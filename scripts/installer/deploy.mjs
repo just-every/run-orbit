@@ -4,10 +4,11 @@ import { randomBytes } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cloudflare } from '@runeditrun/rer/modules/deploy-kit/provider';
-import { ownerTarget, ownerPlan, ownerWorkerName, ownerDeploy, ownerHealth } from '@runeditrun/rer/modules/deploy-kit/owner';
+import { ownerTarget, ownerPlan, ownerWorkerName, ownerDeploy, ownerHealth, settleOwnerState } from '@runeditrun/rer/modules/deploy-kit/owner';
 import { packageBuild } from '@runeditrun/rer/modules/deploy-kit/prepare';
 import { missing, invalid, refuse } from '@runeditrun/rer/errors';
-import { owner } from '@runeditrun/rer/adapter-auth';
+import { claimOrbitOwner } from './hosted-owner.mjs';
+import { ownerSecret } from '@runeditrun/rer/internal/modules/deploy-kit/owner-secret.mjs';
 
 // Optional features are uploaded only when the owner supplies them; deployed
 // secrets are kept by name on later deploys.
@@ -25,7 +26,7 @@ export async function declaration(root, env = process.env) {
 
 /** Base deploy-kit owner-account deploy, health, then the first owner's claim with a one-use token. */
 export function orbitDeploy(lifecycle) {
- return async ({ root, options, store, signal, operationToken }) => {
+ return async ({ root, options, store, signal, operationToken, setupManifest, linkDependencies }) => {
   const environment = options.environment ?? 'production';
   const plan = await declaration(root);
   await lifecycle.run(root, {}, store, () => {}, signal, { verb: 'build', operationToken });
@@ -44,7 +45,7 @@ export function orbitDeploy(lifecycle) {
   const absent = ['CLOUDFLARE_ACCOUNT_ID', 'CLOUDFLARE_API_TOKEN', ...required].filter(name => !process.env[name]?.trim());
   if (absent.length) throw missing(`Deployment requires ${absent.join(', ')} in the environment. See OPERATIONS.md.`);
   if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(process.env.MAIL_FROM.trim())) throw invalid('MAIL_FROM must be a verified sender email address.');
-  const env = { ...process.env, SETUP_TOKEN: process.env.SETUP_TOKEN?.trim() || randomBytes(32).toString('hex') };
+  const env = { ...process.env };
   store.addSecrets?.([env.SETUP_TOKEN, env.SENDGRID_API_KEY, ...optionalSecrets.map(name => env[name])].filter(Boolean));
   const api = cloudflare({ accountId: env.CLOUDFLARE_ACCOUNT_ID, token: env.CLOUDFLARE_API_TOKEN });
   const target = await ownerTarget(api, { project: plan.project, environment });
@@ -54,13 +55,24 @@ export function orbitDeploy(lifecycle) {
   if (git('status', '--porcelain', '--untracked-files=no')) throw refuse('Deploy from a committed checkout.');
   const artifact = await packageBuild({ root, source: { sha: git('rev-parse', 'HEAD'), tree: git('rev-parse', 'HEAD^{tree}') }, runIdentity: { id: '0', attempt: '1' }, productDirectory: '' });
   const statePath = join(root, '.rer', 'deploy', `${target.environment}.json`);
-  const deployed = ownerPlan(target, plan, artifact);
-  const { receipt } = await ownerDeploy({ api, target, plan: deployed, artifact, statePath, env });
+  const { retiredSecrets = [] } = await settleOwnerState({ api, target, statePath });
+  if (!retiredSecrets.includes('SETUP_TOKEN')) env.SETUP_TOKEN ||= randomBytes(32).toString('hex');
+  store.addSecrets?.([env.SETUP_TOKEN].filter(Boolean));
+  const deployed = ownerPlan(target, { ...plan, secrets: plan.secrets.filter(item => !retiredSecrets.includes(item.binding)) }, artifact);
+  const { receipt, sentSecrets } = await ownerDeploy({ api, target, plan: deployed, artifact, statePath, env });
   await ownerHealth({ api, target, plan: deployed, statePath, healthOptions: { readiness: { single: true, totalMs: 30000 } } });
-  // An already claimed installation keeps its owner (409); a new one is claimed now.
-  await owner({ origin: receipt.origin, vars: { SETUP_TOKEN: env.SETUP_TOKEN }, store, signal, input: {} }, { displayName: () => 'Owner', returnTo: '/setup' });
+  // Base retires the spent token and records its Worker version. Updates omit it
+  // from both the upload and owner claim, including after a process restart.
+  const claimed = await claimOrbitOwner({ setupManifest, hook: { returnTo: '/setup' }, declaration: plan,
+   deployed: { origin: receipt.origin, sentSecrets, retiredSecrets }, env,
+   supplied: process.env.SETUP_TOKEN?.trim() ? [] : ['SETUP_TOKEN'],
+   beforeClaim: token => linkDependencies?.(receipt.origin, token),
+   addSecret: value => store.addSecrets?.([value]),
+   secret: ([action, binding], values) => ownerSecret({ api, target, statePath, binding, value: action === '--set' ? values[binding] : undefined }),
+  });
+  if (claimed === undefined) await linkDependencies?.(receipt.origin);
   store.report(`deploy: ${receipt.origin} is healthy. Open ${receipt.origin}/signin and request a sign-in link for the owner email.`);
   for (const line of captureRedirects(receipt.origin)) store.report(line);
-  return { deployed: true, origin: receipt.origin };
+  return { deployed: true, origin: receipt.origin, dependenciesLinked: true };
  };
 }

@@ -1,5 +1,5 @@
 import {recoverTerminalImports} from './archive-terminal-recovery';
-import {ArchiveExportCreationError} from './archive-export-recovery';
+import {ArchiveExportCreationError,ArchiveExportConflictError} from './archive-export-recovery';
 import {ArchiveImportCreationError} from './archive-import-recovery';
 import {foldExportProfile} from './archive-fold-profile';
 import {transferManifestSchema} from './archive-fold-validation';
@@ -16,11 +16,11 @@ export function createArchiveRoutes(db: D1Database) {
             operator: AuthenticatedOperator;
         };
     }>(), imports = new ArchiveImportRepository(db,true), exports = new ArchiveExportRepository(db,foldExportProfile);
-    app.onError((e, c) => e instanceof SyntaxError ? c.json({ error: 'Provide valid JSON.' }, 400) : (e instanceof ArchiveImportCreationError||e instanceof ArchiveExportCreationError) ? c.json({error:e.message,archiveJobId:e.archiveJobId},e.status) : e instanceof RecordError ? c.json({ error: e.message }, e.status) : c.json({ error: 'Archive operation failed. The operation remains resumable; no completion was confirmed.' }, 500));
+    app.onError((e, c) => e instanceof SyntaxError ? c.json({ error: 'Provide valid JSON.' }, 400) : (e instanceof ArchiveImportCreationError||e instanceof ArchiveExportCreationError||e instanceof ArchiveExportConflictError) ? c.json({error:e.message,archiveJobId:e.archiveJobId,...(e instanceof ArchiveExportConflictError?{code:'archive_export_active'}:{})},e.status) : e instanceof RecordError ? c.json({ error: e.message }, e.status) : c.json({ error: 'Archive operation failed. The operation remains resumable; no completion was confirmed.' }, 500));
     app.use('*', async (c, next) => { const id = c.req.param('id'); if (id && !/^[0-9A-HJKMNP-TV-Z]{26}$/.test(id))
         return c.json({ error: 'Invalid archive ID.' }, 400); await next(); });
     app.get('/exports',async(c)=>c.json({jobs:await exports.unfinished(c.get('operator').operatorId)}));
-    app.post('/exports', async (c) => {const actor=c.get('operator').operatorId;await recoverTerminalImports(db,actor);return c.json(await exports.create(actor),201);});
+    app.post('/exports', async (c) => {const actor=c.get('operator').operatorId;await recoverTerminalImports(db,actor);try{return c.json(await exports.create(actor),201);}catch(error){if(error instanceof RecordError&&error.status===409){const [active]=await exports.unfinished(actor);if(active)throw new ArchiveExportConflictError(active.id);}throw error;}});
     app.get('/exports/:id', async (c) => c.json(await exports.status(c.req.param('id'), c.get('operator').operatorId)));
     app.post('/exports/:id/advance', async (c) => c.json(await exports.advance(c.req.param('id'), c.get('operator').operatorId)));
     app.post('/exports/:id/abort', async (c) => c.json(await exports.abort(c.req.param('id'), c.get('operator').operatorId)));

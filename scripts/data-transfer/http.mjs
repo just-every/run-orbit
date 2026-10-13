@@ -1,3 +1,4 @@
+import {archiveTransferError} from '../../src/core/shared/archive-transfer-error.ts';
 /** One authenticated operation. Ambiguous writes are reconciled by transfer status, never retried here. */
 export function transferClient(origin,cookie,fetcher=fetch){
   return async function request(path,{method='GET',body,signal,raw=false}={}){
@@ -5,7 +6,7 @@ export function transferClient(origin,cookie,fetcher=fetch){
     const response=await fetcher(new URL(path,origin),{method,redirect:'error',signal,
       headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},
       ...(body===undefined?{}:{body:typeof body==='string'?body:JSON.stringify(body)})});
-    if(!response.ok){await response.body?.cancel();throw new Error(`Archive operation failed (HTTP ${response.status}). Resume using the recorded transfer ID after checking the operator interface.`);}
+    if(!response.ok)throw await archiveTransferError(response);
     if(raw)return response;
     const reader=response.body?.getReader();if(!reader)throw new Error('Archive status response was empty.');
     const decoder=new TextDecoder('utf-8',{fatal:true});let text='',bytes=0;

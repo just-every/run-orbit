@@ -1,10 +1,11 @@
+import {archiveTransferError} from '../../../shared/archive-transfer-error.ts';
 import {readArchiveFile,validateManifest,type ArchiveManifest} from '../../../shared/archive-transfer-file.ts';
 export interface ArchiveStatus {id:string;state:string;completedTables?:number;totalTables?:number;nextPart?:number;manifest?:ArchiveManifest}
 const base='/api/v1/records/archive';
 export function archiveUrl(kind:'exports'|'imports',id:string,suffix=''){return `${base}/${kind}/${encodeURIComponent(id)}${suffix}`;}
 async function request(path:string,method='GET',body?:unknown):Promise<ArchiveStatus>{
  const response=await fetch(path,{method,credentials:'same-origin',redirect:'error',headers:{'Content-Type':'application/json'},...(body===undefined?{}:{body:typeof body==='string'?body:JSON.stringify(body)})});
- if(!response.ok){await response.body?.cancel();throw new Error(`Archive operation failed (HTTP ${response.status}). The transfer has not been confirmed complete. Check its state before resuming.`);}
+ if(!response.ok)throw await archiveTransferError(response);
  return response.json();
 }
 export async function prepareArchive(id:string,update:(status:ArchiveStatus)=>void,paused:()=>boolean){

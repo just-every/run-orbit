@@ -24,7 +24,7 @@ async function exportArchive(options,request,report){
   status=await request(`${base}/exports`,{method:'POST',body:{}});
   await writeFile(checkpoint,JSON.stringify({operation:'export',origin:options.origin,file:options.file,id:status.id})+'\n',{mode:0o600,flag:'wx'});
  }
- report(`Export transfer ${status.id}. Resume with --resume ${status.id}. Workspace edits can continue while snapshot parts are prepared.`);
+ report(`Export transfer ${status.id}. Resume in Records > Archive using this transfer ID. Workspace edits can continue while snapshot parts are prepared.`);
  while(status.state==='preparing'){
   status=await request(endpoint('exports',status.id,'/advance'),{method:'POST',body:{}});
   report(`Prepared ${status.completedTables} of ${status.totalTables} tables.`);
@@ -46,7 +46,7 @@ async function importArchive(options,request,report){
   if(entry.kind==='manifest'){
    if(status){if(JSON.stringify(validateManifest(status.manifest))!==JSON.stringify(entry.manifest))throw new Error('The archive manifest does not match this restore transfer.');}
    else status=await request(`${base}/imports`,{method:'POST',body:{confirmed:true,manifest:entry.manifest}});
-   report(`Restore transfer ${status.id}. Resume with the same archive and --resume ${status.id}.`);
+   report(`Restore transfer ${status.id}. Resume in Records > Archive with the same archive and this transfer ID.`);
   }else{
    if(!status)throw new Error('Missing restore transfer.');
    // Replaying prior parts verifies the same file, not just the same row counts.
