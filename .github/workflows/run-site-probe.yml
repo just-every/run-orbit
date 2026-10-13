@@ -60,10 +60,17 @@ jobs:
               if (optional) return;
               throw new ProbeFailure(`${label}: invalid API response`);
             }
-            if (optional && (body?.success !== true || !Array.isArray(body.errors) || body.errors.length !== 0 || !Object.hasOwn(body, 'result'))) return;
+            const errors = body?.errors;
+            const errorsShape = !Object.hasOwn(body ?? {}, 'errors') ? 'absent'
+              : errors === null ? 'null' : Array.isArray(errors) ? 'array' : 'malformed';
+            // Log only a fixed shape label and array count, never provider error contents.
+            console.log(`${label}: API errors shape ${errorsShape}${Array.isArray(errors) ? `; count ${errors.length}` : ''}`);
+            const errorsEmpty = errorsShape === 'absent' || errorsShape === 'null'
+              || (errorsShape === 'array' && errors.length === 0);
+            if (optional && (body?.success !== true || !errorsEmpty || !Object.hasOwn(body, 'result'))) return;
             check(body?.success === true, `${label}: API success required`);
             if (!optional) {
-              check(Array.isArray(body.errors) && body.errors.length === 0, `${label}: API errors must be empty`);
+              check(errorsEmpty, `${label}: API errors must be empty`);
               check(Object.hasOwn(body, 'result'), `${label}: API result required`);
             }
             return body.result;
