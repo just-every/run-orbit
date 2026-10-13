@@ -809,8 +809,20 @@
     }
   ],
   "files": {
+    ".github/scripts/orbit-linux-diagnostic/instrumentation.ts": {
+      "sha256": "e0e18e95543517e4e1cf9974f80bad0e260a83aa2f9949f3cfdab6e020c421e4",
+      "executable": false
+    },
+    ".github/scripts/orbit-linux-diagnostic/run.mjs": {
+      "sha256": "cadc9e8517b33f1778055e6e90033c23ef7892e4aece77f2a01caa0de1efa3d0",
+      "executable": false
+    },
     ".github/workflows/edition.yml": {
       "sha256": "a450f3b72bd85ba314073a2af7bfd30039f6bc082a727937cc53ca40c1fb9efe",
+      "executable": false
+    },
+    ".github/workflows/orbit-linux-diagnostic.yml": {
+      "sha256": "ab3993c465a3febf6bc584940c09e408db05cbdfc025fbd5a1b5a8174ba60e2b",
       "executable": false
     },
     ".github/workflows/rer-managed.yml": {

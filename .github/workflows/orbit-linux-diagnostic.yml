@@ -1,0 +1,83 @@
+# TEMPORARY diagnostic only. Remove this workflow and its two helper files after capture.
+# No environment, provider credentials, artifact uploads, deployment, or qualification claim.
+name: Temporary Orbit Linux report diagnostic
+on:
+  push:
+permissions:
+  contents: read
+concurrency:
+  group: orbit-linux-report-diagnostic-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  CI: '1'
+  WRANGLER_SEND_METRICS: 'false'
+  ORBIT_BROWSER_PORT: '15600'
+  ORBIT_ARCHIVE_PORT: '15601'
+  ORBIT_DELEGATION_PORT: '15602'
+  ORBIT_VIEWPORT_PORT: '15603'
+  ORBIT_RECORD_LAYOUT_PORT: '15604'
+  ORBIT_RELATED_RECORD_PORT: '15605'
+  PROOF_PORT: '15606'
+  ORBIT_LIFECYCLE_PORT: '15608'
+  ORBIT_INSPECTOR_PORT: '0'
+  ORBIT_VIEWPORT_INSPECTOR_PORT: '0'
+  ORBIT_RECORD_LAYOUT_INSPECTOR_PORT: '0'
+  ORBIT_RELATED_RECORD_INSPECTOR_PORT: '0'
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22.20.0'
+      - name: Install frozen dependencies and ordinary shard prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          private_log=$(mktemp)
+          trap 'rm -f "$private_log"' EXIT
+          quiet_stage() {
+            local label=$1
+            shift
+            if "$@" >"$private_log" 2>&1; then
+              printf 'DIAGNOSTIC_PREREQUISITE %s passed\n' "$label"
+            else
+              printf 'DIAGNOSTIC_PREREQUISITE %s failed; raw output suppressed\n' "$label"
+              return 1
+            fi
+          }
+          quiet_stage pnpm-install npm install --global pnpm@10.12.4
+          quiet_stage dependencies pnpm install --frozen-lockfile
+          quiet_stage rer-install pnpm exec rer install
+          quiet_stage chromium-install pnpm exec playwright install --with-deps chromium
+      - name: Match normal verification port and free-space prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          read -r ephemeral_first ephemeral_last < /proc/sys/net/ipv4/ip_local_port_range
+          read -r unprivileged_first < /proc/sys/net/ipv4/ip_unprivileged_port_start
+          for port in "$ORBIT_BROWSER_PORT" "$ORBIT_ARCHIVE_PORT" "$ORBIT_DELEGATION_PORT" "$ORBIT_VIEWPORT_PORT" "$ORBIT_RECORD_LAYOUT_PORT" "$ORBIT_RELATED_RECORD_PORT" "$PROOF_PORT" "$((PROOF_PORT + 1))" "$ORBIT_LIFECYCLE_PORT"; do
+            if (( port < unprivileged_first || (port >= ephemeral_first && port <= ephemeral_last) )); then
+              printf 'DIAGNOSTIC_PREREQUISITE verification-port conflict\n'
+              exit 1
+            fi
+          done
+          # Same disposable hosted-runner disk preparation as edition.yml.
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/share/swift
+          printf 'DIAGNOSTIC_PREREQUISITE ports-and-disk passed\n'
+      - name: Run unchanged named assertions with sanitized Linux diagnostics
+        run: node .github/scripts/orbit-linux-diagnostic/run.mjs targeted
+      - name: If targeted passes, capture original fold-domain test order and context
+        # One complete context execution, never a retry. Runs only after targeted succeeds.
+        if: success()
+        run: node .github/scripts/orbit-linux-diagnostic/run.mjs fold-domain
+      - name: Remove generated diagnostic copies
+        if: always()
+        shell: bash
+        run: |
+          find . -maxdepth 1 -type d -name '.orbit-linux-diagnostic-*' -exec rm -rf -- {} +
