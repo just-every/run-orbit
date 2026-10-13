@@ -23,7 +23,7 @@ import { Hono, type MiddlewareHandler } from "hono";
 
 import { createDraftRoutes } from "../features/drafts";
 import type { AuthenticatedOperator } from "../features/identity";
-import type { StepUpAction } from "../../../scripts/base-cli/modules/operator-auth/index.mjs";
+import type { StepUpAction } from "@runeditrun/rer/modules/operator-auth";
 import type { AssetStore } from "../platform/assets";
 import { createDependencies } from "./dependencies";
 

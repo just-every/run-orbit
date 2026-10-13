@@ -1,5 +1,5 @@
+import { HydrationUnit } from '../../../../../base/hydration/unit';
 import type { PropsWithChildren, ReactNode } from "react";
-import { Link } from "@tanstack/react-router";
 
 import { publicProductConfig } from "../../../../app/mounts/public-config";
 import { OrbitLockup } from "../brand/OrbitMark";
@@ -16,13 +16,13 @@ interface AuthFrameProps extends PropsWithChildren {
 /** The frame of sign-in, first-run setup and the missing-page notice: the brand's paper, the lockup home, one card. */
 export function AuthFrame({ action, children, layout, numeral = true }: AuthFrameProps) {
   const { name, imageUrl } = publicProductConfig;
-  const home = <Link aria-label={`${name} home`} className="ob-auth-home" to="/"><OrbitLockup name={name} imageUrl={imageUrl} /></Link>;
+  const home = <HydrationUnit><a aria-label={`${name} home`} className="ob-auth-home" href="/"><OrbitLockup name={name} imageUrl={imageUrl} /></a></HydrationUnit>;
   return (
     <div className={`ob-site ob-auth ob-auth--${layout}`}>
-      {layout === "bar" ? <header className="ob-auth-bar">{home}{action}</header> : null}
+      {layout === "bar" ? <HydrationUnit><header className="ob-auth-bar">{home}{action}</header></HydrationUnit> : null}
       <main className="ob-auth-main">
         {layout === "centred" ? home : null}
-        <section className="ob-auth-card">{children}</section>
+        <HydrationUnit><section className="ob-auth-card">{children}</section></HydrationUnit>
       </main>
       {layout === "centred" && numeral ? <span className="ob-auth-numeral" aria-hidden="true">01</span> : null}
     </div>

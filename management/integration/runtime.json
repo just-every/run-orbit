@@ -27,7 +27,7 @@
     "/api/v1/mail/events/"
   ],
   "delegation": "Native consent and scoped bearer APIs; handoff upsert only; no outreach approval or send authority",
-  "ownerBootstrap": "node scripts/rer.mjs setup --owner-email OWNER locally; node scripts/rer.mjs deploy claims the hosted owner with a one-use setup token",
+  "ownerBootstrap": "rer setup --owner-email OWNER locally; rer deploy claims the hosted owner with a one-use setup token",
   "descriptor": "rer-project.json",
   "artifactBuilder": "scripts/build-delivery-artifact.mjs"
 }

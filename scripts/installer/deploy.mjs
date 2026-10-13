@@ -3,11 +3,11 @@ import {captureRedirects} from './capture-notices.mjs';
 import { randomBytes } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { cloudflare } from '../base-cli/modules/deploy-kit/provider.mjs';
-import { ownerTarget, ownerPlan, ownerWorkerName, ownerDeploy, ownerHealth } from '../base-cli/modules/deploy-kit/owner.mjs';
-import { packageBuild } from '../base-cli/modules/deploy-kit/prepare.mjs';
-import { missing, invalid, refuse } from '../base-cli/cli/errors.mjs';
-import { owner } from '../base-onboarding/adapter-auth.mjs';
+import { cloudflare } from '@runeditrun/rer/modules/deploy-kit/provider';
+import { ownerTarget, ownerPlan, ownerWorkerName, ownerDeploy, ownerHealth } from '@runeditrun/rer/modules/deploy-kit/owner';
+import { packageBuild } from '@runeditrun/rer/modules/deploy-kit/prepare';
+import { missing, invalid, refuse } from '@runeditrun/rer/errors';
+import { owner } from '@runeditrun/rer/adapter-auth';
 
 // Optional features are uploaded only when the owner supplies them; deployed
 // secrets are kept by name on later deploys.

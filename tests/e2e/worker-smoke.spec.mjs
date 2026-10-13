@@ -30,19 +30,17 @@ test("the Worker health endpoint proves its D1 schema is reachable", async ({ re
 });
 
 for (const viewport of viewports) {
-  contract("PUBLIC-001", `the identity plate is sessionless and usable at ${viewport.name} size`, async ({ page }) => {
+  contract("PUBLIC-001", `the installed Lobby is sessionless and usable at ${viewport.name} size`, async ({ page }) => {
     await page.setViewportSize(viewport);
     const failures = watchPageFailures(page);
     const response = await page.goto("/", { waitUntil: "networkidle" });
 
     expect(response?.status()).toBe(200);
-    await expect(page.getByTestId("identity-plate")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Orbit home" })).toBeVisible();
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(page.getByTestId("identity-description")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Sign in" }).first()).toHaveAttribute("href", "/signin");
-    await expect(page.getByRole("img", { name: /NOW queue/ })).toBeVisible();
-    await expect(page.getByText("Pricing", { exact: true })).toHaveCount(0);
+    const state = await (await page.request.get('/setup/state')).json();
+    expect(['unclaimed', 'claimed']).toContain(state.state);
+    await expect(page.getByRole('link', { name: state.state === 'claimed' ? 'Sign in' : 'Finish setup', exact: true }))
+      .toHaveAttribute('href', state.state === 'claimed' ? '/signin' : '/setup');
     await expectNoHorizontalOverflow(page);
     expect(failures).toEqual([]);
   });
@@ -50,11 +48,10 @@ for (const viewport of viewports) {
 
 }
 
-contract("DOCS-001", "the landing's Docs link opens the site's own docs, and their navigation reaches every page", async ({ page }) => {
+contract("DOCS-001", "installed docs navigation reaches every page", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   const failures = watchPageFailures(page);
-  await page.goto("/", { waitUntil: "networkidle" });
-  await page.getByRole("navigation", { name: "Site" }).getByRole("link", { name: "Docs" }).click();
+  await page.goto("/docs", { waitUntil: "networkidle" });
   await expect(page).toHaveURL(/\/docs$/);
   await expect(page.getByRole("heading", { level: 1, name: "Orbit" })).toBeVisible();
   const sidebar = page.locator(".docs-sidebar");

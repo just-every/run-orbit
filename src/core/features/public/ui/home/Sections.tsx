@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { PublicLink as Link, useSiteVariant } from "../site-variant";
 
 import { siteLinks } from "../brand/links";
 import { ImportDrawing } from "./drawings/ImportDrawing";
@@ -11,6 +11,7 @@ import { ScoreDrawing } from "./drawings/ScoreDrawing";
 
 /** Free as in code and as in cost, with the real licence drawn. */
 export function Free() {
+  const site = useSiteVariant();
   return (
     <section className="ob-section ob-split" id="free" aria-labelledby="ob-free-title">
       <div className="ob-section-copy">
@@ -19,7 +20,7 @@ export function Free() {
         <ul className="ob-proof" aria-label="What Orbit never charges for">
           <li>No seats.</li><li>No plans.</li><li>No fees.</li>
         </ul>
-        <div className="ob-actions"><a className="ob-pill" href={siteLinks.source}>Get the code</a></div>
+        <div className="ob-actions"><a className="ob-pill" href={site ? '/run' : siteLinks.source}>{site ? 'Run Orbit' : 'Get the code'}</a></div>
       </div>
       <LicenceDrawing />
     </section>
@@ -93,13 +94,14 @@ export function TryIt() {
 
 /** The closing call to action; the hero's rank returns once beside it. */
 export function Closing() {
+  const site = useSiteVariant();
   return (
     <section className="ob-section ob-closing" id="get-started" aria-labelledby="ob-closing-title">
       <span className="ob-closing-numeral" aria-hidden="true">01</span>
       <div className="ob-closing-copy">
         <h2 id="ob-closing-title">Ready for the next reply.</h2>
         <div className="ob-actions">
-          <a className="ob-pill ob-pill--large" href={siteLinks.source}>Get the code</a>
+          <a className="ob-pill ob-pill--large" href={site ? '/run' : siteLinks.source}>{site ? 'Run Orbit' : 'Get the code'}</a>
           <Link className="ob-link ob-link--large" to="/docs">Read the docs</Link>
         </div>
       </div>

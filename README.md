@@ -6,24 +6,24 @@ This repository is the complete source for Orbit. Public source: [just-every/run
 
 ## Run it on your computer
 
-Orbit pins Node **22.20.0** (`.node-version`) and pnpm **10.12.4** (`packageManager`, through Corepack). Every command below runs through the project's RER CLI, `node scripts/rer.mjs`; the matching package scripts take flags after `--`, for example `pnpm run setup -- --owner-email you@example.com`.
+Orbit pins Node **22.20.0** (`.node-version`) and pnpm **10.12.4** (`packageManager`, through Corepack). Every command below runs through the project's RER CLI, `rer`; the matching package scripts take flags after `--`, for example `pnpm run setup -- --owner-email EMAIL`.
 
 ```sh
 git clone https://github.com/just-every/run-orbit.git && cd run-orbit
-node scripts/rer.mjs install
-node scripts/rer.mjs setup --owner-email you@example.com
-node scripts/rer.mjs dev
+rer install
+rer setup --owner-email EMAIL
+rer dev
 ```
 
 1. `install` installs the frozen dependencies from `pnpm-lock.yaml`.
 2. `setup` asks for nothing else: it writes private local settings, including a generated source encryption key, to `.dev.vars` (mode 0600), builds Orbit, applies every migration to `.wrangler/state`, claims you as the first owner with a private one-use setup token, places a sign-in link in the local outbox and stops the app. Running it again keeps your owner, data and settings.
-3. `dev` serves Orbit on `http://127.0.0.1:8787` (or the port you chose with `--port` at setup) once `/health` answers, and prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN` lines. Open the `RER_OPEN` link on this computer: Orbit opens signed in as you. Its fragment carries this checkout's private dev key, so never share it. A dev badge at the top switches to the `seller` and `collaborator` personas or signs you out. No email is sent locally. Stop it with `node scripts/rer.mjs dev --stop` or Ctrl-C.
+3. `dev` serves Orbit on `http://127.0.0.1:8787` (or the port you chose with `--port` at setup) once `/health` answers, and prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN` lines. Open the `RER_OPEN` link on this computer: Orbit opens signed in as you. Its fragment carries this checkout's private dev key, so never share it. A dev badge at the top switches to the `seller` and `collaborator` personas or signs you out. No email is sent locally. Stop it with `rer dev --stop` or Ctrl-C.
 
 No owner JSON file is needed: the owner email flag and first-run form supply the installation details.
 
 Your first sign-in opens **first-run setup at `/setup`**: confirm the business name, time zone, currency and pipeline stages, then finish. Until you do, every app page returns you to `/setup`; afterwards `/setup` takes you into the app, and Settings holds later changes.
 
-To sign in by email link as in production, use **Email a sign-in link** at `/signin`, then `node scripts/rer.mjs outbox --owner-email you@example.com`: it requests a fresh link and prints an `RER_OPEN` link to the local outbox. Open the message's link and press **Confirm**.
+To sign in by email link as in production, use **Email a sign-in link** at `/signin`, then `rer outbox --owner-email EMAIL`: it requests a fresh link and prints an `RER_OPEN` link to the local outbox. Open the message's link and press **Confirm**.
 
 ### Get your first signal
 
@@ -40,10 +40,10 @@ Follow [Google setup](docs/CONNECT-GMAIL.md) or [Microsoft setup](docs/CONNECT-O
 ### Verify, reset and move data
 
 ```sh
-node scripts/rer.mjs verify
-node scripts/rer.mjs reset --yes
-node scripts/rer.mjs export --output exports/orbit.rer
-node scripts/rer.mjs import --input exports/orbit.rer --yes
+rer verify
+rer reset --yes
+rer export --output exports/orbit.rer
+rer import --input exports/orbit.rer --yes
 ```
 
 - `verify` runs every routine product and fold gate with isolated temporary state; full declared-capacity clauses remain pending. It replaces generated `verification/` outputs; tracked historical evidence is retained under `docs/retained-verification/`. Before release, run `pnpm run verify:release` for the routine gates plus the unchanged full-capacity qualification (see [TESTING.md](TESTING.md)). Stop `dev` and `preview` first; verification never touches your state.
@@ -53,20 +53,20 @@ node scripts/rer.mjs import --input exports/orbit.rer --yes
 ### Deploy and release
 
 ```sh
-node scripts/rer.mjs deploy --dry-run
-node scripts/rer.mjs deploy
-node scripts/rer.mjs release --help
+rer deploy --dry-run
+rer deploy
+rer release --help
 ```
 
 `deploy` deploys to your own Cloudflare account with the Base deploy kit and needs `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `OWNER_EMAIL`, `MAIL_FROM` and `SENDGRID_API_KEY` in the environment; `--dry-run` builds and validates locally without any provider request. [OPERATIONS.md](OPERATIONS.md) lists the token scopes, optional secrets and what to keep. `release` produces a source release receipt and never pushes or deploys.
 
-`node scripts/rer.mjs describe` lists every command, flag, effect and pin; `node scripts/rer.mjs doctor` diagnoses tools and local settings.
+`rer describe` lists every command, flag, effect and pin; `rer doctor` diagnoses tools and local settings.
 
 ## Author and release
 
 `edition.json` selects the edition-owned source graph; `sources.lock.json` records effective bytes and retained comparison origins. Follow [AUTHORING.md](AUTHORING.md) to inspect, lock, check, materialize and release from this repository. `composition.lock.json` is historical import evidence only; it never replaces local source or selects a current release. Preserve migrations and recorded owner intent when integrating updates.
 
-The Base command line (`scripts/base-cli/`), setup lifecycle (`scripts/base-onboarding/`), mail module (`src/base/modules/mail/`) and their contract documents ([RUN-LOCALLY.md](RUN-LOCALLY.md), [SEED-COMMAND-CONTRACT.md](SEED-COMMAND-CONTRACT.md)) are byte-exact copies of Base; `node scripts/rer.mjs check --profile first-party` fails if any copied byte drifts. Refresh them from a Base checkout with `node scripts/export-cli.mjs ORBIT_ROOT`.
+The command line and setup lifecycle come from the exact `@runeditrun/rer` version in devDependencies and pnpm-lock.yaml. `rer check --profile first-party` checks the package-mode contract. Shared application runtime copies retain their Base provenance in `base-copies.json` and `sources.lock.json`; Orbit's adapter remains `scripts/installer/local.mjs`.
 
 ## Customise and share improvements
 

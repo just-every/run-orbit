@@ -2,7 +2,7 @@ import {escapeHtml as esc,nativePage as page,nativeList,nativeError} from './nat
 import {Hono} from 'hono';
 import {z} from 'zod';
 import type {AuthenticatedOperator} from '../identity';
-import type {StepUpAction} from '../../../../scripts/base-cli/modules/operator-auth/index.mjs';
+import type {StepUpAction} from '@runeditrun/rer/modules/operator-auth';
 import {archiveImportActive} from '../../platform/archive-maintenance';
 import {boundedRequestBody,RequestBodyTooLarge} from '../../platform/bounded-request-body';
 import {DelegationError,deny,hash,random,scopes,targetSchema,effectSchema} from './protocol';

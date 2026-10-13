@@ -1,0 +1,15 @@
+:root {
+  --rer-page: #f5f1ea;
+  --rer-surface: #fffdf9;
+  --rer-text: #16171d;
+  --rer-muted: #45474f;
+  --rer-border: #6b6d76;
+  --rer-focus: #b3400c;
+  --rer-accent: #e85b1e;
+  --rer-accent-text: #16171d;
+  --rer-link: #b3400c;
+  --rer-font-body: 'Bricolage Grotesque', 'Bricolage Grotesque Fallback', 'Avenir Next', 'Segoe UI', sans-serif;
+  --rer-font-heading: 'Bricolage Grotesque', 'Bricolage Grotesque Fallback', 'Avenir Next', 'Segoe UI', sans-serif;
+  --rer-radius: 16px;
+  --rer-logo: url('/brand/mark.svg');
+}

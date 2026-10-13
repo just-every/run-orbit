@@ -1,6 +1,6 @@
 import {randomBytes} from 'node:crypto';
-import {readSettings} from '../base-onboarding/adapter-settings.mjs';
-import {writePrivateFile} from '../base-onboarding/private-files.mjs';
+import {readSettings} from '@runeditrun/rer/adapter-settings';
+import {writePrivateFile} from '@runeditrun/rer/private-files';
 /** Upgrade an existing private settings file without replacing any saved value. */
 export async function ensureLocalSourceKey({root,store}){
  const saved=await readSettings(root,{});

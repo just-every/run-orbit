@@ -1,4 +1,4 @@
-import { AuthError, type MailSender, type StepUpAction } from '../../../../scripts/base-cli/modules/operator-auth/index.mjs';
+import { AuthError, type MailSender, type StepUpAction } from '@runeditrun/rer/modules/operator-auth';
 import type { PlatformBindings } from '../../platform/assets';
 import { createOrbitIdentity } from './auth';
 

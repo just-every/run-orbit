@@ -19,7 +19,7 @@ export async function rerTransfer(operation: 'export' | 'import', origin: string
     await copyFile(cookieFile, session);
     await chmod(session, 0o600);
     if (operation === 'import') { await copyFile(file, archive); await chmod(archive, 0o600); }
-    const args = ['scripts/rer.mjs', operation, '--target', 'remote', '--origin', origin, '--session-file', session, ...(operation === 'export' ? ['--output', archive] : ['--input', archive, '--yes'])];
+    const args = ['node_modules/@runeditrun/rer/bin/rer.mjs', operation, '--target', 'remote', '--origin', origin, '--session-file', session, ...(operation === 'export' ? ['--output', archive] : ['--input', archive, '--yes'])];
     try {
       const result = await promisify(execFile)(process.execPath, args, { env: { ...process.env, NODE_EXTRA_CA_CERTS: certificatePath }, timeout: 300000, maxBuffer });
       if (operation === 'export') { await copyFile(archive, file); await chmod(file, 0o600); }

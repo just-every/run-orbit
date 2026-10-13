@@ -1,4 +1,4 @@
-import { devAdmitted } from '../../scripts/base-cli/modules/operator-auth/dev-admission.mjs';
+import { devAdmitted } from '@runeditrun/rer/modules/operator-auth/dev-admission';
 import { personColumns, personOf, sessionStore, sha256, version, LIFETIME, SESSION_COOKIE, type PersonRow } from '../../src/core/features/identity/store';
 import type { AuthenticatedOperator } from '../../src/core/features/identity';
 import type { Clock } from '../../src/core/platform/clock';

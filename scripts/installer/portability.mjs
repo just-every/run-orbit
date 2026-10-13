@@ -1,4 +1,4 @@
-import { localPortability } from '../base-cli/cli/portability.mjs';
+import { localPortability } from '@runeditrun/rer/portability';
 import { remoteTransfer } from './remote-transfer.mjs';
 
 // Orbit's local archive uses Base portability with Orbit's own data policy:

@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { PublicLink as Link, useSiteVariant } from "../site-variant";
 
 import { alternativeSegments } from "../alternative-line";
 import { siteLinks } from "../brand/links";
@@ -8,6 +8,7 @@ const steps = ["A customer acts", "Orbit moves the deal to your NOW queue", "You
 
 /** The first view: the promise, the two actions and the orbit drawing of a customer signal moving a deal to the NOW queue. */
 export function Hero({ description }: { description: string }) {
+  const site = useSiteVariant();
   return (
     <section className="ob-hero" aria-labelledby="ob-hero-title">
       <div className="ob-hero-grid">
@@ -16,7 +17,7 @@ export function Hero({ description }: { description: string }) {
           <p className="ob-hero-sub" data-testid="identity-description">{description}</p>
           <p className="ob-alt">{alternativeSegments.map((part, index) => (typeof part === "string" ? part : <strong key={index}>{part.brand}</strong>))}</p>
           <div className="ob-actions">
-            <a className="ob-pill ob-pill--large" href={siteLinks.source}>Get the code</a>
+            <a className="ob-pill ob-pill--large" href={site ? '/run' : siteLinks.source}>{site ? 'Run Orbit' : 'Get the code'}</a>
             <Link className="ob-link ob-link--large" to="/docs">Read the docs</Link>
           </div>
         </div>

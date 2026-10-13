@@ -1,5 +1,5 @@
 import { createOrbitIdentity, type AuthenticatedOperator } from '../../src/core/features/identity';
-import type { MailMessage, MailSender } from '../../scripts/base-cli/modules/operator-auth/index.mjs';
+import type { MailMessage, MailSender } from '@runeditrun/rer/modules/operator-auth';
 import { TEST_SESSION_SECRET } from './app';
 import type { PlatformBindings } from '../../src/core/platform/assets';
 

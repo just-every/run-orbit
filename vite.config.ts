@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { excludeLocalVariables } from "./vite/exclude-local-variables.ts";
-import { archiveOutputGuard } from "./scripts/base-onboarding/archive-output.mjs";
+import { archiveOutputGuard } from "@runeditrun/rer/archive-output";
 import { docsSite } from "./src/core/features/public/docs/build/plugin.ts";
 
 // Preflight runs before Vite can empty generated output, including direct Vite calls.
@@ -34,8 +34,8 @@ export default defineConfig(({ command }) => ({
     strictPort: true,
     fs: {
       strict: true,
-      // Base operator-auth runs in the Worker from its byte-exact copy under scripts/base-cli/modules.
-      allow: ['src', 'public', 'node_modules', 'scripts/base-cli/modules'],
+      // Base operator-auth runs in the Worker from the exactly pinned rer package.
+      allow: ['src', 'public', 'node_modules', 'deploy-site.json', 'node_modules/@runeditrun/rer/modules'],
       deny: ['**/.rer/**', '**/.seed/**', '**/exports/**', '**/*.rer'],
     },
   }

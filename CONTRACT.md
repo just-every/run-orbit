@@ -1,6 +1,6 @@
 # CONTRACT.md — Orbit
 
-What this product does. Every clause has a stable ID and at least one tagged test; `node scripts/rer.mjs verify` reports each as satisfied, overridden, or broken. Security, privacy, and operational guarantees are in `BASELINE.md`; a clause here may supersede one of them by naming its `BASE-` ID (SIGNAL-009 does). Capacity and rate limits are in `seed.json → limits`. Times are p95 at those limits. Clauses marked *Policy* have a default that buyers may replace through the named extension point.
+What this product does. Every clause has a stable ID and at least one tagged test; `rer verify` reports each as satisfied, overridden, or broken. Security, privacy, and operational guarantees are in `BASELINE.md`; a clause here may supersede one of them by naming its `BASE-` ID (SIGNAL-009 does). Capacity and rate limits are in `seed.json → limits`. Times are p95 at those limits. Clauses marked *Policy* have a default that buyers may replace through the named extension point.
 
 ## Scope
 

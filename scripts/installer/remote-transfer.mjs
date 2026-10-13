@@ -2,7 +2,7 @@ import { relative } from 'node:path';
 import { runTransfer } from '../data-transfer/run.mjs';
 import { transferClient } from '../data-transfer/http.mjs';
 import { readSessionCookie } from '../data-transfer/session.mjs';
-import { RerError, invalid, missing } from '../base-cli/cli/errors.mjs';
+import { RerError, invalid, missing } from '@runeditrun/rer/errors';
 
 // A hosted installation moves its data through Orbit's own authenticated
 // Records archive API (the same archive the Records page downloads), using an

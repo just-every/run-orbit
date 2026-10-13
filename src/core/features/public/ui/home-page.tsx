@@ -1,3 +1,4 @@
+import { PublicVariantProvider, type PublicVariant } from './site-variant';
 import { publicProductConfig } from "../../../app/mounts/public-config";
 import { Hero } from "./home/Hero";
 import { Closing, Free, Product, Score, TryIt } from "./home/Sections";
@@ -9,10 +10,10 @@ import "./home/drawings.css";
 import "./home/rest.css";
 import "./home/rest-art.css";
 
-export function HomePage() {
+export function HomePage({ variant = 'installed' }: { variant?: PublicVariant }) {
   const { name, imageUrl, description, showPoweredByCredit } = publicProductConfig;
   return (
-    <div className="ob-site">
+    <PublicVariantProvider variant={variant}><div className="ob-site">
       <SiteHeader name={name} imageUrl={imageUrl} />
       <main data-testid="identity-plate">
         <Hero description={description} />
@@ -23,6 +24,6 @@ export function HomePage() {
         <Closing />
       </main>
       <SiteFooter name={name} imageUrl={imageUrl} showCredit={showPoweredByCredit} />
-    </div>
+    </div></PublicVariantProvider>
   );
 }

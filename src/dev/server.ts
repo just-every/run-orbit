@@ -2,10 +2,10 @@
 // alone; the deployed main (src/core/app/worker.ts) never imports it, and
 // `rer build` refuses output that contains this layer's marker.
 import worker, { runtimeBindings } from '../core/app/worker';
-import { devGate, devNotFound, isLoopbackHost, safeReturnTo } from '../../scripts/base-cli/modules/operator-auth/index.mjs';
-import { registerDevAdmission, devAdmitted } from '../../scripts/base-cli/modules/operator-auth/dev-admission.mjs';
+import { devGate, devNotFound, isLoopbackHost, safeReturnTo } from '@runeditrun/rer/modules/operator-auth';
+import { registerDevAdmission, devAdmitted } from '@runeditrun/rer/modules/operator-auth/dev-admission';
 // @ts-expect-error The badge is plain ESM without declarations.
-import { decorate } from '../../scripts/base-cli/modules/operator-auth/dev/badge.mjs';
+import { decorate } from '@runeditrun/rer/modules/operator-auth/dev/badge';
 import { clearSessionCookie, sessionStore, sha256 } from '../core/features/identity/store';
 import { createId } from '../core/shared/ids';
 import type { PlatformBindings } from '../core/platform/assets';

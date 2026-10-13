@@ -5,7 +5,7 @@ import {mkdtemp,writeFile,readFile,stat,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {ensureLocalSourceKey,ensureDeploymentSourceKey} from '../../scripts/installer/source-key.mjs';
-import {secretBindings,uploadWorker} from '../../scripts/base-cli/modules/deploy-kit/worker.mjs';
+import {secretBindings,uploadWorker} from '@runeditrun/rer/internal/modules/deploy-kit/worker.mjs';
 test('SIGNAL-009 source keys are private, generated once and inherited across local setup and fake-provider deploys',async()=>{
  const root=await mkdtemp(join(tmpdir(),'orbit-source-key-')),registered=[],store={addSecrets:values=>registered.push(...values)};
  try{

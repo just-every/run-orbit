@@ -5,20 +5,20 @@
 Start the app this way in every checkout, in this order (Node 22.20.0 and pnpm 10.12.4 are pinned):
 
 ```sh
-node scripts/rer.mjs install
-node scripts/rer.mjs setup --owner-email you@example.com
-node scripts/rer.mjs dev
+rer install
+rer setup --owner-email EMAIL
+rer dev
 ```
 
-`setup` takes the real owner mailbox from `--owner-email` or its prompt, claims that owner with a private one-use setup token and exits with no app running. `dev` prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN` once `/health` answers: open the `RER_OPEN` link on this computer and the app opens signed in as the owner, through a dev session that works only behind this checkout's key (`.rer/local/dev-key.env`). The dev badge at the top switches between the owner, `seller@dev.localhost` (a full operator), `collaborator@dev.localhost` (an invited analyst) and signed out; `rer dev --as seller` starts as a persona and `rer dev --login` turns dev sign-in off. Sign-in itself is Base operator-auth over Orbit's own operators: the email link is captured in the local outbox (behind the same key), and no email is sent locally. The first sign-in lands on first-run setup at `/setup`; finish it to reach the app. Stop `dev` with `node scripts/rer.mjs dev --stop` or Ctrl-C (and `preview` with `node scripts/rer.mjs preview --stop`) before build, verification or data transfer.
+`setup` takes the real owner mailbox from `--owner-email` or its prompt, claims that owner with a private one-use setup token and exits with no app running. `dev` prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN` once `/health` answers: open the `RER_OPEN` link on this computer and the app opens signed in as the owner, through a dev session that works only behind this checkout's key (`.rer/local/dev-key.env`). The dev badge at the top switches between the owner, `seller@dev.localhost` (a full operator), `collaborator@dev.localhost` (an invited analyst) and signed out; `rer dev --as seller` starts as a persona and `rer dev --login` turns dev sign-in off. Sign-in itself is Base operator-auth over Orbit's own operators: the email link is captured in the local outbox (behind the same key), and no email is sent locally. The first sign-in lands on first-run setup at `/setup`; finish it to reach the app. Stop `dev` with `rer dev --stop` or Ctrl-C (and `preview` with `rer preview --stop`) before build, verification or data transfer.
 
 ```sh
-node scripts/rer.mjs verify
-node scripts/rer.mjs reset --yes
-node scripts/rer.mjs export --output exports/installation.rer
-node scripts/rer.mjs import --input exports/installation.rer --yes
-node scripts/rer.mjs deploy
-node scripts/rer.mjs describe
+rer verify
+rer reset --yes
+rer export --output exports/installation.rer
+rer import --input exports/installation.rer --yes
+rer deploy
+rer describe
 ```
 
 - `verify` runs the complete verification with its own temporary state.
@@ -38,13 +38,13 @@ Read `README.md`, `HANDOVER.md`, `CONTRACT.md`, `BASELINE.md`, `DIVERGENCE.md`, 
 - One Cloudflare Worker serves Hono HTTP routes and TanStack Start documents. Preserve native session checks on HTTP, documents and generated functions. HTML forms that change state post before hydration.
 - `src/core/features` owns Orbit records, signals, scoring, recommendations and reviewed outreach. Database access belongs in repositories; validate external inputs in routes.
 - `src/family/sales` and `src/modules/sendgrid-email` contain selected component source owned by this edition. Edit it directly; origins support comparison and never override local changes.
-- `scripts/base-cli/`, `scripts/base-onboarding/` and `src/base/modules/mail/` are byte-exact Base copies. Change them in Base and refresh them; `rer check` fails on drift. Orbit's own adapter is `scripts/installer/local.mjs`.
+- `@runeditrun/rer` is pinned exactly in devDependencies. `src/base/` runtime and mail module retain their Base provenance; refresh shared source from its pinned Base revision and run `rer check`. Orbit's own adapter is `scripts/installer/local.mjs`.
 - `src/ext/config.ts` owns the public identity plate. Keep real behaviour and failed states visible; add no mocks, semantic fallbacks or invented AI output. Test fixtures live under `tests/` and never enter application code.
 - Signals retain source, event identity, occurred/received time and immutable evidence. Stage, owner, score, queue and provider delivery state stay independent.
 - Every customer send requires review of exact saved content. Preserve revision/staleness checks, recipient permission, one-attempt submission and truthful ambiguous outcomes. No signal or background action approves mail.
 - Preserve already-applied migration history; use new migrations for core or extension schema changes. Prefer small files and direct responsibility boundaries.
 
-Run `node scripts/rer.mjs verify` after changes and exercise the affected real workflow through `dev`. Record any unverified product or baseline clauses explicitly. For updates, choose the Git or integration method that preserves all owner intent; conflicts are the agent's work.
+Run `rer verify` after changes and exercise the affected real workflow through `dev`. Record any unverified product or baseline clauses explicitly. For updates, choose the Git or integration method that preserves all owner intent; conflicts are the agent's work.
 
 ## Recommended defaults and shared improvements
 

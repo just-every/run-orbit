@@ -1,6 +1,6 @@
-import { AuthError, createAuthHandler, createOperatorAuth, createSignInHandler, securityHeaders, type AuthConfig, type MailSender } from '../../../../scripts/base-cli/modules/operator-auth/index.mjs';
-import { devAdmitted } from '../../../../scripts/base-cli/modules/operator-auth/dev-admission.mjs';
-import { createDependencies } from '../../../../scripts/base-cli/modules/dependencies/index.mjs';
+import { AuthError, createAuthHandler, createOperatorAuth, createSignInHandler, securityHeaders, type AuthConfig, type MailSender } from '@runeditrun/rer/modules/operator-auth';
+import { devAdmitted } from '@runeditrun/rer/modules/operator-auth/dev-admission';
+import { createDependencies } from '@runeditrun/rer/modules/dependencies';
 import { createD1DevelopmentOutbox, sendDevelopment } from '../../../base/modules/mail/src/development/index.mjs';
 import { sendSendGrid, SendGridSendError } from '../../../modules/sendgrid-email/sender';
 import type { PlatformBindings } from '../../platform/assets';

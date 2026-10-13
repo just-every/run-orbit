@@ -1,4 +1,4 @@
-import {devAdmitted} from '../../../../scripts/base-cli/modules/operator-auth/dev-admission.mjs';
+import {devAdmitted} from '@runeditrun/rer/modules/operator-auth/dev-admission';
 import {deny,hash,type Grant} from './protocol';
 
 // Native delegation exposes complete source records. A collaborator profile or
