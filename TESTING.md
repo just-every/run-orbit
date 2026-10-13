@@ -1,7 +1,7 @@
 # Orbit verification
 
-Run `node scripts/rer.mjs verify` (or `pnpm run verify`) after
-`node scripts/rer.mjs install`, with Node 22.20.0 and pnpm 10.12.4. Stop `dev` and
+Run `rer verify` (or `pnpm run verify`) after
+`rer install`, with Node 22.20.0 and pnpm 10.12.4. Stop `dev` and
 `preview` first. Every gate uses a temporary D1 state directory; verification never
 reads or changes the owner's `.wrangler/state`.
 

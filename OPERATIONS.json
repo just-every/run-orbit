@@ -29,180 +29,165 @@
   "commands": {
     "install": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "install"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Frozen pnpm 10.12.4 dependency installation from pnpm-lock.yaml; no setup, global tool change or deployment."
     },
     "setup": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "setup"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Validate rer-setup.json answers, write private .dev.vars (0600), build the Worker, apply migrations/core to .wrangler/state, start Orbit briefly, claim the first owner with the private setup token, place a sign-in link in /__dev/outbox and stop the app. Reruns keep the owner, data and settings bytes."
     },
     "dev": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "dev"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Serve Orbit through Vite with HMR on the requested loopback origin, run the minute Cron Trigger locally, request a fresh owner sign-in link and print RER_READY and RER_SIGN_IN once /health answers."
     },
     "preview": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "preview"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Serve the fixed production build with one workerd on the saved state and owner; no rebuild while serving."
     },
     "build": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "build"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Build the production Worker and assets into dist/ with private local settings moved aside and restored exactly."
     },
     "verify": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "verify"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Run scripts/verify.mjs: source, boundary and manifest checks, D1 core and delegation suites, typecheck, built-Worker and browser journeys, the rer command journey, the capacity measurement and the fold qualification. Reports executed gates only; see ACCEPTANCE.md."
     },
     "reset": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "reset"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "After explicit confirmation, remove .wrangler/state, .rer/local, .seed/installer and .dev.vars. Source, dependencies, exports and .rer/deploy receipts stay. No remote effect."
     },
     "deploy": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "deploy"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Build locally, then deploy to the owner's Cloudflare account with the Base deploy kit (Worker, D1 and migrations, minute Cron, declared secrets), check /health and claim the first owner. --dry-run validates the declaration and packaged build with no provider request."
     },
     "export": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "export"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Write a new owner-only local archive of every Orbit table through Base portability, with a content hash, row counts and exclusions (sessions, sign-in links, collaborator authority, delegation credentials, archive bookkeeping, source secrets). Remote transfer is not supported here; hosted installations use Records > Archive."
     },
     "import": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "import"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Validate an archive, restore it atomically into an empty local database and rebuild search indexes. Run setup afterwards with the archived owner email."
     },
     "release": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "release"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Base release producer: clean source release receipt and optional local tag; never pushes or deploys."
     },
     "outbox": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "outbox"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Print the running local app's /__dev/outbox URL; --owner-email requests a fresh ordinary sign-in link."
     },
     "doctor": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "doctor"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Read-only tool, version, local settings and state placement diagnostics. No provider request."
     },
     "describe": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "describe"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Describe commands, flags, aliases, effects, pins and local state without running project commands."
     },
     "check": {
       "argv": [
-        "node",
-        "scripts/rer.mjs",
+        "rer",
         "check"
       ],
       "inputs": [
-        "scripts/rer.mjs",
+        "package.json",
         "scripts/installer/local.mjs"
       ],
       "effects": "Read-only structural validation of the seed command contract, aliases, pins, operations descriptor and copied Base sources."

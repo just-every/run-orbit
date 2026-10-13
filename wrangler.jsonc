@@ -1,5 +1,5 @@
 // Local Worker configuration. Hosted deployment uses deploy.json through
-// node scripts/rer.mjs deploy; this file names no account or remote resource.
+// rer deploy; this file names no account or remote resource.
 {
   "name": "orbit",
   "main": "src/core/app/worker.ts",

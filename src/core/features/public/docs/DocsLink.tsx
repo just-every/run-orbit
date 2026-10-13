@@ -1,3 +1,4 @@
+import { useSiteVariant } from '../ui/site-variant';
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 
@@ -11,6 +12,7 @@ type DocsLinkProps = {
 
 /** A client-side link to a published docs page. Only the page itself counts as active, so `/docs` is not marked on every page. */
 export function DocsLink({ slug, children, ...props }: DocsLinkProps) {
+  if (useSiteVariant()) return <a href={slug ? `/docs/${slug}` : '/docs'} {...props}>{children}</a>;
   return slug
     ? <Link to="/docs/$slug" params={{ slug }} activeOptions={{ exact: true }} {...props}>{children}</Link>
     : <Link to="/docs" activeOptions={{ exact: true }} {...props}>{children}</Link>;

@@ -1,6 +1,6 @@
-import type { CompletedSession, Session } from '../../../../scripts/base-cli/modules/operator-auth/index.mjs';
-import type { NativePerson } from '../../../../scripts/base-cli/modules/operator-auth/accounts/native.mjs';
-import { safeReturnTo } from '../../../../scripts/base-cli/modules/operator-auth/index.mjs';
+import type { CompletedSession, Session } from '@runeditrun/rer/modules/operator-auth';
+import type { NativePerson } from '@runeditrun/rer/modules/operator-auth/accounts/native';
+import { safeReturnTo } from '@runeditrun/rer/modules/operator-auth';
 import { createId } from '../../shared/ids';
 
 /**

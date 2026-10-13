@@ -1,5 +1,9 @@
 export function protectResponse(response: Response, managementOrigin?: string, publicFormOrigins?: string[]) {
   const headers = new Headers(response.headers);
+  if (headers.get('Content-Type')?.includes('text/html')) {
+    const cache = headers.get('Cache-Control');
+    if (!cache?.split(',').some(value => value.trim() === 'no-transform')) headers.set('Cache-Control', [cache, 'no-transform'].filter(Boolean).join(', '));
+  }
   const existing = (headers.get('Content-Security-Policy') ?? '').split(';').map(part => part.trim()).filter(part => part && !/^frame-(?:src|ancestors)(?:\s|$)/i.test(part)).join('; ');
   const ancestors=publicFormOrigins?`frame-ancestors 'self' ${publicFormOrigins.join(' ')}`:"frame-ancestors 'none'";
   const policy = [existing, ancestors, `frame-src 'self'${managementOrigin ? ` ${managementOrigin}` : ''}`].filter(Boolean).join('; ');

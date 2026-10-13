@@ -1,5 +1,5 @@
-import type { NativeAccountsAdapter } from '../../../../scripts/base-cli/modules/operator-auth/accounts/native.mjs';
-import type { NativeDependencyAuthority } from '../../../../scripts/base-cli/modules/dependencies/index.mjs';
+import type { NativeAccountsAdapter } from '@runeditrun/rer/modules/operator-auth/accounts/native';
+import type { NativeDependencyAuthority } from '@runeditrun/rer/modules/dependencies';
 import { actorFence, clearGuards, guard, ownerFence, refused, type OrbitRole, type SessionStore } from './store';
 
 const STEP_UP_MS = 600_000;

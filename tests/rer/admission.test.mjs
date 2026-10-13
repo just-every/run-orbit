@@ -35,9 +35,10 @@ test('admission uses native owner authority, bounds editor framing and preserves
       fonts.push({width,path,...await visitor.evaluate(() => ({body:getComputedStyle(document.body).fontFamily, heading:getComputedStyle(document.querySelector('h1')).fontFamily,content:getComputedStyle(document.querySelector('.orbit-home')??document.body).fontFamily}))});
       if (evidence) await visitor.screenshot({path:join(evidence,`${path === '/' ? 'home' : 'signin'}-${width}.png`),fullPage:true});
     }
-    // Base serves the sign-in page itself; the home page's Sign in link is a document navigation to it.
+    // The unclaimed Lobby leads through native sign-in to real first-run setup.
     await visitor.goto(origin+'/');
-    await visitor.getByRole('link',{name:'Sign in',exact:true}).first().click();
+    assert.deepEqual(await (await fetch(origin+'/setup/state')).json(), {state:'unclaimed'});
+    await visitor.getByRole('link',{name:'Finish setup',exact:true}).click();
     await visitor.getByRole('heading',{name:'Sign in to Orbit',exact:true}).waitFor();
     const notfound=await visitor.goto(origin+'/missing-admission-route');assert.equal(notfound.status(),404);
     await visitor.getByRole('heading',{name:'Published test not found',exact:true}).waitFor();
@@ -48,6 +49,9 @@ test('admission uses native owner authority, bounds editor framing and preserves
     await owner.fill('#setup-name','Admission Test Co');
     await owner.getByRole('button',{name:'Finish setup'}).click();
     await owner.waitForURL(origin+'/app');
+    assert.deepEqual(await (await fetch(origin+'/setup/state')).json(), {state:'claimed'});
+    await visitor.goto(origin+'/');
+    await visitor.getByRole('link',{name:'Sign in',exact:true}).waitFor();
     for (const width of [1440,390]) {
       await owner.setViewportSize({width,height:900}); await owner.reload();
       const response = await owner.evaluate(async () => { const response=await fetch('/api/editor/config');return {status:response.status,headers:Object.fromEntries(response.headers),body:await response.json()}; }); assert.equal(response.status,200);
@@ -96,8 +100,15 @@ test('admission uses native owner authority, bounds editor framing and preserves
     const page = await browser.newPage(); assert.match((await page.goto(origin+'/signin')).headers()['content-security-policy'], /frame-ancestors 'none'/);
     const response = await page.goto(origin+'/'); assert.match(response.headers()['content-security-policy'], /frame-ancestors 'none'/);
     const files = await page.locator('script[src],link[rel="stylesheet"]').evaluateAll(nodes=>nodes.map(n=>n.src||n.href));
-    assert.ok(files.some(file=>file.includes('/assets/')));
+    assert.ok(files.some(file=>file.endsWith('/rer-theme.css')));
+    assert.ok(files.some(file=>file.endsWith('/brand/fonts.css')));
     for (const file of files) { const asset=await fetch(file); assert.equal(asset.status,200); assert.match(asset.headers.get('content-type'),file.includes('.css')?/text\/css/:/javascript/); }
+    await page.goto(origin+'/docs');
+    const appFiles = await page.locator('script[src],link[rel="stylesheet"]').evaluateAll(nodes=>nodes.map(n=>n.src||n.href));
+    assert.ok(appFiles.some(file=>file.includes('/assets/')));
+    for (const file of appFiles) { const asset=await fetch(file); assert.equal(asset.status,200); assert.match(asset.headers.get('content-type'),file.includes('.css')?/text\/css/:/javascript/); }
+    await page.getByRole('link',{name:'Orbit home',exact:true}).click();
+    await page.getByRole('link',{name:'Sign in',exact:true}).waitFor();
     await page.goto(origin+'/signin'); await page.fill('#signin-email','owner@example.test'); await page.getByRole('button',{name:'Email a sign-in link'}).click();
     await page.getByRole('status').waitFor();
     await checkout.rer(['preview','--stop']); await preview.exited;

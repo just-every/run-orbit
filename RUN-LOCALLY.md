@@ -2,9 +2,8 @@
 
 Install the `rer` command once: `npx -y @runeditrun/rer cli install`, or the
 installer script on the RER site (`curl -fsSL https://runeditrun.com/install.sh | sh`).
-`rer` runs every verb with the checkout's own pinned copy: the vendored
-`scripts/rer.mjs`, the `OPERATIONS.json` argv and the `package.json` aliases
-remain the machine contract until package mode, and `rer` runs them.
+`rer` runs every verb with this checkout's exact `@runeditrun/rer` package pin.
+The `OPERATIONS.json` argv and `package.json` aliases use `rer VERB`.
 
 ## Launch with one command
 
@@ -45,7 +44,7 @@ development:
 
 ```sh
 rer install
-rer setup --owner-email you@example.com
+rer setup --owner-email EMAIL
 rer dev
 ```
 
@@ -105,7 +104,7 @@ below their own floor, described next.
 Missing non-interactive setup answers exit 3 and name the manifest fields.
 Read `rer-setup.json` and pass a private, mode-0600 JSON object keyed by those
 names using `rer setup --answers PATH --non-interactive`,
-for example `{"OWNER_EMAIL":"owner@example.com"}`. Secret values stay in
+for example `{"OWNER_EMAIL":"EMAIL"}`. Secret values stay in
 private inputs and never go in command arguments. A setup rerun with the saved
 owner and origin preserves existing owner/data and exact private settings.
 Conflicting saved identity or origin reports an actionable recovery path.
@@ -115,7 +114,7 @@ first if it should be restored, and import only into an empty destination.
 Queue waits report immediately with a reason and numeric one-based position,
 then refresh about every 15 seconds while waiting. From the runnable project
 root, inspect the live queue with
-`node scripts/base-cli/modules/job-queue/cli.mjs status`.
+`node node_modules/@runeditrun/rer/modules/job-queue/cli.mjs status`.
 
 For the real owner mailbox, `setup` can prompt instead of receiving
 `--owner-email` on the command line. Setup builds the app, applies local

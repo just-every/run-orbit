@@ -13,6 +13,6 @@ export const loadNow = createServerFn({ method: "GET" }).handler(async () => {
   if(await archiveRestoring())throw redirect({href:"/app/records",statusCode:302});
   const deps = await requestScopedDependencies();
   const [queue, presentation] = await Promise.all([deps.opportunities.listNowView({}), deps.workspace.readPresentation()]);
-  if (!presentation) throw new Error("Workspace is not configured. Run node scripts/rer.mjs setup.");
+  if (!presentation) throw new Error("Workspace is not configured. Run rer setup.");
   return { ...queue, presentation };
 });

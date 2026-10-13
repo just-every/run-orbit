@@ -9,9 +9,9 @@
     "artifactFile": "rer-worker-artifact.json"
   },
   "operations": {
-    "setup": "node scripts/rer.mjs install",
-    "build": "node scripts/rer.mjs build",
-    "verify": "node scripts/rer.mjs verify",
+    "setup": "pnpm install --frozen-lockfile && pnpm exec rer install",
+    "build": "pnpm exec rer build",
+    "verify": "pnpm exec rer verify",
     "artifact": "node scripts/build-delivery-artifact.mjs",
     "recovery": "Retain exact source and a full D1 backup before migrations. Restore to a fresh D1, compare Records archive exports, revoke old authority and reconnect excluded credentials before switching traffic. See OPERATIONS.md and docs/artifact/CONTRACT.md."
   },

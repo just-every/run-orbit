@@ -1,4 +1,4 @@
-import type { NativeProofPersistence } from '../../../../scripts/base-cli/modules/operator-auth/identity/email-link/index.mjs';
+import type { NativeProofPersistence } from '@runeditrun/rer/modules/operator-auth/identity/email-link';
 import { actorFence, clearGuards, guard, personFence, refused, version, type OrbitPerson, type OrbitRole, type SessionStore } from './store';
 
 interface ProofRow { kind: 'magic' | 'step_up'; operator_id: string; authority_version: number; email: string; expires_at: number; return_to: string }

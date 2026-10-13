@@ -80,7 +80,7 @@ order in the same checkout:
 
 ```sh
 node scripts/edition-authoring/cli.mjs check
-nice -n 15 node scripts/rer.mjs verify
+nice -n 15 rer verify
 git diff --exit-code HEAD -- .
 git status --porcelain --untracked-files=no
 node scripts/edition-authoring/cli.mjs check

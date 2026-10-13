@@ -28,14 +28,14 @@ When a customer replies, Orbit cancels any follow-up you scheduled for that pers
 Orbit needs Node 22.20.0 and pnpm 10.12.4. From a copy of the code, run:
 
 ```sh
-node scripts/rer.mjs install
-node scripts/rer.mjs setup --owner-email you@example.com
-node scripts/rer.mjs dev
+rer install
+rer setup --owner-email EMAIL
+rer dev
 ```
 
 `setup` makes you the owner. `dev` starts Orbit and prints its address and a link to a local outbox: open the outbox and follow the newest sign-in link. No email is sent from your computer. Your first sign-in asks for your business name, time zone, currency and pipeline stages, and then you are in.
 
-Stop it with `node scripts/rer.mjs dev --stop` or Ctrl-C. Your data stays on your computer between runs.
+Stop it with `rer dev --stop` or Ctrl-C. Your data stays on your computer between runs.
 
 ## Where to go next
 

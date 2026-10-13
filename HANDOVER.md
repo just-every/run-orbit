@@ -4,7 +4,7 @@
 
 Orbit's public source repository is `just-every/run-orbit` (`https://github.com/just-every/run-orbit`), release 0.1.0; `edition.json`, `rer-project.json`, the delivery packaging policy and the management integration profile declare it. The first release is the annotated tag `v0.1.0` on the repository's first commit. No deployment is implied by this source.
 
-Orbit runs on the RER seed command contract (first-party profile). `scripts/installer/local.mjs` is its command adapter; `scripts/base-cli/`, `scripts/base-onboarding/`, `RUN-LOCALLY.md` and `SEED-COMMAND-CONTRACT.md` are byte-exact copies of Base main `53b11d7` (exported with Base's `scripts/export-cli.mjs`; it contains the local-port closure round 3, b1ad813) and `src/base/modules/mail/` of Base `261ed78521f4d80181733ef9f9784a04af1f4b1c`, and `node scripts/rer.mjs check --profile first-party` fails on any drift. `edition.json` records the mail module, contract documents and Vite helper as the `runeditrun/base-local-runtime` component at that revision; the CLI and onboarding copies carry their own hashed inventory (`scripts/base-cli/inventory.json`). Migrations `0021_development_outbox.sql` and `0023_portability.sql` are byte-exact copies of Base's outbox and portability schemas.
+Orbit runs on the RER seed command contract in package mode, with exact `@runeditrun/rer` 0.2.0 and `scripts/installer/local.mjs` preserving its native hooks. Base runtime files under `src/base/` are copied unchanged from `8981bc2c4d9e61feca5787c83b4ed44056659dd9`, recorded in `base-copies.json`; the seed's existing mail module and contract-document origins remain in `edition.json` and `sources.lock.json`. The installed `/` is the shared Lobby, reading the real first-run confirmation. The approved homepage and docs also build as a static run site with `rer build --site`; its deploy workflow remains held outside main.
 
 ## How it runs
 
@@ -37,7 +37,7 @@ Contact deletion erases the person and makes every Records transfer copy unreach
 
 ## Verification
 
-`node scripts/rer.mjs verify` runs every routine product and fold gate listed in TESTING.md sequentially with isolated temporary state; full declared-capacity clauses remain pending. CI (`.github/workflows/edition.yml`) gives the same source-discovered plan independent shard runners with Node 22.20.0 and pnpm 10.12.4, then reconciles their actual runner inventories, terminal totals and completion events. `pnpm run verify:release` reruns all routine gates and the unchanged full-capacity qualification, requiring its fresh capacity and native D1 artifacts. Only the full-scale case is release-only. The new CI wall time remains unmeasured. Local execution coverage is not hosted acceptance: native emailed access on a deployment, provider delivery, inbound replies (OD-08 domain/MX), repeat deployment and customized-owner updates need their own authorized receipts (see ACCEPTANCE.md).
+`rer verify` runs every routine product and fold gate listed in TESTING.md sequentially with isolated temporary state; full declared-capacity clauses remain pending. CI (`.github/workflows/edition.yml`) gives the same source-discovered plan independent shard runners with Node 22.20.0 and pnpm 10.12.4, then reconciles their actual runner inventories, terminal totals and completion events. `pnpm run verify:release` reruns all routine gates and the unchanged full-capacity qualification, requiring its fresh capacity and native D1 artifacts. Only the full-scale case is release-only. The new CI wall time remains unmeasured. Local execution coverage is not hosted acceptance: native emailed access on a deployment, provider delivery, inbound replies (OD-08 domain/MX), repeat deployment and customized-owner updates need their own authorized receipts (see ACCEPTANCE.md).
 
 PUBLIC-002 now presents a separate, read-only fictional example workspace with relative dates. It makes no owner-data read, no mutation and no provider call. No demo records enter D1. The former owner-record demo repository, binding, editable preview and hosted-demo creation runner are retired. Current API/privacy and native browser checks replace that runner; its retained fold provenance and old hosted receipts describe the earlier behavior only.
 
@@ -54,8 +54,7 @@ validation steps; source isolation alone does not establish release acceptance.
 
 ## Sign-in: Base operator-auth over Orbit's own operators
 
-Orbit signs in through Base operator-auth (`scripts/base-cli/modules/operator-auth`,
-byte-exact from Base main 53b11d7, refreshed with Base's `scripts/export-cli.mjs`).
+Orbit signs in through Base operator-auth from the exactly pinned `@runeditrun/rer` package.
 Orbit's own session, magic-link and owner-bootstrap code and its TanStack sign-in
 page are gone; Base serves `/signin` (server-rendered, works before hydration),
 `/auth/*` and the `oidc-provider@1` linking documents under `/.well-known/rer-*`.

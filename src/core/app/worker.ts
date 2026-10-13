@@ -1,3 +1,8 @@
+import { staticAssetResponse } from '../../base/static-assets';
+import { lobbyResponse } from '../../base/lobby';
+import { claimedWhen, setupStateResponse } from '../../base/setup-state';
+import { identity as editionIdentity } from '../../identity';
+const claimed = claimedWhen("SELECT 1 FROM first_run_setup WHERE id = 'workspace'");
 import {pollProviders} from '../features/capture/providers/service';
 import { editorConfigurationResponse, editorOrigin } from "../features/editor/server";
 import {embeddingOrigins} from '../features/forms/embedding';
@@ -15,7 +20,7 @@ import start from "@tanstack/react-start/server-entry";
 import { createAssetStore, type PlatformBindings } from "../platform/assets";
 import { createApp } from "./app";
 import { identityResponse, operatorFromRequest, requireStepUp } from "../features/identity";
-import { devGate } from "../../../scripts/base-cli/modules/operator-auth/index.mjs";
+import { devGate } from "@runeditrun/rer/modules/operator-auth";
 import { publicDemoConfig } from "./mounts/public-config.server";
 export default {
   async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);context.waitUntil(runOrbitTimers(bindings.DB,createOutboundMail(bindings)));context.waitUntil(sweepArchiveTrash(bindings.DB));context.waitUntil(pollProviders(bindings.DB,createSourceSecurity(bindings)));},
@@ -30,8 +35,13 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
     const path = url.pathname;
     const expectedHost = bindings.AUTH_ORIGIN ? new URL(bindings.AUTH_ORIGIN).host : undefined;
     if (expectedHost && url.host !== expectedHost && !["127.0.0.1", "localhost", "[::1]"].includes(url.hostname)) return new Response("Not found", { status: 404 });
-    // Public build assets use the native asset binding; application routes retain native auth.
-    if (path.startsWith("/assets/") || path.startsWith("/fonts/") || path.startsWith("/images/") || path === "/favicon.ico") return bindings.ASSETS.fetch(request);
+    const asset = await staticAssetResponse(request, bindings);
+    if (asset) return asset;
+    const publicBindings = { DB: bindings.DB, AUTH_ORIGIN: bindings.AUTH_ORIGIN ?? '' };
+    const state = await setupStateResponse(request, publicBindings, claimed);
+    if (state) return state;
+    const lobby = await lobbyResponse(request, publicBindings, editionIdentity, claimed);
+    if (lobby) return lobby;
     if (path === "/api/editor/config") return editorConfigurationResponse(request, bindings);
     // The checkout's dev key gates the local outbox and its key exchange; a deployment has no key.
     const gate = devGate({ key: bindings.RER_DEV_KEY, origin: bindings.AUTH_ORIGIN ?? '', local: bindings.AUTH_LOCAL === "true" });

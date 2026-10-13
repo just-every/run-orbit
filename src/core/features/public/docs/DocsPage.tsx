@@ -1,3 +1,4 @@
+import { PublicVariantProvider, type PublicVariant } from '../ui/site-variant';
 import { publicProductConfig } from '../../../app/mounts/public-config';
 import { SiteFooter } from '../ui/home/SiteFooter';
 import { SiteHeader } from '../ui/home/SiteHeader';
@@ -10,12 +11,12 @@ import type { DocsView } from './types';
 import './docs.css';
 
 /** A documentation page in the landing's header and footer: sidebar | page | contents. The page title is the one h1. */
-export function DocsPage({ page, sections, repository }: DocsView) {
+export function DocsPage({ page, sections, repository, variant = 'installed' }: DocsView & { variant?: PublicVariant }) {
   const { name, imageUrl, showPoweredByCredit } = publicProductConfig;
   const order = sections.flatMap(section => section.pages.map(entry => ({ ...entry, section: section.title })));
   const index = order.findIndex(entry => entry.slug === page.slug);
   const current = order[index];
-  return <div className="ob-site ob-docs">
+  return <PublicVariantProvider variant={variant}><div className="ob-site ob-docs">
     <a className="ob-skip" href="#docs-content">Skip to the page</a>
     <SiteHeader name={name} imageUrl={imageUrl} current="docs" />
     <div className="docs-shell">
@@ -28,5 +29,5 @@ export function DocsPage({ page, sections, repository }: DocsView) {
       <DocsToc toc={page.toc} />
     </div>
     <SiteFooter name={name} imageUrl={imageUrl} showCredit={showPoweredByCredit} />
-  </div>;
+  </div></PublicVariantProvider>;
 }

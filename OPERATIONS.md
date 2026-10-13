@@ -1,6 +1,6 @@
 # Orbit operations
 
-Orbit runs through its RER CLI, `node scripts/rer.mjs VERB` (or `pnpm run VERB -- FLAGS`), with Node 22.20.0 and pnpm 10.12.4. [README.md](README.md) gives the local sequence; `node scripts/rer.mjs describe` prints every command, flag, effect and pin from `OPERATIONS.json`, and [SEED-COMMAND-CONTRACT.md](SEED-COMMAND-CONTRACT.md) defines their shared behaviour and exit codes. `node scripts/rer.mjs check --profile first-party` validates that contract structurally without dependencies or settings; it never claims hosted health.
+Orbit runs through its RER CLI, `rer VERB` (or `pnpm run VERB -- FLAGS`), with Node 22.20.0 and pnpm 10.12.4. [README.md](README.md) gives the local sequence; `rer describe` prints every command, flag, effect and pin from `OPERATIONS.json`, and [SEED-COMMAND-CONTRACT.md](SEED-COMMAND-CONTRACT.md) defines their shared behaviour and exit codes. `rer check --profile first-party` validates that contract structurally without dependencies or settings; it never claims hosted health.
 
 ## Local installation
 
@@ -19,7 +19,7 @@ Build output under `dist/` is disposable. Commands refuse a legacy store at `dis
 
 ## Deploy
 
-`node scripts/rer.mjs deploy [--environment NAME]` builds locally, then uses the Base deploy kit against the owner's Cloudflare account:
+`rer deploy [--environment NAME]` builds locally, then uses the Base deploy kit against the owner's Cloudflare account:
 
 - Inputs: `CLOUDFLARE_ACCOUNT_ID` and an account API token in `CLOUDFLARE_API_TOKEN` with Workers Scripts: Edit and D1: Edit; the owner mailbox in `OWNER_EMAIL`; a verified SendGrid sender in `MAIL_FROM` and `SENDGRID_API_KEY`. The account needs a workers.dev subdomain.
 - Optional secrets, uploaded only when present in the environment: `MAIL_REPLY_TO`, `SENDGRID_UNSUBSCRIBE_GROUP_ID`, `RER_MAIL_RELAY_SECRET`, `SENDGRID_WEBHOOK_PUBLIC_KEY`, `SENDGRID_PARSE_PUBLIC_KEY`, `ORBIT_ENCRYPTION_KEY`, `OPENAI_API_KEY`, `AI_MODEL`, `AI_INPUT_COST_PER_MILLION`, `AI_OUTPUT_COST_PER_MILLION`, `AI_CACHED_INPUT_COST_PER_MILLION`.
@@ -50,13 +50,13 @@ The Worker runs a minute Cron for bounded provider capture, scheduled dispatch, 
 
 ## Moving data
 
-Local archives: `node scripts/rer.mjs export --output exports/FILE` and `import --input exports/FILE --yes` use Base portability over the local D1. Every Orbit table moves except installation-bound state: operator sessions and sign-in links, owner bootstrap records, rate limits, runtime controls, erasure signals, collaborator authority (`access_grants`, `access_invitations`, `access_form_authorities`, `access_write_guards`), mail and calendar capture credentials (`capture_credentials`, `capture_oauth`, `capture_locks`; reconnect a provider source after restore), delegation credentials (`delegation_*`), Records-archive bookkeeping (`archive_*`), private CSV originals, reviews, import jobs and undo custody (`ik_*`, `crm_import_*`), and the local outbox. Signal source secrets are written as null; reconfigure them after restore. Full-text search is rebuilt from the restored rows. The receipt reports the content hash, row counts and exclusions; export, import and export again give the same content hash. Import needs an empty destination: run it after `reset --yes`, then `setup --owner-email` with the archive's owner.
+Local archives: `rer export --output exports/FILE` and `import --input exports/FILE --yes` use Base portability over the local D1. Every Orbit table moves except installation-bound state: operator sessions and sign-in links, owner bootstrap records, rate limits, runtime controls, erasure signals, collaborator authority (`access_grants`, `access_invitations`, `access_form_authorities`, `access_write_guards`), mail and calendar capture credentials (`capture_credentials`, `capture_oauth`, `capture_locks`; reconnect a provider source after restore), delegation credentials (`delegation_*`), Records-archive bookkeeping (`archive_*`), private CSV originals, reviews, import jobs and undo custody (`ik_*`, `crm_import_*`), and the local outbox. Signal source secrets are written as null; reconfigure them after restore. Full-text search is rebuilt from the restored rows. The receipt reports the content hash, row counts and exclusions; export, import and export again give the same content hash. Import needs an empty destination: run it after `reset --yes`, then `setup --owner-email` with the archive's owner.
 
 Hosted archives: Records > Archive prepares, resumes, downloads, restores and cancels the hosted installation's own archive. From a terminal, put only `__Host-orbit_session=...` from an ordinary sign-in in a private (0600) file under the ignored `.rer/` directory and run:
 
 ```sh
-node scripts/rer.mjs export --target remote --origin https://your-origin.example --session-file .rer/orbit-cookie --output exports/orbit-hosted.json
-node scripts/rer.mjs import --target remote --origin https://empty-origin.example --session-file .rer/orbit-cookie --input exports/orbit-hosted.json --yes
+rer export --target remote --origin https://your-origin.example --session-file .rer/orbit-cookie --output exports/orbit-hosted.json
+rer import --target remote --origin https://empty-origin.example --session-file .rer/orbit-cookie --input exports/orbit-hosted.json --yes
 ```
 
 The hosted archive is a version 2 JSON document framed as bounded lines. The transfer streams it to disk, verifies every part checksum, and publishes the private file only after the closing record and manifest counts validate. Export keeps a private adjacent `.transfer.json` checkpoint and `.partial` download until verified completion; an interrupted transfer is resumed or discarded from Records with its transfer ID. Export takes a consistent atomic snapshot before serializing; workspace edits can continue during preparation. Import requires an empty customer database, revokes sessions on success and never blindly retries an ambiguous write. Hosted archives and local archives use different formats; move between them through a hosted installation.
@@ -69,4 +69,4 @@ Deleting a contact erases the person's data and makes every prepared or staged R
 
 ## Verification
 
-`node scripts/rer.mjs verify` writes actual clause execution results and blocks uncovered, failed, or skipped clauses; [TESTING.md](TESTING.md) lists its gates. Read [ACCEPTANCE.md](ACCEPTANCE.md) for the provider, capacity, deployment and owner-change requirements that local verification does not establish.
+`rer verify` writes actual clause execution results and blocks uncovered, failed, or skipped clauses; [TESTING.md](TESTING.md) lists its gates. Read [ACCEPTANCE.md](ACCEPTANCE.md) for the provider, capacity, deployment and owner-change requirements that local verification does not establish.

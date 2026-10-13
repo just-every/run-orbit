@@ -20,7 +20,7 @@ export function OperatorShell({ action, children, eyebrow, title, restricted=fal
     <div className="operator-shell ob-app">
       <a className="operator-skip-link" href="#operator-main">Skip to content</a>
       <header className="operator-header">
-        <Link aria-label="Orbit home" className="operator-mark" to="/"><OrbitLockup name={publicProductConfig.name} imageUrl={publicProductConfig.imageUrl} /></Link>
+        <a aria-label="Orbit home" className="operator-mark" href="/"><OrbitLockup name={publicProductConfig.name} imageUrl={publicProductConfig.imageUrl} /></a>
         <button ref={toggle} className="operator-menu-toggle" type="button" aria-expanded={expanded} aria-controls={navigationId} onClick={()=>setExpanded(!expanded)}>Menu</button>
         <nav id={navigationId} aria-label="Operator navigation" className="operator-nav" data-open={expanded} onKeyDown={event=>{if(event.key==='Escape'){setExpanded(false);toggle.current?.focus();}}} onClick={event=>{if((event.target as HTMLElement).closest('a'))setExpanded(false);}}>
           {!restricted&&<><Link to="/app/records">Opportunities</Link>

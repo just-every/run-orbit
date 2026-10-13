@@ -6,7 +6,7 @@ import { mailedIdentity } from '../support/email-link';
 import { testAuth } from '../support/test-auth';
 import { createApp } from '../../src/core/app/app';
 import { identityResponse, operatorFromRequest, requireStepUp } from '../../src/core/features/identity';
-import { registerDevAdmission } from '../../scripts/base-cli/modules/operator-auth/dev-admission.mjs';
+import { registerDevAdmission } from '@runeditrun/rer/modules/operator-auth/dev-admission';
 import { createId } from '../../src/core/shared/ids';
 
 let fixture: Awaited<ReturnType<typeof isolatedDatabase>>;

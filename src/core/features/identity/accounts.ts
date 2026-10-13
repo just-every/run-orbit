@@ -1,5 +1,5 @@
-import type { NativeAccountsAdapter } from '../../../../scripts/base-cli/modules/operator-auth/accounts/native.mjs';
-import { safeReturnTo } from '../../../../scripts/base-cli/modules/operator-auth/index.mjs';
+import type { NativeAccountsAdapter } from '@runeditrun/rer/modules/operator-auth/accounts/native';
+import { safeReturnTo } from '@runeditrun/rer/modules/operator-auth';
 import { createId } from '../../shared/ids';
 import { bootstrapStatement } from './bootstrap';
 import { dependencyAuthority } from './dependencies';

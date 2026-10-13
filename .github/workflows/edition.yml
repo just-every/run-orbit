@@ -44,13 +44,15 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           run_install: false
+      - name: Install pinned package CLI for every shard
+        run: pnpm install --frozen-lockfile
       - name: Check authoritative inputs and retain clean source candidate
         if: matrix.shard == 'source'
         env:
           GIT_ALLOW_PROTOCOL: file
         run: |
           node scripts/edition-authoring/cli.mjs check > /tmp/source-check.json
-          node scripts/rer.mjs describe --json > /tmp/operations.json
+          pnpm exec rer describe --json > /tmp/operations.json
           node scripts/edition-authoring/cli.mjs release /tmp/orbit-source-release > /tmp/source-release.json
           git -C /tmp/orbit-source-release bundle create /tmp/orbit-source.bundle --all
       - name: Check fixed verification ports are outside automatic allocation
@@ -63,7 +65,7 @@ jobs:
               exit 1
             fi
           done
-      - run: node scripts/rer.mjs install
+      - run: pnpm exec rer install
       - run: pnpm exec playwright install --with-deps chromium
       # rer refuses to start local servers below 15 GiB free; the archive lineage needs more.
       - name: Reserve disk for local servers and immutable archive lineage
@@ -157,7 +159,7 @@ jobs:
               exit 1
             fi
           done
-      - run: node scripts/rer.mjs install
+      - run: pnpm install --frozen-lockfile && pnpm exec rer install
       - run: pnpm exec playwright install --with-deps chromium
       - name: Reserve disk for full-capacity D1 roundtrip
         run: |

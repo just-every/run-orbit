@@ -667,6 +667,107 @@
           }
         ]
       }
+    },
+    {
+      "id": "runeditrun/base-runtime",
+      "role": "module",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "src/base/deployment-health.ts",
+          "src/base/dispatch.ts",
+          "src/base/font-head.ts",
+          "src/base/font-response.ts",
+          "src/base/hydration/README.md",
+          "src/base/hydration/intro-guard.ts",
+          "src/base/hydration/report.ts",
+          "src/base/hydration/unit.tsx",
+          "src/base/identity.ts",
+          "src/base/lobby.ts",
+          "src/base/page-style.ts",
+          "src/base/rejected-response.ts",
+          "src/base/run-site.ts",
+          "src/base/setup-state.ts",
+          "src/base/setup.ts",
+          "src/base/static-assets.ts",
+          "src/base/theme-frame.ts"
+        ],
+        "origin": {
+          "repository": "https://github.com/runeditrun/base.git",
+          "revision": "8981bc2c4d9e61feca5787c83b4ed44056659dd9",
+          "path": "foundation/runtime"
+        },
+        "mappings": [
+          {
+            "path": "src/base/deployment-health.ts",
+            "originPath": "deployment-health.ts"
+          },
+          {
+            "path": "src/base/dispatch.ts",
+            "originPath": "dispatch.ts"
+          },
+          {
+            "path": "src/base/font-head.ts",
+            "originPath": "font-head.ts"
+          },
+          {
+            "path": "src/base/font-response.ts",
+            "originPath": "font-response.ts"
+          },
+          {
+            "path": "src/base/hydration/README.md",
+            "originPath": "hydration/README.md"
+          },
+          {
+            "path": "src/base/hydration/intro-guard.ts",
+            "originPath": "hydration/intro-guard.ts"
+          },
+          {
+            "path": "src/base/hydration/report.ts",
+            "originPath": "hydration/report.ts"
+          },
+          {
+            "path": "src/base/hydration/unit.tsx",
+            "originPath": "hydration/unit.tsx"
+          },
+          {
+            "path": "src/base/identity.ts",
+            "originPath": "identity.ts"
+          },
+          {
+            "path": "src/base/lobby.ts",
+            "originPath": "lobby.ts"
+          },
+          {
+            "path": "src/base/page-style.ts",
+            "originPath": "page-style.ts"
+          },
+          {
+            "path": "src/base/rejected-response.ts",
+            "originPath": "rejected-response.ts"
+          },
+          {
+            "path": "src/base/run-site.ts",
+            "originPath": "run-site.ts"
+          },
+          {
+            "path": "src/base/setup-state.ts",
+            "originPath": "setup-state.ts"
+          },
+          {
+            "path": "src/base/setup.ts",
+            "originPath": "setup.ts"
+          },
+          {
+            "path": "src/base/static-assets.ts",
+            "originPath": "static-assets.ts"
+          },
+          {
+            "path": "src/base/theme-frame.ts",
+            "originPath": "theme-frame.ts"
+          }
+        ]
+      }
     }
   ]
 }

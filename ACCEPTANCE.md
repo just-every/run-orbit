@@ -25,7 +25,7 @@ no-mutation checks. Native customer workflows, exact-content approval and all
 sending safeguards remain acceptance obligations.
 No clause is waived or relabelled by this document.
 
-`node scripts/rer.mjs verify` runs the real local runtime suites and writes
+`rer verify` runs the real local runtime suites and writes
 `verification/contract-results.json` from actual Node and Playwright completions.
 An unmapped, failed, or skipped clause blocks the gate. The report establishes
 executed coverage, not that a test label covers every sentence or that a test

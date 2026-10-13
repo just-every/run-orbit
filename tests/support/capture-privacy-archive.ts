@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {createPortability,readArchive} from '../../scripts/base-cli/modules/portability/index.mjs';
+import {createPortability,readArchive} from '@runeditrun/rer/modules/portability';
 import {policy} from '../../scripts/installer/portability.mjs';
 import {createDependencies} from './dependencies';
 import {createApp} from './app';

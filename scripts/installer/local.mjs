@@ -1,9 +1,9 @@
 import {ensureLocalSourceKey} from './source-key.mjs';
-import { localInstaller } from '../base-onboarding/adapter.mjs';
-import { developmentTarget, previewTarget } from '../base-onboarding/operator-installer.mjs';
-import { selectLocalState, LocalStateSafetyError } from '../base-onboarding/local/state.mjs';
-import { privateDirectory } from '../base-onboarding/private-files.mjs';
-import { commandAdapter as createCommandAdapter } from '../base-cli/cli/adapter.mjs';
+import { localInstaller } from '@runeditrun/rer/local-installer';
+import { developmentTarget, previewTarget } from '@runeditrun/rer/operator-installer';
+import { selectLocalState, LocalStateSafetyError } from '@runeditrun/rer/local/state';
+import { privateDirectory } from '@runeditrun/rer/private-files';
+import { commandAdapter as createCommandAdapter } from '@runeditrun/rer/adapter';
 import { localState } from '../local-state.mjs';
 import { orbitPortability } from './portability.mjs';
 import { orbitDeploy } from './deploy.mjs';
@@ -35,6 +35,8 @@ export const lifecycle = captureNotices(localInstaller({
 export const adapter = lifecycle;
 export const { install } = lifecycle;
 export const commandAdapter = createCommandAdapter(lifecycle, {
+ site: { entry: 'src/site/pages.tsx', output: 'dist/site', declaration: 'deploy-site.json', config: 'vite.site.config.ts' },
+ publicPages: ['/', '/signin', '/docs', '/docs/run-locally', '/docs/operations', '/docs/moving-in', '/docs/signals-and-mail', '/docs/owner-steps', '/docs/connect-gmail', '/docs/connect-outlook', '/docs/updating', '/docs/record-policies'],
  dev: developmentTarget, preview: previewTarget, verify: ['pnpm', ['run', 'verify:app']],
  deploy: orbitDeploy(lifecycle), portability: orbitPortability(database),
  setup: { manifestFile: 'rer-setup.json' }, browserModule: 'scripts/installer/ui/seed.mjs',
