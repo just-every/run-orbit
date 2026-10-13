@@ -4,7 +4,7 @@
 
 Orbit's public source repository is `just-every/run-orbit` (`https://github.com/just-every/run-orbit`), release 0.1.0; `edition.json`, `rer-project.json`, the delivery packaging policy and the management integration profile declare it. The first release is the annotated tag `v0.1.0` on the repository's first commit. No deployment is implied by this source.
 
-Orbit runs on the RER seed command contract in package mode, with exact `@runeditrun/rer` 0.2.0 and `scripts/installer/local.mjs` preserving its native hooks. Base runtime files under `src/base/` are copied unchanged from `8981bc2c4d9e61feca5787c83b4ed44056659dd9`, recorded in `base-copies.json`; the seed's existing mail module and contract-document origins remain in `edition.json` and `sources.lock.json`. The installed `/` is the shared Lobby, reading the real first-run confirmation. The approved homepage and docs also build as a static run site with `rer build --site`; its deploy workflow remains held outside main.
+Orbit runs on the RER seed command contract in package mode, with exact `@runeditrun/rer` 0.2.0 and `scripts/installer/local.mjs` preserving its native hooks. Base runtime files under `src/base/` are copied unchanged from `8981bc2c4d9e61feca5787c83b4ed44056659dd9`, recorded in `base-copies.json`; the seed's existing mail module and contract-document origins remain in `edition.json` and `sources.lock.json`. The installed `/` is the shared Lobby, reading the real first-run confirmation. The approved homepage and docs also build as a static run site with `rer build --site`; `.github/workflows/run-site.yml` gates its deployment on `RUN_SITE_DEPLOY`.
 
 ## How it runs
 
@@ -33,11 +33,17 @@ The bounded expansion fold (`docs/fold/`) adds native reports, explicitly invite
 
 Local `rer export`/`import` use Base portability with Orbit's data policy (OPERATIONS.md lists the exclusions) and rebuild full-text search after restore; the journey test proves export/import/export equivalence of content hashes. Hosted installations keep Orbit's own Records archive (v3), reachable from Records and through `rer export|import --target remote`; the fold tests drive that remote path against an emitted Worker over loopback HTTPS.
 
-Contact deletion erases the person and makes every Records transfer copy unreachable in one atomic batch by replacing the transfer jobs, parts, segments and, when present, folded part inventory with empty tables, then removes the orphaned copies and old metadata in bounded batches; the minute timer resumes an interrupted removal. The export snapshot and the restore finish are still single whole-dataset batches (19–34 s on GitHub runners against the 30 s D1 ceiling in the capacity test); bounding them is open work.
+Contact deletion erases the person and makes every Records transfer copy unreachable in one atomic batch by replacing the transfer jobs, parts, segments and, when present, folded part inventory with empty tables, then removes the orphaned copies and old metadata in bounded batches; the minute timer resumes an interrupted removal.
+
+The declared-capacity release run `38384709386` exercised an emitted Worker backed by real D1 at 100,000 contacts, 25,000 companies, 25,000 open opportunities, 1,000,000 signals and 2,000,000 timeline activities. Search p95 ranged from 44.34 to 59.10 ms. Contact erasure took 31.049 s and the erased address was absent on the next read. The archive round trip preserved exact domain hashes and AI usage and passed foreign-key checks and session invalidation. Restore advancement and finalization took 410.735 s across 839 requests after upload; this is not the total archive-transfer or round-trip time. All 339,378 clock calls closed with no pending work or errors, and all four Worker witnesses closed.
+
+Native D1 measurements stayed below the 30 s ceiling: maximum source/restored native calls and batches were 10.916/8.664 s; the whole-dataset snapshot batches were 8.778/8.664 s. Snapshot HTTP header/JSON handling took 19.730/19.656 s; those are HTTP timings, not D1 call durations. Restore finalization remains a whole-dataset architectural operation; its measured native finish batch was 1.509 s (80 statements), followed by a 1.102 s cleanup batch (126 statements). Further batching of snapshot creation and restore finalization remains architectural work.
 
 ## Verification
 
-`rer verify` runs every routine product and fold gate listed in TESTING.md sequentially with isolated temporary state; full declared-capacity clauses remain pending. CI (`.github/workflows/edition.yml`) gives the same source-discovered plan independent shard runners with Node 22.20.0 and pnpm 10.12.4, then reconciles their actual runner inventories, terminal totals and completion events. `pnpm run verify:release` reruns all routine gates and the unchanged full-capacity qualification, requiring its fresh capacity and native D1 artifacts. Only the full-scale case is release-only. The new CI wall time remains unmeasured. Local execution coverage is not hosted acceptance: native emailed access on a deployment, provider delivery, inbound replies (OD-08 domain/MX), repeat deployment and customized-owner updates need their own authorized receipts (see ACCEPTANCE.md).
+`rer verify` runs every routine product and fold gate listed in TESTING.md sequentially with isolated temporary state. [GitHub Actions run 38384709386](https://github.com/just-every/run-orbit/actions/runs/38384709386) passed all nine matrix shards, the verify gate and the release gate on source SHA `64b147965bb71acff8120751d6ab6ccf07eb784b`; the unchanged repository command `pnpm run verify:release` completed successfully. Its release summary records 409 tests and 93 satisfied, 0 pending and 0 broken clauses, including RECORD-006, DATA-001, DATA-002 and BASE-DATA-001. The downloadable `orbit-release-verification` artifact contains the release and capacity receipts. The release command ran from 2026-10-13 11:13:47Z to 16:27:44Z. This result is attributed to the exact source SHA in its receipt; release verification is required for each candidate.
+
+Local and CI execution coverage are not hosted acceptance: native emailed access on a deployment, provider delivery, inbound replies (OD-08 domain/MX), repeat deployment and hosted customized-installation acceptance need their own authorized receipts (see ACCEPTANCE.md).
 
 PUBLIC-002 now presents a separate, read-only fictional example workspace with relative dates. It makes no owner-data read, no mutation and no provider call. No demo records enter D1. The former owner-record demo repository, binding, editable preview and hosted-demo creation runner are retired. Current API/privacy and native browser checks replace that runner; its retained fold provenance and old hosted receipts describe the earlier behavior only.
 
@@ -46,11 +52,7 @@ ignored output, reset for each routine/release or standalone shard/fold invocati
 Formerly tracked receipts and screenshots retain their exact bytes under
 `docs/retained-verification/`; the Worker screenshot now writes under
 `verification/ui/` instead of replacing `visual/12-create-opportunity.png`.
-The unchanged Base producer can invoke routine and release verification in one
-checkout without output paths overlapping tracked source. Pinned-runner negatives,
-the real repeated-command/source-cleanliness proof, full capacity and exact-head
-CI/timing remain UNRUN. See `docs/verification-runtime-checks.md` for the prepared
-validation steps; source isolation alone does not establish release acceptance.
+The release run exercised the isolated verification plan and the full declared-capacity qualification. Supplementary probes remain unrun: pinned-runner and aggregate-receipt negative cases, capacity-artifact mutation negatives, the repeated-command/source-cleanliness proof and the separate full producer-path check. Their prepared scope is in `docs/verification-runtime-checks.md`; its full-capacity execution is completed by run `38384709386`. Local or CI success alone does not establish hosted acceptance.
 
 ## Sign-in: Base operator-auth over Orbit's own operators
 
@@ -105,25 +107,40 @@ to an archived table and archive schema hashes are unchanged; `identity_*` and
 - Provider sign-in (`IDENTITY_PROVIDER`, an Auth install) is optional and off
   until the owner links one and turns it on at `/auth/settings/identity`.
 - Prior-data proof: `tests/core/prior-auth-upgrade.test.ts` upgrades a store
-  captured from main 8298464 (`tests/fixtures/prior-auth`).
+  captured from main 8298464 (`tests/fixtures/prior-auth`). It passed in routine
+  run `38374305276` on `64b1479`, checking preserved operator IDs, access, prior
+  sessions, fresh Base sign-in and delegation. The migration is implemented and
+  source-tested; authorized hosted sign-in/upgrade acceptance remains pending.
 
 ## Reviewed customer move-in (T-098)
 
 `/app/imports` uses the native operator shell and the selected 12ui import composition. The moving guide is `docs/imports/MOVING.md` (also served at `/moving-guide.html`). The direct contact/company CSV write endpoint and UI were removed. Configurable HubSpot/Pipedrive recipes cover contacts, companies, deals, separately exported/prepared notes and standalone mailbox suppression. Source owners remain historical evidence. Only a mapped explicit subscribed permission can make a new contact contactable.
 
-Base import-kit is vendored unchanged from `261ed78521f4d80181733ef9f9784a04af1f4b1c`; Orbit supplies native D1 targets, current operator/session/grant predicates and dependency-aware undo. A private saved dry run binds Apply. The whole suppression group commits before any customer insert; pending safety work fences native contact creation and mail approval/dispatch. Native keyed proofs, contactability revisions and cancellation apply to queued and scheduled sends. Partial failures remain visible and require explicit continue or undo. Undo preserves changed records, incoming native dependencies and independent suppression; it never restarts cancelled work.
+Base import-kit is vendored unchanged from `59a75eacbaef4a93a19601643a1d47828497f631`; Orbit supplies native D1 targets, current operator/session/grant predicates and dependency-aware undo. A private saved dry run binds Apply. The whole suppression group commits before any customer insert; current safety fences hold native contact creation and mail approval/dispatch until that commit succeeds. Native keyed proofs, contactability revisions and cancellation apply to queued and scheduled sends. Partial failures remain visible and require explicit continue or undo. Undo preserves changed records, incoming native dependencies and independent suppression; it never restarts cancelled work.
 
 Private import originals, reviews, job authority and undo metadata are excluded from both archive paths. Contact erasure uses the kit's source withdrawal for mapped contact targets and erases attributed imported notes, while anonymous suppression proofs survive. Orbit also redacts the primary/alias mailboxes from current imported company/contact/deal text, nested custom-field provenance and its own target snapshots in the final native erasure transaction. Exact inventory fences protect concurrent changes; unrelated fields and later owner edits survive. Review withdrawal is selective; status and safe undo remain reachable after its source review is withdrawn, and stale Apply is fenced by current review authority. Unmapped columns remain only in the private original CSV and are reported by column number; rejected-row content is held in the original artifact rather than duplicated in unindexed plan payloads. Provider unsubscribe reflection still requires the configured trusted product-scoped relay/native verified webhook; no provider account or shared webhook change belongs to this importer.
 
-Privacy acceptance is blocked on Base import-kit: its target-only erasure API cannot discover rejected-only source artifacts, or redact another imported record's retained source/effect plan while retaining that native record. Selecting legacy unavailable originals would violate the exact-original contract. Real isolated D1 and public contact-deletion routes reproduce both failures: the mapped company source/effect remains in Kit custody after native rows, graph, search, Orbit snapshots and the public archive are clean; rejected-only and mixed valid-company uploads retain decoded CSV originals. `tests/core/crm-import-erasure.test.ts` keeps both cases as ordinary failing tests. Unrelated-company reviews and safe undo pass. Do not land this candidate as DATA-002 accepted.
-
-Validation is synthetic-only; no real vendor export was supplied. The two focused core import files ran on Node 22.20.0/pnpm 10.12.4 against disposable real D1: 7 tests, 5 passed, 2 privacy failures, no skips. After native redaction, the unchanged erasure file ran again: 3 tests, 1 passed, 2 failures now confined to Kit custody. Additional public-route evidence confirms primary/alias redaction, escaped and owner-edited provenance, archive cleanup, preservation of later company/contact/deal edits, boundary mailboxes, safe undo and the surviving alias hold. Both vendor recipes processed 126 rows with one explicit rejection each, then passed re-import and undo. Suppression/send fences, trusted relay versus forgery, independent primary/alias holds, later edits, storage failure and revoked authority checks passed. Typecheck passes with the whole Kit included, its two upstream status schemas retained, Node 22 declarations and ES2023 library types. Responsive browser, built Worker, accepted T-099 integration and final acceptance remain unrun.
+The exact-head routine evidence `38374305276` records all three cases in
+`tests/core/crm-import-erasure.test.ts` as passed. The later declared-capacity
+release run `38384709386` also satisfies DATA-002; the release contract report has
+93 satisfied clauses, none pending or broken. This supersedes the earlier report
+of two failing erasure cases. Validation remains synthetic: no real vendor export
+was supplied. The scoped owner-update exercise preserved a recorded
+creator-assignment customization through an ordinary merge of public upstream
+`99a912a`. Real native-authenticated API and isolated D1 checks passed before
+customization, after customization and after the update: 21 HTTP requests at each
+stage covered the default, explicit assignment, unassignment, reassignment,
+operator-removal handover and persistence after D1 reopen. The recorded intent,
+all 31 migrations and the shipped source check were preserved. This proves that
+scoped owner requirement, not a hosted installation or migration of an existing
+owner's data across the update. T-099 acceptance and hosted sign-in, provider
+delivery, inbound mail and customer acceptance remain separate.
 
 ## Admission source
 
-The maintained Base delivery producer at `scripts/delivery/base` owns schema-2 raw-payload packaging. Its policy generates `rer-project.json`, the canonical setup digest and `rer-managed.yml`. Base CLI/onboarding refresh is from green Base `261ed78521f4d80181733ef9f9784a04af1f4b1c` (Verify 38149293290). Orbit owns its Inter/Georgia declarations outside Base copy records; the accepted homepage keeps DM Sans and Libre Caslon. Native sign-in uses the same root font links.
+The maintained Base delivery producer at `scripts/delivery/base` owns schema-2 raw-payload packaging. Its policy generates `rer-project.json`, the canonical setup digest and `rer-managed.yml`. Base CLI/onboarding refresh is from green Base `261ed78521f4d80181733ef9f9784a04af1f4b1c` (Verify 38149293290). Orbit's selected theme and public/operator brand use self-hosted Bricolage Grotesque: `src/identity.ts` selects `/brand/fonts.css`, and `public/rer-theme.css` plus the brand tokens select that family. Shared root styles still declare Inter and Georgia (`public/fonts/fonts.css` and `src/core/app/styles.css`) for generic surfaces that do not apply the Orbit brand stack; those declarations are not Orbit's selected brand font.
 
-The optional editor uses the existing native session and setup-owner row, renews short grants against the current session, revokes on logout and rechecks on focus. `RER_MANAGEMENT_ORIGIN` and `RER_INSTALLATION_ID` are public configuration; no management credential is returned. Application framing remains denied. Hosted editor service authorization, visual edit/source/redeploy acceptance and Base operator-auth migration remain separate.
+The optional editor uses the existing native session and setup-owner row, renews short grants against the current session, revokes on logout and rechecks on focus. `RER_MANAGEMENT_ORIGIN` and `RER_INSTALLATION_ID` are public configuration; no management credential is returned. Application framing remains denied. Hosted editor service authorization and visual edit/source/redeploy acceptance remain pending, as does authorized hosted acceptance of the implemented Base operator-auth migration.
 
 Inbound-mail source repair: health exposes actual deploy-kit identity and the Worker serves built asset namespaces when the owner kit runs Worker-first. An unchanged deploy is safe to repeat; a changed provider identity remains a deliberate refusal. The saved live failure followed an authorized external secret update; a tracked secret-rotation path remains shared Base work. Unsubscribe mirroring still requires a configured trusted provider event key/relay; this admission change does not invent provider events.
 
