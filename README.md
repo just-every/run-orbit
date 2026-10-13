@@ -10,6 +10,30 @@
 
 <p align="center"><a href="https://run-orbit.com">run-orbit.com</a> · <a href="https://justevery.com">Part of Just Every</a> · <a href="LICENSE">MIT licensed</a></p>
 
+<p align="center">
+  <a href="https://justevery.com/#vol-orbit"><img src=".github/assets/media/preview.gif" width="800" alt="Orbit's NOW queue: Maya's reply lands and Brightwork's Team plan moves to 01"></a>
+</p>
+<p align="center"><a href="https://justevery.com/#vol-orbit"><b>Watch the full demo</b></a> · 44 seconds</p>
+
+<p align="center">
+  <img src=".github/assets/media/flow.webp" width="800" alt="The top of the NOW queue before Maya's reply, Clinic rollout at 01, and after it, Brightwork's Team plan at 01 with Why NOW: Customer reply">
+</p>
+
+<p align="center">
+  <img src=".github/assets/media/screen-1.webp" width="800" alt="Orbit's NOW queue: six deals ranked 01 to 06, each with stage, owner, score, band and why it is there now"><br>
+  <sub>Every deal in NOW says why it is there.</sub>
+</p>
+
+<p align="center">
+  <img src=".github/assets/media/screen-2.webp" width="800" alt="Orbit's Today brief: one reply and two overdue promises since you last looked, grouped by account for Brightwork Studio and Seabright Hotels"><br>
+  <sub>A daily brief of what changed since you last looked.</sub>
+</p>
+
+<p align="center">
+  <img src=".github/assets/media/screen-3.webp" width="800" alt="Approve and send: the exact message to Maya Chen, the provider footer links, and Approve and send exact revision"><br>
+  <sub>Nothing goes to a customer until you approve the exact message.</sub>
+</p>
+
 # Orbit
 
 Orbit is the Sales edition for account selling guided by customer evidence. Its interface keeps stage, owner, score, queue and message state separate, and operators review every customer message before it is sent.

@@ -817,6 +817,26 @@
       "sha256": "13355a862ef136ef935335c22c2be4d6a3469b1e1defb503d2bf95c04b08a188",
       "executable": false
     },
+    ".github/assets/media/flow.webp": {
+      "sha256": "3f7cf08dffeef47090c001eaebb7512347e9608e7b78eeeee49834c18562ba94",
+      "executable": false
+    },
+    ".github/assets/media/preview.gif": {
+      "sha256": "2329f5a8395d0180cd775c72884f622cc6b7ec54a6fa98f973b9b24a59eae01d",
+      "executable": false
+    },
+    ".github/assets/media/screen-1.webp": {
+      "sha256": "cd1d4710c85cbb8149f0cdcea1dc4e4d2c65cda7c8fc6231777e3ef6fcbfa5c9",
+      "executable": false
+    },
+    ".github/assets/media/screen-2.webp": {
+      "sha256": "5a58eeafd24ad12db5c21341289d8f3af50125d75d30e3ef9c5b48c37f510889",
+      "executable": false
+    },
+    ".github/assets/media/screen-3.webp": {
+      "sha256": "8e2c2a661bd9c5bfd42d4c63c07508c287256f4911fad066c5d1057267c2c627",
+      "executable": false
+    },
     ".github/workflows/edition.yml": {
       "sha256": "a450f3b72bd85ba314073a2af7bfd30039f6bc082a727937cc53ca40c1fb9efe",
       "executable": false
@@ -2646,7 +2666,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "341ac4bbb5520358a95447ca77f323fe00b66104271a3c2169c78757e178b3d5",
+      "sha256": "ebf5aa3966f55d9ada52f1405d680484a380c7a0aa0b51a988b890842d9b49f3",
       "executable": false
     },
     "RECORD-POLICIES.md": {
