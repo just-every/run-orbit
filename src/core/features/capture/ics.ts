@@ -8,6 +8,16 @@ export interface CalendarEvent {
 }
 interface Property {name:string;params:Record<string,string>;value:string}
 
+/** Detect components on unfolded content lines while retaining their physical evidence. */
+function* contentLines(raw:string){
+ const lines=raw.replace(/\r\n?/g,'\n').split('\n');
+ for(let index=0;index<lines.length;){
+  const start=index,parts=[lines[index++]!];
+  while(index<lines.length&&/^[ \t]/.test(lines[index]!))parts.push(lines[index++]!.slice(1));
+  yield {value:parts.join(''),raw:lines.slice(start,index).join('\n')};
+ }
+}
+
 function properties(block:string):Property[]{
  return block.replace(/\r\n?/g,'\n').replace(/\n[ \t]/g,'').split('\n').filter(Boolean).flatMap(line=>{
   let quoted=false,colon=-1;
@@ -46,15 +56,15 @@ function person(property:Property):Mailbox|null{
 /** Each VEVENT, or the reason it cannot be read; one unreadable event never hides the others. */
 export function parseCalendar(raw:string,maxEvents=Infinity):(CalendarEvent|{error:string})[]{
  const blocks:(string|{error:string})[]=[],header:string[]=[];let current:string[]|null=null,started=false,count=0;
- for(const line of raw.replace(/\r\n?/g,'\n').split('\n')){
+ for(const {value:line,raw:physical} of contentLines(raw)){
   if(/^BEGIN:VEVENT$/i.test(line)){
    if(++count>maxEvents)throw new CalendarLimitError('Calendar item limit exceeded.');
    if(current)blocks.push({error:'Calendar event has no END:VEVENT'});
    current=[];started=true;
   }else if(/^END:VEVENT$/i.test(line)){
    if(current)blocks.push(current.join('\n'));current=null;
-  }else if(current)current.push(line);
-  else if(!started)header.push(line);
+  }else if(current)current.push(physical);
+  else if(!started)header.push(physical);
  }
  if(current)blocks.push({error:'Calendar event has no END:VEVENT'});
  const method=(properties(header.join('\n')).find(p=>p.name==='METHOD')?.value??'').toUpperCase();

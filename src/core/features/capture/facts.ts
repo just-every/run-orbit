@@ -16,7 +16,14 @@ export type Read = {fact:Fact} | {skip:string};
 
 const hashed=async(prefix:string,value:string)=>`${prefix}:${await payloadHash(value)}`;
 // A changed copy is one whose words changed; line endings and trailing spaces are transport.
-const canonical=(raw:string)=>raw.replace(/\r\n?/g,'\n').split('\n').map(line=>line.replace(/[ \t]+$/,'')).join('\n').replace(/\n+$/,'');
+function canonical(raw:string){
+ const text=raw.replace(/\r\n?/g,'\n').split('\n').map(line=>{
+  let end=line.length;while(end&&(line[end-1]===' '||line[end-1]==='\t'))end--;
+  return line.slice(0,end);
+ }).join('\n');
+ let end=text.length;while(end&&text[end-1]==='\n')end--;
+ return text.slice(0,end);
+}
 const limit=(text:string,size:number)=>text.length>size?text.slice(0,size):text;
 
 /** All sender-written lines, before quoted/forwarded history or a signature. */
