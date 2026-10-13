@@ -67,7 +67,7 @@ export async function todayJourney({first,second,evidence}){
  // Meeting plan: attendees, unresolved attendee, notes that persist after sign-out, a next action from a plan line.
  await page.goto(meeting.planHref);
  await atWidths(page,evidence,'meeting-plan',async()=>{await expect(page.getByTestId('meeting-plan')).toBeVisible();await expect(page.getByText('sam@acme.test',{exact:true})).toBeVisible();});
- await expect(page.getByRole('link',{name:'Ana Ruiz'})).toBeVisible();await expect(page.getByRole('button',{name:'Create contact sam@acme.test'})).toBeVisible();await expect(page.getByRole('link',{name:'Link by exact email'})).toBeVisible();
+ await expect(page.getByRole('link',{name:'Ana Ruiz'})).toBeVisible();const sam=page.locator('.plan-line--unresolved',{hasText:'sam@acme.test'});await expect(sam.getByRole('button',{name:'Create contact sam@acme.test'})).toBeVisible();await expect(sam.getByRole('link',{name:'Link by exact email'})).toBeVisible();
  await page.getByLabel('Agenda').fill('1. Renewal dates\n2. Owners');await page.getByLabel('Prep notes').fill('Bring the usage report');
  await page.getByRole('button',{name:'Save plan as note'}).click();await expect(page.getByText('Plan saved as a note.')).toBeVisible();
  const interaction=page.locator('.plan-line').filter({has:page.getByRole('link',{name:'Pricing request',exact:true})});await interaction.getByRole('button',{name:/Make next action/}).click();

@@ -3621,6 +3621,10 @@
       "sha256": "d8b53dc1ca469aeec430effcd979870799c239bb1a321fcac80c144cb7d44a99",
       "executable": false
     },
+    "src/core/features/delegation/brief-routes.ts": {
+      "sha256": "4a4aaee1e3f5422df0825bd63c001cfb37499c022a1855ddf72fb5544cedabee",
+      "executable": false
+    },
     "src/core/features/delegation/effects.ts": {
       "sha256": "47024918620b2ed024cfb725519ebeb774bd013d044b5c4e59a04cd048cfa78e",
       "executable": false
@@ -4005,6 +4009,10 @@
       "sha256": "9b8aedd51c685aa96672dfed9c862729650d02b2d1c780ce50b2788a9fb8a589",
       "executable": false
     },
+    "src/core/features/operator/ui/hash-target.tsx": {
+      "sha256": "9762c7f50df7c773d34826cc495aa0f3229f6e8800c7c17f89af657d26ade6ba",
+      "executable": false
+    },
     "src/core/features/operator/ui/import-provenance.ts": {
       "sha256": "38813d470e912f795abc7e52894a10ae4311e935d707d7b5b858ffac92012ad5",
       "executable": false
@@ -4027,6 +4035,10 @@
     },
     "src/core/features/operator/ui/manual-entry.tsx": {
       "sha256": "d6e63b6b9c2e2223dcb3ad593b88666ad756fc596edc1f1f3bceef0a6c0bdab7",
+      "executable": false
+    },
+    "src/core/features/operator/ui/meeting-plan-page.tsx": {
+      "sha256": "efc8c8628b59a89f471204bc391ca2b33bcf744402c22b818d4404b3b23cc6d7",
       "executable": false
     },
     "src/core/features/operator/ui/message-history.tsx": {
@@ -4131,6 +4143,22 @@
     },
     "src/core/features/operator/ui/sources-page.tsx": {
       "sha256": "2c44dcb9e671f9c86238439fa38b0332a5be9295c25a9c3cbb4097f297209a4f",
+      "executable": false
+    },
+    "src/core/features/operator/ui/today-api.ts": {
+      "sha256": "a906e8b24e1fa1647a7438203d5dd9c18c08c3a6561733d3d0f8c7cde70af465",
+      "executable": false
+    },
+    "src/core/features/operator/ui/today-brief.tsx": {
+      "sha256": "763970f208d683d71d78b04f0b80b1ae23ea0b30959fe53cd5c3966220247419",
+      "executable": false
+    },
+    "src/core/features/operator/ui/today-summary.tsx": {
+      "sha256": "c5875db3b7082daf4927252a4fbeab4c546f0b5fd7d5dbb853f3cde0f8ee7a1d",
+      "executable": false
+    },
+    "src/core/features/operator/ui/today.css": {
+      "sha256": "0d4dcdd167776ffa01aba56e2d61adbf6627a701c03764c1c4cc34fdb5d176c4",
       "executable": false
     },
     "src/core/features/operator/ui/unlinked-replies.tsx": {
@@ -4755,6 +4783,58 @@
     },
     "src/core/features/timeline/service.ts": {
       "sha256": "07aa4dff18ffa5ed893a7517418837189327a90326ada3c9d17a175bd7d8c247",
+      "executable": false
+    },
+    "src/core/features/today/brief.ts": {
+      "sha256": "9262127d07e6b422fa4ce71540cd7eeef044db4e31ad06f47912b06f7bebd05d",
+      "executable": false
+    },
+    "src/core/features/today/errors.ts": {
+      "sha256": "056453db1107096c37dda0814f8640ee234386083d312a90ee1ad363addb4bcc",
+      "executable": false
+    },
+    "src/core/features/today/evidence-labels.ts": {
+      "sha256": "4ee4efad2bffef22c07053af63d715e7c96f0dcc431683d27a60748a0e1cf577",
+      "executable": false
+    },
+    "src/core/features/today/links.ts": {
+      "sha256": "eff6ea2098db0c80120bedff9672866a3801f1add566965572be687018439087",
+      "executable": false
+    },
+    "src/core/features/today/meeting-plan.ts": {
+      "sha256": "76ed88e0d9cbe6987a1eec50b7b4bb5c26691adfe52639fb79cd9800be9b06f1",
+      "executable": false
+    },
+    "src/core/features/today/plan-actions.ts": {
+      "sha256": "8d2438df2977e611f5bd3209ef9249fc163a1d8358e729981c5e42e4bcbf7894",
+      "executable": false
+    },
+    "src/core/features/today/promises.ts": {
+      "sha256": "4bc8c076634093d313837cb14f084eb6ea7cead14e743a3ac041c279084ab2e7",
+      "executable": false
+    },
+    "src/core/features/today/routes.ts": {
+      "sha256": "d819c12f32f865a26f6a943d1ab7d6547c83a30c0abb84dc5c35edf14c3607ec",
+      "executable": false
+    },
+    "src/core/features/today/signal-lines.ts": {
+      "sha256": "82dfac2153a9b77861d77284f74b48300f717dd75b7025f1629230172e1ff793",
+      "executable": false
+    },
+    "src/core/features/today/summary.ts": {
+      "sha256": "9a1d6238cb219a7caa437f4f5ad385b74bcaffe7a1ef7750d37ead6bb000e565",
+      "executable": false
+    },
+    "src/core/features/today/types.ts": {
+      "sha256": "1fc73fbbebacb21e520df2b6b73500212f51603f5ab2968e9e4886abd2492577",
+      "executable": false
+    },
+    "src/core/features/today/unresolved.ts": {
+      "sha256": "30fb6ba1da11eb64ba262c3d98ab00b81e0b6564f7a0d9a46672e071b39dd868",
+      "executable": false
+    },
+    "src/core/features/today/window.ts": {
+      "sha256": "4bd028972ad06bb3b8d9b1d1df377bf0ada46cf52fc4b532d3e47ad5a8d2f473",
       "executable": false
     },
     "src/core/features/workbench/action-repository.ts": {
@@ -5549,6 +5629,10 @@
       "sha256": "7d562139c038b20acfec3a6432eb27ddba808add978272dff2f67db2c2951311",
       "executable": false
     },
+    "src/routes/app.meetings.$id.tsx": {
+      "sha256": "0eb3c4d1cc7e874e38eec69c6ae1cc60c60b68ae5345ab2be668abdd2f279cd5",
+      "executable": false
+    },
     "src/routes/app.new.tsx": {
       "sha256": "61576103e37a805ac6337f3c3194142490c199423309c2fde71c4c1ac0edaa55",
       "executable": false
@@ -6021,6 +6105,10 @@
       "sha256": "60dd121e1d1286020ab16eeb2ee5aa292839c307980c5251dda0dfc86c4a0284",
       "executable": false
     },
+    "tests/core/today-brief.test.ts": {
+      "sha256": "403b1868eaae92cad1bb85d8a648cd027368b8a8929b519449a000e474999e99",
+      "executable": false
+    },
     "tests/core/workbench.test.ts": {
       "sha256": "dfb1abfe688720496b10d20b750129473bc072a4e8a0a17e5b73771f713e11cb",
       "executable": false
@@ -6045,6 +6133,14 @@
       "sha256": "a54473996bc656fd70198e186a4ff085d97f8b1ff42bfc00576e59ac952f19c7",
       "executable": false
     },
+    "tests/delegation-browser/today-brief.test.ts": {
+      "sha256": "9877a205d5e1618564792b25861a431cd40e42139ae8628a6a2ff741f5b2b3cb",
+      "executable": false
+    },
+    "tests/delegation-browser/today-journey.mjs": {
+      "sha256": "90593bc044637e1c10061b1ce758d1b8c1f652eaef88b77631e83f6b00087947",
+      "executable": false
+    },
     "tests/delegation-browser/viewport-journey.mjs": {
       "sha256": "ef359cb24cec240c59622c50c272dd966f1acd33d2b91502ac6853c3ddfd75c4",
       "executable": false
@@ -6063,6 +6159,10 @@
     },
     "tests/delegation/authority-regressions.test.ts": {
       "sha256": "405c917918bb802ce3ef6bb17f9184bc1ee79a3e7ba2c5e8c5caed229ea9d78c",
+      "executable": false
+    },
+    "tests/delegation/brief-handoff.test.ts": {
+      "sha256": "d38f97513f79502d043b06d2b06490294672b97dde2dd512548bbf24d9bb2c3b",
       "executable": false
     },
     "tests/delegation/browser-fixture-mode.test.ts": {
@@ -6523,6 +6623,10 @@
     },
     "tests/support/test-state.ts": {
       "sha256": "9ad9a6c43fabd216ee6d8246bb83b972223bfda7aaf340245887478f53ea1ac2",
+      "executable": false
+    },
+    "tests/support/today-workspace.ts": {
+      "sha256": "bf4bcb873dce024488bc56481df5c8c9a926577af0b44a6dc1f4baa7ae7ec114",
       "executable": false
     },
     "tests/support/upload-close-fixture.ts": {
