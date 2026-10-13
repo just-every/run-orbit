@@ -3,6 +3,8 @@ import type {RecordRef,RecordType} from './types';
 export const recordHref=(ref:RecordRef)=>ref.type==='opportunity'?`/app/opportunities/${ref.id}`:`/app/records?kind=${ref.type}&record=${ref.id}`;
 export const entryHref=(ref:RecordRef,entryId:string|null)=>recordHref(ref)+(entryId?`#entry-${entryId}`:'');
 export const planHref=(signalId:string)=>`/app/meetings/${signalId}`;
+/** Where an application reads a signal it selected: a line resting on no record it may see links here. */
+export const signalEvidenceHref=(signalId:string)=>`/api/delegation/v1/evidence?target=signals/${signalId}`;
 export const delegationTarget=(ref:RecordRef)=>`${{contact:'contacts',company:'companies',opportunity:'opportunities'}[ref.type]}/${ref.id}`;
 
 export interface RecordIndex {
@@ -25,11 +27,12 @@ export async function indexRecords(db:D1Database,refs:RecordRef[]):Promise<Recor
 /** Keeps only references to records that still exist. */
 export const existing=(index:RecordIndex,refs:RecordRef[])=>refs.filter(ref=>(ref.type==='opportunity'?index.opportunities:ref.type==='company'?index.companies:index.contacts).has(ref.id));
 
-/** The account a line belongs to: its company when one is known, otherwise its opportunity, otherwise its contact. */
-export function accountFor(index:RecordIndex,refs:RecordRef[]):RecordRef|null{
+/** The account a line belongs to: its company when one is known, otherwise its opportunity, otherwise its contact.
+ * An opportunity's read carries its company; a contact's carries only the company id, so its company names the account only when `named` allows it. */
+export function accountFor(index:RecordIndex,refs:RecordRef[],named:(ref:RecordRef)=>boolean=()=>true):RecordRef|null{
  const company=refs.find(ref=>ref.type==='company')?.id
   ??refs.filter(ref=>ref.type==='opportunity').map(ref=>index.opportunities.get(ref.id)?.company_id).find(Boolean)
-  ??refs.filter(ref=>ref.type==='contact').map(ref=>index.contacts.get(ref.id)?.company_id).find(Boolean);
+  ??refs.filter(ref=>ref.type==='contact').map(ref=>index.contacts.get(ref.id)?.company_id).find(id=>id&&named({type:'company',id}));
  if(company&&index.companies.has(company))return {type:'company',id:company};
  return refs.find(ref=>ref.type==='opportunity')??refs.find(ref=>ref.type==='contact')??null;
 }

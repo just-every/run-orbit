@@ -15,6 +15,8 @@ export interface Brief {
  generatedAt:string;since:string;sinceBasis:'seen'|'stale-interval';
  policy:{staleIntervalDays:number;awaitingResponseWorkingDays:number;timezone:string};
  accounts:BriefAccount[];unresolved:BriefLine[];held:BriefLine[];
+ /** An application's lines that rest only on signals it selected by id, under no account it may see; always empty for an operator. */
+ selectedSignals:BriefLine[];
  counts:{replies:number;meetings:number;observed:number;inferred:number;promises:number;proposals:number;unresolved:number;held:number};
  truncated:boolean;
 }

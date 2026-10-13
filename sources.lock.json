@@ -910,7 +910,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "ea4afdbbfd5c98098f832e23fb5343d7a44ca1974f665a82a2f5a32359115ae4",
+      "sha256": "78fab6634cc7bcbcd286851091542cb3716f0cf7c12e8b117d974d06e96a6758",
       "executable": false
     },
     "deploy-site.json": {
@@ -4806,7 +4806,7 @@
       "executable": false
     },
     "src/core/features/today/brief.ts": {
-      "sha256": "05a4b5e16b07c842a98e3857cc8e28f0aa0c98053aba37d7212e028a4c1109b2",
+      "sha256": "0cc8204c5cd2c3a7765884748775e09bc84921f223b057a5ff0a85dfb490121d",
       "executable": false
     },
     "src/core/features/today/errors.ts": {
@@ -4818,7 +4818,7 @@
       "executable": false
     },
     "src/core/features/today/links.ts": {
-      "sha256": "eff6ea2098db0c80120bedff9672866a3801f1add566965572be687018439087",
+      "sha256": "70133cb7f8a7fa636567004dbcb45cf11857d4bb2b26e26fef000d4061bd4ecd",
       "executable": false
     },
     "src/core/features/today/meeting-plan.ts": {
@@ -4838,7 +4838,7 @@
       "executable": false
     },
     "src/core/features/today/signal-lines.ts": {
-      "sha256": "82dfac2153a9b77861d77284f74b48300f717dd75b7025f1629230172e1ff793",
+      "sha256": "c54f92f8182712a2719a87babc5039c9882c70c4573c594e47bfa67141e0627c",
       "executable": false
     },
     "src/core/features/today/summary.ts": {
@@ -4846,11 +4846,11 @@
       "executable": false
     },
     "src/core/features/today/types.ts": {
-      "sha256": "a02fd917543e9cc31c4d4f0cf482b21297050b20ad7c4f24cd085f122a9c2095",
+      "sha256": "df5d48aec9e2c4b9dd85d564242f3450113f1fbe1e30c45a256f0ef481f493da",
       "executable": false
     },
     "src/core/features/today/unresolved.ts": {
-      "sha256": "2cd6285e048527be2b9099751259250e18d20b22bf561cf612bf99e552a24ea8",
+      "sha256": "b180cf4547746d99bcae4540575d94905f7867e0da42916e8ecceb9dfcdd18bd",
       "executable": false
     },
     "src/core/features/today/window.ts": {
@@ -6182,7 +6182,7 @@
       "executable": false
     },
     "tests/delegation/brief-handoff.test.ts": {
-      "sha256": "27417a57602e663e9640deec8874458bf2cd3a71e89acca503dd8b356e54de9d",
+      "sha256": "3e4b9f65d5475b1892a7707feb9eece5900ea6e9c20b38932302ed07fa4d2eed",
       "executable": false
     },
     "tests/delegation/browser-fixture-mode.test.ts": {

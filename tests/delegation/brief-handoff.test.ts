@@ -3,6 +3,7 @@ import {test} from 'node:test';
 import {isolatedDatabase} from '../support/isolated-database';
 import {todayApp} from '../support/today-workspace';
 import {nativeDelegation} from '../support/app';
+import {eml} from '../support/capture-mail';
 import {delegationRoutes} from '../../src/core/features/delegation/routes';
 import {random} from '../../src/core/features/delegation/protocol';
 import {challenge} from '../../src/core/features/delegation/token';
@@ -17,8 +18,8 @@ test('BRIEF-005 OUT-001 SIGNAL-009 an application reads the brief and a meeting 
   const reply=await t.event(selected,'email.replied','Re: renewal',1),meeting=await t.event(selected,'meeting.booked','Renewal review',0),secret=await t.event(hidden,'email.replied','Re: private terms',1);
   const form=(path:string,body:Record<string,string>)=>native.request('https://orbit.test'+path,{method:'POST',headers:{Cookie:cookie,Origin:'https://orbit.test'},body:new URLSearchParams(body)});
   assert.equal((await form('/clients',{id:'agent',redirect_uri:'https://agent.test/callback'})).status,303);
-  async function grant(scope:string){
-   const verifier=random(),input={client_id:'agent',redirect_uri:'https://agent.test/callback',response_type:'code',state:random(),code_challenge:await challenge(verifier),code_challenge_method:'S256',account_id:'workspace',scope,targets:JSON.stringify([`opportunities/${selected}`])};
+  async function grant(scope:string,targets=[`opportunities/${selected}`]){
+   const verifier=random(),input={client_id:'agent',redirect_uri:'https://agent.test/callback',response_type:'code',state:random(),code_challenge:await challenge(verifier),code_challenge_method:'S256',account_id:'workspace',scope,targets:JSON.stringify(targets)};
    const consent=await form('/authorize',input);assert.equal(consent.status,303,await consent.clone().text());
    const code=new URL(consent.headers.get('Location')!).searchParams.get('code')!;
    const token=(await(await api.request('https://orbit.test/token',{method:'POST',body:new URLSearchParams({grant_type:'authorization_code',client_id:'agent',redirect_uri:input.redirect_uri,code,code_verifier:verifier})})).json()).access_token as string;
@@ -94,5 +95,24 @@ test('BRIEF-005 OUT-001 SIGNAL-009 an application reads the brief and a meeting 
   assert.equal((await handoff(writer.request,'after-revoke',{evidence:[reply]})).status,401);
   assert.equal((await reader.request('/brief')).status,200,'revoking one grant leaves another consented grant alone');
   assert.equal((await reader.request('/revoke',{})).status,200);assert.equal((await reader.request('/brief')).status,401);
+
+  // An application granted only captured signals sees them, and no name, company or record id beyond its grant.
+  const capture=async(from:string,subject:string)=>{const mail=new FormData();mail.append('files',new File([eml({From:from,To:'seller@seller.test',Subject:subject,Date:new Date(Date.now()-3600000).toUTCString(),'Message-ID':`<${random().slice(0,16)}@hidden.test>`},'Body.')],'m.eml',{type:'message/rfc822'}));await t.json('/api/v1/capture/imports',{form:mail},201);
+   return (await db.prepare('SELECT id FROM signals WHERE subject=?').bind(subject).first<{id:string}>())!.id;};
+  const fromBen=await capture('Ben Hale <ben@hidden.test>','Question on terms'),fromCy=await capture('Cy New <cy@hidden.test>','Intro from Cy');
+  const signalsOnly=await grant('crm.evidence.read',[`signals/${fromBen}`,`signals/${fromCy}`]),withBen=await grant('crm.evidence.read',[`signals/${fromBen}`,`contacts/${ben}`]);
+  const briefOf=async(app:typeof reader)=>{const text=await(await app.request('/brief')).text();return {text,brief:(JSON.parse(text) as {brief:Brief}).brief};};
+  const outside=[hidden,hiddenCompany,ben,'Hidden Co','Private deal'];
+  let seen=await briefOf(signalsOnly);
+  assert.deepEqual(seen.brief.held.map(l=>[l.evidence.id,l.detail]).sort(),[[fromBen,'Held for review'],[fromCy,'Held for review']].sort());
+  for(const leak of [...outside,'Ben Hale'])assert.ok(!seen.text.includes(leak),`a held line names nothing outside the grant: ${leak}`);
+  assert.equal((await briefOf(withBen)).brief.held.find(l=>l.evidence.id===fromBen)!.detail,'Held for review: proposed link to Ben Hale','a granted contact may be named');
+  await t.json(`/api/v1/capture/proposals/${(await db.prepare("SELECT id FROM capture_proposals WHERE signal_id=? AND kind='link_signal'").bind(fromBen).first<{id:string}>())!.id}/accept`,{body:{}},200);
+  seen=await briefOf(signalsOnly);
+  assert.deepEqual(seen.brief.accounts,[]);assert.deepEqual(seen.brief.selectedSignals.map(l=>[l.evidence.id,l.records]),[[fromBen,[]]]);
+  for(const leak of [...outside,'Ben Hale'])assert.ok(!seen.text.includes(leak),`a linked signal names no ungranted record: ${leak}`);
+  seen=await briefOf(withBen);
+  assert.deepEqual(seen.brief.accounts.map(a=>[a.key,a.name,a.lines.map(l=>[l.evidence.id,l.records])]),[[`contact:${ben}`,'Ben Hale',[[fromBen,[{type:'contact',id:ben}]]]]]);
+  for(const leak of outside.slice(0,2).concat(outside.slice(3)))assert.ok(!seen.text.includes(leak),`a granted contact opens neither its company nor its deals: ${leak}`);
  }finally{await fixture.dispose();}
 });

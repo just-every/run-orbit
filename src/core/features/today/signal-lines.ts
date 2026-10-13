@@ -1,8 +1,9 @@
 import type {BriefLine,RecordRef} from './types';
 import {planHref} from './links';
 
-/** A line before its records are resolved: signal lines link to the timeline entry the signal made on a record. */
-export type RawLine=Omit<BriefLine,'href'>&{link:{fixed:string}|{entries:{entryId:string;ref:RecordRef}[]}};
+/** A line before its records are resolved: signal lines link to the timeline entry the signal made on a record.
+ * A held line carries the records its capture proposal names; its detail names only those the reader may see. */
+export type RawLine=Omit<BriefLine,'href'>&{link:{fixed:string}|{entries:{entryId:string;ref:RecordRef}[]};proposed?:{ref:RecordRef;name:string}[]};
 
 const label=(type:string)=>type.replaceAll(/[._:-]+/g,' ').replace(/^./,letter=>letter.toUpperCase());
 const meetingTypes=new Set(['meeting.booked','meeting.cancelled','meeting.completed']);

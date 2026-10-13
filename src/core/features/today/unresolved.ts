@@ -18,12 +18,17 @@ export async function unresolvedLines(db:D1Database,limit:number):Promise<RawLin
   ...replies.results.map((row):RawLine=>({id:`unlinked-reply:${row.id}`,kind:'unlinked-reply',group:'unresolved',signalType:'email.replied',confidence:'observed',title:row.subject,detail:`Reply from ${row.sender} without thread headers`,occurredAt:row.occurredAt,dueAt:null,evidence:{type:'unlinked-reply',id:row.id},records:[],planHref:null,link:{fixed:`/app/sources#reply-${row.id}`}}))];
 }
 
+export const heldDetail=(names:string[])=>`Held for review${names.length?`: proposed link to ${names.join(', ')}`:''}`;
+
 /** Captured replies and meetings held until a person accepts or declines the link capture proposed (capture links only Orbit-threaded mail by itself). */
 export async function heldLines(db:D1Database,limit:number):Promise<RawLine[]>{
- const rows=(await db.prepare(`SELECT s.id,s.type,s.subject,s.occurred_at AS occurredAt,s.confidence,p.id AS proposalId,json_extract(p.details_json,'$.names') AS names FROM capture_proposals p JOIN signals s ON s.id=p.signal_id
+ const rows=(await db.prepare(`SELECT s.id,s.type,s.subject,s.occurred_at AS occurredAt,s.confidence,p.id AS proposalId,p.details_json AS details FROM capture_proposals p JOIN signals s ON s.id=p.signal_id
   WHERE p.kind='link_signal' AND p.status='pending' AND NOT EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=s.id) AND NOT EXISTS(SELECT 1 FROM unlinked_signals u WHERE u.signal_id=s.id AND u.resolved_at IS NULL)
-  ORDER BY s.occurred_at DESC,s.id,p.id LIMIT ?`).bind(limit).all<{id:string;type:string;subject:string|null;occurredAt:string;confidence:'observed'|'inferred';proposalId:string;names:string|null}>()).results;
+  ORDER BY s.occurred_at DESC,s.id,p.id LIMIT ?`).bind(limit).all<{id:string;type:string;subject:string|null;occurredAt:string;confidence:'observed'|'inferred';proposalId:string;details:string}>()).results;
  const seen=new Set<string>();
- return rows.filter(row=>!seen.has(row.id)&&Boolean(seen.add(row.id))).map((row):RawLine=>{const names=(JSON.parse(row.names??'[]') as string[]).join(', ');
-  return {id:`held-capture:${row.id}`,kind:'held-capture',group:'held',signalType:row.type,confidence:row.confidence,title:row.subject||row.type,detail:`Held for review${names?`: proposed link to ${names}`:''}`,occurredAt:row.occurredAt,dueAt:null,evidence:{type:'signal',id:row.id},records:[],planHref:null,link:{fixed:`/app/capture#proposal-${row.proposalId}`}};});
+ return rows.filter(row=>!seen.has(row.id)&&Boolean(seen.add(row.id))).map((row):RawLine=>{
+  // A contact link names each proposed contact in order; a company-only link names the company.
+  const details=JSON.parse(row.details) as {contactIds?:string[];names?:string[];companyId?:string|null},names=details.names??[];
+  const proposed=details.contactIds?.length?details.contactIds.map((id,i)=>({ref:{type:'contact' as const,id},name:names[i]??''})).filter(item=>item.name):details.companyId&&names[0]?[{ref:{type:'company' as const,id:details.companyId},name:names[0]}]:[];
+  return {id:`held-capture:${row.id}`,kind:'held-capture',group:'held',signalType:row.type,confidence:row.confidence,title:row.subject||row.type,detail:heldDetail(proposed.map(item=>item.name)),occurredAt:row.occurredAt,dueAt:null,evidence:{type:'signal',id:row.id},records:[],planHref:null,link:{fixed:`/app/capture#proposal-${row.proposalId}`},proposed};});
 }
