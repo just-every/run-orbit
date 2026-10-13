@@ -890,7 +890,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "00963d61fa1e111909947ee953a98e42bbf762cd3e012d7d56f405aabf30dee9",
+      "sha256": "7d2890f0d3740d9b2cd45e34332b6498f27729a16f8753214cb56dfb520d1cf2",
       "executable": false
     },
     "deploy-site.json": {
@@ -1142,7 +1142,7 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "6c26f092f18aa276fb7f07e55261f16007e6c09d50e22e3c8ec4246eb212dddf",
+      "sha256": "38ed998b4cc52e35af22e0c533ece96299196e7b1bf3cc6380a257cf39ee5c87",
       "executable": false
     },
     "LICENSE": {
@@ -2654,7 +2654,7 @@
       "executable": false
     },
     "RELEASE.json": {
-      "sha256": "ed5ca17d9e27511e2c4c0444f6c742ce0dc0ccb1768c5d880c7223a09911cbcc",
+      "sha256": "ef3a6f68be46d8b232677061410a80b62ba4657f03acf3897ad1c1e69b2d1820",
       "executable": false
     },
     "rer-project.json": {

@@ -119,6 +119,14 @@
     {
       "id": "0034_dependency_links.sql",
       "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0035_capture.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0036_capture_providers.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
     }
   ],
   "breaking": false,
