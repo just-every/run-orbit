@@ -8,7 +8,8 @@ import {deny,type Grant} from './protocol';
 
 const readable=(g:Grant)=>{if(!JSON.parse(g.scopes_json).includes('crm.evidence.read'))deny(403,'SCOPE_DENIED');return JSON.parse(g.targets_json) as string[];};
 
-/** Read-only brief and meeting plans for an application holding crm.evidence.read, narrowed to its selected records. */
+/** Read-only brief and meeting plans for an application holding crm.evidence.read, narrowed to its selected records.
+ * They are further reads under the same scope; /identity keeps its rer-delegation/1 shape. */
 export function briefReadRoutes(db:D1Database){
  const app=new Hono<{Variables:{grant:Grant}}>();
  app.get('/brief',async c=>{const g=c.get('grant'),targets=readable(g);const brief=await buildBrief(db,{operatorId:g.principal_id,visible:selectedTargets(targets)});await currentGrant(db,g.id,g);return c.json({provider:'orbit',principalId:g.principal_id,observedAt:new Date().toISOString(),brief});});
@@ -22,7 +23,7 @@ export function briefReadRoutes(db:D1Database){
    const scope=new Set(targets);for(const target of targets.filter(t=>/^opportunities\/[^/]+$/.test(t))){const id=target.split('/')[1]!;for(const row of (await db.prepare("SELECT 'contacts/'||contact_id AS t FROM opportunity_contacts WHERE opportunity_id=?1 UNION SELECT 'companies/'||company_id FROM opportunities WHERE id=?1 AND company_id IS NOT NULL").bind(id).all<{t:string}>()).results)scope.add(row.t);}
    const plan=await buildMeetingPlan(db,signalId!,{operatorId:g.principal_id,allowed:ref=>scope.has(delegationTarget(ref))});await currentGrant(db,g.id,g);
    return c.json({provider:'orbit',principalId:g.principal_id,target,observedAt:new Date().toISOString(),plan});
-  }catch(error){if(error instanceof TodayError)deny(error.status===409?409:404,error.status===409?'REVISION_CONFLICT':'NOT_FOUND');throw error;}
+  }catch(error){if(error instanceof TodayError)deny(404,'NOT_FOUND');throw error;}
  });
  return app;
 }
