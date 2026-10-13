@@ -3498,7 +3498,7 @@
       "executable": false
     },
     "src/core/features/capture/facts.ts": {
-      "sha256": "1243630072988da3514a414160eb60745d1190bb9980fbe607ceeb344d229805",
+      "sha256": "c5f08541b3f6410c0b5f549687af5b1536596eb035a539f708d1103eed5e56be",
       "executable": false
     },
     "src/core/features/capture/file-source.ts": {
@@ -3514,11 +3514,11 @@
       "executable": false
     },
     "src/core/features/capture/intake.ts": {
-      "sha256": "4892bf1fef5c18ec5af58c0fa6d0aeedee148e409e3fc275adf2b72fb8dbd5cf",
+      "sha256": "500809b769ab381e97af92fc3d1cd04425b898e77b4b6b88875fc448ecef1ea1",
       "executable": false
     },
     "src/core/features/capture/mime.ts": {
-      "sha256": "27ebf27623cf4dd838093a60a7db138c0c0296742d7d8c5d562cfe3535371e50",
+      "sha256": "055c8388095e3bbbab26df742801d5b75f0a954ed9b69a09e7d85949bde1747c",
       "executable": false
     },
     "src/core/features/capture/privacy-calendar.ts": {
@@ -3842,19 +3842,19 @@
       "executable": false
     },
     "src/core/features/ingestion/repository.ts": {
-      "sha256": "e078bd20876a1fb03815f31ddaa25836de2ed327e01a312fbc4b288a6ecfb277",
+      "sha256": "3353f83f895233b1b94868db78756b22aab4b94e47e852b598ec567b3275ae18",
       "executable": false
     },
     "src/core/features/ingestion/routes.ts": {
-      "sha256": "04b924e72dc6cf5878d66a63975450fea70d325ce8f9946ff53d17b21aff0334",
+      "sha256": "4b5d2138293ef563ee001fc8fcacc6c35e398a5b2e8887223dc7d4929c1065c1",
       "executable": false
     },
     "src/core/features/ingestion/source-authority.ts": {
-      "sha256": "0343356e1d1675c55e0c58d4523501d1d7c28a8b0fb81a4fe3c6196eb39cdb09",
+      "sha256": "2358f0acedc60457154ec07c8a11d8b355dc94a159c0d4e34fe5336adaf0ae39",
       "executable": false
     },
     "src/core/features/ingestion/source-routes.ts": {
-      "sha256": "ccc20ec8dc5986d6196e4ed64f36afb4ba8155da468effd61a66a0a787d79cd6",
+      "sha256": "225e3f172f7b5178ebd11408a1310fbb78a20c6f1caf8ae37cd60b3163ea2d61",
       "executable": false
     },
     "src/core/features/ingestion/stop-repository.ts": {
@@ -5706,7 +5706,7 @@
       "executable": false
     },
     "tests/core/capture-boundaries.test.ts": {
-      "sha256": "91fb08636443c64ccc8289fe007d5420fa205bdeb1039dc32063d8f55d08c5b9",
+      "sha256": "0bb55dc5501510b2c36bbdbd92b7865589a7196dbd4ce7b7f64099f4f2c994b7",
       "executable": false
     },
     "tests/core/capture-connector.test.ts": {
@@ -6370,7 +6370,7 @@
       "executable": false
     },
     "tests/support/capture-source-boundary.ts": {
-      "sha256": "f068bdfcbb443da9d0e52945ed99de5c6fa127a8c2780c968d7d0e9f1c6128e7",
+      "sha256": "f75b286a611825310afe1bcd6ff72f94b2916c87923dbddcdaeb823006d6d08a",
       "executable": false
     },
     "tests/support/contact-seed-schema.ts": {

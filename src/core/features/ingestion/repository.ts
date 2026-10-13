@@ -1,4 +1,4 @@
-import {isCaptureSource,signedSourcePredicate} from './source-authority';
+import {isNativeSource,signedSourcePredicate} from './source-authority';
 import { contactStopStatements } from '../records/suppression-effects';
 import { weights } from '../workbench/policies';
 import { createId } from '../../shared/ids';
@@ -26,13 +26,13 @@ export class IngestionRepository {
   async source(id:string){return this.db.prepare('SELECT id,type,enabled,secret_ciphertext FROM signal_sources WHERE id=?').bind(id).first<{id:string;type:string;enabled:number;secret_ciphertext:string|null}>();}
   async sources(){return (await this.db.prepare('SELECT id,name,type,enabled,last_accepted_at,last_error,rejected_count,cursor FROM signal_sources ORDER BY name').all()).results;}
   async configure(input:{id:string;name:string;secret:string;enabled:boolean},security:SourceSecurity){
-    if(isCaptureSource(input.id,(await this.source(input.id))?.type))throw new IngestionError(403,'Capture sources cannot accept signed events.');
+    if(isNativeSource(input.id,(await this.source(input.id))?.type))throw new IngestionError(403,'Capture and mail provider sources cannot accept signed events.');
     const now=new Date().toISOString();
     const result=await this.db.prepare(`INSERT INTO signal_sources(id,name,type,enabled,created_at,updated_at,secret_ciphertext) VALUES(?,?,'signed_webhook',?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,enabled=excluded.enabled,secret_ciphertext=excluded.secret_ciphertext,updated_at=excluded.updated_at WHERE ${signedSourcePredicate}`).bind(input.id,input.name,Number(input.enabled),now,now,await security.seal(input.secret)).run();
-    if(result.meta.changes!==1)throw new IngestionError(403,'Capture sources cannot accept signed events.');
+    if(result.meta.changes!==1)throw new IngestionError(403,'Capture and mail provider sources cannot accept signed events.');
   }
   async setEnabled(id:string,enabled:boolean,security?:SourceSecurity){
-    const source=await this.source(id);if(isCaptureSource(id,source?.type))throw new IngestionError(403,'Capture sources cannot accept signed events.');if(!source)throw new IngestionError(404,'Source not found.');
+    const source=await this.source(id);if(isNativeSource(id,source?.type))throw new IngestionError(403,'Capture and mail provider sources cannot accept signed events.');if(!source)throw new IngestionError(404,'Source not found.');
     if(source.secret_ciphertext&&!security)throw new IngestionError(503,'Source security is unavailable.');
     // A fresh encryption nonce revokes in-flight requests without changing the
     // tool's signing secret or adding local authority to portable record data.
@@ -45,7 +45,7 @@ export class IngestionRepository {
   private async assertAuthority(source:string,authority:SourceAuthority){
     try{await this.db.batch([this.sourceFence(source,authority)]);}catch{throw new IngestionError(403,'Source authority changed; use its current signing secret.');}
   }
-  private async sourceChanged(source:string,authority:SourceAuthority){const current=await this.source(source);return !current?.enabled||isCaptureSource(source,current.type)||current.secret_ciphertext!==authority.secret_ciphertext;}
+  private async sourceChanged(source:string,authority:SourceAuthority){const current=await this.source(source);return !current?.enabled||isNativeSource(source,current.type)||current.secret_ciphertext!==authority.secret_ciphertext;}
   async ingest(source:string,event:SignalEvent,hash:string,raw:string,authority?:SourceAuthority){
     const existing=await this.existing(source,event.eventId);
     if(existing){

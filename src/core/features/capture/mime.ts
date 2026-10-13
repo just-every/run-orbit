@@ -6,6 +6,9 @@ export interface ParsedMessage {
  headers:[string,string][];
  header(name:string):string|undefined;
  headerAll(name:string):string[];
+ /** Undecoded values: address lists are split on these, never on decoded text. */
+ rawHeader(name:string):string|undefined;
+ rawHeaderAll(name:string):string[];
  /** The readable text of the message: the first text/plain part, else stripped text/html. */
  text:string;
  /** A delivery-status report's machine-readable part, when the message is one. */
@@ -90,17 +93,18 @@ function walk(entity:MimeEntity,found:Walk,depth=0){
  else if(type.value==='text/html')found.html??=stripHtml(bodyText(entity));
 }
 
+const addressHeaders=new Set(['from','sender','reply-to','to','cc','bcc']);
+const all=(headers:[string,string][],name:string)=>headers.filter(([key])=>key===name.toLowerCase()).map(([,value])=>value);
 export function parseMessage(raw:string):ParsedMessage{
  const entity=splitEntity(raw),found:Walk={};walk(entity,found);
- const headers=entity.headers.map(([name,value])=>[name,decodeHeader(value)] as [string,string]);
- return {headers,header:name=>first(headers,name.toLowerCase()),headerAll:name=>headers.filter(([key])=>key===name.toLowerCase()).map(([,value])=>value),
+ const headers=entity.headers.map(([name,value])=>[name,addressHeaders.has(name)?decodeAddressList(value):decodeHeader(value)] as [string,string]);
+ return {headers,header:name=>first(headers,name.toLowerCase()),headerAll:name=>all(headers,name),rawHeader:name=>first(entity.headers,name.toLowerCase()),rawHeaderAll:name=>all(entity.headers,name),
   text:(found.plain??found.html??'').replace(/\r\n?/g,'\n'),deliveryStatus:found.deliveryStatus,returnedHeaders:found.returnedHeaders};
 }
 
-/** Parse an address list. A mailbox without a valid address is dropped, never repaired. */
-export function mailboxes(value:string|undefined):Mailbox[]{
- if(!value)return [];
- const result:Mailbox[]=[],items:string[]=[];let current='',quoted=false,angle=false,depth=0;
+/** Split an address list on its own commas; quoted strings, comments and angle addresses keep theirs. */
+function listItems(value:string){
+ const items:string[]=[];let current='',quoted=false,angle=false,depth=0;
  for(const character of value){
   if(character==='"'&&depth===0)quoted=!quoted;
   else if(!quoted&&character==='(')depth++;
@@ -110,9 +114,28 @@ export function mailboxes(value:string|undefined):Mailbox[]{
   if(character===','&&!quoted&&!angle&&depth===0){items.push(current);current='';}else current+=character;
  }
  items.push(current);
- for(const item of items){
+ return items;
+}
+const unquote=(phrase:string)=>phrase.trim().replace(/^"(.*)"$/,'$1').replace(/\\(.)/g,'$1').trim();
+/** RFC 2047 words are display text only: decode a mailbox's phrase and quote it, so it can never become list structure. */
+function decodeAddressList(value:string){
+ return listItems(value).map(item=>{
+  const angled=/^(.*)(<[^<>]+>\s*)$/.exec(item);if(!angled)return item;
+  const name=decodeHeader(unquote(angled[1]!));
+  return name===unquote(angled[1]!)?item:`${/^\s/.test(item)?' ':''}"${name.replace(/["\\]/g,'\\$&')}" ${angled[2]}`;
+ }).join(',');
+}
+
+/**
+ * Parse an undecoded address list. A mailbox without a valid address is dropped, never repaired.
+ * Encoded words are decoded only inside a display name, after the list is split.
+ */
+export function mailboxes(value:string|undefined):Mailbox[]{
+ if(!value)return [];
+ const result:Mailbox[]=[];
+ for(const item of listItems(value)){
   const withoutComments=item.replace(/\([^()]*\)/g,' ').trim(),angled=/^(.*)<([^<>]+)>\s*$/.exec(withoutComments);
-  const email=(angled?angled[2]!:withoutComments).trim().toLowerCase(),name=angled?angled[1]!.trim().replace(/^"(.*)"$/,'$1').replace(/\\(.)/g,'$1').trim():'';
+  const email=(angled?angled[2]!:withoutComments).trim().toLowerCase(),name=angled?decodeHeader(unquote(angled[1]!)):'';
   if(/^[^\s@<>()",;]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(email))result.push({name,email});
  }
  return result;

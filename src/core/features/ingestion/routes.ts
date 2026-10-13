@@ -1,4 +1,4 @@
-import {isCaptureSource} from './source-authority';
+import {isNativeSource} from './source-authority';
 import { Hono } from 'hono';
 import {boundedRequestBody,RequestBodyTooLarge} from '../../platform/bounded-request-body';
 import {bookingEvent} from './booking-webhooks';
@@ -13,7 +13,7 @@ export function createSignalIngress(db:D1Database,security?:SourceSecurity){
     const vendor=c.req.param('vendor');if(vendor&&vendor!=='calcom'&&vendor!=='calendly')return c.notFound();
     if(!/^[a-zA-Z0-9_-]{1,80}$/.test(c.req.param('source')))return c.json({error:'Invalid source ID.'},400);
     const source=await repository.source(c.req.param('source'));
-    if(isCaptureSource(c.req.param('source'),source?.type)||!source||!source.enabled||!source.secret_ciphertext)return c.json({error:'Source is not configured.'},403);
+    if(isNativeSource(c.req.param('source'),source?.type)||!source||!source.enabled||!source.secret_ciphertext)return c.json({error:'Source is not configured.'},403);
     if(!security)return c.json({error:'ORBIT_ENCRYPTION_KEY is required for configured sources.'},503);
     let raw:string;
     try{raw=new TextDecoder('utf-8',{fatal:true}).decode(await boundedRequestBody(c.req.raw,262144));}

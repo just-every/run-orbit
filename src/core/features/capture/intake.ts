@@ -78,7 +78,8 @@ export async function intake(db:D1Database,source:CaptureSource,fact:Fact,option
   await ingestion.reject(source.id,fact.eventId,'Captured item identity already carries different content',captureFences(db,source));return {result:'conflict'};
  }
  // Orbit's own inbound reply route may already have attached this exact message.
- if(fact.kind==='message'&&await db.prepare("SELECT 1 FROM signals WHERE source_id='sendgrid-replies' AND source_event_id=?").bind(fact.messageId).first())return {result:'replayed'};
+ // Only that route's receipt counts: a signal alone under its source ID is not proof.
+ if(fact.kind==='message'&&await db.prepare("SELECT 1 FROM signals s JOIN unlinked_replies u ON u.provider_event_id=s.source_event_id AND u.opportunity_id IS NOT NULL WHERE s.source_id='sendgrid-replies' AND s.type='email.replied' AND s.source_event_id=?").bind(fact.messageId).first())return {result:'replayed'};
  const privacy=await capturePrivacy(db,fact);if(await privacy.blocked())return privacy.skipped;
  const operators=new Set((await db.prepare('SELECT lower(trim(email)) AS email FROM operators').all<{email:string}>()).results.map(row=>row.email));
  const senderIsOperator=fact.kind==='message'&&!!fact.sender&&operators.has(fact.sender.email);

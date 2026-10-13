@@ -5,6 +5,7 @@ import {createSourceSecurity,payloadHash} from '../../src/core/platform/source-s
 import {signSource} from '../../src/core/features/ingestion/booking-webhooks';
 import {IngestionRepository} from '../../src/core/features/ingestion/repository';
 import {connectSource} from '../../src/core/features/capture/sources';
+import {createId} from '../../src/core/shared/ids';
 
 /** Drive the signed HTTP doors, including the original pre-emption of a real reply. */
 export async function captureSourceBoundary(f:CaptureFixture,reply:string){
@@ -22,9 +23,8 @@ export async function captureSourceBoundary(f:CaptureFixture,reply:string){
    assert.equal((await request(`sources/${id}${suffix}`,method,body)).status,403,`${method} refuses ${id}`);
   assert.equal((await signed(id,'blocked')).status,403,`signed ingress refuses ${id}`);
  };
- // An absent reserved ID cannot be pre-claimed, including future provider IDs.
- await refused('capture-future');
- assert.equal(await repository.source('capture-future'),null);
+ // An absent reserved ID cannot be pre-claimed, including future provider IDs and Orbit's mail provider sources.
+ for(const id of ['capture-future','sendgrid-replies','sendgrid-events','SendGrid-Replies']){await refused(id);assert.equal(await repository.source(id),null);}
  // Registration may not adopt a pre-existing signed row or its secret.
  await seed('capture-files','signed_webhook');
  const legacy=await repository.source('capture-files');
@@ -44,6 +44,10 @@ export async function captureSourceBoundary(f:CaptureFixture,reply:string){
  const replyEvent='message:'+await payloadHash('<question-1@acme.example>');
  assert.equal((await signed('capture-files',replyEvent)).status,403);
  assert.equal(await f.db.prepare('SELECT count(*) n FROM signals WHERE source_event_id=?').bind(replyEvent).first('n'),0);
+ // A signed row an earlier version let claim the native reply ID stays refused, and a signal it
+ // planted under the reply's Message-ID is not the native reply route's receipt.
+ await seed('sendgrid-replies','signed_webhook');await refused('sendgrid-replies');
+ await f.db.prepare("INSERT INTO signals(id,source_id,source_event_id,type,subject,occurred_at,received_at,payload_hash,confidence,linking_basis,created_at,payload_json) VALUES(?,'sendgrid-replies','<question-1@acme.example>','email.replied','Planted',?,?,'planted','observed','Unlinked',?,'{}')").bind(createId(),at,at,at).run();
  assert.equal(await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(f.scheduled).first('state'),'scheduled');
  // The caller imports the exact real reply next and checks that it cancels this send.
  const provider={id:'capture-provider',adapter:'test-provider',name:'Provider',scope:{mail:{folders:['INBOX']}},credential:'test-only-provider-grant'};

@@ -70,12 +70,12 @@ export async function readMessage(raw:string,now=Date.now()):Promise<Read>{
  const date=Date.parse(message.header('date')??'');
  if(!Number.isFinite(date))return {skip:'No valid Date header'};
  if(date>now+300000)return {skip:'Dated in the future'};
- const sender=mailboxes(message.header('from'))[0]??null,text=message.text,fresh=freshLines(text),subject=limit(message.header('subject')??'',2000);
+ const sender=mailboxes(message.rawHeader('from'))[0]??null,text=message.text,fresh=freshLines(text),subject=limit(message.header('subject')??'',2000);
  const contentType=parameters(message.header('content-type')),autoSubmitted=(message.header('auto-submitted')??'no').toLowerCase();
  const autoReply=autoSubmitted!=='no'&&!contentType.params['report-type']||Boolean(message.header('x-autoreply')||message.header('x-autorespond'))||/auto[_-]reply/i.test(message.header('precedence')??'');
  const bounce=contentType.params['report-type']==='delivery-status'||message.deliveryStatus?deliveryReport(message.deliveryStatus,message.returnedHeaders):null;
  const forwarded=/^\s*(fwd?|fw)\s*:/i.test(subject)?forwardedSender(text):null;
- const participants:Participant[]=[...(sender?[{...sender,role:'from' as const}]:[]),...mailboxes(message.headerAll('to').join(',')).map(m=>({...m,role:'to' as const})),...mailboxes(message.headerAll('cc').join(',')).map(m=>({...m,role:'cc' as const})),...(forwarded?[{...forwarded,role:'forwarded' as const}]:[])];
+ const participants:Participant[]=[...(sender?[{...sender,role:'from' as const}]:[]),...mailboxes(message.rawHeaderAll('to').join(',')).map(m=>({...m,role:'to' as const})),...mailboxes(message.rawHeaderAll('cc').join(',')).map(m=>({...m,role:'cc' as const})),...(forwarded?[{...forwarded,role:'forwarded' as const}]:[])];
  const unsubscribe=unsubscribeQuote([message.header('subject')??'',...fresh]);
  const phoneLine=fresh.find(line=>/^(tel|phone|mobile|cell|direct)\s*[:.]\s*\+?\d[\d ().-]{6,}\d$/i.test(line.trim()));
  const headers=limit(message.headers.map(([name,value])=>`${name}: ${value}`).join('\n'),32768);

@@ -36,6 +36,12 @@ test('CAPTURE-003 CAPTURE-005 OUT-001 OUT-007 ACTION-005 RECORD-012 SIGNAL-009 a
     assert.equal(await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(f.scheduled).first('state'), 'scheduled');
     for(const id of ['legacy-calendar','capture-files','capture-old-webhook'])await f.db.prepare('DELETE FROM signal_sources WHERE id=?').bind(id).run();
     await captureSourceBoundary(f,reply);
+    // Encoded words are display text: a forged display name or Cc never stands in for Ana's address.
+    const forged = (headers: Record<string, string>) => eml({ To: 'seller@orbit.test', Subject: 'Re: Proposal for Acme', Date: rfc(14), 'In-Reply-To': f.anaThread, References: f.anaThread, ...headers }, 'We are no longer interested.\nPlease remove me from your list.');
+    for (const headers of [{ From: '=?utf-8?q?ana=40acme=2Eexample=2C?= <mallory@evil.example>', 'Message-ID': '<forged-q@evil.example>' }, { From: `=?utf-8?b?${btoa('Ana Ruiz <ana@acme.example>,')}?= <mallory@evil.example>`, 'Message-ID': '<forged-b@evil.example>' }, { From: 'mallory@evil.example', Cc: '=?utf-8?q?ana=40acme=2Eexample=2C?= <other@evil.example>', 'Message-ID': '<forged-cc@evil.example>' }])
+      assert.equal(((await (await f.upload([{ name: 'forged.eml', text: forged(headers) }])).json()) as { summary: { skipped: number } }).summary.skipped, 1, `${headers.From} is not Ana`);
+    assert.equal(await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(f.scheduled).first('state'), 'scheduled');
+    assert.equal(await count(f.db, 'SELECT count(*) n FROM capture_proposals WHERE record_id=?', f.ana), 0);
     assert.equal((await f.upload([{ name: 'reply.eml', text: reply }])).status, 201);
     assert.deepEqual(await f.db.prepare('SELECT state,failure FROM outbound_messages WHERE id=?').bind(f.scheduled).first(), { state: 'cancelled', failure: 'Customer reply' }, 'the scheduled send is cancelled at once');
     for (const draft of [f.scheduledDraft, f.unsentDraft]) assert.equal(await f.db.prepare('SELECT is_stale FROM drafts WHERE id=?').bind(draft).first('is_stale'), 1, 'unsent drafts are stale (ACTION-005)');
@@ -43,6 +49,12 @@ test('CAPTURE-003 CAPTURE-005 OUT-001 OUT-007 ACTION-005 RECORD-012 SIGNAL-009 a
     assert.ok(pending >= 2, 'the link and the phone number wait for review');
     assert.equal(await count(f.db, "SELECT count(*) n FROM signal_links l JOIN capture_items i ON i.signal_id=l.signal_id"), 0, 'the reply itself is not on any timeline until reviewed');
     assert.equal(await f.db.prepare('SELECT phone FROM contacts WHERE id=?').bind(f.ana).first('phone'), null);
+    // Ana's own encoded display name, even one with a comma, still stops a new send and attaches in her thread.
+    await f.db.prepare("UPDATE outbound_messages SET state='scheduled',failure=NULL WHERE id=?").bind(f.scheduled).run();
+    const threaded = eml({ From: '=?utf-8?q?Ruiz=2C_Ana?= <ana@acme.example>', To: 'seller@orbit.test', Subject: 'Re: Proposal for Acme', Date: rfc(12), 'Message-ID': '<thread-1@acme.example>', 'In-Reply-To': f.anaThread, References: f.anaThread }, 'Thanks, we will hold for now.');
+    assert.equal(((await (await f.upload([{ name: 'threaded.eml', text: threaded }])).json()) as { summary: { attached: number } }).summary.attached, 1);
+    assert.equal(await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(f.scheduled).first('state'), 'cancelled');
+    assert.equal(await count(f.db, "SELECT count(*) n FROM signal_links l JOIN signals s ON s.id=l.signal_id WHERE s.source_event_id=? AND l.record_id IN(?,?)", 'message:' + await payloadHash('<thread-1@acme.example>'), f.ana, f.opportunity), 2);
 
     // An unsubscribe request is a proposal; Ana stays contactable until a person accepts it.
     await f.upload([{ name: 'unsubscribe.eml', text: unsubscribeMessage() }]);
