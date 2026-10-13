@@ -46,19 +46,20 @@ export async function readProviderItem(db:D1Database,source:CaptureSource,item:C
   const previous=(await db.prepare(`SELECT i.body,i.headers,s.type,s.source_event_id FROM capture_items i JOIN signals s ON s.id=i.signal_id
    WHERE s.source_id=? AND i.source_id=s.source_id AND i.kind='event' AND EXISTS(SELECT 1 FROM json_each(?) k WHERE instr(i.headers,?||k.value||char(10))>0)
    ORDER BY i.captured_at DESC,i.rowid DESC`).bind(source.id,JSON.stringify(keys),keyHeader).all<{body:string;headers:string;type:string;source_event_id:string}>()).results;
-  if(!previous.length)return [{skip:'Deleted calendar event was not previously captured in this calendar'}];
-  originals=[];const seen=new Set<string>();
+  if(!previous.length&&(!item.raw||event.outsideWindow))return [{skip:'Deleted calendar event was not previously captured in this calendar'}];
+  if(!previous.length&&typeof event.seriesId==='string'&&event.seriesId)keys.push(...await identityKeys(db,source,['calendar',event.calendarId,event.seriesId]));
+  if(previous.length)originals=[];const seen=new Set<string>();
   for(const stored of previous){
    const normalized=(await readItem({kind:'calendar',raw:stored.body}))[0];
    if(!normalized||!('fact' in normalized)||normalized.fact.kind!=='event')throw new CaptureProviderError('unavailable','The saved calendar occurrence could not be read.');
    const identity=JSON.stringify([normalized.fact.uid,normalized.fact.recurrenceId]);if(seen.has(identity))continue;seen.add(identity);
    let raw=stored.body;
    if(stored.type!=='meeting.cancelled'){
-    // Tombstones supply no deletion time. Explicitly label Orbit's observation;
-    // retain the original UID, recurrence, dates and people. A series tombstone
-    // cancels each previously captured occurrence, never an invented meeting.
-    const observed=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}Z$/,'Z');
-    raw=raw.replace(/^(?:STATUS|DTSTAMP|LAST-MODIFIED|X-ORBIT-PROVIDER-REVISION):[^\r\n]*\r?\n/gm,'').replace(/END:VEVENT\s*$/,`STATUS:CANCELLED\nDTSTAMP:${observed}\nLAST-MODIFIED:${observed}\nX-ORBIT-DELETION-OBSERVED-AT:${observed}\nX-ORBIT-PROVIDER-REVISION:removed-${stored.source_event_id}\nEND:VEVENT`);
+    // Preserve the occurrence's identity and people. Use the provider's revision
+    // time when supplied; otherwise explicitly label Orbit's observation. Reuse
+    // the saved cancellation on subsequent full or ID-only deletions.
+    const at=event.modifiedAt??new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}Z$/,'Z');
+    raw=raw.replace(/^(?:STATUS|DTSTAMP|LAST-MODIFIED|X-ORBIT-PROVIDER-REVISION):[^\r\n]*\r?\n/gm,'').replace(/END:VEVENT\s*$/,`STATUS:CANCELLED\nDTSTAMP:${at}\nLAST-MODIFIED:${at}\n${event.modifiedAt?'':`X-ORBIT-DELETION-OBSERVED-AT:${at}\n`}X-ORBIT-PROVIDER-REVISION:removed-${stored.source_event_id}\nEND:VEVENT`);
    }
    originals.push({raw,keys:[...new Set([...keys,...[...stored.headers.matchAll(/^X-ORBIT-PROVIDER-KEY: ([a-f0-9]{32}:[a-f0-9]{64})$/gm)].map(match=>match[1]!)])]});
   }

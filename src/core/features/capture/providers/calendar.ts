@@ -16,8 +16,10 @@ export function calendarItem(provider:'google'|'microsoft',event:any,calendarId:
  const google=provider==='google',lines=['BEGIN:VCALENDAR','VERSION:2.0','BEGIN:VEVENT'];
  const uid=google?event.iCalUID:event.iCalUId;
  if(typeof event.id!=='string'||!event.id)throw new CaptureProviderError('unavailable','The calendar returned an invalid event identity.');
- const providerEvent={calendarId,id:event.id,seriesId:google?(event.recurringEventId??seriesId):event.seriesMasterId,deleted:Boolean(google?event.status==='cancelled'&&(!uid||!event.updated||!event.start||!event.organizer):event['@removed'])};
- if(providerEvent.deleted)return {kind:'calendar',raw:'',providerEvent};
+ const providerEvent={calendarId,id:event.id,seriesId:google?(event.recurringEventId??seriesId):event.seriesMasterId,deleted:Boolean(google?event.status==='cancelled':event['@removed']),modifiedAt:google?instant(event.updated):undefined};
+ // Every cancellation resolves captured provider identities first. Only a complete
+ // Google event can stand alone when no captured association exists.
+ if(providerEvent.deleted&&(!google||!uid||!event.updated||!event.start||!event.organizer))return {kind:'calendar',raw:'',providerEvent};
  if(uid)lines.push(`UID:${clean(uid)}`);
  // A provider revision disambiguates changes that leave iCalendar SEQUENCE unchanged.
  const revision=google?event.updated:event.lastModifiedDateTime;
@@ -35,10 +37,13 @@ export function calendarItem(provider:'google'|'microsoft',event:any,calendarId:
  lines.push('END:VEVENT','END:VCALENDAR');return {kind:'calendar',raw:lines.join('\r\n'),providerEvent};
 }
 
-/** Filter using the same named-zone and all-day interpretation as intake, including floating-time refusals. */
+/** Filter using intake's time interpretation. Deletions still reach association
+ * lookup outside the window, but cannot become new standalone evidence there. */
 export function withinCalendarWindow(item:CaptureItem,window:{start:string;end:string}){
  if(item.kind!=='calendar')return true;
  const event=parseCalendar(item.raw)[0];
  if(!event||'error' in event||!event.start||!event.end)return true;
- return Date.parse(event.start)<Date.parse(window.end)&&Date.parse(event.end)>Date.parse(window.start);
+ const inside=Date.parse(event.start)<Date.parse(window.end)&&Date.parse(event.end)>Date.parse(window.start);
+ if(item.providerEvent?.deleted){item.providerEvent.outsideWindow=!inside;return true;}
+ return inside;
 }

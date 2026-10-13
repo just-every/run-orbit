@@ -1134,7 +1134,7 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "c7b0de06842f510a3991ad64d1b4f902d6fdeadbaf97ac2941c37303d1bad66f",
+      "sha256": "50f841eb519d8f279d9399ebb33762d4e64d7d0765b4d7a90ef32c4d5024e775",
       "executable": false
     },
     "LICENSE": {
@@ -3498,7 +3498,7 @@
       "executable": false
     },
     "src/core/features/capture/contracts.ts": {
-      "sha256": "293d308c52cffbf4939e49719072a1ab59ca46c46391e20966b8ad5a5f51fbfe",
+      "sha256": "5dc5424fdaae66a5e0e3bec56aae8fe63d6747da7eadb8cea23681abfdf1fa7c",
       "executable": false
     },
     "src/core/features/capture/facts.ts": {
@@ -3550,11 +3550,11 @@
       "executable": false
     },
     "src/core/features/capture/provider-evidence.ts": {
-      "sha256": "3dabffea6ec579bbbfb2d618d18c1cab5448862ab14cc60e48496bc1b2a37f17",
+      "sha256": "d6778bc4d24a5220476e33fcbb0c4ffc0f30ce6af48c3b472ea22aa96d0f2a94",
       "executable": false
     },
     "src/core/features/capture/providers/calendar.ts": {
-      "sha256": "683f7e0f30fcf801d9b77aa8f4f7c643457f851084a7f74385e280e1ec3eb36c",
+      "sha256": "a582393a6a379ef3fe2d41e588bffc43f6c5a872562555d9343b730d6b36d904",
       "executable": false
     },
     "src/core/features/capture/providers/config.ts": {
@@ -6378,7 +6378,7 @@
       "executable": false
     },
     "tests/support/capture-provider-items.ts": {
-      "sha256": "f3da247ccd1fdf06131fb7cf249582d886a5f4f92b75604b0de1a124f5bdfff6",
+      "sha256": "c625f5dd074efac33fb5f648362cea55a4344aadd8b9066779eef5a7a68055be",
       "executable": false
     },
     "tests/support/capture-provider-network.ts": {

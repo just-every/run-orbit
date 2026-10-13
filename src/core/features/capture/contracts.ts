@@ -10,7 +10,14 @@
  * here. The file import is the first adapter: one page, no cursor, no credential.
  */
 export interface CaptureScope {mail?:{folders:string[]};calendars?:string[];calendarWindow?:{start:string;end:string}}
-export type CaptureItem = {kind:'message';raw:string;providerMessageId?:string} | {kind:'calendar';raw:string;providerEvent?:{calendarId:string;id:string;seriesId?:string;deleted:boolean}} | {kind:'skip';providerMessageId:string;reason:string};
+interface ProviderCalendarEvent {
+ calendarId:string;id:string;seriesId?:string;deleted:boolean;
+ /** Provider modification time normalized as an iCalendar UTC value. */
+ modifiedAt?:string;
+ /** A deletion may still resolve stored occurrences, but cannot stand alone. */
+ outsideWindow?:boolean;
+}
+export type CaptureItem = {kind:'message';raw:string;providerMessageId?:string} | {kind:'calendar';raw:string;providerEvent?:ProviderCalendarEvent} | {kind:'skip';providerMessageId:string;reason:string};
 export interface CapturePage {items:CaptureItem[];cursor:string|null;more:boolean}
 export interface CaptureSourceAdapter {
  readonly adapter:string;
