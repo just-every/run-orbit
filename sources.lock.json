@@ -3498,7 +3498,7 @@
       "executable": false
     },
     "src/core/features/capture/facts.ts": {
-      "sha256": "98f0a325bdc8cbc31ea81b9f5171cbc73e37761487006e6cd1a7230e3d3714be",
+      "sha256": "b6279f27a841b7b54d2ae19f2c14956b1c99134eda1561c0d97114ab26fca6a6",
       "executable": false
     },
     "src/core/features/capture/file-source.ts": {
@@ -3521,8 +3521,16 @@
       "sha256": "4383990dee52c36a94b985143cb4afa5b8fde285798e8cbe02b2900be2fd3b05",
       "executable": false
     },
+    "src/core/features/capture/privacy-calendar.ts": {
+      "sha256": "656ec6f7e5f9247b783ba28d4ae0f97bd4f8be1ce544633fa734bed352ec0254",
+      "executable": false
+    },
+    "src/core/features/capture/privacy-evidence.ts": {
+      "sha256": "ff88cfe301153ab7a4e3ea6fa6837f0f95f03dc8c8711842e8f3fcdf41758b98",
+      "executable": false
+    },
     "src/core/features/capture/privacy.ts": {
-      "sha256": "dc79c162846ef015042ba62f7646a8b59a4cbce5c3ea7b0ca42c529724ca9eb1",
+      "sha256": "eb3bb4a052ae9cbece1e3a5b02398e8aa36ca46fe88646ebab3d1c4f09573b87",
       "executable": false
     },
     "src/core/features/capture/proposal-identity.ts": {
@@ -4594,11 +4602,15 @@
       "executable": false
     },
     "src/core/features/records/capture-erasure.ts": {
-      "sha256": "566a96e9ededc057e64f9b1500e3ceb0d3a911195c38388565f14e63e315c9b6",
+      "sha256": "a50702ef06ccc2545d164546c602345311df79b43bac948f8f97c4960fccfb58",
+      "executable": false
+    },
+    "src/core/features/records/capture-value-erasure.ts": {
+      "sha256": "2fd4a20985993733deb7c2cb50c62c69933a65381d8c87f9ddc0b231e4cfb149",
       "executable": false
     },
     "src/core/features/records/data.ts": {
-      "sha256": "b28c1da4692e2f51e4fe56c87df4b1d7724b5b6635c810aa7c596d23a4985ecc",
+      "sha256": "d6207472f500ec5a4b7c32dfdaf5ee1d37289dfbcdb7869f8950e934ec0dfb0a",
       "executable": false
     },
     "src/core/features/records/erasure-identity.ts": {
