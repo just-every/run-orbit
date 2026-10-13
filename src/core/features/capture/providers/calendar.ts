@@ -17,9 +17,10 @@ export function calendarItem(provider:'google'|'microsoft',event:any,calendarId:
  const uid=google?event.iCalUID:event.iCalUId;
  if(typeof event.id!=='string'||!event.id)throw new CaptureProviderError('unavailable','The calendar returned an invalid event identity.');
  const providerEvent={calendarId,id:event.id,seriesId:google?(event.recurringEventId??seriesId):event.seriesMasterId,deleted:Boolean(google?event.status==='cancelled':event['@removed']),modifiedAt:google?instant(event.updated):undefined};
+ const start=time('DTSTART',event.start,event.isAllDay),end=time('DTEND',event.end,event.isAllDay);
  // Every cancellation resolves captured provider identities first. Only a complete
  // Google event can stand alone when no captured association exists.
- if(providerEvent.deleted&&(!google||!uid||!event.updated||!event.start||!event.organizer))return {kind:'calendar',raw:'',providerEvent};
+ if(providerEvent.deleted&&(!google||!uid||!event.updated||!start.length||!end.length||!event.organizer))return {kind:'calendar',raw:'',providerEvent};
  if(uid)lines.push(`UID:${clean(uid)}`);
  // A provider revision disambiguates changes that leave iCalendar SEQUENCE unchanged.
  const revision=google?event.updated:event.lastModifiedDateTime;
@@ -28,7 +29,7 @@ export function calendarItem(provider:'google'|'microsoft',event:any,calendarId:
  const cancelled=google?event.status==='cancelled':event.isCancelled;
  if(cancelled)lines.push('STATUS:CANCELLED');
  for(const [name,value] of [['CREATED',google?event.created:event.createdDateTime],['LAST-MODIFIED',revision],['DTSTAMP',revision]]){const date=instant(value);if(date)lines.push(`${name}:${date}`);}
- lines.push(...time('DTSTART',event.start,event.isAllDay),...time('DTEND',event.end,event.isAllDay));
+ lines.push(...start,...end);
  if(google&&event.originalStartTime)lines.push(...time('RECURRENCE-ID',event.originalStartTime));
  if(!google&&event.originalStart){const value=instant(event.originalStart);if(value)lines.push(`RECURRENCE-ID:${value}`);}
  const organizer=google?event.organizer:event.organizer?.emailAddress;
@@ -38,11 +39,11 @@ export function calendarItem(provider:'google'|'microsoft',event:any,calendarId:
 }
 
 /** Filter using intake's time interpretation. Deletions still reach association
- * lookup outside the window, but cannot become new standalone evidence there. */
+ * lookup, but require a proven overlap to become new standalone evidence. */
 export function withinCalendarWindow(item:CaptureItem,window:{start:string;end:string}){
  if(item.kind!=='calendar')return true;
  const event=parseCalendar(item.raw)[0];
- if(!event||'error' in event||!event.start||!event.end)return true;
+ if(!event||'error' in event||!event.start||!event.end){if(item.providerEvent?.deleted)item.providerEvent.outsideWindow=true;return true;}
  const inside=Date.parse(event.start)<Date.parse(window.end)&&Date.parse(event.end)>Date.parse(window.start);
  if(item.providerEvent?.deleted){item.providerEvent.outsideWindow=!inside;return true;}
  return inside;

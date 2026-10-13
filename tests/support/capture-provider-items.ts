@@ -55,32 +55,38 @@ export async function deletedEventProof(provider:Provider){
    const erased=await f.app.request(`https://orbit.test/api/v1/records/contact/${f.ana}`,{method:'DELETE',headers:{cookie:f.cookie,origin:'https://orbit.test','content-type':'application/json'},body:JSON.stringify({confirmed:true})});
    assert.equal(erased.status,200);await f.drain(id);assert.equal(await f.count(id),0,'erased originals and deletions cannot return');
   }finally{await f.dispose();}
-  if(provider==='google')await fullGoogleDeletionProof();
+  if(provider==='google')for(const partial of [false,true])await googleDeletionProof(partial);
 }
 
-async function fullGoogleDeletionProof(){
+async function googleDeletionProof(partial:boolean){
  const f=await captureRecoveryFixture('google');try{
   let phase:'booked'|'individual'|'series'|'replay'|'first-cancellation'='booked';
   const modified='2026-10-12T12:00:00Z';
   const master={id:'series-master',iCalUID:'series-uid',summary:'Recurring meeting',created:'2026-10-01T10:00:00Z',updated:'2026-10-01T10:00:00Z',start:{dateTime:'2026-10-20T10:00:00Z'},end:{dateTime:'2026-10-20T11:00:00Z'},organizer:{email:'ana@acme.example'},recurrence:['RRULE:FREQ=DAILY;COUNT=2']};
   const instances=[20,21].map(day=>({...master,id:`occurrence-${day}`,recurrence:undefined,recurringEventId:master.id,originalStartTime:{dateTime:`2026-10-${day}T10:00:00Z`},start:{dateTime:`2026-10-${day}T10:00:00Z`},end:{dateTime:`2026-10-${day}T11:00:00Z`}}));
   const full=(event:object)=>({...event,status:'cancelled',updated:modified});
+  const matching=(event:object)=>full({...event,...(partial?{end:undefined}:{})});
   const first=full({...master,id:'first-cancellation',iCalUID:'first-uid',recurrence:undefined});
+  const incomplete=[
+   ...['2025-10-20T10:00:00Z','2026-10-20T10:00:00Z','2028-10-20T10:00:00Z'].map(dateTime=>({start:{dateTime},end:undefined})),
+   {start:undefined},{start:undefined,end:undefined},{end:{}},{start:{}},
+   {start:{dateTime:'2026-10-20T10:00:00',timeZone:'Unknown/Zone'}},
+  ].map((bounds,index)=>full({...master,id:`incomplete-${index}`,iCalUID:`incomplete-uid-${index}`,recurrence:undefined,...bounds}));
   f.respond(url=>{
-   if(url.pathname.endsWith('/events/series-master/instances'))return Response.json({items:instances});
+   if(url.pathname.endsWith('/events/series-master/instances'))return Response.json({items:[...instances,...incomplete]});
    if(!url.pathname.endsWith('/events'))return;
    // A full individual can omit its recurrence fields; provider ID still resolves
    // just that occurrence. A full master need not retain its recurrence rule.
-   const items=phase==='booked'?[master]:phase==='individual'?[full({...instances[0],originalStartTime:undefined,recurringEventId:undefined})]:phase==='series'?[full({...master,recurrence:undefined,start:{dateTime:'2025-10-20T10:00:00Z'},end:{dateTime:'2025-10-20T11:00:00Z'}})]:phase==='replay'?[{id:master.id,status:'cancelled'},{id:instances[0]!.id,status:'cancelled'},{id:'first-cancellation',status:'cancelled'}]:[first,full({...master,id:'outside-window',iCalUID:'outside-uid',start:{dateTime:'2025-10-20T10:00:00Z'},end:{dateTime:'2025-10-20T11:00:00Z'}})];
+   const items=phase==='booked'?[master]:phase==='individual'?[matching({...instances[0],originalStartTime:undefined,recurringEventId:undefined,...(partial?{start:{dateTime:'2028-10-20T10:00:00Z'}}:{})})]:phase==='series'?[matching({...master,recurrence:undefined,start:{dateTime:'2025-10-20T10:00:00Z'},end:{dateTime:'2025-10-20T11:00:00Z'}})]:phase==='replay'?[{id:master.id,status:'cancelled'},{id:instances[0]!.id,status:'cancelled'},{id:'first-cancellation',status:'cancelled'}]:[first,...incomplete,full({...master,id:'outside-window',iCalUID:'outside-uid',start:{dateTime:'2025-10-20T10:00:00Z'},end:{dateTime:'2025-10-20T11:00:00Z'}})];
    return Response.json({items:[...items,{id:'unknown-id',status:'cancelled',updated:modified}],nextSyncToken:phase});
   });
   const id=await f.connect({calendars:['calendar'],calendarWindow:window});await f.drain(id);assert.equal(await f.count(id),2);
   const cancelled=async()=> (await f.db.prepare("SELECT i.body,s.occurred_at FROM capture_items i JOIN signals s ON s.id=i.signal_id WHERE s.source_id=? AND s.type='meeting.cancelled'").bind(id).all<{body:string;occurred_at:string}>()).results;
-  phase='individual';await f.drain(id);let rows=await cancelled();assert.equal(rows.length,1,'full individual cancellation preserves its sibling');assert.match(rows[0]!.body,/RECURRENCE-ID:20261020T100000Z/);
-  phase='series';await f.drain(id);rows=await cancelled();assert.deepEqual(rows.map(row=>/^RECURRENCE-ID:(.+)$/m.exec(row.body)?.[1]).sort(),['20261020T100000Z','20261021T100000Z'],'full master resolves both stored occurrences even without recurrence and with its start outside the window');
-  for(const row of rows){assert.equal(row.occurred_at,'2026-10-12T12:00:00.000Z');assert.doesNotMatch(row.body,/X-ORBIT-DELETION-OBSERVED-AT/);}
+  phase='individual';await f.drain(id);let rows=await cancelled();assert.equal(rows.length,1,'full or partial individual cancellation preserves its sibling');assert.match(rows[0]!.body,/RECURRENCE-ID:20261020T100000Z/);
+  phase='series';await f.drain(id);rows=await cancelled();assert.deepEqual(rows.map(row=>/^RECURRENCE-ID:(.+)$/m.exec(row.body)?.[1]).sort(),['20261020T100000Z','20261021T100000Z'],'full or partial master resolves both stored occurrences even without recurrence and with its start outside the window');
+  for(const row of rows){assert.equal(row.occurred_at,'2026-10-12T12:00:00.000Z');assert.doesNotMatch(row.body,/X-ORBIT-DELETION-OBSERVED-AT/);assert.ok(row.body.includes(`DTSTART:${/^RECURRENCE-ID:(.+)$/m.exec(row.body)![1]}`),'captured start survives changed or missing cancellation bounds');}
   await f.drain(id);phase='replay';await f.drain(id);assert.equal((await cancelled()).length,2,'full and ID-only series/individual deletions replay');
-  phase='first-cancellation';await f.drain(id);rows=await cancelled();assert.equal(rows.length,3,'a first complete cancellation is captured, but an unknown out-of-window cancellation is not');assert.ok(rows.some(row=>row.body.includes('UID:first-uid')&&row.occurred_at==='2026-10-12T12:00:00.000Z'));
+  phase='first-cancellation';await f.drain(id);rows=await cancelled();assert.equal(rows.length,3,'a first complete cancellation is captured, but unknown cancellations without a proven window overlap are not');assert.ok(rows.some(row=>row.body.includes('UID:first-uid')&&row.occurred_at==='2026-10-12T12:00:00.000Z'));
   await f.drain(id);phase='replay';await f.drain(id);assert.equal((await cancelled()).length,3,'first complete cancellation also replays as a bare ID');
   const erased=await f.app.request(`https://orbit.test/api/v1/records/contact/${f.ana}`,{method:'DELETE',headers:{cookie:f.cookie,origin:'https://orbit.test','content-type':'application/json'},body:JSON.stringify({confirmed:true})});assert.equal(erased.status,200);
   phase='first-cancellation';await f.drain(id);phase='series';await f.drain(id);assert.equal(await f.count(id),0,'full cancellations do not restore erased evidence');

@@ -1134,7 +1134,7 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "50f841eb519d8f279d9399ebb33762d4e64d7d0765b4d7a90ef32c4d5024e775",
+      "sha256": "46f30e52632eb020b98c065119885b6316438f639020c8d50a6a323dd54b73e6",
       "executable": false
     },
     "LICENSE": {
@@ -3554,7 +3554,7 @@
       "executable": false
     },
     "src/core/features/capture/providers/calendar.ts": {
-      "sha256": "a582393a6a379ef3fe2d41e588bffc43f6c5a872562555d9343b730d6b36d904",
+      "sha256": "7b2f6301ec75b4ffbf999ffd39984e48b47792eb358f7f0d3be6630bec2dab22",
       "executable": false
     },
     "src/core/features/capture/providers/config.ts": {
@@ -6378,7 +6378,7 @@
       "executable": false
     },
     "tests/support/capture-provider-items.ts": {
-      "sha256": "c625f5dd074efac33fb5f648362cea55a4344aadd8b9066779eef5a7a68055be",
+      "sha256": "b96fe3341023f2e890ac8929e0b0a1f83004470e0fd976a91eca4ba955bb1163",
       "executable": false
     },
     "tests/support/capture-provider-network.ts": {
