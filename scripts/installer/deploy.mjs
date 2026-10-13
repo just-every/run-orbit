@@ -1,4 +1,5 @@
 import {ensureDeploymentSourceKey} from './source-key.mjs';
+import {captureRedirects} from './capture-notices.mjs';
 import { randomBytes } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -59,6 +60,7 @@ export function orbitDeploy(lifecycle) {
   // An already claimed installation keeps its owner (409); a new one is claimed now.
   await owner({ origin: receipt.origin, vars: { SETUP_TOKEN: env.SETUP_TOKEN }, store, signal, input: {} }, { displayName: () => 'Owner', returnTo: '/setup' });
   store.report(`deploy: ${receipt.origin} is healthy. Open ${receipt.origin}/signin and request a sign-in link for the owner email.`);
+  for (const line of captureRedirects(receipt.origin)) store.report(line);
   return { deployed: true, origin: receipt.origin };
  };
 }

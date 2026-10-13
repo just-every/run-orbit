@@ -1,0 +1,132 @@
+import { createId } from '../../shared/ids';
+import { audit, RecordError } from './shared';
+import { archiveCatalog, type ArchiveManifest, type ArchiveTable } from './archive-schema';
+import { stageName, stageTables } from './archive-storage';
+export type ImportJob = {
+    id: string;
+    kind: string;
+    state: string;
+    actor_id: string;
+    manifest_json: string;
+    progress_json: string;
+};
+type Progress = {
+    phase: 'backup' | 'clear' | 'load' | 'rollback-clear' | 'rollback-load';
+    table: number;
+    offset: number;
+    backupId: string;
+};
+async function save(db: D1Database, job: ImportJob, p: Progress, statements: D1PreparedStatement[] = []) { await db.batch([db.prepare('INSERT INTO archive_step_claims VALUES(?,?)').bind(job.id, job.progress_json), db.prepare("INSERT INTO runtime_controls VALUES('archive_applying',?)").bind(job.id), ...statements, db.prepare('UPDATE archive_jobs SET progress_json=? WHERE id=?').bind(JSON.stringify(p), job.id), db.prepare('DELETE FROM archive_step_claims WHERE job_id=?').bind(job.id), db.prepare("DELETE FROM runtime_controls WHERE name='archive_applying'")]); }
+async function begin(db: D1Database, job: ImportJob, catalog: ArchiveTable[]) { const manifest: ArchiveManifest = JSON.parse(job.manifest_json); const parts = (await db.prepare('SELECT count(*) AS n FROM archive_parts WHERE job_id=?').bind(job.id).first<{
+    n: number;
+}>())!.n; if (parts !== manifest.parts)
+    throw new RecordError(409, 'The archive is incomplete. Upload every part before restoring.'); for (const table of manifest.tables) {
+    const count = (await db.prepare(`SELECT count(*) AS n FROM ${stageName(job.id, table.name)}`).first<{
+        n: number;
+    }>())!.n;
+    if (count !== table.rows)
+        throw new RecordError(409, `The archive is missing rows for ${table.name}.`);
+} if (!await db.prepare(`SELECT 1 FROM ${stageName(job.id, 'operators')} WHERE status='active' LIMIT 1`).first())
+    throw new RecordError(400, 'An archive must retain an active operator for native access.'); for (const table of ['contacts', 'companies', 'opportunities', 'signals'])
+    if (await db.prepare(`SELECT id FROM ${table} LIMIT 1`).first())
+        throw new RecordError(409, 'Restore requires an empty customer database.'); if (await db.prepare("SELECT name FROM runtime_controls WHERE name IN ('archive_import','archive_export')").first())
+    throw new RecordError(409, 'Another archive transfer is preparing or restoring.'); const backupId = createId(), progress: Progress = { phase: 'backup', table: 0, offset: 0, backupId }; await db.batch([db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'archive_import',CASE WHEN NOT EXISTS(SELECT 1 FROM archive_jobs WHERE id=? AND state='uploading') OR EXISTS(SELECT 1 FROM contacts) OR EXISTS(SELECT 1 FROM companies) OR EXISTS(SELECT 1 FROM opportunities) OR EXISTS(SELECT 1 FROM signals) THEN NULL ELSE ? END").bind(job.id,job.id), db.prepare("INSERT INTO runtime_controls VALUES('restore',?)").bind(job.id), db.prepare("INSERT INTO archive_jobs VALUES(?,'backup','preparing',?,'{}','{}',?)").bind(backupId, job.actor_id, new Date().toISOString()), ...stageTables(db, backupId, catalog), db.prepare("UPDATE archive_jobs SET state='restoring',progress_json=? WHERE id=?").bind(JSON.stringify(progress), job.id)]); }
+export async function advanceImport(db: D1Database, job: ImportJob) {
+    if (job.state === 'complete' || job.state === 'aborted')
+        return;
+    const catalog = await archiveCatalog(db);
+    if (job.state === 'uploading') {
+        await begin(db, job, catalog);
+        return;
+    }
+    const p: Progress = JSON.parse(job.progress_json);
+    if (p.phase === 'backup') {
+        const table = catalog[p.table];
+        if (!table) {
+            p.phase = 'clear';
+            p.table = 0;
+            p.offset = 0;
+            await save(db, job, p);
+            return;
+        }
+        const count = (await db.prepare(`SELECT count(*) AS n FROM (SELECT 1 FROM ${table.name} LIMIT 10000 OFFSET ?)`).bind(p.offset).first<{ n: number }>())!.n;
+        if (!count) {
+            p.table++;
+            p.offset = 0;
+            await save(db, job, p);
+            return;
+        }
+        const statement = db.prepare(`INSERT INTO ${stageName(p.backupId, table.name)} SELECT *,row_number() OVER ()+? FROM (SELECT * FROM ${table.name} LIMIT 10000 OFFSET ?)`).bind(p.offset, p.offset);
+        p.offset += count;
+        await save(db, job, p, [statement]);
+        return;
+    }
+    if (p.phase === 'clear' || p.phase === 'rollback-clear') {
+        const table = [...catalog].reverse()[p.table];
+        if (!table) {
+            p.phase = p.phase === 'clear' ? 'load' : 'rollback-load';
+            p.table = 0;
+            p.offset = 0;
+            await save(db, job, p);
+            return;
+        }
+        if (table.name === 'operators') {
+            p.table++;
+            await save(db, job, p);
+            return;
+        }
+        const count = (await db.prepare(`SELECT count(*) AS n FROM (SELECT 1 FROM ${table.name} LIMIT 10000)`).first<{
+            n: number;
+        }>())!.n;
+        if (!count)
+            p.table++;
+        const keys = table.columns.filter(column => column.pk).sort((a,b) => a.pk-b.pk).map(column => column.name);
+        const selector = keys.length ? keys.join(',') : 'rowid';
+        await save(db, job, p, count ? [db.prepare(`DELETE FROM ${table.name} WHERE (${selector}) IN(SELECT ${selector} FROM ${table.name} LIMIT 10000)`)] : []);
+        return;
+    }
+    const rollback = p.phase === 'rollback-load', table = catalog[p.table], source = rollback ? p.backupId : job.id;
+    if (!table) {
+        await finish(db, job, p, catalog, rollback);
+        return;
+    }
+    const staged = stageName(source, table.name), rows = (await db.prepare(`SELECT archive_row_index AS n FROM ${staged} WHERE archive_row_index>=? ORDER BY archive_row_index LIMIT 10000`).bind(p.offset).all<{
+        n: number;
+    }>()).results;
+    if (!rows.length) {
+        p.table++;
+        p.offset = 0;
+        await save(db, job, p);
+        return;
+    }
+    const end = rows.at(-1)!.n;
+    let columns = table.columns.map(c => c.name);
+    if (rollback)
+        columns = (await db.prepare(`PRAGMA table_info(${table.name})`).all<{
+            name: string;
+        }>()).results.map(c => c.name);
+    const values = columns.map(c => table.name === 'operators' ? (c === 'email' ? `'archive-${job.id}-'||id||'@invalid'` : c === 'setup_owner' ? '0' : c) : c);
+    const statement = db.prepare(`INSERT INTO ${table.name}(${columns.join(',')}) SELECT ${values.join(',')} FROM ${staged} WHERE archive_row_index>=? AND archive_row_index<=? ${table.name === 'operators' ? `AND id NOT IN(SELECT id FROM operators)` : ''} ORDER BY archive_row_index`).bind(p.offset, end);
+    p.offset = end + 1;
+    await save(db, job, p, [statement]);
+}
+async function finish(db: D1Database, job: ImportJob, p: Progress, catalog: ArchiveTable[], rollback: boolean) { const source = rollback ? p.backupId : job.id, operators = stageName(source, 'operators'); const columns = catalog.find(t => t.name === 'operators')!.columns.map(c => c.name); const statements: D1PreparedStatement[] = [db.prepare('PRAGMA defer_foreign_keys=ON'), db.prepare('INSERT INTO archive_step_claims VALUES(?,?)').bind(job.id, job.progress_json), db.prepare("INSERT INTO runtime_controls VALUES('archive_applying',?)").bind(job.id)]; if (!rollback)
+    statements.push(db.prepare('DELETE FROM delegation_codes'), db.prepare('DELETE FROM delegation_grants'), db.prepare('DELETE FROM sessions'), db.prepare('DELETE FROM magic_links')); statements.push(db.prepare(`DELETE FROM operators WHERE id NOT IN(SELECT id FROM ${operators})`), db.prepare("UPDATE operators SET email='archive-final-'||id||'@invalid',setup_owner=0"), db.prepare(`UPDATE operators SET ${columns.filter(c => c !== 'id').map(c => `${c}=(SELECT ${c} FROM ${operators} WHERE ${operators}.id=operators.id)`).join(',')}`)); if (!rollback) {
+    statements.push(db.prepare(`UPDATE owner_bootstrap SET owner_id=(SELECT id FROM ${operators} WHERE setup_owner=1),email=(SELECT email FROM ${operators} WHERE setup_owner=1),display_name=(SELECT display_name FROM ${operators} WHERE setup_owner=1),workspace_name=COALESCE((SELECT name FROM workspace_settings),workspace_name),timezone=COALESCE((SELECT timezone FROM workspace_settings),timezone),currency=COALESCE((SELECT currency FROM workspace_settings),currency),stages_json=(SELECT json_group_array(json_object('id',id,'name',name)) FROM (SELECT id,name FROM pipeline_stages ORDER BY position)) WHERE EXISTS(SELECT 1 FROM ${operators} WHERE setup_owner=1)`), db.prepare(`DELETE FROM owner_bootstrap WHERE NOT EXISTS(SELECT 1 FROM ${operators} WHERE setup_owner=1)`));
+    const actor = await db.prepare(`SELECT 1 FROM ${operators} WHERE id=?`).bind(job.actor_id).first();
+    statements.push(audit(db, actor ? job.actor_id : null, 'data.restored', 'workspace', 'workspace', { initiatedBy: job.actor_id }));
+} statements.push(db.prepare('DELETE FROM archive_step_claims WHERE job_id=?').bind(job.id), db.prepare("DELETE FROM runtime_controls WHERE name IN ('restore','archive_import','archive_applying')"), db.prepare('UPDATE archive_jobs SET state=? WHERE id=?').bind(rollback ? 'aborted' : 'complete', job.id)); await db.batch(statements); }
+export async function abortImport(db: D1Database, job: ImportJob) { if (job.state === 'complete')
+    throw new RecordError(409, 'A completed restore cannot be aborted.'); if (job.state === 'aborted')
+    return; const catalog = await archiveCatalog(db); if (job.state === 'uploading') {
+    await db.batch([db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'archive_abort',CASE WHEN EXISTS(SELECT 1 FROM archive_jobs WHERE id=? AND state='uploading') THEN ? ELSE NULL END").bind(job.id,job.id), ...catalog.map(t => db.prepare(`DROP TABLE ${stageName(job.id, t.name)}`)), db.prepare('DELETE FROM archive_parts WHERE job_id=?').bind(job.id), db.prepare("UPDATE archive_jobs SET state='aborted' WHERE id=?").bind(job.id), db.prepare("DELETE FROM runtime_controls WHERE name='archive_abort'")]);
+    return;
+} const p: Progress = JSON.parse(job.progress_json); if (p.phase === 'backup') {
+    await db.batch([db.prepare('INSERT INTO archive_step_claims VALUES(?,?)').bind(job.id, job.progress_json), db.prepare('DELETE FROM archive_step_claims WHERE job_id=?').bind(job.id), db.prepare("DELETE FROM runtime_controls WHERE name IN('restore','archive_import')"), db.prepare("UPDATE archive_jobs SET state='aborted' WHERE id=?").bind(job.id)]);
+    return;
+} if (!p.phase.startsWith('rollback')) {
+    p.phase = 'rollback-clear';
+    p.table = 0;
+    p.offset = 0;
+    await save(db, job, p);
+} await advanceImport(db, { ...job, progress_json: JSON.stringify(p) }); }

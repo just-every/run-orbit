@@ -1,0 +1,4 @@
+import type { SceneCamera } from "../scene-contract";
+export const FRAME: SceneCamera["FRAME"];
+export const CAM: SceneCamera["CAM"];
+export const CLIP: SceneCamera["CLIP"];

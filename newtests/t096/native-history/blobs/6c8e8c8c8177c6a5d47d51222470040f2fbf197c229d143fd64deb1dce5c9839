@@ -1,0 +1,5 @@
+import type * as THREE from "three";
+import type { SceneBuild } from "../scene-contract";
+export function buildScene(scene: THREE.Scene, renderer: THREE.WebGLRenderer, camera: THREE.PerspectiveCamera): SceneBuild;
+
+export function preloadScene(signal?: AbortSignal): Promise<void>;

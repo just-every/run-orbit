@@ -7,8 +7,10 @@ import {companyTargets} from './targets';
 import {matchingReplyMessages} from '../outreach/reply-matching';
 import type {Fact,Participant} from './facts';
 import {proposalStatements,type ProposalDraft} from './proposals';
+import {capturePrivacy} from './privacy';
+import {CaptureError} from './contracts';
 
-export interface CaptureSource {id:string;name:string;connection_id:string|null}
+export interface CaptureSource {id:string;name:string;connection_id:string|null;lease?:string}
 export interface Known {email:string;name:string;role:Participant['role'];contact:{id:string;name:string|null;phone:string|null;company_id:string|null}|null;company:{id:string;name:string}|null}
 export type Outcome =
  | {result:'captured';signalId:string;type:string;attached:boolean;stopped:number;proposals:number;bounce:'permanent'|'transient'|null}
@@ -65,14 +67,19 @@ function stopStatements(db:D1Database,contactIds:string[],reason:string,at:strin
  * evidence, any effect Orbit's own threading or delivery report makes certain,
  * the immediate stop for a reply or booking, and proposals for everything else.
  */
+function captureFences(db:D1Database,source:CaptureSource){return [
+ ...(source.lease?[db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_lease_fence',NULL WHERE NOT EXISTS(SELECT 1 FROM capture_locks WHERE source_id=? AND lease=? AND expires_at>?)").bind(source.id,source.lease,Date.now())]:[]),
+ db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_source_fence',NULL WHERE NOT EXISTS(SELECT 1 FROM capture_sources c JOIN signal_sources s ON s.id=c.id WHERE c.id=? AND c.state<>'disconnected' AND c.connection_id IS ? AND s.type='capture' AND s.enabled=1)").bind(source.id,source.connection_id),
+];}
 export async function intake(db:D1Database,source:CaptureSource,fact:Fact,options:{includeUnknown:boolean}):Promise<Outcome>{
  const ingestion=new IngestionRepository(db),existing=await db.prepare('SELECT id,payload_hash FROM signals WHERE source_id=? AND source_event_id=?').bind(source.id,fact.eventId).first<{id:string;payload_hash:string}>();
  if(existing){
   if(existing.payload_hash===fact.hash)return {result:'replayed'};
-  await ingestion.reject(source.id,fact.eventId,'Captured item identity already carries different content');return {result:'conflict'};
+  await ingestion.reject(source.id,fact.eventId,'Captured item identity already carries different content',captureFences(db,source));return {result:'conflict'};
  }
  // Orbit's own inbound reply route may already have attached this exact message.
  if(fact.kind==='message'&&await db.prepare("SELECT 1 FROM signals WHERE source_id='sendgrid-replies' AND source_event_id=?").bind(fact.messageId).first())return {result:'replayed'};
+ const privacy=await capturePrivacy(db,fact);if(await privacy.blocked())return privacy.skipped;
  const operators=new Set((await db.prepare('SELECT lower(trim(email)) AS email FROM operators').all<{email:string}>()).results.map(row=>row.email));
  const senderIsOperator=fact.kind==='message'&&!!fact.sender&&operators.has(fact.sender.email);
  const participants=fact.kind==='message'&&fact.bounce?.recipient?[{email:fact.bounce.recipient,name:'',role:'to' as const}]:fact.participants;
@@ -80,9 +87,9 @@ export async function intake(db:D1Database,source:CaptureSource,fact:Fact,option
  const type=signalType(fact,source.id,senderIsOperator),at=new Date().toISOString(),signalId=createId(),itemId=createId();
  const senderEmail=fact.kind==='message'?(fact.bounce?.recipient??fact.sender?.email):undefined;
  const event=signalEvent(fact,type,itemId,senderEmail),evidence=evidenceSummary(fact,source.name);
- const statements:D1PreparedStatement[]=[
-  db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_source_fence',NULL WHERE NOT EXISTS(SELECT 1 FROM capture_sources WHERE id=? AND state<>'disconnected' AND connection_id IS ?)").bind(source.id,source.connection_id),
- ];
+ event.data={...event.data,capturePrivacyKeys:privacy.keys};
+ const contactIds=[...new Set(known.flatMap(person=>person.contact?[person.contact.id]:[]))];
+ const statements:D1PreparedStatement[]=[...captureFences(db,source),...privacy.fences(),db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_contact_fence',NULL WHERE EXISTS(SELECT 1 FROM json_each(?) WHERE value NOT IN(SELECT id FROM contacts))").bind(JSON.stringify(contactIds))];
  const signal=(basis:string)=>db.prepare('INSERT INTO signals(id,source_id,source_event_id,type,subject,occurred_at,received_at,payload_hash,confidence,linking_basis,created_at,payload_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)')
   .bind(signalId,source.id,fact.eventId,type,fact.subject,fact.occurredAt,at,fact.hash,confidence(type),basis,at,JSON.stringify(event));
  const item=db.prepare('INSERT INTO capture_items(id,source_id,signal_id,kind,headers,body,captured_at) VALUES(?,?,?,?,?,?,?)').bind(itemId,source.id,signalId,fact.kind,fact.headers,fact.body,at);
@@ -122,13 +129,19 @@ export async function intake(db:D1Database,source:CaptureSource,fact:Fact,option
   statements.push(...stopStatements(db,stopped,type==='email.replied'?'Customer reply':'Meeting booked',at));
  }
  const drafts:ProposalDraft[]=await proposalsFor(db,fact,type,known,attached!==null,bounce,senderIsOperator,stopped);
- statements.push(...await proposalStatements(db,source.id,signalId,fact.eventId,evidence,drafts,at));
+ statements.push(...await proposalStatements(db,source.id,signalId,fact.eventId,evidence,drafts,at,fact.kind==='event'?fact:undefined));
  return commit(db,statements,source,fact,{result:'captured',signalId,type,attached:attached!==null,stopped:stopped.length,proposals:drafts.length,bounce});
 }
 
 async function commit(db:D1Database,statements:D1PreparedStatement[],source:CaptureSource,fact:Fact,outcome:Outcome):Promise<Outcome>{
  try{await db.batch(statements);return outcome;}
  catch(error){
+  // The evidence and every effect rolled back together. Re-read anonymous proofs
+  // so an erasure racing resolution is counted as an intentional privacy skip.
+  if(/NOT NULL constraint failed: runtime_controls/.test(String(error))){
+   const privacy=await capturePrivacy(db,fact);if(await privacy.blocked())return privacy.skipped;
+   throw new CaptureError(409,'Capture authority or customer data changed; retry the item from the saved cursor.');
+  }
   const raced=await db.prepare('SELECT payload_hash FROM signals WHERE source_id=? AND source_event_id=?').bind(source.id,fact.eventId).first<{payload_hash:string}>();
   if(raced)return raced.payload_hash===fact.hash?{result:'replayed'}:{result:'conflict'};
   throw error;

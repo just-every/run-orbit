@@ -1,0 +1,64 @@
+import * as THREE from 'three';
+
+/** Engraved texture on a genuine sphere, lit in world space. */
+export function createSurfaceMaterial({ atlas, copper, gray }) {
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      atlas: { value: atlas }, copper: { value: copper ? 1 : 0 }, gray: { value: gray ? 1 : 0 },
+      navy: { value: new THREE.Color('#192a3d') }, cream: { value: new THREE.Color('#f0e9df') },
+      hitDirection: { value: new THREE.Vector3(0, 0, 1) }, waveRadius: { value: 0 }, waveStrength: { value: 0 },
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      varying vec3 vNormal;
+      varying vec3 vSurface;
+      void main() {
+        vUv = uv;
+        vSurface = normalize(position);
+        vNormal = normalize(mat3(modelMatrix) * normal);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D atlas;
+      uniform float copper;
+      uniform float gray;
+      uniform vec3 navy;
+      uniform vec3 cream;
+      uniform vec3 hitDirection;
+      uniform float waveRadius;
+      uniform float waveStrength;
+      varying vec2 vUv;
+      varying vec3 vNormal;
+      varying vec3 vSurface;
+      void main() {
+        vec3 sampleColor = texture2D(atlas, vUv).rgb;
+        float grain = dot(sampleColor, vec3(.2126, .7152, .0722));
+        float light = smoothstep(.28, .98, dot(normalize(vNormal), normalize(vec3(-.95, .36, .28))));
+        vec3 col;
+        if (copper > .5) col = sampleColor * (.92 + .18 * light);
+        else {
+          float stone = clamp(grain * .65 + light * (.15 + 2.9 * grain), 0., 1.);
+          col = mix(navy, cream, stone);
+          if (gray > .5) {
+            float shade = dot(col, vec3(.2126, .7152, .0722));
+            col = mix(vec3(.035, .047, .065), vec3(.28, .30, .30), clamp(shade * 1.3, 0., 1.));
+          }
+        }
+        // Angular distance makes the ring travel on the sphere itself. The mesh's
+        // depth and front-face rasterization naturally conceal the far hemisphere.
+        // This uniform is zero outside an active wave. Avoid angular-distance
+        // and derivative work whose contribution would be exactly zero.
+        if (waveStrength > 0.) {
+          float distanceFromHit = acos(clamp(dot(normalize(vSurface), normalize(hitDirection)), -1., 1.));
+          float band = max(.004, min(.16, fwidth(distanceFromHit) * .62));
+          float wave = 1. - smoothstep(band * .45, band * 1.5, abs(distanceFromHit - waveRadius));
+          float wake = 1. - smoothstep(band * 1.5, max(.035, band * 3.), abs(distanceFromHit - waveRadius));
+          col = mix(col, copper > .5 ? cream : vec3(.87, .62, .39), waveStrength * (wave * .86 + wake * .065));
+        }
+        gl_FragColor = vec4(col, 1.);
+        #include <colorspace_fragment>
+      }
+    `,
+  });
+}

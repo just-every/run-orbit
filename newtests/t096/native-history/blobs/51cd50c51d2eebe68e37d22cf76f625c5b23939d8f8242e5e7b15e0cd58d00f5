@@ -1,0 +1,45 @@
+import { ProviderRepository } from '../outreach/provider-repository';
+import { Hono } from 'hono';
+import { z } from 'zod';
+import type { AuthenticatedOperator } from '../auth';
+import type { SourceSecurity } from '../../platform/source-security';
+import { payloadHash } from '../../platform/source-security';
+import { eventSchema, IngestionError, standardTypes } from './contracts';
+import { IngestionRepository } from './repository';
+
+export function createSignalIngress(db:D1Database,security?:SourceSecurity){
+  const app=new Hono(),repository=new IngestionRepository(db);
+  app.post('/:source',async c=>{
+    if(!/^[a-zA-Z0-9_-]{1,80}$/.test(c.req.param('source')))return c.json({error:'Invalid source ID.'},400);
+    const source=await repository.source(c.req.param('source'));
+    if(!source||!source.enabled||!source.secret_ciphertext)return c.json({error:'Source is not configured.'},403);
+    if(!security)return c.json({error:'ORBIT_ENCRYPTION_KEY is required for configured sources.'},503);
+    const declared=Number(c.req.header('Content-Length')??0);if(declared>262144)return c.json({error:'Signal payload exceeds 262144 bytes.'},413);
+    const stream=c.req.raw.body?.getReader();let raw='',size=0;const decoder=new TextDecoder();
+    if(stream){while(true){const part=await stream.read();if(part.done)break;size+=part.value.byteLength;if(size>262144){await stream.cancel();return c.json({error:'Signal payload exceeds 262144 bytes.'},413);}raw+=decoder.decode(part.value,{stream:true});}raw+=decoder.decode();}
+    if(!await security.verify(await security.open(source.secret_ciphertext),raw,c.req.header('X-Orbit-Timestamp')??'',c.req.header('X-Orbit-Signature')??''))return c.json({error:'Source signature is missing, invalid or expired.'},401);
+    let parsed;try {parsed=eventSchema.safeParse(JSON.parse(raw));}catch{parsed=undefined;}
+    if(!parsed?.success){await repository.reject(source.id,null,'Invalid event schema');return c.json({error:'Invalid event schema.'},400);}
+    const event=parsed.data;
+    if((!standardTypes.has(event.type)&&!event.type.startsWith(`${source.id}:`))||Date.parse(event.occurredAt)>Date.now()){await repository.reject(source.id,event.eventId,'Invalid event type or future occurred time');return c.json({error:'Invalid event type or future occurred time.'},400);}
+    try{return c.json(await repository.ingest(source.id,event,await payloadHash(raw),raw),201);}
+    catch(error){if(error instanceof IngestionError){await repository.reject(source.id,event.eventId,error.message);return c.json({error:error.message},error.status);}return c.json({error:'Signal persistence failed; replay the same event identity.'},503);}
+  });return app;
+}
+export function createSourceRoutes(db:D1Database,security?:SourceSecurity){
+  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),repository=new IngestionRepository(db);
+  app.onError((error,c)=>c.json({error:error instanceof IngestionError?error.message:'Source operation failed; no success was confirmed.'},error instanceof IngestionError?error.status:500));
+  app.get('/',async c=>c.json({sources:await repository.sources(),configured:Boolean(security)}));
+  app.put('/:id',async c=>{
+    if(!security)return c.json({error:'ORBIT_ENCRYPTION_KEY is required to encrypt source secrets.'},503);
+    const parsed=z.object({name:z.string().trim().min(1).max(200),secret:z.string().min(32).max(256),enabled:z.boolean()}).safeParse(await c.req.json());
+    if(!parsed.success||! /^[a-zA-Z0-9_-]{1,80}$/.test(c.req.param('id')))return c.json({error:'A source ID, name, enabled state and secret of at least 32 characters are required.'},400);
+    await repository.configure({...parsed.data,id:c.req.param('id')},security);return c.json({saved:true});
+  });
+  app.get('/replies',async c=>c.json({replies:await new ProviderRepository(db).unlinkedReplies()}));
+  const recordId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+  app.post('/replies/:id/link',async c=>{const input=z.object({opportunityId:recordId}).strict().safeParse(await c.req.json());if(!recordId.safeParse(c.req.param('id')).success||!input.success)return c.json({error:'Choose a valid reply and opportunity.'},400);await new ProviderRepository(db).linkReply(c.req.param('id'),input.data.opportunityId,c.get('operator').operatorId);return c.json({linked:true});});
+  app.get('/unlinked',async c=>c.json({signals:await repository.unlinked()}));
+  app.post('/unlinked/:id/link',async c=>{const input=z.object({type:z.enum(['contact','company','opportunity']),id:recordId}).strict().safeParse(await c.req.json());if(!recordId.safeParse(c.req.param('id')).success||!input.success)return c.json({error:'Select a record.'},400);await repository.link(c.req.param('id'),{...input.data,basis:'Operator review'},c.get('operator').operatorId);return c.json({linked:true});});
+  return app;
+}

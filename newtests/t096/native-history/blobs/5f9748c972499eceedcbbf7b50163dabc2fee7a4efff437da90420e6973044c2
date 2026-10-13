@@ -1,0 +1,49 @@
+import mountainIllustration from "../../../../assets/design/solar/mountain-illustration.png";
+import { Link } from "@tanstack/react-router";
+import { publicProductConfig } from "../../../app/mounts/public-config";
+import { ConvertedSteps } from "./solar/converted-steps";
+import { SolarSystem } from "./solar/solar-system";
+import "./solar/homepage.css";
+
+export function HomePage() {
+  return (<main className="orbit-home page" data-testid="identity-plate">
+      <header>
+      <h1 className="brand">{publicProductConfig.name}<span aria-hidden="true">.</span>
+      </h1>
+      <Link className="button" to="/signin">
+      <span>Sign in</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 12h18m-7-7 7 7-7 7"/>
+      </svg>
+      </Link>
+      </header>
+      <section className="copy" aria-label="Introduction">
+      <div className="copy-intro">
+      {publicProductConfig.imageUrl ? <img className="identity-image" src={publicProductConfig.imageUrl} alt="" /> : null}
+      <p className="eyebrow" data-testid="identity-description">{publicProductConfig.description}</p>
+      <h2>
+      <span className="lead">Know what</span> <em>deserves your attention.</em>
+      </h2>
+      </div>
+      <div className="art">
+      <img className="solar-terrain" src={mountainIllustration} alt="" aria-hidden="true" draggable={false} />
+      <SolarSystem />
+      </div>
+      <div className="copy-support">
+      <p className="description">Bring customer activity into focus. See the evidence, choose the next action, and review every message before it leaves.</p>
+      <Link className="button primary" to="/signin">
+      <span>Sign in</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 12h18m-7-7 7 7-7 7"/>
+      </svg>
+      </Link>
+      <ConvertedSteps />
+      </div>
+      </section>
+      {publicProductConfig.showPoweredByCredit ? <footer>
+      <p>Powered by <a href="https://runeditrun.com">{publicProductConfig.name}<span>{" · "}</span>runeditrun.com</a>
+      </p>
+      </footer> : null}
+      </main>
+  );
+}

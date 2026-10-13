@@ -1,3 +1,4 @@
+import {isCaptureSource} from './source-authority';
 import { Hono } from 'hono';
 import {boundedRequestBody,RequestBodyTooLarge} from '../../platform/bounded-request-body';
 import {bookingEvent} from './booking-webhooks';
@@ -12,7 +13,7 @@ export function createSignalIngress(db:D1Database,security?:SourceSecurity){
     const vendor=c.req.param('vendor');if(vendor&&vendor!=='calcom'&&vendor!=='calendly')return c.notFound();
     if(!/^[a-zA-Z0-9_-]{1,80}$/.test(c.req.param('source')))return c.json({error:'Invalid source ID.'},400);
     const source=await repository.source(c.req.param('source'));
-    if(!source||!source.enabled||!source.secret_ciphertext)return c.json({error:'Source is not configured.'},403);
+    if(isCaptureSource(c.req.param('source'),source?.type)||!source||!source.enabled||!source.secret_ciphertext)return c.json({error:'Source is not configured.'},403);
     if(!security)return c.json({error:'ORBIT_ENCRYPTION_KEY is required for configured sources.'},503);
     let raw:string;
     try{raw=new TextDecoder('utf-8',{fatal:true}).decode(await boundedRequestBody(c.req.raw,262144));}
@@ -30,7 +31,7 @@ export function createSignalIngress(db:D1Database,security?:SourceSecurity){
     }
     if((!standardTypes.has(event.type)&&!event.type.startsWith(`${source.id}:`))||Date.parse(event.occurredAt)>Date.now()){await repository.reject(source.id,event.eventId,'Invalid event type or future occurred time');return c.json({error:'Invalid event type or future occurred time.'},400);}
     try{const result=await repository.ingest(source.id,event,await payloadHash(raw),raw,source);if(vendor&&'replayed' in result)return c.json({error:'This booking event was already received.'},409);return c.json(result,201);}
-    catch(error){if(error instanceof IngestionError){await repository.reject(source.id,event.eventId,error.message);return c.json({error:error.message},error.status);}return c.json({error:'Signal persistence failed; replay the same event identity.'},503);}
+    catch(error){if(error instanceof IngestionError){if(error.status!==403)await repository.reject(source.id,event.eventId,error.message);return c.json({error:error.message},error.status);}return c.json({error:'Signal persistence failed; replay the same event identity.'},503);}
   });return app;
 }
 

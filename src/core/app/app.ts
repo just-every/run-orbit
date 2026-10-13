@@ -1,3 +1,4 @@
+import type {ProviderFetch} from '../features/capture/providers/config';
 import { createImportRoutes } from '../features/imports/routes';
 import {createCaptureRoutes} from '../features/capture/routes';
 import {AccessError} from '../features/access/errors';
@@ -35,7 +36,7 @@ type AppEnvironment = {
   Variables: { operator: AuthenticatedOperator };
 };
 
-export function createApp(input: { assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
+export function createApp(input: { assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
   const app = new Hono<AppEnvironment>();
   const dependencies = createDependencies(input.database);
   const requireApiOperator: MiddlewareHandler<AppEnvironment> = async (context, next) => {
@@ -115,7 +116,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
     }
   });
   app.route('/api/v1/imports',createImportRoutes(input.database));
-  app.route('/api/v1/capture',createCaptureRoutes(input.database));
+  app.route('/api/v1/capture',createCaptureRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.route("/api/v1/records", createRecordsRoutes(input.database));
   app.route("/api/v1/settings", createSettingsRoutes(input.database));
   app.route("/api/v1/setup", createSetupRoutes(input.database));

@@ -1,0 +1,17 @@
+import { forwardRef } from "react";
+
+export const TargetingOverlay = forwardRef<HTMLDivElement>(function TargetingOverlay(_, ref) {
+  return <div ref={ref} className="targeting" aria-hidden="true">
+    <svg className="targeting__diagram" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+      <path className="targeting__leader" />
+      <g className="targeting__optics">
+        <line className="targeting__horizontal" /><line className="targeting__vertical" />
+        <ellipse className="targeting__outer" /><ellipse className="targeting__inner" />
+        <path className="targeting__crosshair" />
+      </g>
+    </svg>
+    <p className="targeting__finding" />
+    <span className="targeting__coordinate targeting__coordinate--x" />
+    <span className="targeting__coordinate targeting__coordinate--y" />
+  </div>;
+});

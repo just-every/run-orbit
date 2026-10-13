@@ -8,6 +8,9 @@
       { "slug": "operations", "source": "OPERATIONS.md", "label": "Operations" },
       { "slug": "moving-in", "source": "docs/imports/MOVING.md", "label": "Moving in customer records" },
       { "slug": "signals-and-mail", "source": "SIGNALS-AND-OUTREACH.md", "label": "Signals and customer mail" },
+      { "slug": "owner-steps", "source": "OWNER-STEPS.md", "label": "Mail and calendar owner steps" },
+      { "slug": "connect-gmail", "source": "docs/CONNECT-GMAIL.md", "label": "Connect Gmail and Google Calendar" },
+      { "slug": "connect-outlook", "source": "docs/CONNECT-OUTLOOK.md", "label": "Connect Outlook and Microsoft Calendar" },
       { "slug": "updating", "source": "MIGRATION-RECOVERY.md", "label": "Updating and recovery" }
     ]},
     { "title": "Customise", "pages": [

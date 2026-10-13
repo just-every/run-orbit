@@ -1,0 +1,113 @@
+import type { Clock } from "../../platform/clock";
+import { createId } from "../../shared/ids";
+import { toIsoString } from "../../shared/time";
+
+import { AuthRepository, type StoredSession } from "./repository";
+
+export const sessionCookieName = "__Host-orbit_session";
+const maximumSessionLifetimeMs = 1000 * 60 * 60 * 24 * 30;
+
+export interface AuthenticatedOperator {
+  sessionId: string;
+  operatorId: string;
+  email: string;
+  displayName: string;
+}
+
+export interface IssuedSession {
+  id: string;
+  token: string;
+  expiresAt: string;
+}
+
+export class AuthService {
+  constructor(
+    private readonly repository: AuthRepository,
+    private readonly clock: Clock
+  ) {}
+
+  async ensureOperator(input: { id: string; email: string; displayName: string }): Promise<void> {
+    await this.repository.ensureOperator({
+      ...input,
+      email: input.email.trim().toLowerCase(),
+      now: toIsoString(this.clock.now())
+    });
+  }
+
+  async createSession(operatorId: string, lifetimeMs = 1000 * 60 * 60 * 24 * 14): Promise<IssuedSession> {
+    if (!Number.isFinite(lifetimeMs) || lifetimeMs <= 0 || lifetimeMs > maximumSessionLifetimeMs) {
+      throw new RangeError("Session lifetime must be greater than zero and no more than 30 days.");
+    }
+
+    const now = this.clock.now();
+    const expiresAt = new Date(now.getTime() + lifetimeMs);
+    const token = createSessionToken();
+    const id = createId(now.getTime());
+
+    await this.repository.createSession({
+      id,
+      operatorId,
+      tokenHash: await hashSessionToken(token),
+      expiresAt: toIsoString(expiresAt),
+      now: toIsoString(now)
+    });
+
+    return { id, token, expiresAt: toIsoString(expiresAt) };
+  }
+
+  async authenticate(cookieHeader: string | undefined): Promise<AuthenticatedOperator | undefined> {
+    const token = readSessionToken(cookieHeader);
+    if (!token) return undefined;
+
+    const now = toIsoString(this.clock.now());
+    const session = await this.repository.findActiveSession(await hashSessionToken(token), now);
+    if (!session) return undefined;
+
+    await this.repository.touchSession(session.id, now);
+    return toAuthenticatedOperator(session);
+  }
+
+  async revoke(sessionId: string): Promise<void> {
+    await this.repository.revokeSession(sessionId, toIsoString(this.clock.now()));
+  }
+}
+
+export function buildSessionCookie(token: string, expiresAt: string): string {
+  const maxAge = Math.max(0, Math.floor((Date.parse(expiresAt) - Date.now()) / 1000));
+  return `${sessionCookieName}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`;
+}
+
+export function clearSessionCookie(): string {
+  return `${sessionCookieName}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
+}
+
+export function readSessionToken(cookieHeader: string | undefined): string | undefined {
+  if (!cookieHeader) return undefined;
+
+  for (const fragment of cookieHeader.split(";")) {
+    const [name, ...value] = fragment.trim().split("=");
+    if (name === sessionCookieName && value.length === 1 && value[0]) return value[0];
+  }
+
+  return undefined;
+}
+
+async function hashSessionToken(token: string): Promise<string> {
+  const bytes = new TextEncoder().encode(token);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function createSessionToken(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function toAuthenticatedOperator(session: StoredSession): AuthenticatedOperator {
+  return {
+    sessionId: session.id,
+    operatorId: session.operatorId,
+    email: session.email,
+    displayName: session.displayName
+  };
+}

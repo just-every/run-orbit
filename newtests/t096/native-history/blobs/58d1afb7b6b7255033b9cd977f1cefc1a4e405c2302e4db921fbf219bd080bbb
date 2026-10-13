@@ -1,0 +1,43 @@
+import type { Clock } from '../../platform/clock';
+import type { AuthMailer } from '../../platform/auth-mail';
+import { AuthService } from './service';
+import { MagicLinkRepository } from './magic-link-repository';
+
+export function safeReturnTo(value: unknown): string {
+  if (typeof value !== 'string' || !value.startsWith('/') || /[\\\r\n]/.test(value)) return '/app';
+  const url = new URL(value, 'https://orbit.invalid');
+  return url.origin === 'https://orbit.invalid' && (url.pathname === '/app' || url.pathname.startsWith('/app/') || ['/delegation/authorize','/delegation/settings'].includes(url.pathname))
+    ? `${url.pathname}${url.search}` : '/app';
+}
+
+async function hash(token: string): Promise<string> {
+  const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
+  return Array.from(new Uint8Array(bytes), (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+export class MagicLinkService {
+  constructor(private readonly repository: MagicLinkRepository, private readonly auth: AuthService,
+    private readonly clock: Clock, private readonly mailer: AuthMailer, private readonly origin: string) {}
+
+  async request(email: string, returnTo: unknown): Promise<void> {
+    const now = this.clock.now();
+    const token = Array.from(crypto.getRandomValues(new Uint8Array(32)), (byte) => byte.toString(16).padStart(2, '0')).join('');
+    const tokenHash = await hash(token);
+    const issued = await this.repository.issue({ email: email.trim().toLowerCase(), tokenHash,
+      returnTo: safeReturnTo(returnTo), now: now.toISOString(),
+      expiresAt: new Date(now.getTime() + 15 * 60_000).toISOString(),
+      cooldown: new Date(now.getTime() - 60_000).toISOString() });
+    if (!issued) return;
+    const link = new URL('/auth/verify', this.origin);
+    link.searchParams.set('token', token);
+    // Retain the token and cooldown on uncertain delivery: a provider may have accepted the mail.
+    await this.mailer.send({ email, url: link.href, deliveryId: tokenHash });
+  }
+
+  async consume(token: string) {
+    if (!/^[a-f0-9]{64}$/.test(token)) return undefined;
+    const link = await this.repository.consume(await hash(token), this.clock.now().toISOString());
+    if (!link) return undefined;
+    return { session: await this.auth.createSession(link.operator_id), returnTo: safeReturnTo(link.return_to) };
+  }
+}

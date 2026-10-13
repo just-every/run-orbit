@@ -1,0 +1,24 @@
+import { executeArchiveErasure } from '../records';
+import {audit,RecordError} from '../records/shared';
+import {identityMatch,identityPatterns} from '../records/erasure-identity';
+import {redactionSql} from './erasure-redaction';
+
+/** Retain stable attribution IDs while removing a retired operator's personal details. */
+export async function eraseOperator(db:D1Database,id:string,actor:string){
+ const operator=await db.prepare('SELECT email,display_name,status FROM operators WHERE id=?').bind(id).first<{email:string;display_name:string;status:string}>();
+ if(!operator)throw new RecordError(404,'Operator not found.');
+ if(operator.status!=='removed')throw new RecordError(409,'Remove the operator before erasing their personal details.');
+ const now=new Date().toISOString(),statements=[db.prepare('DELETE FROM sessions WHERE operator_id=?').bind(id),db.prepare('DELETE FROM magic_links WHERE operator_id=?').bind(id),db.prepare('DELETE FROM notifications WHERE operator_id=?').bind(id)];
+ // JSON replacement uses escaped text so quotes in a display name cannot invalidate stored JSON.
+ const contentColumns:Record<string,string[]>={audit_entries:['details_json'],timeline_entries:['payload_json'],ai_previews:['content_json'],ai_calls:['error'],notifications:['message'],drafts:['subject','body'],outbound_messages:['subject','body','failure'],source_event_errors:['reason'],signal_sources:['last_error']};
+ const attribution:Record<string,string>={audit_entries:"(actor_id=? OR (entity_type='operator' AND entity_id=?))",timeline_entries:'actor_id=?',ai_previews:'operator_id=?',ai_calls:'operator_id=?',notifications:'operator_id=?',drafts:'author_id=?',outbound_messages:'operator_id=?'};
+ for(const [table,columns]of Object.entries(contentColumns))for(const column of columns){
+  const email=column.endsWith('_json')?JSON.stringify(operator.email).slice(1,-1):operator.email;
+  if(email)statements.push(db.prepare(`UPDATE ${table} SET ${column}=${redactionSql(column,true)} WHERE ${identityMatch(column)}`).bind(email,'Erased operator',...identityPatterns(email)));
+  const scope=attribution[table],name=column.endsWith('_json')?JSON.stringify(operator.display_name).slice(1,-1):operator.display_name;
+  // Display names cannot identify somebody in another operator's content.
+  if(scope&&name)statements.push(db.prepare(`UPDATE ${table} SET ${column}=${redactionSql(column,false)} WHERE ${scope} AND instr(lower(${column}),lower(?))>0`).bind(name,'Erased operator',...Array(scope.match(/\?/g)?.length??0).fill(id),name));
+ }
+ statements.push(db.prepare("UPDATE owner_bootstrap SET email=?,display_name='Erased operator' WHERE owner_id=?").bind(`erased-${id.toLowerCase()}@example.invalid`,id),db.prepare("UPDATE operators SET email=?,display_name='Erased operator',updated_at=? WHERE id=? AND status='removed'").bind(`erased-${id.toLowerCase()}@example.invalid`,now,id),audit(db,actor,'operator.erased','operator',id));
+ await executeArchiveErasure(db,statements);return {erased:true};
+}

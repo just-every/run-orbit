@@ -1,0 +1,21 @@
+export class MagicLinkRepository {
+  constructor(private readonly database: D1Database) {}
+
+  async issue(input: { email: string; tokenHash: string; returnTo: string; now: string; expiresAt: string; cooldown: string }): Promise<boolean> {
+    // Eligibility and cooldown are checked atomically, including concurrent requests.
+    const result = await this.database.prepare(`INSERT INTO magic_links
+      (token_hash, operator_id, return_to, expires_at, created_at)
+      SELECT ?, id, ?, ?, ? FROM operators
+      WHERE lower(email) = ? AND status = 'active'
+      AND NOT EXISTS (SELECT 1 FROM magic_links WHERE operator_id = operators.id AND created_at > ?)
+      LIMIT 1`).bind(input.tokenHash, input.returnTo, input.expiresAt, input.now, input.email, input.cooldown).run();
+    return result.meta.changes === 1;
+  }
+
+  async consume(tokenHash: string, now: string): Promise<{ operator_id: string; return_to: string } | null> {
+    return this.database.prepare(`DELETE FROM magic_links WHERE token_hash = ? AND expires_at > ?
+      AND EXISTS (SELECT 1 FROM operators WHERE operators.id = magic_links.operator_id AND status = 'active')
+      RETURNING operator_id, return_to`).bind(tokenHash, now).first();
+  }
+
+}

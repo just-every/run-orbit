@@ -1,0 +1,27 @@
+import { RecordError } from './shared';
+/** Erasure invalidates every private transfer copy, including paused downloads and imports. */
+export async function archiveErasureStatements(db: D1Database) {
+    const tables = (await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND (name LIKE 'archive_stage_%' OR name LIKE 'archive_snapshot_%') ORDER BY name").all<{
+        name: string;
+    }>()).results;
+    const statements = tables.map(({ name }) => { if (!/^archive_(stage|snapshot)_[a-z0-9_]+$/.test(name))
+        throw new Error('Unexpected archive storage name.'); return db.prepare(`DROP TABLE ${name}`); });
+    // Recheck discovery inside the erasure transaction: a concurrent snapshot must not survive.
+    statements.unshift(db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'archive_erasure',CASE WHEN (SELECT json_group_array(name) FROM (SELECT name FROM sqlite_master WHERE type='table' AND (name LIKE 'archive_stage_%' OR name LIKE 'archive_snapshot_%') ORDER BY name))=? THEN 'active' ELSE NULL END").bind(JSON.stringify(tables.map(table => table.name))));
+    // DROP avoids scanning millions of copied personal rows. Recreate only transfer metadata.
+    statements.push(db.prepare('DROP TABLE archive_part_segments'), db.prepare('DROP TABLE archive_parts'), db.prepare('DROP TABLE archive_jobs'), db.prepare("CREATE TABLE archive_jobs (id TEXT PRIMARY KEY,kind TEXT NOT NULL CHECK(kind IN ('export','import','backup')),state TEXT NOT NULL,actor_id TEXT NOT NULL,manifest_json TEXT NOT NULL,progress_json TEXT NOT NULL DEFAULT '{}',created_at TEXT NOT NULL)"), db.prepare('CREATE TABLE archive_parts (job_id TEXT NOT NULL REFERENCES archive_jobs(id) ON DELETE CASCADE,part_index INTEGER NOT NULL CHECK(part_index>=0),sha256 TEXT NOT NULL,content_json TEXT NOT NULL,PRIMARY KEY(job_id,part_index))'), db.prepare('CREATE TABLE archive_part_segments (job_id TEXT NOT NULL,part_index INTEGER NOT NULL,segment_index INTEGER NOT NULL,content TEXT NOT NULL,PRIMARY KEY(job_id,part_index,segment_index),FOREIGN KEY(job_id,part_index) REFERENCES archive_parts(job_id,part_index) ON DELETE CASCADE)'));
+    statements.push(db.prepare("DELETE FROM runtime_controls WHERE name='archive_erasure'"));
+    return statements;
+}
+
+/** Retry only a rolled-back schema-discovery conflict; never retain a maintenance lock. */
+export async function executeArchiveErasure(db: D1Database, personalStatements: D1PreparedStatement[]) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+        const statements = await archiveErasureStatements(db);
+        try { await db.batch([...statements, ...personalStatements]); return; }
+        catch (error) {
+            if (!String(error).includes('NOT NULL constraint failed: runtime_controls.value')) throw error;
+            if (attempt === 2) throw new RecordError(409, 'Archive transfers changed during erasure. Retry the deletion. No data was changed.');
+        }
+    }
+}

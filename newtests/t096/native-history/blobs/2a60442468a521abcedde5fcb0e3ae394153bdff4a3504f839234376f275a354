@@ -1,0 +1,14 @@
+/** Redact case-insensitively without replacing one mailbox inside another.
+ * Scan in D1 so erasure never loads a customer's complete history into memory.
+ */
+export function redactionSql(column:string,email:boolean){
+ const position='instr(lower(rest),lower(value))',end=`${position}+length(value)`;
+ const before=`CASE WHEN ${position}=1 THEN previous ELSE substr(rest,${position}-1,1) END`;
+ const local="'[a-z0-9.!#$%&''*+/=?^_`{|}~@-]'",domain="'[a-z0-9_@.-]'";
+ const boundary=`lower(${before}) NOT GLOB ${local} AND (lower(substr(rest,${end},1)) NOT GLOB ${domain} OR (substr(rest,${end},1)='.' AND lower(substr(rest,${end}+1,1)) NOT GLOB ${domain}))`;
+ return `(WITH RECURSIVE target(value,replacement) AS (VALUES(?,?)), redaction(rest,clean,previous) AS (
+ SELECT ${column},'',' ' UNION ALL
+ SELECT substr(rest,${end}),clean||substr(rest,1,${position}-1)||CASE WHEN ${email?boundary:'1'} THEN replacement ELSE substr(rest,${position},length(value)) END,substr(rest,${end}-1,1)
+ FROM redaction,target WHERE ${position}>0)
+ SELECT clean||rest FROM redaction,target WHERE ${position}=0 LIMIT 1)`;
+}

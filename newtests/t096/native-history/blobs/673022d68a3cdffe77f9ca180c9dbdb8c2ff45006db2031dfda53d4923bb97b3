@@ -1,0 +1,22 @@
+.orbit-home .targeting { position:absolute; inset:0; pointer-events:none; }
+.orbit-home .targeting__diagram { position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+.orbit-home .targeting__diagram line,.orbit-home .targeting__diagram ellipse,.orbit-home .targeting__diagram path { fill:none; vector-effect:non-scaling-stroke; }
+.orbit-home .targeting__leader { stroke:#a35335; stroke-width:.7; opacity:0; }
+.orbit-home .targeting__optics { stroke:#be8869; stroke-width:.8; }
+.orbit-home .targeting__horizontal,.orbit-home .targeting__vertical { opacity:.74; }
+.orbit-home .targeting__inner { stroke-dasharray:2 3; }
+.orbit-home .targeting__crosshair { stroke:#f5dfbc; stroke-width:1; }
+.orbit-home .targeting__finding { position:absolute; margin:0; opacity:0; font-size:12px; line-height:1.5; letter-spacing:.045em; color:#a44727; white-space:nowrap; background:#fcfaf6; box-shadow:0 0 0 3px #fcfaf6; }
+.orbit-home .targeting__coordinate { position:absolute; color:#965438; font-family:'DM Sans',sans-serif; font-size:10px; line-height:1.4; font-variant-numeric:tabular-nums; letter-spacing:.08em; white-space:nowrap; }
+.orbit-home .targeting__coordinate--x { transform:translateX(-50%); }
+.orbit-home .targeting__coordinate--y { transform:translate(-100%,-50%); }
+.orbit-home .solar-system__status { position:absolute; right:22px; bottom:14px; margin:0; max-width:240px; font-size:12px; line-height:1.5; color:#526172; background:#fcfaf6; padding:8px; }
+.orbit-home .solar-system:not([data-scene-status="ready"]) .targeting { visibility:hidden; }
+@media (max-width:1279px) {
+  .orbit-home .targeting__finding { font-size:11px; letter-spacing:.01em; }
+  .orbit-home .solar-system__status { right:8px; bottom:0; }
+}
+@media (max-width:400px), (orientation:landscape) and (max-height:400px) {
+  .orbit-home .targeting__finding { font-size:10px; letter-spacing:0; }
+  .orbit-home .targeting__coordinate { font-size:8px; letter-spacing:.04em; }
+}

@@ -7,7 +7,7 @@ import { remoteTransfer } from './remote-transfer.mjs';
 // with an installation, as in the Records archive.
 export const policy = {
  product: 'just-every/sales-orbit',
- excludeTables: ['sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'capture_credentials', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
+ excludeTables: ['sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
  derivedTables: ['record_search', 'timeline_search', 'record_search_fields'],
  // Migrations seed these rows in every empty database; the archive's rows replace them.
  replaceableTables: ['graph_workspace_epochs', 'schema_types'],

@@ -4,6 +4,7 @@ import {mkdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {authenticateOperator} from './operator-session.mjs';
 import {fixtureMailbox} from '../support/capture-mail.ts';
+import {requestOfflineFixture} from '../../scripts/browser-runtime.mjs';
 
 const serious=async page=>(await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze()).violations.filter(violation=>['serious','critical'].includes(violation.impact));
 // Nothing may push the page wider than the screen.
@@ -24,6 +25,18 @@ test('CAPTURE-001 CAPTURE-004 an operator adds a mailbox and calendar files, rev
 
   await page.setViewportSize({width,height:900});await page.goto('/app/capture');
   await expect(page.getByRole('heading',{name:'Capture mail and calendar',exact:true})).toBeVisible();
+  const providersResponse=await page.request.get('/api/v1/capture/providers');expect(providersResponse.ok()).toBeTruthy();
+  const providers=await providersResponse.json();
+  expect(providers.available).toBe(true);
+  await expect(page.locator('.capture-provider-section')).toBeVisible();
+  for(const provider of providers.providers)await expect(page.getByText(provider.redirectUri,{exact:true})).toBeVisible();
+  const googleForm=page.locator('form[action="/api/v1/capture/oauth/google/start"]');
+  const microsoftForm=page.locator('form[action="/api/v1/capture/oauth/microsoft/start"]');
+  await expect(googleForm).toBeVisible();
+  await expect(googleForm.locator('input[name="clientSecret"]')).toHaveAttribute('type','password');
+  await expect(microsoftForm).toBeVisible();
+  await expect(microsoftForm.locator('input[name="clientSecret"]')).toHaveAttribute('type','password');
+  await expect(microsoftForm.locator('input[name="tenant"]')).toHaveValue('common');
   await page.getByLabel('Mail (.eml or mbox) and calendar (.ics) files').setInputFiles(files);
   await page.getByRole('button',{name:'Add files',exact:true}).click();
   const result=page.getByRole('region',{name:'Import result'});
@@ -62,4 +75,68 @@ test('CAPTURE-001 CAPTURE-004 an operator adds a mailbox and calendar files, rev
   await expect(page.getByRole('heading',{name:'signal.recorded',exact:true})).toHaveCount(1);
  }
  expect(errors).toEqual([]);
+});
+
+test('CAPTURE provider status keeps revoked access clear and disconnect preserves captured history',async({page,context})=>{
+ test.setTimeout(120_000);
+ await authenticateOperator(context);
+ await requestOfflineFixture('tests/support/capture-browser-source.ts');
+
+ await page.goto('/app/capture');
+ const providersResponse=await page.request.get('/api/v1/capture/providers');
+ expect(providersResponse.ok()).toBeTruthy();
+ const providers=await providersResponse.json();
+ expect(providers.available).toBe(true);
+
+ const screenshots=process.env.CAPTURE_SCREENSHOT_DIR??join('verification','ui','capture');
+ mkdirSync(screenshots,{recursive:true});
+ const sources=[
+  {id:'capture-browser-revoked-google',name:'Revoked Gmail proof',provider:'Google'},
+  {id:'capture-browser-revoked-microsoft',name:'Revoked Outlook proof',provider:'Microsoft'},
+ ];
+ const sourceApi=await page.request.get('/api/v1/capture/sources');
+ expect(sourceApi.ok()).toBeTruthy();
+ const initialSources=(await sourceApi.json()).sources;
+ for(const source of sources){
+  const before=initialSources.find(item=>item.id===source.id);
+  expect(before).toMatchObject({state:'error',has_credential:1,captured_count:7,skipped_count:2,proposals_waiting:1,last_success_at:'2026-10-01T12:00:00.000Z'});
+ }
+ for(const width of [1440,390]){
+  await page.setViewportSize({width,height:900});
+  await page.goto('/app/capture');
+  const providerSection=page.locator('.capture-provider-section');
+  for(const provider of providers.providers)await expect(providerSection.getByText(provider.redirectUri,{exact:true})).toBeVisible();
+  for(const source of sources){
+   const card=page.getByRole('article',{name:source.name});
+   await expect(card.getByText(source.provider,{exact:true})).toBeVisible();
+   await expect(card.getByText('Access revoked · reconnect required',{exact:true})).toBeVisible();
+   await expect(card.getByText('Access was revoked: Reconnect to resume.',{exact:true})).toBeVisible();
+   await expect(card.getByRole('heading',{name:'Reconnect after access was revoked'})).toBeVisible();
+   await expect(card.getByRole('button',{name:`Disconnect ${source.name}`,exact:true})).toBeVisible();
+  }
+  expect(await overflow(page)).toEqual([]);
+  expect(await serious(page)).toEqual([]);
+  await page.screenshot({path:join(screenshots,`capture-revoked-${width}.png`),fullPage:true});
+ }
+
+ for(const source of sources){
+  const card=page.getByRole('article',{name:source.name});
+  page.once('dialog',dialog=>dialog.accept());
+  await card.getByRole('button',{name:`Disconnect ${source.name}`,exact:true}).click();
+  await expect(card.getByText('Disconnected',{exact:true})).toBeVisible();
+ }
+ const after=await page.request.get('/api/v1/capture/sources');
+ expect(after.ok()).toBeTruthy();
+ const afterSources=(await after.json()).sources;
+ for(const source of sources){
+  const saved=afterSources.find(item=>item.id===source.id);
+  expect(saved).toMatchObject({state:'disconnected',has_credential:0,captured_count:7,skipped_count:2,proposals_waiting:1,last_success_at:'2026-10-01T12:00:00.000Z'});
+  const card=page.getByRole('article',{name:source.name});
+  const count=label=>card.locator('.records-detail-list > div').filter({has:page.getByText(label,{exact:true})}).locator('dd');
+  await expect(count('Captured')).toHaveText('7');
+  await expect(count('Not stored')).toHaveText('2');
+  await expect(count('Proposals waiting')).toHaveText('1');
+ }
+ expect(await overflow(page)).toEqual([]);
+ expect(await serious(page)).toEqual([]);
 });

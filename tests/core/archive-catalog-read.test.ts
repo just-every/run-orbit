@@ -32,7 +32,8 @@ function observed(db: D1Database) {
 
 // Independent oracle retains the direct PRAGMA semantics, including cid and FK order.
 async function directCatalog(db: D1Database): Promise<ArchiveTable[]> {
-    const excluded = new Set(['sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'first_run_setup', 'd1_migrations', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'capture_credentials']);
+    // Provider credentials, pending OAuth grants and poll locks belong to this installation.
+    const excluded = new Set(['sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'first_run_setup', 'd1_migrations', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'capture_credentials', 'capture_oauth', 'capture_locks']);
     const names = (await db.prepare("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").all<{name: string}>()).results.map(r => r.name)
         .filter(name => !excluded.has(name) && !['ik_', 'crm_import_', 'delegation_', 'identity_', 'oa_', 'sqlite_', '_cf_', 'rer_', 'record_search', 'timeline_search', 'archive_'].some(prefix => name.startsWith(prefix)));
     const remaining: ArchiveTable[] = [];

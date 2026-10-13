@@ -1,0 +1,82 @@
+import { useCallback, useState } from "react";
+import { Link } from "@tanstack/react-router";
+
+import { formatDateTime, label } from "./formatters";
+import { operatorApi } from "./operator-api";
+import { OperatorShell, OperatorState } from "./operator-shell";
+import { useOperatorResource } from "./use-operator-resource";
+
+export function NowPage({ initialData }: { initialData?: Awaited<ReturnType<typeof import("../../../app/loaders").loadNow>> }) {
+  const [owner, setOwner] = useState("all");
+  const [stage, setStage] = useState("all");
+  const [band, setBand] = useState("all");
+  const loadNow = useCallback(async () => {
+    const [{ facets, opportunities }, { presentation }] = await Promise.all([
+      operatorApi.listNow({ band: band === "all" ? undefined : band, ownerId: owner === "all" ? undefined : owner, stageId: stage === "all" ? undefined : stage }),
+      operatorApi.readWorkspacePresentation()
+    ]);
+    return { facets, opportunities, presentation };
+  }, [band, owner, stage]);
+  const resource = useOperatorResource(`now:${owner}:${stage}:${band}`, loadNow, initialData);
+  const opportunities = resource.data?.opportunities ?? [];
+
+  const facets = resource.data?.facets;
+
+  return (
+    <OperatorShell eyebrow="Priority workspace" title="NOW queue">
+      <section className="operator-queue" data-testid="now-queue">
+        <div className="operator-queue__intro">
+          <details className="operator-queue__policy"><summary>Ordering details</summary><p>First 50 open opportunities, ordered by score, then the most recent contributing signal, then ID.</p><p data-testid="now-ordering">Policy: opportunity.prioritization.v1</p></details>
+        </div>
+        <fieldset className="operator-filters">
+          <legend>Filter this queue</legend>
+          <label>Owner
+            <select aria-label="Filter by owner" onChange={(event) => setOwner(event.target.value)} value={owner}>
+              <option value="all">All owners</option>
+              {facets?.owners.map((item) => <option key={item.id ?? "unassigned"} value={item.id ?? "unassigned"}>{item.name ?? "Unassigned"}</option>)}
+            </select>
+          </label>
+          <label>Stage
+            <select aria-label="Filter by stage" onChange={(event) => setStage(event.target.value)} value={stage}>
+              <option value="all">All stages</option>
+              {facets?.stages.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+            </select>
+          </label>
+          <label>Band
+            <select aria-label="Filter by band" onChange={(event) => setBand(event.target.value)} value={band}>
+              <option value="all">All bands</option>
+              {facets?.bands.map((item) => <option key={item} value={item}>{label(item)}</option>)}
+            </select>
+          </label>
+        </fieldset>
+        {resource.loading ? <OperatorState>Loading the persisted NOW queue…</OperatorState> : null}
+        {resource.error ? <OperatorState kind="error">{resource.error.message}</OperatorState> : null}
+        {!resource.loading && !resource.error && opportunities.length === 0 ? <OperatorState>No persisted NOW opportunities match these filters.</OperatorState> : null}
+        <ol className="operator-queue__list">
+          {opportunities.map((opportunity, index) => (
+            <li className="operator-queue-card" key={opportunity.id}>
+              <Link aria-label={`Open ${opportunity.title}`} to="/app/opportunities/$id" params={{ id: opportunity.id }}>
+                <span className="operator-queue-card__rank">{String(index + 1).padStart(2, "0")}</span>
+                <div className="operator-queue-card__headline">
+                  <h2>{opportunity.title}</h2>
+                  <p>{opportunity.companyName ?? "No company"}</p>
+                </div>
+                <dl className="operator-state-grid">
+                  <div><dt>Stage</dt><dd>{opportunity.stage}</dd></div>
+                  <div><dt>Owner</dt><dd>{opportunity.ownerName ?? "Unassigned"}</dd></div>
+                  <div><dt>Score</dt><dd>{opportunity.score}</dd></div>
+                  <div><dt>Band</dt><dd>{label(opportunity.band)}</dd></div>
+                </dl>
+                <div className="operator-queue-card__reason">
+                  <strong>Why NOW</strong>
+                  <span>{opportunity.queueReason ?? "No queue reason recorded."}</span>
+                  <small>Latest contributing signal: {resource.data ? formatDateTime(opportunity.lastContributingSignalAt, resource.data.presentation) : "Not recorded"}</small>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </section>
+    </OperatorShell>
+  );
+}

@@ -1,0 +1,34 @@
+import {archiveImportActive} from '../platform/archive-maintenance';
+import {protectResponse} from "../platform/response-policy";
+import {runOrbitTimers} from "../features/outreach/timing-repository";
+import {publicRateLimit} from "../platform/public-rate-limit";
+import {createSourceSecurity} from "../platform/source-security";
+import { createAIProvider } from "../features/assistance/provider";
+import { createAuthConfiguration } from "../platform/auth-mail";
+import { createOutboundMail } from "../platform/outbound-mail";
+import start from "@tanstack/react-start/server-entry";
+import { createAssetStore, type PlatformBindings } from "../platform/assets";
+import { createApp } from "./app";
+import { createDependencies } from "./dependencies";
+import { publicDemoConfig } from "./mounts/public-config.server";
+export default {
+  async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {context.waitUntil(runOrbitTimers(bindings.DB,createOutboundMail(bindings)));},
+  async fetch(request: Request, bindings: PlatformBindings, executionContext: ExecutionContext) {return protectResponse(await handle(request,bindings,executionContext));}
+};
+async function handle(request: Request, bindings: PlatformBindings, executionContext: ExecutionContext) {
+    const url = new URL(request.url);
+    const path = url.pathname;
+    const expectedHost = bindings.AUTH_ORIGIN ? new URL(bindings.AUTH_ORIGIN).host : undefined;
+    if (expectedHost && url.host !== expectedHost && !["127.0.0.1", "localhost", "[::1]"].includes(url.hostname)) return new Response("Not found", { status: 404 });
+    if ((path === "/demo" || path === "/demo/") && (!publicDemoConfig.enabled || !bindings.PUBLIC_DEMO_OPPORTUNITY_ID)) return new Response("Not found", { status: 404 });
+    try { const limited=await publicRateLimit(bindings.DB,request);if(limited)return limited; } catch {return new Response(JSON.stringify({error:"Database unavailable."}),{status:503,headers:{"Content-Type":"application/json"}});}
+    if (path.startsWith("/delegation/") || path === "/health" || path === "/auth" || path.startsWith("/auth/") || path === "/api" || path.startsWith("/api/")) {
+      return createApp({ assets: createAssetStore(bindings), database: bindings.DB, authConfiguration: createAuthConfiguration(bindings), outboundMail: createOutboundMail(bindings), aiProvider: createAIProvider(bindings), sourceSecurity: createSourceSecurity(bindings), publicDemoEnabled: publicDemoConfig.enabled, publicDemoOpportunityId: bindings.PUBLIC_DEMO_OPPORTUNITY_ID, mailEventKeys:{eventKey:bindings.SENDGRID_WEBHOOK_PUBLIC_KEY,parseKey:bindings.SENDGRID_PARSE_PUBLIC_KEY,relaySecret:bindings.RER_MAIL_RELAY_SECRET} }).fetch(request, bindings, executionContext);
+    }
+    if (path === "/app" || path.startsWith("/app/")) {
+      const operator = await createDependencies(bindings.DB).auth.authenticate(request.headers.get("Cookie") ?? undefined);
+      if (!operator) return new Response(null, { status: 302, headers: { Location: `/signin?returnTo=${encodeURIComponent(path + url.search)}` } });
+      if(path!=="/app/records"&&await archiveImportActive(bindings.DB))return new Response(null,{status:302,headers:{Location:"/app/records"}});
+    }
+    return start.fetch(request);
+}

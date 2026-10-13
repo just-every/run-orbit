@@ -9,8 +9,13 @@ test('BASE-DATA-004 BASE-DATA-005 OUT-012 configured user-data flows target only
  try{
   await createAIProvider({OPENAI_API_KEY:'test-key',AI_MODEL:'test-model',AI_INPUT_COST_PER_MILLION:'0.2',AI_OUTPUT_COST_PER_MILLION:'1.2'})!.generate({evidence:[{id:'test-evidence',subject:'Test-owned request'}]});
   await createOutboundMail({SENDGRID_API_KEY:'test-key',MAIL_FROM:'test@example.invalid',MAIL_REPLY_TO:'reply@example.invalid',SENDGRID_UNSUBSCRIBE_GROUP_ID:'1'})!.send({id:'test-id',recipient_email:'customer@example.invalid',subject:'Reviewed test subject',body:'Reviewed test body'});
-  assert.deepEqual(requests.map(r=>new URL(r.url).hostname),['api.openai.com','api.sendgrid.com']);
-  assert.deepEqual(new Set(manifest.externals.map(item=>item.id)),new Set(['openai','sendgrid']));
+  const exercised=[{id:'openai',adapter:'ai.provider.v1',url:'https://api.openai.com/v1/responses'},{id:'sendgrid',adapter:'mail.sender.v1',url:'https://api.sendgrid.com/v3/mail/send'}];
+  assert.deepEqual(requests.map(r=>r.url),exercised.map(provider=>provider.url));
+  for(const provider of exercised){
+   const declaration=manifest.externals.find(item=>item.id===provider.id);
+   assert.ok(declaration,`Exercised provider ${provider.id} must declare its data flow`);
+   assert.ok(declaration.adapters.includes(provider.adapter),`Exercised provider ${provider.id} must declare ${provider.adapter}`);
+  }
   assert.equal(requests[1]!.body.personalizations[0].to[0].email,'customer@example.invalid');assert.equal(requests[1]!.body.content[0].value,'Reviewed test body');assert.deepEqual(requests[1]!.body.asm,{group_id:1});assert.equal(requests[1]!.body.tracking_settings.subscription_tracking.enable,false);assert.equal(requests[0]!.body.store,false);
  }finally{globalThis.fetch=actual;}
 });

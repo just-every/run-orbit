@@ -1,0 +1,8 @@
+import { env } from "cloudflare:workers";
+import { getRequest } from "@tanstack/react-start/server";
+import { createDependencies } from "../app/dependencies";
+import type { PlatformBindings } from "./assets";
+export function requestDependencies() { return createDependencies((env as unknown as PlatformBindings).DB); }
+export function operatorFromRequest() { return requestDependencies().auth.authenticate(getRequest().headers.get("Cookie") ?? undefined); }
+
+export async function archiveRestoring(){const {archiveImportActive}=await import('./archive-maintenance');return archiveImportActive((env as unknown as PlatformBindings).DB);}

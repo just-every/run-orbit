@@ -1,0 +1,12 @@
+Use case: precise-object-edit
+Asset type: production albedo material map for a 3D sphere
+Primary request: Correct the supplied texture map so its left and right borders join seamlessly when wrapped horizontally. Preserve the existing map's visual style, mineral patterns, density, composition, detail and muted terracotta palette as closely as possible. The outermost left and right edges must depict matching continuation of the same surface, with no visible vertical boundary when tiled.
+Input images: Image 1 is the edit target: the existing flat rectangular terracotta lunar surface map. Image 2 is only the approved style and palette reference, especially the small orange moon around (844,300); do not reproduce the page.
+Scene/backdrop: A rectangular field completely filled by the existing planetary surface texture.
+Subject: Keep the existing naturally irregular craggy stone geology, engraved craters, fissures, mottling and etched striations.
+Style/medium: Preserve the target's restrained hand-engraved mineral texture and reference's muted editorial finish.
+Composition/framing: Preserve the target's exact flat map layout and aspect ratio. Seamlessly join the left and right edges for equirectangular wrapping. Maintain the current content through the center; adjust only what is needed near the side edges to make the geology continue naturally across the wrap.
+Lighting/mood: Flat albedo-color treatment, no baked directional lighting, highlights or shadows.
+Color palette: Preserve the existing burnt terracotta, rust orange, peach and warm ivory stone colors.
+Constraints: Change only the left/right edge continuity needed for horizontal seamlessness. Keep the full rectangular frame filled with texture, with no globe silhouette, margins, UI or text.
+Avoid: Introducing a sphere or circle, changing the overall palette, changing the central geology, adding new large features, repetitive stamps, dotted craters, camouflage, lava, neon orange, directional shading, cast shadows, atmosphere, stars, orbit lines, lettering, symbols or watermark.

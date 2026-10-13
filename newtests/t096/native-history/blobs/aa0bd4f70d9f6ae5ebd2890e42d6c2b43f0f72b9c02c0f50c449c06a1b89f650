@@ -1,0 +1,51 @@
+import { contactEmailKey,companyDomainKey } from './identity';
+import { RecordsRepository } from './repository';
+import { audit, RecordError, requireRecord, tables, timeline } from './shared';
+import { parseCsv } from '../../shared/csv';
+export { parseCsv } from '../../shared/csv';
+export class ImportMergeRepository {
+ constructor(readonly db:D1Database){}
+ async import(kind:'contact'|'company',csv:string,mapping:Record<string,string>,actor:string){
+  let parsed:string[][];try{parsed=parseCsv(csv);}catch(error){throw new RecordError(400,(error as Error).message);}const [headers,...rows]=parsed;if(!headers)throw new RecordError(400,'CSV is empty.');const results=[];const records=new RecordsRepository(this.db);
+  for(const [index,row] of rows.entries())try{
+   if(row.length!==headers.length)throw new RecordError(400,'Column count differs from header.');
+   const input:Record<string,any>={};for(const [field,column]of Object.entries(mapping)){const position=headers.indexOf(column);if(position<0)throw new RecordError(400,`Missing column ${column}.`);input[field]=row[position]||null;}
+   const id=input.id;delete input.id;let matches:Array<{id:string}>=[];
+   const workspace=kind==='company'?await this.db.prepare('SELECT free_mail_domains_json FROM workspace_settings').first<{free_mail_domains_json:string}>():null;
+   const key=kind==='contact'?contactEmailKey(input.email):companyDomainKey(input.primary_domain,JSON.parse(workspace?.free_mail_domains_json??'[]')); 
+   if(key)matches=(await this.db.prepare(`SELECT id FROM ${tables[kind]} WHERE ${kind==='contact'?'email_key':'primary_domain_key'}=? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type=? AND identity_key=?`).bind(key,kind,key).all<{id:string}>()).results;
+   if(id){await requireRecord(this.db,kind,id);if(matches.some(m=>m.id!==id))throw new RecordError(409,'Orbit ID and identity key identify different records.');}
+   if(matches.length>1)throw new RecordError(409,'Row identifies more than one record.');
+   const existing=id??matches[0]?.id;const previous=existing?await requireRecord(this.db,kind,existing):{};
+   const saved=await records.save(kind,{...previous,custom_fields:JSON.parse(previous.custom_fields_json??'{}'),...input},actor,existing);
+   results.push({row:index+2,status:existing?'updated':'created',id:saved.id});
+  }catch(error){results.push({row:index+2,status:'failed',reason:error instanceof Error?error.message:'Import failed.'});}
+  return {rows:results,created:results.filter(r=>r.status==='created').length,updated:results.filter(r=>r.status==='updated').length,failed:results.filter(r=>r.status==='failed').length};
+ }
+ async candidates(kind:'contact'|'company'){
+  const records=(await this.db.prepare(`SELECT * FROM ${tables[kind]} ORDER BY id`).all<Record<string,any>>()).results;const groups=new Map<string,Record<string,any>[]>();
+  for(const row of records){const name=row.name?.trim().toLowerCase().replace(/\s+/g,' ');if(!name)continue;const key=JSON.stringify([name,kind==='contact'?row.company_id:null]);const group=groups.get(key)??[];group.push(row);groups.set(key,group);}
+  return [...groups.values()].filter(group=>group.length>1);
+ }
+ async merge(kind:'contact'|'company',survivorId:string,retiredId:string,choices:Record<string,'survivor'|'retired'>,actor:string){
+  if(survivorId===retiredId)throw new RecordError(400,'Choose two different records.');const survivor=await requireRecord(this.db,kind,survivorId),retired=await requireRecord(this.db,kind,retiredId);
+  const fields=kind==='contact'?['name','email','phone','job_title','timezone','company_id','contactability','custom_fields_json']:['name','primary_domain','custom_fields_json'];const values:Record<string,any>={};
+  for(const field of fields){if(survivor[field]!==retired[field]&&!choices[field])throw new RecordError(400,`Choose the surviving value for ${field}.`);values[field]=choices[field]==='retired'?retired[field]:survivor[field];}
+  const keyColumn=kind==='contact'?'email_key':'primary_domain_key',key=choices[kind==='contact'?'email':'primary_domain']==='retired'?retired[keyColumn]:survivor[keyColumn];values[keyColumn]=key;values.updated_at=new Date().toISOString();
+  const statements=[this.db.prepare('INSERT INTO record_merge_claims VALUES(?,?,?,?)').bind(kind,retiredId,survivorId,values.updated_at),this.db.prepare(`UPDATE ${tables[kind]} SET ${keyColumn}=NULL WHERE id=?`).bind(retiredId)];
+  for(const oldKey of [survivor[keyColumn],retired[keyColumn]])if(oldKey&&oldKey!==key)statements.push(this.db.prepare('INSERT INTO record_aliases VALUES(?,?,?,?,?) ON CONFLICT(record_type,identity_key) DO UPDATE SET survivor_id=excluded.survivor_id').bind(kind,oldKey,survivorId,retiredId,values.updated_at));
+  statements.push(this.db.prepare('UPDATE record_merge_claims SET survivor_id=? WHERE record_type=? AND survivor_id=?').bind(survivorId,kind,retiredId),this.db.prepare('UPDATE record_aliases SET survivor_id=? WHERE record_type=? AND survivor_id=?').bind(survivorId,kind,retiredId));
+  if(kind==='company')for(const table of ['contacts','opportunities'])statements.push(this.db.prepare(`UPDATE ${table} SET company_id=? WHERE company_id=?`).bind(survivorId,retiredId));
+  else {
+   statements.push(this.db.prepare('DELETE FROM ai_previews WHERE recipient_contact_id IN(?,?)').bind(survivorId,retiredId),this.db.prepare('UPDATE opportunity_contacts SET is_primary=0 WHERE contact_id=? AND opportunity_id IN(SELECT opportunity_id FROM opportunity_contacts WHERE contact_id=?)').bind(retiredId,survivorId),this.db.prepare('INSERT OR IGNORE INTO opportunity_contacts SELECT opportunity_id,?,is_primary,created_at FROM opportunity_contacts WHERE contact_id=?').bind(survivorId,retiredId),this.db.prepare('UPDATE drafts SET recipient_contact_id=?,is_stale=1,stale_reason=\'Contact merged\' WHERE recipient_contact_id=?').bind(survivorId,retiredId),this.db.prepare('UPDATE outbound_messages SET contact_id=? WHERE contact_id=?').bind(survivorId,retiredId));
+  }
+  for(const [table,field]of [['timeline_entry_records','timeline_entry_id'],['signal_links','signal_id']]){
+   if(table==='timeline_entry_records')statements.push(this.db.prepare('INSERT OR IGNORE INTO timeline_entry_records SELECT timeline_entry_id,record_type,? FROM timeline_entry_records WHERE record_type=? AND record_id=?').bind(survivorId,kind,retiredId));
+   else statements.push(this.db.prepare('INSERT OR IGNORE INTO signal_links SELECT signal_id,record_type,?,linking_basis,linked_at FROM signal_links WHERE record_type=? AND record_id=?').bind(survivorId,kind,retiredId));
+   statements.push(this.db.prepare(`DELETE FROM ${table} WHERE record_type=? AND record_id=?`).bind(kind,retiredId));
+  }
+  const keys=Object.keys(values);statements.push(this.db.prepare(`UPDATE ${tables[kind]} SET ${keys.map(k=>`${k}=?`).join(',')} WHERE id=?`).bind(...keys.map(k=>values[k]),survivorId),this.db.prepare(`DELETE FROM ${tables[kind]} WHERE id=?`).bind(retiredId),...timeline(this.db,actor,kind,survivorId,'record.merged',{retiredId,choices}),audit(this.db,actor,'record.merged',kind,survivorId,{retiredId,choices}));
+  if(kind==='contact')statements.push(this.db.prepare('UPDATE opportunity_contacts SET is_primary=1 WHERE contact_id=? AND NOT EXISTS(SELECT 1 FROM opportunity_contacts p WHERE p.opportunity_id=opportunity_contacts.opportunity_id AND p.is_primary=1)').bind(survivorId));
+  try{await this.db.batch(statements);}catch(error){if(String(error).includes('UNIQUE'))throw new RecordError(409,'The record was already merged or its identity changed. Reload before merging.');throw error;}return {id:survivorId,retiredId};
+ }
+}

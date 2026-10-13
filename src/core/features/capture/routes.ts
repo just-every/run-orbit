@@ -1,3 +1,5 @@
+import {AccessService} from '../access/service';
+import {createProviderRoutes,type ProviderConfig} from './providers/routes';
 import {Hono,type Context} from 'hono';
 import {z} from 'zod';
 import type {AuthenticatedOperator} from '../identity';
@@ -8,7 +10,7 @@ import {acceptProposal,declineProposal,listProposals} from './proposals';
 import {captureItems,disconnectSource,ensureFileSource,listSources} from './sources';
 
 /** Capture is an operator action: these routes sit behind the operator session, never a source signature (SIGNAL-009). */
-export function createCaptureRoutes(db:D1Database){
+export function createCaptureRoutes(db:D1Database,providers:ProviderConfig={}){
  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),recordId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
  app.onError((error,c)=>error instanceof CaptureError?c.json({error:error.message},error.status):c.json({error:'Capture failed; nothing was confirmed.'},500));
  app.post('/imports',async c=>{
@@ -28,10 +30,15 @@ export function createCaptureRoutes(db:D1Database){
   await db.batch([audit(db,operator,'capture.imported','capture_source',source.id,{files:files.length,includeUnknown,...summary})]);
   return page?c.redirect(`/app/capture?result=${encodeURIComponent(JSON.stringify(summary))}`,303):c.json({summary},201);
  }
+ app.route('/',createProviderRoutes(db,providers));
  app.get('/sources',async c=>c.json({sources:await listSources(db)}));
  app.post('/sources/:id/disconnect',async c=>{
-  if((await c.req.json().catch(()=>({}))).confirmed!==true)throw new CaptureError(400,'Confirm disconnecting this source.');
-  return c.json(await disconnectSource(db,c.req.param('id'),c.get('operator').operatorId));
+  const form=!(c.req.header('content-type')??'').includes('application/json');
+  const confirmed=form?(await c.req.formData()).get('confirmed')==='true':(await c.req.json().catch(()=>({}))).confirmed===true;
+  if(!confirmed)throw new CaptureError(400,'Confirm disconnecting this source.');
+  const operator=c.get('operator'),access=new AccessService(db),actor=await access.authorizeLegacy(operator,crypto.randomUUID(),'legacy.write');
+  const result=await disconnectSource(db,c.req.param('id'),operator.operatorId,access.fence(actor).map(statement=>db.prepare(statement.sql).bind(...statement.bindings)));
+  return form?c.redirect('/app/capture',303):c.json(result);
  });
  app.get('/proposals',async c=>{
   const query=z.object({status:z.enum(['pending','accepted','declined']).default('pending'),recordType:z.enum(['contact','company','opportunity']).optional(),recordId:recordId.optional()}).strict().safeParse(c.req.query());

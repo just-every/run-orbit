@@ -10,7 +10,7 @@ export interface MessageFact extends FactBase {
  kind:'message';messageId:string;sender:Mailbox|null;references:string;autoReply:boolean;
  bounce:Bounce|null;forwarded:Mailbox|null;unsubscribe:string|null;phone:{value:string;line:string}|null;senderLine:string;
 }
-export interface EventFact extends FactBase {kind:'event';uid:string;sequence:number;phase:'booked'|'completed'|'cancelled';start:string|null;end:string|null}
+export interface EventFact extends FactBase {kind:'event';uid:string;recurrenceId:string|null;sequence:number;phase:'booked'|'completed'|'cancelled';start:string|null;end:string|null}
 export type Fact = MessageFact | EventFact;
 export type Read = {fact:Fact} | {skip:string};
 
@@ -19,13 +19,18 @@ const hashed=async(prefix:string,value:string)=>`${prefix}:${await payloadHash(v
 const canonical=(raw:string)=>raw.replace(/\r\n?/g,'\n').split('\n').map(line=>line.replace(/[ \t]+$/,'')).join('\n').replace(/\n+$/,'');
 const limit=(text:string,size:number)=>text.length>size?text.slice(0,size):text;
 
-/** The lines a person wrote in this message: no quoted history, no signature, at most three. */
+/** All sender-written lines, before quoted/forwarded history or a signature. */
 export function freshLines(text:string){
- const lines:string[]=[];
- for(const line of text.split('\n')){
-  if(/^(--|__)\s*$/.test(line)||/^On .{4,200} wrote:\s*$/.test(line)||/^-+\s*(Original|Forwarded) Message\s*-+$/i.test(line.trim())||/^Begin forwarded message:/i.test(line))break;
-  if(line.startsWith('>')||!line.trim())continue;
-  lines.push(limit(line.trim(),300));if(lines.length===3)break;
+ const lines:string[]=[],source=text.split('\n');
+ for(let index=0;index<source.length;index++){
+  const line=source[index]!,trimmed=line.trim();
+  if(/^(--|__)\s*$/.test(trimmed)||/^On .+ wrote:\s*$/i.test(trimmed)||/^-+\s*(Original|Forwarded) Message\s*-+$/i.test(trimmed)||/^Begin forwarded message:/i.test(trimmed))break;
+  if(/^From:/i.test(trimmed)){
+   let next=index+1;while(next<source.length&&!source[next]!.trim())next++;
+   if(/^(Sent|Date):/i.test(source[next]?.trim()??''))break;
+  }
+  if(trimmed.startsWith('>')||!trimmed)continue;
+  lines.push(line);
  }
  return lines;
 }
@@ -56,11 +61,11 @@ export async function readMessage(raw:string,now=Date.now()):Promise<Read>{
  const forwarded=/^\s*(fwd?|fw)\s*:/i.test(subject)?forwardedSender(text):null;
  const participants:Participant[]=[...(sender?[{...sender,role:'from' as const}]:[]),...mailboxes(message.headerAll('to').join(',')).map(m=>({...m,role:'to' as const})),...mailboxes(message.headerAll('cc').join(',')).map(m=>({...m,role:'cc' as const})),...(forwarded?[{...forwarded,role:'forwarded' as const}]:[])];
  const unsubscribe=[subject,...fresh].find(line=>unsubscribeRequest.test(line))??null;
- const phoneLine=text.split('\n').map(line=>line.trim()).find(line=>/^(tel|phone|mobile|cell|direct)\s*[:.]\s*\+?\d[\d ().-]{6,}\d$/i.test(line));
+ const phoneLine=fresh.find(line=>/^(tel|phone|mobile|cell|direct)\s*[:.]\s*\+?\d[\d ().-]{6,}\d$/i.test(line.trim()));
  const headers=limit(message.headers.map(([name,value])=>`${name}: ${value}`).join('\n'),32768);
  return {fact:{kind:'message',eventId:await hashed('message',messageId),hash:await payloadHash(canonical(raw)),occurredAt:new Date(date).toISOString(),subject,participants,headers,body:limit(text,100000),
-  quote:fresh,messageId,sender,references:[...message.headerAll('in-reply-to'),...message.headerAll('references')].join(' '),autoReply,bounce,forwarded,
-  unsubscribe,phone:phoneLine?{value:phoneLine.replace(/^[^:.]+[:.]\s*/,'').replace(/\s+/g,' '),line:phoneLine}:null,senderLine:limit(`From: ${message.header('from')??''}`,500)}};
+  quote:fresh.slice(0,3).map(line=>limit(line.trim(),300)),messageId,sender,references:[...message.headerAll('in-reply-to'),...message.headerAll('references')].join(' '),autoReply,bounce,forwarded,
+  unsubscribe,phone:phoneLine?{value:phoneLine.replace(/^[^:.]+[:.]\s*/,'').replace(/\s+/g,' ').trim(),line:phoneLine}:null,senderLine:limit(`From: ${message.header('from')??''}`,500)}};
 }
 
 export async function readCalendar(raw:string,now=Date.now()):Promise<Read[]>{
@@ -74,9 +79,10 @@ export async function readCalendar(raw:string,now=Date.now()):Promise<Read[]>{
   if(Date.parse(occurredAt)>now+300000)return {skip:'Dated in the future'};
   const participants:Participant[]=[...(event.organizer?[{...event.organizer,role:'organizer' as const}]:[]),...event.attendees.map(a=>({...a,role:'attendee' as const}))];
   const when=[event.start&&`Starts ${event.start}`,event.end&&`Ends ${event.end}`].filter((line):line is string=>Boolean(line));
-  return {fact:{kind:'event',eventId:await hashed('event',[event.uid,event.recurrenceId??'',event.sequence,phase].join('\n')),hash:await payloadHash(canonical(event.method+'\n'+event.raw)),
-   occurredAt,subject:limit(event.summary||'Meeting',2000),participants,headers:limit(`METHOD: ${event.method}\nUID: ${event.uid}\nSEQUENCE: ${event.sequence}\nSTATUS: ${event.status}`,32768),body:limit(event.raw,100000),
-   quote:[limit(event.summary,300),...when].filter(Boolean),uid:event.uid,sequence:event.sequence,phase,start:event.start,end:event.end}};
+  const phaseId=(value:string)=>hashed('event',[event.uid,event.recurrenceId??'',event.sequence,value,...(event.revision?[event.revision]:[])].join('\n'));
+  return {fact:{kind:'event',eventId:await phaseId(phase),hash:await payloadHash(canonical(event.method+'\n'+event.raw)),
+   occurredAt,subject:limit(event.summary||'Meeting',2000),participants,headers:limit(`METHOD: ${event.method}\nUID: ${event.uid}\nSEQUENCE: ${event.sequence}\nSTATUS: ${event.status}${event.revision?`\nX-ORBIT-PROVIDER-REVISION: ${event.revision}`:''}`,32768),body:limit(event.raw,100000),
+   quote:[limit(event.summary,300),...when].filter(Boolean),uid:event.uid,recurrenceId:event.recurrenceId,sequence:event.sequence,phase,start:event.start,end:event.end}};
  }));
 }
 

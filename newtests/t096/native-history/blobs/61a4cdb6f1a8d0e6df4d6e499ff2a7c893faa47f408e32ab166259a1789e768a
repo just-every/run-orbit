@@ -1,0 +1,15 @@
+import { Hono } from 'hono';
+import { PublicDemoRepository } from './demo-repository';
+
+export function createPublicDemoRoutes(db: D1Database, opportunityId?: string, enabled = true) {
+  const app = new Hono();
+  app.get('/', async (context) => {
+    if (!enabled || !opportunityId) return context.notFound();
+    if (Object.keys(context.req.query()).length) return context.json({ error: 'The public walkthrough has one fixed record.' }, 400);
+    const payload = await new PublicDemoRepository(db).read(opportunityId);
+    if (!payload) return context.notFound();
+    return context.json(payload, 200, { 'Cache-Control': 'no-store' });
+  });
+  app.all('*', (context) => context.notFound());
+  return app;
+}

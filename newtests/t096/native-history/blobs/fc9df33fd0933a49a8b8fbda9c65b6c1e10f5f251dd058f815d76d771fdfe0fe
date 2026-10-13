@@ -1,0 +1,35 @@
+/** Movement adds angular velocity; stopping the pointer lets that velocity decay. */
+export function createAngularMomentum(now: number) {
+  const angle = { x: 0, y: 0 }, velocity = { x: 0, y: 0 };
+  let previous: { x: number; y: number } | null = null;
+  let last = now;
+  const limit = .30;
+  function advance(now: number) {
+    if (now <= last) return;
+    const dt = (now - last) / 1000;
+    last = now;
+    const decay = Math.exp(-dt * 2.6), travel = -Math.expm1(-dt * 2.6) / 2.6;
+    for (const key of ['x', 'y'] as const) {
+      angle[key] = Math.max(-limit, Math.min(limit, angle[key] + velocity[key] * travel));
+      velocity[key] *= decay;
+      if (Math.abs(angle[key]) === limit && Math.sign(velocity[key]) === Math.sign(angle[key])) velocity[key] = 0;
+    }
+  }
+  return {
+    angle, advance,
+    move(x: number, y: number, width: number, height: number, now: number) {
+      // Integrate only the velocity that existed before this event. Applying a
+      // new impulse over the previous frame's entire interval backdates it and
+      // can consume its coast before a slow renderer displays the next frame.
+      advance(now);
+      if (previous) {
+        velocity.x = Math.max(-1.2, Math.min(1.2, velocity.x + (x - previous.x) / width * 1.55));
+        velocity.y = Math.max(-1.2, Math.min(1.2, velocity.y - (y - previous.y) / height * 1.3));
+      }
+      previous = { x, y };
+    },
+    resetClock(now: number) { last = now; },
+    clearInput() { previous = null; velocity.x = velocity.y = 0; },
+    leave() { previous = null; }
+  };
+}

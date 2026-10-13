@@ -5,6 +5,9 @@ import { chmod, rm } from 'node:fs/promises';
 import { isAbsolute, join, resolve } from 'node:path';
 import {identityVarArgs} from '../tests/support/worker-identity.mjs';
 
+// Isolated browser verification only. This key never enters production bindings.
+export const BROWSER_TEST_ORBIT_ENCRYPTION_KEY = '7a'.repeat(32);
+
 function socketPath() {
   const state = process.env.ORBIT_TEST_STATE;
   if (!state || !isAbsolute(state)) throw new Error('Browser fixtures require isolated absolute ORBIT_TEST_STATE.');
@@ -48,7 +51,8 @@ export async function serveBrowserRuntime() {
     const current = spawn(process.execPath, [
       'node_modules/wrangler/bin/wrangler.js', 'dev', '--config', 'dist/server/wrangler.json',
       '--local', '--ip', '127.0.0.1', '--port', String(port),
-      '--inspector-port', process.env.ORBIT_INSPECTOR_PORT ?? '0', '--persist-to', state, ...identityVarArgs(origin)
+      '--inspector-port', process.env.ORBIT_INSPECTOR_PORT ?? '0', '--persist-to', state,
+      ...identityVarArgs(origin), '--var', `ORBIT_ENCRYPTION_KEY:${BROWSER_TEST_ORBIT_ENCRYPTION_KEY}`
     ], { stdio: 'inherit', env: process.env });
     worker = current;
     current.on('exit', code => {
@@ -68,10 +72,11 @@ export async function serveBrowserRuntime() {
     throw new Error('Browser Worker startup timed out.');
   }
   async function fixture(request) {
-    const allowed = request.name === 'tests/support/issue-operator-session.ts'
-      ? Array.isArray(request.args) && request.args.length === 0
-      : request.name === 'tests/archive/session.ts' && Array.isArray(request.args)
-        && (request.args.length === 0 || (request.args.length === 1 && request.args[0] === '--target-owner'));
+    const noArguments = Array.isArray(request.args) && request.args.length === 0;
+    const allowed = (request.name === 'tests/support/issue-operator-session.ts' && noArguments)
+      || (request.name === 'tests/support/capture-browser-source.ts' && noArguments)
+      || (request.name === 'tests/archive/session.ts' && Array.isArray(request.args)
+        && (noArguments || (request.args.length === 1 && request.args[0] === '--target-owner')));
     if (!allowed) throw new Error('Unknown fixture request.');
     if (closing) throw new Error('Browser runtime is closing.');
     await stop();

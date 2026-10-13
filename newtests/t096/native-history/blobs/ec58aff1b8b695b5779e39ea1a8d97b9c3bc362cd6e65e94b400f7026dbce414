@@ -1,0 +1,31 @@
+import { verifyRelayRequest } from '../../../base/sendgrid-event-relay/crypto';
+import { Hono } from 'hono';
+import { z } from 'zod';
+import { verifyMailWebhook } from '../../platform/mail-webhook-security';
+import { payloadHash } from '../../platform/source-security';
+import { ProviderRepository } from './provider-repository';
+const event=z.object({sg_event_id:z.string().min(1),event:z.string().min(1),timestamp:z.number().finite().nonnegative(),email:z.string(),sg_message_id:z.string().optional(),rer_delivery_id:z.string().optional(),rer_product:z.string().optional(),reason:z.string().optional(),type:z.string().optional()});
+export function createMailEventRoutes(db:D1Database,keys:{eventKey?:string;parseKey?:string;relaySecret?:string}){
+ const app=new Hono(),repository=new ProviderRepository(db);
+ app.post('/:kind',async c=>{
+  const kind=c.req.param('kind'),key=kind==='sendgrid'?keys.eventKey:kind==='reply'?keys.parseKey:kind==='relay'?keys.relaySecret:undefined;if(!key)return c.json({error:'Mail signature key is not configured.'},403);
+  const limit=kind==='reply'?262144:1048576;
+  const reader=c.req.raw.body?.getReader(),parts:Uint8Array[]=[];let size=0;if(reader)while(true){const {value,done}=await reader.read();if(done)break;size+=value.length;if(size>limit){await reader.cancel();return c.json({error:'Mail event exceeds payload limit.'},413);}parts.push(value);}
+  const raw=new Uint8Array(size);let offset=0;for(const part of parts){raw.set(part,offset);offset+=part.length;}
+  const valid=kind==='relay'?await verifyRelayRequest({secret:key,timestamp:c.req.header('x-rer-mail-timestamp'),signature:c.req.header('x-rer-mail-signature'),rawBody:new TextDecoder().decode(raw)}):await verifyMailWebhook(key,raw.buffer,c.req.header('X-Twilio-Email-Event-Webhook-Timestamp')??'',c.req.header('X-Twilio-Email-Event-Webhook-Signature')??'');
+  if(!valid)return c.json({error:'Mail signature is invalid or expired.'},401);
+  try{
+   if(kind==='sendgrid'||kind==='relay'){
+    const input=z.array(event).max(1000).safeParse(JSON.parse(new TextDecoder().decode(raw)));if(!input.success)return c.json({error:'Invalid SendGrid event payload.'},400);
+    for(const item of input.data)await repository.event(item,await payloadHash(JSON.stringify(item)));
+   }else{
+    const form=await new Request(c.req.url,{method:'POST',headers:{'content-type':c.req.header('content-type')??''},body:raw}).formData();
+    const headers=String(form.get('headers')??'').replace(/\r?\n[ \t]+/g,' ');const header=(name:string)=>headers.match(new RegExp(`^${name}:\\s*(.*)$`,'im'))?.[1]?.trim()??'';
+    const from=String(form.get('from')??'');const sender=(from.match(/<([^<>]+)>/)?.[1]??from).trim().toLowerCase(),subject=String(form.get('subject')??''),body=String(form.get('text')??''),messageId=header('Message-ID'),references=`${header('References')} ${header('In-Reply-To')}`.trim();
+    if(!z.email().safeParse(sender).success||!messageId)return c.json({error:'Reply sender and Message-ID are required.'},400);
+    const at=header('Date');if(!Number.isFinite(Date.parse(at)))return c.json({error:'Reply Date header is required.'},400);const occurredAt=new Date(at).toISOString();
+    const input={id:messageId,sender,subject,body,messageId,references,occurredAt};await repository.reply(input,await payloadHash(JSON.stringify(input)));
+   }return c.json({accepted:true});
+  }catch{return c.json({error:'Mail event could not be persisted; replay it.'},503);}
+ });return app;
+}

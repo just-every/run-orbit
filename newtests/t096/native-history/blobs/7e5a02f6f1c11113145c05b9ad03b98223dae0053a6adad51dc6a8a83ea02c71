@@ -1,0 +1,69 @@
+import { useState, type FormEvent } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { publicProductConfig } from "../core/app/mounts/public-config";
+import { DraftContentFields } from "../core/features/drafts/ui/draft-content-fields";
+import { ConfigurationNotice, OrbitIcon, OrbitLink, Surface } from "../core/features/public/ui/primitives";
+import { PublicShell } from "../core/features/public/ui/public-shell";
+
+type DemoPayload = {
+  opportunity: { title: string; stage: string; score: number; band: string; queueState: string; queueReason: string | null; companyName: string | null; contactName: string | null };
+  evidence: Array<{ id: string; type: string; subject: string | null; occurredAt: string; confidence: string; contribution: number }>;
+  recommendation: { actionType: string; explanation: string | null; policyVersion: string } | null;
+  draft: { subject: string; body: string } | null;
+};
+
+function DemoPage() {
+  const [payload, setPayload] = useState<DemoPayload>();
+  const [subject, setSubject] = useState("");
+  const [body, setBody] = useState("");
+  const [preview, setPreview] = useState<{ subject: string; body: string }>();
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function loadDemo() {
+    setLoading(true); setStatus("");
+    try {
+      const response = await fetch("/api/v1/public-demo", { cache: "no-store", credentials: "omit", headers: { Accept: "application/json" } });
+      if (!response.ok) throw new Error("The hosted walkthrough is unavailable.");
+      const next = await response.json() as DemoPayload;
+      if (!next.draft || !next.recommendation) throw new Error("The hosted walkthrough has no publish-safe reviewed draft.");
+      setPayload(next); setSubject(next.draft.subject); setBody(next.draft.body);
+    } catch (error) { setStatus(error instanceof Error ? error.message : "The hosted walkthrough is unavailable."); }
+    finally { setLoading(false); }
+  }
+
+  function previewFollowUp(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!subject.trim() || !body.trim()) { setStatus("Add a subject and message before previewing."); return; }
+    setPreview({ subject, body });
+    setStatus("Preview ready. This browser changed its local copy only; nothing was sent and no record changed.");
+  }
+
+  return <PublicShell current="demo" productName={publicProductConfig.name} actions={<OrbitLink kind="quiet" to="/">Return home</OrbitLink>}>
+    <main className="demo-page">
+      <section className="demo-page__intro">
+        <p className="orbit-eyebrow">Live workflow walkthrough</p>
+        <h1>See the evidence behind a next action.</h1>
+        <p>A real, deliberately published Orbit opportunity powers this walkthrough. Load it to inspect the signal trail, edit its reviewed follow-up, and preview the result in your browser.</p>
+      </section>
+      <ConfigurationNotice><strong>Preview only.</strong> The hosted walkthrough publishes one consented record created through Orbit’s own workflow. Loading reads that record; editing and previewing stay in this browser. No customer mail, AI, signal, notification, or record write is possible here.</ConfigurationNotice>
+      {!payload ? <Surface className="demo-page__load">
+        <h2>Load the hosted opportunity</h2>
+        <p>The data is fetched from the dedicated demo deployment and fails closed when that deployment is not configured.</p>
+        <button className="orbit-button orbit-button--primary" type="button" onClick={loadDemo} disabled={loading}>{loading ? "Loading live record…" : status ? "Retry live record" : "Load live record"}<OrbitIcon name="arrow" /></button>
+        {status ? <p className="demo-page__status" role="status">{status}</p> : null}
+      </Surface> : <>
+        <section className="demo-page__grid" aria-label="Opportunity overview">
+          <Surface className="demo-card demo-card--hero"><p className="orbit-eyebrow">Opportunity</p><h2>{payload.opportunity.title}</h2>{payload.opportunity.companyName || payload.opportunity.contactName ? <p>{payload.opportunity.companyName}{payload.opportunity.companyName && payload.opportunity.contactName ? " · " : ""}{payload.opportunity.contactName}</p> : null}<dl><div><dt>Stage</dt><dd>{payload.opportunity.stage}</dd></div><div><dt>Score</dt><dd>{payload.opportunity.score} · {payload.opportunity.band}</dd></div><div><dt>Queue</dt><dd>{payload.opportunity.queueState}</dd></div></dl></Surface>
+          <Surface className="demo-card"><p className="orbit-eyebrow">Recommendation</p><h2>{payload.recommendation!.actionType === "email_follow_up" ? "Email follow-up" : "Manual action"}</h2>{payload.recommendation!.explanation ? <p>{payload.recommendation!.explanation}</p> : null}<small>Policy {payload.recommendation!.policyVersion}</small></Surface>
+        </section>
+        <Surface className="demo-card demo-card--evidence"><div className="demo-card__heading"><div><p className="orbit-eyebrow">Observed evidence</p><h2>What changed the score</h2></div><span>{payload.evidence.length} signal{payload.evidence.length === 1 ? "" : "s"}</span></div><ul>{payload.evidence.map(signal => <li key={signal.id}><div><strong>{signal.subject ?? signal.type}</strong><span>{signal.type} · {new Date(signal.occurredAt).toLocaleDateString()}</span></div><b>{signal.contribution > 0 ? "+" : ""}{signal.contribution}</b></li>)}</ul></Surface>
+        <Surface className="demo-card demo-card--editor"><div><p className="orbit-eyebrow">Browser-local review</p><h2>Edit the follow-up</h2><p>The starting subject and body are the publish-safe draft saved by the hosted workflow. Your edits remain local until you close this page.</p></div><form onSubmit={previewFollowUp}><DraftContentFields body={body} onBodyChange={setBody} onSubjectChange={setSubject} subject={subject} /><div className="demo-page__form-footer"><button className="orbit-button orbit-button--primary" type="submit">Preview follow-up <OrbitIcon name="arrow" /></button><span>Preview does not send</span></div></form></Surface>
+        {preview ? <Surface className="demo-card demo-card--preview" aria-live="polite"><p className="orbit-eyebrow">Preview</p><h2>{preview.subject}</h2><p>{preview.body}</p><strong>Nothing was sent. No record changed.</strong></Surface> : null}
+        {status ? <p className="demo-page__status" role="status">{status}</p> : null}
+      </>}
+    </main>
+  </PublicShell>;
+}
+
+export const Route = createFileRoute("/demo")({ component: DemoPage });

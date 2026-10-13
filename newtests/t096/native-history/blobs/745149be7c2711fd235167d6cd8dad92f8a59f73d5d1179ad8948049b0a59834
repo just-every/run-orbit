@@ -1,0 +1,44 @@
+import { useEffect, useState, type FormEvent } from 'react';
+import { publicProductConfig } from '../../../app/mounts/public-config';
+import { OrbitIcon, OrbitLink, ConfigurationNotice, Surface } from './primitives';
+import { PublicShell } from './public-shell';
+
+export function SignInPage() {
+  const [configured, setConfigured] = useState<boolean | undefined>();
+  const [message, setMessage] = useState('');
+  const [pending, setPending] = useState(false);
+  useEffect(() => {
+    fetch('/auth/status').then(async (response) => {
+      if (!response.ok) throw new Error('Cannot check sign-in configuration.');
+      const status = await response.json() as { configured: boolean };
+      setConfigured(status.configured);
+    }).catch(() => setMessage('Cannot check sign-in configuration. Reload to try again.'));
+    if (new URLSearchParams(window.location.search).has('error')) setMessage('This link has expired or was already used. Request a new link.');
+  }, []);
+  async function requestLink(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setPending(true); setMessage('');
+    const body = new FormData(event.currentTarget);
+    body.set('returnTo', new URLSearchParams(window.location.search).get('returnTo') ?? '/app');
+    try {
+      const response = await fetch('/auth/request', { method: 'POST', body });
+      const result = await response.json() as { message?: string; error?: string };
+      setMessage(result.message ?? result.error ?? 'Sign-in request failed.');
+    } catch { setMessage('Sign-in request failed. Check your connection and try again.'); }
+    finally { setPending(false); }
+  }
+  return <PublicShell current="signin" productName={publicProductConfig.name}
+    actions={<OrbitLink kind="quiet" to="/">Return home</OrbitLink>}>
+    <main className="sign-in-page"><Surface className="sign-in-card">
+      <p className="orbit-eyebrow">Operator access</p>
+      <h1>{configured ? 'Welcome back.' : configured === false ? 'Sign in when delivery is configured.' : 'Sign in to Orbit.'}</h1>
+      {configured ? <><p className="sign-in-card__lead">Enter your operator email and we’ll send you a secure sign-in link.</p>
+        <form onSubmit={requestLink} className="sign-in-form">
+          <label htmlFor="signin-email">Email address</label>
+          <input id="signin-email" name="email" type="email" autoComplete="email" required maxLength={254} />
+          <button className="orbit-button orbit-button--primary" disabled={pending}>{pending ? 'Requesting link…' : 'Send sign-in link'}</button>
+        </form></> : configured === false ? <ConfigurationNotice><strong>Mail authentication is not configured.</strong> Magic-link delivery is unavailable until a mail provider is configured for this deployment.</ConfigurationNotice> : <p>Checking sign-in availability…</p>}
+      {message && <p role="status">{message}</p>}
+      <OrbitLink kind="quiet" to="/">Return to the landing page <OrbitIcon name="arrow" /></OrbitLink>
+    </Surface></main>
+  </PublicShell>;
+}

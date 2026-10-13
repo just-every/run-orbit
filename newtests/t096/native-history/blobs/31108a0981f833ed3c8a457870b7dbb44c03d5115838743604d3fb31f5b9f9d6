@@ -1,0 +1,102 @@
+# Selected-A public homepage
+
+The page's HTML, typography, labels and CSS come from the completed 12ui
+conversion `.12ui/solar-homepage-v1/convert-run/output/index.html` (SHA-256
+`b850aefd7236f082824986d8742ddf187bbc07051dd27917c693a241dc6c47e5`). The selected
+1536 × 1024 source image has SHA-256
+`56a34fde279fbbd4aa3c6ecba0a3e4b0dde5105ca307b9f1ff2a4af694f797ba`.
+The orbital illustration is replaced by real Three.js planets and rings; the
+mountain engraving is a static decorative image beneath the transparent canvas.
+`src/assets/design/solar/mountain-illustration.png` is the generated transparent
+cutout; adjacent prompt files retain the material/artwork instructions. Its visible
+alpha ridge is registered near source y730–995, with the faint left
+endpoint visible. A modest vertical normalization matches the source ridge
+height while preserving its horizontal registration.
+`model/{camera,scene,surfaces}.js` derive from the companion scene kit,
+with generated engraved material maps in `src/assets/design/solar/`.
+The 3D planets use genuine spherical surfaces, rather than source-image
+projection. Static mountain artwork is deliberate; runtime customer fixtures or
+pretend interactive fallbacks are absent.
+
+The converter selected DM Sans 400/500 and Libre Caslon Display 400 as source-font
+approximations. These exact font files are bundled locally with their SIL OFL
+licenses. The source URLs were Google's `dmsans/v17` and
+`librecaslondisplay/v18` font families. Font synthesis is enabled only for the
+converted italic hero text. Source-driven adjustments widen the hero type and
+space the process icons. The feature icons are fresh SVG drawings requested after
+the initial conversion; their class and label contract stays the same. Every style is scoped to `.orbit-home`.
+
+`SolarSystem` loads the model and renderer only in the browser and awaits decoded
+local material images before creating the renderer. One runtime owns a fixed camera,
+its frame loop, viewport mouse input, resize/visibility listeners and GPU teardown.
+The source-registered illustration box (520,60,1016,944) is preserved at all widths;
+small screens scale the complete diagram rather than cropping it. Portrait screens
+place it between headline and support copy. Landscape and smaller desktops use
+separate text and artwork columns, sized to keep the complete diagram above the fold.
+
+The targeting grammar comes from the observed Space Quest IV intro at
+https://www.youtube.com/watch?v=KyiOwKRewaU&t=115s: globe-wide perpendicular axes move
+to an off-center surface point, circular optics contract around that intersection,
+and two coordinates resolve independently before a quiet hold. Orbit translates the
+reference into independent axis acquisition (0–2.8s), contracting optics (2.8–4.6s),
+a brief coordinate lock (4.6–5.3s), surface wave (5.3–7.5s), a readable finding hold
+(7.5–10.8s), and release before the next 12.8-second scan. It preserves the anchored
+camera and quiet colors. The reference review and native video captures remain under
+the owner's `solar-retarget-20261002/reference` evidence directory.
+
+`model/targeting-sequence.js` acquires a new camera-facing off-center point at each
+scan, inverse-transforms it to the sphere's material coordinates, and holds that local
+direction through the cycle. The axes and projected leader share that rotating surface
+point. The shader's angular-distance wave expands from the same local direction across
+the actual sphere; depth and back-face occlusion hide its far hemisphere. Derivative-
+aware line width keeps small targets legible without drawing outside the silhouette.
+
+`project-targeting.ts` renders one finding, rather than a permanent label list. Genuine
+source-plate X/Y coordinates resolve independently, briefly freeze their locked values,
+and fade as the X readout opens into an annotation above the target silhouette. Customer
+signal, Priorities and Follow-up review appear successively, hold, and clear before the
+next acquisition. Measured text and pixel gutters keep labels inside the artwork. Digits
+are decorative drawing coordinates, never customer scores, records or live announcements.
+Selected orbital planes, guides, optics and readouts fade on different schedules; the
+finding hold leaves two quiet orbital planes while the other construction lines recede.
+
+`angular-momentum.ts` converts mouse movement anywhere in the viewport into angular
+velocity. Each line plane rotates independently about its fixed center; pointer stops
+let velocity decay smoothly, and reverse sweeps impart reverse momentum. Each angular
+input is bounded at 0.30 radians. The root, camera, terrain and planet-group position
+never follow the pointer. Planet textures still spin and satellites retain small bounded
+natural arcs. There is no absolute cursor-position target. Touch input preserves native
+scrolling; the decorative scene never handles keyboard navigation, picking or clicks.
+Events and rendered frames advance momentum on the same monotonic clock. Existing
+velocity is integrated before adding each movement, so a late event never inherits
+the previous frame's elapsed time or loses its coast to a preceding rendering stall.
+
+There is no manual motion control or retained manual-pause state. Only the system's
+reduced-motion preference freezes the complete WebGL/overlay frame; changing that
+preference freezes/resumes cleanly. Hidden tabs cancel frame scheduling and clear pending
+input velocity; restoration resets the clock without advancing hidden phases. Unmount
+aborts preloading, removes input/resize/media/context listeners and disposes owned geometry,
+materials and shader textures. Context loss retains the truthful unavailable state.
+
+Identity name, exact configured description, optional local identity image and
+credit visibility still come from the existing public configuration mount.
+Sign-in links use the native route. WebGL failure reports that the illustration
+is unavailable and leaves the real page and sign-in intact. No customer API,
+provider, cookie or external browser asset is needed by this scene.
+
+The generated rock engraving maps, static mountain engraving, reconstructed arcs, source
+fonts and fresh process SVGs are artistic approximations, rather than a claim of pixel
+identity. The earlier procedural noise atlas is removed. Planet material images are
+preloaded with abort support and only scene-owned GPU textures are disposed; no
+untextured placeholder is displayed as a finished illustration. The
+unchanged product contract still requires its independent provider, deployment
+and complete-release acceptance evidence. Homepage checks alone do not establish
+those outcomes.
+
+Verification belongs in a complete disposable source copy. The primary workspace
+must not run dev, migrate, seed, build or verify: some existing scripts explicitly seed
+`.wrangler/state` despite ORBIT_TEST_STATE. Read-only typecheck and an owned browser
+against an already-running preview are permitted. Root owns the narrow replacement of
+legacy tests for the intentionally removed camera/action behavior. Required copy gates
+include typecheck, build, the retained solar/privacy/failure/browser checks, and full
+`pnpm verify`; homepage screenshots do not establish full contract or provider acceptance.

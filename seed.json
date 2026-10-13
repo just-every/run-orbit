@@ -46,7 +46,7 @@
     },
     {
       "id": "mail-calendar-capture",
-      "description": "Owner-supplied mail and calendar files become evidence-backed signals; exact replies, delivery reports and stop conditions apply at once, and every other change is a proposal a person accepts, edits or declines. Provider sources plug in through capture.source.v1.",
+      "description": "Owner-supplied files and scoped read-only Google or Microsoft mail/calendar connections become evidence-backed signals; exact replies, delivery reports and stop conditions apply at once, and every other change is a proposal a person accepts, edits or declines. Providers use the owner's OAuth client through capture.source.v1.",
       "clauses": [
         "CAPTURE-001",
         "CAPTURE-002",
@@ -153,6 +153,34 @@
       "adapters": [
         "ai.provider.v1"
       ]
+    },
+    {
+      "id": "google",
+      "required": false,
+      "requiredWhen": "Google Gmail and Calendar capture is connected with the installation owner's OAuth client.",
+      "why": "Read selected mailbox labels/folders and calendars into reviewed capture evidence.",
+      "data": [
+        "OAuth client credentials and read-only authorization",
+        "Selected mailbox labels/folders, calendars and incremental cursors",
+        "Mail and calendar content returned for the declared scope"
+      ],
+      "adapters": [
+        "capture.source.v1"
+      ]
+    },
+    {
+      "id": "microsoft",
+      "required": false,
+      "requiredWhen": "Microsoft Graph mail and calendars capture is connected with the installation owner's OAuth client.",
+      "why": "Read selected mailbox labels/folders and calendars into reviewed capture evidence.",
+      "data": [
+        "OAuth client credentials and read-only authorization",
+        "Selected mailbox labels/folders, calendars and incremental cursors",
+        "Mail and calendar content returned for the declared scope"
+      ],
+      "adapters": [
+        "capture.source.v1"
+      ]
     }
   ],
   "env": [
@@ -181,8 +209,8 @@
       "name": "ORBIT_ENCRYPTION_KEY",
       "secret": true,
       "required": false,
-      "requiredWhen": "Signed sources are configured.",
-      "why": "Encrypt configured signed-source secrets in D1."
+      "requiredWhen": "Signed sources or Google/Microsoft capture connections are configured.",
+      "why": "Encrypt signed-source secrets, provider tokens and OAuth client secrets in D1."
     },
     {
       "name": "OPENAI_API_KEY",
@@ -352,7 +380,8 @@
     ],
     "adapters": [
       "mail.sender.v1",
-      "ai.provider.v1"
+      "ai.provider.v1",
+      "capture.source.v1"
     ],
     "contributions": [
       "signal.sources.v1"

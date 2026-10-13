@@ -1,0 +1,6 @@
+import { z } from 'zod';
+export const standardTypes = new Set(['form.submitted','email.sent','email.opened','email.replied','email.bounced','email.unsubscribed','meeting.viewed','meeting.booked','meeting.completed','meeting.cancelled','page.viewed','chat.started','content.downloaded','firmographic.changed']);
+export const eventSchema=z.object({eventId:z.string().min(1).max(128),type:z.string().min(1).max(128),subject:z.string().max(2000),occurredAt:z.iso.datetime(),record:z.object({type:z.enum(['contact','company','opportunity']),id:z.string().min(1)}).optional(),email:z.email().optional(),domain:z.string().max(254).optional(),identityBasis:z.string().min(1).max(2000).optional(),permanentBounce:z.boolean().optional(),data:z.record(z.string(),z.unknown()).optional()});
+export type SignalEvent=z.infer<typeof eventSchema>;
+export function confidence(type:string){return ['form.submitted','email.replied','meeting.booked','meeting.completed','content.downloaded','chat.started'].includes(type)?'observed':'inferred';}
+export class IngestionError extends Error {constructor(readonly status:400|401|403|404|409|413|503,message:string){super(message);}}

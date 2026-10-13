@@ -1,0 +1,11 @@
+# Generated Orbit artwork
+
+Created with the built-in image generator, using the approved Orbit homepage A as the visual reference. These are the selected native outputs; the exact prompts are retained alongside them.
+
+| Asset | Exact prompt | Use |
+| --- | --- | --- |
+| [Navy lunar engraving](./navy-lunar-engraving.png) | [Navy prompt](./navy-prompt.txt) | Surface map on real 3D spheres |
+| [Terracotta lunar engraving](./orange-lunar-engraving.png) | [Terracotta prompt](./orange-prompt.txt) | Surface map on real 3D satellites |
+| [Mountain illustration](./mountain-illustration.png) | [Mountain prompt](./mountain-prompt.txt) | Stationary transparent image behind the 3D scene |
+
+The feature-row icons and arrows are fresh native SVGs in `src/core/features/public/ui/solar/converted-steps.tsx`.

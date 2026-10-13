@@ -1,0 +1,4 @@
+import {createFileRoute} from '@tanstack/react-router';
+import {AssistancePage} from '../core/features/operator/ui/assistance-page';
+export const Route=createFileRoute('/app/assistance/$id')({component:Page});
+function Page(){return <AssistancePage opportunityId={Route.useParams().id}/>;}

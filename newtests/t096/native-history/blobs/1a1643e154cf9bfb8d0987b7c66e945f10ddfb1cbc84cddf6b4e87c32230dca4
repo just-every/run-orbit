@@ -1,0 +1,86 @@
+import { and, eq, gt, isNull } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/d1";
+
+import { operators, sessions } from "../../platform/schema";
+
+export interface StoredSession {
+  id: string;
+  operatorId: string;
+  email: string;
+  displayName: string;
+  expiresAt: string;
+}
+
+export class AuthRepository {
+  constructor(private readonly binding: D1Database) {}
+
+  async ensureOperator(input: {
+    id: string;
+    email: string;
+    displayName: string;
+    now: string;
+  }): Promise<void> {
+    await drizzle(this.binding)
+      .insert(operators)
+      .values({
+        id: input.id,
+        email: input.email,
+        displayName: input.displayName,
+        status: "active",
+        createdAt: input.now,
+        updatedAt: input.now
+      })
+      .onConflictDoNothing();
+  }
+
+  async createSession(input: {
+    id: string;
+    operatorId: string;
+    tokenHash: string;
+    expiresAt: string;
+    now: string;
+  }): Promise<void> {
+    await drizzle(this.binding).insert(sessions).values({
+      id: input.id,
+      operatorId: input.operatorId,
+      tokenHash: input.tokenHash,
+      expiresAt: input.expiresAt,
+      createdAt: input.now
+    });
+  }
+
+  async findActiveSession(tokenHash: string, now: string): Promise<StoredSession | undefined> {
+    const result = await drizzle(this.binding)
+      .select({
+        id: sessions.id,
+        operatorId: sessions.operatorId,
+        email: operators.email,
+        displayName: operators.displayName,
+        expiresAt: sessions.expiresAt
+      })
+      .from(sessions)
+      .innerJoin(operators, eq(sessions.operatorId, operators.id))
+      .where(
+        and(
+          eq(sessions.tokenHash, tokenHash),
+          isNull(sessions.revokedAt),
+          gt(sessions.expiresAt, now),
+          eq(operators.status, "active")
+        )
+      )
+      .limit(1);
+
+    return result[0];
+  }
+
+  async touchSession(id: string, now: string): Promise<void> {
+    await drizzle(this.binding).update(sessions).set({ lastSeenAt: now }).where(eq(sessions.id, id));
+  }
+
+  async revokeSession(id: string, now: string): Promise<void> {
+    await drizzle(this.binding)
+      .update(sessions)
+      .set({ revokedAt: now })
+      .where(and(eq(sessions.id, id), isNull(sessions.revokedAt)));
+  }
+}

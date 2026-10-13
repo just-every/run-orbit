@@ -1,0 +1,34 @@
+import type * as THREE from "three";
+
+export interface AmbientPointer { x: number; y: number }
+export interface TargetingState {
+  key: "signal" | "priorities" | "review";
+  phase: "acquire" | "contract" | "detect" | "ripple" | "hold" | "release";
+  point: THREE.Vector3;
+  axis: THREE.Vector3;
+  coordinateAxis: THREE.Vector3;
+  radius: number;
+  surfaceRadius: number;
+  extent: number;
+  readoutExtent: number;
+  opacity: number;
+  coordinateOpacity: number;
+  findingOpacity: number;
+  atmosphere: number;
+  ripple: number;
+}
+export interface SceneBuild {
+  update(dt: number, pointer: AmbientPointer): void;
+  targeting(): TargetingState;
+  anchors: Record<string, THREE.Object3D>;
+  root: THREE.Group;
+}
+export interface SceneCamera {
+  FRAME: { w: number; h: number };
+  CAM: { pos: number[]; yawDeg: number; pitchDeg: number; rollDeg: number; vfov: number };
+  CLIP: { near: number; far: number };
+}
+export interface SceneController {
+  pause(paused: boolean): void;
+  dispose(): void;
+}

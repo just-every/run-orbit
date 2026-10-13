@@ -1,0 +1,68 @@
+import * as THREE from 'three';
+import { preloadSurfaces, buildSurfaceTextures } from './surfaces.js';
+import { createGeometry, sourcePoint } from './geometry.js';
+import { createTargetingSequence } from './targeting-sequence.js';
+export const preloadScene = preloadSurfaces;
+
+export function buildScene(scene, renderer, camera) {
+  renderer.toneMapping = THREE.NoToneMapping;
+  const key = new THREE.DirectionalLight('#fff4df', 2.4); key.position.set(-8, 7, 8);
+  scene.add(key, new THREE.AmbientLight('#cbd1df', .9));
+  const root = new THREE.Group(); root.name = 'solar-system'; scene.add(root);
+  const { sphere, ring, segment } = createGeometry(root, buildSurfaceTextures(renderer));
+  const planet = sphere('central-planet', 1102, 445, 1.25);
+  const satellite = sphere('orange-satellite', 844, 300, .40, true, .1);
+  const moon = sphere('upper-moon', 1218, 223, .18, false, -.1);
+  sphere('right-moon', 1409, 473, .105);
+  sphere('lower-moon', 907, 598, .067, false, .1);
+  const followup = sphere('orange-lower-moon', 1026, 683, .16, true, -.3);
+  const rings = [
+    ring('broad-orbit', 3.52, 2.078, -1.047, -.11, .7),
+    ring('inner-tilted-orbit', 2.3, 1.84, -1.261, -.2, .64),
+    ring('upright-orbit', 1.67, 1.69, .22, .45, .62),
+    ring('outer-orbit', 2.52, 2.5, .30, 0, .3),
+    ring('dashed-orbit', 3.48, 1.53, .36, -.08, .34, true),
+    ring('polar-orbit', 2.94, 3.03, .22, 0, .42, true),
+  ];
+  const guides = [
+    segment([[1102, 60, -.3], [1102, 839, -.3]], .3, 'signal-guide-line'),
+    segment([[1218, 107, -.4], [1218, 696, -.4]], .2, 'priority-guide-line'),
+    segment([[900, 710, -.2], [900, 884, -.2]], .3, 'followup-guide-line'),
+  ];
+  for (const [x,y,r,orange] of [[1102,119,.04,true],[1102,199,.024,false],[1102,285,.033,false],[818,376,.028,false],[937,445,.062,true],[1264,411,.063,true],[1305,332,.036,false],[1310,558,.045,true],[1102,611,.022,false],[1102,759,.045,true]]) sphere('orbit-marker', x, y, r, orange, .15);
+  for (const [x, y] of [[850,146],[733,514],[842,700],[1218,708]]) {
+    segment([[x-8,y],[x+8,y]], .7); segment([[x,y-9],[x,y+9]], .7);
+  }
+  const orbitOrigins = [satellite, moon, followup].map(object => object.position.clone());
+  const ringRotations = rings.map(object => object.rotation.clone());
+  const ringOpacity = rings.map(object => object.material.opacity), guideOpacity = guides.map(object => object.material.opacity);
+  const center = sourcePoint(1102, 445), orbitalAxis = new THREE.Vector3(.15, .22, 1).normalize();
+  const targets = createTargetingSequence([{ key: 'priorities', surface: planet }, { key: 'signal', surface: satellite }, { key: 'review', surface: followup }], camera);
+  let elapsed = 0;
+  return {
+    root, anchors: { signal: satellite, priorities: planet, review: followup, outerRing: rings[3], guide: guides[0] },
+    update(dt, pointer) {
+      elapsed += dt;
+      planet.rotation.y = elapsed * .013; satellite.rotation.y = elapsed * -.018; moon.rotation.y = elapsed * .012;
+      // Bounded orbital arcs preserve the registered composition, even after hours.
+      [satellite, moon, followup].forEach((object, i) => object.position.copy(orbitOrigins[i]).sub(center)
+        .applyAxisAngle(orbitalAxis, Math.sin(elapsed * (.034 + i * .008)) * (i === 0 ? .018 : .012)).add(center));
+      targets.update(dt);
+      const target = targets.state();
+      rings.forEach((object, i) => {
+        const base = ringRotations[i], direction = i % 2 ? -1 : 1;
+        object.rotation.set(base.x + pointer.y * (.65 + i * .06) + pointer.x * direction * .38,
+          base.y + pointer.y * direction * .42,
+          base.z + pointer.x * direction * (.72 + i * .045), 'ZYX');
+        const selected = { priorities: [1, 2], signal: [0, 4], review: [2, 5] }[target.key].includes(i);
+        const quiet = 1 - target.atmosphere;
+        object.material.opacity = ringOpacity[i] * (selected ? 1 - quiet * .62 : Math.max(.025, 1 - quiet * 1.48));
+      });
+      guides.forEach((object, i) => {
+        const selected = i === { priorities: 1, signal: 0, review: 2 }[target.key];
+        object.material.opacity = guideOpacity[i] * target.opacity * (selected ? 1 : .18);
+      });
+    },
+    targeting() { return targets.state(); },
+  };
+}

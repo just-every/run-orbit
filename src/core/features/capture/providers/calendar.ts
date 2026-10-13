@@ -1,0 +1,40 @@
+import {parseCalendar} from '../ics';
+import type {CaptureItem} from '../contracts';
+/** Provider facts rendered as iCalendar for the same normalization/review path as files. */
+const text=(value:unknown)=>String(value??'').replace(/\\/g,'\\\\').replace(/\r?\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');
+const clean=(value:unknown)=>String(value??'').replace(/[\r\n";]/g,'');
+function instant(value:unknown){if(typeof value!=='string'||!/(Z|[+-]\d\d:\d\d)$/.test(value)||!Number.isFinite(Date.parse(value)))return undefined;return new Date(value).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}Z$/,'Z');}
+function time(name:string,value:any,allDay=false){
+ if(!value)return [];
+ if(value.date||allDay){const date=String(value.date??value.dateTime).slice(0,10);return /^\d{4}-\d{2}-\d{2}$/.test(date)?[`${name};VALUE=DATE:${date.replace(/-/g,'')}`]:[];}
+ const utc=instant(value.dateTime);if(utc)return [`${name}:${utc}`];
+ if(typeof value.dateTime!=='string'||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value.dateTime))return [];
+ const date=value.dateTime.slice(0,19).replace(/[-:]/g,''),zone=value.timeZone;
+ return zone==='UTC'?[`${name}:${date}Z`]:[`${name};TZID=${clean(zone)}:${date}`];
+}
+export function calendarItem(provider:'google'|'microsoft',event:any):CaptureItem{
+ const google=provider==='google',lines=['BEGIN:VCALENDAR','VERSION:2.0','BEGIN:VEVENT'];
+ const uid=google?event.iCalUID:event.iCalUId;
+ if(uid)lines.push(`UID:${clean(uid)}`);
+ // A provider revision disambiguates changes that leave iCalendar SEQUENCE unchanged.
+ const revision=google?event.updated:event.lastModifiedDateTime;
+ if(revision)lines.push(`X-ORBIT-PROVIDER-REVISION:${clean(revision)}`);
+ lines.push(`SEQUENCE:${Number.isSafeInteger(event.sequence)?event.sequence:0}`,`SUMMARY:${text(google?event.summary:event.subject)}`);
+ const cancelled=google?event.status==='cancelled':event.isCancelled;
+ if(cancelled)lines.push('STATUS:CANCELLED');
+ for(const [name,value] of [['CREATED',google?event.created:event.createdDateTime],['LAST-MODIFIED',revision],['DTSTAMP',revision]]){const date=instant(value);if(date)lines.push(`${name}:${date}`);}
+ lines.push(...time('DTSTART',event.start,event.isAllDay),...time('DTEND',event.end,event.isAllDay));
+ if(google&&event.originalStartTime)lines.push(...time('RECURRENCE-ID',event.originalStartTime));
+ if(!google&&event.originalStart){const value=instant(event.originalStart);if(value)lines.push(`RECURRENCE-ID:${value}`);}
+ const organizer=google?event.organizer:event.organizer?.emailAddress;
+ if(organizer?.email||organizer?.address)lines.push(`ORGANIZER;CN="${clean(organizer.displayName??organizer.name)}":mailto:${clean(organizer.email??organizer.address)}`);
+ for(const attendee of event.attendees??[]){const person=google?attendee:attendee.emailAddress;if(person?.email||person?.address)lines.push(`ATTENDEE;CN="${clean(person.displayName??person.name)}":mailto:${clean(person.email??person.address)}`);}
+ lines.push('END:VEVENT','END:VCALENDAR');return {kind:'calendar',raw:lines.join('\r\n')};
+}
+
+/** Filter using the same named-zone and all-day interpretation as intake, including floating-time refusals. */
+export function withinCalendarWindow(item:CaptureItem,window:{start:string;end:string}){
+ const event=parseCalendar(item.raw)[0];
+ if(!event||'error' in event||!event.start||!event.end)return true;
+ return Date.parse(event.start)<Date.parse(window.end)&&Date.parse(event.end)>Date.parse(window.start);
+}

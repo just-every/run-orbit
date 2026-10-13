@@ -1,0 +1,79 @@
+import * as THREE from "three";
+import type { SceneBuild } from "./scene-contract";
+
+const findings = { signal: "Customer signal", priorities: "Priorities", review: "Follow-up review" };
+
+/** All optics, digits and the single finding share the actual material surface hit. */
+export function createTargetingProjection(root: HTMLDivElement, camera: THREE.PerspectiveCamera, scene: SceneBuild) {
+  const horizontal = root.querySelector<SVGLineElement>(".targeting__horizontal")!;
+  const vertical = root.querySelector<SVGLineElement>(".targeting__vertical")!;
+  const outer = root.querySelector<SVGEllipseElement>(".targeting__outer")!;
+  const inner = root.querySelector<SVGEllipseElement>(".targeting__inner")!;
+  const crosshair = root.querySelector<SVGPathElement>(".targeting__crosshair")!;
+  const optics = root.querySelector<SVGGElement>(".targeting__optics")!;
+  const xReadout = root.querySelector<HTMLSpanElement>(".targeting__coordinate--x")!;
+  const yReadout = root.querySelector<HTMLSpanElement>(".targeting__coordinate--y")!;
+  const finding = root.querySelector<HTMLParagraphElement>(".targeting__finding")!;
+  const leader = root.querySelector<SVGPathElement>(".targeting__leader")!;
+  let width = 1, height = 1, findingWidth = 0, measureFinding = true;
+  const project = (point: THREE.Vector3) => {
+    const value = point.clone().project(camera);
+    return { x: (value.x + 1) * 500, y: (1 - value.y) * 500 };
+  };
+  function resize() {
+    const bounds = root.getBoundingClientRect(); width = bounds.width; height = bounds.height; measureFinding = true;
+  }
+  function line(node: SVGLineElement, x1: number, y1: number, x2: number, y2: number) {
+    for (const [key, value] of Object.entries({ x1, y1, x2, y2 })) node.setAttribute(key, value.toFixed(3));
+  }
+  function position(node: HTMLElement, x: number, y: number) {
+    node.style.left = `${x / 10}%`; node.style.top = `${y / 10}%`;
+  }
+  function render() {
+    const target = scene.targeting(), axis = project(target.axis), point = project(target.point);
+    const edge = project(target.point.clone().add(new THREE.Vector3(target.extent, target.extent, 0)));
+    const extentX = Math.abs(edge.x - point.x), extentY = Math.abs(edge.y - point.y);
+    const readoutEdge = project(target.point.clone().add(new THREE.Vector3(target.readoutExtent, target.readoutExtent, 0)));
+    const readoutX = Math.abs(readoutEdge.x - point.x), readoutY = Math.abs(readoutEdge.y - point.y);
+    const ringEdge = project(target.axis.clone().add(new THREE.Vector3(target.radius, target.radius, 0)));
+    const rx = Math.max(Math.abs(ringEdge.x - axis.x), 4 / width * 1000);
+    const ry = Math.max(Math.abs(ringEdge.y - axis.y), 4 / height * 1000);
+    line(horizontal, point.x - extentX, axis.y, point.x + extentX, axis.y);
+    line(vertical, axis.x, point.y - extentY, axis.x, point.y + extentY);
+    [outer, inner].forEach((ellipse, i) => {
+      ellipse.setAttribute("cx", axis.x.toFixed(3)); ellipse.setAttribute("cy", axis.y.toFixed(3));
+      ellipse.setAttribute("rx", (rx * (i ? .7 : 1)).toFixed(3)); ellipse.setAttribute("ry", (ry * (i ? .7 : 1)).toFixed(3));
+    });
+    const dx = 4 / width * 1000, dy = 4 / height * 1000;
+    crosshair.setAttribute("d", `M${axis.x - dx},${axis.y}h${dx * 2}M${axis.x},${axis.y - dy}v${dy * 2}`);
+    optics.style.opacity = String(target.opacity);
+    outer.style.opacity = inner.style.opacity = target.phase === "acquire" ? ".18" : ".8";
+    root.dataset.target = target.key; root.dataset.phase = target.phase;
+    root.dataset.axis = JSON.stringify(axis); root.dataset.point = JSON.stringify(point);
+    root.dataset.radius = rx.toFixed(4); root.dataset.ripple = target.ripple.toFixed(4);
+    // Source-plate drawing coordinates; these never describe customer records.
+    xReadout.textContent = `X ${Math.round(768 + target.coordinateAxis.x * 100).toString().padStart(4, "0")}`;
+    yReadout.textContent = `Y ${Math.round(512 - target.coordinateAxis.y * 100).toString().padStart(4, "0")}`;
+    const readoutTop = point.y - readoutY - 20 / height * 1000;
+    position(xReadout, axis.x, readoutTop);
+    position(yReadout, point.x - readoutX - 6 / width * 1000, axis.y);
+    xReadout.style.opacity = yReadout.style.opacity = String(target.coordinateOpacity);
+    const text = target.findingOpacity > 0 ? findings[target.key] : "";
+    if (finding.textContent !== text) { finding.textContent = text; measureFinding = true; }
+    if (measureFinding && text) { findingWidth = finding.offsetWidth; measureFinding = false; }
+    finding.dataset.targetKey = target.key;
+    // The X readout opens into a finding on the same side of the same hit. Pixel
+    // gutters and measured text keep this one annotation inside every composition.
+    const px = 1000 / width, py = 1000 / height;
+    const center = scene.anchors[target.key].getWorldPosition(new THREE.Vector3());
+    const sphereTop = project(center.clone().add(new THREE.Vector3(0, target.surfaceRadius, 0)));
+    const labelX = THREE.MathUtils.clamp(point.x - findingWidth * px * .5, 12 * px, 1000 - findingWidth * px - 12 * px);
+    const labelY = THREE.MathUtils.clamp(sphereTop.y - 29 * py, 12 * py, 1000 - 30 * py);
+    const blend = target.findingOpacity;
+    position(finding, THREE.MathUtils.lerp(axis.x - 22 * px, labelX, blend), THREE.MathUtils.lerp(readoutTop, labelY, blend));
+    finding.style.opacity = leader.style.opacity = String(blend);
+    leader.setAttribute("d", `M${point.x},${point.y}L${labelX + findingWidth * px * .5},${labelY + 19 * py}H${labelX + findingWidth * px}`);
+    root.dataset.anchors = JSON.stringify(Object.fromEntries(Object.entries(scene.anchors).map(([key, object]) => [key, project(object.getWorldPosition(new THREE.Vector3()))])));
+  }
+  return { resize, render };
+}

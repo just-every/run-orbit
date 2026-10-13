@@ -1,0 +1,19 @@
+/**
+ * Buyer-owned Orbit configuration.
+ *
+ * Example: replace `name` and `description` to set the identity shown on
+ * the public identity plate.
+ */
+import type { ProductConfig } from "../core/shared/public-config";
+
+export const orbitConfig = {
+  public: {
+    name: "Orbit",
+    description: "A signal-first CRM for your revenue team.",
+    imageUrl: null,
+    showPoweredByCredit: true
+  },
+  // The dedicated hosted walkthrough enables this. The Worker still requires
+  // its explicit public record binding, so ordinary installs fail closed.
+  demo: { enabled: true }
+} satisfies ProductConfig;

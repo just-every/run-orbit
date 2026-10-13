@@ -1,0 +1,40 @@
+import { useEffect, useRef, useState } from "react";
+import type { SceneController } from "./scene-contract";
+import { TargetingOverlay } from "./targeting-overlay";
+
+export function SolarSystem() {
+  const canvasRef = useRef<HTMLCanvasElement>(null), overlayRef = useRef<HTMLDivElement>(null);
+  const controller = useRef<SceneController | null>(null);
+  const [status, setStatus] = useState<"loading" | "ready" | "unavailable">("loading");
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    const abort = new AbortController(), media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    function preferenceChanged() {
+      setReduced(media.matches); controller.current?.pause(media.matches);
+    }
+    preferenceChanged();
+    function contextLost(event: Event) {
+      event.preventDefault(); abort.abort(); controller.current?.dispose(); controller.current = null;
+      setStatus("unavailable");
+    }
+    const canvas = canvasRef.current!;
+    canvas.addEventListener("webglcontextlost", contextLost); media.addEventListener("change", preferenceChanged);
+    Promise.all([import("./scene-runtime"), import("./model/camera.js"), import("./model/scene.js")])
+      .then(async ([{ createSceneRuntime }, spec, { buildScene, preloadScene }]) => {
+        await preloadScene(abort.signal);
+        if (cancelled || abort.signal.aborted) return;
+        controller.current = createSceneRuntime(canvas, overlayRef.current!, spec, buildScene, media.matches);
+        setStatus("ready");
+      }).catch(() => { if (!cancelled) { abort.abort(); setStatus("unavailable"); } });
+    return () => {
+      cancelled = true; abort.abort(); media.removeEventListener("change", preferenceChanged);
+      canvas.removeEventListener("webglcontextlost", contextLost); controller.current?.dispose(); controller.current = null;
+    };
+  }, []);
+  return <section className="solar-system" aria-label="Orbital illustration" data-scene-status={status} data-reduced-motion={reduced}>
+    <canvas ref={canvasRef} className="solar-system__canvas" role="img" aria-label="Engraved planets and orbital paths, with targeting axes and rings resolving a point on each planet." />
+    <TargetingOverlay ref={overlayRef} />
+    {status !== "ready" && <p className="solar-system__status" role="status">{status === "unavailable" ? "The illustration is unavailable in this browser." : "Loading illustration…"}</p>}
+  </section>;
+}

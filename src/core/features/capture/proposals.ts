@@ -1,5 +1,5 @@
 import {createId} from '../../shared/ids';
-import {payloadHash} from '../../platform/source-security';
+import {calendarIdentity,existingCalendarProposals,personProposal,proposalKey,type CalendarIdentity} from './proposal-identity';
 import {contactEmailKey} from '../records/identity';
 import {contactStopStatements} from '../records/suppression-effects';
 import {audit} from '../records/shared';
@@ -16,9 +16,13 @@ interface ProposalRow {id:string;signal_id:string;kind:ProposalKind;record_type:
  * A proposal is keyed by its evidence and its change, so the same evidence never
  * offers the same change twice: a declined proposal stays declined.
  */
-export async function proposalStatements(db:D1Database,sourceId:string,signalId:string,eventId:string,evidence:Record<string,unknown>,drafts:ProposalDraft[],at:string){
- return Promise.all(drafts.map(async draft=>db.prepare("INSERT INTO capture_proposals(id,proposal_key,signal_id,kind,record_type,record_id,field,current_value,proposed_value,details_json,status,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,'pending',?) ON CONFLICT(proposal_key) DO NOTHING")
-  .bind(createId(),await payloadHash(JSON.stringify([sourceId,eventId,draft.kind,draft.recordType,draft.recordId,draft.field??null,draft.value])),signalId,draft.kind,draft.recordType,draft.recordId,draft.field??null,draft.current,draft.value,JSON.stringify({...draft.details,evidence}),at)));
+export async function proposalStatements(db:D1Database,sourceId:string,signalId:string,eventId:string,evidence:Record<string,unknown>,drafts:ProposalDraft[],at:string,calendar?:CalendarIdentity){
+ const prior=calendar?await existingCalendarProposals(db,sourceId,calendar):new Map<string,string>();
+ return Promise.all(drafts.map(async draft=>{
+  const identity=calendar&&personProposal(draft.kind)?calendarIdentity(calendar):eventId,key=await proposalKey(sourceId,identity,draft);
+  return db.prepare("INSERT INTO capture_proposals(id,proposal_key,signal_id,kind,record_type,record_id,field,current_value,proposed_value,details_json,status,created_at) SELECT ?,?,?,?,?,?,?,?,?,?,'pending',? WHERE NOT EXISTS(SELECT 1 FROM capture_proposals WHERE id=?) ON CONFLICT(proposal_key) DO NOTHING")
+   .bind(createId(),key,signalId,draft.kind,draft.recordType,draft.recordId,draft.field??null,draft.current,draft.value,JSON.stringify({...draft.details,evidence:{...evidence,quote:draft.details.quote??evidence.quote}}),at,prior.get(key)??null);
+ }));
 }
 
 export async function listProposals(db:D1Database,filter:{status:'pending'|'accepted'|'declined';recordType?:'contact'|'company'|'opportunity';recordId?:string}){

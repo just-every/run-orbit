@@ -1,0 +1,133 @@
+import {HandoffTasks} from './handoff-tasks';
+import {ManualAction,RecommendationRefresh} from "./manual-action";
+import { MessageHistory } from "./message-history";
+import { EvidenceActions } from "./evidence-actions";
+import { useCallback } from "react";
+import { Link, useParams } from "@tanstack/react-router";
+
+import { formatCurrency, formatDateTime, label } from "./formatters";
+import { operatorApi } from "./operator-api";
+import { OperatorShell, OperatorState } from "./operator-shell";
+import { useOperatorResource } from "./use-operator-resource";
+
+export function OpportunityPage() {
+  const { id } = useParams({ from: "/app/opportunities/$id" });
+  const loadOpportunity = useCallback(async () => {
+    const [{ opportunity }, { drafts }, { presentation }] = await Promise.all([
+      operatorApi.readOpportunity(id),
+      operatorApi.listOpportunityDrafts(id),
+      operatorApi.readWorkspacePresentation()
+    ]);
+    return { drafts, opportunity, presentation };
+  }, [id]);
+  const resource = useOperatorResource(`opportunity:${id}`, loadOpportunity);
+
+  if (resource.loading) return <OperatorShell title="Opportunity"><OperatorState>Loading persisted opportunity detail…</OperatorState></OperatorShell>;
+  if (resource.error) return <OperatorShell title="Opportunity"><OperatorState kind="error">{resource.error.message}</OperatorState></OperatorShell>;
+  if (!resource.data) return null;
+
+  const { drafts, opportunity, presentation } = resource.data;
+  return (
+    <OperatorShell
+      eyebrow="Explainable priority"
+      title={opportunity.title}
+      action={<Link className="operator-back-link" to="/app">← NOW queue</Link>}
+    >
+      <section className="operator-detail" data-testid="opportunity-detail">
+        <div className="operator-detail__identity operator-surface">
+          <div>
+            <p className="operator-eyebrow">Opportunity identity</p>
+            <h2>{opportunity.companyName ?? "No company associated"}</h2>
+            <p>{opportunity.contacts.map((contact) => contact.name ?? contact.email ?? "Unnamed contact").join(" · ") || "No contact associated"}</p>
+          </div>
+          <p className="operator-detail__value">{formatCurrency(opportunity.valueCents, presentation)}</p>
+        </div>
+
+        <dl className="operator-detail-fields" data-testid="independent-opportunity-fields">
+          <div><dt>Lifecycle</dt><dd>{label(opportunity.lifecycle)}</dd></div>
+          <div><dt>Stage</dt><dd>{opportunity.stage}</dd></div>
+          <div><dt>Owner</dt><dd>{opportunity.ownerName ?? "Unassigned"}</dd></div>
+          <div><dt>Score</dt><dd>{opportunity.score}</dd></div>
+          <div><dt>Band</dt><dd>{label(opportunity.band)}</dd></div>
+          <div><dt>Queue</dt><dd>{label(opportunity.queueState)}</dd></div>
+          <div><dt>Expected close</dt><dd>{formatDateTime(opportunity.expectedCloseAt, presentation)}</dd></div>
+          <div><dt>Queue reason</dt><dd>{opportunity.queueReason ?? "No reason recorded."}</dd></div>
+        </dl>
+
+        <HandoffTasks opportunityId={id} onChange={resource.reload}/>
+        <div className="operator-detail__columns">
+          <section className="operator-surface operator-detail__section" data-testid="current-evaluation">
+            <p className="operator-eyebrow">Current evaluation</p>
+            {opportunity.evaluation ? (
+              <>
+                <h2>{opportunity.evaluation.score} · {label(opportunity.evaluation.band)}</h2>
+                <p>Evaluated {formatDateTime(opportunity.evaluation.evaluatedAt, presentation)} · {opportunity.evaluation.status}</p>
+                <p className="operator-code">Policy {opportunity.evaluation.policyVersion}</p>
+                {opportunity.evaluation.failureAt&&<div role="alert" data-testid="evaluation-failure"><p>Evaluation failed {formatDateTime(opportunity.evaluation.failureAt,presentation)}. The score and evidence above are the last successful evaluation and may be out of date.</p><RecommendationRefresh opportunityId={id} reload={resource.reload}/></div>}
+              </>
+            ) : <OperatorState>No current evaluation is persisted for this opportunity.</OperatorState>}
+          </section>
+          <section className="operator-surface operator-detail__section" data-testid="current-recommendation">
+            <p className="operator-eyebrow">Current recommendation</p>
+            {opportunity.recommendation ? (
+              <>
+                <h2>{label(opportunity.recommendation.actionType)}</h2>
+                <p className="operator-code">Policy {opportunity.recommendation.policyVersion}</p>
+                <p>{opportunity.recommendation.explanation ?? "No written recommendation explanation is stored."}</p>
+                <ManualAction recommendationId={opportunity.recommendation.id} reload={resource.reload} />
+                <Link to="/app/assistance/$id" params={{id:opportunity.id}}>Preview AI assistance</Link>
+                <p><strong>Cited evidence:</strong> {opportunity.recommendation.evidenceSignalIds.join(", ") || "None recorded."}</p>
+              </>
+            ) : <OperatorState>No current recommendation is persisted.</OperatorState>}
+            <RecommendationRefresh opportunityId={opportunity.id} reload={resource.reload} />
+          </section>
+        </div>
+
+        <section className="operator-surface operator-detail__section" data-testid="contributing-evidence">
+          <div className="operator-section-heading">
+            <div><p className="operator-eyebrow">Contributing evidence</p><h2>Signals used by the current score</h2></div>
+            {opportunity.evaluation ? <span>{opportunity.evaluation.contributions.length} signed contributions</span> : null}
+          </div>
+          {opportunity.evaluation?.contributions.length ? (
+            <ul className="operator-evidence-list">
+              {opportunity.evaluation.contributions.map((contribution) => (
+                <li key={contribution.signalId}>
+                  <div><strong>{contribution.signalType}</strong><span>ID {contribution.signalId}</span></div>
+                  <div><span>Source {contribution.source}</span><span>{formatDateTime(contribution.occurredAt, presentation)} · {contribution.confidence}</span></div>
+                  <b>{contribution.contribution > 0 ? "+" : ""}{contribution.contribution}</b>
+                </li>
+              ))}
+            </ul>
+          ) : <OperatorState>No contributing signals are persisted.</OperatorState>}
+          {opportunity.recommendation ? <p className="operator-evidence-note">Recommendation cites: {opportunity.recommendation.evidenceSignalIds.join(", ")}</p> : null}
+        </section>
+
+        <section className="operator-surface operator-detail__section" data-testid="opportunity-drafts">
+          <div className="operator-section-heading"><div><p className="operator-eyebrow">Durable drafts</p><h2>Stored follow-up drafts</h2></div><span>{drafts.length} stored</span></div>
+          {drafts.length ? <ul className="operator-draft-list">
+            {drafts.map((draft) => <li key={draft.id}>
+              <Link to="/app/drafts/$id" params={{ id: draft.id }}>
+                <strong>{draft.subject}</strong><span>{draft.recipientEmail} · revised {draft.revision}</span>
+              </Link>
+            </li>)}
+          </ul> : <OperatorState>No drafts are stored for this opportunity.</OperatorState>}
+          <p className="operator-capability-note">Open a draft to review and approve its exact saved content.</p>
+        </section>
+
+        <section className="operator-surface operator-detail__section" data-testid="opportunity-timeline">
+          <div className="operator-section-heading"><div><p className="operator-eyebrow">Full timeline</p><h2>Recorded record activity</h2></div><span>{opportunity.timeline.length} entries</span></div>
+          {opportunity.timeline.length ? <ol className="operator-timeline">
+            {opportunity.timeline.map((entry) => <li key={entry.id}>
+              <strong>{label(entry.kind)}</strong>
+              <span>Occurred {formatDateTime(entry.occurredAt, presentation)}</span>
+              <span>Recorded {formatDateTime(entry.recordedAt, presentation)}</span>
+              <span>Actor {entry.actorName} ({label(entry.actorType)}) · source {entry.sourceName}</span>
+            </li>)}
+          </ol> : <OperatorState>No timeline entries are persisted.</OperatorState>}
+        </section>
+      </section>
+      <EvidenceActions opportunity={opportunity} reload={resource.reload} />
+      <MessageHistory opportunityId={opportunity.id} />
+    </OperatorShell>
+  );
+}

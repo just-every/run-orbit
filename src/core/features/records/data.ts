@@ -1,7 +1,9 @@
 import {captureImportErasure,withdrawRelatedImportCopies,eraseImportedContact} from '../imports/erasure';
-import { suppressionHashes, suppressionProof } from './suppression';
+import {captureErasureStatements as capturePrivacyErasureStatements} from '../capture/privacy';
+import { privacyMatcher, suppressionProof } from './suppression';
 import { identityMatch, identityPatterns } from './erasure-identity';
 import { executeArchiveErasure } from './archive-erasure';
+import { captureErasureStatements } from './capture-erasure';
 import { evaluationStatements } from '../workbench/evaluation-repository';
 import { createId } from '../../shared/ids';
 import { audit, RecordError, requireRecord, type RecordKind } from './shared';
@@ -23,9 +25,13 @@ export class DataRepository {
    const aliases=(await db.prepare("SELECT identity_key FROM record_aliases WHERE record_type='contact' AND survivor_id=?").bind(id).all<{identity_key:string}>()).results.map(row=>row.identity_key);
    const identities=[...new Set([record.email,...aliases].filter((value):value is string=>typeof value==='string'&&value.length>0))];
    contactEmails=identities;
-   for(const email of identities)for(const token of await suppressionHashes(db,email))statements.push(suppressionProof(db,token,"EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')",[id]));
+   const match=identities.length?await privacyMatcher(db,statements):undefined;
+   if(match)for(const email of identities)for(const token of await match(email))statements.push(suppressionProof(db,token,"EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')",[id]));
    statements.push(db.prepare("INSERT OR IGNORE INTO record_erasure_signals SELECT ?,signal_id FROM signal_links WHERE record_type='contact' AND record_id=?").bind(id,id));
    for(const value of identities)statements.push(db.prepare(`INSERT OR IGNORE INTO record_erasure_signals SELECT ?,id FROM signals WHERE ${identityMatch('payload_json')}`).bind(id,...identityPatterns(value)));
+   // A contact can occur only in Reply-To or quoted history, outside the signal summary. Erase the whole original.
+   for(const value of identities)statements.push(db.prepare(`INSERT OR IGNORE INTO record_erasure_signals SELECT ?,signal_id FROM capture_items WHERE ${identityMatch('headers')} OR ${identityMatch('body')}`).bind(id,...identityPatterns(value),...identityPatterns(value)));
+   statements.push(...await capturePrivacyErasureStatements(db,id,identities,match));
    statements.push(db.prepare(`DELETE FROM unlinked_signals WHERE signal_id IN (${signalIds})`).bind(id));
    statements.push(db.prepare("UPDATE audit_entries SET entity_id='erased',details_json='{}' WHERE entity_type='contact' AND entity_id IN(SELECT retired_id FROM record_merge_claims WHERE record_type='contact' AND survivor_id=?)").bind(id),db.prepare("UPDATE audit_entries SET details_json='{}' WHERE EXISTS(SELECT 1 FROM record_merge_claims m WHERE m.record_type='contact' AND m.survivor_id=? AND instr(audit_entries.details_json,m.retired_id)>0)").bind(id));
    // Display names are not identities: unrelated customers may share them.
@@ -36,10 +42,7 @@ export class DataRepository {
    statements.push(db.prepare(`DELETE FROM action_completions WHERE recommendation_id IN(SELECT recommendation_id FROM recommendation_evidence WHERE signal_id IN (${signalIds}))`).bind(id));
    statements.push(db.prepare(`DELETE FROM recommendations WHERE id IN(SELECT recommendation_id FROM recommendation_evidence WHERE signal_id IN (${signalIds}))`).bind(id),db.prepare(`DELETE FROM evaluations WHERE id IN(SELECT evaluation_id FROM evaluation_contributions WHERE signal_id IN (${signalIds}))`).bind(id));
    statements.push(db.prepare(`DELETE FROM timeline_entries WHERE id IN(SELECT timeline_entry_id FROM timeline_entry_records WHERE record_type='contact' AND record_id=?) OR json_extract(payload_json,'$.contactId')=? OR json_extract(payload_json,'$.signalId') IN (${signalIds}) OR EXISTS(SELECT 1 FROM json_each(timeline_entries.payload_json,'$.contactIds') WHERE value=?)`).bind(id,id,id,id));
-   // Captured originals and their proposals go with the signals they back; only their count stays, in the audit trail.
-   statements.push(db.prepare(`INSERT INTO audit_entries(id,actor_id,action,entity_type,entity_id,details_json,occurred_at) SELECT ?,?,'capture.erased','contact','erased',json_object('capturedItems',(SELECT count(*) FROM capture_items WHERE signal_id IN(${signalIds})),'proposals',(SELECT count(*) FROM capture_proposals WHERE signal_id IN(${signalIds}) OR (record_type='contact' AND record_id=?))),? WHERE EXISTS(SELECT 1 FROM capture_items WHERE signal_id IN(${signalIds})) OR EXISTS(SELECT 1 FROM capture_proposals WHERE record_type='contact' AND record_id=?)`).bind(createId(),actor,id,id,id,new Date().toISOString(),id,id),
-    db.prepare(`DELETE FROM capture_proposals WHERE signal_id IN(${signalIds}) OR (record_type='contact' AND record_id=?) OR EXISTS(SELECT 1 FROM json_each(capture_proposals.details_json,'$.contactIds') WHERE value=?)`).bind(id,id,id),
-    db.prepare(`DELETE FROM capture_items WHERE signal_id IN(${signalIds})`).bind(id));
+   statements.push(...captureErasureStatements(db,id,actor));
    statements.push(db.prepare(`DELETE FROM signals WHERE id IN(${signalIds})`).bind(id),db.prepare("UPDATE audit_entries SET entity_id='erased',details_json='{}' WHERE (entity_type='contact' AND entity_id=?) OR instr(details_json,?)>0").bind(id,id),db.prepare('DELETE FROM contacts WHERE id=?').bind(id));
    statements.push(db.prepare("UPDATE opportunity_contacts SET is_primary=1 WHERE contact_id=(SELECT MIN(c.contact_id) FROM opportunity_contacts c WHERE c.opportunity_id=opportunity_contacts.opportunity_id) AND NOT EXISTS(SELECT 1 FROM opportunity_contacts p WHERE p.opportunity_id=opportunity_contacts.opportunity_id AND p.is_primary=1)"));
    statements.push(db.prepare('DELETE FROM record_erasure_signals WHERE contact_id=?').bind(id));

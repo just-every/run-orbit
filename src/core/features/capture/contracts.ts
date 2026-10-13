@@ -9,7 +9,7 @@
  * a history ID and Microsoft Graph's is a delta link; neither is interpreted
  * here. The file import is the first adapter: one page, no cursor, no credential.
  */
-export interface CaptureScope {mail?:{folders:string[]};calendars?:string[]}
+export interface CaptureScope {mail?:{folders:string[]};calendars?:string[];calendarWindow?:{start:string;end:string}}
 export type CaptureItem = {kind:'message';raw:string} | {kind:'calendar';raw:string};
 export interface CapturePage {items:CaptureItem[];cursor:string|null;more:boolean}
 export interface CaptureSourceAdapter {

@@ -1,0 +1,47 @@
+import * as THREE from 'three';
+
+// These are generated, seamless material maps, never projected source artwork.
+const urls = {
+  navy: new URL('../../../../../../assets/design/solar/navy-lunar-engraving.png', import.meta.url).href,
+  orange: new URL('../../../../../../assets/design/solar/orange-lunar-engraving.png', import.meta.url).href,
+};
+const sources = new Map();
+
+function loadImage(name, url, signal) {
+  if (signal?.aborted) return Promise.reject(new DOMException('Scene loading aborted', 'AbortError'));
+  if (sources.has(name)) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    const cleanup = () => { image.onload = image.onerror = null; signal?.removeEventListener('abort', abort); };
+    const abort = () => { cleanup(); image.src = ''; reject(new DOMException('Scene loading aborted', 'AbortError')); };
+    image.onload = async () => {
+      try {
+        await image.decode();
+        if (signal?.aborted) return abort();
+        sources.set(name, image); cleanup(); resolve();
+      } catch (error) { cleanup(); reject(error); }
+    };
+    image.onerror = () => { cleanup(); reject(new Error(`Unable to load ${name} scene material`)); };
+    signal?.addEventListener('abort', abort, { once: true });
+    image.src = url;
+  });
+}
+
+export async function preloadSurfaces(signal) {
+  await Promise.all(Object.entries(urls).map(([name, url]) => loadImage(name, url, signal)));
+}
+
+export function buildSurfaceTextures(renderer) {
+  const textures = {};
+  for (const name of Object.keys(urls)) {
+    if (!sources.has(name)) throw new Error('Scene materials must be loaded before construction');
+    const texture = new THREE.Texture(sources.get(name));
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    texture.needsUpdate = true;
+    textures[name] = texture;
+  }
+  return textures;
+}

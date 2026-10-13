@@ -5,9 +5,9 @@ const copyName = /^archive_(?:stage|snapshot)_([0-9a-z]{26})_[a-z0-9_]+$/;
 /**
  * Erasure invalidates every private transfer copy, including paused downloads
  * and imports, in the same atomic batch as the person's data: the transfer
- * metadata (jobs, stored parts and segments) is renamed out of reach and
+ * metadata (jobs, stored parts, segments and folded part inventory) is renamed out of reach and
  * recreated empty, so every copied table belongs to a job that no longer
- * exists. Only those three schema renames join the batch; sweepArchiveTrash
+ * exists. Only those schema renames join the batch; sweepArchiveTrash
  * then removes the orphaned copies and old metadata in bounded batches, so no
  * single batch scales with the size of the workspace.
  */
@@ -17,11 +17,15 @@ export async function archiveErasureStatements(db: D1Database) {
     }>()).results;
     for (const { name } of tables) if (!copyName.test(name)) throw new Error('Unexpected archive storage name.');
     const stepTrigger = await db.prepare("SELECT sql FROM sqlite_master WHERE type='trigger' AND name='archive_step_current'").first<{ sql: string }>();
+    const inventory = await db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='archive_part_inventory'").first();
     const epoch = createId().toLowerCase(), trash = (index: number) => `archive_trash_${epoch}_${String(index).padStart(4, '0')}`;
     // Recheck discovery inside the erasure transaction: a concurrent snapshot must not survive.
     const statements = [db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'archive_erasure',CASE WHEN (SELECT json_group_array(name) FROM (SELECT name FROM sqlite_master WHERE type='table' AND (name LIKE 'archive_stage_%' OR name LIKE 'archive_snapshot_%') ORDER BY name))=? THEN 'active' ELSE NULL END").bind(JSON.stringify(tables.map(table => table.name)))];
     // Children before parents, so the sweep never cascades through a populated table.
-    statements.push(db.prepare(`ALTER TABLE archive_part_segments RENAME TO ${trash(0)}`), db.prepare(`ALTER TABLE archive_parts RENAME TO ${trash(1)}`), db.prepare(`ALTER TABLE archive_jobs RENAME TO ${trash(2)}`), db.prepare("CREATE TABLE archive_jobs (id TEXT PRIMARY KEY,kind TEXT NOT NULL CHECK(kind IN ('export','import','backup')),state TEXT NOT NULL,actor_id TEXT NOT NULL,manifest_json TEXT NOT NULL,progress_json TEXT NOT NULL DEFAULT '{}',created_at TEXT NOT NULL)"), db.prepare('CREATE TABLE archive_parts (job_id TEXT NOT NULL REFERENCES archive_jobs(id) ON DELETE CASCADE,part_index INTEGER NOT NULL CHECK(part_index>=0),sha256 TEXT NOT NULL,content_json TEXT NOT NULL,PRIMARY KEY(job_id,part_index))'), db.prepare('CREATE TABLE archive_part_segments (job_id TEXT NOT NULL,part_index INTEGER NOT NULL,segment_index INTEGER NOT NULL,content TEXT NOT NULL,PRIMARY KEY(job_id,part_index,segment_index),FOREIGN KEY(job_id,part_index) REFERENCES archive_parts(job_id,part_index) ON DELETE CASCADE)'));
+    // Inventory is also a child of archive_parts. Leaving it live would retarget
+    // its FK to a trash table, breaking every subsequent folded part upload.
+    statements.push(...(inventory?[db.prepare(`ALTER TABLE archive_part_inventory RENAME TO ${trash(0)}`)]:[]),db.prepare(`ALTER TABLE archive_part_segments RENAME TO ${trash(1)}`), db.prepare(`ALTER TABLE archive_parts RENAME TO ${trash(2)}`), db.prepare(`ALTER TABLE archive_jobs RENAME TO ${trash(3)}`), db.prepare("CREATE TABLE archive_jobs (id TEXT PRIMARY KEY,kind TEXT NOT NULL CHECK(kind IN ('export','import','backup')),state TEXT NOT NULL,actor_id TEXT NOT NULL,manifest_json TEXT NOT NULL,progress_json TEXT NOT NULL DEFAULT '{}',created_at TEXT NOT NULL)"), db.prepare('CREATE TABLE archive_parts (job_id TEXT NOT NULL REFERENCES archive_jobs(id) ON DELETE CASCADE,part_index INTEGER NOT NULL CHECK(part_index>=0),sha256 TEXT NOT NULL,content_json TEXT NOT NULL,PRIMARY KEY(job_id,part_index))'), db.prepare('CREATE TABLE archive_part_segments (job_id TEXT NOT NULL,part_index INTEGER NOT NULL,segment_index INTEGER NOT NULL,content TEXT NOT NULL,PRIMARY KEY(job_id,part_index,segment_index),FOREIGN KEY(job_id,part_index) REFERENCES archive_parts(job_id,part_index) ON DELETE CASCADE)'));
+    if(inventory)statements.push(db.prepare('CREATE TABLE archive_part_inventory(job_id TEXT NOT NULL,part_index INTEGER NOT NULL,row_count INTEGER NOT NULL CHECK(row_count BETWEEN 1 AND 1000),PRIMARY KEY(job_id,part_index),FOREIGN KEY(job_id,part_index) REFERENCES archive_parts(job_id,part_index) ON DELETE CASCADE)'));
     // Renaming archive_jobs retargets this trigger; restore its original definition.
     if (stepTrigger) statements.push(db.prepare('DROP TRIGGER archive_step_current'), db.prepare(stepTrigger.sql));
     if(await db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='archive_storage_reservations'").first())statements.push(db.prepare('DELETE FROM archive_storage_reservations'),db.prepare('DELETE FROM archive_job_profiles'),db.prepare('DELETE FROM archive_storage_observations'));

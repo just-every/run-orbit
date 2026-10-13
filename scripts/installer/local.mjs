@@ -7,6 +7,7 @@ import { commandAdapter as createCommandAdapter } from '../base-cli/cli/adapter.
 import { localState } from '../local-state.mjs';
 import { orbitPortability } from './portability.mjs';
 import { orbitDeploy } from './deploy.mjs';
+import { captureNotices } from './capture-notices.mjs';
 import * as model from './ui/seed.mjs';
 
 export const database = 'orbit-local-db';
@@ -15,7 +16,7 @@ const migrate = ['pnpm', ['exec', 'wrangler', 'd1', 'migrations', 'apply', datab
 // Orbit signs in through Base operator-auth over its own operators and sessions.
 // Locally it claims the first owner with the private setup token, captures
 // sign-in mail in Base's outbox and opens `rer dev` signed in (devIdentity).
-export const lifecycle = localInstaller({
+export const lifecycle = captureNotices(localInstaller({
  features: model.features, node: '22.20.0', tools: ['pnpm', 'node'],
  failure: (error, { store }) => error instanceof LocalStateSafetyError ? store.redact(error.message) : undefined,
  // localState refuses legacy preview state under dist/ before anything builds over it.
@@ -30,7 +31,7 @@ export const lifecycle = localInstaller({
  start: previewTarget,
  owner: { displayName: input => input.displayName || 'Owner', returnTo: '/setup' },
  signIn: { emailKey: 'OWNER_EMAIL', returnTo: '/setup' },
-});
+}));
 export const adapter = lifecycle;
 export const { install } = lifecycle;
 export const commandAdapter = createCommandAdapter(lifecycle, {

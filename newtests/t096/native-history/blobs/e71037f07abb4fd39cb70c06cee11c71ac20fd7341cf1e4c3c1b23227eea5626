@@ -1,0 +1,37 @@
+import * as THREE from 'three';
+import { createSurfaceMaterial } from './surface-material.js';
+
+export const sourcePoint = (x, y, z = 0) => new THREE.Vector3((x - 768) / 100, (512 - y) / 100, z);
+
+export function createGeometry(root, textures) {
+  function sphere(name, x, y, radius, orange = false, z = 0) {
+    const material = name === 'orbit-marker'
+      ? new THREE.MeshBasicMaterial({ color: orange ? '#d6531b' : '#263348' })
+      : createSurfaceMaterial({ atlas: orange ? textures.orange : textures.navy, copper: orange, gray: ['upper-moon', 'right-moon'].includes(name) });
+    // The solid orbit dots span only a few pixels. Keep them round without
+    // submitting the engraved planets' dense surface mesh for every dot.
+    const [widthSegments, heightSegments] = name === 'orbit-marker' ? [24, 16] : [96, 64];
+    const mesh = new THREE.Mesh(new THREE.SphereGeometry(radius, widthSegments, heightSegments), material);
+    mesh.position.copy(sourcePoint(x, y, z)); mesh.name = name; root.add(mesh);
+    return mesh;
+  }
+  function ring(name, a, b, tilt, rotation, opacity, dashed = false) {
+    const points = Array.from({ length: 401 }, (_, i) => {
+      const t = i / 400 * Math.PI * 2;
+      return new THREE.Vector3(a * Math.cos(t), b * Math.sin(t), 0);
+    });
+    const material = dashed
+      ? new THREE.LineDashedMaterial({ color: 0x5c687a, transparent: true, opacity, dashSize: .045, gapSize: .05 })
+      : new THREE.LineBasicMaterial({ color: 0x586579, transparent: true, opacity });
+    const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), material);
+    line.computeLineDistances(); line.rotation.order = 'ZYX'; line.rotation.x = tilt; line.rotation.z = rotation;
+    line.position.copy(sourcePoint(1102, 445)); line.name = name; root.add(line);
+    return line;
+  }
+  function segment(points, opacity = .3, name = '') {
+    const geometry = new THREE.BufferGeometry().setFromPoints(points.map(p => sourcePoint(...p)));
+    const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x718090, transparent: true, opacity }));
+    line.name = name; root.add(line); return line;
+  }
+  return { sphere, ring, segment };
+}

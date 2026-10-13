@@ -1,3 +1,4 @@
+import {stripHtml} from './html';
 /** A small RFC 5322 / MIME reader for captured mail. It keeps what it read and never guesses. */
 export interface Mailbox {name:string;email:string}
 export interface MimeEntity {headers:[string,string][];body:string}
@@ -55,13 +56,9 @@ export function parameters(value:string|undefined){
 }
 function bodyText(entity:MimeEntity){
  const type=parameters(first(entity.headers,'content-type')??'text/plain'),encoding=(first(entity.headers,'content-transfer-encoding')??'').toLowerCase();
- const bytes=encoding==='base64'?base64(entity.body):encoding==='quoted-printable'?quotedPrintable(entity.body):latin1(entity.body);
- // Unencoded 8-bit bodies arrive here already decoded as UTF-8 text.
- return encoding==='base64'||encoding==='quoted-printable'?decodeBytes(bytes,type.params.charset):entity.body;
-}
-function stripHtml(html:string){
- return html.replace(/<(script|style)[\s\S]*?<\/\1>/gi,'').replace(/<br\s*\/?>|<\/(p|div|li|tr|h\d)>/gi,'\n').replace(/<[^>]+>/g,'')
-  .replace(/&nbsp;/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&');
+ // Unencoded bodies are already UTF-8 text; do not allocate a byte array for them.
+ if(encoding!=='base64'&&encoding!=='quoted-printable')return entity.body;
+ return decodeBytes(encoding==='base64'?base64(entity.body):quotedPrintable(entity.body),type.params.charset);
 }
 interface Walk {plain?:string;html?:string;deliveryStatus?:string;returnedHeaders?:[string,string][]}
 function walk(entity:MimeEntity,found:Walk,depth=0){

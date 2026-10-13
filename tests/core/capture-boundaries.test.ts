@@ -1,6 +1,9 @@
+import {captureSourceBoundary} from '../support/capture-source-boundary';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { captureFixture, eml, unsubscribeMessage } from '../support/capture-fixture';
+import { createApp } from '../support/app';
+import { payloadHash } from '../../src/core/platform/source-security';
 import { createSourceSecurity } from '../../src/core/platform/source-security';
 import { IngestionRepository } from '../../src/core/features/ingestion/repository';
 import { signSource } from '../../src/core/features/ingestion/booking-webhooks';
@@ -14,6 +17,25 @@ test('CAPTURE-003 CAPTURE-005 OUT-001 OUT-007 ACTION-005 RECORD-012 SIGNAL-009 a
   try {
     const sends = f.sent.length, drafts = await count(f.db, 'SELECT count(*) n FROM drafts'), outbound = await count(f.db, 'SELECT count(*) n FROM outbound_messages');
     const reply = eml({ From: 'Ana Ruiz <ana@acme.example>', To: 'seller@orbit.test', Subject: 'Quick question', Date: rfc(15), 'Message-ID': '<question-1@acme.example>' }, 'Before Tuesday, can you share the security review?\nPhone: +1 212 555 0199');
+    // Neither a source name nor an old signing credential grants access to capture's replay namespace.
+    const ingressSecurity = createSourceSecurity({ ORBIT_ENCRYPTION_KEY: '22'.repeat(32) })!;
+    const ingress = createApp({ database: f.db, assets: { fetch: async () => new Response('') }, sourceSecurity: ingressSecurity });
+    const signingSecret = 'capture-namespace-test-secret'.repeat(2), now = new Date().toISOString();
+    for (const [id, type] of [['legacy-calendar', 'capture'], ['capture-files', 'capture'], ['capture-old-webhook', 'signed_webhook']]) {
+      await f.db.prepare('INSERT INTO signal_sources(id,name,type,enabled,created_at,updated_at,secret_ciphertext) VALUES(?,?,?,1,?,?,?)')
+        .bind(id, id, type, now, now, await ingressSecurity.seal(signingSecret)).run();
+      const configured = await ingress.request(`https://orbit.test/api/v1/sources/${id}`, { method: 'PUT', headers: { cookie: f.cookie, origin: 'https://orbit.test', 'content-type': 'application/json' }, body: JSON.stringify({ name: 'Signed tool', enabled: true }) });
+      assert.equal(configured.status, 403, 'a capture row or reserved ID cannot become a signed source');
+      const forged = JSON.stringify({ eventId: await payloadHash('<question-1@acme.example>').then(hash => `message:${hash}`), type: `${id}:note`, subject: 'Forged reply identity', occurredAt: now });
+      const timestamp = String(Math.floor(Date.now() / 1000));
+      const posted = await ingress.request(`https://orbit.test/api/v1/signals/${id}`, { method: 'POST', headers: { 'X-Orbit-Timestamp': timestamp, 'X-Orbit-Signature': await signSource(signingSecret, `${timestamp}.${forged}`) }, body: forged });
+      assert.equal(posted.status, 403, 'a legacy valid secret cannot plant a captured reply identity');
+    }
+    assert.equal((await ingress.request('https://orbit.test/api/v1/sources/capture-future', { method: 'PUT', headers: { cookie: f.cookie, origin: 'https://orbit.test', 'content-type': 'application/json' }, body: JSON.stringify({ name: 'Reserved', enabled: true }) })).status, 403);
+    assert.equal(await count(f.db, "SELECT count(*) n FROM signals WHERE subject='Forged reply identity'"), 0);
+    assert.equal(await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(f.scheduled).first('state'), 'scheduled');
+    for(const id of ['legacy-calendar','capture-files','capture-old-webhook'])await f.db.prepare('DELETE FROM signal_sources WHERE id=?').bind(id).run();
+    await captureSourceBoundary(f,reply);
     assert.equal((await f.upload([{ name: 'reply.eml', text: reply }])).status, 201);
     assert.deepEqual(await f.db.prepare('SELECT state,failure FROM outbound_messages WHERE id=?').bind(f.scheduled).first(), { state: 'cancelled', failure: 'Customer reply' }, 'the scheduled send is cancelled at once');
     for (const draft of [f.scheduledDraft, f.unsentDraft]) assert.equal(await f.db.prepare('SELECT is_stale FROM drafts WHERE id=?').bind(draft).first('is_stale'), 1, 'unsent drafts are stale (ACTION-005)');

@@ -1,0 +1,29 @@
+import { useCallback,useState,type FormEvent } from 'react';
+import {RecordSelection} from './record-selection';
+import type {RecordKind} from './records-api';
+import { UnlinkedReplies } from './unlinked-replies';
+import { OperatorShell } from './operator-shell';
+import { useOperatorResource } from './use-operator-resource';
+interface Source {id:string;name:string;enabled:number;last_accepted_at:string|null;last_error:string|null;rejected_count:number}
+interface Unlinked {id:string;source_id:string;type:string;subject:string;occurred_at:string;reason:string}
+async function api<T>(path:string,init?:RequestInit):Promise<T>{const response=await fetch(`/api/v1/sources${path}`,init);const result=await response.json() as T&{error?:string};if(!response.ok)throw new Error(result.error??'Source request failed.');return result;}
+export function SourcesPage(){
+ const load=useCallback(async()=>{const [sources,unlinked]=await Promise.all([api<{sources:Source[];configured:boolean}>(''),api<{signals:Unlinked[]}>('/unlinked')]);return {...sources,...unlinked};},[]);
+ const [recordKind,setRecordKind]=useState<RecordKind>('contact');
+ const resource=useOperatorResource('sources',load),[error,setError]=useState(''),[saving,setSaving]=useState(false),[selection,setSelection]=useState<Unlinked|null>(null);
+ async function save(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget,values=new FormData(form);setSaving(true);setError('');try{await api(`/${encodeURIComponent(String(values.get('id')))}`,{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({name:values.get('name'),secret:values.get('secret'),enabled:values.get('enabled')==='on'})});form.reset();resource.reload();}catch(error){setError(error instanceof Error?error.message:'Source could not be saved.');}finally{setSaving(false);}}
+ async function link(event:FormEvent<HTMLFormElement>){event.preventDefault();if(!selection)return;const values=new FormData(event.currentTarget);setSaving(true);setError('');try{await api(`/unlinked/${selection.id}/link`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:values.get('type'),id:values.get('id')})});setSelection(null);resource.reload();}catch(error){setError(error instanceof Error?error.message:'Signal could not be linked.');}finally{setSaving(false);}}
+ return <OperatorShell eyebrow="Customer evidence" title="Signal sources">
+  <section className="operator-surface operator-detail__section"><h2>Connected sources</h2><p>Review delivery and resolve customer events that need a record match.</p>
+   {resource.loading&&<p>Loading sources…</p>}{(error||resource.error)&&<p role="alert">{error||resource.error?.message}</p>}
+   {resource.data?.sources.length===0&&<p>No external sources connected yet.</p>}
+   <div className="source-table-wrap" tabIndex={0} role="region" aria-label="Connected source diagnostics"><table className="source-table"><thead><tr><th>Source</th><th>Status</th><th>Last accepted</th><th>Rejected</th><th>Latest error</th></tr></thead><tbody>{resource.data?.sources.map(source=><tr key={source.id}><td><strong>{source.name}</strong><br/><small>{source.id}</small></td><td>{source.enabled?'Enabled':'Disabled'}</td><td>{source.last_accepted_at?new Date(source.last_accepted_at).toLocaleString():'No accepted events'}</td><td>{source.rejected_count}</td><td>{source.last_error??'None'}</td></tr>)}</tbody></table></div>
+  </section>
+  <div className="operator-detail__columns"><section className="operator-surface operator-detail__section"><h2>Unlinked review</h2><p>Events stay out of scores until a record is identified. Missing visitor identity consent cannot be bypassed here.</p>
+   {resource.data?.signals.length===0&&<p>All customer events are linked.</p>}
+   {resource.data?.signals.map(signal=><article className="operator-timeline__entry" key={signal.id}><h3>{signal.subject||signal.type}</h3><p>{signal.source_id} · {new Date(signal.occurred_at).toLocaleString()}</p><p>{signal.reason}</p><button className="orbit-button orbit-button--secondary" onClick={()=>setSelection(signal)}>Review record link</button></article>)}
+   {selection&&<form className="workbench-form" onSubmit={link}><h3>Link {selection.subject}</h3><label>Record type<select name="type" value={recordKind} onChange={e=>setRecordKind(e.target.value as RecordKind)}><option value="contact">Contact</option><option value="company">Company</option><option value="opportunity">Opportunity</option></select></label><RecordSelection kind={recordKind}/><button className="orbit-button orbit-button--primary" disabled={saving}>Confirm link</button><button type="button" className="orbit-button orbit-button--quiet" onClick={()=>setSelection(null)}>Cancel</button></form>}
+  </section><section className="operator-surface operator-detail__section"><h2>Configure a source</h2>{resource.data&&!resource.data.configured?<p>Source encryption is not configured. Set ORBIT_ENCRYPTION_KEY before adding secrets.</p>:<form className="workbench-form" onSubmit={save}><label>Source ID<input name="id" pattern="[a-zA-Z0-9_-]{1,80}" required/></label><label>Display name<input name="name" required maxLength={200}/></label><label>Signing secret<input name="secret" type="password" required minLength={32} maxLength={256} autoComplete="new-password"/></label><label><input name="enabled" type="checkbox" defaultChecked/> Enabled</label><p>Saving an existing source ID rotates its signing secret and updates its name and enabled state.</p><button className="orbit-button orbit-button--primary" disabled={saving}>{saving?'Saving…':'Save source'}</button></form>}</section></div>
+ <UnlinkedReplies/>
+ </OperatorShell>;
+}

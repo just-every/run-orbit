@@ -31,6 +31,12 @@ Open NOW and follow the checklist. Add a company and contact with **Add your fir
 
 Open the opportunity from NOW, choose **Write follow-up**, save the exact message and review **Approve and send**. Sending needs a configured customer mail sender; source setup and manual drafts work without one. **See an example** opens a separate read-only workspace and never adds sample customers to yours.
 
+### Capture mail and calendars
+
+Open **Capture** to import mail/calendar files or connect Gmail and Google Calendar, or Outlook mail and calendars. Each connection uses your own OAuth client and read-only permissions. Choose labels or folders and calendars before intake starts; calendar capture also has a fixed date window. Capture shows evidence and proposals for review, with the existing reply, bounce and stop-condition safeguards.
+
+Follow [Google setup](docs/CONNECT-GMAIL.md) or [Microsoft setup](docs/CONNECT-OUTLOOK.md). [OWNER-STEPS.md](OWNER-STEPS.md) contains the remaining live-account proof. A fresh `rer dev` start and a successful `rer deploy` print the callback URIs; Capture also displays them. Disconnect stops intake and deletes the saved provider credentials.
+
 ### Verify, reset and move data
 
 ```sh

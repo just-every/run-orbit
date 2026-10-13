@@ -1,0 +1,26 @@
+import type { ArchivePart, ArchiveTable } from './archive-schema';
+import { stageName } from './archive-storage';
+/** Bounded SQL inputs avoid D1's cell and per-invocation statement limits. */
+export function uploadStatements(db: D1Database, id: string, part: ArchivePart, catalog: ArchiveTable[]) {
+    const statements: D1PreparedStatement[] = [];
+    for (const name of new Set(part.records.map(r => r.table))) {
+        const columns = catalog.find(t => t.name === name)!.columns.map(c => c.name), table = stageName(id, name);
+        let buffer: string[] = [], bytes = 2;
+        const flush = () => { if (!buffer.length)
+            return; statements.push(db.prepare(`INSERT INTO ${table}(${columns.join(',')},archive_row_index) SELECT ${columns.map(c => `json_extract(value,'$.row.${c}')`).join(',')},json_extract(value,'$.index') FROM json_each(?)`).bind(`[${buffer.join(',')}]`)); buffer = []; bytes = 2; };
+        for (const record of part.records.filter(r => r.table === name)) {
+            const encoded = JSON.stringify(record), length = new TextEncoder().encode(encoded).length;
+            if (length > 1048000) {
+                flush();
+                statements.push(db.prepare(`INSERT INTO ${table}(${columns.join(',')},archive_row_index) VALUES(${columns.map(() => '?').join(',')},?)`).bind(...columns.map(c => record.row[c]), record.index));
+                continue;
+            }
+            if (bytes + length + 1 > 1048000)
+                flush();
+            buffer.push(encoded);
+            bytes += length + 1;
+        }
+        flush();
+    }
+    return statements;
+}

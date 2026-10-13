@@ -1,0 +1,41 @@
+import {readArchiveFile,validateManifest,type ArchiveManifest} from '../../../shared/archive-file.ts';
+export interface ArchiveStatus {id:string;state:string;completedTables?:number;totalTables?:number;nextPart?:number;manifest?:ArchiveManifest}
+const base='/api/v1/records/archive';
+export function archiveUrl(kind:'exports'|'imports',id:string,suffix=''){return `${base}/${kind}/${encodeURIComponent(id)}${suffix}`;}
+async function request(path:string,method='GET',body?:unknown):Promise<ArchiveStatus>{
+ const response=await fetch(path,{method,credentials:'same-origin',redirect:'error',headers:{'Content-Type':'application/json'},...(body===undefined?{}:{body:typeof body==='string'?body:JSON.stringify(body)})});
+ if(!response.ok){await response.body?.cancel();throw new Error(`Archive operation failed (HTTP ${response.status}). The transfer has not been confirmed complete. Check its state before resuming.`);}
+ return response.json();
+}
+export async function prepareArchive(id:string,update:(status:ArchiveStatus)=>void,paused:()=>boolean){
+ let status=await request(id?archiveUrl('exports',id):`${base}/exports`,id?'GET':'POST',id?undefined:{});update(status);
+ while(status.state==='preparing'&&!paused()){status=await request(archiveUrl('exports',status.id,'/advance'),'POST',{});update(status);}
+ if(!['preparing','ready'].includes(status.state))throw new Error(`Export is ${status.state}.`);
+ return status;
+}
+export async function restoreArchive(file:File,id:string,update:(status:ArchiveStatus)=>void,validated:(count:number)=>void,paused:()=>boolean){
+ let status=id?await request(archiveUrl('imports',id)):undefined;
+ if(status){update(status);if(status.state==='complete')return status;}
+ for await(const entry of readArchiveFile(file.stream())){
+  if(paused())return status;
+  if(entry.kind==='manifest'){
+   if(status){if(JSON.stringify(validateManifest(status.manifest))!==JSON.stringify(entry.manifest))throw new Error('This archive does not match the selected restore transfer.');}
+   else status=await request(`${base}/imports`,'POST',{confirmed:true,manifest:entry.manifest});
+   update(status);
+  }else{
+   if(!status)throw new Error('Missing restore transfer.');
+   if(!['uploading','restoring'].includes(status.state))throw new Error(`Restore is ${status.state}.`);
+   status=await request(archiveUrl('imports',status.id,`/parts/${entry.part.index}`),'PUT',entry.raw);
+   update(status);validated(entry.part.index+1);
+  }
+ }
+ if(!status)throw new Error('Archive contains no manifest.');
+ while(['uploading','restoring'].includes(status.state)&&!paused()){status=await request(archiveUrl('imports',status.id,'/finalize'),'POST',{});update(status);}
+ if(!['uploading','restoring','complete'].includes(status.state))throw new Error(`Restore is ${status.state}.`);
+ return status;
+}
+export async function abortArchive(kind:'exports'|'imports',id:string,update:(status:ArchiveStatus)=>void){
+ let status:ArchiveStatus;
+ do{status=await request(archiveUrl(kind,id,'/abort'),'POST',{});status.id??=id;update(status);}while(status.state==='restoring');
+ if(status.state!=='aborted')throw new Error(`Archive cancellation is ${status.state}; rollback has not been confirmed complete.`);
+}

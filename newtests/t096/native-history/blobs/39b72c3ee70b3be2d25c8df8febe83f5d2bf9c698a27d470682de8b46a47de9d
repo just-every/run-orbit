@@ -1,0 +1,5 @@
+// The illustration has no rectangular objects or calibrated depth landmarks.
+// Camera is an artistic reconstruction: its projection is anchored to source pixels.
+export const FRAME={w:1536,h:1024};
+export const CAM={pos:[0,0,30],yawDeg:0,pitchDeg:0,rollDeg:0,vfov:19.371};
+export const CLIP={near:10,far:50};

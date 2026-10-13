@@ -1,0 +1,79 @@
+export interface PublicDemoPayload {
+  opportunity: {
+    title: string;
+    stage: string;
+    score: number;
+    band: string;
+    queueState: string;
+    queueReason: string | null;
+    companyName: string | null;
+    contactName: string | null;
+  };
+  evidence: Array<{
+    id: string;
+    type: string;
+    subject: string | null;
+    occurredAt: string;
+    confidence: string;
+    contribution: number;
+  }>;
+  recommendation: {
+    actionType: string;
+    explanation: string | null;
+    policyVersion: string;
+  } | null;
+  draft: {
+    subject: string;
+    body: string;
+  } | null;
+}
+
+export class PublicDemoRepository {
+  constructor(private readonly db: D1Database) {}
+
+  async read(opportunityId: string): Promise<PublicDemoPayload | null> {
+    const opportunity = await this.db.prepare(`
+      SELECT o.title, o.score, o.band, o.queue_state AS queueState,
+        o.queue_reason AS queueReason, s.name AS stage,
+        c.name AS companyName, pc.name AS contactName
+      FROM opportunities o
+      JOIN pipeline_stages s ON s.id = o.stage_id
+      LEFT JOIN companies c ON c.id = o.company_id
+      LEFT JOIN opportunity_contacts oc ON oc.opportunity_id = o.id AND oc.is_primary = 1
+      LEFT JOIN contacts pc ON pc.id = oc.contact_id
+      WHERE o.id = ? AND o.lifecycle = 'open'
+    `).bind(opportunityId).first<PublicDemoPayload['opportunity']>();
+    if (!opportunity) return null;
+
+    const evaluation = await this.db.prepare(`
+      SELECT id FROM evaluations
+      WHERE opportunity_id = ? AND status = 'current'
+      ORDER BY evaluated_at DESC, id DESC LIMIT 1
+    `).bind(opportunityId).first<{ id: string }>();
+    const evidence = evaluation ? (await this.db.prepare(`
+      SELECT s.id, s.type, s.subject, s.occurred_at AS occurredAt,
+        s.confidence, c.contribution
+      FROM evaluation_contributions c
+      JOIN signals s ON s.id = c.signal_id
+      WHERE c.evaluation_id = ? AND s.confidence = 'observed'
+      ORDER BY s.occurred_at DESC, s.id ASC
+    `).bind(evaluation.id).all<PublicDemoPayload['evidence'][number]>()).results : [];
+    const recommendation = await this.db.prepare(`
+      SELECT id, action_type AS actionType, explanation, policy_version AS policyVersion
+      FROM recommendations
+      WHERE opportunity_id = ? AND is_current = 1
+      LIMIT 1
+    `).bind(opportunityId).first<{ id: string } & NonNullable<PublicDemoPayload['recommendation']>>();
+    const draft = recommendation ? await this.db.prepare(`
+      SELECT subject, body FROM drafts
+      WHERE opportunity_id = ? AND recommendation_id = ? AND is_stale = 0
+      ORDER BY updated_at DESC, id DESC LIMIT 1
+    `).bind(opportunityId, recommendation.id).first<NonNullable<PublicDemoPayload['draft']>>() : null;
+    const publicRecommendation = recommendation ? {
+      actionType: recommendation.actionType,
+      explanation: recommendation.explanation,
+      policyVersion: recommendation.policyVersion
+    } : null;
+    return { opportunity, evidence, recommendation: publicRecommendation, draft: draft ?? null };
+  }
+}

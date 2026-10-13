@@ -1,0 +1,105 @@
+import * as THREE from "three";
+import type { SceneBuild, SceneCamera, SceneController } from "./scene-contract";
+import { createTargetingProjection } from "./project-targeting";
+import { createAngularMomentum } from "./angular-momentum";
+
+/** A fixed camera, one owned frame loop, and independent ambient scene input. */
+export function createSceneRuntime(
+  canvas: HTMLCanvasElement,
+  overlay: HTMLDivElement,
+  spec: SceneCamera,
+  build: (scene: THREE.Scene, renderer: THREE.WebGLRenderer, camera: THREE.PerspectiveCamera) => SceneBuild,
+  initiallyPaused: boolean
+): SceneController {
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.setClearColor(0x000000, 0);
+  const scene = new THREE.Scene(), { CAM, FRAME, CLIP } = spec;
+  const camera = new THREE.PerspectiveCamera(CAM.vfov, FRAME.w / FRAME.h, CLIP.near, CLIP.far);
+  camera.position.fromArray(CAM.pos);
+  const degrees = THREE.MathUtils.degToRad;
+  camera.rotation.set(degrees(CAM.pitchDeg), degrees(CAM.yawDeg), degrees(CAM.rollDeg), "YXZ");
+  camera.updateMatrixWorld(true);
+  let built: SceneBuild;
+  try { built = build(scene, renderer, camera); }
+  catch (error) { disposeScene(scene); renderer.dispose(); throw error; }
+  const projection = createTargetingProjection(overlay, camera, built);
+  let paused = initiallyPaused, disposed = false, raf = 0, last = performance.now(), elapsed = 0;
+  const momentum = createAngularMomentum(last), pointer = momentum.angle;
+  canvas.dataset.cameraPose = JSON.stringify({ position: camera.position.toArray(), quaternion: camera.quaternion.toArray() });
+  function render() {
+    if (disposed) return;
+    renderer.render(scene, camera); projection.render();
+    canvas.dataset.elapsed = elapsed.toFixed(4);
+    canvas.dataset.pointer = JSON.stringify(pointer);
+  }
+  function resize() {
+    if (disposed) return;
+    const { width, height } = canvas.getBoundingClientRect();
+    if (width <= 0 || height <= 0) return;
+    renderer.setSize(width, height, false);
+    // Preserve the same source-registered full diagram at every screen size.
+    camera.setViewOffset(FRAME.w, FRAME.h, 520, 60, 1016, 944);
+    camera.updateProjectionMatrix(); projection.resize(); render();
+  }
+  built.update(0, pointer);
+  const observer = new ResizeObserver(resize); observer.observe(canvas); resize();
+  function loop() {
+    raf = 0;
+    if (disposed || paused || document.hidden) return;
+    // Motion uses analytic elapsed-time updates, including exponential momentum
+    // decay. Preserve visible frame time on slow renderers; schedule() resets
+    // the clock when pausing or hiding, so suspended time never catches up.
+    // RAF's timestamp describes the start of the frame and can precede input
+    // dispatched before this callback. Events and frames use the same live
+    // monotonic clock, so no new impulse inherits time before its arrival.
+    const now = performance.now(), dt = Math.max(0, (now - last) / 1000); last = now; elapsed += dt;
+    momentum.advance(now);
+    built.update(dt, pointer); render(); raf = requestAnimationFrame(loop);
+  }
+  function schedule() {
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0; last = performance.now(); momentum.resetClock(last);
+    if (paused || document.hidden) momentum.clearInput();
+    canvas.dataset.motionState = disposed ? "disposed" : document.hidden ? "hidden" : paused ? "paused" : "running";
+    if (!disposed && !paused && !document.hidden) raf = requestAnimationFrame(loop);
+  }
+  function move(event: PointerEvent) {
+    if (disposed || paused || document.hidden || event.pointerType !== "mouse") return;
+    momentum.move(event.clientX, event.clientY, innerWidth, innerHeight, performance.now());
+  }
+  function center() { momentum.clearInput(); }
+  function leave(event: PointerEvent) { if (event.relatedTarget === null) momentum.leave(); }
+  window.addEventListener("pointermove", move, { passive: true });
+  window.addEventListener("pointerout", leave, { passive: true }); window.addEventListener("blur", center);
+  document.addEventListener("visibilitychange", schedule);
+  void document.fonts.ready.then(() => { if (!disposed) resize(); });
+  schedule();
+  return {
+    pause(value) { paused = value; schedule(); },
+    dispose() {
+      if (disposed) return;
+      disposed = true; schedule(); observer.disconnect();
+      window.removeEventListener("pointermove", move); window.removeEventListener("pointerout", leave);
+      window.removeEventListener("blur", center); document.removeEventListener("visibilitychange", schedule);
+      disposeScene(scene); renderer.dispose();
+    }
+  };
+}
+
+function disposeScene(scene: THREE.Scene) {
+  const textures = new Set<THREE.Texture>(), materials = new Set<THREE.Material>(), geometries = new Set<THREE.BufferGeometry>();
+  scene.traverse(object => {
+    const mesh = object as THREE.Mesh;
+    if (mesh.geometry) geometries.add(mesh.geometry);
+    if (mesh.material) for (const material of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) materials.add(material);
+  });
+  for (const material of materials) {
+    for (const value of Object.values(material)) if (value instanceof THREE.Texture) textures.add(value);
+    if (material instanceof THREE.ShaderMaterial) for (const uniform of Object.values(material.uniforms)) if (uniform.value instanceof THREE.Texture) textures.add(uniform.value);
+  }
+  for (const texture of textures) texture.dispose();
+  for (const geometry of geometries) geometry.dispose();
+  for (const material of materials) material.dispose();
+  scene.clear();
+}

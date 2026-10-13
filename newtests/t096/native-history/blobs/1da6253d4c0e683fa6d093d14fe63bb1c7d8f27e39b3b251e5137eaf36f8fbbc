@@ -1,0 +1,29 @@
+export interface AssetStore {
+  fetch(request: Request): Promise<Response>;
+}
+
+export interface PlatformBindings {
+  MAIL_REPLY_TO?: string;
+  SENDGRID_UNSUBSCRIBE_GROUP_ID?: string;
+  RER_MAIL_RELAY_SECRET?: string;
+  SENDGRID_WEBHOOK_PUBLIC_KEY?: string;
+  SENDGRID_PARSE_PUBLIC_KEY?: string;
+  ORBIT_ENCRYPTION_KEY?: string;
+  OPENAI_API_KEY?: string;
+  AI_MODEL?: string;
+  AI_INPUT_COST_PER_MILLION?: string;
+  AI_CACHED_INPUT_COST_PER_MILLION?: string;
+  AI_OUTPUT_COST_PER_MILLION?: string;
+  AUTH_ORIGIN?: string;
+  MAIL_FROM?: string;
+  SENDGRID_API_KEY?: string;
+  PUBLIC_DEMO_OPPORTUNITY_ID?: string;
+  ASSETS: Fetcher;
+  DB: D1Database;
+}
+
+export function createAssetStore(bindings: PlatformBindings): AssetStore {
+  return {
+    fetch: (request) => bindings.ASSETS.fetch(request)
+  };
+}

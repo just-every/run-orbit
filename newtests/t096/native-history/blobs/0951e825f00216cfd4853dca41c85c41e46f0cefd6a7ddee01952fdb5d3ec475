@@ -1,0 +1,68 @@
+import * as THREE from 'three';
+
+const INTERVAL = 12.8;
+const smooth = value => { const t = THREE.MathUtils.clamp(value, 0, 1); return t * t * (3 - 2 * t); };
+
+/** A discovery belongs to the rotating material, from first lock through release. */
+export function createTargetingSequence(stages, camera) {
+  let elapsed = 0, active = -1;
+  const point = new THREE.Vector3(), axis = new THREE.Vector3(), coordinateAxis = new THREE.Vector3();
+  let coordinatesLocked = false;
+  const direction = new THREE.Vector3();
+  function acquire() {
+    const index = Math.floor(elapsed / INTERVAL);
+    if (index === active) return;
+    active = index; coordinatesLocked = false;
+    const surface = stages[index].surface;
+    surface.updateWorldMatrix(true, false);
+    const center = surface.getWorldPosition(new THREE.Vector3());
+    const facing = camera.position.clone().sub(center).normalize();
+    const right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+    const up = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
+    direction.copy(facing).multiplyScalar(Math.sqrt(1 - .38 ** 2 - .26 ** 2))
+      .addScaledVector(right, -.38).addScaledVector(up, .26).normalize()
+      .applyQuaternion(surface.getWorldQuaternion(new THREE.Quaternion()).invert());
+  }
+  function state() {
+    acquire();
+    const stage = stages[active], time = elapsed % INTERVAL;
+    const radius = stage.surface.geometry.parameters.radius;
+    stage.surface.updateWorldMatrix(true, false);
+    point.copy(direction).multiplyScalar(radius); stage.surface.localToWorld(point);
+    const center = stage.surface.getWorldPosition(new THREE.Vector3());
+    const offset = point.clone().sub(center);
+    // Each axis resolves independently, then both remain on the exact surface hit.
+    const xLock = smooth(time / 2.35), yLock = smooth(time / 2.8);
+    axis.copy(center).add(new THREE.Vector3(
+      offset.x + radius * 1.3 * (1 - xLock),
+      offset.y - radius * 1.18 * (1 - yLock), offset.z
+    ));
+    if (!coordinatesLocked) { coordinateAxis.copy(axis); coordinatesLocked = time >= 4.6; }
+    const contract = smooth((time - 2.8) / 1.8);
+    const phase = time < 2.8 ? 'acquire' : time < 4.6 ? 'contract' : time < 5.3 ? 'detect'
+      : time < 7.5 ? 'ripple' : time < 10.8 ? 'hold' : 'release';
+    const release = 1 - smooth((time - 10.8) / 1.5);
+    const finding = smooth((time - 5.3) / .55) * release;
+    const coordinates = smooth(time / .65) * (1 - smooth((time - 5.3) / .35));
+    const optics = smooth(time / .65) * (1 - .93 * smooth((time - 5.3) / 1.2)) * release;
+    const atmosphere = 1 - .65 * smooth((time - 5.3) / 1.8) + .65 * smooth((time - 11.3) / 1.5);
+    return { key: stage.key, phase, point, axis, coordinateAxis, surfaceRadius: radius,
+      radius: radius * (1.12 - 1.035 * contract), extent: radius * (1.65 - 1.45 * contract),
+      readoutExtent: radius * (1.65 - 1.23 * contract), opacity: optics,
+      coordinateOpacity: coordinates, findingOpacity: finding, atmosphere,
+      ripple: phase === 'ripple' ? (time - 5.3) / 2.2 : 0,
+      surface: stage.surface, direction };
+  }
+  function update(dt) {
+    elapsed = (elapsed + dt) % (INTERVAL * stages.length);
+    const target = state();
+    for (const stage of stages) {
+      const uniforms = stage.surface.material.uniforms;
+      uniforms.hitDirection.value.copy(direction);
+      uniforms.waveRadius.value = target.ripple * Math.PI * .92;
+      uniforms.waveStrength.value = stage.surface === target.surface && target.phase === 'ripple'
+        ? smooth(target.ripple / .07) * (1 - smooth((target.ripple - .65) / .35)) : 0;
+    }
+  }
+  return { update, state };
+}

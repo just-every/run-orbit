@@ -1,0 +1,30 @@
+import type { PropsWithChildren, ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
+
+import { OrbitLink } from "./primitives";
+
+interface PublicShellProps extends PropsWithChildren {
+  actions?: ReactNode;
+  current?: "home" | "signin" | "demo";
+  productName: string;
+}
+
+export function PublicShell({ actions, children, current, productName }: PublicShellProps) {
+  return (
+    <div className="public-shell">
+      <header className="public-header">
+        <Link aria-label={`${productName} landing page`} className="orbit-mark" to="/">
+          {productName}
+        </Link>
+        <nav aria-label="Public navigation" className="public-nav">
+          <Link aria-current={current === "home" ? "page" : undefined} to="/">Home</Link>
+          {current === "demo" ? <Link aria-current="page" to="/demo">Demo</Link> : null}
+        </nav>
+        <div className="public-header__actions">
+          {actions ?? <OrbitLink kind="primary" to="/signin">Sign in</OrbitLink>}
+        </div>
+      </header>
+      {children}
+    </div>
+  );
+}

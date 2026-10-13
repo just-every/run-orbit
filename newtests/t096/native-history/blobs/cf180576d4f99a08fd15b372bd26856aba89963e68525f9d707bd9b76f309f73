@@ -1,0 +1,44 @@
+import { Hono } from 'hono';
+import type { AuthConfiguration } from '../../platform/auth-mail';
+import { systemClock } from '../../platform/clock';
+import { AuthService, buildSessionCookie, clearSessionCookie } from './service';
+import { MagicLinkRepository } from './magic-link-repository';
+import { MagicLinkService } from './magic-link-service';
+
+export function createAuthRoutes(auth: AuthService, database: D1Database, configuration?: AuthConfiguration) {
+  const app = new Hono();
+  const magic = configuration ? new MagicLinkService(new MagicLinkRepository(database), auth, systemClock, configuration.mailer, configuration.origin) : undefined;
+  app.use('*', async (context, next) => {
+    context.header('Cache-Control', 'no-store');
+    context.header('Referrer-Policy', 'no-referrer');
+    await next();
+  });
+  app.get('/status', (context) => context.json({ configured: Boolean(magic) }));
+  app.post('/request', async (context) => {
+    if (!magic || !configuration) return context.json({ error: 'Magic-link delivery requires AUTH_ORIGIN, MAIL_FROM and SENDGRID_API_KEY.' }, 503);
+    if (context.req.header('Origin') !== configuration.origin || new URL(context.req.url).origin !== configuration.origin) return context.json({ error: 'Request origin is not allowed.' }, 403);
+    const body = await context.req.parseBody();
+    const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
+    if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return context.json({ error: 'Enter a valid email address.' }, 400);
+    try { await magic.request(email, body.returnTo); }
+    catch { return context.json({ error: 'Magic-link delivery failed. Contact the deployment owner.' }, 503); }
+    return context.json({ message: 'If this email belongs to an enabled operator, a sign-in link is on its way.' });
+  });
+  app.get('/verify', async (context) => {
+    if (!magic || !configuration) return context.text('Magic-link delivery is not configured.', 503);
+    if (new URL(context.req.url).origin !== configuration.origin) return context.text('Request origin is not allowed.', 403);
+    const result = await magic.consume(context.req.query('token') ?? '');
+    if (!result) return context.redirect('/signin?error=invalid-link', 303);
+    context.header('Set-Cookie', buildSessionCookie(result.session.token, result.session.expiresAt));
+    return context.redirect(result.returnTo, 303);
+  });
+  app.post('/signout', async (context) => {
+    const expected = configuration?.origin ?? new URL(context.req.url).origin;
+    if (context.req.header('Origin') !== expected) return context.text('Request origin is not allowed.', 403);
+    const operator = await auth.authenticate(context.req.header('Cookie'));
+    if (operator) await auth.revoke(operator.sessionId);
+    context.header('Set-Cookie', clearSessionCookie());
+    return context.redirect('/signin', 303);
+  });
+  return app;
+}

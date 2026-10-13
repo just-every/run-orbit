@@ -9,7 +9,7 @@ test('CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person 
   const f = await captureFixture();
   try {
     const mail = fixtureMailbox(f);
-    const direct = eml({ From: '"Ana Ruiz-Lopez" <ana@acme.example>', To: 'seller@orbit.test', Cc: 'Dan Ito <dan@acme.example>', Subject: 'Budget', Date: rfc(12), 'Message-ID': '<direct-1@acme.example>' }, 'We have budget for Q1.\n\n--\nAna\nMobile: +44 20 7946 0000');
+    const direct = eml({ From: '"Ana Ruiz-Lopez" <ana@acme.example>', To: 'seller@orbit.test', Cc: 'Dan Ito <dan@acme.example>', Subject: 'Budget', Date: rfc(12), 'Message-ID': '<direct-1@acme.example>' }, 'We have budget for Q1.\nMobile: +44 20 7946 0000\n\n--\nAna');
     const lookalike = eml({ From: '"Ana Ruiz" <ana.ruiz@freemail.example>', To: 'seller@orbit.test', Subject: 'Hello', Date: rfc(11), 'Message-ID': '<lookalike-1@freemail.example>' }, 'Same name, different person.');
     const files = [{ name: 'direct.eml', text: direct }, { name: 'forward.eml', text: mail.forward }, { name: 'invite.ics', text: mail.invite }, { name: 'lookalike.eml', text: lookalike }];
     // The stop a reply or booking makes at once (OUT-007) records its own cancellation entry; everything else waits for review.

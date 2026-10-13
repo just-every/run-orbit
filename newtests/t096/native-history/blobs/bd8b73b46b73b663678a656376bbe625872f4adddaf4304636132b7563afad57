@@ -1,0 +1,41 @@
+import {NotificationCount} from "./notifications-page";
+import type { PropsWithChildren, ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
+
+interface OperatorShellProps extends PropsWithChildren {
+  eyebrow?: string;
+  title: string;
+  action?: ReactNode;
+}
+
+export function OperatorShell({ action, children, eyebrow, title }: OperatorShellProps) {
+  return (
+    <div className="operator-shell">
+      <header className="operator-header">
+        <Link aria-label="Orbit home" className="operator-mark" to="/">Orbit</Link>
+        <nav aria-label="Operator navigation" className="operator-nav">
+          <Link to="/app/records">Opportunities</Link>
+          <Link activeProps={{ "aria-current": "page" }} to="/app">NOW</Link>
+          <Link to="/app/settings">Settings</Link>
+          <Link to="/app/sources">Sources</Link>
+          <NotificationCount />
+        </nav>
+        <form action="/auth/signout" method="post"><button className="operator-back-link">Sign out</button></form>
+      </header>
+      <main className="operator-main">
+        <header className="operator-titlebar">
+          <div>
+            {eyebrow ? <p className="operator-eyebrow">{eyebrow}</p> : null}
+            <h1>{title}</h1>
+          </div>
+          {action ? <div className="operator-titlebar__action">{action}</div> : null}
+        </header>
+        {children}
+      </main>
+    </div>
+  );
+}
+
+export function OperatorState({ children, kind = "info" }: PropsWithChildren<{ kind?: "error" | "info" }>) {
+  return <p className={`operator-state operator-state--${kind}`} role={kind === "error" ? "alert" : "status"}>{children}</p>;
+}
