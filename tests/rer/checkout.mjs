@@ -1,6 +1,6 @@
 import { execFile, spawn } from 'node:child_process';
 import { constants } from 'node:fs';
-import { copyFile, cp, mkdir, mkdtemp, realpath, rm } from 'node:fs/promises';
+import { copyFile, cp, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -37,15 +37,32 @@ export async function freshCheckout() {
   });
   const serve = (args) => {
     const child = spawn(process.execPath, ['node_modules/@runeditrun/rer/bin/rer.mjs', ...args], { cwd: root, env, stdio: ['ignore', 'pipe', 'pipe'] });
-    let output = '';
+    let output = '', becameReady = false;
     const ready = new Promise((done, fail) => {
-      const read = (chunk) => { output += chunk; if (/^RER_(SIGN_IN|OPEN) /m.test(output)) done(output); };
+      const read = (chunk) => { output += chunk; if (/^RER_(SIGN_IN|OPEN) /m.test(output)) { becameReady = true; done(output); } };
       child.stdout.on('data', read); child.stderr.on('data', read);
-      child.on('close', (code) => fail(new Error(`rer ${args[0]} exited ${code} before readiness; private output withheld`)));
+      child.on('close', async (code) => { if (!becameReady) fail(await startupFailure(root, args[0], code, output)); });
     });
     return { child, ready, exited: new Promise((done) => child.on('close', (code) => done({ code, output }))) };
   };
   return { root, rer, serve, async close() { await rm(root, { recursive: true, force: true }); await rm(servers, { recursive: true, force: true }); } };
+}
+
+// Keep failure evidence outside the disposable checkout and any public proof
+// tree. CLI output can contain private URLs; only this owner-only path is printed.
+async function startupFailure(root, verb, code, output) {
+  const message = `rer ${verb} exited ${code} before readiness`;
+  let directory;
+  try {
+    directory = await mkdtemp(join(tmpdir(), 'orbit-rer-startup-failure-'));
+    await writeFile(join(directory, 'command.log'), output, { mode: 0o600, flag: 'wx' });
+    const installer = await readFile(join(root, '.seed/installer/install.log')).catch((error) => { if (error.code !== 'ENOENT') throw error; });
+    if (installer) await writeFile(join(directory, 'installer.log'), installer, { mode: 0o600, flag: 'wx' });
+    return new Error(`${message}; private diagnostics retained at ${directory}`);
+  } catch {
+    if (directory) await rm(directory, { recursive: true, force: true }).catch(() => {});
+    return new Error(`${message}; private output withheld (diagnostic capture unavailable)`);
+  }
 }
 
 export async function freePort() {

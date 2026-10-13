@@ -9,7 +9,7 @@ export async function claimOrbitOwner(options){
   const response=await fetch(input,init);
   if(init?.method!=='POST'||response.status===303)return response;
   const body=await boundedJSON(response,8192).catch(()=>null);
-  const code=typeof body?.error==='string'&&/^[a-z_]{1,64}$/.test(body.error)?body.error:'no code';
+  const code=['already_initialized','invalid_setup_token','invalid_configuration'].includes(body?.error)?body.error:'no code';
   if(response.status===409&&code==='already_initialized')return Response.json({error:code},{status:409});
   refused=`HTTP ${response.status} (${code})`;
   throw Error('owner-claim-refused');

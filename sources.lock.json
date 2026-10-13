@@ -2885,6 +2885,10 @@
       "sha256": "a9562b16f997f5d0b1d9e461b3cf6d889b99be40bfda6cf2b4ee20a5641e833f",
       "executable": false
     },
+    "scripts/installer/hosted-owner.mjs": {
+      "sha256": "0db61e8cd7bca7b7c8c7aead207bdd52ee3bf7463115919f3a6c25bb9a83890e",
+      "executable": false
+    },
     "scripts/installer/local.mjs": {
       "sha256": "f1560bb10cee9471523efe327231d0405395ad3e9bb79270f278074198573b26",
       "executable": false
@@ -4973,6 +4977,10 @@
       "sha256": "810d6831e27e21debe0082d29cd557927ad5fe9ad0ef4af414edeab7801d06ab",
       "executable": false
     },
+    "src/core/shared/archive-transfer-error.ts": {
+      "sha256": "45aaf011839358345f3b812c5d60c07a87a2c9fb706ea88a9fabdb6d9cc16b1d",
+      "executable": false
+    },
     "src/core/shared/archive-transfer-file.ts": {
       "sha256": "f9ae1dec96aa3030fd2ca1580b0a1bdc1a46cb003545625237c55ded647a8143",
       "executable": false
@@ -6406,7 +6414,7 @@
       "executable": false
     },
     "tests/rer/checkout.mjs": {
-      "sha256": "3855da359c0ebd1813df742564107fb5725fe45330e04fed164261f8561efc08",
+      "sha256": "72bef0e696e3a9186ddd1a712e39cb9cd2ea01b6bfc7bfffbdf66cd28b93d20b",
       "executable": false
     },
     "tests/rer/editor-provider.mjs": {
