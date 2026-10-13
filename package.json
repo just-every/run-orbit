@@ -1,0 +1,92 @@
+{
+  "name": "orbit",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@10.12.4",
+  "engines": {
+    "node": "22.20.0"
+  },
+  "scripts": {
+    "setup": "node scripts/rer.mjs setup",
+    "dev": "node scripts/rer.mjs dev",
+    "preview": "node scripts/rer.mjs preview",
+    "build": "node scripts/rer.mjs build",
+    "verify": "node scripts/rer.mjs verify",
+    "reset": "node scripts/rer.mjs reset",
+    "deploy": "node scripts/rer.mjs deploy",
+    "export": "node scripts/rer.mjs export",
+    "import": "node scripts/rer.mjs import",
+    "release": "node scripts/rer.mjs release",
+    "outbox": "node scripts/rer.mjs outbox",
+    "doctor": "node scripts/rer.mjs doctor",
+    "describe": "node scripts/rer.mjs describe",
+    "check": "node scripts/rer.mjs check",
+    "deps": "node scripts/rer.mjs install",
+    "rer": "node scripts/rer.mjs",
+    "build:app": "node scripts/base-onboarding/queued-entry.mjs build:app -- vite build",
+    "verify:app": "node scripts/base-onboarding/queued-entry.mjs verify:app -- node scripts/verify.mjs",
+    "typecheck": "tsc --noEmit",
+    "check:boundaries": "node scripts/check-boundaries.mjs",
+    "test": "playwright test",
+    "test:list": "playwright test --list",
+    "test:composition": "node scripts/test-composition.mjs",
+    "test:worker": "tsx scripts/verify-worker.ts",
+    "test:deployment": "node --test tests/deployment/*.test.mjs",
+    "check:manifest": "node tools/seed-schema/validate.mjs --schema SEED seed.json",
+    "report:contract": "node scripts/report-contract-results.mjs",
+    "test:capacity": "tsx tests/performance/records-capacity.ts",
+    "test:archive": "playwright test --config tests/archive/playwright.config.mjs",
+    "source:check": "node scripts/edition-authoring/cli.mjs check",
+    "source:release": "node scripts/edition-authoring/cli.mjs release",
+    "test:delegation": "tsx --test --test-concurrency=1 tests/delegation/*.test.ts",
+    "test:delegation-browser": "tsx --test tests/delegation-browser/native.test.ts",
+    "test:delegation-viewport": "tsx --test tests/delegation-browser/viewport.test.ts",
+    "test:records-layout": "tsx --test tests/delegation-browser/records-layout.test.ts",
+    "test:related-records": "tsx --test tests/delegation-browser/related-records.test.ts",
+    "build:artifact": "node scripts/build-delivery-artifact.mjs",
+    "test:launch-artifact": "node --test tests/launch-artifact/*.test.mjs",
+    "test:launch-runtime": "tsx --test --test-concurrency=1 tests/launch-runtime/*.test.ts",
+    "test:core": "tsx --test --test-concurrency=1 tests/core/*.test.ts",
+    "verify:release": "node scripts/base-onboarding/queued-entry.mjs verify:app -- node scripts/verify.mjs --release"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "1.170.33",
+    "@tanstack/react-start": "1.168.50",
+    "drizzle-orm": "0.45.2",
+    "hono": "4.13.5",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "ulidx": "2.4.1",
+    "zod": "4.1.5"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@cloudflare/vite-plugin": "1.54.5",
+    "@cloudflare/workers-types": "5.20260908.1",
+    "@playwright/test": "1.61.1",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "22.19.17",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5",
+    "@vitejs/plugin-react": "6.1.1",
+    "highlight.js": "10.7.3",
+    "react-markdown": "6.0.3",
+    "remark-gfm": "1.0.0",
+    "tailwindcss": "4.3.3",
+    "tsx": "4.23.0",
+    "typescript": "5.9.3",
+    "vite": "8.2.2",
+    "wrangler": "4.129.1"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "miniflare@5.20260907.0-alpha": "patches/miniflare@5.20260907.0-alpha.patch",
+      "wrangler@4.129.1": "patches/wrangler@4.129.1.patch"
+    },
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "workerd"
+    ]
+  }
+}

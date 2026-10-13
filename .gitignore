@@ -1,0 +1,29 @@
+.DS_Store
+node_modules/
+dist/
+.wrangler/
+test-results/
+playwright-report/
+# Current execution artifacts; committed historical evidence lives in docs/retained-verification/.
+/verification/
+*.log
+/.orbit-viewport-evidence/
+.tanstack/
+.cache/
+
+# Local design work stays outside the installed source; archived prototypes live in family provenance.
+.12ui/
+
+# 12ui improve kits: candidates, captures and targets are not source
+.improve/
+
+# Local settings, CLI and installer state, owner archives and deployment receipts
+.dev.vars*
+.rer/
+.seed/installer/
+.seed/deployment/
+/exports/
+
+# Test transport scratch space and serialized delivery build output
+/.rer-tools/
+/delivery-artifact/

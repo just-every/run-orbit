@@ -1,0 +1,22 @@
+/* Derived from the approved 12ui D archive panels; the existing Orbit shell owns page chrome. */
+.workspace-archive{display:grid;gap:24px;margin-top:28px;color:inherit}
+.workspace-archive>header p{max-width:70ch}
+.workspace-archive__panel{display:grid;gap:16px;border:1px solid var(--ob-line);border-radius:9px;background:var(--ob-card);padding:24px;box-shadow:0 2px 10px #2a231906}
+.workspace-archive__panel h3{font-size:22px;font-weight:720;letter-spacing:-.01em;margin:0}
+.workspace-archive__panel>p{margin:0;line-height:1.5}
+.workspace-archive__panel label{display:grid;gap:8px;min-width:0}
+.workspace-archive__panel input:not([type=checkbox]){width:100%;min-width:0;box-sizing:border-box}
+.workspace-archive__actions{display:flex;flex-wrap:wrap;gap:12px}
+.workspace-archive__panel>button{justify-self:start}
+.workspace-archive__metrics{display:flex;flex-wrap:wrap;gap:28px;margin:0;padding:18px 0;border-block:1px solid var(--ob-line)}
+.workspace-archive__metrics dt{text-transform:none;font-size:13px;letter-spacing:0;color:var(--ob-muted)}
+.workspace-archive__metrics dd{font-size:16px;margin:8px 0 0;font-variant-numeric:tabular-nums}
+.workspace-archive__state{text-transform:capitalize}
+.workspace-archive__download{display:block;padding:16px;border:1px solid var(--ob-line);border-radius:7px;color:inherit;text-decoration:underline;text-underline-offset:3px}
+.workspace-archive__panel .workspace-archive__confirmation{display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.workspace-archive__confirmation input{margin-top:5px;flex:none}
+.workspace-archive__notice{background:var(--ob-paper-deep);padding:16px;border-radius:7px;font-size:14px}
+@media(max-width:600px){.workspace-archive__panel{padding:18px}.workspace-archive__metrics{gap:18px}}
+.workspace-archive>header h2{font:720 26px/1.2 var(--ob-sans);margin:8px 0 12px}
+.workspace-archive .operator-kicker{font-size:13px;letter-spacing:0;text-transform:none;color:var(--ob-muted)}
+.workspace-archive__panel .workspace-archive__confirmation input{width:16px;height:16px;min-height:16px;flex:0 0 16px;margin:4px 0 0;padding:0}

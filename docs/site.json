@@ -1,0 +1,39 @@
+{
+  "sections": [
+    { "title": "Start here", "pages": [
+      { "slug": "", "source": "docs/overview.md", "label": "Overview" },
+      { "slug": "run-locally", "source": "RUN-LOCALLY.md", "label": "Local command reference" }
+    ]},
+    { "title": "Run it", "pages": [
+      { "slug": "operations", "source": "OPERATIONS.md", "label": "Operations" },
+      { "slug": "moving-in", "source": "docs/imports/MOVING.md", "label": "Moving in customer records" },
+      { "slug": "signals-and-mail", "source": "SIGNALS-AND-OUTREACH.md", "label": "Signals and customer mail" },
+      { "slug": "updating", "source": "MIGRATION-RECOVERY.md", "label": "Updating and recovery" }
+    ]},
+    { "title": "Customise", "pages": [
+      { "slug": "record-policies", "source": "RECORD-POLICIES.md", "label": "Record policies" }
+    ]}
+  ],
+  "githubOnly": [
+    { "source": "README.md", "reason": "The repository front page for people reading the source: commands, authoring and release, with links to the maintainer files; /docs opens with docs/overview.md instead" },
+    { "source": "ACCEPTANCE.md", "reason": "Release acceptance obligations and their evidence, for maintainers and reviewers" },
+    { "source": "AGENTS.md", "reason": "Rules for coding agents and contributors working on Orbit's source" },
+    { "source": "AUTHORING.md", "reason": "How maintainers lock, check, materialize and release the edition source" },
+    { "source": "BASELINE.md", "reason": "Security, privacy and operations requirement clauses, for maintainers" },
+    { "source": "CLAUDE.md", "reason": "A one-line pointer to AGENTS.md for coding agents" },
+    { "source": "CONTRACT.md", "reason": "Product requirement clauses, for maintainers and reviewers" },
+    { "source": "DIVERGENCE.md", "reason": "Recorded design decisions and differences from the family, for maintainers" },
+    { "source": "HANDOVER.md", "reason": "Maintainer orientation and the current verification scope" },
+    { "source": "SEED-COMMAND-CONTRACT.md", "reason": "The shared command contract behind every setup, run, export and deploy command, for maintainers" },
+    { "source": "TESTING.md", "reason": "What the verification command runs, for maintainers; the Overview names the command" },
+    { "source": "docs/artifact/CONTRACT.md", "reason": "Delivery artifact contract for the release tooling, for maintainers" },
+    { "source": "docs/delegation-record-state.md", "reason": "Protocol note on handoff state for developers integrating a delegation client" },
+    { "source": "docs/fold/CONTRACT.md", "reason": "Fold integration clauses for maintainers" },
+    { "source": "docs/fold/MIGRATIONS.md", "reason": "Fold migration history for maintainers" },
+    { "source": "docs/fold/QUALIFICATION.md", "reason": "Fold qualification evidence for maintainers" },
+    { "source": "docs/fold/RELEASE-NOTES.md", "reason": "Fold release notes for maintainers, which cite internal requirement records" },
+    { "source": "docs/retained-verification/README.md", "reason": "Explains the retained historical verification reports, for maintainers" },
+    { "source": "docs/retained-verification/visual-review.md", "reason": "A retained visual review of the working journey, for maintainers" },
+    { "source": "docs/verification-runtime-checks.md", "reason": "Prepared one-off acceptance probes outside the product suite, for maintainers" }
+  ]
+}

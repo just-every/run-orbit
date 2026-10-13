@@ -1,0 +1,95 @@
+{
+ "origin": "http://127.0.0.1:8787",
+ "capturedAt": "2026-10-12T14:04:28.505Z",
+ "workspace": "workspace",
+ "opportunityId": "01M4R6V2J0E5HY97KFEW19GAVN",
+ "secondOpportunityId": "01M4R6V3JKJGMSQDJD792MKR4J",
+ "contactId": "01M4R6V2J0A7ZKB139HSKZVK3B",
+ "formSlug": "prior-inquiry",
+ "handoffTarget": "opportunities/01M4R6V2J0E5HY97KFEW19GAVN/handoffs/prior-handoff",
+ "delegation": {
+  "clientId": "slate",
+  "bearer": "42eff56f0c41d39a3680eeefc04b8ec6564188c82d1595849ee161e91977b593"
+ },
+ "operatorRows": [
+  {
+   "operator_id": "01M4R6RKK5A4YF6J4ZR0P09ZHJ",
+   "role": "legacy_operator",
+   "status": "active",
+   "display_name": "Prior Owner",
+   "email": "owner@prior.example",
+   "access_class": "native_full"
+  },
+  {
+   "operator_id": "01M4R6TYDCTSVF8ZHZT4SYPPRN",
+   "role": "legacy_operator",
+   "status": "active",
+   "display_name": "Prior Seller",
+   "email": "seller@prior.example",
+   "access_class": "native_full"
+  },
+  {
+   "operator_id": "01M4R6TYFGJC9DT8A1TC0252X6",
+   "role": "legacy_operator",
+   "status": "active",
+   "display_name": "Prior Leaver",
+   "email": "leaver@prior.example",
+   "access_class": "native_full"
+  },
+  {
+   "operator_id": "01M4R6V3SJ39DGJRF9APG7F0ZJ",
+   "role": "seller",
+   "status": "active",
+   "display_name": "collab@prior.example",
+   "email": "collab@prior.example",
+   "access_class": "collaborator"
+  },
+  {
+   "operator_id": "01M4R6V3YA9F2CYMTDG26K2WJ0",
+   "role": "analyst",
+   "status": "active",
+   "display_name": "analyst@prior.example",
+   "email": "analyst@prior.example",
+   "access_class": "collaborator"
+  }
+ ],
+ "people": {
+  "owner": {
+   "email": "owner@prior.example",
+   "session": "52fbc952e7aacc197dac09b66d6e95ddd296ca16469035bbefecd8fd563ec97e",
+   "id": "01M4R6RKK5A4YF6J4ZR0P09ZHJ"
+  },
+  "seller": {
+   "email": "seller@prior.example",
+   "id": "01M4R6TYDCTSVF8ZHZT4SYPPRN",
+   "session": "678f3de3f39f8ad1bc7e39c30119a45aa5dee1f245c24193c882069bebb64da9"
+  },
+  "leaver": {
+   "email": "leaver@prior.example",
+   "id": "01M4R6TYFGJC9DT8A1TC0252X6",
+   "session": "1414017c9ed4a67d096d51e6fa7d4a02b367173f12110b25c49cbfdd9d4accbe"
+  },
+  "collaborator": {
+   "email": "collab@prior.example",
+   "invitation": "dc05f244-2a16-4690-bca2-7b1425060158aaa7c082-c163-4bc5-bbe4-c96622edcf6e",
+   "invitationId": "e664ef99-5314-4056-8aba-e2c5ae2c7bb2",
+   "profile": "seller",
+   "session": "9f6034c907a0ac1fda909784e227d2139aa1b40226e603a612e1d296f165166d",
+   "id": "01M4R6V3SJ39DGJRF9APG7F0ZJ"
+  },
+  "analyst": {
+   "email": "analyst@prior.example",
+   "invitation": "9e9edb33-a749-4cb8-9387-986409e771f50b9f6366-4a2b-44a1-8221-5c013f54e6f9",
+   "invitationId": "313a294f-d09d-4403-93e4-b4aee1018ad3",
+   "profile": "analyst",
+   "session": "201f442377d91488554fd358d1d08664cd534002c4d6888da9a656b0c1d76e03",
+   "id": "01M4R6V3YA9F2CYMTDG26K2WJ0"
+  },
+  "pending": {
+   "email": "pending@prior.example",
+   "invitation": "a6e54991-e26e-4af6-869e-712e1b5a58c1ac1d9650-765e-43d3-8525-9983fba9ce42",
+   "invitationId": "c3a3531e-094d-402f-bfca-b814853a4504",
+   "profile": "guest"
+  }
+ }
+}

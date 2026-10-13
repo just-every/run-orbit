@@ -1,0 +1,1985 @@
+{
+ "owner:class": {
+  "status": 200,
+  "body": {
+   "access_class": "native_full"
+  }
+ },
+ "owner:workspaces": {
+  "status": 200,
+  "body": [
+   {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "name": "Your business"
+   }
+  ]
+ },
+ "owner:self": {
+  "status": 200,
+  "body": {
+   "role": "legacy_operator",
+   "access_class": "native_full"
+  }
+ },
+ "owner:opportunities": {
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "opportunity",
+      "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+      "revision": 1,
+      "dataEpoch": 1
+     },
+     "kind": "opportunity",
+     "fields": {
+      "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+      "title": "Prior renewal",
+      "lifecycle": "open",
+      "stage_id": "01M4R6RKK5ZNNHM2MX29YKTDD1",
+      "owner_id": null,
+      "company_id": "01M4R6V2J06N0NA02GDD2PW0WK",
+      "value_cents": 1250000,
+      "expected_close_at": null,
+      "score": 0,
+      "band": "low",
+      "queue_state": "now",
+      "queue_reason": "Operator created opportunity",
+      "last_contributing_signal_at": null,
+      "created_at": "2026-10-12T14:04:07.616Z",
+      "updated_at": "2026-10-12T14:04:07.616Z",
+      "next_due_at": null,
+      "custom_fields_json": "{}",
+      "closed_at": null,
+      "closed_by": null,
+      "close_reason": null
+     },
+     "fieldVersions": {
+      "id": 1,
+      "title": 1,
+      "lifecycle": 1,
+      "stage_id": 1,
+      "owner_id": 1,
+      "company_id": 1,
+      "value_cents": 1,
+      "expected_close_at": 1,
+      "score": 1,
+      "band": 1,
+      "queue_state": 1,
+      "queue_reason": 1,
+      "last_contributing_signal_at": 1,
+      "created_at": 1,
+      "updated_at": 1,
+      "next_due_at": 1,
+      "custom_fields_json": 1,
+      "closed_at": 1,
+      "closed_by": 1,
+      "close_reason": 1
+     }
+    },
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "opportunity",
+      "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+      "revision": 1,
+      "dataEpoch": 1
+     },
+     "kind": "opportunity",
+     "fields": {
+      "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+      "title": "Prior expansion",
+      "lifecycle": "open",
+      "stage_id": "01M4R6RKK69BY4RHSNVTQQ6YFE",
+      "owner_id": null,
+      "company_id": "01M4R6V3JK45Q1Q0XATESBJ6Z4",
+      "value_cents": 480000,
+      "expected_close_at": null,
+      "score": 0,
+      "band": "low",
+      "queue_state": "now",
+      "queue_reason": "Operator created opportunity",
+      "last_contributing_signal_at": null,
+      "created_at": "2026-10-12T14:04:08.659Z",
+      "updated_at": "2026-10-12T14:04:08.659Z",
+      "next_due_at": null,
+      "custom_fields_json": "{}",
+      "closed_at": null,
+      "closed_by": null,
+      "close_reason": null
+     },
+     "fieldVersions": {
+      "id": 1,
+      "title": 1,
+      "lifecycle": 1,
+      "stage_id": 1,
+      "owner_id": 1,
+      "company_id": 1,
+      "value_cents": 1,
+      "expected_close_at": 1,
+      "score": 1,
+      "band": 1,
+      "queue_state": 1,
+      "queue_reason": 1,
+      "last_contributing_signal_at": 1,
+      "created_at": 1,
+      "updated_at": 1,
+      "next_due_at": 1,
+      "custom_fields_json": 1,
+      "closed_at": 1,
+      "closed_by": 1,
+      "close_reason": 1
+     }
+    }
+   ],
+   "nextCursor": null,
+   "watermark": "19",
+   "incomplete": false
+  }
+ },
+ "owner:contacts": {
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "contact",
+      "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+      "revision": 3,
+      "dataEpoch": 3
+     },
+     "kind": "contact",
+     "fields": {
+      "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+      "company_id": "01M4R6V2J06N0NA02GDD2PW0WK",
+      "name": "Pat Prior",
+      "email": "pat@customer.example",
+      "email_key": "pat@customer.example",
+      "phone": "+1 555 0100",
+      "job_title": "Head of Ops",
+      "timezone": null,
+      "contactability": "contactable",
+      "created_at": "2026-10-12T14:04:07.616Z",
+      "updated_at": "2026-10-12T14:04:08.045Z",
+      "custom_fields_json": "{}",
+      "contactability_revision": 1
+     },
+     "fieldVersions": {
+      "id": 3,
+      "company_id": 3,
+      "name": 3,
+      "email": 3,
+      "email_key": 3,
+      "phone": 3,
+      "job_title": 3,
+      "timezone": 3,
+      "contactability": 3,
+      "created_at": 3,
+      "updated_at": 3,
+      "custom_fields_json": 3,
+      "contactability_revision": 3
+     }
+    },
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "contact",
+      "id": "01M4R6V3JKAAFZHWCS2HF9XK0N",
+      "revision": 1,
+      "dataEpoch": 1
+     },
+     "kind": "contact",
+     "fields": {
+      "id": "01M4R6V3JKAAFZHWCS2HF9XK0N",
+      "company_id": "01M4R6V3JK45Q1Q0XATESBJ6Z4",
+      "name": "Sam Second",
+      "email": "sam@second.example",
+      "email_key": "sam@second.example",
+      "phone": null,
+      "job_title": null,
+      "timezone": null,
+      "contactability": "contactable",
+      "created_at": "2026-10-12T14:04:08.659Z",
+      "updated_at": "2026-10-12T14:04:08.659Z",
+      "custom_fields_json": "{}",
+      "contactability_revision": 0
+     },
+     "fieldVersions": {
+      "id": 1,
+      "company_id": 1,
+      "name": 1,
+      "email": 1,
+      "email_key": 1,
+      "phone": 1,
+      "job_title": 1,
+      "timezone": 1,
+      "contactability": 1,
+      "created_at": 1,
+      "updated_at": 1,
+      "custom_fields_json": 1,
+      "contactability_revision": 1
+     }
+    }
+   ],
+   "nextCursor": null,
+   "watermark": "19",
+   "incomplete": false
+  }
+ },
+ "owner:opportunity": {
+  "status": 200,
+  "body": {
+   "ref": {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "type": "opportunity",
+    "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+    "revision": 1,
+    "dataEpoch": 1
+   },
+   "kind": "opportunity",
+   "fields": {
+    "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+    "title": "Prior renewal",
+    "lifecycle": "open",
+    "stage_id": "01M4R6RKK5ZNNHM2MX29YKTDD1",
+    "owner_id": null,
+    "company_id": "01M4R6V2J06N0NA02GDD2PW0WK",
+    "value_cents": 1250000,
+    "expected_close_at": null,
+    "score": 0,
+    "band": "low",
+    "queue_state": "now",
+    "queue_reason": "Operator created opportunity",
+    "last_contributing_signal_at": null,
+    "created_at": "2026-10-12T14:04:07.616Z",
+    "updated_at": "2026-10-12T14:04:07.616Z",
+    "next_due_at": null,
+    "custom_fields_json": "{}",
+    "closed_at": null,
+    "closed_by": null,
+    "close_reason": null
+   },
+   "fieldVersions": {
+    "id": 1,
+    "title": 1,
+    "lifecycle": 1,
+    "stage_id": 1,
+    "owner_id": 1,
+    "company_id": 1,
+    "value_cents": 1,
+    "expected_close_at": 1,
+    "score": 1,
+    "band": 1,
+    "queue_state": 1,
+    "queue_reason": 1,
+    "last_contributing_signal_at": 1,
+    "created_at": 1,
+    "updated_at": 1,
+    "next_due_at": 1,
+    "custom_fields_json": 1,
+    "closed_at": 1,
+    "closed_by": 1,
+    "close_reason": 1
+   },
+   "editableFields": [
+    "title",
+    "stage_id",
+    "owner_id",
+    "company_id",
+    "value_cents",
+    "expected_close_at"
+   ]
+  }
+ },
+ "owner:second-opportunity": {
+  "status": 200,
+  "body": {
+   "ref": {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "type": "opportunity",
+    "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+    "revision": 1,
+    "dataEpoch": 1
+   },
+   "kind": "opportunity",
+   "fields": {
+    "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+    "title": "Prior expansion",
+    "lifecycle": "open",
+    "stage_id": "01M4R6RKK69BY4RHSNVTQQ6YFE",
+    "owner_id": null,
+    "company_id": "01M4R6V3JK45Q1Q0XATESBJ6Z4",
+    "value_cents": 480000,
+    "expected_close_at": null,
+    "score": 0,
+    "band": "low",
+    "queue_state": "now",
+    "queue_reason": "Operator created opportunity",
+    "last_contributing_signal_at": null,
+    "created_at": "2026-10-12T14:04:08.659Z",
+    "updated_at": "2026-10-12T14:04:08.659Z",
+    "next_due_at": null,
+    "custom_fields_json": "{}",
+    "closed_at": null,
+    "closed_by": null,
+    "close_reason": null
+   },
+   "fieldVersions": {
+    "id": 1,
+    "title": 1,
+    "lifecycle": 1,
+    "stage_id": 1,
+    "owner_id": 1,
+    "company_id": 1,
+    "value_cents": 1,
+    "expected_close_at": 1,
+    "score": 1,
+    "band": 1,
+    "queue_state": 1,
+    "queue_reason": 1,
+    "last_contributing_signal_at": 1,
+    "created_at": 1,
+    "updated_at": 1,
+    "next_due_at": 1,
+    "custom_fields_json": 1,
+    "closed_at": 1,
+    "closed_by": 1,
+    "close_reason": 1
+   },
+   "editableFields": [
+    "title",
+    "stage_id",
+    "owner_id",
+    "company_id",
+    "value_cents",
+    "expected_close_at"
+   ]
+  }
+ },
+ "owner:contact": {
+  "status": 200,
+  "body": {
+   "ref": {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "type": "contact",
+    "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+    "revision": 3,
+    "dataEpoch": 3
+   },
+   "kind": "contact",
+   "fields": {
+    "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+    "company_id": "01M4R6V2J06N0NA02GDD2PW0WK",
+    "name": "Pat Prior",
+    "email": "pat@customer.example",
+    "email_key": "pat@customer.example",
+    "phone": "+1 555 0100",
+    "job_title": "Head of Ops",
+    "timezone": null,
+    "contactability": "contactable",
+    "created_at": "2026-10-12T14:04:07.616Z",
+    "updated_at": "2026-10-12T14:04:08.045Z",
+    "custom_fields_json": "{}",
+    "contactability_revision": 1
+   },
+   "fieldVersions": {
+    "id": 3,
+    "company_id": 3,
+    "name": 3,
+    "email": 3,
+    "email_key": 3,
+    "phone": 3,
+    "job_title": 3,
+    "timezone": 3,
+    "contactability": 3,
+    "created_at": 3,
+    "updated_at": 3,
+    "custom_fields_json": 3,
+    "contactability_revision": 3
+   },
+   "editableFields": [
+    "name",
+    "email",
+    "phone",
+    "job_title",
+    "timezone",
+    "company_id",
+    "contactability"
+   ]
+  }
+ },
+ "owner:workbench": {
+  "status": 200,
+  "body": {
+   "companies": [
+    {
+     "id": "01M4R6V2J06N0NA02GDD2PW0WK",
+     "name": "Prior Customer Ltd"
+    },
+    {
+     "id": "01M4R6V3JK45Q1Q0XATESBJ6Z4",
+     "name": "Second Customer Co"
+    }
+   ],
+   "contacts": [
+    {
+     "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+     "name": "Pat Prior",
+     "email": "pat@customer.example",
+     "companyId": "01M4R6V2J06N0NA02GDD2PW0WK"
+    },
+    {
+     "id": "01M4R6V3JKAAFZHWCS2HF9XK0N",
+     "name": "Sam Second",
+     "email": "sam@second.example",
+     "companyId": "01M4R6V3JK45Q1Q0XATESBJ6Z4"
+    }
+   ],
+   "stages": [
+    {
+     "id": "01M4R6RKK5ZNNHM2MX29YKTDD1",
+     "name": "New"
+    },
+    {
+     "id": "01M4R6RKK69BY4RHSNVTQQ6YFE",
+     "name": "Qualified"
+    },
+    {
+     "id": "01M4R6RKK7T6BZ2CFZDJA5SAZ3",
+     "name": "Proposal"
+    }
+   ],
+   "opportunities": [
+    {
+     "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+     "title": "Prior expansion",
+     "score": 0,
+     "band": "low",
+     "queueState": "now",
+     "queueReason": "Operator created opportunity",
+     "nextDueAt": null
+    },
+    {
+     "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+     "title": "Prior renewal",
+     "score": 0,
+     "band": "low",
+     "queueState": "now",
+     "queueReason": "Operator created opportunity",
+     "nextDueAt": null
+    }
+   ],
+   "mailConfigured": false
+  }
+ },
+ "owner:administration": {
+  "status": 200,
+  "body": {
+   "members": [
+    {
+     "operator_id": "01M4R6RKK5A4YF6J4ZR0P09ZHJ",
+     "role": "legacy_operator",
+     "status": "active",
+     "display_name": "Prior Owner",
+     "email": "owner@prior.example",
+     "access_class": "native_full"
+    },
+    {
+     "operator_id": "01M4R6TYDCTSVF8ZHZT4SYPPRN",
+     "role": "legacy_operator",
+     "status": "active",
+     "display_name": "Prior Seller",
+     "email": "seller@prior.example",
+     "access_class": "native_full"
+    },
+    {
+     "operator_id": "01M4R6TYFGJC9DT8A1TC0252X6",
+     "role": "legacy_operator",
+     "status": "removed",
+     "display_name": "Prior Leaver",
+     "email": "leaver@prior.example",
+     "access_class": "native_full"
+    },
+    {
+     "operator_id": "01M4R6V3SJ39DGJRF9APG7F0ZJ",
+     "role": "seller",
+     "status": "active",
+     "display_name": "collab@prior.example",
+     "email": "collab@prior.example",
+     "access_class": "collaborator"
+    },
+    {
+     "operator_id": "01M4R6V3YA9F2CYMTDG26K2WJ0",
+     "role": "analyst",
+     "status": "active",
+     "display_name": "analyst@prior.example",
+     "email": "analyst@prior.example",
+     "access_class": "collaborator"
+    }
+   ],
+   "grants": [
+    {
+     "id": "b6153aba-acd0-4633-ab4c-314137b81c32",
+     "subject_kind": "operator",
+     "subject_id": "01M4R6V3SJ39DGJRF9APG7F0ZJ",
+     "resource_type": "opportunity",
+     "resource_id": "01M4R6V2J0E5HY97KFEW19GAVN",
+     "actions_json": "[\"graph.read\",\"graph.update\"]",
+     "fields_json": "[\"title\",\"value_cents\",\"expected_close_at\"]",
+     "purpose": "Work the renewal",
+     "expires_at": null,
+     "revoked_at": null
+    },
+    {
+     "id": "caea8448-679b-480d-a7d2-8d6be1867589",
+     "subject_kind": "operator",
+     "subject_id": "01M4R6V3SJ39DGJRF9APG7F0ZJ",
+     "resource_type": "contact",
+     "resource_id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+     "actions_json": "[\"graph.read\"]",
+     "fields_json": "[\"name\",\"email\"]",
+     "purpose": "Contact the buyer",
+     "expires_at": null,
+     "revoked_at": null
+    },
+    {
+     "id": "e28575ae-014b-41f0-9a96-3708e8b5f417",
+     "subject_kind": "operator",
+     "subject_id": "01M4R6V3YA9F2CYMTDG26K2WJ0",
+     "resource_type": "opportunity",
+     "resource_id": "01M4R6V3JKJGMSQDJD792MKR4J",
+     "actions_json": "[\"graph.read\"]",
+     "fields_json": "[\"title\",\"value_cents\"]",
+     "purpose": "Forecast review",
+     "expires_at": null,
+     "revoked_at": null
+    }
+   ],
+   "invitations": [
+    {
+     "id": "e664ef99-5314-4056-8aba-e2c5ae2c7bb2",
+     "email": "collab@prior.example",
+     "role": "seller",
+     "expires_at": "2026-11-10T14:04:08.753Z",
+     "accepted_by": "01M4R6V3SJ39DGJRF9APG7F0ZJ",
+     "revoked_at": null
+    },
+    {
+     "id": "313a294f-d09d-4403-93e4-b4aee1018ad3",
+     "email": "analyst@prior.example",
+     "role": "analyst",
+     "expires_at": "2026-11-10T14:04:08.753Z",
+     "accepted_by": "01M4R6V3YA9F2CYMTDG26K2WJ0",
+     "revoked_at": null
+    },
+    {
+     "id": "c3a3531e-094d-402f-bfca-b814853a4504",
+     "email": "pending@prior.example",
+     "role": "guest",
+     "expires_at": "2026-11-10T14:04:08.753Z",
+     "accepted_by": null,
+     "revoked_at": null
+    }
+   ],
+   "roleProfiles": [
+    {
+     "role": "seller",
+     "source": "default",
+     "actions": [
+      "graph.read",
+      "graph.search",
+      "graph.update",
+      "legacy.read",
+      "legacy.write",
+      "analytics.read"
+     ],
+     "fields": [
+      "*"
+     ]
+    },
+    {
+     "role": "analyst",
+     "source": "configured",
+     "actions": [
+      "graph.read",
+      "graph.search",
+      "analytics.read"
+     ],
+     "fields": [
+      "title",
+      "name",
+      "value_cents"
+     ]
+    },
+    {
+     "role": "guest",
+     "source": "default",
+     "actions": [],
+     "fields": [
+      "*"
+     ]
+    }
+   ],
+   "policyEpoch": 19
+  }
+ },
+ "seller:class": {
+  "status": 200,
+  "body": {
+   "access_class": "native_full"
+  }
+ },
+ "seller:workspaces": {
+  "status": 200,
+  "body": [
+   {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "name": "Your business"
+   }
+  ]
+ },
+ "seller:self": {
+  "status": 200,
+  "body": {
+   "role": "legacy_operator",
+   "access_class": "native_full"
+  }
+ },
+ "seller:opportunities": {
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "opportunity",
+      "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+      "revision": 1,
+      "dataEpoch": 1
+     },
+     "kind": "opportunity",
+     "fields": {
+      "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+      "title": "Prior renewal",
+      "lifecycle": "open",
+      "stage_id": "01M4R6RKK5ZNNHM2MX29YKTDD1",
+      "owner_id": null,
+      "company_id": "01M4R6V2J06N0NA02GDD2PW0WK",
+      "value_cents": 1250000,
+      "expected_close_at": null,
+      "score": 0,
+      "band": "low",
+      "queue_state": "now",
+      "queue_reason": "Operator created opportunity",
+      "last_contributing_signal_at": null,
+      "created_at": "2026-10-12T14:04:07.616Z",
+      "updated_at": "2026-10-12T14:04:07.616Z",
+      "next_due_at": null,
+      "custom_fields_json": "{}",
+      "closed_at": null,
+      "closed_by": null,
+      "close_reason": null
+     },
+     "fieldVersions": {
+      "id": 1,
+      "title": 1,
+      "lifecycle": 1,
+      "stage_id": 1,
+      "owner_id": 1,
+      "company_id": 1,
+      "value_cents": 1,
+      "expected_close_at": 1,
+      "score": 1,
+      "band": 1,
+      "queue_state": 1,
+      "queue_reason": 1,
+      "last_contributing_signal_at": 1,
+      "created_at": 1,
+      "updated_at": 1,
+      "next_due_at": 1,
+      "custom_fields_json": 1,
+      "closed_at": 1,
+      "closed_by": 1,
+      "close_reason": 1
+     }
+    },
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "opportunity",
+      "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+      "revision": 1,
+      "dataEpoch": 1
+     },
+     "kind": "opportunity",
+     "fields": {
+      "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+      "title": "Prior expansion",
+      "lifecycle": "open",
+      "stage_id": "01M4R6RKK69BY4RHSNVTQQ6YFE",
+      "owner_id": null,
+      "company_id": "01M4R6V3JK45Q1Q0XATESBJ6Z4",
+      "value_cents": 480000,
+      "expected_close_at": null,
+      "score": 0,
+      "band": "low",
+      "queue_state": "now",
+      "queue_reason": "Operator created opportunity",
+      "last_contributing_signal_at": null,
+      "created_at": "2026-10-12T14:04:08.659Z",
+      "updated_at": "2026-10-12T14:04:08.659Z",
+      "next_due_at": null,
+      "custom_fields_json": "{}",
+      "closed_at": null,
+      "closed_by": null,
+      "close_reason": null
+     },
+     "fieldVersions": {
+      "id": 1,
+      "title": 1,
+      "lifecycle": 1,
+      "stage_id": 1,
+      "owner_id": 1,
+      "company_id": 1,
+      "value_cents": 1,
+      "expected_close_at": 1,
+      "score": 1,
+      "band": 1,
+      "queue_state": 1,
+      "queue_reason": 1,
+      "last_contributing_signal_at": 1,
+      "created_at": 1,
+      "updated_at": 1,
+      "next_due_at": 1,
+      "custom_fields_json": 1,
+      "closed_at": 1,
+      "closed_by": 1,
+      "close_reason": 1
+     }
+    }
+   ],
+   "nextCursor": null,
+   "watermark": "19",
+   "incomplete": false
+  }
+ },
+ "seller:contacts": {
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "contact",
+      "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+      "revision": 3,
+      "dataEpoch": 3
+     },
+     "kind": "contact",
+     "fields": {
+      "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+      "company_id": "01M4R6V2J06N0NA02GDD2PW0WK",
+      "name": "Pat Prior",
+      "email": "pat@customer.example",
+      "email_key": "pat@customer.example",
+      "phone": "+1 555 0100",
+      "job_title": "Head of Ops",
+      "timezone": null,
+      "contactability": "contactable",
+      "created_at": "2026-10-12T14:04:07.616Z",
+      "updated_at": "2026-10-12T14:04:08.045Z",
+      "custom_fields_json": "{}",
+      "contactability_revision": 1
+     },
+     "fieldVersions": {
+      "id": 3,
+      "company_id": 3,
+      "name": 3,
+      "email": 3,
+      "email_key": 3,
+      "phone": 3,
+      "job_title": 3,
+      "timezone": 3,
+      "contactability": 3,
+      "created_at": 3,
+      "updated_at": 3,
+      "custom_fields_json": 3,
+      "contactability_revision": 3
+     }
+    },
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "contact",
+      "id": "01M4R6V3JKAAFZHWCS2HF9XK0N",
+      "revision": 1,
+      "dataEpoch": 1
+     },
+     "kind": "contact",
+     "fields": {
+      "id": "01M4R6V3JKAAFZHWCS2HF9XK0N",
+      "company_id": "01M4R6V3JK45Q1Q0XATESBJ6Z4",
+      "name": "Sam Second",
+      "email": "sam@second.example",
+      "email_key": "sam@second.example",
+      "phone": null,
+      "job_title": null,
+      "timezone": null,
+      "contactability": "contactable",
+      "created_at": "2026-10-12T14:04:08.659Z",
+      "updated_at": "2026-10-12T14:04:08.659Z",
+      "custom_fields_json": "{}",
+      "contactability_revision": 0
+     },
+     "fieldVersions": {
+      "id": 1,
+      "company_id": 1,
+      "name": 1,
+      "email": 1,
+      "email_key": 1,
+      "phone": 1,
+      "job_title": 1,
+      "timezone": 1,
+      "contactability": 1,
+      "created_at": 1,
+      "updated_at": 1,
+      "custom_fields_json": 1,
+      "contactability_revision": 1
+     }
+    }
+   ],
+   "nextCursor": null,
+   "watermark": "19",
+   "incomplete": false
+  }
+ },
+ "seller:opportunity": {
+  "status": 200,
+  "body": {
+   "ref": {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "type": "opportunity",
+    "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+    "revision": 1,
+    "dataEpoch": 1
+   },
+   "kind": "opportunity",
+   "fields": {
+    "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+    "title": "Prior renewal",
+    "lifecycle": "open",
+    "stage_id": "01M4R6RKK5ZNNHM2MX29YKTDD1",
+    "owner_id": null,
+    "company_id": "01M4R6V2J06N0NA02GDD2PW0WK",
+    "value_cents": 1250000,
+    "expected_close_at": null,
+    "score": 0,
+    "band": "low",
+    "queue_state": "now",
+    "queue_reason": "Operator created opportunity",
+    "last_contributing_signal_at": null,
+    "created_at": "2026-10-12T14:04:07.616Z",
+    "updated_at": "2026-10-12T14:04:07.616Z",
+    "next_due_at": null,
+    "custom_fields_json": "{}",
+    "closed_at": null,
+    "closed_by": null,
+    "close_reason": null
+   },
+   "fieldVersions": {
+    "id": 1,
+    "title": 1,
+    "lifecycle": 1,
+    "stage_id": 1,
+    "owner_id": 1,
+    "company_id": 1,
+    "value_cents": 1,
+    "expected_close_at": 1,
+    "score": 1,
+    "band": 1,
+    "queue_state": 1,
+    "queue_reason": 1,
+    "last_contributing_signal_at": 1,
+    "created_at": 1,
+    "updated_at": 1,
+    "next_due_at": 1,
+    "custom_fields_json": 1,
+    "closed_at": 1,
+    "closed_by": 1,
+    "close_reason": 1
+   },
+   "editableFields": [
+    "title",
+    "stage_id",
+    "owner_id",
+    "company_id",
+    "value_cents",
+    "expected_close_at"
+   ]
+  }
+ },
+ "seller:second-opportunity": {
+  "status": 200,
+  "body": {
+   "ref": {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "type": "opportunity",
+    "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+    "revision": 1,
+    "dataEpoch": 1
+   },
+   "kind": "opportunity",
+   "fields": {
+    "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+    "title": "Prior expansion",
+    "lifecycle": "open",
+    "stage_id": "01M4R6RKK69BY4RHSNVTQQ6YFE",
+    "owner_id": null,
+    "company_id": "01M4R6V3JK45Q1Q0XATESBJ6Z4",
+    "value_cents": 480000,
+    "expected_close_at": null,
+    "score": 0,
+    "band": "low",
+    "queue_state": "now",
+    "queue_reason": "Operator created opportunity",
+    "last_contributing_signal_at": null,
+    "created_at": "2026-10-12T14:04:08.659Z",
+    "updated_at": "2026-10-12T14:04:08.659Z",
+    "next_due_at": null,
+    "custom_fields_json": "{}",
+    "closed_at": null,
+    "closed_by": null,
+    "close_reason": null
+   },
+   "fieldVersions": {
+    "id": 1,
+    "title": 1,
+    "lifecycle": 1,
+    "stage_id": 1,
+    "owner_id": 1,
+    "company_id": 1,
+    "value_cents": 1,
+    "expected_close_at": 1,
+    "score": 1,
+    "band": 1,
+    "queue_state": 1,
+    "queue_reason": 1,
+    "last_contributing_signal_at": 1,
+    "created_at": 1,
+    "updated_at": 1,
+    "next_due_at": 1,
+    "custom_fields_json": 1,
+    "closed_at": 1,
+    "closed_by": 1,
+    "close_reason": 1
+   },
+   "editableFields": [
+    "title",
+    "stage_id",
+    "owner_id",
+    "company_id",
+    "value_cents",
+    "expected_close_at"
+   ]
+  }
+ },
+ "seller:contact": {
+  "status": 200,
+  "body": {
+   "ref": {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "type": "contact",
+    "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+    "revision": 3,
+    "dataEpoch": 3
+   },
+   "kind": "contact",
+   "fields": {
+    "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+    "company_id": "01M4R6V2J06N0NA02GDD2PW0WK",
+    "name": "Pat Prior",
+    "email": "pat@customer.example",
+    "email_key": "pat@customer.example",
+    "phone": "+1 555 0100",
+    "job_title": "Head of Ops",
+    "timezone": null,
+    "contactability": "contactable",
+    "created_at": "2026-10-12T14:04:07.616Z",
+    "updated_at": "2026-10-12T14:04:08.045Z",
+    "custom_fields_json": "{}",
+    "contactability_revision": 1
+   },
+   "fieldVersions": {
+    "id": 3,
+    "company_id": 3,
+    "name": 3,
+    "email": 3,
+    "email_key": 3,
+    "phone": 3,
+    "job_title": 3,
+    "timezone": 3,
+    "contactability": 3,
+    "created_at": 3,
+    "updated_at": 3,
+    "custom_fields_json": 3,
+    "contactability_revision": 3
+   },
+   "editableFields": [
+    "name",
+    "email",
+    "phone",
+    "job_title",
+    "timezone",
+    "company_id",
+    "contactability"
+   ]
+  }
+ },
+ "seller:workbench": {
+  "status": 200,
+  "body": {
+   "companies": [
+    {
+     "id": "01M4R6V2J06N0NA02GDD2PW0WK",
+     "name": "Prior Customer Ltd"
+    },
+    {
+     "id": "01M4R6V3JK45Q1Q0XATESBJ6Z4",
+     "name": "Second Customer Co"
+    }
+   ],
+   "contacts": [
+    {
+     "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+     "name": "Pat Prior",
+     "email": "pat@customer.example",
+     "companyId": "01M4R6V2J06N0NA02GDD2PW0WK"
+    },
+    {
+     "id": "01M4R6V3JKAAFZHWCS2HF9XK0N",
+     "name": "Sam Second",
+     "email": "sam@second.example",
+     "companyId": "01M4R6V3JK45Q1Q0XATESBJ6Z4"
+    }
+   ],
+   "stages": [
+    {
+     "id": "01M4R6RKK5ZNNHM2MX29YKTDD1",
+     "name": "New"
+    },
+    {
+     "id": "01M4R6RKK69BY4RHSNVTQQ6YFE",
+     "name": "Qualified"
+    },
+    {
+     "id": "01M4R6RKK7T6BZ2CFZDJA5SAZ3",
+     "name": "Proposal"
+    }
+   ],
+   "opportunities": [
+    {
+     "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+     "title": "Prior expansion",
+     "score": 0,
+     "band": "low",
+     "queueState": "now",
+     "queueReason": "Operator created opportunity",
+     "nextDueAt": null
+    },
+    {
+     "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+     "title": "Prior renewal",
+     "score": 0,
+     "band": "low",
+     "queueState": "now",
+     "queueReason": "Operator created opportunity",
+     "nextDueAt": null
+    }
+   ],
+   "mailConfigured": false
+  }
+ },
+ "seller:administration": {
+  "status": 200,
+  "body": {
+   "members": [
+    {
+     "operator_id": "01M4R6RKK5A4YF6J4ZR0P09ZHJ",
+     "role": "legacy_operator",
+     "status": "active",
+     "display_name": "Prior Owner",
+     "email": "owner@prior.example",
+     "access_class": "native_full"
+    },
+    {
+     "operator_id": "01M4R6TYDCTSVF8ZHZT4SYPPRN",
+     "role": "legacy_operator",
+     "status": "active",
+     "display_name": "Prior Seller",
+     "email": "seller@prior.example",
+     "access_class": "native_full"
+    },
+    {
+     "operator_id": "01M4R6TYFGJC9DT8A1TC0252X6",
+     "role": "legacy_operator",
+     "status": "removed",
+     "display_name": "Prior Leaver",
+     "email": "leaver@prior.example",
+     "access_class": "native_full"
+    },
+    {
+     "operator_id": "01M4R6V3SJ39DGJRF9APG7F0ZJ",
+     "role": "seller",
+     "status": "active",
+     "display_name": "collab@prior.example",
+     "email": "collab@prior.example",
+     "access_class": "collaborator"
+    },
+    {
+     "operator_id": "01M4R6V3YA9F2CYMTDG26K2WJ0",
+     "role": "analyst",
+     "status": "active",
+     "display_name": "analyst@prior.example",
+     "email": "analyst@prior.example",
+     "access_class": "collaborator"
+    }
+   ],
+   "grants": [
+    {
+     "id": "b6153aba-acd0-4633-ab4c-314137b81c32",
+     "subject_kind": "operator",
+     "subject_id": "01M4R6V3SJ39DGJRF9APG7F0ZJ",
+     "resource_type": "opportunity",
+     "resource_id": "01M4R6V2J0E5HY97KFEW19GAVN",
+     "actions_json": "[\"graph.read\",\"graph.update\"]",
+     "fields_json": "[\"title\",\"value_cents\",\"expected_close_at\"]",
+     "purpose": "Work the renewal",
+     "expires_at": null,
+     "revoked_at": null
+    },
+    {
+     "id": "caea8448-679b-480d-a7d2-8d6be1867589",
+     "subject_kind": "operator",
+     "subject_id": "01M4R6V3SJ39DGJRF9APG7F0ZJ",
+     "resource_type": "contact",
+     "resource_id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+     "actions_json": "[\"graph.read\"]",
+     "fields_json": "[\"name\",\"email\"]",
+     "purpose": "Contact the buyer",
+     "expires_at": null,
+     "revoked_at": null
+    },
+    {
+     "id": "e28575ae-014b-41f0-9a96-3708e8b5f417",
+     "subject_kind": "operator",
+     "subject_id": "01M4R6V3YA9F2CYMTDG26K2WJ0",
+     "resource_type": "opportunity",
+     "resource_id": "01M4R6V3JKJGMSQDJD792MKR4J",
+     "actions_json": "[\"graph.read\"]",
+     "fields_json": "[\"title\",\"value_cents\"]",
+     "purpose": "Forecast review",
+     "expires_at": null,
+     "revoked_at": null
+    }
+   ],
+   "invitations": [
+    {
+     "id": "e664ef99-5314-4056-8aba-e2c5ae2c7bb2",
+     "email": "collab@prior.example",
+     "role": "seller",
+     "expires_at": "2026-11-10T14:04:08.753Z",
+     "accepted_by": "01M4R6V3SJ39DGJRF9APG7F0ZJ",
+     "revoked_at": null
+    },
+    {
+     "id": "313a294f-d09d-4403-93e4-b4aee1018ad3",
+     "email": "analyst@prior.example",
+     "role": "analyst",
+     "expires_at": "2026-11-10T14:04:08.753Z",
+     "accepted_by": "01M4R6V3YA9F2CYMTDG26K2WJ0",
+     "revoked_at": null
+    },
+    {
+     "id": "c3a3531e-094d-402f-bfca-b814853a4504",
+     "email": "pending@prior.example",
+     "role": "guest",
+     "expires_at": "2026-11-10T14:04:08.753Z",
+     "accepted_by": null,
+     "revoked_at": null
+    }
+   ],
+   "roleProfiles": [
+    {
+     "role": "seller",
+     "source": "default",
+     "actions": [
+      "graph.read",
+      "graph.search",
+      "graph.update",
+      "legacy.read",
+      "legacy.write",
+      "analytics.read"
+     ],
+     "fields": [
+      "*"
+     ]
+    },
+    {
+     "role": "analyst",
+     "source": "configured",
+     "actions": [
+      "graph.read",
+      "graph.search",
+      "analytics.read"
+     ],
+     "fields": [
+      "title",
+      "name",
+      "value_cents"
+     ]
+    },
+    {
+     "role": "guest",
+     "source": "default",
+     "actions": [],
+     "fields": [
+      "*"
+     ]
+    }
+   ],
+   "policyEpoch": 19
+  }
+ },
+ "collaborator:class": {
+  "status": 200,
+  "body": {
+   "access_class": "collaborator"
+  }
+ },
+ "collaborator:workspaces": {
+  "status": 200,
+  "body": [
+   {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "name": "Your business"
+   }
+  ]
+ },
+ "collaborator:self": {
+  "status": 200,
+  "body": {
+   "role": "seller",
+   "access_class": "collaborator"
+  }
+ },
+ "collaborator:opportunities": {
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "opportunity",
+      "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+      "revision": 1,
+      "dataEpoch": 1
+     },
+     "kind": "opportunity",
+     "fields": {
+      "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+      "title": "Prior renewal",
+      "lifecycle": "open",
+      "stage_id": "01M4R6RKK5ZNNHM2MX29YKTDD1",
+      "owner_id": null,
+      "company_id": "01M4R6V2J06N0NA02GDD2PW0WK",
+      "value_cents": 1250000,
+      "expected_close_at": null,
+      "score": 0,
+      "band": "low",
+      "queue_state": "now",
+      "queue_reason": "Operator created opportunity",
+      "last_contributing_signal_at": null,
+      "created_at": "2026-10-12T14:04:07.616Z",
+      "updated_at": "2026-10-12T14:04:07.616Z",
+      "next_due_at": null,
+      "custom_fields_json": "{}",
+      "closed_at": null,
+      "closed_by": null,
+      "close_reason": null
+     },
+     "fieldVersions": {
+      "id": 1,
+      "title": 1,
+      "lifecycle": 1,
+      "stage_id": 1,
+      "owner_id": 1,
+      "company_id": 1,
+      "value_cents": 1,
+      "expected_close_at": 1,
+      "score": 1,
+      "band": 1,
+      "queue_state": 1,
+      "queue_reason": 1,
+      "last_contributing_signal_at": 1,
+      "created_at": 1,
+      "updated_at": 1,
+      "next_due_at": 1,
+      "custom_fields_json": 1,
+      "closed_at": 1,
+      "closed_by": 1,
+      "close_reason": 1
+     }
+    },
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "opportunity",
+      "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+      "revision": 1,
+      "dataEpoch": 1
+     },
+     "kind": "opportunity",
+     "fields": {
+      "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+      "title": "Prior expansion",
+      "lifecycle": "open",
+      "stage_id": "01M4R6RKK69BY4RHSNVTQQ6YFE",
+      "owner_id": null,
+      "company_id": "01M4R6V3JK45Q1Q0XATESBJ6Z4",
+      "value_cents": 480000,
+      "expected_close_at": null,
+      "score": 0,
+      "band": "low",
+      "queue_state": "now",
+      "queue_reason": "Operator created opportunity",
+      "last_contributing_signal_at": null,
+      "created_at": "2026-10-12T14:04:08.659Z",
+      "updated_at": "2026-10-12T14:04:08.659Z",
+      "next_due_at": null,
+      "custom_fields_json": "{}",
+      "closed_at": null,
+      "closed_by": null,
+      "close_reason": null
+     },
+     "fieldVersions": {
+      "id": 1,
+      "title": 1,
+      "lifecycle": 1,
+      "stage_id": 1,
+      "owner_id": 1,
+      "company_id": 1,
+      "value_cents": 1,
+      "expected_close_at": 1,
+      "score": 1,
+      "band": 1,
+      "queue_state": 1,
+      "queue_reason": 1,
+      "last_contributing_signal_at": 1,
+      "created_at": 1,
+      "updated_at": 1,
+      "next_due_at": 1,
+      "custom_fields_json": 1,
+      "closed_at": 1,
+      "closed_by": 1,
+      "close_reason": 1
+     }
+    }
+   ],
+   "nextCursor": null,
+   "watermark": "19",
+   "incomplete": false
+  }
+ },
+ "collaborator:contacts": {
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "contact",
+      "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+      "revision": 3,
+      "dataEpoch": 3
+     },
+     "kind": "contact",
+     "fields": {
+      "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+      "company_id": "01M4R6V2J06N0NA02GDD2PW0WK",
+      "name": "Pat Prior",
+      "email": "pat@customer.example",
+      "email_key": "pat@customer.example",
+      "phone": "+1 555 0100",
+      "job_title": "Head of Ops",
+      "timezone": null,
+      "contactability": "contactable",
+      "created_at": "2026-10-12T14:04:07.616Z",
+      "updated_at": "2026-10-12T14:04:08.045Z",
+      "custom_fields_json": "{}",
+      "contactability_revision": 1
+     },
+     "fieldVersions": {
+      "id": 3,
+      "company_id": 3,
+      "name": 3,
+      "email": 3,
+      "email_key": 3,
+      "phone": 3,
+      "job_title": 3,
+      "timezone": 3,
+      "contactability": 3,
+      "created_at": 3,
+      "updated_at": 3,
+      "custom_fields_json": 3,
+      "contactability_revision": 3
+     }
+    },
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "contact",
+      "id": "01M4R6V3JKAAFZHWCS2HF9XK0N",
+      "revision": 1,
+      "dataEpoch": 1
+     },
+     "kind": "contact",
+     "fields": {
+      "id": "01M4R6V3JKAAFZHWCS2HF9XK0N",
+      "company_id": "01M4R6V3JK45Q1Q0XATESBJ6Z4",
+      "name": "Sam Second",
+      "email": "sam@second.example",
+      "email_key": "sam@second.example",
+      "phone": null,
+      "job_title": null,
+      "timezone": null,
+      "contactability": "contactable",
+      "created_at": "2026-10-12T14:04:08.659Z",
+      "updated_at": "2026-10-12T14:04:08.659Z",
+      "custom_fields_json": "{}",
+      "contactability_revision": 0
+     },
+     "fieldVersions": {
+      "id": 1,
+      "company_id": 1,
+      "name": 1,
+      "email": 1,
+      "email_key": 1,
+      "phone": 1,
+      "job_title": 1,
+      "timezone": 1,
+      "contactability": 1,
+      "created_at": 1,
+      "updated_at": 1,
+      "custom_fields_json": 1,
+      "contactability_revision": 1
+     }
+    }
+   ],
+   "nextCursor": null,
+   "watermark": "19",
+   "incomplete": false
+  }
+ },
+ "collaborator:opportunity": {
+  "status": 200,
+  "body": {
+   "ref": {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "type": "opportunity",
+    "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+    "revision": 1,
+    "dataEpoch": 1
+   },
+   "kind": "opportunity",
+   "fields": {
+    "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+    "title": "Prior renewal",
+    "lifecycle": "open",
+    "stage_id": "01M4R6RKK5ZNNHM2MX29YKTDD1",
+    "owner_id": null,
+    "company_id": "01M4R6V2J06N0NA02GDD2PW0WK",
+    "value_cents": 1250000,
+    "expected_close_at": null,
+    "score": 0,
+    "band": "low",
+    "queue_state": "now",
+    "queue_reason": "Operator created opportunity",
+    "last_contributing_signal_at": null,
+    "created_at": "2026-10-12T14:04:07.616Z",
+    "updated_at": "2026-10-12T14:04:07.616Z",
+    "next_due_at": null,
+    "custom_fields_json": "{}",
+    "closed_at": null,
+    "closed_by": null,
+    "close_reason": null
+   },
+   "fieldVersions": {
+    "id": 1,
+    "title": 1,
+    "lifecycle": 1,
+    "stage_id": 1,
+    "owner_id": 1,
+    "company_id": 1,
+    "value_cents": 1,
+    "expected_close_at": 1,
+    "score": 1,
+    "band": 1,
+    "queue_state": 1,
+    "queue_reason": 1,
+    "last_contributing_signal_at": 1,
+    "created_at": 1,
+    "updated_at": 1,
+    "next_due_at": 1,
+    "custom_fields_json": 1,
+    "closed_at": 1,
+    "closed_by": 1,
+    "close_reason": 1
+   },
+   "editableFields": [
+    "title",
+    "stage_id",
+    "owner_id",
+    "company_id",
+    "value_cents",
+    "expected_close_at"
+   ]
+  }
+ },
+ "collaborator:second-opportunity": {
+  "status": 200,
+  "body": {
+   "ref": {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "type": "opportunity",
+    "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+    "revision": 1,
+    "dataEpoch": 1
+   },
+   "kind": "opportunity",
+   "fields": {
+    "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+    "title": "Prior expansion",
+    "lifecycle": "open",
+    "stage_id": "01M4R6RKK69BY4RHSNVTQQ6YFE",
+    "owner_id": null,
+    "company_id": "01M4R6V3JK45Q1Q0XATESBJ6Z4",
+    "value_cents": 480000,
+    "expected_close_at": null,
+    "score": 0,
+    "band": "low",
+    "queue_state": "now",
+    "queue_reason": "Operator created opportunity",
+    "last_contributing_signal_at": null,
+    "created_at": "2026-10-12T14:04:08.659Z",
+    "updated_at": "2026-10-12T14:04:08.659Z",
+    "next_due_at": null,
+    "custom_fields_json": "{}",
+    "closed_at": null,
+    "closed_by": null,
+    "close_reason": null
+   },
+   "fieldVersions": {
+    "id": 1,
+    "title": 1,
+    "lifecycle": 1,
+    "stage_id": 1,
+    "owner_id": 1,
+    "company_id": 1,
+    "value_cents": 1,
+    "expected_close_at": 1,
+    "score": 1,
+    "band": 1,
+    "queue_state": 1,
+    "queue_reason": 1,
+    "last_contributing_signal_at": 1,
+    "created_at": 1,
+    "updated_at": 1,
+    "next_due_at": 1,
+    "custom_fields_json": 1,
+    "closed_at": 1,
+    "closed_by": 1,
+    "close_reason": 1
+   },
+   "editableFields": [
+    "title",
+    "stage_id",
+    "owner_id",
+    "company_id",
+    "value_cents",
+    "expected_close_at"
+   ]
+  }
+ },
+ "collaborator:contact": {
+  "status": 200,
+  "body": {
+   "ref": {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "type": "contact",
+    "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+    "revision": 3,
+    "dataEpoch": 3
+   },
+   "kind": "contact",
+   "fields": {
+    "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+    "company_id": "01M4R6V2J06N0NA02GDD2PW0WK",
+    "name": "Pat Prior",
+    "email": "pat@customer.example",
+    "email_key": "pat@customer.example",
+    "phone": "+1 555 0100",
+    "job_title": "Head of Ops",
+    "timezone": null,
+    "contactability": "contactable",
+    "created_at": "2026-10-12T14:04:07.616Z",
+    "updated_at": "2026-10-12T14:04:08.045Z",
+    "custom_fields_json": "{}",
+    "contactability_revision": 1
+   },
+   "fieldVersions": {
+    "id": 3,
+    "company_id": 3,
+    "name": 3,
+    "email": 3,
+    "email_key": 3,
+    "phone": 3,
+    "job_title": 3,
+    "timezone": 3,
+    "contactability": 3,
+    "created_at": 3,
+    "updated_at": 3,
+    "custom_fields_json": 3,
+    "contactability_revision": 3
+   },
+   "editableFields": [
+    "name",
+    "email",
+    "phone",
+    "job_title",
+    "timezone",
+    "company_id",
+    "contactability"
+   ]
+  }
+ },
+ "collaborator:workbench": {
+  "status": 403,
+  "body": {
+   "error": "This native operation requires a full operator."
+  }
+ },
+ "collaborator:administration": {
+  "status": 403,
+  "body": {
+   "error": "This operation is not permitted."
+  }
+ },
+ "analyst:class": {
+  "status": 200,
+  "body": {
+   "access_class": "collaborator"
+  }
+ },
+ "analyst:workspaces": {
+  "status": 200,
+  "body": [
+   {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "name": "Your business"
+   }
+  ]
+ },
+ "analyst:self": {
+  "status": 200,
+  "body": {
+   "role": "analyst",
+   "access_class": "collaborator"
+  }
+ },
+ "analyst:opportunities": {
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "opportunity",
+      "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+      "revision": 1,
+      "dataEpoch": 1
+     },
+     "kind": "opportunity",
+     "fields": {
+      "title": "Prior renewal",
+      "value_cents": 1250000
+     },
+     "fieldVersions": {
+      "title": 1,
+      "value_cents": 1
+     }
+    },
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "opportunity",
+      "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+      "revision": 1,
+      "dataEpoch": 1
+     },
+     "kind": "opportunity",
+     "fields": {
+      "title": "Prior expansion",
+      "value_cents": 480000
+     },
+     "fieldVersions": {
+      "title": 1,
+      "value_cents": 1
+     }
+    }
+   ],
+   "nextCursor": null,
+   "watermark": "19",
+   "incomplete": false
+  }
+ },
+ "analyst:contacts": {
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "contact",
+      "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+      "revision": 3,
+      "dataEpoch": 3
+     },
+     "kind": "contact",
+     "fields": {
+      "name": "Pat Prior"
+     },
+     "fieldVersions": {
+      "name": 3
+     }
+    },
+    {
+     "ref": {
+      "tenantId": "orbit",
+      "workspaceId": "workspace",
+      "type": "contact",
+      "id": "01M4R6V3JKAAFZHWCS2HF9XK0N",
+      "revision": 1,
+      "dataEpoch": 1
+     },
+     "kind": "contact",
+     "fields": {
+      "name": "Sam Second"
+     },
+     "fieldVersions": {
+      "name": 1
+     }
+    }
+   ],
+   "nextCursor": null,
+   "watermark": "19",
+   "incomplete": false
+  }
+ },
+ "analyst:opportunity": {
+  "status": 200,
+  "body": {
+   "ref": {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "type": "opportunity",
+    "id": "01M4R6V2J0E5HY97KFEW19GAVN",
+    "revision": 1,
+    "dataEpoch": 1
+   },
+   "kind": "opportunity",
+   "fields": {
+    "title": "Prior renewal",
+    "value_cents": 1250000
+   },
+   "fieldVersions": {
+    "title": 1,
+    "value_cents": 1
+   },
+   "editableFields": []
+  }
+ },
+ "analyst:second-opportunity": {
+  "status": 200,
+  "body": {
+   "ref": {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "type": "opportunity",
+    "id": "01M4R6V3JKJGMSQDJD792MKR4J",
+    "revision": 1,
+    "dataEpoch": 1
+   },
+   "kind": "opportunity",
+   "fields": {
+    "title": "Prior expansion",
+    "value_cents": 480000
+   },
+   "fieldVersions": {
+    "title": 1,
+    "value_cents": 1
+   },
+   "editableFields": []
+  }
+ },
+ "analyst:contact": {
+  "status": 200,
+  "body": {
+   "ref": {
+    "tenantId": "orbit",
+    "workspaceId": "workspace",
+    "type": "contact",
+    "id": "01M4R6V2J0A7ZKB139HSKZVK3B",
+    "revision": 3,
+    "dataEpoch": 3
+   },
+   "kind": "contact",
+   "fields": {
+    "name": "Pat Prior"
+   },
+   "fieldVersions": {
+    "name": 3
+   },
+   "editableFields": []
+  }
+ },
+ "analyst:workbench": {
+  "status": 403,
+  "body": {
+   "error": "This operation is not permitted."
+  }
+ },
+ "analyst:administration": {
+  "status": 403,
+  "body": {
+   "error": "This operation is not permitted."
+  }
+ },
+ "leaver:class": {
+  "status": 401,
+  "body": {
+   "error": "Operator session required."
+  }
+ },
+ "slate:identity": {
+  "status": 200,
+  "body": {
+   "protocol": "rer-delegation/1",
+   "provider": "orbit",
+   "installationId": "b71a8caeb6508ee803a3b811cf7cf22d",
+   "accountId": "workspace",
+   "principalId": "01M4R6RKK5A4YF6J4ZR0P09ZHJ",
+   "label": "Prior Owner",
+   "grantId": "6beda8593847725f957d6cc9ed8c665229572ca25f2aceff10af213f8d36cc56",
+   "expiresAt": "2026-11-11T14:04:22.669Z",
+   "scopes": [
+    "crm.evidence.read",
+    "crm.handoff.write"
+   ],
+   "targets": [
+    "opportunities/01M4R6V2J0E5HY97KFEW19GAVN"
+   ],
+   "capabilities": {
+    "readKinds": [
+     "crm.opportunity",
+     "crm.contact",
+     "crm.company",
+     "crm.signal",
+     "crm.handoff"
+    ],
+    "operations": [
+     "orbit.handoff.upsert"
+    ],
+    "conditionalWrite": true,
+    "providerIdempotency": true,
+    "readBack": true,
+    "reconciliationAttribution": true
+   }
+  }
+ },
+ "slate:check": {
+  "status": 200,
+  "body": {
+   "provider": "orbit",
+   "installationId": "b71a8caeb6508ee803a3b811cf7cf22d",
+   "accountId": "workspace",
+   "principalId": "01M4R6RKK5A4YF6J4ZR0P09ZHJ",
+   "target": "opportunities/01M4R6V2J0E5HY97KFEW19GAVN/handoffs/prior-handoff",
+   "revision": "b34a3a7b9ae933390b2ca066e0f9807d4b6cf6ddf08fedacc0aff0a30c8382fd",
+   "observedAt": "2026-10-12T14:04:56.987Z",
+   "audience": {
+    "kind": "source-principals",
+    "principalIds": [
+     "01M4R6RKK5A4YF6J4ZR0P09ZHJ",
+     "01M4R6TYDCTSVF8ZHZT4SYPPRN"
+    ]
+   }
+  }
+ },
+ "slate:evidence": {
+  "status": 200,
+  "body": {
+   "provider": "orbit",
+   "installationId": "b71a8caeb6508ee803a3b811cf7cf22d",
+   "accountId": "workspace",
+   "principalId": "01M4R6RKK5A4YF6J4ZR0P09ZHJ",
+   "target": "opportunities/01M4R6V2J0E5HY97KFEW19GAVN",
+   "revision": "b9848f9769200caf04f4cd1aa177b0bec42ce91fb9fd9adaa385fcc8b2342aa1",
+   "observedAt": "2026-10-12T14:04:57.015Z",
+   "audience": {
+    "kind": "source-principals",
+    "principalIds": [
+     "01M4R6RKK5A4YF6J4ZR0P09ZHJ",
+     "01M4R6TYDCTSVF8ZHZT4SYPPRN"
+    ]
+   },
+   "title": "Prior renewal",
+   "text": "{\"company\":{\"created_at\":\"2026-10-12T14:04:07.616Z\",\"custom_fields_json\":\"{}\",\"id\":\"01M4R6V2J06N0NA02GDD2PW0WK\",\"name\":\"Prior Customer Ltd\",\"primary_domain\":null,\"primary_domain_key\":null,\"updated_at\":\"2026-10-12T14:04:07.616Z\"},\"contacts\":[{\"company_id\":\"01M4R6V2J06N0NA02GDD2PW0WK\",\"contactability\":\"contactable\",\"contactability_revision\":1,\"created_at\":\"2026-10-12T14:04:07.616Z\",\"custom_fields_json\":\"{}\",\"email\":\"pat@customer.example\",\"email_key\":\"pat@customer.example\",\"id\":\"01M4R6V2J0A7ZKB139HSKZVK3B\",\"is_primary\":1,\"job_title\":\"Head of Ops\",\"name\":\"Pat Prior\",\"phone\":\"+1 555 0100\",\"timezone\":null,\"updated_at\":\"2026-10-12T14:04:08.045Z\"}],\"opportunity\":{\"band\":\"low\",\"close_reason\":null,\"closed_at\":null,\"closed_by\":null,\"company_id\":\"01M4R6V2J06N0NA02GDD2PW0WK\",\"created_at\":\"2026-10-12T14:04:07.616Z\",\"custom_fields_json\":\"{}\",\"expected_close_at\":null,\"id\":\"01M4R6V2J0E5HY97KFEW19GAVN\",\"last_contributing_signal_at\":null,\"lifecycle\":\"open\",\"next_due_at\":null,\"owner_id\":null,\"queue_reason\":\"Operator created opportunity\",\"queue_state\":\"now\",\"score\":0,\"stage_id\":\"01M4R6RKK5ZNNHM2MX29YKTDD1\",\"title\":\"Prior renewal\",\"updated_at\":\"2026-10-12T14:04:07.616Z\",\"value_cents\":1250000}}",
+   "canonicalUrl": "http://127.0.0.1:8787/app/opportunities/01M4R6V2J0E5HY97KFEW19GAVN"
+  }
+ },
+ "public:form": {
+  "status": 200,
+  "body": null
+ }
+}

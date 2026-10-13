@@ -1,0 +1,2 @@
+/** Text observed in the selected SendGrid group's real delivered message. */
+export function ProviderFooter(){return <aside aria-label="Mandatory provider footer"><p>The message also includes these provider footer links:</p><p><strong>Unsubscribe From This List</strong> · <strong>Manage Email Preferences</strong></p><p>SendGrid generates a private recipient-specific URL for each link. These links do not change the authored message above.</p></aside>;}

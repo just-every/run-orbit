@@ -1,0 +1,2 @@
+import { z } from 'zod';
+export const eventSchema=z.object({eventId:z.string().min(1).max(128),type:z.string().min(1).max(128),subject:z.string().max(2000),occurredAt:z.iso.datetime(),record:z.object({type:z.enum(['contact','company','opportunity']),id:z.string().min(1)}).optional(),email:z.email().optional(),domain:z.string().max(254).optional(),identityBasis:z.string().min(1).max(2000).optional(),permanentBounce:z.boolean().optional(),data:z.record(z.string(),z.unknown()).optional()});

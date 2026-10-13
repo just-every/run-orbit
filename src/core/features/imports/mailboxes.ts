@@ -1,0 +1,2 @@
+/** Current normalized primary and alias identities, ordered exactly like the reviewed snapshot. */
+export function mailboxListSql(contact:string){return `(SELECT json_group_array(mailbox) FROM (SELECT lower(trim(${contact}.email)) AS mailbox WHERE length(trim(COALESCE(${contact}.email,'')))>0 UNION SELECT lower(trim(identity_key)) AS mailbox FROM record_aliases WHERE record_type='contact' AND survivor_id=${contact}.id AND length(trim(identity_key))>0 ORDER BY mailbox))`;}

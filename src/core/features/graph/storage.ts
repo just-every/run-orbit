@@ -1,0 +1,3 @@
+import type {RecordProjection} from '../../shared/expansion-contracts';
+export interface StoredRecord{id:string;tenant_id:string;workspace_id:string;kind:string;fields_json:string;revision:number;data_epoch:number;visibility:string;owner_id:string|null;team_id:string|null;retired_into_id:string|null}
+export function project(row:StoredRecord,fields:readonly string[]):RecordProjection{const values=JSON.parse(row.fields_json);return{ref:{tenantId:row.tenant_id,workspaceId:row.workspace_id,type:row.kind,id:row.id,revision:row.revision,dataEpoch:row.data_epoch},kind:row.kind,fields:Object.fromEntries(fields.filter(field=>Object.hasOwn(values,field)).map(field=>[field,values[field]])),fieldVersions:Object.fromEntries(fields.map(field=>[field,row.revision]))};}

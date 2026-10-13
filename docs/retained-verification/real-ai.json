@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-09-13T01:43:54.529Z",
+  "runtime": "Isolated real D1 and actual configured OpenAI Responses API; test-issued native session for this scoped AI check",
+  "provider": "openai",
+  "model": "gpt-5.6-luna",
+  "previewHash": "98e3506752ce7a82aaed3036cf78a07d6d7e34042793952cb8ab78311c3f1179",
+  "draftHash": "3fe12cc3015c370953d7c1acd9ec07183a31f4e3ea3a674acb52207623ced993",
+  "evidenceValidated": true,
+  "wordLimitValidated": true,
+  "durableUnsentDraft": true,
+  "outboundMessages": 0,
+  "usage": {
+    "provider": "openai",
+    "model": "gpt-5.6-luna",
+    "input_tokens": 580,
+    "output_tokens": 288,
+    "cached_input_tokens": 0,
+    "estimated_cost": 0.00046159999999999994,
+    "duration_ms": 5722,
+    "status": "success"
+  },
+  "limitations": "One test-owned record and one actual generation. This is not the native emailed sign-in or customer-mail acceptance proof."
+}

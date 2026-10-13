@@ -1,0 +1,8 @@
+import { createId } from '../../shared/ids';
+import { WorkbenchError } from './repository';
+import { evaluationStatements } from './evaluation-repository';
+export async function completeAction(db:D1Database,id:string,actor:string,outcome:'completed'|'skipped',note:string){
+ const recommendation=await db.prepare('SELECT opportunity_id FROM recommendations WHERE id=? AND is_current=1 AND completed_at IS NULL').bind(id).first<{opportunity_id:string}>();if(!recommendation)throw new WorkbenchError(409,'Recommendation was replaced or already completed.');
+ const at=new Date().toISOString(),entry=createId();
+ await db.batch([db.prepare('INSERT INTO action_completions(recommendation_id,completed_at) VALUES(?,?)').bind(id,at),db.prepare('UPDATE recommendations SET is_current=0,completed_at=?,completion_outcome=?,completion_note=?,updated_at=? WHERE id=? AND is_current=1').bind(at,outcome,note,at,id),...evaluationStatements(db,recommendation.opportunity_id,actor,`Action ${outcome}`),db.prepare("INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) VALUES(?,'action.completed',?,?,'operator',?,'recommendations',?)").bind(entry,at,at,actor,JSON.stringify({recommendationId:id,outcome,note})),db.prepare("INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) VALUES(?,'opportunity',?)").bind(entry,recommendation.opportunity_id),db.prepare("UPDATE opportunities SET queue_state=CASE WHEN EXISTS(SELECT 1 FROM recommendations WHERE opportunity_id=? AND is_current=1) THEN 'now' ELSE 'none' END,queue_reason=?,next_due_at=NULL WHERE id=? AND lifecycle='open'").bind(recommendation.opportunity_id,`Action ${outcome}`,recommendation.opportunity_id)]);
+}

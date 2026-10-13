@@ -1,0 +1,115 @@
+/* The hero's orbit drawing, laid out on its 850 by 875 design canvas. 1em is 10 design pixels (--s each), so every length
+   below is the design's number divided by ten and the whole scene scales as one. Borders stay at the brand's 1.5px.
+   Colours are the brand's: ink outlines, paper and cream fills, tangerine on the NOW planet, the reply and the reason. */
+.ob-orbit { grid-area: stage; position: relative; justify-self: end; width: calc(850 * var(--s)); aspect-ratio: 850 / 875; margin-right: calc(-36 * var(--s)); font-size: calc(10 * var(--s)); }
+.ob-orbit-art { position: absolute; inset: 0; }
+.ob-icon { width: 2.7em; height: 2.7em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Rings, paths and moons. */
+.ob-rings { position: absolute; top: 0; left: 0; width: 100%; height: auto; overflow: visible; }
+.ob-ring { fill: none; stroke: var(--ob-muted); stroke-opacity: 0.7; stroke-width: 1; }
+.ob-path { fill: none; stroke-width: 2.3; stroke-linecap: round; stroke-dasharray: 9 8; }
+.ob-path--reply { stroke: var(--ob-tangerine); }
+.ob-path--meeting { stroke: var(--ob-ink); }
+.ob-path--form { stroke: var(--ob-muted); stroke-width: 2; stroke-dasharray: 8 6; }
+.ob-moon { stroke: var(--ob-paper); stroke-width: 3; }
+.ob-moon--hollow { fill: var(--ob-paper-deep); stroke: var(--ob-body); stroke-width: 1; }
+.ob-moon--tangerine { fill: var(--ob-tangerine); }
+.ob-moon--ink, .ob-moon--plain { fill: var(--ob-ink); }
+.ob-moon--plain { stroke: none; }
+.ob-moon--grey { fill: var(--ob-muted); stroke: none; }
+
+/* The NOW planet. */
+.ob-now { position: absolute; left: 31.7em; top: 16.7em; display: grid; place-items: center; width: 19.4em; aspect-ratio: 1; border-radius: 50%; background: var(--ob-tangerine); color: var(--ob-paper); }
+.ob-now span { font-size: 3.8em; font-weight: 700; letter-spacing: -0.01em; }
+
+/* The three signal cards. */
+.ob-signal { position: absolute; display: flex; align-items: flex-start; gap: 1.8em; padding: 1.4em 1.6em; border: 1.5px solid var(--ob-ink); border-radius: 1.3em; background: var(--ob-card); box-shadow: 0 0.4em 0.8em rgba(22, 23, 29, 0.05); }
+.ob-signal-icon { flex: none; display: grid; place-items: center; width: 5.2em; aspect-ratio: 1; border: 1px solid var(--ob-line-strong); border-radius: 50%; background: var(--ob-paper-deep); }
+.ob-signal strong { display: block; margin: 0.6em 0 0.7em; font-size: 1.6em; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
+.ob-signal p { color: var(--ob-body); font-size: 1.4em; line-height: 1.3; }
+.ob-signal small { display: block; margin-top: 0.4em; color: var(--ob-muted); font-size: 1.2em; }
+.ob-signal--reply { top: 0; left: 2.5em; width: 26em; min-height: 11.8em; }
+.ob-signal--meeting { top: 4.6em; right: 0; width: max-content; min-width: 23.4em; min-height: 10.4em; }
+.ob-signal--form { top: 26.9em; left: 1em; width: 22em; min-height: 9.9em; gap: 1.5em; padding: 1.4em; }
+
+/* The NOW queue: card 01 over the two deals it passed. */
+.ob-stack { position: absolute; left: 30em; top: 33.2em; width: 50em; }
+.ob-queue { position: relative; z-index: 4; padding: 2em 2.8em 1.8em; transform: rotate(-3.5deg); }
+.ob-queue-label { font-size: 1.6em; font-weight: 500; }
+.ob-deal { display: flex; align-items: center; gap: 1.7em; margin-top: 0.9em; }
+.ob-rank { padding-right: 0.43em; border-right: 1.5px solid var(--ob-line); font-size: 4.2em; font-weight: 780; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.ob-deal-title { flex: 1; min-width: 0; }
+.ob-deal-title strong { display: block; font-size: 2.2em; font-weight: 700; letter-spacing: -0.035em; line-height: 1.15; }
+.ob-deal-title p { margin-top: 0.25em; color: var(--ob-muted); font-size: 1.6em; }
+.ob-queue-score { flex: none; transform: rotate(1.2deg); width: 8.3em; padding: 0.7em 0.5em; border-radius: 1.7em; background: var(--ob-tangerine); color: var(--ob-ink); text-align: center; }
+.ob-queue-score strong { display: block; font-size: 2.5em; font-weight: 750; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.ob-queue-score span { font-size: 1.4em; font-weight: 500; }
+.ob-evidence { display: grid; gap: 1em; margin: 1.35em 0 1em; color: var(--ob-body); font-size: 1.4em; }
+.ob-evidence li { display: flex; align-items: flex-start; gap: 1.85em; }
+.ob-evidence .ob-icon { flex: none; width: 1.57em; height: 1.57em; color: var(--ob-ink); stroke-width: 1.9; }
+.ob-evidence p { line-height: 1.3; }
+.ob-evidence span { display: block; }
+.ob-why { display: flex; align-items: center; gap: 2.5em; padding-top: 1.2em; border-top: 1.5px solid var(--ob-line-strong); font-size: 1.4em; }
+.ob-why b { padding: 0.55em 1.1em; border-radius: 999px; background: var(--ob-tangerine); color: var(--ob-ink); font-size: 1.14em; font-weight: 650; }
+
+.ob-row { position: absolute; display: flex; align-items: flex-end; gap: 1.9em; min-height: 8.4em; padding: 1.7em 2.7em; box-shadow: 0 1.8em 3em rgba(66, 53, 31, 0.07); }
+.ob-row strong { font-size: 2.5em; font-weight: 780; line-height: 1; letter-spacing: -0.02em; }
+.ob-row p { flex: 1; font-size: 1.8em; line-height: 1.1; }
+.ob-row span { padding: 0.45em 0.85em; border-radius: 0.8em; background: var(--ob-paper-deep); color: var(--ob-body); font-size: 1.6em; font-variant-numeric: tabular-nums; }
+.ob-row--second { z-index: 2; top: 30.6em; left: 2.3em; width: 47.1em; transform: rotate(0.7deg); }
+.ob-row--third { z-index: 1; top: 36.1em; left: 3.2em; width: 45.1em; transform: rotate(1.8deg); }
+
+/* The hand-lettered note and its arrow. */
+.ob-note { position: absolute; right: -1.8em; top: 82em; display: flex; align-items: center; gap: 1.3em; }
+.ob-note svg { display: block; fill: none; stroke: var(--ob-ink); stroke-width: 1.1; stroke-linecap: round; stroke-linejoin: round; }
+.ob-note-arrow { width: 8.3em; height: 5em; }
+.ob-note-text { width: 14.2em; height: auto; transform: rotate(-12deg); stroke-width: 1.15; }
+
+/* Load motion, once: card 01 rises into place and the two deals behind it settle. Only translation moves, never opacity,
+   so every frame keeps full contrast; reduced motion switches it off in tokens.css. */
+@media (prefers-reduced-motion: no-preference) {
+  .ob-queue { animation: ob-rise 1s cubic-bezier(0.33, 1, 0.68, 1) 0.15s backwards; }
+  .ob-row--second { animation: ob-settle 0.8s var(--ob-ease) 0.1s backwards; }
+  .ob-row--third { animation: ob-settle 0.8s var(--ob-ease) 0.05s backwards; }
+  @keyframes ob-rise { from { translate: 0 6em; } }
+  @keyframes ob-settle { from { translate: 0 -1.6em; } }
+}
+
+/* From 1280px the drawing is centred in the hero's fixed-height cell, so any spare height is split above and below it. */
+@media (min-width: 1280px) {
+  .ob-orbit { align-self: center; }
+}
+
+/* Under 1060px the drawing sits under the copy at the column's width (the scale --s is set in hero.css); from the table
+   width to the phone it stays the full composition. */
+@media (max-width: 1059px) {
+  .ob-orbit { grid-area: art; justify-self: center; margin: 56px 0 0; max-width: 100%; }
+}
+
+/* Under 820px the text would be too small to read, so the drawing is simplified into a stack: the NOW planet inside its
+   rings, the three signals, then the queue with its two deals tucked under card 01, then the note. 1em is a plain 10px. */
+@media (max-width: 819px) {
+  .ob-orbit { width: 100%; max-width: 560px; aspect-ratio: auto; margin-inline: auto; font-size: 10px; }
+  .ob-orbit-art { position: static; display: grid; gap: 2em; }
+  .ob-rings { display: none; }
+  .ob-now, .ob-signal, .ob-stack, .ob-row, .ob-note { position: relative; inset: auto; width: auto; min-height: 0; }
+  .ob-now { justify-self: center; width: 14em; margin: 6.4em 0; box-shadow: 0 0 0 1.4em var(--ob-paper), 0 0 0 calc(1.4em + 1px) var(--ob-muted), 0 0 0 4.2em var(--ob-paper), 0 0 0 calc(4.2em + 1px) var(--ob-line-strong); }
+  .ob-now span { font-size: 3em; }
+  .ob-signal--reply, .ob-signal--meeting, .ob-signal--form { gap: 1.6em; padding: 1.3em 1.5em; }
+  .ob-signal p, .ob-signal small { font-size: 1.5em; }
+  .ob-signal small { font-size: 1.3em; }
+  .ob-stack { margin-top: 2em; }
+  .ob-queue { transform: rotate(-1.2deg); }
+  .ob-row { margin: -1.6em 0.9em 0; padding: 2.6em 2em 1.2em; align-items: center; min-height: 0; }
+  .ob-row--third { margin: -1.4em 1.8em 0; }
+  .ob-row--second, .ob-row--third { transform: rotate(0.5deg); }
+  .ob-note { justify-self: end; margin-top: 1.6em; right: auto; }
+}
+@media (max-width: 560px) {
+  .ob-orbit { font-size: 9.4px; }
+  .ob-queue { padding: 1.7em 1.6em 1.5em; }
+  .ob-deal { gap: 1em; }
+  .ob-evidence { font-size: 1.5em; }
+  .ob-why { flex-wrap: wrap; gap: 1em 1.6em; font-size: 1.5em; }
+}

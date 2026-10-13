@@ -1,0 +1,21 @@
+import {Hono} from 'hono';
+import {z} from 'zod';
+import type {AppEnvironment} from '../../shared/expansion-contracts';
+import {AccessService} from './service';
+import {AccessAdministration} from './administration';
+import {domainEventStatements} from '../effects/event-statements';
+import {roles} from './policy';
+import {isFullOperator} from './identity-class';
+export function createAccessRoutes(db:D1Database){const app=new Hono<AppEnvironment>(),access=new AccessService(db),admin=new AccessAdministration(db,access,domainEventStatements);
+ app.get('/class',async c=>c.json({access_class:await isFullOperator(db,c.get('operator').operatorId)?'native_full':'collaborator'}));
+ app.get('/workspaces',async c=>c.json(await access.listWorkspaces(c.get('operator'))));
+ app.post('/invitations/accept',async c=>{const input=z.object({token:z.string().min(1).max(200)}).strict().parse(await c.req.json());return c.json(await admin.accept(c.get('operator'),input.token));});
+ app.use('/workspaces/:workspace/*',async(c,next)=>{c.set('actor',await access.resolveOperatorContext(c.get('operator'),c.req.param('workspace')!,crypto.randomUUID()));await next();});
+ app.get('/workspaces/:workspace/self',async c=>{const actor=c.get('actor');const row=await admin.read(actor,"SELECT m.role,CASE WHEN x.operator_id IS NULL THEN 'native_full' ELSE 'collaborator' END AS access_class FROM access_memberships m LEFT JOIN access_collaborators x ON x.operator_id=m.operator_id WHERE m.workspace_id=? AND m.operator_id=?",[actor.workspaceId,c.get('operator').operatorId]);return c.json(row.results[0]);});
+ app.get('/workspaces/:workspace/administration',async c=>c.json(await admin.describe(c.get('actor'))));
+ app.post('/workspaces/:workspace/invitations',async c=>c.json(await admin.invite(c.get('actor'),z.object({email:z.email(),role:z.enum(roles),expiresAt:z.iso.datetime()}).strict().parse(await c.req.json()))));
+ app.put('/workspaces/:workspace/members/:id',async c=>{const body=z.object({role:z.enum(roles),status:z.enum(['active','removed'])}).strict().parse(await c.req.json());await admin.setMembership(c.get('actor'),c.req.param('id'),body.role,body.status);return c.json({saved:true});});
+ app.post('/workspaces/:workspace/grants',async c=>c.json(await admin.grant(c.get('actor'),z.object({subjectKind:z.literal('operator'),subjectId:z.string().min(1),resourceType:z.string().min(1),resourceId:z.string().min(1),actions:z.array(z.string()).min(1).max(10),fields:z.array(z.string()).max(100),purpose:z.string().min(1).max(1000),expiresAt:z.iso.datetime().nullable()}).strict().parse(await c.req.json()))));
+ app.delete('/workspaces/:workspace/grants/:id',async c=>{await admin.revokeGrant(c.get('actor'),c.req.param('id'));return c.json({revoked:true});});
+ app.put('/workspaces/:workspace/roles/:role',async c=>{const role=z.enum(roles).parse(c.req.param('role')),body=z.object({actions:z.array(z.string()).max(10),fields:z.array(z.string()).max(100)}).strict().parse(await c.req.json());await admin.setRoleBundle(c.get('actor'),role,body.actions,body.fields);return c.json({saved:true});});return app;
+}

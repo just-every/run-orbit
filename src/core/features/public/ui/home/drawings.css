@@ -1,0 +1,54 @@
+/* Drawings below the hero, in the hero's card language: cream cards, 1.5px ink outline, soft shadow, a slight tilt, and
+   tangerine only on what matters. Shapes behind a card are flat tangerine, cropped by the card. */
+.ob-figure { position: relative; }
+.ob-sheet { position: relative; z-index: 1; padding: clamp(24px, 2.6vw, 40px); }
+.ob-sheet-eyebrow { color: var(--ob-muted); font-size: 14.5px; }
+.ob-sheet-title { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
+.ob-disc { position: absolute; z-index: 0; top: -14%; right: max(-6%, calc(-1 * var(--ob-gutter))); width: 46%; aspect-ratio: 1; border-radius: 50%; background: var(--ob-tangerine); }
+.ob-chip { display: inline-block; padding: 3px 12px; border-radius: 999px; background: var(--ob-paper-deep); font-size: 15px; }
+.ob-fake-button { display: inline-flex; align-items: center; justify-self: start; align-self: flex-start; min-height: 42px; padding: 0 22px; border-radius: 999px; background: var(--ob-ink); color: var(--ob-paper); font-size: 15.5px; font-weight: 600; box-shadow: var(--ob-shadow-pill); }
+
+/* Free: the LICENSE file. */
+.ob-figure--licence { padding: 9% 7% 6% 0; }
+.ob-licence { transform: rotate(-1.5deg); }
+.ob-licence-title { padding-bottom: 22px; border-bottom: 1.5px solid var(--ob-line); font-size: clamp(26px, 2.4vw, 34px); font-weight: 740; letter-spacing: -0.015em; }
+.ob-licence-text { display: grid; gap: 8px; margin-top: 24px; padding: 24px 22px; border-radius: 10px; background: var(--ob-paper-deep); font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: clamp(13.5px, 1.1vw, 15.5px); line-height: 1.5; }
+.ob-licence-rights { color: var(--ob-tangerine-deep); font-weight: 600; }
+.ob-licence-file { display: flex; align-items: center; gap: 10px; margin-top: 22px; padding-top: 20px; border-top: 1.5px solid var(--ob-line); color: var(--ob-muted); font-size: 14px; font-weight: 600; letter-spacing: 0.06em; }
+.ob-licence-file svg { width: 17px; height: 17px; }
+
+/* Score: the deal page's evidence. */
+.ob-figure--score { padding: 4% 4% 4% 0; }
+.ob-score { transform: rotate(1.2deg); max-width: 600px; }
+.ob-score-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 22px; margin-bottom: 22px; border-bottom: 1.5px solid var(--ob-line); }
+.ob-score-head strong { font-size: clamp(21px, 1.8vw, 26px); font-weight: 720; letter-spacing: -0.012em; }
+.ob-score-total { padding: 6px 15px; border-radius: 999px; background: var(--ob-tangerine-soft); font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ob-score .ob-sheet-title { margin-top: 2px; }
+.ob-score-rows { margin-top: 18px; }
+.ob-score-rows li { display: flex; align-items: center; justify-content: space-between; padding: 18px 2px; border-top: 1.5px solid var(--ob-line); font-size: clamp(16px, 1.25vw, 18px); }
+.ob-score-rows li span { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 0.92em; }
+.ob-score-rows b { color: var(--ob-tangerine-deep); font-size: 1.1em; font-weight: 750; font-variant-numeric: tabular-nums; }
+
+/* Try it: the contact import. */
+.ob-figure--import { padding: 9% 7% 6% 0; }
+.ob-import { display: grid; gap: 18px; transform: rotate(1.5deg); }
+.ob-import .ob-sheet-title { font-size: clamp(24px, 2.2vw, 31px); font-weight: 740; letter-spacing: -0.015em; }
+.ob-import-map { display: grid; gap: 12px; margin-bottom: 10px; }
+.ob-import-map li { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px; padding: 12px 18px; border: 1.5px solid var(--ob-line-strong); border-radius: 12px; font-size: 16.5px; }
+.ob-import-map li > span:nth-child(2) { color: var(--ob-muted); }
+.ob-import-map .ob-chip { justify-self: start; }
+.ob-import-report { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 10px; font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 14.5px; color: var(--ob-body); }
+.ob-import-report b { color: var(--ob-ink); font-weight: 600; }
+
+@media (max-width: 900px) {
+  .ob-figure--licence, .ob-figure--import { padding: 10% 8% 4% 0; }
+  .ob-figure--score { padding: 2% 2% 2% 0; }
+}
+@media (max-width: 560px) {
+  .ob-score-head strong { font-size: 19px; }
+  .ob-score-total { padding: 5px 12px; font-size: 15px; }
+  .ob-licence-text { padding: 18px; font-size: 13px; }
+  .ob-disc { width: 52%; right: max(-4%, calc(-1 * var(--ob-gutter))); }
+  .ob-sheet { padding: 24px; }
+  .ob-import-map li { gap: 10px; padding: 8px 12px; font-size: 15px; }
+}

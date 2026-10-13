@@ -1,0 +1,212 @@
+{
+  "version": "orbit-sample-v1",
+  "workspace": {
+    "name": "Orbit Sample Workspace",
+    "timezone": "Australia/Brisbane",
+    "currency": "AUD",
+    "workingHours": { "start": "08:00", "end": "18:00", "days": [1, 2, 3, 4, 5] },
+    "staleIntervalDays": 14,
+    "awaitingResponseWorkingDays": 5,
+    "freeMailDomains": ["gmail.com", "outlook.com", "yahoo.com"]
+  },
+  "operators": [
+    {
+      "id": "01J0000000000000000000000A",
+      "email": "maya@example.test",
+      "displayName": "Maya Patel"
+    }
+  ],
+  "pipelineStages": [
+    { "id": "01J0000000000000000000000B", "name": "Qualified", "position": 1 },
+    { "id": "01J0000000000000000000000C", "name": "Proposal", "position": 2 }
+  ],
+  "companies": [
+    {
+      "id": "01J0000000000000000000000D",
+      "name": "Fieldhouse Studio",
+      "primaryDomain": "fieldhouse.example",
+      "primaryDomainKey": "fieldhouse.example"
+    }
+  ],
+  "contacts": [
+    {
+      "id": "01J0000000000000000000000E",
+      "companyId": "01J0000000000000000000000D",
+      "name": "Elena Torres",
+      "email": "elena@fieldhouse.example",
+      "emailKey": "elena@fieldhouse.example",
+      "phone": null,
+      "jobTitle": "Founder",
+      "timezone": "Australia/Brisbane",
+      "contactability": "contactable"
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "01J0000000000000000000000F",
+      "title": "Fieldhouse Studio workspace",
+      "lifecycle": "open",
+      "stageId": "01J0000000000000000000000B",
+      "ownerId": "01J0000000000000000000000A",
+      "companyId": "01J0000000000000000000000D",
+      "valueCents": 1200000,
+      "expectedCloseAt": "2026-09-15T00:00:00.000Z",
+      "score": 92,
+      "band": "high",
+      "queueState": "now",
+      "queueReason": "Observed form submission and meeting booking",
+      "lastContributingSignalAt": "2026-08-30T10:30:00.000Z"
+    },
+    {
+      "id": "01J0000000000000000000000G",
+      "title": "Fieldhouse Studio rollout",
+      "lifecycle": "open",
+      "stageId": "01J0000000000000000000000C",
+      "ownerId": null,
+      "companyId": "01J0000000000000000000000D",
+      "valueCents": 450000,
+      "expectedCloseAt": null,
+      "score": 68,
+      "band": "medium",
+      "queueState": "next",
+      "queueReason": "Awaiting customer response",
+      "lastContributingSignalAt": "2026-08-29T10:30:00.000Z"
+    }
+  ],
+  "opportunityContacts": [
+    {
+      "opportunityId": "01J0000000000000000000000F",
+      "contactId": "01J0000000000000000000000E",
+      "isPrimary": true
+    },
+    {
+      "opportunityId": "01J0000000000000000000000G",
+      "contactId": "01J0000000000000000000000E",
+      "isPrimary": true
+    }
+  ],
+  "signalSources": [
+    { "id": "01J0000000000000000000000H", "name": "Website form", "type": "form", "enabled": true },
+    { "id": "01J0000000000000000000000J", "name": "Calendar", "type": "meeting", "enabled": true }
+  ],
+  "signals": [
+    {
+      "id": "01J0000000000000000000000K",
+      "sourceId": "01J0000000000000000000000H",
+      "sourceEventId": "form-20260830-elena",
+      "type": "form_submission",
+      "subject": "Requested implementation discussion",
+      "occurredAt": "2026-08-30T10:00:00.000Z",
+      "receivedAt": "2026-08-30T10:00:02.000Z",
+      "payloadHash": "b4ec334fa6209a63e722dcde1f54c694bf169b2357a0e0d4a4ac3946eae5abef",
+      "confidence": "observed",
+      "linkingBasis": "exact_email"
+    },
+    {
+      "id": "01J0000000000000000000000M",
+      "sourceId": "01J0000000000000000000000J",
+      "sourceEventId": "meeting-20260830-elena",
+      "type": "meeting_booked",
+      "subject": "Booked implementation discussion",
+      "occurredAt": "2026-08-30T10:30:00.000Z",
+      "receivedAt": "2026-08-30T10:30:03.000Z",
+      "payloadHash": "57be5dbd3cc40f111b9431105d663579c18eaf4fd4bc9f6d8df9c0aec4441a21",
+      "confidence": "observed",
+      "linkingBasis": "exact_email"
+    }
+  ],
+  "signalLinks": [
+    {
+      "signalId": "01J0000000000000000000000K",
+      "recordType": "opportunity",
+      "recordId": "01J0000000000000000000000F",
+      "linkingBasis": "exact_email",
+      "linkedAt": "2026-08-30T10:00:02.000Z"
+    },
+    {
+      "signalId": "01J0000000000000000000000M",
+      "recordType": "opportunity",
+      "recordId": "01J0000000000000000000000F",
+      "linkingBasis": "exact_email",
+      "linkedAt": "2026-08-30T10:30:03.000Z"
+    }
+  ],
+  "evaluations": [
+    {
+      "id": "01J0000000000000000000000N",
+      "opportunityId": "01J0000000000000000000000F",
+      "score": 92,
+      "band": "high",
+      "evaluatedAt": "2026-08-30T10:30:04.000Z",
+      "policyVersion": "opportunity.scoring.v1",
+      "status": "current",
+      "failureAt": null,
+      "contributions": [
+        { "id": "01J0000000000000000000000P", "signalId": "01J0000000000000000000000K", "contribution": 42 },
+        { "id": "01J0000000000000000000000Q", "signalId": "01J0000000000000000000000M", "contribution": 50 }
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "01J0000000000000000000000R",
+      "opportunityId": "01J0000000000000000000000F",
+      "actionType": "email_follow_up",
+      "explanation": null,
+      "policyVersion": "opportunity.next-action.v1",
+      "isCurrent": true,
+      "supersededAt": null,
+      "evidenceSignalIds": ["01J0000000000000000000000K", "01J0000000000000000000000M"]
+    }
+  ],
+  "timelineEntries": [
+    {
+      "id": "01J0000000000000000000000S",
+      "kind": "signal.recorded",
+      "occurredAt": "2026-08-30T10:00:00.000Z",
+      "recordedAt": "2026-08-30T10:00:02.000Z",
+      "actorType": "source",
+      "actorId": "01J0000000000000000000000H",
+      "source": "signals",
+      "payload": { "signalId": "01J0000000000000000000000K" },
+      "records": [{ "recordType": "opportunity", "recordId": "01J0000000000000000000000F" }]
+    },
+    {
+      "id": "01J0000000000000000000000T",
+      "kind": "recommendation.created",
+      "occurredAt": "2026-08-30T10:30:04.000Z",
+      "recordedAt": "2026-08-30T10:30:04.000Z",
+      "actorType": "feature",
+      "actorId": null,
+      "source": "recommendations",
+      "payload": { "recommendationId": "01J0000000000000000000000R" },
+      "records": [{ "recordType": "opportunity", "recordId": "01J0000000000000000000000F" }]
+    }
+  ],
+  "drafts": [
+    {
+      "id": "01J0000000000000000000000V",
+      "opportunityId": "01J0000000000000000000000F",
+      "recommendationId": "01J0000000000000000000000R",
+      "authorId": "01J0000000000000000000000A",
+      "recipientContactId": "01J0000000000000000000000E",
+      "recipientEmail": "elena@fieldhouse.example",
+      "subject": "Implementation discussion",
+      "body": "Hi Elena, thanks for requesting an implementation discussion. Would Tuesday work to map your rollout?",
+      "revision": 1,
+      "isStale": false,
+      "staleReason": null
+    }
+  ],
+  "auditEntries": [
+    {
+      "id": "01J0000000000000000000000W",
+      "actorId": "01J0000000000000000000000A",
+      "action": "sample.seeded",
+      "entityType": "workspace",
+      "entityId": "workspace",
+      "details": { "version": "orbit-sample-v1" },
+      "occurredAt": "2026-08-30T10:30:04.000Z"
+    }
+  ]
+}

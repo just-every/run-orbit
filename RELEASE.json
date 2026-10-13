@@ -1,0 +1,126 @@
+{
+  "version": "0.1.0",
+  "date": "2026-10-13",
+  "contractChanges": {},
+  "extensionPointChanges": [],
+  "migrations": [
+    {
+      "id": "0001_orbit_sample_spine.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0002_magic_links.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0003_outreach.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0004_owner_bootstrap.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0005_records.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0006_signals_outreach.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0007_assistance.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0008_stopped_schedule_queue.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0009_archives.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0010_notification_record_scope.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0011_provider_event_actor.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0012_reviewed_signal_actor.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0013_delegation_handoffs.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0014_contact_suppression.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0015_provider_conflicts.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0016_collaborator_access.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0017_native_graph.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0018_analytics_events.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0019_fixed_publication.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0020_archive_generation.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0021_development_outbox.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0022_first_run_setup.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0023_portability.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0024_form_embedding.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0030_crm_import_kit.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0031_crm_move_in.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0032_base_identity.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0033_identity_providers.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    },
+    {
+      "id": "0034_dependency_links.sql",
+      "buyerSteps": "None for a new installation: `rer setup` and `rer deploy` apply it in filename order. An existing pilot installation keeps every applied migration byte unchanged, takes a verified backup first and follows MIGRATION-RECOVERY.md."
+    }
+  ],
+  "breaking": false,
+  "agentUpdateInstructions": "This is Orbit's first public release; there is no earlier public version to update from. A new installation follows README.md: install the locked dependencies, run setup with the owner email and start dev, then deploy to the owner's own Cloudflare account only through OPERATIONS.md. An existing pilot installation preserves its data, its native operator and setup identities and every already-applied migration byte, takes a verified backup before applying anything and follows MIGRATION-RECOVERY.md; it never resets or replaces state to update. Orbit keeps a human review of every customer message before it is sent. No live provider, hosted deployment or live inbound mail acceptance is claimed by this release."
+}

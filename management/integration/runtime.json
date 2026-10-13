@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "workerSource": "src/core/app/worker.ts",
+  "emittedEntry": "dist/server/index.js",
+  "runtime": "cloudflare-workers",
+  "frameworks": [
+    "Hono",
+    "TanStack Start"
+  ],
+  "resources": [
+    {
+      "kind": "d1",
+      "binding": "DB",
+      "migrations": "migrations/core"
+    }
+  ],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "dist/client",
+    "routing": "Worker delegates public build assets to ASSETS; native routes keep session authority"
+  },
+  "cron": "* * * * *",
+  "operatorAuth": "Native emailed single-use magic link; cookie session checked on documents, HTTP and functions; local mail is captured in /__dev/outbox",
+  "workspace": "Exactly one workspace with equal operators; no roles or tenancy",
+  "signedEndpoints": [
+    "/api/v1/signals/",
+    "/api/v1/mail/events/"
+  ],
+  "delegation": "Native consent and scoped bearer APIs; handoff upsert only; no outreach approval or send authority",
+  "ownerBootstrap": "node scripts/rer.mjs setup --owner-email OWNER locally; node scripts/rer.mjs deploy claims the hosted owner with a one-use setup token",
+  "descriptor": "rer-project.json",
+  "artifactBuilder": "scripts/build-delivery-artifact.mjs"
+}

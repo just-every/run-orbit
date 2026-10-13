@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "applicationGeneration": "orbit-fold-1",
+  "contract": "docs/fold/CONTRACT.md",
+  "nativePredecessor": "1cc919c0d9b7a30e02e39dca7f2351286fc4c72a",
+  "expansionParent": "85f8295a5e22c3ab7f018e7f20fe21e548b2e912",
+  "migrationRange": [
+    "0016",
+    "0020"
+  ],
+  "archiveGeneration": 3,
+  "transportArtifactSchema": 2,
+  "resources": [
+    {
+      "kind": "d1",
+      "binding": "DB"
+    }
+  ]
+}

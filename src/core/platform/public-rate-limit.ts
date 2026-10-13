@@ -1,0 +1,29 @@
+/** Durable fixed-minute limits shared by all isolates; identities expire after two minutes. */
+export async function publicIdentity(request:Request,now:number){
+ const ip=request.headers.get('CF-Connecting-IP')??'local';
+ const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(`${Math.floor(now/60000)}:${ip}`));
+ return Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
+}
+export async function consumeRateLimit(db:D1Database,key:string,limit:number,now:number):Promise<Response|undefined>{
+ const result=await db.batch([
+  db.prepare('DELETE FROM public_rate_limits WHERE expires_at<?').bind(now),
+  db.prepare('INSERT INTO public_rate_limits(bucket,count,expires_at) VALUES(?,1,?) ON CONFLICT(bucket) DO UPDATE SET count=count+1 RETURNING count').bind(key,now+120000)
+ ]);
+ const count=(result[1]!.results[0] as {count:number}).count;
+ if(count>limit)return new Response(JSON.stringify({error:'Request rate limit exceeded.'}),{status:429,headers:{'Content-Type':'application/json','Retry-After':String(60-Math.floor(now/1000)%60),'Cache-Control':'no-store'}});
+}
+export async function publicRateLimit(db:D1Database,request:Request,now=Date.now()):Promise<Response|undefined>{
+ const pathname=new URL(request.url).pathname;
+ // The Worker dispatches raw /api/ paths to Hono, which decodes routing text.
+ // Use that same decoder; decodeURIComponent would also invent route slashes.
+ const routedPath=pathname.startsWith('/api/')?getPath(request):pathname;
+ // These bounded-body routes verify the actual signature before choosing their rate bucket.
+ if(request.method==='POST'&&/^\/api\/v1\/mail\/events\/(sendgrid|reply|relay)$/.test(routedPath))return;
+ const ingress=routedPath.startsWith('/api/v1/signals/')||routedPath.startsWith('/api/v1/mail/events/');
+ const delegation=pathname.startsWith('/api/delegation/v1/');
+ const publicForm=routedPath.startsWith('/api/public/forms/');
+ if(pathname.startsWith('/api/')&&!ingress&&!delegation&&!publicForm)return;
+ if(pathname==='/app'||pathname.startsWith('/app/')||pathname.startsWith('/_serverFn/'))return;
+ return consumeRateLimit(db,ingress?`ingress:${Math.floor(now/60000)}`:`public:${await publicIdentity(request,now)}`,ingress?600:300,now);
+}
+import {getPath} from 'hono/utils/url';

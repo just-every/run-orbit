@@ -1,0 +1,447 @@
+diff --git a/wrangler-dist/cli.js b/wrangler-dist/cli.js
+--- a/wrangler-dist/cli.js
++++ b/wrangler-dist/cli.js
+@@ -200075,6 +200075,13 @@
+       localServerReady = createDeferred();
+       proxyWorker;
+       proxyWorkerOptions;
++      userWorkerTransport = require("./http-transport.cjs").createHttpTransport();
++      httpListener;
++      httpListenerTask = Promise.resolve();
++      httpListenerGeneration = 0;
++      httpListenerOptions;
++      httpListenerStopped = createDeferred();
++      httpListenerAbort = new AbortController();
+       inspectorProxyWorkerWebSocket;
+       latestConfig;
+       latestBundle;
+@@ -200089,8 +200096,8 @@
+           this.latestConfig.dev.server?.httpsCertPath
+         ) : void 0;
+         const proxyWorkerOptions = {
+-          host: this.latestConfig.dev?.server?.hostname,
+-          port: this.latestConfig.dev?.server?.port,
++          host: "127.0.0.1",
++          port: 0,
+           https: this.latestConfig.dev?.server?.secure,
+           httpsCert: cert?.cert,
+           httpsKey: cert?.key,
+@@ -200113,6 +200120,16 @@
+               // However, the proxy worker only makes outgoing requests to the user Worker Miniflare instance, which _should_ receive CF-Connecting-IP
+               stripCfConnectingIp: false,
+               serviceBindings: {
++                USER_WORKER: { node: async (req, res) => {
++                  const target = new URL(req.headers["mf-transport-url"]);
++                  const local = ["localhost", "127.0.0.1", "[::1]"].includes(target.hostname);
++                  const tls = local && target.protocol === "https:" ? await miniflare.getEntrySocketHttpOptions({
++                    https: true, httpsKey: cert?.key, httpsCert: cert?.cert,
++                  }) : void 0;
++                  const configuredHost = this.latestConfig.dev?.server?.hostname?.replace(/^\[|\]$/g, "") ?? "127.0.0.1";
++                  const tlsIdentity = ["*", "::", "0.0.0.0"].includes(configuredHost) ? "127.0.0.1" : configuredHost;
++                  this.userWorkerTransport.forward(req, res, target, tls?.https ? { ca: tls.https.tlsOptions.keypair.certificateChain, tlsIdentity } : {});
++                } },
+                 PROXY_CONTROLLER: /* @__PURE__ */ __name(async (req) => {
+                   const message = await req.json();
+                   this.onProxyWorkerMessage(message);
+@@ -200183,7 +200200,21 @@
+           this.proxyWorkerOptions,
+           proxyWorkerOptions
+         );
+-        const willInstantiateMiniflareInstance = !this.proxyWorker || proxyWorkerOptionsChanged;
++        const listenerOptions = {
++          host: this.latestConfig.dev?.server?.hostname,
++          port: this.latestConfig.dev?.server?.port,
++          secure: this.latestConfig.dev?.server?.secure,
++          cert,
++          signal: this.httpListenerAbort.signal,
++        };
++        const listenerOptionsChanged = !this.httpListenerOptions ||
++          this.httpListenerOptions.host !== listenerOptions.host ||
++          this.httpListenerOptions.port !== listenerOptions.port ||
++          this.httpListenerOptions.secure !== listenerOptions.secure ||
++          this.httpListenerOptions.cert?.cert !== listenerOptions.cert?.cert ||
++          this.httpListenerOptions.cert?.key !== listenerOptions.cert?.key;
++        this.httpListenerOptions = listenerOptions;
++        const willInstantiateMiniflareInstance = !this.proxyWorker || proxyWorkerOptionsChanged || listenerOptionsChanged;
+         this.proxyWorker ??= new miniflare.Miniflare(
+           miniflare.convertV4MiniflareOptions(proxyWorkerOptions)
+         );
+@@ -200193,14 +200224,30 @@
+           void this.proxyWorker.setOptions(miniflare.convertV4MiniflareOptions(proxyWorkerOptions)).catch((error53) => {
+             this.emitErrorEvent("Failed to start ProxyWorker", error53);
+           });
++        }
++        if (proxyWorkerOptionsChanged || listenerOptionsChanged) {
+           this.ready = createDeferred(this.ready);
+         }
+         const { proxyWorker } = this;
+         if (willInstantiateMiniflareInstance) {
+-          void Promise.all([
+-            proxyWorker.ready,
+-            !this.inspectorEnabled ? Promise.resolve(void 0) : proxyWorker.unsafeGetDirectURL("InspectorProxyWorker")
+-          ]).then(([url5, inspectorUrl]) => {
++          const generation = ++this.httpListenerGeneration;
++          this.httpListenerTask = this.httpListenerTask.then(() => Promise.race([
++            Promise.all([
++              proxyWorker.ready,
++              !this.inspectorEnabled ? Promise.resolve(void 0) : proxyWorker.unsafeGetDirectURL("InspectorProxyWorker")
++            ]),
++            this.httpListenerStopped.promise,
++          ])).then(async (ready) => {
++            if (!ready || this._torndown || generation !== this.httpListenerGeneration) return;
++            let [url5, inspectorUrl] = ready;
++            await this.httpListener?.dispose();
++            const listener = await require("./http-proxy-listener.cjs")(url5, listenerOptions);
++            if (this._torndown || generation !== this.httpListenerGeneration) {
++              await listener.dispose();
++              return;
++            }
++            this.httpListener = listener;
++            url5 = listener.url;
+             if (!this.inspectorEnabled) {
+               return [url5, void 0];
+             }
+@@ -200208,7 +200255,9 @@
+               url5,
+               inspectorUrl
+             ]);
+-          }).then(([url5, inspectorUrl]) => {
++          }).then((ready) => {
++            if (!ready || this._torndown || generation !== this.httpListenerGeneration) return;
++            const [url5, inspectorUrl] = ready;
+             assert36__default.default(url5);
+             this.emitReadyEvent(proxyWorker, url5, inspectorUrl);
+           }).catch((error53) => {
+@@ -200479,10 +200528,15 @@
+         await super.teardown();
+         logger2.debug("ProxyController teardown beginning...");
+         this._torndown = true;
++        this.httpListenerStopped.resolve(void 0);
++        this.httpListenerAbort.abort();
+         const { proxyWorker } = this;
+         this.proxyWorker = void 0;
+         await Promise.all([
+           proxyWorker?.dispose(),
++          this.httpListenerTask,
++          this.userWorkerTransport.dispose(),
++          this.httpListener?.dispose(),
+           this.inspectorProxyWorkerWebSocket?.promise.then((ws) => ws.close()).catch(() => {
+           })
+         ]);
+diff --git a/wrangler-dist/ProxyWorker.js b/wrangler-dist/ProxyWorker.js
+--- a/wrangler-dist/ProxyWorker.js
++++ b/wrangler-dist/ProxyWorker.js
+@@ -139,7 +139,9 @@
+           headers.set(key, value);
+         }
+       }
+-      const attemptUserWorkerFetch = (attempt = 0) => void fetch(userWorkerUrl, new Request(request, { headers })).then(
++      const isWebSocket = request.headers.get("Upgrade")?.toLowerCase() === "websocket";
++      if (!isWebSocket) headers.set("MF-Transport-URL", userWorkerUrl.href);
++      const attemptUserWorkerFetch = (attempt = 0) => void (isWebSocket ? fetch(userWorkerUrl, new Request(request, { headers })) : this.env.USER_WORKER.fetch(userWorkerUrl, new Request(request, { headers }))).then(
+         async (res) => {
+           if (attempt > 0) {
+             console.warn(
+diff --git a/wrangler-dist/http-transport.cjs b/wrangler-dist/http-transport.cjs
+new file mode 100644
+--- /dev/null
++++ b/wrangler-dist/http-transport.cjs
+@@ -0,0 +1,145 @@
++const { preserveResponseAfterUploadClose } = require('./http-upload-socket.cjs');
++const http = require('node:http');
++const https = require('node:https');
++const net = require('node:net');
++const tls = require('node:tls');
++
++const maxHeaderSize = 128 * 1024;
++
++// Connect to the private socket while verifying the configured public identity.
++// IP identities use TLS host verification without an invalid IP SNI value.
++function connectTls(target, { ca, tlsIdentity } = {}) {
++  const host = target.hostname.replace(/^\[|\]$/g, '');
++  const identity = tlsIdentity ?? host;
++  const socket = net.connect({ host, port: Number(target.port) || 443 });
++  let secure;
++  try {
++    secure = tls.connect({
++      socket, host: identity, ca, rejectUnauthorized: true,
++      ...(!net.isIP(identity) ? { servername: identity } : {}),
++    });
++  } catch (error) { socket.destroy(); throw error; }
++  socket.on('error', error => secure.destroy(error));
++  secure.once('close', () => socket.destroy());
++  return secure;
++}
++
++const hopHeaders = new Set(['connection', 'keep-alive', 'proxy-connection', 'transfer-encoding']);
++
++function trailerPairs(raw) {
++  const pairs = [];
++  for (let i = 0; i < raw.length; i += 2) pairs.push([raw[i], raw[i + 1]]);
++  return pairs;
++}
++
++// A response may finish while the peer is still uploading. Send FIN first, then
++// discard a bounded tail without allowing unread input to reset the response.
++function stageClose(request, socket) {
++  socket.allowHalfOpen = true;
++  let closing = false;
++  socket.destroySoon = () => {
++    if (closing) return;
++    closing = true;
++    socket.end();
++    request.pause();
++    let remaining = 65536;
++    const discard = () => {
++      while (remaining > 0 && request.readableLength > 0) {
++        const chunk = request.read(Math.min(remaining, request.readableLength));
++        if (chunk === null) break;
++        remaining -= chunk.length;
++      }
++      if (remaining === 0) request.removeListener('readable', discard);
++    };
++    const timeout = setTimeout(() => socket.destroy(), 2000);
++    timeout.unref();
++    socket.once('close', () => {
++      clearTimeout(timeout);
++      request.removeListener('readable', discard);
++    });
++    socket.once('end', () => socket.destroy());
++    request.on('readable', discard);
++    discard();
++  };
++}
++
++function createHttpTransport() {
++  const active = new Set();
++  const uploads = new Set();
++  function forward(request, response, target, options = {}) {
++    const { headerOverrides = {}, ...connectionOptions } = options;
++    const replaced = new Set(['connection', 'mf-custom-node-service', 'mf-transport-url',
++      ...Object.keys(headerOverrides).map(name => name.toLowerCase())]);
++    // Node's normalized headers discard some duplicates and join Cookie with
++    // semicolons. Preserve wire fields so the native hop applies its own rules.
++    const headers = [];
++    for (let i = 0; i < request.rawHeaders.length; i += 2) {
++      if (!replaced.has(request.rawHeaders[i].toLowerCase())) {
++        headers.push(request.rawHeaders[i], request.rawHeaders[i + 1]);
++      }
++    }
++    for (const [name, value] of Object.entries(headerOverrides)) headers.push(name, value);
++    headers.push('Connection', 'close');
++    let receivedResponse;
++    const outgoing = (target.protocol === 'https:' ? https : http).request(target, {
++      method: request.method, headers, agent: false, maxHeaderSize, ...connectionOptions,
++      ...(target.protocol === 'https:' && options.tlsIdentity ? {
++        agent: undefined, createConnection: () => connectTls(target, options),
++      } : {}),
++    }, incoming => {
++      receivedResponse = incoming;
++      if (!request.complete) stageClose(request, request.socket);
++      const responseHeaders = [];
++      for (let i = 0; i < incoming.rawHeaders.length; i += 2) {
++        const name = incoming.rawHeaders[i];
++        if (!hopHeaders.has(name.toLowerCase())) responseHeaders.push(name, incoming.rawHeaders[i + 1]);
++      }
++      responseHeaders.push('Connection', 'close');
++      response.writeHead(incoming.statusCode, incoming.statusMessage, responseHeaders);
++      // Preserve full duplex: headers alone do not mean the consumer has stopped
++      // reading. Only stop uploading after the entire response has ended.
++      incoming.on('end', () => {
++        response.addTrailers(trailerPairs(incoming.rawTrailers));
++        request.unpipe(outgoing);
++        request.pause();
++        if (!outgoing.writableEnded) outgoing.end();
++      });
++      incoming.on('error', error => response.destroy(error));
++      response.on('close', () => { if (!incoming.complete) incoming.destroy(); });
++      incoming.pipe(response);
++    });
++    // Byte-bounded headers retain every field, including beyond Node's default
++    // count truncation. The native hop keeps its original 128 KiB policy.
++    preserveResponseAfterUploadClose(outgoing, () => { request.unpipe(outgoing); request.pause(); });
++    outgoing.maxHeadersCount = 0;
++    active.add(outgoing);
++    uploads.add(request.socket);
++    request.socket.once('close', () => uploads.delete(request.socket));
++    outgoing.on('close', () => active.delete(outgoing));
++    // An early response can reject further writes. Its read side still owns
++    // response completion and reports truncation through IncomingMessage.
++    outgoing.on('error', error => { if (!receivedResponse) response.destroy(error); });
++    request.on('aborted', () => outgoing.destroy());
++    request.on('error', error => outgoing.destroy(error));
++    request.on('end', () => outgoing.addTrailers(trailerPairs(request.rawTrailers)));
++    outgoing.flushHeaders();
++    request.pipe(outgoing);
++  }
++  return {
++    forward,
++    async dispose() {
++      const closed = [];
++      for (const outgoing of active) {
++        closed.push(new Promise(resolve => outgoing.once('close', resolve)));
++        outgoing.destroy();
++      }
++      for (const socket of uploads) {
++        closed.push(new Promise(resolve => socket.once('close', resolve)));
++        socket.destroy();
++      }
++      await Promise.all(closed);
++    },
++  };
++}
++
++module.exports = { createHttpTransport, connectTls, maxHeaderSize };
+diff --git a/wrangler-dist/http-proxy-listener.cjs b/wrangler-dist/http-proxy-listener.cjs
+new file mode 100644
+--- /dev/null
++++ b/wrangler-dist/http-proxy-listener.cjs
+@@ -0,0 +1,95 @@
++const http = require('node:http');
++const https = require('node:https');
++const net = require('node:net');
++const { createHttpTransport, connectTls, maxHeaderSize } = require('./http-transport.cjs');
++
++module.exports = async function listen(origin, options) {
++  const entry = await require('miniflare').getEntrySocketHttpOptions({
++    https: options.secure, httpsKey: options.cert?.key, httpsCert: options.cert?.cert,
++  });
++  const certificate = entry.https?.tlsOptions.keypair;
++  const cert = certificate ? { key: certificate.privateKey, cert: certificate.certificateChain } : undefined;
++  if (options.signal?.aborted) throw new Error('HTTP listener stopped before startup');
++  const configuredHost = (options.host ?? '127.0.0.1').replace(/^\[|\]$/g, '');
++  const bindHost = configuredHost === '*' ? '::' : configuredHost === 'localhost' ? '127.0.0.1' : configuredHost;
++  const accessibleHost = ['*', '::', '0.0.0.0'].includes(configuredHost) ? '127.0.0.1' : configuredHost;
++  const urlHost = net.isIPv6(accessibleHost) ? `[${accessibleHost}]` : accessibleHost;
++  // Validate URL construction before binding a socket.
++  const url = new URL(`${cert ? 'https' : 'http'}://${urlHost}:0`);
++  const sockets = new Set();
++  const target = new URL(origin);
++  const transport = createHttpTransport();
++  const tlsOptions = cert ? { ca: cert.cert, tlsIdentity: accessibleHost } : {};
++  const server = (cert ? https : http).createServer({
++    ...cert, allowHalfOpen: true, maxHeaderSize,
++  }, (request, response) => {
++    // The private native listener sees loopback; preserve the public peer identity.
++    const headerOverrides = !request.headers['cf-connecting-ip'] && request.socket.remoteAddress
++      ? { 'CF-Connecting-IP': request.socket.remoteAddress } : {};
++    // Retain the raw HTTP request target, including encoded path components.
++    transport.forward(request, response, target, { ...tlsOptions, path: request.url, headerOverrides });
++  });
++  server.maxHeadersCount = 0;
++  const track = socket => {
++    sockets.add(socket);
++    socket.once('close', () => sockets.delete(socket));
++  };
++  server.on('connection', track);
++  // WebSockets and CONNECT retain the original proxy's protocol handling.
++  const tunnel = (request, socket, head) => {
++    const host = target.hostname.replace(/^\[|\]$/g, '');
++    const upstream = target.protocol === 'https:'
++      ? connectTls(target, tlsOptions)
++      : net.connect({ host, port: Number(target.port) || 80 });
++    track(upstream);
++    upstream.once(target.protocol === 'https:' ? 'secureConnect' : 'connect', () => {
++      let headers = `${request.method} ${request.url} HTTP/${request.httpVersion}\r\n`;
++      const fillPeer = !request.headers['cf-connecting-ip'] && socket.remoteAddress;
++      for (let i = 0; i < request.rawHeaders.length; i += 2) {
++        if (fillPeer && request.rawHeaders[i].toLowerCase() === 'cf-connecting-ip') continue;
++        headers += `${request.rawHeaders[i]}: ${request.rawHeaders[i + 1]}\r\n`;
++      }
++      if (fillPeer) headers += `CF-Connecting-IP: ${socket.remoteAddress}\r\n`;
++      upstream.write(headers + '\r\n');
++      if (head.length) upstream.write(head);
++      socket.pipe(upstream).pipe(socket);
++    });
++    upstream.on('error', () => socket.destroy());
++    socket.on('error', () => upstream.destroy());
++    socket.once('close', () => upstream.destroy());
++    upstream.once('close', () => socket.destroy());
++  };
++  server.on('upgrade', tunnel);
++  server.on('connect', tunnel);
++  let disposal;
++  const dispose = () => disposal ??= (async () => {
++    const closed = new Promise(resolve => server.close(() => resolve()));
++    const socketsClosed = [...sockets].map(socket => new Promise(resolve => {
++      socket.once('close', resolve);
++      socket.destroy();
++    }));
++    await Promise.all([closed, transport.dispose(), ...socketsClosed]);
++  })();
++  try {
++    await new Promise((resolve, reject) => {
++      const stopped = () => reject(new Error('HTTP listener stopped during startup'));
++      server.once('error', reject);
++      server.once('close', stopped);
++      server.listen({
++        port: options.port ?? 0,
++        host: bindHost,
++        signal: options.signal,
++      }, () => {
++        server.removeListener('close', stopped);
++        resolve();
++      });
++    });
++    const address = server.address();
++    if (!address || typeof address === 'string') throw new Error('HTTP listener stopped during startup');
++    url.port = String(address.port);
++    return { url, dispose };
++  } catch (error) {
++    await dispose();
++    throw error;
++  }
++};
+diff --git a/wrangler-dist/http-upload-socket.cjs b/wrangler-dist/http-upload-socket.cjs
+new file mode 100644
+--- /dev/null
++++ b/wrangler-dist/http-upload-socket.cjs
+@@ -0,0 +1,48 @@
++// Node normally destroys both halves of a socket on a write error. An HTTP
++// peer may stop accepting an upload while its response remains readable.
++// Linux can report its pending reset as ECONNRESET on write before EPIPE;
++// neither write error proves that the HTTP response has been read.
++function preserveResponseAfterUploadClose(outgoing, stopUpload) {
++  outgoing.once('socket', socket => {
++    let incoming, pending, deadline;
++    const settle = () => {
++      clearTimeout(deadline);
++      const callback = pending;
++      pending = undefined;
++      callback?.();
++    };
++    outgoing.once('response', response => {
++      incoming = response;
++      clearTimeout(deadline);
++      response.once('end', settle);
++      response.once('error', settle);
++    });
++    socket.once('close', settle);
++    for (const method of ['_write', '_writev']) {
++      const write = socket[method];
++      socket[method] = function (...args) {
++        const callback = args[args.length - 1];
++        args[args.length - 1] = error => {
++          const uploadClosed = error?.code === 'EPIPE' || error?.code === 'ECONNRESET';
++          if (!uploadClosed || error.syscall !== 'write' || incoming?.complete || socket.destroyed) {
++            callback(error);
++            return;
++          }
++          // Hold the failed write callback: never acknowledge rejected bytes or
++          // release queued writes. The original error settles it after the real
++          // response finishes or its read side fails/closes.
++          pending = () => callback(error);
++          stopUpload();
++          if (!incoming) {
++            // No response has begun. Bound this exceptional waiting state;
++            // ordinary response streaming retains its normal lifetime.
++            deadline = setTimeout(() => socket.destroy(error), 2000);
++            deadline.unref();
++          }
++        };
++        return write.apply(this, args);
++      };
++    }
++  });
++}
++module.exports = { preserveResponseAfterUploadClose };

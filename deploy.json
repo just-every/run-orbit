@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "project": "just-every/sales-orbit",
+  "compatibilityDate": "2026-09-08",
+  "compatibilityFlags": [
+    "nodejs_compat"
+  ],
+  "d1": [
+    {
+      "binding": "DB"
+    }
+  ],
+  "originVar": "AUTH_ORIGIN",
+  "vars": {
+    "AUTH_LOCAL": "false",
+    "MAIL_PROVIDER": "sendgrid"
+  },
+  "secrets": [
+    {
+      "binding": "OWNER_EMAIL",
+      "environment": "OWNER_EMAIL"
+    },
+    {
+      "binding": "SETUP_TOKEN",
+      "environment": "SETUP_TOKEN"
+    },
+    {
+      "binding": "MAIL_FROM",
+      "environment": "MAIL_FROM"
+    },
+    {
+      "binding": "SENDGRID_API_KEY",
+      "environment": "SENDGRID_API_KEY"
+    }
+  ],
+  "crons": [
+    "* * * * *"
+  ]
+}

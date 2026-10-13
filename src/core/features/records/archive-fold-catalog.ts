@@ -1,0 +1,29 @@
+import {selectedFoldTables} from '../../shared/archive-lineage';
+import {archiveSchemaObjects,type SchemaObjectTable} from './archive-schema-objects';
+import {storedLegacyLineage} from './archive-lineage';
+import {archiveHash,type ArchiveTable,type ArchiveColumn} from './archive-schema';
+import {RecordError} from './shared';
+export type FoldArchiveTable=SchemaObjectTable&{objects?:{type:string;name:string;sql:string|null}[]};
+export const foldKnownNativeAdditions=['privacy_matching_contexts','mail_provider_conflicts'] as const;
+/** Exact selected consumers. These additional slots never admit arbitrary owner tables. */
+export const foldDomainTables=selectedFoldTables;
+export const foldAuthorityTables=['access_invitations','access_grants','access_form_authorities'] as const;
+export const foldExcludedTables=new Set(['sessions','magic_links','owner_bootstrap','sample_seed_runs','first_run_setup','d1_migrations','public_rate_limits','auth_rate_limits','runtime_controls','record_erasure_signals','access_write_guards','capture_credentials',...foldAuthorityTables]);
+export async function foldArchiveCatalog(db:D1Database){const catalog=await foldInstalledCatalog(db);if(catalog.filter(t=>!(foldDomainTables as readonly string[]).includes(t.name)).length>100&&!await storedLegacyLineage(db,catalog))throw new RecordError(400,'Current archives retain the 100-table base allowance; complete legacy evidence is required for its exact known additions.');return catalog;}
+export function foldInstalledCatalog(db:D1Database){return read(db);}
+async function read(db:D1Database):Promise<ArchiveTable[]>{
+ const inventory=(await db.prepare("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").all<{name:string}>()).results.map(row=>row.name);
+ for(const name of [...foldDomainTables,...foldKnownNativeAdditions,...foldAuthorityTables,'archive_fold_generation','archive_storage_reservations'])if(!inventory.includes(name))throw new RecordError(400,'The complete folded source generation is not installed.');
+ const generation=await db.prepare('SELECT generation FROM archive_fold_generation WHERE singleton=1').first<{generation:string}>();if(generation?.generation!=='orbit-fold-1')throw new RecordError(400,'Unknown archive source generation.');
+ const names=inventory.filter(name=>!foldExcludedTables.has(name)&&!['ik_', 'crm_import_', 'delegation_', 'identity_', 'oa_','sqlite_','_cf_','rer_','record_search','timeline_search','archive_'].some(prefix=>name.startsWith(prefix)));
+ const additions=new Set<string>([...foldDomainTables,...foldKnownNativeAdditions]);if(names.filter(name=>!additions.has(name)).length>100||names.length>100+foldDomainTables.length+foldKnownNativeAdditions.length)throw new RecordError(400,'The base archive catalog exceeds its unchanged 100-table allowance.');
+ if(names.some(name=>!/^[a-z_][a-z0-9_]*$/.test(name)))throw new RecordError(400,'Archive table uses an unsupported identifier.');
+ const objects=(await db.prepare('SELECT tbl_name,type,name,sql FROM sqlite_master WHERE tbl_name IN(SELECT value FROM json_each(?)) ORDER BY tbl_name,type,name').bind(JSON.stringify(names)).all<{tbl_name:string;type:string;name:string;sql:string|null}>()).results;
+ const columns=(await db.prepare('SELECT n.value AS table_name,c.cid,c.name,c.type,c."notnull",c.dflt_value,c.pk FROM json_each(?) n CROSS JOIN pragma_table_info(n.value) c ORDER BY n.value,c.cid').bind(JSON.stringify(names)).all<ArchiveColumn&{table_name:string}>()).results;
+ const fks=(await db.prepare('SELECT n.value AS table_name,f."table" AS dependency FROM json_each(?) n CROSS JOIN pragma_foreign_key_list(n.value) f ORDER BY n.value,f.id,f.seq').bind(JSON.stringify(names)).all<{table_name:string;dependency:string}>()).results;
+ const tables=names.map(name=>{const visible=columns.filter(c=>c.table_name===name&&!(name==='signal_sources'&&c.name==='secret_ciphertext')).map(({table_name,...c})=>c);if(visible.length<1||visible.length>100||visible.some(c=>!/^[a-z_][a-z0-9_]*$/.test(c.name)))throw new RecordError(400,'Archive columns exceed the supported ordered 100-column profile.');const dependencies=[...new Set(fks.filter(f=>f.table_name===name&&names.includes(f.dependency)).map(f=>f.dependency))];if(name==='audit_entries')dependencies.push('privacy_matching_contexts');if(name==='contacts')dependencies.push('audit_entries');if(name==='access_memberships')dependencies.push('access_collaborators');return{name,columns:visible,dependencies,objects:objects.filter(o=>o.tbl_name===name).map(({tbl_name,...object})=>object)};});
+ const ordered:ArchiveTable[]=[];while(ordered.length<tables.length){const ready=tables.filter(t=>!ordered.includes(t)&&t.dependencies.every(d=>ordered.some(o=>o.name===d)));if(!ready.length)throw new RecordError(400,'Archive schema contains a dependency cycle.');ordered.push(...ready);}(ordered[0] as SchemaObjectTable).schemaObjects=await archiveSchemaObjects(db);return ordered;
+}
+export function foldSchemaHash(catalog:ArchiveTable[]){return archiveHash(catalog.map(table=>({name:table.name,columns:table.columns.map(c=>[c.name,c.type,c.notnull,c.pk,c.dflt_value]),objects:(table as FoldArchiveTable).objects,schemaObjects:(table as FoldArchiveTable).schemaObjects})));}
+/** Credentials never travel, but isolated rollback must retain the destination's exact authority. */
+export async function foldRestoreCatalog(db:D1Database,catalog?:ArchiveTable[]){const domain=catalog??await foldArchiveCatalog(db),rows=(await db.prepare('SELECT n.value AS table_name,c.name,c.type,c."notnull",c.dflt_value,c.pk FROM json_each(?) n CROSS JOIN pragma_table_info(n.value) c ORDER BY n.key,c.cid').bind(JSON.stringify(foldAuthorityTables)).all<ArchiveColumn&{table_name:string}>()).results;return[...domain,...foldAuthorityTables.map(name=>({name,columns:rows.filter(c=>c.table_name===name).map(({table_name,...column})=>column),dependencies:[]}))];}

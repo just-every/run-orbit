@@ -1,0 +1,23 @@
+{
+  "id": "orbit",
+  "name": "Orbit",
+  "sourceRepository": "just-every/run-orbit",
+  "artifactFile": "delivery-artifact/rer-worker-artifact.json",
+  "artifactNamePrefix": "orbit-worker-",
+  "compiler": "management/integration",
+  "requiredPublicInputs": [
+    "MAIL_FROM",
+    "MAIL_REPLY_TO",
+    "SENDGRID_UNSUBSCRIBE_GROUP_ID",
+    "SENDGRID_WEBHOOK_PUBLIC_KEY",
+    "SENDGRID_PARSE_PUBLIC_KEY"
+  ],
+  "ownerSetup": "rer setup claims the single workspace owner locally with a private one-use setup token; deploy claims the hosted owner the same way. The owner then confirms the workspace at /setup. Native emailed sign-in requires configured mail when hosted.",
+  "providerSetup": [
+    "SendGrid verified sender, unsubscribe group, signed event webhook and signed Inbound Parse/MX configuration"
+  ],
+  "operationalGaps": [
+    "Service adoption and hosted installation remain separate qualification steps",
+    "Native credentials and sessions are excluded from domain archives and must be reconfigured after restore"
+  ]
+}

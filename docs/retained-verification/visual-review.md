@@ -1,0 +1,7 @@
+# Orbit working journey visual review
+
+The retained opportunity screenshot was extended through 12ui branch into account creation and evidence/approval states. The functional create screen was captured at 1024×1536 and closed with 12ui improve against that generated target. The kit completed; screenshot mode produced an unanchored specification, with no actionable matched changes or raster layers. The existing two-column paper-card composition, summary, controls and green save action match the target's arrangement. Its section typography and summary title were applied at the form level.
+
+Existing functional fields were retained instead of adding duplicate target elements. The decorative search icon was omitted because company lookup is not implemented; decorative user/envelope icons add no action and were omitted. Empty fields and live pipeline names replace the design's example customer data. Existing operator navigation, sign-out, and truthful workspace-currency wording remain intentional content differences.
+
+The evidence/approval composition was integrated into the existing opportunity and draft layouts rather than replacing their established evidence/timeline presentation. Browser tests exercise create, evidence capture and exact durable draft review without a full document navigation. Original design/run details remain in the ignored `.12ui/orbit-working-journey` local artifact; delivered screenshots are in `visual/`.

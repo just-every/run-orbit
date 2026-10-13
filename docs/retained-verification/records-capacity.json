@@ -1,0 +1,987 @@
+{
+  "counts": {
+    "contacts": 100000,
+    "companies": 25000,
+    "openOpportunities": 25000,
+    "signals": 1000000,
+    "timelineActivities": 2000000
+  },
+  "runtime": "local emitted Cloudflare Worker with real D1",
+  "measurements": {
+    "contact?q=Capacityneedle": {
+      "samples": 30,
+      "p95Ms": 11.469750000003842,
+      "maxMs": 39.775000000001455
+    },
+    "contact?q=Timelineneedle": {
+      "samples": 30,
+      "p95Ms": 13.758625000002212,
+      "maxMs": 36.47029199999815
+    },
+    "contact": {
+      "samples": 30,
+      "p95Ms": 15.136540999999852,
+      "maxMs": 28.711957999999868
+    },
+    "company": {
+      "samples": 30,
+      "p95Ms": 13.683624999997846,
+      "maxMs": 14.185791999996582
+    },
+    "opportunity?lifecycle=open&band=low&queue_state=none": {
+      "samples": 30,
+      "p95Ms": 15.297417000001587,
+      "maxMs": 155.93866600000183
+    }
+  },
+  "archive": {
+    "source": {
+      "id": "01M2F2CW158A3JQNG3ZQGSJ0E9",
+      "manifest": {
+        "format": "orbit-export",
+        "version": 2,
+        "exportedAt": "2026-09-14T04:21:54.341Z",
+        "tables": [
+          {
+            "name": "action_completions",
+            "columns": [
+              "recommendation_id",
+              "completed_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "ai_calls",
+            "columns": [
+              "id",
+              "operator_id",
+              "opportunity_id",
+              "provider",
+              "model",
+              "feature",
+              "input_tokens",
+              "output_tokens",
+              "cached_input_tokens",
+              "estimated_cost",
+              "duration_ms",
+              "status",
+              "error",
+              "created_at"
+            ],
+            "rows": 1
+          },
+          {
+            "name": "ai_previews",
+            "columns": [
+              "id",
+              "operator_id",
+              "opportunity_id",
+              "recommendation_id",
+              "recipient_contact_id",
+              "feature",
+              "content_json",
+              "created_at",
+              "consumed_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "companies",
+            "columns": [
+              "id",
+              "name",
+              "primary_domain",
+              "primary_domain_key",
+              "created_at",
+              "updated_at",
+              "custom_fields_json"
+            ],
+            "rows": 25000
+          },
+          {
+            "name": "evaluation_job_runs",
+            "columns": [
+              "opportunity_id",
+              "requested_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "mail_provider_events",
+            "columns": [
+              "id",
+              "payload_hash",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "operators",
+            "columns": [
+              "id",
+              "email",
+              "display_name",
+              "status",
+              "created_at",
+              "updated_at",
+              "setup_owner"
+            ],
+            "rows": 1
+          },
+          {
+            "name": "pipeline_stages",
+            "columns": [
+              "id",
+              "name",
+              "position",
+              "created_at",
+              "updated_at"
+            ],
+            "rows": 1
+          },
+          {
+            "name": "record_aliases",
+            "columns": [
+              "record_type",
+              "identity_key",
+              "survivor_id",
+              "retired_id",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "record_merge_claims",
+            "columns": [
+              "record_type",
+              "retired_id",
+              "survivor_id",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "signal_sources",
+            "columns": [
+              "id",
+              "name",
+              "type",
+              "enabled",
+              "created_at",
+              "updated_at",
+              "last_accepted_at",
+              "last_error",
+              "rejected_count",
+              "cursor"
+            ],
+            "rows": 1
+          },
+          {
+            "name": "source_event_errors",
+            "columns": [
+              "id",
+              "source_id",
+              "source_event_id",
+              "reason",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "timeline_entries",
+            "columns": [
+              "id",
+              "kind",
+              "occurred_at",
+              "recorded_at",
+              "actor_type",
+              "actor_id",
+              "source",
+              "payload_json"
+            ],
+            "rows": 2000000
+          },
+          {
+            "name": "unlinked_replies",
+            "columns": [
+              "id",
+              "provider_event_id",
+              "sender",
+              "subject",
+              "body",
+              "message_id",
+              "reference_ids",
+              "occurred_at",
+              "opportunity_id"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "workspace_settings",
+            "columns": [
+              "id",
+              "name",
+              "timezone",
+              "currency",
+              "working_hours_json",
+              "stale_interval_days",
+              "awaiting_response_working_days",
+              "free_mail_domains_json",
+              "created_at",
+              "updated_at"
+            ],
+            "rows": 1
+          },
+          {
+            "name": "audit_entries",
+            "columns": [
+              "id",
+              "actor_id",
+              "action",
+              "entity_type",
+              "entity_id",
+              "details_json",
+              "occurred_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "contacts",
+            "columns": [
+              "id",
+              "company_id",
+              "name",
+              "email",
+              "email_key",
+              "phone",
+              "job_title",
+              "timezone",
+              "contactability",
+              "created_at",
+              "updated_at",
+              "custom_fields_json"
+            ],
+            "rows": 100000
+          },
+          {
+            "name": "notifications",
+            "columns": [
+              "id",
+              "operator_id",
+              "opportunity_id",
+              "event_key",
+              "kind",
+              "message",
+              "created_at",
+              "read_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "opportunities",
+            "columns": [
+              "id",
+              "title",
+              "lifecycle",
+              "stage_id",
+              "owner_id",
+              "company_id",
+              "value_cents",
+              "expected_close_at",
+              "score",
+              "band",
+              "queue_state",
+              "queue_reason",
+              "last_contributing_signal_at",
+              "created_at",
+              "updated_at",
+              "next_due_at",
+              "custom_fields_json",
+              "closed_at",
+              "closed_by",
+              "close_reason"
+            ],
+            "rows": 25000
+          },
+          {
+            "name": "signals",
+            "columns": [
+              "id",
+              "source_id",
+              "source_event_id",
+              "type",
+              "subject",
+              "occurred_at",
+              "received_at",
+              "payload_hash",
+              "confidence",
+              "linking_basis",
+              "created_at",
+              "payload_json"
+            ],
+            "rows": 1000000
+          },
+          {
+            "name": "timeline_entry_records",
+            "columns": [
+              "timeline_entry_id",
+              "record_type",
+              "record_id"
+            ],
+            "rows": 2000000
+          },
+          {
+            "name": "evaluations",
+            "columns": [
+              "id",
+              "opportunity_id",
+              "score",
+              "band",
+              "evaluated_at",
+              "policy_version",
+              "status",
+              "failure_at",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "opportunity_contacts",
+            "columns": [
+              "opportunity_id",
+              "contact_id",
+              "is_primary",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "recommendations",
+            "columns": [
+              "id",
+              "opportunity_id",
+              "action_type",
+              "explanation",
+              "policy_version",
+              "is_current",
+              "superseded_at",
+              "created_at",
+              "updated_at",
+              "completed_at",
+              "completion_outcome",
+              "completion_note"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "record_mutation_jobs",
+            "columns": [
+              "opportunity_id",
+              "actor_id",
+              "reason",
+              "requested_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "signal_links",
+            "columns": [
+              "signal_id",
+              "record_type",
+              "record_id",
+              "linking_basis",
+              "linked_at"
+            ],
+            "rows": 1000000
+          },
+          {
+            "name": "unlinked_signals",
+            "columns": [
+              "signal_id",
+              "reason",
+              "resolved_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "drafts",
+            "columns": [
+              "id",
+              "opportunity_id",
+              "recommendation_id",
+              "author_id",
+              "recipient_contact_id",
+              "recipient_email",
+              "subject",
+              "body",
+              "revision",
+              "is_stale",
+              "stale_reason",
+              "created_at",
+              "updated_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "evaluation_contributions",
+            "columns": [
+              "id",
+              "evaluation_id",
+              "signal_id",
+              "contribution",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "recommendation_evidence",
+            "columns": [
+              "recommendation_id",
+              "signal_id"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "outbound_messages",
+            "columns": [
+              "id",
+              "draft_id",
+              "revision",
+              "opportunity_id",
+              "operator_id",
+              "contact_id",
+              "recipient_email",
+              "subject",
+              "body",
+              "state",
+              "provider_message_id",
+              "failure",
+              "settlement_id",
+              "created_at",
+              "updated_at",
+              "idempotency_key",
+              "message_id",
+              "reference_ids",
+              "scheduled_at",
+              "next_attempt_at",
+              "attempt_count",
+              "approved_at",
+              "claimed_at",
+              "first_attempt_at"
+            ],
+            "rows": 0
+          }
+        ],
+        "parts": 6155,
+        "rows": 6150005
+      },
+      "snapshotMs": 18870.600583,
+      "bytes": 1709715076
+    },
+    "restored": {
+      "id": "01M2F2PB3AA2JGNGVTD0ZG75AQ",
+      "manifest": {
+        "format": "orbit-export",
+        "version": 2,
+        "exportedAt": "2026-09-14T04:27:04.682Z",
+        "tables": [
+          {
+            "name": "action_completions",
+            "columns": [
+              "recommendation_id",
+              "completed_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "ai_calls",
+            "columns": [
+              "id",
+              "operator_id",
+              "opportunity_id",
+              "provider",
+              "model",
+              "feature",
+              "input_tokens",
+              "output_tokens",
+              "cached_input_tokens",
+              "estimated_cost",
+              "duration_ms",
+              "status",
+              "error",
+              "created_at"
+            ],
+            "rows": 1
+          },
+          {
+            "name": "ai_previews",
+            "columns": [
+              "id",
+              "operator_id",
+              "opportunity_id",
+              "recommendation_id",
+              "recipient_contact_id",
+              "feature",
+              "content_json",
+              "created_at",
+              "consumed_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "companies",
+            "columns": [
+              "id",
+              "name",
+              "primary_domain",
+              "primary_domain_key",
+              "created_at",
+              "updated_at",
+              "custom_fields_json"
+            ],
+            "rows": 25000
+          },
+          {
+            "name": "evaluation_job_runs",
+            "columns": [
+              "opportunity_id",
+              "requested_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "mail_provider_events",
+            "columns": [
+              "id",
+              "payload_hash",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "operators",
+            "columns": [
+              "id",
+              "email",
+              "display_name",
+              "status",
+              "created_at",
+              "updated_at",
+              "setup_owner"
+            ],
+            "rows": 1
+          },
+          {
+            "name": "pipeline_stages",
+            "columns": [
+              "id",
+              "name",
+              "position",
+              "created_at",
+              "updated_at"
+            ],
+            "rows": 1
+          },
+          {
+            "name": "record_aliases",
+            "columns": [
+              "record_type",
+              "identity_key",
+              "survivor_id",
+              "retired_id",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "record_merge_claims",
+            "columns": [
+              "record_type",
+              "retired_id",
+              "survivor_id",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "signal_sources",
+            "columns": [
+              "id",
+              "name",
+              "type",
+              "enabled",
+              "created_at",
+              "updated_at",
+              "last_accepted_at",
+              "last_error",
+              "rejected_count",
+              "cursor"
+            ],
+            "rows": 1
+          },
+          {
+            "name": "source_event_errors",
+            "columns": [
+              "id",
+              "source_id",
+              "source_event_id",
+              "reason",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "timeline_entries",
+            "columns": [
+              "id",
+              "kind",
+              "occurred_at",
+              "recorded_at",
+              "actor_type",
+              "actor_id",
+              "source",
+              "payload_json"
+            ],
+            "rows": 2000000
+          },
+          {
+            "name": "unlinked_replies",
+            "columns": [
+              "id",
+              "provider_event_id",
+              "sender",
+              "subject",
+              "body",
+              "message_id",
+              "reference_ids",
+              "occurred_at",
+              "opportunity_id"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "workspace_settings",
+            "columns": [
+              "id",
+              "name",
+              "timezone",
+              "currency",
+              "working_hours_json",
+              "stale_interval_days",
+              "awaiting_response_working_days",
+              "free_mail_domains_json",
+              "created_at",
+              "updated_at"
+            ],
+            "rows": 1
+          },
+          {
+            "name": "audit_entries",
+            "columns": [
+              "id",
+              "actor_id",
+              "action",
+              "entity_type",
+              "entity_id",
+              "details_json",
+              "occurred_at"
+            ],
+            "rows": 1
+          },
+          {
+            "name": "contacts",
+            "columns": [
+              "id",
+              "company_id",
+              "name",
+              "email",
+              "email_key",
+              "phone",
+              "job_title",
+              "timezone",
+              "contactability",
+              "created_at",
+              "updated_at",
+              "custom_fields_json"
+            ],
+            "rows": 100000
+          },
+          {
+            "name": "notifications",
+            "columns": [
+              "id",
+              "operator_id",
+              "opportunity_id",
+              "event_key",
+              "kind",
+              "message",
+              "created_at",
+              "read_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "opportunities",
+            "columns": [
+              "id",
+              "title",
+              "lifecycle",
+              "stage_id",
+              "owner_id",
+              "company_id",
+              "value_cents",
+              "expected_close_at",
+              "score",
+              "band",
+              "queue_state",
+              "queue_reason",
+              "last_contributing_signal_at",
+              "created_at",
+              "updated_at",
+              "next_due_at",
+              "custom_fields_json",
+              "closed_at",
+              "closed_by",
+              "close_reason"
+            ],
+            "rows": 25000
+          },
+          {
+            "name": "signals",
+            "columns": [
+              "id",
+              "source_id",
+              "source_event_id",
+              "type",
+              "subject",
+              "occurred_at",
+              "received_at",
+              "payload_hash",
+              "confidence",
+              "linking_basis",
+              "created_at",
+              "payload_json"
+            ],
+            "rows": 1000000
+          },
+          {
+            "name": "timeline_entry_records",
+            "columns": [
+              "timeline_entry_id",
+              "record_type",
+              "record_id"
+            ],
+            "rows": 2000000
+          },
+          {
+            "name": "evaluations",
+            "columns": [
+              "id",
+              "opportunity_id",
+              "score",
+              "band",
+              "evaluated_at",
+              "policy_version",
+              "status",
+              "failure_at",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "opportunity_contacts",
+            "columns": [
+              "opportunity_id",
+              "contact_id",
+              "is_primary",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "recommendations",
+            "columns": [
+              "id",
+              "opportunity_id",
+              "action_type",
+              "explanation",
+              "policy_version",
+              "is_current",
+              "superseded_at",
+              "created_at",
+              "updated_at",
+              "completed_at",
+              "completion_outcome",
+              "completion_note"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "record_mutation_jobs",
+            "columns": [
+              "opportunity_id",
+              "actor_id",
+              "reason",
+              "requested_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "signal_links",
+            "columns": [
+              "signal_id",
+              "record_type",
+              "record_id",
+              "linking_basis",
+              "linked_at"
+            ],
+            "rows": 1000000
+          },
+          {
+            "name": "unlinked_signals",
+            "columns": [
+              "signal_id",
+              "reason",
+              "resolved_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "drafts",
+            "columns": [
+              "id",
+              "opportunity_id",
+              "recommendation_id",
+              "author_id",
+              "recipient_contact_id",
+              "recipient_email",
+              "subject",
+              "body",
+              "revision",
+              "is_stale",
+              "stale_reason",
+              "created_at",
+              "updated_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "evaluation_contributions",
+            "columns": [
+              "id",
+              "evaluation_id",
+              "signal_id",
+              "contribution",
+              "created_at"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "recommendation_evidence",
+            "columns": [
+              "recommendation_id",
+              "signal_id"
+            ],
+            "rows": 0
+          },
+          {
+            "name": "outbound_messages",
+            "columns": [
+              "id",
+              "draft_id",
+              "revision",
+              "opportunity_id",
+              "operator_id",
+              "contact_id",
+              "recipient_email",
+              "subject",
+              "body",
+              "state",
+              "provider_message_id",
+              "failure",
+              "settlement_id",
+              "created_at",
+              "updated_at",
+              "idempotency_key",
+              "message_id",
+              "reference_ids",
+              "scheduled_at",
+              "next_attempt_at",
+              "attempt_count",
+              "approved_at",
+              "claimed_at",
+              "first_attempt_at"
+            ],
+            "rows": 0
+          }
+        ],
+        "parts": 6156,
+        "rows": 6150006
+      },
+      "snapshotMs": 18506.761624999985,
+      "bytes": 1709715456
+    },
+    "restoreMs": 94110.19162500004,
+    "advanceRequests": 719,
+    "segments": 9295,
+    "downloadSegmentQueries": 582,
+    "downloadFinalValidityQueries": 1,
+    "maxRequestMs": 18866.884083000004,
+    "exactDomainHashes": {
+      "ai_calls": {
+        "count": 1,
+        "sha256": "d9e08f2348e063fc288c472ca649fd71e101867ce659e192101674ca0ad92f9d"
+      },
+      "companies": {
+        "count": 25000,
+        "sha256": "babd4d99c38d4b14d9e7bf2fc4fc1d3fa2393c93ba43eae0d32715d398abd6da"
+      },
+      "operators": {
+        "count": 1,
+        "sha256": "8da53340f122351c8153a6ef9dbd8812e0e499d2bd1b931b62994bd9ffa5715d"
+      },
+      "pipeline_stages": {
+        "count": 1,
+        "sha256": "ad120a525a36ec0f12dcaa67f2c3834bc608ca7146e0f479bb325338b19eb956"
+      },
+      "signal_sources": {
+        "count": 1,
+        "sha256": "48f8e780f6c0078804b581919af634b7a179a1db3a76e8d6f2135571b36af6f8"
+      },
+      "timeline_entries": {
+        "count": 2000000,
+        "sha256": "8ea7ff718c380bef6e0411f4d50ae57ca8437a71cf27dc41c7f423e174bf10b2"
+      },
+      "workspace_settings": {
+        "count": 1,
+        "sha256": "e6595d59457138b9d4d8714feb0d38135a7e53706a9cfe8061750ad4cc383e5c"
+      },
+      "contacts": {
+        "count": 100000,
+        "sha256": "de910b41bc99c27ed013afad936857e6457408218d9b3c2f4e43ade749a6376b"
+      },
+      "opportunities": {
+        "count": 25000,
+        "sha256": "abe6140402566db87fca34d6e2502542e4d322fc845e5d1728404138f3c5bdff"
+      },
+      "signals": {
+        "count": 1000000,
+        "sha256": "85bb324f43909364730eab0df2610ced89445f5d992ee9faf473a0004f44a5c6"
+      },
+      "timeline_entry_records": {
+        "count": 2000000,
+        "sha256": "cc73e7e0af2a9cc792a2b5ba8edd8cf19fc4bdad2badfcfe4eb045494e5881a8"
+      },
+      "signal_links": {
+        "count": 1000000,
+        "sha256": "bb70299dfc69de423328e7d3788f6f71b20ea66a96160b78bb354a8cb2c99feb"
+      }
+    },
+    "additionalRestoreAudits": 1,
+    "aiUsagePreserved": true
+  },
+  "contactErasure": {
+    "milliseconds": 9379.75012500002,
+    "absentOnNextRead": true
+  }
+}

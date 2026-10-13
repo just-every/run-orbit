@@ -1,0 +1,107 @@
+/* The four drawings of "The rest of your CRM". Cards use the brand's card language (ink outline, cream fill, soft shadow) at
+   the size L drew them, a slight tilt each; every size is in --u (rest.css). Hand notes and arrows are plain ink strokes and
+   the tangerine rays mark the card that just changed. */
+.ob-art { position: absolute; inset: 0; color: var(--ob-ink); }
+.ob-art .ob-card { position: absolute; font-size: calc(14 * var(--u)); line-height: 1.35; }
+.ob-art b { font-weight: 640; }
+.ob-art hr { height: 0; border: 0; border-top: 1px solid var(--ob-line); }
+.ob-lead { display: flex; align-items: center; gap: calc(17 * var(--u)); }
+.ob-name { display: block; font-size: calc(16 * var(--u)); }
+.ob-muted { display: block; color: var(--ob-muted); font-size: calc(13 * var(--u)); line-height: 1.5; }
+.ob-label { margin-bottom: calc(7 * var(--u)); font-size: calc(12 * var(--u)); }
+.ob-dots { margin-left: auto; align-self: flex-start; font-size: calc(21 * var(--u)); letter-spacing: 2px; line-height: 1; }
+.ob-ico { flex: none; width: calc(22 * var(--u)); height: calc(22 * var(--u)); fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.ob-avatar { display: grid; place-items: center; flex: none; width: calc(49 * var(--u)); height: calc(49 * var(--u)); border-radius: 50%; background: var(--ob-sage); font-size: calc(16 * var(--u)); }
+.ob-avatar--small { width: calc(41 * var(--u)); height: calc(41 * var(--u)); background: var(--ob-paper-deep); }
+.ob-avatar--grey { width: calc(45 * var(--u)); height: calc(45 * var(--u)); background: var(--ob-paper-deep); font-size: calc(15 * var(--u)); }
+.ob-tag { display: inline-block; margin-top: calc(5 * var(--u)); padding: calc(4 * var(--u)) calc(9 * var(--u)); border-radius: calc(5 * var(--u)); background: var(--ob-paper-deep); color: var(--ob-body); font-size: calc(11 * var(--u)); }
+.ob-tag--peach { margin: 0 0 0 auto; background: var(--ob-tangerine-soft); color: var(--ob-ink); }
+.ob-field { display: flex; align-items: center; gap: calc(16 * var(--u)); margin-top: calc(8 * var(--u)); color: var(--ob-body); font-size: calc(13 * var(--u)); }
+.ob-value { margin-left: auto; }
+.ob-btn { display: inline-flex; align-items: center; justify-content: center; gap: calc(14 * var(--u)); padding: calc(13 * var(--u)) calc(20 * var(--u)); border: 1.5px solid var(--ob-ink); border-radius: 999px; font-size: calc(18 * var(--u)); font-weight: 600; }
+.ob-btn .ob-ico { width: calc(26 * var(--u)); height: calc(26 * var(--u)); stroke-width: 2; }
+.ob-btn--ink { background: var(--ob-ink); color: var(--ob-paper); box-shadow: var(--ob-shadow-pill); }
+.ob-btn--line { background: color-mix(in srgb, var(--ob-card) 70%, transparent); }
+.ob-btn--small { padding: calc(9 * var(--u)) calc(22 * var(--u)); font-size: calc(13 * var(--u)); }
+
+.ob-hand, .ob-arrow, .ob-rays { position: absolute; overflow: visible; fill: none; stroke: var(--ob-ink); stroke-linecap: round; stroke-linejoin: round; }
+.ob-hand { width: calc(var(--w) * 1.05 * var(--u)); height: auto; stroke-width: 1.3; transform: rotate(-7deg) scale(1, 1.2); transform-origin: 0 100%; }
+.ob-arrow { stroke-width: 1.25; }
+.ob-arrow path:last-child { fill: var(--ob-ink); }
+.ob-rays { width: calc(44 * var(--u)); height: calc(47 * var(--u)); stroke: var(--ob-tangerine); stroke-width: 2; }
+
+/* Customer records: one company card, tilted, with its caption beside it. */
+.ob-rec { left: calc(53 * var(--u)); top: 0; width: calc(339 * var(--u)); padding: calc(23 * var(--u)) calc(20 * var(--u)) calc(19 * var(--u)); transform: rotate(-2.8deg); }
+.ob-rec hr { margin: calc(12 * var(--u)) 0 calc(8 * var(--u)); }
+.ob-rec .ob-lead + hr + .ob-label + .ob-lead { margin-top: 0; }
+.ob-hand--fields { left: calc(-28 * var(--u)); top: calc(276 * var(--u)); }
+.ob-arrow--fields { left: 0; top: calc(229 * var(--u)); width: calc(49 * var(--u)); height: calc(48 * var(--u)); }
+
+/* Your contact form: the enquiry, the contact it matched, a dashed arrow between them. */
+.ob-enquiry { left: 0; top: 0; width: calc(236 * var(--u)); padding: calc(17 * var(--u)) calc(20 * var(--u)); transform: rotate(-4deg); }
+.ob-enquiry-title { display: block; margin-bottom: calc(10 * var(--u)); font-size: calc(15 * var(--u)); }
+.ob-enquiry .ob-label { margin: calc(10 * var(--u)) 0 calc(3 * var(--u)); font-size: calc(13 * var(--u)); font-weight: 400; color: var(--ob-body); }
+.ob-input { display: block; padding: calc(8 * var(--u)) calc(10 * var(--u)); border: 1px solid var(--ob-line-strong); border-radius: calc(7 * var(--u)); background: color-mix(in srgb, var(--ob-card) 60%, transparent); font-size: calc(12 * var(--u)); }
+.ob-enquiry .ob-btn { margin-top: calc(14 * var(--u)); }
+.ob-person { left: calc(304 * var(--u)); top: calc(50 * var(--u)); width: calc(296 * var(--u)); padding: calc(17 * var(--u)); }
+.ob-person .ob-lead { gap: calc(16 * var(--u)); }
+.ob-person .ob-name { font-size: calc(14 * var(--u)); }
+.ob-person .ob-muted { font-size: calc(12 * var(--u)); }
+.ob-person .ob-dots { position: absolute; top: calc(17 * var(--u)); right: calc(17 * var(--u)); }
+.ob-hand--matched { left: calc(290 * var(--u)); top: calc(-40 * var(--u)); }
+.ob-arrow--matched { left: calc(239 * var(--u)); top: calc(7 * var(--u)); width: calc(171 * var(--u)); height: calc(51 * var(--u)); }
+.ob-rays--form { left: calc(-37 * var(--u)); top: calc(-21 * var(--u)); }
+
+/* Replies stop follow-ups: the scheduled message, the reply, and the tangerine pill that overlaps both. */
+.ob-scheduled { left: calc(17 * var(--u)); top: calc(12 * var(--u)); width: calc(295 * var(--u)); padding: calc(18 * var(--u)); transform: rotate(-4deg); }
+.ob-scheduled .ob-lead { align-items: flex-start; gap: calc(14 * var(--u)); }
+.ob-scheduled .ob-ico { width: calc(21 * var(--u)); height: calc(21 * var(--u)); }
+.ob-small-title { display: block; color: var(--ob-body); font-size: calc(13 * var(--u)); }
+.ob-scheduled-title { display: block; margin: calc(13 * var(--u)) 0 calc(4 * var(--u)); font-size: calc(16 * var(--u)); letter-spacing: -0.02em; }
+.ob-date { display: flex; align-items: center; gap: calc(15 * var(--u)); margin-top: calc(14 * var(--u)); color: var(--ob-body); font-size: calc(14 * var(--u)); }
+.ob-reply { left: calc(387 * var(--u)); top: calc(-4 * var(--u)); width: calc(266 * var(--u)); padding: calc(15 * var(--u)) calc(19 * var(--u)) calc(25 * var(--u)); transform: rotate(2.4deg); }
+.ob-reply .ob-lead { gap: calc(14 * var(--u)); }
+.ob-reply .ob-name { font-size: calc(13 * var(--u)); }
+.ob-reply .ob-muted { font-size: calc(12 * var(--u)); }
+.ob-reply .ob-dots { position: absolute; top: calc(17 * var(--u)); right: calc(15 * var(--u)); }
+.ob-quote { margin-top: calc(19 * var(--u)); font-size: calc(15 * var(--u)); line-height: 1.3; }
+.ob-cancelled { position: absolute; z-index: 2; left: calc(258 * var(--u)); top: calc(125 * var(--u)); display: flex; align-items: center; gap: calc(10 * var(--u)); padding: calc(13 * var(--u)) calc(17 * var(--u)); border: 1.5px solid var(--ob-tangerine); border-radius: 999px; background: linear-gradient(115deg, var(--ob-tangerine-soft), color-mix(in srgb, var(--ob-tangerine) 50%, var(--ob-tangerine-soft))); color: color-mix(in srgb, var(--ob-tangerine-deep) 70%, var(--ob-ink)); font-size: calc(15 * var(--u)); font-weight: 600; box-shadow: 0 9px 20px -12px rgba(98, 53, 17, 0.35); transform: rotate(2.8deg); }
+.ob-cancelled .ob-ico { width: calc(24 * var(--u)); height: calc(24 * var(--u)); stroke-width: 2.2; }
+.ob-arrow--follow { left: calc(323 * var(--u)); top: calc(36 * var(--u)); width: calc(49 * var(--u)); height: calc(21 * var(--u)); }
+.ob-rays--follow { left: calc(638 * var(--u)); top: calc(-33 * var(--u)); }
+
+/* Export and restore: the archive and what is in it, the two actions and the arrows between. */
+.ob-archive { left: calc(4 * var(--u)); top: 0; width: calc(308 * var(--u)); padding: calc(18 * var(--u)); transform: rotate(-1.6deg); }
+.ob-archive .ob-lead { gap: calc(18 * var(--u)); }
+.ob-file { display: grid; place-items: center; flex: none; width: calc(57 * var(--u)); height: calc(57 * var(--u)); border-radius: 50%; background: var(--ob-paper-deep); }
+.ob-archive .ob-name { font-size: calc(15 * var(--u)); letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.ob-archive .ob-muted { margin-top: calc(4 * var(--u)); }
+.ob-archive hr { margin: calc(10 * var(--u)) 0 calc(10 * var(--u)) calc(75 * var(--u)); }
+.ob-archive .ob-field { gap: calc(20 * var(--u)); margin-top: calc(7 * var(--u)); }
+.ob-archive .ob-field .ob-ico { width: calc(20 * var(--u)); height: calc(20 * var(--u)); }
+.ob-actions-col { position: absolute; left: calc(375 * var(--u)); top: calc(45 * var(--u)); display: flex; flex-direction: column; gap: calc(33 * var(--u)); width: calc(175 * var(--u)); }
+.ob-hand--backup { left: calc(440 * var(--u)); top: calc(-26 * var(--u)); }
+.ob-hand--restore { left: calc(455 * var(--u)); top: calc(223 * var(--u)); }
+.ob-arrow--out { left: calc(315 * var(--u)); top: calc(20 * var(--u)); width: calc(70 * var(--u)); height: calc(33 * var(--u)); }
+.ob-arrow--in { left: calc(319 * var(--u)); top: calc(161 * var(--u)); width: calc(64 * var(--u)); height: calc(37 * var(--u)); }
+.ob-arrow--down { left: calc(408 * var(--u)); top: calc(-4 * var(--u)); width: calc(25 * var(--u)); height: calc(40 * var(--u)); }
+.ob-arrow--up { left: calc(439 * var(--u)); top: calc(194 * var(--u)); width: calc(20 * var(--u)); height: calc(42 * var(--u)); }
+
+/* A phone: the cards stack in the order they read, hand notes, arrows and rays stay out. */
+@media (max-width: 700px) {
+  .ob-art { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .ob-art .ob-card, .ob-actions-col, .ob-cancelled { position: relative; inset: auto; width: auto; transform: none; }
+  .ob-hand, .ob-arrow, .ob-rays { display: none; }
+  .ob-rec, .ob-archive { transform: rotate(-1deg); }
+  .ob-enquiry { transform: rotate(-1.5deg); }
+  .ob-reply { transform: rotate(1deg); }
+  .ob-scheduled { transform: rotate(-1.2deg); }
+  .ob-cancelled { justify-self: start; margin: -34px 0 10px 14px; transform: rotate(2deg); }
+  /* In the follow-up drawing the pill sits between the cards, straddling the bottom edge of the scheduled follow-up it cancels. */
+  .ob-art--follow .ob-scheduled { order: 1; }
+  .ob-art--follow .ob-cancelled { order: 2; margin: -34px 0 0 14px; }
+  .ob-art--follow .ob-reply { order: 3; }
+  /* Below about 330px the two buttons no longer fit side by side, so Restore wraps under Export. */
+  .ob-actions-col { flex-direction: row; flex-wrap: wrap; gap: 14px; }
+  .ob-actions-col .ob-btn { flex: 1; }
+}

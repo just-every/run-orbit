@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "projectId": "just-every/orbit",
+  "name": "Orbit",
+  "sourceRepository": "https://github.com/just-every/run-orbit",
+  "license": "MIT",
+  "deployment": {
+    "target": "cloudflare-workers",
+    "artifactFile": "rer-worker-artifact.json"
+  },
+  "operations": {
+    "setup": "node scripts/rer.mjs install",
+    "build": "node scripts/rer.mjs build",
+    "verify": "node scripts/rer.mjs verify",
+    "artifact": "node scripts/build-delivery-artifact.mjs",
+    "recovery": "Retain exact source and a full D1 backup before migrations. Restore to a fresh D1, compare Records archive exports, revoke old authority and reconnect excluded credentials before switching traffic. See OPERATIONS.md and docs/artifact/CONTRACT.md."
+  },
+  "verification": {
+    "sensitivePaths": [
+      "src/core/features/identity/**",
+      "src/dev/**",
+      "src/core/features/imports/**",
+      "src/modules/import-kit/**",
+      "src/modules/schema/**",
+      "src/core/features/editor/**",
+      "src/core/platform/**",
+      "src/core/app/worker.ts",
+      "src/base/modules/editor/**",
+      "scripts/installer/**",
+      "scripts/base-cli/**",
+      "scripts/base-onboarding/**",
+      "scripts/delivery/**",
+      "rer-setup.json",
+      ".github/workflows/rer-managed.yml"
+    ],
+    "migrationDirectories": [
+      "migrations/core"
+    ],
+    "guidanceFiles": [
+      "AGENTS.md",
+      "CONTRACT.md",
+      "OPERATIONS.md"
+    ],
+    "testPatterns": [
+      "tests/**/*.test.*",
+      "tests/**/*.spec.*"
+    ]
+  },
+  "setup": {
+    "path": "rer-setup.json",
+    "sha256": "41ddba88f16bdead2129e448608261facedad3ea905803d2fd5c7b5605c09724"
+  }
+}

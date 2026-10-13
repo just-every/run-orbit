@@ -1,0 +1,66 @@
+# Orbit operations
+
+Orbit runs through its RER CLI, `node scripts/rer.mjs VERB` (or `pnpm run VERB -- FLAGS`), with Node 22.20.0 and pnpm 10.12.4. [README.md](README.md) gives the local sequence; `node scripts/rer.mjs describe` prints every command, flag, effect and pin from `OPERATIONS.json`, and [SEED-COMMAND-CONTRACT.md](SEED-COMMAND-CONTRACT.md) defines their shared behaviour and exit codes. `node scripts/rer.mjs check --profile first-party` validates that contract structurally without dependencies or settings; it never claims hosted health.
+
+## Local installation
+
+| Path | Holds | Reset |
+| --- | --- | --- |
+| `.wrangler/state/` | The local D1 database: owner, workspace, records, local outbox | removed |
+| `.dev.vars` (0600) | `OWNER_EMAIL`, `AUTH_ORIGIN`, `AUTH_LOCAL=true`, `MAIL_PROVIDER=development`, `MAIL_FROM`, generated `SESSION_SECRET` and `SETUP_TOKEN` | removed |
+| `.rer/local/`, `.seed/installer/` | CLI bookkeeping, setup answers, private command logs and the checkout's dev key (`.rer/local/dev-key.env`) | removed |
+| `exports/`, `.rer/deploy/` | Your archives and deployment state | kept |
+
+`setup` builds the Worker with `.dev.vars` moved aside, applies `migrations/core` to `.wrangler/state`, starts the built Worker briefly, posts the private `SETUP_TOKEN` to `/auth/bootstrap` to claim the first owner (an existing owner is kept), requests an ordinary sign-in link and stops. The owner's workspace starts with reviewable defaults that the owner confirms at `/setup`; first-run completion is stored in D1 and survives later setups. `dev` serves Vite with the Cloudflare plugin on the saved loopback origin, runs the minute Cron Trigger locally and requests a fresh link before printing `RER_READY`. `preview` serves the fixed production build on the same state.
+
+Sign-in is Base operator-auth over Orbit's own operators and sessions. `dev` opens signed in: `RER_OPEN` trades the checkout's dev key (`.rer/local/dev-key.env`, written by `setup`, replaced by `reset`) for a host-only cookie, and dev sign-in, the `seller` and `collaborator` personas and the outbox answer 404 without that key, even through a tunnel. Dev sessions, and delegation credentials minted from one, count only behind the key; a deployment never has it. Local sign-in mail goes to Base's development outbox at `/__dev/outbox`, stored in the local D1, behind the same key and only on the exact loopback origin and Host in `.dev.vars`. The CLI's own sign-in requests carry an HMAC proof keyed by `SESSION_SECRET`, so restarting `dev` never spends the owner's sign-in allowance; a person's requests still do.
+
+Build output under `dist/` is disposable. Commands refuse a legacy store at `dist/server/.wrangler/state` before building, with exit 4, and never move or delete it: stop any app using it, copy what you need out of `dist/`, then remove it yourself. Settings, state and archive paths must stay inside the checkout without symlinks.
+
+## Deploy
+
+`node scripts/rer.mjs deploy [--environment NAME]` builds locally, then uses the Base deploy kit against the owner's Cloudflare account:
+
+- Inputs: `CLOUDFLARE_ACCOUNT_ID` and an account API token in `CLOUDFLARE_API_TOKEN` with Workers Scripts: Edit and D1: Edit; the owner mailbox in `OWNER_EMAIL`; a verified SendGrid sender in `MAIL_FROM` and `SENDGRID_API_KEY`. The account needs a workers.dev subdomain.
+- Optional secrets, uploaded only when present in the environment: `MAIL_REPLY_TO`, `SENDGRID_UNSUBSCRIBE_GROUP_ID`, `RER_MAIL_RELAY_SECRET`, `SENDGRID_WEBHOOK_PUBLIC_KEY`, `SENDGRID_PARSE_PUBLIC_KEY`, `ORBIT_ENCRYPTION_KEY`, `OPENAI_API_KEY`, `AI_MODEL`, `AI_INPUT_COST_PER_MILLION`, `AI_OUTPUT_COST_PER_MILLION`, `AI_CACHED_INPUT_COST_PER_MILLION`.
+- `deploy.json` declares the D1 binding, the minute Cron, `AUTH_ORIGIN` and the secrets. The kit creates and owns `sales-orbit-<environment>` and its `-db` database, applies migrations with hash-checked history, uploads the Worker and assets, and checks `/health`. It never adopts a resource it did not create. To move an installation that runs elsewhere, export its Records archive and import it into the new one.
+- Deploy generates `SESSION_SECRET` once (Base sign-in links, step-up proofs and rate limits) and keeps the deployed one on later deploys, as it does `ORBIT_ENCRYPTION_KEY`. Set `IDENTITY_PROVIDER` to an Auth install's address to offer provider sign-in; the owner approves the link with a fresh email proof and turns provider sign-in on at `/auth/settings/identity`. Left empty, operators sign in by email link.
+- After health passes, deploy claims the first owner with a one-use setup token (generated for the run unless `SETUP_TOKEN` is supplied); an installation that already has an owner keeps it. Sign in at `/signin` with `OWNER_EMAIL`, then finish `/setup`.
+- Exporting or importing a Records archive and erasing an operator need a fresh email confirmation from the signed-in operator (Base step-up, 10 minutes); for `--target remote`, sign in by email link shortly before the transfer.
+- `.rer/deploy/<environment>.json` (0600) is the only proof of which resources the kit created. Keep it and back it up after every deploy; deploy from a committed checkout.
+- `--dry-run` builds and validates the declaration against the packaged Worker with no provider request and says that nothing was deployed.
+
+## Mail and providers
+
+Hosted native sign-in requires `MAIL_FROM` and `SENDGRID_API_KEY`. Customer outreach also requires `MAIL_REPLY_TO` and `SENDGRID_UNSUBSCRIBE_GROUP_ID`. Configure the reply address's SendGrid Inbound Parse route to `/api/v1/mail/events/reply` with its `SENDGRID_PARSE_PUBLIC_KEY`. Delivery events can use native SendGrid signatures at `/api/v1/mail/events/sendgrid` with `SENDGRID_WEBHOOK_PUBLIC_KEY`, or the pinned Base event relay at `/api/v1/mail/events/relay` with `RER_MAIL_RELAY_SECRET`. The relay must forward only this product's events. Do not replace another app's provider webhook configuration. Email Activity access supports reconciliation of unknown submissions without another send. Customer outreach is never captured by the local outbox: sending to customers always needs a configured provider.
+
+Verified SendGrid, inbound-reply and relay requests share a durable limit of 600 requests per minute, after cryptographic verification. Invalid traffic uses the 300-request public per-IP limit and cannot consume that provider quota. A known provider identity with changed contents is recorded in source diagnostics and acknowledged without applying the replacement. Storage failures remain retryable; each provider event's receipt and effects commit together.
+
+## Signed sources, AI and the minute timer
+
+Signed signal sources need a persistent `ORBIT_ENCRYPTION_KEY` (32 random bytes, 64 hexadecimal characters) to encrypt their configured HMAC secrets in D1. Configure sources in Settings/Sources; clients sign the exact raw request body with the source's timestamp and HMAC as the source screen describes. Losing the encryption key requires reconfiguring the source secrets; it does not erase data.
+
+AI is optional. Set `OPENAI_API_KEY`, `AI_MODEL`, `AI_INPUT_COST_PER_MILLION`, and `AI_OUTPUT_COST_PER_MILLION` to configure it. `AI_CACHED_INPUT_COST_PER_MILLION` applies the selected cached-input rate. Without that rate, estimates use the normal input rate and can overestimate. The operator previews the exact request before generation; no AI request approves mail.
+
+The Worker runs a minute Cron for scheduled dispatch, timed queue transitions, retryable failures, reconciliation and removal of transfer copies left by an interrupted erasure. Operator mutations evaluate pending changes within their request. An ambiguous submission is reconciled by its durable key, never blindly resent. Monitor visible message states, source diagnostics and stale evaluations in the operator app. `/health` checks the D1 schema; provider readiness and workflow outcome checks are separate.
+
+## Moving data
+
+Local archives: `node scripts/rer.mjs export --output exports/FILE` and `import --input exports/FILE --yes` use Base portability over the local D1. Every Orbit table moves except installation-bound state: operator sessions and sign-in links, owner bootstrap records, rate limits, runtime controls, erasure signals, collaborator authority (`access_grants`, `access_invitations`, `access_form_authorities`, `access_write_guards`), mail and calendar capture credentials (`capture_credentials`; reconnect a provider source after restore), delegation credentials (`delegation_*`), Records-archive bookkeeping (`archive_*`), private CSV originals, reviews, import jobs and undo custody (`ik_*`, `crm_import_*`), and the local outbox. Signal source secrets are written as null; reconfigure them after restore. Full-text search is rebuilt from the restored rows. The receipt reports the content hash, row counts and exclusions; export, import and export again give the same content hash. Import needs an empty destination: run it after `reset --yes`, then `setup --owner-email` with the archive's owner.
+
+Hosted archives: Records > Archive prepares, resumes, downloads, restores and cancels the hosted installation's own archive. From a terminal, put only `__Host-orbit_session=...` from an ordinary sign-in in a private (0600) file under the ignored `.rer/` directory and run:
+
+```sh
+node scripts/rer.mjs export --target remote --origin https://your-origin.example --session-file .rer/orbit-cookie --output exports/orbit-hosted.json
+node scripts/rer.mjs import --target remote --origin https://empty-origin.example --session-file .rer/orbit-cookie --input exports/orbit-hosted.json --yes
+```
+
+The hosted archive is a version 2 JSON document framed as bounded lines. The transfer streams it to disk, verifies every part checksum, and publishes the private file only after the closing record and manifest counts validate. Export keeps a private adjacent `.transfer.json` checkpoint and `.partial` download until verified completion; an interrupted transfer is resumed or discarded from Records with its transfer ID. Export takes a consistent atomic snapshot before serializing; workspace edits can continue during preparation. Import requires an empty customer database, revokes sessions on success and never blindly retries an ambiguous write. Hosted archives and local archives use different formats; move between them through a hosted installation.
+
+Contact do-not-contact safety survives deletion through anonymous keyed matching proofs in the audit trail. Suppression and clear receipts are appended with their actual recorded times; clearing does not delete the earlier audit proof. The mailbox itself and its personal history are erased. Each installation generates a privacy matching context; it is available only in the authenticated private archive, so restoring an archive can still match previously suppressed addresses. Treat archives and their backup copies as confidential. Restore preserves existing safety contexts and proofs and restores the exact prior state on rollback. Ordinary record saves, imports and merges cannot clear suppression. Use the separate reviewed contact action; it never revives a cancelled message.
+
+Deleting a contact erases the person's data and makes every prepared or staged Records transfer copy unreachable in one atomic database batch (the transfer jobs, stored parts and segments are replaced by empty ones, so every copy belongs to a job that no longer exists). The orphaned copies and old parts are then removed in bounded batches (at most 20,000 narrow rows or 8 stored parts per statement), and the minute timer finishes any removal an interruption left behind.
+
+## Verification
+
+`node scripts/rer.mjs verify` writes actual clause execution results and blocks uncovered, failed, or skipped clauses; [TESTING.md](TESTING.md) lists its gates. Read [ACCEPTANCE.md](ACCEPTANCE.md) for the provider, capacity, deployment and owner-change requirements that local verification does not establish.

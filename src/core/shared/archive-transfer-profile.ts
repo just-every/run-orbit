@@ -1,0 +1,13 @@
+import {selectedFoldTables as selectedTables,knownNativeAdditions as nativeAdditions,validateLineage,type LegacyLineage,type LineageManifest} from './archive-lineage.ts';
+import {validArchiveCounts} from './archive-counts.ts';
+export interface ArchiveManifest {format:'orbit-export';version:2|3;generation?:'orbit-fold-1';schemaHash?:string;legacyLineage?:LegacyLineage;exportedAt:string;tables:{name:string;columns:string[];rows:number}[];parts:number;rows:number}
+export interface ArchivePart {index:number;sha256:string;records:{table:string;index:number;row:Record<string,string|number|null>}[]}
+export type ArchiveEntry={kind:'manifest';manifest:ArchiveManifest}|{kind:'part';part:ArchivePart;raw:string};
+const selectedFoldTables=new Set<string>(selectedTables),knownNativeAdditions=new Set<string>(nativeAdditions);
+export function validateTransferManifest(value:unknown,validateV2Manifest:(value:unknown)=>LineageManifest):ArchiveManifest{
+ const item=value as ArchiveManifest;if(item?.version===2){const parsed=validateV2Manifest(value);if(!validArchiveCounts(parsed))throw new Error('Archive counts are invalid or unsafe.');return parsed;}
+ if(!item||item.version!==3||item.generation!=='orbit-fold-1'||typeof item.schemaHash!=='string'||!/^[a-f0-9]{64}$/.test(item.schemaHash)||!Array.isArray(item.tables)||item.tables.length>100+selectedFoldTables.size+knownNativeAdditions.size||[...selectedFoldTables,...knownNativeAdditions].some(name=>!item.tables.some(t=>t.name===name))||new Set(item.tables.map(t=>t.name)).size!==item.tables.length)throw new Error('Unsupported finite archive generation.');
+ if(item.legacyLineage)validateLineage(item.legacyLineage,item.tables,validateV2Manifest);else if(item.tables.filter(t=>!selectedFoldTables.has(t.name)).length>100)throw new Error('Current archive base exceeds 100 tables.');
+ for(let i=0;i<item.tables.length;i+=100){const tables=item.tables.slice(i,i+100);validateV2Manifest({...item,version:2,tables,rows:tables.reduce((n,t)=>n+t.rows,0)});}
+ if(!validArchiveCounts(item))throw new Error('Archive total rows do not match its tables.');return item;
+}

@@ -1,0 +1,26 @@
+import {Hono} from 'hono';
+import {z,ZodError} from 'zod';
+import {restrictedEdit} from '../../features/access/native-boundary';
+import {AccessService} from '../../features/access/service';
+import {recordEditableFields} from '../../features/access/record-editability';
+import {AccessError} from '../../features/access/errors';
+import {createAccessRoutes} from '../../features/access/routes';
+import {createFormRoutes} from '../../features/forms/routes';
+import {createAnalyticsReportRoutes} from '../../features/analytics/report-routes';
+import {NativeAnalyticsSources} from '../../features/analytics/native-sources';
+import {AnalyticsMetrics} from '../../features/analytics/metrics';
+import {OperationsStore} from '../../features/operations/store';
+import {GraphRecords} from '../../features/graph/repository';
+import {domainEventStatements} from '../../features/effects/event-statements';
+import type {AppEnvironment} from '../../shared/expansion-contracts';
+export function createFoldRoutes(db:D1Database){const app=new Hono<AppEnvironment>(),access=new AccessService(db),metrics=new AnalyticsMetrics(new OperationsStore(db,access,domainEventStatements),new NativeAnalyticsSources(access)),graph=new GraphRecords(db,access,domainEventStatements);
+ app.onError((error,c)=>c.json({error:error instanceof AccessError||error instanceof ZodError?error.message:'The operation was not confirmed.'},error instanceof AccessError?error.status:error instanceof ZodError?400:503));
+ app.route('/access',createAccessRoutes(db));
+ app.use('/workspaces/:workspace/*',async(c,next)=>{c.set('actor',await access.resolveOperatorContext(c.get('operator'),c.req.param('workspace')!,crypto.randomUUID()));await next();});
+ app.route('/workspaces/:workspace/operations',createAnalyticsReportRoutes(metrics,{searchRecords:(context,input)=>graph.scanRecords(context,{...input,limit:1000})}));
+ const recordKind=z.enum(['company','contact','opportunity']);
+ app.get('/workspaces/:workspace/records',async c=>c.json(await graph.searchRecords(c.get('actor'),{types:[recordKind.parse(c.req.query('kind')??'contact')],query:c.req.query('q')??'',fields:[],filters:{},limit:50,...(c.req.query('cursor')?{cursor:c.req.query('cursor')}: {})})));
+ app.get('/workspaces/:workspace/records/:kind/:id',async c=>{const actor=c.get('actor'),kind=recordKind.parse(c.req.param('kind')),record=await graph.getRecord(actor,{...actor,type:kind,id:c.req.param('id')},[]);return c.json({...record,editableFields:await recordEditableFields(access,actor,kind,record)});});
+ app.put('/workspaces/:workspace/records/:kind/:id',async c=>c.json(await restrictedEdit(db,c.get('actor'),recordKind.parse(c.req.param('kind')),z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/).parse(c.req.param('id')),await c.req.json())));
+ app.route('/workspaces/:workspace/forms',createFormRoutes(db));return app;
+}

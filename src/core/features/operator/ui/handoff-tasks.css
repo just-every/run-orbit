@@ -1,0 +1,72 @@
+.operator-handoff-tasks {
+  min-width: 0;
+}
+
+.operator-handoff-tasks form {
+  display: grid;
+  min-width: 0;
+  gap: 14px;
+  margin: 20px 0 0;
+}
+
+.operator-handoff-tasks h3 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-family: var(--ob-sans);
+  font-size: 1.1rem;
+  font-weight: 550;
+  line-height: 1.35;
+}
+
+.operator-handoff-tasks label {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  color: var(--operator-ink);
+  font-size: .78rem;
+  font-weight: 700;
+}
+
+.operator-handoff-tasks input,
+.operator-handoff-tasks textarea,
+.operator-handoff-tasks select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid var(--ob-line-strong);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--operator-ink);
+  background: var(--operator-paper);
+  font-size: .94rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.operator-handoff-tasks textarea {
+  min-height: 104px;
+  resize: vertical;
+}
+
+.operator-handoff-tasks input:focus,
+.operator-handoff-tasks textarea:focus,
+.operator-handoff-tasks select:focus {
+  border-color: var(--operator-orange);
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(22, 23, 29, 0.12);
+}
+
+.operator-handoff-tasks button {
+  justify-self: start;
+  max-width: 100%;
+}
+
+.operator-handoff-tasks > button {
+  margin-top: 14px;
+}
+
+.operator-handoff-tasks button:disabled {
+  cursor: wait;
+  opacity: .6;
+}

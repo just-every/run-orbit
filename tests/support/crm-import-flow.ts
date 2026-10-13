@@ -1,0 +1,3 @@
+import assert from 'node:assert/strict';
+export async function json(response:Response){const body=await response.json() as any;assert.ok(response.ok,`${response.status}: ${JSON.stringify(body)}`);return body;}
+export async function finish(f:any,review:any,action='apply'){let result;for(let i=0;i<100;i++){result=await json(await f.request(`imports/${review.id}/${action}`,'POST',action==='apply'?{fingerprint:review.fingerprint,confirmed:true}:{confirmed:true}));if(!result.job||['completed','undone','rolled_back'].includes(result.job.state))return result;}throw new Error('Import did not reach a terminal state.');}

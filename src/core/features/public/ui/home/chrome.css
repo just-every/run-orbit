@@ -1,0 +1,34 @@
+/* The header and footer of every public page. They run the full window width, out to the gutter, as across the family. */
+.ob-header { position: relative; z-index: 4; display: flex; align-items: center; justify-content: space-between; gap: 16px; height: var(--ob-header-h); padding-inline: var(--ob-gutter); }
+.ob-header nav { display: flex; align-items: center; gap: clamp(14px, 2.6vw, 40px); font-size: 17px; font-weight: 500; }
+.ob-header nav a:not(.ob-pill) { position: relative; padding: 6px 0; }
+.ob-header nav a:not(.ob-pill)::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px; background: currentColor; opacity: 0; transform: scaleX(0.4); transition: opacity 0.2s, transform 0.2s var(--ob-ease); }
+.ob-header nav a:not(.ob-pill):hover::after { opacity: 0.35; transform: none; }
+
+.ob-brand { display: inline-flex; align-items: center; gap: 11px; }
+.ob-mark { display: block; flex: none; width: clamp(32px, 2.6vw, 38px); height: auto; aspect-ratio: 1; }
+.ob-brand-name { font-size: clamp(25px, 2.2vw, 31px); font-weight: 760; letter-spacing: -0.035em; line-height: 1; }
+
+.ob-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px 40px; max-width: calc(1440px + 2 * var(--ob-gutter)); margin-inline: auto; padding: 40px var(--ob-gutter) 48px; position: relative; }
+.ob-footer::before { content: ""; position: absolute; top: 0; left: var(--ob-gutter); right: var(--ob-gutter); height: 1.5px; background: var(--ob-line); }
+.ob-footer nav { display: flex; flex-wrap: wrap; align-items: center; gap: 16px clamp(24px, 2.8vw, 40px); font-size: 15.5px; font-weight: 500; }
+.ob-footer nav a:not(.ob-footer-licence):hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+.ob-footer-licence { padding: 7px 16px; border: 1.5px solid var(--ob-ink); border-radius: 999px; font-size: 14.5px; transition: background 0.2s, color 0.2s; }
+.ob-footer-licence:hover { background: var(--ob-ink); color: var(--ob-paper); }
+.ob-footer-credit { flex-basis: 100%; color: var(--ob-muted); font-size: 14px; }
+.ob-footer-credit a:hover { color: var(--ob-ink); text-decoration: underline; text-underline-offset: 4px; }
+.ob-footer-credit span { padding: 0 8px; }
+.ob-footer .ob-brand-name { font-size: 24px; }
+.ob-footer .ob-mark { width: 32px; }
+
+@media (max-width: 560px) {
+  .ob-header nav { gap: 16px; font-size: 15px; }
+  .ob-brand { gap: 8px; }
+  .ob-mark { width: 30px; }
+  .ob-brand-name { font-size: 23px; }
+}
+@media (max-width: 359px) {
+  .ob-header nav { gap: 12px; font-size: 14px; }
+  .ob-header .ob-pill { padding: 0 12px; font-size: 14px; }
+  .ob-brand-name { font-size: 21px; }
+}

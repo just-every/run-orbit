@@ -1,0 +1,88 @@
+/* Adapted from the selected converted demo composition, drawn in Orbit's brand (brand/tokens.css): the site's sans,
+   ink on paper, card panels, and tangerine only on the selected deal and its newest event. Scoped to this public story. */
+.demo-story { margin:26px var(--ob-gutter) 64px;font-size:15px;color:var(--ob-ink) }
+.demo-story .eyebrow { font-size:15px;font-weight:500;color:var(--ob-muted);margin:0 }
+.demo-story h1, .demo-story h2, .demo-story h3, .demo-story p { margin:0 }
+.demo-story h1 { font-size:clamp(38px,4.6vw,62px);line-height:1.04;letter-spacing:-.015em;font-weight:760;margin:6px 0 12px;text-wrap:balance }
+.demo-story .intro { font-size:19px;line-height:1.5;color:var(--ob-body);max-width:840px }
+.demo-story .notice { margin:26px 0 20px;border-radius:12px;background:var(--ob-paper-deep);color:var(--ob-ink);min-height:44px;display:flex;align-items:center;gap:12px;padding:11px 16px;font-size:15px;line-height:1.45 }
+.demo-story .notice strong { font-weight:650 }
+.demo-story .notice svg { width:16px;height:16px;flex:none }
+.demo-story .workspace { display:grid;grid-template-columns:400px minmax(0,1fr);gap:18px }
+.demo-story .panel { min-width:0;border:1.5px solid var(--ob-ink);border-radius:var(--ob-radius);background:var(--ob-card);box-shadow:0 1px 2px rgba(22,23,29,.05),0 10px 26px -18px rgba(22,23,29,.28);overflow:hidden }
+.demo-story .opportunities { padding-bottom:18px }
+.demo-story .list-title { padding:16px 20px 10px;display:flex;justify-content:space-between;align-items:center }
+.demo-story .list-title h2 { font-size:22px;font-weight:720;letter-spacing:-.01em }
+.demo-story .list-title p { font-size:14px;color:var(--ob-muted) }
+.demo-story .opportunity { display:grid;grid-template-columns:1fr 92px 16px;align-items:center;gap:10px;position:relative;width:calc(100% - 40px);margin:0 20px;padding:10px 0;border:0;border-bottom:1.5px solid var(--ob-line);background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;min-height:56px }
+.demo-story .opportunity.selected { width:100%;margin:0;padding:10px 20px 10px 17px;background:var(--ob-paper-deep);border-left:3px solid var(--ob-tangerine) }
+/* On the selected row's deeper paper the secondary lines use body ink to keep AA contrast. */
+.demo-story .opportunity.selected :is(.industry,.queue small) { color:var(--ob-body) }
+.demo-story .company, .demo-story .industry, .demo-story .queue { display:block }
+.demo-story .company { font-size:16px;line-height:1.3;font-weight:650 }
+.demo-story .industry { font-size:14px;line-height:1.35;color:var(--ob-muted) }
+.demo-story .queue { color:var(--ob-body);font-size:13.5px;line-height:1.3 }
+.demo-story .queue small { display:block;font-size:12.5px;color:var(--ob-muted) }
+.demo-story .chevron { color:var(--ob-ink);font-size:24px;line-height:1;text-align:right }
+.demo-story .detail-panel { display:grid;grid-template-columns:minmax(0,1.48fr) minmax(0,1fr);padding:22px 0 32px }
+.demo-story .detail { padding:0 28px 0 30px }
+.demo-story .detail .eyebrow { font-size:14px;margin-bottom:4px }
+.demo-story .detail h2 { font-size:32px;line-height:1.1;font-weight:760;letter-spacing:-.015em;margin-bottom:6px }
+.demo-story .contact { font-size:15px;line-height:1.4;margin-bottom:14px;color:var(--ob-body) }
+.demo-story .description, .demo-story .why p { font-size:15px;line-height:1.5;color:var(--ob-body);overflow-wrap:anywhere }
+.demo-story .description { padding-bottom:14px;border-bottom:1.5px solid var(--ob-line) }
+.demo-story .metrics { display:grid;grid-template-columns:1.08fr 1fr 1.14fr;margin:16px 0 28px }
+.demo-story .metric { padding:0 15px;border-left:1.5px solid var(--ob-line);min-height:52px }
+.demo-story .metric:first-child { padding-left:0;border:0 }
+.demo-story .metric dt { font-size:13px;font-weight:500;color:var(--ob-muted);margin-bottom:4px }
+.demo-story .metric dd { margin:0;font-size:16px;font-weight:650;line-height:1.3 }
+.demo-story h3 { font-size:20px;line-height:1.25;font-weight:720;letter-spacing:-.01em }
+.demo-story .why { margin-bottom:26px }
+.demo-story .why p { max-width:480px;margin-top:4px }
+.demo-story .why time { display:block;margin-top:4px;font-size:13px;color:var(--ob-muted) }
+.demo-story .follow h3 { margin-bottom:8px }
+.demo-story .draft { padding:14px 18px 16px;border:1.5px solid var(--ob-line-strong);border-radius:12px;background:var(--ob-paper);font-size:15px;line-height:1.5;color:var(--ob-ink);overflow-wrap:anywhere }
+.demo-story .draft .draft-label { font-size:13px;font-weight:600;color:var(--ob-muted);margin-bottom:2px }
+.demo-story .draft p+p { margin-top:12px }
+.demo-story .draft-body { white-space:pre-wrap }
+.demo-story .follow > .subject { margin-top:10px;font-size:14px;line-height:1.45;color:var(--ob-muted) }
+.demo-story .activity { border-left:1.5px solid var(--ob-line);padding:4px 26px 0 24px }
+.demo-story .activity h3 { padding-bottom:8px;border-bottom:1.5px solid var(--ob-line) }
+.demo-story .timeline { list-style:none;margin:16px 0 0 6px;padding:0 0 0 24px;border-left:1.5px solid var(--ob-line) }
+.demo-story .event { position:relative;padding:0 0 24px }
+.demo-story .event:last-child { padding-bottom:6px }
+.demo-story .event:before { content:'';position:absolute;left:-30.5px;top:5px;width:10px;height:10px;background:var(--ob-line-strong);border:2px solid var(--ob-card);border-radius:50% }
+.demo-story .event:first-child:before { background:var(--ob-tangerine) }
+.demo-story .event-head { display:flex;justify-content:space-between;align-items:baseline;gap:12px }
+.demo-story .event h4 { margin:0;font-size:15.5px;line-height:1.3;font-weight:650;color:var(--ob-ink) }
+.demo-story .event time { flex:none;font-size:13px;color:var(--ob-muted) }
+.demo-story .subject { font-size:14px;line-height:1.45;color:var(--ob-body);margin-top:2px }
+.demo-story .excerpt { font-size:14px;line-height:1.45;color:var(--ob-muted);overflow-wrap:anywhere }
+.demo-story :is(a,button):focus-visible { outline:3px solid var(--ob-tangerine);outline-offset:3px }
+@media(min-width:1024px) and (max-width:1350px){
+.demo-story .workspace { grid-template-columns:32% minmax(0,1fr) }
+.demo-story .detail-panel { grid-template-columns:1.35fr 1fr }
+.demo-story .detail { padding-left:22px;padding-right:22px }
+.demo-story .activity { padding-left:20px;padding-right:20px }
+}
+@media(max-width:1023px){
+.demo-story .intro br { display:none }
+.demo-story .workspace { grid-template-columns:1fr }
+.demo-story .detail-panel { grid-template-columns:1fr;padding-bottom:24px }
+.demo-story .detail { padding:4px 24px 24px }
+.demo-story .activity { border-left:0;border-top:1.5px solid var(--ob-line);padding:22px 24px 0 }
+}
+@media(max-width:599px){
+.demo-story { margin:22px var(--ob-gutter) 40px }
+.demo-story .intro { font-size:17px }
+.demo-story .notice { align-items:flex-start;font-size:14.5px }
+.demo-story .notice svg { margin-top:2px }
+.demo-story .list-title { padding:14px 16px 8px }
+.demo-story .opportunity { grid-template-columns:1fr 84px 14px;width:calc(100% - 32px);margin:0 16px }
+.demo-story .opportunity.selected { padding:10px 16px 10px 13px }
+.demo-story .detail { padding:0 18px 22px }
+.demo-story .detail h2 { font-size:28px }
+.demo-story .metrics { grid-template-columns:1.1fr .8fr 1fr }
+.demo-story .metric { padding:0 10px }
+.demo-story .activity { padding:20px 18px 0 }
+}

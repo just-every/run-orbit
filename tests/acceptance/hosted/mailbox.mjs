@@ -1,0 +1,3 @@
+import {pathToFileURL} from 'node:url';
+export async function mailbox(){const path=process.env.ORBIT_ACCEPTANCE_RECEIVER_CLIENT;if(!path)throw new Error('ORBIT_ACCEPTANCE_RECEIVER_CLIENT is required.');const {findMail}=await import(pathToFileURL(path));return async function receive(recipient,subjectIncludes,after){const deadline=Date.now()+180000;while(Date.now()<deadline){const mail=await findMail({recipient,subjectIncludes,after});if(mail)return mail;await new Promise(resolve=>setTimeout(resolve,2000));}throw new Error('Real SMTP receipt did not arrive within three minutes.');};}
+export function header(headers,name){return String(headers).replace(/\r?\n[ \t]+/g,' ').match(new RegExp(`^${name}:\\s*(.*)$`,'im'))?.[1]??'';}

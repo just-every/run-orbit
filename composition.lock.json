@@ -1,0 +1,2596 @@
+{
+  "schemaVersion": 2,
+  "composition": {
+    "base": "base",
+    "family": "sales",
+    "edition": "orbit",
+    "modules": [
+      "sendgrid-email"
+    ]
+  },
+  "repositories": {
+    "family": {
+      "commit": "4b7a3a6c4ecdbb27742d565dfd96e0704175f23b"
+    },
+    "base": {
+      "commit": "603ee025aa5991fb44e0c3b0731f2113be85ceab"
+    }
+  },
+  "assemblyTool": {
+    "commit": "603ee025aa5991fb44e0c3b0731f2113be85ceab"
+  },
+  "descriptor": {
+    "schemaVersion": 2,
+    "base": "base",
+    "family": "sales",
+    "edition": "orbit",
+    "modules": [
+      "sendgrid-email"
+    ],
+    "source": "editions/orbit",
+    "copies": [
+      {
+        "repository": "family",
+        "component": "sales",
+        "source": "core/src",
+        "target": "src/family/sales"
+      },
+      {
+        "repository": "family",
+        "component": "sales",
+        "source": "core/README.md",
+        "target": "composition/families/sales/README.md"
+      },
+      {
+        "repository": "family",
+        "component": "sales",
+        "source": "core/LICENSE",
+        "target": "composition/families/sales/LICENSE"
+      },
+      {
+        "repository": "family",
+        "component": "sales",
+        "source": "core/tests",
+        "target": "tests/composition/sales"
+      },
+      {
+        "repository": "base",
+        "component": "sendgrid-email",
+        "source": "modules/sendgrid-email/src",
+        "target": "src/modules/sendgrid-email"
+      },
+      {
+        "repository": "base",
+        "component": "sendgrid-email",
+        "source": "modules/sendgrid-email/README.md",
+        "target": "composition/modules/sendgrid-email/README.md"
+      },
+      {
+        "repository": "base",
+        "component": "sendgrid-email",
+        "source": "modules/sendgrid-email/LICENSE",
+        "target": "composition/modules/sendgrid-email/LICENSE"
+      },
+      {
+        "repository": "base",
+        "component": "sendgrid-email",
+        "source": "modules/sendgrid-email/tests",
+        "target": "tests/composition/sendgrid-email"
+      },
+      {
+        "repository": "base",
+        "component": "base",
+        "source": "deployment/health.mjs",
+        "target": "scripts/deployment/health.mjs"
+      },
+      {
+        "repository": "base",
+        "component": "base",
+        "source": "deployment/secret-json.mjs",
+        "target": "scripts/deployment/base-secret-json.mjs"
+      },
+      {
+        "repository": "base",
+        "component": "base",
+        "source": "schema/SEED.schema.json",
+        "target": "tools/seed-schema/SEED.schema.json"
+      },
+      {
+        "repository": "base",
+        "component": "base",
+        "source": "schema/json-schema.mjs",
+        "target": "tools/seed-schema/json-schema.mjs"
+      },
+      {
+        "repository": "base",
+        "component": "base",
+        "source": "schema/validate.mjs",
+        "target": "tools/seed-schema/validate.mjs"
+      },
+      {
+        "repository": "base",
+        "component": "base",
+        "source": "schema/RELEASE.schema.json",
+        "target": "tools/seed-schema/RELEASE.schema.json"
+      },
+      {
+        "repository": "family",
+        "component": "orbit",
+        "source": "editions/orbit/AGENTS.consumer.md",
+        "target": "AGENTS.md"
+      },
+      {
+        "repository": "family",
+        "component": "sales",
+        "source": "core/test-components.mjs",
+        "target": "scripts/test-composition.mjs"
+      },
+      {
+        "repository": "base",
+        "component": "base",
+        "source": "operations/operations.mjs",
+        "target": "scripts/operations.mjs"
+      },
+      {
+        "repository": "base",
+        "component": "base",
+        "source": "infrastructure/sendgrid-event-relay/src/crypto.ts",
+        "target": "src/base/sendgrid-event-relay/crypto.ts"
+      }
+    ]
+  },
+  "descriptorSha256": "28648b3b01666cf26bd8f785720dc50686ad358f64852759f73158931f1fdf56",
+  "familyManifestSha256": "c2d7c2d797f293667f2340b48ee150c2bf39d875ec7a5f21d334fadd11138065",
+  "files": {
+    ".gitignore": {
+      "sha256": "608851504f436125963630c6595d590432b30418caa0b094a1189f65ea9fff0c",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/.gitignore"
+    },
+    "ACCEPTANCE.md": {
+      "sha256": "4995b50c2e098d862fd915e20436afe9034cf81ed13c7eb03ca21a65281bb745",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/ACCEPTANCE.md"
+    },
+    "AGENTS.consumer.md": {
+      "sha256": "5c6dfb3e6eb59f8cdf9f3cf7a419164f32f379e470a717a1a00959d6d839061e",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/AGENTS.consumer.md"
+    },
+    "AGENTS.md": {
+      "sha256": "5c6dfb3e6eb59f8cdf9f3cf7a419164f32f379e470a717a1a00959d6d839061e",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/AGENTS.consumer.md"
+    },
+    "BASELINE.md": {
+      "sha256": "bb49d91b5e9872befd8e9fb6372c53f8067e49c78b86078b162bdcfe0602c395",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/BASELINE.md"
+    },
+    "CLAUDE.md": {
+      "sha256": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/CLAUDE.md"
+    },
+    "CONTRACT.md": {
+      "sha256": "9158f45c97b51352cbdfe411792ab8879aac9b5e89b4441969d1007dd83ed6f6",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/CONTRACT.md"
+    },
+    "DIVERGENCE.md": {
+      "sha256": "de8254cdb5c908a7755d48a3662e4fc62aa3c4940689943224e22873be0a44d4",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/DIVERGENCE.md"
+    },
+    "HANDOVER.md": {
+      "sha256": "059743432a8fe796fcef83040c57eb30b1314b0bc6f5d1a7192d3b834811b730",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/HANDOVER.md"
+    },
+    "LICENSE": {
+      "sha256": "2f5076ef027045b9e0e72df8aa61ca8551e54b1877d531656d6e7985b2c32324",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/LICENSE"
+    },
+    "MIGRATION-RECOVERY.md": {
+      "sha256": "f216ea4381f81688bba9f0c08997037b0803fa06f4612f8fe5b5e05a480e2b62",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/MIGRATION-RECOVERY.md"
+    },
+    "OPERATIONS.json": {
+      "sha256": "a124f92a1770865361aab7758e5752a6d7f00ac67e7b67a8ed16d1f6431c7a27",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/OPERATIONS.json"
+    },
+    "OPERATIONS.md": {
+      "sha256": "21866f813df343f6cfd21bbf3ad60fb3274d80f59b5b496e5c7f1061528c723c",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/OPERATIONS.md"
+    },
+    "README.md": {
+      "sha256": "a148bee9d90931525c99bf71cc017d85568ecf8053f3cbef423de33b475996eb",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/README.md"
+    },
+    "RECORD-POLICIES.md": {
+      "sha256": "f5f800c091f22f53bd23c0ec1cadbf25455def196dd85f259b77152bae4ba7d7",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/RECORD-POLICIES.md"
+    },
+    "SETUP.md": {
+      "sha256": "3dcaf499905516c6d1d374978238b5216580ac8a0fb6405e18d9bd72bb042ebd",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/SETUP.md"
+    },
+    "SIGNALS-AND-OUTREACH.md": {
+      "sha256": "2723c2d4199cfe86e9013e202c40768cda413b2dff8d5a7ce82ecc97d923d3c2",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/SIGNALS-AND-OUTREACH.md"
+    },
+    "TESTING.md": {
+      "sha256": "dd3519d609e7ce0e153a6e62681e088101347191f657dfd8496d9c2499272762",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/TESTING.md"
+    },
+    "composition/families/sales/LICENSE": {
+      "sha256": "2f5076ef027045b9e0e72df8aa61ca8551e54b1877d531656d6e7985b2c32324",
+      "mode": 420,
+      "component": "sales",
+      "repository": "family",
+      "source": "core/LICENSE"
+    },
+    "composition/families/sales/README.md": {
+      "sha256": "5e0bc029ba865bba251cb7221bfd0fdb95437ab30f4cde6990c23b487d8014e0",
+      "mode": 420,
+      "component": "sales",
+      "repository": "family",
+      "source": "core/README.md"
+    },
+    "composition/modules/sendgrid-email/LICENSE": {
+      "sha256": "2f5076ef027045b9e0e72df8aa61ca8551e54b1877d531656d6e7985b2c32324",
+      "mode": 420,
+      "component": "sendgrid-email",
+      "repository": "base",
+      "source": "modules/sendgrid-email/LICENSE"
+    },
+    "composition/modules/sendgrid-email/README.md": {
+      "sha256": "41656bbfc2cf9c01392cb331bb5acedfa2fee46bd7adea1fd3e429efcfef6559",
+      "mode": 420,
+      "component": "sendgrid-email",
+      "repository": "base",
+      "source": "modules/sendgrid-email/README.md"
+    },
+    "deploy/wrangler.template.toml": {
+      "sha256": "f14b08c1e1c2b74a13470228a0789d175c750923247bd22810cd9265943da5fc",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/deploy/wrangler.template.toml"
+    },
+    "migrations/core/0001_orbit_sample_spine.sql": {
+      "sha256": "3969bb2ad471b5abd62072753aa1d1384c1c54662cf1a708775fb83862ba5fb5",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/migrations/core/0001_orbit_sample_spine.sql"
+    },
+    "migrations/core/0002_magic_links.sql": {
+      "sha256": "ef5164a60440fe8ca3af2fa19f2a0800b37624b30329e2f5062943e0d70ff38b",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/migrations/core/0002_magic_links.sql"
+    },
+    "migrations/core/0003_outreach.sql": {
+      "sha256": "a3bae4e11a3a8ffcce93f09b5fde8c0d3d2dcf088ded4c7cd6172ce7bba3df8b",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/migrations/core/0003_outreach.sql"
+    },
+    "migrations/core/0004_owner_bootstrap.sql": {
+      "sha256": "730c8b47bf1c8dba2d4541fbb9e883a919f5fb46bbe35a6adae6154dc4ab5070",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/migrations/core/0004_owner_bootstrap.sql"
+    },
+    "migrations/core/0005_records.sql": {
+      "sha256": "9ad2b44c4af4fe0512ab2e19e8855e14fb200d7e2faab87c1d142c4ba0308651",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/migrations/core/0005_records.sql"
+    },
+    "migrations/core/0006_signals_outreach.sql": {
+      "sha256": "1b30a9d4ddcbaae15acdc56f5c9aa85ccd4d73671c33926ce0595aa42ba2ecda",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/migrations/core/0006_signals_outreach.sql"
+    },
+    "migrations/core/0007_assistance.sql": {
+      "sha256": "8fcbd83afbca8124e01f7ba219d1b202c8f78975dae55c1431c18b9530a1c16b",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/migrations/core/0007_assistance.sql"
+    },
+    "migrations/core/0008_stopped_schedule_queue.sql": {
+      "sha256": "f14a5b7b4b8c680b69ca52d4eb988cfcc4135a7b2c106950930cc4fb6fe0f372",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/migrations/core/0008_stopped_schedule_queue.sql"
+    },
+    "migrations/core/0009_archives.sql": {
+      "sha256": "3a4b7c915c334134d4be8802d62df89dfcf7a2d494301a4b288146cd72ec21a6",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/migrations/core/0009_archives.sql"
+    },
+    "migrations/core/0010_notification_record_scope.sql": {
+      "sha256": "60e98daa12ac94429523bf4edfcb46a84eba195628f54000ad1530740962615b",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/migrations/core/0010_notification_record_scope.sql"
+    },
+    "migrations/core/0011_provider_event_actor.sql": {
+      "sha256": "06d60d573a3bca82837374a9da28cddca5fec314b61d6b38e0bbc14bd9885196",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/migrations/core/0011_provider_event_actor.sql"
+    },
+    "migrations/core/0012_reviewed_signal_actor.sql": {
+      "sha256": "1316dfa33736914f94cb4c93ef9d7b05aae01e15b0dce8fc8455fc4d8176fe2a",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/migrations/core/0012_reviewed_signal_actor.sql"
+    },
+    "orbit-decision-card.json": {
+      "sha256": "dd1628d93ae39c1426d01f0b22fa95f3cc700fd122f531fe390f1dc6b4f2dc6c",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/orbit-decision-card.json"
+    },
+    "package.json": {
+      "sha256": "acfdfb78c2d92367bd47dd480df7e43aa72dc4c9e8386168ab6997484db020f8",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/package.json"
+    },
+    "playwright.config.mjs": {
+      "sha256": "a5c9a4dc111aca415424fbe8c52d73a0b3015e0282d4d893e18420f8fab0ad92",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/playwright.config.mjs"
+    },
+    "pnpm-lock.yaml": {
+      "sha256": "ee6c79488990b5c862d71924447cc40774c9c3899adec09794768fd05657278f",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/pnpm-lock.yaml"
+    },
+    "pnpm-workspace.yaml": {
+      "sha256": "226909e7726c235c6b854540949bc8144625420ccdd6298fca1f7885d8bfe524",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/pnpm-workspace.yaml"
+    },
+    "public/images/notifications/cutout-23-eb137d75d5ab.png": {
+      "sha256": "eb137d75d5aba32fc98f88bdf297c088bb2443c04178122e30ca4ea5823dcea0",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/public/images/notifications/cutout-23-eb137d75d5ab.png"
+    },
+    "public/images/notifications/cutout-39-d85cc9500c4b.png": {
+      "sha256": "d85cc9500c4b03411cd33fe2b7f9a7504cd77e127d6110fc32cd7265f0e40c3d",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/public/images/notifications/cutout-39-d85cc9500c4b.png"
+    },
+    "public/images/notifications/cutout-47-debef8c5bf68.png": {
+      "sha256": "debef8c5bf6868fe1ce5472b0f0bc1a469b4869d8dfd27bb81b47349c0e3e67a",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/public/images/notifications/cutout-47-debef8c5bf68.png"
+    },
+    "public/images/notifications/cutout-55-6fd89330b519.png": {
+      "sha256": "6fd89330b519473128f54a6c9b7d32b7ac576dce650991c8d088d4ef5b8085fe",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/public/images/notifications/cutout-55-6fd89330b519.png"
+    },
+    "public/images/notifications/cutout-71-6675f9e01285.png": {
+      "sha256": "6675f9e01285768e9888490b2d8ca430deb7be7aaf36b98445b64f77cc406804",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/public/images/notifications/cutout-71-6675f9e01285.png"
+    },
+    "public/images/notifications/cutout-79-8438b7774543.png": {
+      "sha256": "8438b7774543c4871767adbbb853cdbd4eafc7df0231902af1131b09cc1a348b",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/public/images/notifications/cutout-79-8438b7774543.png"
+    },
+    "public/images/notifications/cutout-86-9aa795ff9a7f.png": {
+      "sha256": "9aa795ff9a7f3be4107462c92bbf7bc18e9b4b584eb719e444012ee84c5fee30",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/public/images/notifications/cutout-86-9aa795ff9a7f.png"
+    },
+    "research/hubspot-crm-mobile.png": {
+      "sha256": "c09e898e390fb4889ee518cc3770f40cf3a2331dad11a176d60fcf338b438dec",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/research/hubspot-crm-mobile.png"
+    },
+    "research/hubspot-crm-viewport.png": {
+      "sha256": "5ba7bb3afaedaaab01287d420ccc0f76d2338ea8fe152878395d2d764d0d54ae",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/research/hubspot-crm-viewport.png"
+    },
+    "research/hubspot-home-viewport.png": {
+      "sha256": "104947201ce53061a76b15f2f1cc1cebc9d94b29c1e741f6990bc4e1a9610b4f",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/research/hubspot-home-viewport.png"
+    },
+    "scripts/bootstrap-owner.mjs": {
+      "sha256": "3fb6057fc4e5ff6a23b217746c320602d15f8610720398ae2f088cf224cc5f34",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/bootstrap-owner.mjs"
+    },
+    "scripts/browser-results.mjs": {
+      "sha256": "5fe8b03220a12a7af09b8a627e056e87436eee2261378e4144a9735b17ef7ecc",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/browser-results.mjs"
+    },
+    "scripts/browser-server.mjs": {
+      "sha256": "c28702ad5f7142d8e3ad037e78d8d97e8c469eb6e3304502c31f311212e9516e",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/browser-server.mjs"
+    },
+    "scripts/check-boundaries.mjs": {
+      "sha256": "854b4785ff3b9e08efdd4c34a2aea4cde0610b8ccd0edfe630defb0216effed6",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/check-boundaries.mjs"
+    },
+    "scripts/core-results.mjs": {
+      "sha256": "9440fe5a2af476b45f3de20e074431e38121f447466e7f99b7b94447df928691",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/core-results.mjs"
+    },
+    "scripts/data-transfer.mjs": {
+      "sha256": "424a9c471619c0178a5357f7a19aa8c9c8c1e2e8172326a8383645cb5e179a1f",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/data-transfer.mjs"
+    },
+    "scripts/data-transfer/http.mjs": {
+      "sha256": "6ba461d3c2e84e267c54bd4517b9e8aff87d33b66d07cc900121ebd7add6c2df",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/data-transfer/http.mjs"
+    },
+    "scripts/data-transfer/options.mjs": {
+      "sha256": "f2b1801c29581c6c4d96fc97bcd21f682104448b4b7eb0ac303fb317d715ef06",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/data-transfer/options.mjs"
+    },
+    "scripts/data-transfer/run.mjs": {
+      "sha256": "ef7036fe493efbdeae05d038b743ee2d5a0543ca7ab9a02bdfb61ece9b806af8",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/data-transfer/run.mjs"
+    },
+    "scripts/deploy.mjs": {
+      "sha256": "703e8d72ad079a2a5bb4683afa8f9110d3c8d4774fb2b8be25ce1344b238a272",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/deploy.mjs"
+    },
+    "scripts/deployment/base-secret-json.mjs": {
+      "sha256": "0aece11a11fd90ce43e65b7fccb9c4429de126311aa473f528fff059a0cbf343",
+      "mode": 420,
+      "component": "base",
+      "repository": "base",
+      "source": "deployment/secret-json.mjs"
+    },
+    "scripts/deployment/config.mjs": {
+      "sha256": "8a5ee9652179aded80453dbf2f74258da03151603d02b8231b879acfda458809",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/deployment/config.mjs"
+    },
+    "scripts/deployment/health.mjs": {
+      "sha256": "fdbed964e98c21323ac5df575888668e12154038b4e9d6fe6adb97b11f4d24f3",
+      "mode": 420,
+      "component": "base",
+      "repository": "base",
+      "source": "deployment/health.mjs"
+    },
+    "scripts/deployment/owner-input.mjs": {
+      "sha256": "f917e14ef761373c87d5252d8e6f83deb8dd62fd4f6996256d461d8de7ec9000",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/deployment/owner-input.mjs"
+    },
+    "scripts/deployment/run.mjs": {
+      "sha256": "2c918630fca70c827027fb87e62eae249296238071255b97dd9485945faeb8c9",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/deployment/run.mjs"
+    },
+    "scripts/operations-config.mjs": {
+      "sha256": "13d39fcbfc36b40fac9218cb79b1dffdb3d18a6478260377e91dd69a4c29fc86",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/operations-config.mjs"
+    },
+    "scripts/operations.mjs": {
+      "sha256": "89b1122e3d3c17d68893c89cd32432922971a17802ae0c59cc4e42882f3ce456",
+      "mode": 420,
+      "component": "base",
+      "repository": "base",
+      "source": "operations/operations.mjs"
+    },
+    "scripts/prepare-wrangler-config.mjs": {
+      "sha256": "39eb30d17951ca2021fa4e0c97d3a5dfa182be2b7f798b63d19b7eee218deeca",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/prepare-wrangler-config.mjs"
+    },
+    "scripts/report-contract-results.mjs": {
+      "sha256": "5deb6e765ddc4d1aae0f89b4f58861407624ea9c505017e58a13fb185037f986",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/report-contract-results.mjs"
+    },
+    "scripts/seed-local.ts": {
+      "sha256": "2452f5c4cb2e31a1a5b46f334d932b049fd75319db5364618668eec2938d68d8",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/seed-local.ts"
+    },
+    "scripts/setup.mjs": {
+      "sha256": "7ef04723643de7dfd386485b594f4fc52afe46f6129a8ab3f167d8172217f1cb",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/setup.mjs"
+    },
+    "scripts/test-composition.mjs": {
+      "sha256": "3bcd28807dacadec2b7f55d7dbfb3e562372e37757323b902f1423bac41df89a",
+      "mode": 420,
+      "component": "sales",
+      "repository": "family",
+      "source": "core/test-components.mjs"
+    },
+    "scripts/verify-unconfigured-host.ts": {
+      "sha256": "965bc6e5020fb233822b09d554609a54f09381094619b00067f7b960000d31fc",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/verify-unconfigured-host.ts"
+    },
+    "scripts/verify-worker.ts": {
+      "sha256": "1d7d85e0a0f6c04eab09cc716d94236267a885653a3711e08818fbb46575720c",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/verify-worker.ts"
+    },
+    "scripts/verify.mjs": {
+      "sha256": "26001d1a63283cf57b4781b0790495d87b7f0645201d5db97aef0f88ea2f09e1",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/scripts/verify.mjs"
+    },
+    "seed.json": {
+      "sha256": "06f8a28eb3f2bbb24989902045e397f046ab225d640df62f17a83c0a2a903cbe",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/seed.json"
+    },
+    "src/assets/design/assistance-cutout-24-607cce6690f6.png": {
+      "sha256": "607cce6690f66160c703c428c90c868d8327b658c42cc391e6450f88b147708c",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/assets/design/assistance-cutout-24-607cce6690f6.png"
+    },
+    "src/assets/design/assistance-cutout-36-6a0a4e1e9164.png": {
+      "sha256": "6a0a4e1e916472cacc0b185f060d3fa69998baf92dfff196edb5c3eebdb10785",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/assets/design/assistance-cutout-36-6a0a4e1e9164.png"
+    },
+    "src/assets/design/assistance-instructions.svg": {
+      "sha256": "ef42354ca5c82fa96cbaec3109fe688ec0f85f11305b754e6db45ee3f4f9a4e2",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/assets/design/assistance-instructions.svg"
+    },
+    "src/assets/design/assistance-recipient.svg": {
+      "sha256": "1a26f6d4a9067050177d4c3df83030743d377c3a3c3455e0e973732ddad8e1e9",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/assets/design/assistance-recipient.svg"
+    },
+    "src/assets/design/assistance-warning.svg": {
+      "sha256": "323d76d3aa67d02ae5efa3e6b8ec717e43ff45da4a7352247d1d7b6bb77df8f3",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/assets/design/assistance-warning.svg"
+    },
+    "src/assets/design/hero-office-scene.png": {
+      "sha256": "f93406c7fc02c5355f291154d2db1c1f78c329715995d5bcdafbe80d43c0b490",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/assets/design/hero-office-scene.png"
+    },
+    "src/assets/design/information.svg": {
+      "sha256": "056f7a9aad07e6b50b6e71b7a473f4b103e741cbf793e1ef4101a24bb13f678d",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/assets/design/information.svg"
+    },
+    "src/assets/design/orbit-mark.png": {
+      "sha256": "ae7fdc798a00ad373a4712348bff439bfce82b4ed0a3ff3dd356881a6a2b3cd3",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/assets/design/orbit-mark.png"
+    },
+    "src/assets/design/record-created-marker.png": {
+      "sha256": "c008ccdfa53334d63045216d24eeac24f8a0829affa40a11d2afb31edf1f9c74",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/assets/design/record-created-marker.png"
+    },
+    "src/assets/design/record-updated-marker.png": {
+      "sha256": "044d13045c6adf24a2866fd024d0008d7c5a1d9f8d7577b7cde897e53f9fde2d",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/assets/design/record-updated-marker.png"
+    },
+    "src/assets/design/right-arrow.svg": {
+      "sha256": "9959499a056fed2c6147c1e98a1dc12be61f6df90fcf2da1ec02ab19acd2c878",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/assets/design/right-arrow.svg"
+    },
+    "src/base/sendgrid-event-relay/crypto.ts": {
+      "sha256": "6da00d054956ec33046fbe39c1632a3a882a45842b3367ac5bdfd0ea682ec429",
+      "mode": 420,
+      "component": "base",
+      "repository": "base",
+      "source": "infrastructure/sendgrid-event-relay/src/crypto.ts"
+    },
+    "src/core/app/app.ts": {
+      "sha256": "7d95cd7eb81746b790bb0fd93ab665ef00ac8ab59ffbb350facd85fc501e5d29",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/app/app.ts"
+    },
+    "src/core/app/dependencies.ts": {
+      "sha256": "5b34b624bdf6009d625c2de4b71f2390e12485d4f7c58511a458aa9f6bf26dcf",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/app/dependencies.ts"
+    },
+    "src/core/app/loaders.ts": {
+      "sha256": "586c2c5874cb0866973335a4b87c30e733027b836ddab9ad690b57611a270ca0",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/app/loaders.ts"
+    },
+    "src/core/app/mounts/assistance.ts": {
+      "sha256": "f7c93364cb9d3588149d7c9df7446a047412358a975b2b7a74eebf006cc82f35",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/app/mounts/assistance.ts"
+    },
+    "src/core/app/mounts/public-config.server.ts": {
+      "sha256": "9142aa8f350d3b7168239b55f48a905106782c6f6827728acd155a892779a9f8",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/app/mounts/public-config.server.ts"
+    },
+    "src/core/app/mounts/public-config.ts": {
+      "sha256": "659542ced985423a5e9d34d297943951e8b401f522637cd07f85962a335b41f7",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/app/mounts/public-config.ts"
+    },
+    "src/core/app/session-gate.ts": {
+      "sha256": "c5d6793e993acc12fda69ea9d3d9c34d226161a45bf8af9a1b47043ced31eb5d",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/app/session-gate.ts"
+    },
+    "src/core/app/styles.css": {
+      "sha256": "4397aa15d0740a618f75d2c6b2dfbb2c9a3412d173ccf0a62582f9c17120c1da",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/app/styles.css"
+    },
+    "src/core/app/ui/page-frame.tsx": {
+      "sha256": "87f6c20d9a0ea78deff9014324b9f7e5033edfdf3b5f9f06046cf37d5d8d4102",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/app/ui/page-frame.tsx"
+    },
+    "src/core/app/worker.ts": {
+      "sha256": "e8f1a85519fd43477a1d7813755804555f21cfa91cd3b3e1cbab00cf8613f2cc",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/app/worker.ts"
+    },
+    "src/core/features/assistance/preview.ts": {
+      "sha256": "1102138b5ce4d82912b7bb4eea9edcdd1c123a30fa9466d429dbc571e67729ff",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/assistance/preview.ts"
+    },
+    "src/core/features/assistance/provider.ts": {
+      "sha256": "4d196d516d900d4c9f87a0193f7dbb8fbc678656c0fdf7347325002b9e6936c2",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/assistance/provider.ts"
+    },
+    "src/core/features/assistance/routes.ts": {
+      "sha256": "f3e2802a6125ed20321bbad6d441fb4d89b33056686061503afb165849cf287c",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/assistance/routes.ts"
+    },
+    "src/core/features/audit/index.ts": {
+      "sha256": "3c06542af9aeae2618a5dd975088d6bdc2efdab8c1d4d168483047c6674fc0ac",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/audit/index.ts"
+    },
+    "src/core/features/audit/repository.ts": {
+      "sha256": "e4e7acf65623f275c2e6a10978fdd93af5a89e8708496379c47cde2dd735d45d",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/audit/repository.ts"
+    },
+    "src/core/features/audit/service.ts": {
+      "sha256": "1d6851d5eece9553a72987a8e1c71cb01dd531104f03f717f9e5850e9a656fbf",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/audit/service.ts"
+    },
+    "src/core/features/auth/index.ts": {
+      "sha256": "56e81e12aef3599a5a903262ca92d2e4fd02c615603523a58060a495a4ab3ea6",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/auth/index.ts"
+    },
+    "src/core/features/auth/magic-link-repository.ts": {
+      "sha256": "3508d7d29cdb8e8a661a6a6d55dd1d0c73116101293cd4d52a1c8338e2db95df",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/auth/magic-link-repository.ts"
+    },
+    "src/core/features/auth/magic-link-service.ts": {
+      "sha256": "a02fd0780e8a3965fd14f50c0ca9adabefbab7f7a065689a9e199fded783293e",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/auth/magic-link-service.ts"
+    },
+    "src/core/features/auth/repository.ts": {
+      "sha256": "1a1643e154cf9bfb8d0987b7c66e945f10ddfb1cbc84cddf6b4e87c32230dca4",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/auth/repository.ts"
+    },
+    "src/core/features/auth/routes.ts": {
+      "sha256": "cf180576d4f99a08fd15b372bd26856aba89963e68525f9d707bd9b76f309f73",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/auth/routes.ts"
+    },
+    "src/core/features/auth/service.ts": {
+      "sha256": "7f987a681ee77d6622bb9b2edb35e74453d0660aba7951c09b9f8a01654bfbd5",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/auth/service.ts"
+    },
+    "src/core/features/drafts/index.ts": {
+      "sha256": "9b794d6cf6f5395c968cd71611b5c9fb9df533150ea1f74969279aa52a63db9d",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/drafts/index.ts"
+    },
+    "src/core/features/drafts/repository.ts": {
+      "sha256": "45ec94129b662895e10edc2b7feb61d0063ee6efbc7de802b881e92788f18f19",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/drafts/repository.ts"
+    },
+    "src/core/features/drafts/routes.ts": {
+      "sha256": "78b12f636ac5b22553facfa74757bbd6bd0b10a4e1a64426a12471af253a3419",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/drafts/routes.ts"
+    },
+    "src/core/features/drafts/service.ts": {
+      "sha256": "67fc0a01d9a326868b1d127c8fa314545ce01c360f665f42f6f203897149db63",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/drafts/service.ts"
+    },
+    "src/core/features/drafts/ui/draft-content-fields.tsx": {
+      "sha256": "0f4dbac8e3d2976aed082850ac60a1569781b08e2738813f5d860122cc247aaf",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/drafts/ui/draft-content-fields.tsx"
+    },
+    "src/core/features/health/index.ts": {
+      "sha256": "7df4b251860aab62f123622cca9037f5f82f2073a8553580e874720a9ba07222",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/health/index.ts"
+    },
+    "src/core/features/health/repository.ts": {
+      "sha256": "5285782446f425b1cd6b84a42c6ce8fe5f218e6955435ec1c6b2a4f6dde43534",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/health/repository.ts"
+    },
+    "src/core/features/health/service.ts": {
+      "sha256": "afcda710b91f6d11855877ceb7354fe267187debb61b303fc9955a2b7339a116",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/health/service.ts"
+    },
+    "src/core/features/ingestion/contracts.ts": {
+      "sha256": "8f41d891cff70d1d2053413b8b1ac335c3d69188956f7931f82dec8d1438d2f6",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/ingestion/contracts.ts"
+    },
+    "src/core/features/ingestion/linking-repository.ts": {
+      "sha256": "3d28069723a86a5560301cd69a5da91177f00cf6178d9b92d096e10f0597bf0e",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/ingestion/linking-repository.ts"
+    },
+    "src/core/features/ingestion/repository.ts": {
+      "sha256": "82d000434e1df01afb37c7e424d71682c1ad61668f605e4eaa50f895eb1aaac3",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/ingestion/repository.ts"
+    },
+    "src/core/features/ingestion/routes.ts": {
+      "sha256": "51cd50c51d2eebe68e37d22cf76f625c5b23939d8f8242e5e7b15e0cd58d00f5",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/ingestion/routes.ts"
+    },
+    "src/core/features/notifications/routes.ts": {
+      "sha256": "14480172392dbf654b333b13c92b1228f47a38c94bef4f1f4788618bf969c51e",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/notifications/routes.ts"
+    },
+    "src/core/features/operator/ui/WorkspaceArchiveTools.tsx": {
+      "sha256": "21521d1363b9cb52cdbbbb99fd19167d580a6611e7da3924f64343f77bae170e",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/WorkspaceArchiveTools.tsx"
+    },
+    "src/core/features/operator/ui/ai-usage.tsx": {
+      "sha256": "a7d2601423be929ecc49d117afddbcdcbff57fd535881a00505a205882513605",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/ai-usage.tsx"
+    },
+    "src/core/features/operator/ui/archive-transfer.ts": {
+      "sha256": "9420e6d470f8855ed2ad5a378fa8b0841d441ea11844148dc210ed74001d3402",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/archive-transfer.ts"
+    },
+    "src/core/features/operator/ui/assistance-page.tsx": {
+      "sha256": "e239b000eaaf6fa503f01ec70f60bf7c3d447de22b981cfdc322b8424e08b49f",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/assistance-page.tsx"
+    },
+    "src/core/features/operator/ui/assistance-preview.tsx": {
+      "sha256": "05f5223d7a278809d3602d67e7f6ad2c3eb76d337f72c66288881a8a53494d35",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/assistance-preview.tsx"
+    },
+    "src/core/features/operator/ui/assistance.css": {
+      "sha256": "ef516de8d6cd88c88862c64387722dcd02c78a9a0062a2cb289e19309c0e950e",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/assistance.css"
+    },
+    "src/core/features/operator/ui/create-opportunity-page.tsx": {
+      "sha256": "f945d6b64b2e9a6ba02b7b0fc5b632a7fc04759dd4e07128f46013d150e52a8c",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/create-opportunity-page.tsx"
+    },
+    "src/core/features/operator/ui/custom-fields.tsx": {
+      "sha256": "7b765d75a69f3ae9e0a00166e9ab0aac76d5fcebb3d8b10b7fdf0b9289c3dae8",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/custom-fields.tsx"
+    },
+    "src/core/features/operator/ui/draft-approval.tsx": {
+      "sha256": "6e79ad3e602b7bcd80da2c2e269d32af439c0c3b5317538c3b325192c7111ed1",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/draft-approval.tsx"
+    },
+    "src/core/features/operator/ui/draft-page.tsx": {
+      "sha256": "3aff04d020ccfa76b908c1c08f3b106333d83a21ce4e5cf05e1ff93f1faeb8af",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/draft-page.tsx"
+    },
+    "src/core/features/operator/ui/evidence-actions.tsx": {
+      "sha256": "1d38d25c426394ab71c80950229324027ed5ed3f89614d5251dd6adb9574f9dd",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/evidence-actions.tsx"
+    },
+    "src/core/features/operator/ui/formatters.ts": {
+      "sha256": "c0e568d412e85b7b2073728b62d0989267a3013230d9075459f28094f5e9fb05",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/formatters.ts"
+    },
+    "src/core/features/operator/ui/manual-action.tsx": {
+      "sha256": "10d6536a973aaeba9afcfd0363312fe63d2af9fa0d9eb12fafa080195202b4e4",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/manual-action.tsx"
+    },
+    "src/core/features/operator/ui/manual-entry.tsx": {
+      "sha256": "0ef5067ad3d8adcc4fae042030381ce81ccce40fa499da43b7c8eaf1f785169a",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/manual-entry.tsx"
+    },
+    "src/core/features/operator/ui/message-history.tsx": {
+      "sha256": "2e926a7cc9572b5a016c259c09f18b7a30f4ba5a32bb11ef4045639e1e8c7bda",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/message-history.tsx"
+    },
+    "src/core/features/operator/ui/notifications-page.tsx": {
+      "sha256": "bf1764c8ff832327477b5df023be509cbf506c53467ad77b088d5ed4e2622601",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/notifications-page.tsx"
+    },
+    "src/core/features/operator/ui/now-page.tsx": {
+      "sha256": "fe798b988a5b4fb79860cb49283f5f163da8d365480e208d42a49b297a7fe516",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/now-page.tsx"
+    },
+    "src/core/features/operator/ui/operator-api.ts": {
+      "sha256": "67fabc8007e9aab59727903540848754aea4786b26389b5f2a6e40f69f9a6782",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/operator-api.ts"
+    },
+    "src/core/features/operator/ui/operator-shell.tsx": {
+      "sha256": "bd8b73b46b73b663678a656376bbe625872f4adddaf4304636132b7563afad57",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/operator-shell.tsx"
+    },
+    "src/core/features/operator/ui/opportunity-page.tsx": {
+      "sha256": "2ce5c0daa0b61732591d5c1cf937f9be8444af52448f52a7f9d924ce54fe7945",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/opportunity-page.tsx"
+    },
+    "src/core/features/operator/ui/provider-footer.tsx": {
+      "sha256": "1fd571edbe95068d13eb61b8f5f1aef79acc7ae96f6b89929781ab4a3a3ea2a0",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/provider-footer.tsx"
+    },
+    "src/core/features/operator/ui/record-editor.tsx": {
+      "sha256": "6d7e875e67789eb7adff9918fd8fc21be275401350719f823cc4e495e5710a12",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/record-editor.tsx"
+    },
+    "src/core/features/operator/ui/record-selection.tsx": {
+      "sha256": "e4bba2e0090761d71f99bf47901b5c0dfdbb4ebb8dc335b9fee6878fa93ca279",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/record-selection.tsx"
+    },
+    "src/core/features/operator/ui/records-api.ts": {
+      "sha256": "1073ce859463ea9fd94e97552561f314d78ef2b6e3cc3ff4bb0f525c07556e45",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/records-api.ts"
+    },
+    "src/core/features/operator/ui/records-data-tools.tsx": {
+      "sha256": "53ba40419fe5a4406d6ddff086368ebc317f82cbd6056be1ad7443bfc30c6624",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/records-data-tools.tsx"
+    },
+    "src/core/features/operator/ui/records-page.tsx": {
+      "sha256": "35ec918375defd7241cfe2326b5eff639b225792dc5ab8f57640cbbcc2610f4c",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/records-page.tsx"
+    },
+    "src/core/features/operator/ui/records.css": {
+      "sha256": "cb3ee9e4a4caa27e03fbd2dab9ccb63c09a5e71454f7453a8f0ee2819376a656",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/records.css"
+    },
+    "src/core/features/operator/ui/settings-page.tsx": {
+      "sha256": "0cd5de06cfb0c75365f2e761ea3ecaae3b1d97fee979dfdae78c80b2f45e70f0",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/settings-page.tsx"
+    },
+    "src/core/features/operator/ui/sources-page.tsx": {
+      "sha256": "3ea9b3802b73e716e090a10913e7862d250b3c75fa56c4a67be21983e64a206f",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/sources-page.tsx"
+    },
+    "src/core/features/operator/ui/unlinked-replies.tsx": {
+      "sha256": "665f9a8ca47a8cda26e47608f9c2f235c30db4ccf63fde8d82948078a8bc849f",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/unlinked-replies.tsx"
+    },
+    "src/core/features/operator/ui/use-operator-resource.ts": {
+      "sha256": "cff0612c34012752fa5a77b0522f940313c726ac753954dd8acbeafae6731377",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/use-operator-resource.ts"
+    },
+    "src/core/features/operator/ui/workbench-api.ts": {
+      "sha256": "cbe8001f1ab957170ad56f884cd5e19d8934fb732de0cbdee07a83f1bf498340",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/workbench-api.ts"
+    },
+    "src/core/features/operator/ui/workspace-archive.css": {
+      "sha256": "ed98bef59b970f064a22f42013187ddb4175d59d15beff000459910042bdc3ab",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/operator/ui/workspace-archive.css"
+    },
+    "src/core/features/opportunities/contracts.ts": {
+      "sha256": "9c11158929c712e7405f4ebab3e4958db2a4f0af31d8c5639405c6ceb829b87d",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/opportunities/contracts.ts"
+    },
+    "src/core/features/opportunities/index.ts": {
+      "sha256": "84127e7450471af241eaf6450200811b62cd29f89596baf1e94c08fc37b67cc9",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/opportunities/index.ts"
+    },
+    "src/core/features/opportunities/repository.ts": {
+      "sha256": "f9c870f6d6da47b50dcdfdea8fbbcff289ceb26bf5cd0be3311a81cad0e435b4",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/opportunities/repository.ts"
+    },
+    "src/core/features/opportunities/routes.ts": {
+      "sha256": "7dfa7be1057e0eab58d2efdd2c70b1ab233f943dba3e15ddbabb5206ac163cb9",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/opportunities/routes.ts"
+    },
+    "src/core/features/opportunities/service.ts": {
+      "sha256": "69d1a46b3d6bb23606f8f0533021627e1c612e837028da270c33f72c121556b6",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/opportunities/service.ts"
+    },
+    "src/core/features/outreach/approval-repository.ts": {
+      "sha256": "473af3319e8be9d68913dbccc8d9f6559c112f9fb793fb139ad9f1ec35f73bd8",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/outreach/approval-repository.ts"
+    },
+    "src/core/features/outreach/provider-repository.ts": {
+      "sha256": "cdcd9c2aceeeba7571c02ccca581724c60984521ad482f8e9e9b050c2f67ff85",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/outreach/provider-repository.ts"
+    },
+    "src/core/features/outreach/provider-routes.ts": {
+      "sha256": "ec58aff1b8b695b5779e39ea1a8d97b9c3bc362cd6e65e94b400f7026dbce414",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/outreach/provider-routes.ts"
+    },
+    "src/core/features/outreach/review-repository.ts": {
+      "sha256": "28cfff4f0a7073bc63f204d532cb539e4eb267d73f7dc304b4c14c2639d4985d",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/outreach/review-repository.ts"
+    },
+    "src/core/features/outreach/service.ts": {
+      "sha256": "163e5d38b7388f0df97fe806cb4012e687963ea499d66cd4a69d4842b583f161",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/outreach/service.ts"
+    },
+    "src/core/features/outreach/time.ts": {
+      "sha256": "014e6ff3e607b96ea9a7f43e45b7c29bcedbcfa608a25da55a1882f5572c93f6",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/outreach/time.ts"
+    },
+    "src/core/features/outreach/timing-repository.ts": {
+      "sha256": "caf23e5c4cf106bda2e854db0289f1df56f7801f80125be6fc1abf39a4fc51df",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/outreach/timing-repository.ts"
+    },
+    "src/core/features/public/demo-repository.ts": {
+      "sha256": "41c4321239e7618b55587d817bf61b614ea7524266c925346bfe9fa2e9725578",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/public/demo-repository.ts"
+    },
+    "src/core/features/public/routes.ts": {
+      "sha256": "61a4cdb6f1a8d0e6df4d6e499ff2a7c893faa47f408e32ab166259a1789e768a",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/public/routes.ts"
+    },
+    "src/core/features/public/ui/home-page.tsx": {
+      "sha256": "fd61240d9314bdfddba5dfea35b50aedec0145b9283e52c78899b89337c7e140",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/public/ui/home-page.tsx"
+    },
+    "src/core/features/public/ui/primitives.tsx": {
+      "sha256": "38ff34bcdfe648b0255b9c78354772c6187cde7caa5689f09d7c9c3ceab1bd5f",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/public/ui/primitives.tsx"
+    },
+    "src/core/features/public/ui/public-shell.tsx": {
+      "sha256": "16c1192604b695a72ef1d3f8faeb9e452d6852d7d29fc4d00e2e949934dbfa76",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/public/ui/public-shell.tsx"
+    },
+    "src/core/features/public/ui/sign-in-page.tsx": {
+      "sha256": "745149be7c2711fd235167d6cd8dad92f8a59f73d5d1179ad8948049b0a59834",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/public/ui/sign-in-page.tsx"
+    },
+    "src/core/features/recommendations/index.ts": {
+      "sha256": "80dbbe610441ee6b595cdb058b0f5ead63d84477745e8242b0eef7db28783e63",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/recommendations/index.ts"
+    },
+    "src/core/features/recommendations/repository.ts": {
+      "sha256": "2765c2214182e7a070e51eb13c117b753bd541bc91b0cde7c3bb6364cac005d5",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/recommendations/repository.ts"
+    },
+    "src/core/features/recommendations/service.ts": {
+      "sha256": "63c6d05e9552fc02aa9434c3a8d41e585e0fdbcb9a32e2501d477b00f53500ac",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/recommendations/service.ts"
+    },
+    "src/core/features/records/archive-erasure.ts": {
+      "sha256": "b130b489ed3241049f3a5e178d687126ee6630566d4349562b2a6da60f08c30a",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/archive-erasure.ts"
+    },
+    "src/core/features/records/archive-export.ts": {
+      "sha256": "b7abf17357fc58f1cf7fa2d2598eaae8b464266d011308766456701a707fefeb",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/archive-export.ts"
+    },
+    "src/core/features/records/archive-import-progress.ts": {
+      "sha256": "ba2be0953d23e859c5e254baa27e09d9884784920740603afa26cf6aff11edf5",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/archive-import-progress.ts"
+    },
+    "src/core/features/records/archive-import.ts": {
+      "sha256": "babb48754180ea67770aa823fc16dfe2da4f90448416f51bad013fc2981fdf3c",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/archive-import.ts"
+    },
+    "src/core/features/records/archive-routes.ts": {
+      "sha256": "cef68bd1de62879666d35711d69b71cf4818a76e698027dc74b97fd293438ca0",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/archive-routes.ts"
+    },
+    "src/core/features/records/archive-schema.ts": {
+      "sha256": "ffd63820421dc89dba684cfa7c7d7fceb31db663caa6ea3b5cb1af0ff893e59b",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/archive-schema.ts"
+    },
+    "src/core/features/records/archive-stage-upload.ts": {
+      "sha256": "1ff8b8cc466272d6bba8f3005a0f4c25cdfb945c9e4095687436eac22fc1509f",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/archive-stage-upload.ts"
+    },
+    "src/core/features/records/archive-storage.ts": {
+      "sha256": "1858a3340a80d2259ee8bbff5465302dc97c11c1fbb211018c133a62a45eb656",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/archive-storage.ts"
+    },
+    "src/core/features/records/data.ts": {
+      "sha256": "c29e25be0c14dfb0da2b2355f32f39aa173631b796841a7ca7780978b5dbe1d3",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/data.ts"
+    },
+    "src/core/features/records/erasure-identity.ts": {
+      "sha256": "ab303c9bdae96e0a4dd6d03cca721348b2982e90121de41bc17ffe848c79f486",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/erasure-identity.ts"
+    },
+    "src/core/features/records/identity.ts": {
+      "sha256": "91458a84377e95cacf060f4c17e03fb0b0bd21731dac9bb9b501c569c3707f70",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/identity.ts"
+    },
+    "src/core/features/records/import-merge.ts": {
+      "sha256": "aa0bd4f70d9f6ae5ebd2890e42d6c2b43f0f72b9c02c0f50c449c06a1b89f650",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/import-merge.ts"
+    },
+    "src/core/features/records/index.ts": {
+      "sha256": "9ee5046dd7a64240a7636dbd818f124b66b3e698b83ea38f387037d4de473fc5",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/index.ts"
+    },
+    "src/core/features/records/manual.ts": {
+      "sha256": "94cb5a0eda2603307d4dc39d0297673735de75e3160e2d2b11684e1cbbaaca3f",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/manual.ts"
+    },
+    "src/core/features/records/repository.ts": {
+      "sha256": "8c1090a31b6e98e0c6c2075fd156d659b0b5e957683887f8c9ead00962b91f1d",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/repository.ts"
+    },
+    "src/core/features/records/routes.ts": {
+      "sha256": "090a37e509f1616a06f43ca2c6f13f91392ee6a2cd523eaca6c1bbb218368c38",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/routes.ts"
+    },
+    "src/core/features/records/schema.ts": {
+      "sha256": "a4900f44ebd4440d6b88780216cf8fbd1ac964fbe360d82f0aeabd766b233494",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/schema.ts"
+    },
+    "src/core/features/records/seed-repository.ts": {
+      "sha256": "a2779912ad2149d16614026c64cf33c42f2a9f7a5740b3e82e8426a4f99ce819",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/seed-repository.ts"
+    },
+    "src/core/features/records/service.ts": {
+      "sha256": "169a2bbc241944f0366cea4c60cadca7b9c7f2eff43ac0edabf758be051586d7",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/service.ts"
+    },
+    "src/core/features/records/shared.ts": {
+      "sha256": "15de01ea3bb8c226d156ba4eaebd911b1d229324329b721298935a834acb72d6",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/records/shared.ts"
+    },
+    "src/core/features/settings/erasure-redaction.ts": {
+      "sha256": "2a60442468a521abcedde5fcb0e3ae394153bdff4a3504f839234376f275a354",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/settings/erasure-redaction.ts"
+    },
+    "src/core/features/settings/erasure.ts": {
+      "sha256": "dd043cf3c3c28975b789ece39fb2b0868932285b280b4f0579a6d5e5abafad8b",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/settings/erasure.ts"
+    },
+    "src/core/features/settings/repository.ts": {
+      "sha256": "f7aaa3c209fa46509a637ca2b03eb667c65b1e7b2cb37f59d3cf29b2a2032a17",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/settings/repository.ts"
+    },
+    "src/core/features/settings/routes.ts": {
+      "sha256": "704a5aedd5c94ead07f7e0f80dafc2dd29bada5248aa36861f4a8017b8b23cfb",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/settings/routes.ts"
+    },
+    "src/core/features/signals/index.ts": {
+      "sha256": "eb30ce0cc1af724a142b9632ba57108b2e0f05dcde04009279dbe97b5d1aab9d",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/signals/index.ts"
+    },
+    "src/core/features/signals/repository.ts": {
+      "sha256": "401a44cfa8c0f3353d23562aa1b3ac47c3b07c57681a4a05d2e42005dccbe97e",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/signals/repository.ts"
+    },
+    "src/core/features/signals/service.ts": {
+      "sha256": "a1a89a15ece32a2635fe2fc140d1abb041ba04e2670392c76165fd3007211030",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/signals/service.ts"
+    },
+    "src/core/features/timeline/index.ts": {
+      "sha256": "7a59c9eea79e4acc34ef54dcac384cd8269489f3dabe026d7d58b5a92bf6e7d7",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/timeline/index.ts"
+    },
+    "src/core/features/timeline/repository.ts": {
+      "sha256": "b3d5bc80de62c0311d019aed56df79182288cba4a64795f6a8428674b6d1bec5",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/timeline/repository.ts"
+    },
+    "src/core/features/timeline/service.ts": {
+      "sha256": "07aa4dff18ffa5ed893a7517418837189327a90326ada3c9d17a175bd7d8c247",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/timeline/service.ts"
+    },
+    "src/core/features/workbench/action-repository.ts": {
+      "sha256": "5a2861e02eee013979cb77f417ee8152c4c773243209ca26ea49793309b4c6ae",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/workbench/action-repository.ts"
+    },
+    "src/core/features/workbench/evaluation-repository.ts": {
+      "sha256": "9edf25c070cb8a8241048e8d85be1aa0103ae4ed5c1d4882f906e94d76505d79",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/workbench/evaluation-repository.ts"
+    },
+    "src/core/features/workbench/outreach-repository.ts": {
+      "sha256": "309850179ba2e70c44c66a5a7b8376db54f4ff384b9a3c52071e8790c8b95870",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/workbench/outreach-repository.ts"
+    },
+    "src/core/features/workbench/policies.ts": {
+      "sha256": "ce02dc21eb79e864790a9f834aca3e492828329837d8461501c9ee78767923c7",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/workbench/policies.ts"
+    },
+    "src/core/features/workbench/repository.ts": {
+      "sha256": "927032d1545fac82f9245b5bc15193469532aa741cfca262fe7b9dd310d7f5b3",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/workbench/repository.ts"
+    },
+    "src/core/features/workbench/routes.ts": {
+      "sha256": "5b1a909279a5fbcfb50347078e2460f2d998406f8adbfd00b8d87d1f114b5d5a",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/workbench/routes.ts"
+    },
+    "src/core/features/workspace/index.ts": {
+      "sha256": "cfdc52c454b93c1ea9d5f8dbbb9f25ea4b7900ab4e8d3a667af9f740badf0e1b",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/workspace/index.ts"
+    },
+    "src/core/features/workspace/repository.ts": {
+      "sha256": "daaa953c827abb47e5b361556f0f0c3042d779f18feb20ad15b92b88d115ccf2",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/workspace/repository.ts"
+    },
+    "src/core/features/workspace/routes.ts": {
+      "sha256": "439156ce7d01380ae7b1e21a38fe512385a9557d6ebe51d88c6c00b0813dfbd6",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/workspace/routes.ts"
+    },
+    "src/core/features/workspace/service.ts": {
+      "sha256": "678b148995af18e9df6dde0d303529ea6129706dbf64001aedc342f80b0d2d13",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/features/workspace/service.ts"
+    },
+    "src/core/platform/archive-maintenance.ts": {
+      "sha256": "073a265105beb535ad7d88d7ed246695ff04fdbbfc5220bda249d40a169257ff",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/platform/archive-maintenance.ts"
+    },
+    "src/core/platform/assets.ts": {
+      "sha256": "1da6253d4c0e683fa6d093d14fe63bb1c7d8f27e39b3b251e5137eaf36f8fbbc",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/platform/assets.ts"
+    },
+    "src/core/platform/auth-mail.ts": {
+      "sha256": "e7a4497693d3b88dad4cbf3de08c2b78a765edc2faf89d42de9234a9c338bd25",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/platform/auth-mail.ts"
+    },
+    "src/core/platform/bounded-request-body.ts": {
+      "sha256": "13cb886ebc1455c94f5bcc453d8ad01405d63e06e7695806f81ee75121828df7",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/platform/bounded-request-body.ts"
+    },
+    "src/core/platform/clock.ts": {
+      "sha256": "6c7cba4f18612169f4045e6432787368dd3efba90ac49d0a17c0bdd81ed20988",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/platform/clock.ts"
+    },
+    "src/core/platform/mail-webhook-security.ts": {
+      "sha256": "bb4c356b2d3381186df3dfe3369d6757615847afc2df635e6dbe69e2dfb3c18a",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/platform/mail-webhook-security.ts"
+    },
+    "src/core/platform/outbound-mail.ts": {
+      "sha256": "c7688a0610c2fd4c407c6e9cebc1d164683bce7c52f4842fe743a25465d98c30",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/platform/outbound-mail.ts"
+    },
+    "src/core/platform/public-rate-limit.ts": {
+      "sha256": "94222848b37bcc104dbbad76b723c89db1325bea74e22f791ea9ddee8aa4da56",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/platform/public-rate-limit.ts"
+    },
+    "src/core/platform/request.server.ts": {
+      "sha256": "517ae5d8200c63cb4a8698ff6bd043a4534d75514dbb8d787929d0597044f573",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/platform/request.server.ts"
+    },
+    "src/core/platform/response-policy.ts": {
+      "sha256": "b87248a8e6792b4f6a210bd0ce0b37857091e2a005651287473ddab8e1e317da",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/platform/response-policy.ts"
+    },
+    "src/core/platform/schema.ts": {
+      "sha256": "220df7f96c7d17ebdd9731eb97c730ddba98d3eef784e96a6dc3251af62112e0",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/platform/schema.ts"
+    },
+    "src/core/platform/source-security.ts": {
+      "sha256": "8010f10f41e08d29d79c4555a2b1c7ce416cf8bfd8551c67beffc220077d8096",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/platform/source-security.ts"
+    },
+    "src/core/shared/archive-file.ts": {
+      "sha256": "5fa6d2845255118796c41063494199902eda319f297e41276cd7d37ccc2fb4d5",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/shared/archive-file.ts"
+    },
+    "src/core/shared/archive-lines.ts": {
+      "sha256": "6db2c1ef91296b9b5f772d238f6164d12d6fe3199d5d7f52c6c6fd96b3ff9b06",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/shared/archive-lines.ts"
+    },
+    "src/core/shared/csv.ts": {
+      "sha256": "a7a481cf2cbb26a08682838721e2caeca038ffa9c148e864ea9080625dd68c5b",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/shared/csv.ts"
+    },
+    "src/core/shared/ids.ts": {
+      "sha256": "81103d9ec09ca34998f5d7aa64597b276c2e55e9a2355b7867dfbcfbe25a164a",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/shared/ids.ts"
+    },
+    "src/core/shared/public-config.ts": {
+      "sha256": "a07cf6ed8f5840e6aaa8b0b8c8ed201be01f0294e61c434379a6252a15d40959",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/shared/public-config.ts"
+    },
+    "src/core/shared/time.ts": {
+      "sha256": "ca4b8c6812830b4194268dc475e1ebcace157a42b32ffc6cddbfeef2a88bf6e9",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/core/shared/time.ts"
+    },
+    "src/ext/assistance.ts": {
+      "sha256": "b3627fe93c7dfa87afcc7524b374de873f40e1567ed4bc050ea73cb9d6023a2a",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/ext/assistance.ts"
+    },
+    "src/ext/config.ts": {
+      "sha256": "962c9fbdc4bf1042cbfa753d09fb4f76a58c09a74bdaa6b7efd503306b1eee91",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/ext/config.ts"
+    },
+    "src/ext/records.ts": {
+      "sha256": "8ca8702a1d52217d61184e2b34efeafaf58e2aec9639cfece73035a759b5a9eb",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/ext/records.ts"
+    },
+    "src/family/sales/identity.ts": {
+      "sha256": "2847e2d97bf05bf14b7e074851b263e805a86fc605b98d9feb8646bf374a3ecb",
+      "mode": 420,
+      "component": "sales",
+      "repository": "family",
+      "source": "core/src/identity.ts"
+    },
+    "src/family/sales/relationships.ts": {
+      "sha256": "c379eeca37f5beceddc298e456d43e7b0bd205b1750ba24892ab7b5dfbaac526",
+      "mode": 420,
+      "component": "sales",
+      "repository": "family",
+      "source": "core/src/relationships.ts"
+    },
+    "src/modules/sendgrid-email/sender.ts": {
+      "sha256": "68bd03050b287f6839030fb7d9f91abde6ee83e864ef205f5bbd5733651b7c0d",
+      "mode": 420,
+      "component": "sendgrid-email",
+      "repository": "base",
+      "source": "modules/sendgrid-email/src/sender.ts"
+    },
+    "src/routeTree.gen.ts": {
+      "sha256": "d7f2325d12452cc1ebfafbfdca5376ae7474ffbfe2e8373ba4eee2c6d44771fb",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routeTree.gen.ts"
+    },
+    "src/router.tsx": {
+      "sha256": "afea476bc2fc5bb9c9c8123205288768d36c85fe05d6f5fc728b0b056ab75b5e",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/router.tsx"
+    },
+    "src/routes/__root.tsx": {
+      "sha256": "e8dc7823eda836be02a493cc3a699b93da57fb79812956796643c78cb380bb25",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/__root.tsx"
+    },
+    "src/routes/app.assistance.$id.tsx": {
+      "sha256": "fa1b476e699f10c87d8bd2ad7cd58195ca4ecc001a3fb92b2e2e6b6a64fb5b70",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/app.assistance.$id.tsx"
+    },
+    "src/routes/app.drafts.$id.tsx": {
+      "sha256": "ee68bfbf2e2034bdbff943096c9763f39919019185132a17b4af98b4d8940a00",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/app.drafts.$id.tsx"
+    },
+    "src/routes/app.index.tsx": {
+      "sha256": "f7232ea26cfbe56118769ce9a555026b96bf9fd924f4fc1c5fab660a1e7afbf5",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/app.index.tsx"
+    },
+    "src/routes/app.new.tsx": {
+      "sha256": "0b0a7b19575c4f71b3392717c5565a5917ef23e11d40e65b9686db6a3eb0e67e",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/app.new.tsx"
+    },
+    "src/routes/app.notifications.tsx": {
+      "sha256": "ab9aa78bfc8db0bfa193c8634cbf70adbb47a6ab58e9667eb90ead0a092bf9c2",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/app.notifications.tsx"
+    },
+    "src/routes/app.opportunities.$id.tsx": {
+      "sha256": "7ef915735a22a9c734fbf5e385b04be99f8e0947bc1ac293729535a75f198ea6",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/app.opportunities.$id.tsx"
+    },
+    "src/routes/app.records.tsx": {
+      "sha256": "d8853f617a2553cdb6fc60a9634837bc8c8595ad1b9a17f55c53ebc96f810aee",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/app.records.tsx"
+    },
+    "src/routes/app.settings.tsx": {
+      "sha256": "5c65fcf61d42be438a57be5216df03c18341ed7aab4785c454045f954aff7a68",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/app.settings.tsx"
+    },
+    "src/routes/app.sources.tsx": {
+      "sha256": "e00f04f76a137cb78b0e92437af49323463e70b762ac6b344bec4af46cb0c7dd",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/app.sources.tsx"
+    },
+    "src/routes/app.tsx": {
+      "sha256": "a69275d2d8cd3ce0746a490a071f20c17a12f380390f4d39cee999daed6e69ca",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/app.tsx"
+    },
+    "src/routes/demo.tsx": {
+      "sha256": "7e5a02f6f1c11113145c05b9ad03b98223dae0053a6adad51dc6a8a83ea02c71",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/demo.tsx"
+    },
+    "src/routes/index.tsx": {
+      "sha256": "8536c41730454a816cd36efb4a36e25eb4812d5398a915b688f4bc89dbff3771",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/index.tsx"
+    },
+    "src/routes/signin.tsx": {
+      "sha256": "41ab5bd39c48ed19df40b018781d60c03b4d01185fd7c095dfdff90acdb8f489",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/routes/signin.tsx"
+    },
+    "src/vite-env.d.ts": {
+      "sha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/src/vite-env.d.ts"
+    },
+    "tests/acceptance/hosted-demo.mjs": {
+      "sha256": "015f791e1bdf4423f4325f4903bcd6958d144d7a18a045a94204101eeb81794b",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/acceptance/hosted-demo.mjs"
+    },
+    "tests/acceptance/hosted-outreach.mjs": {
+      "sha256": "ac9735ca80fc8c407d63defe878c7c007d73ac7cf12ed3ce260e0bd954f9df50",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/acceptance/hosted-outreach.mjs"
+    },
+    "tests/acceptance/hosted-recovery.mjs": {
+      "sha256": "28b53bc506080d3d69d0e0ad024e6fa8c8444b58b0290633797bfe77e0f56e57",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/acceptance/hosted-recovery.mjs"
+    },
+    "tests/acceptance/hosted/assistance.mjs": {
+      "sha256": "d4cf98eddd7bee86e65136fb37121ed6345e7f5d186ba716c414d5c3d5df28a8",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/acceptance/hosted/assistance.mjs"
+    },
+    "tests/acceptance/hosted/mailbox.mjs": {
+      "sha256": "f7eeab992ff748e3ca8f73426599a17a147ae39d68ff06f2c015fcd7a5c0f9db",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/acceptance/hosted/mailbox.mjs"
+    },
+    "tests/acceptance/hosted/native-access.mjs": {
+      "sha256": "29120373126c8972d44755a055c36f753a7eb1f6076e445b576d42f1d3e0e415",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/acceptance/hosted/native-access.mjs"
+    },
+    "tests/acceptance/hosted/outreach.mjs": {
+      "sha256": "d5c2e2cd3f70bf158843145c9b5690c4258629835348f5148a0c57077c89a874",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/acceptance/hosted/outreach.mjs"
+    },
+    "tests/acceptance/hosted/source.mjs": {
+      "sha256": "1621da14fa8ea9e65203ef1843e04959fd0765a74c63bb7c269f8d15913d2d3b",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/acceptance/hosted/source.mjs"
+    },
+    "tests/acceptance/migration-state.ts": {
+      "sha256": "5c60efbf47f2a2568fa9bb2da4207e561a0af174ab96e5335e69c822e0d7324f",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/acceptance/migration-state.ts"
+    },
+    "tests/acceptance/owner-runtime.ts": {
+      "sha256": "e648a0399bc5ca0d3095d307e70c82a5864c972e486855955f58a6d1ef9ff906",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/acceptance/owner-runtime.ts"
+    },
+    "tests/acceptance/owner-update.mjs": {
+      "sha256": "18053023ba6569bb75c27a645c5c12ded27f3a9dac27fc4454318a09384d4aaa",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/acceptance/owner-update.mjs"
+    },
+    "tests/acceptance/real-ai.ts": {
+      "sha256": "4daf1490810af7e6da53e2682d64b19e460a8581443d7a9ae9b4b5bd661d8a47",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/acceptance/real-ai.ts"
+    },
+    "tests/archive/browser.spec.mjs": {
+      "sha256": "8845fc2128cc7a722cc5febdfbeb5bf093d38364e9ebb324c611cb7ddb7544e4",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/archive/browser.spec.mjs"
+    },
+    "tests/archive/playwright.config.mjs": {
+      "sha256": "70ecb81e7c5cc657f8b915beecc8730266b293fd633480390c9dfae8ea2e48f3",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/archive/playwright.config.mjs"
+    },
+    "tests/archive/server.mjs": {
+      "sha256": "0415a26a270606cdf0cfc102942ff07b2127d95244c87a1dbd0e6d6555382ee7",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/archive/server.mjs"
+    },
+    "tests/archive/session.ts": {
+      "sha256": "704e0ae719ff4ee30f39fbd7cdb5ce524ebaa1a095626b6c37c7b681292a1024",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/archive/session.ts"
+    },
+    "tests/composition/sales/identity.test.ts": {
+      "sha256": "3f31570699088e4d02f987ce5a235b5c4c299506d5a21cfff51790c917afe94c",
+      "mode": 420,
+      "component": "sales",
+      "repository": "family",
+      "source": "core/tests/identity.test.ts"
+    },
+    "tests/composition/sales/relationships.test.ts": {
+      "sha256": "8475b35f13ddd620b1949a2435aa4ac7badde42ff4be2e717bc0e92fa802eb0c",
+      "mode": 420,
+      "component": "sales",
+      "repository": "family",
+      "source": "core/tests/relationships.test.ts"
+    },
+    "tests/composition/sendgrid-email/sender.test.ts": {
+      "sha256": "0b61084a26af0caea8146ccff7d1e0de0c791ce7b173ffd46988e122ccb40c17",
+      "mode": 420,
+      "component": "sendgrid-email",
+      "repository": "base",
+      "source": "modules/sendgrid-email/tests/sender.test.ts"
+    },
+    "tests/contract.mjs": {
+      "sha256": "6163b8869396b3fb4e770fbc1dc55037b80acefd11c60912ab12d594eb15c4b3",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/contract.mjs"
+    },
+    "tests/core/ai-provider.test.ts": {
+      "sha256": "beddb299e68d1a3d6ad1b649eaa7198d76269b60e50ed77ac709dd50f43a0ca5",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/ai-provider.test.ts"
+    },
+    "tests/core/archive-body.test.ts": {
+      "sha256": "d7f5edfb8a926d7603c1ba15ec11a865b1417dbc268384dab64110cfd932f7f3",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/archive-body.test.ts"
+    },
+    "tests/core/archive-transfer.test.ts": {
+      "sha256": "c0436038ca3ba56b4d9dc8f6db440e20ff3af66fd3d2abcf3fe2c9b55a4cbac4",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/archive-transfer.test.ts"
+    },
+    "tests/core/assistance.test.ts": {
+      "sha256": "031fdd9074033e0717f507a6f1a092c07df190fbbca1effce018112701d10481",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/assistance.test.ts"
+    },
+    "tests/core/auth.test.ts": {
+      "sha256": "3f8d22abdb6de10393a5ee005c4ad5de2dfafc7b219ae08760aae5e27cd331fe",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/auth.test.ts"
+    },
+    "tests/core/contact-erasure.test.ts": {
+      "sha256": "be0b45cd4637a0bbb3177c0a6bb9f8652ae737b8e2cf4b313a23f337d77911ef",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/contact-erasure.test.ts"
+    },
+    "tests/core/evaluation-contract.test.ts": {
+      "sha256": "dc70563d2e631c0bc1b6ca4375bf9784fa264fd31c01bb4d8ae2f6dbf2aa18fc",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/evaluation-contract.test.ts"
+    },
+    "tests/core/linked-actor.test.ts": {
+      "sha256": "570bd3cb083dd55b64df61b94d86b6636f1321f7d045ed490b1ed01023fca109",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/linked-actor.test.ts"
+    },
+    "tests/core/migration-recovery.test.ts": {
+      "sha256": "863b6e5aa774514021f1af7fc8c51034f5d159b33012494fac40f410c7f4ef72",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/migration-recovery.test.ts"
+    },
+    "tests/core/operator-erasure.test.ts": {
+      "sha256": "6872756d76d9e0b1e24ae321cf8a4e9e3314c868a636fc137496ba31f5b31305",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/operator-erasure.test.ts"
+    },
+    "tests/core/outbound-boundaries.test.ts": {
+      "sha256": "cb8e3d55c5007a93acbba23974f76ec07be02c3ef27e880944db53607b994ce7",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/outbound-boundaries.test.ts"
+    },
+    "tests/core/outreach-limits.test.ts": {
+      "sha256": "53ca8a6a81d340e07c1436c2c8d013a5374f60a7f0626731b8882c240a3c2307",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/outreach-limits.test.ts"
+    },
+    "tests/core/platform-boundaries.test.ts": {
+      "sha256": "b8ba32d6cc41d256e49395d2e02a9b90a95df6a15206c9dde40c69b9a76dde0a",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/platform-boundaries.test.ts"
+    },
+    "tests/core/provider-protocol.test.ts": {
+      "sha256": "5fb07eec0e011911a1bbd00ce878f9bd2f76e773e06dcdc2148c78e64437bfef",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/provider-protocol.test.ts"
+    },
+    "tests/core/provider-redirects.test.ts": {
+      "sha256": "670318a1966f1334ce7a61180df10bc03e96dc787cd85d241a09836f736e2afe",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/provider-redirects.test.ts"
+    },
+    "tests/core/public-demo.test.ts": {
+      "sha256": "1dd60e2732224aea16dcd78abc211520959a13416ad54276613ab2d2c8a0cb56",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/public-demo.test.ts"
+    },
+    "tests/core/records-complete.test.ts": {
+      "sha256": "d6a258f2f2f5965455fda54ff605a743600d143eea802d83df87bedd62429d72",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/records-complete.test.ts"
+    },
+    "tests/core/records-contract.test.ts": {
+      "sha256": "a14dd553fa6dc6a80ac9b208c8830d4adf1f0dbd31e92d6f4d0448f598c12d68",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/records-contract.test.ts"
+    },
+    "tests/core/records-search.test.ts": {
+      "sha256": "f2b228fd269de2c46eccf9c07e864ade376dd169c3d2310a1d62afe957455eae",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/records-search.test.ts"
+    },
+    "tests/core/retention.test.ts": {
+      "sha256": "90624eb851e874992bf55b16b9e55d77688d9db960687b8bf05b21034780245e",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/retention.test.ts"
+    },
+    "tests/core/signals-outreach.test.ts": {
+      "sha256": "a5f08e3cab2e1a4028afa3e20cc339eef85c44613eef7371791ad0e9ed52cab8",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/signals-outreach.test.ts"
+    },
+    "tests/core/spine.test.ts": {
+      "sha256": "05983fb0b62f46cf4523ff79c6439a34bdcb58ff162050a80758ad14b4fb9347",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/spine.test.ts"
+    },
+    "tests/core/timer-capacity.test.ts": {
+      "sha256": "3b7857dbc473f8b76f2a7388149132b0f11a0dea55b5ef7abe6d02bb77ed0278",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/timer-capacity.test.ts"
+    },
+    "tests/core/workbench.test.ts": {
+      "sha256": "8f5f654df98c9d2342682fb6e1c15ba5f8974271a319a58fb155a2d21e4dbd03",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/core/workbench.test.ts"
+    },
+    "tests/deployment/data-transfer.test.mjs": {
+      "sha256": "9e608501cd0835437e450f87f7678175b9421fd2249499f041d0f1e2d4a43987",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/deployment/data-transfer.test.mjs"
+    },
+    "tests/deployment/deploy.test.mjs": {
+      "sha256": "4b5da9a708274af09a12e1f0ba084156fa5ce2dc68683f9529d6b710f23c73e3",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/deployment/deploy.test.mjs"
+    },
+    "tests/e2e/assistance.spec.mjs": {
+      "sha256": "bc5d1624f9176c62ab37bc21b8dafa77748041b67b5db3c97be685d968703acc",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/e2e/assistance.spec.mjs"
+    },
+    "tests/e2e/baseline.spec.mjs": {
+      "sha256": "ff54da9a6cd7e03bf37945c73fa53ea02af31475a6972d60048a676572a1183c",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/e2e/baseline.spec.mjs"
+    },
+    "tests/e2e/operator-session.mjs": {
+      "sha256": "bcc9f2362917ae80583206314383acece4fee71a3301abaa38b13db5d69c6435",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/e2e/operator-session.mjs"
+    },
+    "tests/e2e/operator.spec.mjs": {
+      "sha256": "7ff6f95cbc1f1d8e9dcc654cba1b11a8830e69ef0b6235eb58316dc122e78637",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/e2e/operator.spec.mjs"
+    },
+    "tests/e2e/records.spec.mjs": {
+      "sha256": "2dadcbaace638925738ee8285b72f08a522fbdcc4a87c478d830299646848688",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/e2e/records.spec.mjs"
+    },
+    "tests/e2e/stale-review.spec.mjs": {
+      "sha256": "dbb560748abab9047924cadebfad296caf7a2a095d2a14efec235ee59d00d759",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/e2e/stale-review.spec.mjs"
+    },
+    "tests/e2e/workbench.spec.mjs": {
+      "sha256": "5289aec15c600d68e9982e7f9b64e7f47887352a518faefde942ba61b432c4bd",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/e2e/workbench.spec.mjs"
+    },
+    "tests/e2e/worker-smoke.spec.mjs": {
+      "sha256": "aee2ed4e43ca57a4f17b136193c9d6e0d65c5e3ba73efa4c709e8c888dbbcd2d",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/e2e/worker-smoke.spec.mjs"
+    },
+    "tests/e2e/zz-notifications.spec.mjs": {
+      "sha256": "cbdbe8f937b9c0af55cf705f6920a24ffcac51d0851f4f6e936301fa7b925ce9",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/e2e/zz-notifications.spec.mjs"
+    },
+    "tests/fixtures/orbit-sample.v1.json": {
+      "sha256": "c5b48e400b30662282eafbd1fd33df22fd6d3605e1976628e49cac8b60dba675",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/fixtures/orbit-sample.v1.json"
+    },
+    "tests/fixtures/sample-data/index.ts": {
+      "sha256": "abfa9a7a5fab343eba770ae761a897e7cb917889b7f80541f34a3063bcd803c3",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/fixtures/sample-data/index.ts"
+    },
+    "tests/fixtures/sample-data/repository.ts": {
+      "sha256": "834c382956b23e5e2279e9c8a500cc7d3187bc21e9cb852e13d62791de466770",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/fixtures/sample-data/repository.ts"
+    },
+    "tests/fixtures/sample-data/sample.ts": {
+      "sha256": "0ffc1da390b03ef50727d926b4b371694ac19e6ee85ffc4fc92d69318cbc04f2",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/fixtures/sample-data/sample.ts"
+    },
+    "tests/fixtures/sample-data/schema.ts": {
+      "sha256": "8628571b1ca3ea5ce8b004ecfd78a6e29548399c43d1f02f14cd7fbf8f51f8d2",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/fixtures/sample-data/schema.ts"
+    },
+    "tests/fixtures/sample-data/service.ts": {
+      "sha256": "e9d07fa463d91912fe6ac418b624101e7f7ac8ab644b037a207a179181b18090",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/fixtures/sample-data/service.ts"
+    },
+    "tests/performance/archive-capacity.ts": {
+      "sha256": "46d1a20699e2b99b602f7e27e38f0751bb8b7a2ac63195e779eeb02127b9ec26",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/performance/archive-capacity.ts"
+    },
+    "tests/performance/records-capacity.ts": {
+      "sha256": "80f8878518be46aca7ef9d1d54841500c144b17e7937e9ecde82e5a80306dd85",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/performance/records-capacity.ts"
+    },
+    "tests/support/available-port.ts": {
+      "sha256": "5d41ad7bfc3a87dc25458db21ac7580fb3711372d5bea9fe8e29b9212c2bb315",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/support/available-port.ts"
+    },
+    "tests/support/isolated-database.ts": {
+      "sha256": "d5f1fc11e8d44a551e17b8be721aef9798e3af950732aedd37328c48f3897ccf",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/support/isolated-database.ts"
+    },
+    "tests/support/issue-operator-session.ts": {
+      "sha256": "38b96329c8b0ddeefa3227d6517ec3d2d039b83292f44d8fca3365796a6d187b",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/support/issue-operator-session.ts"
+    },
+    "tests/support/record-data.ts": {
+      "sha256": "b74f173a67d06bc735f25320cd6776095716c1fa4a5cfe95b5dc3efd7543e3cc",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/support/record-data.ts"
+    },
+    "tests/support/test-dependencies.ts": {
+      "sha256": "adf2e08560186f3b43296b26a35e14542c93acfe67759fbabd7ccc40845e4845",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tests/support/test-dependencies.ts"
+    },
+    "tools/seed-schema/RELEASE.schema.json": {
+      "sha256": "04c0bf1dbb4edbcd5b11f332ed860931929126309706975275ee60371281e900",
+      "mode": 420,
+      "component": "base",
+      "repository": "base",
+      "source": "schema/RELEASE.schema.json"
+    },
+    "tools/seed-schema/SEED.schema.json": {
+      "sha256": "90acf2cef301c8989b6c02ecc90cd3173225c39a5b19e8fd66ede134097f3861",
+      "mode": 420,
+      "component": "base",
+      "repository": "base",
+      "source": "schema/SEED.schema.json"
+    },
+    "tools/seed-schema/json-schema.mjs": {
+      "sha256": "0e6da2cc7cf0f929cec082907ca6b52e05d7eadd3f715181d9f081af37b8f3e7",
+      "mode": 420,
+      "component": "base",
+      "repository": "base",
+      "source": "schema/json-schema.mjs"
+    },
+    "tools/seed-schema/validate.mjs": {
+      "sha256": "db84d7671a68f697d6a97c9ae2e28f6b5d93a6c45c8e25c9551064c5dd09f617",
+      "mode": 420,
+      "component": "base",
+      "repository": "base",
+      "source": "schema/validate.mjs"
+    },
+    "tsconfig.json": {
+      "sha256": "bd612c10199ed66c7271e83bb01e68c52515c19e10f113fdab6499ed9f4f45ea",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/tsconfig.json"
+    },
+    "verification/deployed-pilot-20260912.json": {
+      "sha256": "489997fc1cc217cedebd5b33f8a25fa2e8a27d7224c375115144ddcaaaa41429",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/verification/deployed-pilot-20260912.json"
+    },
+    "verification/real-ai.json": {
+      "sha256": "b55a11b0a1e24a0bb7c5f95e29a4f17d05ae45676e2744fefef81bf4f7a92781",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/verification/real-ai.json"
+    },
+    "verification/records-capacity.json": {
+      "sha256": "1bac07b4839c33ce23b249bdc95b2dbf041752e889ec71307de5db37caaad3ef",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/verification/records-capacity.json"
+    },
+    "verification/visual-review.md": {
+      "sha256": "1b3a3ea7d965581c0404d97da9067fb1b40edc41efb54faffc14f7a021591c45",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/verification/visual-review.md"
+    },
+    "verification/worker-proof.json": {
+      "sha256": "f86f6a03e6eca848c35bf3750954f569a9765de2ae5e5f9a45acb26c2d63ce87",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/verification/worker-proof.json"
+    },
+    "visual/01-landing-desktop.png": {
+      "sha256": "a6c16e56b2cf74361b2ed730733beeeddbdb50028e41a50affd429b254c150a9",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/visual/01-landing-desktop.png"
+    },
+    "visual/02-landing-mobile.png": {
+      "sha256": "25ce7be92e8544fbda1a1126a98c1d2a3d5a414d5b3c988e61b17bf7c254193c",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/visual/02-landing-mobile.png"
+    },
+    "visual/03-demo-opportunity-desktop.png": {
+      "sha256": "a8b83ed16b6f86c38a8459504cefd3938ee49ae254ab012b800cce090880e72b",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/visual/03-demo-opportunity-desktop.png"
+    },
+    "visual/04-demo-review-desktop.png": {
+      "sha256": "dffab8ed252b8bd202d36fa5a6631fe76a0cf7f6e5e3ab145e6021b4800d6047",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/visual/04-demo-review-desktop.png"
+    },
+    "visual/05-demo-outcome-desktop.png": {
+      "sha256": "4830ce61c54174b8ebf65c1fdf37d841de6720207edd5713edbc86d54f25ca25",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/visual/05-demo-outcome-desktop.png"
+    },
+    "visual/06-now-desktop.png": {
+      "sha256": "3597c6c56f81008955b821a78e1b4659fe6166ca031a6beda597b9aeff696a71",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/visual/06-now-desktop.png"
+    },
+    "visual/07-now-mobile.png": {
+      "sha256": "1f0cf56f7e2526ee35c1baed6956fa161954d7e63ce626fa391340530ce95d6d",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/visual/07-now-mobile.png"
+    },
+    "visual/08-opportunity-desktop.png": {
+      "sha256": "8cf56c92a2b120584e6533da64869fbd39a5220df1e3457f40f942d27f2d3444",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/visual/08-opportunity-desktop.png"
+    },
+    "visual/09-opportunity-mobile.png": {
+      "sha256": "a4ea0d1485aaf35649512c4d97f272299c0d56fcefd7fecc19cb841c7ebb98ac",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/visual/09-opportunity-mobile.png"
+    },
+    "visual/10-draft-desktop.png": {
+      "sha256": "4ee6d37caee89ff045d7698e277fc354136076135cd56c87f7a327c790d13414",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/visual/10-draft-desktop.png"
+    },
+    "visual/11-draft-mobile.png": {
+      "sha256": "c44a49a3ca5ee23160ea3a3c1a6c4d3125250112e6825ea54366fcc79efacf3f",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/visual/11-draft-mobile.png"
+    },
+    "visual/12-create-opportunity.png": {
+      "sha256": "b5ce3666de9d67b5d164a88700222b6ff9155c1252d0052206ee707788d96d24",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/visual/12-create-opportunity.png"
+    },
+    "visual/13-deployed-opportunity.png": {
+      "sha256": "9c26dbb4094efaa1c14aed1ba46a855a72c31c48dbcdd0b850c9d7194e3407f1",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/visual/13-deployed-opportunity.png"
+    },
+    "vite.config.ts": {
+      "sha256": "533701f38d9a7f7dc3cb6536a66f1b68821f84ae8d1bc49ff8ff9be58effb6ad",
+      "mode": 420,
+      "component": "orbit",
+      "repository": "family",
+      "source": "editions/orbit/vite.config.ts"
+    }
+  }
+}

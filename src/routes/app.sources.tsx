@@ -1,0 +1,4 @@
+import { editorLeaf } from "../editor/leaf";
+import {createFileRoute} from '@tanstack/react-router';
+import {SourcesPage} from '../core/features/operator/ui/sources-page';
+export const Route=createFileRoute('/app/sources')({component: editorLeaf(SourcesPage)});

@@ -1,0 +1,48 @@
+/* Orbit's paper, ink and pills (brand/tokens.css) applied to the remaining native controls.
+   Tailwind's preflight zeroes every margin, so the modal dialog restores margin:auto to sit in the middle of the window. */
+:where(.operator-shell) :where(button,input,select,textarea){font:inherit;max-width:100%}
+:where(.operator-shell) :where(label,fieldset,form,section,article,aside){min-width:0}
+:where(.operator-shell) :where(p,li,dd,code,a,button,label){overflow-wrap:anywhere}
+:where(.operator-shell) :where(button){min-height:44px;padding:8px 18px;border:1.5px solid var(--ob-ink);border-radius:999px;background:transparent;color:var(--ob-ink);cursor:pointer;white-space:normal}
+:where(.operator-shell) :where(button:disabled){cursor:not-allowed}
+:where(.operator-shell) :where(input,select,textarea){min-width:0;border:var(--app-field);border-radius:12px;padding:9px 13px;background:var(--ob-card);color:var(--ob-ink)}
+:where(.operator-shell) :where(label){display:grid;gap:7px}
+:where(.operator-shell) :where(input[type=checkbox],input[type=radio]){width:18px;min-height:18px;padding:0}
+:where(.operator-shell) :where(textarea){resize:vertical}
+:where(.operator-shell) :where(summary){cursor:pointer}
+.operator-skip-link{position:absolute;left:16px;top:8px;z-index:10;padding:10px 18px;border:1.5px solid var(--ob-ink);border-radius:999px;background:var(--ob-card);color:var(--ob-ink);font-weight:600;transform:translateY(-200%)}
+.operator-skip-link:focus{transform:none}
+.operator-menu-toggle{display:none}
+.ob-app .operator-menu-toggle{min-height:40px;padding:8px 18px;font-size:15px;font-weight:600}
+.ob-app .operator-menu-toggle[aria-expanded=true]{background:var(--ob-ink);color:var(--ob-paper)}
+.operator-access-links{display:flex;flex-wrap:wrap;gap:12px 24px}
+.operator-data-fields{display:grid;gap:12px;margin:8px 0;min-width:0}
+.operator-data-fields>div{min-width:0;border-left:1.5px solid var(--ob-line);padding-left:12px}
+.operator-data-fields dt{font-weight:600;color:var(--ob-muted);font-size:13px}
+.operator-data-fields dd{margin:5px 0 0;min-width:0}
+.operator-data-list{padding-left:22px;min-width:0}
+.operator-data-list>li{margin-block:8px}
+.operator-data-value{white-space:pre-wrap;overflow-wrap:anywhere}
+.operator-dialog{margin:auto;width:min(520px,calc(100% - 32px));max-height:calc(100dvh - 32px);padding:28px;border:1.5px solid var(--ob-ink);border-radius:var(--ob-radius);background:var(--ob-card);color:var(--ob-ink);box-shadow:var(--ob-shadow-card);font-family:var(--ob-sans);overflow:auto}
+.operator-dialog::backdrop{background:rgb(22 23 29 / 45%)}
+.operator-dialog h2{font-size:24px;font-weight:720;letter-spacing:-.01em;line-height:1.2;margin:0}
+.operator-dialog p{margin:10px 0 0;color:var(--ob-body);font-size:15.5px;line-height:1.55}
+.operator-dialog form>label{margin-top:18px}
+.operator-dialog label{display:grid;gap:8px}
+.operator-dialog textarea{width:100%;min-height:100px}
+.operator-dialog__actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end;margin-top:24px}
+@media(max-width:900px){.operator-menu-toggle{display:inline-flex;margin-left:auto}.operator-header>.operator-signout{margin-left:0}.operator-nav{width:100%}.operator-nav[data-open=false]{display:none}.operator-nav[data-open=true]{display:flex;flex-direction:column;align-items:stretch;gap:0}.operator-nav a{padding:12px}.operator-header{gap:8px 12px}}
+@media(max-width:390px){.operator-dialog{padding:18px}.operator-dialog__actions>*{flex:1}.operator-data-fields>div{padding-left:8px}}
+.operator-shell .operator-queue-card__reason small{color:var(--ob-muted)}
+.operator-shell .workbench-create__fields .workbench-form h2{color:var(--ob-muted)}
+.operator-record-actions{display:flex;flex-wrap:wrap;gap:10px}
+/* Standalone actions placed directly in a row keep a 24px pointer target (WCAG 2.2 target size). */
+:where(.operator-shell) article > a{display:inline-block;min-block-size:24px;line-height:24px}
+/* Captured evidence: the quoted lines a proposal rests on, and its old/new values. */
+.operator-shell .capture-quote{margin:8px 0;padding:4px 0 4px 12px;border-left:3px solid var(--operator-border,#ded5cc);white-space:pre-wrap;overflow-wrap:anywhere}
+.operator-shell .capture-quote p{margin:2px 0}
+.operator-shell .capture-change{margin:8px 0}
+.operator-shell .capture-checkbox{display:flex;gap:8px;align-items:flex-start}
+.operator-shell .capture-proposal p{overflow-wrap:anywhere}
+.operator-shell .capture-summary,.operator-shell .capture-change{width:100%;border-collapse:collapse;font-size:.9rem;text-align:left}
+.operator-shell .capture-summary th,.operator-shell .capture-summary td,.operator-shell .capture-change th,.operator-shell .capture-change td{padding:8px 10px;border-bottom:1px solid var(--operator-border,#ded5cc);vertical-align:top;overflow-wrap:anywhere}

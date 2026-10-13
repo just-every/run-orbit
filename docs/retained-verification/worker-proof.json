@@ -1,0 +1,74 @@
+{
+  "unconfiguredHost": {
+    "publicHost": true,
+    "signIn": 200,
+    "authConfigured": false,
+    "privateApi": 401
+  },
+  "ssr": "Authenticated NOW HTML changes with live D1",
+  "sessionHttp": {
+    "missing": {
+      "document": 302,
+      "api": 401,
+      "unknownApi": 401
+    },
+    "expired": {
+      "document": 302,
+      "api": 401,
+      "unknownApi": 401
+    },
+    "revoked": {
+      "document": 302,
+      "api": 401,
+      "unknownApi": 401
+    },
+    "valid": {
+      "document": 200,
+      "api": 200,
+      "unknownApi": 404
+    }
+  },
+  "serverFunctions": [
+    {
+      "url": "/_serverFn/7b6af0d434f254352c730e426244f10a1aef0e4cda80d1e81ed3a0eb34260dac",
+      "control": "missing",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/7b6af0d434f254352c730e426244f10a1aef0e4cda80d1e81ed3a0eb34260dac",
+      "control": "expired",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/7b6af0d434f254352c730e426244f10a1aef0e4cda80d1e81ed3a0eb34260dac",
+      "control": "revoked",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/c7200e007b9add1c6bd0879192730dae0816913a94f96074e444e59789dfc7ed",
+      "control": "missing",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/c7200e007b9add1c6bd0879192730dae0816913a94f96074e444e59789dfc7ed",
+      "control": "expired",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/c7200e007b9add1c6bd0879192730dae0816913a94f96074e444e59789dfc7ed",
+      "control": "revoked",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    }
+  ],
+  "browser": {
+    "stableTimeOrigin": true,
+    "errors": [],
+    "rpcCount": 2
+  }
+}

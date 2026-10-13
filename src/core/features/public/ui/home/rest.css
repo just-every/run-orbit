@@ -1,0 +1,37 @@
+/* "The rest of your CRM": four features, each laid out for what it shows. Every size is in --u, one design pixel: the
+   composition was drawn 1382 wide, so from 1200px it scales with the section; below that the features stack one to a row at
+   up to 700 design pixels wide; on a phone each drawing becomes a plain stack of its cards (rest-art.css has the drawings). */
+.ob-rest-wrap { container-type: inline-size; margin-top: clamp(32px, 4vw, 48px); }
+.ob-rest { --u: min(1px, calc(100cqw / 700)); --ob-radius: calc(12 * var(--u)); --ob-sage: #e5e9cc; display: grid; grid-template-columns: minmax(0, 1fr); row-gap: calc(56 * var(--u)); }
+.ob-feat { position: relative; }
+.ob-feat h3 { font-size: calc(30 * var(--u)); font-weight: 740; letter-spacing: -0.02em; line-height: 1.1; text-wrap: balance; }
+.ob-feat-copy p { margin-top: calc(10 * var(--u)); color: var(--ob-body); font-size: calc(20 * var(--u)); line-height: 1.35; text-wrap: pretty; }
+.ob-feat-copy { position: absolute; }
+
+/* Each feature's frame and where its caption sits, in design pixels. */
+.ob-feat--records { height: calc(400 * var(--u)); }
+.ob-feat--records .ob-feat-copy { left: calc(415 * var(--u)); top: calc(82 * var(--u)); width: calc(285 * var(--u)); }
+.ob-feat--form { height: calc(300 * var(--u)); }
+.ob-feat--form .ob-feat-copy { left: calc(281 * var(--u)); top: calc(180 * var(--u)); width: calc(340 * var(--u)); }
+.ob-feat--follow { height: calc(305 * var(--u)); }
+.ob-feat--follow .ob-feat-copy { left: calc(10 * var(--u)); top: calc(219 * var(--u)); width: calc(660 * var(--u)); }
+.ob-feat--export { height: calc(370 * var(--u)); }
+.ob-feat--export .ob-feat-copy { left: 0; top: calc(275 * var(--u)); width: calc(590 * var(--u)); }
+
+@media (min-width: 1200px) {
+  .ob-rest-wrap { margin-top: clamp(16px, 2vw, 30px); }
+  .ob-rest { --u: min(1px, calc(100cqw / 1382)); grid-template-columns: calc(690 * var(--u)) calc(600 * var(--u)); grid-template-areas: "records form" "follow export"; column-gap: calc(92 * var(--u)); row-gap: calc(24 * var(--u)); }
+  .ob-feat--records { grid-area: records; }
+  .ob-feat--form { grid-area: form; margin-top: calc(22 * var(--u)); }
+  .ob-feat--follow { grid-area: follow; }
+  .ob-feat--export { grid-area: export; margin-top: calc(-55 * var(--u)); margin-left: calc(48 * var(--u)); }
+}
+
+/* A phone: no room for the composition, so each feature is its drawing's cards stacked, then its caption. */
+@media (max-width: 700px) {
+  .ob-rest { --u: 1px; row-gap: 72px; }
+  .ob-feat { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; height: auto; }
+  .ob-feat .ob-feat-copy { position: static; width: auto; }
+  .ob-feat h3 { font-size: 28px; }
+  .ob-feat-copy p { margin-top: 8px; font-size: 18px; }
+}

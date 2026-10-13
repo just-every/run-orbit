@@ -1,0 +1,409 @@
+{
+  "id": "orbit",
+  "name": "Orbit",
+  "version": "0.1.0",
+  "maturity": "complete-workflow-implementation; acceptance requires pinned runtime and native receipts",
+  "capabilities": [
+    {
+      "id": "customer-records",
+      "description": "One workspace of contacts, companies, opportunities, associations, timelines, notes and logged activity, ownership, exact identity, duplicate review and merge, import, search, contactability, deletion, and export.",
+      "clauses": [
+        "TEAM-001",
+        "TEAM-002",
+        "TEAM-003",
+        "TEAM-004",
+        "RECORD-001",
+        "RECORD-002",
+        "RECORD-003",
+        "RECORD-004",
+        "RECORD-005",
+        "RECORD-006",
+        "RECORD-007",
+        "RECORD-008",
+        "RECORD-009",
+        "RECORD-010",
+        "RECORD-011",
+        "RECORD-012",
+        "RECORD-013",
+        "DATA-001",
+        "DATA-002"
+      ]
+    },
+    {
+      "id": "signal-ingestion",
+      "description": "Signed, provenance-bearing, idempotent signal ingestion with exact identity linking, no browser tracking of Orbit's own, and visible source failures.",
+      "clauses": [
+        "SIGNAL-001",
+        "SIGNAL-002",
+        "SIGNAL-003",
+        "SIGNAL-004",
+        "SIGNAL-005",
+        "SIGNAL-006",
+        "SIGNAL-007",
+        "SIGNAL-008",
+        "SIGNAL-009"
+      ]
+    },
+    {
+      "id": "mail-calendar-capture",
+      "description": "Owner-supplied mail and calendar files become evidence-backed signals; exact replies, delivery reports and stop conditions apply at once, and every other change is a proposal a person accepts, edits or declines. Provider sources plug in through capture.source.v1.",
+      "clauses": [
+        "CAPTURE-001",
+        "CAPTURE-002",
+        "CAPTURE-003",
+        "CAPTURE-004",
+        "CAPTURE-005",
+        "CAPTURE-006",
+        "CAPTURE-007"
+      ]
+    },
+    {
+      "id": "explainable-priority",
+      "description": "One configurable pipeline, versioned scoring, visible evidence, and deterministic NOW/NEXT queue entry without automatic stage changes.",
+      "clauses": [
+        "OPP-001",
+        "OPP-002",
+        "OPP-003",
+        "OPP-004",
+        "OPP-005",
+        "OPP-006",
+        "OPP-007",
+        "OPP-008",
+        "OPP-009",
+        "ACTION-001",
+        "ACTION-002"
+      ]
+    },
+    {
+      "id": "human-reviewed-outreach",
+      "description": "AI-assisted one-to-one drafts with an explicit human send boundary, provider-aware delivery state, reconciliation of unresolved submissions, stop conditions, unsubscribe handling, and safe scheduling.",
+      "clauses": [
+        "ACTION-003",
+        "ACTION-004",
+        "ACTION-005",
+        "OUT-001",
+        "OUT-002",
+        "OUT-003",
+        "OUT-004",
+        "OUT-005",
+        "OUT-006",
+        "OUT-007",
+        "OUT-008",
+        "OUT-009",
+        "OUT-010",
+        "OUT-011",
+        "OUT-012",
+        "AI-001",
+        "AI-002",
+        "AI-003",
+        "AI-004"
+      ]
+    },
+    {
+      "id": "operator-notifications",
+      "description": "Idempotent in-app notifications for changes that need the opportunity owner's attention.",
+      "clauses": [
+        "NOTIFY-001",
+        "NOTIFY-002"
+      ]
+    }
+  ],
+  "nonGoals": [
+    "A second workspace",
+    "Roles, territories, or private records",
+    "A second pipeline",
+    "Workflow builder",
+    "Bulk campaigns or sequences",
+    "Autonomous customer outreach",
+    "SMS, phone, or social sending",
+    "Attachments on outbound messages",
+    "Email or digest notifications",
+    "A tracking script, cross-site tracking, fingerprinting, or data-broker identity resolution",
+    "Hosted forms or landing-page building",
+    "Marketing CMS, ads, or multi-touch attribution",
+    "Per-record currencies",
+    "Plan or pricing pages",
+    "Revenue forecasting",
+    "Subscription billing or plan enforcement",
+    "Native mobile applications"
+  ],
+  "externals": [
+    {
+      "id": "sendgrid",
+      "required": false,
+      "requiredWhen": "Production operator sign-in or customer mail is configured.",
+      "why": "Native sign-in and operator-approved mail require an external delivery provider.",
+      "data": [
+        "Operator or customer email address",
+        "Message subject and body",
+        "Durable delivery correlation ID"
+      ],
+      "adapters": [
+        "mail.sender.v1"
+      ]
+    },
+    {
+      "id": "openai",
+      "required": false,
+      "requiredWhen": "AI explanation or draft generation is configured.",
+      "why": "Generate operator-requested recommendation explanations and drafts from the exact reviewed preview.",
+      "data": [
+        "Fields, evidence, prior messages and instructions shown in the operator request preview"
+      ],
+      "adapters": [
+        "ai.provider.v1"
+      ]
+    }
+  ],
+  "env": [
+    {
+      "name": "AUTH_ORIGIN",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "A real mail-auth adapter, signed provider callback, or customer message-link feature is configured.",
+      "why": "Absolute origin for auth, provider callbacks, and customer message links."
+    },
+    {
+      "name": "SENDGRID_API_KEY",
+      "secret": true,
+      "required": false,
+      "requiredWhen": "mail.sender.v1 is configured to issue magic links or send operator-approved one-to-one mail.",
+      "why": "Authenticate the configured mail sender."
+    },
+    {
+      "name": "MAIL_FROM",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "mail.sender.v1 is configured to issue magic links or send operator-approved one-to-one mail.",
+      "why": "Send magic links and operator-approved one-to-one mail."
+    },
+    {
+      "name": "ORBIT_ENCRYPTION_KEY",
+      "secret": true,
+      "required": false,
+      "requiredWhen": "Signed sources are configured.",
+      "why": "Encrypt configured signed-source secrets in D1."
+    },
+    {
+      "name": "OPENAI_API_KEY",
+      "secret": true,
+      "required": false,
+      "requiredWhen": "AI generation is configured.",
+      "why": "Authenticate the selected AI provider."
+    },
+    {
+      "name": "AI_MODEL",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "AI generation is configured.",
+      "why": "Select the AI model explicitly."
+    },
+    {
+      "name": "AI_INPUT_COST_PER_MILLION",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "AI generation is configured.",
+      "why": "Estimate AI input token cost for the selected model."
+    },
+    {
+      "name": "AI_OUTPUT_COST_PER_MILLION",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "AI generation is configured.",
+      "why": "Estimate AI output token cost for the selected model."
+    },
+    {
+      "name": "MAIL_REPLY_TO",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "Provider delivery events, replies or unsubscribe handling is configured.",
+      "why": "SendGrid Inbound Parse reply address for threaded replies."
+    },
+    {
+      "name": "SENDGRID_WEBHOOK_PUBLIC_KEY",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "Provider delivery events, replies or unsubscribe handling is configured.",
+      "why": "Verify SendGrid delivery event signatures."
+    },
+    {
+      "name": "SENDGRID_PARSE_PUBLIC_KEY",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "Provider delivery events, replies or unsubscribe handling is configured.",
+      "why": "Verify SendGrid Inbound Parse signatures."
+    },
+    {
+      "name": "AI_CACHED_INPUT_COST_PER_MILLION",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "Cached-input pricing should be applied to AI cost estimates.",
+      "why": "Estimate cached input cost; without this rate, estimates use the normal input rate and may overestimate."
+    },
+    {
+      "name": "SENDGRID_UNSUBSCRIBE_GROUP_ID",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "Customer outreach is configured.",
+      "why": "Select the provider-managed unsubscribe group for reviewed customer messages."
+    },
+    {
+      "name": "RER_MAIL_RELAY_SECRET",
+      "secret": true,
+      "required": false,
+      "requiredWhen": "A signed provider event relay is configured.",
+      "why": "Verify events addressed to this Orbit deployment by the configured relay."
+    },
+    {
+      "name": "OWNER_EMAIL",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "An installation claims its first owner (rer setup locally, rer deploy when hosted).",
+      "why": "Mailbox of the single initial owner claimed with the setup token."
+    },
+    {
+      "name": "SETUP_TOKEN",
+      "secret": true,
+      "required": false,
+      "requiredWhen": "An installation claims its first owner (rer setup locally, rer deploy when hosted).",
+      "why": "Private one-use proof for the first-owner claim at /auth/bootstrap."
+    },
+    {
+      "name": "AUTH_LOCAL",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "The installation runs on the owner's computer through rer setup and dev.",
+      "why": "Selects loopback sign-in with the local development outbox; never set on a deployment."
+    },
+    {
+      "name": "MAIL_PROVIDER",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "AUTH_LOCAL is true.",
+      "why": "Must be development locally so sign-in mail is captured in /__dev/outbox."
+    },
+    {
+      "name": "SESSION_SECRET",
+      "secret": true,
+      "required": true,
+      "why": "Keys Base operator-auth sign-in links, step-up proofs, rate limits and the local CLI's sign-in proof; rer setup and rer deploy generate it once."
+    },
+    {
+      "name": "IDENTITY_PROVIDER",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "The owner links an Auth install (oidc-provider@1); left empty, operators sign in by email link.",
+      "why": "The optional identity provider this installation links to through /.well-known/rer-dependencies."
+    }
+  ],
+  "deploy": {
+    "healthPath": "/health",
+    "operatorPath": "/app",
+    "apiPath": "/api/v1",
+    "publicPaths": [
+      "/",
+      "/signin",
+      "/demo",
+      "/assets/",
+      "/auth/",
+      "/.well-known/rer-dependencies",
+      "/.well-known/rer-link/",
+      "/health",
+      "/api/v1/public-demo",
+      "/api/v1/signals/",
+      "/api/v1/mail/events/",
+      "/api/delegation/v1/"
+    ],
+    "notes": "Public source and mail event paths require configured signatures. Native auth routes validate origin and one-use tokens; operator APIs and private functions require native sessions. Delegation endpoints require explicit native consent, registered callback and PKCE exchange, then scoped expiring bearer authority; ambient cookies grant no delegated authority."
+  },
+  "extensionPoints": {
+    "policies": [
+      "operator.management.v1",
+      "record.identity.v1",
+      "opportunity.assignment.v1",
+      "opportunity.scoring.v1",
+      "opportunity.prioritization.v1",
+      "opportunity.next-action.v1",
+      "outreach.instructions.v1",
+      "outreach.quiet-hours.v1"
+    ],
+    "events": [
+      "signal.recorded.v1",
+      "record.merged.v1",
+      "opportunity.evaluated.v1",
+      "opportunity.queue-changed.v1",
+      "recommendation.created.v1",
+      "outreach.scheduled.v1",
+      "outreach.accepted.v1",
+      "outreach.failed.v1",
+      "notification.created.v1"
+    ],
+    "slots": [
+      "navigation.after.v1",
+      "now.header.after.v1",
+      "now.row.actions.v1",
+      "contact.sidebar.after.v1",
+      "company.sidebar.after.v1",
+      "opportunity.header.after.v1",
+      "opportunity.sidebar.after.v1",
+      "opportunity.timeline.after.v1",
+      "composer.context.after.v1",
+      "settings.sections.after.v1"
+    ],
+    "adapters": [
+      "mail.sender.v1",
+      "ai.provider.v1"
+    ],
+    "contributions": [
+      "signal.sources.v1"
+    ]
+  },
+  "limits": {
+    "status": "estimated-until-load-tested",
+    "operators": 25,
+    "contacts": 100000,
+    "companies": 25000,
+    "openOpportunities": 25000,
+    "signals": 1000000,
+    "timelineActivities": 2000000,
+    "signalPayloadBytes": 262144,
+    "signedIngressRequestsPerMinute": 600,
+    "publicRequestsPerMinutePerIp": 300,
+    "outboundMessagesPerMinute": 3,
+    "outboundMessagesPerOperatorPerRollingDay": 100
+  },
+  "accessibility": {
+    "level": "WCAG 2.2 AA",
+    "status": "prototype automation only; full shared pack pending"
+  },
+  "operatingCost": {
+    "currency": "USD",
+    "period": "month",
+    "estimated": true,
+    "low": 0,
+    "high": 10,
+    "assumptions": "Cloudflare platform only, excluding buyer-selected mail and AI adapters: Workers Free is the $0 default while daily Worker requests stay at or below 100000, D1 stays at or below 5000000 rows read and 100000 rows written per day, R2 stays within its monthly free tier, and Queues stays at or below 10000 operations per day. Workers Paid is required to sustain the declared 600 signed-ingress requests per minute (864000 requests/day): 600 * 60 * 24 * 30 = 25920000 monthly Worker requests, or 15920000 above the 10000000 Standard-plan inclusion. At $0.30 per additional million, that is $4.78 request overage plus the $5 monthly Paid minimum, rounded up to the $10 high; this excludes CPU, D1 overages, and future Queue fan-out, which must be measured before those capabilities ship. One public IP at the declared 300 requests per minute reaches the Free Worker request ceiling in about 5.6 hours. Sources: https://developers.cloudflare.com/workers/platform/pricing/ ; https://developers.cloudflare.com/d1/platform/pricing/ ; https://developers.cloudflare.com/queues/platform/pricing/",
+    "status": "estimated; not load verified"
+  },
+  "composition": {
+    "base": "base",
+    "family": "sales",
+    "edition": "orbit",
+    "modules": [
+      "sendgrid-email",
+      "import-kit"
+    ]
+  },
+  "category": "sales",
+  "spine": {
+    "id": "sales",
+    "record": "an account opportunity with attributed customer evidence"
+  },
+  "replaces": [
+    { "name": "HubSpot", "edition": null },
+    { "name": "Pipedrive", "edition": null },
+    { "name": "Salesforce", "edition": null }
+  ],
+  "description": "A CRM for one revenue team that turns customer activity reported by the tools they already run into explainable, human-reviewed next actions.",
+  "customFields": []
+}
