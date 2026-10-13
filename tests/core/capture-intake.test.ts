@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { captureFixture, fixtureMailbox, eml } from '../support/capture-fixture';
+import { MAX_ITEMS_PER_IMPORT } from '../../src/core/features/capture/contracts';
 
 const count = async (db: D1Database, sql: string, ...bindings: unknown[]) => Number(await db.prepare(sql).bind(...bindings).first('n'));
 
@@ -66,5 +67,45 @@ test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox 
     const refused = await f.upload([{ name: 'notes.txt', text: 'hello' }]);
     assert.equal(refused.status, 400);
     assert.equal((await f.upload([{ name: 'undated.eml', text: eml({ From: 'ana@acme.example', 'Message-ID': '<undated@acme.example>' }, 'No date') }]).then(r => r.json()) as { summary: { skipReasons: Record<string, number> } }).summary.skipReasons['No valid Date header'], 1);
+
+    // Folded component markers count before any import writes, just like ordinary markers.
+    const event = (index: number) => ['BEGIN:VEVENT', `UID:folded-${index}@acme.example`, 'DTSTAMP:20200101T090000Z', 'DTSTART:20200102T090000Z', 'SUMMARY:Folded meeting', 'ATTENDEE:mailto:ana@acme.example', 'END:VEVENT'].join('\r\n');
+    const calendar = (events: string[]) => ['BEGIN:VCALENDAR', 'VERSION:2.0', 'METHOD:REQUEST', ...events, 'END:VCALENDAR'].join('\r\n');
+    const fold = (text: string) => text.replaceAll('BEGIN:VEVENT', 'BEGIN:VE\r\n VENT').replaceAll('END:VEVENT', 'END:VE\r\n\tVENT');
+    const events = Array.from({ length: MAX_ITEMS_PER_IMPORT + 1 }, (_, index) => event(index));
+    const beforeCalendar = await count(f.db, 'SELECT count(*) n FROM signals');
+    const over = await f.upload([{ name: 'over.ics', text: calendar(events) }]);
+    assert.equal(over.status, 413);
+    const foldedOver = await f.upload([{ name: 'folded-over.ics', text: fold(calendar(events)) }]);
+    assert.equal(foldedOver.status, over.status);
+    assert.deepEqual(await foldedOver.json(), await over.json());
+    assert.equal(await count(f.db, 'SELECT count(*) n FROM signals'), beforeCalendar);
+    const atCap = await f.upload([{ name: 'folded.ics', text: fold(calendar(events.slice(0, MAX_ITEMS_PER_IMPORT))) }]);
+    assert.equal(atCap.status, 201);
+    assert.equal((await atCap.json() as { summary: { captured: number } }).summary.captured, MAX_ITEMS_PER_IMPORT);
+    assert.equal(await count(f.db, 'SELECT count(*) n FROM signals'), beforeCalendar + MAX_ITEMS_PER_IMPORT);
+    assert.equal(await count(f.db, "SELECT count(DISTINCT source_event_id) n FROM signals WHERE subject='Folded meeting'"), MAX_ITEMS_PER_IMPORT);
+
+    // Long whitespace remains real content; transport-only trailing SP/TAB and line endings replay.
+    const hostile = [
+      { type: 'text/plain; ' + ' '.repeat(65536) + '=', body: 'Fresh reply' },
+      { type: 'text/plain; charset=' + ' '.repeat(8192) + '"utf-8" invalid', body: 'A malformed parameter leaves this body readable' },
+      { type: 'text/plain', body: 'First line\n' + '\n'.repeat(8192) + 'Last line' },
+    ].map(({ type, body }, index) => eml({ From: 'ana@acme.example', To: 'seller@orbit.test', Date: 'Wed, 01 Jan 2020 09:00:00 +0000', 'Message-ID': `<hostile-${index}@acme.example>`, 'Content-Type': type }, body));
+    hostile.push(eml({ From: 'ana@acme.example', Date: 'Wed, 01 Jan 2020 09:00:00 +0000', 'Message-ID': '<hostile-header@acme.example>', 'X-Hostile': ' '.repeat(8192) + '\u2028invalid' }, 'A malformed header leaves the message readable'));
+    const hostileImport = await f.upload(hostile.map((text, index) => ({ name: `hostile-${index}.eml`, text })));
+    assert.equal(hostileImport.status, 201);
+    assert.equal((await hostileImport.json() as { summary: { captured: number } }).summary.captured, hostile.length);
+    assert.equal(await count(f.db, "SELECT count(*) n FROM capture_items WHERE headers LIKE '%hostile-header@acme.example%' AND body='A malformed header leaves the message readable' AND headers NOT LIKE '%x-hostile:%'"), 1);
+    for (let index = 0; index < hostile.length; index++) {
+      const transport = hostile[index]!.split('\r\n').map(line => line + ' \t').join('\r') + '\r\r';
+      const replay = await f.upload([{ name: 'transport.eml', text: transport }]);
+      assert.equal(replay.status, 201);
+      assert.equal((await replay.json() as { summary: { replayed: number } }).summary.replayed, 1);
+    }
+    const changedWhitespace = await f.upload([{ name: 'changed-whitespace.eml', text: hostile[0]!.replace(' '.repeat(65536), ' '.repeat(65535)) }]);
+    assert.equal((await changedWhitespace.json() as { summary: { conflicts: number } }).summary.conflicts, 1);
+    const changedBlankLines = await f.upload([{ name: 'changed-blank-lines.eml', text: hostile[2]!.replace('\r\n\r\n\r\n', '\r\n\r\n') }]);
+    assert.equal((await changedBlankLines.json() as { summary: { conflicts: number } }).summary.conflicts, 1);
   } finally { await f.dispose(); }
 });

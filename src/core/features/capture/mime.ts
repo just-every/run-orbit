@@ -43,7 +43,12 @@ function splitEntity(raw:string):MimeEntity{
  const headers:[string,string][]=[];
  for(const line of head.split('\n')){
   if(/^[ \t]/.test(line)&&headers.length){headers[headers.length-1]![1]+=' '+line.trim();continue;}
-  const match=/^([!-9;-~]+):[ \t]*(.*)$/.exec(line);if(match)headers.push([match[1]!.toLowerCase(),match[2]!.trim()]);
+  const match=/^([!-9;-~]+):/.exec(line);
+  if(match){
+   const value=line.slice(match[0].length);
+   // Preserve dot-matching's line-separator rejection without retrying the whitespace prefix.
+   if(!/[\u2028\u2029]/.test(value))headers.push([match[1]!.toLowerCase(),value.trim()]);
+  }
  }
  return {headers,body};
 }
@@ -51,7 +56,14 @@ const first=(headers:[string,string][],name:string)=>headers.find(([key])=>key==
 /** Split a structured header value into its main value and lowercased parameters. */
 export function parameters(value:string|undefined){
  const [main='',...rest]=(value??'').split(';'),result:Record<string,string>={};
- for(const part of rest){const match=/^\s*([^=\s]+)\s*=\s*"?([^"]*)"?\s*$/.exec(part);if(match)result[match[1]!.toLowerCase()]=match[2]!;}
+ for(const part of rest){
+  const match=/^\s*([^=\s]+)\s*=/.exec(part);if(!match)continue;
+  // Retain optional quotes and unquoted trailing whitespace with one scan of the value.
+  let content=part.slice(match[0].length).trimStart();if(content.startsWith('"'))content=content.slice(1);
+  const quote=content.indexOf('"');
+  if(quote>=0&&content.slice(quote+1).trim())continue;
+  result[match[1]!.toLowerCase()]=quote<0?content:content.slice(0,quote);
+ }
  return {value:main.trim().toLowerCase(),params:result};
 }
 function bodyText(entity:MimeEntity){
