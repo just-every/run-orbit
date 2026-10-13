@@ -1,5 +1,5 @@
 import {parseCalendar} from '../ics';
-import type {CaptureItem} from '../contracts';
+import {CaptureProviderError,type CaptureItem} from '../contracts';
 /** Provider facts rendered as iCalendar for the same normalization/review path as files. */
 const text=(value:unknown)=>String(value??'').replace(/\\/g,'\\\\').replace(/\r?\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');
 const clean=(value:unknown)=>String(value??'').replace(/[\r\n";]/g,'');
@@ -12,9 +12,12 @@ function time(name:string,value:any,allDay=false){
  const date=value.dateTime.slice(0,19).replace(/[-:]/g,''),zone=value.timeZone;
  return zone==='UTC'?[`${name}:${date}Z`]:[`${name};TZID=${clean(zone)}:${date}`];
 }
-export function calendarItem(provider:'google'|'microsoft',event:any):CaptureItem{
+export function calendarItem(provider:'google'|'microsoft',event:any,calendarId:string,seriesId?:string):CaptureItem{
  const google=provider==='google',lines=['BEGIN:VCALENDAR','VERSION:2.0','BEGIN:VEVENT'];
  const uid=google?event.iCalUID:event.iCalUId;
+ if(typeof event.id!=='string'||!event.id)throw new CaptureProviderError('unavailable','The calendar returned an invalid event identity.');
+ const providerEvent={calendarId,id:event.id,seriesId:google?(event.recurringEventId??seriesId):event.seriesMasterId,deleted:Boolean(google?event.status==='cancelled'&&(!uid||!event.updated||!event.start||!event.organizer):event['@removed'])};
+ if(providerEvent.deleted)return {kind:'calendar',raw:'',providerEvent};
  if(uid)lines.push(`UID:${clean(uid)}`);
  // A provider revision disambiguates changes that leave iCalendar SEQUENCE unchanged.
  const revision=google?event.updated:event.lastModifiedDateTime;
@@ -29,11 +32,12 @@ export function calendarItem(provider:'google'|'microsoft',event:any):CaptureIte
  const organizer=google?event.organizer:event.organizer?.emailAddress;
  if(organizer?.email||organizer?.address)lines.push(`ORGANIZER;CN="${clean(organizer.displayName??organizer.name)}":mailto:${clean(organizer.email??organizer.address)}`);
  for(const attendee of event.attendees??[]){const person=google?attendee:attendee.emailAddress;if(person?.email||person?.address)lines.push(`ATTENDEE;CN="${clean(person.displayName??person.name)}":mailto:${clean(person.email??person.address)}`);}
- lines.push('END:VEVENT','END:VCALENDAR');return {kind:'calendar',raw:lines.join('\r\n')};
+ lines.push('END:VEVENT','END:VCALENDAR');return {kind:'calendar',raw:lines.join('\r\n'),providerEvent};
 }
 
 /** Filter using the same named-zone and all-day interpretation as intake, including floating-time refusals. */
 export function withinCalendarWindow(item:CaptureItem,window:{start:string;end:string}){
+ if(item.kind!=='calendar')return true;
  const event=parseCalendar(item.raw)[0];
  if(!event||'error' in event||!event.start||!event.end)return true;
  return Date.parse(event.start)<Date.parse(window.end)&&Date.parse(event.end)>Date.parse(window.start);

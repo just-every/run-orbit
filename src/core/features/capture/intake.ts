@@ -1,3 +1,5 @@
+import {captureFences} from './fences';
+import {rememberProviderKeys} from './provider-evidence';
 import {createId} from '../../shared/ids';
 import {companyDomainKey,contactEmailKey} from '../records/identity';
 import {IngestionRepository} from '../ingestion/repository';
@@ -67,14 +69,10 @@ function stopStatements(db:D1Database,contactIds:string[],reason:string,at:strin
  * evidence, any effect Orbit's own threading or delivery report makes certain,
  * the immediate stop for a reply or booking, and proposals for everything else.
  */
-function captureFences(db:D1Database,source:CaptureSource){return [
- ...(source.lease?[db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_lease_fence',NULL WHERE NOT EXISTS(SELECT 1 FROM capture_locks WHERE source_id=? AND lease=? AND expires_at>?)").bind(source.id,source.lease,Date.now())]:[]),
- db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_source_fence',NULL WHERE NOT EXISTS(SELECT 1 FROM capture_sources c JOIN signal_sources s ON s.id=c.id WHERE c.id=? AND c.state<>'disconnected' AND c.connection_id IS ? AND s.type='capture' AND s.enabled=1)").bind(source.id,source.connection_id),
-];}
 export async function intake(db:D1Database,source:CaptureSource,fact:Fact,options:{includeUnknown:boolean}):Promise<Outcome>{
  const ingestion=new IngestionRepository(db),existing=await db.prepare('SELECT id,payload_hash FROM signals WHERE source_id=? AND source_event_id=?').bind(source.id,fact.eventId).first<{id:string;payload_hash:string}>();
  if(existing){
-  if(existing.payload_hash===fact.hash)return {result:'replayed'};
+  if(existing.payload_hash===fact.hash){if(fact.kind==='event'&&fact.providerKeys)await rememberProviderKeys(db,source,existing.id,fact.providerKeys);return {result:'replayed'};}
   await ingestion.reject(source.id,fact.eventId,'Captured item identity already carries different content',captureFences(db,source));return {result:'conflict'};
  }
  // Orbit's own inbound reply route may already have attached this exact message.

@@ -1,9 +1,12 @@
 import {CaptureProviderError} from '../contracts';
+export class ResponseTooLarge extends CaptureProviderError {constructor(){super('unavailable','The provider response exceeds the capture size limit.');}}
+/** Only a successful individual message read may be skipped for size. */
+export class MessageTooLarge extends Error {readonly reason='Message exceeds the capture size limit';}
 /** Bound streamed responses before decoding; neither oversized bodies nor provider error text enter status. */
 export async function boundedResponse(response:Response,limit=8*1024*1024){
  const reader=response.body?.getReader();if(!reader)return response;
  const chunks:Uint8Array[]=[];let length=0;
- try{while(true){const {done,value}=await reader.read();if(done)break;length+=value.byteLength;if(length>limit){await reader.cancel();throw new CaptureProviderError('unavailable','The provider response exceeds the capture size limit.');}chunks.push(value);}}
+ try{while(true){const {done,value}=await reader.read();if(done)break;length+=value.byteLength;if(length>limit){await reader.cancel();throw new ResponseTooLarge();}chunks.push(value);}}
  catch(error){if(error instanceof CaptureProviderError)throw error;throw new CaptureProviderError('unavailable','The provider response was interrupted.');}
  const bytes=new Uint8Array(length);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
  return new Response(bytes,{status:response.status,headers:response.headers});

@@ -4,7 +4,7 @@ import {createId} from '../../shared/ids';
 import {audit} from '../records/shared';
 import type {SourceSecurity} from '../../platform/source-security';
 import {CaptureError,CaptureProviderError,FILE_SOURCE_ID,type CaptureItem,type CaptureScope,type CaptureSourceAdapter} from './contracts';
-import {readItem} from './facts';
+import {readProviderItem,recordProviderSkip} from './provider-evidence';
 import {intake,type CaptureSource} from './intake';
 
 export interface CaptureSummary {captured:number;unlinked:number;replayed:number;conflicts:number;attached:number;stopped:number;bounces:number;proposals:number;skipped:number;skipReasons:Record<string,number>}
@@ -63,20 +63,26 @@ export async function listSources(db:D1Database){
 
 /** Read every fact in the items and commit each through intake. Stops at once when the source is disconnected. */
 export async function captureItems(db:D1Database,source:CaptureSource,items:CaptureItem[],options:{includeUnknown:boolean},summary=emptySummary()){
- const skippedBefore=summary.skipped;
- for(const item of items)for(const read of await readItem(item)){
+ let unkeyedSkips=0;
+ const skip=async(item:CaptureItem,reason:string)=>{
+  const counted=await recordProviderSkip(db,source,item,reason);
+  if(counted===false){summary.replayed++;return;}
+  if(counted===null)unkeyedSkips++;
+  summary.skipped++;summary.skipReasons[reason]=(summary.skipReasons[reason]??0)+1;
+ };
+ for(const item of items)for(const read of await readProviderItem(db,source,item)){
   if(source.lease)await activeLease(db,source,source.lease);
-  if('skip' in read){summary.skipped++;summary.skipReasons[read.skip]=(summary.skipReasons[read.skip]??0)+1;continue;}
+  if('skip' in read){await skip(item,read.skip);continue;}
   let outcome;
   try{outcome=await intake(db,source,read.fact,options);}
   catch(error){if(/NOT NULL constraint failed: runtime_controls/.test(String(error)))throw new CaptureError(409,'This source was disconnected; intake stopped.');throw error;}
-  if(outcome.result==='skipped'){summary.skipped++;summary.skipReasons[outcome.reason]=(summary.skipReasons[outcome.reason]??0)+1;}
+  if(outcome.result==='skipped')await skip(item,outcome.reason);
   else if(outcome.result==='replayed')summary.replayed++;
   else if(outcome.result==='conflict')summary.conflicts++;
   else if(outcome.result==='unlinked')summary.unlinked++;
   else{summary.captured++;summary.proposals+=outcome.proposals;summary.stopped+=outcome.stopped;if(outcome.attached)summary.attached++;if(outcome.bounce)summary.bounces++;}
  }
- if(summary.skipped>skippedBefore)await db.prepare("UPDATE capture_sources SET skipped_count=skipped_count+?,updated_at=? WHERE id=? AND connection_id IS ? AND state<>'disconnected' AND (? IS NULL OR EXISTS(SELECT 1 FROM capture_locks WHERE source_id=? AND lease=? AND expires_at>?))").bind(summary.skipped-skippedBefore,new Date().toISOString(),source.id,source.connection_id,source.lease??null,source.id,source.lease??null,Date.now()).run();
+ if(unkeyedSkips)await db.prepare("UPDATE capture_sources SET skipped_count=skipped_count+?,updated_at=? WHERE id=? AND connection_id IS ? AND state<>'disconnected' AND (? IS NULL OR EXISTS(SELECT 1 FROM capture_locks WHERE source_id=? AND lease=? AND expires_at>?))").bind(unkeyedSkips,new Date().toISOString(),source.id,source.connection_id,source.lease??null,source.id,source.lease??null,Date.now()).run();
  return summary;
 }
 
@@ -119,7 +125,7 @@ export async function syncSource(db:D1Database,id:string,adapter:CaptureSourceAd
  }catch(error){
   const at=new Date().toISOString();
   if(error instanceof CaptureProviderError){
-   await db.prepare(`UPDATE capture_sources SET state=?,last_error=?,last_error_at=?,updated_at=? WHERE ${current()}`).bind(error.code==='revoked'?'error':'connected',error.code==='revoked'?`Access was revoked: ${error.message} Reconnect to resume.`:`Provider unavailable: ${error.message}`,at,at,id,source.connection_id).run();
+   await db.prepare(`UPDATE capture_sources SET state=?,last_error=?,last_error_at=?,updated_at=? WHERE ${current()}`).bind(error.code==='revoked'?'error':'connected',error.code==='revoked'?`${error.authorizationAttention?'Authorization requires attention':'Access was revoked'}: ${error.message} Reconnect to resume.`:`Provider unavailable: ${error.message}`,at,at,id,source.connection_id).run();
    return {...summary,more:true,halted:error.code};
   }
   // A refused entry (revoked, missing credential, disconnected) must not become connected again.

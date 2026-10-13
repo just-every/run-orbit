@@ -34,7 +34,7 @@ export async function readProviderSource(db:D1Database,id:string){
 async function withProvider<T>(db:D1Database,id:string,security:SourceSecurity,fetcher:ProviderFetch,run:(source:ProviderSource,session:ReturnType<typeof providerSession>)=>Promise<T>){
  const source=await readProviderSource(db,id),lease=await leaseSource(db,id),session=providerSession(db,source,lease,security,fetcher);
  try{return await run(source,session);}catch(error){
-  if(error instanceof CaptureProviderError)await db.prepare(`UPDATE capture_sources SET state=?,last_error=?,last_error_at=?,updated_at=? WHERE id=? AND connection_id IS ? AND EXISTS(SELECT 1 FROM capture_locks WHERE source_id=? AND lease=? AND expires_at>?)`).bind(error.code==='revoked'?'error':'connected',error.code==='revoked'?'Access was revoked: Reconnect to resume.':'Provider unavailable: Try again later.',new Date().toISOString(),new Date().toISOString(),id,source.connection_id,id,lease,Date.now()).run();
+  if(error instanceof CaptureProviderError)await db.prepare(`UPDATE capture_sources SET state=?,last_error=?,last_error_at=?,updated_at=? WHERE id=? AND connection_id IS ? AND EXISTS(SELECT 1 FROM capture_locks WHERE source_id=? AND lease=? AND expires_at>?)`).bind(error.code==='revoked'?'error':'connected',error.code==='revoked'?`${error.authorizationAttention?'Authorization requires attention':'Access was revoked'}: ${error.message} Reconnect to resume.`:'Provider unavailable: Try again later.',new Date().toISOString(),new Date().toISOString(),id,source.connection_id,id,lease,Date.now()).run();
   throw error;
  }finally{await db.prepare('DELETE FROM capture_locks WHERE source_id=? AND lease=?').bind(id,lease).run();}
 }

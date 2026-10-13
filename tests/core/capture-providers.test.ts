@@ -1,3 +1,4 @@
+import {oversizedMessageProof,deletedEventProof} from '../support/capture-provider-items';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {createId} from '../../src/core/shared/ids';
@@ -89,4 +90,13 @@ test('CAPTURE-006 Microsoft rejects foreign host, user, folder and calendar delt
  }
  f.state.unsafeLink='';for(const mode of ['malformed','redirect'] as const){f.state[mode]=true;const before=await f.db.prepare('SELECT cursor FROM capture_sources WHERE id=?').bind(id).first('cursor');const response=await f.request(`/sources/${id}/sync`,{});assert.equal((await response.json() as any).summary.halted,'unavailable');assert.equal(await f.db.prepare('SELECT cursor FROM capture_sources WHERE id=?').bind(id).first('cursor'),before);f.state[mode]=false;}
  }finally{await f.dispose();}
+});
+
+
+test('CAPTURE-006 oversized mail skips once while both providers finish other messages and selected calendars',async()=>{
+ for(const provider of ['google','microsoft'] as const)await oversizedMessageProof(provider);
+});
+
+test('CAPTURE-006 provider deletion matches the captured calendar occurrence, replays once and respects erasure',async()=>{
+ for(const provider of ['google','microsoft'] as const)await deletedEventProof(provider);
 });

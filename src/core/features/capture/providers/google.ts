@@ -1,4 +1,4 @@
-import {objectResponse,list,opaque,pageProgress,type PageProgress} from './response';
+import {objectResponse,list,opaque,pageProgress,MessageTooLarge,type PageProgress} from './response';
 import {CaptureProviderError,type CaptureItem,type CaptureScope} from '../contracts';
 import type {ProviderSession} from './session';
 import {calendarItem,withinCalendarWindow} from './calendar';
@@ -27,11 +27,11 @@ export async function googleMail(session:ProviderSession,label:string,cursor:Goo
 async function mailItems(session:ProviderSession,label:string,ids:string[]){
  const items:CaptureItem[]=[];
  for(const id of ids){
-  const response=await session.read(`${gmail}/messages/${encodeId(id)}?format=raw`);if(response.status===404)continue;
+  let response:Response;try{response=await session.message(`${gmail}/messages/${encodeId(id)}?format=raw`);}catch(error){if(error instanceof MessageTooLarge){items.push({kind:'skip',providerMessageId:id,reason:error.reason});continue;}throw error;}if(response.status===404)continue;
   const message=await objectResponse(response);
   if(!Array.isArray(message.labelIds)||message.labelIds.some((id:unknown)=>typeof id!=='string')||typeof message.raw!=='string')throw new CaptureProviderError('unavailable','The mailbox returned an incomplete message.');
   if(!message.labelIds.includes(label))continue;
-  const bytes=Uint8Array.from(atob(message.raw.replace(/-/g,'+').replace(/_/g,'/')),character=>character.charCodeAt(0));items.push({kind:'message',raw:new TextDecoder().decode(bytes)});
+  const bytes=Uint8Array.from(atob(message.raw.replace(/-/g,'+').replace(/_/g,'/')),character=>character.charCodeAt(0));items.push({kind:'message',raw:new TextDecoder().decode(bytes),providerMessageId:id});
  }
  return items;
 }
@@ -39,14 +39,15 @@ export async function googleCalendar(session:ProviderSession,id:string,cursor:Go
  const next={...cursor},window=scope.calendarWindow!;
  if(next.series?.length){
   const response=await session.read(url(`${calendar}/calendars/${encodeId(id)}/events/${encodeId(next.series[0]!)}/instances`,{maxResults:'10',showDeleted:'true',timeMin:window.start,timeMax:window.end,pageToken:next.instancePage}));
-  if(response.status===404){next.series=next.series.slice(1);delete next.instancePage;delete next.instancePagination;return {items:[calendarItem('google',{status:'cancelled'})],cursor:next,more:Boolean(next.series.length||next.roundMore)};}
+  // A missing instances resource is not itself a provider cancellation event.
+  if(response.status===404){next.series=next.series.slice(1);delete next.instancePage;delete next.instancePagination;return {items:[],cursor:next,more:Boolean(next.series.length||next.roundMore)};}
   if(!response.ok)throw new CaptureProviderError('unavailable','The recurring calendar event is unavailable.');
-  const data=await objectResponse(response);
+  const data=await objectResponse(response),seriesId=next.series[0];
   next.instancePagination=pageProgress(next.instancePage,opaque(data.nextPageToken),next.instancePagination);
   if(data.nextPageToken)next.instancePage=data.nextPageToken;else{next.series=next.series.slice(1);delete next.instancePage;}
-  return {items:list(data,'items',typeof data.kind==='string').map((event:any)=>calendarItem('google',event)),cursor:next,more:Boolean(next.series.length||next.roundMore)};
+  return {items:list(data,'items',typeof data.kind==='string').map((event:any)=>calendarItem('google',event,id,seriesId)),cursor:next,more:Boolean(next.series.length||next.roundMore)};
  }
- const response=await session.read(url(`${calendar}/calendars/${encodeId(id)}/events`,{maxResults:'10',singleEvents:'false',showDeleted:'true',syncToken:next.sync,pageToken:next.page}));
+ const response=await session.read(url(`${calendar}/calendars/${encodeId(id)}/events`,{maxResults:'10',singleEvents:'false',showDeleted:'true',syncToken:next.sync,timeMin:next.sync?undefined:window.start,timeMax:next.sync?undefined:window.end,pageToken:next.page}));
  if(response.status===410&&(next.sync||next.page))return {items:[],cursor:{},more:true};
  if(!response.ok)throw new CaptureProviderError('unavailable','The selected calendar is unavailable.');
  const data=await objectResponse(response);next.pagination=pageProgress(next.page,opaque(data.nextPageToken),next.pagination);
@@ -54,7 +55,7 @@ export async function googleCalendar(session:ProviderSession,id:string,cursor:Go
  else{if(typeof data.nextSyncToken!=='string')throw new CaptureProviderError('unavailable','The calendar did not return a sync cursor.');next.sync=data.nextSyncToken;delete next.page;}
  next.series=list(data,'items',typeof data.kind==='string').filter((event:any)=>event.recurrence&&event.status!=='cancelled').map((event:any)=>event.id);
  next.roundMore=Boolean(data.nextPageToken);
- const items=list(data,'items',typeof data.kind==='string').filter((event:any)=>!event.recurrence||event.status==='cancelled').map((event:any)=>calendarItem('google',event)).filter(item=>withinCalendarWindow(item,window));
+ const items=list(data,'items',typeof data.kind==='string').filter((event:any)=>!event.recurrence||event.status==='cancelled').map((event:any)=>calendarItem('google',event,id)).filter(item=>withinCalendarWindow(item,window));
  return {items,cursor:next,more:Boolean(next.series?.length||next.roundMore)};
 }
 export async function googleOptions(session:ProviderSession,continuation?:string){

@@ -1,4 +1,4 @@
-import {objectResponse,list,opaque,pageProgress,type PageProgress} from './response';
+import {objectResponse,list,opaque,pageProgress,MessageTooLarge,type PageProgress} from './response';
 import {CaptureProviderError,type CaptureItem,type CaptureScope} from '../contracts';
 import type {ProviderSession} from './session';
 import {calendarItem} from './calendar';
@@ -19,13 +19,13 @@ export async function microsoftPage(session:ProviderSession,kind:'mail'|'calenda
  if(!next&&!delta||next&&delta)throw new CaptureProviderError('unavailable','The mailbox did not return a valid delta cursor.');
  const link=graphLink((next??delta)!,path),pagination=pageProgress(cursor.link,next?link:undefined,cursor.pagination);
  for(const entry of list(data,'value')){
-  // Tombstones supply neither a source date nor participants. Normalization records a skip, never invents either.
-  if(kind==='calendar'){items.push(calendarItem('microsoft',entry));continue;}
+  // Calendar tombstones resolve only against evidence captured in this source and calendar.
+  if(kind==='calendar'){items.push(calendarItem('microsoft',entry,id));continue;}
   if(entry['@removed'])continue;
   if(typeof entry.id!=='string'||!entry.id)throw new CaptureProviderError('unavailable','The mailbox returned an invalid message identity.');
-  const message=await session.read(`${graph}/v1.0/me/mailFolders/${encodeId(id)}/messages/${encodeId(entry.id)}/$value`,headers);
+  let message:Response;try{message=await session.message(`${graph}/v1.0/me/mailFolders/${encodeId(id)}/messages/${encodeId(entry.id)}/$value`,headers);}catch(error){if(error instanceof MessageTooLarge){items.push({kind:'skip',providerMessageId:entry.id,reason:error.reason});continue;}throw error;}
   if(message.status===404)continue;
-  items.push({kind:'message',raw:await message.text()});
+  items.push({kind:'message',raw:await message.text(),providerMessageId:entry.id});
  }
  return {items,cursor:{link,pagination},more:Boolean(next)};
 }

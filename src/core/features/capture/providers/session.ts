@@ -1,4 +1,4 @@
-import {boundedResponse,objectResponse} from './response';
+import {boundedResponse,objectResponse,ResponseTooLarge,MessageTooLarge} from './response';
 import {createId} from '../../../shared/ids';
 import type {SourceSecurity} from '../../../platform/source-security';
 import {CaptureError,CaptureProviderError} from '../contracts';
@@ -33,7 +33,7 @@ export function providerSession(db:D1Database,source:ProviderSource,lease:string
   }
   return credential;
  }
- async function read(url:string,headers:Record<string,string>={},allowedErrors:readonly number[]=[]){
+ async function read(url:string,headers:Record<string,string>={},allowedErrors:readonly number[]=[],message=false){
   const request=async(force=false)=>{
    const token=await credential(force);await check();
    try{return await fetcher(url,{method:'GET',redirect:'error',headers:{...headers,authorization:`Bearer ${token.accessToken}`},signal:AbortSignal.timeout(20000)});}catch{throw new CaptureProviderError('unavailable','The provider could not be reached.');}
@@ -49,8 +49,8 @@ export function providerSession(db:D1Database,source:ProviderSource,lease:string
   }
   if(response.status===401){await response.body?.cancel();throw new CaptureProviderError('revoked','The provider refused read access.');}
   if(!response.ok&&response.status!==404&&response.status!==410&&!allowedErrors.includes(response.status)){await response.body?.cancel();throw new CaptureProviderError('unavailable','The provider could not finish the read.');}
-  return boundedResponse(response);
+  try{return await boundedResponse(response);}catch(error){if(message&&response.ok&&error instanceof ResponseTooLarge)throw new MessageTooLarge();throw error;}
  }
- return {check,read,async json(url:string,headers?:Record<string,string>){const response=await read(url,headers);if(!response.ok)throw new CaptureProviderError('unavailable','The selected provider resource is no longer available.');return objectResponse(response);}};
+ return {check,read,message:(url:string,headers?:Record<string,string>)=>read(url,headers,[],true),async json(url:string,headers?:Record<string,string>){const response=await read(url,headers);if(!response.ok)throw new CaptureProviderError('unavailable','The selected provider resource is no longer available.');return objectResponse(response);}};
 }
 export type ProviderSession=ReturnType<typeof providerSession>;

@@ -10,7 +10,7 @@
  * here. The file import is the first adapter: one page, no cursor, no credential.
  */
 export interface CaptureScope {mail?:{folders:string[]};calendars?:string[];calendarWindow?:{start:string;end:string}}
-export type CaptureItem = {kind:'message';raw:string} | {kind:'calendar';raw:string};
+export type CaptureItem = {kind:'message';raw:string;providerMessageId?:string} | {kind:'calendar';raw:string;providerEvent?:{calendarId:string;id:string;seriesId?:string;deleted:boolean}} | {kind:'skip';providerMessageId:string;reason:string};
 export interface CapturePage {items:CaptureItem[];cursor:string|null;more:boolean}
 export interface CaptureSourceAdapter {
  readonly adapter:string;
@@ -18,8 +18,8 @@ export interface CaptureSourceAdapter {
  /** Read the page after `cursor` with the stored credential. Never writes to the provider. */
  pull(cursor:string|null,credential:string|null):Promise<CapturePage>;
 }
-/** `revoked`: the grant no longer works and intake stops until reconnected. `unavailable`: try again later. */
-export class CaptureProviderError extends Error {constructor(readonly code:'revoked'|'unavailable',message:string){super(message);}}
+/** `revoked`: authorization needs attention and intake stops until reconnected. `unavailable`: try again later. */
+export class CaptureProviderError extends Error {constructor(readonly code:'revoked'|'unavailable',message:string,readonly authorizationAttention=false){super(message);}}
 export class CaptureError extends Error {constructor(readonly status:400|403|404|409|413|503,message:string){super(message);}}
 export const FILE_SOURCE_ID='capture-files';
 export const MAX_ITEMS_PER_IMPORT=500;

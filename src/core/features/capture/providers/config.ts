@@ -1,3 +1,4 @@
+import {tokenRefusal} from './token-errors';
 import {boundedResponse,objectResponse} from './response';
 import {CaptureError,CaptureProviderError} from '../contracts';
 export type Provider='google'|'microsoft';
@@ -22,7 +23,7 @@ export function checkedScopes(provider:Provider,value:unknown){
 export async function tokenRequest(fetcher:ProviderFetch,provider:Provider,tenant:string,form:URLSearchParams){
  let response:Response;try{response=await fetcher(tokenEndpoint(provider,tenant),{method:'POST',redirect:'error',headers:{'content-type':'application/x-www-form-urlencoded'},body:form,signal:AbortSignal.timeout(20000)});}catch{throw new CaptureProviderError('unavailable','The authorization server could not be reached.');}
  const value=await objectResponse(await boundedResponse(response,65536));
- if(!response.ok)throw new CaptureProviderError(value?.error==='invalid_grant'||value?.error==='invalid_client'?'revoked':'unavailable','The authorization server refused the request.');
+ if(!response.ok)throw tokenRefusal(provider,response.status,value.error);
  if(!value||typeof value.access_token!=='string'||!value.access_token||typeof value.expires_in!=='number'||!Number.isFinite(value.expires_in)||value.expires_in<=0||value.token_type!==undefined&&String(value.token_type).toLowerCase()!=='bearer'||value.refresh_token!==undefined&&(typeof value.refresh_token!=='string'||!value.refresh_token))throw new CaptureProviderError('unavailable','The authorization response was incomplete.');
  return value as Record<string,unknown>&{access_token:string;expires_in:number};
 }
