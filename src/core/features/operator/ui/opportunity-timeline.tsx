@@ -3,6 +3,7 @@ import type {OpportunityDetail,WorkspacePresentation} from './operator-api';
 import {ManualEntry} from './manual-entry';
 import {DataValue} from './data-value';
 import {DeleteTimelineEntry} from './delete-timeline-entry';
+import {ScrollToHash} from './hash-target';
 import {formatDateTime,label} from './formatters';
 
 export function OpportunityTimeline({opportunity,presentation,reload}:{opportunity:OpportunityDetail;presentation:WorkspacePresentation;reload:()=>void}){
@@ -11,7 +12,7 @@ export function OpportunityTimeline({opportunity,presentation,reload}:{opportuni
  return <section className="operator-surface operator-detail__section" data-testid="opportunity-timeline"><h2>Timeline</h2>
   {opportunity.timeline.length?<ol className="operator-timeline">{opportunity.timeline.map(entry=>{
    const payload=entry.payload&&typeof entry.payload==='object'?entry.payload as Record<string,unknown>:{};
-   return <li key={entry.id}><strong>{label(entry.kind)}</strong>
+   return <li key={entry.id} id={`entry-${entry.id}`}><strong>{label(entry.kind)}</strong>
     {typeof payload.text==='string'&&<p style={{whiteSpace:'pre-wrap'}}>{payload.text}</p>}
     {typeof payload.subject==='string'&&<p>{payload.subject}</p>}
     {typeof payload.outcome==='string'&&<p>Outcome: {label(payload.outcome)}</p>}
@@ -24,6 +25,7 @@ export function OpportunityTimeline({opportunity,presentation,reload}:{opportuni
     </div>}
    </li>;
   })}</ol>:<p>No activity recorded yet.</p>}
+  <ScrollToHash ready={opportunity.timeline.length>0}/>
   {editing&&<><ManualEntry key={editing.id} kind="opportunity" id={opportunity.id} contacts={opportunity.contacts.map(c=>({...c,name:c.name??undefined}))} entry={{...editing,occurred_at:editing.occurredAt,payload_json:JSON.stringify(editing.payload)}} onSaved={()=>{finishEditing();reload();}}/><button type="button" onClick={finishEditing}>Cancel editing</button></>}
  </section>;
 }

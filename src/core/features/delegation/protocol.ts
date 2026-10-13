@@ -13,7 +13,7 @@ export const revision=(value:unknown)=>hash(canonical(value));
 export const random=()=>Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('');
 export const scopes=['crm.evidence.read','crm.handoff.write'] as const;
 export const targetSchema=z.string().regex(/^(?:opportunities|contacts|companies|signals)\/[A-Za-z0-9_-]{1,100}(?:\/handoffs\/[A-Za-z0-9_-]{1,100})?$/).refine(v=>!v.includes('/handoffs/')||v.startsWith('opportunities/'));
-export const contentSchema=z.object({title:z.string().min(1).max(300).refine(v=>v.trim().length>0),description:z.string().max(20000),assigneeId:z.string().min(1).max(100).nullable(),dueAt:z.iso.datetime().nullable(),status:z.enum(['open','completed','cancelled'])}).strict();
+export const contentSchema=z.object({title:z.string().min(1).max(300).refine(v=>v.trim().length>0),description:z.string().max(20000),assigneeId:z.string().min(1).max(100).nullable(),dueAt:z.iso.datetime().nullable(),status:z.enum(['open','completed','cancelled']),evidence:z.array(z.string().regex(/^[A-Za-z0-9_-]{1,100}$/)).min(1).max(20).optional()}).strict();
 export const effectSchema=z.object({operationKey:z.string().regex(/^[A-Za-z0-9_-]{1,160}$/),operation:z.literal('orbit.handoff.upsert'),target:targetSchema,expectedRevision:z.string().regex(/^[a-f0-9]{64}$/),expectedAudienceRevision:z.string().regex(/^[a-f0-9]{64}$/),content:contentSchema}).strict();
 export type Effect=z.infer<typeof effectSchema>;
 export type Grant={id:string;client_id:string;principal_id:string;account_id:string;scopes_json:string;targets_json:string;expires_at:string;revoked_at:string|null;token_hash:string|null};

@@ -28,6 +28,7 @@ import { Route as DocsIndexRouteImport } from './routes/docs.index'
 import { Route as DocsSlugRouteImport } from './routes/docs.$slug'
 import { Route as AppAssistanceIdRouteImport } from './routes/app.assistance.$id'
 import { Route as AppDraftsIdRouteImport } from './routes/app.drafts.$id'
+import { Route as AppMeetingsIdRouteImport } from './routes/app.meetings.$id'
 import { Route as AppOpportunitiesIdRouteImport } from './routes/app.opportunities.$id'
 
 const AppRoute = AppRouteImport.update({
@@ -125,6 +126,11 @@ const AppDraftsIdRoute = AppDraftsIdRouteImport.update({
   path: '/drafts/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMeetingsIdRoute = AppMeetingsIdRouteImport.update({
+  id: '/meetings/$id',
+  path: '/meetings/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppOpportunitiesIdRoute = AppOpportunitiesIdRouteImport.update({
   id: '/opportunities/$id',
   path: '/opportunities/$id',
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/docs/': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
+  '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
 }
 export interface FileRoutesByTo {
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
+  '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
 }
 export interface FileRoutesById {
@@ -195,6 +203,7 @@ export interface FileRoutesById {
   '/docs/': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
+  '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
 }
 export interface FileRouteTypes {
@@ -219,6 +228,7 @@ export interface FileRouteTypes {
     | '/docs/'
     | '/app/assistance/$id'
     | '/app/drafts/$id'
+    | '/app/meetings/$id'
     | '/app/opportunities/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -240,6 +250,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/app/assistance/$id'
     | '/app/drafts/$id'
+    | '/app/meetings/$id'
     | '/app/opportunities/$id'
   id:
     | '__root__'
@@ -262,6 +273,7 @@ export interface FileRouteTypes {
     | '/docs/'
     | '/app/assistance/$id'
     | '/app/drafts/$id'
+    | '/app/meetings/$id'
     | '/app/opportunities/$id'
   fileRoutesById: FileRoutesById
 }
@@ -408,6 +420,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDraftsIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/meetings/$id': {
+      id: '/app/meetings/$id'
+      path: '/meetings/$id'
+      fullPath: '/app/meetings/$id'
+      preLoaderRoute: typeof AppMeetingsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/opportunities/$id': {
       id: '/app/opportunities/$id'
       path: '/opportunities/$id'
@@ -433,6 +452,7 @@ interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppAssistanceIdRoute: typeof AppAssistanceIdRoute
   AppDraftsIdRoute: typeof AppDraftsIdRoute
+  AppMeetingsIdRoute: typeof AppMeetingsIdRoute
   AppOpportunitiesIdRoute: typeof AppOpportunitiesIdRoute
 }
 
@@ -451,6 +471,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppAssistanceIdRoute: AppAssistanceIdRoute,
   AppDraftsIdRoute: AppDraftsIdRoute,
+  AppMeetingsIdRoute: AppMeetingsIdRoute,
   AppOpportunitiesIdRoute: AppOpportunitiesIdRoute,
 }
 

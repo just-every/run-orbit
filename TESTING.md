@@ -41,6 +41,13 @@ notification ownership and replay, and exact AI previews with validated output
 and token accounting. Fixtures and controlled provider outcomes exist only in
 test suites; they are not evidence of actual provider delivery.
 
+Today's brief and meeting plans are covered through their public doors by
+`tests/core/today-brief.test.ts` (several simulated days, the summary against the
+provider's real HTTP client with only `fetch` faked, and plans),
+`tests/delegation/brief-handoff.test.ts` (consent, read-only, revoked and unconsented
+grants, cited proposals and the send boundary) and the isolated browser journey
+`tests/delegation-browser/today-brief.test.ts` at 1440 and 390 pixels with axe.
+
 Browser tests use a fresh isolated D1 and the built production Worker. They cover
 native access boundaries, records and settings, source and unmatched reply
 review, notifications, evidence and stale-draft review, exact AI previews,

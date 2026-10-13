@@ -1,5 +1,6 @@
 import {OnboardingChecklist,readOnboarding} from './onboarding-checklist';
 import { useCallback, useState } from "react";
+import { TodayBrief } from "./today-brief";
 import { Link } from "@tanstack/react-router";
 
 import { formatDateTime, label } from "./formatters";
@@ -29,7 +30,9 @@ export function NowPage({ initialData }: { initialData?: Awaited<ReturnType<type
   const facets = resource.data?.facets;
 
   return (
-    <OperatorShell eyebrow="Priority workspace" title="NOW queue">
+    <OperatorShell eyebrow="Today" title="Your brief">
+      <TodayBrief />
+      <h2 className="today-now-title">NOW queue</h2>
       {onboarding.error ? <p role="alert">{onboarding.error.message}</p> : <OnboardingChecklist state={onboarding.data}/>}
       <section className="operator-queue" data-testid="now-queue">
         <div className="operator-queue__intro">

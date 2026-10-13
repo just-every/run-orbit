@@ -75,6 +75,17 @@
       ]
     },
     {
+      "id": "daily-brief",
+      "description": "A brief at the top of the operator home and a plan for each meeting, built from records with every line citing its evidence; an optional AI summary sent only as previewed; delegated applications read the brief and propose cited handoffs a person accepts, edits or dismisses.",
+      "clauses": [
+        "BRIEF-001",
+        "BRIEF-002",
+        "BRIEF-003",
+        "BRIEF-004",
+        "BRIEF-005"
+      ]
+    },
+    {
       "id": "human-reviewed-outreach",
       "description": "AI-assisted one-to-one drafts with an explicit human send boundary, provider-aware delivery state, reconciliation of unresolved submissions, stop conditions, unsubscribe handling, and safe scheduling.",
       "clauses": [

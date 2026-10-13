@@ -30,6 +30,7 @@ import { createDependencies } from "./dependencies";
 import { createNotificationRoutes } from "../features/notifications/routes";
 import { createPublicDemoRoutes } from "../features/public/routes";
 import { createAssistanceRoutes } from "../features/assistance/routes";
+import { createTodayRoutes } from "../features/today/routes";
 import type { AIProvider } from "../features/assistance/provider";
 
 type AppEnvironment = {
@@ -123,6 +124,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
   app.route("/api/v1/sources", createSourceRoutes(input.database,input.sourceSecurity));
   app.route("/api/v1/notifications", createNotificationRoutes(input.database));
   app.route("/api/v1/assistance", createAssistanceRoutes(input.database,input.aiProvider));
+  app.route("/api/v1/today", createTodayRoutes(input.database,input.aiProvider));
   app.route("/api/v1/workbench", createWorkbenchRoutes(input.database, input.outboundMail,Boolean(input.aiProvider)));
   app.route("/api/v1/opportunities", dependencies.opportunityRoutes);
   app.route("/api/v1/drafts", createDraftRoutes(dependencies.drafts));

@@ -70,3 +70,6 @@
   cursor: wait;
   opacity: .6;
 }
+.operator-handoff-proposal { display: grid; gap: 8px; padding: 12px 14px; border: 1.5px solid var(--ob-line); border-radius: 12px; }
+.operator-handoff-proposal p, .operator-handoff-proposal ul { margin: 0; }
+.operator-handoff-proposal__actions { display: flex; flex-wrap: wrap; gap: 10px; }

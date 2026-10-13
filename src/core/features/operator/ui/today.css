@@ -1,0 +1,77 @@
+/* Today's brief and the meeting plan, drawn from 12ui picks evidence/12ui/today-picked-C.png and plan-picked-C.png in
+   the operator console's own language: card fill, 1.5px ink outline, ink pill for the one primary action, underlined
+   links for every cited line, tangerine only for the counts. */
+.today { display: grid; gap: 18px; padding-top: 24px; }
+.today__since { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; }
+.today__since p { margin: 0; color: var(--ob-muted); font-size: 15.5px; }
+.today__since strong { color: var(--ob-ink); }
+.today__counts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; padding: 18px 20px; border: 1.5px solid var(--ob-ink); border-radius: var(--ob-radius); background: var(--ob-card); box-shadow: var(--app-shadow); }
+.today__counts div { display: flex; flex-direction: row-reverse; justify-content: flex-end; align-items: baseline; gap: 10px; min-width: 0; padding: 4px 16px; border-left: 1.5px solid var(--ob-line); }
+.today__counts div:first-child { border-left: 0; }
+.today__counts dt { font-size: 15px; font-weight: 600; }
+.today__counts dd { margin: 0; color: var(--ob-tangerine-deep); font-size: 34px; font-weight: 760; line-height: 1; font-variant-numeric: tabular-nums; }
+.today__accounts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 18px; }
+.today-account { display: grid; gap: 16px; min-width: 0; padding: 24px 28px; }
+.today-account header h3 { margin: 0; font-size: 26px; font-weight: 740; letter-spacing: -0.01em; line-height: 1.15; overflow-wrap: anywhere; }
+.today-account header h3 a { text-decoration: none; }
+.today-account header h3 a:hover { text-decoration: underline; }
+.today-account header p { margin: 4px 0 0; color: var(--ob-muted); font-size: 15px; }
+.today-account__section { padding-top: 14px; border-top: 1.5px solid var(--ob-line); }
+.today-account__section h4 { margin: 0 0 6px; font-size: 15.5px; font-weight: 700; }
+.today-account__section ul, .plan-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.today-line { display: flex; justify-content: space-between; gap: 6px 16px; padding: 6px 0; }
+.today-line__what { display: grid; gap: 2px; min-width: 0; }
+.today-line__what a { overflow-wrap: anywhere; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.today-line__prefix { font-weight: 600; }
+.today-line__detail { color: var(--ob-muted); font-size: 13.5px; }
+.today-line__when { display: grid; flex: none; justify-items: end; gap: 2px; color: var(--ob-body); font-size: 14px; text-align: right; }
+.today-line__when a { font-weight: 650; }
+.today-summary { display: grid; gap: 12px; justify-items: start; }
+.today-summary__preview, .today-summary__result { width: 100%; padding: 14px 16px; border: 1.5px solid var(--ob-line); border-radius: 12px; }
+.today-summary__preview h4 { margin: 0; font-size: 15.5px; }
+.today-summary__preview p, .today-summary__result p { margin: 6px 0; }
+.today-summary__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 10px; }
+.today-summary__cites { color: var(--ob-muted); font-size: 14px; }
+.today__empty { padding: 24px 28px; }
+.today__empty h3 { margin: 0; font-size: 22px; font-weight: 720; }
+.today__empty p, .today__note { margin: 8px 0 0; color: var(--ob-body); }
+.today-now-title { margin: 48px 0 0; font-size: clamp(32px, 3.4vw, 48px); font-weight: 760; letter-spacing: -0.012em; line-height: 1.05; }
+
+.meeting-plan__when { margin: 0; color: var(--ob-body); font-size: 15.5px; }
+.plan-list { margin-top: 12px; }
+.plan-line { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 8px 20px; padding: 12px 0; border-top: 1.5px solid var(--ob-line); }
+.plan-line:first-child { border-top: 0; }
+.plan-line__what { display: grid; gap: 2px; min-width: 0; }
+.plan-line__what span { color: var(--ob-muted); font-size: 14px; }
+.plan-line time { color: var(--ob-body); font-size: 14px; }
+.plan-line__buttons { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; grid-column: 2 / -1; }
+.plan-line__action { min-height: 34px; padding: 4px 14px; font-size: 14px; }
+.plan-link-button { display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border: 1.5px solid var(--ob-ink); border-radius: 999px; font-weight: 600; text-decoration: none; }
+.plan-next-action { display: grid; grid-column: 1 / -1; gap: 10px; padding: 12px 0 4px; }
+.plan-next-action > div { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.plan-opportunity { display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)); align-items: center; gap: 8px 20px; padding: 10px 0; }
+.plan-opportunity span { padding-left: 16px; border-left: 1.5px solid var(--ob-line); color: var(--ob-muted); }
+.plan-opportunity b { color: var(--ob-ink); }
+.plan-notes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.plan-notes h2 label { display: block; margin: 0; font-size: inherit; font-weight: inherit; line-height: inherit; }
+.plan-notes textarea { width: 100%; margin-top: 12px; }
+.plan-notes__save { display: flex; flex-wrap: wrap; grid-column: 1 / -1; align-items: center; gap: 12px 18px; }
+.plan-notes__save p { margin: 0; color: var(--ob-muted); font-size: 14px; }
+
+@media (max-width: 900px) {
+ .today__accounts, .plan-notes { grid-template-columns: minmax(0, 1fr); }
+ .plan-opportunity { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+ .plan-opportunity > a { grid-column: 1 / -1; }
+ .plan-opportunity span:nth-of-type(odd) { padding-left: 0; border-left: 0; }
+}
+@media (max-width: 640px) {
+ .today__counts { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
+ .today__counts div:nth-child(3) { border-left: 0; }
+ .today-account { padding: 20px; }
+ .today-line { flex-direction: column; }
+ .today-line__when { justify-items: start; text-align: left; }
+ .plan-line { grid-template-columns: minmax(0, 1fr); }
+ .plan-line__buttons { grid-column: auto; justify-content: flex-start; }
+ .plan-opportunity { grid-template-columns: minmax(0, 1fr); }
+ .plan-opportunity span { padding-left: 0; border-left: 0; }
+}
