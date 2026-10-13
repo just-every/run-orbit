@@ -40,6 +40,8 @@ export async function todayJourney({first,second,evidence}){
  const start=new Date(Date.now()+86400000);start.setUTCMinutes(0,0,0);
  await files([['invite.ics','text/calendar',['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Fixture//EN','METHOD:REQUEST','BEGIN:VEVENT',`UID:${randomBytes(8).toString('hex')}@acme.test`,'SEQUENCE:0',`DTSTAMP:${stamp(new Date(Date.now()-600000))}`,`CREATED:${stamp(new Date(Date.now()-600000))}`,`DTSTART:${stamp(start)}`,`DTEND:${stamp(new Date(start.getTime()+1800000))}`,'SUMMARY:Renewal review call','ORGANIZER:mailto:owner@brief.test','ATTENDEE;CN=Ana Ruiz:mailto:ana@acme.test','ATTENDEE;CN=Sam Lee:mailto:sam@acme.test','STATUS:CONFIRMED','END:VEVENT','END:VCALENDAR'].join('\r\n')]]);
  await files([['unknown.eml','message/rfc822',['From: Pat Unknown <pat@unmatched.test>','To: owner@brief.test','Subject: Question about your product',`Date: ${new Date(Date.now()-3600000).toUTCString()}`,`Message-ID: <${randomBytes(8).toString('hex')}@unmatched.test>`,'','Is anyone there?'].join('\r\n')]],true);
+ // Before review, the captured invite is on Today as held, so the day is not shown as empty.
+ await page.goto('/app');await expect(page.locator('[data-line^="held-capture:"]')).toHaveCount(1);
  const proposals=(await(await api.get('/api/v1/capture/proposals?status=pending')).json()).proposals;
  for(const proposal of proposals.filter(p=>p.kind==='link_signal'))await post(`/api/v1/capture/proposals/${proposal.id}/accept`,{},200);
 
@@ -63,6 +65,8 @@ export async function todayJourney({first,second,evidence}){
  // AI-003: with no provider the summary shows its request and refuses to send; the brief is untouched.
  await page.getByRole('button',{name:'Summarise Acme Logistics with AI'}).click();
  await expect(page.getByText('AI is not configured. The brief above is complete without a summary.')).toBeVisible();await expect(page.getByRole('button',{name:'Send this request'})).toBeDisabled();
+ // Keyboard focus follows each swap: into the preview, back to its button on cancel, into a plan line's form and to the added action.
+ await expect(page.getByRole('heading',{name:'Request preview'})).toBeFocused();await page.getByRole('region',{name:'AI request for Acme Logistics'}).getByRole('button',{name:'Cancel'}).click();await expect(page.getByRole('button',{name:'Summarise Acme Logistics with AI'})).toBeFocused();
 
  // Meeting plan: attendees, unresolved attendee, notes that persist after sign-out, a next action from a plan line.
  await page.goto(meeting.planHref);
@@ -70,9 +74,9 @@ export async function todayJourney({first,second,evidence}){
  await expect(page.getByRole('link',{name:'Ana Ruiz'})).toBeVisible();const sam=page.locator('.plan-line--unresolved',{hasText:'sam@acme.test'});await expect(sam.getByRole('button',{name:'Create contact sam@acme.test'})).toBeVisible();await expect(sam.getByRole('link',{name:'Link by exact email'})).toBeVisible();
  await page.getByLabel('Agenda').fill('1. Renewal dates\n2. Owners');await page.getByLabel('Prep notes').fill('Bring the usage report');
  await page.getByRole('button',{name:'Save plan as note'}).click();await expect(page.getByText('Plan saved as a note.')).toBeVisible();
- const interaction=page.locator('.plan-line').filter({has:page.getByRole('link',{name:'Pricing request',exact:true})});await interaction.getByRole('button',{name:/Make next action/}).click();
+ const interaction=page.locator('.plan-line').filter({has:page.getByRole('link',{name:'Pricing request',exact:true})});await interaction.getByRole('button',{name:/Make next action/}).click();await expect(interaction.getByLabel('Next action')).toBeFocused();
  await interaction.getByLabel('Next action').fill('Send the usage report');await interaction.getByLabel('Due (your time, optional)').fill(new Date(Date.now()-86400000-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16));
- await interaction.getByRole('button',{name:'Add next action'}).click();await expect(page.getByRole('link',{name:'Next action added'})).toBeVisible();
+ await interaction.getByRole('button',{name:'Add next action'}).click();await expect(page.getByRole('link',{name:'Next action added'})).toBeFocused();
  await page.getByRole('button',{name:'Create contact sam@acme.test'}).click();await expect(page.getByRole('button',{name:'Create contact sam@acme.test'})).toHaveCount(0);await expect(page.getByRole('link',{name:'sam@acme.test'})).toBeVisible();
  await page.getByRole('button',{name:'Sign out'}).click();await page.waitForURL(/signin|\/$/);
  expect((await api.get('/api/v1/today')).status()).toBe(401);

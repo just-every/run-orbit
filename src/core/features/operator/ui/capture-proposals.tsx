@@ -1,4 +1,5 @@
 import {useCallback,useState} from 'react';
+import {ScrollToHash} from './hash-target';
 import {OperatorState} from './operator-shell';
 import {useOperatorResource} from './use-operator-resource';
 
@@ -46,8 +47,9 @@ export function CaptureProposals({recordType,recordId,onChanged}:{recordType?:st
  return <section className="operator-surface operator-detail__section" aria-labelledby={`capture-proposals${recordId??''}`}><h2 id={`capture-proposals${recordId??''}`}>Proposed changes</h2>
   <p>Each change rests on the captured evidence shown with it. Nothing changes until a person accepts it.</p>
   {resource.loading&&<OperatorState>Loading proposed changes…</OperatorState>}{(error||resource.error)&&<OperatorState kind="error">{error||resource.error?.message}</OperatorState>}{status&&<OperatorState>{status}</OperatorState>}
+  <ScrollToHash ready={Boolean(resource.data)}/>
   {resource.data&&!proposals.length&&<p>No proposed changes are waiting.</p>}
-  {proposals.map(proposal=>{const e=proposal.details.evidence,editable=proposal.kind==='set_field'||proposal.kind==='create_contact';return <article className="operator-timeline__entry capture-proposal" key={proposal.id} aria-label={title(proposal)}>
+  {proposals.map(proposal=>{const e=proposal.details.evidence,editable=proposal.kind==='set_field'||proposal.kind==='create_contact';return <article id={`proposal-${proposal.id}`} className="operator-timeline__entry capture-proposal" key={proposal.id} aria-label={title(proposal)}>
    <h3>{title(proposal)}</h3>
    <p>From {e.sender??'unknown sender'} · {new Date(e.date).toLocaleString()} · {e.subject||'No subject'} · {e.source}{proposal.source_state==='disconnected'?' (disconnected source)':''}</p>
    {e.quote.length>0&&<blockquote className="capture-quote">{e.quote.map((line,index)=><p key={index}>{line}</p>)}</blockquote>}

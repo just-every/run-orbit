@@ -5,11 +5,13 @@ import {signalEntries,signalLinks,type RawLine} from './signal-lines';
 
 const LOOKBACK_DAYS=120;
 const followUp="(t.kind LIKE 'manual.%' OR t.kind IN ('action.completed','handoff.updated','handoff.accepted','draft.created'))";
+// The seller's own answer captured from their mailbox: a linked sent message on the same contact or opportunity at or after the signal.
+const capturedSent="NOT EXISTS(SELECT 1 FROM signals sent JOIN signal_links sl ON sl.signal_id=sent.id JOIN signal_links l ON l.record_type=sl.record_type AND l.record_id=sl.record_id WHERE l.signal_id=s.id AND l.record_type IN ('contact','opportunity') AND sent.type='email.sent' AND sent.occurred_at>=s.occurred_at)";
 
 /**
  * Overdue promises, computed from records only:
  * an accepted internal next action or an opportunity's next action past its due time,
- * a customer reply left unanswered beyond the awaiting-response interval,
+ * a customer reply left unanswered beyond the awaiting-response interval (an approved send, a logged call or meeting, a completed action or a captured sent message answers it),
  * a completed meeting with no next step logged after it, and a draft started and not sent.
  */
 export async function promiseLines(db:D1Database,now:Date,policy:BriefPolicy,limit:number):Promise<RawLine[]>{
@@ -21,12 +23,14 @@ export async function promiseLines(db:D1Database,now:Date,policy:BriefPolicy,lim
    AND EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=s.id)
    AND NOT EXISTS(SELECT 1 FROM signal_links l JOIN outbound_messages m ON (l.record_type='opportunity' AND m.opportunity_id=l.record_id) OR (l.record_type='contact' AND m.contact_id=l.record_id) WHERE l.signal_id=s.id AND m.approved_at>=s.occurred_at AND m.state NOT IN ('cancelled','failed'))
    AND NOT EXISTS(SELECT 1 FROM signal_links l JOIN timeline_entry_records r ON r.record_type=l.record_type AND r.record_id=l.record_id JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE l.signal_id=s.id AND t.actor_type='operator' AND t.kind IN ('manual.call','manual.meeting','action.completed') AND t.recorded_at>=s.occurred_at)
+   AND ${capturedSent}
    AND NOT EXISTS(SELECT 1 FROM signals later JOIN signal_links ll ON ll.signal_id=later.id JOIN signal_links l ON l.record_type=ll.record_type AND l.record_id=ll.record_id WHERE l.signal_id=s.id AND later.type='email.replied' AND (later.occurred_at>s.occurred_at OR (later.occurred_at=s.occurred_at AND later.id>s.id)))
    ORDER BY s.occurred_at LIMIT ?`).bind(from,at,limit).all<{id:string;subject:string|null;occurredAt:string}>(),
   db.prepare(`SELECT s.id,s.subject,s.occurred_at AS occurredAt FROM signals s WHERE s.type='meeting.completed' AND s.occurred_at>=? AND s.occurred_at<=?
    AND EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=s.id)
    AND NOT EXISTS(SELECT 1 FROM signal_links l JOIN timeline_entry_records r ON r.record_type=l.record_type AND r.record_id=l.record_id JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE l.signal_id=s.id AND t.actor_type='operator' AND ${followUp} AND t.recorded_at>=s.occurred_at)
    AND NOT EXISTS(SELECT 1 FROM signal_links l JOIN outbound_messages m ON l.record_type='opportunity' AND m.opportunity_id=l.record_id WHERE l.signal_id=s.id AND m.approved_at>=s.occurred_at)
+   AND ${capturedSent}
    ORDER BY s.occurred_at LIMIT ?`).bind(from,at,limit).all<{id:string;subject:string|null;occurredAt:string}>(),
   db.prepare("SELECT d.id,d.subject,d.created_at AS createdAt,d.updated_at AS updatedAt,d.is_stale AS stale,d.stale_reason AS staleReason,d.opportunity_id AS opportunityId,d.recipient_contact_id AS contactId FROM drafts d JOIN opportunities o ON o.id=d.opportunity_id WHERE o.lifecycle='open' AND NOT EXISTS(SELECT 1 FROM outbound_messages m WHERE m.draft_id=d.id AND m.state<>'cancelled') ORDER BY d.created_at LIMIT ?").bind(limit).all<{id:string;subject:string;createdAt:string;updatedAt:string;stale:number;staleReason:string|null;opportunityId:string;contactId:string|null}>()]);
  const signalIds=[...replies.results,...meetings.results].map(row=>row.id),[links,entries]=await Promise.all([signalLinks(db,signalIds),signalEntries(db,signalIds)]);

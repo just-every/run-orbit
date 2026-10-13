@@ -11,6 +11,6 @@ export async function todayRequest<T>(path:string,init?:{method?:string;body?:un
  return payload as T;
 }
 
-const prefixes:Record<BriefLine['kind'],string>={'reply':'Reply','meeting':'Meeting','signal':'Signal','handoff-due':'Next action due','next-action-due':'Next action due','reply-unanswered':'Reply unanswered','meeting-no-next-step':'No next step after meeting','draft-unsent':'Draft not sent','handoff-proposed':'Proposed handoff','unlinked-signal':'No matching record','unlinked-reply':'Reply without a thread'};
+const prefixes:Record<BriefLine['kind'],string>={'reply':'Reply','meeting':'Meeting','signal':'Signal','handoff-due':'Next action due','next-action-due':'Next action due','reply-unanswered':'Reply unanswered','meeting-no-next-step':'No next step after meeting','draft-unsent':'Draft not sent','handoff-proposed':'Proposed handoff','unlinked-signal':'No matching record','unlinked-reply':'Reply without a thread','held-capture':'Held for review'};
 const typeLabel=(type:string)=>type.replaceAll(/[._:-]+/g,' ').replace(/^./,letter=>letter.toUpperCase());
-export const linePrefix=(line:BriefLine)=>(line.kind==='meeting'||line.kind==='signal')&&line.signalType?typeLabel(line.signalType):prefixes[line.kind];
+export const linePrefix=(line:BriefLine)=>(line.kind==='meeting'||line.kind==='signal'||line.kind==='held-capture')&&line.signalType?typeLabel(line.signalType):prefixes[line.kind];

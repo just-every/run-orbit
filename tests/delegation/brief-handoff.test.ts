@@ -46,6 +46,20 @@ test('BRIEF-005 OUT-001 SIGNAL-009 an application reads the brief and a meeting 
   assert.ok(evidence.includes(reply)&&evidence.includes(meeting));assert.ok(!evidence.includes(secret)&&!read.brief.accounts.some(a=>a.name==='Hidden Co'));
   const plan=await reader.request(`/plan?target=signals/${meeting}`);assert.equal(plan.status,200);assert.equal((await plan.json()).plan.meeting.subject,'Renewal review');
   assert.equal((await reader.request(`/plan?target=signals/${secret}`)).status,404);
+  // A contact shared with the ungranted deal, and an unknown attendee at its domain, open nothing outside the grant.
+  const ana=(await db.prepare('SELECT contact_id AS id FROM opportunity_contacts WHERE opportunity_id=?').bind(selected).first<{id:string}>())!.id;
+  const hiddenCompany=(await db.prepare('SELECT company_id AS id FROM opportunities WHERE id=?').bind(hidden).first<{id:string}>())!.id,ben=(await db.prepare('SELECT contact_id AS id FROM opportunity_contacts WHERE opportunity_id=?').bind(hidden).first<{id:string}>())!.id;
+  await t.json(`/api/v1/records/opportunity/${hidden}`,{method:'PUT',body:{contact_ids:[ben,ana],primary_contact_id:ben,title:'Private deal',stage_id:(await db.prepare('SELECT stage_id AS id FROM opportunities WHERE id=?').bind(hidden).first<{id:string}>())!.id,company_id:hiddenCompany,value_cents:500000,owner_id:t.actor,custom_fields:{}}},200);
+  await t.json(`/api/v1/records/company/${hiddenCompany}`,{method:'PUT',body:{name:'Hidden Co',primary_domain:'hidden.test',custom_fields:{}}},200);
+  const draft=(await t.json<{id:string}>(`/api/v1/workbench/opportunities/${hidden}/drafts`,{body:{contactId:ana,subject:'Confidential acquisition terms',body:'Numbers.'}},201)).id;
+  const at=(ms:number)=>new Date(Date.now()+ms).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,''),files=new FormData();
+  files.append('files',new File([['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Fixture//EN','METHOD:REQUEST','BEGIN:VEVENT',`UID:${random().slice(0,16)}@selected.test`,'SEQUENCE:0',`DTSTAMP:${at(-600000)}`,`DTSTART:${at(86400000)}`,`DTEND:${at(88200000)}`,'SUMMARY:Shared review',`ORGANIZER:mailto:${t.actor.toLowerCase()}@seller.test`,'ATTENDEE:mailto:ana@selected.test','ATTENDEE:mailto:cy@hidden.test','STATUS:CONFIRMED','END:VEVENT','END:VCALENDAR'].join('\r\n')],'invite.ics',{type:'text/calendar'}));
+  await t.json('/api/v1/capture/imports',{form:files},201);
+  const shared=(await db.prepare("SELECT id FROM signals WHERE subject='Shared review'").first<{id:string}>())!.id;
+  await t.json(`/api/v1/capture/proposals/${(await db.prepare("SELECT id FROM capture_proposals WHERE signal_id=? AND kind='link_signal'").bind(shared).first<{id:string}>())!.id}/accept`,{body:{}},200);
+  const sharedPlan=await reader.request(`/plan?target=signals/${shared}`),sharedText=await sharedPlan.clone().text();assert.equal(sharedPlan.status,200,sharedText);
+  for(const leak of [hidden,hiddenCompany,draft,'Confidential acquisition terms','Hidden Co'])assert.ok(!sharedText.includes(leak),`the plan discloses nothing outside the grant: ${leak}`);
+  assert.deepEqual((await sharedPlan.json()).plan.unresolved,[{email:'cy@hidden.test',company:null}]);
   const before=await counts();
   assert.equal((await handoff(reader.request,'read-only',{evidence:[reply]})).status,403);
   assert.deepEqual(await counts(),before);

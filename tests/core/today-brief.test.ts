@@ -70,6 +70,12 @@ test('BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one bri
  assert.deepEqual(byKind(next,'reply-unanswered'),[]);
  await t.json(`/api/v1/records/opportunity/${bright}/entries`,{body:{kind:'note',text:'Agreed pilot scope; next step is the review.',occurredAt:new Date().toISOString()}},200);
  assert.deepEqual(byKind(await t.brief(),'meeting-no-next-step'),[]);
+ // The seller's own answer, captured from their mailbox and linked, answers a captured customer reply.
+ await t.opportunity('Eden renewal','Eden Foods','Eve Hart','eve@eden.test');
+ const capture=async(from:string,to:string,ageDays:number)=>{const files=new FormData();files.append('files',new File([eml({From:from,To:to,Subject:'Re: renewal terms',Date:new Date(Date.now()-ageDays*86400000).toUTCString(),'Message-ID':`<${createId()}@capture.test>`},'Renewal terms.')],'mail.eml',{type:'message/rfc822'}));await t.json('/api/v1/capture/imports',{form:files},201);
+  for(const proposal of (await t.json<{proposals:{id:string;kind:string}[]}>('/api/v1/capture/proposals')).proposals.filter(p=>p.kind==='link_signal'))await t.json(`/api/v1/capture/proposals/${proposal.id}/accept`,{body:{}},200);};
+ await capture('Eve Hart <eve@eden.test>',`${t.actor.toLowerCase()}@seller.test`,9);assert.deepEqual(byKind(await t.brief(),'reply-unanswered').map(l=>l.title),['Re: renewal terms']);
+ await capture(`${t.actor.toLowerCase()}@seller.test`,'Eve Hart <eve@eden.test>',0);assert.deepEqual(byKind(await t.brief(),'reply-unanswered'),[]);
 });
 
 test('BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief',async()=>{
@@ -109,8 +115,8 @@ test('BRIEF-004 RECORD-010 OUT-001 a booked meeting gets a cited plan with unres
  const invite=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Fixture//EN','METHOD:REQUEST','BEGIN:VEVENT',`UID:${createId()}@delta.test`,'SEQUENCE:0',`DTSTAMP:${stamp(new Date(Date.now()-600000))}`,`CREATED:${stamp(new Date(Date.now()-600000))}`,`DTSTART:${stamp(start)}`,`DTEND:${stamp(new Date(start.getTime()+1800000))}`,'SUMMARY:Delta rollout review',`ORGANIZER:mailto:${t.actor.toLowerCase()}@seller.test`,'ATTENDEE;CN=Mia Stone:mailto:mia@delta.test','ATTENDEE;CN=Sam New:mailto:sam@delta.test','STATUS:CONFIRMED','END:VEVENT','END:VCALENDAR'].join('\r\n');
  const files=new FormData();files.append('files',new File([invite],'invite.ics',{type:'text/calendar'}));await t.json('/api/v1/capture/imports',{form:files},201);
  const meeting=(await db.prepare("SELECT s.id FROM signals s JOIN capture_items i ON i.signal_id=s.id WHERE s.subject='Delta rollout review'").first<{id:string}>())!.id;
- // Held for review until a person accepts the link; then the plan exists.
- assert.equal((await t.call(`/api/v1/today/meetings/${meeting}`)).status,409);
+ // Held for review until a person accepts the link: listed in the brief as held, and the plan exists only after.
+ assert.equal((await t.call(`/api/v1/today/meetings/${meeting}`)).status,409);assert.ok((await t.brief()).held.some(line=>line.evidence.id===meeting&&line.kind==='held-capture'));
  const proposal=(await db.prepare("SELECT id FROM capture_proposals WHERE signal_id=? AND kind='link_signal'").bind(meeting).first<{id:string}>())!.id;
  await t.json(`/api/v1/capture/proposals/${proposal}/accept`,{body:{}},200);
  const before={drafts:await count('SELECT count(*) AS n FROM drafts'),messages:await count('SELECT count(*) AS n FROM outbound_messages')};

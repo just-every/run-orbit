@@ -890,7 +890,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "7d2890f0d3740d9b2cd45e34332b6498f27729a16f8753214cb56dfb520d1cf2",
+      "sha256": "ea4afdbbfd5c98098f832e23fb5343d7a44ca1974f665a82a2f5a32359115ae4",
       "executable": false
     },
     "deploy-site.json": {
@@ -3934,7 +3934,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/capture-proposals.tsx": {
-      "sha256": "88437077c0ffffdebb7abd986b2de164dfe257a7ac816191bc4ac022fa74a7e7",
+      "sha256": "d1c0ec431777db77a8beb1864ec6d6dd80dc27b9365bffb43386af412efb9381",
       "executable": false
     },
     "src/core/features/operator/ui/capture-provider-form.tsx": {
@@ -4038,7 +4038,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/meeting-plan-page.tsx": {
-      "sha256": "efc8c8628b59a89f471204bc391ca2b33bcf744402c22b818d4404b3b23cc6d7",
+      "sha256": "79504c401347cca11c9b5b4f7796ca741749290fd8657e6c99cee73696d3ca89",
       "executable": false
     },
     "src/core/features/operator/ui/message-history.tsx": {
@@ -4146,15 +4146,15 @@
       "executable": false
     },
     "src/core/features/operator/ui/today-api.ts": {
-      "sha256": "a906e8b24e1fa1647a7438203d5dd9c18c08c3a6561733d3d0f8c7cde70af465",
+      "sha256": "4306d1d62f2bba3333b1d1a91d0e458028d3faac22d2aabcb6a76ab19605615e",
       "executable": false
     },
     "src/core/features/operator/ui/today-brief.tsx": {
-      "sha256": "763970f208d683d71d78b04f0b80b1ae23ea0b30959fe53cd5c3966220247419",
+      "sha256": "877f2932ba7fcb6046967aa3c68611938f364cd7983a3c82088a823ab26eb12e",
       "executable": false
     },
     "src/core/features/operator/ui/today-summary.tsx": {
-      "sha256": "c5875db3b7082daf4927252a4fbeab4c546f0b5fd7d5dbb853f3cde0f8ee7a1d",
+      "sha256": "5af6562cf62431708ddc9f27c37fd3ff86552fb02361cbc7b4bb642a857e3217",
       "executable": false
     },
     "src/core/features/operator/ui/today.css": {
@@ -4786,7 +4786,7 @@
       "executable": false
     },
     "src/core/features/today/brief.ts": {
-      "sha256": "9262127d07e6b422fa4ce71540cd7eeef044db4e31ad06f47912b06f7bebd05d",
+      "sha256": "05a4b5e16b07c842a98e3857cc8e28f0aa0c98053aba37d7212e028a4c1109b2",
       "executable": false
     },
     "src/core/features/today/errors.ts": {
@@ -4802,7 +4802,7 @@
       "executable": false
     },
     "src/core/features/today/meeting-plan.ts": {
-      "sha256": "76ed88e0d9cbe6987a1eec50b7b4bb5c26691adfe52639fb79cd9800be9b06f1",
+      "sha256": "74dc80b595a9135b92ca4939d33522b2930486a9f47f6173a9e803b60bc0ae69",
       "executable": false
     },
     "src/core/features/today/plan-actions.ts": {
@@ -4810,7 +4810,7 @@
       "executable": false
     },
     "src/core/features/today/promises.ts": {
-      "sha256": "4bc8c076634093d313837cb14f084eb6ea7cead14e743a3ac041c279084ab2e7",
+      "sha256": "cd7ee972b17efe7d1ab3e3ea28171151e7ea7d4546f825251af1f19247265874",
       "executable": false
     },
     "src/core/features/today/routes.ts": {
@@ -4826,11 +4826,11 @@
       "executable": false
     },
     "src/core/features/today/types.ts": {
-      "sha256": "1fc73fbbebacb21e520df2b6b73500212f51603f5ab2968e9e4886abd2492577",
+      "sha256": "a02fd917543e9cc31c4d4f0cf482b21297050b20ad7c4f24cd085f122a9c2095",
       "executable": false
     },
     "src/core/features/today/unresolved.ts": {
-      "sha256": "30fb6ba1da11eb64ba262c3d98ab00b81e0b6564f7a0d9a46672e071b39dd868",
+      "sha256": "2cd6285e048527be2b9099751259250e18d20b22bf561cf612bf99e552a24ea8",
       "executable": false
     },
     "src/core/features/today/window.ts": {
@@ -6106,7 +6106,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "403b1868eaae92cad1bb85d8a648cd027368b8a8929b519449a000e474999e99",
+      "sha256": "dcc7b25ceeafbf502f7af88f5e5470b0d4235d16505c431f450e027ee21fd3cd",
       "executable": false
     },
     "tests/core/workbench.test.ts": {
@@ -6138,7 +6138,7 @@
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {
-      "sha256": "90593bc044637e1c10061b1ce758d1b8c1f652eaef88b77631e83f6b00087947",
+      "sha256": "bb04823d2ec7bcfe7aa4da516904cb37426818c349a6b4cd34cd500953160976",
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
@@ -6162,7 +6162,7 @@
       "executable": false
     },
     "tests/delegation/brief-handoff.test.ts": {
-      "sha256": "d38f97513f79502d043b06d2b06490294672b97dde2dd512548bbf24d9bb2c3b",
+      "sha256": "27417a57602e663e9640deec8874458bf2cd3a71e89acca503dd8b356e54de9d",
       "executable": false
     },
     "tests/delegation/browser-fixture-mode.test.ts": {

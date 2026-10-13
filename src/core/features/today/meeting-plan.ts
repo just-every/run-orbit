@@ -1,8 +1,8 @@
 import {companyDomainKey,contactEmailKey} from '../records/identity';
 import type {BriefLine,RecordRef} from './types';
-import {buildBrief} from './brief';
+import {buildBrief,withinGrant} from './brief';
 import {TodayError} from './errors';
-import {entryHref,recordHref} from './links';
+import {entryHref,planHref,recordHref} from './links';
 import {signalLinks} from './signal-lines';
 
 const interactionKinds="(t.kind IN ('signal.recorded','action.completed','draft.created') OR t.kind LIKE 'manual.%' OR t.kind LIKE 'handoff.%' OR t.kind LIKE 'message%' OR t.kind LIKE 'outbound%')";
@@ -52,14 +52,16 @@ async function opportunitiesFor(db:D1Database,ids:string[]){
  return (await db.prepare('SELECT o.id,o.title,o.lifecycle,o.value_cents AS valueCents,p.name AS stage,op.display_name AS owner FROM opportunities o JOIN pipeline_stages p ON p.id=o.stage_id LEFT JOIN operators op ON op.id=o.owner_id WHERE o.id IN (SELECT value FROM json_each(?)) ORDER BY o.title,o.id').bind(JSON.stringify(ids)).all<{id:string;title:string;lifecycle:string;valueCents:number;stage:string;owner:string|null}>()).results.map(row=>({...row,href:recordHref({type:'opportunity',id:row.id})}));
 }
 
-async function interactions(db:D1Database,refs:RecordRef[]):Promise<PlanLine[]>{
- const rows=(await db.prepare(`SELECT t.id,t.kind,t.occurred_at AS occurredAt,t.payload_json AS payload,r.record_type AS type,r.record_id AS recordId FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id
-  WHERE r.record_type||':'||r.record_id IN (SELECT value FROM json_each(?)) AND ${interactionKinds} ORDER BY t.occurred_at DESC,t.id LIMIT 24`).bind(JSON.stringify(refs.map(refKey))).all<{id:string;kind:string;occurredAt:string;payload:string;type:RecordRef['type'];recordId:string}>()).results;
- const seen=new Set<string>(),lines:PlanLine[]=[];
+async function interactions(db:D1Database,refs:RecordRef[],allowed:(ref:RecordRef)=>boolean):Promise<PlanLine[]>{
+ const keys=new Set(refs.map(refKey));
+ const rows=(await db.prepare(`SELECT t.id,t.kind,t.occurred_at AS occurredAt,t.payload_json AS payload,(SELECT json_group_array(json_object('type',a.record_type,'id',a.record_id)) FROM timeline_entry_records a WHERE a.timeline_entry_id=t.id) AS records FROM timeline_entries t
+  WHERE EXISTS(SELECT 1 FROM timeline_entry_records r WHERE r.timeline_entry_id=t.id AND r.record_type||':'||r.record_id IN (SELECT value FROM json_each(?))) AND ${interactionKinds} ORDER BY t.occurred_at DESC,t.id LIMIT 200`).bind(JSON.stringify([...keys])).all<{id:string;kind:string;occurredAt:string;payload:string;records:string}>()).results;
+ const lines:PlanLine[]=[];
  for(const row of rows){
-  if(seen.has(row.id))continue;seen.add(row.id);
+  const records=JSON.parse(row.records) as RecordRef[],record=records.find(ref=>keys.has(refKey(ref))&&allowed(ref));
+  if(!record||!withinGrant(records,allowed))continue;
   const payload=JSON.parse(row.payload) as Record<string,unknown>,text=typeof payload.text==='string'?payload.text.split('\n')[0]:null;
-  lines.push({id:`entry:${row.id}`,title:(typeof payload.subject==='string'&&payload.subject)||text||kindLabel(row.kind),detail:kindLabel(row.kind),occurredAt:row.occurredAt,href:entryHref({type:row.type,id:row.recordId},row.id),evidence:{type:'timeline',id:row.id},record:{type:row.type,id:row.recordId}});
+  lines.push({id:`entry:${row.id}`,title:(typeof payload.subject==='string'&&payload.subject)||text||kindLabel(row.kind),detail:kindLabel(row.kind),occurredAt:row.occurredAt,href:entryHref(record,row.id),evidence:{type:'timeline',id:row.id},record});
   if(lines.length===8)break;
  }
  return lines;
@@ -74,20 +76,23 @@ export async function planNote(db:D1Database,signalId:string,target:RecordRef){
 
 /** Everything a person needs before a meeting, each line citing the record or timeline entry it rests on. */
 export async function buildMeetingPlan(db:D1Database,signalId:string,input:{operatorId:string;now?:Date;allowed?:(ref:RecordRef)=>boolean}){
- const context=await meetingContext(db,signalId),{signal,links}=context,allowed=input.allowed??(()=>true);
- const found=await attendees(db,context.participants,links),people={...found,resolved:found.resolved.filter(person=>allowed({type:'contact',id:person.contact.id})).map(person=>({...person,opportunities:person.opportunities.filter(o=>allowed({type:'opportunity',id:o.id}))}))};
- const opportunityIds=[...new Set([...links.filter(ref=>ref.type==='opportunity'&&allowed(ref)).map(ref=>ref.id),...people.resolved.flatMap(person=>person.opportunities.map(o=>o.id))])];
+ const context=await meetingContext(db,signalId),{signal}=context,allowed=input.allowed??(()=>true),links=context.links.filter(allowed);
+ // An application sees only its granted records: no company guessed from an unknown address, none it was not granted.
+ const found=await attendees(db,context.participants,context.links),people={
+  resolved:found.resolved.filter(person=>allowed({type:'contact',id:person.contact.id})).map(person=>({...person,company:person.company&&allowed({type:'company',id:person.company.id})?person.company:null,opportunities:person.opportunities.filter(o=>allowed({type:'opportunity',id:o.id}))})),
+  unresolved:input.allowed?found.unresolved.map(person=>({email:person.email,company:null})):found.unresolved};
+ const opportunityIds=[...new Set([...links.filter(ref=>ref.type==='opportunity').map(ref=>ref.id),...people.resolved.flatMap(person=>person.opportunities.map(o=>o.id))])];
  const opportunities=(await opportunitiesFor(db,opportunityIds)).map(row=>({...row,linked:links.some(ref=>ref.type==='opportunity'&&ref.id===row.id)}));
  const refs:RecordRef[]=[...links,...people.resolved.map(p=>({type:'contact' as const,id:p.contact.id})),...people.resolved.flatMap(p=>p.company?[{type:'company' as const,id:p.company.id}]:[]),...opportunityIds.map(id=>({type:'opportunity' as const,id}))];
- const keys=new Set(refs.map(refKey)),brief=await buildBrief(db,{operatorId:input.operatorId,now:input.now});
- const promises=brief.accounts.flatMap(account=>account.lines).filter((line:BriefLine)=>(line.group==='promise'||line.group==='proposal')&&line.records.some(ref=>keys.has(refKey(ref)))&&line.records.some(allowed));
- const primary=links.find(ref=>ref.type==='opportunity')?.id??null;
+ const keys=new Set(refs.map(refKey)),brief=await buildBrief(db,{operatorId:input.operatorId,now:input.now,visible:input.allowed?{record:allowed,signal:()=>false}:undefined});
+ const promises=brief.accounts.flatMap(account=>account.lines).filter((line:BriefLine)=>(line.group==='promise'||line.group==='proposal')&&line.records.some(ref=>keys.has(refKey(ref))));
+ const noteTarget=allowed(context.noteTarget)?context.noteTarget:links.find(ref=>ref.type==='opportunity')??links[0]??null;
  return {
   meeting:{signalId:signal.id,status:signal.type.split('.')[1],subject:signal.subject??'Meeting',occurredAt:signal.occurredAt,start:context.start,end:context.end,source:signal.sourceName,
-   href:recordHref(context.noteTarget)},
-  attendees:people.resolved,unresolved:people.unresolved,opportunities,primaryOpportunityId:primary,
+   href:noteTarget?recordHref(noteTarget):planHref(signal.id)},
+  attendees:people.resolved,unresolved:people.unresolved,opportunities,primaryOpportunityId:links.find(ref=>ref.type==='opportunity')?.id??null,
   openValueCents:opportunities.filter(row=>row.lifecycle==='open').reduce((sum,row)=>sum+row.valueCents,0),
-  interactions:(await interactions(db,refs.filter(allowed))),promises,noteTarget:context.noteTarget,note:allowed(context.noteTarget)?await planNote(db,signalId,context.noteTarget):null,
+  interactions:await interactions(db,refs,allowed),promises,noteTarget,note:noteTarget?await planNote(db,signalId,noteTarget):null,
  };
 }
 export type MeetingPlan=Awaited<ReturnType<typeof buildMeetingPlan>>;

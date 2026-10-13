@@ -1,8 +1,8 @@
 export type RecordType='contact'|'company'|'opportunity';
 export interface RecordRef {type:RecordType;id:string}
 export type EvidenceType='signal'|'timeline'|'draft'|'handoff'|'opportunity'|'unlinked-reply';
-export type LineKind='reply'|'meeting'|'signal'|'handoff-due'|'next-action-due'|'reply-unanswered'|'meeting-no-next-step'|'draft-unsent'|'handoff-proposed'|'unlinked-signal'|'unlinked-reply';
-export type LineGroup='new'|'promise'|'proposal'|'unresolved';
+export type LineKind='reply'|'meeting'|'signal'|'handoff-due'|'next-action-due'|'reply-unanswered'|'meeting-no-next-step'|'draft-unsent'|'handoff-proposed'|'unlinked-signal'|'unlinked-reply'|'held-capture';
+export type LineGroup='new'|'promise'|'proposal'|'unresolved'|'held';
 
 /** One brief line. It exists only with the evidence it rests on and a link to that record or timeline entry. */
 export interface BriefLine {
@@ -14,7 +14,7 @@ export interface BriefAccount {key:string;type:RecordType;id:string;name:string;
 export interface Brief {
  generatedAt:string;since:string;sinceBasis:'seen'|'stale-interval';
  policy:{staleIntervalDays:number;awaitingResponseWorkingDays:number;timezone:string};
- accounts:BriefAccount[];unresolved:BriefLine[];
- counts:{replies:number;meetings:number;observed:number;inferred:number;promises:number;proposals:number;unresolved:number};
+ accounts:BriefAccount[];unresolved:BriefLine[];held:BriefLine[];
+ counts:{replies:number;meetings:number;observed:number;inferred:number;promises:number;proposals:number;unresolved:number;held:number};
  truncated:boolean;
 }
