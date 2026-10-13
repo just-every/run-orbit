@@ -1,3 +1,15 @@
+<p align="center">
+  <a href="https://run-orbit.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.webp">
+      <source media="(prefers-color-scheme: light)" srcset=".github/assets/banner-light.webp">
+      <img src=".github/assets/banner-light.webp" width="100%" alt="Orbit: Your next deal finds you. 100% free, open source alternative to HubSpot, Pipedrive and Salesforce.">
+    </picture>
+  </a>
+</p>
+
+<p align="center"><a href="https://run-orbit.com">run-orbit.com</a> · <a href="https://justevery.com">Part of Just Every</a> · <a href="LICENSE">MIT licensed</a></p>
+
 # Orbit
 
 Orbit is the Sales edition for account selling guided by customer evidence. Its interface keeps stage, owner, score, queue and message state separate, and operators review every customer message before it is sent.
