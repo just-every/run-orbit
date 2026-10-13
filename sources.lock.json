@@ -809,6 +809,14 @@
     }
   ],
   "files": {
+    ".github/assets/banner-dark.webp": {
+      "sha256": "a3ef7d3ebc00cef7cebf8fb68806c8a5e079c69dafedee58ca844b431028b907",
+      "executable": false
+    },
+    ".github/assets/banner-light.webp": {
+      "sha256": "13355a862ef136ef935335c22c2be4d6a3469b1e1defb503d2bf95c04b08a188",
+      "executable": false
+    },
     ".github/workflows/edition.yml": {
       "sha256": "a450f3b72bd85ba314073a2af7bfd30039f6bc082a727937cc53ca40c1fb9efe",
       "executable": false
@@ -2638,7 +2646,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "d292cb521522a92f6a66b809bc849c686b5e80a19945f36b1cf6cfe5d53ed2e4",
+      "sha256": "341ac4bbb5520358a95447ca77f323fe00b66104271a3c2169c78757e178b3d5",
       "executable": false
     },
     "RECORD-POLICIES.md": {
