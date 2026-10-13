@@ -10,7 +10,7 @@ export interface MessageFact extends FactBase {
  kind:'message';messageId:string;sender:Mailbox|null;references:string;autoReply:boolean;
  bounce:Bounce|null;forwarded:Mailbox|null;unsubscribe:string|null;phone:{value:string;line:string}|null;senderLine:string;
 }
-export interface EventFact extends FactBase {kind:'event';uid:string;recurrenceId:string|null;sequence:number;phase:'booked'|'completed'|'cancelled';start:string|null;end:string|null}
+export interface EventFact extends FactBase {kind:'event';uid:string;recurrenceId:string|null;originalAt:string|null;sequence:number;phase:'booked'|'completed'|'cancelled';start:string|null;end:string|null}
 export type Fact = MessageFact | EventFact;
 export type Read = {fact:Fact} | {skip:string};
 
@@ -47,6 +47,15 @@ function deliveryReport(status:string|undefined,returned:[string,string][]|undef
   originalMessageId:returned?.find(([name])=>name==='message-id')?.[1]?.trim()??null,diagnostic:limit(field('Diagnostic-Code'),500)};
 }
 const unsubscribeRequest=/\b(unsubscribe|remove me from (your|this|the) (mailing )?list|stop (emailing|contacting|e-mailing) me|do not (email|e-mail|contact) me( again)?|opt[ -]?out)\b/i;
+function unsubscribeQuote(lines:string[]){
+ for(const line of lines){
+  const match=unsubscribeRequest.exec(line);if(!match)continue;
+  // Search the entire fresh line, but save only the request and nearby context.
+  const start=Math.max(0,match.index-100),end=Math.min(line.length,match.index+match[0].length+100);
+  return `${start?'…':''}${line.slice(start,end).trim()}${end<line.length?'…':''}`;
+ }
+ return null;
+}
 
 export async function readMessage(raw:string,now=Date.now()):Promise<Read>{
  const message=parseMessage(raw),messageId=message.header('message-id')?.trim()??'';
@@ -60,7 +69,7 @@ export async function readMessage(raw:string,now=Date.now()):Promise<Read>{
  const bounce=contentType.params['report-type']==='delivery-status'||message.deliveryStatus?deliveryReport(message.deliveryStatus,message.returnedHeaders):null;
  const forwarded=/^\s*(fwd?|fw)\s*:/i.test(subject)?forwardedSender(text):null;
  const participants:Participant[]=[...(sender?[{...sender,role:'from' as const}]:[]),...mailboxes(message.headerAll('to').join(',')).map(m=>({...m,role:'to' as const})),...mailboxes(message.headerAll('cc').join(',')).map(m=>({...m,role:'cc' as const})),...(forwarded?[{...forwarded,role:'forwarded' as const}]:[])];
- const unsubscribe=[subject,...fresh].find(line=>unsubscribeRequest.test(line))??null;
+ const unsubscribe=unsubscribeQuote([message.header('subject')??'',...fresh]);
  const phoneLine=fresh.find(line=>/^(tel|phone|mobile|cell|direct)\s*[:.]\s*\+?\d[\d ().-]{6,}\d$/i.test(line.trim()));
  const headers=limit(message.headers.map(([name,value])=>`${name}: ${value}`).join('\n'),32768);
  return {fact:{kind:'message',eventId:await hashed('message',messageId),hash:await payloadHash(canonical(raw)),occurredAt:new Date(date).toISOString(),subject,participants,headers,body:limit(text,100000),
@@ -82,7 +91,7 @@ export async function readCalendar(raw:string,now=Date.now()):Promise<Read[]>{
   const phaseId=(value:string)=>hashed('event',[event.uid,event.recurrenceId??'',event.sequence,value,...(event.revision?[event.revision]:[])].join('\n'));
   return {fact:{kind:'event',eventId:await phaseId(phase),hash:await payloadHash(canonical(event.method+'\n'+event.raw)),
    occurredAt,subject:limit(event.summary||'Meeting',2000),participants,headers:limit(`METHOD: ${event.method}\nUID: ${event.uid}\nSEQUENCE: ${event.sequence}\nSTATUS: ${event.status}${event.revision?`\nX-ORBIT-PROVIDER-REVISION: ${event.revision}`:''}`,32768),body:limit(event.raw,100000),
-   quote:[limit(event.summary,300),...when].filter(Boolean),uid:event.uid,recurrenceId:event.recurrenceId,sequence:event.sequence,phase,start:event.start,end:event.end}};
+   quote:[limit(event.summary,300),...when].filter(Boolean),uid:event.uid,recurrenceId:event.recurrenceId,originalAt:event.created??event.stamp,sequence:event.sequence,phase,start:event.start,end:event.end}};
  }));
 }
 

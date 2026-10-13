@@ -1,9 +1,11 @@
 import {captureImportErasure,withdrawRelatedImportCopies,eraseImportedContact} from '../imports/erasure';
 import {captureErasureStatements as capturePrivacyErasureStatements} from '../capture/privacy';
+import {retainedEvidenceIdentityMatch,retainedEvidenceIdentityPatterns} from '../capture/privacy-evidence';
 import { privacyMatcher, suppressionProof } from './suppression';
 import { identityMatch, identityPatterns } from './erasure-identity';
 import { executeArchiveErasure } from './archive-erasure';
 import { captureErasureStatements } from './capture-erasure';
+import { capturedValueErasureStatements } from './capture-value-erasure';
 import { evaluationStatements } from '../workbench/evaluation-repository';
 import { createId } from '../../shared/ids';
 import { audit, RecordError, requireRecord, type RecordKind } from './shared';
@@ -25,12 +27,12 @@ export class DataRepository {
    const aliases=(await db.prepare("SELECT identity_key FROM record_aliases WHERE record_type='contact' AND survivor_id=?").bind(id).all<{identity_key:string}>()).results.map(row=>row.identity_key);
    const identities=[...new Set([record.email,...aliases].filter((value):value is string=>typeof value==='string'&&value.length>0))];
    contactEmails=identities;
+   statements.push(...await capturedValueErasureStatements(db,id,identities));
    const match=identities.length?await privacyMatcher(db,statements):undefined;
    if(match)for(const email of identities)for(const token of await match(email))statements.push(suppressionProof(db,token,"EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')",[id]));
    statements.push(db.prepare("INSERT OR IGNORE INTO record_erasure_signals SELECT ?,signal_id FROM signal_links WHERE record_type='contact' AND record_id=?").bind(id,id));
-   for(const value of identities)statements.push(db.prepare(`INSERT OR IGNORE INTO record_erasure_signals SELECT ?,id FROM signals WHERE ${identityMatch('payload_json')}`).bind(id,...identityPatterns(value)));
-   // A contact can occur only in Reply-To or quoted history, outside the signal summary. Erase the whole original.
-   for(const value of identities)statements.push(db.prepare(`INSERT OR IGNORE INTO record_erasure_signals SELECT ?,signal_id FROM capture_items WHERE ${identityMatch('headers')} OR ${identityMatch('body')}`).bind(id,...identityPatterns(value),...identityPatterns(value)));
+   // A mailbox may appear only in a retained proposal excerpt or reviewed value. Erase the whole original.
+   for(const value of identities)statements.push(db.prepare(`INSERT OR IGNORE INTO record_erasure_signals SELECT ?,s.id FROM signals s WHERE ${retainedEvidenceIdentityMatch}`).bind(id,...retainedEvidenceIdentityPatterns(value)));
    statements.push(...await capturePrivacyErasureStatements(db,id,identities,match));
    statements.push(db.prepare(`DELETE FROM unlinked_signals WHERE signal_id IN (${signalIds})`).bind(id));
    statements.push(db.prepare("UPDATE audit_entries SET entity_id='erased',details_json='{}' WHERE entity_type='contact' AND entity_id IN(SELECT retired_id FROM record_merge_claims WHERE record_type='contact' AND survivor_id=?)").bind(id),db.prepare("UPDATE audit_entries SET details_json='{}' WHERE EXISTS(SELECT 1 FROM record_merge_claims m WHERE m.record_type='contact' AND m.survivor_id=? AND instr(audit_entries.details_json,m.retired_id)>0)").bind(id));

@@ -7,7 +7,8 @@ export function captureErasureStatements(db:D1Database,contactId:string,actor:st
  const person=[contactId,contactId,contactId];
  return [
   // Accepted field, contact, stop and queue changes copy evidence without a signalId.
-  // Remove that whole evidence entry, leaving the accepted record value intact.
+  // Remove that whole evidence entry. Destination text is separately redacted
+  // only where it contains an erased mailbox, preserving the accepted decision.
   db.prepare(`DELETE FROM timeline_entries WHERE json_extract(payload_json,'$.proposalId') IN(${proposals})`).bind(...person),
   db.prepare(`UPDATE audit_entries SET entity_id='erased',details_json='{}' WHERE entity_type='capture_proposal' AND entity_id IN(${proposals})`).bind(...person),
   db.prepare(`UPDATE audit_entries SET details_json='{}' WHERE json_extract(details_json,'$.proposalId') IN(${proposals})`).bind(...person),

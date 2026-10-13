@@ -1,26 +1,24 @@
 import {payloadHash} from '../../platform/source-security';
 import {createId} from '../../shared/ids';
-import {identityMatch,identityPatterns} from '../records/erasure-identity';
 import {privacyMatcher,suppressionContextFence} from '../records/suppression';
-import {parseCalendar} from './ics';
+import {calendarPrivacyIdentity,storedCalendarPrivacyIdentity} from './privacy-calendar';
+import {retainedEvidenceText,retainedEvidenceIdentityMatch,retainedEvidenceIdentityPatterns} from './privacy-evidence';
 import type {Fact} from './facts';
 
 type Matcher=Awaited<ReturnType<typeof privacyMatcher>>;
-type CapturePrivacyEvidence=Pick<Fact,'kind'|'eventId'|'body'|'headers'|'participants'|'occurredAt'>;
 const mailboxAction='capture.erased_mailbox',itemAction='capture.erased_item';
 const skipped={result:'skipped' as const,reason:'Evidence was removed by contact erasure'};
 const erasureEpoch="SELECT COALESCE(MAX(rowid),0) FROM audit_entries WHERE action IN('capture.erased_item','capture.erased_mailbox')";
-/** An event's phases and revisions are copies of the same occurrence. Other occurrences remain eligible. */
-async function itemKeys(match:Matcher,kind:string,eventId:string,body:string){
- const event=kind==='event'?parseCalendar(body)[0]:undefined;
- const identity=event&& !('error' in event)?['calendar',event.uid,event.recurrenceId??'']:['message',eventId];
- return match(`capture-evidence-v1:${await payloadHash(JSON.stringify(identity))}`);
+async function itemKeys(match:Matcher,eventId:string,calendar:string[]|null=null){
+ // Also match the exact phase key saved by old truncated-calendar intake.
+ const identities=[['message',eventId],...(calendar?[calendar]:[])];
+ return (await Promise.all(identities.map(async identity=>match(`capture-evidence-v1:${await payloadHash(JSON.stringify(identity))}`)))).flat();
 }
-function mailboxes(fact:CapturePrivacyEvidence){
- // Include quoted history and Reply-To, exactly as the erasure scan does, not just the participant summary.
+function mailboxes(fact:Fact){
+ // Match all retained evidence, not only participants or the truncated original.
  // Walk out from each @: an allowed-character run without @ is never rescanned.
  // Each interval between @ signs is visited at most once from either end.
- const text=fact.headers+'\n'+fact.body,found:string[]=[];
+ const text=retainedEvidenceText(fact),found:string[]=[];
  for(let at=text.indexOf('@');at!==-1;at=text.indexOf('@',at+1)){
   let start=at,end=at+1;
   while(start>0&&/[a-z0-9.!#$%&'*+/=?^_`{|}~-]/i.test(text[start-1]!))start--;
@@ -33,12 +31,11 @@ function mailboxes(fact:CapturePrivacyEvidence){
  }
  return [...new Set([...found,...fact.participants.map(person=>person.email)].map(value=>value.toLowerCase()))];
 }
-export async function capturePrivacy(db:D1Database,fact:CapturePrivacyEvidence){
- const match=await privacyMatcher(db),keys=await itemKeys(match,fact.kind,fact.eventId,fact.body);
+export async function capturePrivacy(db:D1Database,fact:Fact){
+ const match=await privacyMatcher(db),keys=await itemKeys(match,fact.eventId,fact.kind==='event'?calendarPrivacyIdentity(fact):null);
  const epoch=await db.prepare(erasureEpoch).first<number>('COALESCE(MAX(rowid),0)');
- const event=fact.kind==='event'?parseCalendar(fact.body)[0]:undefined;
  // Completion/cancellation time cannot make a pre-erasure calendar original new.
- const occurredAt=event&&!('error' in event)?event.created??event.stamp??fact.occurredAt:fact.occurredAt;
+ const occurredAt=fact.kind==='event'?fact.originalAt??fact.occurredAt:fact.occurredAt;
  const blocked=async()=>{
   if(!epoch)return false;
   if(await db.prepare('SELECT 1 FROM audit_entries WHERE action=? AND entity_id IN(SELECT value FROM json_each(?)) LIMIT 1').bind(itemAction,JSON.stringify(keys)).first())return true;
@@ -61,7 +58,8 @@ export async function capturePrivacy(db:D1Database,fact:CapturePrivacyEvidence){
 export async function captureErasureStatements(db:D1Database,contactId:string,identities:string[],matcher?:Matcher){
  const statements:D1PreparedStatement[]=[];
  // Existing item keys need no new context; derive one only for a mailbox or legacy original.
- const match:Matcher=async value=>{if(!value?.trim())return [];matcher??=await privacyMatcher(db,statements);return matcher(value);};
+ let matching=matcher?Promise.resolve(matcher):undefined;
+ const match:Matcher=async value=>{if(!value?.trim())return [];return (await (matching??=privacyMatcher(db,statements)))(value);};
  const proof=(action:string,token:string,condition='1=1',bindings:unknown[]=[])=>db.prepare(`INSERT INTO audit_entries(id,actor_id,action,entity_type,entity_id,details_json,occurred_at) SELECT ?,NULL,?,'capture_privacy',?,'{}',strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE ${condition}`)
   .bind(createId(),action,token,...bindings);
  for(const email of identities)for(const token of await match(email))statements.push(proof(mailboxAction,token));
@@ -71,14 +69,14 @@ export async function captureErasureStatements(db:D1Database,contactId:string,id
   SELECT lower(hex(randomblob(16))),NULL,?,'capture_privacy',p.value,'{}',strftime('%Y-%m-%dT%H:%M:%fZ','now')
   FROM signals s JOIN capture_items i ON i.signal_id=s.id,json_each(s.payload_json,'$.data.capturePrivacyKeys') p
   WHERE s.id IN(SELECT signal_id FROM record_erasure_signals WHERE contact_id=?) GROUP BY p.value`).bind(itemAction,contactId));
- // Upgrade existing immutable originals lazily, before they are removed. New intake always has keys.
- type Original={signal_id:string;kind:string;headers:string;body:string;source_event_id:string};
+ // Upgrade legacy events even when old truncation produced only phase-specific keys.
+ type Original={signal_id:string;kind:string;headers:string;body:string;source_event_id:string;type:string};
  const originals=new Map<string,Original>();
- const select="SELECT i.signal_id,i.kind,i.headers,i.body,s.source_event_id FROM capture_items i JOIN signals s ON s.id=i.signal_id WHERE COALESCE(json_array_length(s.payload_json,'$.data.capturePrivacyKeys'),0)=0 AND ";
+ const select="SELECT i.signal_id,i.kind,i.headers,i.body,s.source_event_id,s.type FROM capture_items i JOIN signals s ON s.id=i.signal_id WHERE (i.kind='event' OR COALESCE(json_array_length(s.payload_json,'$.data.capturePrivacyKeys'),0)=0) AND ";
  const collect=async(sql:string,bindings:unknown[])=>{for(const row of (await db.prepare(select+sql).bind(...bindings).all<Original>()).results)originals.set(row.signal_id,row);};
  await collect("EXISTS(SELECT 1 FROM signal_links WHERE signal_id=s.id AND record_type='contact' AND record_id=?)",[contactId]);
- for(const email of identities)await collect(`(${identityMatch('s.payload_json')} OR ${identityMatch('i.headers')} OR ${identityMatch('i.body')})`,[...identityPatterns(email),...identityPatterns(email),...identityPatterns(email)]);
- for(const original of originals.values())for(const token of await itemKeys(match,original.kind,original.source_event_id,original.body))
+ for(const email of identities)await collect(retainedEvidenceIdentityMatch,retainedEvidenceIdentityPatterns(email));
+ for(const original of originals.values())for(const token of await itemKeys(match,original.source_event_id,original.kind==='event'?await storedCalendarPrivacyIdentity(original):null))
   statements.push(proof(itemAction,token,'? IN(SELECT signal_id FROM record_erasure_signals WHERE contact_id=?)',[original.signal_id,contactId]));
  return statements;
 }
