@@ -6154,7 +6154,7 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout-journey.mjs": {
-      "sha256": "36b5742792257b3337a06edea3f40e796c33575115bfa3785fa3d8af636d7cbf",
+      "sha256": "7f624f2a610ba58a1a3aec4a0325409aae9e3d062ec6b6530457a2b512c43ff5",
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {

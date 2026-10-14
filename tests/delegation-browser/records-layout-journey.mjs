@@ -121,12 +121,12 @@ async function editRecordThroughKeyboard(page, kind, title, fieldLabel, editedTi
   await expect(card).toHaveCount(1);
   await tabTo(page, async active => await active.evaluate((element, expected) => element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
   await expect(card.getByRole('button')).toBeFocused();
-  await page.keyboard.press('Enter');
+  await awaitRecordDetail(page, kind, () => page.keyboard.press('Enter'));
   await expect(page.getByRole('button', { name: 'Edit details', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Edit details', exact: true }).click();
   await page.getByLabel(fieldLabel, { exact: true }).fill(editedTitle);
   if (beforeSave) await beforeSave();
-  await awaitRecordReload(page, kind, title, () => page.getByRole('button', { name: 'Save changes', exact: true }).click());
+  await awaitRecordDetail(page, kind, () => awaitRecordReload(page, kind, title, () => page.getByRole('button', { name: 'Save changes', exact: true }).click()));
   await expect(page.getByRole('heading', { name: editedTitle, exact: true, level: 1 })).toBeVisible();
   await page.reload({ waitUntil: 'networkidle' });
   const tabName = kind === 'company' ? 'Companies' : kind === 'contact' ? 'Contacts' : 'Opportunities';
@@ -149,9 +149,30 @@ async function expectRecordList(page, kind, title, evidenceName, diagnostics) {
     await page.screenshot({ path: `${evidence}/${evidenceName}-${viewport.name}.png`, fullPage: true });
     if (viewport.name === '320') {
       await tabTo(page, async active => await active.evaluate((element, expected) => element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
-      await page.keyboard.press('Enter');
+      await awaitRecordDetail(page, kind, () => page.keyboard.press('Enter'));
       await expect(page.getByRole('heading', { name: title, exact: true, level: 1 })).toBeVisible();
     }
+  }
+}
+
+async function awaitRecordDetail(page, kind, action) {
+  // Company/contact headings render before their proposed-changes panel loads.
+  // Finish that real request before editing, reloading, or leaving the detail.
+  const detailLoad = page.waitForResponse(response => {
+    const url = new URL(response.url());
+    return response.request().method() === 'GET' && url.pathname.startsWith(`/api/v1/records/${kind}/`);
+  });
+  const proposalsLoad = kind === 'opportunity' ? undefined : page.waitForResponse(response => {
+    const url = new URL(response.url());
+    return response.request().method() === 'GET' && url.pathname === '/api/v1/capture/proposals' && url.searchParams.get('recordType') === kind;
+  });
+  const [detailResponse, proposalsResponse] = await Promise.all([detailLoad, proposalsLoad, action()]);
+  expect(detailResponse.ok(), `${detailResponse.url()}: ${await detailResponse.text()}`).toBe(true);
+  const detail = await detailResponse.json();
+  if (proposalsResponse) {
+    expect(new URL(proposalsResponse.url()).searchParams.get('recordId')).toBe(detail.record.id);
+    expect(proposalsResponse.ok(), `${proposalsResponse.url()}: ${await proposalsResponse.text()}`).toBe(true);
+    expect(Array.isArray((await proposalsResponse.json()).proposals)).toBe(true);
   }
 }
 
