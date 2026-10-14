@@ -2645,6 +2645,14 @@
       "sha256": "55580fd39d44cc15f5957ca9e8f2861f1b46596313b90cd46642ef73e2d0be0e",
       "executable": false
     },
+    "public/capture/google.svg": {
+      "sha256": "764c84e840ce32565ebd58ef1b1f57a6e177e68466306902703d15ce3fdc1394",
+      "executable": false
+    },
+    "public/capture/microsoft.svg": {
+      "sha256": "89b3809795ff7b5530d718cfdc95be81453e6dc7eff0e52c7f1031696cc94ff4",
+      "executable": false
+    },
     "public/favicon.svg": {
       "sha256": "55580fd39d44cc15f5957ca9e8f2861f1b46596313b90cd46642ef73e2d0be0e",
       "executable": false
@@ -2659,6 +2667,10 @@
     },
     "public/operator-native.css": {
       "sha256": "cddb47d21956c7f827ddf74eca1aac1cb5c2af9c72627bbbf2c89da49987e748",
+      "executable": false
+    },
+    "public/orbit-auth.css": {
+      "sha256": "7d02e4db5f1f60e5beef6b7b913a8dafe53abedfae6bfaadcbc7feb232f6a34f",
       "executable": false
     },
     "public/rer-theme.css": {
@@ -3794,7 +3806,7 @@
       "executable": false
     },
     "src/core/features/identity/auth.ts": {
-      "sha256": "94d4bab039088e61b0a1c894a9b8c93fe47948fe9bd7fabcea696d0a6ba8bf4a",
+      "sha256": "d9a781394527371b8a6e0d5df8dd779e9f187c98a1685ccbfaa37d9d9ce2fb56",
       "executable": false
     },
     "src/core/features/identity/bootstrap.ts": {
@@ -3957,20 +3969,28 @@
       "sha256": "9efd093e1a5c2abbaec8b00ee778036faa4289a07102fde82a7f6d8fd51a26b2",
       "executable": false
     },
+    "src/core/features/operator/ui/capture-page.css": {
+      "sha256": "914cc5d5d5d9f1a80ea17f29965c73cb92d5b39156a79b2f802520e682fe33e7",
+      "executable": false
+    },
     "src/core/features/operator/ui/capture-page.tsx": {
-      "sha256": "93d508e38c3602920e237f9df2cc20633c485dec9612fbecd55763770a84f668",
+      "sha256": "3ae7abe358f412bf258b4c171aa8a76339a9f3128d6a6d3be080d3d7a749655c",
+      "executable": false
+    },
+    "src/core/features/operator/ui/capture-proposals.css": {
+      "sha256": "e33f13ded1c473408768885ae0743c319851f0b9e42365710f9ad5f4413517dd",
       "executable": false
     },
     "src/core/features/operator/ui/capture-proposals.tsx": {
-      "sha256": "d1c0ec431777db77a8beb1864ec6d6dd80dc27b9365bffb43386af412efb9381",
+      "sha256": "7aa01aa92eba9d0c732c3e0e254df3b32a0f9bf3352fc523933c22213fb5b4eb",
       "executable": false
     },
     "src/core/features/operator/ui/capture-provider-form.tsx": {
-      "sha256": "08a63650647e81b375b218522cd3416a2c9289ef3a8e3a9c8c5af9e0e63f177b",
+      "sha256": "65a7d3c7704bf29a6ab33300b583a7e6ed0b031cd822ff8ea61d1c5f35398be3",
       "executable": false
     },
     "src/core/features/operator/ui/capture-providers.css": {
-      "sha256": "33ccd928dac0309cb808adb1e69380b599069b28f66daacf5df14fc9f40b61d4",
+      "sha256": "1ad9ebd2872f1b61975da22e72b6b154e9d6c73b5b0da6ed31b9d43f02d4a7d0",
       "executable": false
     },
     "src/core/features/operator/ui/capture-scope.tsx": {
@@ -4186,7 +4206,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/today.css": {
-      "sha256": "0d4dcdd167776ffa01aba56e2d61adbf6627a701c03764c1c4cc34fdb5d176c4",
+      "sha256": "d41f9d1e0c1b1ecad0872cc40e61354e69ae688ecf2e5606cdd9998574c8ba0c",
       "executable": false
     },
     "src/core/features/operator/ui/unlinked-replies.tsx": {
