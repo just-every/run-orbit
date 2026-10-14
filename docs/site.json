@@ -27,6 +27,7 @@
     { "source": "CONTRACT.md", "reason": "Product requirement clauses, for maintainers and reviewers" },
     { "source": "DIVERGENCE.md", "reason": "Recorded design decisions and differences from the family, for maintainers" },
     { "source": "HANDOVER.md", "reason": "Maintainer orientation and the current verification scope" },
+    { "source": "CHANGELOG.md", "reason": "Versioned release changes and upgrade cautions accompany the tagged source on GitHub" },
     { "source": "SEED-COMMAND-CONTRACT.md", "reason": "The shared command contract behind every setup, run, export and deploy command, for maintainers" },
     { "source": "TESTING.md", "reason": "What the verification command runs, for maintainers; the Overview names the command" },
     { "source": "docs/artifact/CONTRACT.md", "reason": "Delivery artifact contract for the release tooling, for maintainers" },
