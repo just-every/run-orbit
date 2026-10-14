@@ -878,7 +878,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "c8c428925f606a04bff48a9a456d941ce4e5b25d1d65855eea2cbc24eeb5b7b8",
+      "sha256": "d4d5ccdd45140a082065c7769a0b83408e06481222eaa0bf2b2c95a2b64b3e65",
       "executable": false
     },
     "CLAUDE.md": {
@@ -1166,7 +1166,7 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "604887ab6a581a94dc66156e0bf6f0a81f1d81ceabbf14ffe484e0dbd5097a7e",
+      "sha256": "a41e134f4d5acd54b648e3e4abc6edeafea5647c9816472f3fdcefaac9bedbb3",
       "executable": false
     },
     "LICENSE": {
@@ -2602,7 +2602,7 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "b39f3354f4604f3c3896e6bf9dd52d6edc79a850c83c4455db70031b984d9183",
+      "sha256": "838509220950dd30e298625e9dd4f476e4a2d462fb1eefca06a0965b604efce1",
       "executable": false
     },
     "patches/miniflare@5.20260907.0-alpha.patch": {
@@ -2618,7 +2618,7 @@
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "fa287bfad556b2976f0ae8ccd1f2da60e7c9e603f40a9498e1a4dd004e11f57b",
+      "sha256": "d5616d21524c2f6253308d5a223ed9bfd23e84ec104ab548508595561a6af111",
       "executable": false
     },
     "pnpm-workspace.yaml": {
@@ -2690,7 +2690,7 @@
       "executable": false
     },
     "RELEASE.json": {
-      "sha256": "12fc3f92cb0d6199bce2e5f301b130257891b8e268974dba86ede1f58866068c",
+      "sha256": "5dbe94a60f125a046ef70f167bc08feb27c799a6f24b19fb5d8550ec91dbf099",
       "executable": false
     },
     "rer-project.json": {
