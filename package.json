@@ -81,6 +81,9 @@
     "wrangler": "4.129.1"
   },
   "pnpm": {
+    "overrides": {
+      "sharp": "0.35.5"
+    },
     "patchedDependencies": {
       "miniflare@5.20260907.0-alpha": "patches/miniflare@5.20260907.0-alpha.patch",
       "wrangler@4.129.1": "patches/wrangler@4.129.1.patch"
