@@ -1,0 +1,37 @@
+/* Provider cards and upload row adapted from the selected Capture conversion. */
+.capture-provider-section.operator-surface, .capture-sources-section.operator-surface {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.capture-provider-section .capture-provider-forms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.capture-provider-section .capture-provider-forms > p { grid-column: 1 / -1; margin: 0; }
+.capture-provider-section .capture-provider-forms > form {
+  padding: 24px 26px 28px;
+  border: 1.5px solid var(--ob-ink);
+  border-radius: var(--ob-radius);
+  background: var(--ob-card);
+}
+.capture-provider-name { display: flex; align-items: center; gap: 16px; margin: 0 0 22px; font-size: 24px; font-weight: 740; letter-spacing: -.02em; }
+.capture-provider-name img { width: 34px; height: 34px; flex: none; }
+.capture-upload > p { max-width: 90ch; }
+.capture-upload .workbench-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: end; gap: 20px; margin-top: 20px; }
+.capture-upload .capture-checkbox { align-self: center; font-weight: 400; font-size: 14px; }
+.capture-upload input[type=file] { width: 100%; }
+.capture-upload .capture-summary { max-width: 760px; margin-top: 12px; }
+.capture-upload [role=status] { margin-top: 24px; }
+.capture-upload .capture-summary td { width: 72px; font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; }
+@media (max-width: 900px) {
+  .capture-provider-section .capture-provider-forms, .capture-upload .workbench-form { grid-template-columns: minmax(0, 1fr); }
+  .capture-upload .workbench-form > button { justify-self: start; }
+}
+@media (max-width: 640px) {
+  .capture-provider-section .capture-provider-forms > form { padding: 20px; }
+  .capture-provider-name { font-size: 22px; }
+}

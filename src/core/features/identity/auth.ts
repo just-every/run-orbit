@@ -18,7 +18,7 @@ export function identityConfig(bindings: PlatformBindings, sender: MailSender | 
     origin: new URL(bindings.AUTH_ORIGIN).origin, local,
     OWNER_EMAIL: bindings.OWNER_EMAIL.trim().toLowerCase(), SESSION_SECRET: bindings.SESSION_SECRET, SETUP_TOKEN: bindings.SETUP_TOKEN,
     ...(sender && bindings.MAIL_FROM ? { MAIL_FROM: bindings.MAIL_FROM } : {}),
-    branding: { productName: 'Orbit', accentColor: '#1f4f46', signInPath: '/signin' },
+    branding: { productName: 'Orbit', accentColor: '#16171d', signInPath: '/signin', theme: '/orbit-auth.css' },
     linkSeconds: 15 * 60, dependencies: true,
   };
 }

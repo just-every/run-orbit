@@ -1,0 +1,60 @@
+@import url('/brand/fonts.css');
+@import url('/rer-theme.css');
+
+/* The native Base auth documents share Orbit's selected sign-in card. */
+html.rer-themed {
+  --rer-accent: #16171d;
+  --rer-accent-text: #fffdf9;
+  --rer-link: #16171d;
+}
+html.rer-themed body { padding: 40px 24px; }
+html.rer-themed main {
+  max-width: 575px;
+  padding: 32px 50px 48px;
+  border: 1.5px solid var(--rer-text);
+  border-radius: 16px;
+  box-shadow: none;
+}
+html.rer-themed .brand {
+  gap: 14px;
+  margin: 0 0 32px;
+  font-size: 34px;
+  font-weight: 750;
+  letter-spacing: -1px;
+  line-height: 40px;
+}
+html.rer-themed .brand::before { width: 40px; height: 40px; }
+html.rer-themed h1 {
+  margin: 0 0 34px;
+  font-size: clamp(36px, 3.4vw, 52px);
+  font-weight: 750;
+  line-height: 1.12;
+  letter-spacing: -.035em;
+  text-wrap: pretty;
+}
+html.rer-themed input:not([type=hidden]) {
+  min-height: 48px;
+  margin: 10px 0 24px;
+  padding: 12px 14px;
+  border: 1px solid #d4cabb;
+  border-radius: 14px;
+  background: var(--rer-surface);
+}
+html.rer-themed button, html.rer-themed .action {
+  min-height: 48px;
+  border: 1.5px solid var(--rer-text);
+  border-radius: 999px;
+}
+html.rer-themed .notice { border-color: var(--rer-focus); background: var(--rer-page); }
+html.rer-themed .secondary-link { margin-top: 24px; }
+html.rer-themed :is(input, a):focus-visible { outline: 3px solid var(--rer-focus); outline-offset: 4px; }
+@media (max-width: 599px) {
+  html.rer-themed body { padding: 24px 16px; }
+  html.rer-themed main { padding: 28px 24px 36px; }
+  html.rer-themed .brand { font-size: 29px; margin-bottom: 28px; }
+  html.rer-themed h1 { font-size: 36px; margin-bottom: 28px; }
+}
+@media (max-width: 359px) {
+  html.rer-themed main { padding-inline: 20px; }
+  html.rer-themed h1 { font-size: 32px; }
+}

@@ -1,0 +1,22 @@
+/* Evidence, comparison and action hierarchy from the selected proposals conversion. */
+.capture-proposals.operator-detail__section { padding: 0; margin-top: 28px; }
+.capture-proposals > p { max-width: 72ch; }
+.capture-proposal { margin-top: 18px; padding: 22px 24px 24px; border: 1.5px solid var(--ob-ink); border-radius: var(--ob-radius); background: var(--ob-card); box-shadow: var(--app-shadow); }
+.capture-proposal h3 { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.35; }
+.capture-proposal > p { margin: 10px 0 18px; color: var(--ob-body); font-size: 14px; line-height: 1.55; }
+.operator-shell .capture-proposal .capture-quote { margin: 0 0 18px; padding: 16px 18px; border: 1px solid var(--ob-line-strong); border-radius: 12px; background: var(--ob-paper); }
+.operator-shell .capture-proposal .capture-quote p { margin: 0; color: var(--ob-ink); line-height: 1.55; }
+.operator-shell .capture-proposal .capture-change { table-layout: fixed; margin: 0; border-collapse: separate; border-spacing: 0; border: 1px solid var(--ob-line-strong); border-radius: 12px; overflow: hidden; }
+.operator-shell .capture-proposal .capture-change th { padding: 14px 20px 6px; border: 0; color: var(--ob-muted); font-size: 13px; font-weight: 600; }
+.operator-shell .capture-proposal .capture-change td { padding: 0 20px 20px; border: 0; color: var(--ob-ink); font-size: 20px; font-weight: 700; }
+.operator-shell .capture-proposal .capture-change :is(th,td) + :is(th,td) { border-left: 1px solid var(--ob-line-strong); }
+.capture-proposal .workbench-actions { justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.capture-proposal .workbench-form { margin-top: 18px; }
+.capture-proposal .orbit-button--quiet { padding: 8px 18px; border: 1.5px solid var(--ob-ink); border-radius: 999px; text-decoration: none; }
+@media (max-width: 640px) {
+  .capture-proposal { padding: 18px 16px; }
+  .operator-shell .capture-proposal .capture-quote { padding: 14px; }
+  .operator-shell .capture-proposal .capture-change th { padding: 12px 12px 6px; }
+  .operator-shell .capture-proposal .capture-change td { padding: 0 12px 14px; font-size: 17px; }
+  .capture-proposal .workbench-actions { justify-content: flex-start; }
+}

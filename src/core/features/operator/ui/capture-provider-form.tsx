@@ -40,6 +40,7 @@ export function CaptureProviderForm({
       const tenantId = `${prefix}-${item.id}-tenant`;
       return <form key={item.id} aria-label={`${source ? 'Reconnect' : 'Connect'} ${label}`} method="post" action={providerAction(item)}>
         {source ? <input type="hidden" name="sourceId" value={source.id} /> : null}
+        {!source ? <h3 className="capture-provider-name"><img src={`/capture/${item.id}.svg`} alt="" aria-hidden="true" />{label}</h3> : null}
         <div className="capture-provider-fields">
           <label htmlFor={nameId}>Connection name
             <input id={nameId} name="name" required maxLength={120} defaultValue={source?.name ?? ''} autoComplete="off" />

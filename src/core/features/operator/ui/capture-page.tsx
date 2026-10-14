@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { CaptureProposals } from './capture-proposals';
 import './records.css';
 import './capture-providers.css';
+import './capture-page.css';
 import { OperatorShell, OperatorState } from './operator-shell';
 import { useOperatorResource } from './use-operator-resource';
 import { CaptureProviderSetup } from './capture-provider-form';
@@ -134,7 +135,7 @@ export function CapturePage() {
       onRetry={() => setProviderRequest((value) => value + 1)}
     />
     {connectionNotice ? <OperatorState>{connectionNotice}</OperatorState> : null}
-    <section className="operator-surface operator-detail__section" aria-labelledby="capture-add">
+    <section className="operator-surface operator-detail__section capture-upload" aria-labelledby="capture-add">
       <h2 id="capture-add">Add mail and calendar files</h2>
       <p>Orbit keeps only messages and events with a known contact or company domain. Captured evidence stops outreach to a person who replied or booked a meeting; every other change waits for your review. Nothing is sent.</p>
       <form className="workbench-form" method="post" action="/api/v1/capture/imports" encType="multipart/form-data" onSubmit={add}>
