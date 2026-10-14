@@ -2574,7 +2574,7 @@
       "executable": false
     },
     "newtests/t096/report-time-boundaries.test.ts": {
-      "sha256": "3e8a0291926198b88fe7b34690570c4e242670fdddf0d9add6b827b3a1570689",
+      "sha256": "51c30797f98bd2e95665fa7f16a73bf30983e05a3d87acfc9249957f1a5f06b1",
       "executable": false
     },
     "newtests/t096/reports-original-assertions.test.ts": {
