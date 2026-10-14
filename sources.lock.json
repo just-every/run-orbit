@@ -2893,8 +2893,12 @@
       "sha256": "f1560bb10cee9471523efe327231d0405395ad3e9bb79270f278074198573b26",
       "executable": false
     },
+    "scripts/installer/portability-policy.mjs": {
+      "sha256": "27fb4d03ef9580e3820381f652c6755825438856c92bcee379052ffbcd24b432",
+      "executable": false
+    },
     "scripts/installer/portability.mjs": {
-      "sha256": "45083a64efe951d7fc1eceaa62dfbbdefb22420aac301794bcaf1cb8bc8bf344",
+      "sha256": "4045c42718af4a31aee18d78d2c37f886dbef1c6f51b5e04cd2d00c0751e8baf",
       "executable": false
     },
     "scripts/installer/remote-transfer.mjs": {
