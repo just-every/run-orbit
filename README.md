@@ -11,9 +11,9 @@
 <p align="center"><a href="https://run-orbit.com">run-orbit.com</a> · <a href="https://justevery.com">Part of Just Every</a> · <a href="LICENSE">MIT licensed</a></p>
 
 <p align="center">
-  <a href="https://justevery.com/#vol-orbit"><img src=".github/assets/media/preview.gif" width="800" alt="Orbit's NOW queue: Maya's reply lands and Brightwork's Team plan moves to 01"></a>
+  <a href="https://justevery.com/#vol-orbit"><img src=".github/assets/media/preview.gif" width="800" alt="Orbit: Maya's reply shows in the brief, and Brightwork's Team plan rises to 01 in the NOW queue"></a>
 </p>
-<p align="center"><a href="https://justevery.com/#vol-orbit"><b>Watch the full demo</b></a> · 44 seconds</p>
+<p align="center"><a href="https://justevery.com/#vol-orbit"><b>Watch the full demo</b></a> · 51 seconds</p>
 
 <p align="center">
   <img src=".github/assets/media/flow.webp" width="800" alt="The top of the NOW queue before Maya's reply, Clinic rollout at 01, and after it, Brightwork's Team plan at 01 with Why NOW: Customer reply">
