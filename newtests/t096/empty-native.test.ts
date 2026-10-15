@@ -1,3 +1,5 @@
+import {isolateBrowserTemp} from '../../tests/support/browser-temp.mjs';
+isolateBrowserTemp();
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {createOrbitIdentity,identityResponse} from '../../src/core/features/identity';

@@ -1,3 +1,5 @@
+import {isolateBrowserTemp} from '../support/browser-temp.mjs';
+isolateBrowserTemp();
 import assert from 'node:assert/strict';
 import { mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { get } from 'node:http';

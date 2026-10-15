@@ -1,5 +1,6 @@
 {
   "schemaVersion": 1,
+  "identityKind": "project",
   "id": "just-every/orbit",
   "toolchain": {
     "id": "runeditrun/edition-authoring",

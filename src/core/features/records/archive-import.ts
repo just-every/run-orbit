@@ -16,9 +16,15 @@ export class ArchiveImportRepository {
     constructor(readonly db: D1Database,readonly folded=false) { }
     async job(id: string, actor: string) { const job = await this.db.prepare("SELECT * FROM archive_jobs WHERE id=? AND kind='import' AND actor_id=?").bind(id, actor).first<ImportJob>(); if (!job)
         throw new RecordError(404, 'Archive import not found.'); return job; }
-    async status(id: string, actor: string) { const job = await this.job(id, actor), progress = JSON.parse(job.progress_json || '{}'); const nextPart = (await this.db.prepare('SELECT count(*) AS n FROM archive_parts WHERE job_id=?').bind(id).first<{
-        n: number;
-    }>())!.n; return { id, state: job.state, manifest: JSON.parse(job.manifest_json), nextPart, phase: progress.phase, completedTables: progress.table ?? 0, totalTables: JSON.parse(job.manifest_json).tables.length }; }
+    async status(id: string, actor: string) {
+        const job=await this.job(id,actor),manifest:TransferManifest=JSON.parse(job.manifest_json),progress=JSON.parse(job.progress_json||'{}');
+        const context=await foldedImportContext(this.db,job),totalTables=context?.catalog.length??manifest.tables.length;
+        const complete=job.state==='complete',completedTables=complete?totalTables:Math.min(progress.table??0,totalTables);
+        const rollback=String(progress.phase??'').startsWith('rollback'),phases=rollback?['rollback-clear','rollback-load']:['backup','clear','load'];
+        const totalSteps=phases.length*totalTables+1,completedSteps=complete?totalSteps:Math.max(0,phases.indexOf(progress.phase))*totalTables+completedTables;
+        const nextPart=complete?manifest.parts:(await this.db.prepare('SELECT count(*) AS n FROM archive_parts WHERE job_id=?').bind(id).first<{n:number}>())!.n;
+        return {id,state:job.state,manifest,nextPart,phase:progress.phase,completedTables,totalTables,completedSteps,totalSteps};
+    }
     async unfinished(actor:string){return Promise.all((await unfinishedImportIds(this.db,actor)).map(id=>this.status(id,actor)));}
     async create(input: unknown, actor: string) {
         const {manifest,catalog}=await(this.folded?validateFoldManifest(this.db,input):validateManifest(this.db,input));
@@ -59,6 +65,16 @@ export class ArchiveImportRepository {
         await this.db.batch([...(context?[...await context.fence(job),...await archiveStorageFence(this.db,id,await uploadedArchiveGrowth(this.db,part,catalog,manifest.version===3))]:[]),...partStatements(this.db, id, part),...(context?[this.db.prepare('INSERT INTO archive_part_inventory VALUES(?,?,?)').bind(id,index,part.records.length)]:[]), ...await uploadStatements(this.db, id, { ...part, records: part.records.map(record => record.table === 'contacts' && !('contactability_revision' in record.row) ? { ...record, row: { ...record.row, contactability_revision: 0 } } : record) }, catalog,manifest.version===3),...(context?await archiveStorageFence(this.db,id):[])]);
         if(context)await observeArchiveStorage(this.db,id,'after-upload');return this.status(id, actor);
     }
-    async advance(id: string, actor: string) { const job = await this.job(id, actor); const context=await foldedImportContext(this.db,job);await advanceImport(this.db, job,context);if(context)await observeArchiveStorage(this.db,id,'after-restore-step');const current=await this.job(id,actor);if(context&&['complete','aborted'].includes(current.state))await context.cleanup(current); return this.status(id, actor); }
+    async advance(id: string, actor: string) {
+        let job=await this.job(id,actor);const context=await foldedImportContext(this.db,job),deadline=Date.now()+2000;
+        // Amortize hosted request latency while keeping each durable step resumable.
+        for(let step=0;step<8&&!['complete','aborted'].includes(job.state);step++){
+            await advanceImport(this.db,job,context);job=await this.job(id,actor);
+            if(Date.now()>=deadline)break;
+        }
+        if(context)await observeArchiveStorage(this.db,id,'after-restore-step');
+        if(context&&['complete','aborted'].includes(job.state))await context.cleanup(job);
+        return this.status(id,actor);
+    }
     async abort(id: string, actor: string) { const job = await this.job(id, actor); const context=await foldedImportContext(this.db,job);await abortImport(this.db, job,context);if(context)await observeArchiveStorage(this.db,id,'after-abort-step');const current=await this.job(id,actor);if(context&&current.state==='aborted')await context.cleanup(current); return this.status(id, actor); }
 }

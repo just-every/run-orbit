@@ -97,12 +97,15 @@ test.describe("authenticated operator UI", () => {
     const evidence = page.getByTestId("contributing-evidence");
     await expect(evidence).toContainText("Used for this recommendation");
     await expect(page.getByTestId("next-action")).toContainText("Write follow-up");
-    await page.getByText("Audit details", {exact:true}).click();
-    const audit=page.getByTestId("current-evaluation");
-    await expect(audit).toContainText("01J0000000000000000000000K");
-    await expect(audit).toContainText("Website form");
-    await expect(audit).toContainText("observed");
-    await expect(audit).toContainText("+42");
+    const id=new URL(page.url()).pathname.split('/').at(-1);
+    const {opportunity}=await(await page.request.get(`/api/v1/opportunities/${id}`)).json();
+    for(const item of opportunity.evaluation.contributions){
+      const row=evidence.locator('li').filter({hasText:item.signalId});
+      await expect(row.getByText(item.signalType,{exact:true})).toBeVisible();
+      await expect(row.locator('b')).toHaveText(`${item.contribution>0?'+':''}${item.contribution}`);
+      await expect(row.locator('b')).toBeVisible();
+      await expect(row).toContainText(item.source);
+    }
     await expectNoHorizontalOverflow(page);
     expect(failures).toEqual([]);
   });

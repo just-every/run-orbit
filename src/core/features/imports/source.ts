@@ -1,7 +1,7 @@
 import { parseCsv } from '../../shared/csv';
 import { canonicalJson,sha256,type SourceBundle,type SourceRecord } from '../../../modules/import-kit/d1/index';
 import { fields,type ImportInput } from './contracts';
-export interface Row {kind:string;id:string;data:Record<string,string>;source:SourceRecord;separator:string;unmapped:number[];error?:string}
+export interface Row {kind:string;id:string;data:Record<string,string>;source:SourceRecord;separator:string;unmapped:number[];error?:string;derivedContacts?:Row[]}
 export function readImport(input:ImportInput){
  const namespace=`orbit:${input.vendor}:${input.account}`,source:SourceBundle={records:[],artifacts:[],diagnostics:[]},rows:Row[]=[];
  if(new Set(input.files.map(f=>f.kind)).size!==input.files.length)throw new Error('Choose at most one file of each type.');
@@ -18,7 +18,7 @@ export function readImport(input:ImportInput){
   for(const [index,values] of parsed.entries()){
    const data=Object.fromEntries(Object.entries(file.mapping).map(([key,header])=>[key,values[headers.indexOf(header)]?.trim()??'']));
    const id=data.id||(file.kind==='suppression'?data.email.toLowerCase():`missing:${index+2}`);
-   const payload={data,separator:file.separator};
+   const payload={data,separator:file.separator,...file.kind==='contact'&&input.contactability==='confirmed_contactable'?{contactability:input.contactability}:{}};
    const record:SourceRecord={namespace,kind:file.kind,sourceId:id,payload,payloadHash:sha256(canonicalJson(payload)),artifactHash:hash,location:{artifact:name,row:index+2}};
    source.records.push(record);rows.push({kind:file.kind,id,data,source:record,separator:file.separator,unmapped:headers.flatMap((header,index)=>Object.values(file.mapping).includes(header)?[]:[index+1]),error:values.length!==headers.length?'Column count differs from header.':!data.id&&file.kind!=='suppression'?'Source ID is empty.':values.some(v=>v.length>100000)?'A cell exceeds 100,000 characters.':undefined});
   }

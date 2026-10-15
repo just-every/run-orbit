@@ -42,24 +42,22 @@ This repository is the complete source for Orbit. Public source: [just-every/run
 
 ## Run it on your computer
 
-Orbit pins Node **22.20.0** (`.node-version`) and pnpm **10.12.4** (`packageManager`, through Corepack). Every command below runs through the project's RER CLI, `rer`; the matching package scripts take flags after `--`, for example `pnpm run setup -- --owner-email EMAIL`.
+Install [RER](https://runeditrun.com) and use **Node 22 or later**. Orbit pins Node **22.20.0** and pnpm **10.12.4** for project commands; RER selects the pinned runtime and installs the frozen dependencies automatically.
 
 ```sh
 git clone https://github.com/just-every/run-orbit.git && cd run-orbit
-rer install
-rer setup --owner-email EMAIL
 rer dev
 ```
 
-1. `install` installs the frozen dependencies from `pnpm-lock.yaml`.
-2. `setup` asks for nothing else: it writes private local settings, including a generated source encryption key, to `.dev.vars` (mode 0600), builds Orbit, applies every migration to `.wrangler/state`, claims you as the first owner with a private one-use setup token, places a sign-in link in the local outbox and stops the app. Running it again keeps your owner, data and settings.
-3. `dev` serves Orbit on `http://127.0.0.1:8787` (or the port you chose with `--port` at setup) once `/health` answers, and prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN` lines. Open the `RER_OPEN` link on this computer: Orbit opens signed in as you. Its fragment carries this checkout's private dev key, so never share it. A dev badge at the top switches to the `seller` and `collaborator` personas or signs you out. No email is sent locally. Stop it with `rer dev --stop` or Ctrl-C.
+`dev` installs dependencies, prepares local settings and starts Orbit. On the first launch it prepares the local trial owner (`owner@orbit.test`); it keeps that owner, your data and settings on later launches. You can change the owner email in Settings → Installation owner. A later deploy uses that current owner unless you explicitly supply `OWNER_EMAIL`. To use your real mailbox from the start, run `rer install` and `rer setup --owner-email EMAIL` before `rer dev`.
+
+Once `/health` answers, `dev` prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN`. Open the `RER_OPEN` link on this computer: Orbit opens signed in as you. Its fragment carries this checkout's private dev key, so never share it. A dev badge at the top switches to the `seller` and `collaborator` personas or signs you out. No email is sent locally. Stop it with `rer dev --stop` or Ctrl-C.
 
 No owner JSON file is needed: the owner email flag and first-run form supply the installation details.
 
 Your first sign-in opens **first-run setup at `/setup`**: confirm the business name, time zone, currency and pipeline stages, then finish. Until you do, every app page returns you to `/setup`; afterwards `/setup` takes you into the app, and Settings holds later changes.
 
-To sign in by email link as in production, use **Email a sign-in link** at `/signin`, then `rer outbox --owner-email EMAIL`: it requests a fresh link and prints an `RER_OPEN` link to the local outbox. Open the message's link and press **Confirm**.
+For the optional local email-link flow, start with `rer dev --login` and use **Email a sign-in link** at `/signin`, then `rer outbox --owner-email EMAIL`: it requests a fresh link and prints an `RER_OPEN` link to the local outbox. Open the message's link and press **Confirm**.
 
 ### Get your first signal
 
@@ -74,6 +72,8 @@ Open **Capture** to import mail/calendar files or connect Gmail and Google Calen
 Follow [Google setup](docs/CONNECT-GMAIL.md) or [Microsoft setup](docs/CONNECT-OUTLOOK.md). [OWNER-STEPS.md](OWNER-STEPS.md) contains the remaining live-account proof. A fresh `rer dev` start and a successful `rer deploy` print the callback URIs; Capture also displays them. Disconnect stops intake and deletes the saved provider credentials.
 
 ### Verify, reset and move data
+
+Stop `dev` and `preview` before CLI export, import, reset, build or verification (`rer dev --stop` and `rer preview --stop`).
 
 ```sh
 rer verify
@@ -95,6 +95,16 @@ rer release --help
 ```
 
 `deploy` deploys to your own Cloudflare account with the Base deploy kit and needs `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` and `OWNER_EMAIL` in the environment. Supply both `MAIL_FROM` and `SENDGRID_API_KEY` to enable hosted email sign-in; with neither, the owner can still be claimed; `--dry-run` builds and validates locally without any provider request. [OPERATIONS.md](OPERATIONS.md) lists the token scopes, optional secrets and what to keep. `release` produces a source release receipt and never pushes or deploys.
+
+For hosted sign-in, open your deployed origin's `/signin`, enter your active operator email, open the emailed link and press **Confirm**. `rer signin` recovers access without email: from the deploying checkout, use the same Cloudflare credentials as deploy and run `rer signin` (or `rer signin --environment NAME --env-file FILE`). Open the private link it prints once within 15 minutes. RER never saves it. Once signed in, correct a wrong owner email in Settings. Local `RER_OPEN` dev credentials cannot sign in to a hosted installation. If mail does not arrive, check the address is active in Settings → Installation owner, the sender is verified and both hosted mail secrets are configured. Restore keeps current hosted full operators, including the active owner, and imports new archived operators as ordinary operators. It revokes sessions; sign in again with the hosted owner's mailbox.
+
+To remove a deployment you created with this checkout:
+
+```sh
+rer deploy --remove --yes
+```
+
+Use the same `--environment NAME` as deployment if you chose one. Keep `.rer/deploy/<environment>.json`: RER uses it to identify the resources it created and confirms their removal. Export a private backup first; removing the deployment deletes its hosted data.
 
 Managed Configure reads `rer-setup.json` and `management/integration/deployment-spec.json` directly from this repository. After changing deployment inputs or migrations, run `rer build` then `pnpm run deployment:spec`. Verify fails on drift against the emitted build. Managed owner claims use RER’s signed confirmation with a hidden generated setup token; direct deploy claims through `POST /auth/bootstrap`.
 

@@ -29,9 +29,9 @@ function managedInstallation(env: PlatformBindings & { RER_INSTALLATION_ID?: str
   try { return !isLoopbackHost(new URL(env.RER_MANAGEMENT_ORIGIN).hostname); } catch { return true; }
 }
 
-function identity(env: PlatformBindings) {
+async function identity(env: PlatformBindings) {
   const store = sessionStore(env.DB, { devAdmitted });
-  const owner = env.OWNER_EMAIL?.trim().toLowerCase();
+  const owner = (await store.person("o.setup_owner=1 AND o.status='active'"))?.email;
   const everyone = () => [...(owner ? [{ as: 'owner', email: owner, role: 'owner' }] : []), ...PERSONAS.map(p => ({ as: p.as, email: `${p.as}@dev.localhost`, role: p.role }))];
   return {
     store, everyone,
@@ -68,7 +68,7 @@ async function enter(request: Request, env: PlatformBindings, gate: NonNullable<
   const url = new URL(request.url), as = url.searchParams.get('as') ?? 'owner', reply = new Headers(headers);
   // A harness presenting the key header also receives the browser cookie.
   if (!(request.headers.get('cookie') ?? '').includes(`${gate.cookieName}=`)) reply.append('set-cookie', await gate.setCookie());
-  const { store, everyone } = identity(env), now = Date.now();
+  const { store, everyone } = await identity(env), now = Date.now();
   if (as === 'signed-out') {
     await store.revokeToken(request, now);
     reply.append('set-cookie', clearSessionCookie());
@@ -106,11 +106,11 @@ export default {
     registerDevAdmission(gate ? (r: Request) => gate.admits(r) : null);
     if (path === '/auth/dev/enter' || path === '/__dev/personas') {
       if (!gate || env.RER_DEV_IDENTITY === 'off' || !await gate.admits(request)) return devNotFound();
-      return path === '/__dev/personas' ? Response.json(identity(env).list(), { headers }) : enter(request, env, gate);
+      return path === '/__dev/personas' ? Response.json((await identity(env)).list(), { headers }) : enter(request, env, gate);
     }
     const response = await worker.fetch(request, original, execution);
     if (!gate || request.method !== 'GET' || path.startsWith('/__dev/')) return response;
-    const badge = await gate.admits(request) && env.RER_DEV_IDENTITY !== 'off' ? await identity(env).badge(request) : null;
+    const badge = await gate.admits(request) && env.RER_DEV_IDENTITY !== 'off' ? await (await identity(env)).badge(request) : null;
     return decorate(response, { exchange: path === '/', badge });
   },
 } satisfies ExportedHandler<PlatformBindings>;

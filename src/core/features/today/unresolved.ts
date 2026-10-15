@@ -1,5 +1,6 @@
 import type {RawLine} from './signal-lines';
 import {handoffEvidence} from '../delegation/evidence';
+import {customerSignalSql} from '../signals/test-events';
 
 /** Handoffs an application proposed that no person has accepted, edited or dismissed yet. */
 export async function proposalLines(db:D1Database,limit:number):Promise<RawLine[]>{
@@ -11,7 +12,7 @@ export async function proposalLines(db:D1Database,limit:number):Promise<RawLine[
 /** Evidence that matched no record: held signals and replies without thread headers. Shown, never guessed. */
 export async function unresolvedLines(db:D1Database,limit:number):Promise<RawLine[]>{
  const [signals,replies]=await Promise.all([
-  db.prepare('SELECT s.id,s.type,s.subject,s.occurred_at AS occurredAt,s.confidence,u.reason FROM unlinked_signals u JOIN signals s ON s.id=u.signal_id WHERE u.resolved_at IS NULL ORDER BY s.occurred_at DESC,s.id LIMIT ?').bind(limit).all<{id:string;type:string;subject:string|null;occurredAt:string;confidence:'observed'|'inferred';reason:string}>(),
+  db.prepare(`SELECT s.id,s.type,s.subject,s.occurred_at AS occurredAt,s.confidence,u.reason FROM unlinked_signals u JOIN signals s ON s.id=u.signal_id WHERE u.resolved_at IS NULL AND ${customerSignalSql()} ORDER BY s.occurred_at DESC,s.id LIMIT ?`).bind(limit).all<{id:string;type:string;subject:string|null;occurredAt:string;confidence:'observed'|'inferred';reason:string}>(),
   db.prepare('SELECT id,sender,subject,occurred_at AS occurredAt FROM unlinked_replies WHERE opportunity_id IS NULL ORDER BY occurred_at DESC LIMIT ?').bind(limit).all<{id:string;sender:string;subject:string;occurredAt:string}>()]);
  return [
   ...signals.results.map((row):RawLine=>({id:`unlinked-signal:${row.id}`,kind:'unlinked-signal',group:'unresolved',signalType:row.type,confidence:row.confidence,title:row.subject||row.type,detail:row.reason,occurredAt:row.occurredAt,dueAt:null,evidence:{type:'signal',id:row.id},records:[],planHref:null,link:{fixed:`/app/sources#unlinked-${row.id}`}})),

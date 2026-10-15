@@ -1,3 +1,5 @@
+import {isolateBrowserTemp} from '../support/browser-temp.mjs';
+isolateBrowserTemp();
 import {verifiedEditionCommit} from './edition-source.mjs';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';

@@ -1,4 +1,5 @@
-import { and, asc, desc, eq, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
+import {customerSignalSql} from '../signals/test-events';
 import { drizzle } from "drizzle-orm/d1";
 
 import type { NowOpportunityFacets, NowOpportunityFilters } from "./contracts";
@@ -172,7 +173,7 @@ export class OpportunitiesRepository {
         signalId: signals.id,
         signalType: signals.type,
         occurredAt: signals.occurredAt,
-        confidence: signals.confidence,
+        confidence: sql<string>`CASE WHEN ${sql.raw(customerSignalSql('signals'))} THEN ${signals.confidence} ELSE 'test' END`,
         source: signalSources.name,
         contribution: evaluationContributions.contribution
       })

@@ -1,3 +1,5 @@
+import {isolateBrowserTemp} from '../support/browser-temp.mjs';
+isolateBrowserTemp();
 import { execFile, spawn } from 'node:child_process';
 import { constants } from 'node:fs';
 import { copyFile, cp, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';

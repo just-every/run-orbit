@@ -50,7 +50,7 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
     const exchange = await gate?.exchange(request);
     if (exchange) return exchange;
     if (path === "/__dev/outbox") { const outbox = gate && await gate.admits(request) ? await developmentOutbox(bindings, request) : null; if (outbox) return outbox; }
-    if ((path === "/auth/magic-link" || path === "/auth/confirm") && request.method === "POST" && await archiveImportActive(bindings.DB)) return new Response(JSON.stringify({ error: "Orbit is restoring an archive. Try again shortly." }), { status: 503, headers: { "Content-Type": "application/json", "Retry-After": "30" } });
+    if ((path === "/auth/magic-link" || path === "/auth/confirm" || path === "/auth/owner-signin") && request.method === "POST" && await archiveImportActive(bindings.DB)) return new Response(JSON.stringify({ error: "Orbit is restoring an archive. Try again shortly." }), { status: 503, headers: { "Content-Type": "application/json", "Retry-After": "30" } });
     const identity = await identityResponse(request, bindings, { waitUntil: promise => executionContext.waitUntil(promise), ownerClaimed: async () => Boolean(await bindings.DB.prepare("SELECT 1 FROM operators WHERE setup_owner=1").first()) });
     if (identity) return identity;
     if ((path === "/demo" || path === "/demo/") && !publicDemoConfig.enabled) return new Response("Not found", { status: 404 });

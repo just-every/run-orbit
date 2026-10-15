@@ -6,6 +6,7 @@ import { tables,type NativeValue } from './targets';
 import type { StopValue } from './targets-stop';
 import {mailboxListSql} from './mailboxes';
 import type { ImportInput } from './contracts';
+import {namedCompanies} from './named-companies';
 
 export async function prepareImport(input:ImportInput,context:D1ImportContext){
  const {source,rows,namespace}=readImport(input),db=context.storage.database,at=new Date().toISOString(),results=new Map<SourceRecord,MappingResult>(),references=new Map<string,string>();
@@ -18,8 +19,9 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  for(const row of rows){if(row.kind==='suppression'){const address=email(row.data.email??'');if(address)stopEmails.add(address);else row.error??='Suppression email is invalid.';}if(row.kind==='contact'){
   const address=email(row.data.email??'');if(row.data.email&&!address)row.error??='Email is invalid; provide one address per row.';
   if(address){const tokens=await matchEmail(address);emailTokens.set(address,tokens);if(tokens.some(token=>activeStops.has(token)))stopEmails.add(address);}
-  if(address&&(positive(row.data.dnc)||!!row.data.bounce||positive(row.data.quarantined)||row.data.permission?.toLowerCase()!=='subscribed'))stopEmails.add(address);
+  if(address&&(positive(row.data.dnc)||!!row.data.bounce||positive(row.data.quarantined)||!permission(row)))stopEmails.add(address);
  }}
+ rows.push(...namedCompanies(rows));
  // Resolve only explicit source IDs or unambiguous native identity keys. Existing records are linked, never overwritten.
  const emails=[...stopEmails].sort(),stopId=nativeId(namespace,'suppression',sha256(canonicalJson(emails)));
  const existing=new Set<Row>(),duplicates=new Set<string>();
@@ -45,11 +47,15 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
   }
   references.set(key,id);
  }
+ // A linked native contact keeps its company and fields. Do not create an unused company for it.
+ for(let index=rows.length-1;index>=0;index--){const row=rows[index];if(row.derivedContacts?.every(contact=>existing.has(contact)||contact.error||duplicates.has(`${contact.kind}:${contact.id}`)))rows.splice(index,1);}
+ const companyFor=new Map(rows.filter(row=>row.derivedContacts).flatMap(row=>row.derivedContacts!.map(contact=>[contact,row] as const)));
+ function permission(row:Row){return row.data.permission?.toLowerCase()==='subscribed'||(!row.data.permission&&input.contactability==='confirmed_contactable');}
  function linked(row:Row,kind:string,field:string){const values=ids(row.data[field],row.separator);return values.map(value=>{const key=`${kind}:${value}`,match=references.get(key);if(!match||duplicates.has(key)||rows.some(other=>other.kind===kind&&other.id===value&&other.error))throw new Error(`Unresolved ${kind} association. Include its file and stable ID.`);return match;});}
  for(const row of rows.sort((a,b)=>['suppression','company','contact','deal','note'].indexOf(a.kind)-['suppression','company','contact','deal','note'].indexOf(b.kind))){try{
   if(row.error)throw new Error(row.error);if(duplicates.has(`${row.kind}:${row.id}`))throw new Error('Duplicate source ID in this file.');
   if(row.kind==='suppression'){const reference=nativeId(namespace,'suppression-reference',row.id);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:'suppression',record_id:stopId,source_id:row.id,mailbox:email(row.data.email)!},links:[]}}]});continue;}
-  if(existing.has(row)){const reference=nativeId(namespace,'reference',`${row.kind}:${row.id}`);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:row.kind,record_id:references.get(`${row.kind}:${row.id}`)!,source_id:row.id,mailbox:row.kind==='contact'?email(row.data.email)??null:null},links:[]}}],unmapped:[{reason:'Associated with a pre-existing native record; its fields are preserved.'}]});continue;}
+  if(existing.has(row)){const reference=nativeId(namespace,'reference',`${row.kind}:${row.id}`);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:row.kind,record_id:references.get(`${row.kind}:${row.id}`)!,source_id:row.id,mailbox:row.kind==='contact'?email(row.data.email)??null:null},links:[]}}],unmapped:[{reason:'Matched an existing native record. Its name, other fields and associations are kept; incoming differences are not applied. Sending holds still apply.'}]});continue;}
   const id=references.get(`${row.kind}:${row.id}`)!,original=originals.get(`${row.kind}:${id}`);
   if(original){results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:JSON.parse(original)}]});continue;}
   const data=row.data,native:Record<string,any>={...shapes[row.kind],id,created_at:at,updated_at:at},links:Record<string,any>[]=[];
@@ -61,9 +67,9 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
    Object.assign(native,{name:data.name,primary_domain:domain,primary_domain_key:companyDomainKey(domain,JSON.parse(settings?.free_mail_domains_json??'[]'))});
   }
   if(row.kind==='contact'){
-   const companies=linked(row,'company','company_ids');if(companies.length>1)throw new Error('Orbit has one primary company per contact. Choose one source company ID.');
+   const named=companyFor.get(row),companies=named?[references.get(`company:${named.id}`)!]:linked(row,'company','company_ids');if(named?.error)throw new Error('The company supplied by Company Name was rejected.');if(companies.length>1)throw new Error('Orbit has one primary company per contact. Choose one source company ID.');
    const name=data.name||[data.first_name,data.last_name].filter(Boolean).join(' ')||null,address=data.email?email(data.email):null;if(!name&&!address)throw new Error('Contact needs a name or email.');
-   Object.assign(native,{name,email:address,email_key:contactEmailKey(address),phone:data.phone||null,job_title:data.job_title||null,company_id:companies[0]??null,contactability:address&&!stopEmails.has(address)&&data.permission?.toLowerCase()==='subscribed'?'contactable':'do_not_contact',contactability_revision:0});
+   Object.assign(native,{name,email:address,email_key:contactEmailKey(address),phone:data.phone||null,job_title:data.job_title||null,company_id:companies[0]??null,contactability:address&&!stopEmails.has(address)&&permission(row)?'contactable':'do_not_contact',contactability_revision:0});
   }
   if(row.kind==='deal'){
    const companies=linked(row,'company','company_ids'),contacts=linked(row,'contact','contact_ids');if(companies.length>1)throw new Error('Choose one company ID for the deal.');
@@ -81,7 +87,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
   }
   links.sort((a,b)=>row.kind==='deal'?a.contact_id.localeCompare(b.contact_id):`${a.record_type}:${a.record_id}`.localeCompare(`${b.record_type}:${b.record_id}`));
   if(Object.values(native).some(v=>typeof v==='number'&&!Number.isFinite(v)))throw new Error('Native record has an unsupported default.');
-  results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:{row:native,links,...row.kind==='contact'?{suppressionTokens:emailTokens.get(native.email)??[]}:{} } as any}]});
+  results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:{row:native,links,...row.kind==='contact'?{suppressionTokens:emailTokens.get(native.email)??[]}:{} } as any}],...row.derivedContacts?{unmapped:[{reason:'Company created from an exact Company Name in the contacts CSV. Existing native companies are never matched by name.'}]}:{}});
  }catch(error){row.error=(error as Error).message;results.set(row.source,{effects:[],rejection:row.error});
   // The exact original remains in kit custody. Rejected rows need only their location and reason in the resumable plan, avoiding unindexed personal-data copies.
   row.source.sourceId=`rejected:${sha256(row.source.sourceId)}`;row.source.payload={rejected:true};row.source.payloadHash=sha256(canonicalJson(row.source.payload));}}
@@ -94,6 +100,6 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  value.contacts=await Promise.all(contacts.map(async c=>{const mailboxes=JSON.parse(c.mailboxes_json) as string[],mailboxDigests=[...new Set((await Promise.all(mailboxes.map(address=>match(address)))).flat())].sort();return{id:c.id,contactability:'do_not_contact',contactability_revision:c.contactability_revision+1,prior:c.contactability,priorRevision:c.contactability_revision,mailboxes,mailboxDigests};}));}
  const payload={emails},safety:SourceRecord={namespace,kind:'safety',sourceId:stopId,payload,payloadHash:sha256(canonicalJson(payload)),artifactHash:source.artifacts[0].sha256,location:{artifact:source.artifacts[0].name,pointer:'/suppression-first'}};
  const effect:TargetEffect={targetKind:'suppression',targetId:stopId,value:value as any};source.records=[safety,...rows.map((r,i)=>duplicates.has(`${r.kind}:${r.id}`)?{...r.source,sourceId:`duplicate-row-${i}:${sha256(r.id)}`} :r.source)];results.set(safety,{effects:emails.length?[effect]:[]});
- const plan=await planD1Import(source,{version:'orbit-csv-v1',map:record=>results.get(record)??results.get(rows.find(r=>r.source.location.artifact===record.location.artifact&&r.source.location.row===record.location.row)?.source??safety)!},{...context,namespace});
+ const plan=await planD1Import(source,{version:'orbit-csv-v1',map:record=>results.get(record)??results.get(rows.find(r=>r.source.kind===record.kind&&r.source.location.artifact===record.location.artifact&&r.source.location.row===record.location.row)?.source??safety)!},{...context,namespace});
  return plan;
 }

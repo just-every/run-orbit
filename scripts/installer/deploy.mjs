@@ -7,8 +7,6 @@ import { cloudflare } from '@runeditrun/rer/modules/deploy-kit/provider';
 import { ownerTarget, ownerPlan, ownerWorkerName, ownerDeploy, ownerHealth, settleOwnerState } from '@runeditrun/rer/modules/deploy-kit/owner';
 import { packageBuild } from '@runeditrun/rer/modules/deploy-kit/prepare';
 import { missing, invalid, refuse } from '@runeditrun/rer/errors';
-import { claimOrbitOwner } from './hosted-owner.mjs';
-import { ownerSecret } from '@runeditrun/rer/internal/modules/deploy-kit/owner-secret.mjs';
 
 // Optional features are uploaded only when the owner supplies them; deployed
 // secrets are kept by name on later deploys.
@@ -24,9 +22,9 @@ export async function declaration(root, env = process.env) {
  return value;
 }
 
-/** Base deploy-kit owner-account deploy, health, then the first owner's claim with a one-use token. */
+/** Upload the owned deployment; RER completes the owner claim and token retirement. */
 export function orbitDeploy(lifecycle) {
- return async ({ root, options, store, signal, operationToken, setupManifest, linkDependencies }) => {
+ return async ({ root, options, store, signal, operationToken }) => {
   const environment = options.environment ?? 'production';
   const plan = await declaration(root);
   await lifecycle.run(root, {}, store, () => {}, signal, { verb: 'build', operationToken });
@@ -64,24 +62,15 @@ export function orbitDeploy(lifecycle) {
   // The fingerprint names every declared secret, so retiring the spent token leaves an unchanged build a no-op.
   const declaredSecrets = ownerPlan(target, plan, artifact).secrets;
   const { receipt, sentSecrets } = await ownerDeploy({ api, target, plan: deployed, artifact, statePath, env, declaredSecrets });
-  let setupToken = sentSecrets.includes('SETUP_TOKEN') ? env.SETUP_TOKEN : undefined;
+  const setupToken = sentSecrets.includes('SETUP_TOKEN') ? env.SETUP_TOKEN : undefined;
   await ownerHealth({ api, target, plan: deployed, statePath, healthOptions: { readiness: { single: true, totalMs: 30000 } } });
   // Base retires the spent token and records its Worker version. Updates omit it
   // from both the upload and owner claim, including after a process restart.
-  const claimed = await claimOrbitOwner({ setupManifest, hook: { returnTo: '/setup' }, declaration: plan,
-   deployed: { origin: receipt.origin, sentSecrets, retiredSecrets }, env,
-   supplied: process.env.SETUP_TOKEN?.trim() ? [] : ['SETUP_TOKEN'],
-   beforeClaim: token => linkDependencies?.(receipt.origin, token),
-   addSecret: value => store.addSecrets?.([value]),
-   secret: ([action, binding], values) => {
-    if (action === '--set' && binding === 'SETUP_TOKEN') setupToken = values[binding];
-    return ownerSecret({ api, target, statePath, binding, value: action === '--set' ? values[binding] : undefined });
-   },
-  });
-  if (claimed === undefined) await linkDependencies?.(receipt.origin);
+  // RER's outer deployment controller waits for this exact source, claims the
+  // owner using its generated-token custody, and retires the one-use token.
   store.report(`deploy: ${receipt.origin} is healthy. Open ${receipt.origin}/signin and request a sign-in link for the owner email.`);
   for (const line of captureRedirects(receipt.origin)) store.report(line);
   // rer reads its kit record from state and redacts the deployed token; it never prints it.
-  return { deployed: true, origin: receipt.origin, dependenciesLinked: true, state: statePath, ...(setupToken ? { setupToken } : {}) };
+  return { deployed: true, origin: receipt.origin, state: statePath, ...(setupToken ? { setupToken } : {}) };
  };
 }

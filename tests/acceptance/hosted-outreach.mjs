@@ -1,3 +1,5 @@
+import {isolateBrowserTemp} from '../support/browser-temp.mjs';
+isolateBrowserTemp();
 import {verifiedEditionCommit} from './edition-source.mjs';
 import {readFile,mkdir,writeFile,appendFile} from 'node:fs/promises';
 import {isAbsolute} from 'node:path';

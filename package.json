@@ -81,8 +81,9 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "miniflare@5.20260907.0-alpha": "patches/miniflare@5.20260907.0-alpha.patch",
-      "wrangler@4.129.1": "patches/wrangler@4.129.1.patch"
+      "miniflare@5.20260907.0-alpha": "patches/miniflare-5.20260907.0-alpha.patch",
+      "wrangler@4.129.1": "patches/wrangler-4.129.1.patch",
+      "@runeditrun/rer@0.2.19": "patches/rer-0.2.19.patch"
     },
     "onlyBuiltDependencies": [
       "esbuild",

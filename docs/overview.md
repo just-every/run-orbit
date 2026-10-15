@@ -25,17 +25,24 @@ When a customer replies, Orbit cancels any follow-up you scheduled for that pers
 
 ## Run it on your computer
 
-Orbit needs Node 22.20.0 and pnpm 10.12.4. From a copy of the code, run:
+Install [RER](https://runeditrun.com) and use Node 22 or later. RER selects Orbit's pinned Node 22.20.0 runtime and pnpm 10.12.4 automatically.
 
 ```sh
-rer install
-rer setup --owner-email EMAIL
+git clone https://github.com/just-every/run-orbit.git && cd run-orbit
 rer dev
 ```
 
-`setup` makes you the owner. `dev` starts Orbit and prints its address and a link to a local outbox: open the outbox and follow the newest sign-in link. No email is sent from your computer. Your first sign-in asks for your business name, time zone, currency and pipeline stages, and then you are in.
+`dev` installs dependencies, prepares the local trial owner (`owner@orbit.test`) on the first launch and starts Orbit. Open the private `RER_OPEN` link it prints on this computer: you are already signed in. No email is sent locally. Your first sign-in asks for your business name, time zone, currency and pipeline stages, and then you are in. Change the trial email in Settings → Installation owner, or use your real owner mailbox from the start: run `rer install` and `rer setup --owner-email EMAIL` before `rer dev`.
 
-Stop it with `rer dev --stop` or Ctrl-C. Your data stays on your computer between runs.
+The local outbox is optional: use `rer dev --login` to try email-link sign-in, then open the outbox link printed by `rer outbox --owner-email EMAIL`, follow the message and press **Confirm**.
+
+Stop it with `rer dev --stop` or Ctrl-C. Your data stays on your computer between runs. Stop `dev` and `preview` before CLI export, import, reset, build or verification.
+
+## Hosted sign-in and removal
+
+After deployment, open `/signin` at your hosted origin, enter your active operator email, follow the emailed link and press **Confirm**. Hosted mail requires a verified `MAIL_FROM` and `SENDGRID_API_KEY`; `rer signin` recovers owner access without email. Run it from the deploying checkout with the same Cloudflare credentials as deploy; add `--environment NAME` and `--env-file FILE` as needed. Open the private link it prints once within 15 minutes, then correct a wrong owner email in Settings. RER never saves that link. A restore retains current full operators and the active hosted owner, imports new archived operators as ordinary operators and revokes sessions, so sign in again afterwards.
+
+To remove the hosted installation, first save a private backup, then run `rer deploy --remove --yes` from the deploying checkout, adding the same `--environment NAME` if you chose one. Keep its `.rer/deploy/<environment>.json` receipt so RER can identify the resources it created and verify their removal. Removal deletes hosted data.
 
 ## Where to go next
 

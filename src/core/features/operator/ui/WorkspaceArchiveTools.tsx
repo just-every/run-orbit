@@ -1,3 +1,4 @@
+import {previewArchive,type ArchivePreview} from './archive-preview';
 import {useOperatorDialog} from './operator-dialog';
 import {useEffect,useRef,useState} from 'react';
 import {abortArchive,archiveUrl,prepareArchive,restoreArchive,unfinishedTransfers,type ArchiveStatus} from './archive-transfer';
@@ -9,7 +10,9 @@ export function WorkspaceArchiveTools(){
  const [file,setFile]=useState<File>(),[confirmed,setConfirmed]=useState(false),[validated,setValidated]=useState(0);
  const [busy,setBusy]=useState<'export'|'import'|'cancel'|null>(null),[error,setError]=useState(''),[paused,setPaused]=useState(false);
  const [unfinished,setUnfinished]=useState<ArchiveStatus[]>([]),[unfinishedExports,setUnfinishedExports]=useState<ArchiveStatus[]>([]);
+ const [preview,setPreview]=useState<ArchivePreview>(),[checking,setChecking]=useState(false);
  const stop=useRef(false);
+ useEffect(()=>{let active=true;setPreview(undefined);setConfirmed(false);if(file){setChecking(true);setError('');void previewArchive(file).then(value=>{if(active)setPreview(value);},reason=>{if(active)setError(reason instanceof Error?reason.message:'Archive could not be checked.');}).finally(()=>{if(active)setChecking(false);});}else setChecking(false);return()=>{active=false;};},[file]);
  useEffect(()=>{try{setExportId(sessionStorage.getItem('orbit:archive:export')??'');setImportId(sessionStorage.getItem('orbit:archive:import')??'');}catch{setError('This browser cannot remember transfer IDs. Copy the displayed ID before leaving.');}},[]);
  const remember=(kind:string,id:string)=>{try{sessionStorage.setItem(`orbit:archive:${kind}`,id);}catch{setError('Copy the transfer ID before leaving; browser storage is unavailable.');}};
  const updateExport=(status:ArchiveStatus)=>{setExportState(status);setExportId(status.id);remember('export',status.id);};
@@ -32,15 +35,17 @@ export function WorkspaceArchiveTools(){
    <button disabled={!!busy} onClick={()=>void run('import',async()=>setUnfinished(await unfinishedTransfers('imports')))}>Find unfinished restores</button>
    {unfinished.map(status=><p key={status.id}><button disabled={!!busy} onClick={()=>updateImport(status)}>Use restore {status.id}</button> — {status.state}</p>)}
    <label>Archive file<input type="file" accept="application/json,.json" disabled={!!busy} onChange={event=>{setFile(event.target.files?.[0]);setValidated(0);}}/></label>
+   {checking&&<p role="status">Checking the archive and operator access before restore…</p>}
+   {preview&&<section aria-label="Operator access after restore"><h4>Operator access after restore</h4><p>Current full operators keep their email, name and status. Collaborators require new invitations after restore. The current owner remains the owner. Matching email addresses use the archive identity so historical attribution stays intact. All sessions end when restore completes; sign in again with your current email.</p><p><strong>Current access:</strong></p><ul>{preview.current.map(operator=><li key={operator.id}>{operator.display_name} · {operator.email} · {operator.status}{operator.setup_owner?' · Owner kept':operator.collaborator?' · Collaborator access removed':' · Operator kept'}</li>)}</ul><p><strong>Operators in this archive:</strong></p><ul>{preview.operators.map(operator=><li key={operator.id}>{operator.display_name} · {operator.email} · {operator.status}{operator.collaborator?' · Collaborator; needs new invitation':preview.current.some(current=>(!current.collaborator||current.setup_owner)&&(current.id===operator.id||current.email.toLowerCase()===operator.email.toLowerCase()))?' · Current access kept':' · Imported as operator'}</li>)}</ul><p>{preview.rows.toLocaleString()} rows in {preview.parts} parts. Archive operators do not replace the current owner.</p></section>}
    <label>Restore transfer ID<input value={importId} onChange={event=>{setImportId(event.target.value);setImportState(undefined);}} disabled={!!busy} placeholder="Leave empty to start a restore"/></label>
-   <label className="workspace-archive__confirmation"><input type="checkbox" checked={confirmed} disabled={!!busy} onChange={event=>setConfirmed(event.target.checked)}/>I confirm this target has no customer data and want to restore the selected archive.</label>
+   <label className="workspace-archive__confirmation"><input type="checkbox" checked={confirmed} disabled={!!busy||!preview||checking} onChange={event=>setConfirmed(event.target.checked)}/>I confirm this target has no customer data and want to restore the selected archive.</label>
    <ArchiveProgress status={importState} validated={validated}/>
-   <div className="workspace-archive__actions"><button disabled={!!busy||!file||!confirmed||importState?.state==='complete'} onClick={()=>{if(file)void run('import',()=>restoreArchive(file,importId,updateImport,setValidated,()=>stop.current));}}>{importId?'Resume restore':'Start restore'}</button>
+   <div className="workspace-archive__actions"><button disabled={!!busy||!file||!preview||checking||!confirmed||importState?.state==='complete'} onClick={()=>{if(file)void run('import',()=>restoreArchive(file,importId,updateImport,setValidated,()=>stop.current));}}>{importState?.state==='complete'?'Restore complete':importId?'Resume restore':'Start restore'}</button>
    {busy==='import'&&<button onClick={()=>{stop.current=true;setPaused(true);}}>Pause after current part</button>}
    {importId&&!['complete','aborted'].includes(importState?.state??'')&&<button disabled={!!busy} onClick={async()=>{if(await ask({title:'Cancel and roll back',description:'Cancel this restore and roll back any changes before releasing the workspace?',confirmLabel:'Cancel and roll back'})!==null)void run('cancel',()=>abortArchive('imports',importId,updateImport));}}>Cancel and roll back</button>}</div>
    {busy==='cancel'&&<p role="status">Waiting for the server to complete cancellation or rollback. The workspace stays protected until confirmed.</p>}
    {importState?.state==='restoring'&&<p role="status">Restore is applying bounded batches. Keep going or resume with this transfer ID; the workspace remains protected.</p>}
-   {importState?.state==='complete'&&<p role="status">Restore completed. Sessions were revoked; sign in again before continuing.</p>}
+   {importState?.state==='complete'&&<p role="status">Restore complete. Your current owner and full operators were kept. Sessions were revoked; <a href="/signin">sign in again</a> before continuing.</p>}
    <p className="workspace-archive__notice">Source secrets must be configured again after a restore. Archives contain private customer data.</p>
   </section>
   {dialog}{paused&&<p role="status">Pausing after the current request. Keep the transfer ID to resume.</p>}{error&&<p role="alert">{error}</p>}
@@ -48,10 +53,11 @@ export function WorkspaceArchiveTools(){
 }
 function ArchiveProgress({status,validated}:{status?:ArchiveStatus;validated?:number}){
  if(!status)return null;
- return <div aria-live="polite"><p className="workspace-archive__state">{status.state}</p><dl className="workspace-archive__metrics">
- {status.totalTables!==undefined&&<div><dt>Tables</dt><dd>{status.completedTables??0} / {status.totalTables}</dd></div>}
+ return <div aria-live="polite" data-archive-state={status.state}><p className="workspace-archive__state">{status.state==='restoring'?(status.phase==='backup'?'Saving recovery copy':status.phase==='clear'?'Clearing empty workspace':status.phase==='load'?'Restoring archive':status.phase?.startsWith('rollback')?'Rolling back restore':'Restoring'):status.state==='complete'?'Restore complete':status.state}</p><dl className="workspace-archive__metrics">
+ {status.totalSteps!==undefined&&<div><dt>Restore steps</dt><dd>{status.completedSteps??0} / {status.totalSteps}</dd></div>}
+ {status.totalTables!==undefined&&<div><dt>Tables in this phase</dt><dd>{status.completedTables??0} / {status.totalTables}</dd></div>}
  {validated!==undefined&&<div><dt>Parts validated</dt><dd>{validated}</dd></div>}
- {status.nextPart!==undefined&&<div><dt>Parts uploaded</dt><dd>{status.nextPart}</dd></div>}
+ {status.nextPart!==undefined&&<div><dt>Parts uploaded</dt><dd>{status.nextPart} / {status.manifest?.parts??status.nextPart}</dd></div>}
  {status.manifest&&<><div><dt>Archive parts</dt><dd>{status.manifest.parts}</dd></div><div><dt>Rows</dt><dd>{status.manifest.rows.toLocaleString()}</dd></div></>}
  </dl></div>;
 }

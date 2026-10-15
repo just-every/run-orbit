@@ -1,3 +1,5 @@
+import {isolateBrowserTemp} from '../support/browser-temp.mjs';
+isolateBrowserTemp();
 import { test } from 'node:test';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';

@@ -12,7 +12,8 @@ export function formatDateTime(value: string | null, presentation: WorkspacePres
 }
 
 export function formatCurrency(cents: number, presentation: WorkspacePresentation): string {
-  return new Intl.NumberFormat("en-AU", { style: "currency", currency: presentation.currency, maximumFractionDigits: 0 }).format(cents / 100);
+  const parts = new Intl.NumberFormat("en-AU", { style: "currency", currency: presentation.currency, maximumFractionDigits: 0 }).formatToParts(cents / 100);
+  return parts.map(part => part.type === "currency" && presentation.currency === "AUD" ? "A$" : part.value).join("");
 }
 
 export function label(value: string): string {

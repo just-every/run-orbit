@@ -7,13 +7,15 @@ The `OPERATIONS.json` argv and `package.json` aliases use `rer VERB`.
 
 ## Launch with one command
 
-From a runnable edition's root, `rer dev` is the whole launch. It installs
+Use Node 22 or later. From a runnable edition's root, `rer dev` is the whole launch. It installs
 locked dependencies when they are missing or older than the lockfile. On a
-checkout that is not set up it sets up a local owner
-(`owner@<checkout-name>.test`) and fills the setup answers the seed declares a
+checkout that is not set up it prepares a local trial owner
+(`owner@orbit.test` for Orbit) and fills the setup answers the seed declares a
 `localDefault` for in `rer-setup.json`. Then it starts the app and prints the
-`RER_READY` lines. It never prompts and never re-runs setup on a checkout that
-is set up. A required setup answer with no value and no `localDefault` stops it
+`RER_READY` lines. It never prompts or re-runs setup on a checkout that is set up.
+Change the trial owner email in Settings → Installation owner, or provide your real
+mailbox first with `rer setup --owner-email EMAIL`. A required setup answer
+with no value and no `localDefault` stops it
 with exit 3 and a message naming the field.
 
 - **Port.** The first port from 8787 that is free on both `127.0.0.1` and `::1`
@@ -129,7 +131,7 @@ checkout's dev key in its fragment: opening it signs the browser in through a
 real dev session, and the key is removed from the address bar and kept only as a
 host-only cookie. Treat that line as a credential and open it only on this
 computer. A dev-only badge switches between the owner, signed out and the
-seed's personas (`admin@dev.localhost` and so on). `dev --as PERSONA` starts as
+seed's configured operator and collaborator personas. `dev --as PERSONA` starts as
 another persona or `signed-out`; `dev --login` turns dev identity off and uses
 the outbox: it prints `RER_SIGN_IN URL` and a `RER_OPEN` URL that opens that
 outbox. Choose the newest ordinary sign-in message and follow its link. No
@@ -170,8 +172,7 @@ start anyway. Reusing a checkout's running server is never refused for memory.
 
 Use the following operations as needed. Reset is destructive local cleanup;
 export any data you need to keep before resetting. Export saves under
-`exports/`: normalized relative paths such as `exports/x.rer` and
-`./exports/x.rer`, and absolute paths inside this checkout's `exports/`, are
+`exports/`: normalized relative paths such as `./exports/x.rer`, and absolute paths inside this checkout's `exports/`, are
 accepted. An absolute path outside the checkout is also accepted. Export
 refuses other paths in the checkout, `..` segments, unsafe symlinks and any
 path served by the app. Import requires an empty destination and `--yes`
@@ -196,13 +197,19 @@ operations and ambiguous or linked state.
 Local export creates a private archive with an integrity receipt and explicit
 exclusions. Import validates the archive and restores into an empty destination.
 After import, run setup to establish the owner and local configuration. Auth,
-outbox, private settings and transient runtime state are excluded. Remote
-transfer is unsupported by the maintained references and fails visibly.
+outbox, private settings and transient runtime state are excluded. Orbit supports hosted Records transfers through `--target remote`; see
+[Operations](OPERATIONS.md) for that separate format and its session requirements.
 
 Real deployment uses the owner-account procedure and its private credentials.
 `rer deploy --dry-run` validates and builds locally without a
 provider request. The default environment is `production`; select another with
-`--environment NAME`. Local validation does not establish provider acceptance,
+`--environment NAME`. To recover hosted owner access without mail, run
+`rer signin` with the same Cloudflare credentials, adding `--environment NAME`
+and `--env-file FILE` as needed. Open its private single-use link within 15
+minutes; it is printed once and never saved. You can then correct a wrong
+owner email in Settings. To remove hosted resources after saving a backup,
+run `rer deploy --remove --yes` with that environment and retain its deployment
+receipt so the kit can identify its resources. Local validation does not establish provider acceptance,
 hosted health or mail delivery.
 
 `rer describe` reads the current checkout's actual verbs,

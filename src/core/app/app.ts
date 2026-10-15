@@ -119,7 +119,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
   app.route('/api/v1/imports',createImportRoutes(input.database));
   app.route('/api/v1/capture',createCaptureRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,demo:input.demo,fetcher:input.captureFetch}));
   app.route("/api/v1/records", createRecordsRoutes(input.database));
-  app.route("/api/v1/settings", createSettingsRoutes(input.database));
+  app.route("/api/v1/settings", createSettingsRoutes(input.database,request=>input.stepUp(request,'email:change','/app/settings')));
   app.route("/api/v1/setup", createSetupRoutes(input.database));
   app.route("/api/v1/sources", createSourceRoutes(input.database,input.sourceSecurity));
   app.route("/api/v1/notifications", createNotificationRoutes(input.database));

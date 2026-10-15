@@ -1,7 +1,9 @@
+import {isolateBrowserTemp} from './tests/support/browser-temp.mjs';
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import {mkdtempSync} from 'node:fs'
 import {tmpdir} from 'node:os'
+isolateBrowserTemp();
 process.env.ORBIT_TEST_STATE??=mkdtempSync(path.join(tmpdir(),'orbit-browser-state-'))
 import { defineConfig } from '@playwright/test'
 

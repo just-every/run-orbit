@@ -192,6 +192,12 @@
       "name": "0036_capture_providers.sql",
       "sha256": "29b3ee67adc33b2b9a760c47de4e8e5587348cc0541ebc8da14af04278cadc73",
       "sql": "-- Installation-local authority; neither OAuth flows nor leases travel in archives.\nCREATE TABLE capture_oauth (\n state_hash TEXT PRIMARY KEY,\n provider TEXT NOT NULL,\n operator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n session_id TEXT NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,\n origin TEXT NOT NULL,\n source_id TEXT NOT NULL,\n connection_id TEXT,\n ciphertext TEXT NOT NULL,\n expires_at INTEGER NOT NULL,\n claimed INTEGER NOT NULL DEFAULT 0\n);\nCREATE INDEX capture_oauth_source ON capture_oauth(source_id);\nCREATE TABLE capture_locks (\n source_id TEXT PRIMARY KEY REFERENCES capture_sources(id) ON DELETE CASCADE,\n lease TEXT NOT NULL,\n expires_at INTEGER NOT NULL\n);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0037_owner_signin.sql",
+      "sha256": "97572888d4ce7ee26d51fd3fb198eb954051805f591d61984d442d29d5a43e28",
+      "sql": "-- A native owner recovery grant minted by rer signin with the deployment's\n-- Cloudflare authority. Only its digest is stored; all state stays local.\nCREATE TABLE identity_owner_signins (\n id TEXT PRIMARY KEY NOT NULL,\n token_hash TEXT NOT NULL UNIQUE,\n operator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n operator_version INTEGER NOT NULL,\n created_at INTEGER NOT NULL,\n expires_at INTEGER NOT NULL,\n consumed_at INTEGER\n);\n\n-- Explicit, read-only native owner projection for the pinned CLI integration.\nCREATE VIEW rer_owner_signin_operators AS\n SELECT o.id,o.email,\n  COALESCE(unixepoch(o.updated_at)*1000+CAST(substr(o.updated_at,21,3) AS INTEGER),0) AS version\n FROM operators o WHERE o.setup_owner=1 AND o.status='active';\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

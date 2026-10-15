@@ -3,13 +3,14 @@ import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {launchFixture} from '../support/launch-fixture';
 import {crmFixture} from '../support/crm-fixtures';
+import {defaultMapping} from '../../src/core/features/imports/contracts';
 import {nativeId} from '../../src/core/features/imports/source';
 import {createDependencies} from '../support/dependencies';
 import {createApp} from '../support/app';
 import {createId} from '../../src/core/shared/ids';
 import {signRelayBody} from '../../src/base/sendgrid-event-relay/crypto';
 import {json,finish} from '../support/crm-import-flow';
-test('RECORD-008 T-098 both documented CSV recipes dry-run, reconcile, re-import and undo through current operator routes',async t=>{
+test('RECORD-008 both documented CSV recipes dry-run, reconcile, re-import and undo through current operator routes',async t=>{
  const f=await launchFixture();try{for(const vendor of ['hubspot','pipedrive'] as const){
   const independentlyStopped=await f.customer(`${vendor}-independent@example.test`),restorable=await f.customer(`${vendor}-standalone@example.test`);
   await json(await f.request(`records/contact/${independentlyStopped.contactId}`,'PUT',{name:'Independently stopped customer',email:independentlyStopped.email,contactability:'do_not_contact'}));
@@ -34,7 +35,7 @@ test('RECORD-008 T-098 both documented CSV recipes dry-run, reconcile, re-import
   t.diagnostic(`${vendor}: ${dry.counts.input} rows, one listed rejection; records, associations, notes, replay and kit undo reconciled.`);
  }}finally{await f.dispose();}
 });
-test('RECORD-008 T-098 stops block exact approved sends; undo preserves edits and independent stops, authority and malformed mapping fail closed',async()=>{
+test('RECORD-008 stops block exact approved sends; undo preserves edits and independent stops, authority and malformed mapping fail closed',async()=>{
  const f=await launchFixture();try{
   const c=await f.customer('hubspot-standalone@example.test'),scheduled=await f.message(c.contactId,c.opportunityId),source=crmFixture('hubspot',f.stage,3);
   let paidCalls=0;const deps=createDependencies(f.db),session=await deps.auth.createSession(f.actor),relaySecret=crypto.randomUUID(),app=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},mailEventKeys:{relaySecret},outboundMail:{send:async()=>{paidCalls++;return{providerMessageId:'test-edge-receipt'};}}});
@@ -54,7 +55,7 @@ test('RECORD-008 T-098 stops block exact approved sends; undo preserves edits an
   await deps.auth.revoke(session.id);assert.equal((await request(`imports/${dry.id}`)).status,401);
  }finally{await f.dispose();}
 });
-test('RECORD-008 T-098 a failed native batch keeps suppression effective; revoked grants and another actor cannot publish retained plans',async()=>{
+test('RECORD-008 a failed native batch keeps suppression effective; revoked grants and another actor cannot publish retained plans',async()=>{
  const f=await launchFixture();try{const source=crmFixture('pipedrive',f.stage,3),existing=await f.customer('pipedrive-standalone@example.test'),dry=await json(await f.request('imports/dry-run','POST',source));
  await f.db.prepare("CREATE TRIGGER import_failure_probe BEFORE INSERT ON companies BEGIN SELECT RAISE(ABORT,'deliberate public-flow storage failure'); END").run();
  assert.equal((await f.request(`imports/${dry.id}/apply`,'POST',{confirmed:true,fingerprint:dry.fingerprint})).status,409);assert.equal((await f.records.detail('contact',existing.contactId)).record.contactability,'do_not_contact');assert.equal((await f.db.prepare('SELECT count(*) n FROM companies').first<any>())!.n,0);
@@ -68,7 +69,7 @@ test('RECORD-008 T-098 a failed native batch keeps suppression effective; revoke
  const {archiveCatalog}=await import('../../src/core/features/records/archive-schema');assert.ok((await archiveCatalog(f.db)).every(table=>!table.name.startsWith('ik_')&&!table.name.startsWith('crm_import_')));
  }finally{await f.dispose();}
 });
-test('RECORD-008 T-098 a contact arriving after review fences every creation and send until undo; missing permission stays held',async()=>{
+test('RECORD-008 a contact arriving after review fences every creation and send until undo; missing permission stays held',async()=>{
  const f=await launchFixture();try{
   const source=crmFixture('hubspot',f.stage,3);delete source.files.find(file=>file.kind==='contact')!.mapping.permission;
   const dry=await json(await f.request('imports/dry-run','POST',source));assert.equal(dry.suppressed,4);
@@ -81,5 +82,17 @@ test('RECORD-008 T-098 a contact arriving after review fences every creation and
   await json(await f.request('records/contact','POST',{name:'After explicitly undoing the review',email:'another-arrival@example.test'}));
   const refreshed=await json(await f.request('imports/dry-run','POST',source));await finish(f,refreshed);
   for(let i=0;i<3;i++){const id=nativeId(`orbit:hubspot:${source.account}`,'contact',`person-${i}`);assert.equal((await f.records.detail('contact',id)).record.contactability,'do_not_contact');}
+  const existing=await f.customer('leo@example.test'),stopped=await f.customer('stopped-import@example.test');
+  await json(await f.request(`records/contact/${existing.contactId}`,'PUT',{name:'Leo Visitor',email:existing.email}));
+  await json(await f.request(`records/contact/${stopped.contactId}`,'PUT',{name:'Stopped',email:stopped.email,contactability:'do_not_contact'}));
+  const headers=['Record ID','First Name','Last Name','Email','Company Name','Phone Number'],csv=[headers.join(','),'new1,Maya,Chen,maya-import@example.test,Brightwork,0412345678','new2,Ari,Park,ari-import@example.test,Brightwork,0498765432',`native,Leo,Park,${existing.email},Unused company,0123`,`stopped,Prior,Stop,${stopped.email},,`].join('\r\n');
+  const ordinary={vendor:'hubspot',account:'standard-contact-export',contactability:'confirmed_contactable',files:[{kind:'contact',name:'contacts.csv',csv,mapping:defaultMapping('hubspot','contact',headers),separator:';'}]};
+  const standard=await json(await f.request('imports/dry-run','POST',ordinary));assert.equal(standard.counts.rejected,0);assert.equal(standard.rows.find((row:any)=>row.sourceId==='native').status,'linked');assert.equal(standard.rows.find((row:any)=>row.sourceId==='native').recordId,existing.contactId);
+  await finish(f,standard);
+  const person=await f.db.prepare("SELECT * FROM contacts WHERE email='maya-import@example.test'").first<any>(),colleague=await f.db.prepare("SELECT * FROM contacts WHERE email='ari-import@example.test'").first<any>();
+  assert.equal(person.name,'Maya Chen');assert.equal(person.phone,'0412345678');assert.equal(person.contactability,'contactable');assert.ok(person.company_id);assert.equal(person.company_id,colleague.company_id);assert.equal((await f.records.detail('company',person.company_id)).record.name,'Brightwork');
+  assert.equal((await f.records.detail('contact',existing.contactId)).record.name,'Leo Visitor');assert.equal((await f.records.detail('contact',stopped.contactId)).record.contactability,'do_not_contact');assert.equal(await f.db.prepare("SELECT id FROM companies WHERE name='Unused company'").first(),null);
+  const again=await json(await f.request('imports/dry-run','POST',ordinary));await finish(f,again);assert.equal(await f.db.prepare("SELECT count(*) n FROM companies WHERE name='Brightwork'").first('n'),1);
+  await finish(f,again,'undo');await finish(f,standard,'undo');assert.equal(await f.db.prepare('SELECT id FROM contacts WHERE id=?').bind(person.id).first(),null);assert.equal(await f.db.prepare('SELECT id FROM companies WHERE id=?').bind(person.company_id).first(),null);assert.equal((await f.records.detail('contact',stopped.contactId)).record.contactability,'do_not_contact');
  }finally{await f.dispose();}
 });

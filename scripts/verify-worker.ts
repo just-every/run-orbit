@@ -1,3 +1,5 @@
+import {isolateBrowserTemp} from '../tests/support/browser-temp.mjs';
+isolateBrowserTemp();
 import assert from 'node:assert/strict';
 import {verifyUnconfiguredHost} from './verify-unconfigured-host';
 import { request as httpRequest } from 'node:http';

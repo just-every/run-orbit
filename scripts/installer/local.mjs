@@ -1,3 +1,4 @@
+import {localOwner} from './local-owner.mjs';
 import {ensureLocalSourceKey} from './source-key.mjs';
 import { localInstaller } from '@runeditrun/rer/local-installer';
 import { developmentTarget, previewTarget } from '@runeditrun/rer/operator-installer';
@@ -17,7 +18,7 @@ const migrate = ({ demo }) => ['pnpm', ['exec', 'wrangler', 'd1', 'migrations', 
 // Locally it claims the first owner with the private setup token, captures
 // sign-in mail in Base's outbox and opens `rer dev` signed in (devIdentity).
 export const lifecycle = captureNotices(localInstaller({
- features: model.features, node: '22.20.0', tools: ['pnpm', 'node'],
+ localOwner, features: model.features, node: '22.20.0', tools: ['pnpm', 'node'],
  failure: (error, { store }) => error instanceof LocalStateSafetyError ? store.redact(error.message) : undefined,
  // localState refuses legacy preview state under dist/ before anything builds over it.
  async prepare(context) { localState(context.root); context.localState = await selectLocalState(context.root); await privateDirectory(context.root, ['.wrangler', 'state']); if(context.verb==='setup')await ensureLocalSourceKey(context); },

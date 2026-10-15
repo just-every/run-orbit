@@ -5,12 +5,15 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
+  '@runeditrun/rer@0.2.19':
+    hash: 2199085c8f97d3003a84c73e5cc74b9f6989c7707e7ab2bf59d52caacd27c803
+    path: patches/rer-0.2.19.patch
   miniflare@5.20260907.0-alpha:
     hash: 29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b
-    path: patches/miniflare@5.20260907.0-alpha.patch
+    path: patches/miniflare-5.20260907.0-alpha.patch
   wrangler@4.129.1:
     hash: f4d92bf73c567e1fccd53e6eab99eed7d54d64bb7781a148da7b01fff998f3cb
-    path: patches/wrangler@4.129.1.patch
+    path: patches/wrangler-4.129.1.patch
 
 importers:
 
@@ -55,7 +58,7 @@ importers:
         version: 1.61.1
       '@runeditrun/rer':
         specifier: 0.2.19
-        version: 0.2.19
+        version: 0.2.19(patch_hash=2199085c8f97d3003a84c73e5cc74b9f6989c7707e7ab2bf59d52caacd27c803)
       '@tailwindcss/vite':
         specifier: 4.3.3
         version: 4.3.3(vite@8.2.2(@types/node@22.19.17)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.0))
@@ -2542,7 +2545,7 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
-  '@runeditrun/rer@0.2.19': {}
+  '@runeditrun/rer@0.2.19(patch_hash=2199085c8f97d3003a84c73e5cc74b9f6989c7707e7ab2bf59d52caacd27c803)': {}
 
   '@sindresorhus/is@7.2.0': {}
 

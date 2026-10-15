@@ -15,6 +15,6 @@ export function DraftApproval({draft,dirty,recipientName}:{draft:OperatorDraft;d
   {dirty&&<OperatorState>Save your changes before approving this revision.</OperatorState>}
   <label>Schedule for later (your browser local time; leave empty to send now)<input type="datetime-local" value={scheduledAt} onChange={e=>{setScheduledAt(e.target.value);setPreview(null);}}/></label>
   {!preview?<button type="button" className="operator-button" disabled={busy||dirty||draft.isStale||Boolean(result)} onClick={()=>void approve()}>{busy?'Checking…':scheduledAt?'Approve and schedule exact revision':'Approve and send exact revision'}</button>:<div role="alert"><p>It is {preview.localTime} in the recipient’s timezone ({preview.timezone}), outside permitted hours. Confirm this time to send now.</p><button type="button" className="operator-button" disabled={busy||dirty||draft.isStale} onClick={()=>void approve(preview.localTime)}>Confirm send at {preview.localTime}</button><button onClick={()=>setPreview(null)}>Cancel</button></div>}
-  {result&&<OperatorState>{result}</OperatorState>}{error&&<OperatorState kind="error">{error}</OperatorState>}
+  {result&&<OperatorState>{result}</OperatorState>}{error&&<OperatorState kind="error">{error} <a href="/app/settings#mail-sender">Customer mail sender settings</a></OperatorState>}
  </section>;
 }

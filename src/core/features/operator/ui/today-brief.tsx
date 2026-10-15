@@ -31,7 +31,7 @@ export function TodayBrief(){
  const {brief,presentation}=resource.data,c=brief.counts,empty=!brief.accounts.length&&!brief.unresolved.length&&!brief.held.length;
  async function seen(){setBusy(true);setError('');try{await todayRequest('/seen',{body:{through:brief.generatedAt}});resource.reload();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  return <section className="today" aria-label="Today's brief" data-testid="today-brief">
-  <div className="today__since"><p>{brief.sinceBasis==='seen'?'Since you last looked':`New in the last ${brief.policy.staleIntervalDays} days`}: <strong><time dateTime={brief.since}>{formatDateTime(brief.since,presentation)}</time></strong></p><button type="button" className="operator-button" disabled={busy} onClick={()=>void seen()}>Mark all as seen</button></div>
+  <div className="today__since"><p>{brief.sinceBasis==='seen'?'Since you last looked':'New customer activity'}: <strong><time dateTime={brief.since}>{formatDateTime(brief.since,presentation)}</time> – <time dateTime={brief.generatedAt}>{formatDateTime(brief.generatedAt,presentation)}</time></strong></p><button type="button" className="operator-button" disabled={busy} onClick={()=>void seen()}>Mark all as seen</button></div>
   {error&&<OperatorState kind="error">{error}</OperatorState>}
   <dl className="today__counts" aria-label="Today at a glance">
    <div><dt>replies</dt><dd>{c.replies}</dd></div><div><dt>meetings</dt><dd>{c.meetings}</dd></div><div><dt>overdue promises</dt><dd>{c.promises}</dd></div><div><dt>unresolved identities</dt><dd>{c.unresolved}</dd></div>
