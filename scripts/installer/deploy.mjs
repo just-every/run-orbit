@@ -59,7 +59,10 @@ export function orbitDeploy(lifecycle) {
   if (!retiredSecrets.includes('SETUP_TOKEN')) env.SETUP_TOKEN ||= randomBytes(32).toString('hex');
   store.addSecrets?.([env.SETUP_TOKEN].filter(Boolean));
   const deployed = ownerPlan(target, { ...plan, secrets: plan.secrets.filter(item => !retiredSecrets.includes(item.binding)) }, artifact);
-  const { receipt, sentSecrets } = await ownerDeploy({ api, target, plan: deployed, artifact, statePath, env });
+  // The fingerprint names every declared secret, so retiring the spent token leaves an unchanged build a no-op.
+  const declaredSecrets = ownerPlan(target, plan, artifact).secrets;
+  const { receipt, sentSecrets } = await ownerDeploy({ api, target, plan: deployed, artifact, statePath, env, declaredSecrets });
+  let setupToken = sentSecrets.includes('SETUP_TOKEN') ? env.SETUP_TOKEN : undefined;
   await ownerHealth({ api, target, plan: deployed, statePath, healthOptions: { readiness: { single: true, totalMs: 30000 } } });
   // Base retires the spent token and records its Worker version. Updates omit it
   // from both the upload and owner claim, including after a process restart.
@@ -68,11 +71,15 @@ export function orbitDeploy(lifecycle) {
    supplied: process.env.SETUP_TOKEN?.trim() ? [] : ['SETUP_TOKEN'],
    beforeClaim: token => linkDependencies?.(receipt.origin, token),
    addSecret: value => store.addSecrets?.([value]),
-   secret: ([action, binding], values) => ownerSecret({ api, target, statePath, binding, value: action === '--set' ? values[binding] : undefined }),
+   secret: ([action, binding], values) => {
+    if (action === '--set' && binding === 'SETUP_TOKEN') setupToken = values[binding];
+    return ownerSecret({ api, target, statePath, binding, value: action === '--set' ? values[binding] : undefined });
+   },
   });
   if (claimed === undefined) await linkDependencies?.(receipt.origin);
   store.report(`deploy: ${receipt.origin} is healthy. Open ${receipt.origin}/signin and request a sign-in link for the owner email.`);
   for (const line of captureRedirects(receipt.origin)) store.report(line);
-  return { deployed: true, origin: receipt.origin, dependenciesLinked: true };
+  // rer reads its kit record from state and redacts the deployed token; it never prints it.
+  return { deployed: true, origin: receipt.origin, dependenciesLinked: true, state: statePath, ...(setupToken ? { setupToken } : {}) };
  };
 }

@@ -2898,7 +2898,7 @@
       "executable": false
     },
     "scripts/installer/deploy.mjs": {
-      "sha256": "a9562b16f997f5d0b1d9e461b3cf6d889b99be40bfda6cf2b4ee20a5641e833f",
+      "sha256": "1bb5459dd0cb14e381f0505899a9c30b3f4b26d5b1adfac9a756e64aa2085bce",
       "executable": false
     },
     "scripts/installer/hosted-owner.mjs": {
