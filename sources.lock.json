@@ -1412,7 +1412,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "457916f5836d9b71b365d5e73ac6cba76dbc81ef0a14fcbcf04a80a168c324a6",
+      "sha256": "3d0d68df53012d05ac4214c478cd4085d0daca788155ad2689081ff03dece30f",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -5976,7 +5976,7 @@
       "executable": false
     },
     "tests/core/launch-inherited-stop.test.ts": {
-      "sha256": "6addaad40f429169744ebaa94b648a0369d6ffd1889a1d3d58fc8bcd63dd8972",
+      "sha256": "1f0e6e27c96c437ea33dfc4ff4377776fab6e1d0d413b813e28dbdfe4910e0f4",
       "executable": false
     },
     "tests/core/launch-provider-conflicts.test.ts": {
@@ -6308,7 +6308,7 @@
       "executable": false
     },
     "tests/rer/onboarding-journey.mjs": {
-      "sha256": "68312e7cc0b7ea97e95fc7b130ee04c0c2a1a5b2c0443a056bd55d59d73d19b8",
+      "sha256": "95d3a99774afeec95bb2aec175f8c8857d9517318cffec593226e48401027001",
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {

@@ -56,9 +56,12 @@ test('DATA-001 restore disables inherited approvals after all tables load, prese
   // Survivor work stays fresh when a normal merge inherits no stop.
   assert.equal((await source.db.prepare('SELECT is_stale FROM drafts WHERE id=?').bind(w.draftId).first())!.is_stale,0);
   const history=await source.message(c.contactId,c.opportunityId,'accepted'),archive=await new TestDataRepository(source.db).export();
+  const retainedOperators=(await new TestDataRepository(normal.db).export()).tables.operators;
   await new TestDataRepository(normal.db).restore(archive,normal.actor);
   const roundtrip=(await new TestDataRepository(normal.db).export()).tables;
-  for(const [name,rows] of Object.entries(archive.tables))if(name!=='audit_entries')assert.equal(await archiveHash(roundtrip[name]),await archiveHash(rows),`Normal archive table ${name} remains exact`);
+  const byId=(a:Record<string,any>,b:Record<string,any>)=>String(a.id).localeCompare(String(b.id));
+  assert.deepEqual([...roundtrip.operators].sort(byId),[...archive.tables.operators,...retainedOperators].sort(byId),'Restore keeps exact archive identities and destination operators');
+  for(const [name,rows] of Object.entries(archive.tables))if(!['audit_entries','operators'].includes(name))assert.equal(await archiveHash(roundtrip[name]),await archiveHash(rows),`Normal archive table ${name} remains exact`);
   // The destination retains suppression for an imported alias, not only its primary mailbox.
   const stopped=await target.records.save('contact',{name:'Destination stop',email:alias.email,contactability:'do_not_contact'},target.actor);
   await new TestDataRepository(target.db).remove('contact',stopped.id,target.actor);
