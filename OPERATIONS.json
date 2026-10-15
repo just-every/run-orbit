@@ -16,7 +16,9 @@
   "requiredEnvironment": [
     "CLOUDFLARE_ACCOUNT_ID",
     "CLOUDFLARE_API_TOKEN",
-    "OWNER_EMAIL"
+    "OWNER_EMAIL",
+    "MAIL_FROM",
+    "SENDGRID_API_KEY"
   ],
   "seedContract": {
     "version": 1,
@@ -47,7 +49,7 @@
         "package.json",
         "scripts/installer/local.mjs"
       ],
-      "effects": "Validate rer-setup.json answers, write private .dev.vars (0600), build the Worker, apply migrations/core to .wrangler/state, start Orbit briefly, claim the first owner with the private setup token, place a sign-in link in /__dev/outbox and stop the app. Reruns keep the owner, data and settings bytes."
+      "effects": "Validate rer-setup.json answers, write private .dev.vars (0600), build the Worker, apply migrations/core to .wrangler/state, start Orbit briefly, claim the first owner with the private setup token, prepare checkout-key gated sign-in and stop the app. Reruns keep the owner, data and settings bytes."
     },
     "dev": {
       "argv": [
@@ -58,7 +60,7 @@
         "package.json",
         "scripts/installer/local.mjs"
       ],
-      "effects": "Serve Orbit through Vite with HMR on the requested loopback origin, run the minute Cron Trigger locally, request a fresh owner sign-in link and print RER_READY and RER_SIGN_IN once /health answers."
+      "effects": "Serve Orbit through Vite with HMR on the requested loopback origin, run the minute Cron Trigger locally, and print RER_READY, RER_SIGNED_IN and private checkout-key RER_OPEN once /health answers. Local sign-in mail is suppressed."
     },
     "preview": {
       "argv": [
@@ -147,17 +149,6 @@
         "scripts/installer/local.mjs"
       ],
       "effects": "Base release producer: clean source release receipt and optional local tag; never pushes or deploys."
-    },
-    "outbox": {
-      "argv": [
-        "rer",
-        "outbox"
-      ],
-      "inputs": [
-        "package.json",
-        "scripts/installer/local.mjs"
-      ],
-      "effects": "Print the running local app's /__dev/outbox URL; --owner-email requests a fresh ordinary sign-in link."
     },
     "doctor": {
       "argv": [

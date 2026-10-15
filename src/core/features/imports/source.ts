@@ -10,17 +10,22 @@ export function readImport(input:ImportInput){
   const parsed=parseCsv(file.csv.replace(/^\uFEFF/,'')),headers=parsed.shift();if(!headers?.length||new Set(headers).size!==headers.length)throw new Error('Each CSV needs unique column headers.');
   if(parsed.length>1000)throw new Error('Each file supports up to 1,000 rows per reviewed import.');
   if(Object.values(file.mapping).some(header=>!headers.includes(header)))throw new Error('A mapped column is absent from its file.');
-  if(!file.mapping.id&&file.kind!=='suppression')throw new Error(`Map a stable source ID for ${file.kind}.`);
+  const emailIdentity=input.vendor==='csv'&&file.kind==='contact'&&!file.mapping.id;
+  if(emailIdentity&&!file.mapping.email)throw new Error('Map an email or a stable source ID for generic CSV contacts.');
+  if(!emailIdentity&&!file.mapping.id&&file.kind!=='suppression')throw new Error(`Map a stable source ID for ${file.kind}.`);
   if(file.kind==='suppression'&&!file.mapping.email)throw new Error('Map an email for the suppression file.');
   if(Buffer.byteLength(file.csv)>2_000_000)throw new Error('Each CSV supports up to 2 MB of UTF-8 data.');
   const hash=sha256(file.csv),name=`${file.kind}/${file.name}`;
   source.artifacts.push({name,sha256:hash,size:Buffer.byteLength(file.csv),original:{status:'available',base64:Buffer.from(file.csv).toString('base64')}});
   for(const [index,values] of parsed.entries()){
    const data=Object.fromEntries(Object.entries(file.mapping).map(([key,header])=>[key,values[headers.indexOf(header)]?.trim()??'']));
-   const id=data.id||(file.kind==='suppression'?data.email.toLowerCase():`missing:${index+2}`);
+   // Only generic contacts may use their exact normalized mailbox as source identity.
+   // Hash it so provenance does not repeat the mailbox. Explicit vendor IDs stay unchanged.
+   const address=emailIdentity?email(data.email??''):undefined;
+   const id=data.id||(file.kind==='suppression'?data.email.toLowerCase():address?`email:${sha256(address)}`:`missing:${index+2}`);
    const payload={data,separator:file.separator,...file.kind==='contact'&&input.contactability==='confirmed_contactable'?{contactability:input.contactability}:{}};
    const record:SourceRecord={namespace,kind:file.kind,sourceId:id,payload,payloadHash:sha256(canonicalJson(payload)),artifactHash:hash,location:{artifact:name,row:index+2}};
-   source.records.push(record);rows.push({kind:file.kind,id,data,source:record,separator:file.separator,unmapped:headers.flatMap((header,index)=>Object.values(file.mapping).includes(header)?[]:[index+1]),error:values.length!==headers.length?'Column count differs from header.':!data.id&&file.kind!=='suppression'?'Source ID is empty.':values.some(v=>v.length>100000)?'A cell exceeds 100,000 characters.':undefined});
+   source.records.push(record);rows.push({kind:file.kind,id,data,source:record,separator:file.separator,unmapped:headers.flatMap((header,index)=>Object.values(file.mapping).includes(header)?[]:[index+1]),error:values.length!==headers.length?'Column count differs from header.':emailIdentity&&!address?'Generic CSV contacts without an ID require a valid email.':!emailIdentity&&!data.id&&file.kind!=='suppression'?'Source ID is empty.':values.some(v=>v.length>100000)?'A cell exceeds 100,000 characters.':undefined});
   }
  }
  return {namespace,source,rows};

@@ -45,7 +45,8 @@ This repository is the complete source for Orbit. Public source: [just-every/run
 Install [RER](https://runeditrun.com) and use **Node 22 or later**. Orbit pins Node **22.20.0** and pnpm **10.12.4** for project commands; RER selects the pinned runtime and installs the frozen dependencies automatically.
 
 ```sh
-git clone https://github.com/just-every/run-orbit.git && cd run-orbit
+git clone https://github.com/just-every/run-orbit.git orbit
+cd orbit
 rer dev
 ```
 
@@ -93,9 +94,9 @@ rer deploy
 rer release --help
 ```
 
-`deploy` deploys to your own Cloudflare account with the Base deploy kit and needs `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` and `OWNER_EMAIL` in the environment. Supply both `MAIL_FROM` and `SENDGRID_API_KEY` to enable hosted email sign-in; with neither, the owner can still be claimed; `--dry-run` builds and validates locally without any provider request. [OPERATIONS.md](OPERATIONS.md) lists the token scopes, optional secrets and what to keep. `release` produces a source release receipt and never pushes or deploys.
+`deploy` deploys to your own Cloudflare account with the Base deploy kit and needs `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` and `OWNER_EMAIL` in the environment. Hosted deployment requires a verified SendGrid sender in `MAIL_FROM` and its `SENDGRID_API_KEY`; `--dry-run` builds and validates locally without any provider request. [OPERATIONS.md](OPERATIONS.md) lists the token scopes, optional secrets and what to keep. `release` produces a source release receipt and never pushes or deploys.
 
-For hosted sign-in, open your deployed origin's `/signin`, enter your active operator email, open the emailed link and press **Confirm**. `rer signin` recovers access without email: from the deploying checkout, use the same Cloudflare credentials as deploy and run `rer signin` (or `rer signin --environment NAME --env-file FILE`). Open the private link it prints once within 15 minutes. RER never saves it. Once signed in, correct a wrong owner email in Settings. Local `RER_OPEN` dev credentials cannot sign in to a hosted installation. If mail does not arrive, check the address is active in Settings → Installation owner, the sender is verified and both hosted mail secrets are configured. Restore keeps current hosted full operators, including the active owner, and imports new archived operators as ordinary operators. It revokes sessions; sign in again with the hosted owner's mailbox.
+For hosted sign-in, open your deployed origin's `/signin`, enter your active operator email, open the emailed link and press **Confirm**. Once signed in, change the owner email in Settings → Installation owner. Local `RER_OPEN` dev credentials cannot sign in to a hosted installation. If mail does not arrive, check the address is active in Settings → Installation owner, the sender is verified and both hosted mail secrets are configured. Restore keeps current hosted full operators, including the active owner, and imports new archived operators as ordinary operators. It revokes sessions; sign in again with the hosted owner's mailbox.
 
 To remove a deployment you created with this checkout:
 

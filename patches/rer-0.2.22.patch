@@ -69,34 +69,3 @@ diff --git a/cli/package-mode.mjs b/cli/package-mode.mjs
   }
   return undefined;
  }
-diff --git a/modules/deploy-kit/owner-signin.mjs b/modules/deploy-kit/owner-signin.mjs
---- a/modules/deploy-kit/owner-signin.mjs
-+++ b/modules/deploy-kit/owner-signin.mjs
-@@ -17,16 +17,22 @@
-   assert(live && sameDeployment(live, state.receipt.provider), 'owned-resource-replaced');
-   const ids = Object.values(state.owned.d1).filter(entry => entry.status === 'created' && entry.id).map(entry => entry.id);
-   const holding = [];
--  for (const id of ids) if ((await query(api, id, "SELECT name FROM sqlite_master WHERE type='table' AND name='oa_owner_signins'"))[0].results.length) holding.push(id);
-+  for (const id of ids) {
-+    const objects=(await query(api,id,"SELECT type,name FROM sqlite_master WHERE name IN ('identity_owner_signins','rer_owner_signin_operators','oa_owner_signins')"))[0].results;
-+    const native=objects.some(o=>o.type==='table'&&o.name==='identity_owner_signins')&&objects.some(o=>o.type==='view'&&o.name==='rer_owner_signin_operators');
-+    if(native)holding.push({id,grants:'identity_owner_signins',operators:'rer_owner_signin_operators',native:true});
-+    else if(objects.some(o=>o.type==='table'&&o.name==='oa_owner_signins'))holding.push({id,grants:'oa_owner_signins',operators:'oa_operators',native:false});
-+  }
-   assert(holding.length > 0, 'owner-signin-unsupported');
-   assert(holding.length === 1, 'owner-signin-ambiguous');
-+  const database=holding[0];
-   const token = randomBytes(32).toString('base64url'), id = randomUUID(), now = clock();
-   // The recorded owner: the claimed (bootstrap) owner first, as operator-auth's own owner() reads it.
--  await query(api, holding[0], `INSERT INTO oa_owner_signins(id,token_hash,operator_id,operator_version,created_at,expires_at)
-+  await query(api, database.id, `INSERT INTO ${database.grants}(id,token_hash,operator_id,operator_version,created_at,expires_at)
-     SELECT ${literal(id)},${literal(await ownerSigninDigest(token))},o.id,o.version,${now},${now + OWNER_SIGNIN_SECONDS * 1000}
--    FROM oa_operators o LEFT JOIN oa_bootstrap b ON b.claim_id=o.id WHERE o.role='owner' AND o.status='active'
--    ORDER BY b.claim_id IS NULL, o.created_at, o.id LIMIT 1`);
--  const [owner] = (await query(api, holding[0], `SELECT o.email FROM oa_owner_signins g JOIN oa_operators o ON o.id=g.operator_id WHERE g.id=${literal(id)}`))[0].results;
-+    FROM ${database.operators} o ${database.native?'':"LEFT JOIN oa_bootstrap b ON b.claim_id=o.id WHERE o.role='owner' AND o.status='active'"}
-+    ORDER BY ${database.native?'o.id':'b.claim_id IS NULL, o.created_at, o.id'} LIMIT 1`);
-+  const [owner] = (await query(api, database.id, `SELECT o.email FROM ${database.grants} g JOIN ${database.operators} o ON o.id=g.operator_id WHERE g.id=${literal(id)}`))[0].results;
-   assert(owner, 'owner-not-claimed');
-   const link = new URL(OWNER_SIGNIN_PATH, target.origin);
-   link.searchParams.set('token', token);

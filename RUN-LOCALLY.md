@@ -7,6 +7,12 @@ The `OPERATIONS.json` argv and `package.json` aliases use `rer VERB`.
 
 ## Launch with one command
 
+```sh
+git clone https://github.com/just-every/run-orbit.git orbit
+cd orbit
+rer dev
+```
+
 Use Node 22 or later. From a runnable edition's root, `rer dev` is the whole launch. It installs
 locked dependencies when they are missing or older than the lockfile. On a
 checkout that is not set up it prepares a local trial owner
@@ -39,7 +45,7 @@ with exit 3 and a message naming the field.
 
 ## Install for a real owner
 
-Use Node 22.20.0 and pnpm 10.12.4 for maintained first-party checkouts. To
+Use Node 22 or later; RER selects Orbit’s pinned Node 22.20.0 and pnpm 10.12.4 automatically. To
 install with a real owner mailbox, run the verbs yourself from the runnable
 edition's root: install locked dependencies, prepare its local owner, then start
 development:
@@ -72,7 +78,7 @@ Open that private URL on this computer: the app opens signed in as the owner,
 at `/setup` until first-run is finished. Local sign-in mail is suppressed;
 there is no local outbox to read. Until first-run completion is stored durably,
 app routes send the signed-in owner to `/setup`. Once complete, `/setup` opens
-the app or settings. Hosted sign-in uses email; see the recovery section below.
+the app or settings. Hosted sign-in uses email; see [Operations](OPERATIONS.md).
 
 The saved local port is used; a first setup saves the first free port from 8787. Explicit ports are decimal
 integers from 1 through 65535 and must be free; a busy requested port fails
@@ -198,11 +204,8 @@ legacy local mail state, private settings and transient runtime state are exclud
 Real deployment uses the owner-account procedure and its private credentials.
 `rer deploy --dry-run` validates and builds locally without a
 provider request. The default environment is `production`; select another with
-`--environment NAME`. To recover hosted owner access without mail, run
-`rer signin` with the same Cloudflare credentials, adding `--environment NAME`
-and `--env-file FILE` as needed. Open its private single-use link within 15
-minutes; it is printed once and never saved. You can then correct a wrong
-owner email in Settings. To remove hosted resources after saving a backup,
+`--environment NAME`. Hosted deployment requires a verified `MAIL_FROM` and
+`SENDGRID_API_KEY`; the owner signs in through the emailed link. To remove hosted resources after saving a backup,
 run `rer deploy --remove --yes` with that environment and retain its deployment
 receipt so the kit can identify its resources. Local validation does not establish provider acceptance,
 hosted health or mail delivery.

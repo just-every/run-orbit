@@ -4,6 +4,12 @@ Open Records → Move in customer records. Choose the source, select CSV files, 
 
 Orbit accepts up to five files, 1,000 rows and 2 MB per file, with 100,000 characters per cell. Use UTF-8 CSV, quoted multiline text and unique headers. Export columns vary by vendor settings, language and custom fields: presets only fill labels they recognize. Explicitly select every other column and the separator used between association IDs. Never join by company name or person name. A contact or deal can have one company; choose a primary company before import if the source has several. Deals can link multiple contacts. Notes can link contacts, companies and deals. Include the referenced records in the same import.
 
+## Your own spreadsheet
+
+Choose **Generic CSV** for a sheet from your own records. A contacts file with `email,name,company` headers maps automatically; review or change those mappings before the dry run. The `company` column creates one source company per identical name in this source account. It never matches an existing native company by name. Map `company_ids` instead when supplying a companies file with explicit IDs.
+
+Contacts need no ID column when every row has a valid email. Orbit derives a stable source identity from the exact email, lowercased with surrounding whitespace removed, and records the source as Generic CSV. Rows with missing or invalid emails are rejected. Keep the source account label and email stable on re-import; file names and row order do not define identity. If addresses may change, supply and map your own stable `id` column from the first import. A mapped but empty ID is rejected. Companies, deals and notes still require explicit stable IDs, as do HubSpot and Pipedrive records. Generic CSV uses the same saved review, contactability safeguards and undo as vendor exports.
+
 ## HubSpot
 
 Export Contacts, Companies and Deals separately, including Record ID, the selected properties, associations and all associated records. Keep unsubscribed contacts in the export. Select English headers if using the preset. Include email information such as Unsubscribed from all email, hard bounce reason and quarantine flags. Map any additional email-type opt-out field into the do-not-contact field, consolidating multiple positive opt-out columns before upload when necessary. Company name on a contact is not its actual company association.

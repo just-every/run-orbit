@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { after,test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
 import { createDependencies } from '../support/dependencies';
+import { createApp } from '../support/app';
 import { createId } from '../../src/core/shared/ids';
 import { createSourceSecurity,payloadHash } from '../../src/core/platform/source-security';
 import { createSignalIngress } from '../../src/core/features/ingestion/routes';
@@ -32,10 +33,22 @@ test('OUT-008 workspace and recipient clocks respect weekdays and DST',()=>{
 });
 test('OUT-001 OUT-009 scheduled approval preserves content and dispatches once; stopped draft never submits',async()=>{
  const f=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db);await db.prepare("UPDATE outbound_messages SET claimed_at='2000-01-01T00:00:00.000Z' WHERE claimed_at IS NOT NULL").run();
- const now=new Date('2030-01-07T09:00:00Z'),scheduledAt='2030-01-07T10:00:00Z';
- const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Approved',body:'Exact approved body'},f.actor);const message=await approval.approve(draft.id,1,f.actor,{now,scheduledAt});assert.equal(message.state,'scheduled');let calls=0;
- const service=new OutreachService(db,{send:async input=>{calls++;assert.equal(input.body,'Exact approved body');return{providerMessageId:'receipt'};}});await service.dispatchDue(new Date(scheduledAt));await service.dispatchDue(new Date(scheduledAt));assert.equal(calls,1);
- const next=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Stop',body:'Must not send'},f.actor);await approval.approve(next.id,1,f.actor,{now,scheduledAt});await db.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(f.contactId).run();await service.dispatchDue(new Date(scheduledAt));assert.equal(calls,1);
+ const now=new Date('2030-01-07T09:00:00Z'),requestedAt='2030-01-12T00:00:00Z'; // Saturday 10am in Brisbane.
+ await db.prepare("UPDATE contacts SET timezone='Australia/Brisbane' WHERE id=?").bind(f.contactId).run();
+ const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Approved',body:'Exact approved body'},f.actor);let calls=0;
+ const mail={send:async(input:{body:string})=>{calls++;assert.equal(input.body,'Exact approved body');return{providerMessageId:'receipt'};}};
+ const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:mail}),session=await createDependencies(db).auth.createSession(f.actor);
+ const request=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1/workbench/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+ const previewResponse=await request(`drafts/${draft.id}/approval-preview?scheduledAt=${encodeURIComponent(requestedAt)}`);assert.equal(previewResponse.status,200);
+ const preview=await previewResponse.json() as {scheduledAt:string;scheduledLocalTime:string;timezone:string;scheduleReason:string};
+ assert.equal(preview.scheduledAt,'2030-01-13T22:00:00.000Z');assert.equal(preview.timezone,'Australia/Brisbane');assert.equal(preview.scheduledLocalTime,localTime(new Date(preview.scheduledAt),preview.timezone).label);assert.ok(typeof preview.scheduleReason==='string'&&preview.scheduleReason.length>0,'Adjusted schedules explain why before approval');assert.equal(calls,0);
+ const approve=(confirmed:string)=>request(`drafts/${draft.id}/approve`,{revision:1,scheduledAt:requestedAt,scheduledAtConfirmation:confirmed});
+ assert.equal((await approve(requestedAt)).status,409,'Unreviewed adjustments are refused');
+ await db.prepare("UPDATE contacts SET timezone='UTC' WHERE id=?").bind(f.contactId).run();assert.equal((await approve(preview.scheduledAt)).status,409,'A changed recipient clock requires a fresh review');
+ await db.prepare("UPDATE contacts SET timezone='Australia/Brisbane' WHERE id=?").bind(f.contactId).run();
+ const response=await approve(preview.scheduledAt);assert.equal(response.status,200);const message=await response.json() as {id:string;state:string;scheduledAt:string};assert.equal(message.state,'scheduled');assert.equal(message.scheduledAt,preview.scheduledAt);
+ const service=new OutreachService(db,mail);await service.dispatchDue(new Date(requestedAt));assert.equal(calls,0);await service.dispatchDue(new Date(message.scheduledAt));await service.dispatchDue(new Date(message.scheduledAt));assert.equal(calls,1);
+ const next=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Stop',body:'Must not send'},f.actor);await approval.approve(next.id,1,f.actor,{now,scheduledAt:message.scheduledAt});await db.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(f.contactId).run();await service.dispatchDue(new Date(message.scheduledAt));assert.equal(calls,1);
 });
 
 test('OUT-011 unknown delivery reconciles by durable provider key and never submits again',async()=>{

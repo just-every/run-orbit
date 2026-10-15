@@ -14,6 +14,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  const stages=new Set((await db.prepare('SELECT id FROM pipeline_stages').all()).results.map(r=>r.id));
  const shapes:Record<string,Record<string,any>>={};
  for(const [kind,table] of Object.entries(tables)){const columns=(await db.prepare(`PRAGMA table_info(${table})`).all()).results;shapes[kind]=Object.fromEntries(columns.map(c=>[c.name,c.dflt_value==null?null:c.dflt_value.startsWith("'")?c.dflt_value.slice(1,-1).replaceAll("''", "'"):Number(c.dflt_value)]));}
+ const identityKey=(row:Row)=>row.error?null:row.kind==='contact'?contactEmailKey(row.data.email):row.kind==='company'?companyDomainKey(row.data.domain,JSON.parse(settings?.free_mail_domains_json??'[]')):null;
  const stopEmails=new Set<string>(),matchEmail=await privacyMatcher(db as unknown as D1Database),activeStops=await activeSuppressionTokens(db as unknown as D1Database);
  const emailTokens=new Map<string,string[]>();
  for(const row of rows){if(row.kind==='suppression'){const address=email(row.data.email??'');if(address)stopEmails.add(address);else row.error??='Suppression email is invalid.';}if(row.kind==='contact'){
@@ -25,12 +26,12 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  // Resolve only explicit source IDs or unambiguous native identity keys. Existing records are linked, never overwritten.
  const emails=[...stopEmails].sort(),stopId=nativeId(namespace,'suppression',sha256(canonicalJson(emails)));
  const existing=new Set<Row>(),duplicates=new Set<string>();
- const identityRows=new Map<string,Row[]>();for(const row of rows){const key=row.kind==='contact'?contactEmailKey(row.data.email):row.kind==='company'?companyDomainKey(row.data.domain,JSON.parse(settings?.free_mail_domains_json??'[]')):null;if(key){const group=identityRows.get(`${row.kind}:${key}`)??[];group.push(row);identityRows.set(`${row.kind}:${key}`,group);}}for(const group of identityRows.values())if(new Set(group.map(r=>r.id)).size>1)for(const row of group)row.error??='Several source IDs share this native identity. Consolidate them explicitly before importing.';
+ const identityRows=new Map<string,Row[]>();for(const row of rows){const key=identityKey(row);if(key){const group=identityRows.get(`${row.kind}:${key}`)??[];group.push(row);identityRows.set(`${row.kind}:${key}`,group);}}for(const group of identityRows.values())if(new Set(group.map(r=>r.id)).size>1)for(const row of group)row.error??='Several source IDs share this native identity. Consolidate them explicitly before importing.';
  const markerRows=(await db.prepare('SELECT kind,id,original_json FROM crm_import_targets WHERE id IN(SELECT value FROM json_each(?))').bind(JSON.stringify(rows.filter(r=>r.kind!=='suppression').map(r=>nativeId(namespace,r.kind,r.id)))).all()).results;
  const originals=new Map(markerRows.map(r=>[`${r.kind}:${r.id}`,r.original_json]));
  const currentIds=new Map<string,Set<string>>(),identities=new Map<string,string[]>();
  for(const kind of ['company','contact','deal','note']){const candidates=rows.filter(r=>r.kind===kind),ids=candidates.map(r=>nativeId(namespace,kind,r.id));currentIds.set(kind,new Set((await db.prepare(`SELECT id FROM ${tables[kind]} WHERE id IN(SELECT value FROM json_each(?))`).bind(JSON.stringify(ids)).all()).results.map(r=>r.id)));
-  if(kind==='contact'||kind==='company'){const keys=JSON.stringify(candidates.map(r=>kind==='contact'?contactEmailKey(r.data.email):companyDomainKey(r.data.domain,JSON.parse(settings?.free_mail_domains_json??'[]'))).filter(Boolean)),column=kind==='contact'?'email_key':'primary_domain_key';
+  if(kind==='contact'||kind==='company'){const keys=JSON.stringify(candidates.map(identityKey).filter(Boolean)),column=kind==='contact'?'email_key':'primary_domain_key';
    const matches=(await db.prepare(`SELECT ${column} AS identity_key,id FROM ${tables[kind]} WHERE ${column} IN(SELECT value FROM json_each(?)) UNION SELECT identity_key,survivor_id AS id FROM record_aliases WHERE record_type=? AND identity_key IN(SELECT value FROM json_each(?))`).bind(keys,kind,keys).all()).results;
    for(const match of matches){const key=`${kind}:${match.identity_key}`,list=identities.get(key)??[];if(!list.includes(match.id))list.push(match.id);identities.set(key,list);}
   }
@@ -41,7 +42,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
   let id=nativeId(namespace,row.kind,row.id),current=currentIds.get(row.kind)!.has(id);
   if(current&&!originals.has(`${row.kind}:${id}`))existing.add(row);
   if(!current&&(row.kind==='contact'||row.kind==='company')){
-   const identity=row.kind==='contact'?contactEmailKey(row.data.email):companyDomainKey(row.data.domain,JSON.parse(settings?.free_mail_domains_json??'[]'));
+   const identity=identityKey(row);
    const matches=identity?identities.get(`${row.kind}:${identity}`)??[]:[];
    if(matches.length>1)row.error??='Identity matches several existing records.';else if(matches.length){id=matches[0];existing.add(row);}
   }

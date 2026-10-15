@@ -1,19 +1,26 @@
 import { createId } from '../../shared/ids';
 import { WorkbenchError } from '../workbench/repository';
 import { permitted, localTime, nextPermitted } from './time';
-export interface ApprovalInput {idempotencyKey?:string;scheduledAt?:string;quietHoursConfirmation?:string;now?:Date}
+export interface ApprovalInput {idempotencyKey?:string;scheduledAt?:string;scheduledAtConfirmation?:string;quietHoursConfirmation?:string;now?:Date}
 export class ApprovalRepository {
  constructor(readonly db:D1Database){}
- async preview(draftId:string,now=new Date()) {
+ async preview(draftId:string,now=new Date(),scheduledAt?:string) {
   const row=await this.db.prepare("SELECT COALESCE(c.timezone,w.timezone) AS timezone FROM drafts d JOIN contacts c ON c.id=d.recipient_contact_id CROSS JOIN workspace_settings w WHERE d.id=? AND w.id='workspace'").bind(draftId).first<{timezone:string}>();
   if(!row)throw new WorkbenchError(404,'Draft or recipient not found.');
-  return {timezone:row.timezone,localTime:localTime(now,row.timezone).label,quietHours:!permitted(now,row.timezone)};
+  const current={timezone:row.timezone,localTime:localTime(now,row.timezone).label,quietHours:!permitted(now,row.timezone)};
+  if(!scheduledAt)return current;
+  const requested=new Date(scheduledAt);
+  if(!Number.isFinite(requested.getTime())||requested.getTime()<=now.getTime())throw new WorkbenchError(400,'Schedule a future time.');
+  const actual=nextPermitted(requested,row.timezone);
+  const scheduleReason=!permitted(requested,row.timezone)?'The requested time is outside 08:00–18:00 Monday to Friday in the recipient’s timezone. Orbit moves scheduled sends to the next permitted minute.':actual.getTime()!==requested.getTime()?'Scheduled sends use whole minutes, so this time is rounded up to the next permitted minute.':null;
+  return {...current,requestedAt:requested.toISOString(),scheduledAt:actual.toISOString(),scheduledLocalTime:localTime(actual,row.timezone).label,scheduleReason};
  }
  async approve(draftId:string,revision:number,actor:string,input:ApprovalInput={}) {
   const now=input.now??new Date(),at=now.toISOString(),preview=await this.preview(draftId,now);
   if(!input.scheduledAt&&preview.quietHours&&input.quietHoursConfirmation!==preview.localTime)throw new WorkbenchError(409,`Outside recipient sending hours (${preview.localTime}, ${preview.timezone}); confirm this exact local time before sending.`);
   if(input.scheduledAt&&(!Number.isFinite(Date.parse(input.scheduledAt))||Date.parse(input.scheduledAt)<=now.getTime()))throw new WorkbenchError(400,'Schedule a future time.');
   const scheduled=input.scheduledAt?nextPermitted(new Date(input.scheduledAt),preview.timezone).toISOString():null;
+  if(input.scheduledAtConfirmation&&input.scheduledAtConfirmation!==scheduled)throw new WorkbenchError(409,'The permitted schedule changed. Review the schedule again before approving.');
   const id=createId(),key=input.idempotencyKey??`${draftId}:${revision}`,messageId=`<${id}@orbit.local>`;
   const minute=new Date(now.getTime()-60000).toISOString(),day=new Date(now.getTime()-86400000).toISOString();
   const insertion=this.db.prepare(`INSERT INTO outbound_messages(id,draft_id,revision,opportunity_id,operator_id,contact_id,recipient_email,subject,body,state,created_at,updated_at,idempotency_key,message_id,reference_ids,scheduled_at,approved_at,claimed_at,first_attempt_at,attempt_count)
@@ -45,7 +52,9 @@ export class ApprovalRepository {
    this.db.prepare("INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) SELECT ?,'opportunity',opportunity_id FROM outbound_messages WHERE settlement_id=?").bind(entry,entry),
    this.db.prepare("INSERT INTO audit_entries(id,actor_id,action,entity_type,entity_id,details_json,occurred_at) SELECT ?,?,'message.cancelled','outbound_message',?,'{}',? WHERE EXISTS(SELECT 1 FROM outbound_messages WHERE settlement_id=?)").bind(createId(),actor,id,at,entry),
    this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason='Scheduled message cancelled by operator',next_due_at=NULL,updated_at=? WHERE id=(SELECT opportunity_id FROM outbound_messages WHERE settlement_id=?) AND lifecycle='open'").bind(at,entry)
-  ]);if(result[0]!.meta.changes!==1)throw new WorkbenchError(409,'Message already dispatched or cancelled.');
+  ]);
+  // Hosted D1 includes the schedule-stop trigger writes in its change count.
+  if(result[0]!.meta.changes<1)throw new WorkbenchError(409,'Message already dispatched or cancelled.');
  }
 
 }

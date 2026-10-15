@@ -4,7 +4,7 @@ import { staticAssetResponse } from '../../base/static-assets';
 import { lobbyResponse } from '../../base/lobby';
 import { claimedWhen, setupStateResponse } from '../../base/setup-state';
 import { identity as editionIdentity } from '../../identity';
-const claimed = claimedWhen("SELECT 1 FROM first_run_setup WHERE id = 'workspace'");
+const claimed = claimedWhen("SELECT 1 FROM operators WHERE setup_owner = 1 AND status = 'active'");
 import {pollProviders} from '../features/capture/providers/service';
 import { editorConfigurationResponse, editorOrigin } from "../features/editor/server";
 import {embeddingOrigins} from '../features/forms/embedding';
@@ -48,7 +48,7 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
     const gate = devGate({ key: bindings.RER_DEV_KEY, origin: bindings.AUTH_ORIGIN ?? '', local: bindings.AUTH_LOCAL === "true" });
     const exchange = await gate?.exchange(request);
     if (exchange) return exchange;
-    if ((path === "/auth/magic-link" || path === "/auth/confirm" || path === "/auth/owner-signin") && request.method === "POST" && await archiveImportActive(bindings.DB)) return new Response(JSON.stringify({ error: "Orbit is restoring an archive. Try again shortly." }), { status: 503, headers: { "Content-Type": "application/json", "Retry-After": "30" } });
+    if ((path === "/auth/magic-link" || path === "/auth/confirm") && request.method === "POST" && await archiveImportActive(bindings.DB)) return new Response(JSON.stringify({ error: "Orbit is restoring an archive. Try again shortly." }), { status: 503, headers: { "Content-Type": "application/json", "Retry-After": "30" } });
     const identity = await identityResponse(request, bindings, { waitUntil: promise => executionContext.waitUntil(promise), ownerClaimed: async () => Boolean(await bindings.DB.prepare("SELECT 1 FROM operators WHERE setup_owner=1").first()) });
     if (identity) return identity;
     if ((path === "/demo" || path === "/demo/") && !publicDemoConfig.enabled) return new Response("Not found", { status: 404 });

@@ -6,3 +6,6 @@ export const landingSchema=z.object({title:z.string().trim().min(1).max(160),hea
 export type LandingDefinition=z.infer<typeof landingSchema>;
 export const intakeSchema=z.object({revision:z.number().int().positive(),operationId:z.string().uuid(),idempotencyKey:z.string().uuid(),values:z.partialRecord(fixedField,z.string().max(4000)),consent:z.boolean().optional()}).strict();
 export type FormIntake=z.infer<typeof intakeSchema>;
+export const captureAuthorizationSchema=z.object({maxRecords:z.number().int().min(1).max(1000),expiresAt:z.iso.datetime()}).strict();
+export const publicationApprovalSchema=z.object({artifactHash:z.string().regex(/^[a-f0-9]{64}$/),formRevision:z.number().int().positive(),capture:captureAuthorizationSchema.optional()}).strict();
+export type PublicationApproval=z.infer<typeof publicationApprovalSchema>;

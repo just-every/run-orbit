@@ -39,7 +39,7 @@ Stop it with `rer dev --stop` or Ctrl-C. Your data stays on your computer betwee
 
 ## Hosted sign-in and removal
 
-After deployment, open `/signin` at your hosted origin, enter your active operator email, follow the emailed link and press **Confirm**. Hosted mail requires a verified `MAIL_FROM` and `SENDGRID_API_KEY`; `rer signin` recovers owner access without email. Run it from the deploying checkout with the same Cloudflare credentials as deploy; add `--environment NAME` and `--env-file FILE` as needed. Open the private link it prints once within 15 minutes, then correct a wrong owner email in Settings. RER never saves that link. A restore retains current full operators and the active hosted owner, imports new archived operators as ordinary operators and revokes sessions, so sign in again afterwards.
+After deployment, open `/signin` at your hosted origin, enter your active operator email, follow the emailed link and press **Confirm**. Hosted mail requires a verified `MAIL_FROM` and `SENDGRID_API_KEY`. Change the owner email in Settings → Installation owner while signed in. A restore retains current full operators and the active hosted owner, imports new archived operators as ordinary operators and revokes sessions, so sign in again afterwards.
 
 To remove the hosted installation, first save a private backup, then run `rer deploy --remove --yes` from the deploying checkout, adding the same `--environment NAME` if you chose one. Keep its `.rer/deploy/<environment>.json` receipt so RER can identify the resources it created and verify their removal. Removal deletes hosted data.
 

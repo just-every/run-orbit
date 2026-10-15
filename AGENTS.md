@@ -24,7 +24,7 @@ rer describe
 - `verify` runs the complete verification with its own temporary state.
 - `reset --yes` removes only `.wrangler/state`, `.rer/local`, `.seed/installer` and `.dev.vars`, and refuses while `dev` runs.
 - `export` writes a new private archive of every Orbit table; `import` restores one into an empty installation (after `reset --yes`), then run `setup` with the archive's owner email. Add `--target remote --origin HTTPS_ORIGIN --session-file FILE` to move a hosted installation's Records archive.
-- `deploy` deploys to the owner's Cloudflare account and needs `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `OWNER_EMAIL`; hosted email sign-in additionally needs both `MAIL_FROM` and `SENDGRID_API_KEY`; `deploy --dry-run` makes no provider request. Never deploy without the owner's instruction.
+- `deploy` deploys to the owner's Cloudflare account and needs `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `OWNER_EMAIL`; hosted deployment requires both `MAIL_FROM` and `SENDGRID_API_KEY`; `deploy --dry-run` makes no provider request. Never deploy without the owner's instruction.
 - `describe` lists every command, flag, effect and pin.
 
 ## Before changing product behaviour

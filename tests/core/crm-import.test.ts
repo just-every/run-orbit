@@ -9,8 +9,8 @@ import {createDependencies} from '../support/dependencies';
 import {createApp} from '../support/app';
 import {createId} from '../../src/core/shared/ids';
 import {signRelayBody} from '../../src/base/sendgrid-event-relay/crypto';
-import {json,finish} from '../support/crm-import-flow';
-test('RECORD-008 both documented CSV recipes dry-run, reconcile, re-import and undo through current operator routes',async t=>{
+import {json,finish,genericCsvFlow} from '../support/crm-import-flow';
+test('RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes',async t=>{
  const f=await launchFixture();try{for(const vendor of ['hubspot','pipedrive'] as const){
   const independentlyStopped=await f.customer(`${vendor}-independent@example.test`),restorable=await f.customer(`${vendor}-standalone@example.test`);
   await json(await f.request(`records/contact/${independentlyStopped.contactId}`,'PUT',{name:'Independently stopped customer',email:independentlyStopped.email,contactability:'do_not_contact'}));
@@ -33,7 +33,7 @@ test('RECORD-008 both documented CSV recipes dry-run, reconcile, re-import and u
   assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(scheduled.id).first<any>())!.state,'cancelled','Undo never resumes cancelled mail');
   const survivingProofs=new Set((await f.db.prepare("SELECT id FROM audit_entries WHERE action='contact.suppressed'").all<{id:string}>()).results.map(row=>row.id));assert.ok(independentProofs.every(id=>survivingProofs.has(id)));
   t.diagnostic(`${vendor}: ${dry.counts.input} rows, one listed rejection; records, associations, notes, replay and kit undo reconciled.`);
- }}finally{await f.dispose();}
+ }await genericCsvFlow(f);}finally{await f.dispose();}
 });
 test('RECORD-008 stops block exact approved sends; undo preserves edits and independent stops, authority and malformed mapping fail closed',async()=>{
  const f=await launchFixture();try{

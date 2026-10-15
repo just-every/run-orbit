@@ -5,8 +5,8 @@ if(target.username||target.password||target.search||target.hash||!/^\/api\/v1\/s
 const secret=process.env.ORBIT_SOURCE_SECRET;
 const credential=process.env.ORBIT_ADAPTER_TOKEN;
 if(!secret||!credential||credential.length<32||credential===secret)throw Error('Configure distinct private ORBIT_SOURCE_SECRET and ORBIT_ADAPTER_TOKEN (at least 32 random characters).');
-const port=Number(process.env.PORT??8789);
-if(!Number.isInteger(port)||port<1||port>65535)throw Error('Invalid PORT.');
+const port=Number(process.env.PORT??0);
+if(!Number.isInteger(port)||port<0||port>65535)throw Error('Invalid PORT.');
 const authenticated=value=>{
  const expected=Buffer.from('Bearer '+credential),actual=Buffer.from(value??'');
  return expected.length===actual.length&&timingSafeEqual(expected,actual);
@@ -37,5 +37,5 @@ const server=createServer(async(request,response)=>{
  }catch{return reply(502,JSON.stringify({error:'Orbit delivery outcome is unknown. Retry the same exact original body; do not create a new event.'}));}
 });
 server.requestTimeout=15000;server.headersTimeout=10000;
-server.listen(port,process.env.HOST??'127.0.0.1',()=>console.log('ADAPTER_READY'));
+server.listen(port,process.env.HOST??'127.0.0.1',()=>{const address=server.address();console.log('ADAPTER_READY',`http://${address.family==='IPv6'?'['+address.address+']':address.address}:${address.port}/events`);});
 for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>{server.close();server.closeAllConnections();});

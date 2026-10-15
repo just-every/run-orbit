@@ -37,10 +37,11 @@ test('admission uses native owner authority, bounds editor framing and preserves
       fonts.push({width,path,...await visitor.evaluate(() => ({body:getComputedStyle(document.body).fontFamily, heading:getComputedStyle(document.querySelector('h1')).fontFamily,content:getComputedStyle(document.querySelector('.orbit-home')??document.body).fontFamily}))});
       if (evidence) await visitor.screenshot({path:join(evidence,`${path === '/' ? 'home' : 'signin'}-${width}.png`),fullPage:true});
     }
-    // An anonymous local visitor reaches the checkout-key gate, without owner authority.
+    // Setup has claimed the owner even before workspace preferences are confirmed.
+    // An anonymous visitor still has no owner authority and reaches the checkout-key gate.
     await visitor.goto(origin+'/');
-    assert.deepEqual(await (await fetch(origin+'/setup/state')).json(), {state:'unclaimed'});
-    await visitor.getByRole('link',{name:'Finish setup',exact:true}).click();
+    assert.deepEqual(await (await fetch(origin+'/setup/state')).json(), {state:'claimed'});
+    await visitor.getByRole('link',{name:'Sign in',exact:true}).click();
     await visitor.waitForURL(url => url.pathname === '/__dev/key');
     assert.equal((await visitor.context().request.get(origin+'/api/editor/config')).status(),403);
     const notfound=await visitor.goto(origin+'/missing-admission-route');assert.equal(notfound.status(),404);
