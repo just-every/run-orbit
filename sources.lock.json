@@ -1382,7 +1382,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "8adbd56ba0ea5435d201ea4ca6a2434df28b5d33d8845d86fbaa36f45ba441dc",
+      "sha256": "e1ceac0cf4f956371f0bc4d364c546cad251ab39c15a2c03cd4bd98538ed4063",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -1422,7 +1422,7 @@
       "executable": false
     },
     "newtests/t096/emitted-fixture.ts": {
-      "sha256": "26fa4efc166876c043bed08ca7605ba3a21ef2e858f37dbec5044964162cb87f",
+      "sha256": "2a01ca52886c017876d52d10311a5a140db007f01a944376986dd96039819292",
       "executable": false
     },
     "newtests/t096/emitted-request.ts": {
@@ -1434,7 +1434,7 @@
       "executable": false
     },
     "newtests/t096/empty-native.test.ts": {
-      "sha256": "16d69d3f36b0e60ab01cdb0fffda45a09fae2ae44151c31a4c6ba7f5a4f4af8d",
+      "sha256": "b01d77bd5d73ca0bfd6153e89b6e4b2c32a298ed86b79b2074460a46ce2590fe",
       "executable": false
     },
     "newtests/t096/fixture.ts": {
@@ -2570,7 +2570,7 @@
       "executable": false
     },
     "newtests/t096/report-disclosure.test.ts": {
-      "sha256": "78376d95aa03ffc364139ae8e1fc748d3c87958ae2741befb4422c4c9c99b810",
+      "sha256": "0bf3ca553763b8f197140bfc7a5f52213da297a2324715a759e149673a48e448",
       "executable": false
     },
     "newtests/t096/report-population-race.test.ts": {

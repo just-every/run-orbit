@@ -28,7 +28,7 @@ before(async()=>{
  await f.db.prepare('UPDATE opportunities SET owner_id=?').bind(f.operator.operatorId).run();
  limitedCookie=(await collaborator(f,'analyst')).cookie;
  await f.db.prepare("UPDATE schema_types SET fields_json=? WHERE name='company'").bind(JSON.stringify({name:{sensitivity:'private'}})).run();
- worker=await emittedWorker(f.target);browser=await chromium.launch({headless:true,args:['--disable-gpu']});
+ worker=await emittedWorker(f.target);browser=await chromium.launch({headless:true,args:['--disable-gpu',...worker.browserArgs]});
 });
 after(async()=>{await browser?.close();await worker?.dispose();await f?.close();});
 
