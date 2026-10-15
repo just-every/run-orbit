@@ -37,6 +37,8 @@ export async function requireStepUp(request: Request, bindings: PlatformBindings
   const identity = createOrbitIdentity(bindings, options);
   if (!identity) return Response.json({ error: 'Sign-in is not configured for this installation.' }, { status: 503 });
   try {
+    const session = await identity.auth.getSession(request);
+    if (session && (bindings.RER_DEMO === '1' || bindings.AUTH_LOCAL === 'true' && session.kind === 'dev')) return null;
     await identity.auth.requireStepUp(request, action);
     return null;
   } catch (error) {

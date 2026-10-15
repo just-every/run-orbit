@@ -13,7 +13,7 @@ export function OrbitLockup({ name, imageUrl }: { name: string; imageUrl: string
   return (
     <span className="ob-brand">
       {imageUrl ? <img className="ob-mark" src={imageUrl} alt="" /> : <OrbitMark />}
-      <span className="ob-brand-name">{name}</span>
+      <span className="ob-brand-name" data-rer-name>{name}</span>
     </span>
   );
 }

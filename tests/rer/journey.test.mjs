@@ -8,12 +8,11 @@ import { after, before, test } from 'node:test';
 import { chromium } from '@playwright/test';
 import { freePort, freshCheckout, listening } from './checkout.mjs';
 import {privateFiles,assertPrivateRoutes,setupWithProbes} from './private-routes.mjs';
-import {devKey,emailLinkSignIn,openLink,outboxLink} from './sign-in.mjs';
+import {devKey,localOwnerSignIn,openLink} from './sign-in.mjs';
 
 // The README's "Run it on your computer" journey through the public rer
-// commands in a fresh checkout: setup, dev signed in, the end-to-end email
-// link through the outbox, /setup, reset and a complete local
-// export/import/export round trip. This is Orbit's one email-link test.
+// commands in a fresh checkout: setup, one-click sign-in, /setup, reset and
+// a complete local export/import/export round trip.
 let checkout, browser;
 before(async () => { checkout = await freshCheckout(); browser = await chromium.launch(); });
 after(async () => { await browser?.close(); await checkout?.rer(['dev', '--stop']); await checkout?.rer(['preview', '--stop']); await checkout?.close(); });
@@ -25,12 +24,10 @@ const hostRequest = (port, path, host) => new Promise((done, fail) => get({ host
 }).on('error', fail));
 const contentHash = (output) => JSON.parse(output.trim().split('\n').find((line) => line.includes('"event":"result"'))).contentHash;
 
-/** Opens the newest outbox link for the owner and presses Confirm; works without JavaScript. */
-async function confirmNewest(origin, context) {
-  const page = await context.newPage(), link = await outboxLink(origin, await devKey(checkout.root), owner);
-  await page.goto(link);
-  await page.getByRole('button', { name: 'Confirm' }).click();
-  return { page, link };
+async function openOwner(origin, context) {
+  const page = await context.newPage();
+  await localOwnerSignIn(page, origin, checkout.root);
+  return {page};
 }
 
 test('setup refuses legacy preview state under dist and leaves it untouched', { timeout: 10 * 60_000 }, async () => {
@@ -72,30 +69,21 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
   await opened.close();
   assert.equal((await fetch(`${origin}/health`)).status, 200);
   await assertPrivateRoutes(origin,privatePaths);
-  // The outbox answers only its exact loopback origin.
-  for (const host of ['orbit.example.com', `localhost:${port}`]) {
-    const foreign = await hostRequest(port, '/__dev/outbox', host);
-    assert.notEqual(foreign.status, 200, host);
-    assert.doesNotMatch(foreign.body, /Open this link|To: /, host);
-  }
-  // Without the checkout key the outbox, dev sign-in and personas do not exist.
-  for (const path of ['/__dev/outbox', '/auth/dev/enter?as=owner', '/__dev/personas']) assert.equal((await hostRequest(port, path, `127.0.0.1:${port}`)).status, 404, path);
-  assert.equal((await fetch(`${origin}/__dev/outbox`, { headers: { 'x-rer-dev-key': key } })).status, 200);
+  // The removed outbox and unauthenticated dev identity routes do not exist.
+  assert.equal((await fetch(`${origin}/__dev/outbox`, {headers:{'x-rer-dev-key':key}})).status,404);
+  for (const path of ['/auth/dev/enter?as=owner', '/__dev/personas']) assert.equal((await hostRequest(port, path, `127.0.0.1:${port}`)).status,404);
   await exitOf(await checkout.rer(['reset', '--yes']), 4, 'reset refuses while dev owns the state');
 
   // Before hydration: no JavaScript at all, at both supported widths.
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
-  const link = await emailLinkSignIn(page, origin, key, owner);
+  await localOwnerSignIn(page, origin, checkout.root);
   assert.equal(new URL(page.url()).pathname, '/setup', 'the email-link sign-in reaches first-run setup');
   await page.getByRole('heading', { name: 'Set up your workspace.' }).waitFor();
   await page.screenshot({ path: join(process.env.ORBIT_EVIDENCE_DIR ?? checkout.root, 'setup-1440.png'), fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= 390), 'no horizontal scroll at 390');
   await page.screenshot({ path: join(process.env.ORBIT_EVIDENCE_DIR ?? checkout.root, 'setup-390.png'), fullPage: true });
-  const reused = await (await browser.newContext({ javaScriptEnabled: false })).newPage();
-  assert.equal((await reused.goto(link)).status(), 400, 'a sign-in link works once');
-  await reused.getByRole('link', { name: 'Request a new link' }).waitFor();
   await page.goto(`${origin}/app/records`);
   assert.equal(new URL(page.url()).pathname, '/setup', 'unfinished setup holds every app route');
   await page.fill('#setup-name', 'Harbor Revenue');
@@ -108,8 +96,7 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
   assert.equal(new URL(page.url()).pathname, '/app', 'finished setup continues into the app');
 
   // The CLI's own request is proven by the checkout, so it never spends the owner's sign-in allowance.
-  await exitOf(await checkout.rer(['outbox', '--owner-email', owner]), 0, 'outbox requests a fresh link');
-  const operator = (await confirmNewest(origin, await browser.newContext())).page;
+  const operator = (await openOwner(origin, await browser.newContext())).page;
   const api = (path, data) => operator.evaluate(async ([path, data]) => (await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })).status, [path, data]);
   assert.equal(await api('/api/v1/records/company', { name: 'Northwind Freight', primary_domain: 'northwind.example' }), 201);
   assert.equal(await api('/api/v1/records/contact', { name: 'Ada Lovelace', email: 'ada@northwind.example' }), 201);
@@ -148,10 +135,9 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
   await exitOf(await checkout.rer(['setup', '--owner-email', owner, '--port', String(port), '--non-interactive']), 0, 'setup after import');
   const restored = checkout.serve(['dev']);
   await restored.ready;
-  const again = await confirmNewest(origin, await browser.newContext({ javaScriptEnabled: false }));
+  const again = await openOwner(origin, await browser.newContext({ javaScriptEnabled: false }));
   assert.equal(new URL(again.page.url()).pathname, '/app', 'restored first-run completion opens the app');
-  await exitOf(await checkout.rer(['outbox', '--owner-email', owner]), 0, 'outbox requests a fresh link');
-  const searcher = (await confirmNewest(origin, await browser.newContext())).page;
+  const searcher = (await openOwner(origin, await browser.newContext())).page;
   const found = await searcher.evaluate(async () => (await fetch('/api/v1/records/contact?q=Lovelace')).text());
   assert.match(found, /Ada Lovelace/, 'restored contacts are searchable');
   await exitOf(await checkout.rer(['dev', '--stop']), 0, 'dev stop');

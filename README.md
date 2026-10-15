@@ -51,13 +51,12 @@ rer dev
 
 `dev` installs dependencies, prepares local settings and starts Orbit. On the first launch it prepares the local trial owner (`owner@orbit.test`); it keeps that owner, your data and settings on later launches. You can change the owner email in Settings → Installation owner. A later deploy uses that current owner unless you explicitly supply `OWNER_EMAIL`. To use your real mailbox from the start, run `rer install` and `rer setup --owner-email EMAIL` before `rer dev`.
 
-Once `/health` answers, `dev` prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN`. Open the `RER_OPEN` link on this computer: Orbit opens signed in as you. Its fragment carries this checkout's private dev key, so never share it. A dev badge at the top switches to the `seller` and `collaborator` personas or signs you out. No email is sent locally. Stop it with `rer dev --stop` or Ctrl-C.
+Once `/health` answers, `dev` prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN`. Open the `RER_OPEN` link on this computer: Orbit opens signed in as you. Its fragment carries this checkout's private dev key, so never share it. The product name reads Orbit Dev. Use `rer dev --as seller` or `--as collaborator` to choose a persona. No email is sent locally. Stop it with `rer dev --stop` or Ctrl-C.
 
 No owner JSON file is needed: the owner email flag and first-run form supply the installation details.
 
 Your first sign-in opens **first-run setup at `/setup`**: confirm the business name, time zone, currency and pipeline stages, then finish. Until you do, every app page returns you to `/setup`; afterwards `/setup` takes you into the app, and Settings holds later changes.
 
-For the optional local email-link flow, start with `rer dev --login` and use **Email a sign-in link** at `/signin`, then `rer outbox --owner-email EMAIL`: it requests a fresh link and prints an `RER_OPEN` link to the local outbox. Open the message's link and press **Confirm**.
 
 ### Get your first signal
 

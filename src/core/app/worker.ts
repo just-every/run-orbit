@@ -15,7 +15,6 @@ import {runOrbitTimers} from "../features/outreach/timing-repository";
 import {publicRateLimit} from "../platform/public-rate-limit";
 import {createSourceSecurity} from "../platform/source-security";
 import { createAIProvider } from "../features/assistance/provider";
-import { developmentOutbox } from "../platform/development-outbox";
 import { firstRunComplete } from "../features/setup/repository";
 import { createOutboundMail } from "../platform/outbound-mail";
 import start from "@tanstack/react-start/server-entry";
@@ -45,18 +44,17 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
     const lobby = await lobbyResponse(request, publicBindings, editionIdentity, claimed);
     if (lobby) return lobby;
     if (path === "/api/editor/config") return editorConfigurationResponse(request, bindings);
-    // The checkout's dev key gates the local outbox and its key exchange; a deployment has no key.
+    // The checkout's dev key gates its key exchange; a deployment has no key.
     const gate = devGate({ key: bindings.RER_DEV_KEY, origin: bindings.AUTH_ORIGIN ?? '', local: bindings.AUTH_LOCAL === "true" });
     const exchange = await gate?.exchange(request);
     if (exchange) return exchange;
-    if (path === "/__dev/outbox") { const outbox = gate && await gate.admits(request) ? await developmentOutbox(bindings, request) : null; if (outbox) return outbox; }
     if ((path === "/auth/magic-link" || path === "/auth/confirm" || path === "/auth/owner-signin") && request.method === "POST" && await archiveImportActive(bindings.DB)) return new Response(JSON.stringify({ error: "Orbit is restoring an archive. Try again shortly." }), { status: 503, headers: { "Content-Type": "application/json", "Retry-After": "30" } });
     const identity = await identityResponse(request, bindings, { waitUntil: promise => executionContext.waitUntil(promise), ownerClaimed: async () => Boolean(await bindings.DB.prepare("SELECT 1 FROM operators WHERE setup_owner=1").first()) });
     if (identity) return identity;
     if ((path === "/demo" || path === "/demo/") && !publicDemoConfig.enabled) return new Response("Not found", { status: 404 });
     try { const limited=await publicRateLimit(bindings.DB,request);if(limited)return limited; } catch {return new Response(JSON.stringify({error:"Database unavailable."}),{status:503,headers:{"Content-Type":"application/json"}});}
     if (path.startsWith("/p/") || path.startsWith("/delegation/") || path === "/health" || path === "/api" || path.startsWith("/api/")) {
-      return createApp({ assets: createAssetStore(bindings), database: bindings.DB, authenticate: r => operatorFromRequest(r, bindings), stepUp: (r, action, returnTo) => requireStepUp(r, bindings, action, returnTo), outboundMail: createOutboundMail(bindings), aiProvider: createAIProvider(bindings), sourceSecurity: createSourceSecurity(bindings), captureOrigin:bindings.AUTH_ORIGIN, demo:bindings.RER_DEMO === '1', publicDemoEnabled: publicDemoConfig.enabled,  mailEventKeys:{eventKey:bindings.SENDGRID_WEBHOOK_PUBLIC_KEY,parseKey:bindings.SENDGRID_PARSE_PUBLIC_KEY,relaySecret:bindings.RER_MAIL_RELAY_SECRET}, deployment:{sourceSha:bindings.RER_DEPLOY_SOURCE,fingerprint:bindings.RER_DEPLOY_FINGERPRINT,versionId:bindings.RER_VERSION?.id} }).fetch(request, bindings, executionContext);
+      return createApp({ assets: createAssetStore(bindings), database: bindings.DB, authenticate: r => operatorFromRequest(r, bindings), stepUp: (r, action, returnTo) => requireStepUp(r, bindings, action, returnTo), outboundMail: createOutboundMail(bindings), aiProvider: createAIProvider(bindings), sourceSecurity: createSourceSecurity(bindings), captureOrigin:bindings.AUTH_ORIGIN, publicDemoEnabled: publicDemoConfig.enabled,  mailEventKeys:{eventKey:bindings.SENDGRID_WEBHOOK_PUBLIC_KEY,parseKey:bindings.SENDGRID_PARSE_PUBLIC_KEY,relaySecret:bindings.RER_MAIL_RELAY_SECRET}, deployment:{sourceSha:bindings.RER_DEPLOY_SOURCE,fingerprint:bindings.RER_DEPLOY_FINGERPRINT,versionId:bindings.RER_VERSION?.id} }).fetch(request, bindings, executionContext);
     }
     const setupPath = path === "/setup" || path === "/setup/";
     if (setupPath || path === "/app" || path.startsWith("/app/")) {

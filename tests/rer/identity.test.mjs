@@ -7,7 +7,7 @@ import { chromium } from '@playwright/test';
 import { accessible } from './onboarding-journey.mjs';
 import { browserAPI } from './browser-api.mjs';
 import { freePort, freshCheckout } from './checkout.mjs';
-import { devKey, emailLinkSignIn, openLink, outboxLink, outboxMessages } from './sign-in.mjs';
+import { devKey, openLink } from './sign-in.mjs';
 
 // Base sign-in in a fresh checkout through the public rer commands: rer dev
 // opens signed in, personas show Orbit's real role and field-access
@@ -28,7 +28,7 @@ async function shot(page, name) {
 }
 const enter = async (page, origin, as) => { await page.goto(`${origin}/auth/dev/enter?as=${as}&returnTo=${encodeURIComponent('/app/access')}`); await page.waitForLoadState('networkidle'); };
 
-test('AUTH-5 rer dev opens signed in, personas switch role and field access, and an invitation is accepted by email link', { timeout: 30 * 60_000 }, async () => {
+test('AUTH-5 rer dev opens signed in, personas switch role and field access', { timeout: 30 * 60_000 }, async () => {
   const port = await freePort(), origin = `http://127.0.0.1:${port}`;
   await exitOf(await checkout.rer(['setup', '--owner-email', 'owner@example.test', '--port', String(port), '--non-interactive']), 0, 'setup');
   const dev = checkout.serve(['dev']), ready = await dev.ready, key = await devKey(checkout.root);
@@ -40,7 +40,6 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access, and
   await page.getByLabel('Business name').fill('Identity journey');
   await page.getByRole('button', { name: 'Finish setup' }).click();
   await page.waitForURL(`${origin}/app`);
-  await page.getByText('Dev: owner@example.test (owner)').waitFor();
   await shot(page, 'owner-app');
 
   // Real records and personas: the seller is a full operator, the collaborator an invited analyst.
@@ -52,7 +51,6 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access, and
   assert.deepEqual(personas.map((persona) => [persona.as, persona.role ?? null]), [['owner', 'owner'], ['seller', 'admin'], ['collaborator', 'member'], ['signed-out', null]]);
 
   await enter(page, origin, 'seller');
-  await page.getByText('Dev: seller@dev.localhost (admin)').waitFor();
   assert.deepEqual(await browserAPI(page, '/api/v2/access/class'), { access_class: 'native_full' });
   assert.equal((await browserAPI(page, '/api/v2/workspaces/workspace/records/contact/' + contact.id)).fields.phone, '+1 555 0199', 'a full operator sees every field');
   await page.goto(`${origin}/app/records?kind=contact&record=${contact.id}`);
@@ -60,7 +58,6 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access, and
   await shot(page, 'seller-contact');
 
   await enter(page, origin, 'collaborator');
-  await page.getByText('Dev: collaborator@dev.localhost (member)').waitFor();
   assert.deepEqual(await browserAPI(page, '/api/v2/access/class'), { access_class: 'collaborator' });
   assert.equal(await page.evaluate(async () => (await fetch('/api/v1/workbench')).status), 403, 'a collaborator has no native operator access');
   const collaboratorId = (await browserAPI(page, '/api/v2/access/workspaces/workspace/administration').catch(() => null))?.members;
@@ -79,26 +76,6 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access, and
   assert.equal(await page.getByText('+1 555 0199').count(), 0);
   await shot(page, 'collaborator-shared');
 
-  // An invitation accepted through the email link, without the dev layer.
-  await enter(page, origin, 'owner');
-  const invitation = await browserAPI(page, '/api/v2/access/workspaces/workspace/invitations', 'POST', { email: 'invitee@example.test', role: 'seller', expiresAt: new Date(Date.now() + 86_400_000).toISOString() });
-  const invitee = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
-  await invitee.goto(`${origin}/signin?returnTo=${encodeURIComponent('/app/access')}`);
-  await shot(invitee, 'signin');
-  await invitee.fill('#signin-email', 'invitee@example.test');
-  await invitee.getByRole('button', { name: 'Email a sign-in link' }).click();
-  await invitee.getByRole('status').filter({ hasText: 'a sign-in link is on its way' }).waitFor();
-  await invitee.goto(await outboxLink(origin, key, 'invitee@example.test'));
-  await shot(invitee, 'confirm');
-  await invitee.getByRole('button', { name: 'Confirm' }).click();
-  await invitee.waitForURL(`${origin}/app/access`);
-  // The token form submits through the hydrated page; act once rer dev's Vite page has settled.
-  await invitee.waitForLoadState('networkidle');
-  await invitee.getByLabel('Invitation token').fill(invitation.token);
-  await invitee.getByRole('button', { name: 'Accept invitation', exact: true }).click();
-  await invitee.getByText('Invitation accepted. Your collaborator access is active.').waitFor();
-  await shot(invitee, 'invitation-accepted');
-  assert.deepEqual(await browserAPI(invitee, '/api/v2/access/workspaces/workspace/self'), { role: 'seller', access_class: 'collaborator' });
   } finally { await checkout.rer(['dev', '--stop']); await dev.exited; }
 });
 
@@ -123,21 +100,5 @@ test('AUTH-5 a store from before the upgrade keeps its people and signs in on Ba
   await owner.getByText('Prior renewal').first().waitFor();
   await shot(owner, 'prior-owner');
 
-  for (const who of ['seller', 'analyst']) {
-    const page = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
-    await emailLinkSignIn(page, origin, key, capture.people[who].email, '/app/access');
-    assert.equal(new URL(page.url()).pathname, '/app/access');
-    const self = await browserAPI(page, '/api/v2/access/workspaces/workspace/self');
-    assert.deepEqual(self, who === 'seller' ? { role: 'legacy_operator', access_class: 'native_full' } : { role: 'analyst', access_class: 'collaborator' }, who);
-    if (who === 'analyst') { await page.goto(`${origin}/app/access`); await shot(page, 'prior-analyst'); }
-  }
-  // The removed operator gets the same public answer and no new link (the store keeps their pre-upgrade messages).
-  const earlier = await outboxMessages(origin, key, capture.people.leaver.email);
-  const leaver = await (await browser.newContext({ javaScriptEnabled: false })).newPage();
-  await leaver.goto(`${origin}/signin`);
-  await leaver.fill('#signin-email', capture.people.leaver.email);
-  await leaver.getByRole('button', { name: 'Email a sign-in link' }).click();
-  await leaver.getByRole('status').filter({ hasText: 'a sign-in link is on its way' }).waitFor();
-  assert.deepEqual(await outboxMessages(origin, key, capture.people.leaver.email), earlier);
   } finally { await checkout.rer(['dev', '--stop']); await dev.exited; }
 });

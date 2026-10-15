@@ -1,4 +1,3 @@
-import { createD1DevelopmentOutbox, sendDevelopment } from '../../base/modules/mail/src/development/index.mjs';
 import { sendSendGrid, SendGridSendError } from '../../modules/sendgrid-email/sender';
 export interface OutboundMail {
  send(input:{id:string;recipient_email:string;subject:string;body:string;message_id?:string;reference_ids?:string;idempotency_key?:string}):Promise<{providerMessageId:string|null}>;
@@ -6,23 +5,17 @@ export interface OutboundMail {
 }
 export interface OutreachEnvironment { RER_DEMO?:string; DB?:D1Database; MAIL_FROM?: string; SENDGRID_API_KEY?: string; SENDGRID_UNSUBSCRIBE_GROUP_ID?:string; MAIL_REPLY_TO?:string; SENDGRID_WEBHOOK_PUBLIC_KEY?:string }
 export function createOutboundMail(env:OutreachEnvironment):OutboundMail|undefined {
- if(env.RER_DEMO === '1') {
-  if(!env.DB || !env.MAIL_FROM)throw new Error('Demo outreach requires its database and MAIL_FROM.');
-  const outbox=createD1DevelopmentOutbox({db:env.DB});
-  return {async send(message){
-   await sendDevelopment({provider:'development',mode:'development'},{from:env.MAIL_FROM!,to:[message.recipient_email],subject:message.subject,text:message.body,deliveryId:message.idempotency_key??message.id},{outbox});
-   return {providerMessageId:null};
-  }};
- }
- if(!env.SENDGRID_UNSUBSCRIBE_GROUP_ID&&!env.MAIL_REPLY_TO)return undefined;
+ const demo = env.RER_DEMO === '1';
+ if(!demo&&!env.SENDGRID_UNSUBSCRIBE_GROUP_ID&&!env.MAIL_REPLY_TO)return undefined;
  const missing=(['SENDGRID_API_KEY','MAIL_FROM','SENDGRID_UNSUBSCRIBE_GROUP_ID','MAIL_REPLY_TO'] as const).filter(name=>!env[name]?.trim());
- if(missing.length)throw new Error(`Customer outreach requires ${missing.join(', ')}.`);
- if(!Number.isInteger(Number(env.SENDGRID_UNSUBSCRIBE_GROUP_ID))||Number(env.SENDGRID_UNSUBSCRIBE_GROUP_ID)<=0)throw new Error('SENDGRID_UNSUBSCRIBE_GROUP_ID must be a positive integer.');
+ if(!demo&&missing.length)throw new Error(`Customer outreach requires ${missing.join(', ')}.`);
+ if(!demo&&(!Number.isInteger(Number(env.SENDGRID_UNSUBSCRIBE_GROUP_ID))||Number(env.SENDGRID_UNSUBSCRIBE_GROUP_ID)<=0))throw new Error('SENDGRID_UNSUBSCRIBE_GROUP_ID must be a positive integer.');
  return {
   async send(message){
    const groupId=Number(env.SENDGRID_UNSUBSCRIBE_GROUP_ID);
-   if(!Number.isInteger(groupId)||groupId<=0||!env.MAIL_REPLY_TO)throw new SendGridSendError('rejected','SENDGRID_UNSUBSCRIBE_GROUP_ID and MAIL_REPLY_TO are required before customer outreach.');
-   return sendSendGrid({apiKey:env.SENDGRID_API_KEY!,message:{from:env.MAIL_FROM!,to:[message.recipient_email],subject:message.subject,text:message.body,deliveryId:message.idempotency_key??message.id,replyTo:env.MAIL_REPLY_TO,asmGroupId:groupId,subscriptionTracking:false,customArgs:{rer_product:'orbit'},headers:{'Message-ID':message.message_id??`<${message.id}@orbit.local>`,...(message.reference_ids?{'References':message.reference_ids,'In-Reply-To':message.reference_ids}:{})}}});
+   if(!demo&&(!Number.isInteger(groupId)||groupId<=0||!env.MAIL_REPLY_TO))throw new SendGridSendError('rejected','SENDGRID_UNSUBSCRIBE_GROUP_ID and MAIL_REPLY_TO are required before customer outreach.');
+   const send = () => sendSendGrid({apiKey:env.SENDGRID_API_KEY!,message:{from:env.MAIL_FROM!,to:[message.recipient_email],subject:message.subject,text:message.body,deliveryId:message.idempotency_key??message.id,replyTo:env.MAIL_REPLY_TO,asmGroupId:groupId,subscriptionTracking:false,customArgs:{rer_product:'orbit'},headers:{'Message-ID':message.message_id??`<${message.id}@orbit.local>`,...(message.reference_ids?{'References':message.reference_ids,'In-Reply-To':message.reference_ids}:{})}}});
+   return demo ? (await import('../../modules/demo/index.mjs')).demoEffect(send, () => ({provider:'sendgrid' as const,state:'accepted' as const,providerMessageId:null})) : send();
   },
   async lookup(id){
    const url=new URL('https://api.sendgrid.com/v3/messages');url.searchParams.set('limit','10');url.searchParams.set('query',`unique_args['rer_delivery_id']="${id.replace(/["\\]/g,'')}"`);

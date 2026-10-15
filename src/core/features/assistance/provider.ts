@@ -9,7 +9,7 @@ export interface AIProvider {
 }
 export interface AIBindings { RER_DEMO?:string; OPENAI_API_KEY?:string; AI_MODEL?:string; AI_INPUT_COST_PER_MILLION?:string; AI_OUTPUT_COST_PER_MILLION?:string; AI_CACHED_INPUT_COST_PER_MILLION?:string }
 export function createAIProvider(env:AIBindings):AIProvider|undefined {
- if(env.RER_DEMO === '1' || !env.OPENAI_API_KEY)return undefined;
+ if(!env.OPENAI_API_KEY)return undefined;
  if(!env.AI_MODEL)throw new Error('AI_MODEL is required with OPENAI_API_KEY.');
  const inputCost=Number(env.AI_INPUT_COST_PER_MILLION),outputCost=Number(env.AI_OUTPUT_COST_PER_MILLION);
  if(!Number.isFinite(inputCost)||inputCost<0)throw new Error('AI_INPUT_COST_PER_MILLION is required.');

@@ -18,7 +18,6 @@
     "export": "rer export",
     "import": "rer import",
     "release": "rer release",
-    "outbox": "rer outbox",
     "doctor": "rer doctor",
     "describe": "rer describe",
     "check": "rer check",
@@ -64,7 +63,7 @@
     "@cloudflare/vite-plugin": "1.54.5",
     "@cloudflare/workers-types": "5.20260908.1",
     "@playwright/test": "1.61.1",
-    "@runeditrun/rer": "0.2.19",
+    "@runeditrun/rer": "0.2.20",
     "@tailwindcss/vite": "4.3.3",
     "@types/node": "22.19.17",
     "@types/react": "19.2.18",
@@ -83,7 +82,7 @@
     "patchedDependencies": {
       "miniflare@5.20260907.0-alpha": "patches/miniflare-5.20260907.0-alpha.patch",
       "wrangler@4.129.1": "patches/wrangler-4.129.1.patch",
-      "@runeditrun/rer@0.2.19": "patches/rer-0.2.19.patch"
+      "@runeditrun/rer@0.2.20": "patches/rer-0.2.20.patch"
     },
     "onlyBuiltDependencies": [
       "esbuild",

@@ -1,10 +1,13 @@
 diff --git a/cli/deploy-command.mjs b/cli/deploy-command.mjs
-index 407e5b062c25bdfcb595641b7cb31fbb6bfb706b..61051c86791fbea409fb09ef9f8385fa7fa5722a 100644
 --- a/cli/deploy-command.mjs
 +++ b/cli/deploy-command.mjs
-@@ -63,7 +63,7 @@ export async function deployCommand(context) {
+@@ -63,10 +63,10 @@
+  // may perform them; neither a build nor a custom upload runs here.
   if (options.remove || options.setSecret || options.unsetSecret) return ownerDeploy(path, adapter)(context);
   if (adapter.deploy.managesHostedOwner) return adapter.deploy(context);
+- const production = await deployEnvironment({ root, options, declaration, setupManifest, settings: adapter.settings, localOnlyKeys });
++ const production = await deployEnvironment({ root, options, declaration, setupManifest, settings: adapter.settings, localOwner: adapter.hooks?.localOwner, localOnlyKeys });
+  await requireProductionAuth({ root, declaration, env: production.env, setupManifest, setupSeed: context.setupSeed, adapter, declarationPath: path, options });
   const sourceSha = options.dryRun ? undefined : committedSource(root, options);
 - const { env, supplied } = await deployEnvironment({ root, options, declaration, setupManifest, settings: adapter.settings, localOnlyKeys });
 + const { env, supplied } = await deployEnvironment({ root, options, declaration, setupManifest, settings: adapter.settings, localOwner: adapter.hooks?.localOwner, localOnlyKeys });
@@ -12,10 +15,9 @@ index 407e5b062c25bdfcb595641b7cb31fbb6bfb706b..61051c86791fbea409fb09ef9f8385fa
   const redaction = createRedaction();
   const addSecret = value => { redaction.addSecrets([value]); store.addSecrets?.([value]); };
 diff --git a/cli/deploy-inputs.mjs b/cli/deploy-inputs.mjs
-index fc8cf576b5d22c2d8ab08d250a56cd681d949407..41484465afa1b9e169d0db4dd2d9d9f78fde4f64 100644
 --- a/cli/deploy-inputs.mjs
 +++ b/cli/deploy-inputs.mjs
-@@ -8,7 +8,7 @@ import { readDeployEnvFile } from '../modules/deploy-kit/env-file.mjs';
+@@ -8,7 +8,7 @@
  // the local setup owner's email, and a fresh value for each secret the setup
  // manifest generates (a session secret, the one-time setup token). A value only
  // reaches a Worker that lacks that secret; an existing one is kept unchanged.
@@ -24,7 +26,7 @@ index fc8cf576b5d22c2d8ab08d250a56cd681d949407..41484465afa1b9e169d0db4dd2d9d9f7
   const env = { ...process.env }, supplied = [];
   if (options.envFile) {
    let values;
-@@ -20,6 +20,13 @@ export async function deployEnvironment({ root, options, declaration, setupManif
+@@ -20,6 +20,13 @@
   const absent = item => item && !env[item.environment]?.trim();
   const emailField = setupManifest?.steps?.find(step => step.type === 'owner-claim')?.emailField;
   const email = secrets.find(item => item?.binding === emailField);
@@ -39,10 +41,9 @@ index fc8cf576b5d22c2d8ab08d250a56cd681d949407..41484465afa1b9e169d0db4dd2d9d9f7
    const { readSettings } = await shared('adapter-settings.mjs');
    const owner = (await readSettings(root, settings)).values[emailField];
 diff --git a/cli/deploy.mjs b/cli/deploy.mjs
-index eed68429cb35fa21d6ea2530039b2a437ad9d1bb..4fe4b201ebdad1f775f3ceb27c678c3e34617bb5 100644
 --- a/cli/deploy.mjs
 +++ b/cli/deploy.mjs
-@@ -44,7 +44,7 @@ export function ownerDeploy(declarationPath, lifecycle) {
+@@ -47,7 +47,7 @@
     store.report('deploy: dry run complete; no deployment occurred and no provider request was made.');
     return { dryRun: true, deployed: false };
    }
@@ -52,10 +53,9 @@ index eed68429cb35fa21d6ea2530039b2a437ad9d1bb..4fe4b201ebdad1f775f3ceb27c678c3e
    if (names.some(name => !env[name]?.trim())) throw missing('CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN are required. See the deploy-kit owner-account instructions.');
    const { main } = await import('../modules/deploy-kit/owner-cli.mjs');
 diff --git a/cli/package-mode.mjs b/cli/package-mode.mjs
-index 5e4f3d7e0670c33cb092d653981258feaa2ae332..165cab4683465a9c460b132dc0ca12d2d669ea95 100644
 --- a/cli/package-mode.mjs
 +++ b/cli/package-mode.mjs
-@@ -39,8 +39,11 @@ export async function lockedPackage(root) {
+@@ -39,8 +39,11 @@
    const entries = block(...own, `${group}:`, 4), entry = entries && block(...entries, `'${packageName}':`, 6);
    if (!entry) continue;
    const fields = Object.fromEntries(lines.slice(...entry).map(line => /^\s+(specifier|version):\s*'?([^'\s]*)'?\s*$/.exec(line)).filter(Boolean).map(match => [match[1], match[2]]));
@@ -70,10 +70,9 @@ index 5e4f3d7e0670c33cb092d653981258feaa2ae332..165cab4683465a9c460b132dc0ca12d2
   return undefined;
  }
 diff --git a/modules/deploy-kit/owner-signin.mjs b/modules/deploy-kit/owner-signin.mjs
-index 2d525d2036dda561fa4a8aa78eddd8dabd717fc1..414e6669691c53aa3746480051cbbc9b69889c6c 100644
 --- a/modules/deploy-kit/owner-signin.mjs
 +++ b/modules/deploy-kit/owner-signin.mjs
-@@ -17,16 +17,22 @@ export async function ownerSignin({ api, target, statePath, clock = Date.now })
+@@ -17,16 +17,22 @@
    assert(live && sameDeployment(live, state.receipt.provider), 'owned-resource-replaced');
    const ids = Object.values(state.owned.d1).filter(entry => entry.status === 'created' && entry.id).map(entry => entry.id);
    const holding = [];

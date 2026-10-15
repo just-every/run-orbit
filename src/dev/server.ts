@@ -2,10 +2,13 @@
 // alone; the deployed main (src/core/app/worker.ts) never imports it, and
 // `rer build` refuses output that contains this layer's marker.
 import worker, { runtimeBindings } from '../core/app/worker';
+import { cliSession } from './cli-session';
+import { identityConfig } from '../core/features/identity/auth';
+// @ts-expect-error Base's HTML page helper is plain ESM.
+import { pageResponse } from '@runeditrun/rer/internal/modules/operator-auth/page.mjs';
 import { devGate, devNotFound, isLoopbackHost, safeReturnTo } from '@runeditrun/rer/modules/operator-auth';
 import { registerDevAdmission, devAdmitted } from '@runeditrun/rer/modules/operator-auth/dev-admission';
-// @ts-expect-error The badge is plain ESM without declarations.
-import { decorate } from '@runeditrun/rer/modules/operator-auth/dev/badge';
+import { decorateLabel } from '../modules/demo/label.mjs';
 import { clearSessionCookie, sessionStore, sha256 } from '../core/features/identity/store';
 import { createId } from '../core/shared/ids';
 import type { PlatformBindings } from '../core/platform/assets';
@@ -36,10 +39,7 @@ async function identity(env: PlatformBindings) {
   return {
     store, everyone,
     list: () => [...everyone(), { as: 'signed-out' }],
-    async badge(request: Request) {
-      const session = await store.read(request, Date.now());
-      return { session: session ? { operator: { email: session.operator.email, role: session.operator.role } } : null, choices: everyone() };
-    },
+
   };
 }
 
@@ -84,7 +84,7 @@ async function enter(request: Request, env: PlatformBindings, gate: NonNullable<
   if (person.status !== 'active') return text(403, `${as} is not an active operator in this workspace.`);
   const existing = await store.read(request, now);
   if (existing?.kind !== 'dev' || existing.operatorId !== person.id) {
-    const issued = await store.issue({ person, kind: 'dev', now });
+    const issued = await store.issue({ person, kind: 'dev', now, freshProof: true });
     if (!issued) return text(409, 'The operator changed while signing in. Try again.');
     reply.append('set-cookie', issued.cookie);
   }
@@ -100,17 +100,22 @@ export default {
       // Never admit a dev credential beside a managed installation.
       registerDevAdmission(null);
       if (env.RER_DEV_IDENTITY !== 'off') return text(503, 'Dev identity refuses to run beside RER_INSTALLATION_ID with a non-loopback RER_MANAGEMENT_ORIGIN. Remove those bindings from local settings or use rer dev --login.');
-      return path === '/auth/dev/enter' || path === '/__dev/personas' ? devNotFound() : worker.fetch(request, original, execution);
+      return path === '/auth/dev/enter' || path === '/__dev/personas' || path === '/auth/local/cli-session' ? devNotFound() : worker.fetch(request, original, execution);
     }
     const gate = devGate({ key: env.RER_DEV_KEY, origin: env.AUTH_ORIGIN ?? '', local: env.AUTH_LOCAL === 'true' });
     registerDevAdmission(gate ? (r: Request) => gate.admits(r) : null);
+    if (path === '/auth/local/cli-session') return gate && env.RER_DEV_IDENTITY !== 'off' ? cliSession(request, env) : devNotFound();
     if (path === '/auth/dev/enter' || path === '/__dev/personas') {
       if (!gate || env.RER_DEV_IDENTITY === 'off' || !await gate.admits(request)) return devNotFound();
       return path === '/__dev/personas' ? Response.json((await identity(env)).list(), { headers }) : enter(request, env, gate);
     }
+    if (path === '/signin' && gate && env.RER_DEV_IDENTITY !== 'off' && request.method === 'GET') {
+      if (!await gate.admits(request)) return new Response(null, {status:303, headers:{...headers, location:'/__dev/key'}});
+      const returnTo = safeReturnTo(new URL(request.url).searchParams.get('returnTo'));
+      return decorateLabel(await pageResponse({branding:identityConfig(env)!.branding, title:'Orbit', heading:'Open your local app', content:`<a class="action" href="/auth/dev/enter?as=owner&returnTo=${encodeURIComponent(returnTo)}">Continue as owner</a>`}), env.RER_DEMO === '1' ? 'Demo' : 'Dev');
+    }
     const response = await worker.fetch(request, original, execution);
     if (!gate || request.method !== 'GET' || path.startsWith('/__dev/')) return response;
-    const badge = await gate.admits(request) && env.RER_DEV_IDENTITY !== 'off' ? await (await identity(env)).badge(request) : null;
-    return decorate(response, { exchange: path === '/', badge });
+    return decorateLabel(response, env.RER_DEMO === '1' ? 'Demo' : 'Dev');
   },
 } satisfies ExportedHandler<PlatformBindings>;

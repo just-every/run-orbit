@@ -34,7 +34,6 @@ rer dev
 
 `dev` installs dependencies, prepares the local trial owner (`owner@orbit.test`) on the first launch and starts Orbit. Open the private `RER_OPEN` link it prints on this computer: you are already signed in. No email is sent locally. Your first sign-in asks for your business name, time zone, currency and pipeline stages, and then you are in. Change the trial email in Settings → Installation owner, or use your real owner mailbox from the start: run `rer install` and `rer setup --owner-email EMAIL` before `rer dev`.
 
-The local outbox is optional: use `rer dev --login` to try email-link sign-in, then open the outbox link printed by `rer outbox --owner-email EMAIL`, follow the message and press **Confirm**.
 
 Stop it with `rer dev --stop` or Ctrl-C. Your data stays on your computer between runs. Stop `dev` and `preview` before CLI export, import, reset, build or verification.
 

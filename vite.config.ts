@@ -23,7 +23,7 @@ export default defineConfig(({ command }) => ({
           ...(process.env.RER_DEMO ? { RER_DEMO: process.env.RER_DEMO, RER_DEMO_EXPIRES: process.env.RER_DEMO_EXPIRES } : {}),
           // rer dev serves the requested loopback origin without rewriting private settings.
           ...(process.env.RER_DEV_ORIGIN ? { RER_DEV_ORIGIN: process.env.RER_DEV_ORIGIN } : {}),
-          // Only `vite dev` receives the checkout's dev key, which gates dev identity and the outbox.
+          // Only `vite dev` receives the checkout's dev key, which gates dev identity.
           ...(command === "serve" && process.env.RER_DEV_KEY ? { RER_DEV_KEY: process.env.RER_DEV_KEY, RER_DEV_IDENTITY: process.env.RER_DEV_IDENTITY ?? "on" } : {}),
         },
       } }),

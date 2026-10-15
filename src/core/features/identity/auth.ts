@@ -1,7 +1,7 @@
 import { AuthError, createAuthHandler, createOperatorAuth, createSignInHandler, securityHeaders, type AuthConfig, type MailSender } from '@runeditrun/rer/modules/operator-auth';
 import { devAdmitted } from '@runeditrun/rer/modules/operator-auth/dev-admission';
 import { createDependencies } from '@runeditrun/rer/modules/dependencies';
-import { createD1DevelopmentOutbox, sendDevelopment } from '../../../base/modules/mail/src/development/index.mjs';
+import { sendDevelopment } from '../../../base/modules/mail/src/development/index.mjs';
 import { sendSendGrid, SendGridSendError } from '../../../modules/sendgrid-email/sender';
 import type { PlatformBindings } from '../../platform/assets';
 import { createNativeAccounts } from './accounts';
@@ -10,6 +10,7 @@ import { sessionStore } from './store';
 import {OwnerClaimError} from '@runeditrun/rer/modules/owner-claim';
 import {ownerClaimResponse} from './owner-claim';
 import {ownerSigninResponse} from './owner-signin';
+import {demoSignIn} from './demo-signin';
 
 export const clientIp = (local: boolean) => (request: Request) => local ? 'loopback' : request.headers.get('CF-Connecting-IP') ?? '';
 
@@ -26,13 +27,12 @@ export function identityConfig(bindings: PlatformBindings, sender: MailSender | 
   };
 }
 
-/** Local mail lands in the development outbox; a deployment sends through SendGrid. Without either, sign-in mail is unavailable; half a configuration fails by name. */
+/** Local mail is silently suppressed; a deployment sends through SendGrid. Without either, sign-in mail is unavailable; half a configuration fails by name. */
 export function identityMailSender(bindings: PlatformBindings): MailSender | undefined {
   if (bindings.AUTH_LOCAL === 'true' || bindings.RER_DEMO === '1') {
     if (bindings.MAIL_PROVIDER !== 'development' || !bindings.MAIL_FROM) return undefined;
-    const outbox = createD1DevelopmentOutbox({ db: bindings.DB });
     return { async send(message) {
-      return sendDevelopment({ provider: 'development', mode: 'development' }, message, { outbox });
+      return sendDevelopment({ provider: 'development', mode: 'development' }, message);
     } };
   }
   const missing = (['MAIL_FROM', 'SENDGRID_API_KEY'] as const).filter(name => !bindings[name]?.trim());
@@ -82,6 +82,7 @@ export async function identityResponse(request: Request, bindings: PlatformBindi
     const identity = createOrbitIdentity(bindings, options);
     if (!identity) return unconfigured(path);
     const { auth, config } = identity;
+    if (bindings.RER_DEMO === '1' && (path === '/signin' && request.method === 'GET' || path === '/auth/demo/enter')) return await demoSignIn(request, identity);
     if (path === '/auth/owner-claim') return await ownerClaimResponse(request, bindings, identity);
     if (path === '/auth/owner-signin') return await ownerSigninResponse(request,identity);
     // PUBLIC-003: without sign-in mail and no linked provider there is no way in, so the page
@@ -99,7 +100,6 @@ export async function identityResponse(request: Request, bindings: PlatformBindi
     const dependencies = await createDependencies({ db: bindings.DB, origin: config.origin, name: 'Orbit', provider: bindings.IDENTITY_PROVIDER, local: config.local, auth }).handle(request);
     return dependencies ?? await createSignInHandler(auth, {
       setup: async () => bindings.SETUP_TOKEN && !await options.ownerClaimed() ? { instructions: 'Use the setup token from your installation to claim the first owner.' } : null,
-      links: () => config.local && bindings.MAIL_PROVIDER === 'development' ? [{ href: '/__dev/outbox', label: 'Open the local development outbox' }] : [],
     })(request) ?? await createAuthHandler(auth)(request);
   } catch (error) {
     const known = error instanceof AuthError || error instanceof OwnerClaimError;

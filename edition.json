@@ -80,8 +80,6 @@
           "src/base/modules/mail/src/development/index.mjs",
           "src/base/modules/mail/src/development/outbox.mjs",
           "src/base/modules/mail/src/development/schema.sql",
-          "src/base/modules/mail/src/development/viewer-html.mjs",
-          "src/base/modules/mail/src/development/viewer.mjs",
           "src/base/modules/mail/src/doctor/common.mjs",
           "src/base/modules/mail/src/doctor/dns.mjs",
           "src/base/modules/mail/src/doctor/index.mjs",
@@ -104,7 +102,16 @@
           "src/base/modules/mail/src/unsubscribe/index.mjs",
           "vite/exclude-local-variables.ts",
           "RUN-LOCALLY.md",
-          "SEED-COMMAND-CONTRACT.md"
+          "SEED-COMMAND-CONTRACT.md",
+          "src/base/modules/mail/src/adapters/rer/contract.mjs",
+          "src/base/modules/mail/src/adapters/rer/index.mjs",
+          "src/base/modules/mail/src/adapters/messaging/request.mjs",
+          "src/base/modules/mail/src/adapters/messaging/serialize.mjs",
+          "src/base/modules/mail/src/adapters/messaging/jws.mjs",
+          "src/base/modules/mail/src/adapters/messaging/event-schema.mjs",
+          "src/base/modules/mail/src/adapters/messaging/contract.mjs",
+          "src/base/modules/mail/src/adapters/messaging/README.md",
+          "src/base/modules/mail/src/adapters/messaging/index.mjs"
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
@@ -228,14 +235,6 @@
           {
             "path": "src/base/modules/mail/src/development/schema.sql",
             "originPath": "modules/mail/src/development/schema.sql"
-          },
-          {
-            "path": "src/base/modules/mail/src/development/viewer-html.mjs",
-            "originPath": "modules/mail/src/development/viewer-html.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/development/viewer.mjs",
-            "originPath": "modules/mail/src/development/viewer.mjs"
           },
           {
             "path": "src/base/modules/mail/src/doctor/common.mjs",

@@ -27,3 +27,6 @@ playwright-report/
 # Test transport scratch space and serialized delivery build output
 /.rer-tools/
 /delivery-artifact/
+
+# Throwaway demo state
+.rer/demo/

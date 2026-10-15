@@ -41,7 +41,7 @@ export async function freshCheckout() {
     const child = spawn(process.execPath, ['node_modules/@runeditrun/rer/bin/rer.mjs', ...args], { cwd: root, env, stdio: ['ignore', 'pipe', 'pipe'] });
     let output = '', becameReady = false;
     const ready = new Promise((done, fail) => {
-      const read = (chunk) => { output += chunk; if (/^RER_(SIGN_IN|OPEN) /m.test(output)) { becameReady = true; done(output); } };
+      const read = (chunk) => { output += chunk; if ((args[0] === 'preview' ? /^RER_READY /m : /^RER_(SIGN_IN|OPEN) /m).test(output)) { becameReady = true; done(output); } };
       child.stdout.on('data', read); child.stderr.on('data', read);
       child.on('close', async (code) => { if (!becameReady) fail(await startupFailure(root, args[0], code, output)); });
     });

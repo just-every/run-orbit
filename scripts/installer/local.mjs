@@ -15,8 +15,7 @@ export const database = 'orbit-local-db';
 const migrate = ({ demo }) => ['pnpm', ['exec', 'wrangler', 'd1', 'migrations', 'apply', database, '--local', '--persist-to', demo?.state ?? '.wrangler/state', '--config', 'wrangler.jsonc'], { env: { ...process.env, WRANGLER_SEND_METRICS: 'false', X_LOCAL_EXPLORER: 'false' } }];
 
 // Orbit signs in through Base operator-auth over its own operators and sessions.
-// Locally it claims the first owner with the private setup token, captures
-// sign-in mail in Base's outbox and opens `rer dev` signed in (devIdentity).
+// Locally it claims the first owner with the private setup token and opens `rer dev` signed in (devIdentity).
 export const lifecycle = captureNotices(localInstaller({
  localOwner, features: model.features, node: '22.20.0', tools: ['pnpm', 'node'],
  failure: (error, { store }) => error instanceof LocalStateSafetyError ? store.redact(error.message) : undefined,
