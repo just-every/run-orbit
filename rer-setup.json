@@ -56,7 +56,7 @@
       "label": "Sender email",
       "help": "A verified SendGrid sender address for hosted sign-in links. Required with the SendGrid API key.",
       "kind": "email",
-      "required": true,
+      "required": false,
       "group": "mail"
     },
     {
@@ -64,7 +64,7 @@
       "label": "SendGrid API key",
       "help": "A SendGrid key with Mail Send permission for the verified sender address.",
       "kind": "secret",
-      "required": true,
+      "required": false,
       "group": "mail",
       "ownerVisible": true,
       "input": "entered"
