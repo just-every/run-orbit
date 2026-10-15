@@ -823,7 +823,7 @@
       "executable": false
     },
     ".github/workflows/edition.yml": {
-      "sha256": "b49b001c279b8db1dfca32e4a8df2372de8727e2ca5bef3ed95b065b0d26d431",
+      "sha256": "862db43f4a393c57a59a68164e7500239aedd200c27e37904eac3e637a765a09",
       "executable": false
     },
     ".github/workflows/rer-managed.yml": {
