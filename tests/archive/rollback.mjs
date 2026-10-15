@@ -9,7 +9,9 @@ export async function exerciseRollback(page,file,otherSession){
  const api=(path,method='GET',body)=>browserAPI(page,path,method,body),base='/api/v1/records/archive/imports';
  const unrelated=await api('/api/v1/records/company','POST',{name:'Unrelated target customer',primary_domain:'unrelated-target.example'});
  const before=await api(`/api/v1/records/company/${unrelated.id}`);
+ const refusal=page.waitForResponse(response=>response.request().method()==='POST'&&new URL(response.url()).pathname.startsWith(base+'/')&&new URL(response.url()).pathname.endsWith('/finalize'),{timeout:90_000});
  await page.getByLabel('Archive file',{exact:true}).setInputFiles(file);await page.getByRole('checkbox').check();await page.getByRole('button',{name:'Start restore',exact:true}).click();
+ expect((await refusal).status()).toBe(409);
  await expect(page.getByRole('alert')).toContainText('HTTP 409');
  const refusedId=await page.getByLabel('Restore transfer ID').inputValue();
  expect((await api(`${base}/${refusedId}`)).state).toBe('uploading');expect(await api(`/api/v1/records/company/${unrelated.id}`)).toEqual(before);

@@ -677,7 +677,7 @@
       "executable": false
     },
     "deploy-demo.json": {
-      "sha256": "1da79b250562c523370022c9794f4c0182cf46b5a404f28895e99d8c75e19230",
+      "sha256": "96d27eaf06214be44e2f4993ec44d8631fd1a2d4642f09d4fb8da1e2bfa5cf2a",
       "executable": false
     },
     "deploy-site.json": {
@@ -929,7 +929,7 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "11c3a7a454786fbd85ca244f88bf8d69eaf1153b784112bcbcfbfb0259e8355a",
+      "sha256": "026caa1e8c4a8325f719008a26517790f68a9bf8dbb5bb50dd3f8eaa84a55a42",
       "executable": false
     },
     "LICENSE": {
@@ -5785,7 +5785,7 @@
       "executable": false
     },
     "tests/archive/rollback.mjs": {
-      "sha256": "9fdcbb19aedac421ca864f13c1f0d6483b7f8a961b2fc2b580c8b7ff3d45ed13",
+      "sha256": "45ba08ee6162c0665b01cbc0b5707c7a136403aaa953d4c351df907c6a2a06a7",
       "executable": false
     },
     "tests/archive/server.mjs": {
