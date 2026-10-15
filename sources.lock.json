@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "parent": null,
   "edition": "just-every/orbit",
-  "manifest": "aad79c51d9bc7f592c576409ac5424a87b599559a983867da39edda464d5cd4c",
+  "manifest": "a51633bbdf1c14ed1e329f709b54e4b9e7815e56ce1aee948d783b52157f2213",
   "toolchain": {
     "id": "runeditrun/edition-authoring",
     "version": "1.1.0",
@@ -801,7 +801,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "fc0e1041efa55771142bbb57c4ab4743147e264d",
+          "revision": "e17843562355e1b6e5068289c8e037951fbc8d3d",
           "path": "modules/demo"
         },
         "mappings": [
@@ -832,9 +832,9 @@
         ]
       },
       "baseline": {
-        "key": "656511162e944cb03dae612cbb5b773230d66e45237c64439db8c3ee364970f1",
+        "key": "b05fa1750eab4646929c323e9a0671c35c68b3ca229a04b52f396627364f5a29",
         "digest": "f8529ba8c29589313b70f7f4b028ddcd7b361a9f14b915550e16f5b7313fbcda",
-        "sha256": "87e4deb5153acc302a46467ad9dc96056448b68524888293f05f07ce586e278e"
+        "sha256": "570fa98b2618fc2a6823c4965bf77d161e3bfa83a363456f415f996b753f5638"
       }
     }
   ],
@@ -956,7 +956,7 @@
       "executable": false
     },
     "deploy-demo.json": {
-      "sha256": "97bb31b5a448a19491ef3afb1fe108c7295b21a2e6354a1189d4acc82b8954b6",
+      "sha256": "96d27eaf06214be44e2f4993ec44d8631fd1a2d4642f09d4fb8da1e2bfa5cf2a",
       "executable": false
     },
     "deploy-site.json": {
@@ -1200,7 +1200,7 @@
       "executable": false
     },
     "edition.json": {
-      "sha256": "aad79c51d9bc7f592c576409ac5424a87b599559a983867da39edda464d5cd4c",
+      "sha256": "a51633bbdf1c14ed1e329f709b54e4b9e7815e56ce1aee948d783b52157f2213",
       "executable": false
     },
     "fold-generation.json": {
@@ -1208,7 +1208,7 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "86099ac16c14fa7f4eeb109451269cbe9ee1c9528bcb67f6b69579a573be83ec",
+      "sha256": "5029ee6b5823e476ff288838077e0e86f7c37c4c13bbc87a2ad6eeb69b24342a",
       "executable": false
     },
     "LICENSE": {
@@ -2604,7 +2604,7 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "36442bae85a59114c98e2ba84bf9b79e4ef05ebd67cf3ff3097f7339e5cceb9a",
+      "sha256": "c2fa8d26b04009143095d91ee49b1a7e428f1f82c4e06f8e76f1deebd34189a8",
       "executable": false
     },
     "patches/miniflare@5.20260907.0-alpha.patch": {
@@ -2620,7 +2620,7 @@
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "7fb0b5e2660095cb5ff5113a0894bc03ba36aa24d75920ee2d6f1f9bb12f33fb",
+      "sha256": "7b76eca351bf7eb264a25d95bacdd1ec75279f485eb2e6207ee67ed0c86fd7e7",
       "executable": false
     },
     "pnpm-workspace.yaml": {
