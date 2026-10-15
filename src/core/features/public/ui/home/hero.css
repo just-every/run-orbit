@@ -25,6 +25,11 @@
 /* The action row is shared with the sections below: its base is the original rule, and the hero's design-pixel spacing is scoped to the hero. */
 .ob-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 36px; margin-top: clamp(28px, 2.6vw, 38px); }
 .ob-hero-copy .ob-actions { gap: 18px calc(39 * var(--u)); margin-top: calc(52 * var(--u)); }
+.ob-actions--demo { position: relative; }
+.ob-actions--demo .ob-demo-link { position: absolute; top: 0; left: 360px; }
+@media (max-width: 1279px) {
+  .ob-actions--demo .ob-demo-link { top: calc(100% + 16px); left: 0; }
+}
 
 .ob-steps { grid-area: steps; display: flex; align-items: flex-start; gap: calc(23 * var(--u)); margin-top: 48px; color: var(--ob-body); font-size: max(14px, calc(16 * var(--u))); }
 .ob-steps li { display: flex; align-items: flex-start; gap: calc(17 * var(--u)); line-height: 1.38; }

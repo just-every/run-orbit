@@ -16,9 +16,10 @@ export function Hero({ description }: { description: string }) {
           <h1 id="ob-hero-title">Your next deal finds you.</h1>
           <p className="ob-hero-sub" data-testid="identity-description">{description}</p>
           <p className="ob-alt">{alternativeSegments.map((part, index) => (typeof part === "string" ? part : <strong key={index}>{part.brand}</strong>))}</p>
-          <div className="ob-actions">
+          <div className={site ? 'ob-actions ob-actions--demo' : 'ob-actions'}>
             <a className="ob-pill ob-pill--large" href={site ? '/run' : siteLinks.source}>{site ? 'Run Orbit' : 'Get the code'}</a>
             <Link className="ob-link ob-link--large" to="/docs">Read the docs</Link>
+            {site && <a className="ob-pill ob-pill--large ob-demo-link" href="https://demo.run-orbit.com/">Try the demo</a>}
           </div>
         </div>
         <OrbitDrawing />

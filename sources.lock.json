@@ -4544,11 +4544,11 @@
       "executable": false
     },
     "src/core/features/public/ui/home/hero.css": {
-      "sha256": "c4e04761fc1932273348628957ff6900976e6dee0a2eebdf66d5efe47608a421",
+      "sha256": "c0e7995cd07b49f8dc6881189d6c29017cc897a47536cb9ed339656a0a25b1ef",
       "executable": false
     },
     "src/core/features/public/ui/home/Hero.tsx": {
-      "sha256": "db4b12b39d90fcb0b07f8f20ce5327006b4a0a4fc5840a53ec9f632379be192a",
+      "sha256": "37b142479a8764428750ef17329d9146e51a5c7365556f9f0351893fe471c83f",
       "executable": false
     },
     "src/core/features/public/ui/home/orbit.css": {
