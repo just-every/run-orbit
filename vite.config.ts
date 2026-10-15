@@ -1,3 +1,4 @@
+import { demoSockets } from './src/modules/demo/vite.mjs';
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
@@ -9,15 +10,17 @@ import { docsSite } from "./src/core/features/public/docs/build/plugin.ts";
 
 // Preflight runs before Vite can empty generated output, including direct Vite calls.
 import { localState } from "./scripts/local-state.mjs";
-const statePath = localState();
+const statePath = localState(undefined, process.env.RER_STATE_DIR);
 
 export default defineConfig(({ command }) => ({
   plugins: [
+    demoSockets(),
     cloudflare({ persistState: { path: statePath }, viteEnvironment: { name: "ssr" },
       config: {
         // `vite dev` alone loads the local-only dev identity entry; builds keep the deployed main.
         ...(command === "serve" ? { main: "src/dev/server.ts" } : {}),
         vars: {
+          ...(process.env.RER_DEMO ? { RER_DEMO: process.env.RER_DEMO, RER_DEMO_EXPIRES: process.env.RER_DEMO_EXPIRES } : {}),
           // rer dev serves the requested loopback origin without rewriting private settings.
           ...(process.env.RER_DEV_ORIGIN ? { RER_DEV_ORIGIN: process.env.RER_DEV_ORIGIN } : {}),
           // Only `vite dev` receives the checkout's dev key, which gates dev identity and the outbox.

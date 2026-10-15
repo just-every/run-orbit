@@ -1,4 +1,4 @@
-/** Deliberately fictional, read-only examples. These objects never enter D1. */
+/** Fictional examples for the read-only story and the isolated, editable demo. */
 export function demoStory(now=new Date()){
  const ago=(days:number)=>new Date(now.getTime()-days*86400000).toISOString();
  const accounts=[['Harbour Studio','Maya Chen','Team workspace',18000],['Northline Foods','Daniel Reed','Regional rollout',42000],['Juniper Health','Aisha Patel','Patient services',36000],['Brightworks Energy','Leo Martin','Field operations',54000],['Cedar Learning','Sofia Nguyen','School pilot',12000],['Atlas Logistics','Oliver Brooks','Dispatch upgrade',28000],['Wattle Design','Amelia Taylor','Client portal',16000],['Seabright Hotels','Noah Wilson','Guest services',48000],['Ember Manufacturing','Isla Harris','Factory pilot',32000],['Finch Accounting','Ethan Clarke','Practice rollout',24000],['Kindred Care','Grace Thomas','Care coordination',21000],['Copperfield Labs','Jack Evans','Research workflow',30000]] as const;

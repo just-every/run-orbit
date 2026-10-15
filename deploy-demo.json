@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "domain": "run-orbit.com",
+  "name": "Orbit",
+  "settings": {
+    "MAIL_PROVIDER": "development",
+    "MAIL_FROM": "Orbit demo <demo@demo.invalid>"
+  }
+}

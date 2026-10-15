@@ -27,7 +27,7 @@ export function identityConfig(bindings: PlatformBindings, sender: MailSender | 
 
 /** Local mail lands in the development outbox; a deployment sends through SendGrid. Without either, sign-in mail is unavailable; half a configuration fails by name. */
 export function identityMailSender(bindings: PlatformBindings): MailSender | undefined {
-  if (bindings.AUTH_LOCAL === 'true') {
+  if (bindings.AUTH_LOCAL === 'true' || bindings.RER_DEMO === '1') {
     if (bindings.MAIL_PROVIDER !== 'development' || !bindings.MAIL_FROM) return undefined;
     const outbox = createD1DevelopmentOutbox({ db: bindings.DB });
     return { async send(message) {
@@ -58,7 +58,7 @@ export function createOrbitIdentity(bindings: PlatformBindings, options: { waitU
     db: bindings.DB, config, accounts, proofs: createNativeProofs(store), clientIp: clientIp(config.local === true), clock,
     ...(mail ? { mailSender: mail } : {}), ...(options.waitUntil ? { waitUntil: options.waitUntil } : {}),
   });
-  return { auth, accounts, store, config };
+  return { auth, accounts, store, config, clock };
 }
 export type OrbitIdentity = NonNullable<ReturnType<typeof createOrbitIdentity>>;
 
