@@ -6160,7 +6160,7 @@
       "executable": false
     },
     "tests/e2e/capture.spec.mjs": {
-      "sha256": "1df0a4b8d3cec96e1c45fc6957c9cfce841c55057310a05682c3245e86f3e2f0",
+      "sha256": "1b974d498d0fc00eccbe26c0c758bbd32bdc2a0c9ede2b8e9a1bb4a1824466ab",
       "executable": false
     },
     "tests/e2e/imports.spec.mjs": {
@@ -6176,7 +6176,7 @@
       "executable": false
     },
     "tests/e2e/records.spec.mjs": {
-      "sha256": "68851fd0553a08988df05b1c7dda2f34db3e3c14e51dd5970581876ba07ab9cb",
+      "sha256": "c4543540ea84329caf30221c3df66e224d9ea3d51502e8ea36352a171b21bb9d",
       "executable": false
     },
     "tests/e2e/stale-review.spec.mjs": {
@@ -6184,7 +6184,7 @@
       "executable": false
     },
     "tests/e2e/workbench.spec.mjs": {
-      "sha256": "f35052e19c5b3379c773a57f1b7cc864a40e04553304cd10286236e6a056171c",
+      "sha256": "6df97294acec216bd1f254514845d1b7654231ab0ebbde163e8b5db695f12feb",
       "executable": false
     },
     "tests/e2e/worker-smoke.spec.mjs": {
@@ -6360,7 +6360,7 @@
       "executable": false
     },
     "tests/support/browser-temp.mjs": {
-      "sha256": "e4ad7189f46dc6877a5ef61b9d9b546cb765983b19c05fd4b3f497c65828a0af",
+      "sha256": "4b6f327a58579395db0f5178fd963f48d641f6c3981aadd17a241c3e0b27abf4",
       "executable": false
     },
     "tests/support/capture-browser-source.ts": {

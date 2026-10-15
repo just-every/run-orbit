@@ -29,10 +29,12 @@ test('a real account, attributed event and durable reviewed draft can be created
   await expect(page.getByTestId('draft-subject')).toHaveValue('Your requested follow-up');
   await page.reload();
   await expect(page.getByTestId('draft-body')).toHaveValue('Thank you for requesting a follow-up. What time suits you?');
+  const preview=page.waitForResponse(response=>new URL(response.url()).pathname.endsWith('/approval-preview'));
   await page.getByRole('button',{name:'Approve and send exact revision'}).click();
-  const quietConfirmation=page.getByRole('button',{name:/^Confirm send at /});
-  await expect(quietConfirmation.or(page.getByText(/Configure .*before approving customer mail/))).toBeVisible();
-  if(await quietConfirmation.isVisible())await quietConfirmation.click();
-  await expect(page.getByText(/Configure .*before approving customer mail/)).toBeVisible();
+  expect((await preview).status()).toBe(503);
+  await expect(page.getByRole('alert').locator('a[href="/app/settings#mail-sender"]')).toBeVisible();
+  await expect(page.getByRole('button',{name:/^Confirm send at /})).toHaveCount(0);
+  await page.reload();
+  await expect(page.getByTestId('draft-body')).toHaveValue('Thank you for requesting a follow-up. What time suits you?');
   expect(failures).toEqual([]);
 });

@@ -52,14 +52,15 @@ test('CAPTURE-001 CAPTURE-004 an operator adds a mailbox and calendar files, rev
   await expect(page.getByRole('heading',{name:account,exact:true,level:1})).toBeVisible();
   const reply=page.getByRole('article',{name:'Link this reply to Ana Ruiz'});
   await expect(reply).toContainText('Can we talk on Tuesday?');
-  await expect(page.getByRole('heading',{name:'signal.recorded',exact:true})).toHaveCount(0);
+  const timelineSignals=page.locator('article[id^="entry-"]').filter({has:page.locator('[data-field="signalId"]')});
+  await expect(timelineSignals).toHaveCount(0);
   const name=page.getByRole('article',{name:'Set name from this message'});
   await expect(name.getByRole('cell',{name:'Ana Ruiz',exact:true})).toBeVisible();await expect(name.getByRole('cell',{name:'Ana R.',exact:true})).toBeVisible();
   expect(await overflow(page)).toEqual([]);expect(await serious(page)).toEqual([]);
   await page.screenshot({path:join(screenshots,`account-before-review-${width}.png`),fullPage:true});
   await reply.getByRole('button',{name:'Accept',exact:true}).click();
   await expect(page.getByText('Accepted: Link this reply to Ana Ruiz.')).toBeVisible();
-  await expect(page.getByRole('heading',{name:'signal.recorded',exact:true})).toHaveCount(1);
+  await expect(timelineSignals).toHaveCount(1);
   const cara=page.getByRole('article',{name:`Create contact cara@${domain} at ${account}`});
   await cara.getByRole('button',{name:'Decline',exact:true}).click();
   await expect(page.getByText(/Declined: Create contact .* It will not be offered again/)).toBeVisible();
@@ -72,7 +73,7 @@ test('CAPTURE-001 CAPTURE-004 an operator adds a mailbox and calendar files, rev
   await page.goto(`/app/records?kind=company&record=${company}`);
   await expect(page.getByRole('article',{name:'Set name from this message'})).toBeVisible();
   await expect(page.getByRole('article',{name:`Create contact cara@${domain} at ${account}`})).toHaveCount(0);
-  await expect(page.getByRole('heading',{name:'signal.recorded',exact:true})).toHaveCount(1);
+  await expect(timelineSignals).toHaveCount(1);
  }
  expect(errors).toEqual([]);
 });
