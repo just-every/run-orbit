@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Mark credential fixtures and examples explicitly synthetic so hosted source checks accept them.
+
 ## 0.2.0 — 2026-10-14
 
 Changes since the published v0.1.0 tag:

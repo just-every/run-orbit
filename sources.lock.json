@@ -641,7 +641,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "d4d5ccdd45140a082065c7769a0b83408e06481222eaa0bf2b2c95a2b64b3e65",
+      "sha256": "5816613db8bd2f4fcca6bcddd6816aa5d2ff17632bc4ac7937a1b2715e04785f",
       "executable": false
     },
     "CLAUDE.md": {
@@ -5813,7 +5813,7 @@
       "executable": false
     },
     "tests/core/capture-boundaries.test.ts": {
-      "sha256": "0bb55dc5501510b2c36bbdbd92b7865589a7196dbd4ce7b7f64099f4f2c994b7",
+      "sha256": "7b307e529e6ef65e8e33c531ad56e6b697cb32cbe3fb5dc673998e8eef82cf8b",
       "executable": false
     },
     "tests/core/capture-connector.test.ts": {
@@ -6413,7 +6413,7 @@
       "executable": false
     },
     "tests/support/worker-identity.mjs": {
-      "sha256": "98480c93ed6d8b4b10299ac928f04b24d8821dfc17af613457da9db688bbe980",
+      "sha256": "4a987f1b91df7ba7c1000a3430fc19216d836b043021fb6ce6a0acbb35803722",
       "executable": false
     },
     "tools/seed-schema/json-schema.mjs": {

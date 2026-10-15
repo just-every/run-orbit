@@ -74,7 +74,7 @@ test('CAPTURE-003 CAPTURE-005 OUT-001 OUT-007 ACTION-005 RECORD-012 SIGNAL-009 a
     assert.equal(await count(f.db, "SELECT count(*) n FROM contacts WHERE contactability='contactable' AND id NOT IN(?,?)", f.ana, f.bob), 0, 'capture made nobody contactable');
 
     // Only an operator session reaches capture. A signed source's signature is not authority here.
-    const security = createSourceSecurity({ ORBIT_ENCRYPTION_KEY: '22'.repeat(32) })!, secret = 'capture-boundary-secret-'.repeat(2), source = createId();
+    const security = createSourceSecurity({ ORBIT_ENCRYPTION_KEY: '22'.repeat(32) })!, secret = 'synthetic-capture-boundary-secret-'.repeat(2), source = createId();
     await new IngestionRepository(f.db).configure({ id: source, name: 'Signed tool', enabled: true, secret }, security);
     const timestamp = String(Math.floor(Date.now() / 1000)), form = new FormData();
     form.append('files', new File([reply.replace('question-1', 'question-2')], 'signed.eml'));
