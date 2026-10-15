@@ -13,7 +13,7 @@
     "operations": {
       "setup": "pnpm install --frozen-lockfile && pnpm exec rer install",
       "build": "pnpm exec rer build",
-      "verify": "pnpm exec rer verify",
+      "verify": "pnpm source:check && pnpm exec rer check --profile first-party && pnpm check:boundaries && pnpm check:manifest && pnpm deployment:check && pnpm typecheck",
       "artifact": "node scripts/build-delivery-artifact.mjs",
       "recovery": "Retain exact source and a full D1 backup before migrations. Restore to a fresh D1, compare Records archive exports, revoke old authority and reconnect excluded credentials before switching traffic. See OPERATIONS.md and docs/artifact/CONTRACT.md."
     },
