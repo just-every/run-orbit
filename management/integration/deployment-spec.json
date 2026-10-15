@@ -200,7 +200,9 @@
   ],
   "durableObjects": [],
   "durableObjectMigrations": [],
-  "publicVariables": {},
+  "publicVariables": {
+    "MAIL_FROM": ""
+  },
   "secretNames": [
     "SETUP_TOKEN",
     "SESSION_SECRET",
@@ -208,8 +210,7 @@
   ],
   "optionalSecretNames": [
     "SENDGRID_API_KEY",
-    "OPENAI_API_KEY",
-    "RER_MAIL_RELAY_SECRET"
+    "OPENAI_API_KEY"
   ],
   "schedules": [
     "* * * * *"

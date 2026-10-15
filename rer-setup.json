@@ -5,6 +5,10 @@
     {
       "id": "owner",
       "label": "First owner"
+    },
+    {
+      "id": "mail",
+      "label": "Sign-in email"
     }
   ],
   "fields": [
@@ -46,6 +50,24 @@
       "input": "managed",
       "generate": "hex",
       "group": "owner"
+    },
+    {
+      "name": "MAIL_FROM",
+      "label": "Sender email",
+      "help": "A verified SendGrid sender address for hosted sign-in links. Required with the SendGrid API key.",
+      "kind": "email",
+      "required": true,
+      "group": "mail"
+    },
+    {
+      "name": "SENDGRID_API_KEY",
+      "label": "SendGrid API key",
+      "help": "A SendGrid key with Mail Send permission for the verified sender address.",
+      "kind": "secret",
+      "required": true,
+      "group": "mail",
+      "ownerVisible": true,
+      "input": "entered"
     },
     {
       "name": "IDENTITY_PROVIDER",

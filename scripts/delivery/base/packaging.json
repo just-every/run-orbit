@@ -87,8 +87,7 @@
       ],
       "optionalSecretNames": [
         "SENDGRID_API_KEY",
-        "OPENAI_API_KEY",
-        "RER_MAIL_RELAY_SECRET"
+        "OPENAI_API_KEY"
       ],
       "providerEffects": [
         "outbound-mail",

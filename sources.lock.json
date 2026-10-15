@@ -1159,7 +1159,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "2a6c016cfadb16f8edc6d15b998fcac33dafc2b561160d299a7098a7e82ba3b9",
+      "sha256": "cd866aaec9b79be0558fce07c508a2ba28f3bfa3cf1d98fe877bd8d5192ab271",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2639,11 +2639,11 @@
       "executable": false
     },
     "rer-project.json": {
-      "sha256": "f19658339bba69648413b0cb1fd068983e875ee3c5e94156b159b810e0c00ca1",
+      "sha256": "77bc8484bde2c17c14e03bf0a842dcfe5b17d24e72ee32f09973eac885ed9db6",
       "executable": false
     },
     "rer-setup.json": {
-      "sha256": "34865f742b356e512c612df9e22da5d71d989f183f81d7634849d3a80cdb4802",
+      "sha256": "9a617f1de1faed165419873e39e2c86540dffc4454caacbb6353103a3147e522",
       "executable": false
     },
     "RUN-LOCALLY.md": {
@@ -2775,7 +2775,7 @@
       "executable": false
     },
     "scripts/delivery/base/packaging.json": {
-      "sha256": "243db2280022e26e5e8a8a3a5326406d29050859db2224b725630033c9847fac",
+      "sha256": "261e95e5017224128c48aeafd7e6999d082f78fc941df42f62e7bfb08aeaaa64",
       "executable": false
     },
     "scripts/delivery/base/paths.mjs": {
@@ -6479,7 +6479,7 @@
       "executable": false
     },
     "wrangler.jsonc": {
-      "sha256": "7d10eecf0118df18271cb9fe5245dcecea7703caf0dc52acae4f286dd0842961",
+      "sha256": "f868b81f3bc7feea5164f5f11d9554ab38cd33b4a02defcdfe0015578c0d9eff",
       "executable": false
     }
   }
