@@ -4662,7 +4662,7 @@
       "executable": false
     },
     "src/core/features/records/archive-routes.ts": {
-      "sha256": "9121a9f3417aa24470c48a5fb7e20c1052790b9fdb31cff24908d210b765917e",
+      "sha256": "9b32e3a8ecf9bdeff467cfd0cf6d95cf55e7c4152d07a2b7b5d6af3e4e5d31fd",
       "executable": false
     },
     "src/core/features/records/archive-schema-fence.ts": {
