@@ -1,4 +1,4 @@
-import { demoSockets } from './src/modules/demo/vite.mjs';
+import { demoSockets } from '@runeditrun/rer/modules/demo/vite';
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";

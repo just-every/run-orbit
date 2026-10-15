@@ -1,4 +1,4 @@
-import { withDemo } from '../../modules/demo/index.mjs';
+import { withDemo } from '@runeditrun/rer/modules/demo';
 import { seedDemo, demoOwner } from '../../demo';
 import { staticAssetResponse } from '../../base/static-assets';
 import { lobbyResponse } from '../../base/lobby';

@@ -2,7 +2,7 @@ import { AuthError, createAuthHandler, createOperatorAuth, createSignInHandler, 
 import { devAdmitted } from '@runeditrun/rer/modules/operator-auth/dev-admission';
 import { createDependencies } from '@runeditrun/rer/modules/dependencies';
 import { sendDevelopment } from '../../../base/modules/mail/src/development/index.mjs';
-import { sendSendGrid, SendGridSendError } from '../../../modules/sendgrid-email/sender';
+import { sendSendGrid, SendGridSendError } from '../../../base/modules/mail/src/sendgrid-email/index.mjs';
 import type { PlatformBindings } from '../../platform/assets';
 import { createNativeAccounts } from './accounts';
 import { createNativeProofs } from './proofs';

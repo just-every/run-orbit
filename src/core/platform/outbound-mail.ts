@@ -1,4 +1,5 @@
-import { sendSendGrid, SendGridSendError } from '../../modules/sendgrid-email/sender';
+import { sendDevelopment } from '../../base/modules/mail/src/development/index.mjs';
+import { sendSendGrid, SendGridSendError } from '../../base/modules/mail/src/sendgrid-email/index.mjs';
 export interface OutboundMail {
  send(input:{id:string;recipient_email:string;subject:string;body:string;message_id?:string;reference_ids?:string;idempotency_key?:string}):Promise<{providerMessageId:string|null}>;
  lookup?(idempotencyKey:string):Promise<{providerMessageId:string}|undefined>;
@@ -12,10 +13,10 @@ export function createOutboundMail(env:OutreachEnvironment):OutboundMail|undefin
  if(!demo&&(!Number.isInteger(Number(env.SENDGRID_UNSUBSCRIBE_GROUP_ID))||Number(env.SENDGRID_UNSUBSCRIBE_GROUP_ID)<=0))throw new Error('SENDGRID_UNSUBSCRIBE_GROUP_ID must be a positive integer.');
  return {
   async send(message){
+   if(demo){const result=await sendDevelopment({provider:'development',mode:'development'},{deliveryId:message.idempotency_key??message.id,from:env.MAIL_FROM??'Orbit Demo <demo@demo.invalid>',to:[message.recipient_email],subject:message.subject,text:message.body});return {providerMessageId:result.providerMessageId};}
    const groupId=Number(env.SENDGRID_UNSUBSCRIBE_GROUP_ID);
    if(!demo&&(!Number.isInteger(groupId)||groupId<=0||!env.MAIL_REPLY_TO))throw new SendGridSendError('rejected','SENDGRID_UNSUBSCRIBE_GROUP_ID and MAIL_REPLY_TO are required before customer outreach.');
-   const send = () => sendSendGrid({apiKey:env.SENDGRID_API_KEY!,message:{from:env.MAIL_FROM!,to:[message.recipient_email],subject:message.subject,text:message.body,deliveryId:message.idempotency_key??message.id,replyTo:env.MAIL_REPLY_TO,asmGroupId:groupId,subscriptionTracking:false,customArgs:{rer_product:'orbit'},headers:{'Message-ID':message.message_id??`<${message.id}@orbit.local>`,...(message.reference_ids?{'References':message.reference_ids,'In-Reply-To':message.reference_ids}:{})}}});
-   return demo ? (await import('../../modules/demo/index.mjs')).demoEffect(send, () => ({provider:'sendgrid' as const,state:'accepted' as const,providerMessageId:null})) : send();
+   return sendSendGrid({apiKey:env.SENDGRID_API_KEY!,message:{from:env.MAIL_FROM!,to:[message.recipient_email],subject:message.subject,text:message.body,deliveryId:message.idempotency_key??message.id,replyTo:env.MAIL_REPLY_TO,asmGroupId:groupId,subscriptionTracking:false,customArgs:{rer_product:'orbit'},headers:{'Message-ID':message.message_id??`<${message.id}@orbit.local>`,...(message.reference_ids?{'References':message.reference_ids,'In-Reply-To':message.reference_ids}:{})}}});
   },
   async lookup(id){
    const url=new URL('https://api.sendgrid.com/v3/messages');url.searchParams.set('limit','10');url.searchParams.set('query',`unique_args['rer_delivery_id']="${id.replace(/["\\]/g,'')}"`);

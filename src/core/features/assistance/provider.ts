@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { demoOutput } from './demo-output';
 export const outputSchema=z.object({explanation:z.string().min(1).max(4000),subject:z.string().max(998),body:z.string().max(10000),evidenceIds:z.array(z.string()).min(1)}).strict();
 export type AIOutput=z.infer<typeof outputSchema>;
 export interface OutputFormat {name:string;schema:z.ZodType}
@@ -9,15 +10,17 @@ export interface AIProvider {
 }
 export interface AIBindings { RER_DEMO?:string; OPENAI_API_KEY?:string; AI_MODEL?:string; AI_INPUT_COST_PER_MILLION?:string; AI_OUTPUT_COST_PER_MILLION?:string; AI_CACHED_INPUT_COST_PER_MILLION?:string }
 export function createAIProvider(env:AIBindings):AIProvider|undefined {
- if(!env.OPENAI_API_KEY)return undefined;
- if(!env.AI_MODEL)throw new Error('AI_MODEL is required with OPENAI_API_KEY.');
- const inputCost=Number(env.AI_INPUT_COST_PER_MILLION),outputCost=Number(env.AI_OUTPUT_COST_PER_MILLION);
+ const demo=env.RER_DEMO==='1';
+ if(!demo&&!env.OPENAI_API_KEY)return undefined;
+ if(!demo&&!env.AI_MODEL)throw new Error('AI_MODEL is required with OPENAI_API_KEY.');
+ const inputCost=Number(demo?0:env.AI_INPUT_COST_PER_MILLION),outputCost=Number(demo?0:env.AI_OUTPUT_COST_PER_MILLION);
  if(!Number.isFinite(inputCost)||inputCost<0)throw new Error('AI_INPUT_COST_PER_MILLION is required.');
  if(!Number.isFinite(outputCost)||outputCost<0)throw new Error('AI_OUTPUT_COST_PER_MILLION is required.');
  const cachedCost=env.AI_CACHED_INPUT_COST_PER_MILLION===undefined?undefined:Number(env.AI_CACHED_INPUT_COST_PER_MILLION);
  if(cachedCost!==undefined&&(!Number.isFinite(cachedCost)||cachedCost<0))throw new Error('AI_CACHED_INPUT_COST_PER_MILLION must be a nonnegative rate.');
- return {provider:'openai',model:env.AI_MODEL,inputCostPerMillion:inputCost,outputCostPerMillion:outputCost,cachedInputCostPerMillion:cachedCost,
+ return {provider:demo?'Demo assistant':'openai',model:demo?'Orbit sample':env.AI_MODEL!,inputCostPerMillion:inputCost,outputCostPerMillion:outputCost,cachedInputCostPerMillion:cachedCost,
   async generate(preview,format={name:'orbit_assistance',schema:outputSchema}) {
+   const request=async()=>{
    const deadline=Date.now()+30000;
    for(let attempt=0;attempt<3;attempt++) {
     let response:Response;
@@ -34,6 +37,9 @@ export function createAIProvider(env:AIBindings):AIProvider|undefined {
     return {output:format.schema.parse(JSON.parse(text)),inputTokens:data.usage.input_tokens,outputTokens:data.usage.output_tokens,cachedInputTokens:data.usage.input_tokens_details?.cached_tokens??0};
    }
    throw new Error('AI transport failed.');
+   };
+   if(demo){const {demoEffect}=await import('@runeditrun/rer/modules/demo');return demoEffect(request,()=>({output:format.schema.parse(demoOutput(preview)),inputTokens:0,outputTokens:0,cachedInputTokens:0}));}
+   return request();
   }
  };
 }

@@ -62,102 +62,19 @@
       "source": {
         "kind": "local",
         "paths": [
-          "src/base/modules/mail/LICENSE",
-          "src/base/modules/mail/index.mjs",
-          "src/base/modules/mail/src/adapters/cloudflare/headers.mjs",
-          "src/base/modules/mail/src/adapters/cloudflare/index.mjs",
-          "src/base/modules/mail/src/adapters/cloudflare/response.mjs",
-          "src/base/modules/mail/src/adapters/resend/index.mjs",
-          "src/base/modules/mail/src/adapters/resend/response.mjs",
-          "src/base/modules/mail/src/adapters/resend/serialize.mjs",
-          "src/base/modules/mail/src/adapters/resend/size.mjs",
-          "src/base/modules/mail/src/adapters/sendgrid/index.mjs",
-          "src/base/modules/mail/src/adapters/sendgrid/serialize.mjs",
-          "src/base/modules/mail/src/core/errors.mjs",
-          "src/base/modules/mail/src/core/transport.mjs",
-          "src/base/modules/mail/src/core/validation.mjs",
-          "src/base/modules/mail/src/development/index.d.mts",
-          "src/base/modules/mail/src/development/index.mjs",
-          "src/base/modules/mail/src/development/outbox.mjs",
-          "src/base/modules/mail/src/development/schema.sql",
-          "src/base/modules/mail/src/doctor/common.mjs",
-          "src/base/modules/mail/src/doctor/dns.mjs",
-          "src/base/modules/mail/src/doctor/index.mjs",
-          "src/base/modules/mail/src/doctor/probe.mjs",
-          "src/base/modules/mail/src/doctor/receive.mjs",
-          "src/base/modules/mail/src/doctor/records.mjs",
-          "src/base/modules/mail/src/events/index.mjs",
-          "src/base/modules/mail/src/events/intake.mjs",
-          "src/base/modules/mail/src/events/storage.mjs",
-          "src/base/modules/mail/src/events/verify.mjs",
-          "src/base/modules/mail/src/inbound/bytes.mjs",
-          "src/base/modules/mail/src/inbound/headers.mjs",
-          "src/base/modules/mail/src/inbound/index.mjs",
-          "src/base/modules/mail/src/inbound/mime.mjs",
-          "src/base/modules/mail/src/inbound/multipart.mjs",
-          "src/base/modules/mail/src/inbound/resend-attachment.mjs",
-          "src/base/modules/mail/src/inbound/resend.mjs",
-          "src/base/modules/mail/src/inbound/sendgrid.mjs",
-          "src/base/modules/mail/src/sender.mjs",
-          "src/base/modules/mail/src/unsubscribe/index.mjs",
+          "src/base/modules/mail",
           "vite/exclude-local-variables.ts",
           "RUN-LOCALLY.md",
-          "SEED-COMMAND-CONTRACT.md",
-          "src/base/modules/mail/src/adapters/rer/contract.mjs",
-          "src/base/modules/mail/src/adapters/rer/index.mjs",
-          "src/base/modules/mail/src/adapters/messaging/request.mjs",
-          "src/base/modules/mail/src/adapters/messaging/serialize.mjs",
-          "src/base/modules/mail/src/adapters/messaging/jws.mjs",
-          "src/base/modules/mail/src/adapters/messaging/event-schema.mjs",
-          "src/base/modules/mail/src/adapters/messaging/contract.mjs",
-          "src/base/modules/mail/src/adapters/messaging/README.md",
-          "src/base/modules/mail/src/adapters/messaging/index.mjs"
+          "SEED-COMMAND-CONTRACT.md"
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "261ed78521f4d80181733ef9f9784a04af1f4b1c",
+          "revision": "1ce15dd8cbb7c8cf2d83ebfde2b4a8a130ff9d74",
           "path": ".",
           "paths": [
             "modules/mail/LICENSE",
             "modules/mail/index.mjs",
-            "modules/mail/src/adapters/cloudflare/headers.mjs",
-            "modules/mail/src/adapters/cloudflare/index.mjs",
-            "modules/mail/src/adapters/cloudflare/response.mjs",
-            "modules/mail/src/adapters/resend/index.mjs",
-            "modules/mail/src/adapters/resend/response.mjs",
-            "modules/mail/src/adapters/resend/serialize.mjs",
-            "modules/mail/src/adapters/resend/size.mjs",
-            "modules/mail/src/adapters/sendgrid/index.mjs",
-            "modules/mail/src/adapters/sendgrid/serialize.mjs",
-            "modules/mail/src/core/errors.mjs",
-            "modules/mail/src/core/transport.mjs",
-            "modules/mail/src/core/validation.mjs",
-            "modules/mail/src/development/index.d.mts",
-            "modules/mail/src/development/index.mjs",
-            "modules/mail/src/development/outbox.mjs",
-            "modules/mail/src/development/schema.sql",
-            "modules/mail/src/development/viewer-html.mjs",
-            "modules/mail/src/development/viewer.mjs",
-            "modules/mail/src/doctor/common.mjs",
-            "modules/mail/src/doctor/dns.mjs",
-            "modules/mail/src/doctor/index.mjs",
-            "modules/mail/src/doctor/probe.mjs",
-            "modules/mail/src/doctor/receive.mjs",
-            "modules/mail/src/doctor/records.mjs",
-            "modules/mail/src/events/index.mjs",
-            "modules/mail/src/events/intake.mjs",
-            "modules/mail/src/events/storage.mjs",
-            "modules/mail/src/events/verify.mjs",
-            "modules/mail/src/inbound/bytes.mjs",
-            "modules/mail/src/inbound/headers.mjs",
-            "modules/mail/src/inbound/index.mjs",
-            "modules/mail/src/inbound/mime.mjs",
-            "modules/mail/src/inbound/multipart.mjs",
-            "modules/mail/src/inbound/resend-attachment.mjs",
-            "modules/mail/src/inbound/resend.mjs",
-            "modules/mail/src/inbound/sendgrid.mjs",
-            "modules/mail/src/sender.mjs",
-            "modules/mail/src/unsubscribe/index.mjs",
+            "modules/mail/src",
             "default-seed/vite/exclude-local-variables.ts",
             "export/RUN-LOCALLY.md",
             "export/SEED-COMMAND-CONTRACT.md"
@@ -173,148 +90,8 @@
             "originPath": "modules/mail/index.mjs"
           },
           {
-            "path": "src/base/modules/mail/src/adapters/cloudflare/headers.mjs",
-            "originPath": "modules/mail/src/adapters/cloudflare/headers.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/adapters/cloudflare/index.mjs",
-            "originPath": "modules/mail/src/adapters/cloudflare/index.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/adapters/cloudflare/response.mjs",
-            "originPath": "modules/mail/src/adapters/cloudflare/response.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/adapters/resend/index.mjs",
-            "originPath": "modules/mail/src/adapters/resend/index.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/adapters/resend/response.mjs",
-            "originPath": "modules/mail/src/adapters/resend/response.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/adapters/resend/serialize.mjs",
-            "originPath": "modules/mail/src/adapters/resend/serialize.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/adapters/resend/size.mjs",
-            "originPath": "modules/mail/src/adapters/resend/size.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/adapters/sendgrid/index.mjs",
-            "originPath": "modules/mail/src/adapters/sendgrid/index.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/adapters/sendgrid/serialize.mjs",
-            "originPath": "modules/mail/src/adapters/sendgrid/serialize.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/core/errors.mjs",
-            "originPath": "modules/mail/src/core/errors.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/core/transport.mjs",
-            "originPath": "modules/mail/src/core/transport.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/core/validation.mjs",
-            "originPath": "modules/mail/src/core/validation.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/development/index.d.mts",
-            "originPath": "modules/mail/src/development/index.d.mts"
-          },
-          {
-            "path": "src/base/modules/mail/src/development/index.mjs",
-            "originPath": "modules/mail/src/development/index.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/development/outbox.mjs",
-            "originPath": "modules/mail/src/development/outbox.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/development/schema.sql",
-            "originPath": "modules/mail/src/development/schema.sql"
-          },
-          {
-            "path": "src/base/modules/mail/src/doctor/common.mjs",
-            "originPath": "modules/mail/src/doctor/common.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/doctor/dns.mjs",
-            "originPath": "modules/mail/src/doctor/dns.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/doctor/index.mjs",
-            "originPath": "modules/mail/src/doctor/index.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/doctor/probe.mjs",
-            "originPath": "modules/mail/src/doctor/probe.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/doctor/receive.mjs",
-            "originPath": "modules/mail/src/doctor/receive.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/doctor/records.mjs",
-            "originPath": "modules/mail/src/doctor/records.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/events/index.mjs",
-            "originPath": "modules/mail/src/events/index.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/events/intake.mjs",
-            "originPath": "modules/mail/src/events/intake.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/events/storage.mjs",
-            "originPath": "modules/mail/src/events/storage.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/events/verify.mjs",
-            "originPath": "modules/mail/src/events/verify.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/inbound/bytes.mjs",
-            "originPath": "modules/mail/src/inbound/bytes.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/inbound/headers.mjs",
-            "originPath": "modules/mail/src/inbound/headers.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/inbound/index.mjs",
-            "originPath": "modules/mail/src/inbound/index.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/inbound/mime.mjs",
-            "originPath": "modules/mail/src/inbound/mime.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/inbound/multipart.mjs",
-            "originPath": "modules/mail/src/inbound/multipart.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/inbound/resend-attachment.mjs",
-            "originPath": "modules/mail/src/inbound/resend-attachment.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/inbound/resend.mjs",
-            "originPath": "modules/mail/src/inbound/resend.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/inbound/sendgrid.mjs",
-            "originPath": "modules/mail/src/inbound/sendgrid.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/sender.mjs",
-            "originPath": "modules/mail/src/sender.mjs"
-          },
-          {
-            "path": "src/base/modules/mail/src/unsubscribe/index.mjs",
-            "originPath": "modules/mail/src/unsubscribe/index.mjs"
+            "path": "src/base/modules/mail/src",
+            "originPath": "modules/mail/src"
           },
           {
             "path": "vite/exclude-local-variables.ts",
@@ -370,43 +147,6 @@
       }
     },
     {
-      "id": "runeditrun/sendgrid-email",
-      "role": "module",
-      "source": {
-        "kind": "local",
-        "paths": [
-          "src/modules/sendgrid-email",
-          "composition/modules/sendgrid-email/README.md",
-          "composition/modules/sendgrid-email/LICENSE"
-        ],
-        "origin": {
-          "repository": "https://github.com/runeditrun/base.git",
-          "revision": "d1343b638afd254679bc2b35819fc1d268bb6cc7",
-          "path": ".",
-          "paths": [
-            "modules/sendgrid-email/src",
-            "modules/sendgrid-email/README.md",
-            "modules/sendgrid-email/LICENSE",
-            "modules/sendgrid-email/tests"
-          ]
-        },
-        "mappings": [
-          {
-            "path": "src/modules/sendgrid-email",
-            "originPath": "modules/sendgrid-email/src"
-          },
-          {
-            "path": "composition/modules/sendgrid-email/README.md",
-            "originPath": "modules/sendgrid-email/README.md"
-          },
-          {
-            "path": "composition/modules/sendgrid-email/LICENSE",
-            "originPath": "modules/sendgrid-email/LICENSE"
-          }
-        ]
-      }
-    },
-    {
       "id": "runeditrun/import-kit",
       "role": "module",
       "source": {
@@ -419,7 +159,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "59a75eacbaef4a93a19601643a1d47828497f631",
+          "revision": "1ce15dd8cbb7c8cf2d83ebfde2b4a8a130ff9d74",
           "path": ".",
           "paths": [
             "modules/import-kit/src",
@@ -500,7 +240,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "261ed78521f4d80181733ef9f9784a04af1f4b1c",
+          "revision": "1ce15dd8cbb7c8cf2d83ebfde2b4a8a130ff9d74",
           "path": ".",
           "paths": [
             "modules/editor/src",
@@ -540,11 +280,12 @@
           "scripts/delivery/base/schema/json-schema.mjs",
           "scripts/delivery/base/schema/setup-validation.mjs",
           "scripts/delivery/base/setup-manifest.mjs",
-          "scripts/delivery/base/spec.mjs"
+          "scripts/delivery/base/spec.mjs",
+          "scripts/delivery/base/mail.mjs"
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "261ed78521f4d80181733ef9f9784a04af1f4b1c",
+          "revision": "1ce15dd8cbb7c8cf2d83ebfde2b4a8a130ff9d74",
           "path": ".",
           "paths": [
             "modules/delivery-producer/artifact.mjs",
@@ -566,7 +307,8 @@
             "schema/json-schema.mjs",
             "schema/setup-validation.mjs",
             "modules/delivery-producer/setup-manifest.mjs",
-            "modules/delivery-producer/spec.mjs"
+            "modules/delivery-producer/spec.mjs",
+            "modules/delivery-producer/mail.mjs"
           ]
         },
         "mappings": [
@@ -649,6 +391,10 @@
           {
             "path": "scripts/delivery/base/spec.mjs",
             "originPath": "modules/delivery-producer/spec.mjs"
+          },
+          {
+            "path": "scripts/delivery/base/mail.mjs",
+            "originPath": "modules/delivery-producer/mail.mjs"
           }
         ]
       }
@@ -755,42 +501,30 @@
       }
     },
     {
-      "id": "runeditrun/base-demo",
+      "id": "runeditrun/base-d1-transport",
       "role": "module",
       "source": {
         "kind": "local",
         "paths": [
-          "src/modules/demo"
+          "src/d1-transport"
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "e17843562355e1b6e5068289c8e037951fbc8d3d",
-          "path": "modules/demo"
+          "revision": "1ce15dd8cbb7c8cf2d83ebfde2b4a8a130ff9d74",
+          "path": "modules/d1-transport",
+          "paths": [
+            "index.mjs",
+            "index.d.mts"
+          ]
         },
         "mappings": [
           {
-            "path": "src/modules/demo/README.md",
-            "originPath": "README.md"
-          },
-          {
-            "path": "src/modules/demo/index.mjs",
+            "path": "src/d1-transport/index.mjs",
             "originPath": "index.mjs"
           },
           {
-            "path": "src/modules/demo/index.d.mts",
+            "path": "src/d1-transport/index.d.mts",
             "originPath": "index.d.mts"
-          },
-          {
-            "path": "src/modules/demo/sockets.mjs",
-            "originPath": "sockets.mjs"
-          },
-          {
-            "path": "src/modules/demo/vite.mjs",
-            "originPath": "vite.mjs"
-          },
-          {
-            "path": "src/modules/demo/vite.d.mts",
-            "originPath": "vite.d.mts"
           }
         ]
       }

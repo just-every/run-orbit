@@ -8,7 +8,7 @@ import { identityConfig } from '../core/features/identity/auth';
 import { pageResponse } from '@runeditrun/rer/internal/modules/operator-auth/page.mjs';
 import { devGate, devNotFound, isLoopbackHost, safeReturnTo } from '@runeditrun/rer/modules/operator-auth';
 import { registerDevAdmission, devAdmitted } from '@runeditrun/rer/modules/operator-auth/dev-admission';
-import { decorateLabel } from '../modules/demo/label.mjs';
+import { decorateLabel } from '@runeditrun/rer/modules/demo/label';
 import { clearSessionCookie, sessionStore, sha256 } from '../core/features/identity/store';
 import { createId } from '../core/shared/ids';
 import type { PlatformBindings } from '../core/platform/assets';

@@ -4,7 +4,7 @@ import {test} from 'node:test';
 import {createAIProvider} from '../../src/core/features/assistance/provider';
 import {identityMailSender} from '../../src/core/features/identity';
 import type {PlatformBindings} from '../../src/core/platform/assets';
-import {SendGridSendError} from '../../src/modules/sendgrid-email/sender';
+import {SendGridSendError} from '../../src/base/modules/mail/src/sendgrid-email/index.mjs';
 import {createOutboundMail} from '../../src/core/platform/outbound-mail';
 
 async function listen(server:Server) {

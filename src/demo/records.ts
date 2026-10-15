@@ -14,8 +14,8 @@ export async function seedRecords(db:D1Database, owner:string, now:Date) {
  const source=demoId(1,0);
  await db.batch([
   insert(db,'signal_sources',{id:source,name:'Demo sample · customer activity',type:'demo',enabled:1,created_at:at,updated_at:at}),
-  insert(db,'signal_sources',{id:demoId(2,0),name:'Demo sample · mailbox archive',type:'capture',enabled:0,created_at:at,updated_at:at}),
-  insert(db,'capture_sources',{id:demoId(2,0),adapter:'file',name:'Demo sample · mailbox archive',scope_json:JSON.stringify({mail:{folders:['Customer conversations']}}),state:'disconnected',captured_count:2,last_success_at:at,disconnected_at:at,created_at:at,updated_at:at}),
+  insert(db,'signal_sources',{id:demoId(2,0),name:'Demo sample · mailbox archive',type:'capture',enabled:1,created_at:at,updated_at:at}),
+  insert(db,'capture_sources',{id:demoId(2,0),adapter:'file',name:'Demo sample · mailbox archive',scope_json:JSON.stringify({mail:{folders:['Customer conversations']}}),state:'connected',connection_id:'files',connected_at:at,captured_count:2,last_success_at:at,created_at:at,updated_at:at}),
  ]);
  for (const [index,deal] of story.deals.entries()) {
   const company=demoId(10,index),contact=demoId(11,index),opportunity=demoId(12,index),draft=demoId(13,index),signal=demoId(14,index);
@@ -26,7 +26,7 @@ export async function seedRecords(db:D1Database, owner:string, now:Date) {
   const batch=[
    insert(db,'companies',{id:company,name:deal.company,primary_domain:domain,primary_domain_key:domain,created_at:occurred,updated_at:at}),
    insert(db,'contacts',{id:contact,company_id:company,name:deal.contact,email,email_key:email,job_title:index%2?'Operations director':'Team lead',timezone:'Australia/Brisbane',contactability:'contactable',created_at:occurred,updated_at:at}),
-   insert(db,'opportunities',{id:opportunity,title:deal.title,lifecycle:'open',stage_id:stage.id,owner_id:owner,company_id:company,value_cents:deal.value*100,score:0,band:'low',queue_state:deal.queue.toLowerCase(),queue_reason:deal.reason,created_at:occurred,updated_at:at}),
+   insert(db,'opportunities',{id:opportunity,title:deal.title,lifecycle:'open',stage_id:stage.id,owner_id:owner,company_id:company,value_cents:deal.value*100,expected_close_at:new Date(now.getTime()+(index+3)*86400000).toISOString(),score:0,band:'low',queue_state:deal.queue.toLowerCase(),queue_reason:deal.reason,created_at:occurred,updated_at:at}),
    insert(db,'opportunity_contacts',{opportunity_id:opportunity,contact_id:contact,is_primary:1,created_at:occurred}),
    insert(db,'signals',{id:signal,source_id:source,source_event_id:deal.id,type:index===0?'email.replied':index%2?'meeting.booked':'form.submitted',subject:deal.signals[0]!.subject,occurred_at:occurred,received_at:occurred,payload_hash:await hash(JSON.stringify(deal.signals)),confidence:'observed',linking_basis:'Demo sample story',created_at:occurred}),
    insert(db,'timeline_entries',{id:signal,kind:'signal.recorded',occurred_at:occurred,recorded_at:occurred,actor_type:'source',actor_id:source,source:'Demo sample',payload_json:JSON.stringify({signalId:signal,subject:deal.signals[0]!.subject,type:index===0?'email.replied':index%2?'meeting.booked':'form.submitted'})}),
