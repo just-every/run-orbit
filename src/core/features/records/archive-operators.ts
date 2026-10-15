@@ -19,9 +19,10 @@ export function restoreOperatorStatements(db:D1Database,id:string,backupId:strin
  const retainedMatch=`${native('r')} AND (${cell('id','r')}=operators.id OR lower(${cell('email','r')})=lower(${archivedValue('email')}))`;
  const retainedValue=(name:string)=>`(SELECT ${cell(name,'r')} FROM ${retained} r WHERE ${retainedMatch} LIMIT 1)`;
  const currentOwner=`EXISTS(SELECT 1 FROM ${retained} WHERE ${cell('setup_owner')}=1 AND ${cell('status')}='active')`;
+ const replacedTrialOwner=`lower(${archivedValue('email')})='owner@orbit.test' AND EXISTS(SELECT 1 FROM ${retained} WHERE ${cell('setup_owner')}=1 AND ${cell('status')}='active' AND lower(${cell('email')})<>'owner@orbit.test')`;
  const restoreArchived=db.prepare(`UPDATE operators SET ${columns.filter(name=>name!=='id').map(name=>{
   const value=archivedValue(name);
-  return `${quoteIdentifier(name)}=${name==='setup_owner'&&!rollback?`CASE WHEN ${value}=1 AND ${currentOwner} THEN 0 ELSE ${value} END`:value}`;
+  return `${quoteIdentifier(name)}=${!rollback&&name==='setup_owner'?`CASE WHEN ${value}=1 AND ${currentOwner} THEN 0 ELSE ${value} END`:!rollback&&name==='status'?`CASE WHEN ${replacedTrialOwner} THEN 'removed' ELSE ${value} END`:value}`;
  }).join(',')} WHERE id IN(SELECT ${cell('id')} FROM ${archived})`);
  // Expressions read the immutable staged mailbox, never the temporary live one.
  const restoreCurrent=db.prepare(`UPDATE operators SET ${columns.filter(name=>name!=='id').map(name=>`${quoteIdentifier(name)}=${retainedValue(name)}`).join(',')} WHERE EXISTS(SELECT 1 FROM ${retained} r WHERE ${retainedMatch})`);
@@ -30,5 +31,11 @@ export function restoreOperatorStatements(db:D1Database,id:string,backupId:strin
   db.prepare("UPDATE operators SET email='archive-final-'||id||'@invalid',setup_owner=0"),
   restoreArchived,
   ...(!rollback?[restoreCurrent]:[]),
+  // Keep the local trial identity for historical attribution, without access or
+  // future work assigned to it. Explicit current access still wins above.
+  ...(!rollback?[
+   db.prepare(`UPDATE opportunities SET owner_id=NULL WHERE lifecycle='open' AND owner_id IN(SELECT id FROM operators WHERE status='removed' AND ${replacedTrialOwner})`),
+   db.prepare(`UPDATE outbound_messages SET state='cancelled',failure='Local trial owner replaced after restore' WHERE state='scheduled' AND operator_id IN(SELECT id FROM operators WHERE status='removed' AND ${replacedTrialOwner})`),
+  ]:[]),
  ];
 }

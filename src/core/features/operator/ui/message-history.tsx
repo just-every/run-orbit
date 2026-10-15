@@ -1,22 +1,26 @@
 import {ProviderFooter} from "./provider-footer";
-import { useCallback,useState } from 'react';
+import { useCallback,useEffect,useState } from 'react';
 import { workbenchRequest } from './workbench-api';
 import { useOperatorResource } from './use-operator-resource';
 import { OperatorState } from './operator-shell';
+interface Scheduler {ready:boolean;lastRunAt:string|null;failed:boolean}
 interface Message {id:string;draftId:string;state:string;subject:string;body:string;recipientEmail:string;providerMessageId:string|null;failure:string|null;retryAfter:string|null;scheduledAt:string|null}
 export function MessageHistory({opportunityId}:{opportunityId:string}) {
- const load=useCallback(()=>workbenchRequest<{messages:Message[]}>(`/opportunities/${opportunityId}/messages`),[opportunityId]),resource=useOperatorResource(`messages:${opportunityId}`,load);
+ const load=useCallback(()=>workbenchRequest<{messages:Message[];scheduler:Scheduler|null}>(`/opportunities/${opportunityId}/messages`),[opportunityId]),resource=useOperatorResource(`messages:${opportunityId}`,load);
  const [error,setError]=useState(''),[confirmation,setConfirmation]=useState<{id:string;localTime:string}|null>(null),[busy,setBusy]=useState(false);
+ const pending=resource.data?.messages.some(message=>['scheduled','queued'].includes(message.state))??false;
+ useEffect(()=>{if(!pending)return;const timer=setInterval(resource.reload,15000);return()=>clearInterval(timer);},[pending,opportunityId]);
  async function cancel(id:string){try{await workbenchRequest(`/messages/${id}/cancel`,{});resource.reload();}catch(e){setError((e as Error).message);}}
  async function retry(message:Message,localTime?:string){setBusy(true);setError('');try{
   if(!localTime){const preview=await workbenchRequest<{quietHours:boolean;localTime:string}>(`/drafts/${message.draftId}/approval-preview`);if(preview.quietHours){setConfirmation({id:message.id,localTime:preview.localTime});return;}}
   await workbenchRequest(`/messages/${message.id}/retry`,{...(localTime?{quietHoursConfirmation:localTime}:{})});setConfirmation(null);resource.reload();
  }catch(e){setError((e as Error).message);resource.reload();}finally{setBusy(false);}}
- return <section className="operator-surface workbench-form"><h2>Approved outreach</h2>{error&&<OperatorState kind="error">{error}</OperatorState>}{resource.error&&<OperatorState kind="error">{resource.error.message}</OperatorState>}
+ return <section id="approved-outreach" className="operator-surface workbench-form"><h2>Approved outreach</h2>{error&&<OperatorState kind="error">{error} <a href="#approved-outreach">Review the approved message and recipient time again</a></OperatorState>}{resource.error&&<OperatorState kind="error">{resource.error.message}</OperatorState>}
+  {pending&&resource.data?.scheduler&&<p role="status">{resource.data.scheduler.ready?`Hosted minute timer active. Last completed: ${new Date(resource.data.scheduler.lastRunAt!).toLocaleString()}.`:resource.data.scheduler.failed?'The hosted timer failed. Scheduled messages are waiting; check the deployment’s Worker errors.':resource.data.scheduler.lastRunAt?'The hosted minute timer is overdue. Scheduled messages are waiting for it to resume.':'The hosted minute timer has not started yet. Scheduled messages are waiting for Cloudflare to activate it.'}</p>}
   {resource.data?.messages.length===0&&<p>No outbound messages approved.</p>}
-  {resource.data?.messages.map(message=><article key={message.id}><h3>{message.subject}</h3><p>{message.recipientEmail} · {message.state}</p>{message.providerMessageId&&<details><summary>Audit details</summary><p>Provider receipt: {message.providerMessageId}</p></details>}{message.failure&&<p role="status">{message.failure}</p>}{message.retryAfter&&<p>Next eligible attempt: {new Date(message.retryAfter).toLocaleString()}</p>}{message.scheduledAt&&<p>Scheduled: {new Date(message.scheduledAt).toLocaleString()}</p>}
+  {resource.data?.messages.map(message=><article key={message.id}><h3>{message.subject}</h3><p>{message.recipientEmail} · {message.state}</p>{message.providerMessageId&&<details><summary>Audit details</summary><p>Provider receipt: {message.providerMessageId}</p></details>}{message.failure&&<p role="status">{message.failure}</p>}{message.retryAfter&&<p>Next eligible attempt: {new Date(message.retryAfter).toLocaleString()}</p>}{message.scheduledAt&&<p><strong>{message.state==='scheduled'?'Will send':'Scheduled for'}: {new Date(message.retryAfter??message.scheduledAt).toLocaleString()}</strong> (your browser local time). {message.state==='scheduled'&&'The hosted minute timer checks this approved message at its due time.'}</p>}
    {message.state==='scheduled'&&<button onClick={()=>void cancel(message.id)}>Cancel scheduled message</button>}
-   {message.state==='draft'&&<details><summary>Review blocked message</summary><p>To: {message.recipientEmail}</p><p>Subject: {message.subject}</p><pre className="assistance-preview-json">{message.body}</pre><ProviderFooter/>{confirmation?.id===message.id?<div role="alert"><p>It is {confirmation.localTime} for the recipient, outside permitted hours.</p><button disabled={busy} onClick={()=>void retry(message,confirmation.localTime)}>Confirm send at {confirmation.localTime}</button><button onClick={()=>setConfirmation(null)}>Cancel</button></div>:<button disabled={busy} onClick={()=>void retry(message)}>Approve this exact content again</button>}</details>}
+   {message.state==='draft'&&<details><summary>Review blocked message</summary><p>To: {message.recipientEmail}</p><p>Subject: {message.subject}</p><pre className="assistance-preview-json">{message.body}</pre><ProviderFooter/>{confirmation?.id===message.id?<div role="alert"><p>It is {confirmation.localTime} for the recipient, outside permitted hours. This confirmation is valid for ten minutes.</p><button disabled={busy} onClick={()=>void retry(message,confirmation.localTime)}>Confirm send now</button><button onClick={()=>setConfirmation(null)}>Cancel</button></div>:<button disabled={busy} onClick={()=>void retry(message)}>Approve this exact content again</button>}</details>}
    {['queued','reconciling','delivery-unknown'].includes(message.state)&&<p>Approval is recorded; the provider outcome is unresolved. Orbit reconciles this intent without submitting it again.</p>}
   </article>)}
  </section>;

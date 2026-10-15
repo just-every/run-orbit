@@ -91,7 +91,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
   results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:{row:native,links,...row.kind==='contact'?{suppressionTokens:emailTokens.get(native.email)??[]}:{} } as any}],...row.derivedContacts?{unmapped:[{reason:'Company created from an exact Company Name in the contacts CSV. Existing native companies are never matched by name.'}]}:{}});
  }catch(error){row.error=(error as Error).message;results.set(row.source,{effects:[],rejection:row.error});
   // The exact original remains in kit custody. Rejected rows need only their location and reason in the resumable plan, avoiding unindexed personal-data copies.
-  row.source.sourceId=`rejected:${sha256(row.source.sourceId)}`;row.source.payload={rejected:true};row.source.payloadHash=sha256(canonicalJson(row.source.payload));}}
+  row.source.sourceId=`rejected:${sha256(row.source.sourceId)}`;row.source.payload={rejected:true,...row.reviewColumns?{reviewColumns:row.reviewColumns}:{}};row.source.payloadHash=sha256(canonicalJson(row.source.payload));}}
  for(const row of rows)if(!row.error&&row.unmapped.length){const result=results.get(row.source)!;result.unmapped=[...result.unmapped??[],...row.unmapped.map(column=>({field:`column:${column}`,reason:`Unmapped column ${column}: retained only in the private original CSV.`}))];}
  // All positive stops and no-consent holds publish in the first atomic kit entry, before any customer creation.
  const saved=await db.prepare('SELECT value_json FROM crm_import_stops WHERE id=?').bind(stopId).first();

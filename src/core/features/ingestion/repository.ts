@@ -25,7 +25,7 @@ export class IngestionRepository {
       AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN('restore','archive_import'))
     ORDER BY p.published_at DESC LIMIT 100`).bind(new Date().toISOString()).all()).results;}
   async source(id:string){return this.db.prepare('SELECT id,type,enabled,secret_ciphertext FROM signal_sources WHERE id=?').bind(id).first<{id:string;type:string;enabled:number;secret_ciphertext:string|null}>();}
-  async sources(){return (await this.db.prepare('SELECT id,name,type,enabled,last_accepted_at,last_error,rejected_count,cursor FROM signal_sources ORDER BY name').all()).results;}
+  async sources(){return (await this.db.prepare('SELECT id,name,type,enabled,secret_ciphertext IS NOT NULL AS has_signing_secret,last_accepted_at,last_error,rejected_count,cursor FROM signal_sources ORDER BY name').all()).results;}
   async configure(input:{id:string;name:string;secret:string;enabled:boolean},security:SourceSecurity){
     if(isNativeSource(input.id,(await this.source(input.id))?.type))throw new IngestionError(403,'Capture and mail provider sources cannot accept signed events.');
     const now=new Date().toISOString();

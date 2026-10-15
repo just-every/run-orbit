@@ -312,14 +312,14 @@
       "secret": false,
       "required": false,
       "requiredWhen": "The installation runs on the owner's computer through rer setup and dev.",
-      "why": "Selects loopback sign-in with the local development outbox; never set on a deployment."
+      "why": "Selects local sign-in behind this checkout’s private dev key; never set on a deployment."
     },
     {
       "name": "MAIL_PROVIDER",
       "secret": false,
       "required": false,
       "requiredWhen": "AUTH_LOCAL is true.",
-      "why": "Must be development locally so sign-in mail is captured in /__dev/outbox."
+      "why": "Must be development locally so sign-in mail is silently suppressed."
     },
     {
       "name": "SESSION_SECRET",

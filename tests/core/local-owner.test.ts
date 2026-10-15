@@ -21,6 +21,9 @@ test('TEAM-002 PUBLIC-004 the owner changes a trial mailbox in Settings, keeps s
   assert.equal((await request(local.token,'settings/owner','PUT',change)).status,401,'a dev cookie needs the checkout key');
   registerDevAdmission(()=>true);
   assert.equal((await request(local.token)).status,200);
+  const modeResponse=await app.request('https://orbit.test/api/v1/settings',{headers:{Cookie:`__Host-orbit_session=${local.token}`}}, {AUTH_LOCAL:'true'});
+  assert.equal((await modeResponse.json() as {local:boolean}).local,true);
+  assert.equal((await (await request(local.token)).json() as {local:boolean}).local,false);
   assert.equal((await request(teammate.token,'settings/owner','PUT',change)).status,403,'an operator cannot change the owner');
   assert.equal((await request(local.token,'settings/owner','PUT',change,'https://forged.test')).status,403);
   assert.equal((await request(local.token,'settings/owner','PUT',{...change,email:'bad'})).status,400);

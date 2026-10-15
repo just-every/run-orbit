@@ -43,7 +43,7 @@
 .crm-import .crm-panel > button:not(.crm-submit){margin-top:12px}
 .crm-import .crm-field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}
 .crm-import .crm-mapping{margin:20px 0;border-top:1.5px solid var(--ob-line);padding-top:16px}
-.crm-import .crm-results{max-height:400px;overflow:auto;padding-left:20px;overflow-wrap:anywhere;color:var(--ob-body)}
+.crm-import .crm-results{padding-left:20px;overflow-wrap:anywhere;color:var(--ob-body)}
 .crm-import .crm-results li{margin:12px 0}
 .crm-import .crm-history{margin-top:32px;overflow-wrap:anywhere}
 .crm-import .crm-history h2{margin:0 0 6px;font-size:22px;font-weight:720;letter-spacing:-.01em}

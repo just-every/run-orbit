@@ -94,7 +94,7 @@ export async function intake(db:D1Database,source:CaptureSource,fact:Fact,option
  const item=db.prepare('INSERT INTO capture_items(id,source_id,signal_id,kind,headers,body,captured_at) VALUES(?,?,?,?,?,?,?)').bind(itemId,source.id,signalId,fact.kind,fact.headers,fact.body,at);
  const counted=db.prepare('UPDATE capture_sources SET captured_count=captured_count+1,last_success_at=?,updated_at=? WHERE id=?').bind(at,at,source.id);
  if(!known.length){
-  if(!options.includeUnknown)return {result:'skipped',reason:'No known contact or company domain'};
+  if(!options.includeUnknown)return {result:'skipped',reason:participants.length&&participants.every(person=>operators.has(person.email))?'All participants use operator addresses; internal operators are excluded from customer capture':'No known contact or company domain'};
   statements.push(signal('Unlinked'),item,db.prepare('INSERT INTO unlinked_signals(signal_id,reason) VALUES(?,?)').bind(signalId,'Captured from a sender with no known contact or company'),counted);
   return commit(db,statements,source,fact,{result:'unlinked',signalId,type});
  }

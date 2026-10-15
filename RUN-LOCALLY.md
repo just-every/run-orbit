@@ -29,8 +29,9 @@ with exit 3 and a message naming the field.
   search elsewhere with `RER_DEV_PORT_FROM=N`.
 - **Detaching.** Without a terminal (an agent's shell tool) `rer dev` returns once
   the app is ready and leaves it running in the background, printing its
-  private log path; in a terminal it stays in the foreground and Ctrl-C stops
-  it. `--detach` and `--foreground` override that.
+  private log path. Stop it with `rer dev --stop`, including after the command
+  returns to your prompt. `--foreground` keeps the command serving; Ctrl-C
+  stops that foreground process. `--detach` explicitly runs in the background.
 - **Progress and resuming.** A first launch can take several minutes. It prints
   a progress line at least every 30 seconds (`progress` events with `--json`).
   If the calling command is killed the launch carries on; run `rer dev` again to
@@ -188,7 +189,7 @@ rer deploy
 rer describe
 ```
 
-Stop dev or preview with `--stop` or Ctrl-C before build or verification, and
+Stop dev with `rer dev --stop` and preview with `rer preview --stop` before build or verification, and
 before reset and data transfer. Reset removes only the
 declared local inventory: local database/storage state, owner and sessions,
 legacy local mail state, CLI and installer bookkeeping, and generated private settings. It

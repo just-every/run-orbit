@@ -6,8 +6,11 @@ export class ImportMergeRepository {
  constructor(readonly db:D1Database){}
  async candidates(kind:'contact'|'company'):Promise<Record<string,any>[][]>{
   const records=(await this.db.prepare(`SELECT * FROM ${tables[kind]} ORDER BY id`).all<Record<string,any>>()).results;const groups=new Map<string,Record<string,any>[]>();
-  for(const row of records){const name=row.name?.trim().toLowerCase().replace(/\s+/g,' ');if(!name)continue;const key=JSON.stringify([name,kind==='contact'?row.company_id:null]);const group=groups.get(key)??[];group.push(row);groups.set(key,group);}
-  return Promise.all([...groups.values()].filter(group=>group.length>1).map(group=>Promise.all(group.map(async record=>({...record,mergeReviewToken:await mergeReviewToken(record)})))));
+  for(const row of records){const name=row.name?.trim().toLowerCase().replace(/\s+/g,' ');if(!name)continue;const group=groups.get(name)??[];group.push(row);groups.set(name,group);}
+  const candidates=[...groups.values()].filter(group=>group.length>1),companyIds=[...new Set(candidates.flat().map(record=>record.company_id).filter(Boolean))];
+  const companies=kind==='contact'&&companyIds.length?(await this.db.prepare('SELECT id,name FROM companies WHERE id IN(SELECT value FROM json_each(?))').bind(JSON.stringify(companyIds)).all<{id:string;name:string}>()).results:[],companyNames=new Map(companies.map(company=>[company.id,company.name]));
+  // Enrich only after hashing the native row: display context is not a merge field.
+  return Promise.all(candidates.map(group=>Promise.all(group.map(async record=>({...record,...kind==='contact'?{companyName:companyNames.get(record.company_id)??null}:{},mergeReviewToken:await mergeReviewToken(record)})))));
  }
  async merge(kind:'contact'|'company',survivorId:string,retiredId:string,choices:Record<string,'survivor'|'retired'>,actor:string,reviewed:MergeReview){
   if(survivorId===retiredId)throw new RecordError(400,'Choose two different records.');const survivor=await requireRecord(this.db,kind,survivorId),retired=await requireRecord(this.db,kind,retiredId);

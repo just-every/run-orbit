@@ -45,7 +45,7 @@ test('a real account, attributed event and durable reviewed draft can be created
   await page.getByRole('button',{name:'Approve and send exact revision'}).click();
   expect((await preview).status()).toBe(503);
   await expect(page.getByRole('alert').locator('a[href="/app/settings#mail-sender"]')).toBeVisible();
-  await expect(page.getByRole('button',{name:/^Confirm send at /})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:/^Confirm send /})).toHaveCount(0);
   await page.reload();
   await expect(page.getByTestId('draft-body')).toHaveValue('Thank you for requesting a follow-up. What time suits you?');
   expect(failures).toEqual([]);

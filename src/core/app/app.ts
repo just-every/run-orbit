@@ -37,7 +37,7 @@ type AppEnvironment = {
   Variables: { operator: AuthenticatedOperator };
 };
 
-export function createApp(input: { assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
+export function createApp(input: { assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
   const app = new Hono<AppEnvironment>();
   const dependencies = createDependencies(input.database);
   const requireApiOperator: MiddlewareHandler<AppEnvironment> = async (context, next) => {
@@ -125,7 +125,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
   app.route("/api/v1/notifications", createNotificationRoutes(input.database));
   app.route("/api/v1/assistance", createAssistanceRoutes(input.database,input.aiProvider));
   app.route("/api/v1/today", createTodayRoutes(input.database,input.aiProvider));
-  app.route("/api/v1/workbench", createWorkbenchRoutes(input.database, input.outboundMail,Boolean(input.aiProvider)));
+  app.route("/api/v1/workbench", createWorkbenchRoutes(input.database, input.outboundMail,Boolean(input.aiProvider),input.hosted));
   app.route("/api/v1/opportunities", dependencies.opportunityRoutes);
   app.route("/api/v1/drafts", createDraftRoutes(dependencies.drafts));
   app.route("/api/v1/workspace", dependencies.workspaceRoutes);

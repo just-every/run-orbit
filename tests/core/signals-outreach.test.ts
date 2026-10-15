@@ -11,6 +11,7 @@ import { WorkbenchRepository } from '../../src/core/features/workbench/repositor
 import { OutreachRepository } from '../../src/core/features/workbench/outreach-repository';
 import { ApprovalRepository } from '../../src/core/features/outreach/approval-repository';
 import { OutreachService } from '../../src/core/features/outreach/service';
+import { runHostedTimers } from '../../src/core/features/outreach/scheduler';
 import { nextPermitted,workingDaysAfter,localTime } from '../../src/core/features/outreach/time';
 const platform=await isolatedDatabase();after(()=>platform.dispose());const db=platform.db;
 async function fixture(){const deps=createDependencies(db),actor=createId(),stage=createId(),at=new Date().toISOString();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.example`,displayName:'Signals operator'});await deps.workspace.ensureWorkspace({name:'Signals workspace',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:['gmail.com']});const position=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Test',position:position!.n});const email=`${createId()}@customer.example`;const opportunity=await new WorkbenchRepository(db).createOpportunity({title:'Signals test',companyName:'Customer',contactName:'Contact',email,stageId:stage,valueCents:100},actor);const contact=await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(opportunity.id).first<{contact_id:string}>();return{actor,opportunityId:opportunity.id,contactId:contact!.contact_id,email,at};}
@@ -27,9 +28,25 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe 
  const tracking={...event,eventId:createId(),type:'page.viewed'};await repository.ingest(source,tracking,await payloadHash(JSON.stringify(tracking)),JSON.stringify(tracking));const unlinked=await repository.unlinked();assert.ok(unlinked.some(row=>row.type==='page.viewed'));
  const diagnostics=await repository.sources();assert.equal(diagnostics.find(row=>row.id===source)?.rejected_count,1);
 });
-test('OUT-008 workspace and recipient clocks respect weekdays and DST',()=>{
+test('OUT-008 recipient clocks respect weekdays, DST and time to review an out-of-hours send',async context=>{
  const sunday=new Date('2026-09-13T10:00:00Z');assert.equal(nextPermitted(sunday,'Europe/London').toISOString(),'2026-09-14T07:00:00.000Z');
  const friday=new Date('2026-10-30T14:00:00Z');const due=workingDaysAfter(friday,1,'America/New_York');assert.equal(localTime(due,'America/New_York').label,'Mon, 02/11/2026, 10:00');
+ context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T06:59:30Z')});
+ try{
+  const f=await fixture(),outreach=new OutreachRepository(db);let sends=0;
+  const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:{send:async()=>{sends++;return{providerMessageId:'test-confirmed'};}}}),session=await createDependencies(db).auth.createSession(f.actor);
+  const request=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1/workbench/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+  const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Take time to review',body:'The exact approved message'},f.actor);
+  const preview=await (await request(`drafts/${draft.id}/approval-preview`)).json() as {localTime:string};
+  context.mock.timers.tick(61000);
+  assert.equal((await request(`drafts/${draft.id}/approve`,{revision:1,quietHoursConfirmation:preview.localTime})).status,200,'Confirmation survives the minute boundary');
+  assert.equal(sends,1);
+  const next=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Expired review',body:'Still needs approval'},f.actor);
+  const expired=await (await request(`drafts/${next.id}/approval-preview`)).json() as {localTime:string};
+  context.mock.timers.tick(11*60000);
+  assert.equal((await request(`drafts/${next.id}/approve`,{revision:1,quietHoursConfirmation:expired.localTime})).status,409,'An old confirmation requires review again');
+  assert.equal(sends,1);
+ }finally{context.mock.timers.reset();}
 });
 test('OUT-001 OUT-009 scheduled approval preserves content and dispatches once; stopped draft never submits',async()=>{
  const f=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db);await db.prepare("UPDATE outbound_messages SET claimed_at='2000-01-01T00:00:00.000Z' WHERE claimed_at IS NOT NULL").run();
@@ -37,8 +54,10 @@ test('OUT-001 OUT-009 scheduled approval preserves content and dispatches once; 
  await db.prepare("UPDATE contacts SET timezone='Australia/Brisbane' WHERE id=?").bind(f.contactId).run();
  const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Approved',body:'Exact approved body'},f.actor);let calls=0;
  const mail={send:async(input:{body:string})=>{calls++;assert.equal(input.body,'Exact approved body');return{providerMessageId:'receipt'};}};
- const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:mail}),session=await createDependencies(db).auth.createSession(f.actor);
+ const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:mail,hosted:true}),session=await createDependencies(db).auth.createSession(f.actor);
  const request=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1/workbench/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+ const pendingPreview=await request(`drafts/${draft.id}/approval-preview?scheduledAt=${encodeURIComponent(requestedAt)}`);assert.equal(pendingPreview.status,409,'Hosted schedules wait for an actual successful minute timer');
+ await runHostedTimers(db,mail);
  const previewResponse=await request(`drafts/${draft.id}/approval-preview?scheduledAt=${encodeURIComponent(requestedAt)}`);assert.equal(previewResponse.status,200);
  const preview=await previewResponse.json() as {scheduledAt:string;scheduledLocalTime:string;timezone:string;scheduleReason:string};
  assert.equal(preview.scheduledAt,'2030-01-13T22:00:00.000Z');assert.equal(preview.timezone,'Australia/Brisbane');assert.equal(preview.scheduledLocalTime,localTime(new Date(preview.scheduledAt),preview.timezone).label);assert.ok(typeof preview.scheduleReason==='string'&&preview.scheduleReason.length>0,'Adjusted schedules explain why before approval');assert.equal(calls,0);

@@ -303,7 +303,7 @@ approved flag, then open the app: a `devIdentity` seed's `dev` prints
 change that); other seeds sign in through the local outbox URL printed by
 `dev`, using the newest ordinary sign-in message. State whether external mail is sent
 and preserve the actual local auth and data requirements. Stop `dev` with
-`rer dev --stop` or Ctrl-C, and stop `preview` with
+`rer dev --stop`, and stop `preview` with
 `rer preview --stop` before build or verification. Then show the current
 verification, reset, transfer, deployment and description commands:
 

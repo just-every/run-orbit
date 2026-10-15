@@ -1,6 +1,12 @@
 import {readArchiveFile} from '../../../shared/archive-transfer-file';
 export type ArchiveOperator={id:string;email:string;display_name:string;status:string;setup_owner?:number;collaborator?:number|boolean};
 export type ArchivePreview={operators:ArchiveOperator[];current:ArchiveOperator[];rows:number;parts:number};
+export function archiveOperatorAccess(operator:ArchiveOperator,current:ArchiveOperator[]){
+ const retained=current.find(target=>(!target.collaborator||target.setup_owner)&&(target.id===operator.id||target.email.toLowerCase()===operator.email.toLowerCase()));
+ if(retained)return {status:retained.status,explanation:'Current access kept'};
+ if(operator.email.toLowerCase()==='owner@orbit.test'&&current.some(target=>target.setup_owner&&target.status==='active'&&target.email.toLowerCase()!=='owner@orbit.test'))return {status:'removed',explanation:'Local trial owner; access removed, historical attribution kept'};
+ return {status:operator.status,explanation:operator.collaborator?'Collaborator; needs new invitation':'Imported as operator'};
+}
 export async function previewArchive(file:File):Promise<ArchivePreview>{
  const response=await fetch('/api/v1/settings',{credentials:'same-origin'});
  if(!response.ok)throw new Error('Current operators could not be read. Restore has not started.');
@@ -11,7 +17,7 @@ export async function previewArchive(file:File):Promise<ArchivePreview>{
   else for(const record of entry.part.records){if(record.table==='access_collaborators'&&typeof record.row.operator_id==='string')collaborators.add(record.row.operator_id);if(record.table==='operators'){
    const row=record.row;
    if(typeof row.id!=='string'||typeof row.email!=='string'||typeof row.display_name!=='string'||typeof row.status!=='string')throw new Error('Archive operator details are invalid.');
-   operators.push({id:row.id,email:row.email,display_name:row.display_name,status:row.status});
+   operators.push({id:row.id,email:row.email,display_name:row.display_name,status:row.status,setup_owner:row.setup_owner===1?1:0});
   }}
  }
  const conflict=operators.find(archive=>current.some(target=>target.id!==archive.id&&target.email.toLowerCase()===archive.email.toLowerCase()&&current.some(person=>person.id===archive.id)));

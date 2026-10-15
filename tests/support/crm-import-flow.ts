@@ -12,6 +12,9 @@ export async function genericCsvFlow(f:any){
  const count=()=>f.db.prepare('SELECT count(*) n FROM contacts').first('n'),before=await count();
  const dry=await json(await f.request('imports/dry-run','POST',source));assert.equal(await count(),before);assert.equal(dry.counts.rejected,1);
  assert.match(dry.rows.find((row:any)=>row.status==='rejected').reason,/valid email/);
+ const contactRows=dry.rows.filter((row:any)=>row.kind==='contact');
+ for(const [index,row] of contactRows.entries()){const [email,name]=rows[index].split(',');assert.ok(row.displayName.includes(name));assert.ok(row.displayName.includes(email.trim()));}
+ const reopened=await json(await f.request(`imports/${dry.id}`));assert.deepEqual(reopened.rows,dry.rows,'Reopening a saved review retains readable labels, including rejected rows');
  assert.equal(dry.rows.find((row:any)=>row.recordId===existing.contactId).status,'linked');
  assert.equal((await f.request(`imports/${dry.id}/apply`,'POST',{fingerprint:'0'.repeat(64),confirmed:true})).status,409);
  await finish(f,dry);assert.equal(await count(),before+2);
@@ -29,5 +32,6 @@ export async function genericCsvFlow(f:any){
  const duplicateReview=await json(await f.request('imports/dry-run','POST',duplicates));assert.equal(duplicateReview.counts.rejected,2);assert.equal(await count(),before);
  const mappedId=structuredClone(source);mappedId.files[0].csv='id,email,name\r\n,valid@example.test,Missing ID';mappedId.files[0].mapping={id:'id',email:'email',name:'name'};
  const emptyIdReview=await json(await f.request('imports/dry-run','POST',mappedId));assert.equal(emptyIdReview.counts.rejected,1);assert.match(emptyIdReview.rows[0].reason,/Source ID is empty/);
+ assert.ok(emptyIdReview.rows[0].displayName.includes('Missing ID'));assert.ok(emptyIdReview.rows[0].displayName.includes('valid@example.test'));
  const vendor=structuredClone(source);vendor.vendor='hubspot';assert.equal((await f.request('imports/dry-run','POST',vendor)).status,409);
 }

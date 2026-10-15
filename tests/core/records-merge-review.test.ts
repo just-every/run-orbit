@@ -2,14 +2,17 @@ import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {launchFixture} from '../support/launch-fixture';
 
-test('RECORD-004 native merge refuses missing and stale reviews without modifying either record or its history',async()=>{
+test('RECORD-004 RECORD-009 matching names across companies remain review-only and native merges refuse missing and stale reviews',async()=>{
  const f=await launchFixture();try{
   for(const kind of ['company','contact'] as const){
-   const create=async(index:number)=>{const result=await f.request(`records/${kind}`,'POST',{name:`Reviewed ${kind}`,custom_fields:{label:`Choice ${index}`},...(kind==='company'?{primary_domain:`${kind}-${index}.example`}:{email:`${kind}-${index}@example.test`})});assert.equal(result.status,201);return (await result.json() as {id:string}).id;};
+   const companyIds:string[]=[];
+   if(kind==='contact')for(const name of ['First workplace','Second workplace']){const response=await f.request('records/company','POST',{name});assert.equal(response.status,201);companyIds.push((await response.json() as {id:string}).id);}
+   const create=async(index:number)=>{const result=await f.request(`records/${kind}`,'POST',{name:index===2?`  REVIEWED   ${kind}  `:`Reviewed ${kind}`,custom_fields:{label:`Choice ${index}`},...(kind==='company'?{primary_domain:`${kind}-${index}.example`}:{email:`${kind}-${index}@example.test`,company_id:companyIds[index-1]??null})});assert.equal(result.status,201);return (await result.json() as {id:string}).id;};
    const survivorId=await create(1),retiredId=await create(2),path=`records/${kind}/merge`;
+   const unassignedId=kind==='contact'?await create(3):undefined;
    const read=async(id:string)=>(await (await f.request(`records/${kind}/${id}`)).json()) as any;
-   const review=async()=>{const result=await f.request(`records/${kind}/duplicates`);assert.equal(result.status,200);const rows=(await result.json() as {groups:Record<string,any>[][]}).groups.flat();return {survivor:rows.find(row=>row.id===survivorId)!.mergeReviewToken,retired:rows.find(row=>row.id===retiredId)!.mergeReviewToken};};
-   const choices={custom_fields_json:'survivor',[kind==='company'?'primary_domain':'email']:'retired'},body={survivorId,retiredId,choices,confirmed:true};
+   const review=async()=>{const before=await Promise.all([read(survivorId),read(retiredId)]),result=await f.request(`records/${kind}/duplicates`);assert.equal(result.status,200);const groups=(await result.json() as {groups:Record<string,any>[][]}).groups,group=groups.find(group=>group.some(row=>row.id===survivorId))!;assert.ok(group.some(row=>row.id===retiredId));if(unassignedId){assert.ok(group.some(row=>row.id===unassignedId));for(const [index,id] of [survivorId,retiredId,unassignedId].entries()){const row=group.find(row=>row.id===id)!;assert.equal(row.email,`contact-${index+1}@example.test`);assert.equal(row.companyName,['First workplace','Second workplace',null][index]);}}assert.deepEqual(await Promise.all([read(survivorId),read(retiredId)]),before);return {survivor:group.find(row=>row.id===survivorId)!.mergeReviewToken,retired:group.find(row=>row.id===retiredId)!.mergeReviewToken};};
+   const choices={name:'survivor',custom_fields_json:'survivor',[kind==='company'?'primary_domain':'email']:'retired',...kind==='contact'?{company_id:'survivor'}:{}},body={survivorId,retiredId,choices,confirmed:true};
    assert.equal((await f.request(path,'POST',body)).status,400);
    for(const changedId of [survivorId,retiredId]){
     const reviewed=await review(),before=(await read(changedId)).record;

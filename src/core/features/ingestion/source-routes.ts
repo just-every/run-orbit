@@ -27,7 +27,9 @@ export function createSourceRoutes(db:D1Database,security?:SourceSecurity){
     const input=z.object({contactId:z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/)}).strict().safeParse(await c.req.json());
     if(!input.success)return c.json({error:'Choose a contact for the test event.'},400);
     const source=await repository.source(c.req.param('id'));
-    if(isNativeSource(c.req.param('id'),source?.type)||!source?.enabled||!source.secret_ciphertext)return c.json({error:'Source is not configured.'},403);
+    if(isNativeSource(c.req.param('id'),source?.type)||!source)return c.json({error:'Source is not configured.'},403);
+    if(!source.secret_ciphertext)return c.json({error:'Reconnect this source in Sources, then copy its new signing secret into your tool before sending events.'},403);
+    if(!source.enabled)return c.json({error:'Enable this source before sending a test event.'},403);
     if(!await repository.contact(input.data.contactId))return c.json({error:'Contact not found.'},404);
     const raw=JSON.stringify({eventId:crypto.randomUUID(),type:'form.submitted',subject:'Form submitted · test',occurredAt:new Date().toISOString(),record:{type:'contact',id:input.data.contactId},data:{test:true}}),timestamp=String(Math.floor(Date.now()/1000));
     const signature=await signSource(await security.open(source.secret_ciphertext),`${timestamp}.${raw}`);

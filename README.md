@@ -52,7 +52,7 @@ rer dev
 
 `dev` installs dependencies, prepares local settings and starts Orbit. On the first launch it prepares the local trial owner (`owner@orbit.test`); it keeps that owner, your data and settings on later launches. You can change the owner email in Settings → Installation owner. A later deploy uses that current owner unless you explicitly supply `OWNER_EMAIL`. To use your real mailbox from the start, run `rer install` and `rer setup --owner-email EMAIL` before `rer dev`.
 
-Once `/health` answers, `dev` prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN`. Open the `RER_OPEN` link on this computer: Orbit opens signed in as you. Its fragment carries this checkout's private dev key, so never share it. The product name reads Orbit Dev. Use `rer dev --as seller` or `--as collaborator` to choose a persona. No email is sent locally. Stop it with `rer dev --stop` or Ctrl-C.
+Once `/health` answers, `dev` prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN`. Open the `RER_OPEN` link on this computer: Orbit opens signed in as you. Its fragment carries this checkout's private dev key, so never share it. The product name reads Orbit Dev. Use `rer dev --as seller` or `--as collaborator` to choose a persona. No email is sent locally. Stop it with `rer dev --stop`, including when the launch command has returned to your prompt.
 
 No owner JSON file is needed: the owner email flag and first-run form supply the installation details.
 
@@ -96,7 +96,7 @@ rer release --help
 
 `deploy` deploys to your own Cloudflare account with the Base deploy kit and needs `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` and `OWNER_EMAIL` in the environment. Hosted deployment requires a verified SendGrid sender in `MAIL_FROM` and its `SENDGRID_API_KEY`; `--dry-run` builds and validates locally without any provider request. [OPERATIONS.md](OPERATIONS.md) lists the token scopes, optional secrets and what to keep. `release` produces a source release receipt and never pushes or deploys.
 
-For hosted sign-in, open your deployed origin's `/signin`, enter your active operator email, open the emailed link and press **Confirm**. Once signed in, change the owner email in Settings → Installation owner. Local `RER_OPEN` dev credentials cannot sign in to a hosted installation. If mail does not arrive, check the address is active in Settings → Installation owner, the sender is verified and both hosted mail secrets are configured. Restore keeps current hosted full operators, including the active owner, and imports new archived operators as ordinary operators. It revokes sessions; sign in again with the hosted owner's mailbox.
+For hosted sign-in, open your deployed origin's `/signin`, enter your active operator email, open the emailed link and press **Confirm**. Once signed in, change the owner email in Settings → Installation owner. Local `RER_OPEN` dev credentials cannot sign in to a hosted installation. If mail does not arrive, check the address is active in Settings → Installation owner, the sender is verified and both hosted mail secrets are configured. Restore keeps current hosted full operators, including the active owner, and imports new archived operators as ordinary operators. The local trial owner is restored without active access when a real owner is already present. Source signing secrets are excluded; open Sources and choose Reconnect source to create a new secret for each tool. Restore revokes sessions; sign in again with the hosted owner's mailbox.
 
 To remove a deployment you created with this checkout:
 

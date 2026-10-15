@@ -38,14 +38,14 @@ test('RECORD-008 DATA-002 T-098 erasure reaches applied rejected-only uploads wi
   const source={vendor:'hubspot',account:'Rejected contacts',files:[{kind:'contact',name:'contacts.csv',csv:`Record ID,Email,Marketing status\r\nrejected-1,${mailbox},subscribed,extra-cell`,mapping:{id:'Record ID',email:'Email',permission:'Marketing status'},separator:';'}],stages:{}};
   const mixed={...source,account:'Rejected contacts alongside a valid company',files:[...source.files,{kind:'company',name:'companies.csv',csv:'ID,Name\r\ncompany-1,Valid unrelated company',mapping:{id:'ID',name:'Name'},separator:';'}]},reviews=[];
   for(const input of [source,mixed]){
-   const dry=await json(await f.request('imports/dry-run','POST',input));assert.equal(dry.counts.rejected,1);assert.match(dry.rows.find((row:any)=>row.status==='rejected').reason,/Column count/);assert.equal(dry.suppressed,0);await finish(f,dry);reviews.push(dry);
+   const dry=await json(await f.request('imports/dry-run','POST',input));assert.equal(dry.counts.rejected,1);const rejected=dry.rows.find((row:any)=>row.status==='rejected');assert.match(rejected.reason,/Column count/);assert.ok(rejected.displayName.includes(mailbox));assert.equal(dry.suppressed,0);await finish(f,dry);reviews.push(dry);
    const job=(await json(await f.request(`imports/${dry.id}`))).job.id;
    const original=(await f.db.prepare("SELECT bytes FROM ik_d1_original_chunks WHERE job_id=? AND original_key LIKE '%contact/contacts.csv%' ORDER BY ordinal").bind(job).all<{bytes:string}>()).results.map(row=>row.bytes).join('');
    assert.ok(Buffer.from(original,'base64').toString('utf8').includes(mailbox));
   }
   await json(await f.request(`records/contact/${contact.id}`,'DELETE',{confirmed:true}));
   assert.ok(!(await importCopies(f.db)).includes(mailbox),'Rejected source bytes must be withdrawn, including decoded base64');
-  for(const dry of reviews){assert.equal((await json(await f.request(`imports/${dry.id}`))).sourceWithdrawn,true);await finish(f,dry,'undo');}
+  for(const dry of reviews){const status=await json(await f.request(`imports/${dry.id}`));assert.equal(status.sourceWithdrawn,true);assert.equal(status.rows,undefined,'Withdrawn reviews cannot expose rejected-row labels');await finish(f,dry,'undo');}
  }finally{await f.dispose();}
 });
 

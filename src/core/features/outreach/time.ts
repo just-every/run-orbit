@@ -2,6 +2,13 @@ const formatters=new Map<string,Intl.DateTimeFormat>();
 function formatter(zone:string){let format=formatters.get(zone);if(!format){format=new Intl.DateTimeFormat('en-GB',{timeZone:zone,weekday:'short',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});formatters.set(zone,format);}return format;}
 export function localTime(date:Date,zone:string){const fields=Object.fromEntries(formatter(zone).formatToParts(date).map(part=>[part.type,part.value]));return {day:`${fields.year}-${fields.month}-${fields.day}`,weekday:fields.weekday!,hour:Number(fields.hour),minute:Number(fields.minute),label:formatter(zone).format(date)};}
 export function permitted(date:Date,zone:string){const time=localTime(date,zone);return !['Sat','Sun'].includes(time.weekday)&&time.hour>=8&&time.hour<18;}
+// The person confirms a displayed recipient minute. Keep that review valid for
+// ten minutes, including across the next clock-minute boundary.
+export function recentLocalTime(confirmation:string|undefined,now:Date,zone:string){
+ if(!confirmation)return false;
+ for(let minute=0;minute<10;minute++)if(localTime(new Date(now.getTime()-minute*60000),zone).label===confirmation)return true;
+ return false;
+}
 export function nextPermitted(date:Date,zone:string){let cursor=new Date(Math.ceil(date.getTime()/60000)*60000);for(let minute=0;minute<8*24*60;minute++){if(permitted(cursor,zone))return cursor;cursor=new Date(cursor.getTime()+60000);}throw new Error('Unable to resolve the next recipient working minute.');}
 export function workingDaysAfter(date:Date,days:number,zone:string){
   if(!Number.isInteger(days)||days<1||days>365)throw new Error('Working-day interval must be 1–365.');

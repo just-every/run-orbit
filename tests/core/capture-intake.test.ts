@@ -107,5 +107,16 @@ test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox 
     assert.equal((await changedWhitespace.json() as { summary: { conflicts: number } }).summary.conflicts, 1);
     const changedBlankLines = await f.upload([{ name: 'changed-blank-lines.eml', text: hostile[2]!.replace('\r\n\r\n\r\n', '\r\n\r\n') }]);
     assert.equal((await changedBlankLines.json() as { summary: { conflicts: number } }).summary.conflicts, 1);
+    // A contact's mailbox may also be an operator mailbox; explain its exclusion accurately.
+    const invited = await f.request('/api/v1/settings/operators', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'ana@acme.example', displayName: 'Ana operator' }) });
+    assert.equal(invited.status, 201);
+    const signalsBeforeInternal = await count(f.db, 'SELECT count(*) n FROM signals');
+    const internal = await f.upload([{ name: 'internal.eml', text: eml({ From: 'ana@acme.example', To: 'seller@orbit.test', Date: 'Wed, 01 Jan 2020 09:00:00 +0000', 'Message-ID': '<internal-contact@acme.example>' }, 'Internal team message') }]);
+    assert.equal(internal.status, 201);
+    const internalSummary = (await internal.json() as { summary: { skipped: number; skipReasons: Record<string, number> } }).summary;
+    assert.equal(internalSummary.skipped, 1);
+    assert.match(Object.keys(internalSummary.skipReasons).join(' '), /operator addresses.*excluded/i);
+    assert.equal(await count(f.db, 'SELECT count(*) n FROM signals'), signalsBeforeInternal);
+
   } finally { await f.dispose(); }
 });
