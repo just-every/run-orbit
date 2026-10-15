@@ -753,6 +753,47 @@
           }
         ]
       }
+    },
+    {
+      "id": "runeditrun/base-demo",
+      "role": "module",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "src/modules/demo"
+        ],
+        "origin": {
+          "repository": "https://github.com/runeditrun/base.git",
+          "revision": "fc0e1041efa55771142bbb57c4ab4743147e264d",
+          "path": "modules/demo"
+        },
+        "mappings": [
+          {
+            "path": "src/modules/demo/README.md",
+            "originPath": "README.md"
+          },
+          {
+            "path": "src/modules/demo/index.mjs",
+            "originPath": "index.mjs"
+          },
+          {
+            "path": "src/modules/demo/index.d.mts",
+            "originPath": "index.d.mts"
+          },
+          {
+            "path": "src/modules/demo/sockets.mjs",
+            "originPath": "sockets.mjs"
+          },
+          {
+            "path": "src/modules/demo/vite.mjs",
+            "originPath": "vite.mjs"
+          },
+          {
+            "path": "src/modules/demo/vite.d.mts",
+            "originPath": "vite.d.mts"
+          }
+        ]
+      }
     }
   ]
 }

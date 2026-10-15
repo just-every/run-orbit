@@ -51,7 +51,7 @@ export function createNativeAccounts(store: SessionStore, input: { clock: () => 
         guard(db, { sql: 'EXISTS(SELECT 1 FROM identity_bindings WHERE issuer=? AND subject=? AND operator_id=?)', args: [principal.issuer, principal.subject, person.id] }),
       ] });
     },
-    /** The setup token claims the first owner, creating the workspace and its first session together. */
+    /** Verified admission claims the first owner, creating the workspace and its first session together. */
     async bootstrap({ email, displayName, returnTo, now }) {
       const ownerId = createId(now), sessionId = createId(now + 1), token = Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2, '0')).join(''), expiresAt = now + LIFETIME.native;
       try {

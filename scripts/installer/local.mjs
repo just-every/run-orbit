@@ -11,7 +11,7 @@ import { captureNotices } from './capture-notices.mjs';
 import * as model from './ui/seed.mjs';
 
 export const database = 'orbit-local-db';
-const migrate = ['pnpm', ['exec', 'wrangler', 'd1', 'migrations', 'apply', database, '--local', '--persist-to', '.wrangler/state', '--config', 'wrangler.jsonc'], { env: { ...process.env, WRANGLER_SEND_METRICS: 'false', X_LOCAL_EXPLORER: 'false' } }];
+const migrate = ({ demo }) => ['pnpm', ['exec', 'wrangler', 'd1', 'migrations', 'apply', database, '--local', '--persist-to', demo?.state ?? '.wrangler/state', '--config', 'wrangler.jsonc'], { env: { ...process.env, WRANGLER_SEND_METRICS: 'false', X_LOCAL_EXPLORER: 'false' } }];
 
 // Orbit signs in through Base operator-auth over its own operators and sessions.
 // Locally it claims the first owner with the private setup token, captures

@@ -1,3 +1,5 @@
+import { withDemo } from '../../modules/demo/index.mjs';
+import { seedDemo, demoOwner } from '../../demo';
 import { staticAssetResponse } from '../../base/static-assets';
 import { lobbyResponse } from '../../base/lobby';
 import { claimedWhen, setupStateResponse } from '../../base/setup-state';
@@ -22,10 +24,10 @@ import { createApp } from "./app";
 import { identityResponse, operatorFromRequest, requireStepUp } from "../features/identity";
 import { devGate } from "@runeditrun/rer/modules/operator-auth";
 import { publicDemoConfig } from "./mounts/public-config.server";
-export default {
+export default withDemo({
   async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);context.waitUntil(runOrbitTimers(bindings.DB,createOutboundMail(bindings)));context.waitUntil(sweepArchiveTrash(bindings.DB));context.waitUntil(pollProviders(bindings.DB,createSourceSecurity(bindings)));},
   async fetch(request: Request, bindings: PlatformBindings, executionContext: ExecutionContext) {return protectResponse(await handle(request,runtimeBindings(bindings),executionContext),editorOrigin(bindings),request.method==='GET'&&/^\/p\/[a-z0-9][a-z0-9-]{0,79}$/.test(new URL(request.url).pathname)?await embeddingOrigins(bindings.DB):undefined);}
-};
+}, { seed: seedDemo, owner: demoOwner });
 // rer dev and preview may serve a requested loopback origin; the saved local origin is never rewritten.
 export function runtimeBindings(bindings: PlatformBindings): PlatformBindings {
   return bindings.AUTH_LOCAL === "true" && bindings.RER_DEV_ORIGIN ? { ...bindings, AUTH_ORIGIN: bindings.RER_DEV_ORIGIN } : bindings;
@@ -54,7 +56,7 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
     if ((path === "/demo" || path === "/demo/") && !publicDemoConfig.enabled) return new Response("Not found", { status: 404 });
     try { const limited=await publicRateLimit(bindings.DB,request);if(limited)return limited; } catch {return new Response(JSON.stringify({error:"Database unavailable."}),{status:503,headers:{"Content-Type":"application/json"}});}
     if (path.startsWith("/p/") || path.startsWith("/delegation/") || path === "/health" || path === "/api" || path.startsWith("/api/")) {
-      return createApp({ assets: createAssetStore(bindings), database: bindings.DB, authenticate: r => operatorFromRequest(r, bindings), stepUp: (r, action, returnTo) => requireStepUp(r, bindings, action, returnTo), outboundMail: createOutboundMail(bindings), aiProvider: createAIProvider(bindings), sourceSecurity: createSourceSecurity(bindings), captureOrigin:bindings.AUTH_ORIGIN, publicDemoEnabled: publicDemoConfig.enabled,  mailEventKeys:{eventKey:bindings.SENDGRID_WEBHOOK_PUBLIC_KEY,parseKey:bindings.SENDGRID_PARSE_PUBLIC_KEY,relaySecret:bindings.RER_MAIL_RELAY_SECRET}, deployment:{sourceSha:bindings.RER_DEPLOY_SOURCE,fingerprint:bindings.RER_DEPLOY_FINGERPRINT,versionId:bindings.RER_VERSION?.id} }).fetch(request, bindings, executionContext);
+      return createApp({ assets: createAssetStore(bindings), database: bindings.DB, authenticate: r => operatorFromRequest(r, bindings), stepUp: (r, action, returnTo) => requireStepUp(r, bindings, action, returnTo), outboundMail: createOutboundMail(bindings), aiProvider: createAIProvider(bindings), sourceSecurity: createSourceSecurity(bindings), captureOrigin:bindings.AUTH_ORIGIN, demo:bindings.RER_DEMO === '1', publicDemoEnabled: publicDemoConfig.enabled,  mailEventKeys:{eventKey:bindings.SENDGRID_WEBHOOK_PUBLIC_KEY,parseKey:bindings.SENDGRID_PARSE_PUBLIC_KEY,relaySecret:bindings.RER_MAIL_RELAY_SECRET}, deployment:{sourceSha:bindings.RER_DEPLOY_SOURCE,fingerprint:bindings.RER_DEPLOY_FINGERPRINT,versionId:bindings.RER_VERSION?.id} }).fetch(request, bindings, executionContext);
     }
     const setupPath = path === "/setup" || path === "/setup/";
     if (setupPath || path === "/app" || path.startsWith("/app/")) {

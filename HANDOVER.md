@@ -4,7 +4,7 @@
 
 Orbit's public source repository is `just-every/run-orbit` (`https://github.com/just-every/run-orbit`), release 0.1.0; `edition.json`, `rer-project.json`, the delivery packaging policy and the management integration profile declare it. The first release is the annotated tag `v0.1.0` on the repository's first commit. No deployment is implied by this source.
 
-Orbit runs on the RER seed command contract in package mode, with exact `@runeditrun/rer` 0.2.14 and `scripts/installer/local.mjs` preserving its native hooks. Base runtime files under `src/base/` are copied unchanged from `8981bc2c4d9e61feca5787c83b4ed44056659dd9`, recorded in `base-copies.json`; the seed's existing mail module and contract-document origins remain in `edition.json` and `sources.lock.json`. The installed `/` is the shared Lobby, reading the real first-run confirmation. The approved homepage and docs also build as a static run site with `rer build --site`; `.github/workflows/run-site.yml` gates its deployment on `RUN_SITE_DEPLOY`.
+Orbit runs on the RER seed command contract in package mode, with exact `@runeditrun/rer` 0.2.15 and `scripts/installer/local.mjs` preserving its native hooks. Base runtime files under `src/base/` are copied unchanged from `8981bc2c4d9e61feca5787c83b4ed44056659dd9`, recorded in `base-copies.json`; the seed's existing mail module and contract-document origins remain in `edition.json` and `sources.lock.json`. The installed `/` is the shared Lobby, reading the real first-run confirmation. The approved homepage and docs also build as a static run site with `rer build --site`; `.github/workflows/run-site.yml` gates its deployment on `RUN_SITE_DEPLOY`.
 
 ## How it runs
 
