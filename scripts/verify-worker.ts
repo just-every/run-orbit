@@ -25,7 +25,10 @@ await platform.dispose();
 // The standalone host proof completes before another Worker owns the same D1.
 const unconfiguredHost=await verifyUnconfiguredHost(port+1);
 const cookie=(token:string)=>`${sessionCookieName}=${token}`;
-const worker=spawn(process.execPath,['node_modules/wrangler/bin/wrangler.js','dev','--config','dist/server/wrangler.json','--local','--persist-to',resolve(testState()),'--port',String(port),'--inspector-port',process.env.ORBIT_INSPECTOR_PORT??'0',...identityVarArgs(origin)],{stdio:['ignore','pipe','pipe'],env:{...process.env,CI:'1'}});
+const providerCredentialCanary=crypto.randomUUID();
+const privateValues=[providerCredentialCanary,TEST_SESSION_SECRET,valid.token,revoked.token,expired.token];
+const privateValuesAbsent=(body:string)=>{for(const value of privateValues)assert.ok(!body.includes(value),'Bound credentials and session values must stay private.');};
+const worker=spawn(process.execPath,['node_modules/wrangler/bin/wrangler.js','dev','--config','dist/server/wrangler.json','--local','--persist-to',resolve(testState()),'--port',String(port),'--inspector-port',process.env.ORBIT_INSPECTOR_PORT??'0',...identityVarArgs(origin),'--var',`SENDGRID_API_KEY:${providerCredentialCanary}`],{stdio:['ignore','pipe','pipe'],env:{...process.env,CI:'1'}});
 let output='';worker.stdout.on('data',chunk=>output+=chunk);worker.stderr.on('data',chunk=>output+=chunk);
 const evidence:Record<string,unknown>={unconfiguredHost};
 async function setTitle(title:string){
@@ -40,10 +43,10 @@ const browser=await chromium.launch();
 try {
   for(let i=0;i<100;i++){try{if((await fetch(origin+'/health')).ok)break;}catch{}await new Promise(resolve=>setTimeout(resolve,100));if(i===99)throw new Error(output);}
   const first=await fetch(origin+'/app',{headers:{Cookie:cookie(valid.token)}});const html=await first.text();
-  assert.equal(first.status,200);assert.ok(html.includes(sampleData.opportunities[0].title));
+  assert.equal(first.status,200);assert.ok(html.includes(sampleData.opportunities[0].title));privateValuesAbsent(html);
   const changed=`Fresh D1 proof ${Date.now()}`;
   await setTitle(changed);
-  const fresh=await (await fetch(origin+'/app',{headers:{Cookie:cookie(valid.token),'Sec-Fetch-Mode':'navigate'}})).text();assert.ok(fresh.includes(changed));
+  const fresh=await (await fetch(origin+'/app',{headers:{Cookie:cookie(valid.token),'Sec-Fetch-Mode':'navigate'}})).text();assert.ok(fresh.includes(changed));privateValuesAbsent(fresh);
   await setTitle(sampleData.opportunities[0].title);
   evidence.ssr='Authenticated NOW HTML changes with live D1';
   const statuses:Record<string,unknown>={};
@@ -80,7 +83,7 @@ try {
     const client=await readFile('dist/client/assets/'+file,'utf8');
     assert.doesNotMatch(client,/cloudflare:workers|token_hash|magic_links/);
     // Setup instructions can name a binding; its private value must stay on the Worker.
-    for(const secret of [TEST_SESSION_SECRET,valid.token,revoked.token,expired.token])assert.ok(!client.includes(secret),`${file} exposes private session material`);
+    privateValuesAbsent(client);
   }
   await mkdir('verification',{recursive:true});await writeFile('verification/worker-proof.json',JSON.stringify(evidence,null,2)+'\n');console.log('Emitted Worker SSR, session transports, browser navigation, assets, host and client-boundary proof passed.');
 }finally{await browser.close();if(worker.exitCode===null){const exited=once(worker,'exit');worker.kill('SIGTERM');await exited;}}

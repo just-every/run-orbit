@@ -2599,7 +2599,7 @@
       "executable": false
     },
     "OPERATIONS.md": {
-      "sha256": "91cb717d3c469e695897b4c5f1ea41b5e7a71be72c2e92b141bba4ffec863790",
+      "sha256": "fbf4d1c1fff974a1b1766628159fcf832ae42038d496210e7d4857f1d189d513",
       "executable": false
     },
     "OWNER-STEPS.md": {
@@ -2711,7 +2711,7 @@
       "executable": false
     },
     "RUN-LOCALLY.md": {
-      "sha256": "68e82c0ff99563772431d94543a93665a2da3f6bb2eb14d93b048cc097fee28e",
+      "sha256": "bf750b435e03456020a5ec266cf3a57451c1c2a189dd224ad9c4590853a2a6d5",
       "executable": false
     },
     "schema/fold/0016_collaborator_access.sql": {
@@ -3007,7 +3007,7 @@
       "executable": false
     },
     "scripts/verify-worker.ts": {
-      "sha256": "d5f1838b4439564344169f54cd5ee7910bf1a67b5f5f6f299770bd9c0ba4ae73",
+      "sha256": "fe17f8bda8d0b22cecf92b0427589dec65799a4364c745efd717c6ac8a40828c",
       "executable": false
     },
     "scripts/verify.mjs": {

@@ -67,14 +67,12 @@ this computer set differently (each distinct pin keeps its own copy), and about
 a checkout on another volume than your home folder, where pnpm cannot clone
 packages from its store.
 
-After `RER_READY`, a seed with dev identity prints `RER_SIGNED_IN EMAIL` and
-`RER_OPEN URL`: open that URL on this computer and the app opens signed in as
-the owner, at `/setup` until first-run is finished. Other seeds, and
-`dev --login`, print `RER_SIGN_IN URL` for the local outbox: open it, follow
-the newest ordinary sign-in link and finish first-run setup at `/setup`. Until
-first-run completion is stored durably, app routes send the signed-in owner to
-`/setup`; signed-out visitors sign in and return there. Once complete,
-`/setup` opens the app or settings. The local outbox sends no external email.
+After `RER_READY`, Orbit prints `RER_SIGNED_IN EMAIL` and `RER_OPEN URL`.
+Open that private URL on this computer: the app opens signed in as the owner,
+at `/setup` until first-run is finished. Local sign-in mail is suppressed;
+there is no local outbox to read. Until first-run completion is stored durably,
+app routes send the signed-in owner to `/setup`. Once complete, `/setup` opens
+the app or settings. Hosted sign-in uses email; see the recovery section below.
 
 The saved local port is used; a first setup saves the first free port from 8787. Explicit ports are decimal
 integers from 1 through 65535 and must be free; a busy requested port fails
@@ -120,8 +118,8 @@ root, inspect the live queue with
 
 For the real owner mailbox, `setup` can prompt instead of receiving
 `--owner-email` on the command line. Setup builds the app, applies local
-migrations, prepares the first owner, requests an ordinary sign-in message and
-stops its temporary app before it exits. Existing owner data and private
+migrations, prepares the first owner and stops its temporary app before it exits.
+Local sign-in mail is suppressed. Existing owner data and private
 settings are preserved on a repeated setup.
 
 Dev starts the real local app with assets and HMR and prints `RER_READY URL`
@@ -130,13 +128,10 @@ after the application health check. With dev identity it then prints
 checkout's dev key in its fragment: opening it signs the browser in through a
 real dev session, and the key is removed from the address bar and kept only as a
 host-only cookie. Treat that line as a credential and open it only on this
-computer. A dev-only badge switches between the owner, signed out and the
-seed's configured operator and collaborator personas. `dev --as PERSONA` starts as
-another persona or `signed-out`; `dev --login` turns dev identity off and uses
-the outbox: it prints `RER_SIGN_IN URL` and a `RER_OPEN` URL that opens that
-outbox. Choose the newest ordinary sign-in message and follow its link. No
-external email is sent. A successful sign-in consumes the link once. Seeds
-without dev identity print only `RER_SIGN_IN URL` for the local outbox.
+computer. The product name reads Orbit Dev. Use `rer dev --as seller` or
+`--as collaborator` to choose another persona, or `--as signed-out` to sign out.
+Local sign-in uses the private key exchange, without an inbox or an email being
+sent. Use the ordinary `rer dev` / `RER_OPEN` flow for local owner access.
 
 Dev and preview are managed servers. In a terminal the first invocation stays
 active while serving; without one, `rer dev` returns once the app is ready and
@@ -190,14 +185,14 @@ rer describe
 Stop dev or preview with `--stop` or Ctrl-C before build or verification, and
 before reset and data transfer. Reset removes only the
 declared local inventory: local database/storage state, owner and sessions,
-outbox, CLI and installer bookkeeping, and generated private settings. It
+legacy local mail state, CLI and installer bookkeeping, and generated private settings. It
 keeps source, dependencies, exports and deployment receipts. It refuses active
 operations and ambiguous or linked state.
 
 Local export creates a private archive with an integrity receipt and explicit
 exclusions. Import validates the archive and restores into an empty destination.
 After import, run setup to establish the owner and local configuration. Auth,
-outbox, private settings and transient runtime state are excluded. Orbit supports hosted Records transfers through `--target remote`; see
+legacy local mail state, private settings and transient runtime state are excluded. Orbit supports hosted Records transfers through `--target remote`; see
 [Operations](OPERATIONS.md) for that separate format and its session requirements.
 
 Real deployment uses the owner-account procedure and its private credentials.
@@ -241,8 +236,8 @@ Local durable state is `.wrangler/state`; CLI bookkeeping is `.rer/local`,
 installer state is `.seed/installer`, and the default private settings file is
 `.dev.vars` with mode 0600. Setup writes this checkout's dev key to
 `.rer/local/dev-key.env` (mode 0600); a repeat setup keeps it and reset removes
-it, which also ends every browser's earlier dev cookie. Dev sign-in, personas
-and the development outbox answer only a request holding that key's cookie, so
+it, which also ends every browser's earlier dev cookie. Dev sign-in and persona
+routes answer only a request holding that key's cookie, so
 a tunnel or local proxy to the app cannot reach them; anything else returns 404.
 Any local user or process that can read the checkout can read the key and sign
 in as the owner. `rer deploy` refuses the key, and `rer build` refuses output
@@ -251,7 +246,7 @@ that contains the dev layer.
 The first-party command profile is optional for independently authored
 projects. They may keep their own runtime, tools, installer, commands and
 provider choices. RER executes only their declared operations and does not
-impose Base pins, aliases, outbox or state layout.
+impose Base pins, aliases or state layout.
 
 ## The front door (opt-in)
 
