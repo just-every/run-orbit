@@ -13,7 +13,7 @@ import { createTestDependencies } from '../tests/support/test-dependencies';
 import { sampleData } from '../tests/fixtures/sample-data';
 import { sessionCookieName } from '../tests/support/test-auth';
 import { testState } from '../tests/support/test-state';
-import {identityVarArgs} from '../tests/support/worker-identity.mjs';
+import {identityVarArgs, TEST_SESSION_SECRET} from '../tests/support/worker-identity.mjs';
 
 const port=Number(process.env.PROOF_PORT??4197),origin=`http://127.0.0.1:${port}`;
 const platform=await getPlatformProxy<{DB:D1Database}>({configPath:'wrangler.jsonc',envFiles:['tests/support/no-local-settings.env'],persist:{path:`${testState()}/v3`},remoteBindings:false});
@@ -76,6 +76,11 @@ try {
   }
   await page.setViewportSize({width:1024,height:1536});await page.goto(origin+'/app/new',{waitUntil:'networkidle'});await mkdir('verification/ui',{recursive:true});await page.screenshot({path:'verification/ui/12-create-opportunity.png',fullPage:true});
   evidence.serverFunctions=transports;evidence.browser={stableTimeOrigin:true,errors,rpcCount:rpc.length};
-  for(const file of await readdir('dist/client/assets'))if(file.endsWith('.js'))assert.doesNotMatch(await readFile('dist/client/assets/'+file,'utf8'),/cloudflare:workers|SENDGRID_API_KEY|token_hash|magic_links/);
+  for(const file of await readdir('dist/client/assets'))if(file.endsWith('.js')){
+    const client=await readFile('dist/client/assets/'+file,'utf8');
+    assert.doesNotMatch(client,/cloudflare:workers|token_hash|magic_links/);
+    // Setup instructions can name a binding; its private value must stay on the Worker.
+    for(const secret of [TEST_SESSION_SECRET,valid.token,revoked.token,expired.token])assert.ok(!client.includes(secret),`${file} exposes private session material`);
+  }
   await mkdir('verification',{recursive:true});await writeFile('verification/worker-proof.json',JSON.stringify(evidence,null,2)+'\n');console.log('Emitted Worker SSR, session transports, browser navigation, assets, host and client-boundary proof passed.');
 }finally{await browser.close();if(worker.exitCode===null){const exited=once(worker,'exit');worker.kill('SIGTERM');await exited;}}

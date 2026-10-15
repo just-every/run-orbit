@@ -37,11 +37,12 @@ test('admission uses native owner authority, bounds editor framing and preserves
       fonts.push({width,path,...await visitor.evaluate(() => ({body:getComputedStyle(document.body).fontFamily, heading:getComputedStyle(document.querySelector('h1')).fontFamily,content:getComputedStyle(document.querySelector('.orbit-home')??document.body).fontFamily}))});
       if (evidence) await visitor.screenshot({path:join(evidence,`${path === '/' ? 'home' : 'signin'}-${width}.png`),fullPage:true});
     }
-    // The unclaimed Lobby leads through native sign-in to real first-run setup.
+    // An anonymous local visitor reaches the checkout-key gate, without owner authority.
     await visitor.goto(origin+'/');
     assert.deepEqual(await (await fetch(origin+'/setup/state')).json(), {state:'unclaimed'});
     await visitor.getByRole('link',{name:'Finish setup',exact:true}).click();
-    await visitor.getByRole('heading',{name:'Sign in to Orbit',exact:true}).waitFor();
+    await visitor.waitForURL(url => url.pathname === '/__dev/key');
+    assert.equal((await visitor.context().request.get(origin+'/api/editor/config')).status(),403);
     const notfound=await visitor.goto(origin+'/missing-admission-route');assert.equal(notfound.status(),404);
     await visitor.getByRole('heading',{name:'Published test not found',exact:true}).waitFor();
     await visitor.reload();await visitor.getByRole('heading',{name:'Published test not found',exact:true}).waitFor();

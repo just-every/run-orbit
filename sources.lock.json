@@ -3007,7 +3007,7 @@
       "executable": false
     },
     "scripts/verify-worker.ts": {
-      "sha256": "4526d186df0588bc1846ab7f0964123e6321e08a1fb5473ba4eb65d46ee58701",
+      "sha256": "d5f1838b4439564344169f54cd5ee7910bf1a67b5f5f6f299770bd9c0ba4ae73",
       "executable": false
     },
     "scripts/verify.mjs": {
@@ -6319,7 +6319,7 @@
       "executable": false
     },
     "tests/rer/admission.test.mjs": {
-      "sha256": "d35c466b18efb2723e7d496fa74bb26cd62a458404c092ea109eba0cdbc995ec",
+      "sha256": "ca0c2aea719613c9d128e8091c0a9e08ffec1e31eaabcd53201efbb55a43b481",
       "executable": false
     },
     "tests/rer/automation-adapter.mjs": {
