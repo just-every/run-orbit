@@ -7,6 +7,8 @@ import type { PlatformBindings } from '../../platform/assets';
 import { createNativeAccounts } from './accounts';
 import { createNativeProofs } from './proofs';
 import { sessionStore } from './store';
+import {OwnerClaimError} from '@runeditrun/rer/modules/owner-claim';
+import {ownerClaimResponse} from './owner-claim';
 
 export const clientIp = (local: boolean) => (request: Request) => local ? 'loopback' : request.headers.get('CF-Connecting-IP') ?? '';
 
@@ -79,6 +81,7 @@ export async function identityResponse(request: Request, bindings: PlatformBindi
     const identity = createOrbitIdentity(bindings, options);
     if (!identity) return unconfigured(path);
     const { auth, config } = identity;
+    if (path === '/auth/owner-claim') return await ownerClaimResponse(request, bindings, identity);
     // PUBLIC-003: without sign-in mail and no linked provider there is no way in, so the page
     // says so and presents no credential field (Base's page always offers the email form).
     if (path === '/signin' && ['GET', 'HEAD'].includes(request.method) && !config.MAIL_FROM && !(await auth.providers?.list() ?? []).some(p => p.visible)) {
@@ -97,6 +100,7 @@ export async function identityResponse(request: Request, bindings: PlatformBindi
       links: () => config.local && bindings.MAIL_PROVIDER === 'development' ? [{ href: '/__dev/outbox', label: 'Open the local development outbox' }] : [],
     })(request) ?? await createAuthHandler(auth)(request);
   } catch (error) {
-    return Response.json({ error: error instanceof AuthError ? error.code : 'auth_unavailable' }, { status: error instanceof AuthError ? error.status : 503, headers: securityHeaders() });
+    const known = error instanceof AuthError || error instanceof OwnerClaimError;
+    return Response.json({ error: known ? error.code : 'auth_unavailable' }, { status: known ? error.status : 503, headers: securityHeaders() });
   }
 }

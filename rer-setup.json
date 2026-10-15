@@ -11,7 +11,7 @@
     {
       "name": "OWNER_EMAIL",
       "label": "Owner email",
-      "help": "Sign-in links for this address appear in the local development outbox; no email is sent.",
+      "help": "This address becomes the first owner of your Orbit workspace.",
       "kind": "email",
       "required": true,
       "prefill": "account-email",
@@ -32,7 +32,8 @@
       "label": "Setup token",
       "kind": "secret",
       "required": true,
-      "ownerVisible": true,
+      "ownerVisible": false,
+      "input": "managed",
       "generate": "hex",
       "group": "owner"
     },
@@ -59,9 +60,10 @@
   "steps": [
     {
       "type": "owner-claim",
-      "mode": "setup-token",
+      "mode": "signed",
       "emailField": "OWNER_EMAIL",
-      "tokenField": "SETUP_TOKEN"
+      "tokenField": "SETUP_TOKEN",
+      "path": "/auth/owner-claim"
     }
   ],
   "dependencies": [

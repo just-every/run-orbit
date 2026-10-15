@@ -339,9 +339,7 @@
         "paths": [
           "src/family/sales",
           "composition/families/sales/README.md",
-          "composition/families/sales/LICENSE",
-          "tests/composition/sales",
-          "scripts/test-composition.mjs"
+          "composition/families/sales/LICENSE"
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/sales.git",
@@ -367,14 +365,6 @@
           {
             "path": "composition/families/sales/LICENSE",
             "originPath": "core/LICENSE"
-          },
-          {
-            "path": "tests/composition/sales",
-            "originPath": "core/tests"
-          },
-          {
-            "path": "scripts/test-composition.mjs",
-            "originPath": "core/test-components.mjs"
           }
         ]
       }
@@ -387,8 +377,7 @@
         "paths": [
           "src/modules/sendgrid-email",
           "composition/modules/sendgrid-email/README.md",
-          "composition/modules/sendgrid-email/LICENSE",
-          "tests/composition/sendgrid-email"
+          "composition/modules/sendgrid-email/LICENSE"
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
@@ -413,10 +402,6 @@
           {
             "path": "composition/modules/sendgrid-email/LICENSE",
             "originPath": "modules/sendgrid-email/LICENSE"
-          },
-          {
-            "path": "tests/composition/sendgrid-email",
-            "originPath": "modules/sendgrid-email/tests"
           }
         ]
       }

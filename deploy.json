@@ -23,14 +23,6 @@
     {
       "binding": "SETUP_TOKEN",
       "environment": "SETUP_TOKEN"
-    },
-    {
-      "binding": "MAIL_FROM",
-      "environment": "MAIL_FROM"
-    },
-    {
-      "binding": "SENDGRID_API_KEY",
-      "environment": "SENDGRID_API_KEY"
     }
   ],
   "crons": [

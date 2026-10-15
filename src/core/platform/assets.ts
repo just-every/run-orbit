@@ -8,6 +8,10 @@ export interface PlatformBindings {
   RER_VERSION?: { id: string };
   RER_MANAGEMENT_ORIGIN?: string;
   RER_INSTALLATION_ID?: string;
+  RER_OWNER_CLAIM_ISSUER?: string;
+  RER_OWNER_CLAIM_INSTALLATION_ID?: string;
+  RER_OWNER_CLAIM_APP_ORIGIN?: string;
+  RER_OWNER_CLAIM_PUBLIC_KEYS?: string;
   MAIL_REPLY_TO?: string;
   SENDGRID_UNSUBSCRIBE_GROUP_ID?: string;
   RER_MAIL_RELAY_SECRET?: string;

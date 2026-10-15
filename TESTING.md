@@ -1,138 +1,94 @@
 # Orbit verification
 
-Run `rer verify` (or `pnpm run verify`) after
-`rer install`, with Node 22.20.0 and pnpm 10.12.4. Stop `dev` and
-`preview` first. Every gate uses a temporary D1 state directory; verification never
+Run `rer verify` after `rer install`, with Node 22.20.0 and pnpm 10.12.4.
+Stop `dev` and `preview` first. Verification uses temporary state and never
 reads or changes the owner's `.wrangler/state`.
 
-The command checks the source lock, the seed command contract and every copied Base
-byte (`rer check --profile first-party`), boundaries and manifests, runs isolated real D1 tests,
-builds and typechecks TanStack Start, executes shared component and deployment
-tests, runs the emitted Worker in Chromium, verifies production transport, and
-runs the README journey through the public rer commands in a fresh checkout
-(`tests/rer/journey.test.mjs`: setup, dev opening signed in, the one end-to-end
-email-link sign-in through the outbox, `/setup` before hydration at 1440 and 390
-pixels, keyless and remote-host outbox refusal, reset refusal while
-active, confirmed reset, corrupt-archive refusal and a complete
-export/import/export round trip), and retains the real non-scale archive, restoration, erasure and suppression proofs.
-Full declared customer-record capacity is a separate required release qualification. Result-bearing Node and
-Playwright reporters build `verification/contract-results.json`. Unmapped,
-failed and skipped clauses block the gate. Routine reports explicitly mark clauses
-with the full-capacity obligation pending; mapped assertions still require
-semantic review against every retained obligation.
+The suite has a hard budget of 200 test cases and qualification flows.
+`scripts/verification-inventory.mjs` discovers every `.test` and `.spec` file
+under `tests/` and `newtests/`, counts nested cases, the `contract()` wrapper and
+every parameter loop expansion, and rejects generators it cannot count.
+The emitted-worker program and the explicit full-capacity program each count
+as one additional qualification flow. Run the inventory directly to inspect
+current counts and files:
 
-`verification/` is ignored execution output. Full routine/release invocations and
-standalone shard/fold commands start with an empty output directory; save any
-receipts you need before starting another command. No old local, capacity or
-external receipt is carried into a new verification invocation. Previously tracked
-reports and screenshots are retained byte-for-byte in
-[`docs/retained-verification/`](docs/retained-verification/README.md), outside every
-producer's output path. Those historical snapshots are never current evidence.
-The reset refuses a tracked file in `verification/` before deleting anything.
-Reporters and the unchanged full-capacity producer write only generated outputs;
-the source lock and Base's tracked-source guard remain enforced.
+```sh
+node scripts/verification-inventory.mjs
+```
 
-The core suites exercise record lifecycle, exact identity and merge safety,
-operator removal and erasure, archive equivalence, migration rollback and
-recovery, signed ingestion and held identities, score evidence and replacement,
-quiet hours and stop rules, bounded retries and durable quota failures, provider
-signatures and threading, unknown-delivery reconciliation without resending,
-notification ownership and replay, and exact AI previews with validated output
-and token accounting. Fixtures and controlled provider outcomes exist only in
-test suites; they are not evidence of actual provider delivery.
+Routine verification uses eight shards, executed sequentially locally and in
+parallel in GitHub Actions:
 
-Today's brief and meeting plans are covered through their public doors by
-`tests/core/today-brief.test.ts` (several simulated days, the summary against the
-provider's real HTTP client with only `fetch` faked, and plans),
-`tests/delegation/brief-handoff.test.ts` (consent, read-only, revoked and unconsented
-grants, cited proposals and the send boundary) and the isolated browser journey
-`tests/delegation-browser/today-brief.test.ts` at 1440 and 390 pixels with axe.
+- `source`: source lock, the first-party RER contract and Base provenance,
+  boundaries, manifest, build, deployment-spec drift against the emitted
+  Worker configuration, and typecheck.
+- `core-0`, `core-1`, `core-2`: isolated D1 product flows, including native identity, step-up,
+  reviewed imports, erasure, capture, source setup, reviewed outreach,
+  provider outcomes, suppression and delegated authority.
+- `runtime`: emitted mail ingress and source-stop flows, browser journeys,
+  and the README lifecycle through real `rer` commands in a fresh checkout.
+- `fold-archive`: current native archive, CLI streaming, interrupted job
+  recovery and restore rollback.
+- `fold-accepted-main`: one immutable accepted-main archive upgrade journey.
+- `fold-domain`: first-run setup, collaborator authority, published forms,
+  reports, browser workflows and restart/upgrade preservation.
 
-Browser tests use a fresh isolated D1 and the built production Worker. They cover
-native access boundaries, records and settings, source and unmatched reply
-review, notifications, evidence and stale-draft review, exact AI previews,
-desktop/mobile layout, keyboard labels and automated accessibility. Screenshots
-are written under `verification/ui`. The production Worker proof additionally
-checks document/API/function authorization, client/server boundaries, asset
-handling and browser navigation.
+Every retained test file is discovered and scheduled exactly once. The final
+aggregate requires every shard on the current commit, reconciles individual
+completion events against runner totals and Playwright collection IDs, and
+checks the actual total against the source inventory and budget. Failed,
+skipped, focused, missing and duplicate cases fail verification. Evidence is
+uploaded even on failure. No product tests run as part of build or deploy.
 
-`rer dev` serves the owner's own data and never seeds customer records. Test suites
-prepare their isolated state with `tests/support/prepare-state.ts`, which loads
-`tests/fixtures`; those imports are absent from the production Worker. Local tests
-write sessions through `tests/support/test-auth.ts` or sign in through Base's real
-email-link lifecycle (`tests/support/email-link.ts`). Production has no fixture
-login shortcut; local dev sign-in exists only behind the checkout's dev key, and
-hosted acceptance must consume an actual emailed link rather than insert a
-session. `tests/core/prior-auth-upgrade.test.ts` upgrades a store captured from
-the pre-Base main (`tests/fixtures/prior-auth`).
+The October 2026 reduction removed duplicate repository, composition, SDK/socket
+and historical-lineage probes. Retained cases keep their assertions. The test
+budget prioritizes public HTTP, browser and CLI journeys and high-stakes data,
+authentication, erasure, restore and exact reviewed-send boundaries. It does not
+claim exhaustive coverage of every contract sentence.
 
-Deployment and transfer command tests use process fixtures and make no cloud or mail calls; `deploy --dry-run` validates the packaged Worker without a provider request.
-Actual installation, native email access, observed SMTP content and headers,
-signed reply and unsubscribe outcomes, repeat deployment, fresh hosted restore,
-and customized-fork updates have separate immutable receipts. The bounded
-`tests/acceptance/hosted-outreach.mjs` runner requires an explicitly authorized
-origin, private provider configuration, actual native browser storage state and
-the test-owned mailbox receiver client; it sends real mail and must not be run
-as an ordinary local test. Never commit those private inputs.
+`verification/` contains ignored execution output. A full invocation or standalone
+shard starts with an empty output directory, refusing to delete any tracked file.
+Save receipts before another invocation. Historical reports and screenshots remain
+under [`docs/retained-verification/`](docs/retained-verification/README.md); they are
+never current evidence. Actual completion events are written to
+`verification/core-results.jsonl`, with the run summary in
+`verification/ci-summary.json`.
 
-Read [ACCEPTANCE.md](ACCEPTANCE.md) and the current handover before interpreting
-results as release acceptance. PUBLIC-002 is covered by
-`tests/core/public-demo.test.ts` and the native first-hour browser journey in
-`tests/rer/onboarding.test.mjs`: the separate story contains twelve relative-date
-deals, cannot select owner records or mutate the installation, and renders at
-1440 and 390 pixels with no serious or critical axe findings. The obsolete
-hosted-record demo creation/preview runner was removed when this behavior was
-replaced. This local demo evidence does not certify hosted deployment or customer
-mail delivery.
+Contract-name mapping remains available separately with `pnpm run report:contract`.
+Its report can identify unmapped or failed clauses; test names alone do not prove
+release acceptance. Routine Verify uses execution results and the test budget,
+not exhaustive clause-name mapping as a pass gate.
 
-## Routine CI and required release qualification
+Browser tests use isolated D1 state and the built Worker. They cover native
+access, records and settings, sources and unmatched replies, notifications,
+stale drafts, exact AI previews, desktop/mobile layouts, keyboard operation and
+automated accessibility. The README CLI journey covers setup, native email-link
+confirmation, first-run setup before hydration, state custody, reset refusal and
+an export/import/export round trip. Today's brief and meeting plans also run
+through native and delegated APIs and the browser at 1440 and 390 pixels.
 
-Routine `rer verify` runs every routine shard sequentially on one computer, with
-isolated state per shard. GitHub's `shards` matrix gives the same complete-file
-plan independent runners: three native core groups (one also runs delegation),
-source checks, production runtime/browser/CLI proofs, fold archive and fold domain
-proofs, and the two immutable lineage cases. Every runner executes test files
-serially. The final required `verify` job checks each planned stage, current Git
-commit, whole-file event coverage, actual passed test events reconciled with runner
-terminal totals (and Playwright collection IDs), and absence of
-failed/skipped or duplicate executions. Core, fold, component and public rer
-journey files are discovered from source rather than a pinned file list. Every `tests/rer/**/*.test.mjs` journey is retained, including
-admission and future onboarding, operator and import journeys when merged. The
-plan checks the complete source file inventory for omissions or duplicate
-scheduling; the aggregate requires passed events from the responsible stage,
-including every configured browser file, and rejects unexpected file events.
-Component tests keep their original source environment and now also emit actual
-completion events. Node focus diagnostics fail verification; browser gates retain
-`--forbid-only`. Missing individual completions or terminal summaries fail the
-shard and aggregate, even when another test in the same file passed. A missing or failed shard
-blocks the aggregate. Evidence is uploaded even on failure.
+Fixtures and controlled provider responses stay in tests. `rer dev` never seeds
+customer records. Local test sessions use `tests/support/test-auth.ts` or Base's
+email-link lifecycle; production has no fixture sign-in shortcut. Prior-auth
+upgrade coverage keeps operator IDs, access rows and delegation. Test provider
+responses do not establish actual provider delivery.
 
-Before release, run the explicit complete qualification:
+Before release, run the explicit full qualification:
 
 ```sh
 pnpm run verify:release
 ```
 
-Stop dev/preview first. This command runs every routine stage, including build,
-then the unchanged `tests/performance/records-capacity.ts` full 6.3-million-row
-fixture and archive roundtrip, using `test:capacity`. Its search p95, full hashes,
-foreign keys, D1 clock witness, revocation and erasure assertions retain their
-original values. Only this scale case moved out of routine verification; no
-non-scale data, auth, isolation or restore proof moved. The bundled Base release
-producer already invokes a declared `verify:release` after routine verification
-and fails release if it fails; no copied Base byte changed. GitHub workflow
-Dispatch with `release` enabled runs this same complete command and retains its
-fresh capacity receipt, native D1 summary and observation stream from that
-capacity invocation; a passed exit code alone cannot qualify release. Both commands
-leave retained source evidence untouched, so the producer's routine-then-release
-sequence can use the same checkout without replacing or restoring source receipts.
-Runtime confirmation of that sequence, actual reporter rejection probes and after
-timing are still pending; [the prepared checks](docs/verification-runtime-checks.md)
-describe the remaining evidence. Routine success is never full-capacity or release acceptance.
+This runs the routine plan, then the unchanged
+`tests/performance/records-capacity.ts` full declared-capacity search, archive
+roundtrip and erasure program. It retains its search latency, complete hashes,
+foreign-key, D1 observation, revocation and erasure assertions. Fresh capacity
+artifacts and actual completion are required. Routine verification records this
+qualification as pending. GitHub workflow dispatch with `release` enabled runs
+the same command and retains its evidence.
 
-The observed CI run before this change, at 19b45b8, took: native product verification
-155m01s (capacity 100m49s, core 34m06s), fold qualification 73m37s. The new routine
-wall is unmeasured until the actual exact-commit CI run; parallel runners change
-scheduling, not the semantic workload. Immutable lineage's two tests now register
-in separate files and share the unchanged assertion body in
-`newtests/t096/archive-lineage-proof.ts`. No assertions or tests were deleted.
+Read [ACCEPTANCE.md](ACCEPTANCE.md) and the handover before interpreting a passing
+suite as a release. Hosted installation, real mailbox access, actual customer
+mail, hosted restore and owner acceptance require their separate receipts.
+`tests/acceptance/hosted-outreach.mjs` sends real mail and requires an explicitly
+authorized origin and private provider inputs; it is never an ordinary local test.

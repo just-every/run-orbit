@@ -12,8 +12,8 @@ import { ownerSecret } from '@runeditrun/rer/internal/modules/deploy-kit/owner-s
 
 // Optional features are uploaded only when the owner supplies them; deployed
 // secrets are kept by name on later deploys.
-export const optionalSecrets = ['MAIL_REPLY_TO', 'SENDGRID_UNSUBSCRIBE_GROUP_ID', 'RER_MAIL_RELAY_SECRET', 'SENDGRID_WEBHOOK_PUBLIC_KEY', 'SENDGRID_PARSE_PUBLIC_KEY', 'ORBIT_ENCRYPTION_KEY', 'OPENAI_API_KEY', 'AI_MODEL', 'AI_INPUT_COST_PER_MILLION', 'AI_OUTPUT_COST_PER_MILLION', 'AI_CACHED_INPUT_COST_PER_MILLION'];
-const required = ['OWNER_EMAIL', 'MAIL_FROM', 'SENDGRID_API_KEY'];
+export const optionalSecrets = ['MAIL_FROM', 'SENDGRID_API_KEY', 'MAIL_REPLY_TO', 'SENDGRID_UNSUBSCRIBE_GROUP_ID', 'RER_MAIL_RELAY_SECRET', 'SENDGRID_WEBHOOK_PUBLIC_KEY', 'SENDGRID_PARSE_PUBLIC_KEY', 'ORBIT_ENCRYPTION_KEY', 'OPENAI_API_KEY', 'AI_MODEL', 'AI_INPUT_COST_PER_MILLION', 'AI_OUTPUT_COST_PER_MILLION', 'AI_CACHED_INPUT_COST_PER_MILLION'];
+const required = ['OWNER_EMAIL'];
 
 export async function declaration(root, env = process.env) {
  let value; try { value = JSON.parse(await readFile(join(root, 'deploy.json'), 'utf8')); } catch { throw invalid('Malformed owner-account deploy declaration deploy.json.'); }
@@ -44,7 +44,9 @@ export function orbitDeploy(lifecycle) {
   }
   const absent = ['CLOUDFLARE_ACCOUNT_ID', 'CLOUDFLARE_API_TOKEN', ...required].filter(name => !process.env[name]?.trim());
   if (absent.length) throw missing(`Deployment requires ${absent.join(', ')} in the environment. See OPERATIONS.md.`);
-  if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(process.env.MAIL_FROM.trim())) throw invalid('MAIL_FROM must be a verified sender email address.');
+  const mail = ['MAIL_FROM', 'SENDGRID_API_KEY'].map(name => Boolean(process.env[name]?.trim()));
+  if (mail[0] !== mail[1]) throw missing('Sign-in mail requires both MAIL_FROM and SENDGRID_API_KEY, or neither. See OPERATIONS.md.');
+  if (mail[0] && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(process.env.MAIL_FROM.trim())) throw invalid('MAIL_FROM must be a verified sender email address.');
   const env = { ...process.env };
   store.addSecrets?.([env.SETUP_TOKEN, env.SENDGRID_API_KEY, ...optionalSecrets.map(name => env[name])].filter(Boolean));
   const api = cloudflare({ accountId: env.CLOUDFLARE_ACCOUNT_ID, token: env.CLOUDFLARE_API_TOKEN });

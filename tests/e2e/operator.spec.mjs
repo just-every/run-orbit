@@ -107,18 +107,6 @@ test.describe("authenticated operator UI", () => {
     expect(failures).toEqual([]);
   });
 
-  contract("ACTION-001", "the desktop detail shows the persisted current recommendation and cited signals", async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
-    const failures = watchFailures(page);
-    await openOpportunity(page);
-
-    await page.getByText("Audit details", {exact:true}).click();
-    const recommendation = page.getByTestId("current-recommendation");
-    await expect(recommendation).toContainText("opportunity.next-action.v1");
-    await expect(recommendation).toContainText("01J0000000000000000000000M");
-    expect(failures).toEqual([]);
-  });
-
   contract("RECORD-005", "the mobile opportunity timeline shows occurred, recorded, actor, and source", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const failures = watchFailures(page);

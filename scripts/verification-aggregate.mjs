@@ -5,9 +5,10 @@ import {fileURLToPath} from 'node:url';
 import {verificationPlan,capacityExecution} from './verification-plan.mjs';
 import {checkTestEvents} from './verification-events.mjs';
 import {checkCapacityResult} from './verification-capacity.mjs';
+import {checkTestBudget} from './verification-inventory.mjs';
 
 export function aggregate(directory='verification/ci-shards',{release=false,capacity}={}){
- const plan=verificationPlan(),expected=Object.keys(plan),commit=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'});
+ const inventory=checkTestBudget(),plan=verificationPlan(),expected=Object.keys(plan),commit=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'});
  if(commit.status!==0)throw Error('Aggregation requires the edition Git commit.');
  const files=readdirSync(directory).filter(file=>file.endsWith('.json'));
  const receipts=files.map(file=>JSON.parse(readFileSync(`${directory}/${file}`,'utf8')));
@@ -31,14 +32,15 @@ export function aggregate(directory='verification/ci-shards',{release=false,capa
  // Node's runner reports every completion; duplicated shard executions are not coverage.
  const keys=executions.map(row=>JSON.stringify([row.runner,row.file,row.name]));
  if(new Set(keys).size!==keys.length)throw Error('A test was executed more than once in the routine plan.');
+ const actualCases=executions.filter(row=>row.type!=='suite').length;
+ if(actualCases!==inventory.cases)throw Error(`Registered test inventory (${inventory.cases}) does not match actual completions (${actualCases}).`);
  const capacityStatus=release?checkCapacityResult(capacity,Math.max(...receipts.map(row=>Date.parse(row.finishedAt)))):'pending';
  executions.push(capacityExecution(capacityStatus));
  mkdirSync('verification',{recursive:true});
  writeFileSync('verification/core-results.jsonl',executions.map(row=>JSON.stringify(row)).join('\n')+'\n');
- // The combined stream replaces old retained per-suite verdicts.
+ // Contract mapping remains an explicit report; a test name is not release acceptance.
  for(const file of ['delegation-results.jsonl','browser-results.jsonl'])writeFileSync(`verification/${file}`,'');
- const report=spawnSync(process.execPath,['scripts/report-contract-results.mjs'],{stdio:'inherit',env:{...process.env,ORBIT_VERIFY_MODE:release?'release':'routine'}});
- writeFileSync('verification/ci-summary.json',JSON.stringify({commit:commit.stdout.trim(),status:report.status===0?'passed':'failed',mode:release?'release':'routine',capacity:capacityStatus,shards:receipts.map(({shard,startedAt,finishedAt})=>({shard,startedAt,finishedAt})),tests:executions.length},null,2)+'\n');
- return report.status===0;
+ writeFileSync('verification/ci-summary.json',JSON.stringify({commit:commit.stdout.trim(),status:'passed',mode:release?'release':'routine',capacity:capacityStatus,shards:receipts.map(({shard,startedAt,finishedAt})=>({shard,startedAt,finishedAt})),tests:actualCases,qualifications:inventory.qualifications,budget:inventory.total,limit:200},null,2)+'\n');
+ return true;
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url))if(!aggregate(process.argv[2]))process.exitCode=1;

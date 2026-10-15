@@ -19,7 +19,8 @@
     },
     "verification": {
       "sensitivePaths": [
-        "src/core/features/auth/**",
+        "src/core/features/identity/**",
+        "src/dev/**",
         "src/core/features/imports/**",
         "src/modules/import-kit/**",
         "src/modules/schema/**",
@@ -76,16 +77,17 @@
         "AI_CACHED_INPUT_COST_PER_MILLION",
         "AI_OUTPUT_COST_PER_MILLION",
         "RER_MANAGEMENT_ORIGIN",
-        "RER_INSTALLATION_ID"
+        "RER_INSTALLATION_ID",
+        "IDENTITY_PROVIDER"
       ],
       "secretNames": [
-        "SETUP_TOKEN"
+        "SETUP_TOKEN",
+        "SESSION_SECRET",
+        "ORBIT_ENCRYPTION_KEY"
       ],
       "optionalSecretNames": [
-        "SESSION_SECRET",
         "SENDGRID_API_KEY",
         "OPENAI_API_KEY",
-        "ORBIT_ENCRYPTION_KEY",
         "RER_MAIL_RELAY_SECRET"
       ],
       "providerEffects": [
