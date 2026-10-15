@@ -167,3 +167,5 @@ Operator erasure now redacts a display name only as a whole word (never inside a
 ## Hosted demo (15 October 2026)
 
 The demo runtime, operator-auth and owner-claim resolve from the same exact rer 0.2.22 package, so mocked mail success shares the installed demo guard. The redundant demo copy and deprecated SendGrid shim are removed; all retained Base module copies refresh together to rer-v0.2.22. Demo customer sends use Base development mail directly. AI generation uses demoEffect with cited sample output only under RER_DEMO. The seed finishes its setup checklist with domain source-check, draft approval and suppressed-send operations, populated customer records, close dates and operators. The public homepage is unchanged.
+
+The hosted demo uses `standard-1`: the rer 0.2.22 `basic` trial did not meet the fresh-start reliability and latency target. The instance choice is in `deploy-demo.json`; sample timings and correlation IDs are retained in the dm-orbit-v22 evidence.

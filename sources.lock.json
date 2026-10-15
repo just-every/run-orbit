@@ -677,7 +677,7 @@
       "executable": false
     },
     "deploy-demo.json": {
-      "sha256": "96d27eaf06214be44e2f4993ec44d8631fd1a2d4642f09d4fb8da1e2bfa5cf2a",
+      "sha256": "1da79b250562c523370022c9794f4c0182cf46b5a404f28895e99d8c75e19230",
       "executable": false
     },
     "deploy-site.json": {
@@ -929,7 +929,7 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "38f5335df42c1d27cf8847356d01df4c63a48e76f529de2fbd534812caf63a95",
+      "sha256": "11c3a7a454786fbd85ca244f88bf8d69eaf1153b784112bcbcfbfb0259e8355a",
       "executable": false
     },
     "LICENSE": {
