@@ -937,7 +937,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "4e8594f8f84aef21978d4ebb2886b33ee05ee3883824d90a097c0c067018c0fb",
+      "sha256": "7635f87e1543e0d7fd1847c694cf75930453182235a61d25199fd9d86ec24fce",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -6533,7 +6533,7 @@
       "executable": false
     },
     "wrangler.jsonc": {
-      "sha256": "f868b81f3bc7feea5164f5f11d9554ab38cd33b4a02defcdfe0015578c0d9eff",
+      "sha256": "7d10eecf0118df18271cb9fe5245dcecea7703caf0dc52acae4f286dd0842961",
       "executable": false
     }
   }
