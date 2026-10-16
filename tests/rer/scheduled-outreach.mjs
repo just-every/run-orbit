@@ -33,7 +33,8 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  const preview=await response.json();
  assert.equal(preview.requestedAt,requestedAt);
  assert.equal(preview.scheduledAt,requestedAt,'The permitted requested time is preserved');
- const displayedTime=await page.evaluate(iso=>new Date(iso).toLocaleString(),preview.scheduledAt);
+ // Orbit shows every date one way, in the browser's time zone: "19 Oct 2026, 10:00 am".
+ const displayedTime=await page.evaluate(iso=>new Intl.DateTimeFormat('en-AU',{dateStyle:'medium',timeStyle:'short'}).format(new Date(iso)),preview.scheduledAt);
  await expect(approval.getByRole('alert')).toContainText(displayedTime);
  assert.equal((await browserAPI(page,messagesPath)).messages.some(message=>message.draftId===draft.id),false,'Schedule preview does not approve a send');
  await page.screenshot({path:`${evidence}/schedule-approval-preview-${width}.png`,fullPage:true});
