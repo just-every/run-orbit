@@ -14,6 +14,10 @@
   ],
   "additionalProperties": false,
   "properties": {
+    "publicReleaseNotes": {
+      "type": "string", "minLength": 1,
+      "description": "Public prose appended after the version in release commit and annotated tag messages; subject to publication inspection."
+    },
     "version": {
       "$ref": "#/$defs/semver",
       "description": "The version this release publishes. Matches the tag and `seed.json → version`."
@@ -34,7 +38,7 @@
     },
     "proseChanges": {
       "type": "array",
-      "description": "Changes to the owner-facing documents that carry no clause ID — `AGENTS.md`, `README.md`, `LICENSE`. They are part of what the owner relies on, so a change in what they promise is recorded here under the same obligation as a clause change. Omit when no such document changed meaning, and on a first release, where the owner receives every document new and there is no earlier meaning to have changed.",
+      "description": "Changes to the owner-facing documents that carry no clause ID — `AGENTS.md` (staged from the author repo's `AGENTS.consumer.md`), `README.md`, `LICENSE`. They are part of what the owner relies on, so a change in what they promise is recorded here under the same obligation as a clause change. Omit when no such document changed meaning, and on a first release, where the owner receives every document new and there is no earlier meaning to have changed.",
       "items": { "$ref": "#/$defs/proseChange" }
     },
     "extensionPointChanges": {
@@ -128,7 +132,7 @@
         "document": {
           "type": "string",
           "minLength": 1,
-          "description": "Path as the owner sees it in the published seed, e.g. `AGENTS.md`."
+          "description": "Path as the owner sees it in the published seed, e.g. `AGENTS.md`, which is staged from the author repo's `AGENTS.consumer.md`."
         },
         "section": {
           "type": "string",

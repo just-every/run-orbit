@@ -12,7 +12,7 @@ export async function demoOwner(env:PlatformBindings){
 export async function seedDemo(env:PlatformBindings,{ownerEmail,now}:{ownerEmail:string;now:Date}){
  const owner=await env.DB.prepare('SELECT id FROM operators WHERE email=? AND setup_owner=1').bind(ownerEmail).first<{id:string}>();
  if(!owner)throw new Error('Claim the demo owner before loading the sample workspace.');
- await completeSetup(env.DB,owner.id,{name:'Orbit demo · customer workspace',timezone:'Australia/Brisbane',currency:'AUD',stages:['Discovery','Evaluation','Proposal']});
+ await completeSetup(env.DB,owner.id,{name:'Brightwork Studio',timezone:'Australia/Brisbane',currency:'AUD',stages:['Discovery','Evaluation','Proposal']});
  await seedRecords(env.DB,owner.id,now);
  await seedPublication(env.DB,owner.id,now);
  await seedActivity(env,owner.id,now);

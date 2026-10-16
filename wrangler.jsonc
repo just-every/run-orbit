@@ -6,7 +6,6 @@
   "compatibility_date": "2026-09-08",
   "compatibility_flags": ["nodejs_compat"],
   "assets": { "binding": "ASSETS" },
-  "vars": { "MAIL_FROM": "" },
   "d1_databases": [
     {
       "binding": "DB",

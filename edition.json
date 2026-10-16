@@ -18,18 +18,22 @@
           "tools/seed-schema/json-schema.mjs",
           "tools/seed-schema/validate.mjs",
           "tools/seed-schema/RELEASE.schema.json",
-          "src/base/sendgrid-event-relay/crypto.ts"
+          "src/base/sendgrid-event-relay/crypto.ts",
+          "tools/seed-schema/setup-validation.mjs",
+          "tools/seed-schema/dependencies.mjs"
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "603ee025aa5991fb44e0c3b0731f2113be85ceab",
+          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
           "path": ".",
           "paths": [
             "schema/SEED.schema.json",
             "schema/json-schema.mjs",
             "schema/validate.mjs",
             "schema/RELEASE.schema.json",
-            "infrastructure/sendgrid-event-relay/src/crypto.ts"
+            "infrastructure/sendgrid-event-relay/src/crypto.ts",
+            "schema/setup-validation.mjs",
+            "schema/dependencies.mjs"
           ]
         },
         "mappings": [
@@ -52,6 +56,14 @@
           {
             "path": "src/base/sendgrid-event-relay/crypto.ts",
             "originPath": "infrastructure/sendgrid-event-relay/src/crypto.ts"
+          },
+          {
+            "path": "tools/seed-schema/setup-validation.mjs",
+            "originPath": "schema/setup-validation.mjs"
+          },
+          {
+            "path": "tools/seed-schema/dependencies.mjs",
+            "originPath": "schema/dependencies.mjs"
           }
         ]
       }
@@ -69,7 +81,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "1ce15dd8cbb7c8cf2d83ebfde2b4a8a130ff9d74",
+          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
           "path": ".",
           "paths": [
             "modules/mail/LICENSE",
@@ -159,7 +171,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "1ce15dd8cbb7c8cf2d83ebfde2b4a8a130ff9d74",
+          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
           "path": ".",
           "paths": [
             "modules/import-kit/src",
@@ -240,7 +252,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "1ce15dd8cbb7c8cf2d83ebfde2b4a8a130ff9d74",
+          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
           "path": ".",
           "paths": [
             "modules/editor/src",
@@ -285,7 +297,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "1ce15dd8cbb7c8cf2d83ebfde2b4a8a130ff9d74",
+          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
           "path": ".",
           "paths": [
             "modules/delivery-producer/artifact.mjs",
@@ -425,7 +437,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "8981bc2c4d9e61feca5787c83b4ed44056659dd9",
+          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
           "path": "foundation/runtime"
         },
         "mappings": [
@@ -510,7 +522,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "1ce15dd8cbb7c8cf2d83ebfde2b4a8a130ff9d74",
+          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
           "path": "modules/d1-transport",
           "paths": [
             "index.mjs",

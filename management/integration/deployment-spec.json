@@ -212,9 +212,7 @@
   ],
   "durableObjects": [],
   "durableObjectMigrations": [],
-  "publicVariables": {
-    "MAIL_FROM": ""
-  },
+  "publicVariables": {},
   "secretNames": [
     "SETUP_TOKEN",
     "SESSION_SECRET",

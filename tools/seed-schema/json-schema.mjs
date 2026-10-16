@@ -1,4 +1,12 @@
-import { isDeepStrictEqual } from 'node:util';
+/** Browser comparison is restricted to the JSON values carried by a setup manifest. */
+function isDeepStrictEqual(left, right) {
+  if (Object.is(left, right)) return true;
+  if (!left || !right || typeof left !== 'object' || typeof right !== 'object'
+    || Array.isArray(left) !== Array.isArray(right)) return false;
+  const names = Object.keys(left);
+  return names.length === Object.keys(right).length
+    && names.every(name => Object.hasOwn(right, name) && isDeepStrictEqual(left[name], right[name]));
+}
 
 // Validates data against the subset of JSON Schema 2020-12 the seed schemas use.
 //
