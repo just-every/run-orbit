@@ -30,12 +30,10 @@ These steps describe the current `main` branch. The older `v0.1.0` tag predates 
 Install [RER](https://runeditrun.com) and use Node 22 or later. RER selects Orbit's pinned Node 22.20.0 runtime and fetches pnpm 10.12.4 into its own cache automatically. You do not need to install pnpm yourself.
 
 ```sh
-git clone --branch main https://github.com/just-every/run-orbit.git orbit
-cd orbit
-rer dev
+npx -y @runeditrun/rer dev just-every/run-orbit
 ```
 
-`dev` installs dependencies, prepares the local trial owner (`owner@orbit.test`) on the first launch and starts Orbit. Open the private `RER_OPEN` link it prints on this computer: you are already signed in. No email is sent locally. Your first sign-in asks for your business name, time zone, currency and pipeline stages, and then you are in. Change the trial email in Settings → Installation owner, or use your real owner mailbox from the start: run `rer install` and `rer setup --owner-email EMAIL` before `rer dev`.
+That one line installs RER, clones `main` and starts Orbit; to start it again later, run `cd run-orbit && rer dev`. `dev` installs dependencies, prepares the local trial owner (`owner@run-orbit.test`) on the first launch and starts Orbit. Open the private `RER_OPEN` link it prints on this computer: you are already signed in. No email is sent locally. Your first sign-in asks for your business name, time zone, currency and pipeline stages, and then you are in. Change the trial email in Settings → Installation owner, or use your real owner mailbox from the start: run `rer install` and `rer setup --owner-email EMAIL` before `rer dev`.
 
 
 Stop it with `rer dev --stop`. Your data stays on your computer between runs. Stop `dev` and `preview` before CLI export, import, reset, build or verification.

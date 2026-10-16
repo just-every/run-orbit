@@ -753,7 +753,7 @@
       "executable": false
     },
     "docs/overview.md": {
-      "sha256": "1390ce793bb54e4bcc47ed841cac5fe83eb32256028fff2bfcb026035932caa1",
+      "sha256": "c0b538d47f579d8b960d798b6f9831c7e1371a84d27ad12bfd42b44699d52a83",
       "executable": false
     },
     "docs/retained-verification/browser-results.jsonl": {
@@ -2429,7 +2429,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "6199e89da45e0cb13a270efe0c53144a15507963bdcfb83509078c56c9d21d26",
+      "sha256": "b6bf33741af553ae3c8f2cb106a29f36da567c343680445fe091b174963f38b0",
       "executable": false
     },
     "RECORD-POLICIES.md": {
@@ -5889,7 +5889,7 @@
       "executable": false
     },
     "src/site/run.ts": {
-      "sha256": "14b0bde273996346b59cb5364e10b099acd348d65002c2a4bd3b7ac6094d91ca",
+      "sha256": "6c0090052bd27a170ea3ef99a182d0328402496f37ac300301f35cff0bbf3b77",
       "executable": false
     },
     "src/vite-env.d.ts": {

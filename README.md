@@ -45,12 +45,10 @@ This repository is the complete source for Orbit. Public source: [just-every/run
 Install [RER](https://runeditrun.com) and use **Node 22 or later**. Orbit pins Node **22.20.0** and pnpm **10.12.4** for project commands; RER selects the pinned runtime, fetches pnpm into its own cache and installs the frozen dependencies automatically. You do not need to install pnpm yourself.
 
 ```sh
-git clone --branch main https://github.com/just-every/run-orbit.git orbit
-cd orbit
-rer dev
+npx -y @runeditrun/rer dev just-every/run-orbit
 ```
 
-`dev` installs dependencies, prepares local settings and starts Orbit. On the first launch it prepares the local trial owner (`owner@orbit.test`); it keeps that owner, your data and settings on later launches. You can change the owner email in Settings → Installation owner. A later deploy uses that current owner unless you explicitly supply `OWNER_EMAIL`. To use your real mailbox from the start, run `rer install` and `rer setup --owner-email EMAIL` before `rer dev`.
+That one line installs RER, clones the current `main` and starts Orbit; to start it again later, run `cd run-orbit && rer dev`. `dev` installs dependencies, prepares local settings and starts Orbit. On the first launch it prepares the local trial owner (`owner@run-orbit.test`); it keeps that owner, your data and settings on later launches. You can change the owner email in Settings → Installation owner. A later deploy uses that current owner unless you explicitly supply `OWNER_EMAIL`. To use your real mailbox from the start, run `rer install` and `rer setup --owner-email EMAIL` before `rer dev`.
 
 Once `/health` answers, `dev` prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN`. Open the `RER_OPEN` link on this computer: Orbit opens signed in as you. Its fragment carries this checkout's private dev key, so never share it. The product name reads Orbit Dev. Use `rer dev --as seller` or `--as collaborator` to choose a persona. No email is sent locally. Stop it with `rer dev --stop`, including when the launch command has returned to your prompt.
 
