@@ -1149,11 +1149,11 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "d8171d94465169212da46afad8647d040946614b9c702c1d88f9ac5026f2cf33",
+      "sha256": "2f60cbcb7d263f6b39a98872b363c1b190a5a11d925d78ebb20027db49753027",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
-      "sha256": "085d5d7cb5fac02dd9a4a2c7fe04821704bb16847b8f92df1f3c83bf1a6c0d74",
+      "sha256": "a101a8c86fe2b68e095c974c0ae95fdeef8fc38499d491d4271c745f238f2699",
       "executable": false
     },
     "newtests/t096/browser-report-authoring.ts": {
