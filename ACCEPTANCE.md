@@ -696,7 +696,7 @@ Current evidence: No implementation found. There is no file storage, upload rout
 
 Status: **partial**.
 
-From Import choose HubSpot, authorize a test account and preview a multi-company export/API pull including activities, associations, separate Contact, Company and deal owners, and a deal with two record attachments and a note attachment; apply, interrupt/resume and rerun; compare source totals and file counts and bytes, and undo around native edits. Final acceptance includes a real authorized customer export.
+From Import choose HubSpot, authorize a test account and preview a multi-company export/API pull including activities, associations, separate Contact, Company and deal owners, and a deal with two record attachments and a note attachment; apply, interrupt/resume and rerun; compare source totals and file counts and bytes, inspect a deal workflow's actions listed against AUTO-002, and undo around native edits. Final acceptance includes a real authorized customer export.
 
 Current evidence: `src/core/features/imports/contracts.ts`; `tests/core/crm-import.test.ts`; `tests/e2e/imports.spec.mjs`. Reviewed HubSpot CSV presets cover core records/deals/prepared notes; connected migration and full activity/owner/pipeline and attachment coverage are missing.
 
@@ -856,17 +856,25 @@ Current evidence: No implementation found. Reviewed single scheduled messages ex
 
 Status: **partial**.
 
-Preview and activate a stale-deal rule, trigger it twice, change the record and revoke permission before dispatch; inspect one authorized task/notification, no stale field write/send, and an actionable failed webhook run after restart.
+Preview and activate a stale-deal rule, trigger it twice, change the record and revoke permission before dispatch; inspect one authorized task/notification, one AUTO-002 field write applied without a proposal, no stale field write/send, and an actionable failed webhook run after restart.
 
-Current evidence: `src/core/features/capture/proposals.ts`; `src/core/features/delegation/effects.ts`; `tests/core/capture-review.test.ts`. Fixed reviewed proposals and handoffs exist; configurable workflow authoring and durable run management are missing.
+Current evidence: `src/core/features/capture/proposals.ts`; `src/core/features/delegation/effects.ts`; `tests/core/capture-review.test.ts`. Fixed reviewed proposals and handoffs exist; configurable workflow authoring, unattended record updates (AUTO-002) and durable run management are missing.
+
+### AUTO-002 — Workflow record updates applied without per-record review.
+
+Status: **missing**.
+
+As a sales admin, activate three workflows, each after its preview shows per-record current and resulting values: "deal created" sets the primary contact's lead status to "Open deal" and the company's lifecycle stage to "Opportunity"; "deal closed won" sets the company and all its contacts to "Customer", stamps "Became customer" with the run date and creates an onboarding task; "meeting logged on a deal in Qualified" moves the deal to "Meeting held". Create a deal, close another won and log a meeting; verify every field value and the stage move are written with no proposal, each with a timeline entry naming the workflow, its version and the trigger, and replay a trigger to see no second write, task or record. Close a deal won whose company lifecycle stage a user edited after the trigger and verify that write is skipped as changed by that user while the contacts and task are updated. Activate a rule that sets a deal amount and verify an approval item waits for the deal owner, with no change until it is accepted. As a manager without the grant to edit a protected field, try to activate a rule writing it and see the refusal naming the field; reduce a sales admin's grant after activation and see the next run refuse that action visibly. Chain two workflows into a loop and see it stop at the depth limit. Undo the closed-won run after a user edited one contact; verify the other values are restored, that contact is listed as skipped and the stage history records the undo. Restart mid-run and resume without a duplicate write.
+
+Current evidence: No implementation found. No workflow engine writes records: the only writes outside a person's own edit are capture proposals accepted one at a time in `src/core/features/capture/proposals.ts`, whose compare-and-set fence on the current value is the guard this clause extends to unattended workflow writes.
 
 ### CALL-001 — Provider-backed click-to-call.
 
 Status: **partial**.
 
-Connect Twilio and Aircall in turn, initiate a call from a real deal to an authorized test number, record answered/no-answer/failed dispositions, replay callbacks and revoke the connection; verify one truthful linked call each time.
+Connect Twilio and Aircall in turn, initiate a call from a real deal to an authorized test number, record answered/no-answer/failed dispositions, replay callbacks and revoke the connection; verify one truthful linked call each time. Place one call and receive one inbound call in the Aircall app outside Orbit and verify each is logged once on the matched contact and deal, with an unknown number held for review.
 
-Current evidence: `src/core/features/records/manual.ts`; `tests/core/today-brief.test.ts`. Manual call logging exists; Twilio/Aircall dialer and call-provider callbacks are missing.
+Current evidence: `src/core/features/records/manual.ts`; `tests/core/today-brief.test.ts`. Manual call logging exists; Twilio/Aircall dialer, call-provider callbacks and logging of calls made outside Orbit are missing.
 
 ### CALL-002 — Consented recordings and cited transcripts.
 
@@ -916,14 +924,6 @@ Connect Dial and Calendly, share a reviewed link, book/reschedule/cancel from ea
 
 Current evidence: `src/core/features/ingestion/booking-webhooks.ts`; `src/core/features/ingestion/calendly-setup.ts`; `tests/core/source-onboarding.test.ts`. Calendly signed booking ingestion and guided callback registration exist; native Dial links and complete reschedule/completion lifecycle are missing.
 
-### INTEGRATE-008 — Buoy post-sale handoff.
-
-Status: **missing**.
-
-Close an authorized USD deal won, preview and approve its Buoy handoff, inspect the linked receiving account/owner and acceptance, then replay, revoke access and fail the provider; verify one handoff, visible failure and no customer-success workflow built inside Orbit.
-
-Current evidence: No implementation found. No implementation of this complete target flow was found.
-
 ### INTEGRATE-002 — Zoom meetings and preparation.
 
 Status: **missing**.
@@ -972,6 +972,14 @@ Preview an audience containing subscribed, unknown and stopped contacts; sync on
 
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 
+### INTEGRATE-008 — Buoy post-sale handoff.
+
+Status: **missing**.
+
+Close an authorized USD deal won, preview and approve its Buoy handoff, inspect the linked receiving account/owner and acceptance, then replay, revoke access and fail the provider; verify one handoff, visible failure and no customer-success workflow built inside Orbit.
+
+Current evidence: No implementation found. No implementation of this complete target flow was found.
+
 ### ENRICH-001 — Licensed enrichment and change signals.
 
 Status: **partial**.
@@ -992,9 +1000,9 @@ Current evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/de
 
 Status: **partial**.
 
-Use the same realistic USD account on desktop, 390px web, iOS and Android; complete task/call/note/stage and exact-message journeys, lose network mid-edit, resolve a conflict, receive push and revoke the device without stale sends.
+Use the same realistic USD account on desktop, 390px web, iOS and Android; complete task/call/note/stage journeys and exact-message journeys for a new one-to-one email, a reply all and an approved outreach, lose network mid-edit, resolve a conflict, receive push and revoke the device without stale sends.
 
-Current evidence: `tests/e2e/operator.spec.mjs`; `tests/delegation-browser/viewport.test.ts`; `newtests/t096/report-disclosure.test.ts`. Responsive native web journeys exist; native mobile apps, offline conflict handling and push reminders are missing.
+Current evidence: `tests/e2e/operator.spec.mjs`; `tests/delegation-browser/viewport.test.ts`; `newtests/t096/report-disclosure.test.ts`. Responsive native web journeys exist; native mobile apps, offline conflict handling, push reminders and phone composing under OUT-017/OUT-019 are missing.
 
 ### DATA-003 — Full-target portability, privacy and audit.
 
@@ -1008,9 +1016,9 @@ Current evidence: `src/core/features/records/archive-export.ts`; `src/core/featu
 
 Status: **partial**.
 
-Install an empty edition through the supported CLI, sign in, configure one mail provider, revoke it, restart and upgrade with populated data; inspect credential-free diagnostics, working manual records and preserved audit, then reconnect without replaying customer actions.
+Install an empty edition through the supported CLI, sign in, enable Google and Microsoft sign-in and sign in with each as an invited user while an uninvited and an unverified address are refused, configure one mail provider, revoke it, restart and upgrade with populated data; inspect credential-free diagnostics, working manual records and preserved audit, then reconnect without replaying customer actions.
 
-Current evidence: `src/core/features/identity/index.ts`; `tests/core/prior-auth-upgrade.test.ts`; `tests/core/capture-providers.test.ts`; `tests/core/provider-redirects.test.ts`. Core operational guards and read-provider failures are implemented; the whole target connector and mobile delivery surface is not.
+Current evidence: `src/core/features/identity/index.ts`; `tests/core/prior-auth-upgrade.test.ts`; `tests/core/capture-providers.test.ts`; `tests/core/provider-redirects.test.ts`. Core operational guards and read-provider failures are implemented, and sign-in through one linked OpenID Connect provider exists in `src/core/features/identity/accounts.ts`; direct Google Workspace and Microsoft Entra ID sign-in, the per-domain requirement, and the whole target connector and mobile delivery surface are not.
 
 ### AGENT-001 — Keep the customer graph current with evidence.
 
@@ -1054,4 +1062,4 @@ Current evidence: `src/core/features/ingestion/booking-webhooks.ts`; `tests/core
 
 ## Completion accounting
 
-130 product clauses: **60 done, 50 partial, 20 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+131 product clauses: **60 done, 50 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
