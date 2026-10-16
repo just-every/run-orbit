@@ -136,9 +136,9 @@ Current evidence: `src/core/features/records/routes.ts`; `src/core/features/reco
 
 Status: **done**.
 
-Set do-not-contact, process unsubscribe and permanent-bounce events, then try immediate and scheduled sending; all remain blocked until an explicit current-state clear.
+Set do-not-contact, process unsubscribe and permanent-bounce events, then try immediate and scheduled sending; all remain blocked until an explicit current-state clear. Create a contact by hand and see it start contactable; recreate an erased contact's address and see it start do-not-contact.
 
-Current evidence: `src/core/features/records/suppression.ts`; `tests/core/launch-suppression.test.ts`; `tests/core/outreach-limits.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts`; `tests/core/outreach-limits.test.ts`. Implemented source and exercising tests, including the contactable default for a hand-created contact and do-not-contact on normalized recreation of a suppressed address; live hosted/provider acceptance remains separate.
 
 ### RECORD-013 — Deletion.
 
@@ -394,7 +394,7 @@ Status: **done**.
 
 Edit recipient/subject/body, sign out, return and read the saved draft with its original source and edit attribution.
 
-Current evidence: `src/core/features/drafts/service.ts`; `tests/e2e/operator.spec.mjs`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/drafts/service.ts`; `tests/e2e/operator.spec.mjs`. Implemented source and exercising tests for a single recipient; To, CC and BCC lists are tracked under OUT-019. Live hosted/provider acceptance remains separate.
 
 ### ACTION-005 — Stale draft.
 
@@ -410,7 +410,7 @@ Status: **done**.
 
 Attempt sending from ingestion, an agent and an unreviewed draft; only native exact-recipient/subject/body approval permits the unchanged message to dispatch.
 
-Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Implemented source and exercising tests for single reviewed sends; batch approval is tracked under SEQUENCE-003. Live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Implemented source and exercising tests for single reviewed sends; batch approval is tracked under SEQUENCE-003 and multi-recipient To/CC/BCC approval under OUT-019. Live hosted/provider acceptance remains separate.
 
 ### OUT-002 — Message states.
 
@@ -434,7 +434,7 @@ Status: **done**.
 
 Deliver correct, foreign and absent reply headers with sender checks; attach the correct reply once and hold ambiguous mail for review.
 
-Current evidence: `src/core/features/outreach/reply-matching.ts`; `tests/core/launch-reply-authority.test.ts`; `tests/core/launch-reply-sender.test.ts`. Implemented source and exercising tests for opportunity-linked sends; threading of deal-less sends is tracked under OUT-017. Live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/outreach/reply-matching.ts`; `tests/core/launch-reply-authority.test.ts`; `tests/core/launch-reply-sender.test.ts`. Implemented source and exercising tests for opportunity-linked sends; threading of deal-less sends is tracked under OUT-017, and replies from CC and BCC recipients under OUT-019. Live hosted/provider acceptance remains separate.
 
 ### OUT-005 — Accepted outcome.
 
@@ -478,11 +478,11 @@ Current evidence: `src/core/features/outreach/scheduler.ts`; `tests/core/outreac
 
 ### OUT-010 — Sending limits.
 
-Status: **done**.
+Status: **partial**.
 
-Exhaust deployment and rep limits before immediate and scheduled submission; retain a visible unsent item with its reason and next permitted time.
+Exhaust a user's sequence budget, their one-to-one budget, a mailbox's pace and the shared transport's rate before immediate and scheduled submission; retain a visible unsent item with its reason and next permitted time, and see another user's mail continue.
 
-Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/outreach-limits.test.ts`. The check before submission and the visible unsent state with its limit and next permitted time are implemented and tested, against today's `seed.json` deployment-wide 3 per minute and shared per-operator 100 per day; the OUT-018 budgets, mailbox pacing and per-user isolation are missing.
 
 ### OUT-011 — Unresolved submission.
 
@@ -498,7 +498,7 @@ Status: **done**.
 
 Inspect unsubscribe headers on actual submitted mail, receive a signed unsubscribe and confirm future sending and scheduled work are suppressed.
 
-Current evidence: `tests/core/outbound-boundaries.test.ts`; `tests/core/outreach-limits.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `tests/core/outbound-boundaries.test.ts`; `tests/core/outreach-limits.test.ts`. Implemented source and exercising tests for single-recipient messages; multi-recipient unsubscribe scope is tracked under OUT-019. Live hosted/provider acceptance remains separate.
 
 ### AI-001 — Provider and input.
 
@@ -672,9 +672,9 @@ Current evidence: `src/core/features/records/repository.ts`; `src/core/features/
 
 Status: **missing**.
 
-Import HubSpot contacts and companies with Contact owner and Company owner columns, one owner value unmatched; map it in the dry run, apply, and see each record's owner and attributed import entry. Bulk-reassign 20 contacts with one denied item and see 19 changes, one listed failure and 19 timeline entries. Enable the company-to-contact rule, preview it, change a company owner and see only its unowned contacts take that owner. Enable the first-email rule, send a first email to an unowned lead and see the sender become its owner. Sign in as a seller restricted to owned records: "My contacts" opens by default, and lists, search, API and export show only their own contacts and companies. Remove a rep and hand over their contacts and companies explicitly under TEAM-004.
+Import HubSpot contacts and companies with Contact owner and Company owner columns, one owner value unmatched; map it in the dry run, apply, and see each record's owner and attributed import entry. Bulk-reassign 20 contacts with one denied item and see 19 changes, one listed failure and 19 timeline entries. Enable the company-to-contact rule, preview it, change a company owner and see only its unowned contacts take that owner. Enable the first-email rule, send a first email to an unowned lead and see the sender become its owner. Sign in as a seller restricted to owned records: "My contacts" opens by default, and lists, search, API and export show only their own contacts and companies. Remove a rep and hand over their contacts and companies explicitly under TEAM-004. Assign a company to a rep and see one notification naming it and the assigner; bulk-assign 20 contacts to another rep and see one notification listing them; assign a contact to yourself and see none.
 
-Current evidence: No implementation found. `src/core/features/records/schema.ts` holds `owner_id` only on opportunities; contacts, leads, companies and custom objects have no owner, bulk assignment, owner import mapping, assignment rules or owned-record views.
+Current evidence: No implementation found. `src/core/features/records/schema.ts` holds `owner_id` only on opportunities; contacts, leads, companies and custom objects have no owner, bulk assignment, owner import mapping, assignment rules, assignment notifications or owned-record views.
 
 ### RECORD-017 — Mentions in notes and activities.
 
@@ -706,7 +706,7 @@ Status: **missing**.
 
 Connect a Salesforce sandbox with converted leads, two record types and linked activity/custom-object data; dry-run, map, apply, interrupt/resume and rerun, reconcile record/association totals and demonstrate conflict-preserving undo. Repeat with an authorized real export.
 
-Current evidence: No implementation found.. No implementation of this complete target flow was found.
+Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### CAPTURE-010 — Continuous authorized mail and calendar reads.
 
@@ -746,7 +746,7 @@ Status: **missing**.
 
 Connect each provider, review recipient/subject/body/signature/attachment, send once and verify provider Sent, a real recipient reply and Orbit threading; revoke before a scheduled send and cause a timeout to demonstrate visible uncertainty with no duplicate or transport switch.
 
-Current evidence: No implementation found.. No implementation of this complete target flow was found.
+Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### OUT-014 — Reusable personalized templates and sales content.
 
@@ -754,7 +754,7 @@ Status: **missing**.
 
 Save a team template, render it for two contacts, block one with a missing field, approve one, revise the template and confirm the approved bytes remain unchanged; send an authorized attachment and refuse a forbidden one.
 
-Current evidence: No implementation found.. No implementation of this complete target flow was found.
+Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### OUT-015 — Honest open and reply tracking.
 
@@ -780,13 +780,29 @@ Through OUT-013, email a lead with no company or deal from its record and receiv
 
 Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/drafts/service.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/outreach-limits.test.ts`. Reviewed one-to-one mail to a contact on an open opportunity exists; the dispatcher in `src/core/features/outreach/service.ts` submits only drafts joined to an open opportunity's contact, so composing from contact, lead and company records, sends to contacts on won/lost or no deals, contact/company reply threading and the contact-level awaiting-response obligation are missing.
 
+### OUT-018 — Sending capacity for a whole sales team.
+
+Status: **partial**.
+
+With 12 users (nine AEs, two SDRs and one manager) sending through Gmail and Microsoft 365 mailboxes and the shared transport, in one business morning each user approves 40 one-to-one messages while two SDRs each approve a 100-recipient, four-step SEQUENCE-003 batch. Verify that every one-to-one message is submitted within 60 seconds of its approval while the batches drain; that each SDR's 100 first steps are submitted within the business day inside their own sequence budget, interleaved with the other SDR's; and that no deployment-wide throttle delays a mailbox send. Inject a provider 429 for one mailbox and see only that mailbox's mail deferred, visibly, until its `Retry-After`. Lower one SDR's sequence budget to 50: only that SDR's remaining steps defer, visibly, naming the limit and the next permitted time, while the other SDR's steps and everyone's one-to-one mail continue. Record the measured submission latencies at the declared 25-user capacity before `seed.json` drops `estimated-until-load-tested`.
+
+Current evidence: `src/core/features/outreach/service.ts`; `tests/core/outreach-limits.test.ts`; `tests/core/signals-outreach.test.ts`. A per-operator rolling-day limit with a visible retry time exists, but it is today's single `seed.json` value of 100 shared by all mail, under a deployment-wide limit of 3 per minute (`claimed_at` counts in `src/core/features/outreach/service.ts`). Separate sequence and one-to-one budgets, per-mailbox pacing, a team-scaled shared-transport rate, one-to-one priority, fair draining and the load journey are missing.
+
+### OUT-019 — To, CC and BCC, reply and reply all.
+
+Status: **missing**.
+
+Through Gmail, receive a captured thread from a contact with two CC'd colleagues, one of them unknown. Reply all from Orbit, adding the team's internal sales engineer in CC and another existing contact in BCC. Verify that the pre-filled To and CC lists leave out the rep's own mailbox; that the unknown colleague needs an explicit choice and becomes a contact with basis `inbound conversation`; that the provider records one message with exactly the approved To, CC and BCC lists and no BCC header in delivered copies; that the reply is logged once on each external contact and once on their company and the linked deal; that the BCC address is absent from the other contacts' timelines and the other recipients' copies; and that a later reply from the CC'd colleague threads back onto their contact, company and deal and closes the awaiting-response obligation. Add a do-not-contact contact in CC and see the send refused, naming them; remove them and approve the re-rendered message. Add a one-off external address and an erased contact's address: the first is sent with its basis recorded, and the second is refused without naming the person. Repeat the reply-all journey through Microsoft 365, and once through `mail.sender.v1`, where a one-click unsubscribe stops every external recipient of that message with the reason shown.
+
+Current evidence: No implementation found. Drafts and outbound messages hold a single `recipient_email` matched to one `contact_id`, and the dispatcher in `src/core/features/outreach/service.ts` joins on it; there are no CC or BCC lists, internal or one-off recipients, reply-all pre-fill or per-recipient landing.
+
 ### TASK-001 — Assigned prioritized recurring sales tasks.
 
 Status: **partial**.
 
-Create a high-priority due call and weekly follow-up, assign/reassign and complete from the daily task view, restart around recurrence and verify one next occurrence; remove the rep and hand over remaining tasks.
+Create a high-priority due call and weekly follow-up, assign/reassign and complete from the daily task view, see the new assignee notified once, restart around recurrence and verify one next occurrence; remove the rep and hand over remaining tasks.
 
-Current evidence: `src/core/features/delegation/effects.ts`; `src/core/features/today/plan-actions.ts`; `tests/delegation/brief-handoff.test.ts`; `tests/core/today-brief.test.ts`. Linked assigned due tasks and review exist; explicit priority, recurrence, unified task calendar and full handover are incomplete.
+Current evidence: `src/core/features/delegation/effects.ts`; `src/core/features/today/plan-actions.ts`; `tests/delegation/brief-handoff.test.ts`; `tests/core/today-brief.test.ts`. Linked assigned due tasks and review exist; explicit priority, recurrence, unified task calendar, assignment notifications and full handover are incomplete.
 
 ### NOTIFY-003 — Reminders that reach an absent seller.
 
@@ -794,23 +810,23 @@ Status: **missing**.
 
 Leave Orbit closed, advance a task reminder/digest schedule, receive it in a real mailbox/device and inspect its evidence link; complete or reassign the task before dispatch, simulate a provider failure and restart without stale or duplicate reminders.
 
-Current evidence: No implementation found.. No implementation of this complete target flow was found.
+Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### SEQUENCE-001 — Multi-step sales sequences.
 
 Status: **partial**.
 
-Create a five-step email/call/manual-LinkedIn sequence whose second email step is threaded, enroll eligible contacts with and without deals with exact-content approvals, complete the manual task, advance business time and restart mid-step; verify one action per due step, the second email arriving in the first email's thread, per-rep limit enforcement and no unapproved send.
+As a seller, create and share with the team a five-step email/call/manual-LinkedIn sequence whose second email step is threaded and CCs the account's sales engineer, and see a read-only user refused authoring; enroll eligible contacts with and without deals with exact-content approvals, complete the manual task, advance business time and restart mid-step; verify one action per due step, the second email arriving in the first email's thread with the internal CC, OUT-018 per-user budget enforcement and no unapproved send.
 
-Current evidence: `src/core/features/outreach/scheduler.ts`; `src/core/features/drafts/service.ts`; `tests/core/outreach-limits.test.ts`. Reviewed single scheduled messages exist; multi-step definitions, deal-less enrollments, step threading and manual step execution are missing.
+Current evidence: `src/core/features/outreach/scheduler.ts`; `src/core/features/drafts/service.ts`; `tests/core/outreach-limits.test.ts`. Reviewed single scheduled messages exist; multi-step definitions, rep authoring and sharing, deal-less enrollments, step threading, internal CC and manual step execution are missing.
 
 ### SEQUENCE-002 — Immediate sequence exits and accountable outcomes.
 
 Status: **partial**.
 
-Race an approved due step with each reply/booking/stage/stop event, restart and replay; verify no prohibited send, one exit reason and separate reply/meeting/deal-outcome measures.
+Race an approved due step with each reply/booking/stage/stop event, including a reply on the step's thread from a colleague the buyer CC'd, restart and replay; verify no prohibited send, one exit reason and separate reply/meeting/deal-outcome measures.
 
-Current evidence: `src/core/features/ingestion/stop-repository.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Contact-level scheduled-message stop rules exist; enrollment/stage exits and outcome reporting are missing.
+Current evidence: `src/core/features/ingestion/stop-repository.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Contact-level scheduled-message stop rules exist; enrollment/stage exits, thread-participant exits and outcome reporting are missing.
 
 ### SEQUENCE-003 — Bulk enrollment with one reviewed batch approval.
 
@@ -866,7 +882,7 @@ Status: **missing**.
 
 Create USD 10,000 at 30% and USD 20,000 at 60%, require USD 15,000 weighted total, apply a documented override and close one won; compare rep/team quota attainment, recurring schedule and preserved prior-period snapshot.
 
-Current evidence: No implementation found.. No implementation of this complete target flow was found.
+Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### QUOTE-001 — Products, quotes and signatures.
 
@@ -874,7 +890,7 @@ Status: **missing**.
 
 Quote two products with discount and tax disclosure, require manager approval above its threshold, send the approved version through DocuSign, reject an old version and process signed/declined callbacks once; review the resulting billing handoff.
 
-Current evidence: No implementation found.. No implementation of this complete target flow was found.
+Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### INTEGRATE-001 — Dial and Calendly bookings.
 
@@ -890,7 +906,7 @@ Status: **missing**.
 
 Close an authorized USD deal won, preview and approve its Buoy handoff, inspect the linked receiving account/owner and acceptance, then replay, revoke access and fail the provider; verify one handoff, visible failure and no customer-success workflow built inside Orbit.
 
-Current evidence: No implementation found.. No implementation of this complete target flow was found.
+Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### INTEGRATE-002 — Zoom meetings and preparation.
 
@@ -898,7 +914,7 @@ Status: **missing**.
 
 Connect Zoom, attach an authorized meeting to a deal, open its preparation, finish it and review a cited recap; deny recording permission, replay completion and cancel a second meeting without fabricated context.
 
-Current evidence: No implementation found.. No implementation of this complete target flow was found.
+Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### INTEGRATE-003 — Nectar and Stripe billing context.
 
@@ -906,7 +922,7 @@ Status: **missing**.
 
 Link a Stripe test customer and Nectar account to a USD deal, ingest invoice paid/past-due/refund events, replay them and inspect one status timeline; approve a billing handoff and deny a mismatched customer.
 
-Current evidence: No implementation found.. No implementation of this complete target flow was found.
+Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### INTEGRATE-004 — HappyToHelp, Help Scout and Zendesk account context.
 
@@ -914,7 +930,7 @@ Status: **missing**.
 
 Connect each support service, map a customer, open a ticket on its sales account, restrict a ticket and revoke access; verify current visibility and one reviewed handoff with a returned support outcome.
 
-Current evidence: No implementation found.. No implementation of this complete target flow was found.
+Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### INTEGRATE-005 — Slack sales notifications and handoffs.
 
@@ -922,7 +938,7 @@ Status: **missing**.
 
 Route a stage event and overdue task to an authorized Slack channel, replay the event, deny a private-account disclosure and submit a revoked or foreign action; inspect one correct notification and attributable task.
 
-Current evidence: No implementation found.. No implementation of this complete target flow was found.
+Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### INTEGRATE-006 — QuickBooks Online and Xero accounting handoff.
 
@@ -930,7 +946,7 @@ Status: **missing**.
 
 For both services approve a USD quote-to-invoice handoff, inspect provider lines/tax/identity, receive partial and full payment status and replay a timed-out result without a second invoice.
 
-Current evidence: No implementation found.. No implementation of this complete target flow was found.
+Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### INTEGRATE-007 — Mailchimp audience and suppression handoff.
 
@@ -938,7 +954,7 @@ Status: **missing**.
 
 Preview an audience containing subscribed, unknown and stopped contacts; sync only the authorized subset, ingest unsubscribe and replay a prior subscription update; verify no resumed outreach or duplicate subscriber.
 
-Current evidence: No implementation found.. No implementation of this complete target flow was found.
+Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### ENRICH-001 — Licensed enrichment and change signals.
 
@@ -1022,4 +1038,4 @@ Current evidence: `src/core/features/ingestion/booking-webhooks.ts`; `tests/core
 
 ## Completion accounting
 
-126 product clauses: **61 done, 47 partial, 18 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+128 product clauses: **60 done, 49 partial, 19 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
