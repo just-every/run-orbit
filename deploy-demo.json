@@ -4,7 +4,8 @@
   "name": "Orbit",
   "settings": {
     "MAIL_PROVIDER": "development",
-    "MAIL_FROM": "Orbit demo <demo@demo.invalid>"
+    "MAIL_FROM": "Alex Morgan <alex@brightwork.example>"
   },
-  "instanceType": "basic"
+  "instanceType": "basic",
+  "ownerEmail": "alex@brightwork.example"
 }

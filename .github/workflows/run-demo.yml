@@ -67,3 +67,17 @@ jobs:
             sleep 15
           done
           ! curl --silent --show-error --doh-url "$doh" -D - -o /dev/null "https://$domain/" | grep -qi '^set-cookie:'
+      - name: Observe test-host admissions for the idle window
+        if: ${{ inputs.test_only && !inputs.remove }}
+        timeout-minutes: 16
+        run: node scripts/demo/observe-host.mjs
+        env:
+          CLOUDFLARE_ACCOUNT_ID: b20c0ca9cab0c2b70e13d7cf724b89bd
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Retain test-host occupancy observation
+        if: ${{ always() && inputs.test_only && !inputs.remove }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-test-observation
+          path: demo-observation/
+          if-no-files-found: error

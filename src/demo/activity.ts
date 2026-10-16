@@ -11,7 +11,7 @@ import {demoId,hash} from './records';
 /** Finish the workspace's first run through the same domain operations as its owner. */
 export async function seedActivity(env:PlatformBindings,owner:string,now:Date){
  const db=env.DB;
- for(const [email,name] of [['alex@demo.invalid','Alex Morgan'],['jordan@demo.invalid','Jordan Lee']]){
+ for(const [email,name] of [['jordan@brightwork.example','Jordan Lee']]){
   if(!await db.prepare('SELECT 1 FROM operators WHERE email=?').bind(email).first())await new SettingsRepository(db).invite(email!,name!,owner);
  }
  const source=demoId(1,0),event={eventId:'demo-connection-check',type:'form.submitted',subject:'Customer activity connection checked',occurredAt:now.toISOString(),data:{test:true}};

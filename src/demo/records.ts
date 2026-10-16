@@ -36,7 +36,7 @@ export async function seedRecords(db:D1Database, owner:string, now:Date) {
    insert(db,'timeline_entry_records',{timeline_entry_id:signal,record_type:record_type!,record_id:record_id!}),
   );
   for(const [m,message] of deal.messages.entries()) {
-   const id=demoId(20,m),messageSignal=demoId(21,m),headers=`From: ${message.kind==='reply'?email:'alex@demo.invalid'}\nTo: ${message.kind==='reply'?'alex@demo.invalid':email}\nSubject: ${message.subject}\nDate: ${new Date(message.occurredAt).toUTCString()}\nMessage-ID: <sample-${m}@demo.invalid>`;
+   const id=demoId(20,m),messageSignal=demoId(21,m),headers=`From: ${message.kind==='reply'?email:'alex@brightwork.example'}\nTo: ${message.kind==='reply'?'alex@brightwork.example':email}\nSubject: ${message.subject}\nDate: ${new Date(message.occurredAt).toUTCString()}\nMessage-ID: <sample-${m}@demo.invalid>`;
    batch.push(
     insert(db,'signals',{id:messageSignal,source_id:demoId(2,0),source_event_id:`story-message-${m}`,type:message.kind==='reply'?'email.replied':'email.sent',subject:message.subject,occurred_at:message.occurredAt,received_at:message.occurredAt,payload_hash:await hash(headers+message.body),confidence:'observed',linking_basis:'Demo sample mailbox history',created_at:message.occurredAt}),
     insert(db,'capture_items',{id,source_id:demoId(2,0),signal_id:messageSignal,kind:'message',headers,body:message.body,captured_at:message.occurredAt}),
