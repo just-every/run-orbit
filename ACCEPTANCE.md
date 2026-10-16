@@ -202,7 +202,7 @@ Status: **done**.
 
 Inspect public assets/network and submit identity-free page/chat events; no Orbit tracker runs and unsupported identity stays outside customer history.
 
-Current evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`. Implemented source and exercising tests for the no-tracker rule; OUT-016's opt-in mail tracking exception is tracked under OUT-016. Live hosted/provider acceptance remains separate.
 
 ### SIGNAL-008 — Ingestion failure.
 
@@ -234,7 +234,7 @@ Status: **done**.
 
 Capture known and unknown participants; unknown mail is not retained by default and explicit one-import retention creates only held evidence.
 
-Current evidence: `src/core/features/capture/intake.ts`; `src/core/features/capture/proposals.ts`; `tests/core/capture-intake.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/capture/intake.ts`; `src/core/features/capture/proposals.ts`; `tests/core/capture-intake.test.ts`. Implemented source and exercising tests for file and address capture; the connected-source new-prospect path is tracked under CAPTURE-012. Live hosted/provider acceptance remains separate.
 
 ### CAPTURE-003 — What capture applies at once.
 
@@ -258,7 +258,7 @@ Status: **done**.
 
 Attempt capture with native, collaborator, source and delegation authority; only permitted native/address intake succeeds, and a proposed new contact stays blocked.
 
-Current evidence: `src/core/features/capture/providers/oauth.ts`; `tests/core/capture-providers.test.ts`; `tests/core/capture-boundaries.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/capture/providers/oauth.ts`; `tests/core/capture-providers.test.ts`; `tests/core/capture-boundaries.test.ts`. Implemented source and exercising tests; the explicit contactability choice on accepting a new-prospect proposal is tracked under CAPTURE-012. Live hosted/provider acceptance remains separate.
 
 ### CAPTURE-006 — Capture sources (`capture.source.v1`).
 
@@ -410,7 +410,7 @@ Status: **done**.
 
 Attempt sending from ingestion, an agent and an unreviewed draft; only native exact-recipient/subject/body approval permits the unchanged message to dispatch.
 
-Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Implemented source and exercising tests for single reviewed sends; batch approval is tracked under SEQUENCE-003. Live hosted/provider acceptance remains separate.
 
 ### OUT-002 — Message states.
 
@@ -696,7 +696,7 @@ Current evidence: No implementation found.. No implementation of this complete t
 
 Status: **partial**.
 
-Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, revoke/reconnect and verify no unauthorized folder/mailbox is read. Complete an authorized live Gmail and Microsoft tenant journey.
+Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, see an unknown correspondent become a CAPTURE-012 proposal, revoke/reconnect and verify no unauthorized folder/mailbox is read. Complete an authorized live Gmail and Microsoft tenant journey.
 
 Current evidence: `src/core/features/capture/providers/google.ts`; `src/core/features/capture/providers/microsoft.ts`; `src/core/features/capture/providers/service.ts`; `tests/core/capture-providers.test.ts`. Read adapters, durable selected-scope cursors and OAuth safeguards exist; current fixed calendar window needs explicit extension and live provider acceptance is unmeasured.
 
@@ -707,6 +707,22 @@ Status: **partial**.
 For both calendars create an approved meeting in Orbit, verify it in the provider, reschedule it there and read it back, edit concurrently, cancel one recurring occurrence and reconnect after revocation without duplicate invitations.
 
 Current evidence: `src/core/features/capture/providers/google.ts`; `src/core/features/capture/providers/microsoft.ts`; `tests/core/capture-providers.test.ts`. Provider calendars are read and cancellation occurrences captured; calendar writeback and invitations do not exist.
+
+### CAPTURE-012 — New prospects from connected mail and calendars.
+
+Status: **partial**.
+
+With a connected Gmail source, send from Gmail to an unknown address at an unknown non-free-mail domain and receive their reply; also receive cold inbound mail from a second unknown person and a bulk newsletter. Verify proposals for the two people (none for the newsletter) with direction and evidence; accept the first with the `rep-initiated conversation` basis and see the full thread back-filled once on the new contact and company, then reply from Orbit on the same thread. Decline the second and confirm it is not proposed again, then create a contact manually for a third earlier correspondent and see their history back-filled. Repeat the inbound case through Microsoft 365.
+
+Current evidence: `src/core/features/capture/intake.ts`; `src/core/features/capture/routes.ts`; `src/core/features/capture/sources.ts`; `tests/core/today-brief.test.ts`. File uploads can keep unknown-participant mail as held unlinked evidence; connected sources still discard it, and new-prospect proposals, back-fill and the recorded contactability basis are missing.
+
+### FORM-001 — Lead capture forms on the buyer's website.
+
+Status: **partial**.
+
+Build a Contact sales form mapping name, email, company, phone and a custom deal-size field, publish it hosted and embedded on an allowlisted test HTTPS domain, and submit from that domain both framed and by direct post: a new person, an existing contact with a changed name, a honeypot-filled bot entry, a too-fast entry, a replay and a post from a non-allowlisted origin. Verify the contact, company and deal creation, the reviewed proposal for the changed name with the stored value untouched, the consent record, round-robin owners alternating across two reps, one notification per accepted submission, NOW entry, spam and origin refusals with counts, and no cookie or tracker on either page.
+
+Current evidence: `src/core/features/forms/service.ts`; `src/core/features/forms/native-capture.ts`; `src/core/features/forms/embedding.ts`; `src/core/platform/response-policy.ts`; `newtests/t096/forms-native.test.ts`. A reviewed hosted form with five fixed contact fields, framed embedding on allowlisted origins, exact-email create-or-update that leaves existing contacts unchanged for review, consent records, idempotent atomic intake and observed form signals exist; company/deal/custom-property mapping, direct cross-origin posting, spam protection, owner rotation and team notification are missing.
 
 ### OUT-013 — Gmail and Microsoft 365 mailbox sending.
 
@@ -731,6 +747,14 @@ Status: **partial**.
 Ingest accepted/delivered/open events and genuine/automatic/foreign replies; show each distinct status and provenance on the same deal, label unknown opens honestly, and verify only a genuine linked reply exits follow-up.
 
 Current evidence: `src/core/features/outreach/provider-events.ts`; `src/core/features/outreach/reply-sender.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/launch-reply-authority.test.ts`. Provider events and reply attribution exist; end-to-end mailbox/open reporting is not complete.
+
+### OUT-016 — Disclosed per-message open and click tracking.
+
+Status: **missing**.
+
+Enable open and click tracking with disclosure, approve a tracked one-to-one message sent through OUT-013 Gmail and a tracked sequence step sent through Microsoft 365, open each in a real mail client and click a link; verify one inferred open and one click signal on the deal, a 302 to the unchanged reviewed destination, one deduplicated real-time rep notification, a proxy prefetch and a scanner click labelled automated, no cookie or script, no sequence exit or high band from the open, and `not tracked` on an untracked message; mark the contact do-not-track, erase another contact and verify nothing further is recorded.
+
+Current evidence: No implementation found. No tracking token, link redirect or tracked open/click signal exists; Orbit currently serves no tracker under SIGNAL-007.
 
 ### TASK-001 — Assigned prioritized recurring sales tasks.
 
@@ -764,6 +788,14 @@ Race an approved due step with each reply/booking/stage/stop event, restart and 
 
 Current evidence: `src/core/features/ingestion/stop-repository.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Contact-level scheduled-message stop rules exist; enrollment/stage exits and outcome reporting are missing.
 
+### SEQUENCE-003 — Bulk enrollment with one reviewed batch approval.
+
+Status: **missing**.
+
+From a saved list of 50 eligible and 3 ineligible contacts, enroll all of them in a five-step sequence with four email steps in one action; inspect the excluded reasons, open any rendered message, edit one and remove one, then approve once. Advance business time and verify one provider submission per due email step per remaining recipient with no further approval, a per-rep limit of 40 per day deferring the rest visibly to the next window, a merge-field change on one contact holding only that recipient's step for review, and a workflow-triggered contact waiting in the owner's approval queue until its batch is approved.
+
+Current evidence: No implementation found. Reviewed single scheduled messages exist under OUT-009; sequences, batch rendering and batch approval do not.
+
 ### AUTO-001 — Configurable sales workflows and visible execution.
 
 Status: **partial**.
@@ -795,6 +827,14 @@ Status: **partial**.
 Build and save a US monthly report for two pipelines containing won/lost/open deals and rep activities, reconcile every total and reason by drill-through, export and reopen it after access revocation and late evidence.
 
 Current evidence: `src/core/features/analytics/metrics.ts`; `src/core/features/analytics/report-routes.ts`; `newtests/t096/report-disclosure.test.ts`; `newtests/t096/report-time-boundaries.test.ts`. Versioned count/sum/mean/ratio reports and disclosed snapshots exist; the full sales/activity/outcome suite and drill-through remain incomplete.
+
+### REPORT-002 — Shared sales dashboards.
+
+Status: **missing**.
+
+As a manager, build a dashboard with at least four tiles: open pipeline by stage across two pipelines, won/lost reasons this quarter, activities by rep, and forecast against quota. Apply owner, team and date-range filters, share it with the sales team and set it as the team default. Sign in as a restricted rep and verify that the same dashboard opens by default and shows only totals that reconcile with that rep's permitted drill-through, with no hidden count. Schedule a weekly email to the manager and the rep and verify each received copy matches its recipient's access. Delete one source report and see an unavailable tile.
+
+Current evidence: No implementation found. Single saved reports and snapshots exist under REPORT-001; dashboard composition, filters, sharing, defaults and scheduled delivery do not.
 
 ### FORECAST-001 — Weighted forecasts, quotas and revenue schedules.
 
@@ -958,4 +998,4 @@ Current evidence: `src/core/features/ingestion/booking-webhooks.ts`; `tests/core
 
 ## Completion accounting
 
-118 product clauses: **61 done, 44 partial, 13 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+123 product clauses: **61 done, 46 partial, 16 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
