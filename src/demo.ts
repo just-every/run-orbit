@@ -12,6 +12,8 @@ export async function demoOwner(env:PlatformBindings){
 export async function seedDemo(env:PlatformBindings,{ownerEmail,now}:{ownerEmail:string;now:Date}){
  const owner=await env.DB.prepare('SELECT id FROM operators WHERE email=? AND setup_owner=1').bind(ownerEmail).first<{id:string}>();
  if(!owner)throw new Error('Claim the demo owner before loading the sample workspace.');
+ // The owner claim names the owner "Owner"; the sample story's owner is Alex Morgan.
+ await env.DB.prepare("UPDATE operators SET display_name='Alex Morgan' WHERE id=? AND display_name='Owner'").bind(owner.id).run();
  await completeSetup(env.DB,owner.id,{name:'Brightwork Studio',timezone:'Australia/Brisbane',currency:'AUD',stages:['Discovery','Evaluation','Proposal']});
  await seedRecords(env.DB,owner.id,now);
  await seedPublication(env.DB,owner.id,now);
