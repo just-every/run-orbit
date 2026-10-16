@@ -59,3 +59,4 @@
 .records-workspace .workbench-form pre {overflow-wrap:anywhere}
 
 .records-workspace .workbench-actions {flex-wrap:wrap}
+.records-contactability-note{margin:12px 0;padding:12px 14px;border-left:3px solid var(--ob-tangerine);background:var(--ob-paper);color:var(--ob-body);line-height:1.5}

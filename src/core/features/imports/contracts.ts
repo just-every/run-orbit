@@ -3,11 +3,14 @@ export const kinds = ['suppression','company','contact','deal','note'] as const;
 export type ImportKind = typeof kinds[number];
 export const importInput = z.object({
  vendor:z.enum(['csv','hubspot','pipedrive']), account:z.string().trim().min(1).max(100),
- files:z.array(z.object({kind:z.enum(kinds),name:z.string().min(1).max(150),csv:z.string().max(2_000_000),mapping:z.record(z.string().max(60),z.string().max(200)),separator:z.enum([';',',','|']).default(';')}).strict()).min(1).max(5),
+ files:z.array(z.object({kind:z.enum(kinds),name:z.string().min(1).max(150),csv:z.string().max(2_000_000),mapping:z.record(z.string().max(60),z.string().max(200)),customFields:z.array(z.string().min(1).max(200)).max(100).optional(),separator:z.enum([';',',','|']).default(';')}).strict()).min(1).max(5),
  stages:z.record(z.string().max(200),z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/)).default({}),
  contactability:z.enum(['mapped_permission','confirmed_contactable']).default('mapped_permission'),
 }).strict();
 export type ImportInput=z.infer<typeof importInput>;
+export type ImportFile=ImportInput['files'][number];
+/** Kinds whose records keep custom fields; a column of theirs can become one. */
+export const customFieldKinds:ReadonlySet<ImportKind>=new Set(['contact','company','deal']);
 export const fields:Record<ImportKind,string[]>={suppression:['id','email','reason'],company:['id','name','domain','owner','description'],contact:['id','name','first_name','last_name','email','phone','job_title','company_ids','company_name','owner','dnc','bounce','quarantined','permission'],deal:['id','title','company_ids','contact_ids','stage','owner','amount','close_date','description'],note:['id','text','occurred_at','contact_ids','company_ids','deal_ids','owner']};
 export const presets:Record<string,Record<ImportKind,Record<string,string>>>={
  csv:{suppression:{email:'email'},company:{id:'id',name:'name',domain:'domain',owner:'owner',description:'description'},contact:{id:'id',name:'name',first_name:'first_name',last_name:'last_name',email:'email',phone:'phone',job_title:'job_title',company_ids:'company_ids',company_name:'company',owner:'owner',dnc:'dnc',bounce:'bounce',quarantined:'quarantined',permission:'permission'},deal:{id:'id',title:'title',stage:'stage',owner:'owner',company_ids:'company_ids',contact_ids:'contact_ids',amount:'amount',close_date:'close_date',description:'description'},note:{id:'id',text:'text',occurred_at:'occurred_at',contact_ids:'contact_ids',company_ids:'company_ids',deal_ids:'deal_ids',owner:'owner'}},

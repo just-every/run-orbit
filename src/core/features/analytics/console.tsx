@@ -1,4 +1,4 @@
-import {label} from '../operator/ui/formatters';
+import {formatDate,label} from '../operator/ui/formatters';
 import {DataValue} from '../operator/ui/data-value';
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { MetricSnapshot } from "../../shared/expansion-contracts";
@@ -358,7 +358,7 @@ export function AnalyticsConsole({ workspaceId }: { workspaceId: string }) {
       {visibleResult && (
         <article className="analytics-console__result">
           <h3>{saved ? t("Saved result") : t("Review before saving")}</h3>
-          <p>{t("Updated")} {new Date(visibleResult.asOf).toLocaleString()}.</p>
+          <p>{t("Updated")} {formatDate(visibleResult.asOf)}.</p>
           {visibleResult.population && (
             <p>
               {t("Records available to you during this review")}: {visibleResult.population.records}. {t("New changes may appear afterwards.")}
@@ -402,7 +402,7 @@ export function AnalyticsConsole({ workspaceId }: { workspaceId: string }) {
                 ? t("Native records were checked against the current data and access revisions.")
                 : visibleResult.watermark === "unknown"
                 ? t("The source has not confirmed that all updates are complete through this period.")
-                : `${t("Source updates are confirmed through")} ${new Date(visibleResult.watermark).toLocaleString()}.`}
+                : `${t("Source updates are confirmed through")} ${formatDate(visibleResult.watermark)}.`}
             </p>
             <p>{visibleResult.inputs.length} source records. Opening a record checks current access.</p><details><summary>Audit details: source records</summary><ol>{visibleResult.inputs.slice(sourcePage*50,sourcePage*50+50).map(ref=><li key={`${ref.type}:${ref.id}`}><a href={`/app/shared-records?${new URLSearchParams({kind:ref.type,id:ref.id})}`}>Open {label(ref.type)}</a> · <code>{ref.id}</code></li>)}</ol><button disabled={sourcePage===0} onClick={()=>setSourcePage(page=>page-1)}>Previous source records</button><button disabled={(sourcePage+1)*50>=visibleResult.inputs.length} onClick={()=>setSourcePage(page=>page+1)}>Next source records</button></details>
           </details>
@@ -420,7 +420,7 @@ export function AnalyticsConsole({ workspaceId }: { workspaceId: string }) {
           {!history.items.length && !history.unavailable && <p>{t("No saved results yet. Preview a report, then save it after review.")}</p>}
           {history.items.map((item) => (
             <article key={item.id}>
-              <p>{t("As of")} {item.asOf}</p><button onClick={async()=>{try{const response=await fetch(`${base}/snapshots/${encodeURIComponent(item.id)}`,{cache:"no-store"});const result=await response.json() as SavedReport & {error?:string};if(!response.ok)throw new Error(result.error);setSaved(result);setPreview(null);}catch(e){setError(e instanceof Error?e.message:"The saved report could not be reopened.");}}}>Reopen saved report</button><a href={`${base}/snapshots/${encodeURIComponent(item.id)}/export`}>Export saved report</a>
+              <p>{t("As of")} {formatDate(item.asOf)}</p><button onClick={async()=>{try{const response=await fetch(`${base}/snapshots/${encodeURIComponent(item.id)}`,{cache:"no-store"});const result=await response.json() as SavedReport & {error?:string};if(!response.ok)throw new Error(result.error);setSaved(result);setPreview(null);}catch(e){setError(e instanceof Error?e.message:"The saved report could not be reopened.");}}}>Reopen saved report</button><a href={`${base}/snapshots/${encodeURIComponent(item.id)}/export`}>Export saved report</a>
               <p>{t("Result")}: {reportValue(item)}</p>
               <ReportDetails report={item}/>
             </article>

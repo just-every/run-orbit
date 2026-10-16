@@ -39,7 +39,7 @@ test('custom filtered Sum discloses its measured period, filters, groups and mis
   const context=await browser.newContext({baseURL:worker.origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:f.cookie}});
   const errors=watchBrowser(context),page=await context.newPage(),id=`disclosed-value-${width}`;
   try{
-   await page.goto('/app/reports');await page.getByText('Create or revise a report from native records',{exact:true}).click();
+   await page.goto('/app/reports');await page.getByText('Create or edit a report from your records',{exact:true}).click();
    await page.getByLabel('Report key').fill(id);await page.getByLabel('Name',{exact:true}).fill('Open opportunity value');
    await page.getByRole('combobox',{name:'Calculation',exact:true}).selectOption('sum');await page.getByLabel('Value field',{exact:true}).selectOption('value_cents');
    await page.getByLabel('Group by field',{exact:true}).selectOption('stage_id');await page.getByLabel('Filter field',{exact:true}).selectOption('lifecycle');

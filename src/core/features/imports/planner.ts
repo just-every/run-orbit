@@ -8,6 +8,9 @@ import {mailboxListSql} from './mailboxes';
 import type { ImportInput } from './contracts';
 import {namedCompanies} from './named-companies';
 
+/** A custom field keeps a whole number or decimal as a number, and everything else as text. */
+function customValues(values:Record<string,string>){return Object.fromEntries(Object.entries(values).map(([name,value])=>[name,/^-?(0|[1-9]\d{0,14})(\.\d+)?$/.test(value)?Number(value):value]));}
+
 export async function prepareImport(input:ImportInput,context:D1ImportContext){
  const {source,rows,namespace}=readImport(input),db=context.storage.database,at=new Date().toISOString(),results=new Map<SourceRecord,MappingResult>(),references=new Map<string,string>();
  const settings=await db.prepare('SELECT free_mail_domains_json FROM workspace_settings').first();
@@ -52,16 +55,16 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  for(let index=rows.length-1;index>=0;index--){const row=rows[index];if(row.derivedContacts?.every(contact=>existing.has(contact)||contact.error||duplicates.has(`${contact.kind}:${contact.id}`)))rows.splice(index,1);}
  const companyFor=new Map(rows.filter(row=>row.derivedContacts).flatMap(row=>row.derivedContacts!.map(contact=>[contact,row] as const)));
  function permission(row:Row){return row.data.permission?.toLowerCase()==='subscribed'||(!row.data.permission&&input.contactability==='confirmed_contactable');}
- function linked(row:Row,kind:string,field:string){const values=ids(row.data[field],row.separator);return values.map(value=>{const key=`${kind}:${value}`,match=references.get(key);if(!match||duplicates.has(key)||rows.some(other=>other.kind===kind&&other.id===value&&other.error))throw new Error(`Unresolved ${kind} association. Include its file and stable ID.`);return match;});}
+ function linked(row:Row,kind:string,field:string){const values=ids(row.data[field],row.separator);return values.map(value=>{const key=`${kind}:${value}`,match=references.get(key);if(!match||duplicates.has(key)||rows.some(other=>other.kind===kind&&other.id===value&&other.error))throw new Error(`This row names a ${kind==='deal'?'deal':kind} ID that is not in the ${kind==='deal'?'deals':kind==='company'?'companies':'contacts'} file. Add that file, or check the ID.`);return match;});}
  for(const row of rows.sort((a,b)=>['suppression','company','contact','deal','note'].indexOf(a.kind)-['suppression','company','contact','deal','note'].indexOf(b.kind))){try{
   if(row.error)throw new Error(row.error);if(duplicates.has(`${row.kind}:${row.id}`))throw new Error('Duplicate source ID in this file.');
   if(row.kind==='suppression'){const reference=nativeId(namespace,'suppression-reference',row.id);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:'suppression',record_id:stopId,source_id:row.id,mailbox:email(row.data.email)!},links:[]}}]});continue;}
-  if(existing.has(row)){const reference=nativeId(namespace,'reference',`${row.kind}:${row.id}`);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:row.kind,record_id:references.get(`${row.kind}:${row.id}`)!,source_id:row.id,mailbox:row.kind==='contact'?email(row.data.email)??null:null},links:[]}}],unmapped:[{reason:'Matched an existing native record. Its name, other fields and associations are kept; incoming differences are not applied. Sending holds still apply.'}]});continue;}
+  if(existing.has(row)){const reference=nativeId(namespace,'reference',`${row.kind}:${row.id}`);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:row.kind,record_id:references.get(`${row.kind}:${row.id}`)!,source_id:row.id,mailbox:row.kind==='contact'?email(row.data.email)??null:null},links:[]}}],unmapped:[{reason:'Already in Orbit, with the same email or website domain. Orbit keeps the saved record and does not apply differences from the file, except that a Do not contact mark from this import still applies.'}]});continue;}
   const id=references.get(`${row.kind}:${row.id}`)!,original=originals.get(`${row.kind}:${id}`);
   if(original){results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:JSON.parse(original)}]});continue;}
   const data=row.data,native:Record<string,any>={...shapes[row.kind],id,created_at:at,updated_at:at},links:Record<string,any>[]=[];
   const provenance={vendor:input.vendor,account:input.account,sourceId:row.id,owner:data.owner??null,stage:data.stage??null,description:data.description??null};
-  if(row.kind!=='note')native.custom_fields_json=JSON.stringify({import_source:JSON.stringify(provenance)});
+  if(row.kind!=='note')native.custom_fields_json=JSON.stringify({...customValues(row.custom),import_source:JSON.stringify(provenance)});
   if(row.kind==='company'){
    if(!data.name)throw new Error('Company name is required.');const domain=data.domain?.trim().toLowerCase().replace(/^www\./,'')||null;
    if(domain&&!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(domain))throw new Error('Company domain must be a domain without a URL path.');
@@ -88,11 +91,11 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
   }
   links.sort((a,b)=>row.kind==='deal'?a.contact_id.localeCompare(b.contact_id):`${a.record_type}:${a.record_id}`.localeCompare(`${b.record_type}:${b.record_id}`));
   if(Object.values(native).some(v=>typeof v==='number'&&!Number.isFinite(v)))throw new Error('Native record has an unsupported default.');
-  results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:{row:native,links,...row.kind==='contact'?{suppressionTokens:emailTokens.get(native.email)??[]}:{} } as any}],...row.derivedContacts?{unmapped:[{reason:'Company created from an exact Company Name in the contacts CSV. Existing native companies are never matched by name.'}]}:{}});
+  results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:{row:native,links,...row.kind==='contact'?{suppressionTokens:emailTokens.get(native.email)??[]}:{} } as any}],...row.derivedContacts?{unmapped:[{reason:'New company, from the Company name column of the contacts file. Orbit does not reuse a company it already has just because the name matches.'}]}:{}});
  }catch(error){row.error=(error as Error).message;results.set(row.source,{effects:[],rejection:row.error});
   // The exact original remains in kit custody. Rejected rows need only their location and reason in the resumable plan, avoiding unindexed personal-data copies.
   row.source.sourceId=`rejected:${sha256(row.source.sourceId)}`;row.source.payload={rejected:true,...row.reviewColumns?{reviewColumns:row.reviewColumns}:{}};row.source.payloadHash=sha256(canonicalJson(row.source.payload));}}
- for(const row of rows)if(!row.error&&row.unmapped.length){const result=results.get(row.source)!;result.unmapped=[...result.unmapped??[],...row.unmapped.map(column=>({field:`column:${column}`,reason:`Unmapped column ${column}: retained only in the private original CSV.`}))];}
+ for(const row of rows)if(!row.error&&row.unmapped.length){const result=results.get(row.source)!;result.unmapped=[...result.unmapped??[],...row.unmapped.map(column=>({field:`column:${column}`,reason:`Column “${column}” is not imported. Orbit keeps it only in its private copy of the original file.`}))];}
  // All positive stops and no-consent holds publish in the first atomic kit entry, before any customer creation.
  const saved=await db.prepare('SELECT value_json FROM crm_import_stops WHERE id=?').bind(stopId).first();
  const value:StopValue=saved?JSON.parse(saved.value_json):{emails,proofs:[],contacts:[],at};

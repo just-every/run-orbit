@@ -126,8 +126,11 @@ test('CAPTURE provider status keeps revoked access clear, reconnects through the
    const callbackStep=source.provider==='Google'?4:2;
    await steps.getByRole('link',{name:new RegExp(`^${callbackStep}\\.`)}).click();
    await expect(page.getByText(`Step ${callbackStep} of 6`)).toBeVisible();
-   await expect(page.getByRole('textbox',{name:`${source.provider} redirect address`})).toHaveText(provider.redirectUri);
-   await expect(page.getByRole('button',{name:`Copy ${source.provider.toLowerCase()} redirect address`})).toBeVisible();
+   // Microsoft refuses a local http:// callback in its Redirect URI box, so the page hands over the exact manifest entry instead.
+   const localMicrosoft=source.provider==='Microsoft'&&provider.redirectUri.startsWith('http://'),copied=localMicrosoft?'Manifest entry for Orbit':`${source.provider} redirect address`;
+   if(localMicrosoft)expect(JSON.parse(`{${(await page.getByRole('textbox',{name:copied}).innerText()).replace(/,\s*$/,'')}}`)).toEqual({replyUrlsWithType:[{url:provider.redirectUri,type:'Web'}]});
+   else await expect(page.getByRole('textbox',{name:copied})).toHaveText(provider.redirectUri);
+   await expect(page.getByRole('button',{name:`Copy ${copied.toLowerCase()}`})).toBeVisible();
    for(const link of await page.locator('.capture-guide__card a[target=_blank]').all())expect(new URL(await link.getAttribute('href')).protocol).toBe('https:');
    expect(await overflow(page)).toEqual([]);
    expect(await serious(page)).toEqual([]);

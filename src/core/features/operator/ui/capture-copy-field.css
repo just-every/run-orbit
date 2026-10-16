@@ -1,0 +1,9 @@
+.capture-copy { display: flex; align-items: stretch; min-width: 0; max-width: 100%; margin: 12px 0; border: 1.5px solid var(--ob-line-strong); border-radius: 12px; background: var(--ob-paper); overflow: hidden; }
+.capture-copy__value { display: flex; flex: 1; align-items: center; min-width: 0; min-height: 48px; padding: 10px 14px; color: var(--ob-ink); font-family: var(--ob-mono); font-size: 14px; line-height: 1.4; overflow-wrap: anywhere; word-break: break-all; user-select: all; }
+.capture-copy__button { flex: none; min-width: 92px; min-height: 48px; padding: 0 18px; border: 0; border-radius: 10px; background: var(--ob-ink); color: var(--ob-paper); cursor: pointer; font: inherit; font-weight: 650; }
+.capture-copy .capture-copy__button { margin: 0; }
+.capture-copy--block { flex-direction: column; }
+.capture-copy--block .capture-copy__value { display: block; white-space: pre-wrap; word-break: normal; overflow-wrap: anywhere; font-size: 13.5px; }
+.capture-copy--block .capture-copy__button { align-self: flex-end; margin: 0 8px 8px; }
+.capture-copy__button:focus-visible, .capture-copy__value:focus-visible { outline: 3px solid var(--ob-tangerine); outline-offset: -3px; }
+.capture-copy__status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }

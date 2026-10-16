@@ -13,7 +13,7 @@ export function namedCompanies(rows:Row[]):Row[]{
   let company=companies.get(id);
   if(!company){
    const data={id,name},payload={data,separator:contact.separator};
-   company={kind:'company',id,data,separator:contact.separator,unmapped:[],derivedContacts:[],source:{...contact.source,kind:'company',sourceId:id,payload,payloadHash:sha256(canonicalJson(payload))}};
+   company={kind:'company',id,data,custom:{},separator:contact.separator,unmapped:[],derivedContacts:[],source:{...contact.source,kind:'company',sourceId:id,payload,payloadHash:sha256(canonicalJson(payload))}};
    companies.set(id,company);
   }
   company.derivedContacts!.push(contact);

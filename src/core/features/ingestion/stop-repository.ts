@@ -1,6 +1,7 @@
 import { contactEmailKey } from '../records/identity';
 import { privacyMatcher, suppressionContextFence, suppressionProof } from '../records/suppression';
 import { eventSchema, IngestionError, type SignalEvent } from './contracts';
+import { doNotContactReason } from '../outreach/stop-reason';
 
 export function stopsMailbox(event:SignalEvent){
   return event.type==='email.unsubscribed'||(event.type==='email.bounced'&&event.permanentBounce===true);
@@ -44,7 +45,7 @@ export async function mailboxStopStatements(db:D1Database,event:SignalEvent,at:s
   // deletion/recreation at the same mailbox resolves the replacement at commit.
   statements.push(...tokens.map(token=>suppressionProof(db,token)),
     db.prepare(`UPDATE contacts SET contactability='do_not_contact',updated_at=? WHERE id IN(${recipients})`).bind(at,...bindings),
-    db.prepare(`UPDATE drafts SET is_stale=1,stale_reason='Contact stop event',updated_at=? WHERE recipient_contact_id IN(${recipients})`).bind(at,...bindings),
-    db.prepare(`UPDATE outbound_messages SET state='cancelled',failure='Contact stop event',updated_at=? WHERE state='scheduled' AND contact_id IN(${recipients})`).bind(at,...bindings));
+    db.prepare(`UPDATE drafts SET is_stale=1,stale_reason=?,updated_at=? WHERE recipient_contact_id IN(${recipients})`).bind(doNotContactReason,at,...bindings),
+    db.prepare(`UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE state='scheduled' AND contact_id IN(${recipients})`).bind(doNotContactReason,at,...bindings));
   return statements;
 }

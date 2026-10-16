@@ -4,7 +4,7 @@ import {ReportField,ReportFilterValue} from './report-fields';
 
 export function ReportDefinitionEditor({workspaceId}:{workspaceId:string}){
  const [error,setError]=useState(''),[busy,setBusy]=useState(false),[type,setType]=useState('opportunity'),[filter,setFilter]=useState(''),feedback=useRef<HTMLParagraphElement>(null);
- return <details className="fold-panel"><summary>Create or revise a report from native records</summary><form onSubmit={async event=>{
+ return <details className="fold-panel"><summary>Create or edit a report from your records</summary><form onSubmit={async event=>{
   event.preventDefault();const data=new FormData(event.currentTarget);setBusy(true);setError('');
   try{
    await api(`/api/v2/workspaces/${encodeURIComponent(workspaceId)}/operations/metrics`,{

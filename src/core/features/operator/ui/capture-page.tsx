@@ -46,6 +46,7 @@ function Start({ forward }: { forward: Overview['forward'] }) {
         <p>Send customer mail to a private address and Orbit files it against the right contact.</p>
         {ready ? <form method="post" action="/api/v1/capture/forward"><button className="orbit-button orbit-button--primary capture-start__button" type="submit">Create my Orbit address</button></form>
           : <a className="orbit-button orbit-button--primary capture-start__button" href="/app/capture/connect/address">Get my Orbit address</a>}
+        {ready ? null : <p className="capture-note">A one-time step first: the address needs Orbit hosted on Cloudflare with a domain of your own. Without one, use the calendar link, a file upload, or Google or Microsoft below.</p>}
       </div>
       <ol className="capture-start__hints">
         <li><span aria-hidden="true">1</span>Copy your address</li>

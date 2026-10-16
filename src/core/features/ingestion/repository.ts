@@ -9,6 +9,7 @@ import { resolveTarget, targetsFor, type SignalTarget } from './linking-reposito
 import { mailboxStopStatements, stopsMailbox } from './stop-repository';
 import { linkTargetFence } from './linking-fence';
 import {isTestEvent,customerSignalSql} from '../signals/test-events';
+import { stopReason } from '../outreach/stop-reason';
 
 interface SourceAuthority {secret_ciphertext:string|null}
 export class IngestionRepository {
@@ -82,7 +83,7 @@ export class IngestionRepository {
     if(event.type==='form.submitted')for(const target of targets.filter(t=>t.type==='opportunity'))statements.push(this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=CASE WHEN queue_state='now' AND queue_reason IN ('Customer reply','Delivery problem') THEN queue_reason ELSE 'Form submitted' END,next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open'").bind(at,target.id));
     const contacts=targets.filter(target=>target.type==='contact');
     if((['email.replied','meeting.booked'].includes(event.type)||stopsMailbox(event))&&!(stopsMailbox(event)&&event.email!==undefined))for(const contact of contacts){
-      statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Customer stop event',updated_at=? WHERE recipient_contact_id=?").bind(at,contact.id),this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure='Customer stop event',updated_at=? WHERE contact_id=? AND state='scheduled'").bind(at,contact.id));
+      statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason=?,updated_at=? WHERE recipient_contact_id=?").bind(stopReason(event.type),at,contact.id),this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE contact_id=? AND state='scheduled'").bind(stopReason(event.type),at,contact.id));
       if(event.type==='email.unsubscribed'||event.permanentBounce)statements.push(...await contactStopStatements(this.db,contact.id));
     }
     if(['email.replied','email.bounced'].includes(event.type))for(const target of targets.filter(t=>t.type==='opportunity'))statements.push(this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=?,next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open'").bind(event.type==='email.replied'?'Customer reply':'Delivery problem',at,target.id));

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { OperatorState } from './operator-shell';
 import { CaptureScope } from './capture-scope';
+import { formatDate } from './formatters';
 import {
   isCaptureProvider,
   isRevokedSource,
@@ -9,7 +10,7 @@ import {
   type CaptureSyncResponse,
 } from './capture-types';
 
-const when = (value: string | null) => value ? new Date(value).toLocaleString() : 'Never';
+const when = (value: string | null) => value ? formatDate(value) : 'Never';
 
 function statusLabel(source: CaptureSource) {
   if (source.state === 'disconnected') return 'Disconnected';
