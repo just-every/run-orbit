@@ -23,7 +23,7 @@ export function OperatorShell({ action, children, eyebrow, title, restricted=fal
         <a aria-label="Orbit home" className="operator-mark" href="/"><OrbitLockup name={publicProductConfig.name} imageUrl={publicProductConfig.imageUrl} /></a>
         <button ref={toggle} className="operator-menu-toggle" type="button" aria-expanded={expanded} aria-controls={navigationId} onClick={()=>setExpanded(!expanded)}>Menu</button>
         <nav id={navigationId} aria-label="Operator navigation" className="operator-nav" data-open={expanded} onKeyDown={event=>{if(event.key==='Escape'){setExpanded(false);toggle.current?.focus();}}} onClick={event=>{if((event.target as HTMLElement).closest('a'))setExpanded(false);}}>
-          {!restricted&&<><Link to="/app/records">Opportunities</Link>
+          {!restricted&&<><Link to="/app/records">Records</Link>
           <Link activeOptions={{ exact: true }} to="/app">NOW</Link>
           <Link to="/app/settings">Settings</Link>
           <Link to="/app/sources">Sources</Link>

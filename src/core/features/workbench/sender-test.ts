@@ -27,5 +27,13 @@ export function senderTestRoutes(db:D1Database,mail?:OutboundMail){
    return c.json({error:'SendGrid did not confirm acceptance. Check your mailbox and SendGrid Activity before trying again; this attempt will not be repeated automatically.'},502);
   }
  });
+ // Only the operator can say the test arrived: SendGrid's acceptance is not delivery.
+ app.post('/received',async c=>{
+  const input=z.object({attemptId:z.uuid()}).strict().safeParse(await c.req.json());
+  if(!input.success)return c.json({error:'Choose the test you received.'},400);
+  const marked=await db.prepare("UPDATE audit_entries SET details_json=? WHERE id=? AND actor_id=? AND action='mail.sender_test' AND json_extract(details_json,'$.state') IN('accepted','received')").bind(JSON.stringify({state:'received'}),`sender-test:${input.data.attemptId}`,c.get('operator').operatorId).run();
+  if(!marked.meta.changes)return c.json({error:'SendGrid has not accepted this test, so it cannot have arrived. Send a test first.'},409);
+  return c.json({received:true});
+ });
  return app;
 }

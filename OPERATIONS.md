@@ -4,7 +4,7 @@ Orbit runs through its RER CLI, `rer VERB` (or `pnpm run VERB -- FLAGS`), with N
 
 ## Local installation
 
-From a fresh clone, run `rer dev`: it installs dependencies, prepares the local trial owner (`owner@orbit.test`) and starts Orbit. Open `RER_OPEN` on this computer to sign in automatically. The optional explicit sequence is `rer install`, `rer setup --owner-email EMAIL`, `rer dev`. Stop dev and preview before CLI export, import, reset, build or verification.
+From a fresh clone, run `rer dev`: it installs dependencies, prepares the local trial owner (`owner@run-orbit.test`, named after the `run-orbit` folder) and starts Orbit. Open `RER_OPEN` on this computer to sign in automatically. The optional explicit sequence is `rer install`, `rer setup --owner-email EMAIL`, `rer dev`. Stop dev and preview before CLI export, import, reset, build or verification.
 
 | Path | Holds | Reset |
 | --- | --- | --- |

@@ -25,6 +25,7 @@ import { createApp } from "./app";
 import { identityResponse, operatorFromRequest, requireStepUp } from "../features/identity";
 import { devGate } from "@runeditrun/rer/modules/operator-auth";
 import { publicDemoConfig } from "./mounts/public-config.server";
+import { invitationLanding } from "../features/access/invitation-landing";
 export default withDemo({
   async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);context.waitUntil(runHostedTimers(bindings.DB,createOutboundMail(bindings)));context.waitUntil(sweepArchiveTrash(bindings.DB));const security=createSourceSecurity(bindings);context.waitUntil(pollProviders(bindings.DB,security));if(security)context.waitUntil(pollCalendarLinks(bindings.DB,security));},
   // Cloudflare Email Routing delivers mail for the Orbit address here.
@@ -63,7 +64,7 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
     const setupPath = path === "/setup" || path === "/setup/";
     if (setupPath || path === "/app" || path.startsWith("/app/")) {
       const operator = await operatorFromRequest(request, bindings);
-      if (!operator) return new Response(null, { status: 302, headers: { Location: `/signin?returnTo=${encodeURIComponent(setupPath ? "/setup" : path + url.search)}` } });
+      if (!operator) return await invitationLanding(bindings.DB, url, request.method, bindings.AUTH_LOCAL === "true") ?? new Response(null, { status: 302, headers: { Location: `/signin?returnTo=${encodeURIComponent(setupPath ? "/setup" : path + url.search)}` } });
       // Unfinished first-run setup lives at /setup; a finished one continues into the app.
       const complete = await firstRunComplete(bindings.DB);
       if (setupPath && complete) return new Response(null, { status: 302, headers: { Location: "/app" } });

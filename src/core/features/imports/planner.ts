@@ -18,13 +18,16 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  const shapes:Record<string,Record<string,any>>={};
  for(const [kind,table] of Object.entries(tables)){const columns=(await db.prepare(`PRAGMA table_info(${table})`).all()).results;shapes[kind]=Object.fromEntries(columns.map(c=>[c.name,c.dflt_value==null?null:c.dflt_value.startsWith("'")?c.dflt_value.slice(1,-1).replaceAll("''", "'"):Number(c.dflt_value)]));}
  const identityKey=(row:Row)=>row.error?null:row.kind==='contact'?contactEmailKey(row.data.email):row.kind==='company'?companyDomainKey(row.data.domain,JSON.parse(settings?.free_mail_domains_json??'[]')):null;
- const stopEmails=new Set<string>(),matchEmail=await privacyMatcher(db as unknown as D1Database),activeStops=await activeSuppressionTokens(db as unknown as D1Database);
+ const stopEmails=new Set<string>(),consentHolds=new Set<string>(),matchEmail=await privacyMatcher(db as unknown as D1Database),activeStops=await activeSuppressionTokens(db as unknown as D1Database);
  const emailTokens=new Map<string,string[]>();
  for(const row of rows){if(row.kind==='suppression'){const address=email(row.data.email??'');if(address)stopEmails.add(address);else row.error??='Suppression email is invalid.';}if(row.kind==='contact'){
   const address=email(row.data.email??'');if(row.data.email&&!address)row.error??='Email is invalid; provide one address per row.';
   if(address){const tokens=await matchEmail(address);emailTokens.set(address,tokens);if(tokens.some(token=>activeStops.has(token)))stopEmails.add(address);}
-  if(address&&(positive(row.data.dnc)||!!row.data.bounce||positive(row.data.quarantined)||!permission(row)))stopEmails.add(address);
+  if(address&&(positive(row.data.dnc)||!!row.data.bounce||positive(row.data.quarantined)))stopEmails.add(address);else if(address&&!permission(row))consentHolds.add(address);
  }}
+ // A missing permission holds only people new to Orbit: a contact already here keeps the contactability its operators set.
+ const known=new Set((await db.prepare("SELECT email_key AS key FROM contacts WHERE email_key IN(SELECT value FROM json_each(?)) UNION SELECT identity_key AS key FROM record_aliases WHERE record_type='contact' AND identity_key IN(SELECT value FROM json_each(?))").bind(JSON.stringify([...consentHolds].map(contactEmailKey)),JSON.stringify([...consentHolds].map(contactEmailKey))).all()).results.map(r=>r.key));
+ for(const address of consentHolds)if(!known.has(contactEmailKey(address)))stopEmails.add(address);
  rows.push(...namedCompanies(rows));
  // Resolve only explicit source IDs or unambiguous native identity keys. Existing records are linked, never overwritten.
  const emails=[...stopEmails].sort(),stopId=nativeId(namespace,'suppression',sha256(canonicalJson(emails)));
@@ -59,7 +62,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  for(const row of rows.sort((a,b)=>['suppression','company','contact','deal','note'].indexOf(a.kind)-['suppression','company','contact','deal','note'].indexOf(b.kind))){try{
   if(row.error)throw new Error(row.error);if(duplicates.has(`${row.kind}:${row.id}`))throw new Error('Duplicate source ID in this file.');
   if(row.kind==='suppression'){const reference=nativeId(namespace,'suppression-reference',row.id);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:'suppression',record_id:stopId,source_id:row.id,mailbox:email(row.data.email)!},links:[]}}]});continue;}
-  if(existing.has(row)){const reference=nativeId(namespace,'reference',`${row.kind}:${row.id}`);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:row.kind,record_id:references.get(`${row.kind}:${row.id}`)!,source_id:row.id,mailbox:row.kind==='contact'?email(row.data.email)??null:null},links:[]}}],unmapped:[{reason:'Already in Orbit, with the same email or website domain. Orbit keeps the saved record and does not apply differences from the file, except that a Do not contact mark from this import still applies.'}]});continue;}
+  if(existing.has(row)){const reference=nativeId(namespace,'reference',`${row.kind}:${row.id}`);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:row.kind,record_id:references.get(`${row.kind}:${row.id}`)!,source_id:row.id,mailbox:row.kind==='contact'?email(row.data.email)??null:null},links:[]}}],unmapped:[{reason:'Already in Orbit, with the same email or website domain. Orbit keeps the saved record and does not apply differences from the file. Only a stop in the file (unsubscribed, bounced or Do not contact) changes whether Orbit may email them.'}]});continue;}
   const id=references.get(`${row.kind}:${row.id}`)!,original=originals.get(`${row.kind}:${id}`);
   if(original){results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:JSON.parse(original)}]});continue;}
   const data=row.data,native:Record<string,any>={...shapes[row.kind],id,created_at:at,updated_at:at},links:Record<string,any>[]=[];

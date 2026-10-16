@@ -6,6 +6,14 @@ import { evaluationStatements } from '../workbench/evaluation-repository';
 import { createId } from '../../shared/ids';
 import { schemas } from './schema';
 import { audit, mutationJob, RecordError, requireRecord, tables, timeline, type RecordKind } from './shared';
+const changeLabels:Record<string,string>={company_id:'Company',stage_id:'Stage',owner_id:'Owner',value_cents:'Value',expected_close_at:'Expected close date',primary_domain:'Website domain',custom_fields_json:'Custom fields'};
+const bookkeeping=new Set(['updated_at','email_key','primary_domain_key']);
+const comparable=(key:string,value:unknown)=>{if(key!=='custom_fields_json'||typeof value!=='string')return value??null;const fields=JSON.parse(value);return JSON.stringify(Object.keys(fields).sort().map(name=>[name,fields[name]]));};
+/** The timeline says which fields an edit changed, so the owner reads who changed what. */
+function changedText(before:Record<string,any>,after:Record<string,any>){
+ const changed=Object.keys(after).filter(key=>!bookkeeping.has(key)&&key in before&&comparable(key,before[key])!==comparable(key,after[key])).map(key=>changeLabels[key]??key.replaceAll('_',' ').replace(/^./,letter=>letter.toUpperCase()));
+ return changed.length?{text:`Changed ${changed.join(', ')}`}:{};
+}
 export class RecordsRepository extends RecordSeedRepository {
  constructor(readonly db:D1Database){super(db);}
  async prepareSave(kind:RecordKind,input:unknown,actor:string,id?:string, options:{ordinaryEdit?:boolean}={}){
@@ -63,7 +71,7 @@ export class RecordsRepository extends RecordSeedRepository {
   if(kind==='contact')statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure='Contact set do-not-contact',updated_at=? WHERE contact_id=? AND state='scheduled' AND EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')").bind(now,id,id));
   if(kind==='contact')statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Contact changed',updated_at=? WHERE recipient_contact_id=?").bind(now,id));
   if(explicitClear)statements.push(audit(this.db,actor,'contactability.cleared','contact',id));
-  statements.push(...timeline(this.db,actor,kind,id,before?'record.updated':'record.created',{}),audit(this.db,actor,before?'record.updated':'record.created',kind,id));
+  statements.push(...timeline(this.db,actor,kind,id,before?'record.updated':'record.created',before?changedText(before,data):{}),audit(this.db,actor,before?'record.updated':'record.created',kind,id));
   return {id,statements,key,keyColumn,kind};
  }
  async save(kind:RecordKind,input:unknown,actor:string,id?:string,options:{ordinaryEdit?:boolean}={}){

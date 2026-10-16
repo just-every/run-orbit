@@ -1,6 +1,7 @@
 import {stageCell,type StageLayout,quoteIdentifier} from './archive-stage-layout';
 import {stageName} from './archive-storage';
 import {RecordError} from './shared';
+import {trialOwnerSql} from '../../shared/trial-owner';
 
 /** A reused ID and a different current mailbox must not identify two people. */
 export async function checkArchiveOperators(db:D1Database,id:string,layout:StageLayout){
@@ -19,7 +20,7 @@ export function restoreOperatorStatements(db:D1Database,id:string,backupId:strin
  const retainedMatch=`${native('r')} AND (${cell('id','r')}=operators.id OR lower(${cell('email','r')})=lower(${archivedValue('email')}))`;
  const retainedValue=(name:string)=>`(SELECT ${cell(name,'r')} FROM ${retained} r WHERE ${retainedMatch} LIMIT 1)`;
  const currentOwner=`EXISTS(SELECT 1 FROM ${retained} WHERE ${cell('setup_owner')}=1 AND ${cell('status')}='active')`;
- const replacedTrialOwner=`lower(${archivedValue('email')})='owner@orbit.test' AND EXISTS(SELECT 1 FROM ${retained} WHERE ${cell('setup_owner')}=1 AND ${cell('status')}='active' AND lower(${cell('email')})<>'owner@orbit.test')`;
+ const replacedTrialOwner=`${trialOwnerSql(archivedValue('email'))} AND EXISTS(SELECT 1 FROM ${retained} WHERE ${cell('setup_owner')}=1 AND ${cell('status')}='active' AND NOT ${trialOwnerSql(cell('email'))})`;
  const restoreArchived=db.prepare(`UPDATE operators SET ${columns.filter(name=>name!=='id').map(name=>{
   const value=archivedValue(name);
   return `${quoteIdentifier(name)}=${!rollback&&name==='setup_owner'?`CASE WHEN ${value}=1 AND ${currentOwner} THEN 0 ELSE ${value} END`:!rollback&&name==='status'?`CASE WHEN ${replacedTrialOwner} THEN 'removed' ELSE ${value} END`:value}`;

@@ -72,7 +72,7 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access', { 
   const shared = await browserAPI(page, '/api/v2/workspaces/workspace/records/contact/' + contact.id);
   assert.deepEqual(Object.keys(shared.fields).sort(), ['email', 'name'], 'the collaborator sees only granted fields');
   await page.goto(`${origin}/app/shared-records?kind=contact&id=${contact.id}`);
-  await page.getByRole('heading', { name: 'Permitted fields' }).waitFor();
+  await page.getByRole('region', { name: 'Shared record details' }).waitFor();
   assert.equal(await page.getByText('+1 555 0199').count(), 0);
   await shot(page, 'collaborator-shared');
 

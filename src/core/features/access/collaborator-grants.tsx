@@ -5,6 +5,10 @@ interface Member{operator_id:string;email:string;access_class:string;status:stri
 interface Grant{id:string;subject_id:string;resource_type:string;resource_id:string;actions_json:string;fields_json:string;purpose:string;revoked_at:string|null}
 type Projection={ref:{id:string};fields:Record<string,unknown>};
 type Act=(work:()=>Promise<void>)=>void;
+/** Editing a field includes seeing it: every read, list and search admits only grants that carry graph.read. */
+const grantActions={see:['graph.read'],edit:['graph.read','graph.update']};
+/** Sharing a record's Company shares that company's name, so the collaborator reads it as a name rather than an ID. */
+const companyOf=(record:Projection)=>typeof record.fields.company_id==='string'?record.fields.company_id:null;
 
 /** Grants are chosen from real records and their named fields; IDs stay behind the picker. */
 export function CollaboratorGrants({base,workspaceId,members,grants,busy,act,setStatus}:{base:string;workspaceId:string;members:Member[];grants:Grant[];busy:boolean;act:Act;setStatus:(text:string)=>void}){
@@ -17,7 +21,7 @@ export function CollaboratorGrants({base,workspaceId,members,grants,busy,act,set
  return <section className="fold-panel"><h2>Share a record with a collaborator</h2>
   <p>A Guest sees only what you share here. Choose the person, find the record by name, then tick the fields they may see or edit.</p>
   {collaborators.length?null:<p>No one has accepted an invitation yet. Once a collaborator accepts, you can share records with them here.</p>}
-  <form onSubmit={event=>{event.preventDefault();const form=new FormData(event.currentTarget);void act(async()=>{await api(`${base}/grants`,{subjectKind:'operator',subjectId:String(form.get('subject')),resourceType:kind,resourceId:recordId,actions:[String(form.get('action'))],fields,purpose:String(form.get('purpose')),expiresAt:null});setStatus(`Shared ${record?recordName(record.fields):'the record'}. The collaborator sees the change on their next page load.`);setFields([]);});}}>
+  <form onSubmit={event=>{event.preventDefault();const form=new FormData(event.currentTarget);void act(async()=>{const subjectId=String(form.get('subject')),purpose=String(form.get('purpose'));await api(`${base}/grants`,{subjectKind:'operator',subjectId,resourceType:kind,resourceId:recordId,actions:grantActions[String(form.get('action')) as keyof typeof grantActions],fields,purpose,expiresAt:null});const company=fields.includes('company_id')&&record?companyOf(record):null;if(company)await api(`${base}/grants`,{subjectKind:'operator',subjectId,resourceType:'company',resourceId:company,actions:grantActions.see,fields:['name'],purpose,expiresAt:null});setStatus(`Shared ${record?recordName(record.fields):'the record'}${company?' and its company name':''}. The collaborator sees the change on their next page load.`);setFields([]);});}}>
    <div className="fold-grid">
     <label>Collaborator<select name="subject" required><option value="">Choose collaborator</option>{collaborators.map(m=><option value={m.operator_id} key={m.operator_id}>{m.email}</option>)}</select></label>
     <label>Record type<select value={kind} onChange={event=>{setKind(event.target.value);setRecordId('');setQuery('');}}>{recordKinds.map(k=><option key={k.value} value={k.value}>{k.label}</option>)}</select></label>
@@ -26,10 +30,10 @@ export function CollaboratorGrants({base,workspaceId,members,grants,busy,act,set
    </div>
    {searchError?<p role="alert">{searchError}</p>:null}
    <fieldset disabled={!record}><legend>Fields they may use</legend>
-    {record?<div className="fold-grid">{choices.map(field=><label key={field} className="fold-check"><input type="checkbox" checked={fields.includes(field)} onChange={event=>setFields(event.target.checked?[...fields,field]:fields.filter(f=>f!==field))}/>{grantFieldLabel(field)}</label>)}</div>:<p>Choose a record to see its fields.</p>}
+    {record?<><div className="fold-grid">{choices.map(field=><label key={field} className="fold-check"><input type="checkbox" checked={fields.includes(field)} onChange={event=>setFields(event.target.checked?[...fields,field]:fields.filter(f=>f!==field))}/>{grantFieldLabel(field)}</label>)}</div>{companyOf(record)?<p className="fold-hint">Sharing Company also lets them see that company's name.</p>:null}</>:<p>Choose a record to see its fields.</p>}
    </fieldset>
    <div className="fold-grid">
-    <label>They may<select name="action"><option value="graph.read">See these fields</option><option value="graph.update">See and edit these fields</option></select></label>
+    <label>They may<select name="action"><option value="see">See these fields</option><option value="edit">See and edit these fields</option></select></label>
     <label>Why (kept with the grant)<input name="purpose" required maxLength={1000} placeholder="For example: helping with the renewal"/></label>
    </div>
    <button disabled={busy||!record||!fields.length}>Share these fields</button>

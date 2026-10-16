@@ -46,6 +46,6 @@ export function TodayBrief(){
    {brief.unresolved.length>0&&<article className="operator-surface today-account" aria-labelledby="today-unresolved"><header><h3 id="today-unresolved">Unresolved identity</h3><p>Evidence that matches no record. Orbit never guesses who it belongs to.</p></header><section className="today-account__section"><ul>{brief.unresolved.map(line=><Line key={line.id} line={line} presentation={presentation}/>)}</ul></section></article>}
    {brief.held.length>0&&<article className="operator-surface today-account" aria-labelledby="today-held"><header><h3 id="today-held">Held for capture review</h3><p>Captured replies and meetings that wait for a person to accept or decline the link Capture proposed.</p></header><section className="today-account__section"><ul>{brief.held.map(line=><Line key={line.id} line={line} presentation={presentation}/>)}</ul></section></article>}
   </div>}
-  {brief.truncated&&<p className="today__note">Showing the 200 most recent signals; open Opportunities for the rest.</p>}
+  {brief.truncated&&<p className="today__note">Showing the 200 most recent signals; open Records for the rest.</p>}
  </section>;
 }

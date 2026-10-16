@@ -1,0 +1,8 @@
+/* The invitation landing page: the same card as Orbit's sign-in page, without the auth page's inline sheet. */
+@import url('/orbit-auth.css');
+html.rer-themed { color-scheme: light; background: var(--rer-page, #f3f5f8); color: var(--rer-text, #172033); font-family: var(--rer-font-body, system-ui, sans-serif); }
+html.rer-themed * { box-sizing: border-box; }
+html.rer-themed body { margin: 0; min-height: 100vh; display: grid; place-items: center; }
+html.rer-themed main { width: 100%; background: var(--rer-surface, #fff); }
+html.rer-themed p { line-height: 1.55; overflow-wrap: anywhere; }
+html.rer-themed .action { display: inline-flex; align-items: center; justify-content: center; padding: 10px 24px; text-align: center; background: var(--rer-accent); color: var(--rer-accent-text); font-weight: 650; text-decoration: none; }
