@@ -1,7 +1,7 @@
 import { editorLeaf } from "../editor/leaf";
 import {AccessNavigation} from '../core/features/operator/ui/access-navigation';
 import {useEffect,useRef,useState} from 'react';
-import {createFileRoute} from '@tanstack/react-router';
+import {createFileRoute,useNavigate} from '@tanstack/react-router';
 import {FoldWorkspace,FoldShell,api} from '../core/features/fold-ui/workspace';
 import {CollaboratorConsole} from '../core/features/access/collaborator-console';
 export const Route=createFileRoute('/app/access')({component:editorLeaf(AccessPage)});
@@ -9,11 +9,13 @@ function AccessPage(){const[accepted,setAccepted]=useState(false);return <FoldSh
 
 /** An invitation link (`?invitation=TOKEN`) is accepted for the signed-in person once, then dropped from the address bar. */
 function InvitationAcceptance({onAccepted}:{onAccepted:()=>void}){
- const[state,setState]=useState<{kind:'idle'|'accepting'|'accepted'|'failed';message?:string}>({kind:'idle'}),feedback=useRef<HTMLParagraphElement>(null),started=useRef(false);
+ const navigate=useNavigate(),[state,setState]=useState<{kind:'idle'|'accepting'|'accepted'|'failed';message?:string}>({kind:'idle'}),feedback=useRef<HTMLParagraphElement>(null),started=useRef(false);
  useEffect(()=>{const params=new URLSearchParams(window.location.search),token=params.get('invitation');if(!token||started.current)return;started.current=true;
-  params.delete('invitation');window.history.replaceState(null,'',`${window.location.pathname}${params.size?`?${params}`:''}`);setState({kind:'accepting'});
-  api('/api/v2/access/invitations/accept',{token}).then(()=>{setState({kind:'accepted'});onAccepted();},e=>setState({kind:'failed',message:e instanceof Error?e.message:'Invitation was not accepted.'})).finally(()=>setTimeout(()=>feedback.current?.focus(),0));
- },[onAccepted]);
+  // Drop the token from the address bar through the router and wait for it, so its
+  // sign-in checks are finished before the acceptance request starts.
+  setState({kind:'accepting'});
+  navigate({to:'/app/access',replace:true}).then(()=>api('/api/v2/access/invitations/accept',{token})).then(()=>{setState({kind:'accepted'});onAccepted();},e=>setState({kind:'failed',message:e instanceof Error?e.message:'Invitation was not accepted.'})).finally(()=>setTimeout(()=>feedback.current?.focus(),0));
+ },[onAccepted,navigate]);
  if(state.kind==='idle')return null;
  return <section className="fold-panel" aria-label="Invitation"><h2>Your invitation</h2><p ref={feedback} tabIndex={-1} role={state.kind==='failed'?'alert':'status'}>{state.kind==='accepting'?'Accepting your invitation…':state.kind==='accepted'?'Invitation accepted. Your collaborator access is active.':`${state.message} Sign in with the email address the invitation was sent to, or ask for a new invitation link.`}</p></section>;
 }

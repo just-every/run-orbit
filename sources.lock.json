@@ -4084,6 +4084,10 @@
       "sha256": "dec2a8ae1909690e1fd9a120a755b3061fc9e3679cfc1bb168d042d23f9c0a8e",
       "executable": false
     },
+    "src/core/features/operator/ui/open-record.ts": {
+      "sha256": "dcde4176521dc88ab1db1b5ff58c0776ea0cb386dcef7c78314a94d97ba49293",
+      "executable": false
+    },
     "src/core/features/operator/ui/operator-api.ts": {
       "sha256": "67fabc8007e9aab59727903540848754aea4786b26389b5f2a6e40f69f9a6782",
       "executable": false
@@ -4161,7 +4165,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records-page.tsx": {
-      "sha256": "79067ec7fcbcf3f63678585fbee4f5a2d5da3abd07ec2399cdec254eacfffc0a",
+      "sha256": "08a87cc55da0146ef27af1782991be023f0a15b52cc651b638e19b475506e7ce",
       "executable": false
     },
     "src/core/features/operator/ui/records.css": {
@@ -5785,7 +5789,7 @@
       "executable": false
     },
     "src/routes/app.access.tsx": {
-      "sha256": "9e3c04b0bc86cbd8c4dd957b7255383f0e6787e82f801cca8cfbdf2f33063967",
+      "sha256": "fbb31ef9a8fe1159cc001d72c8b88cda190375d8e1508d00ca9f73896c166307",
       "executable": false
     },
     "src/routes/app.assistance.$id.tsx": {
