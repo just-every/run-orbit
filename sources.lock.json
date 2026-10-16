@@ -2605,7 +2605,7 @@
       "executable": false
     },
     "scripts/demo/observe-host.mjs": {
-      "sha256": "b7b76c3dbf4067b0459cf46ccdd14a781241a68d342a6ecc19b3b4129b31e534",
+      "sha256": "b008b1d863e280b7546e2cd36ca5d7fbebcbd9a296beaf9bd4203dd245189c09",
       "executable": false
     },
     "scripts/edition-authoring/cli.mjs": {
