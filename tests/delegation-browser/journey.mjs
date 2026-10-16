@@ -13,13 +13,16 @@ export async function nativeHandoffJourney(page){
  const verifier=randomBytes(32).toString('hex'),challenge=createHash('sha256').update(verifier).digest('base64url');
  const query={client_id:client,redirect_uri:callback,response_type:'code',state:nonce,code_challenge:challenge,code_challenge_method:'S256',account_id:'workspace',scope:'crm.evidence.read crm.handoff.write',targets:JSON.stringify(['opportunities/'+opportunity.id])};
  await page.goto('/delegation/authorize?'+new URLSearchParams(query));
- await expect(page.getByRole('heading',{name:'Authorize application',exact:true})).toBeVisible();
- await expect(page.getByText('crm.handoff.write',{exact:true})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Allow this application?',exact:true})).toBeVisible();
+ await expect(page.getByText('Propose handoff tasks on the chosen opportunities, for a person to accept or dismiss',{exact:true})).toBeVisible();
+ await expect(page.getByText('Opportunity: Delegation '+nonce,{exact:true})).toBeVisible();
  const consent=await api.post('/delegation/authorize',{headers:{Origin:origin},form:query,maxRedirects:0});expect(consent.status()).toBe(303);
  const code=new URL(consent.headers().location).searchParams.get('code');
  const exchanged=await api.post('/api/delegation/v1/token',{form:{grant_type:'authorization_code',client_id:client,redirect_uri:callback,code,code_verifier:verifier}});expect(exchanged.status()).toBe(200);
  const token=(await exchanged.json()).access_token,headers={Authorization:'Bearer '+token};
  expect((await api.get('/api/delegation/v1/identity')).status()).toBe(401);
+ // The application picks its records by name: names and target IDs of exactly what it may read.
+ const listed=await(await api.get('/api/delegation/v1/records',{headers,params:{q:'delegation '+nonce}})).json();expect(listed.items).toEqual([{target:'opportunities/'+opportunity.id,kind:'crm.opportunity',name:'Delegation '+nonce}]);expect(listed.nextCursor).toBeNull();
  const target=`opportunities/${opportunity.id}/handoffs/${nonce}`;
  const check=await(await api.get('/api/delegation/v1/check',{headers,params:{target}})).json();
  const audience=await(await api.get('/api/delegation/v1/audience',{headers,params:{target,operation:'orbit.handoff.upsert'}})).json();

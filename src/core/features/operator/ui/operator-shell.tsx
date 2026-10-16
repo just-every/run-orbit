@@ -9,10 +9,12 @@ interface OperatorShellProps extends PropsWithChildren {
   title: string;
   action?: ReactNode;
   restricted?: boolean;
+  /** For a restricted (collaborator) shell: whether their profile reads Reports. */
+  reports?: boolean;
 }
 
 /** The console's frame in Orbit's brand: the lockup home, the navigation row with the current page marked, Sign out. */
-export function OperatorShell({ action, children, eyebrow, title, restricted=false }: OperatorShellProps) {
+export function OperatorShell({ action, children, eyebrow, title, restricted=false, reports=true }: OperatorShellProps) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const current = (href: string) => pathname === href ? "page" as const : undefined;
   const [expanded,setExpanded]=useState(false),navigationId=useId(),toggle=useRef<HTMLButtonElement>(null);
@@ -20,7 +22,7 @@ export function OperatorShell({ action, children, eyebrow, title, restricted=fal
     <div className="operator-shell ob-app">
       <a className="operator-skip-link" href="#operator-main">Skip to content</a>
       <header className="operator-header">
-        <a aria-label="Orbit home" className="operator-mark" href="/"><OrbitLockup name={publicProductConfig.name} imageUrl={publicProductConfig.imageUrl} /></a>
+        <a aria-label="Orbit home" className="operator-mark" href="/app"><OrbitLockup name={publicProductConfig.name} imageUrl={publicProductConfig.imageUrl} /></a>
         <button ref={toggle} className="operator-menu-toggle" type="button" aria-expanded={expanded} aria-controls={navigationId} onClick={()=>setExpanded(!expanded)}>Menu</button>
         <nav id={navigationId} aria-label="Operator navigation" className="operator-nav" data-open={expanded} onKeyDown={event=>{if(event.key==='Escape'){setExpanded(false);toggle.current?.focus();}}} onClick={event=>{if((event.target as HTMLElement).closest('a'))setExpanded(false);}}>
           {!restricted&&<><Link to="/app/records">Records</Link>
@@ -28,7 +30,8 @@ export function OperatorShell({ action, children, eyebrow, title, restricted=fal
           <Link to="/app/settings">Settings</Link>
           <Link to="/app/sources">Sources</Link>
           <Link to="/app/capture">Capture</Link></>}
-          <a href="/app/reports" aria-current={current("/app/reports")}>Reports</a>
+          {restricted&&<a href="/app/shared-records" aria-current={current("/app/shared-records")}>Shared records</a>}
+          {(!restricted||reports)&&<a href="/app/reports" aria-current={current("/app/reports")}>Reports</a>}
           {restricted&&<a href="/app/access" aria-current={current("/app/access")}>Settings</a>}
           {!restricted&&<><a href="/app/forms" aria-current={current("/app/forms")}>Forms</a>
           <NotificationCount /></>}

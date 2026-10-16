@@ -11,10 +11,12 @@
       { "slug": "owner-steps", "source": "OWNER-STEPS.md", "label": "Mail and calendar owner steps" },
       { "slug": "connect-gmail", "source": "docs/CONNECT-GMAIL.md", "label": "Connect Gmail and Google Calendar" },
       { "slug": "connect-outlook", "source": "docs/CONNECT-OUTLOOK.md", "label": "Connect Outlook and Microsoft Calendar" },
+      { "slug": "connected-applications", "source": "docs/CONNECTED-APPLICATIONS.md", "label": "Connected applications" },
       { "slug": "updating", "source": "MIGRATION-RECOVERY.md", "label": "Updating and recovery" }
     ]},
     { "title": "Customise", "pages": [
-      { "slug": "record-policies", "source": "RECORD-POLICIES.md", "label": "Record policies" }
+      { "slug": "record-policies", "source": "RECORD-POLICIES.md", "label": "Record policies" },
+      { "slug": "delegation-protocol", "source": "docs/DELEGATION-PROTOCOL.md", "label": "Delegation protocol" }
     ]}
   ],
   "githubOnly": [

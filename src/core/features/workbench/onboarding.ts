@@ -1,7 +1,8 @@
+import {senderTestedHere} from './sender-test';
 /** All checklist facts are read from this installation; no progress flag grants authority. */
 export async function onboardingState(db:D1Database,mailConfigured:boolean,aiConfigured:boolean){
  const state=await db.prepare(`SELECT
- EXISTS(SELECT 1 FROM audit_entries WHERE action='mail.sender_test' AND json_extract(details_json,'$.state')='received') AS mailChecked,
+ EXISTS(SELECT 1 FROM audit_entries WHERE action='mail.sender_test' AND ${senderTestedHere}) AS mailChecked,
  EXISTS(SELECT 1 FROM contacts c JOIN companies co ON co.id=c.company_id) AS customer,
  (EXISTS(SELECT 1 FROM contacts) OR EXISTS(SELECT 1 FROM companies) OR EXISTS(SELECT 1 FROM opportunities)) AS records,
  EXISTS(SELECT 1 FROM signal_sources WHERE enabled=1 AND type='signed_webhook' AND secret_ciphertext IS NOT NULL) AS source,

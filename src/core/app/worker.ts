@@ -26,6 +26,7 @@ import { identityResponse, operatorFromRequest, requireStepUp } from "../feature
 import { devGate } from "@runeditrun/rer/modules/operator-auth";
 import { publicDemoConfig } from "./mounts/public-config.server";
 import { invitationLanding } from "../features/access/invitation-landing";
+import { collaboratorLanding } from "../features/access/collaborator-home";
 export default withDemo({
   async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);context.waitUntil(runHostedTimers(bindings.DB,createOutboundMail(bindings)));context.waitUntil(sweepArchiveTrash(bindings.DB));const security=createSourceSecurity(bindings);context.waitUntil(pollProviders(bindings.DB,security));if(security)context.waitUntil(pollCalendarLinks(bindings.DB,security));},
   // Cloudflare Email Routing delivers mail for the Orbit address here.
@@ -69,6 +70,9 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
       const complete = await firstRunComplete(bindings.DB);
       if (setupPath && complete) return new Response(null, { status: 302, headers: { Location: "/app" } });
       if (!setupPath && !complete) return new Response(null, { status: 302, headers: { Location: "/setup" } });
+      // A collaborator signing in again (sign-in returns to /app), following an old link or typing an owner
+      // page lands on the pages their profile can use instead of an owner page that refuses them.
+      if (!setupPath) { const landing = await collaboratorLanding(bindings.DB, operator.operatorId, path); if (landing) return new Response(null, { status: 302, headers: { Location: landing } }); }
       if(path!=="/app/records"&&await archiveImportActive(bindings.DB))return new Response(null,{status:302,headers:{Location:"/app/records"}});
       if(bindings.AUTH_LOCAL!=="true"&&request.method==='GET')executionContext.waitUntil(runRequestTimers(bindings.DB,createOutboundMail(bindings)));
     }

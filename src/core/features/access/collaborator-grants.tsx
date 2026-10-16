@@ -1,6 +1,6 @@
 import {useEffect,useState} from 'react';
 import {api} from '../fold-ui/workspace';
-import {grantableFields,grantFieldLabel,recordKinds,recordName} from './grant-fields';
+import {fieldListLabel,grantableFields,grantFieldLabel,recordKinds,recordName} from './grant-fields';
 interface Member{operator_id:string;email:string;access_class:string;status:string}
 interface Grant{id:string;subject_id:string;resource_type:string;resource_id:string;actions_json:string;fields_json:string;purpose:string;revoked_at:string|null}
 type Projection={ref:{id:string};fields:Record<string,unknown>};
@@ -46,6 +46,6 @@ function GrantRow({grant,records,member,busy,onRevoke}:{grant:Grant;records:stri
  const [name,setName]=useState('');
  // A read that crosses another access change is refused as stale; read the record again before calling it gone.
  useEffect(()=>{let live=true;const read=(retry:boolean):Promise<void>=>api<Projection>(`${records}/${grant.resource_type}/${encodeURIComponent(grant.resource_id)}`).then(r=>{if(live)setName(recordName(r.fields));}).catch(error=>{if(retry&&error instanceof Error&&error.message.startsWith('Permissions changed'))return read(false);if(live)setName('A record that no longer exists');});void read(true);return()=>{live=false;};},[records,grant.resource_type,grant.resource_id]);
- const kind=recordKinds.find(k=>k.value===grant.resource_type)?.label??grant.resource_type,fields=(JSON.parse(grant.fields_json) as string[]).map(grantFieldLabel),edit=(JSON.parse(grant.actions_json) as string[]).includes('graph.update');
- return <div className="fold-row"><h3>{kind}: {name||'…'}</h3><p>{member?.email??'Removed collaborator'} may {edit?'see and edit':'see'}: {fields.join(', ')}</p><p>Why: {grant.purpose}</p><button disabled={busy} onClick={onRevoke}>Revoke grant</button></div>;
+ const kind=recordKinds.find(k=>k.value===grant.resource_type)?.label??grant.resource_type,fields=fieldListLabel(JSON.parse(grant.fields_json) as string[]),edit=(JSON.parse(grant.actions_json) as string[]).includes('graph.update');
+ return <div className="fold-row"><h3>{kind}: {name||'…'}</h3><p>{member?.email??'Removed collaborator'} may {edit?'see and edit':'see'}: {fields}</p><p>Why: {grant.purpose}</p><button disabled={busy} onClick={onRevoke}>Revoke grant</button></div>;
 }

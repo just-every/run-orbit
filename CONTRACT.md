@@ -135,7 +135,7 @@ PKCE challenge, scopes and selected targets for a bearer credential expiring wit
 expiry, active operator, enabled application and revocation; restore invalidates
 authority. Native consent, settings and task editing still require the operator session.
 
-`crm.evidence.read` reads only selected records. `crm.handoff.write` permits only
+`crm.evidence.read` reads only selected records, and lists them (with the handoffs on selected opportunities) by name and target ID only, so an application can offer them by name. `crm.handoff.write` permits only
 `orbit.handoff.upsert`, an internal task with title, description, assignee, due time
 and open/completed/cancelled status. It confers no outreach or account-activation
 authority. Writes bind current source and audience revisions and commit task,

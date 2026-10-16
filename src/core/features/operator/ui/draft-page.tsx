@@ -75,7 +75,7 @@ export function DraftPage() {
     >
       <section className="operator-draft-editor" style={{display:"block"}} data-testid="draft-editor">
         {submitted ? <OperatorState>{submitted.state === "scheduled" && submitted.scheduledAt ? `This message is scheduled for ${formatDateTime(submitted.scheduledAt, presentation)}. To change it, cancel it from the opportunity first.` : `This message was approved and handed to the mail service (state: ${label(submitted.state)}). It can no longer be edited. To write to this customer again, start a new follow-up from the opportunity.`}</OperatorState> : null}
-        <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}><fieldset disabled={Boolean(submitted)} style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
+        {submitted ? <SentMessage recipient={resource.data.draft.recipientEmail} subject={resource.data.draft.subject} body={resource.data.draft.body} /> : <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}><fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
           <label>Recipient
             <input data-testid="draft-recipient" required onChange={(event) => setDraft({ ...draft, recipientEmail: event.target.value })} type="email" value={draft.recipientEmail} />
           </label>
@@ -96,11 +96,11 @@ export function DraftPage() {
           </section> : null}
           {saveError ? <OperatorState kind="error">{saveError} <button className="operator-text-button" onClick={resource.reload} type="button">Reload saved draft</button></OperatorState> : null}
           {saved ? <OperatorState>Saved revision {draft.revision}. Your changes are saved.</OperatorState> : null}
-          {submitted ? null : <div className="operator-draft-form__footer">
+          <div className="operator-draft-form__footer">
             <p>Save the exact message before approving or scheduling it below.</p>
             <button className="operator-primary-button" data-testid="save-draft" disabled={saving || draft.isStale} type="submit">{saving ? "Saving…" : "Save draft"}</button>
-          </div>}
-        </fieldset></form>
+          </div>
+        </fieldset></form>}
       </section>
         <details className="operator-surface operator-detail__section"><summary>Audit details</summary>
           <p className="operator-eyebrow">Draft history</p>
@@ -115,4 +115,15 @@ export function DraftPage() {
       {resource.data.submitted ? null : <DraftApproval onSubmitted={setJustSubmitted} recipientName={resource.data.opportunity.contacts.find(contact=>contact.id===draft.recipientContactId)?.name??undefined} draft={draft} dirty={draft.recipientEmail !== resource.data?.draft.recipientEmail || draft.subject !== resource.data?.draft.subject || draft.body !== resource.data?.draft.body} />}
     </OperatorShell>
   );
+}
+
+/** A message handed to the mail service is a record, not a form: what was sent, as text. */
+function SentMessage({ recipient, subject, body }: { recipient: string; subject: string; body: string }) {
+  return <section className="operator-surface operator-draft-form" aria-label="Message as sent" data-testid="sent-message">
+    <dl className="operator-sent-message">
+      <div><dt>Recipient</dt><dd>{recipient}</dd></div>
+      <div><dt>Subject</dt><dd>{subject}</dd></div>
+      <div><dt>Body</dt><dd style={{ whiteSpace: "pre-wrap" }}>{body}</dd></div>
+    </dl>
+  </section>;
 }

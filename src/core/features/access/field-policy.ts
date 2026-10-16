@@ -37,4 +37,7 @@ export function privatePaths(field:string,definitions:Record<string,{sensitivity
  const visit=(value:unknown,path:string,ambiguous=false)=>{if(!value||typeof value!=='object')return;for(const [key,child]of Object.entries(value)){const childPath=path+'.'+key,uncertain=ambiguous||!/^[a-zA-Z0-9_]+$/.test(key);if(privateField(key))paths.add(uncertain?null:childPath);if(uncertain&&Object.entries(definitions).some(([defined,d])=>(defined===childPath||defined.startsWith(childPath+'.'))&&(privateField(defined)||sensitiveLevel(d.sensitivity))))paths.add(null);visit(child,childPath,uncertain);}};
  visit(value,canonical);return[...paths];
 }
+/** A field grant covers that field and the ordinary values inside it: "Custom fields" covers each custom field.
+ * Private paths inside it still need their own grant (privatePaths/coversPrivatePath). */
+export function grantCovers(granted:string,field:string){return granted===field||field.startsWith(granted+'.');}
 export function coversPrivatePath(pattern:string,path:string|null){return pattern==='*'||path!==null&&pattern===path;}

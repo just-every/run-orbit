@@ -7,11 +7,12 @@ import { ImportMappingFields,defaultCustomFields } from './imports-mapping';
 import {useOperatorDialog} from './operator-dialog';
 import './imports.css';
 import { formatDate } from './formatters';
+import { importLabel } from './import-provenance';
 const states:Record<string,string>={queued:'Ready to import',applying:'Importing',completed:'Imported',failed:'Stopped — review the error before continuing',undoing:'Undoing',undone:'Import undone',rolling_back:'Undoing partial import',rolled_back:'Partial import undone'};
 const rowStates:Record<string,string>={ready:'ready to import',rejected:'will not import',linked:'already in Orbit'};
 const vendors:Record<string,string>={csv:'spreadsheet',hubspot:'HubSpot export',pipedrive:'Pipedrive export'};
 /** An import is named by what the person typed and where the file came from, never its internal key. */
-const importName=(namespace:string)=>{const [,vendor,...account]=namespace.split(':');return vendors[vendor]?`${account.join(':')} (${vendors[vendor]})`:namespace;};
+const importName=(namespace:string)=>{const [,vendor,...account]=namespace.split(':');return vendors[vendor]?importLabel(account.join(':'),vendor!):namespace;};
 const retained=(result:any):number=>result?.undo?.dispositions?.filter((d:any)=>d.disposition==='retained').length??0;
 const sourceNames:Record<ImportInput['vendor'],string>={csv:'Spreadsheet',hubspot:'HubSpot',pipedrive:'Pipedrive'};
 const labels:Record<ImportKind,string>={contact:'Contacts',company:'Companies',deal:'Deals',note:'Notes',suppression:'Do not contact list'};

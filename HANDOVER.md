@@ -4,7 +4,7 @@
 
 Orbit's public source repository is `just-every/run-orbit` (`https://github.com/just-every/run-orbit`), release 0.1.0; `edition.json`, `rer-project.json`, the delivery packaging policy and the management integration profile declare it. The first release is the annotated tag `v0.1.0` on the repository's first commit. No deployment is implied by this source.
 
-Orbit runs on the RER seed command contract in package mode, with exact `@runeditrun/rer` 0.2.32 and `scripts/installer/local.mjs` preserving its native hooks. Every unchanged Base copy (the `src/base/` runtime files, mail and editor modules, import-kit, d1-transport, delivery producer, seed schema and template files, `run-site.yml` and `run-demo.yml`) is recorded in `base-copies.json` at rer-v0.2.30 (`d434ea67989fe10b6ddff01daba8bb350975e54a`); adapted Base-derived files and the contract documents keep their origins in `edition.json` and `sources.lock.json`. The installed `/` is the shared Lobby, reading the active installation owner claim. The approved homepage and docs also build as a static run site with `rer build --site`; `.github/workflows/run-site.yml` gates its deployment on `RUN_SITE_DEPLOY`.
+Orbit runs on the RER seed command contract in package mode, with exact `@runeditrun/rer` 0.2.36 and `scripts/installer/local.mjs` preserving its native hooks. Every unchanged Base copy (the `src/base/` runtime files, mail and editor modules, import-kit, d1-transport, delivery producer, seed schema and template files, `run-site.yml` and `run-demo.yml`) is recorded in `base-copies.json` at rer-v0.2.30 (`d434ea67989fe10b6ddff01daba8bb350975e54a`); adapted Base-derived files and the contract documents keep their origins in `edition.json` and `sources.lock.json`. The installed `/` is the shared Lobby, reading the active installation owner claim. The approved homepage and docs also build as a static run site with `rer build --site`; `.github/workflows/run-site.yml` gates its deployment on `RUN_SITE_DEPLOY`.
 
 ## How it runs
 
@@ -58,7 +58,7 @@ The release run exercised the isolated verification plan and the full declared-c
 
 ## Sign-in: Base operator-auth over Orbit's own operators
 
-The exact RER 0.2.32 pin (with `patches/rer-0.2.32.patch`) preserves native local-owner resolution and pnpm patch-aware package selection. Deploy declares SendGrid inputs once for preflight, upload and secret updates. RER’s outer controller waits for the exact source, claims the owner and retires its token. Hosted access uses the operator’s real emailed sign-in link; the earlier printed-link owner recovery adapter is retired. Full destination operators keep access after restore; collaborators require renewed invitations.
+The exact RER 0.2.36 pin (with `patches/rer-0.2.36.patch`) preserves native local-owner resolution and pnpm patch-aware package selection. Deploy declares SendGrid inputs once for preflight, upload and secret updates. RER’s outer controller waits for the exact source, claims the owner and retires its token. Hosted access uses the operator’s real emailed sign-in link; the earlier printed-link owner recovery adapter is retired. Full destination operators keep access after restore; collaborators require renewed invitations.
 
 Orbit signs in through Base operator-auth from the exactly pinned `@runeditrun/rer` package.
 Orbit's own session, magic-link and owner-bootstrap code and its TanStack sign-in

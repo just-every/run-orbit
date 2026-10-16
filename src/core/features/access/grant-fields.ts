@@ -11,3 +11,14 @@ export function recordName(fields:Record<string,unknown>){
  const name=String(fields.name??fields.title??'Unnamed record');
  return typeof fields.email==='string'&&fields.email?`${name} · ${fields.email}`:name;
 }
+const order=['name','title','email','phone','job_title','company_id','primary_domain','stage_id','value_cents','expected_close_at','timezone','contactability'];
+/** One order for every list of fields, so the owner's grant and the collaborator's view read alike. */
+export const fieldRank=(field:string)=>field.startsWith('custom_fields_json')?order.length+1:order.includes(field)?order.indexOf(field):order.length;
+const customPrefix='custom_fields_json.';
+/** A list of granted or editable fields in words: "Phone, Job title, Custom fields (Seats)". */
+export function fieldListLabel(fields:readonly string[]){
+ const custom=fields.filter(field=>field.startsWith(customPrefix)).map(field=>fieldLabel(field.slice(customPrefix.length)));
+ const plain=[...new Set(fields.filter(field=>!field.startsWith(customPrefix)))].sort((a,b)=>fieldRank(a)-fieldRank(b)).map(field=>field==='custom_fields_json'&&custom.length?`Custom fields (${custom.join(', ')})`:grantFieldLabel(field));
+ if(custom.length&&!fields.includes('custom_fields_json'))plain.push(`Custom fields (${custom.join(', ')})`);
+ return plain.join(', ');
+}

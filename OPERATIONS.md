@@ -1,6 +1,6 @@
 # Orbit operations
 
-Orbit runs through its RER CLI, `rer VERB` (or `pnpm run VERB -- FLAGS`), with Node 22 or later to start; project commands select the pinned Node 22.20.0 and pnpm 10.12.4. [README.md](README.md) gives the local sequence; `rer describe` prints every command, flag, effect and pin from `OPERATIONS.json`, and [SEED-COMMAND-CONTRACT.md](SEED-COMMAND-CONTRACT.md) defines their shared behaviour and exit codes. `rer check --profile first-party` validates that contract structurally without dependencies or settings; it never claims hosted health.
+Orbit runs through its RER CLI, `rer VERB` (or `pnpm run VERB -- FLAGS`), installed with the one-line installer from the Run page, which brings its own Node; project commands select the pinned Node 22.20.0 and pnpm 10.12.4. [README.md](README.md) gives the local sequence; `rer describe` prints every command, flag, effect and pin from `OPERATIONS.json`, and [SEED-COMMAND-CONTRACT.md](SEED-COMMAND-CONTRACT.md) defines their shared behaviour and exit codes. `rer check --profile first-party` validates that contract structurally without dependencies or settings; it never claims hosted health.
 
 ## Local installation
 
