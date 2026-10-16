@@ -627,7 +627,7 @@
       "executable": false
     },
     ".github/workflows/edition.yml": {
-      "sha256": "285b054e556bbbc622a635fb1b903648bb5298aa02a10090b3933228236b2ad5",
+      "sha256": "418a55b018e19efeb6481b2ea6099a3d2fccd0532fd3b8220cd915027a482e2f",
       "executable": false
     },
     ".github/workflows/rer-managed.yml": {
@@ -1167,7 +1167,7 @@
       "executable": false
     },
     "newtests/t096/browser-guest-edit-grant.ts": {
-      "sha256": "f45b6c6a2fa2a328eb43aa5406d4bd8d0dff84045654cd75048838fa67cf25ce",
+      "sha256": "e2dd8b56eb8f13806245ef65c794e51e5f31c560d03e0e2983bba919a3abf3b6",
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
@@ -3271,7 +3271,7 @@
       "executable": false
     },
     "src/core/features/access/collaborator-grants.tsx": {
-      "sha256": "f75a97ace85836d73831da90c5b80eaaac55d0afabfe9ede7620f8c2c02ba44f",
+      "sha256": "ed7a451650daa503d3265dd70ba31d44bbde80c9b4c73fb5149e3a5a46089f94",
       "executable": false
     },
     "src/core/features/access/collaborator-invite.tsx": {
@@ -3339,7 +3339,7 @@
       "executable": false
     },
     "src/core/features/access/shared-record-detail.tsx": {
-      "sha256": "a3f5851e597c0ab1b886466c76e7b091e1a595b1165bdc5627c6ffb0846a0b9d",
+      "sha256": "7a1473e9985bec117bb9cf2b6b14435029e5a6ac2b83d6b8aef00165669131ae",
       "executable": false
     },
     "src/core/features/access/shared-records.tsx": {
@@ -4695,7 +4695,7 @@
       "executable": false
     },
     "src/core/features/records/archive-import-progress.ts": {
-      "sha256": "132ec8711693d419db4cb2c2c40afe05aa22571a61148672c06c9d514e970d02",
+      "sha256": "60e66a84ecc7dbea49bac2914a662cc63db36aa5d99da49cc9d91c580823142a",
       "executable": false
     },
     "src/core/features/records/archive-import-recovery.ts": {
@@ -4703,7 +4703,7 @@
       "executable": false
     },
     "src/core/features/records/archive-import.ts": {
-      "sha256": "9197e1af61aeb1a1e0d36c30db97a940200c5f08f666e1b3f4d3848c0e1ccea1",
+      "sha256": "add6647c8d2a3ba736780eec28f799dfc8eb1c165c55511530f4ebd1876ddf05",
       "executable": false
     },
     "src/core/features/records/archive-lineage.ts": {
@@ -6427,7 +6427,7 @@
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
-      "sha256": "b6a14e073f5ec97fee61c0ff806a3c7b6d5a5e67bdc3b486ca5e54475177ceb0",
+      "sha256": "ee5bd71f8a8d4caca464dbc0f24e1562f2908080eeac62c757791ec0f2db4296",
       "executable": false
     },
     "tests/rer/operator-fixture.mjs": {

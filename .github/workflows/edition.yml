@@ -55,6 +55,7 @@ jobs:
           node --input-type=module -e 'import {verificationPlan,shardNeeds} from "./scripts/verification-plan.mjs"; const include=Object.keys(verificationPlan({journeys:process.env.JOURNEYS==="true"})).map(shard=>({shard,...shardNeeds(shard)})); console.log("matrix="+JSON.stringify({include}));' >> "$GITHUB_OUTPUT"
           echo "journeys=$([ "$JOURNEYS" = true ] && echo 1 || echo 0)" >> "$GITHUB_OUTPUT"
   shards:
+    name: shards (${{ matrix.shard }})
     needs: plan
     runs-on: ubuntu-latest
     timeout-minutes: 45

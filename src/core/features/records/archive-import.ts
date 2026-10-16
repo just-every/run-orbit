@@ -68,8 +68,8 @@ export class ArchiveImportRepository {
     async advance(id: string, actor: string) {
         let job=await this.job(id,actor);const context=await foldedImportContext(this.db,job),deadline=Date.now()+2000;
         // Amortize hosted request latency while keeping each durable step resumable.
-        for(let step=0;step<8&&!['complete','aborted'].includes(job.state);step++){
-            await advanceImport(this.db,job,context);job=await this.job(id,actor);
+        for(let step=0;step<8&&!['complete','aborted'].includes(job.state);){
+            step+=await advanceImport(this.db,job,context,8-step);job=await this.job(id,actor);
             if(Date.now()>=deadline)break;
         }
         if(context)await observeArchiveStorage(this.db,id,'after-restore-step');

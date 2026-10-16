@@ -44,7 +44,8 @@ export function CollaboratorGrants({base,workspaceId,members,grants,busy,act,set
 
 function GrantRow({grant,records,member,busy,onRevoke}:{grant:Grant;records:string;member?:Member;busy:boolean;onRevoke:()=>void}){
  const [name,setName]=useState('');
- useEffect(()=>{let live=true;api<Projection>(`${records}/${grant.resource_type}/${encodeURIComponent(grant.resource_id)}`).then(r=>{if(live)setName(recordName(r.fields));}).catch(()=>{if(live)setName('A record that no longer exists');});return()=>{live=false;};},[records,grant.resource_type,grant.resource_id]);
+ // A read that crosses another access change is refused as stale; read the record again before calling it gone.
+ useEffect(()=>{let live=true;const read=(retry:boolean):Promise<void>=>api<Projection>(`${records}/${grant.resource_type}/${encodeURIComponent(grant.resource_id)}`).then(r=>{if(live)setName(recordName(r.fields));}).catch(error=>{if(retry&&error instanceof Error&&error.message.startsWith('Permissions changed'))return read(false);if(live)setName('A record that no longer exists');});void read(true);return()=>{live=false;};},[records,grant.resource_type,grant.resource_id]);
  const kind=recordKinds.find(k=>k.value===grant.resource_type)?.label??grant.resource_type,fields=(JSON.parse(grant.fields_json) as string[]).map(grantFieldLabel),edit=(JSON.parse(grant.actions_json) as string[]).includes('graph.update');
  return <div className="fold-row"><h3>{kind}: {name||'…'}</h3><p>{member?.email??'Removed collaborator'} may {edit?'see and edit':'see'}: {fields.join(', ')}</p><p>Why: {grant.purpose}</p><button disabled={busy} onClick={onRevoke}>Revoke grant</button></div>;
 }

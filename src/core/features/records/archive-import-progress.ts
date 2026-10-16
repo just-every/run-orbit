@@ -40,7 +40,17 @@ async function begin(db: D1Database, job: ImportJob, catalog: ArchiveTable[], la
     if (await db.prepare(`SELECT id FROM ${table} LIMIT 1`).first())
         throw new RecordError(409, 'Restore requires an empty customer database.'); if (await db.prepare("SELECT name FROM runtime_controls WHERE name IN ('archive_import','archive_export')").first())
     throw new RecordError(409, 'Another archive transfer is preparing or restoring.'); const backupId = createId(), progress: Progress = { phase: 'backup', table: 0, offset: 0, backupId }; await db.batch([...(context?.begin?await context.begin(job):[]),...(context?await context.fence(job):[]),db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'archive_import',CASE WHEN NOT EXISTS(SELECT 1 FROM archive_jobs WHERE id=? AND state='uploading') OR EXISTS(SELECT 1 FROM contacts) OR EXISTS(SELECT 1 FROM companies) OR EXISTS(SELECT 1 FROM opportunities) OR EXISTS(SELECT 1 FROM signals) THEN NULL ELSE ? END").bind(job.id,job.id), db.prepare("INSERT INTO runtime_controls VALUES('restore',?)").bind(job.id), db.prepare("INSERT INTO archive_jobs VALUES(?,'backup','preparing',?,'{}','{}',?)").bind(backupId, job.actor_id, new Date().toISOString()), ...await stageTables(db, backupId, catalog), db.prepare("UPDATE archive_jobs SET state='restoring',progress_json=? WHERE id=?").bind(JSON.stringify(progress), job.id)]); }
-export async function advanceImport(db: D1Database, job: ImportJob,context?:ImportContext) {
+/** One durable step. Returns how many table positions it moved: a step that passes over empty
+ * tables counts each of them, so a caller's step budget paces a restore by tables as before. */
+export async function advanceImport(db: D1Database, job: ImportJob,context?:ImportContext,budget=Infinity): Promise<number> {
+    const moved = { skipped: 0, budget };
+    await advanceStep(db, job, context, moved);
+    return 1 + moved.skipped;
+}
+type Moved = { skipped: number; budget: number };
+/** Passes over one more empty table, or reports the step budget spent so the caller saves this position. */
+const passEmpty = (moved: Moved) => ++moved.skipped + 1 < moved.budget;
+async function advanceStep(db: D1Database, job: ImportJob, context: ImportContext|undefined, moved: Moved) {
     if (job.state === 'complete' || job.state === 'aborted')
         return;
     const catalog = context?.catalog??await archiveCatalog(db), layouts = await stageLayouts(db, catalog);
@@ -64,7 +74,9 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
         if (!count) {
             p.table++;
             p.offset = 0;
-            continue;
+            if (passEmpty(moved)) continue;
+            await save(db, job, p,[],context);
+            return;
         }
         const layout = layouts.get(table.name)!;
         const statement = db.prepare(`INSERT INTO ${stageName(p.backupId, table.name)}(${layout.columns.map(c => stageCell(layout, c.name)).join(',')}) SELECT ${layout.columns.map(c => quoteIdentifier(c.name)).join(',')} FROM ${table.name} LIMIT 10000 OFFSET ?`).bind(p.offset);
@@ -113,7 +125,9 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
     if (!rows.length) {
         p.table++;
         p.offset = 0;
-        continue;
+        if (passEmpty(moved)) continue;
+        await save(db, job, p,[],context);
+        return;
     }
     const end = rows.at(-1)!.n;
     let columns = table.columns.map(c => c.name);

@@ -1,4 +1,4 @@
-import {useEffect,useState} from 'react';
+import {useEffect,useId,useState} from 'react';
 import {DataValue,storedValue} from '../operator/ui/data-value';
 import type {RecordProjection} from '../../shared/expansion-contracts';
 import {api} from '../fold-ui/workspace';
@@ -27,10 +27,10 @@ function SharedField({base,field,value,editable,revision,save}:{base:string;fiel
 
 /** A contact's or deal's company reads as the company's name, which the owner shares with the Company field. */
 function CompanyField({base,value,editable,revision,save}:{base:string;value:unknown;editable:boolean;revision:number;save:Save}){
- const [name,setName]=useState(''),[choices,setChoices]=useState<RecordProjection[]>([]);
+ const id=useId(),[name,setName]=useState(''),[choices,setChoices]=useState<RecordProjection[]>([]);
  useEffect(()=>{let live=true;setName('');if(typeof value==='string')api<RecordProjection>(`${base}/company/${encodeURIComponent(value)}`).then(company=>{if(live)setName(String(company.fields.name??''));}).catch(()=>{if(live)setName('');});return()=>{live=false;};},[base,value,revision]);
  useEffect(()=>{let live=true;if(editable)api<{items:RecordProjection[]}>(`${base}?kind=company`).then(result=>{if(live)setChoices(result.items);}).catch(()=>{if(live)setChoices([]);});return()=>{live=false;};},[base,editable,revision]);
  const current=typeof value==='string'?name||'A company not shared with you':'No company';
  if(!editable)return <p><strong>Company:</strong> {current}</p>;
- return <form onSubmit={event=>{event.preventDefault();const id=String(new FormData(event.currentTarget).get('value'));void save('company_id',id||null);}}><label>Company<select name="value" defaultValue={typeof value==='string'?value:''} key={`${revision}:${choices.length}`}><option value="">No company</option>{typeof value==='string'&&!choices.some(item=>item.ref.id===value)?<option value={value}>{current}</option>:null}{choices.map(item=><option key={item.ref.id} value={item.ref.id}>{String(item.fields.name??'Unnamed company')}</option>)}</select></label><button>Save company</button></form>;
+ return <form onSubmit={event=>{event.preventDefault();const id=String(new FormData(event.currentTarget).get('value'));void save('company_id',id||null);}}><label htmlFor={id}>Company</label><select id={id} name="value" defaultValue={typeof value==='string'?value:''} key={`${revision}:${choices.length}`}><option value="">No company</option>{typeof value==='string'&&!choices.some(item=>item.ref.id===value)?<option value={value}>{current}</option>:null}{choices.map(item=><option key={item.ref.id} value={item.ref.id}>{String(item.fields.name??'Unnamed company')}</option>)}</select><button>Save company</button></form>;
 }
