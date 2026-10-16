@@ -1,0 +1,67 @@
+import assert from 'node:assert/strict';
+import {expect} from '@playwright/test';
+import {browserAPI} from './browser-api.mjs';
+
+/** A fresh hosted timer must not block exact approval or hide when a send is due. */
+export async function scheduleOutreach(page,opportunityURL,evidence,submissions){
+ const width=page.viewportSize().width;
+ const opportunityId=new URL(opportunityURL).pathname.split('/').at(-1);
+ const messagesPath=`/api/v1/workbench/opportunities/${opportunityId}/messages`;
+ const before=await browserAPI(page,messagesPath);
+ assert.equal(before.scheduler.lastRunAt,null,'An ordinary request does not claim that Cloudflare ran its timer');
+ assert.equal(before.scheduler.ready,false);
+ const {opportunity}=await browserAPI(page,`/api/v1/opportunities/${opportunityId}`);
+ const contact=opportunity.contacts[0],subject='Your scheduled walkthrough',body='Hi Maya, here are the details for your team walkthrough.';
+ const draft=await browserAPI(page,`/api/v1/workbench/opportunities/${opportunityId}/drafts`,'POST',{contactId:contact.id,subject,body});
+ const {draft:savedDraft}=await browserAPI(page,`/api/v1/drafts/${draft.id}`);
+ const submitted=submissions.length;
+ await page.goto(new URL(`/app/drafts/${draft.id}`,opportunityURL).href);
+ const approval=page.locator('#send-approval');
+ await expect(approval).toContainText(contact.email);
+ await expect(approval).toContainText(subject);
+ await expect(approval).toContainText(body);
+ // Workspace and recipient use UTC. Choose a future weekday in sending hours;
+ // format the input in the browser's zone, just as the labelled field requires.
+ const requested=new Date(Date.now()+86400000);requested.setUTCHours(10,0,0,0);
+ while([0,6].includes(requested.getUTCDay()))requested.setUTCDate(requested.getUTCDate()+1);
+ const requestedAt=requested.toISOString();
+ const localInput=await page.evaluate(iso=>{const date=new Date(iso);return new Date(date.getTime()-date.getTimezoneOffset()*60000).toISOString().slice(0,16);},requestedAt);
+ await approval.getByLabel(/Schedule for later/).fill(localInput);
+ const previewResponse=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/workbench/drafts/${draft.id}/approval-preview`);
+ await approval.getByRole('button',{name:'Review schedule for exact revision',exact:true}).click();
+ const response=await previewResponse;assert.equal(response.status(),200);
+ const preview=await response.json();
+ assert.equal(preview.requestedAt,requestedAt);
+ assert.equal(preview.scheduledAt,requestedAt,'The permitted requested time is preserved');
+ const displayedTime=await page.evaluate(iso=>new Date(iso).toLocaleString(),preview.scheduledAt);
+ await expect(approval.getByRole('alert')).toContainText(displayedTime);
+ assert.equal((await browserAPI(page,messagesPath)).messages.some(message=>message.draftId===draft.id),false,'Schedule preview does not approve a send');
+ await page.screenshot({path:`${evidence}/schedule-approval-preview-${width}.png`,fullPage:true});
+ const approvedResponse=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/workbench/drafts/${draft.id}/approve`&&response.request().method()==='POST');
+ await approval.getByRole('button',{name:'Approve and schedule exact revision',exact:true}).click();
+ const approved=await approvedResponse;assert.equal(approved.status(),200);
+ const scheduled=await approved.json();
+ assert.equal(scheduled.state,'scheduled');assert.equal(scheduled.scheduledAt,preview.scheduledAt);
+ assert.deepEqual(approved.request().postDataJSON(),{revision:savedDraft.revision,scheduledAt:requestedAt,scheduledAtConfirmation:preview.scheduledAt});
+ await expect(approval.getByText(/This exact revision is scheduled/)).toContainText(displayedTime);
+ await page.goto(opportunityURL);
+ const history=page.locator('#approved-outreach'),message=history.locator('article').filter({has:page.getByRole('heading',{name:subject,exact:true})});
+ await expect(message).toContainText(contact.email);
+ await expect(message).toContainText('scheduled');
+ await expect(message.locator('strong')).toContainText(displayedTime);
+ const startup=history.getByRole('status');
+ await expect(startup).toContainText(/Cloudflare has not started its timer/);
+ await expect(startup).toContainText(/Due sends go out when Orbit is next used/);
+ const saved=(await browserAPI(page,messagesPath)).messages.find(message=>message.id===scheduled.id);
+ assert.deepEqual({subject:saved.subject,body:saved.body,recipientEmail:saved.recipientEmail,scheduledAt:saved.scheduledAt},{subject,body,recipientEmail:contact.email,scheduledAt:preview.scheduledAt});
+ assert.equal(submissions.length,submitted,'Scheduling future mail never submits it early');
+ await page.screenshot({path:`${evidence}/scheduled-outreach-${width}.png`,fullPage:true});
+ const cancelled=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/workbench/messages/${scheduled.id}/cancel`&&response.request().method()==='POST');
+ await message.getByRole('button',{name:'Cancel scheduled message',exact:true}).click();
+ assert.equal((await cancelled).status(),200);
+ await expect(message.getByRole('button',{name:'Cancel scheduled message',exact:true})).toHaveCount(0);
+ assert.equal((await browserAPI(page,messagesPath)).messages.find(message=>message.id===scheduled.id).state,'cancelled');
+ assert.equal(submissions.length,submitted,'Cancellation does not submit the scheduled mail');
+ await expect(message).toContainText('cancelled');
+ await page.screenshot({path:`${evidence}/cancelled-outreach-${width}.png`,fullPage:true});
+}

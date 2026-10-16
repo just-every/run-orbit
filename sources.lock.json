@@ -6085,7 +6085,7 @@
       "executable": false
     },
     "tests/e2e/workbench.spec.mjs": {
-      "sha256": "05d48a41b73cdf35cf0e62e5098cf94453f3c8e660bfad38d8ee106eb2c557db",
+      "sha256": "3b2cf66ac57bca675ef61303795d9e89d198f0f57f147eba3d3e672ad65794f3",
       "executable": false
     },
     "tests/e2e/worker-smoke.spec.mjs": {
@@ -6196,6 +6196,10 @@
       "sha256": "9f1ea44247c7e8f3b58ff2fd95ce75db41b83389989760c009da9e540abdebc1",
       "executable": false
     },
+    "tests/rer/hosted-scheduling.mjs": {
+      "sha256": "efffd94a90e004f73dfde625bde9eb4326c0636cbfaa7715f0f761e0011f6cc6",
+      "executable": false
+    },
     "tests/rer/identity.test.mjs": {
       "sha256": "20cca4b6366f5988a3d2aadbab04f8a865fed90d047ee56ad555612dadb3593f",
       "executable": false
@@ -6209,7 +6213,7 @@
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
-      "sha256": "c3bbdc73cf28f7ffc356f152ba9dce7a8e1ca64f8b38a9830000a3bacb9ea515",
+      "sha256": "b6a14e073f5ec97fee61c0ff806a3c7b6d5a5e67bdc3b486ca5e54475177ceb0",
       "executable": false
     },
     "tests/rer/operator-fixture.mjs": {
@@ -6217,7 +6221,7 @@
       "executable": false
     },
     "tests/rer/operator-merge.mjs": {
-      "sha256": "0ca8cc3745d5b56281c0c1070242a0c4a0666b59a7cbb9d56dca8ee2a0255d7a",
+      "sha256": "5699e2927ead88a26abdaad6a9d839caed7ab9cec2482f7d2794c5a89a4bde10",
       "executable": false
     },
     "tests/rer/operator-observations.mjs": {
@@ -6225,7 +6229,7 @@
       "executable": false
     },
     "tests/rer/operator-provenance.mjs": {
-      "sha256": "57a5ce8f625a5a07654b45c64d5314a259851387e80f1eb3db1255fc69aba06b",
+      "sha256": "5def34a169a002be64122830fa46a92749405c49486d09c73b37909b0d24fff4",
       "executable": false
     },
     "tests/rer/operator-routes.mjs": {
@@ -6242,6 +6246,10 @@
     },
     "tests/rer/private-routes.mjs": {
       "sha256": "02c52a40407ac58a4f5a4b40cc8d3728684f9b31a22cd6cb5185cfd0fec8882d",
+      "executable": false
+    },
+    "tests/rer/scheduled-outreach.mjs": {
+      "sha256": "097ef7a8f1c41340a41774a0ce7faeaf0326618d62a707ed377caea71a86256c",
       "executable": false
     },
     "tests/rer/sign-in.mjs": {

@@ -9,7 +9,11 @@ export async function exerciseDuplicateMerge(page,origin,fixture,observe){
   const second=await request(page,'/api/v1/records/company',{name:label,primary_domain:`${reverse?'reverse-':''}second.example`,custom_fields:{campaign_json:'Agency'}});
   const [survivor,retired]=reverse?[second,first]:[first,second];
   const detail=id=>request(page,`/api/v1/records/company/${id}`,undefined,'GET');
-  const select=async()=>{await page.getByRole('button',{name:'Find matching names',exact:true}).click();await page.getByRole('button',{name:new RegExp(survivor.id)}).click();await page.getByRole('button',{name:new RegExp(retired.id)}).click();};
+  const select=async()=>{
+   const candidates=await Promise.all([detail(survivor.id),detail(retired.id)]);
+   await page.getByRole('button',{name:'Find matching names',exact:true}).click();
+   for(const {record} of candidates)await page.getByRole('button',{name:`${record.name} · ${record.primary_domain}`,exact:true}).click();
+  };
   const choose=async()=>{await page.getByLabel('Primary domain',{exact:true}).selectOption(reverse?'survivor':'retired');await page.getByLabel('Custom fields',{exact:true}).selectOption(reverse?'retired':'survivor');};
   const confirm=async()=>{await page.getByRole('button',{name:'Confirm merge',exact:true}).click();return page.getByRole('dialog',{name:'Merge records',exact:true});};
   await page.goto(origin+'/app/records?kind=company');await page.getByText('Import, duplicate review and data export',{exact:true}).click();await select();
