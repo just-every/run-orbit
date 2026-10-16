@@ -245,7 +245,11 @@
             200
           ]
         }
-      ]
+      ],
+      "signIn": {
+        "path": "/signin",
+        "loginHint": true
+      }
     }
   }
 }

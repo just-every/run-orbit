@@ -937,7 +937,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "4e8594f8f84aef21978d4ebb2886b33ee05ee3883824d90a097c0c067018c0fb",
+      "sha256": "e7819bb2d79d3b2e4ff29541c72840b840daee303b5711d47c087e567195d57a",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2333,14 +2333,14 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "22b722c2b9e881a9df60fb2983b73587b90413246af26dcb619053949c043f84",
+      "sha256": "6227890a98b3e7a288edc4c7be24392f3b4bd6f2aee590ecf522017b61625a75",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
       "sha256": "29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b",
       "executable": false
     },
-    "patches/rer-0.2.22.patch": {
+    "patches/rer-0.2.25.patch": {
       "sha256": "629ba0a238ac8feafb66500d8109c42ed2616db5f441701e39202ea9bb89395c",
       "executable": false
     },
@@ -2353,7 +2353,7 @@
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "ca9d359c01de152cac3839d602331838822f2da2d58fb65c50e7fff66977cdae",
+      "sha256": "f758fff358efa2bcae94eddb358c0d8642ce96c1adf5aee40512c3c78797bb35",
       "executable": false
     },
     "pnpm-workspace.yaml": {
@@ -2533,7 +2533,7 @@
       "executable": false
     },
     "scripts/delivery/base/declarations.mjs": {
-      "sha256": "00924a1564e172d4d210a32936afe757870e226796465c11ac148e39d0ea0a85",
+      "sha256": "d8cf67d18fdc6ff027d323d0986a7815b52c71df01c4cbb3dde428cfc7f55a0c",
       "executable": false
     },
     "scripts/delivery/base/export.mjs": {
@@ -2569,7 +2569,7 @@
       "executable": false
     },
     "scripts/delivery/base/packaging.json": {
-      "sha256": "77c0120dc53b09b646c891d6451cb0d48f082276ef9cd63bc53e0bc4c3d6d50e",
+      "sha256": "cbe3c55e1630d6ff1d35e2afb30ee8425adebe52e2c122edd5bd85abcdcc4df4",
       "executable": false
     },
     "scripts/delivery/base/paths.mjs": {
@@ -6150,6 +6150,10 @@
     },
     "tests/fixtures/sample-data/service.ts": {
       "sha256": "c3bf395cfe2c14dea42f05fe314343d218c77256512f31238c9cb351a3a86d8a",
+      "executable": false
+    },
+    "tests/launch-runtime/declared-signin.test.ts": {
+      "sha256": "1fdfa1a46cd11cce856395dce4fa7b8e9c9181f63b268f7eb9111d2ce93ca7d8",
       "executable": false
     },
     "tests/launch-runtime/mail-body-transport.test.ts": {
