@@ -51,14 +51,16 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access', { 
   assert.deepEqual(personas.map((persona) => [persona.as, persona.role ?? null]), [['owner', 'owner'], ['seller', 'admin'], ['collaborator', 'member'], ['signed-out', null]]);
 
   await enter(page, origin, 'seller');
-  assert.deepEqual(await browserAPI(page, '/api/v2/access/class'), { access_class: 'native_full', workspace: true, reports: true });
+  assert.deepEqual(await browserAPI(page, '/api/v2/access/class'), { access_class: 'native_full' });
+  assert.deepEqual(await browserAPI(page, '/api/v2/access/pages'), { access_class: 'native_full', workspace: true, reports: true });
   assert.equal((await browserAPI(page, '/api/v2/workspaces/workspace/records/contact/' + contact.id)).fields.phone, '+1 555 0199', 'a full operator sees every field');
   await page.goto(`${origin}/app/records?kind=contact&record=${contact.id}`);
   await page.getByText('+1 555 0199').first().waitFor();
   await shot(page, 'seller-contact');
 
   await enter(page, origin, 'collaborator');
-  assert.deepEqual(await browserAPI(page, '/api/v2/access/class'), { access_class: 'collaborator', workspace: true, reports: true }, 'the Analyst profile reads the workspace and reports');
+  assert.deepEqual(await browserAPI(page, '/api/v2/access/class'), { access_class: 'collaborator' });
+  assert.deepEqual(await browserAPI(page, '/api/v2/access/pages'), { access_class: 'collaborator', workspace: true, reports: true }, 'the Analyst profile reads the workspace and reports');
   assert.equal(await page.evaluate(async () => (await fetch('/api/v1/workbench')).status), 403, 'a collaborator has no native operator access');
   const collaboratorId = (await browserAPI(page, '/api/v2/access/workspaces/workspace/administration').catch(() => null))?.members;
   assert.equal(collaboratorId, undefined, 'a collaborator cannot administer access');
