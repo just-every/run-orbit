@@ -49,7 +49,9 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
         return;
     }
     const p: Progress = JSON.parse(job.progress_json);
-    if (p.phase === 'backup') {
+    // A table with nothing left to back up or load only moves the cursor, so a step passes over it
+    // and commits once with its real work: each commit carries the full schema and capacity fences.
+    if (p.phase === 'backup') for (;;) {
         const table = catalog[p.table];
         if (!table) {
             p.phase = 'clear';
@@ -62,8 +64,7 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
         if (!count) {
             p.table++;
             p.offset = 0;
-            await save(db, job, p,[],context);
-            return;
+            continue;
         }
         const layout = layouts.get(table.name)!;
         const statement = db.prepare(`INSERT INTO ${stageName(p.backupId, table.name)}(${layout.columns.map(c => stageCell(layout, c.name)).join(',')}) SELECT ${layout.columns.map(c => quoteIdentifier(c.name)).join(',')} FROM ${table.name} LIMIT 10000 OFFSET ?`).bind(p.offset);
@@ -71,6 +72,7 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
         await save(db, job, p, [statement],context);
         return;
     }
+    // Clear keeps one table per step, so a restore interrupted mid-clear stops between tables.
     if (p.phase === 'clear' || p.phase === 'rollback-clear') {
         const table = [...catalog].reverse()[p.table];
         if (!table) {
@@ -98,6 +100,7 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
         await save(db, job, p, count ? [db.prepare(clear)] : [],context);
         return;
     }
+    for (;;) {
     const rollback = p.phase === 'rollback-load', table = catalog[p.table], source = rollback ? p.backupId : job.id;
     if (!table) {
         await finish(db, job, p, catalog, rollback, layouts,context);
@@ -110,8 +113,7 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
     if (!rows.length) {
         p.table++;
         p.offset = 0;
-        await save(db, job, p,[],context);
-        return;
+        continue;
     }
     const end = rows.at(-1)!.n;
     let columns = table.columns.map(c => c.name);
@@ -147,6 +149,8 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
         }
     }
     await save(db, job, p, [statement,...suppression],context);
+    return;
+    }
 }
 async function finish(db: D1Database, job: ImportJob, p: Progress, catalog: ArchiveTable[], rollback: boolean, layouts: Map<string, StageLayout>,context?:ImportContext) { const layout=layouts.get('operators')!, cell=(name:string)=>stageCell(layout,name), source = rollback ? p.backupId : job.id, operators = stageName(source, 'operators'); const columns = catalog.find(t => t.name === 'operators')!.columns.map(c => c.name); const statements: D1PreparedStatement[] = [...(context?await context.fence(job):[]),db.prepare('PRAGMA defer_foreign_keys=ON'), db.prepare('INSERT INTO archive_step_claims VALUES(?,?)').bind(job.id, job.progress_json), db.prepare("INSERT INTO runtime_controls VALUES('archive_applying',?)").bind(job.id)]; if (!rollback)
     statements.push(db.prepare('DELETE FROM delegation_codes'), db.prepare('DELETE FROM delegation_grants'), db.prepare('DELETE FROM identity_owner_signins'), db.prepare('DELETE FROM identity_proofs'), db.prepare('DELETE FROM identity_bindings'), db.prepare('DELETE FROM sessions')); statements.push(...restoreOperatorStatements(db,job.id,p.backupId,layout,columns,rollback,layouts.get('access_collaborators'))); if (!rollback) {

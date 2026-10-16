@@ -16,22 +16,30 @@ current counts and files:
 node scripts/verification-inventory.mjs
 ```
 
-Routine verification uses eight shards, executed sequentially locally and in
-parallel in GitHub Actions:
+`scripts/verification-plan.mjs` is the one plan for local and CI verification.
+GitHub Actions runs its shards in parallel, each sized to about ten minutes from
+measured CI times, so a push Verify finishes within fifteen minutes; local
+`rer verify` runs them all in sequence:
 
 - `source`: source lock, the first-party RER contract and Base provenance,
   boundaries, manifest, build, deployment-spec drift against the emitted
   Worker configuration, and typecheck.
-- `core-0`, `core-1`, `core-2`: isolated D1 product flows, including native identity, step-up,
+- `core-0` … `core-5`: isolated D1 product flows, including native identity, step-up,
   reviewed imports, erasure, capture, source setup, reviewed outreach,
-  provider outcomes, suppression and delegated authority.
-- `runtime`: emitted mail ingress and source-stop flows, browser journeys,
-  and the README lifecycle through real `rer` commands in a fresh checkout.
-- `fold-archive`: current native archive, CLI streaming, interrupted job
-  recovery and restore rollback.
+  provider outcomes, suppression and delegated authority, balanced by file.
+- `runtime`: emitted mail ingress and source-stop flows and the browser journeys.
+- `rer-operator`, `rer-checkouts`: operator controls, onboarding, admission and
+  identity through real `rer` commands in a fresh checkout.
+- `fold-archive-0` … `fold-archive-3`: current native archive, CLI streaming,
+  interrupted job recovery and restore rollback.
 - `fold-accepted-main`: one immutable accepted-main archive upgrade journey.
-- `fold-domain`: first-run setup, collaborator authority, published forms,
-  reports, browser workflows and restart/upgrade preservation.
+- `fold-domain`: first-run setup, collaborator authority (including a Guest's
+  See and edit grant at 1440 and 390), published forms, reports, browser
+  workflows and restart/upgrade preservation.
+- `journeys`: the README install-and-lifecycle clone journey
+  (`tests/rer/journey.test.mjs`). It runs on release tags, the nightly
+  schedule, release qualification and local `rer verify`, not on every push;
+  the routine aggregate then expects every other case.
 
 Every retained test file is discovered and scheduled exactly once. The final
 aggregate requires every shard on the current commit, reconciles individual
