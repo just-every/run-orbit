@@ -15,7 +15,7 @@ export function resetVerification(){
  mkdirSync('verification/ci-shards',{recursive:true});
 }
 export function runShard(name){
- const gates=verificationPlan()[name];if(!gates)throw Error(`Unknown verification shard: ${name}`);
+ const gates=verificationPlan({journeys:true})[name];if(!gates)throw Error(`Unknown verification shard: ${name}`);
  mkdirSync('verification/ci-shards',{recursive:true});
  const destination=`verification/ci-shards/${name}.json`;rmSync(destination,{force:true});
  const commit=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'});if(commit.status!==0)throw Error('Verification requires the edition Git commit.');
@@ -45,7 +45,7 @@ export function runShard(name){
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  // Reject a bad argument before clearing the previous run's evidence.
- if(process.argv.length!==3||!Object.hasOwn(verificationPlan(),process.argv[2]))throw Error(`Usage: node scripts/verification-shard.mjs <${Object.keys(verificationPlan()).join('|')}>`);
+ if(process.argv.length!==3||!Object.hasOwn(verificationPlan({journeys:true}),process.argv[2]))throw Error(`Usage: node scripts/verification-shard.mjs <${Object.keys(verificationPlan({journeys:true})).join('|')}>`);
  resetVerification();
  if(!runShard(process.argv[2]))process.exitCode=1;
 }

@@ -1,23 +1,34 @@
 diff --git a/cli/deploy-command.mjs b/cli/deploy-command.mjs
+index 6decf5973bbb295c65bfe31b2718ad858eb33714..054ce6030ba3e164434113a86b51394aed0dbc09 100644
 --- a/cli/deploy-command.mjs
 +++ b/cli/deploy-command.mjs
-@@ -63,10 +63,10 @@
+@@ -64,7 +64,7 @@ export async function deployCommand(context) {
+  const settings = adapter.hooks?.secrets ?? adapter.settings;
+  // What a dry run went ahead without, listed when it completes.
+  const dryRun = async result => {
+-  const production = await deployEnvironment({ root, options, declaration, setupManifest, settings, localOnlyKeys });
++  const production = await deployEnvironment({ root, options, declaration, setupManifest, settings, localOwner: adapter.hooks?.localOwner, localOnlyKeys });
+   const { signIn } = await requireProductionAuth({ root, declaration, env: production.env, setupManifest, setupSeed: context.setupSeed, adapter, declarationPath: path, options }) ?? {};
+   const needed = neededForRealDeploy({ declaration, env: production.env, signIn });
+   reportNeeded(store, needed);
+@@ -74,10 +74,10 @@ export async function deployCommand(context) {
   // may perform them; neither a build nor a custom upload runs here.
   if (options.remove || options.setSecret || options.unsetSecret) return ownerDeploy(path, adapter)(context);
-  if (adapter.deploy.managesHostedOwner) return adapter.deploy(context);
-- const production = await deployEnvironment({ root, options, declaration, setupManifest, settings: adapter.settings, localOnlyKeys });
-+ const production = await deployEnvironment({ root, options, declaration, setupManifest, settings: adapter.settings, localOwner: adapter.hooks?.localOwner, localOnlyKeys });
+  if (adapter.deploy.managesHostedOwner) { const result = await adapter.deploy(context); return options.dryRun ? dryRun(result) : result; }
+- const production = await deployEnvironment({ root, options, declaration, setupManifest, settings, localOnlyKeys });
++ const production = await deployEnvironment({ root, options, declaration, setupManifest, settings, localOwner: adapter.hooks?.localOwner, localOnlyKeys });
   await requireProductionAuth({ root, declaration, env: production.env, setupManifest, setupSeed: context.setupSeed, adapter, declarationPath: path, options });
   const sourceSha = options.dryRun ? undefined : committedSource(root, options);
-- const { env, supplied } = await deployEnvironment({ root, options, declaration, setupManifest, settings: adapter.settings, localOnlyKeys });
-+ const { env, supplied } = await deployEnvironment({ root, options, declaration, setupManifest, settings: adapter.settings, localOwner: adapter.hooks?.localOwner, localOnlyKeys });
+- const { env, supplied } = await deployEnvironment({ root, options, declaration, setupManifest, settings, localOnlyKeys });
++ const { env, supplied } = await deployEnvironment({ root, options, declaration, setupManifest, settings, localOwner: adapter.hooks?.localOwner, localOnlyKeys });
   const { createRedaction, credentialValues } = await shared('redaction.mjs');
   const redaction = createRedaction();
   const addSecret = value => { redaction.addSecrets([value]); store.addSecrets?.([value]); };
 diff --git a/cli/deploy-inputs.mjs b/cli/deploy-inputs.mjs
+index fcc8f0e877127a4a225199ea25f14e0431f63f23..a436e2787263f023a223cd3c4f8b3681a2e2460d 100644
 --- a/cli/deploy-inputs.mjs
 +++ b/cli/deploy-inputs.mjs
-@@ -8,7 +8,7 @@
+@@ -10,7 +10,7 @@ import { publicOrigin } from '../modules/deploy-kit/public-origin.mjs';
  // the local setup owner's email, and a fresh value for each secret the setup
  // manifest generates (a session secret, the one-time setup token). A value only
  // reaches a Worker that lacks that secret; an existing one is kept unchanged.
@@ -26,7 +37,7 @@ diff --git a/cli/deploy-inputs.mjs b/cli/deploy-inputs.mjs
   const env = { ...process.env }, supplied = [];
   if (options.envFile) {
    let values;
-@@ -20,6 +20,13 @@
+@@ -30,6 +30,13 @@ export async function deployEnvironment({ root, options, declaration, setupManif
   const absent = item => item && !env[item.environment]?.trim();
   const emailField = setupManifest?.steps?.find(step => step.type === 'owner-claim')?.emailField;
   const email = secrets.find(item => item?.binding === emailField);
@@ -41,21 +52,32 @@ diff --git a/cli/deploy-inputs.mjs b/cli/deploy-inputs.mjs
    const { readSettings } = await shared('adapter-settings.mjs');
    const owner = (await readSettings(root, settings)).values[emailField];
 diff --git a/cli/deploy.mjs b/cli/deploy.mjs
+index 7820a3813b3f9ce6ae3f00c66708065c10d38b9c..2e9c433ec995ab9ab6dce3dca2683e09edc25540 100644
 --- a/cli/deploy.mjs
 +++ b/cli/deploy.mjs
-@@ -47,7 +47,7 @@
+@@ -36,7 +36,7 @@ export function ownerDeploy(declarationPath, lifecycle) {
+   if (options.dryRun && options.envFile) await deployEnvironment({ root, options, declaration, localOnlyKeys });
+   let production;
+   if (!change.length) {
+-   production = await deployEnvironment({ root, options, declaration, setupManifest, settings: lifecycle.settings, localOnlyKeys });
++   production = await deployEnvironment({ root, options, declaration, setupManifest, settings: lifecycle.settings, localOwner: lifecycle.hooks?.localOwner, localOnlyKeys });
+    await requireProductionAuth({ root, declaration, env: production.env, setupManifest, setupSeed, adapter: lifecycle, declarationPath, options });
+    if (!options.dryRun) committedSource(root, options);
+    await lifecycle.run(root, {}, store, () => {}, signal, { verb: 'build', operationToken });
+@@ -53,7 +53,7 @@ export function ownerDeploy(declarationPath, lifecycle) {
     store.report('deploy: dry run complete; no deployment occurred and no provider request was made.');
     return { dryRun: true, deployed: false };
    }
 -  const { env, supplied } = await deployEnvironment({ root, options, declaration, setupManifest, settings: lifecycle.settings, localOnlyKeys });
 +  const { env, supplied } = await deployEnvironment({ root, options, declaration, setupManifest, settings: lifecycle.settings, localOwner: lifecycle.hooks?.localOwner, localOnlyKeys });
-   const names = ['CLOUDFLARE_ACCOUNT_ID', 'CLOUDFLARE_API_TOKEN'];
-   if (names.some(name => !env[name]?.trim())) throw missing('CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN are required. See the deploy-kit owner-account instructions.');
+   if (cloudflareCredentials.some(name => !env[name]?.trim())) throw missing(missingCredentialsMessage(declaration, env));
    const { main } = await import('../modules/deploy-kit/owner-cli.mjs');
+   const { createRedaction, credentialValues } = await shared('redaction.mjs');
 diff --git a/cli/package-mode.mjs b/cli/package-mode.mjs
+index 5e4f3d7e0670c33cb092d653981258feaa2ae332..165cab4683465a9c460b132dc0ca12d2d669ea95 100644
 --- a/cli/package-mode.mjs
 +++ b/cli/package-mode.mjs
-@@ -39,8 +39,11 @@
+@@ -39,8 +39,11 @@ export async function lockedPackage(root) {
    const entries = block(...own, `${group}:`, 4), entry = entries && block(...entries, `'${packageName}':`, 6);
    if (!entry) continue;
    const fields = Object.fromEntries(lines.slice(...entry).map(line => /^\s+(specifier|version):\s*'?([^'\s]*)'?\s*$/.exec(line)).filter(Boolean).map(match => [match[1], match[2]]));

@@ -6,7 +6,18 @@ Use your own Microsoft Entra application for your Orbit installation. This guide
 
 Run Orbit following [README.md](../README.md) and open **Capture → Microsoft account → Set up** as the owner. Copy the exact callback URI shown there. A successful authorized `rer deploy` also prints `ORBIT_CAPTURE_REDIRECT microsoft <absolute-URI>`; `rer dev` does not print callback URIs. The callback's origin must match the installation you are connecting (the local origin is printed as `RER_READY`). The callback path is `/api/v1/capture/oauth/microsoft/callback`. Use the entire URI, including host, case and port. Never register the private `RER_OPEN` link or fragment.
 
-Configure the callback as a **Web** platform: Orbit exchanges the code on its server. Hosted callbacks must use HTTPS. For a local `http://127.0.0.1:PORT/...` callback URI shown in Capture, Microsoft's portal currently requires the application manifest's `replyUrlsWithType` entry with type `Web`; the Authentication textbox rejects that HTTP IP literal. Preserve other manifest entries and add the exact callback URI. Do not substitute `localhost` midway through a connection: that changes the session's host. [Microsoft redirect rules and loopback procedure](https://learn.microsoft.com/en-us/entra/identity-platform/reply-url).
+Configure the callback as a **Web** platform: Orbit exchanges the code on its server. Hosted callbacks must use HTTPS. For a local `http://127.0.0.1:PORT/...` callback URI shown in Capture, Microsoft's portal currently requires the application manifest's `replyUrlsWithType` entry with type `Web`; the Authentication textbox rejects that HTTP IP literal. Preserve other manifest entries and add the exact callback URI. Capture's step 2 shows this entry with the callback filled in and a copy button; on the **AAD Graph App Manifest** tab it replaces the line `"replyUrlsWithType": [],`:
+
+```json
+"replyUrlsWithType": [
+    {
+        "url": "http://127.0.0.1:PORT/api/v1/capture/oauth/microsoft/callback",
+        "type": "Web"
+    }
+],
+```
+
+Do not substitute `localhost` midway through a connection: that changes the session's host. [Microsoft redirect rules and loopback procedure](https://learn.microsoft.com/en-us/entra/identity-platform/reply-url).
 
 ## 2. Register the owner application
 

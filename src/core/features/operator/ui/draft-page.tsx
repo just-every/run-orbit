@@ -8,12 +8,17 @@ import { OperatorShell, OperatorState } from "./operator-shell";
 import { useOperatorResource } from "./use-operator-resource";
 import { DraftContentFields } from "../../drafts/ui/draft-content-fields";
 
+interface SubmittedMessage { draftId: string; revision: number; state: string; scheduledAt: string | null }
+const submittedTitles: Record<string, string> = { scheduled: "Scheduled message", failed: "Message not sent", bounced: "Message bounced" };
+
 export function DraftPage() {
   const { id } = useParams({ from: "/app/drafts/$id" });
   const loadDraft = useCallback(async () => {
     const [{ draft }, { presentation }] = await Promise.all([operatorApi.readDraft(id), operatorApi.readWorkspacePresentation()]);
-    const { opportunity } = await operatorApi.readOpportunity(draft.opportunityId);
-    return { draft, presentation, opportunity };
+    const [{ opportunity }, history] = await Promise.all([operatorApi.readOpportunity(draft.opportunityId), fetch(`/api/v1/workbench/opportunities/${encodeURIComponent(draft.opportunityId)}/messages`).then(response => response.ok ? response.json() as Promise<{ messages: SubmittedMessage[] }> : { messages: [] })]);
+    // This exact revision was already approved: show what happened to it instead of an editor.
+    const submitted = history.messages.find(message => message.draftId === draft.id && message.revision === draft.revision && !["draft", "cancelled"].includes(message.state)) ?? null;
+    return { draft, presentation, opportunity, submitted };
   }, [id]);
   const resource = useOperatorResource(`draft:${id}`, loadDraft);
   const [draft, setDraft] = useState<OperatorDraft | null>(null);
@@ -21,6 +26,7 @@ export function DraftPage() {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const [reviewed, setReviewed] = useState(false);
+  const [justSubmitted, setJustSubmitted] = useState<Pick<SubmittedMessage, "state" | "scheduledAt"> | null>(null);
 
   useEffect(() => {
     if (resource.data) { setDraft(resource.data.draft); setReviewed(false); }
@@ -59,15 +65,17 @@ export function DraftPage() {
   }
   if (!draft || !resource.data) return null;
   const presentation = resource.data.presentation;
+  const submitted = resource.data.submitted ?? justSubmitted;
 
   return (
     <OperatorShell
       eyebrow="Human-reviewed outreach"
-      title="Editable draft"
+      title={submitted ? submittedTitles[submitted.state] ?? "Sent message" : "Editable draft"}
       action={<Link className="operator-back-link" to="/app/opportunities/$id" params={{ id: draft.opportunityId }}>← Opportunity detail</Link>}
     >
       <section className="operator-draft-editor" style={{display:"block"}} data-testid="draft-editor">
-        <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}>
+        {submitted ? <OperatorState>{submitted.state === "scheduled" && submitted.scheduledAt ? `This message is scheduled for ${formatDateTime(submitted.scheduledAt, presentation)}. To change it, cancel it from the opportunity first.` : `This message was approved and handed to the mail service (state: ${label(submitted.state)}). It can no longer be edited. To write to this customer again, start a new follow-up from the opportunity.`}</OperatorState> : null}
+        {submitted ? <SentMessage recipient={resource.data.draft.recipientEmail} subject={resource.data.draft.subject} body={resource.data.draft.body} /> : <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}><fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
           <label>Recipient
             <input data-testid="draft-recipient" required onChange={(event) => setDraft({ ...draft, recipientEmail: event.target.value })} type="email" value={draft.recipientEmail} />
           </label>
@@ -92,7 +100,7 @@ export function DraftPage() {
             <p>Save the exact message before approving or scheduling it below.</p>
             <button className="operator-primary-button" data-testid="save-draft" disabled={saving || draft.isStale} type="submit">{saving ? "Saving…" : "Save draft"}</button>
           </div>
-        </form>
+        </fieldset></form>}
       </section>
         <details className="operator-surface operator-detail__section"><summary>Audit details</summary>
           <p className="operator-eyebrow">Draft history</p>
@@ -104,7 +112,18 @@ export function DraftPage() {
             <div><dt>Revision</dt><dd>{draft.revision}</dd></div>
           </dl>
         </details>
-      <DraftApproval recipientName={resource.data.opportunity.contacts.find(contact=>contact.id===draft.recipientContactId)?.name??undefined} draft={draft} dirty={draft.recipientEmail !== resource.data?.draft.recipientEmail || draft.subject !== resource.data?.draft.subject || draft.body !== resource.data?.draft.body} />
+      {resource.data.submitted ? null : <DraftApproval onSubmitted={setJustSubmitted} recipientName={resource.data.opportunity.contacts.find(contact=>contact.id===draft.recipientContactId)?.name??undefined} draft={draft} dirty={draft.recipientEmail !== resource.data?.draft.recipientEmail || draft.subject !== resource.data?.draft.subject || draft.body !== resource.data?.draft.body} />}
     </OperatorShell>
   );
+}
+
+/** A message handed to the mail service is a record, not a form: what was sent, as text. */
+function SentMessage({ recipient, subject, body }: { recipient: string; subject: string; body: string }) {
+  return <section className="operator-surface operator-draft-form" aria-label="Message as sent" data-testid="sent-message">
+    <dl className="operator-sent-message">
+      <div><dt>Recipient</dt><dd>{recipient}</dd></div>
+      <div><dt>Subject</dt><dd>{subject}</dd></div>
+      <div><dt>Body</dt><dd style={{ whiteSpace: "pre-wrap" }}>{body}</dd></div>
+    </dl>
+  </section>;
 }

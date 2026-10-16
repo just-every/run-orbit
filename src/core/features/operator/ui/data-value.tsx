@@ -1,6 +1,6 @@
 import {customFieldValue} from './import-provenance';
 /** Preserve every value and nesting level while presenting records as labelled fields. */
-export function fieldLabel(key:string){if(key==='import_source')return 'Import source';if(key==='custom_fields_json')return 'Custom fields';return key.replace(/([a-z])([A-Z])/g,'$1 $2').replaceAll('_',' ').replace(/^./,letter=>letter.toUpperCase());}
+export function fieldLabel(key:string){if(key==='import_source')return 'Import source';if(key==='id_in_old_system')return 'ID in old system';if(key==='custom_fields_json')return 'Custom fields';return key.replace(/([a-z])([A-Z])/g,'$1 $2').replaceAll('_',' ').replace(/^./,letter=>letter.toUpperCase());}
 export function storedValue(key:string,value:unknown):unknown{
  if(key!=='custom_fields_json')return value;
  const fields=typeof value==='string'?JSON.parse(value):value;

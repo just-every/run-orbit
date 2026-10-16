@@ -6,6 +6,5 @@
     "MAIL_PROVIDER": "development",
     "MAIL_FROM": "Alex Morgan <alex@brightwork.example>"
   },
-  "instanceType": "basic",
   "ownerEmail": "alex@brightwork.example"
 }

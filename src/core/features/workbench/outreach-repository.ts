@@ -25,5 +25,5 @@ export class OutreachRepository {
   async settle(id: string, actor: string, state: 'accepted'|'failed'|'delivery-unknown'|'reconciling', providerId: string|null, failure: string|null) {
     await this.db.batch(await settlementStatements(this.db,id,actor,state,providerId,failure));
   }
-  async messages(opportunityId: string) {return (await this.db.prepare('SELECT id,draft_id AS draftId,state,recipient_email AS recipientEmail,subject,body,provider_message_id AS providerMessageId,failure,next_attempt_at AS retryAfter,scheduled_at AS scheduledAt,created_at AS createdAt FROM outbound_messages WHERE opportunity_id=? ORDER BY created_at DESC').bind(opportunityId).all()).results;}
+  async messages(opportunityId: string) {return (await this.db.prepare('SELECT id,draft_id AS draftId,revision,state,recipient_email AS recipientEmail,subject,body,provider_message_id AS providerMessageId,failure,next_attempt_at AS retryAfter,scheduled_at AS scheduledAt,created_at AS createdAt FROM outbound_messages WHERE opportunity_id=? ORDER BY created_at DESC').bind(opportunityId).all()).results;}
 }

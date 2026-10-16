@@ -32,10 +32,10 @@ export function operatorRoutes(f){return [
  {name:'settings',path:'/app/settings',ready:page=>page.getByRole('button',{name:'Save workspace',exact:true}).waitFor()},
  {name:'notifications',path:'/app/notifications',ready:page=>page.getByRole('button',{name:'Operator review opportunity',exact:true}).first().waitFor()},
  {name:'notification-detail',path:'/app/notifications',ready:async page=>{await page.getByRole('button',{name:'Operator review opportunity',exact:true}).first().click();await page.getByRole('button',{name:'Close notification details'}).waitFor();}},
- {name:'reports',path:'/app/reports',ready:async page=>{await page.getByRole('button',{name:'Reopen saved report'}).first().click();await page.getByText('How this report is calculated',{exact:true}).click();await page.getByText('Create or revise a report from native records',{exact:true}).click();}},
+ {name:'reports',path:'/app/reports',ready:async page=>{await page.getByRole('button',{name:'Reopen saved report'}).first().click();await page.getByText('How this report is calculated',{exact:true}).click();await page.getByText('Create or edit a report from your records',{exact:true}).click();}},
  {name:'forms',path:'/app/forms',ready:async page=>{await page.getByRole('button',{name:'Reopen latest publication'}).first().click();await page.getByRole('button',{name:'Read submissions'}).first().click();await page.getByText('A form submission shown as labelled values.',{exact:true}).waitFor();}},
  {name:'access',path:'/app/access',ready:page=>page.getByRole('button',{name:'Revoke grant',exact:true}).waitFor()},
- {name:'shared',path:`/app/shared-records?kind=contact&id=${f.contactId}`,ready:async page=>{await page.getByRole('heading',{name:'Permitted fields'}).waitFor();await expectProvenance(page,f.provenance);}},
+ {name:'shared',path:`/app/shared-records?kind=contact&id=${f.contactId}`,ready:async page=>{await page.getByRole('region',{name:'Shared record details'}).waitFor();await expectProvenance(page,f.provenance);}},
  {name:'delegation-settings',path:'/delegation/settings',ready:page=>page.getByRole('heading',{name:'Delegations',exact:true}).waitFor()},
  {name:'delegation-authorize',path:f.authorize,ready:page=>page.getByRole('button',{name:'Allow selected access',exact:true}).waitFor()},
  ];}

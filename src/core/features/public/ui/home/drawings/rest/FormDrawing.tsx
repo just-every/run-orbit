@@ -13,7 +13,7 @@ export function FormDrawing() {
         <span className="ob-input">dana@northwind.example</span>
         <p className="ob-label">Message</p>
         <span className="ob-input">Requested a trial</span>
-        <span className="ob-btn ob-btn--ink ob-btn--small">Submit inquiry</span>
+        <span className="ob-btn ob-btn--ink ob-btn--small">Submit enquiry</span>
       </div>
       <div className="ob-card ob-person" aria-hidden="true">
         <div className="ob-lead">

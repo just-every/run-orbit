@@ -80,3 +80,4 @@
  .plan-opportunity { grid-template-columns: minmax(0, 1fr); }
  .plan-opportunity span { padding-left: 0; border-left: 0; }
 }
+.today-now-jump{display:none}@media (max-width:640px){.today-now-jump{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin:0 0 12px;font-weight:650;color:var(--ob-ink)}}.today-now-title{scroll-margin-top:16px}

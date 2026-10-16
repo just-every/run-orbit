@@ -2,3 +2,7 @@
 
 /* A panel's title, intro and fields: the intro under its title, then room before the first field row. */
 .fold-panel>h2{margin-bottom:0}.fold-panel>h2+p{margin-top:8px}.fold-panel>:is(h2,p)+:is(form,.fold-grid,.fold-actions){margin-top:18px}
+
+.fold-panel label.fold-check{display:flex;align-items:center;gap:10px;min-height:44px;margin:0}.fold-panel fieldset{border:1.5px solid var(--ob-line);border-radius:12px;padding:12px 16px;margin:0 0 14px;min-width:0}.fold-panel fieldset:disabled{opacity:.7}
+.fold-panel ol{list-style:decimal;padding-left:24px;margin:8px 0}.fold-panel ol li{list-style:decimal;margin:4px 0}.fold-row p,.fold-row h3{margin:6px 0}.fold-hint{color:var(--ob-muted);font-size:14.5px}
+.fold-row h3{font-size:17px;font-weight:700}

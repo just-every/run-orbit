@@ -7,10 +7,13 @@ import {domainEventStatements} from '../../src/core/features/effects/event-state
 import {GraphRecords} from '../../src/core/features/graph/repository';
 import {RecordsRepository} from '../../src/core/features/records/repository';
 import {createId} from '../../src/core/shared/ids';
-import {emailLinkSignIn} from '../../tests/support/email-link';
+import {emailLinkSignIn,mailedIdentity} from '../../tests/support/email-link';
+import {createOrbitIdentity} from '../../src/core/features/identity';
 import {testAuth} from '../../tests/support/test-auth';
 import {sha256} from '../../src/core/features/identity/store';
 import type {ActorContext} from '../../src/core/shared/expansion-contracts';
+/** An emailed sign-in link not yet opened, as a person signing in again receives it; its path opens on any origin. */
+export async function signInLink(db:D1Database,email:string,returnTo='/app'){const mail=mailedIdentity(db),identity=createOrbitIdentity(mail.bindings,{mailSender:mail.mailSender})!;await identity.auth.requestMagicLink(mail.post('/auth/magic-link'),{email,returnTo});const link=mail.linkIn(mail.sent.at(-1));if(!link)throw new Error(`No sign-in link was sent to ${email}.`);const url=new URL(link);return url.pathname+url.search;}
 export async function signIn(db:D1Database,email:string){const {operator,cookie}=await emailLinkSignIn(db,email,{returnTo:'/app/access'});return{operator,cookie};}
 /** The pre-Base session format, for a historical store whose own (old) code signs in. */
 export async function legacySignIn(db:D1Database,email:string){const id=await db.prepare('SELECT id FROM operators WHERE lower(email)=lower(?)').bind(email).first<string>('id');assert.ok(id);const session=await testAuth(db).legacySession(id!);

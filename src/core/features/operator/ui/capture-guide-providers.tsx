@@ -48,6 +48,33 @@ export function googleSteps(provider: CaptureProviderInfo, finish: ReactNode, re
   ];
 }
 
+/** The manifest entry that registers Orbit's callback as a Web redirect, ready to paste over the empty list. */
+export const microsoftManifestEntry = (redirectUri: string) => `"replyUrlsWithType": [
+    {
+        "url": ${JSON.stringify(redirectUri)},
+        "type": "Web"
+    }
+],`;
+
+/**
+ * Entra's Redirect URI box refuses http://127.0.0.1, so a local Orbit adds its
+ * callback in the app's manifest: the exact entry is given, never described.
+ */
+function localMicrosoftRegistration(redirectUri: string) {
+  return <ol>
+    <li>Choose <strong>New registration</strong> and name it <strong>Orbit</strong>.</li>
+    <li>Under <Term meaning="who may sign in">Supported account types</Term>, choose <strong>Accounts in any organizational directory and personal Microsoft accounts</strong>.</li>
+    <li>Leave <strong>Redirect URI</strong> empty. Orbit is running on this computer, at an <code>http://</code> address, and Microsoft refuses that address in this box. You add it in the manifest instead, in a moment.</li>
+    <li>Choose <strong>Register</strong>. On the page that opens, copy the <strong>Application (client) ID</strong>; that is your Client ID.</li>
+    <li>In the menu on the left, open <strong>Manifest</strong>. If the page shows two tabs, choose <strong>AAD Graph App Manifest</strong>.</li>
+    <li>Click in the manifest, search it (<kbd>Ctrl</kbd>+<kbd>F</kbd>, or <kbd>⌘</kbd>+<kbd>F</kbd> on a Mac) for <code>replyUrlsWithType</code>, and select its whole line, <code>"replyUrlsWithType": [],</code>. Paste this in its place:
+      <CopyField block label="Manifest entry for Orbit" value={microsoftManifestEntry(redirectUri)} />
+      <span className="capture-note">If the brackets after <code>replyUrlsWithType</code> already hold an address, keep it: paste only the part from <code>{'{'}</code> to <code>{'}'}</code>, add a comma after it, and put both just after the <code>[</code>.</span>
+    </li>
+    <li>Choose <strong>Save</strong>. To check, open <strong>Authentication</strong>: under <strong>Web</strong>, <strong>Redirect URIs</strong> now lists <code>{redirectUri}</code>.</li>
+  </ol>;
+}
+
 /** Microsoft Entra: register a Web app, add read permissions, make a secret, then the key. */
 export function microsoftSteps(provider: CaptureProviderInfo, finish: ReactNode, reconnect?: { id: string; name: string }): GuideStep[] {
   return [
@@ -55,13 +82,12 @@ export function microsoftSteps(provider: CaptureProviderInfo, finish: ReactNode,
       <li><ConsoleLink href="https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM">Open Microsoft Entra app registrations</ConsoleLink> and sign in.</li>
       <li>Use your work or school Microsoft account. A personal Outlook.com account can connect in step 5, but registering the app needs an organisation account or a free Azure account.</li>
     </ol> },
-    { title: 'Register Orbit', body: <ol>
+    { title: 'Register Orbit', body: provider.redirectUri.startsWith('http://') ? localMicrosoftRegistration(provider.redirectUri) : <ol>
       <li>Choose <strong>New registration</strong> and name it <strong>Orbit</strong>.</li>
       <li>Under <Term meaning="who may sign in">Supported account types</Term>, choose <strong>Accounts in any organizational directory and personal Microsoft accounts</strong>.</li>
       <li>Under <strong>Redirect URI</strong>, choose <strong>Web</strong> and paste this address:
         <CopyField label="Microsoft redirect address" value={provider.redirectUri} />
         <span className="capture-note">The redirect address is where Microsoft sends you back after you approve Orbit.</span>
-        {provider.redirectUri.startsWith('http://') ? <span className="capture-note">Orbit is running on this computer, and Microsoft refuses an http:// address in that box. Leave it empty, choose <strong>Register</strong>, then open <strong>Manifest</strong>, add this address to <code>replyUrlsWithType</code> with <code>"type": "Web"</code>, and save.</span> : null}
       </li>
       <li>Choose <strong>Register</strong>. On the page that opens, copy the <strong>Application (client) ID</strong>; that is your Client ID.</li>
     </ol> },

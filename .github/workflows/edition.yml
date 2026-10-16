@@ -2,6 +2,9 @@ name: Verify authoritative edition source
 on:
   push:
   pull_request:
+  # Installer and README clone journeys run nightly and on release tags, not on every push.
+  schedule:
+    - cron: '17 3 * * *'
   workflow_dispatch:
     inputs:
       release:
@@ -26,24 +29,51 @@ env:
   ORBIT_RELATED_RECORD_INSPECTOR_PORT: '0'
   WRANGLER_SEND_METRICS: 'false'
 jobs:
-  shards:
+  plan:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      journeys: ${{ steps.plan.outputs.journeys }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - name: Install the plan's TypeScript reader
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - id: plan
+        name: Read the shared local and CI verification plan
+        env:
+          JOURNEYS: ${{ github.ref_type == 'tag' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.release) }}
+        run: |
+          node --input-type=module -e 'import {verificationPlan,shardNeeds} from "./scripts/verification-plan.mjs"; const include=Object.keys(verificationPlan({journeys:process.env.JOURNEYS==="true"})).map(shard=>({shard,...shardNeeds(shard)})); console.log("matrix="+JSON.stringify({include}));' >> "$GITHUB_OUTPUT"
+          echo "journeys=$([ "$JOURNEYS" = true ] && echo 1 || echo 0)" >> "$GITHUB_OUTPUT"
+  shards:
+    name: shards (${{ matrix.shard }})
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
     strategy:
       fail-fast: false
-      matrix:
-        shard: [source, core-0, core-1, core-2, runtime, fold-archive, fold-domain, fold-accepted-main]
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .node-version
       - uses: pnpm/action-setup@v4
         with:
           run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
       - name: Install pinned package CLI for every shard
         run: pnpm install --frozen-lockfile
       - name: Check authoritative inputs and retain clean source candidate
@@ -66,12 +96,17 @@ jobs:
             fi
           done
       - run: pnpm exec playwright install --with-deps chromium
-        if: matrix.shard != 'source' && !startsWith(matrix.shard, 'core-')
+        if: matrix.browsers
       # rer refuses to start local servers below 15 GiB free; the archive lineage needs more.
+      # Remove unused toolchains only until 25 GiB is free.
       - name: Reserve disk for local servers and immutable archive lineage
-        if: ${{ !startsWith(matrix.shard, 'core-') }}
+        if: matrix.disk
         run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/share/swift
+          free_kib() { df -Pk / | awk 'END { print $4 }'; }
+          for unused in /usr/local/lib/android /usr/share/dotnet /opt/ghc /opt/hostedtoolcache/CodeQL /usr/share/swift; do
+            if [ "$(free_kib)" -ge "$((25 * 1024 * 1024))" ]; then break; fi
+            sudo rm -rf -- "$unused"
+          done
           df -h /
       - name: Verify routine product shard
         run: node scripts/verification-shard.mjs "${{ matrix.shard }}"
@@ -104,7 +139,7 @@ jobs:
             /tmp/source-release.json
           if-no-files-found: error
   verify:
-    needs: shards
+    needs: [plan, shards]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -117,13 +152,15 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           run_install: false
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile --ignore-scripts
       - uses: actions/download-artifact@v4
         with:
           pattern: orbit-shard-*
           path: verification/ci-shards
           merge-multiple: true
       - name: Require every planned shard on this commit
+        env:
+          ORBIT_VERIFY_JOURNEYS: ${{ needs.plan.outputs.journeys }}
         run: |
           test '${{ needs.shards.result }}' = success
           node scripts/verification-aggregate.mjs

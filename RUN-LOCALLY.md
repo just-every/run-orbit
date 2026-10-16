@@ -1,22 +1,24 @@
 # Run it locally
 
-Install the `rer` command once: `npx -y @runeditrun/rer cli install`, or the
-installer script on the RER site (`curl -fsSL https://runeditrun.com/install.sh | sh`).
+Install the `rer` command once with the installer on the RER site, which brings its own
+Node when you have none: `curl -fsSL https://runeditrun.com/install.sh | sh`. Already have
+Node 22 or later? `npx -y @runeditrun/rer cli install` does the same.
 `rer` runs every verb with this checkout's exact `@runeditrun/rer` package pin.
 The `OPERATIONS.json` argv and `package.json` aliases use `rer VERB`.
 
 ## Launch with one command
 
 ```sh
-git clone https://github.com/just-every/run-orbit.git orbit
-cd orbit
+git clone https://github.com/just-every/run-orbit.git
+cd run-orbit
 rer dev
 ```
 
-Use Node 22 or later. From a runnable edition's root, `rer dev` is the whole launch. It installs
+From a runnable edition's root, `rer dev` is the whole launch (`rer dev just-every/run-orbit` clones and starts it in one step). It installs
 locked dependencies when they are missing or older than the lockfile. On a
 checkout that is not set up it prepares a local trial owner
-(`owner@orbit.test` for Orbit) and fills the setup answers the seed declares a
+named after the checkout's folder
+(`owner@run-orbit.test` for the `run-orbit` folder above) and fills the setup answers the seed declares a
 `localDefault` for in `rer-setup.json`. Then it starts the app and prints the
 `RER_READY` lines. It never prompts or re-runs setup on a checkout that is set up.
 Change the trial owner email in Settings → Installation owner, or provide your real
@@ -46,7 +48,7 @@ with exit 3 and a message naming the field.
 
 ## Install for a real owner
 
-Use Node 22 or later; RER selects Orbit’s pinned Node 22.20.0 and pnpm 10.12.4 automatically. To
+`rer` brings Orbit’s pinned Node 22.20.0 and pnpm 10.12.4 automatically. To
 install with a real owner mailbox, run the verbs yourself from the runnable
 edition's root: install locked dependencies, prepare its local owner, then start
 development:

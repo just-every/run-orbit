@@ -3,7 +3,7 @@ import {expect} from '@playwright/test';
 import {request} from './operator-fixture.mjs';
 
 export async function expectProvenance(page,provenance){
- for(const value of [provenance.vendor,provenance.account,provenance.sourceId,provenance.owner,provenance.stage,provenance.description,provenance.additional.region])await expect(page.getByText(value,{exact:true}).first()).toBeVisible();
+ for(const value of [`${provenance.account} (${{csv:'spreadsheet',hubspot:'HubSpot export',pipedrive:'Pipedrive export'}[provenance.vendor]})`,provenance.sourceId,provenance.owner,provenance.stage,provenance.description,provenance.additional.region])await expect(page.getByText(value,{exact:true}).first()).toBeVisible();
  await expect(page.getByText(JSON.stringify(provenance),{exact:true})).toHaveCount(0);
 }
 

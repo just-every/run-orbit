@@ -1,14 +1,22 @@
 import type { WorkspacePresentation } from "./operator-api";
 
-export function formatDateTime(value: string | null, presentation: WorkspacePresentation): string {
-  if (!value) return "Not recorded";
-
+/** Every date Orbit shows reads one way: "16 Oct 2026, 7:36 pm", in the given time zone or the browser's. */
+export function formatDate(value: string | number | Date, timeZone?: string): string {
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat("en-AU", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: presentation.timezone
-  }).format(date);
+  return Number.isNaN(date.getTime()) ? String(value) : new Intl.DateTimeFormat("en-AU", { dateStyle: "medium", timeStyle: "short", ...(timeZone ? { timeZone } : {}) }).format(date);
+}
+
+export function formatTime(value: string | number | Date, timeZone?: string): string {
+  return new Intl.DateTimeFormat("en-AU", { timeStyle: "short", ...(timeZone ? { timeZone } : {}) }).format(new Date(value));
+}
+
+/** A day without a time, such as a reporting window's edge: "16 Oct 2026". */
+export function formatDay(value: string | number | Date, timeZone?: string): string {
+  return new Intl.DateTimeFormat("en-AU", { dateStyle: "medium", ...(timeZone ? { timeZone } : {}) }).format(new Date(value));
+}
+
+export function formatDateTime(value: string | null, presentation: WorkspacePresentation): string {
+  return value ? formatDate(value, presentation.timezone) : "Not recorded";
 }
 
 export function formatCurrency(cents: number, presentation: WorkspacePresentation): string {

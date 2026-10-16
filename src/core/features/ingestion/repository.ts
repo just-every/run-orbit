@@ -9,6 +9,7 @@ import { resolveTarget, targetsFor, type SignalTarget } from './linking-reposito
 import { mailboxStopStatements, stopsMailbox } from './stop-repository';
 import { linkTargetFence } from './linking-fence';
 import {isTestEvent,customerSignalSql} from '../signals/test-events';
+import { stopReason } from '../outreach/stop-reason';
 
 interface SourceAuthority {secret_ciphertext:string|null}
 export class IngestionRepository {
@@ -82,13 +83,13 @@ export class IngestionRepository {
     if(event.type==='form.submitted')for(const target of targets.filter(t=>t.type==='opportunity'))statements.push(this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=CASE WHEN queue_state='now' AND queue_reason IN ('Customer reply','Delivery problem') THEN queue_reason ELSE 'Form submitted' END,next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open'").bind(at,target.id));
     const contacts=targets.filter(target=>target.type==='contact');
     if((['email.replied','meeting.booked'].includes(event.type)||stopsMailbox(event))&&!(stopsMailbox(event)&&event.email!==undefined))for(const contact of contacts){
-      statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Customer stop event',updated_at=? WHERE recipient_contact_id=?").bind(at,contact.id),this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure='Customer stop event',updated_at=? WHERE contact_id=? AND state='scheduled'").bind(at,contact.id));
+      statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason=?,updated_at=? WHERE recipient_contact_id=?").bind(stopReason(event.type),at,contact.id),this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE contact_id=? AND state='scheduled'").bind(stopReason(event.type),at,contact.id));
       if(event.type==='email.unsubscribed'||event.permanentBounce)statements.push(...await contactStopStatements(this.db,contact.id));
     }
     if(['email.replied','email.bounced'].includes(event.type))for(const target of targets.filter(t=>t.type==='opportunity'))statements.push(this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=?,next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open'").bind(event.type==='email.replied'?'Customer reply':'Delivery problem',at,target.id));
     return statements;
   }
-  async unlinked(){return (await this.db.prepare(`SELECT s.id,s.source_id,ss.name AS source_name,s.type,s.subject,s.occurred_at,u.reason FROM unlinked_signals u JOIN signals s ON s.id=u.signal_id LEFT JOIN signal_sources ss ON ss.id=s.source_id WHERE u.resolved_at IS NULL AND ${customerSignalSql()} ORDER BY s.received_at DESC LIMIT 100`).all()).results;}
+  async unlinked(){return (await this.db.prepare(`SELECT s.id,s.source_id,ss.name AS source_name,s.type,s.subject,s.occurred_at,u.reason,json_extract(s.payload_json,'$.email') AS email,json_extract(s.payload_json,'$.domain') AS domain,json_extract(s.payload_json,'$.data.name') AS name FROM unlinked_signals u JOIN signals s ON s.id=u.signal_id LEFT JOIN signal_sources ss ON ss.id=s.source_id WHERE u.resolved_at IS NULL AND ${customerSignalSql()} ORDER BY s.received_at DESC LIMIT 100`).all()).results;}
   async link(id:string,target:SignalTarget,actor:string){
     const signal=await this.db.prepare('SELECT s.payload_json,s.source_event_id,s.type,s.subject,s.occurred_at FROM signals s JOIN unlinked_signals u ON u.signal_id=s.id WHERE s.id=? AND u.resolved_at IS NULL').bind(id).first<{payload_json:string;source_event_id:string;type:string;subject:string;occurred_at:string}>();if(!signal)throw new IngestionError(409,'Signal is already linked or missing.');
     // Vendor payloads retain their original bytes; canonical event identity and

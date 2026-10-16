@@ -31,8 +31,9 @@ export function NowPage({ initialData }: { initialData?: Awaited<ReturnType<type
 
   return (
     <OperatorShell eyebrow="Today" title="Your brief">
+      <a className="today-now-jump" href="#now-queue-title">Skip to your NOW queue <span aria-hidden="true">↓</span></a>
       <TodayBrief />
-      <h2 className="today-now-title">NOW queue</h2>
+      <h2 className="today-now-title" id="now-queue-title" tabIndex={-1}>NOW queue</h2>
       {onboarding.error ? <p role="alert">{onboarding.error.message}</p> : <OnboardingChecklist state={onboarding.data}/>}
       <section className="operator-queue" data-testid="now-queue">
         <div className="operator-queue__intro">

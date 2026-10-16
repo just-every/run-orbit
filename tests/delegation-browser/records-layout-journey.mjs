@@ -128,7 +128,10 @@ async function editRecordThroughKeyboard(page, kind, title, fieldLabel, editedTi
   if (beforeSave) await beforeSave();
   await awaitRecordDetail(page, kind, () => awaitRecordReload(page, kind, title, () => page.getByRole('button', { name: 'Save changes', exact: true }).click()));
   await expect(page.getByRole('heading', { name: editedTitle, exact: true, level: 1 })).toBeVisible();
-  await page.reload({ waitUntil: 'networkidle' });
+  // The open record lives in the address bar, so a reload reopens the saved record itself.
+  await awaitRecordDetail(page, kind, () => page.reload({ waitUntil: 'networkidle' }));
+  await expect(page.getByRole('heading', { name: editedTitle, exact: true, level: 1 })).toBeVisible();
+  await page.goto('/app/records', { waitUntil: 'networkidle' });
   const tabName = kind === 'company' ? 'Companies' : kind === 'contact' ? 'Contacts' : 'Opportunities';
   if (kind !== 'opportunity') await awaitRecordReload(page, kind, '', () => page.getByRole('button', { name: tabName, exact: true }).click());
   await awaitRecordReload(page, kind, editedTitle, () => page.getByRole('searchbox', { name: 'Search records and timeline', exact: true }).fill(editedTitle));

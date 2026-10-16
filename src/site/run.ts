@@ -2,8 +2,8 @@ import type { RunData } from '../base/run-site';
 export const run: RunData = {
   name: 'Orbit',
   repository: 'https://github.com/just-every/run-orbit',
-  clone: 'git clone https://github.com/just-every/run-orbit.git orbit',
-  folder: 'orbit',
-  requirements: 'Needs Node 22 or later and pnpm 10.12.4, on macOS, Linux or Windows with WSL2.',
+  clone: 'npx -y @runeditrun/rer dev just-every/run-orbit',
+  folder: 'run-orbit',
+  requirements: 'rer brings the Node and pnpm Orbit pins.',
   licence: 'MIT', docs: true, hosted: [],
 };

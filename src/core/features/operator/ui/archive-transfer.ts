@@ -5,7 +5,7 @@ const base='/api/v1/records/archive';
 export function archiveUrl(kind:'exports'|'imports',id:string,suffix=''){return `${base}/${kind}/${encodeURIComponent(id)}${suffix}`;}
 async function request(path:string,method='GET',body?:unknown):Promise<ArchiveStatus>{
  const response=await fetch(path,{method,credentials:'same-origin',redirect:'error',headers:{'Content-Type':'application/json'},...(body===undefined?{}:{body:typeof body==='string'?body:JSON.stringify(body)})});
- if(!response.ok)throw await archiveTransferError(response);
+ if(!response.ok)throw await archiveTransferError(response,'browser');
  return response.json();
 }
 export async function prepareArchive(id:string,update:(status:ArchiveStatus)=>void,paused:()=>boolean){

@@ -21,14 +21,24 @@ network calls. Hosted sign-in mail reports unavailable and its link is revoked:
 Base only accepts development delivery for local sign-in. The hosted visitor is
 already signed in through the signed owner claim. Gmail and Microsoft provider connections refuse before OAuth;
 file capture remains usable. OpenAI assistance stays unconfigured. Base's guard
-refuses external fetches and sockets, and hosted containers also deny egress.
+refuses external fetches and sockets in the demo.
 Public forms (including `/p/team-walkthrough`) are reachable only through the
 host's per-visitor demo cookie. Sending behavior outside demo mode is unchanged.
 
-Hosted demos use the existing signed `/auth/owner-claim` route. Dispatch **Run
-demo** with the `run-demo` environment: `CLOUDFLARE_API_TOKEN`,
-`TURNSTILE_SECRET_KEY`, optional `RER_DEMO_OPERATOR_TOKEN`, and the
-`TURNSTILE_SITE_KEY` environment variable. `test_only` selects a separate
-`demo.test.run-orbit.com` host with Cloudflare's test widget keys; `remove`
+Hosted demos run on rer 0.2.30's native Worker Loader host
+(rer-v0.2.30 `default-seed/DEMO.md`, "Hosting the demo"). Turnstile admits each
+visitor into their own Loader isolate with SQLite storage for Orbit's D1; the
+once-a-minute Cron arrives by alarm and the built static files are served at
+the edge. The visitor lands signed in through the signed `/auth/owner-claim`
+route. A copy ends after 60 minutes or 15 idle minutes, and its storage is
+erased.
+
+Dispatch **Run demo** (`.github/workflows/run-demo.yml`, Base's template) with
+the `run-demo` environment: the `CLOUDFLARE_ACCOUNT_ID` and
+`TURNSTILE_SITE_KEY` variables, `CLOUDFLARE_API_TOKEN`,
+`TURNSTILE_SECRET_KEY`, optional `RER_DEMO_OPERATOR_TOKEN` and
+`RER_DEMO_MEASUREMENT_TOKEN`. `test_only` selects a separate
+`demo.test.run-orbit.com` host with Cloudflare's test widget keys; its starts
+need the private measurement token as the `rer_demo_measure` cookie. `remove`
 removes the selected host. Production uses `https://demo.run-orbit.com/` and
 real Turnstile. No repository variable enables automatic deployment.

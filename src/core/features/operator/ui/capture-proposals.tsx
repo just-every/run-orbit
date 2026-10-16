@@ -3,6 +3,9 @@ import './capture-proposals.css';
 import {ScrollToHash} from './hash-target';
 import {OperatorState} from './operator-shell';
 import {useOperatorResource} from './use-operator-resource';
+import {formatDate} from './formatters';
+/** Calendar quotes store exact instants ("Starts 2026-10-20T00:00:00.000Z"); show them as dates. */
+const quoteLine=(line:string)=>line.replace(/^(Starts|Ends) (\d{4}-\d{2}-\d{2}T[\d:.]+Z)$/,(_,word:string,at:string)=>`${word} ${formatDate(at)}`);
 
 interface Evidence {source:string;sender:string|null;date:string;subject:string;quote:string[]}
 export interface CaptureProposal {
@@ -14,7 +17,7 @@ async function post(path:string,body:unknown){
  const response=await fetch(path,{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
  const result=await response.json().catch(()=>({})) as {error?:string};if(!response.ok)throw new Error(result.error??'Orbit could not apply that review.');
 }
-const queue=(value:string|null)=>{if(!value)return 'Not set';const parsed=JSON.parse(value) as {state:string;reason:string|null;dueAt?:string|null};return `${parsed.state==='none'?'Not in NOW or NEXT':parsed.state.toUpperCase()}${parsed.reason?` · ${parsed.reason}`:''}${parsed.dueAt?` · until ${new Date(parsed.dueAt).toLocaleString()}`:''}`;};
+const queue=(value:string|null)=>{if(!value)return 'Not set';const parsed=JSON.parse(value) as {state:string;reason:string|null;dueAt?:string|null};return `${parsed.state==='none'?'Not in NOW or NEXT':parsed.state.toUpperCase()}${parsed.reason?` · ${parsed.reason}`:''}${parsed.dueAt?` · until ${formatDate(parsed.dueAt)}`:''}`;};
 const kinds:Record<string,string>={'email.replied':'reply','email.sent':'sent message','email.bounced':'delivery report','meeting.booked':'booked meeting','meeting.completed':'completed meeting','meeting.cancelled':'cancelled meeting'};
 const evidenceKind=(type:string)=>type.endsWith(':email.auto_replied')?'automatic reply':type.endsWith(':email.forwarded')?'forwarded message':kinds[type]??'evidence';
 function title(proposal:CaptureProposal){
@@ -52,8 +55,8 @@ export function CaptureProposals({recordType,recordId,onChanged,standalone=false
   {resource.data&&!proposals.length&&<p>No proposed changes are waiting.</p>}
   {proposals.map(proposal=>{const e=proposal.details.evidence,editable=proposal.kind==='set_field'||proposal.kind==='create_contact';return <article id={`proposal-${proposal.id}`} className="capture-proposal" key={proposal.id} aria-label={title(proposal)}>
    <h3>{title(proposal)}</h3>
-   <p>From {e.sender??'unknown sender'} · {new Date(e.date).toLocaleString()} · {e.subject||'No subject'} · {e.source}{proposal.source_state==='disconnected'?' (disconnected source)':''}</p>
-   {e.quote.length>0&&<blockquote className="capture-quote">{e.quote.map((line,index)=><p key={index}>{line}</p>)}</blockquote>}
+   <p>From {e.sender??'unknown sender'} · {formatDate(e.date)} · {e.subject||'No subject'} · {e.source}{proposal.source_state==='disconnected'?' (disconnected source)':''}</p>
+   {e.quote.length>0&&<blockquote className="capture-quote">{e.quote.map((line,index)=><p key={index}>{quoteLine(line)}</p>)}</blockquote>}
    <Change proposal={proposal}/>
    {editing===proposal.id?<form className="workbench-form" onSubmit={event=>{event.preventDefault();void review(proposal,'accept',value);}}><label>{proposal.kind==='create_contact'?'Contact name':`New ${proposal.field}`}<input value={value} onChange={event=>setValue(event.target.value)} maxLength={200}/></label><div className="workbench-actions"><button className="orbit-button orbit-button--primary" disabled={busy===proposal.id}>Accept edited value</button><button type="button" className="orbit-button orbit-button--quiet" onClick={()=>setEditing('')}>Cancel editing</button></div></form>
    :<div className="workbench-actions"><button className="orbit-button orbit-button--primary" disabled={busy===proposal.id} onClick={()=>void review(proposal,'accept')}>Accept</button>{editable&&<button className="orbit-button orbit-button--secondary" disabled={busy===proposal.id} onClick={()=>{setEditing(proposal.id);setValue(proposal.kind==='create_contact'?proposal.details.name??'':proposal.proposed_value??'');}}>Edit</button>}<button className="orbit-button orbit-button--quiet" disabled={busy===proposal.id} onClick={()=>void review(proposal,'decline')}>Decline</button></div>}

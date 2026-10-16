@@ -27,15 +27,18 @@ When a customer replies, Orbit cancels any follow-up you scheduled for that pers
 
 These steps describe the current `main` branch. The older `v0.1.0` tag predates Capture and the current local sign-in flow; follow the README included with that tag if you use it.
 
-Install [RER](https://runeditrun.com) and use Node 22 or later. RER selects Orbit's pinned Node 22.20.0 runtime and fetches pnpm 10.12.4 into its own cache automatically. You do not need to install pnpm yourself.
+You install nothing first. The same two steps as [run-orbit.com/run](https://run-orbit.com/run): the installer brings its own Node when you have none, then `rer dev` gets Orbit and starts it.
 
 ```sh
-git clone --branch main https://github.com/just-every/run-orbit.git orbit
-cd orbit
-rer dev
+curl -fsSL https://runeditrun.com/install.sh | sh
+rer dev just-every/run-orbit
 ```
 
-`dev` installs dependencies, prepares the local trial owner (`owner@orbit.test`) on the first launch and starts Orbit. Open the private `RER_OPEN` link it prints on this computer: you are already signed in. No email is sent locally. Your first sign-in asks for your business name, time zone, currency and pipeline stages, and then you are in. Change the trial email in Settings → Installation owner, or use your real owner mailbox from the start: run `rer install` and `rer setup --owner-email EMAIL` before `rer dev`.
+Already have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-orbit` does both steps in one line.
+
+To start it again later: `cd run-orbit && rer dev`.
+
+`rer` brings Orbit's pinned Node 22.20.0 and pnpm 10.12.4 into its own cache, so you install neither yourself. `rer dev just-every/run-orbit` clones `main`; `dev` installs dependencies, prepares the local trial owner (`owner@run-orbit.test`) on the first launch and starts Orbit. Open the private `RER_OPEN` link it prints on this computer: you are already signed in. No email is sent locally. Your first sign-in asks for your business name, time zone, currency and pipeline stages, and then you are in. Change the trial email in Settings → Installation owner, or use your real owner mailbox from the start: run `rer install` and `rer setup --owner-email EMAIL` before `rer dev`.
 
 
 Stop it with `rer dev --stop`. Your data stays on your computer between runs. Stop `dev` and `preview` before CLI export, import, reset, build or verification.

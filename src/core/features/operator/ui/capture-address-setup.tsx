@@ -3,6 +3,7 @@ import { ConsoleLink } from './capture-guide';
 import { CopyField } from './capture-copy-field';
 import { OperatorState } from './operator-shell';
 import { useOperatorResource } from './use-operator-resource';
+import {formatDate} from './formatters';
 
 interface Confirmation { provider: 'Gmail'; account: string | null; code: string | null; link: string | null; receivedAt: string }
 interface ForwardStatus { configured: boolean; available: boolean; local: boolean; address: string | null; confirmations: Confirmation[] }
@@ -13,7 +14,7 @@ const keeps = 'Orbit keeps a message only when someone in it is already a contac
 function NotConfigured() {
   return <div className="capture-panel">
     <h2>This Orbit can’t receive mail yet</h2>
-    <p>Whoever installed Orbit does this once, in the Cloudflare account Orbit runs on. It takes about five minutes:</p>
+    <p>Whoever installed Orbit does this once, in the Cloudflare account Orbit runs on. It needs <strong>a domain of your own that uses Cloudflare</strong>: Orbit’s own <code>workers.dev</code> address cannot receive mail. With a domain, it takes about five minutes:</p>
     <ol className="capture-plain-steps">
       <li>In Cloudflare, open your domain, then <strong>Email</strong> › <strong>Email Routing</strong>, and turn it on for a spare subdomain such as <code>capture.example.com</code> (your normal mail is not affected).</li>
       <li>Under <strong>Routing rules</strong>, add the address <code>orbit@capture.example.com</code> with the action <strong>Send to a Worker</strong> and choose <code>sales-orbit-NAME</code>, replacing NAME with the environment name you used with <code>rer deploy --environment NAME</code> (the default is <code>production</code>). Find the exact Worker name in Cloudflare → Workers &amp; Pages or your checkout’s <code>.rer/deploy/NAME.json</code>.</li>
@@ -70,7 +71,7 @@ function ConfirmationNotice({ confirmation }: { confirmation: Confirmation }) {
   return <div className="capture-confirmation" role="status">
     <h3>Gmail asked to confirm forwarding{confirmation.account ? ` from ${confirmation.account}` : ''}</h3>
     {confirmation.code ? <p>Confirmation code: <strong className="capture-confirmation__code">{confirmation.code}</strong></p> : null}
-    <p>Enter the code in Gmail’s forwarding settings{confirmation.link ? <>, or <a href={confirmation.link} target="_blank" rel="noopener noreferrer">open Google’s confirmation link</a></> : null}. Received {new Date(confirmation.receivedAt).toLocaleString()}.</p>
+    <p>Enter the code in Gmail’s forwarding settings{confirmation.link ? <>, or <a href={confirmation.link} target="_blank" rel="noopener noreferrer">open Google’s confirmation link</a></> : null}. Received {formatDate(confirmation.receivedAt)}.</p>
   </div>;
 }
 

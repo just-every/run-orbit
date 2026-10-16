@@ -1,7 +1,7 @@
 import type {AccessPort,ActorContext,NativeOperator,ResourceRef,AccessDecision,SqlStatement} from '../../shared/expansion-contracts';
 import {AccessError,deny} from './errors';
 import {matches,roleAllows} from './policy';
-import {privatePaths,coversPrivatePath} from './field-policy';
+import {privatePaths,coversPrivatePath,grantCovers} from './field-policy';
 import {isFullOperator,fullOperatorFence} from './identity-class';
 interface GrantRow{id:string;expires_at:string|null;resource_type:string;resource_id:string;actions_json:string;fields_json:string}
 /** Native full operators and explicitly accepted collaborators share session verification, never class. */
@@ -29,7 +29,7 @@ export class AccessService implements AccessPort{
   if(!role&&!relevant.length)deny();
   const schema=await this.db.prepare('SELECT fields_json FROM schema_types WHERE workspace_id=? AND name=?').bind(c.workspaceId,resource.type).first<{fields_json:string}>();const definitions:Record<string,{sensitivity?:string}>=JSON.parse(schema?.fields_json??'{}');
   const grantFields:string[]=relevant.flatMap(g=>JSON.parse(g.fields_json)),recordFields:Record<string,unknown>=JSON.parse(record?.fields_json??'{}');
-  const allowedFields=fields.filter(field=>(role&&(!bundle||JSON.parse(bundle.fields_json).some((p:string)=>matches(p,field)))||grantFields.includes('*')||grantFields.includes(field))&&privatePaths(field,definitions,recordFields).every(path=>grantFields.some(pattern=>coversPrivatePath(pattern,path))));
+  const allowedFields=fields.filter(field=>(role&&(!bundle||JSON.parse(bundle.fields_json).some((p:string)=>matches(p,field)))||grantFields.includes('*')||grantFields.some(granted=>grantCovers(granted,field)))&&privatePaths(field,definitions,recordFields).every(path=>grantFields.some(pattern=>coversPrivatePath(pattern,path))));
   if(allowedFields.length!==fields.length)deny('One or more requested fields are restricted.');
   const used=this.grantFences.get(c)??new Set<string>();for(const grant of relevant)used.add(grant.id);this.grantFences.set(c,used);
   return{allowedFields,policyEpoch:c.policyEpoch,dependencies:[]};

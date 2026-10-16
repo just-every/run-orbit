@@ -19,7 +19,7 @@ export async function exerciseDuplicateMerge(page,origin,fixture,observe){
   await page.goto(origin+'/app/records?kind=company');await page.getByText('Import, duplicate review and data export',{exact:true}).click();await select();
   await page.getByRole('button',{name:'Confirm merge',exact:true}).click();await expect(page.getByLabel('Primary domain',{exact:true})).toBeFocused();
   await expect(page.getByLabel('Custom fields',{exact:true}).locator(`option[value=${reverse?'retired':'survivor'}]`)).toContainText('Campaign json: Studio');
-  await expect(page.getByLabel('Custom fields',{exact:true}).locator(`option[value=${reverse?'retired':'survivor'}]`)).toContainText(`Source Id: ${fixture.provenance.sourceId}`);await choose();
+  await expect(page.getByLabel('Custom fields',{exact:true}).locator(`option[value=${reverse?'retired':'survivor'}]`)).toContainText(`ID in old system: ${fixture.provenance.sourceId}`);await choose();
   if(!reverse){
    for(const width of [1440,390,320]){
     await observe('merge-values',width);const dialog=await confirm();await observe('merge-dialog',width);await dialog.getByRole('button',{name:'Cancel',exact:true}).click();assert.equal((await detail(retired.id)).record.id,retired.id);

@@ -40,7 +40,17 @@ async function begin(db: D1Database, job: ImportJob, catalog: ArchiveTable[], la
     if (await db.prepare(`SELECT id FROM ${table} LIMIT 1`).first())
         throw new RecordError(409, 'Restore requires an empty customer database.'); if (await db.prepare("SELECT name FROM runtime_controls WHERE name IN ('archive_import','archive_export')").first())
     throw new RecordError(409, 'Another archive transfer is preparing or restoring.'); const backupId = createId(), progress: Progress = { phase: 'backup', table: 0, offset: 0, backupId }; await db.batch([...(context?.begin?await context.begin(job):[]),...(context?await context.fence(job):[]),db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'archive_import',CASE WHEN NOT EXISTS(SELECT 1 FROM archive_jobs WHERE id=? AND state='uploading') OR EXISTS(SELECT 1 FROM contacts) OR EXISTS(SELECT 1 FROM companies) OR EXISTS(SELECT 1 FROM opportunities) OR EXISTS(SELECT 1 FROM signals) THEN NULL ELSE ? END").bind(job.id,job.id), db.prepare("INSERT INTO runtime_controls VALUES('restore',?)").bind(job.id), db.prepare("INSERT INTO archive_jobs VALUES(?,'backup','preparing',?,'{}','{}',?)").bind(backupId, job.actor_id, new Date().toISOString()), ...await stageTables(db, backupId, catalog), db.prepare("UPDATE archive_jobs SET state='restoring',progress_json=? WHERE id=?").bind(JSON.stringify(progress), job.id)]); }
-export async function advanceImport(db: D1Database, job: ImportJob,context?:ImportContext) {
+/** One durable step. Returns how many table positions it moved: a step that passes over empty
+ * tables counts each of them, so a caller's step budget paces a restore by tables as before. */
+export async function advanceImport(db: D1Database, job: ImportJob,context?:ImportContext,budget=Infinity): Promise<number> {
+    const moved = { skipped: 0, budget };
+    await advanceStep(db, job, context, moved);
+    return 1 + moved.skipped;
+}
+type Moved = { skipped: number; budget: number };
+/** Passes over one more empty table, or reports the step budget spent so the caller saves this position. */
+const passEmpty = (moved: Moved) => ++moved.skipped + 1 < moved.budget;
+async function advanceStep(db: D1Database, job: ImportJob, context: ImportContext|undefined, moved: Moved) {
     if (job.state === 'complete' || job.state === 'aborted')
         return;
     const catalog = context?.catalog??await archiveCatalog(db), layouts = await stageLayouts(db, catalog);
@@ -49,7 +59,9 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
         return;
     }
     const p: Progress = JSON.parse(job.progress_json);
-    if (p.phase === 'backup') {
+    // A table with nothing left to back up or load only moves the cursor, so a step passes over it
+    // and commits once with its real work: each commit carries the full schema and capacity fences.
+    if (p.phase === 'backup') for (;;) {
         const table = catalog[p.table];
         if (!table) {
             p.phase = 'clear';
@@ -62,6 +74,7 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
         if (!count) {
             p.table++;
             p.offset = 0;
+            if (passEmpty(moved)) continue;
             await save(db, job, p,[],context);
             return;
         }
@@ -71,6 +84,7 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
         await save(db, job, p, [statement],context);
         return;
     }
+    // Clear keeps one table per step, so a restore interrupted mid-clear stops between tables.
     if (p.phase === 'clear' || p.phase === 'rollback-clear') {
         const table = [...catalog].reverse()[p.table];
         if (!table) {
@@ -98,6 +112,7 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
         await save(db, job, p, count ? [db.prepare(clear)] : [],context);
         return;
     }
+    for (;;) {
     const rollback = p.phase === 'rollback-load', table = catalog[p.table], source = rollback ? p.backupId : job.id;
     if (!table) {
         await finish(db, job, p, catalog, rollback, layouts,context);
@@ -110,6 +125,7 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
     if (!rows.length) {
         p.table++;
         p.offset = 0;
+        if (passEmpty(moved)) continue;
         await save(db, job, p,[],context);
         return;
     }
@@ -147,6 +163,8 @@ export async function advanceImport(db: D1Database, job: ImportJob,context?:Impo
         }
     }
     await save(db, job, p, [statement,...suppression],context);
+    return;
+    }
 }
 async function finish(db: D1Database, job: ImportJob, p: Progress, catalog: ArchiveTable[], rollback: boolean, layouts: Map<string, StageLayout>,context?:ImportContext) { const layout=layouts.get('operators')!, cell=(name:string)=>stageCell(layout,name), source = rollback ? p.backupId : job.id, operators = stageName(source, 'operators'); const columns = catalog.find(t => t.name === 'operators')!.columns.map(c => c.name); const statements: D1PreparedStatement[] = [...(context?await context.fence(job):[]),db.prepare('PRAGMA defer_foreign_keys=ON'), db.prepare('INSERT INTO archive_step_claims VALUES(?,?)').bind(job.id, job.progress_json), db.prepare("INSERT INTO runtime_controls VALUES('archive_applying',?)").bind(job.id)]; if (!rollback)
     statements.push(db.prepare('DELETE FROM delegation_codes'), db.prepare('DELETE FROM delegation_grants'), db.prepare('DELETE FROM identity_owner_signins'), db.prepare('DELETE FROM identity_proofs'), db.prepare('DELETE FROM identity_bindings'), db.prepare('DELETE FROM sessions')); statements.push(...restoreOperatorStatements(db,job.id,p.backupId,layout,columns,rollback,layouts.get('access_collaborators'))); if (!rollback) {

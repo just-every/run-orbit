@@ -15,13 +15,13 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
  for(const width of [1440,390])for(const vendor of ['hubspot','pipedrive','csv']){
   await page.setViewportSize({width,height:900});
   const spreadsheetRows=['csv-0@example.test,Spreadsheet Person,Spreadsheet Company','csv-1@example.test,Spreadsheet Person,Another Company','csv-2@example.test,Spreadsheet Person,',...Array.from({length:6},(_,index)=>`csv-extra-${index}@example.test,Extra Person ${index},Spreadsheet Company`),'invalid-email,Rejected Person,'];
-  const source=vendor==='csv'?{vendor,files:[{kind:'contact',name:'csv-contact.csv',csv:['email,name,company',...spreadsheetRows].join('\r\n')}]}:crmFixture(vendor,settings.stages[0].id,3);source.account=`Browser ${vendor} ${width} ${Date.now()}`;
+  const source=vendor==='csv'?{vendor,files:[{kind:'contact',name:'csv-contact.csv',csv:['email,name,company,seats',...spreadsheetRows.map((row,index)=>`${row},${index+3}`)].join('\r\n')}]}:crmFixture(vendor,settings.stages[0].id,3);source.account=`Browser ${vendor} ${width} ${Date.now()}`;
   await page.getByRole('radio',{name:vendor==='csv'?'Generic CSV':vendor==='hubspot'?'HubSpot CSV':'Pipedrive CSV'}).check();
   for(const file of source.files)await page.getByLabel(names[file.kind],{exact:true}).setInputFiles({name:file.name,mimeType:'text/csv',buffer:Buffer.from(file.csv)});
-  await page.getByRole('button',{name:'Review dry run',exact:true}).click();await page.getByLabel('Source account label').fill(source.account);
-  const contactMapping=page.locator('details').filter({has:page.getByText(`${vendor}-contact.csv — contact columns`,{exact:true})});
+  await page.getByRole('button',{name:'Review dry run',exact:true}).click();await page.getByLabel('Name for this import').fill(source.account);
+  const contactMapping=page.locator('details').filter({has:page.getByText(`Contacts: ${vendor}-contact.csv`,{exact:true})});
   if(vendor==='csv'){
-   await expect(contactMapping.getByLabel('Source record ID',{exact:true})).toHaveValue('');
+   await expect(contactMapping.getByLabel('ID in your old system',{exact:true})).toHaveValue('');await expect(contactMapping.getByLabel('Column seats',{exact:true})).toHaveValue('custom');
    await expect(contactMapping.getByLabel('Email',{exact:true})).toHaveValue('email');
    await expect(contactMapping.getByLabel('Full name',{exact:true})).toHaveValue('name');
    await expect(contactMapping.getByLabel('Company name',{exact:true})).toHaveValue('company');
@@ -37,10 +37,10 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
    await results.getByText('Rejected Person · invalid-email',{exact:true}).scrollIntoViewIfNeeded();
    await expect(results.getByText('Rejected Person · invalid-email',{exact:true})).toBeInViewport();
   }
-  await page.getByRole('checkbox',{name:'I reviewed every rejection, association and suppression result.'}).check();await page.getByRole('button',{name:'Apply reviewed import',exact:true}).click();await expect(page.getByRole('heading',{name:'Import complete',exact:true})).toBeVisible({timeout:90_000});
+  await page.getByRole('checkbox',{name:'I checked these rows, including any that will not import and any marked Do not contact.'}).check();await page.getByRole('button',{name:'Apply reviewed import',exact:true}).click();await expect(page.getByRole('heading',{name:'Import complete',exact:true})).toBeVisible({timeout:90_000});
   const imported=await page.request.get(`/api/v1/records/contact?q=${vendor}-0%40example.test`);expect(imported.ok()).toBe(true);const contacts=(await imported.json()).records;expect(contacts).toHaveLength(1);expect(contacts[0].contactability).toBe('do_not_contact');
   if(vendor==='csv'){const recordPage=await context.newPage();try{
-   await recordPage.goto(`/app/records?kind=contact&record=${contacts[0].id}`);await expect(recordPage.getByText('Generic CSV',{exact:true})).toBeVisible();
+   await recordPage.goto(`/app/records?kind=contact&record=${contacts[0].id}`);await expect(recordPage.getByText(`${source.account} (spreadsheet)`,{exact:true})).toBeVisible();await expect(recordPage.getByText('Seats',{exact:true})).toBeVisible();
    await recordPage.getByRole('button',{name:'Back to records',exact:true}).click();await recordPage.getByText('Import, duplicate review and data export',{exact:true}).click();
    await recordPage.getByRole('button',{name:'Find matching names',exact:true}).click();
    for(const [email,company] of [['csv-0@example.test','Spreadsheet Company'],['csv-1@example.test','Another Company'],['csv-2@example.test','No company']])await expect(recordPage.getByRole('button',{name:`Spreadsheet Person · ${email} · ${company}`,exact:true})).toBeVisible();
