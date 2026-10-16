@@ -30,3 +30,6 @@ playwright-report/
 
 # Throwaway demo state
 .rer/demo/
+
+# Hosted demo admission observations
+/demo-observation/
