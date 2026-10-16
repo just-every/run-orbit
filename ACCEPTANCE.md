@@ -40,9 +40,9 @@ Current evidence: `src/core/features/access/service.ts`; `src/core/features/reco
 
 Status: **partial**.
 
-Remove a rep with an owned opportunity and scheduled message; verify revoked sessions, cancellation, unassignment and attributed historical notes.
+Remove a rep who owns an opportunity, five contacts, two companies, an open task and a scheduled message; hand the contacts to one rep and the companies to another explicitly, and verify revoked sessions, cancellation, the recorded handover per set, attributed owner-change entries and attributed historical notes.
 
-Current evidence: `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`. Removal and preserved history have implementation; complete handover acceptance is pending.
+Current evidence: `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`. Removal and preserved history have implementation; the per-set handover of owned contacts, leads, companies, tasks and enrollments (RECORD-016) and complete handover acceptance are pending.
 
 ### RECORD-001 — Core records.
 
@@ -98,7 +98,7 @@ Status: **partial**.
 
 Assign, reassign and unassign an opportunity through its native control; reload and inspect its attributed timeline without changing score.
 
-Current evidence: `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`. Owner assignment exists; full current-head public-door assignment/handover evidence is pending.
+Current evidence: `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`. Opportunity owner assignment exists; full current-head public-door assignment/handover evidence is pending. Contact/company owners are tracked under RECORD-016.
 
 ### RECORD-008 — Import.
 
@@ -386,7 +386,7 @@ Status: **done**.
 
 Preview and request a draft from current customer evidence; inspect the unsent result for cited facts and configured instructions.
 
-Current evidence: `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`. Implemented source and exercising tests for drafts on an opportunity's recommendation; drafting from a contact, lead or company record is tracked under OUT-017. Live hosted/provider acceptance remains separate.
 
 ### ACTION-004 — Durable draft.
 
@@ -434,7 +434,7 @@ Status: **done**.
 
 Deliver correct, foreign and absent reply headers with sender checks; attach the correct reply once and hold ambiguous mail for review.
 
-Current evidence: `src/core/features/outreach/reply-matching.ts`; `tests/core/launch-reply-authority.test.ts`; `tests/core/launch-reply-sender.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/outreach/reply-matching.ts`; `tests/core/launch-reply-authority.test.ts`; `tests/core/launch-reply-sender.test.ts`. Implemented source and exercising tests for opportunity-linked sends; threading of deal-less sends is tracked under OUT-017. Live hosted/provider acceptance remains separate.
 
 ### OUT-005 — Accepted outcome.
 
@@ -442,7 +442,7 @@ Status: **done**.
 
 Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and notification.
 
-Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Implemented source and exercising tests for sends linked to an open opportunity; the deal-less awaiting-response obligation is tracked under OUT-017. Live hosted/provider acceptance remains separate.
 
 ### OUT-006 — Delivery failure.
 
@@ -648,9 +648,9 @@ Current evidence: `src/core/features/delegation/protocol.ts`; `tests/delegation/
 
 Status: **partial**.
 
-Invite a manager and two reps, make one account private, deny its record and field through direct URLs/search/API/report/export/AI preview, share it intentionally, then revoke and repeat after sign-out and restore.
+Invite a manager and two reps, make one account private, deny its record and field through direct URLs/search/API/report/export/AI preview, share it intentionally, then revoke and repeat after sign-out and restore. Restrict one rep to owned records and verify that their lists, search, API and export show only the contacts and companies they own under RECORD-016, and that reassigning one of those contacts removes it from their next request.
 
-Current evidence: `src/core/features/access/service.ts`; `src/core/features/access/field-policy.ts`; `newtests/t096/collaborator-lifecycle.test.ts`. Collaborator record/field restrictions exist; native seller/team hierarchy and per-action sales roles are missing.
+Current evidence: `src/core/features/access/service.ts`; `src/core/features/access/field-policy.ts`; `newtests/t096/collaborator-lifecycle.test.ts`. Collaborator record/field restrictions exist; native seller/team hierarchy, owned-record restriction keyed to RECORD-016 owners and per-action sales roles are missing.
 
 ### RECORD-014 — Configurable sales data and custom objects.
 
@@ -668,11 +668,27 @@ Associate champion and evaluator with a USD deal, add a verified decision-maker 
 
 Current evidence: `src/core/features/records/repository.ts`; `src/core/features/graph/repository.ts`; `tests/core/crm-import.test.ts`. Basic deal/contact/company associations exist; stakeholder roles and broader relationship authoring remain target work.
 
+### RECORD-016 — Owners for contacts, leads, companies and custom objects.
+
+Status: **missing**.
+
+Import HubSpot contacts and companies with Contact owner and Company owner columns, one owner value unmatched; map it in the dry run, apply, and see each record's owner and attributed import entry. Bulk-reassign 20 contacts with one denied item and see 19 changes, one listed failure and 19 timeline entries. Enable the company-to-contact rule, preview it, change a company owner and see only its unowned contacts take that owner. Enable the first-email rule, send a first email to an unowned lead and see the sender become its owner. Sign in as a seller restricted to owned records: "My contacts" opens by default, and lists, search, API and export show only their own contacts and companies. Remove a rep and hand over their contacts and companies explicitly under TEAM-004.
+
+Current evidence: No implementation found. `src/core/features/records/schema.ts` holds `owner_id` only on opportunities; contacts, leads, companies and custom objects have no owner, bulk assignment, owner import mapping, assignment rules or owned-record views.
+
+### RECORD-017 — Mentions in notes and activities.
+
+Status: **missing**.
+
+On a deal, a rep writes a note mentioning their manager and a call log mentioning a colleague without access to the deal. The manager receives one notification linking to the note. Before saving, the author is asked to share the deal or remove the second mention; they share it explicitly, and only then is the colleague notified. Edit the note to add a third user; only that user is notified. Delete the call log, and the colleague's unread mention notification is withdrawn. Verify that no access was granted without the explicit share and that no customer message or score changed.
+
+Current evidence: No implementation found. Notes and logged activities under RECORD-010 carry no mention parsing, mention notification or Mentions view.
+
 ### MIGRATE-001 — HubSpot Sales Hub migration.
 
 Status: **partial**.
 
-From Import choose HubSpot, authorize a test account and preview a multi-company export/API pull including activities and associations; apply, interrupt/resume and rerun; compare source totals and undo around native edits. Final acceptance includes a real authorized customer export.
+From Import choose HubSpot, authorize a test account and preview a multi-company export/API pull including activities, associations and separate Contact, Company and deal owners; apply, interrupt/resume and rerun; compare source totals and undo around native edits. Final acceptance includes a real authorized customer export.
 
 Current evidence: `src/core/features/imports/contracts.ts`; `tests/core/crm-import.test.ts`; `tests/e2e/imports.spec.mjs`. Reviewed HubSpot CSV presets cover core records/deals/prepared notes; connected migration and full activity/owner/pipeline coverage are missing.
 
@@ -696,9 +712,9 @@ Current evidence: No implementation found.. No implementation of this complete t
 
 Status: **partial**.
 
-Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, see an unknown correspondent become a CAPTURE-012 proposal, revoke/reconnect and verify no unauthorized folder/mailbox is read. Complete an authorized live Gmail and Microsoft tenant journey.
+Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, switch the multi-deal rule to most recently active open deal and see the next such thread associated automatically with the rule named and then moved in one action, see an unknown correspondent become a CAPTURE-012 proposal, revoke/reconnect and verify no unauthorized folder/mailbox is read. Complete an authorized live Gmail and Microsoft tenant journey.
 
-Current evidence: `src/core/features/capture/providers/google.ts`; `src/core/features/capture/providers/microsoft.ts`; `src/core/features/capture/providers/service.ts`; `tests/core/capture-providers.test.ts`. Read adapters, durable selected-scope cursors and OAuth safeguards exist; current fixed calendar window needs explicit extension and live provider acceptance is unmeasured.
+Current evidence: `src/core/features/capture/providers/google.ts`; `src/core/features/capture/providers/microsoft.ts`; `src/core/features/capture/providers/service.ts`; `tests/core/capture-providers.test.ts`. Read adapters, durable selected-scope cursors and OAuth safeguards exist; current fixed calendar window needs explicit extension, the configurable multi-deal association rule is missing and live provider acceptance is unmeasured.
 
 ### CAPTURE-011 — Two-way calendar and CRM activity.
 
@@ -756,6 +772,14 @@ Enable open and click tracking with disclosure, approve a tracked one-to-one mes
 
 Current evidence: No implementation found. No tracking token, link redirect or tracked open/click signal exists; Orbit currently serves no tracker under SIGNAL-007.
 
+### OUT-017 — One-to-one email from any permitted record.
+
+Status: **partial**.
+
+Through OUT-013, email a lead with no company or deal from its record and receive a real reply; from a contact record, email a contact whose only deal is closed won and receive their reply; bulk-enroll ten deal-less contacts in a sequence under SEQUENCE-003 and receive a reply to one first step. For each, verify exact-content approval, the sent message and reply threaded onto the contact timeline and, where the contact has one, the company timeline, no deal created or required, the won deal's lifecycle unchanged, and the deal-less awaiting-response line appearing in the brief after the interval and clearing on the reply. Attempt a send to a do-not-contact lead and see it refused; email a contact on an open deal from their company record, link it to the deal and see OUT-005's NEXT move.
+
+Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/drafts/service.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/outreach-limits.test.ts`. Reviewed one-to-one mail to a contact on an open opportunity exists; the dispatcher in `src/core/features/outreach/service.ts` submits only drafts joined to an open opportunity's contact, so composing from contact, lead and company records, sends to contacts on won/lost or no deals, contact/company reply threading and the contact-level awaiting-response obligation are missing.
+
 ### TASK-001 — Assigned prioritized recurring sales tasks.
 
 Status: **partial**.
@@ -776,9 +800,9 @@ Current evidence: No implementation found.. No implementation of this complete t
 
 Status: **partial**.
 
-Create a five-step email/call/manual-LinkedIn sequence, enroll eligible contacts with exact-content approvals, complete the manual task, advance business time and restart mid-step; verify one action per due step, per-rep limit enforcement and no unapproved send.
+Create a five-step email/call/manual-LinkedIn sequence whose second email step is threaded, enroll eligible contacts with and without deals with exact-content approvals, complete the manual task, advance business time and restart mid-step; verify one action per due step, the second email arriving in the first email's thread, per-rep limit enforcement and no unapproved send.
 
-Current evidence: `src/core/features/outreach/scheduler.ts`; `src/core/features/drafts/service.ts`; `tests/core/outreach-limits.test.ts`. Reviewed single scheduled messages exist; multi-step definitions, enrollments and manual step execution are missing.
+Current evidence: `src/core/features/outreach/scheduler.ts`; `src/core/features/drafts/service.ts`; `tests/core/outreach-limits.test.ts`. Reviewed single scheduled messages exist; multi-step definitions, deal-less enrollments, step threading and manual step execution are missing.
 
 ### SEQUENCE-002 — Immediate sequence exits and accountable outcomes.
 
@@ -792,7 +816,7 @@ Current evidence: `src/core/features/ingestion/stop-repository.ts`; `src/core/fe
 
 Status: **missing**.
 
-From a saved list of 50 eligible and 3 ineligible contacts, enroll all of them in a five-step sequence with four email steps in one action; inspect the excluded reasons, open any rendered message, edit one and remove one, then approve once. Advance business time and verify one provider submission per due email step per remaining recipient with no further approval, a per-rep limit of 40 per day deferring the rest visibly to the next window, a merge-field change on one contact holding only that recipient's step for review, and a workflow-triggered contact waiting in the owner's approval queue until its batch is approved.
+From a saved list of 50 eligible contacts (ten of them on no deal) and 3 ineligible contacts, enroll all of them in a five-step sequence with four email steps in one action; inspect the excluded reasons, open any rendered message, edit one and remove one, then approve once. Advance business time and verify one provider submission per due email step per remaining recipient with no further approval, a per-rep limit of 40 per day deferring the rest visibly to the next window, a merge-field change on one contact holding only that recipient's step for review, and a workflow-triggered contact waiting in the owner's approval queue until its batch is approved.
 
 Current evidence: No implementation found. Reviewed single scheduled messages exist under OUT-009; sequences, batch rendering and batch approval do not.
 
@@ -998,4 +1022,4 @@ Current evidence: `src/core/features/ingestion/booking-webhooks.ts`; `tests/core
 
 ## Completion accounting
 
-123 product clauses: **61 done, 46 partial, 16 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+126 product clauses: **61 done, 47 partial, 18 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
