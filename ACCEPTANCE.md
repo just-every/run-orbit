@@ -122,7 +122,7 @@ Status: **done**.
 
 Log, edit and delete a note, call and meeting on a customer record; verify time, duration and attendees, and verify no score or external message changed.
 
-Current evidence: `src/core/features/records/manual.ts`; `tests/core/today-brief.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/records/manual.ts`; `tests/core/today-brief.test.ts`. Implemented source and exercising tests; file attachments are tracked under RECORD-018; live hosted/provider acceptance remains separate.
 
 ### RECORD-011 — Related records.
 
@@ -138,7 +138,7 @@ Status: **done**.
 
 Set do-not-contact, process unsubscribe and permanent-bounce events, then try immediate and scheduled sending; all remain blocked until an explicit current-state clear. Create a contact by hand and see it start contactable; recreate an erased contact's address and see it start do-not-contact.
 
-Current evidence: `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts`; `tests/core/outreach-limits.test.ts`. Implemented source and exercising tests, including the contactable default for a hand-created contact and do-not-contact on normalized recreation of a suppressed address; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts`; `tests/core/outreach-limits.test.ts`. Implemented source and exercising tests, including the contactable default for a hand-created contact and do-not-contact on normalized recreation of a suppressed address; unattributed opt-outs from multi-recipient messages are tracked under OUT-020. Live hosted/provider acceptance remains separate.
 
 ### RECORD-013 — Deletion.
 
@@ -226,7 +226,7 @@ Status: **done**.
 
 Upload mail and calendar files on Capture, replay and conflict them, then inspect original evidence and explicit invalid-date/identity/timezone errors.
 
-Current evidence: `src/core/features/capture/intake.ts`; `src/core/features/capture/proposals.ts`; `tests/core/capture-intake.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/capture/intake.ts`; `src/core/features/capture/proposals.ts`; `tests/core/capture-intake.test.ts`. Implemented source and exercising tests; captured attachments are tracked under RECORD-018; live hosted/provider acceptance remains separate.
 
 ### CAPTURE-002 — Known participants only.
 
@@ -274,7 +274,7 @@ Status: **done**.
 
 Export/restore captured evidence and proposals, verify no source credential travels, erase a contact and replay intake to prove erased originals stay fenced.
 
-Current evidence: `src/core/features/capture/privacy.ts`; `tests/core/capture-data.test.ts`; `tests/core/capture-upgrade.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/capture/privacy.ts`; `tests/core/capture-data.test.ts`; `tests/core/capture-upgrade.test.ts`. Implemented source and exercising tests; attachment portability and erasure are tracked under RECORD-018; live hosted/provider acceptance remains separate.
 
 ### CAPTURE-008 — Orbit address.
 
@@ -458,7 +458,7 @@ Status: **done**.
 
 Schedule a message, deliver reply/booking/unsubscribe/bounce or a manual stop, then advance dispatch; cancel the message and stale the draft without duplicates.
 
-Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
+Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Implemented source and exercising tests; pausing for an OUT-020 unattributed stop request is tracked under OUT-020; live hosted/provider acceptance remains separate.
 
 ### OUT-008 — Quiet hours.
 
@@ -496,9 +496,9 @@ Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/ou
 
 Status: **done**.
 
-Inspect unsubscribe headers on actual submitted mail, receive a signed unsubscribe and confirm future sending and scheduled work are suppressed.
+Inspect unsubscribe headers on actual submitted mail of a type set to carry opt-out, receive a signed unsubscribe and confirm future sending and scheduled work are suppressed.
 
-Current evidence: `tests/core/outbound-boundaries.test.ts`; `tests/core/outreach-limits.test.ts`. Implemented source and exercising tests for single-recipient messages; multi-recipient unsubscribe scope is tracked under OUT-019. Live hosted/provider acceptance remains separate.
+Current evidence: `tests/core/outbound-boundaries.test.ts`; `tests/core/outreach-limits.test.ts`. Implemented source and exercising tests for single-recipient messages; every one of which carries opt-out today; the per-type setting and the multi-recipient opt-out scope are tracked under OUT-020. Live hosted/provider acceptance remains separate.
 
 ### AI-001 — Provider and input.
 
@@ -684,27 +684,35 @@ On a deal, a rep writes a note mentioning their manager and a call log mentionin
 
 Current evidence: No implementation found. Notes and logged activities under RECORD-010 carry no mention parsing, mention notification or Mentions view.
 
+### RECORD-018 — Files on records, activities and mail.
+
+Status: **missing**.
+
+Upload a PDF to a deal and a file to a logged call; see both on the deal's Files list with name, type, size, uploader and time; upload a new version of the PDF; and see an executable and a 150 MB file refused with the reason. Receive a captured Gmail reply with a signed PDF attachment and an inline logo: see the PDF on the contact, company and deal and open it from the timeline entry, with the logo not listed. As a restricted rep, be refused a direct download of a file on a deal you cannot see. Migrate a HubSpot deal with two record attachments and a note attachment, and reconcile file counts and bytes in the dry run and after applying. Export and restore, and compare every file's bytes by SHA-256. Delete a file and see the attributed timeline entry. Erase the contact: their mail attachments are gone from the deal, while the user-uploaded PDF stays.
+
+Current evidence: No implementation found. There is no file storage, upload route or Files list on any record or activity, and `src/core/features/capture/mime.ts` skips every `Content-Disposition: attachment` part when parsing captured mail, so captured attachments are dropped; migration presets carry no files.
+
 ### MIGRATE-001 — HubSpot Sales Hub migration.
 
 Status: **partial**.
 
-From Import choose HubSpot, authorize a test account and preview a multi-company export/API pull including activities, associations and separate Contact, Company and deal owners; apply, interrupt/resume and rerun; compare source totals and undo around native edits. Final acceptance includes a real authorized customer export.
+From Import choose HubSpot, authorize a test account and preview a multi-company export/API pull including activities, associations, separate Contact, Company and deal owners, and a deal with two record attachments and a note attachment; apply, interrupt/resume and rerun; compare source totals and file counts and bytes, and undo around native edits. Final acceptance includes a real authorized customer export.
 
-Current evidence: `src/core/features/imports/contracts.ts`; `tests/core/crm-import.test.ts`; `tests/e2e/imports.spec.mjs`. Reviewed HubSpot CSV presets cover core records/deals/prepared notes; connected migration and full activity/owner/pipeline coverage are missing.
+Current evidence: `src/core/features/imports/contracts.ts`; `tests/core/crm-import.test.ts`; `tests/e2e/imports.spec.mjs`. Reviewed HubSpot CSV presets cover core records/deals/prepared notes; connected migration and full activity/owner/pipeline and attachment coverage are missing.
 
 ### MIGRATE-002 — Pipedrive migration.
 
 Status: **partial**.
 
-Choose Pipedrive, connect an authorized account containing two pipelines and cross-linked activities, preview/apply, resume a rate-limited page and rerun; reconcile every exported entity and association, then undo without losing a native note. Include a real authorized export.
+Choose Pipedrive, connect an authorized account containing two pipelines, cross-linked activities and deal files, preview/apply, resume a rate-limited page and rerun; reconcile every exported entity and association, then undo without losing a native note. Include a real authorized export.
 
-Current evidence: `src/core/features/imports/contracts.ts`; `tests/core/crm-import.test.ts`. Pipedrive core CSV presets exist; complete connected migration, products and activity history remain missing.
+Current evidence: `src/core/features/imports/contracts.ts`; `tests/core/crm-import.test.ts`. Pipedrive core CSV presets exist; complete connected migration, products, activity history and files remain missing.
 
 ### MIGRATE-003 — Salesforce Sales Cloud migration.
 
 Status: **missing**.
 
-Connect a Salesforce sandbox with converted leads, two record types and linked activity/custom-object data; dry-run, map, apply, interrupt/resume and rerun, reconcile record/association totals and demonstrate conflict-preserving undo. Repeat with an authorized real export.
+Connect a Salesforce sandbox with converted leads, two record types, linked activity/custom-object data and Files on an Opportunity; dry-run, map, apply, interrupt/resume and rerun, reconcile record/association totals and file counts and bytes, and demonstrate conflict-preserving undo. Repeat with an authorized real export.
 
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 
@@ -712,9 +720,9 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 Status: **partial**.
 
-Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, switch the multi-deal rule to most recently active open deal and see the next such thread associated automatically with the rule named and then moved in one action, see an unknown correspondent become a CAPTURE-012 proposal, revoke/reconnect and verify no unauthorized folder/mailbox is read. Complete an authorized live Gmail and Microsoft tenant journey.
+Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, switch the multi-deal rule to most recently active open deal and see the next such thread associated automatically with the rule named and then moved in one action, see an unknown correspondent become a CAPTURE-012 proposal, see a captured reply's PDF attachment listed on its contact, company and deal with its inline image not listed, revoke/reconnect and verify no unauthorized folder/mailbox is read. Complete an authorized live Gmail and Microsoft tenant journey.
 
-Current evidence: `src/core/features/capture/providers/google.ts`; `src/core/features/capture/providers/microsoft.ts`; `src/core/features/capture/providers/service.ts`; `tests/core/capture-providers.test.ts`. Read adapters, durable selected-scope cursors and OAuth safeguards exist; current fixed calendar window needs explicit extension, the configurable multi-deal association rule is missing and live provider acceptance is unmeasured.
+Current evidence: `src/core/features/capture/providers/google.ts`; `src/core/features/capture/providers/microsoft.ts`; `src/core/features/capture/providers/service.ts`; `tests/core/capture-providers.test.ts`. Read adapters, durable selected-scope cursors and OAuth safeguards exist; current fixed calendar window needs explicit extension, the configurable multi-deal association rule and attachment capture (RECORD-018) are missing and live provider acceptance is unmeasured.
 
 ### CAPTURE-011 — Two-way calendar and CRM activity.
 
@@ -792,9 +800,17 @@ Current evidence: `src/core/features/outreach/service.ts`; `tests/core/outreach-
 
 Status: **missing**.
 
-Through Gmail, receive a captured thread from a contact with two CC'd colleagues, one of them unknown. Reply all from Orbit, adding the team's internal sales engineer in CC and another existing contact in BCC. Verify that the pre-filled To and CC lists leave out the rep's own mailbox; that the unknown colleague needs an explicit choice and becomes a contact with basis `inbound conversation`; that the provider records one message with exactly the approved To, CC and BCC lists and no BCC header in delivered copies; that the reply is logged once on each external contact and once on their company and the linked deal; that the BCC address is absent from the other contacts' timelines and the other recipients' copies; and that a later reply from the CC'd colleague threads back onto their contact, company and deal and closes the awaiting-response obligation. Add a do-not-contact contact in CC and see the send refused, naming them; remove them and approve the re-rendered message. Add a one-off external address and an erased contact's address: the first is sent with its basis recorded, and the second is refused without naming the person. Repeat the reply-all journey through Microsoft 365, and once through `mail.sender.v1`, where a one-click unsubscribe stops every external recipient of that message with the reason shown.
+Through Gmail, receive a captured thread from a contact with two CC'd colleagues, one of them unknown. Reply all from Orbit, adding the team's internal sales engineer in CC and another existing contact in BCC. Verify that the pre-filled To and CC lists leave out the rep's own mailbox; that the unknown colleague needs an explicit choice and becomes a contact with basis `inbound conversation`; that the provider records one message with exactly the approved To, CC and BCC lists and no BCC header in delivered copies; that the reply is logged once on each external contact and once on their company and the linked deal; that the BCC address is absent from the other contacts' timelines and the other recipients' copies; and that a later reply from the CC'd colleague threads back onto their contact, company and deal and closes the awaiting-response obligation. Add a do-not-contact contact in CC and see the send refused, naming them; remove them and approve the re-rendered message. Add a one-off external address and an erased contact's address: the first is sent with its basis recorded, and the second is refused without naming the person. Repeat the reply-all journey through Microsoft 365, and once through `mail.sender.v1` with one-to-one opt-out turned on, where one recipient's opt-out through the message's link stops only that recipient (OUT-020).
 
 Current evidence: No implementation found. Drafts and outbound messages hold a single `recipient_email` matched to one `contact_id`, and the dispatcher in `src/core/features/outreach/service.ts` joins on it; there are no CC or BCC lists, internal or one-off recipients, reply-all pre-fill or per-recipient landing.
+
+### OUT-020 — Opt-out links by message type and per-person opt-out.
+
+Status: **partial**.
+
+With the defaults (one-to-one opt-out off, sequence opt-out on), reply all through Gmail (OUT-013) to a three-person buyer thread and verify that the delivered message has no `List-Unsubscribe` header and no opt-out link; send a sequence step to one of them and verify that it carries `List-Unsubscribe`, `List-Unsubscribe-Post: List-Unsubscribe=One-Click` and the link; remove opt-out from one step as relationship mail and see the review show the marking and the delivered step carry neither. Turn one-to-one opt-out on, see the audit entry, and send a three-recipient message through `mail.sender.v1`: verify that it has no one-click header and one link; one recipient opts out on the page with their own address, and only that contact becomes do-not-contact while the other two can still be emailed and keep their scheduled messages; an address not on the message is refused without listing the recipients. Deliver a signed provider unsubscribe event for that message without a single recipient address: verify that nobody becomes do-not-contact, that every recipient's scheduled message and sequence enrollment pauses with the reason shown, that a new message to one of them is refused naming the request, and that a reply to an inbound message one of them sent after the event can be sent. Resolve the request by naming one person: only they become do-not-contact, the others' paused work resumes, and the resolution is recorded with the user and time.
+
+Current evidence: `src/core/platform/outbound-mail.ts`; `src/core/features/outreach/provider-events.ts`; `tests/core/outreach-limits.test.ts`; `tests/core/outbound-boundaries.test.ts`. Every message today is single-recipient and carries the SendGrid unsubscribe group, and a signed provider unsubscribe sets only that message's one contact do-not-contact. The per-type setting with one-to-one opt-out off by default, per-message removal, the installation-origin one-click handler for mailbox sends, the multi-recipient opt-out page and unattributed stop requests are missing.
 
 ### TASK-001 — Assigned prioritized recurring sales tasks.
 
@@ -986,7 +1002,7 @@ Status: **partial**.
 
 Populate each target feature, export/restore/export and reconcile content and anonymous audit while proving no credential or dispatch authority travels; erase a contact and inspect every read/search/report/AI/export plus pending provider deletion without claiming external recall.
 
-Current evidence: `src/core/features/records/archive-export.ts`; `src/core/features/records/archive-import-context.ts`; `tests/core/capture-data.test.ts`; `tests/core/crm-import-erasure.test.ts`. Native archive, erasure and capture privacy exist; target-feature portability and external deletion outcomes await those features.
+Current evidence: `src/core/features/records/archive-export.ts`; `src/core/features/records/archive-import-context.ts`; `tests/core/capture-data.test.ts`; `tests/core/crm-import-erasure.test.ts`. Native archive, erasure and capture privacy exist; target-feature portability (including RECORD-018 files) and external deletion outcomes await those features.
 
 ### OPS-001 — Owned operation and explicit provider failures.
 
@@ -1038,4 +1054,4 @@ Current evidence: `src/core/features/ingestion/booking-webhooks.ts`; `tests/core
 
 ## Completion accounting
 
-128 product clauses: **60 done, 49 partial, 19 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+130 product clauses: **60 done, 50 partial, 20 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
