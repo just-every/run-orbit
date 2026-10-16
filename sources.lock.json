@@ -663,7 +663,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "bff2b2c4115ed45e3af4a5fd7790a203df889b6ceeecf18374019ebf51039aec",
+      "sha256": "b563e4f2e01dfff5e1ccfde50aa6e309dfff6f5f5c6bf592837b5d3aef063240",
       "executable": false
     },
     "BASELINE.md": {
@@ -3171,7 +3171,7 @@
       "executable": false
     },
     "src/base/run-site.ts": {
-      "sha256": "b902f9421d902f73fac0fe50c874d1200f1dca33a811fb52c60a9bb76c95ea40",
+      "sha256": "53b3f379b9b35c7736ab7f62e36b2687c61ce135bfc0f3b7fc77f752092bc081",
       "executable": false
     },
     "src/base/sendgrid-event-relay/crypto.ts": {
@@ -4535,7 +4535,7 @@
       "executable": false
     },
     "src/core/features/public/ui/home/drawings/rest/FormDrawing.tsx": {
-      "sha256": "e493e0b5c7e7d7a3325d258f6df83498bcff8742f3567e2ace98c18f6526b72e",
+      "sha256": "7a41640f27a638f942f848b00bad930cf2e0c5bb440847f27abd4e3b463639b0",
       "executable": false
     },
     "src/core/features/public/ui/home/drawings/rest/icons.tsx": {
@@ -5923,7 +5923,7 @@
       "executable": false
     },
     "src/site/run.ts": {
-      "sha256": "6c0090052bd27a170ea3ef99a182d0328402496f37ac300301f35cff0bbf3b77",
+      "sha256": "9b3f32a5733f324cbd7f919182221f5e3dca22246ab62b2ec45e3e04770c130f",
       "executable": false
     },
     "src/vite-env.d.ts": {
