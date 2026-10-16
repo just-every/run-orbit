@@ -1,7 +1,7 @@
 diff --git a/cli/deploy-command.mjs b/cli/deploy-command.mjs
 --- a/cli/deploy-command.mjs
 +++ b/cli/deploy-command.mjs
-@@ -63,10 +63,10 @@
+@@ -63,10 +63,10 @@ export async function deployCommand(context) {
   // may perform them; neither a build nor a custom upload runs here.
   if (options.remove || options.setSecret || options.unsetSecret) return ownerDeploy(path, adapter)(context);
   if (adapter.deploy.managesHostedOwner) return adapter.deploy(context);
@@ -17,7 +17,7 @@ diff --git a/cli/deploy-command.mjs b/cli/deploy-command.mjs
 diff --git a/cli/deploy-inputs.mjs b/cli/deploy-inputs.mjs
 --- a/cli/deploy-inputs.mjs
 +++ b/cli/deploy-inputs.mjs
-@@ -8,7 +8,7 @@
+@@ -9,7 +9,7 @@ import { readDeployEnvFile } from '../modules/deploy-kit/env-file.mjs';
  // the local setup owner's email, and a fresh value for each secret the setup
  // manifest generates (a session secret, the one-time setup token). A value only
  // reaches a Worker that lacks that secret; an existing one is kept unchanged.
@@ -26,7 +26,7 @@ diff --git a/cli/deploy-inputs.mjs b/cli/deploy-inputs.mjs
   const env = { ...process.env }, supplied = [];
   if (options.envFile) {
    let values;
-@@ -20,6 +20,13 @@
+@@ -21,6 +21,13 @@ export async function deployEnvironment({ root, options, declaration, setupManif
   const absent = item => item && !env[item.environment]?.trim();
   const emailField = setupManifest?.steps?.find(step => step.type === 'owner-claim')?.emailField;
   const email = secrets.find(item => item?.binding === emailField);
@@ -43,7 +43,7 @@ diff --git a/cli/deploy-inputs.mjs b/cli/deploy-inputs.mjs
 diff --git a/cli/deploy.mjs b/cli/deploy.mjs
 --- a/cli/deploy.mjs
 +++ b/cli/deploy.mjs
-@@ -47,7 +47,7 @@
+@@ -49,7 +49,7 @@ export function ownerDeploy(declarationPath, lifecycle) {
     store.report('deploy: dry run complete; no deployment occurred and no provider request was made.');
     return { dryRun: true, deployed: false };
    }
@@ -55,7 +55,7 @@ diff --git a/cli/deploy.mjs b/cli/deploy.mjs
 diff --git a/cli/package-mode.mjs b/cli/package-mode.mjs
 --- a/cli/package-mode.mjs
 +++ b/cli/package-mode.mjs
-@@ -39,8 +39,11 @@
+@@ -39,8 +39,11 @@ export async function lockedPackage(root) {
    const entries = block(...own, `${group}:`, 4), entry = entries && block(...entries, `'${packageName}':`, 6);
    if (!entry) continue;
    const fields = Object.fromEntries(lines.slice(...entry).map(line => /^\s+(specifier|version):\s*'?([^'\s]*)'?\s*$/.exec(line)).filter(Boolean).map(match => [match[1], match[2]]));

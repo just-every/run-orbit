@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "parent": null,
   "edition": "just-every/orbit",
-  "manifest": "70f3eacb1371a46aed2d70876fbb2fb237d08e8f483f8f28a17f1c80a5da03d0",
+  "manifest": "dc7d6704d5ed529d120a628ed52e9bd9804900d13506a343fd1606c02de0d59d",
   "toolchain": {
     "id": "runeditrun/edition-authoring",
     "version": "1.1.0",
@@ -24,7 +24,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
+          "revision": "d434ea67989fe10b6ddff01daba8bb350975e54a",
           "path": ".",
           "paths": [
             "schema/SEED.schema.json",
@@ -68,9 +68,9 @@
         ]
       },
       "baseline": {
-        "key": "d1eb5b279a344642d19a6f5a0b0fb37b03f3c72bb714ee94b31fb2bc647f2988",
-        "digest": "ac735e917711b5d6af38a6ec6a1ef8a394837ddeeca9c5f8e2faf536dca60b6b",
-        "sha256": "f7eed3e81006e396c4bd82e85fed87fa87695d709dd58e02be4e9569c000907a"
+        "key": "1000fdc00339c36da8e5527214bd5dd1bec1d2831eefdadb721cfeb420c7218f",
+        "digest": "7002904a25fd27153fe398609fcdf23e670d66cd175a634d575e67fb9914526d",
+        "sha256": "eb03fdc0d49ff0b6fa317ac4080aa8159dc90fac7f418cdf8deec6f7c3974308"
       }
     },
     {
@@ -85,7 +85,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
+          "revision": "d434ea67989fe10b6ddff01daba8bb350975e54a",
           "path": ".",
           "paths": [
             "modules/mail/LICENSE",
@@ -124,9 +124,9 @@
         ]
       },
       "baseline": {
-        "key": "c29cf8a4a1035ed2c0d280c9d5a857a8b37fba86e9197a0efc1ada42e9630302",
-        "digest": "dcac1f4422dd9b86bc412a6675dfdaf9ef6e6ce26fe5efcd1409702e0e9feccb",
-        "sha256": "cb28f11fa18a04c023b6781c7737cddb3ea22b473dde9570635e5d92e9aa0a66"
+        "key": "12fb5111798793c59f0c36c3a58e3b9e3575b60f74e0925f82b6b56e96522c4a",
+        "digest": "79c0d3e9a625cdefc846aa0e23065effc0f61d8d9fe75439a959cc8aab10f8c7",
+        "sha256": "216537a50eb51876b6c6ed54745acde754e1fd0a557084960150d99cf43dc24b"
       }
     },
     {
@@ -183,7 +183,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
+          "revision": "d434ea67989fe10b6ddff01daba8bb350975e54a",
           "path": ".",
           "paths": [
             "modules/import-kit/src",
@@ -212,9 +212,9 @@
         ]
       },
       "baseline": {
-        "key": "36148cc9798e3920a9594c1671fb2c5aa074d7dd537f9ab6d9e5811fee5b47c7",
-        "digest": "79fd7eeb59a0312036964d0c112d70495ad9ab75e68ba3d5abacbf944a34d176",
-        "sha256": "cbdd0805bd789bd165de4a327aeefe36a3bb72424ad767fe36cebe9c73b71670"
+        "key": "d19f4d81f7041016dec2d202dbccd2dd2ecf62c13ef218ca43a48bab458e2ca3",
+        "digest": "f6cf418598e27229eca064a2a7e0c36ef5e27575db62b12aa508fd9216684900",
+        "sha256": "eaa334185878e7e5a4b8f0948c6b403c1a32b74ada298cd255a13697e588d00a"
       }
     },
     {
@@ -272,7 +272,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
+          "revision": "d434ea67989fe10b6ddff01daba8bb350975e54a",
           "path": ".",
           "paths": [
             "modules/editor/src",
@@ -287,9 +287,9 @@
         ]
       },
       "baseline": {
-        "key": "b5ee31a9bea8f00fc4f066398b95d241bda4d8d7e595bae87be44995c0e75b63",
-        "digest": "1a5ad8e91fd7bd986656f84a29356aee89791e1066adcd78ddcc757d8f137a68",
-        "sha256": "86b48291689f5036cd9e0d3557bdb55cb97c7cc1f7ef7a09ef410f3eb88bebd6"
+        "key": "5f1127f6c4a0b58132a980d25069fca01f323a021c12bceb9f32af97adf7d984",
+        "digest": "c4a985b2e5f6c0d68764f1d0cec2c3fcdfa96ffcfde54e6205bffe0620ed3eaa",
+        "sha256": "dd9d4f5f3abfce0fba606bedeade1ba471f488f6a8f930461114616caeaf3180"
       }
     },
     {
@@ -317,11 +317,14 @@
           "scripts/delivery/base/schema/setup-validation.mjs",
           "scripts/delivery/base/setup-manifest.mjs",
           "scripts/delivery/base/spec.mjs",
-          "scripts/delivery/base/mail.mjs"
+          "scripts/delivery/base/mail.mjs",
+          "scripts/delivery/base/native-export.mjs",
+          "scripts/delivery/base/sign-in.mjs",
+          "scripts/delivery/base/sql-statements.mjs"
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
+          "revision": "d434ea67989fe10b6ddff01daba8bb350975e54a",
           "path": ".",
           "paths": [
             "modules/delivery-producer/artifact.mjs",
@@ -344,7 +347,10 @@
             "schema/setup-validation.mjs",
             "modules/delivery-producer/setup-manifest.mjs",
             "modules/delivery-producer/spec.mjs",
-            "modules/delivery-producer/mail.mjs"
+            "modules/delivery-producer/mail.mjs",
+            "modules/delivery-producer/native-export.mjs",
+            "modules/delivery-producer/sign-in.mjs",
+            "modules/delivery-producer/sql-statements.mjs"
           ]
         },
         "mappings": [
@@ -431,13 +437,25 @@
           {
             "path": "scripts/delivery/base/mail.mjs",
             "originPath": "modules/delivery-producer/mail.mjs"
+          },
+          {
+            "path": "scripts/delivery/base/native-export.mjs",
+            "originPath": "modules/delivery-producer/native-export.mjs"
+          },
+          {
+            "path": "scripts/delivery/base/sign-in.mjs",
+            "originPath": "modules/delivery-producer/sign-in.mjs"
+          },
+          {
+            "path": "scripts/delivery/base/sql-statements.mjs",
+            "originPath": "modules/delivery-producer/sql-statements.mjs"
           }
         ]
       },
       "baseline": {
-        "key": "36069e1097d49b9d3b38ef96a4ef9fb8f34ef2ea702d79fa7bd1b1ed685b5505",
-        "digest": "70ddd4b882c5d56fff3f8b9d4c447c499d4ed64cf6a3f233dd5b9b241102610d",
-        "sha256": "36bee61156d39fe20eb364bffa5821a3a19daf64e72930ae8cb91e55504841cf"
+        "key": "6e929a3d7a5a1d6e2c777bea917f259ab425b9a4c07a94a04e9637371aff3364",
+        "digest": "3211fe4174eaf0e49e371a8a96c05842b7379c5acfcfa89ef4b509a5f8a66740",
+        "sha256": "2224c4397784d3793859a1f6800badfcd719953f3d822dc859f5e4efec97b711"
       }
     },
     {
@@ -465,7 +483,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
+          "revision": "d434ea67989fe10b6ddff01daba8bb350975e54a",
           "path": "foundation/runtime"
         },
         "mappings": [
@@ -540,9 +558,9 @@
         ]
       },
       "baseline": {
-        "key": "8ffab893e0aac99467b42cef1d2aafdcf313c05cb45d1a4695e30ab4600b6730",
-        "digest": "ecc9a89423511895014eb9bc172047db9d184ff4e8823900d2eb00b6161654ed",
-        "sha256": "a5dc32756ed6c6430eea0cc3ea669f2db2ae36d840bc0d3567d505c939b0f15c"
+        "key": "e34575b315bb542e07b97af6248562a347601ee314d507b21ced29bd89011968",
+        "digest": "dc41be1c3d7b0194ac19acef6398decf7c9effaa68aa4a24d759d5fb78a91d8d",
+        "sha256": "6abf48efed1a4c37252cfe79dd8b60af5440990a83bc62775dbc1bb4e6875d2a"
       }
     },
     {
@@ -554,7 +572,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
+          "revision": "d434ea67989fe10b6ddff01daba8bb350975e54a",
           "path": "modules/d1-transport",
           "paths": [
             "index.mjs",
@@ -573,9 +591,9 @@
         ]
       },
       "baseline": {
-        "key": "551a1563f26a8e6a56b1ca940657272e882c6ba5f0cf7774dfb03c0a58af0b7c",
-        "digest": "6c4cfd971f312736c77a908d9c5909bcc4e0b9776fba30d6f628020509660515",
-        "sha256": "023f39d0a35eecbeb887f70a81fd936c809622d849f9ec9235a45d2d3914e469"
+        "key": "8fda1dc55005f61efa1ab373f3b3cb534dca520490181cdf7290d0d4f5226027",
+        "digest": "d892a311c0a8f24ab34974f67637d450249692aaa619b1fdead9f746f8dab110",
+        "sha256": "c881300d254b009ca26511a20af9373387a9a02c6410b88f18094a3c7237606b"
       }
     }
   ],
@@ -617,7 +635,7 @@
       "executable": false
     },
     ".github/workflows/run-demo.yml": {
-      "sha256": "5acff6c99f215007bfbd5075b5f5f41a9c63b6f53369e0b5f5e48cc149d0f8d4",
+      "sha256": "f2dd68dbfaff33615a0cfb1d4cfa7deed6b9f496c143a9676bba8a9227ddb1df",
       "executable": false
     },
     ".github/workflows/run-site.yml": {
@@ -645,7 +663,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "105930f9652f4c53d4d3651159e6317457accb55c94d72f0e23528de04b1ea7e",
+      "sha256": "bff2b2c4115ed45e3af4a5fd7790a203df889b6ceeecf18374019ebf51039aec",
       "executable": false
     },
     "BASELINE.md": {
@@ -653,7 +671,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "5816613db8bd2f4fcca6bcddd6816aa5d2ff17632bc4ac7937a1b2715e04785f",
+      "sha256": "d08e3b420fcd7c6a46f74c1fe79d7408d2dea1786d1a65a81bae05d971abd632",
       "executable": false
     },
     "CLAUDE.md": {
@@ -685,11 +703,11 @@
       "executable": false
     },
     "DEMO.md": {
-      "sha256": "f4a8ef2b541b708a4a459e2e99b360382a76a6e0237db135026afa42a21e0cd8",
+      "sha256": "9a2ec7694926cd64d8bf252da9f745fdaae767e9fa9321c46bb6534a39bc4dba",
       "executable": false
     },
     "deploy-demo.json": {
-      "sha256": "d7a0b9f54931dfa95695d7dbd14d57534c6b17e6126c182ad1ae3049764f6a45",
+      "sha256": "a2d0e0ae27f5172c8cadae96836653d8b56cc980a493236308920f56b97fc32a",
       "executable": false
     },
     "deploy-site.json": {
@@ -933,7 +951,7 @@
       "executable": false
     },
     "edition.json": {
-      "sha256": "70f3eacb1371a46aed2d70876fbb2fb237d08e8f483f8f28a17f1c80a5da03d0",
+      "sha256": "dc7d6704d5ed529d120a628ed52e9bd9804900d13506a343fd1606c02de0d59d",
       "executable": false
     },
     "fold-generation.json": {
@@ -941,7 +959,7 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "386323fd8fc610c015aae317ebf529017b15a3a1f51176dc2aee816caaa7b3f7",
+      "sha256": "7b9591c834145b1ac81308e9c9048088f4d5e946951a2f0f2aa9a7de12d58171",
       "executable": false
     },
     "LICENSE": {
@@ -2345,15 +2363,15 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "6227890a98b3e7a288edc4c7be24392f3b4bd6f2aee590ecf522017b61625a75",
+      "sha256": "c1feb5191d45ca2798314a2c87880c974d39f87922dd5bfa0e8055a4922cc704",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
       "sha256": "29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b",
       "executable": false
     },
-    "patches/rer-0.2.25.patch": {
-      "sha256": "629ba0a238ac8feafb66500d8109c42ed2616db5f441701e39202ea9bb89395c",
+    "patches/rer-0.2.30.patch": {
+      "sha256": "aed4d28d8cd4b3172bf2ed33b01752378bfe4dca5ad6b3d4f9413a0289e34066",
       "executable": false
     },
     "patches/wrangler-4.129.1.patch": {
@@ -2365,7 +2383,7 @@
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "f758fff358efa2bcae94eddb358c0d8642ce96c1adf5aee40512c3c78797bb35",
+      "sha256": "1139bd96bd2ebac862cc5e427fcceb77d908a8038f3dba2f4db7524e449721b8",
       "executable": false
     },
     "pnpm-workspace.yaml": {
@@ -2576,6 +2594,10 @@
       "sha256": "41650d5f2c22c0dbf8c4d8640bc89d872907828b558df4af89c4f70059d4878f",
       "executable": false
     },
+    "scripts/delivery/base/native-export.mjs": {
+      "sha256": "5c0f90e688f5242dbc2f62416259cbb3074647298df8daa431a7022aa10d1a41",
+      "executable": false
+    },
     "scripts/delivery/base/package.mjs": {
       "sha256": "5a32dec3274b66474e12d5141e973542248ceeecf0f8464f6e9da87d60228cb4",
       "executable": false
@@ -2612,8 +2634,16 @@
       "sha256": "cb8a88fc712f5f102c2a00454a6d46b0ca0b9ec15bd79bf4370358375ad7a009",
       "executable": false
     },
+    "scripts/delivery/base/sign-in.mjs": {
+      "sha256": "951aada2c00131ab7c808974827654b0fda20bcaeed1f2f97194b25441c03aff",
+      "executable": false
+    },
     "scripts/delivery/base/spec.mjs": {
-      "sha256": "6a11b2986a98936f60c8984e73add5ba491002f0609fb0b478874967caaffd92",
+      "sha256": "65179ca5222485513260e8d58aaae6740ae6fe1b27065e96f0d95d197fc6d3f0",
+      "executable": false
+    },
+    "scripts/delivery/base/sql-statements.mjs": {
+      "sha256": "8819f7f91b7781905796ea35b01dd1a55e08ed3893ff6d8aafaf03d2f35c1c9a",
       "executable": false
     },
     "scripts/edition-authoring/cli.mjs": {
@@ -2841,7 +2871,7 @@
       "executable": false
     },
     "src/base/identity.ts": {
-      "sha256": "0ad0cad48af3e2c6a40d931e6065185e87208600bc99ab5f886d5d571d5be547",
+      "sha256": "14b41b6f427e20d0aa15a7c4c9f8f2bfd51ea0c2fefab25bb7c5111b5c61217b",
       "executable": false
     },
     "src/base/lobby.ts": {
@@ -2953,11 +2983,15 @@
       "executable": false
     },
     "src/base/modules/mail/src/adapters/rer/contract.mjs": {
-      "sha256": "3dba4b2c07367775768b5d1683cb859ffd000a6eefd2236308a33ebf7ecad1dd",
+      "sha256": "b5daebf8e3b3e0a8cb9482d93af021db74e5202d75d1d414a98259841fa35ac3",
       "executable": false
     },
     "src/base/modules/mail/src/adapters/rer/index.mjs": {
-      "sha256": "23faa46d74aa987e7fc51e1a78d83760414a169e8bc0101e399bb4d685c4ce14",
+      "sha256": "bbf0d393bc9a5488595cc6f50854e3e7a90fe7272c4ba80721239913ca8be5c7",
+      "executable": false
+    },
+    "src/base/modules/mail/src/adapters/rer/list-headers.mjs": {
+      "sha256": "2ee80e4fa4e9185efebc5ce02fca2f777dfce7b423f31d6a1ede5a19f411195b",
       "executable": false
     },
     "src/base/modules/mail/src/adapters/resend/index.mjs": {
@@ -3001,11 +3035,11 @@
       "executable": false
     },
     "src/base/modules/mail/src/core/validation.mjs": {
-      "sha256": "fa1f79579a96fc7b12964d9515e98135993c18ea1af23922779139abc4221571",
+      "sha256": "a6db031bcfb94718c6a42975990f904c8dd97115448e5a8b90c6e5f3513116c2",
       "executable": false
     },
     "src/base/modules/mail/src/development/index.d.mts": {
-      "sha256": "abec697c7f83a0cb7035a6c8d9b4e3a87c393d6ecd3ccb1ccbe49022eb03d0e2",
+      "sha256": "c5a98aa45d773ca730dda8a197aa3c9ee3fcf44c7999cfe5fd8365c28f8f2faf",
       "executable": false
     },
     "src/base/modules/mail/src/development/index.mjs": {
@@ -3113,7 +3147,7 @@
       "executable": false
     },
     "src/base/modules/mail/src/sender.mjs": {
-      "sha256": "32e35cd88b3b7199f5ce7ac7139be853890428549a84f70a733a5a9a0df6979d",
+      "sha256": "32a413be1866cd5ca060b72c0e30de2c09ff4d37c87c1c94fbcf3de6f86d1dc6",
       "executable": false
     },
     "src/base/modules/mail/src/sendgrid-email/index.d.mts": {
@@ -3125,7 +3159,7 @@
       "executable": false
     },
     "src/base/modules/mail/src/unsubscribe/index.mjs": {
-      "sha256": "4cd7c05a3a885d4d16cfcb50e623fdc201fe6c6bb8d9418502b0837161e55295",
+      "sha256": "5804439f7b5981c73dba442cb33237ba73eedfaf1a71fd1c2f5e5a91cb1b2927",
       "executable": false
     },
     "src/base/page-style.ts": {

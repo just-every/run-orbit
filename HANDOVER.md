@@ -4,7 +4,7 @@
 
 Orbit's public source repository is `just-every/run-orbit` (`https://github.com/just-every/run-orbit`), release 0.1.0; `edition.json`, `rer-project.json`, the delivery packaging policy and the management integration profile declare it. The first release is the annotated tag `v0.1.0` on the repository's first commit. No deployment is implied by this source.
 
-Orbit runs on the RER seed command contract in package mode, with exact `@runeditrun/rer` 0.2.25 and `scripts/installer/local.mjs` preserving its native hooks. Base runtime files under `src/base/` are copied unchanged from `1ee378e41142c673a9098f60af21664c6d8477d1`, recorded in `base-copies.json`; the seed's existing mail module and contract-document origins remain in `edition.json` and `sources.lock.json`. The installed `/` is the shared Lobby, reading the active installation owner claim. The approved homepage and docs also build as a static run site with `rer build --site`; `.github/workflows/run-site.yml` gates its deployment on `RUN_SITE_DEPLOY`.
+Orbit runs on the RER seed command contract in package mode, with exact `@runeditrun/rer` 0.2.30 and `scripts/installer/local.mjs` preserving its native hooks. Every unchanged Base copy (the `src/base/` runtime files, mail and editor modules, import-kit, d1-transport, delivery producer, seed schema and template files, `run-site.yml` and `run-demo.yml`) is recorded in `base-copies.json` at rer-v0.2.30 (`d434ea67989fe10b6ddff01daba8bb350975e54a`); adapted Base-derived files and the contract documents keep their origins in `edition.json` and `sources.lock.json`. The installed `/` is the shared Lobby, reading the active installation owner claim. The approved homepage and docs also build as a static run site with `rer build --site`; `.github/workflows/run-site.yml` gates its deployment on `RUN_SITE_DEPLOY`.
 
 ## How it runs
 
@@ -58,7 +58,7 @@ The release run exercised the isolated verification plan and the full declared-c
 
 ## Sign-in: Base operator-auth over Orbit's own operators
 
-The exact RER 0.2.25 pin preserves native local-owner resolution and pnpm patch-aware package selection. Deploy declares SendGrid inputs once for preflight, upload and secret updates. RER’s outer controller waits for the exact source, claims the owner and retires its token. Hosted access uses the operator’s real emailed sign-in link; the earlier printed-link owner recovery adapter is retired. Full destination operators keep access after restore; collaborators require renewed invitations.
+The exact RER 0.2.30 pin (with `patches/rer-0.2.30.patch`) preserves native local-owner resolution and pnpm patch-aware package selection. Deploy declares SendGrid inputs once for preflight, upload and secret updates. RER’s outer controller waits for the exact source, claims the owner and retires its token. Hosted access uses the operator’s real emailed sign-in link; the earlier printed-link owner recovery adapter is retired. Full destination operators keep access after restore; collaborators require renewed invitations.
 
 Orbit signs in through Base operator-auth from the exactly pinned `@runeditrun/rer` package.
 Orbit's own session, magic-link and owner-bootstrap code and its TanStack sign-in
@@ -166,8 +166,9 @@ Contact erasure removes whole captured originals, signals and proposals containi
 
 Operator erasure now redacts a display name only as a whole word (never inside a longer word or a mailbox), only in that operator's own content and, inside JSON, only in string values (never keys or identifier-like values); names under three characters are left, and erasure answers 409 when another operator's or contact's name contains it.
 
-## Hosted demo (15 October 2026)
+## Hosted demo (16 October 2026)
 
-The demo runtime, operator-auth and owner-claim resolve from the same exact rer 0.2.25 package, so mocked mail success shares the installed demo guard. The redundant demo copy and deprecated SendGrid shim are removed; all retained Base module copies refresh together to rer-v0.2.24. Demo customer sends use Base development mail directly. AI generation uses demoEffect with cited sample output only under RER_DEMO. The seed finishes its setup checklist with domain source-check, draft approval and suppressed-send operations, populated customer records, close dates and operators. The public homepage is unchanged.
+`demo.run-orbit.com` runs on rer 0.2.30's native Worker Loader demo host: each visitor gets their own isolate with SQLite storage for Orbit's D1, the once-a-minute Cron arrives by alarm, and the built static files are served at the edge. A copy ends after 60 minutes or 15 idle minutes and its storage is erased. The container host, its instance type and the container-era observer steps are retired; `run-demo.yml` is Base's template, recorded in `base-copies.json`.
 
-The hosted demo retains `basic`. Its rer 0.2.22 trial was 9/10 starts (successful median 12.141 s); `standard-1` was also 9/10 (successful median 15.464 s), with its seventh visitor timing out after admission. Most successful-start elapsed time preceded admission. Neither type met the hosted startup target; timings and both failure correlation IDs are retained in dm-orbit-v22 evidence for Base follow-up.
+The demo runtime, operator-auth and owner-claim resolve from the same exact rer 0.2.30 package, so mocked mail success shares the installed demo guard. The redundant demo copy and deprecated SendGrid shim are removed; all recorded Base copies refresh together to rer-v0.2.30. Demo customer sends use Base development mail directly. AI generation uses demoEffect with cited sample output only under RER_DEMO. The seed finishes its setup checklist with domain source-check, draft approval and suppressed-send operations, populated customer records, close dates and operators. The public homepage is unchanged.
+

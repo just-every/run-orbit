@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Move the hosted demo to rer 0.2.30's native Worker Loader host (own isolate and SQLite storage per visitor, Cron by alarm, edge static assets) and refresh every recorded Base copy to rer-v0.2.30.
 - Mark credential fixtures and examples explicitly synthetic so hosted source checks accept them.
 
 ## 0.2.0 — 2026-10-14
