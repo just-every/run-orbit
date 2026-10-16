@@ -38,14 +38,14 @@
 
 Orbit is the Sales edition for account selling guided by customer evidence. Its interface keeps stage, owner, score, queue and message state separate, and operators review every customer message before it is sent.
 
-This repository is the complete source for Orbit. Public source: [just-every/run-orbit](https://github.com/just-every/run-orbit), release 0.1.0, licensed under the [MIT License](LICENSE). Read [ACCEPTANCE.md](ACCEPTANCE.md) for the product's acceptance obligations, [CONTRACT.md](CONTRACT.md) for its clauses and [OPERATIONS.md](OPERATIONS.md) for hosted configuration, mail, data transfer and recovery.
+This repository is the complete source for Orbit. Public source: [just-every/run-orbit](https://github.com/just-every/run-orbit), licensed under the [MIT License](LICENSE). These instructions describe the current `main` branch. The older `v0.1.0` tag has different setup commands and predates Capture and the current local sign-in flow; its outbox-based sign-in instructions apply only to that historical version. Current local sign-in uses the private `RER_OPEN` link described below. Use the README included with the tag if you check it out. Read [ACCEPTANCE.md](ACCEPTANCE.md) for the product's acceptance obligations, [CONTRACT.md](CONTRACT.md) for its clauses and [OPERATIONS.md](OPERATIONS.md) for hosted configuration, mail, data transfer and recovery.
 
 ## Run it on your computer
 
-Install [RER](https://runeditrun.com) and use **Node 22 or later**. Orbit pins Node **22.20.0** and pnpm **10.12.4** for project commands; RER selects the pinned runtime and installs the frozen dependencies automatically.
+Install [RER](https://runeditrun.com) and use **Node 22 or later**. Orbit pins Node **22.20.0** and pnpm **10.12.4** for project commands; RER selects the pinned runtime, fetches pnpm into its own cache and installs the frozen dependencies automatically. You do not need to install pnpm yourself.
 
 ```sh
-git clone https://github.com/just-every/run-orbit.git orbit
+git clone --branch main https://github.com/just-every/run-orbit.git orbit
 cd orbit
 rer dev
 ```
@@ -69,7 +69,7 @@ Open the opportunity from NOW, choose **Write follow-up**, save the exact messag
 
 Open **Capture** to import mail/calendar files or connect Gmail and Google Calendar, or Outlook mail and calendars. Each connection uses your own OAuth client and read-only permissions. Choose labels or folders and calendars before intake starts; calendar capture also has a fixed date window. Capture shows evidence and proposals for review, with the existing reply, bounce and stop-condition safeguards.
 
-Follow [Google setup](docs/CONNECT-GMAIL.md) or [Microsoft setup](docs/CONNECT-OUTLOOK.md). [OWNER-STEPS.md](OWNER-STEPS.md) contains the remaining live-account proof. A fresh `rer dev` start and a successful `rer deploy` print the callback URIs; Capture also displays them. Disconnect stops intake and deletes the saved provider credentials.
+Follow [Google setup](docs/CONNECT-GMAIL.md) or [Microsoft setup](docs/CONNECT-OUTLOOK.md). [OWNER-STEPS.md](OWNER-STEPS.md) contains the remaining live-account proof. Copy each provider's exact callback URI from Capture; a successful `rer deploy` also prints them. `rer dev` does not print callback URIs. Disconnect stops intake and deletes the saved provider credentials.
 
 ### Verify, reset and move data
 

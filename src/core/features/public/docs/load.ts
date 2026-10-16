@@ -15,5 +15,7 @@ export const loadDocsPage = createServerFn({ method: 'GET' })
     if (problem) throw new Error(problem);
     const load = Object.hasOwn(pages, slug) ? pages[slug] : undefined;
     if (!load) throw notFound();
-    return { page: (await load()).default, repository, sections };
+    const { operatorFromRequest } = await import('../../../platform/request.server');
+    const [page, operator] = await Promise.all([load(), operatorFromRequest()]);
+    return { page: page.default, repository, sections, signedIn: Boolean(operator) };
   });

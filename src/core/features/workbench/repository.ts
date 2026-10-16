@@ -63,7 +63,7 @@ export class WorkbenchRepository {
     if (previous) { if(previous.payload_hash !== payloadHash) throw new WorkbenchError(409,'Event ID already carries different evidence.'); return {id:previous.id}; }
     const now = new Date(), timestamp = now.toISOString(), id = createId();
     const statements = [
-      this.db.prepare("INSERT OR IGNORE INTO signal_sources(id,name,type,enabled,created_at,updated_at) VALUES(?,?,'operator_attested',1,?,?)").bind(source,`Operator-attested customer event (${actor})`,timestamp,timestamp),
+      this.db.prepare("INSERT OR IGNORE INTO signal_sources(id,name,type,enabled,created_at,updated_at) VALUES(?,?,'operator_attested',1,?,?)").bind(source,'Operator-attested customer event',timestamp,timestamp),
       this.db.prepare("INSERT INTO signals(id,source_id,source_event_id,type,subject,occurred_at,received_at,payload_hash,confidence,linking_basis,created_at) VALUES(?,?,?,?,?,?,?,?,?,'operator-attested record ID',?)").bind(id,source,input.eventId,input.type,input.subject,input.occurredAt,timestamp,payloadHash,['page.viewed','email.opened'].includes(input.type) ? 'inferred' : 'observed',timestamp),
       this.db.prepare("INSERT INTO signal_links(signal_id,record_type,record_id,linking_basis,linked_at) VALUES(?,'opportunity',?,'operator-attested record ID',?)").bind(id,opportunityId,timestamp),
       ...this.timeline(opportunityId,actor,'signal.recorded',{signalId:id,subject:input.subject,contactId:input.contactId??null,permanentBounce:input.permanentBounce===true},timestamp,input.occurredAt)

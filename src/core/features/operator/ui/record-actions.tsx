@@ -14,7 +14,7 @@ export function DeleteRecord({kind,id,onDeleted}:{kind:RecordKind;id:string;onDe
  return <div><button disabled={busy} onClick={()=>void remove()}>Delete record</button>{dialog}{error&&<p role="alert">{error}</p>}</div>;
 }
 
-export function RecordLifecycle({id,onChanged}:{id:string;onChanged:()=>Promise<void>}){
+export function RecordLifecycle({id,lifecycle,onChanged}:{id:string;lifecycle:string;onChanged:()=>Promise<void>}){
  const {ask,dialog}=useOperatorDialog(),[busy,setBusy]=useState(false),[error,setError]=useState('');
  async function change(state:'open'|'won'|'lost'){
   const reason=state==='open'?'':await ask({title:`Close ${state}`,description:'Record why this opportunity is closing. Its evidence and outreach history remain available.',confirmLabel:`Close ${state}`,field:{label:'Reason for closing this opportunity',required:true,maxLength:2000}});
@@ -23,5 +23,5 @@ export function RecordLifecycle({id,onChanged}:{id:string;onChanged:()=>Promise<
   try{await recordsRequest(`records/opportunity/${id}/lifecycle`,'POST',{state,reason});await onChanged();}
   catch(reason){setError((reason as Error).message);}finally{setBusy(false);}
  }
- return <section><h3>Lifecycle</h3><div className="operator-record-actions">{(['open','won','lost'] as const).map(state=><button key={state} disabled={busy} onClick={()=>void change(state)}>{state==='open'?'Reopen':`Close ${state}`}</button>)}</div>{dialog}{error&&<p role="alert">{error}</p>}</section>;
+ return <section><h3>Lifecycle</h3><div className="operator-record-actions">{(['open','won','lost'] as const).filter(state=>state!==lifecycle).map(state=><button key={state} disabled={busy} onClick={()=>void change(state)}>{state==='open'?'Reopen':`Close ${state}`}</button>)}</div>{dialog}{error&&<p role="alert">{error}</p>}</section>;
 }

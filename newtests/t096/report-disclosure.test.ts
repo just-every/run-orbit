@@ -40,10 +40,10 @@ test('custom filtered Sum discloses its measured period, filters, groups and mis
   const errors=watchBrowser(context),page=await context.newPage(),id=`disclosed-value-${width}`;
   try{
    await page.goto('/app/reports');await page.getByText('Create or revise a report from native records',{exact:true}).click();
-   await page.getByLabel('Report ID',{exact:true}).fill(id);await page.getByLabel('Name',{exact:true}).fill('Open opportunity value');
-   await page.getByRole('combobox',{name:'Calculation',exact:true}).selectOption('sum');await page.getByLabel('Value field',{exact:true}).fill('value_cents');
-   await page.getByLabel('Group by field',{exact:true}).fill('stage_id');await page.getByLabel('Filter field',{exact:true}).fill('lifecycle');
-   await page.getByLabel('Filter equals',{exact:true}).fill('open');await page.getByLabel('Description',{exact:true}).fill('Value of open opportunities by pipeline stage');
+   await page.getByLabel('Report key').fill(id);await page.getByLabel('Name',{exact:true}).fill('Open opportunity value');
+   await page.getByRole('combobox',{name:'Calculation',exact:true}).selectOption('sum');await page.getByLabel('Value field',{exact:true}).selectOption('value_cents');
+   await page.getByLabel('Group by field',{exact:true}).selectOption('stage_id');await page.getByLabel('Filter field',{exact:true}).selectOption('lifecycle');
+   await page.getByLabel('Filter equals',{exact:true}).selectOption('open');await page.getByLabel('Description',{exact:true}).fill('Value of open opportunities by pipeline stage');
    await Promise.all([page.waitForResponse(r=>r.url().endsWith('/operations/metrics')&&r.request().method()==='POST'&&r.status()===200),page.getByRole('button',{name:'Save report definition',exact:true}).click()]);
    await page.getByRole('combobox',{name:'Report',exact:true}).selectOption(`${id}:1`);await page.getByLabel('Window start',{exact:true}).fill(from);
    await page.getByLabel('Window end',{exact:true}).fill(through);await page.getByRole('button',{name:'Preview report',exact:true}).click();
@@ -51,16 +51,16 @@ test('custom filtered Sum discloses its measured period, filters, groups and mis
    await page.getByText('How this report is calculated',{exact:true}).click();
    const details=result.locator('.analytics-console__measurement');
    await expect(details).toContainText(new Date(from).toISOString());await expect(details).toContainText(new Date(through).toISOString());
-   await expect(details).toContainText('lifecycle: open');await expect(details).toContainText('stage_id');
+   await expect(details).toContainText('Status: Open');await expect(details).toContainText('Pipeline stage');
    await expect(details).toContainText('Null or nonnumeric');await expect(details).toContainText('Missing numeric values: 0');
    await expect(result.locator('dl').first()).toContainText(new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(1950));
    await expect(details.getByRole('list',{name:'Report groups'})).toContainText('New');
    await expect(details.getByRole('list',{name:'Report groups'})).not.toContainText(f.stage);
    await page.getByRole('button',{name:'Save reviewed report',exact:true}).click();await expect(page.getByRole('heading',{name:'Saved result',exact:true})).toBeVisible();
    await page.reload();await page.getByRole('combobox',{name:'Report',exact:true}).selectOption(`${id}:1`);
-   const history=page.getByRole('region',{name:'Saved report history'});await expect(history).toContainText('lifecycle: open');
+   const history=page.getByRole('region',{name:'Saved report history'});await expect(history).toContainText('Status: Open');
    await expect(history).toContainText(new Date(from).toISOString());await expect(history).toContainText(new Date(through).toISOString());
-   await expect(history).toContainText('stage_id');await expect(history).toContainText('Null or nonnumeric');await expect(history).toContainText('New');
+   await expect(history).toContainText('Pipeline stage');await expect(history).toContainText('Null or nonnumeric');await expect(history).toContainText('New');
    await page.getByLabel('Window start',{exact:true}).fill('2000-01-01T00:00');
    await page.getByRole('button',{name:'Reopen saved report',exact:true}).click();
    await page.getByText('How this report is calculated',{exact:true}).click();await expect(result).toContainText(new Date(from).toISOString());

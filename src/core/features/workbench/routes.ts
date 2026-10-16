@@ -1,3 +1,4 @@
+import {senderTestRoutes} from './sender-test';
 import {schedulerStatus} from '../outreach/scheduler';
 import {onboardingState} from './onboarding';
 import { confirmDraftReview } from '../outreach/review-repository';
@@ -19,6 +20,7 @@ export function createWorkbenchRoutes(database: D1Database, mail?: OutboundMail,
   const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(), repository=new WorkbenchRepository(database), outreach=new OutreachRepository(database);
   app.use('*',async(c,next)=>{const segments=c.req.path.split('/');for(const category of ['opportunities','drafts','recommendations','messages']){const index=segments.indexOf(category);if(index>=0&&segments[index+1]&&!id.safeParse(segments[index+1]).success)return c.json({error:'Invalid record ID.'},400);}await next();});
   app.onError((error,context)=>error instanceof WorkbenchError ? context.json({error:error.message,recordId:error.recordId},error.status) : context.json({error:'The operation failed; no success was confirmed.'},500));
+  app.route('/sender-test',senderTestRoutes(database,mail));
   app.get('/onboarding',async c=>c.json(await onboardingState(database,Boolean(mail),aiConfigured)));
   app.get('/',async context=>context.json({...await repository.inventory(),mailConfigured:Boolean(mail)}));
   app.post('/opportunities',async context=>{

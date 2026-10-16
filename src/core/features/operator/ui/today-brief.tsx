@@ -24,11 +24,11 @@ function Line({line,presentation}:{line:BriefLine;presentation:WorkspacePresenta
 
 /** The top of the operator home: what changed since the operator last looked and what is owed, each line cited. */
 export function TodayBrief(){
- const load=useCallback(async()=>{const [{brief},{presentation}]=await Promise.all([todayRequest<{brief:Brief}>(''),operatorApi.readWorkspacePresentation()]);return {brief,presentation};},[]);
+ const load=useCallback(async()=>{const [{brief,aiConfigured},{presentation}]=await Promise.all([todayRequest<{brief:Brief;aiConfigured:boolean}>(''),operatorApi.readWorkspacePresentation()]);return {brief,aiConfigured,presentation};},[]);
  const resource=useOperatorResource('today',load),[error,setError]=useState(''),[busy,setBusy]=useState(false);
  if(resource.error)return <section className="today" aria-label="Today"><OperatorState kind="error">{resource.error.message}</OperatorState></section>;
  if(!resource.data)return <section className="today" aria-label="Today"><OperatorState>Loading today's brief…</OperatorState></section>;
- const {brief,presentation}=resource.data,c=brief.counts,empty=!brief.accounts.length&&!brief.unresolved.length&&!brief.held.length;
+ const {brief,presentation,aiConfigured}=resource.data,c=brief.counts,empty=!brief.accounts.length&&!brief.unresolved.length&&!brief.held.length;
  async function seen(){setBusy(true);setError('');try{await todayRequest('/seen',{body:{through:brief.generatedAt}});resource.reload();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  return <section className="today" aria-label="Today's brief" data-testid="today-brief">
   <div className="today__since"><p>{brief.sinceBasis==='seen'?'Since you last looked':'New customer activity'}: <strong><time dateTime={brief.since}>{formatDateTime(brief.since,presentation)}</time> – <time dateTime={brief.generatedAt}>{formatDateTime(brief.generatedAt,presentation)}</time></strong></p><button type="button" className="operator-button" disabled={busy} onClick={()=>void seen()}>Mark all as seen</button></div>
@@ -41,7 +41,7 @@ export function TodayBrief(){
    {brief.accounts.map(account=><article key={account.key} className="operator-surface today-account" aria-labelledby={`account-${account.key}`}>
     <header><h3 id={`account-${account.key}`}><a href={account.href}>{account.name}</a></h3><p>{account.type==='company'?'Account':account.type==='opportunity'?'Opportunity without a company':'Contact without a company'}</p></header>
     {sections.map(section=>{const lines=account.lines.filter(section.test);return lines.length?<section key={section.title} className="today-account__section"><h4>{section.title}</h4><ul>{lines.map(line=><Line key={line.id} line={line} presentation={presentation}/>)}</ul></section>:null;})}
-    <TodaySummary account={account.key} name={account.name} lines={account.lines}/>
+    {aiConfigured&&<TodaySummary account={account.key} name={account.name} lines={account.lines}/>}
    </article>)}
    {brief.unresolved.length>0&&<article className="operator-surface today-account" aria-labelledby="today-unresolved"><header><h3 id="today-unresolved">Unresolved identity</h3><p>Evidence that matches no record. Orbit never guesses who it belongs to.</p></header><section className="today-account__section"><ul>{brief.unresolved.map(line=><Line key={line.id} line={line} presentation={presentation}/>)}</ul></section></article>}
    {brief.held.length>0&&<article className="operator-surface today-account" aria-labelledby="today-held"><header><h3 id="today-held">Held for capture review</h3><p>Captured replies and meetings that wait for a person to accept or decline the link Capture proposed.</p></header><section className="today-account__section"><ul>{brief.held.map(line=><Line key={line.id} line={line} presentation={presentation}/>)}</ul></section></article>}

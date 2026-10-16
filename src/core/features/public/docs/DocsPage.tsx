@@ -11,14 +11,14 @@ import type { DocsView } from './types';
 import './docs.css';
 
 /** A documentation page in the landing's header and footer: sidebar | page | contents. The page title is the one h1. */
-export function DocsPage({ page, sections, repository, variant = 'installed' }: DocsView & { variant?: PublicVariant }) {
+export function DocsPage({ page, sections, repository, signedIn = false, variant = 'installed' }: DocsView & { variant?: PublicVariant }) {
   const { name, imageUrl, showPoweredByCredit } = publicProductConfig;
   const order = sections.flatMap(section => section.pages.map(entry => ({ ...entry, section: section.title })));
   const index = order.findIndex(entry => entry.slug === page.slug);
   const current = order[index];
   return <PublicVariantProvider variant={variant}><div className="ob-site ob-docs">
     <a className="ob-skip" href="#docs-content">Skip to the page</a>
-    <SiteHeader name={name} imageUrl={imageUrl} current="docs" />
+    <SiteHeader name={name} imageUrl={imageUrl} current="docs" signedIn={signedIn} />
     <div className="docs-shell">
       <DocsSidebar sections={sections} />
       <main id="docs-content" tabIndex={-1} className="docs-main">

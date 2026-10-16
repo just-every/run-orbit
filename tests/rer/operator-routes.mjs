@@ -25,8 +25,8 @@ export function operatorRoutes(f){return [
  ...['website','calcom','calendly','automation'].map(recipe=>({name:`sources-${recipe}`,path:'/app/sources',ready:async page=>{
   await page.getByRole('button',{name:'Open recipes',exact:true}).click();await page.getByLabel('Recipe',{exact:true}).selectOption(['calcom','calendly'].includes(recipe)?'booking':recipe);
   if(recipe==='website'){await page.getByText('Create or publish a form',{exact:true}).click();await page.getByText('Run a form submission in Node',{exact:true}).click();}
-  else if(recipe==='automation')await page.getByText('Runnable authenticated Node adapter',{exact:true}).click();
-  else {await page.getByLabel('Booking provider',{exact:true}).selectOption(recipe);await page.getByText('Run a signed booking example in Node',{exact:true}).click();}
+  else if(recipe==='automation')await page.getByLabel('Automation platform',{exact:true}).selectOption('make');
+  else await page.getByLabel('Booking provider',{exact:true}).selectOption(recipe);
  }})),
  {name:'sources-disabled',path:'/app/sources',ready:async page=>{await page.getByText('Advanced',{exact:true}).click();await page.getByRole('button',{name:'Disable source',exact:true}).click();await page.getByRole('button',{name:'Enable source',exact:true}).waitFor();await page.getByRole('button',{name:'Open recipes',exact:true}).click();await expect(page.getByRole('button',{name:'Send test event',exact:true})).toBeDisabled();},after:async page=>{await page.getByRole('button',{name:'Enable source',exact:true}).click();await page.getByRole('button',{name:'Disable source',exact:true}).waitFor();}},
  {name:'settings',path:'/app/settings',ready:page=>page.getByRole('button',{name:'Save workspace',exact:true}).waitFor()},

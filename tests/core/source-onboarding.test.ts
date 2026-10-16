@@ -10,6 +10,12 @@ import {createSourceSecurity} from '../../src/core/platform/source-security';
 async function fixture(){const platform=await isolatedDatabase(),db=platform.db,deps=createDependencies(db),actor=createId(),stage=createId();await deps.auth.ensureOperator({id:actor,email:'owner@example.test',displayName:'Owner'});await deps.workspace.ensureWorkspace({name:'First hour',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});await deps.workspace.ensurePipelineStage({id:stage,name:'Discovery',position:0});const session=await deps.auth.createSession(actor);let sends=0;const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex')}),outboundMail:{send:async()=>{sends++;return{providerMessageId:'paid-edge-acceptance'};}}});const headers={Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'};const request=(path:string,method='GET',body?:unknown,override:Record<string,string>={})=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{...headers,...override},body:body===undefined?undefined:JSON.stringify(body)});return{db,app,stage,actor,token:session.token,request,dispose:platform.dispose,sends:()=>sends};}
 test('SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send',async()=>{
  const f=await fixture();try{
+ const testEmail=await(await f.request('workbench/sender-test')).json() as any;assert.equal(testEmail.recipient,'owner@example.test');
+ assert.equal((await f.request('workbench/sender-test','POST',{attemptId:crypto.randomUUID(),confirmed:true},{Cookie:''})).status,401);
+ assert.equal((await f.request('workbench/sender-test','POST',{attemptId:crypto.randomUUID(),confirmed:true,recipient:'someone@example.test'})).status,400);
+ assert.equal((await f.request('workbench/sender-test','POST',{attemptId:crypto.randomUUID(),confirmed:true})).status,200);
+ assert.equal((await f.request('workbench/sender-test','POST',{attemptId:crypto.randomUUID(),confirmed:true})).status,429);
+ assert.equal(f.sends(),1,'A reviewed sender test sends only once to the operator');
  const progress=()=>f.request('workbench/onboarding').then(r=>r.json()) as Promise<any>;assert.equal((await progress()).customer,0);
  const customer=await(await f.request('workbench/opportunities','POST',{title:'First customer',companyName:'Harbour',contactName:'Maya',email:'maya@harbour.test',stageId:f.stage,valueCents:10000})).json() as any;
  const context=await(await f.request('sources/recipe-context')).json() as any,contact=context.contacts[0];assert.ok(contact.id);const newest=await(await f.request('records/contact','POST',{name:'Latest contact',email:'latest@harbour.test'})).json() as any;assert.equal((await(await f.request('sources/recipe-context')).json() as any).contacts[0].id,newest.id);
@@ -33,7 +39,7 @@ test('SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authentica
  const {opportunity}=await(await f.request(`opportunities/${customer.id}`)).json() as any;assert.equal(opportunity.queueReason,'Customer reply');assert.equal(opportunity.band,'high');assert.deepEqual(opportunity.evaluation.contributions.map((c:any)=>c.signalType).sort(),['email.replied','form.submitted','meeting.booked']);assert.ok(opportunity.evaluation.contributions.every((c:any)=>c.signalId!==first.id&&c.signalId!==second.id));
  const draft=await(await f.request(`workbench/opportunities/${customer.id}/drafts`,'POST',{contactId:contact.id,subject:'Your inquiry',body:'Hi Maya, would Thursday suit a walkthrough?'})).json() as any;
  const preview=await(await f.request(`workbench/drafts/${draft.id}/approval-preview`)).json() as any;
- const sent=await f.request(`workbench/drafts/${draft.id}/approve`,'POST',{revision:1,quietHoursConfirmation:preview.localTime});assert.equal(sent.status,200,await sent.clone().text());assert.equal((await sent.json() as any).state,'accepted');assert.equal(f.sends(),1);
+ const sent=await f.request(`workbench/drafts/${draft.id}/approve`,'POST',{revision:1,quietHoursConfirmation:preview.localTime});assert.equal(sent.status,200,await sent.clone().text());assert.equal((await sent.json() as any).state,'accepted');assert.equal(f.sends(),2);
  assert.equal((await progress()).sent,1);assert.equal((await f.db.prepare('SELECT queue_state FROM opportunities WHERE id=?').bind(customer.id).first<any>()).queue_state,'next');
  }finally{await f.dispose();}
 });
@@ -41,6 +47,19 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor-native booking signatures reject t
  const f=await fixture();try{
  const{secret}=await(await f.request('sources/bookings','PUT',{name:'Booking tools',enabled:true})).json() as any;
  await f.request('workbench/opportunities','POST',{title:'Booking customer',companyName:'Harbour',contactName:'Maya',email:'maya@harbour.test',stageId:f.stage,valueCents:10000});
+ const originalFetch=globalThis.fetch;let registration:any;
+ globalThis.fetch=async(input,init)=>{
+  const url=new URL(String(input));assert.equal(url.origin,'https://api.calendly.com');
+  if(url.pathname==='/users/me')return Response.json({resource:{uri:'https://api.calendly.com/users/test-user',current_organization:'https://api.calendly.com/organizations/test-org'}});
+  if((init?.method??'GET')==='GET')return Response.json({collection:[]});
+  registration=JSON.parse(String(init?.body));return Response.json({resource:{uri:'https://api.calendly.com/webhook_subscriptions/test-subscription',callback_url:registration.url,state:'active'}});
+ };
+ try{
+  const connected=await f.request('sources/bookings/calendly','POST',{token:'test-only-calendly-token'});assert.equal(connected.status,200,await connected.clone().text());
+  assert.equal(registration.url,'https://orbit.test/api/v1/signals/bookings/calendly');assert.equal(registration.signing_key,secret);assert.deepEqual(registration.events,['invitee.created','invitee.canceled']);
+  assert.equal(JSON.stringify(await connected.json()).includes('test-only-calendly-token'),false);
+ }finally{globalThis.fetch=originalFetch;}
+
  for(const vendor of ['calcom','calendly'])for(const cancel of [false,true]){
  const occurredAt=new Date().toISOString(),type=cancel?'meeting.cancelled':'meeting.booked';
  const payload=vendor==='calcom'?{triggerEvent:cancel?'BOOKING_CANCELLED':'BOOKING_CREATED',createdAt:occurredAt,payload:{uid:crypto.randomUUID(),attendees:[{email:'maya@harbour.test'}]}}:{event:cancel?'invitee.canceled':'invitee.created',created_at:occurredAt,payload:{uri:'https://api.calendly.com/scheduled_events/event/invitees/'+crypto.randomUUID(),event:'https://api.calendly.com/scheduled_events/event',email:'maya@harbour.test'}};
@@ -58,11 +77,11 @@ test('SIGNAL-009 source rotation and disabling atomically refuse an already stre
  const f=await fixture();try{
  await f.request('workbench/opportunities','POST',{title:'Source race customer',companyName:'Harbour',contactName:'Maya',email:'maya@harbour.test',stageId:f.stage,valueCents:10000});
  const counts=async()=>{const result=[];for(const table of ['signals','signal_links','timeline_entries','evaluations'])result.push(await f.db.prepare(`SELECT count(*) AS n FROM ${table}`).first());return result;};
- for(const vendor of ['orbit','calcom','calendly'])for(const change of ['rotate','disable','disable-enable']){
+ for(const vendor of ['orbit','calcom','calendly','automation'])for(const change of ['rotate','disable','disable-enable']){
   const{secret}=await(await f.request('sources/race','PUT',{name:'Streaming source',enabled:true})).json() as any;
-  const now=new Date().toISOString(),eventId=crypto.randomUUID(),payload=vendor==='orbit'?{eventId,type:'form.submitted',subject:'Streaming inquiry',occurredAt:now,email:'maya@harbour.test'}:vendor==='calcom'?{triggerEvent:'BOOKING_CREATED',createdAt:now,payload:{uid:eventId,attendees:[{email:'maya@harbour.test'}]}}:{event:'invitee.created',created_at:now,payload:{uri:'https://api.calendly.com/scheduled_events/event/invitees/'+eventId,event:'https://api.calendly.com/scheduled_events/event',email:'maya@harbour.test'}};
+  const now=new Date().toISOString(),eventId=crypto.randomUUID(),payload=(vendor==='orbit'||vendor==='automation')?{eventId,type:'form.submitted',subject:'Streaming inquiry',occurredAt:now,email:'maya@harbour.test'}:vendor==='calcom'?{triggerEvent:'BOOKING_CREATED',createdAt:now,payload:{uid:eventId,attendees:[{email:'maya@harbour.test'}]}}:{event:'invitee.created',created_at:now,payload:{uri:'https://api.calendly.com/scheduled_events/event/invitees/'+eventId,event:'https://api.calendly.com/scheduled_events/event',email:'maya@harbour.test'}};
   const raw=JSON.stringify(payload),timestamp=String(Math.floor(Date.now()/1000)),signature=createHmac('sha256',secret).update(vendor==='calcom'?raw:timestamp+'.'+raw).digest('hex');
-  const headers=vendor==='orbit'?{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':signature}:vendor==='calcom'?{'X-Cal-Signature-256':signature}:{'Calendly-Webhook-Signature':`t=${timestamp},v1=${signature}`};
+  const headers=vendor==='automation'?{Authorization:`Bearer ${secret}`}:vendor==='orbit'?{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':signature}:vendor==='calcom'?{'X-Cal-Signature-256':signature}:{'Calendly-Webhook-Signature':`t=${timestamp},v1=${signature}`};
   let release!:()=>void,reading!:()=>void;const bodyRead=new Promise<void>(resolve=>reading=resolve),finish=new Promise<void>(resolve=>release=resolve);
   const stream=new ReadableStream<Uint8Array>({async pull(controller){reading();await finish;controller.enqueue(new TextEncoder().encode(raw));controller.close();}},{highWaterMark:0});
   const before=await counts(),pending=f.app.request(new Request('https://orbit.test/api/v1/signals/race'+(vendor==='orbit'?'':'/'+vendor),{method:'POST',headers,body:stream,duplex:'half'} as RequestInit));

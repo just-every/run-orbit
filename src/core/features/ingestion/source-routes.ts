@@ -9,6 +9,7 @@ import {IngestionRepository} from './repository';
 import {IngestionError} from './contracts';
 import {createSignalIngress} from './routes';
 import {signSource} from './booking-webhooks';
+import {connectCalendly} from './calendly-setup';
 export function createSourceRoutes(db:D1Database,security?:SourceSecurity){
   const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),repository=new IngestionRepository(db);
   app.onError((error,c)=>c.json({error:error instanceof IngestionError?error.message:'Source operation failed; no success was confirmed.'},error instanceof IngestionError?error.status:500));
@@ -22,6 +23,21 @@ export function createSourceRoutes(db:D1Database,security?:SourceSecurity){
   });
   app.patch('/:id',async c=>{const parsed=z.object({enabled:z.boolean()}).strict().safeParse(await c.req.json());if(!parsed.success)return c.json({error:'Choose whether this source is enabled.'},400);await repository.setEnabled(c.req.param('id'),parsed.data.enabled,security);return c.json({saved:true});});
   app.get('/recipe-context',async c=>c.json({contacts:await repository.recipeContacts(),forms:await repository.publishedForms()}));
+  app.post('/:id/calendly',async c=>{
+    c.header('Cache-Control','no-store');
+    if(!security)return c.json({error:'Source encryption is not configured.'},503);
+    if(!/^[a-zA-Z0-9_-]{1,80}$/.test(c.req.param('id')))return c.json({error:'Invalid source ID.'},400);
+    const origin=new URL(c.req.url);
+    if(origin.protocol!=='https:'||/^(localhost|127\.|\[::1\])/.test(origin.hostname))return c.json({error:'Open your hosted HTTPS Orbit before connecting Calendly. Calendly cannot reach Orbit on this computer.'},400);
+    const input=z.object({token:z.string().trim().min(16).max(4096).regex(/^[\x21-\x7e]+$/)}).strict().safeParse(await c.req.json());
+    if(!input.success)return c.json({error:'Paste your Calendly personal access token.'},400);
+    const source=await repository.source(c.req.param('id'));
+    if(!source||isNativeSource(source.id,source.type)||!source.enabled||!source.secret_ciphertext)return c.json({error:'Enable or reconnect this source before connecting Calendly.'},403);
+    const result=await connectCalendly(input.data.token,`${origin.origin}/api/v1/signals/${source.id}/calendly`,await security.open(source.secret_ciphertext));
+    const current=await repository.source(source.id);
+    if(!current?.enabled||current.secret_ciphertext!==source.secret_ciphertext)return c.json({error:'The Orbit source changed during setup. Reconnect Calendly with the current source secret before testing.'},409);
+    return c.json(result);
+  });
   app.post('/:id/test',async c=>{
     if(!security)return c.json({error:'Source encryption is not configured.'},503);
     const input=z.object({contactId:z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/)}).strict().safeParse(await c.req.json());

@@ -194,6 +194,20 @@
       "adapters": [
         "capture.source.v1"
       ]
+    },
+    {
+      "id": "calendly",
+      "required": false,
+      "requiredWhen": "An operator connects Calendly from the booking recipe.",
+      "why": "Create a signed webhook subscription on the operator’s Calendly account without a separate API tool.",
+      "data": [
+        "A personal access token used for this request only",
+        "User identity and webhook subscription metadata",
+        "This installation’s callback URL and source signing key"
+      ],
+      "adapters": [
+        "signal.source.v1"
+      ]
     }
   ],
   "env": [

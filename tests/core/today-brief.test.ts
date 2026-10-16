@@ -50,7 +50,7 @@ test('BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one bri
  assert.deepEqual(byKind(first,'signal').map(l=>[l.evidence.id,l.confidence]).sort(),[[form,'observed'],[view,'inferred']].sort());
  assert.deepEqual(byKind(first,'reply-unanswered').map(l=>l.evidence.id),[oldReply]);
  assert.deepEqual(byKind(first,'meeting-no-next-step').map(l=>l.evidence.id),[completed]);
- assert.deepEqual(byKind(first,'draft-unsent').map(l=>[l.evidence.id,l.href]),[[draft,`/app/drafts/${draft}`]]);
+ assert.deepEqual(byKind(first,'draft-unsent'),[],'A newly saved draft is not overdue');
  assert.deepEqual(byKind(first,'handoff-due').map(l=>[l.evidence.id,l.href]),[[handoff,`/app/opportunities/${cobalt}#handoff-${handoff}`]]);
  assert.deepEqual(byKind(first,'unlinked-signal').map(l=>[l.evidence.id,l.href]),[[unlinked,`/app/sources#unlinked-${unlinked}`]]);
  // A signal line points at the timeline entry the signal made on its opportunity.
@@ -61,7 +61,7 @@ test('BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one bri
  // The operator marks the brief seen; the next day only what arrived since is new, and promises stay until kept.
  assert.equal((await t.call('/api/v1/today/seen',{body:{through:first.generatedAt}})).status,200);
  const quiet=await t.brief();assert.equal(quiet.sinceBasis,'seen');assert.equal(quiet.since,first.generatedAt);
- assert.deepEqual(byKind(quiet,'reply').length+byKind(quiet,'signal').length,0);assert.equal(quiet.counts.promises,4);
+ assert.deepEqual(byKind(quiet,'reply').length+byKind(quiet,'signal').length,0);assert.equal(quiet.counts.promises,3);
  const reply=await t.event(acme,'email.replied','Re: pricing request',0),booked=await t.event(bright,'meeting.booked','Pilot review',0);
  const next=await t.brief();
  assert.deepEqual(byKind(next,'reply').map(l=>l.evidence.id),[reply]);

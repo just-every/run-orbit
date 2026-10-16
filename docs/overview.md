@@ -6,14 +6,14 @@ Orbit is a CRM that keeps every deal moving. When a customer replies, Orbit puts
 
 - **NOW** is your list of deals that need you, highest score first. Each one shows why it is there: a customer reply, a delivery problem, or a score that just moved up a band.
 - **Each deal's page** shows its stage, owner, value and score, the customer activity behind the score, the suggested next action, and every message you have sent.
-- **Customer records** hold your contacts, companies and deals, with your own fields. You can bring contacts and companies in from a CSV file and merge duplicates.
+- **Customer records** hold your contacts, companies and deals, with your own fields. You can bring records in from CSV files, review the mappings and check a dry run before applying the import.
 - **Your contact form** is a simple landing page you write and publish from Orbit. Each enquiry becomes a contact with the enquiry on its timeline.
 - **Collaborators** sign in with their own email address. You choose what each one can see and change.
 - **Reports** count what is in your records, and **Notifications** tell you when a deal needs you or a message could not be delivered.
 
 ## How a score works
 
-A score is what customers did, added up. A booked meeting adds 45, a reply 40, a form 25, a chat 20, and smaller things like a page view add a little. An unsubscribe or a bounced email takes points away. Older activity counts for less and stops counting after 30 days. Your own notes never change a score.
+A score is what customers did, added up. The homepage illustrates this with a booked meeting (`meeting.booked`) adding 36 and a submitted form (`form.submitted`) adding 10. Those are example contributions, not the starting weights in your installation. The default scoring policy starts a new booked meeting at 45, a reply at 40, a form at 25 and a chat at 20. Smaller things like a page view add a little. Older activity counts for less and stops counting after 30 days, so a signal's current contribution can be lower than its starting weight. An unsubscribe or a bounced email takes points away. Your own notes never change a score.
 
 Scores run from 0 to 100. A score of 70 or more is high and 40 or more is medium. Open any deal to see what each piece of activity added.
 
@@ -25,10 +25,13 @@ When a customer replies, Orbit cancels any follow-up you scheduled for that pers
 
 ## Run it on your computer
 
-Install [RER](https://runeditrun.com) and use Node 22 or later. RER selects Orbit's pinned Node 22.20.0 runtime and pnpm 10.12.4 automatically.
+These steps describe the current `main` branch. The older `v0.1.0` tag predates Capture and the current local sign-in flow; follow the README included with that tag if you use it.
+
+Install [RER](https://runeditrun.com) and use Node 22 or later. RER selects Orbit's pinned Node 22.20.0 runtime and fetches pnpm 10.12.4 into its own cache automatically. You do not need to install pnpm yourself.
 
 ```sh
-git clone https://github.com/just-every/run-orbit.git && cd run-orbit
+git clone --branch main https://github.com/just-every/run-orbit.git orbit
+cd orbit
 rer dev
 ```
 

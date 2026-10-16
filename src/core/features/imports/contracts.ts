@@ -15,10 +15,25 @@ export const presets:Record<string,Record<ImportKind,Record<string,string>>>={
  pipedrive:{suppression:{email:'Email'},company:{id:'Organization - ID',name:'Organization - Name',domain:'Domain',owner:'Owner',description:'Description'},contact:{id:'Person - ID',name:'Person - Name',email:'Email',company_ids:'Organization - ID',owner:'Owner',dnc:'Do not contact',permission:'Marketing status'},deal:{id:'Deal - ID',title:'Deal - Title',stage:'Stage',owner:'Owner',company_ids:'Organization - ID',contact_ids:'Person - ID',amount:'Value',close_date:'Expected close date'},note:{id:'Note ID',text:'Content',occurred_at:'Add time',contact_ids:'Person - ID',company_ids:'Organization - ID',deal_ids:'Deal - ID',owner:'Owner'}}
 };
 
-/** Match standard export labels without depending on the exporter’s capitalization. */
+const csvHeaderAliases:Record<string,string[]>={
+ id:['record id','source id'],
+ first_name:['first name'],last_name:['last name'],email:['email address'],phone:['phone number'],
+ job_title:['job title'],company_name:['company name'],company_ids:['company ids','associated company ids'],
+ contact_ids:['contact ids','associated contact ids'],deal_ids:['deal ids','associated deal ids'],
+ dnc:['do not contact'],bounce:['hard bounce','email hard bounce reason'],permission:['marketing status'],
+ title:['deal title','deal name','opportunity title'],amount:['value','deal value'],
+ close_date:['close date','expected close date'],occurred_at:['occurred at'],text:['note text','note body'],
+};
+const normalizedHeader=(header:string)=>header.trim().toLowerCase().replace(/[\s_-]+/g,' ');
+
+/** Keep exporter presets authoritative; suggest only unambiguous generic CSV labels. */
 export function defaultMapping(vendor:ImportInput['vendor'],kind:ImportKind,headers:string[]){
  return Object.fromEntries(Object.entries(presets[vendor][kind]).flatMap(([field,expected])=>{
-  const matches=headers.filter(header=>header.trim().toLowerCase()===expected.toLowerCase());
+  const exact=headers.filter(header=>header.trim().toLowerCase()===expected.toLowerCase());
+  if(exact.length)return exact.length===1?[[field,exact[0]]]:[];
+  if(vendor!=='csv')return [];
+  const aliases=[expected,...(field==='name'?(kind==='company'?['company name']:['full name','contact name']):csvHeaderAliases[field]??[])].map(normalizedHeader);
+  const matches=headers.filter(header=>aliases.includes(normalizedHeader(header)));
   return matches.length===1?[[field,matches[0]]]:[];
  }));
 }

@@ -58,3 +58,7 @@ The direct per-record CSV writer is replaced by the reviewed import-kit wizard. 
 
 **Added.** Step-up (a fresh email proof) for archive export, archive import, operator erasure and delegation consent; record deletion keeps its confirmation only, as an everyday CRM action. Optional provider sign-in through `oidc-provider@1`, off by default. Dev identity behind the checkout key.
 
+
+## Native automation setup (16 October 2026)
+
+Zapier and Make use the source-scoped automation endpoint with their saved private source secret in an Authorization Bearer header over HTTPS. It shares the signed path’s schema, replay identity and current-source commit fence. Provider-native Calendly/Cal.com webhooks keep signature validation. Secrets are never placed in URLs.

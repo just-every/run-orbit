@@ -48,7 +48,7 @@ export async function todayJourney({first,second,evidence}){
  // Day one: every expected line is present, nothing else is, and every link resolves to its evidence.
  const day1=await brief(),meeting=day1.accounts.flatMap(a=>a.lines).find(l=>l.kind==='meeting'&&l.title==='Renewal review call');
  const unlinked=day1.unresolved[0].evidence.id;
- expect(lineIds(day1)).toEqual([`draft-unsent:${draft}`,`meeting-no-next-step:${completed}`,`reply-unanswered:${oldReply}`,`signal:${completed}`,`signal:${form}`,`signal:${meeting.evidence.id}`,`signal:${oldReply}`,`signal:${view}`,`unlinked-signal:${unlinked}`].sort());
+ expect(lineIds(day1)).toEqual([`meeting-no-next-step:${completed}`,`reply-unanswered:${oldReply}`,`signal:${completed}`,`signal:${form}`,`signal:${meeting.evidence.id}`,`signal:${oldReply}`,`signal:${view}`,`unlinked-signal:${unlinked}`].sort());
  await atWidths(page,evidence,'brief-day1',async()=>{await page.goto('/app');for(const id of lineIds(day1))await expect(page.locator(`[data-line="${id}"]`)).toBeVisible();});
  await expect(page.getByRole('heading',{name:'Customer actions (observed)'}).first()).toBeVisible();await expect(page.getByRole('heading',{name:'Tool-reported activity (inferred)'})).toBeVisible();
  for(const line of [...day1.accounts.flatMap(a=>a.lines),...day1.unresolved]){
@@ -60,13 +60,10 @@ export async function todayJourney({first,second,evidence}){
  // Mark seen; the next day only the new reply is new, and the promises remain.
  await page.goto('/app');await page.getByRole('button',{name:'Mark all as seen'}).click();await expect(page.locator(`[data-line="signal:${form}"]`)).toHaveCount(0);
  const reply=await event(acme,'email.replied','Re: pricing request',0);
- await page.goto('/app');await expect(page.locator(`[data-line="signal:${reply}"]`)).toBeVisible();await expect(page.locator(`[data-line="draft-unsent:${draft}"]`)).toBeVisible();
+ await page.goto('/app');await expect(page.locator(`[data-line="signal:${reply}"]`)).toBeVisible();await expect(page.locator(`[data-line="draft-unsent:${draft}"]`)).toHaveCount(0);
 
- // AI-003: with no provider the summary shows its request and refuses to send; the brief is untouched.
- await page.getByRole('button',{name:'Summarise Acme Logistics with AI'}).click();
- await expect(page.getByText('AI is not configured. The brief above is complete without a summary.')).toBeVisible();await expect(page.getByRole('button',{name:'Send this request'})).toBeDisabled();
- // Keyboard focus follows each swap: into the preview, back to its button on cancel, into a plan line's form and to the added action.
- await expect(page.getByRole('heading',{name:'Request preview'})).toBeFocused();await page.getByRole('region',{name:'AI request for Acme Logistics'}).getByRole('button',{name:'Cancel'}).click();await expect(page.getByRole('button',{name:'Summarise Acme Logistics with AI'})).toBeFocused();
+ // AI-003: an unconfigured provider offers no AI action; the brief stays complete.
+ await expect(page.getByRole('button',{name:/Summarise .* with AI/})).toHaveCount(0);
 
  // Meeting plan: attendees, unresolved attendee, notes that persist after sign-out, a next action from a plan line.
  await page.goto(meeting.planHref);

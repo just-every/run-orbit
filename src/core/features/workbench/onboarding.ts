@@ -3,7 +3,7 @@ export async function onboardingState(db:D1Database,mailConfigured:boolean,aiCon
  const state=await db.prepare(`SELECT
  EXISTS(SELECT 1 FROM contacts c JOIN companies co ON co.id=c.company_id) AS customer,
  (EXISTS(SELECT 1 FROM contacts) OR EXISTS(SELECT 1 FROM companies) OR EXISTS(SELECT 1 FROM opportunities)) AS records,
- EXISTS(SELECT 1 FROM signal_sources WHERE enabled=1 AND type IN('signed_webhook','fixed_form')) AS source,
+ EXISTS(SELECT 1 FROM signal_sources WHERE enabled=1 AND type='signed_webhook' AND secret_ciphertext IS NOT NULL) AS source,
  EXISTS(SELECT 1 FROM signals WHERE json_valid(payload_json) AND json_extract(payload_json,'$.data.test')=1) AS test,
  EXISTS(SELECT 1 FROM drafts) AS draft,
  EXISTS(SELECT 1 FROM outbound_messages WHERE state IN('accepted','delivered','opened','replied')) AS sent,

@@ -16,9 +16,9 @@ function NotConfigured() {
     <p>Whoever installed Orbit does this once, in the Cloudflare account Orbit runs on. It takes about five minutes:</p>
     <ol className="capture-plain-steps">
       <li>In Cloudflare, open your domain, then <strong>Email</strong> › <strong>Email Routing</strong>, and turn it on for a spare subdomain such as <code>capture.example.com</code> (your normal mail is not affected).</li>
-      <li>Under <strong>Routing rules</strong>, add the address <code>orbit@capture.example.com</code> with the action <strong>Send to a Worker</strong> and choose this Orbit’s Worker.</li>
+      <li>Under <strong>Routing rules</strong>, add the address <code>orbit@capture.example.com</code> with the action <strong>Send to a Worker</strong> and choose <code>sales-orbit-NAME</code>, replacing NAME with the environment name you used with <code>rer deploy --environment NAME</code> (the default is <code>production</code>). Find the exact Worker name in Cloudflare → Workers &amp; Pages or your checkout’s <code>.rer/deploy/NAME.json</code>.</li>
       <li>Under <strong>Settings</strong>, turn on <strong>Subaddressing</strong>, so private tags like <code>orbit+abc@…</code> reach the same rule.</li>
-      <li>Run <code>CAPTURE_MAIL_ADDRESS=orbit@capture.example.com rer deploy --set-secret CAPTURE_MAIL_ADDRESS</code>, then come back here.</li>
+      <li>Run <code>CAPTURE_MAIL_ADDRESS=orbit@capture.example.com rer deploy --environment NAME --set-secret CAPTURE_MAIL_ADDRESS</code>, using the same NAME as your deployment, then come back here.</li>
     </ol>
     <p className="capture-panel__aside">Until then, the calendar link and file upload work without it.</p>
   </div>;

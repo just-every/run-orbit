@@ -19,3 +19,6 @@ export function formatCurrency(cents: number, presentation: WorkspacePresentatio
 export function label(value: string): string {
   return value.replaceAll("_", " ").replaceAll(".", " ").replaceAll("-", " ").replace(/\b\w/g, (character) => character.toUpperCase());
 }
+
+/** Earlier local events included an operator ID in this source label. */
+export const sourceLabel=(source:string)=>source.startsWith('Operator-attested customer event (')?'Operator-attested customer event':source;
