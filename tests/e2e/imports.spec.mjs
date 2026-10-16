@@ -19,9 +19,16 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
   await page.getByRole('radio',{name:vendor==='csv'?'Generic CSV':vendor==='hubspot'?'HubSpot CSV':'Pipedrive CSV'}).check();
   for(const file of source.files)await page.getByLabel(names[file.kind],{exact:true}).setInputFiles({name:file.name,mimeType:'text/csv',buffer:Buffer.from(file.csv)});
   await page.getByRole('button',{name:'Review dry run',exact:true}).click();await page.getByLabel('Source account label').fill(source.account);
-  const contactMapping=page.locator('details').filter({has:page.getByText(`${vendor}-contact.csv — contact columns`,{exact:true})});if(vendor==='csv'){await expect(contactMapping.getByLabel('id',{exact:true})).toHaveValue('');await expect(contactMapping.getByLabel('email',{exact:true})).toHaveValue('email');await expect(contactMapping.getByLabel('name',{exact:true})).toHaveValue('name');await expect(contactMapping.getByLabel('company name',{exact:true})).toHaveValue('company');}else await contactMapping.getByLabel('permission',{exact:true}).selectOption('Marketing status');
+  const contactMapping=page.locator('details').filter({has:page.getByText(`${vendor}-contact.csv — contact columns`,{exact:true})});
+  if(vendor==='csv'){
+   await expect(contactMapping.getByLabel('Source record ID',{exact:true})).toHaveValue('');
+   await expect(contactMapping.getByLabel('Email',{exact:true})).toHaveValue('email');
+   await expect(contactMapping.getByLabel('Full name',{exact:true})).toHaveValue('name');
+   await expect(contactMapping.getByLabel('Company name',{exact:true})).toHaveValue('company');
+  }else await contactMapping.getByLabel('Permission to contact',{exact:true}).selectOption('Marketing status');
   if(vendor!=='csv')await page.getByRole('combobox',{name:'Qualified',exact:true}).selectOption(settings.stages[0].id);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.screenshot({path:join(screenshots,`viewport-${width}-${vendor}-mapping.png`),fullPage:true});
   await page.getByRole('button',{name:'Run dry run',exact:true}).click();await expect(page.getByRole('heading',{name:'Review your dry run',exact:true})).toBeVisible();if(vendor!=='csv')await expect(page.locator('.crm-results')).toContainText('occurrence time');
   if(vendor==='csv'){
    const results=page.getByRole('list',{name:'Dry run row results'});

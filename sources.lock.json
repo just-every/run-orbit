@@ -6189,7 +6189,7 @@
       "executable": false
     },
     "tests/e2e/imports.spec.mjs": {
-      "sha256": "f72e19b26746dcb68295f7bd9cc28d6078360e044549ff6053409ef12bb4af5a",
+      "sha256": "a2f9522228ace94373e2def8278259afd9e41118eb979f90de29bb6676e78cca",
       "executable": false
     },
     "tests/e2e/operator-session.mjs": {
@@ -6197,7 +6197,7 @@
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
-      "sha256": "29908548dfe6c705cc7ea68e94e53a610fb0df4631b72946b843387b1d2f3338",
+      "sha256": "928b0b838aacf4d86b94904dcc44961282a244c537c5c5365ed2a31d2d8767be",
       "executable": false
     },
     "tests/e2e/records.spec.mjs": {

@@ -89,7 +89,7 @@ test.describe("authenticated operator UI", () => {
     expect(failures).toEqual([]);
   });
 
-  contract("OPP-004", "the mobile detail renders current score evidence and recommendation reason", async ({ page }) => {
+  contract("OPP-004", "the mobile detail renders current score evidence and recommendation reason", async ({ page }, info) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const failures = watchFailures(page);
     await openOpportunity(page);
@@ -100,13 +100,21 @@ test.describe("authenticated operator UI", () => {
     const id=new URL(page.url()).pathname.split('/').at(-1);
     const {opportunity}=await(await page.request.get(`/api/v1/opportunities/${id}`)).json();
     for(const item of opportunity.evaluation.contributions){
-      const row=evidence.locator('li').filter({hasText:item.signalId});
-      await expect(row.getByText(item.signalType,{exact:true})).toBeVisible();
+      const signal=opportunity.signals.find(signal=>signal.id===item.signalId);
+      expect(signal?.subject).toBeTruthy();
+      const signalType=item.signalType.split(/[_.-]/).map(word=>word[0].toUpperCase()+word.slice(1)).join(' ');
+      const row=evidence.getByRole('listitem').filter({has:page.getByText(signal.subject,{exact:true})});
+      await expect(row).toHaveCount(1);
+      await expect(row.getByText(signalType,{exact:true})).toBeVisible();
       await expect(row.locator('b')).toHaveText(`${item.contribution>0?'+':''}${item.contribution}`);
       await expect(row.locator('b')).toBeVisible();
       await expect(row).toContainText(item.source);
     }
     await expectNoHorizontalOverflow(page);
+    await page.screenshot({path:info.outputPath('evidence-390.png'),fullPage:true});
+    await page.setViewportSize({width:1440,height:900});
+    await expectNoHorizontalOverflow(page);
+    await page.screenshot({path:info.outputPath('evidence-1440.png'),fullPage:true});
     expect(failures).toEqual([]);
   });
 
