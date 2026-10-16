@@ -16,7 +16,7 @@ export async function runRequestTimers(db:D1Database,mail?:OutboundMail){
   WHERE json_extract(runtime_controls.value,'$.at')<=?-CASE WHEN json_extract(runtime_controls.value,'$.running')=1 THEN 30000 ELSE 5000 END RETURNING name`)
   .bind(JSON.stringify({at,running:true}),at).first<{name:string}>();
  if(!claim)return;
- try{await runOrbitTimers(db,mail,new Date(),1);}
+ try{await runOrbitTimers(db,mail,new Date(),{mail:1,evaluations:1,transitions:50});}
  finally{await db.prepare("UPDATE runtime_controls SET value=? WHERE name='outreach_request' AND json_extract(value,'$.at')=?").bind(JSON.stringify({at:Date.now(),running:false}),at).run();}
 }
 
