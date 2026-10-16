@@ -11,7 +11,7 @@ import {embeddingOrigins} from '../features/forms/embedding';
 import {archiveImportActive} from '../platform/archive-maintenance';
 import {sweepArchiveTrash} from "../features/records/archive-erasure";
 import {protectResponse} from "../platform/response-policy";
-import {runHostedTimers} from "../features/outreach/scheduler";
+import {runHostedTimers,runRequestTimers} from "../features/outreach/scheduler";
 import {publicRateLimit} from "../platform/public-rate-limit";
 import {createSourceSecurity} from "../platform/source-security";
 import { createAIProvider } from "../features/assistance/provider";
@@ -65,6 +65,7 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
       if (setupPath && complete) return new Response(null, { status: 302, headers: { Location: "/app" } });
       if (!setupPath && !complete) return new Response(null, { status: 302, headers: { Location: "/setup" } });
       if(path!=="/app/records"&&await archiveImportActive(bindings.DB))return new Response(null,{status:302,headers:{Location:"/app/records"}});
+      if(bindings.AUTH_LOCAL!=="true"&&request.method==='GET')executionContext.waitUntil(runRequestTimers(bindings.DB,createOutboundMail(bindings)));
     }
     return start.fetch(request);
 }

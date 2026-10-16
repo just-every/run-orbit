@@ -11,7 +11,6 @@ import { WorkbenchRepository } from '../../src/core/features/workbench/repositor
 import { OutreachRepository } from '../../src/core/features/workbench/outreach-repository';
 import { ApprovalRepository } from '../../src/core/features/outreach/approval-repository';
 import { OutreachService } from '../../src/core/features/outreach/service';
-import { runHostedTimers } from '../../src/core/features/outreach/scheduler';
 import { nextPermitted,workingDaysAfter,localTime } from '../../src/core/features/outreach/time';
 const platform=await isolatedDatabase();after(()=>platform.dispose());const db=platform.db;
 async function fixture(){const deps=createDependencies(db),actor=createId(),stage=createId(),at=new Date().toISOString();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.example`,displayName:'Signals operator'});await deps.workspace.ensureWorkspace({name:'Signals workspace',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:['gmail.com']});const position=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Test',position:position!.n});const email=`${createId()}@customer.example`;const opportunity=await new WorkbenchRepository(db).createOpportunity({title:'Signals test',companyName:'Customer',contactName:'Contact',email,stageId:stage,valueCents:100},actor);const contact=await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(opportunity.id).first<{contact_id:string}>();return{actor,opportunityId:opportunity.id,contactId:contact!.contact_id,email,at};}
@@ -54,10 +53,9 @@ test('OUT-001 OUT-009 scheduled approval preserves content and dispatches once; 
  await db.prepare("UPDATE contacts SET timezone='Australia/Brisbane' WHERE id=?").bind(f.contactId).run();
  const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Approved',body:'Exact approved body'},f.actor);let calls=0;
  const mail={send:async(input:{body:string})=>{calls++;assert.equal(input.body,'Exact approved body');return{providerMessageId:'receipt'};}};
+ const background:Promise<unknown>[]=[];
  const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:mail,hosted:true}),session=await createDependencies(db).auth.createSession(f.actor);
- const request=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1/workbench/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
- const pendingPreview=await request(`drafts/${draft.id}/approval-preview?scheduledAt=${encodeURIComponent(requestedAt)}`);assert.equal(pendingPreview.status,409,'Hosted schedules wait for an actual successful minute timer');
- await runHostedTimers(db,mail);
+ const request=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1/workbench/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined},undefined,{waitUntil(promise:Promise<unknown>){background.push(promise);},passThroughOnException(){}} as ExecutionContext);
  const previewResponse=await request(`drafts/${draft.id}/approval-preview?scheduledAt=${encodeURIComponent(requestedAt)}`);assert.equal(previewResponse.status,200);
  const preview=await previewResponse.json() as {scheduledAt:string;scheduledLocalTime:string;timezone:string;scheduleReason:string};
  assert.equal(preview.scheduledAt,'2030-01-13T22:00:00.000Z');assert.equal(preview.timezone,'Australia/Brisbane');assert.equal(preview.scheduledLocalTime,localTime(new Date(preview.scheduledAt),preview.timezone).label);assert.ok(typeof preview.scheduleReason==='string'&&preview.scheduleReason.length>0,'Adjusted schedules explain why before approval');assert.equal(calls,0);
@@ -66,6 +64,7 @@ test('OUT-001 OUT-009 scheduled approval preserves content and dispatches once; 
  await db.prepare("UPDATE contacts SET timezone='UTC' WHERE id=?").bind(f.contactId).run();assert.equal((await approve(preview.scheduledAt)).status,409,'A changed recipient clock requires a fresh review');
  await db.prepare("UPDATE contacts SET timezone='Australia/Brisbane' WHERE id=?").bind(f.contactId).run();
  const response=await approve(preview.scheduledAt);assert.equal(response.status,200);const message=await response.json() as {id:string;state:string;scheduledAt:string};assert.equal(message.state,'scheduled');assert.equal(message.scheduledAt,preview.scheduledAt);
+ await Promise.all(background);
  const service=new OutreachService(db,mail);await service.dispatchDue(new Date(requestedAt));assert.equal(calls,0);await service.dispatchDue(new Date(message.scheduledAt));await service.dispatchDue(new Date(message.scheduledAt));assert.equal(calls,1);
  const next=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Stop',body:'Must not send'},f.actor);await approval.approve(next.id,1,f.actor,{now,scheduledAt:message.scheduledAt});await db.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(f.contactId).run();await service.dispatchDue(new Date(message.scheduledAt));assert.equal(calls,1);
 });

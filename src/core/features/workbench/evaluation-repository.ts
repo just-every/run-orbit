@@ -37,8 +37,8 @@ export async function evaluateOpportunity(db:D1Database,id:string,actor:string,r
   }
 }
 
-export async function processEvaluationJobs(db:D1Database) {
-  const jobs=await db.prepare('SELECT opportunity_id,actor_id,reason,requested_at FROM record_mutation_jobs ORDER BY requested_at LIMIT 100').all<{opportunity_id:string;actor_id:string;reason:string;requested_at:string}>();
+export async function processEvaluationJobs(db:D1Database,limit=100) {
+  const jobs=await db.prepare('SELECT opportunity_id,actor_id,reason,requested_at FROM record_mutation_jobs ORDER BY requested_at LIMIT ?').bind(limit).all<{opportunity_id:string;actor_id:string;reason:string;requested_at:string}>();
   for(const job of jobs.results){
     try{await db.batch([db.prepare('INSERT INTO evaluation_job_runs(opportunity_id,requested_at) VALUES(?,?)').bind(job.opportunity_id,job.requested_at),...evaluationStatements(db,job.opportunity_id,job.actor_id,job.reason),db.prepare('DELETE FROM record_mutation_jobs WHERE opportunity_id=? AND requested_at=?').bind(job.opportunity_id,job.requested_at)]);}
     catch(error){

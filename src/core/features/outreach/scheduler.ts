@@ -1,5 +1,4 @@
 import type { OutboundMail } from '../../platform/outbound-mail';
-import { WorkbenchError } from '../workbench/repository';
 import { runOrbitTimers } from './timing-repository';
 
 export async function schedulerStatus(db:D1Database,now=new Date()){
@@ -8,10 +7,17 @@ export async function schedulerStatus(db:D1Database,now=new Date()){
  return {ready:Boolean(status?.completedAt&&!status.failed&&now.getTime()-Date.parse(status.completedAt)<120000),lastRunAt:status?.completedAt??null,failed:status?.failed??false};
 }
 
-export async function requireScheduler(db:D1Database){
- const status=await schedulerStatus(db);
- if(status.failed)throw new WorkbenchError(409,'The hosted minute timer failed. No schedule was saved. Check the deployment’s Worker errors, then review the schedule again once the timer resumes.');
- if(!status.ready)throw new WorkbenchError(409,status.lastRunAt?'The hosted minute timer is overdue. No schedule was saved. Try reviewing the schedule again once the timer resumes.':'The hosted minute timer has not started yet. No schedule was saved. New Cloudflare timers can take several minutes to activate; try reviewing the schedule again shortly.');
+// A shared lease bounds activity across isolates. Item claims in dispatchDue
+// remain the authority for sending, including a request racing the Cron.
+export async function runRequestTimers(db:D1Database,mail?:OutboundMail){
+ const at=Date.now();
+ const claim=await db.prepare(`INSERT INTO runtime_controls(name,value) VALUES('outreach_request',?)
+  ON CONFLICT(name) DO UPDATE SET value=excluded.value
+  WHERE json_extract(runtime_controls.value,'$.at')<=?-CASE WHEN json_extract(runtime_controls.value,'$.running')=1 THEN 30000 ELSE 5000 END RETURNING name`)
+  .bind(JSON.stringify({at,running:true}),at).first<{name:string}>();
+ if(!claim)return;
+ try{await runOrbitTimers(db,mail,new Date(),1);}
+ finally{await db.prepare("UPDATE runtime_controls SET value=? WHERE name='outreach_request' AND json_extract(value,'$.at')=?").bind(JSON.stringify({at:Date.now(),running:false}),at).run();}
 }
 
 // Installation-local health never travels with customer archives. Only the

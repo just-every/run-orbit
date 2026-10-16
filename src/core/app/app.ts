@@ -20,6 +20,7 @@ import type {SourceSecurity} from "../platform/source-security";
 import type { OutboundMail } from "../platform/outbound-mail";
 import { createWorkbenchRoutes } from "../features/workbench/routes";
 import { Hono, type MiddlewareHandler } from "hono";
+import {runRequestTimers} from '../features/outreach/scheduler';
 
 import { createDraftRoutes } from "../features/drafts";
 import type { AuthenticatedOperator } from "../features/identity";
@@ -74,6 +75,11 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
     context.header("Cache-Control", "no-store");
     if (!["GET","HEAD","OPTIONS"].includes(context.req.method) && context.req.header("Origin") !== new URL(context.req.url).origin) return context.json({error:"Request origin is not allowed."},403);
     await next();
+  });
+  app.use('/api/v1/*',async(context,next)=>{
+    await next();
+    if(input.hosted&&context.req.method==='GET'&&context.res.status<400)
+      context.executionCtx.waitUntil(runRequestTimers(input.database,input.outboundMail));
   });
   app.use("/api/*", async (context,next) => {
     if ((context.req.path.startsWith("/api/v1/records/archive/") || context.req.path.startsWith("/api/v1/imports/") || context.req.path.startsWith("/api/v1/capture/")) && !["GET","HEAD","OPTIONS"].includes(context.req.method)) {

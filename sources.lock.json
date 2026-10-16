@@ -2325,7 +2325,7 @@
       "executable": false
     },
     "OPERATIONS.md": {
-      "sha256": "fe5e907698f46f86f94c85c43da3890cda567bed546c0612df2c134a36b4bfa4",
+      "sha256": "dd9809c28b1daed6fe8ad6d0045f5f703defdbe201f47a04c7aac8dd2a5b52f6",
       "executable": false
     },
     "OWNER-STEPS.md": {
@@ -3153,7 +3153,7 @@
       "executable": false
     },
     "src/core/app/app.ts": {
-      "sha256": "d254a8fde15da5d212702f0eb9c8ab0d51bc80e698aa5512f1ab519e3fb4c0a7",
+      "sha256": "830f22f7d600c6255db99ce31faf85d1c37c32bf1de854ab1146309aa85d6e13",
       "executable": false
     },
     "src/core/app/demo.css": {
@@ -3201,7 +3201,7 @@
       "executable": false
     },
     "src/core/app/worker.ts": {
-      "sha256": "0c32b83bfa95426a4f4cfec0927f47affef7378195d0a7f092862cfcc9cfc866",
+      "sha256": "6fc5aaeec6ae3fb68cb527cdbb0a07c45fff8c01a5d7e3e198d773ed1a8ee92a",
       "executable": false
     },
     "src/core/features/access/administration.ts": {
@@ -3941,7 +3941,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/message-history.tsx": {
-      "sha256": "ab58bb88efd967443e367f001013a5b44f3148152ac4da7fea06a382bea45078",
+      "sha256": "36678a35a1b611d8de36d292636eb9450adf8fff47c8ebad604f67fd719e6f70",
       "executable": false
     },
     "src/core/features/operator/ui/notifications-page.tsx": {
@@ -4161,11 +4161,11 @@
       "executable": false
     },
     "src/core/features/outreach/scheduler.ts": {
-      "sha256": "152df0bc36b414d64475a8739b6bb7e6da759d7dd809e0179332458153acd893",
+      "sha256": "650fd7e089fb3a5a26706d92842c75ec9fd37cf7aaa0ec419549aa9e27b7d2ea",
       "executable": false
     },
     "src/core/features/outreach/service.ts": {
-      "sha256": "ecddbaadbc293a5870f3b169fdafb60d8647e61515384132cfada9cb8590815f",
+      "sha256": "d88db59ca5fb50ba4cc81e11a20f2c17668c04a89f66d22396c180df8db16c13",
       "executable": false
     },
     "src/core/features/outreach/settlement.ts": {
@@ -4177,7 +4177,7 @@
       "executable": false
     },
     "src/core/features/outreach/timing-repository.ts": {
-      "sha256": "caf23e5c4cf106bda2e854db0289f1df56f7801f80125be6fc1abf39a4fc51df",
+      "sha256": "1640f66cfda18ce31e30b51dd630181f26900bba7765764f266a1cb4e7c4f3c4",
       "executable": false
     },
     "src/core/features/public/demo-story.ts": {
@@ -4769,7 +4769,7 @@
       "executable": false
     },
     "src/core/features/workbench/evaluation-repository.ts": {
-      "sha256": "480c1ab065890e464a8353934c07fab64c5bb699db4c4e23831cbe7958b704ad",
+      "sha256": "7f3d8c061868df75d1f00299fad4205ce60787d0df4f2aafe52c2f4aff2a8912",
       "executable": false
     },
     "src/core/features/workbench/onboarding.ts": {
@@ -4789,7 +4789,7 @@
       "executable": false
     },
     "src/core/features/workbench/routes.ts": {
-      "sha256": "df147ef1112bea5b921559f02b2478c2e3f2b0caf056edd4821d178fa9251bc4",
+      "sha256": "478c6e00739ac7af359cb3cf7c737f2e03f1d2b6611d14f395c4ee548dadf1ad",
       "executable": false
     },
     "src/core/features/workspace/index.ts": {
@@ -5956,6 +5956,10 @@
       "sha256": "977d309af5c2e1dd3174023cd5bfb6b37121e017dcced85b69e3beaccf756f97",
       "executable": false
     },
+    "tests/core/request-scheduling.test.ts": {
+      "sha256": "abc9f19b1e2a56b9ae2f31519ac3b956ade236538d7645b19771444fa4dcbabb",
+      "executable": false
+    },
     "tests/core/retention.test.ts": {
       "sha256": "0afe745075692d70acbc39026dd704f15930da7f4f1bb659b34ab1bd869cb67f",
       "executable": false
@@ -5965,7 +5969,7 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "6d537691a4509aff510b8928d968548a0e54519d7eceaa0b2209cb1d697759d7",
+      "sha256": "312646bb00ec518c381712569e226bd30a6454dc19179d4afbe646f4429fec10",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
