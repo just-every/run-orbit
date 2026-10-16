@@ -2333,7 +2333,7 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "d2012a521a2637b32da3c743e91a990f1e1249317a64c90e3854e3e0df42fef5",
+      "sha256": "d73aa0813fac19c66d9599f13cf9fd2e4f42da2a96745a8ea345255b26f3a7df",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
@@ -2353,7 +2353,7 @@
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "bc4665b7faa0adc2604d1f01dac75f7029fd6b706b537d2e3785a9794f6fd967",
+      "sha256": "e8d5778ef0d01da95dd089c92144d7cab37d98deb57947ac3b8716f582248db0",
       "executable": false
     },
     "pnpm-workspace.yaml": {
@@ -2605,7 +2605,7 @@
       "executable": false
     },
     "scripts/demo/observe-host.mjs": {
-      "sha256": "9557862a06b878aab9f32e04b8ec3a552436504ed722cd8709a7ac955f1cb1b8",
+      "sha256": "7d9df16ec3a83cfb9f7f2436d49356eec5a439f7a64f16b730e43054d0b80f59",
       "executable": false
     },
     "scripts/edition-authoring/cli.mjs": {

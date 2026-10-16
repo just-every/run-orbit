@@ -1,5 +1,6 @@
 // Test-host occupancy observation. Credentials, headers and request bodies stay private.
 import {readFileSync,mkdirSync,appendFileSync} from 'node:fs';
+import WebSocket from 'ws';
 const account=process.env.CLOUDFLARE_ACCOUNT_ID;
 if(account!=='b20c0ca9cab0c2b70e13d7cf724b89bd')throw Error('Wrong demo account.');
 const config=JSON.parse(readFileSync('.rer/demo-host/wrangler.json'));
@@ -11,7 +12,8 @@ if(!response.ok||!body.success)throw Error(`Tail unavailable (${response.status}
 mkdirSync('demo-observation',{recursive:true});
 const write=row=>{appendFileSync('demo-observation/admissions.jsonl',JSON.stringify(row)+'\n');console.log(JSON.stringify(row));};
 const tail=body.result,socket=new WebSocket(tail.url,'trace-v1');socket.binaryType='arraybuffer';
-let interrupted=false;
+let interrupted=false,heartbeat,pongs=0;
+socket.on('pong',()=>{pongs++;});
 socket.addEventListener('message',message=>{
  const event=JSON.parse(typeof message.data==='string'?message.data:new TextDecoder().decode(message.data));
  for(const log of event.logs??[])for(const part of log.message??[]){
@@ -22,13 +24,16 @@ socket.addEventListener('message',message=>{
 });
 try{
  await new Promise((resolve,reject)=>{socket.addEventListener('open',resolve,{once:true});socket.addEventListener('error',()=>reject(Error('Tail connection failed.')),{once:true});});
+ socket.send(JSON.stringify({debug:false}));
+ // Like Wrangler tail, keep the trace WebSocket alive with control-frame pings.
+ heartbeat=setInterval(()=>socket.ping(),30000);
  write({event:'observation_started',at:new Date().toISOString(),worker:config.name});
  await new Promise((resolve,reject)=>{
   const timer=setTimeout(resolve,15*60*1000);
   socket.addEventListener('close',()=>{clearTimeout(timer);interrupted=true;reject(Error('Tail closed before observation completed.'));},{once:true});
  });
- write({event:'observation_finished',at:new Date().toISOString(),continuous:!interrupted});
+ write({event:'observation_finished',at:new Date().toISOString(),continuous:!interrupted,pongs});
 }finally{
- socket.close();const removed=await fetch(endpoint+'/'+tail.id,{method:'DELETE',headers});
+ clearInterval(heartbeat);socket.close();const removed=await fetch(endpoint+'/'+tail.id,{method:'DELETE',headers});
  if(!removed.ok)throw Error(`Tail cleanup failed (${removed.status}).`);
 }
