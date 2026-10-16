@@ -4,6 +4,7 @@
 
 - Move the hosted demo to rer 0.2.30's native Worker Loader host (own isolate and SQLite storage per visitor, Cron by alarm, edge static assets) and refresh every recorded Base copy to rer-v0.2.30.
 - Mark credential fixtures and examples explicitly synthetic so hosted source checks accept them.
+- Read an authenticated JSON request body once when validating it, so under Node a collected clone can no longer cancel the body a route then reads (operator erasure intermittently answered 500 in CI).
 
 ## 0.2.0 — 2026-10-14
 

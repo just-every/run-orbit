@@ -93,7 +93,10 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
         return context.json({error:"Archive request body could not be read."},400);
       }
     } else if (!["GET","HEAD","OPTIONS"].includes(context.req.method) && context.req.header("Content-Type")?.includes("application/json")) {
-      try { await context.req.raw.clone().json(); } catch { return context.json({error:"Request body must be valid JSON."},400); }
+      // Read once and hand routes a fresh Request: under Node, collecting a clone cancels the original's body.
+      const body = await context.req.raw.text();
+      try { JSON.parse(body); } catch { return context.json({error:"Request body must be valid JSON."},400); }
+      context.req.raw = new Request(context.req.raw, { body });
     }
     await next();
   });

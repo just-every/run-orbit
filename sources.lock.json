@@ -671,7 +671,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "d08e3b420fcd7c6a46f74c1fe79d7408d2dea1786d1a65a81bae05d971abd632",
+      "sha256": "f2f4ffe18d7560da80c6c55e437af9ad2d0bd3081a38116c8dfbacbd0db3f5d2",
       "executable": false
     },
     "CLAUDE.md": {
@@ -3207,7 +3207,7 @@
       "executable": false
     },
     "src/core/app/app.ts": {
-      "sha256": "d1ae006481a22df4d05d3577077d166d2214929a1095a2c9556f6dc85afc2e26",
+      "sha256": "63a8e02549edf760a923aebd47574c9f84c644816c88f7234ec22ca60d1e7322",
       "executable": false
     },
     "src/core/app/demo.css": {
