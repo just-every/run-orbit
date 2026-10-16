@@ -41,6 +41,10 @@
       "environment": "MAIL_REPLY_TO"
     },
     {
+      "binding": "CAPTURE_MAIL_ADDRESS",
+      "environment": "CAPTURE_MAIL_ADDRESS"
+    },
+    {
       "binding": "SENDGRID_UNSUBSCRIBE_GROUP_ID",
       "environment": "SENDGRID_UNSUBSCRIBE_GROUP_ID"
     },

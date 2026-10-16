@@ -46,7 +46,7 @@
     },
     {
       "id": "mail-calendar-capture",
-      "description": "Owner-supplied files and scoped read-only Google or Microsoft mail/calendar connections become evidence-backed signals; exact replies, delivery reports and stop conditions apply at once, and every other change is a proposal a person accepts, edits or declines. Providers use the owner's OAuth client through capture.source.v1.",
+      "description": "Mail sent or forwarded to a private Orbit address, a calendar's private iCal link, owner-supplied files and scoped read-only Google or Microsoft mail/calendar connections become evidence-backed signals; exact replies, delivery reports and stop conditions apply at once, and every other change is a proposal a person accepts, edits or declines. Providers use the owner's OAuth client through capture.source.v1.",
       "clauses": [
         "CAPTURE-001",
         "CAPTURE-002",
@@ -54,7 +54,9 @@
         "CAPTURE-004",
         "CAPTURE-005",
         "CAPTURE-006",
-        "CAPTURE-007"
+        "CAPTURE-007",
+        "CAPTURE-008",
+        "CAPTURE-009"
       ]
     },
     {

@@ -14,7 +14,6 @@ import { Route as DemoRouteImport } from './routes/demo'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppAccessRouteImport } from './routes/app.access'
-import { Route as AppCaptureRouteImport } from './routes/app.capture'
 import { Route as AppFormsRouteImport } from './routes/app.forms'
 import { Route as AppImportsRouteImport } from './routes/app.imports'
 import { Route as AppNewRouteImport } from './routes/app.new'
@@ -27,9 +26,12 @@ import { Route as AppSourcesRouteImport } from './routes/app.sources'
 import { Route as DocsIndexRouteImport } from './routes/docs.index'
 import { Route as DocsSlugRouteImport } from './routes/docs.$slug'
 import { Route as AppAssistanceIdRouteImport } from './routes/app.assistance.$id'
+import { Route as AppCaptureIndexRouteImport } from './routes/app.capture.index'
+import { Route as AppCaptureReviewRouteImport } from './routes/app.capture.review'
 import { Route as AppDraftsIdRouteImport } from './routes/app.drafts.$id'
 import { Route as AppMeetingsIdRouteImport } from './routes/app.meetings.$id'
 import { Route as AppOpportunitiesIdRouteImport } from './routes/app.opportunities.$id'
+import { Route as AppCaptureConnectMethodRouteImport } from './routes/app.capture.connect.$method'
 
 const AppRoute = AppRouteImport.update({
   id: '/app',
@@ -54,11 +56,6 @@ const AppIndexRoute = AppIndexRouteImport.update({
 const AppAccessRoute = AppAccessRouteImport.update({
   id: '/access',
   path: '/access',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCaptureRoute = AppCaptureRouteImport.update({
-  id: '/capture',
-  path: '/capture',
   getParentRoute: () => AppRoute,
 } as any)
 const AppFormsRoute = AppFormsRouteImport.update({
@@ -121,6 +118,16 @@ const AppAssistanceIdRoute = AppAssistanceIdRouteImport.update({
   path: '/assistance/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCaptureIndexRoute = AppCaptureIndexRouteImport.update({
+  id: '/capture/',
+  path: '/capture/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCaptureReviewRoute = AppCaptureReviewRouteImport.update({
+  id: '/capture/review',
+  path: '/capture/review',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDraftsIdRoute = AppDraftsIdRouteImport.update({
   id: '/drafts/$id',
   path: '/drafts/$id',
@@ -136,13 +143,17 @@ const AppOpportunitiesIdRoute = AppOpportunitiesIdRouteImport.update({
   path: '/opportunities/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCaptureConnectMethodRoute = AppCaptureConnectMethodRouteImport.update({
+  id: '/capture/connect/$method',
+  path: '/capture/connect/$method',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/demo': typeof DemoRoute
   '/setup': typeof SetupRoute
   '/app/access': typeof AppAccessRoute
-  '/app/capture': typeof AppCaptureRoute
   '/app/forms': typeof AppFormsRoute
   '/app/imports': typeof AppImportsRoute
   '/app/new': typeof AppNewRoute
@@ -156,15 +167,17 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
+  '/app/capture/review': typeof AppCaptureReviewRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/capture/': typeof AppCaptureIndexRoute
+  '/app/capture/connect/$method': typeof AppCaptureConnectMethodRoute
 }
 export interface FileRoutesByTo {
   '/demo': typeof DemoRoute
   '/setup': typeof SetupRoute
   '/app/access': typeof AppAccessRoute
-  '/app/capture': typeof AppCaptureRoute
   '/app/forms': typeof AppFormsRoute
   '/app/imports': typeof AppImportsRoute
   '/app/new': typeof AppNewRoute
@@ -178,9 +191,12 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/docs': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
+  '/app/capture/review': typeof AppCaptureReviewRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/capture': typeof AppCaptureIndexRoute
+  '/app/capture/connect/$method': typeof AppCaptureConnectMethodRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -188,7 +204,6 @@ export interface FileRoutesById {
   '/demo': typeof DemoRoute
   '/setup': typeof SetupRoute
   '/app/access': typeof AppAccessRoute
-  '/app/capture': typeof AppCaptureRoute
   '/app/forms': typeof AppFormsRoute
   '/app/imports': typeof AppImportsRoute
   '/app/new': typeof AppNewRoute
@@ -202,9 +217,12 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
+  '/app/capture/review': typeof AppCaptureReviewRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/capture/': typeof AppCaptureIndexRoute
+  '/app/capture/connect/$method': typeof AppCaptureConnectMethodRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -213,7 +231,6 @@ export interface FileRouteTypes {
     | '/demo'
     | '/setup'
     | '/app/access'
-    | '/app/capture'
     | '/app/forms'
     | '/app/imports'
     | '/app/new'
@@ -227,15 +244,17 @@ export interface FileRouteTypes {
     | '/app/'
     | '/docs/'
     | '/app/assistance/$id'
+    | '/app/capture/review'
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
+    | '/app/capture/'
+    | '/app/capture/connect/$method'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/demo'
     | '/setup'
     | '/app/access'
-    | '/app/capture'
     | '/app/forms'
     | '/app/imports'
     | '/app/new'
@@ -249,16 +268,18 @@ export interface FileRouteTypes {
     | '/app'
     | '/docs'
     | '/app/assistance/$id'
+    | '/app/capture/review'
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
+    | '/app/capture'
+    | '/app/capture/connect/$method'
   id:
     | '__root__'
     | '/app'
     | '/demo'
     | '/setup'
     | '/app/access'
-    | '/app/capture'
     | '/app/forms'
     | '/app/imports'
     | '/app/new'
@@ -272,9 +293,12 @@ export interface FileRouteTypes {
     | '/app/'
     | '/docs/'
     | '/app/assistance/$id'
+    | '/app/capture/review'
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
+    | '/app/capture/'
+    | '/app/capture/connect/$method'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -320,13 +344,6 @@ declare module '@tanstack/react-router' {
       path: '/access'
       fullPath: '/app/access'
       preLoaderRoute: typeof AppAccessRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/capture': {
-      id: '/app/capture'
-      path: '/capture'
-      fullPath: '/app/capture'
-      preLoaderRoute: typeof AppCaptureRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/forms': {
@@ -413,6 +430,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAssistanceIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/capture/': {
+      id: '/app/capture/'
+      path: '/capture'
+      fullPath: '/app/capture/'
+      preLoaderRoute: typeof AppCaptureIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/capture/review': {
+      id: '/app/capture/review'
+      path: '/capture/review'
+      fullPath: '/app/capture/review'
+      preLoaderRoute: typeof AppCaptureReviewRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/drafts/$id': {
       id: '/app/drafts/$id'
       path: '/drafts/$id'
@@ -434,12 +465,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOpportunitiesIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/capture/connect/$method': {
+      id: '/app/capture/connect/$method'
+      path: '/capture/connect/$method'
+      fullPath: '/app/capture/connect/$method'
+      preLoaderRoute: typeof AppCaptureConnectMethodRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppAccessRoute: typeof AppAccessRoute
-  AppCaptureRoute: typeof AppCaptureRoute
   AppFormsRoute: typeof AppFormsRoute
   AppImportsRoute: typeof AppImportsRoute
   AppNewRoute: typeof AppNewRoute
@@ -451,14 +488,16 @@ interface AppRouteChildren {
   AppSourcesRoute: typeof AppSourcesRoute
   AppIndexRoute: typeof AppIndexRoute
   AppAssistanceIdRoute: typeof AppAssistanceIdRoute
+  AppCaptureReviewRoute: typeof AppCaptureReviewRoute
   AppDraftsIdRoute: typeof AppDraftsIdRoute
   AppMeetingsIdRoute: typeof AppMeetingsIdRoute
   AppOpportunitiesIdRoute: typeof AppOpportunitiesIdRoute
+  AppCaptureIndexRoute: typeof AppCaptureIndexRoute
+  AppCaptureConnectMethodRoute: typeof AppCaptureConnectMethodRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppAccessRoute: AppAccessRoute,
-  AppCaptureRoute: AppCaptureRoute,
   AppFormsRoute: AppFormsRoute,
   AppImportsRoute: AppImportsRoute,
   AppNewRoute: AppNewRoute,
@@ -470,9 +509,12 @@ const AppRouteChildren: AppRouteChildren = {
   AppSourcesRoute: AppSourcesRoute,
   AppIndexRoute: AppIndexRoute,
   AppAssistanceIdRoute: AppAssistanceIdRoute,
+  AppCaptureReviewRoute: AppCaptureReviewRoute,
   AppDraftsIdRoute: AppDraftsIdRoute,
   AppMeetingsIdRoute: AppMeetingsIdRoute,
   AppOpportunitiesIdRoute: AppOpportunitiesIdRoute,
+  AppCaptureIndexRoute: AppCaptureIndexRoute,
+  AppCaptureConnectMethodRoute: AppCaptureConnectMethodRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

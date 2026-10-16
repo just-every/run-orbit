@@ -24,7 +24,7 @@ export const lifecycle = captureNotices(localInstaller({
  guard: async ({ root }) => { await selectLocalState(root); },
  secrets: {
   keepExisting: true, originKey: 'AUTH_ORIGIN',
-  values: ({ origin }) => ({ AUTH_LOCAL: 'true', AUTH_ORIGIN: origin, MAIL_PROVIDER: 'development', MAIL_FROM: 'auth@localhost.test' }),
+  values: ({ origin }) => ({ AUTH_LOCAL: 'true', AUTH_ORIGIN: origin, MAIL_PROVIDER: 'development', MAIL_FROM: 'auth@localhost.test', CAPTURE_MAIL_ADDRESS: 'orbit@capture.localhost' }),
  },
  build: ['pnpm', ['run', 'build:app']],
  migrate,

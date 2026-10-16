@@ -60,7 +60,7 @@ test('provider proof command observes bounded intake, refuses invented growth, c
  assert.equal(receipt.after.state,'disconnected');assert.equal(receipt.after.has_credential,0);assert.equal(receipt.sync_refused_status,409);
 });
 
-test('proof command rejects credential-bearing origins, unsafe cookie files and HTTP redirects without forwarding secrets',async t=>{
+test('proof command refuses credential-bearing origins, unsafe cookie files, HTTP redirects, an unfinished page budget and a replay that adds evidence',async t=>{
  let calls = 0;
  const f = await fixture(t,(req,res)=>{calls++;res.statusCode=302;res.setHeader('Location','https://foreign.example/capture');res.end('PRIVATE_REDIRECT_BODY');});
  let result = await command([...f.args,'--phase','initial']);assert.equal(result.code,1);assert.match(result.stderr,/redirect refused/);assert.equal(calls,1);assert.doesNotMatch(result.stderr,/PRIVATE_REDIRECT_BODY|test_session_|test_dev_key_/);
@@ -68,9 +68,10 @@ test('proof command rejects credential-bearing origins, unsafe cookie files and 
  result = await command([...f.args,'--phase','initial']);assert.equal(result.code,1);assert.match(result.stderr,/mode-0600/);assert.equal(calls,1);
  const args = f.args.slice();args[1]='https://user:ARGUMENT_SECRET@example.com';
  result = await command([...args,'--phase','initial']);assert.equal(result.code,1);assert.doesNotMatch(result.stderr,/ARGUMENT_SECRET/);assert.equal(calls,1);
+ await budgetAndReplay(t);
 });
 
-test('proof refuses an unfinished page budget and a replay that adds new evidence',async t=>{
+async function budgetAndReplay(t){
  let count=0,more=true;
  const f=await fixture(t,(req,res)=>{
   res.setHeader('Content-Type','application/json');
@@ -83,7 +84,7 @@ test('proof refuses an unfinished page budget and a replay that adds new evidenc
  more=false;
  result=await command([...f.args,'--phase','initial']);assert.equal(result.code,1);assert.match(result.stderr,/Replay changed evidence/);assert.equal(count,3);
  assert.ok(!(await readdir(join(f.directory,'evidence'))).includes('initial.json'));
-});
+}
 
 test('callback notices use the resolved lifecycle origin only after successful dev startup and leave setup alone',async()=>{
  const lines = [], run = captureNotices({async run(verb,origin) {return {verb,origin,store:{report:line=>lines.push(line)}};}}).run;

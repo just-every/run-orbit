@@ -24,28 +24,22 @@ test('CAPTURE-001 CAPTURE-004 an operator adds a mailbox and calendar files, rev
   const files=[{name:'mailbox.mbox',mimeType:'application/mbox',buffer:Buffer.from(mail.mbox)},{name:'invite.ics',mimeType:'text/calendar',buffer:Buffer.from(mail.invite)},{name:'cancel.ics',mimeType:'text/calendar',buffer:Buffer.from(mail.cancellation)}];
 
   await page.setViewportSize({width,height:900});await page.goto('/app/capture');
-  await expect(page.getByRole('heading',{name:'Capture mail and calendar',exact:true})).toBeVisible();
-  const providersResponse=await page.request.get('/api/v1/capture/providers');expect(providersResponse.ok()).toBeTruthy();
-  const providers=await providersResponse.json();
-  expect(providers.available).toBe(true);
-  await expect(page.locator('.capture-provider-section')).toBeVisible();
-  for(const provider of providers.providers)await expect(page.getByText(provider.redirectUri,{exact:true})).toBeVisible();
-  const googleForm=page.locator('form[action="/api/v1/capture/oauth/google/start"]');
-  const microsoftForm=page.locator('form[action="/api/v1/capture/oauth/microsoft/start"]');
-  await expect(googleForm).toBeVisible();
-  await expect(googleForm.locator('input[name="clientSecret"]')).toHaveAttribute('type','password');
-  await expect(microsoftForm).toBeVisible();
-  await expect(microsoftForm.locator('input[name="clientSecret"]')).toHaveAttribute('type','password');
-  await expect(microsoftForm.locator('input[name="tenant"]')).toHaveValue('common');
+  await expect(page.getByRole('heading',{name:'Capture mail and meetings',exact:true})).toBeVisible();
+  await page.getByRole('link',{name:'Set up mail and calendar files'}).click();
+  await expect(page.getByRole('heading',{name:'Upload mail and calendar files',level:1})).toBeVisible();
   await page.getByLabel('Mail (.eml or mbox) and calendar (.ics) files').setInputFiles(files);
   await page.getByRole('button',{name:'Add files',exact:true}).click();
   const result=page.getByRole('region',{name:'Import result'});
   await expect(result.getByRole('row',{name:/^Captured 6$/})).toBeVisible();
   await expect(result.getByRole('row',{name:/^Not stored 1$/})).toBeVisible();
   await expect(page.getByText('No known contact or company domain: 1',{exact:true})).toBeVisible();
-  await expect(page.getByRole('article',{name:'Link this reply to Ana Ruiz'})).toBeVisible();
   expect(await overflow(page)).toEqual([]);expect(await serious(page)).toEqual([]);
   await page.screenshot({path:join(screenshots,`capture-${width}.png`),fullPage:true});
+  // Review is its own place once something is captured.
+  await page.getByRole('link',{name:/^Review \d+ proposed changes?$/}).click();
+  await expect(page.getByRole('heading',{name:'Review proposed changes',level:1})).toBeVisible();
+  await expect(page.getByRole('article',{name:'Link this reply to Ana Ruiz'})).toBeVisible();
+  expect(await overflow(page)).toEqual([]);expect(await serious(page)).toEqual([]);
 
   // Open the account: its proposals wait there, and nothing is on its timeline until a person accepts.
   await page.goto(`/app/records?kind=company&record=${company}`);
@@ -68,7 +62,7 @@ test('CAPTURE-001 CAPTURE-004 an operator adds a mailbox and calendar files, rev
   await page.screenshot({path:join(screenshots,`account-after-review-${width}.png`),fullPage:true});
 
   // Adding the same files again changes nothing and the declined proposal does not return.
-  await page.goto('/app/capture');await page.getByLabel('Mail (.eml or mbox) and calendar (.ics) files').setInputFiles(files);await page.getByRole('button',{name:'Add files',exact:true}).click();
+  await page.goto('/app/capture/connect/files');await page.getByLabel('Mail (.eml or mbox) and calendar (.ics) files').setInputFiles(files);await page.getByRole('button',{name:'Add files',exact:true}).click();
   await expect(page.getByRole('region',{name:'Import result'}).getByRole('row',{name:/^Already captured 6$/})).toBeVisible();
   await page.goto(`/app/records?kind=company&record=${company}`);
   await expect(page.getByRole('article',{name:'Set name from this message'})).toBeVisible();
@@ -78,7 +72,7 @@ test('CAPTURE-001 CAPTURE-004 an operator adds a mailbox and calendar files, rev
  expect(errors).toEqual([]);
 });
 
-test('CAPTURE provider status keeps revoked access clear and disconnect preserves captured history',async({page,context})=>{
+test('CAPTURE provider status keeps revoked access clear, reconnects through the guided setup and disconnect preserves captured history',async({page,context})=>{
  test.setTimeout(120_000);
  await authenticateOperator(context);
  await requestOfflineFixture('tests/support/capture-browser-source.ts');
@@ -105,8 +99,6 @@ test('CAPTURE provider status keeps revoked access clear and disconnect preserve
  for(const width of [1440,390]){
   await page.setViewportSize({width,height:900});
   await page.goto('/app/capture');
-  const providerSection=page.locator('.capture-provider-section');
-  for(const provider of providers.providers)await expect(providerSection.getByText(provider.redirectUri,{exact:true})).toBeVisible();
   for(const source of sources){
    const card=page.getByRole('article',{name:source.name});
    await expect(card.getByText(source.provider,{exact:true})).toBeVisible();
@@ -118,6 +110,30 @@ test('CAPTURE provider status keeps revoked access clear and disconnect preserve
   expect(await overflow(page)).toEqual([]);
   expect(await serious(page)).toEqual([]);
   await page.screenshot({path:join(screenshots,`capture-revoked-${width}.png`),fullPage:true});
+  // Reconnecting is the guided, one-provider setup: plain steps, the exact console pages, the callback where it is pasted.
+  for(const source of sources){
+   const provider=providers.providers.find(item=>item.name.startsWith(source.provider));
+   await page.goto('/app/capture');
+   await page.getByRole('article',{name:source.name}).getByRole('link',{name:`Reconnect ${source.name}`,exact:true}).click();
+   await expect(page.getByRole('heading',{name:`Connect your ${source.provider} account`,level:1})).toBeVisible();
+   const steps=page.getByRole('navigation',{name:`${source.provider} steps`});
+   await expect(steps.getByRole('listitem')).toHaveCount(6);
+   const form=page.getByRole('form',{name:`Reconnect ${source.provider}`});
+   await expect(form.locator('input[name="sourceId"]')).toHaveValue(source.id);
+   await expect(form.getByLabel('Client secret')).toHaveAttribute('type','password');
+   await expect(form).toHaveAttribute('action',`/api/v1/capture/oauth/${provider.id}/start`);
+   await steps.getByRole('link',{name:/^2\./}).click();
+   const callbackStep=source.provider==='Google'?4:2;
+   await steps.getByRole('link',{name:new RegExp(`^${callbackStep}\\.`)}).click();
+   await expect(page.getByText(`Step ${callbackStep} of 6`)).toBeVisible();
+   await expect(page.getByRole('textbox',{name:`${source.provider} redirect address`})).toHaveText(provider.redirectUri);
+   await expect(page.getByRole('button',{name:`Copy ${source.provider.toLowerCase()} redirect address`})).toBeVisible();
+   for(const link of await page.locator('.capture-guide__card a[target=_blank]').all())expect(new URL(await link.getAttribute('href')).protocol).toBe('https:');
+   expect(await overflow(page)).toEqual([]);
+   expect(await serious(page)).toEqual([]);
+   await page.screenshot({path:join(screenshots,`capture-guide-${provider.id}-${width}.png`),fullPage:true});
+  }
+  await page.goto('/app/capture');
  }
 
  for(const source of sources){

@@ -1,6 +1,6 @@
 # Owner steps: prove mail and calendar capture
 
-Create an OAuth client you own, connect it in your own Orbit installation, then prove the capture path with real provider data. No account has been connected and no live-provider receipt is implied by these instructions.
+Capture's default needs no OAuth client: create the Orbit address and add a calendar link from **Capture**. This page covers the guided Google and Microsoft connections (**Capture → Google account / Microsoft account**, one numbered step at a time with the exact console links and the callback to copy). Create an OAuth client you own, connect it in your own Orbit installation, then prove the capture path with real provider data. No account has been connected and no live-provider receipt is implied by these instructions.
 
 ## About ten minutes per client
 

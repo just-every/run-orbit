@@ -8,6 +8,8 @@ import {CaptureError} from './contracts';
 import {fileAdapter,fileItems} from './file-source';
 import {acceptProposal,declineProposal,listProposals} from './proposals';
 import {captureItems,disconnectSource,ensureFileSource,listSources} from './sources';
+import {createForwardRoutes} from './forward/routes';
+import {createCalendarLinkRoutes} from './calendar-link/routes';
 
 /** Capture is an operator action: these routes sit behind the operator session, never a source signature (SIGNAL-009). */
 export function createCaptureRoutes(db:D1Database,providers:ProviderConfig={}){
@@ -17,7 +19,7 @@ export function createCaptureRoutes(db:D1Database,providers:ProviderConfig={}){
   // A form posted before hydration gets the Capture page back with its result; scripts get JSON.
   const page=(c.req.header('accept')??'').includes('text/html');
   try{return await importFiles(c,page);}
-  catch(error){if(!page||!(error instanceof CaptureError))throw error;return c.redirect(`/app/capture?error=${encodeURIComponent(error.message)}`,303);}
+  catch(error){if(!page||!(error instanceof CaptureError))throw error;return c.redirect(`/app/capture/connect/files?error=${encodeURIComponent(error.message)}`,303);}
  });
  async function importFiles(c:Context<{Variables:{operator:AuthenticatedOperator}}>,page:boolean){
   const form=await c.req.formData().catch(()=>null);if(!form)throw new CaptureError(400,'Add .eml, mbox or .ics files.');
@@ -28,9 +30,11 @@ export function createCaptureRoutes(db:D1Database,providers:ProviderConfig={}){
   if(source.state==='disconnected')throw new CaptureError(409,'File capture is disconnected.');
   const pulled=await fileAdapter(items).pull(null,null),summary=await captureItems(db,source,pulled.items,{includeUnknown});
   await db.batch([audit(db,operator,'capture.imported','capture_source',source.id,{files:files.length,includeUnknown,...summary})]);
-  return page?c.redirect(`/app/capture?result=${encodeURIComponent(JSON.stringify(summary))}`,303):c.json({summary},201);
+  return page?c.redirect(`/app/capture/connect/files?result=${encodeURIComponent(JSON.stringify(summary))}`,303):c.json({summary},201);
  }
  app.route('/',createProviderRoutes(db,providers));
+ app.route('/forward',createForwardRoutes(db,{security:providers.security,address:providers.mailAddress,local:providers.local}));
+ app.route('/calendar-links',createCalendarLinkRoutes(db,{security:providers.security,fetcher:providers.fetcher}));
  app.get('/sources',async c=>c.json({sources:await listSources(db)}));
  app.post('/sources/:id/disconnect',async c=>{
   const form=!(c.req.header('content-type')??'').includes('application/json');

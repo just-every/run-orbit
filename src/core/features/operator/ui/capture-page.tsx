@@ -1,166 +1,117 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
-import { CaptureProposals } from './capture-proposals';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import './records.css';
 import './capture-providers.css';
-import './capture-page.css';
+import './capture-setup.css';
 import { OperatorShell, OperatorState } from './operator-shell';
 import { useOperatorResource } from './use-operator-resource';
-import { CaptureProviderSetup } from './capture-provider-form';
 import { CaptureSource } from './capture-source';
-import type { CaptureProviderDirectory, CaptureSource as CaptureSourceRecord } from './capture-types';
+import type { CaptureSource as CaptureSourceRecord } from './capture-types';
 
-interface Summary {
-  captured: number;
-  unlinked: number;
-  replayed: number;
-  conflicts: number;
-  attached: number;
-  stopped: number;
-  bounces: number;
-  proposals: number;
-  skipped: number;
-  skipReasons: Record<string, number>;
+interface Overview { sources: CaptureSourceRecord[]; forward: { configured: boolean; available: boolean; address: string | null } }
+
+const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+const icons = {
+  mail: <svg viewBox="0 0 48 48" aria-hidden="true"><path {...stroke} d="M8 18h32v20H8zM8 18l16 12 16-12M24 6v6M15 9l3 4M33 9l-3 4" /></svg>,
+  calendar: <svg viewBox="0 0 24 24" aria-hidden="true"><path {...stroke} d="M4 6h16v14H4zM4 10h16M8 3v5M16 3v5" /></svg>,
+  google: <img src="/capture/google.svg" alt="" aria-hidden="true" />,
+  microsoft: <img src="/capture/microsoft.svg" alt="" aria-hidden="true" />,
+  files: <svg viewBox="0 0 24 24" aria-hidden="true"><path {...stroke} d="M8 7V3h8l4 4v11h-4M16 3v4h4M4 7h8l4 4v10H4zM12 7v4h4" /></svg>,
+};
+const ways = [
+  { href: '/app/capture/connect/calendar', icon: icons.calendar, title: 'Calendar link', text: 'Paste your calendar’s private iCal address. Works with Google, Outlook and Apple calendars.' },
+  { href: '/app/capture/connect/google', icon: icons.google, title: 'Google account', text: 'Read the Gmail labels and calendars you choose. About 10 minutes in Google Cloud.' },
+  { href: '/app/capture/connect/microsoft', icon: icons.microsoft, title: 'Microsoft account', text: 'Read the Outlook folders and calendars you choose. About 10 minutes in Microsoft Entra.' },
+  { href: '/app/capture/connect/files', icon: icons.files, title: 'Mail and calendar files', text: 'Upload .eml, mbox or .ics files.' },
+];
+
+function OtherWays({ title, skip }: { title: string; skip?: string }) {
+  return <section className="capture-ways-list" aria-labelledby="capture-other-ways">
+    <h2 id="capture-other-ways">{title}</h2>
+    <ul>{ways.filter((way) => way.href !== skip).map((way) => <li key={way.href}>
+      <span className="capture-ways-list__icon">{way.icon}</span><h3>{way.title}</h3><p>{way.text}</p>
+      <a href={way.href} aria-label={`Set up ${way.title.toLowerCase()}`}>Set up <span aria-hidden="true">→</span></a>
+    </li>)}</ul>
+  </section>;
+}
+
+/** The empty page: one primary action, the Orbit address, and quieter alternatives. */
+function Start({ forward }: { forward: Overview['forward'] }) {
+  const ready = forward.configured && forward.available;
+  return <>
+    <p className="capture-lead">Orbit reads customer email and meetings so it can stop outreach when someone replies and suggest record updates you approve. Nothing is sent from here.</p>
+    <section className="capture-start" aria-labelledby="capture-start-heading">
+      <span className="capture-start__icon">{icons.mail}</span>
+      <div className="capture-start__main">
+        <h2 id="capture-start-heading">Your Orbit address</h2>
+        <p>Send customer mail to a private address and Orbit files it against the right contact.</p>
+        {ready ? <form method="post" action="/api/v1/capture/forward"><button className="orbit-button orbit-button--primary capture-start__button" type="submit">Create my Orbit address</button></form>
+          : <a className="orbit-button orbit-button--primary capture-start__button" href="/app/capture/connect/address">Get my Orbit address</a>}
+      </div>
+      <ol className="capture-start__hints">
+        <li><span aria-hidden="true">1</span>Copy your address</li>
+        <li><span aria-hidden="true">2</span>Bcc it when you write to a customer, or forward a thread</li>
+        <li><span aria-hidden="true">3</span>Orbit files it. You approve any changes.</li>
+      </ol>
+    </section>
+    <OtherWays title="Other ways to connect" />
+  </>;
+}
+
+function Daily({ data, onChanged, focus }: { data: Overview; onChanged: () => void; focus: string }) {
+  const waiting = data.sources.reduce((total, source) => total + source.proposals_waiting, 0);
+  const hasAddress = data.sources.some((source) => source.adapter === 'forward' && source.state !== 'disconnected');
+  useEffect(() => {
+    if (!focus) return;
+    const card = document.getElementById(`capture-source-${focus}`);
+    card?.scrollIntoView({ block: 'center' });
+    card?.focus({ preventScroll: true });
+  }, [focus]);
+  return <>
+    <a className={`capture-review-banner${waiting ? '' : ' capture-review-banner--quiet'}`} href="/app/capture/review">
+      <span><strong>{waiting ? `${waiting} proposed ${waiting === 1 ? 'change' : 'changes'} to review` : 'No proposed changes are waiting'}</strong>
+        <small>{waiting ? 'Orbit changes nothing until you accept.' : 'New evidence shows up here first.'}</small></span>
+      <span className="capture-review-banner__go">Review <span aria-hidden="true">→</span></span>
+    </a>
+    <section className="capture-sources-section" aria-labelledby="capture-sources">
+      <h2 id="capture-sources">Connected</h2>
+      {data.sources.map((source) => <CaptureSource key={source.id} source={source} onChanged={onChanged} />)}
+    </section>
+    {!hasAddress ? <section className="capture-ways-list" aria-labelledby="capture-address-way"><h2 id="capture-address-way">Add your Orbit address</h2><ul><li>
+      <span className="capture-ways-list__icon">{icons.mail}</span><h3>Orbit address</h3><p>Bcc or forward customer mail to a private address. No setup in Google or Microsoft.</p>
+      <a href="/app/capture/connect/address" aria-label="Set up your Orbit address">Set up <span aria-hidden="true">→</span></a></li></ul></section> : null}
+    <OtherWays title="Connect another" />
+  </>;
 }
 
 export function CapturePage() {
   const load = useCallback(async () => {
-    const response = await fetch('/api/v1/capture/sources', { credentials: 'same-origin' });
-    if (!response.ok) throw new Error('Capture sources could not load.');
-    return await response.json() as { sources: CaptureSourceRecord[] };
+    const [sources, forward] = await Promise.all([fetch('/api/v1/capture/sources', { credentials: 'same-origin' }), fetch('/api/v1/capture/forward', { credentials: 'same-origin' })]);
+    if (!sources.ok || !forward.ok) throw new Error('Capture could not load.');
+    return { sources: (await sources.json() as { sources: CaptureSourceRecord[] }).sources, forward: await forward.json() } as Overview;
   }, []);
-  const sources = useOperatorResource('capture-sources', load);
-  const reloadSources = useRef(sources.reload);
-  reloadSources.current = sources.reload;
-  const [summary, setSummary] = useState<Summary | null>(null);
+  const overview = useOperatorResource('capture-overview', load);
+  const reload = useRef(overview.reload);
+  reload.current = overview.reload;
+  const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [revision, setRevision] = useState(0);
-  const [providerDirectory, setProviderDirectory] = useState<CaptureProviderDirectory | null>(null);
-  const [providerError, setProviderError] = useState('');
-  const [providerLoading, setProviderLoading] = useState(true);
-  const [providerRequest, setProviderRequest] = useState(0);
-  const [connectionNotice, setConnectionNotice] = useState('');
-  const [focusSourceId, setFocusSourceId] = useState('');
-
-  useEffect(() => {
-    const controller = new AbortController();
-    setProviderLoading(true);
-    setProviderError('');
-    setProviderDirectory(null);
-    void fetch('/api/v1/capture/providers', { credentials: 'same-origin', signal: controller.signal }).then(async (response) => {
-      const value = await response.json().catch(() => ({})) as CaptureProviderDirectory & { error?: string };
-      if (!response.ok) throw new Error(value.error ?? 'Provider connection details could not load.');
-      setProviderDirectory(value);
-    }).catch((next: unknown) => {
-      if (!controller.signal.aborted) setProviderError(next instanceof Error ? next.message : 'Provider connection details could not load.');
-    }).finally(() => {
-      if (!controller.signal.aborted) setProviderLoading(false);
-    });
-    return () => controller.abort();
-  }, [providerRequest]);
-
-  // Native OAuth and scope form redirects return a short status in the address.
+  const [focus, setFocus] = useState('');
+  // Setup forms return here with a short status in the address.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const result = params.get('result');
-    const failure = params.get('error');
-    const connected = params.get('connected');
-    const scopeSaved = params.get('scopeSaved');
-    if (!result && !failure && !connected && !scopeSaved) return;
-    try {
-      if (result) setSummary(JSON.parse(result) as Summary);
-    } catch {
-      setError('The import result could not be read.');
-    }
+    const connected = params.get('connected'), saved = params.get('scopeSaved'), failure = params.get('error');
+    if (!connected && !saved && !failure) return;
+    if (connected) { setFocus(connected); setNotice('Connected. Orbit has read what it can; new items arrive on their own.'); }
+    if (saved) { setFocus(saved); setNotice('Saved. Orbit reads only the labels, folders and calendars you chose, and checks for new mail every few minutes.'); }
     if (failure) setError(failure);
-    if (connected) {
-      setFocusSourceId(connected);
-      setConnectionNotice('Provider connected. Choose at least one mail label, folder or calendar and save that scope before Orbit reads anything.');
-      reloadSources.current();
-    }
-    if (scopeSaved) {
-      setFocusSourceId(scopeSaved);
-      setConnectionNotice('Selected scope saved. Orbit will read only the folders, labels and calendars you chose.');
-      reloadSources.current();
-    }
+    reload.current();
     window.history.replaceState(null, '', '/app/capture');
   }, []);
-
-  useEffect(() => {
-    if (!focusSourceId || !sources.data?.sources.some((source) => source.id === focusSourceId)) return;
-    const card = document.getElementById(`capture-source-${focusSourceId}`);
-    card?.scrollIntoView({ block: 'center' });
-    card?.focus({ preventScroll: true });
-    setFocusSourceId('');
-  }, [focusSourceId, sources.data]);
-
-  async function add(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    setBusy(true);
-    setError('');
-    setSummary(null);
-    try {
-      const response = await fetch('/api/v1/capture/imports', { method: 'POST', credentials: 'same-origin', body: new FormData(form) });
-      const result = await response.json().catch(() => ({})) as { summary?: Summary; error?: string };
-      if (!response.ok || !result.summary) throw new Error(result.error ?? 'The files could not be captured.');
-      setSummary(result.summary);
-      form.reset();
-      sources.reload();
-      setRevision((value) => value + 1);
-    } catch (next) {
-      setError((next as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  const rows: [string, number][] = summary ? [
-    ['Captured', summary.captured],
-    ['Attached to an Orbit thread', summary.attached],
-    ['Outreach stopped for a reply or booking', summary.stopped],
-    ['Delivery reports for Orbit sends', summary.bounces],
-    ['Proposed changes', summary.proposals],
-    ['Kept in the unlinked queue', summary.unlinked],
-    ['Already captured', summary.replayed],
-    ['Changed copies refused', summary.conflicts],
-    ['Not stored', summary.skipped],
-  ] : [];
-
-  return <OperatorShell eyebrow="Customer evidence" title="Capture mail and calendar">
-    <CaptureProviderSetup
-      directory={providerDirectory}
-      loading={providerLoading}
-      error={providerError}
-      onRetry={() => setProviderRequest((value) => value + 1)}
-    />
-    {connectionNotice ? <OperatorState>{connectionNotice}</OperatorState> : null}
-    <section className="operator-surface operator-detail__section capture-upload" aria-labelledby="capture-add">
-      <h2 id="capture-add">Add mail and calendar files</h2>
-      <p>Orbit keeps only messages and events with a known contact or company domain. Captured evidence stops outreach to a person who replied or booked a meeting; every other change waits for your review. Nothing is sent.</p>
-      <form className="workbench-form" method="post" action="/api/v1/capture/imports" encType="multipart/form-data" onSubmit={add}>
-        <label>Mail (.eml or mbox) and calendar (.ics) files<input type="file" name="files" multiple required accept=".eml,.mbox,.ics,message/rfc822,application/mbox,text/calendar" /></label>
-        <label className="capture-checkbox"><input type="checkbox" name="includeUnknown" /> Also keep messages with no known contact or company, for this import only. They wait in the unlinked queue.</label>
-        <button className="orbit-button orbit-button--primary" disabled={busy}>{busy ? 'Adding…' : 'Add files'}</button>
-      </form>
-      {error ? <OperatorState kind="error">{error}</OperatorState> : null}
-      {summary ? <div role="status"><h3>Import result</h3><div role="region" aria-label="Import result"><table className="capture-summary"><tbody>{rows.map(([name, count]) => <tr key={name}><th scope="row">{name}</th><td>{count}</td></tr>)}</tbody></table></div>
-        {summary.skipped > 0 ? <><h4>Why items were not stored</h4><ul>{Object.entries(summary.skipReasons).map(([reason, count]) => <li key={reason}>{reason}: {count}</li>)}</ul></> : null}
-      </div> : null}
-    </section>
-    <section className="operator-surface operator-detail__section capture-sources-section" aria-labelledby="capture-sources">
-      <h2 id="capture-sources">Sources</h2>
-      <p>Connected accounts stay idle until you save at least one mail folder or calendar. Captured evidence and pending proposals stay here after a disconnect.</p>
-      {sources.loading ? <OperatorState>Loading sources…</OperatorState> : null}
-      {sources.error ? <OperatorState kind="error">{sources.error.message}</OperatorState> : null}
-      {sources.data && !sources.data.sources.length ? <p>No mail or calendar has been captured yet.</p> : null}
-      {sources.data?.sources.map((source) => <CaptureSource
-        key={source.id}
-        source={source}
-        directory={providerDirectory}
-        onChanged={sources.reload}
-      />)}
-    </section>
-    <CaptureProposals key={revision} onChanged={() => sources.reload()} />
+  const live = overview.data?.sources.filter((source) => source.state !== 'disconnected' || source.captured_count > 0) ?? [];
+  return <OperatorShell eyebrow="Customer evidence" title="Capture mail and meetings">
+    {notice ? <OperatorState>{notice}</OperatorState> : null}
+    {error ? <OperatorState kind="error">{error}</OperatorState> : null}
+    {overview.loading ? <OperatorState>Loading Capture…</OperatorState> : null}
+    {overview.error ? <OperatorState kind="error">{overview.error.message}</OperatorState> : null}
+    {overview.data ? live.length ? <Daily data={{ ...overview.data, sources: live }} onChanged={overview.reload} focus={focus} /> : <Start forward={overview.data.forward} /> : null}
   </OperatorShell>;
 }

@@ -1,6 +1,7 @@
 import type {ProviderFetch} from '../features/capture/providers/config';
 import { createImportRoutes } from '../features/imports/routes';
 import {createCaptureRoutes} from '../features/capture/routes';
+import {createForwardInboundRoutes} from '../features/capture/forward/inbound';
 import {AccessError} from '../features/access/errors';
 import {createFoldRoutes} from './mounts/fold';
 import {createPublicFormRoutes} from '../features/forms/public-routes';
@@ -38,7 +39,7 @@ type AppEnvironment = {
   Variables: { operator: AuthenticatedOperator };
 };
 
-export function createApp(input: { assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
+export function createApp(input: { assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
   const app = new Hono<AppEnvironment>();
   const dependencies = createDependencies(input.database);
   const requireApiOperator: MiddlewareHandler<AppEnvironment> = async (context, next) => {
@@ -59,13 +60,14 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
 
   app.use('*',async(context,next)=>{
     const path=context.req.path;
-    if((path.startsWith('/api/v1/signals/')||path.startsWith('/api/v1/mail/events/')||path.startsWith('/api/v1/public-demo')||path.startsWith('/api/public/forms/')||path.startsWith('/p/'))&&await archiveImportActive(input.database))return context.json({error:archiveMaintenanceMessage},503,{'Retry-After':'30'});
+    if((path.startsWith('/api/v1/signals/')||path.startsWith('/api/v1/mail/events/')||path==='/api/v1/mail/capture'||path.startsWith('/api/v1/public-demo')||path.startsWith('/api/public/forms/')||path.startsWith('/p/'))&&await archiveImportActive(input.database))return context.json({error:archiveMaintenanceMessage},503,{'Retry-After':'30'});
     await next();
   });
   app.get('/p/:slug',async c=>{try{return c.html(await new FormService(input.database).publicDocument(c.req.param('slug')),200,{'Cache-Control':'no-store'});}catch(error){return error instanceof AccessError&&error.code==='permission'?c.text('This page is not published.',404):c.text('This page could not be verified. Try again later.',503);}});
   app.route('/api/public/forms',createPublicFormRoutes(input.database));
   app.route("/api/v1/public-demo", createPublicDemoRoutes(input.publicDemoEnabled !== false));
   app.route("/api/v1/mail/events", createMailEventRoutes(input.database,input.mailEventKeys??{}));
+  app.route('/api/v1/mail/capture',createForwardInboundRoutes(input.database,{security:input.sourceSecurity,address:input.captureMailAddress,parseKey:input.mailEventKeys?.parseKey}));
   app.route("/api/v1/signals", createSignalIngress(input.database,input.sourceSecurity));
   app.route("/api/delegation/v1", delegationRoutes(input.database));
   app.route("/delegation", nativeDelegationRoutes(input.database,input.authenticate,input.stepUp));
@@ -123,7 +125,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
     }
   });
   app.route('/api/v1/imports',createImportRoutes(input.database));
-  app.route('/api/v1/capture',createCaptureRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
+  app.route('/api/v1/capture',createCaptureRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch,mailAddress:input.captureMailAddress,local:input.hosted===false}));
   app.route("/api/v1/records", createRecordsRoutes(input.database));
   app.route("/api/v1/settings", createSettingsRoutes(input.database,request=>input.stepUp(request,'email:change','/app/settings')));
   app.route("/api/v1/setup", createSetupRoutes(input.database));

@@ -5,7 +5,7 @@ import { OrbitLockup } from "../../public/ui/brand/OrbitMark";
 import { publicProductConfig } from "../../../app/mounts/public-config";
 
 interface OperatorShellProps extends PropsWithChildren {
-  eyebrow?: string;
+  eyebrow?: ReactNode;
   title: string;
   action?: ReactNode;
   restricted?: boolean;
@@ -38,7 +38,7 @@ export function OperatorShell({ action, children, eyebrow, title, restricted=fal
       <main id="operator-main" tabIndex={-1} className="operator-main">
         <header className="operator-titlebar">
           <div>
-            {eyebrow ? <p className="operator-eyebrow">{eyebrow}</p> : null}
+            {typeof eyebrow === 'string' ? <p className="operator-eyebrow">{eyebrow}</p> : eyebrow ? <div className="operator-eyebrow">{eyebrow}</div> : null}
             <h1>{title}</h1>
           </div>
           {action ? <div className="operator-titlebar__action">{action}</div> : null}

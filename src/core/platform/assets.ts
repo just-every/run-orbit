@@ -16,6 +16,7 @@ export interface PlatformBindings {
   MAIL_REPLY_TO?: string;
   SENDGRID_UNSUBSCRIBE_GROUP_ID?: string;
   RER_MAIL_RELAY_SECRET?: string;
+  CAPTURE_MAIL_ADDRESS?: string;
   SENDGRID_WEBHOOK_PUBLIC_KEY?: string;
   SENDGRID_PARSE_PUBLIC_KEY?: string;
   ORBIT_ENCRYPTION_KEY?: string;

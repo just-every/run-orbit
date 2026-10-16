@@ -26,7 +26,7 @@ A Google Workspace organization can instead use **Internal** only when the proje
 
 ## 3. Connect and choose what Orbit reads
 
-In **Capture**, choose Google and enter the client ID and secret directly into Orbit's connection form. They are sealed server-side with the installation's encryption key. No client-secret environment variable or terminal command is needed. Continue to Google's consent screen, select the test-user account and grant the displayed read permissions. If access is blocked by your organization's policy, ask its administrator to approve this client; changing Orbit cannot override that policy.
+In **Capture**, choose **Google account → Set up**; the guided page walks these same steps one at a time and asks for the client ID and secret in step 5. They are sealed server-side with the installation's encryption key. No client-secret environment variable or terminal command is needed. Continue to Google's consent screen, select the test-user account and grant the displayed read permissions. If access is blocked by your organization's policy, ask its administrator to approve this client; changing Orbit cannot override that policy.
 
 Return to Capture and choose the Gmail label IDs and Calendar IDs you want captured. Choose a small business label and one calendar for the first proof. When selecting calendars, review the required fixed start/end window: its initial default is one year before today through one year after today, and you can edit it. The saved dates stay fixed; extend the window explicitly to include later meetings. Saving a changed selection or window resets provider progress for a fresh scoped read while preserving existing evidence and deduplicating replays.
 

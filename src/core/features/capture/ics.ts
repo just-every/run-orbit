@@ -1,4 +1,5 @@
 import type {Mailbox} from './mime';
+import {windowsZones} from './windows-zones';
 
 /** One VEVENT as written, with its times resolved to UTC. Unknown time zones are refused, never assumed. */
 export interface CalendarEvent {
@@ -42,9 +43,10 @@ function time(property:Property|undefined):string|null{
  if(!match)throw new CalendarTimeError(`Unreadable ${property.name} time.`);
  const [,y,mo,d,h='00',mi='00',s='00',z]=match,local=Date.UTC(Number(y),Number(mo)-1,Number(d),Number(h),Number(mi),Number(s));
  if(z||!match[4])return new Date(local).toISOString();
- const zone=property.params.TZID;
- if(!zone)throw new CalendarTimeError(`${property.name} has no time zone.`);
- try{new Intl.DateTimeFormat('en-US',{timeZone:zone});}catch{throw new CalendarTimeError(`Unknown time zone ${zone}.`);}
+ const named=property.params.TZID;
+ if(!named)throw new CalendarTimeError(`${property.name} has no time zone.`);
+ const zone=windowsZones[named]??named;
+ try{new Intl.DateTimeFormat('en-US',{timeZone:zone});}catch{throw new CalendarTimeError(`Unknown time zone ${named}.`);}
  let utc=local;for(let pass=0;pass<2;pass++)utc=local-offset(utc,zone);
  return new Date(utc).toISOString();
 }

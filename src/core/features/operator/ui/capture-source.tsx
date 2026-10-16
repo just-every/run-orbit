@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { OperatorState } from './operator-shell';
-import { CaptureProviderForm } from './capture-provider-form';
 import { CaptureScope } from './capture-scope';
 import {
   isCaptureProvider,
   isRevokedSource,
   isUnavailableSource,
-  type CaptureProviderDirectory,
   type CaptureSource,
   type CaptureSyncResponse,
 } from './capture-types';
@@ -17,6 +15,7 @@ function statusLabel(source: CaptureSource) {
   if (source.state === 'disconnected') return 'Disconnected';
   if (source.state === 'syncing') return 'Syncing';
   if (source.adapter === 'file') return 'Connected';
+  if (source.adapter === 'forward' && !source.has_credential) return 'Create a new address';
   if (!source.has_credential) return 'Reconnect after restore';
   if (isRevokedSource(source)) return 'Access revoked · reconnect required';
   if (source.state === 'error') return 'Reconnect required';
@@ -30,13 +29,13 @@ async function responseError(response: Response, fallback: string) {
   return body.error || fallback;
 }
 
+const kinds: Record<string, string> = { google: 'Google', microsoft: 'Microsoft', file: 'Files', forward: 'Mail sent to your Orbit address', ical: 'Calendar link' };
+
 export function CaptureSource({
   source: savedSource,
-  directory,
   onChanged,
 }: {
   source: CaptureSource;
-  directory: CaptureProviderDirectory | null;
   onChanged: () => void;
 }) {
   const [syncPending, setSyncPending] = useState(false);
@@ -58,11 +57,10 @@ export function CaptureSource({
   const busy = syncPending || scopePending || disconnectPending;
   const scopeLifetime = workLifetime.current;
   const isCurrent = (lifetime: number) => mounted.current && lifetime === workLifetime.current;
-  const providerInfo = directory?.providers.find((provider) => provider.id === source.adapter);
-  const canReconnect = Boolean(directory) && isCaptureProvider(source.adapter) && Boolean(providerInfo);
+  const oauth = isCaptureProvider(source.adapter);
   const accessRevoked = isRevokedSource(source);
   const needsReconnect = source.state === 'disconnected' || accessRevoked || source.state === 'error' || !source.has_credential;
-  const persistedHasScope = (source.scope.mail?.folders.length ?? 0) > 0 || (source.scope.calendars?.length ?? 0) > 0;
+  const persistedHasScope = !oauth || (source.scope.mail?.folders.length ?? 0) > 0 || (source.scope.calendars?.length ?? 0) > 0;
 
   async function syncNow() {
     if (busy || needsReconnect) return;
@@ -132,7 +130,7 @@ export function CaptureSource({
 
   return <article id={`capture-source-${source.id}`} className="capture-source" aria-label={source.name} tabIndex={-1}>
     <div className="capture-source-heading">
-      <div><h3>{source.name}</h3><p>{source.adapter === 'google' ? 'Google' : source.adapter === 'microsoft' ? 'Microsoft' : 'Files'}</p></div>
+      <div><h3>{source.name}</h3><p>{kinds[source.adapter] ?? source.adapter}</p></div>
       <span className={`capture-source-status${isUnavailableSource(source) ? ' capture-source-status--outage' : accessRevoked ? ' capture-source-status--revoked' : ''}`}>{statusLabel(source)}</span>
     </div>
     <dl className="records-detail-list">
@@ -143,25 +141,33 @@ export function CaptureSource({
       {source.last_error ? <div className="capture-source-error"><dt>Last error</dt><dd>{source.last_error}</dd></div> : null}
     </dl>
 
-    {source.adapter !== 'file' ? <>
+    {source.adapter === 'file' ? <p className="capture-file-source-note"><a href="/app/capture/connect/files">Upload more files</a> to add evidence from this source.</p>
+    : source.adapter === 'forward' ? <>
+      {actionError ? <OperatorState kind="error">{actionError}</OperatorState> : null}
+      <div className="capture-source-actions">
+        {source.state !== 'disconnected' ? <a className="orbit-button orbit-button--primary" href="/app/capture/connect/address">{source.has_credential ? 'Show my Orbit address' : 'Create a new address'}</a> : <a className="orbit-button orbit-button--primary" href="/app/capture/connect/address">Create a new address</a>}
+        {source.state !== 'disconnected' ? <button className="orbit-button orbit-button--quiet" type="button" disabled={disconnectPending} onClick={() => void disconnect()}>Disconnect {source.name}</button> : null}
+      </div>
+    </> : <>
       {needsReconnect ? <section className="capture-source-reconnect" aria-label={`Reconnect ${source.name}`}>
         <h4>{accessRevoked ? 'Reconnect after access was revoked' : source.state === 'disconnected' ? 'Reconnect this disconnected source' : !source.has_credential ? 'Reconnect after restore' : 'Reconnect this source'}</h4>
-        <p>Enter the same provider client ID and a current client secret. Orbit will return here; your captured evidence and proposal history stay in place.</p>
-        {canReconnect && directory ? <CaptureProviderForm directory={directory} source={source} provider={providerInfo} /> : <p>Provider connection details are unavailable; try again when the service is available.</p>}
-      </section> : <CaptureScope
+        {oauth ? <><p>Paste the same Client ID and a current Client secret. Your captured evidence and proposal history stay in place.</p>
+          <a className="orbit-button orbit-button--primary" href={`/app/capture/connect/${source.adapter}?step=5&source=${encodeURIComponent(source.id)}`}>Reconnect {source.name}</a></>
+        : <><p>Paste the calendar’s current link. Captured meetings stay in place.</p><a className="orbit-button orbit-button--primary" href="/app/capture/connect/calendar">Add the calendar again</a></>}
+      </section> : oauth ? <CaptureScope
         source={source}
         onChanged={() => { if (isCurrent(scopeLifetime)) onChanged(); }}
         onBusyChange={(pending) => { if (isCurrent(scopeLifetime)) setScopePending(pending); }}
         onScopeChanged={(changed) => { if (isCurrent(scopeLifetime)) setScopeChanged(changed); }}
         busy={busy}
-      />}
+      /> : null}
 
       {actionError ? <OperatorState kind="error">{actionError}</OperatorState> : null}
       {syncResult ? <OperatorState>{syncResult}</OperatorState> : null}
       {!needsReconnect ? <div className="capture-source-actions">
-        <button className="orbit-button orbit-button--primary" type="button" disabled={busy || source.state === 'syncing' || !persistedHasScope || scopeChanged} onClick={() => void syncNow()}>{syncPending || source.state === 'syncing' ? 'Syncing…' : more ? 'Continue sync' : scopeChanged ? 'Save scope before syncing' : persistedHasScope ? 'Sync now' : 'Choose a source before syncing'}</button>
+        <button className="orbit-button orbit-button--primary" type="button" disabled={busy || source.state === 'syncing' || !persistedHasScope || scopeChanged} onClick={() => void syncNow()}>{syncPending || source.state === 'syncing' ? 'Syncing…' : more ? 'Continue sync' : scopeChanged ? 'Save scope before syncing' : persistedHasScope ? (oauth ? 'Sync now' : 'Check now') : 'Choose a source before syncing'}</button>
         <button className="orbit-button orbit-button--quiet" type="button" disabled={disconnectPending} onClick={() => void disconnect()}>Disconnect {source.name}</button>
-      </div> : <button className="orbit-button orbit-button--quiet" type="button" disabled={disconnectPending} onClick={() => void disconnect()}>Disconnect {source.name}</button>}
-    </> : <p className="capture-file-source-note">Add files above to capture evidence from this source.</p>}
+      </div> : source.state !== 'disconnected' ? <button className="orbit-button orbit-button--quiet" type="button" disabled={disconnectPending} onClick={() => void disconnect()}>Disconnect {source.name}</button> : null}
+    </>}
   </article>;
 }
