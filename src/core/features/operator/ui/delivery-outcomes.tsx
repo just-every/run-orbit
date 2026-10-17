@@ -44,7 +44,7 @@ export function DeliveryOutcomes(){
    </>:null}
    {status.connected?null:<><h3>If SendGrid says you have reached the maximum number of webhooks</h3>
    <p>Your SendGrid plan allows only a few Event Webhooks, and other apps already use them. Orbit cannot connect delivery outcomes on this account until a slot is free. Do not change or reuse another app’s webhook: that app would stop receiving its events. You can:</p>
-   <ul className="capture-plain-steps"><li>delete an Event Webhook you no longer use, or upgrade your SendGrid plan, then start again at step 1; or</li><li>carry on without delivery outcomes. Orbit still sends your approved mail. Each sent message keeps saying “accepted by SendGrid · delivery not tracked”, because Orbit cannot see whether it was delivered, bounced or dropped. To check a message, search for the recipient in <a href="https://app.sendgrid.com/email_activity" target="_blank" rel="noreferrer">SendGrid → Activity</a>.</li></ul></>}
+   <ul className="capture-plain-steps"><li>delete an Event Webhook you no longer use, or upgrade your SendGrid plan, then start again at step 1; or</li><li>carry on without delivery outcomes. Orbit still sends your approved mail. Each sent message keeps saying “accepted by mail provider · delivery not tracked”, because Orbit cannot see whether it was delivered, bounced or dropped. To check a message, search for the recipient in <a href="https://app.sendgrid.com/email_activity" target="_blank" rel="noreferrer">SendGrid → Activity</a>.</li></ul></>}
   </>:<p>Checking delivery outcomes…</p>}
   <button type="button" onClick={resource.reload}>Check connection</button>
  </section>;
