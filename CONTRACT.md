@@ -4,6 +4,16 @@ Target product, approved scope dated 16 October 2026. This is the sales CRM Orbi
 
 Existing bold published clauses retain the unchanged verifier's execution catalog. New target clauses use named headings and are explicit build obligations; they are not falsely presented as executed tests. `rer verify` continues gating every retained published ID. A green existing-code report cannot establish completion of the added target clauses; product acceptance requires every journey below. No test, manifest, workflow or product behavior changes in this documentation round. [BASELINE.md](BASELINE.md) remains applicable with only the named replacements in SIGNAL-009, DATA-001 and DELEGATE-001. Existing rate/capacity declarations in `seed.json` are current limits, not proof of target capacity; OUT-018 states the target sending capacity.
 
+## Product target — 16 October 2026
+
+Orbit is the owned sales CRM a US small sales team buys instead of HubSpot Sales Hub, Pipedrive or Salesforce Sales Cloud. This contract describes that product, which is what Orbit is being built towards, and marks how close the current code is (see [Status](#status)).
+
+| | |
+| --- | --- |
+| Category | Sales CRM |
+| Incumbents a buyer switches from | HubSpot Sales Hub, Pipedrive, Salesforce Sales Cloud (up-and-comers it must also beat: Attio, Day.ai, Twenty) |
+| First buyer | A US small-business sales manager and their reps, selling in USD, using Google Workspace or Microsoft 365, working across US timezones and US daylight-saving transitions |
+
 ## Scope
 
 Orbit is a full small-team Sales CRM: a US business can replace HubSpot Sales Hub, Pipedrive or Salesforce Sales Cloud for leads, contacts, accounts, configurable deal pipelines, complete activity capture, accountable follow-up, sequences, calling, forecasts and sales reporting. Attio, Day.ai and Twenty set the modern relationship/context baseline; licensed Clay enrichment complements it. First buyer: a US small-business sales manager and their reps, selling in USD, using Google Workspace or Microsoft 365, working across US timezones and US daylight-saving transitions.
@@ -673,7 +683,9 @@ The owner-approved scope entry (16 October 2026) maps to named clauses as follow
 
 ## Status
 
-Judged from the code and tests at commit `ef68930` (16 October 2026). Status is an implementation judgment, not a live-provider or deployed-product acceptance claim. The inventory audit at `64f66dd936b78c84ef1d839c68fd735851752ae9` is the starting point; evidence changed by main `ef68930d3213735986e93c630827f0aa890862dc` was re-read. `done` requires implementation and an exercising test; `partial` names the implemented subset and remaining obligation. These source tests were inspected; this documentation round does not claim to have rerun their runtime suites. Existing historical release results belong to their recorded source commits. BASELINE.md remains independently applicable and is not included in these product-clause counts.
+Judged from the code and tests at commit `ef68930d3213735986e93c630827f0aa890862dc` (16 October 2026).
+
+Status is an implementation judgment, not a live-provider or deployed-product acceptance claim. The inventory audit at `64f66dd936b78c84ef1d839c68fd735851752ae9` is the starting point; evidence changed by main `ef68930d3213735986e93c630827f0aa890862dc` was re-read. `done` requires implementation and an exercising test; `partial` names the implemented subset and remaining obligation. These source tests were inspected; this documentation round does not claim to have rerun their runtime suites. Existing historical release results belong to their recorded source commits. BASELINE.md remains independently applicable and is not included in these product-clause counts.
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
