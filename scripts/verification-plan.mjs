@@ -42,6 +42,8 @@ export function verificationPlan({ journeys = false } = {}) {
   const archive = fold.filter(file => file.includes('/archive-') && !lineage.includes(file));
   const core = [...testFiles('tests/core'), ...testFiles('tests/delegation')];
   const rer = testFiles('tests/rer').filter(file => !journeyFiles.includes(file));
+  const operatorShards = Object.fromEntries(['desktop', 'phone', 'small-phone', 'actions'].map(name => [`rer-operator-${name}`, `tests/rer/operator-${name}.test.mjs`]));
+  const operatorFiles = Object.values(operatorShards);
   const prepared = (...gates) => [gate('exec', 'tsx', 'tests/support/prepare-state.ts'), ...gates];
   const plan = {
     source: [
@@ -68,8 +70,8 @@ export function verificationPlan({ journeys = false } = {}) {
       playwright(undefined, testFiles('tests/e2e')),
       playwright('tests/archive/playwright.config.mjs', testFiles('tests/archive')),
     ),
-    'rer-operator': prepared(gate('run', 'build:app'), nodeTests(rer.filter(file => file.endsWith('/operator.test.mjs')), 'verification/rer-operator-results.jsonl', 'node')),
-    'rer-checkouts': prepared(gate('run', 'build:app'), nodeTests(rer.filter(file => !file.endsWith('/operator.test.mjs')), 'verification/rer-checkouts-results.jsonl', 'node')),
+    ...Object.fromEntries(Object.entries(operatorShards).map(([name, file]) => [name, prepared(gate('run', 'build:app'), nodeTests([file], `verification/${name}-results.jsonl`, 'node'))])),
+    'rer-checkouts': prepared(gate('run', 'build:app'), nodeTests(rer.filter(file => !operatorFiles.includes(file)), 'verification/rer-checkouts-results.jsonl', 'node')),
     ...Object.fromEntries(balance(archive, 4).map((files, index) => [`fold-archive-${index}`, [gate('run', 'build:app'), nodeTests(files, `verification/fold-archive-${index}-results.jsonl`)]])),
     'fold-domain': [gate('run', 'build:app'), nodeTests(fold.filter(file => !archive.includes(file) && !lineage.includes(file)), 'verification/fold-domain-results.jsonl')],
     'fold-accepted-main': [gate('run', 'build:app'), nodeTests(lineage, 'verification/fold-accepted-main-results.jsonl')],

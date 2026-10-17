@@ -28,8 +28,13 @@ measured CI times, so a push Verify finishes within fifteen minutes; local
   reviewed imports, erasure, capture, source setup, reviewed outreach,
   provider outcomes, suppression and delegated authority, balanced by file.
 - `runtime`: emitted mail ingress and source-stop flows and the browser journeys.
-- `rer-operator`, `rer-checkouts`: operator controls, onboarding, admission and
-  identity through real `rer` commands in a fresh checkout.
+- `rer-operator-desktop`, `rer-operator-phone`, `rer-operator-small-phone`:
+  the complete operator route journey at 1440, 390 and 320 pixels, with an
+  independent native installation and fixture for each viewport.
+- `rer-operator-actions`: phone navigation, modal confirmations, lifecycle,
+  timeline editing, suppression, deletion and duplicate merge controls.
+- `rer-checkouts`: onboarding, admission and identity through real `rer`
+  commands in a fresh checkout.
 - `fold-archive-0` … `fold-archive-3`: current native archive, CLI streaming,
   interrupted job recovery and restore rollback.
 - `fold-accepted-main`: one immutable accepted-main archive upgrade journey.

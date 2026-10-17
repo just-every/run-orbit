@@ -2791,7 +2791,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "e4eb2d962abbbe44c2fe65952e1ed3d1d665428b22f202dacec88b7ec2bbed12",
+      "sha256": "d887d619c9a10542f4214301e0403589cf7f5760b211a84a770e3560ea897042",
       "executable": false
     },
     "scripts/verification-shard.mjs": {
@@ -6195,7 +6195,7 @@
       "executable": false
     },
     "TESTING.md": {
-      "sha256": "3aa2b478844d268013d949afa5264c41b4a8019533dfe41303f4de53faa249f4",
+      "sha256": "d44f3f85b91cbd9946c00013524ece5f9ddbb518eb5831cfcd89f27b31631b2b",
       "executable": false
     },
     "tests/acceptance/edition-source.mjs": {
@@ -6794,6 +6794,18 @@
       "sha256": "ba5c6ec47a428d3ab530c56a340dc7cf24ddaba509fd3ae68e6c0ac6a7277152",
       "executable": false
     },
+    "tests/rer/operator-actions-journey.mjs": {
+      "sha256": "7b701ca46702ba3ff9a2773d149c5d0e95669ecf4f09862f7a85e3d7baf944db",
+      "executable": false
+    },
+    "tests/rer/operator-actions.test.mjs": {
+      "sha256": "c092009e4bfb2ef05858be873b48b49e3a889285aa981e2215d441c731d38b02",
+      "executable": false
+    },
+    "tests/rer/operator-desktop.test.mjs": {
+      "sha256": "99006a032f52f612ca273992d97c4e00da3d1f44eeba11437450e1cd670cd851",
+      "executable": false
+    },
     "tests/rer/operator-fixture.mjs": {
       "sha256": "6f8afe54b6be6fa611fd2f6e8591a1475f22c6eadb4b5e350ddb7515cc3e2e20",
       "executable": false
@@ -6806,16 +6818,28 @@
       "sha256": "5e4761d8d884788c5f9893a7a824a8aaebc6348d5fc9c0304a0bdc4d53e42c4c",
       "executable": false
     },
+    "tests/rer/operator-phone.test.mjs": {
+      "sha256": "31aee94c7efe9f4c5488e9684b8c7104db6baf67aeaa61c4f740d1a94a154a0b",
+      "executable": false
+    },
     "tests/rer/operator-provenance.mjs": {
       "sha256": "a11710b98838633c39426b489c39641761a4c2871f56f8ef587b2e0c13954126",
+      "executable": false
+    },
+    "tests/rer/operator-route-journey.mjs": {
+      "sha256": "90a986a9d61a699548f9c88ffc028e61767d06d1cfc8a82b251f5463b5609686",
       "executable": false
     },
     "tests/rer/operator-routes.mjs": {
       "sha256": "47c1110a6614e73ec21fefae55c93f9a7f0ba9887c709ac578cd9fa517f71a30",
       "executable": false
     },
-    "tests/rer/operator.test.mjs": {
-      "sha256": "3009172a2b3fe737f15acf415efe807a6dc903a884f8eaefd9e5ccab302a9fc1",
+    "tests/rer/operator-small-phone.test.mjs": {
+      "sha256": "fb6be6b567e2363e06d8e344b4279d89029fe94cc8bae870a74ef7eb0963ba30",
+      "executable": false
+    },
+    "tests/rer/operator-workspace.mjs": {
+      "sha256": "9463a400f2828d992a49d51fa0f9a0a8dd819289247902f9b1e80118b17bddc8",
       "executable": false
     },
     "tests/rer/opportunity-editing.mjs": {
