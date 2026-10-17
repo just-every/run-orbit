@@ -59,6 +59,10 @@
       "default": "sendgrid",
       "options": [
         {
+          "value": "development",
+          "label": "Automatic local sign-in on this computer"
+        },
+        {
           "value": "rer",
           "label": "Run Edit Run managed mail"
         },

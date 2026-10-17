@@ -40,7 +40,7 @@ export const commandAdapter = createCommandAdapter(lifecycle, {
  dev: developmentTarget, preview: previewTarget, verify: ['pnpm', ['run', 'verify:app']],
  deploy: orbitDeploy(lifecycle), portability: orbitPortability(database),
  setup: { manifestFile: 'rer-setup.json' }, browserModule: 'scripts/installer/ui/seed.mjs',
- product: model.product.name, input: { names: { email: 'OWNER_EMAIL', name: 'displayName' } },
+ product: model.product.name, input: { names: { email: 'OWNER_EMAIL', name: 'displayName' }, defaults: async () => ({ MAIL_PROVIDER: 'development', MAIL_FROM: 'auth@localhost.test' }) },
  // Local-only persona sign-in; vite.config.ts loads the entry for `vite dev` alone.
  devIdentity: { entry: 'src/dev/server.ts', output: ['dist'], emailLinkTest: 'tests/rer/journey.test.mjs' },
 });
