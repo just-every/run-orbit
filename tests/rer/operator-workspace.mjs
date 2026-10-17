@@ -16,7 +16,7 @@ export async function withOperatorWorkspace({name,widths,observeSetup=false},run
  try{
   const setup=await checkout.rer(['setup','--owner-email','operator-owner@example.test','--port',String(port),'--non-interactive']);
   assert.equal(setup.code,0,'Native rer setup failed; private output withheld');
-  dev=checkout.serve(['dev']);const open=openLink(await dev.ready);
+  dev=await checkout.serve(['dev']);const open=openLink(await dev.ready);
   browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
   const context=await browser.newContext({baseURL:origin,viewport:{width:1440,height:900}}),page=await context.newPage();settled(page);
   page.setDefaultTimeout(60000);page.setDefaultNavigationTimeout(60000);

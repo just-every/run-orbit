@@ -31,7 +31,7 @@ const enter = async (page, origin, as) => { await page.goto(`${origin}/auth/dev/
 test('AUTH-5 rer dev opens signed in, personas switch role and field access', { timeout: 30 * 60_000 }, async () => {
   const port = await freePort(), origin = `http://127.0.0.1:${port}`;
   await exitOf(await checkout.rer(['setup', '--owner-email', 'owner@example.test', '--port', String(port), '--non-interactive']), 0, 'setup');
-  const dev = checkout.serve(['dev']), ready = await dev.ready, key = await devKey(checkout.root);
+  const dev = await checkout.serve(['dev']), ready = await dev.ready, key = await devKey(checkout.root);
   try {
   assert.match(ready, /^RER_SIGNED_IN owner@example\.test$/m);
   const page = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
@@ -92,7 +92,7 @@ test('AUTH-5 a store from before the upgrade keeps its people and signs in on Ba
   await writeFile(join(d1, '9ba2b04bf514d9facfd57ed57d849e77241a7adc99d1c1545d06688b43d84248.sqlite'), gunzipSync(await readFile(join(checkout.root, 'tests/fixtures/prior-auth/store.sqlite.gz'))));
   const setup = await exitOf(await checkout.rer(['setup', '--owner-email', capture.people.owner.email, '--port', String(port), '--non-interactive']), 0, 'setup over the prior store');
   assert.match(setup, /existing owner was kept/);
-  const dev = checkout.serve(['dev']), ready = await dev.ready, key = await devKey(checkout.root);
+  const dev = await checkout.serve(['dev']), ready = await dev.ready, key = await devKey(checkout.root);
   try {
   assert.match(ready, new RegExp(`^RER_SIGNED_IN ${capture.people.owner.email}$`, 'm'));
   const owner = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
