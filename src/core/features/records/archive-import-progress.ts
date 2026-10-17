@@ -1,4 +1,5 @@
 import {checkArchiveOperators,restoreOperatorStatements} from './archive-operators';
+import {verifyArchiveContentIdentity} from './archive-content-identity';
 import type {ImportContext} from './archive-import-context';
 import { stageLayouts, stageCell, quoteIdentifier, liveRowSelector, type StageLayout } from './archive-stage-layout';
 import { privacyContextStatement, privacyMatcher, activeSuppressionTokens, suppressionProof } from './suppression';
@@ -28,7 +29,7 @@ async function save(db: D1Database, job: ImportJob, p: Progress, statements: D1P
 }
 async function begin(db: D1Database, job: ImportJob, catalog: ArchiveTable[], layouts: Map<string, StageLayout>,context?:ImportContext) { const c = (table: string, column: string, alias?: string) => stageCell(layouts.get(table)!, column, alias); const manifest: ArchiveManifest = JSON.parse(job.manifest_json); const parts = (await db.prepare('SELECT count(*) AS n FROM archive_parts WHERE job_id=?').bind(job.id).first<{
     n: number;
-}>())!.n; if (parts !== manifest.parts)
+}>())!.n; if (context)await verifyArchiveContentIdentity(db,job.id,manifest); if (parts !== manifest.parts)
     throw new RecordError(409, 'The archive is incomplete. Upload every part before restoring.'); for (const table of manifest.tables) {
     const count = (await db.prepare(`SELECT count(*) AS n FROM ${stageName(job.id, table.name)}`).first<{
         n: number;

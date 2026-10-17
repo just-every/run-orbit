@@ -26,8 +26,8 @@ export function createArchiveRoutes(db: D1Database) {
     app.post('/exports/:id/abort', async (c) => c.json(await exports.abort(c.req.param('id'), c.get('operator').operatorId)));
     app.get('/exports/:id/download', async (c) => exports.download(c.req.param('id'), c.get('operator').operatorId));
     app.get('/imports',async(c)=>c.json({jobs:await imports.unfinished(c.get('operator').operatorId)}));
-    app.post('/imports', async (c) => { const parsed = z.object({ confirmed: z.literal(true), manifest: transferManifestSchema }).strict().safeParse(await c.req.json()); if (!parsed.success)
-        return c.json({ error: 'Confirm a valid archive manifest before restoring.' }, 400); const actor=c.get('operator').operatorId;await recoverTerminalImports(db,actor);return c.json(await imports.create(parsed.data.manifest,actor),201); });
+    app.post('/imports', async (c) => { const parsed = z.object({ confirmed: z.literal(true), manifest: transferManifestSchema,contentDigest:z.string().regex(/^[a-f0-9]{64}$/).optional() }).strict().safeParse(await c.req.json()); if (!parsed.success)
+        return c.json({ error: 'Confirm a valid archive manifest before restoring.' }, 400); const actor=c.get('operator').operatorId;await recoverTerminalImports(db,actor);return c.json(await imports.create(parsed.data.manifest,actor,parsed.data.contentDigest),201); });
     app.get('/imports/:id', async (c) => c.json(await imports.status(c.req.param('id'), c.get('operator').operatorId)));
     app.put('/imports/:id/parts/:index', async (c) => { if (!/^\d+$/.test(c.req.param('index')) || !Number.isSafeInteger(Number(c.req.param('index'))))
         return c.json({ error: 'Invalid archive part index.' }, 400); const text = await c.req.text(); if (new TextEncoder().encode(text).length > ARCHIVE_PART_BYTES)

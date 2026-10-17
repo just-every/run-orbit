@@ -1,3 +1,4 @@
+import {managedMail} from './managed-mail.mjs';
 import {isolateBrowserTemp} from '../support/browser-temp.mjs';
 isolateBrowserTemp();
 import assert from 'node:assert/strict';
@@ -35,11 +36,12 @@ for(const width of [1440,390])test(`SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 fir
  await page.goto(origin+'/app');await expect(page.getByRole('link',{name:'Check your mail sender: send yourself a test',exact:true})).toBeVisible();await page.goto(origin+'/app/settings#mail-sender');await page.getByRole('button',{name:'Review test email',exact:true}).click();await page.getByRole('button',{name:'Approve and send test email to me',exact:true}).click();await expect(page.getByRole('status').filter({hasText:'SendGrid accepted the test email to owner@example.test'})).toBeVisible();assert.equal(submissions.at(-1).subject,'Orbit sender check');await page.getByRole('button',{name:'I received “Orbit sender check”',exact:true}).click();await expect(page.getByRole('status').filter({hasText:'shows your mail sender as checked'})).toBeVisible();
  await page.goto(origin+'/app');await expect(page.getByText('Setup complete',{exact:true})).toBeVisible();assert.equal(await page.locator('details').first().getAttribute('open'),null);
  await paidRuntime.teardown();paidRuntime=undefined;
+ await managedMail({checkout,page,port,bindings:paidBindings,opportunityURL:result.opportunityURL,evidence,width});
  await hostedScheduling({checkout,page,port,bindings:paidBindings,opportunityURL:result.opportunityURL,evidence});
  if(width===1440){
   // A dry run goes ahead and names production sign-in mail as needed; the real deploy refuses before building or any provider request.
   const dry=await checkout.rer(['deploy','--dry-run']);assert.equal(dry.code,0,'A dry run lists what a real deploy needs');assert.match(dry.output,/Needed for a real deploy[\s\S]*production sign-in mail/);assert.equal(dry.output.includes(key),false);
   const real=await checkout.rer(['deploy'],{env:{CLOUDFLARE_ACCOUNT_ID:'',CLOUDFLARE_API_TOKEN:''}});assert.equal(real.code,4,'A production deploy must refuse local-only sign-in settings; configure hosted mail or Auth SSO.');assert.match(real.output,/Production sign-in is not configured[\s\S]*Nothing was built or uploaded/);assert.equal(real.output.includes(key),false);
  }
- }finally{await browser?.close();if(paidRuntime)await paidRuntime.teardown();if(dev){dev.child.kill('SIGTERM');await dev.exited;}await checkout.rer(['dev','--stop']);await checkout.close();}
+ }finally{await browser?.close();if(paidRuntime)await paidRuntime.teardown();if(dev){dev.child.kill('SIGTERM');await dev.exited;}await checkout.stop('dev');await checkout.close();}
 });

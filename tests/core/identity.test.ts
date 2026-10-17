@@ -30,6 +30,11 @@ async function operator(email = `${createId().toLowerCase()}@example.test`) {
 
 test('PUBLIC-004 email link: one answer for every address, inert preview, one-use POST confirmation, refused for a removed operator', async () => {
   const mail = mailedIdentity(fixture.db), person = await operator();
+  // The deployed route selects the RER relay, even when old SendGrid credentials remain.
+  const relayBindings={...mail.bindings,AUTH_LOCAL:'false',MAIL_PROVIDER:'rer',MAIL_FROM:'managed@example.test',MAIL_API_KEY:'fixture-relay-key',MAIL_RELAY_URL:'https://managed-mail.example.test/send',SENDGRID_API_KEY:'must-not-be-used'};
+  const nativeFetch=globalThis.fetch;let relayBody:{text:string;subject:string;to:string}|undefined;
+  globalThis.fetch=async(input,init)=>{if(String(input)!==relayBindings.MAIL_RELAY_URL)return nativeFetch(input,init);relayBody=JSON.parse(String(init?.body));return Response.json({messageId:'<signin@example.test>'},{status:202});};
+  try{const relayed=await identityResponse(mail.post('/auth/magic-link',{json:{email:person.email,returnTo:'/app'}}),relayBindings,owned);assert.equal(relayed!.status,202);assert.equal(relayBody?.to,person.email);assert.match(relayBody!.text,/https:\/\/orbit\.test\/auth\/confirm/);}finally{globalThis.fetch=nativeFetch;}
   const ask = (request: Request) => identityResponse(request, mail.bindings, { ...owned, mailSender: mail.mailSender });
   const unknown = await ask(mail.post('/auth/magic-link', { json: { email: 'missing@example.test' } }));
   const known = await ask(mail.post('/auth/magic-link', { json: { email: person.email, returnTo: '/app?queue=next' } }));

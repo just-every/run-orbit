@@ -7,24 +7,26 @@ import {workbenchRequest} from './workbench-api';
 import './capture-providers.css';
 
 type Test={recipient:string;subject:string;body:string};
-type Pending={attemptId:string;sentAt:string;recipient:string};
+type Pending={attemptId:string;sentAt:string;recipient:string;provider?:string};
 const quote=(value:string)=>JSON.stringify(value);
 // Customer mail turns on only once all four are present, so the two that only customer mail uses go last.
 const order=['SENDGRID_API_KEY','MAIL_FROM','MAIL_REPLY_TO','SENDGRID_UNSUBSCRIBE_GROUP_ID'];
-const accepted=(recipient:string)=>`SendGrid accepted the test email to ${recipient}. Open that mailbox and find “Orbit sender check”. Acceptance is not delivery; check Spam and SendGrid Activity if it does not arrive.`;
+const accepted=(recipient:string,managed=false)=>managed?`Run Edit Run accepted the test email to ${recipient}. Open that mailbox and find “Orbit sender check”. Acceptance is not delivery; check Spam if it does not arrive.`:`SendGrid accepted the test email to ${recipient}. Open that mailbox and find “Orbit sender check”. Acceptance is not delivery; check Spam and SendGrid Activity if it does not arrive.`;
 
-export function MailSenderSetup({local,configured}:{local?:boolean;configured:boolean}){
+export function MailSenderSetup({local,configured,provider}:{local?:boolean;configured:boolean;provider?:'rer'|'sendgrid'}){
+ const managed=provider==='rer';
  const [from,setFrom]=useState(''),[key,setKey]=useState(''),[reply,setReply]=useState(''),[group,setGroup]=useState(''),{environment,setEnvironment,name}=useDeployEnvironment();
  const [test,setTest]=useState<Test>(),[result,setResult]=useState(''),[busy,setBusy]=useState(false),[attempt,setAttempt]=useState(()=>crypto.randomUUID()),[sent,setSent]=useState(false);
  // A test SendGrid accepted stays open for “I received” until you confirm it, across reloads.
- useEffect(()=>{if(!configured)return;let active=true;void workbenchRequest<{pending:Pending|null}>('/sender-test/pending').then(({pending})=>{if(active&&pending){setAttempt(pending.attemptId as ReturnType<typeof crypto.randomUUID>);setSent(true);setResult(`${accepted(pending.recipient)} Sent ${formatDate(pending.sentAt)}.`);}},()=>{});return()=>{active=false;};},[configured]);
+ useEffect(()=>{if(!configured)return;let active=true;void workbenchRequest<{pending:Pending|null}>('/sender-test/pending').then(({pending})=>{if(active&&pending){setAttempt(pending.attemptId as ReturnType<typeof crypto.randomUUID>);setSent(true);setResult(`${accepted(pending.recipient,pending.provider==='rer')} Sent ${formatDate(pending.sentAt)}.`);}},()=>{});return()=>{active=false;};},[configured,managed]);
  const complete=from&&key&&reply&&/^[1-9]\d*$/.test(group);
  const values=`MAIL_FROM=${quote(from)}\nSENDGRID_API_KEY=${quote(key)}\nMAIL_REPLY_TO=${quote(reply)}\nSENDGRID_UNSUBSCRIBE_GROUP_ID=${quote(group)}`;
  const commands=order.map(secret=>`rer deploy --env-file .dev.vars.deploy --environment ${name} --set-secret ${secret}`).join(' &&\n');
  async function preview(){setBusy(true);setResult('');try{setTest(await workbenchRequest<Test>('/sender-test'));}catch(e){setResult((e as Error).message);}finally{setBusy(false);}}
- async function send(){setBusy(true);setResult('');try{const sent=await workbenchRequest<{recipient:string}>('/sender-test',{attemptId:attempt,confirmed:true});setResult(accepted(sent.recipient));setSent(true);setTest(undefined);}catch(e){setResult((e as Error).message);}finally{setBusy(false);}}
+ async function send(){setBusy(true);setResult('');try{const sent=await workbenchRequest<{recipient:string;provider?:string}>('/sender-test',{attemptId:attempt,confirmed:true});setResult(accepted(sent.recipient,sent.provider==='rer'));setSent(true);setTest(undefined);}catch(e){setResult((e as Error).message);}finally{setBusy(false);}}
  async function received(){setBusy(true);try{await workbenchRequest('/sender-test/received',{attemptId:attempt});setSent(false);setResult('Thanks. The setup checklist now shows your mail sender as checked.');}catch(e){setResult((e as Error).message);}finally{setBusy(false);}}
  return <div className="workbench-form">
+  {managed?<p>Run Edit Run manages this installation’s sender, relay address and mail key. Replies use the managed sender address. Check the sender configuration below, then approve one test to your own mailbox.</p>:<>
   <p>Use your own SendGrid account to send reviewed customer messages. Follow these steps here; keep the API key private.</p>
   <ol className="capture-plain-steps">
    <li><strong>Verify a sender address.</strong> Open <a href="https://app.sendgrid.com/settings/sender_auth" target="_blank" rel="noreferrer">SendGrid → Settings → Sender Authentication</a>. Choose <strong>Verify a Single Sender</strong>, enter your business details, and click the verification link SendGrid emails you. For regular sending, use <strong>Authenticate Your Domain</strong> on that same page and add the DNS records it provides. Enter the verified email below.</li>
@@ -44,10 +46,11 @@ export function MailSenderSetup({local,configured}:{local?:boolean;configured:bo
    <li>Return here and choose <strong>Check sender configuration</strong>.</li></ol></>}
   {complete?<><p>Copy these exact settings into your private file. They contain your API key.</p><details><summary>Show private settings to copy</summary><CopyField label="Private mail settings" value={values} block/></details></>:<p>Fill in all four values above to reveal the exact settings and copy button.</p>}
   {!local&&<CopyField label="Hosted mail settings commands" value={commands} block/>}
-  <h3>Send yourself a test</h3><p>Once the configuration check passes, review and send one test to your own operator email. Success is “SendGrid accepted” here and a message titled “Orbit sender check” in your mailbox.</p>
-  <p>If SendGrid Activity shows “Dropped: Group Unsubscribe”, this address previously opted out of the group. Use SendGrid → Suppressions → Unsubscribe Groups to review your own subscription, or test from another subscribed operator mailbox. Orbit never overrides an unsubscribe.</p>
+  </>}
+  <h3>Send yourself a test</h3><p>Once the configuration check passes, review and send one test to your own operator email. Success is “{managed?'Run Edit Run':'SendGrid'} accepted” here and a message titled “Orbit sender check” in your mailbox.</p>
+  {!managed&&<p>If SendGrid Activity shows “Dropped: Group Unsubscribe”, this address previously opted out of the group. Use SendGrid → Suppressions → Unsubscribe Groups to review your own subscription, or test from another subscribed operator mailbox. Orbit never overrides an unsubscribe.</p>}
   <button type="button" disabled={!configured||busy} onClick={()=>void preview()}>Review test email</button>
-  {test&&<section><p>To: {test.recipient}</p><p>Subject: {test.subject}</p><p>{test.body}</p><p>SendGrid adds your configured unsubscribe links.</p><button type="button" disabled={busy} onClick={()=>void send()}>Approve and send test email to me</button></section>}
+  {test&&<section><p>To: {test.recipient}</p><p>Subject: {test.subject}</p><p>{test.body}</p>{!managed&&<p>SendGrid adds your configured unsubscribe links.</p>}<button type="button" disabled={busy} onClick={()=>void send()}>Approve and send test email to me</button></section>}
   {result&&<p role="status">{result}</p>}
   {sent&&<button type="button" disabled={busy} onClick={()=>void received()}>I received “Orbit sender check”</button>}
   {result&&<button type="button" disabled={busy} onClick={()=>{setAttempt(crypto.randomUUID());setResult('');setSent(false);}}>Start a new test</button>}

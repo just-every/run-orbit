@@ -1,4 +1,5 @@
 import {recoverableImport,acknowledgeImport,unfinishedImportIds} from './archive-import-recovery';
+import {storedArchiveContentDigest} from './archive-content-identity';
 import {uploadedArchiveGrowth} from './archive-size-plan';
 import {foldRestoreCatalog} from './archive-fold-catalog';
 import {archiveSchemaFence} from './archive-schema-fence';
@@ -23,20 +24,22 @@ export class ArchiveImportRepository {
         const rollback=String(progress.phase??'').startsWith('rollback'),phases=rollback?['rollback-clear','rollback-load']:['backup','clear','load'];
         const totalSteps=phases.length*totalTables+1,completedSteps=complete?totalSteps:Math.max(0,phases.indexOf(progress.phase))*totalTables+completedTables;
         const nextPart=complete?manifest.parts:(await this.db.prepare('SELECT count(*) AS n FROM archive_parts WHERE job_id=?').bind(id).first<{n:number}>())!.n;
-        return {id,state:job.state,manifest,nextPart,phase:progress.phase,completedTables,totalTables,completedSteps,totalSteps};
+        const contentDigest=this.folded?await storedArchiveContentDigest(this.db,id):undefined;
+        return {id,state:job.state,manifest,nextPart,phase:progress.phase,completedTables,totalTables,completedSteps,totalSteps,...(contentDigest?{contentDigest}:{})};
     }
     async unfinished(actor:string){return Promise.all((await unfinishedImportIds(this.db,actor)).map(id=>this.status(id,actor)));}
-    async create(input: unknown, actor: string) {
+    async create(input: unknown, actor: string,contentDigest?:string) {
+        if(contentDigest!==undefined&&(!this.folded||!/^[a-f0-9]{64}$/.test(contentDigest)))throw new RecordError(400,'Provide a valid content digest for a hosted archive restore.');
         const {manifest,catalog}=await(this.folded?validateFoldManifest(this.db,input):validateManifest(this.db,input));
-        if(this.folded){const existing=await recoverableImport(this.db,actor,manifest);if(existing)return acknowledgeImport(this.db,existing,()=>this.status(existing,actor));}
+        if(this.folded){const existing=await recoverableImport(this.db,actor,manifest,contentDigest);if(existing)return acknowledgeImport(this.db,existing,()=>this.status(existing,actor));}
         const id=createId(),stagingCatalog=this.folded?await foldRestoreCatalog(this.db,catalog):catalog;
         const reservation=this.folded?[...await reserveArchiveStorage(this.db,id,'import'),...archiveSchemaFence(this.db,catalog),...await archiveStorageFence(this.db,id)]:[];
-        try{await this.db.batch([...reservation,...(this.folded?[this.db.prepare("INSERT INTO archive_job_profiles VALUES(?,'orbit-fold-1',?,?)").bind(id,JSON.stringify(stagingCatalog),await archiveHash(stagingCatalog))]:[]),this.db.prepare("INSERT INTO archive_jobs(id,kind,state,actor_id,manifest_json,created_at) VALUES(?,'import','uploading',?,?,?)").bind(id,actor,JSON.stringify(manifest),new Date().toISOString()),...await stageTables(this.db,id,stagingCatalog)]);}
+        try{await this.db.batch([...reservation,...(this.folded?[this.db.prepare("INSERT INTO archive_job_profiles VALUES(?,'orbit-fold-1',?,?)").bind(id,JSON.stringify(stagingCatalog),await archiveHash(stagingCatalog))]:[]),this.db.prepare("INSERT INTO archive_jobs(id,kind,state,actor_id,manifest_json,created_at) VALUES(?,'import','uploading',?,?,?)").bind(id,actor,JSON.stringify(manifest),new Date().toISOString()),...(contentDigest?[this.db.prepare('INSERT INTO archive_file_identities VALUES(?,?)').bind(id,contentDigest)]:[]),...await stageTables(this.db,id,stagingCatalog)]);}
         catch(error){
             if(!this.folded)throw error;
             // Reconcile the exact committed transaction or a concurrent identical
             // owner request. Never replay a staging mutation after a lost ACK.
-            const committed=await recoverableImport(this.db,actor,manifest,id)??await recoverableImport(this.db,actor,manifest);
+            const committed=await recoverableImport(this.db,actor,manifest,contentDigest,id)??await recoverableImport(this.db,actor,manifest,contentDigest);
             if(!committed)throw error;
             return acknowledgeImport(this.db,committed,()=>this.status(committed,actor));
         }

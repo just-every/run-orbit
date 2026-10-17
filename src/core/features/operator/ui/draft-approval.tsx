@@ -5,7 +5,7 @@ import { workbenchRequest } from './workbench-api';
 import { OperatorState } from './operator-shell';
 import { formatDate, formatTime, workspaceInstant, zoneLabel } from './formatters';
 interface ApprovalPreview {timezone:string;localTime:string;quietHours:boolean;confirmationExpiresAt:string;requestedAt?:string;scheduledAt?:string;scheduledLocalTime?:string;scheduleReason?:string|null}
-export function DraftApproval({draft,dirty,recipientName,onSubmitted}:{draft:OperatorDraft;dirty:boolean;recipientName?:string;onSubmitted?:(message:{state:string;scheduledAt:string|null})=>void}) {
+export function DraftApproval({draft,dirty,recipientName,onSubmitted,mailProvider}:{mailProvider?:string;draft:OperatorDraft;dirty:boolean;recipientName?:string;onSubmitted?:(message:{state:string;scheduledAt:string|null})=>void}) {
  const [busy,setBusy]=useState(false),[result,setResult]=useState(''),[error,setError]=useState(''),[confirmationError,setConfirmationError]=useState(false),[scheduledAt,setScheduledAt]=useState(''),[preview,setPreview]=useState<ApprovalPreview|null>(null);
  async function approve(confirmation?:ApprovalPreview){setBusy(true);setError('');try{
   const requestedAt=scheduledAt?workspaceInstant(scheduledAt):undefined;
@@ -17,7 +17,7 @@ export function DraftApproval({draft,dirty,recipientName,onSubmitted}:{draft:Ope
   setPreview(null);onSubmitted?.({state:sent.state,scheduledAt:sent.scheduledAt??null});setResult(sent.state==='scheduled'&&sent.scheduledAt?`This exact revision is scheduled for ${formatDate(sent.scheduledAt)}. ${confirmation?.scheduleReason??''} Dispatch will re-check the recipient, evidence, limits and permitted hours.`:`Message state: ${sent.state}. Only a delivery event confirms delivery.`);
  }catch(error){setError((error as Error).message);setConfirmationError(!/mail|sender|provider/i.test((error as Error).message));setPreview(null);}finally{setBusy(false);}}
  return <section id="send-approval" className="operator-surface workbench-form"><h2>Approve and send</h2><p><strong>To:</strong> {recipientName} &lt;{draft.recipientEmail}&gt;</p><p><strong>Subject:</strong> {draft.subject}</p><p style={{whiteSpace:"pre-wrap"}}>{draft.body}</p><p>Approval uses the saved recipient, subject and body shown above, revision {draft.revision}. </p>
-  <ProviderFooter/>
+  <ProviderFooter provider={mailProvider}/>
   {dirty&&<OperatorState>Save your changes before approving this revision.</OperatorState>}
   <label>Schedule for later ({zoneLabel()}; leave empty to send now)<input type="datetime-local" disabled={busy||Boolean(result)} value={scheduledAt} onChange={e=>{setScheduledAt(e.target.value);setPreview(null);}}/></label>
   {!preview?<button type="button" className="operator-button" disabled={busy||dirty||draft.isStale||Boolean(result)} onClick={()=>void approve()}>{busy?'Checking…':scheduledAt?'Review schedule for exact revision':'Approve and send exact revision'}</button>:<div role="alert" className="confirm-actions">

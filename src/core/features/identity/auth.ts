@@ -1,8 +1,8 @@
 import { AuthError, createAuthHandler, createOperatorAuth, createSignInHandler, securityHeaders, type AuthConfig, type MailSender } from '@runeditrun/rer/modules/operator-auth';
 import { devAdmitted } from '@runeditrun/rer/modules/operator-auth/dev-admission';
 import { createDependencies } from '@runeditrun/rer/modules/dependencies';
-import { sendDevelopment } from '../../../base/modules/mail/src/development/index.mjs';
-import { sendSendGrid, SendGridSendError } from '../../../base/modules/mail/src/sendgrid-email/index.mjs';
+import { identityMailSender } from './mail';
+export { identityMailSender } from './mail';
 import type { PlatformBindings } from '../../platform/assets';
 import { createNativeAccounts } from './accounts';
 import { createNativeProofs } from './proofs';
@@ -24,28 +24,6 @@ export function identityConfig(bindings: PlatformBindings, sender: MailSender | 
     branding: { productName: 'Orbit', accentColor: '#16171d', signInPath: '/signin', theme: '/orbit-auth.css' },
     linkSeconds: 15 * 60, dependencies: true,
   };
-}
-
-/** Local mail is silently suppressed; a deployment sends through SendGrid. Without either, sign-in mail is unavailable; half a configuration fails by name. */
-export function identityMailSender(bindings: PlatformBindings): MailSender | undefined {
-  if (bindings.AUTH_LOCAL === 'true' || bindings.RER_DEMO === '1') {
-    if (bindings.MAIL_PROVIDER !== 'development' || !bindings.MAIL_FROM) return undefined;
-    return { async send(message) {
-      return sendDevelopment({ provider: 'development', mode: 'development' }, message);
-    } };
-  }
-  const missing = (['MAIL_FROM', 'SENDGRID_API_KEY'] as const).filter(name => !bindings[name]?.trim());
-  if (missing.length === 2) return undefined;
-  if (missing.length) throw new Error(`Sign-in mail requires ${missing.join(', ')}.`);
-  return { async send(message) {
-    try {
-      const sent = await sendSendGrid({ apiKey: bindings.SENDGRID_API_KEY!, message: { ...message, from: bindings.MAIL_FROM! } });
-      return { status: 'accepted', provider: sent.provider, providerMessageId: sent.providerMessageId };
-    } catch (error) {
-      if (!(error instanceof SendGridSendError)) throw error;
-      return { status: error.outcome === 'ambiguous' ? 'uncertain' : error.outcome, provider: 'sendgrid', providerMessageId: null };
-    }
-  } };
 }
 
 /** Base operator-auth composed over Orbit's native operators, sessions and proofs for one request. */

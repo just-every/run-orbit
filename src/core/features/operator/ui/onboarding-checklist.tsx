@@ -1,5 +1,5 @@
 import './onboarding-checklist.css';
-export interface MailSettings {present:number;total:number;missing:string[];problem:string|null}
+export interface MailSettings {provider?:'rer'|'sendgrid';present:number;total:number;missing:string[];problem:string|null}
 export interface OnboardingState {mailConfigured:boolean;mailSettings?:MailSettings|null;mailChecked:number;aiConfigured:boolean;customer:number;records:number;source:number;test:number;draft:number;sent:number;opportunityId:string|null;draftId:string|null}
 export async function readOnboarding():Promise<OnboardingState>{const response=await fetch('/api/v1/workbench/onboarding');if(!response.ok)throw Error('Setup progress could not load.');return response.json();}
 export function OnboardingChecklist({state}:{state:OnboardingState|null}){

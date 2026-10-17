@@ -17,7 +17,8 @@
   "originVar": "AUTH_ORIGIN",
   "vars": {
     "AUTH_LOCAL": "false",
-    "MAIL_PROVIDER": "sendgrid"
+    "MAIL_PROVIDER": "sendgrid",
+    "MAIL_RELAY_URL": ""
   },
   "secrets": [
     {
@@ -34,7 +35,13 @@
     },
     {
       "binding": "SENDGRID_API_KEY",
-      "environment": "SENDGRID_API_KEY"
+      "environment": "SENDGRID_API_KEY",
+      "optional": true
+    },
+    {
+      "binding": "MAIL_API_KEY",
+      "environment": "MAIL_API_KEY",
+      "optional": true
     },
     {
       "binding": "MAIL_REPLY_TO",

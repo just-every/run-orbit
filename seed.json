@@ -222,8 +222,8 @@
       "name": "SENDGRID_API_KEY",
       "secret": true,
       "required": false,
-      "requiredWhen": "mail.sender.v1 is configured to issue magic links or send operator-approved one-to-one mail.",
-      "why": "Authenticate the configured mail sender."
+      "requiredWhen": "Direct SendGrid sign-in or operator-approved customer mail is selected.",
+      "why": "Authenticate the owner’s SendGrid account; RER-managed mail uses MAIL_API_KEY instead."
     },
     {
       "name": "MAIL_FROM",
@@ -271,8 +271,8 @@
       "name": "MAIL_REPLY_TO",
       "secret": false,
       "required": false,
-      "requiredWhen": "Provider delivery events, replies or unsubscribe handling is configured.",
-      "why": "SendGrid Inbound Parse reply address for threaded replies."
+      "requiredWhen": "Direct SendGrid customer mail is selected.",
+      "why": "The inbox chosen for customer replies, either an ordinary inbox or the configured Orbit capture address."
     },
     {
       "name": "SENDGRID_WEBHOOK_PUBLIC_KEY",
@@ -334,8 +334,22 @@
       "name": "MAIL_PROVIDER",
       "secret": false,
       "required": false,
-      "requiredWhen": "AUTH_LOCAL is true.",
-      "why": "Must be development locally so sign-in mail is silently suppressed."
+      "requiredWhen": "AUTH_LOCAL is true or RER-managed mail is selected.",
+      "why": "Use development for local sign-in suppression, rer for the assigned managed relay, or sendgrid for a direct hosted account. An omitted hosted value retains direct SendGrid behavior."
+    },
+    {
+      "name": "MAIL_RELAY_URL",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "MAIL_PROVIDER is rer.",
+      "why": "The HTTPS mail relay assigned by Run Edit Run hosting, including preview routing."
+    },
+    {
+      "name": "MAIL_API_KEY",
+      "secret": true,
+      "required": false,
+      "requiredWhen": "MAIL_PROVIDER is rer.",
+      "why": "The private key assigned to this installation’s managed mail relay."
     },
     {
       "name": "SESSION_SECRET",

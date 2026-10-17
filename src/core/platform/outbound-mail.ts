@@ -1,26 +1,33 @@
+import { createManagedOutboundMail, ManagedMailError } from './managed-outbound-mail';
+import { validateRerConfig } from '../../base/modules/mail/src/adapters/rer/contract.mjs';
 import { sendDevelopment } from '../../base/modules/mail/src/development/index.mjs';
 import { sendSendGrid, SendGridSendError } from '../../base/modules/mail/src/sendgrid-email/index.mjs';
 export interface OutboundMail {
- send(input:{id:string;recipient_email:string;subject:string;body:string;message_id?:string;reference_ids?:string;idempotency_key?:string}):Promise<{providerMessageId:string|null}>;
+ provider?:'rer'|'sendgrid'|'development';
+ send(input:{id:string;recipient_email:string;subject:string;body:string;message_id?:string;reference_ids?:string;idempotency_key?:string}):Promise<{providerMessageId:string|null;messageId?:string}>;
  lookup?(idempotencyKey:string):Promise<{providerMessageId:string}|undefined>;
  /** The sender's domain, so each Message-ID names a real domain instead of a placeholder. */
  messageIdDomain?:string;
 }
-export interface OutreachEnvironment { RER_DEMO?:string; DB?:D1Database; MAIL_FROM?: string; SENDGRID_API_KEY?: string; SENDGRID_UNSUBSCRIBE_GROUP_ID?:string; MAIL_REPLY_TO?:string; SENDGRID_WEBHOOK_PUBLIC_KEY?:string }
+export interface OutreachEnvironment { RER_DEMO?:string; DB?:D1Database; MAIL_PROVIDER?:string; MAIL_RELAY_URL?:string; MAIL_API_KEY?:string; MAIL_FROM?: string; SENDGRID_API_KEY?: string; SENDGRID_UNSUBSCRIBE_GROUP_ID?:string; MAIL_REPLY_TO?:string; SENDGRID_WEBHOOK_PUBLIC_KEY?:string }
 /** The four settings customer mail needs, in the order Settings → Customer mail sender sets them. */
 export const customerMailSettings=['SENDGRID_API_KEY','MAIL_FROM','MAIL_REPLY_TO','SENDGRID_UNSUBSCRIBE_GROUP_ID'] as const;
-export interface CustomerMailStatus {present:number;total:number;missing:string[];problem:string|null}
+export interface CustomerMailStatus {provider?:'rer'|'sendgrid';present:number;total:number;missing:string[];problem:string|null}
 /** Which customer-mail settings this installation holds, by name only. Customer mail turns on only when all are present and valid. */
 export function customerMailStatus(env:OutreachEnvironment):CustomerMailStatus{
- const missing=customerMailSettings.filter(name=>!env[name]?.trim()),group=env.SENDGRID_UNSUBSCRIBE_GROUP_ID?.trim();
- const problem=group&&!/^[1-9]\d*$/.test(group)?'SENDGRID_UNSUBSCRIBE_GROUP_ID must be the number in SendGrid’s Group ID column.':null;
- return {present:customerMailSettings.length-missing.length,total:customerMailSettings.length,missing,problem};
+ const managed=env.MAIL_PROVIDER==='rer',settings=managed?['MAIL_FROM','MAIL_RELAY_URL','MAIL_API_KEY'] as const:customerMailSettings;
+ const missing=settings.filter(name=>!env[name]?.trim()),group=env.SENDGRID_UNSUBSCRIBE_GROUP_ID?.trim();
+ let problem=!managed&&group&&!/^[1-9]\d*$/.test(group)?'SENDGRID_UNSUBSCRIBE_GROUP_ID must be the number in SendGrid’s Group ID column.':null;
+ if(managed&&env.MAIL_RELAY_URL?.trim())try{validateRerConfig({relayUrl:env.MAIL_RELAY_URL});}catch{problem='MAIL_RELAY_URL must be the assigned HTTPS relay URL.';}
+ return {provider:managed?'rer':'sendgrid',present:settings.length-missing.length,total:settings.length,missing,problem};
 }
 /** Customer mail, or undefined until every setting is present: a partly configured installation keeps running and says what is missing. */
 export function createOutboundMail(env:OutreachEnvironment):OutboundMail|undefined {
  const demo = env.RER_DEMO === '1';
  if(!demo){const status=customerMailStatus(env);if(status.missing.length||status.problem)return undefined;}
+ if(!demo&&env.MAIL_PROVIDER==='rer')return createManagedOutboundMail(env,senderDomain(env.MAIL_FROM));
  return {
+  provider:demo?'development':'sendgrid',
   messageIdDomain:senderDomain(env.MAIL_FROM),
   async send(message){
    if(demo){const result=await sendDevelopment({provider:'development',mode:'development'},{deliveryId:message.idempotency_key??message.id,from:env.MAIL_FROM??'Orbit Demo <demo@demo.invalid>',to:[message.recipient_email],subject:message.subject,text:message.body});return {providerMessageId:result.providerMessageId};}
@@ -46,5 +53,5 @@ async function senderWithName(from:string,db?:D1Database){
 }
 /** The domain of MAIL_FROM, plain or as `Name <address>`. */
 export function senderDomain(from:string|undefined){return /@([a-z0-9.-]+\.[a-z]{2,})>?\s*$/i.exec(from?.trim()??'')?.[1]?.toLowerCase();}
-export function submissionOutcome(error:unknown):'failed'|'delivery-unknown'{return error instanceof SendGridSendError&&error.outcome!=='ambiguous'?'failed':'delivery-unknown';}
-export function transientSubmission(error:unknown){return error instanceof SendGridSendError&&error.outcome==='rate_limited';}
+export function submissionOutcome(error:unknown):'failed'|'delivery-unknown'{return error instanceof ManagedMailError?error.status==='uncertain'?'delivery-unknown':'failed':error instanceof SendGridSendError&&error.outcome!=='ambiguous'?'failed':'delivery-unknown';}
+export function transientSubmission(error:unknown){return error instanceof ManagedMailError?error.status==='rate_limited':error instanceof SendGridSendError&&error.outcome==='rate_limited';}

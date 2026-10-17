@@ -1,6 +1,7 @@
+import {sameArchiveManifest} from '../../../shared/archive-identity.ts';
 import {archiveTransferError} from '../../../shared/archive-transfer-error.ts';
 import {readArchiveFile,validateManifest,type ArchiveManifest} from '../../../shared/archive-transfer-file.ts';
-export interface ArchiveStatus {id:string;state:string;phase?:string;completedSteps?:number;totalSteps?:number;completedTables?:number;totalTables?:number;nextPart?:number;manifest?:ArchiveManifest}
+export interface ArchiveStatus {id:string;state:string;phase?:string;completedSteps?:number;totalSteps?:number;completedTables?:number;totalTables?:number;nextPart?:number;manifest?:ArchiveManifest;contentDigest?:string}
 const base='/api/v1/records/archive';
 export function archiveUrl(kind:'exports'|'imports',id:string,suffix=''){return `${base}/${kind}/${encodeURIComponent(id)}${suffix}`;}
 async function request(path:string,method='GET',body?:unknown):Promise<ArchiveStatus>{
@@ -14,14 +15,14 @@ export async function prepareArchive(id:string,update:(status:ArchiveStatus)=>vo
  if(!['preparing','ready'].includes(status.state))throw new Error(`Export is ${status.state}.`);
  return status;
 }
-export async function restoreArchive(file:File,id:string,update:(status:ArchiveStatus)=>void,validated:(count:number)=>void,paused:()=>boolean){
+export async function restoreArchive(file:File,id:string,contentDigest:string,update:(status:ArchiveStatus)=>void,validated:(count:number)=>void,paused:()=>boolean){
  let status=id?await request(archiveUrl('imports',id)):undefined;
- if(status){update(status);if(status.state==='complete')return status;}
+ if(status){update(status);if(status.contentDigest&&status.contentDigest!==contentDigest)throw new Error('This archive does not match the selected restore transfer. Choose the same unchanged archive.');if(status.state==='complete')return status;}
  for await(const entry of readArchiveFile(file.stream())){
   if(paused())return status;
   if(entry.kind==='manifest'){
-   if(status){if(JSON.stringify(validateManifest(status.manifest))!==JSON.stringify(entry.manifest))throw new Error('This archive does not match the selected restore transfer.');}
-   else status=await request(`${base}/imports`,'POST',{confirmed:true,manifest:entry.manifest});
+   if(status){if(!await sameArchiveManifest(validateManifest(status.manifest),entry.manifest))throw new Error('This archive does not match the selected restore transfer.');}
+   else status=await request(`${base}/imports`,'POST',{confirmed:true,manifest:entry.manifest,contentDigest});
    update(status);
   }else{
    if(!status)throw new Error('Missing restore transfer.');
@@ -31,6 +32,11 @@ export async function restoreArchive(file:File,id:string,update:(status:ArchiveS
   }
  }
  if(!status)throw new Error('Archive contains no manifest.');
+ return finishRestore(status.id,update,paused);
+}
+/** Uploaded archives can finish without asking the browser for the file again. */
+export async function finishRestore(id:string,update:(status:ArchiveStatus)=>void,paused:()=>boolean){
+ let status=await request(archiveUrl('imports',id));update(status);
  while(['uploading','restoring'].includes(status.state)&&!paused()){status=await request(archiveUrl('imports',status.id,'/finalize'),'POST',{});update(status);}
  if(!['uploading','restoring','complete'].includes(status.state))throw new Error(`Restore is ${status.state}.`);
  return status;

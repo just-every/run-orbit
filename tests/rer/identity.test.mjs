@@ -17,7 +17,7 @@ const evidence = process.env.ORBIT_EVIDENCE_DIR;
 const widths = [1440, 390];
 let checkout, browser;
 before(async () => { checkout = await freshCheckout(); browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']}); });
-after(async () => { await browser?.close(); await checkout?.rer(['dev', '--stop']); await checkout?.close(); });
+after(async () => { await browser?.close(); await checkout?.stop('dev'); await checkout?.close(); });
 const exitOf = async (result, code, label) => { assert.equal(result.code, code, `${label}\n${result.output.slice(-1500)}`); return result.output; };
 async function shot(page, name) {
   for (const width of widths) {
@@ -79,7 +79,7 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access', { 
   assert.equal(await page.getByText('+1 555 0199').count(), 0);
   await shot(page, 'collaborator-shared');
 
-  } finally { await checkout.rer(['dev', '--stop']); await dev.exited; }
+  } finally { await checkout.stop('dev'); await dev.exited; }
 });
 
 test('AUTH-5 a store from before the upgrade keeps its people and signs in on Base', { timeout: 30 * 60_000 }, async () => {
@@ -103,5 +103,5 @@ test('AUTH-5 a store from before the upgrade keeps its people and signs in on Ba
   await owner.getByText('Prior renewal').first().waitFor();
   await shot(owner, 'prior-owner');
 
-  } finally { await checkout.rer(['dev', '--stop']); await dev.exited; }
+  } finally { await checkout.stop('dev'); await dev.exited; }
 });
