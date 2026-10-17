@@ -779,7 +779,7 @@
       "executable": false
     },
     "docs/overview.md": {
-      "sha256": "a549b53f81728a4826ff2432c0a85494d9b08500abfa2ed78dcead4e861755eb",
+      "sha256": "5b55ad319453f42306de113d49d407315ffcc739df86636d7cbd2ba3d656ada2",
       "executable": false
     },
     "docs/retained-verification/browser-results.jsonl": {
@@ -967,7 +967,7 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "d5202f3ecadc2cdbc241c8acb7802eeafd702ae2230936209dc1fa397e39b97f",
+      "sha256": "771433436330ab747493e2684ea0159905f32d9e4b8a6def989caa5a5a3117c7",
       "executable": false
     },
     "LICENSE": {
@@ -2367,7 +2367,7 @@
       "executable": false
     },
     "OPERATIONS.md": {
-      "sha256": "c6e47df8132e5e8a9d992c069c0bff8cf698ba4d35dde7e2bb752694e3af96af",
+      "sha256": "2c389294d8b57e9a9d1477ec38e71b6dc5480c30ee3ae4d457f3dcce9f581735",
       "executable": false
     },
     "OWNER-STEPS.md": {
@@ -2463,7 +2463,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "afaa67161909a12c8633300a094ce28d29521b1912f5b374aa0429f556264690",
+      "sha256": "5806bc7666988755af57917dfb2deaa1d44859ecfd214b9968b8e700e130b5e1",
       "executable": false
     },
     "RECORD-POLICIES.md": {
@@ -2483,7 +2483,7 @@
       "executable": false
     },
     "RUN-LOCALLY.md": {
-      "sha256": "eb57c4d7422f0271f4a2698c7a9c405a2c1ba2a45a80abb2259fd2be0d9621d4",
+      "sha256": "3e183f3e2628ebfe2931ef878171ed05bb0909f05f492e80c45053bed0e7b3f2",
       "executable": false
     },
     "schema/fold/0016_collaborator_access.sql": {
