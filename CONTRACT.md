@@ -162,27 +162,29 @@ and native-browser regressions as well as all retained contract gates.
 
 **Acceptance:** Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority.
 
-## Permissions, records and migration
+## Target clauses
 
-### TEAM-005 — Sales roles and private records.
+### Permissions, records and migration
+
+#### TEAM-005 — Sales roles and private records.
 
 An owner assigns sales-admin, manager, seller and read-only roles, teams and record ownership. Managers may see their team; a seller can be restricted to assigned/shared records. Assigned records are exactly the records that seller owns: opportunities under RECORD-007, and contacts, leads, companies and custom-object records under RECORD-016. A restricted role may additionally see records explicitly shared with the seller or their team and, when the administrator enables it for that role, the contacts and company associated with a deal they own. A manager's team scope is the records owned by the team's members. Reassigning an owner changes who may see the record on the next request. Field-level grants protect sensitive amounts, notes, mail and files (RECORD-018). Import/export, forecast override, source connection, deletion, workflow authoring and activation, sequence authoring and sequence enrollment have distinct permissions. By default only sales-admins activate workflows (AUTO-001), whose record writes stay within the activating user's grants (AUTO-002), and sales-admin, manager and seller roles may author sequences (SEQUENCE-001). Current authorization applies to UI, search, APIs, reports, AI input and exports; changes and revocation take effect on the next request, and access changes are audited.
 
 **Acceptance:** Invite a manager and two reps, make one account private, deny its record and field through direct URLs/search/API/report/export/AI preview, share it intentionally, then revoke and repeat after sign-out and restore. Restrict one rep to owned records and verify that their lists, search, API and export show only the contacts and companies they own under RECORD-016, and that reassigning one of those contacts removes it from their next request.
 
-### RECORD-014 — Configurable sales data and custom objects.
+#### RECORD-014 — Configurable sales data and custom objects.
 
 Administrators define typed custom fields, required/unique values, picklists, validation, layouts, custom objects and explicit relationships with contacts, companies and deals. Changes preview affected records before applying; archived fields retain readable history and export meaning. A field can be marked "approve each workflow change" (AUTO-002), and its history names the source of each change: a user, an import, capture, the API or a workflow and its version. Users create saved filtered lists, select columns, sort and bulk-edit permitted records through a review showing individual failures. Leads qualify and convert to associated contact/company/deal records without losing source, activities or consent.
 
 **Acceptance:** Create a Territory object and required deal field, validate bad input, qualify a lead, link stakeholders, save a filtered view, bulk-change selected records with one denied item, then archive a field and inspect history/export.
 
-### RECORD-015 — Deal stakeholders and buying context.
+#### RECORD-015 — Deal stakeholders and buying context.
 
 A deal records multiple contacts with roles such as champion, decision-maker, evaluator and procurement, company relationships, products, next step and mutual commitments. A person can represent more than one company via explicit relationship records while retaining an exact identity and a primary company. Sales users can distinguish a missing stakeholder from an inferred role; no inferred identity or relationship grants contact permission.
 
 **Acceptance:** Associate champion and evaluator with a USD deal, add a verified decision-maker and a second-company relationship, move the primary association and inspect the preserved customer history and authorization.
 
-### RECORD-016 — Owners for contacts, leads, companies and custom objects.
+#### RECORD-016 — Owners for contacts, leads, companies and custom objects.
 
 Every contact, lead (RECORD-014), company and custom-object record holds zero or one owner, an active user, independent of the owners of its deals (RECORD-007). A new record is unassigned unless an assignment rule below, an import mapping, FORM-001, CAPTURE-012 or an AUTO-001 workflow sets its owner. Automatic rules fill only an empty owner and never overwrite an existing one, except the explicit always-sync company rule.
 
@@ -215,7 +217,7 @@ Owners and their history are exported and restored under DATA-003 and returned b
 
 **Acceptance:** Import HubSpot contacts and companies with Contact owner and Company owner columns, one owner value unmatched; map it in the dry run, apply, and see each record's owner and attributed import entry. Bulk-reassign 20 contacts with one denied item and see 19 changes, one listed failure and 19 timeline entries. Enable the company-to-contact rule, preview it, change a company owner and see only its unowned contacts take that owner. Enable the first-email rule, send a first email to an unowned lead and see the sender become its owner. Sign in as a seller restricted to owned records: "My contacts" opens by default, and lists, search, API and export show only their own contacts and companies. Remove a rep and hand over their contacts and companies explicitly under TEAM-004. Assign a company to a rep and see one notification naming it and the assigner; bulk-assign 20 contacts to another rep and see one notification listing them; assign a contact to yourself and see none.
 
-### RECORD-017 — Mentions in notes and activities.
+#### RECORD-017 — Mentions in notes and activities.
 
 In a note, a logged call or meeting (RECORD-010), a task note (TASK-001) or an internal handoff, a user can @mention a colleague or a team. Autocomplete offers only active users and teams. Mentioning someone who cannot see the record under TEAM-005 asks the author either to share the record with them explicitly or to remove the mention; a mention never grants access by itself.
 
@@ -223,7 +225,7 @@ Each mentioned user receives one in-app notification (NOTIFY-001, NOTIFY-002) na
 
 **Acceptance:** On a deal, a rep writes a note mentioning their manager and a call log mentioning a colleague without access to the deal. The manager receives one notification linking to the note. Before saving, the author is asked to share the deal or remove the second mention; they share it explicitly, and only then is the colleague notified. Edit the note to add a third user; only that user is notified. Delete the call log, and the colleague's unread mention notification is withdrawn. Verify that no access was granted without the explicit share and that no customer message or score changed.
 
-### RECORD-018 — Files on records, activities and mail.
+#### RECORD-018 — Files on records, activities and mail.
 
 **Files on records and activities.** A user with edit permission on a record (TEAM-005) attaches files to a contact, lead, company, deal or custom-object record (RECORD-014), and to a note, logged call or meeting (RECORD-010) or a task (TASK-001). Files are added by picker or drag and drop on desktop, and from the phone's files or camera on 390px web and the native apps (MOBILE-001). Each record has a Files list that includes the files on its activities and mail. For each file it shows the name, type, size, uploader or source (a user, a captured message, an Orbit send or a migration), the time and the activity it belongs to. File names are searchable (RECORD-006). Uploading a file with the same name to the same record adds a new version and keeps the earlier ones downloadable; OUT-014 records which version was sent.
 
@@ -250,39 +252,39 @@ Each mentioned user receives one in-app notification (NOTIFY-001, NOTIFY-002) na
 
 **Acceptance:** Upload a PDF to a deal and a file to a logged call; see both on the deal's Files list with name, type, size, uploader and time; upload a new version of the PDF; and see an executable and a 150 MB file refused with the reason. Receive a captured Gmail reply with a signed PDF attachment and an inline logo: see the PDF on the contact, company and deal and open it from the timeline entry, with the logo not listed. As a restricted rep, be refused a direct download of a file on a deal you cannot see. Migrate a HubSpot deal with two record attachments and a note attachment, and reconcile file counts and bytes in the dry run and after applying. Export and restore, and compare every file's bytes by SHA-256. Delete a file and see the attributed timeline entry. Erase the contact: their mail attachments are gone from the deal, while the user-uploaded PDF stays.
 
-### MIGRATE-001 — HubSpot Sales Hub migration.
+#### MIGRATE-001 — HubSpot Sales Hub migration.
 
 Connect HubSpot with least-privilege authorization and start one guided migration covering contacts/leads, companies, deals, pipelines/stages, owners (Contact owner, Company owner and deal owner, each kept separate under RECORD-016 and RECORD-007), custom fields, notes, tasks, calls, meetings, email activity, record and activity attachments (RECORD-018) and associations. A saved dry run reconciles source totals, file counts and bytes, mappings, unsupported or unavailable fields, duplicates and consent. Source owners are mapped to explicitly chosen Orbit users without invitations. Resume checkpoints, stable source IDs, rerun reconciliation and conflict-preserving undo carry RECORD-008 safeguards. Provider permission or export restrictions name exactly what the buyer must export; they never silently drop history. HubSpot workflows are listed with each "Edit record" and create action named as mapped to an AUTO-002 action, needing approval under AUTO-002, or having no Orbit equivalent; none is activated without an administrator's preview.
 
 **Acceptance:** From Import choose HubSpot, authorize a test account and preview a multi-company export/API pull including activities, associations, separate Contact, Company and deal owners, and a deal with two record attachments and a note attachment; apply, interrupt/resume and rerun; compare source totals and file counts and bytes, inspect a deal workflow's actions listed against AUTO-002, and undo around native edits. Final acceptance includes a real authorized customer export.
 
-### MIGRATE-002 — Pipedrive migration.
+#### MIGRATE-002 — Pipedrive migration.
 
 One guided Pipedrive connection migrates people, organizations, leads, deals, multiple pipelines/stages, products, owners (person, organization and deal owners, kept separate under RECORD-016 and RECORD-007), custom fields, notes, tasks, calls, meetings, mail activity, files on deals, people, organizations, notes and activities (RECORD-018) and linked associations using the saved review, consent, idempotency, source-count reconciliation and safe undo rules of MIGRATE-001. An unavailable provider field or file must be listed with a concrete export step and retained source reference. Pipedrive automations' update and create actions are listed against AUTO-002 as in MIGRATE-001.
 
 **Acceptance:** Choose Pipedrive, connect an authorized account containing two pipelines, cross-linked activities and deal files, preview/apply, resume a rate-limited page and rerun; reconcile every exported entity and association, then undo without losing a native note. Include a real authorized export.
 
-### MIGRATE-003 — Salesforce Sales Cloud migration.
+#### MIGRATE-003 — Salesforce Sales Cloud migration.
 
 A guided Salesforce OAuth migration maps Leads and conversions, Accounts, Contacts, Opportunities, record types, stages, users, custom fields/objects, products, Notes, Tasks, Events, EmailMessage history, Files (`ContentDocument`, `ContentVersion` and `ContentDocumentLink`) and legacy Attachments (RECORD-018) and associations into the reviewed Orbit model. It previews mapping choices, owner/role translation (Lead, Account, Contact and Opportunity `OwnerId` mapped separately under RECORD-016 and RECORD-007), field permissions and unsupported metadata, preserves original IDs and source currency, and uses incremental checkpoints, repeat-safe application, reconciliation and safe undo. Orbit does not claim to execute Salesforce Apex or rebuild the buyer's Salesforce apps; Flow, Process Builder and workflow-rule field updates and record creations are listed against AUTO-002 actions as in MIGRATE-001, and other unresolved automation is listed for explicit Orbit workflow mapping.
 
 **Acceptance:** Connect a Salesforce sandbox with converted leads, two record types, linked activity/custom-object data and Files on an Opportunity; dry-run, map, apply, interrupt/resume and rerun, reconcile record/association totals and file counts and bytes, and demonstrate conflict-preserving undo. Repeat with an authorized real export.
 
-## Connected selling, follow-up and automation
+### Connected selling, follow-up and automation
 
-### CAPTURE-010 — Continuous authorized mail and calendar reads.
+#### CAPTURE-010 — Continuous authorized mail and calendar reads.
 
 Connect Gmail/Google Workspace and Microsoft 365/Outlook by OAuth, select mail folders/labels, calendars and history window, and continuously capture past and future authorized activity with durable cursors, refresh, replay protection and visible lag. Threads and calendar occurrences link automatically only by exact contact/deal or trusted message identity; ambiguous multi-deal mail is held for review by default. An administrator may instead choose a workspace rule for mail with a contact who is on several open deals: associate it with that contact's most recently active open deal, or with all of that contact's open deals. Each automatic association names the rule on the timeline entry and can be moved to another deal or removed in one action, and mail to a contact with no open deal attaches to the contact and company only (OUT-017). An unknown external participant becomes a CAPTURE-012 new-prospect proposal rather than being dropped, and a contact created later with that exact address receives its synced history. Attachments of captured messages are fetched and kept under RECORD-018. Raw permission and privacy boundaries of CAPTURE-002 through CAPTURE-007 remain. Provider app registration, Google verification and Microsoft tenant/admin consent are delivery work with actionable setup states, not reasons to substitute files for live sync.
 
 **Acceptance:** Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, switch the multi-deal rule to most recently active open deal and see the next such thread associated automatically with the rule named and then moved in one action, see an unknown correspondent become a CAPTURE-012 proposal, see a captured reply's PDF attachment listed on its contact, company and deal with its inline image not listed, revoke/reconnect and verify no unauthorized folder/mailbox is read. Complete an authorized live Gmail and Microsoft tenant journey.
 
-### CAPTURE-011 — Two-way calendar and CRM activity.
+#### CAPTURE-011 — Two-way calendar and CRM activity.
 
 Authorized reps create, reschedule and cancel record-linked meetings from Orbit into Google Calendar or Outlook, and provider-side changes update the same activity and attendees. Explicit calendar/write consent is separate from read access. Recurring exceptions, US daylight-saving changes, organizer rights, attendee privacy, conflict handling and replay are visible. A stale edit requires a fresh review; a cancellation never cancels unrelated occurrences. External invitations require the rep to review exact attendees and message before dispatch.
 
 **Acceptance:** For both calendars create an approved meeting in Orbit, verify it in the provider, reschedule it there and read it back, edit concurrently, cancel one recurring occurrence and reconnect after revocation without duplicate invitations.
 
-### CAPTURE-012 — New prospects from connected mail and calendars.
+#### CAPTURE-012 — New prospects from connected mail and calendars.
 
 For a connected mailbox or calendar source (CAPTURE-010), a message or meeting whose external participant matches no contact or company key is not discarded. When that participant exchanged mail with an operator (the operator wrote to them, or they wrote to the operator) or attended a meeting with one, Orbit holds a new-prospect proposal showing the exact address, display name, domain, thread subjects, dates and message direction. Held mail stays sealed as held evidence in the SIGNAL-004 unlinked queue for 30 days, changes no record or score, and is purged if nobody accepts it. Automated, bulk and list senders (`List-Unsubscribe` or `Precedence: bulk` mail, no-reply and mailer-daemon addresses, calendar notifications), operator and configured internal domains, and an administrator-maintained exclusion list never produce proposals.
 
@@ -292,7 +294,7 @@ Accepting the proposal, or creating a contact with that exact email through any 
 
 **Acceptance:** With a connected Gmail source, send from Gmail to an unknown address at an unknown non-free-mail domain and receive their reply; also receive cold inbound mail from a second unknown person and a bulk newsletter. Verify proposals for the two people (none for the newsletter) with direction and evidence; accept the first with the `rep-initiated conversation` basis and see the full thread back-filled once on the new contact and company, then reply from Orbit on the same thread. Decline the second and confirm it is not proposed again, then create a contact manually for a third earlier correspondent and see their history back-filled. Repeat the inbound case through Microsoft 365.
 
-### FORM-001 — Lead capture forms on the buyer's website.
+#### FORM-001 — Lead capture forms on the buyer's website.
 
 Administrators build forms such as Contact sales and Request a demo, with fields mapped to contact, company and deal properties, including custom fields (RECORD-014). Fields can be required, picklist or free text, and hidden fields can carry a fixed value or a query parameter of the embedding page that the form declares. Each published form is reviewed as exact content before publication. It is available as a hosted page on the installation origin and as an embed on the buyer's allowlisted HTTPS site domains, either framed or posting directly from that origin. Neither form sets a cookie or loads a tracking script (SIGNAL-007), and a submission from any other origin is refused.
 
@@ -304,25 +306,25 @@ Owner assignment keeps an existing contact owner (RECORD-016). Otherwise it uses
 
 **Acceptance:** Build a Contact sales form mapping name, email, company, phone and a custom deal-size field, publish it hosted and embedded on an allowlisted test HTTPS domain, and submit from that domain both framed and by direct post: a new person, an existing contact with a changed name, a honeypot-filled bot entry, a too-fast entry, a replay and a post from a non-allowlisted origin. Verify the contact, company and deal creation, the reviewed proposal for the changed name with the stored value untouched, the consent record, round-robin owners alternating across two reps, one notification per accepted submission, NOW entry, spam and origin refusals with counts, and no cookie or tracker on either page.
 
-### OUT-013 — Gmail and Microsoft 365 mailbox sending.
+#### OUT-013 — Gmail and Microsoft 365 mailbox sending.
 
 After separate send authorization, a rep sends a reviewed one-to-one message or approved sequence step as their connected Gmail/Workspace or Microsoft 365/Outlook mailbox. The message may be composed from any permitted contact, lead, company or deal record, with or without a deal (OUT-017). The same conversation appears in Sent and returns replies to the correct contact, their company and the exactly linked deal when there is one. Signatures, approved attachments, thread references and provider message IDs are retained, and sent attachments are listed on the recipients' records under RECORD-018. Opt-out headers and the link are added only where OUT-020's setting puts them, handled at the installation origin. To, CC and BCC lists, reply and reply all follow OUT-019, sent as one provider message on the provider's own thread or conversation. Current recipient permission, unchanged-content review, quiet hours, OUT-018 per-user budgets, OUT-010 visible deferral, cancellation and ambiguous-outcome rules apply identically across mailbox and existing mail transports; a mailbox is paced per mailbox within its provider's limits (OUT-018), never by a deployment-wide throttle. A disconnected mailbox visibly blocks its sends; it never silently switches identities or transport.
 
 **Acceptance:** Connect each provider, review recipient/subject/body/signature/attachment, send once and verify provider Sent, a real recipient reply and Orbit threading; revoke before a scheduled send and cause a timeout to demonstrate visible uncertainty with no duplicate or transport switch.
 
-### OUT-014 — Reusable personalized templates and sales content.
+#### OUT-014 — Reusable personalized templates and sales content.
 
 Reps save and share permission-controlled templates, snippets and signatures with reviewed contact/company/deal merge fields. Missing or stale variables block sending until reviewed; preview shows the final exact rendered content, attachment links and the message's OUT-020 opt-out state. Template revisions do not retroactively change already approved messages. Teams can attach a versioned proposal or authorized file with explicit size/access failures and record which version was sent, listed on the recipients' records under RECORD-018.
 
 **Acceptance:** Save a team template, render it for two contacts, block one with a missing field, approve one, revise the template and confirm the approved bytes remain unchanged; send an authorized attachment and refuse a forbidden one.
 
-### OUT-015 — Honest open and reply tracking.
+#### OUT-015 — Honest open and reply tracking.
 
 Account and deal timelines distinguish provider acceptance, delivery, an open report and an actual human reply, retaining source and observed time. Open reports are explicitly inferred and may be unavailable or privacy-proxied; they never prove reading, intent or a human response. Reply tracking rejects automatic replies and ambiguous identity for stop/completion decisions. Gmail and Microsoft 365 report no opens or clicks through their APIs, so open and link-click evidence for Orbit-sent mail comes only from OUT-016's disclosed, opt-in per-message tracking; mail without it shows `not tracked`, never `not opened`. SIGNAL-007 otherwise remains: no covert tracking script, pixel, fingerprint or cross-site collection.
 
 **Acceptance:** Ingest accepted/delivered/open events and genuine/automatic/foreign replies; show each distinct status and provenance on the same deal, label unknown opens honestly, and verify only a genuine linked reply exits follow-up.
 
-### OUT-016 — Disclosed per-message open and click tracking.
+#### OUT-016 — Disclosed per-message open and click tracking.
 
 An administrator enables tracking for the workspace, choosing open tracking, link-click tracking or both, and the disclosure text Orbit adds to tracked mail and the workspace privacy notice. Each rep then turns tracking on or off per one-to-one message, template and sequence email step (workspace default off; a rep may set their own default on). The OUT-001 review shows the tracking state, every tracked link and its exact destination, and the approval binds that state with the content. For opted-in mail sent through any Orbit transport, including OUT-013 Gmail and Microsoft 365 mailbox sending and `mail.sender.v1`, Orbit embeds one per-message, per-recipient image token and rewrites each tracked link to a per-message redirect on the installation origin that answers 302 to the reviewed destination unchanged. Gmail and Microsoft 365 report no opens or clicks through their APIs, so these tokens are the only source of open and click evidence and Orbit claims no other.
 
@@ -332,7 +334,7 @@ Opens and clicks never satisfy ACTION-001 evidence, exit or advance a sequence, 
 
 **Acceptance:** Enable open and click tracking with disclosure, approve a tracked one-to-one message sent through OUT-013 Gmail and a tracked sequence step sent through Microsoft 365, open each in a real mail client and click a link; verify one inferred open and one click signal on the deal, a 302 to the unchanged reviewed destination, one deduplicated real-time rep notification, a proxy prefetch and a scanner click labelled automated, no cookie or script, no sequence exit or high band from the open, and `not tracked` on an untracked message; mark the contact do-not-track, erase another contact and verify nothing further is recorded.
 
-### OUT-017 — One-to-one email from any permitted record.
+#### OUT-017 — One-to-one email from any permitted record.
 
 From a contact, lead (RECORD-014), company or deal record, a user with send permission under TEAM-005 composes a one-to-one email To one or more of that record's contacts. On a company record the To recipients are chosen explicitly from its contacts (RECORD-011). The user may add further To, CC and BCC recipients, internal colleagues and reviewed external addresses under OUT-019. The message can be written by hand, rendered from an OUT-014 template, or drafted on request as in ACTION-003, reading that record's evidence under the AI-001 preview. No open opportunity is required. The following can all be emailed:
 - a lead or contact with no company or deal;
@@ -358,7 +360,7 @@ Sequence enrollment (SEQUENCE-001, SEQUENCE-003) needs no deal, and each deal-le
 
 **Acceptance:** Through OUT-013, email a lead with no company or deal from its record and receive a real reply; from a contact record, email a contact whose only deal is closed won and receive their reply; bulk-enroll ten deal-less contacts in a sequence under SEQUENCE-003 and receive a reply to one first step. For each, verify exact-content approval, the sent message and reply threaded onto the contact timeline and, where the contact has one, the company timeline, no deal created or required, the won deal's lifecycle unchanged, and the deal-less awaiting-response line appearing in the brief after the interval and clearing on the reply. Attempt a send to a do-not-contact lead and see it refused; email a contact on an open deal from their company record, link it to the deal and see OUT-005's NEXT move.
 
-### OUT-018 — Sending capacity for a whole sales team.
+#### OUT-018 — Sending capacity for a whole sales team.
 
 Orbit carries the sending volume of the declared team (`seed.json → limits.operators`, 25 users) on separate per-user budgets, so one SDR's sequences never use up another rep's capacity or their own one-to-one replies. The values in this clause are the target. Today's `seed.json → limits` values (`outboundMessagesPerMinute: 3` for the whole deployment and `outboundMessagesPerOperatorPerRollingDay: 100`) are current limits that this clause replaces as build work. `seed.json` keeps declaring the values in force, marked `estimated-until-load-tested` until the acceptance load journey below passes.
 
@@ -380,7 +382,7 @@ An administrator can lower either budget per user or per team, and raise it up t
 
 **Acceptance:** With 12 users (nine AEs, two SDRs and one manager) sending through Gmail and Microsoft 365 mailboxes and the shared transport, in one business morning each user approves 40 one-to-one messages while two SDRs each approve a 100-recipient, four-step SEQUENCE-003 batch. Verify that every one-to-one message is submitted within 60 seconds of its approval while the batches drain; that each SDR's 100 first steps are submitted within the business day inside their own sequence budget, interleaved with the other SDR's; and that no deployment-wide throttle delays a mailbox send. Inject a provider 429 for one mailbox and see only that mailbox's mail deferred, visibly, until its `Retry-After`. Lower one SDR's sequence budget to 50: only that SDR's remaining steps defer, visibly, naming the limit and the next permitted time, while the other SDR's steps and everyone's one-to-one mail continue. Record the measured submission latencies at the declared 25-user capacity before `seed.json` drops `estimated-until-load-tested`.
 
-### OUT-019 — To, CC and BCC, reply and reply all.
+#### OUT-019 — To, CC and BCC, reply and reply all.
 
 **Fields.** Every one-to-one composer and every reply has To, CC and BCC fields. That covers OUT-017 composes from any record, ACTION-003 drafts, OUT-013 mailbox sends and the reply after a CAPTURE-012 acceptance. Autocomplete offers active users and the contacts the user may see under TEAM-005. The draft (ACTION-004) stores the three ordered lists, and changing any of them marks a reviewed draft stale (ACTION-005).
 
@@ -408,7 +410,7 @@ An administrator can lower either budget per user or per team, and raise it up t
 
 **Acceptance:** Through Gmail, receive a captured thread from a contact with two CC'd colleagues, one of them unknown. Reply all from Orbit, adding the team's internal sales engineer in CC and another existing contact in BCC. Verify that the pre-filled To and CC lists leave out the rep's own mailbox; that the unknown colleague needs an explicit choice and becomes a contact with basis `inbound conversation`; that the provider records one message with exactly the approved To, CC and BCC lists and no BCC header in delivered copies; that the reply is logged once on each external contact and once on their company and the linked deal; that the BCC address is absent from the other contacts' timelines and the other recipients' copies; and that a later reply from the CC'd colleague threads back onto their contact, company and deal and closes the awaiting-response obligation. Add a do-not-contact contact in CC and see the send refused, naming them; remove them and approve the re-rendered message. Add a one-off external address and an erased contact's address: the first is sent with its basis recorded, and the second is refused without naming the person. Repeat the reply-all journey through Microsoft 365, and once through `mail.sender.v1` with one-to-one opt-out turned on, where one recipient's opt-out through the message's link stops only that recipient (OUT-020).
 
-### OUT-020 — Opt-out links by message type and per-person opt-out.
+#### OUT-020 — Opt-out links by message type and per-person opt-out.
 
 **Setting per message type.** In Settings an administrator chooses, separately for each message type, whether Orbit adds opt-out headers (`List-Unsubscribe` and `List-Unsubscribe-Post`, OUT-012) and a visible opt-out link to the message:
 - sequence email steps (SEQUENCE-001, SEQUENCE-003) and AUTO-001 workflow email: on by default;
@@ -433,31 +435,31 @@ A user with permission resolves the request by naming the person or people who o
 
 **Acceptance:** With the defaults (one-to-one opt-out off, sequence opt-out on), reply all through Gmail (OUT-013) to a three-person buyer thread and verify that the delivered message has no `List-Unsubscribe` header and no opt-out link; send a sequence step to one of them and verify that it carries `List-Unsubscribe`, `List-Unsubscribe-Post: List-Unsubscribe=One-Click` and the link; remove opt-out from one step as relationship mail and see the review show the marking and the delivered step carry neither. Turn one-to-one opt-out on, see the audit entry, and send a three-recipient message through `mail.sender.v1`: verify that it has no one-click header and one link; one recipient opts out on the page with their own address, and only that contact becomes do-not-contact while the other two can still be emailed and keep their scheduled messages; an address not on the message is refused without listing the recipients. Deliver a signed provider unsubscribe event for that message without a single recipient address: verify that nobody becomes do-not-contact, that every recipient's scheduled message and sequence enrollment pauses with the reason shown, that a new message to one of them is refused naming the request, and that a reply to an inbound message one of them sent after the event can be sent. Resolve the request by naming one person: only they become do-not-contact, the others' paused work resumes, and the resolution is recorded with the user and time.
 
-### TASK-001 — Assigned prioritized recurring sales tasks.
+#### TASK-001 — Assigned prioritized recurring sales tasks.
 
 Reps create contact/company/deal-linked tasks with owner, due date and time, priority, type, notes, recurrence, reminders and open/completed/cancelled states. A Today/overdue view and activity calendar support reassignment, rescheduling and completion with attribution. A recurring occurrence is distinct and completion schedules the next one once; cancellation stops future instances. Removing a rep offers an explicit task handover and never leaves due work silently ownerless. A task assigned or reassigned to someone else notifies its new owner once under RECORD-016's assignment notifications.
 
 **Acceptance:** Create a high-priority due call and weekly follow-up, assign/reassign and complete from the daily task view, see the new assignee notified once, restart around recurrence and verify one next occurrence; remove the rep and hand over remaining tasks.
 
-### NOTIFY-003 — Reminders that reach an absent seller.
+#### NOTIFY-003 — Reminders that reach an absent seller.
 
 An operator chooses due/overdue task reminders and a daily sales digest by email and mobile push, with Slack as an optional team destination. Reminders honor working hours, timezone, recipient preferences and current access, deduplicate per obligation/due revision, stop on completion and escalate overdue work to an explicitly configured manager. The app shows queued, acknowledged, failed and uncertain attempts; provider acknowledgment is not receipt. A missed scheduled run is visible and resumed without a burst of obsolete reminders.
 
 **Acceptance:** Leave Orbit closed, advance a task reminder/digest schedule, receive it in a real mailbox/device and inspect its evidence link; complete or reassign the task before dispatch, simulate a provider failure and restart without stale or duplicate reminders.
 
-### SEQUENCE-001 — Multi-step sales sequences.
+#### SEQUENCE-001 — Multi-step sales sequences.
 
 Any user whose role holds the sequence-authoring permission (TEAM-005; by default sales-admin, manager and seller) defines versioned ordered email, wait, call-task, meeting and manual LinkedIn steps, conditions and business-day delays, keeps the sequence private or shares it with a team or the workspace, and can copy a shared one to edit; a manager can lock a shared sequence against edits. Sends draw on each sender's OUT-018 sequence budget and pace. Email steps are addressed To the enrolled contact, and a step may CC named internal colleagues only (OUT-019). Email steps carry opt-out headers and the link while OUT-020's sequence setting is on (the default); the author may remove them from one step as relationship mail where OUT-020 allows it. Enrollment requires no deal: any contact or lead with an email address can be enrolled, and a deal-less enrollment's messages and replies land on the contact and company timelines under OUT-017. Each later email step is set by the author either to reply in the thread of the enrollment's previous sent step (the same subject with `Re:`, and `In-Reply-To`/`References` to that message) or to start a new subject. The review shows which. A threaded step whose earlier step was never sent starts a new thread, and the review says so. A rep reviews enrollment and the fully rendered exact email content for each recipient and step, individually or as one reviewed batch of up to 100 contacts under SEQUENCE-003; all external emails keep OUT-001 approval and revision fences. Call and LinkedIn steps require a human action and recorded completion, with no protected-network scraping or auto-posting. The enrollment view shows current step, owner, due time, history, paused/failed state and remaining approved work; bulk enrollment cannot bypass individual contact permission.
 
 **Acceptance:** As a seller, create and share with the team a five-step email/call/manual-LinkedIn sequence whose second email step is threaded and CCs the account's sales engineer, and see a read-only user refused authoring; enroll eligible contacts with and without deals with exact-content approvals, complete the manual task, advance business time and restart mid-step; verify one action per due step, the second email arriving in the first email's thread with the internal CC, OUT-018 per-user budget enforcement and no unapproved send.
 
-### SEQUENCE-002 — Immediate sequence exits and accountable outcomes.
+#### SEQUENCE-002 — Immediate sequence exits and accountable outcomes.
 
 Before every step and atomically when a stop arrives, an enrollment exits on a genuine reply (from the enrolled contact or, on a step's thread, from any external participant such as a CC'd colleague, under OUT-019), meeting booking, configured deal-stage change, won/lost outcome, unsubscribe, permanent bounce or human stop. An automatic reply does not count as a successful customer response. Reassignment, revoked permissions and mailbox disconnect pause with a reason. Reports distinguish delivered messages, replies, booked meetings and actual stage/revenue advancement; an open does not count as success. Restart, replay or a late scheduled job cannot revive an exited enrollment.
 
 **Acceptance:** Race an approved due step with each reply/booking/stage/stop event, including a reply on the step's thread from a colleague the buyer CC'd, restart and replay; verify no prohibited send, one exit reason and separate reply/meeting/deal-outcome measures.
 
-### SEQUENCE-003 — Bulk enrollment with one reviewed batch approval.
+#### SEQUENCE-003 — Bulk enrollment with one reviewed batch approval.
 
 A rep or SDR with the sequence-enrollment permission (TEAM-005) selects up to 100 contacts or leads from a saved list, search result or report drill-through (RECORD-014), with or without deals (OUT-017), and enrolls them into one sequence version in a single action. Before anything sends, Orbit renders every email step for every selected recipient with current merge data and shows one batch review. It lists each recipient's eligibility (do-not-contact, missing email, already enrolled, owner mismatch, missing variable, permission), with excluded recipients and their reasons. It gives a navigable list of every rendered message, each opening to its exact recipient, subject, body, signature, attachments, tracking state (OUT-016) and send window, and it shows the schedule each step will follow. The rep may remove recipients or edit any message before approving; an edit re-renders only that item.
 
@@ -467,13 +469,13 @@ Workflow-triggered enrollment (AUTO-001) never sends unreviewed: triggered conta
 
 **Acceptance:** From a saved list of 50 eligible contacts (ten of them on no deal) and 3 ineligible contacts, enroll all of them in a five-step sequence with four email steps in one action; inspect the excluded reasons, open any rendered message, edit one and remove one, then approve once. Advance business time and verify one provider submission per due email step per remaining recipient with no further approval, a per-rep limit of 40 per day deferring the rest visibly to the next window, a merge-field change on one contact holding only that recipient's step for review, and a workflow-triggered contact waiting in the owner's approval queue until its batch is approved.
 
-### AUTO-001 — Configurable sales workflows and visible execution.
+#### AUTO-001 — Configurable sales workflows and visible execution.
 
 Admins build versioned trigger/condition/action workflows for record changes, activities, form submissions (FORM-001), scheduled stale checks and authorized enrichment signals. Actions assign an owner to a deal, contact, lead, company or custom-object record (fixed, the account owner, meaning the company owner under RECORD-016, or round-robin rotation across a team that skips inactive users and records each choice), create/remind tasks, update records under AUTO-002 (set, copy, stamp and clear fields, move a deal's stage and create associated deals, leads and custom-object records, applied without a per-record proposal), notify a team, enroll into an approved sequence through the owner's SEQUENCE-003 batch approval queue, or call a declared webhook. A preview and dry run show affected records and each external effect; human approval binds external content (OUT-001) and, per record, the material changes AUTO-002 lists: deal amount, products, quote values and forecast category, close date, and moving a deal to won or lost or reopening it. Every run retains owner, source evidence, version, due time, stop condition, attempts and outcome; loops, rate limits, revoked authority, errors and dead letters remain visible and manually resumable.
 
 **Acceptance:** Preview and activate a stale-deal rule, trigger it twice, change the record and revoke permission before dispatch; inspect one authorized task/notification, one AUTO-002 field write applied without a proposal, no stale field write/send, and an actionable failed webhook run after restart.
 
-### AUTO-002 — Workflow record updates applied without per-record review.
+#### AUTO-002 — Workflow record updates applied without per-record review.
 
 An active AUTO-001 workflow changes CRM data with nobody clicking anything, as HubSpot's "Edit record" action and Pipedrive's update and create actions do. Its triggers include a record created or changed (including a deal entering a stage or being won), an activity logged (RECORD-010, CAPTURE-010, CALL-001), a form submission (FORM-001) and a schedule.
 
@@ -508,27 +510,27 @@ For each such change, the run creates one approval item for the record's owner, 
 
 **Acceptance:** As a sales admin, activate three workflows, each after its preview shows per-record current and resulting values: "deal created" sets the primary contact's lead status to "Open deal" and the company's lifecycle stage to "Opportunity"; "deal closed won" sets the company and all its contacts to "Customer", stamps "Became customer" with the run date and creates an onboarding task; "meeting logged on a deal in Qualified" moves the deal to "Meeting held". Create a deal, close another won and log a meeting; verify every field value and the stage move are written with no proposal, each with a timeline entry naming the workflow, its version and the trigger, and replay a trigger to see no second write, task or record. Close a deal won whose company lifecycle stage a user edited after the trigger and verify that write is skipped as changed by that user while the contacts and task are updated. Activate a rule that sets a deal amount and verify an approval item waits for the deal owner, with no change until it is accepted. As a manager without the grant to edit a protected field, try to activate a rule writing it and see the refusal naming the field; reduce a sales admin's grant after activation and see the next run refuse that action visibly. Chain two workflows into a loop and see it stop at the depth limit. Undo the closed-won run after a user edited one contact; verify the other values are restored, that contact is listed as skipped and the stage history records the undo. Restart mid-run and resume without a duplicate write.
 
-### CALL-001 — Provider-backed click-to-call.
+#### CALL-001 — Provider-backed click-to-call.
 
 An authorized rep clicks a contact phone number and calls through Twilio or Aircall from the deal. Connection, ringing, answered, no-answer, cancelled and failed outcomes remain distinct; provider callback identities are idempotent. The call log retains rep, participants, time, duration, disposition, next action and deal/contact links. Calls a rep places or takes in the connected Twilio or Aircall app outside Orbit, including inbound calls and callbacks, are logged once from the provider's call events onto the contact matched by exact phone number and, when that contact has one open deal, that deal; a number matching no contact, several contacts or several open deals is held for the rep's review. Calling respects blocked numbers and provider permissions; no failed call is represented as a completed conversation. Provisioning, US number verification and provider approval are explicit setup work.
 
 **Acceptance:** Connect Twilio and Aircall in turn, initiate a call from a real deal to an authorized test number, record answered/no-answer/failed dispositions, replay callbacks and revoke the connection; verify one truthful linked call each time. Place one call and receive one inbound call in the Aircall app outside Orbit and verify each is logged once on the matched contact and deal, with an unknown number held for review.
 
-### CALL-002 — Consented recordings and cited transcripts.
+#### CALL-002 — Consented recordings and cited transcripts.
 
 With the business's selected recording policy and the participants' required consent, calls and meetings attach provider recordings and timecoded transcripts to the right deal/contact under current access. A recording refused or unavailable is stated plainly; no transcript is fabricated. Reps review speaker identity, recap, commitments and proposed CRM changes against cited timestamps before accepting material updates or sending follow-up. Erasure covers stored recordings, transcripts, derived notes and provider-deletion requests, showing external completion separately.
 
 **Acceptance:** Record an authorized test call, decline consent on another, read timestamped transcript evidence from the deal, correct a speaker and approve a stale-guarded proposal; deny an unauthorized user and erase local and provider copies.
 
-## Sales management
+### Sales management
 
-### REPORT-001 — Sales dashboards and saved reports.
+#### REPORT-001 — Sales dashboards and saved reports.
 
 Managers and reps view pipeline value/count by pipeline/stage/owner, won/lost reasons, revenue, conversion, win rate, stage age, sales cycle, rep activities, task completion, sequence replies and bookings. Save, share and export filtered/grouped reports with period, timezone, source fields, definitions, currency, missing data and freshness disclosed. Drill-through reconciles aggregates to authorized deals and activities; access changes cannot leak hidden amounts through totals. Historical snapshots preserve their definition and distinguish late-arriving data from the original measured result. REPORT-002 composes these reports into shared, filtered and scheduled dashboards.
 
 **Acceptance:** Build and save a US monthly report for two pipelines containing won/lost/open deals and rep activities, reconcile every total and reason by drill-through, export and reopen it after access revocation and late evidence.
 
-### REPORT-002 — Shared sales dashboards.
+#### REPORT-002 — Shared sales dashboards.
 
 A manager composes a dashboard from saved REPORT-001 reports and FORECAST-001 forecast views as up to 24 tiles: chart, table, single number or forecast against quota. The tiles sit in a grid that reflows on a phone (MOBILE-001). Dashboard filters apply to every tile that has the field: owner, team, pipeline, a date range in the workspace's US timezone, and any shared report field. A tile that cannot take a filter says so on the tile instead of silently showing unfiltered data.
 
@@ -538,99 +540,107 @@ A dashboard exports as PDF, with CSV per tile. It can be scheduled for email del
 
 **Acceptance:** As a manager, build a dashboard with at least four tiles: open pipeline by stage across two pipelines, won/lost reasons this quarter, activities by rep, and forecast against quota. Apply owner, team and date-range filters, share it with the sales team and set it as the team default. Sign in as a restricted rep and verify that the same dashboard opens by default and shows only totals that reconcile with that rep's permitted drill-through, with no hidden count. Schedule a weekly email to the manager and the rep and verify each received copy matches its recipient's access. Delete one source report and see an unavailable tile.
 
-### FORECAST-001 — Weighted forecasts, quotas and revenue schedules.
+#### FORECAST-001 — Weighted forecasts, quotas and revenue schedules.
 
 Managers set stage probabilities, forecast categories, per-rep/team monthly or quarterly USD quotas and revenue schedules for one-time and recurring deal lines. Forecasts separate open unweighted value, weighted expected value, committed/best-case/pipeline, closed-won bookings, recurring revenue and quota attainment. Inputs and overrides retain actor, reason, timestamp and an as-of snapshot; stale or missing close dates/probabilities are visible, and sales forecast never claims to be recognized accounting revenue. Weighted value is amount times reviewed probability, independent of engagement score.
 
 **Acceptance:** Create USD 10,000 at 30% and USD 20,000 at 60%, require USD 15,000 weighted total, apply a documented override and close one won; compare rep/team quota attainment, recurring schedule and preserved prior-period snapshot.
 
-### QUOTE-001 — Products, quotes and signatures.
+#### QUOTE-001 — Products, quotes and signatures.
 
 Reps maintain products and price books and create versioned deal quotes with quantities, USD unit prices, discounts, explicit US sales-tax treatment, expiration and approval thresholds. Review the exact proposal and recipient before sharing; the customer receives a hosted quote page and a PDF of exactly the approved version, with an optional Stripe or Nectar payment link when the quote says so; DocuSign handles signature envelopes and a signed or declined outcome returns to the deal without silently marking an unsigned quote won. Approved versions, signers, provider IDs and signed-document links remain attributable and portable. Stripe/Nectar and QuickBooks Online/Xero receive only a reviewed billing/accounting handoff, preventing duplicate customers or invoices.
 
 **Acceptance:** Quote two products with discount and tax disclosure, require manager approval above its threshold, send the approved version through DocuSign, reject an old version and process signed/declined callbacks once; review the resulting billing handoff.
 
-## Category integrations and enrichment
+### Category integrations and enrichment
 
-### INTEGRATE-001 — Dial and Calendly bookings.
+#### INTEGRATE-001 — Dial and Calendly bookings.
 
 An account/contact/deal shows Dial and Calendly booking links and booked/rescheduled/cancelled/completed appointments with exact attendee identity, provider ID, times and meeting context. Reps share an appropriate booking link in reviewed outreach; availability, routing and booking-page configuration remain in the booking product. Duplicate/late booking events update one activity and apply reply/booking sequence stops, while ambiguous attendees wait for review. Disconnect and signature failures are visible.
 
 **Acceptance:** Connect Dial and Calendly, share a reviewed link, book/reschedule/cancel from each provider and inspect the same deal activity and sequence exit; replay and reject a forged callback.
 
-### INTEGRATE-002 — Zoom meetings and preparation.
+#### INTEGRATE-002 — Zoom meetings and preparation.
 
 Connect Zoom to link the actual meeting URL, attendees, provider meeting ID, recording/transcript permission and completion to a scheduled deal activity. Orbit supplies record-backed meeting preparation and reviewed follow-up; Zoom runs the meeting. Provider unavailable, consent denied, missing transcript and ambiguous participants remain visible. A meeting cancellation stops associated preparation/follow-up work and never cancels unrelated events.
 
 **Acceptance:** Connect Zoom, attach an authorized meeting to a deal, open its preparation, finish it and review a cited recap; deny recording permission, replay completion and cancel a second meeting without fabricated context.
 
-### INTEGRATE-003 — Nectar and Stripe billing context.
+#### INTEGRATE-003 — Nectar and Stripe billing context.
 
 Account and deal records link Nectar and Stripe customers, subscriptions, invoices and payment status using explicitly reviewed identity mappings. Show currency, amount, overdue/paid/cancelled/refunded state and source freshness; a billing event is evidence, not automatic proof that a deal is won. Reps hand an approved order to Nectar/Stripe and follow a deep link to collection, with idempotent external references and no duplicate invoice on replay. Orbit neither stores card/ACH credentials nor becomes a billing ledger.
 
 **Acceptance:** Link a Stripe test customer and Nectar account to a USD deal, ingest invoice paid/past-due/refund events, replay them and inspect one status timeline; approve a billing handoff and deny a mismatched customer.
 
-### INTEGRATE-004 — HappyToHelp, Help Scout and Zendesk account context.
+#### INTEGRATE-004 — HappyToHelp, Help Scout and Zendesk account context.
 
 Accounts show authorized ticket summary, severity, status, last update and deep links from HappyToHelp, Help Scout and Zendesk. Sales users may raise or hand off a ticket with reviewed context and see its outcome; support replies and SLA work remain in the support product. Ticket visibility follows both systems' grants, sensitive ticket content is excluded unless specifically authorized, and disconnect or deleted tickets show unavailable state rather than a healthy account inference.
 
 **Acceptance:** Connect each support service, map a customer, open a ticket on its sales account, restrict a ticket and revoke access; verify current visibility and one reviewed handoff with a returned support outcome.
 
-### INTEGRATE-005 — Slack sales notifications and handoffs.
+#### INTEGRATE-005 — Slack sales notifications and handoffs.
 
 Admins connect Slack and choose channels and event types for deal movement, wins, due work and handoffs. Messages contain only allowed fields and an authenticated Orbit link; private account data cannot enter a broader channel. Users can acknowledge or create an internal task under mapped Orbit identity, never approve customer mail through an unbound channel action. Rate limits, unaccepted failures and uncertain submissions remain visible and deduplicated.
 
 **Acceptance:** Route a stage event and overdue task to an authorized Slack channel, replay the event, deny a private-account disclosure and submit a revoked or foreign action; inspect one correct notification and attributable task.
 
-### INTEGRATE-006 — QuickBooks Online and Xero accounting handoff.
+#### INTEGRATE-006 — QuickBooks Online and Xero accounting handoff.
 
 Connect QuickBooks Online and Xero to map customer/product IDs and hand reviewed accepted quotes/orders into invoices while reading invoice and payment status back onto the deal. Preview account/currency, line, discount and sales-tax mappings and reconciliation conflicts. Orbit does not calculate tax filings, post an independent ledger or claim to collect payment; the accounting service owns those records. A retry reuses the approved external reference and never duplicates an invoice.
 
 **Acceptance:** For both services approve a USD quote-to-invoice handoff, inspect provider lines/tax/identity, receive partial and full payment status and replay a timed-out result without a second invoice.
 
-### INTEGRATE-007 — Mailchimp audience and suppression handoff.
+#### INTEGRATE-007 — Mailchimp audience and suppression handoff.
 
 Sales users preview and hand explicitly consented contacts and selected fields to a Mailchimp audience, with source/basis of consent and stable external IDs. Unsubscribe, permanent bounce and do-not-contact remain the stricter state across both systems; a later sync never silently re-subscribes a stopped person. Mailchimp owns bulk campaigns and marketing automation; Orbit owns individual sales sequences and their outcomes.
 
 **Acceptance:** Preview an audience containing subscribed, unknown and stopped contacts; sync only the authorized subset, ingest unsubscribe and replay a prior subscription update; verify no resumed outreach or duplicate subscriber.
 
-### INTEGRATE-008 — Buoy post-sale handoff.
+#### INTEGRATE-008 — Buoy post-sale handoff.
 
 After a human confirms a won deal, Orbit previews and transfers the approved account/contact identity, purchased products, commercial commitments, sales evidence references and receiving owner to Buoy. A stable handoff ID links the products, records Buoy acceptance or an actionable failure and reconciles replay without duplicate accounts. Only permitted account context flows back; health scores, onboarding playbooks, adoption, renewals and customer-success intervention remain in Buoy. Orbit retains the original sales history and can reopen a sales opportunity without rewriting the success record.
 
 **Acceptance:** Close an authorized USD deal won, preview and approve its Buoy handoff, inspect the linked receiving account/owner and acceptance, then replay, revoke access and fail the provider; verify one handoff, visible failure and no customer-success workflow built inside Orbit.
 
-### ENRICH-001 — Licensed enrichment and change signals.
+#### ENRICH-001 — Licensed enrichment and change signals.
 
 An admin selects licensed sources including Clay and its approved providers, chooses contact/company fields, freshness, schedule and USD spending limits, and previews a multi-provider waterfall. Enrichment adds provenance, confidence, fetched time and a conflict proposal alongside existing customer evidence. Company news, hiring and job changes refresh on schedule; failed or empty provider results remain distinct from verified absence. Human-reviewed identity and material changes are required, buying data never makes a person contactable, and erasure/suppression fences prevent re-creation.
 
 **Acceptance:** Configure a Clay waterfall with two permitted providers, preview cost/fields, enrich a company and contact, refresh a verified job change and conflicting phone, exceed budget, fail one provider and erase/replay; no guessed identity, invented value or outreach permission appears.
 
-### API-001 — Public REST API and outbound webhooks.
+#### API-001 — Public REST API and outbound webhooks.
 
 Publish a versioned REST API for permitted contact, company, deal, custom-object, association, note, activity, file (RECORD-018), task, pipeline, report and sequence operations. Admin-issued scoped credentials, pagination, filters, schema errors, rate-limit headers, idempotent writes and optimistic concurrency match native permissions and erasure rules. Signed versioned outgoing webhooks cover changes and sales outcomes, expose event identity, delivery history, retry/dead-letter controls and safe manual replay. Incoming owned-system events keep SIGNAL-009; generic API access never grants exact-message approval or restores expired authority.
 
 **Acceptance:** Create/update/list a deal with a scoped API credential, test pagination, stale writes, revoked scope and denied fields, subscribe an endpoint and verify signed replay-safe change events and visible failed delivery; erase the contact and verify API/export absence.
 
-## Mobile, portability and operation
+### Mobile, portability and operation
 
-### MOBILE-001 — Sales on mobile and desktop.
+#### MOBILE-001 — Sales on mobile and desktop.
 
 At 1440px desktop and 390px phone widths, sellers can search customers, inspect full deal/activity history, work due tasks, change stage, log/call, compose and send new one-to-one email and replies including reply all (OUT-017, OUT-019) under the same exact-message approval, review/send approved outreach and inspect current sync/send failures with keyboard and assistive-technology support. Native iOS and Android apps add push reminders, permitted contact capture and offline notes/tasks with explicit pending/conflict states; offline capture cannot queue an unreviewed external message or show unsynced changes as committed. A revoked session or device loses private data and sending authority.
 
 **Acceptance:** Use the same realistic USD account on desktop, 390px web, iOS and Android; complete task/call/note/stage journeys and exact-message journeys for a new one-to-one email, a reply all and an approved outreach, lose network mid-edit, resolve a conflict, receive push and revoke the device without stale sends.
 
-### DATA-003 — Full-target portability, privacy and audit.
+#### DATA-003 — Full-target portability, privacy and audit.
 
 Every added sales feature inherits BASE-DATA retention, erasure, declared external flows and the permanent anonymized audit. Complete product exports include custom schemas/relationships, multi-pipeline definitions/history, tasks/recurrence, workflow and sequence definitions/enrollment/outcomes, call/transcript evidence, quotes, forecast snapshots/quotas, integration identities/provenance, files and their versions with SHA-256 digests (RECORD-018) and agent decisions. Restore validates integrity into eligible empty data, preserves customer history but pauses external work until fresh authorization and review; it never replays messages, charges or calls. Erasure covers local evidence/derivatives and tracks required provider-deletion requests separately; downloaded archives and already sent external content cannot be recalled. Export permission is independently enforced and external costs are visible in USD.
 
 **Acceptance:** Populate each target feature, export/restore/export and reconcile content and anonymous audit while proving no credential or dispatch authority travels; erase a contact and inspect every read/search/report/AI/export plus pending provider deletion without claiming external recall.
 
-### OPS-001 — Owned operation and explicit provider failures.
+#### OPS-001 — Owned operation and explicit provider failures.
 
 Keep native sign-in, secret custody, origin checks, baseline audit, health, safe migration and source independence as deployable product obligations. When an administrator enables it, users also sign in with Google Workspace or Microsoft 365 (Microsoft Entra ID) through OpenID Connect. Only an invited, active user whose provider-verified email matches their Orbit identity signs in. The administrator may require provider sign-in for the workspace's email domain. Magic-link sign-in remains available unless disabled, and removing the user or the provider configuration ends their access on the next request. Each connector declares fields sent, scopes, credential custody, expected costs, freshness and disable/reconnect controls before activation. Provider apps, tenant approvals, recording consent, US sending requirements, native distribution and provider agreements are tracked setup/engineering obligations. An optional provider failure leaves authorized manual CRM work usable with honest unavailable states; it never fabricates a successful sync, call, forecast or send.
 
 **Acceptance:** Install an empty edition through the supported CLI, sign in, enable Google and Microsoft sign-in and sign in with each as an invited user while an uninvited and an unverified address are refused, configure one mail provider, revoke it, restart and upgrade with populated data; inspect credential-free diagnostics, working manual records and preserved audit, then reconnect without replaying customer actions.
+
+### Honest boundaries
+
+#### BOUNDARY-001 — Separate products and US-first delivery.
+
+Orbit owns the complete sales CRM job, including calling, sales sequences, quoting, forecasts, automation and native mobile. It does not become a marketing CMS/ads-attribution suite, customer-success platform, support inbox, booking engine, payment processor, lender, accounting/tax ledger, PSTN carrier or signature trust service. Buyers reach those jobs through Buoy, HappyToHelp/Help Scout/Zendesk, Dial/Calendly, Nectar/Stripe, Mailchimp, QuickBooks Online/Xero, Twilio/Aircall and DocuSign integrations named above. US-first means USD defaults, US operating timezones and daylight-saving behavior, US business/accounting handoffs and explicit sales-tax treatment on quotes. Broader currency/locale support can extend the model without replacing source monetary values. No difficulty, missing provider approval or pending agreement removes a named CRM obligation. Agents never self-authorize customer outreach or scrape protected prospect networks.
+
+**Acceptance:** Walk a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff; inspect the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 ## Push further
 
@@ -657,14 +667,6 @@ For an accepted promise, pending quote, unanswered request or meeting, the agent
 Admins compose research agents from selected CRM evidence, licensed web research and explicitly allowlisted MCP tools. Each run previews allowed records, destinations, fields, tool permissions, USD token/provider budget, schedule and proposed outputs. Structured cited results feed reviewed workflow steps or enrichment proposals, with no hidden expansion of data access. Tool content is untrusted evidence and cannot authorize a send, buy data beyond budget, change commercial terms or override human approval. Revocation stops future reads/effects; failed or schema-invalid output remains failed without fabricated repairs.
 
 **Acceptance:** Configure a selected-account web/MCP research block with a USD cap, preview its data, return structured citations into a proposed workflow task, inject untrusted instructions and revoke access mid-run; verify only allowed evidence leaves, no external message runs and budget/schema failures remain visible.
-
-## Honest boundaries
-
-### BOUNDARY-001 — Separate products and US-first delivery.
-
-Orbit owns the complete sales CRM job, including calling, sales sequences, quoting, forecasts, automation and native mobile. It does not become a marketing CMS/ads-attribution suite, customer-success platform, support inbox, booking engine, payment processor, lender, accounting/tax ledger, PSTN carrier or signature trust service. Buyers reach those jobs through Buoy, HappyToHelp/Help Scout/Zendesk, Dial/Calendly, Nectar/Stripe, Mailchimp, QuickBooks Online/Xero, Twilio/Aircall and DocuSign integrations named above. US-first means USD defaults, US operating timezones and daylight-saving behavior, US business/accounting handoffs and explicit sales-tax treatment on quotes. Broader currency/locale support can extend the model without replacing source monetary values. No difficulty, missing provider approval or pending agreement removes a named CRM obligation. Agents never self-authorize customer outreach or scrape protected prospect networks.
-
-**Acceptance:** Walk a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff; inspect the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 ## Approved scope mapping
 
