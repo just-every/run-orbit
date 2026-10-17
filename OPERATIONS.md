@@ -1,10 +1,10 @@
 # Orbit operations
 
-Orbit runs through its RER CLI, `rer VERB` (or `pnpm run VERB -- FLAGS`), installed with the one-line installer from the Run page, which brings its own Node; project commands select the pinned Node 22.20.0 and pnpm 10.12.4. [README.md](README.md) gives the local sequence; `rer describe` prints every command, flag, effect and pin from `OPERATIONS.json`, and [SEED-COMMAND-CONTRACT.md](SEED-COMMAND-CONTRACT.md) defines their shared behaviour and exit codes. `rer check --profile first-party` validates that contract structurally without dependencies or settings; it never claims hosted health.
+Orbit runs through its RER CLI, `rer VERB` (or `pnpm run VERB -- FLAGS`), started from nothing with `npx -y @runeditrun/rer dev just-every/run-orbit` (or, without Node, the one-line installer on the Run page, which brings its own); project commands select the pinned Node 22.20.0 and pnpm 10.12.4. [README.md](README.md) gives the local sequence; `rer describe` prints every command, flag, effect and pin from `OPERATIONS.json`, and [SEED-COMMAND-CONTRACT.md](SEED-COMMAND-CONTRACT.md) defines their shared behaviour and exit codes. `rer check --profile first-party` validates that contract structurally without dependencies or settings; it never claims hosted health.
 
 ## Local installation
 
-From a fresh clone, run `rer dev`: it installs dependencies, prepares the local trial owner (`owner@run-orbit.test`, named after the `run-orbit` folder) and starts Orbit. Open `RER_OPEN` on this computer to sign in automatically. The optional explicit sequence is `rer install`, `rer setup --owner-email EMAIL`, `rer dev`. Stop dev and preview before CLI export, import, reset, build or verification.
+Start it with `npx -y @runeditrun/rer dev just-every/run-orbit`, or run `rer dev` in an existing clone: it installs dependencies, prepares the local trial owner (`owner@run-orbit.test`, named after the `run-orbit` folder) and starts Orbit. Open `RER_OPEN` on this computer to sign in automatically. The optional explicit sequence is `rer install`, `rer setup --owner-email EMAIL`, `rer dev`. Stop dev and preview before CLI export, import, reset, build or verification.
 
 | Path | Holds | Reset |
 | --- | --- | --- |

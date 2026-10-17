@@ -779,7 +779,7 @@
       "executable": false
     },
     "docs/overview.md": {
-      "sha256": "a549b53f81728a4826ff2432c0a85494d9b08500abfa2ed78dcead4e861755eb",
+      "sha256": "5b55ad319453f42306de113d49d407315ffcc739df86636d7cbd2ba3d656ada2",
       "executable": false
     },
     "docs/retained-verification/browser-results.jsonl": {
@@ -967,7 +967,7 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "d5202f3ecadc2cdbc241c8acb7802eeafd702ae2230936209dc1fa397e39b97f",
+      "sha256": "771433436330ab747493e2684ea0159905f32d9e4b8a6def989caa5a5a3117c7",
       "executable": false
     },
     "LICENSE": {
@@ -2367,7 +2367,7 @@
       "executable": false
     },
     "OPERATIONS.md": {
-      "sha256": "cda47fcb3d9af28bda7209c3dac72fc9fc32731e87512a00cd6e5070744724dd",
+      "sha256": "de1e6d95ccc9811143299b1072d27f8228c33a09c19049c72fb0f8cb39d0e5e8",
       "executable": false
     },
     "OWNER-STEPS.md": {
@@ -2463,7 +2463,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "9b89dfa7374840d6b1ec1e15e2740127479cbe86ccb2d1eadeacc2d3af3cc732",
+      "sha256": "336f425b846ac43d2557e7e4e19c22cb8edb3fb16d011cb008adb9e32c2b1895",
       "executable": false
     },
     "RECORD-POLICIES.md": {
@@ -2483,7 +2483,7 @@
       "executable": false
     },
     "RUN-LOCALLY.md": {
-      "sha256": "eb57c4d7422f0271f4a2698c7a9c405a2c1ba2a45a80abb2259fd2be0d9621d4",
+      "sha256": "3e183f3e2628ebfe2931ef878171ed05bb0909f05f492e80c45053bed0e7b3f2",
       "executable": false
     },
     "schema/fold/0016_collaborator_access.sql": {
@@ -4062,6 +4062,10 @@
       "sha256": "21e828b6f741510e68e0fcaf0454505ee70a71284d0ca727e3c38700917b600b",
       "executable": false
     },
+    "src/core/features/operator/ui/delivery-outcomes.tsx": {
+      "sha256": "fe69c6f9ea67ff87f3ab31458b3e514f6018521cadea0fb281a62ec16c2805d4",
+      "executable": false
+    },
     "src/core/features/operator/ui/do-not-contact-reason.tsx": {
       "sha256": "019a4e8324f4198e661abb6c163c434835ce843c1865a39bc538d7159f1f8f84",
       "executable": false
@@ -4324,6 +4328,10 @@
     },
     "src/core/features/outreach/approval-repository.ts": {
       "sha256": "d1a483b6b165b16209dedc4c54816ee0bb3976d22b13c24e7fcdaf3c3eea370d",
+      "executable": false
+    },
+    "src/core/features/outreach/delivery-outcomes.ts": {
+      "sha256": "8ebc0328e826b0f4823332157c29cda5939bb858eef9d86c9a66160e1367cea7",
       "executable": false
     },
     "src/core/features/outreach/mailbox-comments.ts": {
