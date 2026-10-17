@@ -18,7 +18,7 @@ assert.ok(root?.startsWith('/')&&origin?.startsWith('https://'),'Explicit privat
 assert.notEqual(origin,'https://orbit.justevery.com');
 const state=JSON.parse(await readFile(process.env.ORBIT_ACCEPTANCE_STORAGE_STATE,'utf8'));
 const cookie=state.cookies.find(row=>row.name==='__Host-orbit_session');assert.ok(cookie);
-const sourceOrigin='https://orbit.justevery.com',receive=await mailbox(),browser=await chromium.launch();
+const sourceOrigin='https://orbit.justevery.com',receive=await mailbox(),browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
 const sourceFile=root+'/source.json',targetFile=root+'/restored.json';
 async function inventory(file){
  const tables={};

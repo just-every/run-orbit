@@ -11,7 +11,7 @@ const configPath=process.env.ORBIT_PRIVATE_CONFIG,statePath=process.env.ORBIT_AC
 if(!configPath||!statePath||!isAbsolute(configPath)||!isAbsolute(statePath))throw new Error('Absolute ORBIT_PRIVATE_CONFIG and ORBIT_ACCEPTANCE_STORAGE_STATE are required; obtain state through actual emailed native sign-in.');
 const configuration=JSON.parse(await readFile(configPath,'utf8')),origin=configuration.AUTH_ORIGIN;
 if(origin!=='https://orbit.justevery.com')throw new Error('This bounded acceptance run is authorized only for the named Orbit deployment.');
-const receive=await mailbox(),browser=await chromium.launch(),context=await browser.newContext({storageState:statePath}),page=await context.newPage();await mkdir('verification',{recursive:true});
+const receive=await mailbox(),browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']}),context=await browser.newContext({storageState:statePath}),page=await context.newPage();await mkdir('verification',{recursive:true});
 try{
  const api=async(path,body)=>{const response=await context.request.fetch(`${origin}/api/v1/${path}`,{method:body?'POST':'GET',headers:{Origin:origin},...(body?{data:body}:{})});if(!response.ok())throw new Error(`Authenticated acceptance endpoint failed: HTTP ${response.status()} ${path}`);return response.json();};
  console.log('Verifying real reviewed outreach, SMTP delivery, threaded reply and provider unsubscribe.');

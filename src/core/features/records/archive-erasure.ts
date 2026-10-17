@@ -29,6 +29,7 @@ export async function archiveErasureStatements(db: D1Database) {
     // Renaming archive_jobs retargets this trigger; restore its original definition.
     if (stepTrigger) statements.push(db.prepare('DROP TRIGGER archive_step_current'), db.prepare(stepTrigger.sql));
     if(await db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='archive_storage_reservations'").first())statements.push(db.prepare('DELETE FROM archive_storage_reservations'),db.prepare('DELETE FROM archive_job_profiles'),db.prepare('DELETE FROM archive_storage_observations'));
+    if(await db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='archive_file_identities'").first())statements.push(db.prepare('DELETE FROM archive_file_identities'));
     statements.push(db.prepare("DELETE FROM runtime_controls WHERE name='archive_erasure'"));
     return statements;
 }

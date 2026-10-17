@@ -15,10 +15,10 @@ export function DraftPage() {
   const { id } = useParams({ from: "/app/drafts/$id" });
   const loadDraft = useCallback(async () => {
     const [{ draft }, { presentation }] = await Promise.all([operatorApi.readDraft(id), operatorApi.readWorkspacePresentation()]);
-    const [{ opportunity }, history] = await Promise.all([operatorApi.readOpportunity(draft.opportunityId), fetch(`/api/v1/workbench/opportunities/${encodeURIComponent(draft.opportunityId)}/messages`).then(response => response.ok ? response.json() as Promise<{ messages: SubmittedMessage[] }> : { messages: [] })]);
+    const [{ opportunity }, history] = await Promise.all([operatorApi.readOpportunity(draft.opportunityId), fetch(`/api/v1/workbench/opportunities/${encodeURIComponent(draft.opportunityId)}/messages`).then(response => response.ok ? response.json() as Promise<{ messages: SubmittedMessage[];mailProvider?:string }> : { messages: [],mailProvider:undefined })]);
     // This exact revision was already approved: show what happened to it instead of an editor.
     const submitted = history.messages.find(message => message.draftId === draft.id && message.revision === draft.revision && !["draft", "cancelled"].includes(message.state)) ?? null;
-    return { draft, presentation, opportunity, submitted };
+    return { draft, presentation, opportunity, submitted, mailProvider:history.mailProvider };
   }, [id]);
   const resource = useOperatorResource(`draft:${id}`, loadDraft);
   const [draft, setDraft] = useState<OperatorDraft | null>(null);
@@ -112,7 +112,7 @@ export function DraftPage() {
             <div><dt>Revision</dt><dd>{draft.revision}</dd></div>
           </dl>
         </details>
-      {resource.data.submitted ? null : <DraftApproval onSubmitted={setJustSubmitted} recipientName={resource.data.opportunity.contacts.find(contact=>contact.id===draft.recipientContactId)?.name??undefined} draft={draft} dirty={draft.recipientEmail !== resource.data?.draft.recipientEmail || draft.subject !== resource.data?.draft.subject || draft.body !== resource.data?.draft.body} />}
+      {resource.data.submitted ? null : <DraftApproval mailProvider={resource.data.mailProvider} onSubmitted={setJustSubmitted} recipientName={resource.data.opportunity.contacts.find(contact=>contact.id===draft.recipientContactId)?.name??undefined} draft={draft} dirty={draft.recipientEmail !== resource.data?.draft.recipientEmail || draft.subject !== resource.data?.draft.subject || draft.body !== resource.data?.draft.body} />}
     </OperatorShell>
   );
 }

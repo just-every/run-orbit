@@ -18,8 +18,8 @@ export class OutreachService {
    if(state==='delivery-unknown')await this.db.prepare('UPDATE outbound_messages SET next_attempt_at=? WHERE id=?').bind(new Date(now.getTime()+300000).toISOString(),message.id).run();
    return {id:message.id,state};
   }
-  try{await repository.settle(message.id,message.operator_id,'accepted',receipt.providerMessageId,null);}catch(error){
-   await this.db.prepare("UPDATE outbound_messages SET state='reconciling',provider_message_id=?,failure='Provider accepted; local settlement needs reconciliation',next_attempt_at=?,updated_at=? WHERE id=? AND state='queued'").bind(receipt.providerMessageId,new Date(Date.now()+300000).toISOString(),new Date().toISOString(),message.id).run();
+  try{await repository.settle(message.id,message.operator_id,'accepted',receipt.providerMessageId,null,receipt.messageId);}catch(error){
+   await this.db.prepare("UPDATE outbound_messages SET state='reconciling',provider_message_id=?,message_id=COALESCE(?,message_id),failure='Provider accepted; local settlement needs reconciliation',next_attempt_at=?,updated_at=? WHERE id=? AND state='queued'").bind(receipt.providerMessageId,receipt.messageId??null,new Date(Date.now()+300000).toISOString(),new Date().toISOString(),message.id).run();
    return {id:message.id,state:'reconciling'};
   }
   return {id:message.id,state:'accepted'};
@@ -45,6 +45,12 @@ export class OutreachService {
   await this.db.prepare("UPDATE outbound_messages SET state='delivery-unknown',failure='Submission was interrupted without a receipt',next_attempt_at=?,updated_at=? WHERE state='queued' AND claimed_at<?").bind(now.toISOString(),now.toISOString(),new Date(now.getTime()-120000).toISOString()).run();
   const messages=await this.db.prepare("SELECT * FROM outbound_messages WHERE state IN('reconciling','delivery-unknown') AND (next_attempt_at IS NULL OR next_attempt_at<=?) ORDER BY created_at LIMIT ?").bind(now.toISOString(),limit).all<OutboundMessage>();
   for(const message of messages.results){
+   // A saved receipt proves acceptance even when the original settlement transaction failed.
+   if(message.provider_message_id){await new OutreachRepository(this.db).settle(message.id,message.operator_id,'accepted',message.provider_message_id,null);continue;}
+   if(this.mail.provider==='rer'&&!this.mail.lookup){
+    await this.db.prepare("UPDATE outbound_messages SET failure='Managed mail acceptance is unresolved. Reconcile with the recipient or hosting provider before resending; automatic resend is disabled.',next_attempt_at=?,updated_at=? WHERE id=?").bind(new Date(now.getTime()+300000).toISOString(),now.toISOString(),message.id).run();
+    continue;
+   }
    if(now.getTime()-Date.parse(message.first_attempt_at??message.approved_at)>=86400000){await new OutreachRepository(this.db).settle(message.id,message.operator_id,'failed',message.provider_message_id,'Provider acceptance remained unresolved for 24 hours.');continue;}
    await this.db.prepare('UPDATE outbound_messages SET next_attempt_at=? WHERE id=?').bind(new Date(now.getTime()+300000).toISOString(),message.id).run();
    try{if(!this.mail.lookup)throw new Error('Mail adapter must support lookup by durable delivery ID.');const receipt=await this.mail.lookup(message.idempotency_key);if(receipt)await new OutreachRepository(this.db).settle(message.id,message.operator_id,'accepted',receipt.providerMessageId,null);}

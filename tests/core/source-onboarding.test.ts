@@ -1,3 +1,4 @@
+import {createOutboundMail,type OutboundMail} from '../../src/core/platform/outbound-mail';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {createHmac,randomBytes} from 'node:crypto';
@@ -7,9 +8,13 @@ import {createDependencies} from '../support/dependencies';
 import {createId} from '../../src/core/shared/ids';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
 
-async function fixture(){const platform=await isolatedDatabase(),db=platform.db,deps=createDependencies(db),actor=createId(),stage=createId();await deps.auth.ensureOperator({id:actor,email:'owner@example.test',displayName:'Owner'});await deps.workspace.ensureWorkspace({name:'First hour',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});await deps.workspace.ensurePipelineStage({id:stage,name:'Discovery',position:0});const session=await deps.auth.createSession(actor);let sends=0;const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex')}),outboundMail:{send:async()=>{sends++;return{providerMessageId:'paid-edge-acceptance'};}}});const headers={Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'};const request=(path:string,method='GET',body?:unknown,override:Record<string,string>={})=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{...headers,...override},body:body===undefined?undefined:JSON.stringify(body)});return{db,app,stage,actor,token:session.token,request,dispose:platform.dispose,sends:()=>sends};}
+async function fixture(mail?:OutboundMail,sendCount?:()=>number){const platform=await isolatedDatabase(),db=platform.db,deps=createDependencies(db),actor=createId(),stage=createId();await deps.auth.ensureOperator({id:actor,email:'owner@example.test',displayName:'Owner'});await deps.workspace.ensureWorkspace({name:'First hour',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});await deps.workspace.ensurePipelineStage({id:stage,name:'Discovery',position:0});const session=await deps.auth.createSession(actor);let sends=0;const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex')}),outboundMail:mail??{send:async()=>{sends++;return{providerMessageId:'paid-edge-acceptance'};}}});const headers={Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'};const request=(path:string,method='GET',body?:unknown,override:Record<string,string>={})=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{...headers,...override},body:body===undefined?undefined:JSON.stringify(body)});return{db,app,stage,actor,token:session.token,request,dispose:platform.dispose,sends:()=>sendCount?sendCount():sends};}
 test('SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send',async()=>{
- const f=await fixture();try{
+ let relayOutcome:'accepted'|'rejected'|'uncertain'='accepted';
+ const nativeFetch=globalThis.fetch,relayUrl='https://managed-mail.example.test/send',bodies:Record<string,unknown>[]=[];
+ globalThis.fetch=async(input,init)=>{if(String(input)!==relayUrl)return nativeFetch(input,init);assert.equal(new Headers(init?.headers).get('authorization'),'Bearer fixture-managed-mail');bodies.push(JSON.parse(String(init?.body)));if(relayOutcome==='uncertain')throw new TypeError('Paid edge lost acknowledgement');if(relayOutcome==='rejected')return Response.json({error:'rejected'},{status:400});return Response.json({messageId:`<relay-${bodies.length}@example.test>`},{status:202});};
+ const mail=createOutboundMail({MAIL_PROVIDER:'rer',MAIL_FROM:'managed@example.test',MAIL_RELAY_URL:relayUrl,MAIL_API_KEY:'fixture-managed-mail',SENDGRID_API_KEY:'must-not-be-used'})!;
+ const f=await fixture(mail,()=>bodies.length);try{
  const testEmail=await(await f.request('workbench/sender-test')).json() as any;assert.equal(testEmail.recipient,'owner@example.test');
  assert.equal((await f.request('workbench/sender-test','POST',{attemptId:crypto.randomUUID(),confirmed:true},{Cookie:''})).status,401);
  assert.equal((await f.request('workbench/sender-test','POST',{attemptId:crypto.randomUUID(),confirmed:true,recipient:'someone@example.test'})).status,400);
@@ -39,9 +44,18 @@ test('SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authentica
  const {opportunity}=await(await f.request(`opportunities/${customer.id}`)).json() as any;assert.equal(opportunity.queueReason,'Customer reply');assert.equal(opportunity.band,'high');assert.deepEqual(opportunity.evaluation.contributions.map((c:any)=>c.signalType).sort(),['email.replied','form.submitted','meeting.booked']);assert.ok(opportunity.evaluation.contributions.every((c:any)=>c.signalId!==first.id&&c.signalId!==second.id));
  const draft=await(await f.request(`workbench/opportunities/${customer.id}/drafts`,'POST',{contactId:contact.id,subject:'Your inquiry',body:'Hi Maya, would Thursday suit a walkthrough?'})).json() as any;
  const preview=await(await f.request(`workbench/drafts/${draft.id}/approval-preview`)).json() as any;
- const sent=await f.request(`workbench/drafts/${draft.id}/approve`,'POST',{revision:1,quietHoursConfirmation:preview.localTime});assert.equal(sent.status,200,await sent.clone().text());assert.equal((await sent.json() as any).state,'accepted');assert.equal(f.sends(),2);
+ const sent=await f.request(`workbench/drafts/${draft.id}/approve`,'POST',{revision:1,quietHoursConfirmation:preview.localTime});assert.equal(sent.status,200,await sent.clone().text());assert.equal((await sent.json() as any).state,'accepted');assert.equal(f.sends(),2);assert.equal(bodies[1]!.to,contact.email);assert.equal(bodies[1]!.subject,'Your inquiry');assert.equal(bodies[1]!.text,'Hi Maya, would Thursday suit a walkthrough?');assert.equal((await f.db.prepare('SELECT message_id FROM outbound_messages WHERE draft_id=?').bind(draft.id).first<any>()).message_id,'<relay-2@example.test>');
  assert.equal((await progress()).sent,1);assert.equal((await f.db.prepare('SELECT queue_state FROM opportunities WHERE id=?').bind(customer.id).first<any>()).queue_state,'next');
- }finally{await f.dispose();}
+ for(const outcome of ['rejected','uncertain'] as const){
+  relayOutcome=outcome;
+  const candidate=await(await f.request(`workbench/opportunities/${customer.id}/drafts`,'POST',{contactId:contact.id,subject:`Provider ${outcome}`,body:'Reviewed provider outcome'})).json() as any;
+  const review=await(await f.request(`workbench/drafts/${candidate.id}/approval-preview`)).json() as any;
+  const before=bodies.length;
+  const result=await f.request(`workbench/drafts/${candidate.id}/approve`,'POST',{revision:1,quietHoursConfirmation:review.localTime});assert.equal(result.status,502,await result.clone().text());assert.equal((await result.json() as any).state,outcome==='rejected'?'failed':'delivery-unknown');assert.equal(bodies.length,before+1);
+  await f.request(`workbench/drafts/${candidate.id}/approve`,'POST',{revision:1,quietHoursConfirmation:review.localTime});assert.equal(bodies.length,before+1,'The same exact approval never submits again after rejection or uncertainty');
+ }
+
+ }finally{globalThis.fetch=nativeFetch;await f.dispose();}
 });
 test('SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor-native booking signatures reject tampering, expiry and replay while unknown invitees remain unlinked',async()=>{
  const f=await fixture();try{

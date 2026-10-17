@@ -10,7 +10,7 @@ const check = args.includes('--check'), root = process.cwd();
 const policy = JSON.parse(await readFile(resolve(root, 'scripts/delivery/base/packaging.json'), 'utf8'));
 const spec = await deploymentSpec(root, policy.artifact.specInputs);
 const {project, workflow, setup: selection} = packagingConfig(policy);
-const setup = await loadSetupManifest(root, selection);
+const setup = await loadSetupManifest(root, selection, spec.mail);
 const descriptor = {...project, setup: {path: setup.path, sha256: setup.sha256}};
 for (const [path, bytes] of [
   ['management/integration/deployment-spec.json', JSON.stringify(spec, null, 2) + '\n'],

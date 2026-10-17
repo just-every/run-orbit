@@ -228,6 +228,12 @@
       "name": "0042_record_ownership.sql",
       "sha256": "2de9fb288dd994ebb0518614dee57ed1984c987b95605eea8172142ededff2c6",
       "sql": "-- Record ownership is withdrawn until it moves to separate ownership tables.\n-- The released 0042 added columns to native tables that an owner may already\n-- have filled to D1's 100-column limit, so it could not apply there.\n-- An installation that applied it keeps those columns and tables untouched\n-- until the replacement migration reconciles them.\nSELECT 1;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0044_archive_content_identity.sql",
+      "sha256": "2fcc846ac6f376b9de4c58be51a0f8459c24569961890c8fa6f624c1ff30a86a",
+      "sql": "CREATE TABLE archive_file_identities (\n    job_id TEXT PRIMARY KEY,\n    digest TEXT NOT NULL CHECK(length(digest)=64 AND digest NOT GLOB '*[^0-9a-f]*')\n);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
@@ -236,13 +242,18 @@
   ],
   "durableObjects": [],
   "durableObjectMigrations": [],
-  "publicVariables": {},
+  "publicVariables": {
+    "MAIL_PROVIDER": "sendgrid",
+    "MAIL_FROM": "",
+    "MAIL_RELAY_URL": ""
+  },
   "secretNames": [
     "SETUP_TOKEN",
     "SESSION_SECRET",
     "ORBIT_ENCRYPTION_KEY"
   ],
   "optionalSecretNames": [
+    "MAIL_API_KEY",
     "SENDGRID_API_KEY",
     "OPENAI_API_KEY"
   ],
@@ -273,5 +284,11 @@
         "loginHint": true
       }
     }
+  },
+  "mail": {
+    "providers": [
+      "rer",
+      "sendgrid"
+    ]
   }
 }

@@ -30,6 +30,6 @@ export async function withOperatorWorkspace({name,widths,observeSetup=false},run
  }finally{
   await fixture?.collaboratorContext.close();await browser?.close();
   if(dev){dev.child.kill('SIGTERM');await dev.exited;}
-  await checkout.rer(['dev','--stop']);assert.equal(await listening(port),false);await checkout.close();
+  await checkout.stop('dev');assert.equal(await listening(port),false);await checkout.close();
  }
 }

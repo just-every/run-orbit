@@ -1,3 +1,4 @@
+import {archiveContentIdentity} from '../../src/core/shared/archive-identity';
 import {rerTransfer} from './rer-transfer';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
@@ -21,8 +22,11 @@ test('committed import creation survives a lost ACK and exposes failed observati
    const value=Reflect.get(real,key);return typeof value==='function'?value.bind(real):value;
   }}),app=application(db);listener=await nativeArchiveHttp(app,target.target.directory);
   assert.equal((await emittedRequest(listener,target.cookie,'/api/v1/settings/operators','POST',{email:'separate-native@fixture.test',displayName:'Separate native operator'})).status,201);
-  const base='/api/v1/records/archive',create=()=>emittedRequest(listener!,target.cookie,base+'/imports','POST',{confirmed:true,manifest:archive.manifest});
-  const recovered=await create();assert.equal(recovered.status,201);const first=await recovered.json() as any;assert.equal(mutations,1);assert.equal((await create()).status,201);assert.equal(mutations,1);
+  const contentDigest=await archiveContentIdentity(archive.manifest,archive.parts);
+  const base='/api/v1/records/archive',create=()=>emittedRequest(listener!,target.cookie,base+'/imports','POST',{confirmed:true,manifest:archive.manifest,contentDigest});
+  const recovered=await create();assert.equal(recovered.status,201);const first=await recovered.json() as any;assert.equal(first.contentDigest,contentDigest);assert.equal(mutations,1);
+  const changedDigest=await archiveContentIdentity(archive.manifest,archive.parts.map((part,index)=>({index,sha256:index===0?'a'.repeat(64):part.sha256})));
+  assert.equal((await emittedRequest(listener,target.cookie,base+'/imports','POST',{confirmed:true,manifest:archive.manifest,contentDigest:changedDigest})).status,409);assert.equal(mutations,1);assert.equal((await create()).status,201);assert.equal(mutations,1);
   const listed=await(await emittedRequest(listener,target.cookie,base+'/imports')).json() as any;assert.deepEqual(listed.jobs.map((job:any)=>job.id),[first.id]);
   assert.equal((await emittedRequest(listener,target.cookie,`${base}/imports/${first.id}/abort`,'POST',{})).status,200);
   committed=false;mode='observation';

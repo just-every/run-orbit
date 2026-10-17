@@ -38,7 +38,7 @@
 
 Orbit is the Sales edition for account selling guided by customer evidence. Its interface keeps stage, owner, score, queue and message state separate, and operators review every customer message before it is sent.
 
-This repository is the complete source for Orbit. Public source: [just-every/run-orbit](https://github.com/just-every/run-orbit), licensed under the [MIT License](LICENSE). These instructions describe the current `main` branch. The older `v0.1.0` tag has different setup commands and predates Capture and the current local sign-in flow; its outbox-based sign-in instructions apply only to that historical version. Current local sign-in uses the private `RER_OPEN` link described below. Use the README included with the tag if you check it out. Read [ACCEPTANCE.md](ACCEPTANCE.md) for the product's acceptance obligations, [CONTRACT.md](CONTRACT.md) for its clauses and [OPERATIONS.md](OPERATIONS.md) for hosted configuration, mail, data transfer and recovery.
+This repository is the complete source for Orbit. Public source: [just-every/run-orbit](https://github.com/just-every/run-orbit), licensed under the [MIT License](LICENSE). These instructions describe the current `main` branch. The older `v0.1.0` tag has different setup commands and predates Capture and the current local sign-in flow. Current local sign-in uses the private `RER_OPEN` link described below. Use the README included with the tag if you check it out. Read [ACCEPTANCE.md](ACCEPTANCE.md) for the product's acceptance obligations, [CONTRACT.md](CONTRACT.md) for its clauses and [OPERATIONS.md](OPERATIONS.md) for hosted configuration, mail, data transfer and recovery.
 
 ## Run it on your computer
 

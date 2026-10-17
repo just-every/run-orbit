@@ -38,7 +38,7 @@ test('full related names and associated-contact labels remain readable in native
       await new Promise(resolve => setTimeout(resolve, 100));
     }
     if (!ready) throw new Error(output || 'Related-record Worker startup failed.');
-    browser = await chromium.launch();
+    browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
     const context = await browser.newContext({ baseURL: origin, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
     const page = await context.newPage(), errors: string[] = [];
     page.on('pageerror', error => errors.push(error.message));

@@ -14,8 +14,8 @@ import {devKey,localOwnerSignIn,openLink} from './sign-in.mjs';
 // commands in a fresh checkout: setup, one-click sign-in, /setup, reset and
 // a complete local export/import/export round trip.
 let checkout, browser;
-before(async () => { checkout = await freshCheckout(); browser = await chromium.launch(); });
-after(async () => { await browser?.close(); await checkout?.rer(['dev', '--stop']); await checkout?.rer(['preview', '--stop']); await checkout?.close(); });
+before(async () => { checkout = await freshCheckout(); browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']}); });
+after(async () => { await browser?.close(); await checkout?.stop('dev'); await checkout?.stop('preview'); await checkout?.close(); });
 
 const owner = 'owner@example.test';
 const exitOf = async (result, code, label) => { assert.equal(result.code, code, `${label}\n${result.output.slice(-1500)}`); return result.output; };
@@ -101,14 +101,14 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
   const api = (path, data) => operator.evaluate(async ([path, data]) => (await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })).status, [path, data]);
   assert.equal(await api('/api/v1/records/company', { name: 'Northwind Freight', primary_domain: 'northwind.example' }), 201);
   assert.equal(await api('/api/v1/records/contact', { name: 'Ada Lovelace', email: 'ada@northwind.example' }), 201);
-  await exitOf(await checkout.rer(['dev', '--stop']), 0, 'dev stop');
-  assert.equal((await dev.exited).code, 0);
+  await exitOf(await checkout.stop('dev'), 143, 'dev stop');
+  assert.equal((await dev.exited).code, 143);
   assert.equal(await listening(port), false, 'dev stop closes the port');
 
   const preview=checkout.serve(['preview']);await preview.ready;
   await assertPrivateRoutes(origin,privatePaths.filter(p=>!p.endsWith('.rer')));
-  await exitOf(await checkout.rer(['preview','--stop']),0,'preview stop');
-  assert.equal((await preview.exited).code,0);assert.equal(await listening(port),false);
+  await exitOf(await checkout.stop('preview'),143,'preview stop');
+  assert.equal((await preview.exited).code,143);assert.equal(await listening(port),false);
 
   await exitOf(await checkout.rer(['import', '--input', 'exports/missing.rer']), 4, 'import requires confirmation');
   const first = contentHash(await exitOf(await checkout.rer(['export', '--output', 'exports/first.rer', '--json']), 0, 'export'));
@@ -141,7 +141,7 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
   const searcher = (await openOwner(origin, await browser.newContext())).page;
   const found = await searcher.evaluate(async () => (await fetch('/api/v1/records/contact?q=Lovelace')).text());
   assert.match(found, /Ada Lovelace/, 'restored contacts are searchable');
-  await exitOf(await checkout.rer(['dev', '--stop']), 0, 'dev stop');
+  await exitOf(await checkout.stop('dev'), 143, 'dev stop');
   await restored.exited;
 
   await exitOf(await checkout.rer(['reset', '--yes']), 0, 'reset before fresh setup');

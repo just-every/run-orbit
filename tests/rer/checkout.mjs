@@ -37,6 +37,8 @@ export async function freshCheckout() {
     if (options.input !== undefined) child.stdin.end(options.input);
     child.on('close', (code) => done({ code, output }));
   });
+  const ownedServers=new Map();
+  const stop=async(verb)=>{const server=ownedServers.get(verb);if(!server)return {code:0,output:''};if(server.child.exitCode===null&&server.child.signalCode===null)server.child.kill('SIGTERM');const result=await server.exited;ownedServers.delete(verb);return result;};
   const serve = (args) => {
     const child = spawn(process.execPath, ['node_modules/@runeditrun/rer/bin/rer.mjs', ...args], { cwd: root, env, stdio: ['ignore', 'pipe', 'pipe'] });
     let output = '', becameReady = false;
@@ -45,9 +47,9 @@ export async function freshCheckout() {
       child.stdout.on('data', read); child.stderr.on('data', read);
       child.on('close', async (code) => { if (!becameReady) fail(await startupFailure(root, args[0], code, output)); });
     });
-    return { child, ready, exited: new Promise((done) => child.on('close', (code) => done({ code, output }))) };
+    const server={ child, ready, exited: new Promise((done) => child.on('close', (code) => done({ code, output }))) };ownedServers.set(args[0],server);return server;
   };
-  return { root, rer, serve, async close() { await rm(root, { recursive: true, force: true }); await rm(servers, { recursive: true, force: true }); } };
+  return { root, rer, serve, stop, async close() { for(const verb of [...ownedServers.keys()])await stop(verb); await rm(root, { recursive: true, force: true }); await rm(servers, { recursive: true, force: true }); } };
 }
 
 // Keep failure evidence outside the disposable checkout and any public proof

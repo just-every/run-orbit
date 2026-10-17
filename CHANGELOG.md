@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Route sign-in and reviewed customer mail through the selected Run Edit Run relay in Managed and Assisted previews, while keeping direct SendGrid deployments and local customer mail. Declare both providers and pin rer 0.2.49.
+- Resume hosted restores using a digest of archive content, preserve exact part checks, explain renewed confirmation, resume saved export/restore progress on return, and label completed exports as finished.
+
 - Add Settings → Delivery outcomes: the exact SendGrid Event Webhook Post URL, the events to tick, the signing key and the deploy command, with connected/not connected and the last signed event. Sent messages say “delivery not tracked” until then, and show Bounced or Not delivered once events arrive.
 - README: step-by-step Cloudflare account ID, API token (exact permissions), workers.dev subdomain and `--env-file .dev.vars.deploy` for `rer deploy`; the dry run lists optional values separately with the feature each turns on, and the sign-in refusal names what to set in plain words.
 - A new enquirer from a published form becomes an opportunity in NOW (forms can opt out). A signed-in operator opening `/` goes to the app. A capture skipped because the sender is also an operator says so.

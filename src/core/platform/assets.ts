@@ -28,6 +28,8 @@ export interface PlatformBindings {
   AUTH_ORIGIN?: string;
   AUTH_LOCAL?: string;
   MAIL_PROVIDER?: string;
+  MAIL_API_KEY?: string;
+  MAIL_RELAY_URL?: string;
   OWNER_EMAIL?: string;
   SETUP_TOKEN?: string;
   SESSION_SECRET?: string;

@@ -14,7 +14,7 @@ export function SenderStatus({local}:{local?:boolean}){
  return <section id="mail-sender" className="operator-surface workbench-form"><h2>Customer mail sender</h2>
   {resource.error?<p role="alert">{resource.error.message}</p>:resource.data?<>
    <p data-testid="mail-sender-status">{resource.data.mailConfigured?'Sender configuration is present and passed the runtime configuration checks.':notSetUp(resource.data.mailSettings)}</p>
-   <MailSenderSetup local={local} configured={resource.data.mailConfigured}/>
+   <MailSenderSetup provider={resource.data.mailSettings?.provider} local={local} configured={resource.data.mailConfigured}/>
   </>:<p>Checking sender configuration…</p>}
   <button type="button" onClick={resource.reload}>Check sender configuration</button>
  </section>;

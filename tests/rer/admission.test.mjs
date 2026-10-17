@@ -11,7 +11,7 @@ import { privateFiles, assertPrivateRoutes, setupWithProbes } from './private-ro
 import {openLink} from './sign-in.mjs';
 
 test('admission uses native owner authority, bounds editor framing and preserves local private files and built assets', {timeout: 15 * 60_000}, async () => {
-  const checkout = await freshCheckout(), browser = await chromium.launch();
+  const checkout = await freshCheckout(), browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
   const evidence = process.env.ORBIT_EVIDENCE_DIR;
   if (evidence) await mkdir(evidence, {recursive: true});
   const management = await fixtureProvider(), manager = management.origin;
@@ -98,7 +98,7 @@ test('admission uses native owner authority, bounds editor framing and preserves
     // Base's sign-in page allows no in-page fetch (default-src 'none'), so ask with this browser's own cookies.
     await owner.waitForURL(url => url.pathname === '/signin');
     assert.equal((await owner.context().request.get(origin+'/api/editor/config')).status(),403);
-    await checkout.rer(['dev','--stop']); await server.exited;
+    await checkout.stop('dev'); await server.exited;
     const preview = checkout.serve(['preview']); await preview.ready;
     await assertPrivateRoutes(origin,paths);
     const page = await browser.newPage(); assert.match((await page.goto(origin+'/signin')).headers()['content-security-policy'], /frame-ancestors 'none'/);
@@ -115,11 +115,11 @@ test('admission uses native owner authority, bounds editor framing and preserves
     await page.getByRole('link',{name:'Sign in',exact:true}).waitFor();
     await page.goto(origin+'/signin'); await page.fill('#signin-email','owner@example.test'); await page.getByRole('button',{name:'Email a sign-in link'}).click();
     await page.getByRole('status').waitFor();
-    await checkout.rer(['preview','--stop']); await preview.exited;
+    await checkout.stop('preview'); await preview.exited;
     if (evidence) await writeFile(join(evidence,'fonts-after.json'),JSON.stringify(fonts,null,2)+'\n');
     console.log(JSON.stringify({fonts,managementFixtureRequests:management.state.requests,ownerClaim:'repeat refused',assets:'served with native MIME',privateRoutes:'setup/dev/preview refused'}));
   } finally {
-    await checkout.rer(['dev','--stop']); await checkout.rer(['preview','--stop']);
+    await checkout.stop('dev'); await checkout.stop('preview');
     await browser.close(); await checkout.close(); await management.close();
   }
 });
