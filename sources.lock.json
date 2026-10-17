@@ -663,7 +663,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "54d84cec934e93ecacac8fcdbb8dbc3346c03549d7b53a337467d1340774c06d",
+      "sha256": "87cab6c24fe75e313c79b5fb38b48d5aa2a3b0946c92acff140ac2a14b217755",
       "executable": false
     },
     "BASELINE.md": {
@@ -2875,7 +2875,7 @@
       "executable": false
     },
     "src/base/contract-style.ts": {
-      "sha256": "41afdf1cb60983b340283b13e414102387eb2a4af022d730220050a4384d0753",
+      "sha256": "4325f4eeabac2bef722808576605d7b657858b918729097c3412393fc6e4941f",
       "executable": false
     },
     "src/base/deployment-health.ts": {
