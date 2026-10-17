@@ -53,14 +53,20 @@ export function verificationPlan({ journeys = false } = {}) {
       gate('exec', 'node', 'scripts/publish-deployment-spec.mjs', '--check'),
       gate('run', 'typecheck'),
     ],
-    ...Object.fromEntries(balance(core, 6).map((files, index) => [`core-${index}`, prepared(nodeTests(files, `verification/core-${index}-results.jsonl`))])),
-    runtime: prepared(
+    ...Object.fromEntries(balance(core, 10).map((files, index) => [`core-${index}`, prepared(nodeTests(files, `verification/core-${index}-results.jsonl`))])),
+    'runtime-launch': prepared(
       gate('run', 'build:app'),
       nodeTests(testFiles('tests/launch-runtime'), 'verification/launch-results.jsonl'),
+      gate('run', 'test:worker'),
+    ),
+    'runtime-delegation': prepared(
+      gate('run', 'build:app'),
       ...testFiles('tests/delegation-browser').map((file, index) => nodeTests([file], `verification/delegation-browser-${index}-results.jsonl`)),
+    ),
+    'runtime-browser': prepared(
+      gate('run', 'build:app'),
       playwright(undefined, testFiles('tests/e2e')),
       playwright('tests/archive/playwright.config.mjs', testFiles('tests/archive')),
-      gate('run', 'test:worker'),
     ),
     'rer-operator': prepared(gate('run', 'build:app'), nodeTests(rer.filter(file => file.endsWith('/operator.test.mjs')), 'verification/rer-operator-results.jsonl', 'node')),
     'rer-checkouts': prepared(gate('run', 'build:app'), nodeTests(rer.filter(file => !file.endsWith('/operator.test.mjs')), 'verification/rer-checkouts-results.jsonl', 'node')),

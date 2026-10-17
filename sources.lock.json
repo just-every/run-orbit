@@ -2399,7 +2399,7 @@
       "executable": false
     },
     "playwright.config.mjs": {
-      "sha256": "61d82746275bcf7cc694eee163b5f425a88e0db1627372c0e8e592c5f6f786c5",
+      "sha256": "d988cc8668e13a9b1a8cdb78b8d8a51cf1013e3f6d49cc60ce9a0cbdf37a9e7d",
       "executable": false
     },
     "pnpm-lock.yaml": {
@@ -2787,7 +2787,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "8de6ab6ebeabd7403a7af765e724beab08d6b9f8189eee8a0f1b151191bfdbb1",
+      "sha256": "e4eb2d962abbbe44c2fe65952e1ed3d1d665428b22f202dacec88b7ec2bbed12",
       "executable": false
     },
     "scripts/verification-shard.mjs": {
@@ -6475,7 +6475,7 @@
       "executable": false
     },
     "tests/e2e/records.spec.mjs": {
-      "sha256": "bbc6f31310e3a177687e73c8b71542fe04fcac39a943c3d132c1c2534fcbe2fd",
+      "sha256": "21b9e994633f43d26bf715a76627e8f1800405c4dcb82b6d4ea47998eec63ec9",
       "executable": false
     },
     "tests/e2e/stale-review.spec.mjs": {

@@ -22,8 +22,8 @@ export default defineConfig({
   use: {
     baseURL,
     browserName: 'chromium',
-    channel: 'chromium',
     headless: true,
+    launchOptions: {args: ['--use-mock-keychain', '--password-store=basic']},
     viewport: {
       width: 1440,
       height: 900,
