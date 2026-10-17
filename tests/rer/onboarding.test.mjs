@@ -1,4 +1,5 @@
 import {managedMail} from './managed-mail.mjs';
+import {waitForNativeServerCapacity} from '../support/native-server-load.mjs';
 import {isolateBrowserTemp} from '../support/browser-temp.mjs';
 isolateBrowserTemp();
 import assert from 'node:assert/strict';
@@ -27,7 +28,7 @@ for(const width of [1440,390])test(`SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 fir
  await writeFile(varsPath,before+'SENDGRID_API_KEY=test-provider-edge\nMAIL_REPLY_TO=replies@example.test\nSENDGRID_UNSUBSCRIBE_GROUP_ID=1\n',{mode:0o600});let submissions=[];
  // Explicit bindings: runners may disable wrangler's env-file loading (CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV=false).
  const paidBindings=Object.fromEntries((await readFile(varsPath,'utf8')).split('\n').filter(line=>/^[A-Z_][A-Z0-9_]*=/.test(line)).map(line=>{const at=line.indexOf('=');return [line.slice(0,at),{type:'secret_text',value:line.slice(at+1).replace(/^(["'])(.*)\1$/,'$2')}];}));
- paidRuntime=new unstable_DevEnv();const paidWorker=await paidRuntime.startWorker({config:join(checkout.root,'dist/server/wrangler.json'),bindings:paidBindings,dev:{remote:false,persist:join(checkout.root,'.wrangler/state'),watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:async request=>{assert.equal(new URL(request.url).origin,'https://api.sendgrid.com');assert.equal(new URL(request.url).pathname,'/v3/mail/send');submissions.push(await request.json());return new Response(null,{status:202,headers:{'x-message-id':'test-paid-provider-acceptance'}});}}});await paidWorker.ready;
+ await waitForNativeServerCapacity();paidRuntime=new unstable_DevEnv();const paidWorker=await paidRuntime.startWorker({config:join(checkout.root,'dist/server/wrangler.json'),bindings:paidBindings,dev:{remote:false,persist:join(checkout.root,'.wrangler/state'),watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:async request=>{assert.equal(new URL(request.url).origin,'https://api.sendgrid.com');assert.equal(new URL(request.url).pathname,'/v3/mail/send');submissions.push(await request.json());return new Response(null,{status:202,headers:{'x-message-id':'test-paid-provider-acceptance'}});}}});await paidWorker.ready;
  await page.goto(result.draftURL);
  // The returned preview determines whether the current recipient time needs confirmation.
  const approvalPreview=page.waitForResponse(response=>new URL(response.url()).pathname.endsWith('/approval-preview'));
