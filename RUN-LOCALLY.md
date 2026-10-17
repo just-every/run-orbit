@@ -1,20 +1,19 @@
 # Run it locally
 
-Install the `rer` command once with the installer on the RER site, which brings its own
-Node when you have none: `curl -fsSL https://runeditrun.com/install.sh | sh`. Already have
-Node 22 or later? `npx -y @runeditrun/rer cli install` does the same.
+Start from nothing with one line: `npx -y @runeditrun/rer dev just-every/run-orbit`.
+No Node? `curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit`
+brings its own and does the same. To set up without starting, use
+`npx -y @runeditrun/rer setup just-every/run-orbit`.
 `rer` runs every verb with this checkout's exact `@runeditrun/rer` package pin.
 The `OPERATIONS.json` argv and `package.json` aliases use `rer VERB`.
 
 ## Launch with one command
 
 ```sh
-git clone https://github.com/just-every/run-orbit.git
-cd run-orbit
-rer dev
+npx -y @runeditrun/rer dev just-every/run-orbit
 ```
 
-From a runnable edition's root, `rer dev` is the whole launch (`rer dev just-every/run-orbit` clones and starts it in one step). It installs
+From a runnable edition's root, `rer dev` is the whole launch (the line above clones and starts it in one step; later, `cd run-orbit && rer dev`). It installs
 locked dependencies when they are missing or older than the lockfile. On a
 checkout that is not set up it prepares a local trial owner
 named after the checkout's folder
