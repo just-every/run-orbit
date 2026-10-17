@@ -1,6 +1,3 @@
-import {ownerAuthorityFence,ownerHistoryStatements,ownerName,requireOwner,type OwnerChange} from '../ownership/changes';
-import {ownerNotificationStatements} from '../ownership/notifications';
-import {createId} from '../../shared/ids';
 import { privacyMatcher, suppressionContextFence, contactSuppressionStatements, suppressionStatements, suppressionPredicate } from './suppression';
 import {invalidateSuppressedWork} from './suppression-effects';
 import { audit, RecordError, requireRecord, tables, timeline } from './shared';
@@ -14,20 +11,19 @@ export class ImportMergeRepository {
   const candidates=[...groups.values()].filter(group=>group.length>1),companyIds=[...new Set(candidates.flat().map(record=>record.company_id).filter(Boolean))];
   const companies=kind==='contact'&&companyIds.length?(await this.db.prepare('SELECT id,name FROM companies WHERE id IN(SELECT value FROM json_each(?))').bind(JSON.stringify(companyIds)).all<{id:string;name:string}>()).results:[],companyNames=new Map(companies.map(company=>[company.id,company.name]));
   // Enrich only after hashing the native row: display context is not a merge field.
-  return Promise.all(candidates.map(group=>Promise.all(group.map(async record=>({...record,...kind==='contact'?{companyName:companyNames.get(record.company_id)??null}:{},owner_name:await ownerName(this.db,record.owner_id??null),mergeReviewToken:await mergeReviewToken(record)})))));
+  return Promise.all(candidates.map(group=>Promise.all(group.map(async record=>({...record,...kind==='contact'?{companyName:companyNames.get(record.company_id)??null}:{},mergeReviewToken:await mergeReviewToken(record)})))));
  }
  async merge(kind:'contact'|'company',survivorId:string,retiredId:string,choices:Record<string,'survivor'|'retired'>,actor:string,reviewed:MergeReview){
   if(survivorId===retiredId)throw new RecordError(400,'Choose two different records.');const survivor=await requireRecord(this.db,kind,survivorId),retired=await requireRecord(this.db,kind,retiredId);
   if(!reviewed||reviewed.survivor!==await mergeReviewToken(survivor)||reviewed.retired!==await mergeReviewToken(retired))throw new RecordError(409,'Records changed; find matching names again and review the current values before merging.');
-  const fields=kind==='contact'?['name','email','phone','job_title','timezone','company_id','contactability','custom_fields_json','owner_id']:['name','primary_domain','custom_fields_json','owner_id'];const values:Record<string,any>={};
+  const fields=kind==='contact'?['name','email','phone','job_title','timezone','company_id','contactability','custom_fields_json']:['name','primary_domain','custom_fields_json'];const values:Record<string,any>={};
   for(const field of fields){if(survivor[field]!==retired[field]&&!choices[field])throw new RecordError(400,`Choose the surviving value for ${field}.`);values[field]=choices[field]==='retired'?retired[field]:survivor[field];}
-  const ownerChanged=survivor.owner_id!==values.owner_id,targetOwnerName=ownerChanged?await requireOwner(this.db,values.owner_id):await ownerName(this.db,values.owner_id);
   if(kind==='contact'&&(survivor.contactability==='do_not_contact'||retired.contactability==='do_not_contact'))values.contactability='do_not_contact';
   const keyColumn=kind==='contact'?'email_key':'primary_domain_key',key=choices[kind==='contact'?'email':'primary_domain']==='retired'?retired[keyColumn]:survivor[keyColumn];values[keyColumn]=key;values.updated_at=new Date().toISOString();
   const aliases=kind==='contact'?(await this.db.prepare("SELECT identity_key FROM record_aliases WHERE record_type='contact' AND survivor_id IN(?,?)").bind(survivorId,retiredId).all<{identity_key:string}>()).results:[];
   const match=kind==='contact'?await privacyMatcher(this.db):null;
   const tokens=match?[...new Set((await Promise.all([survivor.email,retired.email,...aliases.map(alias=>alias.identity_key)].map(email=>match(email)))).flat())]:[];
-  const statements:D1PreparedStatement[]=[...ownerAuthorityFence(this.db,actor,ownerChanged?values.owner_id:null),mergeReviewFence(this.db,kind,[survivor,retired]),...suppressionContextFence(this.db,tokens)];
+  const statements:D1PreparedStatement[]=[mergeReviewFence(this.db,kind,[survivor,retired]),...suppressionContextFence(this.db,tokens)];
   const relationships=await prepareRelationshipMerge(this.db,kind,survivorId,retiredId,values.updated_at,values.company_id);statements.push(...relationships.fences);
   if(kind==='contact'&&values.contactability==='do_not_contact')statements.push(...await contactSuppressionStatements(this.db,survivorId),...await contactSuppressionStatements(this.db,retiredId),...await suppressionStatements(this.db,[values.email]));
   statements.push(this.db.prepare('INSERT INTO record_merge_claims VALUES(?,?,?,?)').bind(kind,retiredId,survivorId,values.updated_at),this.db.prepare(`UPDATE ${tables[kind]} SET ${keyColumn}=NULL WHERE id=?`).bind(retiredId));
@@ -44,7 +40,6 @@ export class ImportMergeRepository {
    statements.push(this.db.prepare(`DELETE FROM ${table} WHERE record_type=? AND record_id=?`).bind(kind,retiredId));
   }
   const keys=Object.keys(values);statements.push(this.db.prepare(`UPDATE ${tables[kind]} SET ${keys.map(k=>`${k}=${kind==='contact'&&k==='contactability'?`CASE WHEN contactability='do_not_contact' OR ${suppressionPredicate(tokens)} OR EXISTS(SELECT 1 FROM contacts WHERE id='${retiredId}' AND contactability='do_not_contact') THEN 'do_not_contact' ELSE ? END`:'?'}`).join(',')} WHERE id=?`).bind(...keys.map(k=>values[k]),survivorId),this.db.prepare(`DELETE FROM ${tables[kind]} WHERE id=?`).bind(retiredId),...timeline(this.db,actor,kind,survivorId,'record.merged',{retiredId,choices}),audit(this.db,actor,'record.merged',kind,survivorId,{retiredId,choices}));
-  if(ownerChanged){const change:OwnerChange={kind,id:survivorId,name:values.name??values.email??survivorId,previousOwnerId:survivor.owner_id??null,previousOwnerName:await ownerName(this.db,survivor.owner_id??null),ownerId:values.owner_id??null,ownerName:targetOwnerName};statements.push(...ownerHistoryStatements(this.db,{...change,actorId:actor,source:'Record merge',occurredAt:values.updated_at}),...await ownerNotificationStatements(this.db,{actorId:actor,operationId:createId(),source:'Record merge',changes:[change]}));}
   if(kind==='contact')statements.push(...invalidateSuppressedWork(this.db,survivorId),this.db.prepare('UPDATE opportunity_contacts SET is_primary=1 WHERE contact_id=? AND NOT EXISTS(SELECT 1 FROM opportunity_contacts p WHERE p.opportunity_id=opportunity_contacts.opportunity_id AND p.is_primary=1)').bind(survivorId));
   try{await this.db.batch(statements);}catch(error){if(String(error).includes('runtime_controls.value'))throw new RecordError(409,'Record or suppression context changed; find matching names again and review the current values before merging.');if(String(error).includes('UNIQUE'))throw new RecordError(409,'The record was already merged or its identity changed. Reload before merging.');throw error;}return {id:survivorId,retiredId};
  }

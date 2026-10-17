@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "rewrites": [
+    {
+      "migration": "0042_record_ownership.sql",
+      "from": "2b0851ed822db8c0dc1e8563cbd9739c637114d802723d76b8df76a41e409227",
+      "to": "2de9fb288dd994ebb0518614dee57ed1984c987b95605eea8172142ededff2c6",
+      "reason": "The released 0042 added owner columns to native tables, which fails on installations whose contacts table is at D1's 100-column limit. Ownership is withdrawn until it moves to separate tables; installations that applied the released bytes keep them as applied history.",
+      "reviewed": true
+    }
+  ]
+}

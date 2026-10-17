@@ -12,7 +12,7 @@ export async function labelReportGroups(metrics:AnalyticsMetrics,context:ActorCo
  proofs.push(...nameProofs);
  snapshot.values.groups=await Promise.all(groups.map(async value=>{
   const row=value as Record<string,Json>,group=row.group;
-  let label=group===null?(definition.groupBy==='owner_id'?'Unassigned':'Not entered'):labels.get(String(group))??String(group);
+  let label=group===null?'Not entered':labels.get(String(group))??String(group);
   if(typeof group==='string'&&definition.groupBy==='stage_id'){
    const stage=await metrics.store.db.prepare('SELECT name FROM pipeline_stages WHERE id=?').bind(group).first<{name:string}>();
    if(!stage)throw new AccessError('prerequisite','A report stage name is unavailable.');

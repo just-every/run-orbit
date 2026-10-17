@@ -26,13 +26,9 @@ function redact(value:any,emails:string[],field?:string):any{
 /** Native projections and Orbit's own target snapshots join the final contact
  * erasure transaction. Complete ordered snapshots fence concurrent edits and
  * newly imported rows. Kit custody is deliberately left to its public API. */
-export async function redactImportedNativeCopies(db:D1Database,contactId:string,emails:string[],operatorId?:string):Promise<D1Sql[]>{
+export async function redactImportedNativeCopies(db:D1Database,contactId:string,emails:string[]):Promise<D1Sql[]>{
  if(!mailboxPattern(emails))return [];
  const statements:D1Sql[]=[];
- const ownerQuery="SELECT kind,id,original_json FROM crm_import_targets WHERE kind IN('contact-owner','company-owner') AND json_extract(original_json,'$.owner_id')=? ORDER BY kind,id";
- const owned=operatorId?(await db.prepare(ownerQuery).bind(operatorId).all<{kind:string;id:string;original_json:string}>()).results:[];
- if(operatorId)statements.push(sql(`INSERT INTO runtime_controls(name,value) SELECT 'crm_owner_provenance_fence',NULL WHERE (SELECT json_group_array(json_array(kind,id,original_json)) FROM (${ownerQuery}))<>?`,operatorId,JSON.stringify(owned.map(row=>[row.kind,row.id,row.original_json]))));
- const redactOwner=(kind:string,id:string,row:any)=>{if(!owned.some(owner=>owner.kind===`${kind}-owner`&&owner.id===id)||!row.custom_fields_json)return row;const fields=JSON.parse(row.custom_fields_json);if(typeof fields.import_source!=='string')return row;let provenance:any;try{provenance=JSON.parse(fields.import_source);}catch{return row;}if(!provenance||typeof provenance!=='object')return row;return {...row,custom_fields_json:JSON.stringify({...fields,import_source:JSON.stringify({...provenance,owner:'[erased]'})})};};
  const definitions=[
   {kind:'company',table:'companies',fields:['name','custom_fields_json']},
   {kind:'contact',table:'contacts',fields:['name','phone','job_title','custom_fields_json']},
@@ -42,13 +38,13 @@ export async function redactImportedNativeCopies(db:D1Database,contactId:string,
   const columns=['id',...fields],excluded=kind==='contact'?contactId:null;
   const query=`SELECT ${columns.join(',')} FROM ${table} WHERE (? IS NULL OR id<>?) AND (id IN(SELECT id FROM crm_import_targets WHERE kind=?) OR json_type(custom_fields_json,'$.import_source') IS NOT NULL) ORDER BY id`;
   const rows=(await db.prepare(query).bind(excluded,excluded,kind).all<Record<string,any>>()).results;
-  const changes=rows.map(row=>redactOwner(kind,row.id,redact(row,emails))).filter((row,index)=>JSON.stringify(row)!==JSON.stringify(rows[index]));
+  const changes=rows.map(row=>redact(row,emails)).filter((row,index)=>JSON.stringify(row)!==JSON.stringify(rows[index]));
   statements.push(sql(`INSERT INTO runtime_controls(name,value) SELECT 'crm_native_erasure_fence',NULL WHERE (SELECT json_group_array(json_array(${columns.join(',')})) FROM (${query}))<>?`,excluded,excluded,kind,JSON.stringify(rows.map(row=>columns.map(column=>row[column])))));
   if(changes.length)statements.push(sql(`UPDATE ${table} SET ${fields.map(field=>`${field}=json_extract(change.value,'$.${field}')`).join(',')} FROM json_each(?) change WHERE ${table}.id=json_extract(change.value,'$.id')`,JSON.stringify(changes)));
  }
  const query="SELECT kind,id,original_json FROM crm_import_targets WHERE kind IN('company','contact','deal') AND NOT(kind='contact' AND id=?) ORDER BY kind,id";
  const markers=(await db.prepare(query).bind(contactId).all<{kind:string;id:string;original_json:string}>()).results;
- const changes=markers.flatMap(marker=>{const before=JSON.parse(marker.original_json),after=redact(before,emails);after.row=redactOwner(marker.kind,marker.id,after.row);return JSON.stringify(before)===JSON.stringify(after)?[]:[{...marker,original_json:JSON.stringify(after)}];});
+ const changes=markers.flatMap(marker=>{const before=JSON.parse(marker.original_json),after=redact(before,emails);return JSON.stringify(before)===JSON.stringify(after)?[]:[{...marker,original_json:JSON.stringify(after)}];});
  statements.push(sql(`INSERT INTO runtime_controls(name,value) SELECT 'crm_target_erasure_fence',NULL WHERE (SELECT json_group_array(json_array(kind,id,original_json)) FROM (${query}))<>?`,contactId,JSON.stringify(markers.map(marker=>[marker.kind,marker.id,marker.original_json]))));
  if(changes.length)statements.push(sql("UPDATE crm_import_targets SET original_json=json_extract(change.value,'$.original_json') FROM json_each(?) change WHERE crm_import_targets.kind=json_extract(change.value,'$.kind') AND crm_import_targets.id=json_extract(change.value,'$.id')",JSON.stringify(changes)));
  return statements;

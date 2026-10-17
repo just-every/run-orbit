@@ -1,4 +1,3 @@
-import {ownershipLocalTables} from '../ownership/archive-compatibility';
 import {nativeCatalogGenerations,legacyNativeCatalog} from './archive-generations';
 import { z } from 'zod';
 import { RecordError } from './shared';
@@ -18,7 +17,7 @@ export type ArchiveTable = {
     columns: ArchiveColumn[];
     dependencies: string[];
 };
-const excluded = new Set([...ownershipLocalTables,'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'first_run_setup', 'd1_migrations', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'capture_credentials','capture_oauth','capture_locks']);
+const excluded = new Set(['sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'first_run_setup', 'd1_migrations', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'capture_credentials','capture_oauth','capture_locks']);
 export const secretColumns: Record<string, readonly string[]> = { signal_sources: ['secret_ciphertext'] };
 const catalogCache = new WeakMap<D1Database, Promise<ArchiveTable[]>>();
 export function archiveCatalog(db: D1Database): Promise<ArchiveTable[]> { let cached = catalogCache.get(db); if (!cached) {

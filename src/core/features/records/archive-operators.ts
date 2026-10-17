@@ -37,7 +37,6 @@ export function restoreOperatorStatements(db:D1Database,id:string,backupId:strin
   // Keep the local trial identity for historical attribution, without access or
   // future work assigned to it. Explicit current access still wins above.
   ...(!rollback?[
-   ...['contacts','companies'].map(table=>db.prepare(`UPDATE ${table} SET owner_id=NULL WHERE owner_id IN(SELECT id FROM operators WHERE status<>'active')`)),
    db.prepare(`UPDATE opportunities SET owner_id=NULL WHERE lifecycle='open' AND owner_id IN(SELECT id FROM operators WHERE status='removed' AND ${replacedTrialOwner})`),
    db.prepare(`UPDATE outbound_messages SET state='cancelled',failure='Archive owner replaced after restore' WHERE state='scheduled' AND operator_id IN(SELECT id FROM operators WHERE status='removed' AND ${replacedTrialOwner})`),
   ]:[]),

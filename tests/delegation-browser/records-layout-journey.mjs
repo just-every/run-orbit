@@ -115,12 +115,11 @@ async function editRecordThroughKeyboard(page, kind, title, fieldLabel, editedTi
   await page.goto('/app/records', { waitUntil: 'networkidle' });
   if (kind === 'company') await awaitRecordReload(page, kind, '', () => page.getByRole('button', { name: 'Companies', exact: true }).click());
   if (kind === 'contact') await awaitRecordReload(page, kind, '', () => page.getByRole('button', { name: 'Contacts', exact: true }).click());
-  if (kind !== 'opportunity') await awaitRecordReload(page, kind, '', () => page.getByRole('combobox', { name: 'Owner', exact: true }).selectOption(''));
   const search = page.getByRole('searchbox', { name: 'Search records and timeline', exact: true });
   await awaitRecordReload(page, kind, title, () => search.fill(title));
   const card = page.locator('.operator-queue-card').filter({ has: page.getByRole('heading', { name: title, exact: true }) });
   await expect(card).toHaveCount(1);
-  await tabTo(page, async active => await active.evaluate((element, expected) => element.tagName === 'BUTTON' && element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
+  await tabTo(page, async active => await active.evaluate((element, expected) => element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
   await expect(card.getByRole('button')).toBeFocused();
   await awaitRecordDetail(page, kind, () => page.keyboard.press('Enter'));
   await expect(page.getByRole('button', { name: 'Edit details', exact: true })).toBeVisible();
@@ -135,7 +134,6 @@ async function editRecordThroughKeyboard(page, kind, title, fieldLabel, editedTi
   await page.goto('/app/records', { waitUntil: 'networkidle' });
   const tabName = kind === 'company' ? 'Companies' : kind === 'contact' ? 'Contacts' : 'Opportunities';
   if (kind !== 'opportunity') await awaitRecordReload(page, kind, '', () => page.getByRole('button', { name: tabName, exact: true }).click());
-  if (kind !== 'opportunity') await awaitRecordReload(page, kind, '', () => page.getByRole('combobox', { name: 'Owner', exact: true }).selectOption(''));
   await awaitRecordReload(page, kind, editedTitle, () => page.getByRole('searchbox', { name: 'Search records and timeline', exact: true }).fill(editedTitle));
   await expect(page.getByRole('heading', { name: editedTitle, exact: true })).toBeVisible();
 }
@@ -146,7 +144,6 @@ async function expectRecordList(page, kind, title, evidenceName, diagnostics) {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto('/app/records', { waitUntil: 'networkidle' });
     if (kind !== 'opportunity') await awaitRecordReload(page, kind, '', () => page.getByRole('button', { name: tabName, exact: true }).click());
-    if (kind !== 'opportunity') await awaitRecordReload(page, kind, '', () => page.getByRole('combobox', { name: 'Owner', exact: true }).selectOption(''));
     await awaitRecordReload(page, kind, title, () => page.getByRole('searchbox', { name: 'Search records and timeline', exact: true }).fill(title));
     const heading = page.getByRole('heading', { name: title, exact: true });
     await expect(heading).toBeVisible();
@@ -154,7 +151,7 @@ async function expectRecordList(page, kind, title, evidenceName, diagnostics) {
     diagnostics.viewportChecks.push({ name: viewport.name, surface: evidenceName, ...metrics });
     await page.screenshot({ path: `${evidence}/${evidenceName}-${viewport.name}.png`, fullPage: true });
     if (viewport.name === '320') {
-      await tabTo(page, async active => await active.evaluate((element, expected) => element.tagName === 'BUTTON' && element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
+      await tabTo(page, async active => await active.evaluate((element, expected) => element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
       await awaitRecordDetail(page, kind, () => page.keyboard.press('Enter'));
       await expect(page.getByRole('heading', { name: title, exact: true, level: 1 })).toBeVisible();
     }

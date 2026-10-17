@@ -1,8 +1,6 @@
-export {eraseImportedOperator} from './operator-erasure';
-import { eraseD1ImportTarget,type D1Sql,type D1ImportContext,type SourceRecord } from '../../../modules/import-kit/d1/index';
+import { eraseD1ImportTarget,type D1Sql,type D1ImportContext } from '../../../modules/import-kit/d1/index';
 import {targets,sql} from './targets';
 import {containsMailbox,withdrawImportReviews} from './review-erasure';
-import {nativeId} from './source';
 import {redactImportedNativeCopies} from './native-erasure';
 /** Keep native erasure and the Kit's source withdrawal in the same final D1 transaction. */
 export function captureImportErasure(database:D1Database){
@@ -20,17 +18,13 @@ export async function withdrawRelatedImportCopies(db:D1Database,actor:string,id:
  for(const reference of references)await eraseD1ImportTarget('reference',reference.id,targets.remove('workspace','reference',reference.id),context);
  const copies=(await db.prepare("SELECT kind,id,original_json FROM crm_import_targets WHERE kind='note'").all<{kind:string;id:string;original_json:string}>()).results;
  const linked=(await db.prepare("SELECT timeline_entry_id FROM timeline_entry_records WHERE record_type='contact' AND record_id=?").bind(id).all<{timeline_entry_id:string}>()).results.map(r=>r.timeline_entry_id);
- for(const copy of copies)if((linked.includes(copy.id)||containsMailbox(copy.original_json,emails))&&JSON.parse(copy.original_json).row.kind!=='owner.changed')await eraseD1ImportTarget('note',copy.id,[...targets.remove('workspace','note',copy.id)],context);
+ for(const copy of copies)if(linked.includes(copy.id)||containsMailbox(copy.original_json,emails))await eraseD1ImportTarget('note',copy.id,[...targets.remove('workspace','note',copy.id)],context);
  const stops=(await db.prepare('SELECT id,value_json FROM crm_import_stops').all<{id:string;value_json:string}>()).results;
  for(const stop of stops)if(emails.some(email=>JSON.parse(stop.value_json).emails.includes(email.toLowerCase())))await eraseD1ImportTarget('suppression',stop.id,[sql('DELETE FROM crm_import_stops WHERE id=?',stop.id)],context);
 }
-/** A contact owns a native row plus independent ownership/history effects. Use a
- * privacy-subject key to sever the entire matched source together, rather than
- * pretending a source with several effects belongs only to its contact target. */
+/** Other imported rows, rejected rows and original files can also hold the person's mailbox. */
+const relatedCopies=(emails:string[])=>({source:(record:{payload:unknown})=>containsMailbox(JSON.stringify(record.payload),emails),original:(bytes:Uint8Array)=>containsMailbox(Buffer.from(bytes).toString('utf8'),emails)});
 export async function eraseImportedContact(db:D1Database,actor:string,id:string,statements:D1Sql[],sessionId?:string,emails:string[]=[]){
- const context=erasureContext(db,actor,sessionId),subject='contact-privacy';
- context.storage.targets={...targets,read:(db,destination,kind,targetId)=>targets.read(db,destination,kind===subject?'contact':kind,targetId),matches:(row,destination,kind,targetId)=>targets.matches(row,destination,kind===subject?'contact':kind,targetId)};
- const history=(await db.prepare("SELECT t.id FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id WHERE r.record_type='contact' AND r.record_id=? AND t.kind='owner.changed' AND EXISTS(SELECT 1 FROM crm_import_targets marker WHERE marker.kind='note' AND marker.id=t.id)").bind(id).all<{id:string}>()).results.map(row=>row.id);
- return eraseD1ImportTarget(subject,id,[...await redactImportedNativeCopies(db,id,emails),...statements,sql("DELETE FROM crm_import_targets WHERE id=? AND kind IN('contact','contact-owner')",id),...history.flatMap(noteId=>targets.remove('workspace','note',noteId)),
- ...await withdrawImportReviews(db,id,emails)],context,{source:(record:SourceRecord)=>(record.kind==='contact'&&nativeId(record.namespace,'contact',record.sourceId)===id)||containsMailbox(JSON.stringify(record.payload),emails),original:(bytes:Uint8Array)=>containsMailbox(Buffer.from(bytes).toString('utf8'),emails)});
+ return eraseD1ImportTarget('contact',id,[...await redactImportedNativeCopies(db,id,emails),...statements,sql('DELETE FROM crm_import_targets WHERE kind=? AND id=?','contact',id),
+ ...await withdrawImportReviews(db,id,emails)],erasureContext(db,actor,sessionId),emails.length?relatedCopies(emails):undefined);
 }
