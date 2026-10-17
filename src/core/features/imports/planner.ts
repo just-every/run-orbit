@@ -8,7 +8,6 @@ import {mailboxListSql} from './mailboxes';
 import type { ImportInput } from './contracts';
 import {namedCompanies} from './named-companies';
 import {resolveImportOwners,importedOwnerEffects} from './owners';
-import {withoutOwner} from './owner-targets';
 
 /** A custom field keeps a whole number or decimal as a number, and everything else as text. */
 function customValues(values:Record<string,string>){return Object.fromEntries(Object.entries(values).map(([name,value])=>[name,/^-?(0|[1-9]\d{0,14})(\.\d+)?$/.test(value)?Number(value):value]));}
@@ -70,7 +69,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
   if(existing.has(row)){const reference=nativeId(namespace,'reference',`${row.kind}:${row.id}`);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:row.kind,record_id:references.get(`${row.kind}:${row.id}`)!,source_id:row.id,mailbox:row.kind==='contact'?email(row.data.email)??null:null},links:[]}}],unmapped:[{reason:'Already in Orbit, with the same email or website domain. Orbit keeps the saved record and does not apply differences from the file. Only a stop in the file (unsubscribed, bounced or Do not contact) changes whether Orbit may email them. Owner mappings do not replace an existing native owner; open the record to review an owner change explicitly.'}]});continue;}
   const id=references.get(`${row.kind}:${row.id}`)!,original=originals.get(`${row.kind}:${id}`);
   if(original){const effects:TargetEffect[]=[{targetKind:row.kind,targetId:id,value:JSON.parse(original)}];for(const [kind,targetId] of [[`${row.kind}-owner`,id],['note',nativeId(namespace,'owner-history',`${row.kind}:${row.id}`)]]){const saved=originals.get(`${kind}:${targetId}`);if(saved)effects.push({targetKind:kind,targetId,value:JSON.parse(saved)});}const mapped=(row.source.payload as any).ownerMapping,owner=effects.find(effect=>effect.targetKind===`${row.kind}-owner`);const ownershipReview=(row.kind==='contact'||row.kind==='company')&&((owner?.value as any)?.owner_id??null)!==(mapped?.ownerId??null);results.set(row.source,{effects,...ownershipReview?{unmapped:[{field:'owner-review',reason:'This record was imported before. A changed owner mapping needs an explicit owner review on its native record; this import will not overwrite its owner. Apply reports a changed source instead of replacing its saved ownership. Use the native owner control for the change.'}]}:{}});continue;}
-  const data=row.data,native:Record<string,any>={...withoutOwner(row.kind,shapes[row.kind]),id,created_at:at,updated_at:at},links:Record<string,any>[]=[];
+  const data=row.data,native:Record<string,any>={...shapes[row.kind],id,created_at:at,updated_at:at},links:Record<string,any>[]=[];
   const provenance={vendor:input.vendor,account:input.account,sourceId:row.id,owner:data.owner??null,stage:data.stage??null,description:data.description??null};
   if(row.kind!=='note')native.custom_fields_json=JSON.stringify({...customValues(row.custom),import_source:JSON.stringify(provenance)});
   if(row.kind==='company'){

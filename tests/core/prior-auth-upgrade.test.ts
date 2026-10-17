@@ -85,6 +85,20 @@ test('AUTH-5 prior-data upgrade keeps operator ids, access rows, invitations, gr
         answer.body.stages=answer.body.stages.map((stage:Record<string,unknown>)=>({...stage,pipeline_id:defaultPipeline.id,pipelineName:defaultPipeline.name,probability:0,required_fields:[],stale_interval_days:null}));
       }}
 
+      // Full-record projections add ownership defaults without changing any prior
+      // field, revision, edit grant or restricted collaborator answer.
+      for(const answer of Object.values(recorded) as {status:number;body:any}[]){
+        if(answer.status!==200)continue;
+        const records=answer.body?.items??[answer.body];
+        for(const record of records){
+          if(!['contact','company','opportunity'].includes(record?.kind)||!record.fields?.id)continue;
+          if(record.kind!=='opportunity'){
+            record.fields.owner_id=null;record.fieldVersions.owner_id=record.ref.revision;
+          }
+          record.fields.owner_revision=0;record.fieldVersions.owner_revision=record.ref.revision;
+        }
+      }
+
       // Old sessions still work, with the same access answers as on the old code.
       for (const probe of probes(capture)) assert.deepEqual(normal(await ask(probe)), normal(recorded[probe.name]), `${probe.name} with the prior session`);
 

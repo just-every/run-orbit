@@ -39,16 +39,25 @@ test('CAPTURE-007 the capture migration upgrades a store from the previous main 
     // The real upgrade applies every pending migration to the prior installation.
     execFileSync(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', directory], { env: { ...process.env, CI: '1' }, encoding: 'utf8', timeout: 120_000 });
     const after = read(file);
+    // Graph projections gain only the declared ownership defaults. Each changed
+    // projection advances its workspace fence; every prior field, privacy
+    // principal and record revision remains exact.
+    const ownershipChanges=new Map<string,number>();
+    before.graph_records=before.graph_records!.map(value=>{const row=JSON.parse(value);if(['contact','company','opportunity'].includes(row.kind)){const fields=JSON.parse(row.fields_json),next=JSON.stringify({...fields,...(row.kind==='opportunity'?{}:{owner_id:null}),owner_revision:0});if(next!==row.fields_json)ownershipChanges.set(row.workspace_id,(ownershipChanges.get(row.workspace_id)??0)+1);row.fields_json=next;}return JSON.stringify(row);}).sort();
+    before.graph_workspace_epochs=before.graph_workspace_epochs!.map(value=>{const row=JSON.parse(value);row.epoch+=ownershipChanges.get(row.workspace_id)??0;return JSON.stringify(row);}).sort();
     for (const table of Object.keys(before)) assert.deepEqual(after[table], before[table], `${table} keeps every prior row unchanged`);
     const addedTables = Object.keys(after).filter(table => !Object.hasOwn(before, table));
     assert.ok(addedTables.length > 0, 'the prior installation gains capture storage');
     // Pipeline migration deliberately backfills metadata for every existing stage.
     // All other new feature storage must still start empty.
-    for (const table of addedTables.filter(name=>!['pipelines','pipeline_stage_rules'].includes(name))) assert.deepEqual(after[table], [], `${table} starts empty`);
+    for (const table of addedTables.filter(name=>!['pipelines','pipeline_stage_rules','record_owners'].includes(name))) assert.deepEqual(after[table], [], `${table} starts empty`);
     const pipelines=after.pipelines!.map(row=>JSON.parse(row)),rules=after.pipeline_stage_rules!.map(row=>JSON.parse(row));
     assert.equal(pipelines.length,1);assert.equal(pipelines[0].is_default,1);
     assert.deepEqual(rules.map(row=>row.stage_id).sort(),before.pipeline_stages!.map(row=>JSON.parse(row).id).sort());
     assert.ok(rules.every(row=>row.pipeline_id===pipelines[0].id));
+    // Ownership is additive sidecar metadata; all original native rows above stay byte-exact.
+    const expectedOwners=(['contacts','companies','opportunities'] as const).flatMap(table=>before[table]!.map(value=>{const row=JSON.parse(value);return JSON.stringify({record_type:table==='companies'?'company':table==='contacts'?'contact':'opportunity',record_id:row.id,owner_id:table==='opportunities'?row.owner_id:null,owner_revision:0});})).sort();
+    assert.deepEqual(after.record_owners,expectedOwners,'prior records receive explicit unassigned ownership or retain their deal owner');
 
     // The upgraded store captures: a reply from the prior contact stops the prior scheduled send.
     const platform = await getPlatformProxy<{ DB: D1Database }>({ configPath: 'wrangler.jsonc', envFiles: ['tests/support/no-local-settings.env'], persist: { path: join(directory, 'v3') }, remoteBindings: false });

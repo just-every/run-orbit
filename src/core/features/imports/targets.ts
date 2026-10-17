@@ -1,4 +1,4 @@
-import {isOwnerTarget,readOwnerTarget,ownerTargetMatches,writeOwnerTarget,removeOwnerTarget,withoutOwner} from './owner-targets';
+import {isOwnerTarget,readOwnerTarget,ownerTargetMatches,writeOwnerTarget,removeOwnerTarget} from './owner-targets';
 import {suppressionPredicate} from '../records/suppression';
 import { canonicalJson,sha256,type D1TargetAdapter,type D1Sql,type TargetRow,type D1Database } from '../../../modules/import-kit/d1/index';
 import { stopRead,stopWrite,stopRemove,stopMatches } from './targets-stop';
@@ -13,7 +13,7 @@ export const targets:D1TargetAdapter={
   const row=await db.prepare(`SELECT * FROM ${table} WHERE id=?`).bind(id).first();if(!row)return undefined;
   const links=kind==='deal'?(await db.prepare('SELECT * FROM opportunity_contacts WHERE opportunity_id=? ORDER BY contact_id').bind(id).all()).results:kind==='note'?(await db.prepare('SELECT * FROM timeline_entry_records WHERE timeline_entry_id=? ORDER BY record_type,record_id').bind(id).all()).results:[];
   const marker=await db.prepare('SELECT revision,original_json FROM crm_import_targets WHERE kind=? AND id=?').bind(kind,id).first();
-  return {destination,targetKind:kind,targetId:id,value:{row:withoutOwner(kind,row),links,...marker&&JSON.parse(marker.original_json).suppressionTokens?{suppressionTokens:JSON.parse(marker.original_json).suppressionTokens}:{}},revision:marker?.revision??sha256(canonicalJson({row:withoutOwner(kind,row),links}))};
+  return {destination,targetKind:kind,targetId:id,value:{row:row,links,...marker&&JSON.parse(marker.original_json).suppressionTokens?{suppressionTokens:JSON.parse(marker.original_json).suppressionTokens}:{}},revision:marker?.revision??sha256(canonicalJson({row:row,links}))};
  },
  matches(row,destination,kind,id){
   if(isOwnerTarget(kind))return ownerTargetMatches(row,kind,id);

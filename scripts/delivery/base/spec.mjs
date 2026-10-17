@@ -7,6 +7,7 @@ import {validateDeclarations} from './declarations.mjs';
 import {validateMailSpec} from './mail.mjs';
 import {validateNativeExport} from './native-export.mjs';
 import {seedSignIn} from './sign-in.mjs';
+import {withReviewedMigrationRewrites, validateMigrationRewrites} from '../migration-rewrites.mjs';
 const reserved = new Set(['ASSETS','RER_RELEASE_DIGEST','RER_PREVIEW_TOKEN','RER_VERSION_METADATA','RER_INSTALLATION_ID','RER_MANAGEMENT_ORIGIN']);
 const specKeys = ['schema','resources','migrations','compatibilityDate','compatibilityFlags','durableObjects','durableObjectMigrations','publicVariables','secretNames','optionalSecretNames','schedules','queueConsumers','healthPath','recovery','emailSending','providerEffects','surfaces','initialSetup','mail','nativeExport'];
 /** Validate the exact producer contract without implying service acceptance or provider consent. */
@@ -57,7 +58,7 @@ export function validateCandidateSpec(spec) {
   validateDurableMigrations(spec.durableObjectMigrations);
   const migrations = new Set();
   for (const item of spec.migrations) {
-    keys(item, ['binding','name','sha256','sql'], 'migration');
+    keys(item, ['binding','name','sha256','sql','rewrites'], 'migration');
     string(item.name, 'migration name', /^[\w.-]+\.sql$/);
     if (!spec.resources.some(resource => resource.kind === 'd1' && resource.binding === item.binding)) throw Error('Migration requires a declared D1 binding');
     const identity = `${item.binding}/${item.name}`;
@@ -65,6 +66,7 @@ export function validateCandidateSpec(spec) {
     migrations.add(identity);
     if (typeof item.sql !== 'string' || Buffer.byteLength(item.sql) > 10 * 1024 * 1024 || item.name === 'setup-initial-owner.sql' || /\brer_migrations\b/i.test(item.sql)) throw Error('Candidate cannot replace owner initialization or migration authority');
     if (typeof item.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(item.sha256) || createHash('sha256').update(item.sql).digest('hex') !== item.sha256) throw Error('Invalid migration byte digest');
+    validateMigrationRewrites(item);
   }
   if (spec.nativeExport !== undefined) validateNativeExport(spec.nativeExport, spec);
   strings(spec.schedules, 'schedules');
@@ -134,7 +136,7 @@ export async function deploymentSpec(root, options = {}) {
     string(item.migrations_dir, 'D1 migrations_dir');
     return {binding:item.binding,path:resolve(dirname(file), item.migrations_dir),prefix:migrationPrefix};
   });
-  const migrations = await collectMigrations(root, [...directories,...extraMigrationDirectories], bindings.resources);
+  const migrations = await withReviewedMigrationRewrites(root, await collectMigrations(root, [...directories,...extraMigrationDirectories], bindings.resources));
   const publicVariables = {};
   object(config.vars === undefined ? {} : config.vars, 'Wrangler vars');
   for (const [name,value] of Object.entries(config.vars ?? {})) {

@@ -277,17 +277,6 @@
       }
     },
     {
-      "path": "scripts/delivery/base/spec.mjs",
-      "originPath": "modules/delivery-producer/spec.mjs",
-      "revision": "d434ea67989fe10b6ddff01daba8bb350975e54a",
-      "files": {
-        "scripts/delivery/base/spec.mjs": "65179ca5222485513260e8d58aaae6740ae6fe1b27065e96f0d95d197fc6d3f0"
-      },
-      "modes": {
-        "scripts/delivery/base/spec.mjs": "100644"
-      }
-    },
-    {
       "path": "scripts/delivery/base/sql-statements.mjs",
       "originPath": "modules/delivery-producer/sql-statements.mjs",
       "revision": "d434ea67989fe10b6ddff01daba8bb350975e54a",

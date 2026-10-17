@@ -62,3 +62,21 @@ The direct per-record CSV writer is replaced by the reviewed import-kit wizard. 
 ## Native automation setup (16 October 2026)
 
 Zapier and Make use the source-scoped automation endpoint with their saved private source secret in an Authorization Bearer header over HTTPS. It shares the signed path’s schema, replay identity and current-source commit fence. Provider-native Calendly/Cal.com webhooks keep signature validation. Secrets are never placed in URLs.
+
+## Reviewed record ownership migration — 17 October 2026
+
+The owner authorized replacing `0042_record_ownership.sql` with the idempotent
+sidecar migration so an existing table at D1's 100-column limit can upgrade.
+`migrations/rewrites.json` names the exact released and replacement digests;
+RER's native reviewed-rewrite validation carries that declaration into direct
+owner artifacts and Orbit's Managed deployment specification and artifact.
+Already-applied released bytes remain recognized as migration history.
+
+`scripts/delivery/base/spec.mjs` is now edition-owned adapted source, retaining
+its Base `d434ea67989fe10b6ddff01daba8bb350975e54a` comparison origin in
+`edition.json` and `sources.lock.json`. It is removed from `base-copies.json`'s
+exact-byte copies; every other delivery producer copy keeps its existing pin.
+The small `scripts/delivery/migration-rewrites.mjs` adapter reuses the pinned
+RER package's declaration reader, attachment and validation instead of copying
+the rewrite policy. Packaging also checks the generated ownership SQL used by
+the Worker against the migration source.

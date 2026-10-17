@@ -1,8 +1,8 @@
 import {actorFence,clearGuards,guard,version} from '../identity/store';
 import {RecordError} from '../records/shared';
 
-const outstandingWork=`EXISTS(SELECT 1 FROM contacts WHERE owner_id=?)
- OR EXISTS(SELECT 1 FROM companies WHERE owner_id=?)
+const outstandingWork=`EXISTS(SELECT 1 FROM record_owners WHERE record_type='contact' AND owner_id=?)
+ OR EXISTS(SELECT 1 FROM record_owners WHERE record_type='company' AND owner_id=?)
  OR EXISTS(SELECT 1 FROM opportunities WHERE owner_id=? AND lifecycle='open')
  OR EXISTS(SELECT 1 FROM sales_tasks WHERE owner_id=? AND status='open')
  OR EXISTS(SELECT 1 FROM handoff_tasks WHERE assignee_id=? AND status='open')

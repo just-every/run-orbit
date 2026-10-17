@@ -1,3 +1,5 @@
+import {reconcileLocalOwnership} from './ownership-local.mjs';
+import {synchronizeOwnershipSql} from './ownership-sql.mjs';
 import {localOwner} from './local-owner.mjs';
 import {ensureLocalSourceKey} from './source-key.mjs';
 import { localInstaller } from '@runeditrun/rer/local-installer';
@@ -12,7 +14,7 @@ import { captureNotices } from './capture-notices.mjs';
 import * as model from './ui/seed.mjs';
 
 export const database = 'orbit-local-db';
-const migrate = ({ demo }) => ['pnpm', ['exec', 'wrangler', 'd1', 'migrations', 'apply', database, '--local', '--persist-to', demo?.state ?? '.wrangler/state', '--config', 'wrangler.jsonc'], { env: { ...process.env, WRANGLER_SEND_METRICS: 'false', X_LOCAL_EXPLORER: 'false' } }];
+const migrate = async context => { await reconcileLocalOwnership(context); const {demo}=context; return ['pnpm', ['exec', 'wrangler', 'd1', 'migrations', 'apply', database, '--local', '--persist-to', demo?.state ?? '.wrangler/state', '--config', 'wrangler.jsonc'], { env: { ...process.env, WRANGLER_SEND_METRICS: 'false', X_LOCAL_EXPLORER: 'false' } }]; };
 
 // Orbit signs in through Base operator-auth over its own operators and sessions.
 // Locally it claims the first owner with the private setup token and opens `rer dev` signed in (devIdentity).
@@ -26,7 +28,7 @@ export const lifecycle = captureNotices(localInstaller({
   keepExisting: true, originKey: 'AUTH_ORIGIN',
   values: ({ origin }) => ({ AUTH_LOCAL: 'true', AUTH_ORIGIN: origin, MAIL_PROVIDER: 'development', MAIL_FROM: 'auth@localhost.test', CAPTURE_MAIL_ADDRESS: 'orbit@capture.localhost' }),
  },
- build: ['pnpm', ['run', 'build:app']],
+ build: async ({root}) => { await synchronizeOwnershipSql(root,{check:true}); return ['pnpm', ['run', 'build:app']]; },
  migrate,
  start: previewTarget,
  owner: { displayName: input => input.displayName || 'Owner', returnTo: '/setup' },

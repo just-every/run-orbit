@@ -1,7 +1,8 @@
+import {recordSource} from '../ownership/storage';
 import {createId} from '../../shared/ids';
 import {audit,RecordError,timeline} from '../records/shared';
 import {taskHandoverStatements,TaskError} from '../tasks';
-import {prepareOwnerChange} from '../ownership/changes';
+import {prepareOwnerChange,recordSnapshotCondition} from '../ownership/changes';
 import {ownerNotificationStatements} from '../ownership/notifications';
 import {removalInventory} from './removal-inventory';
 import {clearRemovalGuards,removalAuthority,removalGuard,removalRowGuard} from './removal-guards';
@@ -22,9 +23,9 @@ export async function removeWithHandover(db:D1Database,id:string,actor:string,ch
  const statements=[...await removalAuthority(db,actor,sessionId),removalRowGuard(db,'operators',inventory.operator)];
  if(inventory.operator.setup_owner)statements.push(guard("EXISTS(SELECT 1 FROM operators WHERE status='active' AND id<>? AND NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=operators.id))",id));
  for(const target of new Set(Object.values(destinations)))if(target)statements.push(guard("EXISTS(SELECT 1 FROM operators WHERE id=? AND status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=operators.id))",target));
- for(const [set,table]of [['opportunities','opportunities'],['contacts','contacts'],['companies','companies']]as const){
-  statements.push(guard(`(SELECT count(*) FROM ${table} WHERE owner_id=?${set==='opportunities'?" AND lifecycle='open'":''})=?`,id,inventory[set].length));
-  for(const row of inventory[set])statements.push(removalRowGuard(db,table,row));
+ for(const [set,kind]of [['opportunities','opportunity'],['contacts','contact'],['companies','company']]as const){
+  statements.push(guard(`(SELECT count(*) FROM ${recordSource(kind)} WHERE owner_id=?${set==='opportunities'?" AND lifecycle='open'":''})=?`,id,inventory[set].length));
+  for(const row of inventory[set]){const snapshot=recordSnapshotCondition(kind,row);statements.push(guard(snapshot.sql,...snapshot.bindings));}
  }
  statements.push(guard("(SELECT count(*) FROM handoff_tasks WHERE assignee_id=? AND status='open')=?",id,inventory.handoffs.length));
  const changes=[];

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "rewrites": [
+    {
+      "migration": "0042_record_ownership.sql",
+      "from": "2b0851ed822db8c0dc1e8563cbd9739c637114d802723d76b8df76a41e409227",
+      "to": "f176587a802b40f169b04b1ee0a926917c9b00feb9109909271eed42b5b47e7b",
+      "reason": "Replace owner columns with idempotent ownership sidecars so installations at D1’s 100-column table limit can upgrade. Previously applied 0042 ownership data is reconciled into sidecars before domain work.",
+      "reviewed": true
+    }
+  ]
+}
