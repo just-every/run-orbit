@@ -2387,14 +2387,14 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "849a759aa21523dd5d3eb0e5dffe6721db6001dd0bda32df7eb5de7447402f45",
+      "sha256": "9369820c0c852af56936e135d551f2dbfa70aa685debae4a8acd06542e070a7d",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
       "sha256": "29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b",
       "executable": false
     },
-    "patches/rer-0.2.42.patch": {
+    "patches/rer-0.2.43.patch": {
       "sha256": "d23819474db0f797417d9eddca1545c96df58fa53089354c44bb5009482dc4db",
       "executable": false
     },
@@ -2407,7 +2407,7 @@
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "2d7bf70bf9f3c6da5cb4f7c365111234bcd392df7c3ac6e59671892bb103dda5",
+      "sha256": "ff94762d2584e206624b02525de4126d84872753604dc8b8b249c79945b71003",
       "executable": false
     },
     "pnpm-workspace.yaml": {
@@ -4243,7 +4243,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-page.tsx": {
-      "sha256": "25f7d4df4d1fc47b5cfb09633462b768e61b556c14765f82931f4a3681c71fcd",
+      "sha256": "d309849ff3eb9382f0f42d4bae9e7fe7f7061e2b6e6381dafee1bbf0aa07c9f4",
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-timeline.tsx": {
@@ -6519,7 +6519,7 @@
       "executable": false
     },
     "tests/e2e/operator-session.mjs": {
-      "sha256": "bcc9f2362917ae80583206314383acece4fee71a3301abaa38b13db5d69c6435",
+      "sha256": "b22bfe194853df9f930d9e4e0aa41190e9d41382cf4e7993641d5f0f9b7938fd",
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
@@ -6791,7 +6791,7 @@
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
-      "sha256": "81ee502acdf9096666b66a943fdf44edece8cebd322ecd12f26e9edb8fb96c2a",
+      "sha256": "ba5c6ec47a428d3ab530c56a340dc7cf24ddaba509fd3ae68e6c0ac6a7277152",
       "executable": false
     },
     "tests/rer/operator-fixture.mjs": {
