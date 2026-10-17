@@ -460,6 +460,6 @@
     { "name": "Pipedrive", "edition": null },
     { "name": "Salesforce", "edition": null }
   ],
-  "description": "A CRM for one revenue team that turns customer activity reported by the tools they already run into explainable, human-reviewed next actions.",
+  "description": "Turn customer activity into clear sales priorities and reviewed next steps.",
   "customFields": []
 }
