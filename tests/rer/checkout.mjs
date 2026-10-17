@@ -30,7 +30,7 @@ export async function freshCheckout() {
   const env = { ...process.env, RER_SERVER_JOURNEY: '1', RER_SERVERS_DIR: servers, WRANGLER_SEND_METRICS: 'false' };
   delete env.RER_LOCAL_OPERATION; delete env.RER_ONBOARDING_PROCESS_OWNER; delete env.ORBIT_TEST_STATE;
   const rer = (args, options = {}) => new Promise((done) => {
-    const child = spawn(process.execPath, ['node_modules/@runeditrun/rer/bin/rer.mjs', ...args], { cwd: root, env, stdio: [options.input === undefined ? 'ignore' : 'pipe', 'pipe', 'pipe'] });
+    const child = spawn(process.execPath, ['node_modules/@runeditrun/rer/bin/rer.mjs', ...args], { cwd: root, env: { ...env, ...options.env }, stdio: [options.input === undefined ? 'ignore' : 'pipe', 'pipe', 'pipe'] });
     let output = '';
     child.stdout.on('data', (chunk) => { output += chunk; });
     child.stderr.on('data', (chunk) => { output += chunk; });

@@ -5,9 +5,12 @@ import {AccessService} from './service';
 import {AccessAdministration} from './administration';
 import {domainEventStatements} from '../effects/event-statements';
 import {roles} from './policy';
+import {isFullOperator} from './identity-class';
 import {appAccess} from './collaborator-home';
 export function createAccessRoutes(db:D1Database){const app=new Hono<AppEnvironment>(),access=new AccessService(db),admin=new AccessAdministration(db,access,domainEventStatements);
- app.get('/class',async c=>{const access=await appAccess(db,c.get('operator').operatorId);return c.json({access_class:access.full?'native_full':'collaborator',workspace:access.workspace,reports:access.reports});});
+ app.get('/class',async c=>c.json({access_class:await isFullOperator(db,c.get('operator').operatorId)?'native_full':'collaborator'}));
+ // The pages this person may open: the owner's pages (workspace) and Reports. /class keeps its prior answer.
+ app.get('/pages',async c=>{const access=await appAccess(db,c.get('operator').operatorId);return c.json({access_class:access.full?'native_full':'collaborator',workspace:access.workspace,reports:access.reports});});
  app.get('/workspaces',async c=>c.json(await access.listWorkspaces(c.get('operator'))));
  app.post('/invitations/accept',async c=>{const input=z.object({token:z.string().min(1).max(200)}).strict().parse(await c.req.json());return c.json(await admin.accept(c.get('operator'),input.token));});
  app.use('/workspaces/:workspace/*',async(c,next)=>{c.set('actor',await access.resolveOperatorContext(c.get('operator'),c.req.param('workspace')!,crypto.randomUUID()));await next();});

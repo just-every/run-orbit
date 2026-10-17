@@ -36,6 +36,10 @@ for(const width of [1440,390])test(`SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 fir
  await page.goto(origin+'/app');await expect(page.getByText('Setup complete',{exact:true})).toBeVisible();assert.equal(await page.locator('details').first().getAttribute('open'),null);
  await paidRuntime.teardown();paidRuntime=undefined;
  await hostedScheduling({checkout,page,port,bindings:paidBindings,opportunityURL:result.opportunityURL,evidence});
- if(width===1440){const dry=await checkout.rer(['deploy','--dry-run']);assert.equal(dry.code,4,'A production deploy must refuse local-only sign-in settings; configure hosted mail or Auth SSO.');assert.equal(dry.output.includes(key),false);}
+ if(width===1440){
+  // A dry run goes ahead and names production sign-in mail as needed; the real deploy refuses before building or any provider request.
+  const dry=await checkout.rer(['deploy','--dry-run']);assert.equal(dry.code,0,'A dry run lists what a real deploy needs');assert.match(dry.output,/Needed for a real deploy[\s\S]*production sign-in mail/);assert.equal(dry.output.includes(key),false);
+  const real=await checkout.rer(['deploy'],{env:{CLOUDFLARE_ACCOUNT_ID:'',CLOUDFLARE_API_TOKEN:''}});assert.equal(real.code,4,'A production deploy must refuse local-only sign-in settings; configure hosted mail or Auth SSO.');assert.match(real.output,/Production sign-in is not configured[\s\S]*Nothing was built or uploaded/);assert.equal(real.output.includes(key),false);
+ }
  }finally{await browser?.close();if(paidRuntime)await paidRuntime.teardown();if(dev){dev.child.kill('SIGTERM');await dev.exited;}await checkout.rer(['dev','--stop']);await checkout.close();}
 });

@@ -3275,7 +3275,7 @@
       "executable": false
     },
     "src/core/features/access/collaborator-console.tsx": {
-      "sha256": "a4ee2ab0f09f9934bf4a117011cf3263dafea4394d5cff9294dee6e946b26fe1",
+      "sha256": "ae83f1e01894a1820cd2392f2bf72cbbe3973d80e80fe271bc267d459945430e",
       "executable": false
     },
     "src/core/features/access/collaborator-grants.tsx": {
@@ -3343,7 +3343,7 @@
       "executable": false
     },
     "src/core/features/access/routes.ts": {
-      "sha256": "092a168950a967ff1fbd87d34a743cb83983a8b211e995b1105856b9352c37b9",
+      "sha256": "82747d4ac1a58bc97673a6b3971e53d4dcc4a55f5486aac7ae94316d188b6185",
       "executable": false
     },
     "src/core/features/access/service.ts": {
@@ -3703,7 +3703,7 @@
       "executable": false
     },
     "src/core/features/fold-ui/workspace.tsx": {
-      "sha256": "354131b6d0383b214150665b44f1cfea534c01f98ec6caf7aeca82c1cfd84430",
+      "sha256": "8ccb04688347e5357ac527386186c89c0c6a0082316bd75d52b83455c08c3371",
       "executable": false
     },
     "src/core/features/forms/console.tsx": {
@@ -6175,7 +6175,7 @@
       "executable": false
     },
     "tests/core/prior-auth-upgrade.test.ts": {
-      "sha256": "ad0d2fdddae6f383ef68b714981df49f9335bdcc8e9b892cd58e248bdc98db0a",
+      "sha256": "06c17c943190146abb8087163f478a8596b6ddec4a2232e6114874f5f029211a",
       "executable": false
     },
     "tests/core/provider-redirects.test.ts": {
@@ -6431,7 +6431,7 @@
       "executable": false
     },
     "tests/rer/checkout.mjs": {
-      "sha256": "943e38b992aaa6703a6652bcdc1e01d2a0fd3579bbc03c75d31dda7d35a87250",
+      "sha256": "6161d6fa26fa1d7776a1fa380b1031d4ac0a483e2952de99ae10fcb398c528b7",
       "executable": false
     },
     "tests/rer/editor-provider.mjs": {
@@ -6443,7 +6443,7 @@
       "executable": false
     },
     "tests/rer/identity.test.mjs": {
-      "sha256": "a0b61bb445014612f0b755930530c802e25a798caa12b2bc5aa6a88757314c43",
+      "sha256": "8084ba7665e0ab472d2e48fb478dab7028a5d734a28e5858bbbf4dad846d2774",
       "executable": false
     },
     "tests/rer/journey.test.mjs": {
@@ -6455,7 +6455,7 @@
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
-      "sha256": "ee5bd71f8a8d4caca464dbc0f24e1562f2908080eeac62c757791ec0f2db4296",
+      "sha256": "d1dfdfa7c68c3bcc705f1c0cfb24ccf5b1586cfea6875ac76d90c582d0ab9d83",
       "executable": false
     },
     "tests/rer/operator-fixture.mjs": {

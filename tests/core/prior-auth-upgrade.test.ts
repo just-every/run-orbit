@@ -20,6 +20,8 @@ const D1_FILE = 'v3/d1/miniflare-D1DatabaseObject/9ba2b04bf514d9facfd57ed57d849e
 const ORIGIN = 'https://orbit.test';
 const capture = JSON.parse(await readFile(join(FIXTURE, 'capture.json'), 'utf8'));
 const recorded = JSON.parse(await readFile(join(FIXTURE, 'answers.json'), 'utf8'));
+// Since the recording, /identity also advertises GET /records to a grant that reads evidence (the prior Slate grant does).
+recorded['slate:identity'].body.capabilities.listRecords = true;
 const FOREIGN_KEYED = ['access_memberships', 'access_invitations', 'access_grants', 'access_collaborators', 'access_form_authorities', 'original_operator_provisions', 'delegation_grants', 'handoff_tasks', 'content_entities', 'opportunities', 'timeline_entries', 'audit_entries', 'owner_bootstrap'];
 
 /** Volatile read times and grant expiries (re-dated below) are not access answers; the capture origin becomes the test origin. */
