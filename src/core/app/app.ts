@@ -1,4 +1,5 @@
 import {createSalesTaskRoutes} from '../features/tasks';
+import {createRelationshipRoutes} from '../features/relationships';
 import type {ProviderFetch} from '../features/capture/providers/config';
 import { createImportRoutes } from '../features/imports/routes';
 import {createCaptureRoutes} from '../features/capture/routes';
@@ -132,6 +133,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
   app.route('/api/v1/capture',createCaptureRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch,mailAddress:input.captureMailAddress,local:input.hosted===false}));
   app.route("/api/v1/records", createRecordsRoutes(input.database));
   app.route('/api/v1/tasks',createSalesTaskRoutes(input.database));
+  app.route('/api/v1/relationships',createRelationshipRoutes(input.database));
   app.route("/api/v1/settings", createSettingsRoutes(input.database,request=>input.stepUp(request,'email:change','/app/settings')));
   app.route("/api/v1/setup", createSetupRoutes(input.database));
   app.route("/api/v1/sources", createSourceRoutes(input.database,input.sourceSecurity));

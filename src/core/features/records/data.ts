@@ -10,6 +10,7 @@ import { capturedValueErasureStatements } from './capture-value-erasure';
 import { evaluationStatements } from '../workbench/evaluation-repository';
 import { createId } from '../../shared/ids';
 import { audit, RecordError, requireRecord, type RecordKind } from './shared';
+import {relationshipContactErasure} from '../relationships/erasure';
 export class DataRepository {
  constructor(readonly db:D1Database){}
  async remove(kind:RecordKind,id:string,actor:string,sessionId?:string){const capture=captureImportErasure(this.db),db=capture.db;const record=await requireRecord(db,kind,id);const statements:D1PreparedStatement[]=[];let contactEmails:string[]=[];
@@ -29,6 +30,7 @@ export class DataRepository {
    const identities=[...new Set([record.email,...aliases].filter((value):value is string=>typeof value==='string'&&value.length>0))];
    contactEmails=identities;
    statements.push(...taskContactErasure(db,id,identities));
+   statements.push(...relationshipContactErasure(db,id,identities));
    statements.push(...await capturedValueErasureStatements(db,id,identities));
    const match=identities.length?await privacyMatcher(db,statements):undefined;
    if(match)for(const email of identities)for(const token of await match(email))statements.push(suppressionProof(db,token,"EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')",[id]));

@@ -689,9 +689,9 @@ Status is an implementation judgment, not a live-provider or deployed-product ac
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 62 | 17 | 0 | 79 |
-| Target and push further | 1 | 30 | 21 | 52 |
-| All | 63 | 47 | 21 | 131 |
+| Published | 64 | 15 | 0 | 79 |
+| Target and push further | 2 | 29 | 21 | 52 |
+| All | 66 | 44 | 21 | 131 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -700,7 +700,7 @@ Status is an implementation judgment, not a live-provider or deployed-product ac
 | `TEAM-003` | One workspace | published | done | `tests/core/records-search.test.ts`; `src/core/features/pipelines/`; `tests/evidence/contract/TEAM-003/` | Persisted US timezone, USD, working hours and intervals exercised with multiple pipelines through Settings and Records at 1440/390. |
 | `TEAM-004` | Removal handover | published | partial | `src/core/features/settings/removal-handover.ts`; `src/core/features/tasks/handover.ts`; `tests/core/today-brief.test.ts`; `tests/evidence/contract/TEAM-004/` | Reviewed per-set opportunity, sales-task and handoff transfer or explicit unassignment is atomic with session revocation and scheduled-mail cancellation; historical attribution remains. Gap: ownership and per-set handover of contacts, leads, companies, custom records and sequence enrollments await those ownership features. |
 | `RECORD-001` | Core records | published | done | `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts` |  |
-| `RECORD-002` | Associations | published | partial | `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts` | Core primary-company/deal associations exist; multiple company relationships and full historical acceptance are pending. |
+| `RECORD-002` | Associations | published | done | `src/core/features/relationships/`; `src/core/features/records/repository.ts`; `tests/core/records-search.test.ts`; `tests/core/records-merge-review.test.ts`; `tests/evidence/contract/RECORD-002/` | Primary and explicit secondary company associations, reviewed deal stakeholders, reassociation history and merge/erasure handling are implemented without rewriting prior customer history. |
 | `RECORD-003` | Identity keys | published | done | `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts` |  |
 | `RECORD-004` | Duplicate merge | published | done | `src/core/features/records/merge-review.ts`; `tests/core/records-merge-review.test.ts` |  |
 | `RECORD-005` | Timeline | published | done | `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts` |  |
@@ -709,7 +709,7 @@ Status is an implementation judgment, not a live-provider or deployed-product ac
 | `RECORD-008` | Import | published | done | `src/core/features/imports/contracts.ts`; `tests/core/crm-import.test.ts`; `tests/core/crm-import-erasure.test.ts`; `tests/e2e/imports.spec.mjs` |  |
 | `RECORD-009` | Duplicate candidates | published | done | `src/core/features/records/import-merge.ts`; `tests/core/records-merge-review.test.ts` |  |
 | `RECORD-010` | Manual entries | published | done | `src/core/features/records/manual.ts`; `tests/core/today-brief.test.ts` | Implemented source and exercising tests; file attachments are tracked under RECORD-018; live hosted/provider acceptance remains separate. |
-| `RECORD-011` | Related records | published | partial | `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts` | Related projections exist; a complete total-and-reassociation journey is pending. |
+| `RECORD-011` | Related records | published | done | `src/core/features/records/repository.ts`; `src/core/features/operator/ui/records-page.tsx`; `tests/core/records-search.test.ts`; `tests/evidence/contract/RECORD-011/` | Company and contact projections link related records; company totals include only open deals and reconcile after explicit reassociation while historical entries, deal owner and lifecycle remain intact. |
 | `RECORD-012` | Contactability | published | done | `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts`; `tests/core/outreach-limits.test.ts` | Implemented source and exercising tests, including the contactable default for a hand-created contact and do-not-contact on normalized recreation of a suppressed address; unattributed opt-outs from multi-recipient messages are tracked under OUT-020. Live hosted/provider acceptance remains separate. |
 | `RECORD-013` | Deletion | published | done | `src/core/features/records/data.ts`; `tests/core/records-complete.test.ts`; `tests/core/contact-erasure.test.ts` |  |
 | `SIGNAL-001` | Ingestion | published | done | `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts` |  |
@@ -776,7 +776,7 @@ Status is an implementation judgment, not a live-provider or deployed-product ac
 | `DELEGATE-001` | Selected application authority | published | done | `src/core/features/delegation/protocol.ts`; `tests/delegation/authority-regressions.test.ts`; `tests/delegation/archive-regression.test.ts` | Scoped delegation exists; never grants outreach authority. |
 | `TEAM-005` | Sales roles and private records | target | partial | `src/core/features/access/service.ts`; `src/core/features/access/field-policy.ts`; `newtests/t096/collaborator-lifecycle.test.ts` | Collaborator record/field restrictions exist; native seller/team hierarchy, owned-record restriction keyed to RECORD-016 owners and per-action sales roles are missing. |
 | `RECORD-014` | Configurable sales data and custom objects | target | partial | `src/core/features/records/schema.ts`; `src/core/features/graph/repository.ts`; `tests/core/crm-import.test.ts` | Native custom JSON fields and graph projections exist; configurable schema, conversion, saved views and bulk workflows are incomplete. |
-| `RECORD-015` | Deal stakeholders and buying context | target | partial | `src/core/features/records/repository.ts`; `src/core/features/graph/repository.ts`; `tests/core/crm-import.test.ts` | Basic deal/contact/company associations exist; stakeholder roles and broader relationship authoring remain target work. |
+| `RECORD-015` | Deal stakeholders and buying context | target | done | `src/core/features/relationships/`; `src/core/features/operator/ui/buying-context.tsx`; `tests/core/records-search.test.ts`; `tests/evidence/contract/RECORD-015/` | Explicit multi-role stakeholders, human verification, missing-role disclosure, secondary company relationships, products, next step and mutual commitments are implemented. Relationship changes preserve identity, history, lifecycle, owner and contact permission. |
 | `RECORD-016` | Owners for contacts, leads, companies and custom objects | target | missing |  | No implementation found. `src/core/features/records/schema.ts` holds `owner_id` only on opportunities; contacts, leads, companies and custom objects have no owner, bulk assignment, owner import mapping, assignment rules, assignment notifications or owned-record views. |
 | `RECORD-017` | Mentions in notes and activities | target | missing |  | No implementation found. Notes and logged activities under RECORD-010 carry no mention parsing, mention notification or Mentions view. |
 | `RECORD-018` | Files on records, activities and mail | target | missing |  | No implementation found. There is no file storage, upload route or Files list on any record or activity, and `src/core/features/capture/mime.ts` skips every `Content-Disposition: attachment` part when parsing captured mail, so captured attachments are dropped; migration presets carry no files. |

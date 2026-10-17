@@ -1,5 +1,6 @@
 import {assertRequiredFields,stagePolicy,stagePolicyFence,type StagePolicy} from '../pipelines/stage-policy';
 import {movementHistory,movementPayload} from '../pipelines/movement';
+import {contactPrimaryCompanyActivity} from '../relationships';
 import { suppressionContextFence, suppressionHashes, suppressionPredicate, clearSuppressionStatements, suppressionStatements, contactSuppressionStatements } from './suppression';
 import { opportunityAssignmentPolicy } from '../../../ext/records';
 import { contactEmailKey, companyDomainKey } from './identity';
@@ -82,11 +83,12 @@ export class RecordsRepository extends RecordSeedRepository {
    statements.push(this.db.prepare(`INSERT INTO ${tables[kind]}(${keys.join(',')}) VALUES(${keys.map(k=>kind==='contact'&&k==='contactability'?contactabilityValue(false):'?').join(',')})`).bind(...keys.map(k=>data[k]??null)));
   }
   if(kind==='opportunity'){
-   statements.push(this.db.prepare('DELETE FROM opportunity_contacts WHERE opportunity_id=?').bind(id));
-   for(const contact of contacts)statements.push(this.db.prepare('INSERT INTO opportunity_contacts VALUES(?,?,?,?)').bind(id,contact,contact===primary?1:0,now));
+   statements.push(this.db.prepare('DELETE FROM opportunity_contacts WHERE opportunity_id=? AND contact_id NOT IN(SELECT value FROM json_each(?))').bind(id,JSON.stringify(contacts)),this.db.prepare('UPDATE opportunity_contacts SET is_primary=0 WHERE opportunity_id=?').bind(id));
+   for(const contact of contacts)statements.push(this.db.prepare('INSERT INTO opportunity_contacts VALUES(?,?,?,?) ON CONFLICT(opportunity_id,contact_id) DO UPDATE SET is_primary=excluded.is_primary').bind(id,contact,contact===primary?1:0,now));
    statements.push(...evaluationStatements(this.db,id,actor,'Opportunity fields or associations changed'),this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Opportunity fields or associations changed',updated_at=? WHERE opportunity_id=?").bind(now,id));
    for(const field of ['stage_id','owner_id'])if(before&&before[field]!==data[field])statements.push(...timeline(this.db,actor,kind,id,field==='stage_id'?'stage.changed':'owner.changed',field==='stage_id'?stageMovement:{previous:before[field],current:data[field]}));
   }
+  if(kind==='contact'&&before&&Object.hasOwn(data,'company_id'))statements.push(...contactPrimaryCompanyActivity(this.db,actor,id,before.company_id??null,data.company_id??null,now));
   if(kind==='contact')statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure='Contact set do-not-contact',updated_at=? WHERE contact_id=? AND state='scheduled' AND EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')").bind(now,id,id));
   if(kind==='contact')statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Contact changed',updated_at=? WHERE recipient_contact_id=?").bind(now,id));
   if(explicitClear)statements.push(audit(this.db,actor,'contactability.cleared','contact',id));
@@ -99,7 +101,7 @@ export class RecordsRepository extends RecordSeedRepository {
   return {id};
  }
  async detail(kind:RecordKind,id:string){const record=await requireRecord(this.db,kind,id);if(kind==='opportunity'){const policy=await stagePolicy(this.db,record.stage_id);Object.assign(record,{pipeline_id:policy.pipeline_id,pipeline_name:policy.pipeline_name,stage_name:policy.stage_name});}const entries=await this.db.prepare("SELECT t.*,o.display_name AS actor_name,s.name AS source_name,e.type AS signal_type FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id LEFT JOIN operators o ON t.actor_type='operator' AND o.id=t.actor_id LEFT JOIN signal_sources s ON s.id=t.source LEFT JOIN signals e ON e.id=t.id WHERE r.record_type=? AND r.record_id=? ORDER BY t.occurred_at DESC,t.id ASC").bind(kind,id).all();
- const contacts=kind==='company'?await this.db.prepare('SELECT * FROM contacts WHERE company_id=? ORDER BY name,id').bind(id).all():kind==='opportunity'?await this.db.prepare('SELECT c.*,oc.is_primary FROM contacts c JOIN opportunity_contacts oc ON oc.contact_id=c.id WHERE oc.opportunity_id=?').bind(id).all():{results:[]};
+ const contacts=kind==='company'?await this.db.prepare('SELECT c.*,CASE WHEN c.company_id=? THEN 1 ELSE 0 END AS relationship_primary FROM contacts c WHERE c.company_id=? OR EXISTS(SELECT 1 FROM contact_company_relationships r WHERE r.contact_id=c.id AND r.company_id=?) ORDER BY c.name,c.id').bind(id,id,id).all():kind==='opportunity'?await this.db.prepare('SELECT c.*,oc.is_primary FROM contacts c JOIN opportunity_contacts oc ON oc.contact_id=c.id WHERE oc.opportunity_id=?').bind(id).all():{results:[]};
  const opportunities=kind==='company'?await this.db.prepare('SELECT o.*,s.name AS stage_name,p.display_name AS owner_name FROM opportunities o JOIN pipeline_stages s ON s.id=o.stage_id LEFT JOIN operators p ON p.id=o.owner_id WHERE company_id=?').bind(id).all():kind==='contact'?await this.db.prepare('SELECT o.*,s.name AS stage_name,p.display_name AS owner_name FROM opportunities o JOIN opportunity_contacts oc ON oc.opportunity_id=o.id JOIN pipeline_stages s ON s.id=o.stage_id LEFT JOIN operators p ON p.id=o.owner_id WHERE oc.contact_id=?').bind(id).all():{results:[]};
  const company=record.company_id?await this.db.prepare('SELECT * FROM companies WHERE id=?').bind(record.company_id).first():null;
  return {record,company,timeline:entries.results,movementHistory:kind==='opportunity'?movementHistory(entries.results):[],contacts:contacts.results,opportunities:opportunities.results,openValueCents:opportunities.results.reduce((sum:number,o:any)=>sum+(o.lifecycle==='open'?o.value_cents:0),0)};}

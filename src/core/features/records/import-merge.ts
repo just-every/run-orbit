@@ -2,6 +2,7 @@ import { privacyMatcher, suppressionContextFence, contactSuppressionStatements, 
 import {invalidateSuppressedWork} from './suppression-effects';
 import { audit, RecordError, requireRecord, tables, timeline } from './shared';
 import {mergeReviewToken,mergeReviewFence,type MergeReview} from './merge-review';
+import {prepareRelationshipMerge} from '../relationships/merge';
 export class ImportMergeRepository {
  constructor(readonly db:D1Database){}
  async candidates(kind:'contact'|'company'):Promise<Record<string,any>[][]>{
@@ -23,14 +24,16 @@ export class ImportMergeRepository {
   const match=kind==='contact'?await privacyMatcher(this.db):null;
   const tokens=match?[...new Set((await Promise.all([survivor.email,retired.email,...aliases.map(alias=>alias.identity_key)].map(email=>match(email)))).flat())]:[];
   const statements:D1PreparedStatement[]=[mergeReviewFence(this.db,kind,[survivor,retired]),...suppressionContextFence(this.db,tokens)];
+  const relationships=await prepareRelationshipMerge(this.db,kind,survivorId,retiredId,values.updated_at,values.company_id);statements.push(...relationships.fences);
   if(kind==='contact'&&values.contactability==='do_not_contact')statements.push(...await contactSuppressionStatements(this.db,survivorId),...await contactSuppressionStatements(this.db,retiredId),...await suppressionStatements(this.db,[values.email]));
   statements.push(this.db.prepare('INSERT INTO record_merge_claims VALUES(?,?,?,?)').bind(kind,retiredId,survivorId,values.updated_at),this.db.prepare(`UPDATE ${tables[kind]} SET ${keyColumn}=NULL WHERE id=?`).bind(retiredId));
   for(const oldKey of [survivor[keyColumn],retired[keyColumn]])if(oldKey&&oldKey!==key)statements.push(this.db.prepare('INSERT INTO record_aliases VALUES(?,?,?,?,?) ON CONFLICT(record_type,identity_key) DO UPDATE SET survivor_id=excluded.survivor_id').bind(kind,oldKey,survivorId,retiredId,values.updated_at));
   statements.push(this.db.prepare('UPDATE record_merge_claims SET survivor_id=? WHERE record_type=? AND survivor_id=?').bind(survivorId,kind,retiredId),this.db.prepare('UPDATE record_aliases SET survivor_id=? WHERE record_type=? AND survivor_id=?').bind(survivorId,kind,retiredId));
   if(kind==='company')for(const table of ['contacts','opportunities'])statements.push(this.db.prepare(`UPDATE ${table} SET company_id=? WHERE company_id=?`).bind(survivorId,retiredId));
   else {
-   statements.push(this.db.prepare('DELETE FROM ai_previews WHERE recipient_contact_id IN(?,?)').bind(survivorId,retiredId),this.db.prepare('UPDATE opportunity_contacts SET is_primary=0 WHERE contact_id=? AND opportunity_id IN(SELECT opportunity_id FROM opportunity_contacts WHERE contact_id=?)').bind(retiredId,survivorId),this.db.prepare('INSERT OR IGNORE INTO opportunity_contacts SELECT opportunity_id,?,is_primary,created_at FROM opportunity_contacts WHERE contact_id=?').bind(survivorId,retiredId),this.db.prepare('UPDATE drafts SET recipient_contact_id=?,is_stale=1,stale_reason=\'Contact merged\' WHERE recipient_contact_id=?').bind(survivorId,retiredId),this.db.prepare('UPDATE outbound_messages SET contact_id=? WHERE contact_id=?').bind(survivorId,retiredId));
+   statements.push(this.db.prepare('DELETE FROM ai_previews WHERE recipient_contact_id IN(?,?)').bind(survivorId,retiredId),this.db.prepare('UPDATE opportunity_contacts SET is_primary=0 WHERE contact_id=?').bind(retiredId),this.db.prepare('INSERT OR IGNORE INTO opportunity_contacts SELECT opportunity_id,?,is_primary,created_at FROM opportunity_contacts WHERE contact_id=?').bind(survivorId,retiredId),this.db.prepare('UPDATE drafts SET recipient_contact_id=?,is_stale=1,stale_reason=\'Contact merged\' WHERE recipient_contact_id=?').bind(survivorId,retiredId),this.db.prepare('UPDATE outbound_messages SET contact_id=? WHERE contact_id=?').bind(survivorId,retiredId));
   }
+  statements.push(...relationships.transfers);
   for(const [table,field]of [['timeline_entry_records','timeline_entry_id'],['signal_links','signal_id']]){
    if(table==='timeline_entry_records')statements.push(this.db.prepare('INSERT OR IGNORE INTO timeline_entry_records SELECT timeline_entry_id,record_type,? FROM timeline_entry_records WHERE record_type=? AND record_id=?').bind(survivorId,kind,retiredId));
    else statements.push(this.db.prepare('INSERT OR IGNORE INTO signal_links SELECT signal_id,record_type,?,linking_basis,linked_at FROM signal_links WHERE record_type=? AND record_id=?').bind(survivorId,kind,retiredId));
