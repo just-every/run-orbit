@@ -4,28 +4,22 @@ import {launchFixture} from '../support/launch-fixture';
 import {crmFixture} from '../support/crm-fixtures';
 import {json,finish} from '../support/crm-import-flow';
 import {importCopies,publicArchive} from '../support/crm-import-privacy';
-import {createDependencies} from '../support/dependencies';
-import {createId} from '../../src/core/shared/ids';
 import {nativeId} from '../../src/core/features/imports/source';
 
 test('RECORD-008 DATA-002 T-098 erasure removes imported personal data from native records, search, archives and decoded custody while preserving later company edits',async()=>{
  const f=await launchFixture();try{
   const source=crmFixture('hubspot',f.stage,3),mailbox='hubspot-0@example.test',companyFile=source.files.find(file=>file.kind==='company')!;
-  const recipient=createId();await createDependencies(f.db).auth.ensureOperator({id:recipient,email:'erasure-owner@example.test',displayName:'Erasure recipient'});source.owners={contact:{'Historic rep':recipient},company:{'Historic rep':recipient}};
-  const contactFile=source.files.find(file=>file.kind==='contact')!;contactFile.csv=contactFile.csv.replaceAll('\"Synthetic\"','\"'+mailbox+'\"');
-  const lines=contactFile.csv.split('\r\n');contactFile.csv=[lines[0],...lines.slice(1).map(line=>line+',Historic rep')].join('\r\n');contactFile.csv=contactFile.csv.replace('\r\n',',Assignment\r\n');contactFile.mapping.owner='Assignment';
-  companyFile.csv=`Record ID,Name,Company domain name,Description,Associated contact email,Owner\r\norg-1,Synthetic Company,synthetic.example.test,"Account contact <${mailbox}>",${mailbox},Historic rep`;
-  companyFile.mapping={id:'Record ID',name:'Name',domain:'Company domain name',description:'Description',owner:'Owner'};
+  companyFile.csv=`Record ID,Name,Company domain name,Description,Associated contact email\r\norg-1,Synthetic Company,synthetic.example.test,"Account contact <${mailbox}>",${mailbox}`;
+  companyFile.mapping={id:'Record ID',name:'Name',domain:'Company domain name',description:'Description'};
   const dry=await json(await f.request('imports/dry-run','POST',source));await finish(f,dry);
   const namespace=`orbit:hubspot:${source.account}`,person=nativeId(namespace,'contact','person-0'),company=nativeId(namespace,'company','org-1'),deal=nativeId(namespace,'deal','deal-1');
-  assert.ok((await f.db.prepare("SELECT message FROM notifications WHERE kind='owner.assigned'").all<any>()).results.some(row=>row.message.includes(mailbox)));
   assert.ok((await importCopies(f.db)).includes(mailbox),'The fixture must exercise retained plaintext and encoded originals');
   const companyBefore=await json(await f.request(`records/company/${company}`));
   assert.ok(!companyBefore.record.custom_fields_json.includes('Associated contact email'),'Unmapped columns stay in private source custody');
   await json(await f.request(`records/company/${company}`,'PUT',{name:'Owner renamed company',primary_domain:companyBefore.record.primary_domain,custom_fields:JSON.parse(companyBefore.record.custom_fields_json)}));
   await json(await f.request(`records/contact/${person}`,'DELETE',{confirmed:true}));
   assert.equal(await f.db.prepare('SELECT id FROM contacts WHERE id=?').bind(person).first(),null);
-  for(const table of ['notifications','record_owner_notification_links','contacts','companies','opportunities','timeline_entries','graph_records','record_search','timeline_search'])assert.ok(!JSON.stringify((await f.db.prepare(`SELECT * FROM ${table}`).all()).results).toLowerCase().includes(mailbox),table);
+  for(const table of ['contacts','companies','opportunities','timeline_entries','graph_records','record_search','timeline_search'])assert.ok(!JSON.stringify((await f.db.prepare(`SELECT * FROM ${table}`).all()).results).toLowerCase().includes(mailbox),table);
   assert.equal((await json(await f.request(`records/company/${company}`))).record.name,'Owner renamed company');
   assert.ok(await f.db.prepare('SELECT id FROM opportunities WHERE id=?').bind(deal).first(),'Erasure preserves the unrelated deal');
   for(const kind of ['company','contact','opportunity'])assert.deepEqual((await json(await f.request(`records/${kind}?q=${encodeURIComponent(mailbox)}`))).records,[]);

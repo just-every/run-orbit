@@ -7,14 +7,12 @@ import type { StopValue } from './targets-stop';
 import {mailboxListSql} from './mailboxes';
 import type { ImportInput } from './contracts';
 import {namedCompanies} from './named-companies';
-import {resolveImportOwners,importedOwnerEffects} from './owners';
 
 /** A custom field keeps a whole number or decimal as a number, and everything else as text. */
 function customValues(values:Record<string,string>){return Object.fromEntries(Object.entries(values).map(([name,value])=>[name,/^-?(0|[1-9]\d{0,14})(\.\d+)?$/.test(value)?Number(value):value]));}
 
 export async function prepareImport(input:ImportInput,context:D1ImportContext){
  const {source,rows,namespace}=readImport(input),db=context.storage.database,at=new Date().toISOString(),results=new Map<SourceRecord,MappingResult>(),references=new Map<string,string>();
- await resolveImportOwners(db,input,rows);
  const settings=await db.prepare('SELECT free_mail_domains_json FROM workspace_settings').first();
  const stages=new Set((await db.prepare('SELECT id FROM pipeline_stages').all()).results.map(r=>r.id));
  const shapes:Record<string,Record<string,any>>={};
@@ -35,10 +33,8 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  const emails=[...stopEmails].sort(),stopId=nativeId(namespace,'suppression',sha256(canonicalJson(emails)));
  const existing=new Set<Row>(),duplicates=new Set<string>();
  const identityRows=new Map<string,Row[]>();for(const row of rows){const key=identityKey(row);if(key){const group=identityRows.get(`${row.kind}:${key}`)??[];group.push(row);identityRows.set(`${row.kind}:${key}`,group);}}for(const group of identityRows.values())if(new Set(group.map(r=>r.id)).size>1)for(const row of group)row.error??='Several source IDs share this native identity. Consolidate them explicitly before importing.';
- const markerRows=(await db.prepare('SELECT kind,id,original_json FROM crm_import_targets WHERE id IN(SELECT value FROM json_each(?))').bind(JSON.stringify(rows.filter(r=>r.kind!=='suppression').flatMap(r=>[nativeId(namespace,r.kind,r.id),nativeId(namespace,'owner-history',`${r.kind}:${r.id}`)]))).all()).results;
+ const markerRows=(await db.prepare('SELECT kind,id,original_json FROM crm_import_targets WHERE id IN(SELECT value FROM json_each(?))').bind(JSON.stringify(rows.filter(r=>r.kind!=='suppression').map(r=>nativeId(namespace,r.kind,r.id)))).all()).results;
  const originals=new Map(markerRows.map(r=>[`${r.kind}:${r.id}`,r.original_json]));
- for(const row of rows)row.source.payloadHash=sha256(canonicalJson(row.source.payload));
-
  const currentIds=new Map<string,Set<string>>(),identities=new Map<string,string[]>();
  for(const kind of ['company','contact','deal','note']){const candidates=rows.filter(r=>r.kind===kind),ids=candidates.map(r=>nativeId(namespace,kind,r.id));currentIds.set(kind,new Set((await db.prepare(`SELECT id FROM ${tables[kind]} WHERE id IN(SELECT value FROM json_each(?))`).bind(JSON.stringify(ids)).all()).results.map(r=>r.id)));
   if(kind==='contact'||kind==='company'){const keys=JSON.stringify(candidates.map(identityKey).filter(Boolean)),column=kind==='contact'?'email_key':'primary_domain_key';
@@ -66,9 +62,9 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  for(const row of rows.sort((a,b)=>['suppression','company','contact','deal','note'].indexOf(a.kind)-['suppression','company','contact','deal','note'].indexOf(b.kind))){try{
   if(row.error)throw new Error(row.error);if(duplicates.has(`${row.kind}:${row.id}`))throw new Error('Duplicate source ID in this file.');
   if(row.kind==='suppression'){const reference=nativeId(namespace,'suppression-reference',row.id);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:'suppression',record_id:stopId,source_id:row.id,mailbox:email(row.data.email)!},links:[]}}]});continue;}
-  if(existing.has(row)){const reference=nativeId(namespace,'reference',`${row.kind}:${row.id}`);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:row.kind,record_id:references.get(`${row.kind}:${row.id}`)!,source_id:row.id,mailbox:row.kind==='contact'?email(row.data.email)??null:null},links:[]}}],unmapped:[{reason:'Already in Orbit, with the same email or website domain. Orbit keeps the saved record and does not apply differences from the file. Only a stop in the file (unsubscribed, bounced or Do not contact) changes whether Orbit may email them. Owner mappings do not replace an existing native owner; open the record to review an owner change explicitly.'}]});continue;}
+  if(existing.has(row)){const reference=nativeId(namespace,'reference',`${row.kind}:${row.id}`);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:row.kind,record_id:references.get(`${row.kind}:${row.id}`)!,source_id:row.id,mailbox:row.kind==='contact'?email(row.data.email)??null:null},links:[]}}],unmapped:[{reason:'Already in Orbit, with the same email or website domain. Orbit keeps the saved record and does not apply differences from the file. Only a stop in the file (unsubscribed, bounced or Do not contact) changes whether Orbit may email them.'}]});continue;}
   const id=references.get(`${row.kind}:${row.id}`)!,original=originals.get(`${row.kind}:${id}`);
-  if(original){const effects:TargetEffect[]=[{targetKind:row.kind,targetId:id,value:JSON.parse(original)}];for(const [kind,targetId] of [[`${row.kind}-owner`,id],['note',nativeId(namespace,'owner-history',`${row.kind}:${row.id}`)]]){const saved=originals.get(`${kind}:${targetId}`);if(saved)effects.push({targetKind:kind,targetId,value:JSON.parse(saved)});}const mapped=(row.source.payload as any).ownerMapping,owner=effects.find(effect=>effect.targetKind===`${row.kind}-owner`);const ownershipReview=(row.kind==='contact'||row.kind==='company')&&((owner?.value as any)?.owner_id??null)!==(mapped?.ownerId??null);results.set(row.source,{effects,...ownershipReview?{unmapped:[{field:'owner-review',reason:'This record was imported before. A changed owner mapping needs an explicit owner review on its native record; this import will not overwrite its owner. Apply reports a changed source instead of replacing its saved ownership. Use the native owner control for the change.'}]}:{}});continue;}
+  if(original){results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:JSON.parse(original)}]});continue;}
   const data=row.data,native:Record<string,any>={...shapes[row.kind],id,created_at:at,updated_at:at},links:Record<string,any>[]=[];
   const provenance={vendor:input.vendor,account:input.account,sourceId:row.id,owner:data.owner??null,stage:data.stage??null,description:data.description??null};
   if(row.kind!=='note')native.custom_fields_json=JSON.stringify({...customValues(row.custom),import_source:JSON.stringify(provenance)});
@@ -98,10 +94,10 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
   }
   links.sort((a,b)=>row.kind==='deal'?a.contact_id.localeCompare(b.contact_id):`${a.record_type}:${a.record_id}`.localeCompare(`${b.record_type}:${b.record_id}`));
   if(Object.values(native).some(v=>typeof v==='number'&&!Number.isFinite(v)))throw new Error('Native record has an unsupported default.');
-  results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:{row:native,links,...row.kind==='contact'?{suppressionTokens:emailTokens.get(native.email)??[]}:{} } as any},...importedOwnerEffects(row,id,namespace,at)],...row.derivedContacts?{unmapped:[{reason:'New company, from the Company name column of the contacts file. Orbit does not reuse a company it already has just because the name matches.'}]}:{}});
+  results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:{row:native,links,...row.kind==='contact'?{suppressionTokens:emailTokens.get(native.email)??[]}:{} } as any}],...row.derivedContacts?{unmapped:[{reason:'New company, from the Company name column of the contacts file. Orbit does not reuse a company it already has just because the name matches.'}]}:{}});
  }catch(error){row.error=(error as Error).message;results.set(row.source,{effects:[],rejection:row.error});
   // The exact original remains in kit custody. Rejected rows need only their location and reason in the resumable plan, avoiding unindexed personal-data copies.
-  row.source.sourceId=`rejected:${sha256(row.source.sourceId)}`;row.source.payload={rejected:true,...row.ownerMapping?{ownerMapping:{value:row.ownerMapping.value,ownerId:row.ownerMapping.ownerId}}:{},...row.reviewColumns?{reviewColumns:row.reviewColumns}:{}};row.source.payloadHash=sha256(canonicalJson(row.source.payload));}}
+  row.source.sourceId=`rejected:${sha256(row.source.sourceId)}`;row.source.payload={rejected:true,...row.reviewColumns?{reviewColumns:row.reviewColumns}:{}};row.source.payloadHash=sha256(canonicalJson(row.source.payload));}}
  for(const row of rows)if(!row.error&&row.unmapped.length){const result=results.get(row.source)!;result.unmapped=[...result.unmapped??[],...row.unmapped.map(column=>({field:`column:${column}`,reason:`Column “${column}” is not imported. Orbit keeps it only in its private copy of the original file.`}))];}
  // All positive stops and no-consent holds publish in the first atomic kit entry, before any customer creation.
  const saved=await db.prepare('SELECT value_json FROM crm_import_stops WHERE id=?').bind(stopId).first();
@@ -111,8 +107,6 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  value.contacts=await Promise.all(contacts.map(async c=>{const mailboxes=JSON.parse(c.mailboxes_json) as string[],mailboxDigests=[...new Set((await Promise.all(mailboxes.map(address=>match(address)))).flat())].sort();return{id:c.id,contactability:'do_not_contact',contactability_revision:c.contactability_revision+1,prior:c.contactability,priorRevision:c.contactability_revision,mailboxes,mailboxDigests};}));}
  const payload={emails},safety:SourceRecord={namespace,kind:'safety',sourceId:stopId,payload,payloadHash:sha256(canonicalJson(payload)),artifactHash:source.artifacts[0].sha256,location:{artifact:source.artifacts[0].name,pointer:'/suppression-first'}};
  const effect:TargetEffect={targetKind:'suppression',targetId:stopId,value:value as any};source.records=[safety,...rows.map((r,i)=>duplicates.has(`${r.kind}:${r.id}`)?{...r.source,sourceId:`duplicate-row-${i}:${sha256(r.id)}`} :r.source)];results.set(safety,{effects:emails.length?[effect]:[]});
- // Keep review labels attributed to source rows, so Kit erasure withdraws them, without making a user rename change the source identity.
- for(const row of rows)if(row.ownerMapping)source.diagnostics.push({severity:'warning',code:'ORBIT_OWNER_MAPPING',message:JSON.stringify(row.ownerMapping),kind:row.source.kind,sourceId:row.source.sourceId,location:row.source.location});
  const plan=await planD1Import(source,{version:'orbit-csv-v1',map:record=>results.get(record)??results.get(rows.find(r=>r.source.kind===record.kind&&r.source.location.artifact===record.location.artifact&&r.source.location.row===record.location.row)?.source??safety)!},{...context,namespace});
  return plan;
 }

@@ -3,7 +3,7 @@ import {validArchiveCounts} from './archive-counts.ts';
 export interface ArchiveManifest {format:'orbit-export';version:2|3;generation?:'orbit-fold-1';schemaHash?:string;legacyLineage?:LegacyLineage;exportedAt:string;tables:{name:string;columns:string[];rows:number}[];parts:number;rows:number}
 export interface ArchivePart {index:number;sha256:string;records:{table:string;index:number;row:Record<string,string|number|null>}[]}
 export type ArchiveEntry={kind:'manifest';manifest:ArchiveManifest}|{kind:'part';part:ArchivePart;raw:string};
-const optionalGroups=[['record_owners'],['record_owner_notification_links'],['pipelines','pipeline_stage_rules'],['sales_task_series','sales_tasks','sales_task_timeline','sales_task_notification_links','sales_task_guards'],['opportunity_stakeholder_roles','opportunity_buying_context','buying_context_contacts','contact_company_relationships']];
+const optionalGroups=[['pipelines','pipeline_stage_rules'],['sales_task_series','sales_tasks','sales_task_timeline','sales_task_notification_links','sales_task_guards'],['opportunity_stakeholder_roles','opportunity_buying_context','buying_context_contacts','contact_company_relationships']];
 const optionalTables=new Set(optionalGroups.flat());
 const selectedFoldTables=new Set<string>(selectedTables),knownNativeAdditions=new Set<string>(nativeAdditions);
 export function validateTransferManifest(value:unknown,validateV2Manifest:(value:unknown)=>LineageManifest):ArchiveManifest{

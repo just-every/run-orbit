@@ -10,7 +10,7 @@ const fieldLabels:Record<string,string>={
 };
 const kindNames:Record<ImportKind,string>={contact:'Contacts',company:'Companies',deal:'Deals',note:'Notes',suppression:'Do not contact list'};
 const linkFields=['company_ids','contact_ids','deal_ids'];
-const label=(kind:ImportKind,field:string)=>field==='owner'&&(kind==='contact'||kind==='company')?`${kind==='contact'?'Contact':'Company'} owner`:field==='name'&&kind==='company'?'Company name':fieldLabels[field];
+const label=(kind:ImportKind,field:string)=>field==='name'&&kind==='company'?'Company name':fieldLabels[field];
 const headersOf=(file:ImportFile)=>parseCsv(file.csv.replace(/^﻿/,''))[0]??[];
 
 /** A generic spreadsheet keeps every column it does not map, as a custom field named after the column. */

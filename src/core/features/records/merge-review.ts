@@ -1,5 +1,4 @@
-import {recordSource} from '../ownership/storage';
-import {type RecordKind} from './shared';
+import {tables, type RecordKind} from './shared';
 
 export type MergeReview={survivor:string;retired:string};
 
@@ -19,7 +18,7 @@ export function mergeReviewFence(db:D1Database,kind:Exclude<RecordKind,'opportun
  const bindings:unknown[]=[];
  const matches=records.map(record=>{
   const fields=reviewedFields(record);bindings.push(...fields.map(field=>record[field]));
-  return `EXISTS(SELECT 1 FROM ${recordSource(kind)} WHERE ${fields.map(field=>`"${field.replaceAll('"','""')}" IS ?`).join(' AND ')})`;
+  return `EXISTS(SELECT 1 FROM ${tables[kind]} WHERE ${fields.map(field=>`"${field.replaceAll('"','""')}" IS ?`).join(' AND ')})`;
  });
  return db.prepare(`INSERT INTO runtime_controls(name,value) SELECT 'record_merge_review',NULL WHERE NOT (${matches.join(' AND ')})`).bind(...bindings);
 }
