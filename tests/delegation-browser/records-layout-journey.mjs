@@ -159,8 +159,8 @@ async function expectRecordList(page, kind, title, evidenceName, diagnostics) {
 }
 
 async function awaitRecordDetail(page, kind, action) {
-  // Company/contact headings render before their proposed-changes panel loads.
-  // Finish that real request before editing, reloading, or leaving the detail.
+  // The heading renders before the capture and relationship panels finish.
+  // Read every panel before editing, reloading, or leaving this record.
   const detailLoad = page.waitForResponse(response => {
     const url = new URL(response.url());
     return response.request().method() === 'GET' && url.pathname.startsWith(`/api/v1/records/${kind}/`);
@@ -169,13 +169,31 @@ async function awaitRecordDetail(page, kind, action) {
     const url = new URL(response.url());
     return response.request().method() === 'GET' && url.pathname === '/api/v1/capture/proposals' && url.searchParams.get('recordType') === kind;
   });
-  const [detailResponse, proposalsResponse] = await Promise.all([detailLoad, proposalsLoad, action()]);
+  const relationshipsLoad = kind === 'company' ? undefined : page.waitForResponse(response => {
+    return response.request().method() === 'GET' && new URL(response.url()).pathname.startsWith(`/api/v1/relationships/${kind}/`);
+  });
+  const optionLoads = kind === 'company' ? [] : (kind === 'contact' ? ['company'] : ['contact', 'company']).map(type => page.waitForResponse(response => {
+    const url = new URL(response.url());
+    return response.request().method() === 'GET' && url.pathname === `/api/v1/records/${type}` && url.searchParams.get('q') === '';
+  }));
+  const [detailResponse, proposalsResponse, relationshipsResponse, ...optionResponses] = await Promise.all([detailLoad, proposalsLoad, relationshipsLoad, ...optionLoads, action()]);
   expect(detailResponse.ok(), `${detailResponse.url()}: ${await detailResponse.text()}`).toBe(true);
   const detail = await detailResponse.json();
   if (proposalsResponse) {
     expect(new URL(proposalsResponse.url()).searchParams.get('recordId')).toBe(detail.record.id);
     expect(proposalsResponse.ok(), `${proposalsResponse.url()}: ${await proposalsResponse.text()}`).toBe(true);
     expect(Array.isArray((await proposalsResponse.json()).proposals)).toBe(true);
+  }
+  if (relationshipsResponse) {
+    expect(relationshipsResponse.ok(), `${relationshipsResponse.url()}: ${await relationshipsResponse.text()}`).toBe(true);
+    const context = await relationshipsResponse.json();
+    expect(new URL(relationshipsResponse.url()).pathname).toBe(`/api/v1/relationships/${kind}/${detail.record.id}`);
+    expect(context.kind).toBe(kind);
+  }
+  // The last Promise.all result belongs to the action itself.
+  for (const response of optionResponses.slice(0, optionLoads.length)) {
+    expect(response.ok(), `${response.url()}: ${await response.text()}`).toBe(true);
+    expect(Array.isArray((await response.json()).records)).toBe(true);
   }
 }
 

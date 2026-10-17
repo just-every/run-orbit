@@ -38,7 +38,7 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
       await new Promise(resolve => setTimeout(resolve, 100));
     }
     if (!ready) throw new Error(output || `Emitted Worker did not start at ${origin}.`);
-    browser = await chromium.launch();
+    browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
     const context = await browser.newContext({ baseURL: origin, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
     await nativeLongRecordLayoutJourney(await context.newPage());
   } finally {

@@ -6439,11 +6439,11 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout-journey.mjs": {
-      "sha256": "c53107fb789168a13cc2b33e6f4a94633326f0ed8cd11cd70ed1e8ecdaa984a9",
+      "sha256": "c8fdbd24d834a7a4477565a894daf4802a2903fde52c15a71db1cbfec3984774",
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {
-      "sha256": "2a055fe821c50d67393c12d87a0c165343939b98c17f9caf06bbe885a5e1671e",
+      "sha256": "c22e3856be0aa21860c52c2ff0e884af65a8d11c35eb3db60e67e4720b83a1d4",
       "executable": false
     },
     "tests/delegation-browser/related-records.test.ts": {
