@@ -12,8 +12,10 @@ import {
 
 const when = (value: string | null) => value ? formatDate(value) : 'Never';
 
-function statusLabel(source: CaptureSource) {
+function statusLabel(source: CaptureSource, receivesMail: boolean) {
   if (source.state === 'disconnected') return 'Disconnected';
+  // A restored Orbit address keeps its history, but only an installation with a receiving mailbox gets new mail.
+  if (source.adapter === 'forward' && !receivesMail) return 'Not receiving mail';
   if (source.state === 'syncing') return 'Syncing';
   if (source.adapter === 'file') return 'Connected';
   if (source.adapter === 'forward' && !source.has_credential) return 'Create a new address';
@@ -35,9 +37,11 @@ const kinds: Record<string, string> = { google: 'Google', microsoft: 'Microsoft'
 export function CaptureSource({
   source: savedSource,
   onChanged,
+  receivesMail = true,
 }: {
   source: CaptureSource;
   onChanged: () => void;
+  receivesMail?: boolean;
 }) {
   const [syncPending, setSyncPending] = useState(false);
   const [scopePending, setScopePending] = useState(false);
@@ -132,7 +136,7 @@ export function CaptureSource({
   return <article id={`capture-source-${source.id}`} className="capture-source" aria-label={source.name} tabIndex={-1}>
     <div className="capture-source-heading">
       <div><h3>{source.name}</h3><p>{kinds[source.adapter] ?? source.adapter}</p></div>
-      <span className={`capture-source-status${isUnavailableSource(source) ? ' capture-source-status--outage' : accessRevoked ? ' capture-source-status--revoked' : ''}`}>{statusLabel(source)}</span>
+      <span className={`capture-source-status${isUnavailableSource(source) ? ' capture-source-status--outage' : accessRevoked ? ' capture-source-status--revoked' : ''}`}>{statusLabel(source, receivesMail)}</span>
     </div>
     <dl className="records-detail-list">
       <div><dt>Last success</dt><dd>{when(source.last_success_at)}</dd></div>
@@ -145,6 +149,7 @@ export function CaptureSource({
     {source.adapter === 'file' ? <p className="capture-file-source-note"><a href="/app/capture/connect/files">Upload more files</a> to add evidence from this source.</p>
     : source.adapter === 'forward' ? <>
       {actionError ? <OperatorState kind="error">{actionError}</OperatorState> : null}
+      {!receivesMail ? <p className="capture-file-source-note">This Orbit can’t receive mail yet, so nothing new arrives at this address. Its earlier captures stay. <a href="/app/capture/connect/address">See the one-time setup</a>.</p> : null}
       <div className="capture-source-actions">
         {source.state !== 'disconnected' ? <a className="orbit-button orbit-button--primary" href="/app/capture/connect/address">{source.has_credential ? 'Show my Orbit address' : 'Create a new address'}</a> : <a className="orbit-button orbit-button--primary" href="/app/capture/connect/address">Create a new address</a>}
         {source.state !== 'disconnected' ? <button className="orbit-button orbit-button--quiet" type="button" disabled={disconnectPending} onClick={() => void disconnect()}>Disconnect {source.name}</button> : null}

@@ -1,11 +1,14 @@
 import {readArchiveFile} from '../../../shared/archive-transfer-file';
-import {isTrialOwnerEmail} from '../../../shared/trial-owner';
+import {isDevPersonaEmail,isTrialOwnerEmail} from '../../../shared/trial-owner';
 export type ArchiveOperator={id:string;email:string;display_name:string;status:string;setup_owner?:number;collaborator?:number|boolean;invited?:number|boolean};
 export type ArchivePreview={operators:ArchiveOperator[];current:ArchiveOperator[];rows:number;parts:number};
 export function archiveOperatorAccess(operator:ArchiveOperator,current:ArchiveOperator[]){
  const retained=current.find(target=>(!target.collaborator||target.setup_owner)&&(target.id===operator.id||target.email.toLowerCase()===operator.email.toLowerCase()));
  if(retained)return {status:retained.status,explanation:'Current access kept'};
- if(isTrialOwnerEmail(operator.email)&&current.some(target=>target.setup_owner&&target.status==='active'&&!isTrialOwnerEmail(target.email)))return {status:'removed',explanation:'Local trial owner; access removed, historical attribution kept'};
+ const replacedBy=current.some(target=>target.setup_owner&&target.status==='active'&&!isTrialOwnerEmail(target.email)&&target.email.toLowerCase()!==operator.email.toLowerCase());
+ if(replacedBy&&isDevPersonaEmail(operator.email))return {status:'removed',explanation:'Local dev persona; not given access here, historical attribution kept'};
+ if(replacedBy&&isTrialOwnerEmail(operator.email))return {status:'removed',explanation:'Local trial owner; access removed, historical attribution kept'};
+ if(replacedBy&&operator.setup_owner)return {status:'removed',explanation:'Owner of the archived workspace; this installation’s owner replaces it. Access removed, historical attribution kept. Invite this address again if that person still needs access'};
  if(operator.collaborator)return operator.invited?{status:'invited',explanation:'Collaborator who never accepted; invite them again here'}:{status:operator.status,explanation:'Collaborator; needs a new invitation here'};
  return {status:operator.status,explanation:'Imported as operator'};
 }

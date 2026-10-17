@@ -75,7 +75,7 @@ function Daily({ data, onChanged, focus }: { data: Overview; onChanged: () => vo
     </a>
     <section className="capture-sources-section" aria-labelledby="capture-sources">
       <h2 id="capture-sources">Connected</h2>
-      {data.sources.map((source) => <CaptureSource key={source.id} source={source} onChanged={onChanged} />)}
+      {data.sources.map((source) => <CaptureSource key={source.id} source={source} onChanged={onChanged} receivesMail={data.forward.configured && data.forward.available} />)}
     </section>
     {!hasAddress ? <section className="capture-ways-list" aria-labelledby="capture-address-way"><h2 id="capture-address-way">Add your Orbit address</h2><ul><li>
       <span className="capture-ways-list__icon">{icons.mail}</span><h3>Orbit address</h3><p>Bcc or forward customer mail to a private address. No setup in Google or Microsoft.</p>

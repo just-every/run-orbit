@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   '@runeditrun/rer@0.2.36':
-    hash: b7bccd9d9705ff86ea7111baa3e6db9dca3517f914bfa14065a66616fc28202d
+    hash: 120246145b29e90846c385abae43a011e28cdeee011d220c36e6ec871e74446a
     path: patches/rer-0.2.36.patch
   miniflare@5.20260907.0-alpha:
     hash: 29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b
@@ -58,7 +58,7 @@ importers:
         version: 1.61.1
       '@runeditrun/rer':
         specifier: 0.2.36
-        version: 0.2.36(patch_hash=b7bccd9d9705ff86ea7111baa3e6db9dca3517f914bfa14065a66616fc28202d)
+        version: 0.2.36(patch_hash=120246145b29e90846c385abae43a011e28cdeee011d220c36e6ec871e74446a)
       '@tailwindcss/vite':
         specifier: 4.3.3
         version: 4.3.3(vite@8.2.2(@types/node@22.19.17)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.0))
@@ -2545,7 +2545,7 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
-  '@runeditrun/rer@0.2.36(patch_hash=b7bccd9d9705ff86ea7111baa3e6db9dca3517f914bfa14065a66616fc28202d)': {}
+  '@runeditrun/rer@0.2.36(patch_hash=120246145b29e90846c385abae43a011e28cdeee011d220c36e6ec871e74446a)': {}
 
   '@sindresorhus/is@7.2.0': {}
 

@@ -89,17 +89,39 @@ rer import --input exports/orbit.rer --yes
 - `reset` lists exactly what it removes (`.wrangler/state`, `.rer/local`, `.seed/installer`, `.dev.vars`) and needs `--yes`. It refuses while `dev` or another local operation owns the state, and keeps source, dependencies, `exports/` and deployment receipts in `.rer/deploy/`. Run `setup` again afterwards for a fresh, empty installation.
 - `export` writes a new owner-only archive of every Orbit table with a content hash, row counts and the exclusions it lists. `import` restores an archive into an empty local installation (after `reset --yes`), then rebuilds search; run `setup` with the archive's owner email to sign in again. Archives contain private customer data.
 
-### Deploy and release
+### Deploy to your Cloudflare account
+
+Orbit runs on your own Cloudflare account; the free Workers plan is enough to start. You need five values. Collect them once, keep them in one private file, and pass that file to `rer deploy`.
+
+1. **Cloudflare account ID.** Sign in at [dash.cloudflare.com](https://dash.cloudflare.com) (create a free account if you have none). The address bar then reads `dash.cloudflare.com/` followed by a 32-character code: that code is your account ID. It is also shown as **Account ID** on [Workers & Pages](https://dash.cloudflare.com/?to=/:account/workers-and-pages).
+2. **workers.dev subdomain.** Open [Workers & Pages](https://dash.cloudflare.com/?to=/:account/workers-and-pages) once. If Cloudflare asks you to choose your `workers.dev` subdomain, pick a name and confirm. Orbit's address becomes `https://sales-orbit-production.<that name>.workers.dev`. If a subdomain is already shown, there is nothing to do.
+3. **Cloudflare API token.** Open [My Profile → API Tokens](https://dash.cloudflare.com/profile/api-tokens) → **Create Token** → **Create Custom Token** → **Get started**. Name it `Orbit deploy`. Under **Permissions**, add exactly two rows: **Account · Workers Scripts · Edit** and **Account · D1 · Edit**. Under **Account Resources**, choose **Include · your account**. Choose **Continue to summary** → **Create Token**, then copy the token: Cloudflare shows it only once.
+4. **Your owner email.** The mailbox you sign in with. Hosted Orbit emails you a sign-in link there.
+5. **Sign-in mail.** Hosted Orbit sends sign-in links through SendGrid, so it needs a verified sender email (`MAIL_FROM`) and a SendGrid API key (`SENDGRID_API_KEY`). Run `rer dev`, open **Settings → Customer mail sender** and follow steps 1 and 2 there: they show exactly where to verify a sender and create a key with Mail Send access.
+
+Create a private file named `.dev.vars.deploy` in your Orbit folder with a plain text editor (on a Mac, `touch .dev.vars.deploy && open -e .dev.vars.deploy`). Put the values in it, one per line, without spaces around `=`:
 
 ```sh
-rer deploy --dry-run
-rer deploy
-rer release --help
+CLOUDFLARE_ACCOUNT_ID=your-32-character-account-id
+CLOUDFLARE_API_TOKEN=your-api-token
+OWNER_EMAIL=you@example.com
+MAIL_FROM=you@example.com
+SENDGRID_API_KEY=SG.your-key
 ```
 
-`deploy` deploys to your own Cloudflare account with the Base deploy kit and needs `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` and `OWNER_EMAIL` in the environment. Hosted deployment requires a verified SendGrid sender in `MAIL_FROM` and its `SENDGRID_API_KEY`; `--dry-run` builds and validates locally without any provider request. [OPERATIONS.md](OPERATIONS.md) lists the token scopes, optional secrets and what to keep. `release` produces a source release receipt and never pushes or deploys.
+Save it, then make it readable only by you and deploy. Git already ignores files named `.dev.vars*`, so it is never committed.
 
-For hosted sign-in, open your deployed origin's `/signin`, enter your active operator email, open the emailed link and press **Confirm**. Once signed in, change the owner email in Settings → Installation owner. Local `RER_OPEN` dev credentials cannot sign in to a hosted installation. If mail does not arrive, check the address is active in Settings → Installation owner, the sender is verified and both hosted mail secrets are configured. Restore keeps current hosted full operators, including the active owner, and imports new archived operators as ordinary operators. The local trial owner is restored without active access when a real owner is already present. Source signing secrets are excluded; open Sources and choose Reconnect source to create a new secret for each tool. Restore revokes sessions; sign in again with the hosted owner's mailbox.
+```sh
+chmod 600 .dev.vars.deploy
+rer deploy --dry-run --env-file .dev.vars.deploy
+rer deploy --env-file .dev.vars.deploy
+```
+
+The dry run builds and checks everything without contacting Cloudflare, lists anything still missing, and lists optional values separately: those turn on extra features (reply capture, delivery outcomes, AI drafts) and can be added later from the app's own setup pages. The real deploy prints your Orbit's address when it finishes. You can also export the same five names as environment variables in your terminal instead of using a file. Later commands the app shows you, such as connecting customer mail or delivery outcomes, take the same `--env-file .dev.vars.deploy`.
+
+[OPERATIONS.md](OPERATIONS.md) lists every optional secret and what to keep. `rer release --help` describes source releases; `release` never pushes or deploys.
+
+For hosted sign-in, open your deployed origin's `/signin`, enter your active operator email, open the emailed link and press **Confirm**. Once signed in, change the owner email in Settings → Installation owner. Local `RER_OPEN` dev credentials cannot sign in to a hosted installation. If mail does not arrive, check the address is active in Settings → Installation owner, the sender is verified and both hosted mail secrets are configured. Restore keeps current hosted full operators, including the active owner, and imports new archived operators as ordinary operators. The archive's own owner, the local trial owner and local dev personas (`@dev.localhost`) are restored without access when this installation already has a different owner, so their past actions keep their names. Source signing secrets are excluded; open Sources and choose Reconnect source to create a new secret for each tool. Restore revokes sessions; sign in again with the hosted owner's mailbox.
 
 To remove a deployment you created with this checkout:
 

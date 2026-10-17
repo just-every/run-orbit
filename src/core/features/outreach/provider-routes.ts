@@ -9,6 +9,7 @@ import {replyPayloadHash} from './reply-payload';
 import {replyHeaders} from './reply-headers';
 import {replySender} from './reply-sender';
 import { ProviderRepository } from './provider-repository';
+import {recordVerifiedDeliveryEvent} from './delivery-outcomes';
 const event=z.object({sg_event_id:z.string().min(1),event:z.string().min(1),timestamp:z.number().finite().nonnegative(),email:z.string(),sg_message_id:z.string().optional(),rer_delivery_id:z.string().optional(),rer_product:z.string().optional(),reason:z.string().optional(),type:z.string().optional()}).passthrough();
 export function createMailEventRoutes(db:D1Database,keys:{eventKey?:string;parseKey?:string;relaySecret?:string}){
  const app=new Hono(),repository=new ProviderRepository(db);
@@ -31,6 +32,7 @@ export function createMailEventRoutes(db:D1Database,keys:{eventKey?:string;parse
     let decoded:unknown;try{decoded=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(raw));}catch{return c.json({error:'Invalid SendGrid event payload.'},400);}
     const input=z.array(event).max(1000).safeParse(decoded);if(!input.success)return c.json({error:'Invalid SendGrid event payload.'},400);
     for(const item of input.data)await repository.event(item,await payloadHash(JSON.stringify(item)));
+    await recordVerifiedDeliveryEvent(db);
    }else{
     const form=await new Request(c.req.url,{method:'POST',headers:{'content-type':c.req.header('content-type')??''},body:raw}).formData();
     const headers=replyHeaders(form),from=form.getAll('from');

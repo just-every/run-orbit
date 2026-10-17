@@ -38,27 +38,33 @@
     },
     {
       "binding": "MAIL_REPLY_TO",
-      "environment": "MAIL_REPLY_TO"
+      "environment": "MAIL_REPLY_TO",
+      "optional": true
     },
     {
       "binding": "CAPTURE_MAIL_ADDRESS",
-      "environment": "CAPTURE_MAIL_ADDRESS"
+      "environment": "CAPTURE_MAIL_ADDRESS",
+      "optional": true
     },
     {
       "binding": "SENDGRID_UNSUBSCRIBE_GROUP_ID",
-      "environment": "SENDGRID_UNSUBSCRIBE_GROUP_ID"
+      "environment": "SENDGRID_UNSUBSCRIBE_GROUP_ID",
+      "optional": true
     },
     {
       "binding": "RER_MAIL_RELAY_SECRET",
-      "environment": "RER_MAIL_RELAY_SECRET"
+      "environment": "RER_MAIL_RELAY_SECRET",
+      "optional": true
     },
     {
       "binding": "SENDGRID_WEBHOOK_PUBLIC_KEY",
-      "environment": "SENDGRID_WEBHOOK_PUBLIC_KEY"
+      "environment": "SENDGRID_WEBHOOK_PUBLIC_KEY",
+      "optional": true
     },
     {
       "binding": "SENDGRID_PARSE_PUBLIC_KEY",
-      "environment": "SENDGRID_PARSE_PUBLIC_KEY"
+      "environment": "SENDGRID_PARSE_PUBLIC_KEY",
+      "optional": true
     },
     {
       "binding": "ORBIT_ENCRYPTION_KEY",
@@ -66,23 +72,28 @@
     },
     {
       "binding": "OPENAI_API_KEY",
-      "environment": "OPENAI_API_KEY"
+      "environment": "OPENAI_API_KEY",
+      "optional": true
     },
     {
       "binding": "AI_MODEL",
-      "environment": "AI_MODEL"
+      "environment": "AI_MODEL",
+      "optional": true
     },
     {
       "binding": "AI_INPUT_COST_PER_MILLION",
-      "environment": "AI_INPUT_COST_PER_MILLION"
+      "environment": "AI_INPUT_COST_PER_MILLION",
+      "optional": true
     },
     {
       "binding": "AI_OUTPUT_COST_PER_MILLION",
-      "environment": "AI_OUTPUT_COST_PER_MILLION"
+      "environment": "AI_OUTPUT_COST_PER_MILLION",
+      "optional": true
     },
     {
       "binding": "AI_CACHED_INPUT_COST_PER_MILLION",
-      "environment": "AI_CACHED_INPUT_COST_PER_MILLION"
+      "environment": "AI_CACHED_INPUT_COST_PER_MILLION",
+      "optional": true
     },
     {
       "binding": "SESSION_SECRET",
@@ -91,5 +102,6 @@
   ],
   "crons": [
     "* * * * *"
-  ]
+  ],
+  "deployGuide": "https://github.com/just-every/run-orbit#deploy-to-your-cloudflare-account"
 }

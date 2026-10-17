@@ -91,3 +91,24 @@ index 5e4f3d7e0670c33cb092d653981258feaa2ae332..165cab4683465a9c460b132dc0ca12d2
   }
   return undefined;
  }
+diff --git a/cli/production-auth.mjs b/cli/production-auth.mjs
+index f4a0f1b329e0306b0d320997a64875d0b26f7ea3..0cec102a8d85782cbde09a8568c5d1959755b666 100644
+--- a/cli/production-auth.mjs
++++ b/cli/production-auth.mjs
+@@ -3,6 +3,7 @@ import { main as owner } from '../modules/deploy-kit/owner-cli.mjs';
+ import { hookState } from './deploy-hook-record.mjs';
+ import { savedSetupAnswers } from './setup-answers.mjs';
+ import { productionMail } from './production-mail.mjs';
++import { deployGuide } from './deploy-needs.mjs';
+ 
+ // Validate the shared email/identity contract using the bindings that will reach
+ // the runtime. Independently authored authentication remains the adapter's job.
+@@ -30,5 +31,7 @@ export async function requireProductionAuth({ root, declaration, env, setupManif
+  })) return;
+  // A dry run goes ahead without the mail inputs and lists them as needed for a real deploy.
+  if (options.dryRun) return { signIn: `${mail.missing}${dependencies.length ? ', or an approved Auth SSO install' : ''}` };
+- throw refuse(`Production sign-in is not configured. Configure outbound email; missing or invalid: ${mail.missing}. Or select and approve an Auth SSO install through the declared oidc-provider@1 setup dependency. Local dev and demo use automatic RER_OPEN sign-in. Nothing was built or uploaded.`);
++ // Plain words first: what sign-in needs, which values are missing and where the project explains them.
++ const guide = deployGuide(declaration);
++ throw refuse(`Production sign-in is not configured. A hosted deployment emails each person a sign-in link, so it needs outbound email: set ${mail.missing} (missing or invalid now), then run the same command again.${dependencies.length ? ' Instead of email, an approved Auth SSO sign-in install also works.' : ''} Nothing was built or uploaded.${guide ? `\nWhere to get these values: ${guide}` : ''}`);
+ }

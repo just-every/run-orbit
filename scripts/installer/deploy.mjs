@@ -12,6 +12,15 @@ import { missing, invalid, refuse } from '@runeditrun/rer/errors';
 // secrets are kept by name on later deploys.
 export const optionalSecrets = ['MAIL_FROM', 'SENDGRID_API_KEY', 'MAIL_REPLY_TO', 'CAPTURE_MAIL_ADDRESS', 'SENDGRID_UNSUBSCRIBE_GROUP_ID', 'RER_MAIL_RELAY_SECRET', 'SENDGRID_WEBHOOK_PUBLIC_KEY', 'SENDGRID_PARSE_PUBLIC_KEY', 'ORBIT_ENCRYPTION_KEY', 'OPENAI_API_KEY', 'AI_MODEL', 'AI_INPUT_COST_PER_MILLION', 'AI_OUTPUT_COST_PER_MILLION', 'AI_CACHED_INPUT_COST_PER_MILLION'];
 const required = ['OWNER_EMAIL'];
+// Each optional value and the feature it turns on, for the dry run's plain list.
+const optionalFeatures = [
+ [['MAIL_REPLY_TO', 'SENDGRID_UNSUBSCRIBE_GROUP_ID'], 'Customer outreach', 'Settings → Customer mail sender walks you through both'],
+ [['SENDGRID_WEBHOOK_PUBLIC_KEY'], 'Delivery outcomes such as bounces', 'Settings → Delivery outcomes'],
+ [['RER_MAIL_RELAY_SECRET'], 'Delivery outcomes through a Run Edit Run event relay, instead of the key above'],
+ [['CAPTURE_MAIL_ADDRESS'], 'The Orbit address for capturing mail', 'Capture → Orbit address'],
+ [['SENDGRID_PARSE_PUBLIC_KEY'], 'Automatic reply capture through SendGrid Inbound Parse'],
+ [['OPENAI_API_KEY', 'AI_MODEL', 'AI_INPUT_COST_PER_MILLION', 'AI_OUTPUT_COST_PER_MILLION', 'AI_CACHED_INPUT_COST_PER_MILLION'], 'AI-written drafts'],
+];
 
 export async function declaration(root, env = process.env) {
  let value; try { value = JSON.parse(await readFile(join(root, 'deploy.json'), 'utf8')); } catch { throw invalid('Malformed owner-account deploy declaration deploy.json.'); }
@@ -38,11 +47,16 @@ export function orbitDeploy(lifecycle) {
    for(const kind of ['d1','r2','kv','queues'])for(const resource of preview[kind]??[])store.report(`${kind}: ${resource.name} (${resource.binding})`);
    store.report(`Secrets: ${preview.secrets.map(item=>item.binding).join(', ')}`);
    for(const database of preview.d1)for(const migration of database.migrations)store.report(`Migration: ${database.binding}/${migration.name}`);
+   const later = optionalFeatures.filter(([names]) => names.every(name => !process.env[name]?.trim()));
+   if (later.length) {
+    store.report('Optional, not needed to deploy (add one later, only for the feature it turns on):');
+    for (const [names, feature, where] of later) store.report(`  - ${feature}: ${names.join(', ')}${where ? ` (${where})` : ''}`);
+   }
    store.report('deploy: dry run complete; no deployment occurred and no provider request was made.');
    return { dryRun: true, deployed: false };
   }
   const absent = ['CLOUDFLARE_ACCOUNT_ID', 'CLOUDFLARE_API_TOKEN', ...required].filter(name => !process.env[name]?.trim());
-  if (absent.length) throw missing(`Deployment requires ${absent.join(', ')} in the environment. See OPERATIONS.md.`);
+  if (absent.length) throw missing(`Deployment needs ${absent.join(', ')}. Nothing was deployed. The README's "Deploy to your Cloudflare account" steps show where to get each value and how to pass it: https://github.com/just-every/run-orbit#deploy-to-your-cloudflare-account`);
   const env = { ...process.env };
   store.addSecrets?.([env.SETUP_TOKEN, env.SENDGRID_API_KEY, ...optionalSecrets.map(name => env[name])].filter(Boolean));
   const api = cloudflare({ accountId: env.CLOUDFLARE_ACCOUNT_ID, token: env.CLOUDFLARE_API_TOKEN });

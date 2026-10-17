@@ -1,7 +1,7 @@
 import { createId } from '../../shared/ids';
 import { WorkbenchError } from '../workbench/repository';
 import { permitted, localTime, nextPermitted, recentLocalTime } from './time';
-export interface ApprovalInput {idempotencyKey?:string;scheduledAt?:string;scheduledAtConfirmation?:string;quietHoursConfirmation?:string;now?:Date}
+export interface ApprovalInput {idempotencyKey?:string;scheduledAt?:string;scheduledAtConfirmation?:string;quietHoursConfirmation?:string;now?:Date;messageIdDomain?:string}
 export class ApprovalRepository {
  constructor(readonly db:D1Database){}
  async preview(draftId:string,now=new Date(),scheduledAt?:string) {
@@ -21,7 +21,7 @@ export class ApprovalRepository {
   if(input.scheduledAt&&(!Number.isFinite(Date.parse(input.scheduledAt))||Date.parse(input.scheduledAt)<=now.getTime()))throw new WorkbenchError(400,'Schedule a future time.');
   const scheduled=input.scheduledAt?nextPermitted(new Date(input.scheduledAt),preview.timezone).toISOString():null;
   if(input.scheduledAtConfirmation&&input.scheduledAtConfirmation!==scheduled)throw new WorkbenchError(409,'The permitted schedule changed. Review the schedule again before approving.');
-  const id=createId(),key=input.idempotencyKey??`${draftId}:${revision}`,messageId=`<${id}@orbit.local>`;
+  const id=createId(),key=input.idempotencyKey??`${draftId}:${revision}`,messageId=`<${id}@${input.messageIdDomain??'orbit.local'}>`;
   const minute=new Date(now.getTime()-60000).toISOString(),day=new Date(now.getTime()-86400000).toISOString();
   const insertion=this.db.prepare(`INSERT INTO outbound_messages(id,draft_id,revision,opportunity_id,operator_id,contact_id,recipient_email,subject,body,state,created_at,updated_at,idempotency_key,message_id,reference_ids,scheduled_at,approved_at,claimed_at,first_attempt_at,attempt_count)
    SELECT ?,d.id,d.revision,d.opportunity_id,?,c.id,d.recipient_email,d.subject,d.body,?,?,?, ?,?,COALESCE((SELECT message_id FROM outbound_messages WHERE opportunity_id=d.opportunity_id AND state IN('accepted','delivered') ORDER BY created_at DESC LIMIT 1),''),?,?,?,?,?

@@ -22,7 +22,7 @@ import { createOutboundMail } from "../platform/outbound-mail";
 import start from "@tanstack/react-start/server-entry";
 import { createAssetStore, type PlatformBindings } from "../platform/assets";
 import { createApp } from "./app";
-import { identityResponse, operatorFromRequest, requireStepUp } from "../features/identity";
+import { identityResponse, operatorFromRequest, requireStepUp, SESSION_COOKIE } from "../features/identity";
 import { devGate } from "@runeditrun/rer/modules/operator-auth";
 import { publicDemoConfig } from "./mounts/public-config.server";
 import { invitationLanding } from "../features/access/invitation-landing";
@@ -47,6 +47,8 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
     const publicBindings = { DB: bindings.DB, AUTH_ORIGIN: bindings.AUTH_ORIGIN ?? '' };
     const state = await setupStateResponse(request, publicBindings, claimed);
     if (state) return state;
+    // The Lobby is the same page for every visitor; a signed-in operator goes straight to the app instead.
+    if (path === "/" && (request.method === "GET" || request.method === "HEAD") && (request.headers.get("cookie") ?? "").includes(`${SESSION_COOKIE}=`) && await operatorFromRequest(request, bindings)) return new Response(null, { status: 302, headers: { Location: "/app", "cache-control": "no-store" } });
     const lobby = await lobbyResponse(request, publicBindings, editionIdentity, claimed);
     if (lobby) return lobby;
     if (path === "/api/editor/config") return editorConfigurationResponse(request, bindings);

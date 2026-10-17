@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add Settings → Delivery outcomes: the exact SendGrid Event Webhook Post URL, the events to tick, the signing key and the deploy command, with connected/not connected and the last signed event. Sent messages say “delivery not tracked” until then, and show Bounced or Not delivered once events arrive.
+- README: step-by-step Cloudflare account ID, API token (exact permissions), workers.dev subdomain and `--env-file .dev.vars.deploy` for `rer deploy`; the dry run lists optional values separately with the feature each turns on, and the sign-in refusal names what to set in plain words.
+- A new enquirer from a published form becomes an opportunity in NOW (forms can opt out). A signed-in operator opening `/` goes to the app. A capture skipped because the sender is also an operator says so.
+- Restore keeps the archive's own owner and `rer dev` personas only for attribution when the installation already has a different owner; removed operators are listed separately. A restored Orbit address on an installation that cannot receive mail says “Not receiving mail”.
+- Message-IDs use the sender's domain; phone layouts give the signing secret and the outside-hours confirmation room; the form's status line sits beside the step just used; deploy builds print warnings only.
 - Move the hosted demo to rer 0.2.30's native Worker Loader host (own isolate and SQLite storage per visitor, Cron by alarm, edge static assets) and refresh every recorded Base copy to rer-v0.2.30.
 - Mark credential fixtures and examples explicitly synthetic so hosted source checks accept them.
 - Read an authenticated JSON request body once when validating it, so under Node a collected clone can no longer cancel the body a route then reads (operator erasure intermittently answered 500 in CI).

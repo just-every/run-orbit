@@ -64,6 +64,15 @@ function stopStatements(db:D1Database,contactIds:string[],reason:string,at:strin
   db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE contact_id=? AND state='scheduled'").bind(reason,at,id),
  ]);
 }
+/** Why nobody in a message could be linked; an operator's own address is never a customer, even when a contact shares it. */
+async function unknownReason(db:D1Database,participants:Participant[],operators:Set<string>){
+ if(participants.length&&participants.every(person=>operators.has(person.email)))return 'All participants use operator addresses; internal operators are excluded from customer capture';
+ for(const person of participants.filter(person=>operators.has(person.email))){
+  const key=contactEmailKey(person.email);
+  if(key&&await db.prepare('SELECT 1 FROM contacts WHERE email_key=?').bind(key).first())return `${person.email} is both a contact and an operator’s sign-in email. Orbit never files an operator’s own mail as customer mail. Give the contact or the operator a different email address, then add this message again`;
+ }
+ return 'No known contact or company domain';
+}
 /**
  * One captured message or calendar event, committed atomically: its signal and
  * evidence, any effect Orbit's own threading or delivery report makes certain,
@@ -94,7 +103,7 @@ export async function intake(db:D1Database,source:CaptureSource,fact:Fact,option
  const item=db.prepare('INSERT INTO capture_items(id,source_id,signal_id,kind,headers,body,captured_at) VALUES(?,?,?,?,?,?,?)').bind(itemId,source.id,signalId,fact.kind,fact.headers,fact.body,at);
  const counted=db.prepare('UPDATE capture_sources SET captured_count=captured_count+1,last_success_at=?,updated_at=? WHERE id=?').bind(at,at,source.id);
  if(!known.length){
-  if(!options.includeUnknown)return {result:'skipped',reason:participants.length&&participants.every(person=>operators.has(person.email))?'All participants use operator addresses; internal operators are excluded from customer capture':'No known contact or company domain'};
+  if(!options.includeUnknown)return {result:'skipped',reason:await unknownReason(db,participants,operators)};
   statements.push(signal('Unlinked'),item,db.prepare('INSERT INTO unlinked_signals(signal_id,reason) VALUES(?,?)').bind(signalId,'Captured from a sender with no known contact or company'),counted);
   return commit(db,statements,source,fact,{result:'unlinked',signalId,type});
  }

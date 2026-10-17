@@ -46,3 +46,6 @@
 .operator-shell .capture-proposal p{overflow-wrap:anywhere}
 .operator-shell .capture-summary,.operator-shell .capture-change{width:100%;border-collapse:collapse;font-size:.9rem;text-align:left}
 .operator-shell .capture-summary th,.operator-shell .capture-summary td,.operator-shell .capture-change th,.operator-shell .capture-change td{padding:8px 10px;border-bottom:1px solid var(--operator-border,#ded5cc);vertical-align:top;overflow-wrap:anywhere}
+/* A confirmation's explanation sits on its own line above its buttons, with room between them on a phone. */
+.operator-shell .confirm-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.operator-shell .confirm-actions>p{flex-basis:100%}

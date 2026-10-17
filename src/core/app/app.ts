@@ -136,7 +136,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
   app.route("/api/v1/notifications", createNotificationRoutes(input.database));
   app.route("/api/v1/assistance", createAssistanceRoutes(input.database,input.aiProvider));
   app.route("/api/v1/today", createTodayRoutes(input.database,input.aiProvider));
-  app.route("/api/v1/workbench", createWorkbenchRoutes(input.database, input.outboundMail,Boolean(input.aiProvider),input.hosted));
+  app.route("/api/v1/workbench", createWorkbenchRoutes(input.database, input.outboundMail,Boolean(input.aiProvider),input.hosted,input.mailEventKeys??{},input.captureOrigin));
   app.route("/api/v1/opportunities", dependencies.opportunityRoutes);
   app.route("/api/v1/drafts", createDraftRoutes(dependencies.drafts));
   app.route("/api/v1/workspace", dependencies.workspaceRoutes);

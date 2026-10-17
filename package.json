@@ -23,7 +23,7 @@
     "check": "rer check",
     "deps": "rer install",
     "rer": "rer",
-    "build:app": "rer queue build:app -- vite build",
+    "build:app": "rer queue build:app -- vite build --logLevel warn",
     "verify:app": "rer queue verify:app -- node scripts/verify.mjs",
     "typecheck": "tsc --noEmit",
     "check:boundaries": "node scripts/check-boundaries.mjs",
