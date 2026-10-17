@@ -1179,7 +1179,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "dfdefab9321c19a23d82b8f4dff08ac097286d7a01a053569e18951f1a4f75ba",
+      "sha256": "bec543935983f7820522d8a3807f6a7081a4650f65a41e4a273e581118a2db4f",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -4143,7 +4143,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/message-history.tsx": {
-      "sha256": "5aae8e5b454dff8b0128a22d43712d0e14b9c3f48065f78c9aad80c92a7a8cb1",
+      "sha256": "7442ee26740cb502a7d75d9ce1ca443963b1bc3310f0e9c56b78fadb51261a78",
       "executable": false
     },
     "src/core/features/operator/ui/notifications-page.tsx": {
@@ -6327,7 +6327,7 @@
       "executable": false
     },
     "tests/e2e/records.spec.mjs": {
-      "sha256": "70309f734af0d7587807decbc5ae2d081f6ae57df6654919ab0d79cab3f16302",
+      "sha256": "bbc6f31310e3a177687e73c8b71542fe04fcac39a943c3d132c1c2534fcbe2fd",
       "executable": false
     },
     "tests/e2e/stale-review.spec.mjs": {
@@ -6411,7 +6411,7 @@
       "executable": false
     },
     "tests/launch-runtime/mail-ingress.test.ts": {
-      "sha256": "0bb5d65b5198c676870022e36e7fdd3ea69a30118edf2fe82d4c9eae4d3fa3b4",
+      "sha256": "93a12a0c95135cf3b3a3b02d2d29fe6e3eaf6c15633e426ef478e5402e43a3bd",
       "executable": false
     },
     "tests/launch-runtime/source-mailbox-stop.test.ts": {

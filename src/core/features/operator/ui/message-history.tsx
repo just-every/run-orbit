@@ -8,8 +8,8 @@ interface Scheduler {ready:boolean;lastRunAt:string|null;failed:boolean}
 interface Message {id:string;draftId:string;state:string;subject:string;body:string;recipientEmail:string;providerMessageId:string|null;failure:string|null;retryAfter:string|null;scheduledAt:string|null}
 /** A sent message's state in plain words; until delivery events are connected, acceptance is all Orbit can know. */
 function outcome(state:string,tracked:boolean){
- if(state==='accepted')return tracked?'Accepted by SendGrid · waiting for the delivery report':'Accepted by SendGrid · delivery not tracked';
- return ({delivered:'Delivered',bounced:'Bounced',failed:'Not delivered',cancelled:'Cancelled',scheduled:'Scheduled',draft:'Blocked before sending'} as Record<string,string>)[state]??state;
+ if(state==='accepted')return tracked?'accepted by SendGrid · waiting for the delivery report':'accepted by SendGrid · delivery not tracked';
+ return state==='failed'?'failed · not delivered':state;
 }
 export function MessageHistory({opportunityId}:{opportunityId:string}) {
  const load=useCallback(()=>workbenchRequest<{messages:Message[];scheduler:Scheduler|null;outcomesTracked:boolean}>(`/opportunities/${opportunityId}/messages`),[opportunityId]),resource=useOperatorResource(`messages:${opportunityId}`,load);
