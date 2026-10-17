@@ -6783,7 +6783,7 @@
       "executable": false
     },
     "tests/rer/admission.test.mjs": {
-      "sha256": "e3dc5333be2be4fa707804866805cb72ec9a65c12cac36ad3a02708573d587cc",
+      "sha256": "d68998f8864aac826ba8591b6e16953055c02fbfd0443d9ef230a57043c1a2de",
       "executable": false
     },
     "tests/rer/browser-api.mjs": {
@@ -6795,7 +6795,7 @@
       "executable": false
     },
     "tests/rer/checkout.mjs": {
-      "sha256": "41771f49885adba10242a1d03f096815617a47c7c053f1da519a25576e5b8c24",
+      "sha256": "bd37dea7dd7e9f0233e3d2505f81e16e7c606f6357df51778ad64f47aa94b826",
       "executable": false
     },
     "tests/rer/editor-provider.mjs": {
@@ -6807,11 +6807,11 @@
       "executable": false
     },
     "tests/rer/identity.test.mjs": {
-      "sha256": "155dd42df832e51de620559cf8d144cd459e2753d8f8c49ac237cf7ffa7e4c16",
+      "sha256": "80640b3905cda18825ed186013e5486a2e65e6ad6d2477161521a0e8e5534cff",
       "executable": false
     },
     "tests/rer/journey.test.mjs": {
-      "sha256": "ed06a40030f5ad5d355ef19ed6b8ba4d26c6c9e402997b43c4bfcffaec0d0720",
+      "sha256": "9b53c328699293d171f15aac2bac5290784667a31a641acfd289c9b86d71a3d2",
       "executable": false
     },
     "tests/rer/managed-mail.mjs": {
@@ -6823,7 +6823,7 @@
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
-      "sha256": "afd446e02393a92d56f799a8cf50e4cb3a310d84795f831cb8326c7b7ff45435",
+      "sha256": "15f1de5316743e2b20166fd56a8f79f9f3c8c20c19efbcdaadc3f590f96d2098",
       "executable": false
     },
     "tests/rer/operator-actions-journey.mjs": {
@@ -6871,7 +6871,7 @@
       "executable": false
     },
     "tests/rer/operator-workspace.mjs": {
-      "sha256": "0a78c4b6c51e177412d9a6e925caa7f6392523d82386d2f822a18c9c40fafa93",
+      "sha256": "56bdc57aaf6bee7e13af1d1d645cdfe5f8978bbdec31d7371166b29795ab746b",
       "executable": false
     },
     "tests/rer/opportunity-editing.mjs": {
@@ -7020,6 +7020,10 @@
     },
     "tests/support/mail-transport-client.ts": {
       "sha256": "5aedd823c1b5c5ac7f2951d004d430380f4cba704155b389e51e766671680077",
+      "executable": false
+    },
+    "tests/support/native-server-load.mjs": {
+      "sha256": "e9bed93789ec7324dc277320066e42484b9f74f4c9b3c8494e8cfdf24ec9fb1b",
       "executable": false
     },
     "tests/support/observed-capacity-worker.ts": {

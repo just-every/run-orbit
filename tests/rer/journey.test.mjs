@@ -58,7 +58,7 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
   assert.ok((await readFile(settings)).equals(bytes), 'repeat setup keeps exact private settings');
   await exitOf(await checkout.rer(['setup', '--owner-email', 'other@example.test', '--port', String(port), '--non-interactive']), 4, 'conflicting owner');
 
-  const dev = checkout.serve(['dev']);
+  const dev = await checkout.serve(['dev']);
   const ready = await dev.ready, key = await devKey(checkout.root);
   assert.match(ready, new RegExp(`^RER_READY ${origin}$`, 'm'));
   assert.match(ready, new RegExp(`^RER_SIGNED_IN ${owner}$`, 'm'));
@@ -105,7 +105,7 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
   assert.equal((await dev.exited).code, 143);
   assert.equal(await listening(port), false, 'dev stop closes the port');
 
-  const preview=checkout.serve(['preview']);await preview.ready;
+  const preview=await checkout.serve(['preview']);await preview.ready;
   await assertPrivateRoutes(origin,privatePaths.filter(p=>!p.endsWith('.rer')));
   await exitOf(await checkout.stop('preview'),143,'preview stop');
   assert.equal((await preview.exited).code,143);assert.equal(await listening(port),false);
@@ -134,7 +134,7 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
 
   // The restored owner signs in again through setup, with search rebuilt.
   await exitOf(await checkout.rer(['setup', '--owner-email', owner, '--port', String(port), '--non-interactive']), 0, 'setup after import');
-  const restored = checkout.serve(['dev']);
+  const restored = await checkout.serve(['dev']);
   await restored.ready;
   const again = await openOwner(origin, await browser.newContext({ javaScriptEnabled: false }));
   assert.equal(new URL(again.page.url()).pathname, '/app', 'restored first-run completion opens the app');

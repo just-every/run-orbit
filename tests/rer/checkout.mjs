@@ -1,4 +1,5 @@
 import {isolateBrowserTemp} from '../support/browser-temp.mjs';
+import {waitForNativeServerCapacity} from '../support/native-server-load.mjs';
 isolateBrowserTemp();
 import { execFile, spawn } from 'node:child_process';
 import { constants } from 'node:fs';
@@ -39,7 +40,8 @@ export async function freshCheckout() {
   });
   const ownedServers=new Map();
   const stop=async(verb)=>{const server=ownedServers.get(verb);if(!server)return {code:0,output:''};if(server.child.exitCode===null&&server.child.signalCode===null)server.child.kill('SIGTERM');const result=await server.exited;ownedServers.delete(verb);return result;};
-  const serve = (args) => {
+  const serve = async (args) => {
+    await waitForNativeServerCapacity();
     const child = spawn(process.execPath, ['node_modules/@runeditrun/rer/bin/rer.mjs', ...args], { cwd: root, env, stdio: ['ignore', 'pipe', 'pipe'] });
     let output = '', becameReady = false;
     const ready = new Promise((done, fail) => {

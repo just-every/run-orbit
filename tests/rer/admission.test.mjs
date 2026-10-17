@@ -26,7 +26,7 @@ test('admission uses native owner authority, bounds editor framing and preserves
     const setup = await setupWithProbes(checkout, ['setup','--owner-email','owner@example.test','--port',String(port),'--non-interactive'], origin, paths);
     assert.equal(setup.code, 0, setup.output.slice(-1500));
     await appendFile(join(checkout.root,'.dev.vars'), `\nRER_MANAGEMENT_ORIGIN=${manager}\nRER_INSTALLATION_ID=test-orbit\n`);
-    const server = checkout.serve(['dev']); const open = openLink(await server.ready);
+    const server = await checkout.serve(['dev']); const open = openLink(await server.ready);
     await assertPrivateRoutes(origin, paths);
     const denied = await fetch(origin + '/api/editor/config'); assert.equal(denied.status, 403);
     assert.match(denied.headers.get('cache-control'), /no-store/);
@@ -99,7 +99,7 @@ test('admission uses native owner authority, bounds editor framing and preserves
     await owner.waitForURL(url => url.pathname === '/signin');
     assert.equal((await owner.context().request.get(origin+'/api/editor/config')).status(),403);
     await checkout.stop('dev'); await server.exited;
-    const preview = checkout.serve(['preview']); await preview.ready;
+    const preview = await checkout.serve(['preview']); await preview.ready;
     await assertPrivateRoutes(origin,paths);
     const page = await browser.newPage(); assert.match((await page.goto(origin+'/signin')).headers()['content-security-policy'], /frame-ancestors 'none'/);
     const response = await page.goto(origin+'/'); assert.match(response.headers()['content-security-policy'], /frame-ancestors 'none'/);
