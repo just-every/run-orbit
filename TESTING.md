@@ -72,6 +72,10 @@ Its report can identify unmapped or failed clauses; test names alone do not prov
 release acceptance. Routine Verify uses execution results and the test budget,
 not exhaustive clause-name mapping as a pass gate.
 
+Operator accessibility scans keep script-disabled preview frames in scope. Their
+injected audit callbacks use Node's real timers through the browser driver, while
+the original iframe DOM and sandbox remain intact. Analyses fail after 45 seconds.
+
 Browser tests use isolated D1 state and the built Worker. They cover native
 access, records and settings, sources and unmatched replies, notifications,
 stale drafts, exact AI previews, desktop/mobile layouts, keyboard operation and

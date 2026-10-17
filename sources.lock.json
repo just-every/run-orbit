@@ -2387,15 +2387,15 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "9369820c0c852af56936e135d551f2dbfa70aa685debae4a8acd06542e070a7d",
+      "sha256": "1321a73527b9f0af6e109fb461870b806fd175bf3895fa53fce2e7d59465c7f0",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
       "sha256": "29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b",
       "executable": false
     },
-    "patches/rer-0.2.43.patch": {
-      "sha256": "d23819474db0f797417d9eddca1545c96df58fa53089354c44bb5009482dc4db",
+    "patches/rer-0.2.44.patch": {
+      "sha256": "1514d2337a02d0d7d7a53f5da139f84677bd9b9a78e188f6b9bbc4fdd5549ada",
       "executable": false
     },
     "patches/wrangler-4.129.1.patch": {
@@ -2407,7 +2407,7 @@
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "ff94762d2584e206624b02525de4126d84872753604dc8b8b249c79945b71003",
+      "sha256": "14a68be776b9c22d436cf899d138c13a2146f597e9d7f7e004d0adb10a785164",
       "executable": false
     },
     "pnpm-workspace.yaml": {
@@ -6195,7 +6195,7 @@
       "executable": false
     },
     "TESTING.md": {
-      "sha256": "d44f3f85b91cbd9946c00013524ece5f9ddbb518eb5831cfcd89f27b31631b2b",
+      "sha256": "e22290f0ca0a6886c9e405f32e7d952f8a3904e95bf8e4444bd649ff850352b6",
       "executable": false
     },
     "tests/acceptance/edition-source.mjs": {
@@ -6815,7 +6815,7 @@
       "executable": false
     },
     "tests/rer/operator-observations.mjs": {
-      "sha256": "5e4761d8d884788c5f9893a7a824a8aaebc6348d5fc9c0304a0bdc4d53e42c4c",
+      "sha256": "fa4ea4c7f35bc1856c7730b5843ebb529a9a0690c1af9ee8e13bc174bc69e261",
       "executable": false
     },
     "tests/rer/operator-phone.test.mjs": {
@@ -6839,7 +6839,7 @@
       "executable": false
     },
     "tests/rer/operator-workspace.mjs": {
-      "sha256": "9463a400f2828d992a49d51fa0f9a0a8dd819289247902f9b1e80118b17bddc8",
+      "sha256": "48d40e8e420753c6aade5aaa37611420242caba9de59492e968ee2f15de9ee2a",
       "executable": false
     },
     "tests/rer/opportunity-editing.mjs": {
@@ -7000,6 +7000,10 @@
     },
     "tests/support/prepare-state.ts": {
       "sha256": "d070f202f1752a15438c935b1eaebe9bc3db2d68cc533190fa90f62bce8a6b76",
+      "executable": false
+    },
+    "tests/support/preview-timers.mjs": {
+      "sha256": "850b4074e72c36869acb4ab0787c3ef700100eed51c0df8357a67ab23cf49815",
       "executable": false
     },
     "tests/support/record-data.ts": {

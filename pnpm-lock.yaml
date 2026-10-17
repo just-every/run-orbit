@@ -5,9 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
-  '@runeditrun/rer@0.2.43':
-    hash: d23819474db0f797417d9eddca1545c96df58fa53089354c44bb5009482dc4db
-    path: patches/rer-0.2.43.patch
+  '@runeditrun/rer@0.2.44':
+    hash: 1514d2337a02d0d7d7a53f5da139f84677bd9b9a78e188f6b9bbc4fdd5549ada
+    path: patches/rer-0.2.44.patch
   miniflare@5.20260907.0-alpha:
     hash: 29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b
     path: patches/miniflare-5.20260907.0-alpha.patch
@@ -57,8 +57,8 @@ importers:
         specifier: 1.64.1
         version: 1.64.1
       '@runeditrun/rer':
-        specifier: 0.2.43
-        version: 0.2.43(patch_hash=d23819474db0f797417d9eddca1545c96df58fa53089354c44bb5009482dc4db)
+        specifier: 0.2.44
+        version: 0.2.44(patch_hash=1514d2337a02d0d7d7a53f5da139f84677bd9b9a78e188f6b9bbc4fdd5549ada)
       '@tailwindcss/vite':
         specifier: 4.3.3
         version: 4.3.3(vite@8.2.2(@types/node@22.19.17)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.0))
@@ -840,8 +840,8 @@ packages:
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
 
-  '@runeditrun/rer@0.2.43':
-    resolution: {integrity: sha512-4NL0Fs7WSuqE15s0SmAalDtFMql9Bglhym8EA+Rkut8bc7axtByfqIdvAUQ5N4lc8gSyx4XMu/5XJLG27wVJYw==}
+  '@runeditrun/rer@0.2.44':
+    resolution: {integrity: sha512-yggI6r0sLjToijo7jZkTziZd3CuDtCz95cuwG3PQJsXqs8kwQXyeOC1Zgu7xmqJxijrGTASFiKRypVZY5SQD5w==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -2540,7 +2540,7 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
-  '@runeditrun/rer@0.2.43(patch_hash=d23819474db0f797417d9eddca1545c96df58fa53089354c44bb5009482dc4db)': {}
+  '@runeditrun/rer@0.2.44(patch_hash=1514d2337a02d0d7d7a53f5da139f84677bd9b9a78e188f6b9bbc4fdd5549ada)': {}
 
   '@sindresorhus/is@7.2.0': {}
 

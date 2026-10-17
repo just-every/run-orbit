@@ -2,10 +2,11 @@ import assert from 'node:assert/strict';
 import {writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
+import {withPreviewTimers} from '../support/preview-timers.mjs';
 
 export async function observeOperator(page,name,width,directory,observations){
  await page.setViewportSize({width,height:900});
- const violations=(await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze()).violations;
+ const violations=(await withPreviewTimers(page,()=>new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze())).violations;
  const geometry=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth}));
  const fonts=await page.evaluate(()=>({body:getComputedStyle(document.body).fontFamily,heading:getComputedStyle(document.querySelector('h1')).fontFamily}));
  let text=await page.locator('body').innerText();

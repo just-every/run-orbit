@@ -19,6 +19,7 @@ export async function withOperatorWorkspace({name,widths,observeSetup=false},run
   dev=checkout.serve(['dev']);const open=openLink(await dev.ready);
   browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
   const context=await browser.newContext({baseURL:origin,viewport:{width:1440,height:900}}),page=await context.newPage();settled(page);
+  page.setDefaultTimeout(60000);page.setDefaultNavigationTimeout(60000);
   await devSignIn(page,open);
   if(observeSetup)for(const width of widths)await observeOperator(page,'setup',width,directory,observations);
   await page.getByLabel('Your name').fill('Opal Operator');await page.getByLabel('Business name').fill('Operator acceptance');

@@ -1,8 +1,8 @@
 diff --git a/cli/deploy-command.mjs b/cli/deploy-command.mjs
-index 3029908..b4234af 100644
+index adbd385..f7a0650 100644
 --- a/cli/deploy-command.mjs
 +++ b/cli/deploy-command.mjs
-@@ -67,7 +67,7 @@ export async function deployCommand(context) {
+@@ -79,7 +79,7 @@ export async function deployCommand(context) {
   const settings = adapter.hooks?.secrets ?? adapter.settings;
   // What a dry run went ahead without, listed when it completes.
   const dryRun = async result => {
@@ -11,7 +11,7 @@ index 3029908..b4234af 100644
    const { signIn } = await requireProductionAuth({ root, declaration, env: production.env, setupManifest, setupSeed: context.setupSeed, adapter, declarationPath: path, options }) ?? {};
    const needed = neededForRealDeploy({ declaration, env: production.env, signIn });
    reportNeeded(store, needed);
-@@ -79,10 +79,10 @@ export async function deployCommand(context) {
+@@ -91,10 +91,10 @@ export async function deployCommand(context) {
   // A hook that deployed through the kit keeps what its Worker holds: rotate there as a secret change.
   if (options.rotateSecret && !adapter.deploy.managesHostedOwner && await hookState(root, options.environment ?? 'production')) return ownerDeploy(path, adapter)(context);
   if (adapter.deploy.managesHostedOwner) { const result = await adapter.deploy(context); return options.dryRun ? dryRun(result) : result; }
@@ -52,7 +52,7 @@ index 7f079f8..c29f178 100644
    const { readSettings } = await shared('adapter-settings.mjs');
    const owner = (await readSettings(root, settings)).values[emailField];
 diff --git a/cli/deploy.mjs b/cli/deploy.mjs
-index 38d534d..1544c3d 100644
+index af0155b..d8ac991 100644
 --- a/cli/deploy.mjs
 +++ b/cli/deploy.mjs
 @@ -39,7 +39,7 @@ export function ownerDeploy(declarationPath, lifecycle) {
@@ -70,9 +70,9 @@ index 38d534d..1544c3d 100644
    }
 -  const { env, supplied, generated, reused, rotated } = await deployEnvironment({ root, options, declaration, setupManifest, settings: lifecycle.settings, localOnlyKeys });
 +  const { env, supplied, generated, reused, rotated } = await deployEnvironment({ root, options, declaration, setupManifest, settings: lifecycle.settings, localOwner: lifecycle.hooks?.localOwner, localOnlyKeys });
+   if (options.setSecret || options.unsetSecret) secretChangeInputs(declaration, options, env, again);
    const kept = keptSecrets(declaration, setupManifest);
    if (cloudflareCredentials.some(name => !env[name]?.trim())) throw missing(missingCredentialsMessage(declaration, env));
-   const { main } = await import('../modules/deploy-kit/owner-cli.mjs');
 diff --git a/cli/package-mode.mjs b/cli/package-mode.mjs
 index 5e4f3d7..165cab4 100644
 --- a/cli/package-mode.mjs
