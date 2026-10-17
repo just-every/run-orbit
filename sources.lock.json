@@ -663,7 +663,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "0beec89430027d9bdeae83824185c9beceb69e6750b0d63a1e7286bc84f27c8e",
+      "sha256": "f5b4f6413033e0d95d3276db994715fb3e3ca1132af39e37b33a3a2df880366e",
       "executable": false
     },
     "BASELINE.md": {
@@ -5904,50 +5904,6 @@
     },
     "src/modules/import-kit/d1/undo-types.ts": {
       "sha256": "39a110602c82019bf19bccd13316d590ee3e6f3fbc7171b5aa35d982e6158b50",
-      "executable": false
-    },
-    "src/modules/import-kit/door/authority.ts": {
-      "sha256": "99e03de4eb8d5646df08af5714e243c0ba82aa9efe6d5cb600fc4c6fcab38173",
-      "executable": false
-    },
-    "src/modules/import-kit/door/grants.ts": {
-      "sha256": "e72b34950dc5b5b4d528cd6a2143f61c282ddcc04548335116c81759ce39a397",
-      "executable": false
-    },
-    "src/modules/import-kit/door/index.ts": {
-      "sha256": "e11c5493539ca7f468e3f508e459ba781c2fc77cf91a298feb0a966340e5079d",
-      "executable": false
-    },
-    "src/modules/import-kit/door/inventory.ts": {
-      "sha256": "301a164b4e6a428f1b92ffa867b2a35c686aa2a6ec61e6ac7796c80aea80cec0",
-      "executable": false
-    },
-    "src/modules/import-kit/door/jobs.ts": {
-      "sha256": "059ca108d66c8c6b620a8c359a083e13f8311abe85d9e91b88768820a1a09bdd",
-      "executable": false
-    },
-    "src/modules/import-kit/door/planning.ts": {
-      "sha256": "c05d1f7dbae110a0384683d41afacaf8e9838cdcc9d9706e846dd60d108bbed7",
-      "executable": false
-    },
-    "src/modules/import-kit/door/README.md": {
-      "sha256": "0890e3a47e6d12fdb3ecf0af128ce359b4657eb52b388ceb37cd9c25becf2ca4",
-      "executable": false
-    },
-    "src/modules/import-kit/door/schema.ts": {
-      "sha256": "bfce4acad8f99f0c176f90d23a5887a7c4806a28b325b726e02872df1c5ec96d",
-      "executable": false
-    },
-    "src/modules/import-kit/door/store.ts": {
-      "sha256": "2173a28efac4b4c350830e0b52d422d0269a8276e414b67876607943fa288134",
-      "executable": false
-    },
-    "src/modules/import-kit/door/types.ts": {
-      "sha256": "1ffdba77a925837aa2fbf48b2f4c69b4f5c828e631bcace723821d255a6f52ce",
-      "executable": false
-    },
-    "src/modules/import-kit/door/uploads.ts": {
-      "sha256": "f86698f9e577f8b73c12a9aa117b1dd6c49752423971410c9f6a0f3ef7a2efcb",
       "executable": false
     },
     "src/modules/import-kit/engine/apply.ts": {
