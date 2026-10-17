@@ -13,7 +13,7 @@ const verificationKey=/^MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE[A-Za-z0-9+/]{86}==?
 
 function summary(status:Status){
  if(!status.connected)return status.hosted
-  ?'Orbit knows SendGrid accepted each message, but not whether it was delivered, bounced or dropped. Sent messages say “delivery not tracked” until you finish the steps below.'
+  ?'Orbit knows the mail provider accepted each message, but not whether it was delivered, bounced or dropped. Sent messages say “delivery not tracked” until you finish the steps below.'
   :'Delivery outcomes need a hosted Orbit: SendGrid must reach a public address to report outcomes, so connect them after you deploy Orbit. Until then, sent messages say “delivery not tracked”.';
  const via=status.method==='relay'?'the Run Edit Run event relay':'SendGrid’s signed Event Webhook';
  return status.lastEventAt
