@@ -689,15 +689,15 @@ Status is an implementation judgment, not a live-provider or deployed-product ac
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 60 | 19 | 0 | 79 |
+| Published | 62 | 17 | 0 | 79 |
 | Target and push further | 0 | 31 | 21 | 52 |
-| All | 60 | 50 | 21 | 131 |
+| All | 62 | 48 | 21 | 131 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
 | `TEAM-001` | Equal operators | published | partial | `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts` | Restricted collaborator access exists; native sellers remain full peers and the target role model is incomplete. |
 | `TEAM-002` | Management | published | partial | `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts` | Setup-owner and management policy breadth needs the exact native-management journey; collaborator roles do not establish seller hierarchy. |
-| `TEAM-003` | One workspace | published | partial | `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts` | Workspace settings exist; multiple pipeline configuration is not implemented. |
+| `TEAM-003` | One workspace | published | done | `tests/core/records-search.test.ts`; `src/core/features/pipelines/`; `tests/evidence/contract/TEAM-003/` | Persisted US timezone, USD, working hours and intervals exercised with multiple pipelines through Settings and Records at 1440/390. |
 | `TEAM-004` | Removal handover | published | partial | `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts` | Removal and preserved history have implementation; the per-set handover of owned contacts, leads, companies, tasks and enrollments (RECORD-016) and complete handover acceptance are pending. |
 | `RECORD-001` | Core records | published | done | `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts` |  |
 | `RECORD-002` | Associations | published | partial | `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts` | Core primary-company/deal associations exist; multiple company relationships and full historical acceptance are pending. |
@@ -738,7 +738,7 @@ Status is an implementation judgment, not a live-provider or deployed-product ac
 | `OPP-006` | NOW ordering | published | done | `src/core/features/opportunities/repository.ts`; `tests/e2e/operator.spec.mjs` |  |
 | `OPP-007` | Queue entry | published | done | `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts` |  |
 | `OPP-008` | Manual completion | published | done | `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts` |  |
-| `OPP-009` | Pipeline stages | published | partial | `src/core/features/records/schema.ts`; `src/core/features/opportunities/repository.ts` | Only one pipeline and stage list exist; multiple pipelines, rules and safe cross-pipeline moves remain target work. |
+| `OPP-009` | Pipeline stages | published | done | `migrations/core/0039_sales_pipelines.sql`; `src/core/features/pipelines/`; `tests/core/records-search.test.ts`; `tests/evidence/contract/OPP-009/` | Native named pipelines, ordered stages, probabilities, required fields, stage stale intervals, guarded moves/history and occupied deletion refusal exercised; board/list share filters. Workflow engine remains tracked under AUTO-002. |
 | `ACTION-001` | Current recommendation | published | partial | `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts` | Recommendations and cited drafts exist; full evidence/version and AI-absent journey remains pending. |
 | `ACTION-002` | Replacement | published | partial | `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts` | Supersession exists; complete old-action refusal evidence is pending. |
 | `ACTION-003` | Draft on request | published | done | `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts` | Implemented source and exercising tests for drafts on an opportunity's recommendation; drafting from a contact, lead or company record is tracked under OUT-017. Live hosted/provider acceptance remains separate. |

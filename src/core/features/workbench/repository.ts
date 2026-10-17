@@ -1,3 +1,5 @@
+import {RecordError} from '../records/shared';
+import {assertRequiredFields,stagePolicy,stagePolicyFence} from '../pipelines/stage-policy';
 import { suppressionHashes, suppressionPredicate, suppressionContextFence } from '../records/suppression';
 import {contactStopStatements} from '../records/suppression-effects';
 import { weights } from './policies';
@@ -13,31 +15,34 @@ export class WorkbenchError extends Error { constructor(readonly status: 400 | 4
 export class WorkbenchRepository {
   constructor(readonly db: D1Database) {}
   async inventory() {
-    const [companies, contacts, stages, opportunities] = await Promise.all([
+    const [companies, contacts, stages, opportunities, pipelines] = await Promise.all([
       this.db.prepare('SELECT id,name FROM companies ORDER BY name').all(),
       this.db.prepare('SELECT id,name,email,company_id AS companyId FROM contacts ORDER BY name').all(),
-      this.db.prepare('SELECT id,name FROM pipeline_stages ORDER BY position').all(),
-      this.db.prepare('SELECT id,title,score,band,queue_state AS queueState,queue_reason AS queueReason,next_due_at AS nextDueAt FROM opportunities ORDER BY updated_at DESC LIMIT 200').all()
+      this.db.prepare('SELECT s.id,s.name,r.pipeline_id,p.name AS pipelineName,r.probability,r.required_fields_json,r.stale_interval_days FROM pipeline_stages s JOIN pipeline_stage_rules r ON r.stage_id=s.id JOIN pipelines p ON p.id=r.pipeline_id ORDER BY s.position').all<{required_fields_json:string}&Record<string,unknown>>(),
+      this.db.prepare('SELECT id,title,score,band,queue_state AS queueState,queue_reason AS queueReason,next_due_at AS nextDueAt FROM opportunities ORDER BY updated_at DESC LIMIT 200').all(),
+      this.db.prepare('SELECT id,name,is_default FROM pipelines ORDER BY is_default DESC,created_at,id').all()
     ]);
-    return { companies: companies.results, contacts: contacts.results, stages: stages.results, opportunities: opportunities.results };
+    return { companies: companies.results, contacts: contacts.results, stages: stages.results.map(({required_fields_json,...stage})=>({...stage,required_fields:JSON.parse(required_fields_json)})), opportunities: opportunities.results, pipelines:pipelines.results };
   }
   async createOpportunity(input: { title: string; companyName: string; contactName: string; email: string; stageId: string; valueCents: number }, actor: string) {
     const email=input.email.trim().toLowerCase(),emailKey=contactEmailKey(email),ownerId=opportunityAssignmentPolicy.ownerForNewOpportunity({actorId:actor});
     if(ownerId&&!await this.db.prepare("SELECT id FROM operators WHERE id=? AND status='active'").bind(ownerId).first())throw new WorkbenchError(400,'Assignment policy selected an inactive or unknown operator.');
     const duplicate = await this.db.prepare("SELECT id FROM contacts WHERE email_key = ? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type='contact' AND identity_key=?").bind(emailKey,emailKey).first<{ id: string }>();
     if (duplicate) throw new WorkbenchError(409, `A contact already uses that email: ${duplicate.id}. Use the existing record.`,duplicate.id);
-    if (!await this.db.prepare('SELECT id FROM pipeline_stages WHERE id = ?').bind(input.stageId).first()) throw new WorkbenchError(400, 'Unknown pipeline stage.');
+    const policy=await stagePolicy(this.db,input.stageId).catch(error=>{if(error instanceof RecordError)throw new WorkbenchError(400,error.message);throw error;});
     const emailTokens=await suppressionHashes(this.db,email);
     const now = new Date().toISOString(), companyId = createId(), contactId = createId(), id = createId();
+    try{assertRequiredFields(policy,{title:input.title,stage_id:input.stageId,owner_id:ownerId,company_id:companyId,value_cents:input.valueCents,contact_ids:[contactId],primary_contact_id:contactId,custom_fields:{}});}catch(error){if(error instanceof RecordError)throw new WorkbenchError(409,error.message);throw error;}
     assertCommercialRelationship({ contactId, opportunityId: id }, { contactIds: new Set([contactId]), opportunityIds: new Set([id]) });
     try{await this.db.batch([
       ...suppressionContextFence(this.db,emailTokens),
+      ...stagePolicyFence(this.db,[policy]),
       this.db.prepare('INSERT INTO companies(id,name,created_at,updated_at) VALUES(?,?,?,?)').bind(companyId,input.companyName,now,now),
       this.db.prepare(`INSERT INTO contacts(id,company_id,name,email,email_key,contactability,created_at,updated_at) VALUES(?,?,?,?,?,CASE WHEN ${suppressionPredicate(emailTokens)} THEN 'do_not_contact' ELSE 'contactable' END,?,?)`).bind(contactId,companyId,input.contactName,email,emailKey,now,now),
       this.db.prepare("INSERT INTO opportunities(id,title,lifecycle,stage_id,owner_id,company_id,value_cents,score,band,queue_state,queue_reason,created_at,updated_at) VALUES(?,?,'open',?,?,?,?,0,'low','now','Operator created opportunity',?,?)").bind(id,input.title,input.stageId,ownerId,companyId,input.valueCents,now,now),
       this.db.prepare('INSERT INTO opportunity_contacts(opportunity_id,contact_id,is_primary,created_at) VALUES(?,?,1,?)').bind(id,contactId,now),
       ...this.timeline(id,actor,'opportunity.created',{title:input.title},now)
-    ]);}catch(error){const duplicate=await this.db.prepare("SELECT id FROM contacts WHERE email_key=? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type='contact' AND identity_key=?").bind(emailKey,emailKey).first<{id:string}>();if(duplicate)throw new WorkbenchError(409,`A contact already uses that identity: ${duplicate.id}.`,duplicate.id);throw error;}
+    ]);}catch(error){if(/runtime_controls.value/.test(String(error)))throw new WorkbenchError(409,'The pipeline rules changed. Reload before creating an opportunity.');const duplicate=await this.db.prepare("SELECT id FROM contacts WHERE email_key=? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type='contact' AND identity_key=?").bind(emailKey,emailKey).first<{id:string}>();if(duplicate)throw new WorkbenchError(409,`A contact already uses that identity: ${duplicate.id}.`,duplicate.id);throw error;}
     return { id };
   }
   timeline(opportunityId: string, actor: string, kind: string, payload: unknown, now: string, occurredAt = now, settlement?: string) {

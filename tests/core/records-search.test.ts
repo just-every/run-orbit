@@ -1,3 +1,4 @@
+import {salesPipelinesJourney} from '../support/sales-pipelines';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
@@ -7,10 +8,10 @@ import { RecordsRepository } from '../../src/core/features/records/repository';
 import { ManualRepository } from '../../src/core/features/records/manual';
 import { createId } from '../../src/core/shared/ids';
 
-test('RECORD-006 search matches record and timeline text, intersects every opportunity filter and caps the first page', async()=>{
+test('OPP-009 TEAM-003 RECORD-006 pipelines move safely and search matches record and timeline text, intersects every opportunity filter and caps the first page', async()=>{
  const fixture=await isolatedDatabase(),db=fixture.db,actor=createId(),other=createId(),stage=createId(),otherStage=createId(),now=new Date().toISOString();
  try {
-  const deps=createDependencies(db);
+  const deps=createDependencies(db);await deps.workspace.ensureWorkspace({name:'Search workspace',timezone:'America/New_York',currency:'USD',workingHours:{days:[1,2,3,4,5],start:'09:00',end:'17:00'},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
   for(const id of [actor,other])await deps.auth.ensureOperator({id,email:`${id}@search.test`,displayName:'Search operator'});
   await db.batch([db.prepare('INSERT INTO pipeline_stages VALUES(?,?,0,?,?)').bind(stage,'Qualified',now,now),db.prepare('INSERT INTO pipeline_stages VALUES(?,?,1,?,?)').bind(otherStage,'Later',now,now)]);
   const records=new RecordsRepository(db),manual=new ManualRepository(db);
@@ -35,5 +36,6 @@ test('RECORD-006 search matches record and timeline text, intersects every oppor
   assert.deepEqual(await search('opportunity',new URLSearchParams(expected).toString()),[opportunity.id]);
   for(let i=0;i<55;i++)await records.save('contact',{name:`Pagebound ${i}`,email:`page-${i}@search.test`},actor);
   assert.equal((await search('contact','q=Pagebound')).length,50);
+  await salesPipelinesJourney((path,method='GET',body)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),actor);
  } finally {await fixture.dispose();}
 });
