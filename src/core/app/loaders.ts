@@ -10,8 +10,11 @@ export const requireOperator = createServerFn({ method: "GET" }).handler(async (
 /** The workspace time zone, so every time in the app reads on one labelled clock. */
 export const loadWorkspaceTimeZone = createServerFn({ method: "GET" }).handler(async () => {
   await requireOperator();
-  const { requestScopedDependencies } = await import("../platform/request.server");
-  const presentation = await (await requestScopedDependencies()).workspace.readPresentation();
+  // The signed-in shell also hosts invitation acceptance. Loading its clock
+  // must not require a workspace membership that the invitation creates.
+  const { env } = await import("cloudflare:workers");
+  const { DB } = env as unknown as { DB: D1Database };
+  const presentation = await DB.prepare("SELECT timezone FROM workspace_settings WHERE id='workspace'").first<{timezone:string}>();
   return presentation?.timezone ?? null;
 });
 

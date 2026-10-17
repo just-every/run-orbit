@@ -60,7 +60,7 @@ export async function nativeOpportunityViewportJourney(page){
    const section=page.getByTestId('handoff-tasks');
    await expect(section.getByRole('heading',{name:taskTitle,exact:true})).toBeVisible();
    await expect(section.getByRole('textbox',{name:'Title',exact:true})).toHaveValue(taskTitle);
-   for(const [role,name] of [['textbox','Description'],['combobox','Assignee'],['textbox','Due time (UTC)'],['combobox','Status']])await expect(section.getByRole(role,{name,exact:true})).toBeVisible();
+   for(const [role,name] of [['textbox','Description'],['combobox','Assignee'],['textbox',/^Due time \(/],['combobox','Status']])await expect(section.getByRole(role,{name,exact:true})).toBeVisible();
    await expect(section.getByRole('button',{name:'Save handoff',exact:true})).toBeEnabled();
    const after=await viewportMetrics(page,viewport.width);
    diagnostics.viewports.push({name:viewport.name,width:viewport.width,height:viewport.height,phase:'after-handoff',...after});
@@ -86,14 +86,14 @@ export async function nativeOpportunityViewportJourney(page){
     await section.getByRole('textbox',{name:'Title',exact:true}).fill(editedTitle);
     await section.getByRole('textbox',{name:'Description',exact:true}).fill(`Reviewed regional installation coordination for the Northstar fleet account; current status is ${status}.`);
     await assigneeField.selectOption(status==='cancelled'?'':assignee);
-    await section.getByRole('textbox',{name:'Due time (UTC)',exact:true}).fill('2026-10-15T09:30');
+    await section.getByRole('textbox',{name:/^Due time \(/,exact:true}).fill('2026-10-15T09:30');
     await statusField.selectOption(status);
     const saved=page.waitForResponse(response=>response.url().endsWith('/delegation/handoffs')&&response.request().method()==='POST');
     await section.getByRole('button',{name:'Save handoff',exact:true}).click();
     expect((await saved).status()).toBe(200);
     await expect(section.getByRole('heading',{name:editedTitle,exact:true})).toBeVisible();
     const readback=await(await api.get('/delegation/handoffs/'+opportunity.id)).json(),persisted=readback.tasks[0].task;
-    expect(Object.fromEntries(taskKey.map(key=>[key,persisted[key]]))).toEqual({title:editedTitle,description:`Reviewed regional installation coordination for the Northstar fleet account; current status is ${status}.`,assignee_id:status==='cancelled'?null:assignee,due_at:'2026-10-15T09:30:00.000Z',status});
+    expect(Object.fromEntries(taskKey.map(key=>[key,persisted[key]]))).toEqual({title:editedTitle,description:`Reviewed regional installation coordination for the Northstar fleet account; current status is ${status}.`,assignee_id:status==='cancelled'?null:assignee,due_at:'2026-10-14T23:30:00.000Z',status});
     displayedTaskTitle=editedTitle;
    }
   }

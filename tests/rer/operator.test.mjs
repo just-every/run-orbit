@@ -19,7 +19,7 @@ test('BASE-PUBLIC-003 T099 operator controls through native rer dev and disposab
  const checkout=await freshCheckout(),port=await freePort(),origin=`http://127.0.0.1:${port}`,observations=[];let browser,dev,fixture;let completed=0;
  try{
   const setup=await checkout.rer(['setup','--owner-email','operator-owner@example.test','--port',String(port),'--non-interactive']);assert.equal(setup.code,0,'Native rer setup failed; private output withheld');
-  dev=checkout.serve(['dev']);const open=openLink(await dev.ready);browser=await chromium.launch();const context=await browser.newContext({baseURL:origin,viewport:{width:1440,height:900}}),page=await context.newPage();settled(page);
+  dev=checkout.serve(['dev']);const open=openLink(await dev.ready);browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});const context=await browser.newContext({baseURL:origin,viewport:{width:1440,height:900}}),page=await context.newPage();settled(page);
   await devSignIn(page,open);
   await t.test('every reachable operator route and expanded data view passes WCAG A/AA without horizontal scrolling',async()=>{
    for(const width of widths)await observeOperator(page,'setup',width,directory,observations);

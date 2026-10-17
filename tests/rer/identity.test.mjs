@@ -16,7 +16,7 @@ import { devKey, openLink } from './sign-in.mjs';
 const evidence = process.env.ORBIT_EVIDENCE_DIR;
 const widths = [1440, 390];
 let checkout, browser;
-before(async () => { checkout = await freshCheckout(); browser = await chromium.launch(); });
+before(async () => { checkout = await freshCheckout(); browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']}); });
 after(async () => { await browser?.close(); await checkout?.rer(['dev', '--stop']); await checkout?.close(); });
 const exitOf = async (result, code, label) => { assert.equal(result.code, code, `${label}\n${result.output.slice(-1500)}`); return result.output; };
 async function shot(page, name) {

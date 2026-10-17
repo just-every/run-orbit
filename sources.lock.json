@@ -1183,7 +1183,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "bec543935983f7820522d8a3807f6a7081a4650f65a41e4a273e581118a2db4f",
+      "sha256": "2e3811c773b80e0c5ed419c4fa9364ad83a35523ff80bf302eace02e23b03d73",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -3255,7 +3255,7 @@
       "executable": false
     },
     "src/core/app/loaders.ts": {
-      "sha256": "cb928877907575278dfbf2bb0bc32200251848f7d0591328ebc5f6bacb55569c",
+      "sha256": "8bd77e54a31eb182b95a837ebf235d3bb0fd4fe3d587cd06d63dac301938aca6",
       "executable": false
     },
     "src/core/app/mounts/assistance.ts": {
@@ -6291,11 +6291,11 @@
       "executable": false
     },
     "tests/delegation-browser/journey.mjs": {
-      "sha256": "4255e55dfb4b755b603500c2464db5a64407c80f2c0ff07bc687fb4f43094ff6",
+      "sha256": "29a70850a4c05ca2eaeabbf4089a500fc86cc1a9e3d8869f82fbcd082a666094",
       "executable": false
     },
     "tests/delegation-browser/native.test.ts": {
-      "sha256": "67fb8fb2707bee87dd688992049601f6ae1fdd46e646e883608217531f862417",
+      "sha256": "007a4e147ec0a8afebeb56e1904d681c47c913e14e74f7d79a59952f61f55ab0",
       "executable": false
     },
     "tests/delegation-browser/records-layout-journey.mjs": {
@@ -6319,11 +6319,11 @@
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
-      "sha256": "ef359cb24cec240c59622c50c272dd966f1acd33d2b91502ac6853c3ddfd75c4",
+      "sha256": "d0b33e8e0fbb103bcdf309f4d406bea77c854e819e9dec02eda3214d3923787a",
       "executable": false
     },
     "tests/delegation-browser/viewport.test.ts": {
-      "sha256": "43e734644df5a80e8fd7d5d66276f3b01afefb7dd3dbdd023d0b85d073effbe5",
+      "sha256": "c415d6a3e1c4950f4ea783dbfc59658c89735e9810e4897044109bd70718b834",
       "executable": false
     },
     "tests/delegation/archive-regression.test.ts": {
@@ -6543,7 +6543,7 @@
       "executable": false
     },
     "tests/rer/identity.test.mjs": {
-      "sha256": "de2b4240a845e9d88321e587eee00d54e54e6781a7e16a450b6e530c5f59ade9",
+      "sha256": "4678324fe622d6e936c01047ec8d37e521bcb71dada7e6daa3d074676115fbce",
       "executable": false
     },
     "tests/rer/journey.test.mjs": {
@@ -6579,7 +6579,7 @@
       "executable": false
     },
     "tests/rer/operator.test.mjs": {
-      "sha256": "d54a7ba724a2033826004a58b5c40bc95652347fe60e5cfc1d01e754e88b61a2",
+      "sha256": "3009172a2b3fe737f15acf415efe807a6dc903a884f8eaefd9e5ccab302a9fc1",
       "executable": false
     },
     "tests/rer/opportunity-editing.mjs": {
