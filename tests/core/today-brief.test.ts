@@ -1,3 +1,4 @@
+import {exerciseSalesTasks} from '../support/sales-tasks';
 import assert from 'node:assert/strict';
 import {after,test} from 'node:test';
 import {isolatedDatabase} from '../support/isolated-database';
@@ -25,7 +26,7 @@ async function captureUnknown(t:TodayApp,subject:string){
  const result=await t.json<{summary:unknown}>('/api/v1/capture/imports',{form},201);return result;
 }
 
-test('BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence',async()=>{
+test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence',async()=>{
  const t=await todayApp(db);
  // A day with nothing: the brief says so plainly.
  const empty=await t.brief();assert.deepEqual([empty.accounts.length,empty.unresolved.length],[0,0]);assert.equal(empty.sinceBasis,'stale-interval');
@@ -76,6 +77,25 @@ test('BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one bri
   for(const proposal of (await t.json<{proposals:{id:string;kind:string}[]}>('/api/v1/capture/proposals')).proposals.filter(p=>p.kind==='link_signal'))await t.json(`/api/v1/capture/proposals/${proposal.id}/accept`,{body:{}},200);};
  await capture('Eve Hart <eve@eden.test>',`${t.actor.toLowerCase()}@seller.test`,9);assert.deepEqual(byKind(await t.brief(),'reply-unanswered').map(l=>l.title),['Re: renewal terms']);
  await capture(`${t.actor.toLowerCase()}@seller.test`,'Eve Hart <eve@eden.test>',0);assert.deepEqual(byKind(await t.brief(),'reply-unanswered'),[]);
+ const work=await exerciseSalesTasks(t,db),receiver=(await t.json<{id:string}>('/api/v1/settings/operators',{body:{email:`handover-${createId().toLowerCase()}@example.test`,displayName:'Alex Handover'}},201)).id;
+ const task=(await t.json<any>(`/api/v1/tasks/${work.openTaskId}`)).task;
+ const owned=await t.opportunity('Task handover deal','Handover Company','Handover Buyer',`${createId().toLowerCase()}@handover.test`),ownedDetail=await t.json<any>(`/api/v1/records/opportunity/${owned}`);
+ await t.json(`/api/v1/records/opportunity/${owned}`,{method:'PUT',body:{...ownedDetail.record,owner_id:work.ownerId,contact_ids:ownedDetail.contacts.map((c:any)=>c.id),primary_contact_id:ownedDetail.contacts[0].id,custom_fields:{}}},200);
+ assert.equal((await t.call(`/api/v1/settings/operators/${work.ownerId}`,{method:'DELETE',body:{confirmed:true}})).status,409,'owned work requires explicit reviewed choices');
+ const review=await t.json<any>(`/api/v1/settings/operators/${work.ownerId}/removal-review`);
+ const {taskContent}=await import('../../src/core/features/tasks/ui/api');
+ await t.json(`/api/v1/tasks/${task.id}`,{method:'PUT',body:{...taskContent(task),notes:'Updated before removal',revision:task.revision,status:'open'}},200);
+ const plan={review:review.review,opportunities:t.actor,tasks:receiver,handoffs:null};
+ assert.equal((await t.call(`/api/v1/settings/operators/${work.ownerId}`,{method:'DELETE',body:{confirmed:true,handover:plan}})).status,409,'changed work refuses the old review');
+ const refreshed=await t.json<any>(`/api/v1/settings/operators/${work.ownerId}/removal-review`);
+ const leaving=await todayApp(db,{operatorId:work.ownerId});
+ await leaving.json(`/api/v1/records/opportunity/${owned}/entries`,{body:{kind:'note',text:'Preserve the leaving rep’s handover notes',occurredAt:new Date().toISOString()}},200);
+ await t.json(`/api/v1/settings/operators/${work.ownerId}`,{method:'DELETE',body:{confirmed:true,handover:{...plan,review:refreshed.review}}},200);
+ assert.equal((await t.json<any>(`/api/v1/tasks/${task.id}`)).task.ownerId,receiver);
+ const handed=await t.json<any>(`/api/v1/records/opportunity/${owned}`);assert.equal(handed.record.owner_id,t.actor);assert.ok(handed.timeline.some((e:any)=>e.actor_id===work.ownerId&&e.payload_json.includes('handover notes')));
+ assert.equal((await leaving.call('/api/v1/tasks?view=all')).status,401);
+ const notifications=await db.prepare("SELECT count(*) n FROM notifications WHERE operator_id=? AND kind='task.assigned' AND event_key LIKE 'task.handover:%'").bind(receiver).first<{n:number}>();assert.equal(notifications!.n,1);
+
 });
 
 test('BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief',async()=>{

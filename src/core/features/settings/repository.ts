@@ -1,4 +1,5 @@
 import { PipelinesRepository } from '../pipelines/repository';
+import {removeWithHandover,type RemovalChoices} from './removal-handover';
 import { operatorManagementPolicy } from '../../../ext/records';
 import { companyDomainKey } from '../records/identity';
 import { createId } from '../../shared/ids';
@@ -16,8 +17,7 @@ export class SettingsRepository {
   statements.push(audit(this.db,actor,'workspace.updated','workspace','workspace'));try{await this.db.batch(statements);}catch(error){if(String(error).includes('UNIQUE'))throw new RecordError(409,'Changing free-mail domains would create duplicate company keys. Resolve them first.');throw error;}return {updated:true};
  }
  async invite(email:string,name:string,actor:string){if(!operatorManagementPolicy.canInvite({actorId:actor,email,displayName:name}))throw new RecordError(403,'The operator management policy does not permit this invitation.');const id=createId(),now=new Date().toISOString();try{await this.db.batch([this.db.prepare("INSERT INTO operators(id,email,display_name,status,created_at,updated_at) VALUES(?,?,?,'active',?,?)").bind(id,email.toLowerCase(),name,now,now),audit(this.db,actor,'operator.invited','operator',id)]);}catch(error){if(String(error).includes('UNIQUE'))throw new RecordError(409,'An operator already uses this email.');throw error;}return {id};}
- async remove(id:string,actor:string){if(!operatorManagementPolicy.canRemove({actorId:actor,operatorId:id}))throw new RecordError(403,'The operator management policy does not permit this removal.');const operator=await this.db.prepare('SELECT setup_owner FROM operators WHERE id=?').bind(id).first<{setup_owner:number}>();if(!operator)throw new RecordError(404,'Operator not found.');if(operator.setup_owner&&id!==actor)throw new RecordError(409,'Only the setup operator can remove themselves.');const now=new Date().toISOString();const opportunities=(await this.db.prepare("SELECT id FROM opportunities WHERE owner_id=? AND lifecycle='open'").bind(id).all<{id:string}>()).results;
-  await this.db.batch([this.db.prepare("UPDATE operators SET status='removed',updated_at=? WHERE id=?").bind(now,id),this.db.prepare('UPDATE sessions SET revoked_at=? WHERE operator_id=? AND revoked_at IS NULL').bind(now,id),this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure='Operator removed',updated_at=? WHERE operator_id=? AND state='scheduled'").bind(now,id),this.db.prepare("UPDATE opportunities SET owner_id=NULL,updated_at=? WHERE owner_id=? AND lifecycle='open'").bind(now,id),...opportunities.flatMap(o=>[...timeline(this.db,actor,'opportunity',o.id,'owner.changed',{previous:id,current:null,reason:'Operator removed'}),mutationJob(this.db,o.id,actor,'Owner removed')]),audit(this.db,actor,'operator.removed','operator',id)]);return {removed:true};
- }
+ async remove(id:string,actor:string,choices?:RemovalChoices,sessionId?:string){if(!operatorManagementPolicy.canRemove({actorId:actor,operatorId:id}))throw new RecordError(403,'The operator management policy does not permit this removal.');return removeWithHandover(this.db,id,actor,choices,sessionId);}
+
  async stages(stages:{id?:string;name:string}[],actor:string){return new PipelinesRepository(this.db).legacyStages(stages,actor);}
 }

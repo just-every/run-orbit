@@ -1,3 +1,4 @@
+import {taskContactErasure} from '../tasks/privacy';
 import {captureImportErasure,withdrawRelatedImportCopies,eraseImportedContact} from '../imports/erasure';
 import {captureErasureStatements as capturePrivacyErasureStatements} from '../capture/privacy';
 import {retainedEvidenceIdentityMatch,retainedEvidenceIdentityPatterns} from '../capture/privacy-evidence';
@@ -27,6 +28,7 @@ export class DataRepository {
    const aliases=(await db.prepare("SELECT identity_key FROM record_aliases WHERE record_type='contact' AND survivor_id=?").bind(id).all<{identity_key:string}>()).results.map(row=>row.identity_key);
    const identities=[...new Set([record.email,...aliases].filter((value):value is string=>typeof value==='string'&&value.length>0))];
    contactEmails=identities;
+   statements.push(...taskContactErasure(db,id,identities));
    statements.push(...await capturedValueErasureStatements(db,id,identities));
    const match=identities.length?await privacyMatcher(db,statements):undefined;
    if(match)for(const email of identities)for(const token of await match(email))statements.push(suppressionProof(db,token,"EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')",[id]));

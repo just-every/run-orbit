@@ -1,4 +1,4 @@
-import {prePipelineCatalog} from '../pipelines/archive-compatibility';
+import {nativeCatalogGenerations,legacyNativeCatalog} from './archive-generations';
 import { z } from 'zod';
 import { RecordError } from './shared';
 export const ARCHIVE_PART_BYTES = 16777216;
@@ -81,8 +81,8 @@ export async function validateManifest(db: D1Database, input: unknown) {
     const parsed = manifestSchema.safeParse(input);
     if (!parsed.success) throw new RecordError(400, 'Invalid archive manifest.');
     const manifest = parsed.data, catalog = await archiveCatalog(db);
-    const previous=prePipelineCatalog(catalog);
-    const generations = [catalog,previous,previous.filter(t => t.name !== 'mail_provider_conflicts'),
+    const previous=legacyNativeCatalog(catalog);
+    const generations = [...nativeCatalogGenerations(catalog),previous.filter(t => t.name !== 'mail_provider_conflicts'),
         previous.filter(t => !['privacy_matching_contexts', 'mail_provider_conflicts'].includes(t.name)).map(t => t.name === 'contacts' ? { ...t, columns: t.columns.filter(c => c.name !== 'contactability_revision') } : t)];
     const inputCatalog = generations.find(candidate => manifest.tables.length === candidate.length && new Set(manifest.tables.map(t => t.name)).size === candidate.length && candidate.every(table => {
         const supplied = manifest.tables.find(t => t.name === table.name);

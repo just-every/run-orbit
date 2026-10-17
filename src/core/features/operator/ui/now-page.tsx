@@ -1,3 +1,4 @@
+import {SalesTasks} from './sales-tasks';
 import {OnboardingChecklist,readOnboarding} from './onboarding-checklist';
 import { useCallback, useState } from "react";
 import { TodayBrief } from "./today-brief";
@@ -33,6 +34,7 @@ export function NowPage({ initialData }: { initialData?: Awaited<ReturnType<type
     <OperatorShell eyebrow="Today" title="Your brief">
       <a className="today-now-jump" href="#now-queue-title">Skip to your NOW queue <span aria-hidden="true">↓</span></a>
       <TodayBrief />
+      <SalesTasks/>
       <h2 className="today-now-title" id="now-queue-title" tabIndex={-1}>NOW queue</h2>
       {onboarding.error ? <p role="alert">{onboarding.error.message}</p> : <OnboardingChecklist state={onboarding.data}/>}
       <section className="operator-queue" data-testid="now-queue">

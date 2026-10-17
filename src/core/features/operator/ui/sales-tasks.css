@@ -1,0 +1,55 @@
+.sales-tasks { min-width: 0; padding: 24px; scroll-margin-top: 20px; }
+.sales-tasks h2, .sales-tasks h3 { margin: 0; overflow-wrap: anywhere; }
+.sales-tasks p { overflow-wrap: anywhere; }
+.sales-tasks__header, .sales-tasks__toolbar, .sales-task > header, .sales-tasks__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.sales-tasks__header, .sales-task > header { justify-content: space-between; }
+.sales-tasks__header p { margin: 5px 0; }
+.sales-tasks__toolbar { margin-top: 20px; align-items: end; }
+.sales-tasks__views { display: flex; flex-wrap: wrap; gap: 5px; }
+.sales-tasks button { min-height: 44px; max-width: 100%; padding: 8px 12px; border: 1px solid var(--ob-line-strong); border-radius: 8px; font: inherit; cursor: pointer; }
+.sales-tasks button[aria-pressed="true"] { color: var(--operator-paper); background: var(--operator-ink); border-color: var(--operator-ink); }
+.sales-tasks button:disabled { opacity: .6; cursor: wait; }
+.sales-tasks button:focus-visible, .sales-tasks summary:focus-visible, .sales-tasks a:focus-visible { outline: 3px solid var(--operator-orange); outline-offset: 3px; }
+.sales-tasks label { display: grid; gap: 6px; min-width: 0; font-size: .86rem; font-weight: 600; }
+.sales-tasks input, .sales-tasks select, .sales-tasks textarea { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; border: 1px solid var(--ob-line-strong); border-radius: 8px; padding: 9px 11px; color: var(--operator-ink); background: var(--operator-paper); font: inherit; }
+.sales-tasks textarea { resize: vertical; }
+.sales-tasks input:focus, .sales-tasks select:focus, .sales-tasks textarea:focus { outline: 2px solid var(--operator-orange); outline-offset: 2px; }
+.sales-tasks__hint { font-size: .82rem; line-height: 1.5; }
+.sales-tasks__body { margin-top: 20px; }
+.sales-tasks__body--calendar { display: grid; grid-template-columns: minmax(250px, 290px) minmax(0, 1fr); gap: 20px; align-items: start; }
+.sales-tasks__list { display: grid; gap: 14px; min-width: 0; }
+.sales-task { min-width: 0; padding: 18px; border: 1px solid var(--ob-line); border-radius: 12px; scroll-margin-top: 20px; }
+.sales-task--highlighted { border-color: var(--operator-orange); box-shadow: 0 0 0 2px var(--operator-orange); }
+.sales-task > header > div { flex: 1; min-width: 150px; }
+.sales-task h3 { font-size: 1.08rem; line-height: 1.4; }
+.sales-task__tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 8px; font-size: .75rem; }
+.sales-task__tags span { padding: 3px 7px; border: 1px solid var(--ob-line); border-radius: 5px; }
+.sales-task__tags [data-priority="high"], .sales-task__tags [data-priority="urgent"] { border-color: var(--operator-orange); font-weight: 700; }
+.sales-task__overdue { font-weight: 700; }
+.sales-task__notes { white-space: pre-wrap; }
+.sales-task details { margin-top: 16px; }
+.sales-task summary { padding: 9px 0; min-height: 24px; cursor: pointer; font-weight: 600; }
+.sales-task__history { display: grid; gap: 14px; padding-left: 22px; font-size: .86rem; }
+.sales-task__history p { margin: 4px 0; }
+.sales-tasks__linked { margin: 20px 0; }
+.sales-task-form { display: grid; gap: 16px; margin: 20px 0; padding: 20px; border: 1px solid var(--ob-line-strong); border-radius: 12px; }
+.sales-task-form fieldset { display: grid; gap: 14px; border: 0; margin: 0; padding: 0; min-width: 0; }
+.sales-tasks__fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.sales-tasks .sales-tasks__check { display: flex; flex-direction: row; align-items: center; gap: 10px; }
+.sales-tasks__check input { flex: 0 0 22px; min-height: 22px; width: 22px; }
+.sales-task-calendar { min-width: 0; padding: 12px; border: 1px solid var(--ob-line); border-radius: 12px; }
+.sales-task-calendar header { display: flex; justify-content: space-between; gap: 6px; align-items: center; margin-bottom: 10px; }
+.sales-task-calendar__grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; text-align: center; }
+.sales-task-calendar__grid > span { padding: 5px 0; font-size: .75rem; }
+.sales-task-calendar__grid button { padding: 7px 0; border-color: transparent; font-size: .85rem; }
+.sales-task-calendar label { margin-top: 12px; }
+@media (max-width: 760px) {
+ .sales-tasks { padding: 16px; }
+ .sales-tasks__body--calendar { grid-template-columns: minmax(0, 1fr); }
+ .sales-task-calendar { max-width: 360px; width: 100%; box-sizing: border-box; }
+ .sales-tasks__fields { grid-template-columns: minmax(0, 1fr); }
+ .sales-tasks__toolbar > label { width: 100%; }
+ .sales-task-form { padding: 14px; }
+ .sales-task { padding: 14px; }
+ .sales-tasks__header > button { margin-top: 5px; }
+}
