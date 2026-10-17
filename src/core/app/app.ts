@@ -18,7 +18,7 @@ import {createSettingsRoutes} from "../features/settings/routes";
 import { createSetupRoutes } from "../features/setup/routes";
 import {createSignalIngress,createSourceRoutes} from "../features/ingestion/routes";
 import type {SourceSecurity} from "../platform/source-security";
-import type { OutboundMail } from "../platform/outbound-mail";
+import type { CustomerMailStatus, OutboundMail } from "../platform/outbound-mail";
 import { createWorkbenchRoutes } from "../features/workbench/routes";
 import { Hono, type MiddlewareHandler } from "hono";
 import {runRequestTimers} from '../features/outreach/scheduler';
@@ -39,7 +39,7 @@ type AppEnvironment = {
   Variables: { operator: AuthenticatedOperator };
 };
 
-export function createApp(input: { assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
+export function createApp(input: { assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
   const app = new Hono<AppEnvironment>();
   const dependencies = createDependencies(input.database);
   const requireApiOperator: MiddlewareHandler<AppEnvironment> = async (context, next) => {
@@ -136,7 +136,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
   app.route("/api/v1/notifications", createNotificationRoutes(input.database));
   app.route("/api/v1/assistance", createAssistanceRoutes(input.database,input.aiProvider));
   app.route("/api/v1/today", createTodayRoutes(input.database,input.aiProvider));
-  app.route("/api/v1/workbench", createWorkbenchRoutes(input.database, input.outboundMail,Boolean(input.aiProvider),input.hosted,input.mailEventKeys??{},input.captureOrigin));
+  app.route("/api/v1/workbench", createWorkbenchRoutes(input.database, input.outboundMail,Boolean(input.aiProvider),input.hosted,input.mailEventKeys??{},input.captureOrigin,input.mailSettings));
   app.route("/api/v1/opportunities", dependencies.opportunityRoutes);
   app.route("/api/v1/drafts", createDraftRoutes(dependencies.drafts));
   app.route("/api/v1/workspace", dependencies.workspaceRoutes);

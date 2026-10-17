@@ -37,6 +37,7 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access', { 
   const page = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
   await page.goto(openLink(ready));
   await page.waitForURL((url) => url.pathname === '/setup');
+  await page.getByLabel('Your name').fill('Indra Identity');
   await page.getByLabel('Business name').fill('Identity journey');
   await page.getByRole('button', { name: 'Finish setup' }).click();
   await page.waitForURL(`${origin}/app`);

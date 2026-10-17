@@ -1,7 +1,7 @@
 import {archiveOperatorAccess,previewArchive,type ArchivePreview} from './archive-preview';
 import {useOperatorDialog} from './operator-dialog';
 import {useEffect,useRef,useState} from 'react';
-import {abortArchive,archiveUrl,prepareArchive,restoreArchive,unfinishedTransfers,type ArchiveStatus} from './archive-transfer';
+import {abortArchive,archiveUrl,prepareArchive,restoreArchive,transferStatus,unfinishedTransfers,type ArchiveStatus} from './archive-transfer';
 import './workspace-archive.css';
 export function WorkspaceArchiveTools(){
  const {ask,dialog}=useOperatorDialog();
@@ -13,10 +13,14 @@ export function WorkspaceArchiveTools(){
  const [preview,setPreview]=useState<ArchivePreview>(),[checking,setChecking]=useState(false);
  const stop=useRef(false);
  useEffect(()=>{let active=true;setPreview(undefined);setConfirmed(false);if(file){setChecking(true);setFailure({kind:'',text:''});void previewArchive(file).then(value=>{if(active)setPreview(value);},reason=>{if(active)setFailure({kind:'import',text:reason instanceof Error?reason.message:'Archive could not be checked.'});}).finally(()=>{if(active)setChecking(false);});}else setChecking(false);return()=>{active=false;};},[file]);
- useEffect(()=>{try{setExportId(sessionStorage.getItem('orbit:archive:export')??'');setImportId(sessionStorage.getItem('orbit:archive:import')??'');}catch{setError('This browser cannot remember transfer IDs. Copy the displayed ID before leaving.');}},[]);
+ useEffect(()=>{let active=true;try{setExportId(sessionStorage.getItem('orbit:archive:export')??'');const remembered=sessionStorage.getItem('orbit:archive:import')??'';setImportId(remembered);
+  // A finished or rolled-back restore leaves nothing to resume or cancel, so the panel starts fresh.
+  if(remembered)void transferStatus('imports',remembered).then(status=>{if(!active)return;if(!status||finished(status.state)){forget('import');setImportId('');}else setImportState(status);},()=>{});
+ }catch{setError('This browser cannot remember transfer IDs. Copy the displayed ID before leaving.');}return()=>{active=false;};},[]);
  const remember=(kind:string,id:string)=>{try{sessionStorage.setItem(`orbit:archive:${kind}`,id);}catch{setError('Copy the transfer ID before leaving; browser storage is unavailable.');}};
+ const forget=(kind:string)=>{try{sessionStorage.removeItem(`orbit:archive:${kind}`);}catch{/* nothing was remembered */}};
  const updateExport=(status:ArchiveStatus)=>{setExportState(status);setExportId(status.id);remember('export',status.id);};
- const updateImport=(status:ArchiveStatus)=>{setImportState(status);setImportId(status.id);remember('import',status.id);};
+ const updateImport=(status:ArchiveStatus)=>{setImportState(status);setImportId(status.id);if(finished(status.state))forget('import');else remember('import',status.id);};
  /** A failure is shown beside the button that caused it. */
  const setError=(text:string)=>setFailure({kind:'',text});
  const failure=(kinds:string[])=>error.text&&kinds.includes(error.kind)?<p role="alert">{error.text}</p>:null;
@@ -46,7 +50,7 @@ export function WorkspaceArchiveTools(){
    <ArchiveProgress status={importState} validated={validated}/>
    <div className="workspace-archive__actions"><button disabled={!!busy||!file||!preview||checking||!confirmed||importState?.state==='complete'} onClick={()=>{if(file)void run('import',()=>restoreArchive(file,importId,updateImport,setValidated,()=>stop.current));}}>{importState?.state==='complete'?'Restore complete':importId?'Resume restore':'Start restore'}</button>
    {busy==='import'&&<button onClick={()=>{stop.current=true;setPaused(true);}}>Pause after current part</button>}
-   {importId&&!['complete','aborted'].includes(importState?.state??'')&&<button disabled={!!busy} onClick={async()=>{if(await ask({title:'Cancel and roll back',description:'Cancel this restore and roll back any changes before releasing the workspace?',confirmLabel:'Cancel and roll back'})!==null)void run('cancel',()=>abortArchive('imports',importId,updateImport),'import');}}>Cancel and roll back</button>}</div>
+   {importId&&importState&&!finished(importState.state)&&<button disabled={!!busy} onClick={async()=>{if(await ask({title:'Cancel and roll back',description:'Cancel this restore and roll back any changes before releasing the workspace?',confirmLabel:'Cancel and roll back'})!==null)void run('cancel',()=>abortArchive('imports',importId,updateImport),'import');}}>Cancel and roll back</button>}</div>
    {failure(['import'])}
    {busy==='cancel'&&<p role="status">Waiting for the server to complete cancellation or rollback. The workspace stays protected until confirmed.</p>}
    {importState?.state==='restoring'&&<p role="status">Restore is applying bounded batches. Keep going or resume with this transfer ID; the workspace remains protected.</p>}
@@ -56,6 +60,7 @@ export function WorkspaceArchiveTools(){
   {dialog}{paused&&<p role="status">Pausing after the current request. Keep the transfer ID to resume.</p>}{failure([''])}
  </section>;
 }
+const finished=(state:string)=>state==='complete'||state==='aborted';
 function ArchiveProgress({status,validated}:{status?:ArchiveStatus;validated?:number}){
  if(!status)return null;
  return <div aria-live="polite" data-archive-state={status.state}><p className="workspace-archive__state">{status.state==='restoring'?(status.phase==='backup'?'Saving recovery copy':status.phase==='clear'?'Clearing empty workspace':status.phase==='load'?'Restoring archive':status.phase?.startsWith('rollback')?'Rolling back restore':'Restoring'):status.state==='complete'?'Restore complete':status.state}</p><dl className="workspace-archive__metrics">

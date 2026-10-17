@@ -15,13 +15,13 @@ Start it with `npx -y @runeditrun/rer dev just-every/run-orbit`, or run `rer dev
 
 `setup` builds the Worker with `.dev.vars` moved aside, applies `migrations/core` to `.wrangler/state`, starts the built Worker briefly, posts the private `SETUP_TOKEN` to `/auth/bootstrap` to claim the first owner (an existing owner is kept), requests an ordinary sign-in link and stops. The owner's workspace starts with reviewable defaults that the owner confirms at `/setup`; first-run completion is stored in D1 and survives later setups. `dev` serves Vite with the Cloudflare plugin on the saved loopback origin, runs the minute Cron Trigger locally and requests a fresh link before printing `RER_READY`. `preview` serves the fixed production build on the same state.
 
-Sign-in is Base operator-auth over Orbit's own operators and sessions. `dev` opens signed in: `RER_OPEN` trades the checkout's dev key (`.rer/local/dev-key.env`, written by `setup`, replaced by `reset`) for a host-only cookie, and dev sign-in, the `seller` and `collaborator` personas answer 404 without that key, even through a tunnel. Dev sessions, and delegation credentials minted from one, count only behind the key; a deployment never has it. Local mail is suppressed silently; sign-in is one click. The CLI's own sign-in requests carry an HMAC proof keyed by `SESSION_SECRET`, so restarting `dev` never spends the owner's sign-in allowance; a person's requests still do.
+Sign-in is Base operator-auth over Orbit's own operators and sessions. `dev` opens signed in: `RER_OPEN` trades the checkout's dev key (`.rer/local/dev-key.env`, written by `setup`, replaced by `reset`) for a host-only cookie, and dev sign-in, the `seller` and `collaborator` personas answer 404 without that key, even through a tunnel. Dev sessions, and delegation credentials minted from one, count only behind the key; a deployment never has it. Local sign-in mail is never sent; sign-in is one click. Customer mail is real once its SendGrid settings are present. The CLI's own sign-in requests carry an HMAC proof keyed by `SESSION_SECRET`, so restarting `dev` never spends the owner's sign-in allowance; a person's requests still do.
 
 Build output under `dist/` is disposable. Commands refuse a legacy store at `dist/server/.wrangler/state` before building, with exit 4, and never move or delete it: stop any app using it, copy what you need out of `dist/`, then remove it yourself. Settings, state and archive paths must stay inside the checkout without symlinks.
 
 ## Deploy
 
-`rer deploy [--environment NAME]` builds locally, then uses the Base deploy kit against the owner's Cloudflare account:
+`rer deploy [--environment NAME]` builds locally, then uses the Base deploy kit against the owner's Cloudflare account. Stop `rer dev` in the checkout first (`rer dev --stop`); deploy refuses while dev holds the local state.
 
 - Inputs: `CLOUDFLARE_ACCOUNT_ID` and an account API token in `CLOUDFLARE_API_TOKEN` with exactly Account · Workers Scripts · Edit and Account · D1 · Edit; the owner mailbox in `OWNER_EMAIL`. Hosted deployment requires both a verified SendGrid sender in `MAIL_FROM` and its `SENDGRID_API_KEY`. The account needs a workers.dev subdomain. README → [Deploy to your Cloudflare account](README.md#deploy-to-your-cloudflare-account) gives the dashboard pages and steps for each value. Pass them as environment variables or in an owned 0600 file with `--env-file` (the README uses `.dev.vars.deploy`, which git ignores).
 - Optional secrets (`"optional": true` in `deploy.json`), uploaded only when present in the environment; the dry run lists them separately with the feature each turns on: `MAIL_REPLY_TO`, `CAPTURE_MAIL_ADDRESS`, `SENDGRID_UNSUBSCRIBE_GROUP_ID`, `RER_MAIL_RELAY_SECRET`, `SENDGRID_WEBHOOK_PUBLIC_KEY`, `SENDGRID_PARSE_PUBLIC_KEY`, `ORBIT_ENCRYPTION_KEY`, `OPENAI_API_KEY`, `AI_MODEL`, `AI_INPUT_COST_PER_MILLION`, `AI_OUTPUT_COST_PER_MILLION`, `AI_CACHED_INPUT_COST_PER_MILLION`.
@@ -39,7 +39,7 @@ Open the deployed origin's `/signin`, enter an active operator email, follow the
 To remove this checkout's deployment after saving a private backup:
 
 ```sh
-rer deploy --remove --yes
+rer deploy --remove --yes --env-file .dev.vars.deploy
 ```
 
 Add the same `--environment NAME` used to deploy. Preserve `.rer/deploy/<environment>.json`; it identifies the Worker and database created by the kit. Removal deletes the owned hosted resources and their data and reads back that they are gone. It does not remove local data or resources the kit did not create.

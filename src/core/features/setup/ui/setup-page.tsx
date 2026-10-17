@@ -22,16 +22,21 @@ export function SetupPage({ view }: { view: SetupView }) {
     const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
     if (field && detected && storedZone === workspaceDefaults.timezone && field.value === storedZone) field.value = detected;
   }, [storedZone]);
+  const ownerName = view.displayName === 'Owner' ? '' : view.displayName;
   const name = view.workspace?.name && view.workspace.name !== workspaceDefaults.name ? view.workspace.name : '';
   const signOut = <form method="post" action="/auth/signout"><button className="ob-auth-signout">Sign out</button></form>;
   return <AuthFrame layout="bar" action={signOut}>
     <p className="ob-auth-eyebrow">First-run setup</p>
     <h1>Set up your workspace.</h1>
     {view.owner ? <>
-      <p className="ob-auth-lead">Welcome, {view.displayName}. Confirm how Orbit presents your business. You can change these later in Settings.</p>
+      <p className="ob-auth-lead">Welcome{ownerName ? `, ${ownerName}` : ''}. Tell Orbit who you are and how to present your business. You can change these later in Settings.</p>
       <form method="post" action="/api/v1/setup" className="ob-auth-form">
+        <label htmlFor="setup-owner-name">Your name</label>
+        <input id="setup-owner-name" name="ownerName" required maxLength={200} autoComplete="name" defaultValue={ownerName} aria-describedby="setup-owner-name-help" />
+        <p id="setup-owner-name-help" className="ob-auth-help">Shown to your team as the owner of deals and actions.</p>
         <label htmlFor="setup-name">Business name</label>
-        <input id="setup-name" name="name" required maxLength={200} autoComplete="organization" defaultValue={name} />
+        <input id="setup-name" name="name" required maxLength={200} autoComplete="organization" defaultValue={name} aria-describedby="setup-name-help" />
+        <p id="setup-name-help" className="ob-auth-help">Customers see it as the sender name on the mail you approve.</p>
         <label htmlFor="setup-timezone">Time zone</label>
         <input id="setup-timezone" ref={timezone} name="timezone" required maxLength={100} defaultValue={storedZone} aria-describedby="setup-timezone-help" />
         <p id="setup-timezone-help" className="ob-auth-help">An IANA time zone, for example Australia/Brisbane.</p>

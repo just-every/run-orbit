@@ -86,6 +86,7 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
   await page.screenshot({ path: join(process.env.ORBIT_EVIDENCE_DIR ?? checkout.root, 'setup-390.png'), fullPage: true });
   await page.goto(`${origin}/app/records`);
   assert.equal(new URL(page.url()).pathname, '/setup', 'unfinished setup holds every app route');
+  await page.fill('#setup-owner-name', 'Harper Lane');
   await page.fill('#setup-name', 'Harbor Revenue');
   await page.fill('#setup-timezone', 'Australia/Brisbane');
   await page.fill('#setup-currency', 'aud');

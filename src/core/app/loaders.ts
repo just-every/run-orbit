@@ -7,6 +7,14 @@ export const requireOperator = createServerFn({ method: "GET" }).handler(async (
   return { operator };
 });
 
+/** The workspace time zone, so every time in the app reads on one labelled clock. */
+export const loadWorkspaceTimeZone = createServerFn({ method: "GET" }).handler(async () => {
+  await requireOperator();
+  const { requestScopedDependencies } = await import("../platform/request.server");
+  const presentation = await (await requestScopedDependencies()).workspace.readPresentation();
+  return presentation?.timezone ?? null;
+});
+
 export const loadNow = createServerFn({ method: "GET" }).handler(async () => {
   await requireOperator();
   const { requestScopedDependencies,archiveRestoring } = await import("../platform/request.server");

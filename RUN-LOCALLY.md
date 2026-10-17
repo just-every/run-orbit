@@ -208,7 +208,7 @@ Real deployment uses the owner-account procedure and its private credentials.
 provider request. The default environment is `production`; select another with
 `--environment NAME`. Hosted deployment requires a verified `MAIL_FROM` and
 `SENDGRID_API_KEY`; the owner signs in through the emailed link. To remove hosted resources after saving a backup,
-run `rer deploy --remove --yes` with that environment and retain its deployment
+run `rer deploy --remove --yes --env-file .dev.vars.deploy` with that environment and retain its deployment
 receipt so the kit can identify its resources. Local validation does not establish provider acceptance,
 hosted health or mail delivery.
 

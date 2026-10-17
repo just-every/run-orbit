@@ -21,20 +21,19 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  await expect(approval).toContainText(subject);
  await expect(approval).toContainText(body);
  // Workspace and recipient use UTC. Choose a future weekday in sending hours;
- // format the input in the browser's zone, just as the labelled field requires.
+ // the field reads workspace time, as its label says.
  const requested=new Date(Date.now()+86400000);requested.setUTCHours(10,0,0,0);
  while([0,6].includes(requested.getUTCDay()))requested.setUTCDate(requested.getUTCDate()+1);
  const requestedAt=requested.toISOString();
- const localInput=await page.evaluate(iso=>{const date=new Date(iso);return new Date(date.getTime()-date.getTimezoneOffset()*60000).toISOString().slice(0,16);},requestedAt);
- await approval.getByLabel(/Schedule for later/).fill(localInput);
+ await approval.getByLabel(/Schedule for later/).fill(requestedAt.slice(0,16));
  const previewResponse=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/workbench/drafts/${draft.id}/approval-preview`);
  await approval.getByRole('button',{name:'Review schedule for exact revision',exact:true}).click();
  const response=await previewResponse;assert.equal(response.status(),200);
  const preview=await response.json();
  assert.equal(preview.requestedAt,requestedAt);
  assert.equal(preview.scheduledAt,requestedAt,'The permitted requested time is preserved');
- // Orbit shows every date one way, in the browser's time zone: "19 Oct 2026, 10:00 am".
- const displayedTime=await page.evaluate(iso=>new Intl.DateTimeFormat('en-AU',{dateStyle:'medium',timeStyle:'short'}).format(new Date(iso)),preview.scheduledAt);
+ // Orbit shows every date one way, in workspace time and labelled: "19 Oct 2026, 10:00 am (UTC)".
+ const displayedTime=`${new Intl.DateTimeFormat('en-AU',{dateStyle:'medium',timeStyle:'short',timeZone:'UTC'}).format(new Date(preview.scheduledAt))} (UTC)`;
  await expect(approval.getByRole('alert')).toContainText(displayedTime);
  assert.equal((await browserAPI(page,messagesPath)).messages.some(message=>message.draftId===draft.id),false,'Schedule preview does not approve a send');
  await page.screenshot({path:`${evidence}/schedule-approval-preview-${width}.png`,fullPage:true});

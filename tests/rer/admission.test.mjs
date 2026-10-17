@@ -50,7 +50,7 @@ test('admission uses native owner authority, bounds editor framing and preserves
     assert.equal(management.state.requests, 0, 'public pages never contact management');
     const owner = await browser.newPage();
     await owner.goto(open); await owner.waitForURL(url => url.pathname === '/setup');
-    await owner.fill('#setup-name','Admission Test Co');
+    await owner.fill('#setup-owner-name','Avery Admission');await owner.fill('#setup-name','Admission Test Co');
     await owner.getByRole('button',{name:'Finish setup'}).click();
     await owner.waitForURL(origin+'/app');
     assert.deepEqual(await (await fetch(origin+'/setup/state')).json(), {state:'claimed'});

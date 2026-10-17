@@ -30,6 +30,11 @@ export function senderTestRoutes(db:D1Database,mail?:OutboundMail){
    return c.json({error:'SendGrid did not confirm acceptance. Check your mailbox and SendGrid Activity before trying again; this attempt will not be repeated automatically.'},502);
   }
  });
+ // The operator's latest test, while SendGrid accepted it and nobody has said it arrived: a reload keeps "I received" available.
+ app.get('/pending',async c=>{
+  const latest=await db.prepare(`SELECT id,occurred_at AS sentAt,json_extract(details_json,'$.state') AS state FROM audit_entries WHERE actor_id=? AND action='mail.sender_test' AND json_extract(details_json,'$.installation')=${installationId} ORDER BY occurred_at DESC,id DESC LIMIT 1`).bind(c.get('operator').operatorId).first<{id:string;sentAt:string;state:string}>();
+  return c.json({pending:latest?.state==='accepted'?{attemptId:latest.id.slice('sender-test:'.length),sentAt:latest.sentAt,recipient:c.get('operator').email}:null});
+ });
  // Only the operator can say the test arrived: SendGrid's acceptance is not delivery.
  app.post('/received',async c=>{
   const input=z.object({attemptId:z.uuid()}).strict().safeParse(await c.req.json());

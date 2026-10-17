@@ -29,7 +29,7 @@ test('a real account, attributed event and durable reviewed draft can be created
   await page.getByRole('button',{name:'Cancel',exact:true}).click();await page.getByRole('link',{name:'Evidence and outreach',exact:true}).click();
   await page.getByText('Log activity',{exact:true}).click();
   await page.getByRole('combobox',{name:'Event type',exact:true}).selectOption('email.replied');
-  await page.getByLabel('Occurred time',{exact:true}).fill('2026-09-11T12:00');
+  await page.getByLabel(/^Occurred time/).fill('2026-09-11T12:00');
   await page.getByLabel('Evidence subject',{exact:true}).fill('The customer requested a follow-up call.');
   await page.getByRole('button',{name:'Record event',exact:true}).click();
   await expect(page.getByText('Customer event recorded with your operator attribution.')).toBeVisible();

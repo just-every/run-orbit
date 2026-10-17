@@ -1,7 +1,7 @@
 import {useCallback,useEffect,useRef,useState,type FormEvent} from 'react';
 import {useParams} from '@tanstack/react-router';
 import './today.css';
-import {formatCurrency,formatDateTime} from './formatters';
+import {formatCurrency,formatDateTime,workspaceInstant,zoneLabel} from './formatters';
 import {operatorApi,type WorkspacePresentation} from './operator-api';
 import {OperatorShell,OperatorState} from './operator-shell';
 import {useOperatorResource} from './use-operator-resource';
@@ -17,11 +17,11 @@ function NextAction({signalId,line,onAdded}:{signalId:string;line:Cited;onAdded:
  useEffect(()=>{if(open)title.current?.focus();else if(returning.current){returning.current=false;button.current?.focus();}},[open]);
  useEffect(()=>{if(done)added.current?.focus();},[done]);
  async function submit(event:FormEvent<HTMLFormElement>){event.preventDefault();const data=new FormData(event.currentTarget);setBusy(true);setError('');
-  try{const due=String(data.get('dueAt')??'');const result=await todayRequest<{observed:{target:string}}>(`/meetings/${signalId}/actions`,{body:{title:String(data.get('title')),dueAt:due?new Date(due).toISOString():null,evidenceId:line.evidence.id}});const [,opportunity,,handoff]=result.observed.target.split('/');setDone(`/app/opportunities/${opportunity}#handoff-${handoff}`);setOpen(false);onAdded();}
+  try{const due=String(data.get('dueAt')??'');const result=await todayRequest<{observed:{target:string}}>(`/meetings/${signalId}/actions`,{body:{title:String(data.get('title')),dueAt:due?workspaceInstant(due):null,evidenceId:line.evidence.id}});const [,opportunity,,handoff]=result.observed.target.split('/');setDone(`/app/opportunities/${opportunity}#handoff-${handoff}`);setOpen(false);onAdded();}
   catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  if(done)return <a ref={added} className="plan-line__done" href={done}>Next action added</a>;
  if(!open)return <button ref={button} type="button" className="plan-line__action" onClick={()=>setOpen(true)} aria-label={`Make next action from ${line.title}`}>Make next action</button>;
- return <form className="plan-next-action" onSubmit={submit}><label>Next action<input ref={title} name="title" required maxLength={300} defaultValue={line.title}/></label><label>Due (your time, optional)<input name="dueAt" type="datetime-local"/></label><div><button className="operator-button" disabled={busy}>Add next action</button><button type="button" className="operator-text-button" onClick={()=>{returning.current=true;setOpen(false);}}>Cancel</button></div>{error&&<OperatorState kind="error">{error}</OperatorState>}</form>;
+ return <form className="plan-next-action" onSubmit={submit}><label>Next action<input ref={title} name="title" required maxLength={300} defaultValue={line.title}/></label><label>Due ({zoneLabel()}, optional)<input name="dueAt" type="datetime-local"/></label><div><button className="operator-button" disabled={busy}>Add next action</button><button type="button" className="operator-text-button" onClick={()=>{returning.current=true;setOpen(false);}}>Cancel</button></div>{error&&<OperatorState kind="error">{error}</OperatorState>}</form>;
 }
 
 function PlanNotes({plan,signalId,onSaved}:{plan:MeetingPlan;signalId:string;onSaved:()=>void}){

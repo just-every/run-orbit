@@ -23,7 +23,7 @@ test('BASE-PUBLIC-003 T099 operator controls through native rer dev and disposab
   await devSignIn(page,open);
   await t.test('every reachable operator route and expanded data view passes WCAG A/AA without horizontal scrolling',async()=>{
    for(const width of widths)await observeOperator(page,'setup',width,directory,observations);
-   await page.getByLabel('Business name').fill('Operator acceptance');await page.getByRole('button',{name:'Finish setup',exact:true}).click();await page.waitForURL(origin+'/app');
+   await page.getByLabel('Your name').fill('Opal Operator');await page.getByLabel('Business name').fill('Operator acceptance');await page.getByRole('button',{name:'Finish setup',exact:true}).click();await page.waitForURL(origin+'/app');
    fixture=await prepareOperatorFixture(page,browser,origin,await devKey(checkout.root),'operator-owner@example.test');
    const cases=operatorRoutes(fixture);
    for(const width of widths){

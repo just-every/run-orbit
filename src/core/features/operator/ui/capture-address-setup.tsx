@@ -1,6 +1,7 @@
 import { useCallback, useState, type FormEvent } from 'react';
 import { ConsoleLink } from './capture-guide';
 import { CopyField } from './capture-copy-field';
+import { EnvironmentField, useDeployEnvironment } from './deploy-environment';
 import { OperatorState } from './operator-shell';
 import { useOperatorResource } from './use-operator-resource';
 import {formatDate} from './formatters';
@@ -12,14 +13,16 @@ const keeps = 'Orbit keeps a message only when someone in it is already a contac
 
 /** Shown only when the installation has no receiving mailbox: the one-time hosting step, in plain words. */
 function NotConfigured() {
+  const { environment, setEnvironment, name } = useDeployEnvironment();
   return <div className="capture-panel">
     <h2>This Orbit can’t receive mail yet</h2>
     <p>Whoever installed Orbit does this once, in the Cloudflare account Orbit runs on. It needs <strong>a domain of your own that uses Cloudflare</strong>: Orbit’s own <code>workers.dev</code> address cannot receive mail. With a domain, it takes about five minutes:</p>
+    <EnvironmentField id="address-environment-hint" environment={environment} setEnvironment={setEnvironment}/>
     <ol className="capture-plain-steps">
       <li>In Cloudflare, open your domain, then <strong>Email</strong> › <strong>Email Routing</strong>, and turn it on for a spare subdomain such as <code>capture.example.com</code> (your normal mail is not affected).</li>
-      <li>Under <strong>Routing rules</strong>, add the address <code>orbit@capture.example.com</code> with the action <strong>Send to a Worker</strong> and choose <code>sales-orbit-NAME</code>, replacing NAME with the environment name you used with <code>rer deploy --environment NAME</code> (the default is <code>production</code>). Find the exact Worker name in Cloudflare → Workers &amp; Pages or your checkout’s <code>.rer/deploy/NAME.json</code>.</li>
+      <li>Under <strong>Routing rules</strong>, add the address <code>orbit@capture.example.com</code> with the action <strong>Send to a Worker</strong> and choose the Worker <code>sales-orbit-{name}</code>, this Orbit.</li>
       <li>Under <strong>Settings</strong>, turn on <strong>Subaddressing</strong>, so private tags like <code>orbit+abc@…</code> reach the same rule.</li>
-      <li>Run <code>CAPTURE_MAIL_ADDRESS=orbit@capture.example.com rer deploy --env-file .dev.vars.deploy --environment NAME --set-secret CAPTURE_MAIL_ADDRESS</code>, using the same NAME as your deployment, then come back here.</li>
+      <li>In the Orbit folder you deployed from, run this, with your own address in place of <code>orbit@capture.example.com</code>, then come back here:<CopyField label="Set the Orbit address command" value={`CAPTURE_MAIL_ADDRESS=orbit@capture.example.com rer deploy --env-file .dev.vars.deploy --environment ${name} --set-secret CAPTURE_MAIL_ADDRESS`}/></li>
     </ol>
     <p className="capture-panel__aside">Until then, the calendar link and file upload work without it.</p>
   </div>;

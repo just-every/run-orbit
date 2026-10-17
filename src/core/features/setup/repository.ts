@@ -1,7 +1,7 @@
 import { RecordError } from '../records/shared';
 import { SettingsRepository } from '../settings/repository';
 
-export interface SetupInput { name: string; timezone: string; currency: string; stages: string[] }
+export interface SetupInput { ownerName?: string; name: string; timezone: string; currency: string; stages: string[] }
 
 export async function firstRunComplete(db: D1Database): Promise<boolean> {
   return Boolean(await db.prepare("SELECT 1 FROM first_run_setup WHERE id='workspace'").first());
@@ -36,5 +36,8 @@ export async function completeSetup(db: D1Database, operatorId: string, input: S
     const index = unused.findIndex((stage) => stage.name === name);
     return index === -1 ? { name } : { id: unused.splice(index, 1)[0]!.id, name };
   }), operatorId);
+  // The owner's own name replaces the stand-in "Owner" on deals, timelines and the welcome. A name is not
+  // authority, so updated_at (the session authority version) stays and the owner stays signed in.
+  if (input.ownerName) await db.prepare('UPDATE operators SET display_name=? WHERE id=?').bind(input.ownerName, operatorId).run();
   await db.prepare("INSERT OR IGNORE INTO first_run_setup (id, completed_at) VALUES ('workspace', ?)").bind(new Date().toISOString()).run();
 }

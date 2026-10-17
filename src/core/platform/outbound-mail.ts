@@ -7,19 +7,25 @@ export interface OutboundMail {
  messageIdDomain?:string;
 }
 export interface OutreachEnvironment { RER_DEMO?:string; DB?:D1Database; MAIL_FROM?: string; SENDGRID_API_KEY?: string; SENDGRID_UNSUBSCRIBE_GROUP_ID?:string; MAIL_REPLY_TO?:string; SENDGRID_WEBHOOK_PUBLIC_KEY?:string }
+/** The four settings customer mail needs, in the order Settings → Customer mail sender sets them. */
+export const customerMailSettings=['SENDGRID_API_KEY','MAIL_FROM','MAIL_REPLY_TO','SENDGRID_UNSUBSCRIBE_GROUP_ID'] as const;
+export interface CustomerMailStatus {present:number;total:number;missing:string[];problem:string|null}
+/** Which customer-mail settings this installation holds, by name only. Customer mail turns on only when all are present and valid. */
+export function customerMailStatus(env:OutreachEnvironment):CustomerMailStatus{
+ const missing=customerMailSettings.filter(name=>!env[name]?.trim()),group=env.SENDGRID_UNSUBSCRIBE_GROUP_ID?.trim();
+ const problem=group&&!/^[1-9]\d*$/.test(group)?'SENDGRID_UNSUBSCRIBE_GROUP_ID must be the number in SendGrid’s Group ID column.':null;
+ return {present:customerMailSettings.length-missing.length,total:customerMailSettings.length,missing,problem};
+}
+/** Customer mail, or undefined until every setting is present: a partly configured installation keeps running and says what is missing. */
 export function createOutboundMail(env:OutreachEnvironment):OutboundMail|undefined {
  const demo = env.RER_DEMO === '1';
- if(!demo&&!env.SENDGRID_UNSUBSCRIBE_GROUP_ID&&!env.MAIL_REPLY_TO)return undefined;
- const missing=(['SENDGRID_API_KEY','MAIL_FROM','SENDGRID_UNSUBSCRIBE_GROUP_ID','MAIL_REPLY_TO'] as const).filter(name=>!env[name]?.trim());
- if(!demo&&missing.length)throw new Error(`Customer outreach requires ${missing.join(', ')}.`);
- if(!demo&&(!Number.isInteger(Number(env.SENDGRID_UNSUBSCRIBE_GROUP_ID))||Number(env.SENDGRID_UNSUBSCRIBE_GROUP_ID)<=0))throw new Error('SENDGRID_UNSUBSCRIBE_GROUP_ID must be a positive integer.');
+ if(!demo){const status=customerMailStatus(env);if(status.missing.length||status.problem)return undefined;}
  return {
   messageIdDomain:senderDomain(env.MAIL_FROM),
   async send(message){
    if(demo){const result=await sendDevelopment({provider:'development',mode:'development'},{deliveryId:message.idempotency_key??message.id,from:env.MAIL_FROM??'Orbit Demo <demo@demo.invalid>',to:[message.recipient_email],subject:message.subject,text:message.body});return {providerMessageId:result.providerMessageId};}
    const groupId=Number(env.SENDGRID_UNSUBSCRIBE_GROUP_ID);
-   if(!demo&&(!Number.isInteger(groupId)||groupId<=0||!env.MAIL_REPLY_TO))throw new SendGridSendError('rejected','SENDGRID_UNSUBSCRIBE_GROUP_ID and MAIL_REPLY_TO are required before customer outreach.');
-   return sendSendGrid({apiKey:env.SENDGRID_API_KEY!,message:{from:env.MAIL_FROM!,to:[message.recipient_email],subject:message.subject,text:message.body,deliveryId:message.idempotency_key??message.id,replyTo:env.MAIL_REPLY_TO,asmGroupId:groupId,subscriptionTracking:false,customArgs:{rer_product:'orbit'},headers:{'Message-ID':message.message_id??`<${message.id}@${senderDomain(env.MAIL_FROM)}>`,...(message.reference_ids?{'References':message.reference_ids,'In-Reply-To':message.reference_ids}:{})}}});
+   return sendSendGrid({apiKey:env.SENDGRID_API_KEY!,message:{from:await senderWithName(env.MAIL_FROM!,env.DB),to:[message.recipient_email],subject:message.subject,text:message.body,deliveryId:message.idempotency_key??message.id,replyTo:env.MAIL_REPLY_TO,asmGroupId:groupId,subscriptionTracking:false,customArgs:{rer_product:'orbit'},headers:{'Message-ID':message.message_id??`<${message.id}@${senderDomain(env.MAIL_FROM)}>`,...(message.reference_ids?{'References':message.reference_ids,'In-Reply-To':message.reference_ids}:{})}}});
   },
   async lookup(id){
    const url=new URL('https://api.sendgrid.com/v3/messages');url.searchParams.set('limit','10');url.searchParams.set('query',`unique_args['rer_delivery_id']="${id.replace(/["\\]/g,'')}"`);
@@ -30,6 +36,13 @@ export function createOutboundMail(env:OutreachEnvironment):OutboundMail|undefin
    return accepted?.msg_id?{providerMessageId:accepted.msg_id}:undefined;
   }
  };
+}
+/** Customers see the business name from first-run setup beside a bare MAIL_FROM address; a MAIL_FROM that names itself is kept. */
+async function senderWithName(from:string,db?:D1Database){
+ if(from.includes('<')||!db)return from;
+ const row=await db.prepare("SELECT name FROM workspace_settings WHERE id='workspace'").first<{name:string|null}>();
+ const name=row?.name?.replace(/[<>"\\\r\n]/g,'').trim();
+ return name?`"${name}" <${from.trim()}>`:from;
 }
 /** The domain of MAIL_FROM, plain or as `Name <address>`. */
 export function senderDomain(from:string|undefined){return /@([a-z0-9.-]+\.[a-z]{2,})>?\s*$/i.exec(from?.trim()??'')?.[1]?.toLowerCase();}

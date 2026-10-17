@@ -10,7 +10,7 @@ import { OutreachService } from '../outreach/service';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AuthenticatedOperator } from '../identity';
-import type { OutboundMail } from '../../platform/outbound-mail';
+import type { CustomerMailStatus, OutboundMail } from '../../platform/outbound-mail';
 import { submissionOutcome } from '../../platform/outbound-mail';
 import { WorkbenchRepository, WorkbenchError } from './repository';
 import { OutreachRepository } from './outreach-repository';
@@ -18,13 +18,13 @@ import { weights } from './policies';
 import {logUnexpected} from '../../platform/unexpected-error';
 const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 const createSchema=z.object({title:z.string().trim().min(1).max(200),companyName:z.string().trim().min(1).max(200),contactName:z.string().trim().min(1).max(200),email:z.string().trim().email(),stageId:id,valueCents:z.number().int().min(0).max(100000000000)});
-export function createWorkbenchRoutes(database: D1Database, mail?: OutboundMail, aiConfigured=false, hosted=false, mailEvents:DeliveryOutcomeKeys={}, origin='') {
+export function createWorkbenchRoutes(database: D1Database, mail?: OutboundMail, aiConfigured=false, hosted=false, mailEvents:DeliveryOutcomeKeys={}, origin='', mailSettings?:CustomerMailStatus) {
   const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(), repository=new WorkbenchRepository(database), outreach=new OutreachRepository(database);
   app.use('*',async(c,next)=>{const segments=c.req.path.split('/');for(const category of ['opportunities','drafts','recommendations','messages']){const index=segments.indexOf(category);if(index>=0&&segments[index+1]&&!id.safeParse(segments[index+1]).success)return c.json({error:'Invalid record ID.'},400);}await next();});
   app.onError((error,context)=>{if(error instanceof WorkbenchError)return context.json({error:error.message,recordId:error.recordId},error.status);logUnexpected('workbench',error);return context.json({error:'The operation failed; no success was confirmed.'},500);});
   app.route('/sender-test',senderTestRoutes(database,mail));
   app.get('/delivery-outcomes',async c=>c.json(await deliveryOutcomesStatus(database,mailEvents,hosted,origin)));
-  app.get('/onboarding',async c=>c.json(await onboardingState(database,Boolean(mail),aiConfigured)));
+  app.get('/onboarding',async c=>c.json({...await onboardingState(database,Boolean(mail),aiConfigured),mailSettings:mailSettings??null}));
   app.get('/',async context=>context.json({...await repository.inventory(),mailConfigured:Boolean(mail)}));
   app.post('/opportunities',async context=>{
     const input=createSchema.safeParse(await context.req.json());if(!input.success)return context.json({error:'Enter valid company, contact, stage and opportunity details.'},400);

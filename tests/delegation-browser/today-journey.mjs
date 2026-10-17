@@ -72,7 +72,7 @@ export async function todayJourney({first,second,evidence}){
  await page.getByLabel('Agenda').fill('1. Renewal dates\n2. Owners');await page.getByLabel('Prep notes').fill('Bring the usage report');
  await page.getByRole('button',{name:'Save plan as note'}).click();await expect(page.getByText('Plan saved as a note.')).toBeVisible();
  const interaction=page.locator('.plan-line').filter({has:page.getByRole('link',{name:'Pricing request',exact:true})});await interaction.getByRole('button',{name:/Make next action/}).click();await expect(interaction.getByLabel('Next action')).toBeFocused();
- await interaction.getByLabel('Next action').fill('Send the usage report');await interaction.getByLabel('Due (your time, optional)').fill(new Date(Date.now()-86400000-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16));
+ await interaction.getByLabel('Next action').fill('Send the usage report');await interaction.getByLabel(/^Due \(/).fill(new Date(Date.now()-86400000).toISOString().slice(0,16));
  await interaction.getByRole('button',{name:'Add next action'}).click();await expect(page.getByRole('link',{name:'Next action added'})).toBeFocused();
  await page.getByRole('button',{name:'Create contact sam@acme.test'}).click();await expect(page.getByRole('button',{name:'Create contact sam@acme.test'})).toHaveCount(0);await expect(page.getByRole('link',{name:'sam@acme.test'})).toBeVisible();
  await page.getByRole('button',{name:'Sign out'}).click();await page.waitForURL(/signin|\/$/);

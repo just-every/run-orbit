@@ -5,6 +5,7 @@ import { RecordError } from '../records/shared';
 import { completeSetup } from './repository';
 
 const setupInput = z.object({
+  ownerName: z.string().trim().min(1).max(200),
   name: z.string().trim().min(1).max(200),
   timezone: z.string().trim().min(1).max(100),
   currency: z.string().trim().toUpperCase().regex(/^[A-Z]{3}$/),
@@ -20,7 +21,7 @@ export function createSetupRoutes(db: D1Database) {
     const fail = (status: 400 | 403 | 409, error: string) => page ? context.redirect(`/setup?${new URLSearchParams({ error })}`, 303) : context.json({ error }, status);
     const body = context.req.header('Content-Type')?.includes('application/json') ? await context.req.json() : await context.req.parseBody();
     const parsed = setupInput.safeParse(body);
-    if (!parsed.success) return fail(400, 'Enter a business name, time zone, three-letter currency and at least one pipeline stage.');
+    if (!parsed.success) return fail(400, 'Enter your name, a business name, time zone, three-letter currency and at least one pipeline stage.');
     if (new Set(parsed.data.stages).size !== parsed.data.stages.length) return fail(400, 'Use distinct pipeline stage names.');
     try { await completeSetup(db, context.get('operator').operatorId, parsed.data); }
     catch (error) { if (error instanceof RecordError) return fail(error.status === 403 ? 403 : error.status === 409 ? 409 : 400, error.message); throw error; }

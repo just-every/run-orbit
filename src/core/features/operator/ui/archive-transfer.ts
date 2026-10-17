@@ -41,6 +41,14 @@ export async function abortArchive(kind:'exports'|'imports',id:string,update:(st
  if(status.state!=='aborted')throw new Error(`Archive cancellation is ${status.state}; rollback has not been confirmed complete.`);
 }
 
+/** A remembered transfer's current status; undefined once the server no longer holds it, as after a finished restore. */
+export async function transferStatus(kind:'exports'|'imports',id:string):Promise<ArchiveStatus|undefined>{
+ const response=await fetch(archiveUrl(kind,id),{credentials:'same-origin',redirect:'error'});
+ if(response.status===404){await response.body?.cancel();return undefined;}
+ if(!response.ok)throw await archiveTransferError(response,'browser');
+ return response.json();
+}
+
 export async function unfinishedTransfers(kind:'exports'|'imports'):Promise<ArchiveStatus[]>{
  const response=await fetch(base+'/'+kind,{credentials:'same-origin',redirect:'error'});
  if(!response.ok){await response.body?.cancel();throw new Error('Unfinished transfers could not be read.');}

@@ -54,7 +54,7 @@ To start it again later: `cd run-orbit && rer dev`.
 
 Orbit pins Node **22.20.0** and pnpm **10.12.4** for project commands; `rer` brings both into its own cache and installs the frozen dependencies, so you install neither yourself. `rer dev just-every/run-orbit` clones the current `main`. `dev` installs dependencies, prepares local settings and starts Orbit. On the first launch it prepares the local trial owner (`owner@run-orbit.test`); it keeps that owner, your data and settings on later launches. You can change the owner email in Settings → Installation owner. A later deploy uses that current owner unless you explicitly supply `OWNER_EMAIL`. To use your real mailbox from the start, run `npx -y @runeditrun/rer install just-every/run-orbit`, then `rer setup --owner-email EMAIL` from the checkout, before `rer dev`.
 
-Once `/health` answers, `dev` prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN`. Open the `RER_OPEN` link on this computer: Orbit opens signed in as you. Its fragment carries this checkout's private dev key, so never share it. The product name reads Orbit Dev. Use `rer dev --as seller` or `--as collaborator` to choose a persona. No email is sent locally. Stop it with `rer dev --stop`, including when the launch command has returned to your prompt.
+Once `/health` answers, `dev` prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN`. Open the `RER_OPEN` link on this computer: Orbit opens signed in as you. Its fragment carries this checkout's private dev key, so never share it. The product name reads Orbit Dev. Use `rer dev --as seller` or `--as collaborator` to choose a persona. Local sign-in needs no email: `RER_OPEN` signs you in. Customer mail you approve is real: once you add your own SendGrid settings in Settings → Customer mail sender, it goes to the customer's inbox even from your computer. Stop it with `rer dev --stop`, including when the launch command has returned to your prompt.
 
 No owner JSON file is needed: the owner email flag and first-run form supply the installation details.
 
@@ -108,9 +108,10 @@ MAIL_FROM=you@example.com
 SENDGRID_API_KEY=SG.your-key
 ```
 
-Save it, then make it readable only by you and deploy. Git already ignores files named `.dev.vars*`, so it is never committed.
+Save it, then make it readable only by you and deploy. Git already ignores files named `.dev.vars*`, so it is never committed. Stop `rer dev` first if it is running in this folder (`rer dev --stop`): deploy refuses while dev holds the local state.
 
 ```sh
+rer dev --stop
 chmod 600 .dev.vars.deploy
 rer deploy --dry-run --env-file .dev.vars.deploy
 rer deploy --env-file .dev.vars.deploy
@@ -122,13 +123,13 @@ The dry run builds and checks everything without contacting Cloudflare, lists an
 
 For hosted sign-in, open your deployed origin's `/signin`, enter your active operator email, open the emailed link and press **Confirm**. Once signed in, change the owner email in Settings → Installation owner. Local `RER_OPEN` dev credentials cannot sign in to a hosted installation. If mail does not arrive, check the address is active in Settings → Installation owner, the sender is verified and both hosted mail secrets are configured. Restore keeps current hosted full operators, including the active owner, and imports new archived operators as ordinary operators. The archive's own owner, the local trial owner and local dev personas (`@dev.localhost`) are restored without access when this installation already has a different owner, so their past actions keep their names. Source signing secrets are excluded; open Sources and choose Reconnect source to create a new secret for each tool. Restore revokes sessions; sign in again with the hosted owner's mailbox.
 
-To remove a deployment you created with this checkout:
+To remove a deployment you created with this checkout, pass the same private file so `rer` can reach your Cloudflare account:
 
 ```sh
-rer deploy --remove --yes
+rer deploy --remove --yes --env-file .dev.vars.deploy
 ```
 
-Use the same `--environment NAME` as deployment if you chose one. Keep `.rer/deploy/<environment>.json`: RER uses it to identify the resources it created and confirms their removal. Export a private backup first; removing the deployment deletes its hosted data.
+Add the same `--environment NAME` as deployment if you chose one. Keep `.rer/deploy/<environment>.json`: RER uses it to identify the resources it created and confirms their removal. Export a private backup first; removing the deployment deletes its hosted data.
 
 Managed Configure reads `rer-setup.json` and `management/integration/deployment-spec.json` directly from this repository. After changing deployment inputs or migrations, run `rer build` then `pnpm run deployment:spec`. Verify fails on drift against the emitted build. Managed owner claims use RER’s signed confirmation with a hidden generated setup token; direct deploy claims through `POST /auth/bootstrap`.
 

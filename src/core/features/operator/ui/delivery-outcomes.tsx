@@ -1,7 +1,7 @@
 import './capture-setup.css';
 import {useCallback,useState} from 'react';
 import {CopyField} from './capture-copy-field';
-import {deployedEnvironment} from './mail-sender-setup';
+import {EnvironmentField,useDeployEnvironment} from './deploy-environment';
 import {formatDate} from './formatters';
 import {useOperatorResource} from './use-operator-resource';
 import {workbenchRequest} from './workbench-api';
@@ -24,9 +24,8 @@ function summary(status:Status){
 /** Settings → Delivery outcomes: connect SendGrid's Event Webhook so bounces and drops reach each message. */
 export function DeliveryOutcomes(){
  const resource=useOperatorResource('delivery-outcomes',useCallback(readStatus,[]));
- const [key,setKey]=useState(''),[environment,setEnvironment]=useState(()=>typeof window==='undefined'?'production':deployedEnvironment(window.location.hostname));
+ const [key,setKey]=useState(''),{environment,setEnvironment,name}=useDeployEnvironment();
  const status=resource.data,trimmed=key.replace(/\s+/g,'');
- const name=/^[a-z0-9-]+$/.test(environment)?environment:'NAME';
  return <section id="delivery-outcomes" className="operator-surface workbench-form"><h2>Delivery outcomes</h2>
   {resource.error?<p role="alert">{resource.error.message}</p>:status?<>
    <p data-testid="delivery-outcomes-status"><strong>{status.connected?'Connected':'Not connected'}.</strong> {summary(status)}</p>
@@ -40,10 +39,12 @@ export function DeliveryOutcomes(){
    </ol>
    {status.hosted?<><label>SendGrid verification key<textarea rows={3} autoComplete="off" spellCheck={false} value={key} onChange={e=>setKey(e.target.value)} placeholder="MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE…"/></label>
    {trimmed&&!verificationKey.test(trimmed)?<p role="alert">That does not look like a SendGrid verification key. Copy the whole key shown under Signature Verification; it starts with MFkw and is about 124 characters long.</p>:null}
-    <label>Deployment environment name<input value={environment} onChange={e=>setEnvironment(e.target.value)} aria-describedby="outcomes-environment-hint"/></label>
-    <p id="outcomes-environment-hint">The name you gave <code>rer deploy --environment</code>; <code>production</code> if you gave none. Orbit fills it in from this address when it can.</p>
+    <EnvironmentField id="outcomes-environment-hint" environment={environment} setEnvironment={setEnvironment}/>
     {verificationKey.test(trimmed)?<CopyField label="Connect delivery outcomes command" value={`SENDGRID_WEBHOOK_PUBLIC_KEY='${trimmed}' rer deploy --env-file .dev.vars.deploy --environment ${name} --set-secret SENDGRID_WEBHOOK_PUBLIC_KEY`}/>:<p>Paste the verification key above to reveal the exact command.</p>}
    </>:null}
+   {status.connected?null:<><h3>If SendGrid says you have reached the maximum number of webhooks</h3>
+   <p>Your SendGrid plan allows only a few Event Webhooks, and other apps already use them. Orbit cannot connect delivery outcomes on this account until a slot is free. Do not change or reuse another app’s webhook: that app would stop receiving its events. You can:</p>
+   <ul className="capture-plain-steps"><li>delete an Event Webhook you no longer use, or upgrade your SendGrid plan, then start again at step 1; or</li><li>carry on without delivery outcomes. Orbit still sends your approved mail. Each sent message keeps saying “accepted by SendGrid · delivery not tracked”, because Orbit cannot see whether it was delivered, bounced or dropped. To check a message, search for the recipient in <a href="https://app.sendgrid.com/email_activity" target="_blank" rel="noreferrer">SendGrid → Activity</a>.</li></ul></>}
   </>:<p>Checking delivery outcomes…</p>}
   <button type="button" onClick={resource.reload}>Check connection</button>
  </section>;
