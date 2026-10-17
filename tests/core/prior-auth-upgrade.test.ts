@@ -76,6 +76,15 @@ test('AUTH-5 prior-data upgrade keeps operator ids, access rows, invitations, gr
         return { status: response.status, body };
       };
 
+      // The workbench now advertises the installed pipeline and each stage's policy.
+      // Extend the recorded public shape while keeping every prior access answer exact.
+      const defaultPipeline=await db.prepare('SELECT id,name,is_default FROM pipelines WHERE is_default=1').first<{id:string;name:string;is_default:number}>();
+      assert.ok(defaultPipeline);
+      for(const name of Object.keys(recorded)){const answer=recorded[name];if(name.endsWith(':workbench')&&answer.status===200){
+        answer.body.pipelines=[defaultPipeline];
+        answer.body.stages=answer.body.stages.map((stage:Record<string,unknown>)=>({...stage,pipeline_id:defaultPipeline.id,pipelineName:defaultPipeline.name,probability:0,required_fields:[],stale_interval_days:null}));
+      }}
+
       // Old sessions still work, with the same access answers as on the old code.
       for (const probe of probes(capture)) assert.deepEqual(normal(await ask(probe)), normal(recorded[probe.name]), `${probe.name} with the prior session`);
 

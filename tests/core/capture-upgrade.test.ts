@@ -42,7 +42,13 @@ test('CAPTURE-007 the capture migration upgrades a store from the previous main 
     for (const table of Object.keys(before)) assert.deepEqual(after[table], before[table], `${table} keeps every prior row unchanged`);
     const addedTables = Object.keys(after).filter(table => !Object.hasOwn(before, table));
     assert.ok(addedTables.length > 0, 'the prior installation gains capture storage');
-    for (const table of addedTables) assert.deepEqual(after[table], [], `${table} starts empty`);
+    // Pipeline migration deliberately backfills metadata for every existing stage.
+    // All other new feature storage must still start empty.
+    for (const table of addedTables.filter(name=>!['pipelines','pipeline_stage_rules'].includes(name))) assert.deepEqual(after[table], [], `${table} starts empty`);
+    const pipelines=after.pipelines!.map(row=>JSON.parse(row)),rules=after.pipeline_stage_rules!.map(row=>JSON.parse(row));
+    assert.equal(pipelines.length,1);assert.equal(pipelines[0].is_default,1);
+    assert.deepEqual(rules.map(row=>row.stage_id).sort(),before.pipeline_stages!.map(row=>JSON.parse(row).id).sort());
+    assert.ok(rules.every(row=>row.pipeline_id===pipelines[0].id));
 
     // The upgraded store captures: a reply from the prior contact stops the prior scheduled send.
     const platform = await getPlatformProxy<{ DB: D1Database }>({ configPath: 'wrangler.jsonc', envFiles: ['tests/support/no-local-settings.env'], persist: { path: join(directory, 'v3') }, remoteBindings: false });

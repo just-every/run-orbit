@@ -2711,7 +2711,7 @@
       "executable": false
     },
     "scripts/installer/portability-policy.mjs": {
-      "sha256": "27fb4d03ef9580e3820381f652c6755825438856c92bcee379052ffbcd24b432",
+      "sha256": "0cd026734a507fa37d9ff592b2a0619c15c4d47c81c4b0e32f32a2f174008eaf",
       "executable": false
     },
     "scripts/installer/portability.mjs": {
@@ -6163,7 +6163,7 @@
       "executable": false
     },
     "tests/core/capture-upgrade.test.ts": {
-      "sha256": "eb875d3c4b98fc98f6ec43dce1a697ad8b0554e8d8eb6789b80ab5d93af1096c",
+      "sha256": "c0162965b163f6b5e14b6318adf7b01f787855272ca3a4c67aa8f7a0e62685e1",
       "executable": false
     },
     "tests/core/contact-erasure.test.ts": {
@@ -6243,7 +6243,7 @@
       "executable": false
     },
     "tests/core/prior-auth-upgrade.test.ts": {
-      "sha256": "06c17c943190146abb8087163f478a8596b6ddec4a2232e6114874f5f029211a",
+      "sha256": "b7e7c64be7e2ba2b224e85729c413243f546cdec9ab4cb8d74ca1ed5def16ae2",
       "executable": false
     },
     "tests/core/provider-redirects.test.ts": {
