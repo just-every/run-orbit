@@ -663,7 +663,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "b563e4f2e01dfff5e1ccfde50aa6e309dfff6f5f5c6bf592837b5d3aef063240",
+      "sha256": "54d84cec934e93ecacac8fcdbb8dbc3346c03549d7b53a337467d1340774c06d",
       "executable": false
     },
     "BASELINE.md": {
@@ -967,7 +967,7 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "771433436330ab747493e2684ea0159905f32d9e4b8a6def989caa5a5a3117c7",
+      "sha256": "e9c3f883f1305a789a9df27b637967131ab7754c8af1835e03d6b38de8639d55",
       "executable": false
     },
     "LICENSE": {
@@ -2375,15 +2375,15 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "82e9c274783567976510b6685c290ccbf144bb97e6141e9701b7f29f63084ce4",
+      "sha256": "c60eb0fcf635039713b759ec11ee3f8766f0aa271b4746f96d951521d2b1106d",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
       "sha256": "29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b",
       "executable": false
     },
-    "patches/rer-0.2.36.patch": {
-      "sha256": "120246145b29e90846c385abae43a011e28cdeee011d220c36e6ec871e74446a",
+    "patches/rer-0.2.40.patch": {
+      "sha256": "d23819474db0f797417d9eddca1545c96df58fa53089354c44bb5009482dc4db",
       "executable": false
     },
     "patches/wrangler-4.129.1.patch": {
@@ -2395,7 +2395,7 @@
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "a33df25d6ee971bcdf86fdd37b991068e04f665f13a4e72b5373de8d602bc978",
+      "sha256": "3d9ae68fb86f5453e1f8ccd867baf40d3c220557142297a79efd4f7cbfd991c7",
       "executable": false
     },
     "pnpm-workspace.yaml": {
@@ -2854,6 +2854,18 @@
       "sha256": "9959499a056fed2c6147c1e98a1dc12be61f6df90fcf2da1ec02ab19acd2c878",
       "executable": false
     },
+    "src/base/contract-filter.ts": {
+      "sha256": "eec5be7da15653b69dd343fb3cf9f7a2e695eb215c5ee118f3508090e9c29232",
+      "executable": false
+    },
+    "src/base/contract-page.ts": {
+      "sha256": "8fff886df5869401818c0a3422a9a9cb73f3f1c4cb100d46f2a315176102b64f",
+      "executable": false
+    },
+    "src/base/contract-style.ts": {
+      "sha256": "41afdf1cb60983b340283b13e414102387eb2a4af022d730220050a4384d0753",
+      "executable": false
+    },
     "src/base/deployment-health.ts": {
       "sha256": "49f4dac80429ea7d9477b40799a6242f9af4870f3229df70d0ac1f635476b8b7",
       "executable": false
@@ -3187,7 +3199,15 @@
       "executable": false
     },
     "src/base/run-site.ts": {
-      "sha256": "53b3f379b9b35c7736ab7f62e36b2687c61ce135bfc0f3b7fc77f752092bc081",
+      "sha256": "608a6b61630ee1cddfa4bd797f2b6c1880ab699b89c82e37bba18f4690b5ca01",
+      "executable": false
+    },
+    "src/base/seed-contract.d.mts": {
+      "sha256": "2add6b0252ab6cb78051c7c5c2754daaebada6d7bea411df85eb8b0cb8a0ce09",
+      "executable": false
+    },
+    "src/base/seed-contract.mjs": {
+      "sha256": "fe40fa189caf33b7531b6d02e31616275f324d5727b9b0db7ddf35998712dd7c",
       "executable": false
     },
     "src/base/sendgrid-event-relay/crypto.ts": {
@@ -4479,7 +4499,7 @@
       "executable": false
     },
     "src/core/features/public/docs/DocsSidebar.tsx": {
-      "sha256": "c78447dd5611c71ba6a95352f1bb410e9b1f20243893b49e4b35ee6aa3c9fe74",
+      "sha256": "64d424238a9f98cf7e01ef454e5f440d97a1dba6af7c8bf6f0bdb26785cb8949",
       "executable": false
     },
     "src/core/features/public/docs/DocsToc.tsx": {
@@ -4535,7 +4555,7 @@
       "executable": false
     },
     "src/core/features/public/ui/brand/links.ts": {
-      "sha256": "2989dc4ecc47137e7ba31139147508e9eec85d0c135ed4dfb224310371f9b4cc",
+      "sha256": "5c58969a18a9b4bf5b6e87a0d2ce8565a4d38e7f82a8859865d6ecaf78d44675",
       "executable": false
     },
     "src/core/features/public/ui/brand/OrbitMark.tsx": {
@@ -4663,7 +4683,7 @@
       "executable": false
     },
     "src/core/features/public/ui/home/SiteFooter.tsx": {
-      "sha256": "189c25ea253f87ba79221b34856b59ddb9ddf33a667e19d5e94f252821e680b8",
+      "sha256": "4ba4c89b6e5ac0659446e3e4dd04503b131efd89132d05a932826243382ee7f6",
       "executable": false
     },
     "src/core/features/public/ui/home/SiteHeader.tsx": {
@@ -5983,7 +6003,7 @@
       "executable": false
     },
     "src/site/pages.tsx": {
-      "sha256": "1bc33281a8afda9075a3ef224b5ffa4d7cbab07dc2419231a8106f878e3245bc",
+      "sha256": "6d3d0bb35b956b18e8e1cc1b48cb7f7c137189d09ea806f486795ba756a707e4",
       "executable": false
     },
     "src/site/run.ts": {

@@ -12,6 +12,7 @@ export function SiteFooter({ name, imageUrl, showCredit }: { name: string; image
       <OrbitLockup name={name} imageUrl={imageUrl} />
       <nav aria-label="Footer">
         <Link to="/docs">Docs</Link>
+        {site && <a href={siteLinks.contract}>Contract</a>}
         <a href={siteLinks.source}>Source</a>
         {!site && <a href="/signin">Sign in</a>}
         <a className="ob-footer-licence" href={siteLinks.licence}>MIT licence</a>

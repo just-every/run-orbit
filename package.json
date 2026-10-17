@@ -63,7 +63,7 @@
     "@cloudflare/vite-plugin": "1.54.5",
     "@cloudflare/workers-types": "5.20260908.1",
     "@playwright/test": "1.61.1",
-    "@runeditrun/rer": "0.2.36",
+    "@runeditrun/rer": "0.2.40",
     "@tailwindcss/vite": "4.3.3",
     "@types/node": "22.19.17",
     "@types/react": "19.2.18",
@@ -82,7 +82,7 @@
     "patchedDependencies": {
       "miniflare@5.20260907.0-alpha": "patches/miniflare-5.20260907.0-alpha.patch",
       "wrangler@4.129.1": "patches/wrangler-4.129.1.patch",
-      "@runeditrun/rer@0.2.36": "patches/rer-0.2.36.patch"
+      "@runeditrun/rer@0.2.40": "patches/rer-0.2.40.patch"
     },
     "onlyBuiltDependencies": [
       "esbuild",
