@@ -1,3 +1,5 @@
+import {createOwnershipRoutes} from '../ownership/routes';
+import {requireOwner} from '../ownership/changes';
 import {moveOpportunity} from '../pipelines/movement';
 import { clearContactSuppression } from './suppression';
 import { Hono } from 'hono';
@@ -15,13 +17,14 @@ export function createRecordsRoutes(db:D1Database){const app=new Hono<{Variables
  const recordId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
  app.use('*',async(c,next)=>{const match=/\/(contact|company|opportunity)\/([^/]+)(?:\/entries\/([^/]+))?/.exec(c.req.path);if(match&&!['duplicates','merge'].includes(match[2])){for(const value of [match[2],match[3]].filter(Boolean)){if(!recordId.safeParse(value).success)return c.json({error:'Invalid record ID.'},400);}}await next();});
  app.route('/archive',createArchiveRoutes(db));
+ app.route('/owners',createOwnershipRoutes(db));
  app.post('/contact/:id/clear-do-not-contact',async c=>{
   const input=z.object({confirmed:z.literal(true),email:z.email().nullable(),updatedAt:z.string().min(1),revision:z.number().int().nonnegative()}).strict().safeParse(await c.req.json());
   if(!input.success)return c.json({error:'Review the current contact and confirm clearing do-not-contact.'},400);
   return c.json(await clearContactSuppression(db,c.req.param('id'),c.get('operator').operatorId,input.data));
  });
  for(const kind of ['contact','company','opportunity'] as RecordKind[]){
-  app.get(`/${kind}`,async c=>{const filters=z.object({q:z.string().max(500).optional(),lifecycle:z.enum(['','open','won','lost']).optional(),band:z.enum(['','low','medium','high']).optional(),queue_state:z.enum(['','now','next','none']).optional(),pipeline_id:z.union([recordId,z.literal('')]).optional(),stage_id:z.union([recordId,z.literal('')]).optional(),owner_id:z.union([recordId,z.literal('')]).optional()}).strict().safeParse(c.req.query());if(!filters.success)return c.json({error:'Invalid search or opportunity filters.'},400);return c.json({records:await repo.search(kind,filters.data.q??'',filters.data as Record<string,string>)});});
+  app.get(`/${kind}`,async c=>{const filters=z.object({q:z.string().max(500).optional(),lifecycle:z.enum(['','open','won','lost']).optional(),band:z.enum(['','low','medium','high']).optional(),queue_state:z.enum(['','now','next','none']).optional(),pipeline_id:z.union([recordId,z.literal('')]).optional(),stage_id:z.union([recordId,z.literal('')]).optional(),owner_id:z.union([recordId,z.enum(['','me','unassigned'])]).optional()}).strict().safeParse(c.req.query());if(!filters.success)return c.json({error:'Invalid search or opportunity filters.'},400);const values=filters.data as Record<string,string>;if(values.owner_id==='me')values.owner_id=c.get('operator').operatorId;else if(values.owner_id&&values.owner_id!=='unassigned')await requireOwner(db,values.owner_id);return c.json({records:await repo.search(kind,values.q??'',values)});});
   app.post(`/${kind}`,async c=>c.json(await repo.save(kind,await c.req.json(),c.get('operator').operatorId,undefined,{ordinaryEdit:true}),201));
   if(kind!=='opportunity'){
    app.get(`/${kind}/duplicates`,async c=>c.json({groups:await imports.candidates(kind)}));

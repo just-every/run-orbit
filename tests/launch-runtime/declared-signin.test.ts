@@ -17,7 +17,7 @@ test('the declared owner sign-in opens the emitted email form with an editable l
  try {
   await fixture.close();
   await worker.start();
-  browser = await chromium.launch();
+  browser = await chromium.launch({ headless: true, args: ['--use-mock-keychain', '--password-store=basic'] });
   const context = await browser.newContext({javaScriptEnabled: false});
   const page = await context.newPage();
   const signIn = new URL(spec.surfaces.app.signIn.path, worker.origin);

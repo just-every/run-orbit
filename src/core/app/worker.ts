@@ -1,3 +1,4 @@
+import {ensureOwnershipReconciled} from '../features/ownership/reconcile';
 import {dispatchSalesTaskReminders} from '../features/tasks';
 import { withDemo } from '@runeditrun/rer/modules/demo';
 import { seedDemo, demoOwner } from '../../demo';
@@ -29,9 +30,9 @@ import { publicDemoConfig } from "./mounts/public-config.server";
 import { invitationLanding } from "../features/access/invitation-landing";
 import { collaboratorLanding } from "../features/access/collaborator-home";
 export default withDemo({
-  async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);context.waitUntil(runHostedTimers(bindings.DB,createOutboundMail(bindings)));context.waitUntil(sweepArchiveTrash(bindings.DB));context.waitUntil(dispatchSalesTaskReminders(bindings.DB));const security=createSourceSecurity(bindings);context.waitUntil(pollProviders(bindings.DB,security));if(security)context.waitUntil(pollCalendarLinks(bindings.DB,security));},
+  async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);await ensureOwnershipReconciled(bindings.DB);context.waitUntil(runHostedTimers(bindings.DB,createOutboundMail(bindings)));context.waitUntil(sweepArchiveTrash(bindings.DB));context.waitUntil(dispatchSalesTaskReminders(bindings.DB));const security=createSourceSecurity(bindings);context.waitUntil(pollProviders(bindings.DB,security));if(security)context.waitUntil(pollCalendarLinks(bindings.DB,security));},
   // Cloudflare Email Routing delivers mail for the Orbit address here.
-  async email(message:ForwardableEmailMessage,bindings:PlatformBindings){bindings=runtimeBindings(bindings);await receiveRoutedEmail(message,bindings.DB,{security:createSourceSecurity(bindings),address:bindings.CAPTURE_MAIL_ADDRESS});},
+  async email(message:ForwardableEmailMessage,bindings:PlatformBindings){bindings=runtimeBindings(bindings);await ensureOwnershipReconciled(bindings.DB);await receiveRoutedEmail(message,bindings.DB,{security:createSourceSecurity(bindings),address:bindings.CAPTURE_MAIL_ADDRESS});},
   async fetch(request: Request, bindings: PlatformBindings, executionContext: ExecutionContext) {return protectResponse(await handle(request,runtimeBindings(bindings),executionContext),editorOrigin(bindings),request.method==='GET'&&/^\/p\/[a-z0-9][a-z0-9-]{0,79}$/.test(new URL(request.url).pathname)?await embeddingOrigins(bindings.DB):undefined);}
 }, { seed: seedDemo, owner: demoOwner });
 // rer dev and preview may serve a requested loopback origin; the saved local origin is never rewritten.
@@ -39,6 +40,7 @@ export function runtimeBindings(bindings: PlatformBindings): PlatformBindings {
   return bindings.AUTH_LOCAL === "true" && bindings.RER_DEV_ORIGIN ? { ...bindings, AUTH_ORIGIN: bindings.RER_DEV_ORIGIN } : bindings;
 }
 async function handle(request: Request, bindings: PlatformBindings, executionContext: ExecutionContext) {
+    await ensureOwnershipReconciled(bindings.DB);
     const url = new URL(request.url);
     const path = url.pathname;
     const expectedHost = bindings.AUTH_ORIGIN ? new URL(bindings.AUTH_ORIGIN).host : undefined;

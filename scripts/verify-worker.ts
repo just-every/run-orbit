@@ -39,7 +39,7 @@ async function setTitle(title:string){
  const saved=await fetch(origin+'/api/v1/records/opportunity/'+sampleData.opportunities[0].id,{method:'PUT',headers,body:JSON.stringify(input)});
  assert.equal(saved.status,200,await saved.text());
 }
-const browser=await chromium.launch();
+const browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
 try {
   for(let i=0;i<100;i++){try{if((await fetch(origin+'/health')).ok)break;}catch{}await new Promise(resolve=>setTimeout(resolve,100));if(i===99)throw new Error(output);}
   const first=await fetch(origin+'/app',{headers:{Cookie:cookie(valid.token)}});const html=await first.text();
