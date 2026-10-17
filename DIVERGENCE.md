@@ -48,7 +48,7 @@ under the existing public limit; no new provider or customer outreach is introdu
 
 ## Reviewed CSV move-in
 
-The direct per-record CSV writer is replaced by the reviewed import-kit wizard. Existing native identities are linked without field replacement; changed source bytes or native edits are reported as conflicts. Imported owner names are inert evidence, never operator assignments or invitations. Missing consent is held. Import custody and undo authority stay installation-local; native records and anonymous suppression proofs remain portable. Privacy erasure withdraws uploaded originals and stale reviews.
+The direct per-record CSV writer is replaced by the reviewed import-kit wizard. Existing native identities are linked without field replacement; changed source bytes or native edits are reported as conflicts. Contact/company owner columns map to active full operators by exact email or an explicit saved dry-run choice; unmatched values stay unassigned. Existing native identities keep their owners. Other imported owner values remain historical evidence, and no mapping creates an invitation. Missing consent is held. Import custody and undo authority stay installation-local; native records and anonymous suppression proofs remain portable. Privacy erasure withdraws uploaded originals and stale reviews.
 
 ## Sign-in moved onto Base operator-auth — AUTH-5 (12 Oct 2026)
 

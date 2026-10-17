@@ -1,0 +1,13 @@
+import {createId} from '../../shared/ids';
+import type {OwnerChange} from './changes';
+export async function ownerNotificationStatements(db:D1Database,input:{actorId:string;operationId:string;source?:string;changes:OwnerChange[];batchId?:string}){
+ const actor=await db.prepare('SELECT display_name FROM operators WHERE id=?').bind(input.actorId).first<{display_name:string}>(),groups=new Map<string,OwnerChange[]>(),statements:D1PreparedStatement[]=[];
+ for(const change of input.changes)if(change.ownerId&&change.ownerId!==input.actorId&&change.previousOwnerId!==change.ownerId){const items=groups.get(change.ownerId)??[];items.push(change);groups.set(change.ownerId,items);}
+ for(const [recipient,items] of groups){const id=createId(),now=new Date().toISOString(),key=`owner:${input.operationId}:${recipient}`,assigner=input.source&&input.source!=='Operator'?`${input.source} (${actor?.display_name??'Operator'})`:actor?.display_name??'Operator';
+  statements.push(db.prepare(`INSERT OR IGNORE INTO notifications(id,operator_id,opportunity_id,event_key,kind,message,created_at) SELECT ?,?,NULL,?,'owner.assigned','',? WHERE EXISTS(SELECT 1 FROM operators WHERE id=? AND status='active')${input.batchId?' AND EXISTS(SELECT 1 FROM record_owner_batch_items WHERE batch_id=? AND changed=1)':''}`).bind(id,recipient,key,now,recipient,...input.batchId?[input.batchId]:[]));
+  const links=items.map(item=>({kind:item.kind,id:item.id,name:item.name,previousOwnerId:item.previousOwnerId,previousOwnerName:item.previousOwnerName,href:item.kind==='opportunity'?`/app/opportunities/${item.id}`:`/app/records?kind=${item.kind}&record=${item.id}`}));
+  statements.push(db.prepare(`INSERT OR IGNORE INTO record_owner_notification_links SELECT n.id,json_extract(item.value,'$.kind'),json_extract(item.value,'$.id'),json_extract(item.value,'$.name'),json_extract(item.value,'$.previousOwnerId'),json_extract(item.value,'$.previousOwnerName'),?,json_extract(item.value,'$.href') FROM notifications n,json_each(?) item WHERE n.event_key=? AND n.operator_id=?${input.batchId?" AND EXISTS(SELECT 1 FROM record_owner_batch_items b WHERE b.batch_id=? AND b.record_id=json_extract(item.value,'$.id') AND b.changed=1)":''}`).bind(input.actorId,JSON.stringify(links),key,recipient,...input.batchId?[input.batchId]:[]));
+  statements.push(db.prepare("UPDATE notifications SET message=?||' assigned '||(SELECT group_concat(name||' (previous owner: '||COALESCE(previous_owner_name,'Unassigned')||')',', ') FROM record_owner_notification_links WHERE notification_id=notifications.id) WHERE id=? AND EXISTS(SELECT 1 FROM record_owner_notification_links WHERE notification_id=notifications.id)").bind(assigner,id));
+ }
+ return statements;
+}

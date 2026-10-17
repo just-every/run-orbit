@@ -1,0 +1,22 @@
+.record-owner {border-top:1px solid var(--ob-line);padding-top:18px;display:grid;gap:12px}
+.record-owner h3,.record-owner p {margin:0}
+.record-owner__controls {display:flex;align-items:end;gap:12px;flex-wrap:wrap}
+.record-owner__controls label {flex:1;min-width:180px}
+.record-owner__hint,.owner-review>p {font-size:13px;color:var(--ob-muted)}
+.bulk-record-owners h2 {font-size:19px;margin:0}
+.bulk-record-owners>p {margin:0}
+.owner-review {border-top:1px solid var(--ob-line);padding-top:18px}
+.owner-review ul,.owner-batch-history ul {list-style:none;padding:0;display:grid;gap:12px}
+.owner-review li,.owner-batch-history li {display:grid;gap:6px;padding-block:12px;border-bottom:1px solid var(--ob-line);overflow-wrap:anywhere}
+.owner-batch-history button {justify-self:start}
+.records-workspace .operator-queue-card.record-selectable {display:grid;grid-template-columns:44px minmax(0,1fr);align-items:start}
+.records-workspace .record-selectable>label {display:flex;padding:25px 0 20px 18px;min-height:44px;cursor:pointer}
+.records-workspace .record-selectable input,.records-select-all input {width:18px;min-height:18px;margin:0}
+.records-workspace .record-selectable>button {padding-left:12px}
+.records-select-all {display:flex;gap:10px;align-items:center;font-size:14px}
+.record-owner-badge {display:block;margin-top:7px;color:var(--ob-ink)}
+@media(max-width:700px){.record-owner__controls{align-items:stretch}.record-owner__controls label{flex-basis:100%;min-width:0}.record-owner__controls button{width:100%}.bulk-record-owners{padding:20px}}
+
+.bulk-record-owners--idle {padding:14px 18px;gap:10px;box-shadow:none}
+.bulk-record-owners--idle h2 {font-size:16px}
+.bulk-record-owners--idle>p {font-size:13px}
