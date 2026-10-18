@@ -14,7 +14,7 @@
 .record-editor .operator-surface {border-radius:11px;border-color:var(--ob-ink);box-shadow:0 8px 25px #40321e04;background:var(--ob-card)}
 .record-editor .workbench-form {padding:24px;gap:24px}
 .record-editor .workbench-form h2,.record-editor .workbench-summary h2,.record-editor__history h3 {font:500 15px/1.4 var(--ob-sans);letter-spacing:0;text-transform:none;color:var(--ob-muted)}
-.record-editor .workbench-form input,.record-editor .workbench-form select {padding:9px 11px;min-height:38px;font-size:14px;background:transparent;border-color:var(--ob-line-strong)}
+.record-editor .workbench-form input,.record-editor .workbench-form select {padding:9px 11px;min-height:38px;font-size:14px;background-color:transparent;border-color:var(--ob-line-strong)}
 .record-editor .workbench-form label {font-size:14px;gap:8px}
 .record-editor .workbench-form>p {font-size:13px;line-height:1.5;color:var(--ob-muted);margin-top:-12px}
 .record-editor .workbench-summary {padding:24px}

@@ -3,7 +3,7 @@
 .buying-context__fields{min-width:0;padding:0;border:0;margin:0}
 .buying-context__fields>legend{font-weight:600}
 .buying-context label{display:flex;flex-direction:column;gap:.4rem;font-size:.88rem}
-.buying-context input:not([type=checkbox]):not([type=radio]),.buying-context textarea,.buying-context select{box-sizing:border-box;width:100%;min-width:0;border:1px solid var(--operator-border,#d8dce3);border-radius:.45rem;padding:.65rem;background:var(--operator-surface,#fff);color:inherit;font:inherit}
+.buying-context input:not([type=checkbox]):not([type=radio]),.buying-context textarea,.buying-context select{box-sizing:border-box;width:100%;min-width:0;border:1px solid var(--operator-border,#d8dce3);border-radius:.45rem;padding:.65rem;background-color:var(--operator-surface,#fff);color:inherit;font:inherit}
 .buying-context textarea{resize:vertical}
 .buying-context small{display:block;font-size:.78rem;color:var(--operator-muted,#596575);font-weight:400}
 .buying-context__help,.buying-context__missing{font-size:.85rem;color:var(--operator-muted,#596575)}

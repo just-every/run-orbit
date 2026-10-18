@@ -63,7 +63,7 @@
   border: 1.5px solid var(--ob-line-strong);
   border-radius: 12px;
   color: var(--orbit-ink);
-  background: var(--orbit-paper);
+  background-color: var(--orbit-paper);
   font: inherit;
 }
 

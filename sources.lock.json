@@ -2467,7 +2467,7 @@
       "executable": false
     },
     "public/operator-native.css": {
-      "sha256": "cd776faefac62bfb798030d8eb1dc202acef4b932e139ee203ddb55e0bf78a90",
+      "sha256": "af1602e9c021b6fc42a66cf614ac287c5ed256dc88b05828733623e8b6326ba6",
       "executable": false
     },
     "public/orbit-auth.css": {
@@ -3403,7 +3403,7 @@
       "executable": false
     },
     "src/core/features/analytics/console.css": {
-      "sha256": "470fe86b3198736d20c503c2ff6f9baebd612961253fdfee22238cf575a1f97a",
+      "sha256": "f154061c05ebaedb7fe3933d14688f877d6d8594246bc0691c65eeea8f457325",
       "executable": false
     },
     "src/core/features/analytics/console.tsx": {
@@ -3995,7 +3995,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/assistance.css": {
-      "sha256": "1352096fd463deb8492a05a9ac228185d80f7564f3058972a46057cc966953cb",
+      "sha256": "3e24d8472a2b4956f38a7e5779ea0e4c2295acfe3e3d1ccf07ea999799e2b99f",
       "executable": false
     },
     "src/core/features/operator/ui/automation-recipe.tsx": {
@@ -4007,7 +4007,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/buying-context.css": {
-      "sha256": "b881feca51b3142f72f8f06287b93ca83121453bb9a7665ad986b4ed8fadbfcd",
+      "sha256": "b25ac36c17b8cdb1c36b986eb7c2629b86535d22ef721ab58432dc13bd4a92bb",
       "executable": false
     },
     "src/core/features/operator/ui/buying-context.tsx": {
@@ -4151,7 +4151,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/handoff-tasks.css": {
-      "sha256": "9b153bf22ca9a78f4b451b620bd7fb94d42763f3246558527aa78543ccc5a744",
+      "sha256": "21ee381e8643b3f41d1739c0cb2c641f58f9c3bb102b313b50c10680876eb6f9",
       "executable": false
     },
     "src/core/features/operator/ui/handoff-tasks.tsx": {
@@ -4223,7 +4223,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator-controls.css": {
-      "sha256": "eea51c37280c1f6faffe74e37b522648990f3fa2f96904b8f26b665e980bdef4",
+      "sha256": "c2fc0e7679250028b97c4d77d95e178257c1cd1922c63f3c9c78b1018e708e3e",
       "executable": false
     },
     "src/core/features/operator/ui/operator-dialog.tsx": {
@@ -4243,7 +4243,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator.css": {
-      "sha256": "feb509cc635755182c19ab158942b76355e71772268320973eaefbe34369b2ec",
+      "sha256": "eeb96fd91a59ca7c44ac59772d1d54af4cce5b265472c05341754abdcd11fd45",
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-evidence.tsx": {
@@ -4315,11 +4315,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/records.css": {
-      "sha256": "5949087041c07684aaf5c5409d1c36ef7fc0e97aa9439d5b7031f1846f50ed6f",
+      "sha256": "3e99453bd72c34e1c822f6182b2f5ef9407e1067a165ce234f903541519ecca6",
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.css": {
-      "sha256": "75a38520060120e2a2d5d41402f97cb9607884aa89ebcca9a45897135f01bdb9",
+      "sha256": "4e2f91125a9485e92cfe3d194637e82b395e8db4361a49ae5fb1ee8817847990",
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.tsx": {

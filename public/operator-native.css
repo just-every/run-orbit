@@ -15,7 +15,7 @@ form,article,fieldset{min-width:0;padding:20px;margin-block:20px;border:1.5px so
 fieldset legend{font-weight:700;padding:0 6px}
 label{display:block;font-weight:600;margin:16px 0 6px}label.check{display:flex;gap:10px;align-items:flex-start;font-weight:500}
 input,select,textarea,button,.button{font:inherit;max-width:100%;min-width:0}
-input:not([type=checkbox]),select,textarea{display:block;width:100%;min-height:44px;padding:10px 14px;border:1.5px solid #b9b0a3;border-radius:10px;background:#fff;color:var(--rer-text)}
+input:not([type=checkbox]),select,textarea{display:block;width:100%;min-height:44px;padding:10px 14px;border:1.5px solid #b9b0a3;border-radius:10px;background-color:#fff;color:var(--rer-text)}
 textarea{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9rem}
 input[type=checkbox]{width:20px;height:20px;margin-top:3px;flex:none;accent-color:var(--rer-text)}
 button,.button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin:16px 12px 0 0;padding:10px 22px;border:1.5px solid var(--rer-text);border-radius:999px;background:var(--rer-text);color:var(--rer-page);font-weight:600;text-decoration:none;cursor:pointer}
@@ -24,3 +24,20 @@ article form{border:0;padding:0;margin:0;display:inline}
 [role=alert]{padding:14px 16px;border-radius:12px;background:#fbe6dc;border:1.5px solid var(--rer-focus)}[role=status].lead{padding:14px 16px;border-radius:12px;background:#e7efe2;border:1.5px solid #3d6b35}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--rer-focus);outline-offset:3px}
 .skip-link{position:absolute;top:8px;left:16px;padding:12px;background:var(--rer-surface);transform:translateY(-200%)}.skip-link:focus{transform:none}
+
+/* Base #247: single-choice chevrons; list boxes keep native controls. */
+select:not([multiple],[size]:not([size="1"])) {
+  --rer-select-ink: var(--rer-muted);
+  -webkit-appearance: none;
+  appearance: none;
+  padding-inline-end: 40px;
+  text-overflow: ellipsis;
+  background-image:
+    linear-gradient(to top right, transparent calc(50% - 1.1px), var(--rer-select-ink) calc(50% - .55px), var(--rer-select-ink) calc(50% + .55px), transparent calc(50% + 1.1px)),
+    linear-gradient(to top left, transparent calc(50% - 1.1px), var(--rer-select-ink) calc(50% - .55px), var(--rer-select-ink) calc(50% + .55px), transparent calc(50% + 1.1px));
+  background-repeat: no-repeat;
+  background-position: right 20px center, right 14px center;
+  background-size: 6px 6px;
+}
+select:not([multiple],[size]:not([size="1"])):focus-visible { --rer-select-ink: var(--rer-text); }
+select:not([multiple],[size]:not([size="1"])):disabled { --rer-select-ink: color-mix(in srgb, var(--rer-muted) 55%, transparent); }

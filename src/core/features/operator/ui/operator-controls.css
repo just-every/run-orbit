@@ -5,7 +5,23 @@
 :where(.operator-shell) :where(p,li,dd,code,a,button,label){overflow-wrap:anywhere}
 :where(.operator-shell) :where(button){min-height:44px;padding:8px 18px;border:1.5px solid var(--ob-ink);border-radius:999px;background:transparent;color:var(--ob-ink);cursor:pointer;white-space:normal}
 :where(.operator-shell) :where(button:disabled){cursor:not-allowed}
-:where(.operator-shell) :where(input,select,textarea){min-width:0;border:var(--app-field);border-radius:12px;padding:9px 13px;background:var(--ob-card);color:var(--ob-ink)}
+:where(.operator-shell) :where(input,select,textarea){min-width:0;border:var(--app-field);border-radius:12px;padding:9px 13px;background-color:var(--ob-card);color:var(--ob-ink)}
+/* Base #247: single-choice chevrons; list boxes keep native controls. */
+.operator-shell select:not([multiple],[size]:not([size="1"])) {
+  --rer-select-ink: var(--ob-body);
+  -webkit-appearance: none;
+  appearance: none;
+  padding-inline-end: 40px;
+  text-overflow: ellipsis;
+  background-image:
+    linear-gradient(to top right, transparent calc(50% - 1.1px), var(--rer-select-ink) calc(50% - .55px), var(--rer-select-ink) calc(50% + .55px), transparent calc(50% + 1.1px)),
+    linear-gradient(to top left, transparent calc(50% - 1.1px), var(--rer-select-ink) calc(50% - .55px), var(--rer-select-ink) calc(50% + .55px), transparent calc(50% + 1.1px));
+  background-repeat: no-repeat;
+  background-position: right 20px center, right 14px center;
+  background-size: 6px 6px;
+}
+.operator-shell select:not([multiple],[size]:not([size="1"])):focus-visible { --rer-select-ink: var(--ob-ink); }
+.operator-shell select:not([multiple],[size]:not([size="1"])):disabled { --rer-select-ink: color-mix(in srgb, var(--ob-body) 55%, transparent); }
 :where(.operator-shell) :where(label){display:grid;gap:7px}
 :where(.operator-shell) :where(input[type=checkbox],input[type=radio]){width:18px;min-height:18px;padding:0}
 :where(.operator-shell) :where(textarea){resize:vertical}

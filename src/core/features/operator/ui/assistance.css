@@ -57,7 +57,7 @@
 .assistance-button:disabled {opacity:.6;cursor:not-allowed}
 .assistance-prepare {display:grid;gap:20px;max-width:680px}
 .assistance-prepare label {display:grid;gap:9px;font-size:14px;font-weight:600}
-.assistance-prepare select {width:100%;min-width:0;padding:12px;border:1px solid var(--ob-line-strong);border-radius:8px;background:white;font-size:14px}
+.assistance-prepare select {width:100%;min-width:0;padding:12px;border:1px solid var(--ob-line-strong);border-radius:8px;background-color:white;font-size:14px}
 .assistance-prepare button {justify-self:start}
 @media(max-width:700px){.assistance-page .operator-main {padding-top:24px}.assistance-page .operator-titlebar {gap:20px}.assistance-columns {grid-template-columns:1fr}.assistance-card {padding:19px}.assistance-opportunity {align-items:flex-start;flex-direction:column;gap:18px}.assistance-value {text-align:left}.assistance-value strong {font-size:29px}.assistance-value span {display:inline}.assistance-card-lead {margin-bottom:16px}.assistance-actions {flex-wrap:wrap;gap:10px;padding:15px}.assistance-button--outline {flex-basis:100%;margin-right:0}.assistance-button--cancel,.assistance-button--generate {flex:1}.assistance-provider {margin-inline:0;padding:18px;gap:12px}.assistance-context-row {gap:11px}.assistance-complete-fields {padding:12px}.assistance-evidence summary {gap:10px;padding:11px}.assistance-evidence summary img {width:36px;height:38px}}
 .assistance-opportunity>div:first-child,.assistance-evidence summary>span:not(.assistance-chevron) {min-width:0;overflow-wrap:anywhere}

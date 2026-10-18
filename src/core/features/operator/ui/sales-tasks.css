@@ -11,7 +11,7 @@
 .sales-tasks button:disabled { opacity: .6; cursor: wait; }
 .sales-tasks button:focus-visible, .sales-tasks summary:focus-visible, .sales-tasks a:focus-visible { outline: 3px solid var(--operator-orange); outline-offset: 3px; }
 .sales-tasks label { display: grid; gap: 6px; min-width: 0; font-size: .86rem; font-weight: 600; }
-.sales-tasks input, .sales-tasks select, .sales-tasks textarea { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; border: 1px solid var(--ob-line-strong); border-radius: 8px; padding: 9px 11px; color: var(--operator-ink); background: var(--operator-paper); font: inherit; }
+.sales-tasks input, .sales-tasks select, .sales-tasks textarea { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; border: 1px solid var(--ob-line-strong); border-radius: 8px; padding: 9px 11px; color: var(--operator-ink); background-color: var(--operator-paper); font: inherit; }
 .sales-tasks textarea { resize: vertical; }
 .sales-tasks input:focus, .sales-tasks select:focus, .sales-tasks textarea:focus { outline: 2px solid var(--operator-orange); outline-offset: 2px; }
 .sales-tasks__hint { font-size: .82rem; line-height: 1.5; }
