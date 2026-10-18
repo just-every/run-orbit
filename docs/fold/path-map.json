@@ -279,7 +279,7 @@
     "classification": "excluded-runtime"
   },
   {
-    "path": ".github/workflows/edition.yml",
+    "path": ".github/workflows/verify.yml",
     "mainSha256": "2b3765d1864f6059e32e1b33af655c83c6925fafd13c56657bf0bce693ab9443",
     "expansionSha256": "5c9e62d15c646db7a5ad8e64879ebb31d40e44b38f37c075b79af3c33ad841a9",
     "mainObject": {
@@ -299,7 +299,7 @@
     "decision": "preserved-main",
     "targets": [
       {
-        "path": ".github/workflows/edition.yml",
+        "path": ".github/workflows/verify.yml",
         "sha256": "2b3765d1864f6059e32e1b33af655c83c6925fafd13c56657bf0bce693ab9443",
         "mode": "100644",
         "kind": "blob",
