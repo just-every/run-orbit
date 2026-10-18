@@ -4,7 +4,7 @@ The target is a full small-team US sales CRM replacing HubSpot Sales Hub, Pipedr
 
 This is a build backlog and acceptance specification, not a claim of current product completion. Status is tied to inspected main `ef68930d3213735986e93c630827f0aa890862dc`, starting from the inventory code audit at `64f66dd936b78c84ef1d839c68fd735851752ae9` and re-reading changed evidence. `done` means source plus an exercising test for the stated behavior; `partial` identifies an implemented subset and its remaining work; `missing` has no implementation of that flow. Test paths are existing evidence, not claims of a new execution on this documentation commit. Hosted/provider outcomes remain unverified unless independently recorded for the exact candidate. For the 0.2.0 release record (18 October 2026, commit `5c72dc85b7d4627e8b655246102981992f48a7fa`) every status here matches the CONTRACT.md Status table, and the fifteen published clauses that were partial carry the restated journeys their independent release gate exercised.
 
-`rer verify` retains its existing bold published-clause execution catalog and fails unmapped, failed or skipped published IDs. All existing IDs and checks remain. New named target headings are not yet execution mappings: they remain mandatory acceptance obligations with the status below. A green existing-code execution report does not satisfy unfinished target clauses or the full text of a broadened clause. No result is waived, relabelled or manufactured to make this documentation pass. Build rounds must implement and map the target journeys without weakening the retained checks.
+`rer verify` retains its existing bold published-clause execution catalog and fails unmapped, failed or skipped published IDs. All existing IDs and checks remain. New named target headings are not yet execution mappings: they remain mandatory acceptance obligations with the status below. A green existing-code execution report does not satisfy unfinished target clauses or the full text of a broadened clause. No result is waived, relabeled or manufactured to make this documentation pass. Build rounds must implement and map the target journeys without weakening the retained checks.
 
 Complete acceptance requires an immutable exact candidate, frozen install, full CI, native empty-installation sign-in and authorized provider connections, realistic customer data, both 1440px desktop and 390px phone inspection, keyboard/accessibility checks, recorded failure/restart/revocation journeys, export/restore equivalence and an owner-intent-preserving update. Public Lobby, run site and fictional read-only demo retain their approved behavior. No owner data, mutation, AI call or sending authority may leak into the demo. Runtime test providers do not establish real mailbox delivery, a call, a booking, a signature or a payment.
 
@@ -600,7 +600,7 @@ Current evidence: `src/base/lobby.ts`; `tests/e2e/baseline.spec.mjs`. The v0.2.0
 
 Status: **done**.
 
-Browse the labelled fictional demo and unknown paths at desktop/mobile sizes; verify no owner-data read, D1 write, AI request or send.
+Browse the labeled fictional demo and unknown paths at desktop/mobile sizes; verify no owner-data read, D1 write, AI request or send.
 
 Current evidence: `src/demo.ts`; `tests/core/public-demo.test.ts`. Implemented source and exercising tests; live hosted/provider acceptance remains separate.
 
@@ -776,7 +776,7 @@ Current evidence: `src/core/features/outreach/provider-events.ts`; `src/core/fea
 
 Status: **missing**.
 
-Enable open and click tracking with disclosure, approve a tracked one-to-one message sent through OUT-013 Gmail and a tracked sequence step sent through Microsoft 365, open each in a real mail client and click a link; verify one inferred open and one click signal on the deal, a 302 to the unchanged reviewed destination, one deduplicated real-time rep notification, a proxy prefetch and a scanner click labelled automated, no cookie or script, no sequence exit or high band from the open, and `not tracked` on an untracked message; mark the contact do-not-track, erase another contact and verify nothing further is recorded.
+Enable open and click tracking with disclosure, approve a tracked one-to-one message sent through OUT-013 Gmail and a tracked sequence step sent through Microsoft 365, open each in a real mail client and click a link; verify one inferred open and one click signal on the deal, a 302 to the unchanged reviewed destination, one deduplicated real-time rep notification, a proxy prefetch and a scanner click labeled automated, no cookie or script, no sequence exit or high band from the open, and `not tracked` on an untracked message; mark the contact do-not-track, erase another contact and verify nothing further is recorded.
 
 Current evidence: No implementation found. No tracking token, link redirect or tracked open/click signal exists; Orbit currently serves no tracker under SIGNAL-007.
 
