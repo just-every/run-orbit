@@ -1,57 +1,251 @@
 {
   "version": "0.2.0",
   "previousVersion": "0.1.0",
-  "date": "2026-10-14",
+  "date": "2026-10-18",
+  "publicReleaseNotes": "Orbit 0.2.0: hosted customer-mail setup from Orbit's own pages, delivery outcomes, sales pipelines, sales tasks and buying context, Today's brief, mail and calendar capture (files, a private Orbit address, a calendar link, read-only Google and Microsoft connections), resumable export and restore, operator removal with handover, and an in-place update from 0.1.0 that keeps every row.",
   "contractChanges": {
-    "CAPTURE-007": {
-      "change": "changed",
-      "summary": "Capture erasure retains anonymous replay proofs and private archive matching contexts.",
-      "was": "Captured evidence, proposals and source state are part of every export and restore under DATA-001; source credentials never are, so a restored provider source must be reconnected. Erasing a contact erases the captured evidence and proposals that carry them under DATA-002, and the audit trail keeps only their count.",
-      "now": "Captured evidence, proposals and source state are part of every export and restore under DATA-001; source credentials never are, so a restored provider source must be reconnected. Erasing a contact erases the captured evidence and proposals that carry them under DATA-002. The audit trail keeps counts and anonymous keyed replay proofs with erasure times, without addresses, original item identifiers or content, so later intake cannot recreate erased originals. Private matching contexts and proofs travel in archives; restoring an owner's historical archive retains DATA-001's existing behavior."
+    "CAPTURE-008": {
+      "change": "added",
+      "summary": "Orbit address: When the installation names a receiving mailbox (CAPTURE_MAIL_ADDRESS, reached through Cloudflare Email Routing or signed SendGrid Inbound Parse), an operator can create a private Orbit address on the Capture page with no provider console: the mailbox with a random tag, kept sealed like a credential and never in archives. Status: done."
+    },
+    "CAPTURE-009": {
+      "change": "added",
+      "summary": "Calendar link: An operator can add a calendar by the private iCal address its own calendar offers (Google, Outlook or iCloud), with no provider console. Status: done."
     },
     "BRIEF-001": {
       "change": "added",
-      "summary": "The top of the operator home is a brief built from records only, so it works with the AI provider unconfigured (AI-003). Per account (the company when one is known, otherwise the opportunity, otherwise the contact) it lists the customer signals linked since the operator last marked the brief seen, or, before they ever have, over the stale interval counted from the start of the day (UTC), with replies and booked, completed or cancelled meetings first and observed signals kept apart from inferred ones (SIGNAL-006); the account's overdue promises (BRIEF-002); and application handoffs waiting for review (BRIEF-005). Signals that match no record and replies without thread headers are listed as unresolved identity, never guessed; captured replies and meetings waiting for a person to accept or decline their proposed link are listed as held for capture review. Every line shows its occurred time and links to the record, timeline entry, draft, task or review item it rests on; a line without such evidence is not shown. Marking the brief seen records the operator and the time the brief was built in the audit trail, so anything arriving later stays new. A day with nothing says so. The brief is for full native operators; invited collaborators cannot read it."
+      "summary": "Today's brief: The top of the operator home is a brief built from records only, so it works with the AI provider unconfigured (AI-003). Status: done."
     },
     "BRIEF-002": {
       "change": "added",
-      "summary": "Computed from records when the brief is built: an open internal next action (a handoff task a person wrote or accepted) or an open opportunity's next action past its due time; the latest customer reply on a record with no approved outbound message, captured sent message, logged call or meeting, or completed action on that record since, once the awaiting-response interval (TEAM-003, working days in the workspace timezone) has passed; a meeting completed within the last 120 days with no note, logged call or meeting, completed action, handoff, draft, approved message or captured sent message on its records after it; and a draft on an open opportunity with no outbound message other than a cancelled one. A recommendation carries no due time and is never a promise by itself."
+      "summary": "Overdue promises: Computed from records when the brief is built: an open internal next action (a handoff task a person wrote or accepted) or an open opportunity's next action past its due time; the latest customer reply on a record with no approved outbound message, captured sent message, logged call or meeting, or completed action on that record since, once the awaiting-response interval (TEAM-003, working days in the workspace timezone) has passed; a meeting completed within the last 120 days with no note, logged call or meeting, completed action, handoff, draft, approved message or captured sent message on i Status: done."
     },
     "BRIEF-003": {
       "change": "added",
-      "summary": "With a provider configured (AI-001), an operator can ask for a one-paragraph summary of one account's brief lines. The request preview shows every field sent, and the request is sent only unchanged from that preview; a brief that changed since the preview is refused with 409. Output must validate and cite only evidence IDs from that account's lines (AI-002); failing or uncited output is recorded (AI-004) and shown as failed, never repaired or replaced. Summaries are not stored, and a provider failure leaves the brief whole."
+      "summary": "Account summary: With a provider configured (AI-001), an operator can ask for a one-paragraph summary of one account's brief lines. Status: done."
     },
     "BRIEF-004": {
       "change": "added",
-      "summary": "A meeting signal linked to a record (booked, completed or cancelled, from a source or from capture) has a plan page: its time exactly as the source gave it or the statement that none was given; attendees resolved by exact email key (RECORD-003) with their company and open opportunities; attendees with no record listed as unresolved, never guessed, with a way to create a contact with that exact address; the opportunities with value, stage and owner and their total open value; the last interactions on its records and the outstanding promises on them (BRIEF-002), each citing its timeline entry or record. The agenda and prep notes are saved as one note under RECORD-010 on the meeting's opportunity (or its company or contact) and edited in place. A person can turn a cited plan line into an internal next action on the meeting's opportunity that cites that line. Planning creates no draft and sends nothing (OUT-001)."
+      "summary": "Meeting plan: A meeting signal linked to a record (booked, completed or cancelled, from a source or from capture) has a plan page: its time exactly as the source gave it or the statement that none was given; attendees resolved by exact email key (RECORD-003) with their company and open opportunities; attendees with no record listed as unresolved, never guessed, with a way to create a contact with that exact address; the opportunities with value, stage and owner and their total open value; the last interactions on its records and the outstanding promises on them (BRIEF-002), each citing its timeline entry or Status: done."
     },
     "BRIEF-005": {
       "change": "added",
-      "summary": "Within the scoped application delegation below and with no new scope: `crm.evidence.read` also reads the brief, narrowed to lines resting on selected records, and the plan of a meeting that is selected or linked to a selected record, narrowed to the selected records and the contacts and company of selected opportunities; a line or interaction resting only on opportunities outside the grant is left out even when it shares a contact or company, records outside the grant are left off the lines shown, and unresolved attendees show only their address. A line seen only through a signal selected by id keeps only selected records; one left with none is listed apart from the accounts and links to that signal's evidence read. A held line names a proposed contact or company only when it is selected, and a selected contact's line is filed under its company only when that company is selected too. `orbit.handoff.upsert` content may cite evidence IDs; each must be a signal, timeline entry, draft or task on that opportunity, its contacts or its company, or the write is refused with 422. A handoff an application wrote is a proposal, shown in the brief and on the opportunity with its cited evidence (or the statement that it cites none), until a person accepts it, saves an edited version or dismisses it; that review appends one timeline entry attributed to the person and naming the application. No handoff can approve or start a message (OUT-001). Without consent, without the write scope or after revocation an application cannot write, and revocation stops its reads at once."
+      "summary": "Agent handoff: Within the scoped application delegation below and with no new scope: crm.evidence.read also reads the brief, narrowed to lines resting on selected records, and the plan of a meeting that is selected or linked to a selected record, narrowed to the selected records and the contacts and company of selected opportunities; a line or interaction resting only on opportunities outside the grant is left out even when it shares a contact or company, records outside the grant are left off the lines shown, and unresolved attendees show only their address. Status: done."
+    },
+    "DELEGATE-001": {
+      "change": "added",
+      "summary": "Selected application authority: The 27 September native delegation outcome supersedes BASE-ACCESS-002 and BASE-ACCESS-004 only for /api/delegation/v1/: an allowlisted application exchanges a single-use consent code bound to the native operator, workspace, exact callback, PKCE challenge, scopes and selected targets for a bearer credential expiring within 30 days. Status: done."
+    },
+    "TEAM-001": {
+      "change": "changed",
+      "summary": "Equal operators: Restated for 0.2.0 to what this release ships and its independent gate proved; the larger obligation stays with the target clause the text names. Status: done.",
+      "was": "Every operator can view and act on every contact, company, opportunity, signal, activity, and notification. There are no roles and no private records.",
+      "now": "Every active full operator has equal access to the whole workspace: every record, field and action. An invited collaborator reaches only the records, fields and actions shared with them, and the server refuses the rest; a hidden control never stands in for that refusal. Restricted sellers, managers and analysts with role grants are TEAM-005."
+    },
+    "TEAM-002": {
+      "change": "changed",
+      "summary": "Management: Restated for 0.2.0 to what this release ships and its independent gate proved; the larger obligation stays with the target clause the text names. Status: partial. No automated test exercises the two setup-owner removal refusals; the v0.2.0 release gate exercised them, and the rest of the restated clause, through the public API on 5c72dc8. Roles, teams and access review are TEAM-005.",
+      "was": "Operators are invited and removed in settings. The operator configured at setup can be removed only by themselves. *Policy: `operator.management.v1`; default: any operator may invite or remove.*",
+      "now": "Any active full operator invites and removes operators in Settings. An invitation sends no email: the invited person requests their own sign-in link. Removing an operator revokes their sessions at once, and later sign-in requests for their address send no link. The setup owner can be removed only by themselves, and only while another active full operator exists. Invitations and removals are audited. Roles, teams and access review are TEAM-005; policy `operator.management.v1` may narrow who invites or removes without bypassing server-side checks."
+    },
+    "TEAM-003": {
+      "change": "changed",
+      "summary": "One workspace: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "A deployment holds exactly one workspace and offers no way to create a second. Its name, timezone, currency, working hours, stale interval, awaiting-response interval, pipeline stages, signal sources, and free-mail domain list are configured in settings and apply to every record.",
+      "now": "A deployment holds one business workspace. Its name, US operating timezone, USD default currency, working hours, stale and awaiting-response intervals, signal sources and free-mail domains are configured in Settings. Multiple sales pipelines are configured under OPP-009 inside that workspace; a second isolated deployment is a separate installation, not an extra pipeline."
+    },
+    "TEAM-004": {
+      "change": "changed",
+      "summary": "Removal handover: Restated for 0.2.0 to what this release ships and its independent gate proved; the larger obligation stays with the target clause the text names. Status: done.",
+      "was": "Removing an operator revokes their sessions, cancels their scheduled messages, and unassigns their open opportunities. Their notes, drafts, sent messages, and timeline entries remain and stay attributed to them.",
+      "now": "Removing an operator revokes their sessions, cancels their scheduled messages, and hands over or unassigns their open opportunities, open sales tasks and delegated handoffs. The removal review lists each of those sets, the remover chooses a receiving full operator or explicit unassignment for each, and the removal is refused until every set has a recorded choice or if the reviewed work changed meanwhile; revocation, cancellation and handover then happen together. Each handed-over opportunity gets one attributed owner-change timeline entry. Their notes, drafts, sent messages and timeline entries remain and stay attributed to them. Handing over owned contacts, leads, companies and custom-object records is RECORD-016, and active sequence enrollments are SEQUENCE-001."
+    },
+    "RECORD-001": {
+      "change": "changed",
+      "summary": "Core records: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "Operators can create, edit, and delete contacts, companies, and opportunities. A contact requires a name or an email address and may also hold a phone number, job title, and timezone; a company requires a name and may hold one primary domain; an opportunity requires a title and holds a pipeline stage, a value in the workspace currency, zero or one owner, an expected close date, at most one company, and any number of contacts. Each entity listed in `seed.json → customFieldEntities` also holds custom fields.",
+      "now": "Operators can create, edit, and delete contacts, companies, and opportunities. A contact requires a name or an email address and may also hold a phone number, job title, and timezone; a company requires a name and may hold one primary domain; an opportunity requires a title and holds a pipeline stage, a value in the workspace currency, zero or one owner, an expected close date, at most one company, and any number of contacts. Each entity listed in `seed.json → customFieldEntities` also holds custom fields. Contact, lead, company and custom-object owners, independent of opportunity owners, are defined in RECORD-016."
+    },
+    "RECORD-002": {
+      "change": "changed",
+      "summary": "Associations: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "A contact belongs to at most one company and to any number of opportunities. An opportunity with at least one contact names one of them primary, and that contact is the default recipient for its outreach; an opportunity with no contact is never recommended an email follow-up. Changing an association moves no timeline entry: each record keeps the entries it already had.",
+      "now": "A contact has at most one primary company and can have further explicit company relationships under RECORD-015, and can belong to any number of opportunities. An opportunity with contacts names one primary as its default outreach recipient; a deal without a contact is never recommended an email follow-up. Changing an association moves no old timeline entry."
+    },
+    "RECORD-006": {
+      "change": "changed",
+      "summary": "Search and views: Restated for 0.2.0 to what this release ships and its independent gate proved; the larger obligation stays with the target clause the text names. Status: done.",
+      "was": "Operators can search contacts, companies, opportunities, and timeline text, and can filter opportunities by state, stage, owner, band, and queue. A first page of at most 50 matches returns within 500ms.",
+      "now": "Operators can search contacts, companies, opportunities, and timeline text, and can filter opportunities by state, stage, owner, band, and queue. A first page holds at most 50 matches. Answering that first page within 500ms at the declared capacity in `seed.json` is a capacity target qualified separately; this release makes no capacity promise."
+    },
+    "RECORD-007": {
+      "change": "changed",
+      "summary": "Ownership: Restated for 0.2.0 to what this release ships and its independent gate proved; the larger obligation stays with the target clause the text names. Status: done.",
+      "was": "An opportunity has zero or one owner. Any operator can assign or reassign it, and the change appears on its timeline. *Policy: `opportunity.assignment.v1`; default: a new opportunity is unassigned.*",
+      "now": "An opportunity has zero or one owner. Any operator can assign, reassign or unassign it; each change appears on its timeline as an attributed owner change and leaves its score unchanged. *Policy: `opportunity.assignment.v1`; default: an opportunity an operator creates is unassigned.* An opportunity created from a published form's enquiry belongs to the operator who published the form. Owners of contacts, leads, companies and custom-object records, and notifications to a deal's new owner, are RECORD-016."
+    },
+    "RECORD-008": {
+      "change": "changed",
+      "summary": "Import: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "Full native operators move contacts, companies, deals and notes through explicit CSV mappings and a mandatory saved dry run. All suppression and absent-consent holds publish before customer creation or sending; malformed suppression rows block application. Source IDs and explicit associations are retained with inert provenance. Existing native identities are associated without replacing their fields. Every rejected row names its file, row and reason and creates no customer record. Unchanged re-imports reuse native records, associations and notes. Base import-kit records originals, current-session authority, atomic progress and conflict-preserving undo; undo removes or restores only owned, unchanged effects and keeps native edits, independent suppression and their dependency closure. No import approves outreach or grants operator access.",
+      "now": "Full native operators move contacts, companies, deals and notes through explicit CSV mappings and a mandatory saved dry run. New contacts are held by default unless mapped explicit subscribed permission or an explicit per-import operator contactability attestation permits contact. Existing do-not-contact stops always win. All suppression and remaining absent-consent holds publish before customer creation or sending; malformed suppression rows block application. Source IDs and explicit associations are retained with inert provenance. Existing native identities are associated without replacing their fields. Every rejected row names its file, row and reason and creates no customer record. Unchanged re-imports reuse native records, associations and notes. Base import-kit records originals, current-session authority, atomic progress and conflict-preserving undo; undo removes or restores only owned, unchanged effects and keeps native edits, independent suppression and their dependency closure. No import approves outreach or grants operator access. Contact-owner and company-owner columns are mapped under RECORD-016."
+    },
+    "RECORD-009": {
+      "change": "changed",
+      "summary": "Duplicate candidates: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "Orbit lists contacts sharing a name within one company, and companies sharing a name, as duplicate candidates; names are compared lowercased with runs of whitespace collapsed. A candidate is a review item only: nothing is merged, altered, or hidden until an operator completes RECORD-004.",
+      "now": "Orbit lists contacts sharing a name across companies, including contacts with no company, and companies sharing a name, as duplicate candidates; names are compared lowercased with runs of whitespace collapsed. A candidate is a review item only: nothing is merged, altered, or hidden until an operator completes RECORD-004."
+    },
+    "RECORD-010": {
+      "change": "changed",
+      "summary": "Manual entries: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "An operator can add a note to any record and log a call or meeting with an occurred time, duration, and attending contacts. A manual entry is attributed to its author, editable and deletable by any operator, never sent to a customer, and never contributes to a score.",
+      "now": "An operator can add a note to any record and log a call or meeting with an occurred time, duration, and attending contacts. A manual entry is attributed to its author, editable and deletable by any operator, never sent to a customer, and never contributes to a score. RECORD-017 adds @mentions of colleagues in these entries, and RECORD-018 attaches files to them."
+    },
+    "RECORD-012": {
+      "change": "changed",
+      "summary": "Contactability: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "A contact is contactable or do-not-contact. An operator can set do-not-contact at any time, and an unsubscribe event or a permanent bounce also sets it. No operation sends customer email to a do-not-contact contact, the state is shown wherever the contact appears, and only an operator can clear it.",
+      "now": "A contact is contactable or do-not-contact. An operator can set do-not-contact at any time, and an unsubscribe event that identifies the person (OUT-012, OUT-020) or a permanent bounce also sets it, for that person only. An opt-out that cannot name one recipient of a multi-recipient message pauses those recipients' scheduled work rather than suppressing them (OUT-020). No operation sends customer email to a do-not-contact contact, the state is shown wherever the contact appears, and only an operator can clear it. A contact an operator creates by hand on a record page or through the Records API starts contactable unless the operator chooses do-not-contact or its address matches a retained suppression proof, in which case it starts do-not-contact; other doors state their own default (RECORD-008, CAPTURE-005, CAPTURE-012, FORM-001, OUT-019)."
+    },
+    "SIGNAL-007": {
+      "change": "changed",
+      "summary": "No tracking: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "Orbit serves no tracking script, pixel, or cookie, and performs no fingerprinting or cross-site collection. A page-view, chat, or download signal is accepted only when its source supplies the visitor identity it already holds and the basis for holding it; without that basis the event is held unlinked under SIGNAL-004 and never becomes contact history.",
+      "now": "Orbit serves no tracking script, pixel, or cookie, and performs no fingerprinting or cross-site collection. A page-view, chat, or download signal is accepted only when its source supplies the visitor identity it already holds and the basis for holding it; without that basis the event is held unlinked under SIGNAL-004 and never becomes contact history. The one exception is OUT-016's disclosed, opt-in, per-message open and link-click tracking of Orbit-sent customer mail, which adds nothing to Orbit's public pages, its app or any other site."
+    },
+    "SIGNAL-009": {
+      "change": "changed",
+      "summary": "Signed sources: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "This clause supersedes BASE-ACCESS-004 for the paths `/api/v1/signals/` and `/api/v1/mail/events/` only: a request there is authorised by a signature from a source or mail provider configured in this deployment instead of an operator session, and may write only signals, delivery states, and their timeline entries. Native operator mutations require a valid operator session and a server-side ownership check. The separately scoped application-delegation boundary below is the only additional authorization exception.",
+      "now": "This clause supersedes BASE-ACCESS-004 for the paths `/api/v1/signals/` and `/api/v1/mail/events/` only: a request there is authorised by a signature from a source or mail provider configured in this deployment (or, at a source’s `/automation` endpoint only, its current private secret in an HTTPS Authorization Bearer header) instead of an operator session, and may write only signals, delivery states, and their timeline entries. Native operator mutations require a valid operator session and a server-side ownership check. The separately scoped application-delegation boundary below is the only additional authorization exception."
+    },
+    "CAPTURE-001": {
+      "change": "changed",
+      "summary": "File capture: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "An operator adds `.eml` files, an mbox or `.ics` calendar files on the Capture page. Each message or calendar event becomes one signal with the same columns, confidence and linking rules as SIGNAL-001 to SIGNAL-006, and keeps its original headers and body as the evidence the signal points to. Replay identity is the Message-ID, or the event UID with its SEQUENCE and what happened (booked, completed or cancelled): adding the same item again changes nothing, and a changed copy with the same identity is refused and recorded on the capture source under SIGNAL-003. A calendar event keeps its original start and end times; a missing identity, a missing date or an unknown time zone is reported, never guessed.",
+      "now": "An operator adds `.eml` files, an mbox or `.ics` calendar files on the Capture page. Each message or calendar event becomes one signal with the same columns, confidence and linking rules as SIGNAL-001 to SIGNAL-006, and keeps its original headers, body and non-inline attachments (RECORD-018) as the evidence the signal points to. Replay identity is the Message-ID, or the event UID with its SEQUENCE and what happened (booked, completed or cancelled): adding the same item again changes nothing, and a changed copy with the same identity is refused and recorded on the capture source under SIGNAL-003. A calendar event keeps its original start and end times; a missing identity, a missing date or an unknown time zone is reported, never guessed."
+    },
+    "CAPTURE-002": {
+      "change": "changed",
+      "summary": "Known participants only: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "A captured message or event is stored only when a participant other than an operator holds a contact's exact email key or a company's exact domain key (RECORD-003). Anything else is not stored, and the import reports how many items were not stored and why. An operator may keep unknown senders for one import; those signals wait in the unlinked queue under SIGNAL-004 and change no record.",
+      "now": "A captured message or event is stored only when a participant other than an operator holds a contact's exact email key or a company's exact domain key (RECORD-003). Anything else is not stored, and the import reports how many items were not stored and why. An operator may keep unknown senders for one import; those signals wait in the unlinked queue under SIGNAL-004 and change no record. For a connected mailbox or calendar source (CAPTURE-010), an unknown external participant in a conversation with an operator becomes a held CAPTURE-012 new-prospect proposal instead of being discarded."
+    },
+    "CAPTURE-005": {
+      "change": "changed",
+      "summary": "Human boundary: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "Capture never creates a draft, approves or starts a message, or makes a contact contactable. A contact created from a proposal is do-not-contact until an operator clears it under RECORD-012, and an unsubscribe request in a captured message is a do-not-contact proposal. Capture endpoints accept only a full native operator's session: a source signature, a delegation credential or an invited collaborator is refused, and the signed paths of SIGNAL-009 cannot write into a capture source.",
+      "now": "Capture never creates a draft, approves or starts a message, or makes a contact contactable. A contact created from a proposal is do-not-contact until an operator clears it under RECORD-012; the person accepting a CAPTURE-012 new-prospect proposal makes that choice explicitly in the same review, with the basis it records, and an unsubscribe request in a captured message is a do-not-contact proposal. Capture endpoints accept only a full native operator's session: a source signature, a delegation credential or an invited collaborator is refused, and the signed paths of SIGNAL-009 cannot write into a capture source. Mail delivered to an operator-created Orbit address (CAPTURE-008) is the only intake without a session; its authority is that address's private tag, and it writes only into that address's source."
+    },
+    "CAPTURE-007": {
+      "change": "changed",
+      "summary": "Captured data: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "Captured evidence, proposals and source state are part of every export and restore under DATA-001; source credentials never are, so a restored provider source must be reconnected. Erasing a contact erases the captured evidence and proposals that carry them under DATA-002, and the audit trail keeps only their count.",
+      "now": "Captured evidence, including its attachments (RECORD-018), proposals and source state are part of every export and restore under DATA-001; source credentials never are, so a restored provider source must be reconnected. Erasing a contact erases the captured evidence and proposals that carry them under DATA-002. The audit trail keeps counts and anonymous keyed replay proofs with erasure times, without addresses, original item identifiers or content, so later intake cannot recreate erased originals. Private matching contexts and proofs travel in archives; restoring an owner's historical archive retains DATA-001's existing behavior."
+    },
+    "OPP-007": {
+      "change": "changed",
+      "summary": "Queue entry: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "An open opportunity enters NOW when its band rises, a customer reply or delivery problem arrives, a scheduled message cannot be sent, its expected close date passes, its last timeline entry becomes older than the stale interval, or an operator puts it there. It is in NEXT while it waits for a scheduled send or for a customer response inside the awaiting-response interval, and in neither when no action is pending. The stale interval defaults to 14 days and the awaiting-response interval to 5 working days, counted Monday to Friday in the workspace timezone. Every entry, move, and removal records its reason and actor on the timeline.",
+      "now": "An open opportunity enters NOW when its band rises, a customer form submission, reply or delivery problem arrives, a scheduled message cannot be sent, its expected close date passes, its last timeline entry becomes older than the stale interval, or an operator puts it there. It is in NEXT while it waits for a scheduled send or for a customer response inside the awaiting-response interval, and in neither when no action is pending. The stale interval defaults to 14 days and the awaiting-response interval to 5 working days, counted Monday to Friday in the workspace timezone. Every entry, move, and removal records its reason and actor on the timeline."
+    },
+    "OPP-009": {
+      "change": "changed",
+      "summary": "Pipeline stages: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "The deployment has one pipeline. Its stages are named and ordered in settings; an opportunity can move to any stage in any order, and each move records the previous stage, the actor, and the time. A stage holding opportunities cannot be deleted until they are moved.",
+      "now": "Operators configure multiple named pipelines with ordered stages, stage probabilities, required fields and stage-specific stale intervals. Deals retain their pipeline, stage and movement history; permitted users move a deal within or between pipelines with explicit destination mapping. Stage moves record previous stage, actor and time without silently changing lifecycle or score; a move by an AUTO-002 workflow applies the same required fields and records the workflow, its version and the trigger as actor. An occupied stage or pipeline cannot be deleted until its deals have been explicitly moved. Pipeline boards and list views expose the same records and filters."
+    },
+    "ACTION-003": {
+      "change": "changed",
+      "summary": "Draft on request: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "An operator can request a one-to-one email draft for the current recommendation. Generation reads the opportunity, the primary or operator-selected contact, that contact's company, the cited signals, the messages already exchanged with that contact, and the configured instructions, and sends nothing. *Policy: `outreach.instructions.v1`; default: at most 150 words, and no fact, price, discount, or commitment that a cited record or signal field does not carry.*",
+      "now": "An operator can request a one-to-one email draft for the current recommendation. Generation reads the opportunity, the primary or operator-selected contact, that contact's company, the cited signals, the messages already exchanged with that contact, and the configured instructions, and sends nothing. *Policy: `outreach.instructions.v1`; default: at most 150 words, and no fact, price, discount, or commitment that a cited record or signal field does not carry.* OUT-017 offers the same draft request from a contact, lead or company record, with no recommendation or open opportunity, under the same preview and policy."
+    },
+    "ACTION-004": {
+      "change": "changed",
+      "summary": "Durable draft: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "Recipient, subject, and body are visible and editable, and the draft is stored with its author, source recommendation, created time, and last edit time, and is readable after signing out and back in.",
+      "now": "Recipient, subject, and body are visible and editable (the recipient being OUT-019's To, CC and BCC lists), and the draft is stored with its author, source recommendation, created time, and last edit time, and is readable after signing out and back in."
+    },
+    "OUT-001": {
+      "change": "changed",
+      "summary": "Human send boundary: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "No signal, score, recommendation, draft, job, or AI result can approve or start a customer message. A send requires an authenticated operator who has seen the exact recipient, subject, and body to invoke it, and a worker may dispatch only the unchanged content an operator approved for the schedule in OUT-009. No policy, adapter, extension, or setting removes this requirement.",
+      "now": "No signal, score, recommendation, draft, job, or AI result can approve or start a customer message. A send requires an authenticated operator who has seen the exact recipient, subject, and body to invoke it, and a worker may dispatch only the unchanged content an operator approved for the schedule in OUT-009. For a message with several recipients, the exact recipient is the complete To, CC and BCC lists under OUT-019. For a SEQUENCE-003 batch, one approval covers each listed message whose exact recipient, subject and body the batch review rendered and made inspectable, and nothing else. No policy, adapter, extension, or setting removes this requirement."
+    },
+    "OUT-004": {
+      "change": "changed",
+      "summary": "Threading: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "An outbound message carries message and reference headers that return the customer's reply to the same opportunity. A reply carrying those headers is attached once; a reply without them becomes an unlinked activity for operator review rather than a subject-based guess.",
+      "now": "An outbound message carries message and reference headers that return the customer's reply to the same opportunity. A reply carrying those headers is attached once; a reply without them becomes an unlinked activity for operator review rather than a subject-based guess. For a message sent with no linked opportunity, or to a contact whose deals are won or lost, OUT-017 returns the reply by the same headers to that contact and their company. A reply from any external recipient of the message, To, CC or BCC, threads back the same way onto that replier's contact (OUT-019)."
+    },
+    "OUT-005": {
+      "change": "changed",
+      "summary": "Accepted outcome: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "When the provider accepts a submission, one local transaction records the reviewed content and provider message ID as a timeline activity, completes the recommendation, sets the next action to awaiting response, moves the opportunity from NOW to NEXT, and creates one notification for the responsible operator. A replayed provider event repeats none of it.",
+      "now": "When the provider accepts a submission, one local transaction records the reviewed content and provider message ID as a timeline activity, completes the recommendation, sets the next action to awaiting response, moves the opportunity from NOW to NEXT, and creates one notification for the responsible operator. A replayed provider event repeats none of it. This clause governs a send linked to an open opportunity; a send with no linked open opportunity records the same timeline activity and notification and opens OUT-017's contact-level awaiting-response obligation instead of a queue move."
+    },
+    "OUT-007": {
+      "change": "changed",
+      "summary": "Stop conditions: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "A reply, a booked meeting, an unsubscribe, a do-not-contact, or a permanent bounce cancels that contact's scheduled messages and marks their unsent drafts stale under ACTION-005. A reply or a bounce ends awaiting response and returns the opportunity to NOW with the reply or the delivery problem as its next action.",
+      "now": "A reply, a booked meeting, an unsubscribe, a do-not-contact, or a permanent bounce cancels that contact's scheduled messages and marks their unsent drafts stale under ACTION-005. A reply or a bounce ends awaiting response and returns the opportunity to NOW with the reply or the delivery problem as its next action. An OUT-020 unattributed stop request pauses, rather than cancels, the scheduled messages and sequence enrollments of every external recipient of its message until a user resolves it."
+    },
+    "OUT-010": {
+      "change": "changed",
+      "summary": "Sending limits: Restated for 0.2.0 to what this release ships and its independent gate proved; the larger obligation stays with the target clause the text names. Status: done.",
+      "was": "The per-minute deployment limit and the per-operator rolling-day limit in `seed.json → limits` are checked before submission. A message over a limit stays unsent and visible with the limit that stopped it and the time it may be sent; Orbit neither retries it silently nor merges it with another message.",
+      "now": "Before submission Orbit checks the deployment-wide limit of 3 messages a minute and each operator's limit of 100 messages a rolling day (`seed.json` limits). A message over a limit stays unsent and visible with the limit that stopped it and the time it may be sent; Orbit neither retries it silently nor merges it with another message. The per-user sequence and one-to-one budgets, mailbox pacing and per-user isolation of the shared rate are OUT-018."
+    },
+    "OUT-011": {
+      "change": "changed",
+      "summary": "Unresolved submission: Restated for 0.2.0 to what this release ships and its independent gate proved; the larger obligation stays with the target clause the text names. Status: done.",
+      "was": "Orbit records the outbound intent and its provider idempotency key durably before submitting. If the transaction in OUT-005 fails the message becomes reconciling; if the provider's response is a timeout it becomes delivery-unknown. In both states a job queries the provider by that idempotency key every 5 minutes for up to 24 hours, submits nothing again, and applies the OUT-005 outcome exactly once if acceptance is confirmed. A message still unresolved after 24 hours becomes a failure the operator can see, and notifies the responsible operator.",
+      "now": "Orbit records the outbound intent and its provider idempotency key durably before submitting. If the transaction in OUT-005 fails the message becomes reconciling; if the provider's response is a timeout it becomes delivery-unknown. In both states a job queries the provider by that idempotency key every 5 minutes, submits nothing again, and applies the OUT-005 outcome exactly once if acceptance is confirmed. With SendGrid the query uses its Email Activity API; on an account without that API each attempt records the lookup failure on the message. A SendGrid message still unresolved after 24 hours becomes a failure the operator can see, and notifies the responsible operator. Run Edit Run managed mail offers no lookup, so such a message stays delivery-unknown with that explanation, is never submitted again, and is left for the operator to reconcile."
+    },
+    "OUT-012": {
+      "change": "changed",
+      "summary": "Unsubscribe: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "Every outbound customer message carries `List-Unsubscribe` and `List-Unsubscribe-Post` headers handled by the mail provider. An unsubscribe event from the provider sets that contact do-not-contact under RECORD-012 within 60 seconds and cancels their scheduled messages.",
+      "now": "An outbound customer message that carries opt-out under OUT-020 carries `List-Unsubscribe` and `List-Unsubscribe-Post` headers handled by the mail provider, or by the installation origin for an OUT-013 mailbox send. An unsubscribe event that identifies one recipient sets that contact do-not-contact under RECORD-012 within 60 seconds and cancels their scheduled messages. OUT-020 sets which message types carry opt-out (sequence email on and one-to-one email off by default) and the scope of an opt-out from a message with more than one external recipient."
+    },
+    "PUBLIC-001": {
+      "change": "changed",
+      "summary": "Landing page: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "`GET /` returns 200 without an operator session, takes its name, description, and images from `ext/config.ts`, and links to sign-in. It shows no contact, company, opportunity, or signal from this deployment.",
+      "now": "GET / at the app origin returns the public Base Lobby without a session and links to native sign-in. The separate approved run site uses Orbit's public identity and images. Neither surface exposes this installation's contacts, companies, opportunities or signals. This target-contract round leaves the approved homepage and app interface untouched."
     },
     "PUBLIC-004": {
       "change": "changed",
-      "summary": "Native sign-in declares its path, brand and theme in src/identity.ts; authentication requirements are unchanged.",
+      "summary": "Native sign-in: Restated in the 16 October 2026 product target. Status: done.",
       "was": "Base operator-auth over Orbit's own operators: configured email-link delivery sends only to an existing active operator, gives the same request response for unknown and inactive addresses, and exchanges a hashed, single-use link, confirmed by POST from a read-only confirmation page within 15 minutes, for a secure native session. An optional linked identity provider (an Auth install) admits only existing operators and stays off until the owner turns it on. Return locations stay inside the operator app. Sign-out revokes that session. A missing or failed mail configuration cannot issue a session.",
-      "now": "Base operator-auth over Orbit's own operators: configured email-link delivery sends only to an existing active operator, gives the same request response for unknown and inactive addresses, and exchanges a hashed, single-use link, confirmed by POST from a read-only confirmation page within 15 minutes, for a secure native session. An optional linked identity provider (an Auth install) admits only existing operators and stays off until the owner turns it on. Return locations stay inside the operator app. Sign-out revokes that session. A missing or failed mail configuration cannot issue a session. Orbit\u2019s sign-in path, brand and theme are declared in `src/identity.ts`."
+      "now": "Base operator-auth over Orbit's own operators: configured email-link delivery sends only to an existing active operator, gives the same request response for unknown and inactive addresses, and exchanges a hashed, single-use link, confirmed by POST from a read-only confirmation page within 15 minutes, for a secure native session. An optional linked identity provider (an Auth install) admits only existing operators and stays off until the owner turns it on. Return locations stay inside the operator app. Sign-out revokes that session. A missing or failed mail configuration cannot issue a session. Orbit’s sign-in path, brand and theme are declared in `src/identity.ts`."
+    },
+    "DATA-001": {
+      "change": "changed",
+      "summary": "Export contents: Restated in the 16 October 2026 product target. Status: done.",
+      "was": "The export contains contacts, companies, opportunities, associations, source configuration without secrets, signals, evaluations with their policy versions, recommendations, drafts, outbound messages with their provider statuses, timeline activities, notifications, settings, and audit entries as JSON.",
+      "now": "The buyer can export and restore contacts, companies, opportunities, associations, custom data, source definitions without secrets, signals and captured evidence, evaluations with policy versions, recommendations, drafts, outbound content/status, tasks, timeline, notifications, settings, reports and audit as versioned data. Both supported archive paths disclose their format and eligible receiving state. Installation-local sessions, identity proofs, source/OAuth credentials, delegation authority, private import originals/custody and collaborator/public-form authority do not travel; reconnection and renewed authorization are explicit. DATA-003 extends these guarantees to every target feature. This records Orbit's installation-authority replacement for literal BASE-DATA-001 credential portability; it does not claim that excluded private originals are portable product records."
     }
   },
   "proseChanges": [
     {
       "document": "README.md",
       "change": "changed",
-      "date": "2026-10-14",
-      "summary": "Documents the packaged rer CLI, read-only Google/Microsoft capture setup, Today brief, and local versus hosted backup procedures; adds demo media.",
-      "was": "Local commands used node scripts/rer.mjs; capture documented file intake and future provider adapters.",
-      "now": "Commands use the pinned @runeditrun/rer CLI; Google and Microsoft capture require the owner's OAuth client and live-account proof remains in OWNER-STEPS.md. Today brief and meeting plans are documented. Local .rer archives and hosted Records JSON archives use separate transfer paths."
+      "date": "2026-10-17",
+      "summary": "Commands run through the pinned @runeditrun/rer package and the one-line installer, and hosting is a step-by-step guide to the owner's own Cloudflare account.",
+      "was": "Every command ran through the vendored node scripts/rer.mjs, local sign-in read links from a development outbox, and hosting listed the deploy inputs without a walkthrough.",
+      "now": "Install rer with the one-line installer and run rer dev; local sign-in uses rer dev's private RER_OPEN link and no outbox exists. Hosting is a step-by-step guide (Cloudflare account ID, API token permissions, workers.dev subdomain, a private .dev.vars.deploy file, rer deploy --dry-run, rer deploy, rer deploy --remove). Hosted backups use Orbit's Records archive, not raw D1 export.",
+      "ownerAction": "Install the current rer and use rer commands; the vendored scripts/rer.mjs and the development outbox are gone."
     },
     {
       "document": "AGENTS.md",
       "change": "changed",
-      "date": "2026-10-14",
-      "summary": "Use the pinned packaged rer CLI and Orbit installer; hosted transfers use explicit remote origin and private session file.",
-      "was": "Local operations ran node scripts/rer.mjs through the repository wrapper.",
-      "now": "@runeditrun/rer is pinned exactly; local operations use rer with scripts/installer/local.mjs. Hosted Records transfer adds --target remote --origin HTTPS_ORIGIN --session-file FILE. Preserve native operator identity and applied migration bytes."
+      "date": "2026-10-18",
+      "summary": "Agents use the exactly pinned @runeditrun/rer package with scripts/installer/local.mjs, preserve native operator identity and applied migration bytes, and choose direct SendGrid or the Run Edit Run mail relay explicitly.",
+      "was": "Local operations ran through node scripts/rer.mjs and the repository wrapper.",
+      "now": "@runeditrun/rer is pinned exactly in package.json and pnpm-lock.yaml and local operations use rer with scripts/installer/local.mjs. Direct hosted deployment needs MAIL_FROM and SENDGRID_API_KEY; RER-managed hosting selects MAIL_PROVIDER=rer with MAIL_FROM, MAIL_RELAY_URL and MAIL_API_KEY. Already-applied migration history is preserved and schema changes use new migrations."
     }
   ],
   "extensionPointChanges": [
@@ -59,15 +253,43 @@
       "id": "capture.source.v1",
       "kind": "adapter",
       "change": "added",
-      "summary": "The existing capture.source.v1 contract is now listed in seed.json extensionPoints.adapters and implemented for scoped read-only Google and Microsoft connections alongside file intake; it grants no outreach authority."
+      "summary": "The capture.source.v1 adapter contract is listed in seed.json extensionPoints.adapters and implemented for read-only Google and Microsoft connections beside file intake; it grants no outreach authority."
     }
   ],
   "migrations": [
     {
       "id": "0036_capture_providers.sql",
-      "buyerSteps": "Take a verified backup and stop intake and writes before rer setup (local) or the separately authorized deployment applies this new migration. It adds installation-local capture_oauth and capture_locks tables and their indexes without replacing prior tables or sending messages. Preserve all already-applied migration bytes. Existing file capture needs no provider connection; provider capture requires the owner's OAuth client, ORBIT_ENCRYPTION_KEY and explicit read-only scope selection."
+      "buyerSteps": "Adds installation-local tables for Google and Microsoft capture sign-in state and intake leases; nothing in them travels in archives. No owner action beyond the backup."
+    },
+    {
+      "id": "0037_owner_signin.sql",
+      "buyerSteps": "Adds a table holding only the digest of an owner sign-in grant; no existing table changes. No owner action beyond the backup."
+    },
+    {
+      "id": "0038_import_kit_v22.sql",
+      "buyerSteps": "Extends the import tables additively and carries existing import jobs into them; earlier imports keep their history and Undo. No owner action beyond the backup."
+    },
+    {
+      "id": "0039_sales_pipelines.sql",
+      "buyerSteps": "Adds pipelines and stage rules and puts the existing stages into one default Sales pipeline, keeping the existing stage table's shape. No owner action beyond the backup."
+    },
+    {
+      "id": "0040_sales_tasks.sql",
+      "buyerSteps": "Adds sales task tables, kept apart from delegated handoffs. No owner action beyond the backup."
+    },
+    {
+      "id": "0041_buying_context.sql",
+      "buyerSteps": "Adds stakeholder roles, buying context and secondary company relationship tables beside the existing association table. No owner action beyond the backup."
+    },
+    {
+      "id": "0042_record_ownership.sql",
+      "buyerSteps": "Changes nothing on an installation that never applied the withdrawn first version. That first version, briefly on main, added owner columns; it is declared as a reviewed rewrite in migrations/rewrites.json, and an installation that applied it keeps those columns untouched. No owner action beyond the backup."
+    },
+    {
+      "id": "0044_archive_content_identity.sql",
+      "buyerSteps": "Adds a table recording each hosted restore's archive content digest, so an interrupted restore resumes only with the same archive; it holds no customer data. No owner action beyond the backup."
     }
   ],
   "breaking": false,
-  "agentUpdateInstructions": "Update from v0.1.0 without resetting or replacing installation state. Save a verified backup outside the checkout, preserve native operators, setup identity, records, files, queues, owner changes and every applied migration byte; stop dev/preview, writes, scheduled processing and source intake before updating. Install frozen dependencies with Node 22.20.0 and pnpm 10.12.4; local rer setup applies only pending migration 0036_capture_providers.sql and keeps the existing owner and settings. Verify records and outbound states before resuming; never replay sends. Use MIGRATION-RECOVERY.md for the distinct local and hosted backup/restore paths, including credentials and authority excluded from archives. Configure or reconnect provider sources separately with the owner's OAuth client and encryption key. The Today brief and meeting plans add no sending authority; existing delegation scopes and handoffs without citations remain valid. rer is pinned at 0.2.4. This release adds no capacity promise and claims no live Google/Microsoft account, mail delivery, hosted application deployment or inbound-mail acceptance."
+  "agentUpdateInstructions": "Update from 0.1.0 in place; never reset or replace the installation. Before updating, stop rer dev and hosted writes and take a private backup outside the checkout: locally rer export (an .rer archive; on 0.1.0 node scripts/rer.mjs export), hosted through Records → Export archive after signing in (wrangler d1 export cannot read Orbit's search tables). Install the rer command with the one-line installer, check out v0.2.0, then rer install (Node 22.20.0, pnpm 10.12.4, @runeditrun/rer 0.2.52 pinned exactly) and rer setup locally, or rer deploy --env-file .dev.vars.deploy for a hosted installation: they apply only the pending migrations 0036 to 0042 and 0044 and keep the owner, operators, settings and every row. Preserve every applied migration byte; 0042 is a declared rewrite in migrations/rewrites.json. A direct SendGrid deployment needs no new setting (MAIL_PROVIDER defaults to SendGrid). Afterwards check records, custom fields, drafts and scheduled messages before resuming; never resend an uncertain message without reconciling it. A restored source needs Reconnect source. This release makes no capacity promise and does not claim live Google or Microsoft capture, inbound mail to an Orbit address, delivery outcomes from a SendGrid Event Webhook or the managed relay, none of which its gate exercised."
 }

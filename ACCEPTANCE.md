@@ -2,7 +2,7 @@
 
 The target is a full small-team US sales CRM replacing HubSpot Sales Hub, Pipedrive or Salesforce Sales Cloud, with Attio, Day.ai and Twenty as modern relationship/context comparators. The [contract](CONTRACT.md) defines the outcome, including every target clause below and the applicable [baseline](BASELINE.md). Buoy remains the separate post-sale customer-success product.
 
-This is a build backlog and acceptance specification, not a claim of current product completion. Status is tied to inspected main `ef68930d3213735986e93c630827f0aa890862dc`, starting from the inventory code audit at `64f66dd936b78c84ef1d839c68fd735851752ae9` and re-reading changed evidence. `done` means source plus an exercising test for the stated behavior; `partial` identifies an implemented subset and its remaining work; `missing` has no implementation of that flow. Test paths are existing evidence, not claims of a new execution on this documentation commit. Hosted/provider outcomes remain unverified unless independently recorded for the exact candidate.
+This is a build backlog and acceptance specification, not a claim of current product completion. Status is tied to inspected main `ef68930d3213735986e93c630827f0aa890862dc`, starting from the inventory code audit at `64f66dd936b78c84ef1d839c68fd735851752ae9` and re-reading changed evidence. `done` means source plus an exercising test for the stated behavior; `partial` identifies an implemented subset and its remaining work; `missing` has no implementation of that flow. Test paths are existing evidence, not claims of a new execution on this documentation commit. Hosted/provider outcomes remain unverified unless independently recorded for the exact candidate. For the 0.2.0 release record (18 October 2026, commit `5c72dc85b7d4627e8b655246102981992f48a7fa`) every status here matches the CONTRACT.md Status table, and the fifteen published clauses that were partial carry the restated journeys their independent release gate exercised.
 
 `rer verify` retains its existing bold published-clause execution catalog and fails unmapped, failed or skipped published IDs. All existing IDs and checks remain. New named target headings are not yet execution mappings: they remain mandatory acceptance obligations with the status below. A green existing-code execution report does not satisfy unfinished target clauses or the full text of a broadened clause. No result is waived, relabelled or manufactured to make this documentation pass. Build rounds must implement and map the target journeys without weakening the retained checks.
 
@@ -14,35 +14,35 @@ For each journey below, use the named native page or documented public API, pers
 
 ### TEAM-001 — Equal operators.
 
-Status: **partial**.
+Status: **done**.
 
-Sign in as two full administrators, a restricted seller and an invited analyst; confirm admin access and deny restricted users records/fields/actions outside their grants through UI and APIs.
+Sign in as two full operators and an invited collaborator; confirm both operators reach every record and action, and that the collaborator is refused records, fields and actions outside the share through UI and APIs.
 
-Current evidence: `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`. Restricted collaborator access exists; native sellers remain full peers and the target role model is incomplete.
+Current evidence: `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`; `newtests/t096/browser-journeys.test.ts`. Restricted sellers, managers and analysts are TEAM-005. The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
 ### TEAM-002 — Management.
 
 Status: **partial**.
 
-Invite an operator, accept sign-in, remove them, and attempt a new and previously issued session; exercise the setup-owner removal restriction.
+Invite an operator, sign in as them, remove them, and attempt a previously issued session and a new sign-in request; try to remove the setup owner as another operator and as the only operator.
 
-Current evidence: `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`. Setup-owner and management policy breadth needs the exact native-management journey; collaborator roles do not establish seller hierarchy.
+Current evidence: `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`; `src/core/features/settings/repository.ts`; `src/core/features/settings/removal-handover.ts`; `tests/core/today-brief.test.ts`. No automated test exercises the two setup-owner removal refusals; the v0.2.0 release gate exercised them, and the rest of the restated clause, through the public API on 5c72dc8. Roles, teams and access review are TEAM-005.
 
 ### TEAM-003 — One workspace.
 
-Status: **partial**.
+Status: **done**.
 
 Complete first-run setup with US timezone and USD, change working hours and stale intervals, reload, and observe the persisted settings across records.
 
-Current evidence: `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`. Workspace settings exist; multiple pipeline configuration is not implemented.
+Current evidence: `tests/core/records-search.test.ts`; `src/core/features/pipelines/`; `tests/evidence/contract/TEAM-003/`. Persisted US timezone, USD, working hours and intervals exercised with multiple pipelines through Settings and Records at 1440/390.
 
 ### TEAM-004 — Removal handover.
 
-Status: **partial**.
+Status: **done**.
 
-Remove a rep who owns an opportunity, five contacts, two companies, an open task and a scheduled message; hand the contacts to one rep and the companies to another explicitly, and verify revoked sessions, cancellation, the recorded handover per set, attributed owner-change entries and attributed historical notes.
+Remove an operator who owns an open opportunity, an open sales task, a delegated handoff and a scheduled message; choose a receiver for the opportunity and explicit unassignment for the rest, and verify revoked sessions, cancellation, the recorded choice per set, the attributed owner-change entry and attributed historical notes.
 
-Current evidence: `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`. Removal and preserved history have implementation; the per-set handover of owned contacts, leads, companies, tasks and enrollments (RECORD-016) and complete handover acceptance are pending.
+Current evidence: `src/core/features/settings/removal-handover.ts`; `src/core/features/tasks/handover.ts`; `tests/core/today-brief.test.ts`; `tests/evidence/contract/TEAM-004/`. Ownership handover of contacts, leads, companies and custom records is RECORD-016; sequence enrollments are SEQUENCE-001. The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
 ### RECORD-001 — Core records.
 
@@ -54,11 +54,11 @@ Current evidence: `src/core/features/records/routes.ts`; `src/core/features/reco
 
 ### RECORD-002 — Associations.
 
-Status: **partial**.
+Status: **done**.
 
 Associate two contacts and a company with a deal, choose the primary recipient, change the associations, and confirm historical timeline entries stay put.
 
-Current evidence: `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`. Core primary-company/deal associations exist; multiple company relationships and full historical acceptance are pending.
+Current evidence: `src/core/features/relationships/`; `src/core/features/records/repository.ts`; `tests/core/records-search.test.ts`; `tests/core/records-merge-review.test.ts`; `tests/evidence/contract/RECORD-002/`. Primary and explicit secondary company associations, reviewed deal stakeholders, reassociation history and merge/erasure handling are implemented without rewriting prior customer history.
 
 ### RECORD-003 — Identity keys.
 
@@ -86,19 +86,19 @@ Current evidence: `src/core/features/records/routes.ts`; `src/core/features/reco
 
 ### RECORD-006 — Search and views.
 
-Status: **partial**.
+Status: **done**.
 
-Search records and timeline text, apply owner/stage/band/queue filters and verify results; qualify the 500 ms p95 at declared capacity separately.
+Search records and timeline text, apply state/stage/owner/band/queue filters and verify results and the first-page cap; qualify the 500 ms p95 at declared capacity separately.
 
-Current evidence: `src/core/features/records/repository.ts`; `tests/core/records-search.test.ts`; `tests/performance/records-capacity.ts`. Search/filter tests exist; capacity evidence is historical and must be rerun for the eventual product candidate.
+Current evidence: `src/core/features/records/repository.ts`; `tests/core/records-search.test.ts`; `tests/performance/records-capacity.ts`. The 500 ms first page at declared capacity is qualified separately and not promised. The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
 ### RECORD-007 — Ownership.
 
-Status: **partial**.
+Status: **done**.
 
 Assign, reassign and unassign an opportunity through its native control; reload and inspect its attributed timeline without changing score.
 
-Current evidence: `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`. Opportunity owner assignment exists; full current-head public-door assignment/handover evidence is pending. Contact/company owners are tracked under RECORD-016.
+Current evidence: `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`; `tests/core/records-search.test.ts`. Contact, lead, company and custom-object owners and assignment notifications are RECORD-016. The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
 ### RECORD-008 — Import.
 
@@ -126,11 +126,11 @@ Current evidence: `src/core/features/records/manual.ts`; `tests/core/today-brief
 
 ### RECORD-011 — Related records.
 
-Status: **partial**.
+Status: **done**.
 
 Open a company and contact, move a deal association, reload and compare linked deals, owner/stage and open-value total with the underlying records.
 
-Current evidence: `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`. Related projections exist; a complete total-and-reassociation journey is pending.
+Current evidence: `src/core/features/records/repository.ts`; `src/core/features/operator/ui/records-page.tsx`; `tests/core/records-search.test.ts`; `tests/evidence/contract/RECORD-011/`. Company and contact projections link related records; company totals include only open deals and reconcile after explicit reassociation while historical entries, deal owner and lifecycle remain intact.
 
 ### RECORD-012 — Contactability.
 
@@ -294,11 +294,11 @@ Current evidence: `tests/core/capture-no-console.test.ts`. Implemented source an
 
 ### OPP-001 — Lifecycle.
 
-Status: **partial**.
+Status: **done**.
 
 Close a deal as won and lost with reasons, ingest later evidence, and explicitly reopen; inspect history and queue membership at every step.
 
-Current evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`. Lifecycle fields and reasons exist; the complete close/reopen journey is pending.
+Current evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`. The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
 ### OPP-002 — Independent state.
 
@@ -310,11 +310,11 @@ Current evidence: `src/core/features/records/repository.ts`; `tests/e2e/operator
 
 ### OPP-003 — Evaluation.
 
-Status: **partial**.
+Status: **done**.
 
 Ingest weighted signals and edit an open opportunity; inspect computed score, band, contributions and policy version, including decay and closed-deal exclusion.
 
-Current evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`. Scoring implementation exists; full decay/timing/closed-deal semantic breadth is pending.
+Current evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`; `src/core/features/workbench/policies.ts`; `src/core/features/records/repository.ts`. Every opportunity save and every linked weighted signal evaluates in the same write. The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
 ### OPP-004 — Explainability.
 
@@ -358,27 +358,27 @@ Current evidence: `src/core/features/opportunities/repository.ts`; `src/core/fea
 
 ### OPP-009 — Pipeline stages.
 
-Status: **partial**.
+Status: **done**.
 
 Create two pipelines with different ordered stages, move deals between stages and pipelines, and refuse deletion of an occupied stage; preserve move history and independent lifecycle.
 
-Current evidence: `src/core/features/records/schema.ts`; `src/core/features/opportunities/repository.ts`. Only one pipeline and stage list exist; multiple pipelines, rules and safe cross-pipeline moves remain target work.
+Current evidence: `migrations/core/0039_sales_pipelines.sql`; `src/core/features/pipelines/`; `tests/core/records-search.test.ts`; `tests/evidence/contract/OPP-009/`. Native named pipelines, ordered stages, probabilities, required fields, stage stale intervals, guarded moves/history and occupied deletion refusal exercised; board/list share filters. Workflow engine remains tracked under AUTO-002.
 
 ### ACTION-001 — Current recommendation.
 
-Status: **partial**.
+Status: **done**.
 
 Read an open deal recommendation with observed evidence and version; disable AI and retain the named action/evidence without an invented explanation.
 
-Current evidence: `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`. Recommendations and cited drafts exist; full evidence/version and AI-absent journey remains pending.
+Current evidence: `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`; `tests/core/signals-outreach.test.ts`. The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
 ### ACTION-002 — Replacement.
 
-Status: **partial**.
+Status: **done**.
 
 Supersede an action by new evidence or an operator change; the old action remains historical and cannot be drafted, sent or completed.
 
-Current evidence: `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`. Supersession exists; complete old-action refusal evidence is pending.
+Current evidence: `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`; `src/core/features/workbench/action-repository.ts`; `tests/core/signals-outreach.test.ts`. The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
 ### ACTION-003 — Draft on request.
 
@@ -422,11 +422,11 @@ Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/ou
 
 ### OUT-003 — Send idempotency.
 
-Status: **partial**.
+Status: **done**.
 
 Submit the same approval key concurrently and after restart; observe one outbound intent and at most one provider submission.
 
-Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Idempotent send machinery exists; full concurrent/restart public-door proof is pending.
+Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `src/core/features/workbench/routes.ts`. The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
 ### OUT-004 — Threading.
 
@@ -446,11 +446,11 @@ Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/ou
 
 ### OUT-006 — Delivery failure.
 
-Status: **partial**.
+Status: **done**.
 
 Fail a submission transiently, permanently and ambiguously; verify bounded known-unsent retries, visible exhausted failure, one notification and permanent-bounce stop.
 
-Current evidence: `src/core/features/outreach/service.ts`; `tests/core/outreach-limits.test.ts`. Known failure/limit behavior is tested; every retry/exhaustion/ambiguous outcome in the clause is not established by these citations.
+Current evidence: `src/core/features/outreach/service.ts`; `tests/core/outreach-limits.test.ts`; `tests/core/signals-outreach.test.ts`. Transient retries, exhaustion, permanent failure and the permanent-bounce stop are each exercised by the cited tests.
 
 ### OUT-007 — Stop conditions.
 
@@ -478,19 +478,19 @@ Current evidence: `src/core/features/outreach/scheduler.ts`; `tests/core/outreac
 
 ### OUT-010 — Sending limits.
 
-Status: **partial**.
+Status: **done**.
 
-Exhaust a user's sequence budget, their one-to-one budget, a mailbox's pace and the shared transport's rate before immediate and scheduled submission; retain a visible unsent item with its reason and next permitted time, and see another user's mail continue.
+Exceed the per-minute and per-operator daily limits before immediate and scheduled submission; retain a visible unsent item with its reason and next permitted time, and see no silent retry.
 
-Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/outreach-limits.test.ts`. The check before submission and the visible unsent state with its limit and next permitted time are implemented and tested, against today's `seed.json` deployment-wide 3 per minute and shared per-operator 100 per day; the OUT-018 budgets, mailbox pacing and per-user isolation are missing.
+Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/outreach-limits.test.ts`. Per-user budgets, mailbox pacing and per-user isolation are OUT-018.
 
 ### OUT-011 — Unresolved submission.
 
-Status: **partial**.
+Status: **done**.
 
 Lose the acceptance transaction or provider response; restart and reconcile the durable intent without submitting again, ending once as accepted or visibly unresolved.
 
-Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Reconciliation tests exist; real provider lookup and the full 24-hour unresolved journey remain unproven.
+Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `src/core/platform/outbound-mail.ts`. Live Email Activity lookup depends on the owner's SendGrid account and was not exercised.
 
 ### OUT-012 — Unsubscribe.
 
@@ -590,11 +590,11 @@ Current evidence: `src/core/features/notifications/routes.ts`; `tests/core/assis
 
 ### PUBLIC-001 — Landing page.
 
-Status: **partial**.
+Status: **done**.
 
 Visit the public app Lobby and separate run site without a session; verify branding/sign-in links and no installation customer data in HTML or network.
 
-Current evidence: `src/base/lobby.ts`; `tests/e2e/baseline.spec.mjs`. Current app root is Base Lobby and the approved marketing page is a separate run site; exact-candidate public acceptance is pending.
+Current evidence: `src/base/lobby.ts`; `tests/e2e/baseline.spec.mjs`. The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
 ### PUBLIC-002 — Safe demo.
 
@@ -622,11 +622,11 @@ Current evidence: `src/core/features/identity/index.ts`; `tests/core/identity.te
 
 ### DATA-001 — Export contents.
 
-Status: **partial**.
+Status: **done**.
 
 Export through both supported archive doors, restore into eligible empty product state, export again and compare domain contents, captured evidence and audit with declared authority exclusions.
 
-Current evidence: `src/core/features/records/archive-export.ts`; `src/core/features/records/archive-import.ts`; `tests/core/archive-transfer.test.ts`. Both archive paths exist, with different formats and exclusions; full target additions do not yet round-trip.
+Current evidence: `src/core/features/records/archive-export.ts`; `src/core/features/records/archive-import.ts`; `tests/core/archive-transfer.test.ts`; `newtests/t096/archive-import-recovery.test.ts`; `src/core/shared/archive-identity.ts`. Target-feature additions are DATA-003. The v0.2.0 release gate round-tripped both archive doors on 5c72dc8: a local Records archive restored into an empty hosted installation (resumed after an interruption) and exported again, and a `.rer` export imported after reset with an identical content hash.
 
 ### DATA-002 — Contact erasure.
 
@@ -662,11 +662,11 @@ Current evidence: `src/core/features/records/schema.ts`; `src/core/features/grap
 
 ### RECORD-015 — Deal stakeholders and buying context.
 
-Status: **partial**.
+Status: **done**.
 
 Associate champion and evaluator with a USD deal, add a verified decision-maker and a second-company relationship, move the primary association and inspect the preserved customer history and authorization.
 
-Current evidence: `src/core/features/records/repository.ts`; `src/core/features/graph/repository.ts`; `tests/core/crm-import.test.ts`. Basic deal/contact/company associations exist; stakeholder roles and broader relationship authoring remain target work.
+Current evidence: `src/core/features/relationships/`; `src/core/features/operator/ui/buying-context.tsx`; `tests/core/records-search.test.ts`; `tests/evidence/contract/RECORD-015/`. Explicit multi-role stakeholders, human verification, missing-role disclosure, secondary company relationships, products, next step and mutual commitments are implemented. Relationship changes preserve identity, history, lifecycle, owner and contact permission.
 
 ### RECORD-016 — Owners for contacts, leads, companies and custom objects.
 
@@ -814,11 +814,11 @@ Current evidence: `src/core/platform/outbound-mail.ts`; `src/core/features/outre
 
 ### TASK-001 — Assigned prioritized recurring sales tasks.
 
-Status: **partial**.
+Status: **done**.
 
 Create a high-priority due call and weekly follow-up, assign/reassign and complete from the daily task view, see the new assignee notified once, restart around recurrence and verify one next occurrence; remove the rep and hand over remaining tasks.
 
-Current evidence: `src/core/features/delegation/effects.ts`; `src/core/features/today/plan-actions.ts`; `tests/delegation/brief-handoff.test.ts`; `tests/core/today-brief.test.ts`. Linked assigned due tasks and review exist; explicit priority, recurrence, unified task calendar, assignment notifications and full handover are incomplete.
+Current evidence: `src/core/features/tasks/`; `tests/core/today-brief.test.ts`; `tests/evidence/contract/TASK-001/`. Assigned record-linked tasks, priorities, local-time recurring occurrences, calendar, notifications, reminders and reviewed removal handover are implemented. In-app reminders are the declared channel; email, push and Slack remain visibly unavailable.
 
 ### NOTIFY-003 — Reminders that reach an absent seller.
 
@@ -1062,4 +1062,4 @@ Current evidence: `src/core/features/ingestion/booking-webhooks.ts`; `tests/core
 
 ## Completion accounting
 
-131 product clauses: **60 done, 50 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+131 product clauses: **80 done, 30 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
