@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Route sign-in and reviewed customer mail through the selected Run Edit Run relay in Managed and Assisted previews, while keeping direct SendGrid deployments and local customer mail. Declare both providers and pin rer 0.2.49.
+- Route sign-in and reviewed customer mail through the selected Run Edit Run relay in Managed and Assisted previews, while keeping direct SendGrid deployments and local customer mail. Declare both providers and pin rer 0.2.52.
 - Resume hosted restores using a digest of archive content, preserve exact part checks, explain renewed confirmation, resume saved export/restore progress on return, and label completed exports as finished.
 
 - Add Settings → Delivery outcomes: the exact SendGrid Event Webhook Post URL, the events to tick, the signing key and the deploy command, with connected/not connected and the last signed event. Sent messages say “delivery not tracked” until then, and show Bounced or Not delivered once events arrive.
