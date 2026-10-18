@@ -6823,7 +6823,7 @@
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
-      "sha256": "2cce51a3100280c1960d0d5e3c75b7de800413e47a72c8603d0ffc191a737ca0",
+      "sha256": "2b5e8d157e8a27ec2c4aad603c2ba7bf863a5e2d8b3e5c04c7fb3ed0686ab03d",
       "executable": false
     },
     "tests/rer/operator-actions-journey.mjs": {
