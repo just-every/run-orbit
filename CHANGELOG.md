@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep the owner’s contact search available while changing collaborator grants; full native reads check live identity and membership without treating an unrelated collaborator policy change as lost access.
+
 - Route sign-in and reviewed customer mail through the selected Run Edit Run relay in Managed and Assisted previews, while keeping direct SendGrid deployments and local customer mail. Declare both providers and pin rer 0.2.52.
 - Resume hosted restores using a digest of archive content, preserve exact part checks, explain renewed confirmation, resume saved export/restore progress on return, and label completed exports as finished.
 

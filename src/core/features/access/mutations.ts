@@ -8,7 +8,7 @@ export class ScopedMutations {
     return [...this.events.buildDomainEventStatements({schemaVersion:1,eventId,tenantId:context.tenantId,workspaceId:context.workspaceId,aggregateType:resource.type,aggregateId:resource.id,aggregateVersion:revision,kind:operation,occurredAt:now,receivedAt:now,actor:context.principal,correlationId:context.requestId,payloadRef:payload,accessEpoch:context.policyEpoch},{id:crypto.randomUUID(),scope:context,actor:context.principal,operation,resource,occurredAt:now,detailsRef:payload,correlationId:context.requestId})];
   }
   async read<T>(context:ActorContext,sql:string,bindings:readonly unknown[]=[]):Promise<D1Result<T>> {
-    const checks=this.access.fence(context).map(s=>this.db.prepare(s.sql).bind(...s.bindings));
+    const checks=this.access.fence(context,'read').map(s=>this.db.prepare(s.sql).bind(...s.bindings));
     try{return (await this.db.batch([...checks,this.db.prepare(sql).bind(...bindings)])).at(-1)! as D1Result<T>;}
     catch(error){if(/CHECK constraint failed/.test(String(error)))throw new AccessError('permission','Authority changed before the read.');throw error;}
   }

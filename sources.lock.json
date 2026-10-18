@@ -671,7 +671,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "a6f263ecdaac77d392d1d82329aaf4d0799ccb516f9b0d99fce5674921a155fe",
+      "sha256": "26bc07bb59baeec0d6e0379a1f4e2afe223a95fed08772eb730e2ed62de02c57",
       "executable": false
     },
     "CLAUDE.md": {
@@ -699,7 +699,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "d3623a308027ba15eb0e70cbb51ffdccabede12575c0aa68dd61fcb60573db3b",
+      "sha256": "26ccce16aac75da0c4366d4520307e603722ccca77b6579858c5fc6f6e8e6839",
       "executable": false
     },
     "DEMO.md": {
@@ -3311,7 +3311,7 @@
       "executable": false
     },
     "src/core/features/access/base-query-policy.ts": {
-      "sha256": "2738aef72cf16be720afb0047ec7726d284adadf074c54f447cd4a0bcd255528",
+      "sha256": "88b651c0a24acf1691f1a62a58b41d7571d95f6f649603db2c84dbb5eab4ec75",
       "executable": false
     },
     "src/core/features/access/collaborator-console.tsx": {
@@ -3359,7 +3359,7 @@
       "executable": false
     },
     "src/core/features/access/mutations.ts": {
-      "sha256": "b52d4106dad993de66cf5479ab5e672b0fbbd544a5e94586522e81d0d0072f8d",
+      "sha256": "d930c6179a78cdc16dc8434f8fbb9ad17358207ec5c8f7973cd2ed7b8bdc8b2f",
       "executable": false
     },
     "src/core/features/access/native-boundary.ts": {
@@ -3387,7 +3387,7 @@
       "executable": false
     },
     "src/core/features/access/service.ts": {
-      "sha256": "9d4bd2954811b900ea44c22d6b4ef1a9f122a7c990461cda09809ff8254da615",
+      "sha256": "8828e54e362b38f6541ae503adc39f1bbea602793c6cdca0c8e015753a0c04a2",
       "executable": false
     },
     "src/core/features/access/shared-record-detail.tsx": {
