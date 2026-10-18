@@ -671,7 +671,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "183a4c0544aa201060c2978c5e0daa096c4fe7c910dc38f90ecba1df5d18ec2f",
+      "sha256": "a6f263ecdaac77d392d1d82329aaf4d0799ccb516f9b0d99fce5674921a155fe",
       "executable": false
     },
     "CLAUDE.md": {
@@ -699,7 +699,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "6621bb4b68aff30c78dc33cf3b6491de6bf3f6183dafa0ffc2cf37ad19e1f103",
+      "sha256": "d3623a308027ba15eb0e70cbb51ffdccabede12575c0aa68dd61fcb60573db3b",
       "executable": false
     },
     "DEMO.md": {
@@ -967,7 +967,7 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "adbc6d403b78e90559cc228e9c4e0233670364d156dbb96e042184ce704aab9b",
+      "sha256": "1b162c4eb5e5b304912aeabc58ed7484471fb7d8c1b02e60e3a930eb1fe887da",
       "executable": false
     },
     "LICENSE": {
@@ -2399,7 +2399,7 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "270151e0bd046d390599f254c1ee6a321b3d1dd652afbe86cdfeaa7ef52f39c5",
+      "sha256": "834afe325d2e4086212af834e584f5120b9bcce1becc0b24ecc63b93aa17ab8f",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
@@ -2415,7 +2415,7 @@
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "b245d3efdc282385153218ada650d1af23e6cb0a6812747b5c9a06f46a33fb7e",
+      "sha256": "8d50c697c92a0842ec4580fc03a1d40c2885f7ab7edf85b40e29d5bf0fdc6771",
       "executable": false
     },
     "pnpm-workspace.yaml": {
@@ -6795,7 +6795,7 @@
       "executable": false
     },
     "tests/rer/checkout.mjs": {
-      "sha256": "bd37dea7dd7e9f0233e3d2505f81e16e7c606f6357df51778ad64f47aa94b826",
+      "sha256": "a8f5f4a1a97bce0ec594010c871ae404a0dca1ebe73fdaf45dac8ee4c809c5a6",
       "executable": false
     },
     "tests/rer/editor-provider.mjs": {
@@ -6803,7 +6803,7 @@
       "executable": false
     },
     "tests/rer/hosted-scheduling.mjs": {
-      "sha256": "e232b8eae30f33b31ff57a7376bf5197ec901953c919d8b4cca65a13889aa877",
+      "sha256": "fc497403c13725769625225f2e21fea9ff49f487f3f0276662ad288bf1831204",
       "executable": false
     },
     "tests/rer/identity.test.mjs": {
@@ -6815,7 +6815,7 @@
       "executable": false
     },
     "tests/rer/managed-mail.mjs": {
-      "sha256": "3472672e9b07f0d8a5631b24781fa6bd4590705e77d1d50cfc318eedec1397f1",
+      "sha256": "7d68984fadfec3a61e74abb1a2153169945a7c6af7283e57c0b7c5e5627f422e",
       "executable": false
     },
     "tests/rer/onboarding-journey.mjs": {
@@ -6823,7 +6823,7 @@
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
-      "sha256": "f3f984e4ccf1bcc22d0f73c3d3d9f98b11c442c48481692cc0aa0657866d6fda",
+      "sha256": "2cce51a3100280c1960d0d5e3c75b7de800413e47a72c8603d0ffc191a737ca0",
       "executable": false
     },
     "tests/rer/operator-actions-journey.mjs": {
@@ -7020,10 +7020,6 @@
     },
     "tests/support/mail-transport-client.ts": {
       "sha256": "5aedd823c1b5c5ac7f2951d004d430380f4cba704155b389e51e766671680077",
-      "executable": false
-    },
-    "tests/support/native-server-load.mjs": {
-      "sha256": "e9bed93789ec7324dc277320066e42484b9f74f4c9b3c8494e8cfdf24ec9fb1b",
       "executable": false
     },
     "tests/support/observed-capacity-worker.ts": {

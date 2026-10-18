@@ -3,7 +3,6 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {unstable_DevEnv} from 'wrangler';
 import {scheduleOutreach} from './scheduled-outreach.mjs';
-import {waitForNativeServerCapacity} from '../support/native-server-load.mjs';
 
 /** Cloudflare has not delivered a Cron tick in this fresh-install fixture. */
 export async function holdCloudflareTimer(checkout){
@@ -13,7 +12,6 @@ export async function holdCloudflareTimer(checkout){
 
 /** The native CLI session continues on the same host under hosted HTTPS settings. */
 export async function hostedScheduling({checkout,page,port,bindings,opportunityURL,evidence}){
- await waitForNativeServerCapacity();
  const origin=`https://127.0.0.1:${port}`,runtime=new unstable_DevEnv(),submissions=[];
  try{
   const worker=await runtime.startWorker({

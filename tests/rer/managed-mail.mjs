@@ -2,11 +2,9 @@ import assert from 'node:assert/strict';
 import {join} from 'node:path';
 import {unstable_DevEnv} from 'wrangler';
 import {expect} from '@playwright/test';
-import {waitForNativeServerCapacity} from '../support/native-server-load.mjs';
 
 /** Continue the real workspace and session; fake only the managed provider's HTTP edge. */
 export async function managedMail({checkout,page,port,bindings,opportunityURL,evidence,width}){
- await waitForNativeServerCapacity();
  const origin=`https://127.0.0.1:${port}`,runtime=new unstable_DevEnv(),submissions=[];
  const secret=value=>({type:'secret_text',value});
  const shot=async name=>page.screenshot({path:join(evidence,`managed-${name}-${width}.png`),fullPage:true});
