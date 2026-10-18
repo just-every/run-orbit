@@ -47,7 +47,7 @@ The homepage calls Orbit an alternative to HubSpot, Pipedrive and Salesforce. CO
 ### Back up first, then update
 
 1. Back up and keep the archive private, outside the checkout. Locally, stop `rer dev` and run `rer export --output exports/before-0.2.0.rer` (on 0.1.0: `node scripts/rer.mjs export --output exports/before-0.2.0.rer`). On a hosted installation, sign in and use Records → Import, duplicate review and data export → Export archive → Prepare export → Download completed archive. `wrangler d1 export` cannot read Orbit's search tables (MIGRATION-RECOVERY.md).
-2. Install the `rer` command with the one-line installer from the Run page if you don't have it. Orbit 0.2.0 pins `@runeditrun/rer` 0.2.52 and replaces `node scripts/rer.mjs`.
+2. Install the `rer` command with the one-line installer from the Run page if you don't have it. Orbit 0.2.0 pins `@runeditrun/rer` 0.2.59 and replaces `node scripts/rer.mjs`.
 3. Check out v0.2.0, then run `rer install` and `rer setup`. Locally, setup applies the eight pending migrations and keeps your owner, operators, settings and every row. For a hosted installation, run `rer deploy --env-file .dev.vars.deploy` (with your `--environment NAME`, if you gave one), which applies the same migrations there. Never reset to update.
 4. Check your records, custom fields, drafts and scheduled messages before you resume work. Reconnect each source (Sources → Reconnect source) only if you restored from an archive.
 
