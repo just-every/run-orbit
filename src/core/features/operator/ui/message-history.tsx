@@ -4,6 +4,7 @@ import { workbenchRequest } from './workbench-api';
 import { useOperatorResource } from './use-operator-resource';
 import { OperatorState } from './operator-shell';
 import { formatDate } from './formatters';
+import { FollowUpOutcomes, type Outcomes } from './follow-up-outcomes';
 interface Scheduler {ready:boolean;lastRunAt:string|null;failed:boolean}
 interface Message {id:string;draftId:string;state:string;subject:string;body:string;recipientEmail:string;providerMessageId:string|null;failure:string|null;retryAfter:string|null;scheduledAt:string|null;acceptedAt:string|null;deliveredAt:string|null}
 /** A sent message's state in plain words; until delivery events are connected, acceptance is all Orbit can know. */
@@ -12,7 +13,7 @@ function outcome(state:string,tracked:boolean){
  return state==='failed'?'failed · not delivered':state;
 }
 export function MessageHistory({opportunityId}:{opportunityId:string}) {
- const load=useCallback(()=>workbenchRequest<{messages:Message[];mailProvider?:string;scheduler:Scheduler|null;outcomesTracked:boolean}>(`/opportunities/${opportunityId}/messages`),[opportunityId]),resource=useOperatorResource(`messages:${opportunityId}`,load);
+ const load=useCallback(()=>workbenchRequest<{messages:Message[];outcomes:Outcomes;mailProvider?:string;scheduler:Scheduler|null;outcomesTracked:boolean}>(`/opportunities/${opportunityId}/messages`),[opportunityId]),resource=useOperatorResource(`messages:${opportunityId}`,load);
  const [error,setError]=useState(''),[confirmation,setConfirmation]=useState<{id:string;localTime:string}|null>(null),[busy,setBusy]=useState(false);
  const pending=resource.data?.messages.some(message=>['scheduled','queued'].includes(message.state))??false;
  useEffect(()=>{if(!pending)return;const timer=setInterval(resource.reload,15000);return()=>clearInterval(timer);},[pending,opportunityId]);
@@ -23,6 +24,7 @@ export function MessageHistory({opportunityId}:{opportunityId:string}) {
  }catch(e){setError((e as Error).message);resource.reload();}finally{setBusy(false);}}
  return <section id="approved-outreach" className="operator-surface workbench-form"><h2>Approved outreach</h2><p>Open/click not tracked. Open/click reports in the timeline are inferred evidence and never confirm a human response.</p>{error&&<OperatorState kind="error">{error} <a href="#approved-outreach">Review the approved message and recipient time again</a></OperatorState>}{resource.error&&<OperatorState kind="error">{resource.error.message}</OperatorState>}
   {pending&&resource.data?.scheduler&&<p role="status">{resource.data.scheduler.ready?`Hosted minute timer active. Last completed: ${formatDate(resource.data.scheduler.lastRunAt!)}.`:resource.data.scheduler.failed?'The hosted timer failed. Due sends go out when Orbit is next used; check the deployment’s Worker errors.':resource.data.scheduler.lastRunAt?'The hosted minute timer is overdue. Due sends go out when Orbit is next used until the timer resumes.':'Cloudflare has not started its timer yet. Due sends go out when Orbit is next used until Cloudflare starts its timer.'}</p>}
+  {resource.data&&<FollowUpOutcomes outcomes={resource.data.outcomes}/>}
   {resource.data?.messages.length===0&&<p>No outbound messages approved.</p>}
   {resource.data?.messages.map(message=><article key={message.id}><h3>{message.subject}</h3><p data-testid="message-outcome">{message.recipientEmail} · {outcome(message.state,resource.data!.outcomesTracked)}</p>{message.state==='accepted'&&!resource.data!.outcomesTracked&&<p>Provider acceptance does not confirm delivery. Check the recipient’s mailbox or provider activity.</p>}{message.acceptedAt&&<p>Mail provider acceptance receipt · {formatDate(message.acceptedAt)}</p>}{message.deliveredAt&&<p>Delivery reported by mail provider · {formatDate(message.deliveredAt)}</p>}{message.providerMessageId&&<details><summary>Audit details</summary><p>Provider receipt: {message.providerMessageId}</p></details>}{message.failure&&<p role="status">{message.failure}</p>}{message.retryAfter&&<p>Next eligible attempt: {formatDate(message.retryAfter)}</p>}{message.scheduledAt&&<p><strong>{message.state==='scheduled'?'Will send':'Scheduled for'}: {formatDate(message.retryAfter??message.scheduledAt)}</strong> (your browser local time). {message.state==='scheduled'&&'Orbit checks due messages when you use it and when the hosted minute timer runs.'}</p>}
    {message.state==='scheduled'&&<button onClick={()=>void cancel(message.id)}>Cancel scheduled message</button>}

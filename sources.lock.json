@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "1aafeb3b1ef4158318fdcfe8be7e4bdd15b36e17344b0478e5d7f0eeb9e69b3a",
+      "sha256": "5a579e9d57cc98f7e1d49e7417945c33e3b45ea83ac475c3a602e4300b0d9201",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "95263d53887b2130240cb33ed552e3c93b7bdbd08f65f2055fec85970ca7f972",
+      "sha256": "ccfef48e7c01bde97709c4cee213824c866d573076cccfe794c424cdd21b5053",
       "executable": false
     },
     "DEMO.md": {
@@ -4259,7 +4259,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/message-history.tsx": {
-      "sha256": "0ba21875fffa49d00b3fd31774c4767feb2f5c1c02d41114b9ab6ecfb96bbd8d",
+      "sha256": "3e42aa53921fc47bcba5f28c328923dc880dfa2383b86c2105a255087cc6f335",
       "executable": false
     },
     "src/core/features/operator/ui/notifications-page.tsx": {
@@ -4539,7 +4539,7 @@
       "executable": false
     },
     "src/core/features/outreach/stop-reason.ts": {
-      "sha256": "9137bbc15495803d9eeecc2fc8b4976890836ec6e684ed4fcfebcb03e3ff5b2a",
+      "sha256": "4fc4a18a78ec7ecacfde801de3ba6235ec65a4a9066eb99f618c969894d795b6",
       "executable": false
     },
     "src/core/features/outreach/time.ts": {
@@ -4559,7 +4559,7 @@
       "executable": false
     },
     "src/core/features/pipelines/movement.ts": {
-      "sha256": "7fffec749342aba773732c31eef88c377100534a5789ede5b82cecea913d5907",
+      "sha256": "ad0dc962c04b0cef468992e23988bdef974d74e44576e58071ed94e5687a1566",
       "executable": false
     },
     "src/core/features/pipelines/repository.ts": {
@@ -5015,7 +5015,7 @@
       "executable": false
     },
     "src/core/features/records/repository.ts": {
-      "sha256": "d7997f63a9087cfafbfec044325b546d3f454a3e5e82a17dfa1f47a40b0f45ae",
+      "sha256": "6c93b3d07a6e4b0bbc00b2341177deb16daf31c3370cb138ba01c991c550047f",
       "executable": false
     },
     "src/core/features/records/routes.ts": {
@@ -5327,7 +5327,7 @@
       "executable": false
     },
     "src/core/features/workbench/routes.ts": {
-      "sha256": "5f894051a56c615158df07fa0230aaaa7b39e01cbf90485f8456ea514247e3b9",
+      "sha256": "dd734cd6b6818bd1400084ac04eb68e20d8d1ed102eccea130b4e02f8d5a1004",
       "executable": false
     },
     "src/core/features/workbench/sender-test.ts": {
@@ -6659,7 +6659,7 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "312646bb00ec518c381712569e226bd30a6454dc19179d4afbe646f4429fec10",
+      "sha256": "b6a3f31393dabd34d972665723ba5966d8a884406842baf3f306977fdb337968",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {

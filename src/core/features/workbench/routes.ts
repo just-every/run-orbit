@@ -1,3 +1,4 @@
+import { followUpOutcomes } from '../outreach/follow-up-outcomes';
 import {senderTestRoutes} from './sender-test';
 import {schedulerStatus} from '../outreach/scheduler';
 import {deliveryOutcomesStatus,deliveryOutcomesTracked,type DeliveryOutcomeKeys} from '../outreach/delivery-outcomes';
@@ -39,7 +40,7 @@ export function createWorkbenchRoutes(database: D1Database, mail?: OutboundMail,
     const input=z.object({contactId:id,subject:z.string().trim().min(1).max(998),body:z.string().trim().min(1).max(100000)}).safeParse(await context.req.json());if(!input.success)return context.json({error:'Choose a recipient and enter a subject and message.'},400);
     return context.json(await outreach.createDraft(context.req.param('id'),input.data,context.get('operator').operatorId),201);
   });
-  app.get('/opportunities/:id/messages',async context=>context.json({messages:await outreach.messages(context.req.param('id')),mailProvider:mail?.provider??'sendgrid',scheduler:hosted?await schedulerStatus(database):null,outcomesTracked:deliveryOutcomesTracked(mailEvents)}));
+  app.get('/opportunities/:id/messages',async context=>context.json({messages:await outreach.messages(context.req.param('id')),outcomes:await followUpOutcomes(database,context.req.param('id')),mailProvider:mail?.provider??'sendgrid',scheduler:hosted?await schedulerStatus(database):null,outcomesTracked:deliveryOutcomesTracked(mailEvents)}));
   app.post('/opportunities/:id/recommendation',async c=>{await evaluateOpportunity(database,c.req.param('id'),c.get('operator').operatorId,'Operator requested a new recommendation');return c.json({refreshed:true});});
   app.post('/recommendations/:id/complete',async c=>{const input=z.object({outcome:z.enum(['completed','skipped']),note:z.string().max(5000).default('')}).safeParse(await c.req.json());if(!input.success)return c.json({error:'Choose completed or skipped and an optional note.'},400);await completeAction(database,c.req.param('id'),c.get('operator').operatorId,input.data.outcome,input.data.note);return c.json({completed:true});});
   app.post('/drafts/:id/review',async c=>{const input=z.object({revision:z.number().int().positive(),reviewedUpdatedAt:z.iso.datetime(),recipientContactId:id,recipientEmail:z.email(),subject:z.string().min(1).max(998),body:z.string().min(1).max(100000)}).safeParse(await c.req.json());if(!input.success)return c.json({error:'Review the latest changed draft and its exact recipient and content.'},400);return c.json(await confirmDraftReview(database,c.req.param('id'),c.get('operator').operatorId,input.data));});

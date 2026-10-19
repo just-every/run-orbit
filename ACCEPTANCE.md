@@ -752,6 +752,8 @@ Current evidence: `src/core/features/forms/service.ts`; `src/core/features/forms
 
 Status: **missing**.
 
+Before mailbox sequence sending ships, a mailbox disconnect must pause that mailbox's enrollments visibly with the reason, and a genuine reply on the provider's own thread or conversation must exit them under SEQUENCE-002.
+
 Before mailbox sending ships, it must satisfy OUT-015’s separate acceptance/delivery/inferred-report/human-reply provenance and genuine-reply stop semantics, with open/click not tracked unless OUT-016 is explicitly enabled.
 
 Connect each provider, review recipient/subject/body/signature/attachment, send once and verify provider Sent, a real recipient reply and Orbit threading; revoke before a scheduled send and cause a timeout to demonstrate visible uncertainty with no duplicate or transport switch.
@@ -806,6 +808,8 @@ Current evidence: `src/core/features/outreach/service.ts`; `tests/core/outreach-
 
 Status: **missing**.
 
+Before sequence steps with CC ship, a genuine reply from any external participant of a step's thread must exit that enrollment under SEQUENCE-002.
+
 Before multi-recipient sending ships, it must satisfy OUT-015’s exact-identity genuine-reply attribution for every external recipient; automatic, foreign and ambiguous replies never complete awaiting-response or stop follow-up.
 
 Through Gmail, receive a captured thread from a contact with two CC'd colleagues, one of them unknown. Reply all from Orbit, adding the team's internal sales engineer in CC and another existing contact in BCC. Verify that the pre-filled To and CC lists leave out the rep's own mailbox; that the unknown colleague needs an explicit choice and becomes a contact with basis `inbound conversation`; that the provider records one message with exactly the approved To, CC and BCC lists and no BCC header in delivered copies; that the reply is logged once on each external contact and once on their company and the linked deal; that the BCC address is absent from the other contacts' timelines and the other recipients' copies; and that a later reply from the CC'd colleague threads back onto their contact, company and deal and closes the awaiting-response obligation. Add a do-not-contact contact in CC and see the send refused, naming them; remove them and approve the re-rendered message. Add a one-off external address and an erased contact's address: the first is sent with its basis recorded, and the second is refused without naming the person. Repeat the reply-all journey through Microsoft 365, and once through `mail.sender.v1` with one-to-one opt-out turned on, where one recipient's opt-out through the message's link stops only that recipient (OUT-020).
@@ -840,23 +844,31 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 Status: **partial**.
 
+Before enrollments ship, they must satisfy SEQUENCE-002: an enrollment exits atomically on a genuine reply (including one from an external participant of a step's thread), a meeting booking, a stage change, a won or lost close, an unsubscribe, a permanent bounce or a human stop; reassignment, revoked permission and mailbox disconnect pause it visibly with the reason; and restart, replay or a late job never revives an exited enrollment.
+
 As a seller, create and share with the team a five-step email/call/manual-LinkedIn sequence whose second email step is threaded and CCs the account's sales engineer, and see a read-only user refused authoring; enroll eligible contacts with and without deals with exact-content approvals, complete the manual task, advance business time and restart mid-step; verify one action per due step, the second email arriving in the first email's thread with the internal CC, OUT-018 per-user budget enforcement and no unapproved send.
 
 Current evidence: `src/core/features/outreach/scheduler.ts`; `src/core/features/drafts/service.ts`; `tests/core/outreach-limits.test.ts`. Reviewed single scheduled messages exist; multi-step definitions, rep authoring and sharing, deal-less enrollments, step threading, internal CC and manual step execution are missing.
 
 ### SEQUENCE-002 — Immediate sequence exits and accountable outcomes.
 
-Status: **partial**.
+Status: **done**.
 
 Before sequence exits ship, they must satisfy OUT-015: only a genuine attributed human reply exits on reply; automatic mail and inferred open/click reports never do.
 
+Until SEQUENCE-001 enrollments exist, these exits govern each reviewed single scheduled message (OUT-009). A genuine attributed reply or meeting booking (OUT-007, OUT-015), an unsubscribe, a permanent bounce or do-not-contact (RECORD-012), any stage move of its deal (every move counts until a sequence configures which stages exit) and a won or lost close each cancel the affected scheduled messages in the same commit as the event, with the reason recorded on the message; a human cancel does the same. Reopening the deal, replaying the event, restarting or a late dispatch revives none of them, and a new send needs a fresh review. For a single scheduled message, removing the user who approved it cancels it and it needs a fresh approval, which is stricter than a pause; reassigning the deal leaves the message with that approving user. Pausing with a reason on reassignment, revoked permission and mailbox disconnect belongs to enrollments. Each deal's Approved outreach view shows Follow-up outcomes since its first provider-accepted message: accepted, delivery-reported, human replies, meetings booked and stage advances counted separately with the won or lost outcome, and open/click reports and automatic replies listed as not counted.
+
+SEQUENCE-001 and SEQUENCE-003 inherit enrollment exits, pause with a reason on reassignment, revoked permission and mailbox disconnect, and no revival of an exited enrollment; AUTO-001 inherits them for workflow-triggered enrollments; OUT-019 inherits exits on a genuine reply from any external participant of a step's thread; OUT-013 inherits mailbox-disconnect pause and provider-thread exits; REPORT-001 inherits sequence-level outcome reporting. Each must pass this clause's acceptance before shipping.
+
 Race an approved due step with each reply/booking/stage/stop event, including a reply on the step's thread from a colleague the buyer CC'd, restart and replay; verify no prohibited send, one exit reason and separate reply/meeting/deal-outcome measures.
 
-Current evidence: `src/core/features/ingestion/stop-repository.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`. Contact-level scheduled-message stop rules exist; enrollment/stage exits, thread-participant exits and outcome reporting are missing.
+Current evidence: `tests/core/signals-outreach.test.ts` — “OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not”; `src/core/features/pipelines/movement.ts`; `src/core/features/records/repository.ts`; `src/core/features/outreach/follow-up-outcomes.ts`; `src/core/features/operator/ui/follow-up-outcomes.tsx`; `tests/evidence/contract/SEQUENCE-002/`. Public HTTP races approved scheduled sends with an automatic reply, an open report, a genuine reply, a stage move and a close, then reopens, replays and dispatches late: no prohibited send, one recorded exit reason each, and separate outcome measures, inspected on the deal at 1440/390. Enrollment exits and pauses are inherited as stated above.
 
 ### SEQUENCE-003 — Bulk enrollment with one reviewed batch approval.
 
 Status: **missing**.
+
+Before batch enrollment ships, each enrollment in a batch must satisfy SEQUENCE-002's exits, pauses with a reason and no-revival rules on its own, without stopping the rest of the batch.
 
 From a saved list of 50 eligible contacts (ten of them on no deal) and 3 ineligible contacts, enroll all of them in a five-step sequence with four email steps in one action; inspect the excluded reasons, open any rendered message, edit one and remove one, then approve once. Advance business time and verify one provider submission per due email step per remaining recipient with no further approval, a per-rep limit of 40 per day deferring the rest visibly to the next window, a merge-field change on one contact holding only that recipient's step for review, and a workflow-triggered contact waiting in the owner's approval queue until its batch is approved.
 
@@ -865,6 +877,8 @@ Current evidence: No implementation found. Reviewed single scheduled messages ex
 ### AUTO-001 — Configurable sales workflows and visible execution.
 
 Status: **partial**.
+
+Before workflow-triggered enrollment or workflow email ships, it must satisfy SEQUENCE-002's exits, pauses with a reason and no-revival rules.
 
 Preview and activate a stale-deal rule, trigger it twice, change the record and revoke permission before dispatch; inspect one authorized task/notification, one AUTO-002 field write applied without a proposal, no stale field write/send, and an actionable failed webhook run after restart.
 
@@ -897,6 +911,8 @@ Current evidence: `src/core/features/records/manual.ts`; `src/core/features/capt
 ### REPORT-001 — Sales dashboards and saved reports.
 
 Status: **partial**.
+
+Before sequence reports ship, they must show SEQUENCE-002's delivered, reply, meeting and stage/revenue measures separately and never count an open as success.
 
 Build and save a US monthly report for two pipelines containing won/lost/open deals and rep activities, reconcile every total and reason by drill-through, export and reopen it after access revocation and late evidence.
 
@@ -1074,4 +1090,4 @@ Current evidence: `tests/core/source-onboarding.test.ts` — “BOUNDARY-001 cur
 
 ## Completion accounting
 
-131 product clauses: **85 done, 25 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+131 product clauses: **86 done, 24 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.

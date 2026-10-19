@@ -1,4 +1,5 @@
 import {audit,mutationJob,RecordError,requireRecord,timeline} from '../records/shared';
+import {stageChangedReason} from '../outreach/stop-reason';
 import {assertRequiredFields,stagePolicy,stagePolicyFence,type StagePolicy} from './stage-policy';
 export function movementPayload(previous:StagePolicy,current:StagePolicy){return {
  previous:previous.stage_id,current:current.stage_id,
@@ -20,6 +21,7 @@ export async function moveOpportunity(db:D1Database,id:string,stageId:string,rev
   ...stagePolicyFence(db,[previous,current],{id,stage_id:deal.stage_id,updated_at:deal.updated_at}),
   db.prepare('UPDATE opportunities SET stage_id=?,updated_at=? WHERE id=?').bind(stageId,now,id),
   db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Opportunity stage changed',updated_at=? WHERE opportunity_id=?").bind(now,id),
+  db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE opportunity_id=? AND state='scheduled'").bind(stageChangedReason,now,id),
   mutationJob(db,id,actor,'Opportunity stage changed'),...timeline(db,actor,'opportunity',id,'stage.changed',payload,now),audit(db,actor,'stage.changed','opportunity',id,payload)
  ]);}catch(error){if(/runtime_controls.value|FOREIGN KEY constraint/.test(String(error)))throw new RecordError(409,'The opportunity or pipeline rules changed. Reload before moving.');throw error;}
  return {id};
