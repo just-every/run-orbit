@@ -6515,7 +6515,7 @@
       "executable": false
     },
     "tests/core/launch-inherited-stop.test.ts": {
-      "sha256": "1f0e6e27c96c437ea33dfc4ff4377776fab6e1d0d413b813e28dbdfe4910e0f4",
+      "sha256": "654e5e7a37e7c4ea4713858dfbc33989df4afdfb703406f955766d587b29bc0c",
       "executable": false
     },
     "tests/core/launch-provider-conflicts.test.ts": {

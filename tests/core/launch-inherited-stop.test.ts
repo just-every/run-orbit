@@ -61,7 +61,16 @@ test('DATA-001 restore disables inherited approvals after all tables load, prese
   const roundtrip=(await new TestDataRepository(normal.db).export()).tables;
   const byId=(a:Record<string,any>,b:Record<string,any>)=>String(a.id).localeCompare(String(b.id));
   assert.deepEqual([...roundtrip.operators].sort(byId),[...archive.tables.operators,...retainedOperators].sort(byId),'Restore keeps exact archive identities and destination operators');
-  for(const [name,rows] of Object.entries(archive.tables))if(!['audit_entries','operators'].includes(name))assert.equal(await archiveHash(roundtrip[name]),await archiveHash(rows),`Normal archive table ${name} remains exact`);
+  const expectedMessages=archive.tables.outbound_messages.map(row=>{
+   if(row.state!=='scheduled')return row;
+   const restored=roundtrip.outbound_messages.find(candidate=>candidate.id===row.id)!;
+   assert.equal(restored.state,'cancelled','Restore removes source approval even for a contactable recipient and active operator');
+   assert.match(String(restored.failure),/restore.*review/i);
+   assert.ok(Date.parse(String(restored.updated_at))>=Date.parse(archive.exportedAt),'Cancellation records the restore time');
+   return {...row,state:'cancelled',failure:restored.failure,updated_at:restored.updated_at};
+  });
+  for(const [name,rows] of Object.entries(archive.tables))if(!['audit_entries','operators'].includes(name))assert.equal(await archiveHash(roundtrip[name]),await archiveHash(name==='outbound_messages'?expectedMessages:rows),`Normal archive table ${name} preserves every field except renewed dispatch authority`);
+  let normalSends=0;await new OutreachService(normal.db,{async send(){normalSends++;return {providerMessageId:'test-only'};}}).dispatchDue(due);assert.equal(normalSends,0,'A normal restore cannot dispatch the source installation approval');
   // The destination retains suppression for an imported alias, not only its primary mailbox.
   const stopped=await target.records.save('contact',{name:'Destination stop',email:alias.email,contactability:'do_not_contact'},target.actor);
   await new TestDataRepository(target.db).remove('contact',stopped.id,target.actor);
