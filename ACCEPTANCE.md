@@ -752,6 +752,8 @@ Current evidence: `src/core/features/forms/service.ts`; `src/core/features/forms
 
 Status: **missing**.
 
+Before mailbox sending ships, it must satisfy OUT-015’s separate acceptance/delivery/inferred-report/human-reply provenance and genuine-reply stop semantics, with open/click not tracked unless OUT-016 is explicitly enabled.
+
 Connect each provider, review recipient/subject/body/signature/attachment, send once and verify provider Sent, a real recipient reply and Orbit threading; revoke before a scheduled send and cause a timeout to demonstrate visible uncertainty with no duplicate or transport switch.
 
 Current evidence: No implementation found. No implementation of this complete target flow was found.
@@ -766,15 +768,19 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 ### OUT-015 — Honest open and reply tracking.
 
-Status: **partial**.
+Status: **done**.
 
-Ingest accepted/delivered/open events and genuine/automatic/foreign replies; show each distinct status and provenance on the same deal, label unknown opens honestly, and verify only a genuine linked reply exits follow-up.
+Ingest accepted/delivered/open events and genuine/automatic/foreign replies; show separate provider acceptance, reported delivery, inferred historical open/click reports and human replies with source and occurred/recorded time on account/contact/deal history. Duplicate reports have one effect; automatic replies, foreign senders and ambiguous threads leave scheduled follow-up unchanged, including after manual linking of nonhuman evidence. Without tracking, show `open/click not tracked`. Only a genuine exact-identity linked reply stops follow-up; add no pixel, redirect token or tracking collection.
 
-Current evidence: `src/core/features/outreach/provider-events.ts`; `src/core/features/outreach/reply-sender.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/launch-reply-authority.test.ts`. Provider events and reply attribution exist; end-to-end mailbox/open reporting is not complete.
+OUT-013 inherits these reporting/provenance and genuine-reply semantics for mailbox sending; OUT-016 inherits disclosed opt-in collection and proxy/automated classification; OUT-019 inherits genuine multi-recipient attribution; SEQUENCE-002 inherits genuine-reply exits. Each must pass the corresponding expanded journey before shipping.
+
+Current evidence: `tests/core/launch-reply-authority.test.ts` — “OUT-015 automatic/foreign replies never stop follow-up; inferred reports and untracked opens stay distinct”; `tests/core/signals-outreach.test.ts`; `src/core/features/outreach/provider-replies.ts`; `src/core/features/operator/ui/mail-evidence.tsx`. Signed public HTTP and populated account/deal history at 1440/390 exercise current behavior. Existing unsolicited reports are inferred historical provider evidence only, under ct’s 19 October 06:03Z approval; no new tracking collection or live-mailbox completion is claimed.
 
 ### OUT-016 — Disclosed per-message open and click tracking.
 
 Status: **missing**.
+
+Before tracking collection ships, it must satisfy OUT-015’s source/time, inferred/unreliable report and proxy/automated classifications; reports never become human replies or stop follow-up.
 
 Enable open and click tracking with disclosure, approve a tracked one-to-one message sent through OUT-013 Gmail and a tracked sequence step sent through Microsoft 365, open each in a real mail client and click a link; verify one inferred open and one click signal on the deal, a 302 to the unchanged reviewed destination, one deduplicated real-time rep notification, a proxy prefetch and a scanner click labeled automated, no cookie or script, no sequence exit or high band from the open, and `not tracked` on an untracked message; mark the contact do-not-track, erase another contact and verify nothing further is recorded.
 
@@ -799,6 +805,8 @@ Current evidence: `src/core/features/outreach/service.ts`; `tests/core/outreach-
 ### OUT-019 — To, CC and BCC, reply and reply all.
 
 Status: **missing**.
+
+Before multi-recipient sending ships, it must satisfy OUT-015’s exact-identity genuine-reply attribution for every external recipient; automatic, foreign and ambiguous replies never complete awaiting-response or stop follow-up.
 
 Through Gmail, receive a captured thread from a contact with two CC'd colleagues, one of them unknown. Reply all from Orbit, adding the team's internal sales engineer in CC and another existing contact in BCC. Verify that the pre-filled To and CC lists leave out the rep's own mailbox; that the unknown colleague needs an explicit choice and becomes a contact with basis `inbound conversation`; that the provider records one message with exactly the approved To, CC and BCC lists and no BCC header in delivered copies; that the reply is logged once on each external contact and once on their company and the linked deal; that the BCC address is absent from the other contacts' timelines and the other recipients' copies; and that a later reply from the CC'd colleague threads back onto their contact, company and deal and closes the awaiting-response obligation. Add a do-not-contact contact in CC and see the send refused, naming them; remove them and approve the re-rendered message. Add a one-off external address and an erased contact's address: the first is sent with its basis recorded, and the second is refused without naming the person. Repeat the reply-all journey through Microsoft 365, and once through `mail.sender.v1` with one-to-one opt-out turned on, where one recipient's opt-out through the message's link stops only that recipient (OUT-020).
 
@@ -839,6 +847,8 @@ Current evidence: `src/core/features/outreach/scheduler.ts`; `src/core/features/
 ### SEQUENCE-002 — Immediate sequence exits and accountable outcomes.
 
 Status: **partial**.
+
+Before sequence exits ship, they must satisfy OUT-015: only a genuine attributed human reply exits on reply; automatic mail and inferred open/click reports never do.
 
 Race an approved due step with each reply/booking/stage/stop event, including a reply on the step's thread from a colleague the buyer CC'd, restart and replay; verify no prohibited send, one exit reason and separate reply/meeting/deal-outcome measures.
 
@@ -1064,4 +1074,4 @@ Current evidence: `src/core/features/ingestion/booking-webhooks.ts`; `tests/core
 
 ## Completion accounting
 
-131 product clauses: **82 done, 28 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+131 product clauses: **83 done, 27 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
