@@ -22,11 +22,11 @@ Current evidence: `src/core/features/access/service.ts`; `src/core/features/reco
 
 ### TEAM-002 — Management.
 
-Status: **partial**.
+Status: **done**.
 
 Invite an operator, sign in as them, remove them, and attempt a previously issued session and a new sign-in request; try to remove the setup owner as another operator and as the only operator.
 
-Current evidence: `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`; `src/core/features/settings/repository.ts`; `src/core/features/settings/removal-handover.ts`; `tests/core/today-brief.test.ts`. No automated test exercises the two setup-owner removal refusals; the v0.2.0 release gate exercised them, and the rest of the restated clause, through the public API on 5c72dc8. Roles, teams and access review are TEAM-005.
+Current evidence: `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`; `src/core/features/settings/repository.ts`; `src/core/features/settings/removal-handover.ts`; `tests/core/today-brief.test.ts`; `tests/core/local-owner.test.ts`. The named HTTP journey proves both setup-owner refusals, successor-enabled self-removal, session revocation, suppressed sign-in and audit. Roles, teams and access review are TEAM-005.
 
 ### TEAM-003 — One workspace.
 

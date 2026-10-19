@@ -689,13 +689,13 @@ Judged from the code and tests at commit `ef68930d3213735986e93c630827f0aa890862
 
 Status is an implementation judgment, not a live-provider or deployed-product acceptance claim. The inventory audit at `64f66dd936b78c84ef1d839c68fd735851752ae9` is the starting point; evidence changed by main `ef68930d3213735986e93c630827f0aa890862dc` was re-read. `done` requires implementation and an exercising test; `partial` names the implemented subset and remaining obligation. These source tests were inspected; this documentation round does not claim to have rerun their runtime suites. Existing historical release results belong to their recorded source commits. BASELINE.md remains independently applicable and is not included in these product-clause counts.
 
-For the 0.2.0 release record (18 October 2026, commit `5c72dc85b7d4627e8b655246102981992f48a7fa`), the fifteen published clauses that were partial were restated to what that commit ships and its independent release gate proved, and each larger obligation stays with the target clause named in its text. TEAM-002 stays partial only because no automated test exercises its setup-owner refusals; the other fourteen are done.
+For the 0.2.0 release record (18 October 2026, commit `5c72dc85b7d4627e8b655246102981992f48a7fa`), the fifteen published clauses that were partial were restated to what that commit ships and its independent release gate proved, and each larger obligation stays with the target clause named in its text. The 19 October TEAM-002 automated HTTP journey now proves its setup-owner refusals and permitted self-removal; all 79 published clauses are done.
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 78 | 1 | 0 | 79 |
+| Published | 79 | 0 | 0 | 79 |
 | Target and push further | 2 | 29 | 21 | 52 |
-| All | 80 | 30 | 21 | 131 |
+| All | 81 | 29 | 21 | 131 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
