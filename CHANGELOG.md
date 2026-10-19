@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.3.0 — 2026-10-19
+## 0.3.0 — 2026-10-20
 
-Changes since v0.2.0 (2026-10-18). An independent release gate ran every homepage job on commit `7c2a636` before this record: once locally at desktop and phone widths, started with the README's one line, and once on a hosted Cloudflare installation with real SendGrid mail. On the hosted installation it took a backup, removed the deployment, deployed again and restored every row. It also updated a populated 0.2.0 installation in place, and every row was kept.
+Changes since v0.2.0 (2026-10-18). An independent release gate ran every homepage job on commit `7c2a636` before this record: once locally at desktop and phone widths, started with the README's one line, and once on a hosted Cloudflare installation with real SendGrid mail. On the hosted installation it took a backup, removed the deployment, deployed again and restored every row. Sending budgets, opt-out links and the end of follow-up on stage moves landed after that gate, so their journeys were run again on commit `0b2bb14`, locally at both widths with real SendGrid mail, and a populated 0.2.0 installation was updated in place to that commit with every row kept. Mentions and the move to rer 0.2.72 landed after that, so the mentions journey was run on commit `ee5d210`, locally at both widths, a populated 0.2.0 installation was updated in place to that commit with every row kept, and an archive made by 0.2.0 restored into it with every row unchanged.
 
 ### What you get
 
@@ -10,25 +10,37 @@ Changes since v0.2.0 (2026-10-18). An independent release gate ran every homepag
 - **Form spam protection.** Published forms refuse submissions that fill a hidden field, arrive too fast or come too often from one form or network. You can also turn on Cloudflare Turnstile for a form. Each refusal is counted with its reason, and suspected spam waits in a list under Forms → Read spam and refusals, where a person can release or erase it.
 - **Honest reply and open tracking.** Timelines keep provider acceptance, reported delivery, inferred open reports and real replies apart, with their source and time. An automatic reply (an out-of-office, say), a reply from someone else or an ambiguous one never stops or completes a follow-up. Orbit adds no open or click tracking of its own.
 - **Everything travels in an archive.** Export and restore carry every current kind of data: custom fields and relationships, pipelines and stage history, recurring tasks, reviewed form submissions and spam, captured mail and agent handoff decisions. Restored scheduled messages lose their send approval, so nothing goes out until you approve it again.
+- **Follow-up ends when the deal moves.** A scheduled follow-up is cancelled in the same step as any stage move, a won or lost close, a genuine reply or booking, an unsubscribe, a permanent bounce or do-not-contact, and says why. Reopening the deal or replaying the event never brings it back. Each deal's Approved outreach shows Follow-up outcomes: messages the provider accepted, reported deliveries, human replies, meetings booked, stage advances and the deal outcome, each counted on its own, with opens and automatic replies listed as not counted.
+- **Sending budgets for each person.** Each user has their own one-to-one budget (1,000 messages a rolling day by default), so one person's volume never holds up another's, under a shared rate of 100 messages a minute. Settings → Sending capacity shows what each person has used and lets the owner change both; each change is audited. A message over a limit stays unsent and names the limit, its value and when it may be sent.
+- **Opt-out links by message type.** Settings → Opt-out links decides, for one-to-one email, sequence steps and workflow email, whether Orbit adds List-Unsubscribe headers and an unsubscribe link. One-to-one email starts without them on a new installation; an updated installation keeps them on, as 0.2.0 sent them, until you change it. A rep can remove opt-out from one message as relationship or transactional mail, or add it, and the draft is reviewed again. The approval binds that choice, and the message is delivered exactly so. Each change is audited.
+- **Mentions.** Type `@` in a note, a logged call or meeting, a task note or a handoff to mention a colleague; autocomplete offers your active operators and the collaborators who accepted their invitation. Each colleague you mention gets one notification that opens the exact entry, editing notifies only people newly mentioned, and deleting the entry withdraws notifications not yet read. A collaborator who cannot see the record cannot be mentioned until you share it with them or remove the mention; a mention never grants access. Notifications → Mentions lists every entry that mentions you. Mentions stay internal: they never reach a customer or an AI request.
 - **Connected products.** Settings → Connected products names the products Orbit works beside (booking, meetings, calling, support, signatures, billing, accounting, Slack, Mailchimp and Buoy), the job each one owns, and whether it reaches Orbit. Today signed Calendly and Cal.com bookings do; the rest say plainly that they are not available in Orbit.
 - **Setup-owner protection.** Another operator cannot remove the operator who set Orbit up, and the last administrator cannot remove themselves.
 - **Update in place.** An installation on 0.2.0 updates without a reset and keeps every operator, record and setting.
 
 ### Not in this release
 
-The homepage calls Orbit an alternative to HubSpot, Pipedrive and Salesforce. CONTRACT.md describes that full product, and the code is still behind it: all 79 published clauses are done, but 21 target clauses are missing and 25 are partial (see the Status table). In particular:
+The homepage calls Orbit an alternative to HubSpot, Pipedrive and Salesforce. CONTRACT.md describes that full product, and the code is still behind it: all 79 published clauses are done, but 20 target clauses are missing and 24 are partial (see the Status table). In particular:
 
-- Mail is sent only through SendGrid (or the managed relay), one recipient at a time. There is no sending from your own Gmail or Microsoft 365 mailbox (OUT-013), no CC, BCC or reply-all (OUT-019), no templates (OUT-014) and no opt-in open or click tracking (OUT-016). Sequences are partial (SEQUENCE-001, SEQUENCE-002), and bulk enrollment is missing (SEQUENCE-003).
+- Mail is sent only through SendGrid (or the managed relay), one recipient at a time. There is no sending from your own Gmail or Microsoft 365 mailbox (OUT-013), no CC, BCC or reply-all (OUT-019), no templates (OUT-014) and no opt-in open or click tracking (OUT-016). There are no multi-step sequences yet (SEQUENCE-001 is partial), and bulk enrollment is missing (SEQUENCE-003).
 - Every operator sees every record. Roles and private records are partial (TEAM-005). Only deals have owners; contacts, companies and custom records do not (RECORD-016).
-- There are no quotes or signatures (QUOTE-001), no weighted forecasts (FORECAST-001), no shared dashboards (REPORT-002), no workflows that write records (AUTO-002), no file attachments (RECORD-018) and no mentions (RECORD-017).
+- There are no quotes or signatures (QUOTE-001), no weighted forecasts (FORECAST-001), no shared dashboards (REPORT-002), no workflows that write records (AUTO-002) and no file attachments (RECORD-018).
 - Forms are fixed contact forms. Mapping fields to company, deal or custom properties and posting directly from your own site are still to come (FORM-001 is partial).
 - There is no Salesforce migration (MIGRATE-003). Orbit has no Zoom, Slack, billing, accounting, help-desk, Mailchimp or Buoy integrations (INTEGRATE-002 to INTEGRATE-008), and Connected products lists them as not available. Booking tools reach Orbit through Sources (INTEGRATE-001 is partial). Calling is partial (CALL-001, CALL-002).
-- Sending limits are 3 messages a minute for the whole installation and 100 a day per operator (OUT-010). Per-user budgets and mailbox pacing are OUT-018.
+- Mentions are partial (RECORD-017): a mentioned collaborator has no notification inbox yet, so they cannot open their mention; there are no team mentions (TEAM-005), and mentions notify in the app only, not by email, push or Slack (NOTIFY-003).
+- Sending budgets cover one-to-one mail today. Sequence budgets and pacing per mailbox arrive with sequences and mailbox sending (OUT-018).
 - This release makes no capacity promise. The limits in `seed.json` are estimates until a load test runs.
 - The release gate did not exercise live Google or Microsoft capture, inbound mail to an Orbit address, delivery outcomes from a SendGrid Event Webhook, the managed mail relay, Cloudflare Turnstile on a form, or the AI conflict check. Each needs the owner's own accounts, keys, domain or Managed hosting.
 
+### Fixed before release
+
+- The release qualification's full-capacity archive check compared the restored installation with the source and found one extra operator, membership and provision. Restore keeps the restoring installation's own operator on purpose, so that whoever restores is never locked out; the check now sets that operator's rows aside and checks them exactly, and every other table must still match the source row for row.
+- Verification occasionally failed to start a test Worker ("Emitted Worker exited before readiness"): the test chose a free port and released it, and Wrangler's own listeners could take that port first. Test ports now come from a range the operating system never hands out on its own.
+- An archive made by 0.2.0 could not be restored into this release: the opt-out migration (`0047_opt_out_settings.sql`) keeps one-to-one opt-out on for an installation that already has people, and the restore refused to skip that step. Orbit now runs on rer 0.2.72, which applies that step to the restored data, so a 0.2.0 archive restores with every row and one-to-one opt-out kept on.
+
 ### Known issues
 
+- On the managed mail relay (Managed hosting), Orbit cannot add opt-out links yet, so it refuses every message that needs one with "This relay cannot carry your opt-out link yet (OUT-013)". Only a reply in a thread the recipient has answered is sent there, labeled as sent without opt-out. A one-to-one message without opt-out (the setting off, or opt-out removed as relationship or transactional mail) is sent as before. Your own SendGrid account carries opt-out normally.
 - A restore brings back imported contacts and companies, but not their import history: archives leave out the import tables, so an import made before the backup cannot be undone on the restored installation.
 - Scheduling a draft that was written before another message to the same deal was sent is refused with "Revision already approved, changed, or is no longer permitted". The refusal is correct (the deal's recommendation changed), but the message does not say so; write a new draft.
 - While a restore holds the workspace, notification polling answers 503 and fills the browser console. It stops when the restore ends.
@@ -37,13 +49,15 @@ The homepage calls Orbit an alternative to HubSpot, Pipedrive and Salesforce. CO
 ### Back up first, then update
 
 1. Back up and keep the archive private, outside the checkout. Locally, stop `rer dev` and run `rer export --output exports/before-0.3.0.rer`. On a hosted installation, sign in and use Records → Import, duplicate review and data export → Export archive → Prepare export; Orbit emails you a "Confirm it's you" link first, then Download completed archive. `wrangler d1 export` cannot read Orbit's search tables (MIGRATION-RECOVERY.md).
-2. Check out v0.3.0, then run `rer install` and `rer setup`. Orbit 0.3.0 pins `@runeditrun/rer` 0.2.63. Locally, setup applies the one pending migration and keeps your owner, operators, settings and every row. For a hosted installation, run `rer deploy --env-file .dev.vars.deploy` (with your `--environment NAME`, if you gave one), which applies the same migration there. Never reset to update.
-3. No new setting is needed. `ORBIT_FORM_TURNSTILE_SECRET` is optional, only for a form you opt in to Cloudflare Turnstile.
+2. Check out v0.3.0, then run `rer install` and `rer setup`. Orbit 0.3.0 pins `@runeditrun/rer` 0.2.72. Locally, setup applies the three pending migrations and keeps your owner, operators, settings and every row; if you changed the owner email under Settings, set `OWNER_EMAIL` in `.dev.vars` to that address first, as setup asks. For a hosted installation, run `rer deploy --env-file .dev.vars.deploy` (with your `--environment NAME`, if you gave one), which applies the same migrations there. Never reset to update.
+3. No new setting is needed. `ORBIT_FORM_TURNSTILE_SECRET` is optional, only for a form you opt in to Cloudflare Turnstile. Check Settings → Sending capacity and Settings → Opt-out links once: default limits rise to 100 messages a minute shared and 1,000 a user per rolling day, and one-to-one opt-out stays on until you change it.
 4. Check your records, custom fields, drafts and scheduled messages before you resume work.
 
 ### Migrations
 
 - `0045_form_abuse.sql`: adds two tables for refused form submissions, one for refusal details and one for the suspected-spam values a person can release or erase. No existing table changes.
+- `0046_sending_capacity.sql`: adds an empty table for the owner's changes to the shared sending rate and each user's one-to-one budget; without a row the defaults apply. No existing table changes.
+- `0047_opt_out_settings.sql`: adds the opt-out setting for each message type, each draft's opt-out choice and the opt-out state each approval binds. An installation that already has users keeps one-to-one opt-out on; messages approved before the update keep their original unsubscribe group. No existing table changes.
 
 ## 0.2.0 — 2026-10-18
 
