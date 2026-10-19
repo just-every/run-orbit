@@ -1,4 +1,5 @@
 import {BuyingContext} from './buying-context';
+import {DealRisks} from './deal-risks';
 import {OpportunityTimeline} from './opportunity-timeline';
 import {OpportunityEvidence} from './opportunity-evidence';
 import {HandoffTasks} from './handoff-tasks';
@@ -31,7 +32,7 @@ export function OpportunityPage(){
  <OpportunityEvidence opportunity={opportunity} presentation={presentation}/>
  <section className="operator-surface operator-detail__section" data-testid="opportunity-drafts"><h2>Follow-up drafts</h2>{drafts.length?<ul className="operator-draft-list">{drafts.map(draft=><li key={draft.id}><Link to="/app/drafts/$id" params={{id:draft.id}}><strong>{draft.subject}</strong><span>{draft.recipientEmail} · Revision {draft.revision}</span></Link></li>)}</ul>:<p>No follow-ups written yet.</p>}</section>
  <HandoffTasks opportunityId={id} onChange={resource.reload}/>
- <BuyingContext kind="opportunity" recordId={id} onChanged={()=>void resource.reload()}/>
+ <BuyingContext kind="opportunity" recordId={id} onChanged={()=>void resource.reload()}/><DealRisks dealId={id}/>
  <OpportunityTimeline opportunity={opportunity} presentation={presentation} reload={resource.reload}/>
  <EvidenceActions opportunity={opportunity} reload={resource.reload} mode="activity"/>
  <details className="operator-surface operator-detail__section"><summary>Audit details</summary><section data-testid="current-evaluation"><h2>Current evaluation</h2>{opportunity.evaluation?<><p>Policy {opportunity.evaluation.policyVersion} · {opportunity.evaluation.status}</p><p>Evaluated {formatDateTime(opportunity.evaluation.evaluatedAt,presentation)}</p></>:<p>No evaluation yet.</p>}</section><section data-testid="current-recommendation"><h2>Recommendation record</h2>{rec&&<><p>{label(rec.actionType)} · Policy {rec.policyVersion}</p><p>{rec.id}</p><p>{rec.evidenceSignalIds.join(', ')}</p></>}<RecommendationRefresh opportunityId={id} reload={resource.reload}/></section><ul>{opportunity.signals.map(signal=><li key={signal.id}>{signal.id} · {signal.type} · {signal.source} · {signal.linkingBasis}</li>)}</ul><ul>{opportunity.timeline.map(entry=><li key={entry.id}>{entry.id} · {entry.kind} · Occurred {formatDateTime(entry.occurredAt,presentation)} · Recorded {formatDateTime(entry.recordedAt,presentation)} · Actor {entry.actorName} ({label(entry.actorType)}) · source {entry.sourceName}</li>)}</ul></details>

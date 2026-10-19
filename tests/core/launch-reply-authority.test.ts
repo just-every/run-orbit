@@ -7,7 +7,7 @@ import {archiveHash} from '../../src/core/features/records/archive-schema';
 import {generateKeyPairSync,sign} from 'node:crypto';
 import {createMailEventRoutes} from '../../src/core/features/outreach/provider-routes';
 
-test('OUT-015 automatic/foreign replies never stop follow-up; inferred reports and untracked opens stay distinct',async()=>{
+test('OUT-015 automatic/foreign replies never stop follow-up; inferred reports and untracked opens stay distinct; AGENT-002 reported opens without a reply become an inferred, cited deal risk',async()=>{
  const f=await launchFixture();try{
   const a=await f.customer(),b=await f.customer(),sent=await f.message(a.contactId,a.opportunityId,'queued'),scheduled=await f.message(a.contactId,a.opportunityId),post=signedReplies(f.db);
   const foreign='visitor@elsewhere.test';
@@ -55,6 +55,10 @@ test('OUT-015 automatic/foreign replies never stop follow-up; inferred reports a
   const beforeReports=await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(scheduled.id).first();
   for(const kind of ['open','click']){const item=event(kind);assert.equal((await report(item)).status,200);assert.equal((await report(item)).status,200);}
   assert.deepEqual(await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(scheduled.id).first(),beforeReports,'Open and click reports never stop follow-up');
+  const risks=await(await f.request(`risks/${a.opportunityId}/findings`)).json() as {evidence:{id:string;label:string;confidence:string}[];findings:{kind:string;citations:{evidenceId:string}[];inference:{source:string}|null}[]};
+  const opened=risks.findings.find(finding=>finding.kind==='opens-no-reply')!;assert.ok(opened,'Reported opens with no human reply are a deal risk');assert.equal(opened.inference?.source,'rule');
+  const cited=opened.citations.map(item=>risks.evidence.find(evidence=>evidence.id===item.evidenceId)!);assert.equal(cited[0]!.label,'Accepted send');assert.equal(cited[0]!.confidence,'observed');
+  assert.ok(cited.length>1&&cited.slice(1).every(item=>item.confidence==='inferred'),'Each open report is cited as inferred evidence, never as a reply');
   for(const kind of ['opportunity','company','contact']){
    const id=kind==='opportunity'?a.opportunityId:kind==='company'?company.id:a.contactId;
    const response=await f.request(`records/${kind}/${id}`);assert.equal(response.status,200);

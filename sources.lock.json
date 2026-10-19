@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "89ada6e1d05e9f191dc2993ff553994b94cdb097723c23d1f33eb16b8e3027db",
+      "sha256": "1aafeb3b1ef4158318fdcfe8be7e4bdd15b36e17344b0478e5d7f0eeb9e69b3a",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "e937a347c7b3516b1a9a7b2c3eff20b291664b93ddae02f38d13487fe0030976",
+      "sha256": "95263d53887b2130240cb33ed552e3c93b7bdbd08f65f2055fec85970ca7f972",
       "executable": false
     },
     "DEMO.md": {
@@ -3283,7 +3283,7 @@
       "executable": false
     },
     "src/core/app/app.ts": {
-      "sha256": "9cd37f82b64da489f9df6464fbf5e48db3cd341f541715518a519ec09b7ad905",
+      "sha256": "487c979492de5fa1673b9224515fa717fe4cae44e8b4d92c8aa05eb9c0c590b9",
       "executable": false
     },
     "src/core/app/demo.css": {
@@ -4158,6 +4158,14 @@
       "sha256": "7d0618b013d6249151dd8cd18277678f831e5ef8a4963f750a76a28902f6444d",
       "executable": false
     },
+    "src/core/features/operator/ui/deal-risk-finding.tsx": {
+      "sha256": "b491645c599e84466a760bb764464edf393f2120710e8608634dc961516b34c3",
+      "executable": false
+    },
+    "src/core/features/operator/ui/deal-risks.tsx": {
+      "sha256": "4077e05807084b5bfffd375466ad7015ecf62584e65bd8ba030166c498995600",
+      "executable": false
+    },
     "src/core/features/operator/ui/delete-timeline-entry.tsx": {
       "sha256": "21e828b6f741510e68e0fcaf0454505ee70a71284d0ca727e3c38700917b600b",
       "executable": false
@@ -4307,7 +4315,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-page.tsx": {
-      "sha256": "d309849ff3eb9382f0f42d4bae9e7fe7f7061e2b6e6381dafee1bbf0aa07c9f4",
+      "sha256": "1e4ac15ac87808d445d2d0b29000ad59165b6908a0bdb5820e2277f954b8cd77",
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-timeline.tsx": {
@@ -5084,6 +5092,26 @@
     },
     "src/core/features/relationships/snapshot.ts": {
       "sha256": "3a25d3023d7da69c185f0be13a9d38c5fa10948c381d5673b451e28f7932c249",
+      "executable": false
+    },
+    "src/core/features/risks/actions.ts": {
+      "sha256": "623c659318f9d831e290529d06c88f165cd13c764a86604b3ab3b838b8afd582",
+      "executable": false
+    },
+    "src/core/features/risks/conflicts.ts": {
+      "sha256": "5ef46bfe938db9b267e91c52e29fc6eea4dfc7415b18fb94e22876f4f1d401e1",
+      "executable": false
+    },
+    "src/core/features/risks/evidence.ts": {
+      "sha256": "ad5b75d0f56fda21273e27ff8b76da0df9da36fd8d50d085adee3fd7d60967e7",
+      "executable": false
+    },
+    "src/core/features/risks/findings.ts": {
+      "sha256": "22b77e219f90dbab69fb20f53cbf4bd29887f890083bb9e6c9e4450853358734",
+      "executable": false
+    },
+    "src/core/features/risks/routes.ts": {
+      "sha256": "1a5dbaf5670e0d1d544bbda64328ac164e6b3c225d4f82ed3117c687dcefb312",
       "executable": false
     },
     "src/core/features/settings/connected-products.ts": {
@@ -6547,7 +6575,7 @@
       "executable": false
     },
     "tests/core/launch-reply-authority.test.ts": {
-      "sha256": "40ca686b46d4668c86fc78ecd92664f53c68a4538e0b722acd5546e3179261f2",
+      "sha256": "475d36e08c5c3301bfbfe964202415b5d44e3f6606555abf4fcd2ed9dd5ff84a",
       "executable": false
     },
     "tests/core/launch-reply-sender.test.ts": {
@@ -6639,7 +6667,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "fd228727a1298b7dbd55cdc64867ebc5f6ad9f3ca44d4191c3085c30126f6243",
+      "sha256": "b71e0ebca28164fe4444e8bb7cb5b7a82769e467dedfd1c16f9c44fa94cfd21d",
       "executable": false
     },
     "tests/delegation-browser/journey.mjs": {
@@ -6756,6 +6784,18 @@
     },
     "tests/e2e/zz-notifications.spec.mjs": {
       "sha256": "dfd453575b74b8fb0bad9d3a265810b4a45bd206cc866fa994a11894820ea3c8",
+      "executable": false
+    },
+    "tests/evidence/contract/AGENT-002/deal-risks-open-1440.png": {
+      "sha256": "bfa680525345418170c86c0146b2a5dc6b6e33670ecb3509a6721cbf865eab5a",
+      "executable": false
+    },
+    "tests/evidence/contract/AGENT-002/deal-risks-reviewed-1440.png": {
+      "sha256": "9aa4ee7facc62e1ffc1fbd59f727a980e1e13616246e7d20296d8a7c3fa350da",
+      "executable": false
+    },
+    "tests/evidence/contract/AGENT-002/deal-risks-reviewed-390.png": {
+      "sha256": "9fc9d3f0fb111f5f85d55fbb6bbd1d28991775de77bf0cd7c8cece3a99e0e3e2",
       "executable": false
     },
     "tests/evidence/contract/BOUNDARY-001/booked-deal-1440.png": {

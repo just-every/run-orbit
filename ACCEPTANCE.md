@@ -890,7 +890,7 @@ Current evidence: `src/core/features/records/manual.ts`; `tests/core/today-brief
 
 Status: **partial**.
 
-Record an authorized test call, decline consent on another, read timestamped transcript evidence from the deal, correct a speaker and approve a stale-guarded proposal; deny an unauthorized user and erase local and provider copies. As part of BOUNDARY-001's walk, record a consented call on the walk's USD deal and inspect the provider link and an unavailable recording provider shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+Record an authorized test call, decline consent on another, read timestamped transcript evidence from the deal, correct a speaker and approve a stale-guarded proposal; deny an unauthorized user and erase local and provider copies. Contradict a recorded commitment in a transcript and inspect AGENT-002's cited conflict. As part of BOUNDARY-001's walk, record a consented call on the walk's USD deal and inspect the provider link and an unavailable recording provider shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 Current evidence: `src/core/features/records/manual.ts`; `src/core/features/capture/proposals.ts`; `tests/core/capture-review.test.ts`. Reviewed evidence updates and logged calls exist; recording, transcription and provider erasure are missing.
 
@@ -922,7 +922,7 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 Status: **missing**.
 
-Quote two products with discount and tax disclosure, require manager approval above its threshold, send the approved version through DocuSign, reject an old version and process signed/declined callbacks once; review the resulting billing handoff. As the signed-quote step of BOUNDARY-001's walk, quote and sign the walk's USD deal after its support context and inspect the DocuSign link, the signature boundary and an unconfigured provider shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+Quote two products with discount and tax disclosure, require manager approval above its threshold, send the approved version through DocuSign, reject an old version and process signed/declined callbacks once; review the resulting billing handoff. As AGENT-002 evidence, contradict a quote date with a logged call and inspect the cited conflict. As the signed-quote step of BOUNDARY-001's walk, quote and sign the walk's USD deal after its support context and inspect the DocuSign link, the signature boundary and an unconfigured provider shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 
@@ -1042,11 +1042,11 @@ Current evidence: `src/core/features/capture/intake.ts`; `src/core/features/capt
 
 ### AGENT-002 — Explain stalled deals and contradictory commitments.
 
-Status: **partial**.
+Status: **done**.
 
-Use deals with recent opens but no reply, a missing approver and contradictory quote/call dates; inspect precise cited risk and next action, dismiss one and approve another task, then verify no autonomous stage or forecast change.
+Use deals with reported opens but no reply, no recorded decision-maker, an overdue promise and task, a deal past its stage's stale interval and contradictory recorded commitment and call dates; inspect precise cited risk, observation apart from inference and next action at 1440 and 390, reject an AI result whose citation is not an exact recorded quote, dismiss one with a reason and reload, adjust a required role and approve another task, then verify no autonomous stage, amount, close date, stakeholder, commitment, forecast or mail change. QUOTE-001 repeats this with contradictory quote dates, and CALL-002 with transcript evidence, before they ship.
 
-Current evidence: `src/core/features/today/promises.ts`; `src/core/features/today/brief.ts`; `src/core/features/workbench/repository.ts`; `tests/core/today-brief.test.ts`. Evidence-based stale queues and overdue promises exist; stakeholder, purchase/quote and contradictory-commitment analysis is missing.
+Current evidence: `tests/core/today-brief.test.ts` — “AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks”; `tests/core/launch-reply-authority.test.ts`; `src/core/features/risks/`; `src/core/features/operator/ui/deal-risks.tsx`; `src/core/features/operator/ui/deal-risk-finding.tsx`; `src/core/features/today/promises.ts`; `tests/evidence/contract/AGENT-002/`. The authenticated HTTP journey records a confirmed champion and no decision-maker, mutual commitments and a logged call with different kickoff dates, an overdue handoff and assigned task, and a deal past its stage interval; findings cite the exact recorded lines, keep observation apart from rule or AI inference, and invent no stakeholder. The conflict check sends exactly the previewed recorded lines, fails whole on a quote missing from its line or an invented line, and records every call; without AI it answers unavailable. Dismissal requires a reason and survives reload on the deal timeline, a required procurement role is attributed, an uncited task is refused and an approved task is an open internal handoff, while stage, amount, close date, stakeholders, commitments, drafts and mail stay unchanged. The OUT-015 journey shows reported opens without a human reply as an inferred, cited risk on the accepted send. The deal risk panel was inspected at 1440 and 390 after approving a task and dismissing a finding.
 
 ### AGENT-003 — Follow the next action through to a customer outcome.
 
@@ -1074,4 +1074,4 @@ Current evidence: `tests/core/source-onboarding.test.ts` — “BOUNDARY-001 cur
 
 ## Completion accounting
 
-131 product clauses: **84 done, 26 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+131 product clauses: **85 done, 25 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
