@@ -1,3 +1,4 @@
+import {formAbuseErasure} from './form-abuse-erasure';
 import {taskContactErasure} from '../tasks/privacy';
 import {captureImportErasure,withdrawRelatedImportCopies,eraseImportedContact} from '../imports/erasure';
 import {captureErasureStatements as capturePrivacyErasureStatements} from '../capture/privacy';
@@ -29,6 +30,7 @@ export class DataRepository {
    const aliases=(await db.prepare("SELECT identity_key FROM record_aliases WHERE record_type='contact' AND survivor_id=?").bind(id).all<{identity_key:string}>()).results.map(row=>row.identity_key);
    const identities=[...new Set([record.email,...aliases].filter((value):value is string=>typeof value==='string'&&value.length>0))];
    contactEmails=identities;
+   statements.push(...formAbuseErasure(db,identities));
    statements.push(...taskContactErasure(db,id,identities));
    statements.push(...relationshipContactErasure(db,id,identities));
    statements.push(...await capturedValueErasureStatements(db,id,identities));

@@ -208,6 +208,18 @@
       "adapters": [
         "signal.source.v1"
       ]
+    },
+    {
+      "id": "cloudflare-turnstile",
+      "required": false,
+      "requiredWhen": "An operator opts a published form in with a Turnstile site key.",
+      "why": "Optional human challenge after the visitor first interacts with the form.",
+      "data": [
+        "Cloudflare challenge response token",
+        "Form hostname and challenge verification result",
+        "Visitor connection and browser signals sent directly to Cloudflare by its widget after interaction"
+      ],
+      "adapters": []
     }
   ],
   "env": [
@@ -363,6 +375,13 @@
       "required": false,
       "requiredWhen": "The owner links an Auth install (oidc-provider@1); left empty, operators sign in by email link.",
       "why": "The optional identity provider this installation links to through /.well-known/rer-dependencies."
+    },
+    {
+      "name": "ORBIT_FORM_TURNSTILE_SECRET",
+      "secret": true,
+      "required": false,
+      "requiredWhen": "A published form opts in to Cloudflare Turnstile with its site key.",
+      "why": "Verify the opted-in public form challenge before accepting an enquiry."
     }
   ],
   "deploy": {
@@ -381,7 +400,9 @@
       "/api/v1/public-demo",
       "/api/v1/signals/",
       "/api/v1/mail/events/",
-      "/api/delegation/v1/"
+      "/api/delegation/v1/",
+      "/p/",
+      "/api/public/forms/"
     ],
     "notes": "Public source and mail event paths require configured signatures. Native auth routes validate origin and one-use tokens; operator APIs and private functions require native sessions. Delegation endpoints require explicit native consent, registered callback and PKCE exchange, then scoped expiring bearer authority; ambient cookies grant no delegated authority."
   },
@@ -470,9 +491,18 @@
     "record": "an account opportunity with attributed customer evidence"
   },
   "replaces": [
-    { "name": "HubSpot", "edition": null },
-    { "name": "Pipedrive", "edition": null },
-    { "name": "Salesforce", "edition": null }
+    {
+      "name": "HubSpot",
+      "edition": null
+    },
+    {
+      "name": "Pipedrive",
+      "edition": null
+    },
+    {
+      "name": "Salesforce",
+      "edition": null
+    }
   ],
   "description": "Turn customer activity into clear sales priorities and reviewed next steps.",
   "customFields": []

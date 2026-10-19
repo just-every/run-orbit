@@ -1,7 +1,7 @@
 import { createId } from '../../shared/ids';
 export type RecordKind = 'contact'|'company'|'opportunity';
 export const tables = { contact:'contacts',company:'companies',opportunity:'opportunities' } as const;
-export class RecordError extends Error { constructor(readonly status:400|403|404|409|413, message:string,readonly recordId?:string){super(message);} }
+export class RecordError extends Error { constructor(readonly status:400|403|404|409|413|429, message:string,readonly recordId?:string){super(message);} }
 export function audit(db:D1Database,actor:string|null,action:string,kind:string,id:string,details:unknown={}) {
  return db.prepare('INSERT INTO audit_entries(id,actor_id,action,entity_type,entity_id,details_json,occurred_at) VALUES(?,?,?,?,?,?,?)').bind(createId(),actor,action,kind,id,JSON.stringify(details),new Date().toISOString());
 }

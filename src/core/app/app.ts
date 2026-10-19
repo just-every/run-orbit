@@ -7,6 +7,7 @@ import {createForwardInboundRoutes} from '../features/capture/forward/inbound';
 import {AccessError} from '../features/access/errors';
 import {createFoldRoutes} from './mounts/fold';
 import {createPublicFormRoutes} from '../features/forms/public-routes';
+import type {FormAbuseOptions} from '../features/forms/abuse';
 import {FormService} from '../features/forms/service';
 import {collaboratorNativeBoundary} from '../features/access/native-boundary';
 import {delegationRoutes} from '../features/delegation/routes';
@@ -41,7 +42,7 @@ type AppEnvironment = {
   Variables: { operator: AuthenticatedOperator };
 };
 
-export function createApp(input: { assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
+export function createApp(input: { assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; formAbuse?:FormAbuseOptions; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
   const app = new Hono<AppEnvironment>();
   const dependencies = createDependencies(input.database);
   const requireApiOperator: MiddlewareHandler<AppEnvironment> = async (context, next) => {
@@ -66,7 +67,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
     await next();
   });
   app.get('/p/:slug',async c=>{try{return c.html(await new FormService(input.database).publicDocument(c.req.param('slug')),200,{'Cache-Control':'no-store'});}catch(error){return error instanceof AccessError&&error.code==='permission'?c.text('This page is not published.',404):c.text('This page could not be verified. Try again later.',503);}});
-  app.route('/api/public/forms',createPublicFormRoutes(input.database));
+  app.route('/api/public/forms',createPublicFormRoutes(input.database,input.formAbuse));
   app.route("/api/v1/public-demo", createPublicDemoRoutes(input.publicDemoEnabled !== false));
   app.route("/api/v1/mail/events", createMailEventRoutes(input.database,input.mailEventKeys??{}));
   app.route('/api/v1/mail/capture',createForwardInboundRoutes(input.database,{security:input.sourceSecurity,address:input.captureMailAddress,parseKey:input.mailEventKeys?.parseKey}));

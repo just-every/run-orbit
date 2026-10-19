@@ -33,6 +33,7 @@ export interface PlatformBindings {
   OWNER_EMAIL?: string;
   SETUP_TOKEN?: string;
   SESSION_SECRET?: string;
+  ORBIT_FORM_TURNSTILE_SECRET?: string;
   RER_DEV_ORIGIN?: string;
   /** The checkout's local dev key; only local runtimes receive it and `rer deploy` refuses it. */
   RER_DEV_KEY?: string;

@@ -12,5 +12,8 @@ export function createFormRoutes(db:D1Database){const app=new Hono<AppEnvironmen
  app.post('/publications/:id/withdraw',async c=>c.json(await forms.withdraw(c.get('actor'),c.req.param('id'))));
  app.get('/publications/:id',async c=>c.json(await forms.reviewPublication(c.get('actor'),c.req.param('id'))));
  app.get('/:id/publications',async c=>c.json(await forms.publications(c.get('actor'),c.req.param('id'))));
+ app.get('/:id/spam',async c=>c.json(await forms.spam(c.get('actor'),c.req.param('id'))));
+ app.post('/:formId/spam/:id/release',async c=>c.json(await forms.releaseSpam(c.get('actor'),c.req.param('formId'),c.req.param('id'))));
+ app.delete('/:formId/spam/:id',async c=>c.json(await forms.eraseSpam(c.get('actor'),c.req.param('formId'),c.req.param('id'))));
  app.get('/:id/submissions',async c=>c.json(await forms.submissions(c.get('actor'),c.req.param('id'))));return app;
 }

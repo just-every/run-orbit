@@ -234,6 +234,12 @@
       "name": "0044_archive_content_identity.sql",
       "sha256": "2fcc846ac6f376b9de4c58be51a0f8459c24569961890c8fa6f624c1ff30a86a",
       "sql": "CREATE TABLE archive_file_identities (\n    job_id TEXT PRIMARY KEY,\n    digest TEXT NOT NULL CHECK(length(digest)=64 AND digest NOT GLOB '*[^0-9a-f]*')\n);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0045_form_abuse.sql",
+      "sha256": "31cc13915a3b6c1befe0ded3b5d643720e2e1f74485f64c0cce84694e9b3d4ea",
+      "sql": "-- Refusal metadata is portable; personal values have a separately erasable home.\nCREATE TABLE form_abuse_refusals (\n id TEXT PRIMARY KEY, form_id TEXT NOT NULL, operation_id TEXT NOT NULL,\n idempotency_key TEXT, payload_hash TEXT, reason TEXT NOT NULL,\n created_at TEXT NOT NULL, UNIQUE(form_id,idempotency_key)\n);\nCREATE TABLE form_spam (\n id TEXT PRIMARY KEY REFERENCES form_abuse_refusals(id),\n values_json TEXT NOT NULL, intake_json TEXT NOT NULL,\n state TEXT NOT NULL CHECK(state IN('pending','released','erased')),\n receipt_json TEXT\n);\nCREATE INDEX form_abuse_refusals_form ON form_abuse_refusals(form_id,created_at);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
@@ -255,7 +261,8 @@
   "optionalSecretNames": [
     "MAIL_API_KEY",
     "SENDGRID_API_KEY",
-    "OPENAI_API_KEY"
+    "OPENAI_API_KEY",
+    "ORBIT_FORM_TURNSTILE_SECRET"
   ],
   "schedules": [
     "* * * * *"

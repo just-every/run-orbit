@@ -62,3 +62,7 @@ The direct per-record CSV writer is replaced by the reviewed import-kit wizard. 
 ## Native automation setup (16 October 2026)
 
 Zapier and Make use the source-scoped automation endpoint with their saved private source secret in an Authorization Bearer header over HTTPS. It shares the signed path’s schema, replay identity and current-source commit fence. Provider-native Calendly/Cal.com webhooks keep signature validation. Secrets are never placed in URLs.
+
+## Optional form human challenge — FORM-001 / BASE-PUBLIC-001 (19 October 2026)
+
+FORM-001 permits optional Cloudflare Turnstile. When an operator saves its site key and reviews a new publication, that form loads Cloudflare’s challenge only after the visitor first interacts. Disabled forms load no third-party assets. The installation verifies a challenge with its private ORBIT_FORM_TURNSTILE_SECRET before accepting the enquiry; verification failure holds the enquiry for review. This is the narrow FORM-001 exception to BASE-PUBLIC-001’s third-party-asset rule, approved by ct on 19 October. Public forms set no cookies or trackers of their own.

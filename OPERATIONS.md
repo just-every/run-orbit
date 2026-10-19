@@ -105,3 +105,9 @@ Hosted scheduling is available immediately. Cloudflare can take several minutes 
 Managed and Assisted previews select `MAIL_PROVIDER=rer` with the assigned `MAIL_FROM`, `MAIL_RELAY_URL` and secret `MAIL_API_KEY`. Sign-in, sender tests and approved customer mail use that relay. Direct deployments continue to use the configured SendGrid key, reply address and unsubscribe group; local sign-in remains automatic while approved local customer mail uses SendGrid. Provider acceptance does not confirm delivery. An uncertain managed submission stays unresolved without automatic resend.
 
 Records → Export and restore saves progress after each request. Returning to the panel resumes an unfinished export or an already uploaded restore. For a part-way upload, choose the same unchanged archive and tick the confirmation again. A content digest covers its validated manifest and ordered part hashes; the server checks the durable uploaded content before applying it. Completed exports say “Finished — ready to download”.
+
+### Optional form challenge
+
+Forms use SESSION_SECRET for server-issued fill proofs and anonymous network rate buckets. To enable Cloudflare Turnstile for a form, configure its matching private ORBIT_FORM_TURNSTILE_SECRET on the installation, enter the public site key in the form editor, and review and publish that revision. Disabled forms make no Turnstile request. Missing or failed verification refuses the enquiry with a visible reason in Forms → Read spam and refusals. Full operators can release its saved original once or erase it; withdrawn or expired publication authority blocks release.
+
+Existing form artifacts compiled before abuse protection must be saved, compiled, reviewed and published again to supply the new fill proof. Their exact saved bytes remain unchanged; submissions without that proof are refused and available for review.

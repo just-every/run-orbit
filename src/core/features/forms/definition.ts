@@ -1,10 +1,10 @@
 import {z} from 'zod';
 export const fixedField=z.enum(['name','email','phone','job_title','message']);
-export const formSchema=z.object({title:z.string().trim().min(1).max(120),fields:z.array(z.object({id:fixedField,label:z.string().trim().min(1).max(80),required:z.boolean()}).strict()).min(1).max(5),consentWording:z.string().trim().min(1).max(2000).nullable(),createOpportunity:z.boolean().optional()}).strict().refine(value=>value.fields.some(f=>f.id==='email'&&f.required)&&new Set(value.fields.map(f=>f.id)).size===value.fields.length,'Include one required email field; fields must be unique.');
+export const formSchema=z.object({title:z.string().trim().min(1).max(120),fields:z.array(z.object({id:fixedField,label:z.string().trim().min(1).max(80),required:z.boolean()}).strict()).min(1).max(5),consentWording:z.string().trim().min(1).max(2000).nullable(),createOpportunity:z.boolean().optional(),turnstileSiteKey:z.string().trim().min(1).max(200).optional()}).strict().refine(value=>value.fields.some(f=>f.id==='email'&&f.required)&&new Set(value.fields.map(f=>f.id)).size===value.fields.length,'Include one required email field; fields must be unique.');
 export type FormDefinition=z.infer<typeof formSchema>;
 export const landingSchema=z.object({title:z.string().trim().min(1).max(160),heading:z.string().trim().min(1).max(200),paragraphs:z.array(z.string().trim().min(1).max(2000)).min(1).max(12)}).strict();
 export type LandingDefinition=z.infer<typeof landingSchema>;
-export const intakeSchema=z.object({revision:z.number().int().positive(),operationId:z.string().uuid(),idempotencyKey:z.string().uuid(),values:z.partialRecord(fixedField,z.string().max(4000)),consent:z.boolean().optional()}).strict();
+export const intakeSchema=z.object({revision:z.number().int().positive(),operationId:z.string().uuid(),idempotencyKey:z.string().uuid(),values:z.partialRecord(fixedField,z.string().max(4000)),consent:z.boolean().optional(),honeypot:z.string().max(4000).optional(),fillToken:z.string().max(2000).optional(),turnstileToken:z.string().max(4000).optional()}).strict();
 export type FormIntake=z.infer<typeof intakeSchema>;
 export const captureAuthorizationSchema=z.object({maxRecords:z.number().int().min(1).max(1000),expiresAt:z.iso.datetime()}).strict();
 export const publicationApprovalSchema=z.object({artifactHash:z.string().regex(/^[a-f0-9]{64}$/),formRevision:z.number().int().positive(),capture:captureAuthorizationSchema.optional()}).strict();

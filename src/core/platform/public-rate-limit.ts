@@ -22,6 +22,9 @@ export async function publicRateLimit(db:D1Database,request:Request,now=Date.now
  const ingress=routedPath.startsWith('/api/v1/signals/')||routedPath.startsWith('/api/v1/mail/events/');
  const delegation=pathname.startsWith('/api/delegation/v1/');
  const publicForm=routedPath.startsWith('/api/public/forms/');
+ // Submissions use their own durable buckets; stateless challenge issuance keeps
+ // the general public request limit without consuming a submission allowance.
+ if(request.method==='POST'&&/^\/api\/public\/forms\/[a-z0-9][a-z0-9-]{0,79}$/.test(routedPath))return;
  if(pathname.startsWith('/api/')&&!ingress&&!delegation&&!publicForm)return;
  if(pathname==='/app'||pathname.startsWith('/app/')||pathname.startsWith('/_serverFn/'))return;
  return consumeRateLimit(db,ingress?`ingress:${Math.floor(now/60000)}`:`public:${await publicIdentity(request,now)}`,ingress?600:300,now);

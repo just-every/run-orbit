@@ -89,7 +89,8 @@
       "optionalSecretNames": [
         "MAIL_API_KEY",
         "SENDGRID_API_KEY",
-        "OPENAI_API_KEY"
+        "OPENAI_API_KEY",
+        "ORBIT_FORM_TURNSTILE_SECRET"
       ],
       "providerEffects": [
         "outbound-mail",
