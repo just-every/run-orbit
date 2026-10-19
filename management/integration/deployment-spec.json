@@ -240,6 +240,12 @@
       "name": "0045_form_abuse.sql",
       "sha256": "31cc13915a3b6c1befe0ded3b5d643720e2e1f74485f64c0cce84694e9b3d4ea",
       "sql": "-- Refusal metadata is portable; personal values have a separately erasable home.\nCREATE TABLE form_abuse_refusals (\n id TEXT PRIMARY KEY, form_id TEXT NOT NULL, operation_id TEXT NOT NULL,\n idempotency_key TEXT, payload_hash TEXT, reason TEXT NOT NULL,\n created_at TEXT NOT NULL, UNIQUE(form_id,idempotency_key)\n);\nCREATE TABLE form_spam (\n id TEXT PRIMARY KEY REFERENCES form_abuse_refusals(id),\n values_json TEXT NOT NULL, intake_json TEXT NOT NULL,\n state TEXT NOT NULL CHECK(state IN('pending','released','erased')),\n receipt_json TEXT\n);\nCREATE INDEX form_abuse_refusals_form ON form_abuse_refusals(form_id,created_at);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0046_sending_capacity.sql",
+      "sha256": "c68c9d51899b6125abe553a09b188235f277268a6b9be84129147ec8a188a17b",
+      "sql": "-- OUT-018: administrator overrides of the shared transport rate ('shared') and each\n-- user's one-to-one rolling-day budget ('one-to-one:<operator id>'). Absent rows use\n-- the defaults in src/core/features/outreach/sending-limits.ts.\nCREATE TABLE sending_limits (\n id TEXT PRIMARY KEY CHECK(id='shared' OR id LIKE 'one-to-one:%'),\n value INTEGER NOT NULL CHECK(value>0),\n updated_by TEXT NOT NULL,\n updated_at TEXT NOT NULL\n);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
