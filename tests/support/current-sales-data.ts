@@ -1,0 +1,72 @@
+import assert from 'node:assert/strict';
+import type {CaptureFixture} from './capture-fixture';
+import {createId} from '../../src/core/shared/ids';
+import {emailLinkSignIn} from './email-link';
+import {snapshot} from '../../src/core/features/delegation/evidence';
+import {random} from '../../src/core/features/delegation/protocol';
+import {challenge} from '../../src/core/features/delegation/token';
+import {OutreachRepository} from '../../src/core/features/workbench/outreach-repository';
+import {ApprovalRepository} from '../../src/core/features/outreach/approval-repository';
+import {createApp,TEST_SESSION_SECRET} from './app';
+
+/** Populate the current product through the same authenticated doors as the UI. */
+export async function currentSalesData(f:CaptureFixture){
+ const call=async(path:string,body?:unknown,method=body===undefined?'GET':'POST')=>{
+  const response=await f.request(path,{method,headers:{'Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
+  assert.ok(response.ok,`${method} ${path}: ${response.status} ${await response.clone().text()}`);return response.json() as Promise<any>;
+ };
+ const native='/api/v1',fold='/api/v2/workspaces/workspace',operations=fold+'/operations';
+ const record=await call(`${native}/records/contact/${f.ana}`);
+ await call(`${native}/records/contact/${f.ana}`,{...record.record,custom_fields:{Budget:'USD 40,000',Territory:'West'},company_id:f.company},'PUT');
+ const pipeline=await call(`${native}/settings/pipelines`,{name:'Renewals',stages:[{name:'Review',probability:70,requiredFields:[],staleIntervalDays:7}]});
+ const settings=await call(`${native}/settings`),stage=settings.stages.find((s:any)=>s.pipeline_id===pipeline.id);
+ const deal=await call(`${native}/records/opportunity/${f.opportunity}`);
+ await call(`${native}/records/opportunity/${f.opportunity}/move`,{stageId:stage.id,reviewedStageId:deal.record.stage_id});
+ const context=await call(`${native}/relationships/opportunity/${f.opportunity}`);
+ await call(`${native}/relationships/opportunity/${f.opportunity}`,{revision:context.revision,companyId:f.company,primaryContactId:f.ana,stakeholders:[{contactId:f.ana,roles:['champion'],verified:true},{contactId:f.bob,roles:['decision_maker'],verified:false}],products:['Orbit annual'],nextStep:'Review rollout',mutualCommitments:'Confirm the rollout date'},'PUT');
+ const secondary=await call(`${native}/records/company`,{name:'Acme subsidiary',primary_domain:'subsidiary.example'}),contactContext=await call(`${native}/relationships/contact/${f.ana}`);
+ await call(`${native}/relationships/contact/${f.ana}`,{revision:contactContext.revision,secondaryCompanies:[{companyId:secondary.id,verified:true}]},'PUT');
+ const peer=await call(`${native}/settings/operators`,{email:'rollout-owner@example.test',displayName:'Jordan Lee'});
+ const task={title:'Weekly rollout review',recordType:'contact',recordId:f.ana,ownerId:peer.id,dueAt:'2027-03-07T14:00:00.000Z',priority:'high',type:'follow_up',notes:'Private rollout task for ana@acme.example',recurrence:'weekly',timezone:'America/New_York',reminderMinutes:15};
+ const created=await call(`${native}/tasks`,task);
+ await call(`${native}/tasks/${created.id}`,{...task,revision:created.revision,status:'completed'},'PUT');
+ await call(`${native}/records/contact/${f.ana}/entries`,{kind:'note',text:'Private account planning for ana@acme.example',occurredAt:new Date().toISOString()});
+ const definition={name:'Contact distribution',description:'Reviewed current contacts',aggregation:'count',unit:'contacts',sourceTypes:['contact'],sourceOperation:'graph.read',sourceFields:['email','created_at'],currency:null,missingPolicy:'incomplete',lateArrival:'recompute',attributionModel:'none',attributionWindowDays:1,groupBy:'email',dateField:'created_at'};
+ await call(operations+'/metrics',{id:'current-contacts',version:1,definition});
+ const period={version:1,from:new Date(Date.now()-86400000).toISOString(),through:new Date(Date.now()+86400000).toISOString()},preview=await call(operations+'/metrics/current-contacts/preview',period);
+ const report=await call(operations+'/metrics/current-contacts/snapshots',{...period,reviewHash:preview.reviewHash});
+ const forms=fold+'/forms',saved=await call(forms,{form:{title:'Rollout enquiry',fields:[{id:'name',label:'Name',required:true},{id:'email',label:'Email',required:true},{id:'message',label:'Message',required:false}],consentWording:'Send product updates by email'},landing:{title:'Talk to Acme',heading:'Rollout enquiry',paragraphs:['Tell us about your rollout.']}});
+ const compiled=await call(forms+'/compile',{formId:saved.id,revision:saved.revision,reviewedHash:saved.hash,slug:'portability-enquiry',maxRecords:10,expiresAt:new Date(Date.now()+86400000).toISOString()});
+ await call(`${forms}/publications/${compiled.operationId}/approve`,{artifactHash:compiled.hash,formRevision:saved.revision});
+ await call(`${forms}/publications/${compiled.operationId}/publish`,{});
+ const app=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},formAbuse:{secret:TEST_SESSION_SECRET}});
+ const intake={revision:saved.revision,operationId:compiled.operationId,idempotencyKey:crypto.randomUUID(),values:{name:'Ana Ruiz',email:'ana@acme.example',message:'Private reviewed form enquiry'},consent:true,honeypot:'bot'};
+ const refused=await app.request('https://orbit.test/api/public/forms/portability-enquiry',{method:'POST',headers:{Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify(intake)});assert.equal(refused.status,400);
+ const spam=await call(`${forms}/${saved.id}/spam`);assert.equal(spam.length,1);
+ await call(`${forms}/${saved.id}/spam/${spam[0].id}/release`,{});
+ const held={...intake,idempotencyKey:crypto.randomUUID()};assert.equal((await app.request('https://orbit.test/api/public/forms/portability-enquiry',{method:'POST',headers:{Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify(held)})).status,400);
+ // Agent proposal + human review history survives; its bearer execution authority does not.
+ const form=(path:string,body:Record<string,string>)=>f.request('/delegation'+path,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(body)});
+ assert.equal((await form('/clients',{id:'portability-agent',redirect_uri:'https://agent.test/callback'})).status,303);
+ const verifier=random(),consent=await form('/authorize',{client_id:'portability-agent',redirect_uri:'https://agent.test/callback',response_type:'code',state:random(),code_challenge:await challenge(verifier),code_challenge_method:'S256',account_id:'workspace',scope:'crm.evidence.read crm.handoff.write',targets:JSON.stringify([`opportunities/${f.opportunity}`])});assert.equal(consent.status,303);
+ const code=new URL(consent.headers.get('Location')!).searchParams.get('code')!;
+ const exchanged=await f.app.request('https://orbit.test/api/delegation/v1/token',{method:'POST',body:new URLSearchParams({grant_type:'authorization_code',client_id:'portability-agent',redirect_uri:'https://agent.test/callback',code,code_verifier:verifier})});assert.equal(exchanged.status,200);
+ const token=(await exchanged.json() as any).access_token,target=`opportunities/${f.opportunity}/handoffs/${createId()}`,state=await snapshot(f.db,target,true);
+ const effect={operationKey:random(),operation:'orbit.handoff.upsert',target,expectedRevision:state.revision,expectedAudienceRevision:state.audience.audienceRevision,content:{title:'Review the rollout',description:'Evidence-backed agent proposal',assigneeId:f.operator,dueAt:null,status:'open'}};
+ const proposed=await f.app.request('https://orbit.test/api/delegation/v1/effects',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(effect)});assert.equal(proposed.status,200,await proposed.clone().text());
+ const after=await snapshot(f.db,target);
+ await call('/delegation/handoffs',{...effect,operationKey:random(),expectedRevision:after.revision,content:{...effect.content,title:'Reviewed rollout task'},review:'accepted'});
+ const scheduledDraft=await new OutreachRepository(f.db).createDraft(f.opportunity,{contactId:f.ana,subject:'Freshly reviewed scheduled follow-up',body:'This needs new receiver authorization'},f.operator);
+ const scheduled=await new ApprovalRepository(f.db).approve(scheduledDraft.id,1,f.operator,{scheduledAt:new Date(Date.now()+2*86400000).toISOString()});assert.equal(scheduled.state,'scheduled');
+ const ai=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},aiProvider:{provider:'paid-edge-fixture',model:'account-summary',inputCostPerMillion:2,outputCostPerMillion:4,generate:async(request:any)=>({output:{explanation:'Review the recorded rollout evidence.',subject:'',body:'',evidenceIds:[request.evidence[0].id]},inputTokens:100,outputTokens:50})}});
+ const aiCall=async(path:string,body:unknown)=>{const response=await ai.request('https://orbit.test/api/v1/assistance/'+path,{method:'POST',headers:{Cookie:f.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify(body)});assert.equal(response.status,200,await response.clone().text());return response.json() as Promise<any>;};
+ const aiPreview=await aiCall('preview',{opportunityId:f.opportunity,contactId:f.ana,feature:'explanation'});await aiCall('generate',{previewId:aiPreview.id});
+ const usage=await call('/api/v1/assistance/usage');assert.equal(usage.totals.length,1);assert.equal(usage.totals[0].estimatedCost,0.0004,'visible cost records use configured USD input/output rates');assert.equal(settings.workspace.currency,'USD');
+ const erased=await call(`${native}/records/contact`,{name:'Already erased archive person',email:'anonymous-before-export@example.test'});
+ await call(`${native}/records/contact/${erased.id}`,{confirmed:true},'DELETE');
+ const invitation=await call('/api/v2/access/workspaces/workspace/invitations',{email:'archive-reader@example.test',role:'analyst',expiresAt:new Date(Date.now()+86400000).toISOString()});
+ const reader=await emailLinkSignIn(f.db,'archive-reader@example.test');
+ const accepted=await f.app.request('https://orbit.test/api/v2/access/invitations/accept',{method:'POST',headers:{Cookie:reader.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({token:invitation.token})});assert.equal(accepted.status,200);
+ const denied=await f.app.request('https://orbit.test/api/v1/records/archive/exports',{method:'POST',headers:{Cookie:reader.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:'{}'});assert.equal(denied.status,403,'report access never grants complete export');
+ return {reader,call,report,forms:forms+'/'+saved.id,operation:compiled.operationId,token,privateValues:['ana@acme.example','Private reviewed form enquiry','Private rollout task','Private account planning']};
+}

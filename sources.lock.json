@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "9155a300111dc9a5bf990ea488d27b2b3c9657e13b822f09575e7881b7dea16f",
+      "sha256": "88c6767cf545bb004ca946ea72c9348630b8c47bb15059d3f9b8b5feda031505",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "528043290c1106ce6f1bc7c1f06517d4fd2ee8cd650161af36ae01badb8407e2",
+      "sha256": "d3ee214cead2e609a123d884c20a00a165d36f5a92c79762da2f5b75209eaeb5",
       "executable": false
     },
     "DEMO.md": {
@@ -2747,7 +2747,7 @@
       "executable": false
     },
     "scripts/installer/portability-policy.mjs": {
-      "sha256": "0cd026734a507fa37d9ff592b2a0619c15c4d47c81c4b0e32f32a2f174008eaf",
+      "sha256": "47d692532a5adc08f6c5d207fbedc2d337a159e8110d742148321fd8270dbe58",
       "executable": false
     },
     "scripts/installer/portability.mjs": {
@@ -4427,7 +4427,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/WorkspaceArchiveTools.tsx": {
-      "sha256": "8aa356ffea230e2e17dcd2177d9f16fd70ecef4335fc3ae94e792c42383c1164",
+      "sha256": "1582c63371000b60832826a967cc5049a5874f1032b32148882703e98068716a",
       "executable": false
     },
     "src/core/features/opportunities/contracts.ts": {
@@ -4883,7 +4883,7 @@
       "executable": false
     },
     "src/core/features/records/archive-import-progress.ts": {
-      "sha256": "419b0cd6d43283175d5e56e988bf75a4c711a2717799ccd96b790d83330f75e8",
+      "sha256": "cc2dd6781792eba37e298266ffa2e4945e73857e10b9f9f1f80e0fb7a19c97d7",
       "executable": false
     },
     "src/core/features/records/archive-import-recovery.ts": {
@@ -6475,7 +6475,7 @@
       "executable": false
     },
     "tests/core/capture-data.test.ts": {
-      "sha256": "69f76cc1b61dcca683f57ba7988c4cc5753a4c7ca6e4b61dd688f86db00466a5",
+      "sha256": "671506d3ce227d6af1889a1acc41c7d5f5e1f27be323e9f76fb9bf833937f6d6",
       "executable": false
     },
     "tests/core/capture-intake.test.ts": {
@@ -7132,6 +7132,18 @@
     },
     "tests/support/crm-import-privacy.ts": {
       "sha256": "e3d38ea1acc0f955cb8241708877217a8bd3c6fc4ec192dad1716402e36cec74",
+      "executable": false
+    },
+    "tests/support/current-sales-archive.ts": {
+      "sha256": "78fd6575bb5e6b84fc40607413b30c1aecbc8d8dc2038d7c3befe2cee087b009",
+      "executable": false
+    },
+    "tests/support/current-sales-data.ts": {
+      "sha256": "e910c5a249c3c06c5c667fc5b15c58fbef290a9894908e4ba3e20c2e4ae1378e",
+      "executable": false
+    },
+    "tests/support/current-sales-local.ts": {
+      "sha256": "ee0ac1901b4e69fd5cc9485e9acbc1e476a5d8f0948c2724bb68da8238e0cdb3",
       "executable": false
     },
     "tests/support/d1-clock-witness.ts": {

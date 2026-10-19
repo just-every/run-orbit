@@ -8,6 +8,8 @@ import { connectSource } from '../../src/core/features/capture/sources';
 import { capturePrivacyFixture } from '../support/capture-privacy-fixture';
 import { localArchiveRoundTrip,uploadRestored } from '../support/capture-privacy-archive';
 import { isolatedDatabase } from '../support/isolated-database';
+import {currentSalesData} from '../support/current-sales-data';
+import {proveCurrentArchive} from '../support/current-sales-archive';
 
 const json = { 'content-type': 'application/json' };
 async function exported(f: CaptureFixture, discard = false) {
@@ -26,13 +28,14 @@ async function captured(f: CaptureFixture) {
   assert.equal((await f.request(`/api/v1/capture/proposals/${proposals.find(p => p.kind === 'create_contact')!.id}/decline`, { method: 'POST', headers: json, body: '{}' })).status, 200);
 }
 
-test('CAPTURE-007 DATA-001 captured evidence, proposals and source state travel in the Records archive and restore equivalently; credentials never travel', async () => {
+test('DATA-003 current sales capabilities round-trip without authority and erase across public reads', async () => {
   const f = await captureFixture(), target = await launchFixture();
   try {
     await captured(f);
     const security = createSourceSecurity({ ORBIT_ENCRYPTION_KEY: '44'.repeat(32) })!;
     await connectSource(f.db, { id: 'capture-provider', adapter: 'fake-mail', name: 'Provider mailbox', scope: { mail: { folders: ['INBOX'] } }, credential: 'provider-grant-never-exported' }, security, f.operator);
     const sealed = await f.db.prepare("SELECT ciphertext FROM capture_credentials WHERE source_id='capture-provider'").first<{ ciphertext: string }>();
+    const current=await currentSalesData(f);
     const archive = await exported(f), names = archive.manifest.tables.map((table: { name: string }) => table.name), text = JSON.stringify(archive);
     for (const table of ['capture_sources', 'capture_items', 'capture_proposals']) assert.ok(names.includes(table), `${table} is exported`);
     assert.ok(!names.includes('capture_credentials'));
@@ -46,6 +49,7 @@ test('CAPTURE-007 DATA-001 captured evidence, proposals and source state travel 
     for (const table of ['capture_sources', 'capture_items', 'capture_proposals', 'signals', 'signal_links', 'unlinked_signals'])
       assert.deepEqual((await target.db.prepare(`SELECT * FROM ${table} ORDER BY 1`).all()).results, (await f.db.prepare(`SELECT * FROM ${table} ORDER BY 1`).all()).results, `${table} restores equivalently`);
     assert.equal(await target.db.prepare('SELECT count(*) n FROM capture_credentials').first('n'), 0, 'a restored provider source has no credential and must be reconnected');
+    await proveCurrentArchive(f,target,current,archive);
   } finally { await f.dispose(); await target.dispose(); }
 });
 

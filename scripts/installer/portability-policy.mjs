@@ -9,7 +9,20 @@ export default {
  // Migrations seed these rows in every empty database; the archive's rows replace them.
  replaceableTables: ['graph_workspace_epochs', 'schema_types', 'pipelines'],
  secretColumns: { signal_sources: ['secret_ciphertext'] },
+ // Older valid archives may still contain schedules. Strip that installation-local
+ // approval in staging, after integrity validation and before atomic publication.
+ async validateStaged({ db, tables }) {
+  const table = tables.outbound_messages;
+  if (!table) return; // A supported archive predating outbound mail has no approval to strip.
+  const quoted = '"' + table.replaceAll('"', '""') + '"';
+  await db.prepare(`UPDATE ${quoted} SET state='cancelled',failure='Archive transfer requires fresh review and approval before sending' WHERE state='scheduled'`).run();
+ },
  requiredConfiguration: ['OWNER_EMAIL', 'SESSION_SECRET', 'SETUP_TOKEN'],
  // Dev personas are real operators in local dev only; an archive carries them suspended.
- exportRow: (table, row) => table === 'operators' && typeof row.email === 'string' && row.email.toLowerCase().endsWith('@dev.localhost') ? { ...row, status: 'removed' } : row,
+ exportRow: (table, row) => {
+  if (table === 'operators' && typeof row.email === 'string' && row.email.toLowerCase().endsWith('@dev.localhost')) return { ...row, status: 'removed' };
+  // Content/history travel; an installation's approval to dispatch later does not.
+  if (table === 'outbound_messages' && row.state === 'scheduled') return { ...row, state: 'cancelled', failure: 'Archive transfer requires fresh review and approval before sending' };
+  return row;
+ },
 };

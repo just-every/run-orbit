@@ -1006,11 +1006,13 @@ Current evidence: `tests/e2e/operator.spec.mjs`; `tests/delegation-browser/viewp
 
 ### DATA-003 — Full-target portability, privacy and audit.
 
-Status: **partial**.
+Status: **done**.
 
-Populate each target feature, export/restore/export and reconcile content and anonymous audit while proving no credential or dispatch authority travels; erase a contact and inspect every read/search/report/AI/export plus pending provider deletion without claiming external recall.
+Populate every currently supported category, export through authenticated HTTP, restore into empty product data, export again and reconcile complete content digests and anonymous audit; refuse unauthorized export and show that credentials, sessions, collaborator/publication/agent authority and scheduled dispatch approval do not travel. Erase a contact and inspect every current read/search/report/AI/export and replay fence. Repeat this journey for each target feature before it ships, including its required provider-deletion requests and separately confirmed outcomes, without claiming recall of downloads or already sent content.
 
-Current evidence: `src/core/features/records/archive-export.ts`; `src/core/features/records/archive-import-context.ts`; `tests/core/capture-data.test.ts`; `tests/core/crm-import-erasure.test.ts`. Native archive, erasure and capture privacy exist; target-feature portability (including RECORD-018 files) and external deletion outcomes await those features.
+The baseline applies to every currently supported category, including custom fields and relationships, pipelines and movement history, recurring tasks, saved reports, reviewed form submissions and spam, capture/proposals, and agent handoff decisions. Before shipping, TEAM-005; RECORD-014/016/017/018; MIGRATE-001–003; CAPTURE-010–012; FORM-001; OUT-013–020; NOTIFY-003; SEQUENCE-001–003; AUTO-001–002; CALL-001–002; REPORT-001–002; FORECAST-001; QUOTE-001; INTEGRATE-001–008; ENRICH-001; API-001; MOBILE-001; OPS-001; and AGENT-001–004 inherit these same export, integrity, erasure, anonymized audit, declared external-deletion and fresh-authority obligations for each added record and derivative. Existing subsets remain covered now; future file versions must round-trip identical bytes and SHA-256 digests.
+
+Current evidence: `tests/core/capture-data.test.ts` — “DATA-003 current sales capabilities round-trip without authority and erase across public reads”; `tests/support/current-sales-data.ts`; `tests/support/current-sales-archive.ts`; `tests/support/current-sales-local.ts`; `scripts/installer/portability-policy.mjs`; `newtests/t096/forms-native.test.ts`; `tests/core/crm-import-erasure.test.ts`. The populated authenticated Records HTTP export→empty restore→export compares complete category digests and original anonymous audit, exercises independent denied export access and removed session/collaborator/form/agent authority, and cancels restored scheduled messages while preserving their historical content. The local `.rer` engine round-trips that same populated source and strips scheduled dispatch approval without changing the source installation. Valid older local archives also lose that approval in staging before atomic publication. Public record/search/report/AI/task/form/capture/export reads and old-mail replay stay erased; configured AI usage costs are recorded in USD. The export/restore and erasure screens are exercised at 1440 and 390. Read-only mailbox disconnect removes Orbit credentials, not the provider’s original mail; this local journey claims no completed external deletion or recall. Required provider requests and separately confirmed outcomes remain obligations as written above.
 
 ### OPS-001 — Owned operation and explicit provider failures.
 
@@ -1062,4 +1064,4 @@ Current evidence: `src/core/features/ingestion/booking-webhooks.ts`; `tests/core
 
 ## Completion accounting
 
-131 product clauses: **80 done, 30 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+131 product clauses: **82 done, 28 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
