@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "0a92b0271f0f936665c5ffe1c8ab81aee5bed2fe806b661eb0116353e75d0aac",
+      "sha256": "b350a63793a9bc5ea074780fab0200cd1c049fe0c97af8ee4c5f1ab21ffa7512",
       "executable": false
     },
     "DEMO.md": {
@@ -6507,7 +6507,7 @@
       "executable": false
     },
     "tests/core/local-owner.test.ts": {
-      "sha256": "2bd4636559d12685c883a222227dfc55f58ab401533538156dae1ee2686e534d",
+      "sha256": "70a3efa7a1ccf10783be2aaf6a4d2e46ebe82c4ea5661aa1813d139d193a57b6",
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {

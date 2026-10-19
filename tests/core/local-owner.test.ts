@@ -8,7 +8,7 @@ import {createApp} from '../support/app';
 import {mailedIdentity} from '../support/email-link';
 import {testAuth} from '../support/test-auth';
 
-test('TEAM-002 PUBLIC-004 the owner changes a trial mailbox in Settings, keeps sign-in, and ends old links and sessions',async()=>{
+test('TEAM-002 PUBLIC-004 owner mailbox changes and setup-owner removal preserve sign-in authority',async()=>{
  const fixture=await isolatedDatabase(),db=fixture.db,owner=createId(),stage=createId(),now=new Date().toISOString();
  try {
   await db.prepare("INSERT INTO owner_bootstrap VALUES('initial-owner',?,'owner@orbit.test','Owner','Owner settings','UTC','USD',?,?)").bind(owner,JSON.stringify([{id:stage,name:'New'}]),now).run();
@@ -52,6 +52,27 @@ test('TEAM-002 PUBLIC-004 the owner changes a trial mailbox in Settings, keeps s
   assert.equal((await request(nativeToken,'settings/owner','PUT',{currentEmail:change.email,email:'owner@newbusiness.example.test'})).status,200,'a native owner with fresh email proof can also correct their address');
   assert.equal((await request(nativeToken)).status,200,'the asking native session stays valid');
   assert.equal((await request(local.token)).status,401,'the previous dev session is revoked');
+
+  const remove=(token:string,id:string)=>request(token,`settings/operators/${id}`,'DELETE',{confirmed:true});
+  const otherRemovingOwner=await remove(teammate.token,owner);
+  assert.equal(otherRemovingOwner.status,409);
+  assert.match((await otherRemovingOwner.json() as {error:string}).error,/Only the setup operator can remove themselves/);
+  assert.equal((await request(nativeToken)).status,200,'a refused removal keeps the owner active');
+  assert.equal((await remove(nativeToken,outsider)).status,200);
+  assert.equal((await request(teammate.token)).status,401,'removal revokes the invited operator session');
+  const mailBeforeRemovalRequest=mail.sent.length;
+  await ask(mail.post('/auth/magic-link',{json:{email:'teammate@example.test'}}));
+  assert.equal(mail.sent.length,mailBeforeRemovalRequest,'removed operators receive no new sign-in link');
+  const lastOwner=await remove(nativeToken,owner);
+  assert.equal(lastOwner.status,409);
+  assert.match((await lastOwner.json() as {error:string}).error,/Establish another active administrator/);
+  const invited=await request(nativeToken,'settings/operators','POST',{email:'successor@example.test',displayName:'Successor'});
+  assert.equal(invited.status,201,await invited.clone().text());
+  assert.equal(mail.sent.length,mailBeforeRemovalRequest,'invitations send no email');
+  assert.equal((await remove(nativeToken,owner)).status,200,'another active full operator permits self-removal');
+  assert.equal((await request(nativeToken)).status,401,'self-removal revokes the asking owner session');
+  assert.equal(await db.prepare("SELECT status FROM operators WHERE id=?").bind(owner).first('status'),'removed');
+  assert.ok(await db.prepare("SELECT 1 FROM audit_entries WHERE action='operator.removed' AND entity_id=?").bind(owner).first(),'self-removal is audited');
 
  } finally {registerDevAdmission(null);await fixture.dispose();}
 });
