@@ -626,6 +626,10 @@
       "sha256": "8e2c2a661bd9c5bfd42d4c63c07508c287256f4911fad066c5d1057267c2c627",
       "executable": false
     },
+    ".github/assets/release/orbit-now-queue-1600.png": {
+      "sha256": "e7365cabd28cbcef3bcf17dba432f2c9a3aa09455be9915b9135580c4def7645",
+      "executable": false
+    },
     ".github/workflows/rer-managed.yml": {
       "sha256": "4438b6e2ab1aa8eac1ccb92a7a6063ed222ac3b8575417824951e80a0bf4c40a",
       "executable": false
