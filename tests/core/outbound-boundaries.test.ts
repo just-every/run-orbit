@@ -39,25 +39,27 @@ test('BASE-DATA-004 BASE-DATA-005 OUT-012 OUT-020 user data reaches only declare
    const settings=await api<{types:{type:string;carries:boolean;basis:string}[]}>(rep,'settings/opt-out');
    assert.deepEqual(settings.body.types.map(t=>[t.type,t.carries]),[['one_to_one',false],['sequence',true],['workflow',true]],'A new installation starts one-to-one off and sequence and workflow email on');
    const plain=await draft('Default one-to-one');assert.equal((await api(rep,`workbench/drafts/${plain}/opt-out`)).body.carries,false);
-   assert.equal((await api(rep,`workbench/drafts/${plain}/approve`,{revision:1,optOut:false})).body.state,'accepted');assert.equal(delivered().asm,undefined,'No unsubscribe group, so no List-Unsubscribe header and no footer');
+   assert.equal((await api(rep,`workbench/drafts/${plain}/approve`,{revision:1})).body.state,'accepted');assert.equal(delivered().asm,undefined,'No unsubscribe group, so no List-Unsubscribe header and no footer');
    assert.equal((await api(rep,'settings/opt-out/one_to_one',{carries:true,removalAllowed:true})).status,403);
+   const pending=await draft('Reviewed before the owner changed the setting');
    assert.equal((await api(owner,'settings/opt-out/one_to_one',{carries:true,removalAllowed:true})).status,200);
+   assert.equal((await db.prepare('SELECT stale_reason FROM drafts WHERE id=?').bind(pending).first<{stale_reason:string}>())!.stale_reason,'Opt-out setting changed','A draft reviewed under the old setting needs review again');
+   assert.equal((await api(rep,`workbench/drafts/${pending}/approve`,{revision:1})).status,409);
    const changed=(await db.prepare("SELECT actor_id,details_json FROM audit_entries WHERE action='opt_out.setting.changed' AND entity_id='one_to_one'").first<{actor_id:string;details_json:string}>())!;assert.equal(changed.actor_id,owner);assert.deepEqual(JSON.parse(changed.details_json),{previous:{carries:false,removalAllowed:true},current:{carries:true,removalAllowed:true}});
-   const opted=await draft('Opted in by the owner');assert.equal((await api(rep,`workbench/drafts/${opted}/approve`,{revision:1,optOut:false})).status,409,'An approval reviewed under another opt-out state is refused');
-   assert.equal((await api(rep,`workbench/drafts/${opted}/approve`,{revision:1,optOut:true})).body.state,'accepted');assert.deepEqual(delivered().asm,{group_id:7});
-   const scheduled=await draft('Scheduled under opt-out on'),bound=(await api<{id:string}>(rep,`workbench/drafts/${scheduled}/approve`,{revision:1,optOut:true,scheduledAt:'2030-01-08T10:00:00.000Z'})).body.id;
+   const opted=await draft('Opted in by the owner');assert.equal((await api(rep,`workbench/drafts/${opted}/approve`,{revision:1})).body.state,'accepted');assert.deepEqual(delivered().asm,{group_id:7});
+   const scheduled=await draft('Scheduled under opt-out on'),bound=(await api<{id:string}>(rep,`workbench/drafts/${scheduled}/approve`,{revision:1,scheduledAt:'2030-01-08T10:00:00.000Z'})).body.id;
    assert.equal((await api(owner,'settings/opt-out/one_to_one',{carries:false,removalAllowed:false})).status,200);
    assert.deepEqual((await api(owner,'settings/opt-out')).body.approvedUnsent,{carrying:1,notCarrying:0,approvedBeforeSetting:0},'Settings count approved unsent messages bound to the old state');
    context.mock.timers.setTime(Date.parse('2030-01-08T10:00:00Z'));await new OutreachService(db,createOutboundMail({SENDGRID_API_KEY:'test-key',MAIL_FROM:'test@example.invalid',MAIL_REPLY_TO:'reply@example.invalid',SENDGRID_UNSUBSCRIBE_GROUP_ID:'7',DB:db})!).dispatchDue();
    assert.equal((await db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(bound).first<{state:string}>())!.state,'accepted');assert.deepEqual(delivered().asm,{group_id:7},'A message keeps the opt-out state its approval bound');
    const added=await draft('Rep adds opt-out');assert.equal((await api(rep,`workbench/drafts/${added}/opt-out`,{choice:'added'})).body.carries,true);
-   assert.equal((await api(rep,`workbench/drafts/${added}/approve`,{revision:1,optOut:true})).status,409,'A stale draft needs review first');
-   assert.equal((await api(rep,`workbench/drafts/${added}/approve`,{revision:await review(added),optOut:true})).body.state,'accepted');assert.deepEqual(delivered().asm,{group_id:7});
+   assert.equal((await api(rep,`workbench/drafts/${added}/approve`,{revision:1})).status,409,'A stale draft needs review first');
+   assert.equal((await api(rep,`workbench/drafts/${added}/approve`,{revision:await review(added)})).body.state,'accepted');assert.deepEqual(delivered().asm,{group_id:7});
    assert.equal((await api(owner,'settings/opt-out/one_to_one',{carries:true,removalAllowed:false})).status,200);
    const relation=await draft('Relationship mail');assert.equal((await api(rep,`workbench/drafts/${relation}/opt-out`,{choice:'relationship'})).status,409,'Removal can be forbidden per type');
    assert.equal((await api(owner,'settings/opt-out/one_to_one',{carries:true,removalAllowed:true})).status,200);
    assert.equal((await api(rep,`workbench/drafts/${relation}/opt-out`,{choice:'relationship'})).body.carries,false);
-   assert.equal((await api(rep,`workbench/drafts/${relation}/approve`,{revision:await review(relation),optOut:false})).body.state,'accepted');assert.equal(delivered().asm,undefined);
+   assert.equal((await api(rep,`workbench/drafts/${relation}/approve`,{revision:await review(relation)})).body.state,'accepted');assert.equal(delivered().asm,undefined);
    assert.deepEqual((await db.prepare('SELECT b.carries,b.marking FROM outbound_message_opt_out b JOIN outbound_messages m ON m.id=b.message_id ORDER BY m.created_at').all()).results.map(row=>[row.carries,row.marking]),[[0,null],[1,null],[1,null],[1,'added'],[0,'relationship']]);
   }finally{context.mock.timers.reset();await p.dispose();}
  }finally{globalThis.fetch=actual;}

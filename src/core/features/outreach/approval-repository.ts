@@ -3,7 +3,7 @@ import { WorkbenchError } from '../workbench/repository';
 import { permitted, localTime, nextPermitted, recentLocalTime } from './time';
 import { deferral, oneToOneLimitSql, sharedLimitSql } from './sending-limits';
 import { bindOptOut, draftOptOut } from './opt-out';
-export interface ApprovalInput {idempotencyKey?:string;scheduledAt?:string;scheduledAtConfirmation?:string;quietHoursConfirmation?:string;now?:Date;messageIdDomain?:string;optOutTransport?:boolean;optOutExpected?:boolean}
+export interface ApprovalInput {idempotencyKey?:string;scheduledAt?:string;scheduledAtConfirmation?:string;quietHoursConfirmation?:string;now?:Date;messageIdDomain?:string;optOutTransport?:boolean}
 export class ApprovalRepository {
  constructor(readonly db:D1Database){}
  async preview(draftId:string,now=new Date(),scheduledAt?:string) {
@@ -25,7 +25,6 @@ export class ApprovalRepository {
   if(input.scheduledAtConfirmation&&input.scheduledAtConfirmation!==scheduled)throw new WorkbenchError(409,'The permitted schedule changed. Review the schedule again before approving.');
   const id=createId(),key=input.idempotencyKey??`${draftId}:${revision}`,messageId=`<${id}@${input.messageIdDomain??'orbit.local'}>`;
   const optOut=await draftOptOut(this.db,draftId,input.optOutTransport??true);
-  if(input.optOutExpected!==undefined&&input.optOutExpected!==optOut.carries)throw new WorkbenchError(409,'The opt-out state of this message changed. Review it again before approving.');
   const minute=new Date(now.getTime()-60000).toISOString(),day=new Date(now.getTime()-86400000).toISOString();
   const insertion=this.db.prepare(`INSERT INTO outbound_messages(id,draft_id,revision,opportunity_id,operator_id,contact_id,recipient_email,subject,body,state,created_at,updated_at,idempotency_key,message_id,reference_ids,scheduled_at,approved_at,claimed_at,first_attempt_at,attempt_count)
    SELECT ?,d.id,d.revision,d.opportunity_id,?,c.id,d.recipient_email,d.subject,d.body,?,?,?, ?,?,COALESCE((SELECT message_id FROM outbound_messages WHERE opportunity_id=d.opportunity_id AND state IN('accepted','delivered') ORDER BY created_at DESC LIMIT 1),''),?,?,?,?,?

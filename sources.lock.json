@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "0656100ba154658e950cc4685cf23c8f48066a87de23647ef7de9453b532955e",
+      "sha256": "effb712794427c5525e766a140999b4bb8d5db7cbd331de888fe88a32c6b5a71",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "f69ef4bc71b885328d94fb41a3f1da217ad47a344ab02b392fb58a4a53af6b45",
+      "sha256": "561e37bfdae60a7937e89fcef0465d682bae004ce2871bfb057f30d242a61b20",
       "executable": false
     },
     "DEMO.md": {
@@ -979,7 +979,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "b4a29635a97b0ef95650b86976ed4563dbb8b37518e158e676ec3df4f04660ff",
+      "sha256": "4b026a139284051788a50bce47a75116506fa581367010d09f7aff161df0ba40",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -1155,7 +1155,7 @@
       "executable": false
     },
     "migrations/core/0047_opt_out_settings.sql": {
-      "sha256": "04888798640f0441fc01171a6c38be971aab9f72b818f954eeb4f0a6ef19c7e2",
+      "sha256": "cb7b87ceeeb9c0b36a72595dcba92355b19107116f970f0d1e1751858564688d",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -4191,7 +4191,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/draft-approval.tsx": {
-      "sha256": "9ba40631ef8011aa578e4d3a97e42cb192d3ed22f3224ef52da5cfc6573d2145",
+      "sha256": "7e41c572f83ff7107aea137c1143ecad8646b3449bee399c9c8d6d869134f46f",
       "executable": false
     },
     "src/core/features/operator/ui/draft-opt-out.tsx": {
@@ -4343,7 +4343,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/opt-out-settings.tsx": {
-      "sha256": "fdf3d61a7b1c267d72cd45e0970243dd5f5ee8e0c99fa54bf221141af2c64fd6",
+      "sha256": "418489e936f4ac79adfad3bff824b30f9a27c2618174b0f3ad4ba562a7087dae",
       "executable": false
     },
     "src/core/features/operator/ui/owner-settings.tsx": {
@@ -4499,7 +4499,7 @@
       "executable": false
     },
     "src/core/features/outreach/approval-repository.ts": {
-      "sha256": "73f32b1120dff1364860d1f0066e2b87b82d512d21cd74d71128de9807e08bc2",
+      "sha256": "87d820fe5fb494e575d50e078eeaa8192ea1fa2207d8563f424a4175ee545c0a",
       "executable": false
     },
     "src/core/features/outreach/automatic-replies.ts": {
@@ -4523,7 +4523,7 @@
       "executable": false
     },
     "src/core/features/outreach/opt-out.ts": {
-      "sha256": "6de3b1bbaf82eb2dbea00c2ba404b20a864920212e391c9c8bf05398a2ec81d4",
+      "sha256": "e887dba35a53c78a452b704f8ef0dcbd803d23a95c6a6d821ad31736f135c195",
       "executable": false
     },
     "src/core/features/outreach/provider-conflicts.ts": {
@@ -5371,7 +5371,7 @@
       "executable": false
     },
     "src/core/features/workbench/routes.ts": {
-      "sha256": "dccff166f3a5c69aa16ac4baea08ec8c93e18d51e647888d6c0aadee2965acbd",
+      "sha256": "258d144244cb75c0fc95e6c596d5c26014cfcbad89ab3da33977636553bc1265",
       "executable": false
     },
     "src/core/features/workbench/sender-test.ts": {
@@ -6587,7 +6587,7 @@
       "executable": false
     },
     "tests/core/capture-upgrade.test.ts": {
-      "sha256": "c0162965b163f6b5e14b6318adf7b01f787855272ca3a4c67aa8f7a0e62685e1",
+      "sha256": "f5d3da6de2ac612648c41d47dae13c90f043caa00847ec629ef3c4f47c8b1ecf",
       "executable": false
     },
     "tests/core/contact-erasure.test.ts": {
@@ -6655,7 +6655,7 @@
       "executable": false
     },
     "tests/core/outbound-boundaries.test.ts": {
-      "sha256": "e636e82e9e5a2818132adecf03cca940fa16bcc616ef0e85297fbcec0058e4a1",
+      "sha256": "2248b047d88c3bc01f7665f863d52dec83dbd7005ff5a0d57a6a816b85da372f",
       "executable": false
     },
     "tests/core/outreach-limits.test.ts": {

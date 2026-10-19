@@ -1,5 +1,5 @@
 -- OUT-020: whether Orbit adds opt-out headers and a link, per message type. Sequence and
--- workflow email start on. One-to-one email starts off on a fresh installation; an
+-- workflow email default on. One-to-one email defaults off on a new installation; an
 -- installation upgraded with users already present keeps today's opt-out on until an
 -- administrator changes it (ct, 19 October 2026), so no consent state changes silently.
 CREATE TABLE opt_out_settings (
@@ -10,13 +10,11 @@ CREATE TABLE opt_out_settings (
  updated_by TEXT,
  updated_at TEXT NOT NULL
 );
-INSERT INTO opt_out_settings(message_type,carries,basis,updated_at) VALUES
- ('sequence',1,'default',strftime('%Y-%m-%dT%H:%M:%fZ','now')),
- ('workflow',1,'default',strftime('%Y-%m-%dT%H:%M:%fZ','now'));
+-- Absent rows take the defaults in src/core/features/outreach/opt-out.ts, so a new
+-- installation's table starts empty and an archive restores into it.
 INSERT INTO opt_out_settings(message_type,carries,basis,updated_at)
- SELECT 'one_to_one',CASE WHEN EXISTS(SELECT 1 FROM operators) THEN 1 ELSE 0 END,
-  CASE WHEN EXISTS(SELECT 1 FROM operators) THEN 'kept on for an upgraded installation' ELSE 'default for a new installation' END,
-  strftime('%Y-%m-%dT%H:%M:%fZ','now');
+ SELECT 'one_to_one',1,'kept on for an upgraded installation',strftime('%Y-%m-%dT%H:%M:%fZ','now')
+ WHERE EXISTS(SELECT 1 FROM operators);
 -- A rep's marking on one draft: removal as relationship or transactional mail, or adding opt-out.
 CREATE TABLE draft_opt_out (
  draft_id TEXT PRIMARY KEY REFERENCES drafts(id) ON DELETE CASCADE,
