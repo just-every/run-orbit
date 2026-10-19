@@ -1,4 +1,5 @@
 import { followUpOutcomes } from '../outreach/follow-up-outcomes';
+import { draftOptOut, markDraftOptOut } from '../outreach/opt-out';
 import {senderTestRoutes} from './sender-test';
 import {schedulerStatus} from '../outreach/scheduler';
 import {deliveryOutcomesStatus,deliveryOutcomesTracked,type DeliveryOutcomeKeys} from '../outreach/delivery-outcomes';
@@ -51,11 +52,13 @@ export function createWorkbenchRoutes(database: D1Database, mail?: OutboundMail,
     return context.json(await new ApprovalRepository(database).preview(context.req.param('id'),new Date(),input.data.scheduledAt));
   });
   app.post('/messages/:id/retry',async c=>{if(!mail)return c.json({error:'Mail provider is required.'},503);const input=z.object({quietHoursConfirmation:z.string().optional()}).strict().safeParse(await c.req.json());if(!input.success)return c.json({error:'Invalid retry confirmation.'},400);const message=await new ApprovalRepository(database).retryBlocked(c.req.param('id'),c.get('operator').operatorId,input.data.quietHoursConfirmation);return c.json(await new OutreachService(database,mail).submit(message));});
+  app.get('/drafts/:id/opt-out',async c=>c.json(await draftOptOut(database,c.req.param('id'),mail?.provider!=='rer')));
+  app.post('/drafts/:id/opt-out',async c=>{const input=z.object({choice:z.enum(['relationship','transactional','added']).nullable()}).strict().safeParse(await c.req.json());if(!input.success)return c.json({error:'Choose relationship or transactional mail, add opt-out, or clear the marking.'},400);await markDraftOptOut(database,c.req.param('id'),c.get('operator').operatorId,input.data.choice);return c.json(await draftOptOut(database,c.req.param('id'),mail?.provider!=='rer'));});
   app.post('/messages/:id/cancel',async context=>{await new ApprovalRepository(database).cancel(context.req.param('id'),context.get('operator').operatorId);return context.json({cancelled:true});});
   app.post('/drafts/:id/approve',async context=>{
     if(!mail)return context.json({error:'Configure mail delivery before approving customer mail.'},503);
-    const input=z.object({revision:z.number().int().positive(),idempotencyKey:z.string().min(1).max(128).optional(),scheduledAt:z.iso.datetime().optional(),scheduledAtConfirmation:z.iso.datetime().optional(),quietHoursConfirmation:z.string().max(200).optional()}).safeParse(await context.req.json());if(!input.success)return context.json({error:'An exact draft revision and valid approval options are required.'},400);
-    const actor=context.get('operator').operatorId,message=await outreach.claim(context.req.param('id'),input.data.revision,actor,{...input.data,messageIdDomain:mail.messageIdDomain});
+    const input=z.object({revision:z.number().int().positive(),idempotencyKey:z.string().min(1).max(128).optional(),scheduledAt:z.iso.datetime().optional(),scheduledAtConfirmation:z.iso.datetime().optional(),quietHoursConfirmation:z.string().max(200).optional(),optOut:z.boolean().optional()}).safeParse(await context.req.json());if(!input.success)return context.json({error:'An exact draft revision and valid approval options are required.'},400);
+    const {optOut,...approval}=input.data,actor=context.get('operator').operatorId,message=await outreach.claim(context.req.param('id'),input.data.revision,actor,{...approval,messageIdDomain:mail.messageIdDomain,optOutTransport:mail.provider!=='rer',optOutExpected:optOut});
     if(message.state==='draft')return context.json({id:message.id,state:'draft',error:message.failure,retryAfter:message.next_attempt_at},409);
     if(message.state==='scheduled')return context.json({id:message.id,state:'scheduled',scheduledAt:message.scheduled_at});
     const result=await new OutreachService(database,mail).submit(message);return context.json(result,result.state==='accepted'?200:502);

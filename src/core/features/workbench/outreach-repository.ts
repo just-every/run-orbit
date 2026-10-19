@@ -27,7 +27,7 @@ export class OutreachRepository {
   }
   async messages(opportunityId: string) {
     return (await this.db.prepare(`SELECT id,draft_id AS draftId,revision,state,recipient_email AS recipientEmail,subject,body,
-      provider_message_id AS providerMessageId,failure,next_attempt_at AS retryAfter,scheduled_at AS scheduledAt,created_at AS createdAt,
+      provider_message_id AS providerMessageId,failure,(SELECT carries FROM outbound_message_opt_out WHERE message_id=outbound_messages.id) AS optOut,next_attempt_at AS retryAfter,scheduled_at AS scheduledAt,created_at AS createdAt,
       (SELECT MIN(t.occurred_at) FROM timeline_entry_records r JOIN timeline_entries t ON t.id=r.timeline_entry_id
         WHERE r.record_type='opportunity' AND r.record_id=outbound_messages.opportunity_id AND t.kind='message.accepted'
           AND json_extract(t.payload_json,'$.messageId')=outbound_messages.id) AS acceptedAt,

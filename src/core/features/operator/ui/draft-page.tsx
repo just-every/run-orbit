@@ -90,7 +90,7 @@ export function DraftPage() {
             <p>Current opportunity: {resource.data.opportunity.title} · {resource.data.opportunity.stage} · {resource.data.opportunity.queueReason}</p>
             <ul>{resource.data.opportunity.signals.slice(0,5).map(signal=><li key={signal.id}>{signal.subject??label(signal.type)} · {formatDateTime(signal.occurredAt,presentation)}</li>)}</ul>
             <label>Confirm the current recipient<select value={draft.recipientContactId??''} onChange={event=>{const contact=resource.data?.opportunity.contacts.find(contact=>contact.id===event.target.value);if(contact)setDraft({...draft,recipientContactId:contact.id,recipientEmail:contact.email??''});}}><option value="">Choose a linked contact</option>{resource.data.opportunity.contacts.map(contact=><option key={contact.id} value={contact.id} disabled={contact.contactability!=='contactable'}>{contact.name??contact.email} — {contact.email} ({contact.contactability})</option>)}</select></label>
-            <label><input type="checkbox" checked={reviewed} onChange={event=>setReviewed(event.target.checked)}/> I reviewed the changed evidence, current recipient, subject and body above.</label>
+            <label style={{display:"flex",gap:8,alignItems:"flex-start"}}><input style={{width:"auto",flex:"none"}} type="checkbox" checked={reviewed} onChange={event=>setReviewed(event.target.checked)}/> I reviewed the changed evidence, current recipient, subject and body above.</label>
             <button type="button" className="operator-primary-button" disabled={saving||!reviewed||!draft.recipientContactId} onClick={()=>void confirmReview()}>Confirm reviewed draft</button>
             <p>This confirms a new draft revision. It sends nothing.</p>
           </section> : null}
@@ -112,7 +112,7 @@ export function DraftPage() {
             <div><dt>Revision</dt><dd>{draft.revision}</dd></div>
           </dl>
         </details>
-      {resource.data.submitted ? null : <DraftApproval mailProvider={resource.data.mailProvider} onSubmitted={setJustSubmitted} recipientName={resource.data.opportunity.contacts.find(contact=>contact.id===draft.recipientContactId)?.name??undefined} draft={draft} dirty={draft.recipientEmail !== resource.data?.draft.recipientEmail || draft.subject !== resource.data?.draft.subject || draft.body !== resource.data?.draft.body} />}
+      {resource.data.submitted ? null : <DraftApproval mailProvider={resource.data.mailProvider} onSubmitted={setJustSubmitted} onOptOutChanged={resource.reload} recipientName={resource.data.opportunity.contacts.find(contact=>contact.id===draft.recipientContactId)?.name??undefined} draft={draft} dirty={draft.recipientEmail !== resource.data?.draft.recipientEmail || draft.subject !== resource.data?.draft.subject || draft.body !== resource.data?.draft.body} />}
     </OperatorShell>
   );
 }

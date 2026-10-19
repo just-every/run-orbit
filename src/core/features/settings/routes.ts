@@ -11,6 +11,7 @@ import { SettingsRepository } from './repository';
 import { connectedProducts } from './connected-products';
 import { ownerEmailSettings, updateOwnerEmail } from './owner-email';
 import {sendingCapacity,setOneToOneBudget,setSharedRate} from '../outreach/sending-limits';
+import {messageTypes,optOutSettings,setOptOut,type MessageType} from '../outreach/opt-out';
 import {logUnexpected} from '../../platform/unexpected-error';
 export function createSettingsRoutes(db:D1Database,stepUp?:(request:Request)=>Promise<Response|null>){const app=new Hono<{Bindings:{AUTH_LOCAL?:string};Variables:{operator:AuthenticatedOperator}}>(),repo=new SettingsRepository(db),pipelines=new PipelinesRepository(db);
  app.onError((e,c)=>{if(e instanceof RecordError)return c.json({error:e.message},e.status);logUnexpected('settings',e);return c.json({error:'Settings operation failed.'},500);});
@@ -22,6 +23,8 @@ export function createSettingsRoutes(db:D1Database,stepUp?:(request:Request)=>Pr
  app.get('/sending',async c=>c.json(await sendingCapacity(db,c.get('operator').operatorId)));
  app.put('/sending/shared',async c=>{const input=z.object({perMinute:z.number().int().min(1).max(100000).nullable()}).strict().safeParse(await c.req.json());if(!input.success)return c.json({error:'Enter the shared transport rate as a whole number of messages a minute, or reset it to the default.'},400);return c.json(await setSharedRate(db,c.get('operator').operatorId,input.data.perMinute));});
  app.put('/sending/operators/:id',async c=>{const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/).safeParse(c.req.param('id')),input=z.object({oneToOnePerDay:z.number().int().min(1).nullable()}).strict().safeParse(await c.req.json());if(!id.success)return c.json({error:'Invalid operator ID.'},400);if(!input.success)return c.json({error:'Enter a one-to-one budget as a whole number of messages a day, or reset it to the default.'},400);return c.json(await setOneToOneBudget(db,c.get('operator').operatorId,id.data,input.data.oneToOnePerDay));});
+ app.get('/opt-out',async c=>c.json(await optOutSettings(db)));
+ app.post('/opt-out/:type',async c=>{const type=c.req.param('type') as MessageType,input=z.object({carries:z.boolean(),removalAllowed:z.boolean()}).strict().safeParse(await c.req.json());if(!messageTypes.includes(type))return c.json({error:'Unknown message type.'},400);if(!input.success)return c.json({error:'Choose whether this message type carries opt-out and whether reps may remove it.'},400);return c.json(await setOptOut(db,c.get('operator').operatorId,type,input.data));});
  app.get('/products',async c=>c.json({products:await connectedProducts(db)}));
  app.get('/form-embedding',async c=>c.json({origins:await embeddingOrigins(db)}));
  app.put('/form-embedding',async c=>{const parsed=z.object({origins:z.array(embedOrigin).max(50)}).strict().safeParse(await c.req.json());if(!parsed.success)return c.json({error:'Enter up to 50 HTTPS website origins without paths.'},400);await saveEmbeddingOrigins(db,[...new Set(parsed.data.origins)]);return c.json({saved:true});});
