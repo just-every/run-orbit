@@ -4138,6 +4138,10 @@
       "sha256": "44cb32a5f07f8c3f83cbd601539574d8a6a8172affcf39869593a4b02e4e69f4",
       "executable": false
     },
+    "src/core/features/operator/ui/connected-products.tsx": {
+      "sha256": "e49a23dfde6affb684d087530c2fe860dd0fb26c53a68fc26d7abf52d4115043",
+      "executable": false
+    },
     "src/core/features/operator/ui/create-opportunity-page.tsx": {
       "sha256": "771b3234b92df4e64533d39310ad2029dbf76c304a18c9c42a3ff06f3a98245c",
       "executable": false
@@ -5080,6 +5084,10 @@
     },
     "src/core/features/relationships/snapshot.ts": {
       "sha256": "3a25d3023d7da69c185f0be13a9d38c5fa10948c381d5673b451e28f7932c249",
+      "executable": false
+    },
+    "src/core/features/settings/connected-products.ts": {
+      "sha256": "3b8bbee0419001599d09c03634d999feae899cca1d19d9b5763b3cfcce54e2d0",
       "executable": false
     },
     "src/core/features/settings/erasure-redaction.ts": {
@@ -6748,6 +6756,30 @@
     },
     "tests/e2e/zz-notifications.spec.mjs": {
       "sha256": "dfd453575b74b8fb0bad9d3a265810b4a45bd206cc866fa994a11894820ea3c8",
+      "executable": false
+    },
+    "tests/evidence/contract/BOUNDARY-001/booked-deal-1440.png": {
+      "sha256": "9ee1d7731b99793420f044e717c2872dfa68582ec0d89d74204b78eb78522f92",
+      "executable": false
+    },
+    "tests/evidence/contract/BOUNDARY-001/booked-deal-390.png": {
+      "sha256": "5495e78d612d496c00df236e10ee752c8a6a199d6ab001b3777689ac5271513f",
+      "executable": false
+    },
+    "tests/evidence/contract/BOUNDARY-001/connected-products-1440.png": {
+      "sha256": "4c21a4e5d73e783801757e1fe70fc4967194b7144c602cd9c18e74e5451c4034",
+      "executable": false
+    },
+    "tests/evidence/contract/BOUNDARY-001/connected-products-390.png": {
+      "sha256": "46ca5bdd1872f744b90c89eb3f6874253bea2454cc8ffd2e313a076db7a423c7",
+      "executable": false
+    },
+    "tests/evidence/contract/BOUNDARY-001/exact-message-review-1440.png": {
+      "sha256": "c03a383cde483aee4553abb527723afb5b4e00d180070d86b3770bb094f5eaa4",
+      "executable": false
+    },
+    "tests/evidence/contract/BOUNDARY-001/exact-message-review-390.png": {
+      "sha256": "ba5e368fd219dcc8cc3f6a88573f6626cad79a313d6e09962be9280dbb507302",
       "executable": false
     },
     "tests/evidence/contract/OPP-009/board-1440.png": {
