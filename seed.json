@@ -1,7 +1,7 @@
 {
   "id": "orbit",
   "name": "Orbit",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "maturity": "complete-workflow-implementation; acceptance requires pinned runtime and native receipts",
   "capabilities": [
     {
