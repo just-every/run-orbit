@@ -3,7 +3,7 @@ import { recordsRequest } from './records-api';
 import { OperatorState } from './operator-shell';
 import { formatDate } from './formatters';
 interface TypeSetting {type:'one_to_one'|'sequence'|'workflow';carries:boolean;removalAllowed:boolean;basis:string;updatedBy:string|null;updatedAt:string|null}
-interface Settings {types:TypeSetting[];approvedUnsent:{carrying:number;notCarrying:number;approvedBeforeSetting:number}}
+interface Settings {types:TypeSetting[];approvedUnsent:{carrying:number;notCarrying:number;approvedBeforeSetting:number};relayRefused:number}
 const names={one_to_one:'One-to-one email and replies',sequence:'Sequence email steps',workflow:'Workflow email'};
 const notes={one_to_one:'',sequence:' Applies when sequences arrive.',workflow:' Applies when workflow email arrives.'};
 /** OUT-020: per message type, whether Orbit adds opt-out headers and a link; each change is audited and applies to messages approved after it. */
@@ -20,6 +20,7 @@ export function OptOutSettings(){
    <label><input type="checkbox" checked={setting.carries} onChange={e=>void save(setting,{carries:e.target.checked})}/> Add opt-out headers and link</label>
    <label><input type="checkbox" checked={setting.removalAllowed} onChange={e=>void save(setting,{removalAllowed:e.target.checked})}/> Reps may remove it from one message as relationship or transactional mail</label>
   </fieldset>)}
-  <p>Approved messages not yet sent keep the state their approval bound: {data.approvedUnsent.carrying} with opt-out, {data.approvedUnsent.notCarrying} without{data.approvedUnsent.approvedBeforeSetting?`, and ${data.approvedUnsent.approvedBeforeSetting} approved before this setting existed, which keep their original unsubscribe group`:''}.</p></>:!error&&<OperatorState>Loading opt-out settings…</OperatorState>}
+  <p>Approved messages not yet sent keep the state their approval bound: {data.approvedUnsent.carrying} with opt-out, {data.approvedUnsent.notCarrying} without{data.approvedUnsent.approvedBeforeSetting?`, and ${data.approvedUnsent.approvedBeforeSetting} approved before this setting existed, which keep their original unsubscribe group`:''}.</p>
+  {data.relayRefused>0&&<p>{data.relayRefused} {data.relayRefused===1?'message was':'messages were'} refused because the managed mail relay cannot carry an opt-out link yet (OUT-013).</p>}</>:!error&&<OperatorState>Loading opt-out settings…</OperatorState>}
  </section>;
 }

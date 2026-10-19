@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "effb712794427c5525e766a140999b4bb8d5db7cbd331de888fe88a32c6b5a71",
+      "sha256": "7b70093b4f9ea369bdfaac45b8d41c41f22ce0deab614059f68f1beab0d97ba1",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "561e37bfdae60a7937e89fcef0465d682bae004ce2871bfb057f30d242a61b20",
+      "sha256": "09524c64004822ab839e00120acd5b17537f694f488dbee4208983f881842207",
       "executable": false
     },
     "DEMO.md": {
@@ -4191,11 +4191,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/draft-approval.tsx": {
-      "sha256": "7e41c572f83ff7107aea137c1143ecad8646b3449bee399c9c8d6d869134f46f",
+      "sha256": "7c1d63d9bcb8246bd56a62e4701472cab5fddf89e44cba57e27df6a15f7781d4",
       "executable": false
     },
     "src/core/features/operator/ui/draft-opt-out.tsx": {
-      "sha256": "acb763fe3e612865bd4595ba5155ed3244946c4653b51dc4367eb32f075dbfcd",
+      "sha256": "2de5b0696cfa7365aef704dc07cc5308d71736f3522f3a75a334494ef0c8c6e2",
       "executable": false
     },
     "src/core/features/operator/ui/draft-page.tsx": {
@@ -4343,7 +4343,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/opt-out-settings.tsx": {
-      "sha256": "418489e936f4ac79adfad3bff824b30f9a27c2618174b0f3ad4ba562a7087dae",
+      "sha256": "6a76e5567827292ae25c41a438b29c8ddee4ee6a13251f47425216959113af65",
       "executable": false
     },
     "src/core/features/operator/ui/owner-settings.tsx": {
@@ -4499,7 +4499,7 @@
       "executable": false
     },
     "src/core/features/outreach/approval-repository.ts": {
-      "sha256": "87d820fe5fb494e575d50e078eeaa8192ea1fa2207d8563f424a4175ee545c0a",
+      "sha256": "553529d10eb4b6c5e3ae5035d46f91b62dc90babac1ee6fce39fcc5af8c462c6",
       "executable": false
     },
     "src/core/features/outreach/automatic-replies.ts": {
@@ -4523,7 +4523,7 @@
       "executable": false
     },
     "src/core/features/outreach/opt-out.ts": {
-      "sha256": "e887dba35a53c78a452b704f8ef0dcbd803d23a95c6a6d821ad31736f135c195",
+      "sha256": "413092ae33cd5974f72ba0d91e0b108d115f9d81e559ea2af92843e1f37c5693",
       "executable": false
     },
     "src/core/features/outreach/provider-conflicts.ts": {
@@ -4575,7 +4575,7 @@
       "executable": false
     },
     "src/core/features/outreach/service.ts": {
-      "sha256": "04aa5899580ebe9184417d28da4996f78fd5aa8c54074db21dc5a8fb196bb176",
+      "sha256": "b1384c047bf27a55cd6ab55501c5e562a253acac55a0e1db2ad3e738735dce55",
       "executable": false
     },
     "src/core/features/outreach/settlement.ts": {
@@ -6655,7 +6655,7 @@
       "executable": false
     },
     "tests/core/outbound-boundaries.test.ts": {
-      "sha256": "2248b047d88c3bc01f7665f863d52dec83dbd7005ff5a0d57a6a816b85da372f",
+      "sha256": "41e09055ecd3c9a829652044efdec9b7839855278f7588e57bd006e4da81443a",
       "executable": false
     },
     "tests/core/outreach-limits.test.ts": {
