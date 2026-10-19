@@ -2,6 +2,7 @@ import {createId} from '../../shared/ids';
 import {contactStopStatements} from '../records/suppression-effects';
 import {settlementStatements} from './settlement';
 import {recordProviderConflict} from './provider-conflicts';
+import {mailHistoryLinks} from './history-links';
 export interface ProviderEvent {sg_event_id:string;event:string;timestamp:number;email:string;sg_message_id?:string;rer_delivery_id?:string;rer_product?:string;reason?:string;type?:string}
 export async function recordProviderEvent(db:D1Database,event:ProviderEvent,hash:string){
  const prior=()=>db.prepare('SELECT payload_hash FROM mail_provider_events WHERE id=?').bind(event.sg_event_id).first<{payload_hash:string}>();
@@ -21,7 +22,8 @@ export async function recordProviderEvent(db:D1Database,event:ProviderEvent,hash
  if(next)statements.push(db.prepare("UPDATE outbound_messages SET state=?,failure=?,updated_at=? WHERE id=? AND state IN('accepted','delivered')").bind(next,event.reason??null,at,message.id));
  if(['bounce','dropped'].includes(event.event))statements.push(db.prepare("UPDATE opportunities SET queue_state='now',queue_reason='Delivery problem',next_due_at=NULL WHERE id=? AND lifecycle='open'").bind(message.opportunity_id));
  if(['unsubscribe','group_unsubscribe','spamreport'].includes(event.event)||(event.event==='bounce'&&event.type==='bounce'))statements.push(...await contactStopStatements(db,message.contact_id,[event.email,message.recipient_email]));
- const timelineId=createId();statements.push(db.prepare("INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) VALUES(?,?,?,?,'source','sendgrid-events','sendgrid',?)").bind(timelineId,`provider.${event.event}`,new Date(event.timestamp*1000).toISOString(),at,JSON.stringify({messageId:message.id,providerEventId:event.sg_event_id,reason:event.reason??null})),db.prepare("INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) VALUES(?,'opportunity',?)").bind(timelineId,message.opportunity_id));
+ const reportedEngagement=['open','click'].includes(event.event),timelineId=createId();
+ statements.push(db.prepare("INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) VALUES(?,?,?,?,'source','sendgrid-events','sendgrid',?)").bind(timelineId,`provider.${event.event}`,new Date(event.timestamp*1000).toISOString(),at,JSON.stringify({messageId:message.id,providerEventId:event.sg_event_id,reason:event.reason??null,...(reportedEngagement?{confidence:'inferred',classification:'unverified provider report',tracking:'not tracked',humanResponse:false}:{} )})),db.prepare("INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) VALUES(?,'opportunity',?)").bind(timelineId,message.opportunity_id),...mailHistoryLinks(db,timelineId,message.opportunity_id,[message.contact_id]));
  try{await db.batch(statements);}catch(error){
   const winner=await prior();if(!winner)throw error;
   if(winner.payload_hash!==hash)await recordProviderConflict(db,event.sg_event_id,winner.payload_hash,hash);

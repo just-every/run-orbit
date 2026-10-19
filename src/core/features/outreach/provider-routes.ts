@@ -38,8 +38,8 @@ export function createMailEventRoutes(db:D1Database,keys:{eventKey?:string;parse
     const headers=replyHeaders(form),from=form.getAll('from');
     const sender=from.length===1&&typeof from[0]==='string'?replySender(from[0]):null;
     if(!sender||!headers||(headers.sender!==undefined&&headers.sender!==sender))return c.json({error:'One consistent reply sender, Message-ID and valid Date are required.'},400);
-    const {messageId,references,occurredAt}=headers,subject=String(form.get('subject')??''),body=String(form.get('text')??'');
-    const input={id:messageId,sender,subject,body,messageId,references,occurredAt};await repository.reply(input,await replyPayloadHash(form));
+    const {messageId,references,occurredAt,automatic}=headers,subject=String(form.get('subject')??''),body=String(form.get('text')??'');
+    const input={id:messageId,sender,subject,body,messageId,references,occurredAt,automatic};await repository.reply(input,await replyPayloadHash(form));
    }return c.json({accepted:true});
   }catch{return c.json({error:'Mail event could not be persisted; replay it.'},503);}
  });return app;

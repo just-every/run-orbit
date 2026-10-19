@@ -19,5 +19,10 @@ export function replyHeaders(form:FormData){
  if(messages.length!==1||!messages[0]||dates.length!==1||!Number.isFinite(Date.parse(dates[0]!)))return null;
  const senders=values.get('from')??[],sender=senders.length===1?replySender(senders[0]!):undefined;
  if(senders.length>1||sender===null)return null;
- return {sender,messageId:messages[0],occurredAt:new Date(dates[0]!).toISOString(),references:[...(values.get('references')??[]),...(values.get('in-reply-to')??[])].join(' ')};
+ // Match Capture's automatic-mail indicators, considering every header rather
+ // than letting a second Auto-Submitted: no conceal an automatic submission.
+ const automatic=(values.get('auto-submitted')??[]).some(value=>value.toLowerCase()!=='no')
+  ||['x-autoreply','x-autorespond'].some(name=>(values.get(name)??[]).some(Boolean))
+  ||(values.get('precedence')??[]).some(value=>/auto[_-]reply/i.test(value));
+ return {sender,automatic,messageId:messages[0],occurredAt:new Date(dates[0]!).toISOString(),references:[...(values.get('references')??[]),...(values.get('in-reply-to')??[])].join(' ')};
 }
