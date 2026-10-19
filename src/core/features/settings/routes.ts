@@ -8,6 +8,7 @@ import type { AuthenticatedOperator } from '../identity';
 import { RecordError } from '../records/shared';
 import { eraseOperator } from './erasure';
 import { SettingsRepository } from './repository';
+import { connectedProducts } from './connected-products';
 import { ownerEmailSettings, updateOwnerEmail } from './owner-email';
 import {logUnexpected} from '../../platform/unexpected-error';
 export function createSettingsRoutes(db:D1Database,stepUp?:(request:Request)=>Promise<Response|null>){const app=new Hono<{Bindings:{AUTH_LOCAL?:string};Variables:{operator:AuthenticatedOperator}}>(),repo=new SettingsRepository(db),pipelines=new PipelinesRepository(db);
@@ -17,6 +18,7 @@ export function createSettingsRoutes(db:D1Database,stepUp?:(request:Request)=>Pr
  app.post('/pipelines',async c=>{const input=pipelineInput.safeParse(await c.req.json());if(!input.success)return c.json({error:'Enter a pipeline name, ordered stages, probabilities and valid required fields.'},400);return c.json(await pipelines.create(input.data,c.get('operator').operatorId),201);});
  app.put('/pipelines/:id',async c=>{const input=pipelineInput.safeParse(await c.req.json());if(!input.success)return c.json({error:'Enter a pipeline name, ordered stages, probabilities and valid required fields.'},400);return c.json(await pipelines.update(c.req.param('id'),input.data,c.get('operator').operatorId));});
  app.delete('/pipelines/:id',async c=>{const input=z.object({confirmed:z.literal(true)}).strict().safeParse(await c.req.json());if(!input.success)return c.json({error:'Confirm pipeline deletion.'},400);return c.json(await pipelines.remove(c.req.param('id'),c.get('operator').operatorId));});
+ app.get('/products',async c=>c.json({products:await connectedProducts(db)}));
  app.get('/form-embedding',async c=>c.json({origins:await embeddingOrigins(db)}));
  app.put('/form-embedding',async c=>{const parsed=z.object({origins:z.array(embedOrigin).max(50)}).strict().safeParse(await c.req.json());if(!parsed.success)return c.json({error:'Enter up to 50 HTTPS website origins without paths.'},400);await saveEmbeddingOrigins(db,[...new Set(parsed.data.origins)]);return c.json({saved:true});});
  app.get('/',async c=>c.json({...await repo.read(),owner:await ownerEmailSettings(db,c.get('operator')),local:c.env?.AUTH_LOCAL==='true'}));

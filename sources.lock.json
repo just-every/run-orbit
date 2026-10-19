@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "da6243ba080b8786e85210790d8bac1915446fb5cc14c9db4326ddea1f292328",
+      "sha256": "89ada6e1d05e9f191dc2993ff553994b94cdb097723c23d1f33eb16b8e3027db",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "9e6ab0deec40b659e979f507880a9ee7c5f2cec7fc6a5291e2f93f78cae87011",
+      "sha256": "e937a347c7b3516b1a9a7b2c3eff20b291664b93ddae02f38d13487fe0030976",
       "executable": false
     },
     "DEMO.md": {
@@ -4383,7 +4383,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/settings-page.tsx": {
-      "sha256": "833acd90fb62737209e621e9cd0ff21d0c0a45e4195068f0864f6f01c8c4ca05",
+      "sha256": "c46128d51a31aad9bceb10edd2790d35b52c8e6463a739187a428968c27b75ce",
       "executable": false
     },
     "src/core/features/operator/ui/source-recipes.tsx": {
@@ -5103,7 +5103,7 @@
       "executable": false
     },
     "src/core/features/settings/routes.ts": {
-      "sha256": "ffb5e9cd33aa70f553bd54103a13c2c5df321f796f9cbe5913008731c2bb30aa",
+      "sha256": "b02f98cf043c8bcf495ed1f2d58ea85d0e5f1bd2f1382c7dcc7e1f9c03611451",
       "executable": false
     },
     "src/core/features/setup/loader.ts": {
@@ -6627,7 +6627,7 @@
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
-      "sha256": "89b279aba32f1ef79167fbf0bff59d3d6a5f130ec750c7dc746ee55aaaed8d0c",
+      "sha256": "50f525665bd0cb3844ff957cc8eed5e7d1b06996ee532e78f7037553df2e98f7",
       "executable": false
     },
     "tests/core/today-brief.test.ts": {

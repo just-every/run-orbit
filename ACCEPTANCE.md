@@ -882,7 +882,7 @@ Current evidence: No implementation found. No workflow engine writes records: th
 
 Status: **partial**.
 
-Connect Twilio and Aircall in turn, initiate a call from a real deal to an authorized test number, record answered/no-answer/failed dispositions, replay callbacks and revoke the connection; verify one truthful linked call each time. Place one call and receive one inbound call in the Aircall app outside Orbit and verify each is logged once on the matched contact and deal, with an unknown number held for review.
+Connect Twilio and Aircall in turn, initiate a call from a real deal to an authorized test number, record answered/no-answer/failed dispositions, replay callbacks and revoke the connection; verify one truthful linked call each time. Place one call and receive one inbound call in the Aircall app outside Orbit and verify each is logged once on the matched contact and deal, with an unknown number held for review. As part of BOUNDARY-001's walk, call the walk's USD deal contact and inspect the provider link, the carrier boundary and an unapproved provider shown as unresolved setup with manual logging still available. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 Current evidence: `src/core/features/records/manual.ts`; `tests/core/today-brief.test.ts`. Manual call logging exists; Twilio/Aircall dialer, call-provider callbacks and logging of calls made outside Orbit are missing.
 
@@ -890,7 +890,7 @@ Current evidence: `src/core/features/records/manual.ts`; `tests/core/today-brief
 
 Status: **partial**.
 
-Record an authorized test call, decline consent on another, read timestamped transcript evidence from the deal, correct a speaker and approve a stale-guarded proposal; deny an unauthorized user and erase local and provider copies.
+Record an authorized test call, decline consent on another, read timestamped transcript evidence from the deal, correct a speaker and approve a stale-guarded proposal; deny an unauthorized user and erase local and provider copies. As part of BOUNDARY-001's walk, record a consented call on the walk's USD deal and inspect the provider link and an unavailable recording provider shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 Current evidence: `src/core/features/records/manual.ts`; `src/core/features/capture/proposals.ts`; `tests/core/capture-review.test.ts`. Reviewed evidence updates and logged calls exist; recording, transcription and provider erasure are missing.
 
@@ -922,7 +922,7 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 Status: **missing**.
 
-Quote two products with discount and tax disclosure, require manager approval above its threshold, send the approved version through DocuSign, reject an old version and process signed/declined callbacks once; review the resulting billing handoff.
+Quote two products with discount and tax disclosure, require manager approval above its threshold, send the approved version through DocuSign, reject an old version and process signed/declined callbacks once; review the resulting billing handoff. As the signed-quote step of BOUNDARY-001's walk, quote and sign the walk's USD deal after its support context and inspect the DocuSign link, the signature boundary and an unconfigured provider shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 
@@ -930,7 +930,7 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 Status: **partial**.
 
-Connect Dial and Calendly, share a reviewed link, book/reschedule/cancel from each provider and inspect the same deal activity and sequence exit; replay and reject a forged callback.
+Connect Dial and Calendly, share a reviewed link, book/reschedule/cancel from each provider and inspect the same deal activity and sequence exit; replay and reject a forged callback. As the booking step of BOUNDARY-001's walk, book the walk's USD deal from each provider and inspect its product links, the booking product's ownership of availability and routing, and a disconnected provider shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 Current evidence: `src/core/features/ingestion/booking-webhooks.ts`; `src/core/features/ingestion/calendly-setup.ts`; `tests/core/source-onboarding.test.ts`. Calendly signed booking ingestion and guided callback registration exist; native Dial links and complete reschedule/completion lifecycle are missing.
 
@@ -938,7 +938,7 @@ Current evidence: `src/core/features/ingestion/booking-webhooks.ts`; `src/core/f
 
 Status: **missing**.
 
-Connect Zoom, attach an authorized meeting to a deal, open its preparation, finish it and review a cited recap; deny recording permission, replay completion and cancel a second meeting without fabricated context.
+Connect Zoom, attach an authorized meeting to a deal, open its preparation, finish it and review a cited recap; deny recording permission, replay completion and cancel a second meeting without fabricated context. As part of BOUNDARY-001's booking step, run this on the walk's booked USD deal and inspect the Zoom link, Zoom's ownership of the meeting and an unconnected Zoom shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 
@@ -946,7 +946,7 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 Status: **missing**.
 
-Link a Stripe test customer and Nectar account to a USD deal, ingest invoice paid/past-due/refund events, replay them and inspect one status timeline; approve a billing handoff and deny a mismatched customer.
+Link a Stripe test customer and Nectar account to a USD deal, ingest invoice paid/past-due/refund events, replay them and inspect one status timeline; approve a billing handoff and deny a mismatched customer. As the billing step of BOUNDARY-001's walk, hand the walk's signed USD quote to each billing product and inspect its link, the collection boundary and a disconnected provider shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 
@@ -954,7 +954,7 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 Status: **missing**.
 
-Connect each support service, map a customer, open a ticket on its sales account, restrict a ticket and revoke access; verify current visibility and one reviewed handoff with a returned support outcome.
+Connect each support service, map a customer, open a ticket on its sales account, restrict a ticket and revoke access; verify current visibility and one reviewed handoff with a returned support outcome. As the support-context step of BOUNDARY-001's walk, open the walk's USD account after its booking and inspect each support product link, the support product's ownership boundary and a disconnected service shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 
@@ -962,7 +962,7 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 Status: **missing**.
 
-Route a stage event and overdue task to an authorized Slack channel, replay the event, deny a private-account disclosure and submit a revoked or foreign action; inspect one correct notification and attributable task.
+Route a stage event and overdue task to an authorized Slack channel, replay the event, deny a private-account disclosure and submit a revoked or foreign action; inspect one correct notification and attributable task. On BOUNDARY-001's walk, route the walk's won-deal and Buoy-handoff notices and inspect the Slack link and a disconnected workspace shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 
@@ -970,7 +970,7 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 Status: **missing**.
 
-For both services approve a USD quote-to-invoice handoff, inspect provider lines/tax/identity, receive partial and full payment status and replay a timed-out result without a second invoice.
+For both services approve a USD quote-to-invoice handoff, inspect provider lines/tax/identity, receive partial and full payment status and replay a timed-out result without a second invoice. As the accounting step of BOUNDARY-001's walk, hand the walk's signed USD quote to each accounting service and inspect its link, the ledger boundary and a disconnected service shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 
@@ -978,7 +978,7 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 Status: **missing**.
 
-Preview an audience containing subscribed, unknown and stopped contacts; sync only the authorized subset, ingest unsubscribe and replay a prior subscription update; verify no resumed outreach or duplicate subscriber.
+Preview an audience containing subscribed, unknown and stopped contacts; sync only the authorized subset, ingest unsubscribe and replay a prior subscription update; verify no resumed outreach or duplicate subscriber. On BOUNDARY-001's walk, preview the walk's consented buyer for a Mailchimp audience and inspect the Mailchimp link, its campaign ownership and a disconnected account shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 
@@ -986,7 +986,7 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 Status: **missing**.
 
-Close an authorized USD deal won, preview and approve its Buoy handoff, inspect the linked receiving account/owner and acceptance, then replay, revoke access and fail the provider; verify one handoff, visible failure and no customer-success workflow built inside Orbit.
+Close an authorized USD deal won, preview and approve its Buoy handoff, inspect the linked receiving account/owner and acceptance, then replay, revoke access and fail the provider; verify one handoff, visible failure and no customer-success workflow built inside Orbit. As the post-sale step of BOUNDARY-001's walk, hand the walk's won USD deal to Buoy and inspect the Buoy link, Buoy's ownership of customer success and a disconnected Buoy shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 
@@ -1066,12 +1066,12 @@ Current evidence: `src/core/features/assistance/provider.ts`; `src/core/features
 
 ### BOUNDARY-001 — Separate products and US-first delivery.
 
-Status: **partial**.
+Status: **done**.
 
-Walk a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff; inspect the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+Walk a US buyer's USD deal through every current capability: signed Calendly booking intake onto the deal, a manual call log, and an exact-message review and send, with the USD amount unchanged and no mail sent by a booking, a manual entry or provider setup. In Settings at 1440 and 390, inspect Connected products: Calendly and Cal.com show their real delivery state, and Dial, Zoom, Twilio/Aircall, HappyToHelp/Help Scout/Zendesk, DocuSign, Nectar/Stripe, QuickBooks Online/Xero, Slack, Mailchimp and Buoy show as not available in Orbit with the job each owns, with no substituted connector or mock and no reduced CRM scope. The complete walk from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff is carried by INTEGRATE-001–008, CALL-001/002 and QUOTE-001, each in its own acceptance, and run end to end by whichever ships last.
 
-Current evidence: `src/core/features/ingestion/booking-webhooks.ts`; `tests/core/source-onboarding.test.ts`. Native USD defaults and Calendly integration exist; the complete cross-product handoff set is missing.
+Current evidence: `tests/core/source-onboarding.test.ts` — “BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup”; `src/core/features/settings/connected-products.ts`; `src/core/features/operator/ui/connected-products.tsx`; `src/core/features/ingestion/booking-webhooks.ts`; `tests/core/signals-outreach.test.ts`; `tests/support/sales-tasks.ts`; `tests/evidence/contract/BOUNDARY-001/`. The authenticated HTTP journey connects a booking source, accepts a signed Calendly booking as linked deal evidence, logs a manual call, keeps the USD 100.00 amount, reviews and sends exact mail, and shows Calendly receiving while Cal.com awaits delivery and Dial, Zoom, Twilio, Aircall, HappyToHelp, Help Scout, Zendesk, DocuSign, Nectar, Stripe, QuickBooks Online, Xero, Slack, Mailchimp and Buoy are unavailable with no connector door; bookings, manual work and setup send no mail. US timezone and DST behavior stays proven by OUT-008, TASK-001 and TEAM-003. Settings › Connected products and the booked deal were inspected at 1440 and 390. The full walk is now an obligation of INTEGRATE-001–008, CALL-001/002 and QUOTE-001, each in its own acceptance; whichever ships last runs it end to end.
 
 ## Completion accounting
 
-131 product clauses: **83 done, 27 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+131 product clauses: **84 done, 26 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
