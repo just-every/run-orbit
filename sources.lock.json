@@ -4202,6 +4202,14 @@
       "sha256": "fd24e7283a26aadc8ec5b1a65f72b6bad409c74f4019b77292f2fcfd0bbd705a",
       "executable": false
     },
+    "src/core/features/operator/ui/follow-up-outcomes.css": {
+      "sha256": "130c8e17427972462c640fc9e5f705437db6c64c60910bdc51c36b5cc34fbefe",
+      "executable": false
+    },
+    "src/core/features/operator/ui/follow-up-outcomes.tsx": {
+      "sha256": "9bdee90d8b9f42b51af28e753d0ff4c2ce23773c4eb7f79398a7f38baab62579",
+      "executable": false
+    },
     "src/core/features/operator/ui/form-embedding-settings.tsx": {
       "sha256": "9a20b20c4c01a434ecd53a4d0b0b69c91b643c93a27e6323ec94d486c5914c03",
       "executable": false
@@ -4476,6 +4484,10 @@
     },
     "src/core/features/outreach/delivery-outcomes.ts": {
       "sha256": "8ebc0328e826b0f4823332157c29cda5939bb858eef9d86c9a66160e1367cea7",
+      "executable": false
+    },
+    "src/core/features/outreach/follow-up-outcomes.ts": {
+      "sha256": "2b7d1f1a0dabb9b30481bb1490561b6fdbb41cf4e1f5fe07d18de3ccdc557811",
       "executable": false
     },
     "src/core/features/outreach/history-links.ts": {
@@ -6892,6 +6904,14 @@
     },
     "tests/evidence/contract/RECORD-015/deal-buying-context-390.png": {
       "sha256": "7eb3efd9dab0e663f830673167417309d539ecbfefd4676896e8efea8f10b5c1",
+      "executable": false
+    },
+    "tests/evidence/contract/SEQUENCE-002/sequence-002-outcomes-1440.png": {
+      "sha256": "88e3ebc43747b0f5cff296c4e0a3d9d79596ba7722da5b8a376155c25d935839",
+      "executable": false
+    },
+    "tests/evidence/contract/SEQUENCE-002/sequence-002-outcomes-390.png": {
+      "sha256": "608801dfc3006971ee979c6226cfa7b49f07718a309618b4e066a2ae9c6bb5d4",
       "executable": false
     },
     "tests/evidence/contract/TASK-001/assigned-tasks-1440.png": {

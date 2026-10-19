@@ -3,7 +3,7 @@ import { formatDate } from './formatters';
 export interface Outcomes {firstAcceptedAt:string|null;accepted:number;delivered:number;humanReplies:number;meetingsBooked:number;stageAdvances:number;lifecycle:string;closedAt:string|null;inferredReports:number;automaticReplies:number}
 /** SEQUENCE-002: delivery, human replies, meetings and deal movement are measured apart; opens and automatic replies are shown but never counted as success. */
 export function FollowUpOutcomes({outcomes}:{outcomes:Outcomes}){
- if(!outcomes.firstAcceptedAt)return <div className="follow-up-outcomes" data-testid="follow-up-outcomes"><h3>Follow-up outcomes</h3><p>No message has been accepted by the mail provider yet, so there are no outcomes to measure.</p></div>;
+ if(!outcomes.firstAcceptedAt)return null;
  const deal=outcomes.lifecycle==='won'?`Won${outcomes.closedAt?` · ${formatDate(outcomes.closedAt)}`:''}`:outcomes.lifecycle==='lost'?`Lost${outcomes.closedAt?` · ${formatDate(outcomes.closedAt)}`:''}`:'Open';
  return <div className="follow-up-outcomes" data-testid="follow-up-outcomes"><h3>Follow-up outcomes</h3><p>Since the first accepted message on {formatDate(outcomes.firstAcceptedAt)}.</p>
   <dl className="operator-data-fields">
