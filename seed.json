@@ -460,8 +460,8 @@
     "signalPayloadBytes": 262144,
     "signedIngressRequestsPerMinute": 600,
     "publicRequestsPerMinutePerIp": 300,
-    "outboundMessagesPerMinute": 3,
-    "outboundMessagesPerOperatorPerRollingDay": 100
+    "outboundMessagesPerMinute": 100,
+    "outboundMessagesPerOperatorPerRollingDay": 1000
   },
   "accessibility": {
     "level": "WCAG 2.2 AA",

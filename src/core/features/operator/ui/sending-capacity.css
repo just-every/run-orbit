@@ -1,0 +1,7 @@
+.sending-capacity table{border-collapse:collapse;width:100%}
+.sending-capacity caption{text-align:left;font-weight:600;padding-bottom:8px}
+.sending-capacity th,.sending-capacity td{padding:8px 16px 8px 0;text-align:left;vertical-align:middle;border-bottom:1px solid var(--ob-line)}
+.sending-capacity__budget{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sending-capacity__budget input{width:6.5rem;min-width:0}
+.sending-capacity__rate{display:grid;gap:8px;margin-top:16px}
+@media(max-width:480px){.sending-capacity th,.sending-capacity td{padding-right:10px}.sending-capacity__budget input{width:5rem}}

@@ -482,7 +482,7 @@ Status: **done**.
 
 Exceed the per-minute and per-operator daily limits before immediate and scheduled submission; retain a visible unsent item with its reason and next permitted time, and see no silent retry.
 
-Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/outreach-limits.test.ts`. Per-user budgets, mailbox pacing and per-user isolation are OUT-018.
+Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/outreach-limits.test.ts`. Per-user one-to-one budgets and the team-scaled shared rate are exercised by OUT-018's journey; sequence budgets and mailbox pacing remain OUT-018 obligations inherited by the sequence and mailbox clauses.
 
 ### OUT-011 — Unresolved submission.
 
@@ -648,6 +648,8 @@ Current evidence: `src/core/features/delegation/protocol.ts`; `tests/delegation/
 
 Status: **partial**.
 
+Before teams ship, they must carry OUT-018's per-team lowering and raising of sending budgets, audited like the per-user change the installation owner makes today.
+
 Invite a manager and two reps, make one account private, deny its record and field through direct URLs/search/API/report/export/AI preview, share it intentionally, then revoke and repeat after sign-out and restore. Restrict one rep to owned records and verify that their lists, search, API and export show only the contacts and companies they own under RECORD-016, and that reassigning one of those contacts removes it from their next request.
 
 Current evidence: `src/core/features/access/service.ts`; `src/core/features/access/field-policy.ts`; `newtests/t096/collaborator-lifecycle.test.ts`. Collaborator record/field restrictions exist; native seller/team hierarchy, owned-record restriction keyed to RECORD-016 owners and per-action sales roles are missing.
@@ -752,6 +754,8 @@ Current evidence: `src/core/features/forms/service.ts`; `src/core/features/forms
 
 Status: **missing**.
 
+Before mailbox sending ships, it must satisfy OUT-018: each mailbox paced within its provider's limits and never by a deployment-wide throttle, a provider `429` deferring only that mailbox's mail visibly until its `Retry-After`, and each mailbox's usage in the administrator's view.
+
 Before mailbox sequence sending ships, a mailbox disconnect must pause that mailbox's enrollments visibly with the reason, and a genuine reply on the provider's own thread or conversation must exit them under SEQUENCE-002.
 
 Before mailbox sending ships, it must satisfy OUT-015’s separate acceptance/delivery/inferred-report/human-reply provenance and genuine-reply stop semantics, with open/click not tracked unless OUT-016 is explicitly enabled.
@@ -798,11 +802,13 @@ Current evidence: `src/core/features/outreach/service.ts`; `src/core/features/dr
 
 ### OUT-018 — Sending capacity for a whole sales team.
 
-Status: **partial**.
+Status: **done**.
+
+Today every message is one-to-one mail through the shared transport, and these values are in force: each user's one-to-one budget (1,000 a rolling day by default) and the shared rate (100 a minute by default, 4 for each of the 25 declared users) replace the former deployment-wide 3 a minute and 100 per user, and a change applies to the next claim. Until TEAM-005 adds the administrator role, the installation owner sets each user's one-to-one budget, up to the shared rate's daily capacity, and the shared rate, and each change is audited with the owner, the old and new values and the time; per-team budgets come with TEAM-005's teams. A held message names the limit that stopped it with its value, and the time it may be sent. Settings → Sending capacity shows each user their own budget used and remaining, and the owner every user's. SEQUENCE-001, SEQUENCE-003 and AUTO-001 inherit the sequence budget and pace, one-to-one priority, the 75% sequence share and fair draining; OUT-013 inherits per-mailbox pacing, provider quota and `Retry-After` deferral and mailbox usage in the administrator's view. `seed.json` declares 100 a minute and 1,000 a user per rolling day, still marked `estimated-until-load-tested`: no measured submission latency is claimed until the acceptance load journey runs.
 
 With 12 users (nine AEs, two SDRs and one manager) sending through Gmail and Microsoft 365 mailboxes and the shared transport, in one business morning each user approves 40 one-to-one messages while two SDRs each approve a 100-recipient, four-step SEQUENCE-003 batch. Verify that every one-to-one message is submitted within 60 seconds of its approval while the batches drain; that each SDR's 100 first steps are submitted within the business day inside their own sequence budget, interleaved with the other SDR's; and that no deployment-wide throttle delays a mailbox send. Inject a provider 429 for one mailbox and see only that mailbox's mail deferred, visibly, until its `Retry-After`. Lower one SDR's sequence budget to 50: only that SDR's remaining steps defer, visibly, naming the limit and the next permitted time, while the other SDR's steps and everyone's one-to-one mail continue. Record the measured submission latencies at the declared 25-user capacity before `seed.json` drops `estimated-until-load-tested`.
 
-Current evidence: `src/core/features/outreach/service.ts`; `tests/core/outreach-limits.test.ts`; `tests/core/signals-outreach.test.ts`. A per-operator rolling-day limit with a visible retry time exists, but it is today's single `seed.json` value of 100 shared by all mail, under a deployment-wide limit of 3 per minute (`claimed_at` counts in `src/core/features/outreach/service.ts`). Separate sequence and one-to-one budgets, per-mailbox pacing, a team-scaled shared-transport rate, one-to-one priority, fair draining and the load journey are missing.
+Current evidence: `tests/core/outreach-limits.test.ts` — “OUT-010 OUT-018 one user's volume never consumes another's budget and every deferral names its limit”; `src/core/features/outreach/sending-limits.ts`; `src/core/features/outreach/service.ts`; `src/core/features/outreach/approval-repository.ts`; `src/core/features/operator/ui/sending-capacity.tsx`; `tests/evidence/contract/OUT-018/`. Public HTTP approvals by twelve users with a lowered budget and a changed shared rate, a dispatch two days later and an explicit retry; Settings → Sending capacity and a held message inspected at 1440/390. Inherited obligations and the unmeasured load journey are stated above.
 
 ### OUT-019 — To, CC and BCC, reply and reply all.
 
@@ -844,6 +850,8 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 Status: **partial**.
 
+Before sequence sending ships, it must satisfy OUT-018: each sender's sequence budget (500 a rolling day by default) and pace (3 a minute), at most 75% of the shared transport's rate, one-to-one mail claimed first, round-robin draining across users, and deferrals that name the sequence budget or pace and the time.
+
 Before enrollments ship, they must satisfy SEQUENCE-002: an enrollment exits atomically on a genuine reply (including one from an external participant of a step's thread), a meeting booking, a stage change, a won or lost close, an unsubscribe, a permanent bounce or a human stop; reassignment, revoked permission and mailbox disconnect pause it visibly with the reason; and restart, replay or a late job never revives an exited enrollment.
 
 As a seller, create and share with the team a five-step email/call/manual-LinkedIn sequence whose second email step is threaded and CCs the account's sales engineer, and see a read-only user refused authoring; enroll eligible contacts with and without deals with exact-content approvals, complete the manual task, advance business time and restart mid-step; verify one action per due step, the second email arriving in the first email's thread with the internal CC, OUT-018 per-user budget enforcement and no unapproved send.
@@ -868,6 +876,8 @@ Current evidence: `tests/core/signals-outreach.test.ts` — “OUT-007 OUT-009 S
 
 Status: **missing**.
 
+Before batch sending ships, it must satisfy OUT-018: each sender's sequence budget (500 a rolling day by default) and pace (3 a minute), at most 75% of the shared transport's rate, one-to-one mail claimed first, round-robin draining across users, and deferrals that name the sequence budget or pace and the time.
+
 Before batch enrollment ships, each enrollment in a batch must satisfy SEQUENCE-002's exits, pauses with a reason and no-revival rules on its own, without stopping the rest of the batch.
 
 From a saved list of 50 eligible contacts (ten of them on no deal) and 3 ineligible contacts, enroll all of them in a five-step sequence with four email steps in one action; inspect the excluded reasons, open any rendered message, edit one and remove one, then approve once. Advance business time and verify one provider submission per due email step per remaining recipient with no further approval, a per-rep limit of 40 per day deferring the rest visibly to the next window, a merge-field change on one contact holding only that recipient's step for review, and a workflow-triggered contact waiting in the owner's approval queue until its batch is approved.
@@ -877,6 +887,8 @@ Current evidence: No implementation found. Reviewed single scheduled messages ex
 ### AUTO-001 — Configurable sales workflows and visible execution.
 
 Status: **partial**.
+
+Before workflow email ships, it must satisfy OUT-018: each sender's sequence budget (500 a rolling day by default) and pace (3 a minute), at most 75% of the shared transport's rate, one-to-one mail claimed first, round-robin draining across users, and deferrals that name the sequence budget or pace and the time.
 
 Before workflow-triggered enrollment or workflow email ships, it must satisfy SEQUENCE-002's exits, pauses with a reason and no-revival rules.
 
@@ -1090,4 +1102,4 @@ Current evidence: `tests/core/source-onboarding.test.ts` — “BOUNDARY-001 cur
 
 ## Completion accounting
 
-131 product clauses: **86 done, 24 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+131 product clauses: **87 done, 23 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.

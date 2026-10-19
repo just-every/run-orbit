@@ -90,8 +90,10 @@ test('OPP-008 completion removes an exhausted recommendation; new observed evide
 test('OUT-010 over-limit approval remains durably unsent with retry time',async()=>{
  const f=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db);await db.prepare("UPDATE outbound_messages SET claimed_at='2000-01-01T00:00:00.000Z' WHERE claimed_at IS NOT NULL").run();
  const fixed=new Date('2031-01-06T10:00:00Z');const messages=[];
- for(let i=0;i<4;i++){const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:`Limit ${i}`,body:'Reviewed'},f.actor);messages.push(await approval.approve(draft.id,1,f.actor,{now:fixed}));}
- assert.deepEqual(messages.map(m=>m.state),['queued','queued','queued','draft']);assert.ok(messages[3]!.failure);assert.equal(messages[3]!.next_attempt_at,'2031-01-06T10:01:00.000Z');
+ await db.prepare("INSERT INTO sending_limits VALUES('shared',3,?,?)").bind(f.actor,fixed.toISOString()).run();
+ try{for(let i=0;i<4;i++){const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:`Limit ${i}`,body:'Reviewed'},f.actor);messages.push(await approval.approve(draft.id,1,f.actor,{now:fixed}));}}
+ finally{await db.prepare("DELETE FROM sending_limits WHERE id='shared'").run();}
+ assert.deepEqual(messages.map(m=>m.state),['queued','queued','queued','draft']);assert.match(messages[3]!.failure!,/shared sending rate of 3 messages a minute/);assert.equal(messages[3]!.next_attempt_at,'2031-01-06T10:01:00.000Z');
 });
 
 test('BASE-OPS-003 OUT-002 OUT-005 signed provider delivery is verified and idempotent',async()=>{
