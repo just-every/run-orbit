@@ -7171,7 +7171,7 @@
       "executable": false
     },
     "tests/performance/archive-capacity.ts": {
-      "sha256": "591f449b4443b7de8f5543884e2d7da0ffa9b354c39ad4071390c02b56e28ef7",
+      "sha256": "387d311af9399a0c24aa92a1950f54a950fd5c5ef166fa1462a40a1c6f4ea46e",
       "executable": false
     },
     "tests/performance/records-capacity.ts": {

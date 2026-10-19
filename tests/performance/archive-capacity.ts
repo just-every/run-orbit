@@ -36,7 +36,12 @@ export async function verifyArchiveCapacity(origin: string, cookie: string, read
         while (status.state === 'preparing')
         status = await (await request(host, session, `/exports/${status.id}/advance`, 'POST', {})).json(); assert.equal(status.state, 'ready'); const response = await request(host, session, `/exports/${status.id}/download`); await pipeline(Readable.fromWeb(response.body as any), createWriteStream(file, { flags: 'wx', mode: 0o600 })); return { id: status.id, manifest: status.manifest, snapshotHttpHeadersAndJsonMs, bytes: (await stat(file)).size }; }
     async function* entries(file: string) { yield* readArchiveFile(Readable.toWeb(createReadStream(file)) as ReadableStream<Uint8Array>); }
-    async function hashes(file: string) { const hashes = new Map<string, ReturnType<typeof createHash>>(), counts: Record<string, number> = {}; let audits = 0; for await (const entry of entries(file)) {
+    // Restore keeps the restoring installation's own native operator, with its
+    // provision and membership, so whoever restores is never locked out
+    // (restoreOperatorStatements, foldedImportContext). Those rows are set aside
+    // here and asserted exactly; every other archived row must match the source.
+    const retainedOperatorColumns: Record<string, string> = { operators: 'id', access_memberships: 'operator_id', original_operator_provisions: 'operator_id' };
+    async function hashes(file: string, retainedOperator: string) { const hashes = new Map<string, ReturnType<typeof createHash>>(), counts: Record<string, number> = {}, retained: Record<string, Record<string, unknown>[]> = {}; let audits = 0; for await (const entry of entries(file)) {
         if (entry.kind !== 'part')
             continue;
         for (const record of entry.part.records) {
@@ -44,12 +49,16 @@ export async function verifyArchiveCapacity(origin: string, cookie: string, read
                 audits++;
                 continue;
             }
+            if (record.table in retainedOperatorColumns && record.row[retainedOperatorColumns[record.table]] === retainedOperator) {
+                (retained[record.table] ??= []).push(record.row);
+                continue;
+            }
             const hash = hashes.get(record.table) ?? createHash('sha256');
             hash.update(JSON.stringify(record.row) + '\n');
             hashes.set(record.table, hash);
             counts[record.table] = (counts[record.table] ?? 0) + 1;
         }
-    } return { tables: Object.fromEntries([...hashes].map(([name, hash]) => [name, { count: counts[name], sha256: hash.digest('hex') }])), audits }; }
+    } return { tables: Object.fromEntries([...hashes].map(([name, hash]) => [name, { count: counts[name], sha256: hash.digest('hex') }])), audits, retained }; }
     try {
         const first = await snapshot(origin, cookie, join(directory, 'source.json'));
         console.log(`Archive source: ${first.manifest.rows} rows, ${first.manifest.parts} parts, ${first.bytes} bytes, snapshot HTTP headers and JSON ${first.snapshotHttpHeadersAndJsonMs.toFixed(1)}ms`);
@@ -100,9 +109,14 @@ export async function verifyArchiveCapacity(origin: string, cookie: string, read
         targetCookie = `__Host-orbit_session=${(await createDependencies(target.db).auth.createSession(actor)).token}`;
         await target.close();
         await startWorker();
-        const second = await snapshot(targetOrigin, targetCookie, join(directory, 'restored.json')), before = await hashes(join(directory, 'source.json')), after = await hashes(join(directory, 'restored.json'));
+        const second = await snapshot(targetOrigin, targetCookie, join(directory, 'restored.json')), before = await hashes(join(directory, 'source.json'), targetActor), after = await hashes(join(directory, 'restored.json'), targetActor);
+        assert.deepEqual(before.retained, {});
         assert.deepEqual(after.tables, before.tables);
         assert.equal(after.audits, before.audits + 1);
+        assert.deepEqual(Object.keys(after.retained).sort(), ['access_memberships', 'operators', 'original_operator_provisions']);
+        assert.deepEqual(after.retained.operators.map(row => [row.email, row.status]), [['target-capacity@example.test', 'active']]);
+        assert.deepEqual(after.retained.access_memberships.map(row => [row.workspace_id, row.role, row.status]), [['workspace', 'legacy_operator', 'active']]);
+        assert.equal(after.retained.original_operator_provisions.length, 1);
         await stopWorker();
         await target.reopen();
         assert.deepEqual(await target.db.prepare('SELECT input_tokens,output_tokens,cached_input_tokens,estimated_cost FROM ai_calls').first(), { input_tokens: 9876, output_tokens: 5432, cached_input_tokens: 1234, estimated_cost: 0.987 });
