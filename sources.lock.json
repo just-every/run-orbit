@@ -7295,7 +7295,7 @@
       "executable": false
     },
     "tests/support/available-port.ts": {
-      "sha256": "5d41ad7bfc3a87dc25458db21ac7580fb3711372d5bea9fe8e29b9212c2bb315",
+      "sha256": "863820081bccb2e25bc2ac6b3b5225172b88985ead004117c30377d60f41d350",
       "executable": false
     },
     "tests/support/browser-temp.mjs": {
