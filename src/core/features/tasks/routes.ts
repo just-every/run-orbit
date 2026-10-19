@@ -1,3 +1,5 @@
+import { RecordError } from '../records/shared';
+import { MentionAccessError } from '../records/mentions';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AuthenticatedOperator } from '../identity';
@@ -17,7 +19,7 @@ const content = z.object({
 const query = z.object({view: z.enum(['today','overdue','all']).default('today'), owner: z.union([id, z.literal('unassigned'), z.literal('all')]).optional(), date: z.iso.date().optional(), offset: z.coerce.number().int().min(0).max(1000000).default(0)}).strict();
 export function createSalesTaskRoutes(db: D1Database) {
  const app = new Hono<{Variables: {operator: AuthenticatedOperator}}>();
- app.onError((error, c) => {if (error instanceof TaskError) return c.json({error: error.message}, error.status); throw error;});
+ app.onError((error, c) => {if (error instanceof TaskError) return c.json({error: error.message}, error.status); if (error instanceof RecordError) return c.json({error: error.message, ...(error instanceof MentionAccessError ? {withoutAccess: error.colleagues} : {})}, error.status); throw error;});
  app.use('*', async (c, next) => {await taskAuthority(db, c.get('operator')); await next();});
  app.get('/', async c => {
   const parsed = query.safeParse(c.req.query());

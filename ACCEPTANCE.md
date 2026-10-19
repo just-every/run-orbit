@@ -650,6 +650,8 @@ Status: **partial**.
 
 Before teams ship, they must carry OUT-018's per-team lowering and raising of sending budgets, audited like the per-user change the installation owner makes today.
 
+Before teams ship, they must carry RECORD-017's team mentions: autocomplete offers active teams, a team mention notifies each active member once, and "cannot see the record" follows the team roles and private records instead of the collaborator-only check used today.
+
 Invite a manager and two reps, make one account private, deny its record and field through direct URLs/search/API/report/export/AI preview, share it intentionally, then revoke and repeat after sign-out and restore. Restrict one rep to owned records and verify that their lists, search, API and export show only the contacts and companies they own under RECORD-016, and that reassigning one of those contacts removes it from their next request.
 
 Current evidence: `src/core/features/access/service.ts`; `src/core/features/access/field-policy.ts`; `newtests/t096/collaborator-lifecycle.test.ts`. Collaborator record/field restrictions exist; native seller/team hierarchy, owned-record restriction keyed to RECORD-016 owners and per-action sales roles are missing.
@@ -680,11 +682,13 @@ Current evidence: No implementation found. `src/core/features/records/schema.ts`
 
 ### RECORD-017 — Mentions in notes and activities.
 
-Status: **missing**.
+Status: **partial**.
+
+Today a user mentions a colleague as `@Display Name`, or as `@email` when two active colleagues share a name, in a note, a logged call or meeting, a task note or a person's handoff; while they type, autocomplete offers active full operators and collaborators who accepted their invitation. Until TEAM-005's roles exist every full operator sees every record (pattern 4), so only a collaborator can be without access: one whose role does not read records and who holds no live grant for the record. Saving text that mentions such a collaborator is refused with their names; the author shares the record with them through the existing collaborator grant (the installation owner acts for the administrator until TEAM-005, pattern 2) or removes the mention, and a mention never grants access. Each mentioned colleague other than the author receives one in-app notification naming the author and the record and opening the exact entry, task or handoff; an edit notifies only colleagues not yet notified for that entry; deleting an entry withdraws its unread mention notifications and leaves an attributed "entry deleted" timeline record. Notifications → Mentions lists every entry, task note and handoff that mentions the user now. An application's proposed handoff notifies nobody until a person accepts or edits it. Mentions are internal: no customer message carries entry text, AI-001 previews carry no notes, and AGENT-002's conflict check sends note lines only exactly as its preview shows them. An entry's mentions are saved with it (a task note or handoff keeps them in its text), so they are exported with it, and deleting or erasing the record erases its mention notifications (DATA-002). TEAM-005 inherits team mentions and NOTIFY-003 inherits email, push and Slack delivery by preference. Not yet: a mentioned collaborator has no notification inbox and Shared records shows no entries, so the collaborator cannot open their mention; that waits for ct to decide whether a shared record's internal entries are visible to its collaborators.
 
 On a deal, a rep writes a note mentioning their manager and a call log mentioning a colleague without access to the deal. The manager receives one notification linking to the note. Before saving, the author is asked to share the deal or remove the second mention; they share it explicitly, and only then is the colleague notified. Edit the note to add a third user; only that user is notified. Delete the call log, and the colleague's unread mention notification is withdrawn. Verify that no access was granted without the explicit share and that no customer message or score changed.
 
-Current evidence: No implementation found. Notes and logged activities under RECORD-010 carry no mention parsing, mention notification or Mentions view.
+Current evidence: `src/core/features/records/mentions.ts`; `src/core/features/records/manual.ts`; `src/core/features/operator/ui/mention-field.tsx`; `tests/core/today-brief.test.ts` — “BRIEF-004 RECORD-010 RECORD-017 OUT-001 a booked meeting gets a cited plan with unresolved attendees shown, notes saved as one editable note, and plan lines become next actions without sending anything; a mention notifies once, asks to share before notifying a collaborator without access, withdraws on delete and never reaches AI or a customer”; `tests/evidence/contract/RECORD-017/`. Mentions in notes, logged calls and meetings, task notes and handoffs, autocomplete, the share-or-remove prompt for a collaborator without access, one notification per colleague opening the exact entry, the edit and delete rules, the Mentions view, AI and customer exclusion and export and erasure are proven through public HTTP and at 1440/390. Missing: a mentioned collaborator cannot open their mention, because collaborators have no notification inbox and Shared records shows no entries (waiting on ct: are a shared record's internal entries visible to its collaborators?). Team mentions are TEAM-005's and email, push or Slack delivery NOTIFY-003's.
 
 ### RECORD-018 — Files on records, activities and mail.
 
@@ -845,6 +849,8 @@ Current evidence: `src/core/features/tasks/`; `tests/core/today-brief.test.ts`; 
 ### NOTIFY-003 — Reminders that reach an absent seller.
 
 Status: **missing**.
+
+Before email, push or Slack notifications ship, they must deliver RECORD-017's mention notifications by each mentioned user's preference, once per entry, task or handoff, and withdraw an undelivered one when its entry is deleted.
 
 Leave Orbit closed, advance a task reminder/digest schedule, receive it in a real mailbox/device and inspect its evidence link; complete or reassign the task before dispatch, simulate a provider failure and restart without stale or duplicate reminders.
 

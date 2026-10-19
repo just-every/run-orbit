@@ -1,3 +1,4 @@
+import { mentionHrefSql } from '../records/mentions';
 import { Hono } from 'hono';
 import type { AuthenticatedOperator } from '../identity';
 export function createNotificationRoutes(db:D1Database) {
@@ -5,7 +6,7 @@ export function createNotificationRoutes(db:D1Database) {
  app.get('/',async c=>{
   const actor=c.get('operator').operatorId;
   const [items,count]=await Promise.all([
-   db.prepare('SELECT n.id,(SELECT l.href FROM sales_task_notification_links l WHERE l.notification_id=n.id LIMIT 1) AS href,n.opportunity_id AS opportunityId,o.title AS opportunityTitle,n.kind,n.message,n.created_at AS createdAt,n.read_at AS readAt FROM notifications n LEFT JOIN opportunities o ON o.id=n.opportunity_id WHERE n.operator_id=? ORDER BY n.created_at DESC,n.id DESC LIMIT 100').bind(actor).all(),
+   db.prepare(`SELECT n.id,COALESCE((SELECT l.href FROM sales_task_notification_links l WHERE l.notification_id=n.id LIMIT 1),${mentionHrefSql}) AS href,n.opportunity_id AS opportunityId,o.title AS opportunityTitle,n.kind,n.message,n.created_at AS createdAt,n.read_at AS readAt FROM notifications n LEFT JOIN opportunities o ON o.id=n.opportunity_id WHERE n.operator_id=? ORDER BY n.created_at DESC,n.id DESC LIMIT 100`).bind(actor).all(),
    db.prepare('SELECT count(*) AS count FROM notifications WHERE operator_id=? AND read_at IS NULL').bind(actor).first<{count:number}>()
   ]);
   return c.json({notifications:items.results,unread:count?.count??0});

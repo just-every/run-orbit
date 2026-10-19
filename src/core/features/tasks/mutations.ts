@@ -5,6 +5,9 @@ import { TaskError, type TaskInput, type TaskRow, type TaskStatus } from './cont
 import { taskAssignment, taskEffects } from './effects';
 import { insertTask, rawTask } from './repository';
 import { nextTaskDue, taskLocalClock } from './time';
+import { mentionPlan } from '../records/mentions';
+/** RECORD-017: a task note's mentions notify each colleague once per task; the text keeps them. */
+const noteMentions=(db: D1Database, task: TaskRow, author: string) => mentionPlan(db, {source: 'task', sourceId: task.id, kind: task.record_type, recordId: (task.contact_id ?? task.company_id ?? task.opportunity_id)!, label: 'task note', text: task.notes, author});
 const tables = {contact: 'contacts', company: 'companies', opportunity: 'opportunities'} as const;
 function inputGuard(db: D1Database, input: TaskInput) {
  const owner = input.ownerId ? ` AND ${activeTaskOwner}` : '';
@@ -26,7 +29,7 @@ export async function createTask(db: D1Database, actor: AuthenticatedOperator, i
  const authority = await taskAuthority(db, actor), now = new Date().toISOString(), task = newTask(input, actor.operatorId, now);
  await commitTasks(db, authority, [inputGuard(db, input),
  db.prepare('INSERT INTO sales_task_series(id,created_at) VALUES(?,?)').bind(task.series_id, now),
- insertTask(db, task), ...taskEffects(db, task, actor.operatorId, 'task.created'), ...taskAssignment(db, task, actor.operatorId)]);
+ insertTask(db, task), ...taskEffects(db, task, actor.operatorId, 'task.created'), ...taskAssignment(db, task, actor.operatorId), ...(await noteMentions(db, task, actor.operatorId)).statements]);
  return {id: task.id, revision: task.revision};
 }
 function updatedTask(previous: TaskRow, input: TaskInput, actorId: string, status: TaskStatus): TaskRow {
@@ -63,7 +66,7 @@ export async function updateTask(db: D1Database, actor: AuthenticatedOperator, i
   statements.push(db.prepare('UPDATE sales_task_series SET cancelled_at=?,cancelled_by=? WHERE id=?').bind(task.updated_at, actor.operatorId, task.series_id));
  } else {
   const kind = input.status === 'completed' ? 'task.completed' : task.owner_id !== previous.owner_id ? 'task.reassigned' : task.due_at !== previous.due_at ? 'task.rescheduled' : 'task.updated';
-  statements.push(updateStatement(db, task), ...taskEffects(db, task, actor.operatorId, kind, previous));
+  statements.push(updateStatement(db, task), ...taskEffects(db, task, actor.operatorId, kind, previous), ...(await noteMentions(db, task, actor.operatorId)).statements);
   if (task.owner_id !== previous.owner_id) statements.push(...taskAssignment(db, task, actor.operatorId, previous.owner_id));
   if (input.status === 'completed' && task.recurrence !== 'none') {
    const revision = createId();

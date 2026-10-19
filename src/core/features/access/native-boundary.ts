@@ -29,7 +29,7 @@ export async function restrictedEdit(db:D1Database,c:ActorContext,kind:keyof typ
 export function collaboratorNativeBoundary(db:D1Database):MiddlewareHandler<{Variables:{operator:AuthenticatedOperator}}>{return async(c,next)=>{
  const operator=c.get('operator');if(await isFullOperator(db,operator.operatorId)){await next();return;}
  try{const access=new AccessService(db),actor=await access.authorizeLegacy(operator,crypto.randomUUID(),['GET','HEAD'].includes(c.req.method)?'legacy.read':'legacy.write'),path=c.req.path;
-  if(!path.startsWith('/api/v1/records/')||path.includes('/archive'))deny('This native operation requires a full operator.');
+  if(!path.startsWith('/api/v1/records/')||path.includes('/archive')||path.startsWith('/api/v1/records/mention'))deny('This native operation requires a full operator.');
   const edit=/^\/api\/v1\/records\/(contact|company|opportunity)\/([0-9A-HJKMNP-TV-Z]{26})$/.exec(path);
   if(c.req.method==='PUT'&&edit)return c.json(await restrictedEdit(db,actor,edit[1] as keyof typeof nativeEditableFields,edit[2],await c.req.json()));
   if(!['GET','HEAD'].includes(c.req.method))deny('Only explicitly permitted record edits are available to collaborators.');

@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "7b70093b4f9ea369bdfaac45b8d41c41f22ce0deab614059f68f1beab0d97ba1",
+      "sha256": "c6bd0d885747c1eabb9dfaa59d85c20385fe2fe078fd9c9a16372201b434b5a6",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "09524c64004822ab839e00120acd5b17537f694f488dbee4208983f881842207",
+      "sha256": "59974ef89422265f5c807616de4e36e85e7adf791fec21ab388982dc43cdffc0",
       "executable": false
     },
     "DEMO.md": {
@@ -3399,7 +3399,7 @@
       "executable": false
     },
     "src/core/features/access/native-boundary.ts": {
-      "sha256": "26f3e3b442bf78e6e888f0be946dc0d2c87f91181a54d77197259f1f9c36f246",
+      "sha256": "824c4ec0ed600c9903c0f52b0ecb1f99a220d3d0deb460f4baccfc1dfa936e6a",
       "executable": false
     },
     "src/core/features/access/policy.ts": {
@@ -3691,7 +3691,7 @@
       "executable": false
     },
     "src/core/features/delegation/effects.ts": {
-      "sha256": "27c3b761ece21e269e7243ce0f6a911c946d40449a0106f68f83dddd14be0aa9",
+      "sha256": "e188ef3a0d1dfc24f16e6c5fc52df38e000309c754d6ee021300d6653d03507e",
       "executable": false
     },
     "src/core/features/delegation/evidence.ts": {
@@ -4019,7 +4019,7 @@
       "executable": false
     },
     "src/core/features/notifications/routes.ts": {
-      "sha256": "c34c0e5b103db4a43105e076777923a334fb7d94622ca6904dc140f8ca193174",
+      "sha256": "a5728aba89840ddcb8edb28b1d689c538f48bab0bc546a6da66ce6241cabd25d",
       "executable": false
     },
     "src/core/features/operations/store.ts": {
@@ -4271,11 +4271,15 @@
       "executable": false
     },
     "src/core/features/operator/ui/manual-entry.tsx": {
-      "sha256": "7aacf1dd0f0b81a7c5490b565a51dc97b27cccd28fe7101a88b19e97f6678ab4",
+      "sha256": "b57804e972b4772f8e87c2c5b0a5875d633d9cf2e3988f30045a94c641b40839",
       "executable": false
     },
     "src/core/features/operator/ui/meeting-plan-page.tsx": {
       "sha256": "dea80dcca3a9a2a82dddf25119459504487d3eb2d29c1443a78400f3f6b60fc8",
+      "executable": false
+    },
+    "src/core/features/operator/ui/mention-field.tsx": {
+      "sha256": "286e3e95d08c52327e5c0e122810b7327f1650a6074320304345ef8535993a56",
       "executable": false
     },
     "src/core/features/operator/ui/message-history.tsx": {
@@ -4283,7 +4287,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/notifications-page.tsx": {
-      "sha256": "2158bec8880851564d7f6761d16a3c639e2f37e96e8d81ee5bf0d53c7ed97e58",
+      "sha256": "ba75b68c93df1d92db069d15a7d75ba98288feb11b266e977f971533661c47cf",
       "executable": false
     },
     "src/core/features/operator/ui/now-page.tsx": {
@@ -4327,7 +4331,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator.css": {
-      "sha256": "eeb96fd91a59ca7c44ac59772d1d54af4cce5b265472c05341754abdcd11fd45",
+      "sha256": "c7cfd1d6340631de1e56eba2bfb7781e0129b1dfb74f71748369e734b51c8448",
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-evidence.tsx": {
@@ -5027,7 +5031,7 @@
       "executable": false
     },
     "src/core/features/records/data.ts": {
-      "sha256": "bfc026d4b2f5f2fdb8639b029a23449bde8696b8dae0da6dbf3bfcb4c1ffa02f",
+      "sha256": "7fdf91434da42af94c1e6d677a1e4cba7ef2276f085ab4b95d08e22d6b3a036a",
       "executable": false
     },
     "src/core/features/records/erasure-identity.ts": {
@@ -5051,7 +5055,11 @@
       "executable": false
     },
     "src/core/features/records/manual.ts": {
-      "sha256": "3e67d2e4058b7f937e06aa0ec5efa47198f41acadfafb446d501dd09a4396778",
+      "sha256": "402e683daab4764e85d01156c74dfcf7db2db6423215b037ebd185c82a1a719d",
+      "executable": false
+    },
+    "src/core/features/records/mentions.ts": {
+      "sha256": "8d8d231366c82466534a2c70fa2af7f80ca3404684d0584ee1e37506086f9cfc",
       "executable": false
     },
     "src/core/features/records/merge-review.ts": {
@@ -5063,7 +5071,7 @@
       "executable": false
     },
     "src/core/features/records/routes.ts": {
-      "sha256": "bf71eea4c910c226b51fd6dc220558667e334f5fd4922d7fad651e25590f3724",
+      "sha256": "bb4b17d2e935be3cd593f19a456bdf1fb24b6d0426117955bdcda2d82690cc1a",
       "executable": false
     },
     "src/core/features/records/schema.ts": {
@@ -5243,7 +5251,7 @@
       "executable": false
     },
     "src/core/features/tasks/mutations.ts": {
-      "sha256": "ccbf6e2270de9f03722caa296da0e3ba9ad80e9d8d9b327416a55f1f5219b98b",
+      "sha256": "5c79fc32bba62f8b9d2934e9487a3b0e213c1f8db013b95cb2222ee90647bcf6",
       "executable": false
     },
     "src/core/features/tasks/privacy.ts": {
@@ -5259,7 +5267,7 @@
       "executable": false
     },
     "src/core/features/tasks/routes.ts": {
-      "sha256": "146b694def144f75771d26c8c096311c983bf1c29c86351c7fb74de49e5d32de",
+      "sha256": "13c4ceebe7065e943747dddf565c0736d8888c51c1cd6c4d30b339a7ae634ba3",
       "executable": false
     },
     "src/core/features/tasks/time.ts": {
@@ -6711,7 +6719,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "b71e0ebca28164fe4444e8bb7cb5b7a82769e467dedfd1c16f9c44fa94cfd21d",
+      "sha256": "acd4dc53429dc04091aa42c715179df744687de47367dcb7863effeb70a63430",
       "executable": false
     },
     "tests/delegation-browser/journey.mjs": {
@@ -7000,6 +7008,30 @@
     },
     "tests/evidence/contract/RECORD-015/deal-buying-context-390.png": {
       "sha256": "7eb3efd9dab0e663f830673167417309d539ecbfefd4676896e8efea8f10b5c1",
+      "executable": false
+    },
+    "tests/evidence/contract/RECORD-017/record-017-notifications-mentions-1440.png": {
+      "sha256": "fe99882e891b13d2224bfafe6f2fedcffed9bc0b8ac8873ec0a2e943272a759a",
+      "executable": false
+    },
+    "tests/evidence/contract/RECORD-017/record-017-notifications-mentions-390.png": {
+      "sha256": "00350b89cbe5f87588572de75843520db7cca5b5bd87e0f57e8159b3ffdc5bd2",
+      "executable": false
+    },
+    "tests/evidence/contract/RECORD-017/record-017-share-or-remove-1440.png": {
+      "sha256": "c4ee099383c0d513f606459cf94894aef9b5e258eec20dfc7dca0bde12b83db5",
+      "executable": false
+    },
+    "tests/evidence/contract/RECORD-017/record-017-share-or-remove-390.png": {
+      "sha256": "56a990ef50366626ab4639b20a9d13d293a32c4090cf83d5bcdbfa8d27c56dae",
+      "executable": false
+    },
+    "tests/evidence/contract/RECORD-017/record-017-suggestions-1440.png": {
+      "sha256": "43584e82b901090a8c87d8dfbd4aa5b1ff3bd50ca23c18e1956d01596279731f",
+      "executable": false
+    },
+    "tests/evidence/contract/RECORD-017/record-017-suggestions-390.png": {
+      "sha256": "8ad6115326c622a5289c7d717a542a82314143321a04f6e42e5a361b3ea26ae6",
       "executable": false
     },
     "tests/evidence/contract/SEQUENCE-002/sequence-002-outcomes-1440.png": {

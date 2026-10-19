@@ -175,7 +175,7 @@ async function agentRisks(t:TodayApp,off:TodayApp){
  assert.equal((await risks(off)).aiConfigured,false);assert.equal((await off.call(`/api/v1/risks/${deal}/conflicts`,{body:{requestHash:'0'.repeat(64)}})).status,503);
 }
 
-test('BRIEF-004 RECORD-010 OUT-001 a booked meeting gets a cited plan with unresolved attendees shown, notes saved as one editable note, and plan lines become next actions without sending anything',async()=>{
+test('BRIEF-004 RECORD-010 RECORD-017 OUT-001 a booked meeting gets a cited plan with unresolved attendees shown, notes saved as one editable note, and plan lines become next actions without sending anything; a mention notifies once, asks to share before notifying a collaborator without access, withdraws on delete and never reaches AI or a customer',async()=>{
  const t=await todayApp(db);
  const opportunity=await t.opportunity('Delta rollout','Delta Freight','Mia Stone','mia@delta.test',1250000);
  const prior=await t.event(opportunity,'form.submitted','Rollout questions',4);
@@ -208,4 +208,32 @@ test('BRIEF-004 RECORD-010 OUT-001 a booked meeting gets a cited plan with unres
  assert.deepEqual(task,{title:'Confirm rollout owners',status:'open',source_client_id:null,assignee_id:t.actor});
  assert.equal((await t.call(`/api/v1/today/meetings/${meeting}/actions`,{body:{title:'Uncited',dueAt:null,evidenceId:prior}})).status,400);
  assert.deepEqual({drafts:await count('SELECT count(*) AS n FROM drafts'),messages:await count('SELECT count(*) AS n FROM outbound_messages')},before,'planning sends and drafts nothing');
+ // RECORD-017 through the public doors: a manager, a colleague and a collaborator without access to the deal.
+ const colleague=async(name:string,collaborator=false)=>{const id=createId();if(collaborator)await db.prepare('INSERT INTO access_collaborators VALUES(?,?)').bind(id,new Date().toISOString()).run();const app=await todayApp(db,{operatorId:id});await db.prepare('UPDATE operators SET display_name=? WHERE id=?').bind(name,id).run();if(collaborator){const {token}=await t.json<{token:string}>('/api/v2/access/workspaces/workspace/invitations',{body:{email:`${id.toLowerCase()}@seller.test`,role:'guest',expiresAt:new Date(Date.now()+86400000).toISOString()}},200);await app.json('/api/v2/access/invitations/accept',{body:{token}},200);}return app;};
+ const manager=await colleague('Morgan Manager'),riley=await colleague('Riley Rep'),casey=await colleague('Casey Contractor',true);
+ await db.prepare("UPDATE operators SET display_name='Avery Author',setup_owner=1 WHERE id=?").bind(t.actor).run();
+ assert.deepEqual((await t.json<{colleagues:{name:string}[]}>('/api/v1/records/mentionable',{},200)).colleagues.map(c=>c.name).filter(name=>['Morgan Manager','Riley Rep','Casey Contractor'].includes(name)),['Casey Contractor','Morgan Manager','Riley Rep'],'Autocomplete offers active colleagues');
+ const mentionCount=async(who:TodayApp)=>(await who.json<{notifications:{kind:string;href:string|null;message:string}[]}>('/api/v1/notifications',{},200)).notifications.filter(n=>n.kind==='record.mention');
+ const caseyMentions=()=>count(`SELECT count(*) AS n FROM notifications WHERE kind='record.mention' AND operator_id='${casey.actor}'`);
+ const scored=await db.prepare('SELECT score,band FROM opportunities WHERE id=?').bind(opportunity).first(),sends={drafts:await count('SELECT count(*) AS n FROM drafts'),messages:await count('SELECT count(*) AS n FROM outbound_messages')};
+ const entry=(body:Record<string,unknown>,id?:string)=>t.call(`/api/v1/records/opportunity/${opportunity}/entries${id?`/${id}`:''}`,{method:id?'PUT':'POST',body:{occurredAt:new Date(Date.now()-60000).toISOString(),...body}});
+ const note=await entry({kind:'note',text:'@Morgan Manager can you review the rollout pricing?'});assert.equal(note.status,200,await note.clone().text());const noteId=(await note.json() as {id:string}).id;
+ const [notified]=await mentionCount(manager);assert.equal((await mentionCount(manager)).length,1);assert.equal(notified!.href,`/app/opportunities/${opportunity}#entry-${noteId}`);assert.equal(notified!.message,'Avery Author mentioned you in a note on Delta rollout.');
+ const hidden=await entry({kind:'call',text:'Walked @Casey Contractor through the rollout plan',durationMinutes:15});assert.equal(hidden.status,409);
+ assert.deepEqual(((await hidden.json()) as {withoutAccess:{name:string}[]}).withoutAccess.map(c=>c.name),['Casey Contractor'],'The author is asked to share or remove the mention before saving');
+ assert.equal(await caseyMentions(),0);assert.equal(await count(`SELECT count(*) AS n FROM access_grants WHERE subject_id='${casey.actor}'`),0,'A mention never grants access');
+ assert.equal((await t.call('/api/v2/access/workspaces/workspace/grants',{body:{subjectKind:'operator',subjectId:casey.actor,resourceType:'opportunity',resourceId:opportunity,actions:['graph.read'],fields:['*'],purpose:'Mentioned in a call log',expiresAt:null}})).status,200);
+ const call=await entry({kind:'call',text:'Walked @Casey Contractor through the rollout plan',durationMinutes:15});assert.equal(call.status,200,await call.clone().text());const callId=(await call.json() as {id:string}).id;
+ assert.equal(await caseyMentions(),1,'Only after the explicit share is the collaborator notified');
+ assert.equal((await entry({kind:'note',text:'@Morgan Manager can you review the rollout pricing? Looping in @Riley Rep.'},noteId)).status,200);
+ assert.deepEqual([(await mentionCount(manager)).length,(await mentionCount(riley)).length],[1,1],'An edit notifies only the newly added mention');
+ {const removed=await t.call(`/api/v1/records/opportunity/${opportunity}/entries/${callId}`,{method:'DELETE',body:{}});assert.equal(removed.status,200,await removed.text());}
+ assert.equal(await caseyMentions(),0,'Deleting the entry withdraws its unread mention');
+ assert.deepEqual(await db.prepare("SELECT t.actor_id,json_extract(t.payload_json,'$.entryId') AS entryId FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id WHERE t.kind='entry.deleted' AND r.record_id=?").bind(opportunity).first(),{actor_id:t.actor,entryId:callId});
+ const priceTask=await t.json<{id:string}>('/api/v1/tasks',{body:{title:'Price review',recordType:'opportunity',recordId:opportunity,ownerId:t.actor,dueAt:new Date(Date.now()+86400000).toISOString(),priority:'normal',type:'follow_up',notes:'@Riley Rep owns the discount sheet',recurrence:'none',timezone:'UTC',reminderMinutes:null}},201);
+ assert.deepEqual((await mentionCount(riley)).map(n=>n.href).sort(),[`/app#sales-task-${priceTask.id}`,`/app/opportunities/${opportunity}#entry-${noteId}`]);
+ assert.deepEqual((await riley.json<{mentions:{source:string;id:string}[]}>('/api/v1/records/mentions',{},200)).mentions.map(m=>[m.source,m.id]).sort(),[['entry',noteId],['task',priceTask.id]],'The Mentions view lists every entry that mentions the user');
+ assert.equal((await t.call('/api/v1/tasks',{body:{title:'Hidden',recordType:'opportunity',recordId:opportunity,ownerId:t.actor,dueAt:new Date(Date.now()+86400000).toISOString(),priority:'normal',type:'other',notes:'Ask @Casey Contractor',recurrence:'none',timezone:'UTC',reminderMinutes:null}})).status,201,'The explicit share covers task notes on the deal too');
+ assert.equal(JSON.stringify(await db.prepare("SELECT payload_json FROM timeline_entries WHERE id=?").bind(noteId).first()).includes(riley.actor),true,'Mentions are saved with the entry, so they export and erase with it');
+ assert.deepEqual([await db.prepare('SELECT score,band FROM opportunities WHERE id=?').bind(opportunity).first(),{drafts:await count('SELECT count(*) AS n FROM drafts'),messages:await count('SELECT count(*) AS n FROM outbound_messages')}],[scored,sends],'Mentions change no score and send nothing');
 });

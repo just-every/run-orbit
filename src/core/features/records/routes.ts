@@ -9,12 +9,15 @@ import { ManualRepository } from './manual';
 import { DataRepository } from './data';
 import { createArchiveRoutes } from './archive-routes';
 import { RecordError, type RecordKind } from './shared';
+import { MentionAccessError, mentionable, mentionsOf } from './mentions';
 import {logUnexpected} from '../../platform/unexpected-error';
 export function createRecordsRoutes(db:D1Database){const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),repo=new RecordsRepository(db),imports=new ImportMergeRepository(db),manual=new ManualRepository(db),data=new DataRepository(db);
- app.onError((e,c)=>{if(e instanceof RecordError)return c.json({error:e.message,recordId:e.recordId},e.status);logUnexpected('records',e);return c.json({error:'Record operation failed; no success was confirmed.'},500);});
+ app.onError((e,c)=>{if(e instanceof RecordError)return c.json({error:e.message,recordId:e.recordId,...(e instanceof MentionAccessError?{withoutAccess:e.colleagues}:{})},e.status);logUnexpected('records',e);return c.json({error:'Record operation failed; no success was confirmed.'},500);});
  const recordId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
  app.use('*',async(c,next)=>{const match=/\/(contact|company|opportunity)\/([^/]+)(?:\/entries\/([^/]+))?/.exec(c.req.path);if(match&&!['duplicates','merge'].includes(match[2])){for(const value of [match[2],match[3]].filter(Boolean)){if(!recordId.safeParse(value).success)return c.json({error:'Invalid record ID.'},400);}}await next();});
  app.route('/archive',createArchiveRoutes(db));
+ app.get('/mentionable',async c=>c.json({colleagues:await mentionable(db)}));
+ app.get('/mentions',async c=>c.json({mentions:await mentionsOf(db,c.get('operator').operatorId)}));
  app.post('/contact/:id/clear-do-not-contact',async c=>{
   const input=z.object({confirmed:z.literal(true),email:z.email().nullable(),updatedAt:z.string().min(1),revision:z.number().int().nonnegative()}).strict().safeParse(await c.req.json());
   if(!input.success)return c.json({error:'Review the current contact and confirm clearing do-not-contact.'},400);

@@ -291,3 +291,7 @@
   .operator-evidence-list li > div:nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
   .workbench-actions { flex-wrap: wrap; padding: 16px 20px; }
 }
+.mention-suggestions { display: flex; flex-wrap: wrap; gap: 8px; }
+.mention-suggestions button { display: inline-flex; gap: 6px; align-items: baseline; max-width: 100%; overflow-wrap: anywhere; }
+.mention-access { display: grid; gap: 12px; padding: 12px 16px; border: 1.5px solid var(--ob-line); border-radius: 12px; }
+.mention-access .workbench-actions { flex-wrap: wrap; }

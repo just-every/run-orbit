@@ -1,5 +1,6 @@
 import {formAbuseErasure} from './form-abuse-erasure';
 import {taskContactErasure} from '../tasks/privacy';
+import {erasedMentions} from './mentions';
 import {captureImportErasure,withdrawRelatedImportCopies,eraseImportedContact} from '../imports/erasure';
 import {captureErasureStatements as capturePrivacyErasureStatements} from '../capture/privacy';
 import {retainedEvidenceIdentityMatch,retainedEvidenceIdentityPatterns} from '../capture/privacy-evidence';
@@ -56,7 +57,7 @@ export class DataRepository {
    statements.push(db.prepare('DELETE FROM record_erasure_signals WHERE contact_id=?').bind(id));
    for(const opportunity of affected)statements.push(...evaluationStatements(db,opportunity.opportunity_id,actor,'Contact erased'));
   }
-  statements.push(db.prepare('DELETE FROM record_merge_claims WHERE record_type=? AND (survivor_id=? OR retired_id=?)').bind(kind,id,id),db.prepare('DELETE FROM record_aliases WHERE record_type=? AND survivor_id=?').bind(kind,id),db.prepare('DELETE FROM timeline_entry_records WHERE record_type=? AND record_id=?').bind(kind,id),db.prepare('DELETE FROM signal_links WHERE record_type=? AND record_id=?').bind(kind,id),audit(db,actor,'record.deleted',kind,kind==='contact'?'erased':id));
+  statements.push(db.prepare('DELETE FROM record_merge_claims WHERE record_type=? AND (survivor_id=? OR retired_id=?)').bind(kind,id,id),db.prepare('DELETE FROM record_aliases WHERE record_type=? AND survivor_id=?').bind(kind,id),db.prepare('DELETE FROM timeline_entry_records WHERE record_type=? AND record_id=?').bind(kind,id),erasedMentions(db),db.prepare('DELETE FROM signal_links WHERE record_type=? AND record_id=?').bind(kind,id),audit(db,actor,'record.deleted',kind,kind==='contact'?'erased':id));
   if(kind==='contact'){await withdrawRelatedImportCopies(db,actor,id,contactEmails,sessionId);await executeArchiveErasure(db,statements,all=>eraseImportedContact(db,actor,id,all.map(statement=>{const query=capture.queries.get(statement);if(!query)throw new Error('Untracked native erasure statement.');return query;}),sessionId,contactEmails));}else await db.batch(statements);return {deleted:true};
  }
 }

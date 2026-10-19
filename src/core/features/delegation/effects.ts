@@ -2,6 +2,8 @@ import {currentGrant,guard} from './authority';
 import {nativeAuthority} from './native-authority';
 import {foreignEvidence,handoffContent,snapshot} from './evidence';
 import {deny,revision,random,scoped,type Effect,type Grant} from './protocol';
+import {MentionAccessError,mentionPlan} from '../records/mentions';
+import {RecordError} from '../records/shared';
 export async function receipt(db:D1Database,g:Grant,key:string){
  await currentGrant(db,g.id,g);
  const stored=await db.prepare('SELECT * FROM delegation_receipts WHERE client_id=? AND principal_id=? AND account_id=? AND operation_key=?').bind(g.client_id,g.principal_id,g.account_id,key).first<{target:string;receipt_json:string;request_hash:string}>();
@@ -32,6 +34,8 @@ export async function writeHandoff(db:D1Database,input:Effect,identity:{grant?:G
  const afterRevision=await revision({...before.value,handoff:evidence.length?{...task,evidence}:task});
  const record={id,operationKey:input.operationKey,requestHash,provider:'orbit',installationId:before.installationId,accountId:'workspace',principalId:actor,operation:input.operation,target:input.target,beforeRevision:before.revision,afterRevision,committedAt:now};
  const statements=[guard(db,id,before.epoch,g,actor),db.prepare(`INSERT INTO handoff_tasks(id,opportunity_id,title,description,assignee_id,due_at,status,source_client_id,actor_id,revision,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title,description=excluded.description,assignee_id=excluded.assignee_id,due_at=excluded.due_at,status=excluded.status,source_client_id=excluded.source_client_id,actor_id=excluded.actor_id,revision=excluded.revision,updated_at=excluded.updated_at`).bind(...Object.values(task)),db.prepare("INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) VALUES(?,?,?,?,'operator',?,'orbit-handoff',?)").bind(id,review?(review==='dismissed'?'handoff.dismissed':'handoff.accepted'):'handoff.updated',now,now,actor,JSON.stringify({handoffId:task.id,title:task.title,status:task.status,assigneeId:task.assignee_id,dueAt:task.due_at,sourceClientId:task.source_client_id,evidence,...(review?{review,proposedBy:old!.source_client_id}:{})})),db.prepare("INSERT INTO timeline_entry_records VALUES(?,'opportunity',?)").bind(id,task.opportunity_id)];
+ // RECORD-017: a person's handoff notifies the colleagues it mentions; an application's proposal notifies nobody until a person accepts or edits it.
+ if(!g)try{statements.push(...(await mentionPlan(db,{source:'handoff',sourceId:task.id!,kind:'opportunity',recordId:task.opportunity_id!,label:'handoff',text:String(task.description??''),author:actor})).statements);}catch(error){if(error instanceof MentionAccessError)deny(409,'MENTION_WITHOUT_ACCESS');if(error instanceof RecordError)deny(409,'MENTION_AMBIGUOUS');throw error;}
  statements.push(db.prepare('INSERT OR IGNORE INTO handoff_contacts(handoff_id,contact_id) SELECT ?,contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(task.id,task.opportunity_id));
  if(g)statements.push(db.prepare('INSERT INTO delegation_receipts VALUES(?,?,?,?,?,?,?,?)').bind(id,g.client_id,g.principal_id,g.account_id,input.operationKey,input.target,requestHash,JSON.stringify(record)));
  statements.push(db.prepare('DELETE FROM delegation_guards WHERE id=?').bind(id));
