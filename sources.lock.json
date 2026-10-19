@@ -6906,6 +6906,22 @@
       "sha256": "d228b85047a38390dc6d70923e445b8f6527d7d951b621f5224dd25bce992c32",
       "executable": false
     },
+    "tests/evidence/contract/OUT-020/out-020-relay-refused-1440.png": {
+      "sha256": "0cc77a65911255224407caf7bc047ea5257702e7efe435f65de30cf420f5a63c",
+      "executable": false
+    },
+    "tests/evidence/contract/OUT-020/out-020-relay-refused-390.png": {
+      "sha256": "afc1ced207304ba6975b469bb916fe746a6a7015e5aee40595b52451e7ce608e",
+      "executable": false
+    },
+    "tests/evidence/contract/OUT-020/out-020-relay-reply-1440.png": {
+      "sha256": "fd72bef4875f5a49aacff83ca57164b53e97305a1077f9842bc92bb812e3f330",
+      "executable": false
+    },
+    "tests/evidence/contract/OUT-020/out-020-relay-reply-390.png": {
+      "sha256": "19f37f8b139b6bd07d3434d1557e22f30d8e2f7a321a2a5275914faed04e1e64",
+      "executable": false
+    },
     "tests/evidence/contract/OUT-020/out-020-review-included-1440.png": {
       "sha256": "a6f08adca5aa9f1010dd061d3ae2acd9ea4c9fde54b58d7ce37265368502137e",
       "executable": false
@@ -6928,6 +6944,14 @@
     },
     "tests/evidence/contract/OUT-020/out-020-settings-390.png": {
       "sha256": "fc6fd62239c8f73f7d75934db4382efd0c0b4fdaaaca164651f567cd3d5fed9a",
+      "executable": false
+    },
+    "tests/evidence/contract/OUT-020/out-020-settings-relay-refused-1440.png": {
+      "sha256": "d8090d8c1104d9016b820c93d2ba3b646a90368495084bea748b63d277628486",
+      "executable": false
+    },
+    "tests/evidence/contract/OUT-020/out-020-settings-relay-refused-390.png": {
+      "sha256": "91bf3a975dda5b8ca34898261f407e53c389d0a35db3423134881766a155f9c8",
       "executable": false
     },
     "tests/evidence/contract/RECORD-002/promoted-primary-company-1440.png": {
