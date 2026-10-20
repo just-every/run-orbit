@@ -7,13 +7,14 @@ const nodeTests = (files, result, runner = 'tsx') => ({ args: ['exec', runner, '
 const playwright = (config, files) => ({ files, args: ['exec', 'playwright', 'test', ...(config ? ['--config', config] : []), '--workers=1', '--forbid-only', '--reporter=list,./scripts/browser-results.mjs'], result: 'verification/browser-results.jsonl', browser: true });
 
 // Measured CI minutes per file (Verify on b68c8c3), used only to balance shards so each push
-// Verify job stays near ten minutes. A file missing here counts as half a minute.
+// Verify job stays near ten minutes. INTEGRATE-005 uses its conservative 8.5-minute local proof.
+// A file missing here counts as half a minute.
 const minutes = {
   'tests/core/capture-data.test.ts': 8.5, 'tests/core/capture-providers.test.ts': 5.3, 'tests/core/crm-import.test.ts': 4.9,
   'tests/core/launch-inherited-stop.test.ts': 2.6, 'tests/core/onboarding-archive.test.ts': 2.3, 'tests/core/archive-transfer.test.ts': 1.7,
   'tests/core/capture-intake.test.ts': 1.7, 'tests/core/crm-import-erasure.test.ts': 1.5, 'tests/core/launch-suppression.test.ts': 1.5,
   'tests/core/launch-suppression-archive.test.ts': 1.3, 'tests/delegation/archive-regression.test.ts': 0.8, 'tests/core/contact-erasure.test.ts': 0.8,
-  'tests/core/capture-connector.test.ts': 0.8, 'tests/core/launch-provider-conflicts.test.ts': 0.8, 'tests/core/source-onboarding.test.ts': 4.5,
+  'tests/core/capture-connector.test.ts': 0.8, 'tests/core/launch-provider-conflicts.test.ts': 0.8, 'tests/core/source-onboarding.test.ts': 8.5,
   'newtests/t096/archive-native.test.ts': 8.3, 'newtests/t096/archive-terminal-recovery.test.ts': 7.6, 'newtests/t096/archive-view-rollback.test.ts': 3.7,
   'newtests/t096/archive-import-recovery.test.ts': 3.4, 'newtests/t096/archive-cli-native.test.ts': 2.4, 'newtests/t096/archive-upgrade-preflight.test.ts': 1.4,
 };
