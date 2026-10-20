@@ -7,7 +7,7 @@ import {proveSlackArchive} from './slack-archive-proof';
 export interface SlackFixture {db:D1Database;actor:string;stage:string;app:ReturnType<typeof createApp>;request:(path:string,method?:string,body?:unknown,headers?:Record<string,string>)=>Promise<Response>}
 export async function proveSlackNotices(f:SlackFixture,deal:string,contact:string){
  const native=globalThis.fetch,secret=randomBytes(32).toString('hex'),token='test-only-slack-bot',posts:any[]=[],deletes:any[]=[],responses:any[]=[];
- let outcome:'sent'|'rate'|'timeout'|'revoked'|'failed'|'missing'='sent',attempts=0,safety:Record<string,unknown>={};
+ let outcome:'sent'|'rate'|'timeout'|'revoked'|'failed'|'missing'|'frozen'|'archived'='sent',attempts=0,safety:Record<string,unknown>={};
  const channel=(id='CINTERNAL')=>({id,name:id==='CINTERNAL'?'sales-internal':'external',is_channel:true,is_frozen:false,is_member:id!=='CNOTMEMBER',is_archived:false,is_shared:id==='CEXTERNAL',is_ext_shared:id==='CEXTERNAL',is_org_shared:false,is_pending_ext_shared:false,connected_team_ids:[],pending_connected_team_ids:[],context_team_id:'TWORKSPACE',...safety});
  globalThis.fetch=async(input,init)=>{
   if(String(input).startsWith('https://hooks.slack.com/actions/')){responses.push(JSON.parse(String(init?.body)));return new Response('ok');}
@@ -20,7 +20,7 @@ export async function proveSlackNotices(f:SlackFixture,deal:string,contact:strin
   if(method==='conversations.info')return Response.json({ok:true,channel:channel(body.channel)});
   if(method==='chat.delete'){deletes.push(body);return Response.json({ok:true,channel:body.channel,ts:body.ts});}
   assert.equal(method,'chat.postMessage');attempts++;
-  if(outcome==='rate'){outcome='sent';return new Response('',{status:429,headers:{'Retry-After':'1'}});}if(outcome==='timeout')throw new TypeError('connection lost after request left');if(outcome==='failed')return Response.json({ok:false,error:'not_in_channel'});if(outcome==='missing')return Response.json({ok:false,error:'channel_not_found'});
+  if(outcome==='rate'){outcome='sent';return new Response('',{status:429,headers:{'Retry-After':'1'}});}if(outcome==='timeout')throw new TypeError('connection lost after request left');if(outcome==='failed')return Response.json({ok:false,error:'not_in_channel'});if(outcome==='missing')return Response.json({ok:false,error:'channel_not_found'});if(outcome==='frozen')return Response.json({ok:false,error:'channel_is_frozen'});if(outcome==='archived')return Response.json({ok:false,error:'is_archived'});
   const ts=`1800000000.${String(posts.length+1).padStart(6,'0')}`;posts.push({...body,ts});return Response.json({ok:true,channel:body.channel,ts,message:{user:'UBOT',bot_id:'BBOT',app_id:'AORBIT',text:body.text,blocks:body.blocks}});
  };
  const call=async(path:string,method='GET',body?:unknown)=>{const r=await f.request('settings/slack'+(path?'/'+path:''),method,body);assert.ok(r.ok,`${path}: ${r.status} ${await r.clone().text()}`);return r.json() as Promise<any>;};
@@ -56,6 +56,7 @@ export async function proveSlackNotices(f:SlackFixture,deal:string,contact:strin
   const blocked=(await notices()).find(n=>n.state==='failed');assert.ok(blocked);await call(`notices/${blocked.id}/retry`,'POST',{});assert.ok(posts.length>preShare);
   outcome='failed';await move(f.stage,second);const unaccepted=(await notices()).find(n=>n.state==='failed'&&n.error==='not_in_channel');assert.ok(unaccepted);assert.equal((await call('')).channels[0].last_error,'not_in_channel');
   outcome='missing';await confirm();await call(`notices/${unaccepted.id}/retry`,'POST',{});assert.equal((await notices()).find(n=>n.id===unaccepted.id).error,'channel_not_found');
+  for(const [mode,error] of [['frozen','channel_is_frozen'],['archived','is_archived']] as const){outcome=mode;await confirm();await call(`notices/${unaccepted.id}/retry`,'POST',{});assert.equal((await notices()).find(n=>n.id===unaccepted.id).error,error);assert.equal((await call('')).channels[0].enabled,0,'Frozen/archived provider refusal suspends routing');}
   outcome='sent';await confirm();await call(`notices/${unaccepted.id}/retry`,'POST',{});assert.equal((await notices()).find(n=>n.id===unaccepted.id).state,'sent');
   const event=(type:string,extra:object={})=>({type:'event_callback',team_id:'TWORKSPACE',api_app_id:'AORBIT',authorizations:[{team_id:'TWORKSPACE',enterprise_id:null}],event_id:'Ev'+crypto.randomUUID().replaceAll('-',''),event:{type,channel:'CINTERNAL',...extra}});
   const shared=event('channel_shared');assert.equal((await signed(shared,'events')).status,200);assert.equal((await call('')).channels[0].enabled,0);assert.equal((await signed(shared,'events')).data.replayed,true);await signed(event('channel_unshared'),'events');assert.equal((await call('')).channels[0].enabled,0);await confirm();await signed(event('member_left_channel',{user:'UBOT'}),'events');assert.equal((await call('')).channels[0].enabled,0);await confirm();
