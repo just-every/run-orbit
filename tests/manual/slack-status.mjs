@@ -8,7 +8,6 @@ import {getPlatformProxy} from 'wrangler';
 import {chromium} from '@playwright/test';
 import {identityVarArgs} from '../support/worker-identity.mjs';
 const connectedFixture=process.argv.includes('--connected');
-if(connectedFixture)await import('./slack-live-readback.mjs');
 const origin='http://127.0.0.1:17862',evidence='docs/retained-verification/INTEGRATE-005';
 const probe=createServer();await new Promise((resolve,reject)=>{probe.once('error',reject);probe.listen(17862,'127.0.0.1',resolve);});await new Promise(resolve=>probe.close(resolve));
 const platform=await getPlatformProxy({configPath:'wrangler.jsonc',envFiles:['tests/support/no-local-settings.env'],persist:{path:'.wrangler/state/v3'},remoteBindings:false});
