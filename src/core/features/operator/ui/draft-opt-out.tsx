@@ -1,7 +1,7 @@
 import { useCallback,useEffect,useState } from 'react';
 import { workbenchRequest } from './workbench-api';
 import { OperatorState } from './operator-shell';
-export interface OptOutState {setting:boolean;removalAllowed:boolean;choice:'relationship'|'transactional'|'added'|null;transport:boolean;carries:boolean;marking:string|null;reply:boolean;refusal:string|null}
+export interface OptOutState {setting:boolean;removalAllowed:boolean;choice:'relationship'|'transactional'|'added'|null;transport:boolean;carries:boolean;marking:string|null;reply:boolean;refusal:string|null;origin:string|null}
 /** OUT-020: the opt-out state this approval binds, and the rep's marking. Changing it makes the draft need review again. */
 export function DraftOptOut({draftId,disabled,onState,onChanged}:{draftId:string;disabled:boolean;onState:(state:OptOutState|null)=>void;onChanged:()=>void}){
  const [state,setState]=useState<OptOutState|null>(null),[error,setError]=useState('');
@@ -10,7 +10,8 @@ export function DraftOptOut({draftId,disabled,onState,onChanged}:{draftId:string
  async function mark(choice:OptOutState['choice']){try{setError('');await workbenchRequest(`/drafts/${draftId}/opt-out`,{choice});await load();onChanged();}catch(e){setError((e as Error).message);}}
  if(!state)return error?<OperatorState kind="error">{error}</OperatorState>:null;
  return <div className="draft-opt-out" data-testid="draft-opt-out">
-  <p><strong>Opt-out:</strong> {state.carries?'included — List-Unsubscribe headers and the provider’s unsubscribe footer shown below':'not included — no List-Unsubscribe header and no unsubscribe footer'}.</p>
+  <p><strong>Opt-out:</strong> {state.carries?state.origin?'included — List-Unsubscribe headers and an installation unsubscribe link':'included — List-Unsubscribe headers and the provider’s unsubscribe footer shown below':'not included — no List-Unsubscribe header and no unsubscribe footer'}.</p>
+  {state.carries&&state.origin&&<aside aria-label="Installation opt-out link"><p>The message ends with <strong>Unsubscribe:</strong> and a private link on <strong>{state.origin}</strong>. Approval binds that link to this message and recipient; the same link is in the one-click List-Unsubscribe headers.</p><p>Opening it changes nothing. Confirming stops only this contact’s emails and scheduled sends. It works until the contact or message is erased.</p></aside>}
   {state.refusal&&<p role="alert"><strong>{state.refusal}.</strong> This message needs opt-out and is not a reply to the recipient’s own email in this thread, so Orbit will not send it through the managed mail relay.</p>}
   <p>{state.refusal?'Only a reply in a thread the recipient has answered can be sent without opt-out until then.':state.marking==='transport'?'This replies to the recipient’s own email in this thread, so it is sent without opt-out: the managed mail relay cannot add Orbit’s opt-out yet (OUT-013).':state.marking==='relationship'||state.marking==='transactional'?`You removed opt-out from this message as ${state.marking} mail.`:state.marking==='added'?'You added opt-out to this message.':state.setting?'One-to-one email carries opt-out (Settings → Opt-out links).':'One-to-one email carries no opt-out by default (Settings → Opt-out links).'}</p>
   <div className="draft-opt-out__actions">

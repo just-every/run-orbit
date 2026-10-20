@@ -7,7 +7,7 @@ export const messageTypes:MessageType[]=['one_to_one','sequence','workflow'];
 /** Defaults for a type with no stored row: one-to-one off on a new installation, sequence and workflow email on. The migration stores one-to-one on for an installation upgraded with users present. */
 const defaults:Record<MessageType,{carries:number;basis:string}>={one_to_one:{carries:0,basis:'default for a new installation'},sequence:{carries:1,basis:'default'},workflow:{carries:1,basis:'default'}};
 const settingSql=(type:string)=>`SELECT COALESCE((SELECT carries FROM opt_out_settings WHERE message_type='${type}'),${defaults[type as MessageType].carries}) AS carries,COALESCE((SELECT removal_allowed FROM opt_out_settings WHERE message_type='${type}'),1) AS removal_allowed`;
-/** OUT-020 (ct, 19 October): the managed mail relay cannot carry Orbit's opt-out until OUT-013's installation-origin one-click handler ships. */
+/** Kept for transports without the supported installation-origin capability path. */
 export const relayRefusal='This relay cannot carry your opt-out link yet (OUT-013)';
 /** A one-to-one message replies in an existing thread when its recipient has a genuine email reply (never an automatic one) recorded on the deal. */
 const replySql=(opportunity:string,contact:string)=>`EXISTS(SELECT 1 FROM signals s JOIN signal_links lo ON lo.signal_id=s.id AND lo.record_type='opportunity' AND lo.record_id=${opportunity} JOIN signal_links lc ON lc.signal_id=s.id AND lc.record_type='contact' AND lc.record_id=${contact} WHERE s.type='email.replied')`;
@@ -43,8 +43,8 @@ export async function draftOptOut(db:D1Database,draftId:string,transport=true){
  return {setting,removalAllowed,choice,transport,carries,marking,reply,refusal:wanted&&!transport&&relayRefuses('one_to_one',wanted,reply)?relayRefusal:null};
 }
 /** Dispatch re-checks a message on the managed relay: one whose approval bound opt-out (including through another provider), marked it uncarried, or predates OUT-020 is refused unless it is a reply in an existing thread. */
-export async function relayRefusedAtDispatch(db:D1Database,messageId:string){
- return Boolean(await db.prepare(`SELECT 1 FROM outbound_messages m LEFT JOIN outbound_message_opt_out b ON b.message_id=m.id WHERE m.id=? AND (b.message_id IS NULL OR b.carries=1 OR b.marking='transport') AND NOT ${replySql('m.opportunity_id','m.contact_id')}`).bind(messageId).first());
+export async function relayRefusedAtDispatch(db:D1Database,messageId:string,capable=false){
+ return Boolean(await db.prepare(`SELECT 1 FROM outbound_messages m LEFT JOIN outbound_message_opt_out b ON b.message_id=m.id WHERE m.id=? AND (${capable?"b.marking='transport'":"b.message_id IS NULL OR b.carries=1 OR b.marking='transport'"}) AND NOT ${replySql('m.opportunity_id','m.contact_id')}`).bind(messageId).first());
 }
 export async function markDraftOptOut(db:D1Database,draftId:string,actor:string,choice:OptOutChoice|null){
  const state=await draftOptOut(db,draftId);

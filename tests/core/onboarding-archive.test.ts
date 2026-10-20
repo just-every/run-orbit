@@ -8,6 +8,11 @@ import {createDependencies} from '../support/dependencies';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
 import {createHmac,randomBytes} from 'node:crypto';
 import {createId} from '../../src/core/shared/ids';
+import {isolatedDatabase} from '../support/isolated-database';
+import {localArchiveRoundTrip} from '../support/capture-privacy-archive';
+import {foldInstalledCatalog,foldSchemaHash} from '../../src/core/features/records/archive-fold-catalog';
+import {preOptOutCapabilityCatalog} from '../../src/core/features/records/archive-generations';
+import {archiveHash,type ArchivePart} from '../../src/core/features/records/archive-schema';
 
 function sourceRequests(db:D1Database,cookie:string){
  const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex')})});
@@ -32,21 +37,50 @@ test('DATA-001 local archive restores records and keeps the hosted owner able to
  const trialOwned=await source.customer('trial-owned@example.test');
  await source.db.prepare('UPDATE opportunities SET owner_id=? WHERE id=?').bind(source.actor,trialOwned.opportunityId).run();
  const scheduled=await source.message(trialOwned.contactId,trialOwned.opportunityId);
+ const capability={token:randomBytes(32).toString('hex'),message_id:scheduled.id,contact_id:trialOwned.contactId,origin:'https://orbit.test',created_at:new Date().toISOString()};
+ await source.db.batch([
+  source.db.prepare('INSERT INTO outbound_message_opt_out VALUES(?,1,\'added\')').bind(scheduled.id),
+  source.db.prepare('INSERT INTO outbound_opt_out_capabilities VALUES(?,?,?,?,?)').bind(capability.token,capability.message_id,capability.contact_id,capability.origin,capability.created_at),
+ ]);
+ const approvedOptOut=await source.db.prepare('SELECT * FROM outbound_message_opt_out WHERE message_id=?').bind(scheduled.id).first();
  for(const origin of ['https://*.example.test','https://website.example/path','http://website.example','https://user@website.example'])assert.equal((await source.request('settings/form-embedding','PUT',{origins:[origin]})).status,400);
  await request(source,'settings/form-embedding','PUT',{origins:['https://website.example']});
  let exported=await request(source,'records/archive/exports','POST',{});
  for(let n=0;n<300&&exported.state!=='ready';n++)exported=await request(source,`records/archive/exports/${exported.id}/advance`,'POST',{});
  assert.equal(exported.state,'ready');
  const archive=await request(source,`records/archive/exports/${exported.id}/download`);
+ assert.deepEqual(archive.parts.flatMap((part:ArchivePart)=>part.records).filter((record:ArchivePart['records'][number])=>record.table==='outbound_opt_out_capabilities').map((record:ArchivePart['records'][number])=>record.row),[capability]);
  assert.ok(archive.parts.flatMap((part:any)=>part.records).filter((record:any)=>record.table==='signal_sources').every((record:any)=>record.row.secret_ciphertext===undefined),'Signing credentials do not travel in archives');
  for(const tables of [archive.manifest.tables.filter((t:any)=>t.name!=='form_embed_origins'),[...archive.manifest.tables,{name:'unknown_records',columns:['id'],rows:0}]]){
   assert.equal((await target.request('records/archive/imports','POST',{confirmed:true,manifest:{...archive.manifest,tables}})).status,400);
  }
- let imported=await request(target,'records/archive/imports','POST',{confirmed:true,manifest:archive.manifest});
- for(const part of archive.parts)await request(target,`records/archive/imports/${imported.id}/parts/${part.index}`,'PUT',part);
- for(let n=0;n<700&&imported.state!=='complete';n++){imported=await request(target,`records/archive/imports/${imported.id}/finalize`,'POST',{});assert.ok(imported.completedTables<=imported.totalTables);assert.ok(imported.completedSteps<=imported.totalSteps);}
- assert.equal(imported.state,'complete');
- assert.equal(imported.completedSteps,imported.totalSteps);assert.equal(imported.nextPart,archive.manifest.parts);
+ const restore=async(destination:typeof target,document:typeof archive)=>{
+  let imported=await request(destination,'records/archive/imports','POST',{confirmed:true,manifest:document.manifest});
+  for(const part of document.parts)await request(destination,`records/archive/imports/${imported.id}/parts/${part.index}`,'PUT',part);
+  for(let n=0;n<700&&imported.state!=='complete';n++){imported=await request(destination,`records/archive/imports/${imported.id}/finalize`,'POST',{});assert.ok(imported.completedTables<=imported.totalTables);assert.ok(imported.completedSteps<=imported.totalSteps);}
+  assert.equal(imported.state,'complete');
+  assert.equal(imported.completedSteps,imported.totalSteps);assert.equal(imported.nextPart,document.manifest.parts);
+ };
+ const previous=await launchFixture();
+ try{
+  const parts:ArchivePart[]=[];
+  for(const part of archive.parts as ArchivePart[]){const records=part.records.filter(record=>record.table!=='outbound_opt_out_capabilities');if(records.length)parts.push({index:parts.length,records,sha256:await archiveHash(records)});}
+  const tables=archive.manifest.tables.filter((table:{name:string})=>table.name!=='outbound_opt_out_capabilities');
+  const schemaHash=await foldSchemaHash(preOptOutCapabilityCatalog(await foldInstalledCatalog(source.db)));
+  await restore(previous,{...archive,parts,manifest:{...archive.manifest,tables,schemaHash,parts:parts.length,rows:tables.reduce((sum:number,table:{rows:number})=>sum+table.rows,0)}});
+  assert.deepEqual(await previous.db.prepare('SELECT * FROM outbound_message_opt_out WHERE message_id=?').bind(scheduled.id).first(),approvedOptOut,'The released opt-out binding survives an archive without capabilities');
+  assert.equal(await previous.db.prepare('SELECT email FROM contacts WHERE id=?').bind(customer.id).first('email'),'archive@example.test');
+  assert.equal(await previous.db.prepare('SELECT count(*) FROM outbound_opt_out_capabilities').first('count(*)'),0,'Restoring old messages never invents capability authority');
+ }finally{await previous.dispose();}
+ const local=await isolatedDatabase();
+ try{
+  await localArchiveRoundTrip(source.db,local.db);
+  assert.deepEqual(await local.db.prepare('SELECT * FROM outbound_opt_out_capabilities WHERE token=?').bind(capability.token).first(),capability,'The local CLI preserves the exact capability and origin');
+  assert.deepEqual(await local.db.prepare('SELECT * FROM outbound_message_opt_out WHERE message_id=?').bind(scheduled.id).first(),approvedOptOut);
+ }finally{await local.dispose();}
+ await restore(target,archive);
+ assert.deepEqual(await target.db.prepare('SELECT * FROM outbound_opt_out_capabilities WHERE token=?').bind(capability.token).first(),capability,'Records restore preserves the exact capability and origin');
+ assert.deepEqual(await target.db.prepare('SELECT * FROM outbound_message_opt_out WHERE message_id=?').bind(scheduled.id).first(),approvedOptOut);
  assert.deepEqual(await target.db.prepare('SELECT email,status,setup_owner FROM operators WHERE id=?').bind(target.actor).first(),{email:'hosted-owner@example.test',status:'active',setup_owner:1});
  assert.deepEqual(await target.db.prepare('SELECT email,status,setup_owner FROM operators WHERE id=?').bind(source.actor).first(),{email:'owner@orbit.test',status:'removed',setup_owner:0});
  assert.equal((await target.db.prepare('SELECT status FROM operators WHERE id=?').bind(teammate).first<{status:string}>())?.status,'active','Real archived operators retain access');

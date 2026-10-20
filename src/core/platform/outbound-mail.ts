@@ -4,12 +4,13 @@ import { sendDevelopment } from '../../base/modules/mail/src/development/index.m
 import { sendSendGrid, SendGridSendError } from '../../base/modules/mail/src/sendgrid-email/index.mjs';
 export interface OutboundMail {
  provider?:'rer'|'sendgrid'|'development';
- send(input:{id:string;recipient_email:string;subject:string;body:string;message_id?:string;reference_ids?:string;idempotency_key?:string;opt_out?:boolean}):Promise<{providerMessageId:string|null;messageId?:string}>;
+ optOutOrigin?:string;
+ send(input:{id:string;recipient_email:string;subject:string;body:string;message_id?:string;reference_ids?:string;idempotency_key?:string;opt_out?:boolean;opt_out_url?:string}):Promise<{providerMessageId:string|null;messageId?:string}>;
  lookup?(idempotencyKey:string):Promise<{providerMessageId:string}|undefined>;
  /** The sender's domain, so each Message-ID names a real domain instead of a placeholder. */
  messageIdDomain?:string;
 }
-export interface OutreachEnvironment { RER_DEMO?:string; DB?:D1Database; MAIL_PROVIDER?:string; MAIL_RELAY_URL?:string; MAIL_API_KEY?:string; MAIL_FROM?: string; SENDGRID_API_KEY?: string; SENDGRID_UNSUBSCRIBE_GROUP_ID?:string; MAIL_REPLY_TO?:string; SENDGRID_WEBHOOK_PUBLIC_KEY?:string }
+export interface OutreachEnvironment { AUTH_ORIGIN?:string; RER_DEMO?:string; DB?:D1Database; MAIL_PROVIDER?:string; MAIL_RELAY_URL?:string; MAIL_API_KEY?:string; MAIL_FROM?: string; SENDGRID_API_KEY?: string; SENDGRID_UNSUBSCRIBE_GROUP_ID?:string; MAIL_REPLY_TO?:string; SENDGRID_WEBHOOK_PUBLIC_KEY?:string }
 /** The four settings customer mail needs, in the order Settings → Customer mail sender sets them. */
 export const customerMailSettings=['SENDGRID_API_KEY','MAIL_FROM','MAIL_REPLY_TO','SENDGRID_UNSUBSCRIBE_GROUP_ID'] as const;
 export interface CustomerMailStatus {provider?:'rer'|'sendgrid';present:number;total:number;missing:string[];problem:string|null}

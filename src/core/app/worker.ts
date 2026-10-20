@@ -28,6 +28,7 @@ import { devGate } from "@runeditrun/rer/modules/operator-auth";
 import { publicDemoConfig } from "./mounts/public-config.server";
 import { invitationLanding } from "../features/access/invitation-landing";
 import { collaboratorLanding } from "../features/access/collaborator-home";
+import { optOutResponse } from '../features/outreach/opt-out-public';
 export default withDemo({
   async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);context.waitUntil(runHostedTimers(bindings.DB,createOutboundMail(bindings)));context.waitUntil(sweepArchiveTrash(bindings.DB));context.waitUntil(dispatchSalesTaskReminders(bindings.DB));const security=createSourceSecurity(bindings);context.waitUntil(pollProviders(bindings.DB,security));if(security)context.waitUntil(pollCalendarLinks(bindings.DB,security));},
   // Cloudflare Email Routing delivers mail for the Orbit address here.
@@ -41,6 +42,9 @@ export function runtimeBindings(bindings: PlatformBindings): PlatformBindings {
 async function handle(request: Request, bindings: PlatformBindings, executionContext: ExecutionContext) {
     const url = new URL(request.url);
     const path = url.pathname;
+    // A link visit is read-only: no sign-in, setup redirect, rate-counter write
+    // or request-driven scheduler. The capability checks its saved origin.
+    if(path.startsWith('/unsubscribe/'))return optOutResponse(request,bindings.DB);
     const expectedHost = bindings.AUTH_ORIGIN ? new URL(bindings.AUTH_ORIGIN).host : undefined;
     if (expectedHost && url.host !== expectedHost && !["127.0.0.1", "localhost", "[::1]"].includes(url.hostname)) return new Response("Not found", { status: 404 });
     const asset = await staticAssetResponse(request, bindings);

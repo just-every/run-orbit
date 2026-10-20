@@ -25,6 +25,7 @@ import type { CustomerMailStatus, OutboundMail } from "../platform/outbound-mail
 import { createWorkbenchRoutes } from "../features/workbench/routes";
 import { Hono, type MiddlewareHandler } from "hono";
 import {runRequestTimers} from '../features/outreach/scheduler';
+import {optOutResponse} from '../features/outreach/opt-out-public';
 
 import { createDraftRoutes } from "../features/drafts";
 import type { AuthenticatedOperator } from "../features/identity";
@@ -46,6 +47,7 @@ type AppEnvironment = {
 export function createApp(input: { assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; formAbuse?:FormAbuseOptions; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
   const app = new Hono<AppEnvironment>();
   const dependencies = createDependencies(input.database);
+  app.all('/unsubscribe/:token',c=>optOutResponse(c.req.raw,input.database));
   const requireApiOperator: MiddlewareHandler<AppEnvironment> = async (context, next) => {
     const operator = await input.authenticate(context.req.raw);
     if (!operator) return context.json({ error: "Operator session required." }, 401);
