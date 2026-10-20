@@ -6895,7 +6895,7 @@
       "executable": false
     },
     "tests/core/capture-upgrade.test.ts": {
-      "sha256": "1c93fde689b50d5f01fae9c9d63911f58a8afbcc5cedd57764d4a125bd1e114a",
+      "sha256": "85ae786a393b24f370a4b7124a94781d160aaf50fcbfc828b6aa28e21469d6e6",
       "executable": false
     },
     "tests/core/contact-erasure.test.ts": {
@@ -7595,7 +7595,7 @@
       "executable": false
     },
     "tests/rer/managed-mail.mjs": {
-      "sha256": "7d68984fadfec3a61e74abb1a2153169945a7c6af7283e57c0b7c5e5627f422e",
+      "sha256": "128f34895a41afb5876097e5828603c819b347a0bf1e9c541eea736f52d67355",
       "executable": false
     },
     "tests/rer/onboarding-journey.mjs": {
@@ -7603,7 +7603,7 @@
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
-      "sha256": "73a5ad355332670f1db3cb7be1e82a7e19d8a983d1201e9348004c5181742735",
+      "sha256": "3677014779e8f624c86e2988fa0e5c75bc31476e39f14bf2251771c7ce49b243",
       "executable": false
     },
     "tests/rer/operator-actions-journey.mjs": {
@@ -7664,6 +7664,10 @@
     },
     "tests/rer/scheduled-outreach.mjs": {
       "sha256": "9c437c86bda0651d7695196e55805a3c6934091c695b5692cf13a1d6959d28b4",
+      "executable": false
+    },
+    "tests/rer/sent-message-proof.mjs": {
+      "sha256": "1f492762d3538af5e6cbe16baea9ecc21fa89e4923fa439af953544105dd2d58",
       "executable": false
     },
     "tests/rer/sign-in.mjs": {

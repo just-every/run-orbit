@@ -17,11 +17,14 @@ import { createSourceSecurity, payloadHash } from '../../src/core/platform/sourc
 // send and a scheduled send waiting in NEXT. Miniflare names the D1 file after wrangler.jsonc's database id.
 const FIXTURE = 'tests/fixtures/prior-capture';
 const D1_FILE = 'v3/d1/miniflare-D1DatabaseObject/9ba2b04bf514d9facfd57ed57d849e77241a7adc99d1c1545d06688b43d84248.sqlite';
+const quote = (name: string) => '"' + name.replaceAll('"', '""') + '"';
 const read = (file: string) => {
   const store = new DatabaseSync(file, { readOnly: true });
   try {
     const tables = (store.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' ORDER BY name").all() as { name: string }[]).map(row => row.name);
-    return Object.fromEntries(tables.map(table => [table, store.prepare(`SELECT * FROM "${table}"`).all().map(row => JSON.stringify(row)).sort()]));
+    const columns = Object.fromEntries(tables.map(table => [table, (store.prepare(`PRAGMA table_xinfo(${quote(table)})`).all() as { name: string; hidden: number }[]).filter(column => column.hidden !== 1).map(column => column.name)]));
+    const rows = Object.fromEntries(tables.map(table => [table, store.prepare(`SELECT ${columns[table]!.map(quote).join(',')} FROM ${quote(table)}`).all().map(row => JSON.stringify(row)).sort()]));
+    return { columns, rows };
   } finally { store.close(); }
 };
 
@@ -31,15 +34,25 @@ test('CAPTURE-007 the capture migration upgrades a store from the previous main 
     const file = join(directory, D1_FILE);
     await mkdir(join(file, '..'), { recursive: true });
     await writeFile(file, gunzipSync(await readFile(join(FIXTURE, 'store.sqlite.gz'))));
-    const before = read(file);
+    const { columns: originalColumns, rows: before } = read(file);
     assert.equal(before.signals!.length, 3); assert.equal(before.unlinked_signals!.length, 1);
     assert.deepEqual(before.outbound_messages!.map(row => JSON.parse(row).state).sort(), ['accepted', 'scheduled']);
     assert.ok(before.timeline_entries!.length > 10);
 
     // The real upgrade applies every pending migration to the prior installation.
     execFileSync(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', directory], { env: { ...process.env, CI: '1' }, encoding: 'utf8', timeout: 120_000 });
-    const after = read(file);
-    for (const table of Object.keys(before)) assert.deepEqual(after[table], before[table], `${table} keeps every prior row unchanged`);
+    const { columns: currentColumns, rows: after } = read(file);
+    for (const table of Object.keys(before)) {
+      const columns = originalColumns[table]!;
+      assert.ok(columns.every(column => currentColumns[table]?.includes(column)), `${table} keeps every prior column`);
+      const retained = after[table]!.map(encoded => { const row = JSON.parse(encoded); return JSON.stringify(Object.fromEntries(columns.map(column => [column, row[column]]))); }).sort();
+      assert.deepEqual(retained, before[table], `${table} keeps every prior row unchanged`);
+    }
+    for (const encoded of after.drafts!) {
+      const row = JSON.parse(encoded);
+      assert.deepEqual({ library_selection_json: row.library_selection_json, merge_review_json: row.merge_review_json }, { library_selection_json: '{}', merge_review_json: null }, 'prior drafts receive only the additive library metadata defaults');
+    }
+    assert.ok(after.outbound_messages!.every(encoded => JSON.parse(encoded).render_snapshot_json === null), 'prior approved messages gain no invented render snapshot');
     const addedTables = Object.keys(after).filter(table => !Object.hasOwn(before, table));
     assert.ok(addedTables.length > 0, 'the prior installation gains capture storage');
     // Pipeline migration deliberately backfills metadata for every existing stage, and
