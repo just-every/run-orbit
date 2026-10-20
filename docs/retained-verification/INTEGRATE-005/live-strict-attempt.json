@@ -1,0 +1,15 @@
+{
+  "provider": "Slack",
+  "live": true,
+  "status": [
+    "conversations.info: workspace-internal bot-member test channel; no customer-facing indicators",
+    "Channel safety flags: {\"is_member\":true,\"is_channel\":true,\"is_archived\":false,\"is_frozen\":\"absent\",\"is_shared\":false,\"is_ext_shared\":false,\"is_org_shared\":false,\"is_pending_ext_shared\":false}",
+    "auth.test: accepted",
+    "Settings bot-token and generated test-installation signing-secret entry: connected; credentials cleared from form",
+    "Screen path: /app/settings",
+    "Visible error: ",
+    "BLOCKED: Held channel did not pass the complete conversations.info safety checks"
+  ],
+  "messages": [],
+  "cleanup": []
+}

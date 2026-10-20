@@ -44,7 +44,7 @@ A successful local receipt proves only the named account, selection and phases. 
 
 ## Slack sales notices and live buttons
 
-The bot-only proof for INTEGRATE-005 is retained at `docs/retained-verification/INTEGRATE-005/live.json`: Settings connection, stage and overdue-task delivery, channel readback, authenticated links, replay and deletion were live. Signed inbound actions and identity refusals use a generated test-installation signing secret at the fake network edge; no live Slack button click is claimed.
+The final recorded held-bot proof is `docs/retained-verification/INTEGRATE-005/live.json`: Settings connection, stage and overdue-task delivery, authenticated links, replay and public contact erasure with tracked provider deletion were live. Both independent repeat deletes returned message_not_found and channel history was empty of this run’s messages. Signed inbound actions and identity refusals use a generated test-installation signing secret at the fake network edge; no live Slack button click is claimed.
 
 For your installation, open Settings → Slack sales notices. Enter the installed bot token and the app's signing secret from Slack App Console → Basic Information → App Credentials. They are encrypted, never shown again or exported; after importing an archive enter them again. The bot needs `chat:write` and `channels:read`, and `groups:read` only when you select private channels. Channel-history proof needs the matching history scope. Invite the bot to an internal test channel, load member channels and select event types. Map each Slack user ID explicitly to an active Orbit operator; do not infer identity from email.
 

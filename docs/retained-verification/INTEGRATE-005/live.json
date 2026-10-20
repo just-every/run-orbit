@@ -1,0 +1,48 @@
+{
+  "provider": "Slack",
+  "live": true,
+  "status": [
+    "conversations.info: workspace-internal bot-member test channel; no customer-facing indicators",
+    "Channel safety flags: {\"is_member\":true,\"is_channel\":true,\"is_archived\":false,\"is_frozen\":\"absent\",\"is_shared\":false,\"is_ext_shared\":false,\"is_org_shared\":false,\"is_pending_ext_shared\":false}",
+    "auth.test: accepted",
+    "Recorded run audience checks: {\"contextTeamMatches\":true,\"connectedTeams\":0,\"pendingConnectedTeams\":0,\"pendingShared\":0,\"foreignSharedTeams\":0}",
+    "Settings bot-token and generated test-installation signing-secret entry: connected; credentials cleared from form",
+    "Accepted bot message bound its Slack app identity",
+    "Stage move and overdue-task notice: sent once each; event replay and process replay: no second message",
+    "conversations.history: both run-tagged messages arrived with only allowed fields",
+    "Public contact erasure redacted both local notices and completed two tracked chat.delete requests through Orbit",
+    "Disconnect: unresolved setup; existing in-app deal and task remain available",
+    "Inbound signatures and identity refusals use the fake network edge, not a live Slack click; app-console interactivity configuration is still required for live clicks.",
+    "Final channel readback: no messages from this run"
+  ],
+  "messages": [
+    {
+      "event": "due",
+      "status": "arrived; allowlisted; authenticated link opens; anonymous link requires sign-in",
+      "timestamp": "1792524005.886449"
+    },
+    {
+      "event": "stage",
+      "status": "arrived; allowlisted; authenticated link opens; anonymous link requires sign-in",
+      "timestamp": "1792524004.801689"
+    }
+  ],
+  "cleanup": [
+    {
+      "timestamp": "1792524005.886449",
+      "status": "message_not_found; already deleted by Orbit"
+    },
+    {
+      "timestamp": "1792524005.886449",
+      "status": "second delete: message_not_found"
+    },
+    {
+      "timestamp": "1792524004.801689",
+      "status": "message_not_found; already deleted by Orbit"
+    },
+    {
+      "timestamp": "1792524004.801689",
+      "status": "second delete: message_not_found"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "provider": "Slack",
+  "live": true,
+  "status": [
+    "conversations.info: workspace-internal bot-member test channel; no customer-facing indicators",
+    "auth.test: accepted",
+    "Settings bot-token and generated test-installation signing-secret entry: connected; credentials cleared from form",
+    "Stage move and overdue-task notice: sent once each; event replay and process replay: no second message",
+    "conversations.history: both run-tagged messages arrived with only allowed fields",
+    "Disconnect: unresolved setup; existing in-app deal and task remain available",
+    "Inbound signatures and identity refusals use the fake network edge, not a live Slack click; app-console interactivity configuration is still required for live clicks.",
+    "Final channel readback: no messages from this run"
+  ],
+  "messages": [
+    {
+      "event": "due",
+      "status": "arrived; allowlisted; authenticated link opens; anonymous link requires sign-in",
+      "timestamp": "1792520020.537189"
+    },
+    {
+      "event": "stage",
+      "status": "arrived; allowlisted; authenticated link opens; anonymous link requires sign-in",
+      "timestamp": "1792520019.649159"
+    }
+  ],
+  "cleanup": [
+    {
+      "timestamp": "1792520020.537189",
+      "status": "deleted"
+    },
+    {
+      "timestamp": "1792520020.537189",
+      "status": "second delete: message_not_found"
+    },
+    {
+      "timestamp": "1792520019.649159",
+      "status": "deleted"
+    },
+    {
+      "timestamp": "1792520019.649159",
+      "status": "second delete: message_not_found"
+    }
+  ]
+}
