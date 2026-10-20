@@ -10,6 +10,6 @@ export function protectResponse(response: Response, managementOrigin?: string, p
   headers.set('Content-Security-Policy', policy);
   if(publicFormOrigins)headers.delete('X-Frame-Options');else headers.set('X-Frame-Options', 'DENY');
   headers.set('X-Content-Type-Options', 'nosniff');
-  headers.set('Referrer-Policy', 'same-origin');
+  if(!headers.has('Referrer-Policy'))headers.set('Referrer-Policy', 'same-origin');
   return new Response(response.body, {status: response.status, statusText: response.statusText, headers});
 }

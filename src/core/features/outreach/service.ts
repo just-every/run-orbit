@@ -5,6 +5,7 @@ import { ApprovalRepository, type OutboundMessage } from './approval-repository'
 import { nextPermitted, permitted } from './time';
 import { boundOptOut, relayRefusal, relayRefusalAudit, relayRefusedAtDispatch } from './opt-out';
 import { deferral, oneToOneLimitSql, sharedLimitSql } from './sending-limits';
+import { messageOptOutUrl } from './opt-out-capability';
 
 export class OutreachService {
  constructor(readonly db:D1Database,readonly mail:OutboundMail){}
@@ -12,14 +13,17 @@ export class OutreachService {
   if(message.state!=='queued')throw new Error('Only a claimed operator approval may be submitted.');
   const eligible=await this.db.prepare("SELECT m.id FROM outbound_messages m JOIN contacts c ON c.id=m.contact_id WHERE m.id=? AND m.state='queued' AND c.contactability='contactable' AND lower(trim(c.email))=lower(trim(m.recipient_email)) AND NOT EXISTS(SELECT 1 FROM crm_import_reviews WHERE safety_pending=1)").bind(message.id).first();
   if(!eligible){await this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure='Recipient permission changed before submission' WHERE id=? AND state='queued'").bind(message.id).run();return{id:message.id,state:'cancelled'};}
-  if(this.mail.provider==='rer'&&await relayRefusedAtDispatch(this.db,message.id)){
+  if(this.mail.provider==='rer'&&await relayRefusedAtDispatch(this.db,message.id,Boolean(this.mail.optOutOrigin))){
    const at=new Date().toISOString();
    await this.db.batch([this.db.prepare("UPDATE outbound_messages SET state='failed',failure=?,updated_at=? WHERE id=? AND state='queued'").bind(relayRefusal,at,message.id),this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=?,next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open'").bind(relayRefusal,at,message.opportunity_id),relayRefusalAudit(this.db,message.operator_id,'outbound_message',message.id)]);
    return {id:message.id,state:'failed'};
   }
   const repository=new OutreachRepository(this.db);let receipt;
   const optOut=await boundOptOut(this.db,message.id);
-  try{receipt=await this.mail.send({...message,...(optOut===undefined?{}:{opt_out:optOut})});}catch(error){
+  try{
+   const url=this.mail.provider==='rer'&&this.mail.optOutOrigin&&optOut!==false?await messageOptOutUrl(this.db,message.id,this.mail.optOutOrigin):undefined;
+   receipt=await this.mail.send({...message,...(optOut===undefined?{}:{opt_out:optOut}),...(url?{opt_out_url:url}:{})});
+  }catch(error){
    const now=new Date(),at=now.toISOString();
    if(transientSubmission(error)&&message.attempt_count<5&&now.getTime()-Date.parse(message.first_attempt_at??message.approved_at)<3600000){await this.db.prepare("UPDATE outbound_messages SET state='scheduled',next_attempt_at=?,failure=?,updated_at=? WHERE id=? AND state='queued'").bind(new Date(now.getTime()+message.attempt_count*60000).toISOString(),error instanceof Error?error.message:'Provider rate limit',at,message.id).run();return {id:message.id,state:'scheduled'};}
    const state=submissionOutcome(error);await repository.settle(message.id,message.operator_id,state,null,error instanceof Error?error.message:'Provider receipt unavailable');

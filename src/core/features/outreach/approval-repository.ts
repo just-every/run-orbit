@@ -3,7 +3,8 @@ import { WorkbenchError } from '../workbench/repository';
 import { permitted, localTime, nextPermitted, recentLocalTime } from './time';
 import { deferral, oneToOneLimitSql, sharedLimitSql } from './sending-limits';
 import { bindOptOut, draftOptOut, relayRefusalAudit } from './opt-out';
-export interface ApprovalInput {idempotencyKey?:string;scheduledAt?:string;scheduledAtConfirmation?:string;quietHoursConfirmation?:string;now?:Date;messageIdDomain?:string;optOutTransport?:boolean}
+import { capabilityStatement } from './opt-out-capability';
+export interface ApprovalInput {idempotencyKey?:string;scheduledAt?:string;scheduledAtConfirmation?:string;quietHoursConfirmation?:string;now?:Date;messageIdDomain?:string;optOutTransport?:boolean;optOutOrigin?:string}
 export class ApprovalRepository {
  constructor(readonly db:D1Database){}
  async preview(draftId:string,now=new Date(),scheduledAt?:string) {
@@ -37,7 +38,8 @@ export class ApprovalRepository {
   let result:D1Result[];try{result=await this.db.batch([insertion,
     this.db.prepare(`UPDATE outbound_messages SET state='draft',claimed_at=NULL,first_attempt_at=NULL,attempt_count=0,failure='Sending limit reached; review and retry after the displayed time',next_attempt_at=? WHERE id=? AND state='queued' AND ((SELECT COUNT(*) FROM outbound_messages WHERE claimed_at>?)>${sharedLimitSql} OR (SELECT COUNT(*) FROM outbound_messages WHERE operator_id=? AND claimed_at>?)>${oneToOneLimitSql('?')})`).bind(at,id,minute,actor,day,actor),
     this.db.prepare("UPDATE opportunities SET queue_state='next',queue_reason='Scheduled message',next_due_at=?,updated_at=? WHERE id=(SELECT opportunity_id FROM outbound_messages WHERE id=? AND state='scheduled') AND lifecycle='open'").bind(scheduled,at,id),
-    ...bindOptOut(this.db,id,draftId,optOut)
+    ...bindOptOut(this.db,id,draftId,optOut),
+    ...(input.optOutOrigin&&optOut.carries?[capabilityStatement(this.db,id,input.optOutOrigin)]:[])
   ]);}catch(error){if(/runtime_controls.value/.test(String(error)))throw new WorkbenchError(409,'The opt-out setting or this message’s opt-out marking changed. Review it again before approving.');throw error;}
   if(result[0]!.meta.changes!==1)throw new WorkbenchError(409,'Revision already approved, changed, or is no longer permitted.');
   if(result[1]!.meta.changes>=1){const held=await deferral(this.db,actor,now);if(held)await this.db.prepare("UPDATE outbound_messages SET failure=?,next_attempt_at=? WHERE id=? AND state='draft'").bind(held.failure,held.retryAt,id).run();}

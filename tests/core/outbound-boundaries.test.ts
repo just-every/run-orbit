@@ -9,7 +9,9 @@ import {createDependencies} from '../support/dependencies';
 import {createId} from '../../src/core/shared/ids';
 import {WorkbenchRepository} from '../../src/core/features/workbench/repository';
 import {OutreachService} from '../../src/core/features/outreach/service';
-test('BASE-DATA-004 BASE-DATA-005 OUT-012 OUT-020 user data reaches only declared providers; opt-out state is set by type, bound to the approved message and delivered exactly; the managed relay refuses a new one-to-one send with its OUT-013 reason and sends a labeled reply in an existing thread',async context=>{
+import type {OutboundMessage} from '../../src/core/features/outreach/approval-repository';
+import {databaseDigest} from '../support/stop-attribution';
+test('OUT-020 managed opt-out is approval-bound, suppresses only its recipient and stops replayed dispatch',async context=>{
  const actual=globalThis.fetch,requests:{url:string;body:any}[]=[];
  const relayUrl='https://managed-mail.example.test/send';
  globalThis.fetch=async(input,init)=>{const url=String(input);requests.push({url,body:JSON.parse(String(init?.body??'{}'))});if(url===relayUrl)return Response.json({messageId:`<relay-${requests.length}@example.test>`},{status:202});if(url==='https://api.sendgrid.com/v3/mail/send')return new Response(null,{status:202,headers:{'x-message-id':'test-provider-receipt'}});if(url==='https://api.openai.com/v1/responses')return Response.json({status:'completed',usage:{input_tokens:1,output_tokens:1,input_tokens_details:{cached_tokens:0}},output:[{content:[{type:'output_text',text:JSON.stringify({explanation:'Observed request.',subject:'Request',body:'Thank you for your request.',evidenceIds:['test-evidence']})}]}]});throw new Error('Unexpected outbound target');};
@@ -62,7 +64,7 @@ test('BASE-DATA-004 BASE-DATA-005 OUT-012 OUT-020 user data reaches only declare
    assert.equal((await api(rep,`workbench/drafts/${relation}/opt-out`,{choice:'relationship'})).body.carries,false);
    assert.equal((await api(rep,`workbench/drafts/${relation}/approve`,{revision:await review(relation)})).body.state,'accepted');assert.equal(delivered().asm,undefined);
    assert.deepEqual((await db.prepare('SELECT b.carries,b.marking FROM outbound_message_opt_out b JOIN outbound_messages m ON m.id=b.message_id ORDER BY m.created_at').all()).results.map(row=>[row.carries,row.marking]),[[0,null],[1,null],[1,null],[1,'added'],[0,'relationship']]);
-   // OUT-020 on the managed relay (ct, 19 October): it cannot carry opt-out until OUT-013, so only a reply in a thread the recipient answered is sent, labeled.
+   // A relay without an installation origin still refuses opt-out and labels its reply exception.
    const relayMail=createOutboundMail({MAIL_PROVIDER:'rer',MAIL_FROM:'managed@example.test',MAIL_RELAY_URL:relayUrl,MAIL_API_KEY:'fixture-relay-key'})!,relay=call(createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:relayMail})),relaySends=()=>requests.filter(r=>r.url===relayUrl).length;
    const refusal='This relay cannot carry your opt-out link yet (OUT-013)',fresh=await draft('New sales email on the relay');
    assert.deepEqual((({refusal,marking,carries,reply})=>({refusal,marking,carries,reply}))((await relay(rep,`workbench/drafts/${fresh}/opt-out`)).body),{refusal,marking:'transport',carries:false,reply:false},'The review names the refusal before approval');
@@ -75,6 +77,114 @@ test('BASE-DATA-004 BASE-DATA-005 OUT-012 OUT-020 user data reaches only declare
    const answer=await draft('Reply in the thread the buyer answered');assert.deepEqual((({refusal,marking,reply})=>({refusal,marking,reply}))((await relay(rep,`workbench/drafts/${answer}/opt-out`)).body),{refusal:null,marking:'transport',reply:true});
    assert.equal((await relay(rep,`workbench/drafts/${answer}/approve`,{revision:1})).body.state,'accepted');assert.equal(relaySends(),1);assert.equal(requests.at(-1)!.body.subject,'Reply in the thread the buyer answered');
    assert.deepEqual(await db.prepare('SELECT b.carries,b.marking FROM outbound_message_opt_out b JOIN outbound_messages m ON m.id=b.message_id WHERE m.draft_id=?').bind(answer).first(),{carries:0,marking:'transport'},'The reply is bound and labeled as sent without opt-out');
+
+   // A configured installation origin gives managed single-recipient mail its own durable capability.
+   const managedMail=createOutboundMail({MAIL_PROVIDER:'rer',MAIL_FROM:'managed@example.test',MAIL_RELAY_URL:relayUrl,MAIL_API_KEY:'fixture-relay-key',AUTH_ORIGIN:'https://orbit.test',DB:db})!;
+   assert.equal(managedMail.optOutOrigin,'https://orbit.test');
+   const managedApp=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:managedMail}),managed=call(managedApp);
+   const secondDeal=await new WorkbenchRepository(db).createOpportunity({title:'Separate renewal',companyName:'Other customer',contactName:'Other buyer',email:'other@customer.invalid',stageId:stage,valueCents:0},rep);
+   const secondContact=(await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(secondDeal.id).first<{contact_id:string}>())!.contact_id;
+   const otherDraft=async(subject:string)=>(await managed<{id:string}>(rep,`workbench/opportunities/${secondDeal.id}/drafts`,{contactId:secondContact,subject,body:'Other reviewed body'})).body.id;
+   const approve=async(id:string,scheduledAt?:string)=>{
+    const result=await managed<{id:string;state:string}>(rep,`workbench/drafts/${id}/approve`,{revision:1,...(scheduledAt?{scheduledAt}:{})});
+    assert.equal(result.status,200);return result.body;
+   };
+   const capability=async(messageId:string)=>{
+    const row=await db.prepare('SELECT token,message_id,contact_id,origin,created_at FROM outbound_opt_out_capabilities WHERE message_id=?').bind(messageId).first<{token:string;message_id:string;contact_id:string;origin:string;created_at:string}>();
+    assert.ok(row,'Managed opt-out has a durable message capability');assert.match(row.token,/^[a-f0-9]{64}$/);assert.equal(row.message_id,messageId);assert.equal(row.origin,'https://orbit.test');assert.ok(Number.isFinite(Date.parse(row.created_at)));return row;
+   };
+   const assertWire=async(messageId:string,subject:string,body='Reviewed body')=>{
+    const cap=await capability(messageId),url=`https://orbit.test/unsubscribe/${cap.token}`;
+    const wire=requests.filter(request=>request.url===relayUrl).findLast(request=>request.body.subject===subject)!.body;
+    assert.equal(wire.text,body+'\n\nUnsubscribe: '+url,'The exact saved body is followed by exactly one opt-out footer');
+    assert.equal(wire.listUnsubscribe,'<'+url+'>');assert.equal(wire.listUnsubscribePost,true);return {cap,url,wire};
+   };
+   const assertPlain=(subject:string,body='Reviewed body')=>{
+    const wire=requests.filter(request=>request.url===relayUrl).findLast(request=>request.body.subject===subject)!.body;
+    assert.equal(wire.text,body);assert.equal(Object.hasOwn(wire,'listUnsubscribe'),false);assert.equal(Object.hasOwn(wire,'listUnsubscribePost'),false);
+   };
+   const freshManaged=await draft('Managed reviewed opt-out');
+   const reviewState=(await managed(rep,`workbench/drafts/${freshManaged}/opt-out`)).body;
+   assert.equal(reviewState.carries,true);assert.equal(reviewState.refusal,null);assert.equal(reviewState.marking,null);
+   const approved=await approve(freshManaged);assert.equal(approved.state,'accepted');
+   const {cap,url}=await assertWire(approved.id,'Managed reviewed opt-out');assert.equal(cap.contact_id,contact);
+   const countBefore=(await db.prepare('SELECT count(*) AS n FROM outbound_opt_out_capabilities').first<{n:number}>())!.n,sendsBeforeReapproval=relaySends();
+   assert.equal((await managed(rep,`workbench/drafts/${freshManaged}/approve`,{revision:1})).status,409);
+   assert.equal((await managed(rep,`workbench/drafts/${pending}/approve`,{revision:1})).status,409);
+   assert.equal((await db.prepare('SELECT count(*) AS n FROM outbound_opt_out_capabilities').first<{n:number}>())!.n,countBefore,'Rejected approvals create no capability');
+   assert.equal(relaySends(),sendsBeforeReapproval,'A rejected or replayed approval cannot dispatch again');
+
+   const untouched=await databaseDigest(db),confirmation=await managedApp.request(url),html=await confirmation.text();
+   assert.equal(confirmation.status,200);assert.match(html,/<form[^>]*method="post"/);assert.match(html,/<button[^>]*type="submit"/);
+   for(const identity of [contact,deal.id,approved.id,'buyer@customer.invalid','Opt-out contact','Managed reviewed opt-out','other@customer.invalid'])assert.equal(html.includes(identity),false,'Public confirmation discloses no recipient or message identity');
+   assert.equal(await databaseDigest(db),untouched,'Opening a valid opt-out link changes no database state');
+   const invalidUrls=['https://orbit.test/unsubscribe/not-a-token',`https://orbit.test/unsubscribe/${'f'.repeat(64)}`,url.replace('https://orbit.test','https://foreign.test')];
+   let generic404:string|undefined;
+   for(const invalidUrl of invalidUrls)for(const method of ['GET','POST']){
+    const response=await managedApp.request(invalidUrl,{method}),body=await response.text();assert.equal(response.status,404);
+    generic404??=body;assert.equal(body,generic404,'Malformed, foreign and wrong-origin capabilities have the same generic refusal');
+   }
+   assert.equal(await databaseDigest(db),untouched,'Invalid links and wrong-origin posts change no database state');
+
+   // Approval carries its original setting across a provider move and later setting changes.
+   const switchedDraft=await draft('SendGrid approval keeps opt-out'),switched=(await api<{id:string}>(rep,`workbench/drafts/${switchedDraft}/approve`,{revision:1,scheduledAt:'2030-01-10T10:00:00.000Z'})).body.id;
+   assert.equal(await db.prepare('SELECT token FROM outbound_opt_out_capabilities WHERE message_id=?').bind(switched).first(),null);
+   assert.equal((await managed(owner,'settings/opt-out/one_to_one',{carries:false,removalAllowed:true})).status,200);
+   const offDraft=await draft('Managed approval keeps opt-out off'),off=await approve(offDraft,'2030-01-10T10:00:00.000Z');
+   assert.equal(await db.prepare('SELECT token FROM outbound_opt_out_capabilities WHERE message_id=?').bind(off.id).first(),null);
+   assert.equal((await managed(owner,'settings/opt-out/one_to_one',{carries:true,removalAllowed:true})).status,200);
+   const olderDraft=await draft('Approval before opt-out bindings'),older=(await api<{id:string}>(rep,`workbench/drafts/${olderDraft}/approve`,{revision:1,scheduledAt:'2030-01-10T10:00:00.000Z'})).body.id;
+   await db.prepare('DELETE FROM outbound_message_opt_out WHERE message_id=?').bind(older).run(); // Pre-OUT-020 approval fixture.
+   const oldTransportDraft=await otherDraft('Legacy uncarried approval'),oldTransport=await approve(oldTransportDraft,'2030-01-10T10:00:00.000Z');
+   await db.prepare("UPDATE outbound_message_opt_out SET carries=0,marking='transport' WHERE message_id=?").bind(oldTransport.id).run(); // Previously reviewed without an available link.
+   await db.prepare('DELETE FROM outbound_opt_out_capabilities WHERE message_id=?').bind(oldTransport.id).run();
+   context.mock.timers.setTime(Date.parse('2030-01-10T10:00:00Z'));
+   const service=new OutreachService(db,managedMail);await service.dispatchDue();
+   for(const [id,subject] of [[switched,'SendGrid approval keeps opt-out'],[older,'Approval before opt-out bindings']] as const){
+    assert.equal((await db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(id).first<{state:string}>())!.state,'accepted');
+    assert.equal((await assertWire(id,subject)).cap.contact_id,contact);
+   }
+   assertPlain('Managed approval keeps opt-out off');assert.equal(await db.prepare('SELECT token FROM outbound_opt_out_capabilities WHERE message_id=?').bind(off.id).first(),null);
+   assert.deepEqual(await db.prepare('SELECT state,failure FROM outbound_messages WHERE id=?').bind(oldTransport.id).first(),{state:'failed',failure:refusal},'A legacy transport marking still requires fresh review unless it is a reply');
+   assert.equal((await managed(rep,`workbench/opportunities/${secondDeal.id}/events`,{type:'email.replied',subject:'Renewal question',occurredAt:new Date().toISOString(),eventId:'other-buyer-reply',contactId:secondContact})).status,201);
+   const oldReplyDraft=await otherDraft('Legacy uncarried reply'),oldReply=await approve(oldReplyDraft,'2030-01-11T10:00:00.000Z');
+   await db.prepare("UPDATE outbound_message_opt_out SET carries=0,marking='transport' WHERE message_id=?").bind(oldReply.id).run();
+   // This fixture predates capabilities too: the old review never approved a link.
+   await db.prepare('DELETE FROM outbound_opt_out_capabilities WHERE message_id=?').bind(oldReply.id).run();
+   context.mock.timers.setTime(Date.parse('2030-01-11T10:00:00Z'));await service.dispatchDue();
+   assertPlain('Legacy uncarried reply','Other reviewed body');
+   assert.equal((await db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(oldReply.id).first<{state:string}>())!.state,'accepted');
+
+   // Both customers have independently approved future work. Stop only the recipient named by the capability.
+   const remaining=[] as string[];
+   for(const subject of ['Scheduled buyer follow-up','Held buyer follow-up','Claimed buyer follow-up'])remaining.push((await approve(await draft(subject),'2030-01-14T10:00:00.000Z')).id);
+   await db.prepare("UPDATE outbound_messages SET state='draft' WHERE id=?").bind(remaining[1]).run();
+   await db.prepare("UPDATE outbound_messages SET state='queued' WHERE id=?").bind(remaining[2]).run();
+   const claimed=(await db.prepare('SELECT * FROM outbound_messages WHERE id=?').bind(remaining[2]).first<OutboundMessage>())!;
+   const otherFuture=await approve(await otherDraft('Other buyer keeps their renewal follow-up'),'2030-01-14T10:00:00.000Z');
+   const beforeStop=relaySends(),stopped=await managedApp.request(url,{method:'POST'});assert.equal(stopped.status,200);
+   assert.equal((await db.prepare('SELECT contactability FROM contacts WHERE id=?').bind(contact).first<{contactability:string}>())!.contactability,'do_not_contact');
+   assert.equal((await db.prepare('SELECT contactability FROM contacts WHERE id=?').bind(secondContact).first<{contactability:string}>())!.contactability,'contactable');
+   for(const id of remaining)assert.equal((await db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(id).first<{state:string}>())!.state,'cancelled','The stop atomically cancels scheduled, held and claimed sends');
+   assert.equal((await db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(otherFuture.id).first<{state:string}>())!.state,'scheduled');
+   const stoppedDigest=await databaseDigest(db);
+   assert.equal((await managedApp.request(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'List-Unsubscribe=One-Click'})).status,200);
+   assert.equal((await managedApp.request(url,{method:'POST'})).status,200);
+   assert.equal(await databaseDigest(db),stoppedDigest,'Button and RFC 8058 repeats are idempotent');
+   assert.equal((await service.submit(claimed)).state,'cancelled');assert.equal(relaySends(),beforeStop,'A stale in-memory dispatch claim cannot send after the stop');
+   context.mock.timers.setTime(Date.parse('2030-01-14T10:00:00Z'));await service.dispatchDue();await service.dispatchDue();
+   assert.equal(relaySends(),beforeStop+1,'Only the other customer’s scheduled mail is dispatched, once');
+   const otherWire=await assertWire(otherFuture.id,'Other buyer keeps their renewal follow-up','Other reviewed body');assert.equal(otherWire.cap.contact_id,secondContact);
+   for(const id of remaining)assert.equal((await db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(id).first<{state:string}>())!.state,'cancelled','Replayed scheduled dispatch cannot revive stopped work');
+   context.mock.timers.setTime(Date.parse('2040-01-10T10:00:00Z'));
+   assert.equal((await managedApp.request(url)).status,200,'A capability has no arbitrary time expiry');
+   context.mock.timers.setTime(Date.parse('2030-01-14T10:00:00Z'));
+   tokens.set(owner,(await deps.auth.createSession(owner)).token);
+   const erased=await managedApp.request(`https://orbit.test/api/v1/records/contact/${contact}`,{method:'DELETE',headers:{Cookie:`__Host-orbit_session=${tokens.get(owner)}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({confirmed:true})});
+   assert.equal(erased.status,200);assert.equal(await db.prepare('SELECT id FROM contacts WHERE id=?').bind(contact).first(),null);
+   assert.equal((await db.prepare('SELECT count(*) AS n FROM outbound_opt_out_capabilities WHERE contact_id=?').bind(contact).first<{n:number}>())!.n,0,'Public contact erasure removes every capability for that recipient');
+   for(const method of ['GET','POST']){const response=await managedApp.request(url,{method});assert.equal(response.status,404);assert.equal(await response.text(),generic404);}
+   assert.equal((await managedApp.request(otherWire.url)).status,200,'Erasing one person preserves another person’s capability');
   }finally{context.mock.timers.reset();await p.dispose();}
  }finally{globalThis.fetch=actual;}
 });

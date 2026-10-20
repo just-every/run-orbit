@@ -8,6 +8,7 @@ export const preFormAbuseCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=
 export const optOutArchiveTables=['opt_out_settings','draft_opt_out','outbound_message_opt_out'] as const;
 export const preOptOutCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>!(optOutArchiveTables as readonly string[]).includes(table.name));
 export const preSendingCapacityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='sending_limits');
+export const preOptOutCapabilityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='outbound_opt_out_capabilities');
 /** Complete native source generations in migration order; never arbitrary missing tables. */
-export function nativeCatalogGenerations(catalog:ArchiveTable[]){const forecast=preForecastCatalog(catalog),optOut=preOptOutCatalog(forecast),sending=preSendingCapacityCatalog(optOut),forms=preFormAbuseCatalog(sending),tasks=preRelationshipCatalog(forms),pipelines=preTaskCatalog(tasks);return [catalog,forecast,optOut,sending,forms,tasks,pipelines,prePipelineCatalog(pipelines)];}
+export function nativeCatalogGenerations(catalog:ArchiveTable[]){const capabilities=preOptOutCapabilityCatalog(catalog),forecast=preForecastCatalog(capabilities),optOut=preOptOutCatalog(forecast),sending=preSendingCapacityCatalog(optOut),forms=preFormAbuseCatalog(sending),tasks=preRelationshipCatalog(forms),pipelines=preTaskCatalog(tasks);return [catalog,capabilities,forecast,optOut,sending,forms,tasks,pipelines,prePipelineCatalog(pipelines)];}
 export const legacyNativeCatalog=(catalog:ArchiveTable[])=>nativeCatalogGenerations(catalog).at(-1)!;
