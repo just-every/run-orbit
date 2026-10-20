@@ -19,7 +19,7 @@ export function LibraryPage(){
    <section className="operator-surface library-list" aria-label="Saved message content">
     <div className="library-list-heading"><h2>Saved content</h2><button type="button" onClick={()=>choose(null)}>New entry</button></div>
     <label>Search library<input type="search" value={query} onChange={e=>setQuery(e.target.value)}/></label>
-    <label>Content type<select value={kind} onChange={e=>setKind(e.target.value)}><option value="all">All content</option><option value="template">Templates</option><option value="snippet">Snippets</option><option value="signature">Signatures</option></select></label>
+    <label>Content type<select aria-label="Content type" value={kind} onChange={e=>setKind(e.target.value)}><option value="all">All content</option><option value="template">Templates</option><option value="snippet">Snippets</option><option value="signature">Signatures</option></select></label>
     <ul>{state.entries.filter(entry=>(kind==='all'||entry.kind===kind)&&entry.name.toLowerCase().includes(query.toLowerCase())).map(entry=><li key={entry.id}><button type="button" aria-pressed={selected?.id===entry.id} onClick={()=>choose(entry)}><strong>{entry.name}</strong><span>{entry.kind} · {entry.visibility} · revision {entry.revision}</span></button></li>)}</ul>
     {!state.entries.length&&<p>No saved content yet. Create your first template, snippet or signature.</p>}
    </section>
@@ -29,8 +29,8 @@ export function LibraryPage(){
     {!editable&&<p>This shared content is read-only. The installation owner manages it.</p>}
     <form onSubmit={event=>{event.preventDefault();void save();}}><fieldset disabled={busy||!editable}>
      <label>Name<input required maxLength={120} value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label>
-     <div className="library-choices"><label>Kind<select value={form.kind} onChange={e=>setForm({...form,kind:e.target.value as LibraryInput['kind']})}><option value="template">Template</option><option value="snippet">Snippet</option><option value="signature">Signature</option></select></label>
-     <label>Visibility<select value={form.visibility} onChange={e=>setForm({...form,visibility:e.target.value as LibraryInput['visibility']})}><option value="private">Private — only me</option>{state.admin&&<option value="shared">Shared — full operators</option>}{!state.admin&&form.visibility==='shared'&&<option value="shared">Shared — full operators</option>}</select></label></div>
+     <div className="library-choices"><label>Kind<select aria-label="Kind" value={form.kind} onChange={e=>setForm({...form,kind:e.target.value as LibraryInput['kind']})}><option value="template">Template</option><option value="snippet">Snippet</option><option value="signature">Signature</option></select></label>
+     <label>Visibility<select aria-label="Visibility" value={form.visibility} onChange={e=>setForm({...form,visibility:e.target.value as LibraryInput['visibility']})}><option value="private">Private — only me</option>{state.admin&&<option value="shared">Shared — full operators</option>}{!state.admin&&form.visibility==='shared'&&<option value="shared">Shared — full operators</option>}</select></label></div>
      {form.kind==='template'&&<label>Subject<input required maxLength={998} value={form.subject} onChange={e=>setForm({...form,subject:e.target.value})}/></label>}
      <label>Body<textarea required rows={10} maxLength={100000} value={form.body} onChange={e=>setForm({...form,body:e.target.value})}/></label>
      <details className="library-field-help"><summary>Available merge fields</summary><p>Insert a field exactly as shown. Every used value must exist on the current record and be reviewed before approval.</p><ul>{state.fields.map(field=><li key={field}><code>{`{{${field}}}`}</code></li>)}</ul></details>

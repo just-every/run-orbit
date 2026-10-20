@@ -3911,7 +3911,7 @@
       "executable": false
     },
     "src/core/features/drafts/ui/library-page.tsx": {
-      "sha256": "b0a960c713b59ff0c93471c4b54c7cdfa394d96e2cc4338ee3abf68a1bec175f",
+      "sha256": "e919f9217c8442c11286a470a456b8f2a19a2e1aab2cf9fc01a706638d223727",
       "executable": false
     },
     "src/core/features/drafts/ui/library-picker.tsx": {
