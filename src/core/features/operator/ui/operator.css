@@ -158,6 +158,7 @@
 .operator-timeline li::before { content: ""; position: absolute; top: 5px; left: -5px; width: 8.5px; height: 8.5px; border: 1.5px solid var(--ob-ink); border-radius: 50%; background: var(--ob-card); }
 .operator-timeline li:last-child { padding-bottom: 0; }
 .operator-timeline strong { color: var(--ob-ink); font-size: 15.5px; }
+.operator-timeline li:is(:target, :focus), :is([id^="entry-"], [id^="handoff-"]):is(:target, :focus) { outline: 2px solid var(--ob-ink); outline-offset: 4px; border-radius: 8px; }
 
 /* A draft's review page. */
 .operator-draft-editor { display: grid; grid-template-columns: minmax(230px, 0.76fr) minmax(0, 1.6fr); gap: 18px; padding-top: 24px; }

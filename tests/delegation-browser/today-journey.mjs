@@ -2,6 +2,7 @@ import {expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import {mkdirSync} from 'node:fs';
 import {randomBytes,createHash} from 'node:crypto';
+import {mentionLink} from './mention-link.mjs';
 
 const widths=[1440,390];
 const serious=async page=>(await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze()).violations.filter(v=>['serious','critical'].includes(v.impact)).map(v=>v.id);
@@ -15,7 +16,7 @@ async function atWidths(page,evidence,name,ready){
  await page.setViewportSize({width:1440,height:900});
 }
 
-export async function todayJourney({first,second,evidence}){
+export async function todayJourney({first,second,colleague,evidence}){
  mkdirSync(evidence,{recursive:true});
  const page=await first.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('/app');const origin=new URL(page.url()).origin,api=page.request;
@@ -99,6 +100,7 @@ export async function todayJourney({first,second,evidence}){
  await atWidths(again,evidence,'handoff-proposal',async()=>{await expect(proposal.getByText(`Proposed by ${client}.`)).toBeVisible();await expect(proposal.getByRole('link',{name:'Re: pricing request'})).toBeVisible();});
  await proposal.getByRole('button',{name:'Accept'}).click();await expect(again.getByText(`Proposed by ${client}.`)).toHaveCount(0);
  await expect(again.getByTestId('opportunity-timeline').getByText('Handoff Accepted').first()).toBeVisible();
+ await mentionLink({author:again,colleague,origin,opportunity:acme,occurredAt:daysAgo(20)});
  // Nothing was sent or drafted for a customer by any of this.
  for(const id of [acme,bright,bright2])expect((await(await again.request.get(`/api/v1/workbench/opportunities/${id}/messages`)).json()).messages).toEqual([]);
  expect(errors).toEqual([]);
