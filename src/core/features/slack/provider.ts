@@ -1,6 +1,6 @@
 import {SlackError} from './contracts';
 const revoked=new Set(['invalid_auth','account_inactive','token_revoked']);
-const known=new Set([...revoked,'missing_scope','not_in_channel','channel_not_found','is_archived','restricted_action','ratelimited','message_not_found','invalid_arguments','no_permission','cant_delete_message']);
+const known=new Set([...revoked,'missing_scope','not_in_channel','channel_not_found','is_archived','restricted_action','ratelimited','message_not_found','invalid_arguments','no_permission','cant_delete_message','is_frozen','channel_is_frozen','channel_is_archived']);
 export class SlackProviderError extends Error {
  constructor(public code:string,public uncertain=false,public retryAfter:number|null=null){super(code);}
  get revoked(){return revoked.has(this.code);}
@@ -20,6 +20,6 @@ export async function slackCall(token:string,method:string,body:Record<string,un
  return value;
 }
 export function internalChannel(channel:any,team:string){
- return Boolean(channel&&channel.is_member===true&&channel.is_archived===false&&channel.is_frozen===false&&channel.is_channel===true&&channel.is_shared===false&&channel.is_ext_shared===false&&channel.is_org_shared===false&&channel.is_pending_ext_shared===false&&!channel.connected_team_ids?.length&&!channel.pending_connected_team_ids?.length&&!channel.pending_shared?.length&&!channel.shared_team_ids?.some((id:string)=>id!==team)&&channel.context_team_id===team&&!channel.is_im&&!channel.is_mpim);
+ return Boolean(channel&&channel.is_member===true&&channel.is_archived===false&&(channel.is_frozen===false||!Object.hasOwn(channel,'is_frozen'))&&channel.is_channel===true&&channel.is_shared===false&&channel.is_ext_shared===false&&channel.is_org_shared===false&&channel.is_pending_ext_shared===false&&!channel.connected_team_ids?.length&&!channel.pending_connected_team_ids?.length&&!channel.pending_shared?.length&&!channel.shared_team_ids?.some((id:string)=>id!==team)&&channel.context_team_id===team&&!channel.is_im&&!channel.is_mpim);
 }
 export async function checkedChannel(token:string,id:string,team:string,fetcher?:typeof fetch){const {channel}=await slackCall(token,'conversations.info',{channel:id},fetcher);if(!internalChannel(channel,team))throw new SlackError(400,'Choose a workspace-internal channel where this bot is a member. Shared, external and archived channels are refused.');return channel as {id:string;name:string};}
