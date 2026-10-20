@@ -23,6 +23,7 @@ export async function forecastBrowserJourney(browser:Browser,origin:string,direc
  const first=await request('/api/v1/records/opportunity','POST',{title:'Harbor annual platform',stage_id:firstStage,owner_id:state.operators[0]!.id,value_cents:1000000,expected_close_at:close+'T12:00:00.000Z',contact_ids:[contact.id],primary_contact_id:contact.id});
  const second=await request('/api/v1/records/opportunity','POST',{title:'Summit expansion',stage_id:secondStage,owner_id:rep.id,value_cents:2000000,expected_close_at:close+'T12:00:00.000Z'});
  await request('/api/v1/records/opportunity','POST',{title:'Date and probability need review',stage_id:unreviewed,value_cents:500000});
+ const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);await request('/api/v1/records/opportunity','POST',{title:'Past close date needs review',stage_id:firstStage,value_cents:0,expected_close_at:yesterday+'T12:00:00.000Z'});
  const overrideReason='Buyer confirmed budget after procurement review';
  let prior:ForecastSnapshot|undefined;
  async function capture(page:Page,name:string){await accessible(page,name,directory);await page.getByRole('region',{name:'Sales forecast',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,name+'-viewport.png')});}
@@ -57,14 +58,14 @@ export async function forecastBrowserJourney(browser:Browser,origin:string,direc
    const current=await request(`${base}/preview`,'POST',period) as ForecastPreview;
    assert.equal(current.result.totals.weightedExpectedCents,800000);assert.equal(current.result.totals.wonBookingsCents,2000000);assert.equal(current.result.totals.committedCents,1000000);assert.equal(current.result.totals.recurringScheduledCents,100000);assert.equal(current.result.totals.oneTimeScheduledCents,50000);assert.equal(current.result.totals.mrrCents,100000);assert.equal(current.result.totals.arrCents,1200000);
    assert.deepEqual(current.result.quotaAttainment.map(row=>row.attainmentPercent).sort((a,b)=>a!-b!),[25,50]);
-   await expect(panel.getByRole('complementary',{name:'Forecast input warnings'})).toContainText('Missing close date');await expect(panel.getByRole('complementary',{name:'Forecast input warnings'})).toContainText('Missing reviewed probability');
+   await expect(panel.getByRole('complementary',{name:'Forecast input warnings'})).toContainText('Missing close date');await expect(panel.getByRole('complementary',{name:'Forecast input warnings'})).toContainText('Missing reviewed probability');await expect(panel.getByRole('complementary',{name:'Forecast input warnings'})).toContainText('Close date is in the past');const override=current.result.inputs.dealInputs.find(input=>input.dealId===first.id)!;assert.equal(override.actorId,state.operators[0]!.id);assert.equal(override.reason,overrideReason);assert.ok(Number.isFinite(Date.parse(override.reviewedAt)));
    await capture(page,`forecast-${width}`);
    await panel.getByRole('button',{name:'History',exact:true}).click();
    await panel.getByLabel('Saved forecast snapshot',{exact:true}).selectOption(prior!.id);
    await expect(panel).toContainText('$15,000.00');await expect(panel).toContainText(overrideReason);await capture(page,`forecast-history-${width}`);
    assert.deepEqual(await request(`${base}/snapshots/${prior!.id}`),prior,'win, new overrides and new reviews never rewrite prior as-of snapshot');
    await errors.check(directory,`forecast-${width}`);
-  }finally{await context.close();}
+  }catch(error){await page.screenshot({path:join(directory,`forecast-failure-${width}.png`),fullPage:true});console.error('Forecast page on failure:',await page.getByRole('region',{name:'Sales forecast',exact:true}).innerText());throw error;}finally{await context.close();}
  }
  const limited=await browser.newContext({baseURL:origin,ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:limitedCookie}});
  try{for(const path of [base,`${base}/snapshots`,`${base}/snapshots/${prior!.id}`])assert.equal((await limited.request.get(path)).status(),403,'a report collaborator has no current forecast access');assert.equal((await limited.request.post(`${base}/preview`,{data:period,headers:{Origin:origin}})).status(),403);}finally{await limited.close();await setup.close();}
