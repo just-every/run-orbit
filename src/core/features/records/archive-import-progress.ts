@@ -85,8 +85,10 @@ async function advanceStep(db: D1Database, job: ImportJob, context: ImportContex
         await save(db, job, p, [statement],context);
         return;
     }
-    // Clear keeps one table per step, so a restore interrupted mid-clear stops between tables.
+    // Keep each nonempty clear as its own durable step. Empty tables have no write
+    // to interrupt; pass over them within the same bounded budget as backup/load.
     if (p.phase === 'clear' || p.phase === 'rollback-clear') {
+        for (;;) {
         const table = [...catalog].reverse()[p.table];
         if (!table) {
             p.phase = p.phase === 'clear' ? 'load' : 'rollback-load';
@@ -97,6 +99,7 @@ async function advanceStep(db: D1Database, job: ImportJob, context: ImportContex
         }
         if (table.name === 'operators') {
             p.table++;
+            if (passEmpty(moved)) continue;
             await save(db, job, p,[],context);
             return;
         }
@@ -104,14 +107,19 @@ async function advanceStep(db: D1Database, job: ImportJob, context: ImportContex
         const count = (await db.prepare(`SELECT count(*) AS n FROM (SELECT 1 FROM ${table.name}${retain} LIMIT 10000)`).first<{
             n: number;
         }>())!.n;
-        if (!count)
+        if (!count) {
             p.table++;
+            if (passEmpty(moved)) continue;
+            await save(db, job, p,[],context);
+            return;
+        }
         const selector = liveRowSelector(layouts.get(table.name)!);
         // Identity-free owner tables must be cleared completely; owner values named
         // rowid are never mistaken for SQLite's hidden address. The source is locked.
         const clear = selector ? `DELETE FROM ${table.name} WHERE (${selector}) IN(SELECT ${selector} FROM ${table.name}${retain} LIMIT 10000)` : `DELETE FROM ${table.name}${retain}`;
-        await save(db, job, p, count ? [db.prepare(clear)] : [],context);
+        await save(db, job, p, [db.prepare(clear)],context);
         return;
+        }
     }
     for (;;) {
     const rollback = p.phase === 'rollback-load', table = catalog[p.table], source = rollback ? p.backupId : job.id;

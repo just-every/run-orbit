@@ -14,6 +14,7 @@ import {foldInstalledCatalog,foldSchemaHash} from '../../src/core/features/recor
 import {preOptOutCapabilityCatalog} from '../../src/core/features/records/archive-generations';
 import {preForecastCatalog} from '../../src/core/features/records/forecast-archive-compatibility';
 import {preLibraryCatalog} from '../../src/core/features/records/library-archive-compatibility';
+import {preSlackCatalog} from '../../src/core/features/slack/archive';
 import {archiveHash,type ArchivePart} from '../../src/core/features/records/archive-schema';
 
 function sourceRequests(db:D1Database,cookie:string){
@@ -69,8 +70,8 @@ test('DATA-001 local archive restores records and keeps the hosted owner able to
   assert.equal(imported.state,'complete');
   assert.equal(imported.completedSteps,imported.totalSteps);assert.equal(imported.nextPart,document.manifest.parts);
  };
- const currentCatalog=await foldInstalledCatalog(source.db);
- for(const catalog of [preLibraryCatalog(currentCatalog),preForecastCatalog(preOptOutCapabilityCatalog(preLibraryCatalog(currentCatalog)))]){
+ const historicalCatalog=preSlackCatalog(await foldInstalledCatalog(source.db));
+ for(const catalog of [preLibraryCatalog(historicalCatalog),preForecastCatalog(preOptOutCapabilityCatalog(preLibraryCatalog(historicalCatalog)))]){
  const previous=await launchFixture();
  try{
   const names=new Set(catalog.map(table=>table.name)),columns=new Map(catalog.map(table=>[table.name,new Set(table.columns.map(column=>column.name))]));
