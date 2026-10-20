@@ -2,6 +2,7 @@ import { useEffect,useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { OperatorShell,OperatorState } from './operator-shell';
 import {formatDate} from './formatters';
+import {useAccessPages} from '../../fold-ui/workspace';
 interface Notification {id:string;href:string|null;opportunityId:string|null;opportunityTitle:string|null;kind:string;message:string;createdAt:string;readAt:string|null}
 export function useNotifications(){
  const [data,setData]=useState<{notifications:Notification[];unread:number}>({notifications:[],unread:0}),[error,setError]=useState('');
@@ -21,8 +22,8 @@ const notificationIconPaths={
 function category(item:Notification){return item.kind==='record.mention'?'mention':item.kind.startsWith('task.')?'task':item.kind==='opportunity.now'?'now':item.kind==='customer.reply'?'reply':'failure';}
 function NotificationIcon({item}:{item:Notification}){return <svg className="notification-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{notificationIconPaths[category(item)]}</svg>;}
 /** Retained notification branch layout, populated only with real deployment events. */
-export function NotificationsPage(){const {data,error,read}=useNotifications();const [unreadOnly,setUnreadOnly]=useState(false),[kind,setKind]=useState('all'),[selectedId,setSelectedId]=useState<string|null>(null);const items=data.notifications.filter(item=>(!unreadOnly||!item.readAt)&&(kind==='all'||category(item)===kind)),selected=data.notifications.find(item=>item.id===selectedId);
- return <OperatorShell eyebrow="Notifications" title="Notifications inbox" action={<span>{data.unread} unread</span>}>
+export function NotificationsPage(){const {data,error,read}=useNotifications(),pages=useAccessPages();const [unreadOnly,setUnreadOnly]=useState(false),[kind,setKind]=useState('all'),[selectedId,setSelectedId]=useState<string|null>(null);const items=data.notifications.filter(item=>(!unreadOnly||!item.readAt)&&(kind==='all'||category(item)===kind)),selected=data.notifications.find(item=>item.id===selectedId);
+ return <OperatorShell eyebrow="Notifications" title="Notifications inbox" action={<span>{data.unread} unread</span>} restricted={pages.accessClass==="collaborator"} reports={pages.reports}>
   <p>Review recent updates and open the opportunity to take action.</p>
   <section className="operator-surface workbench-form notification-filters"><label><input type="checkbox" checked={unreadOnly} onChange={e=>setUnreadOnly(e.target.checked)}/> Show unread only</label><label>Notification type<select value={kind} onChange={e=>setKind(e.target.value)}><option value="all">All types</option><option value="task">Tasks</option><option value="now">Needs attention</option><option value="reply">Customer replies</option><option value="mention">Mentions</option><option value="failure">Delivery outcomes</option></select></label></section>
   {error&&<OperatorState kind="error">{error}</OperatorState>}

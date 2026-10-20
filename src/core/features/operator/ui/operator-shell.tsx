@@ -32,7 +32,8 @@ export function OperatorShell({ action, children, eyebrow, title, restricted=fal
           <Link to="/app/capture">Capture</Link></>}
           {restricted&&<a href="/app/shared-records" aria-current={current("/app/shared-records")}>Shared records</a>}
           {(!restricted||reports)&&<a href="/app/reports" aria-current={current("/app/reports")}>Reports</a>}
-          {restricted&&<a href="/app/access" aria-current={current("/app/access")}>Settings</a>}
+          {restricted&&<><a href="/app/access" aria-current={current("/app/access")}>Settings</a>
+          <NotificationCount /></>}
           {!restricted&&<><a href="/app/forms" aria-current={current("/app/forms")}>Forms</a>
           <NotificationCount /></>}
         </nav>

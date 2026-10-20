@@ -2,12 +2,15 @@ import { createId } from '../../shared/ids';
 import { isFullOperator } from '../access/identity-class';
 import { matches, roleAllows } from '../access/policy';
 import { RecordError, type RecordKind } from './shared';
+import { readsEntries, recordGrant } from '../access/grant-entries';
 /** RECORD-017: where a mention can be written. The notification's event key names the source, so each colleague is notified once per source. */
 export type MentionSource='entry'|'task'|'handoff';
 export interface Colleague {id:string;name:string;email:string}
+/** What the author is asked before a mention saves: share the record with its entries, or turn entries on for the collaborator's grant (grantId). */
+export interface UnreachedColleague extends Colleague {ask:'share'|'entries';grantId:string|null}
 const kindName=(kind:RecordKind)=>kind==='opportunity'?'deal':kind;
 export class MentionAccessError extends RecordError {
- constructor(readonly colleagues:Colleague[],kind:RecordKind){super(409,`${colleagues.map(c=>c.name).join(', ')} cannot see this ${kindName(kind)}. Share it with ${colleagues.length===1?'them':'each of them'} explicitly or remove the mention; a mention never grants access.`);}
+ constructor(readonly colleagues:UnreachedColleague[],kind:RecordKind){const names=(ask:string)=>colleagues.filter(c=>c.ask===ask).map(c=>c.name).join(', ');super(409,[names('share')&&`${names('share')} cannot see this ${kindName(kind)}.`,names('entries')&&`${names('entries')} cannot see this ${kindName(kind)}'s notes, calls and meetings.`].filter(Boolean).join(' ')+` Share them with ${colleagues.length===1?'this person':'each person'} explicitly or remove the mention; a mention never grants access.`);}
 }
 /** Active colleagues an author may mention: active full operators and collaborators who accepted their invitation. Teams arrive with TEAM-005. */
 export async function mentionable(db:D1Database){return (await db.prepare("SELECT o.id,o.display_name AS name,o.email FROM operators o WHERE o.status='active' AND (NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id) OR EXISTS(SELECT 1 FROM access_memberships m WHERE m.operator_id=o.id AND m.status='active')) ORDER BY o.display_name COLLATE NOCASE,o.id").all<Colleague>()).results;}
@@ -34,11 +37,16 @@ export async function canSee(db:D1Database,operatorId:string,kind:RecordKind,rec
  const grants=(await db.prepare("SELECT resource_type,resource_id,actions_json FROM access_grants WHERE subject_kind='operator' AND subject_id=? AND revoked_at IS NULL AND (expires_at IS NULL OR expires_at>?)").bind(operatorId,new Date().toISOString()).all<{resource_type:string;resource_id:string;actions_json:string}>()).results;
  return grants.some(grant=>matches(grant.resource_type,kind)&&matches(grant.resource_id,recordId)&&(JSON.parse(grant.actions_json) as string[]).includes('graph.read'));
 }
+/** A collaborator opens a mention only through a live grant on the record that includes its notes, calls and meetings (ct, 19 October); null when they can. */
+async function unreached(db:D1Database,colleague:Colleague,kind:RecordKind,recordId:string):Promise<UnreachedColleague|null>{
+ if(await isFullOperator(db,colleague.id)||await readsEntries(db,colleague.id,kind,recordId))return null;
+ return await canSee(db,colleague.id,kind,recordId)?{...colleague,ask:'entries',grantId:await recordGrant(db,colleague.id,kind,recordId)}:{...colleague,ask:'share',grantId:null};
+}
 const recordName:Record<RecordKind,string>={contact:'SELECT COALESCE(name,email) AS name FROM contacts WHERE id=?',company:'SELECT name FROM companies WHERE id=?',opportunity:'SELECT title AS name FROM opportunities WHERE id=?'};
-/** The mentions in an entry, task note or handoff, refused before saving when a mentioned colleague cannot see the record, and one in-app notification for each mentioned colleague not yet notified for this source. */
+/** The mentions in an entry, task note or handoff, refused before saving when a mentioned colleague cannot open it there, and one in-app notification for each mentioned colleague not yet notified for this source. */
 export async function mentionPlan(db:D1Database,input:{source:MentionSource;sourceId:string;kind:RecordKind;recordId:string;label:string;text:string;author:string}){
- const mentioned=parseMentions(input.text,await mentionable(db)).filter(c=>c.id!==input.author),hidden:Colleague[]=[];
- for(const colleague of mentioned)if(!await canSee(db,colleague.id,input.kind,input.recordId))hidden.push(colleague);
+ const mentioned=parseMentions(input.text,await mentionable(db)).filter(c=>c.id!==input.author),hidden:UnreachedColleague[]=[];
+ for(const colleague of mentioned){const ask=await unreached(db,colleague,input.kind,input.recordId);if(ask)hidden.push(ask);}
  if(hidden.length)throw new MentionAccessError(hidden,input.kind);
  const name=(await db.prepare(recordName[input.kind]).bind(input.recordId).first<{name:string|null}>())?.name??kindName(input.kind),at=new Date().toISOString();
  return {mentions:mentioned.map(c=>c.id),statements:mentioned.map(colleague=>db.prepare("INSERT OR IGNORE INTO notifications(id,operator_id,opportunity_id,event_key,kind,message,created_at) SELECT ?,?,?,?,'record.mention',a.display_name||?,? FROM operators a WHERE a.id=?").bind(createId(),colleague.id,input.kind==='opportunity'?input.recordId:null,`mention:${input.source}:${input.sourceId}`,` mentioned you in a ${input.label} on ${name}.`,at,input.author))};

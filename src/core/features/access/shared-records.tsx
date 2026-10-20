@@ -2,6 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import type {RecordProjection} from '../../shared/expansion-contracts';
 import {api} from '../fold-ui/workspace';
 import {SharedRecordDetail,type SharedRecord} from './shared-record-detail';
+import {SharedEntries} from './shared-entries';
 /** A saved value in words: a custom field arrives as {name: value}. */
 const shown=(value:unknown):string=>value===null||value===''?'empty':typeof value==='object'?Object.values(value as object).map(shown).join(', '):typeof value==='boolean'?(value?'Yes':'No'):`“${String(value)}”`;
 export function SharedRecords({workspaceId}:{workspaceId:string}){
@@ -13,5 +14,5 @@ export function SharedRecords({workspaceId}:{workspaceId:string}){
  async function save(field:string,value:unknown,label:string){if(!record)return false;let saved=false;try{await api(`${base}/${kind}/${record.ref.id}`,{[field]:value},'PUT');await open(record.ref.id);await load();setError('');setStatus(field==='company_id'?'Field saved: Company changed.':field==='contactability'?'Field saved: marked Do not contact.':`Field saved: ${label} is now ${shown(value)}.`);saved=true;}catch(e){setStatus('');setError(e instanceof Error?e.message:'This field cannot be edited.');}setTimeout(()=>feedback.current?.focus(),0);return saved;}
  const message=<p ref={feedback} tabIndex={-1} role={error?'alert':'status'}>{error||status}</p>;
  return <section className="fold-panel"><h2>Records currently shared with you</h2><p>Each read and edit checks your current record and field permissions.</p>{record?null:message}<div className="fold-grid"><label>Record type<select value={kind} onChange={event=>setKind(event.target.value)}><option value="contact">Contacts</option><option value="company">Companies</option><option value="opportunity">Opportunities</option></select></label><label>Search permitted fields<input type="search" value={query} onChange={event=>setQuery(event.target.value)}/></label></div>{items===null?<p>Loading shared records…</p>:items.length?<ul>{items.map(item=><li key={item.ref.id}><button onClick={()=>void open(item.ref.id)}>{String(item.fields.name??item.fields.title??item.fields.email??'Shared record')}</button></li>)}</ul>:<p>No records match your current access.</p>}{cursor&&<button onClick={()=>void load(cursor)}>Read more records</button>}
- {record&&<SharedRecordDetail base={base} record={record} save={save} feedback={message}/>}</section>;
+ {record&&<><SharedRecordDetail base={base} record={record} save={save} feedback={message}/><SharedEntries base={base} kind={kind} id={record.ref.id}/></>}</section>;
 }

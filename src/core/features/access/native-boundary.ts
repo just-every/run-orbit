@@ -8,6 +8,7 @@ import {AccessError,deny,check} from './errors';
 import {revisionGuard} from './mutations';
 import {createRecordsRoutes} from '../records/routes';
 import type {ActorContext} from '../../shared/expansion-contracts';
+import {collaboratorMentions,createCollaboratorNotificationRoutes} from '../notifications/collaborator';
 export const nativeEditableFields={contact:['name','email','phone','job_title','timezone','company_id','contactability','custom_fields'],company:['name','primary_domain','custom_fields'],opportunity:['title','stage_id','owner_id','company_id','value_cents','expected_close_at','contact_ids','primary_contact_id','custom_fields']} as const;
 export async function restrictedEdit(db:D1Database,c:ActorContext,kind:keyof typeof nativeEditableFields,id:string,raw:unknown){
  if(!raw||typeof raw!=='object'||Array.isArray(raw))deny('Provide a record field object.');const patch=raw as Record<string,unknown>;if(Object.keys(patch).some(key=>!(nativeEditableFields[kind] as readonly string[]).includes(key)))deny('This record field cannot be edited.');if(patch.contactability!==undefined&&patch.contactability!=='do_not_contact')deny('Collaborators cannot clear do-not-contact.');
@@ -28,7 +29,14 @@ export async function restrictedEdit(db:D1Database,c:ActorContext,kind:keyof typ
 /** Every native API has a class boundary. Restricted reads use the same fenced native repositories. */
 export function collaboratorNativeBoundary(db:D1Database):MiddlewareHandler<{Variables:{operator:AuthenticatedOperator}}>{return async(c,next)=>{
  const operator=c.get('operator');if(await isFullOperator(db,operator.operatorId)){await next();return;}
- try{const access=new AccessService(db),actor=await access.authorizeLegacy(operator,crypto.randomUUID(),['GET','HEAD'].includes(c.req.method)?'legacy.read':'legacy.write'),path=c.req.path;
+ try{const path=c.req.path;
+  // RECORD-017: any accepted collaborator reads their own mention notifications, scoped to records shared with them with entries.
+  if(path==='/api/v1/notifications'||path.startsWith('/api/v1/notifications/')||(path==='/api/v1/records/mentions'&&c.req.method==='GET')){
+   const access=new AccessService(db);await access.resolveOperatorContext(operator,(await access.originalWorkspace()).workspaceId,crypto.randomUUID());
+   if(path==='/api/v1/records/mentions')return c.json({mentions:await collaboratorMentions(db,operator.operatorId)});
+   const {Hono}=await import('hono');const scoped=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),url=new URL(c.req.url);url.pathname=url.pathname.slice('/api/v1/notifications'.length)||'/';scoped.use('*',async(ctx,next)=>{ctx.set('operator',operator);await next();});scoped.route('/',createCollaboratorNotificationRoutes(db));return scoped.fetch(new Request(url,c.req.raw));
+  }
+  const access=new AccessService(db),actor=await access.authorizeLegacy(operator,crypto.randomUUID(),['GET','HEAD'].includes(c.req.method)?'legacy.read':'legacy.write');
   if(!path.startsWith('/api/v1/records/')||path.includes('/archive')||path.startsWith('/api/v1/records/mention'))deny('This native operation requires a full operator.');
   const edit=/^\/api\/v1\/records\/(contact|company|opportunity)\/([0-9A-HJKMNP-TV-Z]{26})$/.exec(path);
   if(c.req.method==='PUT'&&edit)return c.json(await restrictedEdit(db,actor,edit[1] as keyof typeof nativeEditableFields,edit[2],await c.req.json()));
