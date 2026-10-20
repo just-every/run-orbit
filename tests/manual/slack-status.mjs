@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
 import {createServer} from 'node:net';
-import {writeFile,rm} from 'node:fs/promises';
+import {writeFile,rm,mkdir} from 'node:fs/promises';
 import {getPlatformProxy} from 'wrangler';
 import {chromium} from '@playwright/test';
 import {identityVarArgs} from '../support/worker-identity.mjs';
@@ -11,6 +11,7 @@ import {prepareSlackVisualData} from './slack-visual-data.mjs';
 const connectedFixture=process.argv.includes('--connected');
 const origin='http://127.0.0.1:17862',evidence='docs/retained-verification/INTEGRATE-005';
 const probe=createServer();await new Promise((resolve,reject)=>{probe.once('error',reject);probe.listen(17862,'127.0.0.1',resolve);});await new Promise(resolve=>probe.close(resolve));
+await mkdir('.rer-tools',{recursive:true});
 const platform=await getPlatformProxy({configPath:'wrangler.jsonc',envFiles:['tests/support/no-local-settings.env'],persist:{path:'.wrangler/state/v3'},remoteBindings:false});
 let browser,worker,session,memberSession,closed=false;
 try{

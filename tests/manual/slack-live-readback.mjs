@@ -3,12 +3,13 @@ import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
 import {createServer} from 'node:net';
-import {readFile,writeFile,rm} from 'node:fs/promises';
+import {readFile,writeFile,rm,mkdir} from 'node:fs/promises';
 import {getPlatformProxy} from 'wrangler';
 import {chromium} from '@playwright/test';
 import {identityVarArgs} from '../support/worker-identity.mjs';
 const origin='http://127.0.0.1:17863',folder='docs/retained-verification/INTEGRATE-005',record=JSON.parse(await readFile(folder+'/live.json','utf8'));
 const probe=createServer();await new Promise((resolve,reject)=>{probe.once('error',reject);probe.listen(17863,'127.0.0.1',resolve);});await new Promise(resolve=>probe.close(resolve));
+await mkdir('.rer-tools',{recursive:true});
 const platform=await getPlatformProxy({configPath:'wrangler.jsonc',envFiles:['tests/support/no-local-settings.env'],persist:{path:'.wrangler/state/v3'},remoteBindings:false});
 let worker,browser,closed=false;
 try{
