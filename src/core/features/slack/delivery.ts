@@ -1,3 +1,4 @@
+import {processSlackDeletions} from './deletions';
 import {createId} from '../../shared/ids';
 import {archiveImportActive} from '../../platform/archive-maintenance';
 import {credentials,installation,providerFailure} from './installation';
@@ -21,7 +22,7 @@ async function enqueueDue(db:D1Database){
 
 }
 export async function processSlack(db:D1Database,config:SlackConfig){
- try{await processPending(db,config);}catch{await db.batch([db.prepare("UPDATE slack_installation SET state='error',error='Slack processing failed; inspect setup and reconnect'"),db.prepare("UPDATE slack_notices SET state='paused',error='Slack processing failed; notices paused' WHERE state IN ('queued','rate-limited')")]);}
+ try{await processSlackDeletions(db,config);await processPending(db,config);}catch{await db.batch([db.prepare("UPDATE slack_installation SET state='error',error='Slack processing failed; inspect setup and reconnect'"),db.prepare("UPDATE slack_notices SET state='paused',error='Slack processing failed; notices paused' WHERE state IN ('queued','rate-limited')")]);}
 }
 async function processPending(db:D1Database,config:SlackConfig){
  if(await archiveImportActive(db))return;
@@ -43,23 +44,27 @@ async function processPending(db:D1Database,config:SlackConfig){
   if((await installation(db))?.state!=='connected')break;
   const channel=await db.prepare('SELECT * FROM slack_channels WHERE id=?').bind(notice.channel_id).first<Channel>();
   if(!channel||!channel.enabled||(channel.retry_at&&channel.retry_at>new Date().toISOString()))continue;
-  if(!await workspaceRecord(db,notice.record_type,notice.record_id)){
-   await db.prepare("UPDATE slack_notices SET state='withheld',content_json=NULL,error='Record is restricted from this channel audience',updated_at=? WHERE id=? AND state IN ('queued','rate-limited')").bind(now,notice.id).run();continue;
-  }
-  const content=await noticeContent(db,notice,item.origin);
-  if(!content){await db.prepare("UPDATE slack_notices SET state='redacted',content_json=NULL,error='Underlying record unavailable' WHERE id=?").bind(notice.id).run();continue;}
+  const prepared=await noticeContent(db,notice,item.origin);
+  if(!prepared){await db.prepare("UPDATE slack_notices SET state='redacted',content_json=NULL,error='Underlying record unavailable' WHERE id=?").bind(notice.id).run();continue;}
+  const content=prepared.content;
   let submitted=false;
   try{
    await checkedChannel(token,channel.id,item.team_id,config.fetcher);
-   const visibility=workspaceRecordFence(notice.record_type,notice.record_id);
-   const claimed=await db.prepare(`UPDATE slack_notices SET state='submitting',content_json=?,error=NULL,retry_at=NULL,updated_at=? WHERE id=? AND state IN ('queued','rate-limited') AND EXISTS(SELECT 1 FROM slack_installation WHERE state='connected') AND EXISTS(SELECT 1 FROM slack_channels WHERE id=? AND enabled=1) AND ${visibility.sql}`).bind(JSON.stringify(content),new Date().toISOString(),notice.id,channel.id,...visibility.args).run();
+   const visibility=prepared.private?{sql:'EXISTS(SELECT 1 FROM graph_records WHERE kind=? AND id=? AND retired_into_id IS NULL)',args:[notice.record_type,notice.record_id]}:workspaceRecordFence(notice.record_type,notice.record_id);
+   const claimed=await db.prepare(`UPDATE slack_notices SET state='submitting',content_json=?,privacy=?,installation_epoch=?,error=NULL,retry_at=NULL,updated_at=? WHERE id=? AND state IN ('queued','rate-limited') AND EXISTS(SELECT 1 FROM slack_installation WHERE state='connected') AND EXISTS(SELECT 1 FROM slack_channels WHERE id=? AND enabled=1) AND ${visibility.sql}`).bind(JSON.stringify(content),prepared.private?'withheld':null,item.connected_at,new Date().toISOString(),notice.id,channel.id,...visibility.args).run();
    if(!claimed.meta.changes)continue;
+   const buttons={ack:crypto.randomUUID(),task:crypto.randomUUID()};
+   await db.batch([db.prepare('DELETE FROM slack_action_tokens WHERE notice_id=? AND consumed_at IS NULL').bind(notice.id),...Object.entries(buttons).map(([kind,id])=>db.prepare('INSERT INTO slack_action_tokens(id,notice_id,action,event_key,channel_id,record_type,record_id,installation_epoch) VALUES(?,?,?,?,?,?,?,?)').bind(id,notice.id,kind==='ack'?'orbit_ack':'orbit_task',notice.event_key,notice.channel_id,notice.record_type,notice.record_id,item.connected_at))]);
    submitted=true;
-   const result=await slackCall(token,'chat.postMessage',{channel:channel.id,client_msg_id:notice.id,...slackMessage(notice.id,content)},config.fetcher);
+   const result=await slackCall(token,'chat.postMessage',{channel:channel.id,client_msg_id:notice.id,...slackMessage(buttons,content)},config.fetcher);
    if(typeof result.ts!=='string'||result.channel!==channel.id)throw new SlackProviderError('unaccepted_response',true);
-   await db.batch([db.prepare("UPDATE slack_notices SET state='sent',message_ts=?,error=NULL,updated_at=? WHERE id=? AND state='submitting'").bind(result.ts,new Date().toISOString(),notice.id),db.prepare('UPDATE slack_channels SET last_error=NULL,retry_at=NULL WHERE id=?').bind(channel.id)]);
+   const appId=result.message?.app_id??result.message?.bot_profile?.app_id;
+   if(typeof appId!=='string'||!/^A[A-Z0-9]+$/.test(appId)||item.app_id&&item.app_id!==appId)throw new SlackProviderError('unaccepted_response',true);
+   item.app_id=appId;
+   await db.batch([db.prepare('UPDATE slack_installation SET app_id=? WHERE connected_at=?').bind(appId,item.connected_at),db.prepare("UPDATE slack_notices SET state='sent',message_ts=?,delivery_team_id=?,delivery_app_id=?,error=NULL,updated_at=? WHERE id=? AND state='submitting'").bind(result.ts,item.team_id,appId,new Date().toISOString(),notice.id),db.prepare('UPDATE slack_channels SET last_error=NULL,retry_at=NULL WHERE id=?').bind(channel.id)]);
   }catch(error){
    await providerFailure(db,error);
+   if(error instanceof SlackProviderError&&['not_in_channel','channel_not_found','is_archived'].includes(error.code)||!(error instanceof SlackProviderError)){await db.batch([db.prepare("UPDATE slack_channels SET enabled=0,last_error='Channel safety changed; administrator must re-confirm' WHERE id=?").bind(channel.id),db.prepare("UPDATE slack_notices SET state='paused',error='Channel suspended; administrator must re-confirm' WHERE channel_id=? AND state IN ('queued','rate-limited')").bind(channel.id)]);}
    const code=error instanceof SlackProviderError?error.code:'Channel safety check failed',rate=error instanceof SlackProviderError?error.retryAfter:null;
    const retry=rate?new Date(Date.now()+rate*1000).toISOString():null;
    const state=error instanceof SlackProviderError&&error.revoked?'paused':rate?'rate-limited':submitted&&(!(error instanceof SlackProviderError)||error.uncertain)?'uncertain':'failed';

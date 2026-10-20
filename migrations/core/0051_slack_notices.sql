@@ -1,12 +1,16 @@
 -- INTEGRATE-005: additive storage; credentials never enter a portable archive.
-CREATE TABLE slack_installation(id TEXT PRIMARY KEY,team_id TEXT NOT NULL,bot_user_id TEXT NOT NULL,state TEXT NOT NULL,error TEXT,origin TEXT NOT NULL,connected_at TEXT NOT NULL,retry_at TEXT);
+CREATE TABLE slack_installation(id TEXT PRIMARY KEY,team_id TEXT NOT NULL,bot_user_id TEXT NOT NULL,state TEXT NOT NULL,error TEXT,origin TEXT NOT NULL,connected_at TEXT NOT NULL,retry_at TEXT,enterprise_id TEXT NOT NULL DEFAULT '',app_id TEXT);
 CREATE TABLE slack_credentials(id TEXT PRIMARY KEY,ciphertext TEXT NOT NULL);
 CREATE TABLE slack_channels(id TEXT PRIMARY KEY,name TEXT NOT NULL,events_json TEXT NOT NULL,enabled INTEGER NOT NULL DEFAULT 1,last_error TEXT,retry_at TEXT);
-CREATE TABLE slack_mappings(slack_user_id TEXT PRIMARY KEY,operator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,revoked_at TEXT);
-CREATE TABLE slack_notices(id TEXT PRIMARY KEY,event_key TEXT NOT NULL,event_kind TEXT NOT NULL,channel_id TEXT NOT NULL REFERENCES slack_channels(id),record_type TEXT NOT NULL,record_id TEXT,source_id TEXT,state TEXT NOT NULL DEFAULT 'queued',content_json TEXT,stage_from TEXT,stage_to TEXT,due_at TEXT,message_ts TEXT,error TEXT,retry_at TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL,acknowledged_by TEXT REFERENCES operators(id) ON DELETE SET NULL,acknowledged_at TEXT,UNIQUE(event_key,channel_id));
+CREATE TABLE slack_mappings(team_id TEXT NOT NULL,enterprise_id TEXT NOT NULL,app_id TEXT NOT NULL,slack_user_id TEXT NOT NULL,operator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,revoked_at TEXT,policy_epoch INTEGER NOT NULL,confirmed_at TEXT NOT NULL,PRIMARY KEY(team_id,enterprise_id,app_id,slack_user_id));
+CREATE TABLE slack_notices(id TEXT PRIMARY KEY,event_key TEXT NOT NULL,event_kind TEXT NOT NULL,channel_id TEXT NOT NULL REFERENCES slack_channels(id),record_type TEXT NOT NULL,record_id TEXT,source_id TEXT,state TEXT NOT NULL DEFAULT 'queued',content_json TEXT,stage_from TEXT,stage_to TEXT,due_at TEXT,message_ts TEXT,error TEXT,retry_at TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL,acknowledged_by TEXT REFERENCES operators(id) ON DELETE SET NULL,acknowledged_at TEXT,installation_epoch TEXT,privacy TEXT,delivery_team_id TEXT,delivery_app_id TEXT,UNIQUE(event_key,channel_id));
 CREATE INDEX slack_notices_channel_state ON slack_notices(channel_id,state);
 CREATE INDEX slack_notices_pending ON slack_notices(state,retry_at,created_at);
 CREATE TABLE slack_actions(id TEXT PRIMARY KEY,notice_id TEXT NOT NULL REFERENCES slack_notices(id),slack_user_id TEXT NOT NULL,operator_id TEXT REFERENCES operators(id) ON DELETE SET NULL,action TEXT NOT NULL,task_id TEXT,created_at TEXT NOT NULL);
+CREATE TABLE slack_action_tokens(id TEXT PRIMARY KEY,notice_id TEXT NOT NULL REFERENCES slack_notices(id) ON DELETE CASCADE,action TEXT NOT NULL,event_key TEXT NOT NULL,channel_id TEXT NOT NULL,record_type TEXT NOT NULL,record_id TEXT NOT NULL,installation_epoch TEXT NOT NULL,consumed_at TEXT,operator_id TEXT);
+CREATE TABLE slack_events(id TEXT PRIMARY KEY,event_type TEXT NOT NULL,processed_at TEXT NOT NULL);
+CREATE TABLE slack_deletions(notice_id TEXT PRIMARY KEY REFERENCES slack_notices(id),team_id TEXT NOT NULL,app_id TEXT,channel_id TEXT NOT NULL,message_ts TEXT NOT NULL,state TEXT NOT NULL DEFAULT 'queued',error TEXT,retry_at TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL);
+CREATE INDEX slack_deletions_pending ON slack_deletions(state,retry_at);
 
 -- Link insertion is in the same transaction as the real sales event. Never copy its free text.
 CREATE TRIGGER slack_sales_event AFTER INSERT ON timeline_entry_records
@@ -24,12 +28,15 @@ BEGIN
 END;
 
 CREATE TRIGGER slack_erase_contact BEFORE DELETE ON contacts WHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='restore') BEGIN
+ INSERT OR IGNORE INTO slack_deletions(notice_id,team_id,app_id,channel_id,message_ts,created_at,updated_at) SELECT n.id,n.delivery_team_id,n.delivery_app_id,n.channel_id,n.message_ts,strftime('%Y-%m-%dT%H:%M:%fZ','now'),strftime('%Y-%m-%dT%H:%M:%fZ','now') FROM slack_notices n WHERE n.message_ts IS NOT NULL AND ((record_type='contact' AND record_id=OLD.id) OR (record_type='opportunity' AND record_id IN(SELECT opportunity_id FROM opportunity_contacts WHERE contact_id=OLD.id)));
  UPDATE slack_notices SET content_json=NULL,stage_from=NULL,stage_to=NULL,record_id=NULL,source_id=NULL,state='redacted',error='Underlying record erased',updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now')
  WHERE (record_type='contact' AND record_id=OLD.id) OR (record_type='opportunity' AND record_id IN(SELECT opportunity_id FROM opportunity_contacts WHERE contact_id=OLD.id));
 END;
 CREATE TRIGGER slack_erase_deal BEFORE DELETE ON opportunities WHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='restore') BEGIN
+ INSERT OR IGNORE INTO slack_deletions(notice_id,team_id,app_id,channel_id,message_ts,created_at,updated_at) SELECT n.id,n.delivery_team_id,n.delivery_app_id,n.channel_id,n.message_ts,strftime('%Y-%m-%dT%H:%M:%fZ','now'),strftime('%Y-%m-%dT%H:%M:%fZ','now') FROM slack_notices n WHERE n.message_ts IS NOT NULL AND (record_type='opportunity' AND record_id=OLD.id);
  UPDATE slack_notices SET content_json=NULL,stage_from=NULL,stage_to=NULL,record_id=NULL,source_id=NULL,state='redacted',error='Underlying record erased',updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE record_type='opportunity' AND record_id=OLD.id;
 END;
 CREATE TRIGGER slack_erase_company BEFORE DELETE ON companies WHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='restore') BEGIN
+ INSERT OR IGNORE INTO slack_deletions(notice_id,team_id,app_id,channel_id,message_ts,created_at,updated_at) SELECT n.id,n.delivery_team_id,n.delivery_app_id,n.channel_id,n.message_ts,strftime('%Y-%m-%dT%H:%M:%fZ','now'),strftime('%Y-%m-%dT%H:%M:%fZ','now') FROM slack_notices n WHERE n.message_ts IS NOT NULL AND ((record_type='company' AND record_id=OLD.id) OR (record_type='opportunity' AND record_id IN(SELECT id FROM opportunities WHERE company_id=OLD.id)));
  UPDATE slack_notices SET content_json=NULL,stage_from=NULL,stage_to=NULL,record_id=NULL,source_id=NULL,state='redacted',error='Underlying record erased',updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE (record_type='company' AND record_id=OLD.id) OR (record_type='opportunity' AND record_id IN(SELECT id FROM opportunities WHERE company_id=OLD.id));
 END;

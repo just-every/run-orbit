@@ -1,47 +1,56 @@
 import {Hono} from 'hono';
-import {payloadHash} from '../../platform/source-security';
 import {archiveImportActive} from '../../platform/archive-maintenance';
 import {createId} from '../../shared/ids';
 import {newTask} from '../tasks/mutations';
 import {insertTask} from '../tasks/repository';
 import {taskEffects} from '../tasks/effects';
+import {audit} from '../records/shared';
 import {credentials,installation} from './installation';
-import {workspaceRecord,workspaceRecordFence} from './content';
-import type {Notice,SlackConfig} from './contracts';
-async function verified(secret:string,raw:string,timestamp:string,signature:string){
- if(!/^\d{10}$/.test(timestamp)||Math.abs(Date.now()-Number(timestamp)*1000)>300000||!/^v0=[a-f0-9]{64}$/.test(signature))return false;
- const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['verify']);
- return crypto.subtle.verify('HMAC',key,Uint8Array.from(signature.slice(3).match(/../g)!,part=>parseInt(part,16)),new TextEncoder().encode(`v0:${timestamp}:${raw}`));
+import {verified} from './signature';
+import {actionMapping,actorRecordFence,installationMatches} from './identity';
+import type {Installation,Notice,SlackConfig} from './contracts';
+const refusal='Not changed: Slack action is foreign, expired, already used, unmapped, revoked or no longer authorized. Open Orbit to inspect current work.';
+/** Never retain a response_url: it carries a provider capability. It receives generic ephemeral outcomes only. */
+async function respond(url:string,text:string,fetcher:typeof fetch=fetch){
+ const parsed=new URL(url);if(parsed.protocol!=='https:'||parsed.hostname!=='hooks.slack.com'||!parsed.pathname.startsWith('/actions/')||parsed.username||parsed.password||parsed.hash)throw Error('Invalid Slack response destination');
+ const result=await fetcher(url,{method:'POST',redirect:'manual',headers:{'Content-Type':'application/json'},body:JSON.stringify({response_type:'ephemeral',text}),signal:AbortSignal.timeout(5000)});if(!result.ok)throw Error('Slack action response unaccepted');
 }
 export function createSlackActionRoutes(db:D1Database,config:SlackConfig){
  const app=new Hono();
  app.post('/',async c=>{
-  const refuse=(text:string)=>c.json({response_type:'ephemeral',text:'Not changed: '+text});
-  if(await archiveImportActive(db))return refuse('Orbit is restoring an archive.');
-  const item=await installation(db);if(!item||item.state!=='connected')return refuse('Slack is disconnected or revoked.');
-  let secret:string;try{secret=(await credentials(db,config)).signingSecret;}catch{return refuse('Slack credentials need setup.');}
-  const raw=await c.req.text();if(raw.length>65536)return c.json({error:'Action too large.'},413);
-  if(!await verified(secret,raw,c.req.header('X-Slack-Request-Timestamp')??'',c.req.header('X-Slack-Signature')??''))return c.json({error:'Invalid, unsigned or stale Slack action.'},401);
-  let payload:any;try{payload=JSON.parse(new URLSearchParams(raw).get('payload')??'');}catch{return refuse('Invalid Slack action.');}
-  if(payload.type!=='block_actions'||payload.team?.id!==item.team_id||payload.actions?.length!==1)return refuse('Foreign workspace or unsupported action.');
-  const action=payload.actions[0],id=action.value;
-  if(!['orbit_ack','orbit_task'].includes(action.action_id)||typeof id!=='string'||typeof action.action_ts!=='string'||typeof payload.user?.id!=='string')return refuse('Unsupported action. Customer mail cannot be changed from Slack.');
-  const notice=await db.prepare("SELECT n.* FROM slack_notices n JOIN slack_channels c ON c.id=n.channel_id WHERE n.id=? AND n.state='sent' AND c.enabled=1").bind(id).first<Notice>();
-  if(!notice||payload.channel?.id!==notice.channel_id||payload.container?.channel_id!==notice.channel_id||payload.container?.message_ts!==notice.message_ts||payload.message?.ts!==notice.message_ts||payload.message?.user!==item.bot_user_id)return refuse('Foreign channel or message; Orbit did not send this notice.');
-  const mapping=await db.prepare("SELECT m.operator_id FROM slack_mappings m JOIN operators o ON o.id=m.operator_id WHERE m.slack_user_id=? AND m.revoked_at IS NULL AND o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=o.id)").bind(payload.user.id).first<{operator_id:string}>();
-  if(!mapping)return refuse('Slack identity is unmapped, revoked or its operator was removed.');
-  if(!await workspaceRecord(db,notice.record_type,notice.record_id))return refuse('Record access changed. Open Orbit for authorized work.');
-  const replay=await payloadHash(`${item.team_id}:${payload.user.id}:${action.action_id}:${action.action_ts}:${id}`),now=new Date().toISOString();
-  if(await db.prepare('SELECT 1 FROM slack_actions WHERE id=?').bind(replay).first())return refuse('This action was already received; replay refused.');
-  const task=action.action_id==='orbit_task'?newTask({title:'Follow up on Slack notice',recordType:notice.record_type,recordId:notice.record_id!,ownerId:mapping.operator_id,dueAt:notice.due_at??now,priority:'normal',type:'follow_up',notes:'',recurrence:'none',timezone:'UTC',reminderMinutes:null},mapping.operator_id,now):null;
-  const guard=createId(),visibility=workspaceRecordFence(notice.record_type,notice.record_id);
-  try{await db.batch([
-   db.prepare(`INSERT INTO runtime_controls(name,value) SELECT ?,CASE WHEN EXISTS(SELECT 1 FROM slack_mappings m JOIN operators o ON o.id=m.operator_id JOIN slack_installation i ON i.state='connected' JOIN slack_notices n ON n.id=? JOIN slack_channels c ON c.id=n.channel_id AND c.enabled=1 WHERE m.slack_user_id=? AND m.operator_id=? AND m.revoked_at IS NULL AND o.status='active' AND n.state='sent' AND n.message_ts=? AND i.team_id=? AND i.connected_at=? AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=o.id)) AND ${visibility.sql} AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN ('restore','archive_import')) THEN 'allowed' ELSE NULL END`).bind(guard,id,payload.user.id,mapping.operator_id,notice.message_ts,item.team_id,item.connected_at,...visibility.args),
-   db.prepare('INSERT INTO slack_actions VALUES(?,?,?,?,?,?,?)').bind(replay,id,payload.user.id,mapping.operator_id,action.action_id,task?.id??null,now),
-   ...(task?[db.prepare('INSERT INTO sales_task_series(id,created_at) VALUES(?,?)').bind(task.series_id,now),insertTask(db,task),...taskEffects(db,task,mapping.operator_id,'task.created')]:[db.prepare('UPDATE slack_notices SET acknowledged_by=?,acknowledged_at=? WHERE id=?').bind(mapping.operator_id,now,id)]),
-   db.prepare('DELETE FROM runtime_controls WHERE name=?').bind(guard)
-  ]);}catch{return refuse('The action was replayed or its identity, workspace or notice changed. Reload Orbit.');}
-  return c.json({response_type:'ephemeral',text:task?'Internal task created under your mapped Orbit identity.':'Notice acknowledged under your mapped Orbit identity.'});
- });
- return app;
+  const refuse=async(reason:string,status:200|401=200)=>{await db.batch([audit(db,null,'slack.action-refused','slack','action',{reason})]);return c.json({response_type:'ephemeral',text:refusal},status);};
+  if(await archiveImportActive(db))return refuse('restore');
+  const item=await installation(db);if(!item||item.state!=='connected')return refuse('disconnected');
+  let secret:string;try{secret=(await credentials(db,config)).signingSecret;}catch{return refuse('credentials');}
+  const raw=await c.req.text();if(raw.length>65536||!await verified(secret,raw,c.req.header('X-Slack-Request-Timestamp')??'',c.req.header('X-Slack-Signature')??''))return refuse('signature-or-time',401);
+  let payload:any;try{payload=JSON.parse(new URLSearchParams(raw).get('payload')??'');}catch{return refuse('payload');}
+  if(payload.type!=='block_actions'||!installationMatches(item,payload)||payload.actions?.length!==1)return refuse('foreign-installation');
+  // Slack receives its HTTP acknowledgment before task work or response_url delivery.
+  c.executionCtx.waitUntil(processAction(db,item,payload).then(text=>respond(payload.response_url,text,config.fetcher)).catch(async()=>{await db.batch([audit(db,null,'slack.action-response-unresolved','slack','action',{})]);}));
+  return c.json({response_type:'ephemeral',text:'Action received. Its outcome will appear here shortly.'});
+ });return app;
+}
+async function processAction(db:D1Database,item:Installation,payload:any){
+ const reject=async(reason:string)=>{await db.batch([audit(db,null,'slack.action-refused','slack','action',{reason})]);return refusal;};
+ const action=payload.actions[0];if(!['orbit_ack','orbit_task'].includes(action.action_id)||typeof action.value!=='string'||typeof payload.user?.id!=='string')return reject('unsupported-action');
+ const issued=await db.prepare('SELECT * FROM slack_action_tokens WHERE id=? AND action=? AND consumed_at IS NULL').bind(action.value,action.action_id).first<{id:string;notice_id:string;event_key:string;channel_id:string;record_type:string;record_id:string;installation_epoch:string}>();
+ if(!issued||issued.installation_epoch!==item.connected_at)return reject('one-use-action');
+ const notice=await db.prepare("SELECT n.* FROM slack_notices n JOIN slack_channels c ON c.id=n.channel_id WHERE n.id=? AND n.state='sent' AND c.enabled=1").bind(issued.notice_id).first<Notice>();
+ if(!notice||notice.installation_epoch!==item.connected_at||notice.event_key!==issued.event_key||notice.record_id!==issued.record_id||notice.record_type!==issued.record_type||notice.channel_id!==issued.channel_id||payload.channel?.id!==notice.channel_id||payload.container?.channel_id!==notice.channel_id||payload.container?.message_ts!==notice.message_ts||payload.message?.ts!==notice.message_ts||payload.message?.user!==item.bot_user_id)return reject('foreign-message');
+ const mapping=await actionMapping(db,item,payload.user.id);if(!mapping)return reject('mapping-or-access');
+ const visibility=actorRecordFence(notice.record_type,notice.record_id!,mapping.operator_id);
+ if(!await db.prepare(`SELECT 1 WHERE ${visibility.sql}`).bind(...visibility.args).first())return reject('record-access');
+ const now=new Date().toISOString(),task=action.action_id==='orbit_task'?newTask({title:'Follow up on Slack notice',recordType:notice.record_type,recordId:notice.record_id!,ownerId:mapping.operator_id,dueAt:notice.due_at??now,priority:'normal',type:'follow_up',notes:'',recurrence:'none',timezone:'UTC',reminderMinutes:null},mapping.operator_id,now):null;
+ const guard=createId();
+ try{await db.batch([
+  db.prepare(`INSERT INTO runtime_controls(name,value) SELECT ?,CASE WHEN EXISTS(SELECT 1 FROM slack_action_tokens t JOIN slack_mappings m ON m.team_id=? AND m.enterprise_id=? AND m.app_id=? AND m.slack_user_id=? JOIN operators o ON o.id=m.operator_id JOIN access_memberships a ON a.operator_id=o.id AND a.workspace_id='workspace' AND a.status='active' JOIN access_workspaces w ON w.id=a.workspace_id AND w.policy_epoch=m.policy_epoch JOIN slack_installation i ON i.state='connected' AND i.connected_at=t.installation_epoch JOIN slack_notices n ON n.id=t.notice_id JOIN slack_channels c ON c.id=n.channel_id AND c.enabled=1 WHERE t.id=? AND t.consumed_at IS NULL AND m.operator_id=? AND m.revoked_at IS NULL AND o.status='active' AND n.state='sent' AND n.message_ts=? AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=o.id)) AND ${visibility.sql} AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN ('restore','archive_import')) THEN 'allowed' ELSE NULL END`).bind(guard,item.team_id,item.enterprise_id,item.app_id,payload.user.id,issued.id,mapping.operator_id,notice.message_ts,...visibility.args),
+  db.prepare('UPDATE slack_action_tokens SET consumed_at=?,operator_id=? WHERE id=? AND consumed_at IS NULL').bind(now,mapping.operator_id,issued.id),
+  db.prepare('INSERT INTO slack_actions VALUES(?,?,?,?,?,?,?)').bind(issued.id,notice.id,payload.user.id,mapping.operator_id,action.action_id,task?.id??null,now),
+  ...(task?[db.prepare('INSERT INTO sales_task_series(id,created_at) VALUES(?,?)').bind(task.series_id,now),insertTask(db,task),...taskEffects(db,task,mapping.operator_id,'task.created').map(statement=>statement),db.prepare("UPDATE timeline_entries SET source='Slack' WHERE id IN(SELECT entry_id FROM sales_task_timeline WHERE task_id=?)").bind(task.id)]:[db.prepare('UPDATE slack_notices SET acknowledged_by=?,acknowledged_at=? WHERE id=?').bind(mapping.operator_id,now,notice.id)]),
+  audit(db,mapping.operator_id,task?'slack.task-created':'slack.acknowledged','slack',issued.id,{noticeId:notice.id,taskId:task?.id??null}),db.prepare('DELETE FROM runtime_controls WHERE name=?').bind(guard)
+ ]);}catch{
+  const committed=await db.prepare('SELECT task_id FROM slack_actions WHERE id=?').bind(issued.id).first<{task_id:string|null}>().catch(()=>null);
+  return committed?'Action already committed under your mapped Orbit identity.':'Action outcome is uncertain or was refused after an authority change. Inspect Orbit by this notice; never create a replacement task to reconcile it.';
+ }
+ return task?'Internal task created under your mapped Orbit identity.':'Notice acknowledged under your mapped Orbit identity.';
 }

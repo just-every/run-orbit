@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import type {SlackFixture} from './slack-notices-proof';
+export async function proveSlackActions(f:SlackFixture,{deal,posts,call,signed}:any){
+ const button=(message:any,kind:string)=>message.blocks[1].elements.find((b:any)=>b.action_id===kind).value;
+ const action=(user='UMAPPED',kind='orbit_ack',change:any={},message=posts[0])=>({type:'block_actions',api_app_id:'AORBIT',team:{id:'TWORKSPACE'},enterprise:null,user:{id:user,team_id:'TWORKSPACE'},channel:{id:'CINTERNAL'},container:{channel_id:'CINTERNAL',message_ts:message.ts},message:{ts:message.ts,user:'UBOT'},actions:[{action_id:kind,value:button(message,kind==='orbit_task'?'orbit_task':'orbit_ack'),action_ts:'1800000001.123456'}],response_url:'https://hooks.slack.com/actions/test-only/response',...change});
+ const counts=async()=>({actions:await f.db.prepare('SELECT count(*) n FROM slack_actions').first('n'),tasks:await f.db.prepare('SELECT count(*) n FROM sales_tasks').first('n')});
+ const refused=async(payload:any)=>{const before=await counts(),result=await signed(payload);assert.match(result.text,/Not changed/);assert.deepEqual(await counts(),before);};
+ assert.equal((await signed(action(),'actions',{unsigned:true})).status,401);assert.equal((await signed(action(),'actions',{stale:true})).status,401);assert.equal((await signed(action(),'actions',{bad:true})).status,401);
+ await refused(action());await call('mappings','PUT',{slackUserId:'UMAPPED',operatorId:f.actor,revoked:false});
+ for(const change of [{team:{id:'TFOREIGN'}},{api_app_id:'AFOREIGN'},{enterprise:{id:'EFOREIGN'}},{user:{id:'UMAPPED',team_id:'TFOREIGN'}},{channel:{id:'CFOREIGN'}},{message:{ts:posts[0].ts,user:'UOTHER'}}])await refused(action('UMAPPED','orbit_ack',change));
+ await refused(action('UMAPPED','mail_approve'));
+ await call('mappings','PUT',{slackUserId:'UMAPPED',operatorId:f.actor,revoked:true});await refused(action());await call('mappings','PUT',{slackUserId:'UMAPPED',operatorId:f.actor,revoked:false});
+ const ack=action();assert.match((await signed(ack)).text,/acknowledged/);await refused(ack);assert.equal((await call('')).notices.find((n:any)=>n.message_ts===posts[0].ts).acknowledged_by,f.actor);
+ const makeTask=action('UMAPPED','orbit_task');assert.match((await signed(makeTask)).text,/task created/);await refused({...makeTask,actions:makeTask.actions.map((a:any)=>({...a,action_ts:'1800000002.000000'}))});
+ const task=await f.db.prepare("SELECT t.* FROM sales_tasks t JOIN slack_actions a ON a.task_id=t.id WHERE a.action='orbit_task'").first<any>();assert.equal(task.created_by,f.actor);assert.equal(task.owner_id,f.actor);assert.equal(task.notes,'');assert.equal(await f.db.prepare('SELECT source FROM timeline_entries WHERE id IN(SELECT entry_id FROM sales_task_timeline WHERE task_id=?) LIMIT 1').bind(task.id).first('source'),'Slack');
+ const removed=await(await f.request('settings/operators','POST',{email:'removed@orbit.test',displayName:'Removed seller'})).json() as any;await call('mappings','PUT',{slackUserId:'UREMOVED',operatorId:removed.id,revoked:false});const response=await f.request(`settings/operators/${removed.id}`,'DELETE',{confirmed:true});assert.equal(response.status,200,await response.clone().text());await refused(action('UREMOVED','orbit_ack',{},posts[2]));
+ // A mapping's old permission epoch is dead immediately after access changes.
+ await call('mappings','PUT',{slackUserId:'UMAPPED',operatorId:f.actor,revoked:false});await f.db.prepare("UPDATE graph_records SET visibility='restricted',owner_id=NULL WHERE kind='opportunity' AND id=?").bind(deal).run();await refused(action('UMAPPED','orbit_ack',{},posts[2]));await f.db.prepare("UPDATE graph_records SET visibility='workspace',owner_id=NULL WHERE kind='opportunity' AND id=?").bind(deal).run();await call('mappings','PUT',{slackUserId:'UMAPPED',operatorId:f.actor,revoked:false});
+ assert.ok(Number(await f.db.prepare("SELECT count(*) n FROM audit_entries WHERE action='slack.mapping-changed'").first('n'))>0);assert.ok(Number(await f.db.prepare("SELECT count(*) n FROM audit_entries WHERE action='slack.action-refused'").first('n'))>0);
+}

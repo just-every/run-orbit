@@ -415,7 +415,8 @@
       "/api/delegation/v1/",
       "/p/",
       "/api/public/forms/",
-      "/api/v1/slack/actions"
+      "/api/v1/slack/actions",
+      "/api/v1/slack/events"
     ],
     "notes": "Public source and mail event paths require configured signatures. Native auth routes validate origin and one-use tokens; operator APIs and private functions require native sessions. Delegation endpoints require explicit native consent, registered callback and PKCE exchange, then scoped expiring bearer authority; ambient cookies grant no delegated authority."
   },

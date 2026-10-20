@@ -1,3 +1,4 @@
+import {createSlackEventRoutes} from '../features/slack/events';
 import {createSlackRoutes} from '../features/slack/routes';
 import {createSlackActionRoutes} from '../features/slack/actions';
 import {processSlack} from '../features/slack/delivery';
@@ -70,7 +71,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
 
   app.use('*',async(context,next)=>{
     const path=context.req.path;
-    if((path.startsWith('/api/v1/slack/actions')||path.startsWith('/api/v1/signals/')||path.startsWith('/api/v1/mail/events/')||path==='/api/v1/mail/capture'||path.startsWith('/api/v1/public-demo')||path.startsWith('/api/public/forms/')||path.startsWith('/p/'))&&await archiveImportActive(input.database))return context.json({error:archiveMaintenanceMessage},503,{'Retry-After':'30'});
+    if((path.startsWith('/api/v1/slack/')||path.startsWith('/api/v1/signals/')||path.startsWith('/api/v1/mail/events/')||path==='/api/v1/mail/capture'||path.startsWith('/api/v1/public-demo')||path.startsWith('/api/public/forms/')||path.startsWith('/p/'))&&await archiveImportActive(input.database))return context.json({error:archiveMaintenanceMessage},503,{'Retry-After':'30'});
     await next();
   });
   app.get('/p/:slug',async c=>{try{return c.html(await new FormService(input.database).publicDocument(c.req.param('slug')),200,{'Cache-Control':'no-store'});}catch(error){return error instanceof AccessError&&error.code==='permission'?c.text('This page is not published.',404):c.text('This page could not be verified. Try again later.',503);}});
@@ -81,6 +82,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
   app.route("/api/v1/signals", createSignalIngress(input.database,input.sourceSecurity));
   app.route("/api/delegation/v1", delegationRoutes(input.database));
   app.route("/delegation", nativeDelegationRoutes(input.database,input.authenticate,input.stepUp));
+  app.route('/api/v1/slack/events',createSlackEventRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin}));
   app.route('/api/v1/slack/actions',createSlackActionRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin}));
   app.use("/api/*", requireApiOperator);
   app.use('/api/*',async(context,next)=>{if(!context.req.path.startsWith('/api/v1/records/archive')&&await archiveImportActive(input.database))return context.json({error:archiveMaintenanceMessage},503,{'Retry-After':'30'});await next();});
