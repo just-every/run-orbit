@@ -19,6 +19,7 @@ try{
  const internal=info.is_member===true&&info.is_shared===false&&info.is_ext_shared===false&&info.is_org_shared!==true&&info.is_pending_ext_shared!==true&&!info.pending_shared?.length&&!info.is_im&&!info.is_mpim&&!info.is_archived;
  if(!internal||/customer|client|support|external|public community/.test(description))throw new Error('Held channel is shared, not a bot-member internal channel, or appears customer-facing; live proof stopped.');
  report.status.push('conversations.info: workspace-internal bot-member test channel; no customer-facing indicators');
+ report.status.push('Channel safety flags: '+JSON.stringify(Object.fromEntries(['is_member','is_channel','is_archived','is_frozen','is_shared','is_ext_shared','is_org_shared','is_pending_ext_shared'].map(key=>[key,info[key]??'absent']))));
  const auth=await slack('auth.test',{});report.status.push('auth.test: accepted');
  await launch(['setup','--owner-email','owner@run-orbit.test','--port','17861','--non-interactive']);
  server=spawn(process.execPath,['node_modules/@runeditrun/rer/bin/rer.mjs','dev','--foreground','--direct','--port','17861'],{env:{...process.env,SLACK_BOT_TOKEN:undefined,SLACK_CHANNEL_ID:undefined,WRANGLER_SEND_METRICS:'false'},stdio:['ignore','pipe','pipe']});
@@ -36,7 +37,7 @@ try{
  await page.getByLabel('Bot token',{exact:true}).fill(token);await page.getByLabel('Slack app signing secret',{exact:true}).fill(randomBytes(32).toString('hex'));
  const [connection]=await Promise.all([page.waitForResponse(r=>r.url().endsWith('/api/v1/settings/slack/connect')&&r.request().method()==='POST'),page.getByRole('button',{name:'Verify and connect Slack',exact:true}).click()]);const connectResult=await connection.json();assert.equal(connection.status(),200,'Slack Settings connection: '+(connectResult.error??connection.status()));await page.getByRole('button',{name:'Load member channels',exact:true}).waitFor();
  report.status.push('Settings bot-token and generated test-installation signing-secret entry: connected; credentials cleared from form');
- await page.getByRole('button',{name:'Load member channels',exact:true}).click();await page.locator('section[aria-labelledby="slack-settings"] select').first().selectOption(channelId);
+ const [choices]=await Promise.all([page.waitForResponse(r=>r.url().endsWith('/api/v1/settings/slack/channels')),page.getByRole('button',{name:'Load member channels',exact:true}).click()]);assert.equal(choices.status(),200,'Member-channel list HTTP status');const choiceData=await choices.json();assert.ok(choiceData.channels.some(channel=>channel.id===channelId),'Held channel did not pass the complete conversations.info safety checks');await page.locator('section[aria-labelledby="slack-settings"] select').first().selectOption(channelId);
  await Promise.all([page.waitForResponse(r=>r.url().endsWith('/api/v1/settings/slack/channels')&&r.request().method()==='PUT'),page.getByRole('button',{name:'Save channel routing',exact:true}).click()]);
  let state=await api('settings/slack');assert.ok(state.channels.some(c=>c.id===channelId));
  const settings=await api('settings'),stages=settings.stages,owner=settings.operators.find(o=>o.setup_owner===1);assert.ok(stages.length>=2);
