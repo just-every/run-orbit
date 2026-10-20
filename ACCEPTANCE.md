@@ -658,6 +658,8 @@ Before teams ship, they must carry RECORD-017's per-entry private visibility: an
 
 Invite a manager and two reps, make one account private, deny its record and field through direct URLs/search/API/report/export/AI preview, share it intentionally, then revoke and repeat after sign-out and restore. Restrict one rep to owned records and verify that their lists, search, API and export show only the contacts and companies they own under RECORD-016, and that reassigning one of those contacts removes it from their next request. Share a deal with a collaborator including its notes, calls and meetings, make one of its notes private, and confirm the collaborator does not see that note on Shared records or through a mention of them.
 
+TEAM-005 inherits INTEGRATE-005’s real administrator roles and team-scoped Slack channel and audience rules. Exercise the inherited Slack rules or notice through the receiving step.
+
 Current evidence: `src/core/features/access/service.ts`; `src/core/features/access/field-policy.ts`; `newtests/t096/collaborator-lifecycle.test.ts`. Collaborator record/field restrictions exist; native seller/team hierarchy, owned-record restriction keyed to RECORD-016 owners and per-action sales roles are missing.
 
 TEAM-005 inherits FORECAST-001’s real team quota membership, team-scoped forecast/override permissions and rep/team quota-attainment acceptance; the owner administers the current per-rep forecast until then.
@@ -992,6 +994,8 @@ Status: **missing**.
 
 Quote two products with discount and tax disclosure, require manager approval above its threshold, send the approved version through DocuSign, reject an old version and process signed/declined callbacks once; review the resulting billing handoff. As AGENT-002 evidence, contradict a quote date with a logged call and inspect the cited conflict. As the signed-quote step of BOUNDARY-001's walk, quote and sign the walk's USD deal after its support context and inspect the DocuSign link, the signature boundary and an unconfigured provider shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
+QUOTE-001 inherits INTEGRATE-005’s signed-quote Slack notice with the fixed allowed fields and authenticated Orbit link. Exercise the inherited Slack rules or notice through the receiving step.
+
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 QUOTE-001 inherits FORECAST-001’s product/quote-line linkage and one-time/recurring schedule comparison. Current deals retain their schedules before quote linkage ships.
@@ -1018,6 +1022,8 @@ Status: **missing**.
 
 Link a Stripe test customer and Nectar account to a USD deal, ingest invoice paid/past-due/refund events, replay them and inspect one status timeline; approve a billing handoff and deny a mismatched customer. As the billing step of BOUNDARY-001's walk, hand the walk's signed USD quote to each billing product and inspect its link, the collection boundary and a disconnected provider shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
+INTEGRATE-003 inherits INTEGRATE-005’s billing Slack notice with the fixed allowed fields and authenticated Orbit link. Exercise the inherited Slack rules or notice through the receiving step.
+
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 
 ### INTEGRATE-004 — HappyToHelp, Help Scout and Zendesk account context.
@@ -1030,11 +1036,13 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 ### INTEGRATE-005 — Slack sales notifications and handoffs.
 
-Status: **missing**.
+Status: **partial**.
 
-Route a stage event and overdue task to an authorized Slack channel, replay the event, deny a private-account disclosure and submit a revoked or foreign action; inspect one correct notification and attributable task. On BOUNDARY-001's walk, route the walk's won-deal and Buoy-handoff notices and inspect the Slack link and a disconnected workspace shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+In Settings connect a bot and generated test-installation signing secret, select eligible channels and event types, and refuse an external/nonmember channel. Route a stage event and overdue task, replay them without another message, and inspect only the fixed allowed fields and a token-free link requiring Orbit sign-in. Withhold a private-account notice. Exercise a 429 then success, an unaccepted failure, a timeout held uncertain, unsigned and stale requests, unmapped/foreign/revoked/replayed/removed-operator actions, an attributed acknowledgment and internal task, and a revoked workspace shown as unresolved setup with manual work unaffected. Export/import configuration, mappings and delivery history without token/signing secret; erase the underlying contact and deal and inspect redacted stored notice content. Inspect Settings, notice status and unresolved setup at 1440 and 390. TEAM-005 repeats this with real administrator roles and team-scoped channel/audience rules. On BOUNDARY-001's walk inspect notices for the existing booking, call/meeting, internal handoff and won deal. INTEGRATE-008 inherits the Buoy-handoff notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice, each inspecting allowed fields and authenticated links when it ships. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
-Current evidence: No implementation found. No implementation of this complete target flow was found.
+Gap: awaiting ct identity and audience ruling.
+
+Current evidence: `src/core/features/slack/`; `migrations/core/0051_slack_notices.sql`; the extended and retitled INTEGRATE-005 / BOUNDARY-001 case in `tests/core/source-onboarding.test.ts`; `docs/retained-verification/INTEGRATE-005/`. CI uses Slack only as a fake at the network edge. The retained local provider record distinguishes real bot delivery/deletion from signed requests using the generated test-installation secret; no live Slack click is claimed.
 
 ### INTEGRATE-006 — QuickBooks Online and Xero accounting handoff.
 
@@ -1057,6 +1065,8 @@ Current evidence: No implementation found. No implementation of this complete ta
 Status: **missing**.
 
 Close an authorized USD deal won, preview and approve its Buoy handoff, inspect the linked receiving account/owner and acceptance, then replay, revoke access and fail the provider; verify one handoff, visible failure and no customer-success workflow built inside Orbit. As the post-sale step of BOUNDARY-001's walk, hand the walk's won USD deal to Buoy and inspect the Buoy link, Buoy's ownership of customer success and a disconnected Buoy shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+
+INTEGRATE-008 inherits INTEGRATE-005’s post-sale Buoy-handoff Slack notice with the fixed allowed fields and authenticated Orbit link. Exercise the inherited Slack rules or notice through the receiving step.
 
 Current evidence: No implementation found. No implementation of this complete target flow was found.
 

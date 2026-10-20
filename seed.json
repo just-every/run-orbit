@@ -199,11 +199,11 @@
       "id": "calendly",
       "required": false,
       "requiredWhen": "An operator connects Calendly from the booking recipe.",
-      "why": "Create a signed webhook subscription on the operator’s Calendly account without a separate API tool.",
+      "why": "Create a signed webhook subscription on the operator\u2019s Calendly account without a separate API tool.",
       "data": [
         "A personal access token used for this request only",
         "User identity and webhook subscription metadata",
-        "This installation’s callback URL and source signing key"
+        "This installation\u2019s callback URL and source signing key"
       ],
       "adapters": [
         "signal.source.v1"
@@ -218,6 +218,18 @@
         "Cloudflare challenge response token",
         "Form hostname and challenge verification result",
         "Visitor connection and browser signals sent directly to Cloudflare by its widget after interaction"
+      ],
+      "adapters": []
+    },
+    {
+      "id": "slack",
+      "required": false,
+      "requiredWhen": "The installation owner connects Slack sales notices in Settings.",
+      "why": "Deliver allowed-field internal sales notices and accept signed actions under explicit mapped Orbit identities.",
+      "data": [
+        "Encrypted installation bot token and app signing secret",
+        "Workspace-internal bot-member channel IDs and explicit Slack user-to-operator mappings",
+        "Event kind, record display name, stage from/to, owner display name, due date and authenticated Orbit link"
       ],
       "adapters": []
     }
@@ -235,7 +247,7 @@
       "secret": true,
       "required": false,
       "requiredWhen": "Direct SendGrid sign-in or operator-approved customer mail is selected.",
-      "why": "Authenticate the owner’s SendGrid account; RER-managed mail uses MAIL_API_KEY instead."
+      "why": "Authenticate the owner\u2019s SendGrid account; RER-managed mail uses MAIL_API_KEY instead."
     },
     {
       "name": "MAIL_FROM",
@@ -248,8 +260,8 @@
       "name": "ORBIT_ENCRYPTION_KEY",
       "secret": true,
       "required": false,
-      "requiredWhen": "Signed sources or Google/Microsoft capture connections are configured.",
-      "why": "Encrypt signed-source secrets, provider tokens and OAuth client secrets in D1."
+      "requiredWhen": "Signed sources, Slack or Google/Microsoft capture connections are configured.",
+      "why": "Encrypt signed-source secrets, Slack credentials, provider tokens and OAuth client secrets in D1."
     },
     {
       "name": "OPENAI_API_KEY",
@@ -340,7 +352,7 @@
       "secret": false,
       "required": false,
       "requiredWhen": "The installation runs on the owner's computer through rer setup and dev.",
-      "why": "Selects local sign-in behind this checkout’s private dev key; never set on a deployment."
+      "why": "Selects local sign-in behind this checkout\u2019s private dev key; never set on a deployment."
     },
     {
       "name": "MAIL_PROVIDER",
@@ -361,7 +373,7 @@
       "secret": true,
       "required": false,
       "requiredWhen": "MAIL_PROVIDER is rer.",
-      "why": "The private key assigned to this installation’s managed mail relay."
+      "why": "The private key assigned to this installation\u2019s managed mail relay."
     },
     {
       "name": "SESSION_SECRET",
@@ -402,7 +414,8 @@
       "/api/v1/mail/events/",
       "/api/delegation/v1/",
       "/p/",
-      "/api/public/forms/"
+      "/api/public/forms/",
+      "/api/v1/slack/actions"
     ],
     "notes": "Public source and mail event paths require configured signatures. Native auth routes validate origin and one-use tokens; operator APIs and private functions require native sessions. Delegation endpoints require explicit native consent, registered callback and PKCE exchange, then scoped expiring bearer authority; ambient cookies grant no delegated authority."
   },
