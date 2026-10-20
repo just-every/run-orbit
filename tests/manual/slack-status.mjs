@@ -26,6 +26,7 @@ try{
   const errors={'rate-limited':'ratelimited',uncertain:'submission_uncertain',failed:'not_in_channel',withheld:'Record is restricted from this channel audience',paused:'token_revoked',held:'Held by administrator; never resend',redacted:'Underlying record erased'};
   await db.prepare('INSERT OR REPLACE INTO slack_notices(id,event_key,event_kind,channel_id,record_type,record_id,state,content_json,error,retry_at,created_at,updated_at,privacy) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)').bind('visual-'+state,'visual-'+state,'stage',channel.id,'opportunity',['withheld','redacted'].includes(state)?null:deal.id,state==='withheld'?'sent':state,content,errors[state],state==='rate-limited'?retry:null,new Date(Date.now()+1000+i).toISOString(),now,state==='withheld'?'withheld':null).run();
  }
+ for(const [notice,state,error] of [['redacted','deleted',null],['uncertain','uncertain','submission_uncertain'],['held','held','Restored request needs administrator confirmation']])await db.prepare('INSERT OR REPLACE INTO slack_deletions(notice_id,team_id,app_id,channel_id,message_ts,state,error,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?)').bind('visual-'+notice,installation.team_id,installation.app_id,channel.id,'1792500000.'+notice.length,state,error,now,now).run();
  await platform.dispose();closed=true;
  worker=spawn(process.execPath,['node_modules/wrangler/bin/wrangler.js','dev','--config','dist/server/wrangler.json','--local','--persist-to','.wrangler/state','--ip','127.0.0.1','--port','17862','--inspector-port','0',...identityVarArgs(origin,'owner@run-orbit.test')],{env:{...process.env,WRANGLER_SEND_METRICS:'false'},stdio:['ignore','pipe','pipe']});
  await writeFile('.rer-tools/slack-status-pids.json',JSON.stringify({worker:worker.pid}));
@@ -39,6 +40,7 @@ try{
   await page.getByText('Unresolved setup · notices paused',{exact:true}).first().waitFor();
   await page.locator('#slack-settings').evaluate(el=>el.scrollIntoView({block:'start'}));await page.screenshot({path:`${evidence}/revoked-settings-${width}.png`});
   for(const state of states){const row=page.locator('li').filter({has:page.getByText(`stage · #${channel.name} · ${state==='withheld'?'sent · details withheld':state}`,{exact:true})});await row.evaluate(el=>el.scrollIntoView({block:'start'}));await page.screenshot({path:`${evidence}/${state}-${width}.png`});}
+  await page.getByRole('heading',{name:'Provider deletion requests',exact:true}).evaluate(el=>el.scrollIntoView({block:'start'}));await page.screenshot({path:`${evidence}/provider-deletions-${width}.png`});
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'Settings fits the viewport');
  }
  const disconnected=await page.evaluate(async()=>{const response=await fetch('/api/v1/settings/slack/disconnect',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});return response.status;});assert.equal(disconnected,200);
