@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "88424339e6a7bd9e35b01b9915424c03c3bf14438171660c163e1fe19615cad6",
+      "sha256": "f15b164dce49b0f7e31f893a10fa1810cad5c6e514da19f8c4319fda2ee82eb5",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "fd4c418e6300ba0425d207cb1a0da15d312a97758fe8074c9ec28b847d76e787",
+      "sha256": "4fc6d30e8ac215b7131ba039d01e3c40be76687bb9183e47507d2a6d846bae08",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "373d2eff93c1eb788c5168202c84ac48ac0c6a2f22be407946f16299ee0f7ca4",
+      "sha256": "2a6ddccf08faf684cf2671d0191a8ca3e9b8be811b3ccbbefeee86752e7e2b9f",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -896,6 +896,54 @@
     },
     "docs/retained-verification/FORECAST-001/forecast-override-390.png": {
       "sha256": "eff26197571c7e9c06c03d449d0410accdac73f5f1f85c66a2fdda5a50a785d8",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-014/approved-snapshot-1440.png": {
+      "sha256": "95cd6f407457d981fca02017a3637e11dd608f2817ada029ca43489b23b08f3e",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-014/approved-snapshot-390.png": {
+      "sha256": "1cac926d99231d1ab1aeb71780235e568df689520a582ca1803585e4ea2d81e6",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-014/library-1440.png": {
+      "sha256": "29f19bdd22e8c3495b76fb28fb817eb6d3550762cfae965da61fbc5227564e0d",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-014/library-390.png": {
+      "sha256": "fcd32da71cb5f4e2d60a45487c77d7f1bd8eb371bc4b3302868c0fd9d16f4152",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-014/missing-review-1440.png": {
+      "sha256": "adebc7059d7ca34e77a0b745d4300a24bdb2c64cddbfaa227797ba1ded56ef56",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-014/missing-review-390.png": {
+      "sha256": "6d500ff56f83c3798dee59d4a9769de71f85d7cb2a4695ab6255f0841a1d336c",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-014/rendered-review-1440.png": {
+      "sha256": "05a2b30379151efe4f11c06a201da7e0649ddc0f5df50f49eaaca37f31c7f766",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-014/rendered-review-390.png": {
+      "sha256": "ed7b093b03778b371e42727a7a69a9eedc65e4aba7a7caf526c4f6c621808330",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-014/rendered-review-focus-1440.png": {
+      "sha256": "5e117bbb9c576395148ddc042fe073615585f40251b653917ea52f653062d0d0",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-014/rendered-review-focus-390.png": {
+      "sha256": "5a7f8c755c87d2adb911f535a92a688d8fadb1a1693a1e84ddf53e27804722fd",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-014/stale-review-1440.png": {
+      "sha256": "8675b719f50523ebbec23f98ca80f5c01a42294949e22c084b3e4f1a8b5e7901",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-014/stale-review-390.png": {
+      "sha256": "5ff3fe7b4d7eb60f037a7f310ca300c9320f205370f99e2fe01ab84cce0cf18a",
       "executable": false
     },
     "docs/retained-verification/README.md": {
