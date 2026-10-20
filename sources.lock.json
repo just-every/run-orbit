@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "1edf094f32869d623b12bcca5bdb9fc61e194b70c701609e29b02b3c435c0218",
+      "sha256": "d0b524e4ae0efb2ca512919d5b0ddccdba8490efbbd875f1d3b02e5014374779",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "6e9a536a4139dad82a11082584c8a546057b9b85518b4feb0268a9a44e4b9c0c",
+      "sha256": "81d0e57f87905faecdd4cbe4cba87d831691dd79549dc918b06db03ad2db2dfe",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "f824756c4feec677a124133fb87c3b80bdcf0871c3b408f94f23c5da59402130",
+      "sha256": "8cdfd578cd599ae48e8abb3b66e718a3a10cb01ee79f00d4a740cb7f92c5b4e4",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -2519,7 +2519,7 @@
       "executable": false
     },
     "newtests/t096/released-forecast-upgrade.ts": {
-      "sha256": "d783b7d5c9031495e4e8ae28364829c9d9151cdc281b47d84b021a6dbd3e5341",
+      "sha256": "276f6268859253fd53fa32399bb4f87def5abcbcd9905fc33767712eba4cf769",
       "executable": false
     },
     "newtests/t096/report-disclosure.test.ts": {
