@@ -7,13 +7,14 @@ import {writeFile,rm} from 'node:fs/promises';
 import {getPlatformProxy} from 'wrangler';
 import {chromium} from '@playwright/test';
 import {identityVarArgs} from '../support/worker-identity.mjs';
+import {prepareSlackVisualData} from './slack-visual-data.mjs';
 const connectedFixture=process.argv.includes('--connected');
 const origin='http://127.0.0.1:17862',evidence='docs/retained-verification/INTEGRATE-005';
 const probe=createServer();await new Promise((resolve,reject)=>{probe.once('error',reject);probe.listen(17862,'127.0.0.1',resolve);});await new Promise(resolve=>probe.close(resolve));
 const platform=await getPlatformProxy({configPath:'wrangler.jsonc',envFiles:['tests/support/no-local-settings.env'],persist:{path:'.wrangler/state/v3'},remoteBindings:false});
 let browser,worker,session,memberSession,closed=false;
 try{
- const db=platform.env.DB,owner=await db.prepare("SELECT * FROM operators WHERE setup_owner=1 AND status='active'").first();assert.ok(owner);
+ const db=platform.env.DB;await prepareSlackVisualData(db,origin);const owner=await db.prepare("SELECT * FROM operators WHERE setup_owner=1 AND status='active'").first();assert.ok(owner);
  const {testAuth}=await import('../support/test-auth.ts');session=await testAuth(db).createSession(owner.id);
  await db.prepare("UPDATE slack_installation SET state='revoked',error='token_revoked',app_id=COALESCE(app_id,'AVISUAL')").run();
  let deal=await db.prepare('SELECT * FROM opportunities ORDER BY created_at DESC LIMIT 1').first();if(!deal){const {createApp}=await import('../support/app.ts'),app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}}),stage=await db.prepare('SELECT id FROM pipeline_stages ORDER BY position LIMIT 1').first('id');const response=await app.request('https://orbit.test/api/v1/workbench/opportunities',{method:'POST',headers:{Cookie:'__Host-orbit_session='+session.token,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({title:'Harbour annual rollout',companyName:'Harbour',contactName:'Maya Chen',email:'maya@harbour.test',stageId:stage,valueCents:4200000})});assert.equal(response.status,201);deal=await db.prepare('SELECT * FROM opportunities ORDER BY created_at DESC LIMIT 1').first();}assert.ok(deal);
