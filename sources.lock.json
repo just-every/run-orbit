@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "ffaa471a560d0f0f308d3b98fd0f69613bece99923c582631072e01b70aad5ed",
+      "sha256": "1a2558725260102cf9bebd6801d39cd76f6537e7be270e6c0e94e372dfa11c30",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "a2462a11a05948bede5703766f3b31f4e0d03569802f32827be4b1021d783fdd",
+      "sha256": "db9be6877626ce054ded29b81b1eaf7e653018752e642d6194b30b5db69defa7",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "167520dad278a2c5959432a07a32b57195db7db44aad60a005aa75a488f6993e",
+      "sha256": "50ee1e995081384b08eb0c4d33fe97ba78d74abcd92ba116f1b7b7846de4782a",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -898,16 +898,24 @@
       "sha256": "eff26197571c7e9c06c03d449d0410accdac73f5f1f85c66a2fdda5a50a785d8",
       "executable": false
     },
+    "docs/retained-verification/INTEGRATE-005/archive-1440.png": {
+      "sha256": "cc60d9d6d1919316f6310f7c24a08fb194f9658323d21e46a30ec195e77ac1b0",
+      "executable": false
+    },
+    "docs/retained-verification/INTEGRATE-005/archive-390.png": {
+      "sha256": "190e900ece91ecb040396c7433a1007832c8de5a1cb22eb8488a01fbbf0f7cc5",
+      "executable": false
+    },
     "docs/retained-verification/INTEGRATE-005/channel-status-1440.png": {
-      "sha256": "f71791dfb07a0ec532190e5988f8eb10200df3904da2d68a806c0df02522feb5",
+      "sha256": "3c43eab42d5497645332ea1d3e9ce7402e37fa34dabd847764ed1985f53baf7b",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/channel-status-390.png": {
-      "sha256": "44e9c94bad60baff598e0beca1919f324d49028d82a32c28d3f99ab80f7885ee",
+      "sha256": "9888e7678b74c3798f07c39652f0e46f516358d6d83aebedd595611b93e76de7",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/credentials-1440.png": {
-      "sha256": "aeb932cd75a024db3afda51ba887e205e4692d4386b6b397c76b915f6e1776da",
+      "sha256": "59675f7ccb47fbe781be99a706a52431df51fc461973aadcd26ffc2a4d4bd2c7",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/credentials-390.png": {
@@ -915,19 +923,19 @@
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/failed-1440.png": {
-      "sha256": "67ac832b265e789240d84783e0fdc3edc23267f59d311caf6d8cccebb05e5858",
+      "sha256": "c2f2ab325c211c5664e0c55e5767d334a9f01b8e85d946cd67892a2db7768ca6",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/failed-390.png": {
-      "sha256": "f184efeb244b5171e2f20b5e452b268e4a8411bb8989d3778f6acd5b3f508565",
+      "sha256": "e57e78acf31337e9488a81e266de6f6d0d3ed6da9e6329259ed80bd8327566e2",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/held-1440.png": {
-      "sha256": "257bd0dc991cffe6cf66d3e5059431a599ed7fd045622d87f347fecf4c64d18c",
+      "sha256": "455390da6fffd4df37047cd2909894d9ed7780703e49c8f6b639d30f89c20b3c",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/held-390.png": {
-      "sha256": "b0de1119e5b72520cfb4a5f00a483cbe175cf09fa734f770cae660f39864968a",
+      "sha256": "77b7c803534d5611155d41a13254a481d180613337d662c53a5eb5afc5e5288c",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/live-before-ct.json": {
@@ -975,71 +983,71 @@
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/mapping-1440.png": {
-      "sha256": "f96172079bbe49627560f074e5f8bb36ee10d0873d3631f2603f467217876831",
+      "sha256": "1b14da571fb2e6b25cc4b48e275bb713b994cc0f337a120b9ba097f281051665",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/mapping-390.png": {
-      "sha256": "34420db2cd751ee47d3bfae70db25569b8afe318a29426be8728fd90de3d5c6d",
+      "sha256": "03912a24ca3ae7f5815b768488998ebfbb09d61e6e875f0a2f3c5aa8b61a41ea",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/mapping-operator-1440.png": {
-      "sha256": "bc2a362524bdd978ac4858c8f45380a29c9dce312d1cc664ac5c066a7f4f9e41",
+      "sha256": "f4550bb974e28314842ffc909ee3a0ad4e95b0e287d5847e7d81eccfaf59b28a",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/mapping-operator-390.png": {
-      "sha256": "f66cea1db78afafb5fed0cd4c032cbdb379c5310f483d5d2f5852086f6178435",
+      "sha256": "1f3482a4787289cb87844e64745e12b0e2fde1745bb92b6731c499a38d4fb1bb",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/notices-1440.png": {
-      "sha256": "dc66427b909fd7fdea2d0664a3ce2e0de3f72e02ce9b6007d9dd85c2f08a68a3",
+      "sha256": "f0262f0d5a3e3419eb2c0382e091f1439559f299fdaf3d6b65effd8961fd5d47",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/notices-390.png": {
-      "sha256": "37fe3afdf6482aa75371addac500c75bda13887f7817169439bdd430c59ce14a",
+      "sha256": "f5f3546db869405c9c5baae3110ba60436f47a67b5f23bdeae13e4b5f7baac9e",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/paused-1440.png": {
-      "sha256": "cd36318b6f05f5bf44e63168ca78e70cdd4cb365072e31dab351b26a685d9ace",
+      "sha256": "2fd40950b33075f1e889268436e9d3763f4cc36ef13390db8283dce2e5f42b88",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/paused-390.png": {
-      "sha256": "08f65a2623e13f19a4f02765b925ee6e05a09b20bf169f70c050aaf9c63e4bb9",
+      "sha256": "a5cad3342c969a16927865b6be078e650439d3cb1d0a8bb61110fb639aa7f282",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/products-unresolved-1440.png": {
-      "sha256": "2e0cb3e2c550821397ea15613975577b62387b36f023f60975dbb91566432f54",
+      "sha256": "a2c5046e78c15377ebbed0af53ec6206aee9297748306f3bed86c10888b2332e",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/products-unresolved-390.png": {
-      "sha256": "93354df9716f6061daead306371e6f72c141ea9ac1b5f62a995de26820eb3596",
+      "sha256": "80eef28e7ec4e7c8e0ac32bfc466a4dea830fff9c9012a32bac2e5f0bbfdb8d7",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/provider-deletions-1440.png": {
-      "sha256": "1fa7655c1ce5a3ef46f3a7712e0889dad94c9e7a4caf43601d5a7e5383ab876d",
+      "sha256": "d203aa449d5dd4f25ea507f9eed4307dd394e2a972d1eb01b1a4b78b7f9de4b5",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/provider-deletions-390.png": {
-      "sha256": "9251ee793329b6c08c581aa18ecf01108d34a8c400600b5a5a2d66f87e75f765",
+      "sha256": "ded425023666eb764879572938e4861ab17c1a73cab3e0789c80586b03e8d10a",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/rate-limited-1440.png": {
-      "sha256": "021af6e8282f29a611aafa809bb07516d7e78cd9a2fa3b30125a5f650d198244",
+      "sha256": "ba5523d17aa4d64ae6668e407ff6304b547ccb3ed265caff98c136cbdbf664a3",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/rate-limited-390.png": {
-      "sha256": "5909f9e1c1dd9e10eaadfc4958ed6c5860c7ce701f0b090791f90c16270cea74",
+      "sha256": "6cf519f4eef00f7fbb28cb90634620ffb36dc01d646b3712d7d979c74f27e425",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/README.md": {
-      "sha256": "55268d8f4b5204ef69783832232ddf5994ffe7775f9032647af83e99193b99c2",
+      "sha256": "31d2e9527198280104499b8f965c55975399e33dbcd1794f26e579036fcd1246",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/redacted-1440.png": {
-      "sha256": "9ef4bc18a5a014f8131c6372adf7f56c14e315c3235db02fb4ad6db950d3abcb",
+      "sha256": "d0c231566cfdea3016b8cdbf60fc9125a281a796a1d11ac979e53e7e3eacbd65",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/redacted-390.png": {
-      "sha256": "fafee26ca649ebce75aaeff88f111a43247ee27a17f529f50ea7a20f3d6b11e1",
+      "sha256": "5dd6b503dd08b35560fbd93d4ae68123c388ac68f58f44f06c90a5c0ff72bb88",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/revoked-settings-1440.png": {
@@ -1051,7 +1059,7 @@
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/routing-1440.png": {
-      "sha256": "509ee3c71b91decdf60f2a921ae2dead60e72be9779533580a61a3f4e71e35b0",
+      "sha256": "09ccb9ba23d8916ee2fc2bac1377d27a6b7be396b6793e44bdbfea4ca76c8706",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/routing-390.png": {
@@ -1059,19 +1067,19 @@
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/settings-1440.png": {
-      "sha256": "fb04d7ef41c2f1aaec0bfab2cfc0f6c01eb8e3060e856a31959c063610cee640",
+      "sha256": "6da06ffa4e9b5f39415bbba0410461cf6ca90bad0e72d3fc9934219139ceeeaf",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/settings-390.png": {
-      "sha256": "f2d72ac0c65dc29606e272f5057cda7ed8086a2f265e83b178bce494d5a2fc6f",
+      "sha256": "d05d40d5caf9f2616741e38de6ff52a1cb996d4a73abf2c3770abaf4a244cdcf",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/uncertain-1440.png": {
-      "sha256": "2bb331659c19026835d08fcd65be2335b7b89711cd627b0c0342ff39c8a520ac",
+      "sha256": "05d6c69a3bb3e6633a0d78c56836e748be4b1692528581b1560775ef8bcd5863",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/uncertain-390.png": {
-      "sha256": "f096602a6c5dbe7922b66063f574aca0abc5addd265912a95188a3bae553c54d",
+      "sha256": "e9bb83688a7e39dce87e0d58d5c5e56cf7320b3b6fe0f1b4de280d510eb9025a",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/unresolved-1440.png": {
@@ -1083,11 +1091,11 @@
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/withheld-1440.png": {
-      "sha256": "b2aadf0f2a916eee24f3399b9da4c9174ff5bf81222919311335be050da806ad",
+      "sha256": "e03d09b008376912a6e1793cfa4daba1e35da4815a5bba64c5785a196ac29c5e",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/withheld-390.png": {
-      "sha256": "83da424e52131d5fff145d6dcbdcdca484c1d8ec6f1f0ffee266cf4a7597446b",
+      "sha256": "2b1ac76dd034f9fb0670b54f7680219e4b47577d07070a8e57b8457ec2a41fdd",
       "executable": false
     },
     "docs/retained-verification/OUT-014/approved-snapshot-1440.png": {
@@ -5439,7 +5447,7 @@
       "executable": false
     },
     "src/core/features/records/archive-import-progress.ts": {
-      "sha256": "cc2dd6781792eba37e298266ffa2e4945e73857e10b9f9f1f80e0fb7a19c97d7",
+      "sha256": "7d65e9b3a9dcc6bd8f0546652c045f3957fdc14d7bab88e2b798c65c6ae6df18",
       "executable": false
     },
     "src/core/features/records/archive-import-recovery.ts": {
@@ -7203,7 +7211,7 @@
       "executable": false
     },
     "tests/core/onboarding-archive.test.ts": {
-      "sha256": "09a60c98d79187feec84b1ece75724a5b62058193ea54cba96a4b388d17cdb41",
+      "sha256": "d75d75eb4741af12e7486055df0552b681d0df878717c36b3c0179a7d0251faf",
       "executable": false
     },
     "tests/core/operator-erasure.test.ts": {
@@ -7803,7 +7811,7 @@
       "executable": false
     },
     "tests/manual/slack-live-readback.mjs": {
-      "sha256": "9534ae7e11b8e9a12e267d742d658ca2571248790604076ec1da3f734fc162b9",
+      "sha256": "e3908491ab30038a2639d31b9fe9657c0ca7cd895f060990fc291e231c5d0bdc",
       "executable": false
     },
     "tests/manual/slack-live.mjs": {
@@ -7811,7 +7819,11 @@
       "executable": false
     },
     "tests/manual/slack-status.mjs": {
-      "sha256": "9e8ed8880779864a4f919b2933cd12499b43dfd43c7890ef01ee7d99d14468ad",
+      "sha256": "f2e2f7900b8a6f60743df455e504500897cea8d8fb1c58454781b9027e270f3d",
+      "executable": false
+    },
+    "tests/manual/slack-visual-data.mjs": {
+      "sha256": "9c51844f451cca3a55667afe9bb077828a60a032f44ca83a96148957930c4ef3",
       "executable": false
     },
     "tests/performance/archive-capacity.ts": {
