@@ -1,3 +1,4 @@
+import {preSlackCatalog} from '../../src/core/features/slack/archive';
 import assert from 'node:assert/strict';
 import {releasedDatabase} from './released-database';
 import {createApp} from '../../tests/support/app';
@@ -56,7 +57,7 @@ export async function proveReleasedForecastUpgrade(){
   const preceding=await snapshot(db),precedingCatalog=await releasedCatalog(db),precedingHash=await foldSchemaHash(precedingCatalog);
   await target.upgrade();db=target.db;
   await assertRetained(db,before);await assertRetained(db,preceding);
-  const preLibrary=preLibraryCatalog(await foldInstalledCatalog(db));assert.deepEqual(preLibrary,precedingCatalog,'0049 retains exact columns, objects, triggers and views after stripping the library additions');assert.equal(await foldSchemaHash(preLibrary),precedingHash);
+  const preLibrary=preLibraryCatalog(preSlackCatalog(await foldInstalledCatalog(db)));assert.deepEqual(preLibrary,precedingCatalog,'0049 retains exact columns, objects, triggers and views after stripping the library additions');assert.equal(await foldSchemaHash(preLibrary),precedingHash);
   const previous=preForecastCatalog(preOptOutCapabilityCatalog(preLibrary));assert.deepEqual(previous,catalog,'pre-forecast generation retains the exact released columns, objects, triggers and views');assert.equal(await foldSchemaHash(previous),schemaHash);
   assert.deepEqual((await validateFoldManifest(db,manifestFor(catalog,before,schemaHash,now))).inputCatalog,previous);
   assert.deepEqual((await validateFoldManifest(db,manifestFor(precedingCatalog,preceding,precedingHash,now))).inputCatalog,preLibrary);

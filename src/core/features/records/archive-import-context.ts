@@ -16,6 +16,7 @@ export async function foldedImportContext(db:D1Database,job:ImportJob):Promise<I
  const profile=await db.prepare("SELECT catalog_json,catalog_hash FROM archive_job_profiles WHERE job_id=? AND generation='orbit-fold-1'").bind(job.id).first<{catalog_json:string;catalog_hash:string}>();if(!profile)return;
  const catalog:ArchiveTable[]=JSON.parse(profile.catalog_json);if(await archiveHash(catalog)!==profile.catalog_hash)throw new RecordError(409,'The stored target archive catalog was changed.');
  return{catalog,prepareRollback:current=>prepareViewRollback(db,current,catalog,profile),begin:()=>archiveRestoreCoverage(db,job.id,catalog),fence:async()=>[...archiveSchemaFence(db,catalog),...await archiveStorageFence(db,job.id)],async finish(_job,rollback){if(rollback)return[];return[...await lineageCommitStatements(db,job.id,JSON.parse(job.manifest_json) as TransferManifest,catalog.filter(t=>!['access_grants','access_invitations','access_form_authorities'].includes(t.name))),
+ db.prepare('DELETE FROM slack_credentials'),db.prepare("UPDATE slack_installation SET state='disconnected',error='Archive restored; reconnect Slack credentials'"),
  db.prepare('DELETE FROM access_grants'),db.prepare('DELETE FROM access_invitations'),db.prepare('DELETE FROM access_form_authorities'),
  db.prepare("UPDATE access_memberships SET status='removed' WHERE operator_id IN(SELECT operator_id FROM access_collaborators)"),
  db.prepare('DELETE FROM publication_targets'),db.prepare("UPDATE publication_operations SET state='withdrawn' WHERE state='published'"),

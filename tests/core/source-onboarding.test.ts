@@ -1,3 +1,4 @@
+import {proveSlackNotices} from '../support/slack-notices-proof';
 import {createOutboundMail,type OutboundMail} from '../../src/core/platform/outbound-mail';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
@@ -9,7 +10,7 @@ import {createId} from '../../src/core/shared/ids';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
 
 async function fixture(mail?:OutboundMail,sendCount?:()=>number){const platform=await isolatedDatabase(),db=platform.db,deps=createDependencies(db),actor=createId(),stage=createId();await deps.auth.ensureOperator({id:actor,email:'owner@example.test',displayName:'Owner'});await deps.workspace.ensureWorkspace({name:'First hour',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});await deps.workspace.ensurePipelineStage({id:stage,name:'Discovery',position:0});const session=await deps.auth.createSession(actor);let sends=0;const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex')}),outboundMail:mail??{send:async()=>{sends++;return{providerMessageId:'paid-edge-acceptance'};}}});const headers={Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'};const request=(path:string,method='GET',body?:unknown,override:Record<string,string>={})=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{...headers,...override},body:body===undefined?undefined:JSON.stringify(body)});return{db,app,stage,actor,token:session.token,request,dispose:platform.dispose,sends:()=>sendCount?sendCount():sends};}
-test('BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send',async()=>{
+test('INTEGRATE-005 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions; BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send',async()=>{
  let relayOutcome:'accepted'|'rejected'|'uncertain'='accepted';
  const nativeFetch=globalThis.fetch,relayUrl='https://managed-mail.example.test/send',bodies:Record<string,unknown>[]=[];
  globalThis.fetch=async(input,init)=>{if(String(input)!==relayUrl)return nativeFetch(input,init);assert.equal(new Headers(init?.headers).get('authorization'),'Bearer fixture-managed-mail');bodies.push(JSON.parse(String(init?.body)));if(relayOutcome==='uncertain')throw new TypeError('Paid edge lost acknowledgement');if(relayOutcome==='rejected')return Response.json({error:'rejected'},{status:400});return Response.json({messageId:`<relay-${bodies.length}@example.test>`},{status:202});};
@@ -58,8 +59,9 @@ test('BOUNDARY-001 current USD sales journey respects product boundaries and exp
  const products=async()=>((await(await f.request('settings/products')).json()) as any).products as any[],named=(list:any[],name:string)=>list.find(item=>item.products.includes(name));
  assert.equal((await f.request('settings/products','GET',undefined,{Cookie:''})).status,401);
  const unresolved=await products();assert.equal(named(unresolved,'Calendly').state,'awaiting-delivery');
- for(const[name,clause]of[['Dial','INTEGRATE-001'],['Zoom','INTEGRATE-002'],['Twilio','CALL-001'],['Aircall','CALL-001'],['HappyToHelp','INTEGRATE-004'],['Help Scout','INTEGRATE-004'],['Zendesk','INTEGRATE-004'],['DocuSign','QUOTE-001'],['Nectar','INTEGRATE-003'],['Stripe','INTEGRATE-003'],['QuickBooks Online','INTEGRATE-006'],['Xero','INTEGRATE-006'],['Slack','INTEGRATE-005'],['Mailchimp','INTEGRATE-007'],['Buoy','INTEGRATE-008']]){const product=named(unresolved,name);assert.deepEqual([product?.state,product?.clause,product?.lastDeliveryAt],['unavailable',clause,null],`${name} is unresolved setup, never a connection`);}
+ for(const[name,clause]of[['Dial','INTEGRATE-001'],['Zoom','INTEGRATE-002'],['Twilio','CALL-001'],['Aircall','CALL-001'],['HappyToHelp','INTEGRATE-004'],['Help Scout','INTEGRATE-004'],['Zendesk','INTEGRATE-004'],['DocuSign','QUOTE-001'],['Nectar','INTEGRATE-003'],['Stripe','INTEGRATE-003'],['QuickBooks Online','INTEGRATE-006'],['Xero','INTEGRATE-006'],['Mailchimp','INTEGRATE-007'],['Buoy','INTEGRATE-008']]){const product=named(unresolved,name);assert.deepEqual([product?.state,product?.clause,product?.lastDeliveryAt],['unavailable',clause,null],`${name} is unresolved setup, never a connection`);}
  assert.equal((await f.request('settings/products/dial','POST',{})).status,404,'No substituted connector exists for an unbuilt product');
+ assert.equal(named(unresolved,'Slack').state,'unresolved-setup');
  const workspace=(await(await f.request('settings')).json() as any).workspace;assert.equal(workspace.currency,'USD');
  const sendsBeforeSales=bodies.length,booking=await(await f.request('sources/bookings','PUT',{name:'Booking tools',enabled:true})).json() as any;
  const invitee=JSON.stringify({event:'invitee.created',created_at:new Date().toISOString(),payload:{uri:'https://api.calendly.com/scheduled_events/demo/invitees/'+crypto.randomUUID(),event:'https://api.calendly.com/scheduled_events/demo',email:contact.email}}),at=String(Math.floor(Date.now()/1000));
@@ -70,6 +72,8 @@ test('BOUNDARY-001 current USD sales journey respects product boundaries and exp
  assert.ok(JSON.stringify(detail).includes('Discovery call: Maya wants a USD 100 pilot.'),'Manual sales work stays on the deal');
  const deal=(await(await f.request(`opportunities/${customer.id}`)).json() as any).opportunity;assert.equal(deal.valueCents??deal.value_cents,10000,'The USD source amount is unchanged');assert.ok(deal.evaluation.contributions.some((c:any)=>c.signalId===bookedSignal.id),'A signed booking is customer evidence on the deal');
  assert.equal(bodies.length,sendsBeforeSales,'Bookings, manual work and provider setup never send customer mail');
+ await proveSlackNotices(f,customer.id,contact.id);
+ assert.equal(bodies.length,sendsBeforeSales,'Slack actions never approve, edit or send customer mail');
 
  }finally{globalThis.fetch=nativeFetch;await f.dispose();}
 });

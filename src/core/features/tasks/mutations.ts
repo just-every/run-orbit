@@ -13,7 +13,7 @@ function inputGuard(db: D1Database, input: TaskInput) {
  const owner = input.ownerId ? ` AND ${activeTaskOwner}` : '';
  return taskGuard(db, {sql: `EXISTS(SELECT 1 FROM ${tables[input.recordType]} WHERE id=?)${owner}`, args: [input.recordId, ...(input.ownerId ? [input.ownerId] : [])]});
 }
-function newTask(input: TaskInput, actorId: string, now: string): TaskRow {
+export function newTask(input: TaskInput, actorId: string, now: string): TaskRow {
  const id = createId(), revision = createId();
  return {id, series_id: createId(), occurrence: 0, record_type: input.recordType,
  contact_id: input.recordType === 'contact' ? input.recordId : null,

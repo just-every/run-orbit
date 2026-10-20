@@ -1,3 +1,6 @@
+import {createSlackRoutes} from '../features/slack/routes';
+import {createSlackActionRoutes} from '../features/slack/actions';
+import {processSlack} from '../features/slack/delivery';
 import {createLibraryRoutes} from '../features/drafts/library-routes';
 import {createSalesTaskRoutes} from '../features/tasks';
 import {createRelationshipRoutes} from '../features/relationships';
@@ -67,7 +70,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
 
   app.use('*',async(context,next)=>{
     const path=context.req.path;
-    if((path.startsWith('/api/v1/signals/')||path.startsWith('/api/v1/mail/events/')||path==='/api/v1/mail/capture'||path.startsWith('/api/v1/public-demo')||path.startsWith('/api/public/forms/')||path.startsWith('/p/'))&&await archiveImportActive(input.database))return context.json({error:archiveMaintenanceMessage},503,{'Retry-After':'30'});
+    if((path.startsWith('/api/v1/slack/actions')||path.startsWith('/api/v1/signals/')||path.startsWith('/api/v1/mail/events/')||path==='/api/v1/mail/capture'||path.startsWith('/api/v1/public-demo')||path.startsWith('/api/public/forms/')||path.startsWith('/p/'))&&await archiveImportActive(input.database))return context.json({error:archiveMaintenanceMessage},503,{'Retry-After':'30'});
     await next();
   });
   app.get('/p/:slug',async c=>{try{return c.html(await new FormService(input.database).publicDocument(c.req.param('slug')),200,{'Cache-Control':'no-store'});}catch(error){return error instanceof AccessError&&error.code==='permission'?c.text('This page is not published.',404):c.text('This page could not be verified. Try again later.',503);}});
@@ -78,6 +81,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
   app.route("/api/v1/signals", createSignalIngress(input.database,input.sourceSecurity));
   app.route("/api/delegation/v1", delegationRoutes(input.database));
   app.route("/delegation", nativeDelegationRoutes(input.database,input.authenticate,input.stepUp));
+  app.route('/api/v1/slack/actions',createSlackActionRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin}));
   app.use("/api/*", requireApiOperator);
   app.use('/api/*',async(context,next)=>{if(!context.req.path.startsWith('/api/v1/records/archive')&&await archiveImportActive(input.database))return context.json({error:archiveMaintenanceMessage},503,{'Retry-After':'30'});await next();});
   app.use("/api/*", async (context,next) => {
@@ -134,6 +138,8 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
       try { await processEvaluationJobs(input.database); } catch { context.header("X-Orbit-Evaluation","failed; inspect stale evaluation"); }
     }
   });
+  app.route('/api/v1/settings/slack',createSlackRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin}));
+  app.use('/api/v1/*',async(c,next)=>{await next();if(!['GET','HEAD','OPTIONS'].includes(c.req.method)&&c.res.status<400&&!c.req.path.startsWith('/api/v1/settings/slack')&&!c.req.path.includes('/archive/')){try{await processSlack(input.database,{security:input.sourceSecurity,origin:input.captureOrigin});}catch{c.header('X-Orbit-Slack','Processing failed; inspect Slack setup');}};});
   app.route('/api/v1/imports',createImportRoutes(input.database));
   app.route('/api/v1/capture',createCaptureRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch,mailAddress:input.captureMailAddress,local:input.hosted===false}));
   app.route("/api/v1/records", createRecordsRoutes(input.database));
