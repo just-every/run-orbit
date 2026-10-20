@@ -1,0 +1,9 @@
+# Forecast claims
+
+FORECAST-001 covers reviewed USD forecasts on current deals. The installation owner administers stage probabilities and categories, deal overrides, one-time and recurring schedule lines, and monthly or quarterly per-rep quotas. Current full operators can read; collaborators cannot. The [contract](../CONTRACT.md) and [acceptance](../ACCEPTANCE.md) retain TEAM-005’s real team membership, team access and team quota comparison, and QUOTE-001’s product/quote-line linkage and schedule comparison. Current deal schedules do not wait for those clauses.
+
+Reports separates open unweighted value, amount × reviewed probability, forecast categories, closed-won bookings, one-time/recurring scheduled amounts, MRR, ARR and quota attainment. Engagement score never supplies probability. Dates use UTC calendar days with the end excluded. These are sales forecast measures, never recognized accounting revenue.
+
+Reviews retain actor, reason, time and every prior revision. Saved as-of snapshots retain their original inputs and results after later overrides and wins. Current access is checked on every read; erasure withdraws affected snapshots and review streams in full, preserving unrelated snapshots. Records and local archives carry the forecast data without sign-in authority.
+
+The existing browser journey “FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots” exercises the USD 15,000 example, an override, quotas, schedules, a win, missing/stale inputs, refused access, archive round trips and erasure. Its forecast, override and history screenshots are retained at [FORECAST-001](retained-verification/FORECAST-001/). Released v0.3.0 row preservation is exercised in the existing forward-upgrade case. No tests were added to the 200-flow budget, and these claims do not establish completion of the remaining CRM target clauses.
