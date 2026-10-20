@@ -52,7 +52,7 @@ export class DraftsRepository {
     const statements = [
       this.binding
         .prepare(
-          "UPDATE drafts SET recipient_email = ?, subject = ?, body = ?, revision = revision + 1, updated_at = ? WHERE id = ? AND revision = ? AND is_stale = 0 AND NOT EXISTS (SELECT 1 FROM outbound_messages WHERE draft_id = drafts.id AND revision = drafts.revision)"
+          "UPDATE drafts SET recipient_email = ?, subject = ?, body = ?, merge_review_json = NULL, revision = revision + 1, updated_at = ? WHERE id = ? AND revision = ? AND is_stale = 0 AND NOT EXISTS (SELECT 1 FROM outbound_messages WHERE draft_id = drafts.id AND revision = drafts.revision)"
         )
         .bind(input.recipientEmail, input.subject, input.body, input.updatedAt, input.id, input.expectedRevision),
       this.binding

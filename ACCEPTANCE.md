@@ -2,7 +2,7 @@
 
 The target is a full small-team US sales CRM replacing HubSpot Sales Hub, Pipedrive or Salesforce Sales Cloud, with Attio, Day.ai and Twenty as modern relationship/context comparators. The [contract](CONTRACT.md) defines the outcome, including every target clause below and the applicable [baseline](BASELINE.md). Buoy remains the separate post-sale customer-success product.
 
-This is a build backlog and acceptance specification, not a claim of current product completion. Status is tied to implementation commit `e28c7c16fe14b3523b0bb035f84e5a771911a7d1` (20 October 2026), starting from the inventory code audit at `64f66dd936b78c84ef1d839c68fd735851752ae9` and re-reading changed evidence. `done` means source plus an exercising test for the stated behavior; `partial` identifies an implemented subset and its remaining work; `missing` has no implementation of that flow. Test paths are existing evidence, not claims of a new execution on this documentation commit. Hosted/provider outcomes remain unverified unless independently recorded for the exact candidate. For the 0.2.0 release record (18 October 2026, commit `5c72dc85b7d4627e8b655246102981992f48a7fa`) every status here matches the CONTRACT.md Status table, and the fifteen published clauses that were partial carry the restated journeys their independent release gate exercised.
+This is a build backlog and acceptance specification, not a claim of current product completion. Status is tied to implementation commit `a70c5dd` (20 October 2026), starting from the inventory code audit at `64f66dd936b78c84ef1d839c68fd735851752ae9` and re-reading changed evidence. `done` means source plus an exercising test for the stated behavior; `partial` identifies an implemented subset and its remaining work; `missing` has no implementation of that flow. Test paths are existing evidence, not claims of a new execution on this documentation commit. Hosted/provider outcomes remain unverified unless independently recorded for the exact candidate. For the 0.2.0 release record (18 October 2026, commit `5c72dc85b7d4627e8b655246102981992f48a7fa`) every status here matches the CONTRACT.md Status table, and the fifteen published clauses that were partial carry the restated journeys their independent release gate exercised.
 
 `rer verify` retains its existing bold published-clause execution catalog and fails unmapped, failed or skipped published IDs. All existing IDs and checks remain. New named target headings are not yet execution mappings: they remain mandatory acceptance obligations with the status below. A green existing-code execution report does not satisfy unfinished target clauses or the full text of a broadened clause. No result is waived, relabeled or manufactured to make this documentation pass. Build rounds must implement and map the target journeys without weakening the retained checks.
 
@@ -650,6 +650,8 @@ Status: **partial**.
 
 Before teams ship, they must carry OUT-018's per-team lowering and raising of sending budgets, audited like the per-user change the installation owner makes today.
 
+Before teams and restricted sales roles ship, they must carry OUT-014's template, snippet and signature sharing: real team membership, team-restricted sharing and current role/record/field access govern authoring, use and merge-data reads. The installation owner acts as administrator until then; current full operators may use the library and collaborators are refused.
+
 Before teams ship, they must carry RECORD-017's team mentions: autocomplete offers active teams, a team mention notifies each active member once, and "cannot see the record" follows the team roles and private records instead of the collaborator-only check used today.
 
 Before teams ship, they must carry RECORD-017's per-entry private visibility: an author can make a single note, logged call or meeting, task note or handoff private, and a private entry is hidden from colleagues outside its audience and from a collaborator whose grant includes the record's notes, calls and meetings, on Shared records, in Notifications → Mentions and in mention notifications. Until then every entry on a record is visible to every full operator and to a collaborator whose grant on that record includes its notes, calls and meetings.
@@ -697,6 +699,8 @@ Current evidence: `src/core/features/records/mentions.ts`; `src/core/features/re
 ### RECORD-018 — Files on records, activities and mail.
 
 Status: **missing**.
+
+Before template attachments ship, RECORD-018 must also satisfy OUT-014: authorized/versioned attachment selection, size/type limits, explicit access and size failures, exact attachment preview before approval, and a record of the precise version sent on the recipients' records. Its acceptance sends an authorized attachment and refuses a forbidden one.
 
 Upload a PDF to a deal and a file to a logged call; see both on the deal's Files list with name, type, size, uploader and time; upload a new version of the PDF; and see an executable and a 150 MB file refused with the reason. Receive a captured Gmail reply with a signed PDF attachment and an inline logo: see the PDF on the contact, company and deal and open it from the timeline entry, with the logo not listed. As a restricted rep, be refused a direct download of a file on a deal you cannot see. Migrate a HubSpot deal with two record attachments and a note attachment, and reconcile file counts and bytes in the dry run and after applying. Export and restore, and compare every file's bytes by SHA-256. Delete a file and see the attributed timeline entry. Erase the contact: their mail attachments are gone from the deal, while the user-uploaded PDF stays.
 
@@ -778,9 +782,13 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 Status: **missing**.
 
-Save a team template, render it for two contacts, block one with a missing field, approve one, revise the template and confirm the approved bytes remain unchanged; send an authorized attachment and refuse a forbidden one.
+As the installation owner, save workspace-shared templates, snippets and signatures using the reviewed fixed merge-field list; as another full operator, read and use those entries, create and edit a private entry and be refused a workspace-shared write. Render for two contacts and inspect the exact recipient, subject, body, signature and OUT-020 opt-out state at 1440 and 390. Refuse a collaborator's library read, authoring, sharing and application attempts. The installation owner acts as administrator until TEAM-005 supplies real teams and restricted sharing; library sharing grants no record or field access.
 
-Current evidence: No implementation found. No implementation of this complete target flow was found.
+Block approval and sending with a missing merge value or stale rendered input until a fresh render is reviewed. Approve one render, revise the template, snippet and signature and confirm the immutable approved rendered-byte snapshot and content hash remain unchanged; dispatch submits exactly the approved bytes under OUT-001's existing staleness fences.
+
+TEAM-005 repeats the sharing acceptance with real team membership, team-restricted sharing and restricted role/record/field access. RECORD-018 inherits authorized versioned attachment selection, size/type limits, explicit access/size failures, exact preview before approval and before files ship, and the sent-version record on recipients' records; it sends an authorized attachment and refuses a forbidden one. SEQUENCE-001 and SEQUENCE-003 each repeat template expansion, per-recipient/per-step rendered review and approval hashing, with missing/stale merge values held and no later library revision rewriting an approved snapshot.
+
+Current evidence: The source snapshot a70c5dd has no implementation of this complete flow. Completion requires the existing `tests/core/signals-outreach.test.ts` journey titled “OUT-014 missing merge fields block; template revisions never rewrite approved content”, additive migration `migrations/core/0050_message_library.sql`, and retained library/rendered-review proof under `docs/retained-verification/OUT-014/`. These are build obligations; no test run or browser result is claimed by this documentation change.
 
 ### OUT-015 — Honest open and reply tracking.
 
@@ -872,6 +880,8 @@ Status: **partial**.
 
 Before sequence sending ships, it must satisfy OUT-018: each sender's sequence budget (500 a rolling day by default) and pace (3 a minute), at most 75% of the shared transport's rate, one-to-one mail claimed first, round-robin draining across users, and deferrals that name the sequence budget or pace and the time.
 
+Before sequence sending ships, each recipient's email step must satisfy OUT-014's template/snippet/signature expansion, missing/stale merge-field approval blocks, exact rendered review, immutable rendered-byte snapshot and content-hash approval binding. Later library revisions never rewrite that approved snapshot; changed inputs retain the step's review hold and revision fences.
+
 Before sequence sending ships, each step must satisfy OUT-020's per-type setting, permitted per-step removal, exact approval binding and installation-origin capability headers/link, with per-person atomic stops and no revival. If its transport cannot carry that approved state, the managed-relay refusal remains applicable.
 
 Before enrollments ship, they must satisfy SEQUENCE-002: an enrollment exits atomically on a genuine reply (including one from an external participant of a step's thread), a meeting booking, a stage change, a won or lost close, an unsubscribe, a permanent bounce or a human stop; reassignment, revoked permission and mailbox disconnect pause it visibly with the reason; and restart, replay or a late job never revives an exited enrollment.
@@ -899,6 +909,8 @@ Current evidence: `tests/core/signals-outreach.test.ts` — “OUT-007 OUT-009 S
 Status: **missing**.
 
 Before batch sending ships, it must satisfy OUT-018: each sender's sequence budget (500 a rolling day by default) and pace (3 a minute), at most 75% of the shared transport's rate, one-to-one mail claimed first, round-robin draining across users, and deferrals that name the sequence budget or pace and the time.
+
+Before batch sending ships, each recipient's email step must satisfy OUT-014's template/snippet/signature expansion, missing/stale merge-field approval blocks, exact rendered review, immutable rendered-byte snapshot and content-hash approval binding. A library revision cannot rewrite an approved batch item; changed inputs hold only that recipient's affected step for review under this clause's rules.
 
 Before batch sending ships, each recipient's message must satisfy OUT-020's setting, permitted removal, exact approval binding and installation-origin capability headers/link, with per-person atomic stops and no revival. If its transport cannot carry that approved state, the managed-relay refusal remains applicable.
 
@@ -1132,4 +1144,4 @@ Current evidence: `tests/core/source-onboarding.test.ts` — “BOUNDARY-001 cur
 
 ## Completion accounting
 
-131 product clauses: **87 done, 23 partial, 21 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+131 product clauses: **90 done, 22 partial, 19 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.

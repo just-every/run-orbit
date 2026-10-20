@@ -1,3 +1,4 @@
+import {renderDraft,requireRendered} from '../drafts/render';
 import { createId } from '../../shared/ids';
 import { WorkbenchError } from '../workbench/repository';
 import { permitted, localTime, nextPermitted, recentLocalTime } from './time';
@@ -24,23 +25,25 @@ export class ApprovalRepository {
   if(input.scheduledAt&&(!Number.isFinite(Date.parse(input.scheduledAt))||Date.parse(input.scheduledAt)<=now.getTime()))throw new WorkbenchError(400,'Schedule a future time.');
   const scheduled=input.scheduledAt?nextPermitted(new Date(input.scheduledAt),preview.timezone).toISOString():null;
   if(input.scheduledAtConfirmation&&input.scheduledAtConfirmation!==scheduled)throw new WorkbenchError(409,'The permitted schedule changed. Review the schedule again before approving.');
+  const rendered=await renderDraft(this.db,draftId,actor);requireRendered(rendered.review);
   const id=createId(),key=input.idempotencyKey??`${draftId}:${revision}`,messageId=`<${id}@${input.messageIdDomain??'orbit.local'}>`;
   const optOut=await draftOptOut(this.db,draftId,input.optOutTransport??true);
   if(optOut.refusal){await relayRefusalAudit(this.db,actor,'draft',draftId).run();throw new WorkbenchError(409,optOut.refusal);}
   const minute=new Date(now.getTime()-60000).toISOString(),day=new Date(now.getTime()-86400000).toISOString();
-  const insertion=this.db.prepare(`INSERT INTO outbound_messages(id,draft_id,revision,opportunity_id,operator_id,contact_id,recipient_email,subject,body,state,created_at,updated_at,idempotency_key,message_id,reference_ids,scheduled_at,approved_at,claimed_at,first_attempt_at,attempt_count)
-   SELECT ?,d.id,d.revision,d.opportunity_id,?,c.id,d.recipient_email,d.subject,d.body,?,?,?, ?,?,COALESCE((SELECT message_id FROM outbound_messages WHERE opportunity_id=d.opportunity_id AND state IN('accepted','delivered') ORDER BY created_at DESC LIMIT 1),''),?,?,?,?,?
+  const insertion=this.db.prepare(`INSERT INTO outbound_messages(id,draft_id,revision,opportunity_id,operator_id,contact_id,recipient_email,subject,body,state,created_at,updated_at,idempotency_key,message_id,reference_ids,scheduled_at,approved_at,claimed_at,first_attempt_at,attempt_count,render_snapshot_json)
+   SELECT ?,d.id,d.revision,d.opportunity_id,?,c.id,d.recipient_email,?,?, ?,?,?, ?,?,COALESCE((SELECT message_id FROM outbound_messages WHERE opportunity_id=d.opportunity_id AND state IN('accepted','delivered') ORDER BY created_at DESC LIMIT 1),''),?,?,?,?,?,?
    FROM drafts d JOIN opportunities o ON o.id=d.opportunity_id JOIN contacts c ON c.id=d.recipient_contact_id JOIN opportunity_contacts oc ON oc.opportunity_id=o.id AND oc.contact_id=c.id
    WHERE d.id=? AND d.revision=? AND d.is_stale=0 AND o.lifecycle='open' AND c.contactability='contactable' AND lower(trim(c.email))=lower(trim(d.recipient_email))
    AND EXISTS(SELECT 1 FROM operators WHERE id=? AND status='active')
    AND(d.recommendation_id IS NULL OR EXISTS(SELECT 1 FROM recommendations WHERE id=d.recommendation_id AND is_current=1))
-   ON CONFLICT DO NOTHING`).bind(id,actor,scheduled?'scheduled':'queued',at,at,key,messageId,scheduled,at,scheduled?null:at,scheduled?null:at,scheduled?0:1,draftId,revision,actor);
+   ON CONFLICT DO NOTHING`).bind(id,actor,rendered.review.subject,rendered.review.body,scheduled?'scheduled':'queued',at,at,key,messageId,scheduled,at,scheduled?null:at,scheduled?null:at,scheduled?0:1,JSON.stringify(rendered.review),draftId,revision,actor);
   let result:D1Result[];try{result=await this.db.batch([insertion,
     this.db.prepare(`UPDATE outbound_messages SET state='draft',claimed_at=NULL,first_attempt_at=NULL,attempt_count=0,failure='Sending limit reached; review and retry after the displayed time',next_attempt_at=? WHERE id=? AND state='queued' AND ((SELECT COUNT(*) FROM outbound_messages WHERE claimed_at>?)>${sharedLimitSql} OR (SELECT COUNT(*) FROM outbound_messages WHERE operator_id=? AND claimed_at>?)>${oneToOneLimitSql('?')})`).bind(at,id,minute,actor,day,actor),
     this.db.prepare("UPDATE opportunities SET queue_state='next',queue_reason='Scheduled message',next_due_at=?,updated_at=? WHERE id=(SELECT opportunity_id FROM outbound_messages WHERE id=? AND state='scheduled') AND lifecycle='open'").bind(scheduled,at,id),
+    ...rendered.guards,
     ...bindOptOut(this.db,id,draftId,optOut),
     ...(input.optOutOrigin&&optOut.carries?[capabilityStatement(this.db,id,input.optOutOrigin)]:[])
-  ]);}catch(error){if(/runtime_controls.value/.test(String(error)))throw new WorkbenchError(409,'The opt-out setting or this message’s opt-out marking changed. Review it again before approving.');throw error;}
+  ]);}catch(error){if(/runtime_controls.value/.test(String(error)))throw new WorkbenchError(409,'Merge values, permissions or the opt-out state changed. Review the exact rendered message again before approving.');throw error;}
   if(result[0]!.meta.changes!==1)throw new WorkbenchError(409,'Revision already approved, changed, or is no longer permitted.');
   if(result[1]!.meta.changes>=1){const held=await deferral(this.db,actor,now);if(held)await this.db.prepare("UPDATE outbound_messages SET failure=?,next_attempt_at=? WHERE id=? AND state='draft'").bind(held.failure,held.retryAt,id).run();}
   return this.message(id);
@@ -49,7 +52,7 @@ export class ApprovalRepository {
  async retryBlocked(id:string,actor:string,confirmation?:string){
   const message=await this.message(id),now=new Date(),at=now.toISOString(),preview=await this.preview(message.draft_id,now);
   if(preview.quietHours&&!recentLocalTime(confirmation,now,preview.timezone))throw new WorkbenchError(409,`Review recipient local time ${preview.localTime} again before retrying; confirmation stays valid for ten minutes.`);
-  const result=await this.db.prepare(`UPDATE outbound_messages SET state='queued',operator_id=?,claimed_at=?,first_attempt_at=COALESCE(first_attempt_at,?),attempt_count=1,failure=NULL,updated_at=? WHERE id=? AND state='draft' AND next_attempt_at<=? AND EXISTS(SELECT 1 FROM drafts d JOIN contacts c ON c.id=d.recipient_contact_id JOIN opportunities o ON o.id=d.opportunity_id JOIN opportunity_contacts oc ON oc.opportunity_id=o.id AND oc.contact_id=c.id WHERE d.id=outbound_messages.draft_id AND d.revision=outbound_messages.revision AND d.is_stale=0 AND c.contactability='contactable' AND o.lifecycle='open' AND d.body=outbound_messages.body AND d.subject=outbound_messages.subject AND lower(trim(c.email))=lower(trim(outbound_messages.recipient_email)) AND (d.recommendation_id IS NULL OR EXISTS(SELECT 1 FROM recommendations WHERE id=d.recommendation_id AND is_current=1))) AND (SELECT COUNT(*) FROM outbound_messages WHERE claimed_at>?)<${sharedLimitSql} AND (SELECT COUNT(*) FROM outbound_messages WHERE operator_id=? AND claimed_at>?)<${oneToOneLimitSql('?')}`).bind(actor,at,at,at,id,at,new Date(now.getTime()-60000).toISOString(),actor,new Date(now.getTime()-86400000).toISOString(),actor).run();
+  const result=await this.db.prepare(`UPDATE outbound_messages SET state='queued',operator_id=?,claimed_at=?,first_attempt_at=COALESCE(first_attempt_at,?),attempt_count=1,failure=NULL,updated_at=? WHERE id=? AND state='draft' AND next_attempt_at<=? AND EXISTS(SELECT 1 FROM drafts d JOIN contacts c ON c.id=d.recipient_contact_id JOIN opportunities o ON o.id=d.opportunity_id JOIN opportunity_contacts oc ON oc.opportunity_id=o.id AND oc.contact_id=c.id WHERE d.id=outbound_messages.draft_id AND d.revision=outbound_messages.revision AND d.is_stale=0 AND c.contactability='contactable' AND o.lifecycle='open' AND d.body=COALESCE(json_extract(outbound_messages.render_snapshot_json,'$.sourceBody'),outbound_messages.body) AND d.subject=COALESCE(json_extract(outbound_messages.render_snapshot_json,'$.sourceSubject'),outbound_messages.subject) AND lower(trim(c.email))=lower(trim(outbound_messages.recipient_email)) AND (d.recommendation_id IS NULL OR EXISTS(SELECT 1 FROM recommendations WHERE id=d.recommendation_id AND is_current=1))) AND (SELECT COUNT(*) FROM outbound_messages WHERE claimed_at>?)<${sharedLimitSql} AND (SELECT COUNT(*) FROM outbound_messages WHERE operator_id=? AND claimed_at>?)<${oneToOneLimitSql('?')}`).bind(actor,at,at,at,id,at,new Date(now.getTime()-60000).toISOString(),actor,new Date(now.getTime()-86400000).toISOString(),actor).run();
   if(result.meta.changes!==1){const held=await deferral(this.db,actor,now);throw new WorkbenchError(409,held?held.failure:'Message changed or is no longer permitted.');}return this.message(id);
  }
  async cancel(id:string,actor:string){
@@ -66,4 +69,4 @@ export class ApprovalRepository {
  }
 
 }
-export interface OutboundMessage {id:string;draft_id:string;revision:number;opportunity_id:string;operator_id:string;contact_id:string;recipient_email:string;subject:string;body:string;state:string;provider_message_id:string|null;message_id:string;reference_ids:string;idempotency_key:string;scheduled_at:string|null;next_attempt_at:string|null;attempt_count:number;approved_at:string;claimed_at:string|null;first_attempt_at:string|null;created_at:string;failure:string|null}
+export interface OutboundMessage {id:string;draft_id:string;revision:number;opportunity_id:string;operator_id:string;contact_id:string;recipient_email:string;subject:string;body:string;state:string;provider_message_id:string|null;message_id:string;reference_ids:string;idempotency_key:string;scheduled_at:string|null;next_attempt_at:string|null;attempt_count:number;approved_at:string;claimed_at:string|null;first_attempt_at:string|null;created_at:string;failure:string|null;render_snapshot_json:string|null}

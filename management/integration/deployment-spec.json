@@ -264,6 +264,12 @@
       "name": "0049_opt_out_capabilities.sql",
       "sha256": "4dc9e79a3c5c4015a053871d1db9d8b5ad49b575f26aed1077cdbfc98a17a5b4",
       "sql": "-- OUT-020: an unguessable capability for one approved message and recipient.\n-- No time expiry: CAN-SPAM requires at least 30 days after sending; a working\n-- link forever is the honest choice. Erasure removes the capability with its data.\nCREATE TABLE outbound_opt_out_capabilities (\n token TEXT PRIMARY KEY CHECK(length(token)=64 AND token NOT GLOB '*[^a-f0-9]*'),\n message_id TEXT NOT NULL UNIQUE REFERENCES outbound_messages(id) ON DELETE CASCADE,\n contact_id TEXT NOT NULL REFERENCES contacts(id) ON DELETE CASCADE,\n origin TEXT NOT NULL,\n created_at TEXT NOT NULL\n);\nCREATE INDEX outbound_opt_out_contact ON outbound_opt_out_capabilities(contact_id);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0050_message_library.sql",
+      "sha256": "36ba3babd1253e74fd91f76bf26ea8adcd1dae9b693d3198489ab0f0146d1208",
+      "sql": "CREATE TABLE message_library (\n id TEXT PRIMARY KEY,\n kind TEXT NOT NULL CHECK(kind IN ('template','snippet','signature')),\n name TEXT NOT NULL,\n subject TEXT NOT NULL,\n body TEXT NOT NULL,\n visibility TEXT NOT NULL CHECK(visibility IN ('private','shared')),\n owner_id TEXT NOT NULL REFERENCES operators(id),\n revision INTEGER NOT NULL,\n updated_at TEXT NOT NULL\n);\nALTER TABLE drafts ADD COLUMN library_selection_json TEXT NOT NULL DEFAULT '{}';\nALTER TABLE drafts ADD COLUMN merge_review_json TEXT;\nALTER TABLE outbound_messages ADD COLUMN render_snapshot_json TEXT;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

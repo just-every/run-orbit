@@ -16,6 +16,7 @@ import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppAccessRouteImport } from './routes/app.access'
 import { Route as AppFormsRouteImport } from './routes/app.forms'
 import { Route as AppImportsRouteImport } from './routes/app.imports'
+import { Route as AppLibraryRouteImport } from './routes/app.library'
 import { Route as AppNewRouteImport } from './routes/app.new'
 import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
 import { Route as AppRecordsRouteImport } from './routes/app.records'
@@ -66,6 +67,11 @@ const AppFormsRoute = AppFormsRouteImport.update({
 const AppImportsRoute = AppImportsRouteImport.update({
   id: '/imports',
   path: '/imports',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLibraryRoute = AppLibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
   getParentRoute: () => AppRoute,
 } as any)
 const AppNewRoute = AppNewRouteImport.update({
@@ -156,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/app/access': typeof AppAccessRoute
   '/app/forms': typeof AppFormsRoute
   '/app/imports': typeof AppImportsRoute
+  '/app/library': typeof AppLibraryRoute
   '/app/new': typeof AppNewRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/records': typeof AppRecordsRoute
@@ -180,6 +187,7 @@ export interface FileRoutesByTo {
   '/app/access': typeof AppAccessRoute
   '/app/forms': typeof AppFormsRoute
   '/app/imports': typeof AppImportsRoute
+  '/app/library': typeof AppLibraryRoute
   '/app/new': typeof AppNewRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/records': typeof AppRecordsRoute
@@ -206,6 +214,7 @@ export interface FileRoutesById {
   '/app/access': typeof AppAccessRoute
   '/app/forms': typeof AppFormsRoute
   '/app/imports': typeof AppImportsRoute
+  '/app/library': typeof AppLibraryRoute
   '/app/new': typeof AppNewRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/records': typeof AppRecordsRoute
@@ -233,6 +242,7 @@ export interface FileRouteTypes {
     | '/app/access'
     | '/app/forms'
     | '/app/imports'
+    | '/app/library'
     | '/app/new'
     | '/app/notifications'
     | '/app/records'
@@ -257,6 +267,7 @@ export interface FileRouteTypes {
     | '/app/access'
     | '/app/forms'
     | '/app/imports'
+    | '/app/library'
     | '/app/new'
     | '/app/notifications'
     | '/app/records'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '/app/access'
     | '/app/forms'
     | '/app/imports'
+    | '/app/library'
     | '/app/new'
     | '/app/notifications'
     | '/app/records'
@@ -358,6 +370,13 @@ declare module '@tanstack/react-router' {
       path: '/imports'
       fullPath: '/app/imports'
       preLoaderRoute: typeof AppImportsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/library': {
+      id: '/app/library'
+      path: '/library'
+      fullPath: '/app/library'
+      preLoaderRoute: typeof AppLibraryRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/new': {
@@ -479,6 +498,7 @@ interface AppRouteChildren {
   AppAccessRoute: typeof AppAccessRoute
   AppFormsRoute: typeof AppFormsRoute
   AppImportsRoute: typeof AppImportsRoute
+  AppLibraryRoute: typeof AppLibraryRoute
   AppNewRoute: typeof AppNewRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppRecordsRoute: typeof AppRecordsRoute
@@ -500,6 +520,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAccessRoute: AppAccessRoute,
   AppFormsRoute: AppFormsRoute,
   AppImportsRoute: AppImportsRoute,
+  AppLibraryRoute: AppLibraryRoute,
   AppNewRoute: AppNewRoute,
   AppNotificationsRoute: AppNotificationsRoute,
   AppRecordsRoute: AppRecordsRoute,

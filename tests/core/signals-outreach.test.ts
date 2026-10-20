@@ -48,8 +48,53 @@ test('OUT-008 recipient clocks respect weekdays, DST and time to review an out-o
   assert.equal(sends,1);
  }finally{context.mock.timers.reset();}
 });
-test('OUT-001 OUT-009 scheduled approval preserves content and dispatches once; stopped draft never submits',async()=>{
- const f=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db);await db.prepare("UPDATE outbound_messages SET claimed_at='2000-01-01T00:00:00.000Z' WHERE claimed_at IS NOT NULL").run();
+test('OUT-014 missing merge fields block; template revisions never rewrite approved content',async()=>{
+ const f=await fixture(),second=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db);await db.prepare("UPDATE outbound_messages SET claimed_at='2000-01-01T00:00:00.000Z' WHERE claimed_at IS NOT NULL").run();
+ await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();
+ const ownerSession=await createDependencies(db).auth.createSession(f.actor),repSession=await createDependencies(db).auth.createSession(second.actor);
+ const edge:{recipient_email:string;subject:string;body:string}[]=[];
+ const libraryApp=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:{send:async input=>{edge.push(input);return{providerMessageId:'library-receipt'};}}});
+ const api=async(path:string,method='GET',data?:unknown,token=ownerSession.token)=>libraryApp.request(`https://orbit.test/api/v1/${path}`,{method,headers:{Cookie:`__Host-orbit_session=${token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(data===undefined?{}:{body:JSON.stringify(data)})});
+ const content={kind:'template',name:'Discovery follow-up',subject:'Next steps for {{company.name}}',body:'Hi {{contact.name}},\nYour role: {{contact.job_title}}.\nLet’s discuss {{deal.title}}.',visibility:'shared'};
+ assert.equal((await api('library','POST',content,repSession.token)).status,403,'Only the current administrator can share content');
+ const saved=await api('library','POST',content);assert.equal(saved.status,201);const template=await saved.json() as {id:string;revision:number};
+ const snippet=await (await api('library','POST',{kind:'snippet',name:'Meeting note',body:'We can review the plan with {{contact.name}}.',visibility:'shared'})).json() as {id:string};
+ const signature=await (await api('library','POST',{kind:'signature',name:'Sales signature',body:'Best,\nThe Customer team',visibility:'shared'})).json() as {id:string};
+ const privateResult=await api('library','POST',{kind:'signature',name:'Personal signature',body:'Private signature',visibility:'private'},repSession.token);assert.equal(privateResult.status,201);const privateEntry=await privateResult.json() as {id:string};
+ assert.ok(!(await (await api('library')).json() as {entries:{id:string}[]}).entries.some(entry=>entry.id===privateEntry.id),'Private entries never appear to other operators');
+ assert.equal((await api(`library/${template.id}`,'PUT',{...content,revision:template.revision},repSession.token)).status,403);
+ // A real collaborator class has no message-library or approval authority, regardless of shared visibility.
+ const collaborator=createId();await db.prepare('INSERT INTO access_collaborators(operator_id,invited_at) VALUES(?,?)').bind(collaborator,f.at).run();await createDependencies(db).auth.ensureOperator({id:collaborator,email:`${collaborator}@test.example`,displayName:'Library collaborator'});
+ const collaboratorSession=await createDependencies(db).auth.createSession(collaborator);
+ assert.equal((await api('library','GET',undefined,collaboratorSession.token)).status,403);assert.equal((await api('library','POST',content,collaboratorSession.token)).status,403);
+ await db.prepare("UPDATE contacts SET name='Maya Chen',job_title='Operations lead' WHERE id=?").bind(f.contactId).run();
+ await db.prepare("UPDATE contacts SET name='Jordan Lee',job_title=NULL WHERE id=?").bind(second.contactId).run();
+ const libraryDrafts=[];
+ for(const target of [f,second]){const created=await api(`workbench/opportunities/${target.opportunityId}/drafts`,'POST',{contactId:target.contactId,subject:'Initial subject',body:'Initial body'});assert.equal(created.status,201);const draft=await created.json() as {id:string};assert.equal((await api(`library/drafts/${draft.id}/apply`,'POST',{revision:1,templateId:template.id,snippetId:snippet.id,signatureId:signature.id})).status,200);libraryDrafts.push(draft);}
+ const [personalized,missingDraft]=libraryDrafts as [{id:string},{id:string}];
+ assert.equal((await api(`library/drafts/${personalized.id}/apply`,'POST',{revision:2,templateId:template.id},collaboratorSession.token)).status,403);
+ assert.equal((await api(`workbench/drafts/${personalized.id}/approve`,'POST',{revision:2},collaboratorSession.token)).status,403);
+ assert.equal((await api(`library/drafts/${personalized.id}/apply`,'POST',{revision:2,signatureId:privateEntry.id})).status,404,'Private content cannot be applied by another operator');
+ const missing=await (await api(`library/drafts/${missingDraft.id}/render`)).json() as {missing:string[];body:string;reviewHash:string};assert.ok(missing.missing.includes('contact.job_title'));assert.match(missing.body,/Jordan Lee/);
+ assert.equal((await api(`library/drafts/${missingDraft.id}/render`,'POST',{revision:2,reviewHash:missing.reviewHash})).status,409);
+ const schedule={revision:2,scheduledAt:'2030-01-07T10:00:00.000Z'};
+ assert.equal((await api(`workbench/drafts/${missingDraft.id}/approve`,'POST',schedule)).status,409);
+ let rendered=await (await api(`library/drafts/${personalized.id}/render`)).json() as {reviewHash:string;subject:string;body:string};
+ assert.match(rendered.body,/Maya Chen/);assert.match(rendered.body,/Operations lead/);
+ assert.equal((await api(`library/drafts/${personalized.id}/render`,'POST',{revision:2,reviewHash:rendered.reviewHash})).status,200);
+ await db.prepare("UPDATE contacts SET job_title='VP Operations' WHERE id=?").bind(f.contactId).run();
+ assert.equal((await api(`workbench/drafts/${personalized.id}/approve`,'POST',schedule)).status,409,'Stale merge values block approval');
+ assert.equal((await api(`library/drafts/${personalized.id}/render`,'POST',{revision:2,reviewHash:rendered.reviewHash})).status,409,'A stale preview cannot mark current values reviewed');
+ rendered=await (await api(`library/drafts/${personalized.id}/render`)).json() as typeof rendered;
+ assert.equal((await api(`library/drafts/${personalized.id}/render`,'POST',{revision:2,reviewHash:rendered.reviewHash})).status,200);
+ const approved=await api(`workbench/drafts/${personalized.id}/approve`,'POST',schedule);assert.equal(approved.status,200);const approvedMessage=await approved.json() as {id:string};
+ const before=await approval.message(approvedMessage.id);assert.equal(before.body,rendered.body);assert.equal(before.subject,rendered.subject);
+ assert.equal((await api(`library/${template.id}`,'PUT',{...content,body:'Changed library body for {{contact.name}}',revision:1})).status,200);
+ assert.equal((await api(`workbench/drafts/${missingDraft.id}/approve`,'POST',schedule)).status,409,'Unapproved selections need the current template revision');
+ assert.ok((await (await api(`library/drafts/${missingDraft.id}/render`)).json() as {stale:string[]}).stale.length>0,'The review names the stale library revision');
+ const libraryService=new OutreachService(db,{send:async input=>{edge.push(input);return{providerMessageId:'library-receipt'};}});await libraryService.dispatchDue(new Date(schedule.scheduledAt));await libraryService.dispatchDue(new Date(schedule.scheduledAt));
+ assert.deepEqual(edge.map(({recipient_email,subject,body})=>({recipient_email,subject,body})),[{recipient_email:f.email.toLowerCase(),subject:rendered.subject,body:rendered.body}],'Dispatch sends exactly the approved rendered bytes once after a library revision');
+ const after=await approval.message(approvedMessage.id);assert.equal(after.body,before.body);assert.equal(after.subject,before.subject);assert.equal(after.render_snapshot_json,before.render_snapshot_json);
  const now=new Date('2030-01-07T09:00:00Z'),requestedAt='2030-01-12T00:00:00Z'; // Saturday 10am in Brisbane.
  await db.prepare("UPDATE contacts SET timezone='Australia/Brisbane' WHERE id=?").bind(f.contactId).run();
  const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Approved',body:'Exact approved body'},f.actor);let calls=0;

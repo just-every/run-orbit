@@ -55,8 +55,9 @@ test('DATA-002 erasure matches complete current and alias mailboxes while preser
   const sharedBefore=await db.prepare('SELECT * FROM ai_previews WHERE id=?').bind(preview).first();
   const rows:Array<{erase:boolean,ids:Record<string,string>}>=[];
   for(const [email,erase] of [['ann@example.test',true],['AnN@EXAMPLE.test',true],['OLD@example.test',true],['joann@example.test',false],['bold@example.test',false],['ann@example.test.evil.invalid',false],['x.ann@example.test',false],['ann@example.test.',true],['joann@example.test> and <ann@example.test',true]] as const){
-   const ids=Object.fromEntries(['signals','timeline_entries','notifications','ai_previews','ai_calls','audit_entries','unlinked_replies'].map(table=>[table,createId()]));
+   const ids=Object.fromEntries(['signals','timeline_entries','notifications','ai_previews','ai_calls','audit_entries','unlinked_replies','message_library','drafts','outbound_messages'].map(table=>[table,createId()]));
    const content=`Customer <${email}> replied`;
+   const review=JSON.stringify({sourceSubject:'Subject',sourceBody:'Hello {{contact.email}}',subject:'Subject',body:content,fields:[{name:'contact.email',value:email}],context:JSON.stringify({'contact.email':email}),reviewed:true});
    await db.batch([
     db.prepare("INSERT INTO signals(id,source_id,source_event_id,type,subject,occurred_at,received_at,payload_hash,confidence,linking_basis,created_at,payload_json) VALUES(?,?,?,'page.viewed','Held view',?,?,'testhash','inferred','No identity basis',?,?)").bind(ids.signals,source,ids.signals,now,now,now,JSON.stringify({email,content})),
     db.prepare("INSERT INTO timeline_entries VALUES(?,'note',?,?,'operator',?,'manual',?)").bind(ids.timeline_entries,now,now,actor,JSON.stringify({text:content})),
@@ -65,6 +66,9 @@ test('DATA-002 erasure matches complete current and alias mailboxes while preser
     db.prepare("INSERT INTO ai_calls(id,operator_id,provider,model,feature,input_tokens,output_tokens,cached_input_tokens,estimated_cost,duration_ms,status,error,created_at) VALUES(?,?,'test','test','draft',123,45,6,0.0123,1,'failed',?,?)").bind(ids.ai_calls,actor,content,now),
     db.prepare("INSERT INTO audit_entries VALUES(?,?,'test','test','test',?,?)").bind(ids.audit_entries,actor,JSON.stringify({text:content}),now),
     db.prepare("INSERT INTO unlinked_replies(id,provider_event_id,sender,subject,body,occurred_at) VALUES(?,?,?,'Reply','Body',?)").bind(ids.unlinked_replies,ids.unlinked_replies,content,now),
+    db.prepare("INSERT INTO message_library(id,kind,name,subject,body,visibility,owner_id,revision,updated_at) VALUES(?,'template','Saved reply','Reply',?,'private',?,1,?)").bind(ids.message_library,content,actor,now),
+    db.prepare("INSERT INTO drafts(id,opportunity_id,author_id,recipient_contact_id,recipient_email,subject,body,revision,is_stale,created_at,updated_at,library_selection_json,merge_review_json) VALUES(?,?,?,?,?,'Subject','Hello {{contact.email}}',1,0,?,?,?,?)").bind(ids.drafts,archive.id,actor,other.id,'joann@example.test',now,now,JSON.stringify({template:{id:ids.message_library,revision:1}}),review),
+    db.prepare("INSERT INTO outbound_messages(id,draft_id,revision,opportunity_id,operator_id,contact_id,recipient_email,subject,body,state,created_at,updated_at,idempotency_key,message_id,approved_at,render_snapshot_json) VALUES(?,?,1,?,?,?,?,'Subject','Saved body','accepted',?,?,?,?,?,?)").bind(ids.outbound_messages,ids.drafts,archive.id,actor,other.id,'joann@example.test',now,now,ids.outbound_messages,`<${ids.outbound_messages}@orbit.test>`,now,review),
    ]);
    rows.push({erase,ids});
   }

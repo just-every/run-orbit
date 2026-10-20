@@ -1,3 +1,4 @@
+import {createLibraryRoutes} from '../features/drafts/library-routes';
 import {createSalesTaskRoutes} from '../features/tasks';
 import {createRelationshipRoutes} from '../features/relationships';
 import type {ProviderFetch} from '../features/capture/providers/config';
@@ -147,6 +148,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
   app.route("/api/v1/risks", createRiskRoutes(input.database,input.aiProvider));
   app.route("/api/v1/workbench", createWorkbenchRoutes(input.database, input.outboundMail,Boolean(input.aiProvider),input.hosted,input.mailEventKeys??{},input.captureOrigin,input.mailSettings));
   app.route("/api/v1/opportunities", dependencies.opportunityRoutes);
+  app.route('/api/v1/library',createLibraryRoutes(input.database));
   app.route("/api/v1/drafts", createDraftRoutes(dependencies.drafts));
   app.route("/api/v1/workspace", dependencies.workspaceRoutes);
 

@@ -1,0 +1,17 @@
+.library-intro{max-width:70ch;margin-bottom:28px;color:var(--ob-muted,#56616c);line-height:1.6}
+.message-library-layout{display:grid;grid-template-columns:minmax(260px,1fr) minmax(0,2fr);gap:24px;align-items:start}
+.library-list,.library-editor{padding:24px;min-width:0}
+.library-list-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.library-list-heading h2{margin:0}.library-list label,.library-editor label{display:grid;gap:8px;margin-bottom:18px;font-weight:600}
+.library-list input,.library-list select,.library-editor input,.library-editor select,.library-editor textarea{box-sizing:border-box;width:100%;min-width:0;padding:11px 12px;border:1px solid var(--ob-line,#ccd2d8);border-radius:8px;background:var(--ob-paper,#fff);color:inherit;font:inherit;font-weight:400}
+.library-list ul{list-style:none;margin:24px 0 0;padding:0}.library-list li+li{margin-top:8px}
+.library-list li button{display:grid;text-align:left;gap:6px;width:100%;padding:14px;background:transparent;border:1px solid transparent;border-radius:8px;color:inherit;overflow-wrap:anywhere}
+.library-list li button[aria-pressed=true]{background:var(--ob-wash,#f3f5f7);border-color:var(--ob-line,#ccd2d8)}
+.library-list li span{font-size:13px;color:var(--ob-muted,#56616c)}
+.library-editor h2{margin:0 0 18px}.library-editor fieldset{border:0;padding:0;margin:0;min-width:0}
+.library-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px}.library-choices label{min-width:0}
+.library-field-help{margin:8px 0 24px}.library-field-help ul{display:flex;gap:10px 24px;flex-wrap:wrap;padding-left:20px}
+.library-delete{margin-top:24px}.library-delete button+button{margin-left:12px}
+.operator-library-picker{padding:20px 0;margin:12px 0}.operator-library-picker summary{font-weight:600;cursor:pointer}.operator-library-picker p{line-height:1.6}
+.rendered-merge-review h3{font-size:18px;margin:24px 0 14px}.merge-field-values{display:grid;gap:12px;margin:0 0 20px}.merge-field-values div{display:grid;grid-template-columns:minmax(120px,1fr) minmax(0,2fr);gap:14px}.merge-field-values dt{font-family:monospace;font-size:14px}.merge-field-values dd{margin:0;overflow-wrap:anywhere}
+@media(max-width:700px){.message-library-layout{grid-template-columns:minmax(0,1fr)}.library-list,.library-editor{padding:18px}.library-list ul{max-height:240px;overflow:auto}.library-choices{grid-template-columns:minmax(0,1fr);gap:0}.merge-field-values div{grid-template-columns:minmax(0,1fr);gap:4px}}

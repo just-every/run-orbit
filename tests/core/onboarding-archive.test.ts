@@ -13,6 +13,7 @@ import {localArchiveRoundTrip} from '../support/capture-privacy-archive';
 import {foldInstalledCatalog,foldSchemaHash} from '../../src/core/features/records/archive-fold-catalog';
 import {preOptOutCapabilityCatalog} from '../../src/core/features/records/archive-generations';
 import {preForecastCatalog} from '../../src/core/features/records/forecast-archive-compatibility';
+import {preLibraryCatalog} from '../../src/core/features/records/library-archive-compatibility';
 import {archiveHash,type ArchivePart} from '../../src/core/features/records/archive-schema';
 
 function sourceRequests(db:D1Database,cookie:string){
@@ -38,6 +39,10 @@ test('DATA-001 local archive restores records and keeps the hosted owner able to
  const trialOwned=await source.customer('trial-owned@example.test');
  await source.db.prepare('UPDATE opportunities SET owner_id=? WHERE id=?').bind(source.actor,trialOwned.opportunityId).run();
  const scheduled=await source.message(trialOwned.contactId,trialOwned.opportunityId);
+ const libraryRows=['template','snippet','signature'].map((kind,index)=>({id:createId(),kind,name:`Archive ${kind}`,subject:kind==='template'?'Hello {{contact.name}}':'',body:`Saved ${kind} 雪`,visibility:index===1?'private':'shared',owner_id:source.actor,revision:index+1,updated_at:new Date().toISOString()}));
+ for(const row of libraryRows)await source.db.prepare('INSERT INTO message_library(id,kind,name,subject,body,visibility,owner_id,revision,updated_at) VALUES(?,?,?,?,?,?,?,?,?)').bind(...Object.values(row)).run();
+ const draft=createId(),draftMetadata={library_selection_json:JSON.stringify(Object.fromEntries(libraryRows.map(row=>[row.kind,{id:row.id,revision:row.revision}]))),merge_review_json:null};
+ await source.db.prepare('INSERT INTO drafts(id,opportunity_id,author_id,recipient_contact_id,recipient_email,subject,body,created_at,updated_at,library_selection_json) VALUES(?,?,?,?,?,?,?,?,?,?)').bind(draft,trialOwned.opportunityId,source.actor,trialOwned.contactId,trialOwned.email,'Archive draft','Saved draft body',new Date().toISOString(),new Date().toISOString(),draftMetadata.library_selection_json).run();
  const capability={token:randomBytes(32).toString('hex'),message_id:scheduled.id,contact_id:trialOwned.contactId,origin:'https://orbit.test',created_at:new Date().toISOString()};
  await source.db.batch([
   source.db.prepare('INSERT INTO outbound_message_opt_out VALUES(?,1,\'added\')').bind(scheduled.id),
@@ -50,6 +55,8 @@ test('DATA-001 local archive restores records and keeps the hosted owner able to
  for(let n=0;n<300&&exported.state!=='ready';n++)exported=await request(source,`records/archive/exports/${exported.id}/advance`,'POST',{});
  assert.equal(exported.state,'ready');
  const archive=await request(source,`records/archive/exports/${exported.id}/download`);
+ const exportedLibrary=archive.parts.flatMap((part:ArchivePart)=>part.records).filter((record:ArchivePart['records'][number])=>record.table==='message_library').map((record:ArchivePart['records'][number])=>record.row);
+ assert.deepEqual(exportedLibrary.sort((a:any,b:any)=>a.id.localeCompare(b.id)),libraryRows.sort((a,b)=>a.id.localeCompare(b.id)));
  assert.deepEqual(archive.parts.flatMap((part:ArchivePart)=>part.records).filter((record:ArchivePart['records'][number])=>record.table==='outbound_opt_out_capabilities').map((record:ArchivePart['records'][number])=>record.row),[capability]);
  assert.ok(archive.parts.flatMap((part:any)=>part.records).filter((record:any)=>record.table==='signal_sources').every((record:any)=>record.row.secret_ciphertext===undefined),'Signing credentials do not travel in archives');
  for(const tables of [archive.manifest.tables.filter((t:any)=>t.name!=='form_embed_origins'),[...archive.manifest.tables,{name:'unknown_records',columns:['id'],rows:0}]]){
@@ -62,25 +69,34 @@ test('DATA-001 local archive restores records and keeps the hosted owner able to
   assert.equal(imported.state,'complete');
   assert.equal(imported.completedSteps,imported.totalSteps);assert.equal(imported.nextPart,document.manifest.parts);
  };
+ const currentCatalog=await foldInstalledCatalog(source.db);
+ for(const catalog of [preLibraryCatalog(currentCatalog),preForecastCatalog(preOptOutCapabilityCatalog(preLibraryCatalog(currentCatalog)))]){
  const previous=await launchFixture();
  try{
-  const catalog=preForecastCatalog(preOptOutCapabilityCatalog(await foldInstalledCatalog(source.db))),names=new Set(catalog.map(table=>table.name));
+  const names=new Set(catalog.map(table=>table.name)),columns=new Map(catalog.map(table=>[table.name,new Set(table.columns.map(column=>column.name))]));
   const parts:ArchivePart[]=[];
-  for(const part of archive.parts as ArchivePart[]){const records=part.records.filter(record=>names.has(record.table));if(records.length)parts.push({index:parts.length,records,sha256:await archiveHash(records)});}
-  const tables=archive.manifest.tables.filter((table:{name:string})=>names.has(table.name));
+  for(const part of archive.parts as ArchivePart[]){const records=part.records.filter(record=>names.has(record.table)).map(record=>({...record,row:Object.fromEntries(Object.entries(record.row).filter(([column])=>columns.get(record.table)!.has(column)))}));if(records.length)parts.push({index:parts.length,records,sha256:await archiveHash(records)});}
+  const tables=archive.manifest.tables.filter((table:{name:string})=>names.has(table.name)).map((table:{name:string;columns:string[]})=>({...table,columns:table.columns.filter(column=>columns.get(table.name)!.has(column))}));
   const schemaHash=await foldSchemaHash(catalog);
   await restore(previous,{...archive,parts,manifest:{...archive.manifest,tables,schemaHash,parts:parts.length,rows:tables.reduce((sum:number,table:{rows:number})=>sum+table.rows,0)}});
   assert.deepEqual(await previous.db.prepare('SELECT * FROM outbound_message_opt_out WHERE message_id=?').bind(scheduled.id).first(),approvedOptOut,'The released opt-out binding survives an archive without capabilities');
   assert.equal(await previous.db.prepare('SELECT email FROM contacts WHERE id=?').bind(customer.id).first('email'),'archive@example.test');
-  assert.equal(await previous.db.prepare('SELECT count(*) FROM outbound_opt_out_capabilities').first('count(*)'),0,'Restoring old messages never invents capability authority');
+  assert.equal(await previous.db.prepare('SELECT count(*) FROM outbound_opt_out_capabilities').first('count(*)'),names.has('outbound_opt_out_capabilities')?1:0,'Restoring old messages never invents capability authority');
+  assert.equal(await previous.db.prepare('SELECT count(*) FROM message_library').first('count(*)'),0,'An older generation does not invent library entries');
+  assert.deepEqual(await previous.db.prepare('SELECT library_selection_json,merge_review_json FROM drafts WHERE id=?').bind(draft).first(),{library_selection_json:'{}',merge_review_json:null},'Historical draft rows receive the additive migration defaults');
  }finally{await previous.dispose();}
+ }
  const local=await isolatedDatabase();
  try{
   await localArchiveRoundTrip(source.db,local.db);
+  assert.deepEqual((await local.db.prepare('SELECT * FROM message_library ORDER BY id').all()).results,libraryRows,'The local CLI preserves library content, permissions, ownership and revision');
+  assert.deepEqual(await local.db.prepare('SELECT library_selection_json,merge_review_json FROM drafts WHERE id=?').bind(draft).first(),draftMetadata);
   assert.deepEqual(await local.db.prepare('SELECT * FROM outbound_opt_out_capabilities WHERE token=?').bind(capability.token).first(),capability,'The local CLI preserves the exact capability and origin');
   assert.deepEqual(await local.db.prepare('SELECT * FROM outbound_message_opt_out WHERE message_id=?').bind(scheduled.id).first(),approvedOptOut);
  }finally{await local.dispose();}
  await restore(target,archive);
+ assert.deepEqual((await target.db.prepare('SELECT * FROM message_library ORDER BY id').all()).results,libraryRows,'Records restore preserves library content, permissions, ownership and revision');
+ assert.deepEqual(await target.db.prepare('SELECT library_selection_json,merge_review_json FROM drafts WHERE id=?').bind(draft).first(),draftMetadata);
  assert.deepEqual(await target.db.prepare('SELECT * FROM outbound_opt_out_capabilities WHERE token=?').bind(capability.token).first(),capability,'Records restore preserves the exact capability and origin');
  assert.deepEqual(await target.db.prepare('SELECT * FROM outbound_message_opt_out WHERE message_id=?').bind(scheduled.id).first(),approvedOptOut);
  assert.deepEqual(await target.db.prepare('SELECT email,status,setup_owner FROM operators WHERE id=?').bind(target.actor).first(),{email:'hosted-owner@example.test',status:'active',setup_owner:1});

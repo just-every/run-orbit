@@ -1,4 +1,5 @@
 import {preForecastCatalog} from './forecast-archive-compatibility';
+import {preLibraryCatalog} from './library-archive-compatibility';
 import type {ArchiveTable} from './archive-schema';
 import {prePipelineCatalog} from '../pipelines/archive-compatibility';
 import {preRelationshipCatalog} from '../relationships/archive-compatibility';
@@ -10,5 +11,5 @@ export const preOptOutCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>!(
 export const preSendingCapacityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='sending_limits');
 export const preOptOutCapabilityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='outbound_opt_out_capabilities');
 /** Complete native source generations in migration order; never arbitrary missing tables. */
-export function nativeCatalogGenerations(catalog:ArchiveTable[]){const capabilities=preOptOutCapabilityCatalog(catalog),forecast=preForecastCatalog(capabilities),optOut=preOptOutCatalog(forecast),sending=preSendingCapacityCatalog(optOut),forms=preFormAbuseCatalog(sending),tasks=preRelationshipCatalog(forms),pipelines=preTaskCatalog(tasks);return [catalog,capabilities,forecast,optOut,sending,forms,tasks,pipelines,prePipelineCatalog(pipelines)];}
+export function nativeCatalogGenerations(catalog:ArchiveTable[]){const library=preLibraryCatalog(catalog),capabilities=preOptOutCapabilityCatalog(library),forecast=preForecastCatalog(capabilities),optOut=preOptOutCatalog(forecast),sending=preSendingCapacityCatalog(optOut),forms=preFormAbuseCatalog(sending),tasks=preRelationshipCatalog(forms),pipelines=preTaskCatalog(tasks);return [catalog,library,capabilities,forecast,optOut,sending,forms,tasks,pipelines,prePipelineCatalog(pipelines)];}
 export const legacyNativeCatalog=(catalog:ArchiveTable[])=>nativeCatalogGenerations(catalog).at(-1)!;

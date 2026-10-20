@@ -14,6 +14,7 @@ import { evaluationStatements } from '../workbench/evaluation-repository';
 import { createId } from '../../shared/ids';
 import { audit, RecordError, requireRecord, type RecordKind } from './shared';
 import {relationshipContactErasure} from '../relationships/erasure';
+import {messageContactErasure} from '../drafts/privacy';
 export class DataRepository {
  constructor(readonly db:D1Database){}
  async remove(kind:RecordKind,id:string,actor:string,sessionId?:string){const capture=captureImportErasure(this.db),db=capture.db;const record=await requireRecord(db,kind,id);const statements:D1PreparedStatement[]=[];let contactEmails:string[]=[];
@@ -33,6 +34,7 @@ export class DataRepository {
    const aliases=(await db.prepare("SELECT identity_key FROM record_aliases WHERE record_type='contact' AND survivor_id=?").bind(id).all<{identity_key:string}>()).results.map(row=>row.identity_key);
    const identities=[...new Set([record.email,...aliases].filter((value):value is string=>typeof value==='string'&&value.length>0))];
    contactEmails=identities;
+   statements.push(...messageContactErasure(db,identities));
    statements.push(...formAbuseErasure(db,identities));
    statements.push(...taskContactErasure(db,id,identities));
    statements.push(...relationshipContactErasure(db,id,identities));

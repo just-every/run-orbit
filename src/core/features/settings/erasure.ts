@@ -3,6 +3,7 @@ import { executeArchiveErasure } from '../records';
 import {audit,RecordError} from '../records/shared';
 import {identityMatch,identityPatterns} from '../records/erasure-identity';
 import {containsWord,redactJsonText,redactionSql} from './erasure-redaction';
+import {messageReviewOperatorErasure} from '../drafts/privacy';
 
 /** Retain stable attribution IDs while removing a retired operator's personal details. */
 export async function eraseOperator(db:D1Database,id:string,actor:string){
@@ -19,9 +20,10 @@ export async function eraseOperator(db:D1Database,id:string,actor:string){
  }
  const now=new Date().toISOString(),statements=[db.prepare('DELETE FROM sessions WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_proofs WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_bindings WHERE operator_id=?').bind(id),db.prepare('DELETE FROM notifications WHERE operator_id=?').bind(id)];
  statements.push(...forecastErasureStatements(db,'operator',id,[operator.email]));
+ statements.push(...await messageReviewOperatorErasure(db,id,name,operator.email));
  // JSON replacement uses escaped text so quotes in a display name cannot invalidate stored JSON.
- const contentColumns:Record<string,string[]>={audit_entries:['details_json'],timeline_entries:['payload_json'],ai_previews:['content_json'],ai_calls:['error'],notifications:['message'],drafts:['subject','body'],outbound_messages:['subject','body','failure'],source_event_errors:['reason'],signal_sources:['last_error']};
- const attribution:Record<string,string>={audit_entries:"(actor_id=? OR (entity_type='operator' AND entity_id=?))",timeline_entries:'actor_id=?',ai_previews:'operator_id=?',ai_calls:'operator_id=?',notifications:'operator_id=?',drafts:'author_id=?',outbound_messages:'operator_id=?'};
+ const contentColumns:Record<string,string[]>={audit_entries:['details_json'],timeline_entries:['payload_json'],ai_previews:['content_json'],ai_calls:['error'],notifications:['message'],drafts:['subject','body'],outbound_messages:['subject','body','failure'],message_library:['name','subject','body'],source_event_errors:['reason'],signal_sources:['last_error']};
+ const attribution:Record<string,string>={audit_entries:"(actor_id=? OR (entity_type='operator' AND entity_id=?))",timeline_entries:'actor_id=?',ai_previews:'operator_id=?',ai_calls:'operator_id=?',notifications:'operator_id=?',drafts:'author_id=?',outbound_messages:'operator_id=?',message_library:'owner_id=?'};
  // Structured content is rewritten value by value, never as text, so a name can never alter a key or the JSON itself.
  // Each row is fenced on the value read here and runs before the mailbox redaction below.
  if(redactName)for(const [table,columns]of Object.entries(contentColumns))for(const column of columns.filter(column=>column.endsWith('_json'))){

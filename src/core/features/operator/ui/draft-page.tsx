@@ -1,3 +1,4 @@
+import {DraftLibraryPicker} from '../../drafts/ui/library-picker';
 import { DraftApproval } from "./draft-approval";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "@tanstack/react-router";
@@ -8,7 +9,7 @@ import { OperatorShell, OperatorState } from "./operator-shell";
 import { useOperatorResource } from "./use-operator-resource";
 import { DraftContentFields } from "../../drafts/ui/draft-content-fields";
 
-interface SubmittedMessage { draftId: string; revision: number; state: string; scheduledAt: string | null }
+interface SubmittedMessage { draftId: string; revision: number; state: string; scheduledAt: string | null;recipientEmail:string;subject:string;body:string }
 const submittedTitles: Record<string, string> = { scheduled: "Scheduled message", failed: "Message not sent", bounced: "Message bounced" };
 
 export function DraftPage() {
@@ -75,7 +76,7 @@ export function DraftPage() {
     >
       <section className="operator-draft-editor" style={{display:"block"}} data-testid="draft-editor">
         {submitted ? <OperatorState>{submitted.state === "scheduled" && submitted.scheduledAt ? `This message is scheduled for ${formatDateTime(submitted.scheduledAt, presentation)}. To change it, cancel it from the opportunity first.` : `This message was approved and handed to the mail service (state: ${label(submitted.state)}). It can no longer be edited. To write to this customer again, start a new follow-up from the opportunity.`}</OperatorState> : null}
-        {submitted ? <SentMessage recipient={resource.data.draft.recipientEmail} subject={resource.data.draft.subject} body={resource.data.draft.body} /> : <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}><fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
+        {submitted ? <SentMessage recipient={resource.data.submitted?.recipientEmail??draft.recipientEmail} subject={resource.data.submitted?.subject??draft.subject} body={resource.data.submitted?.body??draft.body} /> : <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}><fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
           <label>Recipient
             <input data-testid="draft-recipient" required onChange={(event) => setDraft({ ...draft, recipientEmail: event.target.value })} type="email" value={draft.recipientEmail} />
           </label>
@@ -85,6 +86,7 @@ export function DraftPage() {
             onSubjectChange={(subject) => setDraft({ ...draft, subject })}
             subject={draft.subject}
           />
+          <DraftLibraryPicker draft={draft} disabled={saving} onApplied={resource.reload}/>
           {draft.isStale ? <section className="operator-state operator-state--error" data-testid="stale-review">
             <h2>Review what changed</h2><p>{draft.staleReason ?? "Customer context changed."}</p>
             <p>Current opportunity: {resource.data.opportunity.title} · {resource.data.opportunity.stage} · {resource.data.opportunity.queueReason}</p>
@@ -112,7 +114,7 @@ export function DraftPage() {
             <div><dt>Revision</dt><dd>{draft.revision}</dd></div>
           </dl>
         </details>
-      {resource.data.submitted ? null : <DraftApproval mailProvider={resource.data.mailProvider} onSubmitted={setJustSubmitted} onOptOutChanged={resource.reload} recipientName={resource.data.opportunity.contacts.find(contact=>contact.id===draft.recipientContactId)?.name??undefined} draft={draft} dirty={draft.recipientEmail !== resource.data?.draft.recipientEmail || draft.subject !== resource.data?.draft.subject || draft.body !== resource.data?.draft.body} />}
+      {resource.data.submitted ? null : <DraftApproval mailProvider={resource.data.mailProvider} onSubmitted={message=>{setJustSubmitted(message);resource.reload();}} onOptOutChanged={resource.reload} recipientName={resource.data.opportunity.contacts.find(contact=>contact.id===draft.recipientContactId)?.name??undefined} draft={draft} dirty={draft.recipientEmail !== resource.data?.draft.recipientEmail || draft.subject !== resource.data?.draft.subject || draft.body !== resource.data?.draft.body} />}
     </OperatorShell>
   );
 }

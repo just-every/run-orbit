@@ -11,7 +11,7 @@ import { assertCommercialRelationship } from '../../../family/sales/relationship
 import { stopReason } from '../outreach/stop-reason';
 
 
-export class WorkbenchError extends Error { constructor(readonly status: 400 | 404 | 409, message: string, readonly recordId?:string) { super(message); } }
+export class WorkbenchError extends Error { constructor(readonly status: 400 | 403 | 404 | 409, message: string, readonly recordId?:string) { super(message); } }
 export class WorkbenchRepository {
   constructor(readonly db: D1Database) {}
   async inventory() {

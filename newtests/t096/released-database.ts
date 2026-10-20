@@ -16,9 +16,9 @@ export async function releasedDatabase(){
  const open=()=>getPlatformProxy<{DB:D1Database}>({configPath:config,persist:{path:join(state,'v3')},remoteBindings:false});
  let platform:Awaited<ReturnType<typeof open>>|undefined;
  try{migrate();platform=await open();}catch(error){await rm(directory,{recursive:true,force:true});throw error;}
- return{get db(){if(!platform)throw new Error('Released database is closed.');return platform.env.DB;},async upgrade(){
+ return{get db(){if(!platform)throw new Error('Released database is closed.');return platform.env.DB;},async upgrade(through?:string){
   await platform?.dispose();platform=undefined;
-  for(const name of (await readdir('migrations/core')).filter(name=>name.endsWith('.sql')&&!released.includes(`migrations/core/${name}`)).sort())await writeFile(join(migrations,name),await readFile(join('migrations/core',name)),{mode:0o600});
+  for(const name of (await readdir('migrations/core')).filter(name=>name.endsWith('.sql')&&(!through||name<=through)&&!released.includes(`migrations/core/${name}`)).sort())await writeFile(join(migrations,name),await readFile(join('migrations/core',name)),{mode:0o600});
   try{migrate();}finally{platform=await open();}
  },async dispose(){await platform?.dispose();platform=undefined;await rm(directory,{recursive:true,force:true});}};
 }
