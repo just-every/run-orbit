@@ -9,7 +9,7 @@ export async function proveSlackNotices(f:Fixture,deal:string,contact:string){
  const native=globalThis.fetch,secret=randomBytes(32).toString('hex'),token='test-only-slack-bot',posts:any[]=[];
  let outcome:'sent'|'rate'|'timeout'|'revoked'|'failed'='sent',attempts=0;
  const channel=(id='CINTERNAL')=>({id,name:id==='CINTERNAL'?'sales-internal':'external',is_member:true,is_archived:false,is_shared:id==='CEXTERNAL',is_ext_shared:id==='CEXTERNAL',is_org_shared:false,context_team_id:'TWORKSPACE'});
- globalThis.fetch=async(input,init)=>{if(!String(input).startsWith('https://slack.com/api/'))return native(input,init);assert.equal(new Headers(init?.headers).get('authorization'),'Bearer '+token);const url=new URL(String(input)),method=url.pathname.split('/').at(-1),body=init?.body?JSON.parse(String(init.body)):Object.fromEntries(url.searchParams);
+ globalThis.fetch=async(input,init)=>{if(!String(input).startsWith('https://slack.com/api/'))return native(input,init);assert.equal(init?.redirect,'manual');assert.equal(new Headers(init?.headers).get('authorization'),'Bearer '+token);const url=new URL(String(input)),method=url.pathname.split('/').at(-1),body=init?.body?JSON.parse(String(init.body)):Object.fromEntries(url.searchParams);
   if(outcome==='revoked')return Response.json({ok:false,error:'token_revoked'});
   if(method==='auth.test')return Response.json({ok:true,team_id:'TWORKSPACE',user_id:'UBOT',bot_id:'BBOT'});
   if(method==='conversations.list')return Response.json({ok:true,channels:[channel(),channel('CEXTERNAL'),{...channel('CNOTMEMBER'),is_member:false}],response_metadata:{next_cursor:''}});

@@ -9,8 +9,8 @@ export class SlackProviderError extends Error {
 export async function slackCall(token:string,method:string,body:Record<string,unknown>={},fetcher:typeof fetch=fetch){
  const read=method==='auth.test'||method.startsWith('conversations.'),query=new URLSearchParams(Object.entries(body).map(([key,value])=>[key,String(value)]));
  let response:Response;
- try{response=await fetcher('https://slack.com/api/'+method+(read&&query.size?'?'+query:''),{method:read?'GET':'POST',redirect:'error',headers:{Authorization:'Bearer '+token,...(read?{}:{'Content-Type':'application/json; charset=utf-8'})},...(read?{}:{body:JSON.stringify(body)}),signal:AbortSignal.timeout(12000)});}
- catch{throw new SlackProviderError('submission_uncertain',true);}
+ try{response=await fetcher('https://slack.com/api/'+method+(read&&query.size?'?'+query:''),{method:read?'GET':'POST',redirect:'manual',headers:{Authorization:'Bearer '+token,...(read?{}:{'Content-Type':'application/json; charset=utf-8'})},...(read?{}:{body:JSON.stringify(body)}),signal:AbortSignal.timeout(12000)});}
+ catch{throw new SlackProviderError(method==='chat.postMessage'?'submission_uncertain':'provider_unreachable',method==='chat.postMessage');}
  if(response.status===429){const raw=response.headers.get('retry-after'),seconds=raw&&/^\d+$/.test(raw)?Math.max(1,Number(raw)):60;throw new SlackProviderError('ratelimited',false,seconds);}
  let value:any;
  try{const raw=await response.text();if(raw.length>2*1024*1024)throw Error();value=JSON.parse(raw);}catch{throw new SlackProviderError('unaccepted_response',method==='chat.postMessage');}

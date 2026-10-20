@@ -6,10 +6,10 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {randomBytes} from 'node:crypto';
 import {chromium} from '@playwright/test';
 const evidence='docs/retained-verification/INTEGRATE-005',report={provider:'Slack',live:true,status:[],messages:[],cleanup:[]};
-let browser,server,buffer='',messages=[],origin,api,posted=0;
+let browser,server,lastPage,buffer='',messages=[],origin,api,posted=0;
 const token=process.env.SLACK_BOT_TOKEN,channelId=process.env.SLACK_CHANNEL_ID;
 assert.ok(token&&channelId,'Held Slack bot and channel must be injected by the named key wrapper.');
-async function slack(method,body){const read=method==='auth.test'||method.startsWith('conversations.'),query=new URLSearchParams(Object.entries(body).map(([key,value])=>[key,String(value)]));const response=await fetch('https://slack.com/api/'+method+(read&&query.size?'?'+query:''),{method:read?'GET':'POST',redirect:'error',headers:{Authorization:'Bearer '+token,...(read?{}:{'Content-Type':'application/json; charset=utf-8'})},...(read?{}:{body:JSON.stringify(body)}),signal:AbortSignal.timeout(15000)});const result=await response.json();if(!result.ok){const error=new Error(`Slack ${method}: ${String(result.error).replace(/[^a-z_]/g,'')}`);error.code=result.error;throw error;}return result;}
+async function slack(method,body){const read=method==='auth.test'||method.startsWith('conversations.'),query=new URLSearchParams(Object.entries(body).map(([key,value])=>[key,String(value)]));const response=await fetch('https://slack.com/api/'+method+(read&&query.size?'?'+query:''),{method:read?'GET':'POST',redirect:'manual',headers:{Authorization:'Bearer '+token,...(read?{}:{'Content-Type':'application/json; charset=utf-8'})},...(read?{}:{body:JSON.stringify(body)}),signal:AbortSignal.timeout(15000)});const result=await response.json();if(!result.ok){const error=new Error(`Slack ${method}: ${String(result.error).replace(/[^a-z_]/g,'')}`);error.code=result.error;throw error;}return result;}
 function launch(args){return new Promise((resolve,reject)=>{const child=spawn(process.execPath,['node_modules/@runeditrun/rer/bin/rer.mjs',...args],{env:{...process.env,SLACK_BOT_TOKEN:undefined,SLACK_CHANNEL_ID:undefined,WRANGLER_SEND_METRICS:'false'},stdio:['ignore','pipe','pipe']});let output='';child.stdout.on('data',chunk=>output+=chunk);child.stderr.on('data',chunk=>output+=chunk);child.once('exit',code=>code===0?resolve(output):reject(new Error(`Orbit ${args[0]} failed (exit ${code}); no private output printed.`)));});}
 try{
  // Read before connecting or posting. Customer-facing or externally shared channels stop the live leg.
@@ -25,7 +25,7 @@ try{
  const deadline=Date.now()+180000;while(!/^RER_OPEN /m.test(buffer)){if(server.exitCode!==null)throw new Error('Orbit dev exited before ready; private output withheld.');if(Date.now()>deadline)throw new Error('Orbit dev startup timed out; private output withheld.');await new Promise(r=>setTimeout(r,250));}
  const open=buffer.match(/^RER_OPEN (.+)$/m)[1].trim();origin=new URL(open).origin;
  browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
- const context=await browser.newContext({viewport:{width:1440,height:1000}}),page=await context.newPage();await page.goto(open);await page.waitForURL(url=>!url.hash,{timeout:60000});
+ const context=await browser.newContext({viewport:{width:1440,height:1000}}),page=await context.newPage();lastPage=page;await page.goto(open);await page.waitForURL(url=>(url.pathname==='/setup'||url.pathname.startsWith('/app'))&&!url.hash,{timeout:60000});
  api=async(path,method='GET',body)=>{const result=await page.evaluate(async({path,method,body})=>{const response=await fetch('/api/v1/'+path,{method,...(body===undefined?{}:{headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})});return{status:response.status,data:await response.json()};},{path,method,body});assert.ok(result.status<400,`Orbit ${path}: HTTP ${result.status}`);return result.data;};
  // Complete the real first-run setup through its public route when required.
  if(new URL(page.url()).pathname==='/setup'){
@@ -33,7 +33,7 @@ try{
  }
  await page.goto(origin+'/app/settings');await page.getByRole('heading',{name:'Slack sales notices',exact:true}).waitFor();
  await page.getByLabel('Bot token',{exact:true}).fill(token);await page.getByLabel('Slack app signing secret',{exact:true}).fill(randomBytes(32).toString('hex'));
- await page.getByRole('button',{name:'Verify and connect Slack',exact:true}).click();await page.getByRole('button',{name:'Load member channels',exact:true}).waitFor();
+ const [connection]=await Promise.all([page.waitForResponse(r=>r.url().endsWith('/api/v1/settings/slack/connect')&&r.request().method()==='POST'),page.getByRole('button',{name:'Verify and connect Slack',exact:true}).click()]);const connectResult=await connection.json();assert.equal(connection.status(),200,'Slack Settings connection: '+(connectResult.error??connection.status()));await page.getByRole('button',{name:'Load member channels',exact:true}).waitFor();
  report.status.push('Settings bot-token and generated test-installation signing-secret entry: connected; credentials cleared from form');
  await page.getByRole('button',{name:'Load member channels',exact:true}).click();await page.getByLabel('Channel',{exact:true}).selectOption(channelId);
  await page.getByRole('button',{name:'Save channel routing',exact:true}).click();
@@ -53,7 +53,7 @@ try{
  await api('settings/slack/disconnect','POST',{});report.status.push('Disconnect: unresolved setup; existing in-app deal and task remain available');
  for(const width of [1440,390]){await page.setViewportSize({width,height:1000});await page.goto(origin+'/app/settings');await page.getByRole('heading',{name:'Slack sales notices',exact:true}).waitFor();await page.locator('#slack-settings').scrollIntoViewIfNeeded();await page.screenshot({path:`${evidence}/unresolved-${width}.png`});await page.getByRole('heading',{name:'Connected products',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:`${evidence}/products-unresolved-${width}.png`});}
  report.status.push('Inbound signatures and identity refusals use the fake network edge, not a live Slack click; app-console interactivity configuration is still required for live clicks.');
-}catch(error){report.status.push('BLOCKED: '+(error.code?'Slack missing scope or API refusal: '+error.code:error.message));process.exitCode=1;}
+}catch(error){if(lastPage){await lastPage.screenshot({path:'.rer-tools/slack-failure.png'}).catch(()=>{});report.status.push('Screen path: '+new URL(lastPage.url()).pathname);report.status.push('Visible error: '+(await lastPage.getByRole('alert').allTextContents().catch(()=>[])).join(' '));}report.status.push('BLOCKED: '+(error.code&&error.code!=='ERR_ASSERTION'?'Slack missing scope or API refusal: '+error.code:error.message));process.exitCode=1;}
 finally{
  // Read the running app even after a failed assertion, so every posted timestamp is cleaned up.
  if(api)try{const state=await api('settings/slack');messages=state.notices.filter(n=>n.message_ts).map(n=>({ts:n.message_ts}));}catch{}
