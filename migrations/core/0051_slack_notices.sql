@@ -4,6 +4,7 @@ CREATE TABLE slack_credentials(id TEXT PRIMARY KEY,ciphertext TEXT NOT NULL);
 CREATE TABLE slack_channels(id TEXT PRIMARY KEY,name TEXT NOT NULL,events_json TEXT NOT NULL,enabled INTEGER NOT NULL DEFAULT 1,last_error TEXT,retry_at TEXT);
 CREATE TABLE slack_mappings(slack_user_id TEXT PRIMARY KEY,operator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,revoked_at TEXT);
 CREATE TABLE slack_notices(id TEXT PRIMARY KEY,event_key TEXT NOT NULL,event_kind TEXT NOT NULL,channel_id TEXT NOT NULL REFERENCES slack_channels(id),record_type TEXT NOT NULL,record_id TEXT,source_id TEXT,state TEXT NOT NULL DEFAULT 'queued',content_json TEXT,stage_from TEXT,stage_to TEXT,due_at TEXT,message_ts TEXT,error TEXT,retry_at TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL,acknowledged_by TEXT REFERENCES operators(id) ON DELETE SET NULL,acknowledged_at TEXT,UNIQUE(event_key,channel_id));
+CREATE INDEX slack_notices_channel_state ON slack_notices(channel_id,state);
 CREATE INDEX slack_notices_pending ON slack_notices(state,retry_at,created_at);
 CREATE TABLE slack_actions(id TEXT PRIMARY KEY,notice_id TEXT NOT NULL REFERENCES slack_notices(id),slack_user_id TEXT NOT NULL,operator_id TEXT REFERENCES operators(id) ON DELETE SET NULL,action TEXT NOT NULL,task_id TEXT,created_at TEXT NOT NULL);
 

@@ -15,7 +15,7 @@ export async function slackCall(token:string,method:string,body:Record<string,un
  let value:any;
  try{const raw=await response.text();if(raw.length>2*1024*1024)throw Error();value=JSON.parse(raw);}catch{throw new SlackProviderError('unaccepted_response',method==='chat.postMessage');}
  if(!response.ok)throw new SlackProviderError('http_'+response.status,method==='chat.postMessage'&&response.status>=500);
- if(value?.ok!==true)throw new SlackProviderError(known.has(value?.error)?value.error:'unaccepted_response');
+ if(value?.ok!==true)throw new SlackProviderError(known.has(value?.error)?value.error:'unaccepted_response',method==='chat.postMessage'&&!known.has(value?.error));
  return value;
 }
 export function internalChannel(channel:any,team:string){

@@ -13,7 +13,7 @@ const minutes = {
   'tests/core/launch-inherited-stop.test.ts': 2.6, 'tests/core/onboarding-archive.test.ts': 2.3, 'tests/core/archive-transfer.test.ts': 1.7,
   'tests/core/capture-intake.test.ts': 1.7, 'tests/core/crm-import-erasure.test.ts': 1.5, 'tests/core/launch-suppression.test.ts': 1.5,
   'tests/core/launch-suppression-archive.test.ts': 1.3, 'tests/delegation/archive-regression.test.ts': 0.8, 'tests/core/contact-erasure.test.ts': 0.8,
-  'tests/core/capture-connector.test.ts': 0.8, 'tests/core/launch-provider-conflicts.test.ts': 0.8, 'tests/core/source-onboarding.test.ts': 0.8,
+  'tests/core/capture-connector.test.ts': 0.8, 'tests/core/launch-provider-conflicts.test.ts': 0.8, 'tests/core/source-onboarding.test.ts': 4.5,
   'newtests/t096/archive-native.test.ts': 8.3, 'newtests/t096/archive-terminal-recovery.test.ts': 7.6, 'newtests/t096/archive-view-rollback.test.ts': 3.7,
   'newtests/t096/archive-import-recovery.test.ts': 3.4, 'newtests/t096/archive-cli-native.test.ts': 2.4, 'newtests/t096/archive-upgrade-preflight.test.ts': 1.4,
 };
