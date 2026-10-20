@@ -6,7 +6,7 @@ import {insertTask} from '../tasks/repository';
 import {taskEffects} from '../tasks/effects';
 import {audit} from '../records/shared';
 import {credentials,installation} from './installation';
-import {verified} from './signature';
+import {verified,slackBody} from './signature';
 import {actionMapping,actorRecordFence,installationMatches} from './identity';
 import type {Installation,Notice,SlackConfig} from './contracts';
 const refusal='Not changed: Slack action is foreign, expired, already used, unmapped, revoked or no longer authorized. Open Orbit to inspect current work.';
@@ -22,7 +22,7 @@ export function createSlackActionRoutes(db:D1Database,config:SlackConfig){
   if(await archiveImportActive(db))return refuse('restore');
   const item=await installation(db);if(!item||item.state!=='connected')return refuse('disconnected');
   let secret:string;try{secret=(await credentials(db,config)).signingSecret;}catch{return refuse('credentials');}
-  const raw=await c.req.text();if(raw.length>65536||!await verified(secret,raw,c.req.header('X-Slack-Request-Timestamp')??'',c.req.header('X-Slack-Signature')??''))return refuse('signature-or-time',401);
+  let raw:string;try{raw=await slackBody(c.req.raw);}catch{return c.json({error:'Slack request exceeds the supported body size'},413);}if(!await verified(secret,raw,c.req.header('X-Slack-Request-Timestamp')??'',c.req.header('X-Slack-Signature')??''))return refuse('signature-or-time',401);
   let payload:any;try{payload=JSON.parse(new URLSearchParams(raw).get('payload')??'');}catch{return refuse('payload');}
   if(payload.type!=='block_actions'||!installationMatches(item,payload)||payload.actions?.length!==1)return refuse('foreign-installation');
   // Slack receives its HTTP acknowledgment before task work or response_url delivery.

@@ -1,3 +1,5 @@
+import {boundedRequestBody} from '../../platform/bounded-request-body';
+export async function slackBody(request:Request){return new TextDecoder().decode(await boundedRequestBody(request,65536));}
 /** WebCrypto verifies HMAC in constant time; signed freshness never substitutes for one-use IDs. */
 export async function verified(secret:string,raw:string,timestamp:string,signature:string){
  if(!/^\d{10}$/.test(timestamp)||!/^v0=[a-f0-9]{64}$/.test(signature))return false;
