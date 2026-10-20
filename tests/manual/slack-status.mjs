@@ -7,7 +7,7 @@ import {chromium} from '@playwright/test';
 import {identityVarArgs} from '../support/worker-identity.mjs';
 const origin='http://127.0.0.1:17862',evidence='docs/retained-verification/INTEGRATE-005';
 const platform=await getPlatformProxy({configPath:'wrangler.jsonc',envFiles:['tests/support/no-local-settings.env'],persist:{path:'.wrangler/state/v3'},remoteBindings:false});
-let browser,worker,session;
+let browser,worker,session,closed=false;
 try{
  const db=platform.env.DB,owner=await db.prepare("SELECT * FROM operators WHERE setup_owner=1 AND status='active'").first();assert.ok(owner);
  const {testAuth}=await import('../support/test-auth.ts');session=await testAuth(db).createSession(owner.id);
@@ -23,7 +23,7 @@ try{
   const errors={'rate-limited':'ratelimited',uncertain:'submission_uncertain',failed:'not_in_channel',withheld:'Record is restricted from this channel audience',paused:'token_revoked',held:'Held by administrator; never resend',redacted:'Underlying record erased'};
   await db.prepare('INSERT OR REPLACE INTO slack_notices(id,event_key,event_kind,channel_id,record_type,record_id,state,content_json,error,retry_at,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').bind('visual-'+state,'visual-'+state,'stage',channel.id,'opportunity',['withheld','redacted'].includes(state)?null:deal.id,state,content,errors[state],state==='rate-limited'?retry:null,new Date(Date.now()+1000+i).toISOString(),now).run();
  }
- await platform.dispose();
+ await platform.dispose();closed=true;
  worker=spawn(process.execPath,['node_modules/wrangler/bin/wrangler.js','dev','--config','dist/server/wrangler.json','--local','--persist-to','.wrangler/state','--ip','127.0.0.1','--port','17862','--inspector-port','0',...identityVarArgs(origin,'owner@run-orbit.test')],{env:{...process.env,WRANGLER_SEND_METRICS:'false'},stdio:['ignore','pipe','pipe']});
  // Keep process output private: Wrangler may describe local bindings.
  worker.stdout.on('data',()=>{});worker.stderr.on('data',()=>{});
@@ -38,4 +38,4 @@ try{
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'Settings fits the viewport');
  }
  console.log('Slack settings, rate-limit, uncertain, failed, withheld, paused, held and redacted states inspected at 1440/390. These state fixtures are not live-provider proof.');
-}finally{await browser?.close();await platform.dispose();if(worker&&worker.exitCode===null){worker.kill('SIGTERM');await once(worker,'exit');}}
+}finally{await browser?.close();if(!closed)await platform.dispose();if(worker&&worker.exitCode===null){worker.kill('SIGTERM');await once(worker,'exit');}}
