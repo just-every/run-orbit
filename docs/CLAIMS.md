@@ -23,4 +23,4 @@ This supplement records the OUT-020 claim boundary; the complete inventory remai
 
 Proof: `tests/core/outbound-boundaries.test.ts` — “OUT-020 managed opt-out is approval-bound, suppresses only its recipient and stops replayed dispatch”; screenshots `tests/evidence/contract/OUT-020/`. The HTTP/relay-edge test and screenshots were exercised on 20 October 2026. Records and CLI restores carry capabilities, and the released v0.3.0 additive upgrade kept all 125 existing rows across 203 tables unchanged. A passing relay-edge test establishes submitted bytes and local behavior, not live relay delivery.
 
-Source provenance: `5ad1f2f0629415ba50f04a3230e9d450c0b66862` (20 October 2026). The existing 200-case cap is unchanged.
+Source provenance: `f092419bf45d8507d14ed78f6e7ac1e0ff00ce87` (20 October 2026). The existing 200-case cap is unchanged.
