@@ -8,7 +8,7 @@ interface Fixture {db:D1Database;actor:string;stage:string;app:ReturnType<typeof
 export async function proveSlackNotices(f:Fixture,deal:string,contact:string){
  const native=globalThis.fetch,secret=randomBytes(32).toString('hex'),token='test-only-slack-bot',posts:any[]=[];
  let outcome:'sent'|'rate'|'timeout'|'revoked'|'failed'='sent',attempts=0;
- const channel=(id='CINTERNAL')=>({id,name:id==='CINTERNAL'?'sales-internal':'external',is_member:true,is_archived:false,is_shared:id==='CEXTERNAL',is_ext_shared:id==='CEXTERNAL',is_org_shared:false,context_team_id:'TWORKSPACE'});
+ const channel=(id='CINTERNAL')=>({id,name:id==='CINTERNAL'?'sales-internal':'external',is_member:id!=='CNOTMEMBER',is_archived:false,is_shared:id==='CEXTERNAL',is_ext_shared:id==='CEXTERNAL',is_org_shared:false,context_team_id:'TWORKSPACE'});
  globalThis.fetch=async(input,init)=>{if(!String(input).startsWith('https://slack.com/api/'))return native(input,init);assert.equal(init?.redirect,'manual');assert.equal(new Headers(init?.headers).get('authorization'),'Bearer '+token);const url=new URL(String(input)),method=url.pathname.split('/').at(-1),body=init?.body?JSON.parse(String(init.body)):Object.fromEntries(url.searchParams);
   if(outcome==='revoked')return Response.json({ok:false,error:'token_revoked'});
   if(method==='auth.test')return Response.json({ok:true,team_id:'TWORKSPACE',user_id:'UBOT',bot_id:'BBOT'});
@@ -25,6 +25,7 @@ export async function proveSlackNotices(f:Fixture,deal:string,contact:string){
   await call('connect','POST',{token,signingSecret:secret});assert.ok(!JSON.stringify(await call('')).includes(secret));assert.ok(!JSON.stringify(await call('')).includes(token));
   assert.deepEqual((await call('channels')).channels.map((c:any)=>c.id),['CINTERNAL']);
   assert.equal((await f.request('settings/slack/channels','PUT',{id:'CEXTERNAL',events:['stage'],enabled:true})).status,400);
+  assert.equal((await f.request('settings/slack/channels','PUT',{id:'CNOTMEMBER',events:['stage'],enabled:true})).status,400);
   await call('channels','PUT',{id:'CINTERNAL',events:['stage','due','won','handoff'],enabled:true});
   const stageUpdate=await f.request('settings/stages','PUT',{stages:[{id:f.stage,name:'Discovery'},{name:'Proposal'}]});assert.equal(stageUpdate.status,200,await stageUpdate.clone().text());const second=(await stageUpdate.json() as any).stages.find((s:any)=>s.name==='Proposal').id;
   const move=async(id:string,from:string,to:string)=>{const response=await f.request(`records/opportunity/${id}/move`,'POST',{stageId:to,reviewedStageId:from});assert.ok(response.ok,await response.clone().text());};
@@ -52,7 +53,7 @@ export async function proveSlackNotices(f:Fixture,deal:string,contact:string){
   await f.request(`records/opportunity/${deal}/entries`,'POST',{kind:'call',text:'Customer call with private content',occurredAt:new Date().toISOString(),durationMinutes:5});
   await f.request(`records/opportunity/${deal}/lifecycle`,'POST',{state:'won',reason:'Private win reason'});assert.ok((await notices()).some(n=>n.event_kind==='won'&&n.state==='sent'));assert.ok((await notices()).some(n=>n.event_kind==='handoff'&&n.state==='sent'));assert.ok(posts.every(p=>!p.text.includes('Private win reason')&&!p.text.includes('Customer call with private content')));
   outcome='revoked';await process(); // no queued delivery need not call the provider; explicit workspace verification does.
-  assert.equal((await f.request('settings/slack/verify','POST',{})).status,503);assert.equal((await call('')).installation.state,'revoked');const products=await(await f.request('settings/products')).json() as any;assert.equal(products.products.find((p:any)=>p.products.includes('Slack')).state,'unresolved-setup');
+  assert.equal((await f.request('settings/slack/verify','POST',{})).status,503);assert.equal((await call('')).installation.state,'revoked');assert.equal((await call('')).installation.error,'token_revoked');const products=await(await f.request('settings/products')).json() as any;assert.equal(products.products.find((p:any)=>p.products.includes('Slack')).state,'unresolved-setup');
   await move(deal,f.stage,second);assert.ok((await notices()).some(n=>n.state==='paused'));
   await proveArchive(f,contact,secret,token);
  }finally{globalThis.fetch=native;}
