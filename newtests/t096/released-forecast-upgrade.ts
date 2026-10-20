@@ -7,6 +7,7 @@ import {archiveCatalog,type ArchiveTable} from '../../src/core/features/records/
 import {archiveSchemaObjects,type SchemaObjectTable} from '../../src/core/features/records/archive-schema-objects';
 import {foldExcludedTables,foldInstalledCatalog,foldSchemaHash,type FoldArchiveTable} from '../../src/core/features/records/archive-fold-catalog';
 import {preForecastCatalog} from '../../src/core/features/records/forecast-archive-compatibility';
+import {preOptOutCapabilityCatalog} from '../../src/core/features/records/archive-generations';
 import {validateFoldManifest} from '../../src/core/features/records/archive-fold-validation';
 
 /** Read the actual released schema without assuming forecast tables are installed. */
@@ -39,7 +40,7 @@ export async function proveReleasedForecastUpgrade(){
   const before=new Map<string,string[]>();for(const name of names)before.set(name,await rows(db,name));
   await target.upgrade();db=target.db;
   for(const name of names)assert.deepEqual(await rows(db,name),before.get(name),`released rows retained in ${name}`);
-  const previous=preForecastCatalog(await foldInstalledCatalog(db));assert.deepEqual(previous,catalog,'pre-forecast generation retains the exact released columns, objects, triggers and views');assert.equal(await foldSchemaHash(previous),schemaHash);
+  const previous=preForecastCatalog(preOptOutCapabilityCatalog(await foldInstalledCatalog(db)));assert.deepEqual(previous,catalog,'pre-forecast generation retains the exact released columns, objects, triggers and views');assert.equal(await foldSchemaHash(previous),schemaHash);
   const manifest={format:'orbit-export',version:3,generation:'orbit-fold-1',schemaHash,exportedAt:now,tables:catalog.map(table=>({name:table.name,columns:table.columns.map(column=>column.name),rows:before.get(table.name)!.length})),rows:catalog.reduce((sum,table)=>sum+before.get(table.name)!.length,0),parts:1};
   assert.deepEqual((await validateFoldManifest(db,manifest)).inputCatalog,previous);
   assert.deepEqual((await db.prepare('PRAGMA foreign_key_check').all()).results,[]);
