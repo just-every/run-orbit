@@ -3403,7 +3403,7 @@
       "executable": false
     },
     "src/core/features/access/native-boundary.ts": {
-      "sha256": "82ec7724f69e28322213e142df456fafbe90329ef5d4bcf9a4b899d784afc804",
+      "sha256": "b56d055d0648412c5fe35827b481ad2126c6564ebfbd626c8db200e18b60ef7a",
       "executable": false
     },
     "src/core/features/access/policy.ts": {
