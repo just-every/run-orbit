@@ -747,9 +747,9 @@ The owner-approved scope entry (16 October 2026) maps to named clauses as follow
 
 ## Status
 
-Judged from the code and tests at commit `f6649d7b5416a1c18c6d7f647d35e89cb30be847` (20 October 2026).
+Judged from the code and tests at commit `fdbb2ed628d0aedd0041397f45709ed6ab940a91` (20 October 2026).
 
-Status is an implementation judgment, not a live-provider or deployed-product acceptance claim. The inventory audit at `64f66dd936b78c84ef1d839c68fd735851752ae9` is the starting point; evidence changed by main `f6649d7b5416a1c18c6d7f647d35e89cb30be847` and by the 20 October RECORD-017 collaborator notifications and shared entries was re-read. `done` requires implementation and an exercising test; `partial` names the implemented subset and remaining obligation. These source tests were inspected; this documentation round does not claim to have rerun their runtime suites. Existing historical release results belong to their recorded source commits. BASELINE.md remains independently applicable and is not included in these product-clause counts.
+Status is an implementation judgment, not a live-provider or deployed-product acceptance claim. The inventory audit at `64f66dd936b78c84ef1d839c68fd735851752ae9` is the starting point; evidence changed by main `fdbb2ed628d0aedd0041397f45709ed6ab940a91` and by the 20 October RECORD-017 collaborator notifications and shared entries was re-read. `done` requires implementation and an exercising test; `partial` names the implemented subset and remaining obligation. These source tests were inspected; this documentation round does not claim to have rerun their runtime suites. Existing historical release results belong to their recorded source commits. BASELINE.md remains independently applicable and is not included in these product-clause counts.
 
 For the 0.2.0 release record (18 October 2026, commit `5c72dc85b7d4627e8b655246102981992f48a7fa`), the fifteen published clauses that were partial were restated to what that commit ships and its independent release gate proved, and each larger obligation stays with the target clause named in its text. The 19 October TEAM-002 automated HTTP journey now proves its setup-owner refusals and permitted self-removal; all 79 published clauses are done.
 
