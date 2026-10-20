@@ -20,7 +20,7 @@ try{
  if(!internal||/customer|client|support|external|public community/.test(description))throw new Error('Held channel is shared, not a bot-member internal channel, or appears customer-facing; live proof stopped.');
  report.status.push('conversations.info: workspace-internal bot-member test channel; no customer-facing indicators');
  report.status.push('Channel safety flags: '+JSON.stringify(Object.fromEntries(['is_member','is_channel','is_archived','is_frozen','is_shared','is_ext_shared','is_org_shared','is_pending_ext_shared'].map(key=>[key,info[key]??'absent']))));
- const auth=await slack('auth.test',{});report.status.push('auth.test: accepted');
+ const auth=await slack('auth.test',{});report.status.push('auth.test: accepted');report.status.push('Recorded run audience checks: '+JSON.stringify({contextTeamMatches:info.context_team_id===auth.team_id,connectedTeams:info.connected_team_ids?.length??0,pendingConnectedTeams:info.pending_connected_team_ids?.length??0,pendingShared:info.pending_shared?.length??0,foreignSharedTeams:info.shared_team_ids?.filter(id=>id!==auth.team_id).length??0}));
  await launch(['setup','--owner-email','owner@run-orbit.test','--port','17861','--non-interactive']);
  server=spawn(process.execPath,['node_modules/@runeditrun/rer/bin/rer.mjs','dev','--foreground','--direct','--port','17861'],{env:{...process.env,SLACK_BOT_TOKEN:undefined,SLACK_CHANNEL_ID:undefined,WRANGLER_SEND_METRICS:'false'},stdio:['ignore','pipe','pipe']});
  server.stdout.on('data',chunk=>buffer+=chunk);server.stderr.on('data',chunk=>buffer+=chunk);
