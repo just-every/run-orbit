@@ -26,7 +26,7 @@ export async function forecastBrowserJourney(browser:Browser,origin:string,direc
  const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);await request('/api/v1/records/opportunity','POST',{title:'Past close date needs review',stage_id:firstStage,value_cents:0,expected_close_at:yesterday+'T12:00:00.000Z'});
  const overrideReason='Buyer confirmed budget after procurement review';
  let prior:ForecastSnapshot|undefined;
- async function capture(page:Page,name:string){await accessible(page,name,directory);await page.getByRole('region',{name:'Sales forecast',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,name+'-viewport.png')});}
+ async function capture(page:Page,name:string){await accessible(page,name,directory);const panel=page.getByRole('region',{name:'Sales forecast',exact:true}),focus=name.includes('override')?panel.getByRole('form',{name:'Review deal forecast',exact:true}):panel.locator('.forecast-measures').first();await focus.screenshot({path:join(directory,name+'-focus.png')});await (name.includes('override')?focus:panel).evaluate(element=>element.scrollIntoView({block:'start'}));await page.screenshot({path:join(directory,name+'-viewport.png')});}
  async function reviewedAction(page:Page,name:string,path:string){await Promise.all([page.waitForResponse(response=>new URL(response.url()).pathname===base+path&&response.request().method()==='POST'&&response.ok()),page.getByRole('button',{name,exact:true}).click()]);}
  for(const width of [1440,390]){
   const context=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),errors=watchBrowser(context),page=await context.newPage();
