@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {join} from 'node:path';
 import {expect,type Browser,type Page} from '@playwright/test';
 import {accessible,watchBrowser} from './browser-observations';
 import type {ForecastPreview,ForecastSnapshot,ForecastState} from '../../src/core/features/forecast/types';
@@ -24,6 +25,7 @@ export async function forecastBrowserJourney(browser:Browser,origin:string,direc
  await request('/api/v1/records/opportunity','POST',{title:'Date and probability need review',stage_id:unreviewed,value_cents:500000});
  const overrideReason='Buyer confirmed budget after procurement review';
  let prior:ForecastSnapshot|undefined;
+ async function capture(page:Page,name:string){await accessible(page,name,directory);await page.getByRole('region',{name:'Sales forecast',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,name+'-viewport.png')});}
  async function reviewedAction(page:Page,name:string,path:string){await Promise.all([page.waitForResponse(response=>new URL(response.url()).pathname===base+path&&response.request().method()==='POST'&&response.ok()),page.getByRole('button',{name,exact:true}).click()]);}
  for(const width of [1440,390]){
   const context=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),errors=watchBrowser(context),page=await context.newPage();
@@ -45,21 +47,21 @@ export async function forecastBrowserJourney(browser:Browser,origin:string,direc
     await panel.getByRole('button',{name:'Review inputs',exact:true}).click();await panel.getByLabel('Forecast deal',{exact:true}).selectOption(first.id);await panel.getByLabel('Deal probability override (%)',{exact:true}).fill('80');await panel.getByLabel('Deal category override',{exact:true}).selectOption('committed');
     await panel.getByRole('button',{name:'Add schedule line',exact:true}).click();await panel.getByLabel('Line 1 label',{exact:true}).fill('Platform subscription');await panel.getByLabel('Line 1 frequency',{exact:true}).selectOption('monthly');await panel.getByLabel('Line 1 amount (USD)',{exact:true}).fill('1000');await panel.getByLabel('Line 1 start date',{exact:true}).fill(from);
     await panel.getByRole('button',{name:'Add schedule line',exact:true}).click();await panel.getByLabel('Line 2 label',{exact:true}).fill('Implementation');await panel.getByLabel('Line 2 amount (USD)',{exact:true}).fill('500');await panel.getByLabel('Line 2 start date',{exact:true}).fill(from);await panel.getByLabel('Deal forecast reason',{exact:true}).fill(overrideReason);
-    await accessible(page,`forecast-override-${width}`,directory);await reviewedAction(page,'Save deal forecast',`/deals/${first.id}`);
+    await capture(page,`forecast-override-${width}`);await reviewedAction(page,'Save deal forecast',`/deals/${first.id}`);
     const refused=await setup.request.post(`${base}/snapshots`,{data:{...period,reviewHash:stale.reviewHash},headers:{Origin:origin}});assert.equal(refused.status(),409,'intervening override invalidates a prior preview');
     await request(`/api/v1/records/opportunity/${second.id}/lifecycle`,'POST',{state:'won',reason:'Signed annual agreement'});
    }else{
-    await panel.getByLabel('Forecast deal',{exact:true}).selectOption(first.id);await expect(panel.getByLabel('Deal probability override (%)',{exact:true})).toHaveValue('80');await expect(panel.getByLabel('Line 1 label',{exact:true})).toHaveValue('Platform subscription');await accessible(page,`forecast-override-${width}`,directory);
+    await panel.getByLabel('Forecast deal',{exact:true}).selectOption(first.id);await expect(panel.getByLabel('Deal probability override (%)',{exact:true})).toHaveValue('80');await expect(panel.getByLabel('Line 1 label',{exact:true})).toHaveValue('Platform subscription');await capture(page,`forecast-override-${width}`);
    }
    await panel.getByRole('button',{name:'Overview',exact:true}).click();await panel.getByLabel('Forecast from',{exact:true}).fill(from);await panel.getByLabel('Forecast through',{exact:true}).fill(through);await reviewedAction(page,'Preview forecast','/preview');
    const current=await request(`${base}/preview`,'POST',period) as ForecastPreview;
    assert.equal(current.result.totals.weightedExpectedCents,800000);assert.equal(current.result.totals.wonBookingsCents,2000000);assert.equal(current.result.totals.committedCents,1000000);assert.equal(current.result.totals.recurringScheduledCents,100000);assert.equal(current.result.totals.oneTimeScheduledCents,50000);assert.equal(current.result.totals.mrrCents,100000);assert.equal(current.result.totals.arrCents,1200000);
    assert.deepEqual(current.result.quotaAttainment.map(row=>row.attainmentPercent).sort((a,b)=>a!-b!),[25,50]);
    await expect(panel.getByRole('complementary',{name:'Forecast input warnings'})).toContainText('Missing close date');await expect(panel.getByRole('complementary',{name:'Forecast input warnings'})).toContainText('Missing reviewed probability');
-   await accessible(page,`forecast-${width}`,directory);
+   await capture(page,`forecast-${width}`);
    await panel.getByRole('button',{name:'History',exact:true}).click();
    await panel.getByLabel('Saved forecast snapshot',{exact:true}).selectOption(prior!.id);
-   await expect(panel).toContainText('$15,000.00');await expect(panel).toContainText(overrideReason);await accessible(page,`forecast-history-${width}`,directory);
+   await expect(panel).toContainText('$15,000.00');await expect(panel).toContainText(overrideReason);await capture(page,`forecast-history-${width}`);
    assert.deepEqual(await request(`${base}/snapshots/${prior!.id}`),prior,'win, new overrides and new reviews never rewrite prior as-of snapshot');
    await errors.check(directory,`forecast-${width}`);
   }finally{await context.close();}
