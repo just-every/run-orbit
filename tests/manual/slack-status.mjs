@@ -19,12 +19,12 @@ try{
  const now=new Date().toISOString(),retry=new Date(Date.now()+300000).toISOString();
  await db.prepare("UPDATE slack_installation SET state='revoked',error='token_revoked'").run();
  await db.prepare("UPDATE slack_channels SET last_error='ratelimited',retry_at=?").bind(retry).run();
- await db.prepare('INSERT OR REPLACE INTO slack_mappings VALUES(?,?,NULL)').bind('UVISUAL',owner.id).run();
+ const installation=await db.prepare('SELECT * FROM slack_installation').first(),epoch=Number(await db.prepare("SELECT policy_epoch FROM access_workspaces WHERE id='workspace'").first('policy_epoch'));await db.prepare('INSERT OR REPLACE INTO slack_mappings VALUES(?,?,?,?,?,NULL,?,?)').bind(installation.team_id,installation.enterprise_id,installation.app_id,'UVISUAL',owner.id,epoch,now).run();
  const states=['rate-limited','uncertain','failed','withheld','paused','held','redacted'];
  for(const [i,state] of states.entries()){
-  const content=['withheld','redacted'].includes(state)?null:JSON.stringify({eventKind:'stage',recordDisplayName:'Harbour annual rollout',stageFrom:'Discovery',stageTo:'Proposal',ownerDisplayName:owner.display_name,dueDate:null,link:origin+'/app/opportunities/'+deal.id});
+  const content=state==='redacted'?null:state==='withheld'?JSON.stringify({eventKind:'stage',link:origin+'/app/opportunities/'+deal.id}):JSON.stringify({eventKind:'stage',recordDisplayName:'Harbour annual rollout',stageFrom:'Discovery',stageTo:'Proposal',ownerDisplayName:owner.display_name,dueDate:null,link:origin+'/app/opportunities/'+deal.id});
   const errors={'rate-limited':'ratelimited',uncertain:'submission_uncertain',failed:'not_in_channel',withheld:'Record is restricted from this channel audience',paused:'token_revoked',held:'Held by administrator; never resend',redacted:'Underlying record erased'};
-  await db.prepare('INSERT OR REPLACE INTO slack_notices(id,event_key,event_kind,channel_id,record_type,record_id,state,content_json,error,retry_at,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').bind('visual-'+state,'visual-'+state,'stage',channel.id,'opportunity',['withheld','redacted'].includes(state)?null:deal.id,state,content,errors[state],state==='rate-limited'?retry:null,new Date(Date.now()+1000+i).toISOString(),now).run();
+  await db.prepare('INSERT OR REPLACE INTO slack_notices(id,event_key,event_kind,channel_id,record_type,record_id,state,content_json,error,retry_at,created_at,updated_at,privacy) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)').bind('visual-'+state,'visual-'+state,'stage',channel.id,'opportunity',['withheld','redacted'].includes(state)?null:deal.id,state==='withheld'?'sent':state,content,errors[state],state==='rate-limited'?retry:null,new Date(Date.now()+1000+i).toISOString(),now,state==='withheld'?'withheld':null).run();
  }
  await platform.dispose();closed=true;
  worker=spawn(process.execPath,['node_modules/wrangler/bin/wrangler.js','dev','--config','dist/server/wrangler.json','--local','--persist-to','.wrangler/state','--ip','127.0.0.1','--port','17862','--inspector-port','0',...identityVarArgs(origin,'owner@run-orbit.test')],{env:{...process.env,WRANGLER_SEND_METRICS:'false'},stdio:['ignore','pipe','pipe']});
@@ -38,7 +38,7 @@ try{
   await page.setViewportSize({width,height:1000});await page.goto(origin+'/app/settings');await page.getByRole('heading',{name:'Slack sales notices',exact:true}).waitFor();
   await page.getByText('Unresolved setup · notices paused',{exact:true}).first().waitFor();
   await page.locator('#slack-settings').evaluate(el=>el.scrollIntoView({block:'start'}));await page.screenshot({path:`${evidence}/revoked-settings-${width}.png`});
-  for(const state of states){const row=page.locator('li').filter({has:page.getByText(`stage · #${channel.name} · ${state}`,{exact:true})});await row.evaluate(el=>el.scrollIntoView({block:'start'}));await page.screenshot({path:`${evidence}/${state}-${width}.png`});}
+  for(const state of states){const row=page.locator('li').filter({has:page.getByText(`stage · #${channel.name} · ${state==='withheld'?'sent · details withheld':state}`,{exact:true})});await row.evaluate(el=>el.scrollIntoView({block:'start'}));await page.screenshot({path:`${evidence}/${state}-${width}.png`});}
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'Settings fits the viewport');
  }
  const disconnected=await page.evaluate(async()=>{const response=await fetch('/api/v1/settings/slack/disconnect',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});return response.status;});assert.equal(disconnected,200);
