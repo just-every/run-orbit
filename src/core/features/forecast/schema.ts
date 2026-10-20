@@ -1,0 +1,13 @@
+import {z} from 'zod';
+const date=z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(value=>value>='1900-01-01'&&Number.isFinite(Date.parse(value))&&new Date(value).toISOString().slice(0,10)===value,'Use a real date from 1900 onward.');
+const id=z.string().min(1).max(120);
+const cents=z.number().int().min(0).max(100_000_000_000_000);
+const reason=z.string().trim().min(1).max(2000);
+const probability=z.number().min(0).max(100);
+const category=z.enum(['pipeline','best_case','committed','omitted']);
+export const forecastPeriodSchema=z.object({from:date,through:date}).strict().refine(v=>v.from<v.through,'The through date must follow the from date.').refine(v=>Date.parse(v.through)-Date.parse(v.from)<=36600*86400000,'Choose a period of at most 100 years.');
+export const stageRuleSchema=z.object({stageId:id,probability,category,reason}).strict();
+export const revenueScheduleSchema=z.object({label:z.string().trim().min(1).max(200),kind:z.enum(['one_time','monthly','quarterly','annual']),amountCents:cents,startDate:date,endDate:date.nullable()}).strict().refine(v=>v.endDate===null||v.endDate>v.startDate,'A schedule end is exclusive and must follow its start.');
+export const dealForecastSchema=z.object({probability:probability.nullable(),category:category.nullable(),closeDate:date.nullable(),schedules:z.array(revenueScheduleSchema).max(1000),reason}).strict();
+export const quotaSchema=z.object({operatorId:id,period:z.enum(['monthly','quarterly']),startDate:date,amountCents:cents,reason}).strict().refine(v=>v.startDate.endsWith('-01')&&(v.period==='monthly'||['01','04','07','10'].includes(v.startDate.slice(5,7))),'Quotas start on the first day of a calendar month or quarter.').refine(v=>v.startDate.slice(0,4)!=='9999'||Number(v.startDate.slice(5,7))+(v.period==='monthly'?1:3)<=12,'The complete quota period must end before year 10000.');
+export const snapshotSchema=forecastPeriodSchema.safeExtend({reviewHash:z.string().regex(/^[a-f0-9]{64}$/)});

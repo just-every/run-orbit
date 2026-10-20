@@ -1,3 +1,4 @@
+import {forecastErasureStatements} from '../forecast/privacy';
 import { executeArchiveErasure } from '../records';
 import {audit,RecordError} from '../records/shared';
 import {identityMatch,identityPatterns} from '../records/erasure-identity';
@@ -17,6 +18,7 @@ export async function eraseOperator(db:D1Database,id:string,actor:string){
   if(others.some(other=>other.name&&containsWord(other.name,name)))throw new RecordError(409,'Another operator or contact has a name containing this display name, so Orbit cannot tell whose name attributed text means. Nothing was erased.');
  }
  const now=new Date().toISOString(),statements=[db.prepare('DELETE FROM sessions WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_proofs WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_bindings WHERE operator_id=?').bind(id),db.prepare('DELETE FROM notifications WHERE operator_id=?').bind(id)];
+ statements.push(...forecastErasureStatements(db,'operator',id,[operator.email]));
  // JSON replacement uses escaped text so quotes in a display name cannot invalidate stored JSON.
  const contentColumns:Record<string,string[]>={audit_entries:['details_json'],timeline_entries:['payload_json'],ai_previews:['content_json'],ai_calls:['error'],notifications:['message'],drafts:['subject','body'],outbound_messages:['subject','body','failure'],source_event_errors:['reason'],signal_sources:['last_error']};
  const attribution:Record<string,string>={audit_entries:"(actor_id=? OR (entity_type='operator' AND entity_id=?))",timeline_entries:'actor_id=?',ai_previews:'operator_id=?',ai_calls:'operator_id=?',notifications:'operator_id=?',drafts:'author_id=?',outbound_messages:'operator_id=?'};
