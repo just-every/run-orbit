@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "8dd58a42095b1ac368ddd7c3b07cefd146cca7d6b9d86ae41da7bc0cb3b8cf7c",
+      "sha256": "3f74ecc1204bca9d278f68b037221b7c674d2957e3f3412039f5729034051448",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "704daf1c262f168099d2ac6b1ea1a6f8c5931d9eaf3d4560170bf05fe1f6d563",
+      "sha256": "924a6b8a9aab68005c2a16dfa45e56c68be6523a8b803a724bd60b20fc9fc84a",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "876caed6ba357c0f107a051deee4b045546a774fc41041629f6ffd394ac90dcc",
+      "sha256": "3c530e3e548c85389d7987016226472f0f8ea9e7a07727bc2541c6440bfebe90",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -1387,7 +1387,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "d4ebe3d6f6769fbb59204c9f3ed3a9383e905c07f355d50b9254ecc876a7833f",
+      "sha256": "08559709643e9549e4c2fa1ab4900609e2e1bfecd9603bf6b73077db4d2e87b1",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -4019,7 +4019,7 @@
       "executable": false
     },
     "src/core/features/analytics/sales.css": {
-      "sha256": "8799f20e51baece9a76945594142ff64cd0cf2b77be37803819b4d50cbef3947",
+      "sha256": "3592d113afd2580b8c4478810c0a51eedaa12754eae5837e10cde6a853776d8f",
       "executable": false
     },
     "src/core/features/analytics/snapshot-storage.ts": {
