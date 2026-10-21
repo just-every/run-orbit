@@ -32,7 +32,7 @@
 .sales-section{display:grid;gap:10px;min-width:0;padding-top:14px;border-top:1px solid var(--operator-line)}
 .sales-totals{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin:0}.sales-cell-note{display:block;margin-top:6px;color:var(--ob-body);font-size:.78rem;line-height:1.35}
 .sales-totals .sales-not-success{border-style:dashed}
-.sales-reports .sales-cell{min-width:44px;padding:6px 10px;white-space:nowrap;overflow-wrap:normal;border-color:var(--operator-green);font-variant-numeric:tabular-nums;text-decoration:underline;text-underline-offset:3px}
+.sales-reports .sales-cell{min-width:44px;padding:6px 10px;white-space:nowrap;overflow-wrap:normal;border-color:var(--operator-green);font-variant-numeric:tabular-nums;text-decoration:underline;text-underline-offset:3px;transition:none}
 .sales-reports .sales-cell[aria-expanded=true]{color:#fff;background:var(--operator-green)}
 .sales-table{max-width:100%;overflow-x:auto;border:1px solid var(--operator-line);border-radius:8px;background:var(--operator-paper)}
 .sales-table table{width:100%;min-width:max-content;border-collapse:collapse;font-size:.9rem}
