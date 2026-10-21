@@ -8,6 +8,7 @@ const playwright = (config, files) => ({ files, args: ['exec', 'playwright', 'te
 
 // Measured CI minutes per file (Verify on b68c8c3), used only to balance shards so each push
 // Verify job stays near ten minutes. INTEGRATE-005 uses its conservative 8.5-minute local proof.
+// Fold-domain files are from Verify 39500768813; REPORT-001 uses its 4-minute local proof.
 // A file missing here counts as half a minute.
 const minutes = {
   'tests/core/capture-data.test.ts': 8.5, 'tests/core/capture-providers.test.ts': 5.3, 'tests/core/crm-import.test.ts': 4.9,
@@ -17,6 +18,8 @@ const minutes = {
   'tests/core/capture-connector.test.ts': 0.8, 'tests/core/launch-provider-conflicts.test.ts': 0.8, 'tests/core/source-onboarding.test.ts': 8.5,
   'newtests/t096/archive-native.test.ts': 8.3, 'newtests/t096/archive-terminal-recovery.test.ts': 7.6, 'newtests/t096/archive-view-rollback.test.ts': 3.7,
   'newtests/t096/archive-import-recovery.test.ts': 3.4, 'newtests/t096/archive-cli-native.test.ts': 2.4, 'newtests/t096/archive-upgrade-preflight.test.ts': 1.4,
+  'newtests/t096/browser-journeys.test.ts': 6.5, 'newtests/t096/report-disclosure.test.ts': 4, 'newtests/t096/forms-native.test.ts': 2.1,
+  'newtests/t096/delegation-collaborator.test.ts': 1.9, 'newtests/t096/collaborator-lifecycle.test.ts': 1, 'newtests/t096/forward-upgrade.test.ts': 0.9,
 };
 const weight = file => minutes[file] ?? 0.5;
 /** Longest first into the lightest bin: a deterministic, balanced split of files into `count` shards. */
@@ -74,7 +77,7 @@ export function verificationPlan({ journeys = false } = {}) {
     ...Object.fromEntries(Object.entries(operatorShards).map(([name, file]) => [name, prepared(gate('run', 'build:app'), nodeTests([file], `verification/${name}-results.jsonl`, 'node'))])),
     'rer-checkouts': prepared(gate('run', 'build:app'), nodeTests(rer.filter(file => !operatorFiles.includes(file)), 'verification/rer-checkouts-results.jsonl', 'node')),
     ...Object.fromEntries(balance(archive, 4).map((files, index) => [`fold-archive-${index}`, [gate('run', 'build:app'), nodeTests(files, `verification/fold-archive-${index}-results.jsonl`)]])),
-    'fold-domain': [gate('run', 'build:app'), nodeTests(fold.filter(file => !archive.includes(file) && !lineage.includes(file)), 'verification/fold-domain-results.jsonl')],
+    ...Object.fromEntries(balance(fold.filter(file => !archive.includes(file) && !lineage.includes(file)), 2).map((files, index) => [`fold-domain-${index}`, [gate('run', 'build:app'), nodeTests(files, `verification/fold-domain-${index}-results.jsonl`)]])),
     'fold-accepted-main': [gate('run', 'build:app'), nodeTests(lineage, 'verification/fold-accepted-main-results.jsonl')],
     journeys: prepared(gate('run', 'build:app'), nodeTests(journeyFiles, 'verification/journeys-results.jsonl', 'node')),
   };

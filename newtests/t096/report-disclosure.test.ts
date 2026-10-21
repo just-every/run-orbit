@@ -9,9 +9,11 @@ import {fixture,nativeRecord,collaborator} from './fixture';
 import {emittedWorker} from './emitted-fixture';
 import {emittedRequest} from './emitted-request';
 import {accessible,watchBrowser} from './browser-observations';
+import {seedSalesReport} from './sales-report-fixture';
+import {salesReportJourney} from './browser-sales-report';
 
 let f:Awaited<ReturnType<typeof fixture>>,worker:Awaited<ReturnType<typeof emittedWorker>>;
-let browser:Awaited<ReturnType<typeof chromium.launch>>,limitedCookie:string,companyId:string;
+let browser:Awaited<ReturnType<typeof chromium.launch>>,limitedCookie:string,companyId:string,sales:Awaited<ReturnType<typeof seedSalesReport>>,seller:Awaited<ReturnType<typeof collaborator>>;
 const directory=process.env.ORBIT_FOLD_BROWSER_EVIDENCE!;
 const from=new Date(Date.now()-86400000).toISOString().slice(0,16),through=new Date(Date.now()+86400000).toISOString().slice(0,16);
 const apiBase='/api/v2/workspaces/workspace/operations';
@@ -30,11 +32,12 @@ before(async()=>{
  await f.db.prepare('UPDATE opportunities SET owner_id=?').bind(f.operator.operatorId).run();
  limitedCookie=(await collaborator(f,'analyst')).cookie;
  await f.db.prepare("UPDATE schema_types SET fields_json=? WHERE name='company'").bind(JSON.stringify({name:{sensitivity:'private'}})).run();
+ sales=await seedSalesReport(f);seller=await collaborator(f,'seller');
  worker=await emittedWorker(f.target);browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic','--disable-gpu',...worker.browserArgs]});
 });
 after(async()=>{await browser?.close();await worker?.dispose();await f?.close();});
 
-test('custom filtered Sum discloses its measured period, filters, groups and missing handling in preview, history and export at both widths',async()=>{
+test('REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence',async()=>{
  for(const width of [1440,390]){
   const context=await browser.newContext({baseURL:worker.origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:f.cookie}});
   const errors=watchBrowser(context),page=await context.newPage(),id=`disclosed-value-${width}`;
@@ -78,6 +81,7 @@ test('custom filtered Sum discloses its measured period, filters, groups and mis
    await accessible(page,`disclosed-report-${width}`,directory);await errors.check(directory,`disclosed-report-${width}`);
   }finally{await context.close();}
  }
+ await salesReportJourney({browser,worker,ownerCookie:f.cookie,seller:{cookie:seller.cookie,operatorId:seller.operator.operatorId,email:seller.operator.email},seed:sales,directory});
 });
 
 test('Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API',async()=>{

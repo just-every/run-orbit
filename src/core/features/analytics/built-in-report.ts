@@ -99,9 +99,10 @@ function reviewHash(context: ActorContext, version: number, refs: DependencyRef[
 
 export async function previewOpenOpportunities(metrics: AnalyticsMetrics, graph: Pick<GraphPort,'searchRecords'>, context: ActorContext, version: number): Promise<BuiltInReportSnapshot> {
   context = await metrics.permit(context, 'analytics.read', OPEN_OPPORTUNITIES_REPORT_ID);
+  const shared = await metrics.sales.shares.assertVisible(context, OPEN_OPPORTUNITIES_REPORT_ID);
   const definition = await assertDefinition(metrics, context, version);
   const { refs, population } = await currentOpenOpportunityInputs(context, graph);
-  const proofs = await sourceProofs(metrics, context, definition, refs);
+  const proofs = [...shared, ...await sourceProofs(metrics, context, definition, refs)];
   const snapshot: BuiltInReportSnapshot = {
     sourceLineageVersion: 1,
     id: `preview-${crypto.randomUUID()}`,
@@ -134,6 +135,7 @@ export async function previewOpenOpportunities(metrics: AnalyticsMetrics, graph:
 export async function saveOpenOpportunities(metrics: AnalyticsMetrics, graph: Pick<GraphPort,'searchRecords'>, context: ActorContext, version: number, expectedReviewHash: string): Promise<BuiltInReportSnapshot> {
   context = await metrics.permit(context, 'analytics.read', OPEN_OPPORTUNITIES_REPORT_ID);
   await metrics.store.access.authorize(context, 'analytics.snapshot', { ...context, type: 'analytics', id: OPEN_OPPORTUNITIES_REPORT_ID }, []);
+  const shared = await metrics.sales.shares.assertVisible(context, OPEN_OPPORTUNITIES_REPORT_ID);
   const definition = await assertDefinition(metrics, context, version);
   const { refs, population } = await currentOpenOpportunityInputs(context, graph);
   const hash = await reviewHash(context, version, refs, population);
@@ -166,6 +168,7 @@ export async function saveOpenOpportunities(metrics: AnalyticsMetrics, graph: Pi
     population,
   };
   await metrics.store.commit(context, 'analytics.snapshot', id, 1, [
+    ...shared,
     ...proofs,
     ...metrics.store.guard('EXISTS(SELECT 1 FROM analytics_definitions WHERE tenant_id=? AND workspace_id=? AND id=? AND version=? AND body_json=?)', [context.tenantId, context.workspaceId, OPEN_OPPORTUNITIES_REPORT_ID, version, JSON.stringify(definition)]),
     ...snapshotStatements(snapshot),

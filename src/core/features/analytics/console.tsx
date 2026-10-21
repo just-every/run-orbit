@@ -3,6 +3,7 @@ import {DataValue} from '../operator/ui/data-value';
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { MetricSnapshot } from "../../shared/expansion-contracts";
 import { ReportDetails, reportValue } from './report-details';
+import { ReportSharing } from './report-sharing';
 
 import { ReadState } from "../fold-ui/workspace";
 
@@ -38,6 +39,14 @@ async function post<T>(url: string, body: unknown): Promise<T> {
   const result = (await response.json()) as T & { error?: string };
   if (!response.ok) throw new Error(result.error ?? `HTTP ${response.status}`);
   return result;
+}
+
+function isSalesDefinition(item: Definition) {
+  try {
+    return JSON.parse(item.body_json).kind === "sales";
+  } catch {
+    return false;
+  }
 }
 
 function labelFor(item: Definition, versionLabel: string) {
@@ -122,7 +131,8 @@ export function AnalyticsConsole({ workspaceId }: { workspaceId: string }) {
         };
         if (!response.ok) throw new Error(body.error ?? `HTTP ${response.status}`);
         if (active) {
-          const definitions = body.items ?? [];
+          // Sales reports have their own suite console; this console keeps record count/sum/mean/ratio reports.
+          const definitions = (body.items ?? []).filter((item) => !isSalesDefinition(item));
           setItems(definitions);
           const preferred = definitions.find((item) => item.id === BUILT_IN_REPORT_ID) ?? definitions[0];
           if (preferred) setSelected(`${preferred.id}:${preferred.version}`);
@@ -179,7 +189,7 @@ export function AnalyticsConsole({ workspaceId }: { workspaceId: string }) {
       const definitions = (await response.json()) as { items?: Definition[]; error?: string };
       if (!response.ok) throw new Error(definitions.error ?? `HTTP ${response.status}`);
       if (`${scopeRef.current.workspaceId}:${scopeRef.current.selected}` === currentScope) {
-        setItems(definitions.items ?? []);
+        setItems((definitions.items ?? []).filter((item) => !isSalesDefinition(item)));
         setSelected(`${result.id}:${result.version}`);
         setStatus(result.created ? t("Open opportunities report is ready to review.") : t("Open opportunities report is available."));
       }
@@ -355,6 +365,7 @@ export function AnalyticsConsole({ workspaceId }: { workspaceId: string }) {
           </button>
         )}
       </div>
+      {selectedDefinition && <ReportSharing base={base} id={selectedDefinition.id} />}
       {visibleResult && (
         <article className="analytics-console__result">
           <h3>{saved ? t("Saved result") : t("Review before saving")}</h3>
