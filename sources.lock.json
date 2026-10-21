@@ -3283,7 +3283,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "3bec9abd1f9ca3ff0fadc601ac69b03956024702a3ba30e2340ddd094ce0ede6",
+      "sha256": "911fd40101c8b8df32a827012b01a3bb8883a9d3fd8467d08e4ea7118ced1755",
       "executable": false
     },
     "scripts/verification-shard.mjs": {
@@ -7271,7 +7271,11 @@
       "executable": false
     },
     "tests/core/capture-data.test.ts": {
-      "sha256": "671506d3ce227d6af1889a1acc41c7d5f5e1f27be323e9f76fb9bf833937f6d6",
+      "sha256": "632f11503cd311fa2a64ba48bf543f939cb2fac13eb24f0651a39556da06f000",
+      "executable": false
+    },
+    "tests/core/capture-erasure.test.ts": {
+      "sha256": "9f0c4835ff1006a4d391eeb3ce5bed4276ea1bbc9ff5b666fe50afde4a02aa3e",
       "executable": false
     },
     "tests/core/capture-intake.test.ts": {
@@ -7284,6 +7288,10 @@
     },
     "tests/core/capture-providers.test.ts": {
       "sha256": "131cabdb68c916281196d358e3502008757d0288f5edc7cc38b6e4484bda62c5",
+      "executable": false
+    },
+    "tests/core/capture-replay-archive.test.ts": {
+      "sha256": "f28f94866ed6f90400c0ea395ae41bd4b0f0845b6ea2cdc2e17ea6e56ed6bb89",
       "executable": false
     },
     "tests/core/capture-review.test.ts": {
@@ -8108,6 +8116,10 @@
     },
     "tests/support/capture-browser-source.ts": {
       "sha256": "79ce651cfcd7acd1442d57008d84e727acd48a329976969bdb0bdad814c493eb",
+      "executable": false
+    },
+    "tests/support/capture-data-archive.ts": {
+      "sha256": "c443bf691bb997fc943e990d32de95ff308c787eb885b39dc7af12190474aa9c",
       "executable": false
     },
     "tests/support/capture-erasure-fixture.ts": {
