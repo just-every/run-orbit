@@ -1,0 +1,11 @@
+# REPORT-001 retained verification
+
+These screens come from the extended case “REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence” in `newtests/t096/report-disclosure.test.ts`. It runs the real emitted Worker on a US sales book that `newtests/t096/sales-report-fixture.ts` creates through Orbit's own HTTP doors: two pipelines beside the default one, eight deals with won, lost and open outcomes, recorded stage moves, notes, calls and meetings by two reps, tasks, signed Calendly and Cal.com bookings, and reviewed scheduled messages with deliveries, a genuine reply, an automatic reply and a reported open at the fake mail edge. Only the history dates are then moved into the two previous New York months. Each `.axe.json` holds that page's accessibility scan; the case fails on any serious or critical finding and on horizontal page overflow.
+
+- `sales-reports-1440.png`, `sales-reports-390.png`: Reports with the built-in sales suite open.
+- `sales-report-1440.png`, `sales-report-390.png`: the saved US monthly report for two pipelines with its disclosed basis and an open drill-through (Won value at 1440, the owner's activities at 390).
+- `sales-limited-1440.png`: the same saved report opened by the collaborator it was shared with. Only their grants count, the amount they may not read is never summed, and per-person groups are withheld.
+- `sales-revoked-390.png`: the collaborator's next request after the owner revoked one of those grants on the Access page.
+- `sales-late-1440.png`: the saved result reopened after a backdated note, a task completion and a close, with late-arriving evidence beside the unchanged original.
+
+In each of those states the case also downloads the export and checks that every figure in it reconciles to the rows it lists; the exports are not retained because their record keys resemble credentials to the publication scanner. The same case then restores the report from the running Worker's Records archive, round-trips it through the local CLI engine and erases a contact the saved result names. These are native local proofs in the emitted Worker, not hosted or provider outcomes.

@@ -2,13 +2,13 @@
 
 The target is a full small-team US sales CRM replacing HubSpot Sales Hub, Pipedrive or Salesforce Sales Cloud, with Attio, Day.ai and Twenty as modern relationship/context comparators. The [contract](CONTRACT.md) defines the outcome, including every target clause below and the applicable [baseline](BASELINE.md). Buoy remains the separate post-sale customer-success product.
 
-This is a build backlog and acceptance specification, not a claim of current product completion. Status is tied to implementation commit `5b296b65c14b895d2728abcc1ff802be825d9c08` (21 October 2026), starting from the inventory code audit at `64f66dd936b78c84ef1d839c68fd735851752ae9` and re-reading changed evidence. `done` means source plus an exercising test for the stated behavior; `partial` identifies an implemented subset and its remaining work; `missing` has no implementation of that flow. Test paths are existing evidence, not claims of a new execution on this documentation commit. Hosted/provider outcomes remain unverified unless independently recorded for the exact candidate. For the 0.2.0 release record (18 October 2026, commit `5c72dc85b7d4627e8b655246102981992f48a7fa`) every status here matches the CONTRACT.md Status table, and the fifteen published clauses that were partial carry the restated journeys their independent release gate exercised.
+This is a build backlog and acceptance specification, not a claim of current product completion. Status is tied to implementation commit `95f4e006cda0406d2a50add74afe36ead062cd3b` (21 October 2026), starting from the inventory code audit at `64f66dd936b78c84ef1d839c68fd735851752ae9` and re-reading changed evidence. `done` means source plus an exercising test for the stated behavior; `partial` identifies an implemented subset and its remaining work; `missing` has no implementation of that flow. Test paths are existing evidence, not claims of a new execution on this documentation commit. Hosted/provider outcomes remain unverified unless independently recorded for the exact candidate. For the 0.2.0 release record (18 October 2026, commit `5c72dc85b7d4627e8b655246102981992f48a7fa`) every status here matches the CONTRACT.md Status table, and the fifteen published clauses that were partial carry the restated journeys their independent release gate exercised.
 
 `rer verify` retains its existing bold published-clause execution catalog and fails unmapped, failed or skipped published IDs. All existing IDs and checks remain. New named target headings are not yet execution mappings: they remain mandatory acceptance obligations with the status below. A green existing-code execution report does not satisfy unfinished target clauses or the full text of a broadened clause. No result is waived, relabeled or manufactured to make this documentation pass. Build rounds must implement and map the target journeys without weakening the retained checks.
 
 Complete acceptance requires an immutable exact candidate, frozen install, full CI, native empty-installation sign-in and authorized provider connections, realistic customer data, both 1440px desktop and 390px phone inspection, keyboard/accessibility checks, recorded failure/restart/revocation journeys, export/restore equivalence and an owner-intent-preserving update. Public Lobby, run site and fictional read-only demo retain their approved behavior. No owner data, mutation, AI call or sending authority may leak into the demo. Runtime test providers do not establish real mailbox delivery, a call, a booking, a signature or a payment.
 
-For each journey below, use the named native page or documented public API, persist and reload its end state, and test the failure/stop case. Network/paid edges may use test doubles in automated suites only; final provider acceptance uses authorized test accounts and real recipient/device observations. Exact-message approval, current access, privacy and audit apply in every new flow. Report executed gates, incomplete target obligations and external unknowns separately. FORECAST-001 extends the existing Records/Reports journey and screens. OUT-020’s HTTP/relay-edge test, archive transfer tests, extended onboarding archive, exact released-schema forward upgrade, typecheck and built-Worker pages at 1440/390 were exercised and repeated on the combined source; other statuses retain their earlier inspected evidence.
+For each journey below, use the named native page or documented public API, persist and reload its end state, and test the failure/stop case. Network/paid edges may use test doubles in automated suites only; final provider acceptance uses authorized test accounts and real recipient/device observations. Exact-message approval, current access, privacy and audit apply in every new flow. Report executed gates, incomplete target obligations and external unknowns separately. FORECAST-001 extends the existing Records/Reports journey and screens. REPORT-001 extends the existing report-disclosure case through Reports, its HTTP routes and the Records/local archives at 1440/390. OUT-020’s HTTP/relay-edge test, archive transfer tests, extended onboarding archive, exact released-schema forward upgrade, typecheck and built-Worker pages at 1440/390 were exercised and repeated on the combined source; other statuses retain their earlier inspected evidence.
 
 ## Clause-by-clause journeys
 
@@ -668,6 +668,8 @@ TEAM-005 inherits INTEGRATE-005’s real administrator roles and team-scoped Sla
 
 INTEGRATE-005’s Slack mappings confer no role, record or field access. Permission changes apply on the next request and require fresh mapping confirmation. A seller-, team- or otherwise restricted record never counts as visible to every active full operator; a team channel never widens access. Exercise this inherited behavior through its public door.
 
+Before teams and restricted sales roles ship, they must carry REPORT-001's manager team scope, team sharing of reports and restricted-seller totals. Repeat REPORT-001's two-pipeline report as a manager scoped to a team, share it with that team, and as a restricted seller verify that totals, groups and reasons reconcile with their permitted drill-through with no hidden count or sum.
+
 Current evidence: `src/core/features/access/service.ts`; `src/core/features/access/field-policy.ts`; `newtests/t096/collaborator-lifecycle.test.ts`. Collaborator record/field restrictions exist; native seller/team hierarchy, owned-record restriction keyed to RECORD-016 owners and per-action sales roles are missing.
 
 TEAM-005 inherits FORECAST-001’s real team quota membership, team-scoped forecast/override permissions and rep/team quota-attainment acceptance; the owner administers the current per-rep forecast until then.
@@ -695,6 +697,8 @@ Status: **missing**.
 Import HubSpot contacts and companies with Contact owner and Company owner columns, one owner value unmatched; map it in the dry run, apply, and see each record's owner and attributed import entry. Bulk-reassign 20 contacts with one denied item and see 19 changes, one listed failure and 19 timeline entries. Enable the company-to-contact rule, preview it, change a company owner and see only its unowned contacts take that owner. Enable the first-email rule, send a first email to an unowned lead and see the sender become its owner. Sign in as a seller restricted to owned records: "My contacts" opens by default, and lists, search, API and export show only their own contacts and companies. Remove a rep and hand over their contacts and companies explicitly under TEAM-004. Assign a company to a rep and see one notification naming it and the assigner; bulk-assign 20 contacts to another rep and see one notification listing them; assign a contact to yourself and see none.
 
 NOTIFY-003 inherits personal Slack assignment DMs under INTEGRATE-005: only the explicitly mapped, opted-in new owner with current access, one notice per bulk batch, none on replay or undo. Assignment never grants access. Exercise this inherited behavior through its public door.
+
+RECORD-016 inherits REPORT-001's owner grouping. Group REPORT-001's rep activities, task completion and bookings by contact and company owner, including Unassigned, and reconcile each group by drill-through.
 
 Current evidence: No implementation found. `src/core/features/records/schema.ts` holds `owner_id` only on opportunities; contacts, leads, companies and custom objects have no owner, bulk assignment, owner import mapping, assignment rules, assignment notifications or owned-record views.
 
@@ -906,6 +910,8 @@ Before enrollments ship, they must satisfy SEQUENCE-002: an enrollment exits ato
 
 As a seller, create and share with the team a five-step email/call/manual-LinkedIn sequence whose second email step is threaded and CCs the account's sales engineer, and see a read-only user refused authoring; enroll eligible contacts with and without deals with exact-content approvals, complete the manual task, advance business time and restart mid-step; verify one action per due step, the second email arriving in the first email's thread with the internal CC, OUT-018 per-user budget enforcement and no unapproved send.
 
+Before sequence reports ship, they must carry REPORT-001's enrollment-level sequence reply reports. Report the five-step sequence by step and enrolling rep, reconcile its delivered, genuine reply, meeting and stage/revenue measures by drill-through, and see an inferred open and an automatic reply not counted.
+
 Current evidence: `src/core/features/outreach/scheduler.ts`; `src/core/features/drafts/service.ts`; `tests/core/outreach-limits.test.ts`. Reviewed single scheduled messages exist; multi-step definitions, rep authoring and sharing, deal-less enrollments, step threading, internal CC and manual step execution are missing.
 
 ### SEQUENCE-002 — Immediate sequence exits and accountable outcomes.
@@ -966,6 +972,8 @@ Status: **partial**.
 
 Connect Twilio and Aircall in turn, initiate a call from a real deal to an authorized test number, record answered/no-answer/failed dispositions, replay callbacks and revoke the connection; verify one truthful linked call each time. Place one call and receive one inbound call in the Aircall app outside Orbit and verify each is logged once on the matched contact and deal, with an unknown number held for review. As part of BOUNDARY-001's walk, call the walk's USD deal contact and inspect the provider link, the carrier boundary and an unapproved provider shown as unresolved setup with manual logging still available. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
+Before provider calls ship, they must carry REPORT-001's rep activities. After the Twilio and Aircall calls, open REPORT-001's rep activities and see each logged call counted once under its rep, with failed and no-answer calls kept distinct, reconciled by drill-through.
+
 Current evidence: `src/core/features/records/manual.ts`; `tests/core/today-brief.test.ts`. Manual call logging exists; Twilio/Aircall dialer, call-provider callbacks and logging of calls made outside Orbit are missing.
 
 ### CALL-002 — Consented recordings and cited transcripts.
@@ -978,13 +986,15 @@ Current evidence: `src/core/features/records/manual.ts`; `src/core/features/capt
 
 ### REPORT-001 — Sales dashboards and saved reports.
 
-Status: **partial**.
+Status: **done**.
 
 Before sequence reports ship, they must show SEQUENCE-002's delivered, reply, meeting and stage/revenue measures separately and never count an open as success.
 
-Build and save a US monthly report for two pipelines containing won/lost/open deals and rep activities, reconcile every total and reason by drill-through, export and reopen it after access revocation and late evidence.
+Build and save a US monthly report for two pipelines containing won/lost/open deals and rep activities, reconcile every total and reason by drill-through, export and reopen it after access revocation and late evidence. Conversion, win rate, stage age, sales cycle, task completion, bookings and follow-up outcomes match hand-counted values, and an inferred open or an automatic reply is never counted as success or a reply. A collaborator without the amount field sees no sum of hidden amounts and no hidden count; the reopened report and its export reflect a revoked grant on the next request. Late evidence appears beside the unchanged original. Definitions, shares and saved results travel through the Records and local CLI archives without authority, and erasing a contact the result names withdraws it.
 
-Current evidence: `src/core/features/analytics/metrics.ts`; `src/core/features/analytics/report-routes.ts`; `newtests/t096/report-disclosure.test.ts`; `newtests/t096/report-time-boundaries.test.ts`. Versioned count/sum/mean/ratio reports and disclosed snapshots exist; the full sales/activity/outcome suite and drill-through remain incomplete.
+Today follow-up outcomes measure reviewed single scheduled messages. The installation owner administers report sharing until TEAM-005, and until roles exist every full operator reads every record while a collaborator sees only their grants. SEQUENCE-001 inherits enrollment-level sequence reply reports, TEAM-005 manager team scope, team sharing of reports and restricted-seller totals, RECORD-016 owner grouping with "Unassigned", CALL-001 provider call activity in rep activities, and REPORT-002 dashboard composition.
+
+Current evidence: `src/core/features/analytics/`; additive `migrations/core/0052_report_shares.sql`; `newtests/t096/report-disclosure.test.ts` — “REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence”, extended and retitled from “custom filtered Sum discloses its measured period, filters, groups and missing handling in preview, history and export at both widths” with all of its assertions kept; `newtests/t096/browser-sales-report.ts`; `newtests/t096/sales-report-fixture.ts`; `newtests/t096/sales-report-archive.ts`; `docs/retained-verification/REPORT-001/`. Ten built-in definitions (pipeline, reasons, revenue, conversion and win rate, stage age and sales cycle, activities, tasks, bookings, follow-up outcomes and the monthly suite) open, save and version through Reports. The case saves the monthly report for two pipelines shared with one collaborator, reconciles every total and reason, exports and reopens it at 1440 and 390, revokes the collaborator's grant on the Access page, adds a backdated note, a task completion and a close, then restores the report from the running Worker's Records archive, round-trips it through the local CLI engine and erases a contact it names. Released v0.3.0 native data upgrades with every prior row unchanged.
 
 ### REPORT-002 — Shared sales dashboards.
 
@@ -993,6 +1003,8 @@ Status: **missing**.
 As a manager, build a dashboard with at least four tiles: open pipeline by stage across two pipelines, won/lost reasons this quarter, activities by rep, and forecast against quota. Apply owner, team and date-range filters, share it with the sales team and set it as the team default. Sign in as a restricted rep and verify that the same dashboard opens by default and shows only totals that reconcile with that rep's permitted drill-through, with no hidden count. Schedule a weekly email to the manager and the rep and verify each received copy matches its recipient's access. Delete one source report and see an unavailable tile.
 
 INTEGRATE-005 carries only a generic dashboard-ready notice and authenticated link. No PDF, CSV, image, count or sum goes to a Slack channel; the signed-in viewer renders the dashboard under their current access. Exercise this inherited behavior through its public door.
+
+REPORT-002 inherits REPORT-001's dashboard composition. Open each report tile's disclosed basis and drill-through and reconcile it with the saved REPORT-001 report it shows.
 
 Current evidence: No implementation found. Single saved reports and snapshots exist under REPORT-001; dashboard composition, filters, sharing, defaults and scheduled delivery do not.
 
@@ -1180,4 +1192,4 @@ Current evidence: `tests/core/source-onboarding.test.ts` — “INTEGRATE-005 Sl
 
 ## Completion accounting
 
-131 product clauses: **91 done, 22 partial, 18 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+131 product clauses: **93 done, 21 partial, 17 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
