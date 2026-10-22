@@ -12,7 +12,7 @@ export interface LateSection{measure:string;title:string;cells:LateCell[]}
 export interface SalesView{kind:'sales';id:string;saved:boolean;definitionId:string;definitionVersion:number;name:string;description:string;definition:SalesDefinition;
  period:SalesPeriod&{bucket:string;boundaries:string};timezone:string;currency:string;asOf:string;freshness:string;access:{limited:boolean;note:string};
  filters:{pipelines:{id:string;name:string}[];reps:{id:string;name:string}[]|null;groupBy:string;notes:string[]};
- sections:Section[];rows:Record<string,RowView>;late:{computedAt:string;note:string;sections:LateSection[];rows:Record<string,RowView>}|null;
+ stages:StageConfig[];sections:Section[];rows:Record<string,RowView>;late:{computedAt:string;note:string;sections:LateSection[];rows:Record<string,RowView>}|null;
  sources:string[];missing:string[];reviewHash?:string}
 const date=(at:string|null,timeZone:string)=>at&&Number.isFinite(Date.parse(at))?new Intl.DateTimeFormat('en-US',{timeZone,month:'short',day:'numeric',year:'numeric'}).format(new Date(at)):'date unavailable';
 const nouns:Record<string,string>={opportunity:'a deal',contact:'a contact',company:'a company'};
@@ -54,7 +54,7 @@ export function salesView(input:{id:string;saved:boolean;definitionId:string;def
  const {definition,period}=input,pipelineNames=new Map(input.stages.map(stage=>[stage.pipelineId,stage.pipelineName]));
  const lateKeys=new Set(input.late?.sections.flatMap(section=>section.cells.flatMap(cell=>cell.rows))??[]);
  const notes=[...(definition.pipelineIds.length?['Filtered to the chosen pipelines: activities, tasks, messages and bookings count only when linked to a deal in them.']:[]),...(definition.repIds.length?['The rep filter applies to the deal owner, activity author, message approver and task assignee; bookings are not filtered by rep.']:[])];
- return {kind:'sales',id:input.id,saved:input.saved,definitionId:input.definitionId,definitionVersion:input.definitionVersion,name:definition.name,description:definition.description,definition,
+ return {stages:input.stages,kind:'sales',id:input.id,saved:input.saved,definitionId:input.definitionId,definitionVersion:input.definitionVersion,name:definition.name,description:definition.description,definition,
   period:{...period,bucket:'Monthly buckets on local calendar months',boundaries:`Each month starts at local midnight on its first day in ${period.timezone} (included) and ends at local midnight on the next month's first day (excluded).`},timezone:period.timezone,currency:input.currency,asOf:input.asOf,
   freshness:input.saved?`Saved result measured ${local(input.asOf,period.timezone)} (${input.asOf}). Evidence recorded later is shown separately as late-arriving and never changes this result; recompute to create a separate result.`:`Computed ${local(input.asOf,period.timezone)} (${input.asOf}) from current records, checked against current data and access in the same transaction. Not saved.`,
   access:{limited:input.limited,note:input.access.full?(input.limited?'Limited to your access now: some saved rows or fields are no longer readable, so only what you may read is shown.':'Computed from every record in this workspace; you are a full operator.'):'Limited to your access: only records and fields you may read now are included, and nothing about hidden records is counted. Sharing a report grants no record access.'},

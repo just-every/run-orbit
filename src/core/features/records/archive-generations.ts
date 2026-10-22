@@ -1,3 +1,4 @@
+import {dashboardArchiveTables} from '../../shared/archive-lineage';
 import {preSlackCatalog} from '../slack/archive';
 import {preReportShareCatalog} from '../analytics/archive-compatibility';
 import {preForecastCatalog} from './forecast-archive-compatibility';
@@ -13,5 +14,5 @@ export const preOptOutCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>!(
 export const preSendingCapacityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='sending_limits');
 export const preOptOutCapabilityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='outbound_opt_out_capabilities');
 /** Complete native source generations in migration order; never arbitrary missing tables. */
-export function nativeCatalogGenerations(catalog:ArchiveTable[]){const shares=preReportShareCatalog(catalog),slack=preSlackCatalog(shares),library=preLibraryCatalog(slack),capabilities=preOptOutCapabilityCatalog(library),forecast=preForecastCatalog(capabilities),optOut=preOptOutCatalog(forecast),sending=preSendingCapacityCatalog(optOut),forms=preFormAbuseCatalog(sending),tasks=preRelationshipCatalog(forms),pipelines=preTaskCatalog(tasks);return [catalog,shares,slack,library,capabilities,forecast,optOut,sending,forms,tasks,pipelines,prePipelineCatalog(pipelines)];}
+export function nativeCatalogGenerations(catalog:ArchiveTable[]){const dashboards=catalog.filter(table=>!(dashboardArchiveTables as readonly string[]).includes(table.name)),shares=preReportShareCatalog(dashboards),slack=preSlackCatalog(shares),library=preLibraryCatalog(slack),capabilities=preOptOutCapabilityCatalog(library),forecast=preForecastCatalog(capabilities),optOut=preOptOutCatalog(forecast),sending=preSendingCapacityCatalog(optOut),forms=preFormAbuseCatalog(sending),tasks=preRelationshipCatalog(forms),pipelines=preTaskCatalog(tasks);return [catalog,dashboards,shares,slack,library,capabilities,forecast,optOut,sending,forms,tasks,pipelines,prePipelineCatalog(pipelines)];}
 export const legacyNativeCatalog=(catalog:ArchiveTable[])=>nativeCatalogGenerations(catalog).at(-1)!;

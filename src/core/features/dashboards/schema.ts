@@ -1,0 +1,13 @@
+import {z} from 'zod';
+import {salesMeasures} from '../analytics/sales-definition';
+const id=z.string().regex(/^[a-zA-Z0-9_-]{1,120}$/);
+const month=z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/);
+export const filtersSchema=z.object({ownerIds:z.array(id).max(200),pipelineIds:z.array(id).max(50),from:month,through:month,field:z.object({name:z.string().regex(/^[a-zA-Z][a-zA-Z0-9_]{0,80}$/),value:z.string().max(200)}).nullable()}).strict();
+export const tileSchema=z.object({id,source:z.enum(['report','forecast']),sourceId:id,version:z.union([z.literal('live'),z.number().int().positive()]),snapshotId:id.nullable(),measure:z.enum(salesMeasures),kind:z.enum(['number','chart','table','forecast']),width:z.number().int().min(3).max(12),height:z.union([z.literal(1),z.literal(2)])}).strict();
+export const dashboardSchema=z.object({name:z.string().trim().min(1).max(120),filters:filtersSchema,tiles:z.array(tileSchema).max(24).refine(items=>new Set(items.map(item=>item.id)).size===items.length,'Each tile needs its own ID.')}).strict();
+export const dashboardSave=z.object({version:z.number().int().min(0),definition:dashboardSchema}).strict();
+export const dashboardShare=z.object({version:z.number().int().positive(),audience:z.enum(['private','named','workspace']),grants:z.array(z.object({operatorId:id,access:z.enum(['view','edit'])}).strict()).max(200)}).strict();
+export type DashboardDefinition=z.infer<typeof dashboardSchema>;
+export type DashboardFilters=z.infer<typeof filtersSchema>;
+export type DashboardTile=z.infer<typeof tileSchema>;
+export type DashboardShare=z.infer<typeof dashboardShare>;

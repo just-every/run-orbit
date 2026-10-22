@@ -49,15 +49,15 @@ export class SalesReports{
  private async settings(){const row=await this.db.prepare("SELECT timezone,currency FROM workspace_settings WHERE id='workspace'").first<{timezone:string;currency:string}>();if(!row)throw new AccessError('prerequisite','Workspace timezone and currency are unavailable.');return row;}
  private labels(stages:StageConfig[],access:ViewerAccess):Labels{return {stages:new Map(stages.map(stage=>[stage.id,stage])),pipelines:new Map(stages.map(stage=>[stage.pipelineId,stage.pipelineName])),operators:access.operatorNames};}
  /** One viewer's population for a period: native rows and graph deals, filtered to what they may read now. */
- private async population(c:ActorContext,definition:SalesDefinition,period:SalesPeriod){
+ private async population(c:ActorContext,definition:SalesDefinition,period:SalesPeriod,field?:{name:string;value:string}){
   const native=await this.sources.salesPopulation(period),access=await viewerAccess(this.graph,c,native.rows.flatMap(row=>row.refs)),rows:SalesRow[]=[];
   const facts=new Map([...access.deals].map(([id,deal])=>[id,dealFacts(deal.values,id,native)]));
   for(const [id,deal] of facts){const closed=typeof deal.closed_at==='string'?deal.closed_at:null;rows.push({key:`deal:${id}`,kind:'deal',id,refs:[{type:'opportunity',id}],dealId:id,governed:dealGoverned,at:closed,recordedAt:closed??(typeof deal.created_at==='string'?deal.created_at:null),facts:deal});}
   for(const row of native.rows)rows.push(this.withDeal(row,facts));
-  const visible=applyAccess(access,rows),asOf=new Date().toISOString(),sections=aggregate(definition,period,asOf,visible,this.labels(native.stages,access)),cited=citedRows(sections);
+  const visible=applyAccess(access,rows).filter(row=>!field||Boolean(row.dealId&&Object.hasOwn(access.deals.get(row.dealId)?.values??{},field.name)&&String(access.deals.get(row.dealId)?.values[field.name])===field.value)),asOf=new Date().toISOString(),sections=aggregate(definition,period,asOf,visible,this.labels(native.stages,access)),cited=citedRows(sections);
   // A saved result keeps the rows its figures cite, with each cited movement's deal, whose owner and creation it was measured by.
   for(const row of visible)if(cited.has(row.key)&&row.kind==='movement')cited.add(`deal:${row.dealId}`);
-  return {native,access,asOf,sections,rows:visible.filter(row=>cited.has(row.key))};
+  return {native,access,asOf,sections,rows:visible.filter(row=>cited.has(row.key)).map(row=>field&&row.dealId?{...row,facts:{...row.facts,dashboard_filter:field.value},governed:{...row.governed,dashboard_filter:[field.name]}}:row)};
  }
  /** A row linked to a deal takes the deal's pipeline (governed by its stage), and a message the deal's later win and amount. */
  private withDeal(row:SalesRow,deals:Map<string,Record<string,Json>>):SalesRow{
@@ -74,9 +74,11 @@ export class SalesReports{
   return next;
  }
  private async hash(c:ActorContext,id:string,version:number,period:SalesPeriod,currency:string,stages:StageConfig[],rows:SalesRow[]){return sha256(JSON.stringify({tenantId:c.tenantId,workspaceId:c.workspaceId,principal:c.principal,policyEpoch:c.policyEpoch,id,version,period:[period.from,period.through,period.timezone],currency,stages,rows:rows.map(row=>[row.key,row.at,row.recordedAt,row.facts])}));}
- private async compute(c:ActorContext,id:string,version:number,fromMonth:string,throughMonth:string){
+ private async compute(c:ActorContext,id:string,version:number,fromMonth:string,throughMonth:string,filters?:{ownerIds:string[];pipelineIds:string[];field:{name:string;value:string}|null}){
   c=await this.metrics.permit(c,'analytics.read',id);const shareFence=await this.shares.assertVisible(c,id),definition=await this.definition(c,id,version),settings=await this.settings();
-  const period=salesPeriod(fromMonth,throughMonth,settings.timezone),result=await this.population(c,definition,period);
+  // Dashboard predicates narrow the saved definition; they never replace its restrictions.
+  if(filters){const intersect=(saved:string[],chosen:string[])=>!chosen.length?saved:!saved.length?chosen:saved.filter(id=>chosen.includes(id));definition.repIds=intersect(definition.repIds,filters.ownerIds);definition.pipelineIds=intersect(definition.pipelineIds,filters.pipelineIds);if(filters.ownerIds.length&&!definition.repIds.length)definition.repIds=['no-matching-owner'];if(filters.pipelineIds.length&&!definition.pipelineIds.length)definition.pipelineIds=['no-matching-pipeline'];}
+  const period=salesPeriod(fromMonth,throughMonth,settings.timezone),result=await this.population(c,definition,period,filters?.field??undefined);
   const proofs=[...shareFence,...await accessProofs(this.sources,c,result.access,result.rows,'lineage'),...this.metrics.store.guard("EXISTS(SELECT 1 FROM workspace_settings WHERE id='workspace' AND timezone=? AND currency=?)",[settings.timezone,settings.currency])];
   return {c,definition,period,currency:settings.currency,...result,proofs,reviewHash:await this.hash(c,id,version,period,settings.currency,result.native.stages,result.rows)};
  }
@@ -85,8 +87,8 @@ export class SalesReports{
   if(native.fingerprint.value.length>MAX_BODY)throw new AccessError('validation','This period has too many source records to save as one result. Choose fewer months or pipelines.');
   return this.metrics.store.guard(`(${native.fingerprint.sql})=?`,[...native.fingerprint.bindings,native.fingerprint.value]);
  }
- async preview(c:ActorContext,id:string,version:number,fromMonth:string,throughMonth:string):Promise<SalesView>{
-  const result=await this.compute(c,id,version,fromMonth,throughMonth);await this.metrics.checkSources(result.c,result.proofs);
+ async preview(c:ActorContext,id:string,version:number,fromMonth:string,throughMonth:string,filters?:{ownerIds:string[];pipelineIds:string[];field:{name:string;value:string}|null}):Promise<SalesView>{
+  const result=await this.compute(c,id,version,fromMonth,throughMonth,filters);await this.metrics.checkSources(result.c,result.proofs);
   return salesView({id:`preview-${crypto.randomUUID()}`,saved:false,definitionId:id,definitionVersion:version,definition:result.definition,period:result.period,currency:result.currency,asOf:result.asOf,stages:result.native.stages,sections:result.sections,rows:result.rows,access:result.access,limited:!result.access.full,reviewHash:result.reviewHash,late:null});
  }
  async save(c:ActorContext,id:string,version:number,fromMonth:string,throughMonth:string,expected:string):Promise<SalesView>{
