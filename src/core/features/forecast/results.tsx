@@ -3,7 +3,7 @@ import type {ForecastResult,ForecastValues,ForecastWarning} from './types';
 import {categoryLabel} from './review-forms';
 
 export const usd=(cents:number)=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(cents/100);
-const percent=(value:number|null)=>value===null?'No quota amount':`${new Intl.NumberFormat('en-US',{maximumFractionDigits:2}).format(value)}%`;
+export const percent=(value:number|null)=>value===null?'No quota amount':`${new Intl.NumberFormat('en-US',{maximumFractionDigits:2}).format(value)}%`;
 const measures:[keyof ForecastValues,string][]=[['openUnweightedCents','Open unweighted value'],['weightedExpectedCents','Weighted expected value'],['committedCents','Committed'],['bestCaseCents','Best case'],['pipelineCents','Pipeline'],['omittedCents','Omitted'],['wonBookingsCents','Closed-won bookings'],['oneTimeScheduledCents','One-time scheduled revenue'],['recurringScheduledCents','Recurring scheduled revenue'],['mrrCents','MRR'],['arrCents','ARR'],['unweightedMissingProbabilityCents','Open value missing probability']];
 const warnings:Record<ForecastWarning,string>={missing_close_date:'Missing close date',stale_close_date:'Close date is in the past',missing_probability:'Missing reviewed probability',stale_review:'Probability review is stale',unassigned_owner:'No assigned owner'};
 export function ForecastMeasures({values}:{values:ForecastValues}){return <dl className="forecast-measures">{measures.map(([key,title])=><div key={key}><dt>{title}</dt><dd>{usd(values[key])}</dd></div>)}</dl>;}

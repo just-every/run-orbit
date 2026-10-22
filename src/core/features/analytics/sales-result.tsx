@@ -4,8 +4,8 @@ import type {RowView,SalesView} from './sales-view';
 import {cellValue,recordNoun} from './sales-format';
 
 /** A sales result: its disclosed basis, every figure, and the exact rows behind any figure on request. */
-type Drill={id:string;title:string;cell:Cell};
-function DrillList({drill,rows,currency}:{drill:Drill;rows:Record<string,RowView>;currency:string}){
+export type Drill={id:string;title:string;cell:Cell};
+export function DrillList({drill,rows,currency}:{drill:Drill;rows:Record<string,RowView>;currency:string}){
  const {cell}=drill,listed=cell.rows.map(key=>rows[key]).filter((row):row is RowView=>Boolean(row)),numerator=new Set(cell.numerator??[]),panel=useRef<HTMLElement>(null);
  useEffect(()=>{panel.current?.focus();},[drill.id]);
  const amount=cell.format==='money'?cellValue({format:'money',value:listed.reduce((total,row)=>total+(cell.values?.[row.key]??0),0)},currency):null;
@@ -19,7 +19,7 @@ function DrillList({drill,rows,currency}:{drill:Drill;rows:Record<string,RowView
   {listed.length>0&&<ol>{listed.map(row=><li key={row.key}>{row.href?<a href={row.href}>{row.label}</a>:row.label}<span> · {row.detail}</span>{cell.values?.[row.key]!==undefined&&<span> · {cell.format==='money'?cellValue({format:'money',value:cell.values[row.key]!},currency):cellValue({format:'days',value:cell.values[row.key]!},currency)}</span>}{cell.format==='percent'&&<span> · {numerator.has(row.key)?'counted in the rate':'in the base only'}</span>}</li>)}</ol>}
  </section>;
 }
-function CellButton({cell,group,currency,open,onOpen}:{cell:Cell;group:string|null;currency:string;open:boolean;onOpen:()=>void}){
+export function CellButton({cell,group,currency,open,onOpen}:{cell:Cell;group:string|null;currency:string;open:boolean;onOpen:()=>void}){
  const title=group?`${cell.label} · ${group}`:cell.label;
  return <button type="button" className="sales-cell" aria-expanded={open} aria-label={`${cellValue(cell,currency)} ${title}: show the records behind it`} onClick={onOpen}>{cellValue(cell,currency)}</button>;
 }
@@ -43,7 +43,7 @@ function SectionView({section,view,prefix}:{section:Section;view:SalesView;prefi
 }
 const local=(at:string,timeZone:string)=>new Intl.DateTimeFormat('en-US',{timeZone,year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'}).format(new Date(at));
 /** Late-arriving evidence per measure: each changed figure once, then the records behind those changes once. */
-function LateEvidence({view,late,prefix}:{view:SalesView;late:NonNullable<SalesView['late']>;prefix:string}){
+export function LateEvidence({view,late,prefix}:{view:SalesView;late:NonNullable<SalesView['late']>;prefix:string}){
  return <section className="sales-late" aria-labelledby={`${prefix}-late-title`}>
   <h4 id={`${prefix}-late-title`}>Late-arriving evidence</h4>
   <p>{late.note} Checked {local(late.computedAt,view.timezone)}.</p>

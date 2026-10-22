@@ -5,6 +5,11 @@
 @import './fonts.css';
 
 .ob-site, .ob-app {
+  --ob-chart-1: #046b3c;
+  --ob-chart-2: #206dd3;
+  --ob-chart-3: var(--ob-tangerine);
+  --ob-won: #156c42;
+  --ob-lost: #b22f31;
   --ob-paper: #f5f1ea;
   --ob-paper-deep: #ede7dc;
   --ob-card: #fffdf9;
