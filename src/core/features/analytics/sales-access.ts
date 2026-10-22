@@ -23,6 +23,7 @@ export async function viewerAccess(graph:GraphRecords,c:ActorContext,refs:GraphR
  // Every deal the viewer may read, with only the fields they may read: the same scanner and fences as every report.
  let cursor:string|undefined;
  do{const page=await graph.scanRecords(c,{types:['opportunity'],query:'',fields:[],filters:{},limit:1000,...(cursor?{cursor}:{})});if(page.incomplete)throw new AccessError('prerequisite','The deal population is incomplete.');for(const item of page.items)deals.set(item.ref.id,{ref:item.ref,values:item.fields,fields:new Set(Object.keys(item.fields))});cursor=page.nextCursor??undefined;}while(cursor);
+ refs=[...refs,...[...deals.values()].flatMap(deal=>typeof deal.values.company_id==='string'?[{type:'company' as const,id:deal.values.company_id}]:[])];
  const records:ViewerAccess['records']=new Map(),policy=await graphReadPolicy(graph.access,c),name=policy.field("'name'");
  for(const [id,deal] of deals)records.set(`opportunity:${id}`,{ref:deal.ref,name:typeof deal.values.title==='string'&&deal.values.title.trim()?deal.values.title:null});
  for(const type of ['contact','company'] as const){

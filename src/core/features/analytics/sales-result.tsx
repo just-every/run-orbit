@@ -4,11 +4,11 @@ import type {RowView,SalesView} from './sales-view';
 import {cellValue,recordNoun} from './sales-format';
 
 /** A sales result: its disclosed basis, every figure, and the exact rows behind any figure on request. */
-export type Drill={id:string;title:string;cell:Cell};
-export function DrillList({drill,rows,currency}:{drill:Drill;rows:Record<string,RowView>;currency:string}){
+export type Drill={id:string;title:string;cell:Cell;amounts?:Record<string,number>};
+export function DrillList({drill,rows,currency,table=false}:{drill:Drill;rows:Record<string,RowView>;currency:string;table?:boolean}){
  const {cell}=drill,listed=cell.rows.map(key=>rows[key]).filter((row):row is RowView=>Boolean(row)),numerator=new Set(cell.numerator??[]),panel=useRef<HTMLElement>(null);
  useEffect(()=>{panel.current?.focus();},[drill.id]);
- const amount=cell.format==='money'?cellValue({format:'money',value:listed.reduce((total,row)=>total+(cell.values?.[row.key]??0),0)},currency):null;
+ const amounts=drill.amounts??(cell.format==='money'?cell.values:undefined),amount=amounts?cellValue({format:'money',value:listed.reduce((total,row)=>total+(amounts[row.key]??0),0)},currency):null;
  const summary=cell.format==='percent'?`${numerator.size} of ${listed.length} ${recordNoun(listed.length)} meet the measure (${cellValue(cell,currency)}).`
   :cell.format==='days'?`${listed.length} ${recordNoun(listed.length)}, mean ${cellValue(cell,currency)}.`
   :`${listed.length} ${recordNoun(listed.length)}${amount?` totalling ${amount}`:''}.`;
@@ -16,12 +16,13 @@ export function DrillList({drill,rows,currency}:{drill:Drill;rows:Record<string,
   <h5>Records behind {drill.title}</h5>
   <p role="status">{summary} They reconcile to the figure shown.</p>
   {cell.note&&<p>{cell.note}</p>}
-  {listed.length>0&&<ol>{listed.map(row=><li key={row.key}>{row.href?<a href={row.href}>{row.label}</a>:row.label}<span> · {row.detail}</span>{cell.values?.[row.key]!==undefined&&<span> · {cell.format==='money'?cellValue({format:'money',value:cell.values[row.key]!},currency):cellValue({format:'days',value:cell.values[row.key]!},currency)}</span>}{cell.format==='percent'&&<span> · {numerator.has(row.key)?'counted in the rate':'in the base only'}</span>}</li>)}</ol>}
+  {table&&listed.length>0&&<div className="sales-table dash-drill-table"><table><caption>Permitted records</caption><thead><tr><th>Deal</th><th>Account</th><th>Owner</th><th>Expected close</th><th>Amount</th></tr></thead><tbody>{listed.map(row=><tr key={row.key}><th>{row.href?<a href={row.href}>{row.label}</a>:row.label}</th><td>{row.account??'Not available'}</td><td>{row.owner??'Not available'}</td><td>{row.expectedClose?.slice(0,10)??'Not entered'}</td><td>{amounts?.[row.key]===undefined?'Not available':cellValue({format:'money',value:amounts[row.key]!},currency)}</td></tr>)}</tbody><tfoot><tr><th>Total</th><td colSpan={3}>{listed.length} {recordNoun(listed.length)}</td><td>{amount??cellValue(cell,currency)}</td></tr></tfoot></table></div>}
+  {listed.length>0&&<ol className={table?'dash-drill-lines':undefined}>{listed.map(row=><li key={row.key}>{row.href?<a href={row.href}>{row.label}</a>:row.label}{table?<span> · {row.account??'Not available'} · {row.owner??'Not available'} · {row.expectedClose?.slice(0,10)??'Not entered'}</span>:<span> · {row.detail}</span>}{(amounts?.[row.key]??cell.values?.[row.key])!==undefined&&<span> · {amounts?cellValue({format:'money',value:amounts[row.key]!},currency):cellValue({format:'days',value:cell.values![row.key]!},currency)}</span>}{cell.format==='percent'&&<span> · {numerator.has(row.key)?'counted in the rate':'in the base only'}</span>}</li>)}</ol>}
  </section>;
 }
-export function CellButton({cell,group,currency,open,onOpen}:{cell:Cell;group:string|null;currency:string;open:boolean;onOpen:()=>void}){
+export function CellButton({cell,group,currency,open,onOpen,text}:{cell:Cell;group:string|null;currency:string;open:boolean;onOpen:()=>void;text?:string}){
  const title=group?`${cell.label} · ${group}`:cell.label;
- return <button type="button" className="sales-cell" aria-expanded={open} aria-label={`${cellValue(cell,currency)} ${title}: show the records behind it`} onClick={onOpen}>{cellValue(cell,currency)}</button>;
+ return <button type="button" className="sales-cell" aria-expanded={open} aria-label={`${text??cellValue(cell,currency)} ${title}: show the records behind it`} onClick={onOpen}>{text??cellValue(cell,currency)}</button>;
 }
 function SectionView({section,view,prefix}:{section:Section;view:SalesView;prefix:string}){
  const [drill,setDrill]=useState<Drill|null>(null),currency=view.currency;

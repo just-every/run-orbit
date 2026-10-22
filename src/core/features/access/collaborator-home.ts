@@ -15,6 +15,6 @@ const collaboratorPages=['/app/shared-records','/app/access','/app/notifications
 export async function collaboratorLanding(db:D1Database,operatorId:string,path:string):Promise<string|null>{
  const access=await appAccess(db,operatorId);if(access.workspace)return null;
  const page=path.replace(/\/+$/,'')||'/';
- if(collaboratorPages.includes(page)||(access.reports&&page==='/app/reports'))return null;
+ if(collaboratorPages.includes(page)||(access.reports&&(page==='/app/reports'||/^\/app\/dashboards\/[a-zA-Z0-9_-]+$/.test(page))))return null;
  return '/app/shared-records';
 }

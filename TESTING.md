@@ -38,9 +38,9 @@ measured CI times, so a push Verify finishes within fifteen minutes; local
 - `fold-archive-0` … `fold-archive-3`: current native archive, CLI streaming,
   interrupted job recovery and restore rollback.
 - `fold-accepted-main`: one immutable accepted-main archive upgrade journey.
-- `fold-domain-0`, `fold-domain-1`: first-run setup, collaborator authority
+- `fold-domain-0` … `fold-domain-2`: first-run setup, collaborator authority
   (including a Guest's See and edit grant at 1440 and 390), published forms,
-  reports, browser workflows and restart/upgrade preservation, balanced by file.
+  reports and dashboard composition, browser workflows and restart/upgrade preservation, balanced by file. REPORT-002 extends the existing report journey; its larger browser and archive path is weighted separately so it does not put a shard past the routine time budget.
 - `journeys`: the README install-and-lifecycle clone journey
   (`tests/rer/journey.test.mjs`). It runs on release tags, the nightly
   schedule, release qualification and local `rer verify`, not on every push;

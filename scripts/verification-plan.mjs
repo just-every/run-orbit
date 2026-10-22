@@ -21,8 +21,8 @@ const minutes = {
   'tests/core/capture-connector.test.ts': 0.8, 'tests/core/launch-provider-conflicts.test.ts': 0.8, 'tests/core/source-onboarding.test.ts': 8.5,
   'newtests/t096/archive-native.test.ts': 8.3, 'newtests/t096/archive-terminal-recovery.test.ts': 7.6, 'newtests/t096/archive-view-rollback.test.ts': 3.7,
   'newtests/t096/archive-import-recovery.test.ts': 3.4, 'newtests/t096/archive-cli-native.test.ts': 2.4, 'newtests/t096/archive-upgrade-preflight.test.ts': 1.4,
-  'newtests/t096/browser-journeys.test.ts': 6.5, 'newtests/t096/report-disclosure.test.ts': 4, 'newtests/t096/forms-native.test.ts': 2.1,
-  'newtests/t096/delegation-collaborator.test.ts': 1.9, 'newtests/t096/collaborator-lifecycle.test.ts': 1, 'newtests/t096/forward-upgrade.test.ts': 0.9,
+  'newtests/t096/browser-journeys.test.ts': 6.5, 'newtests/t096/report-disclosure.test.ts': 8.5, 'newtests/t096/forms-native.test.ts': 2.1,
+  'newtests/t096/delegation-collaborator.test.ts': 1.9, 'newtests/t096/collaborator-lifecycle.test.ts': 1, 'newtests/t096/forward-upgrade.test.ts': 1.5,
 };
 const weight = file => minutes[file] ?? 0.5;
 /** Longest first into the lightest bin: a deterministic, balanced split of files into `count` shards. */
@@ -83,7 +83,7 @@ export function verificationPlan({ journeys = false } = {}) {
     ...Object.fromEntries(Object.entries(operatorShards).map(([name, file]) => [name, prepared(gate('run', 'build:app'), nodeTests([file], `verification/${name}-results.jsonl`, 'node'))])),
     'rer-checkouts': prepared(gate('run', 'build:app'), nodeTests(rer.filter(file => !operatorFiles.includes(file)), 'verification/rer-checkouts-results.jsonl', 'node')),
     ...Object.fromEntries(balance(archive, 4).map((files, index) => [`fold-archive-${index}`, [gate('run', 'build:app'), nodeTests(files, `verification/fold-archive-${index}-results.jsonl`)]])),
-    ...Object.fromEntries(balance(fold.filter(file => !archive.includes(file) && !lineage.includes(file)), 2).map((files, index) => [`fold-domain-${index}`, [gate('run', 'build:app'), nodeTests(files, `verification/fold-domain-${index}-results.jsonl`)]])),
+    ...Object.fromEntries(balance(fold.filter(file => !archive.includes(file) && !lineage.includes(file)), 3).map((files, index) => [`fold-domain-${index}`, [gate('run', 'build:app'), nodeTests(files, `verification/fold-domain-${index}-results.jsonl`)]])),
     journeys: prepared(gate('run', 'build:app'), nodeTests(journeyFiles, 'verification/journeys-results.jsonl', 'node')),
   };
   const planned = Object.values(plan).flatMap(gates => gates.flatMap(stage => stage.files ?? []));

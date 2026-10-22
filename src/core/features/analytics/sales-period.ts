@@ -1,3 +1,4 @@
+import {taskInstant,shiftTaskDay} from '../tasks/time';
 import {AccessError} from '../access/errors';
 
 /** Local calendar months in the workspace's IANA timezone, as exact UTC instants (start included, end excluded). */
@@ -29,3 +30,11 @@ export function salesPeriod(fromMonth:string,throughMonth:string,timezone:string
  return {fromMonth,throughMonth,from:months[0]!.from,through:months.at(-1)!.through,timezone,months};
 }
 export const inPeriod=(period:SalesPeriod,at:string|null|undefined)=>{if(!at)return false;const instant=Date.parse(at);return Number.isFinite(instant)&&instant>=Date.parse(period.from)&&instant<Date.parse(period.through);};
+
+/** A dashboard's day range keeps REPORT-001's monthly buckets and source-population engine. */
+export function salesDateRange(fromDate:string,throughDate:string,timezone:string):SalesPeriod{
+ const base=salesPeriod(fromDate.slice(0,7),throughDate.slice(0,7),timezone);
+ if(fromDate>throughDate)throw new AccessError('validation','Choose a first and last date, in order.');
+ const from=taskInstant(`${fromDate}T00:00`,timezone),through=taskInstant(`${shiftTaskDay(throughDate,1)}T00:00`,timezone);
+ return {...base,from,through};
+}

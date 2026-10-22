@@ -47,7 +47,7 @@ function reconcileExport(view:any){
 const totals=(view:any,measure:string)=>Object.fromEntries(view.sections.find((part:any)=>part.measure===measure).totals.map((cell:any)=>[cell.key,cell.value]));
 async function download(page:Page,scope:Locator,path:string){const downloading=page.waitForEvent('download');await scope.getByRole('link',{name:'Export sales result',exact:true}).first().click();await (await downloading).saveAs(path);return JSON.parse(await readFile(path,'utf8'));}
 
-export async function salesReportJourney({browser,worker,ownerCookie,seller,seed,directory}:{browser:Browser;worker:Worker;ownerCookie:string;seller:{cookie:string;operatorId:string;email:string};seed:Seed;directory:string}){
+export async function salesReportJourney({browser,worker,ownerCookie,seller,seed,directory}:{browser:Browser;worker:Worker;ownerCookie:string;seller:{cookie:string;operatorId:string;email:string;displayName?:string};seed:Seed;directory:string}){
  const call=async(cookie:string,path:string,method='GET',body?:unknown)=>{const response=await emittedRequest(worker,cookie,path,method,body),text=await response.text();assert.ok(response.ok,`${method} ${path}: ${response.status} ${text}`);return text?JSON.parse(text):null;};
  const context=async(width:number,cookie:string)=>{const created=await browser.newContext({baseURL:worker.origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}});return {created,errors:watchBrowser(created),page:await created.newPage()};};
  const {at,months}=seed,workspace=(await call(ownerCookie,'/api/v1/settings')).workspace;
@@ -58,13 +58,13 @@ export async function salesReportJourney({browser,worker,ownerCookie,seller,seed
   // The owner opens the built-in monthly report, saves it for two pipelines, shared with one collaborator by name.
   const owner=await context(1440,ownerCookie),page=owner.page,reports=page.getByRole('region',{name:'Sales reports',exact:true});
   await page.goto('/app/reports');await expect(reports.getByRole('heading',{name:'Built-in sales reports',exact:true})).toBeVisible();
-  await expect(reports.locator('.sales-suite li').getByRole('button')).toHaveCount(10);await accessible(page,'sales-reports-1440',directory);
+  if(!await reports.locator('.sales-suite').evaluate(element=>element.hasAttribute('open')))await reports.locator('.sales-suite>summary').click();await expect(reports.locator('.sales-suite li').getByRole('button')).toHaveCount(10);await accessible(page,'sales-reports-1440',directory);
   await reports.getByRole('button',{name:'Open Monthly sales report',exact:true}).click();await expect(reports.getByRole('heading',{name:'Sales report preview',exact:true})).toBeVisible();
   await reports.getByText('Edit filters, grouping and sharing',{exact:true}).click();const editor=reports.locator('.sales-editor');
   await editor.getByLabel('Report name',{exact:true}).fill('US monthly sales');await editor.getByLabel('Report description',{exact:true}).fill('Two US pipelines by New York calendar month');
   for(const pipeline of ['New business','Renewals'])await editor.getByRole('checkbox',{name:pipeline,exact:true}).check();
   await editor.getByLabel('Report key',{exact:true}).fill('us-monthly');await editor.getByRole('radio',{name:'Named people',exact:true}).check();
-  await editor.getByRole('checkbox',{name:`${seller.email} (${seller.email}, collaborator)`,exact:true}).check();
+  await editor.getByRole('checkbox',{name:`${seller.displayName??seller.email} (${seller.email}, collaborator)`,exact:true}).check();
   await Promise.all([page.waitForResponse(response=>new URL(response.url()).pathname.endsWith('/operations/metrics')&&response.request().method()==='POST'&&response.status()===200),editor.getByRole('button',{name:'Save as new report',exact:true}).click()]);
   await expect(reports.getByRole('combobox',{name:'Sales report',exact:true})).toHaveValue('us-monthly:1');
   await reports.getByLabel('First month',{exact:true}).fill(months.first);await reports.getByLabel('Last month',{exact:true}).fill(months.current);

@@ -36,6 +36,7 @@ async function processAction(db:D1Database,item:Installation,payload:any){
  const issued=await db.prepare('SELECT * FROM slack_action_tokens WHERE id=? AND action=? AND consumed_at IS NULL').bind(action.value,action.action_id).first<{id:string;notice_id:string;event_key:string;channel_id:string;record_type:string;record_id:string;installation_epoch:string}>();
  if(!issued||issued.installation_epoch!==item.connected_at)return reject('one-use-action');
  const notice=await db.prepare("SELECT n.* FROM slack_notices n JOIN slack_channels c ON c.id=n.channel_id WHERE n.id=? AND n.state='sent' AND c.enabled=1").bind(issued.notice_id).first<Notice>();
+ if(notice?.record_type==='dashboard')return reject('dashboard-has-no-actions');
  if(!notice||notice.installation_epoch!==item.connected_at||notice.event_key!==issued.event_key||notice.record_id!==issued.record_id||notice.record_type!==issued.record_type||notice.channel_id!==issued.channel_id||payload.channel?.id!==notice.channel_id||payload.container?.channel_id!==notice.channel_id||payload.container?.message_ts!==notice.message_ts||payload.message?.ts!==notice.message_ts||payload.message?.user!==item.bot_user_id)return reject('foreign-message');
  const mapping=await actionMapping(db,item,payload.user.id);if(!mapping)return reject('mapping-or-access');
  const visibility=actorRecordFence(notice.record_type,notice.record_id!,mapping.operator_id);

@@ -29,6 +29,7 @@ import { Route as DocsSlugRouteImport } from './routes/docs.$slug'
 import { Route as AppAssistanceIdRouteImport } from './routes/app.assistance.$id'
 import { Route as AppCaptureIndexRouteImport } from './routes/app.capture.index'
 import { Route as AppCaptureReviewRouteImport } from './routes/app.capture.review'
+import { Route as AppDashboardsIdRouteImport } from './routes/app.dashboards.$id'
 import { Route as AppDraftsIdRouteImport } from './routes/app.drafts.$id'
 import { Route as AppMeetingsIdRouteImport } from './routes/app.meetings.$id'
 import { Route as AppOpportunitiesIdRouteImport } from './routes/app.opportunities.$id'
@@ -134,6 +135,11 @@ const AppCaptureReviewRoute = AppCaptureReviewRouteImport.update({
   path: '/capture/review',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDashboardsIdRoute = AppDashboardsIdRouteImport.update({
+  id: '/dashboards/$id',
+  path: '/dashboards/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDraftsIdRoute = AppDraftsIdRouteImport.update({
   id: '/drafts/$id',
   path: '/drafts/$id',
@@ -175,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/docs/': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
   '/app/capture/review': typeof AppCaptureReviewRoute
+  '/app/dashboards/$id': typeof AppDashboardsIdRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
@@ -200,6 +207,7 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
   '/app/capture/review': typeof AppCaptureReviewRoute
+  '/app/dashboards/$id': typeof AppDashboardsIdRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
@@ -227,6 +235,7 @@ export interface FileRoutesById {
   '/docs/': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
   '/app/capture/review': typeof AppCaptureReviewRoute
+  '/app/dashboards/$id': typeof AppDashboardsIdRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
@@ -255,6 +264,7 @@ export interface FileRouteTypes {
     | '/docs/'
     | '/app/assistance/$id'
     | '/app/capture/review'
+    | '/app/dashboards/$id'
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
@@ -280,6 +290,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/app/assistance/$id'
     | '/app/capture/review'
+    | '/app/dashboards/$id'
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
@@ -306,6 +317,7 @@ export interface FileRouteTypes {
     | '/docs/'
     | '/app/assistance/$id'
     | '/app/capture/review'
+    | '/app/dashboards/$id'
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
@@ -463,6 +475,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCaptureReviewRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/dashboards/$id': {
+      id: '/app/dashboards/$id'
+      path: '/dashboards/$id'
+      fullPath: '/app/dashboards/$id'
+      preLoaderRoute: typeof AppDashboardsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/drafts/$id': {
       id: '/app/drafts/$id'
       path: '/drafts/$id'
@@ -509,6 +528,7 @@ interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppAssistanceIdRoute: typeof AppAssistanceIdRoute
   AppCaptureReviewRoute: typeof AppCaptureReviewRoute
+  AppDashboardsIdRoute: typeof AppDashboardsIdRoute
   AppDraftsIdRoute: typeof AppDraftsIdRoute
   AppMeetingsIdRoute: typeof AppMeetingsIdRoute
   AppOpportunitiesIdRoute: typeof AppOpportunitiesIdRoute
@@ -531,6 +551,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppAssistanceIdRoute: AppAssistanceIdRoute,
   AppCaptureReviewRoute: AppCaptureReviewRoute,
+  AppDashboardsIdRoute: AppDashboardsIdRoute,
   AppDraftsIdRoute: AppDraftsIdRoute,
   AppMeetingsIdRoute: AppMeetingsIdRoute,
   AppOpportunitiesIdRoute: AppOpportunitiesIdRoute,

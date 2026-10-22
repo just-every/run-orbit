@@ -1,10 +1,11 @@
+import {proveDashboardSlack} from './dashboard-slack-proof';
 import assert from 'node:assert/strict';
 import {randomBytes,createHmac} from 'node:crypto';
 import {createId} from '../../src/core/shared/ids';
 import type {createApp} from './app';
 import {proveSlackActions} from './slack-actions-proof';
 import {proveSlackArchive} from './slack-archive-proof';
-export interface SlackFixture {db:D1Database;actor:string;stage:string;app:ReturnType<typeof createApp>;request:(path:string,method?:string,body?:unknown,headers?:Record<string,string>)=>Promise<Response>}
+export interface SlackFixture {token:string;setClock:(value:Date|undefined)=>void;db:D1Database;actor:string;stage:string;app:ReturnType<typeof createApp>;request:(path:string,method?:string,body?:unknown,headers?:Record<string,string>)=>Promise<Response>}
 export async function proveSlackNotices(f:SlackFixture,deal:string,contact:string){
  const native=globalThis.fetch,secret=randomBytes(32).toString('hex'),token='test-only-slack-bot',posts:any[]=[],deletes:any[]=[],responses:any[]=[];
  let outcome:'sent'|'rate'|'timeout'|'revoked'|'failed'|'missing'|'frozen'|'archived'='sent',attempts=0,safety:Record<string,unknown>={};
@@ -64,6 +65,7 @@ export async function proveSlackNotices(f:SlackFixture,deal:string,contact:strin
   const callResult=await f.request(`records/opportunity/${deal}/entries`,'POST',{kind:'call',text:'Private customer call contents',occurredAt:new Date().toISOString(),durationMinutes:5});assert.equal(callResult.status,200);await f.request(`records/opportunity/${deal}/lifecycle`,'POST',{state:'won',reason:'Private win reason'});assert.ok((await notices()).some(n=>n.event_kind==='won'&&n.state==='sent'));assert.ok((await notices()).some(n=>n.event_kind==='handoff'&&n.state==='sent'));
   const booking=await(await f.request('sources/bookings','PUT',{name:'Internal booking notices',enabled:true})).json() as any,raw=JSON.stringify({triggerEvent:'BOOKING_CREATED',createdAt:new Date().toISOString(),payload:{uid:crypto.randomUUID(),attendees:[{email:'maya@harbour.test'}]}}),bookingCount=posts.length;
   const booked=()=>f.app.request('https://orbit.test/api/v1/signals/bookings/calcom',{method:'POST',headers:{'X-Cal-Signature-256':createHmac('sha256',booking.secret).update(raw).digest('hex')},body:raw});assert.equal((await booked()).status,201);await process();assert.equal(posts.length,bookingCount+1);assert.equal((await booked()).status,409);await process();assert.equal(posts.length,bookingCount+1);assert.ok(posts.every(p=>!p.text.includes('maya@harbour.test')&&!p.text.includes('Maya')&&!p.text.includes('Private win reason')&&!p.text.includes('Private customer call contents')));
+  await proveDashboardSlack(f,{posts,call,outcome:value=>{outcome=value;},safety:value=>{safety=value;}});
   outcome='revoked';await process();assert.equal((await f.request('settings/slack/verify','POST',{})).status,503);assert.equal((await call('')).installation.state,'revoked');assert.equal((await call('')).installation.error,'token_revoked');const products=await(await f.request('settings/products')).json() as any;assert.equal(products.products.find((p:any)=>p.products.includes('Slack')).state,'unresolved-setup');await move(second,f.stage);assert.ok((await notices()).some(n=>n.state==='paused'));
   outcome='sent';await proveSlackArchive(f,{contact,secret,token,deletes,posts,call});
  }finally{globalThis.fetch=native;}

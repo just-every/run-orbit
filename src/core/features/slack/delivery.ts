@@ -1,3 +1,5 @@
+import {systemClock} from '../../platform/clock';
+import {dashboardNoticeFence,enqueueDashboardNotices} from './dashboard-notices';
 import {processSlackDeletions} from './deletions';
 import {createId} from '../../shared/ids';
 import {archiveImportActive} from '../../platform/archive-maintenance';
@@ -27,7 +29,7 @@ export async function processSlack(db:D1Database,config:SlackConfig){
 async function processPending(db:D1Database,config:SlackConfig){
  if(await archiveImportActive(db))return;
  const item=await installation(db);if(!item)return;
- await enqueueDue(db);
+ await enqueueDue(db);await enqueueDashboardNotices(db,config.clock??systemClock);
  if(item.state!=='connected'||!config.security||!await db.prepare("SELECT 1 FROM slack_credentials WHERE id='slack'").first()){
   await db.prepare("UPDATE slack_notices SET state='paused',error='Slack unresolved setup; reconnect in Settings' WHERE state IN ('queued','rate-limited')").run();return;
  }
@@ -50,11 +52,11 @@ async function processPending(db:D1Database,config:SlackConfig){
   let submitted=false;
   try{
    await checkedChannel(token,channel.id,item.team_id,config.fetcher);
-   const visibility=prepared.private?{sql:'EXISTS(SELECT 1 FROM graph_records WHERE kind=? AND id=? AND retired_into_id IS NULL)',args:[notice.record_type,notice.record_id]}:workspaceRecordFence(notice.record_type,notice.record_id);
+   const visibility=notice.record_type==='dashboard'?dashboardNoticeFence(notice.record_id,notice.source_id,notice.channel_id):prepared.private?{sql:'EXISTS(SELECT 1 FROM graph_records WHERE kind=? AND id=? AND retired_into_id IS NULL)',args:[notice.record_type,notice.record_id]}:workspaceRecordFence(notice.record_type,notice.record_id);
    const claimed=await db.prepare(`UPDATE slack_notices SET state='submitting',content_json=?,privacy=?,installation_epoch=?,error=NULL,retry_at=NULL,updated_at=? WHERE id=? AND state IN ('queued','rate-limited') AND EXISTS(SELECT 1 FROM slack_installation WHERE state='connected') AND EXISTS(SELECT 1 FROM slack_channels WHERE id=? AND enabled=1) AND ${visibility.sql}`).bind(JSON.stringify(content),prepared.private?'withheld':null,item.connected_at,new Date().toISOString(),notice.id,channel.id,...visibility.args).run();
    if(!claimed.meta.changes)continue;
    const buttons={ack:crypto.randomUUID(),task:crypto.randomUUID()};
-   await db.batch([db.prepare('DELETE FROM slack_action_tokens WHERE notice_id=? AND consumed_at IS NULL').bind(notice.id),...Object.entries(buttons).map(([kind,id])=>db.prepare('INSERT INTO slack_action_tokens(id,notice_id,action,event_key,channel_id,record_type,record_id,installation_epoch) VALUES(?,?,?,?,?,?,?,?)').bind(id,notice.id,kind==='ack'?'orbit_ack':'orbit_task',notice.event_key,notice.channel_id,notice.record_type,notice.record_id,item.connected_at))]);
+   if(notice.record_type!=='dashboard')await db.batch([db.prepare('DELETE FROM slack_action_tokens WHERE notice_id=? AND consumed_at IS NULL').bind(notice.id),...Object.entries(buttons).map(([kind,id])=>db.prepare('INSERT INTO slack_action_tokens(id,notice_id,action,event_key,channel_id,record_type,record_id,installation_epoch) VALUES(?,?,?,?,?,?,?,?)').bind(id,notice.id,kind==='ack'?'orbit_ack':'orbit_task',notice.event_key,notice.channel_id,notice.record_type,notice.record_id,item.connected_at))]);
    submitted=true;
    const result=await slackCall(token,'chat.postMessage',{channel:channel.id,client_msg_id:notice.id,...slackMessage(buttons,content)},config.fetcher);
    if(typeof result.ts!=='string'||result.channel!==channel.id)throw new SlackProviderError('unaccepted_response',true);

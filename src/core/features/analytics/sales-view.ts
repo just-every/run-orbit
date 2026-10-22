@@ -6,7 +6,7 @@ import type {ViewerAccess} from './sales-access';
 import type {SalesRow,StageConfig} from './sales-rows';
 
 /** What preview, history and export disclose: period and timezone, definitions, source fields, currency, missing data and freshness. */
-export interface RowView{key:string;kind:string;label:string;detail:string;href:string|null;at:string|null;recordedAt:string|null;facts:Record<string,Json>}
+export interface RowView{key:string;kind:string;label:string;detail:string;href:string|null;at:string|null;recordedAt:string|null;facts:Record<string,Json>;account:string|null;owner:string|null;expectedClose:string|null}
 export interface LateCell{key:string;label:string;group:string|null;format:Cell['format'];value:number;rows:string[]}
 export interface LateSection{measure:string;title:string;cells:LateCell[]}
 export interface SalesView{kind:'sales';id:string;saved:boolean;definitionId:string;definitionVersion:number;name:string;description:string;definition:SalesDefinition;
@@ -31,7 +31,7 @@ function rowViews(rows:SalesRow[],access:ViewerAccess,stages:StageConfig[],timez
   else if(row.kind==='message'){label=`Reviewed message on ${record}`;detail=[`Accepted ${date(row.at,timezone)}`,by?`approved by ${by}`:'',row.facts.scheduled===true?'scheduled':'sent at approval',...(['delivered','replied','meeting','advanced','won'] as const).filter(fact=>row.facts[fact]===true).map(fact=>({delivered:'delivered',replied:'genuine reply',meeting:'meeting booked',advanced:'stage advanced',won:'deal won'})[fact]),row.facts.inferred_open===true?'reported open (inferred, not success)':'',row.facts.automatic_reply===true?'automatic reply (not a reply)':''].filter(Boolean).join(' · ');}
   else if(row.kind==='task'){label=`Task on ${record}`;detail=[`Due ${date(row.at,timezone)}`,String(row.facts.status??''),by?`assigned to ${by}`:''].filter(Boolean).join(' · ');}
   else {label=`${({calendly:'Calendly',calcom:'Cal.com'} as Record<string,string>)[String(row.facts.provider)]??'Signed'} ${row.facts.cancelled===true?'cancellation':'booking'} for ${record}`;detail=date(row.at,timezone);}
-  views[row.key]={key:row.key,kind:row.kind,label,detail,href:primary?`/app/shared-records?${new URLSearchParams({kind:primary.type,id:primary.id})}`:null,at:row.at,recordedAt:row.recordedAt,facts:row.facts};
+  views[row.key]={key:row.key,kind:row.kind,label,detail,href:primary?`/app/shared-records?${new URLSearchParams({kind:primary.type,id:primary.id})}`:null,at:row.at,recordedAt:row.recordedAt,facts:row.facts,account:row.dealId?name('company',String(access.deals.get(row.dealId)?.values.company_id??'')):null,owner:author(row.facts.owner_id),expectedClose:row.dealId&&typeof access.deals.get(row.dealId)?.values.expected_close_at==='string'?String(access.deals.get(row.dealId)?.values.expected_close_at):null};
  }
  return views;
 }

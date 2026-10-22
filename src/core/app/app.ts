@@ -1,3 +1,4 @@
+import type {Clock} from '../platform/clock';
 import {createSlackEventRoutes} from '../features/slack/events';
 import {createSlackRoutes} from '../features/slack/routes';
 import {createSlackActionRoutes} from '../features/slack/actions';
@@ -49,7 +50,7 @@ type AppEnvironment = {
   Variables: { operator: AuthenticatedOperator };
 };
 
-export function createApp(input: { assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; formAbuse?:FormAbuseOptions; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
+export function createApp(input: { clock?:Clock; assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; formAbuse?:FormAbuseOptions; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
   const app = new Hono<AppEnvironment>();
   const dependencies = createDependencies(input.database);
   app.all('/unsubscribe/:token',c=>optOutResponse(c.req.raw,input.database));
@@ -120,7 +121,7 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
     if (guarded) { const refused = await input.stepUp(context.req.raw, guarded[1], guarded[2]); if (refused) return refused; }
     await next();
   });
-  app.route('/api/v2',createFoldRoutes(input.database));
+  app.route('/api/v2',createFoldRoutes(input.database,input.clock));
   app.use('/api/v1/*',collaboratorNativeBoundary(input.database));
   app.use("/api/v1/records/*", async (context,next) => {
     await next();
@@ -140,8 +141,8 @@ export function createApp(input: { assets: AssetStore; database: D1Database; aut
       try { await processEvaluationJobs(input.database); } catch { context.header("X-Orbit-Evaluation","failed; inspect stale evaluation"); }
     }
   });
-  app.route('/api/v1/settings/slack',createSlackRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin}));
-  app.use('/api/v1/*',async(c,next)=>{await next();if(!['GET','HEAD','OPTIONS'].includes(c.req.method)&&c.res.status<400&&!c.req.path.startsWith('/api/v1/settings/slack')&&!c.req.path.includes('/archive/')){try{await processSlack(input.database,{security:input.sourceSecurity,origin:input.captureOrigin});}catch{c.header('X-Orbit-Slack','Processing failed; inspect Slack setup');}};});
+  app.route('/api/v1/settings/slack',createSlackRoutes(input.database,{clock:input.clock,security:input.sourceSecurity,origin:input.captureOrigin}));
+  app.use('/api/v1/*',async(c,next)=>{await next();if(!['GET','HEAD','OPTIONS'].includes(c.req.method)&&c.res.status<400&&!c.req.path.startsWith('/api/v1/settings/slack')&&!c.req.path.includes('/archive/')){try{await processSlack(input.database,{clock:input.clock,security:input.sourceSecurity,origin:input.captureOrigin});}catch{c.header('X-Orbit-Slack','Processing failed; inspect Slack setup');}};});
   app.route('/api/v1/imports',createImportRoutes(input.database));
   app.route('/api/v1/capture',createCaptureRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch,mailAddress:input.captureMailAddress,local:input.hosted===false}));
   app.route("/api/v1/records", createRecordsRoutes(input.database));

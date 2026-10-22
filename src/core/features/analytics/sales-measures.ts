@@ -53,9 +53,14 @@ export function aggregate(definition:SalesDefinition,period:SalesPeriod,asOf:str
  for(const measure of definition.measures){
   if(measure==='pipeline'){
    const open=deals.filter(row=>row.facts.lifecycle==='open'),cells=(members:SalesRow[])=>[count('deals','Deals',members),money('value','Value',members)];
+   const pipelineGroups=grouped(open,row=>fact(row,'pipeline_id'),pipelineName,cells),stageGroups=grouped(open,row=>fact(row,'stage_id'),stageName,cells,stageOrder);
+   // Configured groups with no permitted rows have genuine zero cells from this same aggregation.
+   for(const [id] of labels.pipelines)if((!pipelines.size||pipelines.has(id))&&!pipelineGroups.some(group=>group.key===id))pipelineGroups.push({key:id,label:pipelineName(id),cells:cells([])});
+   for(const stage of labels.stages.values())if((!pipelines.size||pipelines.has(stage.pipelineId))&&!stageGroups.some(group=>group.key===stage.id))stageGroups.push({key:stage.id,label:stageName(stage.id),cells:cells([])});
+   stageGroups.sort((a,b)=>stageOrder(a.key)-stageOrder(b.key)||a.label.localeCompare(b.label));
    section(measure,{totals:[count('deals','Open deals',open),money('value','Open value',open)],tables:[
-    ...table('pipeline','Pipeline',grouped(open,row=>fact(row,'pipeline_id'),pipelineName,cells)),
-    ...table('stage','Stage',grouped(open,row=>fact(row,'stage_id'),stageName,cells,stageOrder)),
+    ...table('pipeline','Pipeline',pipelineGroups),
+    ...table('stage','Stage',stageGroups),
     ...(full?table('owner','Owner',grouped(open,row=>fact(row,'owner_id'),operator,cells)):[])],withheld:full?null:withheld});
   }else if(measure==='reasons'){
    const closed=deals.filter(closedIn),won=closed.filter(row=>row.facts.lifecycle==='won'),lost=closed.filter(row=>row.facts.lifecycle==='lost');

@@ -1,17 +1,23 @@
+import {systemClock,type Clock} from '../../platform/clock';
 import {Hono} from 'hono';
 import {z} from 'zod';
 import type {AppEnvironment} from '../../shared/expansion-contracts';
 import type {AnalyticsMetrics} from '../analytics/metrics';
 import {Dashboards} from './repository';
+import {dashboardPdf} from './pdf';
+import {dashboardTileCsv} from './export';
 import {dashboardSchedule} from './schedules';
 import {filtersSchema} from './schema';
-export function createDashboardRoutes(metrics:AnalyticsMetrics){
- const app=new Hono<AppEnvironment>(),dashboards=new Dashboards(metrics),id=z.string().regex(/^[a-zA-Z0-9_-]{1,120}$/);
+export function createDashboardRoutes(metrics:AnalyticsMetrics,clock:Clock=systemClock){
+ const app=new Hono<AppEnvironment>(),dashboards=new Dashboards(metrics,clock),id=z.string().regex(/^[a-zA-Z0-9_-]{1,120}$/);
  app.use('*',async(c,next)=>{c.header('Cache-Control','no-store');await next();});
  app.get('/',async c=>c.json(await dashboards.list(c.get('actor'))));
  app.put('/:id',async c=>c.json(await dashboards.save(c.get('actor'),id.parse(c.req.param('id')),await c.req.json())));
  app.get('/:id',async c=>c.json(await dashboards.read(c.get('actor'),id.parse(c.req.param('id')))));
  app.post('/:id/compute',async c=>c.json(await dashboards.read(c.get('actor'),id.parse(c.req.param('id')),filtersSchema.parse(await c.req.json()))));
+ app.get('/:id/pdf',async c=>{const filters=c.req.query('filters'),view=await dashboards.read(c.get('actor'),id.parse(c.req.param('id')),filters?filtersSchema.parse(JSON.parse(filters)):undefined);return new Response(new Uint8Array(dashboardPdf(view)).buffer,{headers:{'Content-Type':'application/pdf','Cache-Control':'no-store','Content-Disposition':'attachment; filename="orbit-dashboard.pdf"'}});});
+ app.get('/:id/tiles/:tile/csv',async c=>{const filters=c.req.query('filters'),view=await dashboards.read(c.get('actor'),id.parse(c.req.param('id')),filters?filtersSchema.parse(JSON.parse(filters)):undefined),tile=view.tiles.find(t=>t.id===id.parse(c.req.param('tile')));if(!tile||tile.status!=='ready')return c.json({error:'Source unavailable.'},404);return new Response(dashboardTileCsv(tile,view),{headers:{'Content-Type':'text/csv; charset=utf-8','Cache-Control':'no-store','Content-Disposition':'attachment; filename="orbit-dashboard-tile.csv"'}});});
+ app.get('/:id/outline',async c=>c.json(await dashboards.read(c.get('actor'),id.parse(c.req.param('id')),undefined,true)));
  app.get('/:id/definition',async c=>{const d=await dashboards.head(c.get('actor'),id.parse(c.req.param('id')));if(!d.edit)return c.json({error:'Dashboard editing is not permitted.'},403);return c.json({version:d.h.version,definition:d.definition});});
  app.get('/:id/sharing',async c=>c.json(await dashboards.sharing(c.get('actor'),id.parse(c.req.param('id')))));
  app.put('/:id/sharing',async c=>c.json(await dashboards.sharing(c.get('actor'),id.parse(c.req.param('id')),await c.req.json())));
