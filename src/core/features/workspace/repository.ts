@@ -16,10 +16,14 @@ export class WorkspaceRepository {
     freeMailDomainsJson: string;
     now: string;
   }): Promise<void> {
-    await drizzle(this.binding)
-      .insert(workspaceSettings)
-      .values({ id: "workspace", ...input, createdAt: input.now, updatedAt: input.now })
-      .onConflictDoNothing();
+    // Seeding also runs before later additive migrations; let their defaults apply.
+    await this.binding.prepare(`INSERT INTO workspace_settings
+      (id, name, timezone, currency, working_hours_json, stale_interval_days,
+       awaiting_response_working_days, free_mail_domains_json, created_at, updated_at)
+      VALUES ('workspace', ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING`)
+      .bind(input.name, input.timezone, input.currency, input.workingHoursJson,
+        input.staleIntervalDays, input.awaitingResponseWorkingDays,
+        input.freeMailDomainsJson, input.now, input.now).run();
     // An established workspace has finished first-run setup (from the schema that records it).
     if (await this.binding.prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'first_run_setup'").first())
       await this.binding.prepare("INSERT OR IGNORE INTO first_run_setup (id, completed_at) VALUES ('workspace', ?)").bind(input.now).run();
