@@ -27,7 +27,7 @@ export async function ownershipBrowserJourney(browser:Browser,origin:string,dire
     await region.getByRole('button',{name:'Apply assignment',exact:true}).click();
     await expect(region.getByText('Current owner: Jordan Reyes',{exact:true})).toBeVisible();
     await expect(region.getByRole('button',{name:'Undo assignment',exact:true})).toBeEnabled();
-    await expect(page.locator('article[id^="entry-"]').filter({hasText:'Jordan Reyes'})).toHaveCount(1);
+    const ownerEntry=page.locator('article[id^="entry-"]').filter({hasText:'Jordan Reyes'});await expect(ownerEntry).toHaveCount(1);await ownerEntry.locator('summary').click();await expect(ownerEntry.getByText('Jordan Reyes',{exact:true})).toBeVisible();
     await accessible(page,`ownership-${kind}-assigned-${width}`,directory);
    }
    await page.goto('/app/records?kind=contact');

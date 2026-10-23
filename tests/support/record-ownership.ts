@@ -22,7 +22,7 @@ export async function exerciseRecordOwnership(request:(path:string,method?:strin
  assert.equal((await notices()).length,initialNotices+1);
  let state=await detail(first);assert.equal(state.ownership.ownerId,other);
  const changed=state.timeline.filter((entry:any)=>entry.kind==='owner.changed');
- assert.equal(changed.length,1);assert.equal(changed[0].actor_id,actor);assert.ok(changed[0].occurred_at);
+ assert.equal(changed.length,1);assert.equal(changed[0].actor_id,actor);assert.ok(Number.isFinite(Date.parse(changed[0].occurred_at)));const change=JSON.parse(changed[0].payload_json);assert.equal(change.previous,null);assert.equal(change.current,other);assert.ok(change.currentOwnerName);
  await apply(batch.id);assert.equal((await detail(first)).timeline.filter((entry:any)=>entry.kind==='owner.changed').length,1,'Replay appends no event');
  assert.equal((await notices()).length,initialNotices+1);
  batch=await review([first],other);result=await apply(batch.id);assert.equal(result.items.filter((item:any)=>item.applied).length,0);assert.equal((await notices()).length,initialNotices+1,'Same owner is no change');

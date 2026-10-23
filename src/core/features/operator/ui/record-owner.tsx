@@ -24,7 +24,7 @@ export function RecordOwner({kind,ids,operators,currentOwner,onChanged}:{kind:'c
    <button disabled={busy||!ids.length}>{busy?'Preparing review…':'Review assignment'}</button>
   </form>:<>
    <p>{phase==='review'?'Review every change before applying. A record changed since this review is refused.':phase==='applied'?'Assignment finished. Individual results are listed below. Undo restores only records that have not changed since.':'Undo finished. Individual results are listed below.'}</p>
-   {batch?<ReviewedRecordChanges items={batch.items}/>:null}
+   {batch?<ReviewedRecordChanges items={batch.items} finished={phase!=='review'}/>:null}
    <div className="workbench-actions">
     {phase==='review'?<><button disabled={busy} onClick={()=>{setBatch(undefined);setPhase('choose');}}>Cancel review</button><button className="operator-button" disabled={busy} onClick={()=>void perform('apply')}>{busy?'Applying…':'Apply assignment'}</button></>:phase==='applied'?<button disabled={busy} onClick={()=>void perform('undo')}>{busy?'Undoing…':'Undo assignment'}</button>:null}
     {phase!=='review'?<button disabled={busy} onClick={()=>{setBatch(undefined);setPhase('choose');}}>Review another assignment</button>:null}
