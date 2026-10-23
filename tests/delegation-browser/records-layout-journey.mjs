@@ -119,7 +119,7 @@ async function editRecordThroughKeyboard(page, kind, title, fieldLabel, editedTi
   await awaitRecordReload(page, kind, title, () => search.fill(title));
   const card = page.locator('.operator-queue-card').filter({ has: page.getByRole('heading', { name: title, exact: true }) });
   await expect(card).toHaveCount(1);
-  await tabTo(page, async active => await active.evaluate((element, expected) => element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
+  await tabTo(page, async active => await active.evaluate((element, expected) => element.matches('button') && element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
   await expect(card.getByRole('button')).toBeFocused();
   await awaitRecordDetail(page, kind, () => page.keyboard.press('Enter'));
   await expect(page.getByRole('button', { name: 'Edit details', exact: true })).toBeVisible();
@@ -151,7 +151,7 @@ async function expectRecordList(page, kind, title, evidenceName, diagnostics) {
     diagnostics.viewportChecks.push({ name: viewport.name, surface: evidenceName, ...metrics });
     await page.screenshot({ path: `${evidence}/${evidenceName}-${viewport.name}.png`, fullPage: true });
     if (viewport.name === '320') {
-      await tabTo(page, async active => await active.evaluate((element, expected) => element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
+      await tabTo(page, async active => await active.evaluate((element, expected) => element.matches('button') && element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
       await awaitRecordDetail(page, kind, () => page.keyboard.press('Enter'));
       await expect(page.getByRole('heading', { name: title, exact: true, level: 1 })).toBeVisible();
     }
