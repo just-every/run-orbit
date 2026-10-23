@@ -112,6 +112,13 @@ jobs:
           for attempt in 1 2 3; do
             mirror=${mirrors[attempt - 1]}
             sudo sed -i -E "s@^(URIs:[[:space:]]*)https?://(([a-z0-9.-]+\.)?archive\.ubuntu\.com|security\.ubuntu\.com|mirrors\.edge\.kernel\.org)/ubuntu/?@\1${mirror}/@" /etc/apt/sources.list.d/ubuntu.sources
+            # Hosted images can resolve Ubuntu through mirror+file URIs instead
+            # of the direct URIs above. Rotate those lists as well.
+            for apt_mirror_list in /etc/apt/apt-mirrors.txt /etc/apt/apt-mirrors-security.txt; do
+              if [ -f "$apt_mirror_list" ]; then
+                printf '%s\n' "$mirror" | sudo tee "$apt_mirror_list" > /dev/null
+              fi
+            done
             printf 'Chromium apt: libraries attempt %s/3 (60s deadline; mirror %s)\n' "$attempt" "$mirror"
             if sudo env "PATH=$PATH" APT_CONFIG=/var/tmp/orbit-apt/apt.conf timeout --kill-after=5s 60s bash -ec '
               dpkg --configure -a
@@ -249,6 +256,13 @@ jobs:
           for attempt in 1 2 3; do
             mirror=${mirrors[attempt - 1]}
             sudo sed -i -E "s@^(URIs:[[:space:]]*)https?://(([a-z0-9.-]+\.)?archive\.ubuntu\.com|security\.ubuntu\.com|mirrors\.edge\.kernel\.org)/ubuntu/?@\1${mirror}/@" /etc/apt/sources.list.d/ubuntu.sources
+            # Hosted images can resolve Ubuntu through mirror+file URIs instead
+            # of the direct URIs above. Rotate those lists as well.
+            for apt_mirror_list in /etc/apt/apt-mirrors.txt /etc/apt/apt-mirrors-security.txt; do
+              if [ -f "$apt_mirror_list" ]; then
+                printf '%s\n' "$mirror" | sudo tee "$apt_mirror_list" > /dev/null
+              fi
+            done
             printf 'Chromium apt: libraries attempt %s/3 (60s deadline; mirror %s)\n' "$attempt" "$mirror"
             if sudo env "PATH=$PATH" APT_CONFIG=/var/tmp/orbit-apt/apt.conf timeout --kill-after=5s 60s bash -ec '
               dpkg --configure -a
