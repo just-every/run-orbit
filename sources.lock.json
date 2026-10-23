@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "eba0ddef0ecdf3c2c860ea74e857aca4700e7df259ce6e424302aef4344efdaf",
+      "sha256": "6644821cf8416fd4448c9ebf6c3096c38e9962abd9b558253bde2e15e493206f",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "656957f30e7a65b7e438c6a9191af93a01855d94648902e1da36b775ec92e5d9",
+      "sha256": "bacebd8bc65d11fd13ece2154af9c0bf647300efdf8799a60298a0d307c93ce5",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "75f0d88c169da5dc67b574803eb35f05b0ada1e4d786f1aee242ced684896203",
+      "sha256": "edfd983017dcaf038ef1aa922e95f966e07e68f8e9f7a8e93bbcf2d25f37c9ed",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -896,6 +896,38 @@
     },
     "docs/retained-verification/FORECAST-001/forecast-override-390.png": {
       "sha256": "eff26197571c7e9c06c03d449d0410accdac73f5f1f85c66a2fdda5a50a785d8",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-mapping-builder-1440.png": {
+      "sha256": "17d649b38c98cbd9b132d285a00d0dd140f33fe3f71811fd2c69d345d304a5df",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-mapping-builder-390.png": {
+      "sha256": "6cb5dab56f67766a12bc38881327f0d60077a499d3205209852cd9013be986a0",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-mapping-hosted-1440.png": {
+      "sha256": "08cd39041999efd6fa750355948d247d9e2686bf0305f46429403189067c6ece",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-mapping-hosted-390.png": {
+      "sha256": "fc473eb611f097243596f86e94b59ce833260ecb1e3c39e0237edfc6b3942d32",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-mapping-notification-1440.png": {
+      "sha256": "0bac765d8835b8a6bfeec27df0cdf6a07e787a38938f7ef2b49fa9e12ee7acc3",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-mapping-notification-390.png": {
+      "sha256": "0c27fedcc4b6c22cafa9bf6d74421aa093bbff4c1b84ee39c969b261703da651",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-mapping-received-1440.png": {
+      "sha256": "be441b5cf9b3367cec1afcc154923a4f279a5fcec03bea0ec05acd422ba98e0c",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-mapping-received-390.png": {
+      "sha256": "4deba9ea153b9ed7f5a909317d169a70b813c4b2892b13c5606d5615983664c0",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/archive-1440.png": {
