@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "ea64f955a8f7ead60fb4213b4e5d039b21281c6fa26ab5ed486e6c4f9fe0e643",
+      "sha256": "5d593e9ab3f46099006c5a10e52153a3cec7224c1b31c2c87540c1cef181d738",
       "executable": false
     },
     "DEMO.md": {
@@ -5155,7 +5155,7 @@
       "executable": false
     },
     "src/core/features/forms/console.tsx": {
-      "sha256": "dbe157392309ba910fadb01288664465198037f7fcfdadf8f63ec8cd5562450a",
+      "sha256": "c653fabd66c56d46401da00bfaa5b9b3a8d314554b1dd45943e9f41fd4ec02f2",
       "executable": false
     },
     "src/core/features/forms/definition.ts": {
@@ -5935,7 +5935,7 @@
       "executable": false
     },
     "src/core/features/outreach/history-links.ts": {
-      "sha256": "cef9d21cab64703b54a3e26891cf5e311502b870dd092096b41cf90aa7c57e0d",
+      "sha256": "7f91e7d42a5c132832896d2ce3c29b4f74b25437d0728b43afe844fc91953f39",
       "executable": false
     },
     "src/core/features/outreach/mailbox-comments.ts": {
@@ -6007,7 +6007,7 @@
       "executable": false
     },
     "src/core/features/outreach/reply-matching.ts": {
-      "sha256": "d713524e57604d6130a2244d0743c258d57d7f078d6feef943bab04f4c2a3bc5",
+      "sha256": "444d2a51948998c1b904de3073c422fe63c090cfeca5f959d0cde7a426532675",
       "executable": false
     },
     "src/core/features/outreach/reply-payload.ts": {
@@ -6063,7 +6063,7 @@
       "executable": false
     },
     "src/core/features/ownership/legacy.ts": {
-      "sha256": "b9c06eff71dcb519d8b21824f62c146c010b104317c4425b3ad643b981e89ee4",
+      "sha256": "d50c0eec741ad6b51035770f85136d00ff19845759f799f06c6986e007c8a0e8",
       "executable": false
     },
     "src/core/features/ownership/privacy.ts": {
@@ -6567,7 +6567,7 @@
       "executable": false
     },
     "src/core/features/records/repository.ts": {
-      "sha256": "5bb8727c1987a1752404c7657068e9602e458d3e3b162a27984b22f1548156bd",
+      "sha256": "b3bb946a58012a351a85f67db1a7f5d134e6e63fbe0ad2f84ae736bcd499dc60",
       "executable": false
     },
     "src/core/features/records/routes.ts": {
@@ -6955,7 +6955,7 @@
       "executable": false
     },
     "src/core/features/workspace/repository.ts": {
-      "sha256": "67ce499e39e67cbe93400ab0ec8c964dadb5fd3d7c23fad9c899f53d0069e11a",
+      "sha256": "84f6a44faeb4aa5219b738d156ecc75d90d256db8c64db0ab88d08e5171d530b",
       "executable": false
     },
     "src/core/features/workspace/routes.ts": {
@@ -8239,7 +8239,7 @@
       "executable": false
     },
     "tests/core/onboarding-archive.test.ts": {
-      "sha256": "65659895bf944d8dcf2decf1790d482b1f1ec56432b93d8dd3f37aefa599fc7e",
+      "sha256": "1c2b38eb99a053a9b5be88ec9a1803a2e7a73815c88de16ad60796ddcb925889",
       "executable": false
     },
     "tests/core/operator-erasure.test.ts": {
