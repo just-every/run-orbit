@@ -56,7 +56,15 @@ export async function exerciseRecordOwnership(request:(path:string,method?:strin
  result=await apply(batch.id);assert.equal(result.items.filter((item:any)=>item.applied).length,1);assert.equal(result.items.filter((item:any)=>item.failure).length,1);
  await call(`records/contact/${contacts[1]}`,'PUT',{name:'Changed after assignment',email:'synthetic-orbit-owner-bulk-1@ownership.test'});
  result=await undo(batch.id);assert.equal(result.items.filter((item:any)=>item.undone).length,0);assert.equal((await detail(contacts[1])).ownership.ownerId,other);
- const inactive=await call('settings/operators','POST',{email:'synthetic-orbit-inactive@ownership.test',displayName:'Inactive rep'},201);await call(`settings/operators/${inactive.id}`,'DELETE',{confirmed:true});
+ const inactive=await call('settings/operators','POST',{email:'synthetic-orbit-inactive@ownership.test',displayName:'Inactive rep'},201);
+ const privateContact=await create('synthetic-orbit-owner-privacy');
+ const privateBatch=await review([privateContact],inactive.id);await apply(privateBatch.id);
+ batch=await review([privateContact],other);await apply(batch.id);
+ await call(`settings/operators/${inactive.id}`,'DELETE',{confirmed:true});
+ await call(`settings/operators/${inactive.id}/erase`,'POST',{confirmed:true});
+ assert.ok(!JSON.stringify(await detail(privateContact)).includes('Inactive rep'),'Retired owner names erase from history attributed to another actor');
+ assert.ok(!JSON.stringify(await call(`records/ownership/${privateBatch.id}`)).includes('Inactive rep'),'Retired owner names erase from saved reviews');
+ assert.ok(!(await notices()).some((notice:any)=>notice.message.includes('Inactive rep')));
  batch=await review([contacts[2]],inactive.id);result=await apply(batch.id);assert.ok(result.items[0].failure);assert.equal((await detail(contacts[2])).ownership.ownerId,null);
  const invalid=await review([contacts[2]],'00000000000000000000000000');
  const refused=await apply(invalid.id);assert.ok(refused.items[0].failure);assert.equal((await detail(contacts[2])).ownership.ownerId,null);

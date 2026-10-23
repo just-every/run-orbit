@@ -20,7 +20,7 @@ export function RecordOwner({kind,ids,operators,currentOwner,onChanged}:{kind:'c
   <h2>{ids.length===1?'Record owner':`Assign ${ids.length} selected records`}</h2>
   {currentOwner!==undefined?<p>Current owner: {currentOwner??'Unassigned'}</p>:null}
   {phase==='choose'?<form onSubmit={e=>{e.preventDefault();void perform('review');}}>
-   <label>New owner<select value={ownerId} onChange={e=>setOwnerId(e.target.value)}><option value="">Unassigned</option>{operators.filter(user=>user.status==='active').map(user=><option key={user.id} value={user.id}>{user.display_name}</option>)}</select></label>
+   <label>New owner<select aria-label="New owner" value={ownerId} onChange={e=>setOwnerId(e.target.value)}><option value="">Unassigned</option>{operators.filter(user=>user.status==='active').map(user=><option key={user.id} value={user.id}>{user.display_name}</option>)}</select></label>
    <button disabled={busy||!ids.length}>{busy?'Preparing review…':'Review assignment'}</button>
   </form>:<>
    <p>{phase==='review'?'Review every change before applying. A record changed since this review is refused.':phase==='applied'?'Assignment finished. Individual results are listed below. Undo restores only records that have not changed since.':'Undo finished. Individual results are listed below.'}</p>
