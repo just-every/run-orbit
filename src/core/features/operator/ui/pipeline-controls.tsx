@@ -7,6 +7,7 @@ export function PipelineStageFields({settings,stageId,onChange}:{settings:any;st
 }
 export function MovePipeline({record,settings,onChanged}:{record:any;settings:any;onChanged:()=>Promise<void>}) {
  const [stage,setStage]=useState(record.stage_id),[review,setReview]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ if(!settings)return <p role="status">Loading pipeline choices…</p>;
  const current=settings.stages.find((s:any)=>s.id===record.stage_id),destination=settings.stages.find((s:any)=>s.id===stage);
  const description=(s:any)=>`${settings.pipelines.find((p:any)=>p.id===s?.pipeline_id)?.name??'Pipeline unavailable'} / ${s?.name??'Stage unavailable'}`;
  async function move(){setBusy(true);setError('');try{await recordsRequest(`records/opportunity/${record.id}/move`,'POST',{stageId:stage,reviewedStageId:record.stage_id});setReview(false);await onChanged();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
