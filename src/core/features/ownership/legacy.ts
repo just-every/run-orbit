@@ -11,6 +11,9 @@ export async function reconcileLegacyOwnership(db:D1Database){
  const signature=await legacyOwnershipSignature(db);
  const native=recognized&&signature.native&&columns.every(result=>result.results.some(c=>c.name==='owner_id'&&c.type==='TEXT')&&result.results.some(c=>c.name==='owner_revision'&&c.type==='INTEGER'));
  const sidecar=recognized&&signature.sidecar&&names.includes('record_owners')&&(await db.prepare('PRAGMA table_info(record_owners)').all<{name:string}>()).results.map(c=>c.name).join(',')==='record_type,record_id,owner_id,owner_revision';
+ // A fresh or owner-authored schema has no legacy ownership to import.
+ // Keep these reads from changing the delegation epoch through runtime_controls.
+ if(!native&&!sidecar)return;
  const now=new Date().toISOString(),statements:D1PreparedStatement[]=[];
  // A second concurrent reconciliation observes the receipt inside the transaction.
  const unseen="NOT EXISTS(SELECT 1 FROM ownership_reconciliations WHERE source='legacy-0042')";
