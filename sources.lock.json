@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "65f1fd252a40c2e0f82ee62761cbc8cfd496e5ce047ab0dd4d22e2755d72ec81",
+      "sha256": "856e2e25f52ad49c77f73898548f69d2285c625c9d6f4e0bcda15da72d2df2fb",
       "executable": false
     },
     "DEMO.md": {
@@ -2075,7 +2075,7 @@
       "executable": false
     },
     "newtests/t096/browser-forecast-journey.ts": {
-      "sha256": "ffac8315fb947c9e585ab9f0397f057b1f068e437ba62e84cceccfefaf5ffffa",
+      "sha256": "032d40216808cc5b655f092a2d378917d5693070ae2a26bba51f2117f12c4fc7",
       "executable": false
     },
     "newtests/t096/browser-form-mapping.ts": {
@@ -5755,7 +5755,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/pipeline-controls.tsx": {
-      "sha256": "440ed25abf930ced99bc42e2c80dd37ce92b9947459f14cd66612efde5e3af20",
+      "sha256": "0dfafa31e54b112618a60177fdfcec8d6c8c274d19a9fb8068e0b794d4f339d3",
       "executable": false
     },
     "src/core/features/operator/ui/pipeline-settings.tsx": {
@@ -8319,7 +8319,7 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout-journey.mjs": {
-      "sha256": "c8fdbd24d834a7a4477565a894daf4802a2903fde52c15a71db1cbfec3984774",
+      "sha256": "b5581704b700ca147d51bf32517b391e86f988be8b4f4e9b223bbddecd990afe",
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {
