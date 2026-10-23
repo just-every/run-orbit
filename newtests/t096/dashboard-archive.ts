@@ -8,6 +8,7 @@ export async function dashboardArchiveBefore(target:Awaited<ReturnType<typeof fi
   const normalize=(rows:Record<string,unknown>[])=>rows.map(row=>JSON.stringify(table==='sales_dashboards'?{...row,authority:0}:table==='sales_dashboard_schedules'?{...row,state:'paused'}:row)).sort();assert.deepEqual(normalize(actual),normalize(expected));
   if(table==='sales_dashboards')assert.ok(actual.every(row=>row.authority===0));if(table==='sales_dashboard_schedules')assert.ok(actual.every(row=>row.state==='paused'));
  }
+ for(const row of archived('slack_notices').filter(row=>row.event_kind==='dashboard'&&row.content_json)){assert.deepEqual(Object.keys(JSON.parse(String(row.content_json))).sort(),['eventKind','link']);}
  const cookie=(await import('./fixture')).signIn;
  const owner=(await cookie(target.db,'owner@fold.test')).cookie;
  // The same public schedule read crosses US daylight saving using the existing Clock seam.

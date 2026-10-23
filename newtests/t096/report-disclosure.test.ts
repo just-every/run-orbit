@@ -10,6 +10,9 @@ import {emittedWorker} from './emitted-fixture';
 import {emittedRequest} from './emitted-request';
 import {accessible,watchBrowser} from './browser-observations';
 import {seedSalesReport} from './sales-report-fixture';
+import {emittedSlackWorker} from './emitted-slack-worker';
+import {dashboardSlackFixture} from './dashboard-slack-fixture';
+import {dashboardSlackScreens} from './browser-dashboard-slack';
 import {dashboardJourney} from './browser-dashboard';
 import {salesReportJourney} from './browser-sales-report';
 
@@ -34,7 +37,7 @@ before(async()=>{
  limitedCookie=(await collaborator(f,'analyst')).cookie;
  await f.db.prepare("UPDATE schema_types SET fields_json=? WHERE name='company'").bind(JSON.stringify({name:{sensitivity:'private'}})).run();
  sales=await seedSalesReport(f);seller=await collaborator(f,'seller');await f.db.prepare('UPDATE operators SET display_name=? WHERE id=?').bind('Marcus Lee',seller.operator.operatorId).run();
- worker=await emittedWorker(f.target);browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic','--disable-gpu',...worker.browserArgs]});
+ worker=await emittedWorker(f.target);console.info('Owned emitted Worker PID',worker.pid);browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic','--disable-gpu',...worker.browserArgs]});
 });
 after(async()=>{await browser?.close();await worker?.dispose();await f?.close();});
 
@@ -83,6 +86,8 @@ test('REPORT-002 a manager’s Tile board composes viewer-fenced reports and exp
   }finally{await context.close();}
  }
  await dashboardJourney({browser,worker,ownerCookie:f.cookie,seller:{cookie:seller.cookie,operatorId:seller.operator.operatorId},seed:sales,directory});
+ await browser.close();await worker.dispose();await f.target.reopen();worker=await emittedSlackWorker(f.target,origin=>dashboardSlackFixture(f,origin));browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic','--disable-gpu',...worker.browserArgs]});console.info('Owned emitted Worker PID',worker.pid);
+ await dashboardSlackScreens(browser,worker,f.cookie,directory);
  await salesReportJourney({browser,worker,ownerCookie:f.cookie,seller:{cookie:seller.cookie,operatorId:seller.operator.operatorId,email:seller.operator.email,displayName:'Marcus Lee'},seed:sales,directory});
 });
 

@@ -12,7 +12,7 @@ type Run={context:BrowserContext;errors:ReturnType<typeof watchBrowser>;page:Pag
 const root='/api/v2/workspaces/workspace',ops=root+'/operations';
 export async function dashboardAccessProof({worker,ownerCookie,seller,seed,id,evidence,open,shot,call}:{browser:Browser;worker:Worker;ownerCookie:string;seller:{cookie:string;operatorId:string};seed:Awaited<ReturnType<typeof seedSalesReport>>;id:string;evidence:string;open:(width:number,cookie?:string)=>Promise<Run>;shot:(page:Page,name:string)=>Promise<void>;call:<T=any>(cookie:string,path:string,method?:string,body?:unknown)=>Promise<T>}){
  const base=root+'/dashboards/'+id,document='/app/dashboards/'+id;
- assert.equal((await emittedRequest(worker,'',document)).status,302,'dashboard documents require native sign-in');
+ assert.equal((await emittedRequest(worker,'',document)).status,401,'dashboard documents require native sign-in');
  const full=await call<DashboardView>(ownerCookie,base);reconcileDashboard(full);
  for(const width of [1440,390]){
   const run=await open(width),page=run.page,releases:(()=>void)[]=[];

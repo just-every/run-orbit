@@ -1,7 +1,7 @@
 import type {Clock} from '../../platform/clock';
 import type {SourceSecurity} from '../../platform/source-security';
-export const eventKinds=['stage','won','due','handoff'] as const;
-export type EventKind=typeof eventKinds[number]|'dashboard';
+export const eventKinds=['stage','won','due','handoff','dashboard'] as const;
+export type EventKind=typeof eventKinds[number];
 export interface SlackConfig {clock?:Clock;security?:SourceSecurity;origin?:string;fetcher?:typeof fetch}
 export interface Installation {id:string;team_id:string;bot_user_id:string;state:string;error:string|null;origin:string;connected_at:string;retry_at:string|null;enterprise_id:string;app_id:string|null}
 export interface Channel {id:string;name:string;events_json:string;enabled:number;last_error:string|null;retry_at:string|null}

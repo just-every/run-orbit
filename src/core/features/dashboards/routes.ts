@@ -7,6 +7,7 @@ import {Dashboards} from './repository';
 import {dashboardPdf} from './pdf';
 import {dashboardTileCsv} from './export';
 import {dashboardSchedule} from './schedules';
+import {setDashboardSlack} from './schedule-state';
 import {filtersSchema} from './schema';
 export function createDashboardRoutes(metrics:AnalyticsMetrics,clock:Clock=systemClock){
  const app=new Hono<AppEnvironment>(),dashboards=new Dashboards(metrics,clock),id=z.string().regex(/^[a-zA-Z0-9_-]{1,120}$/);
@@ -23,6 +24,7 @@ export function createDashboardRoutes(metrics:AnalyticsMetrics,clock:Clock=syste
  app.put('/:id/sharing',async c=>c.json(await dashboards.sharing(c.get('actor'),id.parse(c.req.param('id')),await c.req.json())));
  app.get('/:id/schedule',async c=>c.json(await dashboardSchedule(dashboards,c.get('actor'),id.parse(c.req.param('id')))));
  app.put('/:id/schedule',async c=>c.json(await dashboardSchedule(dashboards,c.get('actor'),id.parse(c.req.param('id')),await c.req.json())));
+ app.post('/:id/schedule/slack',async c=>c.json(await setDashboardSlack(dashboards,c.get('actor'),id.parse(c.req.param('id')),await c.req.json())));
  app.put('/:id/default',async c=>c.json(await dashboards.setDefault(c.get('actor'),id.parse(c.req.param('id')),z.object({enabled:z.boolean()}).strict().parse(await c.req.json()).enabled)));
  return app;
 }

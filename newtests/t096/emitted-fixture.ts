@@ -20,4 +20,4 @@ export async function emittedWorker(target:{directory:string;close():Promise<voi
 /** Chromium trusts exactly this fixture key during the TLS handshake. A per-context
  * certificate-error override is decided after the handshake, so connections started
  * before a new context's first override fail and are retried until Chromium gives up. */
-function certificateTrust(cert:string){return[`--ignore-certificate-errors-spki-list=${createHash('sha256').update(new X509Certificate(cert).publicKey.export({type:'spki',format:'der'})).digest('base64')}`];}
+export function certificateTrust(cert:string){return[`--ignore-certificate-errors-spki-list=${createHash('sha256').update(new X509Certificate(cert).publicKey.export({type:'spki',format:'der'})).digest('base64')}`];}

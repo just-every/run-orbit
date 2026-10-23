@@ -29,7 +29,7 @@ export class Dashboards{
   return {c,h,share,manage,edit:manage||Boolean(h.authority&&share.audience==='named'&&grant?.access==='edit'),definition:JSON.parse(h.body_json) as DashboardDefinition};
  }
  fence(c:ActorContext,id:string,h:Head){return this.store.guard('EXISTS(SELECT 1 FROM sales_dashboards WHERE workspace_id=? AND id=? AND version=? AND sharing_version=? AND authority=?)',[c.workspaceId,id,h.version,h.sharing_version,h.authority]);}
- async adminChannels(c:ActorContext){if(!await this.admin(c))return [];return (await this.db.prepare("SELECT c.id,c.name FROM slack_channels c WHERE c.enabled=1 AND EXISTS(SELECT 1 FROM slack_installation WHERE state='connected') ORDER BY c.name").all<{id:string;name:string}>()).results;}
+ async adminChannels(c:ActorContext){if(!await this.admin(c))return [];return (await this.db.prepare("SELECT c.id,c.name FROM slack_channels c WHERE c.enabled=1 AND EXISTS(SELECT 1 FROM json_each(c.events_json) WHERE value='dashboard') AND EXISTS(SELECT 1 FROM slack_installation WHERE state='connected') ORDER BY c.name").all<{id:string;name:string}>()).results;}
  async list(c:ActorContext){
   c=await this.metrics.permit(c,'analytics.read');
   const ids=(await this.db.prepare('SELECT id FROM sales_dashboards WHERE workspace_id=? ORDER BY id').bind(c.workspaceId).all<{id:string}>()).results;

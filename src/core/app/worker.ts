@@ -73,6 +73,11 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
     const setupPath = path === "/setup" || path === "/setup/";
     if (setupPath || path === "/app" || path.startsWith("/app/")) {
       const operator = await operatorFromRequest(request, bindings);
+      if (!operator && /^\/app\/dashboards\/[^/]+$/.test(path)) {
+        const signInUrl=new URL('/signin',url);signInUrl.searchParams.set('returnTo',path);
+        const signIn=await identityResponse(new Request(signInUrl,{method:request.method==='HEAD'?'HEAD':'GET'}),bindings,{waitUntil:promise=>executionContext.waitUntil(promise),ownerClaimed:async()=>true});
+        return new Response(signIn?.body??null,{status:401,headers:signIn?.headers});
+      }
       if (!operator) return await invitationLanding(bindings.DB, url, request.method, bindings.AUTH_LOCAL === "true") ?? new Response(null, { status: 302, headers: { Location: `/signin?returnTo=${encodeURIComponent(setupPath ? "/setup" : path + url.search)}` } });
       // Unfinished first-run setup lives at /setup; a finished one continues into the app.
       const complete = await firstRunComplete(bindings.DB);
