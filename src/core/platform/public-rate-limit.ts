@@ -16,13 +16,17 @@ export async function consumeRateLimit(db:D1Database,key:string,limit:number,now
 export async function rejectedRateLimit(db:D1Database,request:Request,now=Date.now()){
  return consumeRateLimit(db,`public:${await publicIdentity(request,now)}`,300,now);
 }
+/** Called only after the route verifies the source's own signature or credential. */
+export function signedSourceRateLimit(db:D1Database,sourceId:string,now=Date.now()){
+ return consumeRateLimit(db,`signed-source:${sourceId}:${Math.floor(now/60000)}`,600,now);
+}
 export async function publicRateLimit(db:D1Database,request:Request,now=Date.now()):Promise<Response|undefined>{
  const pathname=new URL(request.url).pathname;
  // The Worker dispatches raw /api/ paths to Hono, which decodes routing text.
  // Use that same decoder; decodeURIComponent would also invent route slashes.
  const routedPath=pathname.startsWith('/api/')?getPath(request):pathname;
  // These bounded-body routes verify the actual signature before choosing their rate bucket.
- if(request.method==='POST'&&/^\/api\/v1\/mail\/events\/(sendgrid|reply|relay)$/.test(routedPath))return;
+ if(request.method==='POST'&&/^\/api\/v1\/(mail\/events\/(sendgrid|reply|relay)|signals\/[^/]+(\/(calcom|calendly|automation))?)$/.test(routedPath))return;
  const ingress=routedPath.startsWith('/api/v1/signals/')||routedPath.startsWith('/api/v1/mail/events/');
  const delegation=pathname.startsWith('/api/delegation/v1/');
  const publicForm=routedPath.startsWith('/api/public/forms/');
@@ -31,6 +35,6 @@ export async function publicRateLimit(db:D1Database,request:Request,now=Date.now
  if(request.method==='POST'&&/^\/api\/public\/forms\/[a-z0-9][a-z0-9-]{0,79}$/.test(routedPath))return;
  if(pathname.startsWith('/api/')&&!ingress&&!delegation&&!publicForm)return;
  if(pathname==='/app'||pathname.startsWith('/app/')||pathname.startsWith('/_serverFn/'))return;
- return consumeRateLimit(db,ingress?`ingress:${Math.floor(now/60000)}`:`public:${await publicIdentity(request,now)}`,ingress?600:300,now);
+ return consumeRateLimit(db,`public:${await publicIdentity(request,now)}`,300,now);
 }
 import {getPath} from 'hono/utils/url';

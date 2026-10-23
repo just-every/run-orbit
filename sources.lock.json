@@ -3267,7 +3267,7 @@
       "executable": false
     },
     "OPERATIONS.md": {
-      "sha256": "2b86e5e0ef7977805708cc44c186e0700dcae95cd50123341c170a14a74de941",
+      "sha256": "61caa0c2d87ce272f3eed41633c0a3a21a014bfc52d7d9bae79fc68fd561d8ca",
       "executable": false
     },
     "OWNER-STEPS.md": {
@@ -5099,7 +5099,7 @@
       "executable": false
     },
     "src/core/features/ingestion/routes.ts": {
-      "sha256": "49ad47d8aca3a6e740e7be6ed31ba19438a142c4ca58bc5a8f77698a4cf7cd7e",
+      "sha256": "759077a0cee4516b56645d30ba7aa9bf3195a0b4743bd9be03fbe720570a9c0e",
       "executable": false
     },
     "src/core/features/ingestion/source-authority.ts": {
@@ -6627,7 +6627,7 @@
       "executable": false
     },
     "src/core/platform/public-rate-limit.ts": {
-      "sha256": "0908d3e9a10c18868ec6f54057f06d0e39ac2a62310fa88df423360a5046b0d4",
+      "sha256": "0e8c6caef5708d92103ebef0178995ee51bb41a633982b37b4e2badb1f407e17",
       "executable": false
     },
     "src/core/platform/request.server.ts": {
@@ -8451,7 +8451,7 @@
       "executable": false
     },
     "tests/launch-runtime/mail-ingress.test.ts": {
-      "sha256": "80dfee5e7abf5c17c2a10def93791be439e0fbf532e0bcecf7023c96cd6958da",
+      "sha256": "d75929121657cbd8894ea091e472ed419fbc444d43dfa66a017f602583d982bf",
       "executable": false
     },
     "tests/launch-runtime/source-mailbox-stop.test.ts": {

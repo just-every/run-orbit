@@ -6,7 +6,7 @@ import {spawn} from 'node:child_process';
 import {once} from 'node:events';
 import {writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
-import {generateKeyPairSync,sign} from 'node:crypto';
+import {createHmac,generateKeyPairSync,randomBytes,sign} from 'node:crypto';
 import {chromium,expect} from '@playwright/test';
 import {isolatedDatabase} from '../support/isolated-database';
 import {availablePort} from '../support/available-port';
@@ -20,7 +20,7 @@ import {signRelayBody} from '../../src/base/sendgrid-event-relay/crypto';
 import {publicIdentity} from '../../src/core/platform/public-rate-limit';
 import {identityVarArgs} from '../support/worker-identity.mjs';
 
-test('emitted Worker verifies each provider before its separate limit, shows a signed bounce as the message outcome, and supports the reviewed native do-not-contact clear',async()=>{
+test('emitted Worker verifies each provider and signed source before its separate limit, shows a signed bounce as the message outcome, and supports the reviewed native do-not-contact clear',async()=>{
  const fixture=await isolatedDatabase(),port=await availablePort(),origin=`http://127.0.0.1:${port}`,secret=crypto.randomUUID()+crypto.randomUUID(),keys=generateKeyPairSync('ec',{namedCurve:'prime256v1'}),publicKey=keys.publicKey.export({type:'spki',format:'der'}).toString('base64');
  let worker:ReturnType<typeof spawn>|undefined,browser:Awaited<ReturnType<typeof chromium.launch>>|undefined;
  try{
@@ -38,7 +38,7 @@ test('emitted Worker verifies each provider before its separate limit, shows a s
   }
   await fixture.close();
   // Generated credentials live in a private disposable file, never process arguments or logs.
-  const secretsFile=join(fixture.directory,'provider.env');await writeFile(secretsFile,`RER_MAIL_RELAY_SECRET=${secret}\nSENDGRID_WEBHOOK_PUBLIC_KEY=${publicKey}\nSENDGRID_PARSE_PUBLIC_KEY=${publicKey}\n`,{mode:0o600});
+  const secretsFile=join(fixture.directory,'provider.env');await writeFile(secretsFile,`RER_MAIL_RELAY_SECRET=${secret}\nSENDGRID_WEBHOOK_PUBLIC_KEY=${publicKey}\nSENDGRID_PARSE_PUBLIC_KEY=${publicKey}\nORBIT_ENCRYPTION_KEY=${randomBytes(32).toString('hex')}\n`,{mode:0o600});
   worker=spawn(process.execPath,['node_modules/wrangler/bin/wrangler.js','dev','--config','dist/server/wrangler.json','--local','--persist-to',fixture.directory,'--port',String(port),'--inspector-port','0','--env-file',secretsFile,...identityVarArgs(origin)],{stdio:['ignore','pipe','pipe'],env:{...Object.fromEntries(['PATH','HOME','TMPDIR','USER','LANG','LC_ALL'].flatMap(name=>process.env[name]?[[name,process.env[name]!]]:[])),CI:'1',WRANGLER_SEND_METRICS:'false'}});
   worker.stdout!.resume();worker.stderr!.resume();let ready=false;for(let i=0;i<300;i++){try{if((await fetch(origin+'/health')).ok){ready=true;break;}}catch{}if(worker.exitCode!==null)break;await new Promise(resolve=>setTimeout(resolve,100));}assert.equal(ready,true,'Emitted Worker becomes healthy');
   const session_=`__Host-orbit_session=${session.token}`,api=async(path:string)=>{const response=await fetch(origin+'/api/v1/workbench'+path,{headers:{Cookie:session_}});assert.equal(response.status,200);return response.json() as any;};
@@ -46,6 +46,12 @@ test('emitted Worker verifies each provider before its separate limit, shows a s
   const timestamp=String(Math.floor(Date.now()/1000)),body='[]',relayHeaders={'CF-Connecting-IP':ip,'x-rer-mail-timestamp':timestamp,'x-rer-mail-signature':await signRelayBody(secret,timestamp,body)};
   const relay=(signature=relayHeaders['x-rer-mail-signature'])=>fetch(origin+'/api/v1/mail/events/relay',{method:'POST',headers:{...relayHeaders,'x-rer-mail-signature':signature},body});
   assert.equal((await relay('forged')).status,401);assert.equal((await relay('forged')).status,429);assert.equal((await relay()).status,200,'A valid relay survives saturated unsigned and general ingress buckets');
+  // Unsigned signal traffic from any number of networks is refused per network; a signed source spends only its own budget.
+  const source=createId(),configured=await fetch(origin+`/api/v1/sources/${source}`,{method:'PUT',headers:{Cookie:session_,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({name:'Runtime signed source',enabled:true})});assert.equal(configured.status,200);const sourceSecret=(await configured.json() as {secret:string}).secret;
+  const unsigned=(network:string)=>fetch(origin+'/api/v1/signals/unknown-source',{method:'POST',headers:{'CF-Connecting-IP':network},body:'{}'});
+  for(const network of ['signal-flood-a','signal-flood-b','signal-flood-c'])for(let i=0;i<201;i++)assert.equal((await unsigned(network)).status,403);assert.equal((await unsigned(ip)).status,429,'An exhausted network is refused');
+  const signal=JSON.stringify({eventId:createId(),type:'page.viewed',subject:'Runtime signed source',occurredAt:new Date().toISOString(),email:'runtime-signal@customer.test'}),signedAt=String(Math.floor(Date.now()/1000));
+  assert.equal((await fetch(origin+`/api/v1/signals/${source}`,{method:'POST',headers:{'CF-Connecting-IP':ip,'Content-Type':'application/json','X-Orbit-Timestamp':signedAt,'X-Orbit-Signature':createHmac('sha256',sourceSecret).update(`${signedAt}.${signal}`).digest('hex')},body:signal})).status,201,'A signed source survives unsigned floods and saturated shared buckets');
   const bounce=JSON.stringify([{sg_event_id:createId(),event:'bounce',type:'bounce',reason:'550 5.1.1 Address does not exist',timestamp:Number(timestamp),email:'runtime-buyer@orbit.test',rer_product:'orbit',rer_delivery_id:message.idempotency_key}]);
   const signature=sign('sha256',Buffer.from(timestamp+bounce),keys.privateKey).toString('base64');assert.equal((await fetch(origin+'/api/v1/mail/events/sendgrid',{method:'POST',headers:{'CF-Connecting-IP':ip,'X-Twilio-Email-Event-Webhook-Timestamp':timestamp,'X-Twilio-Email-Event-Webhook-Signature':signature},body:bounce})).status,200);
   const outcomes=await api('/delivery-outcomes');assert.equal(outcomes.connected,true);assert.ok(outcomes.lastEventAt,'Settings shows the last signed delivery event');
