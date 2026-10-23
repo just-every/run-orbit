@@ -55,7 +55,7 @@ test('DATA-001 restore disables inherited approvals after all tables load, prese
   // Survivor work stays fresh when a normal merge inherits no stop.
   assert.equal((await source.db.prepare('SELECT is_stale FROM drafts WHERE id=?').bind(w.draftId).first())!.is_stale,0);
   const history=await source.message(c.contactId,c.opportunityId,'accepted'),archive=await new TestDataRepository(source.db).export();
-  const retainedOperators=(await new TestDataRepository(normal.db).export()).tables.operators;
+  const retained=(await new TestDataRepository(normal.db).export()).tables,retainedOperators=retained.operators;
   await new TestDataRepository(normal.db).restore(archive,normal.actor);
   const roundtrip=(await new TestDataRepository(normal.db).export()).tables;
   const byId=(a:Record<string,any>,b:Record<string,any>)=>String(a.id).localeCompare(String(b.id));
@@ -68,7 +68,13 @@ test('DATA-001 restore disables inherited approvals after all tables load, prese
    assert.ok(Date.parse(String(restored.updated_at))>=Date.parse(archive.exportedAt),'Cancellation records the restore time');
    return {...row,state:'cancelled',failure:restored.failure,updated_at:restored.updated_at};
   });
-  for(const [name,rows] of Object.entries(archive.tables))if(!['audit_entries','operators'].includes(name))assert.equal(await archiveHash(roundtrip[name]),await archiveHash(name==='outbound_messages'?expectedMessages:rows),`Normal archive table ${name} preserves every field except renewed dispatch authority`);
+  // Folded archives additionally expose native identity projections. The current
+  // installation's operator survives restore together with their exact projection.
+  for(const name of ['access_memberships','original_operator_provisions']){
+   const byOperator=(a:Record<string,any>,b:Record<string,any>)=>String(a.operator_id).localeCompare(String(b.operator_id));
+   assert.deepEqual([...roundtrip[name]].sort(byOperator),[...archive.tables[name],...retained[name]].sort(byOperator),`Restore retains source and destination native identity fields in ${name}`);
+  }
+  for(const [name,rows] of Object.entries(archive.tables))if(!['audit_entries','operators','access_memberships','original_operator_provisions'].includes(name))assert.equal(await archiveHash(roundtrip[name]),await archiveHash(name==='outbound_messages'?expectedMessages:rows),`Normal archive table ${name} preserves every field except renewed dispatch authority`);
   let normalSends=0;await new OutreachService(normal.db,{async send(){normalSends++;return {providerMessageId:'test-only'};}}).dispatchDue(due);assert.equal(normalSends,0,'A normal restore cannot dispatch the source installation approval');
   // The destination retains suppression for an imported alias, not only its primary mailbox.
   const stopped=await target.records.save('contact',{name:'Destination stop',email:alias.email,contactability:'do_not_contact'},target.actor);

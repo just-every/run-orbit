@@ -16,7 +16,7 @@ async function workspace(db: D1Database) { if (!await db.prepare('SELECT 1 FROM 
 async function archive(db: D1Database) { const repo = new ArchiveExportRepository(db, foldExportProfile), actor = (await db.prepare('SELECT id FROM operators LIMIT 1').first<{
     id: string;
 }>())!.id; let status = await repo.create(actor); for (let i = 0; i < 200 && status.state !== 'ready'; i++)
-    status = await repo.advance(status.id, actor); assert.equal(status.state, 'ready'); const document = await readCurrentArchive(await repo.download(status.id, actor)); return document; }
+    status = await repo.advance(status.id, actor); assert.equal(status.state, 'ready'); const document = await readCurrentArchive(await repo.download(status.id, actor)); return {...document,id:status.id}; }
 test('BASE-DATA-001 interrupted invalid restore remains hidden and abort restores original administrator, session and exact metadata', async () => { const source = await isolatedDatabase(), target = await isolatedDatabase(); try {
     await owner(source.db, 'source@example.test');
     const actor = await owner(target.db);
@@ -53,7 +53,7 @@ finally {
     await source.dispose();
     await target.dispose();
 } });
-test('DATA-002 contact erasure invalidates prepared exports, paused downloads and uploaded restore copies', async () => {
+test('DATA-002 contact erasure invalidates prepared exports, paused downloads and separately uploaded restore copies', async () => {
     const fixture = await isolatedDatabase();
     try {
         const actor = await owner(fixture.db), contact = createId();
@@ -62,16 +62,26 @@ test('DATA-002 contact erasure invalidates prepared exports, paused downloads an
         const exportId = (await fixture.db.prepare("SELECT id FROM archive_jobs WHERE kind='export'").first<{id:string}>())!.id;
         const response = await exports.download(exportId, actor), reader = response.body!.getReader();
         await reader.read(); // Header consumed; no customer data has been read.
-        const imports = new ArchiveImportRepository(fixture.db, true), upload = await imports.create(document.manifest, actor);
-        for (const part of document.parts) await imports.upload(upload.id, part.index, part, actor);
+        const imports = new ArchiveImportRepository(fixture.db, true);
+        // Current Records permits one retained transfer at a time. Exercise each
+        // private copy through its real door rather than bypassing that boundary.
+        await assert.rejects(imports.create(document.manifest, actor), /Another archive transfer/);
         await new TestDataRepository(fixture.db).remove('contact', contact, actor);
         assert.equal((await fixture.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND (name LIKE 'archive_snapshot_%' OR name LIKE 'archive_stage_%')").all()).results.length, 0);
         for (const table of ['archive_jobs', 'archive_parts', 'archive_part_segments']) assert.equal((await fixture.db.prepare(`SELECT count(*) AS n FROM ${table}`).first<{n:number}>())!.n, 0);
         await assert.rejects(exports.download(exportId, actor), /not found/);
-        await assert.rejects(imports.advance(upload.id, actor), /not found/);
         await assert.rejects(async () => { while (!(await reader.read()).done) {} }, /removed|incomplete/);
         const fresh = await archive(fixture.db);
         assert.ok(!JSON.stringify(fresh).includes('erase@example.test'));
+        await exports.abort(fresh.id, actor);
+        await fixture.db.prepare("INSERT INTO contacts(id,name,email,email_key,contactability,created_at,updated_at) VALUES(?,'Private archive contact','erase@example.test','erase@example.test','contactable',?,?)").bind(contact, now, now).run();
+        const upload = await imports.create(document.manifest, actor);
+        for (const part of document.parts) await imports.upload(upload.id, part.index, part, actor);
+        await new TestDataRepository(fixture.db).remove('contact', contact, actor);
+        assert.equal((await fixture.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND (name LIKE 'archive_snapshot_%' OR name LIKE 'archive_stage_%')").all()).results.length, 0);
+        for (const table of ['archive_jobs', 'archive_parts', 'archive_part_segments']) assert.equal((await fixture.db.prepare(`SELECT count(*) AS n FROM ${table}`).first<{n:number}>())!.n, 0);
+        await assert.rejects(imports.advance(upload.id, actor), /not found/);
+        assert.ok(!JSON.stringify(await archive(fixture.db)).includes('erase@example.test'));
     } finally { await fixture.dispose(); }
 });
 test('BASE-DATA-001 abort racing an export part write cannot recreate private transfer data', async () => {

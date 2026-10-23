@@ -111,3 +111,5 @@ mail, hosted restore and owner acceptance require their separate receipts.
 authorized origin and private provider inputs; it is never an ordinary local test.
 
 CAPTURE-010 keeps its one existing provider scope/rule/correction/custody case in `tests/core/capture-mail-rules.test.ts`; the other provider cases remain in `capture-providers.test.ts`. No case is added or removed. The plan weights the extended case at eleven minutes from its local execution and updates the mapped-form, record-mail, browser and populated-upgrade weights from their measured local paths, preserving the same shard counts and test budget.
+
+Current-install archive fixtures use the production folded generation and streamed reader. The transfer erasure case preserves its export/paused-stream and uploaded-restore assertions in consecutive passes because Records admits one retained transfer at a time. Failure triggers are installed before upload and armed by a runtime-control row, so the immutable schema fence remains exercised.

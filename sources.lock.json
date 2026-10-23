@@ -3875,7 +3875,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "b589cb237546f84d00f7b88c56c0ae1de741258be2e239538597ac2e180f713f",
+      "sha256": "5d9c4d92a83a64067ef36123acb301830aaa2048af65c92c1fd4127d9af39516",
       "executable": false
     },
     "scripts/verification-shard.mjs": {
@@ -8027,7 +8027,7 @@
       "executable": false
     },
     "TESTING.md": {
-      "sha256": "51f650ed50fced0b243f7381ca42cb4139fd23052e8bfdd5fedddb8e463f5a72",
+      "sha256": "7d1016d03487d72ebb9af73a9011a71085ca738afcbdea1c417f0bf66d6a6f02",
       "executable": false
     },
     "tests/acceptance/edition-source.mjs": {
@@ -8099,7 +8099,7 @@
       "executable": false
     },
     "tests/core/archive-transfer.test.ts": {
-      "sha256": "7a07d4b6f18bbe4a2987f15f9bab5ed52043f2d641b330f47af26659e9c772e2",
+      "sha256": "78b0bd2e03afd9d711afe391968aed0681196457009928d246dcfd3d6d77020d",
       "executable": false
     },
     "tests/core/assistance.test.ts": {
@@ -8167,7 +8167,7 @@
       "executable": false
     },
     "tests/core/launch-inherited-stop.test.ts": {
-      "sha256": "ad7e6dbab088e21b122835b0e11a2247ef50e39b242e0bd2e1f598ac8653e44b",
+      "sha256": "a15f1a9e33409a57b507688c8bfc9135c9919a9c302afad36db79456df4aa874",
       "executable": false
     },
     "tests/core/launch-provider-conflicts.test.ts": {
