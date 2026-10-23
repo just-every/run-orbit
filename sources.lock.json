@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "4f450452d642e916635c8391aea0526210a68f96b5925a8829d0a67367a1bf21",
+      "sha256": "83c227e461300ee8f7877d461b60e86e99902bd3e5a22295b5e36e2f62b59de9",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "958bc501208a12e28be15623fc78c377f40e89a74123697bd09bb6cbfedb85af",
+      "sha256": "ea64f955a8f7ead60fb4213b4e5d039b21281c6fa26ab5ed486e6c4f9fe0e643",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "95c83a9e2402459cd05c872568095d64bb04cf5b0c02204f0937f1c357cfc2fb",
+      "sha256": "0a14bac5b47a469e91c90aa586397e737efb50351338513d69f5786983085957",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -792,6 +792,38 @@
     },
     "docs/retained-verification/browser-results.jsonl": {
       "sha256": "9bd45ef79313e55ac860c62c1d97740a20bd4700f637a87998b8bdc2ab0ede16",
+      "executable": false
+    },
+    "docs/retained-verification/CAPTURE-010/capture-mail-association-1440.png": {
+      "sha256": "849120e4c9cad87d10b705842366f39286827a28d7e76743dc445859d6cfaa5b",
+      "executable": false
+    },
+    "docs/retained-verification/CAPTURE-010/capture-mail-association-390.png": {
+      "sha256": "97356f8d42a9a712ce55bcaa4dce225edfbe4b126c2fe67329ee694164cf7781",
+      "executable": false
+    },
+    "docs/retained-verification/CAPTURE-010/capture-mail-moved-1440.png": {
+      "sha256": "3c445ff769e484242966559ed8b210b2bd942f1edeedecceee2e011664b47470",
+      "executable": false
+    },
+    "docs/retained-verification/CAPTURE-010/capture-mail-moved-390.png": {
+      "sha256": "9e6aca567bf6806906beabe54dd52b123a09d83da71b67c589fd935ffad572a8",
+      "executable": false
+    },
+    "docs/retained-verification/CAPTURE-010/capture-mail-removed-1440.png": {
+      "sha256": "152acda11bf9c4fb94c79a68e2ddeef8f9058b981d679831dee2076507e727f9",
+      "executable": false
+    },
+    "docs/retained-verification/CAPTURE-010/capture-mail-removed-390.png": {
+      "sha256": "647e21f35132647bf39b69a61dfb72a467c4ea13be5e87a27b9c2a04839de1d2",
+      "executable": false
+    },
+    "docs/retained-verification/CAPTURE-010/capture-mail-rule-1440.png": {
+      "sha256": "ee2d2d53184919ea516cebd77e17039deb1c7b289cd81a0c43f3a13eeb4e7904",
+      "executable": false
+    },
+    "docs/retained-verification/CAPTURE-010/capture-mail-rule-390.png": {
+      "sha256": "3cdee3234cef24a293ecaa776ad8f4dd8fd1287838b7f8244a1f01c9c8c4db8d",
       "executable": false
     },
     "docs/retained-verification/contract-results.json": {
