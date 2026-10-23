@@ -1,3 +1,4 @@
+import {recordMailDatabase} from '../outreach/record-mail-storage';
 import {identityMatch,identityPatterns} from '../records/erasure-identity';
 import {redactJsonText} from '../settings/erasure-redaction';
 
@@ -11,7 +12,9 @@ export function messageContactErasure(db:D1Database,identities:string[]){
   statements.push(
    db.prepare(`DELETE FROM message_library WHERE ${['name','subject','body'].map(identityMatch).join(' OR ')}`).bind(...patterns,...patterns,...patterns),
    db.prepare(`DELETE FROM outbound_messages WHERE ${['subject','body','render_snapshot_json'].map(identityMatch).join(' OR ')} OR draft_id IN(SELECT id FROM drafts WHERE ${draftMatch})`).bind(...Array(6).fill(patterns).flat()),
-   db.prepare(`DELETE FROM drafts WHERE ${draftMatch}`).bind(...patterns,...patterns,...patterns)
+   db.prepare(`DELETE FROM drafts WHERE ${draftMatch}`).bind(...patterns,...patterns,...patterns),
+   recordMailDatabase(db).prepare(`DELETE FROM outbound_messages WHERE ${['subject','body','render_snapshot_json'].map(identityMatch).join(' OR ')} OR draft_id IN(SELECT id FROM drafts WHERE ${draftMatch})`).bind(...Array(6).fill(patterns).flat()),
+   recordMailDatabase(db).prepare(`DELETE FROM drafts WHERE ${draftMatch}`).bind(...patterns,...patterns,...patterns)
   );
  }
  return statements;
@@ -27,7 +30,7 @@ function redactReview(text:string,name:string,mailbox:string){
 /** Mailboxes identify the operator globally; a display name only identifies their attributed text. */
 export async function messageReviewOperatorErasure(db:D1Database,id:string,name:string,mailbox:string){
  const statements:D1PreparedStatement[]=[],redactName=name.length>=3;
- for(const [table,column,author]of [['drafts','merge_review_json','author_id'],['outbound_messages','render_snapshot_json','operator_id']] as const){
+ for(const [table,column,author]of [['drafts','merge_review_json','author_id'],['outbound_messages','render_snapshot_json','operator_id'],['record_mail_drafts','merge_review_json','author_id'],['record_mail_outbound_messages','render_snapshot_json','operator_id']] as const){
   const escapedName=JSON.stringify(name).slice(1,-1);
   const rows=(await db.prepare(`SELECT rowid AS row,${column} AS value,${author}=? AS attributed FROM ${table} WHERE ${column} IS NOT NULL AND (${identityMatch(column)} OR (${author}=? AND ? AND (instr(lower(${column}),lower(?))>0 OR instr(lower(json_extract(${column},'$.context')),lower(?))>0)))`).bind(id,...identityPatterns(mailbox),id,redactName?1:0,escapedName,escapedName).all<{row:number;value:string;attributed:number}>()).results;
   for(const row of rows){

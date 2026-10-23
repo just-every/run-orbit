@@ -13,3 +13,8 @@ export function replyForm(from:string,id:string,references:string){
  form.set('headers',`Message-ID: ${id}\r\nDate: Mon, 05 Oct 2026 12:00:00 GMT\r\nReferences: ${references}`);
  return form;
 }
+/** The provider's signed delivery HTTP edge, without a provider account. */
+export function signedDeliveryEvents(db:D1Database){
+ const keys=generateKeyPairSync('ec',{namedCurve:'prime256v1'}),app=createMailEventRoutes(db,{eventKey:keys.publicKey.export({type:'spki',format:'der'}).toString('base64')});
+ return async(events:unknown[])=>{const body=JSON.stringify(events),timestamp=String(Math.floor(Date.now()/1000));return app.request('https://orbit.test/sendgrid',{method:'POST',headers:{'Content-Type':'application/json','X-Twilio-Email-Event-Webhook-Timestamp':timestamp,'X-Twilio-Email-Event-Webhook-Signature':sign('sha256',Buffer.from(timestamp+body),keys.privateKey).toString('base64')},body});};
+}

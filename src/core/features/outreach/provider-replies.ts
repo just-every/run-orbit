@@ -1,3 +1,4 @@
+import {recordMailReplyStatements} from './record-mail-replies';
 import {createId} from '../../shared/ids';
 import {payloadHash} from '../../platform/source-security';
 import {IngestionRepository} from '../ingestion/repository';
@@ -29,7 +30,8 @@ export async function recordProviderReply(db:D1Database,input:ProviderReply,hash
  const messages=await matchingReplyMessages(db,input.sender,input.references),opportunities=new Set(messages.map(message=>message.opportunity_id)),opportunityId=opportunities.size===1?messages[0]!.opportunity_id:null;
  const source='sendgrid-replies',at=new Date().toISOString(),statements=[db.prepare('INSERT INTO mail_provider_events VALUES(?,?,?)').bind(receiptId,hash,at),db.prepare("INSERT OR IGNORE INTO signal_sources(id,name,type,enabled,created_at,updated_at) VALUES(?,'SendGrid authenticated replies','mail_provider',1,?,?)").bind(source,at,at)];
  const event=providerReplyEvent(input,opportunityId);
- if(opportunityId){
+ if(messages.length&&messages.every(message=>message.record_mail===1)){statements.push(...await recordMailReplyStatements(db,input,messages,hash,at));}
+ else if(opportunityId){
   const plan=await new IngestionRepository(db).prepare(source,event,hash,JSON.stringify(event));statements.push(...plan.statements);
   const contacts=[...new Set(messages.map(message=>message.contact_id))];
   statements.push(...mailHistoryLinks(db,plan.id,opportunityId,contacts));
@@ -40,6 +42,6 @@ export async function recordProviderReply(db:D1Database,input:ProviderReply,hash
  }else if(input.automatic)statements.push(...unlinkedAutomaticReply(db,source,event,hash,at));
  // The old reply-review door always records human evidence. Automatic mail
  // uses typed signals instead, so later manual linking cannot stop follow-up.
- if(!input.automatic)statements.push(db.prepare('INSERT INTO unlinked_replies(id,provider_event_id,sender,subject,body,message_id,reference_ids,occurred_at,opportunity_id) VALUES(?,?,?,?,?,?,?,?,?)').bind(createId(),input.id,input.sender,input.subject,input.body,input.messageId,input.references,input.occurredAt,opportunityId));
+ if(!input.automatic&&(!messages.length||messages.every(message=>message.record_mail===0)&&opportunityId))statements.push(db.prepare('INSERT INTO unlinked_replies(id,provider_event_id,sender,subject,body,message_id,reference_ids,occurred_at,opportunity_id) VALUES(?,?,?,?,?,?,?,?,?)').bind(createId(),input.id,input.sender,input.subject,input.body,input.messageId,input.references,input.occurredAt,opportunityId));
  try{await db.batch(statements);}catch(error){const winner=await prior();if(!winner)throw error;if(winner.payload_hash!==hash)await recordProviderConflict(db,receiptId,winner.payload_hash,hash,'sendgrid-replies');}
 }

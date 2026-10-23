@@ -6,13 +6,13 @@ export const sharedLimitSql=`COALESCE((SELECT value FROM sending_limits WHERE id
 export const oneToOneLimitSql=(operator:string)=>`COALESCE((SELECT value FROM sending_limits WHERE id='one-to-one:'||${operator}),${defaultOneToOnePerDay})`;
 const windows=(now:Date)=>({minute:new Date(now.getTime()-60000).toISOString(),day:new Date(now.getTime()-86400000).toISOString()});
 async function freedAt(db:D1Database,where:string,binds:unknown[],over:number,period:number){
- const row=await db.prepare(`SELECT claimed_at FROM outbound_messages WHERE ${where} ORDER BY claimed_at LIMIT 1 OFFSET ?`).bind(...binds,over).first<{claimed_at:string}>();
+ const row=await db.prepare(`SELECT claimed_at FROM outbound_delivery_budget WHERE ${where} ORDER BY claimed_at LIMIT 1 OFFSET ?`).bind(...binds,over).first<{claimed_at:string}>();
  return row?Date.parse(row.claimed_at)+period:0;
 }
 /** Which limit holds this sender's next message, in words, and when it may be sent; null when none is reached. */
 export async function deferral(db:D1Database,operatorId:string,now=new Date()){
  const {minute,day}=windows(now);
- const row=(await db.prepare(`SELECT ${sharedLimitSql} AS shared,${oneToOneLimitSql('?1')} AS budget,(SELECT COUNT(*) FROM outbound_messages WHERE claimed_at>?2) AS sharedUsed,(SELECT COUNT(*) FROM outbound_messages WHERE operator_id=?1 AND claimed_at>?3) AS budgetUsed`).bind(operatorId,minute,day).first<{shared:number;budget:number;sharedUsed:number;budgetUsed:number}>())!;
+ const row=(await db.prepare(`SELECT ${sharedLimitSql} AS shared,${oneToOneLimitSql('?1')} AS budget,(SELECT COUNT(*) FROM outbound_delivery_budget WHERE claimed_at>?2) AS sharedUsed,(SELECT COUNT(*) FROM outbound_delivery_budget WHERE operator_id=?1 AND claimed_at>?3) AS budgetUsed`).bind(operatorId,minute,day).first<{shared:number;budget:number;sharedUsed:number;budgetUsed:number}>())!;
  const limits:string[]=[];let retry=now.getTime();
  if(row.budgetUsed>=row.budget){limits.push(`this sender's one-to-one budget of ${row.budget} messages a rolling day`);retry=Math.max(retry,await freedAt(db,'operator_id=? AND claimed_at>?',[operatorId,day],row.budgetUsed-row.budget,86400000));}
  if(row.sharedUsed>=row.shared){limits.push(`the shared sending rate of ${row.shared} messages a minute`);retry=Math.max(retry,await freedAt(db,'claimed_at>?',[minute],row.sharedUsed-row.shared,60000));}
@@ -24,8 +24,8 @@ async function requireOwner(db:D1Database,actor:string){
 /** Budgets used and remaining: the owner sees every active user; anyone else sees their own. */
 export async function sendingCapacity(db:D1Database,actor:string,now=new Date()){
  const {minute,day}=windows(now),owner=Boolean(await db.prepare("SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active'").bind(actor).first());
- const shared=(await db.prepare(`SELECT ${sharedLimitSql} AS perMinute,EXISTS(SELECT 1 FROM sending_limits WHERE id='shared') AS overridden,(SELECT COUNT(*) FROM outbound_messages WHERE claimed_at>?) AS used`).bind(minute).first<{perMinute:number;overridden:number;used:number}>())!;
- const users=(await db.prepare(`SELECT o.id,o.display_name AS name,${oneToOneLimitSql('o.id')} AS budget,EXISTS(SELECT 1 FROM sending_limits WHERE id='one-to-one:'||o.id) AS overridden,(SELECT COUNT(*) FROM outbound_messages m WHERE m.operator_id=o.id AND m.claimed_at>?) AS used FROM operators o WHERE o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id) AND (?=1 OR o.id=?) ORDER BY o.display_name,o.id`).bind(day,owner?1:0,actor).all<{id:string;name:string;budget:number;overridden:number;used:number}>()).results;
+ const shared=(await db.prepare(`SELECT ${sharedLimitSql} AS perMinute,EXISTS(SELECT 1 FROM sending_limits WHERE id='shared') AS overridden,(SELECT COUNT(*) FROM outbound_delivery_budget WHERE claimed_at>?) AS used`).bind(minute).first<{perMinute:number;overridden:number;used:number}>())!;
+ const users=(await db.prepare(`SELECT o.id,o.display_name AS name,${oneToOneLimitSql('o.id')} AS budget,EXISTS(SELECT 1 FROM sending_limits WHERE id='one-to-one:'||o.id) AS overridden,(SELECT COUNT(*) FROM outbound_delivery_budget m WHERE m.operator_id=o.id AND m.claimed_at>?) AS used FROM operators o WHERE o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id) AND (?=1 OR o.id=?) ORDER BY o.display_name,o.id`).bind(day,owner?1:0,actor).all<{id:string;name:string;budget:number;overridden:number;used:number}>()).results;
  return {owner,status:'estimated-until-load-tested',declaredUsers,perUserPerMinute,shared:{...shared,overridden:Boolean(shared.overridden),default:defaultSharedPerMinute},sequencePerDay:defaultSequencePerDay,
   users:users.map(user=>({...user,overridden:Boolean(user.overridden),remaining:Math.max(0,user.budget-user.used),default:defaultOneToOnePerDay}))};
 }

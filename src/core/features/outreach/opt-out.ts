@@ -1,3 +1,5 @@
+import {draftRecordLinks} from './record-mail-links';
+import {isRecordMailDatabase} from './record-mail-storage';
 import { createId } from '../../shared/ids';
 import { audit, RecordError } from '../records/shared';
 import { WorkbenchError } from '../workbench/repository';
@@ -10,14 +12,15 @@ const settingSql=(type:string)=>`SELECT COALESCE((SELECT carries FROM opt_out_se
 /** Kept for transports without the supported installation-origin capability path. */
 export const relayRefusal='This relay cannot carry your opt-out link yet (OUT-013)';
 /** A one-to-one message replies in an existing thread when its recipient has a genuine email reply (never an automatic one) recorded on the deal. */
-const replySql=(opportunity:string,contact:string)=>`EXISTS(SELECT 1 FROM signals s JOIN signal_links lo ON lo.signal_id=s.id AND lo.record_type='opportunity' AND lo.record_id=${opportunity} JOIN signal_links lc ON lc.signal_id=s.id AND lc.record_type='contact' AND lc.record_id=${contact} WHERE s.type='email.replied')`;
+const replySql=(db:D1Database,opportunity:string,contact:string,draft:string)=>`EXISTS(SELECT 1 FROM signals s JOIN signal_links lc ON lc.signal_id=s.id AND lc.record_type='contact' AND lc.record_id=${contact} WHERE s.type='email.replied' AND (${opportunity} IS NULL OR EXISTS(SELECT 1 FROM signal_links lo WHERE lo.signal_id=s.id AND lo.record_type='opportunity' AND lo.record_id=${opportunity}))
+ ${isRecordMailDatabase(db)?`AND s.source_id='sendgrid-replies' AND EXISTS(SELECT 1 FROM outbound_messages prior WHERE prior.contact_id=${contact} AND prior.opportunity_id IS ${opportunity} AND prior.state IN('accepted','delivered') AND instr(COALESCE(json_extract(s.payload_json,'$.data.references'),''),prior.message_id)>0 AND (SELECT history_opportunity_id FROM record_mail_context WHERE draft_id=prior.draft_id) IS (SELECT history_opportunity_id FROM record_mail_context WHERE draft_id=${draft}))`:''})`;
 /** On a transport that cannot carry opt-out, sequence and workflow email is always refused, and one-to-one email that needs opt-out is refused unless it is such a reply, which is sent labelled. */
 export function relayRefuses(type:MessageType,wanted:boolean,reply:boolean){return type!=='one_to_one'||wanted&&!reply;}
 export function relayRefusalAudit(db:D1Database,actor:string,entityType:'draft'|'outbound_message',entityId:string,type:MessageType='one_to_one'){return audit(db,actor,'opt_out.relay_refused',entityType,entityId,{messageType:type,reason:relayRefusal});}
 interface Setting {message_type:MessageType;carries:number;removal_allowed:number;basis:string;updated_by:string|null;updated_by_name:string|null;updated_at:string|null}
 export async function optOutSettings(db:D1Database){
  const rows=(await db.prepare('SELECT s.*,o.display_name AS updated_by_name FROM opt_out_settings s LEFT JOIN operators o ON o.id=s.updated_by').all<Setting>()).results;
- const counts=(await db.prepare("SELECT COALESCE(b.carries,-1) AS carries,COUNT(*) AS n FROM outbound_messages m LEFT JOIN outbound_message_opt_out b ON b.message_id=m.id WHERE m.state IN('scheduled','draft') GROUP BY COALESCE(b.carries,-1)").all<{carries:number;n:number}>()).results;
+ const counts=(await db.prepare("SELECT COALESCE(b.carries,-1) AS carries,COUNT(*) AS n FROM (SELECT id,state FROM outbound_messages UNION ALL SELECT id,state FROM record_mail_outbound_messages) m LEFT JOIN (SELECT message_id,carries FROM outbound_message_opt_out UNION ALL SELECT message_id,carries FROM record_mail_outbound_message_opt_out) b ON b.message_id=m.id WHERE m.state IN('scheduled','draft') GROUP BY COALESCE(b.carries,-1)").all<{carries:number;n:number}>()).results;
  const count=(carries:number)=>counts.find(row=>row.carries===carries)?.n??0;
  return {types:messageTypes.map(type=>{const row=rows.find(item=>item.message_type===type);return row?{type,carries:row.carries===1,removalAllowed:row.removal_allowed===1,basis:row.basis,updatedBy:row.updated_by_name,updatedAt:row.updated_at}:{type,carries:defaults[type].carries===1,removalAllowed:true,basis:defaults[type].basis,updatedBy:null,updatedAt:null};}),
   approvedUnsent:{carrying:count(1),notCarrying:count(0),approvedBeforeSetting:count(-1)},
@@ -35,7 +38,7 @@ export async function setOptOut(db:D1Database,actor:string,type:MessageType,inpu
 }
 /** The opt-out state a one-to-one draft would be approved with now, and why. `transport` is false where the transport cannot carry Orbit's opt-out; there `refusal` names why approval is refused. */
 export async function draftOptOut(db:D1Database,draftId:string,transport=true){
- const row=await db.prepare(`SELECT s.carries,s.removal_allowed,c.choice,${replySql('d.opportunity_id','d.recipient_contact_id')} AS reply FROM drafts d CROSS JOIN (${settingSql('one_to_one')}) s LEFT JOIN draft_opt_out c ON c.draft_id=d.id WHERE d.id=?`).bind(draftId).first<{carries:number;removal_allowed:number;choice:OptOutChoice|null;reply:number}>();
+ const row=await db.prepare(`SELECT s.carries,s.removal_allowed,c.choice,${replySql(db,'d.opportunity_id','d.recipient_contact_id','d.id')} AS reply FROM drafts d CROSS JOIN (${settingSql('one_to_one')}) s LEFT JOIN draft_opt_out c ON c.draft_id=d.id WHERE d.id=?`).bind(draftId).first<{carries:number;removal_allowed:number;choice:OptOutChoice|null;reply:number}>();
  if(!row)throw new WorkbenchError(404,'Draft not found.');
  const setting=row.carries===1,removalAllowed=row.removal_allowed===1,choice=row.choice,reply=row.reply===1;
  const wanted=setting?!(choice&&choice!=='added'&&removalAllowed):choice==='added';
@@ -44,7 +47,7 @@ export async function draftOptOut(db:D1Database,draftId:string,transport=true){
 }
 /** Dispatch re-checks a message on the managed relay: one whose approval bound opt-out (including through another provider), marked it uncarried, or predates OUT-020 is refused unless it is a reply in an existing thread. */
 export async function relayRefusedAtDispatch(db:D1Database,messageId:string,capable=false){
- return Boolean(await db.prepare(`SELECT 1 FROM outbound_messages m LEFT JOIN outbound_message_opt_out b ON b.message_id=m.id WHERE m.id=? AND (${capable?"b.marking='transport'":"b.message_id IS NULL OR b.carries=1 OR b.marking='transport'"}) AND NOT ${replySql('m.opportunity_id','m.contact_id')}`).bind(messageId).first());
+ return Boolean(await db.prepare(`SELECT 1 FROM outbound_messages m LEFT JOIN outbound_message_opt_out b ON b.message_id=m.id WHERE m.id=? AND (${capable?"b.marking='transport'":"b.message_id IS NULL OR b.carries=1 OR b.marking='transport'"}) AND NOT ${replySql(db,'m.opportunity_id','m.contact_id','m.draft_id')}`).bind(messageId).first());
 }
 export async function markDraftOptOut(db:D1Database,draftId:string,actor:string,choice:OptOutChoice|null){
  const state=await draftOptOut(db,draftId);
@@ -57,7 +60,7 @@ export async function markDraftOptOut(db:D1Database,draftId:string,actor:string,
   // ACTION-005: a reviewed draft whose opt-out state changes must be reviewed again.
   db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Opt-out state changed',updated_at=? WHERE id=?").bind(now,draftId),
   db.prepare("INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) VALUES(?,'draft.opt_out_changed',?,?,'operator',?,'outreach',?)").bind(entry,now,now,actor,JSON.stringify({draftId,choice})),
-  db.prepare("INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) SELECT ?,'opportunity',opportunity_id FROM drafts WHERE id=?").bind(entry,draftId)]);
+  db.prepare("INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) SELECT ?,'opportunity',opportunity_id FROM drafts WHERE id=? AND opportunity_id IS NOT NULL").bind(entry,draftId),...draftRecordLinks(db,draftId,entry)]);
  return draftOptOut(db,draftId);
 }
 /** Statements that bind the reviewed opt-out state to the approved message, aborting the approval if the setting or marking moved since it was read. */

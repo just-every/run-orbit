@@ -1,3 +1,4 @@
+import {recordMailContactMerge} from '../outreach/record-mail-privacy';
 import { privacyMatcher, suppressionContextFence, contactSuppressionStatements, suppressionStatements, suppressionPredicate } from './suppression';
 import {invalidateSuppressedWork} from './suppression-effects';
 import { audit, RecordError, requireRecord, tables, timeline } from './shared';
@@ -29,6 +30,7 @@ export class ImportMergeRepository {
   statements.push(this.db.prepare('INSERT INTO record_merge_claims VALUES(?,?,?,?)').bind(kind,retiredId,survivorId,values.updated_at),this.db.prepare(`UPDATE ${tables[kind]} SET ${keyColumn}=NULL WHERE id=?`).bind(retiredId));
   for(const oldKey of [survivor[keyColumn],retired[keyColumn]])if(oldKey&&oldKey!==key)statements.push(this.db.prepare('INSERT INTO record_aliases VALUES(?,?,?,?,?) ON CONFLICT(record_type,identity_key) DO UPDATE SET survivor_id=excluded.survivor_id').bind(kind,oldKey,survivorId,retiredId,values.updated_at));
   statements.push(this.db.prepare('UPDATE record_merge_claims SET survivor_id=? WHERE record_type=? AND survivor_id=?').bind(survivorId,kind,retiredId),this.db.prepare('UPDATE record_aliases SET survivor_id=? WHERE record_type=? AND survivor_id=?').bind(survivorId,kind,retiredId));
+  if(kind==='company')statements.push(this.db.prepare("UPDATE record_mail_context SET origin_id=? WHERE origin_type='company' AND origin_id=?").bind(survivorId,retiredId));
   if(kind==='company')for(const table of ['contacts','opportunities'])statements.push(this.db.prepare(`UPDATE ${table} SET company_id=? WHERE company_id=?`).bind(survivorId,retiredId));
   else {
    statements.push(this.db.prepare('DELETE FROM ai_previews WHERE recipient_contact_id IN(?,?)').bind(survivorId,retiredId),this.db.prepare('UPDATE opportunity_contacts SET is_primary=0 WHERE contact_id=?').bind(retiredId),this.db.prepare('INSERT OR IGNORE INTO opportunity_contacts SELECT opportunity_id,?,is_primary,created_at FROM opportunity_contacts WHERE contact_id=?').bind(survivorId,retiredId),this.db.prepare('UPDATE drafts SET recipient_contact_id=?,is_stale=1,stale_reason=\'Contact merged\' WHERE recipient_contact_id=?').bind(survivorId,retiredId),this.db.prepare('UPDATE outbound_messages SET contact_id=? WHERE contact_id=?').bind(survivorId,retiredId));

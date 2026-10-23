@@ -195,7 +195,7 @@ export const timelineEntryRecords = sqliteTable(
 
 export const drafts = sqliteTable("drafts", {
   id: text("id").primaryKey(),
-  opportunityId: text("opportunity_id").notNull(),
+  opportunityId: text("opportunity_id"),
   recommendationId: text("recommendation_id"),
   authorId: text("author_id").notNull(),
   recipientContactId: text("recipient_contact_id"),

@@ -12,6 +12,8 @@ export default {
  // Older valid archives may still contain schedules. Strip that installation-local
  // approval in staging, after integrity validation and before atomic publication.
  async validateStaged({ db, tables }) {
+  if(tables.record_mail_outbound_messages)await db.prepare(`UPDATE "${tables.record_mail_outbound_messages.replaceAll('"','""')}" SET state='cancelled',failure='Archive transfer requires fresh review and approval before sending' WHERE state IN('draft','scheduled','queued')`).run();
+  if(tables.record_mail_drafts)await db.prepare(`UPDATE "${tables.record_mail_drafts.replaceAll('"','""')}" SET is_stale=1,stale_reason='Archive transfer requires fresh review'`).run();
   if(tables.ownership_batches)await db.prepare(`UPDATE "${tables.ownership_batches.replaceAll('"','""')}" SET state='held'`).run();
   if(tables.sales_dashboards)await db.prepare(`UPDATE "${tables.sales_dashboards.replaceAll('"','""')}" SET authority=0`).run();
   if(tables.sales_dashboard_schedules)await db.prepare(`UPDATE "${tables.sales_dashboard_schedules.replaceAll('"','""')}" SET state='paused'`).run();
@@ -27,6 +29,8 @@ export default {
  requiredConfiguration: ['OWNER_EMAIL', 'SESSION_SECRET', 'SETUP_TOKEN'],
  // Dev personas are real operators in local dev only; an archive carries them suspended.
  exportRow: (table, row) => {
+  if(table==='record_mail_outbound_messages'&&['draft','scheduled','queued'].includes(row.state))return {...row,state:'cancelled',failure:'Archive transfer requires fresh review and approval before sending'};
+  if(table==='record_mail_drafts')return {...row,is_stale:1,stale_reason:'Archive transfer requires fresh review'};
   if (table === 'ownership_batches') return {...row,state:'held'};
   if (table === 'sales_dashboards') return {...row,authority:0};
   if (table === 'sales_dashboard_schedules') return {...row,state:'paused'};

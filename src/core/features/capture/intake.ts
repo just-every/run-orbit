@@ -113,7 +113,7 @@ export async function intake(db:D1Database,source:CaptureSource,fact:Fact,option
  if(fact.kind==='message'&&fact.sender&&(type==='email.replied'||type.endsWith(':email.auto_replied'))&&fact.references){
   const messages=await matchingReplyMessages(db,fact.sender.email,fact.references);
   if(messages.length){const opportunity=messages[0]!.opportunity_id,contacts=[...new Set(messages.map(m=>m.contact_id))];
-   attached=[{type:'opportunity',id:opportunity,basis:'Orbit message thread'},...contacts.map(id=>({type:'contact' as const,id,basis:'Verified reply sender'}))];}
+   attached=[...(opportunity?[{type:'opportunity' as const,id:opportunity,basis:'Orbit message thread'}]:[]),...contacts.map(id=>({type:'contact' as const,id,basis:'Verified reply sender'}))];}
  }
  if(fact.kind==='message'&&fact.bounce?.originalMessageId&&fact.bounce.recipient){
   const message=await db.prepare('SELECT id,opportunity_id,contact_id,state FROM outbound_messages WHERE message_id=? AND lower(trim(recipient_email))=?').bind(fact.bounce.originalMessageId,fact.bounce.recipient).first<{id:string;opportunity_id:string;contact_id:string|null;state:string}>();

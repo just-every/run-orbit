@@ -1,3 +1,4 @@
+import {recordMailContactErasure,recordMailRecordErasure} from '../outreach/record-mail-privacy';
 import {formMappedValueErasure} from '../forms/archive';
 import {ownershipErasureStatements} from '../ownership/privacy';
 import {forecastErasureStatements} from '../forecast/privacy';
@@ -22,6 +23,7 @@ export class DataRepository {
  async remove(kind:RecordKind,id:string,actor:string,sessionId?:string){const capture=captureImportErasure(this.db),db=capture.db;const record=await requireRecord(db,kind,id);const statements:D1PreparedStatement[]=[];let contactEmails:string[]=[];
   if(kind!=='opportunity')statements.push(...ownershipErasureStatements(db,kind,id));
   statements.push(...forecastErasureStatements(db,kind,id,typeof record.email==='string'?[record.email]:[]));
+  if(kind!=='contact')statements.push(...recordMailRecordErasure(db,kind,id));
   if(kind==='company')statements.push(db.prepare('DELETE FROM companies WHERE id=?').bind(id));
   if(kind==='opportunity'){
    // Preserve provider-accepted content as durable customer activities before removing opportunity FKs.
@@ -31,6 +33,7 @@ export class DataRepository {
    statements.push(db.prepare('UPDATE ai_calls SET error=NULL WHERE opportunity_id=?').bind(id),db.prepare("INSERT OR IGNORE INTO timeline_entry_records SELECT r.timeline_entry_id,'contact',oc.contact_id FROM timeline_entry_records r JOIN opportunity_contacts oc ON oc.opportunity_id=r.record_id JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE r.record_type='opportunity' AND r.record_id=? AND t.kind LIKE '%accepted%'").bind(id),db.prepare('DELETE FROM outbound_messages WHERE opportunity_id=?').bind(id),db.prepare('DELETE FROM evaluation_job_runs WHERE opportunity_id=?').bind(id),db.prepare('DELETE FROM action_completions WHERE recommendation_id IN(SELECT id FROM recommendations WHERE opportunity_id=?)').bind(id),db.prepare('DELETE FROM ai_previews WHERE opportunity_id=?').bind(id),db.prepare('DELETE FROM notifications WHERE opportunity_id=?').bind(id),db.prepare('DELETE FROM opportunities WHERE id=?').bind(id));
   }
   if(kind==='contact'){
+   statements.push(...recordMailContactErasure(db,id));
    const affected=(await db.prepare('SELECT opportunity_id FROM opportunity_contacts WHERE contact_id=?').bind(id).all<{opportunity_id:string}>()).results;
    // Remove every signal carrying this contact, including copies linked to other records.
    const signalIds="SELECT signal_id FROM record_erasure_signals WHERE contact_id=?";

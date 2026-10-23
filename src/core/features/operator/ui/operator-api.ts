@@ -76,7 +76,7 @@ const opportunityDetailSchema = nowOpportunitySchema.extend({
 
 const draftSchema = z.object({
   id: z.string(),
-  opportunityId: z.string(),
+  opportunityId: z.string().nullable(),
   recommendationId: z.string().nullable(),
   authorId: z.string(),
   recipientContactId: z.string().nullable(),

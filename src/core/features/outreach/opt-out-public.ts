@@ -1,3 +1,4 @@
+import {recordMailDatabase} from './record-mail-storage';
 import { boundedRequestBody } from '../../platform/bounded-request-body';
 import { archiveImportActive } from '../../platform/archive-maintenance';
 import { findCapability, optOutPath, unsubscribe } from './opt-out-capability';
@@ -9,7 +10,7 @@ export async function optOutResponse(request:Request,db:D1Database):Promise<Resp
  if(!['GET','HEAD','POST'].includes(request.method))return new Response(null,{status:405,headers:{Allow:'GET, HEAD, POST'}});
  try{
   if(await archiveImportActive(db))return response('unavailable',503);
-  if(!await findCapability(db,token,url.origin))return response('invalid',404);
+  if(!await findCapability(db,token,url.origin)){db=recordMailDatabase(db);if(!await findCapability(db,token,url.origin))return response('invalid',404);}
   if(request.method==='GET'||request.method==='HEAD')return response('confirm');
   // RFC 8058 mail clients POST without a session or browser Origin. The opaque
   // capability is the authority; no address or contact ID is ever accepted.

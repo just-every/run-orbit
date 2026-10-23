@@ -1,3 +1,4 @@
+import {exerciseRecordMail} from '../support/record-mail';
 import assert from 'node:assert/strict';
 import { after,test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
@@ -177,7 +178,7 @@ test('BASE-OPS-004 OUT-006 provider retry expiry fails before quiet-hours deferr
  const opportunity=await db.prepare('SELECT queue_state,queue_reason FROM opportunities WHERE id=?').bind(f.opportunityId).first<{queue_state:string;queue_reason:string}>();assert.equal(opportunity?.queue_state,'now');assert.match(opportunity!.queue_reason,/retry window expired/);
 });
 
-test('OUT-004 a reply links only by durable thread headers; unmatched replies require operator review',async()=>{
+test('OUT-017 record mail preserves exact approval, sender promises, custody and OUT-004 header-only reply matching',async context=>{
  const {ProviderRepository}=await import('../../src/core/features/outreach/provider-repository');const f=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db),provider=new ProviderRepository(db);
  const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Same subject',body:'Reviewed'},f.actor);
  const message=await approval.approve(draft.id,1,f.actor,{now:new Date('2032-01-05T10:00:00Z'),scheduledAt:'2032-01-05T11:00:00Z'});
@@ -187,7 +188,7 @@ test('OUT-004 a reply links only by durable thread headers; unmatched replies re
  const unmatched={...reply,id:createId(),messageId:`<${createId()}@customer.example>`,references:''};await provider.reply(unmatched,await payloadHash(JSON.stringify(unmatched)));
  const row=(await provider.unlinkedReplies()).find(row=>row.subject==='Same subject'&&row.sender===f.email);assert.ok(row);
  assert.equal(await db.prepare('SELECT id FROM signals WHERE source_event_id=?').bind(unmatched.id).first(),null);
- await provider.linkReply(String(row.id),f.opportunityId,f.actor);assert.ok(await db.prepare('SELECT id FROM signals WHERE source_event_id=?').bind(unmatched.id).first());await assert.rejects(provider.linkReply(String(row.id),f.opportunityId,f.actor));
+ await provider.linkReply(String(row.id),f.opportunityId,f.actor);assert.ok(await db.prepare('SELECT id FROM signals WHERE source_event_id=?').bind(unmatched.id).first());await assert.rejects(provider.linkReply(String(row.id),f.opportunityId,f.actor));await exerciseRecordMail(context);
 });
 
 test('BASE-OPS-004 OPP-005 evaluation failure preserves readable prior evidence and clears on a successful refresh',async()=>{

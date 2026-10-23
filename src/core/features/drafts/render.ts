@@ -1,15 +1,18 @@
+import {isRecordMailDatabase} from '../outreach/record-mail-storage';
 import {LibraryRepository,type LibraryKind} from './library-repository';
 import {WorkbenchError} from '../workbench/repository';
 import {payloadHash} from '../../platform/source-security';
 export type LibrarySelection=Partial<Record<LibraryKind,{id:string;revision:number}>>;
 interface RenderDraft {id:string;revision:number;subject:string;body:string;recipient_email:string;library_selection_json:string;merge_review_json:string|null}
 export interface RenderReview {revision:number;sourceSubject:string;sourceBody:string;subject:string;body:string;recipientEmail:string;fields:{name:string;value:string|null}[];missing:string[];stale:string[];reviewHash:string;required:boolean;reviewed:boolean}
-const contextSql=`SELECT json_object('contact.name',c.name,'contact.email',c.email,'contact.job_title',c.job_title,'company.name',co.name,'deal.title',o.title,'owner.name',a.display_name,'owner.email',a.email) AS value FROM drafts d JOIN contacts c ON c.id=d.recipient_contact_id JOIN opportunities o ON o.id=d.opportunity_id LEFT JOIN companies co ON co.id=COALESCE(c.company_id,o.company_id) LEFT JOIN operators a ON a.id=o.owner_id WHERE d.id=?`;
+const nativeContextSql=`SELECT json_object('contact.name',c.name,'contact.email',c.email,'contact.job_title',c.job_title,'company.name',co.name,'deal.title',o.title,'owner.name',a.display_name,'owner.email',a.email) AS value FROM drafts d JOIN contacts c ON c.id=d.recipient_contact_id JOIN opportunities o ON o.id=d.opportunity_id LEFT JOIN companies co ON co.id=COALESCE(c.company_id,o.company_id) LEFT JOIN operators a ON a.id=o.owner_id WHERE d.id=?`;
+const recordContextSql=`SELECT json_object('contact.name',c.name,'contact.email',c.email,'contact.job_title',c.job_title,'company.name',co.name,'deal.title',o.title,'owner.name',a.display_name,'owner.email',a.email) AS value FROM drafts d JOIN contacts c ON c.id=d.recipient_contact_id LEFT JOIN opportunities o ON o.id=d.opportunity_id LEFT JOIN companies co ON co.id=c.company_id LEFT JOIN record_ownership ro ON ro.record_type='contact' AND ro.record_id=c.id LEFT JOIN operators a ON a.id=CASE WHEN d.opportunity_id IS NOT NULL THEN o.owner_id ELSE ro.owner_id END WHERE d.id=?`;
+const contextSql=(db:D1Database)=>isRecordMailDatabase(db)?recordContextSql:nativeContextSql;
 export async function renderDraft(db:D1Database,id:string,actor:string){
  const library=new LibraryRepository(db);await library.access(actor);
  const draft=await db.prepare('SELECT id,revision,subject,body,recipient_email,library_selection_json,merge_review_json FROM drafts WHERE id=?').bind(id).first<RenderDraft>();
  if(!draft)throw new WorkbenchError(404,'Draft not found.');
- const context=await db.prepare(contextSql).bind(id).first<{value:string}>();if(!context)throw new WorkbenchError(409,'Choose a current linked recipient before rendering.');
+ const context=await db.prepare(contextSql(db)).bind(id).first<{value:string}>();if(!context)throw new WorkbenchError(409,'Choose a current linked recipient before rendering.');
  const values=JSON.parse(context.value) as Record<string,string|null>,fields=new Map<string,string|null>(),missing:string[]=[],stale:string[]=[];
  const expand=(source:string)=>{const rendered=source.replace(/\{\{\s*([^{}]+?)\s*\}\}/g,(_,name:string)=>{const value=values[name]??null;fields.set(name,value);if(!value?.trim())missing.push(name);return value??`{{${name}}}`;});if(rendered.includes('{{')||rendered.includes('}}'))missing.push('Unresolved merge field');return rendered;};
  const selection=JSON.parse(draft.library_selection_json) as LibrarySelection,selectionGuards:D1PreparedStatement[]=[];
@@ -24,7 +27,7 @@ export async function renderDraft(db:D1Database,id:string,actor:string){
  const snapshot={revision:draft.revision,sourceSubject:draft.subject,sourceBody:draft.body,subject,body,recipientEmail:draft.recipient_email,fields:[...fields].map(([name,value])=>({name,value})),selection,context:context.value};
  const reviewHash=await payloadHash(JSON.stringify(snapshot));
  const review:RenderReview={...snapshot,missing:[...new Set(missing)],stale,reviewHash,required,reviewed:!required||Boolean(draft.merge_review_json&&JSON.parse(draft.merge_review_json).reviewHash===reviewHash)};
- const guards=[library.permissionFence(actor),db.prepare(`INSERT INTO runtime_controls(name,value) SELECT 'merge_review_changed',NULL WHERE COALESCE((${contextSql}),'')<>? OR NOT EXISTS(SELECT 1 FROM drafts WHERE id=? AND revision=? AND subject=? AND body=? AND recipient_email=? AND library_selection_json=?)`).bind(id,context.value,id,draft.revision,draft.subject,draft.body,draft.recipient_email,draft.library_selection_json),...selectionGuards];
+ const guards=[library.permissionFence(actor),db.prepare(`INSERT INTO runtime_controls(name,value) SELECT 'merge_review_changed',NULL WHERE COALESCE((${contextSql(db)}),'')<>? OR NOT EXISTS(SELECT 1 FROM drafts WHERE id=? AND revision=? AND subject=? AND body=? AND recipient_email=? AND library_selection_json=?)`).bind(id,context.value,id,draft.revision,draft.subject,draft.body,draft.recipient_email,draft.library_selection_json),...selectionGuards];
  return {draft,review,guards};
 }
 export function requireRendered(review:RenderReview){if(review.missing.length||review.stale.length)throw new WorkbenchError(409,`Resolve merge fields before approval: ${[...review.missing,...review.stale].join('; ')}`);if(!review.reviewed)throw new WorkbenchError(409,'Merge variables changed or have not been reviewed. Review the exact rendered message again.');}

@@ -10,16 +10,19 @@ import { useOperatorResource } from "./use-operator-resource";
 import { DraftContentFields } from "../../drafts/ui/draft-content-fields";
 
 interface SubmittedMessage { draftId: string; revision: number; state: string; scheduledAt: string | null;recipientEmail:string;subject:string;body:string }
-const submittedTitles: Record<string, string> = { scheduled: "Scheduled message", failed: "Message not sent", bounced: "Message bounced" };
+const submittedTitles: Record<string, string> = { scheduled: "Scheduled message", failed: "Message not sent", bounced: "Message bounced", "delivery-unknown":"Delivery unresolved", reconciling:"Reconciling provider acceptance", queued:"Submission in progress", delivered:"Delivered message" };
 
 export function DraftPage() {
   const { id } = useParams({ from: "/app/drafts/$id" });
   const loadDraft = useCallback(async () => {
     const [{ draft }, { presentation }] = await Promise.all([operatorApi.readDraft(id), operatorApi.readWorkspacePresentation()]);
-    const [{ opportunity }, history] = await Promise.all([operatorApi.readOpportunity(draft.opportunityId), fetch(`/api/v1/workbench/opportunities/${encodeURIComponent(draft.opportunityId)}/messages`).then(response => response.ok ? response.json() as Promise<{ messages: SubmittedMessage[];mailProvider?:string }> : { messages: [],mailProvider:undefined })]);
+    const opportunity=draft.opportunityId?(await operatorApi.readOpportunity(draft.opportunityId)).opportunity:null;
+    const contactContext=!opportunity?await fetch(`/api/v1/workbench/records/contact/${draft.recipientContactId}/mail-context`).then(async response=>{if(!response.ok)throw new Error('Recipient context could not load.');return response.json() as Promise<{contacts:{id:string;name:string|null;email:string|null;contactability:string}[]}>;}):null;
+    const path=draft.opportunityId?`opportunities/${draft.opportunityId}/messages`:`records/contact/${draft.recipientContactId}/mail`;
+    const history=await fetch(`/api/v1/workbench/${path}`).then(async response=>{if(!response.ok)throw new Error('Saved message history could not load.');return response.json() as Promise<{messages:SubmittedMessage[];mailProvider?:string}>;});
     // This exact revision was already approved: show what happened to it instead of an editor.
     const submitted = history.messages.find(message => message.draftId === draft.id && message.revision === draft.revision && !["draft", "cancelled"].includes(message.state)) ?? null;
-    return { draft, presentation, opportunity, submitted, mailProvider:history.mailProvider };
+    return { draft, presentation, opportunity, contactContext, submitted, mailProvider:history.mailProvider };
   }, [id]);
   const resource = useOperatorResource(`draft:${id}`, loadDraft);
   const [draft, setDraft] = useState<OperatorDraft | null>(null);
@@ -67,15 +70,16 @@ export function DraftPage() {
   if (!draft || !resource.data) return null;
   const presentation = resource.data.presentation;
   const submitted = resource.data.submitted ?? justSubmitted;
+  const contacts=resource.data.opportunity?.contacts??resource.data.contactContext?.contacts??[];
 
   return (
     <OperatorShell
       eyebrow="Human-reviewed outreach"
       title={submitted ? submittedTitles[submitted.state] ?? "Sent message" : "Editable draft"}
-      action={<Link className="operator-back-link" to="/app/opportunities/$id" params={{ id: draft.opportunityId }}>← Opportunity detail</Link>}
+      action={draft.opportunityId?<Link className="operator-back-link" to="/app/opportunities/$id" params={{ id: draft.opportunityId }}>← Opportunity detail</Link>:<a className="operator-back-link" href={`/app/records?kind=contact&record=${draft.recipientContactId}#record-mail`}>← Contact detail</a>}
     >
       <section className="operator-draft-editor" style={{display:"block"}} data-testid="draft-editor">
-        {submitted ? <OperatorState>{submitted.state === "scheduled" && submitted.scheduledAt ? `This message is scheduled for ${formatDateTime(submitted.scheduledAt, presentation)}. To change it, cancel it from the opportunity first.` : `This message was approved and handed to the mail service (state: ${label(submitted.state)}). It can no longer be edited. To write to this customer again, start a new follow-up from the opportunity.`}</OperatorState> : null}
+        {submitted ? <OperatorState>{submitted.state === "scheduled" && submitted.scheduledAt ? `This message is scheduled for ${formatDateTime(submitted.scheduledAt, presentation)}. To change it, cancel it from the record first.` : `This message was approved and handed to the mail service (state: ${label(submitted.state)}). It can no longer be edited. To write to this customer again, start a new follow-up from the record.`}</OperatorState> : null}
         {submitted ? <SentMessage recipient={resource.data.submitted?.recipientEmail??draft.recipientEmail} subject={resource.data.submitted?.subject??draft.subject} body={resource.data.submitted?.body??draft.body} /> : <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}><fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
           <label>Recipient
             <input data-testid="draft-recipient" required onChange={(event) => setDraft({ ...draft, recipientEmail: event.target.value })} type="email" value={draft.recipientEmail} />
@@ -89,9 +93,9 @@ export function DraftPage() {
           <DraftLibraryPicker draft={draft} disabled={saving} onApplied={resource.reload}/>
           {draft.isStale ? <section className="operator-state operator-state--error" data-testid="stale-review">
             <h2>Review what changed</h2><p>{draft.staleReason ?? "Customer context changed."}</p>
-            <p>Current opportunity: {resource.data.opportunity.title} · {resource.data.opportunity.stage} · {resource.data.opportunity.queueReason}</p>
-            <ul>{resource.data.opportunity.signals.slice(0,5).map(signal=><li key={signal.id}>{signal.subject??label(signal.type)} · {formatDateTime(signal.occurredAt,presentation)}</li>)}</ul>
-            <label>Confirm the current recipient<select value={draft.recipientContactId??''} onChange={event=>{const contact=resource.data?.opportunity.contacts.find(contact=>contact.id===event.target.value);if(contact)setDraft({...draft,recipientContactId:contact.id,recipientEmail:contact.email??''});}}><option value="">Choose a linked contact</option>{resource.data.opportunity.contacts.map(contact=><option key={contact.id} value={contact.id} disabled={contact.contactability!=='contactable'}>{contact.name??contact.email} — {contact.email} ({contact.contactability})</option>)}</select></label>
+            {resource.data.opportunity?<p>Current opportunity: {resource.data.opportunity.title} · {resource.data.opportunity.stage} · {resource.data.opportunity.queueReason}</p>:<p>Contact email: {contacts[0]?.email} · {contacts[0]?.contactability}. Review the <a href={`/app/records?kind=contact&record=${draft.recipientContactId}`}>current customer evidence</a> before confirming.</p>}
+            <ul>{(resource.data.opportunity?.signals??[]).slice(0,5).map(signal=><li key={signal.id}>{signal.subject??label(signal.type)} · {formatDateTime(signal.occurredAt,presentation)}</li>)}</ul>
+            <label>Confirm the current recipient<select value={draft.recipientContactId??''} onChange={event=>{const contact=contacts.find(contact=>contact.id===event.target.value);if(contact)setDraft({...draft,recipientContactId:contact.id,recipientEmail:contact.email??''});}}><option value="">Choose a linked contact</option>{contacts.map(contact=><option key={contact.id} value={contact.id} disabled={contact.contactability!=='contactable'}>{contact.name??contact.email} — {contact.email} ({contact.contactability})</option>)}</select></label>
             <label style={{display:"flex",gap:8,alignItems:"flex-start"}}><input style={{width:"auto",flex:"none"}} type="checkbox" checked={reviewed} onChange={event=>setReviewed(event.target.checked)}/> I reviewed the changed evidence, current recipient, subject and body above.</label>
             <button type="button" className="operator-primary-button" disabled={saving||!reviewed||!draft.recipientContactId} onClick={()=>void confirmReview()}>Confirm reviewed draft</button>
             <p>This confirms a new draft revision. It sends nothing.</p>
@@ -114,7 +118,7 @@ export function DraftPage() {
             <div><dt>Revision</dt><dd>{draft.revision}</dd></div>
           </dl>
         </details>
-      {resource.data.submitted ? null : <DraftApproval mailProvider={resource.data.mailProvider} onSubmitted={message=>{setJustSubmitted(message);resource.reload();}} onOptOutChanged={resource.reload} recipientName={resource.data.opportunity.contacts.find(contact=>contact.id===draft.recipientContactId)?.name??undefined} draft={draft} dirty={draft.recipientEmail !== resource.data?.draft.recipientEmail || draft.subject !== resource.data?.draft.subject || draft.body !== resource.data?.draft.body} />}
+      {resource.data.submitted ? null : <DraftApproval mailProvider={resource.data.mailProvider} onSubmitted={message=>{setJustSubmitted(message);resource.reload();}} onOptOutChanged={resource.reload} recipientName={contacts.find(contact=>contact.id===draft.recipientContactId)?.name??undefined} draft={draft} dirty={draft.recipientEmail !== resource.data?.draft.recipientEmail || draft.subject !== resource.data?.draft.subject || draft.body !== resource.data?.draft.body} />}
     </OperatorShell>
   );
 }

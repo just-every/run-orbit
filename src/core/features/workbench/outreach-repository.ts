@@ -27,13 +27,13 @@ export class OutreachRepository {
   }
   async messages(opportunityId: string) {
     return (await this.db.prepare(`SELECT id,draft_id AS draftId,revision,state,recipient_email AS recipientEmail,subject,body,
-      provider_message_id AS providerMessageId,failure,(SELECT carries FROM outbound_message_opt_out WHERE message_id=outbound_messages.id) AS optOut,next_attempt_at AS retryAfter,scheduled_at AS scheduledAt,created_at AS createdAt,
+      provider_message_id AS providerMessageId,failure,(SELECT carries FROM (SELECT message_id,carries FROM outbound_message_opt_out UNION ALL SELECT message_id,carries FROM record_mail_outbound_message_opt_out) WHERE message_id=outbound_messages.id) AS optOut,next_attempt_at AS retryAfter,scheduled_at AS scheduledAt,created_at AS createdAt,
       (SELECT MIN(t.occurred_at) FROM timeline_entry_records r JOIN timeline_entries t ON t.id=r.timeline_entry_id
         WHERE r.record_type='opportunity' AND r.record_id=outbound_messages.opportunity_id AND t.kind='message.accepted'
           AND json_extract(t.payload_json,'$.messageId')=outbound_messages.id) AS acceptedAt,
       (SELECT MIN(t.occurred_at) FROM timeline_entry_records r JOIN timeline_entries t ON t.id=r.timeline_entry_id
         WHERE r.record_type='opportunity' AND r.record_id=outbound_messages.opportunity_id AND t.kind='provider.delivered'
           AND json_extract(t.payload_json,'$.messageId')=outbound_messages.id) AS deliveredAt
-      FROM outbound_messages WHERE opportunity_id=? ORDER BY created_at DESC`).bind(opportunityId).all()).results;
+      FROM (SELECT id,draft_id,revision,state,recipient_email,subject,body,provider_message_id,failure,next_attempt_at,scheduled_at,created_at,opportunity_id FROM outbound_messages UNION ALL SELECT id,draft_id,revision,state,recipient_email,subject,body,provider_message_id,failure,next_attempt_at,scheduled_at,created_at,opportunity_id FROM record_mail_outbound_messages) AS outbound_messages WHERE opportunity_id=? ORDER BY created_at DESC`).bind(opportunityId).all()).results;
   }
 }
