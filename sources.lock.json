@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "5d593e9ab3f46099006c5a10e52153a3cec7224c1b31c2c87540c1cef181d738",
+      "sha256": "65f1fd252a40c2e0f82ee62761cbc8cfd496e5ce047ab0dd4d22e2755d72ec81",
       "executable": false
     },
     "DEMO.md": {
@@ -2091,7 +2091,7 @@
       "executable": false
     },
     "newtests/t096/browser-guest-edit-grant.ts": {
-      "sha256": "8a7519c6ce63c7b87e9f9c4e26f387aba7b751f486a66b5d35b83f624a7fc159",
+      "sha256": "9d376e63699065761eb8db6a4c4576df33d9da57828c58e83329473a05f13d93",
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
