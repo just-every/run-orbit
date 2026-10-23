@@ -1,0 +1,12 @@
+.record-owner form {display:grid;gap:16px;justify-items:start}
+.record-owner label {width:100%;max-width:420px}
+.record-owner .workbench-actions {display:flex;gap:12px;flex-wrap:wrap}
+.record-change-review {list-style:none;padding:0;margin:0;display:grid;gap:16px}
+.record-change-review li {border-top:1px solid var(--ob-line);padding-top:16px;min-width:0;overflow-wrap:anywhere}
+.record-change-review h3 {font-size:17px;margin:0 0 12px}
+.record-change-review dl {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0}
+.record-change-review dt {font-size:13px;color:var(--ob-muted)}
+.record-change-review dd {margin:4px 0 0}
+.records-workspace .record-selection {display:flex;align-items:center;gap:8px;padding:12px 24px}
+.records-workspace .record-selection input {width:18px;min-height:18px;margin:0}
+@media(max-width:700px){.record-change-review dl{grid-template-columns:minmax(0,1fr)}}

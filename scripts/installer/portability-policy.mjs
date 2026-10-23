@@ -4,7 +4,7 @@
 // with an installation, as in the Records archive.
 export default {
  product: 'just-every/sales-orbit',
- excludeTables: ['sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
+ excludeTables: ['sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'record_owner_reviews', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
  derivedTables: ['record_search', 'timeline_search', 'record_search_fields'],
  // Migrations seed these rows in every empty database; the archive's rows replace them.
  replaceableTables: ['graph_workspace_epochs', 'schema_types', 'pipelines', 'forecast_source_clock'],
@@ -12,6 +12,7 @@ export default {
  // Older valid archives may still contain schedules. Strip that installation-local
  // approval in staging, after integrity validation and before atomic publication.
  async validateStaged({ db, tables }) {
+  if(tables.ownership_batches)await db.prepare(`UPDATE "${tables.ownership_batches.replaceAll('"','""')}" SET state='held'`).run();
   if(tables.sales_dashboards)await db.prepare(`UPDATE "${tables.sales_dashboards.replaceAll('"','""')}" SET authority=0`).run();
   if(tables.sales_dashboard_schedules)await db.prepare(`UPDATE "${tables.sales_dashboard_schedules.replaceAll('"','""')}" SET state='paused'`).run();
   if(tables.slack_installation){const quoted='"'+tables.slack_installation.replaceAll('"','""')+'"';await db.prepare(`UPDATE ${quoted} SET state='disconnected',error='Archive restored; reconnect Slack credentials'`).run();}
@@ -26,6 +27,7 @@ export default {
  requiredConfiguration: ['OWNER_EMAIL', 'SESSION_SECRET', 'SETUP_TOKEN'],
  // Dev personas are real operators in local dev only; an archive carries them suspended.
  exportRow: (table, row) => {
+  if (table === 'ownership_batches') return {...row,state:'held'};
   if (table === 'sales_dashboards') return {...row,authority:0};
   if (table === 'sales_dashboard_schedules') return {...row,state:'paused'};
   if (table === 'operators' && typeof row.email === 'string' && row.email.toLowerCase().endsWith('@dev.localhost')) return { ...row, status: 'removed' };

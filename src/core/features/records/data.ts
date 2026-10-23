@@ -1,3 +1,4 @@
+import {ownershipErasureStatements} from '../ownership/privacy';
 import {forecastErasureStatements} from '../forecast/privacy';
 import {formAbuseErasure} from './form-abuse-erasure';
 import {taskContactErasure} from '../tasks/privacy';
@@ -18,6 +19,7 @@ import {messageContactErasure} from '../drafts/privacy';
 export class DataRepository {
  constructor(readonly db:D1Database){}
  async remove(kind:RecordKind,id:string,actor:string,sessionId?:string){const capture=captureImportErasure(this.db),db=capture.db;const record=await requireRecord(db,kind,id);const statements:D1PreparedStatement[]=[];let contactEmails:string[]=[];
+  if(kind!=='opportunity')statements.push(...ownershipErasureStatements(db,kind,id));
   statements.push(...forecastErasureStatements(db,kind,id,typeof record.email==='string'?[record.email]:[]));
   if(kind==='company')statements.push(db.prepare('DELETE FROM companies WHERE id=?').bind(id));
   if(kind==='opportunity'){

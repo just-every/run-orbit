@@ -1,3 +1,4 @@
+import {preOwnershipCatalog} from '../../src/core/features/ownership/archive';
 import {preDashboardCatalog} from '../../src/core/features/dashboards/archive';
 import {preSlackCatalog} from '../../src/core/features/slack/archive';
 import {preReportShareCatalog} from '../../src/core/features/analytics/archive-compatibility';
@@ -59,7 +60,7 @@ export async function proveReleasedForecastUpgrade(){
   const preceding=await snapshot(db),precedingCatalog=await releasedCatalog(db),precedingHash=await foldSchemaHash(precedingCatalog);
   await target.upgrade();db=target.db;
   await assertRetained(db,before);await assertRetained(db,preceding);
-  const preLibrary=preLibraryCatalog(preSlackCatalog(preReportShareCatalog(preDashboardCatalog(await foldInstalledCatalog(db)))));assert.deepEqual(preLibrary,precedingCatalog,'0049 retains exact columns, objects, triggers and views after stripping the library additions');assert.equal(await foldSchemaHash(preLibrary),precedingHash);
+  const preLibrary=preLibraryCatalog(preSlackCatalog(preReportShareCatalog(preDashboardCatalog(preOwnershipCatalog(await foldInstalledCatalog(db))))));assert.deepEqual(preLibrary,precedingCatalog,'0049 retains exact columns, objects, triggers and views after stripping the library additions');assert.equal(await foldSchemaHash(preLibrary),precedingHash);
   const previous=preForecastCatalog(preOptOutCapabilityCatalog(preLibrary));assert.deepEqual(previous,catalog,'pre-forecast generation retains the exact released columns, objects, triggers and views');assert.equal(await foldSchemaHash(previous),schemaHash);
   assert.deepEqual((await validateFoldManifest(db,manifestFor(catalog,before,schemaHash,now))).inputCatalog,previous);
   assert.deepEqual((await validateFoldManifest(db,manifestFor(precedingCatalog,preceding,precedingHash,now))).inputCatalog,preLibrary);
@@ -68,6 +69,11 @@ export async function proveReleasedForecastUpgrade(){
   assert.equal(await db.prepare('SELECT count(*) n FROM message_library').first('n'),0);
   assert.deepEqual((await db.prepare('PRAGMA foreign_key_check').all()).results,[]);
   const upgraded=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}}),response=await upgraded.request(`https://orbit.test/api/v1/records/opportunity/${deal.id}`,{headers:{Cookie:session.cookie}});assert.equal(response.status,200);assert.equal((await response.json() as any).record.value_cents,734567);
+  for(const [kind,id]of [['contact',contact.id],['company',company.id]]) {
+   const current=await upgraded.request(`https://orbit.test/api/v1/records/${kind}/${id}`,{headers:{Cookie:session.cookie}});assert.equal(current.status,200);assert.equal((await current.json() as any).ownership.ownerId,null);
+   const reviewing=await upgraded.request('https://orbit.test/api/v1/records/ownership/review',{method:'POST',headers:{Cookie:session.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({kind,ids:[id],ownerId:owner})});assert.equal(reviewing.status,200);const batch=await reviewing.json() as any;
+   const applied=await upgraded.request(`https://orbit.test/api/v1/records/ownership/${batch.id}/apply`,{method:'POST',headers:{Cookie:session.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:'{}'});assert.equal(applied.status,200);assert.equal((await applied.json() as any).items.filter((item:any)=>item.applied).length,1);
+  }
   return{released:{tables:before.length,rows:before.reduce((sum,table)=>sum+table.rows.length,0)},preceding:{tables:preceding.length,rows:preceding.reduce((sum,table)=>sum+table.rows.length,0)},foreignKeyViolations:0};
  }finally{await target.dispose();}
 }

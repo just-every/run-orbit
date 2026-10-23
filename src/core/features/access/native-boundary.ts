@@ -41,7 +41,7 @@ export function collaboratorNativeBoundary(db:D1Database):MiddlewareHandler<{Var
   const edit=/^\/api\/v1\/records\/(contact|company|opportunity)\/([0-9A-HJKMNP-TV-Z]{26})$/.exec(path);
   if(c.req.method==='PUT'&&edit)return c.json(await restrictedEdit(db,actor,edit[1] as keyof typeof nativeEditableFields,edit[2],await c.req.json()));
   if(!['GET','HEAD'].includes(c.req.method))deny('Only explicitly permitted record edits are available to collaborators.');
-  const child=createRecordsRoutes(legacyDatabase(db,actor)),url=new URL(c.req.url);url.pathname=url.pathname.slice('/api/v1/records'.length)||'/';
+  const child=createRecordsRoutes(legacyDatabase(db,actor),{ownership:false}),url=new URL(c.req.url);url.pathname=url.pathname.slice('/api/v1/records'.length)||'/';
   const {Hono}=await import('hono');const scoped=new Hono<{Variables:{operator:AuthenticatedOperator}}>();scoped.use('*',async(ctx,next)=>{ctx.set('operator',operator);await next();});scoped.route('/',child);return scoped.fetch(new Request(url,c.req.raw));
  }catch(error){if(error instanceof AccessError)return c.json({error:error.message},error.status);throw error;}
 };}

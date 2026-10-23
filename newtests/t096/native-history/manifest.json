@@ -2143,6 +2143,352 @@
      "sha256": "678958bfce68cd386913fc242f06684a94d9d09908e124eadf3e16a24d5473b0"
     }
    ]
+  },
+  "396d2c6a41d76428185824268390617519780faa": {
+   "tree": "411e78f69a05d2badc09a58a501a74ac6b343e3d",
+   "files": [
+    {
+     "path": "migrations/core/0001_orbit_sample_spine.sql",
+     "sha256": "3969bb2ad471b5abd62072753aa1d1384c1c54662cf1a708775fb83862ba5fb5"
+    },
+    {
+     "path": "migrations/core/0002_magic_links.sql",
+     "sha256": "ef5164a60440fe8ca3af2fa19f2a0800b37624b30329e2f5062943e0d70ff38b"
+    },
+    {
+     "path": "migrations/core/0003_outreach.sql",
+     "sha256": "a3bae4e11a3a8ffcce93f09b5fde8c0d3d2dcf088ded4c7cd6172ce7bba3df8b"
+    },
+    {
+     "path": "migrations/core/0004_owner_bootstrap.sql",
+     "sha256": "730c8b47bf1c8dba2d4541fbb9e883a919f5fb46bbe35a6adae6154dc4ab5070"
+    },
+    {
+     "path": "migrations/core/0005_records.sql",
+     "sha256": "9ad2b44c4af4fe0512ab2e19e8855e14fb200d7e2faab87c1d142c4ba0308651"
+    },
+    {
+     "path": "migrations/core/0006_signals_outreach.sql",
+     "sha256": "1b30a9d4ddcbaae15acdc56f5c9aa85ccd4d73671c33926ce0595aa42ba2ecda"
+    },
+    {
+     "path": "migrations/core/0007_assistance.sql",
+     "sha256": "8fcbd83afbca8124e01f7ba219d1b202c8f78975dae55c1431c18b9530a1c16b"
+    },
+    {
+     "path": "migrations/core/0008_stopped_schedule_queue.sql",
+     "sha256": "f14a5b7b4b8c680b69ca52d4eb988cfcc4135a7b2c106950930cc4fb6fe0f372"
+    },
+    {
+     "path": "migrations/core/0009_archives.sql",
+     "sha256": "3a4b7c915c334134d4be8802d62df89dfcf7a2d494301a4b288146cd72ec21a6"
+    },
+    {
+     "path": "migrations/core/0010_notification_record_scope.sql",
+     "sha256": "60e98daa12ac94429523bf4edfcb46a84eba195628f54000ad1530740962615b"
+    },
+    {
+     "path": "migrations/core/0011_provider_event_actor.sql",
+     "sha256": "06d60d573a3bca82837374a9da28cddca5fec314b61d6b38e0bbc14bd9885196"
+    },
+    {
+     "path": "migrations/core/0012_reviewed_signal_actor.sql",
+     "sha256": "1316dfa33736914f94cb4c93ef9d7b05aae01e15b0dce8fc8455fc4d8176fe2a"
+    },
+    {
+     "path": "migrations/core/0013_delegation_handoffs.sql",
+     "sha256": "1a41d372749c2b3928308e9f1c8b1d57e1c2ddbca1b52076ae2f42fbcbd4de96"
+    },
+    {
+     "path": "migrations/core/0014_contact_suppression.sql",
+     "sha256": "bfbb6fd20280a32557a49fa5a1736f19330c5cd39dbb408c3443581e2e694e12"
+    },
+    {
+     "path": "migrations/core/0015_provider_conflicts.sql",
+     "sha256": "e8b39c6daa3fd11b29018d41ae71a3e15ac5f53d8fce00b9b0ec5af99c102d98"
+    },
+    {
+     "path": "migrations/core/0016_collaborator_access.sql",
+     "sha256": "c6da775a5ddadfa7be714af312751ddbfacfab68d19fe8d5da94d4a927b13195"
+    },
+    {
+     "path": "migrations/core/0017_native_graph.sql",
+     "sha256": "bec7ec9129b5026935c143e01f10f6ec5d4893b6a42445045ae74ec9e19c521f"
+    },
+    {
+     "path": "migrations/core/0018_analytics_events.sql",
+     "sha256": "9edaa75d44917f0c218537138edfc4787503d14c371e9ed75543580382f4ea44"
+    },
+    {
+     "path": "migrations/core/0019_fixed_publication.sql",
+     "sha256": "3e7c20999d241e87c6a549f474c4fa587f6959f6c410055bdd92aab654874e00"
+    },
+    {
+     "path": "migrations/core/0020_archive_generation.sql",
+     "sha256": "7d0ce7c1a6967af5249d76e657b026996ebbdda904a59528f465a037234d5e45"
+    },
+    {
+     "path": "migrations/core/0021_development_outbox.sql",
+     "sha256": "45d6b03eadfe1e91737763ae85cdff74e7216f859869e34431550bba48294996"
+    },
+    {
+     "path": "migrations/core/0022_first_run_setup.sql",
+     "sha256": "bc01d606bb77cf1e1adc132329363246bc063fedd6d911f29b23c45382e5ac62"
+    },
+    {
+     "path": "migrations/core/0023_portability.sql",
+     "sha256": "c7db9042f6d5c571e10297c02df858ad2f3466beb4fa85649fee407cc228747b"
+    },
+    {
+     "path": "migrations/core/0024_form_embedding.sql",
+     "sha256": "bc4d1a78ca7ac4ca96aa194ad2b1a25df8fcc557f9e8334f8edc4f78c0a8d91e"
+    },
+    {
+     "path": "migrations/core/0030_crm_import_kit.sql",
+     "sha256": "e8eb5daa12082608926d8cc9075bd8c1fb04bd1decf4053bedf1dfc1977864ff"
+    },
+    {
+     "path": "migrations/core/0031_crm_move_in.sql",
+     "sha256": "4a8c584c92e1ed55f0085258f3402998096f3a1b458040b3ca5b0bd0ed6990ed"
+    },
+    {
+     "path": "migrations/core/0032_base_identity.sql",
+     "sha256": "085e413ffeea6eca32125848bd0216b35a5ee2367f1b72786c3f6f84dfdfb714"
+    },
+    {
+     "path": "migrations/core/0033_identity_providers.sql",
+     "sha256": "f879fb86b079e591dfe4a8513752a8e0394e252b940aa35d3f7430f27b7382c6"
+    },
+    {
+     "path": "migrations/core/0034_dependency_links.sql",
+     "sha256": "3e97030fbbf2373e3bfede6d3c0a158b838003f0bbe369ce505e20a75abb89e1"
+    },
+    {
+     "path": "migrations/core/0035_capture.sql",
+     "sha256": "a075108b44f76c08c398886e9ccb91e0397ec89a21edd31198e1367eee4d0b91"
+    },
+    {
+     "path": "migrations/core/0036_capture_providers.sql",
+     "sha256": "29b3ee67adc33b2b9a760c47de4e8e5587348cc0541ebc8da14af04278cadc73"
+    },
+    {
+     "path": "migrations/core/0037_owner_signin.sql",
+     "sha256": "97572888d4ce7ee26d51fd3fb198eb954051805f591d61984d442d29d5a43e28"
+    },
+    {
+     "path": "migrations/core/0038_import_kit_v22.sql",
+     "sha256": "ad80bc916d1881e89c1d41ff38f9c953e7d888670fa3cc3c3ec868995ffc5e6a"
+    },
+    {
+     "path": "migrations/core/0039_sales_pipelines.sql",
+     "sha256": "30eb1d4eef284ffe8590df45711366ce5e3c0b33de47654060bacf8b3c67a220"
+    },
+    {
+     "path": "migrations/core/0040_sales_tasks.sql",
+     "sha256": "f2bba2429f2f29ce6d1123de2fa6fbb41fe57ba81079a4d0dff51f2c02abcfba"
+    },
+    {
+     "path": "migrations/core/0041_buying_context.sql",
+     "sha256": "83e5cc474fd43bdbfb098326796250850e7dfe1e40dcebf6a5cfdd5cfec2d331"
+    },
+    {
+     "path": "migrations/core/0042_record_ownership.sql",
+     "sha256": "2de9fb288dd994ebb0518614dee57ed1984c987b95605eea8172142ededff2c6"
+    },
+    {
+     "path": "migrations/core/0044_archive_content_identity.sql",
+     "sha256": "2fcc846ac6f376b9de4c58be51a0f8459c24569961890c8fa6f624c1ff30a86a"
+    },
+    {
+     "path": "migrations/core/0045_form_abuse.sql",
+     "sha256": "31cc13915a3b6c1befe0ded3b5d643720e2e1f74485f64c0cce84694e9b3d4ea"
+    },
+    {
+     "path": "migrations/core/0046_sending_capacity.sql",
+     "sha256": "c68c9d51899b6125abe553a09b188235f277268a6b9be84129147ec8a188a17b"
+    },
+    {
+     "path": "migrations/core/0047_opt_out_settings.sql",
+     "sha256": "cb7b87ceeeb9c0b36a72595dcba92355b19107116f970f0d1e1751858564688d"
+    },
+    {
+     "path": "migrations/core/0048_forecasts.sql",
+     "sha256": "c33bc69cad4ee1903dd4cd40cb8c66531e21b02b499f46add73919e1270729dc"
+    },
+    {
+     "path": "migrations/core/0049_opt_out_capabilities.sql",
+     "sha256": "4dc9e79a3c5c4015a053871d1db9d8b5ad49b575f26aed1077cdbfc98a17a5b4"
+    },
+    {
+     "path": "migrations/core/0050_message_library.sql",
+     "sha256": "36ba3babd1253e74fd91f76bf26ea8adcd1dae9b693d3198489ab0f0146d1208"
+    },
+    {
+     "path": "migrations/core/0051_slack_notices.sql",
+     "sha256": "f10b66026446b28cd4c68f31d5ee0f59c1b5e4e6250e7adda807f846373ff851"
+    },
+    {
+     "path": "migrations/core/0052_report_shares.sql",
+     "sha256": "678958bfce68cd386913fc242f06684a94d9d09908e124eadf3e16a24d5473b0"
+    },
+    {
+     "path": "migrations/core/0053_dashboards.sql",
+     "sha256": "08dfa335f437fb97926dc6ec618d6eec55f01279d6c73ab287553dc94772f626"
+    }
+   ]
+  },
+  "549f59d08053d2165c61c9bdf3522193e29b6507": {
+   "tree": "af67997741b04ae3cef95b17e4ac1a43ba5b441f",
+   "files": [
+    {
+     "path": "migrations/core/0001_orbit_sample_spine.sql",
+     "sha256": "3969bb2ad471b5abd62072753aa1d1384c1c54662cf1a708775fb83862ba5fb5"
+    },
+    {
+     "path": "migrations/core/0002_magic_links.sql",
+     "sha256": "ef5164a60440fe8ca3af2fa19f2a0800b37624b30329e2f5062943e0d70ff38b"
+    },
+    {
+     "path": "migrations/core/0003_outreach.sql",
+     "sha256": "a3bae4e11a3a8ffcce93f09b5fde8c0d3d2dcf088ded4c7cd6172ce7bba3df8b"
+    },
+    {
+     "path": "migrations/core/0004_owner_bootstrap.sql",
+     "sha256": "730c8b47bf1c8dba2d4541fbb9e883a919f5fb46bbe35a6adae6154dc4ab5070"
+    },
+    {
+     "path": "migrations/core/0005_records.sql",
+     "sha256": "9ad2b44c4af4fe0512ab2e19e8855e14fb200d7e2faab87c1d142c4ba0308651"
+    },
+    {
+     "path": "migrations/core/0006_signals_outreach.sql",
+     "sha256": "1b30a9d4ddcbaae15acdc56f5c9aa85ccd4d73671c33926ce0595aa42ba2ecda"
+    },
+    {
+     "path": "migrations/core/0007_assistance.sql",
+     "sha256": "8fcbd83afbca8124e01f7ba219d1b202c8f78975dae55c1431c18b9530a1c16b"
+    },
+    {
+     "path": "migrations/core/0008_stopped_schedule_queue.sql",
+     "sha256": "f14a5b7b4b8c680b69ca52d4eb988cfcc4135a7b2c106950930cc4fb6fe0f372"
+    },
+    {
+     "path": "migrations/core/0009_archives.sql",
+     "sha256": "3a4b7c915c334134d4be8802d62df89dfcf7a2d494301a4b288146cd72ec21a6"
+    },
+    {
+     "path": "migrations/core/0010_notification_record_scope.sql",
+     "sha256": "60e98daa12ac94429523bf4edfcb46a84eba195628f54000ad1530740962615b"
+    },
+    {
+     "path": "migrations/core/0011_provider_event_actor.sql",
+     "sha256": "06d60d573a3bca82837374a9da28cddca5fec314b61d6b38e0bbc14bd9885196"
+    },
+    {
+     "path": "migrations/core/0012_reviewed_signal_actor.sql",
+     "sha256": "1316dfa33736914f94cb4c93ef9d7b05aae01e15b0dce8fc8455fc4d8176fe2a"
+    },
+    {
+     "path": "migrations/core/0013_delegation_handoffs.sql",
+     "sha256": "1a41d372749c2b3928308e9f1c8b1d57e1c2ddbca1b52076ae2f42fbcbd4de96"
+    },
+    {
+     "path": "migrations/core/0014_contact_suppression.sql",
+     "sha256": "bfbb6fd20280a32557a49fa5a1736f19330c5cd39dbb408c3443581e2e694e12"
+    },
+    {
+     "path": "migrations/core/0015_provider_conflicts.sql",
+     "sha256": "e8b39c6daa3fd11b29018d41ae71a3e15ac5f53d8fce00b9b0ec5af99c102d98"
+    },
+    {
+     "path": "migrations/core/0016_collaborator_access.sql",
+     "sha256": "c6da775a5ddadfa7be714af312751ddbfacfab68d19fe8d5da94d4a927b13195"
+    },
+    {
+     "path": "migrations/core/0017_native_graph.sql",
+     "sha256": "bec7ec9129b5026935c143e01f10f6ec5d4893b6a42445045ae74ec9e19c521f"
+    },
+    {
+     "path": "migrations/core/0018_analytics_events.sql",
+     "sha256": "9edaa75d44917f0c218537138edfc4787503d14c371e9ed75543580382f4ea44"
+    },
+    {
+     "path": "migrations/core/0019_fixed_publication.sql",
+     "sha256": "3e7c20999d241e87c6a549f474c4fa587f6959f6c410055bdd92aab654874e00"
+    },
+    {
+     "path": "migrations/core/0020_archive_generation.sql",
+     "sha256": "7d0ce7c1a6967af5249d76e657b026996ebbdda904a59528f465a037234d5e45"
+    },
+    {
+     "path": "migrations/core/0021_development_outbox.sql",
+     "sha256": "45d6b03eadfe1e91737763ae85cdff74e7216f859869e34431550bba48294996"
+    },
+    {
+     "path": "migrations/core/0022_first_run_setup.sql",
+     "sha256": "bc01d606bb77cf1e1adc132329363246bc063fedd6d911f29b23c45382e5ac62"
+    },
+    {
+     "path": "migrations/core/0023_portability.sql",
+     "sha256": "c7db9042f6d5c571e10297c02df858ad2f3466beb4fa85649fee407cc228747b"
+    },
+    {
+     "path": "migrations/core/0024_form_embedding.sql",
+     "sha256": "bc4d1a78ca7ac4ca96aa194ad2b1a25df8fcc557f9e8334f8edc4f78c0a8d91e"
+    },
+    {
+     "path": "migrations/core/0030_crm_import_kit.sql",
+     "sha256": "e8eb5daa12082608926d8cc9075bd8c1fb04bd1decf4053bedf1dfc1977864ff"
+    },
+    {
+     "path": "migrations/core/0031_crm_move_in.sql",
+     "sha256": "4a8c584c92e1ed55f0085258f3402998096f3a1b458040b3ca5b0bd0ed6990ed"
+    },
+    {
+     "path": "migrations/core/0032_base_identity.sql",
+     "sha256": "085e413ffeea6eca32125848bd0216b35a5ee2367f1b72786c3f6f84dfdfb714"
+    },
+    {
+     "path": "migrations/core/0033_identity_providers.sql",
+     "sha256": "f879fb86b079e591dfe4a8513752a8e0394e252b940aa35d3f7430f27b7382c6"
+    },
+    {
+     "path": "migrations/core/0034_dependency_links.sql",
+     "sha256": "3e97030fbbf2373e3bfede6d3c0a158b838003f0bbe369ce505e20a75abb89e1"
+    },
+    {
+     "path": "migrations/core/0035_capture.sql",
+     "sha256": "a075108b44f76c08c398886e9ccb91e0397ec89a21edd31198e1367eee4d0b91"
+    },
+    {
+     "path": "migrations/core/0036_capture_providers.sql",
+     "sha256": "29b3ee67adc33b2b9a760c47de4e8e5587348cc0541ebc8da14af04278cadc73"
+    },
+    {
+     "path": "migrations/core/0037_owner_signin.sql",
+     "sha256": "97572888d4ce7ee26d51fd3fb198eb954051805f591d61984d442d29d5a43e28"
+    },
+    {
+     "path": "migrations/core/0038_import_kit_v22.sql",
+     "sha256": "ad80bc916d1881e89c1d41ff38f9c953e7d888670fa3cc3c3ec868995ffc5e6a"
+    },
+    {
+     "path": "migrations/core/0039_sales_pipelines.sql",
+     "sha256": "30eb1d4eef284ffe8590df45711366ce5e3c0b33de47654060bacf8b3c67a220"
+    },
+    {
+     "path": "migrations/core/0040_sales_tasks.sql",
+     "sha256": "f2bba2429f2f29ce6d1123de2fa6fbb41fe57ba81079a4d0dff51f2c02abcfba"
+    },
+    {
+     "path": "migrations/core/0041_buying_context.sql",
+     "sha256": "83e5cc474fd43bdbfb098326796250850e7dfe1e40dcebf6a5cfdd5cfec2d331"
+    },
+    {
+     "path": "migrations/core/0042_record_ownership.sql",
+     "sha256": "2b0851ed822db8c0dc1e8563cbd9739c637114d802723d76b8df76a41e409227"
+    }
+   ]
   }
  }
 }

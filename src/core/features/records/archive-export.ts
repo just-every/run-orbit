@@ -1,3 +1,4 @@
+import {reconcileLegacyOwnership} from '../ownership/legacy';
 import {ArchiveExportCreationError,unfinishedExportIds} from './archive-export-recovery';
 import type {ArchiveExportProfile,TransferManifest} from './archive-profile';
 import {storedExportProfile} from './archive-fold-profile';
@@ -27,6 +28,7 @@ export class ArchiveExportRepository{
  async status(id:string,actor:string){const job=await this.job(id,actor),manifest:TransferManifest=JSON.parse(job.manifest_json),progress:Progress=JSON.parse(job.progress_json);return{id,state:job.state==='snapshotting'?'preparing':job.state,completedTables:progress.table,totalTables:manifest.tables.length,...(job.state==='ready'?{manifest}: {})};}
  async unfinished(actor:string){return Promise.all((await unfinishedExportIds(this.db,actor)).map(id=>this.status(id,actor)));}
  async create(actor:string){
+  await reconcileLegacyOwnership(this.db);
   if(await this.db.prepare("SELECT name FROM runtime_controls WHERE name='archive_import'").first())throw new RecordError(409,'Finish or abort the current restore before exporting.');
   const catalog=await (this.profile?.catalog(this.db)??archiveCatalog(this.db)),id=createId(),exportedAt=new Date().toISOString();
   const manifest:TransferManifest=this.profile?await this.profile.manifest(this.db,catalog,exportedAt):{format:'orbit-export',version:2,exportedAt,tables:catalog.map(t=>({name:t.name,columns:t.columns.map(c=>c.name),rows:0})),parts:0,rows:0},progress:Progress={table:0,cursor:0,part:0,snapshotLayout:'aliased-v1'};
