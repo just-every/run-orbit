@@ -12,6 +12,7 @@ export const workspaceSettings = sqliteTable("workspace_settings", {
   staleIntervalDays: integer("stale_interval_days").notNull(),
   awaitingResponseWorkingDays: integer("awaiting_response_working_days").notNull(),
   freeMailDomainsJson: text("free_mail_domains_json").notNull(),
+  captureMailRule: text("capture_mail_rule").notNull().default("review"),
   createdAt: createdAt(),
   updatedAt: updatedAt()
 });

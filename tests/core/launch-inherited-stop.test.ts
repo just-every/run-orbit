@@ -8,7 +8,8 @@ import {OutreachRepository} from '../../src/core/features/workbench/outreach-rep
 import {ApprovalRepository} from '../../src/core/features/outreach/approval-repository';
 import {OutreachService} from '../../src/core/features/outreach/service';
 import {ArchiveImportRepository} from '../../src/core/features/records/archive-import';
-import {archiveCatalog,archiveHash} from '../../src/core/features/records/archive-schema';
+import {archiveHash} from '../../src/core/features/records/archive-schema';
+import {currentFixtureArchive} from '../support/current-archive';
 import {clearContactSuppression} from '../../src/core/features/records/suppression';
 import {contactStopStatements} from '../../src/core/features/records/suppression-effects';
 
@@ -29,9 +30,7 @@ async function assertStopped(db:D1Database,contactId:string,actor:string,w:Await
  assert.equal((await db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(w.messageId).first())!.state,'cancelled');
 }
 async function upload(db:D1Database,archive:Awaited<ReturnType<TestDataRepository['export']>>,actor:string){
- const catalog=await archiveCatalog(db),parts=[];
- for(const table of catalog){const records=archive.tables[table.name].map((row,index)=>({table:table.name,index,row}));if(records.length)parts.push({index:parts.length,records,sha256:await archiveHash(records)});}
- const manifest={format:'orbit-export',version:2,exportedAt:archive.exportedAt,tables:catalog.map(table=>({name:table.name,columns:table.columns.map(column=>column.name),rows:archive.tables[table.name].length})),parts:parts.length,rows:parts.reduce((n,part)=>n+part.records.length,0)},repo=new ArchiveImportRepository(db);
+ const {manifest,parts}=await currentFixtureArchive(db,archive),repo=new ArchiveImportRepository(db,true);
  const job=await repo.create(manifest,actor);for(const part of parts)await repo.upload(job.id,part.index,part,actor);return {repo,id:job.id};
 }
 
@@ -74,13 +73,14 @@ test('DATA-001 restore disables inherited approvals after all tables load, prese
   // The destination retains suppression for an imported alias, not only its primary mailbox.
   const stopped=await target.records.save('contact',{name:'Destination stop',email:alias.email,contactability:'do_not_contact'},target.actor);
   await new TestDataRepository(target.db).remove('contact',stopped.id,target.actor);
+  await target.db.prepare("CREATE TRIGGER test_inherited_stop_failure BEFORE UPDATE OF state ON outbound_messages WHEN NEW.state='cancelled' AND EXISTS(SELECT 1 FROM runtime_controls WHERE name='test_inherited_stop_failure') BEGIN SELECT RAISE(ABORT,'Injected final stop failure'); END").run();
   const before=await archiveHash((await new TestDataRepository(target.db).export()).tables),job=await upload(target.db,archive,target.actor);
-  await target.db.prepare("CREATE TRIGGER test_inherited_stop_failure BEFORE UPDATE OF state ON outbound_messages WHEN NEW.state='cancelled' BEGIN SELECT RAISE(ABORT,'Injected final stop failure'); END").run();
+  await target.db.prepare("INSERT INTO runtime_controls VALUES('test_inherited_stop_failure','enabled')").run();
   let failed=false;for(let i=0;i<1000&&!failed;i++)try{await job.repo.advance(job.id,target.actor);}catch(error){assert.match(String(error),/Injected final stop failure/);failed=true;}
   assert.equal(failed,true);
   assert.equal((await target.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(w.messageId).first())!.state,'scheduled','Failed finalization rolled back cancellation');
   assert.equal((await target.db.prepare('SELECT is_stale FROM drafts WHERE id=?').bind(w.draftId).first())!.is_stale,0,'Failed finalization rolled back stale marking');
-  await target.db.prepare('DROP TRIGGER test_inherited_stop_failure').run();
+  await target.db.prepare("DELETE FROM runtime_controls WHERE name='test_inherited_stop_failure'").run();
   let status=await job.repo.abort(job.id,target.actor);for(let i=0;i<1000&&status.state!=='aborted';i++)status=await job.repo.advance(job.id,target.actor);assert.equal(status.state,'aborted');
   assert.equal(await archiveHash((await new TestDataRepository(target.db).export()).tables),before,'Every destination domain row is restored exactly');
   await new TestDataRepository(target.db).restore(archive,target.actor);

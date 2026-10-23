@@ -1,48 +1,12 @@
+import {providerFixture as fixture,captureFixtureSecurity as security} from '../support/capture-provider-fixture';
 import {oversizedMessageProof,deletedEventProof} from '../support/capture-provider-items';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {createId} from '../../src/core/shared/ids';
-import {captureFixture} from '../support/capture-fixture';
-import {createApp} from '../support/app';
-import {captureProviderNetwork} from '../support/capture-provider-network';
-import {createSourceSecurity} from '../../src/core/platform/source-security';
-import {type Provider} from '../../src/core/features/capture/providers/config';
-import {archiveCatalog} from '../../src/core/features/records/archive-schema';
-const security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'72'.repeat(32)})!;
+import {foldArchiveCatalog as archiveCatalog} from '../../src/core/features/records/archive-fold-catalog';
 const selected={mail:{folders:['INBOX','SENT']},calendars:['calendar'],calendarWindow:{start:'2026-01-01T00:00:00.000Z',end:'2027-01-01T00:00:00.000Z'}};
-async function fixture(provider:Provider){
- const f=await captureFixture(),network=captureProviderNetwork(provider);let crash=false;
- const db=new Proxy({} as D1Database,{get(_target,key){const target=f.platform.db;if(key==='prepare')return (sql:string)=>{if(crash&&sql.startsWith('UPDATE capture_sources SET cursor=')){crash=false;throw new Error('Worker stopped before cursor commit');}return target.prepare(sql);};const value=Reflect.get(target,key);return typeof value==='function'?value.bind(target):value;}});
- const build=()=>createApp({database:db,assets:{fetch:async()=>new Response('')},sourceSecurity:security,captureOrigin:'https://orbit.test',captureFetch:network.fetcher});let app=build();
- const request=(path:string,body?:unknown,cookie=f.cookie)=>app.request(`https://orbit.test/api/v1/capture${path}`,{method:body===undefined?'GET':'POST',headers:{cookie,origin:'https://orbit.test','content-type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
- async function start(sourceId?:string,cookie=f.cookie){const response=await request(`/oauth/${provider}/start`,{name:`${provider} account`,clientId:'test-client',clientSecret:'test-secret',sourceId},cookie);assert.equal(response.status,200);const url=new URL((await response.json() as any).authorizationUrl);network.state.challenge=url.searchParams.get('code_challenge')!;return url;}
- async function callback(url:URL,cookie=f.cookie){return request(`/oauth/${provider}/callback?state=${encodeURIComponent(url.searchParams.get('state')!)}&code=test-code`,undefined,cookie);}
- async function connect(sourceId?:string){const response=await callback(await start(sourceId));assert.equal(response.status,303);const location=new URL(response.headers.get('location')!,'https://orbit.test');assert.ok(!location.searchParams.has('error'),location.searchParams.get('error')??'');return location.searchParams.get('connected')!;}
- const count=(id:string)=>db.prepare('SELECT count(*) n FROM signals WHERE source_id=?').bind(id).first<number>('n');
- async function drain(id:string){let rounds=0;while(true){const response=await request(`/sources/${id}/sync`,{});assert.equal(response.status,200);const value=await response.json() as any;assert.ok(!value.summary.halted);if(!value.more)return;assert.ok(++rounds<100,'bounded resumable source must eventually finish');}}
- return {...f,...network,db,get app(){return app;},request,start,callback,connect,count,drain,reopen:async()=>{await f.platform.close();await f.platform.reopen();app=build();},crash:()=>{crash=true;}};
-}
 
-test('CAPTURE-006 both real adapters page selected scope fairly, replay a crashed commit, resume incrementally and retain no unknown mail',async()=>{
- for(const provider of ['google','microsoft'] as const){const f=await fixture(provider);try{
-  const id=await f.connect();assert.equal((await f.request(`/sources/${id}/sync`,{})).status,409);assert.equal(f.state.reads.length,0);
-  let continuation:string|undefined,mail:string[]=[],calendars:string[]=[];do{const response=await f.request(`/sources/${id}/options${continuation?`?continuation=${encodeURIComponent(continuation)}`:''}`);assert.equal(response.status,200);const value=await response.json() as any;mail.push(...value.mail.map((x:any)=>x.id));calendars.push(...value.calendars.map((x:any)=>x.id));continuation=value.continuation;}while(continuation);
-  assert.deepEqual(mail,['INBOX','SENT']);assert.deepEqual(calendars,['calendar']);
-  assert.equal((await f.request(`/sources/${id}/scope`,selected)).status,200);
-  f.crash();assert.equal((await f.request(`/sources/${id}/sync`,{})).status,500);assert.ok((await f.count(id))!>0);
-  await f.reopen();await f.drain(id);assert.equal(await f.count(id),26);assert.equal(await f.db.prepare("SELECT count(*) n FROM capture_items WHERE headers LIKE '%unknown%' OR body LIKE '%unknown%'").first('n'),0);
-  f.state.incremental=true;f.state.tombstones=true;await f.drain(id);assert.equal(await f.count(id),28);
-  assert.equal(await f.db.prepare("SELECT count(*) n FROM signals WHERE source_id=? AND type='meeting.cancelled'").bind(id).first('n'),1);
-  assert.ok(Number(await f.db.prepare('SELECT skipped_count FROM capture_sources WHERE id=?').bind(id).first('skipped_count'))>0);
-  if(provider==='google'){f.state.expireHistory=true;await f.drain(id);assert.equal(await f.count(id),28);assert.ok(f.state.reads.some(url=>url.includes('startHistoryId=900719925474099312345')));}
-  f.state.recurring=true;await f.drain(id);assert.equal(await f.count(id),30);await f.drain(id);assert.equal(await f.count(id),30,'recurring occurrences replay independently');
-  const starts=(await f.db.prepare("SELECT json_extract(payload_json,'$.data.start') AS start FROM signals WHERE source_id=? AND type LIKE 'meeting.%'").bind(id).all<{start:string}>()).results.map(row=>row.start);assert.ok(starts.includes('2026-11-01T05:30:00.000Z'));assert.ok(starts.includes('2026-11-08T06:30:00.000Z'));
-  f.state.outage=true;const before=await f.db.prepare('SELECT cursor FROM capture_sources WHERE id=?').bind(id).first('cursor');const unavailable=await (await f.request(`/sources/${id}/sync`,{})).json() as any;assert.equal(unavailable.summary.halted,'unavailable');assert.equal(await f.db.prepare('SELECT cursor FROM capture_sources WHERE id=?').bind(id).first('cursor'),before);
-  f.state.outage=false;f.state.revoked=true;assert.equal((await (await f.request(`/sources/${id}/sync`,{})).json() as any).summary.halted,'revoked');const reads=f.state.reads.length;assert.equal((await f.request(`/sources/${id}/sync`,{})).status,409);assert.equal(f.state.reads.length,reads);
-  f.state.revoked=false;await f.connect(id);assert.equal(await f.db.prepare('SELECT cursor FROM capture_sources WHERE id=?').bind(id).first('cursor'),null);assert.equal((await f.request(`/sources/${id}/sync`,{})).status,409);
-  assert.equal((await f.request(`/sources/${id}/disconnect`,{confirmed:true})).status,200);assert.equal(await f.db.prepare('SELECT count(*) n FROM capture_credentials WHERE source_id=?').bind(id).first('n'),0);
- }finally{await f.dispose();}}
-});
+
 
 test('CAPTURE-005 OAuth binds native session, provider, origin, expiry and one use; encrypted authority stays out of status and archives',async()=>{
  const f=await fixture('google');try{

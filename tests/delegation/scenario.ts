@@ -5,10 +5,10 @@ import {delegationRoutes} from '../../src/core/features/delegation/routes';
 import {nativeDelegation} from '../support/app';
 import { testAuth } from '../support/test-auth';
 import {snapshot} from '../../src/core/features/delegation/evidence';
-import {archiveCatalog} from '../../src/core/features/records/archive-schema';
+import {foldArchiveCatalog} from '../../src/core/features/records/archive-fold-catalog';
 export async function exercise(db:D1Database){
  const now=new Date().toISOString();
- await db.prepare("INSERT INTO workspace_settings VALUES('workspace','Test','UTC','USD','{}',14,5,'[]',?,?)").bind(now,now).run();
+ await db.prepare("INSERT INTO workspace_settings(id,name,timezone,currency,working_hours_json,stale_interval_days,awaiting_response_working_days,free_mail_domains_json,created_at,updated_at) VALUES('workspace','Test','UTC','USD','{}',14,5,'[]',?,?)").bind(now,now).run();
  const auth=testAuth(db,{now:()=>new Date()});
  await auth.ensureOperator({id:'operator',email:'operator@example.test',displayName:'Operator'});await auth.ensureOperator({id:'peer',email:'peer@example.test',displayName:'Peer'});
  await db.prepare("INSERT INTO pipeline_stages VALUES('stage','New',1,?,?)").bind(now,now).run();
@@ -47,7 +47,7 @@ export async function exercise(db:D1Database){
  assert.equal((await request('/effects',{...effect,operationKey:'stale'})).status,409);
  const beforeAudience=await snapshot(db,target);await auth.ensureOperator({id:'new-peer',email:'new@example.test',displayName:'New'});
  assert.equal((await request('/effects',{...effect,operationKey:'audience',expectedRevision:beforeAudience.revision})).status,409);
- const catalog=await archiveCatalog(db);assert.ok(catalog.some(t=>t.name==='handoff_tasks'));assert.ok(!catalog.some(t=>t.name.startsWith('delegation_')));
+ const catalog=await foldArchiveCatalog(db);assert.ok(catalog.some(t=>t.name==='handoff_tasks'));assert.ok(!catalog.some(t=>t.name.startsWith('delegation_')));
  await db.prepare("UPDATE operators SET status='removed' WHERE id='peer'").run();assert.equal((await db.prepare('SELECT assignee_id FROM handoff_tasks').first())!.assignee_id,'peer'); // completed attribution remains
  await db.prepare("UPDATE operators SET status='removed' WHERE id='operator'").run();for(const path of ['/identity','/check?target=opportunities/opp','/effects/operation-1'])assert.equal((await request(path)).status,401);
  return {native,api};

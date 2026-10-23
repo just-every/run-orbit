@@ -3,7 +3,9 @@ import { test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
 import { ArchiveExportRepository } from '../../src/core/features/records/archive-export';
 import { ArchiveImportRepository } from '../../src/core/features/records/archive-import';
-import { archiveHash, type ArchiveManifest, type ArchivePart } from '../../src/core/features/records/archive-schema';
+import { archiveHash } from '../../src/core/features/records/archive-schema';
+import { foldExportProfile } from '../../src/core/features/records/archive-fold-profile';
+import { readCurrentArchive } from '../support/current-archive';
 import { TestDataRepository } from '../support/record-data';
 import { createId } from '../../src/core/shared/ids';
 import { createDependencies } from '../../src/core/app/dependencies';
@@ -11,13 +13,10 @@ const now = '2026-09-13T00:00:00.000Z';
 async function owner(db: D1Database, email = 'original@example.test') { const id = createId(); await db.prepare("INSERT INTO operators(id,email,display_name,status,setup_owner,created_at,updated_at) VALUES(?,?,'Original administrator','active',1,?,?)").bind(id, email, now, now).run(); await db.prepare("INSERT INTO sessions(id,operator_id,token_hash,expires_at,created_at) VALUES(?,?,'original-session','2099-01-01',?)").bind(createId(), id, now).run(); await workspace(db); return id; }
 // An installed Orbit always has its workspace; erasure authority is a current workspace membership.
 async function workspace(db: D1Database) { if (!await db.prepare('SELECT 1 FROM workspace_settings').first()) await createDependencies(db).workspace.ensureWorkspace({name:'Archive checks',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]}); }
-async function archive(db: D1Database) { const repo = new ArchiveExportRepository(db), actor = (await db.prepare('SELECT id FROM operators LIMIT 1').first<{
+async function archive(db: D1Database) { const repo = new ArchiveExportRepository(db, foldExportProfile), actor = (await db.prepare('SELECT id FROM operators LIMIT 1').first<{
     id: string;
 }>())!.id; let status = await repo.create(actor); for (let i = 0; i < 200 && status.state !== 'ready'; i++)
-    status = await repo.advance(status.id, actor); assert.equal(status.state, 'ready'); const document = await (await repo.download(status.id, actor)).json() as {
-    manifest: ArchiveManifest;
-    parts: ArchivePart[];
-}; return document; }
+    status = await repo.advance(status.id, actor); assert.equal(status.state, 'ready'); const document = await readCurrentArchive(await repo.download(status.id, actor)); return document; }
 test('BASE-DATA-001 interrupted invalid restore remains hidden and abort restores original administrator, session and exact metadata', async () => { const source = await isolatedDatabase(), target = await isolatedDatabase(); try {
     await owner(source.db, 'source@example.test');
     const actor = await owner(target.db);
@@ -26,7 +25,7 @@ test('BASE-DATA-001 interrupted invalid restore remains hidden and abort restore
     const invalid = parts.find(p => p.records[0].table === 'operators')!;
     invalid.records[0].row.setup_owner = 2;
     invalid.sha256 = await archiveHash(invalid.records);
-    const repo = new ArchiveImportRepository(target.db);
+    const repo = new ArchiveImportRepository(target.db, true);
     let status = await repo.create(manifest, actor);
     for (const part of parts)
         await repo.upload(status.id, part.index, part, actor);
@@ -59,11 +58,11 @@ test('DATA-002 contact erasure invalidates prepared exports, paused downloads an
     try {
         const actor = await owner(fixture.db), contact = createId();
         await fixture.db.prepare("INSERT INTO contacts(id,name,email,email_key,contactability,created_at,updated_at) VALUES(?,'Private archive contact','erase@example.test','erase@example.test','contactable',?,?)").bind(contact, now, now).run();
-        const document = await archive(fixture.db), exports = new ArchiveExportRepository(fixture.db);
+        const document = await archive(fixture.db), exports = new ArchiveExportRepository(fixture.db, foldExportProfile);
         const exportId = (await fixture.db.prepare("SELECT id FROM archive_jobs WHERE kind='export'").first<{id:string}>())!.id;
         const response = await exports.download(exportId, actor), reader = response.body!.getReader();
         await reader.read(); // Header consumed; no customer data has been read.
-        const imports = new ArchiveImportRepository(fixture.db), upload = await imports.create(document.manifest, actor);
+        const imports = new ArchiveImportRepository(fixture.db, true), upload = await imports.create(document.manifest, actor);
         for (const part of document.parts) await imports.upload(upload.id, part.index, part, actor);
         await new TestDataRepository(fixture.db).remove('contact', contact, actor);
         assert.equal((await fixture.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND (name LIKE 'archive_snapshot_%' OR name LIKE 'archive_stage_%')").all()).results.length, 0);
@@ -78,12 +77,12 @@ test('DATA-002 contact erasure invalidates prepared exports, paused downloads an
 test('BASE-DATA-001 abort racing an export part write cannot recreate private transfer data', async () => {
     const fixture = await isolatedDatabase();
     try {
-        const actor = await owner(fixture.db), exports = new ArchiveExportRepository(fixture.db), status = await exports.create(actor);
+        const actor = await owner(fixture.db), exports = new ArchiveExportRepository(fixture.db, foldExportProfile), status = await exports.create(actor);
         const concurrentDb = {prepare:fixture.db.prepare.bind(fixture.db),batch:async (statements:D1PreparedStatement[]) => {
             await exports.abort(status.id, actor);
             return fixture.db.batch(statements);
         }} as D1Database;
-        await assert.rejects(new ArchiveExportRepository(concurrentDb).advance(status.id, actor));
+        await assert.rejects(new ArchiveExportRepository(concurrentDb, foldExportProfile).advance(status.id, actor));
         assert.equal((await exports.status(status.id, actor)).state, 'aborted');
         assert.equal((await fixture.db.prepare('SELECT count(*) AS n FROM archive_parts WHERE job_id=?').bind(status.id).first<{n:number}>())!.n, 0);
         assert.equal((await fixture.db.prepare('SELECT count(*) AS n FROM archive_part_segments WHERE job_id=?').bind(status.id).first<{n:number}>())!.n, 0);
@@ -96,7 +95,7 @@ test('DATA-002 erasure retries snapshot creation racing archive table discovery 
         await fixture.db.prepare("INSERT INTO contacts(id,name,email,email_key,contactability,created_at,updated_at) VALUES(?,'Private','erase-race@example.test','erase-race@example.test','contactable',?,?)").bind(contact, now, now).run();
         let injected = false;
         const concurrentDb = {prepare:fixture.db.prepare.bind(fixture.db),batch:async (statements:D1PreparedStatement[]) => {
-            if (!injected) { injected = true; await new ArchiveExportRepository(fixture.db).create(actor); }
+            if (!injected) { injected = true; await new ArchiveExportRepository(fixture.db, foldExportProfile).create(actor); }
             return fixture.db.batch(statements);
         }} as D1Database;
         await new TestDataRepository(concurrentDb).remove('contact', contact, actor);

@@ -7,7 +7,7 @@ import {challenge} from '../../src/core/features/delegation/token';
 
 export async function authorityFixture(db:D1Database){
  const now=new Date().toISOString(),auth=testAuth(db,{now:()=>new Date()});
- await db.prepare("INSERT INTO workspace_settings VALUES('workspace','Delegation proof','UTC','USD','{}',14,5,'[]',?,?)").bind(now,now).run();
+ await db.prepare("INSERT INTO workspace_settings(id,name,timezone,currency,working_hours_json,stale_interval_days,awaiting_response_working_days,free_mail_domains_json,created_at,updated_at) VALUES('workspace','Delegation proof','UTC','USD','{}',14,5,'[]',?,?)").bind(now,now).run();
  await auth.ensureOperator({id:'owner',email:'owner@example.test',displayName:'Owner'});
  await auth.ensureOperator({id:'peer',email:'peer@example.test',displayName:'Peer'});
  await db.prepare("INSERT INTO pipeline_stages VALUES('stage','New',1,?,?)").bind(now,now).run();

@@ -109,3 +109,5 @@ suite as a release. Hosted installation, real mailbox access, actual customer
 mail, hosted restore and owner acceptance require their separate receipts.
 `tests/acceptance/hosted-outreach.mjs` sends real mail and requires an explicitly
 authorized origin and private provider inputs; it is never an ordinary local test.
+
+CAPTURE-010 keeps its one existing provider scope/rule/correction/custody case in `tests/core/capture-mail-rules.test.ts`; the other provider cases remain in `capture-providers.test.ts`. No case is added or removed. The plan weights the extended case at eleven minutes from its local execution and updates the mapped-form, record-mail, browser and populated-upgrade weights from their measured local paths, preserving the same shard counts and test budget.

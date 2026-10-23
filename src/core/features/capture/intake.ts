@@ -11,6 +11,7 @@ import type {Fact,Participant} from './facts';
 import {proposalStatements,type ProposalDraft} from './proposals';
 import {capturePrivacy} from './privacy';
 import {CaptureError} from './contracts';
+import {automaticMailAssociation} from './mail-association';
 
 export interface CaptureSource {id:string;name:string;connection_id:string|null;lease?:string}
 export interface Known {email:string;name:string;role:Participant['role'];contact:{id:string;name:string|null;phone:string|null;company_id:string|null}|null;company:{id:string;name:string}|null}
@@ -124,10 +125,13 @@ export async function intake(db:D1Database,source:CaptureSource,fact:Fact,option
    Object.assign(event,{permanentBounce:fact.bounce.permanent});delete event.email;
   }
  }
+ const automatic=!attached?await automaticMailAssociation(db,source.id,fact,known):null;
+ if(automatic){attached=automatic.targets;statements.push(...automatic.fences);Object.assign(evidence,automatic.evidence);}
+ else if(attached&&fact.kind==='message')Object.assign(evidence,{associationRule:fact.bounce?'Verified delivery report for an Orbit send':'Trusted Orbit message identity',associationRuleId:fact.bounce?'delivery':'thread'});
  let stopped:string[]=[];
  if(attached){
-  attached=[...attached,...await companyTargets(db,attached)];
-  statements.push(signal(attached[0]!.basis),item,...await ingestion.linkStatements(signalId,event,attached,source.id,at,'source',source.id,evidence),counted);
+  if(!automatic)attached=[...attached,...await companyTargets(db,attached)];
+  statements.push(signal(attached[0]!.basis),item,...await ingestion.linkStatements(signalId,automatic?{...event,email:automatic.email}:event,attached,source.id,at,'source',source.id,evidence),counted);
   stopped=type==='email.replied'?attached.filter(t=>t.type==='contact').map(t=>t.id):[];
  }else{
   statements.push(signal('Held for review'),item,counted);

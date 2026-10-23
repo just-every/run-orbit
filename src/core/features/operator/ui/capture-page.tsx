@@ -1,3 +1,4 @@
+import {CaptureMailRule} from './capture-mail-rule';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import './records.css';
 import './capture-providers.css';
@@ -113,6 +114,7 @@ export function CapturePage() {
     {error ? <OperatorState kind="error">{error}</OperatorState> : null}
     {overview.loading ? <OperatorState>Loading Capture…</OperatorState> : null}
     {overview.error ? <OperatorState kind="error">{overview.error.message}</OperatorState> : null}
+    {overview.data ? <CaptureMailRule/> : null}
     {overview.data ? live.length ? <Daily data={{ ...overview.data, sources: live }} onChanged={overview.reload} focus={focus} /> : <Start forward={overview.data.forward} /> : null}
   </OperatorShell>;
 }

@@ -66,7 +66,7 @@ test('RECORD-008 a failed native batch keeps suppression effective; revoked gran
  await f.db.prepare("UPDATE access_memberships SET status='removed' WHERE operator_id=?").bind(f.actor).run();assert.equal((await f.request(`imports/${dry.id}/undo`,'POST',{confirmed:true})).status,403);await f.db.prepare("UPDATE access_memberships SET status='active' WHERE operator_id=?").bind(f.actor).run();
  const undone=await finish(f,dry,'undo');assert.equal(undone.job.state,'rolled_back');assert.ok(await f.db.prepare('SELECT id FROM contacts WHERE id=?').bind(recreated.id).first());assert.equal((await f.records.detail('contact',recreated.id)).record.contactability,'do_not_contact');
  const deps=createDependencies(f.db),other=createId();await deps.auth.ensureOperator({id:other,email:'other-import-operator@example.test',displayName:'Other operator'});const session=await deps.auth.createSession(other);assert.equal((await f.request(`imports/${dry.id}`,'GET',undefined,{Cookie:`__Host-orbit_session=${session.token}`})).status,404);
- const {archiveCatalog}=await import('../../src/core/features/records/archive-schema');assert.ok((await archiveCatalog(f.db)).every(table=>!table.name.startsWith('ik_')&&!table.name.startsWith('crm_import_')));
+ const {foldArchiveCatalog}=await import('../../src/core/features/records/archive-fold-catalog');assert.ok((await foldArchiveCatalog(f.db)).every(table=>!table.name.startsWith('ik_')&&!table.name.startsWith('crm_import_')));
  }finally{await f.dispose();}
 });
 test('RECORD-008 a contact arriving after review fences every creation and send until undo; missing permission stays held',async()=>{

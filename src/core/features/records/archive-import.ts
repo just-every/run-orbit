@@ -1,3 +1,4 @@
+import {upgradeCaptureMailRuleArchiveRecord} from '../capture/archive';
 import {recoverableImport,acknowledgeImport,unfinishedImportIds} from './archive-import-recovery';
 import {storedArchiveContentDigest} from './archive-content-identity';
 import {uploadedArchiveGrowth} from './archive-size-plan';
@@ -66,7 +67,7 @@ export class ArchiveImportRepository {
         if (index !== count)
             throw new RecordError(409, 'Upload the next missing archive part first.');
         // A request contains at most 1000 rows. Stage typed cells, never JSON-expanded D1 rows.
-        await this.db.batch([...(context?[...await context.fence(job),...await archiveStorageFence(this.db,id,await uploadedArchiveGrowth(this.db,part,catalog,manifest.version===3))]:[]),...partStatements(this.db, id, part),...(context?[this.db.prepare('INSERT INTO archive_part_inventory VALUES(?,?,?)').bind(id,index,part.records.length)]:[]), ...await uploadStatements(this.db, id, { ...part, records: part.records.map(upgradeLibraryArchiveRecord).map(record => record.table === 'contacts' && !('contactability_revision' in record.row) ? { ...record, row: { ...record.row, contactability_revision: 0 } } : record) }, catalog,manifest.version===3),...(context?await archiveStorageFence(this.db,id):[])]);
+        await this.db.batch([...(context?[...await context.fence(job),...await archiveStorageFence(this.db,id,await uploadedArchiveGrowth(this.db,part,catalog,manifest.version===3))]:[]),...partStatements(this.db, id, part),...(context?[this.db.prepare('INSERT INTO archive_part_inventory VALUES(?,?,?)').bind(id,index,part.records.length)]:[]), ...await uploadStatements(this.db, id, { ...part, records: part.records.map(upgradeCaptureMailRuleArchiveRecord).map(upgradeLibraryArchiveRecord).map(record => record.table === 'contacts' && !('contactability_revision' in record.row) ? { ...record, row: { ...record.row, contactability_revision: 0 } } : record) }, catalog,manifest.version===3),...(context?await archiveStorageFence(this.db,id):[])]);
         if(context)await observeArchiveStorage(this.db,id,'after-upload');return this.status(id, actor);
     }
     async advance(id: string, actor: string) {

@@ -11,18 +11,22 @@ const playwright = (config, files) => ({ files, args: ['exec', 'playwright', 'te
 // Fold-domain files are from Verify 39500768813; REPORT-001 uses its 4-minute local proof.
 // Verify 39577822567 put capture-data alone at 14 minutes. Its unchanged cases now run
 // in three files; their weights and onboarding-archive use that run's actual case times.
+// CAPTURE-010 moves its existing extended case into one file (no new registration):
+// local provider/custody proof is about eleven minutes. FORM-001 and forward upgrades
+// use their measured 6.8/5.4-minute local times; reviewed record mail and the expanded
+// browser flow are weighted too, so those larger paths balance honestly.
 // A file missing here counts as half a minute.
 const minutes = {
   'tests/core/capture-data.test.ts': 7.3, 'tests/core/capture-erasure.test.ts': 2.9, 'tests/core/capture-replay-archive.test.ts': 3.9,
-  'tests/core/capture-providers.test.ts': 5.3, 'tests/core/crm-import.test.ts': 4.9,
+  'tests/core/capture-mail-rules.test.ts': 11, 'tests/core/signals-outreach.test.ts': 7.5, 'tests/core/records-search.test.ts': 1.3, 'tests/core/capture-providers.test.ts': 4.5, 'tests/core/crm-import.test.ts': 4.9,
   'tests/core/launch-inherited-stop.test.ts': 2.6, 'tests/core/onboarding-archive.test.ts': 7.7, 'tests/core/archive-transfer.test.ts': 1.7,
   'tests/core/capture-intake.test.ts': 1.7, 'tests/core/crm-import-erasure.test.ts': 1.5, 'tests/core/launch-suppression.test.ts': 1.5,
   'tests/core/launch-suppression-archive.test.ts': 1.3, 'tests/delegation/archive-regression.test.ts': 0.8, 'tests/core/contact-erasure.test.ts': 0.8,
   'tests/core/capture-connector.test.ts': 0.8, 'tests/core/launch-provider-conflicts.test.ts': 0.8, 'tests/core/source-onboarding.test.ts': 8.5,
   'newtests/t096/archive-native.test.ts': 8.3, 'newtests/t096/archive-terminal-recovery.test.ts': 7.6, 'newtests/t096/archive-view-rollback.test.ts': 3.7,
   'newtests/t096/archive-import-recovery.test.ts': 3.4, 'newtests/t096/archive-cli-native.test.ts': 2.4, 'newtests/t096/archive-upgrade-preflight.test.ts': 1.4,
-  'newtests/t096/browser-journeys.test.ts': 6.5, 'newtests/t096/report-disclosure.test.ts': 8.5, 'newtests/t096/forms-native.test.ts': 2.1,
-  'newtests/t096/delegation-collaborator.test.ts': 1.9, 'newtests/t096/collaborator-lifecycle.test.ts': 1, 'newtests/t096/forward-upgrade.test.ts': 1.5,
+  'newtests/t096/browser-journeys.test.ts': 12.5, 'newtests/t096/report-disclosure.test.ts': 8.5, 'newtests/t096/forms-native.test.ts': 6.8,
+  'newtests/t096/delegation-collaborator.test.ts': 1.9, 'newtests/t096/collaborator-lifecycle.test.ts': 1, 'newtests/t096/forward-upgrade.test.ts': 5.4,
 };
 const weight = file => minutes[file] ?? 0.5;
 /** Longest first into the lightest bin: a deterministic, balanced split of files into `count` shards. */

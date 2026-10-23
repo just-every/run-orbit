@@ -10,11 +10,29 @@ import {acceptProposal,declineProposal,listProposals} from './proposals';
 import {captureItems,disconnectSource,ensureFileSource,listSources} from './sources';
 import {createForwardRoutes} from './forward/routes';
 import {createCalendarLinkRoutes} from './calendar-link/routes';
+import {mailRuleSettings,saveMailRule} from './mail-rule';
+import {correctDealLinks,readDealLinks} from './deal-links';
 
 /** Capture is an operator action: these routes sit behind the operator session, never a source signature (SIGNAL-009). */
 export function createCaptureRoutes(db:D1Database,providers:ProviderConfig={}){
  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),recordId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
  app.onError((error,c)=>error instanceof CaptureError?c.json({error:error.message},error.status):c.json({error:'Capture failed; nothing was confirmed.'},500));
+ app.get('/mail-rule',async c=>c.json(await mailRuleSettings(db,c.get('operator'))));
+ app.put('/mail-rule',async c=>{
+  const input=z.object({rule:z.enum(['review','recent','all'])}).strict().safeParse(await c.req.json().catch(()=>null));
+  if(!input.success)throw new CaptureError(400,'Choose a connected mail association rule.');
+  return c.json(await saveMailRule(db,c.get('operator'),input.data.rule));
+ });
+ app.get('/signals/:id/deal-links',async c=>{
+  if(!recordId.safeParse(c.req.param('id')).success)throw new CaptureError(400,'Invalid captured signal ID.');
+  return c.json(await readDealLinks(db,c.req.param('id'),c.get('operator')));
+ });
+ app.post('/signals/:id/deal-links',async c=>{
+  if(!recordId.safeParse(c.req.param('id')).success)throw new CaptureError(400,'Invalid captured signal ID.');
+  const input=z.object({opportunityId:recordId.nullable(),requestId:z.uuid()}).strict().safeParse(await c.req.json().catch(()=>null));
+  if(!input.success)throw new CaptureError(400,'Choose an open deal or remove the deal associations.');
+  return c.json(await correctDealLinks(db,c.req.param('id'),c.get('operator'),input.data.opportunityId,input.data.requestId));
+ });
  app.post('/imports',async c=>{
   // A form posted before hydration gets the Capture page back with its result; scripts get JSON.
   const page=(c.req.header('accept')??'').includes('text/html');

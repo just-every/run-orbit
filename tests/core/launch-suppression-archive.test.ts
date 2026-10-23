@@ -3,12 +3,12 @@ import {test} from 'node:test';
 import {launchFixture} from '../support/launch-fixture';
 import {TestDataRepository} from '../support/record-data';
 import {ArchiveImportRepository} from '../../src/core/features/records/archive-import';
-import {archiveCatalog,archiveHash} from '../../src/core/features/records/archive-schema';
+import {archiveHash} from '../../src/core/features/records/archive-schema';
+import {currentFixtureArchive} from '../support/current-archive';
 import {suppressionHashes,suppressionPredicate} from '../../src/core/features/records/suppression';
 
 async function upload(db:D1Database,archive:Awaited<ReturnType<TestDataRepository['export']>>,actor:string){
- const catalog=await archiveCatalog(db),parts=[];for(const table of catalog){const records=archive.tables[table.name].map((row,index)=>({table:table.name,index,row}));if(records.length)parts.push({index:parts.length,records,sha256:await archiveHash(records)});}
- const manifest={format:'orbit-export',version:2,exportedAt:archive.exportedAt,tables:catalog.map(table=>({name:table.name,columns:table.columns.map(column=>column.name),rows:archive.tables[table.name].length})),parts:parts.length,rows:parts.reduce((n,part)=>n+part.records.length,0)},repo=new ArchiveImportRepository(db);
+ const {manifest,parts}=await currentFixtureArchive(db,archive),repo=new ArchiveImportRepository(db,true);
  const job=await repo.create(manifest,actor);for(const part of parts)await repo.upload(job.id,part.index,part,actor);return {repo,id:job.id};
 }
 async function stopAndErase(f:Awaited<ReturnType<typeof launchFixture>>,email:string){const contact=await f.records.save('contact',{name:'Erase safety proof',email,contactability:'do_not_contact'},f.actor);await new TestDataRepository(f.db).remove('contact',contact.id,f.actor);}
@@ -18,11 +18,13 @@ test('DATA-001 DATA-002 private archive carries keyed anonymous proofs; multiple
  const source=await launchFixture(),target=await launchFixture();try{
   await stopAndErase(source,'source-erased@customer.test');await source.records.save('contact',{name:'Incoming customer',email:'incoming@customer.test'},source.actor);
   await stopAndErase(target,'destination-erased@customer.test');
+  // Fix the failure trigger in the schema before snapshotting; arm it only for the load.
+  await target.db.prepare("CREATE TRIGGER test_restore_failure BEFORE INSERT ON contacts WHEN EXISTS(SELECT 1 FROM runtime_controls WHERE name='test_restore_failure') BEGIN SELECT RAISE(ABORT,'Injected restore persistence failure'); END").run();
   const archive=await new TestDataRepository(source.db).export(),before=await new TestDataRepository(target.db).export();
   const beforeHash=await archiveHash(before.tables),job=await upload(target.db,archive,target.actor);
-  await target.db.prepare("CREATE TRIGGER test_restore_failure BEFORE INSERT ON contacts BEGIN SELECT RAISE(ABORT,'Injected restore persistence failure'); END").run();
+  await target.db.prepare("INSERT INTO runtime_controls VALUES('test_restore_failure','enabled')").run();
   let failed=false;for(let i=0;i<600&&!failed;i++){try{await job.repo.advance(job.id,target.actor);}catch(error){assert.match(String(error),/Injected restore persistence failure/);failed=true;}}assert.equal(failed,true);
-  await target.db.prepare('DROP TRIGGER test_restore_failure').run();let status=await job.repo.abort(job.id,target.actor);for(let i=0;i<600&&status.state!=='aborted';i++)status=await job.repo.advance(job.id,target.actor);assert.equal(status.state,'aborted');
+  await target.db.prepare("DELETE FROM runtime_controls WHERE name='test_restore_failure'").run();let status=await job.repo.abort(job.id,target.actor);for(let i=0;i<600&&status.state!=='aborted';i++)status=await job.repo.advance(job.id,target.actor);assert.equal(status.state,'aborted');
   assert.equal(await archiveHash((await new TestDataRepository(target.db).export()).tables),beforeHash,'Rollback restores every original domain row without disclosing private context values');
   assert.equal(await proofExists(target.db,'source-erased@customer.test'),false);assert.equal(await proofExists(target.db,'destination-erased@customer.test'),true);
   await new TestDataRepository(target.db).restore(archive,target.actor);
