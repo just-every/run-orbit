@@ -14,6 +14,10 @@ import {foldInstalledCatalog,foldSchemaHash} from '../../src/core/features/recor
 import {preOptOutCapabilityCatalog} from '../../src/core/features/records/archive-generations';
 import {preForecastCatalog} from '../../src/core/features/records/forecast-archive-compatibility';
 import {preLibraryCatalog} from '../../src/core/features/records/library-archive-compatibility';
+import {preCaptureMailRuleCatalog} from '../../src/core/features/capture/archive';
+import {preRecordMailCatalog} from '../../src/core/features/outreach/record-mail-archive';
+import {preFormAssignmentCatalog} from '../../src/core/features/forms/archive';
+import {preOwnershipCatalog} from '../../src/core/features/ownership/archive';
 import {preDashboardCatalog} from '../../src/core/features/dashboards/archive';
 import {preSlackCatalog} from '../../src/core/features/slack/archive';
 import {preReportShareCatalog} from '../../src/core/features/analytics/archive-compatibility';
@@ -72,7 +76,7 @@ test('DATA-001 local archive restores records and keeps the hosted owner able to
   assert.equal(imported.state,'complete');
   assert.equal(imported.completedSteps,imported.totalSteps);assert.equal(imported.nextPart,document.manifest.parts);
  };
- const historicalCatalog=preSlackCatalog(preReportShareCatalog(preDashboardCatalog(await foldInstalledCatalog(source.db))));
+ const historicalCatalog=preSlackCatalog(preReportShareCatalog(preDashboardCatalog(preOwnershipCatalog(preFormAssignmentCatalog(preRecordMailCatalog(preCaptureMailRuleCatalog(await foldInstalledCatalog(source.db))))))));
  for(const catalog of [preLibraryCatalog(historicalCatalog),preForecastCatalog(preOptOutCapabilityCatalog(preLibraryCatalog(historicalCatalog)))]){
  const previous=await launchFixture();
  try{
