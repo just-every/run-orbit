@@ -4491,7 +4491,7 @@
       "executable": false
     },
     "src/core/features/capture/forward/inbound.ts": {
-      "sha256": "61b47ec4bd9777e931caed063bb883c91afb3dcb2dcbe1495032e24f03c259a5",
+      "sha256": "ba3c483143d8e2900ce502962967c4560319ba4740f6ca7de1394dcaf6299e13",
       "executable": false
     },
     "src/core/features/capture/forward/receive.ts": {
@@ -5667,7 +5667,7 @@
       "executable": false
     },
     "src/core/features/outreach/provider-routes.ts": {
-      "sha256": "a599a8d546c31e6764e789e9e5cbfdd8ec5fc73e4f3171bc4b5f7b9d452e0ae2",
+      "sha256": "84eaa354621bfec5243868f928b951b3303436db13ff286bad4ed529cfec0bb6",
       "executable": false
     },
     "src/core/features/outreach/reply-headers.ts": {
@@ -6359,7 +6359,7 @@
       "executable": false
     },
     "src/core/features/slack/actions.ts": {
-      "sha256": "6058eeba29cef21e4be269b46b54afad2b08691db86acdf3445c2c9b6696ed6e",
+      "sha256": "b6fbed8834cb4e3617fba3dd834dd72634c76cf00414796cf32cf30e190bfd50",
       "executable": false
     },
     "src/core/features/slack/archive.ts": {
@@ -6391,7 +6391,7 @@
       "executable": false
     },
     "src/core/features/slack/events.ts": {
-      "sha256": "f06e9f5c0605c9647633480f566acf046e4bcddd87e58e46a4533518d246ba11",
+      "sha256": "9de06f4d24a46c6605779f7575a16133bcfd1a15eb1b374e243106c35f83fc05",
       "executable": false
     },
     "src/core/features/slack/identity.ts": {
@@ -6611,7 +6611,7 @@
       "executable": false
     },
     "src/core/platform/mail-event-rate-limit.ts": {
-      "sha256": "483da2d948a8f128d3f2788437d0302f844ebe7f0c8dc84896fabeef315a8a6c",
+      "sha256": "f8e54e272d4a589c731b0001c7af242731de037dfbd07a0a9aa10a0777ab5063",
       "executable": false
     },
     "src/core/platform/mail-webhook-security.ts": {
@@ -6627,7 +6627,7 @@
       "executable": false
     },
     "src/core/platform/public-rate-limit.ts": {
-      "sha256": "3688619c83bd6a8afc825be65b342202e979276d3ccd0b38d28d93fb2d3c7435",
+      "sha256": "0908d3e9a10c18868ec6f54057f06d0e39ac2a62310fa88df423360a5046b0d4",
       "executable": false
     },
     "src/core/platform/request.server.ts": {
@@ -7875,7 +7875,7 @@
       "executable": false
     },
     "tests/core/platform-boundaries.test.ts": {
-      "sha256": "9bd4cb74a78d7786d0e8d078412ada70c1f26937ccb3ab3f3842e00bc2839a81",
+      "sha256": "0a2e54a5591e16b12ed42c547c79cb87bffc0d837e79c0bfbc97215f2b824ff8",
       "executable": false
     },
     "tests/core/prior-auth-upgrade.test.ts": {

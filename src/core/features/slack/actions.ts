@@ -1,5 +1,6 @@
 import {Hono} from 'hono';
 import {archiveImportActive} from '../../platform/archive-maintenance';
+import {rejectedRateLimit} from '../../platform/public-rate-limit';
 import {createId} from '../../shared/ids';
 import {newTask} from '../tasks/mutations';
 import {insertTask} from '../tasks/repository';
@@ -18,11 +19,13 @@ async function respond(url:string,text:string,fetcher:typeof fetch=fetch){
 export function createSlackActionRoutes(db:D1Database,config:SlackConfig){
  const app=new Hono();
  app.post('/',async c=>{
-  const refuse=async(reason:string,status:200|401=200)=>{await db.batch([audit(db,null,'slack.action-refused','slack','action',{reason})]);return c.json({response_type:'ephemeral',text:refusal},status);};
-  if(await archiveImportActive(db))return refuse('restore');
-  const item=await installation(db);if(!item||item.state!=='connected')return refuse('disconnected');
-  let secret:string;try{secret=(await credentials(db,config)).signingSecret;}catch{return refuse('credentials');}
-  let raw:string;try{raw=await slackBody(c.req.raw);}catch{return c.json({error:'Slack request exceeds the supported body size'},413);}if(!await verified(secret,raw,c.req.header('X-Slack-Request-Timestamp')??'',c.req.header('X-Slack-Signature')??''))return refuse('signature-or-time',401);
+  const refuse=async(reason:string)=>{await db.batch([audit(db,null,'slack.action-refused','slack','action',{reason})]);return c.json({response_type:'ephemeral',text:refusal});};
+  // Unverified callbacks spend their network's public budget instead of writing an audit row each.
+  const reject=async(status:200|401|413=200,body:object={response_type:'ephemeral',text:refusal})=>(await rejectedRateLimit(db,c.req.raw))??c.json(body,status);
+  if(await archiveImportActive(db))return reject();
+  const item=await installation(db);if(!item||item.state!=='connected')return reject();
+  let secret:string;try{secret=(await credentials(db,config)).signingSecret;}catch{return reject();}
+  let raw:string;try{raw=await slackBody(c.req.raw);}catch{return reject(413,{error:'Slack request exceeds the supported body size'});}if(!await verified(secret,raw,c.req.header('X-Slack-Request-Timestamp')??'',c.req.header('X-Slack-Signature')??''))return reject(401);
   let payload:any;try{payload=JSON.parse(new URLSearchParams(raw).get('payload')??'');}catch{return refuse('payload');}
   if(payload.type!=='block_actions'||!installationMatches(item,payload)||payload.actions?.length!==1)return refuse('foreign-installation');
   // Slack receives its HTTP acknowledgment before task work or response_url delivery.

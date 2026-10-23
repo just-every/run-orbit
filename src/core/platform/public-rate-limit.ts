@@ -12,6 +12,10 @@ export async function consumeRateLimit(db:D1Database,key:string,limit:number,now
  const count=(result[1]!.results[0] as {count:number}).count;
  if(count>limit)return new Response(JSON.stringify({error:'Request rate limit exceeded.'}),{status:429,headers:{'Content-Type':'application/json','Retry-After':String(60-Math.floor(now/1000)%60),'Cache-Control':'no-store'}});
 }
+/** Unverified or unconfigured callers spend their own network's public budget, never a verified sender's. */
+export async function rejectedRateLimit(db:D1Database,request:Request,now=Date.now()){
+ return consumeRateLimit(db,`public:${await publicIdentity(request,now)}`,300,now);
+}
 export async function publicRateLimit(db:D1Database,request:Request,now=Date.now()):Promise<Response|undefined>{
  const pathname=new URL(request.url).pathname;
  // The Worker dispatches raw /api/ paths to Hono, which decodes routing text.

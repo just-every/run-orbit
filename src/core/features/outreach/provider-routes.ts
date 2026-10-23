@@ -1,5 +1,6 @@
 import {boundedRequestBody,RequestBodyTooLarge} from '../../platform/bounded-request-body';
-import {signedMailRateLimit,rejectedMailRateLimit} from '../../platform/mail-event-rate-limit';
+import {signedMailRateLimit} from '../../platform/mail-event-rate-limit';
+import {rejectedRateLimit} from '../../platform/public-rate-limit';
 import { verifyRelayRequest } from '../../../base/sendgrid-event-relay/crypto';
 import { Hono } from 'hono';
 import { z } from 'zod';
@@ -15,7 +16,7 @@ export function createMailEventRoutes(db:D1Database,keys:{eventKey?:string;parse
  const app=new Hono(),repository=new ProviderRepository(db);
  app.onError((_error,c)=>c.json({error:'Mail event storage is unavailable; replay it.'},503));
  app.post('/:kind',async c=>{
-  const reject=async(status:401|403|413,error:string)=>(await rejectedMailRateLimit(db,c.req.raw))??c.json({error},status);
+  const reject=async(status:401|403|413,error:string)=>(await rejectedRateLimit(db,c.req.raw))??c.json({error},status);
   const kind=c.req.param('kind'),key=kind==='sendgrid'?keys.eventKey:kind==='reply'?keys.parseKey:kind==='relay'?keys.relaySecret:undefined;if(!key)return reject(403,'Mail signature key is not configured.');
   const limit=kind==='reply'?262144:1048576;
   const declared=c.req.header('Content-Length');

@@ -3,6 +3,7 @@ import {createId} from '../../shared/ids';
 import {Hono} from 'hono';
 import {audit} from '../records/shared';
 import {archiveImportActive} from '../../platform/archive-maintenance';
+import {rejectedRateLimit} from '../../platform/public-rate-limit';
 import {credentials,installation} from './installation';
 import {verified,slackBody} from './signature';
 import type {SlackConfig} from './contracts';
@@ -10,11 +11,13 @@ import type {SlackConfig} from './contracts';
 export function createSlackEventRoutes(db:D1Database,config:SlackConfig){
  const app=new Hono();
  app.post('/',async c=>{
-  const refuse=async(reason:string,status:401|403|400|503)=>{await db.batch([audit(db,null,'slack.event-refused','slack','event',{reason})]);return c.json({error:'Slack event refused'},status);};
-  if(await archiveImportActive(db))return refuse('restore',503);
-  const item=await installation(db);if(!item)return refuse('setup',401);
-  let secret:string;try{secret=(await credentials(db,config)).signingSecret;}catch{return refuse('setup',401);}
-  let raw:string;try{raw=await slackBody(c.req.raw);}catch{return c.json({error:'Slack request exceeds the supported body size'},413);}if(!await verified(secret,raw,c.req.header('X-Slack-Request-Timestamp')??'',c.req.header('X-Slack-Signature')??''))return refuse('signature-or-time',401);
+  const refuse=async(reason:string,status:403|400)=>{await db.batch([audit(db,null,'slack.event-refused','slack','event',{reason})]);return c.json({error:'Slack event refused'},status);};
+  // Unverified callbacks spend their network's public budget instead of writing an audit row each.
+  const reject=async(status:401|413|503,error='Slack event refused')=>(await rejectedRateLimit(db,c.req.raw))??c.json({error},status);
+  if(await archiveImportActive(db))return reject(503);
+  const item=await installation(db);if(!item)return reject(401);
+  let secret:string;try{secret=(await credentials(db,config)).signingSecret;}catch{return reject(401);}
+  let raw:string;try{raw=await slackBody(c.req.raw);}catch{return reject(413,'Slack request exceeds the supported body size');}if(!await verified(secret,raw,c.req.header('X-Slack-Request-Timestamp')??'',c.req.header('X-Slack-Signature')??''))return reject(401);
   let payload:any;try{payload=JSON.parse(raw);}catch{return refuse('payload',400);}
   if(payload.type==='url_verification'&&typeof payload.challenge==='string')return c.json({challenge:payload.challenge});
   const enterprise=payload.enterprise_id??payload.authorizations?.find((a:any)=>a.team_id===item.team_id)?.enterprise_id??'';

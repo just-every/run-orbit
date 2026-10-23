@@ -1,6 +1,7 @@
 import {Hono} from 'hono';
 import {boundedRequestBody,RequestBodyTooLarge} from '../../../platform/bounded-request-body';
-import {signedMailRateLimit,rejectedMailRateLimit} from '../../../platform/mail-event-rate-limit';
+import {signedMailRateLimit} from '../../../platform/mail-event-rate-limit';
+import {rejectedRateLimit} from '../../../platform/public-rate-limit';
 import {verifyMailWebhook} from '../../../platform/mail-webhook-security';
 import type {SourceSecurity} from '../../../platform/source-security';
 import {mailboxConfig} from './address';
@@ -26,7 +27,7 @@ export function createForwardInboundRoutes(db:D1Database,inbound:ForwardInbound&
  const app=new Hono();
  app.onError((_error,c)=>c.json({error:'Forwarded mail could not be stored; replay it.'},503));
  app.post('/',async c=>{
-  const reject=async(status:401|403|413,error:string)=>(await rejectedMailRateLimit(db,c.req.raw))??c.json({error},status);
+  const reject=async(status:401|403|413,error:string)=>(await rejectedRateLimit(db,c.req.raw))??c.json({error},status);
   if(!inbound.parseKey)return reject(403,'Mail signature key is not configured.');
   let raw:ArrayBuffer;
   try{raw=await boundedRequestBody(c.req.raw,MAX_FORWARDED_BYTES+1024*1024);}
