@@ -1,3 +1,4 @@
+import {bookingUpgrade} from './booking-upgrade';
 import {dashboardStartingUpgrade} from './dashboard-upgrade';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
@@ -28,4 +29,4 @@ test('accepted main and released v0.3.0 advance with every native value, custom 
  assert.deepEqual((await db.prepare('SELECT render_snapshot_json FROM outbound_messages').all()).results,JSON.parse(before.get('outbound_messages')!.rows).map(()=>({render_snapshot_json:null})),'Existing approved messages retain their original bytes without invented render snapshots');
  assert.deepEqual((await db.prepare("SELECT type,name,sql FROM sqlite_master WHERE name IN('owner_custom','owner_custom_amount') ORDER BY name").all()).results,ddl);assert.deepEqual((await db.prepare('PRAGMA foreign_key_check').all()).results,[]);
  const auth=await createDependencies(db).auth.authenticate(cookie);assert.ok(auth);assert.equal(auth.operatorId,owner);assert.equal(await isFullOperator(db,owner),true);const access=new AccessService(db),context=await access.resolveOperatorContext(auth,'workspace','forward'),graph=new GraphRecords(db,access,domainEventStatements);assert.equal((await graph.getRecord(context,{...context,type:'opportunity',id:opportunity},['score','value_cents'])).fields.score,63);assert.equal(await db.prepare('SELECT hex(payload) FROM owner_custom').first('hex(payload)'),'00FF80010D0A');assert.equal(await db.prepare('SELECT twice FROM owner_custom').first('twice'),14);assert.equal(await db.prepare("SELECT count(*) n FROM pragma_table_xinfo('contacts') WHERE hidden<>1").first('n'),100);await assert.rejects(db.prepare(`CREATE TABLE refused_101(${Array.from({length:101},(_,i)=>`c_${i} TEXT`).join(',')})`).run());assert.equal(await db.prepare("SELECT name FROM sqlite_master WHERE name='refused_101'").first(),null);
- }finally{await target.dispose();}await proveReleasedForecastUpgrade();await dashboardStartingUpgrade();});
+ }finally{await target.dispose();}await proveReleasedForecastUpgrade();await dashboardStartingUpgrade();await bookingUpgrade();});

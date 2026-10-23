@@ -34,3 +34,5 @@ export default {
   return row;
  },
 };
+
+// booking_activity_ids is durable domain data; its timeline FK cascades contact erasure.

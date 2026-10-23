@@ -1826,6 +1826,10 @@
       "sha256": "08dfa335f437fb97926dc6ec618d6eec55f01279d6c73ab287553dc94772f626",
       "executable": false
     },
+    "migrations/core/0058_booking_lifecycle.sql": {
+      "sha256": "05e197dd50c24c405704904a7de8fbef9c15828854c322aef86f517621c80bcd",
+      "executable": false
+    },
     "migrations/rewrites.json": {
       "sha256": "3ef25c0914487226e6d08d3e587a45d09d2f7a823ab72d255c7d78d3d45467d0",
       "executable": false
@@ -1874,8 +1878,16 @@
       "sha256": "7ed2cf61393d3b962b2f7112f665363de2b58cb7d6e6e78782b356b497ad192a",
       "executable": false
     },
+    "newtests/t096/booking-upgrade.ts": {
+      "sha256": "6abf7666e77fed6276e23e3542f294a2384164f8fe104f0ca816ecdc5d80ca14",
+      "executable": false
+    },
     "newtests/t096/browser-access-journey.ts": {
       "sha256": "9a48519b325d9e6821d5aa5ed7f4b0508d6c79b2ed3f5b0a65846a8beeab5af8",
+      "executable": false
+    },
+    "newtests/t096/browser-booking-lifecycle.ts": {
+      "sha256": "91d08f399a06d14064b5badd385a4e65ec009b0a2b515be5fcc26e83c95f7ed1",
       "executable": false
     },
     "newtests/t096/browser-dashboard-slack.ts": {
@@ -1903,7 +1915,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "2befb66c08d2df05e25b55fdc2582702a47d4a9876b1ff2c2d6f6660e9c9580a",
+      "sha256": "55f838e02572d456ca17b17d0449bc3a7da9bfe42f4d8536b808adf8fbea661d",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -1995,7 +2007,7 @@
       "executable": false
     },
     "newtests/t096/forward-upgrade.test.ts": {
-      "sha256": "614a34619482d7257455587edb38f83aaa3fda77a5571797faee07b83dc4dbb2",
+      "sha256": "c1c73153a15871e2e708fad5807d5d01223f0185ff6c51fa8e1de716a90f22c2",
       "executable": false
     },
     "newtests/t096/immutable-native-app.ts": {
@@ -3603,7 +3615,7 @@
       "executable": false
     },
     "scripts/installer/portability-policy.mjs": {
-      "sha256": "726d559a8182119e1753fe6b3e9eefe6fcc6d662479966dbe9898f90cc52ba12",
+      "sha256": "e62684fc60c5031c10b2a48b8b4f5b95f449c6d6308d45e221e137dda4e663de",
       "executable": false
     },
     "scripts/installer/portability.mjs": {
@@ -5066,12 +5078,20 @@
       "sha256": "92b056fc1b16eab1e6de47163fc9e61272889dde729d24ca91ddaa4ef76bf92d",
       "executable": false
     },
+    "src/core/features/ingestion/archive.ts": {
+      "sha256": "8069ff77824f3f01565f116eedb216293820ce336d73f01ba73af4a09b421e49",
+      "executable": false
+    },
     "src/core/features/ingestion/automation-auth.ts": {
       "sha256": "6ee8882f0cf79db867e18a908b6a2853a72e519d1a04d0e0f3d06923a0debe5d",
       "executable": false
     },
+    "src/core/features/ingestion/booking-activity.ts": {
+      "sha256": "35c76adc920aa4b27ac347b991db21595bf3d58e702c1908a2403106955803e2",
+      "executable": false
+    },
     "src/core/features/ingestion/booking-webhooks.ts": {
-      "sha256": "11fe31cd663985fa4540961412f20519112f6f51413df4884fe9a2b60e76a91d",
+      "sha256": "6ccda77d8d36313b214f823cac6ef30c266c75dbf3dc34fd945c70becee5e8ad",
       "executable": false
     },
     "src/core/features/ingestion/calendly-setup.ts": {
@@ -5079,7 +5099,7 @@
       "executable": false
     },
     "src/core/features/ingestion/contracts.ts": {
-      "sha256": "3a367af9a1b54be98c513048f50552f30783ecbd727e8b48770e1fcc45470154",
+      "sha256": "c296dde6a826d985362bde5224801cce6f5b60d6c1243df855aa051e91237788",
       "executable": false
     },
     "src/core/features/ingestion/event-schema.ts": {
@@ -5091,11 +5111,15 @@
       "executable": false
     },
     "src/core/features/ingestion/linking-repository.ts": {
-      "sha256": "3d28069723a86a5560301cd69a5da91177f00cf6178d9b92d096e10f0597bf0e",
+      "sha256": "59d839907255966a5201f3699d251bfd0154a26ae8e8eb715c719c0f5642d327",
+      "executable": false
+    },
+    "src/core/features/ingestion/privacy.ts": {
+      "sha256": "d5ecb53f6be402abdf23dc9554f55b1461076e1f7ba99f27bca8b9fc15baf4bb",
       "executable": false
     },
     "src/core/features/ingestion/repository.ts": {
-      "sha256": "1b8f427e63fa247060e85eeb3fa1190aad35e18f7f34b8823d44eab21b30d52c",
+      "sha256": "a6ca636448dfdc3dcd99b5ab53d9fcdb7907de3225f6749957ac0d3f5b33e5e3",
       "executable": false
     },
     "src/core/features/ingestion/routes.ts": {
@@ -5160,6 +5184,10 @@
     },
     "src/core/features/operator/ui/automation-recipe.tsx": {
       "sha256": "89e7408bd5fc8df2e00d18c3253d584bda319d2d8a80931243221434b6afd518",
+      "executable": false
+    },
+    "src/core/features/operator/ui/booking-activity.tsx": {
+      "sha256": "e8dbdf3d1ef46300c920f4d0ac3e8d9ffe3e8b1e46f45a8a22848d93a6285c98",
       "executable": false
     },
     "src/core/features/operator/ui/booking-recipe.tsx": {
@@ -5251,7 +5279,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/connected-products.tsx": {
-      "sha256": "9f0082ad38404e597738970ec2b91bbc9d35dadf15709ea17b877ce06c0ece50",
+      "sha256": "8fe5160df8ce86f2a58e65df844e458a4c3fa3ae604b70f55ebb478903c6c7e8",
       "executable": false
     },
     "src/core/features/operator/ui/create-opportunity-page.tsx": {
@@ -5447,7 +5475,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-timeline.tsx": {
-      "sha256": "cff7ee0b9f3f7acb71118f2189ccc80153c427bfda1deff16d345b8cb1e20f38",
+      "sha256": "cb4fd858b346b3a250d50c77f18dedd0dc55a0fcdc052b23e39ed7cbba34b9b4",
       "executable": false
     },
     "src/core/features/operator/ui/opt-out-settings.tsx": {
@@ -6067,7 +6095,7 @@
       "executable": false
     },
     "src/core/features/records/archive-generations.ts": {
-      "sha256": "3074ec31986076ba60f2e820d9ecc0aad28956a29cffa6eaed6ef922c150128f",
+      "sha256": "73db6c6e1ff1ebbec5761c1c1b9eae01687082a2185be39aa67d9daf0a5273dd",
       "executable": false
     },
     "src/core/features/records/archive-import-context.ts": {
@@ -6151,7 +6179,7 @@
       "executable": false
     },
     "src/core/features/records/data.ts": {
-      "sha256": "d86379a68e1dc1ac3d9ed9c7053c54117943e12c1d33f56e9badf25e5608443e",
+      "sha256": "18b11ba72a037610c013ae30380b943764e2120fe482d17e961653449368393a",
       "executable": false
     },
     "src/core/features/records/erasure-identity.ts": {
@@ -6299,7 +6327,7 @@
       "executable": false
     },
     "src/core/features/settings/connected-products.ts": {
-      "sha256": "1300340f68cb4de9cc8bd705bf0a0b20c25feee5826670a1da082b3a82eab6f1",
+      "sha256": "154cffd5969e23d389ae99ff7e8f21c6ed3e0160821af08b565598fc5656a229",
       "executable": false
     },
     "src/core/features/settings/erasure-redaction.ts": {
@@ -6363,7 +6391,7 @@
       "executable": false
     },
     "src/core/features/slack/archive.ts": {
-      "sha256": "f0d167a50d7bbf049a4355069e16784dd92dbc8a29f5c84bbab092a3e0a25bbe",
+      "sha256": "77f86226f47e508a1a5a4867bd2b1998fa34b8bcf0aafe09f462b1edfe276836",
       "executable": false
     },
     "src/core/features/slack/content.ts": {
@@ -6663,7 +6691,7 @@
       "executable": false
     },
     "src/core/shared/archive-lineage.ts": {
-      "sha256": "18de25a902b24238fa48ae0341d3a2d53e4aa704649d1201e79db9d999425220",
+      "sha256": "68de8b95330c35284139d219ea714b76b1131d52c236c607468a3c4df488057b",
       "executable": false
     },
     "src/core/shared/archive-lines.ts": {
@@ -6683,7 +6711,7 @@
       "executable": false
     },
     "src/core/shared/archive-transfer-profile.ts": {
-      "sha256": "0adce060a795a50e6ae8aafaae2acf2881f43fc338a3f3d41b3392de73e3f63a",
+      "sha256": "d1fc03fe211cb6fb6735347520048f067a1ec6dc4bbdef9175a5970030edc7a7",
       "executable": false
     },
     "src/core/shared/csv.ts": {
@@ -7919,7 +7947,7 @@
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
-      "sha256": "d9e3e6d1d60aa722fdeef03158397b0b29a0c8dc0c7fc15813aadd1ac2b138ab",
+      "sha256": "73378026f6bf9d824e8bacec7c21cb65e27f009d1c1e94ade4b5ad704c7ac5b1",
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
@@ -8604,6 +8632,10 @@
     },
     "tests/support/available-port.ts": {
       "sha256": "863820081bccb2e25bc2ac6b3b5225172b88985ead004117c30377d60f41d350",
+      "executable": false
+    },
+    "tests/support/booking-lifecycle-proof.ts": {
+      "sha256": "cdd0b516661199fc45b857d6e35d48b601210c6b42f08e9ec0aab09c501d86c5",
       "executable": false
     },
     "tests/support/browser-temp.mjs": {

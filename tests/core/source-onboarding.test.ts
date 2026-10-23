@@ -1,3 +1,4 @@
+import {proveBookingLifecycle} from '../support/booking-lifecycle-proof';
 import {proveSlackNotices} from '../support/slack-notices-proof';
 import {createOutboundMail,type OutboundMail} from '../../src/core/platform/outbound-mail';
 import assert from 'node:assert/strict';
@@ -77,10 +78,10 @@ test('REPORT-002 explicitly enabled Slack schedules respect DST, hold uncertaint
 
  }finally{globalThis.fetch=nativeFetch;await f.dispose();}
 });
-test('SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor-native booking signatures reject tampering, expiry and replay while unknown invitees remain unlinked',async()=>{
+test('INTEGRATE-001 signed booking lifecycles update one activity without regression or resumed outreach; SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor signatures reject tampering, expiry and replay while ambiguous attendees wait for review',async()=>{
  const f=await fixture();try{
  const{secret}=await(await f.request('sources/bookings','PUT',{name:'Booking tools',enabled:true})).json() as any;
- await f.request('workbench/opportunities','POST',{title:'Booking customer',companyName:'Harbour',contactName:'Maya',email:'maya@harbour.test',stageId:f.stage,valueCents:10000});
+ const bookingCustomer=await (await f.request('workbench/opportunities','POST',{title:'Booking customer',companyName:'Harbour',contactName:'Maya',email:'maya@harbour.test',stageId:f.stage,valueCents:10000})).json() as any;
  const originalFetch=globalThis.fetch;let registration:any;
  globalThis.fetch=async(input,init)=>{
   const url=new URL(String(input));assert.equal(url.origin,'https://api.calendly.com');
@@ -104,6 +105,7 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor-native booking signatures reject t
  const accepted=await post(raw);assert.equal(accepted.status,201,await accepted.clone().text());const signal=await accepted.json() as any;assert.equal(signal.linked,true);assert.equal((await post(raw)).status,409);assert.equal((await f.db.prepare('SELECT type FROM signals WHERE id=?').bind(signal.id).first<any>()).type,type);
  }
  const unknown=JSON.stringify({triggerEvent:'BOOKING_CREATED',createdAt:new Date().toISOString(),payload:{uid:crypto.randomUUID(),attendees:[{email:'unknown@example.test'}]}});const response=await f.app.request('https://orbit.test/api/v1/signals/bookings/calcom',{method:'POST',headers:{'X-Cal-Signature-256':createHmac('sha256',secret).update(unknown).digest('hex')},body:unknown});const unlinked=await response.json() as any;assert.equal(unlinked.linked,false);assert.match(JSON.stringify(await(await f.request('sources/unlinked')).json()),/No unique record match/);const contact=(await(await f.request('sources/recipe-context')).json() as any).contacts[0];assert.equal((await f.request(`sources/unlinked/${unlinked.id}/link`,'POST',{type:'contact',id:contact.id})).status,200);assert.ok(await f.db.prepare('SELECT signal_id FROM signal_links WHERE signal_id=? AND record_id=?').bind(unlinked.id,contact.id).first());
+ await proveBookingLifecycle(f,secret,bookingCustomer.id);
  }finally{await f.dispose();}
 });
 

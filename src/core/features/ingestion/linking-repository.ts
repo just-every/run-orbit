@@ -1,7 +1,14 @@
+import {bookingEvidence} from './booking-webhooks';
 import { companyDomainKey,contactEmailKey } from '../records/identity';
 import type { SignalEvent } from './contracts';
 export interface SignalTarget {type:'contact'|'company'|'opportunity';id:string;basis:string}
-export async function resolveTarget(db:D1Database,event:SignalEvent):Promise<SignalTarget|undefined> {
+export async function resolveTarget(db:D1Database,event:SignalEvent,source?:string):Promise<SignalTarget|undefined> {
+  const booking=bookingEvidence(event);
+  if(booking&&!event.record){
+   if(booking.attendees.length!==1)return;
+   const prior=(await db.prepare('SELECT DISTINCT t.payload_json FROM booking_activity_ids b JOIN timeline_entries t ON t.id=b.timeline_id WHERE b.source_id=? AND b.provider=? AND b.provider_id IN(SELECT value FROM json_each(?))').bind(source??'',booking.provider,JSON.stringify([booking.providerId,booking.relatedId])).all<{payload_json:string}>()).results;
+   if(prior.some(row=>(JSON.parse(row.payload_json).booking.attendees as {email:string}[]).some(a=>a.email.trim().toLowerCase()!==booking.attendees[0]!.email.trim().toLowerCase())))return;
+  }
   if(['page.viewed','chat.started','content.downloaded'].includes(event.type)&&!event.identityBasis)return;
   if(event.record){const table={contact:'contacts',company:'companies',opportunity:'opportunities'}[event.record.type];if(await db.prepare(`SELECT id FROM ${table} WHERE id=?`).bind(event.record.id).first())return {...event.record,basis:'Explicit Orbit record ID'};return;}
   const settings=await db.prepare("SELECT free_mail_domains_json FROM workspace_settings WHERE id='workspace'").first<{free_mail_domains_json:string}>();

@@ -1,3 +1,6 @@
+import {bookingIngressPrivacy} from './privacy';
+import {bookingActivity} from './booking-activity';
+import {decodeBooking} from './booking-webhooks';
 import {isNativeSource,signedSourcePredicate} from './source-authority';
 import { contactStopStatements } from '../records/suppression-effects';
 import { weights } from '../workbench/policies';
@@ -63,9 +66,9 @@ export class IngestionRepository {
     return {id:plan.id,linked:plan.linked};
   }
   async prepare(source:string,event:SignalEvent,hash:string,raw:string){
-    const test=isTestEvent(event),target=test?null:await resolveTarget(this.db,event),id=createId(),at=new Date().toISOString();
+    const test=isTestEvent(event),target=test?null:await resolveTarget(this.db,event,source),id=createId(),at=new Date().toISOString();
     const targets=target?await targetsFor(this.db,target):[];
-    const statements=[this.db.prepare('INSERT INTO signals(id,source_id,source_event_id,type,subject,occurred_at,received_at,payload_hash,confidence,linking_basis,created_at,payload_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').bind(id,source,event.eventId,test?`${source}:test`:event.type,event.subject,event.occurredAt,at,hash,test?'inferred':confidence(event.type),test?'Source connection test':target?.basis??'Unlinked',at,raw),
+    const statements=[...await bookingIngressPrivacy(this.db,event,source),this.db.prepare('INSERT INTO signals(id,source_id,source_event_id,type,subject,occurred_at,received_at,payload_hash,confidence,linking_basis,created_at,payload_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').bind(id,source,event.eventId,test?`${source}:test`:event.type,event.subject,event.occurredAt,at,hash,test?'inferred':confidence(event.type),test?'Source connection test':target?.basis??'Unlinked',at,raw),
       this.db.prepare('UPDATE signal_sources SET last_accepted_at=?,updated_at=? WHERE id=?').bind(at,at,source),
       ...(test?[]:await mailboxStopStatements(this.db,event,at)),
       ...await this.linkStatements(id,event,targets,source,at)];
@@ -75,15 +78,17 @@ export class IngestionRepository {
   private async existing(source:string,eventId:string){return this.db.prepare('SELECT id,payload_hash FROM signals WHERE source_id=? AND source_event_id=?').bind(source,eventId).first<{id:string;payload_hash:string}>();}
   private replay(row:{id:string;payload_hash:string},hash:string){if(row.payload_hash!==hash)throw new IngestionError(409,'Source event identity already carries different payload.');return {id:row.id,replayed:true};}
   /** `evidence` adds what the timeline shows of a captured original (sender, date, quoted lines). */
-  async linkStatements(id:string,event:SignalEvent,targets:SignalTarget[],actor:string,at:string,actorType:'source'|'operator'='source',sourceName=actor,evidence?:Record<string,unknown>){
+  async linkStatements(id:string,event:SignalEvent,targets:SignalTarget[],actor:string,at:string,actorType:'source'|'operator'='source',sourceName=actor,evidence?:Record<string,unknown>,bookingSource=actor){
     if(isTestEvent(event))return [];
     const statements=linkTargetFence(this.db,event,targets,actorType==='operator');
-    if(targets.length)statements.push(this.db.prepare("INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) VALUES(?,'signal.recorded',?,?,?,?,?,?)").bind(id,event.occurredAt,at,actorType,actor,sourceName,JSON.stringify({signalId:id,subject:event.subject,...evidence})));
-    for(const target of targets){statements.push(this.db.prepare('INSERT INTO signal_links(signal_id,record_type,record_id,linking_basis,linked_at) VALUES(?,?,?,?,?)').bind(id,target.type,target.id,target.basis,at),this.db.prepare('INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) VALUES(?,?,?)').bind(id,target.type,target.id));if(target.type==='opportunity'&&(weights[event.type]??0)!==0)statements.push(...evaluationStatements(this.db,target.id,actor,'New customer evidence',new Date(at)));}
+    const activity=await bookingActivity(this.db,id,event,targets,bookingSource,at,actorType,actor);
+    if(activity)statements.push(...activity.statements);
+    if(targets.length&&!activity)statements.push(this.db.prepare("INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) VALUES(?,'signal.recorded',?,?,?,?,?,?)").bind(id,event.occurredAt,at,actorType,actor,sourceName,JSON.stringify({signalId:id,subject:event.subject,...evidence})));
+    for(const target of targets){statements.push(this.db.prepare('INSERT INTO signal_links(signal_id,record_type,record_id,linking_basis,linked_at) VALUES(?,?,?,?,?)').bind(id,target.type,target.id,target.basis,at),this.db.prepare('INSERT OR IGNORE INTO timeline_entry_records(timeline_entry_id,record_type,record_id) VALUES(?,?,?)').bind(activity?.timelineId??id,target.type,target.id));if(target.type==='opportunity'&&(weights[event.type]??0)!==0)statements.push(...evaluationStatements(this.db,target.id,actor,'New customer evidence',new Date(at)));}
     if(event.type==='form.submitted')for(const target of targets.filter(t=>t.type==='opportunity'))statements.push(this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=CASE WHEN queue_state='now' AND queue_reason IN ('Customer reply','Delivery problem') THEN queue_reason ELSE 'Form submitted' END,next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open'").bind(at,target.id));
     const contacts=targets.filter(target=>target.type==='contact');
-    if((['email.replied','meeting.booked'].includes(event.type)||stopsMailbox(event))&&!(stopsMailbox(event)&&event.email!==undefined))for(const contact of contacts){
-      statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason=?,updated_at=? WHERE recipient_contact_id=?").bind(stopReason(event.type),at,contact.id),this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE contact_id=? AND state='scheduled'").bind(stopReason(event.type),at,contact.id));
+    if((['email.replied','meeting.booked','meeting.rescheduled'].includes(event.type)||stopsMailbox(event))&&!(stopsMailbox(event)&&event.email!==undefined))for(const contact of contacts){
+      statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason=?,updated_at=? WHERE recipient_contact_id=?").bind(stopReason(event.type==='meeting.rescheduled'?'meeting.booked':event.type),at,contact.id),this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE contact_id=? AND state='scheduled'").bind(stopReason(event.type==='meeting.rescheduled'?'meeting.booked':event.type),at,contact.id));
       if(event.type==='email.unsubscribed'||event.permanentBounce)statements.push(...await contactStopStatements(this.db,contact.id));
     }
     if(['email.replied','email.bounced'].includes(event.type))for(const target of targets.filter(t=>t.type==='opportunity'))statements.push(this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=?,next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open'").bind(event.type==='email.replied'?'Customer reply':'Delivery problem',at,target.id));
@@ -91,14 +96,15 @@ export class IngestionRepository {
   }
   async unlinked(){return (await this.db.prepare(`SELECT s.id,s.source_id,ss.name AS source_name,s.type,s.subject,s.occurred_at,u.reason,json_extract(s.payload_json,'$.email') AS email,json_extract(s.payload_json,'$.domain') AS domain,json_extract(s.payload_json,'$.data.name') AS name FROM unlinked_signals u JOIN signals s ON s.id=u.signal_id LEFT JOIN signal_sources ss ON ss.id=s.source_id WHERE u.resolved_at IS NULL AND ${customerSignalSql()} ORDER BY s.received_at DESC LIMIT 100`).all()).results;}
   async link(id:string,target:SignalTarget,actor:string){
-    const signal=await this.db.prepare('SELECT s.payload_json,s.source_event_id,s.type,s.subject,s.occurred_at FROM signals s JOIN unlinked_signals u ON u.signal_id=s.id WHERE s.id=? AND u.resolved_at IS NULL').bind(id).first<{payload_json:string;source_event_id:string;type:string;subject:string;occurred_at:string}>();if(!signal)throw new IngestionError(409,'Signal is already linked or missing.');
+    const signal=await this.db.prepare('SELECT s.payload_json,s.source_event_id,s.type,s.subject,s.occurred_at,s.source_id FROM signals s JOIN unlinked_signals u ON u.signal_id=s.id WHERE s.id=? AND u.resolved_at IS NULL').bind(id).first<{payload_json:string;source_event_id:string;type:string;subject:string;occurred_at:string;source_id:string}>();if(!signal)throw new IngestionError(409,'Signal is already linked or missing.');
     // Vendor payloads retain their original bytes; canonical event identity and
     // meaning come from the verified signal columns when an operator links one.
-    const event={...JSON.parse(signal.payload_json),eventId:signal.source_event_id,type:signal.type,subject:signal.subject,occurredAt:signal.occurred_at} as SignalEvent;
+    const vendor=signal.source_event_id.startsWith('calcom:')?'calcom':signal.source_event_id.startsWith('calendly:')?'calendly':null;
+    const event=Object.assign(vendor?await decodeBooking(vendor,signal.payload_json):JSON.parse(signal.payload_json),{eventId:signal.source_event_id,type:signal.type,subject:signal.subject,occurredAt:signal.occurred_at}) as SignalEvent;
     if(isTestEvent(event))throw new IngestionError(409,'Source connection tests cannot become customer evidence.');
     // Visitor data lacking a basis must not become contact history through review either.
     if(['page.viewed','chat.started','content.downloaded'].includes(event.type)&&!event.identityBasis)throw new IngestionError(409,'A source-held visitor identity basis is required.');
     const resolved=await resolveTarget(this.db,{...event,record:{type:target.type,id:target.id}});if(!resolved)throw new IngestionError(404,'Record not found.');
-    const at=new Date().toISOString();await this.db.batch([...await this.linkStatements(id,event,await targetsFor(this.db,{...resolved,basis:'Operator reviewed record link'}),actor,at,'operator','operator.review'),this.db.prepare('UPDATE unlinked_signals SET resolved_at=? WHERE signal_id=?').bind(at,id)]);
+    const at=new Date().toISOString();await this.db.batch([...await bookingIngressPrivacy(this.db,event,signal.source_id),...await this.linkStatements(id,event,await targetsFor(this.db,{...resolved,basis:'Operator reviewed record link'}),actor,at,'operator','operator.review',undefined,signal.source_id),this.db.prepare('UPDATE unlinked_signals SET resolved_at=? WHERE signal_id=?').bind(at,id)]);
   }
 }

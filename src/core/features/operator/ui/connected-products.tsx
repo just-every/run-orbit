@@ -2,7 +2,7 @@ import {useEffect,useState} from 'react';
 import {OperatorState} from './operator-shell';
 import {formatDate} from './formatters';
 interface Product {job:string;products:string[];owns:string;state:'receiving'|'awaiting-delivery'|'unavailable'|'connected'|'unresolved-setup';lastDeliveryAt:string|null;inOrbit:string}
-const label={connected:'Connected', 'unresolved-setup':'Unresolved setup · notices paused',receiving:'Receiving bookings','awaiting-delivery':'Not set up yet',unavailable:'Not available in Orbit'} as const;
+const label={connected:'Connected', 'unresolved-setup':'Unresolved setup',receiving:'Receiving bookings','awaiting-delivery':'Not set up yet',unavailable:'Not available in Orbit'} as const;
 /** Separate products own these jobs; each shows only what Orbit really receives from it today. */
 export function ConnectedProducts(){
  const [products,setProducts]=useState<Product[]>(),[error,setError]=useState('');
