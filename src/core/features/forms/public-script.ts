@@ -25,7 +25,7 @@ async function prepare(){
  if(fillToken){prepared();return;}if(preparing)return;preparing=true;
  notice('Preparing this form. Please wait two seconds.');
  try{
-  const response=await fetch(endpoint+'/challenge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idempotencyKey:key})});
+  const response=await fetch(endpoint+'/challenge',{method:'POST',credentials:'omit',headers:{'Content-Type':'application/json'},body:JSON.stringify({idempotencyKey:key})});
   const body=await response.json();if(!response.ok)throw Error(body.error||'This form could not be prepared.');
   if(typeof body.token!=='string'||!body.token)throw Error('This form could not be prepared.');
   fillToken=body.token;readyAt=Date.now()+2000;prepared();setTimeout(prepared,2000);
@@ -40,7 +40,7 @@ form.addEventListener('submit',async event=>{
  const data=new FormData(form),values={};for(const name of config.fields)values[name]=data.get(name);
  sending=true;update();notice('Submitting enquiry…');
  try{
-  const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:config.revision,operationId:config.operationId,idempotencyKey:key,values,consent:data.get('consent')==='on',honeypot:String(data.get('honeypot')||''),fillToken,...(config.turnstileSiteKey?{turnstileToken}:{})})});
+  const response=await fetch(endpoint,{method:'POST',credentials:'omit',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:config.revision,operationId:config.operationId,idempotencyKey:key,values,consent:data.get('consent')==='on',honeypot:String(data.get('honeypot')||''),fillToken,...(config.turnstileSiteKey?{turnstileToken}:{})})});
   const body=await response.json();if(!response.ok)throw Error(body.error||'The enquiry could not be saved.');
   received=true;notice('Your enquiry was received. Thank you.');result.focus();
  }catch(error){notice(error instanceof Error?error.message:'The enquiry was not confirmed. Try submitting again.',true);result.focus();}

@@ -1,3 +1,4 @@
+import {formMappedValueErasure} from '../forms/archive';
 import {ownershipErasureStatements} from '../ownership/privacy';
 import {forecastErasureStatements} from '../forecast/privacy';
 import {formAbuseErasure} from './form-abuse-erasure';
@@ -40,7 +41,8 @@ export class DataRepository {
    statements.push(...formAbuseErasure(db,identities));
    statements.push(...taskContactErasure(db,id,identities));
    statements.push(...relationshipContactErasure(db,id,identities));
-   statements.push(...await capturedValueErasureStatements(db,id,identities));
+   statements.push(...await capturedValueErasureStatements(db,id,identities),...await formMappedValueErasure(db,identities,id));
+   statements.push(db.prepare("DELETE FROM notifications WHERE event_key IN(SELECT 'form:'||id FROM marketing_form_submissions WHERE contact_id=?)").bind(id));
    const match=identities.length?await privacyMatcher(db,statements):undefined;
    if(match)for(const email of identities)for(const token of await match(email))statements.push(suppressionProof(db,token,"EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')",[id]));
    statements.push(db.prepare("INSERT OR IGNORE INTO record_erasure_signals SELECT ?,signal_id FROM signal_links WHERE record_type='contact' AND record_id=?").bind(id,id));

@@ -1,4 +1,5 @@
 import {createId} from '../../shared/ids';
+import {reviewedFormField} from '../forms/field-review';
 import {calendarIdentity,existingCalendarProposals,personProposal,proposalKey,type CalendarIdentity} from './proposal-identity';
 import {contactEmailKey} from '../records/identity';
 import {contactStopStatements} from '../records/suppression-effects';
@@ -72,12 +73,13 @@ export async function acceptProposal(db:D1Database,id:string,actor:string,edit?:
   statements.push(db.prepare("INSERT INTO contacts(id,company_id,name,email,email_key,contactability,created_at,updated_at) VALUES(?,?,?,?,?,'do_not_contact',?,?)").bind(contact,company?.id??null,name,email,key,at,at),
    ...entry(db,'capture.contact_created',actor,signal.source_id,{contactId:contact,name,email,contactability:'do_not_contact',...evidence},recordsOf(contact,company?.id??null),at),audit(db,actor,'record.created','contact',contact,{source:'capture',proposalId:id}));
  }else if(proposal.kind==='set_field'){
-  const field=proposal.field;if(field!=='name'&&field!=='phone')throw new CaptureError(400,'This field cannot be set from captured evidence.');
+  if(details.formField===true){const reviewed=await reviewedFormField(db,proposal,details,actor,edit);decided=reviewed.value;statements.push(...reviewed.statements,...entry(db,'capture.field_set',actor,signal.source_id,{field:proposal.field,previous:proposal.current_value,current:decided,...evidence},[[proposal.record_type,proposal.record_id]],at));}
+  else {const field=proposal.field;if(field!=='name'&&field!=='phone')throw new CaptureError(400,'This field cannot be set from captured evidence.');
   decided=(edit??proposal.proposed_value??'').trim();if(!decided||decided.length>(field==='name'?200:64))throw new CaptureError(400,`Enter a ${field} of at most ${field==='name'?200:64} characters.`);
   statements.push(fence(db,'capture_value_current',`EXISTS(SELECT 1 FROM contacts WHERE id=? AND ${field} IS ?)`,proposal.record_id,proposal.current_value),
    db.prepare(`UPDATE contacts SET ${field}=?,updated_at=? WHERE id=?`).bind(decided,at,proposal.record_id),
    db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Contact changed',updated_at=? WHERE recipient_contact_id=?").bind(at,proposal.record_id),
-   ...entry(db,'capture.field_set',actor,signal.source_id,{field,previous:proposal.current_value,current:decided,...evidence},recordsOf(proposal.record_id,details.companyId??null),at),audit(db,actor,'record.updated','contact',proposal.record_id,{source:'capture',proposalId:id,field}));
+   ...entry(db,'capture.field_set',actor,signal.source_id,{field,previous:proposal.current_value,current:decided,...evidence},recordsOf(proposal.record_id,details.companyId??null),at),audit(db,actor,'record.updated','contact',proposal.record_id,{source:'capture',proposalId:id,field}));}
  }else if(proposal.kind==='next_action'){
   const current=JSON.parse(proposal.current_value!) as {state:string;reason:string|null},next=JSON.parse(proposal.proposed_value!) as {state:'now'|'next';reason:string;dueAt:string|null};
   statements.push(fence(db,'capture_queue_current',"EXISTS(SELECT 1 FROM opportunities WHERE id=? AND lifecycle='open' AND queue_state=? AND queue_reason IS ?)",proposal.record_id,current.state,current.reason),

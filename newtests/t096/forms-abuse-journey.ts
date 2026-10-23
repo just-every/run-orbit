@@ -1,3 +1,4 @@
+import {formOriginRace} from './forms-origin-race';
 import assert from 'node:assert/strict';
 import {createApp,TEST_SESSION_SECRET} from '../../tests/support/app';
 import {createPublicFormRoutes} from '../../src/core/features/forms/public-routes';
@@ -39,5 +40,6 @@ export async function formAbuseJourney(f:Awaited<ReturnType<typeof fixture>>,p:A
  assert.equal((await verifyPost(attempts[0])).status,400,'a challenge for another action is refused');valid=true;assert.equal((await verifyPost(attempts[1])).status,200);const called=calls;assert.equal((await verifyPost({...attempts[1],turnstileToken:'already-consumed'})).status,200);assert.equal(calls,called,'accepted replays never resubmit a one-use provider token');
  const heldPayloads=(await f.db.prepare('SELECT intake_json FROM form_spam').all<{intake_json:string}>()).results;assert.ok(heldPayloads.every(row=>!row.intake_json.includes('fillToken')&&!row.intake_json.includes('turnstileToken')),'quarantine excludes transport credentials');
  assert.ok((await f.db.prepare('SELECT bucket FROM public_rate_limits').all<{bucket:string}>()).results.every(row=>!row.bucket.includes('203.0.113.')&&!row.bucket.includes('198.51.100.')),'rate buckets retain no raw network address');
+ await formOriginRace(f);
 
 }

@@ -1,4 +1,7 @@
 import {FormAbuse,type FormAbuseOptions} from './abuse';
+import {admittedFormOrigin,formOriginFence} from './admission';
+import {validateFormAssignment} from './assignment';
+import {stagePolicy} from '../pipelines/stage-policy';
 import {previousRefusal,recordRefusal,refusalResult} from './abuse-store';
 import {RecordError} from '../records/shared';
 import {formSchema,landingSchema,intakeSchema,type FormDefinition,type FormIntake,type PublicationApproval} from './definition';
@@ -19,11 +22,12 @@ export class FormService extends ScopedMutations{
  constructor(db:D1Database,access=new AccessService(db)){super(db,access,domainEventStatements);}
  private async owner(c:ActorContext){await this.access.authorize(c,'content.write',{...c,type:'form',id:'*'},[]);if(c.principal.kind!=='operator'||!await isFullOperator(this.db,c.principal.operatorId))deny('A native full operator must review publication.');this.access.addDependencyFences(c,fullOperatorFence(c),'publication-owner');return c.principal.operatorId;}
  async save(c:ActorContext,input:{id?:string;revision?:number;form:unknown;landing:unknown}){
-  const owner=await this.owner(c),form=formSchema.parse(input.form),landing=landingSchema.parse(input.landing),id=input.id??crypto.randomUUID(),before=input.id?await this.entity(input.id,'form'):null;
+  const owner=await this.owner(c),form=formSchema.parse(input.form),landing=landingSchema.parse(input.landing);await validateFormAssignment(this.db,form);if(form.opportunity){const policy=await stagePolicy(this.db,form.opportunity.stageId);check(!form.opportunity.pipelineId||form.opportunity.pipelineId===policy.pipeline_id,'Choose a stage in the selected pipeline.');}const id=input.id??crypto.randomUUID(),before=input.id?await this.entity(input.id,'form'):null;
   check(!before||before.revision===input.revision,'Form changed; reload before saving.');const revision=(before?.revision??0)+1,body=JSON.stringify({form,landing}),hash=await sha256(body),now=new Date().toISOString(),guard=crypto.randomUUID();
   const statements:SqlStatement[]=[{sql:'INSERT INTO access_write_guards VALUES(?,CASE WHEN COALESCE((SELECT revision FROM content_entities WHERE id=?),0)=? THEN 1 ELSE 0 END)',bindings:[guard,id,revision-1]},{sql:'DELETE FROM access_write_guards WHERE id=?',bindings:[guard]},{sql:"INSERT INTO content_entities VALUES(?,'form',?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET revision=excluded.revision,body_json=excluded.body_json,content_hash=excluded.content_hash,updated_at=excluded.updated_at",bindings:[id,revision,body,hash,owner,now]},...this.event(c,'form.saved',{...c,type:'form',id},revision,{hash})];await this.commit(c,statements);return{id,revision,hash,form,landing};
  }
  async entity(id:string,kind:string){const row=await this.db.prepare('SELECT * FROM content_entities WHERE id=? AND kind=?').bind(id,kind).first<Entity>();if(!row)throw new AccessError('validation','Content not found.');return row;}
+ async builderOptions(c:ActorContext){await this.owner(c);const [operators,stages]=await Promise.all([this.read(c,"SELECT id,display_name FROM operators WHERE status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=operators.id) ORDER BY display_name,id"),this.read(c,"SELECT s.id AS stage_id,s.name AS stage_name,p.id AS pipeline_id,p.name AS pipeline_name FROM pipeline_stages s JOIN pipeline_stage_rules r ON r.stage_id=s.id JOIN pipelines p ON p.id=r.pipeline_id ORDER BY p.is_default DESC,p.created_at,p.id,s.position")]);return {operators:operators.results,stages:stages.results};}
  async list(c:ActorContext){await this.owner(c);const rows=await this.read(c,"SELECT id,revision,body_json,content_hash,updated_at FROM content_entities WHERE kind='form' ORDER BY updated_at DESC");return rows.results;}
  async compile(c:ActorContext,input:{formId:string;revision:number;reviewedHash:string;slug:string;maxRecords:number;expiresAt:string}){
   const owner=await this.owner(c),stored=await this.entity(input.formId,'form');check(stored.revision===input.revision&&stored.content_hash===input.reviewedHash,'Review the exact current form before compiling.');check(/^[a-z0-9][a-z0-9-]{0,79}$/.test(input.slug),'Choose a lowercase publication path.');check(Number.isInteger(input.maxRecords)&&input.maxRecords>0&&input.maxRecords<=1000&&Date.parse(input.expiresAt)>Date.now(),'Choose a future expiry and a limit of 1–1000 contacts.');
@@ -51,12 +55,13 @@ export class FormService extends ScopedMutations{
  }
  /** Browser admission owns transport, rate controls and external verification. */
  async submitPublic(slug:string,raw:unknown,options:FormAbuseOptions,request:Request){
-  const {intake,operation,stored,form,payloadHash}=await this.submission(slug,raw);if(intake.operationId!==operation.id||intake.revision!==operation.form_revision){await this.refuse(slug,'publication',options,request);throw new AccessError('validation','The published form changed; reload before submitting.');}const replay=await this.replay(slug,stored,intake,payloadHash);if(replay)return replay;
-  const abuse=new FormAbuse(this.db,options),limited=await abuse.counters(stored.id,request),reason=limited?'rate_limit':await abuse.reason(intake,operation.id,form.turnstileSiteKey,request?new URL(request.url).hostname:undefined);
+  const admission=await admittedFormOrigin(this.db,request);const {intake,operation,stored,form,payloadHash}=await this.submission(slug,raw);if(intake.operationId!==operation.id||intake.revision!==operation.form_revision){await this.refuse(slug,'publication',options,request);throw new AccessError('validation','The published form changed; reload before submitting.');}const replay=await this.replay(slug,stored,intake,payloadHash);if(replay)return replay;
+  const abuse=new FormAbuse(this.db,options),limited=await abuse.counters(stored.id,request),reason=limited?'rate_limit':await abuse.reason(intake,operation.id,form.turnstileSiteKey,admission.hostname);
   if(reason)return refusalResult(await recordRefusal(this.db,operation,reason,intake,payloadHash));
-  try{return await this.capture(slug,operation,stored,form,intake,payloadHash);}catch(error){if(error instanceof RecordError)return refusalResult(await recordRefusal(this.db,operation,'invalid_fields',intake,payloadHash));if(/CHECK constraint failed/.test(String(error)))return refusalResult(await recordRefusal(this.db,operation,'capture_authority',intake,payloadHash));throw error;}
+  try{return await this.capture(slug,operation,stored,form,intake,payloadHash,admission.external?formOriginFence(this.db,admission.origin):[]);}catch(error){if(error instanceof RecordError)return refusalResult(await recordRefusal(this.db,operation,'invalid_fields',intake,payloadHash));if(/CHECK constraint failed/.test(String(error)))return refusalResult(await recordRefusal(this.db,operation,'capture_authority',intake,payloadHash));throw error;}
  }
- async challenge(slug:string,key:string,options:FormAbuseOptions){const operation=await this.publicState(slug);return {token:await new FormAbuse(this.db,options).challenge(operation.id,key)};}
+ async preflight(slug:string,_options:FormAbuseOptions,request:Request){await admittedFormOrigin(this.db,request);await this.publicState(slug);}
+ async challenge(slug:string,key:string,options:FormAbuseOptions,request?:Request){const operation=await this.publicState(slug);if(request)await admittedFormOrigin(this.db,request);return {token:await new FormAbuse(this.db,options).challenge(operation.id,key)};}
  async refuse(slug:string,reason:string,options:FormAbuseOptions,request?:Request){const operation=await this.publicState(slug);await new FormAbuse(this.db,options).counters(operation.form_id,request);await recordRefusal(this.db,operation,reason);}
  private async capture(slug:string,operation:Publication,stored:Entity,form:FormDefinition,intake:FormIntake,payloadHash:string,extra:D1PreparedStatement[]=[],releaseId?:string){
   const refusalGuard=crypto.randomUUID();
