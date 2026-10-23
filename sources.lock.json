@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "6644821cf8416fd4448c9ebf6c3096c38e9962abd9b558253bde2e15e493206f",
+      "sha256": "4f450452d642e916635c8391aea0526210a68f96b5925a8829d0a67367a1bf21",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "bacebd8bc65d11fd13ece2154af9c0bf647300efdf8799a60298a0d307c93ce5",
+      "sha256": "475bdd8ded31b371d9c90a9bac1df9e0bd170557d9d47a3ec35d3353f0c8d2dc",
       "executable": false
     },
     "DEMO.md": {
@@ -1176,6 +1176,54 @@
     },
     "docs/retained-verification/OUT-014/stale-review-390.png": {
       "sha256": "5ff3fe7b4d7eb60f037a7f310ca300c9320f205370f99e2fe01ab84cce0cf18a",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-017/record-mail-company-composer-1440.png": {
+      "sha256": "e7b8469e6650bc01545953126b6805555f2b6df25f5642968df0336819e4c3f9",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-017/record-mail-company-composer-390.png": {
+      "sha256": "2281226ed0336e10e25fcddadf25e910f27a45be0061eb78567117154f662f6e",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-017/record-mail-contact-composer-1440.png": {
+      "sha256": "1cc94a09808b673d9af31d4aa02d4a3273ca5f834eb8a0252dcaa55b06a7c045",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-017/record-mail-contact-composer-390.png": {
+      "sha256": "a4909c75d175d653a3f71af902d17cefb27cfc3f7fa5fab166df0961ba6638ad",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-017/record-mail-contact-timeline-1440.png": {
+      "sha256": "7c7d616a4826c40aa1aac662827e591851fe0a024c2b3ce5ebdd567ad73fdd76",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-017/record-mail-contact-timeline-390.png": {
+      "sha256": "24d28371b84fc449609febeca61cedb03f3aae834a8429cdc79949872a6128e8",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-017/record-mail-draft-review-1440.png": {
+      "sha256": "9661c66d63381836bad986699b4330a95b8b74bc3b84decfe41f66da43982c14",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-017/record-mail-draft-review-390.png": {
+      "sha256": "b8e07bbfc40b1b4288a42f0f738f3fe5304be3a46b43ef81bccdf467b9d7a8e4",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-017/record-mail-notification-1440.png": {
+      "sha256": "3345fa3e8a4619e30c90747d1765a65ae111b763a81910f39971a0df830422fe",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-017/record-mail-notification-390.png": {
+      "sha256": "8a1d24062926c77a637404f22be22c3a333c26082c3f9f17fcf8f96c21190be1",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-017/record-mail-today-1440.png": {
+      "sha256": "b6ab9a53477ce6ba3b17b3bc3d6ff2bd203511aab0063cef6fdb72bd0200c7eb",
+      "executable": false
+    },
+    "docs/retained-verification/OUT-017/record-mail-today-390.png": {
+      "sha256": "dae49b32fa11fcca797bc27b6f56d5fa6af96b6c119ab4d9fc6c1a310ddb538a",
       "executable": false
     },
     "docs/retained-verification/README.md": {
@@ -2019,7 +2067,7 @@
       "executable": false
     },
     "newtests/t096/browser-record-mail.ts": {
-      "sha256": "fee1cbccd6a0219c5e62cb1c9fba7953ec973e5604e3ecb3ded90d08fec76ddc",
+      "sha256": "eb9cd34e617acd01c5eb33e826cce77fcf3e8005792dc8bd925ad6a43ab04c3a",
       "executable": false
     },
     "newtests/t096/browser-report-authoring.ts": {
