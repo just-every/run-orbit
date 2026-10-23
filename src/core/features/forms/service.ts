@@ -52,12 +52,12 @@ export class FormService extends ScopedMutations{
  /** Browser admission owns transport, rate controls and external verification. */
  async submitPublic(slug:string,raw:unknown,options:FormAbuseOptions,request:Request){
   const {intake,operation,stored,form,payloadHash}=await this.submission(slug,raw);if(intake.operationId!==operation.id||intake.revision!==operation.form_revision){await this.refuse(slug,'publication',options,request);throw new AccessError('validation','The published form changed; reload before submitting.');}const replay=await this.replay(slug,stored,intake,payloadHash);if(replay)return replay;
-  const abuse=new FormAbuse(this.db,options),limited=await abuse.counters(stored.id,request),reason=limited?'rate_limit':await abuse.reason(intake,operation.id,form.turnstileSiteKey,request?new URL(request.url).hostname:undefined);
+  const abuse=new FormAbuse(this.db,options);await abuse.admit(stored.id,request);const reason=await abuse.reason(intake,operation.id,form.turnstileSiteKey,request?new URL(request.url).hostname:undefined);
   if(reason)return refusalResult(await recordRefusal(this.db,operation,reason,intake,payloadHash));
   try{return await this.capture(slug,operation,stored,form,intake,payloadHash);}catch(error){if(error instanceof RecordError)return refusalResult(await recordRefusal(this.db,operation,'invalid_fields',intake,payloadHash));if(/CHECK constraint failed/.test(String(error)))return refusalResult(await recordRefusal(this.db,operation,'capture_authority',intake,payloadHash));throw error;}
  }
  async challenge(slug:string,key:string,options:FormAbuseOptions){const operation=await this.publicState(slug);return {token:await new FormAbuse(this.db,options).challenge(operation.id,key)};}
- async refuse(slug:string,reason:string,options:FormAbuseOptions,request?:Request){const operation=await this.publicState(slug);await new FormAbuse(this.db,options).counters(operation.form_id,request);await recordRefusal(this.db,operation,reason);}
+ async refuse(slug:string,reason:string,options:FormAbuseOptions,request?:Request){const operation=await this.publicState(slug);await new FormAbuse(this.db,options).admit(operation.form_id,request);await recordRefusal(this.db,operation,reason);}
  private async capture(slug:string,operation:Publication,stored:Entity,form:FormDefinition,intake:FormIntake,payloadHash:string,extra:D1PreparedStatement[]=[],releaseId?:string){
   const refusalGuard=crypto.randomUUID();
   const authority=await this.db.prepare('SELECT custodian_id FROM access_form_authorities WHERE id=?').bind(operation.authority_id).first<{custodian_id:string}>();if(!authority)deny();const plan=await nativeCapture(this.db,{form,intake,formId:stored.id,ownerId:authority.custodian_id,operationId:operation.id,artifactHash:operation.artifact_hash,payloadHash}),guard=crypto.randomUUID();

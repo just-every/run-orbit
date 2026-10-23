@@ -1987,11 +1987,11 @@
       "executable": false
     },
     "newtests/t096/forms-abuse-journey.ts": {
-      "sha256": "49f15d7b1078af228ce89b51227cf868635082112b132dc79fc2bec55170864b",
+      "sha256": "7c03b5a8277d03e2db285c45db3a79a2b7dace1da1be844a2b13dd1a7d2e1af3",
       "executable": false
     },
     "newtests/t096/forms-native.test.ts": {
-      "sha256": "d5ece33727421cb463a6421dabdc84aace47a2f7296a4e7e8067b202dfa6b86b",
+      "sha256": "45b546dfd41f8f5ec2c01d404b5926bd06eba29c1e7c81e43ba09e0dce920bd9",
       "executable": false
     },
     "newtests/t096/forward-upgrade.test.ts": {
@@ -4883,7 +4883,7 @@
       "executable": false
     },
     "src/core/features/forms/abuse.ts": {
-      "sha256": "f654155d3954933fdf805d5e861a134c31ad7c2b0838ea6187a5983ee1cac98b",
+      "sha256": "f17502f58c9ed62370ff7b44344048d16d9c43a3d696417d25648b5aa45552d8",
       "executable": false
     },
     "src/core/features/forms/console.tsx": {
@@ -4919,7 +4919,7 @@
       "executable": false
     },
     "src/core/features/forms/service.ts": {
-      "sha256": "2c2ecac9758b060504756686d38fd355378867ac8993883761434dbe49b42a03",
+      "sha256": "73a44244e3e552b94ec9136e2e487d9868653115b85fae5f2b163f767c1e6b5a",
       "executable": false
     },
     "src/core/features/forms/spam-panel.tsx": {

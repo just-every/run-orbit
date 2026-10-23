@@ -1,4 +1,5 @@
 import {AccessError} from '../access/errors';
+import {RecordError} from '../records/shared';
 import type {FormIntake} from './definition';
 export interface FormAbuseOptions {secret?:string;turnstileSecret?:string;fetch?:typeof fetch}
 const encoder=new TextEncoder();
@@ -7,14 +8,15 @@ export class FormAbuse {
  constructor(readonly db:D1Database,readonly options:FormAbuseOptions={}){}
  private async sign(value:string){if(!this.options.secret)throw new AccessError('prerequisite','Form protection is not configured.');const key=await crypto.subtle.importKey('raw',encoder.encode(this.options.secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);return hex(await crypto.subtle.sign('HMAC',key,encoder.encode(value)));}
  async challenge(operationId:string,idempotencyKey:string){const body=JSON.stringify([operationId,idempotencyKey,Date.now()]);return `${btoa(body)}.${await this.sign(body)}`;}
- async counters(formId:string,request?:Request){
+ /** Counts one attempt; past either limit it is refused before any refusal or payload is retained. */
+ async admit(formId:string,request?:Request){
   // Only Cloudflare's trusted connection metadata enables its injected address.
   // Local requests share one bucket; X-Forwarded-For never contributes.
   const ip=(request as (Request&{cf?:unknown})|undefined)?.cf?request!.headers.get('CF-Connecting-IP')??'local':'local';
   const digest=await this.sign(`form-network:${ip}`),now=Date.now(),expires=now+60000;
   const buckets=[`form:${formId}`,`form-network:${digest}`];
   const result=await this.db.batch([this.db.prepare('DELETE FROM public_rate_limits WHERE expires_at<=?').bind(now),...buckets.map(bucket=>this.db.prepare('INSERT INTO public_rate_limits(bucket,count,expires_at) VALUES(?,1,?) ON CONFLICT(bucket) DO UPDATE SET count=CASE WHEN expires_at<=? THEN 1 ELSE count+1 END,expires_at=CASE WHEN expires_at<=? THEN excluded.expires_at ELSE expires_at END RETURNING count').bind(bucket,expires,now,now))]);
-  return Number((result[1].results[0] as {count:number}).count)>30||Number((result[2].results[0] as {count:number}).count)>10;
+  if(Number((result[1].results[0] as {count:number}).count)>30||Number((result[2].results[0] as {count:number}).count)>10)throw new RecordError(429,'Form submission refused: rate_limit.');
  }
  async reason(intake:FormIntake,operationId:string,siteKey?:string,hostname?:string){
   if(intake.honeypot?.trim())return 'honeypot';
