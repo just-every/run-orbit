@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "04ef61a9f1d9d5f000ff4273cb1c4b5c15fdb1e319c698c7f6b86e16eaa5d301",
+      "sha256": "8c771c8f6781e387086f34cb422ef797f6a192a5024351c89bf7594aadac45db",
       "executable": false
     },
     "DEMO.md": {
@@ -1623,7 +1623,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "dec3e24602add8d2ed13b6f81dcca3c31e8344502360f1a8f0f23062c3ea2e28",
+      "sha256": "df049342b31863af31820c43ada3bbc0b9f215d42512d21b6bc2c272a81bd834",
       "executable": false
     },
     "management/integration/profile.json": {
