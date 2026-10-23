@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "bc87a4b6cff8fd387b1b15b0f413b4dd76f4f14115776da8a0a44ddfc2075d5f",
+      "sha256": "eba0ddef0ecdf3c2c860ea74e857aca4700e7df259ce6e424302aef4344efdaf",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "77612df360d18664d47cdd7e174209414b6a5fee1ea818c3cdd1f94215233899",
+      "sha256": "656957f30e7a65b7e438c6a9191af93a01855d94648902e1da36b775ec92e5d9",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "0df12ebb2c4a0b0055b056b8e0d6330c1adc4610daec528a740b978e26361ce6",
+      "sha256": "75f0d88c169da5dc67b574803eb35f05b0ada1e4d786f1aee242ced684896203",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -1152,6 +1152,62 @@
     },
     "docs/retained-verification/real-ai.json": {
       "sha256": "b55a11b0a1e24a0bb7c5f95e29a4f17d05ae45676e2744fefef81bf4f7a92781",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-bulk-review-1440.png": {
+      "sha256": "53d23d80f0f9bb1b65a02a15f8220140b595cafa06eee93d6f29c0075f1a0c5e",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-bulk-review-390.png": {
+      "sha256": "3c7ea578efd76e5854fde17f8ef1f20adba75cd1eeee8f2639209f2fded8590e",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-bulk-undone-1440.png": {
+      "sha256": "656a29056e7ba811afd908fd1b5ae9f27584095d5975bfcf37d75c230735239f",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-bulk-undone-390.png": {
+      "sha256": "20685eb16494e2d1bedf4283eccbe0df06897d13c34ce62ea07da93474f31d46",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-company-assigned-1440.png": {
+      "sha256": "f9e3a8d93f21e0f57e60acae525cb57daa7d2fee33b04b7617162a438b14df3b",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-company-assigned-390.png": {
+      "sha256": "620b07de59cf4b324bfde6d77bc4888ca7758268359e3c9893c6359773461d4d",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-company-review-1440.png": {
+      "sha256": "bff0dab00a3673909b402e5cc899bb7f137415c9d0f6eeb2e494713eb3c67caa",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-company-review-390.png": {
+      "sha256": "6faef860e3ecc8cfa9a5c746630445b5d581a8f8f8674d6505b32c3271ee2007",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-contact-assigned-1440.png": {
+      "sha256": "4cd1935a84a8f3ee294251d7f1a9d0e31c9b652d2726c0509b84c3537f7a5d71",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-contact-assigned-390.png": {
+      "sha256": "546ebafd94660bec109eb1feb5f60077f1862473e8a32483e00868c1b929943c",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-contact-review-1440.png": {
+      "sha256": "a14ccec809370335d7318c5b2d086ed43097df30b7d07fc554782f107ea68f5b",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-contact-review-390.png": {
+      "sha256": "72f5d16c75e4b17dfb747595d17011c4a8ceacec8fe888a8ddda602e3089b3ee",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-notifications-1440.png": {
+      "sha256": "3e1747dd163d00f1fc1ba8b55191d96d2308bc021f3e58a4de721d3ad9745f44",
+      "executable": false
+    },
+    "docs/retained-verification/RECORD-016/ownership-notifications-390.png": {
+      "sha256": "97c2c149e82f47b6514b9d2416a5fea80beb705d6a0409fd729bc995c3967fd6",
       "executable": false
     },
     "docs/retained-verification/records-capacity.json": {
@@ -1915,7 +1971,7 @@
       "executable": false
     },
     "newtests/t096/browser-ownership.ts": {
-      "sha256": "202b3484032181f0e927a905fc620c4e5dc21ea0098dc5a85a3cadca11da8d72",
+      "sha256": "6076c0ab7aa17cb6b43f5d98e4a1a83b450c1dcec18636faf3ff9bd621b68143",
       "executable": false
     },
     "newtests/t096/browser-report-authoring.ts": {
@@ -5411,7 +5467,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/notifications-page.tsx": {
-      "sha256": "8d678955156237a5b4dc9b46f11283602a8ff61c6f0eab6d682540213e8773b4",
+      "sha256": "da7d37a448abb603f326b3aa05b9e972986b9bc04d14ec8280809aa8667df0df",
       "executable": false
     },
     "src/core/features/operator/ui/now-page.tsx": {
@@ -5519,7 +5575,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record-owner.tsx": {
-      "sha256": "8efc11566b9da39e4fc66cc3aded8b9903fa801f2982cf0ac5c9e188934c0b37",
+      "sha256": "19fd790cc79da2dd972f05d5432689357fb6e6255111f685980265ce96e6dc39",
       "executable": false
     },
     "src/core/features/operator/ui/record-selection.tsx": {
@@ -5543,7 +5599,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/reviewed-record-changes.tsx": {
-      "sha256": "1d6f2567b7b8af5ea1b1afbf9298c032fedd9dcbc71e8586c32670e9c5069169",
+      "sha256": "b4a8cbf409cba14eb61254175034798405ccbbfa07eb25e215111c086a942b18",
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.css": {
@@ -5767,7 +5823,7 @@
       "executable": false
     },
     "src/core/features/ownership/privacy.ts": {
-      "sha256": "bd913ec0c8a1f4978d82283ae5859a2585693be20275713601cf92b5d435054e",
+      "sha256": "bd7bf0a5eed83976c7c42f04dc3325882f758bb04f834c455e8d7d8df72e1fcb",
       "executable": false
     },
     "src/core/features/ownership/read.ts": {
@@ -6379,7 +6435,7 @@
       "executable": false
     },
     "src/core/features/settings/erasure.ts": {
-      "sha256": "e0ff493e0e265d1afad4b752c88c39e03a0325b80fa431cda2400cb71ed9d91a",
+      "sha256": "f84808f34298147d6138be1c4e21150b1a1fa4df196e5a6639d163c3e9da8a43",
       "executable": false
     },
     "src/core/features/settings/owner-email.ts": {
@@ -8839,7 +8895,7 @@
       "executable": false
     },
     "tests/support/record-ownership.ts": {
-      "sha256": "5895b0b83fb63bb34a1253792eae7e789152140914bc7da5ec684439f4a57050",
+      "sha256": "9813f864bbec8c7201530e6502a9d46a4d2966f616133ea4b769047eb725b5cf",
       "executable": false
     },
     "tests/support/reviewed-merge.ts": {
