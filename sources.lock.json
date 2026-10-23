@@ -2091,7 +2091,7 @@
       "executable": false
     },
     "newtests/t096/capture-rule-browser-seed.ts": {
-      "sha256": "6b6e553ad73d737301eb83d5b375f6a80511dbe02b1bb7ec96ad2c19c6b4d01c",
+      "sha256": "3a011d498cb52332b63b5459d085b353ea32c27003265c2b829941908a0fe119",
       "executable": false
     },
     "newtests/t096/collaborator-lifecycle.test.ts": {
