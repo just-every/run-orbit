@@ -6,9 +6,9 @@ import type {AIProvider} from '../../src/core/features/assistance/provider';
 const daysAgo=(days:number)=>new Date(Date.now()-days*86400000).toISOString();
 
 /** An operator session on the real application, driving only its HTTP doors. */
-export async function todayApp(db:D1Database,options:{provider?:AIProvider;operatorId?:string;calling?:Pick<Parameters<typeof createApp>[0],'sourceSecurity'|'captureOrigin'|'captureFetch'>}={}){
+export async function todayApp(db:D1Database,options:{email?:string;provider?:AIProvider;operatorId?:string;calling?:Pick<Parameters<typeof createApp>[0],'sourceSecurity'|'captureOrigin'|'captureFetch'>}={}){
  const deps=createDependencies(db),actor=options.operatorId??createId();
- await deps.auth.ensureOperator({id:actor,email:`${actor.toLowerCase()}@seller.test`,displayName:'Sam Seller'});
+ await deps.auth.ensureOperator({id:actor,email:options.email??`${actor.toLowerCase()}@seller.test`,displayName:'Sam Seller'});
  await deps.workspace.ensureWorkspace({name:'Brief proof',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
  if(!await db.prepare('SELECT 1 FROM pipeline_stages LIMIT 1').first())await deps.workspace.ensurePipelineStage({id:createId(),name:'Qualified',position:1});
  const session=await deps.auth.createSession(actor),app=createApp({database:db,assets:{fetch:async()=>new Response('test')},aiProvider:options.provider,...options.calling});

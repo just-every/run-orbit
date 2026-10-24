@@ -1,3 +1,4 @@
+import {reconcileWritebacks} from './writeback-reconcile';
 import {audit} from '../../records/shared';
 import {AccessService} from '../../access/service';
 import type {AuthenticatedOperator} from '../../identity';
@@ -52,7 +53,9 @@ export function selectScope(db:D1Database,id:string,scope:CaptureScope,security:
 export async function syncProvider(db:D1Database,id:string,security:SourceSecurity,fetcher:ProviderFetch=fetch,maxPages=4){
  const source=await readProviderSource(db,id),scope=JSON.parse(source.scope_json) as CaptureScope;
  if(!(scope.mail?.folders?.length||scope.calendars?.length))throw new CaptureError(409,'Choose the labels, folders or calendars to read first.');
- return syncSource(db,id,(current,lease)=>sourceAdapter(current,providerSession(db,current,lease,security,fetcher)),security,{maxPages});
+ const result=await syncSource(db,id,(current,lease)=>sourceAdapter(current,providerSession(db,current,lease,security,fetcher)),security,{maxPages});
+ if(!('halted' in result))await withProvider(db,id,security,fetcher,(current,session)=>reconcileWritebacks(db,current,session));
+ return result;
 }
 export async function pollProviders(db:D1Database,security:SourceSecurity|undefined){
  if(!security)return;

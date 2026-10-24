@@ -1,3 +1,4 @@
+import {calendarWritebackProof} from '../support/calendar-writeback';
 import {providerFixture as fixture,captureFixtureSecurity as security} from '../support/capture-provider-fixture';
 import {oversizedMessageProof,deletedEventProof} from '../support/capture-provider-items';
 import assert from 'node:assert/strict';
@@ -62,5 +63,5 @@ test('CAPTURE-006 oversized mail skips once while both providers finish other me
 });
 
 test('CAPTURE-006 provider deletion matches the captured calendar occurrence, replays once and respects erasure',async()=>{
- for(const provider of ['google','microsoft'] as const)await deletedEventProof(provider);
+ for(const provider of ['google','microsoft'] as const){await deletedEventProof(provider);await calendarWritebackProof(provider);}
 });
