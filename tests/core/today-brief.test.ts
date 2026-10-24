@@ -1,3 +1,4 @@
+import {exerciseTwilio} from '../support/twilio-calls';
 import {exerciseSalesTasks} from '../support/sales-tasks';
 import assert from 'node:assert/strict';
 import {after,test} from 'node:test';
@@ -262,4 +263,5 @@ test('BRIEF-004 RECORD-010 RECORD-017 OUT-001 a booked meeting gets a cited plan
  assert.equal((await t.call('/api/v1/tasks',{body:{title:'Hidden',recordType:'opportunity',recordId:opportunity,ownerId:t.actor,dueAt:new Date(Date.now()+86400000).toISOString(),priority:'normal',type:'other',notes:'Ask @Casey Contractor',recurrence:'none',timezone:'UTC',reminderMinutes:null}})).status,201,'The explicit share covers task notes on the deal too');
  assert.equal(JSON.stringify(await db.prepare("SELECT payload_json FROM timeline_entries WHERE id=?").bind(noteId).first()).includes(riley.actor),true,'Mentions are saved with the entry, so they export and erase with it');
  assert.deepEqual([await db.prepare('SELECT score,band FROM opportunities WHERE id=?').bind(opportunity).first(),{drafts:await count('SELECT count(*) AS n FROM drafts'),messages:await count('SELECT count(*) AS n FROM outbound_messages')}],[scored,sends],'Mentions change no score and send nothing');
+ await exerciseTwilio(db);
 });

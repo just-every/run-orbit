@@ -19,7 +19,7 @@ export async function publicRateLimit(db:D1Database,request:Request,now=Date.now
  const routedPath=pathname.startsWith('/api/')?getPath(request):pathname;
  // These bounded-body routes verify the actual signature before choosing their rate bucket.
  if(request.method==='POST'&&/^\/api\/v1\/mail\/events\/(sendgrid|reply|relay)$/.test(routedPath))return;
- const ingress=routedPath.startsWith('/api/v1/signals/')||routedPath.startsWith('/api/v1/mail/events/');
+ const ingress=routedPath.startsWith('/api/v1/calls/twilio/')||routedPath.startsWith('/api/v1/signals/')||routedPath.startsWith('/api/v1/mail/events/');
  const delegation=pathname.startsWith('/api/delegation/v1/');
  const publicForm=routedPath.startsWith('/api/public/forms/');
  // Submissions use their own durable buckets; stateless challenge issuance keeps
