@@ -1,3 +1,4 @@
+import {foldArchiveCatalog} from '../../src/core/features/records/archive-fold-catalog';
 import {createId} from '../../src/core/shared/ids';
 import assert from 'node:assert/strict';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
@@ -11,6 +12,7 @@ export async function exerciseTwilio(db:D1Database){
  if(!owner)await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(t.actor).run();
  await t.json('/api/v1/calls/settings',{method:'PUT',body:{accountSid,token,from,operatorPhone}},200);
  const storage=await db.prepare('SELECT ciphertext FROM call_credentials').first<{ciphertext:string}>();assert.ok(storage&&!storage.ciphertext.includes(token),'credentials are encrypted');
+ const catalog=await foldArchiveCatalog(db);assert.equal(catalog.some(table=>table.name==='call_credentials'),false,'current archives exclude installation calling credentials');assert.ok(catalog.some(table=>table.name==='call_events'),'call receipts keep their export meaning');
  const deal=await t.opportunity('Twilio review','Synthetic calls','Synthetic caller','synthetic-orbit-call@example.test');
  const contact=(await t.json<any>(`/api/v1/opportunities/${deal}`)).opportunity.contacts[0].id;
  const record=await t.json<any>(`/api/v1/records/contact/${contact}`);
