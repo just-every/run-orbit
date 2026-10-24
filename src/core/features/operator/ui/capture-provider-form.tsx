@@ -29,7 +29,8 @@ export function ProviderKeyForm({ provider, sourceId, sourceName }: { provider: 
       </label>
       <p>Leave “common” so any work, school or personal Microsoft account can connect. To allow only your organisation, paste the Directory (tenant) ID from the app’s Overview page.</p>
     </details> : null}
+    <label><input type="checkbox" name="writebackConsent"/>Allow reviewed calendar writeback ({provider.id==='google'?'calendar.events':'Calendars.ReadWrite'})</label>
     <button className="orbit-button orbit-button--primary" type="submit">{sourceId ? `Reconnect ${label.key}` : `Connect ${label.key}`}</button>
-    <p className="capture-key-form__note">{label.key} opens next. Choose your account and allow read-only access; you come straight back here to pick what Orbit reads.</p>
+    <p className="capture-key-form__note">{label.key} opens next. Choose your account and approve read access. Calendar write permission is requested only when you separately select writeback above.</p>
   </form>;
 }
