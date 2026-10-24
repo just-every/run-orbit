@@ -1827,7 +1827,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "3d64af63ed52d1c5b09f6f4c014a4118c6af20d119471b0c69b10b734617be66",
+      "sha256": "4cb3548c2b49ce71499a0345ced88cd5268bff7daa42efb62a721d51fca0c04a",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2044,6 +2044,10 @@
     },
     "migrations/core/0057_capture_mail_rule.sql": {
       "sha256": "963df98969e3aeb72e95b40cfe67f0f8bfc658aacaf8e68c84d1d6acb42411e1",
+      "executable": false
+    },
+    "migrations/core/0058_twilio_calls.sql": {
+      "sha256": "d347174ae8c973e5192b0d6a73cef9a765b57e20028951dc06fb47bf68e53bed",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -4407,7 +4411,7 @@
       "executable": false
     },
     "src/core/app/app.ts": {
-      "sha256": "0f0817143fdd24327fc222043891f40307a1876930337c189008a366ec7ce40a",
+      "sha256": "e4bb59d8ebe5e09ad5e3711033f1e76b456f6850d0cc20489879f6a2de336aa9",
       "executable": false
     },
     "src/core/app/demo.css": {
@@ -4720,6 +4724,18 @@
     },
     "src/core/features/audit/service.ts": {
       "sha256": "1d6851d5eece9553a72987a8e1c71cb01dd531104f03f717f9e5850e9a656fbf",
+      "executable": false
+    },
+    "src/core/features/calls/provider.ts": {
+      "sha256": "d95ad364012efc9b5055b010c70eb0617f538038b7893a9a7255b5ce58366e44",
+      "executable": false
+    },
+    "src/core/features/calls/repository.ts": {
+      "sha256": "57e0f9116066cf36854a44a2d167ad47ad79664853402085f02715933ec0a66a",
+      "executable": false
+    },
+    "src/core/features/calls/routes.ts": {
+      "sha256": "85a62413f98e768f19c59080f9adc8545cb5f74db2d172dd4b669a8c4ee5e084",
       "executable": false
     },
     "src/core/features/capture/archive.ts": {
@@ -6483,7 +6499,7 @@
       "executable": false
     },
     "src/core/features/records/archive-generations.ts": {
-      "sha256": "940bc5cc51d8547dbd73b9e4e43b0fa62a64bd35133a436d1eb2ac92d4bb03be",
+      "sha256": "2d260bdc5ba47ab82892b55d912092e22e8bfd1a3e61c7f30bfa373d89f6a3be",
       "executable": false
     },
     "src/core/features/records/archive-import-context.ts": {
@@ -6527,7 +6543,7 @@
       "executable": false
     },
     "src/core/features/records/archive-schema.ts": {
-      "sha256": "35cc7c89449ae366dd0becab75bfde1bd036e37e87f4cafc8792e6ff531ab3bd",
+      "sha256": "2e37f6d08a67a1a6050559bb1d1786f0081f6d00df21ec6282aa25437c4c18bf",
       "executable": false
     },
     "src/core/features/records/archive-size-plan.ts": {
@@ -7047,7 +7063,7 @@
       "executable": false
     },
     "src/core/platform/public-rate-limit.ts": {
-      "sha256": "3688619c83bd6a8afc825be65b342202e979276d3ccd0b38d28d93fb2d3c7435",
+      "sha256": "8b87cea05abf9b163e2250619d3dfa937dddcb3fcef62854c95b78f859843fe2",
       "executable": false
     },
     "src/core/platform/request.server.ts": {
@@ -8347,7 +8363,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "acf02378cc84d719228a4f42f7a99b443f93c4206e588d323d624f2551e2a564",
+      "sha256": "bfc346282d4bac6fe02af2c3e4afb6884ef5a53ad0d228edfcc8881914e28d92",
       "executable": false
     },
     "tests/delegation-browser/journey.mjs": {
@@ -9283,7 +9299,11 @@
       "executable": false
     },
     "tests/support/today-workspace.ts": {
-      "sha256": "bf4bcb873dce024488bc56481df5c8c9a926577af0b44a6dc1f4baa7ae7ec114",
+      "sha256": "cf397fcf82f2f17d5d537dededa8901c38613d95735dd21e7788b6fa9917b00d",
+      "executable": false
+    },
+    "tests/support/twilio-calls.ts": {
+      "sha256": "4aae7177308377db7a0b8b55a40522735d219c2903bdae7dfb7abeb9875255cd",
       "executable": false
     },
     "tests/support/upload-close-fixture.ts": {

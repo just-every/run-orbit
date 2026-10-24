@@ -1,0 +1,41 @@
+import {createId} from '../../src/core/shared/ids';
+import assert from 'node:assert/strict';
+import {createSourceSecurity} from '../../src/core/platform/source-security';
+import {todayApp} from './today-workspace';
+/** CALL-001: network fake only; all configuration, calls and receipts use the real app. */
+export async function exerciseTwilio(db:D1Database){
+ const security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)})!,accountSid='AC'+'1'.repeat(32),token='synthetic-orbit-twilio-token',from='+12025550101',operatorPhone='+12025550102',customer='+12025550103';
+ let submits=0,providerStatus=201;
+ const owner=await db.prepare("SELECT id FROM operators WHERE setup_owner=1 AND status='active'").first<{id:string}>();
+ const t=await todayApp(db,{operatorId:owner?.id,calling:{sourceSecurity:security,captureOrigin:'https://orbit.test',captureFetch:async(url,init)=>{assert.equal(String(url),`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Calls.json`);assert.equal(init?.redirect,'manual');assert.match(String(init?.body),/Twiml=/);submits++;return Response.json({sid:'CA'+'2'.repeat(32)},{status:providerStatus});}}});
+ if(!owner)await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(t.actor).run();
+ await t.json('/api/v1/calls/settings',{method:'PUT',body:{accountSid,token,from,operatorPhone}},200);
+ const storage=await db.prepare('SELECT ciphertext FROM call_credentials').first<{ciphertext:string}>();assert.ok(storage&&!storage.ciphertext.includes(token),'credentials are encrypted');
+ const deal=await t.opportunity('Twilio review','Synthetic calls','Synthetic caller','synthetic-orbit-call@example.test');
+ const contact=(await t.json<any>(`/api/v1/opportunities/${deal}`)).opportunity.contacts[0].id;
+ const record=await t.json<any>(`/api/v1/records/contact/${contact}`);
+ await t.json(`/api/v1/records/contact/${contact}`,{method:'PUT',body:{...record.record,phone:customer,custom_fields:{}}},200);
+ const preview=await t.json<any>(`/api/v1/calls/contacts/${contact}/preview`,{},200);
+ assert.deepEqual([preview.to,preview.from,preview.operatorPhone],[customer,from,operatorPhone]);
+ const dial={operationKey:createId(),confirmed:true,to:customer,from,operatorPhone};
+ assert.equal((await t.call(`/api/v1/calls/contacts/${contact}/dial`,{body:{...dial,to:'+12025550999'}})).status,409);assert.equal(submits,0);
+ await t.json(`/api/v1/calls/contacts/${contact}/dial`,{body:dial},201);assert.equal(submits,1);
+ assert.equal((await t.call(`/api/v1/calls/contacts/${contact}/dial`,{body:dial})).status,409);assert.equal(submits,1,'one attempt per reviewed command');
+ providerStatus=307;assert.equal((await t.call(`/api/v1/calls/contacts/${contact}/dial`,{body:{...dial,operationKey:createId()}})).status,502);assert.equal(submits,2,'redirect is neither followed nor retried');
+ const callback='https://orbit.test/api/v1/calls/twilio/events';
+ async function event(sid:string,sequence:number,direction:string,number:string,status='completed',bad=false){const form=new URLSearchParams({AccountSid:accountSid,CallSid:sid,SequenceNumber:String(sequence),Direction:direction,From:direction==='inbound'?number:from,To:direction==='inbound'?from:number,CallStatus:status,CallDuration:'125'});const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(token),{name:'HMAC',hash:'SHA-1'},false,['sign']);const raw=callback+[...form.keys()].sort().map(name=>name+form.get(name)).join('');const signature=btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(raw)))));return t.app.request(callback,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-Twilio-Signature':bad?'bad':signature},body:form});}
+ const sid='CA'+'3'.repeat(32);assert.equal((await event(sid,2,'inbound',customer,'completed',true)).status,403);
+ assert.deepEqual(await(await event(sid,2,'inbound',customer)).json(),{replay:false,held:false});
+ assert.deepEqual(await(await event(sid,2,'inbound',customer)).json(),{replay:true});
+ assert.equal((await event(sid,1,'inbound',customer,'ringing')).status,200);
+ let entries=(await t.json<any>(`/api/v1/records/contact/${contact}`)).timeline.filter((entry:any)=>entry.source==='twilio');
+ assert.equal(entries.length,1);assert.equal(JSON.parse(entries[0].payload_json).text,'Twilio inbound call: completed','late ringing cannot regress a completed call');
+ const outside='CA'+'4'.repeat(32);assert.equal((await event(outside,0,'outbound-api',customer)).status,200);
+ assert.equal((await t.json<any>(`/api/v1/records/contact/${contact}`)).timeline.filter((entry:any)=>entry.source==='twilio').length,2,'outside-Orbit outbound calls are logged too');
+ const unknown='CA'+'5'.repeat(32);assert.deepEqual(await(await event(unknown,0,'inbound','+12025550999')).json(),{replay:false,held:true});
+ const held=(await t.json<any>('/api/v1/calls/settings',{},200)).held;assert.equal(held.length,1);
+ await t.json(`/api/v1/calls/held/${held[0].id}/link`,{body:{contactId:contact}},200);
+ assert.equal((await t.json<any>('/api/v1/calls/settings',{},200)).held.length,0);
+ const other=await todayApp(db,{calling:{sourceSecurity:security,captureOrigin:'https://orbit.test'}});assert.equal((await other.call('/api/v1/calls/settings')).status,403);
+ await t.json('/api/v1/calls/settings',{method:'DELETE',body:{}},200);assert.equal((await event(sid,3,'inbound',customer)).status,503,'disconnect stops callbacks');
+}
