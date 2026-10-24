@@ -6647,7 +6647,7 @@
       "executable": false
     },
     "src/core/features/records/entry-privacy.ts": {
-      "sha256": "26d19536f66e328c446bdde7163fe3395d7afb5b799301defa434a82d48f8c44",
+      "sha256": "b2e270c5521e67c4eb08ea651b47405f978e272c4e3dc7ba596edccb8a0dc83b",
       "executable": false
     },
     "src/core/features/records/erasure-identity.ts": {
@@ -8483,7 +8483,7 @@
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
-      "sha256": "d0b33e8e0fbb103bcdf309f4d406bea77c854e819e9dec02eda3214d3923787a",
+      "sha256": "edbf1aa7f20045a52fc0768b6ef2f0b764ad0ef9960ea281c345bafbf03541b2",
       "executable": false
     },
     "tests/delegation-browser/viewport.test.ts": {
