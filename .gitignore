@@ -30,3 +30,4 @@ playwright-report/
 
 # Throwaway demo state
 .rer/demo/
+.env*
