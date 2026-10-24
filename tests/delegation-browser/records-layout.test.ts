@@ -1,3 +1,4 @@
+import {typedFieldsJourney} from './typed-fields-journey.mjs';
 import {browserPrivateData} from '../support/browser-private-data';
 import {privateEntriesJourney} from './private-entries-journey.mjs';
 import {browserCalendarData} from '../support/browser-calendar-data';
@@ -62,6 +63,7 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
     await privateEntriesJourney(await context.newPage(),await collaboratorContext.newPage(),privateData);
     await collaboratorContext.close();
     await nativeLongRecordLayoutJourney(await context.newPage());
+    await typedFieldsJourney(await context.newPage(),calendarData.contact);
   } finally {
     await browser?.close();
     if (worker && worker.exitCode === null) { worker.kill('SIGTERM'); await once(worker, 'exit'); }
