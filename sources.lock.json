@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "d7487e5cec8e6b4bfcd8d47fe1aa09b39d72d41d3a60303bfdbde954303e7e33",
+      "sha256": "637a2ee3449f16867ad47896526eb5f2a8d95042cefd19958b82709dd8c2490b",
       "executable": false
     },
     "DEMO.md": {
@@ -8391,7 +8391,7 @@
       "executable": false
     },
     "tests/core/provider-redirects.test.ts": {
-      "sha256": "6848b016727312c28f39061a1d20dc5d0edcaac89a76aea5cf4d644ebc3684e4",
+      "sha256": "c2b272c0913f00e2a080c72a668b5dd48e4b8bfb05f7b2ec187990e2797e6ff5",
       "executable": false
     },
     "tests/core/public-demo.test.ts": {
@@ -9355,7 +9355,7 @@
       "executable": false
     },
     "tests/support/sign-in-domains.ts": {
-      "sha256": "2aa45900eeffc6df5ee0e9849330da32fccfb79906d82a2dc32e2d65bda6e74a",
+      "sha256": "acafc9d0772f30643dad292017d563f7ac832d70a676cb7b1a98e8f0e6b457c7",
       "executable": false
     },
     "tests/support/signed-reply.ts": {
