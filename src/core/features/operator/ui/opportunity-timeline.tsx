@@ -22,7 +22,7 @@ export function OpportunityTimeline({opportunity,presentation,reload}:{opportuni
     {typeof payload.note==='string'&&payload.note&&<p style={{whiteSpace:'pre-wrap'}}>{payload.note}</p>}
     <span>Source: {entry.kind.startsWith('provider.')?'SendGrid provider report':entry.kind==='message.accepted'?'Mail provider acceptance receipt':entry.sourceName} · Occurred {formatDateTime(entry.occurredAt,presentation)} · Recorded {formatDateTime(entry.recordedAt,presentation)}</span>
     <details><summary>Recorded details</summary><DataValue value={entry.payload}/></details>
-    {entry.kind.startsWith('manual.')&&<div className="workbench-actions">
+    {entry.kind.startsWith('manual.')&&entry.sourceName!=='twilio'&&<div className="workbench-actions">
      <button type="button" onClick={event=>{trigger.current=event.currentTarget;setEditing(entry);}}>Edit entry</button>
      <DeleteTimelineEntry kind="opportunity" recordId={opportunity.id} entryId={entry.id} onDeleted={()=>{if(editing?.id===entry.id)setEditing(null);reload();}}/>
     </div>}

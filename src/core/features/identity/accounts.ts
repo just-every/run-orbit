@@ -34,17 +34,19 @@ export function createNativeAccounts(store: SessionStore, input: { clock: () => 
     owner: () => store.person("o.setup_owner=1 AND o.status='active'"),
     async identityEnabled() { return (await settings())?.idp_sign_in === 1; },
     async policyVersion() { return (await settings())!.generation; },
-    // Orbit keeps no domain rules: every operator may use the email link or a linked provider.
-    async requiredProvider() { return null; },
+    // Email links remain available; provider admission observes the selected domain route.
+    async requiredProvider(email) { return await db.prepare('SELECT provider_id FROM identity_domain_policies WHERE domain=?').bind(email.toLowerCase().split('@')[1]??'').first<string>('provider_id'); },
     async currentBoundSubject({ personId, issuer }) {
       const rows = (await db.prepare('SELECT subject FROM identity_bindings WHERE issuer=? AND operator_id=?').bind(issuer, personId).all<{ subject: string }>()).results;
       return rows.length === 1 ? rows[0]!.subject : null;
     },
     async bindAndIssueSession({ person, principal, returnTo }) {
+      if(principal.emailVerified!==true||typeof principal.email!=='string'||principal.email.trim().toLowerCase()!==person.email||person.role==='member')return null;
       if (!Number.isSafeInteger(principal.providerGeneration) || principal.providerGeneration < 0) return null;
       const pin = principal.providerPin, now = input.clock();
       // One transaction: current person, setting, generation and pin; a binding never moves to another operator. Orbit has no passwords to revoke.
       return store.issue({ person, kind: 'oidc', now, returnTo, principal, statements: [
+        guard(db, {sql:"NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=?) AND NOT EXISTS(SELECT 1 FROM identity_domain_policies WHERE domain=? AND provider_id<>?)",args:[person.id,person.email.split('@')[1]??'',principal.provider??'']}),
         guard(db, { sql: 'EXISTS(SELECT 1 FROM identity_settings WHERE id=1 AND idp_sign_in=1 AND generation=?)', args: [principal.providerGeneration] }),
         ...(pin ? [guard(db, { sql: "EXISTS(SELECT 1 FROM oa_identity_providers WHERE provider_id=? AND status='linked' AND issuer=? AND client_id=? AND linked_at=?)", args: [pin.id, pin.issuer, pin.clientId, pin.linkedAt] })] : []),
         db.prepare('INSERT INTO identity_bindings (issuer,subject,operator_id,created_at) VALUES (?,?,?,?) ON CONFLICT(issuer,subject) DO NOTHING').bind(principal.issuer, principal.subject, person.id, iso(now)),
