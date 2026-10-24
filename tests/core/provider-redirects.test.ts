@@ -63,5 +63,6 @@ test('BASE-DATA-004 BASE-DATA-005 AI-002 OUT-012 provider redirects never reach 
   globalThis.fetch=nativeFetch;
   await Promise.all([close(provider),close(destination)]);
  }
- await signInDomains();
 });
+
+test('OPS-001 linked OIDC enforces reviewed domain policy, verified invited operators, recovery and next-request revocation',async()=>{await signInDomains();});
