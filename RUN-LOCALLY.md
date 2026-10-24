@@ -1,16 +1,17 @@
 # Run it locally
 
-Start from nothing with one line: `npx -y @runeditrun/rer dev just-every/run-orbit`.
-No Node? `curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit`
-brings its own and does the same. To set up without starting, use
-`npx -y @runeditrun/rer setup just-every/run-orbit`.
+Start from nothing with one line:
+`curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit`.
+Git is required; rer brings Node and pnpm. Already have Node 22 or later?
+`npx -y @runeditrun/rer dev just-every/run-orbit` does the same. To set up without
+starting, use `setup` in place of `dev`.
 `rer` runs every verb with this checkout's exact `@runeditrun/rer` package pin.
 The `OPERATIONS.json` argv and `package.json` aliases use `rer VERB`.
 
 ## Launch with one command
 
 ```sh
-npx -y @runeditrun/rer dev just-every/run-orbit
+curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit
 ```
 
 From a runnable edition's root, `rer dev` is the whole launch (the line above clones and starts it in one step; later, `cd run-orbit && rer dev`). It installs

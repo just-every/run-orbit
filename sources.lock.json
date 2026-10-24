@@ -782,12 +782,16 @@
       "sha256": "4f6cd264e40d49a89434265f63235ec4eedf9aabff80b63725a59be2607dd064",
       "executable": false
     },
+    "docs/getting-started.md": {
+      "sha256": "4790272cfd96ab1bb411ca0f9a13ca5424abc5e9651a92cde967c98b5f0cecf1",
+      "executable": false
+    },
     "docs/imports/MOVING.md": {
       "sha256": "de69572bff2234dd1f0ea80af5ef6c69680a74d4243e5efdff257d1b545c9030",
       "executable": false
     },
     "docs/overview.md": {
-      "sha256": "0629e68ec19fbb481efa36a76122d15286099cec3d09d8316692952d8ec8e6d8",
+      "sha256": "5665e939469895a3e6e155763856d492af83a8cfeed76bb06e7aea3f441c9226",
       "executable": false
     },
     "docs/retained-verification/browser-results.jsonl": {
@@ -1799,7 +1803,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "ebffed9059b7ec178ef91ae26d8b3fdb6f590aebb70ee1b1624ffcd2e0f6447a",
+      "sha256": "6ee5edd2ece3eb836dbe21302fbf73d79185bf48d785eb2e00692f53fd01bfff",
       "executable": false
     },
     "docs/verification-runtime-checks.md": {
@@ -3643,7 +3647,7 @@
       "executable": false
     },
     "RUN-LOCALLY.md": {
-      "sha256": "7cabd8ded087dd1ad3a07367881d79560d7bd488bac86534e69ca3bd3956dc16",
+      "sha256": "8c4a46c901afa6a4c385fd74a27d89acbe5c0e0a3ab2f8f57accf52861c7c048",
       "executable": false
     },
     "schema/fold/0016_collaborator_access.sql": {

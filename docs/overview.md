@@ -30,14 +30,14 @@ These steps describe the current `main` branch. The older `v0.1.0` tag predates 
 You install nothing first. The same one line as [run-orbit.com/run](https://run-orbit.com/run) gets Orbit and starts it:
 
 ```sh
-npx -y @runeditrun/rer dev just-every/run-orbit
+curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit
 ```
 
-No Node? `curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit` brings its own and does the same.
+Git is required; rer brings Node and pnpm. Already have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-orbit` does the same. If the installer prints a line that puts `rer` on your PATH, run that line too.
 
-To start it again later: `cd run-orbit && rer dev`.
+To start it again later, run the same line from the same folder, or `cd run-orbit && rer dev`.
 
-`rer` brings Orbit's pinned Node 22.20.0 and pnpm 10.12.4 into its own cache, so you install neither yourself. `rer dev just-every/run-orbit` clones `main`; `dev` installs dependencies, prepares the local trial owner (`owner@run-orbit.test`) on the first launch and starts Orbit. Open the private `RER_OPEN` link it prints on this computer: you are already signed in. Local sign-in needs no email: `RER_OPEN` signs you in. Customer mail you approve is real: once you add your own SendGrid settings in Settings → Customer mail sender, it goes to the customer's inbox even from your computer. Your first sign-in asks for your business name, time zone, currency and pipeline stages, and then you are in. Change the trial email in Settings → Installation owner, or use your real owner mailbox from the start: run `npx -y @runeditrun/rer install just-every/run-orbit`, then `rer setup --owner-email EMAIL` from the checkout, before `rer dev`.
+`rer` brings Orbit's pinned Node 22.20.0 and pnpm 10.12.4 into its own cache, so you install neither yourself. The line clones `main`; `dev` installs dependencies, prepares the local trial owner (`owner@run-orbit.test`) on the first launch and starts Orbit. Open the private `RER_OPEN` link it prints on this computer: you are already signed in. Local sign-in needs no email: `RER_OPEN` signs you in. Customer mail you approve is real: once you add your own SendGrid settings in Settings → Customer mail sender, it goes to the customer's inbox even from your computer. Your first sign-in asks for your business name, time zone, currency and pipeline stages, and then you are in. Change the trial email in Settings → Installation owner, or use your real owner mailbox from the start: run `npx -y @runeditrun/rer install just-every/run-orbit`, then `rer setup --owner-email EMAIL` from the checkout, before `rer dev`.
 
 
 Stop it with `rer dev --stop`. Your data stays on your computer between runs. Stop `dev` and `preview` before CLI export, import, reset, build or verification.
