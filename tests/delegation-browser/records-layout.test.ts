@@ -1,3 +1,5 @@
+import {browserPrivateData} from '../support/browser-private-data';
+import {privateEntriesJourney} from './private-entries-journey.mjs';
 import {browserCalendarData} from '../support/browser-calendar-data';
 import {calendarJourney} from './calendar-journey.mjs';
 import {isolateBrowserTemp} from '../support/browser-temp.mjs';
@@ -35,6 +37,7 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
     const raw=callback+[...heldForm.keys()].sort().map(name=>name+heldForm.get(name)).join(''),signature=Buffer.from(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(raw))).toString('base64');
     const held=await caller.app.request(callback,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-Twilio-Signature':signature},body:heldForm});if(held.status!==200)throw new Error('Held-call browser fixture failed.');
     const calendarData=await browserCalendarData(fixture.db,sampleData.operators[0].id);
+    const privateData=await browserPrivateData(fixture.db,sampleData.operators[0].id);
     await fixture.close();
     worker = spawn(process.execPath, [
       'node_modules/wrangler/bin/wrangler.js', 'dev', '--config', 'dist/server/wrangler.json',
@@ -55,6 +58,9 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
     const context = await browser.newContext({ baseURL: origin, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
     await callingJourney(await context.newPage());
     await calendarJourney(await context.newPage(),calendarData);
+    const collaboratorContext=await browser.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:privateData.cookie}});
+    await privateEntriesJourney(await context.newPage(),await collaboratorContext.newPage(),privateData);
+    await collaboratorContext.close();
     await nativeLongRecordLayoutJourney(await context.newPage());
   } finally {
     await browser?.close();

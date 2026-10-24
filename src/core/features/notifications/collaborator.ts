@@ -6,9 +6,9 @@ import { mentionsOf } from '../records/mentions';
  * through a live grant that includes its notes, calls and meetings. Losing that grant hides them (nothing is deleted)
  * and a new grant shows them again; no other operator's notification or count is ever read here. */
 const targets=`WITH mention_targets AS MATERIALIZED(
- SELECT n.id AS nid,r.record_type AS kind,r.record_id AS rid,'entry-'||r.timeline_entry_id AS anchor FROM notifications n JOIN timeline_entry_records r ON r.timeline_entry_id=substr(n.event_key,15) WHERE n.operator_id=?1 AND n.kind='record.mention' AND n.event_key LIKE 'mention:entry:%'
- UNION ALL SELECT n.id,t.record_type,COALESCE(t.contact_id,t.company_id,t.opportunity_id),'task-'||t.id FROM notifications n JOIN sales_tasks t ON t.id=substr(n.event_key,14) WHERE n.operator_id=?1 AND n.kind='record.mention' AND n.event_key LIKE 'mention:task:%'
- UNION ALL SELECT n.id,'opportunity',h.opportunity_id,'handoff-'||h.id FROM notifications n JOIN handoff_tasks h ON h.id=substr(n.event_key,17) WHERE n.operator_id=?1 AND n.kind='record.mention' AND n.event_key LIKE 'mention:handoff:%'),
+ SELECT n.id AS nid,r.record_type AS kind,r.record_id AS rid,'entry-'||r.timeline_entry_id AS anchor FROM notifications n JOIN timeline_entry_records r ON r.timeline_entry_id=substr(n.event_key,15) WHERE n.operator_id=?1 AND n.kind='record.mention' AND n.event_key LIKE 'mention:entry:%' AND NOT EXISTS(SELECT 1 FROM entry_privacy p WHERE p.source='entry' AND p.entry_id=r.timeline_entry_id)
+ UNION ALL SELECT n.id,t.record_type,COALESCE(t.contact_id,t.company_id,t.opportunity_id),'task-'||t.id FROM notifications n JOIN sales_tasks t ON t.id=substr(n.event_key,14) WHERE n.operator_id=?1 AND n.kind='record.mention' AND n.event_key LIKE 'mention:task:%' AND NOT EXISTS(SELECT 1 FROM entry_privacy p WHERE p.source='task' AND p.entry_id=t.id)
+ UNION ALL SELECT n.id,'opportunity',h.opportunity_id,'handoff-'||h.id FROM notifications n JOIN handoff_tasks h ON h.id=substr(n.event_key,17) WHERE n.operator_id=?1 AND n.kind='record.mention' AND n.event_key LIKE 'mention:handoff:%' AND NOT EXISTS(SELECT 1 FROM entry_privacy p WHERE p.source='handoff' AND p.entry_id=h.id)),
 visible AS(SELECT nid,min('/app/shared-records?kind='||kind||'&id='||rid||'#'||anchor) AS href FROM mention_targets WHERE ${entriesGrantSql('?1','mention_targets.kind','mention_targets.rid')} GROUP BY nid)`;
 export function createCollaboratorNotificationRoutes(db:D1Database){
  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
