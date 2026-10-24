@@ -1,3 +1,4 @@
+import {typedFieldRoutes} from '../records/typed-fields';
 import {domainPolicyRoutes} from '../identity/domain-policy';
 import {PipelinesRepository} from '../pipelines/repository';
 import {pipelineId,pipelineInput} from '../pipelines/contracts';
@@ -16,6 +17,7 @@ import {messageTypes,optOutSettings,setOptOut,type MessageType} from '../outreac
 import {logUnexpected} from '../../platform/unexpected-error';
 export function createSettingsRoutes(db:D1Database,stepUp?:(request:Request)=>Promise<Response|null>){const app=new Hono<{Bindings:{AUTH_LOCAL?:string};Variables:{operator:AuthenticatedOperator}}>(),repo=new SettingsRepository(db),pipelines=new PipelinesRepository(db);
  app.onError((e,c)=>{if(e instanceof RecordError)return c.json({error:e.message},e.status);logUnexpected('settings',e);return c.json({error:'Settings operation failed.'},500);});
+ app.route('/custom-fields',typedFieldRoutes(db));
  app.route('/sign-in-policy',domainPolicyRoutes(db));
  app.use('/operators/*',async(c,next)=>{const id=new URL(c.req.url).pathname.split('/operators/')[1]?.split('/')[0];if(id!==undefined&&!/^[0-9A-HJKMNP-TV-Z]{26}$/.test(id))return c.json({error:'Invalid operator ID.'},400);await next();});
  app.use('/pipelines/*',async(c,next)=>{const id=c.req.path.split('/pipelines/')[1]?.split('/')[0];if(id!==undefined&&!pipelineId.safeParse(id).success)return c.json({error:'Invalid pipeline ID.'},400);await next();});

@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {DataValue,fieldLabel,valueText} from './data-value';
 import {importProvenance} from './import-provenance';
 import {convertFieldValue,type FieldValue,type FieldType} from './custom-field-types';
-export function CustomFields({value,onChange}:{value:Record<string,FieldValue>;onChange:(value:Record<string,FieldValue>)=>void}){
+export function CustomFields({value,onChange,definitions=[]}:{definitions?:any[];value:Record<string,FieldValue>;onChange:(value:Record<string,FieldValue>)=>void}){
  const [newName,setNewName]=useState('');
  const [replacement,setReplacement]=useState<{name:string;value:FieldValue;previous:FieldValue}|null>(null);
  function change(name:string,next:FieldValue){setReplacement(null);onChange({...value,[name]:next});}
@@ -12,7 +12,8 @@ export function CustomFields({value,onChange}:{value:Record<string,FieldValue>;o
   else change(name,converted.value);
  }
  return <fieldset className="record-custom-fields"><legend>Custom fields</legend>
-  {Object.entries(value).map(([name,current])=>{
+  {definitions.filter(f=>!f.archived||Object.hasOwn(value,f.field_key)).map(field=>{const current=value[field.field_key],name=field.field_key;return <div className="record-custom-fields__row" key={name}>{field.archived?<><strong>{field.label} · archived</strong><DataValue value={current}/></>:<label>{field.label}{field.required?' (required)':''}{field.value_type==='picklist'?<select aria-label={field.label} value={String(current??'')} onChange={e=>change(name,e.target.value)}><option value="">Choose a value</option>{JSON.parse(field.options_json).map((option:string)=><option key={option} value={option}>{option}</option>)}</select>:<input aria-label={field.label} type={field.value_type==='number'?'number':field.value_type==='date'?'date':'text'} step={field.value_type==='number'?'any':undefined} value={String(current??'')} onChange={e=>change(name,field.value_type==='number'?(e.target.value===''?null:Number(e.target.value)):e.target.value)}/>}</label>}</div>;})}
+  {Object.entries(value).filter(([name])=>!definitions.some(f=>f.field_key===name)).map(([name,current])=>{
    const provenance=importProvenance(name,current);
    return <div className="record-custom-fields__row" key={name}>
     {provenance?<fieldset><legend>{fieldLabel(name)}</legend><DataValue value={provenance}/><button type="button" onClick={()=>change(name,valueText(provenance))}>Replace {fieldLabel(name)} with text</button></fieldset>:<>
