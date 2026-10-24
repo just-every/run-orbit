@@ -35,7 +35,10 @@ export class DataRepository {
    statements.push(db.prepare('UPDATE ai_calls SET error=NULL WHERE opportunity_id=?').bind(id),db.prepare("INSERT OR IGNORE INTO timeline_entry_records SELECT r.timeline_entry_id,'contact',oc.contact_id FROM timeline_entry_records r JOIN opportunity_contacts oc ON oc.opportunity_id=r.record_id JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE r.record_type='opportunity' AND r.record_id=? AND t.kind LIKE '%accepted%'").bind(id),db.prepare('DELETE FROM outbound_messages WHERE opportunity_id=?').bind(id),db.prepare('DELETE FROM evaluation_job_runs WHERE opportunity_id=?').bind(id),db.prepare('DELETE FROM action_completions WHERE recommendation_id IN(SELECT id FROM recommendations WHERE opportunity_id=?)').bind(id),db.prepare('DELETE FROM ai_previews WHERE opportunity_id=?').bind(id),db.prepare('DELETE FROM notifications WHERE opportunity_id=?').bind(id),db.prepare('DELETE FROM opportunities WHERE id=?').bind(id));
   }
   if(kind==='contact'){
-   if(typeof record.phone==='string'&&record.phone.trim())statements.push(db.prepare('INSERT OR IGNORE INTO call_erased_numbers VALUES(?)').bind(await payloadHash(normalizedPhone(record.phone))));
+   const callNumbers=(await db.prepare('SELECT from_number,to_number,direction FROM call_events WHERE contact_id=?').bind(id).all<{from_number:string;to_number:string;direction:string}>()).results.map(call=>call.direction.startsWith('inbound')?call.from_number:call.to_number);
+   if(typeof record.phone==='string'&&record.phone.trim())callNumbers.push(record.phone);
+   for(const phone of new Set(callNumbers.map(normalizedPhone)))statements.push(db.prepare('INSERT OR IGNORE INTO call_erased_numbers VALUES(?)').bind(await payloadHash(phone)));
+
    statements.push(...recordMailContactErasure(db,id));
    const affected=(await db.prepare('SELECT opportunity_id FROM opportunity_contacts WHERE contact_id=?').bind(id).all<{opportunity_id:string}>()).results;
    // Remove every signal carrying this contact, including copies linked to other records.
