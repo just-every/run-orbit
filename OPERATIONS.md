@@ -1,5 +1,11 @@
 # Orbit operations
 
+```sh
+curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit
+```
+
+Git is required; rer brings Node and pnpm. Already have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-orbit` does the same.
+
 Orbit runs through its RER CLI, `rer VERB` (or `pnpm run VERB -- FLAGS`), started from nothing with `npx -y @runeditrun/rer dev just-every/run-orbit` (or, without Node, the one-line installer on the Run page, which brings its own); project commands select the pinned Node 22.20.0 and pnpm 10.12.4. [README.md](README.md) gives the local sequence; `rer describe` prints every command, flag, effect and pin from `OPERATIONS.json`, and [SEED-COMMAND-CONTRACT.md](SEED-COMMAND-CONTRACT.md) defines their shared behaviour and exit codes. `rer check --profile first-party` validates that contract structurally without dependencies or settings; it never claims hosted health.
 
 ## Local installation
@@ -20,6 +26,8 @@ Sign-in is Base operator-auth over Orbit's own operators and sessions. `dev` ope
 Build output under `dist/` is disposable. Commands refuse a legacy store at `dist/server/.wrangler/state` before building, with exit 4, and never move or delete it: stop any app using it, copy what you need out of `dist/`, then remove it yourself. Settings, state and archive paths must stay inside the checkout without symlinks.
 
 ## Deploy
+
+For assisted hosting, start at https://app.runeditrun.com/?product=orbit&plan=assisted.
 
 `rer deploy [--environment NAME]` builds locally, then uses the Base deploy kit against the owner's Cloudflare account. Stop `rer dev` in the checkout first (`rer dev --stop`); deploy refuses while dev holds the local state.
 
