@@ -1827,7 +1827,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "544a4d9715dfdbf7c1ef356b3da9e9353354c3a29f1087118ab10d0a56816a7b",
+      "sha256": "b03d3ce924396cc4ee4036d682054ecee6ce94cd473b1a5946551d03e1e362f0",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -3527,7 +3527,7 @@
       "executable": false
     },
     "newtests/t096/released-database.ts": {
-      "sha256": "a461170473a91cd8171a39a744b6dbbfdb71ec782412cb386c32c5805ac414de",
+      "sha256": "66800ae5bda0cb0cdf942a14fda27d2278a8c84e73df9df37215b47b32b3358a",
       "executable": false
     },
     "newtests/t096/released-forecast-upgrade.ts": {
