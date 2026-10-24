@@ -8439,7 +8439,7 @@
       "executable": false
     },
     "tests/delegation-browser/calling-journey.mjs": {
-      "sha256": "222e944fbfc0bea07ceea8d1dd58800d069754308048c2b83a2e1d4caa0c36c1",
+      "sha256": "2dd35765db6c9d3ea770a67187bb8ecaafa7e0618cfad132d68d99df01fb6737",
       "executable": false
     },
     "tests/delegation-browser/journey.mjs": {
@@ -9403,7 +9403,7 @@
       "executable": false
     },
     "tests/support/twilio-calls.ts": {
-      "sha256": "25d851a433bed41ac1ff49e35d710b8d21b48442d927df3038f4e20f066d9a5e",
+      "sha256": "1d938365c28a9dd3d41c81c6a99517011879f55c971d021faa46c0a25d648e5e",
       "executable": false
     },
     "tests/support/typed-fields-proof.ts": {
