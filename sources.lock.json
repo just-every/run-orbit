@@ -8259,7 +8259,7 @@
       "executable": false
     },
     "tests/core/archive-transfer.test.ts": {
-      "sha256": "78b0bd2e03afd9d711afe391968aed0681196457009928d246dcfd3d6d77020d",
+      "sha256": "f3d7389e859da1417675247041c10bfebbd0e838b37f9c1d84289ff74be96b15",
       "executable": false
     },
     "tests/core/assistance.test.ts": {
@@ -8391,7 +8391,7 @@
       "executable": false
     },
     "tests/core/provider-redirects.test.ts": {
-      "sha256": "4769bfcd267275c0fd3d2ff7ded70ba1a7008fec68be1b82681d2eb51c88f79e",
+      "sha256": "6848b016727312c28f39061a1d20dc5d0edcaac89a76aea5cf4d644ebc3684e4",
       "executable": false
     },
     "tests/core/public-demo.test.ts": {
@@ -8431,7 +8431,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "bfc346282d4bac6fe02af2c3e4afb6884ef5a53ad0d228edfcc8881914e28d92",
+      "sha256": "8cfd05c5f0c4ea5f289d16a40a4737862843e4242b4c71fb5d4d2bff3bf3f005",
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {
