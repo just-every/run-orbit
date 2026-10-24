@@ -1,3 +1,4 @@
+import {EntryPrivacy} from '../../operator/ui/entry-privacy';
 import { useEffect, useRef, useState } from 'react';
 import { formatDate, label } from '../../operator/ui/formatters';
 import type { SalesTask, TaskHistory, TaskStatus } from '../contracts';
@@ -18,6 +19,7 @@ export function SalesTaskCard({task, busy, highlighted, onEdit, onStatus}: {
   <p className={overdue ? 'sales-task__overdue' : ''}>{overdue ? 'Overdue · ' : 'Due '}<time dateTime={task.dueAt}>{formatDate(task.dueAt, task.timezone)}</time></p>
   {task.recurrence !== 'none' && <p>Repeats {task.recurrence}. Occurrence {task.occurrence + 1}{task.seriesCancelledAt ? ' · Series cancelled' : ''}.</p>}
   {task.reminderMinutes !== null && <p>In-app reminder {task.reminderMinutes === 0 ? 'at the due time' : `${task.reminderMinutes} minutes before due`}.</p>}
+  <EntryPrivacy source="task" id={task.id}/>
   {task.notes && <p className="sales-task__notes">{task.notes}</p>}
   <p className="sales-tasks__hint">Updated by {task.updatedByName ?? 'Removed operator'} · <time dateTime={task.updatedAt}>{formatDate(task.updatedAt, task.timezone)}</time></p>
   <div className="sales-tasks__actions">{task.status === 'open' && <><button type="button" disabled={busy} onClick={() => onEdit(task)}>Edit, reassign or reschedule</button><button type="button" disabled={busy} onClick={() => onStatus(task, 'cancelled')}>{task.recurrence === 'none' ? 'Cancel task' : 'Cancel recurring series'}</button></>}</div>

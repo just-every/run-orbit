@@ -1,3 +1,4 @@
+import {privateEntriesProof} from './private-entries-proof';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {fixture,collaborator,nativeRecord,signIn} from './fixture';
@@ -24,6 +25,7 @@ test('TEAM-001 native peers stay full while a distinct accepted collaborator obe
  const grant=await f.admin.grant(await f.nativeContext(),{subjectKind:'operator',subjectId:viewer.operator.operatorId,resourceType:'company',resourceId:record.ref.id,actions:['graph.read'],fields:['primary_domain'],purpose:'Review this exact field',expiresAt:null});const granted=await f.access.resolveOperatorContext(viewer.operator,'workspace','grant');assert.equal((await f.graph.getRecord(granted,record.ref,['primary_domain'])).fields.primary_domain,'secretneedle.test');const prepared=legacyDatabase(f.db,granted).prepare('SELECT primary_domain FROM companies WHERE id=?').bind(record.ref.id);await f.admin.revokeGrant(await f.nativeContext(),grant.id);await assert.rejects(prepared.first());
  const query=legacyDatabase(f.db,await f.access.resolveOperatorContext(viewer.operator,'workspace','before-removal')).prepare('SELECT id FROM companies');await f.admin.setMembership(await f.nativeContext(),viewer.operator.operatorId,'seller','removed');await assert.rejects(query.all());assert.equal(await createDependencies(f.db).auth.authenticate(viewer.cookie),undefined);await assert.rejects(f.admin.setMembership(await f.nativeContext(),viewer.operator.operatorId,'seller','active'));assert.equal(await isFullOperator(f.db,viewer.operator.operatorId),false);
  const newSession=await createDependencies(f.db).auth.createSession(viewer.operator.operatorId),operator=(await createDependencies(f.db).auth.authenticate(`__Host-orbit_session=${newSession.token}`))!;await assert.rejects(f.access.resolveOperatorContext(operator,'workspace','removed'));const invitation=await f.admin.invite(await f.nativeContext(),{email:operator.email,role:'guest',expiresAt:new Date(Date.now()+86400000).toISOString()});await f.admin.accept(operator,invitation.token);const renewed=await f.access.resolveOperatorContext(operator,'workspace','reauthorized');assert.equal((await f.graph.searchRecords(renewed,{types:['company'],query:'',fields:[],filters:{},limit:10})).items.length,0);assert.equal(await isFullOperator(f.db,operator.operatorId),false);
+ await privateEntriesProof(f);
  }finally{await f.close();}});
 
 test('selected original nested-private and assembled-read assertions run against an accepted collaborator and native positive',async()=>{const f=await fixture();try{
