@@ -1,5 +1,7 @@
 import {isolateBrowserTemp} from '../support/browser-temp.mjs';
 isolateBrowserTemp();
+import {get} from 'node:https';
+import {callingJourney} from './calling-journey.mjs';
 import { test } from 'node:test';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
@@ -15,17 +17,18 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
   const fixture = await isolatedDatabase();
   const port = Number(process.env.ORBIT_RECORD_LAYOUT_PORT ?? 8728);
   const inspectorPort = Number(process.env.ORBIT_RECORD_LAYOUT_INSPECTOR_PORT ?? 8733);
-  const origin = `http://127.0.0.1:${port}`;
+  const origin = `https://127.0.0.1:${port}`;
   let worker: ReturnType<typeof spawn> | undefined;
   let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
   try {
     const deps = createTestDependencies(fixture.db);
     await deps.sampleData.seed();
+    await fixture.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(sampleData.operators[0].id).run();
     const session = await deps.auth.createSession(sampleData.operators[0].id);
     await fixture.close();
     worker = spawn(process.execPath, [
       'node_modules/wrangler/bin/wrangler.js', 'dev', '--config', 'dist/server/wrangler.json',
-      '--local', '--persist-to', fixture.directory, '--port', String(port), '--inspector-port', String(inspectorPort), ...identityVarArgs(origin)
+      '--local', '--local-protocol', 'https', '--persist-to', fixture.directory, '--port', String(port), '--inspector-port', String(inspectorPort), '--var','ORBIT_ENCRYPTION_KEY:'+ 'ab'.repeat(32), ...identityVarArgs(origin)
     ], { stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, CI: '1' } });
     let output = '';
     worker.stdout!.on('data', chunk => output += chunk);
@@ -33,13 +36,14 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
     let ready = false;
     for (let attempt = 0; attempt < 300; attempt++) {
       try {
-        if ((await fetch(origin + '/health')).ok) { ready = true; break; }
+        if (await new Promise<boolean>(resolve=>{get(origin+'/health',{rejectUnauthorized:false},response=>{response.resume();resolve(response.statusCode===200);}).on('error',()=>resolve(false));})) { ready = true; break; }
       } catch {}
       await new Promise(resolve => setTimeout(resolve, 100));
     }
     if (!ready) throw new Error(output || `Emitted Worker did not start at ${origin}.`);
     browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
-    const context = await browser.newContext({ baseURL: origin, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
+    const context = await browser.newContext({ baseURL: origin, ignoreHTTPSErrors:true, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
+    await callingJourney(await context.newPage());
     await nativeLongRecordLayoutJourney(await context.newPage());
   } finally {
     await browser?.close();

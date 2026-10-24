@@ -45,7 +45,7 @@ export function personFence(person: { id: string; email: string; version: number
 /** Session provenance lives in identity_sessions (alias i), joined LEFT so pre-upgrade sessions keep a NULL kind. */
 export const PROVENANCE = 'LEFT JOIN identity_sessions i ON i.session_id=s.id';
 const PROVIDER_PIN = "(i.provider_id IS NULL OR EXISTS(SELECT 1 FROM oa_identity_providers ip WHERE ip.provider_id=i.provider_id AND ip.issuer=i.issuer AND ip.linked_at=i.provider_linked_at AND ip.status='linked'))";
-const PROVIDER_SESSION = `(s.created_at>? AND EXISTS(SELECT 1 FROM identity_settings st WHERE st.id=1 AND st.idp_sign_in=1 AND st.generation=i.provider_generation) AND ${PROVIDER_PIN} AND EXISTS(SELECT 1 FROM identity_bindings b WHERE b.issuer=i.issuer AND b.subject=i.subject AND b.operator_id=s.operator_id))`;
+const PROVIDER_SESSION = `(s.created_at>? AND EXISTS(SELECT 1 FROM identity_settings st WHERE st.id=1 AND st.idp_sign_in=1 AND st.generation=i.provider_generation) AND ${PROVIDER_PIN} AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=s.operator_id) AND NOT EXISTS(SELECT 1 FROM identity_domain_policies dp JOIN operators po ON po.id=s.operator_id WHERE dp.domain=substr(lower(po.email),instr(po.email,'@')+1) AND dp.provider_id IS NOT i.provider_id) AND EXISTS(SELECT 1 FROM identity_bindings b WHERE b.issuer=i.issuer AND b.subject=i.subject AND b.operator_id=s.operator_id))`;
 /** Sessions from before Base adoption carry no kind or version and keep their existing native contract. */
 const CURRENT = (o: string) => `(i.kind IS NULL OR i.authority_version=${version(o)}) AND (i.kind IS NOT 'oidc' OR ${PROVIDER_SESSION})`;
 

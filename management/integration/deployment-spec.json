@@ -318,6 +318,18 @@
       "name": "0058_twilio_calls.sql",
       "sha256": "d347174ae8c973e5192b0d6a73cef9a765b57e20028951dc06fb47bf68e53bed",
       "sql": "-- Installation credentials are excluded from Records archives; reconnect after restore.\nCREATE TABLE call_credentials (id INTEGER PRIMARY KEY CHECK(id=1), ciphertext TEXT NOT NULL);\nCREATE TABLE call_events (\n id TEXT PRIMARY KEY NOT NULL,\n account_sid TEXT NOT NULL,\n call_sid TEXT NOT NULL,\n sequence INTEGER NOT NULL CHECK(sequence>=0),\n contact_id TEXT REFERENCES contacts(id) ON DELETE CASCADE,\n from_number TEXT NOT NULL,\n to_number TEXT NOT NULL,\n direction TEXT NOT NULL,\n status TEXT NOT NULL,\n duration_seconds INTEGER,\n received_at TEXT NOT NULL,\n entry_id TEXT REFERENCES timeline_entries(id) ON DELETE CASCADE,\n UNIQUE(account_sid,call_sid,sequence)\n);\nCREATE INDEX call_events_contact ON call_events(contact_id,received_at);\nCREATE TABLE call_dial_attempts (\n id TEXT PRIMARY KEY NOT NULL,\n contact_id TEXT NOT NULL REFERENCES contacts(id) ON DELETE CASCADE,\n actor_id TEXT REFERENCES operators(id) ON DELETE SET NULL,\n created_at TEXT NOT NULL,\n state TEXT NOT NULL CHECK(state IN('attempted','submitted','uncertain')),\n call_sid TEXT\n);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0059_call_erasure.sql",
+      "sha256": "af9c8b40121206afb1f7d454f93a289dc9c7ca8c93e9331e1db13d06f5ed13d1",
+      "sql": "-- Retain only a digest so delayed provider events cannot restore an erased phone.\nCREATE TABLE call_erased_numbers (phone_hash TEXT PRIMARY KEY NOT NULL);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0060_sign_in_domains.sql",
+      "sha256": "c4dc60ec6a7dc1f38e7568b83b0690dfa199e368bf372b23e3a39756902b39f2",
+      "sql": "-- Installation-local admission policy; identity tables never confer restored authority.\nCREATE TABLE identity_domain_policies (\n domain TEXT PRIMARY KEY NOT NULL,\n provider_id TEXT NOT NULL,\n updated_by TEXT NOT NULL REFERENCES operators(id),\n updated_at TEXT NOT NULL\n);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
