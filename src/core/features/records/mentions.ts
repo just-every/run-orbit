@@ -45,7 +45,8 @@ async function unreached(db:D1Database,colleague:Colleague,kind:RecordKind,recor
 const recordName:Record<RecordKind,string>={contact:'SELECT COALESCE(name,email) AS name FROM contacts WHERE id=?',company:'SELECT name FROM companies WHERE id=?',opportunity:'SELECT title AS name FROM opportunities WHERE id=?'};
 /** The mentions in an entry, task note or handoff, refused before saving when a mentioned colleague cannot open it there, and one in-app notification for each mentioned colleague not yet notified for this source. */
 export async function mentionPlan(db:D1Database,input:{source:MentionSource;sourceId:string;kind:RecordKind;recordId:string;label:string;text:string;author:string}){
- const mentioned=parseMentions(input.text,await mentionable(db)).filter(c=>c.id!==input.author),hidden:UnreachedColleague[]=[];
+ let mentioned=parseMentions(input.text,await mentionable(db)).filter(c=>c.id!==input.author),hidden:UnreachedColleague[]=[];
+ if(await db.prepare('SELECT 1 FROM entry_privacy WHERE source=? AND entry_id=?').bind(input.source,input.sourceId).first()){const full=[];for(const colleague of mentioned)if(await isFullOperator(db,colleague.id))full.push(colleague);mentioned=full;}
  for(const colleague of mentioned){const ask=await unreached(db,colleague,input.kind,input.recordId);if(ask)hidden.push(ask);}
  if(hidden.length)throw new MentionAccessError(hidden,input.kind);
  const name=(await db.prepare(recordName[input.kind]).bind(input.recordId).first<{name:string|null}>())?.name??kindName(input.kind),at=new Date().toISOString();
@@ -69,7 +70,8 @@ export async function mentionsOf(db:D1Database,operatorId:string):Promise<Mentio
  const colleagues=await mentionable(db),still=(text:string)=>parseMentions(text,colleagues).some(c=>c.id===operatorId);
  const tasks=(await db.prepare("SELECT t.id,'task' AS kind,t.notes AS text,a.display_name AS author,t.record_type AS recordType,COALESCE(t.contact_id,t.company_id,t.opportunity_id) AS recordId,t.updated_at AS at FROM notifications n JOIN sales_tasks t ON n.event_key LIKE 'mention:task:%' AND t.id=substr(n.event_key,14) LEFT JOIN operators a ON a.id=t.updated_by WHERE n.operator_id=? AND n.kind='record.mention'").bind(operatorId).all<Omit<Mention,'source'|'href'>>()).results;
  const handoffs=(await db.prepare("SELECT h.id,'handoff' AS kind,h.description AS text,a.display_name AS author,'opportunity' AS recordType,h.opportunity_id AS recordId,h.updated_at AS at FROM notifications n JOIN handoff_tasks h ON n.event_key LIKE 'mention:handoff:%' AND h.id=substr(n.event_key,17) LEFT JOIN operators a ON a.id=h.actor_id WHERE n.operator_id=? AND n.kind='record.mention'").bind(operatorId).all<Omit<Mention,'source'|'href'>>()).results;
- return [...entries.map(row=>({...row,source:'entry' as const,href:`${recordHref(row.recordType,row.recordId)}#entry-${row.id}`})),
-  ...tasks.filter(row=>still(row.text)).map(row=>({...row,source:'task' as const,href:`/app#sales-task-${row.id}`})),
-  ...handoffs.filter(row=>still(row.text)).map(row=>({...row,source:'handoff' as const,href:`/app/opportunities/${row.recordId}#handoff-${row.id}`}))].sort((a,b)=>b.at.localeCompare(a.at));
+ const full=await isFullOperator(db,operatorId),privateRows=full?[]:(await db.prepare('SELECT source,entry_id FROM entry_privacy').all<{source:string;entry_id:string}>()).results,hidden=new Set(privateRows.map(p=>`${p.source}:${p.entry_id}`));
+ return [...entries.filter(row=>!hidden.has(`entry:${row.id}`)).map(row=>({...row,source:'entry' as const,href:`${recordHref(row.recordType,row.recordId)}#entry-${row.id}`})),
+  ...tasks.filter(row=>!hidden.has(`task:${row.id}`)&&still(row.text)).map(row=>({...row,source:'task' as const,href:`/app#sales-task-${row.id}`})),
+  ...handoffs.filter(row=>!hidden.has(`handoff:${row.id}`)&&still(row.text)).map(row=>({...row,source:'handoff' as const,href:`/app/opportunities/${row.recordId}#handoff-${row.id}`}))].sort((a,b)=>b.at.localeCompare(a.at));
 }
