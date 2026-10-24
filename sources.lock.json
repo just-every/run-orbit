@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "c8cbbb8e6561cf293ba0a9e0cfca7b63da7a96a715ae0cf919eeb3c06a8b30a2",
+      "sha256": "819e1be19e23c176f3fc591458d10a34fc6444f89ed79aba1684e3218519726e",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "36997768b8b825966194f223ddfe5594aa6a87cf0128a1350dc465caa81a923d",
+      "sha256": "ae2027ba869eb9700796330f96184f2061a589ee00e8583d27976a9ff3685a2c",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "0a14bac5b47a469e91c90aa586397e737efb50351338513d69f5786983085957",
+      "sha256": "271921d675d5160dde0cbef617917694120c8854a4d00549382d7e9e2dee3343",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -930,6 +930,18 @@
       "sha256": "eff26197571c7e9c06c03d449d0410accdac73f5f1f85c66a2fdda5a50a785d8",
       "executable": false
     },
+    "docs/retained-verification/FORM-001/form-hidden-framed-390.png": {
+      "sha256": "8734d619bbb99a118da6db53ac0548ad5f3f63e4211cd89e4fd398193601d41d",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-hidden-review-1440.png": {
+      "sha256": "c456b37739cb3d8971b085f049421b274e66c99ba2e92988b14beaf067a82aaf",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-hidden-review-390.png": {
+      "sha256": "ccea304317211bd22cd3d55cea669bf00e4622d676568364171b270702b50dbb",
+      "executable": false
+    },
     "docs/retained-verification/FORM-001/form-mapping-builder-1440.png": {
       "sha256": "17d649b38c98cbd9b132d285a00d0dd140f33fe3f71811fd2c69d345d304a5df",
       "executable": false
@@ -960,6 +972,26 @@
     },
     "docs/retained-verification/FORM-001/form-mapping-received-390.png": {
       "sha256": "4deba9ea153b9ed7f5a909317d169a70b813c4b2892b13c5606d5615983664c0",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-picklist-builder-1440.png": {
+      "sha256": "dc0fba61c4e36adb5d299ccb0b5596123fd68f985b02160bcde1502e6994385f",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-picklist-builder-390.png": {
+      "sha256": "a1fce425a9dcd8818d9b3ac7f7e81667f2da1f004e65137fd88d939caacedc59",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-picklist-hosted-1440.png": {
+      "sha256": "4fb82baffbad44c48353670a0d8a33f1b6b78728c7159ae62b0049ee62dca119",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-picklist-hosted-390.png": {
+      "sha256": "21d2a81dcdc8c995d70a8928745a1aa8b339834e3d4ded904b1f376c59950031",
+      "executable": false
+    },
+    "docs/retained-verification/FORM-001/form-picklist-received-1440.png": {
+      "sha256": "0d9f3259301b15503e5ebc9bcfa2266e2dc3b44b06ea14eb4e2803e71b333cfb",
       "executable": false
     },
     "docs/retained-verification/INTEGRATE-005/archive-1440.png": {
@@ -2079,7 +2111,7 @@
       "executable": false
     },
     "newtests/t096/browser-form-mapping.ts": {
-      "sha256": "d7f19212bd1912491af55311faaf0727a4a9b874b806556cdcee9a284bacc4a4",
+      "sha256": "cc92022ebcd27af78180a8a81c30520fa65702b8c338d0d791f1035aee2f2609",
       "executable": false
     },
     "newtests/t096/browser-form-no-script.ts": {
@@ -2095,7 +2127,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "99a6995f382ed1f39ed5a90d2b2a5eb2f82a459f4e1c943fbdba5efe42532693",
+      "sha256": "585be39d12a171360c74e58ec2d60b034cc19c7ad7a26ee42bd810e4a7db50e4",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -2195,15 +2227,15 @@
       "executable": false
     },
     "newtests/t096/forms-mapped-custody.ts": {
-      "sha256": "2a782dabb47db2dcb08df7ee12b3be7555024b3f64d0436297206f7b94936664",
+      "sha256": "44ace416d88870ec08ad4b8e687dad7d52cfb45e618c42ce4b0992c86edd15eb",
       "executable": false
     },
     "newtests/t096/forms-mapped-journey.ts": {
-      "sha256": "29e6cb5768024ddfe2b3db7db3060aa38fa6f62760c936887322b1b9fe5f00a7",
+      "sha256": "50f9f54ef0072385fd5c6754d352f41f92dae25d63a931fa14be16ff0b1397d5",
       "executable": false
     },
     "newtests/t096/forms-native.test.ts": {
-      "sha256": "30e46b7bbaeaba8a790b7b5c4cfd162f5e6821274428b1d36f164aa8f76d61bb",
+      "sha256": "42cea25052142a03f076755b214f9e7d76d7015c966e6ff9f890940fe18863e7",
       "executable": false
     },
     "newtests/t096/forms-origin-race.ts": {
@@ -5147,7 +5179,7 @@
       "executable": false
     },
     "src/core/features/forms/builder.tsx": {
-      "sha256": "28e42830dae4820071a1297f0f16bfcfc479f896357d5b1be703a4cc1d6222c6",
+      "sha256": "819660cfd764df2cb508cbcd0719894dc89551012606fb8b837588bd0c3ed095",
       "executable": false
     },
     "src/core/features/forms/company-intake.ts": {
@@ -5155,11 +5187,15 @@
       "executable": false
     },
     "src/core/features/forms/console.tsx": {
-      "sha256": "c653fabd66c56d46401da00bfaa5b9b3a8d314554b1dd45943e9f41fd4ec02f2",
+      "sha256": "bff4ad9c35b256aafcb96439d4ad3a438d76e8fc95d954d5d5fa2159012c2390",
       "executable": false
     },
     "src/core/features/forms/definition.ts": {
-      "sha256": "5d16da9595937096b201ddd0144f578e8e7e81146959f81a19ee3c296238b947",
+      "sha256": "be30d47603af9877d41c7eca9c6696a27ab8ceb2b390b32479116e6e86490887",
+      "executable": false
+    },
+    "src/core/features/forms/embed-code.ts": {
+      "sha256": "66cbb460011feb50669851a3d67c00293478d3c8f085ad0b445f52f17323a65e",
       "executable": false
     },
     "src/core/features/forms/embedding.ts": {
@@ -5174,12 +5210,16 @@
       "sha256": "33d5f4818cd799fba76137d9fbfac4dddfefd4b0810f3828ee3a67f67118c16d",
       "executable": false
     },
+    "src/core/features/forms/field-values.ts": {
+      "sha256": "e6e182b305b5eb20545857b86e4833149905c5702e0af5928842245dff8d5f89",
+      "executable": false
+    },
     "src/core/features/forms/mappings.ts": {
-      "sha256": "449e5c56f8c0a46283f3e1ce419ca1e45c60b13adc259fbe96bde2d39bf2f7f3",
+      "sha256": "49ab9e5fb3685a34be5f7181e440e8dc13b5dc3e0b506144cf47a4635bbf2c2c",
       "executable": false
     },
     "src/core/features/forms/native-capture.ts": {
-      "sha256": "eb3a66d4ef99d3cadc6617f338b557fd91059a4ba5c5a391cb28f83162ca6f1a",
+      "sha256": "8f164bbcf8574ea998df9bed19ec8cdcd2b856293755f32de8e3da5b2623b00b",
       "executable": false
     },
     "src/core/features/forms/opportunity-intake.ts": {
@@ -5191,7 +5231,7 @@
       "executable": false
     },
     "src/core/features/forms/public-script.ts": {
-      "sha256": "ad3e0f2a360c0631076724d2cb4e2b33f3e55a89099bab7621de30d88e47a375",
+      "sha256": "5f6ad16f1f5894b6cd9cc8eb77ae0138a67fd1819e27c477647f6e3c418a5c6a",
       "executable": false
     },
     "src/core/features/forms/publication-approval.ts": {
@@ -5203,7 +5243,7 @@
       "executable": false
     },
     "src/core/features/forms/service.ts": {
-      "sha256": "1345c1a7d2616637ef10cc19f25963e70b0cbeba7c9e2024a1c12795866e8f69",
+      "sha256": "dd815d155b2ad68f276fc8911fae88e74e80ae591f544fd97ca30ac7fb415e88",
       "executable": false
     },
     "src/core/features/forms/spam-panel.tsx": {
@@ -5379,7 +5419,7 @@
       "executable": false
     },
     "src/core/features/ingestion/repository.ts": {
-      "sha256": "1b8f427e63fa247060e85eeb3fa1190aad35e18f7f34b8823d44eab21b30d52c",
+      "sha256": "f097130cf85195725cea89e9177ae72688ce42350d4a8bbf0b25037846a033ea",
       "executable": false
     },
     "src/core/features/ingestion/routes.ts": {
@@ -5851,7 +5891,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/source-recipes.tsx": {
-      "sha256": "c3b639ccc5792a4862b82b00c204abaf519904d25f78976a4f6a8d2a9768ab43",
+      "sha256": "fbf7f3eb4c6fc98e6a42393766b7f0847e53c7677275734c49a27201bc81dcc5",
       "executable": false
     },
     "src/core/features/operator/ui/sources-page.tsx": {
@@ -6387,7 +6427,7 @@
       "executable": false
     },
     "src/core/features/publication/fixed-compiler.ts": {
-      "sha256": "8f4e22a323a4ae5b8cd647f880321ec80b45a673ddfc33ee3e98bf627cc87a93",
+      "sha256": "175b3e56279749eea9b8c7d1d00f618161614231324867660db7957148404f5c",
       "executable": false
     },
     "src/core/features/publication/read-only-preview.ts": {
