@@ -1,3 +1,4 @@
+import {typedFieldFences} from './typed-fields';
 import {legacyActorContext} from '../access/legacy-database';
 import {reconcileLegacyOwnership} from '../ownership/legacy';
 import {readOwnership,ownershipForRecords} from '../ownership/read';
@@ -67,10 +68,12 @@ export class RecordsRepository extends RecordSeedRepository {
    if(data.owner_id&&!await this.db.prepare("SELECT id FROM operators WHERE id=? AND status='active'").bind(data.owner_id).first())throw new RecordError(400,'Owner must be an active operator.');
    for(const contact of contacts)await requireRecord(this.db,'contact',contact);
   }
+  const typedFences=await typedFieldFences(this.db,kind,id,data.custom_fields,JSON.parse(before?.custom_fields_json??'{}'));
   data.custom_fields_json=JSON.stringify(data.custom_fields);delete data.custom_fields;data.updated_at=now;
   const columns=Object.keys(data),values=columns.map(k=>data[k]??null);
   const statements:D1PreparedStatement[]=policies.length?stagePolicyFence(this.db,policies,before?{id,stage_id:before.stage_id,updated_at:before.updated_at}:undefined):[];
   const emailTokens=kind==='contact'?await suppressionHashes(this.db,data.email):[];
+  statements.push(...typedFences);
   statements.push(...suppressionContextFence(this.db,emailTokens));
   // Only a trusted internal operator call with an explicit field can clear. HTTP edits/imports opt out.
   const explicitClear=kind==='contact'&&!!before&&!options.ordinaryEdit&&(input as any)?.contactability==='contactable';
