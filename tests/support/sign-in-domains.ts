@@ -7,7 +7,7 @@ import {sessionStore} from '../../src/core/features/identity/store';
 import {isolatedDatabase} from './isolated-database';
 import {todayApp} from './today-workspace';
 import {emailLinkSignIn,mailedIdentity} from './email-link';
-import {createOrbitIdentity} from '../../src/core/features/identity';
+import {identityResponse} from '../../src/core/features/identity';
 import {TEST_SESSION_SECRET} from './worker-identity.mjs';
 /** A local issuer at the network edge; admission, signatures, policy and sessions are real. */
 export async function signInDomains(){
@@ -49,13 +49,41 @@ export async function signInDomains(){
   await auth.providers!.relink('auth');
   const invited=await t.json<any>('/api/v1/settings/operators',{body:{email:'synthetic-orbit-invited@example.com',displayName:'Synthetic invited operator'}},201);
   const peerEmail=await emailLinkSignIn(db,'synthetic-orbit-invited@example.com');
+  const mail=mailedIdentity(db,origin,{OWNER_EMAIL:'synthetic-orbit-owner@example.com'});
+  async function emailDoor(request:Request){const response=await identityResponse(request,mail.bindings,{mailSender:mail.mailSender,ownerClaimed:async()=>true});assert.ok(response);return response;}
+  const protectedRoute=(cookie='')=>t.app.request(origin+'/api/v2/access/class',{headers:{Cookie:cookie}});
+  // Recovery is the email form on Base's sign-in page after an unavailable provider.
+  const recovery=await emailDoor(new Request(origin+'/signin?notice=oidc_provider_unavailable'));
+  assert.equal(recovery.status,200);assert.match(await recovery.text(),/<form[^>]+action="\/auth\/magic-link"/);
+  const pendingEmail=await emailDoor(mail.post('/auth/magic-link',{json:{email:'synthetic-orbit-invited@example.com'}}));assert.equal(pendingEmail.status,202);
+  const pendingLink=mail.linkIn(mail.sent.at(-1));assert.ok(pendingLink);
+
   await t.json(policy,{method:'PUT',body:{domain:'example.com',providerId:'auth'}},200);
   assert.equal(await auth.getSession(new Request(origin+'/app',{headers:{Cookie:peerEmail.cookie}})),null,'requiring a provider ends an older non-owner email session');
-  const mail=mailedIdentity(db),native=createOrbitIdentity(mail.bindings,{mailSender:mail.mailSender})!;await native.auth.requestMagicLink(mail.post('/auth/magic-link'),{email:'synthetic-orbit-invited@example.com'});assert.equal(mail.sent.length,0,'a required domain cannot bypass its provider with a new email link');
-  assert.ok(await emailLinkSignIn(db,'synthetic-orbit-owner@example.com'),'owner recovery email remains available under the domain requirement');
+  assert.equal((await protectedRoute(peerEmail.cookie)).status,401,'the protected API rejects an older required-domain email session');
+  const sentBefore=mail.sent.length;
+  for(const request of [mail.post('/auth/magic-link',{json:{email:'synthetic-orbit-invited@example.com'}}),mail.post('/auth/magic-link',{form:{email:'synthetic-orbit-invited@example.com',returnTo:'/app'}})]){
+   const result=await emailDoor(request);assert.equal(result.status,request.headers.get('content-type')==='application/json'?202:303);
+   assert.equal(result.headers.get('set-cookie'),null,'neither magic link nor email recovery issues a session cookie');
+   assert.equal(mail.sent.length,sentBefore,'required-domain non-owners receive no email proof');
+   assert.equal((await protectedRoute()).status,401,'the protected API refuses both email paths');
+  }
+  const stale=await emailDoor(mail.post('/auth/confirm',{form:{token:new URL(pendingLink).searchParams.get('token')!}}));
+  assert.equal(stale.status,403,'a proof issued before the domain requirement cannot bypass it');assert.equal(stale.headers.get('set-cookie'),null);
+  assert.equal((await protectedRoute()).status,401);
+  async function admittedEmail(address:string,recovery=false){
+   const requested=await emailDoor(mail.post('/auth/magic-link',recovery?{form:{email:address,returnTo:'/app'}}:{json:{email:address,returnTo:'/app'}}));assert.equal(requested.status,recovery?303:202);
+   const link=mail.linkIn(mail.sent.at(-1));assert.ok(link);const preview=await emailDoor(new Request(link));assert.equal(preview.status,200);assert.equal(preview.headers.get('set-cookie'),null);
+   const confirmed=await emailDoor(mail.post('/auth/confirm',{form:{token:new URL(link).searchParams.get('token')!}}));assert.equal(confirmed.status,303);
+   const cookie=confirmed.headers.getSetCookie().find(value=>value.startsWith('__Host-orbit_session='))?.split(';')[0];assert.ok(cookie);
+   assert.ok(await auth.getSession(new Request(origin+'/app',{headers:{Cookie:cookie}})));assert.equal((await protectedRoute(cookie)).status,200);
+  }
+  await admittedEmail('synthetic-orbit-owner@example.com',true);
+  await t.json('/api/v1/settings/operators',{body:{email:'synthetic-orbit-unrestricted@elsewhere.test',displayName:'Synthetic unrestricted operator'}},201);
+  await admittedEmail('synthetic-orbit-unrestricted@elsewhere.test');
   email='synthetic-orbit-invited@example.com';subject='synthetic-orbit-invited';
   const operatorSignIn=await signIn();assert.equal(operatorSignIn.status,303);const operatorCookie=operatorSignIn.headers.getSetCookie().find(c=>c.startsWith('__Host-orbit_session='))!.split(';')[0]!;
-  const operatorRequest=new Request(origin+'/app',{headers:{Cookie:operatorCookie}});assert.ok(await auth.getSession(operatorRequest));
+  const operatorRequest=new Request(origin+'/app',{headers:{Cookie:operatorCookie}});assert.ok(await auth.getSession(operatorRequest));assert.equal((await protectedRoute(operatorCookie)).status,200,'the selected local OIDC issuer admits the same required-domain operator');
   await t.json(`/api/v1/settings/operators/${invited.id}`,{method:'DELETE',body:{confirmed:true}},200);assert.equal(await auth.getSession(operatorRequest),null,'operator removal ends provider access on the next request');
   assert.equal((await signIn()).status,403,'removed operator cannot sign in again');
 

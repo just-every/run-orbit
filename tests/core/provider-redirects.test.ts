@@ -65,4 +65,4 @@ test('BASE-DATA-004 BASE-DATA-005 AI-002 OUT-012 provider redirects never reach 
  }
 });
 
-test('OPS-001 linked OIDC enforces reviewed domain policy, verified invited operators, recovery and next-request revocation',async()=>{await signInDomains();});
+test('OPS-001 required domains deny magic-link and recovery sessions while selected OIDC, owner recovery and unrestricted email remain admitted',async()=>{await signInDomains();});
