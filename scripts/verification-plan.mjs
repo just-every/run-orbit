@@ -18,16 +18,17 @@ const playwright = (config, files) => ({ files, args: ['exec', 'playwright', 'te
 // Folded archive callers carry their local transfer/rollback costs instead of old V2 weights.
 // A file missing here counts as half a minute.
 const minutes = {
+  'tests/core/records-complete.test.ts': 2.2, 'tests/core/today-brief.test.ts': 1.2,
   'tests/core/capture-data.test.ts': 7.3, 'tests/core/capture-erasure.test.ts': 2.9, 'tests/core/capture-replay-archive.test.ts': 3.9,
-  'tests/core/capture-mail-rules.test.ts': 11, 'tests/core/signals-outreach.test.ts': 7.5, 'tests/core/records-search.test.ts': 1.3, 'tests/core/capture-providers.test.ts': 4.5, 'tests/core/crm-import.test.ts': 8.5,
+  'tests/core/capture-mail-rules.test.ts': 11, 'tests/core/signals-outreach.test.ts': 7.5, 'tests/core/records-search.test.ts': 1.3, 'tests/core/capture-providers.test.ts': 7.8, 'tests/core/crm-import.test.ts': 8.5,
   'tests/core/launch-inherited-stop.test.ts': 8.5, 'tests/core/onboarding-archive.test.ts': 7.7, 'tests/core/archive-transfer.test.ts': 6.2,
   'tests/core/capture-intake.test.ts': 1.7, 'tests/core/crm-import-erasure.test.ts': 1.5, 'tests/core/launch-suppression.test.ts': 1.5,
   'tests/core/launch-suppression-archive.test.ts': 5.5, 'tests/delegation/archive-regression.test.ts': 2.5, 'tests/core/contact-erasure.test.ts': 0.8,
   'tests/core/capture-connector.test.ts': 0.8, 'tests/core/launch-provider-conflicts.test.ts': 0.8, 'tests/core/source-onboarding.test.ts': 8.5,
   'newtests/t096/archive-native.test.ts': 8.3, 'newtests/t096/archive-terminal-recovery.test.ts': 7.6, 'newtests/t096/archive-view-rollback.test.ts': 3.7,
   'newtests/t096/archive-import-recovery.test.ts': 3.4, 'newtests/t096/archive-cli-native.test.ts': 2.4, 'newtests/t096/archive-upgrade-preflight.test.ts': 1.4,
-  'newtests/t096/browser-journeys.test.ts': 12.5, 'newtests/t096/report-disclosure.test.ts': 8.5, 'newtests/t096/forms-native.test.ts': 6.8,
-  'newtests/t096/delegation-collaborator.test.ts': 1.9, 'newtests/t096/collaborator-lifecycle.test.ts': 1, 'newtests/t096/forward-upgrade.test.ts': 5.4,
+  'newtests/t096/browser-journeys.test.ts': 12.5, 'newtests/t096/report-disclosure.test.ts': 8.5, 'newtests/t096/forms-native.test.ts': 10.2,
+  'newtests/t096/delegation-collaborator.test.ts': 1.9, 'newtests/t096/collaborator-lifecycle.test.ts': 2.5, 'newtests/t096/forward-upgrade.test.ts': 5.4,
 };
 const weight = file => minutes[file] ?? 0.5;
 /** Longest first into the lightest bin: a deterministic, balanced split of files into `count` shards. */
