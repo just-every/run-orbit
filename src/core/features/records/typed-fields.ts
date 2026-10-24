@@ -20,9 +20,9 @@ export function fieldReason(field:{label:string;value_type:string;required:numbe
 const policyVersion=(db:D1Database,recordKind:RecordKind)=>db.prepare("SELECT COALESCE(sum(revision),0)||':'||count(*) AS value FROM record_custom_fields WHERE kind=?").bind(recordKind).first<string>('value');
 /** Repeat schema and uniqueness checks inside the record's write transaction. */
 export async function typedFieldFences(db:D1Database,recordKind:RecordKind,id:string,values:Record<string,unknown>,before:Record<string,unknown>){
- const revision=await policyVersion(db,recordKind);
- const fields=(await db.prepare('SELECT * FROM record_custom_fields WHERE kind=? ORDER BY field_key').bind(recordKind).all<TypedField>()).results,statements=[guard(db,{sql:"(SELECT COALESCE(sum(revision),0)||':'||count(*) FROM record_custom_fields WHERE kind=?)=?",args:[recordKind,revision]})];
- if(revision!==await policyVersion(db,recordKind))throw new RecordError(409,'Custom field definitions changed. Review the fields again.');
+ const snapshot=await db.prepare("SELECT COALESCE(sum(revision),0)||':'||count(*) AS value,json_group_array(json_object('kind',kind,'field_key',field_key,'label',label,'value_type',value_type,'required',required,'is_unique',is_unique,'options_json',options_json,'archived',archived,'revision',revision)) AS fields FROM record_custom_fields WHERE kind=?").bind(recordKind).first<{value:string;fields:string}>();
+ if(!snapshot)throw new RecordError(409,'Custom field definitions are unavailable.');
+ const revision=snapshot.value,fields=JSON.parse(snapshot.fields) as TypedField[],statements=[guard(db,{sql:"(SELECT COALESCE(sum(revision),0)||':'||count(*) FROM record_custom_fields WHERE kind=?)=?",args:[recordKind,revision]})];
  for(const field of fields){const value=values[field.field_key];if(field.archived){if(JSON.stringify(value)!==JSON.stringify(before[field.field_key]))throw new RecordError(400,`${field.label}: archived values are read-only.`);continue;}
   const reason=fieldReason(field,value);if(reason)throw new RecordError(400,`${field.label}: ${reason}.`);
   if(field.is_unique&&!empty(value)){

@@ -24,7 +24,7 @@ export async function nativeCapture(db:D1Database,input:{form:FormDefinition;int
  const contactId=existing?.id??saved!.id,submissionId=createId(),signalId=createId(),source=`form:${input.formId}`,event={eventId:submissionId,type:'form.submitted',subject:form.title,occurredAt:at,email,record:{type:'contact' as const,id:contactId}};
  const proposals=[...company.proposals];
  if(saved){statements.push(...saved.statements);if(company.id&&company.created)statements.push(db.prepare('UPDATE contacts SET company_id=?,updated_at=? WHERE id=?').bind(company.id,at,contactId));}
- else{const fields=existingFieldIntake(db,'contact',existing,values.contact,at);statements.push(recordSnapshotFence(db,'contact',existing),...fields.statements);proposals.push(...fields.proposals);
+ else{const fields=await existingFieldIntake(db,'contact',existing,values.contact,at);statements.push(recordSnapshotFence(db,'contact',existing),...fields.statements);proposals.push(...fields.proposals);
   if(company.id&&!existing.company_id)statements.push(db.prepare('UPDATE contacts SET company_id=?,updated_at=? WHERE id=? AND company_id IS NULL').bind(company.id,at,contactId));
  }
  if(existing)await reconcileLegacyOwnership(db);
