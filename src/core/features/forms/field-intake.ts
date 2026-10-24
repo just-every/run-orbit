@@ -1,9 +1,10 @@
+import {typedFieldFences} from '../records/typed-fields';
 import {proposalStatements,type ProposalDraft} from '../capture/proposals';
 import {createId} from '../../shared/ids';
 import {tables,type RecordKind} from '../records/shared';
 export interface FieldIntake {statements:D1PreparedStatement[];proposals:ProposalDraft[]}
 /** Empty values can be filled. Every populated disagreement remains a proposal. */
-export function existingFieldIntake(db:D1Database,kind:'contact'|'company',record:Record<string,any>,values:Record<string,any>,at:string):FieldIntake{
+export async function existingFieldIntake(db:D1Database,kind:'contact'|'company',record:Record<string,any>,values:Record<string,any>,at:string):Promise<FieldIntake>{
  const custom=JSON.parse(record.custom_fields_json??'{}'),nextCustom={...custom},updates:Record<string,unknown>={},proposals:ProposalDraft[]=[];
  const mappings=Object.entries(values).flatMap(([field,value])=>field==='custom_fields'?Object.entries(value).map(([key,v])=>[`custom.${key}`,v] as const):[[field,value] as const]);
  for(const [field,value]of mappings){
@@ -14,7 +15,7 @@ export function existingFieldIntake(db:D1Database,kind:'contact'|'company',recor
   else proposals.push({kind:'set_field',recordType:kind,recordId:record.id,field,value:typeof value==='string'?value:JSON.stringify(value),current:typeof previous==='string'?previous:JSON.stringify(previous),details:{formField:true,valueType:typeof value==='number'?'number':typeof value==='boolean'?'boolean':'text',companyId:kind==='contact'?record.company_id:null}});
  }
  if(JSON.stringify(custom)!==JSON.stringify(nextCustom))updates.custom_fields_json=JSON.stringify(nextCustom);
- const statements:D1PreparedStatement[]=[];
+ const statements:D1PreparedStatement[]=await typedFieldFences(db,kind,record.id,nextCustom,custom);
  if(Object.keys(updates).length){
   const columns=Object.keys(updates);statements.push(db.prepare(`UPDATE ${tables[kind]} SET ${columns.map(field=>`${field}=?`).join(',')},updated_at=? WHERE id=?`).bind(...Object.values(updates),at,record.id));
   if(kind==='contact')statements.push(db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Contact changed',updated_at=? WHERE recipient_contact_id=?").bind(at,record.id));
