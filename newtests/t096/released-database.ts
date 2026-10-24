@@ -1,7 +1,8 @@
 import {execFileSync} from 'node:child_process';
-import {mkdtemp,mkdir,readdir,readFile,writeFile,rm} from 'node:fs/promises';
+import {mkdtemp,mkdir,readdir,readFile,writeFile,rm,symlink} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
-import {join} from 'node:path';
+import {join,dirname,resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {getPlatformProxy} from 'wrangler';
 
 /** Released migration bytes create the source store; only unapplied current migrations advance it. */
@@ -16,9 +17,19 @@ export async function releasedDatabase(){
  const open=()=>getPlatformProxy<{DB:D1Database}>({configPath:config,persist:{path:join(state,'v3')},remoteBindings:false});
  let platform:Awaited<ReturnType<typeof open>>|undefined;
  try{migrate();platform=await open();}catch(error){await rm(directory,{recursive:true,force:true});throw error;}
- return{get db(){if(!platform)throw new Error('Released database is closed.');return platform.env.DB;},async upgrade(through?:string){
+ return{directory,get db(){if(!platform)throw new Error('Released database is closed.');return platform.env.DB;},async upgrade(through?:string){
   await platform?.dispose();platform=undefined;
   for(const name of (await readdir('migrations/core')).filter(name=>name.endsWith('.sql')&&(!through||name<=through)&&!released.includes(`migrations/core/${name}`)).sort())await writeFile(join(migrations,name),await readFile(join('migrations/core',name)),{mode:0o600});
   try{migrate();}finally{platform=await open();}
  },async dispose(){await platform?.dispose();platform=undefined;await rm(directory,{recursive:true,force:true});}};
+}
+
+/** Run the release's own HTTP and identity code against its pre-migration store. */
+export async function releasedRuntime(directory:string,db:D1Database){
+ const source=join(directory,'released-source'),git=(args:string[])=>execFileSync('git',args,{maxBuffer:16777216});
+ await mkdir(source);await writeFile(join(source,'package.json'),'{"type":"module"}');await symlink(resolve('node_modules'),join(source,'node_modules'),'dir');
+ const files=git(['ls-tree','-r','--name-only','v0.3.0','src']).toString().trim().split('\n');
+ for(const file of files){const path=join(source,file);await mkdir(dirname(path),{recursive:true});await writeFile(path,git(['show',`v0.3.0:${file}`]));}
+ const {createApp}=await import(pathToFileURL(join(source,'src/core/app/app.ts')).href),{createOrbitIdentity}=await import(pathToFileURL(join(source,'src/core/features/identity/auth.ts')).href);
+ return {app:createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}}),createOrbitIdentity};
 }

@@ -2067,7 +2067,7 @@
       "executable": false
     },
     "migrations/core/0063_typed_fields.sql": {
-      "sha256": "8bf10ee64277c20b341942a3c97ec4de4c63365c45b8076d7c2564bb978f5b0b",
+      "sha256": "5dbd2c198d1715fad60437be9095957f00cffdbc69d01b0f966e2a3424f6687f",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -3527,11 +3527,11 @@
       "executable": false
     },
     "newtests/t096/released-database.ts": {
-      "sha256": "f46259ce7b10255bfd20890744290654afe3dcb2cee8c56df9a39db42cc3697d",
+      "sha256": "a461170473a91cd8171a39a744b6dbbfdb71ec782412cb386c32c5805ac414de",
       "executable": false
     },
     "newtests/t096/released-forecast-upgrade.ts": {
-      "sha256": "dc68b9c165d215226799fd31e04f725c084acf8f3a8902bed0333e48d3bc8c61",
+      "sha256": "6183d6ac4863bb6500ccbc8f26301702e88df77bddad7cd5c4d872dc5f447db9",
       "executable": false
     },
     "newtests/t096/report-disclosure.test.ts": {
@@ -5707,7 +5707,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/entry-privacy.tsx": {
-      "sha256": "759d021bf03ba060a6d0170e8ac337f03b5aa773fc9cf13e6af3ef17ca0a2496",
+      "sha256": "720847da96288ecfd4fa3f26a9bc44aad4aa2b54918bb6acd389468eca57688b",
       "executable": false
     },
     "src/core/features/operator/ui/evidence-actions.tsx": {
@@ -5843,7 +5843,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-page.tsx": {
-      "sha256": "17273ea3c65aa3cae29e325e6e6b4e6af900009ff150fba1a0e9cbe721d18dc9",
+      "sha256": "3513855418b779859af0860bfa7bebba132e098eeaf70a9807ccf1265889d971",
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-timeline.tsx": {
@@ -6559,7 +6559,7 @@
       "executable": false
     },
     "src/core/features/records/archive-generations.ts": {
-      "sha256": "26c5a1b0125fbef093361c0dc949b7d9ac7691083a0c49a529bd0a011cbe4e7a",
+      "sha256": "36c7e38a396c493fa330c17239f80587261280e8825406eca69f3ebe66c81e87",
       "executable": false
     },
     "src/core/features/records/archive-import-context.ts": {
@@ -6735,7 +6735,7 @@
       "executable": false
     },
     "src/core/features/records/typed-fields.ts": {
-      "sha256": "1a8d12f00138e0356859a011ec4e8bfdd1aa9ec726b1c5766a98994be7d131b8",
+      "sha256": "3aa69a391bf8cc1ba6829b30738bf66d782839ba89df8ff687820a89f52791e3",
       "executable": false
     },
     "src/core/features/relationships/activity.ts": {
@@ -8367,7 +8367,7 @@
       "executable": false
     },
     "tests/core/onboarding-archive.test.ts": {
-      "sha256": "1c2b38eb99a053a9b5be88ec9a1803a2e7a73815c88de16ad60796ddcb925889",
+      "sha256": "79d56b6447ded048219d08a01f4ac88bdab2c990557beddfe2aab315c1872bef",
       "executable": false
     },
     "tests/core/operator-erasure.test.ts": {
@@ -9263,7 +9263,7 @@
       "executable": false
     },
     "tests/support/email-link.ts": {
-      "sha256": "6903c87145d3458d927e2640098e44d69a346e505d4cd93f66c3215bd7eb7184",
+      "sha256": "4ba8b133bb62bc97630c7214cfa271e4f45f085a9fdc6f49b783a748807694e1",
       "executable": false
     },
     "tests/support/emitted-mail-worker.ts": {
