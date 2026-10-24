@@ -3515,7 +3515,7 @@
       "executable": false
     },
     "newtests/t096/private-entries-proof.ts": {
-      "sha256": "536ff6e287910934b2fe7d3b031cf731e9ad47e2b01462fd931e26f8619fc17e",
+      "sha256": "358c9ffa2e6d4cf6a68f046b1dbe9a1b00816036680363d37771eaf2c143c126",
       "executable": false
     },
     "newtests/t096/publication-fixture.ts": {
