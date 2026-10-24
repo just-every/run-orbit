@@ -3,6 +3,8 @@ import {RecordError} from '../records/shared';
 export const mappingSchema=z.object({recordType:z.enum(['contact','company','opportunity']),field:z.string().max(100),valueType:z.enum(['text','number','boolean']).optional()}).strict().refine(value=>isMappedField(value.recordType,value.field),'Choose an allowed native or custom property.');
 export type FormMapping=z.infer<typeof mappingSchema>;
 const nativeFields={contact:['name','email','phone','job_title','timezone'],company:['name','primary_domain'],opportunity:['title','value_cents','expected_close_at']};
+/** Name, email, phone and job title save to the contact unless a field maps them elsewhere. */
+export function fieldMapping(field:{id:string;mapping?:FormMapping}):FormMapping|undefined{return field.mapping??(['name','email','phone','job_title'].includes(field.id)?{recordType:'contact',field:field.id}:undefined);}
 export function isMappedField(kind:string,field:string){return kind in nativeFields&&((nativeFields[kind as keyof typeof nativeFields] as string[]).includes(field)||/^custom\.[a-z][a-z0-9_]{0,63}$/.test(field));}
 /** This single allowlist also validates edited proposals before an SQL column is selected. */
 export function mappedValue(mapping:FormMapping,input:string):string|number|boolean|null{
@@ -24,6 +26,6 @@ export function mappedValue(mapping:FormMapping,input:string):string|number|bool
 export function setMapped(target:Record<string,any>,field:string,value:unknown){if(field.startsWith('custom.')){target.custom_fields??={};target.custom_fields[field.slice(7)]=value;}else target[field]=value;}
 export function mappedFormValues(fields:{id:string;mapping?:FormMapping}[],values:Record<string,string|undefined>){
  const result:{contact:Record<string,any>;company:Record<string,any>;opportunity:Record<string,any>}={contact:{},company:{},opportunity:{}};
- for(const field of fields){const mapping=field.mapping??(['name','email','phone','job_title'].includes(field.id)?{recordType:'contact' as const,field:field.id}:undefined);if(!mapping||values[field.id]===undefined)continue;const value=mappedValue(mapping,values[field.id]!);if(value!==null)setMapped(result[mapping.recordType],mapping.field,value);}
+ for(const field of fields){const mapping=fieldMapping(field);if(!mapping||values[field.id]===undefined)continue;const value=mappedValue(mapping,values[field.id]!);if(value!==null)setMapped(result[mapping.recordType],mapping.field,value);}
  return result;
 }

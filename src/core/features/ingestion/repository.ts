@@ -10,6 +10,7 @@ import { mailboxStopStatements, stopsMailbox } from './stop-repository';
 import { linkTargetFence } from './linking-fence';
 import {isTestEvent,customerSignalSql} from '../signals/test-events';
 import { stopReason } from '../outreach/stop-reason';
+import {formSchema,hiddenValues} from '../forms/definition';
 
 interface SourceAuthority {secret_ciphertext:string|null}
 export class IngestionRepository {
@@ -17,14 +18,15 @@ export class IngestionRepository {
   async hasEvent(source:string,event:string){return Boolean(await this.existing(source,event));}
   async recipeContacts(){return (await this.db.prepare('SELECT id,name,email FROM contacts ORDER BY created_at DESC,rowid DESC LIMIT 100').all()).results;}
   async contact(id:string){return this.db.prepare('SELECT id FROM contacts WHERE id=?').bind(id).first();}
-  async publishedForms(){return (await this.db.prepare(`SELECT p.slug,p.id AS operationId,p.form_revision AS revision
+  /** Framed embeds forward only the query parameters each reviewed form declares. */
+  async publishedForms(){return (await this.db.prepare(`SELECT p.slug,p.id AS operationId,p.form_revision AS revision,f.body_json
     FROM publication_targets t JOIN publication_operations p ON p.id=t.operation_id
     JOIN content_entities f ON f.id=p.form_id JOIN access_form_authorities a ON a.id=p.authority_id
     JOIN operators o ON o.id=a.custodian_id JOIN signal_sources ss ON ss.id='form:'||p.form_id
     WHERE p.state='published' AND f.revision=p.form_revision AND ss.enabled=1 AND a.revoked_at IS NULL
       AND a.expires_at>? AND o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=o.id)
       AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN('restore','archive_import'))
-    ORDER BY p.published_at DESC LIMIT 100`).bind(new Date().toISOString()).all()).results;}
+    ORDER BY p.published_at DESC LIMIT 100`).bind(new Date().toISOString()).all<{slug:string;operationId:string;revision:number;body_json:string}>()).results.map(({body_json,...form})=>({...form,parameters:hiddenValues(formSchema.parse(JSON.parse(body_json).form)).flatMap(item=>'parameter' in item?[item.parameter]:[])}));}
   async source(id:string){return this.db.prepare('SELECT id,type,enabled,secret_ciphertext FROM signal_sources WHERE id=?').bind(id).first<{id:string;type:string;enabled:number;secret_ciphertext:string|null}>();}
   async sources(){return (await this.db.prepare('SELECT id,name,type,enabled,secret_ciphertext IS NOT NULL AS has_signing_secret,last_accepted_at,last_error,rejected_count,cursor FROM signal_sources ORDER BY name').all()).results;}
   async configure(input:{id:string;name:string;secret:string;enabled:boolean},security:SourceSecurity){

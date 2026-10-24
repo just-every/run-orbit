@@ -1,5 +1,5 @@
 /** This script is part of the reviewed artifact, never injected when the page is served. */
-export function publicFormScript(input:{slug:string;revision:number;operationId:string;fields:string[];turnstileSiteKey?:string}){
+export function publicFormScript(input:{slug:string;revision:number;operationId:string;fields:string[];query?:[string,string][];turnstileSiteKey?:string}){
  const config=JSON.stringify(input).replaceAll('<','\\u003c');
  return `(()=>{
 const config=${config},form=document.getElementById('capture'),result=document.getElementById('result'),button=document.getElementById('capture-submit'),retry=document.getElementById('capture-retry');
@@ -37,7 +37,8 @@ for(const event of ['pointerdown','keydown','input'])form.addEventListener(event
 retry.addEventListener('click',()=>void prepare());
 form.addEventListener('submit',async event=>{
  event.preventDefault();if(button.disabled)return;
- const data=new FormData(form),values={};for(const name of config.fields)values[name]=data.get(name);
+ const data=new FormData(form),values={},page=new URLSearchParams(location.search);for(const name of config.fields)values[name]=data.get(name);
+ for(const [name,parameter] of config.query||[])if(page.has(parameter))values[name]=page.get(parameter);
  sending=true;update();notice('Submitting enquiry…');
  try{
   const response=await fetch(endpoint,{method:'POST',credentials:'omit',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:config.revision,operationId:config.operationId,idempotencyKey:key,values,consent:data.get('consent')==='on',honeypot:String(data.get('honeypot')||''),fillToken,...(config.turnstileSiteKey?{turnstileToken}:{})})});
