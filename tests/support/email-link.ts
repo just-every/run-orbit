@@ -22,8 +22,8 @@ export function mailedIdentity(db: D1Database, origin = 'https://orbit.test', ex
  * Signs in through Base's real email-link lifecycle over Orbit's operators:
  * request a link, read it from the captured message, confirm it by POST.
  */
-export async function emailLinkSignIn(db: D1Database, email: string, { origin = 'https://orbit.test', returnTo = '/app' } = {}): Promise<{ operator: AuthenticatedOperator; cookie: string; link: string }> {
-  const mail = mailedIdentity(db, origin), identity = createOrbitIdentity(mail.bindings, { mailSender: mail.mailSender })!;
+export async function emailLinkSignIn(db: D1Database, email: string, { origin = 'https://orbit.test', returnTo = '/app', createIdentity = createOrbitIdentity }: {origin?:string;returnTo?:string;createIdentity?:typeof createOrbitIdentity} = {}): Promise<{ operator: AuthenticatedOperator; cookie: string; link: string }> {
+  const mail = mailedIdentity(db, origin), identity = createIdentity(mail.bindings, { mailSender: mail.mailSender })!;
   await identity.auth.requestMagicLink(mail.post('/auth/magic-link'), { email, returnTo });
   const link = mail.linkIn(mail.sent.at(-1));
   if (!link) throw new Error(`No sign-in link was sent to ${email}.`);

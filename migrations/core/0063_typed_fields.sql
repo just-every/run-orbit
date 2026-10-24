@@ -11,15 +11,14 @@ CREATE TABLE record_custom_fields (
  PRIMARY KEY(kind,field_key)
 );
 CREATE TABLE identity_custom_field_epochs (kind TEXT PRIMARY KEY NOT NULL,epoch INTEGER NOT NULL);
-INSERT INTO identity_custom_field_epochs VALUES('contact',0),('company',0),('opportunity',0);
-CREATE TRIGGER custom_field_contacts_insert AFTER INSERT ON contacts BEGIN UPDATE identity_custom_field_epochs SET epoch=epoch+1 WHERE kind='contact'; END;
-CREATE TRIGGER custom_field_contacts_update AFTER UPDATE ON contacts BEGIN UPDATE identity_custom_field_epochs SET epoch=epoch+1 WHERE kind='contact'; END;
-CREATE TRIGGER custom_field_contacts_delete AFTER DELETE ON contacts BEGIN UPDATE identity_custom_field_epochs SET epoch=epoch+1 WHERE kind='contact'; END;
-CREATE TRIGGER custom_field_companies_insert AFTER INSERT ON companies BEGIN UPDATE identity_custom_field_epochs SET epoch=epoch+1 WHERE kind='company'; END;
-CREATE TRIGGER custom_field_companies_update AFTER UPDATE ON companies BEGIN UPDATE identity_custom_field_epochs SET epoch=epoch+1 WHERE kind='company'; END;
-CREATE TRIGGER custom_field_companies_delete AFTER DELETE ON companies BEGIN UPDATE identity_custom_field_epochs SET epoch=epoch+1 WHERE kind='company'; END;
-CREATE TRIGGER custom_field_deals_insert AFTER INSERT ON opportunities BEGIN UPDATE identity_custom_field_epochs SET epoch=epoch+1 WHERE kind='opportunity'; END;
-CREATE TRIGGER custom_field_deals_update AFTER UPDATE ON opportunities BEGIN UPDATE identity_custom_field_epochs SET epoch=epoch+1 WHERE kind='opportunity'; END;
-CREATE TRIGGER custom_field_deals_delete AFTER DELETE ON opportunities BEGIN UPDATE identity_custom_field_epochs SET epoch=epoch+1 WHERE kind='opportunity'; END;
+CREATE TRIGGER custom_field_contacts_insert AFTER INSERT ON contacts BEGIN INSERT INTO identity_custom_field_epochs VALUES('contact',1) ON CONFLICT(kind) DO UPDATE SET epoch=epoch+1; END;
+CREATE TRIGGER custom_field_contacts_update AFTER UPDATE ON contacts BEGIN INSERT INTO identity_custom_field_epochs VALUES('contact',1) ON CONFLICT(kind) DO UPDATE SET epoch=epoch+1; END;
+CREATE TRIGGER custom_field_contacts_delete AFTER DELETE ON contacts BEGIN INSERT INTO identity_custom_field_epochs VALUES('contact',1) ON CONFLICT(kind) DO UPDATE SET epoch=epoch+1; END;
+CREATE TRIGGER custom_field_companies_insert AFTER INSERT ON companies BEGIN INSERT INTO identity_custom_field_epochs VALUES('company',1) ON CONFLICT(kind) DO UPDATE SET epoch=epoch+1; END;
+CREATE TRIGGER custom_field_companies_update AFTER UPDATE ON companies BEGIN INSERT INTO identity_custom_field_epochs VALUES('company',1) ON CONFLICT(kind) DO UPDATE SET epoch=epoch+1; END;
+CREATE TRIGGER custom_field_companies_delete AFTER DELETE ON companies BEGIN INSERT INTO identity_custom_field_epochs VALUES('company',1) ON CONFLICT(kind) DO UPDATE SET epoch=epoch+1; END;
+CREATE TRIGGER custom_field_deals_insert AFTER INSERT ON opportunities BEGIN INSERT INTO identity_custom_field_epochs VALUES('opportunity',1) ON CONFLICT(kind) DO UPDATE SET epoch=epoch+1; END;
+CREATE TRIGGER custom_field_deals_update AFTER UPDATE ON opportunities BEGIN INSERT INTO identity_custom_field_epochs VALUES('opportunity',1) ON CONFLICT(kind) DO UPDATE SET epoch=epoch+1; END;
+CREATE TRIGGER custom_field_deals_delete AFTER DELETE ON opportunities BEGIN INSERT INTO identity_custom_field_epochs VALUES('opportunity',1) ON CONFLICT(kind) DO UPDATE SET epoch=epoch+1; END;
 
 CREATE TABLE record_custom_field_history (kind TEXT NOT NULL,field_key TEXT NOT NULL,revision INTEGER NOT NULL,definition_json TEXT NOT NULL CHECK(json_valid(definition_json)),changed_at TEXT NOT NULL,PRIMARY KEY(kind,field_key,revision));

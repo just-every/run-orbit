@@ -1,3 +1,4 @@
+import {preCallingCatalog} from '../../src/core/features/records/archive-generations';
 import {preCaptureMailRuleCatalog} from '../../src/core/features/capture/archive';
 import {preRecordMailCatalog} from '../../src/core/features/outreach/record-mail-archive';
 import {preFormAssignmentCatalog} from '../../src/core/features/forms/archive';
@@ -6,7 +7,7 @@ import {preDashboardCatalog} from '../../src/core/features/dashboards/archive';
 import {preSlackCatalog} from '../../src/core/features/slack/archive';
 import {preReportShareCatalog} from '../../src/core/features/analytics/archive-compatibility';
 import assert from 'node:assert/strict';
-import {releasedDatabase} from './released-database';
+import {releasedDatabase,releasedRuntime} from './released-database';
 import {createApp} from '../../tests/support/app';
 import {emailLinkSignIn} from '../../tests/support/email-link';
 import {createId} from '../../src/core/shared/ids';
@@ -47,8 +48,8 @@ export async function proveReleasedForecastUpgrade(){
   let db=target.db;const owner=createId(),stage=createId(),now=new Date().toISOString();
   await db.prepare('INSERT INTO owner_bootstrap VALUES(?,?,?,?,?,?,?,?,?)').bind('initial-owner',owner,'released@upgrade.test','Released owner','Released business','UTC','USD',JSON.stringify([{id:stage,name:'Review'}]),now).run();
   await db.prepare("INSERT INTO first_run_setup VALUES('workspace',?)").bind(now).run();
-  const session=await emailLinkSignIn(db,'released@upgrade.test');
-  const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}});
+  const released=await releasedRuntime(target.directory,db),session=await emailLinkSignIn(db,'released@upgrade.test',{createIdentity:released.createOrbitIdentity});
+  const app=released.app;
   const call=async(path:string,body?:unknown)=>{const response=await app.request('https://orbit.test/api/v1'+path,{method:body===undefined?'GET':'POST',headers:{Cookie:session.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});assert.ok(response.ok,`${path}: ${response.status} ${await response.clone().text()}`);return response.json() as Promise<any>;};
   const company=await call('/records/company',{name:'Released company',primary_domain:'released.example'}),contact=await call('/records/contact',{name:'Released contact',email:'contact@released.example',company_id:company.id,contactability:'do_not_contact'});
   const deal=await call('/records/opportunity',{title:'Released deal',stage_id:stage,owner_id:owner,company_id:company.id,value_cents:734567,expected_close_at:'2026-11-20T00:00:00.000Z',contact_ids:[contact.id],primary_contact_id:contact.id});
@@ -63,7 +64,7 @@ export async function proveReleasedForecastUpgrade(){
   const preceding=await snapshot(db),precedingCatalog=await releasedCatalog(db),precedingHash=await foldSchemaHash(precedingCatalog);
   await target.upgrade();db=target.db;
   await assertRetained(db,before);await assertRetained(db,preceding);
-  const preLibrary=preLibraryCatalog(preSlackCatalog(preReportShareCatalog(preDashboardCatalog(preOwnershipCatalog(preFormAssignmentCatalog(preRecordMailCatalog(preCaptureMailRuleCatalog(await foldInstalledCatalog(db)))))))));assert.deepEqual(preLibrary,precedingCatalog,'0049 retains exact columns, objects, triggers and views after stripping the library additions');assert.equal(await foldSchemaHash(preLibrary),precedingHash);
+  const preLibrary=preLibraryCatalog(preSlackCatalog(preReportShareCatalog(preDashboardCatalog(preOwnershipCatalog(preFormAssignmentCatalog(preRecordMailCatalog(preCaptureMailRuleCatalog(preCallingCatalog(await foldInstalledCatalog(db))))))))));assert.deepEqual(preLibrary,precedingCatalog,'0049 retains exact columns, objects, triggers and views after stripping the library additions');assert.equal(await foldSchemaHash(preLibrary),precedingHash);
   const previous=preForecastCatalog(preOptOutCapabilityCatalog(preLibrary));assert.deepEqual(previous,catalog,'pre-forecast generation retains the exact released columns, objects, triggers and views');assert.equal(await foldSchemaHash(previous),schemaHash);
   assert.deepEqual((await validateFoldManifest(db,manifestFor(catalog,before,schemaHash,now))).inputCatalog,previous);
   assert.deepEqual((await validateFoldManifest(db,manifestFor(precedingCatalog,preceding,precedingHash,now))).inputCatalog,preLibrary);

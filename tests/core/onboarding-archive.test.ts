@@ -1,3 +1,4 @@
+import {preCallingCatalog} from '../../src/core/features/records/archive-generations';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {launchFixture} from '../support/launch-fixture';
@@ -76,7 +77,7 @@ test('DATA-001 local archive restores records and keeps the hosted owner able to
   assert.equal(imported.state,'complete');
   assert.equal(imported.completedSteps,imported.totalSteps);assert.equal(imported.nextPart,document.manifest.parts);
  };
- const historicalCatalog=preSlackCatalog(preReportShareCatalog(preDashboardCatalog(preOwnershipCatalog(preFormAssignmentCatalog(preRecordMailCatalog(preCaptureMailRuleCatalog(await foldInstalledCatalog(source.db))))))));
+ const historicalCatalog=preSlackCatalog(preReportShareCatalog(preDashboardCatalog(preOwnershipCatalog(preFormAssignmentCatalog(preRecordMailCatalog(preCaptureMailRuleCatalog(preCallingCatalog(await foldInstalledCatalog(source.db)))))))));
  for(const catalog of [preLibraryCatalog(historicalCatalog),preForecastCatalog(preOptOutCapabilityCatalog(preLibraryCatalog(historicalCatalog)))]){
  const previous=await launchFixture();
  try{
