@@ -29,9 +29,9 @@ export function createCaptureRoutes(db:D1Database,providers:ProviderConfig={}){
  });
  app.post('/signals/:id/deal-links',async c=>{
   if(!recordId.safeParse(c.req.param('id')).success)throw new CaptureError(400,'Invalid captured signal ID.');
-  const input=z.object({opportunityId:recordId.nullable(),requestId:z.uuid()}).strict().safeParse(await c.req.json().catch(()=>null));
-  if(!input.success)throw new CaptureError(400,'Choose an open deal or remove the deal associations.');
-  return c.json(await correctDealLinks(db,c.req.param('id'),c.get('operator'),input.data.opportunityId,input.data.requestId));
+  const input=z.object({opportunityId:recordId.nullable(),requestId:z.uuid(),revision:z.string().regex(/^[a-f0-9]{64}$/)}).strict().safeParse(await c.req.json().catch(()=>null));
+  if(!input.success)throw new CaptureError(400,'Review a deal or remove the deal associations.');
+  return c.json(await correctDealLinks(db,c.req.param('id'),c.get('operator'),input.data.opportunityId,input.data.requestId,input.data.revision));
  });
  app.post('/imports',async c=>{
   // A form posted before hydration gets the Capture page back with its result; scripts get JSON.
