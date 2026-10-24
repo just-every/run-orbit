@@ -38,6 +38,7 @@ export async function exerciseTwilio(db:D1Database){
  const held=(await t.json<any>('/api/v1/calls/settings',{},200)).held;assert.equal(held.length,1);
  await t.json(`/api/v1/calls/held/${held[0].id}/link`,{body:{contactId:contact}},200);
  assert.equal((await t.json<any>('/api/v1/calls/settings',{},200)).held.length,0);
+ const logged=await t.json<any>(`/api/v1/calls/contacts/${contact}/log`,{},200);assert.equal(logged.calls.length,3);
  const other=await todayApp(db,{calling:{sourceSecurity:security,captureOrigin:'https://orbit.test'}});assert.equal((await other.call('/api/v1/calls/settings')).status,403);
  const workspace=(await db.prepare('SELECT workspace_id FROM access_memberships WHERE operator_id=? LIMIT 1').bind(t.actor).first<{workspace_id:string}>())!.workspace_id;
  const reportBase=`/api/v2/workspaces/${workspace}/operations`;
@@ -47,5 +48,9 @@ export async function exerciseTwilio(db:D1Database){
  assert.equal(calls.rows.filter((key:string)=>entries.some((entry:any)=>key===`activity:${entry.id}`)).length,1,'a provider call counts once in Rep activities');
  const providerEntry=entries[0];
  assert.equal((await t.call(`/api/v1/records/contact/${contact}/entries/${providerEntry.id}`,{method:'PUT',body:{kind:'call',text:'Changed provider receipt',occurredAt:new Date().toISOString(),durationMinutes:2}})).status,409,'provider receipts stay immutable');
+ await t.json(`/api/v1/records/contact/${contact}`,{method:'DELETE',body:{confirmed:true}},200);
+ assert.deepEqual(await(await event(sid,3,'inbound',customer)).json(),{replay:true},'an erased phone never returns as a held call');
+ assert.deepEqual(await(await event(unknown,1,'inbound','+12025550999')).json(),{replay:true},'owner-matched unknown numbers are also fenced on erasure');
+ assert.equal((await t.json<any>('/api/v1/calls/settings',{},200)).held.length,0);
  await t.json('/api/v1/calls/settings',{method:'DELETE',body:{}},200);assert.equal((await event(sid,3,'inbound',customer)).status,503,'disconnect stops callbacks');
 }

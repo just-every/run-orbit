@@ -45,5 +45,13 @@ export async function signInDomains(){
   await auth.providers!.unlink('auth');assert.equal(await auth.getSession(new Request(origin+'/app',{headers:{Cookie:linkedCookie}})),null,'unlink ends access on the next request');
   assert.ok(await emailLinkSignIn(db,email),'email links remain available');
   assert.equal(tokenRequests,5);
+  await auth.providers!.relink('auth');
+  const invited=await t.json<any>('/api/v1/settings/operators',{body:{email:'synthetic-orbit-invited@example.com',displayName:'Synthetic invited operator'}},201);
+  email='synthetic-orbit-invited@example.com';subject='synthetic-orbit-invited';
+  const operatorSignIn=await signIn();assert.equal(operatorSignIn.status,303);const operatorCookie=operatorSignIn.headers.getSetCookie().find(c=>c.startsWith('__Host-orbit_session='))!.split(';')[0]!;
+  const operatorRequest=new Request(origin+'/app',{headers:{Cookie:operatorCookie}});assert.ok(await auth.getSession(operatorRequest));
+  await t.json(`/api/v1/settings/operators/${invited.id}`,{method:'DELETE',body:{confirmed:true}},200);assert.equal(await auth.getSession(operatorRequest),null,'operator removal ends provider access on the next request');
+  assert.equal((await signIn()).status,403,'removed operator cannot sign in again');
+
  }finally{server.closeAllConnections();await new Promise<void>((resolve,reject)=>server.close(e=>e?reject(e):resolve()));await fixture.dispose();}
 }

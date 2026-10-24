@@ -64,7 +64,8 @@ export async function identityResponse(request: Request, bindings: PlatformBindi
     // PUBLIC-003: without sign-in mail and no linked provider there is no way in, so the page
     // says so and presents no credential field (Base's page always offers the email form).
     if (path === '/signin' && ['GET', 'HEAD'].includes(request.method) && !config.MAIL_FROM && !(await auth.providers?.list() ?? []).some(p => p.visible)) {
-      return noWayIn('Sign-in email is not available right now. Ask the person who runs this app to check its mail settings.', request.method);
+      const refusedProvider=['oidc_admission_denied','oidc_provider_required','oidc_sign_in_disabled'].includes(new URL(request.url).searchParams.get('notice')??'');
+      return noWayIn((refusedProvider?'Provider sign-in was refused. ':'')+'Sign-in email is not available right now. Ask the person who runs this app to check its mail settings.', request.method);
     }
     // Links from Orbit's retired sign-in engine cannot be redeemed; offer a new one.
     if (path === '/auth/verify') return new Response(null, { status: 303, headers: { ...securityHeaders(), Location: '/signin' } });
