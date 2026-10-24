@@ -25,6 +25,9 @@ export async function callingJourney(page){
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('contact-call-log',width,call);}
  await call.getByRole('button',{name:'Cancel call',exact:true}).click();
  await expect(call.getByRole('button',{name:'Confirm and call once'})).toHaveCount(0);
+ const workspace=await (await page.request.get('/api/v1/settings')).json(),dealResponse=await page.request.post('/api/v1/records/opportunity',{headers:{Origin:origin},data:{title:'Synthetic reviewed calling deal',stage_id:workspace.stages[0].id,value_cents:0,contact_ids:[contact.id],primary_contact_id:contact.id}});expect(dealResponse.status(),await dealResponse.text()).toBe(201);const deal=await dealResponse.json();
+ await page.goto(`/app/opportunities/${deal.id}`);await call.getByRole('button',{name:'Review call',exact:true}).click();await expect(call.getByRole('heading',{name:'Review exact call'})).toBeVisible();await call.getByText('Call log',{exact:true}).click();await expect(call).toContainText('Twilio inbound call: completed');
+ for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('deal-call-review',width,call);}
  await page.goto('/app/settings');await expect(settings.getByRole('button',{name:'Disconnect Twilio',exact:true})).toBeVisible();
  await settings.getByRole('button',{name:'Disconnect Twilio',exact:true}).click();
  await expect(settings.getByRole('status').filter({hasText:'Unresolved setup'})).toBeVisible();

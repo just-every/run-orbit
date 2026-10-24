@@ -6,7 +6,8 @@ import {createNativeProofs} from '../../src/core/features/identity/proofs';
 import {sessionStore} from '../../src/core/features/identity/store';
 import {isolatedDatabase} from './isolated-database';
 import {todayApp} from './today-workspace';
-import {emailLinkSignIn} from './email-link';
+import {emailLinkSignIn,mailedIdentity} from './email-link';
+import {createOrbitIdentity} from '../../src/core/features/identity';
 import {TEST_SESSION_SECRET} from './worker-identity.mjs';
 /** A local issuer at the network edge; admission, signatures, policy and sessions are real. */
 export async function signInDomains(){
@@ -47,6 +48,11 @@ export async function signInDomains(){
   assert.equal(tokenRequests,5);
   await auth.providers!.relink('auth');
   const invited=await t.json<any>('/api/v1/settings/operators',{body:{email:'synthetic-orbit-invited@example.com',displayName:'Synthetic invited operator'}},201);
+  const peerEmail=await emailLinkSignIn(db,'synthetic-orbit-invited@example.com');
+  await t.json(policy,{method:'PUT',body:{domain:'example.com',providerId:'auth'}},200);
+  assert.equal(await auth.getSession(new Request(origin+'/app',{headers:{Cookie:peerEmail.cookie}})),null,'requiring a provider ends an older non-owner email session');
+  const mail=mailedIdentity(db),native=createOrbitIdentity(mail.bindings,{mailSender:mail.mailSender})!;await native.auth.requestMagicLink(mail.post('/auth/magic-link'),{email:'synthetic-orbit-invited@example.com'});assert.equal(mail.sent.length,0,'a required domain cannot bypass its provider with a new email link');
+  assert.ok(await emailLinkSignIn(db,'synthetic-orbit-owner@example.com'),'owner recovery email remains available under the domain requirement');
   email='synthetic-orbit-invited@example.com';subject='synthetic-orbit-invited';
   const operatorSignIn=await signIn();assert.equal(operatorSignIn.status,303);const operatorCookie=operatorSignIn.headers.getSetCookie().find(c=>c.startsWith('__Host-orbit_session='))!.split(';')[0]!;
   const operatorRequest=new Request(origin+'/app',{headers:{Cookie:operatorCookie}});assert.ok(await auth.getSession(operatorRequest));
