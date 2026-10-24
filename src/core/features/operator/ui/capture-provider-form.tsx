@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import type { CaptureProviderInfo } from './capture-types';
 
 const names = { google: { key: 'Google', mailbox: 'Gmail' }, microsoft: { key: 'Microsoft', mailbox: 'Outlook' } } as const;
@@ -9,7 +9,9 @@ const names = { google: { key: 'Google', mailbox: 'Gmail' }, microsoft: { key: '
  * access. The secret is sealed on this installation and never kept in the browser.
  */
 export function ProviderKeyForm({ provider, sourceId, sourceName }: { provider: CaptureProviderInfo; sourceId?: string; sourceName?: string }) {
-  const prefix = useId(), label = names[provider.id];
+  const prefix = useId(), label = names[provider.id], [writebackConsent, setWritebackConsent] = useState(false);
+ const readScopes = provider.id === 'google' ? ['gmail.readonly', 'calendar.readonly'] : ['Mail.Read', 'Calendars.Read'];
+ const writeScope = provider.id === 'google' ? 'calendar.events' : 'Calendars.ReadWrite';
   return <form className="capture-key-form" aria-label={`${sourceId ? 'Reconnect' : 'Connect'} ${label.key}`} method="post" action={`/api/v1/capture/oauth/${provider.id}/start`}>
     {sourceId ? <input type="hidden" name="sourceId" value={sourceId} /> : null}
     <label htmlFor={`${prefix}-client-id`}>Client ID
@@ -29,7 +31,14 @@ export function ProviderKeyForm({ provider, sourceId, sourceName }: { provider: 
       </label>
       <p>Leave “common” so any work, school or personal Microsoft account can connect. To allow only your organisation, paste the Directory (tenant) ID from the app’s Overview page.</p>
     </details> : null}
-    <label><input type="checkbox" name="writebackConsent"/>Allow reviewed calendar writeback ({provider.id==='google'?'calendar.events':'Calendars.ReadWrite'})</label>
+    <label className="capture-writeback-consent"><input type="checkbox" name="writebackConsent" checked={writebackConsent} onChange={event => setWritebackConsent(event.target.checked)} />Allow reviewed calendar writeback ({writeScope})</label>
+    <div className="capture-key-permissions" aria-live="polite">
+      <p>{writebackConsent ? 'Read access and reviewed calendar writeback' : 'Read-only access'}</p>
+      <ul aria-label="Requested permissions">
+        {readScopes.map(scope => <li key={scope}>Read access · <code>{scope}</code></li>)}
+        {writebackConsent && <li>Calendar writeback · <code>{writeScope}</code></li>}
+      </ul>
+    </div>
     <button className="orbit-button orbit-button--primary" type="submit">{sourceId ? `Reconnect ${label.key}` : `Connect ${label.key}`}</button>
     <p className="capture-key-form__note">{label.key} opens next. Choose your account and approve read access. Calendar write permission is requested only when you separately select writeback above.</p>
   </form>;
