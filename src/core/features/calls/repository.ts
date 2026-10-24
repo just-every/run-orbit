@@ -13,6 +13,8 @@ export class CallsRepository {
  async status(actor:string){await this.requireOwner(actor);const credentials=await this.credentials();return {configured:!!credentials,from:credentials?.from??null,operatorPhone:credentials?.operatorPhone??null,callback:credentials?`${credentials.origin}/api/v1/calls/twilio/events`:null,held:(await this.db.prepare('SELECT id,from_number,to_number,direction,status,received_at FROM call_events e WHERE contact_id IS NULL AND NOT EXISTS(SELECT 1 FROM call_events newer WHERE newer.account_sid=e.account_sid AND newer.call_sid=e.call_sid AND newer.sequence>e.sequence) ORDER BY received_at DESC LIMIT 100').all()).results};}
  async contactFor(phone:string){const rows=(await this.db.prepare('SELECT id,phone FROM contacts WHERE phone IS NOT NULL').all<{id:string;phone:string}>()).results.filter(c=>normalizedPhone(c.phone)===phone);return rows.length===1?rows[0]!.id:null;}
  async receive(form:URLSearchParams){
+  const customerNumber=form.get('Direction')!.startsWith('inbound')?form.get('From')!:form.get('To')!;
+  if(await this.db.prepare('SELECT 1 FROM call_erased_numbers WHERE phone_hash=?').bind(await payloadHash(normalizedPhone(customerNumber))).first())return {replay:true};
   const account=form.get('AccountSid')!,sid=form.get('CallSid')!,sequence=Number(form.get('SequenceNumber')??'0');
   if(await this.db.prepare('SELECT 1 FROM call_events WHERE account_sid=? AND call_sid=? AND sequence=?').bind(account,sid,sequence).first())return {replay:true};
   const from=form.get('From')!,to=form.get('To')!,direction=form.get('Direction')!,status=form.get('CallStatus')!,duration=form.get('CallDuration');

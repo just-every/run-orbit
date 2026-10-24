@@ -1,3 +1,4 @@
+import {signInDomains} from '../support/sign-in-domains';
 import assert from 'node:assert/strict';
 import {createServer, type Server} from 'node:http';
 import {test} from 'node:test';
@@ -62,4 +63,5 @@ test('BASE-DATA-004 BASE-DATA-005 AI-002 OUT-012 provider redirects never reach 
   globalThis.fetch=nativeFetch;
   await Promise.all([close(provider),close(destination)]);
  }
+ await signInDomains();
 });

@@ -39,5 +39,13 @@ export async function exerciseTwilio(db:D1Database){
  await t.json(`/api/v1/calls/held/${held[0].id}/link`,{body:{contactId:contact}},200);
  assert.equal((await t.json<any>('/api/v1/calls/settings',{},200)).held.length,0);
  const other=await todayApp(db,{calling:{sourceSecurity:security,captureOrigin:'https://orbit.test'}});assert.equal((await other.call('/api/v1/calls/settings')).status,403);
+ const workspace=(await db.prepare('SELECT workspace_id FROM access_memberships WHERE operator_id=? LIMIT 1').bind(t.actor).first<{workspace_id:string}>())!.workspace_id;
+ const reportBase=`/api/v2/workspaces/${workspace}/operations`;
+ const definition=await t.json<any>(`${reportBase}/reports/suite/sales-activities`,{body:{}},200),month=new Date().toISOString().slice(0,7);
+ const report=await t.json<any>(`${reportBase}/reports/${definition.id}/preview`,{body:{version:definition.version,from:month,through:month}},200);
+ const calls=report.sections.find((section:any)=>section.measure==='activities').totals.find((cell:any)=>cell.key==='call');
+ assert.equal(calls.rows.filter((key:string)=>entries.some((entry:any)=>key===`activity:${entry.id}`)).length,1,'a provider call counts once in Rep activities');
+ const providerEntry=entries[0];
+ assert.equal((await t.call(`/api/v1/records/contact/${contact}/entries/${providerEntry.id}`,{method:'PUT',body:{kind:'call',text:'Changed provider receipt',occurredAt:new Date().toISOString(),durationMinutes:2}})).status,409,'provider receipts stay immutable');
  await t.json('/api/v1/calls/settings',{method:'DELETE',body:{}},200);assert.equal((await event(sid,3,'inbound',customer)).status,503,'disconnect stops callbacks');
 }
