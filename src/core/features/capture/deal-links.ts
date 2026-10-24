@@ -27,7 +27,7 @@ async function review(db:D1Database,id:string){
 export async function readDealLinks(db:D1Database,id:string,operator:AuthenticatedOperator){
  const fences=await correctionAccess(db,operator);await db.batch(fences);
  // Capture currently admits only full operators, who can read and change all
- // native deals. Restricted roles remain denied at captureAccess.
+ // native deals. Restricted roles remain denied by correctionAccess.
  const snapshot=await review(db,id),currentIds=new Set(snapshot.linked.filter(row=>row.record_type==='opportunity').map(row=>row.record_id));
  await db.batch(await correctionAccess(db,operator));
  return {rule:JSON.parse(snapshot.original.payload_json).associationRule as string,revision:snapshot.revision,current:snapshot.available.filter(row=>currentIds.has(row.id)).map(({id,title})=>({id,title})),choices:snapshot.available.map(({id,title,lifecycle})=>({id,title,lifecycle}))};

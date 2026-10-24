@@ -2159,7 +2159,7 @@
       "executable": false
     },
     "newtests/t096/capture-rule-browser-seed.ts": {
-      "sha256": "806b2663cf2eafff8535757d86de7286b7485459b88abe824c61f4ddbe5aa6d8",
+      "sha256": "0a23943611d2ba62f216061e43040614b7636cef145a66b8c5fecd95287816f0",
       "executable": false
     },
     "newtests/t096/collaborator-lifecycle.test.ts": {
@@ -4743,7 +4743,7 @@
       "executable": false
     },
     "src/core/features/capture/deal-links.ts": {
-      "sha256": "c882ea06a73bb0c059f52be52a6fa9686c5a97b3c69cf138eaccf11519cbf24d",
+      "sha256": "0f0f17503cd53d72d9fd1a0557bf0c590ab018e4ff9ab9254739e97212d71d14",
       "executable": false
     },
     "src/core/features/capture/facts.ts": {
@@ -9055,7 +9055,7 @@
       "executable": false
     },
     "tests/support/capture-mail-rule.ts": {
-      "sha256": "1c42ab88376c9d93d59468217177b6e92f7c79ff29940aaf73d4886c8a5a5b5f",
+      "sha256": "abc84423e31043ca88acb9ee4d185e1af0cc3b2f65f2601cfd74e7af720189aa",
       "executable": false
     },
     "tests/support/capture-mail.ts": {
