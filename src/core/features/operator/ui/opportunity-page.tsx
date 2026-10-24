@@ -1,3 +1,4 @@
+import {MeetingWriteback} from './meeting-writeback';
 import {ReviewedCall} from './reviewed-call';
 import {BuyingContext} from './buying-context';
 import {DealRisks} from './deal-risks';
@@ -26,7 +27,7 @@ export function OpportunityPage(){
  <section className="operator-detail" data-testid="opportunity-detail">
  <header className="operator-surface operator-detail__section"><h2>{opportunity.companyName??'No company associated'}</h2><p>{opportunity.contacts.map(c=>c.name??c.email??'Unnamed contact').join(' · ')}</p><p>{formatCurrency(opportunity.valueCents,presentation)} · {opportunity.stage} · {opportunity.ownerName??'Unassigned'}</p></header>
  <p><a href={`/app/records?kind=opportunity&record=${encodeURIComponent(id)}`}>Manage deal details, pipeline and lifecycle</a></p>
- <ReviewedCall key={id} contacts={opportunity.contacts}/><MessageHistory opportunityId={id}/>
+ <MeetingWriteback key={`calendar-${id}`} kind="opportunity" id={id} contacts={opportunity.contacts} onChanged={resource.reload}/><ReviewedCall key={id} contacts={opportunity.contacts}/><MessageHistory opportunityId={id}/>
  <section className="operator-surface operator-detail__section" data-testid="next-action"><h2>Next action</h2>{opportunity.evaluation?.failureAt&&<div role="alert" data-testid="evaluation-failure"><p>Priorities could not be refreshed at {formatDateTime(opportunity.evaluation.failureAt,presentation)}. The score and evidence shown are from the last successful evaluation and may be out of date.</p><RecommendationRefresh opportunityId={id} reload={resource.reload}/></div>}<p>{rec?.explanation??opportunity.queueReason??'Review the customer evidence and choose your next step.'}</p><div className="workbench-actions"><button className="orbit-button orbit-button--primary" onClick={()=>setCompose(true)}>Write follow-up</button>{configuration.aiConfigured&&<Link className="orbit-button orbit-button--secondary" to="/app/assistance/$id" params={{id}}>Draft with AI</Link>}</div>{rec&&<details><summary>Complete or skip this action</summary><ManualAction recommendationId={rec.id} reload={resource.reload}/></details>}</section>
  {compose&&<EvidenceActions opportunity={opportunity} reload={resource.reload} mode="draft"/>}
  <dl className="operator-detail-fields" data-testid="independent-opportunity-fields"><div><dt>Score</dt><dd>{opportunity.score} · {label(opportunity.band)}</dd></div><div><dt>Queue</dt><dd>{label(opportunity.queueState)}</dd></div><div><dt>Lifecycle</dt><dd>{label(opportunity.lifecycle)}</dd></div><div><dt>Expected close</dt><dd>{formatDateTime(opportunity.expectedCloseAt,presentation)}</dd></div></dl>

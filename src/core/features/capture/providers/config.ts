@@ -15,7 +15,8 @@ export function trustedOrigin(origin:string|undefined,request?:string){
  if(request&&new URL(request).origin!==origin)throw new CaptureError(403,'The provider connection must use the installation origin.');
  return origin;
 }
-export interface Credential{clientId:string;clientSecret:string;tenant:string;accessToken:string;refreshToken:string;expiresAt:number;scope:string}
+export const writeScopes={google:'https://www.googleapis.com/auth/calendar.events',microsoft:'Calendars.ReadWrite'};
+export interface Credential{writebackConsent?:boolean;clientId:string;clientSecret:string;tenant:string;accessToken:string;refreshToken:string;expiresAt:number;scope:string}
 export function checkedScopes(provider:Provider,value:unknown){
  if(typeof value!=='string'||!scopes[provider].every(scope=>value.split(/\s+/).some(granted=>granted===scope||(provider==='microsoft'&&granted===`https://graph.microsoft.com/${scope}`))))throw new CaptureProviderError('revoked','The required read permissions were not granted.');
  return value;

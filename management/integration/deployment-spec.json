@@ -330,6 +330,12 @@
       "name": "0060_sign_in_domains.sql",
       "sha256": "c4dc60ec6a7dc1f38e7568b83b0690dfa199e368bf372b23e3a39756902b39f2",
       "sql": "-- Installation-local admission policy; identity tables never confer restored authority.\nCREATE TABLE identity_domain_policies (\n domain TEXT PRIMARY KEY NOT NULL,\n provider_id TEXT NOT NULL,\n updated_by TEXT NOT NULL REFERENCES operators(id),\n updated_at TEXT NOT NULL\n);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0061_calendar_writeback.sql",
+      "sha256": "0a5b7d68b99caa109ee892f673e510e262abf750b5294e4a2e186b0c201e7dab",
+      "sql": "CREATE TABLE calendar_writebacks (\n id TEXT PRIMARY KEY NOT NULL,\n source_id TEXT NOT NULL REFERENCES capture_sources(id) ON DELETE CASCADE,\n connection_id TEXT NOT NULL,\n calendar_id TEXT NOT NULL,\n provider_event_id TEXT,\n record_type TEXT NOT NULL CHECK(record_type IN('contact','opportunity')),\n record_id TEXT NOT NULL,\n contact_id TEXT NOT NULL REFERENCES contacts(id) ON DELETE CASCADE,\n entry_id TEXT REFERENCES timeline_entries(id) ON DELETE CASCADE,\n state TEXT NOT NULL CHECK(state IN('attempted','written','cancelled','conflict','uncertain')),\n payload_json TEXT NOT NULL,\n etag TEXT,\n error TEXT,\n updated_at TEXT NOT NULL\n);\nCREATE INDEX calendar_writebacks_record ON calendar_writebacks(record_type,record_id);\n-- Single-use command custody has no provider credentials or invitation content.\nCREATE TABLE calendar_writeback_attempts (id TEXT PRIMARY KEY NOT NULL,writeback_id TEXT NOT NULL,created_at TEXT NOT NULL);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

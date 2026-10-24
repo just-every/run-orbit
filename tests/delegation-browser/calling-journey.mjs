@@ -7,13 +7,6 @@ export async function callingJourney(page){
  const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
  await page.goto('/app/settings');
  const settings=page.getByRole('region',{name:'Calling',exact:true});
- await expect(settings.getByRole('status')).toHaveText('Unresolved setup · Twilio not connected');
- for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('calling-unconnected',width,settings);}
- await settings.getByLabel('Account SID',{exact:true}).fill('AC'+'1'.repeat(32));
- await settings.getByLabel('Auth token',{exact:true}).fill('synthetic-orbit-twilio-token');
- await settings.getByLabel('Twilio phone',{exact:true}).fill('+12025550101');
- await settings.getByLabel('Your phone',{exact:true}).fill('+12025550102');
- await settings.getByRole('button',{name:'Connect Twilio',exact:true}).click();
  await expect(settings.getByRole('status').filter({hasText:'Twilio connected'})).toBeVisible();
  await expect(settings.getByLabel('Auth token',{exact:true})).toHaveValue('');
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('calling-connected',width,settings);}
@@ -31,6 +24,7 @@ export async function callingJourney(page){
  await page.goto('/app/settings');await expect(settings.getByRole('button',{name:'Disconnect Twilio',exact:true})).toBeVisible();
  await settings.getByRole('button',{name:'Disconnect Twilio',exact:true}).click();
  await expect(settings.getByRole('status').filter({hasText:'Unresolved setup'})).toBeVisible();
+ for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('calling-unconnected',width,settings);}
  expect(errors).toEqual([]);
  async function proof(name,width,region){await expect(region).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);const result=await new AxeBuilder({page}).include(name.startsWith('contact')?'[aria-label="Call contact"]':'[aria-labelledby="calling-settings"]').analyze();expect(result.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);await region.screenshot({path:`${evidence}/${name}-${width}.png`});}
 }

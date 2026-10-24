@@ -1,3 +1,4 @@
+import {calendarWritebackRoutes} from './writeback';
 import {Hono} from 'hono';
 import {z} from 'zod';
 import type {AuthenticatedOperator} from '../../identity';
@@ -20,6 +21,7 @@ export function createProviderRoutes(db:D1Database,config:ProviderConfig){
   const provider=/\/oauth\/(google|microsoft)\//.exec(c.req.path)?.[1],page=provider?`/app/capture/connect/${provider}?step=5&`:'/app/capture?';
   return (c.req.header('accept')??'').includes('text/html')?c.redirect(`${page}error=${encodeURIComponent(message)}`,303):c.json({error:message},status);
  });
+ app.route('/writeback',calendarWritebackRoutes(db,config));
  app.get('/providers',c=>{
   const origin=trustedOrigin(config.origin,c.req.url);
   return c.json({available:Boolean(config.security),providers:([{id:'google',name:'Google Gmail and Calendar'},{id:'microsoft',name:'Microsoft mail and calendar'}] as const).map(provider=>({...provider,redirectUri:redirectUri(origin,provider.id)}))});

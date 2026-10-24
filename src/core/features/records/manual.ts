@@ -9,7 +9,7 @@ export class ManualRepository {
   if(input.kind!=='note'&&(!Number.isInteger(input.durationMinutes)||input.durationMinutes!<0))throw new RecordError(400,'Enter the duration in minutes.');
   for(const contact of input.contactIds??[])await requireRecord(this.db,'contact',contact);
   const current=id?await this.db.prepare("SELECT t.payload_json,t.source FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id WHERE t.id=? AND t.kind IN ('manual.note','manual.call','manual.meeting') AND r.record_type=? AND r.record_id=?").bind(id,kind,recordId).first<{payload_json:string;source:string}>():null;
-  if(current?.source==='twilio')throw new RecordError(409,'Provider call receipts cannot be edited. Add a separate note.');
+  if(current&&['twilio','calendar-writeback'].includes(current.source))throw new RecordError(409,'Provider receipts cannot be edited. Add a separate note.');
   if(id&&!current)throw new RecordError(404,'Manual entry not found.');
   // A meeting plan saved as a note keeps its plan fields when the note is edited from the timeline.
   plan??=current?(JSON.parse(current.payload_json) as {plan?:{meetingSignalId:string;agenda:string;prep:string}}).plan:undefined;
