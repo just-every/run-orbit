@@ -8439,7 +8439,7 @@
       "executable": false
     },
     "tests/delegation-browser/calling-journey.mjs": {
-      "sha256": "2dd35765db6c9d3ea770a67187bb8ecaafa7e0618cfad132d68d99df01fb6737",
+      "sha256": "5f97b19221cdab8bfe9d4c6d8e6ae3084c4a21ac76b7d5366bd4fec599e214f6",
       "executable": false
     },
     "tests/delegation-browser/journey.mjs": {
@@ -8455,7 +8455,7 @@
       "executable": false
     },
     "tests/delegation-browser/private-entries-journey.mjs": {
-      "sha256": "6e82ae30707349325cd7ebd6c528bc5a7736e1e19c5d5c327631a6a0e8e6e534",
+      "sha256": "7d56465a6a7c55675cb7155de095515de01d7f616e6b998918d4812d8281f8ca",
       "executable": false
     },
     "tests/delegation-browser/records-layout-journey.mjs": {
@@ -8479,7 +8479,7 @@
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
-      "sha256": "c9e4a7057eb50204f06b32ee5f7780de3e47d719c14695807ea9ab50a001d533",
+      "sha256": "1f9b371b29ab7a2af606615b7f675229319ed5ea548953b7c89b96c12627e560",
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
