@@ -10,7 +10,7 @@ import {publication} from './publication-fixture';
 import {submitForm} from './form-submit';
 import {createApp,TEST_SESSION_SECRET} from '../../tests/support/app';
 import {formAbuseJourney} from './forms-abuse-journey';
-test('FORM-001 mapped cross-origin capture, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent',async()=>{const f=await fixture();try{
+test('FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent',async()=>{const f=await fixture();try{
  const p=await publication(f),intake={revision:p.saved.revision,operationId:p.compiled.operationId,idempotencyKey:crypto.randomUUID(),values:{name:'Person',email:'person@example.com'}};
  assert.equal(await p.forms.publicDocument(p.slug),p.compiled.html);const first=await submitForm(p.forms,p.slug,intake);assert.equal(first.replayed,false);assert.equal(first.reviewRequired,false);
  const contact=await f.db.prepare("SELECT * FROM contacts WHERE email='person@example.com'").first<any>();assert.equal(contact.name,'Person');assert.equal(contact.contactability,'do_not_contact');assert.equal(await f.db.prepare('SELECT count(*) n FROM consent_events').first('n'),0);assert.equal(await f.db.prepare('SELECT count(*) n FROM signals').first('n'),1);assert.equal(await f.db.prepare("SELECT count(*) n FROM timeline_entries WHERE kind='signal.recorded'").first('n'),1);
