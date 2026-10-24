@@ -1,3 +1,4 @@
+import {TEST_SESSION_SECRET} from '../../tests/support/worker-identity.mjs';
 import {execFileSync} from 'node:child_process';
 import {mkdtemp,mkdir,readdir,readFile,writeFile,rm,symlink} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
@@ -30,6 +31,7 @@ export async function releasedRuntime(directory:string,db:D1Database){
  await mkdir(source);await writeFile(join(source,'package.json'),'{"type":"module"}');await symlink(resolve('node_modules'),join(source,'node_modules'),'dir');
  const files=git(['ls-tree','-r','--name-only','v0.3.0','src']).toString().trim().split('\n');
  for(const file of files){const path=join(source,file);await mkdir(dirname(path),{recursive:true});await writeFile(path,git(['show',`v0.3.0:${file}`]));}
- const {createApp}=await import(pathToFileURL(join(source,'src/core/app/app.ts')).href),{createOrbitIdentity}=await import(pathToFileURL(join(source,'src/core/features/identity/auth.ts')).href);
- return {app:createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}}),createOrbitIdentity};
+ const {createApp}=await import(pathToFileURL(join(source,'src/core/app/app.ts')).href),{createOrbitIdentity}=await import(pathToFileURL(join(source,'src/core/features/identity/auth.ts')).href),{operatorFromRequest,requireStepUp}=await import(pathToFileURL(join(source,'src/core/features/identity/session.ts')).href);
+ const bindings=(request:Request)=>({DB:db,AUTH_ORIGIN:new URL(request.url).origin,AUTH_LOCAL:'false',SESSION_SECRET:TEST_SESSION_SECRET,OWNER_EMAIL:'owner@orbit.test'});
+ return {app:createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},authenticate:(request:Request)=>operatorFromRequest(request,bindings(request)),stepUp:(request:Request,action:unknown,returnTo?:string)=>requireStepUp(request,bindings(request),action,returnTo)}),createOrbitIdentity};
 }
