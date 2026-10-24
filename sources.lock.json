@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "c1c9cb315546c0e04a85d30bb8e041eb1c0b6eb4ffba4082fe350b53ae9e6c0e",
+      "sha256": "a4acaeb9e39e197ffb96b53fbe45b7d4215d974404f913dcfb6caeee3eb0b401",
       "executable": false
     },
     "DEMO.md": {
@@ -2099,7 +2099,7 @@
       "executable": false
     },
     "newtests/t096/browser-capture-rule.ts": {
-      "sha256": "4964c1a7fcf93e064a689ca00d0572fe8f66a2babb4ed001d7b3c3aa8c29eb1f",
+      "sha256": "311ea010f5aa197833a1dc59bc974fe037a6866e22f99011efbb14080369e767",
       "executable": false
     },
     "newtests/t096/browser-dashboard-slack.ts": {
@@ -2159,7 +2159,7 @@
       "executable": false
     },
     "newtests/t096/capture-rule-browser-seed.ts": {
-      "sha256": "3a011d498cb52332b63b5459d085b353ea32c27003265c2b829941908a0fe119",
+      "sha256": "0a23943611d2ba62f216061e43040614b7636cef145a66b8c5fecd95287816f0",
       "executable": false
     },
     "newtests/t096/collaborator-lifecycle.test.ts": {
@@ -3535,7 +3535,7 @@
       "executable": false
     },
     "OPERATIONS.md": {
-      "sha256": "bbf8e3a11145d1164fc7a5acf1b57adc76d1bb488ccd5727e8b67f1dcda021be",
+      "sha256": "baafa3746b1addec7668dfedcdb6535b36915f58d02e7ef65160baa844946396",
       "executable": false
     },
     "OWNER-STEPS.md": {
@@ -4743,7 +4743,7 @@
       "executable": false
     },
     "src/core/features/capture/deal-links.ts": {
-      "sha256": "404befab37715eb783076e6a957b8b8f9ac436ac0c89d5ea97ac305ade3dec54",
+      "sha256": "0f0f17503cd53d72d9fd1a0557bf0c590ab018e4ff9ab9254739e97212d71d14",
       "executable": false
     },
     "src/core/features/capture/facts.ts": {
@@ -4871,7 +4871,7 @@
       "executable": false
     },
     "src/core/features/capture/routes.ts": {
-      "sha256": "0981db446853df2dabacdbbf6dc848c9324182ac3a5b50dd742ff44e2cc5070c",
+      "sha256": "ead60e63e0e5c29d80caacd7f66df2772f9784d11d4aa561e3edc4a961289507",
       "executable": false
     },
     "src/core/features/capture/sources.ts": {
@@ -5523,7 +5523,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/capture-deal-links.tsx": {
-      "sha256": "3915bcdf87a4e1ed7b3c0367c782405feef20688e3c0ab3f2a3cb93292b7bbfd",
+      "sha256": "da4927f5b0b1f3dfbf37f493c525f0e589f2448119520b3820800dc681547a66",
       "executable": false
     },
     "src/core/features/operator/ui/capture-files-setup.tsx": {
@@ -9055,7 +9055,7 @@
       "executable": false
     },
     "tests/support/capture-mail-rule.ts": {
-      "sha256": "191797f7e0deca24a94a3eb193ea2a7adfe2a24a762e256de32175d9ef9026dc",
+      "sha256": "abc84423e31043ca88acb9ee4d185e1af0cc3b2f65f2601cfd74e7af720189aa",
       "executable": false
     },
     "tests/support/capture-mail.ts": {
