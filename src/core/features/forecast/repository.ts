@@ -1,3 +1,4 @@
+import {operatorListingPredicate} from '../identity/operator-listing';
 import {salesFilterValue} from '../analytics/sales-filter';
 import {AccessService} from '../access/service';
 import {AccessError,deny} from '../access/errors';
@@ -32,7 +33,7 @@ export class ForecastRepository {
   try{results=await this.db.batch([...checks,
    this.db.prepare('SELECT revision FROM forecast_source_clock WHERE id=1'),
    this.db.prepare('SELECT id,name FROM pipeline_stages ORDER BY position,id'),
-   this.db.prepare("SELECT o.id,o.display_name AS name,o.setup_owner FROM operators o WHERE o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id) ORDER BY o.display_name,o.id"),
+   this.db.prepare(`SELECT o.id,o.display_name AS name,o.setup_owner FROM operators o WHERE o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id) AND ${operatorListingPredicate('o')} ORDER BY o.display_name,o.id`),
    this.db.prepare('SELECT r.*,o.display_name AS actor_name FROM forecast_revisions r LEFT JOIN operators o ON o.id=r.actor_id WHERE r.workspace_id=? ORDER BY r.kind,r.target_key,r.revision').bind(context.workspaceId),
    this.db.prepare('SELECT * FROM opportunities ORDER BY id'),
    this.db.prepare("SELECT stale_interval_days,currency FROM workspace_settings WHERE id='workspace'"),

@@ -9,6 +9,7 @@ import { contactEmailKey } from '../records/identity';
 import { opportunityAssignmentPolicy } from '../../../ext/records';
 import { assertCommercialRelationship } from '../../../family/sales/relationships';
 import { stopReason } from '../outreach/stop-reason';
+import {replyNotificationStatements} from '../notifications/reply-events';
 
 
 export class WorkbenchError extends Error { constructor(readonly status: 400 | 403 | 404 | 409, message: string, readonly recordId?:string) { super(message); } }
@@ -81,6 +82,7 @@ export class WorkbenchRepository {
       if(['email.replied','email.bounced'].includes(input.type))statements.push(this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=?,next_due_at=NULL WHERE id=? AND lifecycle='open'").bind(input.type==='email.replied'?'Customer reply':'Delivery problem',opportunityId));
     }
     if(input.contactId && (['email.replied','meeting.booked','email.unsubscribed'].includes(input.type)||stopsContact))statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE contact_id=? AND state='scheduled'").bind(stopReason(input.type),timestamp,input.contactId),this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason=?,updated_at=? WHERE recipient_contact_id=?").bind(stopReason(input.type),timestamp,input.contactId));
+    if(input.type==='email.replied')statements.push(...replyNotificationStatements(this.db,id,`reply:${id}`,[opportunityId],timestamp,input.contactId?[input.contactId]:[]));
     try { await this.db.batch(statements); }
     catch(error) {
       const concurrent = await this.db.prepare('SELECT id,payload_hash FROM signals WHERE source_id=? AND source_event_id=?').bind(source,input.eventId).first<{id:string;payload_hash:string}>();

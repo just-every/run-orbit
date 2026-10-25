@@ -1,3 +1,4 @@
+import {operatorListingPredicate} from '../identity/operator-listing';
 import type {ActorContext,DependencyRef,Json,MetricSnapshot,SqlStatement} from '../../shared/expansion-contracts';
 import {salesFilterValue} from './sales-filter';
 import {GraphRecords} from '../graph/repository';
@@ -141,7 +142,7 @@ export class SalesReports{
  async suite(c:ActorContext){
   c=await this.metrics.permit(c,'analytics.read');const settings=await this.settings(),full=c.principal.kind==='operator'&&await isFullOperator(this.db,c.principal.operatorId);
   const pipelines=(await this.db.prepare('SELECT id,name FROM pipelines ORDER BY is_default DESC,name,id').all<{id:string;name:string}>()).results;
-  const reps=full?(await this.db.prepare("SELECT o.id,o.display_name AS name FROM operators o WHERE o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id) ORDER BY o.display_name,o.id").all<{id:string;name:string}>()).results:[];
+  const reps=full?(await this.db.prepare(`SELECT o.id,o.display_name AS name FROM operators o WHERE o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id) AND ${operatorListingPredicate('o')} ORDER BY o.display_name,o.id`).all<{id:string;name:string}>()).results:[];
   const members=full?await this.shares.members(c):[];
   const canDefine=await this.metrics.store.access.authorize(c,'analytics.define',{...c,type:'analytics',id:'*'},[]).then(()=>true,()=>false);
   await this.metrics.checkSources(c,full?fullOperatorFence(c):[]);

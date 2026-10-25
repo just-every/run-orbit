@@ -14,7 +14,7 @@ export function recordMailContactMerge(db:D1Database,retiredId:string,survivorId
 export function recordMailContactErasure(db:D1Database,contactId:string){
  return [
   db.prepare("DELETE FROM notifications WHERE event_key IN(SELECT 'record-mail:'||m.id||':'||n.state FROM record_mail_outbound_messages m CROSS JOIN (SELECT 'accepted' AS state UNION ALL SELECT 'failed' UNION ALL SELECT 'bounced' UNION ALL SELECT 'delivery-unknown' UNION ALL SELECT 'reconciling') n WHERE m.contact_id=?)").bind(contactId),
-  db.prepare("DELETE FROM notifications WHERE event_key IN(SELECT 'reply:'||signal_id FROM signal_links WHERE record_type='contact' AND record_id=?)").bind(contactId)
+  db.prepare("DELETE FROM notifications WHERE event_key IN(SELECT 'reply:'||signal_id FROM signal_links WHERE record_type='contact' AND record_id=? UNION SELECT json_extract(t.payload_json,'$.notificationEventKey') FROM signal_links l JOIN timeline_entries t ON t.id=l.signal_id WHERE l.record_type='contact' AND l.record_id=?)").bind(contactId,contactId)
  ];
 }
 /** Removing an origin keeps the recipient's accepted history and withdraws all send authority. */

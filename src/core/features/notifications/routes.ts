@@ -1,12 +1,17 @@
 import { mentionHrefSql } from '../records/mentions';
 import { Hono } from 'hono';
 import type { AuthenticatedOperator } from '../identity';
+import {replyNotificationMatchSql} from './reply-events';
+const recordMailContact="SELECT m.contact_id FROM record_mail_outbound_messages m WHERE n.event_key GLOB 'record-mail:'||m.id||':*'";
+const replyContact=`SELECT l.record_id FROM signal_links l LEFT JOIN timeline_entries t ON t.id=l.signal_id WHERE l.record_type='contact' AND ${replyNotificationMatchSql} ORDER BY l.record_id LIMIT 1`;
+const formContact="SELECT s.contact_id FROM marketing_form_submissions s WHERE n.kind='form.submitted' AND n.event_key='form:'||s.id";
+const contactId=`COALESCE((${recordMailContact}),(${replyContact}),(${formContact}))`;
 export function createNotificationRoutes(db:D1Database) {
  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
  app.get('/',async c=>{
   const actor=c.get('operator').operatorId;
   const [items,count]=await Promise.all([
-   db.prepare(`SELECT n.id,COALESCE((SELECT '/app/records?kind=contact&record='||m.contact_id FROM record_mail_outbound_messages m WHERE n.event_key GLOB 'record-mail:'||m.id||':*'),(SELECT '/app/records?kind=contact&record='||l.record_id FROM signal_links l WHERE l.record_type='contact' AND n.event_key='reply:'||l.signal_id LIMIT 1),(SELECT '/app/records?kind=contact&record='||s.contact_id FROM marketing_form_submissions s WHERE n.kind='form.submitted' AND n.event_key='form:'||s.id),(SELECT '/app/records?kind='||b.record_type||CASE WHEN b.item_count=1 THEN '&record='||(SELECT record_id FROM ownership_batch_items WHERE batch_id=b.id LIMIT 1) ELSE '' END FROM ownership_batches b WHERE n.kind='record.assigned' AND n.event_key='ownership:'||b.id),(SELECT l.href FROM sales_task_notification_links l WHERE l.notification_id=n.id LIMIT 1),${mentionHrefSql}) AS href,n.opportunity_id AS opportunityId,o.title AS opportunityTitle,n.kind,n.message,n.created_at AS createdAt,n.read_at AS readAt FROM notifications n LEFT JOIN opportunities o ON o.id=n.opportunity_id WHERE n.operator_id=? ORDER BY n.created_at DESC,n.id DESC LIMIT 100`).bind(actor).all(),
+   db.prepare(`SELECT n.id,COALESCE((SELECT '/app/records?kind=contact&record='||c.id FROM contacts c WHERE c.id=${contactId}),(SELECT '/app/records?kind='||b.record_type||CASE WHEN b.item_count=1 THEN '&record='||(SELECT record_id FROM ownership_batch_items WHERE batch_id=b.id LIMIT 1) ELSE '' END FROM ownership_batches b WHERE n.kind='record.assigned' AND n.event_key='ownership:'||b.id),(SELECT l.href FROM sales_task_notification_links l WHERE l.notification_id=n.id LIMIT 1),${mentionHrefSql}) AS href,n.opportunity_id AS opportunityId,o.title AS opportunityTitle,COALESCE(o.title,(SELECT COALESCE(NULLIF(c.name,''),c.email) FROM contacts c WHERE c.id=${contactId})) AS recordTitle,n.kind,n.message,n.created_at AS createdAt,n.read_at AS readAt FROM notifications n LEFT JOIN opportunities o ON o.id=n.opportunity_id WHERE n.operator_id=? ORDER BY n.created_at DESC,n.id DESC LIMIT 100`).bind(actor).all(),
    db.prepare('SELECT count(*) AS count FROM notifications WHERE operator_id=? AND read_at IS NULL').bind(actor).first<{count:number}>()
   ]);
   return c.json({notifications:items.results,unread:count?.count??0});

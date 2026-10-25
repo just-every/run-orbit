@@ -1,3 +1,4 @@
+import {operatorListingPredicate} from '../identity/operator-listing';
 import { localTime } from '../outreach/time';
 import { TaskError, type SalesTask, type TaskHistory, type TaskList, type TaskRow } from './contracts';
 import { taskDayWindow } from './time';
@@ -34,7 +35,7 @@ export interface TaskQuery {view: 'today' | 'overdue' | 'all'; owner?: string; d
 export async function listTasks(db: D1Database, actorId: string, query: TaskQuery): Promise<TaskList> {
  const [workspace, operators] = await Promise.all([
   db.prepare("SELECT timezone FROM workspace_settings WHERE id='workspace'").first<{timezone: string}>(),
-  db.prepare("SELECT p.id,p.display_name AS displayName FROM operators p WHERE p.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=p.id) ORDER BY p.display_name,p.id").all<{id: string; displayName: string}>()
+  db.prepare(`SELECT p.id,p.display_name AS displayName FROM operators p WHERE p.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=p.id) AND ${operatorListingPredicate('p')} ORDER BY p.display_name,p.id`).all<{id: string; displayName: string}>()
  ]);
  if (!workspace) throw new TaskError(503, 'Finish workspace setup before creating tasks.');
  const timezone = workspace.timezone, now = new Date().toISOString(), today = localTime(new Date(now), timezone).day;

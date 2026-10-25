@@ -25,7 +25,7 @@ export type Outcome =
 /** A held or attached signal's event, carrying every participant so contact erasure can find it. */
 function signalEvent(fact:Fact,type:string,itemId:string,sender:string|undefined):SignalEvent{
  return {eventId:fact.eventId,type,subject:fact.subject,occurredAt:fact.occurredAt,...(sender?{email:sender}:{}),
-  data:{captureItemId:itemId,participants:fact.participants.map(p=>p.email),quote:fact.quote,...(fact.kind==='event'?{start:fact.start,end:fact.end}:{})}};
+  data:{captureItemId:itemId,participants:fact.participants.map(p=>p.email),quote:fact.quote,...(fact.kind==='event'?{start:fact.start,end:fact.end}:{messageId:fact.messageId})}};
 }
 export function evidenceSummary(fact:Fact,sourceName:string){
  const sender=fact.kind==='message'?fact.sender?.email??null:fact.participants.find(p=>p.role==='organizer')?.email??null;

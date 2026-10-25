@@ -1,6 +1,7 @@
+import {formatDateTime} from '../operator/presentation-date';
 const formatters=new Map<string,Intl.DateTimeFormat>();
 function formatter(zone:string){let format=formatters.get(zone);if(!format){format=new Intl.DateTimeFormat('en-GB',{timeZone:zone,weekday:'short',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});formatters.set(zone,format);}return format;}
-export function localTime(date:Date,zone:string){const fields=Object.fromEntries(formatter(zone).formatToParts(date).map(part=>[part.type,part.value]));return {day:`${fields.year}-${fields.month}-${fields.day}`,weekday:fields.weekday!,hour:Number(fields.hour),minute:Number(fields.minute),label:formatter(zone).format(date)};}
+export function localTime(date:Date,zone:string){const fields=Object.fromEntries(formatter(zone).formatToParts(date).map(part=>[part.type,part.value]));return {day:`${fields.year}-${fields.month}-${fields.day}`,weekday:fields.weekday!,hour:Number(fields.hour),minute:Number(fields.minute),label:formatDateTime(date,zone)};}
 export function permitted(date:Date,zone:string){const time=localTime(date,zone);return !['Sat','Sun'].includes(time.weekday)&&time.hour>=8&&time.hour<18;}
 // The person confirms a displayed recipient minute. Keep that review valid for
 // ten minutes, including across the next clock-minute boundary.

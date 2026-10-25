@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
 import { createApp as testApp, identityBindings } from '../support/app';
-import { mailedIdentity } from '../support/email-link';
+import { emailLinkSignIn, mailedIdentity } from '../support/email-link';
 import { testAuth } from '../support/test-auth';
 import { createApp } from '../../src/core/app/app';
 import { identityResponse, operatorFromRequest, requireStepUp } from '../../src/core/features/identity';
@@ -109,13 +109,41 @@ test('AUTH-5 step-up guards export, delete and minting delegation credentials wi
 });
 
 test('AUTH-5 dev sessions and the credentials they mint count only behind the checkout key', async () => {
-  const person = await operator(), app = testApp({ database: fixture.db, assets: { fetch: async () => new Response('asset') } });
+  const person = await operator('seller@dev.localhost'), app = testApp({ database: fixture.db, assets: { fetch: async () => new Response('asset') } });
   const session = await person.auth.createSession(person.id);
   await fixture.db.prepare("UPDATE identity_sessions SET kind='dev' WHERE session_id=?").bind(session.id).run();
   const ask = () => app.request('https://orbit.test/api/v2/access/class', { headers: { Cookie: `__Host-orbit_session=${session.token}` } });
   assert.equal((await ask()).status, 401, 'a deployed Worker registers no dev admission');
+  const invited = await operator(), removed = await operator(), ownerSession = await person.auth.createSession(owner);
+  await fixture.db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(removed.id).run();
+  const listings = [
+    ['/api/v1/settings', 'operators'],
+    ['/api/v1/settings/sending', 'users'],
+    ['/api/v1/tasks', 'operators'],
+    ['/api/v2/workspaces/workspace/forms/builder-options', 'operators'],
+    ['/api/v2/workspaces/workspace/forecast', 'operators'],
+    ['/api/v2/workspaces/workspace/operations/reports/suite', 'reps'],
+  ] as const;
+  async function listed(visible: boolean) {
+    for (const [path, key] of listings) {
+      const response = await app.request(`https://orbit.test${path}`, { headers: { Cookie: `__Host-orbit_session=${ownerSession.token}` } });
+      assert.equal(response.status, 200, path);
+      const rows = (await response.json() as Record<string, {id: string}[]>)[key]!;
+      assert.equal(rows.some(row => row.id === person.id), visible, `${path}: local persona needs a real sign-in`);
+      assert.ok(rows.some(row => row.id === invited.id), `${path}: an ordinary invitation needs no prior sign-in`);
+      if (path === '/api/v1/settings') assert.ok(rows.some(row => row.id === removed.id), 'ordinary removed operators keep their history');
+    }
+  }
+  await listed(false);
   registerDevAdmission(() => true);
-  try { assert.equal((await ask()).status, 200, 'the local dev layer admits it behind the key'); }
+  try {
+    assert.equal((await ask()).status, 200, 'the local dev layer admits it behind the key');
+    const native = await emailLinkSignIn(fixture.db, person.email);
+    await listed(true);
+    await person.auth.revoke(native.operator.sessionId);
+    await listed(false);
+    assert.equal((await ask()).status, 200, 'listing visibility does not change persona sign-in');
+  }
   finally { registerDevAdmission(null); }
 
   await fixture.db.prepare("INSERT INTO delegation_clients(id,redirect_uri,origin) VALUES('dev-minted','https://slate.test/callback','https://slate.test')").run();

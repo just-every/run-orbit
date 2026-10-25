@@ -36,7 +36,9 @@ test.describe("authenticated operator UI", () => {
     await page.goto("/app", { waitUntil: "networkidle" });
 
     await expect(page.getByTestId("now-queue")).toBeVisible();
-    await expect(page.getByTestId("now-ordering")).toHaveText("Policy: opportunity.prioritization.v1");
+    const {opportunities}=await (await page.request.get('/api/v1/opportunities/now')).json();
+    const ordered=[...opportunities].sort((a,b)=>b.score-a.score || (b.lastContributingSignalAt??'').localeCompare(a.lastContributingSignalAt??'') || a.id.localeCompare(b.id));
+    expect(await page.locator('.operator-queue-card > a').evaluateAll(links=>links.map(link=>link.getAttribute('href')))).toEqual(ordered.map(row=>`/app/opportunities/${row.id}`));
     await expect(page.locator(".operator-queue-card").first()).toContainText("Ordering proof X");
     await page.getByLabel("Filter by owner").selectOption("unassigned");
     await expect(page.getByText("Fieldhouse Studio workspace", { exact: true })).toHaveCount(0);
@@ -151,8 +153,9 @@ test.describe("authenticated operator UI", () => {
     await expect(page.getByTestId("draft-body")).toHaveValue(issued.draft.body);
     await page.getByText("Audit details", {exact:true}).click();
     const metadata = page.getByText("Draft history").locator("..");
-    await expect(metadata).toContainText(`Author${issued.draft.authorId}`);
-    await expect(metadata).toContainText(`Source recommendation${issued.draft.recommendationId}`);
+    const {operators}=await (await page.request.get('/api/v1/settings')).json();
+    await expect(metadata).toContainText(operators.find(operator=>operator.id===issued.draft.authorId).display_name);
+    await expect(metadata.getByRole('link')).toHaveAttribute('href',`/app/opportunities/${issued.draft.opportunityId}`);
     await expect(metadata).toContainText("Created");
     await expect(metadata).toContainText("Last updated");
     const savedBody = `Persisted operator edit ${Date.now()}.`;
