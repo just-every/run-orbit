@@ -6,7 +6,7 @@ import {localTime} from '../outreach/time';
 import type {Dashboards} from './repository';
 export const scheduleInput=z.object({version:z.number().int().min(0),frequency:z.enum(['daily','weekly','monthly']),hour:z.number().int().min(0).max(23),minute:z.number().int().min(0).max(59),weekday:z.number().int().min(0).max(6),day:z.number().int().min(1).max(28),recipientIds:z.array(z.string().min(1).max(120)).max(200),channelId:z.string().max(40).nullable(),pdf:z.boolean(),csv:z.boolean()}).strict().refine(s=>s.recipientIds.length>0||Boolean(s.channelId),{message:'Choose an email recipient or a Slack channel.'});
 export type DashboardSchedule=z.infer<typeof scheduleInput>;
-export const deliveryGap='Email paused: dashboard email needs a system notification sender. The managed relay cannot carry attachments. Slack is a separate destination and must be explicitly enabled by the installation owner.';
+export const deliveryGap='Email is paused: no notification sender yet.';
 /** The existing task clock resolver handles repeated minutes and spring gaps. No real wait. */
 export function nextDashboardSend(input:DashboardSchedule,timezone:string,now:Date){
  const start=localTime(now,timezone).day;
@@ -28,6 +28,7 @@ export async function dashboardSchedule(dashboards:Dashboards,c:ActorContext,id:
  }
  const history=(await dashboards.db.prepare("SELECT n.id,n.due_at AS at,n.state,n.error,c.name AS channel FROM slack_notices n JOIN slack_channels c ON c.id=n.channel_id WHERE n.event_kind='dashboard' AND n.record_id=? ORDER BY n.created_at DESC LIMIT 50").bind(id).all<{id:string;at:string;state:string;error:string|null;channel:string}>()).results;
  const definition:DashboardSchedule=latest?JSON.parse(latest.body_json):{version:0,frequency:'weekly',hour:8,minute:0,weekday:1,day:1,recipientIds:[],channelId:null,pdf:false,csv:false};
+ // Only a real admin or provider pause has a reason; every saved version also starts paused, without one.
  const pause=await dashboards.db.prepare("SELECT json_extract(details_json,'$.reason') AS reason FROM audit_entries WHERE action='slack.dashboard-paused' AND entity_type='dashboard' AND entity_id=? AND json_extract(details_json,'$.version')=? ORDER BY occurred_at DESC LIMIT 1").bind(id,latest?.version??0).first<string>('reason');
- return {definition,slackAdmin:Boolean(await dashboards.db.prepare("SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active'").bind(c.principal.kind==='operator'?c.principal.operatorId:'').first()),pauseReason:pause??'Every saved schedule version starts paused. Enable Slack explicitly.',state:latest?.state??'paused',gap:deliveryGap,timezone:suite.timezone,nextAt:nextDashboardSend(definition,suite.timezone,now),members,channels,history};
+ return {definition,slackAdmin:Boolean(await dashboards.db.prepare("SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active'").bind(c.principal.kind==='operator'?c.principal.operatorId:'').first()),pauseReason:pause,state:latest?.state??'paused',gap:deliveryGap,timezone:suite.timezone,nextAt:nextDashboardSend(definition,suite.timezone,now),members,channels,history};
 }

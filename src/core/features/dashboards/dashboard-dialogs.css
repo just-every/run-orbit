@@ -39,9 +39,8 @@
 .dash-recipient-chips li{display:inline-flex;align-items:center;min-height:36px;padding:0 0 0 12px;border-radius:999px;background:var(--ob-paper-deep);font-size:14px}
 .dash-recipient-chips button{display:inline-flex;align-items:center;justify-content:center;width:36px;min-height:36px;padding:0;border:0;border-radius:999px;background:none;color:var(--ob-ink)}
 .dash-dialog .dash-field-note{margin-top:6px}
-.dash-slack{display:grid;justify-items:start;gap:8px;margin-top:16px}
+.dash-slack{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:16px}
 .dash-slack [role=status]{margin:0;font-size:14.5px;color:var(--ob-body)}
-.dash-slack .dash-meta{margin:0}
 .dash-attachments .sales-check{display:flex;align-items:center;gap:10px;min-height:44px;margin:0;font-weight:500}
 .dash-attachments .sales-check input{width:20px;height:20px}
 .dash-dialog .dash-state{display:flex;align-items:flex-start;gap:10px;margin:14px 0 0;padding:12px 14px}
