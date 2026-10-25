@@ -1423,7 +1423,7 @@
       "executable": false
     },
     "docs/retained-verification/REPORT-002/access-revoked-1440.png": {
-      "sha256": "8bd717039e01ba5f3d3166b8d5cfa6804041a4694fe99c7e44fd1e4c30154112",
+      "sha256": "ad81c55893a832a20b65dd73fdfd20738a3148317f83885063cbc1d0829a3235",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/access-revoked-390.png": {
@@ -1439,7 +1439,7 @@
       "executable": false
     },
     "docs/retained-verification/REPORT-002/dashboard-operator-1440.png": {
-      "sha256": "02223d6509dec0b02686d685a623834d261936033fe9022026e99dece4aa31e2",
+      "sha256": "314be7c0b766be21dfba35e5860347c43693e92a03deba63276a6b107af24e87",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/dashboard-operator-390.png": {
@@ -1447,7 +1447,7 @@
       "executable": false
     },
     "docs/retained-verification/REPORT-002/dashboard-restricted-1440.png": {
-      "sha256": "d9dac60f521f627a00fb8c7966d3ebe7783ab6b0684215e7437a7e56b1f4f9e1",
+      "sha256": "0b86da24c7af78305769cef81388b3f9a1f81a22684717ba5ed4a2c4c4aa25b6",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/dashboard-restricted-390.png": {
@@ -1463,39 +1463,39 @@
       "executable": false
     },
     "docs/retained-verification/REPORT-002/drill-1440.png": {
-      "sha256": "b245cfdcb7feb90eb368e8ee0b62fa83f192ececbc1a683afc2c3edb61dbe750",
+      "sha256": "b4c242967c90f0217279ba08d47eb1e71de533a8947f1a4a26c1faecb3657e0d",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/drill-390.png": {
-      "sha256": "e18bb82641b61bc3f81fcbf0c2d3426d15f8be741f9f964746031ffdde467fb0",
+      "sha256": "8fe8e53c1e7bc5174e7a65cf19c92447c0f6f86b3c0107f75ad4e54e5064cf74",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/drill-restricted-1440.png": {
-      "sha256": "bb92f70eea6ac1beb9beaeafc71da30770f5fa37f83dac8f4963c126d7a3d237",
+      "sha256": "f5f9d93b347879457962b3fdfeb7907010214b2d632bd8190d5dc07e91e645f1",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/drill-restricted-390.png": {
-      "sha256": "765e81d1bff5b0977041dcb9df5a386ad9489b78b6bd9901ba0336124b61173c",
+      "sha256": "f5d91056936ae09725700a42fcafbdddb3bd5ede3d75502186d57d8dd0596362",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/edit-tiles-1440.png": {
-      "sha256": "97cb1e79c5974fb8f495604459ddb8bdc959b9c887628f7c7bcf0dfc6ad53c6b",
+      "sha256": "7ae89b545d6f441ff9acba22225d9a4fe3b448105d6bba6a0f9eabcfa373f3d9",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/edit-tiles-390.png": {
-      "sha256": "a1cf4e020f4554f8718e179ab2120ebe8c5a3c21da97c348d7ad11e923413660",
+      "sha256": "161c0e42d6675210404ea692e60780c69746f20096c013d08e230833977a3061",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/filter-not-applied-1440.png": {
-      "sha256": "f3a7d3d75da32dc836d1903066bb12e38287681e49b9ebb0f18bc3bc9f8caa64",
+      "sha256": "2f0dd40bceeee75fcaab44cd70d1d3d90c8118a5271289187a1321507ce27ccb",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/filter-not-applied-390.png": {
-      "sha256": "110fff62d27cee20959a92b4022e429f4ac2996d4e2eb15910e68198713c7193",
+      "sha256": "5b00c609b86db03deaa89a8fdb7077fa596efc052a4e9a843b7eab1ca2ca2979",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/loading-1440.png": {
-      "sha256": "a4662397e16766409d68f779357a92aa5485b841c545d3cdceb6d7f69f68fed5",
+      "sha256": "3916ffe9aefe0186bf64e79466b7b5029680a68d80a1b572255e1094c29d8cc1",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/loading-390.png": {
@@ -1503,11 +1503,11 @@
       "executable": false
     },
     "docs/retained-verification/REPORT-002/no-value-1440.png": {
-      "sha256": "66a0e793d2f1f45f531a126238a74990f1ceb8a40757a949e65b8b52963be39e",
+      "sha256": "f4ada0006af2b81e261ab84dd89888461b941bfe91df874d61598808e65ddb24",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/no-value-390.png": {
-      "sha256": "ca7ef1661dd790e993a50dbde93762dc871ab1a9cb0d82c4602e8546332e6354",
+      "sha256": "12dc17de6e5bbef0537fb6eb94e3d3e41dd8c0df1924197ebc14ad38b0ed04c5",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/pdf-owner-page-1.png": {
@@ -1551,11 +1551,11 @@
       "executable": false
     },
     "docs/retained-verification/REPORT-002/refetch-1440.png": {
-      "sha256": "03541fa54cc9145242ead2718c8fbeecbc22cc4d9af00ff3b422a690f5034905",
+      "sha256": "476f66990367caae2e49a0d8eb25127ffb43966786fe7a666990c9aee7c97fae",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/refetch-390.png": {
-      "sha256": "7914409d547e4e3005ffbce2949c9283db09c539afc128b5292ac7f3c9b01df9",
+      "sha256": "c87e66592d9d57e180b90e0e49b289145b7ea4aecbef9c25df92f7e9bdca78e9",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/reports-default-1440.png": {
@@ -1583,19 +1583,19 @@
       "executable": false
     },
     "docs/retained-verification/REPORT-002/schedule-1440.png": {
-      "sha256": "4522ad2ffbbc3ea494df91093b4fe7227ae3f1879ae9de8b7d13adb0ef565177",
+      "sha256": "175ab9b5d4b143fef3faa33f6951451380b992a8c2b72364c8e4605971898eeb",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/schedule-390.png": {
-      "sha256": "80ad8a8cc4de84a5616f31126e73698bb72d94b1d3a2f05a853c56220a69a2cb",
+      "sha256": "4b5346bb0320a7f44734194872e40633b8b289dc484d3079b0228b430cc3538f",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/schedule-footer-1440.png": {
-      "sha256": "2820fe0bdc782c465100aec6b215250eef860bd41e9a3b9c7095e1f7a57822de",
+      "sha256": "3a0c273c49682567bc7782f50c31dbaddd38ba6b5cfa026924a1311da326c118",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/schedule-footer-390.png": {
-      "sha256": "1af454c8c73819fd03f0c77649f101a1b69b396924fa6617da3d138be4b0b86b",
+      "sha256": "ee06ad899dc3b49b44ca7f7cd24302a95b96eaeb08fb08396fcd23f9629a1fec",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/schedule-notes.md": {
@@ -1603,7 +1603,7 @@
       "executable": false
     },
     "docs/retained-verification/REPORT-002/share-1440.png": {
-      "sha256": "712bd23b7c6f2c8f4be616bef1a70c6b080ea8c7e18a5b536f7a3181d29ba660",
+      "sha256": "603a52ee808ac7257626b83db85a0583d3d219ef73c05f52f7feed3116189489",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/share-390.png": {
@@ -1627,7 +1627,7 @@
       "executable": false
     },
     "docs/retained-verification/REPORT-002/source-no-longer-shared-1440.png": {
-      "sha256": "6c42826699483976471a31b27da998fa59404e1b386a52d57d3d1e6c08826e64",
+      "sha256": "572e70cf3655a67e83e1ea2c3ca16e8e0e8cd44c8e047c6a6aa1869017db5cba",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/source-no-longer-shared-390.png": {
@@ -1635,19 +1635,19 @@
       "executable": false
     },
     "docs/retained-verification/REPORT-002/tile-error-1440.png": {
-      "sha256": "c0a94b973c7062e619741928681f2f99cd7510dd54861e944c0249906c326b95",
+      "sha256": "212b12bea9762d380c366b22b5ab7f191676fef1b9ef977f24a927dbe95ce231",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/tile-error-390.png": {
-      "sha256": "c65c838b091bd83e9ac731fde1c0efad852a2effd54c05ddf6baf71fc56173c6",
+      "sha256": "a7fdcbfa0f80aa380672440f21cba7d3b33ea240362bc3ad588c51017a08b1ef",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/tooltip-close-hover-1440.png": {
-      "sha256": "07e226460d6007159d46bf92269996fac8a73db60a2ff3dd18de5f18f1fdc6a1",
+      "sha256": "74dc0b44edbb3598d8ae05ce7c59fc39736c088af6dd0c03999c5f33deb9bf3c",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/tooltip-close-long-press-390.png": {
-      "sha256": "91ab8301d3b0d62ff2c638e40307405da7a567b6c4bb73b0f61a381fb82609be",
+      "sha256": "b834e84e94ec2c4dbf8b9d61f008b53b6f9c7ed919a70ab7c52d403718e5bf9b",
       "executable": false
     },
     "docs/retained-verification/REPORT-002/tooltip-remove-hover-1440.png": {
@@ -2131,7 +2131,7 @@
       "executable": false
     },
     "newtests/t096/browser-dashboard.ts": {
-      "sha256": "d2017f21701586fdf0660cc4d0470fad7d724753ce40f77fc0952c3baef12d90",
+      "sha256": "36debb0e8e138d3addddcb167e44f2585277824d04f5f1386995720f4c7cc5ec",
       "executable": false
     },
     "newtests/t096/browser-forecast-journey.ts": {
