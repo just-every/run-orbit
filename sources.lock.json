@@ -4479,7 +4479,7 @@
       "executable": false
     },
     "src/core/app/styles.css": {
-      "sha256": "18575b88d7b22c1a3e56c9a8e29410579a0e47d6116280ef19c7cb9088a5db87",
+      "sha256": "699db0bb6a3012d6725399d5e724187b89b086a7f04fbb14cde7e979da6541a8",
       "executable": false
     },
     "src/core/app/ui/page-frame.tsx": {
@@ -5871,7 +5871,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator.css": {
-      "sha256": "68c9c43b0820cabf87cd873776c937e265d41255c5a500460291a207cf5e5d01",
+      "sha256": "3c6f26e67125374ed75196143518f1f4e39c70b70fbe680bacc6b2de687ff296",
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-evidence.tsx": {
@@ -5971,7 +5971,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.css": {
-      "sha256": "9cc8a3622c4d82f5ad4871749ec2a771aa120bc944057a73aedfff9416c89276",
+      "sha256": "d62b72d2bd75eda30fa50cfa4f428798df156e02fd4d1aacf10ca5be0ff1a368",
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.tsx": {
