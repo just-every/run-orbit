@@ -8,6 +8,13 @@ export async function replyEventKey(signalId:string,event:SignalEvent){
  return typeof messageId==='string'&&messageId.trim()?`reply:${await payloadHash(messageId.trim())}`:`reply:${signalId}`;
 }
 
+/** Keep an existing receipt visible to the installed signal-link trigger during
+ * the transaction, so replaying or correcting a link cannot create it again.
+ * replyNotificationStatements restores the shared key before commit. */
+export function prepareReplyLink(db:D1Database,signalId:string,eventKey:string){
+ return db.prepare("UPDATE OR IGNORE notifications SET event_key=? WHERE event_key=?").bind(`reply:${signalId}`,eventKey);
+}
+
 /** Applied triggers still emit signal and queue keys. Fold their outputs inside
  * the originating transaction, before another request can observe either row.
  * The existing unique(operator_id,event_key) constraint preserves a prior read. */

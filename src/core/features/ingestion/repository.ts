@@ -11,7 +11,7 @@ import { linkTargetFence } from './linking-fence';
 import {isTestEvent,customerSignalSql} from '../signals/test-events';
 import { stopReason } from '../outreach/stop-reason';
 import {formSchema,hiddenValues} from '../forms/definition';
-import {replyEventKey,replyNotificationStatements} from '../notifications/reply-events';
+import {prepareReplyLink,replyEventKey,replyNotificationStatements} from '../notifications/reply-events';
 
 interface SourceAuthority {secret_ciphertext:string|null}
 export class IngestionRepository {
@@ -81,6 +81,7 @@ export class IngestionRepository {
   async linkStatements(id:string,event:SignalEvent,targets:SignalTarget[],actor:string,at:string,actorType:'source'|'operator'='source',sourceName=actor,evidence?:Record<string,unknown>){
     if(isTestEvent(event))return [];
     const statements=linkTargetFence(this.db,event,targets,actorType==='operator'),notificationEventKey=await replyEventKey(id,event);
+    if(notificationEventKey)statements.push(prepareReplyLink(this.db,id,notificationEventKey));
     if(targets.length)statements.push(this.db.prepare("INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) VALUES(?,'signal.recorded',?,?,?,?,?,?)").bind(id,event.occurredAt,at,actorType,actor,sourceName,JSON.stringify({signalId:id,subject:event.subject,...evidence,...(notificationEventKey?{notificationEventKey}:{})})));
     for(const target of targets){statements.push(this.db.prepare('INSERT INTO signal_links(signal_id,record_type,record_id,linking_basis,linked_at) VALUES(?,?,?,?,?)').bind(id,target.type,target.id,target.basis,at),this.db.prepare('INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) VALUES(?,?,?)').bind(id,target.type,target.id));if(target.type==='opportunity'&&(weights[event.type]??0)!==0)statements.push(...evaluationStatements(this.db,target.id,actor,'New customer evidence',new Date(at)));}
     if(event.type==='form.submitted')for(const target of targets.filter(t=>t.type==='opportunity'))statements.push(this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=CASE WHEN queue_state='now' AND queue_reason IN ('Customer reply','Delivery problem') THEN queue_reason ELSE 'Form submitted' END,next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open'").bind(at,target.id));
