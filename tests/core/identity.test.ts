@@ -118,6 +118,7 @@ test('AUTH-5 dev sessions and the credentials they mint count only behind the ch
   await fixture.db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(removed.id).run();
   const listings = [
     ['/api/v1/settings', 'operators'],
+    ['/api/v2/access/workspaces/workspace/administration', 'members'],
     ['/api/v1/settings/sending', 'users'],
     ['/api/v1/tasks', 'operators'],
     ['/api/v2/workspaces/workspace/forms/builder-options', 'operators'],
@@ -128,10 +129,10 @@ test('AUTH-5 dev sessions and the credentials they mint count only behind the ch
     for (const [path, key] of listings) {
       const response = await app.request(`https://orbit.test${path}`, { headers: { Cookie: `__Host-orbit_session=${ownerSession.token}` } });
       assert.equal(response.status, 200, path);
-      const rows = (await response.json() as Record<string, {id: string}[]>)[key]!;
-      assert.equal(rows.some(row => row.id === person.id), visible, `${path}: local persona needs a real sign-in`);
-      assert.ok(rows.some(row => row.id === invited.id), `${path}: an ordinary invitation needs no prior sign-in`);
-      if (path === '/api/v1/settings') assert.ok(rows.some(row => row.id === removed.id), 'ordinary removed operators keep their history');
+      const rows = (await response.json() as Record<string, {id?: string;operator_id?:string}[]>)[key]!;
+      assert.equal(rows.some(row => (row.id??row.operator_id) === person.id), visible, `${path}: local persona needs a real sign-in`);
+      assert.ok(rows.some(row => (row.id??row.operator_id) === invited.id), `${path}: an ordinary invitation needs no prior sign-in`);
+      if (path === '/api/v1/settings') assert.ok(rows.some(row => (row.id??row.operator_id) === removed.id), 'ordinary removed operators keep their history');
     }
   }
   await listed(false);
