@@ -48,7 +48,7 @@
 .dash-tile .assistance-badge{display:inline-block;margin-left:4px;padding:1px 7px;border-radius:7px;background:var(--ob-paper-deep);color:var(--ob-body);font-size:13px;font-weight:600;vertical-align:2px}
 .dash-csv{display:inline-flex;align-items:center;gap:4px;flex:none;min-width:44px;min-height:44px;margin:-12px -6px -12px 0;padding:0 6px;color:var(--ob-ink);font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
 .dash-tile p{margin:0}
-.dash-tile .sales-cell{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:4px 8px;border:0;border-radius:10px;background:none;color:var(--ob-ink);font:inherit;font-variant-numeric:tabular-nums;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;transition:none;cursor:pointer}
+.dash-tile .sales-cell{display:inline-flex;align-items:center;justify-content:center;min-width:28px;min-height:28px;padding:2px 8px;border:0;border-radius:10px;background:none;color:var(--ob-ink);font:inherit;font-variant-numeric:tabular-nums;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;transition:none;cursor:pointer}
 .dash-tile .sales-cell[aria-expanded=true]{background:var(--ob-ink);color:var(--ob-card);box-shadow:0 0 0 4px var(--ob-ink);text-decoration:none}
 .dash-number .sales-cell{min-height:0;padding:0;justify-content:flex-start;color:var(--ob-tangerine-deep);font-size:40px;font-weight:760;line-height:1.15;letter-spacing:-.03em;text-decoration:none;font-variant-numeric:normal}
 .dash-number .sales-cell:is(:hover,:focus-visible){text-decoration:underline;text-decoration-thickness:2px}
@@ -81,7 +81,7 @@ p.dash-breakdown{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:va
 .dash-matrix__cell{display:grid;gap:4px;align-content:start;min-width:0}
 .dash-bar{display:block;height:8px;min-width:0;background:var(--ob-line)}
 .dash-bar>span{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--pipeline-color,var(--ob-tangerine))}
-.dash-matrix__cell .sales-cell{justify-self:start;justify-content:flex-start;padding-inline:0;font-size:16px;font-weight:650}
+.dash-matrix__cell .sales-cell{justify-self:start;justify-content:flex-start;min-width:32px;padding-inline:0;font-size:16px;font-weight:650}
 .dash-matrix__amount{font-size:13.5px;color:var(--ob-muted);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .dash-matrix__stage,.dash-matrix__total{display:none}
 @container (max-width:559px){
@@ -173,6 +173,7 @@ p.dash-breakdown{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:va
  .dash-filter-chips button{display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;min-height:44px;padding:0;border:0;border-radius:999px;background:none;color:var(--ob-ink)}
  .dash-grid{grid-template-columns:minmax(0,1fr);gap:16px}
  .dash-tile,.dash-tile[style]{grid-column:span 1;grid-row:span 1;padding:16px}
+ .dash-tile .sales-cell{min-width:44px;min-height:44px}
  .dash-number .sales-cell{min-height:44px;font-size:36px}
  .dash-basis-fold>summary,.dash-forecast .sales-cell{min-width:44px;min-height:44px}
  .dash-tile .sales-late a{display:inline-flex;align-items:center;min-height:44px}
