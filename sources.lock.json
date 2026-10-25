@@ -5663,7 +5663,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/custom-fields.tsx": {
-      "sha256": "6381488954d9093e15d83eea521fa0b6b621773d397eb6af95d8b3b33e7a50b8",
+      "sha256": "c9d31db276b0c88f9a8c29ffba1a646604ed3f54b97dfb883caf2448968b82c1",
       "executable": false
     },
     "src/core/features/operator/ui/data-value.tsx": {
@@ -5899,7 +5899,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record-editor.tsx": {
-      "sha256": "2e2bf6fc01eda0a358d7f7ace2ebd06bd679ecf1257fa52eb019f2b7eaf97bca",
+      "sha256": "8f766399ea0e4ce0aefff7ba03e648982af57d6486284df69975b62f31815071",
       "executable": false
     },
     "src/core/features/operator/ui/record-entry-details.tsx": {
@@ -8487,7 +8487,7 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout-journey.mjs": {
-      "sha256": "295d1e3fb674000fd7a0a3b81553083a8045967ca3eb6a10d6aa63e94dba4eda",
+      "sha256": "830dd310eaf293914ae4b2e07d55532ad847c9bb925f100d7adf15ad8ad57208",
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {

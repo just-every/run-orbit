@@ -151,6 +151,13 @@ async function expectRecordList(page, kind, title, evidenceName, diagnostics) {
     await awaitRecordReload(page, kind, title, () => page.getByRole('searchbox', { name: 'Search records and timeline', exact: true }).fill(title));
     const heading = page.getByRole('heading', { name: title, exact: true });
     await expect(heading).toBeVisible();
+    if (kind !== 'opportunity') {
+      const selection = page.getByRole('checkbox', { name: `Select ${title}`, exact: true });
+      await selection.check();
+      await expect(page.getByRole('button', { name: 'Review assignment', exact: true })).toBeVisible();
+      await selection.uncheck();
+      await expect(page.getByRole('button', { name: 'Review assignment', exact: true })).toHaveCount(0);
+    }
     const metrics = await assertReadablePage(page, viewport, heading, title);
     diagnostics.viewportChecks.push({ name: viewport.name, surface: evidenceName, ...metrics });
     await page.screenshot({ path: `${evidence}/${evidenceName}-${viewport.name}.png`, fullPage: true });
