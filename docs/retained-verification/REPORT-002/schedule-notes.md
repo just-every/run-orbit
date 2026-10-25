@@ -38,3 +38,5 @@ New validation, suspension and history reasons, also shown when relevant:
 - “Schedule changed; historical notice held”
 
 “Explicit owner enable” is the new audit reason. “Slack scheduled; email paused”, the schedule heading, attachment labels, access note, existing Slack transport errors and Queued/Sent/Failed/Uncertain labels are reused.
+
+sd-orbit-c24 (25 Oct 2026), Tile board UI round: the remove buttons on grants and recipients are named for their person ("Remove {name}") with the same tooltip; the Slack helper is now one sentence, "Saving a new schedule version pauses Slack until it is enabled again."; the email-paused text is a neutral state with an info icon rather than an error box; delivery pills carry an icon and "Paused" is neutral; Day and Time sit under "Every {day} at {time}, {zone}" with the calendar icon. The Slack status strings, buttons and the email-paused sentence are unchanged.
