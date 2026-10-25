@@ -8603,7 +8603,7 @@
       "executable": false
     },
     "tests/e2e/zz-notifications.spec.mjs": {
-      "sha256": "d7dbdcbb2d7861ebf584aed3a33cced453a35800f3f7d23a329b46f200a272ae",
+      "sha256": "f7e32c4eb90e74262f375ef4958a6f2825f058fd20cf252ff2ba8aff4b6726f9",
       "executable": false
     },
     "tests/evidence/contract/AGENT-002/deal-risks-open-1440.png": {
