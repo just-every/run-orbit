@@ -83,7 +83,7 @@
 .records-list .operator-queue-card {display:flex;align-items:center;min-width:0}
 .records-workspace .records-list .operator-queue-card>button {flex:1;min-width:0;padding:16px 20px}
 .records-workspace .records-list h2 {font-size:20px;margin-bottom:5px}
-.records-list .record-selection--row {flex:0 0 44px;min-height:44px;margin:0 12px 0 0;place-items:center}
+.records-workspace .records-list .record-selection--row {display:flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;min-height:44px;padding:0;margin:0 12px 0 0}
 .records-list .record-selection--row input {margin:0}
 @media(hover:hover) and (min-width:701px){.records-list .record-selection--row {opacity:0}.records-list li:hover .record-selection--row,.records-list li:focus-within .record-selection--row,.records-list .record-selection--row:has(input:checked){opacity:1}}
 .ob-app .pipeline-deal {grid-template-columns:minmax(0,1fr);justify-items:start;align-items:start}

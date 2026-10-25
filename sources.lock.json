@@ -5951,7 +5951,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records.css": {
-      "sha256": "0f237f295e125a8b8ec7cac0f987776b3543b4513ca343511027ec859c99239b",
+      "sha256": "9a89800d72ba8c5578df232ad74be3098b3e3c2665e42baed765aedfd1a9c632",
       "executable": false
     },
     "src/core/features/operator/ui/reviewed-call.tsx": {
