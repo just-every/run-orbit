@@ -40,7 +40,7 @@ export function DashboardPage({workspace,id}:{workspace:string;id:string}){
  const exportFilters=chosen?`?filters=${encodeURIComponent(JSON.stringify(chosen))}`:'';
  if(!view)return <section className="dashboard"><p className="operator-eyebrow"><a href="/app/reports">Reports</a> / Dashboards</p>{error?<div className="operator-state operator-state--error" role="alert">{error} <button type="button" className="dash-text-button" onClick={reload}>Try again</button></div>:<p role="status">Computing under your access…</p>}</section>;
  return <section className="dashboard">
-  <DashboardTitle view={view} pdfUrl={`${base}/pdf${exportFilters}`} onShare={()=>setDialog('share')} onSchedule={()=>setDialog('schedule')} onEdit={()=>setDialog('edit')} onDefault={async enabled=>{try{await api(`${base}/default`,{enabled},'PUT');reload();}catch(e){setError(e instanceof Error?e.message:String(e));}}}/>
+  <DashboardTitle view={view} pdfUrl={`${base}/pdf${exportFilters}`} onShare={()=>setDialog('share')} onSchedule={()=>setDialog('schedule')} onEdit={()=>setDialog('edit')} onDefault={async enabled=>{await api(`${base}/default`,{enabled},'PUT');reload();}}/>
   {error&&<p role="alert" className="operator-state operator-state--error">{error}</p>}
   {view.tiles.length===0?<div className="operator-surface dash-empty"><h2>No tiles yet</h2><p>Add saved sales reports or forecast views as tiles: a chart, a table, a single number or a forecast against quota, up to 24.</p>{view.canEdit?<button type="button" className="ob-pill" onClick={()=>setDialog('edit')}>Add a tile</button>:<p>The owner hasn't added tiles yet.</p>}</div>:<>
    {chosen&&<DashboardFilterCard view={view} filters={chosen} setFilters={value=>{setDrill(null);setFilters(value);}}/>}
