@@ -53,5 +53,13 @@
  .sales-tasks__header > button { margin-top: 5px; }
 }
 @media (max-width: 640px) {
- .sales-task-calendar__grid { grid-template-columns: repeat(7, minmax(44px, 1fr)); overflow-x: auto; }
+ .sales-task-calendar { padding: 0; border: 0; }
+ /* Use the card's padding before narrowing days; keep 6px for their focus rings. */
+ .sales-tasks:has(.sales-task-calendar) { padding-inline: clamp(6px, calc((100vw - 316px - var(--ob-gutter) - var(--ob-gutter)) / 2), 16px); }
+ .sales-task-calendar__grid { gap: 1px; }
+}
+@media (max-width: 367px) {
+ /* At 320px seven 38px days fit; the date field remains a 44px target. */
+ .sales-task-calendar__grid { gap: 0; }
+ .ob-app.operator-shell .sales-task-calendar__grid button { min-width: 38px; }
 }
