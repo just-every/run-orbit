@@ -4,4 +4,4 @@ export async function workbenchRequest<T>(path: string, body?: unknown): Promise
   if(!response.ok)throw new Error(result.error??`Submission state: ${result.state??'failed'}. Reload to inspect the recorded result.`);
   return result;
 }
-export interface Inventory { stages:{id:string;name:string;pipelineName?:string}[]; opportunities:{id:string;title:string;score:number;band:string;queueState:string;queueReason:string|null;nextDueAt:string|null}[];mailConfigured:boolean }
+export interface Inventory { companies:{id:string;name:string}[]; contacts:{id:string;name?:string;email?:string|null;companyId?:string|null}[]; stages:{id:string;name:string;pipelineName?:string}[]; opportunities:{id:string;title:string;score:number;band:string;queueState:string;queueReason:string|null;nextDueAt:string|null}[];mailConfigured:boolean }

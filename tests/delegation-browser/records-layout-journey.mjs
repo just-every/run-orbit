@@ -62,11 +62,15 @@ export async function nativeLongRecordLayoutJourney(page) {
 
     await editRecordThroughKeyboard(page, 'opportunity', target.title, 'Opportunity title', editedOpportunityTitle, async () => {
       await page.getByRole('combobox', { name: 'Linked company', exact: true }).selectOption(company.id);
-      const contactOption = page.locator('.record-editor fieldset label').filter({ hasText: editedContactName }).locator('input[type="checkbox"]');
-      await contactOption.check();
+      await page.getByRole('searchbox', { name: 'Find contacts', exact: true }).fill(editedContactName);
+      await page.getByRole('list', { name: 'Contact search results', exact: true }).getByRole('button').filter({ hasText: editedContactName }).click();
       await page.getByRole('combobox', { name: 'Primary recipient', exact: true }).selectOption(contact.id);
     });
     await expectRecordList(page, 'opportunity', editedOpportunityTitle, 'opportunity', diagnostics);
+    const savedOpportunity = await page.request.get(`/api/v1/records/opportunity/${target.id}`);
+    const savedDetail = await savedOpportunity.json();
+    expect(savedDetail.contacts.some(item => item.id === contact.id && item.is_primary === 1)).toBe(true);
+    expect(savedDetail.record.company_id).toBe(company.id);
 
     for (const viewport of viewports) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
