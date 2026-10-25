@@ -17,6 +17,9 @@
   --font-display: var(--ob-sans);
   --app-shadow: 0 1px 2px rgba(22, 23, 29, 0.05), 0 10px 26px -18px rgba(22, 23, 29, 0.28);
   --app-field: 1.5px solid var(--ob-line-strong);
+  --app-field-focus: var(--ob-tangerine-deep);
+  --app-text-min: 13px;
+  --app-control-min: 40px;
   font-size: 16px;
   line-height: 1.5;
 }
@@ -24,7 +27,7 @@
 :where(.ob-app) :where(p, li, dd, small, label) { text-wrap: pretty; }
 :where(.ob-app) :where(button) { text-wrap: balance; }
 :where(.ob-app) :where(a) { color: inherit; }
-:where(.ob-app) :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible { outline: 3px solid var(--ob-tangerine); outline-offset: 3px; }
+:where(.ob-app) :where(a, button, summary, [tabindex]):focus-visible { outline: 3px solid var(--ob-tangerine); outline-offset: 3px; }
 
 /* Header: the lockup, the navigation row and Sign out, on one hairline. */
 .operator-header { display: flex; align-items: center; gap: clamp(18px, 2.4vw, 36px); min-height: 72px; padding: 12px var(--ob-gutter); border-bottom: 1.5px solid var(--ob-line); }
@@ -39,7 +42,7 @@
 .operator-nav a[aria-current="page"] { color: var(--ob-ink); font-weight: 650; }
 .operator-nav a[aria-current="page"]::after { opacity: 1; transform: none; background: var(--ob-tangerine); }
 .operator-header > form { margin-left: auto; }
-.operator-header .operator-back-link { min-height: 40px; }
+.operator-header .operator-back-link { min-height: var(--app-control-min); }
 
 /* Page title: a quiet eyebrow, the big ink title, a hairline. */
 .operator-main { width: min(1440px, 100%); min-width: 0; margin: 0 auto; padding: clamp(28px, 3.6vw, 52px) var(--ob-gutter) 80px; }
@@ -62,7 +65,9 @@
 :where(.ob-app) :where(input:not([type="checkbox"], [type="radio"], [type="hidden"], [type="file"]), select, textarea) { box-sizing: border-box; max-width: 100%; min-height: 44px; padding: 9px 13px; border: var(--app-field); border-radius: 12px; background-color: var(--ob-card); color: var(--ob-ink); font: inherit; font-size: 15.5px; transition: border-color 0.18s, box-shadow 0.18s; }
 :where(.ob-app) :where(textarea) { line-height: 1.5; resize: vertical; }
 :where(.ob-app) :where(input, select, textarea):hover { border-color: #bdb3a3; }
-:where(.ob-app) :where(input, select, textarea):focus { border-color: var(--ob-ink); outline: none; box-shadow: 0 0 0 3px rgba(22, 23, 29, 0.12); }
+/* Focus belongs to the field's existing border. Reports retain their own focus rules. */
+.ob-app.operator-shell :is(input, select, textarea):not(:where(.analytics-console *, .sales-reports *, .forecast-console *, .dashboard *)):focus { border-color: var(--app-field-focus); outline: none; box-shadow: none; }
+.ob-app.operator-shell :is(input[type="checkbox"], input[type="radio"]):focus { accent-color: var(--app-field-focus); outline: 2px solid var(--app-field-focus); outline-offset: -2px; }
 :where(.ob-app) :where(input[type="checkbox"], input[type="radio"]) { width: 18px; height: 18px; accent-color: var(--ob-ink); }
 :where(.ob-app) :where(label) { color: var(--ob-ink); font-size: 14.5px; font-weight: 600; }
 :where(.ob-app) :where(fieldset) { min-width: 0; margin: 0; padding: 0; border: 0; }
@@ -70,19 +75,19 @@
 :where(.ob-app) :where(summary) { cursor: pointer; font-weight: 600; }
 :where(.ob-app) :where(code, pre) { font-family: var(--ob-mono); }
 :where(.ob-app) :where(input[type="file"]) { max-width: 100%; color: var(--ob-body); font: inherit; font-size: 14.5px; }
-:where(.ob-app) :where(input[type="file"])::file-selector-button { min-height: 40px; margin-right: 12px; padding: 8px 18px; border: 1.5px solid var(--ob-ink); border-radius: 999px; background: transparent; color: var(--ob-ink); cursor: pointer; font: inherit; font-size: 15px; font-weight: 600; transition: background-color 0.18s; }
+:where(.ob-app) :where(input[type="file"])::file-selector-button { min-height: var(--app-control-min); margin-right: 12px; padding: 8px 18px; border: 1.5px solid var(--ob-ink); border-radius: 999px; background: transparent; color: var(--ob-ink); cursor: pointer; font: inherit; font-size: 15px; font-weight: 600; transition: background-color 0.18s; }
 :where(.ob-app) :where(input[type="file"])::file-selector-button:hover { background: rgba(22, 23, 29, 0.06); }
 
 /* Buttons: an unclassed button is an outline pill; the primary classes are the ink pill; text buttons are underlined. */
-:where(.ob-app) :where(button) { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 8px 18px; border: 1.5px solid var(--ob-ink); border-radius: 999px; background: transparent; color: var(--ob-ink); cursor: pointer; font: inherit; font-size: 15px; font-weight: 600; line-height: 1.2; text-align: center; transition: background-color 0.18s, color 0.18s, transform 0.18s var(--ob-ease); }
+:where(.ob-app) :where(button) { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: var(--app-control-min); padding: 8px 18px; border: 1.5px solid var(--ob-ink); border-radius: 999px; background: transparent; color: var(--ob-ink); cursor: pointer; font: inherit; font-size: 15px; font-weight: 600; line-height: 1.2; text-align: center; transition: background-color 0.18s, color 0.18s, transform 0.18s var(--ob-ease); }
 :where(.ob-app) :where(button):hover:not(:disabled) { background: rgba(22, 23, 29, 0.06); }
 :where(.ob-app) :where(button):disabled { cursor: not-allowed; opacity: 0.5; }
 .ob-app :is(.operator-button, .operator-primary-button, .orbit-button--primary, .assistance-button--generate, .analytics-console__submit) { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 22px; border: 1.5px solid var(--ob-ink); border-radius: 999px; background: var(--ob-ink); color: var(--ob-paper); box-shadow: var(--ob-shadow-pill); cursor: pointer; font: inherit; font-size: 15.5px; font-weight: 600; line-height: 1.25; text-align: center; text-decoration: none; justify-self: start; }
 .ob-app :is(.operator-button, .operator-primary-button, .orbit-button--primary, .assistance-button--generate, .analytics-console__submit):hover:not(:disabled) { background: #000; transform: translateY(-1px); }
 .ob-app :is(.operator-button, .operator-primary-button, .orbit-button--primary, .assistance-button--generate, .analytics-console__submit):disabled { cursor: not-allowed; opacity: 0.5; box-shadow: none; transform: none; }
-.ob-app .orbit-button { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 8px 18px; line-height: 1.2; text-align: center; border-radius: 999px; cursor: pointer; font-size: 15px; font-weight: 600; text-decoration: none; }
+.ob-app .orbit-button { display: inline-flex; align-items: center; justify-content: center; min-height: var(--app-control-min); padding: 8px 18px; line-height: 1.2; text-align: center; border-radius: 999px; cursor: pointer; font-size: 15px; font-weight: 600; text-decoration: none; }
 .ob-app .orbit-button--secondary { border: 1.5px solid var(--ob-ink); background: transparent; color: var(--ob-ink); }
-.ob-app :is(.orbit-button--quiet, .operator-text-button) { min-height: 40px; padding: 0; border: 0; background: none; color: var(--ob-ink); box-shadow: none; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.ob-app :is(.orbit-button--quiet, .operator-text-button) { min-height: var(--app-control-min); padding: 0; border: 0; background: none; color: var(--ob-ink); box-shadow: none; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
 .ob-app :is(.orbit-button--quiet, .operator-text-button):hover:not(:disabled) { background: none; text-decoration-thickness: 2.5px; }
 
 /* NOW queue (pick A): ordering details, filters with the label inside each box, then one wide card per deal. */
@@ -94,13 +99,13 @@
 .operator-queue__policy p[data-testid="now-ordering"] { font-family: var(--ob-mono); font-size: 13px; }
 .operator-filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .operator-filters legend { margin-bottom: 10px; font-size: 16px; font-weight: 700; }
-.operator-filters label { position: relative; display: grid; min-width: 0; color: var(--ob-muted); font-size: 12.5px; font-weight: 500; }
+.operator-filters label { position: relative; display: grid; min-width: 0; color: var(--ob-muted); font-size: var(--app-text-min); font-weight: 500; }
 .operator-filters label select { position: absolute; inset: 0; width: 100%; height: 100%; padding: 18px 38px 0 14px; background-color: transparent; font-weight: 600; }
 .operator-filters label { min-height: 56px; padding: 8px 14px 0; border: var(--app-field); border-radius: 12px; background: var(--ob-card); }
 .operator-filters label select { border-color: transparent; }
 .operator-filters label:hover { border-color: #bdb3a3; }
-.operator-filters label:focus-within { border-color: var(--ob-ink); box-shadow: 0 0 0 3px rgba(22, 23, 29, 0.12); }
-.operator-filters label select:focus { box-shadow: none; }
+.operator-filters label:focus-within { border-color: var(--app-field-focus); }
+.ob-app.operator-shell .operator-filters label select:focus { border-color: transparent; box-shadow: none; }
 .operator-queue__list, .operator-evidence-list, .operator-draft-list, .operator-timeline { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
 .operator-queue__list { grid-template-columns: minmax(0, 1fr); min-width: 0; }
 .operator-queue-card { min-width: 0; border: 1.5px solid var(--ob-ink); border-radius: var(--ob-radius); background: var(--ob-card); box-shadow: var(--app-shadow); transition: transform 0.2s var(--ob-ease), box-shadow 0.2s var(--ob-ease); }
@@ -188,7 +193,9 @@
 .workbench-summary dt { color: var(--ob-muted); font-size: 13px; }
 .workbench-summary dd { margin: 6px 0 0; overflow-wrap: anywhere; font-weight: 600; }
 .workbench-actions { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 18px 24px; }
-.workbench-actions > a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border: 1.5px solid var(--ob-ink); border-radius: 999px; color: inherit; font-weight: 600; text-decoration: none; }
+.workbench-actions > a { display: inline-flex; align-items: center; min-height: var(--app-control-min); padding: 0 18px; border: 1.5px solid var(--ob-ink); border-radius: 999px; color: inherit; font-weight: 600; text-decoration: none; }
+/* An action row inside an already padded card shares the card's content edges. */
+.operator-detail__section > .workbench-actions { padding-inline: 0; }
 .workbench-evidence { margin-top: 18px; }
 .workbench-create--entry { grid-template-columns: minmax(0, 1fr); }
 .workbench-create--entry .workbench-create__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -198,12 +205,14 @@
 .operator-surface :is(input:not([type="checkbox"], [type="radio"]), select, textarea) { max-width: 100%; }
 .assistance-preview-json { white-space: pre-wrap; overflow-wrap: anywhere; font: 13.5px/1.6 var(--ob-mono); max-width: 100%; }
 
+.connected-products small { font-size: var(--app-text-min); }
+
 /* Sources: the connected-source table. */
 .source-table-wrap { max-width: 100%; overflow: auto; margin-top: 18px; }
 .source-table { width: 100%; min-width: 650px; border-collapse: collapse; font-size: 15px; text-align: left; }
 .source-table th, .source-table td { padding: 12px 12px 12px 0; border-bottom: 1.5px solid var(--ob-line); vertical-align: top; }
 .source-table th { border-bottom: 2px solid var(--ob-ink); color: var(--ob-ink); font-size: 13.5px; font-weight: 650; }
-.source-table td small { display: block; margin-top: 4px; overflow-wrap: anywhere; color: var(--ob-muted); font-family: var(--ob-mono); font-size: 12.5px; }
+.source-table td small { display: block; margin-top: 4px; overflow-wrap: anywhere; color: var(--ob-muted); font-family: var(--ob-mono); font-size: var(--app-text-min); }
 .source-table td:first-child { min-width: 180px; }
 
 /* Notifications inbox. */
@@ -234,7 +243,7 @@
 .operator-detail__section > a { display: inline-block; margin-top: 12px; }
 .settings-layout fieldset { display: flex; flex-wrap: wrap; gap: 10px 8px; }
 .settings-layout fieldset legend { width: 100%; margin-bottom: 8px; }
-.settings-layout fieldset label { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px 0 12px; border: var(--app-field); border-radius: 999px; font-weight: 600; }
+.settings-layout fieldset label { display: inline-flex; align-items: center; gap: 8px; min-height: var(--app-control-min); padding: 0 14px 0 12px; border: var(--app-field); border-radius: 999px; font-weight: 600; }
 .settings-layout fieldset label:has(input:checked) { border-color: var(--ob-ink); }
 .settings-layout input[type=checkbox] { margin: 0; }
 .settings-layout .workbench-summary button:not(.operator-button) { min-height: 0; padding: 0; border: 0; border-radius: 0; background: none; font-size: 14px; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
@@ -296,3 +305,18 @@
 .mention-suggestions button { display: inline-flex; gap: 6px; align-items: baseline; max-width: 100%; overflow-wrap: anywhere; }
 .mention-access { display: grid; gap: 12px; padding: 12px 16px; border: 1.5px solid var(--ob-line); border-radius: 12px; }
 .mention-access .workbench-actions { flex-wrap: wrap; }
+
+/* Phone controls share a minimum target; spacing stays with each feature's rows. */
+@media (max-width: 640px) {
+  .ob-app { --app-control-min: 44px; }
+  .ob-app.operator-shell :is(button, summary, select, input:not([type="checkbox"], [type="radio"], [type="hidden"]), [role="tab"]):not(:where(.dashboard *)) { min-height: var(--app-control-min); min-width: 44px; }
+  .ob-app.operator-shell summary:not(:where(.dashboard *)) { padding-block: 10px; }
+  .ob-app.operator-shell label:has(> :is(input[type="checkbox"], input[type="radio"])):not(:where(.dashboard *)) { min-height: 44px; min-width: 44px; align-items: center; }
+  .ob-app.operator-shell a:not(:where(.dashboard *)) { min-height: 44px; min-width: 44px; }
+  .ob-app.operator-shell a:is(:not([class]), [class=""], .active):not(:where(p *, li *, .dashboard *)),
+  .ob-app .operator-mark, .ob-app .operator-nav a,
+  .ob-app .today-account h3 a, .ob-app .today-line__when a,
+  .ob-app .operator-access-links a, .ob-app .operator-detail > p > a,
+  .ob-app .records-workspace > p > a, .ob-app .operator-titlebar__action a,
+  .ob-app .buying-context__person a, .ob-app .notification-list a, .ob-app .deal-risk a { display: inline-flex; align-items: center; }
+}

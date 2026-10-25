@@ -174,7 +174,7 @@
 
 .analytics-console__result dt {
   color: var(--orbit-muted);
-  font-size: 0.78rem;
+  font-size: var(--app-text-min);
   font-weight: 700;
 }
 
@@ -196,7 +196,7 @@
   border: 1px solid var(--orbit-line);
   border-radius: 6px;
   background: var(--orbit-paper);
-  font-size: 0.8rem;
+  font-size: var(--app-text-min);
 }
 
 @media (max-width: 620px) {

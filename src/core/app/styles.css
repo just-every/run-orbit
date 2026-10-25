@@ -15,7 +15,7 @@ body { min-width: 320px; margin: 0; }
 button, input, textarea { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 a { color: inherit; }
-:focus-visible { outline: 3px solid #ff4b18; outline-offset: 3px; }
+:focus-visible:not(:where(.ob-app input, .ob-app select, .ob-app textarea)) { outline: 3px solid #ff4b18; outline-offset: 3px; }
 
 
 .orbit-button { display:inline-flex; align-items:center; justify-content:center; min-height:48px; max-width:100%; padding:12px 18px; border:1px solid transparent; border-radius:12px; cursor:pointer; font-size:.96rem; font-weight:600; line-height:1.2; text-align:center; text-decoration:none; transition:background-color 150ms ease,border-color 150ms ease,color 150ms ease,transform 150ms ease; }
