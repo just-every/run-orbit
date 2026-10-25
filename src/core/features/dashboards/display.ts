@@ -5,16 +5,16 @@ export const dashboardDay=(at:string|null,timezone:string)=>at&&Number.isFinite(
 const localDay=(at:number,timezone:string)=>new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(at));
 const zoneShort=(timezone:string)=>new Intl.DateTimeFormat('en-US',{timeZone:timezone,timeZoneName:'shortGeneric'}).formatToParts(new Date()).find(p=>p.type==='timeZoneName')?.value??timezone;
 const lastDay=(month:string)=>{const [year,m]=month.split('-').map(Number);return new Date(Date.UTC(year!,m!,0)).toISOString().slice(0,10);};
-/** One way to write a run of local calendar days: "Q4 2026 · Oct 1 – Dec 31, ET", otherwise "Oct 5 – Nov 2, 2026, ET". */
-export function dayRange(first:string,last:string,timezone:string){
+/** One way to write a run of local calendar days: "Q4 2026 · Oct 1 – Dec 31, ET" (short: "Q4 2026"), otherwise "Oct 5 – Nov 2, 2026, ET". */
+export function dayRange(first:string,last:string,timezone:string,short=false){
  const day=new Intl.DateTimeFormat('en-US',{timeZone:'UTC',month:'short',day:'numeric'}),at=(d:string)=>day.format(new Date(`${d}T12:00:00Z`)),[fy,fm,fd]=first.split('-').map(Number) as [number,number,number],[ly,lm]=last.split('-').map(Number) as [number,number];
  const quarter=fd===1&&fy===ly&&fm%3===1&&lm===fm+2&&last===lastDay(last.slice(0,7));
- return quarter?`Q${(fm+2)/3} ${fy} · ${at(first)} – ${at(last)}, ${zoneShort(timezone)}`:fy===ly?`${at(first)} – ${at(last)}, ${fy}, ${zoneShort(timezone)}`:`${at(first)}, ${fy} – ${at(last)}, ${ly}, ${zoneShort(timezone)}`;
+ return quarter?`Q${(fm+2)/3} ${fy}${short?'':` · ${at(first)} – ${at(last)}, ${zoneShort(timezone)}`}`:fy===ly?`${at(first)} – ${at(last)}, ${fy}, ${zoneShort(timezone)}`:`${at(first)}, ${fy} – ${at(last)}, ${ly}, ${zoneShort(timezone)}`;
 }
 export const measuredNow=(measure:string)=>measure==='pipeline'||measure==='stage_age';
 export const filtersPeriod=(filters:DashboardFilters,timezone:string)=>dayRange(filters.dateRange?.from??`${filters.from}-01`,filters.dateRange?.through??lastDay(filters.through),timezone);
 /** Forecast views carry ISO dates with an exclusive end. */
-export const forecastPeriod=(from:string,through:string,timezone:string)=>dayRange(from.slice(0,10),new Date(Date.parse(`${through.slice(0,10)}T12:00:00Z`)-86_400_000).toISOString().slice(0,10),timezone);
+export const forecastPeriod=(from:string,through:string,timezone:string,short=false)=>dayRange(from.slice(0,10),new Date(Date.parse(`${through.slice(0,10)}T12:00:00Z`)-86_400_000).toISOString().slice(0,10),timezone,short);
 export function dashboardPeriod(view:SalesView){
  if(measuredNow(view.sections[0]?.measure??''))return view.saved?'Open when this result was measured':'Open now';
  return dayRange(localDay(Date.parse(view.period.from),view.timezone),localDay(Date.parse(view.period.through)-1,view.timezone),view.timezone);
