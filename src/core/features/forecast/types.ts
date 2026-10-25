@@ -19,6 +19,6 @@ export interface ForecastValues {openUnweightedCents:number;weightedExpectedCent
 export interface ForecastRep {operatorId:string|null;name:string;totals:ForecastValues}
 export interface QuotaAttainment {quota:ForecastQuota;through:string;wonBookingsCents:number;attainmentPercent:number|null}
 export interface ForecastResult extends ForecastPeriod {asOf:string;currency:'USD';basis:string;totals:ForecastValues;reps:ForecastRep[];quotaAttainment:QuotaAttainment[];quotaTotals:{monthly:{amountCents:number;wonBookingsCents:number;attainmentPercent:number|null};quarterly:{amountCents:number;wonBookingsCents:number;attainmentPercent:number|null}};deals:ForecastDeal[];inputs:ForecastState}
-export interface ForecastPreview {reviewHash:string;result:ForecastResult}
+export interface ForecastPreview {reviewHash:string;result:ForecastResult;filterNotes?:string[]}
 export interface ForecastSnapshotMetadata extends ForecastPeriod {id:string;asOf:string;actorId:string;reviewHash:string}
 export interface ForecastSnapshot extends ForecastSnapshotMetadata {result:ForecastResult}

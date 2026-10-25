@@ -1,3 +1,4 @@
+import {dashboardBackendProof} from './dashboard-backend-proof';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {Hono} from 'hono';
@@ -28,4 +29,4 @@ test('report periods compare instants across ISO precision and timezone equality
       body: await response.clone().text(),
       error: routeError,
     }));
-    const actual=await response.json() as any;assert.equal(actual.values.value,4);assert.deepEqual(actual.inputs.map((ref:any)=>ref.id).sort(),expected.toSorted());await assert.rejects(metrics.preview(await f.context(),'instants',1,'2026-10-01T22:00:00+10:00','2026-10-01T12:00:00.000Z'),/valid report period/);await assert.rejects(metrics.preview(await f.context(),'instants',1,'2026-10-01T12:00:00Z','2026-10-01T21:59:59.999+10:00'),/valid report period/);}finally{await f.close();}});
+    const actual=await response.json() as any;assert.equal(actual.values.value,4);assert.deepEqual(actual.inputs.map((ref:any)=>ref.id).sort(),expected.toSorted());await assert.rejects(metrics.preview(await f.context(),'instants',1,'2026-10-01T22:00:00+10:00','2026-10-01T12:00:00.000Z'),/valid report period/);await assert.rejects(metrics.preview(await f.context(),'instants',1,'2026-10-01T12:00:00Z','2026-10-01T21:59:59.999+10:00'),/valid report period/);}finally{await f.close();}await dashboardBackendProof();});

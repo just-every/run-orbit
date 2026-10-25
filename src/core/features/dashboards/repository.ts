@@ -1,8 +1,9 @@
+import {dashboardSourceFences} from './read-fences';
 import {measureCatalog} from '../analytics/sales-definition';
 import {systemClock,type Clock} from '../../platform/clock';
-import type {ActorContext} from '../../shared/expansion-contracts';
+import type {ActorContext,SqlStatement} from '../../shared/expansion-contracts';
 import {AccessError} from '../access/errors';
-import {isFullOperator} from '../access/identity-class';
+import {isFullOperator,fullOperatorFence} from '../access/identity-class';
 import type {AnalyticsMetrics} from '../analytics/metrics';
 import type {SalesView} from '../analytics/sales-view';
 import type {ForecastSnapshot} from '../forecast/types';
@@ -28,7 +29,7 @@ export class Dashboards{
   await this.metrics.checkSources(c,this.store.guard('EXISTS(SELECT 1 FROM sales_dashboards WHERE workspace_id=? AND id=? AND version=? AND sharing_version=? AND authority=?)',[c.workspaceId,id,h.version,h.sharing_version,h.authority]));
   return {c,h,share,manage,edit:manage||Boolean(h.authority&&share.audience==='named'&&grant?.access==='edit'),definition:JSON.parse(h.body_json) as DashboardDefinition};
  }
- fence(c:ActorContext,id:string,h:Head){return this.store.guard('EXISTS(SELECT 1 FROM sales_dashboards WHERE workspace_id=? AND id=? AND version=? AND sharing_version=? AND authority=?)',[c.workspaceId,id,h.version,h.sharing_version,h.authority]);}
+ fence(c:ActorContext,id:string,h:Head){return this.store.guard('EXISTS(SELECT 1 FROM sales_dashboards d JOIN sales_dashboard_versions v ON v.workspace_id=d.workspace_id AND v.dashboard_id=d.id AND v.version=d.version WHERE d.workspace_id=? AND d.id=? AND d.version=? AND d.sharing_version=? AND d.authority=? AND v.body_json=?)',[c.workspaceId,id,h.version,h.sharing_version,h.authority,h.body_json]);}
  async adminChannels(c:ActorContext){if(!await this.admin(c))return [];return (await this.db.prepare("SELECT c.id,c.name FROM slack_channels c WHERE c.enabled=1 AND EXISTS(SELECT 1 FROM json_each(c.events_json) WHERE value='dashboard') AND EXISTS(SELECT 1 FROM slack_installation WHERE state='connected') ORDER BY c.name").all<{id:string;name:string}>()).results;}
  async list(c:ActorContext){
   c=await this.metrics.permit(c,'analytics.read');
@@ -55,16 +56,23 @@ export class Dashboards{
   return {...current.share,members:await this.metrics.sales.shares.members(current.c),changedAt:changed!.changedAt,changedBy:changed!.changedBy??'Former operator',timezone:changed!.timezone};
  }
  async setDefault(c:ActorContext,id:string,enabled:boolean){const current=await this.head(c,id);await this.store.commit(current.c,'analytics.read',id,current.h.version,[...this.fence(current.c,id,current.h),...(enabled?[{sql:'INSERT INTO sales_dashboard_defaults VALUES(?,?,?) ON CONFLICT(workspace_id,operator_id) DO UPDATE SET dashboard_id=excluded.dashboard_id',bindings:[c.workspaceId,actor(c),id]}]:[{sql:'DELETE FROM sales_dashboard_defaults WHERE workspace_id=? AND operator_id=? AND dashboard_id=?',bindings:[c.workspaceId,actor(c),id]}])]);return {default:enabled};}
- async tile(c:ActorContext,tile:DashboardTile,filters:DashboardFilters):Promise<TileResult>{
+ async tile(c:ActorContext,tile:DashboardTile,filters:DashboardFilters,proofs:SqlStatement[]=[]):Promise<TileResult>{
   if(tile.withdrawn)return unavailable(tile);
   let sourceReadable=false,sourceVersion:string|number=tile.version;
   try{
    if(tile.source==='forecast'){
     const repository=new ForecastRepository(this.db),saved=await repository.snapshot(c,tile.sourceId);
-    // Forecast snapshots have their own erasure index and require a full operator. Live keeps the saved view's period.
-    const settings=await this.db.prepare("SELECT timezone FROM workspace_settings WHERE id='workspace'").first<string>('timezone'),period=filters.dateRange?salesDateRange(filters.dateRange.from,filters.dateRange.through,settings!):salesPeriod(filters.from,filters.through,settings!);
-    const forecast=tile.version==='live'?{...saved,from:period.from.slice(0,10),through:period.through.slice(0,10),result:(await repository.preview(c,{from:period.from.slice(0,10),through:period.through.slice(0,10)},filters)).result}:saved;
-    const notes=tile.version==='live'?[]:['Dashboard filters not applied: this tile shows the forecast view’s saved result.'];
+    // A saved result ignores every dashboard filter, even a range that a live tile cannot compute.
+    sourceReadable=true;
+    let live:Awaited<ReturnType<ForecastRepository['preview']>>|null=null;
+    if(tile.version==='live'){
+     const settings=await this.db.prepare("SELECT timezone FROM workspace_settings WHERE id='workspace'").first<string>('timezone'),period=filters.dateRange?salesDateRange(filters.dateRange.from,filters.dateRange.through,settings!):salesPeriod(filters.from,filters.through,settings!);
+     const field=filters.field?{...filters.field,name:Object.hasOwn(tile.bindings,filters.field.name)?tile.bindings[filters.field.name]!:filters.field.name}:null;
+     live=await repository.preview(c,{from:period.from.slice(0,10),through:period.through.slice(0,10)},{...filters,field,timezone:settings!});
+    }
+    if(live)proofs.push(...repository.proofs(live));
+    const forecast=live?{...saved,from:live.result.from,through:live.result.through,asOf:live.result.asOf,result:live.result}:saved;
+    const notes=live?(live.filterNotes??[]):['Dashboard filters not applied: this tile shows the forecast view’s saved result.'];
     return {id:tile.id,width:tile.width,height:tile.height,status:'ready',tile,notes,report:null,forecast};
    }
    await this.metrics.sales.shares.assertVisible(c,tile.sourceId);
@@ -79,24 +87,22 @@ export class Dashboards{
     let field=filters.field?{...filters.field,name:Object.hasOwn(tile.bindings,filters.field.name)?tile.bindings[filters.field.name]!:filters.field.name}:null;if(field&&tile.measure==='bookings'){notes.push(`${field.name} filter not applied: this report's records have no ${field.name} field.`);field=null;}
     if(measuredNow)notes.push(tile.measure==='pipeline'?'Date range not applied: open pipeline is measured when computed, not over a period.':'Date range not applied: stage age is measured when computed.');
     if(tile.measure==='bookings'&&filters.ownerIds.length)notes.push('Owner filter not applied: bookings are not filtered by rep.');
-    report=await this.metrics.sales.preview(c,tile.sourceId,version,filters.from,filters.through,{...filters,field});if(field)report.filters.notes.push(`${filters.field!.name}: ${field.value}${field.name!==filters.field!.name?` (report field ${field.name})`:''}.`);
+    report=await this.metrics.sales.preview(c,tile.sourceId,version,filters.from,filters.through,{...filters,field});notes.push(...report.filters.notes.filter(note=>note.includes(' filter not applied:')));if(field&&!report.filters.notes.some(note=>note.includes(' filter not applied:')))report.filters.notes.push(`${filters.field!.name}: ${field.value}${field.name!==filters.field!.name?` (report field ${field.name})`:''}.`);
    }
+   proofs.push(...this.metrics.sales.proofs(report));
    report={...report,sections:report.sections.filter(s=>s.measure===tile.measure).map(section=>section.measure==='revenue'?{...section,months:section.months.filter(month=>month.key<=monthKey(Date.parse(report.asOf),report.timezone))}:section.measure==='reasons'?{...section,tables:section.tables.map(table=>({...table,groups:[...table.groups].sort((a,b)=>Number(a.label.startsWith('Lost ·'))-Number(b.label.startsWith('Lost ·')))}))}:section),late:report.late?{...report.late,sections:report.late.sections.filter(s=>s.measure===tile.measure)}:null};
    return {id:tile.id,width:tile.width,height:tile.height,status:'ready',tile,notes,report,forecast:null};
-  }catch(error){if(error instanceof AccessError){if(error.code==='permission'||error.code==='validation'&&!sourceReadable)return unavailable(tile);return {id:tile.id,width:tile.width,height:tile.height,status:'error',name:measureCatalog[tile.measure].title,version:sourceVersion,period:`${filters.from} to ${filters.through}`,message:error.code==='prerequisite'?'This tile could not be computed. Try again.':'Report sources or permissions changed. Try again.'};}throw error;}
+  }catch(error){if(error instanceof AccessError){if(error.code==='permission'||error.code==='validation'&&!sourceReadable)return unavailable(tile);return {id:tile.id,width:tile.width,height:tile.height,status:'error',name:tile.source==='forecast'?'Forecast vs quota':measureCatalog[tile.measure].title,version:sourceVersion,period:`${filters.from} to ${filters.through}`,message:error.code==='prerequisite'?'This tile could not be computed. Try again.':'Report sources or permissions changed. Try again.'};}throw error;}
  }
  async outlineTile(c:ActorContext,tile:DashboardTile,filters:DashboardFilters):Promise<TileResult>{
   if(tile.withdrawn)return unavailable(tile);
   try{if(tile.source==='forecast'){const repository=new ForecastRepository(this.db);await repository.permit(c);const saved=await repository.snapshot(c,tile.sourceId);return {id:tile.id,width:tile.width,height:tile.height,status:'loading',name:'Forecast vs quota',version:tile.version,period:`${saved.from} to ${saved.through}`};}
-   await this.metrics.sales.shares.assertVisible(c,tile.sourceId);const latest=await this.db.prepare('SELECT max(version) v FROM analytics_definitions WHERE workspace_id=? AND id=?').bind(c.workspaceId,tile.sourceId).first<number>('v');if(!latest)return unavailable(tile);const version=tile.version==='live'?latest:tile.version,definition=await this.metrics.sales.definition(c,tile.sourceId,version);return {id:tile.id,width:tile.width,height:tile.height,status:'loading',name:tile.kind==='chart'&&tile.measure==='pipeline'?'Open pipeline by stage, two pipelines':measureCatalog[tile.measure].title,version,period:`${filters.from} to ${filters.through}`};
+   await this.metrics.sales.shares.assertVisible(c,tile.sourceId);const latest=await this.db.prepare('SELECT max(version) v FROM analytics_definitions WHERE workspace_id=? AND id=?').bind(c.workspaceId,tile.sourceId).first<number>('v');if(!latest)return unavailable(tile);const version=tile.version==='live'?latest:tile.version,definition=await this.metrics.sales.definition(c,tile.sourceId,version);if(!definition.measures.includes(tile.measure))return unavailable(tile);if(tile.snapshotId&&!await this.db.prepare('SELECT 1 FROM analytics_snapshots WHERE workspace_id=? AND id=? AND definition_id=? AND definition_version=?').bind(c.workspaceId,tile.snapshotId,tile.sourceId,version).first())return unavailable(tile);return {id:tile.id,width:tile.width,height:tile.height,status:'loading',name:tile.kind==='chart'&&tile.measure==='pipeline'?'Open pipeline by stage, two pipelines':measureCatalog[tile.measure].title,version,period:`${filters.from} to ${filters.through}`};
   }catch(error){if(error instanceof AccessError)return unavailable(tile);throw error;}
  }
  async read(c:ActorContext,id:string,filters?:DashboardFilters,pending=false){
-  const current=await this.head(c,id),suite=await this.metrics.sales.suite(current.c),selected=filters??current.definition.filters,tiles:TileResult[]=[];
-  for(const tile of current.definition.tiles)tiles.push(await (pending?this.outlineTile(current.c,tile,selected):this.tile(current.c,tile,selected)));
-  await this.head(current.c,id);
-  const sourceFences=[];for(const tile of tiles){const original=current.definition.tiles.find(t=>t.id===tile.id)!;if((tile.status==='ready'||tile.status==='error')&&original.source==='report')sourceFences.push(...await this.metrics.sales.shares.assertVisible(current.c,original.sourceId));}
-  await this.metrics.checkSources(current.c,sourceFences);
+  const current=await this.head(c,id),suite=await this.metrics.sales.suite(current.c),selected=filters??current.definition.filters,tiles:TileResult[]=[],proofs:SqlStatement[]=[];
+  for(const tile of current.definition.tiles)tiles.push(await (pending?this.outlineTile(current.c,tile,selected):this.tile(current.c,tile,selected,proofs)));
   const full=current.c.principal.kind==='operator'&&await isFullOperator(this.db,actor(current.c));
   const limited=!full||tiles.some(t=>t.status==='ready'&&t.report?.access.limited);
   const fieldValues=new Map<string,Set<string>>();let cursor:string|undefined;do{const page=await this.metrics.sales.graph.scanRecords(current.c,{types:['opportunity'],query:'',fields:[],filters:{},limit:1000,...(cursor?{cursor}:{})});for(const item of page.items){const custom=typeof item.fields.custom_fields_json==='string'?JSON.parse(item.fields.custom_fields_json):{};for(const [name,value] of Object.entries({...Object.fromEntries(Object.entries(item.fields).filter(([key])=>['lifecycle','band','queue_state','close_reason'].includes(key))),...custom})){if(['string','number','boolean'].includes(typeof value)&&/^[a-zA-Z][a-zA-Z0-9_]{0,80}$/.test(name)){const values=fieldValues.get(name)??new Set<string>();values.add(String(value));fieldValues.set(name,values);}}}cursor=page.nextCursor??undefined;}while(cursor);await this.metrics.checkSources(current.c,[]);
@@ -104,6 +110,7 @@ export class Dashboards{
   const owner=full?await this.db.prepare('SELECT display_name FROM operators WHERE id=?').bind(current.h.owner_id).first<string>('display_name'):null;
   const namedPeople=full&&current.share.audience==='named'?await this.metrics.sales.shares.members(current.c):[];
   const isDefault=Boolean(await this.db.prepare('SELECT 1 FROM sales_dashboard_defaults WHERE workspace_id=? AND operator_id=? AND dashboard_id=?').bind(c.workspaceId,actor(c),id).first());
+  await this.metrics.checkSources(current.c,[...proofs,...this.fence(current.c,id,current.h),...await dashboardSourceFences(this,current.c,current.definition,tiles),...(full?fullOperatorFence(current.c):[])]);
   return {id,pending,name:current.definition.name,version:current.h.version,sharingVersion:current.h.sharing_version,owner,canEdit:current.edit,canManage:current.manage,isDefault,filters:selected,savedFilters:current.definition.filters,timezone:suite.timezone,currency:suite.currency,pipelines:suite.pipelines,reps:suite.reps,fields,tiles,computedAt:new Date().toISOString(),limited,access:!full?'Limited to your access: only records and fields you may read now are included, and nothing about hidden records is counted. Sharing a dashboard grants no record access.':limited?'Limited to your access now: some saved rows or fields are no longer readable, so only what you may read is shown.':'Computed from every record in this workspace; you are a full operator.',takeEveryFilter:tiles.filter(t=>t.status==='ready'&&!t.notes.length).length,unavailable:tiles.filter(t=>t.status==='unavailable').length,sharing:current.share.audience==='private'?'Private':current.share.audience==='workspace'?'Shared with everyone in the workspace who can read reports':namedPeople.length?`Shared with ${current.share.grants.map(grant=>`${namedPeople.find(person=>person.id===grant.operatorId)?.name??'Inactive person'} (${grant.access})`).join(', ')}`:'Shared with named people'};
  }
 }

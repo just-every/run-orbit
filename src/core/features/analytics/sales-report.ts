@@ -24,6 +24,9 @@ export const isSalesSnapshot=(value:unknown):value is SalesSnapshotBody=>Boolean
 
 export class SalesReports{
  readonly shares:ReportShares;readonly graph:GraphRecords;
+ private readonly readFences=new WeakMap<SalesView,SqlStatement[]>();
+ /** In-process proof only: composed reads recheck the exact source rows without serializing authority. */
+ proofs(view:SalesView){return this.readFences.get(view)??[];}
  constructor(readonly metrics:AnalyticsMetrics){this.shares=new ReportShares(metrics.store);this.graph=new GraphRecords(metrics.store.db,metrics.store.access,domainEventStatements);}
  private get db(){return this.metrics.store.db;}
  private get sources(){if(!this.metrics.sources)throw new AccessError('prerequisite','Native source authority is required.');return this.metrics.sources;}
@@ -55,10 +58,11 @@ export class SalesReports{
   const facts=new Map([...access.deals].map(([id,deal])=>[id,dealFacts(deal.values,id,native)]));
   for(const [id,deal] of facts){const closed=typeof deal.closed_at==='string'?deal.closed_at:null;rows.push({key:`deal:${id}`,kind:'deal',id,refs:[{type:'opportunity',id}],dealId:id,governed:dealGoverned,at:closed,recordedAt:closed??(typeof deal.created_at==='string'?deal.created_at:null),facts:deal});}
   for(const row of native.rows)rows.push(this.withDeal(row,facts));
-  const visible=applyAccess(access,rows).filter(row=>!field||Boolean(row.dealId&&salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.value!==undefined&&String(salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.value)===field.value)),asOf=new Date().toISOString(),sections=aggregate(definition,period,asOf,visible,this.labels(native.stages,access)),cited=citedRows(sections);
+  const fieldApplied=!field||[...access.deals.values()].some(deal=>salesFilterValue(deal.values,field.name)!==null);
+  const visible=applyAccess(access,rows).filter(row=>!field||!fieldApplied||Boolean(row.dealId&&salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.value!==undefined&&String(salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.value)===field.value)),asOf=new Date().toISOString(),sections=aggregate(definition,period,asOf,visible,this.labels(native.stages,access)),cited=citedRows(sections);
   // A saved result keeps the rows its figures cite, with each cited movement's deal, whose owner and creation it was measured by.
   for(const row of visible)if(cited.has(row.key)&&row.kind==='movement')cited.add(`deal:${row.dealId}`);
-  return {native,access,asOf,sections,rows:visible.filter(row=>cited.has(row.key)).map(row=>field&&row.dealId?{...row,facts:{...row.facts,dashboard_filter:field.value},governed:{...row.governed,dashboard_filter:[salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.sourceField??field.name]}}:row)};
+  return {native,access,asOf,sections,fieldApplied,rows:visible.filter(row=>cited.has(row.key)).map(row=>field&&fieldApplied&&row.dealId?{...row,facts:{...row.facts,dashboard_filter:field.value},governed:{...row.governed,dashboard_filter:[salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.sourceField??field.name]}}:row)};
  }
  /** A row linked to a deal takes the deal's pipeline (governed by its stage), and a message the deal's later win and amount. */
  private withDeal(row:SalesRow,deals:Map<string,Record<string,Json>>):SalesRow{
@@ -90,7 +94,10 @@ export class SalesReports{
  }
  async preview(c:ActorContext,id:string,version:number,fromMonth:string,throughMonth:string,filters?:{ownerIds:string[];pipelineIds:string[];field:{name:string;value:string}|null;dateRange?:{from:string;through:string}}):Promise<SalesView>{
   const result=await this.compute(c,id,version,fromMonth,throughMonth,filters);await this.metrics.checkSources(result.c,result.proofs);
-  return salesView({id:`preview-${crypto.randomUUID()}`,saved:false,definitionId:id,definitionVersion:version,definition:result.definition,period:result.period,currency:result.currency,asOf:result.asOf,stages:result.native.stages,sections:result.sections,rows:result.rows,access:result.access,limited:!result.access.full,reviewHash:result.reviewHash,late:null});
+  const view=salesView({id:`preview-${crypto.randomUUID()}`,saved:false,definitionId:id,definitionVersion:version,definition:result.definition,period:result.period,currency:result.currency,asOf:result.asOf,stages:result.native.stages,sections:result.sections,rows:result.rows,access:result.access,limited:!result.access.full,reviewHash:result.reviewHash,late:null});
+  if(filters?.field&&!result.fieldApplied)view.filters.notes.push(`${filters.field.name} filter not applied: this report's readable records have no ${filters.field.name} field.`);
+  this.readFences.set(view,[...this.metrics.store.access.fence(result.c),...result.proofs]);
+  return view;
  }
  async save(c:ActorContext,id:string,version:number,fromMonth:string,throughMonth:string,expected:string):Promise<SalesView>{
   const result=await this.compute(c,id,version,fromMonth,throughMonth);
@@ -108,8 +115,10 @@ export class SalesReports{
   const visible=applyAccess(access,snapshot.rows),complete=access.full&&visible.length===snapshot.rows.length&&visible.every((row,index)=>JSON.stringify(row.facts)===JSON.stringify(snapshot.rows[index]!.facts));
   const sections=aggregate(snapshot.definition,snapshot.period,snapshot.asOf,visible,this.labels(snapshot.stages,access)),current=await this.population(c,snapshot.definition,snapshot.period);
   const late=lateArriving(sections,current.sections,new Map(current.rows.map(row=>[row.key,row])),snapshot.asOf);
-  await this.metrics.checkSources(c,[...shareFence,...await accessProofs(this.sources,c,access,visible,'current'),...await accessProofs(this.sources,c,current.access,current.rows,'lineage')]);
-  return salesView({id:snapshot.id,saved:true,definitionId:snapshot.definitionId,definitionVersion:snapshot.definitionVersion,definition:snapshot.definition,period:snapshot.period,currency:snapshot.currency,asOf:snapshot.asOf,stages:snapshot.stages,sections,rows:visible,access,limited:!complete,late:{sections:late,rows:current.rows,computedAt:current.asOf,access:current.access}});
+  const proofs=[...shareFence,...await accessProofs(this.sources,c,access,visible,'current'),...await accessProofs(this.sources,c,current.access,current.rows,'lineage')];
+  await this.metrics.checkSources(c,proofs);
+  const view=salesView({id:snapshot.id,saved:true,definitionId:snapshot.definitionId,definitionVersion:snapshot.definitionVersion,definition:snapshot.definition,period:snapshot.period,currency:snapshot.currency,asOf:snapshot.asOf,stages:snapshot.stages,sections,rows:visible,access,limited:!complete,late:{sections:late,rows:current.rows,computedAt:current.asOf,access:current.access}});
+  this.readFences.set(view,[...this.metrics.store.access.fence(c),...proofs]);return view;
  }
  /** Saved results of one definition version, each with its disclosed basis and the missing data this viewer may read. */
  async history(c:ActorContext,id:string,version:number){

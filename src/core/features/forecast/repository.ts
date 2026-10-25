@@ -1,7 +1,7 @@
 import {salesFilterValue} from '../analytics/sales-filter';
 import {AccessService} from '../access/service';
 import {AccessError,deny} from '../access/errors';
-import {isFullOperator} from '../access/identity-class';
+import {isFullOperator,fullOperatorFence} from '../access/identity-class';
 import {sha256} from '../access/mutations';
 import {OperationsStore} from '../operations/store';
 import {domainEventStatements} from '../effects/event-statements';
@@ -15,10 +15,13 @@ interface Loaded {state:ForecastState;clock:number;classStamp:string;staleDays:n
 const classStampSql="COALESCE((SELECT group_concat(operator_id,'|') FROM (SELECT operator_id FROM access_collaborators ORDER BY operator_id)),'')";
 export class ForecastRepository {
  readonly access:AccessService;readonly store:OperationsStore;
+ private readonly readFences=new WeakMap<ForecastPreview,SqlStatement[]>();
+ proofs(view:ForecastPreview){return this.readFences.get(view)??[];}
  constructor(readonly db:D1Database){this.access=new AccessService(db);this.store=new OperationsStore(db,this.access,domainEventStatements);}
  async permit(context:ActorContext,owner=false){
   const current=await this.access.refreshContext(context);
   if(current.principal.kind!=='operator'||!await isFullOperator(this.db,current.principal.operatorId))deny('Forecasts require a current full operator.');
+  this.access.addDependencyFences(current,fullOperatorFence(current),'forecast-class');
   await this.access.authorize(current,owner?'forecast.configure':'forecast.read',{...current,type:'forecast',id:'*'},[]);
   if(owner){const actor=current.principal.operatorId;if(!await this.db.prepare("SELECT 1 FROM operators WHERE id=? AND status='active' AND setup_owner=1").bind(actor).first())deny('Only the installation owner configures forecasts until TEAM-005 adds administrators.');this.access.addDependencyFences(current,this.store.guard("EXISTS(SELECT 1 FROM operators WHERE id=? AND status='active' AND setup_owner=1)",[actor]),'forecast-owner');}
   return current;
@@ -66,9 +69,11 @@ export class ForecastRepository {
  async setDeal(context:ActorContext,id:string,input:DealForecastInput){return this.revise(context,'deal',id,id,input,this.store.guard('EXISTS(SELECT 1 FROM opportunities WHERE id=?)',[id]));}
  async setQuota(context:ActorContext,input:QuotaInput){return this.revise(context,'quota',`${input.operatorId}:${input.period}:${input.startDate}`,input.operatorId,input,this.store.guard("EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id))",[input.operatorId]));}
  private async reviewed(loaded:Loaded,period:ForecastPeriod){return sha256(JSON.stringify({period,clock:loaded.clock,classStamp:loaded.classStamp,state:loaded.state,staleDays:loaded.staleDays}));}
- async preview(context:ActorContext,period:ForecastPeriod,filters?:{ownerIds:string[];pipelineIds:string[];field:{name:string;value:string}|null}):Promise<ForecastPreview>{const current=await this.permit(context),loaded=await this.load(current);
+ async preview(context:ActorContext,period:ForecastPeriod,filters?:{ownerIds:string[];pipelineIds:string[];field:{name:string;value:string}|null;timezone?:string}):Promise<ForecastPreview>{const current=await this.permit(context),loaded=await this.load(current),filterNotes:string[]=[],field=filters?.field;
+  if(field&&!loaded.state.deals.some(deal=>salesFilterValue(deal as unknown as Record<string,import('../../shared/expansion-contracts').Json>,field.name)!==null)){filterNotes.push(`${field.name} filter not applied: this forecast's records have no ${field.name} field.`);filters={...filters!,field:null};}
   if(filters){const stages=filters.pipelineIds.length?new Set((await this.db.prepare('SELECT stage_id FROM pipeline_stage_rules WHERE pipeline_id IN(SELECT value FROM json_each(?))').bind(JSON.stringify(filters.pipelineIds)).all<{stage_id:string}>()).results.map(row=>row.stage_id)):null;loaded.state={...loaded.state,deals:loaded.state.deals.filter(deal=>(!filters.ownerIds.length||filters.ownerIds.includes(deal.owner_id??''))&&(!stages||stages.has(deal.stage_id))&&(!filters.field||String(salesFilterValue(deal as unknown as Record<string,import('../../shared/expansion-contracts').Json>,filters.field.name)?.value??'')===filters.field.value)),quotas:loaded.state.quotas.filter(quota=>!filters.ownerIds.length||filters.ownerIds.includes(quota.operatorId))};}
-  await this.store.assertCurrent(current);return {reviewHash:await this.reviewed(loaded,period),result:calculateForecast(loaded.state,period,new Date().toISOString(),loaded.staleDays)};}
+  await this.store.assertCurrent(current);const view={filterNotes,reviewHash:await this.reviewed(loaded,period),result:calculateForecast(loaded.state,period,new Date().toISOString(),loaded.staleDays,filters?.timezone)};
+  this.readFences.set(view,[...fullOperatorFence(current),...this.store.guard(`EXISTS(SELECT 1 FROM forecast_source_clock WHERE id=1 AND revision=?) AND ${classStampSql}=?`,[loaded.clock,loaded.classStamp])]);return view;}
  async saveSnapshot(context:ActorContext,period:ForecastPeriod,reviewHash:string):Promise<ForecastSnapshot>{
   const current=await this.permit(context,true),loaded=await this.load(current),hash=await this.reviewed(loaded,period);
   if(hash!==reviewHash)throw new AccessError('conflict','Forecast inputs changed after preview. Preview and review the current forecast.');
