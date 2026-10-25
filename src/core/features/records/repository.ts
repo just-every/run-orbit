@@ -7,7 +7,8 @@ import {assertRequiredFields,stagePolicy,stagePolicyFence,type StagePolicy} from
 import {movementHistory,movementPayload} from '../pipelines/movement';
 import {contactPrimaryCompanyActivity} from '../relationships';
 import { suppressionContextFence, suppressionHashes, suppressionPredicate, clearSuppressionStatements, suppressionStatements, contactSuppressionStatements } from './suppression';
-import { defaultOpportunityOwner } from '../ownership/writes';
+import { opportunityAssignmentPolicy } from '../../../ext/records';
+import { eligibleOpportunityOwners } from '../ownership/writes';
 import { contactEmailKey, companyDomainKey } from './identity';
 import { RecordSeedRepository } from './seed-repository';
 import { evaluationStatements } from '../workbench/evaluation-repository';
@@ -57,7 +58,7 @@ export class RecordsRepository extends RecordSeedRepository {
   if(keyColumn){data[keyColumn]=key;if(key){const duplicate=await this.db.prepare(`SELECT id FROM ${tables[kind]} WHERE ${keyColumn}=? AND id<>? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type=? AND identity_key=? AND survivor_id<>?`).bind(key,id,kind,key,id).first<{id:string}>();if(duplicate)throw new RecordError(409,'Identity already belongs to another record.',duplicate.id);}}
   const contacts:string[]=data.contact_ids??[];delete data.contact_ids;const primary=data.primary_contact_id;delete data.primary_contact_id;
   if(kind==='opportunity'){
-   if(!before&&data.owner_id===undefined)data.owner_id=await defaultOpportunityOwner(this.db,actor);
+   if(!before&&data.owner_id===undefined)data.owner_id=opportunityAssignmentPolicy.ownerForNewOpportunity({actorId:actor,eligibleOperatorIds:await eligibleOpportunityOwners(this.db)});
    const current=await stagePolicy(this.db,data.stage_id);policies.push(current);
    if(before&&before.stage_id!==data.stage_id){
     const previous=await stagePolicy(this.db,before.stage_id);policies.push(previous);

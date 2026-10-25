@@ -6,7 +6,8 @@ import { weights } from './policies';
 import { evaluationStatements } from './evaluation-repository';
 import { createId } from '../../shared/ids';
 import { contactEmailKey } from '../records/identity';
-import { defaultOpportunityOwner } from '../ownership/writes';
+import { opportunityAssignmentPolicy } from '../../../ext/records';
+import { eligibleOpportunityOwners } from '../ownership/writes';
 import { assertCommercialRelationship } from '../../../family/sales/relationships';
 import { stopReason } from '../outreach/stop-reason';
 
@@ -25,7 +26,7 @@ export class WorkbenchRepository {
     return { companies: companies.results, contacts: contacts.results, stages: stages.results.map(({required_fields_json,...stage})=>({...stage,required_fields:JSON.parse(required_fields_json)})), opportunities: opportunities.results, pipelines:pipelines.results };
   }
   async createOpportunity(input: { title: string; companyId?:string; companyName?: string; contactIds?:string[]; primaryContactId?:string; contactName?: string; email?: string; stageId: string; valueCents: number }, actor: string) {
-    const email=input.email?.trim().toLowerCase()||null,emailKey=contactEmailKey(email),ownerId=await defaultOpportunityOwner(this.db,actor);
+    const email=input.email?.trim().toLowerCase()||null,emailKey=contactEmailKey(email),ownerId=opportunityAssignmentPolicy.ownerForNewOpportunity({actorId:actor,eligibleOperatorIds:await eligibleOpportunityOwners(this.db)});
     if(ownerId&&!await this.db.prepare("SELECT id FROM operators WHERE id=? AND status='active'").bind(ownerId).first())throw new WorkbenchError(400,'Assignment policy selected an inactive or unknown operator.');
     if(!!input.companyId===!!input.companyName)throw new WorkbenchError(400,'Choose an existing company or enter a new company.');
     if(!!input.contactName!==!!email||!(input.contactIds?.length||email))throw new WorkbenchError(400,'Choose existing contacts or enter a new contact.');

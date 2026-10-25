@@ -1,11 +1,10 @@
 import {createId} from '../../shared/ids';
-import {opportunityAssignmentPolicy} from '../../../ext/records';
 import {tables} from '../records/shared';
 import type {OwnershipBatch,OwnershipItem} from './types';
 /** Opportunities retain their native owner column; collaborators cannot own native work. */
-export async function defaultOpportunityOwner(db:D1Database,actorId:string){
+export async function eligibleOpportunityOwners(db:D1Database){
  const eligible=(await db.prepare("SELECT id FROM operators WHERE status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=operators.id) ORDER BY id").all<{id:string}>()).results;
- return opportunityAssignmentPolicy.ownerForNewOpportunity({actorId,eligibleOperatorIds:eligible.map(operator=>operator.id)});
+ return eligible.map(operator=>operator.id);
 }
 function itemGate(batch:OwnershipBatch,item:OwnershipItem,state:string){
  return {sql:'EXISTS(SELECT 1 FROM ownership_batches b JOIN ownership_batch_items i ON i.batch_id=b.id WHERE b.id=? AND b.state=? AND i.record_id=? AND i.failure IS NULL AND i.previous_owner_id IS NOT b.owner_id)',values:[batch.id,state,item.record_id]};
