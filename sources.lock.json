@@ -5943,7 +5943,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.css": {
-      "sha256": "d62b72d2bd75eda30fa50cfa4f428798df156e02fd4d1aacf10ca5be0ff1a368",
+      "sha256": "436e18dcbf5d1741bd45704024607134584864eec8b08ffe30db9273f4b417f6",
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.tsx": {
