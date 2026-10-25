@@ -1,4 +1,5 @@
 import {dashboardSourceFences} from './read-fences';
+import {filtersPeriod,forecastPeriod,measuredNow} from './display';
 import {measureCatalog} from '../analytics/sales-definition';
 import {systemClock,type Clock} from '../../platform/clock';
 import type {ActorContext,SqlStatement} from '../../shared/expansion-contracts';
@@ -15,6 +16,8 @@ export type TileResult={id:string;width:number;height:number;status:'loading';na
 type Head={owner_id:string|null;version:number;sharing_version:number;authority:number;body_json:string;share_json:string};
 const actor=(c:ActorContext)=>c.principal.kind==='operator'?c.principal.operatorId:'';
 const unavailable=(tile:DashboardTile):TileResult=>({id:tile.id,width:tile.width,height:1,status:'unavailable'});
+/** A tile frame shown before or instead of its figures names its period the way the computed tile will. */
+const framePeriod=(tile:DashboardTile,filters:DashboardFilters,timezone:string)=>tile.source==='forecast'?(tile.version==='live'?filtersPeriod(filters,timezone):'Saved forecast view'):measuredNow(tile.measure)?'Open now':tile.snapshotId?'Saved result':filtersPeriod(filters,timezone);
 /** Dashboard custody holds definitions and pointers, never a second copy of a report population. */
 export class Dashboards{
  constructor(readonly metrics:AnalyticsMetrics,readonly clock:Clock=systemClock){}
@@ -56,7 +59,7 @@ export class Dashboards{
   return {...current.share,members:await this.metrics.sales.shares.members(current.c),changedAt:changed!.changedAt,changedBy:changed!.changedBy??'Former operator',timezone:changed!.timezone};
  }
  async setDefault(c:ActorContext,id:string,enabled:boolean){const current=await this.head(c,id);await this.store.commit(current.c,'analytics.read',id,current.h.version,[...this.fence(current.c,id,current.h),...(enabled?[{sql:'INSERT INTO sales_dashboard_defaults VALUES(?,?,?) ON CONFLICT(workspace_id,operator_id) DO UPDATE SET dashboard_id=excluded.dashboard_id',bindings:[c.workspaceId,actor(c),id]}]:[{sql:'DELETE FROM sales_dashboard_defaults WHERE workspace_id=? AND operator_id=? AND dashboard_id=?',bindings:[c.workspaceId,actor(c),id]}])]);return {default:enabled};}
- async tile(c:ActorContext,tile:DashboardTile,filters:DashboardFilters,proofs:SqlStatement[]=[]):Promise<TileResult>{
+ async tile(c:ActorContext,tile:DashboardTile,filters:DashboardFilters,timezone:string,proofs:SqlStatement[]=[]):Promise<TileResult>{
   if(tile.withdrawn)return unavailable(tile);
   let sourceReadable=false,sourceVersion:string|number=tile.version;
   try{
@@ -92,17 +95,17 @@ export class Dashboards{
    proofs.push(...this.metrics.sales.proofs(report));
    report={...report,sections:report.sections.filter(s=>s.measure===tile.measure).map(section=>section.measure==='revenue'?{...section,months:section.months.filter(month=>month.key<=monthKey(Date.parse(report.asOf),report.timezone))}:section.measure==='reasons'?{...section,tables:section.tables.map(table=>({...table,groups:[...table.groups].sort((a,b)=>Number(a.label.startsWith('Lost ·'))-Number(b.label.startsWith('Lost ·')))}))}:section),late:report.late?{...report.late,sections:report.late.sections.filter(s=>s.measure===tile.measure)}:null};
    return {id:tile.id,width:tile.width,height:tile.height,status:'ready',tile,notes,report,forecast:null};
-  }catch(error){if(error instanceof AccessError){if(error.code==='permission'||error.code==='validation'&&!sourceReadable)return unavailable(tile);return {id:tile.id,width:tile.width,height:tile.height,status:'error',name:tile.source==='forecast'?'Forecast vs quota':measureCatalog[tile.measure].title,version:sourceVersion,period:`${filters.from} to ${filters.through}`,message:error.code==='prerequisite'?'This tile could not be computed. Try again.':'Report sources or permissions changed. Try again.'};}throw error;}
+  }catch(error){if(error instanceof AccessError){if(error.code==='permission'||error.code==='validation'&&!sourceReadable)return unavailable(tile);return {id:tile.id,width:tile.width,height:tile.height,status:'error',name:tile.source==='forecast'?'Forecast vs quota':measureCatalog[tile.measure].title,version:sourceVersion,period:framePeriod(tile,filters,timezone),message:error.code==='prerequisite'?'This tile could not be computed. Try again.':'Report sources or permissions changed. Try again.'};}throw error;}
  }
- async outlineTile(c:ActorContext,tile:DashboardTile,filters:DashboardFilters):Promise<TileResult>{
+ async outlineTile(c:ActorContext,tile:DashboardTile,filters:DashboardFilters,timezone:string):Promise<TileResult>{
   if(tile.withdrawn)return unavailable(tile);
-  try{if(tile.source==='forecast'){const repository=new ForecastRepository(this.db);await repository.permit(c);const saved=await repository.snapshot(c,tile.sourceId);return {id:tile.id,width:tile.width,height:tile.height,status:'loading',name:'Forecast vs quota',version:tile.version,period:`${saved.from} to ${saved.through}`};}
-   await this.metrics.sales.shares.assertVisible(c,tile.sourceId);const latest=await this.db.prepare('SELECT max(version) v FROM analytics_definitions WHERE workspace_id=? AND id=?').bind(c.workspaceId,tile.sourceId).first<number>('v');if(!latest)return unavailable(tile);const version=tile.version==='live'?latest:tile.version,definition=await this.metrics.sales.definition(c,tile.sourceId,version);if(!definition.measures.includes(tile.measure))return unavailable(tile);if(tile.snapshotId&&!await this.db.prepare('SELECT 1 FROM analytics_snapshots WHERE workspace_id=? AND id=? AND definition_id=? AND definition_version=?').bind(c.workspaceId,tile.snapshotId,tile.sourceId,version).first())return unavailable(tile);return {id:tile.id,width:tile.width,height:tile.height,status:'loading',name:tile.kind==='chart'&&tile.measure==='pipeline'?'Open pipeline by stage, two pipelines':measureCatalog[tile.measure].title,version,period:`${filters.from} to ${filters.through}`};
+  try{if(tile.source==='forecast'){const repository=new ForecastRepository(this.db);await repository.permit(c);const saved=await repository.snapshot(c,tile.sourceId);return {id:tile.id,width:tile.width,height:tile.height,status:'loading',name:'Forecast vs quota',version:tile.version,period:tile.version==='live'?filtersPeriod(filters,timezone):forecastPeriod(saved.from,saved.through,timezone)};}
+   await this.metrics.sales.shares.assertVisible(c,tile.sourceId);const latest=await this.db.prepare('SELECT max(version) v FROM analytics_definitions WHERE workspace_id=? AND id=?').bind(c.workspaceId,tile.sourceId).first<number>('v');if(!latest)return unavailable(tile);const version=tile.version==='live'?latest:tile.version,definition=await this.metrics.sales.definition(c,tile.sourceId,version);if(!definition.measures.includes(tile.measure))return unavailable(tile);if(tile.snapshotId&&!await this.db.prepare('SELECT 1 FROM analytics_snapshots WHERE workspace_id=? AND id=? AND definition_id=? AND definition_version=?').bind(c.workspaceId,tile.snapshotId,tile.sourceId,version).first())return unavailable(tile);return {id:tile.id,width:tile.width,height:tile.height,status:'loading',name:tile.kind==='chart'&&tile.measure==='pipeline'?'Open pipeline by stage':measureCatalog[tile.measure].title,version,period:framePeriod(tile,filters,timezone)};
   }catch(error){if(error instanceof AccessError)return unavailable(tile);throw error;}
  }
  async read(c:ActorContext,id:string,filters?:DashboardFilters,pending=false){
   const current=await this.head(c,id),suite=await this.metrics.sales.suite(current.c),selected=filters??current.definition.filters,tiles:TileResult[]=[],proofs:SqlStatement[]=[];
-  for(const tile of current.definition.tiles)tiles.push(await (pending?this.outlineTile(current.c,tile,selected):this.tile(current.c,tile,selected,proofs)));
+  for(const tile of current.definition.tiles)tiles.push(await (pending?this.outlineTile(current.c,tile,selected,suite.timezone):this.tile(current.c,tile,selected,suite.timezone,proofs)));
   const full=current.c.principal.kind==='operator'&&await isFullOperator(this.db,actor(current.c));
   const limited=!full||tiles.some(t=>t.status==='ready'&&t.report?.access.limited);
   const fieldValues=new Map<string,Set<string>>();let cursor:string|undefined;do{const page=await this.metrics.sales.graph.scanRecords(current.c,{types:['opportunity'],query:'',fields:[],filters:{},limit:1000,...(cursor?{cursor}:{})});for(const item of page.items){const custom=typeof item.fields.custom_fields_json==='string'?JSON.parse(item.fields.custom_fields_json):{};for(const [name,value] of Object.entries({...Object.fromEntries(Object.entries(item.fields).filter(([key])=>['lifecycle','band','queue_state','close_reason'].includes(key))),...custom})){if(['string','number','boolean'].includes(typeof value)&&/^[a-zA-Z][a-zA-Z0-9_]{0,80}$/.test(name)){const values=fieldValues.get(name)??new Set<string>();values.add(String(value));fieldValues.set(name,values);}}}cursor=page.nextCursor??undefined;}while(cursor);await this.metrics.checkSources(current.c,[]);
