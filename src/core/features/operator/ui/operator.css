@@ -65,6 +65,7 @@
 :where(.ob-app) :where(input:not([type="checkbox"], [type="radio"], [type="hidden"], [type="file"]), select, textarea) { box-sizing: border-box; max-width: 100%; min-height: 44px; padding: 9px 13px; border: var(--app-field); border-radius: 12px; background-color: var(--ob-card); color: var(--ob-ink); font: inherit; font-size: 15.5px; transition: border-color 0.18s, box-shadow 0.18s; }
 :where(.ob-app) :where(textarea) { line-height: 1.5; resize: vertical; }
 :where(.ob-app) :where(input, select, textarea):hover { border-color: #bdb3a3; }
+:where(.ob-app) :where(input, select, textarea):focus { border-color: var(--ob-ink); outline: none; box-shadow: 0 0 0 3px rgba(22, 23, 29, 0.12); }
 /* Focus belongs to the field's existing border. Reports retain their own focus rules. */
 .ob-app.operator-shell :is(input, select, textarea):not(:where(.analytics-console *, .sales-reports *, .forecast-console *, .dashboard *)):focus { border-color: var(--app-field-focus); outline: none; box-shadow: none; }
 .ob-app.operator-shell :is(input[type="checkbox"], input[type="radio"]):focus { accent-color: var(--app-field-focus); outline: 2px solid var(--app-field-focus); outline-offset: -2px; }

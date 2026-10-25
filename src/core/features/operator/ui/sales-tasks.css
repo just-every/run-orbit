@@ -52,3 +52,6 @@
  .sales-task { padding: 14px; }
  .sales-tasks__header > button { margin-top: 5px; }
 }
+@media (max-width: 640px) {
+ .sales-task-calendar__grid { grid-template-columns: repeat(7, minmax(44px, 1fr)); overflow-x: auto; }
+}
