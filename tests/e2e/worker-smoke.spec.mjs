@@ -51,17 +51,30 @@ for (const viewport of viewports) {
 contract("DOCS-001", "installed docs navigation reaches every page", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   const failures = watchPageFailures(page);
-  await page.goto("/docs", { waitUntil: "networkidle" });
+  const initialResponse = await page.goto("/docs", { waitUntil: "networkidle" });
   await expect(page).toHaveURL(/\/docs$/);
   await expect(page.getByRole("heading", { level: 1, name: "Orbit" })).toBeVisible();
   const sidebar = page.locator(".docs-sidebar");
   const links = await sidebar.getByRole("link").evaluateAll((items) => items.map((item) => item.getAttribute("href")));
   expect(links.length).toBeGreaterThan(1);
+  const initialCurrent = await page.evaluate(html => {
+    const document = new DOMParser().parseFromString(html, 'text/html');
+    return ['.docs-sidebar', '.docs-menu'].map(selector => Array.from(document.querySelectorAll(`${selector} [aria-current="page"]`), item => item.getAttribute('href')));
+  }, await initialResponse.text());
+  expect(initialCurrent).toEqual([[links[0]], [links[0]]]);
   for (const href of links) expect((await page.request.get(href)).status(), href).toBe(200);
   await sidebar.getByRole("link").nth(2).click();
+  await expect(sidebar.locator('[aria-current="page"]')).toHaveCount(1);
   await expect(page.locator(".docs-sidebar [aria-current=page]")).toHaveAttribute("href", links[2]);
   expect((await page.request.get("/docs/not-a-page")).status()).toBe(404);
   await page.setViewportSize({ width: 390, height: 844 });
+  const menu = page.locator('.docs-menu');
+  await menu.locator('summary').click();
+  await expect(menu.locator('[aria-current="page"]')).toHaveCount(1);
+  await expect(menu.locator('[aria-current="page"]')).toHaveAttribute('href', links[2]);
+  await menu.getByRole('link').nth(1).click();
+  await expect(menu.locator('[aria-current="page"]')).toHaveCount(1);
+  await expect(menu.locator('[aria-current="page"]')).toHaveAttribute('href', links[1]);
   await expectNoHorizontalOverflow(page);
   expect(failures).toEqual([]);
 });

@@ -1,7 +1,44 @@
 import {expect} from '@playwright/test';
 import {expectProvenance} from './operator-provenance.mjs';
+import {exerciseSourceRemoval} from './source-recipes.mjs';
+
+async function expectRouteRecovery(page){
+ const origin=new URL(page.url()).origin;
+ for(const [path,destination] of [
+  ['/app/opportunities','/app/records'],['/app/companies','/app/records?kind=company'],['/app/contacts','/app/records?kind=contact'],
+  ...['now','today','meetings','drafts','assistance'].map(name=>[`/app/${name}`,'/app']),
+ ]){
+  const response=await page.request.get(origin+path);
+  expect(response.status()).toBe(200);
+  const url=new URL(response.url());expect(url.pathname+url.search).toBe(destination);
+  await response.dispose();
+ }
+ for(const kind of ['opportunities','meetings','drafts','assistance']){
+  for(const id of ['invalid.id','00000000000000000000000000']){
+   const read=kind==='meetings'?`/api/v1/today/meetings/${id}`:kind==='drafts'?`/api/v1/drafts/${id}`:`/api/v1/opportunities/${id}`;
+   const response=await page.request.get(origin+read);expect(response.status()).toBe(404);await response.dispose();
+   if(kind==='opportunities'){
+    const drafts=await page.request.get(origin+`/api/v1/drafts?opportunityId=${id}`);expect(drafts.status()).toBe(404);await drafts.dispose();
+   }
+   await page.goto(origin+`/app/${kind}/${id}`);
+   await expect(page.getByRole('main').getByRole('alert')).toBeVisible();
+   await expect(page.getByRole('main').locator('form')).toHaveCount(0);
+   const back=page.getByRole('main').locator('a[href="/app/records"]');await expect(back).toBeVisible();await back.click();
+   await expect(page).toHaveURL(origin+'/app/records');
+   await page.getByRole('button',{name:'Create from existing records'}).waitFor();
+  }
+ }
+ await page.goto(origin+'/app');await page.getByTestId('now-queue').waitFor();
+}
+
+async function expectHashTarget(page,id){
+ const target=page.locator(`#${id}`);
+ await expect(target).toBeFocused();
+ await expect(target.getByRole('heading').first()).toBeInViewport();
+}
+
 export function operatorRoutes(f){return [
- {name:'now',path:'/app',ready:page=>page.getByTestId('now-queue').waitFor()},
+ {name:'now',path:'/app',ready:async page=>{await page.getByTestId('now-queue').waitFor();await expectRouteRecovery(page);}},
  {name:'imports',path:'/app/imports',ready:page=>page.getByRole('heading',{name:'Move in your customer records',exact:true}).waitFor()},
  {name:'records',path:'/app/records',ready:page=>page.getByRole('button',{name:'Create from existing records'}).waitFor()},
  {name:'contacts',path:'/app/records?kind=contact',ready:page=>page.getByRole('button',{name:'Create contact',exact:true}).waitFor()},
@@ -28,11 +65,11 @@ export function operatorRoutes(f){return [
   else if(recipe==='automation')await page.getByLabel('Automation platform',{exact:true}).selectOption('make');
   else await page.getByLabel('Booking provider',{exact:true}).selectOption(recipe);
  }})),
- {name:'sources-disabled',path:'/app/sources',ready:async page=>{await page.getByText('Advanced',{exact:true}).click();await page.getByRole('button',{name:'Disable source',exact:true}).click();await page.getByRole('button',{name:'Enable source',exact:true}).waitFor();await page.getByRole('button',{name:'Open recipes',exact:true}).click();await expect(page.getByRole('button',{name:'Send test event',exact:true})).toBeDisabled();},after:async page=>{await page.getByRole('button',{name:'Enable source',exact:true}).click();await page.getByRole('button',{name:'Disable source',exact:true}).waitFor();}},
- {name:'settings',path:'/app/settings',ready:page=>page.getByRole('button',{name:'Save workspace',exact:true}).waitFor()},
+ {name:'sources-disabled',path:'/app/sources',ready:async page=>{await page.getByText('Advanced',{exact:true}).click();await page.getByRole('button',{name:'Disable source',exact:true}).click();await page.getByRole('button',{name:'Enable source',exact:true}).waitFor();await page.getByRole('button',{name:'Open recipes',exact:true}).click();await expect(page.getByRole('button',{name:'Send test event',exact:true})).toBeDisabled();},after:async page=>{await page.getByRole('button',{name:'Enable source',exact:true}).click();await page.getByRole('button',{name:'Disable source',exact:true}).waitFor();await exerciseSourceRemoval(page,f);}},
+ {name:'settings',path:'/app/settings#mail-sender',ready:async page=>{await page.getByRole('button',{name:'Save workspace',exact:true}).waitFor();await expectHashTarget(page,'mail-sender');}},
  {name:'notifications',path:'/app/notifications',ready:page=>page.getByRole('button',{name:'Operator review opportunity',exact:true}).first().waitFor()},
  {name:'notification-detail',path:'/app/notifications',ready:async page=>{await page.getByRole('button',{name:'Operator review opportunity',exact:true}).first().click();await page.getByRole('button',{name:'Close notification details'}).waitFor();}},
- {name:'reports',path:'/app/reports',ready:async page=>{await page.getByRole('button',{name:'Reopen saved report'}).first().click();await page.getByText('How this report is calculated',{exact:true}).click();await page.getByText('Create or edit a report from your records',{exact:true}).click();}},
+ {name:'reports',path:'/app/reports#forecast',ready:async page=>{await expectHashTarget(page,'forecast');await page.getByRole('button',{name:'Reopen saved report'}).first().click();await page.getByText('How this report is calculated',{exact:true}).click();await page.getByText('Create or edit a report from your records',{exact:true}).click();}},
  {name:'forms',path:'/app/forms',ready:async page=>{await page.getByRole('button',{name:'Reopen latest publication'}).first().click();await page.frameLocator('iframe[title="Compiled landing page preview"]').getByRole('heading',{name:'Tell us about your team',exact:true}).waitFor();await page.getByRole('button',{name:'Read submissions'}).first().click();await page.getByText('A form submission shown as labelled values.',{exact:true}).waitFor();}},
  {name:'access',path:'/app/access',ready:page=>page.getByRole('button',{name:'Revoke grant',exact:true}).waitFor()},
  {name:'shared',path:`/app/shared-records?kind=contact&id=${f.contactId}`,ready:async page=>{await page.getByRole('region',{name:'Shared record details'}).waitFor();await expectProvenance(page,f.provenance);}},

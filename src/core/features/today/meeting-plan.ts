@@ -17,7 +17,7 @@ export interface UnresolvedAttendee {email:string;company:{id:string;name:string
 /** The meeting signal and the records it is linked to; a meeting with no linked record cannot be planned. */
 export async function meetingContext(db:D1Database,signalId:string){
  const signal=await db.prepare("SELECT s.id,s.type,s.subject,s.occurred_at AS occurredAt,s.payload_json AS payload,ss.name AS sourceName FROM signals s JOIN signal_sources ss ON ss.id=s.source_id WHERE s.id=? AND s.type IN ('meeting.booked','meeting.completed','meeting.cancelled')").bind(signalId).first<{id:string;type:string;subject:string|null;occurredAt:string;payload:string|null;sourceName:string}>();
- if(!signal)throw new TodayError(404,'Meeting not found.');
+ if(!signal)throw new TodayError(404,'That meeting does not exist.');
  const links=(await signalLinks(db,[signalId])).get(signalId)??[];
  if(!links.length)throw new TodayError(409,'This meeting is not linked to a record yet. Review it under Sources first.');
  let data:Record<string,unknown>={};try{const payload=JSON.parse(signal.payload??'{}') as {data?:unknown};if(payload.data&&typeof payload.data==='object')data=payload.data as Record<string,unknown>;}catch{/* a signal without a JSON payload carries no meeting details */}

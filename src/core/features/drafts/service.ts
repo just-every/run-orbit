@@ -28,6 +28,10 @@ export class DraftsService {
     return this.repository.listOpportunityDrafts(opportunityId);
   }
 
+  async hasOpportunity(opportunityId: string) {
+    return this.repository.hasOpportunity(opportunityId);
+  }
+
   async updateDraft(input: {
     id: string;
     expectedRevision: number;

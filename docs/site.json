@@ -3,7 +3,7 @@
     { "title": "Start here", "pages": [
       { "slug": "", "source": "docs/overview.md", "label": "Overview" },
       { "slug": "getting-started", "source": "docs/getting-started.md", "label": "Getting started" },
-      { "slug": "run-locally", "source": "RUN-LOCALLY.md", "label": "Local command reference" }
+      { "slug": "run-locally", "source": "RUN-LOCALLY.md", "label": "Run it locally" }
     ]},
     { "title": "Run it", "pages": [
       { "slug": "operations", "source": "OPERATIONS.md", "label": "Operations" },
