@@ -1,5 +1,5 @@
 import {useEffect,useState} from 'react';
-import {ActionTooltip} from '../operator/ui/action-tooltip';
+import {DashboardTooltip} from './tooltip';
 import {DashboardIcon} from './icons';
 import {DashboardDateFilter} from './date-filter';
 import {filtersPeriod} from './display';
@@ -18,5 +18,5 @@ export function DashboardFilterCard({view,filters,setFilters}:{view:DashboardVie
   <DashboardDateFilter timezone={view.timezone} filters={filters} saved={saved} onChange={setFilters}/>
   <label>{fieldName}<select aria-label={fieldName} value={fieldValue} onChange={e=>{const colon=e.target.value.indexOf(':');setFilters({...filters,field:colon<0?null:{name:e.target.value.slice(0,colon),value:e.target.value.slice(colon+1)}});}}><option value="">All values</option>{view.fields.map(f=><optgroup key={f.name} label={f.name}>{f.values.map(value=><option value={`${f.name}:${value}`} key={value}>{value}</option>)}</optgroup>)}{filters.field&&!view.fields.some(f=>f.name===filters.field!.name&&f.values.includes(filters.field!.value))&&<option value={fieldValue}>{filters.field.value}</option>}</select></label>
   <button type="button" className="dash-text-button dash-filters__reset" onClick={()=>setFilters(saved)}>Reset to saved filters</button>
- </div></details><ul className="dash-filter-chips" aria-label="Applied filters">{chips.map(chip=><li key={chip.label}><span>{chip.label}</span>{chip.remove&&<ActionTooltip label={chip.remove.label}><button type="button" onClick={chip.remove.clear}><DashboardIcon kind="cross"/></button></ActionTooltip>}</li>)}</ul></section>;
+ </div></details><ul className="dash-filter-chips" aria-label="Applied filters">{chips.map(chip=><li key={chip.label}><span>{chip.label}</span>{chip.remove&&<DashboardTooltip label={chip.remove.label}><button type="button" onClick={chip.remove.clear}><DashboardIcon kind="cross"/></button></DashboardTooltip>}</li>)}</ul></section>;
 }
