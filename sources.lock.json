@@ -5971,7 +5971,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.css": {
-      "sha256": "436e18dcbf5d1741bd45704024607134584864eec8b08ffe30db9273f4b417f6",
+      "sha256": "5dc5ddb40176c60ab6e4148605889a67db9805ece7b47fb61c10148611a1c780",
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.tsx": {

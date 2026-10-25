@@ -61,5 +61,5 @@
 @media (max-width: 367px) {
  /* At 320px seven 38px days fit; the date field remains a 44px target. */
  .sales-task-calendar__grid { gap: 0; }
- .ob-app.operator-shell .sales-task-calendar__grid button { min-width: 38px; }
+ .ob-app.operator-shell .sales-tasks .sales-task-calendar__grid button { min-width: 38px; }
 }
