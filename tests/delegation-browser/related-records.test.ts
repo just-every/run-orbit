@@ -49,6 +49,10 @@ test('full related names and associated-contact labels remain readable in native
         stageId: inventory.stages[0].id, valueCents: 12345678 } });
     expect(created.status(), await created.text()).toBe(201);
     const opportunity = await created.json();
+    const initial = await context.request.get(`/api/v1/records/opportunity/${opportunity.id}`);
+    expect(initial.ok()).toBe(true);
+    const original = await initial.json(), linkedContact = original.contacts.find((row: any) => row.name === contact);
+    expect(linkedContact).toBeDefined();
     async function readable(locator: any, text: string) {
       await expect(locator).toBeVisible();
       const result = await locator.evaluate((element: HTMLElement, expected: string) => {
@@ -89,9 +93,14 @@ test('full related names and associated-contact labels remain readable in native
         await page.screenshot({ path: `${evidence}/${tab.toLowerCase()}-${width}.png`, fullPage: true });
         if (tab === 'Opportunities') {
           await page.getByRole('button', { name: 'Edit details', exact: true }).click();
-          const label = page.locator('.record-editor fieldset label').filter({ hasText: contact });
-          await expect(label.locator('input[type=checkbox]')).toBeChecked();
-          await readable(label, contact);
+          const chip = page.getByRole('list', { name: 'Associated contacts', exact: true }).getByRole('listitem').filter({ hasText: contact });
+          await expect(chip).toHaveCount(1);
+          await readable(chip, contact);
+          await expect(chip.getByRole('button', { name: 'Remove contact', exact: true })).toBeEnabled();
+          const primary = page.getByRole('combobox', { name: 'Primary recipient', exact: true });
+          await expect(primary).toHaveValue(linkedContact.id);
+          await expect(primary.locator('option:checked')).toHaveText(contact);
+          await primary.selectOption(linkedContact.id);
           await expect(page.getByLabel('Opportunity title', { exact: true })).toHaveValue(title);
           await page.screenshot({ path: `${evidence}/editor-${width}.png`, fullPage: true });
           await page.getByRole('button', { name: 'Save changes', exact: true }).click();
@@ -99,6 +108,7 @@ test('full related names and associated-contact labels remain readable in native
           const saved = await (await context.request.get(`/api/v1/records/opportunity/${opportunity.id}`)).json();
           expect(saved.record.title).toBe(title);
           expect(saved.contacts.some((row: any) => row.name === contact)).toBe(true);
+          expect(saved.contacts.find((row: any) => row.id === linkedContact.id)?.is_primary).toBe(1);
         }
       }
     }
