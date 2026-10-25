@@ -5763,7 +5763,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/hash-target.tsx": {
-      "sha256": "804bd3f3724a5ca1e3cb8a157caeb2a62db13e0edd811806ff49ab3b1f7022e5",
+      "sha256": "48b094dee225013747dc4c337bdba783d177eb7acd6489834bcb93856e436367",
       "executable": false
     },
     "src/core/features/operator/ui/import-provenance.ts": {
@@ -5995,7 +5995,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/sources-page.tsx": {
-      "sha256": "9714b4d51f42b530a8120c7c477863613da986bf4f06c585e6829c2a45eed1ac",
+      "sha256": "8c0016d06ed96feb56715bb9b7338a33b2e77c21ead94bf0ce1abda39c4a01e7",
+      "executable": false
+    },
+    "src/core/features/operator/ui/sources.css": {
+      "sha256": "cdc85fe789d944b8628b4cdf1d796c494555d0275ffe6335ff19e04b1f7d8566",
       "executable": false
     },
     "src/core/features/operator/ui/today-api.ts": {

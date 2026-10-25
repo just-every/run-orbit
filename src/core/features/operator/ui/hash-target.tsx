@@ -15,6 +15,9 @@ export function ScrollToHash({ready}:{ready:boolean}){
   function settle(){
    const next=document.getElementById(id);if(!next)return;
    next.scrollIntoView({block:'start'});
+   // Keep the target and its focus outline inside the viewport despite fractional scroll rounding.
+   const top=next.getBoundingClientRect().top;
+   if(top<24)window.scrollBy({top:Math.floor(top-24),behavior:'instant'});
    if(next!==target){
     target=next;
     if(!next.hasAttribute('tabindex'))next.tabIndex=-1;

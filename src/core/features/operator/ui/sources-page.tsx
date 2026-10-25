@@ -1,3 +1,4 @@
+import './sources.css';
 import {formatDate} from './formatters';
 import {SourceRecipes,CopyText,type RecipeContext} from './source-recipes';
 import { useCallback,useState,type FormEvent } from 'react';
@@ -30,7 +31,7 @@ export function SourcesPage(){
      {Boolean(source.has_signing_secret)&&<><button type="button" disabled={saving||!resource.data?.configured} onClick={()=>void toggle(source)}>{source.enabled?'Disable source':'Enable source'}</button><p>Rotate this source's signing secret if it has been exposed. Copy the new secret into your connected tools; old signatures stop working immediately. Other sources keep their own secrets.</p><button type="button" disabled={saving||!resource.data?.configured} onClick={()=>void renewSecret(source)}>Rotate signing secret</button></>}
      <p>Last accepted: {source.last_accepted_at?formatDate(source.last_accepted_at):'No events yet'} · Rejected: {source.rejected_count}</p>{source.last_error&&<p>{source.last_error}</p>}
      <p>Receiving address: <code>{`${window.location.origin}/api/v1/signals/${source.id}`}</code></p>
-     {removing===source.id?<div><p>Remove {source.name}? This address will stop accepting events. Its past evidence stays available.</p><button type="button" disabled={saving} onClick={()=>void remove(source)}>Confirm remove</button><button type="button" disabled={saving} onClick={()=>setRemoving('')}>Cancel</button></div>:<button type="button" disabled={saving} onClick={()=>setRemoving(source.id)}>Remove</button>}
+     <div className="source-removal">{removing===source.id?<><p>Remove {source.name}? This address will stop accepting events. Its past evidence stays available.</p><button type="button" disabled={saving} onClick={()=>void remove(source)}>Confirm remove</button><button type="button" disabled={saving} onClick={()=>setRemoving('')}>Cancel</button></>:<button type="button" disabled={saving} onClick={()=>setRemoving(source.id)}>Remove</button>}</div>
     </details>
    </article>)}
    {reveal&&<section role="status"><h3>Save your signing secret now</h3><p>This is its only display. Reloading hides it. Keep it in your tool's private settings.</p><code data-testid="source-secret" style={{display:'block',overflowWrap:'anywhere',margin:'8px 0 12px'}}>{reveal.secret}</code><CopyText text={reveal.secret} label="Copy secret"/><button type="button" onClick={()=>setReveal(null)}>I saved it</button></section>}
