@@ -1,5 +1,5 @@
 import {NotificationCount} from "./notifications-page";
-import {useId,useRef,useState, type PropsWithChildren, type ReactNode} from "react";
+import {useEffect,useId,useRef,useState, type PropsWithChildren, type ReactNode} from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { OrbitLockup } from "../../public/ui/brand/OrbitMark";
 import { publicProductConfig } from "../../../app/mounts/public-config";
@@ -18,13 +18,19 @@ export function OperatorShell({ action, children, eyebrow, title, restricted=fal
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const current = (href: string) => pathname === href ? "page" as const : undefined;
   const [expanded,setExpanded]=useState(false),navigationId=useId(),toggle=useRef<HTMLButtonElement>(null);
+  useEffect(()=>{
+    if(!expanded)return;
+    const close=(event:KeyboardEvent)=>{if(event.key==='Escape'){setExpanded(false);toggle.current?.focus();}};
+    document.addEventListener('keydown',close);
+    return()=>document.removeEventListener('keydown',close);
+  },[expanded]);
   return (
     <div className="operator-shell ob-app">
       <a className="operator-skip-link" href="#operator-main">Skip to content</a>
       <header className="operator-header">
         <a aria-label="Orbit home" className="operator-mark" href="/app"><OrbitLockup name={publicProductConfig.name} imageUrl={publicProductConfig.imageUrl} /></a>
         <button ref={toggle} className="operator-menu-toggle" type="button" aria-expanded={expanded} aria-controls={navigationId} onClick={()=>setExpanded(!expanded)}>Menu</button>
-        <nav id={navigationId} aria-label="Operator navigation" className="operator-nav" data-open={expanded} onKeyDown={event=>{if(event.key==='Escape'){setExpanded(false);toggle.current?.focus();}}} onClick={event=>{if((event.target as HTMLElement).closest('a'))setExpanded(false);}}>
+        <nav id={navigationId} aria-label="Operator navigation" className="operator-nav" data-open={expanded} onClick={event=>{if((event.target as HTMLElement).closest('a'))setExpanded(false);}}>
           {!restricted&&<><Link to="/app/records">Records</Link>
           <Link activeOptions={{ exact: true }} to="/app">NOW</Link>
           <Link to="/app/settings">Settings</Link>

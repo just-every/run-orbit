@@ -4479,7 +4479,7 @@
       "executable": false
     },
     "src/core/app/styles.css": {
-      "sha256": "699db0bb6a3012d6725399d5e724187b89b086a7f04fbb14cde7e979da6541a8",
+      "sha256": "18575b88d7b22c1a3e56c9a8e29410579a0e47d6116280ef19c7cb9088a5db87",
       "executable": false
     },
     "src/core/app/ui/page-frame.tsx": {
@@ -4599,7 +4599,7 @@
       "executable": false
     },
     "src/core/features/analytics/console.css": {
-      "sha256": "f154061c05ebaedb7fe3933d14688f877d6d8594246bc0691c65eeea8f457325",
+      "sha256": "1d39e7b6147f645d57d45daae116d6a4901b42740be3e82c81440ff5a084d442",
       "executable": false
     },
     "src/core/features/analytics/console.tsx": {
@@ -5555,7 +5555,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/buying-context.css": {
-      "sha256": "b25ac36c17b8cdb1c36b986eb7c2629b86535d22ef721ab58432dc13bd4a92bb",
+      "sha256": "5120f5d2140afae5b87b38c5928e1deaf8e4dd39ea38911b46afb03348133382",
       "executable": false
     },
     "src/core/features/operator/ui/buying-context.tsx": {
@@ -5623,7 +5623,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/capture-providers.css": {
-      "sha256": "1ad9ebd2872f1b61975da22e72b6b154e9d6c73b5b0da6ed31b9d43f02d4a7d0",
+      "sha256": "757fe401733eb4eff3891c67b5bd2967ceeacb38265aecb073530ca925165e58",
       "executable": false
     },
     "src/core/features/operator/ui/capture-review-page.tsx": {
@@ -5635,7 +5635,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/capture-setup.css": {
-      "sha256": "a5478c38221ace6779ec32b6aa96c4594254537c7d358aa6e55efd1902434545",
+      "sha256": "686ee5bd53b018d95132925a46b8be7c4b2fb20227e8abf6e5da645591df6979",
       "executable": false
     },
     "src/core/features/operator/ui/capture-source.tsx": {
@@ -5739,7 +5739,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/handoff-tasks.css": {
-      "sha256": "21ee381e8643b3f41d1739c0cb2c641f58f9c3bb102b313b50c10680876eb6f9",
+      "sha256": "b1ea8726e5786e635c51d3ab896e0a27a905da77186b9f954efa51ba55f402b4",
       "executable": false
     },
     "src/core/features/operator/ui/handoff-tasks.tsx": {
@@ -5807,7 +5807,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/onboarding-checklist.css": {
-      "sha256": "9a24338cf8d63db068993902269e5c9566083bcc90cc1a1787bff7ee1ebe04b0",
+      "sha256": "ae241258875aaf1e0b684841e68df50e6e8262c1e0a58819d843a98c6fcf5e5e",
       "executable": false
     },
     "src/core/features/operator/ui/onboarding-checklist.tsx": {
@@ -5823,7 +5823,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator-controls.css": {
-      "sha256": "c2fc0e7679250028b97c4d77d95e178257c1cd1922c63f3c9c78b1018e708e3e",
+      "sha256": "d176f5563079f0d1ab8f8cb3e15e463cd06036eb4049fc42baeb7ca6843bc6f7",
       "executable": false
     },
     "src/core/features/operator/ui/operator-dialog.tsx": {
@@ -5839,11 +5839,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator-shell.tsx": {
-      "sha256": "aa21b3ca9263f888be4a89d288681d6be41657cf57a89796a8fa66fd20faf19a",
+      "sha256": "046d63fa14418f76d39b65b6c958b8a379a06298500efe98e8e175d5c95b8931",
       "executable": false
     },
     "src/core/features/operator/ui/operator.css": {
-      "sha256": "b8ba0a18fd7883ed84e491a33df32bad26472223e6edd2aaafeb7dd02541f39a",
+      "sha256": "68c9c43b0820cabf87cd873776c937e265d41255c5a500460291a207cf5e5d01",
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-evidence.tsx": {
@@ -5931,7 +5931,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records.css": {
-      "sha256": "3e99453bd72c34e1c822f6182b2f5ef9407e1067a165ce234f903541519ecca6",
+      "sha256": "f6e182569f58d3b28c4df254619ed4ff8ac5e249515b33d421bd05b7da41a3f6",
       "executable": false
     },
     "src/core/features/operator/ui/reviewed-call.tsx": {
@@ -5943,7 +5943,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.css": {
-      "sha256": "4e2f91125a9485e92cfe3d194637e82b395e8db4361a49ae5fb1ee8817847990",
+      "sha256": "9cc8a3622c4d82f5ad4871749ec2a771aa120bc944057a73aedfff9416c89276",
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.tsx": {
@@ -9059,7 +9059,7 @@
       "executable": false
     },
     "tests/rer/operator-actions-journey.mjs": {
-      "sha256": "7b701ca46702ba3ff9a2773d149c5d0e95669ecf4f09862f7a85e3d7baf944db",
+      "sha256": "77f41284e3c8a066126674bd4046fcc1fda9cc9534cf981239e2392fc90d30d2",
       "executable": false
     },
     "tests/rer/operator-actions.test.mjs": {

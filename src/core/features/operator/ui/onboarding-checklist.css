@@ -8,4 +8,4 @@
 .onboarding-checklist a:hover{text-decoration-thickness:2.5px}
 /* Stacked checklist links keep a 24px pointer target (WCAG 2.2 target size). */
 .onboarding-checklist a{display:inline-block;min-block-size:24px;line-height:24px}
-@media(max-width:640px){.onboarding-checklist summary{font-size:20px}}
+@media(max-width:640px){.onboarding-checklist summary{font-size:20px}.onboarding-checklist a{min-block-size:44px;line-height:1.5;display:inline-flex;align-items:center}}

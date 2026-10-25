@@ -3,9 +3,9 @@
 .buying-context__fields{min-width:0;padding:0;border:0;margin:0}
 .buying-context__fields>legend{font-weight:600}
 .buying-context label{display:flex;flex-direction:column;gap:.4rem;font-size:.88rem}
-.buying-context input:not([type=checkbox]):not([type=radio]),.buying-context textarea,.buying-context select{box-sizing:border-box;width:100%;min-width:0;border:1px solid var(--operator-border,#d8dce3);border-radius:.45rem;padding:.65rem;background-color:var(--operator-surface,#fff);color:inherit;font:inherit}
+.buying-context input:not([type=checkbox],[type=radio]),.buying-context textarea,.buying-context select{box-sizing:border-box;width:100%;min-width:0;border:1px solid var(--operator-border,#d8dce3);border-radius:.45rem;padding:.65rem;background-color:var(--operator-surface,#fff);color:inherit;font:inherit}
 .buying-context textarea{resize:vertical}
-.buying-context small{display:block;font-size:.78rem;color:var(--operator-muted,#596575);font-weight:400}
+.buying-context small{display:block;color:var(--operator-muted,#596575);font-weight:400}
 .buying-context__help,.buying-context__missing{font-size:.85rem;color:var(--operator-muted,#596575)}
 .buying-context__company,.buying-context__commercial{display:grid;gap:.9rem}
 .buying-context__company{grid-template-columns:1fr 1fr}
@@ -13,10 +13,10 @@
 .buying-context__stakeholders>li{min-width:0;border:1px solid var(--operator-border,#d8dce3);border-radius:.6rem;padding:.9rem}
 .buying-context__person{display:flex;align-items:flex-start;justify-content:space-between;gap:.8rem}
 .buying-context__person a{font-weight:600}
-.buying-context__verification{display:inline-block;white-space:nowrap;font-size:.74rem;border-radius:1rem;padding:.2rem .6rem;background:#f1f0ed;color:#625b48}
+.buying-context__verification{display:inline-block;white-space:nowrap;border-radius:1rem;padding:.2rem .6rem;background:#f1f0ed;color:#625b48}
 .buying-context__verification.is-verified{background:#e2f2e8;color:#205b3b}
 .buying-context__roles{border:0;margin:.8rem 0;padding:0;display:flex;flex-wrap:wrap;gap:.6rem 1rem;min-width:0}
-.buying-context__roles legend{font-size:.8rem;margin-bottom:.5rem;color:var(--operator-muted,#596575)}
+.buying-context__roles legend{margin-bottom:.5rem;color:var(--operator-muted,#596575)}
 .buying-context__roles label,.buying-context__relationship-actions label{display:flex;flex-direction:row;align-items:center;gap:.4rem}
 .buying-context input[type=checkbox],.buying-context input[type=radio]{flex:0 0 auto;min-width:1rem;min-height:1rem;margin:0}
 .buying-context__relationship-actions{display:flex;align-items:center;flex-wrap:wrap;gap:.65rem 1rem}
@@ -31,3 +31,5 @@
 .buying-context__error{color:var(--operator-error,#a92b36)}
 .buying-context button{min-height:2.3rem}
 @media(max-width:600px){.buying-context__company{grid-template-columns:1fr}.buying-context__person{flex-wrap:wrap}.buying-context__relationship-actions{align-items:flex-start;flex-direction:column}.buying-context__relationship-actions button{margin-left:0}.buying-context__actions>*{width:100%}.buying-context__options>li{align-items:flex-start}.buying-context__options button{max-width:45%;white-space:normal}}
+
+.buying-context small,.buying-context__verification,.buying-context__roles legend{font-size:var(--app-text-min)}

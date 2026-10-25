@@ -4,7 +4,7 @@
 .records-workspace {display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
 .records-workspace > :not(.records-tabs) {margin-block:0}
 .records-tabs {display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 6px;border-bottom:1.5px solid var(--ob-line);padding-bottom:18px}
-.ob-app .records-tabs button {min-height:40px;padding:0 18px;border-color:var(--ob-line-strong);color:var(--ob-muted);font-size:15px;font-weight:600}
+.ob-app .records-tabs button {min-height:var(--app-control-min);padding:0 18px;border-color:var(--ob-line-strong);color:var(--ob-muted);font-size:15px;font-weight:600}
 .ob-app .records-tabs button:hover:not(:disabled) {border-color:var(--ob-ink);background:transparent;color:var(--ob-ink)}
 .ob-app .records-tabs button[aria-pressed=true] {border-color:var(--ob-ink);background:var(--ob-tangerine-soft);color:var(--ob-ink);font-weight:650}
 .records-tabs button:disabled {cursor:wait}
