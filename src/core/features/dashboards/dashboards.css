@@ -28,6 +28,7 @@
 .dash-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:20;min-width:100%;padding:6px;border:1.5px solid var(--ob-ink);border-radius:12px;background:var(--ob-card);box-shadow:var(--ob-shadow-card)}
 .dash-menu [role=menuitem]{display:flex;align-items:center;width:100%;min-height:44px;padding:0 12px;border:0;border-radius:8px;background:none;color:var(--ob-ink);font:500 15px var(--ob-sans);text-align:left;white-space:nowrap;cursor:pointer}
 .dash-menu [role=menuitem]:is(:hover,:focus-visible){outline:none;background:var(--ob-paper-deep)}
+.dash-default__failure{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;margin:6px 0 0;font-size:14px;color:#7a2a07}.dash-default__failure .dash-text-button{color:#7a2a07}
 
 /* Filter card: labelled selects in one row; on a phone one summary row, chips and stacked selects. */
 .dash-filters{padding:20px 24px}

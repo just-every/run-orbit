@@ -15,6 +15,7 @@
 .dash-dialog__version{margin-top:14px;padding-top:12px;border-top:1px solid var(--ob-line)}
 .dash-icon-button{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-height:44px;padding:0;border:0;border-radius:999px;background:none;color:var(--ob-ink)}
 .dash-icon-button:hover{background:var(--ob-paper-deep)}
+.dash-failure{display:flex;flex-wrap:wrap;align-items:center;gap:0 10px;margin:14px 0 0}.dash-failure .dash-text-button{color:#7a2a07}
 
 /* Share: audience options with the grants nested under Named people. */
 .dash-audience{margin-top:10px}
