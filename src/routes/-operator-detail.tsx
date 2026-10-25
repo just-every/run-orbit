@@ -12,7 +12,7 @@ export function requireDetailId(id: string, kind: DetailKind) {
 export function OperatorDetailState({ kind, missing = false }: { kind: DetailKind; missing?: boolean }) {
   const noun = kind === 'assistance' ? 'opportunity' : kind;
   return <OperatorShell title={kind[0].toUpperCase() + kind.slice(1)}>
-    <OperatorState kind="error">{missing ? `That ${noun} does not exist.` : `Orbit could not load this ${noun}.`} <Link to="/app/records">Back to records</Link></OperatorState>
+    <OperatorState kind="error">{missing ? `That ${noun} does not exist.` : `Orbit could not load this ${noun}.`} <Link className="operator-back-link" to="/app/records">Back to records</Link></OperatorState>
   </OperatorShell>;
 }
 

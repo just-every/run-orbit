@@ -8099,7 +8099,7 @@
       "executable": false
     },
     "src/routes/-operator-detail.tsx": {
-      "sha256": "4b0378fc7bb981d9fc5100a581db6f0fa379214dd5214b0c7c254dc1b292ede4",
+      "sha256": "d6411598f7ecf67f13a24387e7581508474b5b5c25850ac68c42483c7308fd42",
       "executable": false
     },
     "src/routes/app.access.tsx": {
