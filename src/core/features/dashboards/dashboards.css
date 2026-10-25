@@ -37,7 +37,9 @@
 .dash-filters__fields{display:flex;flex-wrap:wrap;align-items:end;gap:16px}
 .dash-filters__fields>label{flex:1 1 170px;min-width:0}.dash-filters__fields>label:nth-child(2){flex:1.4 1 220px}.dash-filters__fields>.dash-filters__date{flex:1.6 1 250px}
 .dash-filters__fields select,.dash-filters__fields input{width:100%;min-width:0}
-.dash-filters__reset{flex:none;min-height:44px}
+/* Reset keeps the 4px bottom margin of .operator-surface labels, so it sits on the selects' line. */
+.dash-filters__reset{flex:none;min-height:44px;margin-bottom:4px}
+.dash-filters__refused{flex:1 1 100%;margin:0;font-size:14px;font-weight:600;color:#7a2a07}
 .dash-filter-chips{display:none}
 .dash-summary{margin:14px 0 18px;font-size:14px;color:var(--ob-muted)}
 
