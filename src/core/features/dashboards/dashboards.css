@@ -96,6 +96,11 @@ p.dash-breakdown{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:va
  .dash-matrix__amount{text-align:right}
  .dash-matrix__cell .sales-cell{justify-self:center;justify-content:center}
 }
+/* At 320 the amount sits under the bar, so each stage row fits its tile. */
+@container (max-width:280px){
+ .dash-matrix__cell{grid-template-columns:minmax(88px,max-content) minmax(24px,1fr) 44px;row-gap:2px}
+ .dash-matrix__amount{grid-column:2/-1;text-align:left}
+}
 
 /* Tables are REPORT-001's: hairline rows, tabular figures, drill buttons; no box inside the tile. */
 .dash-table{max-width:100%;overflow-x:auto;border:0;border-radius:0;background:none}
