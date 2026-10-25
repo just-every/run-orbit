@@ -1,0 +1,97 @@
+/* Dashboard dialogs on Orbit's .operator-dialog: Share, Schedule email, Edit tiles, and the drill drawer (full screen from 620px). */
+.dash-dialog{width:min(600px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto}
+.dash-dialog__header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:4px}
+.dash-dialog__header h2{margin:0;font-size:24px;font-weight:720;line-height:1.2}
+.dash-dialog__header button{display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;min-height:44px;margin:-8px -10px 0 0;padding:0;border:0;border-radius:999px;background:none;color:var(--ob-ink);font-size:24px;line-height:1}
+.dash-dialog__header button:hover{background:var(--ob-paper-deep)}
+.dash-dialog label{display:grid;gap:8px;margin:14px 0 0;font-size:14px;font-weight:600}
+.dash-dialog fieldset{min-width:0;margin:18px 0 0;padding:0;border:0}
+.dash-dialog legend{margin-bottom:8px;padding:0;font-size:14.5px;font-weight:650}
+.dash-dialog select,.dash-dialog input:not([type=radio],[type=checkbox]){width:100%}
+.dash-dialog .operator-dialog__actions button{min-height:44px}
+.dash-dialog .operator-dialog__actions .ob-pill{min-height:44px;font-size:15px}
+.dash-dialog__lead{margin-top:8px}
+.dash-dialog__note{display:flex;align-items:flex-start;gap:8px;margin-top:16px;font-size:14px;color:var(--ob-body)}
+.dash-dialog__version{margin-top:14px;padding-top:12px;border-top:1px solid var(--ob-line)}
+.dash-icon-button{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-height:44px;padding:0;border:0;border-radius:999px;background:none;color:var(--ob-ink)}
+.dash-icon-button:hover{background:var(--ob-paper-deep)}
+
+/* Share: audience options with the grants nested under Named people. */
+.dash-audience{margin-top:10px}
+.dash-audience label{display:flex;align-items:center;gap:10px;min-height:44px;margin:0;font-size:15px;font-weight:500}
+.dash-grants{display:grid;gap:2px;margin:2px 0 6px 28px}
+.dash-grant{display:grid;grid-template-columns:minmax(0,1fr) 132px 44px;align-items:center;gap:10px;padding:4px 0;border-bottom:1px solid var(--ob-line)}
+.dash-grant__person{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;min-width:0;overflow-wrap:anywhere}
+.dash-grant__person strong{font-weight:650}
+.dash-grant select{min-height:36px;padding-block:4px}
+.dash-grants__add{margin-top:8px}
+
+/* Schedule email: segmented frequency, one schedule sentence, recipient chips, Slack and the real delivery state. */
+.dash-frequency__segments{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dash-frequency label{position:relative;display:flex;align-items:center;justify-content:center;min-height:40px;margin:0;border:1.5px solid var(--ob-ink);border-radius:999px;font-size:14.5px;cursor:pointer}
+.dash-frequency label.is-selected{background:var(--ob-ink);color:var(--ob-paper)}
+.dash-frequency input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.dash-frequency label:focus-within{outline:none;border-color:var(--ob-tangerine-deep);box-shadow:inset 0 0 0 1.5px var(--ob-tangerine-deep)}
+.dash-send-at .sales-reports__fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.dash-send-at label{margin:0}
+.dash-send-at__summary{display:flex;align-items:center;gap:8px;margin:10px 0 0;font-size:14.5px;color:var(--ob-ink)}
+.dash-recipient-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 4px;padding:0;list-style:none}
+.dash-recipient-chips li{display:inline-flex;align-items:center;min-height:36px;padding:0 0 0 12px;border-radius:999px;background:var(--ob-paper-deep);font-size:14px}
+.dash-recipient-chips button{display:inline-flex;align-items:center;justify-content:center;width:36px;min-height:36px;padding:0;border:0;border-radius:999px;background:none;color:var(--ob-ink)}
+.dash-dialog .dash-field-note{margin-top:6px}
+.dash-slack{display:grid;justify-items:start;gap:8px;margin-top:16px}
+.dash-slack [role=status]{margin:0;font-size:14.5px;color:var(--ob-body)}
+.dash-slack .dash-meta{margin:0}
+.dash-attachments .sales-check{display:flex;align-items:center;gap:10px;min-height:44px;margin:0;font-weight:500}
+.dash-attachments .sales-check input{width:20px;height:20px}
+.dash-dialog .dash-state{display:flex;align-items:flex-start;gap:10px;margin:14px 0 0;padding:12px 14px}
+.dash-dialog .dash-state p{margin:0;font-size:14.5px;line-height:1.5;color:var(--ob-ink)}.dash-state .dash-icon{margin-top:3px}
+.dash-history{margin-top:18px}.dash-history h3{margin:0 0 4px;font-size:15px;font-weight:700}
+.dash-history ul{margin:0;padding:0;list-style:none}
+.dash-delivery{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 10px;padding:10px 0;border-top:1px solid var(--ob-line);font-size:14px}
+.dash-dialog .dash-delivery p{grid-column:1/-1;margin:0;font-size:13.5px}
+.dashboard .capture-source-status{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:var(--ob-paper-deep);color:var(--ob-ink);font-size:13px;font-weight:650;line-height:1.3;white-space:nowrap}
+.dashboard .capture-source-status .dash-icon{width:14px;height:14px}
+.dashboard .dash-delivery--sent{background:#e2f2e8;color:#205b3b}
+.dashboard .dash-delivery--failed{background:var(--ob-tangerine-soft);color:#7a2a07}
+.dashboard .dash-delivery--uncertain{border:1.5px dashed var(--ob-tangerine-deep);background:var(--ob-card);color:#7a2a07}
+
+/* Edit tiles: Orbit's labelled selects, the rarely changed fields folded per tile. */
+.dash-editor{display:grid;margin:16px 0 0;padding:0;list-style:none}
+.dash-editor>li{padding:16px 0;border-top:1px solid var(--ob-line)}
+.dash-editor h3{margin:0 0 4px;font-size:16px;font-weight:650}
+.dash-editor .sales-reports__fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.dash-editor .sales-reports__fields label{margin:0}
+.dash-editor__advanced{grid-column:1/-1}
+.dash-editor__advanced>summary{display:flex;align-items:center;min-height:44px;width:fit-content;font-size:14px;font-weight:600}
+.dash-editor__actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.dash-editor__actions button,.dash-editor__add{min-height:40px;padding:0 16px;font-size:14px;font-weight:600}
+
+/* Drill drawer: a right-hand sheet with square corners, so its single ink edge is allowed; full screen at 620px and below. */
+.dash-drawer{position:fixed;inset:0 0 0 auto;width:min(520px,100vw);max-width:100vw;height:100dvh;max-height:100dvh;margin:0;padding:28px;border:0;border-left:1.5px solid var(--ob-ink);border-radius:0;box-shadow:var(--ob-shadow-card)}
+.dash-drawer .sales-drill{gap:12px;margin-top:14px;padding:0;border:0;background:none}
+.dash-drawer .sales-drill h5{display:none}
+.dash-drawer .sales-drill [role=status]{margin:0;font-size:15px;color:var(--ob-ink)}
+.dash-drill-table{max-width:100%;overflow-x:auto;border:0;border-radius:0;background:none}
+.dash-drill-table table{width:100%;min-width:0;border-collapse:collapse;table-layout:auto;font-size:14px}
+.dash-drill-table caption{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.dash-drill-table :is(th,td){min-width:0;max-width:none;padding:10px 6px;border-top:1px solid var(--ob-line);text-align:left;white-space:normal;overflow-wrap:anywhere}
+.dash-drill-table :is(th,td):first-child{padding-left:0}.dash-drill-table :is(th,td):last-child{padding-right:0;text-align:right;white-space:nowrap;overflow-wrap:normal;font-variant-numeric:tabular-nums}
+.dash-drill-table thead th{border-top:0;font-size:13.5px;font-weight:600;color:var(--ob-muted)}
+.dash-drill-table tbody th{font-weight:500}
+.dash-drill-table tfoot :is(th,td){border-top:1.5px solid var(--ob-ink);font-weight:650}
+.dash-drill-lines{display:none}
+.dash-drawer__basis{margin:22px 0 4px;font-size:16px;font-weight:700}
+
+@media(max-width:620px){
+ .dash-dialog{padding:20px}
+ .dash-grants{margin-left:0}
+ .dash-grant{grid-template-columns:minmax(0,1fr) 44px}.dash-grant__person{grid-column:1/-1}.dash-grant select{grid-column:1;min-height:44px}
+ .dash-slack button,.dash-frequency label,.dash-recipient-chips li,.dash-recipient-chips button,.dash-editor__actions button,.dash-editor__add{min-height:44px}
+ .dash-recipient-chips button{width:44px}
+ .dash-editor .sales-reports__fields,.dash-send-at .sales-reports__fields{grid-template-columns:minmax(0,1fr)}
+ .dash-drawer{width:100vw;padding:20px;border-left:0}
+ .dash-drill-table{display:none}.dash-drill-lines{display:block}
+ .dash-drawer .sales-drill ol{margin:0;padding-left:20px}
+ .dash-drawer .sales-drill li{padding:8px 0;border-bottom:1px solid var(--ob-line)}
+ .dash-drawer .sales-drill li a{display:inline-flex;align-items:center;min-height:44px}
+}
