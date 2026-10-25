@@ -12,5 +12,7 @@ export async function publicationAvailabilityJourney(f:Awaited<ReturnType<typeof
  const update=await app.request(base,{method:'POST',headers,body:JSON.stringify({id:p.saved.id,revision:p.saved.revision,form:body.form,landing:{...body.landing,heading:'Request a revised walkthrough'}})});assert.equal(update.status,200,await update.clone().text());
  assert.equal((await app.request(`https://orbit.test/p/${p.slug}`)).status,404);
  const stale=await app.request(review,{headers});assert.equal(stale.status,200);assert.ok((await stale.json() as {unavailableReason:string|null}).unavailableReason);
+ assert.equal((await app.request(`${review}/publish`,{method:'POST',headers,body:'{}'})).status,403);
+ assert.equal((await app.request(`https://orbit.test/p/${p.slug}`)).status,404);
  assert.equal((await app.request(`${review}/withdraw`,{method:'POST',headers,body:'{}'})).status,200);
 }

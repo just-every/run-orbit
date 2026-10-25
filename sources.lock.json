@@ -2159,7 +2159,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "cd23e388fb3da4830af9ec2a9fcbf9d8e16726d0fd51cb21bd8e1b66f3af7616",
+      "sha256": "f4e1500eb5f69120babfb4ae63855ea48050e428caa4e7635ee9c4d142a72f44",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -2279,7 +2279,7 @@
       "executable": false
     },
     "newtests/t096/forms-publication-availability.ts": {
-      "sha256": "2eb6b865c86f7b64ef88795225ec0191302c8fc80102b89f9f99c462fc11d493",
+      "sha256": "17fafe22cc9996a31315fd7db120a575150a13220485dc72e66c76eeb4313110",
       "executable": false
     },
     "newtests/t096/forward-upgrade.test.ts": {
@@ -5255,7 +5255,7 @@
       "executable": false
     },
     "src/core/features/forms/console.tsx": {
-      "sha256": "a5bfd0327082cca72e2981c79dc2774730a8c522f8715500a9a9f22efc4697bc",
+      "sha256": "567395e993ec3e7aafc7f8a5789975dfff0790f14a19fd1dc8c86a252b34dd72",
       "executable": false
     },
     "src/core/features/forms/definition.ts": {
@@ -5315,7 +5315,7 @@
       "executable": false
     },
     "src/core/features/forms/service.ts": {
-      "sha256": "252b7599745a0c6fc57d45c0e689e732b02d9bc5edd10134bfa9f6966af04fb7",
+      "sha256": "c16f8eff30135e21636088b1e732b94f8dcf1107035dda9d8c40ddf5ecb6310e",
       "executable": false
     },
     "src/core/features/forms/spam-panel.tsx": {
