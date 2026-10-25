@@ -4951,7 +4951,7 @@
       "executable": false
     },
     "src/core/features/dashboards/dashboard-dialogs.css": {
-      "sha256": "2cf0c71d8365c00c1414f9cdd794ae7f29472bb578ba5bb4b93366700a292ddf",
+      "sha256": "286cd85b3454da20bd728b4093112ae42cad5c74c7fcab4e9b9e088a48330514",
       "executable": false
     },
     "src/core/features/dashboards/dashboards.css": {
@@ -4975,7 +4975,7 @@
       "executable": false
     },
     "src/core/features/dashboards/editor-tile.tsx": {
-      "sha256": "8398e74f515195480e2396f86dad4c201571bdf4f71367f374548857254c6a1a",
+      "sha256": "f72705bfce01a9f55f18ed71806f2dd8133d0646b62ca39a50415d64dbc6ada0",
       "executable": false
     },
     "src/core/features/dashboards/editor.tsx": {

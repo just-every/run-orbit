@@ -2,6 +2,7 @@ import type {DashboardTile} from './schema';
 import {measureCatalog} from '../analytics/sales-definition';
 import type {SalesDefinition} from '../analytics/sales-definition';
 import {dashboardLocal,forecastPeriod} from './display';
+import {DashboardIcon} from './icons';
 export type ReportChoice={id:string;version:number;body_json:string};
 export type ResultChoice={id:string;asOf:string};
 export function DashboardEditorTile({tile,index,sources,forecasts,results,update,timezone}:{tile:DashboardTile;index:number;sources:ReportChoice[];forecasts:{id:string;from:string;through:string}[];results:ResultChoice[];update:(patch:Partial<DashboardTile>)=>void;timezone:string}){
@@ -13,7 +14,7 @@ export function DashboardEditorTile({tile,index,sources,forecasts,results,update
   {tile.source==='report'&&<>
    <label>Measure<select aria-label="Measure" value={tile.measure} onChange={e=>update({measure:e.target.value as DashboardTile['measure']})}>{definition?.measures.map(measure=><option key={measure} value={measure}>{measureCatalog[measure].title}</option>)}</select></label>
    <label>Display<select aria-label="Display" value={tile.kind} onChange={e=>update({kind:e.target.value as DashboardTile['kind']})}><option value="number">Single number</option><option value="chart" disabled={tile.measure!=='pipeline'}>Chart</option><option value="table">Table</option></select></label>
-   <details className="dash-editor__advanced"><summary>Version, saved result and field</summary><div className="sales-reports__fields">
+   <details className="dash-editor__advanced"><summary>Version, saved result and field<DashboardIcon kind="chevron"/></summary><div className="sales-reports__fields">
    <label>Source version<select aria-label="Source version" value={tile.version} onChange={e=>{const version=e.target.value==='live'?'live':Number(e.target.value),source=matches.find(s=>version==='live'||s.version===version);update({version,snapshotId:null,measure:source?JSON.parse(source.body_json).measures[0]:tile.measure});}}><option value="live">Live: latest definition</option>{matches.map(source=><option key={source.version} value={source.version}>Version {source.version}</option>)}</select></label>
    <label>Result<select aria-label="Result" value={tile.snapshotId??''} disabled={tile.version==='live'} onChange={e=>update({snapshotId:e.target.value||null})}><option value="">Compute under the viewer's current access</option>{results.map(result=><option key={result.id} value={result.id}>Saved result measured {dashboardLocal(result.asOf,timezone,true)}</option>)}</select></label>
    <label>Shared field binding (dashboard field)<input aria-label="Shared field binding (dashboard field)" value={Object.keys(tile.bindings)[0]??''} onChange={e=>update({bindings:e.target.value?{[e.target.value]:Object.values(tile.bindings)[0]??e.target.value}:{}})}/></label>

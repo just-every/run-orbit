@@ -18,7 +18,7 @@
 
 /* Share: audience options with the grants nested under Named people. */
 .dash-audience{margin-top:10px}
-.dash-audience label{display:flex;align-items:center;gap:10px;min-height:44px;margin:0;font-size:15px;font-weight:500}
+.dash-audience>div>label{display:flex;align-items:center;gap:10px;min-height:44px;margin:0;font-size:15px;font-weight:500}
 .dash-grants{display:grid;gap:2px;margin:2px 0 6px 28px}
 .dash-grant{display:grid;grid-template-columns:minmax(0,1fr) 132px 44px;align-items:center;gap:10px;padding:4px 0;border-bottom:1px solid var(--ob-line)}
 .dash-grant__person{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;min-width:0;overflow-wrap:anywhere}
@@ -62,7 +62,7 @@
 .dash-editor .sales-reports__fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .dash-editor .sales-reports__fields label{margin:0}
 .dash-editor__advanced{grid-column:1/-1}
-.dash-editor__advanced>summary{display:flex;align-items:center;min-height:44px;width:fit-content;font-size:14px;font-weight:600}
+.dash-editor__advanced>summary{display:flex;align-items:center;gap:6px;min-height:44px;width:fit-content;font-size:14px;font-weight:600;list-style:none}.dash-editor__advanced>summary::-webkit-details-marker{display:none}.dash-editor__advanced[open]>summary .dash-icon--chevron{transform:rotate(180deg)}
 .dash-editor__actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .dash-editor__actions button,.dash-editor__add{min-height:40px;padding:0 16px;font-size:14px;font-weight:600}
 
@@ -93,5 +93,5 @@
  .dash-drill-table{display:none}.dash-drill-lines{display:block}
  .dash-drawer .sales-drill ol{margin:0;padding-left:20px}
  .dash-drawer .sales-drill li{padding:8px 0;border-bottom:1px solid var(--ob-line)}
- .dash-drawer .sales-drill li a{display:inline-flex;align-items:center;min-height:44px}
+ .dash-drawer a[href]{display:inline-flex;align-items:center;min-height:44px}
 }
