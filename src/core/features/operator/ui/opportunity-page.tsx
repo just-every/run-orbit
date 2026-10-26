@@ -10,7 +10,7 @@ import {MessageHistory} from './message-history';
 import {EvidenceActions} from './evidence-actions';
 import {useCallback,useState} from 'react';
 import {Link,useParams} from '@tanstack/react-router';
-import {formatCurrency,formatDate,formatDateTime,label,sourceLabel} from './formatters';
+import {formatCurrency,formatDay,formatDateTime,label,sourceLabel} from './formatters';
 import {operatorApi} from './operator-api';
 import {OperatorShell,OperatorState} from './operator-shell';
 import {useOperatorResource} from './use-operator-resource';
@@ -30,7 +30,7 @@ export function OpportunityPage(){
  <MessageHistory opportunityId={id}/>
  <section className="operator-surface operator-detail__section" data-testid="next-action"><h2>Next action</h2>{opportunity.evaluation?.failureAt&&<div role="alert" data-testid="evaluation-failure"><p>Priorities could not be refreshed at {formatDateTime(opportunity.evaluation.failureAt,presentation)}. The score and evidence shown are from the last successful evaluation and may be out of date.</p><RecommendationRefresh opportunityId={id} reload={resource.reload}/></div>}<p>{rec?.explanation??opportunity.queueReason??'Review the customer evidence and choose your next step.'}</p><div className="workbench-actions"><button className="orbit-button orbit-button--primary" onClick={()=>setCompose(true)}>Write follow-up</button>{configuration.aiConfigured&&<Link className="orbit-button orbit-button--secondary" to="/app/assistance/$id" params={{id}}>Draft with AI</Link>}</div>{rec&&<details><summary>Complete or skip this action</summary><ManualAction recommendationId={rec.id} reload={resource.reload}/></details>}</section>
  {compose&&<EvidenceActions opportunity={opportunity} reload={resource.reload} mode="draft"/>}
- <dl className="operator-detail-fields" data-testid="independent-opportunity-fields"><div><dt>Score</dt><dd>{opportunity.score} · {label(opportunity.band)}</dd></div><div><dt>Queue</dt><dd>{label(opportunity.queueState)}</dd></div><div><dt>Lifecycle</dt><dd>{label(opportunity.lifecycle)}</dd></div><div><dt>Expected close</dt><dd>{opportunity.expectedCloseAt?formatDate(opportunity.expectedCloseAt,presentation.timezone):'Not recorded'}</dd></div></dl>
+ <dl className="operator-detail-fields" data-testid="independent-opportunity-fields"><div><dt>Score</dt><dd>{opportunity.score} · {label(opportunity.band)}</dd></div><div><dt>Queue</dt><dd>{label(opportunity.queueState)}</dd></div><div><dt>Lifecycle</dt><dd>{label(opportunity.lifecycle)}</dd></div><div><dt>Expected close</dt><dd>{opportunity.expectedCloseAt?formatDay(opportunity.expectedCloseAt,presentation.timezone):'Not recorded'}</dd></div></dl>
  <OpportunityEvidence opportunity={opportunity} presentation={presentation}/>
  <section className="operator-surface operator-detail__section" data-testid="opportunity-drafts"><h2>Follow-up drafts</h2>{drafts.length?<ul className="operator-draft-list">{drafts.map(draft=><li key={draft.id}><Link to="/app/drafts/$id" params={{id:draft.id}}><strong>{draft.subject}</strong><span>{draft.recipientEmail} · Revision {draft.revision}</span></Link></li>)}</ul>:<p>No follow-ups written yet.</p>}</section>
  <MeetingWriteback key={`calendar-${id}`} kind="opportunity" id={id} contacts={opportunity.contacts} onChanged={resource.reload}/><ReviewedCall key={id} contacts={opportunity.contacts}/>

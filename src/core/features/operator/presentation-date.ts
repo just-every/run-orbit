@@ -30,9 +30,11 @@ function display(value: DateValue, style: DateStyle, timeZone = workspaceTimeZon
   return formatter.format(date);
 }
 
-/** A calendar date in the workspace zone: "27 Oct 2026". */
-export function formatDate(value: DateValue, timeZone?: string): string { return display(value, "date", timeZone); }
-export const formatDay = formatDate;
+/** An instant in the workspace zone, without a repeated zone suffix. */
+export function formatDate(value: DateValue, timeZone?: string): string { return display(value, "dateTime", timeZone); }
+
+/** A true calendar date: "27 Oct 2026", with no time of day. */
+export function formatDay(value: DateValue, timeZone?: string): string { return display(value, "date", timeZone); }
 
 /** A time in the workspace zone: "2:17 am". */
 export function formatTime(value: DateValue, timeZone?: string): string { return display(value, "time", timeZone); }
