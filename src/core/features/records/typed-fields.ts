@@ -1,3 +1,4 @@
+import {typedFieldHistory} from './typed-field-history';
 import {Hono} from 'hono';
 import {z} from 'zod';
 import type {AuthenticatedOperator} from '../identity';
@@ -35,6 +36,7 @@ export async function typedFieldFences(db:D1Database,recordKind:RecordKind,id:st
 }
 export function typedFieldRoutes(db:D1Database){const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
  app.onError((e,c)=>c.json({error:e instanceof RecordError?e.message:e instanceof z.ZodError?'Enter a valid typed field definition.':'Custom field settings could not be saved.'},e instanceof RecordError?e.status:e instanceof z.ZodError?400:503));
+ app.get('/history',async c=>c.json(await typedFieldHistory(db,c.req.query())));
  async function owner(actor:AuthenticatedOperator){if(!await db.prepare("SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active'").bind(actor.operatorId).first())throw new RecordError(403,'Only the installation owner defines custom fields.');}
  async function preview(input:Definition){
   const epoch=await db.prepare('SELECT COALESCE((SELECT epoch FROM identity_custom_field_epochs WHERE kind=?),0) AS epoch').bind(input.kind).first<number>('epoch'),revision=await policyVersion(db,input.kind),field={label:input.label,value_type:input.valueType,required:Number(input.required),options_json:JSON.stringify(input.options)},affected:{id:string;name:string;reason:string}[]=[],duplicates=new Map<string,string[]>();

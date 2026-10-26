@@ -6059,7 +6059,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-settings.tsx": {
-      "sha256": "94f7f3de25b74fcd00fc56b2df7c34c06fb7c184e64e1ae14f8dd2576c591f79",
+      "sha256": "793fb7de2efbb562ca3fd0c249a5710b670c5c07067b8c68e71a62946729de14",
       "executable": false
     },
     "src/core/features/operator/ui/unlinked-replies.tsx": {
@@ -6803,7 +6803,7 @@
       "executable": false
     },
     "src/core/features/records/typed-fields.ts": {
-      "sha256": "3aa69a391bf8cc1ba6829b30738bf66d782839ba89df8ff687820a89f52791e3",
+      "sha256": "cef9a7c068815f1e4efbddbf7cb1f4e1f9fe12948147368b5285a1ed10e0478d",
       "executable": false
     },
     "src/core/features/relationships/activity.ts": {
@@ -8467,7 +8467,7 @@
       "executable": false
     },
     "tests/core/records-complete.test.ts": {
-      "sha256": "1e5f5fc66861af26084d6c47d4898ad812799bb03770c0fad4d49e4b8dc7fdca",
+      "sha256": "307e3c67db651de1ba42767ca71a7445d0a6298b697f4a4a63f2097ae668145f",
       "executable": false
     },
     "tests/core/records-merge-review.test.ts": {
@@ -8547,7 +8547,7 @@
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
-      "sha256": "1f9b371b29ab7a2af606615b7f675229319ed5ea548953b7c89b96c12627e560",
+      "sha256": "2683a23b9e9554c5702080c0d5bb53795bb2707585957f8c83e303cf7a61a7fc",
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
@@ -9475,7 +9475,7 @@
       "executable": false
     },
     "tests/support/typed-fields-proof.ts": {
-      "sha256": "b1182250bdd6b915902d5c4156144ac7e8cf7c5eb30de967e3cb6cd5cd366442",
+      "sha256": "42f792b247b5f568a64166b4cacd4d39f7553cba2f37b64e8a133074211be479",
       "executable": false
     },
     "tests/support/upload-close-fixture.ts": {
