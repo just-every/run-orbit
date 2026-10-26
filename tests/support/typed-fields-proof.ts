@@ -38,5 +38,11 @@ export async function typedFieldsProof(){const f=await isolatedDatabase();try{co
  const secondPage=await t.json<any>(base+`/history?kind=contact&fieldKey=synthetic_paged&beforeRevision=${firstPage.nextBeforeRevision}`,{},200);
  assert.equal(firstPage.revisions.length,50);assert.equal(secondPage.nextBeforeRevision,null);
  assert.deepEqual([...firstPage.revisions,...secondPage.revisions].map((r:any)=>[r.revision,r.definition.label]),Array.from({length:53},(_,i)=>[53-i,`History meaning ${53-i}`]),'paged public reads retain every revision once in descending order');
- const target=await isolatedDatabase();try{await localArchiveRoundTrip(db,target.db);for(const table of ['record_custom_fields','record_custom_field_history'])assert.deepEqual((await target.db.prepare(`SELECT * FROM ${table} ORDER BY kind,field_key${table.endsWith('history')?',revision':''}`).all()).results,(await db.prepare(`SELECT * FROM ${table} ORDER BY kind,field_key${table.endsWith('history')?',revision':''}`).all()).results,'typed field meaning and archived history survive export and restore');}finally{await target.dispose();}
+ const target=await isolatedDatabase();try{await localArchiveRoundTrip(db,target.db);for(const table of ['record_custom_fields','record_custom_field_history'])assert.deepEqual((await target.db.prepare(`SELECT * FROM ${table} ORDER BY kind,field_key${table.endsWith('history')?',revision':''}`).all()).results,(await db.prepare(`SELECT * FROM ${table} ORDER BY kind,field_key${table.endsWith('history')?',revision':''}`).all()).results,'typed field meaning and archived history survive export and restore');
+ const restored=await todayApp(target.db,{operatorId:t.actor});
+ for(const kind of ['contact','company','opportunity']){
+  const path=base+`/history?kind=${kind}&fieldKey=synthetic_number`;
+  assert.deepEqual(await restored.json(path,{},200),await t.json(path,{},200),'a fresh native session reads the same archived definition meaning after local restore');
+ }
+ }finally{await target.dispose();}
  }finally{await f.dispose();}}

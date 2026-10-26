@@ -9487,7 +9487,7 @@
       "executable": false
     },
     "tests/support/typed-fields-proof.ts": {
-      "sha256": "42f792b247b5f568a64166b4cacd4d39f7553cba2f37b64e8a133074211be479",
+      "sha256": "2d8eb55a148a1744a337c5a74a13940c0477ad3c2a1a232a8dcd9291a00a1b1f",
       "executable": false
     },
     "tests/support/upload-close-fixture.ts": {
