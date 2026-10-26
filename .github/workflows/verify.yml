@@ -30,7 +30,7 @@ env:
   WRANGLER_SEND_METRICS: 'false'
 jobs:
   plan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.plan.outputs.matrix }}
       journeys: ${{ steps.plan.outputs.journeys }}
@@ -54,10 +54,11 @@ jobs:
         run: |
           node --input-type=module -e 'import {verificationPlan,shardNeeds} from "./scripts/verification-plan.mjs"; const include=Object.keys(verificationPlan({journeys:process.env.JOURNEYS==="true"})).map(shard=>({shard,...shardNeeds(shard)})); console.log("matrix="+JSON.stringify({include}));' >> "$GITHUB_OUTPUT"
           echo "journeys=$([ "$JOURNEYS" = true ] && echo 1 || echo 0)" >> "$GITHUB_OUTPUT"
+  # rer 0.2.72 refused its 15 GiB floor with 6.9 GiB free under /tmp on ubuntu-26.04 (40271348273, 40264827958, 40265855868); move back to ubuntu-latest with the rer repin that measures the write path (rer 0.2.76+, Base #383).
   shards:
     name: shards (${{ matrix.shard }})
     needs: plan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     strategy:
       fail-fast: false
@@ -188,7 +189,7 @@ jobs:
   verify:
     needs: [plan, shards]
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -223,7 +224,7 @@ jobs:
   release:
     if: github.event_name == 'workflow_dispatch' && inputs.release
     needs: verify
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
