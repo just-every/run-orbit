@@ -1,0 +1,5 @@
+.typed-field-history { min-width: 0; }
+.typed-field-history summary { min-height: 44px; padding-block: 12px; }
+.typed-field-history ol { display: grid; gap: 16px; padding-inline-start: 20px; }
+.typed-field-history li { min-width: 0; }
+.typed-field-history :is(p, summary, h3) { overflow-wrap: anywhere; }

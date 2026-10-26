@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import './typed-field-history.css';
 import {recordsRequest} from './records-api';
 import {OperatorState} from './operator-shell';
 
@@ -15,7 +16,7 @@ export function TypedFieldHistory({kind,fieldKey,label}:{kind:string;fieldKey:st
    setHistory(previous=>({...next,revisions:beforeRevision===undefined?next.revisions:[...(previous?.revisions??[]),...next.revisions]}));
   }catch(e){setError((e as Error).message);}finally{setBusy(false);}
  }
- return <details onToggle={event=>{if(event.currentTarget.open&&!history&&!busy&&!error)void load();}}>
+ return <details className="typed-field-history" onToggle={event=>{if(event.currentTarget.open&&!history&&!busy&&!error)void load();}}>
   <summary>{label} definition history</summary>
   <p>Saved definitions preserve the field’s name, type and choices. Record value changes are separate from this history.</p>
   {error&&<OperatorState kind="error">{error}<button type="button" disabled={busy} onClick={()=>void load()}>Retry history</button></OperatorState>}

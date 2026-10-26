@@ -6058,6 +6058,14 @@
       "sha256": "fd992259f13788095270069c3492752bf0256d8af6bd3305a0c3a6cb7d230310",
       "executable": false
     },
+    "src/core/features/operator/ui/typed-field-history.css": {
+      "sha256": "97046674bbad2cb89e83b5132c9595ad3c00351363c9cb236b009bd96e5d564e",
+      "executable": false
+    },
+    "src/core/features/operator/ui/typed-field-history.tsx": {
+      "sha256": "ee92db27dfa8f5a1bdc45ada5302b05bdbff15cfbddb241b57553f6489e6c10b",
+      "executable": false
+    },
     "src/core/features/operator/ui/typed-field-settings.tsx": {
       "sha256": "793fb7de2efbb562ca3fd0c249a5710b670c5c07067b8c68e71a62946729de14",
       "executable": false
@@ -6800,6 +6808,10 @@
     },
     "src/core/features/records/suppression.ts": {
       "sha256": "c9c816b0fac15c34cc0caae561447b4a1a853a0cc3a65ce29a78341998146fca",
+      "executable": false
+    },
+    "src/core/features/records/typed-field-history.ts": {
+      "sha256": "6fb61368d43e9616c6ed05ba98ff2bee57ac6651f53698480863db07c8393c83",
       "executable": false
     },
     "src/core/features/records/typed-fields.ts": {
