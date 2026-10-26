@@ -5523,7 +5523,7 @@
       "executable": false
     },
     "src/core/features/operator/presentation-date.ts": {
-      "sha256": "ca97516d0f0b27918ef08a96774ab081ea5937145458684ded9087741fe9580d",
+      "sha256": "639296ed28619af814881f34caaff7b3dc740940463355bb769645b11947ff74",
       "executable": false
     },
     "src/core/features/operator/ui/access-navigation.tsx": {
@@ -5879,7 +5879,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-page.tsx": {
-      "sha256": "9d0b6f55906ccf2e33f45f44551ebeccdd02a7c7c60f20dd4f7746d9a573d602",
+      "sha256": "645f26799a3748d028086df0fd2e49d1347a19dd69b6dc9f4119b482b416d8f4",
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-timeline.tsx": {
@@ -7007,7 +7007,7 @@
       "executable": false
     },
     "src/core/features/tasks/ui/task-card.tsx": {
-      "sha256": "3a95e3a5bc96e0e31d22015844889d1feecf7587ca6ee312cf5ce99552ead63d",
+      "sha256": "c35e55eee740febf750e192791af7aa2d374a5f727cc2548d835283916c5cb59",
       "executable": false
     },
     "src/core/features/tasks/ui/task-form.tsx": {
