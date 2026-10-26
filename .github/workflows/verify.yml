@@ -150,6 +150,13 @@ jobs:
           df -h /
       - name: Verify routine product shard
         run: node scripts/verification-shard.mjs "${{ matrix.shard }}"
+      - name: Retain rer startup diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbit-startup-diagnostics-${{ matrix.shard }}
+          path: verification/startup-diagnostics/
+          if-no-files-found: ignore
       - name: Retain shard completion
         if: always()
         uses: actions/upload-artifact@v4
