@@ -9,9 +9,9 @@ export function SaveFailure({message,onRetry}:{message:string;onRetry?:()=>void}
   const line=element.current,dialog=line?.closest('dialog');if(!line||!dialog)return;
   const actions=line.nextElementSibling?.matches('.operator-dialog__actions')?line.nextElementSibling:null;
   const box=dialog.getBoundingClientRect(),failure=line.getBoundingClientRect(),buttons=actions?.getBoundingClientRect();
-  const top=Math.min(failure.top,buttons?.top??failure.top),bottom=Math.max(failure.bottom,buttons?.bottom??failure.bottom),visibleTop=box.top+dialog.clientTop,visibleBottom=visibleTop+dialog.clientHeight;
+  const top=Math.min(failure.top,buttons?.top??failure.top),bottom=Math.max(failure.bottom,buttons?.bottom??failure.bottom),visibleTop=Math.max(box.top,0),visibleBottom=Math.min(box.bottom,window.innerHeight);
   // Scroll only this dialog, by the clipped extent; keep the press's focus and already visible content in place.
-  if(bottom>visibleBottom)dialog.scrollTop+=bottom-visibleBottom;else if(top<visibleTop)dialog.scrollTop+=top-visibleTop;
+  if(bottom>visibleBottom+0.5)dialog.scrollTop+=bottom-visibleBottom;else if(top<visibleTop-0.5)dialog.scrollTop+=top-visibleTop;
  },[message]);
  return <p ref={element} role="alert" className="operator-state operator-state--error dash-failure">{message}{onRetry&&<> <button type="button" className="dash-text-button" onClick={onRetry}>Retry</button></>}</p>;
 }
