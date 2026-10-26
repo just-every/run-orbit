@@ -59,7 +59,7 @@ export function SalesTasks() {
    <label>Task owner<select value={owner} onChange={event => {setOwner(event.target.value); setOffset(0);}}><option value="mine">My tasks</option><option value="all">Everyone</option><option value="unassigned">Unassigned</option>{data?.operators.map(operator => <option key={operator.id} value={operator.id}>{operator.displayName}</option>)}</select></label>
    <button type="button" disabled={unavailable} onClick={() => setRefresh(value => value + 1)}>Reload tasks</button>
   </div>
-  {data && <p className="sales-tasks__hint">Daily views and the activity calendar use {data.timezone}. Individual due times show their task timezone.</p>}
+  {data && <p className="sales-tasks__hint">Daily views and the activity calendar use the workspace time zone set in Settings. Individual due times show their task time zone.</p>}
   {error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
   {editor && data && <SalesTaskForm key={editor === 'new' ? 'new' : editor.id + editor.revision} task={editor === 'new' ? undefined : editor} data={data} busy={unavailable} onSave={save} onCancel={() => setEditor(null)}/>}
   {focused && !loading && !data?.tasks.some(task => task.id === focused.id) && <div className="sales-tasks__linked"><p>Task opened from a link</p>{card(focused)}</div>}

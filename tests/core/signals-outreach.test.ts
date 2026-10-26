@@ -31,7 +31,7 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe 
 });
 test('OUT-008 recipient clocks respect weekdays, DST and time to review an out-of-hours send',async context=>{
  const sunday=new Date('2026-09-13T10:00:00Z');assert.equal(nextPermitted(sunday,'Europe/London').toISOString(),'2026-09-14T07:00:00.000Z');
- const friday=new Date('2026-10-30T14:00:00Z');const due=workingDaysAfter(friday,1,'America/New_York');assert.equal(localTime(due,'America/New_York').label,'Mon, 02/11/2026, 10:00');
+ const friday=new Date('2026-10-30T14:00:00Z');const due=workingDaysAfter(friday,1,'America/New_York');assert.equal(due.toISOString(),'2026-11-02T15:00:00.000Z','The working-day deadline stays at 10am after the DST transition');
  context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T06:59:30Z')});
  try{
   const f=await fixture(),outreach=new OutreachRepository(db);let sends=0;

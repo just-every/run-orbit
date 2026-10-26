@@ -67,8 +67,13 @@ export function operatorRoutes(f){return [
  }})),
  {name:'sources-disabled',path:'/app/sources',ready:async page=>{await page.getByText('Advanced',{exact:true}).click();await page.getByRole('button',{name:'Disable source',exact:true}).click();await page.getByRole('button',{name:'Enable source',exact:true}).waitFor();await page.getByRole('button',{name:'Open recipes',exact:true}).click();await expect(page.getByRole('button',{name:'Send test event',exact:true})).toBeDisabled();},after:async page=>{await page.getByRole('button',{name:'Enable source',exact:true}).click();await page.getByRole('button',{name:'Disable source',exact:true}).waitFor();await exerciseSourceRemoval(page,f);}},
  {name:'settings',path:'/app/settings#mail-sender',ready:async page=>{await page.getByRole('button',{name:'Save workspace',exact:true}).waitFor();await expectHashTarget(page,'mail-sender');}},
- {name:'notifications',path:'/app/notifications',ready:page=>page.getByRole('button',{name:'Operator review opportunity',exact:true}).first().waitFor()},
- {name:'notification-detail',path:'/app/notifications',ready:async page=>{await page.getByRole('button',{name:'Operator review opportunity',exact:true}).first().click();await page.getByRole('button',{name:'Close notification details'}).waitFor();}},
+ {name:'notifications',path:'/app/notifications',ready:page=>page.getByRole('link',{name:'Operator review opportunity',exact:true}).first().waitFor()},
+ {name:'notification-target',path:'/app/notifications',ready:async page=>{
+  const before=await(await page.request.get('/api/v1/notifications')).json(),notification=before.notifications.find(item=>item.opportunityId===f.opportunityId);
+  await page.getByRole('link',{name:'Operator review opportunity',exact:true}).first().click();await page.getByTestId('next-action').waitFor();
+  await expect(page).toHaveURL(new RegExp(`/app/opportunities/${f.opportunityId}$`));
+  await expect.poll(async()=>(await(await page.request.get('/api/v1/notifications')).json()).notifications.find(item=>item.id===notification.id).readAt).toBeTruthy();
+ }},
  {name:'reports',path:'/app/reports#forecast',ready:async page=>{await expectHashTarget(page,'forecast');await page.getByRole('button',{name:'Reopen saved report'}).first().click();await page.getByText('How this report is calculated',{exact:true}).click();await page.getByText('Create or edit a report from your records',{exact:true}).click();}},
  {name:'forms',path:'/app/forms',ready:async page=>{await page.getByRole('button',{name:'Reopen latest publication'}).first().click();await page.frameLocator('iframe[title="Compiled landing page preview"]').getByRole('heading',{name:'Tell us about your team',exact:true}).waitFor();await page.getByRole('button',{name:'Read submissions'}).first().click();await page.getByText('A form submission shown as labelled values.',{exact:true}).waitFor();}},
  {name:'access',path:'/app/access',ready:page=>page.getByRole('button',{name:'Revoke grant',exact:true}).waitFor()},

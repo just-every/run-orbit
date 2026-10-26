@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { captureFixture, fixtureMailbox, eml } from '../support/capture-fixture';
 import { MAX_ITEMS_PER_IMPORT } from '../../src/core/features/capture/contracts';
+import {signedReplies} from '../support/signed-reply';
 
 const count = async (db: D1Database, sql: string, ...bindings: unknown[]) => Number(await db.prepare(sql).bind(...bindings).first('n'));
 
@@ -31,6 +32,19 @@ test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox 
     assert.equal(await count(f.db, "SELECT count(*) n FROM timeline_entry_records WHERE timeline_entry_id=? AND record_type='company' AND record_id=?", reply!.id, f.company), 1, 'the reply lands on the account');
     const opportunity = await f.db.prepare('SELECT queue_state,queue_reason FROM opportunities WHERE id=?').bind(f.opportunity).first<{ queue_state: string; queue_reason: string }>();
     assert.equal(opportunity!.queue_state, 'now');
+
+    // One reply seen through both capture and the signed provider door remains
+    // one recipient's notification, including a read made between deliveries.
+    const inbox = await (await f.request('/api/v1/notifications')).json() as {notifications:{id:string;kind:string;opportunityId:string;readAt:string|null}[]};
+    const notices = inbox.notifications.filter(item=>item.kind==='customer.reply'&&item.opportunityId===f.opportunity);
+    assert.equal(notices.length,1,'The reply and its queue transition share one notification');
+    assert.equal((await f.request(`/api/v1/notifications/${notices[0]!.id}/read`,{method:'POST'})).status,200);
+    const separator=mail.reply.indexOf('\r\n\r\n'),providerCopy=new FormData();
+    providerCopy.set('from','"Ana R." <ana@acme.example>');providerCopy.set('subject','Re: Proposal for Acme');providerCopy.set('headers',mail.reply.slice(0,separator));providerCopy.set('text',mail.reply.slice(separator+4));
+    const deliver=signedReplies(f.db);assert.equal((await deliver(providerCopy)).status,200);assert.equal((await deliver(providerCopy)).status,200);
+    const afterCopy=await(await f.request('/api/v1/notifications')).json() as typeof inbox;
+    const remaining=afterCopy.notifications.filter(item=>item.kind==='customer.reply'&&item.opportunityId===f.opportunity);
+    assert.equal(remaining.length,1);assert.equal(remaining[0]!.id,notices[0]!.id);assert.ok(remaining[0]!.readAt,'Another writer cannot make a read event unread again');
 
     // RECORD-012: a permanent delivery report for Orbit's send to Bob stops Bob.
     assert.equal(await f.db.prepare('SELECT contactability FROM contacts WHERE id=?').bind(f.bob).first('contactability'), 'do_not_contact');
@@ -81,7 +95,7 @@ test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox 
     assert.deepEqual(await foldedOver.json(), await over.json());
     assert.equal(await count(f.db, 'SELECT count(*) n FROM signals'), beforeCalendar);
     const atCap = await f.upload([{ name: 'folded.ics', text: fold(calendar(events.slice(0, MAX_ITEMS_PER_IMPORT))) }]);
-    assert.equal(atCap.status, 201);
+    assert.equal(atCap.status, 201, await atCap.clone().text());
     assert.equal((await atCap.json() as { summary: { captured: number } }).summary.captured, MAX_ITEMS_PER_IMPORT);
     assert.equal(await count(f.db, 'SELECT count(*) n FROM signals'), beforeCalendar + MAX_ITEMS_PER_IMPORT);
     assert.equal(await count(f.db, "SELECT count(DISTINCT source_event_id) n FROM signals WHERE subject='Folded meeting'"), MAX_ITEMS_PER_IMPORT);

@@ -2,7 +2,7 @@ import {EntryPrivacy} from './entry-privacy';
 import {useRef,useState} from 'react';
 import type {OpportunityDetail,WorkspacePresentation} from './operator-api';
 import {ManualEntry} from './manual-entry';
-import {DataValue} from './data-value';
+import {AuditValue} from './audit-value';
 import {DeleteTimelineEntry} from './delete-timeline-entry';
 import {ScrollToHash} from './hash-target';
 import {formatDateTime,label} from './formatters';
@@ -22,7 +22,7 @@ export function OpportunityTimeline({opportunity,presentation,reload}:{opportuni
     {typeof payload.outcome==='string'&&<p>Outcome: {label(payload.outcome)}</p>}
     {typeof payload.note==='string'&&payload.note&&<p style={{whiteSpace:'pre-wrap'}}>{payload.note}</p>}
     <span>Source: {entry.kind.startsWith('provider.')?'SendGrid provider report':entry.kind==='message.accepted'?'Mail provider acceptance receipt':entry.sourceName} · Occurred {formatDateTime(entry.occurredAt,presentation)} · Recorded {formatDateTime(entry.recordedAt,presentation)}</span>
-    <details><summary>Recorded details</summary><DataValue value={entry.payload}/></details>
+    <details><summary>Recorded details</summary><AuditValue value={entry.payload}/></details>
     {entry.kind.startsWith('manual.')&&<EntryPrivacy source="entry" id={entry.id}/>}
     {entry.kind.startsWith('manual.')&&!['twilio','calendar-writeback'].includes(entry.sourceName)&&<div className="workbench-actions">
      <button type="button" onClick={event=>{trigger.current=event.currentTarget;setEditing(entry);}}>Edit entry</button>

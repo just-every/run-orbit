@@ -1,0 +1,8 @@
+.operator-queue .operator-queue-card > a {
+  grid-template-columns: 72px minmax(0, 1fr) minmax(210px, 0.7fr);
+}
+.operator-queue .operator-queue-card__reason { grid-column: auto; }
+@media (max-width: 760px) {
+  .operator-queue .operator-queue-card > a { grid-template-columns: 52px minmax(0, 1fr); }
+  .operator-queue .operator-queue-card__reason { grid-column: 2 / -1; }
+}
