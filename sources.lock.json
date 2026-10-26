@@ -5751,7 +5751,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/draft-page.tsx": {
-      "sha256": "82ae0a29f6c4afddd0348c498f2d17988a9fc9a2194fc6918e67921bd8bd5486",
+      "sha256": "5077bb4a376fb8abedd92ee84f0278d37ce2a87da57197039a280eb7df971fe7",
       "executable": false
     },
     "src/core/features/operator/ui/duplicate-review.css": {
@@ -5883,7 +5883,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator-controls.css": {
-      "sha256": "c2fc0e7679250028b97c4d77d95e178257c1cd1922c63f3c9c78b1018e708e3e",
+      "sha256": "c93d05ff0864c91ee26e79470107c84649f33846dc5c35296980741eeadcb45d",
       "executable": false
     },
     "src/core/features/operator/ui/operator-dialog.tsx": {
