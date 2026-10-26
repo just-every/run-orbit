@@ -2159,7 +2159,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "f4e1500eb5f69120babfb4ae63855ea48050e428caa4e7635ee9c4d142a72f44",
+      "sha256": "7fd843eff96ca65db019bd76f047fa8fa748f205e223f86081618ca797f464d7",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
