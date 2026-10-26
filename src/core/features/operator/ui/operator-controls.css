@@ -65,3 +65,8 @@
 /* A confirmation's explanation sits on its own line above its buttons, with room between them on a phone. */
 .operator-shell .confirm-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
 .operator-shell .confirm-actions>p{flex-basis:100%}
+/* Sources has no page class; its current navigation link scopes these phone targets. */
+@media (max-width:640px){
+  .operator-shell:has(.operator-nav a[href="/app/sources"][aria-current="page"]) .operator-main>.operator-detail__section>article :is(button,summary),
+  .operator-shell:has(.operator-nav a[href="/app/sources"][aria-current="page"]) .operator-main>.operator-detail__columns>.operator-detail__section>.workbench-form>button{min-height:44px}
+}

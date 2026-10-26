@@ -41,6 +41,7 @@
 .sales-task-calendar__grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; text-align: center; }
 .sales-task-calendar__grid > span { padding: 5px 0; font-size: var(--app-text-min); }
 .sales-task-calendar__grid button { padding: 7px 0; border-color: transparent; font-size: .85rem; }
+.sales-task-calendar__grid button:focus-visible { z-index: 1; }
 .sales-task-calendar label { margin-top: 12px; }
 @media (max-width: 760px) {
  .sales-tasks { padding: 16px; }

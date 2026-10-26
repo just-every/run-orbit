@@ -5851,7 +5851,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator-controls.css": {
-      "sha256": "d176f5563079f0d1ab8f8cb3e15e463cd06036eb4049fc42baeb7ca6843bc6f7",
+      "sha256": "42d0fd4bf3bc4e00250bc45e0bd8cd55b5955bfd70317c5835fff3bc30c9362a",
       "executable": false
     },
     "src/core/features/operator/ui/operator-dialog.tsx": {
@@ -5971,7 +5971,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.css": {
-      "sha256": "5dc5ddb40176c60ab6e4148605889a67db9805ece7b47fb61c10148611a1c780",
+      "sha256": "47b3c03eb49167f253fba7197811a75806d89535875f5acdadd1b9a4b3c1f7a8",
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.tsx": {
