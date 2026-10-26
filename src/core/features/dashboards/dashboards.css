@@ -167,6 +167,7 @@ p.dash-breakdown{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:va
  .dash-title__head h1{font-size:38px}
  .dash-title-meta{line-height:1.6}
  .dash-outline,.dashboard .ob-pill,.dash-text-button,.dash-filters__reset{min-height:44px}
+ .dash-failure .dash-text-button,.dash-default__failure .dash-text-button{min-width:44px;justify-content:center}
  .dash-default{flex:1 1 100%}.dash-default__button{width:100%}
  .dash-filters{padding:16px}
  .dash-filters>details>summary{display:flex;align-items:center;gap:8px;min-height:44px;font-size:16px;font-weight:650;list-style:none}
