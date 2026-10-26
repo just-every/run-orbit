@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import './typed-field-history.css';
 import {recordsRequest} from './records-api';
+import {formatDateTime} from './formatters';
 import {OperatorState} from './operator-shell';
 
 type Revision={revision:number;changedAt:string;definition:{label:string;valueType:string;required:number;unique:number;options:string[];archived:number}};
@@ -22,7 +23,7 @@ export function TypedFieldHistory({kind,fieldKey,label}:{kind:string;fieldKey:st
   {error&&<OperatorState kind="error">{error}<button type="button" disabled={busy} onClick={()=>void load()}>Retry history</button></OperatorState>}
   {history&&<ol>{history.revisions.map(item=><li key={item.revision}>
    <h3>Revision {item.revision}: {item.definition.label}</h3>
-   <p><time dateTime={item.changedAt}>{item.changedAt}</time> · {item.definition.valueType} · {item.definition.required?'Required':'Optional'} · {item.definition.unique?'Unique':'Duplicates allowed'} · {item.definition.archived?'Archived':'Active'}</p>
+   <p><time dateTime={item.changedAt}>{formatDateTime(item.changedAt)}</time> · {item.definition.valueType} · {item.definition.required?'Required':'Optional'} · {item.definition.unique?'Unique':'Duplicates allowed'} · {item.definition.archived?'Archived':'Active'}</p>
    {item.definition.options.length>0&&<p>Choices: {item.definition.options.join(', ')}</p>}
   </li>)}</ol>}
   {history?.revisions.length===0&&<p>No saved definition revisions are available.</p>}
