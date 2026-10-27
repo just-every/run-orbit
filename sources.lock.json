@@ -6119,15 +6119,19 @@
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-outcome.tsx": {
-      "sha256": "2ee63a8dadbbc0d90078414a018d788ce7bcd7013c671c0ecaaf549a0124c6fa",
+      "sha256": "a6fb0140e55346bbf7c98cc8297aa41360dde2dc5a3ac33041ab896d928171fb",
+      "executable": false
+    },
+    "src/core/features/operator/ui/typed-field-review.tsx": {
+      "sha256": "c0cbb9baccf7d209bc16803c278d9abc17b4ee378ffaf936cec421664b16e08e",
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-settings.css": {
-      "sha256": "5956bc81761f98ecdbcc4ec62d2de7bf624eb3f139bb1554b9464e0760c35012",
+      "sha256": "0a9562bde1a552837e27b82476626591f55399e4f1e3abe6aca3e2ae03a980cc",
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-settings.tsx": {
-      "sha256": "f46901453313462695bfe3eea3435c72eb8d913f1dcd478e853536801552e780",
+      "sha256": "2811e651b318e1b0061db6b666ccc8cfb56a3ec5f2639cb02cc2605b8570921f",
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-words.ts": {
@@ -6879,7 +6883,7 @@
       "executable": false
     },
     "src/core/features/records/typed-fields.ts": {
-      "sha256": "5e6e70b23c82c10335bb29e4b52f0f65a6c886571e21b2d5b61649aac3881a2f",
+      "sha256": "061522bb599c89a0d98d2f7f5f97fb93dd73b6a8b4a682b3832451a927167bf0",
       "executable": false
     },
     "src/core/features/relationships/activity.ts": {
@@ -8623,7 +8627,7 @@
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
-      "sha256": "9bfbdc8854ff0d9d934e4ab7dc4310322df19de6671dabb5c7d761342132d0f9",
+      "sha256": "c2ccfab5e8ae24557f4f6d5d42fc1da16b102a763bc74cc6ed62349494bb28fa",
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
@@ -9555,7 +9559,7 @@
       "executable": false
     },
     "tests/support/typed-fields-proof.ts": {
-      "sha256": "b560e50d4639af4e19fa209bc2f8a414651c40788cc9ac90742983a3af981c9b",
+      "sha256": "224d82d14443d76d2f90ff8b69994e3e66a159288e1fb0ceef690365f222e201",
       "executable": false
     },
     "tests/support/upload-close-fixture.ts": {

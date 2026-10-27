@@ -32,6 +32,9 @@ export async function typedFieldsProof(){const f=await isolatedDatabase();try{co
   assert.equal((await t.app.request('https://orbit.test'+base+`/history?kind=${kind}&fieldKey=synthetic_number`)).status,401,'schema history requires native authentication');
   const archived=await t.call(`/api/v1/records/${kind}/${first.id}`,{method:'PUT',body:{...content(1),custom_fields:{...values,synthetic_number:43}}});assert.equal(archived.status,400);assert.match(await archived.text(),/Recorded amount: archived values are read-only/);
   assert.equal((await t.json<any>(`/api/v1/records/${kind}/${first.id}`)).record.custom_fields_json,JSON.stringify(values));
+  const renamedRestore=await t.json<any>(base+'/preview',{body:{...definition,fieldKey:'synthetic_number',label:'Restored amount',valueType:'number',required:false,unique:false}},200);assert.equal((await t.call(base+'/confirm',{body:{input:renamedRestore.input,reviewHash:renamedRestore.reviewHash,confirmed:true}})).status,409,'a restore keeps the archived meaning');
+  await configure({...definition,fieldKey:'synthetic_number',label:'Recorded amount',valueType:'number',required:false,unique:false});
+  await t.json(`/api/v1/records/${kind}/${first.id}`,{method:'PUT',body:{...content(1),custom_fields:{...values,synthetic_number:43}}},200);
  }
  const paged={kind:'contact',fieldKey:'synthetic_paged',label:'History pages',valueType:'text',required:false,unique:false,options:[],archived:false};
  for(let revision=1;revision<=53;revision++)await configure({...paged,label:`History meaning ${revision}`});
