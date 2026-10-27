@@ -21,6 +21,10 @@ export function fieldReason(field:{label:string;value_type:string;required:numbe
 const policyVersion=(db:D1Database,recordKind:RecordKind)=>db.prepare("SELECT COALESCE(sum(revision),0)||':'||count(*) AS value FROM record_custom_fields WHERE kind=?").bind(recordKind).first<string>('value');
 /** Repeat schema and uniqueness checks inside the record's write transaction. */
 export async function typedFieldFences(db:D1Database,recordKind:RecordKind,id:string,values:Record<string,unknown>,before:Record<string,unknown>){
+ return (await typedFieldSave(db,recordKind,id,values,before)).statements;
+}
+/** Keep Timeline labels bound to the same definition snapshot as validation. */
+export async function typedFieldSave(db:D1Database,recordKind:RecordKind,id:string,values:Record<string,unknown>,before:Record<string,unknown>){
  const snapshot=await db.prepare("SELECT COALESCE(sum(revision),0)||':'||count(*) AS value,json_group_array(json_object('kind',kind,'field_key',field_key,'label',label,'value_type',value_type,'required',required,'is_unique',is_unique,'options_json',options_json,'archived',archived,'revision',revision)) AS fields FROM record_custom_fields WHERE kind=?").bind(recordKind).first<{value:string;fields:string}>();
  if(!snapshot)throw new RecordError(409,'Custom field definitions are unavailable.');
  const revision=snapshot.value,fields=JSON.parse(snapshot.fields) as TypedField[],statements=[guard(db,{sql:"(SELECT COALESCE(sum(revision),0)||':'||count(*) FROM record_custom_fields WHERE kind=?)=?",args:[recordKind,revision]})];
@@ -32,7 +36,7 @@ export async function typedFieldFences(db:D1Database,recordKind:RecordKind,id:st
    statements.push(guard(db,{sql,args}));
   }
  }
- return [...statements,clearGuards(db)];
+ return {statements:[...statements,clearGuards(db)],fields};
 }
 export function typedFieldRoutes(db:D1Database){const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
  app.onError((e,c)=>c.json({error:e instanceof RecordError?e.message:e instanceof z.ZodError?'Enter a valid typed field definition.':'Custom field settings could not be saved.'},e instanceof RecordError?e.status:e instanceof z.ZodError?400:503));

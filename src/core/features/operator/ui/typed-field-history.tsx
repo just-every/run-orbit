@@ -22,6 +22,7 @@ export function TypedFieldHistory({kind,fieldKey,label}:{kind:string;fieldKey:st
  }
  return <details className="typed-field-history" onToggle={event=>{if(event.currentTarget.open&&!history&&!busy&&!failure)void load();}}>
   <summary>Definition history<span className="typed-field-visually-hidden"> for {label}</span></summary>
+  <p>Value changes are in each record’s Timeline.</p>
   {failure&&<OperatorState kind="error">{failure.text} <button type="button" disabled={busy} onClick={()=>void load(failure.beforeRevision)}>Retry history</button></OperatorState>}
   {history&&<ol>{history.revisions.map(item=><li key={item.revision}>
    {revisionChange(item.definition,item.previous)}<span className="typed-field-history__meta"> · {item.changedBy&&<>by {item.changedBy} · </>}<time dateTime={item.changedAt}>{formatDateTime(item.changedAt)}</time></span>
