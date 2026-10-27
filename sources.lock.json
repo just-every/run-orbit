@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "f9c170b6b5fe91cd61fa0ba3a34556946f964c191a96c0cfc47d8a70d45cc5f8",
+      "sha256": "47b0077f0fc315afba5099392afc134fe73cd72f263ca85d2b581f27dfe25614",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "8edf9c628282a64e851861a3b091115f885d06005e1b7f10502b05fd46ff7d67",
+      "sha256": "fb43a9a6baca9e0c29c3d5233aee5f0e46cc16e7cc1b3dd49a80d7454428b5fd",
       "executable": false
     },
     "DEMO.md": {
@@ -1827,7 +1827,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "b03d3ce924396cc4ee4036d682054ecee6ce94cd473b1a5946551d03e1e362f0",
+      "sha256": "aa9d9c1401ff3f597016e0a7555ac54ce4268d3815c40438b6fd9a6482b177a4",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2070,6 +2070,10 @@
       "sha256": "5dbd2c198d1715fad60437be9095957f00cffdbc69d01b0f966e2a3424f6687f",
       "executable": false
     },
+    "migrations/core/0065_api_credentials.sql": {
+      "sha256": "7d7f3b89926b30b78d284fced9a2a69d30cc27acccfc2f702876ca6933ba2bc9",
+      "executable": false
+    },
     "migrations/rewrites.json": {
       "sha256": "3ef25c0914487226e6d08d3e587a45d09d2f7a823ab72d255c7d78d3d45467d0",
       "executable": false
@@ -2275,7 +2279,7 @@
       "executable": false
     },
     "newtests/t096/forward-upgrade.test.ts": {
-      "sha256": "e2c711f17f750d4476c300af6645dc5b0832a48e7740f5686b281d1f740f9c82",
+      "sha256": "7736e89f2f7da3eb7f9a0e716793c473c569cb3a5470ad1806eb54b8f66e142a",
       "executable": false
     },
     "newtests/t096/immutable-native-app.ts": {
@@ -3911,7 +3915,7 @@
       "executable": false
     },
     "scripts/installer/portability-policy.mjs": {
-      "sha256": "29257b4b2bbf136ebe0c46696a4042ce4dd6b0afd3ab473e4f0db35de608cb19",
+      "sha256": "a6d2d4211522bd440c44c809fb14c76878433e3b613fb0977ee49bf9ce15d5a1",
       "executable": false
     },
     "scripts/installer/portability.mjs": {
@@ -4459,7 +4463,7 @@
       "executable": false
     },
     "src/core/app/app.ts": {
-      "sha256": "f54fefd059931979a19827d56b441f839589301f0d5d3fbcaf2167541e234bf4",
+      "sha256": "a77cca752b712430d9d391f303bd722419fb94eaff368dd32a9a414a8b2b0298",
       "executable": false
     },
     "src/core/app/demo.css": {
@@ -4744,6 +4748,18 @@
     },
     "src/core/features/analytics/sources.ts": {
       "sha256": "3859efb9e45098b168e2aa1b18441fa00acdd1443ace34f3904ea5befc7e145b",
+      "executable": false
+    },
+    "src/core/features/api/credentials.ts": {
+      "sha256": "9940ad37def1bbc944843bc0222f2bda54fe8ebf3dd1786d57fb03bab9ceea68",
+      "executable": false
+    },
+    "src/core/features/api/privacy.ts": {
+      "sha256": "822130663daaf5842b50f1b1399851d15c09a597fd4ff827fa74d76aa331af2b",
+      "executable": false
+    },
+    "src/core/features/api/routes.ts": {
+      "sha256": "0f5a4c65353b21febaa35fc0c8a9dd9cc0e0469cba33a1369bb4a720dc311299",
       "executable": false
     },
     "src/core/features/assistance/demo-output.ts": {
@@ -6643,7 +6659,7 @@
       "executable": false
     },
     "src/core/features/records/archive-fold-catalog.ts": {
-      "sha256": "eb6fc8efb2ccf0f82ae910899fac8d48f85600bbf70140463ea8d462303e0c0b",
+      "sha256": "4791a31fc157387994cf632c72b967f7a5b5186ee0ab9c8f7b997e6885d4e941",
       "executable": false
     },
     "src/core/features/records/archive-fold-profile.ts": {
@@ -6659,11 +6675,11 @@
       "executable": false
     },
     "src/core/features/records/archive-import-context.ts": {
-      "sha256": "c14f736a10e7f02fcf2dd3054c3ed437482bc83557646bb1a0fb7a6b3cbee7d8",
+      "sha256": "ba1e5c6326a16cb2c68127ae4a3d74487d37115e2e417eca946ad7991ad7fbf7",
       "executable": false
     },
     "src/core/features/records/archive-import-progress.ts": {
-      "sha256": "0da8d3121c8ea148eaba0eefe8c519bd3b7a8e5e4ca4cd389dd38d822da34e9a",
+      "sha256": "4a7dfbe666e3a33cbb5417e34ee4e9aa908f221db25071277f4d7b35cb48bcfe",
       "executable": false
     },
     "src/core/features/records/archive-import-recovery.ts": {
@@ -6699,7 +6715,7 @@
       "executable": false
     },
     "src/core/features/records/archive-schema.ts": {
-      "sha256": "2e37f6d08a67a1a6050559bb1d1786f0081f6d00df21ec6282aa25437c4c18bf",
+      "sha256": "4ea7b5e2f7272d29cb477804992a4a40e548f38af19e5adf48446a51ade8753e",
       "executable": false
     },
     "src/core/features/records/archive-size-plan.ts": {
@@ -6739,7 +6755,7 @@
       "executable": false
     },
     "src/core/features/records/data.ts": {
-      "sha256": "7d438345a2d2b041337a90331405b07cb46ba2cd64bfb2f648fa4cbccfe86754",
+      "sha256": "f4d5d0ab83f3f747eace9acbf4f58aedf4f970d79a5755d94e60a7f3ed55607b",
       "executable": false
     },
     "src/core/features/records/entry-privacy.ts": {
@@ -6907,7 +6923,7 @@
       "executable": false
     },
     "src/core/features/settings/erasure.ts": {
-      "sha256": "4f60b6c406ea4f10fa3d35c0bf2d11d678eb8d0ea6abd385890779006ad77c6b",
+      "sha256": "9748ef083c92b3c6770b2067dc367ec8a0fbd31ef4299502d1e68bf82f3b8553",
       "executable": false
     },
     "src/core/features/settings/owner-email.ts": {
@@ -8359,7 +8375,7 @@
       "executable": false
     },
     "tests/core/archive-transfer.test.ts": {
-      "sha256": "f3d7389e859da1417675247041c10bfebbd0e838b37f9c1d84289ff74be96b15",
+      "sha256": "987f12169b25f417e1887428a37ebfcd751cc5f3ced07e6b7d4c89ab8b062147",
       "executable": false
     },
     "tests/core/assistance.test.ts": {
@@ -8411,7 +8427,7 @@
       "executable": false
     },
     "tests/core/contact-erasure.test.ts": {
-      "sha256": "c7d7aff2df04bcaaba24d4f1b4970e0c3aff60e81fe4210634ae11cdae555a2f",
+      "sha256": "41de873425c05f6bedc74b837c295aa6ce4d87ddf8ba804428b0312ddc5a2cff",
       "executable": false
     },
     "tests/core/crm-import-erasure.test.ts": {
@@ -8467,11 +8483,11 @@
       "executable": false
     },
     "tests/core/onboarding-archive.test.ts": {
-      "sha256": "79d56b6447ded048219d08a01f4ac88bdab2c990557beddfe2aab315c1872bef",
+      "sha256": "5c6b1d6f067efc91495e21d4a3d26c309db2be539ee609af3ef70376b2348a0a",
       "executable": false
     },
     "tests/core/operator-erasure.test.ts": {
-      "sha256": "7f38a669878e1ada01455d759892e6fa3760705b60ee36ad9881e394bdb7a8e3",
+      "sha256": "b2f03eb8225d370cedbbb7cbbda2631f32e35f324477d9ca56976bcfc5ae936e",
       "executable": false
     },
     "tests/core/outbound-boundaries.test.ts": {
@@ -8599,7 +8615,7 @@
       "executable": false
     },
     "tests/delegation/authority-regressions.test.ts": {
-      "sha256": "405c917918bb802ce3ef6bb17f9184bc1ee79a3e7ba2c5e8c5caed229ea9d78c",
+      "sha256": "f92546d734c8f33d545f4190fe0398be0c61412b5b4fc1d5cbb1bf875ffb2845",
       "executable": false
     },
     "tests/delegation/brief-handoff.test.ts": {
@@ -9220,6 +9236,10 @@
     },
     "tests/rer/source-recipes.mjs": {
       "sha256": "3514f348c3c03dee6e0fc71893b01e7640680da32f1ab150e0d68aba5687a57c",
+      "executable": false
+    },
+    "tests/support/api-credentials-proof.ts": {
+      "sha256": "95515d71e724a7bfa8f218974600f21a78e54074af6baf3f2b85f6ea91dedf30",
       "executable": false
     },
     "tests/support/app.ts": {
