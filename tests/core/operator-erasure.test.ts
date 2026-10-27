@@ -14,6 +14,7 @@ test('OUT-017 BASE-DATA-003 operator erasure redacts only the erased operator\'s
  try{
   const deps=createDependencies(db),records=new RecordsRepository(db),manual=new ManualRepository(db),admin=createId();
   await deps.auth.ensureOperator({id:admin,email:'admin@example.test',displayName:'Administrator'});
+  await deps.workspace.ensureWorkspace({name:'synthetic-orbit-1',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
   const session=await deps.auth.createSession(admin),app=createApp({database:db,assets:{fetch:async()=>new Response('')}});
   const erase=(id:string)=>app.request(`https://orbit.test/api/v1/settings/operators/${id}/erase`,{method:'POST',headers:{cookie:`__Host-orbit_session=${session.token}`,origin:'https://orbit.test','content-type':'application/json'},body:JSON.stringify({confirmed:true})});
   const stage=createId();await db.prepare('INSERT INTO pipeline_stages VALUES(?,?,0,?,?)').bind(stage,'Qualified',now,now).run();
