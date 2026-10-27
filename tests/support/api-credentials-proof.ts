@@ -30,9 +30,10 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  assert.deepEqual(JSON.parse(row!.records_json as string),[record]);assert.deepEqual(JSON.parse(row!.fields_json as string),['title']);
  const listed=await request(),diagnostics=await listed.text();assert.ok(!diagnostics.includes(issued.secret)&&!diagnostics.includes(String(row!.verifier)));
  const publicRequest=(path='/deals',method='GET',body?:unknown,secret:string|null=issued.secret,extra:Record<string,string>={},database=db)=>app(database).request('https://orbit.test/api/rest/v1'+path,{method,headers:{'Content-Type':jsonType,...(secret?{Authorization:'Bearer '+secret}:{}),...extra},body:body===undefined?undefined:JSON.stringify(body)});
- const apiStage=createId();
+ const apiStage=createId(),outsideRecord=createId();
  await db.prepare('INSERT INTO pipeline_stages(id,name,position,created_at,updated_at) VALUES(?,?,?,?,?)').bind(apiStage,'synthetic-orbit-2',2,now,now).run();
  await db.prepare('UPDATE opportunities SET stage_id=? WHERE id=?').bind(apiStage,record).run();
+ await db.prepare("INSERT INTO opportunities(id,title,lifecycle,stage_id,value_cents,score,band,queue_state,created_at,updated_at) VALUES(?,'synthetic-orbit-6','open',?,0,0,'low','none',?,?)").bind(outsideRecord,apiStage,now,now).run();
  assert.equal((await publicRequest()).status,200,'Standalone API credential authenticates without a native session');
  assert.equal((await publicRequest('/deals','GET',undefined,null)).status,401,'Missing credential is refused');
  assert.equal((await publicRequest('/deals','GET',undefined,null,{Cookie:cookie})).status,401,'An owner cookie never authenticates the public API');
@@ -41,12 +42,12 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  const etag=read.headers.get('ETag')!;assert.ok(etag);
  assert.deepEqual((await read.json() as any).deal,{id:record,title:'synthetic-orbit-1'},'Only permitted fields are returned');
  assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:'synthetic-orbit-2'},issued.secret,{'If-Match':etag})).status,200,'Scoped update succeeds without a native session or Origin');
- assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:'synthetic-orbit-3'},issued.secret,{'If-Match':etag})).status,409,'A stale write is refused');
- assert.equal((await publicRequest('/deals/'+record+'?fields=value_cents')).status,403,'Denied read fields stay private');
  const updated=await publicRequest('/deals/'+record),updatedEtag=updated.headers.get('ETag')!;
  assert.equal((await updated.json() as any).deal.title,'synthetic-orbit-2','The standalone write is visible at the HTTP edge');
+ assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:'synthetic-orbit-3'},issued.secret,{'If-Match':etag})).status,409,'A stale write is refused');
+ assert.equal((await publicRequest('/deals/'+record+'?fields=value_cents')).status,403,'Denied read fields stay private');
  assert.equal((await publicRequest('/deals/'+record,'PATCH',{value_cents:100},issued.secret,{'If-Match':updatedEtag})).status,403,'Denied write fields cannot change');
- assert.equal((await publicRequest('/deals/'+createId())).status,403,'A record outside scope is refused');
+ assert.equal((await publicRequest('/deals/'+outsideRecord)).status,403,'An existing record outside scope is refused');
  assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:42},issued.secret,{'If-Match':updatedEtag})).status,400,'Schema errors are real HTTP refusals');
  assert.equal((await publicRequest('/deals?unsupported=1')).status,400);
  assert.equal((await publicRequest('/deals?limit=1&limit=2')).status,400);
@@ -59,7 +60,7 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  const replay=await publicRequest('/deals','POST',creation,creator.secret,createHeaders);assert.equal(replay.status,200,await replay.clone().text());assert.deepEqual(await replay.json(),{...created,replayed:true},'The same idempotency key returns the one original deal');
  assert.equal((await publicRequest('/deals','POST',{...creation,title:'synthetic-orbit-4'},creator.secret,createHeaders)).status,409,'Changed idempotent content is refused');
  const firstPage=await publicRequest('/deals?limit=1', 'GET',undefined,creator.secret);assert.equal(firstPage.status,200);
- assert.ok(Number(firstPage.headers.get('RateLimit-Remaining'))<Number(firstPage.headers.get('RateLimit-Limit')));assert.ok(Number(firstPage.headers.get('RateLimit-Reset'))>0);
+ const remaining=firstPage.headers.get('RateLimit-Remaining');assert.ok(remaining!==null&&Number(remaining)>=0&&Number(remaining)<Number(firstPage.headers.get('RateLimit-Limit')),'Rate-limit headers expose the remaining allowance');assert.ok(Number(firstPage.headers.get('RateLimit-Reset'))>0);
  const page=await firstPage.json() as any;assert.equal(page.deals.length,1);assert.ok(page.nextCursor);
  const secondPage=await(await publicRequest('/deals?limit=1&cursor='+page.nextCursor,'GET',undefined,creator.secret)).json() as any;
  assert.equal(secondPage.deals.length,1);assert.notEqual(secondPage.deals[0].id,page.deals[0].id);assert.equal(secondPage.nextCursor,null,'Cursor pagination ends after the two scoped deals');
@@ -68,7 +69,9 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  await db.prepare('UPDATE public_rate_limits SET count=? WHERE bucket=?').bind(limit,`api:${creator.credential.id}:${Math.floor(clockNow.getTime()/60000)}`).run();
  const limited=await publicRequest('/deals','GET',undefined,creator.secret);assert.equal(limited.status,429,'The advertised rate limit is enforced at the HTTP edge');assert.ok(Number(limited.headers.get('Retry-After'))>0);
  await db.prepare('DELETE FROM public_rate_limits WHERE bucket=?').bind(`api:${creator.credential.id}:${Math.floor(clockNow.getTime()/60000)}`).run();
- assert.equal((await publicRequest('/deals','POST',creation,issued.secret,createHeaders)).status,403,'An update credential cannot create');
+ const noCreateResponse=await request('','POST',{...definition,fields:['title','stage_id','value_cents']});assert.equal(noCreateResponse.status,201);
+ const noCreate=await noCreateResponse.json() as typeof issued;
+ assert.equal((await publicRequest('/deals','POST',creation,noCreate.secret,createHeaders)).status,403,'An update credential cannot create');
  const readOnly=await(await request('','POST',{...definition,operations:['deal.read']})).json() as typeof issued;
  assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:'synthetic-orbit-4'},readOnly.secret,{'If-Match':updatedEtag})).status,403,'A read-only credential cannot write');
  const rotatedResponse=await request('/'+id+'/rotate','POST',{revision:1});assert.equal(rotatedResponse.status,200,await rotatedResponse.clone().text());
@@ -133,7 +136,7 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  const audits=JSON.stringify((await db.prepare("SELECT * FROM audit_entries WHERE action LIKE 'api.%'").all()).results);
  for(const secret of [issued.secret,rotated.secret,raced.secret])assert.ok(!audits.includes(secret));
  assert.equal(await db.prepare('SELECT count(*) n FROM outbound_messages').first('n'),0);
- await db.prepare('DELETE FROM api_credentials').run();for(const deal of [record,created.id])await db.prepare('DELETE FROM opportunities WHERE id=?').bind(deal).run();
+ await db.prepare('DELETE FROM api_credentials').run();for(const deal of [record,created.id,outsideRecord])await db.prepare('DELETE FROM opportunities WHERE id=?').bind(deal).run();
  await db.prepare('DELETE FROM pipeline_stage_rules WHERE stage_id=?').bind(apiStage).run();await db.prepare('DELETE FROM pipeline_stages WHERE id=?').bind(apiStage).run();
 }
 
