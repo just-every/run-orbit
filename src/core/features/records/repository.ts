@@ -1,4 +1,4 @@
-import {typedFieldFences} from './typed-fields';
+import {typedFieldFences,typedFieldSave,type TypedField} from './typed-fields';
 import {legacyActorContext} from '../access/legacy-database';
 import {reconcileLegacyOwnership} from '../ownership/legacy';
 import {readOwnership,ownershipForRecords} from '../ownership/read';
@@ -18,9 +18,19 @@ const changeLabels:Record<string,string>={company_id:'Company',stage_id:'Stage',
 const bookkeeping=new Set(['updated_at','email_key','primary_domain_key']);
 const comparable=(key:string,value:unknown)=>{if(key!=='custom_fields_json'||typeof value!=='string')return value??null;const fields=JSON.parse(value);return JSON.stringify(Object.keys(fields).sort().map(name=>[name,fields[name]]));};
 /** The timeline says which fields an edit changed, so the owner reads who changed what. */
-function changedText(before:Record<string,any>,after:Record<string,any>){
- const changed=Object.keys(after).filter(key=>!bookkeeping.has(key)&&key in before&&comparable(key,before[key])!==comparable(key,after[key])).map(key=>changeLabels[key]??key.replaceAll('_',' ').replace(/^./,letter=>letter.toUpperCase()));
- return changed.length?{text:`Changed ${changed.join(', ')}`}:{};
+function changedText(before:Record<string,any>,after:Record<string,any>,definitions:TypedField[]){
+ const changed=Object.keys(after).filter(key=>!bookkeeping.has(key)&&key in before&&comparable(key,before[key])!==comparable(key,after[key]));
+ const lines=changed.filter(key=>key!=='custom_fields_json').map(key=>changeLabels[key]??key.replaceAll('_',' ').replace(/^./,letter=>letter.toUpperCase()));
+ const text=lines.length?[`Changed ${lines.join(', ')}`]:[];
+ if(changed.includes('custom_fields_json')){
+  const oldValues=JSON.parse(before.custom_fields_json),newValues=JSON.parse(after.custom_fields_json);
+  const labels=new Map(definitions.map(field=>[field.field_key,field.label]));
+  const display=(value:unknown)=>value===undefined||value===null||value===''?'Empty':typeof value==='string'?value:JSON.stringify(value);
+  for(const key of new Set([...Object.keys(oldValues),...Object.keys(newValues)])){
+   if(JSON.stringify(oldValues[key])!==JSON.stringify(newValues[key]))text.push(`Changed ${labels.get(key)??key}: ${display(oldValues[key])} → ${display(newValues[key])}`);
+  }
+ }
+ return text.length?{text:text.join('\n')}:null;
 }
 export class RecordsRepository extends RecordSeedRepository {
  constructor(readonly db:D1Database){super(db);}
@@ -68,12 +78,12 @@ export class RecordsRepository extends RecordSeedRepository {
    if(data.owner_id&&!await this.db.prepare("SELECT id FROM operators WHERE id=? AND status='active'").bind(data.owner_id).first())throw new RecordError(400,'Owner must be an active operator.');
    for(const contact of contacts)await requireRecord(this.db,'contact',contact);
   }
-  const typedFences=await typedFieldFences(this.db,kind,id,data.custom_fields,JSON.parse(before?.custom_fields_json??'{}'));
+  const typedSave=await typedFieldSave(this.db,kind,id,data.custom_fields,JSON.parse(before?.custom_fields_json??'{}'));
   data.custom_fields_json=JSON.stringify(data.custom_fields);delete data.custom_fields;data.updated_at=now;
   const columns=Object.keys(data),values=columns.map(k=>data[k]??null);
   const statements:D1PreparedStatement[]=policies.length?stagePolicyFence(this.db,policies,before?{id,stage_id:before.stage_id,updated_at:before.updated_at}:undefined):[];
   const emailTokens=kind==='contact'?await suppressionHashes(this.db,data.email):[];
-  statements.push(...typedFences);
+  statements.push(...typedSave.statements);
   statements.push(...suppressionContextFence(this.db,emailTokens));
   // Only a trusted internal operator call with an explicit field can clear. HTTP edits/imports opt out.
   const explicitClear=kind==='contact'&&!!before&&!options.ordinaryEdit&&(input as any)?.contactability==='contactable';
@@ -100,7 +110,9 @@ export class RecordsRepository extends RecordSeedRepository {
   if(kind==='contact')statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure='Contact set do-not-contact',updated_at=? WHERE contact_id=? AND state='scheduled' AND EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')").bind(now,id,id));
   if(kind==='contact')statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Contact changed',updated_at=? WHERE recipient_contact_id=?").bind(now,id));
   if(explicitClear)statements.push(audit(this.db,actor,'contactability.cleared','contact',id));
-  statements.push(...timeline(this.db,actor,kind,id,before?'record.updated':'record.created',before?changedText(before,data):{}),audit(this.db,actor,before?'record.updated':'record.created',kind,id));
+  const changes=before?changedText(before,data,typedSave.fields):{};
+  if(changes)statements.push(...timeline(this.db,actor,kind,id,before?'record.updated':'record.created',changes));
+  statements.push(audit(this.db,actor,before?'record.updated':'record.created',kind,id));
   return {id,statements,key,keyColumn,kind};
  }
  async save(kind:RecordKind,input:unknown,actor:string,id?:string,options:{ordinaryEdit?:boolean}={}){
