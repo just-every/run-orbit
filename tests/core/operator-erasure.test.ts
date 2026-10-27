@@ -1,3 +1,4 @@
+import {issueNativeCredential} from '../support/api-credentials-proof';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
@@ -32,7 +33,9 @@ test('OUT-017 BASE-DATA-003 operator erasure redacts only the erased operator\'s
    const scheduledDraft=createId(),scheduledMessage=createId();await db.batch([db.prepare('INSERT INTO record_mail_drafts SELECT ?,opportunity_id,recommendation_id,author_id,recipient_contact_id,recipient_email,subject,body,revision,is_stale,stale_reason,created_at,updated_at,library_selection_json,merge_review_json FROM record_mail_drafts WHERE id=?').bind(scheduledDraft,recordDraft),db.prepare("INSERT INTO record_mail_context VALUES(?,'contact',?,NULL)").bind(scheduledDraft,contact.id),db.prepare("INSERT INTO record_mail_outbound_messages(id,draft_id,revision,operator_id,contact_id,recipient_email,subject,body,state,created_at,updated_at,idempotency_key,message_id,approved_at) VALUES(?,?,1,?,?,'customer@example.test',?,?,'scheduled',?,?,?,?,?)").bind(scheduledMessage,scheduledDraft,id,contact.id,text,text,now,now,scheduledMessage,`<${scheduledMessage}@orbit.test>`,now)]);
    return {id,call,entry:entry.id,library,draft,message,recordDraft,recordMessage,scheduledMessage};
   };
+  await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(admin).run();
   const mark=await operator('mark@example.test','Mark','Marketing plan drafted by Mark at MARK@example.test. Also jomark@example.test.');
+  const markCredential=await issueNativeCredential(db,admin,opportunity.id,mark.id);
   const other=await operator('jomark@example.test','Marketing lead','Marketing review: Mark asked for the Marketing plan');
   const snapshot=async(row:{id:string;call:string;entry:string})=>({operator:await db.prepare('SELECT * FROM operators WHERE id=?').bind(row.id).first(),call:await db.prepare('SELECT * FROM ai_calls WHERE id=?').bind(row.call).first(),entry:await db.prepare('SELECT * FROM timeline_entries WHERE id=?').bind(row.entry).first()});
   const otherBefore=await snapshot(other);
@@ -53,6 +56,7 @@ test('OUT-017 BASE-DATA-003 operator erasure redacts only the erased operator\'s
   for(const text of [(erasedContent.draft as {merge_review_json:string}).merge_review_json,(erasedContent.message as {render_snapshot_json:string}).render_snapshot_json,(erasedContent.recordDraft as {merge_review_json:string}).merge_review_json,(erasedContent.recordMessage as {render_snapshot_json:string}).render_snapshot_json]){
    const review=JSON.parse(text);assert.equal(review.fields[0].name,'owner.name');assert.equal(review.fields[0].value,'Erased operator');assert.deepEqual(JSON.parse(review.context),{'owner.name':'Erased operator','owner.email':'Erased operator'});
   }
+  assert.equal(await db.prepare('SELECT id FROM api_credentials WHERE id=?').bind(markCredential.credential.id).first(),null,'Operator erasure removes their credential verifier and scope');
   const erased=await db.prepare('SELECT display_name,email FROM operators WHERE id=?').bind(mark.id).first<{display_name:string;email:string}>();assert.equal(erased!.display_name,'Erased operator');assert.ok(erased!.email.endsWith('@example.invalid'));
 
   // 'Ann' is also part of another operator's name, so whose name attributed text means is ambiguous.
