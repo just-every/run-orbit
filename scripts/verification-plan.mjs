@@ -2,7 +2,8 @@ import { discoverTests, checkTestBudget } from './verification-inventory.mjs';
 
 export const testFiles = directory => discoverTests(directory);
 const reporter = file => ['--test-reporter=spec', '--test-reporter-destination=stdout', '--test-reporter=./scripts/core-results.mjs', `--test-reporter-destination=${file}`];
-const gate = (...args) => ({ args });
+const gate = (...args) => ({ args: process.env.ORBIT_VERIFY_PREBUILT === '1' && args.join(' ') === 'run build:app'
+  ? ['exec', 'node', 'scripts/verification-build.mjs', 'check'] : args });
 const nodeTests = (files, result, runner = 'tsx') => ({ args: ['exec', runner, '--test', '--no-test-only', '--test-concurrency=1', ...reporter(result), ...files], files, result });
 const playwright = (config, files) => ({ files, args: ['exec', 'playwright', 'test', ...(config ? ['--config', config] : []), '--workers=1', '--forbid-only', '--reporter=list,./scripts/browser-results.mjs'], result: 'verification/browser-results.jsonl', browser: true });
 
@@ -100,3 +101,28 @@ export function verificationPlan({ journeys = false } = {}) {
 }
 
 export const capacityExecution = status => ({ runner: 'emitted-worker', name: 'RECORD-006 DATA-001 DATA-002 BASE-DATA-001 complete declared-capacity search, archive roundtrip and erasure', file: 'tests/performance/records-capacity.ts', status });
+
+// Whole-shard minutes from successful Verify 40412666211. Preserve each shard's
+// assertions, isolated state and exact-commit receipt; only runner assignment
+// changes. Seven test runners plus the source/build runner cap push fan-out at 8.
+const shardMinutes = {
+  'core-0': 9.70, 'core-1': 12.25, 'core-2': 9.30, 'core-3': 8.27, 'core-4': 11.68,
+  'core-5': 14.98, 'core-6': 10.80, 'core-7': 13.30, 'core-8': 12.53, 'core-9': 12.87,
+  'fold-accepted-main': 16.37, 'fold-archive-0': 8.90, 'fold-archive-1': 6.58,
+  'fold-archive-2': 4.53, 'fold-archive-3': 7.12, 'fold-domain-0': 13.77,
+  'fold-domain-1': 15.72, 'fold-domain-2': 17.47, 'runtime-launch': 3.58,
+  'runtime-delegation': 5.43, 'runtime-browser': 11.95, 'rer-checkouts': 9.38,
+  'rer-operator-desktop': 3.27, 'rer-operator-phone': 3.22,
+  'rer-operator-small-phone': 3.63, 'rer-operator-actions': 3.33, journeys: 10,
+};
+export function verificationBatches({ journeys = false } = {}) {
+  const names = Object.keys(verificationPlan({ journeys })).filter(name => name !== 'source');
+  const bins = Array.from({ length: 7 }, () => ({ minutes: 0, shards: [] }));
+  for (const name of names.sort((a, b) => (shardMinutes[b] ?? 1) - (shardMinutes[a] ?? 1) || a.localeCompare(b))) {
+    const bin = bins.reduce((smallest, candidate) => candidate.minutes < smallest.minutes ? candidate : smallest);
+    bin.minutes += shardMinutes[name] ?? 1;
+    bin.shards.push(name);
+  }
+  return bins.map(({ shards }, index) => ({ batch: `batch-${index}`, shards,
+    browsers: shards.some(name => shardNeeds(name).browsers), disk: shards.some(name => shardNeeds(name).disk) }));
+}

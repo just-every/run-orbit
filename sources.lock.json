@@ -643,7 +643,7 @@
       "executable": false
     },
     ".github/workflows/verify.yml": {
-      "sha256": "710cea5f661988185cef0328c62a6f9576746558cb9edc638cc467cac66bd855",
+      "sha256": "15140a75cd19eb9311b69507415ea2d8454ec13d462d0c804c4a6b836588001a",
       "executable": false
     },
     ".gitignore": {
@@ -3742,6 +3742,10 @@
       "sha256": "548bcb758f2860e84f45df9e455bddac7fbc6d7a9d7cddccf1699513d5265d65",
       "executable": false
     },
+    "scripts/chromium-probe.mjs": {
+      "sha256": "b0c0638d9138aa7e14ead9a91eaacebe62ae71e26d7809e769c8e5f27340443f",
+      "executable": false
+    },
     "scripts/core-results.mjs": {
       "sha256": "3c2b6b71cfb1af0d684080036ff0a13d3523f0302b74054f0e811f3b4fffecf8",
       "executable": false
@@ -3886,6 +3890,10 @@
       "sha256": "65e5ffd7072ff880e1861d7bff3b32edfaf3b4ed2f629e279a102808210fa7b2",
       "executable": false
     },
+    "scripts/install-chromium-deps.py": {
+      "sha256": "a2e40a3ea1d6fb88330f3cc1b4076e17fd3600eef29da126911790ff360dbc38",
+      "executable": false
+    },
     "scripts/installer/capture-notices.mjs": {
       "sha256": "ea7c43f3e4b4004e3926a945292bb973acb58f1df75fab8bf4b3937ffc1106e2",
       "executable": false
@@ -3962,6 +3970,14 @@
       "sha256": "27b2bdb42534477a484b083057a26449c069b99f3fa4c533f76a3538253bd9c7",
       "executable": false
     },
+    "scripts/verification-batch.mjs": {
+      "sha256": "0eae6cb0b829ee9c551bf699823f62b5c5f18a387c5ea980f5b908f93f9a6572",
+      "executable": false
+    },
+    "scripts/verification-build.mjs": {
+      "sha256": "1cb42dfba9f99823eeb99f1ce32a1bb080907ac403abc5f16adf54be271241a9",
+      "executable": false
+    },
     "scripts/verification-capacity.mjs": {
       "sha256": "717d740da071cf9a574bbb040a64a8318497527c3a6e0ef4307dac1a8a35f7b6",
       "executable": false
@@ -3975,7 +3991,11 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "8a6ba8a26ba6f18f545c843f34f277f6ff43dc3c1b9e63ab12d0220a87ce6361",
+      "sha256": "2470102f91b854e5f1de47cbfda23ec4e56aa812d937a52108e20b0234a7beee",
+      "executable": false
+    },
+    "scripts/verification-reuse.sh": {
+      "sha256": "aa4a292531437a5ea4c2c308ab00cdf305d4c1925a85a97b7fbd44b1bdf1d699",
       "executable": false
     },
     "scripts/verification-shard.mjs": {
