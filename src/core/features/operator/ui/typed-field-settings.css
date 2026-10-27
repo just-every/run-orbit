@@ -9,3 +9,7 @@
 .typed-field-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
 .workbench-form > .typed-field-key { margin-top: -8px; color: var(--ob-muted); font-size: 14px; overflow-wrap: anywhere; }
 .typed-field-visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+/* Phone tap targets: the seed's control token (44px at phone width once the shell sets it), never under 44px here. */
+@media (max-width: 640px) {
+  :where([aria-labelledby="typed-fields"]) button { min-height: var(--app-control-min, 44px); }
+}
