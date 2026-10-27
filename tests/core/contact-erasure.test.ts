@@ -32,7 +32,7 @@ for(const deleteOpportunityFirst of [false,true])test(`DATA-002 RECORD-013 erasi
   await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(actor).run();
   const credential=await issueNativeCredential(db,actor,removed.opportunity.id),retainedCredential=await issueNativeCredential(db,actor,retained.opportunity.id);
   async function counterpart(){const result:Record<string,unknown>={};for(const [table,id]of [['contacts',retained.contact.id],['opportunities',retained.opportunity.id],['timeline_entries',retained.entry.id],['notifications',retained.notification],['ai_previews',retained.preview],['ai_calls',retained.call]])result[table]=await db.prepare(`SELECT * FROM ${table} WHERE id=?`).bind(id).first();return result;}
-  const labelCredential=await issueNativeCredential(db,actor,retained.opportunity.id,actor,'synthetic-orbit-1 '+removed.contact.email);
+  const labelCredential=await issueNativeCredential(db,actor,retained.opportunity.id,actor,'synthetic-orbit-1 '+await db.prepare('SELECT email FROM contacts WHERE id=?').bind(removed.contact.id).first('email'));
   const before=await counterpart();assert.ok(Object.values(before).every(Boolean));
   if(deleteOpportunityFirst)await new DataRepository(db).remove('opportunity',removed.opportunity.id,actor);
   await new DataRepository(db).remove('contact',removed.contact.id,actor);
