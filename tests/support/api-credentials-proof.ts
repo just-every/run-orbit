@@ -15,6 +15,8 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  const request=(path='',method='GET',body?:unknown,override:Record<string,string>={},database=db)=>app(database).request('https://orbit.test/api/v1/settings/api-credentials'+path,{method,headers:{...headers,...override},body:body===undefined?undefined:JSON.stringify(body)});
  const definition={name:'synthetic-orbit-1',principalId,operations:['deal.read','deal.update'],recordIds:[record],fields:['title'],expiresAt:'2026-11-26T00:00:00.000Z'};
  assert.equal((await request('','POST',definition,{Cookie:''})).status,401);
+ assert.equal((await request('?unsupported=1')).status,400);
+ assert.equal((await request('/invalid/rotate','POST',{revision:1})).status,400);
  assert.equal((await request('','POST',definition,{Origin:'https://foreign.example.test'})).status,403);
  const peer=await deps.auth.createSession(principalId);
  assert.equal((await request('','POST',definition,{Cookie:'__Host-orbit_session='+peer.token})).status,403);
