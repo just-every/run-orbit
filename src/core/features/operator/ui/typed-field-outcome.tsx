@@ -1,10 +1,11 @@
 import {useEffect,useRef} from 'react';
 import {plainFailure} from '../../dashboards/save-failure';
 
-export type Outcome={at:'editor'|'review'|'saved';text:string;failed:boolean;retry?:()=>void};
+/** Where the line shows: under Preview ("editor"), under the review's actions ("review"), after the folded editor ("saved") or under a row ("row:<key>"). */
+export type Outcome={at:string;text:string;failed:boolean;retry?:()=>void};
 
 /** What refused a press, with Retry only where pressing again can help: the same request after a lost connection or a server fault, a fresh preview after a 409. */
-export function refusal(at:Outcome['at'],error:unknown,again:()=>void,refresh:()=>void):Outcome{
+export function refusal(at:string,error:unknown,again:()=>void,refresh:()=>void):Outcome{
  const status=(error as {status?:number}).status;
  return {at,text:plainFailure(error),failed:true,retry:status===409?refresh:status===undefined||status>=500?again:undefined};
 }
