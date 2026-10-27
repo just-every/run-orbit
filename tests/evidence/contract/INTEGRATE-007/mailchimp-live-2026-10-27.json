@@ -1,0 +1,281 @@
+{
+ "clause": "INTEGRATE-007",
+ "kind": "held-key live proof (dated, one-time evidence; never a permanent test)",
+ "window": {
+  "start": "2026-10-27T11:38:07.742Z",
+  "finish": "2026-10-27T11:40:08.460Z"
+ },
+ "code": "681b1ece224b233cec89fdc0abf833473fad0c68",
+ "harness": "built Worker (dist/server/wrangler.json) in wrangler DevEnv at https://127.0.0.1:4983, self-signed TLS on loopback; Mailchimp Marketing API the only permitted egress; refused outbound requests: 0",
+ "dataCentre": "us1",
+ "audience": {
+  "used": "existing audience …268b with synthetic members only",
+  "membersBefore": 1,
+  "membersAfter": 1,
+  "disposableAudience": {
+   "request": "POST /3.0/lists",
+   "status": 403,
+   "title": "User action not permitted",
+   "detail": "User does not have access to the requested operation"
+  },
+  "automations": 0,
+  "customerJourneys": 0
+ },
+ "contacts": {
+  "n1": "qa+synthetic-orbit-hk2-1@… consent recorded",
+  "n2": "qa+synthetic-orbit-hk2-2@… no consent",
+  "n3": "qa+synthetic-orbit-hk2-3@… Do not contact in Orbit",
+  "n4": "qa+synthetic-orbit-hk2-4@… consent recorded, later unsubscribed in Mailchimp"
+ },
+ "steps": [
+  {
+   "orbit": "POST /api/v1/settings/mailchimp/connect",
+   "status": 200,
+   "mailchimp": "GET /3.0/ping 200"
+  },
+  {
+   "orbit": "GET /api/v1/settings/products",
+   "result": "Mailchimp unresolved-setup until an audience is chosen"
+  },
+  {
+   "orbit": "PUT /api/v1/settings/mailchimp/audience",
+   "status": 200,
+   "mailchimp": "GET list 200; GET merge-fields 200; POST merge field ORBITCONS 200"
+  },
+  {
+   "orbit": "GET /api/v1/marketing/mailchimp/preview?fields=name",
+   "status": 200,
+   "counts": {
+    "subscribed": 2,
+    "unknown": 1,
+    "stopped": 1,
+    "send": 2,
+    "unchanged": 0,
+    "unsubscribe": 0,
+    "check": 1
+   },
+   "groups": {
+    "n1": "subscribed",
+    "n2": "unknown",
+    "n3": "stopped",
+    "n4": "subscribed"
+   }
+  },
+  {
+   "orbit": "POST /api/v1/marketing/mailchimp/handoffs",
+   "status": 200,
+   "counts": {
+    "sent": 2,
+    "unchanged": 0,
+    "unsubscribed": 0,
+    "checked": 1,
+    "stoppedInMailchimp": 0,
+    "refused": 0,
+    "uncertain": 0,
+    "remaining": 0
+   },
+   "mailchimp": [
+    {
+     "method": "PUT",
+     "path": "/3.0/lists/…268b/members/…f701",
+     "status": 200,
+     "sent": {
+      "statusField": "absent",
+      "statusIfNew": "subscribed",
+      "mergeFields": [
+       "FNAME",
+       "LNAME",
+       "ORBITCONS"
+      ]
+     },
+     "memberStatus": "subscribed"
+    },
+    {
+     "method": "GET",
+     "path": "/3.0/lists/…268b/members/…0f50",
+     "status": 404
+    },
+    {
+     "method": "PUT",
+     "path": "/3.0/lists/…268b/members/…1046",
+     "status": 200,
+     "sent": {
+      "statusField": "absent",
+      "statusIfNew": "subscribed",
+      "mergeFields": [
+       "FNAME",
+       "LNAME",
+       "ORBITCONS"
+      ]
+     },
+     "memberStatus": "subscribed"
+    }
+   ]
+  },
+  {
+   "readBack": "GET member n1..n4",
+   "result": {
+    "n1": {
+     "id": "…f701",
+     "uniqueEmailId": "…c4d4",
+     "status": "subscribed",
+     "ORBITCONS": "synthetic-orbit-hk2 webinar form: Ticked product news on 27 October 2026",
+     "mergeFields": [
+      "FNAME",
+      "LNAME",
+      "ORBITCONS"
+     ]
+    },
+    "n2": 404,
+    "n3": 404,
+    "n4": {
+     "id": "…1046",
+     "uniqueEmailId": "…530a",
+     "status": "subscribed"
+    }
+   }
+  },
+  {
+   "orbit": "POST /api/v1/marketing/mailchimp/handoffs (unchanged)",
+   "status": 200,
+   "counts": {
+    "sent": 0,
+    "unchanged": 2,
+    "unsubscribed": 0,
+    "checked": 0,
+    "stoppedInMailchimp": 0,
+    "refused": 0,
+    "uncertain": 0,
+    "remaining": 0
+   },
+   "mailchimpRequests": 0,
+   "readBack": "n1 and n4: same member id, last_changed unchanged"
+  },
+  {
+   "provider": "POST /3.0/lists/…268b/webhooks (unsubscribe, cleaned; sources user, admin, api) through a quick tunnel",
+   "status": 200,
+   "webhook": "…1316",
+   "orbit": "validation GET answered; webhookCheckedAt recorded"
+  },
+  {
+   "provider": "PATCH member n4 status unsubscribed",
+   "status": 200,
+   "orbit": "Mailchimp webhook delivered; contact n4 Do not contact with source mailchimp within 5 s"
+  },
+  {
+   "orbit": "POST /api/v1/marketing/mailchimp/handoffs replaying the first operation",
+   "status": 409,
+   "mailchimpRequests": 0
+  },
+  {
+   "orbit": "POST /api/v1/signals/mailchimp/<token> earlier subscribe for n4, replayed",
+   "status": 200,
+   "result": "recorded; n4 stays Do not contact"
+  },
+  {
+   "orbit": "POST /api/v1/marketing/mailchimp/handoffs (after)",
+   "status": 200,
+   "counts": {
+    "sent": 0,
+    "unchanged": 1,
+    "unsubscribed": 1,
+    "checked": 0,
+    "stoppedInMailchimp": 0,
+    "refused": 0,
+    "uncertain": 0,
+    "remaining": 0
+   },
+   "mailchimp": [
+    {
+     "method": "PATCH",
+     "path": "/3.0/lists/…268b/members/…1046",
+     "status": 200,
+     "sent": {
+      "statusField": "unsubscribed",
+      "statusIfNew": null,
+      "mergeFields": null
+     },
+     "memberStatus": "unsubscribed"
+    }
+   ],
+   "readBack": "n4 status unsubscribed; one member per hash"
+  },
+  {
+   "orbit": "POST /api/v1/workbench/opportunities/:n4/drafts",
+   "status": 409,
+   "result": "This contact must not be contacted."
+  },
+  {
+   "orbit": "POST /api/v1/settings/mailchimp/disconnect",
+   "status": 200,
+   "result": "Connected products Mailchimp unresolved-setup; webhook address answers 404"
+  }
+ ],
+ "providerRequests": {
+  "orbit": {
+   "GET us1.api.mailchimp.com": 5,
+   "POST us1.api.mailchimp.com": 1,
+   "PUT us1.api.mailchimp.com": 2,
+   "PATCH us1.api.mailchimp.com": 1
+  },
+  "proof": {
+   "GET us1.api.mailchimp.com": 22,
+   "POST us1.api.mailchimp.com": 4,
+   "PATCH us1.api.mailchimp.com": 1,
+   "DELETE us1.api.mailchimp.com": 2
+  },
+  "orbitTotal": 9,
+  "proofTotal": 29
+ },
+ "objects": {
+  "created": [
+   {
+    "kind": "merge field",
+    "id": "ORBITCONS",
+    "audience": "…268b"
+   },
+   {
+    "kind": "member",
+    "id": "…f701"
+   },
+   {
+    "kind": "member",
+    "id": "…1046"
+   },
+   {
+    "kind": "webhook",
+    "id": "…1316"
+   }
+  ],
+  "deleted": [
+   {
+    "kind": "webhook",
+    "id": "…1316"
+   },
+   {
+    "kind": "member",
+    "id": "…f701"
+   },
+   {
+    "kind": "member",
+    "id": "…1046"
+   },
+   {
+    "kind": "merge field",
+    "id": "ORBITCONS"
+   }
+  ]
+ },
+ "cleanup": {
+  "webhooksLeft": 0,
+  "webhooksStatus": 200,
+  "member n1": 404,
+  "member n2": 404,
+  "member n3": 404,
+  "member n4": 404,
+  "mergeFieldLeft": false,
+  "existingMembersAfter": 1,
+  "existingMembersBefore": 1
+ },
+ "screens": "kept outside the repository with the round evidence"
+}

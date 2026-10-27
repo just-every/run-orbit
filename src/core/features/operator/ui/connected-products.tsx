@@ -1,8 +1,8 @@
 import {useEffect,useState} from 'react';
 import {OperatorState} from './operator-shell';
 import {formatDate} from './formatters';
-interface Product {job:string;products:string[];owns:string;state:'receiving'|'awaiting-delivery'|'unavailable'|'connected'|'unresolved-setup';lastDeliveryAt:string|null;inOrbit:string}
-const label={connected:'Connected', 'unresolved-setup':'Unresolved setup · notices paused',receiving:'Receiving bookings','awaiting-delivery':'Not set up yet',unavailable:'Not available in Orbit'} as const;
+interface Product {job:string;products:string[];owns:string;state:'receiving'|'awaiting-delivery'|'unavailable'|'connected'|'unresolved-setup';lastDeliveryAt:string|null;inOrbit:string;link?:{href:string;label:string}}
+const label={connected:'Connected', 'unresolved-setup':'Unresolved setup',receiving:'Receiving bookings','awaiting-delivery':'Not set up yet',unavailable:'Not available in Orbit'} as const;
 /** Separate products own these jobs; each shows only what Orbit really receives from it today. */
 export function ConnectedProducts(){
  const [products,setProducts]=useState<Product[]>(),[error,setError]=useState('');
@@ -13,6 +13,7 @@ export function ConnectedProducts(){
    <h3 style={{margin:'0 0 4px'}}>{product.products.join(', ')} <small>· {product.job}</small></h3>
    <p style={{margin:'0 0 4px'}}><strong>{label[product.state]}</strong>{product.lastDeliveryAt?` · Last delivery ${formatDate(product.lastDeliveryAt)}`:''}</p>
    <p style={{margin:'0 0 4px'}}>{product.inOrbit}{product.state==='awaiting-delivery'&&<> <a href="/app/sources">Open Signal sources</a></>}</p>
+   {product.link&&<p style={{margin:'0 0 4px'}}><a href={product.link.href} target="_blank" rel="noreferrer" style={{display:'inline-flex',alignItems:'center',minHeight:44}}>{product.link.label}</a></p>}
    <p style={{margin:0}}>Owns: {product.owns}.</p>
   </li>)}</ul>}
  </section>;

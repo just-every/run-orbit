@@ -1115,11 +1115,11 @@ Current evidence: No implementation found. No implementation of this complete ta
 
 ### INTEGRATE-007 — Mailchimp audience and suppression handoff.
 
-Status: **missing**.
+Status: **partial**.
 
 Preview an audience containing subscribed, unknown and stopped contacts; sync only the authorized subset, ingest unsubscribe and replay a prior subscription update; verify no resumed outreach or duplicate subscriber. On BOUNDARY-001's walk, preview the walk's consented buyer for a Mailchimp audience and inspect the Mailchimp link, its campaign ownership and a disconnected account shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
-Current evidence: No implementation found. No implementation of this complete target flow was found.
+Current evidence: `src/core/features/marketing/`; `src/core/features/settings/connected-products.ts`; `src/core/features/operator/ui/mailchimp-settings.tsx`; `src/core/features/operator/ui/mailchimp-preview.tsx`. `tests/core/launch-suppression.test.ts` — “INTEGRATE-007 Mailchimp receives only consented contacts, its unsubscribes stop Orbit outreach and no replay re-subscribes; RECORD-012 DATA-001 manual, source and provider stops preserve anonymous suppression through export and restore” asserts the three-group preview, the consented-only handoff (`status_if_new`, selected fields and the `ORBITCONS` consent field), an unchanged re-sync with no provider request or second member, Mailchimp unsubscribe and cleaned webhooks as stops with Mailchimp provenance, replayed unsubscribe, subscribe and handoff without effect, no later re-subscribe, refused outreach, erasure of the stored member IDs, archives without key or token, and unresolved setup after restore and disconnect. The existing BOUNDARY-001 walk case in `tests/core/source-onboarding.test.ts` previews the walk's consented buyer with source and basis, checks the Mailchimp audience link and campaign ownership in Connected products and reads a disconnected account as unresolved setup. Held-key live run on 27 October 2026: `tests/evidence/contract/INTEGRATE-007/mailchimp-live-2026-10-27.json`. Remaining: Orbit does not register its webhook in Mailchimp or verify Mailchimp's optional signing; erasure requests no member deletion in Mailchimp; merges do not carry consent or member links; one handoff makes at most 100 provider requests; the owner administers the connection until TEAM-005. The third Acceptance sentence, the complete US buyer walk, belongs to whichever BOUNDARY-001 clause ships last and is not met here: INTEGRATE-001, CALL-001 and CALL-002 are partial, and INTEGRATE-002, INTEGRATE-003, INTEGRATE-004, INTEGRATE-006, INTEGRATE-008 and QUOTE-001 are missing.
 
 ### INTEGRATE-008 — Buoy post-sale handoff.
 
@@ -1235,4 +1235,4 @@ Current evidence: `tests/core/source-onboarding.test.ts` — “REPORT-002 expli
 
 ## Completion accounting
 
-131 product clauses: **93 done, 23 partial, 15 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.
+131 product clauses: **93 done, 24 partial, 14 missing**. Baseline obligations remain additional requirements. The status table at the end of CONTRACT.md and the journeys here describe the same set of IDs and statuses. No target is declared complete by its presence in this file.

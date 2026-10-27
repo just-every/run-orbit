@@ -1,0 +1,17 @@
+.mailchimp-settings :is(button, select, input:not([type="checkbox"]), summary) { min-height: 44px; }
+.mailchimp-settings button { min-width: 44px; }
+.mailchimp-settings summary { display: flex; align-items: center; cursor: pointer; }
+.mailchimp-state { display: grid; gap: 4px; padding: 12px 14px; border: 1.5px solid var(--operator-border, #d8dce3); border-radius: 12px; overflow-wrap: anywhere; }
+.mailchimp-state[data-state="connected"] { border-color: #1f7a45; background: #eef8f1; }
+.mailchimp-state[data-state="unresolved"] { border-color: #a35a00; background: #fff6e8; }
+.mailchimp-state[data-state="disconnected"] { border-style: dashed; background: var(--operator-paper, #fff); }
+.mailchimp-link { display: inline-flex; align-items: center; min-height: 44px; justify-self: start; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+.mailchimp-webhook { display: block; padding: 8px; overflow-wrap: anywhere; word-break: break-all; }
+.mailchimp-check { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.mailchimp-check input { width: 22px; height: 22px; margin: 11px; flex: none; }
+.mailchimp-groups { display: grid; gap: 16px; }
+.mailchimp-group { border-top: 1px solid var(--operator-border, #d8dce3); padding-top: 8px; min-width: 0; }
+.mailchimp-group ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.mailchimp-group li { overflow-wrap: anywhere; }
+.mailchimp-action { color: var(--operator-muted, #4b5563); }
+@media (min-width: 1100px) { .mailchimp-groups { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

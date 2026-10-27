@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "71055a2a73c26ff432d7d407325e736b8a5814502f9bba3dcde0adff0a1f3c11",
+      "sha256": "62b36200cd3fdc30be70f4d65f0425b864ecda11cfd49c949a405a0f5723bc01",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "89f3e734f3ea9cfa3b7d196638834f36417a99324a1fe1813dbb437f50afea03",
+      "sha256": "de4c3bc56418e3fa855a49becd8f60c8d9ed605624f02e4c0b0d62d63de3bd73",
       "executable": false
     },
     "DEMO.md": {
@@ -4463,7 +4463,7 @@
       "executable": false
     },
     "src/core/app/app.ts": {
-      "sha256": "31d8f04b2712d8d02717c7619de0c27716f4d1494d24ca02dd07f4e5a73c2d6a",
+      "sha256": "da7d6ada17cb0b5c853f4b1619bf1b64ef1a45a8b67b02b9b3eefc80b62d9a26",
       "executable": false
     },
     "src/core/app/demo.css": {
@@ -5586,6 +5586,38 @@
       "sha256": "9121ee31ba7e6b77b94544a0fcf640cc44987f3ea728a2db6ce502721e2e0c18",
       "executable": false
     },
+    "src/core/features/marketing/connection.ts": {
+      "sha256": "ae907b32ef420cdb10de000d880a390e9ee1d2ddd0534376fac85c50dcdfd61f",
+      "executable": false
+    },
+    "src/core/features/marketing/contracts.ts": {
+      "sha256": "645d3d8e174d329beea234c0aeab07df6ea1d29b69c995281e50dca14fd0ec75",
+      "executable": false
+    },
+    "src/core/features/marketing/handoff.ts": {
+      "sha256": "1b92c8504da884a5cbc2de31b6d46a17bded90588766e4db0372c00320acce3e",
+      "executable": false
+    },
+    "src/core/features/marketing/ledger.ts": {
+      "sha256": "156277d6eb8614b4518baa47f33975e098339890aa1ddaf28e6df4c996d118b9",
+      "executable": false
+    },
+    "src/core/features/marketing/md5.ts": {
+      "sha256": "74eb91f0fd6634fe486e97aa8c818d30a9648bbda3057c5bc7db235b867d928b",
+      "executable": false
+    },
+    "src/core/features/marketing/provider.ts": {
+      "sha256": "997134c0791a11282373d645c0d3efe61a4b770828d5b68b2da982fe3317797f",
+      "executable": false
+    },
+    "src/core/features/marketing/routes.ts": {
+      "sha256": "d5a9933e14fed5dfd1880e5b101e954f6484d2a160e7622e68601b9e19a0f075",
+      "executable": false
+    },
+    "src/core/features/marketing/webhook.ts": {
+      "sha256": "4923149c2686a855e9c50c95ddb70d47672434ff97c3dceb80b1368bcbf15d92",
+      "executable": false
+    },
     "src/core/features/notifications/collaborator.ts": {
       "sha256": "1e34374447ce755a88d42b756671c7d3219e700c8f3e1f4490bd84737ebbd844",
       "executable": false
@@ -5747,7 +5779,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/connected-products.tsx": {
-      "sha256": "9f0082ad38404e597738970ec2b91bbc9d35dadf15709ea17b877ce06c0ece50",
+      "sha256": "8f323dee6e9d676a225c6446bb49d5bc92daf043f3f5da694ee8538534719d13",
       "executable": false
     },
     "src/core/features/operator/ui/create-opportunity-page.tsx": {
@@ -5868,6 +5900,18 @@
     },
     "src/core/features/operator/ui/mail-sender-setup.tsx": {
       "sha256": "cca707ce3229b6be913ee7630b1679594314a7a716157c1f238f0b6064a16b06",
+      "executable": false
+    },
+    "src/core/features/operator/ui/mailchimp-preview.tsx": {
+      "sha256": "be39f0bcc11287823b0881db7ca59d43f767f63e94777be5e5c1b024dd313c42",
+      "executable": false
+    },
+    "src/core/features/operator/ui/mailchimp-settings.css": {
+      "sha256": "a84962974e193d215334b9de87f3755fa0bdc4b4ae873df76d04d9956d489be9",
+      "executable": false
+    },
+    "src/core/features/operator/ui/mailchimp-settings.tsx": {
+      "sha256": "d362501dd13c712e6a17582c214f85f10a6aa447dff24438b28e0f236686fbb0",
       "executable": false
     },
     "src/core/features/operator/ui/manual-action.tsx": {
@@ -6071,7 +6115,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/settings-page.tsx": {
-      "sha256": "e346d31703f7c38df88dea5b009504a93dc61b888342799e964e42cec27f2150",
+      "sha256": "25f48c6c3e074271432bd239402cb82845915cc902ca6fe3662cdb2dd09dc4fa",
       "executable": false
     },
     "src/core/features/operator/ui/sign-in-policy.tsx": {
@@ -6947,7 +6991,7 @@
       "executable": false
     },
     "src/core/features/settings/connected-products.ts": {
-      "sha256": "1300340f68cb4de9cc8bd705bf0a0b20c25feee5826670a1da082b3a82eab6f1",
+      "sha256": "ce92a578a9785a83acf97437a1e9a5f679b22ff79a677596c48e2c0519edbafe",
       "executable": false
     },
     "src/core/features/settings/erasure-redaction.ts": {
@@ -8499,7 +8543,7 @@
       "executable": false
     },
     "tests/core/launch-suppression.test.ts": {
-      "sha256": "73973c0991fe5f4c68b746ebada9288e7510e48f22c818f822a36c78a396eb16",
+      "sha256": "25a9b39dd13115847a1881e096db1ec1fce47517cdcf3bf8133dc756c5c9bf25",
       "executable": false
     },
     "tests/core/local-owner.test.ts": {
@@ -8575,7 +8619,7 @@
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
-      "sha256": "d9e3e6d1d60aa722fdeef03158397b0b29a0c8dc0c7fc15813aadd1ac2b138ab",
+      "sha256": "78dda02684102d44c4c458d8835b499a3dbad58b0aab704c22b4305947e3c9e7",
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
@@ -8752,6 +8796,10 @@
     },
     "tests/evidence/contract/BOUNDARY-001/exact-message-review-390.png": {
       "sha256": "ba5e368fd219dcc8cc3f6a88573f6626cad79a313d6e09962be9280dbb507302",
+      "executable": false
+    },
+    "tests/evidence/contract/INTEGRATE-007/mailchimp-live-2026-10-27.json": {
+      "sha256": "3e70f970b90df4f56c8ccff3e3d522f67304c6af58871e1279e0f2e79aa2fb2d",
       "executable": false
     },
     "tests/evidence/contract/OPP-009/board-1440.png": {

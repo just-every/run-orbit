@@ -7,6 +7,8 @@ import {createSlackEventRoutes} from '../features/slack/events';
 import {createSlackRoutes} from '../features/slack/routes';
 import {createSlackActionRoutes} from '../features/slack/actions';
 import {processSlack} from '../features/slack/delivery';
+import {mailchimpHandoffRoutes,mailchimpSettingsRoutes} from '../features/marketing/routes';
+import {mailchimpWebhookRoutes} from '../features/marketing/webhook';
 import {createLibraryRoutes} from '../features/drafts/library-routes';
 import {createSalesTaskRoutes} from '../features/tasks';
 import {createRelationshipRoutes} from '../features/relationships';
@@ -84,6 +86,7 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
   app.route("/api/v1/public-demo", createPublicDemoRoutes(input.publicDemoEnabled !== false));
   app.route("/api/v1/mail/events", createMailEventRoutes(input.database,input.mailEventKeys??{}));
   app.route('/api/v1/mail/capture',createForwardInboundRoutes(input.database,{security:input.sourceSecurity,address:input.captureMailAddress,parseKey:input.mailEventKeys?.parseKey}));
+  app.route('/api/v1/signals/mailchimp',mailchimpWebhookRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin}));
   app.route("/api/v1/signals", createSignalIngress(input.database,input.sourceSecurity));
   app.route("/api/delegation/v1", delegationRoutes(input.database));
   app.route("/delegation", nativeDelegationRoutes(input.database,input.authenticate,input.stepUp));
@@ -148,6 +151,8 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
     }
   });
   app.route('/api/v1/settings/api-credentials',apiCredentialRoutes(input.database,input.clock));
+  app.route('/api/v1/settings/mailchimp',mailchimpSettingsRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
+  app.route('/api/v1/marketing/mailchimp',mailchimpHandoffRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.route('/api/v1/settings/slack',createSlackRoutes(input.database,{clock:input.clock,security:input.sourceSecurity,origin:input.captureOrigin}));
   app.use('/api/v1/*',async(c,next)=>{await next();if(!['GET','HEAD','OPTIONS'].includes(c.req.method)&&c.res.status<400&&!c.req.path.startsWith('/api/v1/settings/slack')&&!c.req.path.includes('/archive/')){try{await processSlack(input.database,{clock:input.clock,security:input.sourceSecurity,origin:input.captureOrigin});}catch{c.header('X-Orbit-Slack','Processing failed; inspect Slack setup');}};});
   app.route('/api/v1/entries/visibility',entryPrivacyRoutes(input.database));

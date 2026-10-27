@@ -59,7 +59,8 @@ test('REPORT-002 explicitly enabled Slack schedules respect DST, hold uncertaint
  const products=async()=>((await(await f.request('settings/products')).json()) as any).products as any[],named=(list:any[],name:string)=>list.find(item=>item.products.includes(name));
  assert.equal((await f.request('settings/products','GET',undefined,{Cookie:''})).status,401);
  const unresolved=await products();assert.equal(named(unresolved,'Calendly').state,'awaiting-delivery');
- for(const[name,clause]of[['Dial','INTEGRATE-001'],['Zoom','INTEGRATE-002'],['Twilio','CALL-001'],['Aircall','CALL-001'],['HappyToHelp','INTEGRATE-004'],['Help Scout','INTEGRATE-004'],['Zendesk','INTEGRATE-004'],['DocuSign','QUOTE-001'],['Nectar','INTEGRATE-003'],['Stripe','INTEGRATE-003'],['QuickBooks Online','INTEGRATE-006'],['Xero','INTEGRATE-006'],['Mailchimp','INTEGRATE-007'],['Buoy','INTEGRATE-008']]){const product=named(unresolved,name);assert.deepEqual([product?.state,product?.clause,product?.lastDeliveryAt],['unavailable',clause,null],`${name} is unresolved setup, never a connection`);}
+ for(const[name,clause]of[['Dial','INTEGRATE-001'],['Zoom','INTEGRATE-002'],['Twilio','CALL-001'],['Aircall','CALL-001'],['HappyToHelp','INTEGRATE-004'],['Help Scout','INTEGRATE-004'],['Zendesk','INTEGRATE-004'],['DocuSign','QUOTE-001'],['Nectar','INTEGRATE-003'],['Stripe','INTEGRATE-003'],['QuickBooks Online','INTEGRATE-006'],['Xero','INTEGRATE-006'],['Buoy','INTEGRATE-008']]){const product=named(unresolved,name);assert.deepEqual([product?.state,product?.clause,product?.lastDeliveryAt],['unavailable',clause,null],`${name} is unresolved setup, never a connection`);}
+ assert.deepEqual([named(unresolved,'Mailchimp').state,named(unresolved,'Mailchimp').clause,named(unresolved,'Mailchimp').link],['unresolved-setup','INTEGRATE-007',undefined],'Mailchimp is unresolved setup until a key check passes and an audience is chosen');
  assert.equal((await f.request('settings/products/dial','POST',{})).status,404,'No substituted connector exists for an unbuilt product');
  assert.equal(named(unresolved,'Slack').state,'unresolved-setup');
  const workspace=(await(await f.request('settings')).json() as any).workspace;assert.equal(workspace.currency,'USD');
@@ -72,6 +73,24 @@ test('REPORT-002 explicitly enabled Slack schedules respect DST, hold uncertaint
  assert.ok(JSON.stringify(detail).includes('Discovery call: Maya wants a USD 100 pilot.'),'Manual sales work stays on the deal');
  const deal=(await(await f.request(`opportunities/${customer.id}`)).json() as any).opportunity;assert.equal(deal.valueCents??deal.value_cents,10000,'The USD source amount is unchanged');assert.ok(deal.evaluation.contributions.some((c:any)=>c.signalId===bookedSignal.id),'A signed booking is customer evidence on the deal');
  assert.equal(bodies.length,sendsBeforeSales,'Bookings, manual work and provider setup never send customer mail');
+ // INTEGRATE-007 on the walk: the consented US buyer may join a Mailchimp audience (faked only at its network edge), Mailchimp owns campaigns, and a disconnected account is unresolved setup.
+ await f.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();const relayFetch=globalThis.fetch,mailchimpApi='https://us1.api.mailchimp.com/3.0',audience=new Map<string,any>(),mailchimpCalls:string[]=[];
+ globalThis.fetch=async(input,init)=>{const url=String(input);if(!url.startsWith(mailchimpApi+'/'))return relayFetch(input,init);const path=url.slice(mailchimpApi.length).split('?')[0]!,method=init?.method??'GET',body=init?.body?JSON.parse(String(init.body)):undefined;mailchimpCalls.push(`${method} ${path}`);
+  if(path==='/ping')return Response.json({health_status:'ok'});if(path==='/lists/synthwalk1')return Response.json({id:'synthwalk1',name:'US buyers',web_id:5150});
+  if(path==='/lists/synthwalk1/merge-fields')return Response.json(method==='POST'?{tag:'ORBITCONS'}:{merge_fields:[{tag:'FNAME'},{tag:'LNAME'}]});
+  const hash=/^\/lists\/synthwalk1\/members\/([a-f0-9]{32})$/.exec(path)?.[1];if(hash&&method==='PUT'){const member={id:hash,unique_email_id:'w'+hash.slice(0,9),status:audience.get(hash)?.status??body.status_if_new,merge_fields:body.merge_fields};audience.set(hash,member);return Response.json(member);}
+  return Response.json({title:'Resource Not Found'},{status:404});};
+ assert.equal((await f.request('settings/mailchimp/connect','POST',{apiKey:'synthetic-orbit-hk2-walk-us1'})).status,200);assert.equal(named(await products(),'Mailchimp').state,'unresolved-setup','A passing key check without an audience is not yet connected');
+ assert.equal((await f.request('settings/mailchimp/audience','PUT',{audienceId:'synthwalk1'})).status,200);
+ assert.equal((await f.request(`marketing/mailchimp/consents/${contact.id}`,'POST',{source:'Harbour pilot booking form',basis:'Asked for US product news on the discovery call',confirmed:true})).status,200);
+ const walkPreview=await(await f.request('marketing/mailchimp/preview?fields=name')).json() as any,buyer=walkPreview.groups.subscribed.find((item:any)=>item.contactId===contact.id);
+ assert.deepEqual([buyer?.email,buyer?.consent?.source,buyer?.consent?.basis],[contact.email,'Harbour pilot booking form','Asked for US product news on the discovery call'],'The walk’s consented buyer previews as subscribed with the basis of consent');
+ assert.ok(walkPreview.groups.unknown.some((item:any)=>item.email==='latest@harbour.test'),'A contact without recorded consent is never handed over');
+ const handed=await f.request('marketing/mailchimp/handoffs','POST',{fields:walkPreview.fields,previewDigest:walkPreview.digest,operationId:crypto.randomUUID()});assert.equal(handed.status,200,await handed.clone().text());assert.equal(audience.size,1,'Only the consented buyer joins the audience');
+ const marketing=named(await products(),'Mailchimp');assert.deepEqual([marketing.state,marketing.link?.href],['connected','https://us1.admin.mailchimp.com/lists/members?id=5150'],'Connected products links the chosen audience in Mailchimp');
+ assert.match(marketing.owns,/campaign/i);assert.ok(!mailchimpCalls.some(call=>call.includes('/campaigns')),'Orbit never creates or sends a Mailchimp campaign');assert.equal(bodies.length,sendsBeforeSales,'The audience handoff sends no customer mail');
+ assert.equal((await f.request('settings/mailchimp/disconnect','POST',{})).status,200);const disconnected=named(await products(),'Mailchimp');assert.deepEqual([disconnected.state,disconnected.link],['unresolved-setup',undefined],'A disconnected account is unresolved setup');
+ assert.equal((await f.request('marketing/mailchimp/preview?fields=name')).status,409,'A disconnected account hands nothing over');
  await proveSlackNotices(f,customer.id,contact.id);
  assert.equal(bodies.length,sendsBeforeSales,'Slack actions never approve, edit or send customer mail');
 
