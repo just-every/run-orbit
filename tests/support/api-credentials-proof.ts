@@ -4,12 +4,14 @@ import {createDependencies} from './dependencies';
 import {createId} from '../../src/core/shared/ids';
 import {hash} from '../../src/core/features/delegation/protocol';
 
+const jsonType=Response.json(null).headers.get('Content-Type')!;
+
 export async function proveApiCredentials(db:D1Database,actor:string,cookie:string,stage:string){
  const deps=createDependencies(db),principalId=createId(),record=createId(),now='2026-10-27T00:00:00.000Z';let clockNow=new Date(now);
  await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(actor).run();
  await deps.auth.ensureOperator({id:principalId,email:'synthetic-orbit-1@example.test',displayName:'synthetic-orbit-1'});
  await db.prepare("INSERT INTO opportunities(id,title,lifecycle,stage_id,value_cents,score,band,queue_state,created_at,updated_at) VALUES(?,'synthetic-orbit-1','open',?,0,0,'low','none',?,?)").bind(record,stage,now,now).run();
- const headers={Cookie:cookie,Origin:'https://orbit.test','Content-Type':'application/json'},app=(database=db)=>createApp({database,clock:{now:()=>clockNow},assets:{fetch:async()=>new Response(null,{status:404})}});
+ const headers={Cookie:cookie,Origin:'https://orbit.test','Content-Type':jsonType},app=(database=db)=>createApp({database,clock:{now:()=>clockNow},assets:{fetch:async()=>new Response(null,{status:404})}});
  const request=(path='',method='GET',body?:unknown,override:Record<string,string>={},database=db)=>app(database).request('https://orbit.test/api/v1/settings/api-credentials'+path,{method,headers:{...headers,...override},body:body===undefined?undefined:JSON.stringify(body)});
  const definition={name:'synthetic-orbit-1',principalId,operations:['deal.read','deal.update'],recordIds:[record],fields:['title'],expiresAt:'2026-11-26T00:00:00.000Z'};
  assert.equal((await request('','POST',definition,{Cookie:''})).status,401);
@@ -66,6 +68,6 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
 
 export async function issueNativeCredential(db:D1Database,actor:string,recordId:string,principalId=actor,name='synthetic-orbit-1'){
  const session=await createDependencies(db).auth.createSession(actor),app=createApp({database:db,clock:{now:()=>new Date('2026-10-27T00:00:00.000Z')},assets:{fetch:async()=>new Response(null,{status:404})}});
- const response=await app.request('https://orbit.test/api/v1/settings/api-credentials',{method:'POST',headers:{Cookie:'__Host-orbit_session='+session.token,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({name,principalId,operations:['deal.read'],recordIds:[recordId],fields:['title'],expiresAt:'2026-11-26T00:00:00.000Z'})});
+ const response=await app.request('https://orbit.test/api/v1/settings/api-credentials',{method:'POST',headers:{Cookie:'__Host-orbit_session='+session.token,Origin:'https://orbit.test','Content-Type':jsonType},body:JSON.stringify({name,principalId,operations:['deal.read'],recordIds:[recordId],fields:['title'],expiresAt:'2026-11-26T00:00:00.000Z'})});
  assert.equal(response.status,201,await response.clone().text());return response.json() as Promise<{credential:{id:string;revision:number};secret:string}>;
 }
