@@ -59,8 +59,8 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  await db.prepare('DELETE FROM api_credentials').run();await db.prepare('DELETE FROM opportunities WHERE id=?').bind(record).run();
 }
 
-export async function issueNativeCredential(db:D1Database,actor:string,recordId:string,principalId=actor){
+export async function issueNativeCredential(db:D1Database,actor:string,recordId:string,principalId=actor,name='synthetic-orbit-1'){
  const session=await createDependencies(db).auth.createSession(actor),app=createApp({database:db,clock:{now:()=>new Date('2026-10-27T00:00:00.000Z')},assets:{fetch:async()=>new Response(null,{status:404})}});
- const response=await app.request('https://orbit.test/api/v1/settings/api-credentials',{method:'POST',headers:{Cookie:'__Host-orbit_session='+session.token,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({name:'synthetic-orbit-1',principalId,operations:['deal.read'],recordIds:[recordId],fields:['title'],expiresAt:'2026-11-26T00:00:00.000Z'})});
+ const response=await app.request('https://orbit.test/api/v1/settings/api-credentials',{method:'POST',headers:{Cookie:'__Host-orbit_session='+session.token,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({name,principalId,operations:['deal.read'],recordIds:[recordId],fields:['title'],expiresAt:'2026-11-26T00:00:00.000Z'})});
  assert.equal(response.status,201,await response.clone().text());return response.json() as Promise<{credential:{id:string;revision:number};secret:string}>;
 }
