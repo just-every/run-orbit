@@ -5979,7 +5979,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records-api.ts": {
-      "sha256": "56ecd526faa3ca851d9984dc0feb9d13ab7527a2e09c772e326b3ad673b61020",
+      "sha256": "67dc11d0d1dac8eea78aa17283ac0dbbfb0ca8bae581e7fe91e454e20f3d3395",
       "executable": false
     },
     "src/core/features/operator/ui/records-data-tools.tsx": {
@@ -6066,8 +6066,16 @@
       "sha256": "f93d6fc1dba8bba7764bfb85d550d98fbbf84574efe4a7b5db40e8cda5ff7707",
       "executable": false
     },
+    "src/core/features/operator/ui/typed-field-outcome.tsx": {
+      "sha256": "2ee63a8dadbbc0d90078414a018d788ce7bcd7013c671c0ecaaf549a0124c6fa",
+      "executable": false
+    },
+    "src/core/features/operator/ui/typed-field-settings.css": {
+      "sha256": "b7e818299e10c6c904907ad80e038e02501a1b238502dfa15857f7d12bf06aed",
+      "executable": false
+    },
     "src/core/features/operator/ui/typed-field-settings.tsx": {
-      "sha256": "820d3429633b94d5e0af52686e3388043dfc5b58f467dbdc47122a2ff9c9fd5b",
+      "sha256": "d0dabbb0801775ffb2f77bd4e83165c670064c1b6dda8267cd61b5e23501ebdb",
       "executable": false
     },
     "src/core/features/operator/ui/unlinked-replies.tsx": {
@@ -8559,7 +8567,7 @@
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
-      "sha256": "52c184127b3a7704568a58bca2ada52051f5abd85a12ea7c418f582b6550e4fb",
+      "sha256": "fef62c163e20634e234eabfcd0338465738ccc4766a4b9da4150e2db2d68d6d4",
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
