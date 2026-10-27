@@ -6,7 +6,6 @@ import {consumeRateLimit,publicIdentity} from '../../platform/public-rate-limit'
 import {RecordError} from '../records/shared';
 import {authenticateApi,ApiError,type ApiCredential} from './authority';
 import {ApiDeals} from './resources';
-import seed from '../../../../seed.json';
 
 const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 const fields=z.object({title:z.string().trim().min(1).max(500),stage_id:id,value_cents:z.number().int().min(0).max(100000000000),company_id:id.nullable()}).partial().strict();
@@ -22,7 +21,6 @@ export function publicApiRoutes(db:D1Database,clock:Clock=systemClock){
  app.onError((error,c)=>c.json({error:error instanceof ApiError||error instanceof RecordError?error.message:'The API request failed; no success was confirmed.'},error instanceof ApiError||error instanceof RecordError?error.status:503));
  app.use('*',async(c,next)=>{
   c.header('Cache-Control','no-store');
-  if(!seed.deploy.publicPaths.some(path=>path!=='/'&&path.endsWith('/')?c.req.path.startsWith(path):c.req.path===path))throw new ApiError(503,'This API path is not declared public.');
   const now=clock.now().getTime(),limited=await consumeRateLimit(db,`api-public:${await publicIdentity(c.req.raw,now)}`,300,now);
   if(limited)return limited;
   const credential=await authenticateApi(db,c.req.raw,clock);c.set('credential',credential);
