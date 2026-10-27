@@ -1,4 +1,5 @@
 import {apiCredentialRoutes} from '../features/api/routes';
+import {publicApiRoutes} from '../features/api/public-routes';
 import {entryPrivacyRoutes} from '../features/records/entry-privacy';
 import {callEventRoutes,callRoutes} from '../features/calls/routes';
 import type {Clock} from '../platform/clock';
@@ -89,6 +90,7 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
   app.route('/api/v1/slack/events',createSlackEventRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin}));
   app.route('/api/v1/slack/actions',createSlackActionRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin}));
   app.route('/api/v1/calls/twilio/events',callEventRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
+  app.route('/api/rest/v1',publicApiRoutes(input.database,input.clock));
   app.use("/api/*", requireApiOperator);
   app.use('/api/*',async(context,next)=>{if(!context.req.path.startsWith('/api/v1/records/archive')&&await archiveImportActive(input.database))return context.json({error:archiveMaintenanceMessage},503,{'Retry-After':'30'});await next();});
   app.use("/api/*", async (context,next) => {

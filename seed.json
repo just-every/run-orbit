@@ -413,6 +413,7 @@
       "/api/v1/signals/",
       "/api/v1/mail/events/",
       "/api/delegation/v1/",
+      "/api/rest/v1/",
       "/p/",
       "/api/public/forms/",
       "/api/v1/slack/actions",

@@ -29,18 +29,86 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  assert.equal(row!.installation_id,await db.prepare('SELECT id FROM delegation_installation').first('id'));
  assert.deepEqual(JSON.parse(row!.records_json as string),[record]);assert.deepEqual(JSON.parse(row!.fields_json as string),['title']);
  const listed=await request(),diagnostics=await listed.text();assert.ok(!diagnostics.includes(issued.secret)&&!diagnostics.includes(String(row!.verifier)));
+ const publicRequest=(path='/deals',method='GET',body?:unknown,secret:string|null=issued.secret,extra:Record<string,string>={},database=db)=>app(database).request('https://orbit.test/api/rest/v1'+path,{method,headers:{'Content-Type':jsonType,...(secret?{Authorization:'Bearer '+secret}:{}),...extra},body:body===undefined?undefined:JSON.stringify(body)});
+ const apiStage=createId();
+ await db.prepare('INSERT INTO pipeline_stages(id,name,position,created_at,updated_at) VALUES(?,?,?,?,?)').bind(apiStage,'synthetic-orbit-2',2,now,now).run();
+ await db.prepare('UPDATE opportunities SET stage_id=? WHERE id=?').bind(apiStage,record).run();
+ assert.equal((await publicRequest()).status,200,'Standalone API credential authenticates without a native session');
+ assert.equal((await publicRequest('/deals','GET',undefined,null)).status,401,'Missing credential is refused');
+ assert.equal((await publicRequest('/deals','GET',undefined,null,{Cookie:cookie})).status,401,'An owner cookie never authenticates the public API');
+ assert.equal((await publicRequest('/deals','GET',undefined,'synthetic-orbit-2')).status,401,'Other credential namespaces are refused');
+ const read=await publicRequest('/deals/'+record);assert.equal(read.status,200,await read.clone().text());
+ const etag=read.headers.get('ETag')!;assert.ok(etag);
+ assert.deepEqual((await read.json() as any).deal,{id:record,title:'synthetic-orbit-1'},'Only permitted fields are returned');
+ assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:'synthetic-orbit-2'},issued.secret,{'If-Match':etag})).status,200,'Scoped update succeeds without a native session or Origin');
+ assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:'synthetic-orbit-3'},issued.secret,{'If-Match':etag})).status,409,'A stale write is refused');
+ assert.equal((await publicRequest('/deals/'+record+'?fields=value_cents')).status,403,'Denied read fields stay private');
+ const updated=await publicRequest('/deals/'+record),updatedEtag=updated.headers.get('ETag')!;
+ assert.equal((await updated.json() as any).deal.title,'synthetic-orbit-2','The standalone write is visible at the HTTP edge');
+ assert.equal((await publicRequest('/deals/'+record,'PATCH',{value_cents:100},issued.secret,{'If-Match':updatedEtag})).status,403,'Denied write fields cannot change');
+ assert.equal((await publicRequest('/deals/'+createId())).status,403,'A record outside scope is refused');
+ assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:42},issued.secret,{'If-Match':updatedEtag})).status,400,'Schema errors are real HTTP refusals');
+ assert.equal((await publicRequest('/deals?unsupported=1')).status,400);
+ assert.equal((await publicRequest('/deals?limit=1&limit=2')).status,400);
+ for(const path of ['/messages/approve','/messages/send','/approvals/restore'])assert.equal((await publicRequest(path,'POST',{})).status,404,'API credentials have no message or approval operation');
+ const createResponse=await request('','POST',{...definition,operations:['deal.read','deal.create','deal.update'],fields:['title','stage_id','value_cents']});assert.equal(createResponse.status,201);
+ const creator=await createResponse.json() as typeof issued;
+ const creation={title:'synthetic-orbit-3',stage_id:apiStage,value_cents:500},createHeaders={'Idempotency-Key':'synthetic-orbit-1'};
+ const createdResponse=await publicRequest('/deals','POST',creation,creator.secret,createHeaders);assert.equal(createdResponse.status,201,await createdResponse.clone().text());
+ const created=await createdResponse.json() as {id:string;replayed:boolean};assert.equal(created.replayed,false);
+ const replay=await publicRequest('/deals','POST',creation,creator.secret,createHeaders);assert.equal(replay.status,200,await replay.clone().text());assert.deepEqual(await replay.json(),{...created,replayed:true},'The same idempotency key returns the one original deal');
+ assert.equal((await publicRequest('/deals','POST',{...creation,title:'synthetic-orbit-4'},creator.secret,createHeaders)).status,409,'Changed idempotent content is refused');
+ const firstPage=await publicRequest('/deals?limit=1', 'GET',undefined,creator.secret);assert.equal(firstPage.status,200);
+ assert.ok(Number(firstPage.headers.get('RateLimit-Remaining'))<Number(firstPage.headers.get('RateLimit-Limit')));assert.ok(Number(firstPage.headers.get('RateLimit-Reset'))>0);
+ const page=await firstPage.json() as any;assert.equal(page.deals.length,1);assert.ok(page.nextCursor);
+ const secondPage=await(await publicRequest('/deals?limit=1&cursor='+page.nextCursor,'GET',undefined,creator.secret)).json() as any;
+ assert.equal(secondPage.deals.length,1);assert.notEqual(secondPage.deals[0].id,page.deals[0].id);assert.equal(secondPage.nextCursor,null,'Cursor pagination ends after the two scoped deals');
+ const filtered=await(await publicRequest('/deals?title=synthetic-orbit-3','GET',undefined,creator.secret)).json() as any;assert.deepEqual(filtered.deals.map((deal:any)=>deal.id),[created.id],'An exact filter returns only the matching scoped deal');
+ const limit=Number(firstPage.headers.get('RateLimit-Limit'));
+ await db.prepare('UPDATE public_rate_limits SET count=? WHERE bucket=?').bind(limit,`api:${creator.credential.id}:${Math.floor(clockNow.getTime()/60000)}`).run();
+ const limited=await publicRequest('/deals','GET',undefined,creator.secret);assert.equal(limited.status,429,'The advertised rate limit is enforced at the HTTP edge');assert.ok(Number(limited.headers.get('Retry-After'))>0);
+ await db.prepare('DELETE FROM public_rate_limits WHERE bucket=?').bind(`api:${creator.credential.id}:${Math.floor(clockNow.getTime()/60000)}`).run();
+ assert.equal((await publicRequest('/deals','POST',creation,issued.secret,createHeaders)).status,403,'An update credential cannot create');
+ const readOnly=await(await request('','POST',{...definition,operations:['deal.read']})).json() as typeof issued;
+ assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:'synthetic-orbit-4'},readOnly.secret,{'If-Match':updatedEtag})).status,403,'A read-only credential cannot write');
  const rotatedResponse=await request('/'+id+'/rotate','POST',{revision:1});assert.equal(rotatedResponse.status,200,await rotatedResponse.clone().text());
  const rotated=await rotatedResponse.json() as typeof issued;
+ assert.equal((await publicRequest('/deals','GET',undefined,issued.secret)).status,401,'Rotation refuses the old secret on its next request');
+ assert.equal((await publicRequest('/deals','GET',undefined,rotated.secret)).status,200,'Rotation admits the new secret on its next request');
+ assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:'synthetic-orbit-4'},issued.secret,{'If-Match':updatedEtag})).status,401,'Rotation also refuses old-secret writes');
  assert.notEqual(rotated.secret,issued.secret);assert.equal(rotated.credential.expiresAt,issued.credential.expiresAt);
  assert.equal(await db.prepare('SELECT verifier FROM api_credentials WHERE id=?').bind(id).first('verifier'),await hash(rotated.secret));
  assert.equal((await request('/'+id+'/rotate','POST',{revision:1})).status,409);
  assert.equal((await request('/'+id+'/revoke','POST',{revision:2})).status,200);
+ assert.equal((await publicRequest('/deals','GET',undefined,rotated.secret)).status,401,'Revocation refuses the next read');
+ assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:'synthetic-orbit-4'},rotated.secret,{'If-Match':updatedEtag})).status,401,'Revocation refuses the next write');
  assert.notEqual(await db.prepare('SELECT verifier FROM api_credentials WHERE id=?').bind(id).first('verifier'),await hash(rotated.secret));
  assert.equal((await request('/'+id+'/rotate','POST',{revision:3})).status,409);
  const expired=await(await request('','POST',{...definition,expiresAt:'2026-10-28T00:00:00.000Z'})).json() as typeof issued;
  clockNow=new Date('2026-10-28T00:00:00.000Z');
+ assert.equal((await publicRequest('/deals','GET',undefined,expired.secret)).status,401,'Expiry refuses authentication at its exact boundary');
  assert.equal((await request('/'+expired.credential.id+'/rotate','POST',{revision:1})).status,409);
  clockNow=new Date(now);
+ const raceCredential=await(await request('','POST',definition)).json() as typeof issued;
+ const effects=async()=>Promise.all(['opportunities','timeline_entries','audit_entries'].map(table=>db.prepare(`SELECT count(*) FROM ${table}`).first('count(*)')));
+ for(const change of ['revoke','rotate','principal','installation','restore','record','expiry']){
+  let changed=false;const beforeEffects=await effects();
+  const database=new Proxy(db,{get(target,key){if(key==='batch')return async(statements:D1PreparedStatement[])=>{
+   // The public limiter's first batch precedes the native write planner.
+   if(!changed&&statements.length>3){changed=true;
+    if(change==='revoke')await target.prepare('UPDATE api_credentials SET revoked_at=? WHERE id=?').bind(now,raceCredential.credential.id).run();
+    if(change==='rotate')await target.prepare('UPDATE api_credentials SET verifier=? WHERE id=?').bind(await hash('synthetic-orbit-5'),raceCredential.credential.id).run();
+    if(change==='principal')await target.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(principalId).run();
+    if(change==='installation')await target.prepare("UPDATE api_credentials SET installation_id='synthetic-orbit-5' WHERE id=?").bind(raceCredential.credential.id).run();
+    if(change==='restore')await target.prepare("INSERT INTO runtime_controls(name,value) VALUES('archive_import','synthetic-orbit-5')").run();
+    if(change==='record')await target.prepare('UPDATE api_credentials SET records_json=\'[]\' WHERE id=?').bind(raceCredential.credential.id).run();
+    if(change==='expiry')await target.prepare('UPDATE api_credentials SET expires_at=? WHERE id=?').bind(now,raceCredential.credential.id).run();
+   }return target.batch(statements);
+  };const value=Reflect.get(target,key);return typeof value==='function'?value.bind(target):value;}});
+  assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:'synthetic-orbit-5'},raceCredential.secret,{'If-Match':updatedEtag},database)).status,401,change+' during write is refused');assert.ok(changed);assert.deepEqual(await effects(),beforeEffects,'No durable effects survive '+change);
+  clockNow=new Date(now);await db.prepare("DELETE FROM runtime_controls WHERE name='archive_import'").run();await db.prepare("UPDATE operators SET status='active' WHERE id=?").bind(principalId).run();
+  await db.prepare('UPDATE api_credentials SET revoked_at=NULL,verifier=?,installation_id=(SELECT id FROM delegation_installation),records_json=?,expires_at=? WHERE id=?').bind(await hash(raceCredential.secret),JSON.stringify([record]),definition.expiresAt,raceCredential.credential.id).run();
+ }
  const raced=await(await request('','POST',definition)).json() as typeof issued;
  let intercepted=false;
  const wrapped=new Proxy(db,{get(target,key){if(key==='batch')return async(statements:D1PreparedStatement[])=>{if(!intercepted){intercepted=true;await target.prepare('UPDATE api_credentials SET revoked_at=? WHERE id=?').bind(now,raced.credential.id).run();}return target.batch(statements);};const value=Reflect.get(target,key);return typeof value==='function'?value.bind(target):value;}});
@@ -65,7 +133,8 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  const audits=JSON.stringify((await db.prepare("SELECT * FROM audit_entries WHERE action LIKE 'api.%'").all()).results);
  for(const secret of [issued.secret,rotated.secret,raced.secret])assert.ok(!audits.includes(secret));
  assert.equal(await db.prepare('SELECT count(*) n FROM outbound_messages').first('n'),0);
- await db.prepare('DELETE FROM api_credentials').run();await db.prepare('DELETE FROM opportunities WHERE id=?').bind(record).run();
+ await db.prepare('DELETE FROM api_credentials').run();for(const deal of [record,created.id])await db.prepare('DELETE FROM opportunities WHERE id=?').bind(deal).run();
+ await db.prepare('DELETE FROM pipeline_stage_rules WHERE stage_id=?').bind(apiStage).run();await db.prepare('DELETE FROM pipeline_stages WHERE id=?').bind(apiStage).run();
 }
 
 export async function issueNativeCredential(db:D1Database,actor:string,recordId:string,principalId=actor,name='synthetic-orbit-1'){

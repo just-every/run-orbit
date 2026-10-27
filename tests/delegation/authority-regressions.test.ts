@@ -1,4 +1,5 @@
 import {proveApiCredentials} from '../support/api-credentials-proof';
+import {createApp} from '../support/app';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {isolatedDatabase} from '../support/isolated-database';
@@ -13,6 +14,9 @@ test('API-001 native credential lifecycle and delegation D1 reject ambient cooki
  const fixture=await isolatedDatabase(),db=fixture.db;
  try{
   const f=await authorityFixture(db);await proveApiCredentials(db,'owner',f.cookie,'stage');const g=await f.grant(),read=await f.grant('crm.evidence.read');
+  const publicApp=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}});
+  assert.equal((await publicApp.request('https://orbit.test/api/rest/v1/deals',{headers:{Authorization:'Bearer '+g.token,Cookie:f.cookie}})).status,401,'A real delegation grant and owner cookie cannot authenticate as an API credential');
+  assert.equal((await publicApp.request('https://orbit.test/api/rest/v1/deals',{headers:{'X-Slack-User':'owner',Cookie:f.cookie}})).status,401,'A Slack identity mapping supplies no API credential');
   assert.equal((await f.api.request('https://orbit.test/identity',{headers:{Cookie:f.cookie}})).status,401);
   assert.equal((await read.request('/effects',await effect(db,'read-only'))).status,403);
   assert.equal((await g.request('/check?target='+target)).status,200);
