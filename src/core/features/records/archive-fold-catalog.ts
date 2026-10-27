@@ -8,7 +8,7 @@ export const foldKnownNativeAdditions=['privacy_matching_contexts','mail_provide
 /** Exact selected consumers. These additional slots never admit arbitrary owner tables. */
 export const foldDomainTables=selectedFoldTables;
 export const foldAuthorityTables=['access_invitations','access_grants','access_form_authorities'] as const;
-export const foldExcludedTables=new Set(['call_credentials','sessions','magic_links','owner_bootstrap','sample_seed_runs','first_run_setup','d1_migrations','public_rate_limits','auth_rate_limits','runtime_controls','record_erasure_signals','access_write_guards','capture_credentials','capture_oauth','capture_locks','slack_credentials','slack_action_tokens','record_owner_reviews',...foldAuthorityTables]);
+export const foldExcludedTables=new Set(['api_credentials', 'call_credentials','sessions','magic_links','owner_bootstrap','sample_seed_runs','first_run_setup','d1_migrations','public_rate_limits','auth_rate_limits','runtime_controls','record_erasure_signals','access_write_guards','capture_credentials','capture_oauth','capture_locks','slack_credentials','slack_action_tokens','record_owner_reviews',...foldAuthorityTables]);
 export async function foldArchiveCatalog(db:D1Database){const catalog=await foldInstalledCatalog(db);if(catalog.filter(t=>!(foldDomainTables as readonly string[]).includes(t.name)).length>100&&!await storedLegacyLineage(db,catalog))throw new RecordError(400,'Current archives retain the 100-table base allowance; complete legacy evidence is required for its exact known additions.');return catalog;}
 export function foldInstalledCatalog(db:D1Database){return read(db);}
 async function read(db:D1Database):Promise<ArchiveTable[]>{

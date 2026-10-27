@@ -4,7 +4,7 @@
 // with an installation, as in the Records archive.
 export default {
  product: 'just-every/sales-orbit',
- excludeTables: ['call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'record_owner_reviews', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
+ excludeTables: ['api_credentials', 'call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'record_owner_reviews', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
  derivedTables: ['record_search', 'timeline_search', 'record_search_fields'],
  // Migrations seed these rows in every empty database; the archive's rows replace them.
  replaceableTables: ['graph_workspace_epochs', 'schema_types', 'pipelines', 'forecast_source_clock'],
@@ -12,6 +12,8 @@ export default {
  // Older valid archives may still contain schedules. Strip that installation-local
  // approval in staging, after integrity validation and before atomic publication.
  async validateStaged({ db, tables }) {
+  if(await db.prepare('SELECT 1 FROM api_credentials LIMIT 1').first())throw new Error('Local restore requires an installation without API credentials; they never travel or regain authority.');
+  if(tables.api_credentials)await db.prepare('DELETE FROM "'+tables.api_credentials.replaceAll('"','""')+'"').run();
   if(tables.call_credentials)await db.prepare('DELETE FROM "'+tables.call_credentials.replaceAll('"','""')+'"').run();
   if(tables.record_mail_outbound_messages)await db.prepare(`UPDATE "${tables.record_mail_outbound_messages.replaceAll('"','""')}" SET state='cancelled',failure='Archive transfer requires fresh review and approval before sending' WHERE state IN('draft','scheduled','queued')`).run();
   if(tables.record_mail_drafts)await db.prepare(`UPDATE "${tables.record_mail_drafts.replaceAll('"','""')}" SET is_stale=1,stale_reason='Archive transfer requires fresh review'`).run();

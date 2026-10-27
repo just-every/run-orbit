@@ -1,3 +1,4 @@
+import {proveApiCredentials} from '../support/api-credentials-proof';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {isolatedDatabase} from '../support/isolated-database';
@@ -8,10 +9,10 @@ import {bearer} from '../../src/core/features/delegation/authority';
 
 const target='opportunities/opp/handoffs/task';
 async function effect(db:D1Database,key:string){const s=await snapshot(db,target,true);return {operationKey:key,operation:'orbit.handoff.upsert' as const,target,expectedRevision:s.revision,expectedAudienceRevision:s.audience.audienceRevision,content:{title:'Follow up internally',description:'Arrange customer onboarding',assigneeId:'peer',dueAt:'2026-10-10T00:00:00.000Z',status:'open' as const}};}
-test('delegation D1 rejects ambient cookies, scope escalation, expiration, disable and revocation on every read/write',async()=>{
+test('API-001 native credential lifecycle and delegation D1 reject ambient cookies, scope escalation, expiration, disable and revocation on every read/write',async()=>{
  const fixture=await isolatedDatabase(),db=fixture.db;
  try{
-  const f=await authorityFixture(db),g=await f.grant(),read=await f.grant('crm.evidence.read');
+  const f=await authorityFixture(db);await proveApiCredentials(db,'owner',f.cookie,'stage');const g=await f.grant(),read=await f.grant('crm.evidence.read');
   assert.equal((await f.api.request('https://orbit.test/identity',{headers:{Cookie:f.cookie}})).status,401);
   assert.equal((await read.request('/effects',await effect(db,'read-only'))).status,403);
   assert.equal((await g.request('/check?target='+target)).status,200);

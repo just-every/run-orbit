@@ -1,3 +1,4 @@
+import {apiCredentialErasure} from '../api/privacy';
 import {payloadHash} from '../../platform/source-security';
 import {normalizedPhone} from '../calls/provider';
 import {recordMailContactErasure,recordMailRecordErasure} from '../outreach/record-mail-privacy';
@@ -23,6 +24,7 @@ import {messageContactErasure} from '../drafts/privacy';
 export class DataRepository {
  constructor(readonly db:D1Database){}
  async remove(kind:RecordKind,id:string,actor:string,sessionId?:string){const capture=captureImportErasure(this.db),db=capture.db;const record=await requireRecord(db,kind,id);const statements:D1PreparedStatement[]=[];let contactEmails:string[]=[];
+  statements.push(...apiCredentialErasure(db,kind,id));
   if(kind!=='opportunity')statements.push(...ownershipErasureStatements(db,kind,id));
   statements.push(...forecastErasureStatements(db,kind,id,typeof record.email==='string'?[record.email]:[]));
   if(kind!=='contact')statements.push(...recordMailRecordErasure(db,kind,id));

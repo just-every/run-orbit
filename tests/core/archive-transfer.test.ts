@@ -1,3 +1,4 @@
+import {issueNativeCredential} from '../support/api-credentials-proof';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
@@ -62,12 +63,18 @@ finally {
     await source.dispose();
     await target.dispose();
 } });
-test('DATA-002 contact erasure invalidates exports, downloads and restore copies and fences a snapshot created during discovery', async () => {
+test('API-001 credential custody and DATA-002 contact erasure invalidate exports, downloads and restore copies and fences a snapshot created during discovery', async () => {
     const fixture = await isolatedDatabase();
     try {
         const actor = await owner(fixture.db), contact = createId();
         await fixture.db.prepare("INSERT INTO contacts(id,name,email,email_key,contactability,created_at,updated_at) VALUES(?,'Private archive contact','erase@example.test','erase@example.test','contactable',?,?)").bind(contact, now, now).run();
+        const stage=createId(),deal=createId();
+        await fixture.db.prepare("INSERT INTO pipeline_stages VALUES(?,'synthetic-orbit-1',1,?,?)").bind(stage,now,now).run();
+        await fixture.db.prepare("INSERT INTO opportunities(id,title,lifecycle,stage_id,value_cents,score,band,queue_state,created_at,updated_at) VALUES(?,'synthetic-orbit-1','open',?,0,0,'low','none',?,?)").bind(deal,stage,now,now).run();
+        await fixture.db.prepare('INSERT INTO opportunity_contacts(opportunity_id,contact_id,is_primary,created_at) VALUES(?,?,1,?)').bind(deal,contact,now).run();
+        const credential=await issueNativeCredential(fixture.db,actor,deal);
         const document = await archive(fixture.db), exports = new ArchiveExportRepository(fixture.db, foldExportProfile);
+        assert.ok(!document.manifest.tables.some(table=>table.name==='api_credentials'));assert.ok(!JSON.stringify(document).includes(credential.secret));
         const exportId = (await fixture.db.prepare("SELECT id FROM archive_jobs WHERE kind='export'").first<{id:string}>())!.id;
         const response = await exports.download(exportId, actor), reader = response.body!.getReader();
         await reader.read(); // Header consumed; no customer data has been read.
@@ -76,6 +83,7 @@ test('DATA-002 contact erasure invalidates exports, downloads and restore copies
         // private copy through its real door rather than bypassing that boundary.
         await assert.rejects(imports.create(document.manifest, actor), /Another archive transfer/);
         await new TestDataRepository(fixture.db).remove('contact', contact, actor);
+        assert.equal(await fixture.db.prepare('SELECT count(*) FROM api_credentials').first('count(*)'),0,'Erasure withdraws scoped API credentials before removing contact edges');
         assert.equal((await fixture.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND (name LIKE 'archive_snapshot_%' OR name LIKE 'archive_stage_%')").all()).results.length, 0);
         for (const table of ['archive_jobs', 'archive_parts', 'archive_part_segments']) assert.equal((await fixture.db.prepare(`SELECT count(*) AS n FROM ${table}`).first<{n:number}>())!.n, 0);
         await assert.rejects(exports.download(exportId, actor), /not found/);

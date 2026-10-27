@@ -1,3 +1,4 @@
+import {issueNativeCredential} from '../support/api-credentials-proof';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
@@ -28,10 +29,14 @@ for(const deleteOpportunityFirst of [false,true])test(`DATA-002 RECORD-013 erasi
    customers.push({contact,opportunity,entry,notification,preview,call});
   }
   const [removed,retained]=customers;
+  await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(actor).run();
+  const credential=await issueNativeCredential(db,actor,removed.opportunity.id),retainedCredential=await issueNativeCredential(db,actor,retained.opportunity.id);
   async function counterpart(){const result:Record<string,unknown>={};for(const [table,id]of [['contacts',retained.contact.id],['opportunities',retained.opportunity.id],['timeline_entries',retained.entry.id],['notifications',retained.notification],['ai_previews',retained.preview],['ai_calls',retained.call]])result[table]=await db.prepare(`SELECT * FROM ${table} WHERE id=?`).bind(id).first();return result;}
   const before=await counterpart();assert.ok(Object.values(before).every(Boolean));
   if(deleteOpportunityFirst)await new DataRepository(db).remove('opportunity',removed.opportunity.id,actor);
   await new DataRepository(db).remove('contact',removed.contact.id,actor);
+  assert.equal(await db.prepare('SELECT id FROM api_credentials WHERE id=?').bind(credential.credential.id).first(),null);
+  assert.ok(await db.prepare('SELECT id FROM api_credentials WHERE id=?').bind(retainedCredential.credential.id).first());
   assert.deepEqual(await counterpart(),before,'Separate same-name customer rows must remain byte-for-byte equivalent');
   for(const [table,id]of [['contacts',removed.contact.id],['timeline_entries',removed.entry.id],['notifications',removed.notification],['ai_previews',removed.preview]])assert.equal(await db.prepare(`SELECT * FROM ${table} WHERE id=?`).bind(id).first(),null,`Target ${table} erased`);
   assert.deepEqual(await db.prepare('SELECT input_tokens,output_tokens,cached_input_tokens,estimated_cost,error FROM ai_calls WHERE id=?').bind(removed.call).first(),{input_tokens:123,output_tokens:45,cached_input_tokens:6,estimated_cost:0.0123,error:null});
