@@ -6111,7 +6111,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-history.tsx": {
-      "sha256": "5a5d19cb6cf7c97058ba5166890f67b4353539b2ebfff2b0a4bac6acf261456d",
+      "sha256": "12d70d5f7fb420e165c51505796023754e11c7430efbabf63662fe5df4ef1090",
+      "executable": false
+    },
+    "src/core/features/operator/ui/typed-field-key.ts": {
+      "sha256": "5adc5f2a73e41040c17ba632d7e37fa8468a4bf6b0722bb248ac9090fdb14382",
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-outcome.tsx": {
@@ -6119,11 +6123,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-settings.css": {
-      "sha256": "b7e818299e10c6c904907ad80e038e02501a1b238502dfa15857f7d12bf06aed",
+      "sha256": "5956bc81761f98ecdbcc4ec62d2de7bf624eb3f139bb1554b9464e0760c35012",
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-settings.tsx": {
-      "sha256": "c02588e15cc16b031f0f62447259ff418396c9028cebb603c54cc0b59300a882",
+      "sha256": "f46901453313462695bfe3eea3435c72eb8d913f1dcd478e853536801552e780",
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-words.ts": {
@@ -8619,7 +8623,7 @@
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
-      "sha256": "c835c7b1ebbf8827350f515306d7b2e8df20956f8ae1c3b890dc9889a0424206",
+      "sha256": "9bfbdc8854ff0d9d934e4ab7dc4310322df19de6671dabb5c7d761342132d0f9",
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {

@@ -21,13 +21,13 @@ export function TypedFieldHistory({kind,fieldKey,label}:{kind:string;fieldKey:st
   }catch(e){setFailure({text:plainFailure(e),beforeRevision});}finally{setBusy(false);}
  }
  return <details className="typed-field-history" onToggle={event=>{if(event.currentTarget.open&&!history&&!busy&&!failure)void load();}}>
-  <summary>{label} definition history</summary>
+  <summary>Definition history<span className="typed-field-visually-hidden"> for {label}</span></summary>
   {failure&&<OperatorState kind="error">{failure.text}<button type="button" disabled={busy} onClick={()=>void load(failure.beforeRevision)}>Retry history</button></OperatorState>}
   {history&&<ol>{history.revisions.map(item=><li key={item.revision}>
    {revisionChange(item.definition,item.previous)}<span className="typed-field-history__meta"> · {item.changedBy&&<>by {item.changedBy} · </>}<time dateTime={item.changedAt}>{formatDateTime(item.changedAt)}</time></span>
   </li>)}</ol>}
-  {history?.revisions.length===0&&<p>No saved definition revisions are available.</p>}
-  {busy&&<OperatorState>Loading definition history…</OperatorState>}
+  {history?.revisions.length===0&&<p>No revisions yet.</p>}
+  {busy&&<OperatorState>Loading…</OperatorState>}
   {history?.nextBeforeRevision!==null&&history?.nextBeforeRevision!==undefined&&<button type="button" disabled={busy} onClick={()=>void load(history.nextBeforeRevision!)}>Earlier definitions</button>}
  </details>;
 }
