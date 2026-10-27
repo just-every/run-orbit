@@ -14,12 +14,12 @@ export function apiCredentialRoutes(db:D1Database,clock?:Clock){
  app.post('/',async c=>{
   const input=credentialDefinition.safeParse(await c.req.json());
   if(!input.success)return c.json({error:'Choose a name, active principal, explicit deal operations, records, fields and expiry.'},400);
-  return c.json(await repo.issue(c.get('operator').operatorId,input.data),201);
+  return c.json(await repo.issue(c.get('operator'),input.data),201);
  });
  for(const action of ['rotate','revoke'] as const)app.post(`/:id/${action}`,async c=>{
   const input=z.object({revision:z.number().int().positive()}).strict().safeParse(await c.req.json());
   if(!input.success)return c.json({error:'Review the current credential revision.'},400);
-  return c.json(await repo[action](c.get('operator').operatorId,c.req.param('id'),input.data.revision));
+  return c.json(await repo[action](c.get('operator'),c.req.param('id'),input.data.revision));
  });
  return app;
 }

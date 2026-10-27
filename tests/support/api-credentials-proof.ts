@@ -53,6 +53,11 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
   assert.equal((await request('', 'GET',undefined,{Cookie:'',Authorization:'Bearer '+secret})).status,401);
   assert.equal((await app().request('https://orbit.test/api/delegation/v1/identity',{headers:{Authorization:'Bearer '+secret}})).status,401);
  }
+ const nativeSession=await deps.auth.createSession(actor);let revokedSession=false;
+ const sessionRace=new Proxy(db,{get(target,key){if(key==='batch')return async(statements:D1PreparedStatement[])=>{if(!revokedSession){revokedSession=true;await target.prepare('UPDATE sessions SET revoked_at=? WHERE id=?').bind(new Date().toISOString(),nativeSession.id).run();}return target.batch(statements);};const value=Reflect.get(target,key);return typeof value==='function'?value.bind(target):value;}});
+ const beforeSessionRace=await db.prepare('SELECT count(*) FROM api_credentials').first('count(*)');
+ assert.equal((await request('','POST',definition,{Cookie:'__Host-orbit_session='+nativeSession.token},sessionRace)).status,409);assert.ok(revokedSession);
+ assert.equal(await db.prepare('SELECT count(*) FROM api_credentials').first('count(*)'),beforeSessionRace,'A revoked native session cannot issue durable authority');
  const audits=JSON.stringify((await db.prepare("SELECT * FROM audit_entries WHERE action LIKE 'api.%'").all()).results);
  for(const secret of [issued.secret,rotated.secret,raced.secret])assert.ok(!audits.includes(secret));
  assert.equal(await db.prepare('SELECT count(*) n FROM outbound_messages').first('n'),0);
