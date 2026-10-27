@@ -24,13 +24,17 @@ export async function typedFieldsProof(){const f=await isolatedDatabase();try{co
   await configure({...definition,fieldKey:'synthetic_number',label:'Recorded amount',valueType:'number',required:false,unique:false,archived:true});
   const history=await t.json<any>(base+`/history?kind=${kind}&fieldKey=synthetic_number`,{},200);
   assert.deepEqual(history.revisions.map((r:any)=>({revision:r.revision,label:r.definition.label,type:r.definition.valueType,archived:r.definition.archived})),[{revision:3,label:'Recorded amount',type:'number',archived:1},{revision:2,label:'Recorded amount',type:'number',archived:0},{revision:1,label:'Synthetic number',type:'number',archived:0}],'archiving retains the original and renamed definition meaning in public history');
-  assert.ok(history.revisions.every((r:any)=>Number.isFinite(Date.parse(r.changedAt))));
+  assert.ok(history.revisions.every((r:any)=>Number.isFinite(Date.parse(r.changedAt))&&r.changedBy==='Sam Seller'),'each revision names when and who saved it');
+  assert.deepEqual(history.revisions.map((r:any)=>r.previous?.label??null),['Recorded amount','Synthetic number',null],'each revision carries the one before it');
   assert.equal(history.nextBeforeRevision,null);
   assert.equal((await t.call(base+`/history?kind=${kind}&fieldKey=synthetic_number&beforeRevision=invalid`)).status,400);
   assert.equal((await t.call(base+`/history?kind=${kind}&fieldKey=missing_field`)).status,404);
   assert.equal((await t.app.request('https://orbit.test'+base+`/history?kind=${kind}&fieldKey=synthetic_number`)).status,401,'schema history requires native authentication');
   const archived=await t.call(`/api/v1/records/${kind}/${first.id}`,{method:'PUT',body:{...content(1),custom_fields:{...values,synthetic_number:43}}});assert.equal(archived.status,400);assert.match(await archived.text(),/Recorded amount: archived values are read-only/);
   assert.equal((await t.json<any>(`/api/v1/records/${kind}/${first.id}`)).record.custom_fields_json,JSON.stringify(values));
+  const renamedRestore=await t.json<any>(base+'/preview',{body:{...definition,fieldKey:'synthetic_number',label:'Restored amount',valueType:'number',required:false,unique:false}},200);assert.equal((await t.call(base+'/confirm',{body:{input:renamedRestore.input,reviewHash:renamedRestore.reviewHash,confirmed:true}})).status,409,'a restore keeps the archived meaning');
+  await configure({...definition,fieldKey:'synthetic_number',label:'Recorded amount',valueType:'number',required:false,unique:false});
+  await t.json(`/api/v1/records/${kind}/${first.id}`,{method:'PUT',body:{...content(1),custom_fields:{...values,synthetic_number:43}}},200);
  }
  const paged={kind:'contact',fieldKey:'synthetic_paged',label:'History pages',valueType:'text',required:false,unique:false,options:[],archived:false};
  for(let revision=1;revision<=53;revision++)await configure({...paged,label:`History meaning ${revision}`});

@@ -5999,7 +5999,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records-api.ts": {
-      "sha256": "56ecd526faa3ca851d9984dc0feb9d13ab7527a2e09c772e326b3ad673b61020",
+      "sha256": "67dc11d0d1dac8eea78aa17283ac0dbbfb0ca8bae581e7fe91e454e20f3d3395",
       "executable": false
     },
     "src/core/features/operator/ui/records-data-tools.tsx": {
@@ -6079,15 +6079,35 @@
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-history.css": {
-      "sha256": "5316ab1d8b3e7e2f840bc86fc6bf85f41c7f8b49cdbc004b0203369b8f818ff8",
+      "sha256": "8154142fb524f3eecca7119c4a2bb7be48106d81c13a931ed4f9873b3757848e",
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-history.tsx": {
-      "sha256": "f93d6fc1dba8bba7764bfb85d550d98fbbf84574efe4a7b5db40e8cda5ff7707",
+      "sha256": "80490e85abbb9cc0ee87a7bfeb5e902d182033ab3f1b710e8361569565e49782",
+      "executable": false
+    },
+    "src/core/features/operator/ui/typed-field-key.ts": {
+      "sha256": "5adc5f2a73e41040c17ba632d7e37fa8468a4bf6b0722bb248ac9090fdb14382",
+      "executable": false
+    },
+    "src/core/features/operator/ui/typed-field-outcome.tsx": {
+      "sha256": "a6fb0140e55346bbf7c98cc8297aa41360dde2dc5a3ac33041ab896d928171fb",
+      "executable": false
+    },
+    "src/core/features/operator/ui/typed-field-review.tsx": {
+      "sha256": "c0cbb9baccf7d209bc16803c278d9abc17b4ee378ffaf936cec421664b16e08e",
+      "executable": false
+    },
+    "src/core/features/operator/ui/typed-field-settings.css": {
+      "sha256": "fa6b7ede6b410deca68ad2d7f2f3d80f36dec1b2c024106fbbc14d95c151cd04",
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-settings.tsx": {
-      "sha256": "820d3429633b94d5e0af52686e3388043dfc5b58f467dbdc47122a2ff9c9fd5b",
+      "sha256": "2811e651b318e1b0061db6b666ccc8cfb56a3ec5f2639cb02cc2605b8570921f",
+      "executable": false
+    },
+    "src/core/features/operator/ui/typed-field-words.ts": {
+      "sha256": "d696f3ec3934d535b82ed019659369eb1bbe549ad285fcbd362ac6f5121c4dc5",
       "executable": false
     },
     "src/core/features/operator/ui/unlinked-replies.tsx": {
@@ -6787,7 +6807,7 @@
       "executable": false
     },
     "src/core/features/records/repository.ts": {
-      "sha256": "b3f02436cfe3ff7ffddc2ec7eafc2a0d66f4b849f897ee569a5d2c78a8baecef",
+      "sha256": "0387a757f1133e786cc2b159a9807e643e4a1ba6364c19976d66505049638354",
       "executable": false
     },
     "src/core/features/records/routes.ts": {
@@ -6819,7 +6839,7 @@
       "executable": false
     },
     "src/core/features/records/shared.ts": {
-      "sha256": "1c1468e4a04f74c6d5addcc87908b8433cd8d17f26d66980dc65c75382642a84",
+      "sha256": "59b6ce9c8ebf14e1c19de1ece4a76a7515d71ec732426153356656724b64105e",
       "executable": false
     },
     "src/core/features/records/suppression-effects.ts": {
@@ -6831,11 +6851,11 @@
       "executable": false
     },
     "src/core/features/records/typed-field-history.ts": {
-      "sha256": "6fb61368d43e9616c6ed05ba98ff2bee57ac6651f53698480863db07c8393c83",
+      "sha256": "fee0215a3669afcd5807ae7bbfc8eb32665f99dfbae3b0f26dc5675381d8969d",
       "executable": false
     },
     "src/core/features/records/typed-fields.ts": {
-      "sha256": "cef9a7c068815f1e4efbddbf7cb1f4e1f9fe12948147368b5285a1ed10e0478d",
+      "sha256": "864a6d572f5b28568daea7cf482a19eabcf64acedd5e2c99e253a6e5bd0dc96c",
       "executable": false
     },
     "src/core/features/relationships/activity.ts": {
@@ -8579,7 +8599,7 @@
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
-      "sha256": "2683a23b9e9554c5702080c0d5bb53795bb2707585957f8c83e303cf7a61a7fc",
+      "sha256": "c2ccfab5e8ae24557f4f6d5d42fc1da16b102a763bc74cc6ed62349494bb28fa",
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
@@ -9507,7 +9527,7 @@
       "executable": false
     },
     "tests/support/typed-fields-proof.ts": {
-      "sha256": "2d8eb55a148a1744a337c5a74a13940c0477ad3c2a1a232a8dcd9291a00a1b1f",
+      "sha256": "224d82d14443d76d2f90ff8b69994e3e66a159288e1fb0ceef690365f222e201",
       "executable": false
     },
     "tests/support/upload-close-fixture.ts": {
