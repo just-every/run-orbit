@@ -25,7 +25,16 @@ function changedText(before:Record<string,any>,after:Record<string,any>,definiti
  if(changed.includes('custom_fields_json')){
   const oldValues=JSON.parse(before.custom_fields_json),newValues=JSON.parse(after.custom_fields_json);
   const labels=new Map(definitions.map(field=>[field.field_key,field.label]));
-  const display=(value:unknown)=>value===undefined||value===null||value===''?'Empty':typeof value==='string'?value:JSON.stringify(value);
+  const display=(value:unknown):string=>{
+   if(value===undefined||value===null||value==='')return 'Empty';
+   if(typeof value==='string'){
+    try{const structured=JSON.parse(value);if(structured&&typeof structured==='object')return display(structured);}catch{}
+    return value;
+   }
+   if(Array.isArray(value))return value.length?value.map(display).join('; '):'No items';
+   if(typeof value==='object')return Object.entries(value).map(([name,item])=>`${name}: ${display(item)}`).join('; ')||'No fields';
+   return String(value);
+  };
   for(const key of new Set([...Object.keys(oldValues),...Object.keys(newValues)])){
    if(JSON.stringify(oldValues[key])!==JSON.stringify(newValues[key]))text.push(`Changed ${labels.get(key)??key}: ${display(oldValues[key])} → ${display(newValues[key])}`);
   }
