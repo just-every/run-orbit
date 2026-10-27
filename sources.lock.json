@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "7e84292dfb1e01a10a36e69461bc7328ba6c089110a12b4d6c5355c1642a4d98",
+      "sha256": "71055a2a73c26ff432d7d407325e736b8a5814502f9bba3dcde0adff0a1f3c11",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "60b092264592e267cc626396e12a989504d3c7adc8530e80fe0d43e11c0294d5",
+      "sha256": "89f3e734f3ea9cfa3b7d196638834f36417a99324a1fe1813dbb437f50afea03",
       "executable": false
     },
     "DEMO.md": {
@@ -4763,7 +4763,7 @@
       "executable": false
     },
     "src/core/features/api/public-routes.ts": {
-      "sha256": "6bf50a725890eae163a0619752a7e1bb5ae20775d8777e188d10a4192338c45e",
+      "sha256": "1a7a350bb9c54e9b8b7a9a8ab06ef09ac55527977206f1742c3eec1474511ce5",
       "executable": false
     },
     "src/core/features/api/resources.ts": {
