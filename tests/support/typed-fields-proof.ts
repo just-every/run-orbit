@@ -24,7 +24,8 @@ export async function typedFieldsProof(){const f=await isolatedDatabase();try{co
   await configure({...definition,fieldKey:'synthetic_number',label:'Recorded amount',valueType:'number',required:false,unique:false,archived:true});
   const history=await t.json<any>(base+`/history?kind=${kind}&fieldKey=synthetic_number`,{},200);
   assert.deepEqual(history.revisions.map((r:any)=>({revision:r.revision,label:r.definition.label,type:r.definition.valueType,archived:r.definition.archived})),[{revision:3,label:'Recorded amount',type:'number',archived:1},{revision:2,label:'Recorded amount',type:'number',archived:0},{revision:1,label:'Synthetic number',type:'number',archived:0}],'archiving retains the original and renamed definition meaning in public history');
-  assert.ok(history.revisions.every((r:any)=>Number.isFinite(Date.parse(r.changedAt))));
+  assert.ok(history.revisions.every((r:any)=>Number.isFinite(Date.parse(r.changedAt))&&r.changedBy==='Sam Seller'),'each revision names when and who saved it');
+  assert.deepEqual(history.revisions.map((r:any)=>r.previous?.label??null),['Recorded amount','Synthetic number',null],'each revision carries the one before it');
   assert.equal(history.nextBeforeRevision,null);
   assert.equal((await t.call(base+`/history?kind=${kind}&fieldKey=synthetic_number&beforeRevision=invalid`)).status,400);
   assert.equal((await t.call(base+`/history?kind=${kind}&fieldKey=missing_field`)).status,404);
