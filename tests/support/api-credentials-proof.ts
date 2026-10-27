@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+import {strict as assert} from 'node:assert';
 import {createApp} from './app';
 import {createDependencies} from './dependencies';
 import {createId} from '../../src/core/shared/ids';
