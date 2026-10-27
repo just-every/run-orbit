@@ -3991,7 +3991,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "2470102f91b854e5f1de47cbfda23ec4e56aa812d937a52108e20b0234a7beee",
+      "sha256": "4bf43ecf4e48fa79fd3e7e3514a64eacfc792b9b668ae69543305437d6c924bf",
       "executable": false
     },
     "scripts/verification-reuse.sh": {

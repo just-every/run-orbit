@@ -17,6 +17,7 @@ const playwright = (config, files) => ({ files, args: ['exec', 'playwright', 'te
 // use their measured 6.8/5.4-minute local times; reviewed record mail and the expanded
 // browser flow are weighted too, so those larger paths balance honestly.
 // Folded archive callers carry their local transfer/rollback costs instead of old V2 weights.
+// Fold-domain weights below are the actual per-file case minutes from Verify 40424898123.
 // A file missing here counts as half a minute.
 const minutes = {
   'tests/core/records-complete.test.ts': 2.2, 'tests/core/today-brief.test.ts': 1.2,
@@ -28,8 +29,10 @@ const minutes = {
   'tests/core/capture-connector.test.ts': 0.8, 'tests/core/launch-provider-conflicts.test.ts': 0.8, 'tests/core/source-onboarding.test.ts': 8.5,
   'newtests/t096/archive-native.test.ts': 8.3, 'newtests/t096/archive-terminal-recovery.test.ts': 7.6, 'newtests/t096/archive-view-rollback.test.ts': 3.7,
   'newtests/t096/archive-import-recovery.test.ts': 3.4, 'newtests/t096/archive-cli-native.test.ts': 2.4, 'newtests/t096/archive-upgrade-preflight.test.ts': 1.4,
-  'newtests/t096/browser-journeys.test.ts': 12.5, 'newtests/t096/report-disclosure.test.ts': 8.5, 'newtests/t096/forms-native.test.ts': 10.2,
-  'newtests/t096/delegation-collaborator.test.ts': 1.9, 'newtests/t096/collaborator-lifecycle.test.ts': 2.5, 'newtests/t096/forward-upgrade.test.ts': 5.4,
+  'newtests/t096/browser-journeys.test.ts': 9.57, 'newtests/t096/report-disclosure.test.ts': 10.28, 'newtests/t096/forms-native.test.ts': 8.87,
+  'newtests/t096/delegation-collaborator.test.ts': 1.99, 'newtests/t096/collaborator-lifecycle.test.ts': 2.14, 'newtests/t096/forward-upgrade.test.ts': 7.49,
+  'newtests/t096/collaborator-links.test.ts': 0.39, 'newtests/t096/emitted-restart.test.ts': 0.40,
+  'newtests/t096/empty-native.test.ts': 0.40, 'newtests/t096/report-time-boundaries.test.ts': 1.64, 'newtests/t096/report-population-race.test.ts': 0.37,
 };
 const weight = file => minutes[file] ?? 0.5;
 /** Longest first into the lightest bin: a deterministic, balanced split of files into `count` shards. */
@@ -90,7 +93,7 @@ export function verificationPlan({ journeys = false } = {}) {
     ...Object.fromEntries(Object.entries(operatorShards).map(([name, file]) => [name, prepared(gate('run', 'build:app'), nodeTests([file], `verification/${name}-results.jsonl`, 'node'))])),
     'rer-checkouts': prepared(gate('run', 'build:app'), nodeTests(rer.filter(file => !operatorFiles.includes(file)), 'verification/rer-checkouts-results.jsonl', 'node')),
     ...Object.fromEntries(balance(archive, 4).map((files, index) => [`fold-archive-${index}`, [gate('run', 'build:app'), nodeTests(files, `verification/fold-archive-${index}-results.jsonl`)]])),
-    ...Object.fromEntries(balance(fold.filter(file => !archive.includes(file) && !lineage.includes(file)), 3).map((files, index) => [`fold-domain-${index}`, [gate('run', 'build:app'), nodeTests(files, `verification/fold-domain-${index}-results.jsonl`)]])),
+    ...Object.fromEntries(balance(fold.filter(file => !archive.includes(file) && !lineage.includes(file)), 4).map((files, index) => [`fold-domain-${index}`, [gate('run', 'build:app'), nodeTests(files, `verification/fold-domain-${index}-results.jsonl`)]])),
     journeys: prepared(gate('run', 'build:app'), nodeTests(journeyFiles, 'verification/journeys-results.jsonl', 'node')),
   };
   const planned = Object.values(plan).flatMap(gates => gates.flatMap(stage => stage.files ?? []));
@@ -102,25 +105,32 @@ export function verificationPlan({ journeys = false } = {}) {
 
 export const capacityExecution = status => ({ runner: 'emitted-worker', name: 'RECORD-006 DATA-001 DATA-002 BASE-DATA-001 complete declared-capacity search, archive roundtrip and erasure', file: 'tests/performance/records-capacity.ts', status });
 
-// Whole-shard minutes from successful Verify 40412666211. Preserve each shard's
-// assertions, isolated state and exact-commit receipt; only runner assignment
-// changes. Seven test runners plus the source/build runner cap push fan-out at 8.
+// Actual test-step minutes from Verify 40424898123, excluding each runner's
+// measured ~0.5-minute setup. Fold-domain weights sum that run's per-file times
+// after splitting its 18.32-minute shard across four unchanged file groups.
+// Seven runners serialized ~223 minutes of tests into a 38.62-minute Verify.
+// Twenty test runners plus one source/build runner budget ~12.3 minutes at 1.1
+// imbalance, then setup and the serial plan/build/aggregate (~2 minutes). This
+// targets the 18.47-minute baseline; single unchanged files still exceed 10 minutes.
 const shardMinutes = {
-  'core-0': 9.70, 'core-1': 12.25, 'core-2': 9.30, 'core-3': 8.27, 'core-4': 11.68,
-  'core-5': 14.98, 'core-6': 10.80, 'core-7': 13.30, 'core-8': 12.53, 'core-9': 12.87,
-  'fold-accepted-main': 16.37, 'fold-archive-0': 8.90, 'fold-archive-1': 6.58,
-  'fold-archive-2': 4.53, 'fold-archive-3': 7.12, 'fold-domain-0': 13.77,
-  'fold-domain-1': 15.72, 'fold-domain-2': 17.47, 'runtime-launch': 3.58,
-  'runtime-delegation': 5.43, 'runtime-browser': 11.95, 'rer-checkouts': 9.38,
-  'rer-operator-desktop': 3.27, 'rer-operator-phone': 3.22,
-  'rer-operator-small-phone': 3.63, 'rer-operator-actions': 3.33, journeys: 10,
+  'core-0': 7.19, 'core-1': 11.87, 'core-2': 8.67, 'core-3': 9.76, 'core-4': 12.43,
+  'core-5': 14.49, 'core-6': 10.62, 'core-7': 13.78, 'core-8': 8.50, 'core-9': 10.32,
+  'fold-accepted-main': 11.01, 'fold-archive-0': 8.39, 'fold-archive-1': 6.92,
+  'fold-archive-2': 6.05, 'fold-archive-3': 4.49,
+  'runtime-launch': 2.35, 'runtime-delegation': 4.51, 'runtime-browser': 9.35,
+  'rer-checkouts': 8.74, 'rer-operator-desktop': 2.25, 'rer-operator-phone': 2.57,
+  'rer-operator-small-phone': 2.68, 'rer-operator-actions': 1.89, journeys: 10,
 };
 export function verificationBatches({ journeys = false } = {}) {
-  const names = Object.keys(verificationPlan({ journeys })).filter(name => name !== 'source');
-  const bins = Array.from({ length: 7 }, () => ({ minutes: 0, shards: [] }));
-  for (const name of names.sort((a, b) => (shardMinutes[b] ?? 1) - (shardMinutes[a] ?? 1) || a.localeCompare(b))) {
+  const plan = verificationPlan({ journeys });
+  const names = Object.keys(plan).filter(name => name !== 'source');
+  const duration = name => name.startsWith('fold-domain-')
+    ? plan[name].flatMap(stage => stage.files ?? []).reduce((sum, file) => sum + weight(file), 0)
+    : shardMinutes[name] ?? 1;
+  const bins = Array.from({ length: 20 }, () => ({ minutes: 0, shards: [] }));
+  for (const name of names.sort((a, b) => duration(b) - duration(a) || a.localeCompare(b))) {
     const bin = bins.reduce((smallest, candidate) => candidate.minutes < smallest.minutes ? candidate : smallest);
-    bin.minutes += shardMinutes[name] ?? 1;
+    bin.minutes += duration(name);
     bin.shards.push(name);
   }
   return bins.map(({ shards }, index) => ({ batch: `batch-${index}`, shards,
