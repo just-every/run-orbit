@@ -44,9 +44,9 @@ export function mailchimpWebhookRoutes(db:D1Database,config:MailchimpConfig){
    const contacts=(await db.prepare("SELECT record_id FROM signal_links WHERE signal_id=? AND record_type='contact'").bind(result.id).all<{record_id:string}>()).results.map(row=>row.record_id);
    const memberId=subscriberHash(email),statements:D1PreparedStatement[]=[];
    for(const contactId of contacts){
-    if(kind==='unsubscribe'||kind==='cleaned')statements.push(withdrawalStatement(db,null,contactId,'Mailchimp',subjects[kind]),linkStatement(db,null,contactId,{listId,memberId,uniqueEmailId:data.id||null,status:kind==='cleaned'?'cleaned':'unsubscribed',hash:null}));
-    // A subscribe is recorded, never trusted to lift a stop; a stopped contact's member is set back to unsubscribed on the next handoff.
-    if(kind==='subscribe')statements.push(linkStatement(db,null,contactId,{listId,memberId,uniqueEmailId:data.id||null,status:'subscribed',hash:null}));
+    if(kind==='unsubscribe'||kind==='cleaned')statements.push(withdrawalStatement(db,null,contactId,'Mailchimp',subjects[kind]),linkStatement(db,null,contactId,{listId,memberId,uniqueEmailId:data.id||null,status:kind==='cleaned'?'cleaned':'unsubscribed',hash:null,reported:true}));
+    // A subscribe is recorded, never trusted to lift a stop; the next handoff reads a stopped contact's member and sets it back to unsubscribed.
+    if(kind==='subscribe')statements.push(linkStatement(db,null,contactId,{listId,memberId,uniqueEmailId:data.id||null,status:'subscribed',hash:null,reported:true}));
    }
    if(statements.length)await db.batch(statements);
    return c.json({received:true,signalId:result.id});

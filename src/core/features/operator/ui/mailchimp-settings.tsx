@@ -5,8 +5,10 @@ import {formatDateTime} from './formatters';
 import {MailchimpPreview} from './mailchimp-preview';
 import './mailchimp-settings.css';
 
-interface Status {state:'connected'|'unresolved-setup';reason:string|null;held:boolean;owner:boolean;ownership:string;audience:{name:string;link:string}|null;checkedAt:string|null;webhookCheckedAt:string|null;lastEventAt:string|null;webhookUrl:string|null;fields:string[]}
+interface Status {state:'connected'|'unresolved-setup';reason:string|null;held:boolean;owner:boolean;ownership:string;audience:{name:string;link:string}|null;checkedAt:string|null;webhookCheckedAt:string|null;lastEventAt:string|null;webhookUrl:string|null;fields:string[];deletions:Deletion[]}
+interface Deletion {id:string;state:'queued'|'deleted'|'failed'|'uncertain'|'paused'|'held';reason:string|null;requestedAt:string;updatedAt:string;audience:string|null}
 const phases={connected:'Connected',unresolved:'Unresolved setup',disconnected:'Not connected · unresolved setup'} as const;
+const deletionStates={queued:'Waiting to send',deleted:'Deleted in Mailchimp',failed:'Refused by Mailchimp',uncertain:'Not confirmed yet',paused:'Paused',held:'Held for your confirmation'} as const;
 /** INTEGRATE-007: the owner connects one Mailchimp audience; every operator sees its real state and previews the handoff. */
 export function MailchimpSettings(){
  const [data,setData]=useState<Status>(),[error,setError]=useState(''),[notice,setNotice]=useState(''),[apiKey,setApiKey]=useState(''),[options,setOptions]=useState<{id:string;name:string;members:number|null}[]>([]),[audience,setAudience]=useState(''),[busy,setBusy]=useState(false);
@@ -30,6 +32,8 @@ export function MailchimpSettings(){
      {data.webhookUrl&&<><h3>Unsubscribes from Mailchimp</h3><p>In Mailchimp, open the audience, then Settings and Webhooks. Add this address, and tick Unsubscribes and Cleaned addresses for changes made by subscribers, by account admins and through the API. Keep it private: connecting again replaces it.</p><code className="mailchimp-webhook">{data.webhookUrl}</code><p>{data.webhookCheckedAt?`Mailchimp checked this address ${formatDateTime(data.webhookCheckedAt)}.`:'Mailchimp has not checked this address yet.'} Mailchimp can reach it only on a public HTTPS address.</p></>}
     </>}
    </>:<p>Ask the installation owner to connect Mailchimp or change its audience.</p>}
+   {data.deletions.length>0&&<><h3>Deletions in Mailchimp</h3><p>Erasing a contact in Orbit asks Mailchimp to permanently delete the matching member. Each request is tracked here, apart from the erasure, until Mailchimp confirms it.</p>
+    <ul className="mailchimp-deletions">{data.deletions.map(item=><li key={item.id} data-state={item.state}><strong>{deletionStates[item.state]}</strong><span>Requested {formatDateTime(item.requestedAt)}{item.audience?` for the audience “${item.audience}”`:''}{item.state==='deleted'?`, confirmed ${formatDateTime(item.updatedAt)}.`:'.'}</span>{item.reason&&<span>{item.reason}</span>}{data.owner&&['held','failed','uncertain'].includes(item.state)&&<button type="button" disabled={busy} onClick={()=>void run(`deletions/${item.id}/retry`,{},'POST','Deletion confirmed. Orbit asked Mailchimp again.')}>Confirm deletion retry</button>}</li>)}</ul></>}
    {phase==='connected'&&<MailchimpPreview fields={data.fields}/>}
   </>}
  </section>;

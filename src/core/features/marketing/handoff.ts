@@ -28,7 +28,7 @@ export async function plan(db:D1Database,settings:ConnectionSettings,fields:Hand
   const consent=given.get(row.id)??null,memberId=subscriberHash(row.email),saved=links.get(row.id),member=saved&&saved.listId===audience.id&&saved.memberId===memberId?saved:null;
   const stopped=row.contactability==='do_not_contact'||consent?.state==='withdrawn'||Boolean(member&&stoppedStatuses.includes(member.status));
   const base={contactId:row.id,name:row.name??row.email,email:row.email.trim(),company:row.company,memberId,member};
-  if(stopped){items.push({...base,group:'stopped',reason:stopReason(row,consent?.state==='withdrawn',member),consent:null,action:!member?'check':['subscribed','pending'].includes(member.status)?'unsubscribe':'none'});continue;}
+  if(stopped){items.push({...base,group:'stopped',reason:stopReason(row,consent?.state==='withdrawn',member),consent:null,action:!member||member.reported?'check':['subscribed','pending'].includes(member.status)?'unsubscribe':'none'});continue;}
   if(consent?.state!=='given'){items.push({...base,group:'unknown',reason:'No marketing consent recorded in Orbit',consent:null,action:'none'});continue;}
   const merge:Record<string,string>={},[first='',...rest]=(row.name??'').trim().split(/\s+/).filter(Boolean);
   if(selected.includes('name')&&settings.mergeTags.includes('FNAME'))merge.FNAME=first;

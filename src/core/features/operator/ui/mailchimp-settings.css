@@ -14,4 +14,7 @@
 .mailchimp-group ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
 .mailchimp-group li { overflow-wrap: anywhere; }
 .mailchimp-action { color: var(--operator-muted, #4b5563); }
+.mailchimp-deletions { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.mailchimp-deletions li { display: grid; gap: 4px; justify-items: start; padding-top: 8px; border-top: 1px solid var(--operator-border, #d8dce3); overflow-wrap: anywhere; min-width: 0; }
+.mailchimp-deletions li[data-state="failed"] strong, .mailchimp-deletions li[data-state="held"] strong { color: #a35a00; }
 @media (min-width: 1100px) { .mailchimp-groups { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

@@ -6,6 +6,7 @@ import {isFullOperator} from '../access/identity-class';
 import {requireRecord,RecordError} from '../records/shared';
 import {handoffFields,MailchimpError,type MailchimpConfig} from './contracts';
 import {audiences,check,chooseAudience,connect,connection,disconnect,openSealed,ownership} from './connection';
+import {confirmDeletion,deletionViews} from './deletions';
 import {consentStatement,withdrawalStatement} from './ledger';
 import {handoff,plan,type PlanItem} from './handoff';
 import {MailchimpProviderError,refusalMessage} from './provider';
@@ -22,7 +23,7 @@ export function mailchimpSettingsRoutes(db:D1Database,config:MailchimpConfig){
  app.get('/',async c=>{
   const owner=await isOwner(db,c.get('operator').operatorId),status=await connection(db),settings=status.settings;
   const webhookUrl=owner&&status.held&&settings?.audience?`${trustedOrigin(config.origin??new URL(c.req.url).origin,c.req.url)}/api/v1/signals/mailchimp/${(await openSealed(db,config)).webhookToken}`:null;
-  return c.json({state:status.state,reason:status.reason,held:status.held,owner,ownership,audience:settings?.audience?{name:settings.audience.name,link:status.link}:null,checkedAt:settings?.checkedAt??null,webhookCheckedAt:settings?.webhookCheckedAt??null,lastEventAt:status.lastEventAt,webhookUrl,fields:handoffFields.filter(field=>field==='name'?settings?.mergeTags.includes('FNAME'):settings?.mergeTags.includes('PHONE'))});
+  return c.json({state:status.state,reason:status.reason,held:status.held,owner,ownership,audience:settings?.audience?{name:settings.audience.name,link:status.link}:null,checkedAt:settings?.checkedAt??null,webhookCheckedAt:settings?.webhookCheckedAt??null,lastEventAt:status.lastEventAt,webhookUrl,fields:handoffFields.filter(field=>field==='name'?settings?.mergeTags.includes('FNAME'):settings?.mergeTags.includes('PHONE')),deletions:await deletionViews(db)});
  });
  app.use('*',async(c,next)=>{if(!await isOwner(db,c.get('operator').operatorId))throw new MailchimpError(403,'Only the installation owner connects Mailchimp until TEAM-005.');await next();});
  app.post('/connect',async c=>{const input=z.object({apiKey:z.string().min(10).max(100)}).strict().safeParse(await c.req.json());if(!input.success)throw new MailchimpError(400,'Enter the Mailchimp API key.');await connect(db,config,input.data.apiKey,c.get('operator').operatorId);return c.json({connected:true});});
@@ -30,6 +31,7 @@ export function mailchimpSettingsRoutes(db:D1Database,config:MailchimpConfig){
  app.get('/audiences',async c=>c.json({audiences:await audiences(db,config)}));
  app.put('/audience',async c=>{const input=z.object({audienceId:z.string().min(1).max(32)}).strict().safeParse(await c.req.json());if(!input.success)throw new MailchimpError(400,'Choose a Mailchimp audience.');return c.json({audience:await chooseAudience(db,config,input.data.audienceId,c.get('operator').operatorId)});});
  app.post('/disconnect',async c=>{await disconnect(db,c.get('operator').operatorId);return c.json({disconnected:true});});
+ app.post('/deletions/:id/retry',async c=>{const id=c.req.param('id');if(!/^[0-9A-Z]{26}$/.test(id))throw new MailchimpError(404,'This deletion is finished or does not exist.');await confirmDeletion(db,config,id,c.get('operator').operatorId);return c.json({deletions:await deletionViews(db)});});
  return app;
 }
 
