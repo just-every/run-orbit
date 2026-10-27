@@ -857,7 +857,7 @@ The owner-approved scope entry (16 October 2026) maps to named clauses as follow
 
 ## Status
 
-Judged from the code and tests at commit `9069ba27022fca83f1dabac6054f1c562871debc` (27 October 2026).
+Judged from the code and tests at commit `b300e460a20da7f09122dc4a9157499430c4f8d5` (27 October 2026).
 
 On 27 October 2026, ct reviewed main `32b5b45ff201e65606dfad369c171df5a1db22ac` and approved the five engineering policies with riders.
 
