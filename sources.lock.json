@@ -6075,7 +6075,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/typed-field-settings.tsx": {
-      "sha256": "d0dabbb0801775ffb2f77bd4e83165c670064c1b6dda8267cd61b5e23501ebdb",
+      "sha256": "c02588e15cc16b031f0f62447259ff418396c9028cebb603c54cc0b59300a882",
       "executable": false
     },
     "src/core/features/operator/ui/unlinked-replies.tsx": {
@@ -8567,7 +8567,7 @@
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
-      "sha256": "fef62c163e20634e234eabfcd0338465738ccc4766a4b9da4150e2db2d68d6d4",
+      "sha256": "c4e02d81d521d32cca299c267e63e72c19f2630c2a2263c6531d8864437e4b41",
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
