@@ -1,7 +1,8 @@
+import {identityMatch,identityPatterns} from '../records/erasure-identity';
 import type {RecordKind} from '../records/shared';
 
 /** Withdraw local authority before the native erasure removes graph edges. */
-export function apiCredentialErasure(db:D1Database,kind:RecordKind,id:string){
+export function apiCredentialErasure(db:D1Database,kind:RecordKind,id:string,identities:string[]=[]){
  const deals=kind==='opportunity'?'SELECT ? AS id':kind==='contact'?'SELECT opportunity_id AS id FROM opportunity_contacts WHERE contact_id=?':'SELECT id FROM opportunities WHERE company_id=?';
- return [db.prepare(`DELETE FROM api_credentials WHERE EXISTS(SELECT 1 FROM json_each(records_json) r WHERE r.value IN(${deals}))`).bind(id)];
+ return [db.prepare(`DELETE FROM api_credentials WHERE EXISTS(SELECT 1 FROM json_each(records_json) r WHERE r.value IN(${deals}))`).bind(id),...identities.map(identity=>db.prepare(`DELETE FROM api_credentials WHERE ${identityMatch('name')}`).bind(...identityPatterns(identity)))];
 }

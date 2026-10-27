@@ -24,7 +24,7 @@ import {messageContactErasure} from '../drafts/privacy';
 export class DataRepository {
  constructor(readonly db:D1Database){}
  async remove(kind:RecordKind,id:string,actor:string,sessionId?:string){const capture=captureImportErasure(this.db),db=capture.db;const record=await requireRecord(db,kind,id);const statements:D1PreparedStatement[]=[];let contactEmails:string[]=[];
-  statements.push(...apiCredentialErasure(db,kind,id));
+  if(kind!=='contact')statements.push(...apiCredentialErasure(db,kind,id));
   if(kind!=='opportunity')statements.push(...ownershipErasureStatements(db,kind,id));
   statements.push(...forecastErasureStatements(db,kind,id,typeof record.email==='string'?[record.email]:[]));
   if(kind!=='contact')statements.push(...recordMailRecordErasure(db,kind,id));
@@ -48,6 +48,7 @@ export class DataRepository {
    const aliases=(await db.prepare("SELECT identity_key FROM record_aliases WHERE record_type='contact' AND survivor_id=?").bind(id).all<{identity_key:string}>()).results.map(row=>row.identity_key);
    const identities=[...new Set([record.email,...aliases].filter((value):value is string=>typeof value==='string'&&value.length>0))];
    contactEmails=identities;
+   statements.push(...apiCredentialErasure(db,kind,id,identities));
    statements.push(...messageContactErasure(db,identities));
    statements.push(...formAbuseErasure(db,identities));
    statements.push(...taskContactErasure(db,id,identities));

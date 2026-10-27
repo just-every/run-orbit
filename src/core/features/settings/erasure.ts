@@ -19,7 +19,7 @@ export async function eraseOperator(db:D1Database,id:string,actor:string){
   const others=(await db.prepare("SELECT display_name AS name FROM operators WHERE id<>? AND instr(lower(display_name),lower(?))>0 UNION ALL SELECT name FROM contacts WHERE instr(lower(name),lower(?))>0").bind(id,name,name).all<{name:string|null}>()).results;
   if(others.some(other=>other.name&&containsWord(other.name,name)))throw new RecordError(409,'Another operator or contact has a name containing this display name, so Orbit cannot tell whose name attributed text means. Nothing was erased.');
  }
- const now=new Date().toISOString(),statements=[db.prepare('DELETE FROM api_credentials WHERE principal_id=?').bind(id),db.prepare('DELETE FROM sessions WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_proofs WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_bindings WHERE operator_id=?').bind(id),db.prepare('DELETE FROM notifications WHERE operator_id=?').bind(id)];
+ const now=new Date().toISOString(),statements=[db.prepare(`DELETE FROM api_credentials WHERE principal_id=? OR ${identityMatch('name')}`).bind(id,...identityPatterns(operator.email)),db.prepare('DELETE FROM sessions WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_proofs WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_bindings WHERE operator_id=?').bind(id),db.prepare('DELETE FROM notifications WHERE operator_id=?').bind(id)];
  statements.push(...ownershipOperatorErasure(db,id));
  statements.push(...forecastErasureStatements(db,'operator',id,[operator.email]));
  statements.push(...await messageReviewOperatorErasure(db,id,name,operator.email));
