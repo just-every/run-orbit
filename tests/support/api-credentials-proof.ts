@@ -18,7 +18,7 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  assert.equal((await request('','POST',definition,{Origin:'https://foreign.example.test'})).status,403);
  const peer=await deps.auth.createSession(principalId);
  assert.equal((await request('','POST',definition,{Cookie:'__Host-orbit_session='+peer.token})).status,403);
- for(const change of [{expiresAt:now},{expiresAt:'2027-10-27T00:00:00.000Z'},{operations:['message.approve']},{fields:['recipient_email']},{recordIds:[]},{recordIds:[createId()]},{principalId:createId()}])assert.ok((await request('','POST',{...definition,...change})).status>=400);
+ for(const change of [{expiresAt:now},{expiresAt:new Date(clockNow.getTime()+90*86400000+1).toISOString()},{expiresAt:'2027-10-27T00:00:00.000Z'},{operations:['message.approve']},{fields:['recipient_email']},{recordIds:[]},{recordIds:[createId()]},{principalId:createId()}])assert.ok((await request('','POST',{...definition,...change})).status>=400);
  const response=await request('','POST',definition);assert.equal(response.status,201,await response.clone().text());
  assert.equal(response.headers.get('cache-control'),'no-store');
  const issued=await response.json() as {credential:{id:string;revision:number;expiresAt:string};secret:string},id=issued.credential.id;
