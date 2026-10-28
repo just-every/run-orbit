@@ -39,7 +39,7 @@
 .operator-nav a[aria-current="page"] { color: var(--ob-ink); font-weight: 650; }
 .operator-nav a[aria-current="page"]::after { opacity: 1; transform: none; background: var(--ob-tangerine); }
 .operator-header > form { margin-left: auto; }
-.operator-header .operator-back-link { min-height: 40px; }
+.operator-header :is(.operator-back-link, .operator-menu-toggle) { min-height: 44px; min-width: 44px; }
 
 /* Page title: a quiet eyebrow, the big ink title, a hairline. */
 .operator-main { width: min(1440px, 100%); min-width: 0; margin: 0 auto; padding: clamp(28px, 3.6vw, 52px) var(--ob-gutter) 80px; }

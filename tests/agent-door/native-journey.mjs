@@ -43,9 +43,14 @@ export default async function sellerDay({tool,request,origin,cookie}) {
  assert.deepEqual(write?.resource,{kind:'opportunity',id},'native write audit identifies its actual opportunity');
 }
 
-// PENDING-CT-SURFACE-2026-10-28: the complete CLI conformance run is refused
-// while CONTRACT.md lacks BASE-AGENT-010. The existing native proof now also
-// asserts resource data.code, current-policy replay refusal and an independent
-// native reviewer session. No access/security tool is declared, so sponsor
-// self-widening fixtures are inapplicable; the standard handoff assignee still
-// uses the shared {$sponsor:'id'} fixture syntax.
+// The installed 0.2.86 runner exercises the native target, resource refusal,
+// replay admission, signed owner binding and independent reviewer lifecycle.
+// Access/security tools remain undeclared, so no self-widening probe applies.
+// PENDING-BASE-ARCHIVE-2026-10-28: 0.2.86 archive record-base succeeds,
+// but refresh-base still needs historical workflow matching at Base
+// edition-authoring/workflow-copies.mjs:51; archive-source.mjs:34 refuses it.
+// Keep the recorded release source; do not invent Git ancestry for an archive.
+// PENDING-BASE-INJECTION-2026-10-28: Base modules/agent-door/conformance/
+// journey.mjs:92 reissues completed mutations with a new key and their old
+// native revisions. public_update, save_handoff and draft_update must refuse
+// that stale request. Keep the injection assertions and native fences intact.

@@ -333,6 +333,31 @@
       }
     },
     {
+      "id": "fixture_contact",
+      "tool": "orbit.records.list",
+      "args": {
+        "kind": "contact",
+        "query": "Maya Chen",
+        "limit": 1
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
       "id": "public_company",
       "tool": "orbit.records.create",
       "args": {
@@ -432,8 +457,7 @@
       "args": {
         "kind": "contact",
         "record": {
-          "name": "Maya Chen",
-          "email": "buyer@example.test",
+          "name": "Elliot Carter",
           "company_id": {
             "$from": "public_company",
             "pointer": "/id"
@@ -751,7 +775,10 @@
           "$from": "opportunity",
           "pointer": "/id"
         },
-        "id": "seller-day"
+        "id": {
+          "$from": "opportunity",
+          "pointer": "/id"
+        }
       },
       "expect": [
         {
@@ -819,12 +846,12 @@
       "args": {
         "kind": "opportunity",
         "id": {
-          "$from": "opportunity",
-          "pointer": "/id"
+          "$from": "fixture",
+          "pointer": "/items/0/ref/id"
         },
         "contact_id": {
-          "$from": "contact",
-          "pointer": "/id"
+          "$from": "fixture_contact",
+          "pointer": "/items/0/ref/id"
         },
         "subject": "Brightwork next steps",
         "body": "Maya, here is the saved proposal outline."
@@ -880,7 +907,10 @@
           "$from": "draft",
           "pointer": "/id"
         },
-        "recipient_email": "buyer@example.test",
+        "recipient_email": {
+          "$from": "fixture_contact",
+          "pointer": "/items/0/fields/email"
+        },
         "subject": "Brightwork next steps",
         "body": "Maya, here is the revised saved proposal outline.",
         "expected_revision": {

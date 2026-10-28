@@ -69,7 +69,7 @@ export async function agentDoorProof() {
       assert.equal(response!.status,200);
       assert.equal((await response!.json() as {result:{protocolVersion:string}}).result.protocolVersion,version);
     }
-    const principal={person:{id:owner.operatorId},agent:{id:'ari',name:'Ari'},scopes:['records:read','records:write','handoffs:read','handoffs:write','events:read','drafts:read','drafts:write','briefs:read','sources:read','forecasts:read','forecasts:write','reports:read','reports:write','operations:read'],consent:'door-test-consent'};
+    const principal={person:{id:owner.operatorId},agent:{id:'ari',name:'Ari'},scopes:['records:read','records:write','handoffs:read','handoffs:write','events:read','drafts:read','drafts:write','briefs:read','risks:read','sources:read','forecasts:read','forecasts:write','reports:read','reports:write','operations:read'],consent:'door-test-consent'};
     const companyArgs={kind:'company',record:{name:'Brightwork Studio'},idempotency_key:'native-company'};
     assert.equal((await door.invoke('orbit.records.create',companyArgs,principal)).code,'policy_unset');
     const envelope=await policyEnvelope({origin,business:'door-company',seq:0,revision:0,signer:{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation}},autonomousPolicy());
@@ -133,6 +133,9 @@ export async function agentDoorProof() {
     const contact=await call('orbit.records.create',{kind:'contact',record:{name:'Maya Chen',email:'maya@example.test',company_id:companyId},idempotency_key:'native-contact'});
     const stage=await fixture.db.prepare('SELECT id FROM pipeline_stages ORDER BY position LIMIT 1').first<string>('id');
     const opportunity=await call('orbit.records.create',{kind:'opportunity',record:{title:'Brightwork Team plan',stage_id:stage,value_cents:750000,company_id:companyId,contact_ids:[contact.id],primary_contact_id:contact.id},idempotency_key:'native-opportunity'});
+    const risks=await call('orbit.risks.read',{id:opportunity.id});
+    assert.equal(risks.risks.deal.id,opportunity.id);
+    assert.ok(Array.isArray(risks.risks.findings),'native rule findings are available over MCP as JSON');
     const target=`opportunities/${opportunity.id}/handoffs/seller-day`;
     const handoff=await call('orbit.handoffs.read',{target});
     const content={title:'Prepare buyer follow-up',description:'Use the current customer context',assigneeId:owner.operatorId,dueAt:null,status:'open'};

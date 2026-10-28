@@ -12,6 +12,13 @@ export async function fullSeller(bindings:PlatformBindings,ctx:{person:{id:strin
   await nativeAuthority(bindings.DB,ctx.person.id);
 }
 
+async function readRisks(bindings:PlatformBindings,id:string) {
+  // Match the native findings route: dismissal state is already applied to
+  // each finding; its internal Map is not part of the JSON projection.
+  const {dismissed:_,...risks}=await dealRisks(bindings.DB,id);
+  return {risks};
+}
+
 async function readSignal(bindings:PlatformBindings,id:string) {
   const signal=await bindings.DB.prepare('SELECT id,source_id,source_event_id,type,subject,occurred_at,received_at FROM signals WHERE id=?').bind(id).first();
   if(!signal)throw new ToolRefusal('resource_unavailable');
@@ -28,7 +35,7 @@ export function evidenceTools(bindings:PlatformBindings) {
     read('signals','Read immutable signal evidence','Read the native signal and explicit record links. A signal is evidence, never approval.',['SIGNAL-001'],{id:string},args=>readSignal(bindings,String(args.id))),
     read('briefs','Prepare the seller’s day','Read the native brief with cited current records. Forecasts, promises and delivery remain independent facts.',['BRIEF-001','BRIEF-002'],{},async(_args,ctx)=>({brief:await buildBrief(bindings.DB,{operatorId:ctx.person.id})})),
     read('meetings','Read a cited meeting plan','Read the real meeting plan, unresolved attendees and cited evidence without creating a draft or sending.',['BRIEF-004'],{id:string},async(args,ctx)=>({plan:await buildMeetingPlan(bindings.DB,String(args.id),{operatorId:ctx.person.id})})),
-    read('risks','Read opportunity risks','Read native findings and cited evidence; no generated causal outcome is implied.',['AGENT-001'],{id:string},async args=>({risks:await dealRisks(bindings.DB,String(args.id))})),
+    read('risks','Read opportunity risks','Read native findings and cited evidence; no generated causal outcome is implied.',['AGENT-001'],{id:string},args=>readRisks(bindings,String(args.id))),
     read('sources','Read source metadata','Read source configuration metadata and intake status. Signing and provider credentials are excluded.',['SIGNAL-001'],{},async()=>({sources:(await bindings.DB.prepare('SELECT id,name,type,enabled,created_at,updated_at FROM signal_sources ORDER BY id').all()).results})),
     read('operations','Read native change witness','Read stable native state digests covering CRM fields, source-bound handoffs, drafts, outreach, timeline and current authority. It performs no provider or scheduler work.',['DELEGATE-001','RECORD-018'],{},async()=>{
       const result:Record<string,{rows:number;sha256:string}>={};
@@ -51,7 +58,7 @@ export function evidenceResources(bindings:PlatformBindings):ResourceDefinition[
       const id=pattern.exec(uri)?.[1];if(!id)return null;
       try {
         await fullSeller(bindings,ctx);
-        const result=tool==='orbit.signals.read'?await readSignal(bindings,id):tool==='orbit.meetings.read'?{plan:await buildMeetingPlan(bindings.DB,id,{operatorId:ctx.person.id})}:{risks:await dealRisks(bindings.DB,id)};
+        const result=tool==='orbit.signals.read'?await readSignal(bindings,id):tool==='orbit.meetings.read'?{plan:await buildMeetingPlan(bindings.DB,id,{operatorId:ctx.person.id})}:await readRisks(bindings,id);
         return {json:result,untrusted:true};
       } catch {return null;}
     }}));

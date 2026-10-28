@@ -406,7 +406,6 @@
   "durableObjectMigrations": [],
   "publicVariables": {
     "MAIL_PROVIDER": "sendgrid",
-    "MAIL_FROM": "",
     "MAIL_RELAY_URL": ""
   },
   "secretNames": [
@@ -418,7 +417,8 @@
     "MAIL_API_KEY",
     "SENDGRID_API_KEY",
     "OPENAI_API_KEY",
-    "ORBIT_FORM_TURNSTILE_SECRET"
+    "ORBIT_FORM_TURNSTILE_SECRET",
+    "MAIL_FROM"
   ],
   "schedules": [
     "* * * * *"

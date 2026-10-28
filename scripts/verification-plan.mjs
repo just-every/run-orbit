@@ -71,6 +71,7 @@ export function verificationPlan({ journeys = false } = {}) {
       gate('run', 'check:manifest'),
       gate('run', 'agent:surface'),
       gate('exec', 'rer', 'build'),
+      gate('exec', 'node', 'node_modules/@runeditrun/rer/cli/agent-door.mjs', '.', 'deploy.json'),
       gate('exec', 'node', 'scripts/publish-deployment-spec.mjs', '--check'),
       gate('run', 'typecheck'),
     ],

@@ -24,8 +24,8 @@ seller authority.
 Edit a permitted CRM field at its actual revision. Keep deal amount and forecast
 estimates separate from payment, legal acceptance and independently observed
 customer events. Prepare and revise an exact saved draft, then inspect it. Draft
-preparation does not approve, schedule or send a message. Orbit's current
-person-only exact-content customer-send boundary remains in force.
+preparation does not approve, schedule or send a message. Customer-send tools
+still need native integration with the aligned company-policy contract.
 
 ## Identity and policy
 
@@ -107,6 +107,13 @@ settings and policy after moving an installation.
 
 The source declaration is `agent-surface.json`; `pnpm exec tsx
 scripts/agent-surface.ts` regenerates it from the runtime registry. The Base
-runtime copy and the installed CLI are separate pins. Complete conformance and
-the broader customer-send contract reconciliation remain prerequisites to
-calling the full adoption ready.
+runtime copy and the installed CLI are separate pins. The published CLI is
+pinned to `@runeditrun/rer` 0.2.86. Its installed
+conformance entry runs against the production build in the existing source
+verification stage, and normal `rer verify` runs the same harness after the
+product checks. Base-delivered clauses are synchronized with `rer door clauses
+--write`; existing clause judgments remain unchanged.
+
+The current main contract supplies the aligned SURFACE requirements. Completing
+the customer-send and retained delegation integrations, the broader registry and
+client-data custody remains necessary for the full agent adoption.
