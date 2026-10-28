@@ -50,9 +50,10 @@ export function define<T extends z.ZodRawShape>(area:string,verb:string,schema:z
  authority?:ToolDefinition['authority'];
  run:(args:z.infer<z.ZodObject<T>>,ctx:ToolContext)=>Promise<unknown>;
 }):ToolDefinition{
- const {description,scope,run,classify,summary,revision,...rest}=options;
+ const {description,scope,run,classify,summary,revision,target,...rest}=options;
  return {name:`orbit.${area}.${verb}`,title:`${area} ${verb}`,description,scope:scope??`orbit.${area}.${rest.readOnly?'read':'write'}`,inputSchema:doorSchema(z.toJSONSchema(rest.widens===false?schema.strict():schema,{io:'input',unrepresentable:'any'})) as JsonSchemaObject,outputSchema:{type:'object'},...rest,
  classify:async(args,c)=>{await localFence(`orbit.${area}.${verb}`,args,c);return classify?classify(schema.parse(args),c):standard;},
+ ...(target?{target:async(args:Record<string,unknown>,c:ToolContext)=>{await nativeCall(()=>localFence(`orbit.${area}.${verb}`,args,c));return target(args,c);}}:{}),
  ...(summary?{summary:(args:Record<string,unknown>,c:ToolContext)=>summary(schema.parse(args),c)}:{}),
  ...(revision?{revision:(args:Record<string,unknown>,c:ToolContext)=>revision(schema.parse(args),c)}:{}),
  async run(args,ctx){await localFence(`orbit.${area}.${verb}`,args,ctx);const result=await nativeCall(()=>run(schema.parse(args),ctx));return{result:result??{saved:true}};}};

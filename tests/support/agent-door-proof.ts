@@ -12,6 +12,8 @@ import { signJws, policyEnvelope, autonomousPolicy } from '../../src/base/module
 import { snapshot } from '../../src/core/features/delegation/evidence';
 import type { PlatformBindings } from '../../src/core/platform/assets';
 import { emailLinkSignIn } from './email-link';
+import { random } from '../../src/core/features/delegation/protocol';
+import { challenge } from '../../src/core/features/delegation/token';
 
 // PENDING-SEED-2026-10-28: the full declarative journey still lacks coverage of
 // every declared tool/class and native grant-subset fixtures. BASE-AGENT shared
@@ -88,6 +90,18 @@ export async function exerciseAgentDoor(){
   assert.equal(buyer.body.result?.isError,false,JSON.stringify(buyer.body));const contactId=buyer.body.result.structuredContent.id;
   const opportunity=await call('orbit.records.create',{kind:'opportunity',fields:{title:'Northstar renewal',stage_id:stage,company_id:companyId,value_cents:1250000,contact_ids:[contactId],primary_contact_id:contactId},idempotency_key:'buyer-opportunity'});
   assert.equal(opportunity.body.result?.isError,false,JSON.stringify(opportunity.body));const opportunityId=opportunity.body.result.structuredContent.id;
+  // A real retained delegation credential must not disclose an unselected native
+  // target through the new attribution hook before its selection fence runs.
+  const nativeForm=(path:string,body:Record<string,string>)=>nativeApp.request(origin+path,{method:'POST',headers:{Origin:origin,Cookie:cookie},body:new URLSearchParams(body)});
+  const clientId='native-agent-target-reader',redirectUri='https://native-reader.example.test/callback',verifier=random();
+  assert.equal((await nativeForm('/delegation/clients',{id:clientId,redirect_uri:redirectUri})).status,303);
+  const consent=await nativeForm('/delegation/authorize',{client_id:clientId,redirect_uri:redirectUri,response_type:'code',state:random(),code_challenge:await challenge(verifier),code_challenge_method:'S256',account_id:'workspace',scope:'crm.evidence.read',targets:JSON.stringify([`opportunities/${opportunityId}`])});assert.equal(consent.status,303);
+  const authorizationCode=new URL(consent.headers.get('Location')!).searchParams.get('code')!;
+  const exchange=await nativeApp.request(origin+'/api/delegation/v1/token',{method:'POST',body:new URLSearchParams({grant_type:'authorization_code',client_id:clientId,redirect_uri:redirectUri,code:authorizationCode,code_verifier:verifier})});assert.equal(exchange.status,200);
+  const localToken=(await exchange.json() as {access_token:string}).access_token;
+  const localRead=await call('orbit.records.read',{kind:'opportunity',id:opportunityId,fields:['title']},localToken);assert.equal(localRead.body.result?.isError,false,JSON.stringify(localRead.body));
+  const outside=await call('orbit.records.read',{kind:'company',id:companyId,fields:['name']},localToken);assert.equal(code(outside),'not_found');
+  const outsideAudit=JSON.parse((await db.prepare("SELECT row FROM agent_door_audit WHERE json_extract(row,'$.tool')='orbit.records.read' ORDER BY sequence DESC LIMIT 1").first<{row:string}>())!.row);assert.equal(outsideAudit.resource,null);assert.equal(outsideAudit.code,'not_found');
   const target=`opportunities/${opportunityId}/handoffs/${randomUUID()}`;
   const source=await call('orbit.handoffs.read',{target});assert.equal(source.body.result?.isError,false,JSON.stringify(source.body));
   const selected=source.body.result.structuredContent;
