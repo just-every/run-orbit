@@ -42,7 +42,9 @@ Business policy editor. Existing selected delegation credentials may use MCP for
 their original evidence and handoff scopes; their selected targets, current
 client, sponsor and revocation continue to apply. They gain no draft or mail
 authority. The existing selected delegation HTTP API remains available during
-this adoption.
+this adoption with its native selected-consent rules. It has not yet moved to
+the shared policy pipeline; shared-door Pause currently governs shared-door
+calls. Completing that migration is required before full agent adoption.
 
 Business posts `{policy: "<signed JWS>"}` to `/api/rer/agent-policy`. Successful
 adoption returns only `adopted` and the door's class inventory. Missing,
@@ -61,7 +63,7 @@ permission remain separate requirements.
 | `orbit.drafts.read` | `drafts:read` | standard |
 | `orbit.drafts.update` | `drafts:write` | standard |
 | `orbit.events.list` | `events:read` | standard |
-| `orbit.forecasts.read` | `forecasts:read` | standard |
+| `orbit.forecasts.read` | `forecasts:read` | standard, sensitive |
 | `orbit.forecasts.update` | `forecasts:write` | standard |
 | `orbit.handoffs.read` | `handoffs:read` | standard |
 | `orbit.handoffs.upsert` | `handoffs:write` | standard |
@@ -71,9 +73,9 @@ permission remain separate requirements.
 | `orbit.records.list` | `records:read` | standard, sensitive |
 | `orbit.records.read` | `records:read` | standard, sensitive |
 | `orbit.records.update` | `records:write` | standard |
-| `orbit.reports.compute` | `reports:write` | standard |
-| `orbit.reports.preview` | `reports:read` | standard |
-| `orbit.reports.read` | `reports:read` | standard |
+| `orbit.reports.compute` | `reports:write` | standard, sensitive |
+| `orbit.reports.preview` | `reports:read` | standard, sensitive |
+| `orbit.reports.read` | `reports:read` | standard, sensitive |
 | `orbit.reports.update` | `reports:write` | standard |
 | `orbit.risks.read` | `risks:read` | standard |
 | `orbit.signals.list` | `signals:read` | standard |
@@ -84,7 +86,11 @@ permission remain separate requirements.
 
 Resource readers recheck current native visibility and scope. Absent and
 restricted CRM records are refused alike. Protected fields actually returned
-by the CRM projection add the `sensitive` class. Signal and source tools return
+by the CRM projection add the `sensitive` class. Forecasts returning protected
+CRM fields and report measurements derived from those fields carry the same
+class; an ordinary count does not become sensitive because unrelated private
+fields exist. `orbit.forecasts.read` can select one current `opportunity_id`;
+immutable saved snapshots retain their whole original result. Signal and source tools return
 metadata, not source signing keys or provider credentials. Outside text is
 untrusted and cannot change policy or establish approval.
 

@@ -29,13 +29,30 @@ export async function readRecord(bindings:PlatformBindings,who:ToolContext|Resou
   await localGrant(bindings.DB,who,`${{company:'companies',contact:'contacts',opportunity:'opportunities'}[kind]}/${id}`,'crm.evidence.read');
   return graph.getRecord(actor,{...actor,type:kind,id},fields);
 }
-export async function recordRisk(db:D1Database,records:RecordProjection[]):Promise<ClassAndFacts[]> {
-  for(const record of records) {
-    const schema=await db.prepare('SELECT fields_json FROM schema_types WHERE workspace_id=? AND name=?').bind(record.ref.workspaceId,record.kind).first<{fields_json:string}>();
-    const definitions=JSON.parse(schema?.fields_json??'{}');
-    if(Object.keys(record.fields).some(field=>privatePaths(field,definitions,record.fields).length)) return [...standard(),{class:'sensitive',facts:{kind:'protected_crm_fields',measure:records.length}}];
+/** Resolve native projected paths, including JSON columns, without treating an
+ * absent or null protected field as returned protected content. */
+export function projectedValue(fields:Record<string,unknown>,path:string):unknown {
+  if(Object.hasOwn(fields,path))return fields[path];
+  let value:unknown=fields;
+  for(const segment of path.split('.')) {
+    if(typeof value==='string'){try{value=JSON.parse(value);}catch{return undefined;}}
+    if(!value||typeof value!=='object'||!Object.hasOwn(value,segment))return undefined;
+    value=(value as Record<string,unknown>)[segment];
   }
-  return standard();
+  return value;
+}
+export async function recordRisk(db:D1Database,records:Array<{ref:{workspaceId:string};kind:string;fields:Record<string,unknown>}>):Promise<ClassAndFacts[]> {
+  const schemas=new Map<string,Record<string,{sensitivity?:string}>>();let protectedRecords=0;
+  for(const record of records) {
+    const key=record.ref.workspaceId+':'+record.kind;
+    if(!schemas.has(key)) {
+      const schema=await db.prepare('SELECT fields_json FROM schema_types WHERE workspace_id=? AND name=?').bind(record.ref.workspaceId,record.kind).first<{fields_json:string}>();
+      schemas.set(key,JSON.parse(schema?.fields_json??'{}'));
+    }
+    const definitions=schemas.get(key)!;
+    if(Object.keys(record.fields).some(field=>privatePaths(field,definitions,record.fields).some(path=>projectedValue(record.fields,path??field)!=null)))protectedRecords++;
+  }
+  return protectedRecords?[...standard(),{class:'sensitive',facts:{kind:'protected_crm_fields',measure:protectedRecords}}]:standard();
 }
 
 const fieldSchema={type:'object',properties:{

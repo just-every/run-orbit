@@ -33,7 +33,13 @@ step('definition','reports.update',{definition:{name:'Seller opportunities',desc
 step('report_preview','reports.preview',{id:from('definition','/id'),version:1,from:'2026-01-01T00:00:00Z',through:'2027-01-01T00:00:00Z'});
 step('report_snapshot','reports.compute',{id:from('definition','/id'),version:1,from:'2026-01-01T00:00:00Z',through:'2027-01-01T00:00:00Z',review_hash:from('report_preview','/reviewHash')});
 step('report_read','reports.read',{id:from('report_snapshot','/id')});
-step('forecast','forecasts.read',{});
+step('forecast','forecasts.read',{opportunity_id:from('opportunity','/id')});
+step('protected_opportunity','records.create',{kind:'opportunity',record:{title:'Protected native forecast',stage_id:from('fixture','/items/0/fields/stage_id'),value_cents:750000,custom_fields:{private_amount:1200}}});
+step('protected_forecast','forecasts.read',{opportunity_id:from('protected_opportunity','/id')},sensitive);
+step('protected_definition','reports.update',{definition:{name:'Protected native amount',description:'A native sum over protected CRM data.',aggregation:'count',unit:'opportunities',sourceTypes:['opportunity'],sourceOperation:'graph.read',sourceFields:['custom_fields_json'],groupBy:'custom_fields_json',filters:{id:from('protected_opportunity','/id')},currency:null,missingPolicy:'incomplete',lateArrival:'recompute',attributionModel:'none',attributionWindowDays:30}});
+step('protected_preview','reports.preview',{id:from('protected_definition','/id'),version:1,from:'2026-01-01T00:00:00Z',through:'2027-01-01T00:00:00Z'},sensitive);
+step('protected_snapshot','reports.compute',{id:from('protected_definition','/id'),version:1,from:'2026-01-01T00:00:00Z',through:'2027-01-01T00:00:00Z',review_hash:from('protected_preview','/reviewHash')},sensitive);
+step('protected_report','reports.read',{id:from('protected_snapshot','/id')},sensitive);
 step('forecast_update','forecasts.update',{id:from('opportunity','/id'),forecast:{probability:40,category:'pipeline',closeDate:null,schedules:[],reason:'CRM estimate from current buyer evidence'}});
 step('witness','operations.read',{});
 step('events','events.list',{limit:200});

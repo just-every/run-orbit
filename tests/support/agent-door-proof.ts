@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import {isolatedDatabase} from './isolated-database';
 import {identityResponse, operatorFromRequest} from '../../src/core/features/identity';
 import {orbitAgentDoor, orbitBusinessSettings} from '../../src/core/features/agent-door';
+import {SettingsRepository} from '../../src/core/features/settings/repository';
+import {localAgentCredentialProof} from './agent-door-local-proof';
 import {orbitPeople} from '../../src/core/features/agent-door/people';
 import {autonomousPolicy,policyEnvelope} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 
@@ -37,6 +39,14 @@ export async function agentDoorProof() {
     assert.equal(applied!.status,200,await applied!.text());
     assert.equal((await people.sponsor({sub:'business-owner'}))?.id,owner.operatorId);
     assert.equal(await people.sponsor({sub:owner.email}),null,'token email never supplies Business authority');
+    const settingsRepository=new SettingsRepository(fixture.db),teammate=await settingsRepository.invite('jamie@example.test','Jamie Rivera',owner.operatorId);
+    assert.equal(await people.sponsor({sub:'business-jamie'}),null,'native membership alone is not a Business binding');
+    const roster={...document,jti:crypto.randomUUID(),rev:2,team:[{id:'business-jamie',email:'jamie@example.test',name:'Jamie Rivera',role:'admin',invite:0}]};
+    const rosterApplied=await settings.handle(post('/api/rer/business-settings',{settings:await sign('rer-business-settings+jwt',roster)}));
+    assert.equal(rosterApplied!.status,200,await rosterApplied!.clone().text());
+    const mappedTeammate=await people.sponsor({sub:'business-jamie'});assert.equal(mappedTeammate?.id,teammate.id);
+    assert.deepEqual(await people.businessMember!(mappedTeammate!),{id:'business-jamie',role:'editor'});
+
     const door=orbitAgentDoor(bindings);
     const metadata=await door.handle(new Request(origin+'/.well-known/oauth-protected-resource/mcp'));
     assert.equal((await metadata!.json() as {resource:string}).resource,origin+'/mcp');
@@ -67,6 +77,8 @@ export async function agentDoorProof() {
     const validBusiness=await businessCall('orbit.records.read',{kind:'company',id:companyId});
     assert.equal(validBusiness.status,200);assert.equal(validBusiness.body.result.structuredContent.ref.id,companyId);
     assert.equal(validBusiness.body.result.isError,false);
+    const teammateCall=await businessCall('orbit.records.read',{kind:'company',id:companyId},{sub:'business-jamie',email:bindings.OWNER_EMAIL,act:{sub:'jamie-assistant',name:'Jules'}});
+    assert.equal(teammateCall.status,200,JSON.stringify(teammateCall.body));assert.equal(teammateCall.body.result.isError,false,'Business subject selects the teammate despite a different token email');
     const read=await door.invoke('orbit.records.read',{kind:'company',id:companyId},principal);
     assert.equal(read.outcome,'done',JSON.stringify(read));
     const current=(read.result as {ref:{revision:number}}).ref.revision;
@@ -108,10 +120,29 @@ export async function agentDoorProof() {
     const preview=await call('orbit.reports.preview',period);
     const report=await call('orbit.reports.compute',{...period,review_hash:preview.reviewHash,idempotency_key:'native-report-snapshot'});
     await call('orbit.reports.read',{id:report.id});
+    const privateOpportunity=await call('orbit.records.create',{kind:'opportunity',record:{title:'Protected amount',stage_id:stage,value_cents:750000,custom_fields:{private_amount:1200}},idempotency_key:'private-opportunity'});
+    const privateDefinition=await call('orbit.reports.update',{definition:{name:'Protected amount sum',description:'Native protected source measurement',aggregation:'count',unit:'opportunities',sourceTypes:['opportunity'],sourceOperation:'graph.read',sourceFields:['custom_fields_json'],groupBy:'custom_fields_json',filters:{id:privateOpportunity.id},currency:null,missingPolicy:'incomplete',lateArrival:'recompute',attributionModel:'none',attributionWindowDays:30},idempotency_key:'private-definition'});
+    const privatePeriod={...period,id:privateDefinition.id};
+    const privatePreview=await call('orbit.reports.preview',privatePeriod);
+    assert.equal(privatePreview.values.value,1);assert.ok(JSON.stringify(privatePreview.values.groups).includes('private_amount'));
+    const privateReport=await call('orbit.reports.compute',{...privatePeriod,review_hash:privatePreview.reviewHash,idempotency_key:'private-report'});
+    await call('orbit.forecasts.read',{opportunity_id:privateOpportunity.id});
+    const sensitiveBlocked=autonomousPolicy();sensitiveBlocked.rules.push({id:'protected',class:'sensitive',do:'blocked'});
+    const blockEnvelope=await policyEnvelope({origin,business:'door-company',seq:1,revision:1,signer:{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation}},sensitiveBlocked);
+    assert.equal((await door.handle(post('/api/rer/agent-policy',{policy:blockEnvelope.policy})))!.status,200);
+    for(const [name,args]of [['orbit.forecasts.read',{opportunity_id:privateOpportunity.id}],['orbit.reports.preview',privatePeriod],['orbit.reports.read',{id:privateReport.id}]] as const) {
+      const refused=await door.invoke(name,args,principal);assert.equal(refused.code,'policy_blocked',JSON.stringify(refused));
+    }
+    await call('orbit.forecasts.read',{opportunity_id:opportunity.id});
+    await call('orbit.reports.read',{id:report.id});
+    assert.equal((await door.invoke('orbit.reports.compute',{...privatePeriod,review_hash:privatePreview.reviewHash,idempotency_key:'blocked-private-compute'},principal)).code,'policy_blocked');
     const events=await call('orbit.events.list',{limit:200});
     assert.ok(events.events.some((event:any)=>event.actor.kind==='agent'&&event.actor.label==='Ari for Morgan Lee'&&event.native_activity_id),'native activity is the retained event source');
+    await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId);
     const witness=await call('orbit.operations.read',{});
     assert.ok(witness.record_mail_drafts.rows>0);
+    await settingsRepository.remove(teammate.id,owner.operatorId,undefined,owner.sessionId);
+    assert.equal((await businessCall('orbit.records.read',{kind:'company',id:companyId},{sub:'business-jamie',act:{sub:'jamie-assistant',name:'Jules'}})).status,401,'native teammate removal overrides a still-applied Business mapping');
     await fixture.db.prepare('UPDATE operators SET email=? WHERE id=?').bind('renamed@example.test',owner.operatorId).run();
     assert.equal((await people.sponsor({sub:'business-owner'}))?.id,owner.operatorId);
     await fixture.db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(owner.operatorId).run();

@@ -67,7 +67,8 @@
       "scope": "forecasts:read",
       "readOnly": true,
       "classes": [
-        "standard"
+        "standard",
+        "sensitive"
       ],
       "clauses": [
         "FORECAST-001"
@@ -187,7 +188,8 @@
       "scope": "reports:write",
       "readOnly": false,
       "classes": [
-        "standard"
+        "standard",
+        "sensitive"
       ],
       "clauses": [
         "REPORT-001"
@@ -198,7 +200,8 @@
       "scope": "reports:read",
       "readOnly": true,
       "classes": [
-        "standard"
+        "standard",
+        "sensitive"
       ],
       "clauses": [
         "REPORT-001"
@@ -209,7 +212,8 @@
       "scope": "reports:read",
       "readOnly": true,
       "classes": [
-        "standard"
+        "standard",
+        "sensitive"
       ],
       "clauses": [
         "REPORT-001"
@@ -1023,11 +1027,239 @@
     {
       "id": "forecast",
       "tool": "orbit.forecasts.read",
-      "args": {},
+      "args": {
+        "opportunity_id": {
+          "$from": "opportunity",
+          "pointer": "/id"
+        }
+      },
       "expect": [
         {
           "class": "standard",
           "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "protected_opportunity",
+      "tool": "orbit.records.create",
+      "args": {
+        "kind": "opportunity",
+        "record": {
+          "title": "Protected native forecast",
+          "stage_id": {
+            "$from": "fixture",
+            "pointer": "/items/0/fields/stage_id"
+          },
+          "value_cents": 750000,
+          "custom_fields": {
+            "private_amount": 1200
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "protected_forecast",
+      "tool": "orbit.forecasts.read",
+      "args": {
+        "opportunity_id": {
+          "$from": "protected_opportunity",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        },
+        {
+          "class": "sensitive",
+          "facts": {
+            "kind": "protected_crm_fields",
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "protected_definition",
+      "tool": "orbit.reports.update",
+      "args": {
+        "definition": {
+          "name": "Protected native amount",
+          "description": "A native sum over protected CRM data.",
+          "aggregation": "count",
+          "unit": "opportunities",
+          "sourceTypes": [
+            "opportunity"
+          ],
+          "sourceOperation": "graph.read",
+          "sourceFields": [
+            "custom_fields_json"
+          ],
+          "groupBy": "custom_fields_json",
+          "filters": {
+            "id": {
+              "$from": "protected_opportunity",
+              "pointer": "/id"
+            }
+          },
+          "currency": null,
+          "missingPolicy": "incomplete",
+          "lateArrival": "recompute",
+          "attributionModel": "none",
+          "attributionWindowDays": 30
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "protected_preview",
+      "tool": "orbit.reports.preview",
+      "args": {
+        "id": {
+          "$from": "protected_definition",
+          "pointer": "/id"
+        },
+        "version": 1,
+        "from": "2026-01-01T00:00:00Z",
+        "through": "2027-01-01T00:00:00Z"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        },
+        {
+          "class": "sensitive",
+          "facts": {
+            "kind": "protected_crm_fields",
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "protected_snapshot",
+      "tool": "orbit.reports.compute",
+      "args": {
+        "id": {
+          "$from": "protected_definition",
+          "pointer": "/id"
+        },
+        "version": 1,
+        "from": "2026-01-01T00:00:00Z",
+        "through": "2027-01-01T00:00:00Z",
+        "review_hash": {
+          "$from": "protected_preview",
+          "pointer": "/reviewHash"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        },
+        {
+          "class": "sensitive",
+          "facts": {
+            "kind": "protected_crm_fields",
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "protected_report",
+      "tool": "orbit.reports.read",
+      "args": {
+        "id": {
+          "$from": "protected_snapshot",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        },
+        {
+          "class": "sensitive",
+          "facts": {
+            "kind": "protected_crm_fields",
             "measure": 1
           }
         }

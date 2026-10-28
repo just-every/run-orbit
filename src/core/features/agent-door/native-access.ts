@@ -1,5 +1,6 @@
 import {AccessService} from '../access/service';
 import {deny} from '../access/errors';
+import {fullOperatorFence} from '../access/identity-class';
 import type {ActorContext, SqlStatement} from '../../shared/expansion-contracts';
 import type {ResourceContext, ToolContext} from '../../../base/modules/agent-door/index.ts';
 import {orbitPeople,nativePersonAdmission} from './people';
@@ -22,6 +23,7 @@ export class AgentAccess extends AccessService {
     if (!row) deny();
     const c: ActorContext = {...scope,requestId:crypto.randomUUID(),policyEpoch:row.policy_epoch,agentApprovers:'approvers' in this.who?this.who.approvers:[],principal:{kind:'operator',operatorId:person.id,sessionId:'',agent:{id:this.who.agent.id,name:this.who.agent.name,label:`${this.who.agent.name} for ${person.name}`,sponsorName:person.name}}};
     this.contexts.add(c);
+    if(person.role!=='member')this.addDependencyFences(c,fullOperatorFence(c),'native-class');
     if(this.who.clientId?.startsWith('orbit-delegation:')) {
       const grant=await currentGrant(this.db,this.who.clientId.slice('orbit-delegation:'.length));
       if(grant.principal_id!==person.id)deny('Native credential sponsor changed.');
@@ -38,14 +40,15 @@ export class AgentAccess extends AccessService {
   override fence(c: ActorContext, _mode:'read'|'write'='write'): SqlStatement[] {
     if (!this.contexts.has(c) || c.principal.kind !== 'operator') deny();
     const id=crypto.randomUUID(), person=c.principal.operatorId;
-    const grant=this.grantsAtAdmission.get(c);
+    const grant=this.grantsAtAdmission.get(c),nativeGrants=this.admittedGrantIds(c),now=new Date().toISOString();
     return [{sql:`INSERT INTO access_write_guards VALUES(?,CASE WHEN EXISTS(
       SELECT 1 FROM access_workspaces w JOIN access_memberships m ON m.workspace_id=w.id JOIN operators o ON o.id=m.operator_id
       WHERE w.id=? AND w.tenant_id=? AND w.policy_epoch=? AND o.id=? AND o.status='active' AND m.status='active'
       AND ${nativePersonAdmission})
       AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN('restore','archive_import'))
       ${grant?`AND EXISTS(SELECT 1 FROM delegation_grants g JOIN delegation_clients client ON client.id=g.client_id WHERE g.id=? AND client.enabled=1 AND g.revoked_at IS NULL AND g.expires_at>strftime('%Y-%m-%dT%H:%M:%fZ','now') AND ${grantMatchPredicate})`:''}
-      THEN 1 ELSE 0 END)`,bindings:[id,c.workspaceId,c.tenantId,c.policyEpoch,person,...(grant?[grant.id,...grantBindings(grant)]:[])]}, {sql:'DELETE FROM access_write_guards WHERE id=?',bindings:[id]}];
+      AND (SELECT count(*) FROM access_grants WHERE id IN(SELECT value FROM json_each(?)) AND revoked_at IS NULL AND (expires_at IS NULL OR expires_at>max(?,strftime('%Y-%m-%dT%H:%M:%fZ','now'))))=?
+      THEN 1 ELSE 0 END)`,bindings:[id,c.workspaceId,c.tenantId,c.policyEpoch,person,...(grant?[grant.id,...grantBindings(grant)]:[]),JSON.stringify(nativeGrants),now,nativeGrants.length]}, {sql:'DELETE FROM access_write_guards WHERE id=?',bindings:[id]},...this.dependencyFences(c)];
   }
 }
 
