@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "fc2cc0a150042108508756cd508de9f5279052eb15b992e2a9aa515db4838306",
+      "sha256": "b73f3157c67a0e56aebf0a382d6e1c8e2a79a8f7c993f723c5d2dfa07ef37a5d",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "07ccbfa6cf468e349faa871b752fe1e13575482ac2db5f1c7c7f0b88b9eab97a",
+      "sha256": "895ea163d9695726001d705c01fc3748d3608c83b87c7dc2d1a9c335388cafd7",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "5af2b588c7f92e6be5cb4a2e4e57840733ecb100f8bba96c0673d78c733f7d42",
+      "sha256": "4528653de0bb556bf4531815be63b58da831bbbc41dd0a65f0caa6024c9e4c1f",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -4015,7 +4015,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "708982732a6fb2f123b2f2339a7cc907ea1f9c724e5827d339f42374405a824f",
+      "sha256": "3da17091bcb8091b9081b61ebcfefcbd01c0007ef2f6d4baf73e8e42cfc3c0a1",
       "executable": false
     },
     "scripts/verification-reuse.sh": {
@@ -8547,7 +8547,7 @@
       "executable": false
     },
     "tests/core/capture-erasure.test.ts": {
-      "sha256": "4bf157405db7f2d124e676cb33b71c7bb3fde142a7b5af42d130051048ca78aa",
+      "sha256": "216b59ffd0b2b85a49e1578ae3527a86354f69ab5b22c6cdde2d23a31b66098b",
       "executable": false
     },
     "tests/core/capture-intake.test.ts": {
@@ -8580,6 +8580,10 @@
     },
     "tests/core/crm-vendor.test.ts": {
       "sha256": "a3a8263df1deefe8555cd0d36d5f0bc73b64c1b286edbda2b6fa05bdd7393f68",
+      "executable": false
+    },
+    "tests/core/customer-portability.test.ts": {
+      "sha256": "e471cb8d279360fb499838d294a3bb369b43ce6cc6482a292aad88ec36ff8bc8",
       "executable": false
     },
     "tests/core/identity.test.ts": {

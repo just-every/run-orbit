@@ -4,32 +4,14 @@ import {captureFixture,fixtureMailbox,eml} from '../support/capture-fixture';
 import {launchFixture} from '../support/launch-fixture';
 import {isolatedDatabase} from '../support/isolated-database';
 import {testAuth} from '../support/test-auth';
-import {currentSalesData} from '../support/current-sales-data';
-import {proveCurrentArchive} from '../support/current-sales-archive';
 import {exported,captured} from '../support/capture-data-archive';
 import {eraseCapturedOriginals} from '../support/sanity-capture-erasure';
 import {localArchiveRoundTrip,uploadRestored} from '../support/capture-privacy-archive';
 import {capturePrivacyFixture} from '../support/capture-privacy-fixture';
-test('CAPTURE-007 DATA-002 DATA-003 current sales records restore without authority, erase across public reads and cannot return through either archive path',async()=>{
+test('CAPTURE-007 DATA-002 captured originals erase across public reads and cannot return through either archive path',async()=>{
  const f=await captureFixture(),target=await launchFixture(),local=await isolatedDatabase();try{
     await captured(f);
-    const current=await currentSalesData(f);
-    const archive = await exported(f), names = archive.manifest.tables.map((table: { name: string }) => table.name), text = JSON.stringify(archive);
-    for (const table of ['capture_sources', 'capture_items', 'capture_proposals']) assert.ok(names.includes(table), `${table} is exported`);
-    assert.ok(!names.includes('capture_credentials'));
-
-    assert.ok(text.includes('Can we talk on Tuesday?'), 'the captured original travels');
-
-    let imported = (await (await target.request('records/archive/imports', 'POST', { confirmed: true, manifest: archive.manifest })).json()) as any;
-    for (const part of archive.parts) assert.ok((await target.request(`records/archive/imports/${imported.id}/parts/${part.index}`, 'PUT', part)).ok);
-    for (let n = 0; n < 700 && imported.state !== 'complete'; n++) imported = await (await target.request(`records/archive/imports/${imported.id}/finalize`, 'POST', {})).json();
-    assert.equal(imported.state, 'complete');
-    for (const table of ['capture_sources', 'capture_items', 'capture_proposals', 'signals', 'signal_links', 'unlinked_signals'])
-      assert.deepEqual((await target.db.prepare(`SELECT * FROM ${table} ORDER BY 1`).all()).results, (await f.db.prepare(`SELECT * FROM ${table} ORDER BY 1`).all()).results, `${table} restores equivalently`);
-    assert.equal(await target.db.prepare('SELECT count(*) n FROM capture_credentials').first('n'), 0, 'a restored provider source has no credential and must be reconnected');
-    await proveCurrentArchive(f,target,current,archive);
-
-    // After transfer work, the owner confirms identity again before privacy operations.
+    // Confirm identity again before erasure and before exporting the erased archive.
     await f.refreshSignIn();
     await eraseCapturedOriginals(f);
     const original=fixtureMailbox(f).reply;
