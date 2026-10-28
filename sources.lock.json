@@ -795,7 +795,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "db04509bbf75ba6bcfd210c63f9a0cb844eff2774bedbd958d6f257b77d63b4f",
+      "sha256": "425368dea08fb1ffcb3882e3f833ece4fbfe80bba4acca3f55be95d886d708dc",
       "executable": false
     },
     "docs/artifact/CONTRACT.md": {
@@ -4019,7 +4019,7 @@
       "executable": false
     },
     "scripts/generate-agent-docs.ts": {
-      "sha256": "aad48d2e95b8e74ac03d6827b2300595d60e6291780b6485d10813480a45bf1f",
+      "sha256": "f0dd81711589dd62608248988b9426d03a0cecb80ddcb5af5228234799ebf4d6",
       "executable": false
     },
     "scripts/generate-agent-surface.ts": {
@@ -5815,7 +5815,7 @@
       "executable": false
     },
     "src/core/features/agent-door/tools.ts": {
-      "sha256": "8ea041fdbe6251480de0fe5261e259a45023075efa19575c812b139d2f04dbc5",
+      "sha256": "fe7aee38ca3abd14555894ece541ef313d6fef1418e13653104af2a58d4bdfb4",
       "executable": false
     },
     "src/core/features/agent-door/work.ts": {
@@ -7207,7 +7207,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator-controls.css": {
-      "sha256": "c93d05ff0864c91ee26e79470107c84649f33846dc5c35296980741eeadcb45d",
+      "sha256": "f004e2454096efd78082840efcd6db35797c6b30f8dcaa92d43a7fdce5432a42",
       "executable": false
     },
     "src/core/features/operator/ui/operator-dialog.tsx": {
