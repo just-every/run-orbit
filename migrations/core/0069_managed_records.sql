@@ -19,6 +19,9 @@ CREATE TABLE managed_records (
 );
 CREATE INDEX managed_records_kind ON managed_records(kind,id);
 CREATE INDEX managed_records_owner ON managed_records(owner_id,kind,id);
+INSERT INTO managed_record_types(name,label,fields_json,version,created_at,updated_at) VALUES
+ ('lead','Leads','{"name":{"label":"Record name","type":"text","required":true,"sensitivity":"public"},"email":{"label":"Email","type":"text","required":false,"sensitivity":"public"},"phone":{"label":"Phone","type":"text","required":false,"sensitivity":"public"},"description":{"label":"Description","type":"text","required":false,"sensitivity":"public"}}',1,strftime('%Y-%m-%dT%H:%M:%fZ','now'),strftime('%Y-%m-%dT%H:%M:%fZ','now'));
+INSERT INTO schema_types(workspace_id,name,fields_json,version) SELECT 'workspace',name,fields_json,version FROM managed_record_types;
 CREATE TRIGGER managed_types_insert AFTER INSERT ON managed_record_types
  WHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN('restore','archive_import')) BEGIN
  INSERT INTO schema_types(workspace_id,name,fields_json,version) VALUES('workspace',NEW.name,NEW.fields_json,NEW.version);
@@ -53,5 +56,3 @@ CREATE TRIGGER managed_graph_delete AFTER DELETE ON graph_records
  WHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN('restore','archive_import')) AND EXISTS(SELECT 1 FROM managed_records WHERE kind=OLD.kind AND id=OLD.id) BEGIN
  DELETE FROM managed_records WHERE kind=OLD.kind AND id=OLD.id;
 END;
-INSERT INTO managed_record_types(name,label,fields_json,version,created_at,updated_at) VALUES
- ('lead','Leads','{"name":{"label":"Record name","type":"text","required":true,"sensitivity":"public"},"email":{"label":"Email","type":"text","required":false,"sensitivity":"public"},"phone":{"label":"Phone","type":"text","required":false,"sensitivity":"public"},"description":{"label":"Description","type":"text","required":false,"sensitivity":"public"}}',1,strftime('%Y-%m-%dT%H:%M:%fZ','now'),strftime('%Y-%m-%dT%H:%M:%fZ','now'));

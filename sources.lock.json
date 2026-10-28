@@ -2115,7 +2115,7 @@
       "executable": false
     },
     "migrations/core/0069_managed_records.sql": {
-      "sha256": "d1e236730e6a4d2a19ee2cd51b29b00bbbc929ccf02456fcf5fedcf68885a644",
+      "sha256": "44bc2adef363ce5159fb747cf840774e9146f82145c078a37c8b56a1fc17fe28",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -3783,7 +3783,7 @@
       "executable": false
     },
     "schema/fold/0069_managed_records.sql": {
-      "sha256": "d1e236730e6a4d2a19ee2cd51b29b00bbbc929ccf02456fcf5fedcf68885a644",
+      "sha256": "44bc2adef363ce5159fb747cf840774e9146f82145c078a37c8b56a1fc17fe28",
       "executable": false
     },
     "scripts/browser-results.mjs": {
