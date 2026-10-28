@@ -1,0 +1,94 @@
+import {defineTool,ToolRefusal,type ToolContext,type ResourceDefinition} from '../../../base/modules/agent-door/index.ts';
+import {AnalyticsMetrics,metricDefinition} from '../analytics/metrics';
+import {NativeAnalyticsSources} from '../analytics/native-sources';
+import {OperationsStore} from '../operations/store';
+import {domainEventStatements} from '../effects/event-statements';
+import {ForecastRepository} from '../forecast/repository';
+import {dealForecastSchema} from '../forecast/schema';
+import {salesDefinition} from '../analytics/sales-definition';
+import {z} from 'zod';
+import type {PlatformBindings} from '../../platform/assets';
+import {nativeRecords,recordRisk,projectedValue,objectSchema,outputSchema,standard,string} from './records';
+import {fullSeller} from './evidence';
+import {agentDatabase} from './native-access';
+
+async function nativeReports(bindings:PlatformBindings,ctx:ToolContext) {
+  await fullSeller(bindings,ctx);const {access,actor}=await nativeRecords(bindings,ctx),db=agentDatabase(bindings.DB,access,actor,ctx);
+  return {actor,metrics:new AnalyticsMetrics(new OperationsStore(db,access,domainEventStatements),new NativeAnalyticsSources(access)),forecast:new ForecastRepository(db,access)};
+}
+/** The classification uses the exact native lineage/returned fields, never
+ * an agent's sensitivity flag or unrelated private rows in the workspace. */
+async function reportRisk(bindings:PlatformBindings,value:any,workspaceId:string) {
+  const requested=new Map<string,{type:string;id:string;fields:Set<string>}>();
+  const add=(type:string,id:string,fields:string[])=>{const key=type+':'+id,prior=requested.get(key)??{type,id,fields:new Set<string>()};fields.forEach(field=>prior.fields.add(field));requested.set(key,prior);};
+  if(value.kind==='sales') {
+    const sourceFields=(value.sources as string[]).flatMap(source=>{const [table,...path]=source.split('.');return [{type:({opportunities:'opportunity',contacts:'contact',companies:'company'} as Record<string,string>)[table!],field:path.join('.')}];});
+    for(const row of [...Object.values(value.rows??{}),...Object.values(value.late?.rows??{})] as Array<{href:string|null}>) {
+      if(!row.href)continue;const params=new URL(row.href,'https://orbit.invalid').searchParams,type=params.get('kind'),id=params.get('id');
+      if(type&&id)add(type,id,[type==='opportunity'?'title':'name',...sourceFields.filter(item=>item.type===type).map(item=>item.field)]);
+    }
+  } else for(const ref of value.inputs??[])add(ref.type,ref.id,value.sourceFields??[]);
+  const rows=(await bindings.DB.prepare(`SELECT g.kind,g.id AS record_id,g.fields_json FROM graph_records g WHERE g.workspace_id=? AND EXISTS(SELECT 1 FROM json_each(?) wanted WHERE json_extract(wanted.value,'$.type')=g.kind AND json_extract(wanted.value,'$.id')=g.id)`).bind(workspaceId,JSON.stringify([...requested.values()])).all<{kind:string;record_id:string;fields_json:string}>()).results;
+  return recordRisk(bindings.DB,rows.map(row=>{const source=JSON.parse(row.fields_json),fields=requested.get(row.kind+':'+row.record_id)!.fields;return {ref:{workspaceId},kind:row.kind,fields:Object.fromEntries([...fields].map(field=>[field,projectedValue(source,field)]))};}));
+}
+async function readForecast(bindings:PlatformBindings,args:Record<string,unknown>,ctx:ToolContext) {
+  const {actor,forecast}=await nativeReports(bindings,ctx);
+  if(args.id&&args.id!=='current') {
+    if(args.opportunity_id)throw new ToolRefusal('invalid_arguments');
+    return forecast.snapshot(actor,String(args.id));
+  }
+  const state=await forecast.read(actor);
+  return args.opportunity_id?{...state,deals:state.deals.filter(deal=>deal.id===args.opportunity_id),dealInputs:state.dealInputs.filter(input=>input.dealId===args.opportunity_id),reviewHistory:state.reviewHistory.filter(review=>review.kind!=='deal'||review.subjectId===args.opportunity_id)}:state;
+}
+async function forecastRisk(bindings:PlatformBindings,value:any,workspaceId:string) {
+  const state=value.result?.inputs??value;
+  return recordRisk(bindings.DB,(state.deals??[]).map((deal:Record<string,unknown>)=>({ref:{workspaceId},kind:'opportunity',fields:{...deal,custom_fields:deal.custom_fields_json}})));
+}
+export function reportTools(bindings:PlatformBindings) {
+  const metricSchema=z.toJSONSchema(metricDefinition);
+  // JSON object keys are already strings. Base's closed schema vocabulary does
+  // not admit Zod's redundant propertyNames:{type:'string'} annotation.
+  delete (metricSchema.properties!.filters as Record<string,unknown>).propertyNames;
+  return [
+    defineTool({name:'orbit.reports.read',title:'Read native report evidence',description:'Read a saved native report snapshot with its exact source dependencies and measurement limits. It never delivers a report.',scope:'reports:read',readOnly:true,
+      inputSchema:objectSchema({id:string}),outputSchema,classes:['standard','sensitive'],clauses:['REPORT-001'],untrusted:true,classify:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx);return reportRisk(bindings,await metrics.read(actor,String(args.id)),actor.workspaceId);},
+      run:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx);return {result:await metrics.read(actor,String(args.id))};}}),
+    defineTool({name:'orbit.reports.update',title:'Save a native metric definition',description:'Save a versioned private metric definition using the native source validator. No provider or report-delivery schedule is created.',scope:'reports:write',readOnly:false,
+      inputSchema:objectSchema({id:string,version:{type:'integer',minimum:1},definition:{anyOf:[metricSchema,z.toJSONSchema(salesDefinition)]}},['definition']),outputSchema,classes:['standard'],clauses:['REPORT-001'],untrusted:true,
+      classify:async(_args,ctx)=>{await fullSeller(bindings,ctx);return standard();},summary:args=>({target:{id:String(args.id),name:String((args.definition as {name:string}).name)},items:[`Version: ${args.version}`,JSON.stringify(args.definition)]}),
+      run:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx);const id=args.id?String(args.id):crypto.randomUUID(),version=Number(args.version??1);const result=await metrics.define(actor,id,version,args.definition);ctx.emit('report.updated',`orbit://reports/${id}/definition/${version}`);return {result};}}),
+    defineTool({name:'orbit.reports.preview',title:'Preview native report measurement',description:'Read the current native report measurement and its source-bound review hash without saving a snapshot.',scope:'reports:read',readOnly:true,
+      inputSchema:objectSchema({id:string,version:{type:'integer',minimum:1},from:{type:'string',format:'date-time'},through:{type:'string',format:'date-time'}}),outputSchema,classes:['standard','sensitive'],clauses:['REPORT-001'],untrusted:true,
+      classify:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx);return reportRisk(bindings,await metrics.preview(actor,String(args.id),Number(args.version),String(args.from),String(args.through)),actor.workspaceId);},
+      run:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx);return {result:await metrics.preview(actor,String(args.id),Number(args.version),String(args.from),String(args.through))};}}),
+    defineTool({name:'orbit.reports.compute',title:'Save a source-bound report snapshot',description:'Compute and save the native measurement only when its exact preview hash is still current. No external delivery is started.',scope:'reports:write',readOnly:false,
+      inputSchema:objectSchema({id:string,version:{type:'integer',minimum:1},from:{type:'string',format:'date-time'},through:{type:'string',format:'date-time'},review_hash:{type:'string',pattern:'^[a-f0-9]{64}$'}}),outputSchema,classes:['standard','sensitive'],clauses:['REPORT-001'],untrusted:true,
+      classify:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx);return reportRisk(bindings,await metrics.preview(actor,String(args.id),Number(args.version),String(args.from),String(args.through)),actor.workspaceId);},summary:args=>({target:{id:String(args.id)},items:[`Version: ${args.version}`,`From: ${args.from}`,`Through: ${args.through}`,`Native review: ${args.review_hash}`]}),
+      run:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx);const result=await metrics.compute(actor,String(args.id),Number(args.version),String(args.from),String(args.through),undefined,String(args.review_hash));const id=result.id;ctx.emit('report.computed',`orbit://reports/${id}`);return {result,resources:[{uri:`orbit://reports/${id}`,name:'Native report snapshot'}]};}}),
+    defineTool({name:'orbit.forecasts.read',title:'Read current forecast facts',description:'Read native CRM estimates, observed reviews and independent snapshot history. Estimates do not move money or bind a contract.',scope:'forecasts:read',readOnly:true,
+      inputSchema:objectSchema({id:string,opportunity_id:string},[]),outputSchema,classes:['standard','sensitive'],clauses:['FORECAST-001'],untrusted:true,classify:async(args,ctx)=>{const {actor}=await nativeRecords(bindings,ctx);return forecastRisk(bindings,await readForecast(bindings,args,ctx),actor.workspaceId);},
+      run:async(args,ctx)=>({result:await readForecast(bindings,args,ctx)})}),
+    defineTool({name:'orbit.forecasts.update',title:'Record a reasoned deal forecast',description:'Save a native forecast override with its required reason. Current native owner authority remains required; a forecast is CRM data.',scope:'forecasts:write',readOnly:false,
+      inputSchema:objectSchema({id:string,forecast:z.toJSONSchema(dealForecastSchema)}),outputSchema,classes:['standard'],clauses:['FORECAST-001'],
+      revision:async(_args,ctx)=>{await fullSeller(bindings,ctx);return (await bindings.DB.prepare('SELECT revision FROM forecast_source_clock WHERE id=1').first<{revision:number}>())!.revision;},
+      classify:async(_args,ctx)=>{await fullSeller(bindings,ctx);return standard();},summary:args=>({target:{id:String(args.id)},items:[JSON.stringify(args.forecast)]}),
+      run:async(args,ctx)=>{const {actor,forecast}=await nativeReports(bindings,ctx);const result=await forecast.setDeal(actor,String(args.id),dealForecastSchema.parse(args.forecast));ctx.emit('forecast.updated','orbit://forecasts/current');return {result};}}),
+  ];
+}
+export function reportResources(bindings:PlatformBindings):ResourceDefinition[] {
+  return [
+    {uriTemplate:'orbit://reports/{id}',name:'Native report snapshot',scope:'reports:read',tool:'orbit.reports.read'},
+    {uriTemplate:'orbit://reports/{id}/definition/{version}',name:'Native report definition',scope:'reports:read',tool:'orbit.reports.read'},
+    {uriTemplate:'orbit://forecasts/{id}',name:'Immutable forecast snapshot',scope:'forecasts:read',tool:'orbit.forecasts.read'},
+  ].map(({uriTemplate,name,scope,tool})=>({uriTemplate,name,scope,classes:uriTemplate.includes('/definition/')?['standard']:['standard','sensitive'],classify:async(record,ctx)=>{if(uriTemplate.includes('/definition/'))return standard();const {actor}=await nativeRecords(bindings,ctx);return tool==='orbit.forecasts.read'?forecastRisk(bindings,record.json,actor.workspaceId):reportRisk(bindings,record.json,actor.workspaceId);},
+    async read(uri,ctx) {try {await fullSeller(bindings,ctx);const id=uri.split('/').at(-1)!;const definition=reportTools(bindings).find(item=>item.name===tool)!;
+      const principal={...ctx,seed:'orbit',origin:bindings.AUTH_ORIGIN!,now:Date.now,door:'mcp' as const,actor:{agent:ctx.agent,for:{id:ctx.person.id,name:ctx.person.name},label:`${ctx.agent.name} for ${ctx.person.name}`},approvers:[],emit(){}};
+      const definitionUri=/^orbit:\/\/reports\/([^/?#]+)\/definition\/(\d+)$/.exec(uri);
+      if(definitionUri) {
+        const {actor,metrics}=await nativeReports(bindings,principal);await metrics.permit(actor,'analytics.read',definitionUri[1]);await metrics.sales.shares.assertVisible(actor,definitionUri[1]!);
+        const row=await bindings.DB.prepare('SELECT body_json FROM analytics_definitions WHERE workspace_id=? AND id=? AND version=?').bind(actor.workspaceId,definitionUri[1],Number(definitionUri[2])).first<{body_json:string}>();
+        await metrics.checkSources(actor,[]);return row?{json:JSON.parse(row.body_json),untrusted:true}:null;
+      }
+      const result=await definition.run({id},principal);
+      return {json:result.result,untrusted:true};}catch{return null;}}}));
+}
