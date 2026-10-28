@@ -53,7 +53,7 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
     // Emitted documents and HTTP routes share one Worker; only Twilio's outbound network edge is faked.
     await callingJourney(await context.newPage(),{fetch:worker.fetch.bind(worker),origin,provider:callingProvider,accountSid:callingAccount,token:callingToken});
     await calendarJourney(await context.newPage(),calendarData);
-    const collaboratorContext=await browser.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:privateData.cookie}});
+    const collaboratorContext=await browser.newContext({baseURL:origin,ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:privateData.cookie}});
     await privateEntriesJourney(await context.newPage(),await collaboratorContext.newPage(),privateData);
     await collaboratorContext.close();
     await nativeLongRecordLayoutJourney(await context.newPage());

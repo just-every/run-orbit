@@ -8783,7 +8783,7 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {
-      "sha256": "8c201566e6fce4f7e41c610aafa585443f25e8d7b4ac4eb63ab76016b04f69fc",
+      "sha256": "5803ca52aa8edc653755d462948ab29f71887623e19eee28491ab7bde299f0de",
       "executable": false
     },
     "tests/delegation-browser/related-records.test.ts": {
