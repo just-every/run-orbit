@@ -19,7 +19,8 @@ export default async function sellerDay({tool,request,origin,cookie}) {
  assert.deepEqual(replay,saved,'native handoff replay has the retained outcome');
  const stale=await tool('orbit.handoffs.upsert',{...args,idempotency_key:crypto.randomUUID()});
  assert.equal(stale.result?._meta?.['com.runeditrun/error']?.code,'revision_conflict');
- const edited=await call('records.update',{kind:'opportunity',id,fields:{value_cents:Number(record.fields.value_cents)+1000},expected_revision:record.ref.revision,idempotency_key:crypto.randomUUID()});
+ const writeKey=crypto.randomUUID();
+ const edited=await call('records.update',{kind:'opportunity',id,fields:{value_cents:Number(record.fields.value_cents)+1000},expected_revision:record.ref.revision,idempotency_key:writeKey});
  assert.equal(edited.id,id);
  const readback=await call('records.read',{kind:'opportunity',id});
  assert.equal(readback.fields.value_cents,Number(record.fields.value_cents)+1000,'CRM value is an estimate, not a payment');
@@ -27,11 +28,18 @@ export default async function sellerDay({tool,request,origin,cookie}) {
  assert.equal(native.status,200);
  const detail=await native.json();
  assert.ok(detail.timeline.some(row=>row.actor_type==='agent'&&row.actor_name&&JSON.parse(row.payload_json).preparedBy?.agent?.id),'native timeline must name agent for sponsor');
- const auditResponse=await request(new URL('/agents/api/audit?limit=200',origin).href,{headers:{Cookie:cookie}});
- assert.equal(auditResponse.status,200);
- const audit=await auditResponse.json();
- assert.equal(audit.differs_from_policy,0);
- const write=audit.rows.find(row=>row.tool==='orbit.records.update'&&row.outcome==='done');
+ const rows=[];
+ let cursor='0';
+ for(;;) {
+  const auditResponse=await request(new URL('/agents/api/audit?after='+cursor,origin).href,{headers:{Cookie:cookie}});
+  assert.equal(auditResponse.status,200);
+  const audit=await auditResponse.json();
+  assert.equal(audit.differs_from_policy,0);
+  rows.push(...audit.rows);
+  if(!audit.cursor||audit.cursor===cursor)break;
+  cursor=audit.cursor;
+ }
+ const write=rows.find(row=>row.tool==='orbit.records.update'&&row.outcome==='done'&&row.idempotency_key===writeKey);
  assert.deepEqual(write?.resource,{kind:'opportunity',id},'native write audit identifies its actual opportunity');
 }
 

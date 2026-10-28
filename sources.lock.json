@@ -8947,7 +8947,7 @@
       "executable": false
     },
     "tests/agent-door/native-journey.mjs": {
-      "sha256": "192a5646e88c85b71ba0da04c60f0806611575a39e694ccf55f20daceb3c1a61",
+      "sha256": "9bd3f72c7a19ceab0572abc6befb5e7202bcd4ee2ef2dfe2c3e427041718f90a",
       "executable": false
     },
     "tests/archive/browser.spec.mjs": {
