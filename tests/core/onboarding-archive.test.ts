@@ -1,3 +1,5 @@
+import {archiveDelegation} from '../support/sanity-records-delegation';
+import {abortInvalidRestore} from '../support/sanity-records-archive';
 import {issueNativeCredential} from '../support/api-credentials-proof';
 import {preCallingCatalog} from '../../src/core/features/records/archive-generations';
 import assert from 'node:assert/strict';
@@ -52,6 +54,9 @@ test('API-001 credentials stay local while DATA-001 local archive restores recor
  await source.db.prepare('UPDATE opportunities SET owner_id=? WHERE id=?').bind(source.actor,trialOwned.opportunityId).run();
  const apiCredential=await issueNativeCredential(source.db,source.actor,trialOwned.opportunityId);
  const scheduled=await source.message(trialOwned.contactId,trialOwned.opportunityId);
+ const sourceGrant=await archiveDelegation(source,trialOwned.opportunityId,trialOwned.contactId,teammate);
+ const destinationCustomer=await target.customer('destination@example.test');
+ const destinationGrant=await archiveDelegation(target,destinationCustomer.opportunityId,destinationCustomer.contactId,target.actor);
  const libraryRows=['template','snippet','signature'].map((kind,index)=>({id:createId(),kind,name:`Archive ${kind}`,subject:kind==='template'?'Hello {{contact.name}}':'',body:`Saved ${kind} 雪`,visibility:index===1?'private':'shared',owner_id:source.actor,revision:index+1,updated_at:new Date().toISOString()}));
  for(const row of libraryRows)await source.db.prepare('INSERT INTO message_library(id,kind,name,subject,body,visibility,owner_id,revision,updated_at) VALUES(?,?,?,?,?,?,?,?,?)').bind(...Object.values(row)).run();
  const draft=createId(),draftMetadata={library_selection_json:JSON.stringify(Object.fromEntries(libraryRows.map(row=>[row.kind,{id:row.id,revision:row.revision}]))),merge_review_json:null};
@@ -68,6 +73,7 @@ test('API-001 credentials stay local while DATA-001 local archive restores recor
  for(let n=0;n<300&&exported.state!=='ready';n++)exported=await request(source,`records/archive/exports/${exported.id}/advance`,'POST',{});
  assert.equal(exported.state,'ready');
  const archive=await request(source,`records/archive/exports/${exported.id}/download`);
+ assert.ok(!JSON.stringify(archive).includes(sourceGrant.token));assert.ok(archive.manifest.tables.every((table:{name:string})=>!table.name.startsWith('delegation_')));
  assert.ok(!JSON.stringify(archive).includes(apiCredential.secret));assert.ok(!archive.manifest.tables.some((table:{name:string})=>table.name==='api_credentials'));
  const exportedLibrary=archive.parts.flatMap((part:ArchivePart)=>part.records).filter((record:ArchivePart['records'][number])=>record.table==='message_library').map((record:ArchivePart['records'][number])=>record.row);
  assert.deepEqual(exportedLibrary.sort((a:any,b:any)=>a.id.localeCompare(b.id)),libraryRows.sort((a,b)=>a.id.localeCompare(b.id)));
@@ -88,6 +94,7 @@ test('API-001 credentials stay local while DATA-001 local archive restores recor
   assert.equal(imported.state,'complete');
   assert.equal(imported.completedSteps,imported.totalSteps);assert.equal(imported.nextPart,document.manifest.parts);
  };
+ await abortInvalidRestore(target,archive);
  const historicalCatalog=preSlackCatalog(preReportShareCatalog(preDashboardCatalog(preOwnershipCatalog(preFormAssignmentCatalog(preRecordMailCatalog(preCaptureMailRuleCatalog(preCallingCatalog(await foldInstalledCatalog(source.db)))))))));
  for(const catalog of [preLibraryCatalog(historicalCatalog),preForecastCatalog(preOptOutCapabilityCatalog(preLibraryCatalog(historicalCatalog)))]){
  const previous=await launchFixture();
@@ -117,6 +124,9 @@ test('API-001 credentials stay local while DATA-001 local archive restores recor
   assert.deepEqual(await local.db.prepare('SELECT * FROM signals WHERE id=?').bind(removedSource.signalId).first(),removedSource.signal);
  }finally{await local.dispose();}
  await restore(target,archive);
+ assert.equal((await destinationGrant.request('/identity')).status,401,'restore revokes the destination application grant');
+ for(const table of ['delegation_grants','delegation_codes','delegation_receipts'])assert.equal(await target.db.prepare(`SELECT count(*) FROM ${table}`).first('count(*)'),0);
+ for(const table of ['handoff_tasks','handoff_contacts'])assert.deepEqual((await target.db.prepare(`SELECT * FROM ${table}`).all()).results,sourceGrant.rows[table],'handoff provenance survives detached contacts and restore');
  assert.equal(await target.db.prepare('SELECT count(*) FROM api_credentials').first('count(*)'),0,'Records restore creates no API credential authority');
  assert.deepEqual((await target.db.prepare('SELECT * FROM message_library ORDER BY id').all()).results,libraryRows,'Records restore preserves library content, permissions, ownership and revision');
  assert.deepEqual(await target.db.prepare('SELECT library_selection_json,merge_review_json FROM drafts WHERE id=?').bind(draft).first(),draftMetadata);
@@ -156,5 +166,7 @@ test('API-001 credentials stay local while DATA-001 local archive restores recor
  assert.equal(await target.db.prepare('SELECT id FROM signals WHERE id=?').bind(removedSource.signalId).first(),null,'Contact erasure still removes evidence belonging to a removed source');
  assert.equal(await target.db.prepare('SELECT id FROM timeline_entries WHERE id=?').bind(removedSource.signalId).first(),null);
  assert.ok(await target.db.prepare('SELECT removed_at FROM signal_sources WHERE id=?').bind(removedSource.id).first('removed_at'),'Erasure never reconnects a removed source');
+ const erasedHandoff=await target.request(`records/contact/${trialOwned.contactId}`,'DELETE',{confirmed:true},{Cookie:cookie.split(';')[0]!});assert.equal(erasedHandoff.status,200);
+ assert.equal(await target.db.prepare('SELECT * FROM handoff_tasks').first(),null,'erasing a detached customer still removes the archived handoff');
  }finally{await source.dispose();await target.dispose();}
 });

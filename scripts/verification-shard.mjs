@@ -14,8 +14,8 @@ export function resetVerification(){
  rmSync('verification',{recursive:true,force:true});
  mkdirSync('verification/ci-shards',{recursive:true});
 }
-export function runShard(name){
- const gates=verificationPlan({journeys:true})[name];if(!gates)throw Error(`Unknown verification shard: ${name}`);
+export function runShard(name,options){
+ const gates=verificationPlan(options)[name];if(!gates)throw Error(`Unknown verification shard: ${name}`);
  mkdirSync('verification/ci-shards',{recursive:true});
  const destination=`verification/ci-shards/${name}.json`;rmSync(destination,{force:true});
  const commit=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'});if(commit.status!==0)throw Error('Verification requires the edition Git commit.');
@@ -26,7 +26,7 @@ export function runShard(name){
   for(const gate of gates){
    if(gate.result)rmSync(gate.result,{force:true});
    console.log(`\nVerification (${name}): pnpm ${gate.args.join(' ')}`);
-   const env={...process.env,...gate.env,TMPDIR:state,ORBIT_STARTUP_DIAGNOSTICS:resolve(`verification/startup-diagnostics/${name}`),ORBIT_FOLD_BROWSER_EVIDENCE:browserEvidence,RER_SERVER_JOURNEY:'1',...(gate.browser?{}:{ORBIT_TEST_STATE:state})};
+   const env={...process.env,...gate.env,TMPDIR:state,ORBIT_TEST_DATABASE_TEMPLATE:join(state,'database-template'),ORBIT_STARTUP_DIAGNOSTICS:resolve(`verification/startup-diagnostics/${name}`),ORBIT_FOLD_BROWSER_EVIDENCE:browserEvidence,RER_SERVER_JOURNEY:'1',...(gate.browser?{}:{ORBIT_TEST_STATE:state})};
    if(gate.browser)delete env.ORBIT_TEST_STATE;
    const start=Date.now(),run=spawnSync('pnpm',gate.args,{stdio:'inherit',env});
    const events=gate.result?rowsFrom(gate.result):[],report=events.filter(row=>row.kind!=='test');
@@ -44,8 +44,9 @@ export function runShard(name){
  return !failed&&stages.length===gates.length;
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
+ const options=undefined;
  // Reject a bad argument before clearing the previous run's evidence.
- if(process.argv.length!==3||!Object.hasOwn(verificationPlan({journeys:true}),process.argv[2]))throw Error(`Usage: node scripts/verification-shard.mjs <${Object.keys(verificationPlan({journeys:true})).join('|')}>`);
+ if(process.argv.length!==3||!Object.hasOwn(verificationPlan(options),process.argv[2]))throw Error(`Usage: node scripts/verification-shard.mjs <${Object.keys(verificationPlan(options)).join('|')}>`);
  resetVerification();
  if(!runShard(process.argv[2]))process.exitCode=1;
 }

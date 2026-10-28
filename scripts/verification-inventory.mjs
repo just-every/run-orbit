@@ -48,15 +48,13 @@ export function testInventory() {
   });
 }
 
-export function checkTestBudget() {
+export function verificationInventory() {
   const files = testInventory(), cases = files.reduce((sum, row) => sum + row.cases, 0);
-  // The emitted-worker and explicit full-capacity programs are also test flows.
-  const qualifications = 2;
-  if (cases + qualifications > 200) throw Error(`Test budget exceeded: ${cases} registered cases + ${qualifications} qualification flows > 200`);
-  return { cases, qualifications, total: cases + qualifications, files };
+  // Capacity is the only separate product qualification. Source assertions count too.
+  const qualifications = 1, sourceAssertions = 5;
+  return { cases, qualifications, sourceAssertions, total: cases + qualifications + sourceAssertions, files };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const inventory = testInventory(), cases = inventory.reduce((sum, row) => sum + row.cases, 0);
-  console.log(JSON.stringify({ cases, qualifications: 2, total: cases + 2, files: inventory }, null, 2));
+  console.log(JSON.stringify(verificationInventory(), null, 2));
 }

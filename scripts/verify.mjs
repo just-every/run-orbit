@@ -9,7 +9,15 @@ if(process.argv.slice(2).some(arg=>arg!=='--release'))throw Error('Usage: node s
 // Local verification is deliberately sequential; CI gives each shard its own runner.
 resetVerification();
 let passed=true;
-for(const name of Object.keys(verificationPlan({journeys:true})))if(!runShard(name)){passed=false;break;}
+const options={journeys:true};
+for(const name of Object.keys(verificationPlan(options))){
+ if(!runShard(name,options)){passed=false;break;}
+ if(name==='source'){
+  const sealed=spawnSync(process.execPath,['scripts/verification-build.mjs','seal'],{stdio:'inherit'});
+  if(sealed.status!==0){passed=false;break;}
+  process.env.ORBIT_VERIFY_PREBUILT='1';
+ }
+}
 let capacity;
 if(passed&&release){
  console.log('\nVerification: pnpm run test:capacity (full release qualification)');
