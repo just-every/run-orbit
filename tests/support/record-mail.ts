@@ -1,3 +1,6 @@
+import {recordMailHeldReplies} from './record-mail-held-replies';
+import {recordMailAI} from './record-mail-ai';
+import {recordMailHandover} from './record-mail-handover';
 import {recordMailBooking} from './record-mail-booking';
 import assert from 'node:assert/strict';
 import type {TestContext} from 'node:test';
@@ -10,6 +13,7 @@ import {createId} from '../../src/core/shared/ids';
 import {recordMailCustody} from './record-mail-custody';
 /** Public record compose, exact review, approved relay acceptance and signed replies. */
 export async function exerciseRecordMail(context:TestContext){
+ await recordMailAI();await recordMailHandover(context);await recordMailHeldReplies();
  const f=await fixture();try{
   const edge:any[]=[],mail={provider:'rer' as const,optOutOrigin:'https://orbit.test',messageIdDomain:'orbit.test',send:async(input:any)=>{edge.push(input);return{providerMessageId:`synthetic-orbit-${edge.length}`};}},app=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:mail});
   let cookie=f.cookie;const request=(path:string,method='GET',body?:unknown)=>app.request(`https://orbit.test/api/v1/${path}`,{method,headers:{Cookie:cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)}),call=async(path:string,method='GET',body?:unknown,status=200)=>{const response=await request(path,method,body);assert.equal(response.status,status,await response.clone().text());return response.json() as Promise<any>;};
