@@ -6,8 +6,9 @@ export async function workflowContactErasure(db:D1Database,id:string,identities:
  const statements:D1PreparedStatement[]=[db.prepare('UPDATE workflow_versions SET preview_id=NULL,preview_json=NULL')];
  const identity=mailboxPattern(identities);
  const derived=(await db.prepare("SELECT plan_json FROM workflow_record_writes WHERE EXISTS(SELECT 1 FROM json_each(plan_json,'$.relatedRecords') WHERE json_extract(value,'$.recordType')='contact' AND json_extract(value,'$.recordId')=?) ORDER BY occurred_at DESC,rowid DESC").bind(id).all<{plan_json:string}>()).results;
+ const targets=new Map<string,{recordType:string;recordId:string}>();
  for(const row of derived){const p=JSON.parse(row.plan_json);
-  statements.push(db.prepare('DELETE FROM workflow_events WHERE id IN(SELECT event_id FROM workflow_event_snapshots WHERE record_type=? AND record_id=?)').bind(p.recordType,p.recordId));
+  targets.set(`${p.recordType}:${p.recordId}`,p);
   if(p.recordType==='contact'&&p.recordId===id||!Object.hasOwn(tables,p.recordType)||p.field==='contactability')continue;
   const source=p.action.sourceTarget??'trigger',root=p.relatedRecords?.[0],contactSource=source==='form'||source==='trigger'&&root?.recordType==='contact'||['primary_contact','associated_contacts','all_contacts'].includes(source)||source.startsWith('contacts_by_role:');
   if(identity)identity.lastIndex=0;const personalCopy=p.action.kind==='copy'&&(p.copiedContactIds?p.copiedContactIds.includes(id):contactSource),mentionsIdentity=!!identity?.test(JSON.stringify(p.after));
@@ -27,6 +28,8 @@ export async function workflowContactErasure(db:D1Database,id:string,identities:
   else if(['name','email','phone','job_title','timezone','primary_domain','title'].includes(p.field))statements.push(db.prepare(`UPDATE ${table} SET ${p.field}=?,updated_at=? WHERE id=? AND ${p.field} IS ?`).bind(before??(['name','title'].includes(p.field)?'Erased source':null),new Date().toISOString(),p.recordId,p.after??null));
  }
 
+ // Field restoration itself emits events: withdraw them after every restoration.
+ for(const p of targets.values())statements.push(db.prepare('DELETE FROM workflow_events WHERE id IN(SELECT event_id FROM workflow_event_snapshots WHERE record_type=? AND record_id=?)').bind(p.recordType,p.recordId));
  for(const identity of [id,...identities]){
   const match=identity===id?'instr(definition_json,?)>0':identityMatch('definition_json'),args=identity===id?[id]:identityPatterns(identity);
   const affected=`SELECT workflow_id FROM workflow_versions WHERE ${match}`;

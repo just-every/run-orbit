@@ -94,7 +94,7 @@ export async function undoRecordWrite(context:WorkflowContext,writeId:string){
  const plan=JSON.parse(stored.plan_json) as WorkflowRecordPlan;
  if(plan.field==='create_record')return {undone:false,skipped:true,writeId,reason:'Native records do not support archiving a created deal.'};
  if(plan.field==='contactability')return {undone:false,skipped:true,writeId,reason:'Do not contact requires the separate reviewed permission action.'};
- const inverse={...plan,id:`${writeId}:undo`,before:plan.after,after:plan.before,needsApproval:false};
+ const inverse={...plan,id:`${writeId}:undo`,before:plan.after,after:plan.before,copiedContactIds:plan.beforeContactIds,beforeContactIds:plan.copiedContactIds,needsApproval:false};
  try{return {undone:true,writeId,receipt:await write({...context,approvedWriteId:inverse.id},inverse,writeId)};}
  catch(error){if(error instanceof RecordError&&error.status===409)return {undone:false,skipped:true,writeId,reason:error.message};throw error;}
 }

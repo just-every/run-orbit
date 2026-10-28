@@ -7523,7 +7523,7 @@
       "executable": false
     },
     "src/core/features/workflows/privacy.ts": {
-      "sha256": "a1c025f3d635b74cf58b5c5d2ad8aeaf5fb4153638c32b54996baee19abbd00c",
+      "sha256": "53072b40e6cf36d67cf8d2740cd6d49f31f173e3eefafc48f7782922d50ab776",
       "executable": false
     },
     "src/core/features/workflows/provenance.ts": {
@@ -7547,7 +7547,7 @@
       "executable": false
     },
     "src/core/features/workflows/record-writes.ts": {
-      "sha256": "0632a3ade4db2ff0f47fa235ec6cde226b0794129ad45675fdbf64abf079fedd",
+      "sha256": "62d4412da8b00b0529b9e3b317337ee9cdd4a48fae0bc5da46473ff91528a995",
       "executable": false
     },
     "src/core/features/workflows/repository.ts": {
@@ -10003,7 +10003,7 @@
       "executable": false
     },
     "tests/support/workflow-lineage-journey.ts": {
-      "sha256": "efc2f12d75edaefb8c3d44e1dd59aa6abddf03c471bbee7c65e24648e3e062fe",
+      "sha256": "6cbf179b9c03fb704b817263f640783b8389e34e4e62e7d74b907a450ac1c6a5",
       "executable": false
     },
     "tests/support/workflow-record-journey.ts": {
