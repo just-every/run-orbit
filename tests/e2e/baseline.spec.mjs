@@ -1,3 +1,4 @@
+import {mkdirSync} from 'node:fs';
 import {test, expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import {authenticateOperator} from './operator-session.mjs';
@@ -35,20 +36,27 @@ test('public entry and a seller’s first review remain private, accessible and 
   expect(gated.status()).toBe(302);
   expect(gated.headers().location).toBe('/signin?returnTo=%2Fapp');
   for (const route of ['/', '/signin', '/docs', '/demo']) {
-    await page.goto(route, {waitUntil: 'networkidle'});
+    const routeResponse = await page.goto(route, {waitUntil: 'networkidle'});
     if (route === '/signin') {
       await expect(page.getByRole('alert')).toContainText(/email is not available/i);
       await expect(page.getByRole('textbox')).toHaveCount(0);
     }
     if (route === '/docs') {
-      await page.getByText('Docs menu', {exact: false}).click();
-      const sidebar = page.getByRole('navigation', {name: 'Documentation', exact: true});
-      const links = await sidebar.getByRole('link').evaluateAll(items => items.map(item => item.getAttribute('href')));
+      const menu = page.locator('.docs-menu');
+      await menu.locator('summary').click();
+      const links = await menu.getByRole('link').evaluateAll(items => items.map(item => item.getAttribute('href')));
       expect(links.length).toBeGreaterThan(1);
+      const initialCurrent = await page.evaluate(html => {
+        const document = new DOMParser().parseFromString(html, 'text/html');
+        return ['.docs-sidebar', '.docs-menu'].map(selector => Array.from(document.querySelectorAll(`${selector} [aria-current="page"]`), item => item.getAttribute('href')));
+      }, await routeResponse.text());
+      expect(initialCurrent).toEqual([[links[0]], [links[0]]]);
       for (const href of links) expect((await page.request.get(href)).status(), href).toBe(200);
-      await sidebar.getByRole('link').nth(2).click();
-      await page.getByText('Docs menu', {exact: false}).click();
-      await expect(sidebar.locator('[aria-current=page]')).toHaveAttribute('href', links[2]);
+      for (const index of [2, 1]) {
+        await menu.getByRole('link').nth(index).click();
+        await expect(menu.locator('[aria-current="page"]')).toHaveCount(1);
+        await expect(menu.locator('[aria-current="page"]')).toHaveAttribute('href', links[index]);
+      }
     }
     if (route === '/demo') {
       const selected = page.getByRole('complementary', {name: 'Opportunities'}).getByRole('button').last();
@@ -100,6 +108,16 @@ test('public entry and a seller’s first review remain private, accessible and 
   await expect(page.getByRole('button', {name: 'Invite operator', exact: true})).toBeVisible();
   await accessible(page);
   await phoneDashboard(page);
+  mkdirSync('verification/ui', {recursive: true});
+  await page.screenshot({path: 'verification/ui/390-seller-smoke.png', fullPage: true});
+  await page.goto('/delegation/settings');
+  await menu.click(); await navigation.getByRole('link', {name: 'Records', exact: true}).click();
+  await page.waitForURL('**/app/records');
+  await page.goto('/delegation/settings'); await menu.click();
+  await navigation.getByRole('link', {name: 'Records', exact: true}).focus(); await page.keyboard.press('Escape');
+  await expect(navigation).toBeHidden(); await expect(menu).toBeFocused();
+  await page.getByRole('button', {name: 'Sign out', exact: true}).click(); await page.waitForURL(/signin|\/$/);
+  expect((await page.request.get('/api/v1/workbench')).status()).toBe(401);
   expect(errors).toEqual([]);
 });
 
