@@ -1,4 +1,5 @@
 import {Hono} from 'hono';
+import {meetingActivity} from './writeback-details';
 import {z} from 'zod';
 import type {AuthenticatedOperator} from '../../identity';
 import {actorFence,guard,clearGuards,version} from '../../identity/store';
@@ -40,7 +41,7 @@ export function calendarWritebackRoutes(db:D1Database,config:{security?:SourceSe
   return {source,token,row,current,reviewHash,contact};
  }
  app.get('/',async c=>{const sources=(await db.prepare("SELECT id,name,adapter,scope_json FROM capture_sources WHERE adapter IN('google','microsoft') AND state IN('connected','syncing')").all<any>()).results,options=[];for(const source of sources){const token=await credential(source.id);options.push({id:source.id,name:source.name,provider:source.adapter,consented:token.writebackConsent===true,calendars:JSON.parse(source.scope_json).calendars??[]});}return c.json({sources:options});});
- app.get('/records/:kind/:id',async c=>{const kind=z.enum(['contact','opportunity']).parse(c.req.param('kind')),record=id.parse(c.req.param('id'));return c.json({meetings:(await db.prepare('SELECT id,source_id,calendar_id,contact_id,state,payload_json,error FROM calendar_writebacks WHERE record_type=? AND record_id=? ORDER BY updated_at DESC').bind(kind,record).all()).results});});
+ app.get('/records/:kind/:id',async c=>{const kind=z.enum(['contact','opportunity']).parse(c.req.param('kind')),record=id.parse(c.req.param('id'));return c.json({meetings:(await db.prepare('SELECT w.id,w.source_id,w.calendar_id,w.contact_id,w.state,w.payload_json,w.error,json_extract(t.payload_json,'$.originalMeeting') AS original_json,json_extract(t.payload_json,'$.provider') AS provider_json FROM calendar_writebacks w LEFT JOIN timeline_entries t ON t.id=w.entry_id WHERE w.record_type=? AND w.record_id=? ORDER BY w.updated_at DESC').bind(kind,record).all()).results});});
  app.post('/preview',async c=>{const input=inputSchema.parse(await c.req.json()),review=await inspect(input);return c.json({input,reviewHash:review.reviewHash,providerEvent:review.current?.details??null,warning:review.row?.state==='conflict'?'Provider edits conflict with the last Orbit version. Review every attendee and message again.':null});});
  app.post('/confirm',async c=>{
   const body=z.object({input:inputSchema,reviewHash:z.string().regex(/^[a-f0-9]{64}$/),operationKey:id,confirmed:z.literal(true)}).strict().parse(await c.req.json()),input=body.input,lease=await leaseSource(db,input.sourceId);
@@ -61,7 +62,8 @@ export function calendarWritebackRoutes(db:D1Database,config:{security?:SourceSe
    const result=cancel?{}:await response.json() as any,eventId=review.row?.provider_event_id??result.id,etag=response.headers.get('etag')??result.etag??result['@odata.etag']??null;
    if(!cancel&&(typeof eventId!=='string'||!eventId||!etag)){await uncertain(target,'Provider returned no event identity or revision.');throw new RecordError(409,'The provider returned an incomplete receipt. Check the calendar.');}
    await activeLease(db,review.source,lease);
-   const entry=review.row?.entry_id??createId(),text=cancel?`Meeting cancelled: ${m.title}`:`Meeting: ${m.title}\n${m.message}`,entryPayload=JSON.stringify({text,durationMinutes:(Date.parse(m.end)-Date.parse(m.start))/60000,contactIds:[input.contactId],calendarWritebackId:target,attendees:m.attendees,start:m.start,end:m.end,cancelled:cancel});
+   const entry=review.row?.entry_id??createId(),previous=review.row?.entry_id?await db.prepare('SELECT payload_json FROM timeline_entries WHERE id=?').bind(entry).first<string>('payload_json'):null;
+   const entryPayload=JSON.stringify(meetingActivity(m,input.contactId,target,{adapter:review.source.adapter,sourceId:input.sourceId,calendarId:input.calendarId,eventId:eventId??'',revision:etag,observedAt:now,observedBy:'operator'},previous?JSON.parse(previous):undefined,cancel));
    await db.batch([db.prepare("INSERT INTO timeline_entries VALUES(?,'manual.meeting',?,?,'operator',?,'calendar-writeback',?) ON CONFLICT(id) DO UPDATE SET occurred_at=excluded.occurred_at,payload_json=excluded.payload_json").bind(entry,m.start,now,actor.operatorId,entryPayload),db.prepare('INSERT OR IGNORE INTO timeline_entry_records VALUES(?,?,?)').bind(entry,input.recordType,input.recordId),db.prepare('UPDATE calendar_writebacks SET provider_event_id=?,entry_id=?,state=?,payload_json=?,etag=?,error=NULL,updated_at=? WHERE id=?').bind(eventId??null,entry,cancel?'cancelled':'written',JSON.stringify(m),etag,new Date().toISOString(),target)]);
    return c.json({id:target,state:cancel?'cancelled':'written'},201);
   }finally{await db.prepare('DELETE FROM capture_locks WHERE source_id=? AND lease=?').bind(input.sourceId,lease).run();}

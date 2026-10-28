@@ -19,7 +19,7 @@ export function captureProviderNetwork(provider:Provider){
   if(/\/events(?:\/[^/]+)?(?:\/cancel)?$/.test(url.pathname)&&(init.method!=='GET'||/\/events\/[^/]+$/.test(url.pathname))){
    assert.ok(new Headers(init.headers).get('authorization'));
    const parts=url.pathname.split('/'),eventId=parts.at(-1)==='cancel'?parts.at(-2)!:parts.at(-1)!,event=state.writeEvents.get(eventId);
-   if(init.method==='GET')return event?json(event):json({},404);
+   if(init.method==='GET'){state.reads.push(raw);if(state.revoked)return json({},401);if(state.outage)return json({},503);return event?json(event):json({},404);}
    assert.ok(state.scope.includes(provider==='google'?'calendar.events':'Calendars.ReadWrite'),'writes require separate scope');
    if(state.uncertainWrite)throw new Error('Synthetic provider disconnect');
    if(state.conflictNext){state.conflictNext=false;return json({},412);}
