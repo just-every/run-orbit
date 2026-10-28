@@ -46,7 +46,7 @@ test('an operator delegates a handoff, reviews calls and calendars, and edits na
     const raw=callback+[...heldForm.keys()].sort().map(name=>name+heldForm.get(name)).join(''),signature=Buffer.from(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(raw))).toString('base64');
     const held=await caller.app.request(callback,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-Twilio-Signature':signature},body:heldForm});if(held.status!==200)throw new Error('Held-call browser fixture failed.');
     const calendarData=await browserCalendarData(fixture.db,sampleData.operators[0].id);
-    const captureSeed=await captureRuleBrowserSeed({db:fixture.db,cookie:`${sessionCookieName}=${session.token}`,stage:sampleData.pipelineStages[0].id});
+    const captureSeed=await captureRuleBrowserSeed({db:fixture.db,cookie:`${sessionCookieName}=${session.token}`,stage:sampleData.pipelineStages[0].id,operatorEmail:sampleData.operators[0].email});
     const privateData=await browserPrivateData(fixture.db,sampleData.operators[0].id);
     const providerCanary=crypto.randomUUID(),privateBindings=join(fixture.directory,'browser-provider.env');await writeFile(privateBindings,`SENDGRID_API_KEY=${providerCanary}\n`,{mode:0o600});
     await fixture.close();
