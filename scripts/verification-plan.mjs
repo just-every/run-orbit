@@ -28,6 +28,7 @@ const minutes = {
   'tests/core/capture-microsoft.test.ts': 3,
   'tests/core/capture-calendar.test.ts': 6,
   'tests/core/capture-erasure.test.ts': 6,
+  'tests/core/customer-portability.test.ts': 7,
   'tests/core/source-onboarding.test.ts': 4,
   'tests/core/onboarding-archive.test.ts': 15,
   'tests/core/crm-import.test.ts': 6,
