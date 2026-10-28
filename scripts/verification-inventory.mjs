@@ -11,7 +11,7 @@ export function discoverTests(directory) {
 }
 
 // Count registered cases, including each loop expansion and nested node:test case.
-// Fail on an unrecognised generator so future parameterisation cannot evade the cap.
+// Fail on an unrecognised generator so future parameterisation cannot evade the count.
 export function testInventory() {
   return ['tests', 'newtests'].flatMap(discoverTests).map(file => {
     const source = ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true);
