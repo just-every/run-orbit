@@ -6,8 +6,8 @@ export interface AppAccess{full:boolean;workspace:boolean;reports:boolean}
  * opens the owner's pages only when their profile reads the workspace (legacy.read), and Reports
  * only when it reads analytics; a Guest's profile reads neither, so they work in Shared records. */
 export async function appAccess(db:D1Database,operatorId:string):Promise<AppAccess>{
- if(await salesProfile(db,operatorId))return{full:false,workspace:true,reports:true};
  if(await isFullOperator(db,operatorId))return{full:true,workspace:true,reports:true};
+ if(await salesProfile(db,operatorId))return{full:false,workspace:true,reports:true};
  const member=await db.prepare("SELECT m.role,b.actions_json FROM access_memberships m JOIN access_legacy_mapping l ON l.workspace_id=m.workspace_id LEFT JOIN access_role_bundles b ON b.workspace_id=m.workspace_id AND b.role=m.role WHERE m.operator_id=? AND m.status='active'").bind(operatorId).first<{role:string;actions_json:string|null}>();
  const can=(action:string)=>!!member&&(member.actions_json?(JSON.parse(member.actions_json) as string[]).includes(action):roleAllows(member.role,action));
  return{full:false,workspace:can('legacy.read'),reports:can('analytics.read')};
