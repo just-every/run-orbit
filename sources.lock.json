@@ -1851,7 +1851,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "aa9d9c1401ff3f597016e0a7555ac54ce4268d3815c40438b6fd9a6482b177a4",
+      "sha256": "29558242aa5c855af2f0b3883eb0a6759925d680848dd1f8af43737c566be07b",
       "executable": false
     },
     "management/integration/profile.json": {
