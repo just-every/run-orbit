@@ -2,7 +2,7 @@ import { parseCsv } from '../../../shared/csv';
 import { customFieldKinds,fields,type ImportFile,type ImportInput,type ImportKind } from '../../imports/contracts';
 const fieldLabels:Record<string,string>={
  id:'ID in your old system',name:'Full name',first_name:'First name',last_name:'Last name',email:'Email',phone:'Phone',
- job_title:'Job title',company_ids:'Company ID (from the companies file)',company_name:'Company name',owner:'Owner (kept as history only)',
+ job_title:'Job title',company_ids:'Company ID (from the companies file)',company_name:'Company name',owner:'Owner',
  dnc:'Do not contact',bounce:'Email bounce',quarantined:'Email quarantined',permission:'Permission to contact',
  domain:'Company website domain',description:'Description',title:'Deal title',contact_ids:'Contact IDs (from the contacts file)',stage:'Pipeline stage',
  amount:'Deal value',close_date:'Expected close date',text:'Note text',occurred_at:'Activity date and time',
@@ -10,7 +10,7 @@ const fieldLabels:Record<string,string>={
 };
 const kindNames:Record<ImportKind,string>={contact:'Contacts',company:'Companies',deal:'Deals',note:'Notes',suppression:'Do not contact list'};
 const linkFields=['company_ids','contact_ids','deal_ids'];
-const label=(kind:ImportKind,field:string)=>field==='name'&&kind==='company'?'Company name':fieldLabels[field];
+const label=(kind:ImportKind,field:string)=>field==='name'&&kind==='company'?'Company name':field==='owner'&&!['contact','company'].includes(kind)?'Owner (kept as history only)':fieldLabels[field];
 const headersOf=(file:ImportFile)=>parseCsv(file.csv.replace(/^﻿/,''))[0]??[];
 
 /** A generic spreadsheet keeps every column it does not map, as a custom field named after the column. */
