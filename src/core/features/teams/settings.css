@@ -1,0 +1,15 @@
+.sales-teams {font-size:14px;min-width:0}
+.sales-teams h3 {font-size:15px;margin:18px 0 6px}
+.sales-teams p {font-size:14px}
+.sales-teams input,.sales-teams select,.sales-teams button {font-size:14px;max-width:100%}
+.sales-teams__form {border:0;padding:0;margin:0;min-width:0;display:grid;gap:12px}
+.sales-teams__item {padding:12px;background:var(--operator-surface,#fff);border:1px solid var(--operator-border,#d9dedb);border-radius:8px;min-width:0}
+.sales-teams__item summary {cursor:pointer;font-weight:600;font-size:14px;overflow-wrap:anywhere}
+.sales-teams__item summary span {display:block;font-weight:400;margin:4px 0 0 18px}
+.sales-teams__item[open] > label,.sales-teams__item[open] > fieldset {margin-top:12px}
+.sales-teams__item label {font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sales-teams__item label:has(>select),.sales-teams__item label:has(>input:not([type=checkbox])) {display:grid;gap:6px}
+.sales-teams__choices {display:flex;flex-wrap:wrap;gap:12px 18px;padding:10px;border:1px solid var(--operator-border,#d9dedb);border-radius:8px;min-width:0}
+.sales-teams__choices legend {font-size:14px;padding:0 4px}
+.sales-teams__wide {width:100%}
+@media(max-width:600px){.sales-teams__choices {display:grid;gap:12px}.sales-teams__item {padding:10px}}

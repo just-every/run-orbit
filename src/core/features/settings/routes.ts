@@ -12,7 +12,7 @@ import { eraseOperator } from './erasure';
 import { SettingsRepository } from './repository';
 import { connectedProducts } from './connected-products';
 import { ownerEmailSettings, updateOwnerEmail } from './owner-email';
-import {sendingCapacity,setOneToOneBudget,setSharedRate} from '../outreach/sending-limits';
+import {sendingCapacity,setOneToOneBudget,setSharedRate,setTeamBudget} from '../outreach/sending-limits';
 import {messageTypes,optOutSettings,setOptOut,type MessageType} from '../outreach/opt-out';
 import {logUnexpected} from '../../platform/unexpected-error';
 export function createSettingsRoutes(db:D1Database,stepUp?:(request:Request)=>Promise<Response|null>){const app=new Hono<{Bindings:{AUTH_LOCAL?:string};Variables:{operator:AuthenticatedOperator}}>(),repo=new SettingsRepository(db),pipelines=new PipelinesRepository(db);
@@ -27,6 +27,7 @@ export function createSettingsRoutes(db:D1Database,stepUp?:(request:Request)=>Pr
  app.get('/sending',async c=>c.json(await sendingCapacity(db,c.get('operator').operatorId)));
  app.put('/sending/shared',async c=>{const input=z.object({perMinute:z.number().int().min(1).max(100000).nullable()}).strict().safeParse(await c.req.json());if(!input.success)return c.json({error:'Enter the shared transport rate as a whole number of messages a minute, or reset it to the default.'},400);return c.json(await setSharedRate(db,c.get('operator').operatorId,input.data.perMinute));});
  app.put('/sending/operators/:id',async c=>{const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/).safeParse(c.req.param('id')),input=z.object({oneToOnePerDay:z.number().int().min(1).nullable()}).strict().safeParse(await c.req.json());if(!id.success)return c.json({error:'Invalid operator ID.'},400);if(!input.success)return c.json({error:'Enter a one-to-one budget as a whole number of messages a day, or reset it to the default.'},400);return c.json(await setOneToOneBudget(db,c.get('operator').operatorId,id.data,input.data.oneToOnePerDay));});
+ app.put('/sending/teams/:id',async c=>{const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/).safeParse(c.req.param('id')),input=z.object({perDay:z.number().int().min(1).nullable(),kind:z.enum(['one-to-one','sequence']).default('one-to-one')}).strict().safeParse(await c.req.json());if(!id.success||!input.success)return c.json({error:'Choose an active team and a whole-number daily budget, or reset it to the default.'},400);return c.json(await setTeamBudget(db,c.get('operator').operatorId,id.data,input.data.perDay,input.data.kind));});
  app.get('/opt-out',async c=>c.json(await optOutSettings(db)));
  app.post('/opt-out/:type',async c=>{const type=c.req.param('type') as MessageType,input=z.object({carries:z.boolean(),removalAllowed:z.boolean()}).strict().safeParse(await c.req.json());if(!messageTypes.includes(type))return c.json({error:'Unknown message type.'},400);if(!input.success)return c.json({error:'Choose whether this message type carries opt-out and whether reps may remove it.'},400);return c.json(await setOptOut(db,c.get('operator').operatorId,type,input.data));});
  app.get('/products',async c=>c.json({products:await connectedProducts(db)}));

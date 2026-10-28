@@ -6,7 +6,7 @@ import { ensureOpenOpportunitiesDefinition, OPEN_OPPORTUNITIES_REPORT_ID, previe
 import { shareInput } from './report-shares';
 
 const month = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/);
-const sharing = z.object({ audience: z.enum(['private', 'operators', 'workspace']), operatorIds: z.array(z.string()).max(200) }).strict();
+const sharing = z.object({ audience: z.enum(['private', 'operators', 'teams', 'workspace']), operatorIds: z.array(z.string()).max(200), teamIds:z.array(z.string()).max(200).optional() }).strict();
 
 export function createAnalyticsReportRoutes(metrics: AnalyticsMetrics, graph: Pick<GraphPort,'searchRecords'>) {
   const app = new Hono<AppEnvironment>();
@@ -15,7 +15,7 @@ export function createAnalyticsReportRoutes(metrics: AnalyticsMetrics, graph: Pi
   app.post('/metrics',async c=>{const input=z.object({id:z.string(),version:z.number().int().positive(),definition:z.unknown(),sharing:sharing.optional()}).strict().parse(await c.req.json());return c.json(await metrics.define(c.get('actor'),input.id,input.version,input.definition,input.sharing));});
   app.post('/metrics/:id/snapshots',async c=>{const input=z.object({version:z.number().int().positive(),from:z.iso.datetime({offset:true}),through:z.iso.datetime({offset:true}),reviewHash:z.string().regex(/^[a-f0-9]{64}$/)}).strict().parse(await c.req.json());return c.json(await metrics.compute(c.get('actor'),c.req.param('id'),input.version,input.from,input.through,undefined,input.reviewHash));});
   app.get('/snapshots/:id',async c=>c.json(await metrics.read(c.get('actor'),c.req.param('id'))));
-  app.get('/snapshots/:id/export',async c=>{const result=await metrics.read(c.get('actor'),c.req.param('id'));return new Response(JSON.stringify(result),{headers:{'Content-Type':'application/json','Cache-Control':'no-store','Content-Disposition':'attachment; filename="orbit-report.json"'}});});
+  app.get('/snapshots/:id/export',async c=>{const result=await metrics.read(await metrics.exportContext(c.get('actor')),c.req.param('id'));return new Response(JSON.stringify(result),{headers:{'Content-Type':'application/json','Cache-Control':'no-store','Content-Disposition':'attachment; filename="orbit-report.json"'}});});
   app.post('/metrics/templates/open-opportunities', async c => {
     c.header('Cache-Control', 'no-store');
     return c.json(await ensureOpenOpportunitiesDefinition(metrics, c.get('actor')));

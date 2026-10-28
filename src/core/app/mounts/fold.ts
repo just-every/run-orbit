@@ -1,3 +1,4 @@
+import {salesExportRoutes} from '../../features/teams/export';
 import {systemClock,type Clock} from '../../platform/clock';
 import {Hono} from 'hono';
 import {z,ZodError} from 'zod';
@@ -25,6 +26,7 @@ export function createFoldRoutes(db:D1Database,clock:Clock=systemClock){const ap
  app.route('/workspaces/:workspace/operations',createAnalyticsReportRoutes(metrics,{searchRecords:(context,input)=>graph.scanRecords(context,{...input,limit:1000})}));
  app.route('/workspaces/:workspace/dashboards',createDashboardRoutes(metrics,clock));
  app.route('/workspaces/:workspace/forecast',createForecastRoutes(db));
+ app.route('/workspaces/:workspace/record-export',salesExportRoutes(db));
  const recordKind=z.enum(['company','contact','opportunity']);
  app.get('/workspaces/:workspace/records',async c=>c.json(await graph.searchRecords(c.get('actor'),{types:[recordKind.parse(c.req.query('kind')??'contact')],query:c.req.query('q')??'',fields:[],filters:{},limit:50,...(c.req.query('cursor')?{cursor:c.req.query('cursor')}: {})})));
  app.get('/workspaces/:workspace/records/:kind/:id',async c=>{const actor=c.get('actor'),kind=recordKind.parse(c.req.param('kind')),record=await graph.getRecord(actor,{...actor,type:kind,id:c.req.param('id')},[]);return c.json({...record,editableFields:await recordEditableFields(access,actor,kind,record)});});

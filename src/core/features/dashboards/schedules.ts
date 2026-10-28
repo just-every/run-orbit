@@ -1,3 +1,4 @@
+import {salesAdmin} from '../teams/policy';
 import {z} from 'zod';
 import type {ActorContext} from '../../shared/expansion-contracts';
 import {AccessError} from '../access/errors';
@@ -30,5 +31,5 @@ export async function dashboardSchedule(dashboards:Dashboards,c:ActorContext,id:
  const definition:DashboardSchedule=latest?JSON.parse(latest.body_json):{version:0,frequency:'weekly',hour:8,minute:0,weekday:1,day:1,recipientIds:[],channelId:null,pdf:false,csv:false};
  // Only a real admin or provider pause has a reason; every saved version also starts paused, without one.
  const pause=await dashboards.db.prepare("SELECT json_extract(details_json,'$.reason') AS reason FROM audit_entries WHERE action='slack.dashboard-paused' AND entity_type='dashboard' AND entity_id=? AND json_extract(details_json,'$.version')=? ORDER BY occurred_at DESC LIMIT 1").bind(id,latest?.version??0).first<string>('reason');
- return {definition,slackAdmin:Boolean(await dashboards.db.prepare("SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active'").bind(c.principal.kind==='operator'?c.principal.operatorId:'').first()),pauseReason:pause,state:latest?.state??'paused',gap:deliveryGap,timezone:suite.timezone,nextAt:nextDashboardSend(definition,suite.timezone,now),members,channels,history};
+ return {definition,slackAdmin:await salesAdmin(dashboards.db,c.principal.kind==='operator'?c.principal.operatorId:''),pauseReason:pause,state:latest?.state??'paused',gap:deliveryGap,timezone:suite.timezone,nextAt:nextDashboardSend(definition,suite.timezone,now),members,channels,history};
 }

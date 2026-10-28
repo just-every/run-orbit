@@ -1,3 +1,6 @@
+import {salesProfile} from '../teams/policy';
+import {salesOperationAllowed} from '../teams/permissions';
+import {salesCanRead,salesCanEdit} from '../teams/record-access';
 import type {AccessPort,ActorContext,NativeOperator,ResourceRef,AccessDecision,SqlStatement} from '../../shared/expansion-contracts';
 import {AccessError,deny} from './errors';
 import {matches,roleAllows} from './policy';
@@ -19,6 +22,15 @@ export class AccessService implements AccessPort{
  async authorize(c:ActorContext,operation:string,resource:ResourceRef,fields:readonly string[]):Promise<AccessDecision>{
   const current=await this.refreshContext(c);if(current.policyEpoch!==c.policyEpoch)throw new AccessError('conflict','Permissions changed; refresh workspace context.');if(resource.tenantId!==c.tenantId||resource.workspaceId!==c.workspaceId)deny();
   if(c.principal.kind!=='operator')deny();
+  const sales=await salesProfile(this.db,c.principal.operatorId);
+  if(sales){
+   if(!salesOperationAllowed(sales,operation))deny('Your sales role does not permit this action.');
+   if(['contact','company','opportunity'].includes(resource.type)){
+    const allowed=operation==='graph.update'?await salesCanEdit(this.db,c.principal.operatorId,resource.type,resource.id,fields):await salesCanRead(this.db,c.principal.operatorId,resource.type,resource.id,fields);
+    if(!allowed)deny('Record or field access is not permitted.');
+   }
+   return{allowedFields:[...fields],policyEpoch:c.policyEpoch,dependencies:[]};
+  }
   if(await isFullOperator(this.db,c.principal.operatorId)){this.addDependencyFences(c,fullOperatorFence(c),'native-class');return{allowedFields:[...fields],policyEpoch:c.policyEpoch,dependencies:[]};}
   const member=await this.db.prepare("SELECT role FROM access_memberships WHERE workspace_id=? AND operator_id=? AND status='active'").bind(c.workspaceId,c.principal.operatorId).first<{role:string}>();
   const bundle=await this.db.prepare('SELECT actions_json,fields_json FROM access_role_bundles WHERE workspace_id=? AND role=?').bind(c.workspaceId,member?.role??'guest').first<{actions_json:string;fields_json:string}>();

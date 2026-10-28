@@ -1,3 +1,5 @@
+import {salesProfile} from '../teams/policy';
+import {salesFieldAllowed} from '../teams/record-access';
 import type {ActorContext,SqlValue} from '../../shared/expansion-contracts';
 import {AccessService} from './service';
 import {graphReadPolicy} from './query-policy';
@@ -7,6 +9,12 @@ const policyCache=new WeakMap<ActorContext,ReturnType<typeof graphReadPolicy>>()
 const columnCache=new WeakMap<ActorContext,Map<string,Promise<Array<{name:string}>>>>();
 /** Fixed original-workspace tables only. Expansion backup belongs to operations' explicit scope. */
 const related:Record<string,string>={
+ record_ownership:"EXISTS(SELECT 1 FROM _legacy_rows permitted WHERE permitted.kind=b.record_type AND permitted.id=b.record_id)",
+ sales_tasks:"EXISTS(SELECT 1 FROM _legacy_rows permitted WHERE permitted.kind=b.record_type AND permitted.id=COALESCE(b.contact_id,b.company_id,b.opportunity_id)) AND NOT EXISTS(SELECT 1 FROM main.entry_privacy private WHERE private.source='task' AND private.entry_id=b.id)",
+ handoff_tasks:"opportunity_id IN(SELECT id FROM _legacy_rows WHERE kind='opportunity') AND NOT EXISTS(SELECT 1 FROM main.entry_privacy private WHERE private.source='handoff' AND private.entry_id=b.id)",
+ sales_task_timeline:'task_id IN(SELECT id FROM sales_tasks)',
+ sales_task_notification_links:'task_id IN(SELECT id FROM sales_tasks)',
+
  opportunity_contacts:'opportunity_id IN(SELECT id FROM _legacy_rows WHERE kind=\'opportunity\') AND contact_id IN(SELECT id FROM _legacy_rows WHERE kind=\'contact\')',
  signal_links:"(record_type='company' AND record_id IN(SELECT id FROM _legacy_rows WHERE kind='company')) OR (record_type='contact' AND record_id IN(SELECT id FROM _legacy_rows WHERE kind='contact')) OR (record_type='opportunity' AND record_id IN(SELECT id FROM _legacy_rows WHERE kind='opportunity'))",
  signals:'EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=b.id) AND NOT EXISTS(SELECT 1 FROM main.signal_links l WHERE l.signal_id=b.id AND NOT EXISTS(SELECT 1 FROM signal_links visible WHERE visible.signal_id=l.signal_id AND visible.record_type=l.record_type AND visible.record_id=l.record_id))',
@@ -23,10 +31,11 @@ const related:Record<string,string>={
  audit_entries:"(entity_type='company' AND entity_id IN(SELECT id FROM _legacy_rows WHERE kind='company')) OR (entity_type='contact' AND entity_id IN(SELECT id FROM _legacy_rows WHERE kind='contact')) OR (entity_type='opportunity' AND entity_id IN(SELECT id FROM _legacy_rows WHERE kind='opportunity'))",
  ai_previews:'opportunity_id IN(SELECT id FROM _legacy_rows WHERE kind=\'opportunity\')',ai_calls:'opportunity_id IN(SELECT id FROM _legacy_rows WHERE kind=\'opportunity\')',
 };
-const dependencies:Record<string,string[]>={opportunity_contacts:['opportunities','contacts'],signal_links:['companies','contacts','opportunities'],signals:['signal_links'],timeline_entry_records:['companies','contacts','opportunities'],timeline_entries:['timeline_entry_records'],evaluations:['opportunities'],evaluation_contributions:['evaluations','signals'],recommendations:['opportunities'],recommendation_evidence:['recommendations','signals'],drafts:['opportunities','contacts'],outbound_messages:['opportunities','contacts'],record_aliases:['companies','contacts'],record_merge_claims:['companies','contacts'],record_mutation_jobs:['opportunities'],action_completions:['recommendations'],notifications:['operators','opportunities'],audit_entries:['companies','contacts','opportunities'],ai_previews:['opportunities'],ai_calls:['opportunities']};
+const dependencies:Record<string,string[]>={record_ownership:['contacts','companies','opportunities'],sales_tasks:['contacts','companies','opportunities'],handoff_tasks:['opportunities'],sales_task_timeline:['sales_tasks'],sales_task_notification_links:['sales_tasks'],opportunity_contacts:['opportunities','contacts'],signal_links:['companies','contacts','opportunities'],signals:['signal_links'],timeline_entry_records:['companies','contacts','opportunities'],timeline_entries:['timeline_entry_records'],evaluations:['opportunities'],evaluation_contributions:['evaluations','signals'],recommendations:['opportunities'],recommendation_evidence:['recommendations','signals'],drafts:['opportunities','contacts'],outbound_messages:['opportunities','contacts'],record_aliases:['companies','contacts'],record_merge_claims:['companies','contacts'],record_mutation_jobs:['opportunities'],action_completions:['recommendations'],notifications:['operators','opportunities'],audit_entries:['companies','contacts','opportunities'],ai_previews:['opportunities'],ai_calls:['opportunities']};
 export async function legacyProjection(db:D1Database,c:ActorContext,sql:string):Promise<{sql:string;bindings:SqlValue[]}>{
  if(/\b(?:access_\w+|graph_\w+|schema_\w+|domain_\w+|native_stage_audit_custody|native_erased_audit_custody|sqlite_master|sqlite_schema)\b/i.test(sql))deny('Use the explicitly scoped administration or archive API.');
  if(!/^\s*(SELECT|WITH)\b/i.test(sql))return {sql,bindings:[]};
+ const sales=c.principal.kind==='operator'?await salesProfile(db,c.principal.operatorId):null;
  const tables=new Set<string>();if(/\btimeline_search\b/i.test(sql))tables.add('timeline_entries');for(const table of ['companies','contacts','opportunities','operators','sessions',...Object.keys(related)])if(new RegExp(`\\b${table}\\b`,'i').test(sql))tables.add(table);
  const add=(table:string)=>{for(const dependency of dependencies[table]??[]){if(!tables.has(dependency)){tables.add(dependency);add(dependency);}}};for(const table of [...tables])add(table);
  const literal=(value:SqlValue)=>value===null?'NULL':typeof value==='number'?String(value):`'${String(value).replaceAll("'","''")}'`;
@@ -64,12 +73,16 @@ export async function legacyProjection(db:D1Database,c:ActorContext,sql:string):
    ctes.push(`${table} AS(SELECT ${selections.join(',')} FROM main.${table} b JOIN main.graph_records r ON r.id=b.id AND r.kind='${({companies:'company',contacts:'contact',opportunities:'opportunity'} as Record<string,string>)[table]}' WHERE r.workspace_id=? AND r.tenant_id=? AND r.retired_into_id IS NULL AND ${inline(policy.row)})`);bindings.push(c.workspaceId,c.tenantId);
   }else if(table==='operators'){ctes.push("operators AS(SELECT b.* FROM main.operators b JOIN main.access_memberships m ON m.operator_id=b.id WHERE m.workspace_id=?)");bindings.push(c.workspaceId);}
   else if(table==='sessions'){ctes.push('sessions AS(SELECT * FROM main.sessions WHERE operator_id=?)');bindings.push(c.principal.kind==='operator'?c.principal.operatorId:'');}
-  else {let condition=`(${related[table]})`;
+  else {let condition=`(${related[table]})`;if(sales&&table==='timeline_entries')condition=condition.replace("AND private.entry_id=b.id)",`AND private.entry_id=b.id AND private.author_id<>${literal(c.principal.kind==='operator'?c.principal.operatorId:'')})`);
    if(['evaluations','recommendations','drafts','outbound_messages','ai_previews','ai_calls'].includes(table))condition+=' AND EXISTS(SELECT 1 FROM _legacy_derived_opportunities visible WHERE visible.id=b.opportunity_id)';
+   if(sales&&table==='timeline_entries')condition+=` AND NOT EXISTS(SELECT 1 FROM main.entry_privacy private WHERE private.source='entry' AND private.entry_id=b.id AND private.author_id<>${literal(c.principal.kind==='operator'?c.principal.operatorId:'')})`;
+   if(sales&&table==='timeline_entries'&&!salesFieldAllowed(sales,'notes'))condition+=' AND 0';
+   if(sales&&['drafts','outbound_messages','ai_previews','ai_calls'].includes(table)&&!salesFieldAllowed(sales,'mail'))condition+=' AND 0';
    if(table==='notifications')condition+=' AND (opportunity_id IS NULL OR EXISTS(SELECT 1 FROM _legacy_derived_opportunities visible WHERE visible.id=b.opportunity_id))';
    if(table==='audit_entries')condition+=' AND EXISTS(SELECT 1 FROM _legacy_derivable visible WHERE visible.id=b.entity_id AND visible.kind=b.entity_type)';
    if(table==='signals')condition+=" AND NOT EXISTS(SELECT 1 FROM main.signal_links dependency WHERE dependency.signal_id=b.id AND (NOT EXISTS(SELECT 1 FROM _legacy_derivable visible WHERE visible.id=dependency.record_id AND visible.kind=dependency.record_type) OR (dependency.record_type='opportunity' AND NOT EXISTS(SELECT 1 FROM _legacy_derived_opportunities visible WHERE visible.id=dependency.record_id))))";
    if(table==='timeline_entries')condition+=" AND NOT EXISTS(SELECT 1 FROM main.timeline_entry_records dependency WHERE dependency.timeline_entry_id=b.id AND (NOT EXISTS(SELECT 1 FROM _legacy_derivable visible WHERE visible.id=dependency.record_id AND visible.kind=dependency.record_type) OR (dependency.record_type='opportunity' AND NOT EXISTS(SELECT 1 FROM _legacy_derived_opportunities visible WHERE visible.id=dependency.record_id))))";
+   if(sales&&['sales_tasks','handoff_tasks','signals'].includes(table)&&!salesFieldAllowed(sales,table==='signals'?'mail':'notes'))condition+=' AND 0';
    ctes.push(`${table} AS(SELECT b.* FROM main.${table} b WHERE (${condition}))`);
   }
  }

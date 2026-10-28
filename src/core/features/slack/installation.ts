@@ -1,3 +1,4 @@
+import {salesAdmin} from '../teams/policy';
 import {suspendDashboardSchedules} from './dashboard-suspension';
 import {audit} from '../records/shared';
 import {currentEpoch} from './identity';
@@ -6,7 +7,7 @@ import {slackCall,SlackProviderError} from './provider';
 export async function installation(db:D1Database){return db.prepare('SELECT * FROM slack_installation WHERE id=?').bind('slack').first<Installation>();}
 export async function credentials(db:D1Database,config:SlackConfig){const row=await db.prepare('SELECT ciphertext FROM slack_credentials WHERE id=?').bind('slack').first<{ciphertext:string}>();if(!row||!config.security)throw new SlackError(503,'Slack is unresolved setup. Enter credentials again; notices are paused.');try{return JSON.parse(await config.security.open(row.ciphertext)) as {token:string;signingSecret:string};}catch{throw new SlackError(503,'Slack credentials cannot be opened. Reconnect in Settings.');}}
 export async function providerFailure(db:D1Database,error:unknown){if(error instanceof SlackProviderError&&error.revoked){await db.batch([...suspendDashboardSchedules(db,'Slack credentials revoked; reconnect and enable the saved schedule again.'),db.prepare("UPDATE slack_installation SET state='revoked',error=?").bind(error.code),db.prepare("UPDATE slack_notices SET state='paused',error=? WHERE state IN ('queued','rate-limited','failed')").bind(error.code)]);}}
-export async function requireAdmin(db:D1Database,id:string){if(!await db.prepare("SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active'").bind(id).first())throw new SlackError(403,'Only the installation owner administers Slack until TEAM-005.');}
+export async function requireAdmin(db:D1Database,id:string){if(!await salesAdmin(db,id))throw new SlackError(403,'Only sales administrators administer Slack.');}
 export async function connect(db:D1Database,config:SlackConfig,token:string,signingSecret:string,origin:string,actor:string){
  if(!config.security)throw new SlackError(503,'Slack needs the installation encryption key.');
  const auth=await slackCall(token,'auth.test',{},config.fetcher);

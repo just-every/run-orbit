@@ -3,10 +3,10 @@ import {Hono} from 'hono';
 import {z} from 'zod';
 import type {AuthenticatedOperator} from '../identity';
 import {WorkbenchError} from '../workbench/repository';
-import {LibraryRepository} from './library-repository';
+import {LibraryRepository,libraryAudience} from './library-repository';
 import {renderDraft} from './render';
 const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/),revision=z.number().int().positive();
-const content=z.object({kind:z.enum(['template','snippet','signature']),name:z.string().trim().min(1).max(120),subject:z.string().max(998).default(''),body:z.string().min(1).max(100000),visibility:z.enum(['private','shared'])});
+const content=z.object({kind:z.enum(['template','snippet','signature']),name:z.string().trim().min(1).max(120),subject:z.string().max(998).default(''),body:z.string().min(1).max(100000),visibility:z.enum(['private','shared']),teamId:id.nullable().optional()});
 export function createLibraryRoutes(db:D1Database){
  const rootDatabase=db;
  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),library=new LibraryRepository(db);
@@ -17,10 +17,10 @@ export function createLibraryRoutes(db:D1Database){
  app.delete('/:id',async c=>{const input=z.object({revision}).strict().safeParse(await c.req.json()),key=id.safeParse(c.req.param('id'));if(!input.success||!key.success)return c.json({error:'Choose the current library revision.'},400);return c.json(await library.remove(c.get('operator').operatorId,key.data,input.data.revision));});
  app.post('/drafts/:id/apply',async c=>{const db=await draftMailDatabase(rootDatabase,c.req.param('id'));
   const input=z.object({revision,templateId:id.optional(),snippetId:id.optional(),signatureId:id.optional()}).strict().safeParse(await c.req.json()),key=id.safeParse(c.req.param('id'));if(!input.success||!key.success)return c.json({error:'Choose content and the saved draft revision.'},400);
-  const actor=c.get('operator').operatorId,{draft}=await renderDraft(db,key.data,actor),selection:Record<string,{id:string;revision:number}>={};let subject=draft.subject,body=draft.body;
+  const actor=c.get('operator').operatorId,audience=libraryAudience(actor);await library.author(actor);const {draft}=await renderDraft(db,key.data,actor),selection:Record<string,{id:string;revision:number}>={};let subject=draft.subject,body=draft.body;
   for(const kind of ['template','snippet','signature']as const){const entryId=input.data[`${kind}Id`];if(!entryId)continue;const entry=await library.read(entryId,actor);if(entry.kind!==kind)throw new WorkbenchError(400,'Choose the matching library kind.');selection[kind]={id:entry.id,revision:entry.revision};if(kind==='template'){subject=entry.subject;body=entry.body;}else body+='\n\n'+entry.body;}
   if(!Object.keys(selection).length)throw new WorkbenchError(400,'Choose at least one library entry.');
-  const result=await db.batch([library.permissionFence(actor),...Object.entries(selection).map(([kind,entry])=>db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'library_content_changed',NULL WHERE NOT EXISTS(SELECT 1 FROM message_library WHERE id=? AND revision=? AND kind=? AND (visibility='shared' OR owner_id=?))").bind(entry.id,entry.revision,kind,actor)),db.prepare('UPDATE drafts SET subject=?,body=?,library_selection_json=?,merge_review_json=NULL,revision=revision+1,updated_at=? WHERE id=? AND revision=? AND is_stale=0 AND NOT EXISTS(SELECT 1 FROM outbound_messages WHERE draft_id=drafts.id AND revision=drafts.revision)').bind(subject,body,JSON.stringify(selection),new Date().toISOString(),key.data,input.data.revision)]);
+  const result=await db.batch([library.permissionFence(actor),...Object.entries(selection).map(([kind,entry])=>db.prepare(`INSERT INTO runtime_controls(name,value) SELECT 'library_content_changed',NULL WHERE NOT EXISTS(SELECT 1 FROM message_library WHERE id=? AND revision=? AND kind=? AND ${audience.sql})`).bind(entry.id,entry.revision,kind,...audience.args)),db.prepare('UPDATE drafts SET subject=?,body=?,library_selection_json=?,merge_review_json=NULL,revision=revision+1,updated_at=? WHERE id=? AND revision=? AND is_stale=0 AND NOT EXISTS(SELECT 1 FROM outbound_messages WHERE draft_id=drafts.id AND revision=drafts.revision)').bind(subject,body,JSON.stringify(selection),new Date().toISOString(),key.data,input.data.revision)]);
   if(result.at(-1)!.meta.changes!==1)throw new WorkbenchError(409,'Draft changed, is stale or already approved. Reload it.');return c.json((await renderDraft(db,key.data,actor)).review);
  });
  app.get('/drafts/:id/render',async c=>{const db=await draftMailDatabase(rootDatabase,c.req.param('id'));if(!id.safeParse(c.req.param('id')).success)return c.json({error:'Invalid draft.'},400);return c.json((await renderDraft(db,c.req.param('id'),c.get('operator').operatorId)).review);});

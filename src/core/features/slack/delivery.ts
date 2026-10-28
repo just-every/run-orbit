@@ -1,3 +1,4 @@
+import {checkedAudience} from './audience';
 import {suspendDashboardSchedules} from './dashboard-suspension';
 import {systemClock} from '../../platform/clock';
 import {dashboardNoticeFence,enqueueDashboardNotices} from './dashboard-notices';
@@ -49,10 +50,11 @@ async function processPending(db:D1Database,config:SlackConfig){
   const channel=await db.prepare('SELECT * FROM slack_channels WHERE id=?').bind(notice.channel_id).first<Channel>();
   if(!channel||!channel.enabled||(channel.retry_at&&channel.retry_at>clock.now().toISOString()))continue;
   const prepared=await noticeContent(db,notice,item.origin);
-  if(!prepared){await db.prepare("UPDATE slack_notices SET state='redacted',content_json=NULL,error='Underlying record unavailable' WHERE id=?").bind(notice.id).run();continue;}
+  if(!prepared){await db.prepare("UPDATE slack_notices SET state='redacted',content_json=NULL,error='Record unavailable to this channel audience' WHERE id=?").bind(notice.id).run();continue;}
   const content=prepared.content;
   let submitted=false;
   try{
+   await checkedAudience(db,item,token,channel.id,channel.audience_team_id,config.fetcher);
    await checkedChannel(token,channel.id,item.team_id,config.fetcher);
    const visibility=notice.record_type==='dashboard'?dashboardNoticeFence(notice.record_id,notice.source_id,notice.channel_id):prepared.private?{sql:'EXISTS(SELECT 1 FROM graph_records WHERE kind=? AND id=? AND retired_into_id IS NULL)',args:[notice.record_type,notice.record_id]}:workspaceRecordFence(notice.record_type,notice.record_id);
    const claimed=await db.prepare(`UPDATE slack_notices SET state='submitting',content_json=?,privacy=?,installation_epoch=?,error=NULL,retry_at=NULL,updated_at=? WHERE id=? AND state IN ('queued','rate-limited') AND EXISTS(SELECT 1 FROM slack_installation WHERE state='connected') AND EXISTS(SELECT 1 FROM slack_channels WHERE id=? AND enabled=1) AND ${visibility.sql}`).bind(JSON.stringify(content),prepared.private?'withheld':null,item.connected_at,clock.now().toISOString(),notice.id,channel.id,...visibility.args).run();

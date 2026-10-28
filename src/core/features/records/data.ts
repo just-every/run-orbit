@@ -24,7 +24,7 @@ import {messageContactErasure} from '../drafts/privacy';
 import {mailchimpErasure} from '../marketing/deletions';
 export class DataRepository {
  constructor(readonly db:D1Database){}
- async remove(kind:RecordKind,id:string,actor:string,sessionId?:string){const capture=captureImportErasure(this.db),db=capture.db;const record=await requireRecord(db,kind,id);const statements:D1PreparedStatement[]=[];let contactEmails:string[]=[];
+ async remove(kind:RecordKind,id:string,actor:string,sessionId?:string){const capture=captureImportErasure(this.db),db=capture.db;const record=await requireRecord(db,kind,id);const statements:D1PreparedStatement[]=[db.prepare('DELETE FROM sales_record_shares WHERE kind=? AND record_id=?').bind(kind,id)];let contactEmails:string[]=[];
   if(kind!=='contact')statements.push(...apiCredentialErasure(db,kind,id));
   if(kind!=='opportunity')statements.push(...ownershipErasureStatements(db,kind,id));
   statements.push(...forecastErasureStatements(db,kind,id,typeof record.email==='string'?[record.email]:[]));

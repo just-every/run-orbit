@@ -1,3 +1,6 @@
+import {salesNativeBoundary} from '../features/teams/native-boundary';
+import {createTeamRoutes} from '../features/teams/routes';
+import {salesProfile} from '../features/teams/policy';
 import {apiCredentialRoutes} from '../features/api/routes';
 import {publicApiRoutes} from '../features/api/public-routes';
 import {entryPrivacyRoutes} from '../features/records/entry-privacy';
@@ -132,7 +135,9 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
     await next();
   });
   app.route('/api/v2',createFoldRoutes(input.database,input.clock));
-  app.use('/api/v1/*',collaboratorNativeBoundary(input.database));
+  app.use('/api/v1/*',salesNativeBoundary(input.database));
+  app.use('/api/v1/*',async(c,next)=>{if(await salesProfile(input.database,c.get('operator').operatorId)){await next();return;}return collaboratorNativeBoundary(input.database)(c,next);});
+  app.route('/api/v1/settings/teams',createTeamRoutes(input.database));
   app.use("/api/v1/records/*", async (context,next) => {
     await next();
     if (!context.req.path.startsWith("/api/v1/records/archive") && !["GET","HEAD","OPTIONS"].includes(context.req.method) && context.res.status<400) {

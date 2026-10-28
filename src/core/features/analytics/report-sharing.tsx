@@ -3,11 +3,11 @@ import {api} from '../fold-ui/workspace';
 import './sales.css';
 
 /** REPORT-001 sharing for any saved report: private, named people or the workspace. Sharing never grants record access. */
-export type Audience='private'|'operators'|'workspace';
+export type Audience='private'|'operators'|'teams'|'workspace';
 export interface Member{id:string;name:string;email:string;collaborator:number}
-interface SharingState{audience:Audience;ownerId:string|null;operatorIds:string[];revision:number;canManage:boolean;members:Member[]}
+interface SharingState{audience:Audience;ownerId:string|null;operatorIds:string[];revision:number;canManage:boolean;members:Member[];teams:{id:string;name:string}[];teamIds:string[]}
 const toggle=(values:string[],value:string,on:boolean)=>on?[...new Set([...values,value])]:values.filter(item=>item!==value);
-const audienceLabels:Record<Audience,string>={private:'Private',operators:'Shared with named people',workspace:'Shared with the workspace'};
+const audienceLabels:Record<Audience,string>={private:'Private',operators:'Shared with named people',teams:'Shared with teams',workspace:'Shared with the workspace'};
 
 export function SharingChoice({audience,named,members,onAudience,onNamed,legend}:{audience:Audience;named:string[];members:Member[];onAudience:(value:Audience)=>void;onNamed:(value:string[])=>void;legend:string}){
  return <fieldset><legend>{legend}</legend>
@@ -20,12 +20,12 @@ export function SharingChoice({audience,named,members,onAudience,onNamed,legend}
 export function ReportSharing({base,id}:{base:string;id:string}){
  const [state,setState]=useState<SharingState|null>(null),[audience,setAudience]=useState<Audience>('workspace'),[named,setNamed]=useState<string[]>([]),[message,setMessage]=useState('');
  const path=`${base}/reports/${encodeURIComponent(id)}/sharing`;
- useEffect(()=>{let active=true;setState(null);setMessage('');api<SharingState>(path).then(result=>{if(active){setState(result);setAudience(result.audience);setNamed(result.operatorIds);}}).catch(error=>{if(active)setMessage(error instanceof Error?error.message:'Sharing is unavailable.');});return()=>{active=false;};},[path]);
+ useEffect(()=>{let active=true;setState(null);setMessage('');api<SharingState>(path).then(result=>{if(active){setState(result);setAudience(result.audience==='teams'?'operators':result.audience);setNamed([...result.operatorIds,...result.teamIds.map(id=>`team:${id}`)]);}}).catch(error=>{if(active)setMessage(error instanceof Error?error.message:'Sharing is unavailable.');});return()=>{active=false;};},[path]);
  if(!state)return message?<p className="sales-note" role="alert">{message}</p>:null;
  if(!state.canManage)return <p className="sales-note">{audienceLabels[state.audience]}. Only the report owner or the installation owner changes its sharing.</p>;
  return <details className="fold-panel report-sharing"><summary>Sharing: {audienceLabels[state.audience]}</summary>
-  <SharingChoice audience={audience} named={named} members={state.members} onAudience={setAudience} onNamed={setNamed} legend="Who may open this report"/>
-  <button type="button" onClick={async()=>{setMessage('');try{const result=await api<SharingState>(path,{audience,operatorIds:audience==='operators'?named:[],revision:state.revision},'PUT');setState(result);setMessage('Sharing saved.');}catch(error){setMessage(error instanceof Error?error.message:'Sharing was not saved.');}}}>Save sharing</button>
+  <SharingChoice audience={audience==='teams'?'operators':audience} named={named} members={[...state.members,...state.teams.map(team=>({id:`team:${team.id}`,name:team.name,email:'Team',collaborator:0}))]} onAudience={setAudience} onNamed={setNamed} legend="Who may open this report"/>
+  <button type="button" onClick={async()=>{setMessage('');try{const result=await api<SharingState>(path,{audience:audience==='operators'&&named.some(id=>id.startsWith('team:'))?'teams':audience,teamIds:named.filter(id=>id.startsWith('team:')).map(id=>id.slice(5)),operatorIds:audience==='operators'?named.filter(id=>!id.startsWith('team:')):[],revision:state.revision},'PUT');setState(result);setMessage('Sharing saved.');}catch(error){setMessage(error instanceof Error?error.message:'Sharing was not saved.');}}}>Save sharing</button>
   <p role="status">{message}</p>
  </details>;
 }

@@ -1,3 +1,5 @@
+import {salesProfile} from '../teams/policy';
+import {salesCanRead,salesCanEdit,salesRowPolicy,salesScopedFieldPolicy} from '../teams/record-access';
 import {hash} from '../delegation/protocol';
 import {RecordsRepository} from '../records/repository';
 import {audit,RecordError} from '../records/shared';
@@ -13,12 +15,14 @@ export class ApiDeals {
  constructor(readonly db:D1Database,readonly clock:Clock){}
  async list(credential:ApiCredential,input:{limit:number;cursor?:string;title?:string},fields:string[]){
   apiScope(credential,'deal.read',undefined,fields);
-  const result=await apiTransaction(this.db,credential,this.clock,[this.db.prepare("SELECT * FROM opportunities WHERE id IN(SELECT value FROM json_each(?)) AND id>? AND (? IS NULL OR title=?) ORDER BY id LIMIT ?").bind(credential.records_json,input.cursor??'',input.title??null,input.title??null,input.limit+1)]);
+  const profile=await salesProfile(this.db,credential.principal_id),row=profile?await salesRowPolicy(this.db,credential.principal_id):{sql:'1',bindings:[]},checks=profile?await Promise.all([...fields,...(input.title?['title']:[])].map(field=>salesScopedFieldPolicy(this.db,credential.principal_id,`'${field}'`))):[];
+  const result=await apiTransaction(this.db,credential,this.clock,[this.db.prepare(`SELECT d.* FROM opportunities d JOIN graph_records r ON r.kind='opportunity' AND r.id=d.id AND r.retired_into_id IS NULL WHERE d.id IN(SELECT value FROM json_each(?)) AND d.id>? AND (? IS NULL OR d.title=?) AND ${row.sql} ${checks.map(check=>`AND ${check.sql}`).join(' ')} ORDER BY d.id LIMIT ?`).bind(credential.records_json,input.cursor??'',input.title??null,input.title??null,input.limit+1)]);
   const rows=result[1]!.results as Deal[],more=rows.length>input.limit,page=rows.slice(0,input.limit);
   return {deals:page.map(row=>projected(row,fields)),nextCursor:more?String(page.at(-1)!.id):null};
  }
  async read(credential:ApiCredential,id:string,fields:string[]){
   apiScope(credential,'deal.read',id,fields);
+  if(await salesProfile(this.db,credential.principal_id)&&!await salesCanRead(this.db,credential.principal_id,'opportunity',id,fields))throw new ApiError(403,'Current sales record or field access is required.');
   const result=await apiTransaction(this.db,credential,this.clock,[this.db.prepare('SELECT * FROM opportunities WHERE id=?').bind(id)]);
   const row=result[1]!.results[0] as Deal|undefined;
   if(!row)throw new ApiError(404,'Deal not found.');
@@ -35,12 +39,13 @@ export class ApiDeals {
  }
  async create(credential:ApiCredential,input:Record<string,unknown>,key:string){
   apiScope(credential,'deal.create',undefined,Object.keys(input));
+  const sales=await salesProfile(this.db,credential.principal_id);if(sales?.role==='read-only')throw new ApiError(403,'This sales role cannot create deals.');
   const fingerprint=await hash(JSON.stringify(Object.keys(input).sort().map(field=>[field,input[field]]))),keyHash=await hash(key);
   const previous=await this.receipt(credential,keyHash,fingerprint);if(previous)return previous;
   // Explicit creation authority includes only the new records this credential creates.
   const records=JSON.parse(credential.records_json) as string[];
   if(records.length>=100)throw new ApiError(409,'The credential record scope is full; ask its administrator for a new scope.');
-  const plan=await new RecordsRepository(this.db).prepareSave('opportunity',input,credential.principal_id);
+  const plan=await new RecordsRepository(this.db).prepareSave('opportunity',{...input,...(sales?{owner_id:credential.principal_id}:{})},credential.principal_id);
   const guard=crypto.randomUUID();
   try{await apiTransaction(this.db,credential,this.clock,[
    this.db.prepare("INSERT INTO access_write_guards VALUES(?,CASE WHEN NOT EXISTS(SELECT 1 FROM audit_entries WHERE action='api.deal_created' AND json_extract(details_json,'$.credentialId')=? AND json_extract(details_json,'$.key')=?) THEN 1 ELSE 0 END)").bind(guard,credential.id,keyHash),
@@ -56,6 +61,7 @@ export class ApiDeals {
  }
  async update(credential:ApiCredential,id:string,input:Record<string,unknown>,expected:string){
   apiScope(credential,'deal.update',id,Object.keys(input));
+  if(await salesProfile(this.db,credential.principal_id)&&!await salesCanEdit(this.db,credential.principal_id,'opportunity',id,Object.keys(input)))throw new ApiError(403,'Current sales edit permission is required.');
   const before=await this.db.prepare('SELECT * FROM opportunities WHERE id=?').bind(id).first<Deal>();
   if(!before)throw new ApiError(404,'Deal not found.');
   if(await dealRevision(before)!==expected)throw new ApiError(409,'The deal changed; read it again.');

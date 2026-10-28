@@ -96,6 +96,30 @@ test('OUT-014 missing merge fields block; template revisions never rewrite appro
  const libraryService=new OutreachService(db,{send:async input=>{edge.push(input);return{providerMessageId:'library-receipt'};}});await libraryService.dispatchDue(new Date(schedule.scheduledAt));await libraryService.dispatchDue(new Date(schedule.scheduledAt));
  assert.deepEqual(edge.map(({recipient_email,subject,body})=>({recipient_email,subject,body})),[{recipient_email:f.email.toLowerCase(),subject:rendered.subject,body:rendered.body}],'Dispatch sends exactly the approved rendered bytes once after a library revision');
  const after=await approval.message(approvedMessage.id);assert.equal(after.body,before.body);assert.equal(after.subject,before.subject);assert.equal(after.render_snapshot_json,before.render_snapshot_json);
+ // TEAM-005 repeats library use with an actual restricted seller and native team membership.
+ const outsider=await fixture(),outsiderSession=await createDependencies(db).auth.createSession(outsider.actor);
+ const teamResponse=await api('settings/teams','POST',{name:'Synthetic content team',active:true,defaultDashboardId:null});assert.equal(teamResponse.status,201,await teamResponse.clone().text());const team=await teamResponse.json() as {id:string};
+ assert.equal((await api(`settings/teams/${team.id}/members`,'PUT',{operatorIds:[second.actor]})).status,200);
+ const seller={role:'seller',scope:'assigned',fields:['mail'],permissions:['export'],includeAssociations:true};
+ assert.equal((await api(`settings/teams/roles/${second.actor}`,'PUT',seller)).status,200);
+ const teamContent={kind:'template',name:'Team-only follow-up',subject:'About {{deal.title}}',body:'Hello {{contact.name}} at {{company.name}}',visibility:'shared',teamId:team.id};
+ const teamSaved=await api('library','POST',teamContent,repSession.token);assert.equal(teamSaved.status,201,await teamSaved.clone().text());const teamEntry=await teamSaved.json() as {id:string};
+ assert.ok(!(await (await api('library','GET',undefined,outsiderSession.token)).json() as {entries:{id:string}[]}).entries.some(entry=>entry.id===teamEntry.id),'A team audience does not include an outside full operator');
+ assert.equal((await api('library','POST',{...teamContent,teamId:null},repSession.token)).status,403,'A seller cannot widen team content to the workspace');
+ const ownDraft=await outreach.createDraft(second.opportunityId,{contactId:second.contactId,subject:'Initial',body:'Initial'},second.actor);
+ const applied=await api(`library/drafts/${ownDraft.id}/apply`,'POST',{revision:1,templateId:teamEntry.id},repSession.token);assert.equal(applied.status,200,await applied.clone().text());assert.match((await applied.json() as {body:string}).body,/Jordan Lee/);
+ assert.equal((await api(`library/drafts/${personalized.id}/render`,'GET',undefined,repSession.token)).status,403,'Shared templates never grant the recipient or deal record');
+ assert.equal((await api(`settings/teams/roles/${second.actor}`,'PUT',{...seller,fields:[]})).status,200);
+ assert.equal((await api(`library/drafts/${ownDraft.id}/render`,'GET',undefined,repSession.token)).status,403,'Revoking mail fields blocks merge reads on the next request');
+ assert.equal((await api(`settings/teams/roles/${second.actor}`,'PUT',seller)).status,200);
+ assert.equal((await api(`settings/teams/${team.id}/members`,'PUT',{operatorIds:[]})).status,200);
+ assert.ok(!(await (await api('library','GET',undefined,repSession.token)).json() as {entries:{id:string}[]}).entries.some(entry=>entry.id===teamEntry.id),'Team membership revocation removes even a former author’s team content');
+ // Membership is checked when applying another author’s content too.
+ const ownerTeamEntry=await (await api('library','POST',{...teamContent,name:'Administrator team snippet',kind:'snippet',subject:''})).json() as {id:string};
+ assert.equal((await api(`library/drafts/${ownDraft.id}/apply`,'POST',{revision:2,snippetId:ownerTeamEntry.id},repSession.token)).status,404,'Revoked team membership removes another author’s content immediately');
+ assert.equal((await api(`settings/teams/roles/${second.actor}`,'PUT',{...seller,role:'read-only'})).status,200);
+ assert.equal((await api('library','POST',{...teamContent,visibility:'private'},repSession.token)).status,403,'Read-only roles cannot author content');
+ await db.prepare('DELETE FROM sales_roles WHERE operator_id=?').bind(second.actor).run();
  const now=new Date('2030-01-07T09:00:00Z'),requestedAt='2030-01-12T00:00:00Z'; // Saturday 10am in Brisbane.
  await db.prepare("UPDATE contacts SET timezone='Australia/Brisbane' WHERE id=?").bind(f.contactId).run();
  const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Approved',body:'Exact approved body'},f.actor);let calls=0;

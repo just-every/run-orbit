@@ -3,7 +3,7 @@ import {deny,hash,type Grant} from './protocol';
 
 // Native delegation exposes complete source records. A collaborator profile or
 // record grant can never confer this separate, unrestricted authority class.
-export const nativeFullPredicate="o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=o.id)";
+export const nativeFullPredicate="o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=o.id) AND (o.setup_owner=1 OR NOT EXISTS(SELECT 1 FROM sales_roles role WHERE role.operator_id=o.id))";
 export const nativeActorPredicate=`EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND ${nativeFullPredicate})`;
 const grantJoins='delegation_grants g JOIN operators o ON o.id=g.principal_id JOIN delegation_clients c ON c.id=g.client_id JOIN workspace_settings w ON w.id=g.account_id';
 const grantCurrent=`g.revoked_at IS NULL AND g.expires_at>strftime('%Y-%m-%dT%H:%M:%fZ','now') AND c.enabled=1 AND ${nativeFullPredicate}`;

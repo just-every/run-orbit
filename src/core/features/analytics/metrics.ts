@@ -1,3 +1,4 @@
+import {salesProfile} from '../teams/policy';
 import {snapshotStatements,hydrateSnapshot} from './snapshot-storage';
 import {reportMeasurement} from './measurement';
 import {labelReportGroups} from './group-labels';
@@ -19,15 +20,16 @@ export class AnalyticsMetrics {
  readonly sales:SalesReports;
  constructor(readonly store:OperationsStore,readonly sources?:AnalyticsSourcePort){this.sales=new SalesReports(this);}
  async permit(ctx:ActorContext,operation:string,id='*'){ctx=await this.store.access.refreshContext(ctx);await this.store.access.authorize(ctx,operation,{...ctx,type:'analytics',id},[]);return ctx;}
+ async exportContext(ctx:ActorContext){ctx=await this.permit(ctx,'analytics.read');if(ctx.principal.kind==='operator'&&await salesProfile(this.store.db,ctx.principal.operatorId))await this.store.access.authorize(ctx,'export',{...ctx,type:'analytics',id:'*'},[]);return ctx;}
  /** Count/sum/mean/ratio definitions over native CRM fields, or REPORT-001 sales suite definitions. A new report records its
   * sharing; a later version of a shared report belongs to whoever manages that sharing. */
- async define(ctx:ActorContext,id:string,version:number,input:unknown,sharing?:{audience:Audience;operatorIds:string[]}){
+ async define(ctx:ActorContext,id:string,version:number,input:unknown,sharing?:{audience:Audience;operatorIds:string[];teamIds?:string[]}){
   ctx=await this.permit(ctx,'analytics.define',id);let body:MetricDefinition|SalesDefinition;
   if(isSalesBody(input)){body=salesDefinition.parse(input);await this.sales.validate(body);}
   else{body=metricDefinition.parse(input);if(body.currency!==null||body.attributionModel!=='none'||body.sourceOperation!=='graph.read'||body.sourceTypes.some(type=>!['contact','company','opportunity'].includes(type)))throw new AccessError('validation','Reports use native CRM fields, without FX or attribution.');}
   if(!/^[a-z0-9_-]{1,100}$/.test(id)||!Number.isSafeInteger(version)||version<1)throw new AccessError('validation','A stable definition ID and positive version are required.');
   const share=await this.sales.shares.read(ctx,id);if(version>1&&share.stored&&!await this.sales.shares.canManage(ctx,share))throw new AccessError('permission','Only the report owner or the installation owner saves a new version of this report.');
-  const shares=version===1?this.sales.shares.createStatements(ctx,id,sharing?.audience,sharing?await this.sales.shares.named(ctx,sharing.audience,sharing.operatorIds):[]):this.sales.shares.fence(ctx,id);
+  const shares=version===1?this.sales.shares.createStatements(ctx,id,sharing?.audience,sharing?await this.sales.shares.named(ctx,sharing.audience,sharing.operatorIds,sharing.teamIds):[]):this.sales.shares.fence(ctx,id);
   await this.store.commit(ctx,'analytics.define',id,version,[...this.store.guard('COALESCE((SELECT max(version) FROM analytics_definitions WHERE workspace_id=? AND id=?),0)=?',[ctx.workspaceId,id,version-1]),{sql:'INSERT INTO analytics_definitions VALUES(?,?,?,?,?,?)',bindings:[id,ctx.tenantId,ctx.workspaceId,version,JSON.stringify(body),new Date().toISOString()]},...shares]);return {id,version,definition:body};}
  async definition(ctx:ActorContext,id:string,version:number){const row=await this.store.db.prepare('SELECT body_json FROM analytics_definitions WHERE workspace_id=? AND id=? AND version=?').bind(ctx.workspaceId,id,version).first<{body_json:string}>();if(!row)throw new AccessError('validation','Metric definition does not exist.');return metricDefinition.parse(JSON.parse(row.body_json));}
  async sourceProofs(ctx:ActorContext,definition:MetricDefinition,refs:DependencyRef[]){if(!this.sources)throw new AccessError('prerequisite','Native source authority is required.');for(const ref of refs)if(!definition.sourceTypes.includes(ref.type))throw new AccessError('validation','Source type does not match its definition.');const fields=[...new Set([...definition.sourceFields,...[definition.valueField,definition.denominatorField,definition.groupBy,definition.dateField].filter((field):field is string=>Boolean(field)),...Object.keys(definition.filters??{})])];return this.sources.traceStatements(ctx,refs.map(ref=>({ref,fields}))); }

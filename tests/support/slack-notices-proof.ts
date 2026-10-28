@@ -51,6 +51,46 @@ export async function proveSlackNotices(f:SlackFixture,deal:string,contact:strin
   const booking=await(await f.request('sources/bookings','PUT',{name:'Internal booking notices',enabled:true})).json() as any,raw=JSON.stringify({triggerEvent:'BOOKING_CREATED',createdAt:new Date().toISOString(),payload:{uid:crypto.randomUUID(),attendees:[{email:'maya@harbour.test'}]}}),bookingCount=posts.length;
   const booked=()=>f.app.request('https://orbit.test/api/v1/signals/bookings/calcom',{method:'POST',headers:{'X-Cal-Signature-256':createHmac('sha256',booking.secret).update(raw).digest('hex')},body:raw});assert.equal((await booked()).status,201);await process();assert.equal(posts.length,bookingCount+1);assert.equal((await booked()).status,409);await process();assert.equal(posts.length,bookingCount+1);assert.ok(posts.every(p=>!p.text.includes('maya@harbour.test')&&!p.text.includes('Maya')&&!p.text.includes('Private win reason')&&!p.text.includes('Private customer call contents')));
   await proveDashboardSlack(f,{posts,call,signed,secret,token,outcome:value=>edge.setOutcome(value),safety:value=>edge.setSafety(value)});
+  // TEAM-005: a real sales administrator chooses a team audience, which grants no record access.
+  const seller=await(await f.request('settings/operators','POST',{email:'synthetic-orbit-team-member@example.test',displayName:'Synthetic team seller'})).json() as {id:string};
+  const administrator=await(await f.request('settings/operators','POST',{email:'synthetic-orbit-sales-admin@example.test',displayName:'Synthetic sales administrator'})).json() as {id:string};
+  const adminRole={role:'sales-admin',scope:'all',fields:['*'],permissions:['source.connect','export','analytics.define','forecast.read'],includeAssociations:true};
+  assert.equal((await f.request(`settings/teams/roles/${administrator.id}`,'PUT',adminRole)).status,200);
+  const administratorSession=await (await import('./test-auth')).testAuth(f.db).createSession(administrator.id);
+  const adminRequest=(path:string,method='GET',body?:unknown)=>f.request('settings/slack'+(path?'/'+path:''),method,body,{Cookie:'__Host-orbit_session='+administratorSession.token});
+  assert.equal((await adminRequest()).status,200);assert.equal((await (await adminRequest()).json() as any).admin,true,'The sales-admin role administers Slack without owning the installation');
+  const teamResponse=await f.request('settings/teams','POST',{name:'Synthetic Slack team',active:true,defaultDashboardId:null});assert.equal(teamResponse.status,201);const team=await teamResponse.json() as {id:string};
+  assert.equal((await f.request(`settings/teams/${team.id}/members`,'PUT',{operatorIds:[f.actor,seller.id,administrator.id]})).status,200);
+  const sellerRole={role:'seller',scope:'assigned',fields:['mail'],permissions:['export'],includeAssociations:false};
+  assert.equal((await f.request(`settings/teams/roles/${seller.id}`,'PUT',sellerRole)).status,200);
+  edge.setMembers(['UBOT','UOWNER','UTEAM']);
+  for(const [slackUserId,operatorId] of [['UOWNER',f.actor],['UTEAM',seller.id]])assert.equal((await adminRequest('mappings','PUT',{slackUserId,operatorId,revoked:false})).status,200);
+  assert.equal((await adminRequest('channels','PUT',{id:'CINTERNAL',events:['stage'],enabled:true,teamId:team.id})).status,200);
+  const hiddenBefore=posts.length;await move(f.stage,second);assert.equal(posts.length,hiddenBefore,'Team membership and a mapping do not emit even a generic notice for a hidden record');
+  const company=await f.db.prepare('SELECT company_id FROM opportunities WHERE id=?').bind(deal).first<string>('company_id');
+  for(const [kind,recordId] of [['opportunity',deal],['contact',contact],['company',company]])assert.equal((await f.request('settings/teams/shares','POST',{kind,recordId,subjectKind:'user',subjectId:seller.id,fields:['*'],canEdit:true})).status,201);
+  // Access changes invalidate every old mapping until an administrator explicitly confirms it.
+  const staleBefore=posts.length;await move(second,f.stage);assert.equal(posts.length,staleBefore);assert.equal((await call('')).channels.find((c:any)=>c.id==='CINTERNAL').enabled,0);
+  for(const [slackUserId,operatorId] of [['UOWNER',f.actor],['UTEAM',seller.id]])assert.equal((await adminRequest('mappings','PUT',{slackUserId,operatorId,revoked:false})).status,200);
+  assert.equal((await adminRequest('channels','PUT',{id:'CINTERNAL',events:['stage'],enabled:true,teamId:team.id})).status,200);
+  const allowedBefore=posts.length;await move(f.stage,second);assert.ok(posts.length>allowedBefore,'An explicitly shared record reaches its authorized team audience');
+  const dashboardPath='/api/v2/workspaces/workspace/dashboards/synthetic-orbit-team-ready';
+  const dashboardRequest=(path:string,method='GET',body?:unknown,session=f.token)=>f.app.request('https://orbit.test'+dashboardPath+path,{method,headers:{Cookie:'__Host-orbit_session='+session,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
+  assert.equal((await dashboardRequest('','PUT',{version:0,definition:{name:'Team sales dashboard',filters:{ownerIds:[],pipelineIds:[],from:'2026-10',through:'2026-12',field:null},tiles:[]}})).status,200);
+  assert.equal((await dashboardRequest('/sharing','PUT',{version:1,audience:'teams',teamGrants:[{teamId:team.id,access:'view'}],grants:[]})).status,200);
+  assert.equal((await adminRequest('channels','PUT',{id:'CINTERNAL',events:['stage','dashboard'],enabled:true,teamId:team.id})).status,200);
+  const teamScheduleResponse=await dashboardRequest('/schedule','PUT',{version:0,frequency:'daily',hour:8,minute:0,weekday:1,day:1,recipientIds:[],channelId:'CINTERNAL',pdf:false,csv:false});assert.equal(teamScheduleResponse.status,200,await teamScheduleResponse.clone().text());const teamSchedule=await teamScheduleResponse.json() as any;
+  assert.equal((await dashboardRequest('/schedule/slack','POST',{version:1,enabled:true},administratorSession.token)).status,200,'A sales administrator explicitly enables a team dashboard schedule');
+  const readyBefore=posts.length;f.setClock(new Date(teamSchedule.nextAt));await process();assert.equal(posts.length,readyBefore+1);assert.equal(posts.at(-1).blocks[0].text.text,'Dashboard ready.');assert.ok(!posts.at(-1).text.includes('Team sales dashboard'));
+  assert.equal((await dashboardRequest('/sharing','PUT',{version:2,audience:'private',grants:[],teamGrants:[]})).status,200);
+  f.setClock(new Date(Date.parse(teamSchedule.nextAt)+86400000));const privateReadyBefore=posts.length;await process();assert.equal(posts.length,privateReadyBefore,'Removing dashboard team sharing suppresses even the generic dashboard-ready link');f.setClock(undefined);
+  edge.setMembers(['UBOT','UOWNER','UTEAM','UOUTSIDER']);assert.equal((await adminRequest('channels','PUT',{id:'CINTERNAL',events:['stage'],enabled:true,teamId:team.id})).status,403,'An unmapped Slack member cannot join a team audience');
+  const outsiderBefore=posts.length;await move(second,f.stage);assert.equal(posts.length,outsiderBefore,'Membership is checked again before posting');
+  edge.setMembers(['UBOT','UOWNER','UTEAM']);
+  assert.equal((await f.request(`settings/teams/roles/${seller.id}`,'PUT',{...sellerRole,role:'read-only',fields:[]})).status,200);
+  assert.equal((await adminRequest('channels','PUT',{id:'CINTERNAL',events:['stage'],enabled:true,teamId:team.id})).status,403,'A role change requires fresh mapping confirmation');
+  for(const [slackUserId,operatorId] of [['UOWNER',f.actor],['UTEAM',seller.id]])assert.equal((await adminRequest('mappings','PUT',{slackUserId,operatorId,revoked:false})).status,200);
+  assert.equal((await adminRequest('channels','PUT',{id:'CINTERNAL',events:['stage','due'],enabled:true,teamId:team.id})).status,200);
   edge.setOutcome('revoked');await process();assert.equal((await f.request('settings/slack/verify','POST',{})).status,503);assert.equal((await call('')).installation.state,'revoked');assert.equal((await call('')).installation.error,'token_revoked');const products=await(await f.request('settings/products')).json() as any;assert.equal(products.products.find((p:any)=>p.products.includes('Slack')).state,'unresolved-setup');await move(second,f.stage);assert.ok((await notices()).some(n=>n.state==='paused'));
   edge.setOutcome('sent');await proveSlackArchive(f,{contact,secret,token,deletes,posts,call});
  }finally{edge.restore();}

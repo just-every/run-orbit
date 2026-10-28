@@ -41,6 +41,7 @@ export async function eraseOperator(db:D1Database,id:string,actor:string){
   // Display names cannot identify somebody in another operator's content.
   if(scope&&redactName&&!column.endsWith('_json'))statements.push(db.prepare(`UPDATE ${table} SET ${column}=${redactionSql(column,'word')} WHERE ${scope} AND instr(lower(${column}),lower(?))>0`).bind(name,'Erased operator',...Array(scope.match(/\?/g)?.length??0).fill(id),name));
  }
+ statements.push(db.prepare("DELETE FROM sales_record_shares WHERE subject_kind='user' AND subject_id=?").bind(id),db.prepare('DELETE FROM sales_team_members WHERE operator_id=?').bind(id),db.prepare('DELETE FROM sales_roles WHERE operator_id=?').bind(id));
  statements.push(db.prepare("UPDATE owner_bootstrap SET email=?,display_name='Erased operator' WHERE owner_id=?").bind(`erased-${id.toLowerCase()}@example.invalid`,id),db.prepare("UPDATE operators SET email=?,display_name='Erased operator',updated_at=? WHERE id=? AND status='removed'").bind(`erased-${id.toLowerCase()}@example.invalid`,now,id),audit(db,actor,'operator.erased','operator',id));
  await executeArchiveErasure(db,statements);return {erased:true};
 }

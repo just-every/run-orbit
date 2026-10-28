@@ -19,7 +19,7 @@ export const credentialDefinition=z.object({
 }).strict();
 type Definition=z.infer<typeof credentialDefinition>;
 type Credential={id:string;installation_id:string;name:string;principal_id:string;operations_json:string;records_json:string;fields_json:string;verifier:string;created_at:string;expires_at:string;revoked_at:string|null;revision:number};
-const administrator="EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND o.status='active' AND o.setup_owner=1 AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id))";
+const administrator="EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND o.status='active' AND (o.setup_owner=1 OR EXISTS(SELECT 1 FROM sales_roles role WHERE role.operator_id=o.id AND role.role='sales-admin')) AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id))";
 const principal="EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id))";
 const available="NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import')";
 const fullScope="NOT EXISTS(SELECT 1 FROM json_each(?) r WHERE NOT EXISTS(SELECT 1 FROM opportunities d WHERE d.id=r.value))";

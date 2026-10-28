@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import {expect,type Browser} from '@playwright/test';
+import {join} from 'node:path';
+import {createApp} from '../../tests/support/app';
+import {signIn,type fixture} from './fixture';
+import {defaultSalesProfile} from '../../src/core/features/teams/policy';
+export async function teamBrowserSeed(f:Awaited<ReturnType<typeof fixture>>){
+ const app=createApp({database:f.db,assets:{fetch:async()=>new Response('')}}),people=[];
+ for(const name of ['Jordan Seller','Avery Manager']){const email=name.split(' ')[0].toLowerCase()+'@'+'team-browser.test';const result=await app.request('https://orbit.test/api/v1/settings/operators',{method:'POST',headers:{Cookie:f.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({email,displayName:name})});assert.equal(result.status,201);people.push(await signIn(f.db,email));}
+ return{rep:people[0]!,manager:people[1]!};
+}
+export async function teamBrowserJourney(browser:Browser,origin:string,directory:string,cookie:string,seed:Awaited<ReturnType<typeof teamBrowserSeed>>){
+ const context=await browser.newContext({baseURL:origin,viewport:{width:1440,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),page=await context.newPage();
+ const call=async(path:string,body?:unknown,method=body===undefined?'GET':'POST')=>{const response=await context.request.fetch(path,{method,...(body===undefined?{}:{data:body}),headers:{Origin:origin}});assert.ok(response.ok(),`${path}: ${response.status()} ${await response.text()}`);return response.json();};
+ try{
+ const settings='/api/v1/settings/teams';for(const [person,role]of [[seed.rep,'seller'],[seed.manager,'manager']] as const)await call(settings+'/roles/'+person.operator.operatorId,defaultSalesProfile(role),'PUT');
+ const team=await call(settings,{name:'West sales',active:true,defaultDashboardId:null});await call(settings+'/'+team.id+'/members',{operatorIds:[seed.rep.operator.operatorId,seed.manager.operator.operatorId]},'PUT');
+ await call('/api/v1/library',{kind:'template',name:'West team follow-up',subject:'Next steps',body:'Thank you for our conversation. Shall we review the next step?',visibility:'shared',teamId:team.id});
+ const company=await call('/api/v1/records/company',{name:'West account',primary_domain:'west-business.test'}),review=await call('/api/v1/records/ownership/review',{kind:'company',ids:[company.id],ownerId:seed.rep.operator.operatorId});await call('/api/v1/records/ownership/'+review.id+'/apply',{});
+ const root='/api/v2/workspaces/workspace';await call(root+'/operations/metrics',{id:'team-browser-pipeline',version:1,definition:{kind:'sales',name:'West pipeline',description:'Current permitted West pipeline',measures:['pipeline','activities'],pipelineIds:[],repIds:[],groupBy:'owner',bucket:'month'},sharing:{audience:'teams',operatorIds:[],teamIds:[team.id]}});
+ const dashboard=root+'/dashboards/west-sales';await call(dashboard,{version:0,definition:{name:'West sales',filters:{ownerIds:[],pipelineIds:[],teamIds:[],from:'2026-10',through:'2026-11',field:null},tiles:[{id:'pipeline',source:'report',sourceId:'team-browser-pipeline',version:'live',snapshotId:null,measure:'pipeline',kind:'number',width:6,height:1,bindings:{}}]}},'PUT');await call(dashboard+'/sharing',{version:1,audience:'teams',grants:[],teamGrants:[{teamId:team.id,access:'view'}]},'PUT');await call(dashboard+`/teams/${team.id}/default`,{enabled:true},'PUT');
+ for(const width of [1440,390]){
+  await page.setViewportSize({width,height:1000});await page.goto('/app/settings');const teams=page.locator('.sales-teams');await expect(teams.getByRole('heading',{name:'Sales roles and teams',exact:true})).toBeVisible();await teams.locator('summary').filter({hasText:'Jordan Seller'}).click();await expect(teams.getByLabel('Sales role',{exact:true}).first()).toBeVisible();await teams.locator('summary').filter({hasText:'Manage record privacy'}).click();await teams.getByLabel('Record privacy selection',{exact:true}).selectOption('company:'+company.id);await teams.getByLabel('Record visibility',{exact:true}).selectOption('restricted');await expect(teams.getByRole('status')).toContainText('Saved');await teams.scrollIntoViewIfNeeded();await teams.screenshot({path:join(directory,`team-settings-${width}.png`)});
+  const capacity=page.locator('section').filter({has:page.getByRole('heading',{name:'Sending capacity',exact:true})}).last();await capacity.scrollIntoViewIfNeeded();await capacity.screenshot({path:join(directory,`team-capacity-${width}.png`)});
+  const slack=page.locator('section').filter({has:page.getByRole('heading',{name:/Slack/})}).last();await slack.scrollIntoViewIfNeeded();await slack.screenshot({path:join(directory,`team-slack-${width}.png`)});
+  await page.goto('/app/library');await expect(page.getByRole('heading',{name:'Message library',exact:true})).toBeVisible();await page.screenshot({path:join(directory,`team-library-${width}.png`),fullPage:true});
+  await page.goto('/app/reports');await expect(page.getByRole('heading',{name:'Reports',exact:true}).first()).toBeVisible();await page.screenshot({path:join(directory,`team-reports-${width}.png`)});const forecast=page.locator('#forecast');await forecast.scrollIntoViewIfNeeded();await forecast.screenshot({path:join(directory,`team-forecast-${width}.png`)});
+  await page.goto('/app/dashboards/west-sales');await expect(page.getByRole('heading',{name:'West sales',exact:true})).toBeVisible();await page.screenshot({path:join(directory,`team-dashboard-${width}.png`),fullPage:true});
+  const repContext=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:seed.rep.cookie}}),repPage=await repContext.newPage();try{await repPage.goto('/app/shared-records?kind=company');await expect(repPage.getByRole('button',{name:'West account',exact:true})).toBeVisible();await repPage.getByRole('button',{name:'West account',exact:true}).click();await expect(repPage.getByRole('heading',{name:'West account',exact:true})).toBeVisible();await repPage.screenshot({path:join(directory,`team-restricted-record-${width}.png`),fullPage:true});const denied=await repContext.request.get(settings);assert.equal(denied.status(),403);}finally{await repContext.close();}
+ }
+ }finally{await context.close();}
+}

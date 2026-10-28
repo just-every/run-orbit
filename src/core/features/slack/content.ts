@@ -1,3 +1,4 @@
+import {audienceCanRead} from './audience';
 import {dashboardNoticeFence} from './dashboard-notices';
 import {recordHref} from '../today/links';
 import type {Notice} from './contracts';
@@ -9,11 +10,13 @@ export interface NoticeContent {eventKind:string;link:string;recordDisplayName?:
 export async function noticeContent(db:D1Database,notice:Notice,origin:string):Promise<{content:NoticeContent;private:boolean}|null>{
  if(notice.event_kind==='dashboard'&&notice.record_type==='dashboard'){const fence=dashboardNoticeFence(notice.record_id,notice.source_id,notice.channel_id);if(!await db.prepare(`SELECT 1 WHERE ${fence.sql}`).bind(...fence.args).first())return null;return {content:{eventKind:'dashboard',link:origin+'/app/dashboards/'+encodeURIComponent(notice.record_id!)},private:true};}
  if(notice.record_type==='dashboard')return null;
+ if(!notice.record_id||!await audienceCanRead(db,notice.channel_id,notice.record_type,notice.record_id))return null;
  const select={opportunity:'SELECT r.title AS name,o.display_name AS owner FROM opportunities r LEFT JOIN operators o ON o.id=r.owner_id WHERE r.id=?',contact:'SELECT NULL AS name,NULL AS owner FROM contacts WHERE id=?',company:'SELECT name,NULL AS owner FROM companies WHERE id=?'};
  const row=await db.prepare(select[notice.record_type]).bind(notice.record_id).first<{name:string|null;owner:string|null}>();if(!row)return null;
  const content={eventKind:notice.event_kind,link:origin+recordHref({type:notice.record_type,id:notice.record_id!})};
  // Person names never enter channels. Private records get only a generic notice and the authenticated link.
- if(notice.record_type==='contact'||!await workspaceRecord(db,notice.record_type,notice.record_id))return{content,private:true};
+ const disclosedFields=[...(notice.record_type==='opportunity'?['title','stage_id','owner_id']:['name']),...(notice.event_kind==='due'?['due_at','task_type','priority']:[])];
+ if(notice.record_type==='contact'||!await audienceCanRead(db,notice.channel_id,notice.record_type,notice.record_id,disclosedFields)||!await workspaceRecord(db,notice.record_type,notice.record_id))return{content,private:true};
  const task=notice.event_kind==='due'?await db.prepare('SELECT o.display_name AS owner,t.task_type AS type,t.priority FROM sales_tasks t LEFT JOIN operators o ON o.id=t.owner_id WHERE t.id=?').bind(notice.source_id).first<{owner:string|null;type:string;priority:string}>():null;
  return {content:{...content,recordDisplayName:row.name??'Unnamed account',stageFrom:notice.stage_from,stageTo:notice.stage_to,ownerDisplayName:task?.owner??row.owner,dueDate:notice.due_at,...(task?{taskType:task.type,taskPriority:task.priority}:{})},private:false};
 }

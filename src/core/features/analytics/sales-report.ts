@@ -1,3 +1,4 @@
+import {salesProfile,salesAdmin} from '../teams/policy';
 import {operatorListingPredicate} from '../identity/operator-listing';
 import type {ActorContext,DependencyRef,Json,MetricSnapshot,SqlStatement} from '../../shared/expansion-contracts';
 import {salesFilterValue} from './sales-filter';
@@ -54,13 +55,14 @@ export class SalesReports{
  private async settings(){const row=await this.db.prepare("SELECT timezone,currency FROM workspace_settings WHERE id='workspace'").first<{timezone:string;currency:string}>();if(!row)throw new AccessError('prerequisite','Workspace timezone and currency are unavailable.');return row;}
  private labels(stages:StageConfig[],access:ViewerAccess):Labels{return {stages:new Map(stages.map(stage=>[stage.id,stage])),pipelines:new Map(stages.map(stage=>[stage.pipelineId,stage.pipelineName])),operators:access.operatorNames};}
  /** One viewer's population for a period: native rows and graph deals, filtered to what they may read now. */
- private async population(c:ActorContext,definition:SalesDefinition,period:SalesPeriod,field?:{name:string;value:string}){
+ private async population(c:ActorContext,definition:SalesDefinition,period:SalesPeriod,field?:{name:string;value:string},teamOwners?:string[]){
   const native=await this.sources.salesPopulation(period),access=await viewerAccess(this.graph,c,native.rows.flatMap(row=>row.refs)),rows:SalesRow[]=[];
   const facts=new Map([...access.deals].map(([id,deal])=>[id,dealFacts(deal.values,id,native)]));
   for(const [id,deal] of facts){const closed=typeof deal.closed_at==='string'?deal.closed_at:null;rows.push({key:`deal:${id}`,kind:'deal',id,refs:[{type:'opportunity',id}],dealId:id,governed:dealGoverned,at:closed,recordedAt:closed??(typeof deal.created_at==='string'?deal.created_at:null),facts:deal});}
   for(const row of native.rows)rows.push(this.withDeal(row,facts));
   const fieldApplied=!field||[...access.deals.values()].some(deal=>salesFilterValue(deal.values,field.name)!==null);
-  const visible=applyAccess(access,rows).filter(row=>!field||!fieldApplied||Boolean(row.dealId&&salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.value!==undefined&&String(salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.value)===field.value)),asOf=new Date().toISOString(),sections=aggregate(definition,period,asOf,visible,this.labels(native.stages,access)),cited=citedRows(sections);
+  const teamRecords=teamOwners?new Set((await this.db.prepare("SELECT r.kind,r.id FROM graph_records r WHERE COALESCE((SELECT owner_id FROM record_ownership own WHERE own.record_type=r.kind AND own.record_id=r.id),json_extract(r.fields_json,'$.owner_id'),r.owner_id) IN(SELECT value FROM json_each(?))").bind(JSON.stringify(teamOwners)).all<{kind:string;id:string}>()).results.map(row=>`${row.kind}:${row.id}`)):null;
+  const visible=applyAccess(access,rows).filter(row=>!teamRecords||(row.dealId?teamRecords.has(`opportunity:${row.dealId}`):row.refs.some(ref=>teamRecords.has(keyOf(ref))))).filter(row=>!field||!fieldApplied||Boolean(row.dealId&&salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.value!==undefined&&String(salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.value)===field.value)),asOf=new Date().toISOString(),sections=aggregate(definition,period,asOf,visible,this.labels(native.stages,access)),cited=citedRows(sections);
   // A saved result keeps the rows its figures cite, with each cited movement's deal, whose owner and creation it was measured by.
   for(const row of visible)if(cited.has(row.key)&&row.kind==='movement')cited.add(`deal:${row.dealId}`);
   return {native,access,asOf,sections,fieldApplied,rows:visible.filter(row=>cited.has(row.key)).map(row=>field&&fieldApplied&&row.dealId?{...row,facts:{...row.facts,dashboard_filter:field.value},governed:{...row.governed,dashboard_filter:[salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.sourceField??field.name]}}:row)};
@@ -80,11 +82,12 @@ export class SalesReports{
   return next;
  }
  private async hash(c:ActorContext,id:string,version:number,period:SalesPeriod,currency:string,stages:StageConfig[],rows:SalesRow[]){return sha256(JSON.stringify({tenantId:c.tenantId,workspaceId:c.workspaceId,principal:c.principal,policyEpoch:c.policyEpoch,id,version,period:[period.from,period.through,period.timezone],currency,stages,rows:rows.map(row=>[row.key,row.at,row.recordedAt,row.facts])}));}
- private async compute(c:ActorContext,id:string,version:number,fromMonth:string,throughMonth:string,filters?:{ownerIds:string[];pipelineIds:string[];field:{name:string;value:string}|null;dateRange?:{from:string;through:string}}){
+ private async compute(c:ActorContext,id:string,version:number,fromMonth:string,throughMonth:string,filters?:{ownerIds:string[];teamIds?:string[];pipelineIds:string[];field:{name:string;value:string}|null;dateRange?:{from:string;through:string}}){
   c=await this.metrics.permit(c,'analytics.read',id);const shareFence=await this.shares.assertVisible(c,id),definition=await this.definition(c,id,version),settings=await this.settings();
   // Dashboard predicates narrow the saved definition; they never replace its restrictions.
+  const teamOwners=filters?.teamIds?.length?(await this.db.prepare('SELECT DISTINCT m.operator_id FROM sales_team_members m JOIN sales_teams t ON t.id=m.team_id AND t.active=1 WHERE m.team_id IN(SELECT value FROM json_each(?))').bind(JSON.stringify(filters.teamIds)).all<{operator_id:string}>()).results.map(row=>row.operator_id):undefined;
   if(filters){const intersect=(saved:string[],chosen:string[])=>!chosen.length?saved:!saved.length?chosen:saved.filter(id=>chosen.includes(id));definition.repIds=intersect(definition.repIds,filters.ownerIds);definition.pipelineIds=intersect(definition.pipelineIds,filters.pipelineIds);if(filters.ownerIds.length&&!definition.repIds.length)definition.repIds=['no-matching-owner'];if(filters.pipelineIds.length&&!definition.pipelineIds.length)definition.pipelineIds=['no-matching-pipeline'];}
-  const period=filters?.dateRange?salesDateRange(filters.dateRange.from,filters.dateRange.through,settings.timezone):salesPeriod(fromMonth,throughMonth,settings.timezone),result=await this.population(c,definition,period,filters?.field??undefined);
+  const period=filters?.dateRange?salesDateRange(filters.dateRange.from,filters.dateRange.through,settings.timezone):salesPeriod(fromMonth,throughMonth,settings.timezone),result=await this.population(c,definition,period,filters?.field??undefined,teamOwners);
   const proofs=[...shareFence,...await accessProofs(this.sources,c,result.access,result.rows,'lineage'),...this.metrics.store.guard("EXISTS(SELECT 1 FROM workspace_settings WHERE id='workspace' AND timezone=? AND currency=?)",[settings.timezone,settings.currency])];
   return {c,definition,period,currency:settings.currency,...result,proofs,reviewHash:await this.hash(c,id,version,period,settings.currency,result.native.stages,result.rows)};
  }
@@ -93,7 +96,7 @@ export class SalesReports{
   if(native.fingerprint.value.length>MAX_BODY)throw new AccessError('validation','This period has too many source records to save as one result. Choose fewer months or pipelines.');
   return this.metrics.store.guard(`(${native.fingerprint.sql})=?`,[...native.fingerprint.bindings,native.fingerprint.value]);
  }
- async preview(c:ActorContext,id:string,version:number,fromMonth:string,throughMonth:string,filters?:{ownerIds:string[];pipelineIds:string[];field:{name:string;value:string}|null;dateRange?:{from:string;through:string}}):Promise<SalesView>{
+ async preview(c:ActorContext,id:string,version:number,fromMonth:string,throughMonth:string,filters?:{ownerIds:string[];teamIds?:string[];pipelineIds:string[];field:{name:string;value:string}|null;dateRange?:{from:string;through:string}}):Promise<SalesView>{
   const result=await this.compute(c,id,version,fromMonth,throughMonth,filters);await this.metrics.checkSources(result.c,result.proofs);
   const view=salesView({id:`preview-${crypto.randomUUID()}`,saved:false,definitionId:id,definitionVersion:version,definition:result.definition,period:result.period,currency:result.currency,asOf:result.asOf,stages:result.native.stages,sections:result.sections,rows:result.rows,access:result.access,limited:!result.access.full,reviewHash:result.reviewHash,late:null});
   if(filters?.field&&!result.fieldApplied)view.filters.notes.push(`${filters.field.name} filter not applied: this report's readable records have no ${filters.field.name} field.`);
@@ -142,10 +145,14 @@ export class SalesReports{
  async suite(c:ActorContext){
   c=await this.metrics.permit(c,'analytics.read');const settings=await this.settings(),full=c.principal.kind==='operator'&&await isFullOperator(this.db,c.principal.operatorId);
   const pipelines=(await this.db.prepare('SELECT id,name FROM pipelines ORDER BY is_default DESC,name,id').all<{id:string;name:string}>()).results;
-  const reps=full?(await this.db.prepare(`SELECT o.id,o.display_name AS name FROM operators o WHERE o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id) AND ${operatorListingPredicate('o')} ORDER BY o.display_name,o.id`).all<{id:string;name:string}>()).results:[];
-  const members=full?await this.shares.members(c):[];
+  let reps=full?(await this.db.prepare(`SELECT o.id,o.display_name AS name FROM operators o WHERE o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id) AND ${operatorListingPredicate('o')} ORDER BY o.display_name,o.id`).all<{id:string;name:string}>()).results:[];
+  const profile=c.principal.kind==='operator'?await salesProfile(this.db,c.principal.operatorId):null,admin=c.principal.kind==='operator'&&await salesAdmin(this.db,c.principal.operatorId);
+  const memberships=c.principal.kind==='operator'?(await this.db.prepare('SELECT team_id FROM sales_team_members WHERE operator_id=?').bind(c.principal.operatorId).all<{team_id:string}>()).results.map(row=>row.team_id):[];
+  const teams=(await this.shares.teams()).filter(team=>full||admin||memberships.includes(team.id));
+  if(profile&&!full){const access=await viewerAccess(this.graph,c,[]),owners=new Set([...access.deals.values()].flatMap(deal=>typeof deal.values.owner_id==='string'?[deal.values.owner_id]:[]));reps=[...access.operatorNames??[]].filter(([id])=>owners.has(id)).map(([id,name])=>({id,name}));}
+  const members=full||profile?await this.shares.members(c):[];
   const canDefine=await this.metrics.store.access.authorize(c,'analytics.define',{...c,type:'analytics',id:'*'},[]).then(()=>true,()=>false);
   await this.metrics.checkSources(c,full?fullOperatorFence(c):[]);
-  return {templates:salesSuite,timezone:settings.timezone,currency:settings.currency,pipelines,reps,members,canDefine};
+  return {templates:salesSuite,timezone:settings.timezone,currency:settings.currency,pipelines,reps,members,teams,canDefine};
  }
 }
