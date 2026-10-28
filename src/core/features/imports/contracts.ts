@@ -4,6 +4,7 @@ export type ImportKind = typeof kinds[number];
 export const importInput = z.object({
  vendor:z.enum(['csv','hubspot','pipedrive']), account:z.string().trim().min(1).max(100),
  files:z.array(z.object({kind:z.enum(kinds),name:z.string().min(1).max(150),csv:z.string().max(2_000_000),mapping:z.record(z.string().max(60),z.string().max(200)),customFields:z.array(z.string().min(1).max(200)).max(100).optional(),separator:z.enum([';',',','|']).default(';')}).strict()).min(1).max(5),
+ owners:z.record(z.string().max(200),z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/).nullable()).optional(),
  stages:z.record(z.string().max(200),z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/)).default({}),
  contactability:z.enum(['mapped_permission','confirmed_contactable']).default('mapped_permission'),
 }).strict();
