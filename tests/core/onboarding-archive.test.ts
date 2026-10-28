@@ -4,7 +4,7 @@ import {preCallingCatalog} from '../../src/core/features/records/archive-generat
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {launchFixture} from '../support/launch-fixture';
-import {mailedIdentity} from '../support/email-link';
+import {mailedIdentity,emailLinkSignIn} from '../support/email-link';
 import {identityResponse} from '../../src/core/features/identity';
 import {createApp} from '../support/app';
 import {createDependencies} from '../support/dependencies';
@@ -37,7 +37,7 @@ function sourceRequests(db:D1Database,cookie:string){
 
 test('API-001 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions',async()=>{
  const source=await launchFixture(),target=await launchFixture();
- const request=async(f:Awaited<ReturnType<typeof launchFixture>>,path:string,method='GET',body?:unknown)=>{const response=await f.request(path,method,body);assert.ok(response.ok,`${method} ${path}: ${response.status} ${(await response.clone().text()).slice(0,300)}`);return response.json() as Promise<any>;};
+ const request=async(f:Awaited<ReturnType<typeof launchFixture>>,path:string,method='GET',body?:unknown,headers:Record<string,string>={})=>{const response=await f.request(path,method,body,headers);assert.ok(response.ok,`${method} ${path}: ${response.status} ${(await response.clone().text()).slice(0,300)}`);return response.json() as Promise<any>;};
  try{
  await source.db.prepare("UPDATE operators SET email='owner@orbit.test',setup_owner=1 WHERE id=?").bind(source.actor).run();
  await target.db.prepare("UPDATE operators SET email='hosted-owner@example.test',setup_owner=1 WHERE id=?").bind(target.actor).run();
@@ -85,9 +85,12 @@ test('API-001 credentials stay local while DATA-001 local archive restores recor
   assert.equal((await target.request('records/archive/imports','POST',{confirmed:true,manifest:{...archive.manifest,tables}})).status,400);
  }
  const restore=async(destination:typeof target,document:typeof archive)=>{
-  let imported=await request(destination,'records/archive/imports','POST',{confirmed:true,manifest:document.manifest});
-  for(const part of document.parts)await request(destination,`records/archive/imports/${imported.id}/parts/${part.index}`,'PUT',part);
-  for(let n=0;n<700&&imported.state!=='complete';n++){imported=await request(destination,`records/archive/imports/${imported.id}/finalize`,'POST',{});assert.ok(imported.completedTables<=imported.totalTables);assert.ok(imported.completedSteps<=imported.totalSteps);}
+  // A slow archive qualification still confirms current authority through real email sign-in.
+  const email=await destination.db.prepare('SELECT email FROM operators WHERE id=?').bind(destination.actor).first<string>('email');assert.ok(email);
+  const restoredIdentity=await emailLinkSignIn(destination.db,email),headers={Cookie:restoredIdentity.cookie};
+  let imported=await request(destination,'records/archive/imports','POST',{confirmed:true,manifest:document.manifest},headers);
+  for(const part of document.parts)await request(destination,`records/archive/imports/${imported.id}/parts/${part.index}`,'PUT',part,headers);
+  for(let n=0;n<700&&imported.state!=='complete';n++){imported=await request(destination,`records/archive/imports/${imported.id}/finalize`,'POST',{},headers);assert.ok(imported.completedTables<=imported.totalTables);assert.ok(imported.completedSteps<=imported.totalSteps);}
   assert.equal(imported.state,'complete');
   assert.equal(imported.completedSteps,imported.totalSteps);assert.equal(imported.nextPart,document.manifest.parts);
  };

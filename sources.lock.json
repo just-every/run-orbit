@@ -8687,7 +8687,7 @@
       "executable": false
     },
     "tests/core/onboarding-archive.test.ts": {
-      "sha256": "43aa37743f3c047e4279f5b4a92ca269a7f2cc024b57faccb0326bd2695532a0",
+      "sha256": "6e5b75e1827698a9e0a5810fb0363ec5854ca1533863a834b5dc159a0352a557",
       "executable": false
     },
     "tests/core/operator-erasure.test.ts": {
