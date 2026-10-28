@@ -9199,7 +9199,7 @@
       "executable": false
     },
     "tests/rer/editor-admission.mjs": {
-      "sha256": "d65125b1e4e2b8ac781a2d40abb4f1cf3fe44553e1807ec90d34359e0e8da113",
+      "sha256": "88fbbdc4d6da293eaf6acdd81c642a8245395a309875da3dd3332f52d96f6c51",
       "executable": false
     },
     "tests/rer/editor-provider.mjs": {
