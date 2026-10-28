@@ -41,12 +41,14 @@ test('public entry and a seller’s first review remain private, accessible and 
       await expect(page.getByRole('textbox')).toHaveCount(0);
     }
     if (route === '/docs') {
-      const sidebar = page.locator('.docs-sidebar');
+      await page.getByText('Docs menu', {exact: false}).click();
+      const sidebar = page.getByRole('navigation', {name: 'Documentation', exact: true});
       const links = await sidebar.getByRole('link').evaluateAll(items => items.map(item => item.getAttribute('href')));
       expect(links.length).toBeGreaterThan(1);
       for (const href of links) expect((await page.request.get(href)).status(), href).toBe(200);
       await sidebar.getByRole('link').nth(2).click();
-      await expect(page.locator('.docs-sidebar [aria-current=page]')).toHaveAttribute('href', links[2]);
+      await page.getByText('Docs menu', {exact: false}).click();
+      await expect(sidebar.locator('[aria-current=page]')).toHaveAttribute('href', links[2]);
     }
     if (route === '/demo') {
       const selected = page.getByRole('complementary', {name: 'Opportunities'}).getByRole('button').last();
