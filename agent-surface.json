@@ -834,7 +834,7 @@
         "external"
       ],
       "clauses": [
-        "INTEGRATE-004"
+        "INTEGRATE-007"
       ],
       "inputSchema": {
         "type": "object",
@@ -869,7 +869,7 @@
         "standard"
       ],
       "clauses": [
-        "INTEGRATE-004"
+        "INTEGRATE-007"
       ],
       "inputSchema": {
         "type": "object",

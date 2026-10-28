@@ -723,7 +723,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "e337ee83be8e9ce1f410b44881b8cd72f639980d33b0b84eedf6845366165641",
+      "sha256": "acd1d27b23bdd2ec65187ace943a4fbe4eb2b1ea9d2109356edd44887f1bfaa2",
       "executable": false
     },
     "AGENTS.md": {
@@ -5803,7 +5803,7 @@
       "executable": false
     },
     "src/core/features/agent-door/provider-tools.ts": {
-      "sha256": "0d230da60d77eaacd175d4fcc0a7b10ef8e69f7e8833d2da8cb9f47876e16982",
+      "sha256": "62b43b140c9080c4fc9b7a68e6831a1d22b6e0a43e7bb4c25806a97fff70258c",
       "executable": false
     },
     "src/core/features/agent-door/resources.ts": {
