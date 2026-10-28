@@ -73,6 +73,8 @@ export async function deliveryOutcomes(context:TestContext){
   await api(`records/opportunity/${unassigned.opportunityId}`,'PUT',{title:'Unassigned customer',stage_id:f.stage,value_cents:0,owner_id:null});
   const future=await api(`workbench/opportunities/${unassigned.opportunityId}/drafts`,'POST',{contactId:unassigned.contactId,subject:'Responsible operator proof',body:'Reviewed content'});
   const futureMessage=await api(`workbench/drafts/${future.id}/approve`,'POST',{revision:1,scheduledAt:'2030-01-14T11:00:00Z'});
+  // Make the colleague's action later than draft creation under the frozen clock.
+  context.mock.timers.setTime(Date.now()+60000);
   const note=await app.request(`https://orbit.test/api/v1/records/opportunity/${unassigned.opportunityId}/entries`,{method:'POST',headers:{Cookie:`__Host-orbit_session=${colleagueSession.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({kind:'note',text:'I own the current follow-up',occurredAt:new Date().toISOString()})});assert.equal(note.status,200);
   status=400;context.mock.timers.setTime(Date.parse('2030-01-14T11:00:00Z'));await runHostedTimers(f.db,mail);assert.equal((await history(unassigned.opportunityId)).find(row=>row.id===futureMessage.id).state,'failed');
   const colleagueInbox=await app.request('https://orbit.test/api/v1/notifications',{headers:{Cookie:`__Host-orbit_session=${colleagueSession.token}`}});assert.equal((await colleagueInbox.json() as any).notifications.filter((notice:any)=>notice.opportunityId===unassigned.opportunityId&&notice.kind==='message.failed').length,1);
