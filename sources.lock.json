@@ -8611,7 +8611,7 @@
       "executable": false
     },
     "tests/core/onboarding-archive.test.ts": {
-      "sha256": "8ab20f43b40aaaeb18965ac6a903d928a7244eafcef197c3bd71943a7061cd45",
+      "sha256": "19bcf54cff5aad9e794f47659eb9af0a73582827f18d125c149c7d6022740b45",
       "executable": false
     },
     "tests/core/outbound-boundaries.test.ts": {
@@ -9555,7 +9555,7 @@
       "executable": false
     },
     "tests/support/sanity-records-delegation.ts": {
-      "sha256": "61dd3c0378f994a6a4815843bb30069441489a47cf32b0ade6c3bac674a80f74",
+      "sha256": "c4139feb11b91926b44e9418cd3d0cd4a6e635b0b47d7e01ee6c447203ebcffd",
       "executable": false
     },
     "tests/support/sanity-records-fields.ts": {
