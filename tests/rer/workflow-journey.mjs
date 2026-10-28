@@ -9,8 +9,8 @@ export async function workflowBrowserJourney({page,fixture,origin,directory},wid
  await page.setViewportSize({width,height:900});await page.goto(origin+'/app/settings');
  const settings=page.locator('.workflows-settings');await expect(settings.getByRole('heading',{name:'Sales workflows',exact:true})).toBeVisible();
  await settings.getByRole('button',{name:'New workflow',exact:true}).click();
- await settings.getByLabel('Trigger',{exact:true}).selectOption('activity_logged');
- await settings.getByLabel('Activity type',{exact:true}).selectOption('meeting');
+ await settings.locator('.workflows-editor').getByLabel(/^Trigger/).selectOption('activity_logged');
+ await settings.locator('.workflows-editor').getByLabel(/^Activity type/).selectOption('meeting');
  await settings.getByLabel('Workflow name',{exact:true}).fill('Prepare account review');
  await settings.locator('.workflows-editor').getByLabel('Field',{exact:true}).fill('title');
  await settings.getByLabel('Value',{exact:true}).fill('Account review ready');
