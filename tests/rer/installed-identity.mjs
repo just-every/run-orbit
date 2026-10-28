@@ -8,7 +8,12 @@ import {freePort} from './checkout.mjs';
 import {accessible} from './onboarding-journey.mjs';
 const exitOf=async(result,code,label)=>{assert.equal(result.code,code,`${label}: ${result.output.slice(-1500)}`);return result.output;};
 const shot=async page=>accessible(page);
-const enter=async(page,origin,as)=>{await page.goto(`${origin}/auth/dev/enter?as=${as}&returnTo=${encodeURIComponent('/app/access')}`);await page.waitForLoadState('networkidle');};
+const enter=async(page,origin,as)=>{
+ const response=await page.goto(`${origin}/auth/dev/enter?as=${as}&returnTo=${encodeURIComponent('/app/access')}`);
+ assert.equal(response.status(),200,`${as} enters through the dev persona door`);
+ assert.equal(new URL(page.url()).origin,origin,'Persona navigation stays on the running dev origin');
+ await page.waitForLoadState('networkidle');
+};
 export async function installedPersonas(page,origin,opportunityURL) {
   // Real records and personas: the seller is a full operator, the collaborator an invited analyst.
   const workbench = await browserAPI(page, '/api/v1/workbench');

@@ -19,6 +19,7 @@ import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { chromium } from '@playwright/test';
 import { isolatedDatabase } from '../support/isolated-database';
+import { availablePort } from '../support/available-port';
 import { createTestDependencies } from '../support/test-dependencies';
 import { sampleData } from '../fixtures/sample-data';
 import { sessionCookieName } from '../support/test-auth';
@@ -27,9 +28,10 @@ import { identityVarArgs } from '../support/worker-identity.mjs';
 
 test('an owner moves a customer book into Orbit, reviews captured activity and configures the customer workspace', async () => {
   const fixture = await isolatedDatabase();
-  const port = Number(process.env.ORBIT_RECORD_LAYOUT_PORT ?? 8728);
-  const inspectorPort = Number(process.env.ORBIT_RECORD_LAYOUT_INSPECTOR_PORT ?? 8733);
+  const port = Number(process.env.ORBIT_RECORD_LAYOUT_PORT ?? await availablePort());
+  const inspectorPort = Number(process.env.ORBIT_RECORD_LAYOUT_INSPECTOR_PORT ?? 0);
   const origin = `http://127.0.0.1:${port}`;
+  const cookieOrigin = `https://127.0.0.1:${port}`;
   let worker: ReturnType<typeof spawn> | undefined;
   let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
   try {
@@ -59,6 +61,7 @@ test('an owner moves a customer book into Orbit, reviews captured activity and c
     worker.stderr!.on('data', chunk => output += chunk);
     let ready = false;
     for (let attempt = 0; attempt < 300; attempt++) {
+      if (worker.exitCode !== null) throw new Error(output || `Emitted Worker exited ${worker.exitCode} before readiness.`);
       try {
         if ((await fetch(origin+'/health')).ok) { ready = true; break; }
       } catch {}
@@ -67,6 +70,9 @@ test('an owner moves a customer book into Orbit, reviews captured activity and c
     if (!ready) throw new Error(output || `Emitted Worker did not start at ${origin}.`);
     browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
     const context = await browser.newContext({ viewport:{width:1440,height:900},timezoneId:"Australia/Brisbane", baseURL: origin, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
+    // Native form redirects use Chromium's cookie jar, not the injected header.
+    // These are this fixture's own sessions, with the product's cookie attributes.
+    await context.addCookies([{name:sessionCookieName,value:session.token,url:cookieOrigin,secure:true,httpOnly:true,sameSite:'Lax',expires:Date.parse(session.expiresAt)/1000}]);
     const evidence=resolve('verification/ui/customer-onboarding');await mkdir(evidence,{recursive:true});
     const info={outputPath:(...parts:string[])=>join(evidence,...parts)};
     const page=await context.newPage();
@@ -78,6 +84,8 @@ test('an owner moves a customer book into Orbit, reviews captured activity and c
     await inspectUntrustedCustomer(page);
     await nativeLongRecordLayoutJourney(page,customer);
     const guest=await browser.newContext({baseURL:origin,viewport:{width:1440,height:900},extraHTTPHeaders:{Cookie:viewer.cookie}});
+    const [guestCookieName,guestToken]=viewer.cookie.split('=');
+    await guest.addCookies([{name:guestCookieName!,value:guestToken!,url:cookieOrigin,secure:true,httpOnly:true,sameSite:'Lax'}]);
     await reviewImportedData(page,await guest.newPage(),customer,viewer.operator.operatorId);await guest.close();
     await calendarJourney(page,calendarData);
     await callingJourney(page);
