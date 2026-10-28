@@ -8811,7 +8811,7 @@
       "executable": false
     },
     "tests/delegation/authority-regressions.test.ts": {
-      "sha256": "60c644a80c15e48934bb1eb8b19744b977f98d37747ce8f2f48e763a414e1ba1",
+      "sha256": "d98a743bc1fb77ed8a41e7bf43ef78d7fbbe4388720e70f567de8b36612b9f0c",
       "executable": false
     },
     "tests/delegation/brief-handoff.test.ts": {

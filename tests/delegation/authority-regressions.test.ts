@@ -21,7 +21,9 @@ test('API-001 native credential lifecycle and delegation D1 reject ambient cooki
   const inherited=['constructor','toString','__proto__','hasOwnProperty','valueOf'],refusals=[];
   for(const kind of inherited){
    const response=await connect(kind),body=await response.text();
+   assert.equal(response.headers.get('Cache-Control'),'no-store',kind);
    assert.doesNotMatch(body,/\bbinding\b|\bstack\b|D1_ERROR|SQLITE|\[native code\]|\b(?:Type|Reference|Syntax)Error\b|\bat\s+\S+\s+\(/i,kind);
+   assert.equal(JSON.parse(body).error.code,'INVALID_REQUEST',kind);
    refusals.push(response.status);
   }
   assert.deepEqual(refusals,inherited.map(()=>400),'Inherited record kinds take the normal invalid request path');
