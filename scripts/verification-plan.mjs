@@ -25,7 +25,7 @@ const minutes = {
   'newtests/t096/browser-journeys.test.ts': 2.34,
   'newtests/t096/empty-native.test.ts': 0.57,
   'newtests/t096/forward-upgrade.test.ts': 0.45,
-  'newtests/t096/portability-journey.test.ts': 8,
+  'newtests/t096/portability-journey.test.ts': 11.0,
   'newtests/t096/report-disclosure.test.ts': 2.95,
   'tests/archive/browser.spec.mjs': 5.5,
   'tests/core/capture-upgrade.test.ts': 0.22,

@@ -3979,11 +3979,11 @@
       "executable": false
     },
     "scripts/verification-inventory.mjs": {
-      "sha256": "a545cf2437577630b05f6783d86574c641048ddc5df3c29ee81ce65ea08237e5",
+      "sha256": "911a625b25e82ef72d94b19a4d4f8e1590ce10910b43e734c5bf1f4dc979e516",
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "808d141eb7227fec7310e461555373628e26387e085b0f24021b89a511af41ce",
+      "sha256": "ba19e3c05eadb2680d81f604ff6666d7c7b95967b956468d362b2d1e0fbcbbf8",
       "executable": false
     },
     "scripts/verification-reuse.sh": {
