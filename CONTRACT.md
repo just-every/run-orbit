@@ -1774,7 +1774,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 - **money:** purchasing licensed enrichment, paid provider work, payment or invoice actions, with amount, USD currency and counterparty; editing a nonbinding deal estimate alone is standard.
 - **commitment:** signature, accepted quote, binding commercial terms or a sign-off relied upon outside the business, with version, value and counterparty.
 - **gated:** provider consent, business verification or hosted checkout that the provider keeps for a person, with provider and exact step; an available company API route follows the policy for its computed classes.
-- **access:** staff, teams, record audience and application/agent grants, with people and widening/narrowing direction.
+- **access:** changes to staff, teams, record audiences (including collaborator entry grants) and application/agent grants, with affected people and widening/narrowing direction; a mention that changes no access stays standard.
 - **security:** protective connection settings or credential handling, with the setting and provider.
 - **destructive:** irreversible record/file erasure, with affected item count; reversible archive/undo stays standard.
 - **sensitive:** regulated identifiers or financial/health/payroll data present in permitted records, files or transcripts, with kind and record count, rather than a blanket label on ordinary CRM contacts.
@@ -1863,7 +1863,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `orbit.record.owners_for_contacts_leads_companies_and_custom_objects` | Owners for contacts, leads, companies and custom objects | RECORD-016 | standard or access | planned |
 | `orbit.record.mentions_in_notes_and_activities` | Mentions in notes and activities | RECORD-017 | standard | planned |
 | `orbit.record.owner_mapping_on_import_and_migration` | Owner mapping on import and migration | RECORD-019 | standard or access | planned |
-| `orbit.record.collaborator_entry_grants_and_mention_access` | Collaborator entry grants and mention access | RECORD-023 | standard | planned |
+| `orbit.record.collaborator_entry_grants_and_mention_access` | Collaborator entry grants and mention access | RECORD-023 | standard or access | planned |
 | `orbit.record.mention_delivery_through_personal_channels` | Mention delivery through personal channels | RECORD-024 | standard | planned |
 | `orbit.record.automatic_record_owner_rules` | Automatic record-owner rules | RECORD-020 | standard or access | planned |
 | `orbit.record.assignment_notifications` | Assignment notifications | RECORD-021 | standard | planned |
