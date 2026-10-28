@@ -65,6 +65,7 @@ test('an operator imports customer records, reviews captured changes and follows
  await importsJourney1(input,info);
  await zz_notificationsJourney1(input,info);
  await baselineJourney5(input,info);
- await input.page.goto('/app/records');await mkdir('verification/ui',{recursive:true});await input.page.screenshot({path:'verification/ui/workspace-1440.png',fullPage:true});
+ await input.page.waitForLoadState('networkidle');await input.page.goto('/app/settings',{waitUntil:'networkidle'});await expect(input.page.getByRole('heading',{name:'Workspace settings',exact:true})).toBeVisible();await mkdir('verification/ui',{recursive:true});await input.page.screenshot({path:'verification/ui/settings-1440.png',fullPage:true});
+ await input.page.goto('/app/records',{waitUntil:'networkidle'});await input.page.screenshot({path:'verification/ui/workspace-1440.png',fullPage:true});
  expect(failures).toEqual([]);
 });

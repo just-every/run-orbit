@@ -39,7 +39,7 @@ export async function populateSalesPortability(f:CaptureFixture){
   await signed({type:'event_callback',team_id:'TWORKSPACE',api_app_id:'AORBIT',authorizations:[{team_id:'TWORKSPACE',enterprise_id:null}],event_id:'Ev'+createId(),event:{type:'user_change',user:{id:'UOTHER',team_id:'TWORKSPACE',deleted:true}}},'events');
   const removed=await call('records/contact',{name:'Disposable Slack buyer',email:'synthetic-orbit-portable-slack@example.test'}),old=await call('records/opportunity',{title:'Old portable Slack notice',stage_id:stage,value_cents:0,contact_ids:[removed.id],primary_contact_id:removed.id});
   await call(`records/opportunity/${old.id}/lifecycle`,{state:'won',reason:'Recorded'});await call(`records/contact/${removed.id}`,{confirmed:true},'DELETE');
- }finally{edge.restore();}
+ // Later writes and erasure also process Slack; the caller keeps this edge for the journey.
  const compose=async(subject:string)=>call(`workbench/records/contact/${f.ana}/drafts`,{contactId:f.ana,opportunityId:null,subject,body:'Portable reviewed content for ana@acme.example'});
  const draft=await compose('Portable accepted record mail'),render=await call(`library/drafts/${draft.id}/render`);await call(`library/drafts/${draft.id}/render`,{revision:1,reviewHash:render.reviewHash});const preview=await call(`workbench/drafts/${draft.id}/approval-preview`);
  const accepted=await call(`workbench/drafts/${draft.id}/approve`,{revision:1,quietHoursConfirmation:preview.localTime});assert.equal(accepted.state,'accepted');
@@ -50,6 +50,7 @@ export async function populateSalesPortability(f:CaptureFixture){
  for(const table of stableTables)assert.ok(snapshot.get(table)!.length,`${table} is populated before transfer`);
  const sort=(rows:Record<string,unknown>[])=>rows.map(row=>JSON.stringify(row)).sort();
  return {
+  restoreNetwork:edge.restore,
   async assertRestored(db:D1Database,door:RequestDoor){
    for(const table of stableTables)assert.deepEqual(sort((await db.prepare(`SELECT * FROM ${table}`).all<Record<string,unknown>>()).results),sort(snapshot.get(table)!),`${table} content survives the shared transfer`);
    for(const [table,transform] of [['slack_channels',(row:any)=>({...row,enabled:0})],['slack_mappings',(row:any)=>{assert.ok(row.revoked_at);return row;}]] as const){const actual=(await db.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all<any>()).results,expected=snapshot.get(table)!;assert.equal(actual.length,expected.length);for(const [i,row] of actual.entries()){if(table==='slack_mappings'){assert.ok(row.revoked_at);assert.deepEqual({...row,revoked_at:null},{...expected[i],revoked_at:null});}else assert.deepEqual(row,transform(expected[i]));}}
@@ -64,4 +65,5 @@ export async function populateSalesPortability(f:CaptureFixture){
    const slack=(await db.prepare('SELECT * FROM slack_notices').all()).results;assert.ok(slack.every(row=>row.record_id!==f.ana&&!String(row.content_json).includes('ana@acme.example')));
   }
  };
+ }catch(error){edge.restore();throw error;}
 }

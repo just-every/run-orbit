@@ -49,7 +49,7 @@ function sourceClient(db:D1Database,cookie:string,contactId:string){
 
 /** One installation contains every current category before either archive door is exercised. */
 export async function populatedPortabilityJourney(){
- const original=await captureFixture(),target=await fixture();let cookie=original.cookie,worker:Awaited<ReturnType<typeof emittedWorker>>|undefined;
+ const original=await captureFixture(),target=await fixture();let cookie=original.cookie,worker:Awaited<ReturnType<typeof emittedWorker>>|undefined,restoreSalesNetwork:(()=>void)|undefined;
  const source={...original,get db(){return original.platform.db;},get cookie(){return cookie;},get app(){return createApp({database:original.platform.db,assets:{fetch:async()=>new Response('')},formAbuse:{secret:TEST_SESSION_SECRET}});},request(path:string,init:RequestInit={}){return this.app.request('https://orbit.test'+path,{...init,headers:{Cookie:cookie,Origin:'https://orbit.test',...init.headers}});}};
  try{
   await captured(source);await installOwnerSchema(source.db);await installOwnerSchema(target.db);
@@ -58,7 +58,9 @@ export async function populatedPortabilityJourney(){
   const beforeTyped=await typedRows(source.db),security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'44'.repeat(32)})!;
   await connectSource(source.db,{id:'capture-provider',adapter:'fake-mail',name:'Provider mailbox',scope:{mail:{folders:['INBOX']}},credential:'synthetic-orbit-provider-grant'},security,source.operator);
   const sealed=await source.db.prepare("SELECT ciphertext FROM capture_credentials WHERE source_id='capture-provider'").first<string>('ciphertext');
-  const data=await currentSalesData(source),sales=await populateSalesPortability(source),reports=await portableReports(source),library=await portableLibrary(source);
+  const data=await currentSalesData(source),sales=await populateSalesPortability(source);
+  restoreSalesNetwork=sales.restoreNetwork;
+  const reports=await portableReports(source),library=await portableLibrary(source);
   const stopped=await value(source.request.bind(source),'/api/v1/records/contact',{name:'Erased source',email:'source-erased@acme.example',contactability:'do_not_contact'});
   const erasedMail=eml({From:'source-erased@acme.example',To:'seller@orbit.test',Date:new Date(Date.now()-60000).toUTCString(),Subject:'Erased source evidence','Message-ID':'<source-erased@acme.example>'},'Source private evidence');
   assert.equal((await source.upload([{name:'source-erased.eml',text:erasedMail}])).status,201);
@@ -123,7 +125,7 @@ export async function populatedPortabilityJourney(){
    erased:async(db,door)=>{assert.equal(await db.prepare('SELECT id FROM signals WHERE id=?').bind(removedSource.signalId).first(),null,'Erasure removes retained evidence from a removed source');assert.equal(await db.prepare('SELECT id FROM timeline_entries WHERE id=?').bind(removedSource.signalId).first(),null);assert.ok(await db.prepare('SELECT removed_at FROM signal_sources WHERE id=?').bind(removedSource.id).first('removed_at'),'Erasure keeps the source retired');await sales.assertErased(db,door);await reports.assertErased({db,request:door});assert.equal(await db.prepare('SELECT id FROM handoff_tasks WHERE id=?').bind(handoff).first(),null);const raw=eml({From:'destination@acme.example',To:'seller@orbit.test',Date:new Date(Date.now()-60000).toUTCString(),Subject:'Destination history','Message-ID':'<destination-history@acme.example>'},'Old destination evidence'),form=new FormData();form.append('files',new File([raw],'old.eml'));assert.equal((await door('/api/v1/capture/imports',{method:'POST',body:form})).status,201);assert.equal(await db.prepare("SELECT count(*) n FROM capture_items WHERE instr(headers||body,'destination@acme.example')>0").first('n'),0);},
   });
   await source.request(`/api/v1/records/archive/exports/${exportId}/abort`,json({}));
- }finally{await worker?.dispose();await original.dispose();await target.close();}
+ }finally{try{await worker?.dispose();await original.dispose();await target.close();}finally{restoreSalesNetwork?.();}}
 }
 
 async function restorePublication(db:D1Database,door:Door,forms:string,operation:string){

@@ -48,11 +48,11 @@ test('an operator delegates a handoff, reviews calls and calendars, and edits na
     const calendarData=await browserCalendarData(fixture.db,sampleData.operators[0].id);
     const captureSeed=await captureRuleBrowserSeed({db:fixture.db,cookie:`${sessionCookieName}=${session.token}`,stage:sampleData.pipelineStages[0].id,operatorEmail:sampleData.operators[0].email});
     const privateData=await browserPrivateData(fixture.db,sampleData.operators[0].id);
-    const providerCanary=crypto.randomUUID(),privateBindings=join(fixture.directory,'browser-provider.env');await writeFile(privateBindings,`SENDGRID_API_KEY=${providerCanary}\n`,{mode:0o600});
+    const providerCanary=crypto.randomUUID(),privateBindings=join(fixture.directory,'browser-provider.env');await writeFile(privateBindings,`SENDGRID_API_KEY=${providerCanary}\nORBIT_ENCRYPTION_KEY=${'ab'.repeat(32)}\n`,{mode:0o600});
     await fixture.close();
     worker = spawn(process.execPath, [
       'node_modules/wrangler/bin/wrangler.js', 'dev', '--config', 'dist/server/wrangler.json',
-      '--local', '--persist-to', fixture.directory, '--env-file', privateBindings, '--port', String(port), '--inspector-port', String(inspectorPort), '--var','ORBIT_ENCRYPTION_KEY:'+ 'ab'.repeat(32), ...identityVarArgs(origin)
+      '--local', '--persist-to', fixture.directory, '--env-file', privateBindings, '--port', String(port), '--inspector-port', String(inspectorPort), ...identityVarArgs(origin)
     ], { stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, CI: '1' } });
     let output = '';
     worker.stdout!.on('data', chunk => output += chunk);
@@ -71,11 +71,16 @@ test('an operator delegates a handoff, reviews calls and calendars, and edits na
     expect((await context.request.post('/delegation/clients',{headers:{Cookie:privateData.cookie,Origin:origin},form:{id:'synthetic-orbit-forbidden-client',redirect_uri:'https://synthetic-orbit.example/callback'},maxRedirects:0})).status()).toBe(403);
     await workerSecurityJourney({browser,context,origin,valid:session.token,revoked:revoked.token,expired:expired.token,providerCanary,opportunityId:sampleData.opportunities[0].id});
     await nativeHandoffJourney(await context.newPage());
-    const captureEvidence=resolve(process.env.ORBIT_FOLD_BROWSER_EVIDENCE??'verification/ui/capture-rule');await mkdir(captureEvidence,{recursive:true});await captureRuleBrowserJourney(browser,origin,captureEvidence,`${sessionCookieName}=${session.token}`,captureSeed);
     await nativeOpportunityViewportJourney(await context.newPage());
     await relatedRecordsJourney(context);
     await callingJourney(await context.newPage());
-    await calendarJourney(await context.newPage(),calendarData);
+    const calendarPage=await context.newPage();try{await calendarJourney(calendarPage,calendarData);}finally{await calendarPage.close();}
+    // The calendar fixture's network edge is gone when the compiled Worker runs.
+    // Its reviewed history stays after a real disconnect; capture must not discover
+    // a supposedly live provider using the fixture's synthetic credentials.
+    const disconnected=await context.request.post(`/api/v1/capture/sources/${calendarData.source}/disconnect`,{headers:{Origin:origin},data:{confirmed:true}});expect(disconnected.status()).toBe(200);
+    const sources=await context.request.get('/api/v1/capture/sources');expect(sources.ok()).toBe(true);expect((await sources.json()).sources.find((source:any)=>source.id===calendarData.source)).toMatchObject({state:'disconnected',has_credential:0});
+    const captureEvidence=resolve(process.env.ORBIT_FOLD_BROWSER_EVIDENCE??'verification/ui/capture-rule');await mkdir(captureEvidence,{recursive:true});await captureRuleBrowserJourney(browser,origin,captureEvidence,`${sessionCookieName}=${session.token}`,captureSeed);
     const collaboratorContext=await browser.newContext({baseURL:origin,viewport:{width:1440,height:900},extraHTTPHeaders:{Cookie:privateData.cookie}});
     await privateEntriesJourney(await context.newPage(),await collaboratorContext.newPage(),privateData);
     await collaboratorContext.close();

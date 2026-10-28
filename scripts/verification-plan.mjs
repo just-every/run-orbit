@@ -16,9 +16,48 @@ export const journeyFiles = [
   'tests/core/migration-recovery.test.ts',
 ];
 
-// Estimates are replaced with per-file timings from the consolidated local run.
+// Measured m1 journey minutes; incomplete flows use conservative estimates
+// until their focused run completes. Browser entries also budget server setup.
 // Longest first into the lightest runner keeps setup and browser costs shared.
-const minutes = {};
+const minutes = {
+  'newtests/t096/archive-import-recovery.test.ts': 7.74,
+  'newtests/t096/archive-lineage-accepted-main.test.ts': 40,
+  'newtests/t096/browser-journeys.test.ts': 1.73,
+  'newtests/t096/empty-native.test.ts': 0.54,
+  'newtests/t096/forward-upgrade.test.ts': 0.45,
+  'newtests/t096/portability-journey.test.ts': 8,
+  'newtests/t096/report-disclosure.test.ts': 2.95,
+  'tests/archive/browser.spec.mjs': 4.88,
+  'tests/core/capture-upgrade.test.ts': 0.22,
+  'tests/core/customer-capture.test.ts': 9.83,
+  'tests/core/customer-contact-permission.test.ts': 2,
+  'tests/core/customer-google-source.test.ts': 9.41,
+  'tests/core/customer-identity.test.ts': 1.53,
+  'tests/core/customer-microsoft-source.test.ts': 6.8,
+  'tests/core/customer-opt-out.test.ts': 1.22,
+  'tests/core/customer-privacy.test.ts': 2.5,
+  'tests/core/customer-replies.test.ts': 0.62,
+  'tests/core/customer-sending.test.ts': 0.75,
+  'tests/core/migration-recovery.test.ts': 0.88,
+  'tests/core/prior-auth-upgrade.test.ts': 0.97,
+  'tests/core/sales-import.test.ts': 8.2,
+  'tests/core/sales-outreach.test.ts': 4.75,
+  'tests/core/sales-privacy.test.ts': 2.54,
+  'tests/core/sales-records.test.ts': 3.28,
+  'tests/core/sales-sources.test.ts': 3.82,
+  'tests/core/sales-today.test.ts': 2.17,
+  'tests/delegation-browser/native.test.ts': 4,
+  'tests/delegation-browser/today-brief.test.ts': 0.72,
+  'tests/delegation/authority-journey.test.ts': 2.5,
+  'tests/e2e/workspace.spec.mjs': 3,
+  'tests/launch-runtime/mail-body-transport.release.test.ts': 0.5,
+  'tests/launch-runtime/mail-ingress.test.ts': 0.75,
+  'tests/rer/admission.release.test.mjs': 3.43,
+  'tests/rer/identity.release.test.mjs': 2.42,
+  'tests/rer/journey.release.test.mjs': 5.66,
+  'tests/rer/onboarding.release.test.mjs': 2.99,
+  'tests/rer/operator.release.test.mjs': 3.19,
+};
 const weight = file => minutes[file] ?? 1;
 const isBrowser = file => /tests\/(?:e2e|archive|delegation-browser|launch-runtime|rer)\//.test(file) || /(?:browser-journeys|report-disclosure|empty-native)\.test\.ts$/.test(file);
 function balanced(files, count) {

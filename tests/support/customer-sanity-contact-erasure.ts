@@ -15,7 +15,8 @@ export async function contactErasure(db:D1Database,stage:string) {
   // An installed Orbit always has its workspace; erasure authority is a current workspace membership.
   await createDependencies(db).workspace.ensureWorkspace({name:'Erasure checks',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
   const records=new RecordsRepository(db),manual=new ManualRepository(db),customers=[];
-  for(const email of ['first@example.test','second@example.test']) {
+  const caseKey=deleteOpportunityFirst?'deal-first':'contact-first';
+  for(const email of [`first+${caseKey}@example.test`,`second+${caseKey}@example.test`]) {
    const contact=await records.save('contact',{name:'Acceptance customer',email},actor);
    const opportunity=await records.save('opportunity',{title:email,stage_id:stage,value_cents:0,contact_ids:[contact.id],primary_contact_id:contact.id},actor);
    const entry=await manual.save('contact',contact.id,{kind:'note',text:'Acceptance customer discussed their separate account.',occurredAt:now},actor);
