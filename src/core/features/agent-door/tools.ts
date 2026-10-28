@@ -51,7 +51,7 @@ export function define<T extends z.ZodRawShape>(area:string,verb:string,schema:z
  run:(args:z.infer<z.ZodObject<T>>,ctx:ToolContext)=>Promise<unknown>;
 }):ToolDefinition{
  const {description,scope,run,classify,summary,revision,...rest}=options;
- return {name:`orbit.${area}.${verb}`,title:`${area} ${verb}`,description,scope:scope??`orbit.${area}.${rest.readOnly?'read':'write'}`,inputSchema:doorSchema(z.toJSONSchema(schema.strict(),{io:'input',unrepresentable:'any'})) as JsonSchemaObject,outputSchema:{type:'object'},...rest,
+ return {name:`orbit.${area}.${verb}`,title:`${area} ${verb}`,description,scope:scope??`orbit.${area}.${rest.readOnly?'read':'write'}`,inputSchema:doorSchema(z.toJSONSchema(rest.widens===false?schema.strict():schema,{io:'input',unrepresentable:'any'})) as JsonSchemaObject,outputSchema:{type:'object'},...rest,
  classify:async(args,c)=>{await localFence(`orbit.${area}.${verb}`,args,c);return classify?classify(schema.parse(args),c):standard;},
  ...(summary?{summary:(args:Record<string,unknown>,c:ToolContext)=>summary(schema.parse(args),c)}:{}),
  ...(revision?{revision:(args:Record<string,unknown>,c:ToolContext)=>revision(schema.parse(args),c)}:{}),
@@ -75,7 +75,7 @@ export function coreTools():ToolDefinition[]{return [
  }),
  define('records','create',z.object({kind,fields:z.record(z.string(),z.unknown())}),{
   description:'Create a native contact, company or opportunity. A forecast amount moves no money.',readOnly:false,classes:['standard'],clauses:['RECORD-001','RECORD-003'],
-  async summary(a,c){await full(c);return{target:{name:String(a.fields.name??a.fields.title??a.kind)},items:Object.keys(a.fields)};},
+  async summary(a,c){await full(c);return{target:{name:String(a.fields.name??a.fields.title??a.kind)},items:Object.entries(a.fields).map(([field,value])=>`${field}: ${JSON.stringify(value)}`)};},
   async run(a,c){const db=await agentDatabase(c),state=await localState(c.db,c);if(state?.type==='api')return new ApiDeals(db,systemClock).create(state.row as ApiCredential,a.fields,crypto.randomUUID());const result=await new RecordsRepository(db).save(a.kind,schemas[a.kind as RecordKind].parse(a.fields),c.person.id,undefined,{ordinaryEdit:true});return result;}
  }),
  define('records','update',z.object({kind,id,patch:z.record(z.string(),z.unknown())}),{
@@ -124,7 +124,7 @@ export function coreTools():ToolDefinition[]{return [
   async classify(_a,c){await full(c);return standard;},
   async run(_a,c){await full(c);const result:Record<string,unknown>={};
    const sources:Record<string,string>={companies:'*',contacts:'*',opportunities:'*',handoff_tasks:'*',drafts:'*',outbound_messages:'id,draft_id,revision,operator_id,contact_id,recipient_email,subject,body,state,attempt_count,scheduled_at',timeline_entries:'*',access_grants:'*',sales_tasks:'*',content_entities:'*',forecast_revisions:'*',analytics_definitions:'*',ownership_batches:'*',ownership_batch_items:'*',capture_proposals:'*',capture_sources:'id,name,adapter,scope_json,state,last_error,updated_at',call_dial_attempts:'*',message_library:'*',api_credentials:'id,principal_id,operations_json,records_json,fields_json,expires_at,revoked_at,revision'};
-   for(const [table,columns]of Object.entries(sources)){const rows=(await c.db.prepare(`SELECT ${columns} FROM ${table} ORDER BY rowid LIMIT 1000`).all()).results;result[table]={count:rows.length,digest:await hash(JSON.stringify(rows))};}
+   for(const [table,columns]of Object.entries(sources)){const rows=(await c.db.prepare(`SELECT ${columns} FROM ${table} ORDER BY rowid`).all()).results;result[table]={count:rows.length,digest:await hash(JSON.stringify(rows))};}
    return result;
   }
  })

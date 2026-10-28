@@ -44,7 +44,7 @@ export class OutreachService {
   return {id:message.id,state:'accepted'};
  }
  async dispatchDue(now=new Date(),limit=50,admittedAgentMessage?:string){
-  const rows=await this.db.prepare("SELECT id FROM outbound_messages WHERE state='scheduled' AND COALESCE(next_attempt_at,scheduled_at)<=? ORDER BY COALESCE(next_attempt_at,scheduled_at) LIMIT ?").bind(now.toISOString(),limit).all<{id:string}>();
+  const rows=await this.db.prepare("SELECT id FROM outbound_messages WHERE state='scheduled' AND COALESCE(next_attempt_at,scheduled_at)<=? AND (? IS NULL OR id=?) ORDER BY COALESCE(next_attempt_at,scheduled_at) LIMIT ?").bind(now.toISOString(),admittedAgentMessage??null,admittedAgentMessage??null,limit).all<{id:string}>();
   const approval=new ApprovalRepository(this.db);
   for(const row of rows.results){if(row.id!==admittedAgentMessage&&await this.db.prepare('SELECT 1 FROM orbit_agent_work WHERE message_id=?').bind(row.id).first())continue;const message=await approval.message(row.id);
    if(message.first_attempt_at&&(message.attempt_count>=5||now.getTime()-Date.parse(message.first_attempt_at)>=3600000)){
@@ -60,10 +60,11 @@ export class OutreachService {
    await this.submit(await approval.message(message.id));
   }
  }
- async reconcile(now=new Date(),limit=50){
-  await this.db.prepare("UPDATE outbound_messages SET state='delivery-unknown',failure='Submission was interrupted without a receipt',next_attempt_at=?,updated_at=? WHERE state='queued' AND claimed_at<?").bind(now.toISOString(),now.toISOString(),new Date(now.getTime()-120000).toISOString()).run();
-  const messages=await this.db.prepare("SELECT * FROM outbound_messages WHERE state IN('reconciling','delivery-unknown') AND (next_attempt_at IS NULL OR next_attempt_at<=?) ORDER BY created_at LIMIT ?").bind(now.toISOString(),limit).all<OutboundMessage>();
+ async reconcile(now=new Date(),limit=50,admittedAgentMessage?:string){
+  await this.db.prepare("UPDATE outbound_messages SET state='delivery-unknown',failure='Submission was interrupted without a receipt',next_attempt_at=?,updated_at=? WHERE state='queued' AND claimed_at<? AND (id=? OR (? IS NULL AND NOT EXISTS(SELECT 1 FROM orbit_agent_work w WHERE w.message_id=outbound_messages.id)))").bind(now.toISOString(),now.toISOString(),new Date(now.getTime()-120000).toISOString(),admittedAgentMessage??null,admittedAgentMessage??null).run();
+  const messages=await this.db.prepare("SELECT * FROM outbound_messages WHERE state IN('reconciling','delivery-unknown') AND (next_attempt_at IS NULL OR next_attempt_at<=?) AND (? IS NULL OR id=?) ORDER BY created_at LIMIT ?").bind(now.toISOString(),admittedAgentMessage??null,admittedAgentMessage??null,limit).all<OutboundMessage>();
   for(const message of messages.results){
+   if(message.id!==admittedAgentMessage&&await this.db.prepare('SELECT 1 FROM orbit_agent_work WHERE message_id=?').bind(message.id).first())continue;
    // A saved receipt proves acceptance even when the original settlement transaction failed.
    if(message.provider_message_id){await new OutreachRepository(this.db).settle(message.id,message.operator_id,'accepted',message.provider_message_id,null);continue;}
    if(this.mail.provider==='rer'&&!this.mail.lookup){

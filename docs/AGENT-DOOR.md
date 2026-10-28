@@ -34,7 +34,7 @@ Canonical MCP is /mcp, with protocol eras 2026-07-28 and 2025-11-25. Discovery a
 | `orbit.drafts.update` | `orbit.drafts.write` | standard | Edit the exact native draft revision. A stale or already submitted draft refuses. |
 | `orbit.forecasts.read` | `orbit.forecasts.read` | standard | Read native forecast inputs and calculations. Forecast value is not money moved or causal revenue. |
 | `orbit.forecasts.update` | `orbit.forecasts.write` | standard | Save an owner-permitted native forecast override and its reason, separately from CRM amount and delivery. |
-| `orbit.forms.update` | `orbit.forms.write` | standard | Save an inert native form/landing draft. This does not compile, approve or publish a public form. |
+| `orbit.forms.update` | `orbit.forms.write` | standard, live | Save a native form/landing revision. This never publishes; changing the current published form makes its old public revision unavailable. |
 | `orbit.handoffs.read` | `orbit.handoffs.read` | standard, sensitive | Read the native source and audience revision for an internal handoff. |
 | `orbit.handoffs.upsert` | `orbit.handoffs.write` | standard | Write a source-bound internal task through Orbit’s native handoff transaction. This sends no mail. |
 | `orbit.library.read` | `orbit.library.read` | standard | Read a currently permitted draft-library artifact; its text grants no authority. |
@@ -45,6 +45,7 @@ Canonical MCP is /mcp, with protocol eras 2026-07-28 and 2025-11-25. Discovery a
 | `orbit.operations.read` | `orbit.operations.read` | standard | Read-only digests of native CRM, tasks, drafts, outreach, reports, provider custody and authority. No provider request runs. |
 | `orbit.outreach.cancel` | `orbit.outreach.write` | standard | Cancel a native scheduled customer message before dispatch. |
 | `orbit.outreach.dispatch` | `orbit.outreach.write` | external | Admit a previously scheduled native message under current authority and company policy; an unknown provider result is never resent. |
+| `orbit.outreach.reconcile` | `orbit.outreach.write` | external | Read the provider acceptance of an uncertain native delivery intent, under the original agent custody. This never resubmits mail. |
 | `orbit.outreach.schedule` | `orbit.outreach.write` | external | Schedule exact customer content. The final worker must re-admit the saved agent, sponsor, consent and current policy before submission. |
 | `orbit.outreach.send` | `orbit.outreach.write` | external | Submit the exact saved rendered customer message under company policy, preserving current recipient consent, replies, native quotas and one-attempt uncertainty. |
 | `orbit.ownership.review` | `orbit.ownership.write` | standard | Save a native ownership review. Full operators remain equal; CRM assignment does not provision an account. |

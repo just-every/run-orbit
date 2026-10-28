@@ -24,8 +24,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -41,8 +40,7 @@
       ],
       "inputSchema": {
         "type": "object",
-        "properties": {},
-        "additionalProperties": false
+        "properties": {}
       }
     },
     {
@@ -151,8 +149,7 @@
           "fields",
           "purpose",
           "expiresAt"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -193,8 +190,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -244,8 +240,7 @@
           "id",
           "text",
           "occurredAt"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -269,8 +264,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -341,8 +335,7 @@
           "contactId",
           "subject",
           "body"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -367,8 +360,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -408,8 +400,7 @@
           "recipientEmail",
           "subject",
           "body"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -449,8 +440,7 @@
       ],
       "inputSchema": {
         "type": "object",
-        "properties": {},
-        "additionalProperties": false
+        "properties": {}
       }
     },
     {
@@ -583,8 +573,7 @@
         "required": [
           "id",
           "forecast"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -592,7 +581,8 @@
       "scope": "orbit.forms.write",
       "readOnly": false,
       "classes": [
-        "standard"
+        "standard",
+        "live"
       ],
       "clauses": [
         "FORM-001"
@@ -616,8 +606,7 @@
         "required": [
           "form",
           "landing"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -642,8 +631,7 @@
         },
         "required": [
           "target"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -741,8 +729,7 @@
           "sourceRevision",
           "audienceRevision",
           "content"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -766,8 +753,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -837,8 +823,7 @@
         },
         "required": [
           "entry"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -873,8 +858,7 @@
         "required": [
           "fields",
           "previewDigest"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -898,8 +882,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -923,8 +906,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -967,8 +949,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -993,8 +974,31 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
+      }
+    },
+    {
+      "name": "orbit.outreach.reconcile",
+      "scope": "orbit.outreach.write",
+      "readOnly": false,
+      "classes": [
+        "external"
+      ],
+      "clauses": [
+        "OUT-007"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
       }
     },
     {
@@ -1026,8 +1030,7 @@
         "required": [
           "id",
           "scheduledAt"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1054,8 +1057,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1105,8 +1107,7 @@
           "kind",
           "ids",
           "ownerId"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1130,8 +1131,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1159,8 +1159,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1194,8 +1193,7 @@
         "required": [
           "kind",
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1228,8 +1226,7 @@
         "required": [
           "kind",
           "fields"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1272,8 +1269,7 @@
         },
         "required": [
           "kind"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1338,8 +1334,7 @@
           "retiredId",
           "choices",
           "reviewed"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1383,8 +1378,7 @@
         "required": [
           "kind",
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1424,8 +1418,7 @@
           "kind",
           "id",
           "patch"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1586,8 +1579,7 @@
         "required": [
           "id",
           "kind"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1611,8 +1603,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1644,8 +1635,7 @@
           "id",
           "version",
           "definition"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1669,8 +1659,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1696,8 +1685,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1713,8 +1701,7 @@
       ],
       "inputSchema": {
         "type": "object",
-        "properties": {},
-        "additionalProperties": false
+        "properties": {}
       }
     },
     {
@@ -1739,8 +1726,7 @@
         },
         "required": [
           "id"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -1859,8 +1845,7 @@
         },
         "required": [
           "task"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     {
@@ -2000,8 +1985,7 @@
         "required": [
           "id",
           "task"
-        ],
-        "additionalProperties": false
+        ]
       }
     }
   ],

@@ -58,12 +58,31 @@ export async function exerciseAgentDoor(){
   const replay=await call('orbit.records.create',{kind:'company',fields:{name:'Northstar Buyer'},idempotency_key:'create-company'});assert.equal(replay.body.result.structuredContent.id,companyId);
   assert.equal((await db.prepare('SELECT count(*) AS n FROM companies').first<{n:number}>())!.n,1);
   assert.equal(code(await call('orbit.records.create',{kind:'company',fields:{name:'Changed request'},idempotency_key:'create-company'})),'idempotency_conflict');
-  const current=await call('orbit.records.read',{kind:'company',id:companyId});assert.equal(current.body.result?.isError,false,JSON.stringify(current.body));assert.equal(current.body.result.structuredContent.fields.name,'Northstar Buyer');
+  const current=await call('orbit.records.read',{kind:'company',id:companyId,confirmExternal:true,classes:['standard'],approved:true});assert.equal(current.body.result?.isError,false,JSON.stringify(current.body));assert.equal(current.body.result.structuredContent.fields.name,'Northstar Buyer');
   const before=current.body.result.structuredContent.ref.revision;
   const update=await call('orbit.records.update',{kind:'company',id:companyId,patch:{name:'Reviewed Buyer'},expected_revision:before,idempotency_key:'edit-company'});assert.equal(update.body.result?.isError,false,JSON.stringify(update.body));
   assert.equal(code(await call('orbit.records.update',{kind:'company',id:companyId,patch:{name:'Stale edit'},expected_revision:before,idempotency_key:'stale-edit'})),'revision_conflict');
   const history=(await db.prepare("SELECT actor_type,payload_json FROM timeline_entries WHERE kind='record.updated' ORDER BY recorded_at DESC").all<{actor_type:string;payload_json:string}>()).results;
   assert.equal(history[0].actor_type,'agent');const attribution=await db.prepare("SELECT actor FROM orbit_native_attribution WHERE table_name='timeline_entries' ORDER BY rowid DESC LIMIT 1").first<{actor:string}>();assert.equal(JSON.parse(attribution!.actor).label,'Riley Sales Agent for Avery Seller');
+  // A real seller handoff uses current native evidence and audience revisions.
+  const settingsRead=await person('/api/v1/settings'),nativeSettings=await settingsRead.json() as any;
+  assert.equal(settingsRead.status,200);
+  const stage=nativeSettings.stages[0].id;
+  const buyer=await call('orbit.records.create',{kind:'contact',fields:{name:'Jordan Buyer',email:'jordan@buyer.example.test',company_id:companyId},idempotency_key:'buyer-contact'});
+  assert.equal(buyer.body.result?.isError,false,JSON.stringify(buyer.body));const contactId=buyer.body.result.structuredContent.id;
+  const opportunity=await call('orbit.records.create',{kind:'opportunity',fields:{title:'Northstar renewal',stage_id:stage,company_id:companyId,value_cents:1250000,contact_ids:[contactId],primary_contact_id:contactId},idempotency_key:'buyer-opportunity'});
+  assert.equal(opportunity.body.result?.isError,false,JSON.stringify(opportunity.body));const opportunityId=opportunity.body.result.structuredContent.id;
+  const target=`opportunities/${opportunityId}/handoffs/${randomUUID()}`;
+  const source=await call('orbit.handoffs.read',{target});assert.equal(source.body.result?.isError,false,JSON.stringify(source.body));
+  const selected=source.body.result.structuredContent;
+  const handoff={target,sourceRevision:selected.revision,audienceRevision:selected.audience.audienceRevision,content:{title:'Prepare renewal meeting',description:'Review the current opportunity before the buyer meeting.',assigneeId:owner.operatorId,dueAt:null,status:'open'},idempotency_key:'seller-handoff'};
+  const saved=await call('orbit.handoffs.upsert',handoff);assert.equal(saved.body.result?.isError,false,JSON.stringify(saved.body));
+  assert.deepEqual((await call('orbit.handoffs.upsert',handoff)).body.result.structuredContent,saved.body.result.structuredContent);
+  assert.equal((await db.prepare('SELECT count(*) AS n FROM handoff_tasks WHERE opportunity_id=?').bind(opportunityId).first<{n:number}>())!.n,1);
+  assert.equal(code(await call('orbit.handoffs.upsert',{...handoff,idempotency_key:'stale-handoff'})),'native_conflict');
+  const draft=await call('orbit.drafts.create',{opportunityId,contactId,subject:'Renewal meeting',body:'Jordan, here is the agenda for our renewal discussion.',idempotency_key:'buyer-draft'});
+  assert.equal(draft.body.result?.isError,false,JSON.stringify(draft.body));
+  assert.equal((await db.prepare('SELECT count(*) AS n FROM outbound_messages').first<{n:number}>())!.n,0,'Preparing the seller day and draft never submits customer mail');
   // Invalid Business identities refuse before native reads; email never supplies identity.
   assert.equal((await call('orbit.records.read',{kind:'company',id:companyId},await credential({sub:'unmapped',email}))).status,401);
   assert.equal((await call('orbit.records.read',{kind:'company',id:companyId},await credential({aud:'https://elsewhere.test/mcp'}))).status,401);
