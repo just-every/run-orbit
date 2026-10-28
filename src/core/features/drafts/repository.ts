@@ -39,6 +39,10 @@ export class DraftsRepository {
     return rows.flat().sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt)||b.id.localeCompare(a.id));
   }
 
+  async hasOpportunity(opportunityId: string): Promise<boolean> {
+    return Boolean(await this.binding.prepare('SELECT id FROM opportunities WHERE id=?').bind(opportunityId).first());
+  }
+
   async updateWithRevision(input: {
     id: string;
     expectedRevision: number;

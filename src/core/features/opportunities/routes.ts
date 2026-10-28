@@ -21,12 +21,12 @@ export function createOpportunityRoutes(service: OpportunitiesService) {
   });
   routes.get("/:id", async (context) => {
     const id = opportunityIdSchema.safeParse(context.req.param("id"));
-    if (!id.success) return context.json({ error: "Invalid opportunity ID." }, 400);
+    if (!id.success) return context.json({ error: "That opportunity does not exist." }, 404);
 
     const opportunity = await service.findDetail(id.data);
     return opportunity
       ? context.json({ opportunity })
-      : context.json({ error: "Opportunity not found." }, 404);
+      : context.json({ error: "That opportunity does not exist." }, 404);
   });
 
   return routes;
