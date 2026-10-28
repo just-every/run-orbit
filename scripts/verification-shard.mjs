@@ -19,7 +19,10 @@ export function runShard(name,{journeys=process.env.ORBIT_VERIFY_JOURNEYS==='1'}
  mkdirSync('verification/ci-shards',{recursive:true});
  const destination=`verification/ci-shards/${name}.json`;rmSync(destination,{force:true});
  const commit=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'});if(commit.status!==0)throw Error('Verification requires the edition Git commit.');
- const state=mkdtempSync(join(tmpdir(),`orbit-${name}-`)),stages=[],executions=[];
+ // Nested tsx commands also create AF_UNIX sockets. Keep the shard root short
+ // rather than nesting it beneath the remote wrapper's checkout TMPDIR.
+ const temporaryRoot=process.platform==='win32'?tmpdir():'/tmp';
+ const state=mkdtempSync(join(temporaryRoot,`orbit-${name}-`)),stages=[],executions=[];
  const startedAt=new Date().toISOString();let failed=false;
  const browserEvidence=resolve(`verification/fold/${name}/browser`);mkdirSync(browserEvidence,{recursive:true});
  try{

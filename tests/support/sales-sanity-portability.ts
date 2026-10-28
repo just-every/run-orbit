@@ -25,11 +25,13 @@ export async function populateSalesPortability(f:CaptureFixture){
  try{
   await call('settings/slack/connect',{token:edge.token,signingSecret:edge.secret});
   await call('settings/slack/channels',{id:'CINTERNAL',events:['won'],enabled:true},'PUT');
-  await call('settings/slack/mappings',{slackUserId:'UMAPPED',operatorId:f.operator,revoked:false},'PUT');
   const original=await call(`records/opportunity/${f.opportunity}`),stage=original.record.stage_id;
   const deal=await call('records/opportunity',{title:'Portable sales review',stage_id:stage,value_cents:4200,company_id:f.company,contact_ids:[f.ana],primary_contact_id:f.ana});
   await call(`records/opportunity/${deal.id}/lifecycle`,{state:'won',reason:'Recorded acceptance'});
   assert.equal(edge.posts.length,1,'the portable Slack history has a genuine delivered notice');
+  // The accepted notice binds the verified bot app before a user can be mapped.
+  const connected=await call('settings/slack');assert.ok(connected.installation.app_id);
+  await call('settings/slack/mappings',{slackUserId:'UMAPPED',operatorId:f.operator,revoked:false},'PUT');
   const signed=async(payload:any,route:string)=>{const timestamp=String(Math.floor(Date.now()/1000)),raw=route==='actions'?new URLSearchParams({payload:JSON.stringify(payload)}).toString():JSON.stringify(payload),signature='v0='+createHmac('sha256',edge.secret).update(`v0:${timestamp}:${raw}`).digest('hex'),work:Promise<unknown>[]=[];
    const r=await app.fetch(new Request('https://orbit.test/api/v1/slack/'+route,{method:'POST',headers:{'Content-Type':route==='actions'?'application/x-www-form-urlencoded':'application/json','X-Slack-Request-Timestamp':timestamp,'X-Slack-Signature':signature},body:raw}),{}, {waitUntil(p:Promise<unknown>){work.push(p);},passThroughOnException(){}} as ExecutionContext);assert.equal(r.status,200,await r.clone().text());await Promise.all(work);};
   const notice=edge.posts[0],button=notice.blocks[1].elements.find((b:any)=>b.action_id==='orbit_ack');

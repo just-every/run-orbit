@@ -7,14 +7,13 @@ import { createId } from '../../src/core/shared/ids';
 
 import {createApp} from './app';
 
-export async function contactErasure(db:D1Database) {
+export async function contactErasure(db:D1Database,stage:string) {
  for(const deleteOpportunityFirst of [false,true]){
 
- const actor=createId(),stage=createId(),now=new Date().toISOString();
+ const actor=createId(),now=new Date().toISOString();
   await createDependencies(db).auth.ensureOperator({id:actor,email:`${actor}@erasure-operator.example.test`,displayName:'Erasure operator'});
   // An installed Orbit always has its workspace; erasure authority is a current workspace membership.
   await createDependencies(db).workspace.ensureWorkspace({name:'Erasure checks',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
-  await db.prepare('INSERT INTO pipeline_stages VALUES(?,?,0,?,?)').bind(stage,'Qualified',now,now).run();
   const records=new RecordsRepository(db),manual=new ManualRepository(db),customers=[];
   for(const email of ['first@example.test','second@example.test']) {
    const contact=await records.save('contact',{name:'Acceptance customer',email},actor);
@@ -53,11 +52,10 @@ export async function contactErasure(db:D1Database) {
  }
  {
 
- const actor=createId(),stage=createId(),source=createId(),now=new Date().toISOString();
+ const actor=createId(),source=createId(),now=new Date().toISOString();
   await createDependencies(db).auth.ensureOperator({id:actor,email:'boundary-operator@example.test',displayName:'Operator'});
   // An installed Orbit always has its workspace; erasure authority is a current workspace membership.
   await createDependencies(db).workspace.ensureWorkspace({name:'Erasure checks',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
-  await db.prepare('INSERT INTO pipeline_stages VALUES(?,?,0,?,?)').bind(stage,'Qualified',now,now).run();
   await db.prepare("INSERT INTO signal_sources(id,name,type,enabled,created_at,updated_at) VALUES(?,'Test source','signed_webhook',1,?,?)").bind(source,now,now).run();
   const records=new RecordsRepository(db),target=await records.save('contact',{name:'Shared name',email:'ann@example.test'},actor),other=await records.save('contact',{name:'Shared name',email:'joann@example.test'},actor);
   await db.prepare("INSERT INTO record_aliases VALUES('contact','old@example.test',?,?,?)").bind(target.id,createId(),now).run();
