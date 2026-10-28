@@ -26,6 +26,7 @@ export class ImportAdmission {
  predicate(){return sql(`EXISTS(SELECT 1 FROM access_workspaces WHERE id='workspace' AND policy_epoch=?)${this.guards.map(g=>` AND (${g.sql})`).join('')}`,this.epoch,...this.guards.flatMap(g=>g.params??[]));}
  async plan(plan:ImportPlan,write=false){
   const profile=this.profile;if(!profile)return;
+  const descriptions=new Set(plan.entries.filter(entry=>(entry.source.payload as any)?.data?.description).flatMap(entry=>entry.effects.map(effect=>effect.targetKind+':'+effect.targetId)));
   const effects=plan.entries.flatMap(e=>e.effects),candidates=new Map<string,TargetEffect>();
   for(const effect of effects)if(['contact','company','deal'].includes(effect.targetKind))candidates.set(nativeKind(effect.targetKind)+':'+effect.targetId,effect);
   const ownTeams=await teamIds(this.db,this.actor.operatorId),allowedOwners=new Set(profile.scope==='assigned'?[this.actor.operatorId]:(await Promise.all(ownTeams.map(id=>teamMembers(this.db,id)))).flat());
@@ -33,7 +34,7 @@ export class ImportAdmission {
   const require=(kind:string,id:string,names:string[],edit=false)=>{const key=kind+':'+id,item=required.get(key)??{kind,id,fields:new Set<string>(),write:false,owner:undefined};names.forEach(f=>item.fields.add(f));item.write||=edit;required.set(key,item);};
   for(const effect of effects){const value=effect.value as unknown as NativeValue,kind=nativeKind(effect.targetKind);
    if(['contact','company','opportunity'].includes(kind)){
-    require(kind,effect.targetId,fields(value),write);
+    require(kind,effect.targetId,[...fields(value),...descriptions.has(effect.targetKind+':'+effect.targetId)?['description']:[]],write);
     if(value.row.company_id)require('company',value.row.company_id,['id']);
     if(kind==='opportunity')for(const link of value.links)require('contact',link.contact_id,['id']);
    }else if(kind==='reference'){
@@ -46,7 +47,7 @@ export class ImportAdmission {
    }
   }
   if(write&&effects.length&&profile.role==='read-only')throw refused();
-  
+
   for(const item of required.values()){
    const names=[...item.fields],existing=await this.db.prepare("SELECT COALESCE((SELECT own.owner_id FROM record_ownership own WHERE own.record_type=graph_records.kind AND own.record_id=graph_records.id),json_extract(fields_json,'$.owner_id'),owner_id) AS owner FROM graph_records WHERE workspace_id='workspace' AND kind=? AND id=? AND retired_into_id IS NULL").bind(item.kind,item.id).first<{owner:string|null}>();
    if(existing){item.owner=existing.owner;if(!await (item.write?salesCanEdit:salesCanRead)(this.db,this.actor.operatorId,item.kind,item.id,names))throw refused();}

@@ -1,11 +1,12 @@
 import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AuthenticatedOperator } from '../identity';
+import {AccessError} from '../access/errors';
 import { RecordError } from '../records/shared';
 import { importInput } from './contracts';
 import { ImportRepository } from './repository';
 export function createImportRoutes(db:D1Database){const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
- app.onError((error,c)=>c.json({error:error instanceof RecordError?error.message:`Import stopped: ${error.message}`},error instanceof RecordError?error.status:409));
+ app.onError((error,c)=>c.json({error:error instanceof RecordError||error instanceof AccessError?error.message:`Import stopped: ${error.message}`},error instanceof RecordError||error instanceof AccessError?error.status:409));
  const repo=(c:any)=>new ImportRepository(db,c.get('operator'));
  app.get('/',async c=>c.json({imports:await repo(c).list()}));
  app.post('/dry-run',async c=>{const parsed=importInput.safeParse(await c.req.json());if(!parsed.success)return c.json({error:'Choose supported CSV files, a source account and explicit column mappings.',details:parsed.error.issues.map(i=>i.message)},400);return c.json(await repo(c).dryRun(parsed.data));});
