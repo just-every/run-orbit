@@ -1,4 +1,4 @@
-import type {AuthenticatedOperator} from '../identity';
+import type {NativeActor} from '../identity';
 import {RecordError,requireRecord} from '../records/shared';
 import type {ContactContext,ContactContextInput,SecondaryCompany} from './contracts';
 import {relationshipActivity} from './activity';
@@ -10,7 +10,8 @@ function contactView(id:string,snapshot:Awaited<ReturnType<typeof readSnapshot>>
   secondaryCompanies:snapshot.state.secondaryCompanies.map((row:SecondaryCompany)=>({companyId:row.companyId,name:row.name,verified:Boolean(row.verified),verifiedBy:row.verifiedBy,verifiedAt:row.verifiedAt}))};
 }
 export async function readContactContext(db:D1Database,id:string){return contactView(id,await readSnapshot(db,'contact',id));}
-export async function saveContactContext(db:D1Database,id:string,input:ContactContextInput,actor:AuthenticatedOperator){
+export async function saveContactContext(db:D1Database,id:string,input:ContactContextInput,actor:NativeActor){
+ if(!('sessionId' in actor)&&input.secondaryCompanies.some(item=>item.verified))throw new RecordError(403,'A person must verify a relationship assertion.');
  const snapshot=await readSnapshot(db,'contact',id),before=contactView(id,snapshot);
  if(snapshot.revision!==input.revision)throw new RecordError(409,'The contact or company relationships changed. Reload and review before saving.');
  if(input.secondaryCompanies.some(item=>item.companyId===before.primaryCompany?.id))throw new RecordError(400,'The primary company is already associated. Choose a different secondary company.');

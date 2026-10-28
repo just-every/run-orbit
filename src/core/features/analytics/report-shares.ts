@@ -9,7 +9,7 @@ import type {OperationsStore} from '../operations/store';
 export type Audience='private'|'operators'|'workspace';
 export interface ReportShare{audience:Audience;ownerId:string|null;operatorIds:string[];revision:number;stored:boolean}
 export const shareInput=z.object({audience:z.enum(['private','operators','workspace']),operatorIds:z.array(z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/)).max(200),revision:z.number().int().min(0)}).strict();
-const operatorOf=(c:ActorContext)=>c.principal.kind==='operator'?c.principal.operatorId:'';
+const operatorOf=(c:ActorContext)=>(c.principal.kind==='operator'||c.principal.kind==='agent')?c.principal.operatorId:'';
 /** SQL: the report `definition` (an expression) is visible to operator `?`. A report without a share row keeps workspace visibility. */
 export const visibleSql=(definition:string)=>`(NOT EXISTS(SELECT 1 FROM analytics_report_shares s WHERE s.workspace_id=?1 AND s.definition_id=${definition}) OR EXISTS(SELECT 1 FROM analytics_report_shares s WHERE s.workspace_id=?1 AND s.definition_id=${definition} AND (s.audience='workspace' OR s.owner_id=?2 OR (s.audience='operators' AND EXISTS(SELECT 1 FROM json_each(s.operators_json) named WHERE named.value=?2)) OR EXISTS(SELECT 1 FROM operators admin WHERE admin.id=?2 AND admin.setup_owner=1 AND admin.status='active'))))`;
 export class ReportShares{

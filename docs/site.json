@@ -13,6 +13,7 @@
       { "slug": "connect-gmail", "source": "docs/CONNECT-GMAIL.md", "label": "Connect Gmail and Google Calendar" },
       { "slug": "connect-outlook", "source": "docs/CONNECT-OUTLOOK.md", "label": "Connect Outlook and Microsoft Calendar" },
       { "slug": "connected-applications", "source": "docs/CONNECTED-APPLICATIONS.md", "label": "Connected applications" },
+      { "slug": "agents", "source": "docs/AGENT-DOOR.md", "label": "Agents and company policy" },
       { "slug": "updating", "source": "MIGRATION-RECOVERY.md", "label": "Updating and recovery" }
     ]},
     { "title": "Customise", "pages": [

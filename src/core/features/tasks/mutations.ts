@@ -1,4 +1,4 @@
-import type { AuthenticatedOperator } from '../identity';
+import type { NativeActor } from '../identity';
 import { createId } from '../../shared/ids';
 import { activeTaskOwner, commitTasks, taskAuthority, taskGuard } from './authority';
 import { TaskError, type TaskInput, type TaskRow, type TaskStatus } from './contracts';
@@ -25,7 +25,7 @@ export function newTask(input: TaskInput, actorId: string, now: string): TaskRow
  status: 'open', revision, assignment_revision: revision, reminder_revision: revision,
  created_by: actorId, updated_by: actorId, created_at: now, updated_at: now};
 }
-export async function createTask(db: D1Database, actor: AuthenticatedOperator, input: TaskInput) {
+export async function createTask(db: D1Database, actor: NativeActor, input: TaskInput) {
  const authority = await taskAuthority(db, actor), now = new Date().toISOString(), task = newTask(input, actor.operatorId, now);
  await commitTasks(db, authority, [inputGuard(db, input),
  db.prepare('INSERT INTO sales_task_series(id,created_at) VALUES(?,?)').bind(task.series_id, now),
@@ -47,7 +47,7 @@ function updateStatement(db: D1Database, task: TaskRow) {
  const fields: (keyof TaskRow)[] = ['title','owner_id','due_at','priority','task_type','notes','recurrence','timezone','recurrence_time','reminder_minutes','status','revision','assignment_revision','reminder_revision','updated_by','updated_at'];
  return db.prepare(`UPDATE sales_tasks SET ${fields.map(field => `${field}=?`).join(',')} WHERE id=?`).bind(...fields.map(field => task[field]), task.id);
 }
-export async function updateTask(db: D1Database, actor: AuthenticatedOperator, id: string, input: TaskInput & {revision: string; status: TaskStatus}) {
+export async function updateTask(db: D1Database, actor: NativeActor, id: string, input: TaskInput & {revision: string; status: TaskStatus}) {
  const authority = await taskAuthority(db, actor), previous = await rawTask(db, id);
  if (previous.revision !== input.revision) throw new TaskError(409, 'The task changed. Reload before saving.');
  if (previous.status !== 'open') throw new TaskError(409, 'This occurrence has finished. Edit the next open occurrence instead.');

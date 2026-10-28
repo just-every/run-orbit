@@ -1,0 +1,2203 @@
+{
+  "schema": "rer-agent-surface/1",
+  "seed": "orbit",
+  "specialist": "sales rep",
+  "tools": [
+    {
+      "name": "orbit.access.grants",
+      "scope": "orbit.access.read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "TEAM-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.access.read",
+      "scope": "orbit.access.read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "TEAM-001",
+        "TEAM-002"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "orbit.access.revoke",
+      "scope": "orbit.access.write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "TEAM-001",
+        "RECORD-017"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "widens": false,
+      "narrowing": {
+        "effect": "revoke",
+        "target": "id"
+      }
+    },
+    {
+      "name": "orbit.access.update",
+      "scope": "orbit.access.write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "TEAM-001",
+        "RECORD-017"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "subjectId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "resourceType": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "company",
+              "opportunity",
+              "analytics",
+              "legacy"
+            ]
+          },
+          "resourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "actions": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fields": {
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "expiresAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "subjectId",
+          "resourceType",
+          "resourceId",
+          "actions",
+          "fields",
+          "purpose",
+          "expiresAt"
+        ]
+      }
+    },
+    {
+      "name": "orbit.briefs.read",
+      "scope": "orbit.briefs.read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "BRIEF-001",
+        "BRIEF-002"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "orbit.calls.dial",
+      "scope": "orbit.calls.write",
+      "readOnly": false,
+      "classes": [
+        "external"
+      ],
+      "clauses": [
+        "CALL-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.calls.log",
+      "scope": "orbit.calls.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CALL-001",
+        "RECORD-007"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "company",
+              "opportunity"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 100000
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "kind",
+          "id",
+          "text",
+          "occurredAt"
+        ]
+      }
+    },
+    {
+      "name": "orbit.credentials.read",
+      "scope": "orbit.credentials.read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "API-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.credentials.revoke",
+      "scope": "orbit.credentials.write",
+      "readOnly": false,
+      "classes": [
+        "security"
+      ],
+      "clauses": [
+        "API-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "widens": false,
+      "narrowing": {
+        "effect": "revoke",
+        "target": "id"
+      }
+    },
+    {
+      "name": "orbit.drafts.create",
+      "scope": "orbit.drafts.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OUT-001",
+        "OUT-004"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "opportunityId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "contactId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "subject": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 100000
+          }
+        },
+        "required": [
+          "opportunityId",
+          "contactId",
+          "subject",
+          "body"
+        ]
+      }
+    },
+    {
+      "name": "orbit.drafts.read",
+      "scope": "orbit.drafts.read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OUT-001",
+        "OUT-004"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.drafts.update",
+      "scope": "orbit.drafts.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OUT-004"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "recipientEmail": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "subject": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 100000
+          }
+        },
+        "required": [
+          "id",
+          "recipientEmail",
+          "subject",
+          "body"
+        ]
+      }
+    },
+    {
+      "name": "orbit.events.list",
+      "scope": "events:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "BASE-AGENT-010"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "after": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "orbit.forecasts.read",
+      "scope": "orbit.forecasts.read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "FORECAST-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "orbit.forecasts.update",
+      "scope": "orbit.forecasts.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "FORECAST-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "forecast": {
+            "type": "object",
+            "properties": {
+              "probability": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "category": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "pipeline",
+                      "best_case",
+                      "committed",
+                      "omitted"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "closeDate": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "schedules": {
+                "maxItems": 1000,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "one_time",
+                        "monthly",
+                        "quarterly",
+                        "annual"
+                      ]
+                    },
+                    "amountCents": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100000000000000
+                    },
+                    "startDate": {
+                      "type": "string",
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                    },
+                    "endDate": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "kind",
+                    "amountCents",
+                    "startDate",
+                    "endDate"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "probability",
+              "category",
+              "closeDate",
+              "schedules",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "forecast"
+        ]
+      }
+    },
+    {
+      "name": "orbit.forms.update",
+      "scope": "orbit.forms.write",
+      "readOnly": false,
+      "classes": [
+        "standard",
+        "live"
+      ],
+      "clauses": [
+        "FORM-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "revision": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "form": {},
+          "landing": {}
+        },
+        "required": [
+          "form",
+          "landing"
+        ]
+      }
+    },
+    {
+      "name": "orbit.handoffs.read",
+      "scope": "orbit.handoffs.read",
+      "readOnly": true,
+      "classes": [
+        "standard",
+        "sensitive"
+      ],
+      "clauses": [
+        "DELEGATE-001",
+        "BRIEF-005"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "pattern": "^opportunities\\/[A-Za-z0-9_-]+\\/handoffs\\/[A-Za-z0-9_-]+$"
+          }
+        },
+        "required": [
+          "target"
+        ]
+      }
+    },
+    {
+      "name": "orbit.handoffs.upsert",
+      "scope": "orbit.handoffs.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "DELEGATE-001",
+        "BRIEF-005"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "pattern": "^opportunities\\/[A-Za-z0-9_-]+\\/handoffs\\/[A-Za-z0-9_-]+$"
+          },
+          "sourceRevision": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "audienceRevision": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "content": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 20000
+              },
+              "assigneeId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dueAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "open",
+                  "completed",
+                  "cancelled"
+                ]
+              },
+              "evidence": {
+                "minItems": 1,
+                "maxItems": 20,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,100}$"
+                }
+              }
+            },
+            "required": [
+              "title",
+              "description",
+              "assigneeId",
+              "dueAt",
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "target",
+          "sourceRevision",
+          "audienceRevision",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "orbit.library.read",
+      "scope": "orbit.library.read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OUT-016"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.library.update",
+      "scope": "orbit.library.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OUT-016"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "revision": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "entry": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "template",
+                  "snippet",
+                  "signature"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "subject": {
+                "default": "",
+                "type": "string",
+                "maxLength": 998
+              },
+              "body": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100000
+              },
+              "visibility": {
+                "type": "string",
+                "enum": [
+                  "private",
+                  "shared"
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "name",
+              "body",
+              "visibility"
+            ]
+          }
+        },
+        "required": [
+          "entry"
+        ]
+      }
+    },
+    {
+      "name": "orbit.marketing.handoff",
+      "scope": "orbit.marketing.write",
+      "readOnly": false,
+      "classes": [
+        "external"
+      ],
+      "clauses": [
+        "INTEGRATE-007"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "maxItems": 2,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "name",
+                "phone"
+              ]
+            }
+          },
+          "previewDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "fields",
+          "previewDigest"
+        ]
+      }
+    },
+    {
+      "name": "orbit.marketing.withdraw",
+      "scope": "orbit.marketing.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INTEGRATE-007"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.meetings.read",
+      "scope": "orbit.meetings.read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "BRIEF-003"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.operations.read",
+      "scope": "orbit.operations.read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RECORD-005",
+        "DELEGATE-001",
+        "OUT-004",
+        "TEAM-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "orbit.outreach.cancel",
+      "scope": "orbit.outreach.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OUT-008"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.outreach.dispatch",
+      "scope": "orbit.outreach.write",
+      "readOnly": false,
+      "classes": [
+        "external"
+      ],
+      "clauses": [
+        "OUT-008",
+        "OUT-007"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.outreach.reconcile",
+      "scope": "orbit.outreach.write",
+      "readOnly": false,
+      "classes": [
+        "external"
+      ],
+      "clauses": [
+        "OUT-007"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.outreach.schedule",
+      "scope": "orbit.outreach.write",
+      "readOnly": false,
+      "classes": [
+        "external"
+      ],
+      "clauses": [
+        "OUT-008",
+        "OUT-004",
+        "OUT-007"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "scheduledAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          }
+        },
+        "required": [
+          "id",
+          "scheduledAt"
+        ]
+      }
+    },
+    {
+      "name": "orbit.outreach.send",
+      "scope": "orbit.outreach.write",
+      "readOnly": false,
+      "classes": [
+        "external"
+      ],
+      "clauses": [
+        "OUT-001",
+        "OUT-004",
+        "OUT-005",
+        "OUT-007"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.ownership.review",
+      "scope": "orbit.ownership.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RECORD-016"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "company"
+            ]
+          },
+          "ids": {
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "ownerId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "kind",
+          "ids",
+          "ownerId"
+        ]
+      }
+    },
+    {
+      "name": "orbit.ownership.update",
+      "scope": "orbit.ownership.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RECORD-016"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.proposals.accept",
+      "scope": "orbit.proposals.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CAPTURE-006",
+        "AGENT-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "edit": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.records.archive",
+      "scope": "orbit.records.write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "DATA-002",
+        "RECORD-013"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "company",
+              "opportunity"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "kind",
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.records.create",
+      "scope": "orbit.records.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RECORD-001",
+        "RECORD-003"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "company",
+              "opportunity"
+            ]
+          },
+          "fields": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "kind",
+          "fields"
+        ]
+      }
+    },
+    {
+      "name": "orbit.records.list",
+      "scope": "orbit.records.read",
+      "readOnly": true,
+      "classes": [
+        "standard",
+        "sensitive"
+      ],
+      "clauses": [
+        "RECORD-001",
+        "RECORD-006",
+        "TEAM-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "company",
+              "opportunity"
+            ]
+          },
+          "query": {
+            "default": "",
+            "type": "string",
+            "maxLength": 500
+          },
+          "fields": {
+            "default": [],
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      }
+    },
+    {
+      "name": "orbit.records.merge",
+      "scope": "orbit.records.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RECORD-004"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "company"
+            ]
+          },
+          "survivorId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "retiredId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "choices": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "survivor",
+                "retired"
+              ]
+            }
+          },
+          "reviewed": {
+            "type": "object",
+            "properties": {
+              "survivor": {
+                "type": "string"
+              },
+              "retired": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "survivor",
+              "retired"
+            ]
+          }
+        },
+        "required": [
+          "kind",
+          "survivorId",
+          "retiredId",
+          "choices",
+          "reviewed"
+        ]
+      }
+    },
+    {
+      "name": "orbit.records.read",
+      "scope": "orbit.records.read",
+      "readOnly": true,
+      "classes": [
+        "standard",
+        "sensitive"
+      ],
+      "clauses": [
+        "RECORD-001",
+        "RECORD-005",
+        "TEAM-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "company",
+              "opportunity"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "fields": {
+            "default": [],
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.records.update",
+      "scope": "orbit.records.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RECORD-001",
+        "TEAM-001",
+        "RECORD-005"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "company",
+              "opportunity"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "patch": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "kind",
+          "id",
+          "patch"
+        ]
+      }
+    },
+    {
+      "name": "orbit.relationships.update",
+      "scope": "orbit.relationships.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RECORD-015"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "opportunity"
+            ]
+          },
+          "opportunity": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "companyId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "primaryContactId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "stakeholders": {
+                "maxItems": 1000,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "contactId": {
+                      "type": "string",
+                      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+                    },
+                    "roles": {
+                      "maxItems": 5,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "champion",
+                          "decision_maker",
+                          "evaluator",
+                          "procurement",
+                          "other"
+                        ]
+                      }
+                    },
+                    "verified": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "contactId",
+                    "roles",
+                    "verified"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "products": {
+                "maxItems": 100,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                }
+              },
+              "nextStep": {
+                "type": "string",
+                "maxLength": 10000
+              },
+              "mutualCommitments": {
+                "type": "string",
+                "maxLength": 20000
+              }
+            },
+            "required": [
+              "revision",
+              "companyId",
+              "primaryContactId",
+              "stakeholders",
+              "products",
+              "nextStep",
+              "mutualCommitments"
+            ],
+            "additionalProperties": false
+          },
+          "contact": {
+            "type": "object",
+            "properties": {
+              "revision": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "secondaryCompanies": {
+                "maxItems": 1000,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "companyId": {
+                      "type": "string",
+                      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+                    },
+                    "verified": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "companyId",
+                    "verified"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "revision",
+              "secondaryCompanies"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "kind"
+        ]
+      }
+    },
+    {
+      "name": "orbit.reports.read",
+      "scope": "orbit.reports.read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.reports.update",
+      "scope": "orbit.reports.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "definition": {}
+        },
+        "required": [
+          "id",
+          "version",
+          "definition"
+        ]
+      }
+    },
+    {
+      "name": "orbit.risks.read",
+      "scope": "orbit.risks.read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-002"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.signals.read",
+      "scope": "orbit.signals.read",
+      "readOnly": true,
+      "classes": [
+        "standard",
+        "sensitive"
+      ],
+      "clauses": [
+        "SIGNAL-001",
+        "SIGNAL-008"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.sources.read",
+      "scope": "orbit.sources.read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CAPTURE-001",
+        "CAPTURE-004"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "orbit.sources.sync",
+      "scope": "orbit.sources.write",
+      "readOnly": false,
+      "classes": [
+        "external"
+      ],
+      "clauses": [
+        "CAPTURE-004",
+        "CAPTURE-005"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "orbit.tasks.create",
+      "scope": "orbit.tasks.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "TASK-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              "recordType": {
+                "type": "string",
+                "enum": [
+                  "contact",
+                  "company",
+                  "opportunity"
+                ]
+              },
+              "recordId": {
+                "type": "string",
+                "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+              },
+              "ownerId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dueAt": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+              },
+              "priority": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "normal",
+                  "high",
+                  "urgent"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "call",
+                  "email",
+                  "meeting",
+                  "follow_up",
+                  "other"
+                ]
+              },
+              "notes": {
+                "type": "string",
+                "maxLength": 20000
+              },
+              "recurrence": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "daily",
+                  "weekly"
+                ]
+              },
+              "timezone": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "reminderMinutes": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10080
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "title",
+              "recordType",
+              "recordId",
+              "ownerId",
+              "dueAt",
+              "priority",
+              "type",
+              "notes",
+              "recurrence",
+              "timezone",
+              "reminderMinutes"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "task"
+        ]
+      }
+    },
+    {
+      "name": "orbit.tasks.update",
+      "scope": "orbit.tasks.write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "TASK-001"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "task": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              "recordType": {
+                "type": "string",
+                "enum": [
+                  "contact",
+                  "company",
+                  "opportunity"
+                ]
+              },
+              "recordId": {
+                "type": "string",
+                "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+              },
+              "ownerId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "dueAt": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+              },
+              "priority": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "normal",
+                  "high",
+                  "urgent"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "call",
+                  "email",
+                  "meeting",
+                  "follow_up",
+                  "other"
+                ]
+              },
+              "notes": {
+                "type": "string",
+                "maxLength": 20000
+              },
+              "recurrence": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "daily",
+                  "weekly"
+                ]
+              },
+              "timezone": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "reminderMinutes": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10080
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "revision": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "open",
+                  "completed",
+                  "cancelled"
+                ]
+              }
+            },
+            "required": [
+              "title",
+              "recordType",
+              "recordId",
+              "ownerId",
+              "dueAt",
+              "priority",
+              "type",
+              "notes",
+              "recurrence",
+              "timezone",
+              "reminderMinutes",
+              "revision",
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "task"
+        ]
+      }
+    }
+  ],
+  "resources": [
+    "orbit://records/{kind}/{id}",
+    "orbit://signals/{id}",
+    "orbit://meetings/{id}/plan",
+    "orbit://opportunities/{id}/risks",
+    "orbit://drafts/{id}",
+    "orbit://outreach/{id}",
+    "orbit://operations/{id}",
+    "orbit://reports/{id}",
+    "orbit://forecasts/{id}",
+    "orbit://access/{id}"
+  ],
+  "notTools": [
+    {
+      "clauses": [
+        "DATA-001"
+      ],
+      "reason": "import-door"
+    },
+    {
+      "clauses": [
+        "OPS-001"
+      ],
+      "reason": "installation"
+    },
+    {
+      "clauses": [
+        "OPS-001"
+      ],
+      "reason": "screen"
+    }
+  ],
+  "witness": {
+    "tool": "orbit.operations.read",
+    "args": {}
+  },
+  "journey": [
+    {
+      "id": "create-company",
+      "tool": "orbit.records.create",
+      "args": {
+        "kind": "company",
+        "fields": {
+          "name": "Native conformance buyer"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "approved": true
+      }
+    },
+    {
+      "id": "read-company",
+      "tool": "orbit.records.read",
+      "args": {
+        "kind": "company",
+        "id": {
+          "$from": "create-company",
+          "pointer": "/id"
+        },
+        "fields": [
+          "name"
+        ]
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "update-company",
+      "tool": "orbit.records.update",
+      "args": {
+        "kind": "company",
+        "id": {
+          "$from": "create-company",
+          "pointer": "/id"
+        },
+        "patch": {
+          "name": "Reviewed native buyer"
+        },
+        "expected_revision": {
+          "$from": "read-company",
+          "pointer": "/ref/revision"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "list-companies",
+      "tool": "orbit.records.list",
+      "args": {
+        "kind": "company",
+        "query": "Reviewed",
+        "fields": [
+          "name"
+        ]
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "seller-brief",
+      "tool": "orbit.briefs.read",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "native-witness",
+      "tool": "orbit.operations.read",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "events",
+      "tool": "orbit.events.list",
+      "args": {
+        "limit": 100
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    }
+  ],
+  "escalations": [
+    {
+      "id": "sponsor-grant-id",
+      "tool": "orbit.access.update",
+      "args": {
+        "subjectId": {
+          "$sponsor": "id"
+        },
+        "resourceType": "company",
+        "resourceId": "*",
+        "actions": [
+          "graph.read"
+        ],
+        "fields": [
+          "name"
+        ],
+        "purpose": "Conformance self-widening refusal",
+        "expiresAt": null
+      }
+    }
+  ],
+  "narrowings": [],
+  "verification": {
+    "owner": {
+      "initializer": "tests/agent-door-owner.mjs"
+    },
+    "network": {
+      "module": "tests/agent-provider-edge.mjs",
+      "origins": [
+        "https://api.twilio.com",
+        "https://us1.api.mailchimp.com",
+        "https://oauth2.googleapis.com",
+        "https://gmail.googleapis.com",
+        "https://www.googleapis.com",
+        "https://graph.microsoft.com",
+        "https://login.microsoftonline.com",
+        "https://slack.com"
+      ]
+    }
+  }
+}

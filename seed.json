@@ -394,6 +394,41 @@
       "required": false,
       "requiredWhen": "A published form opts in to Cloudflare Turnstile with its site key.",
       "why": "Verify the opted-in public form challenge before accepting an enquiry."
+    },
+    {
+      "name": "RER_OWNER_CLAIM_ISSUER",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "This installation is paired with Business for signed owner claims, settings and agent policy.",
+      "why": "Reuse the existing installation issuer, origin and public key ring; no independent agent key authority."
+    },
+    {
+      "name": "RER_OWNER_CLAIM_INSTALLATION_ID",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "This installation is paired with Business for signed owner claims, settings and agent policy.",
+      "why": "Reuse the existing installation issuer, origin and public key ring; no independent agent key authority."
+    },
+    {
+      "name": "RER_OWNER_CLAIM_APP_ORIGIN",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "This installation is paired with Business for signed owner claims, settings and agent policy.",
+      "why": "Reuse the existing installation issuer, origin and public key ring; no independent agent key authority."
+    },
+    {
+      "name": "RER_OWNER_CLAIM_PUBLIC_KEYS",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "This installation is paired with Business for signed owner claims, settings and agent policy.",
+      "why": "Reuse the existing installation issuer, origin and public key ring; no independent agent key authority."
+    },
+    {
+      "name": "RER_BUSINESS_TRUST",
+      "secret": false,
+      "required": false,
+      "requiredWhen": "This installation is paired with Business for signed owner claims, settings and agent policy.",
+      "why": "Reuse the existing installation issuer, origin and public key ring; no independent agent key authority."
     }
   ],
   "deploy": {

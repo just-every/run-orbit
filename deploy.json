@@ -105,6 +105,26 @@
     {
       "binding": "SESSION_SECRET",
       "environment": "SESSION_SECRET"
+    },
+    {
+      "binding": "RER_OWNER_CLAIM_ISSUER",
+      "environment": "RER_OWNER_CLAIM_ISSUER"
+    },
+    {
+      "binding": "RER_OWNER_CLAIM_INSTALLATION_ID",
+      "environment": "RER_OWNER_CLAIM_INSTALLATION_ID"
+    },
+    {
+      "binding": "RER_OWNER_CLAIM_APP_ORIGIN",
+      "environment": "RER_OWNER_CLAIM_APP_ORIGIN"
+    },
+    {
+      "binding": "RER_OWNER_CLAIM_PUBLIC_KEYS",
+      "environment": "RER_OWNER_CLAIM_PUBLIC_KEYS"
+    },
+    {
+      "binding": "RER_BUSINESS_TRUST",
+      "environment": "RER_BUSINESS_TRUST"
     }
   ],
   "crons": [
