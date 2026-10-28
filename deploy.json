@@ -31,7 +31,8 @@
     },
     {
       "binding": "MAIL_FROM",
-      "environment": "MAIL_FROM"
+      "environment": "MAIL_FROM",
+      "verifyStandIn": "Orbit <auth@native-orbit.example.test>"
     },
     {
       "binding": "SENDGRID_API_KEY",
@@ -46,7 +47,8 @@
     {
       "binding": "MAIL_REPLY_TO",
       "environment": "MAIL_REPLY_TO",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "reply@native-orbit.example.test"
     },
     {
       "binding": "CAPTURE_MAIL_ADDRESS",
@@ -56,7 +58,8 @@
     {
       "binding": "SENDGRID_UNSUBSCRIBE_GROUP_ID",
       "environment": "SENDGRID_UNSUBSCRIBE_GROUP_ID",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "1"
     },
     {
       "binding": "RER_MAIL_RELAY_SECRET",
@@ -75,7 +78,8 @@
     },
     {
       "binding": "ORBIT_ENCRYPTION_KEY",
-      "environment": "ORBIT_ENCRYPTION_KEY"
+      "environment": "ORBIT_ENCRYPTION_KEY",
+      "verifyStandIn": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
     },
     {
       "binding": "OPENAI_API_KEY",
@@ -85,22 +89,26 @@
     {
       "binding": "AI_MODEL",
       "environment": "AI_MODEL",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "verification-network-edge"
     },
     {
       "binding": "AI_INPUT_COST_PER_MILLION",
       "environment": "AI_INPUT_COST_PER_MILLION",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "0"
     },
     {
       "binding": "AI_OUTPUT_COST_PER_MILLION",
       "environment": "AI_OUTPUT_COST_PER_MILLION",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "0"
     },
     {
       "binding": "AI_CACHED_INPUT_COST_PER_MILLION",
       "environment": "AI_CACHED_INPUT_COST_PER_MILLION",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "0"
     },
     {
       "binding": "SESSION_SECRET",
