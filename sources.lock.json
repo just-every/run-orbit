@@ -735,7 +735,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "da2634d73fb627757f77a1adbac594380b582cecc5611d0d6bfee590cc210de7",
+      "sha256": "bfd13b7cd0ebd9fe2ee4b3526fd49b6b7ec0cd29013ca35abec86e0253ba6899",
       "executable": false
     },
     "BASELINE.md": {
@@ -9495,7 +9495,7 @@
       "executable": false
     },
     "src/operator-auth/index.d.mts": {
-      "sha256": "cf3ba368871ed4db7b4966b64876bed9116db7dc00d462e8d64cbcf985a717aa",
+      "sha256": "86a221a11b3f5b5922a8f2d94cfbe56b0c557f1bad52eafb75f5b53eda0ae659",
       "executable": false
     },
     "src/operator-auth/loopback.mjs": {
