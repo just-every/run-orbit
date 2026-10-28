@@ -1,0 +1,1132 @@
+{
+  "schema": "rer-agent-surface/1",
+  "seed": "orbit",
+  "specialist": "sales rep",
+  "tools": [
+    {
+      "name": "orbit.briefs.read",
+      "scope": "briefs:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "BRIEF-001",
+        "BRIEF-002"
+      ]
+    },
+    {
+      "name": "orbit.drafts.create",
+      "scope": "drafts:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OUT-001",
+        "ACTION-005"
+      ]
+    },
+    {
+      "name": "orbit.drafts.read",
+      "scope": "drafts:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OUT-001",
+        "ACTION-005"
+      ]
+    },
+    {
+      "name": "orbit.drafts.update",
+      "scope": "drafts:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OUT-001",
+        "ACTION-005"
+      ]
+    },
+    {
+      "name": "orbit.events.list",
+      "scope": "events:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "BASE-AGENT-010"
+      ]
+    },
+    {
+      "name": "orbit.forecasts.read",
+      "scope": "forecasts:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "FORECAST-001"
+      ]
+    },
+    {
+      "name": "orbit.forecasts.update",
+      "scope": "forecasts:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "FORECAST-001"
+      ]
+    },
+    {
+      "name": "orbit.handoffs.read",
+      "scope": "handoffs:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "DELEGATE-001",
+        "BRIEF-005"
+      ]
+    },
+    {
+      "name": "orbit.handoffs.upsert",
+      "scope": "handoffs:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "DELEGATE-001",
+        "BRIEF-005"
+      ]
+    },
+    {
+      "name": "orbit.meetings.read",
+      "scope": "meetings:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "BRIEF-004"
+      ]
+    },
+    {
+      "name": "orbit.operations.read",
+      "scope": "operations:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "DELEGATE-001",
+        "RECORD-018"
+      ]
+    },
+    {
+      "name": "orbit.records.create",
+      "scope": "records:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RECORD-001",
+        "RECORD-003",
+        "RECORD-007"
+      ]
+    },
+    {
+      "name": "orbit.records.list",
+      "scope": "records:read",
+      "readOnly": true,
+      "classes": [
+        "standard",
+        "sensitive"
+      ],
+      "clauses": [
+        "RECORD-001",
+        "RECORD-018"
+      ]
+    },
+    {
+      "name": "orbit.records.read",
+      "scope": "records:read",
+      "readOnly": true,
+      "classes": [
+        "standard",
+        "sensitive"
+      ],
+      "clauses": [
+        "RECORD-001",
+        "RECORD-018"
+      ]
+    },
+    {
+      "name": "orbit.records.update",
+      "scope": "records:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RECORD-014",
+        "RECORD-018"
+      ]
+    },
+    {
+      "name": "orbit.reports.compute",
+      "scope": "reports:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-001"
+      ]
+    },
+    {
+      "name": "orbit.reports.preview",
+      "scope": "reports:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-001"
+      ]
+    },
+    {
+      "name": "orbit.reports.read",
+      "scope": "reports:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-001"
+      ]
+    },
+    {
+      "name": "orbit.reports.update",
+      "scope": "reports:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-001"
+      ]
+    },
+    {
+      "name": "orbit.risks.read",
+      "scope": "risks:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-001"
+      ]
+    },
+    {
+      "name": "orbit.signals.list",
+      "scope": "signals:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "SIGNAL-001"
+      ]
+    },
+    {
+      "name": "orbit.signals.read",
+      "scope": "signals:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "SIGNAL-001"
+      ]
+    },
+    {
+      "name": "orbit.sources.read",
+      "scope": "sources:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "SIGNAL-001"
+      ]
+    }
+  ],
+  "resources": [
+    "orbit://drafts/{id}",
+    "orbit://forecasts/{id}",
+    "orbit://meetings/{id}/plan",
+    "orbit://operations/{id}",
+    "orbit://opportunities/{id}/risks",
+    "orbit://outreach/{id}",
+    "orbit://records/{kind}/{id}",
+    "orbit://reports/{id}",
+    "orbit://reports/{id}/definition/{version}",
+    "orbit://signals/{id}"
+  ],
+  "notTools": [
+    {
+      "clauses": [
+        "DATA-001"
+      ],
+      "reason": "import-door"
+    },
+    {
+      "clauses": [
+        "PUBLIC-003"
+      ],
+      "reason": "installation"
+    }
+  ],
+  "witness": {
+    "tool": "orbit.operations.read",
+    "args": {}
+  },
+  "escalations": [],
+  "journey": [
+    {
+      "id": "fixture",
+      "tool": "orbit.records.list",
+      "args": {
+        "kind": "opportunity",
+        "query": "Door specialist fixture opportunity",
+        "limit": 1
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "public_company",
+      "tool": "orbit.records.create",
+      "args": {
+        "kind": "company",
+        "record": {
+          "name": "Brightwork public seller context"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "public_read",
+      "tool": "orbit.records.read",
+      "args": {
+        "kind": "company",
+        "id": {
+          "$from": "public_company",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "public_update",
+      "tool": "orbit.records.update",
+      "args": {
+        "kind": "company",
+        "id": {
+          "$from": "public_company",
+          "pointer": "/id"
+        },
+        "fields": {
+          "name": "Brightwork public seller context updated"
+        },
+        "expected_revision": {
+          "$from": "public_read",
+          "pointer": "/ref/revision"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "contact",
+      "tool": "orbit.records.create",
+      "args": {
+        "kind": "contact",
+        "record": {
+          "name": "Maya Chen",
+          "email": "buyer@example.test",
+          "company_id": {
+            "$from": "public_company",
+            "pointer": "/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "opportunity",
+      "tool": "orbit.records.create",
+      "args": {
+        "kind": "opportunity",
+        "record": {
+          "title": "Brightwork Team plan",
+          "stage_id": {
+            "$from": "fixture",
+            "pointer": "/items/0/fields/stage_id"
+          },
+          "value_cents": 750000,
+          "company_id": {
+            "$from": "public_company",
+            "pointer": "/id"
+          },
+          "contact_ids": [
+            {
+              "$from": "contact",
+              "pointer": "/id"
+            }
+          ],
+          "primary_contact_id": {
+            "$from": "contact",
+            "pointer": "/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "protected_company",
+      "tool": "orbit.records.create",
+      "args": {
+        "kind": "company",
+        "record": {
+          "name": "Protected seller context",
+          "custom_fields": {
+            "private_note": "Protected internal buyer context"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "protected_read",
+      "tool": "orbit.records.read",
+      "args": {
+        "kind": "company",
+        "id": {
+          "$from": "protected_company",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        },
+        {
+          "class": "sensitive",
+          "facts": {
+            "kind": "protected_crm_fields",
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "protected_list",
+      "tool": "orbit.records.list",
+      "args": {
+        "kind": "company",
+        "query": "Protected seller context",
+        "limit": 1
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        },
+        {
+          "class": "sensitive",
+          "facts": {
+            "kind": "protected_crm_fields",
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "signals",
+      "tool": "orbit.signals.list",
+      "args": {
+        "opportunity_id": {
+          "$from": "fixture",
+          "pointer": "/items/0/ref/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "signal",
+      "tool": "orbit.signals.read",
+      "args": {
+        "id": {
+          "$from": "signals",
+          "pointer": "/signals/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "meeting",
+      "tool": "orbit.meetings.read",
+      "args": {
+        "id": {
+          "$from": "signals",
+          "pointer": "/signals/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "brief",
+      "tool": "orbit.briefs.read",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "risks",
+      "tool": "orbit.risks.read",
+      "args": {
+        "id": {
+          "$from": "opportunity",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "sources",
+      "tool": "orbit.sources.read",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "handoff",
+      "tool": "orbit.handoffs.read",
+      "args": {
+        "opportunity_id": {
+          "$from": "opportunity",
+          "pointer": "/id"
+        },
+        "id": "seller-day"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "save_handoff",
+      "tool": "orbit.handoffs.upsert",
+      "args": {
+        "target": {
+          "$from": "handoff",
+          "pointer": "/target"
+        },
+        "source_revision": {
+          "$from": "handoff",
+          "pointer": "/revision"
+        },
+        "audience_revision": {
+          "$from": "handoff",
+          "pointer": "/audienceRevision"
+        },
+        "content": {
+          "title": "Prepare buyer follow-up",
+          "description": "Use current source evidence; this is an internal handoff.",
+          "assigneeId": {
+            "$sponsor": "id"
+          },
+          "dueAt": null,
+          "status": "open"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "draft",
+      "tool": "orbit.drafts.create",
+      "args": {
+        "kind": "opportunity",
+        "id": {
+          "$from": "opportunity",
+          "pointer": "/id"
+        },
+        "contact_id": {
+          "$from": "contact",
+          "pointer": "/id"
+        },
+        "subject": "Brightwork next steps",
+        "body": "Maya, here is the saved proposal outline."
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "draft_read",
+      "tool": "orbit.drafts.read",
+      "args": {
+        "id": {
+          "$from": "draft",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "draft_update",
+      "tool": "orbit.drafts.update",
+      "args": {
+        "id": {
+          "$from": "draft",
+          "pointer": "/id"
+        },
+        "recipient_email": "buyer@example.test",
+        "subject": "Brightwork next steps",
+        "body": "Maya, here is the revised saved proposal outline.",
+        "expected_revision": {
+          "$from": "draft_read",
+          "pointer": "/draft/revision"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "definition",
+      "tool": "orbit.reports.update",
+      "args": {
+        "definition": {
+          "name": "Seller opportunities",
+          "description": "Count native opportunities, without causal revenue claims.",
+          "aggregation": "count",
+          "unit": "opportunities",
+          "sourceTypes": [
+            "opportunity"
+          ],
+          "sourceOperation": "graph.read",
+          "sourceFields": [],
+          "currency": null,
+          "missingPolicy": "incomplete",
+          "lateArrival": "recompute",
+          "attributionModel": "none",
+          "attributionWindowDays": 30
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "report_preview",
+      "tool": "orbit.reports.preview",
+      "args": {
+        "id": {
+          "$from": "definition",
+          "pointer": "/id"
+        },
+        "version": 1,
+        "from": "2026-01-01T00:00:00Z",
+        "through": "2027-01-01T00:00:00Z"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "report_snapshot",
+      "tool": "orbit.reports.compute",
+      "args": {
+        "id": {
+          "$from": "definition",
+          "pointer": "/id"
+        },
+        "version": 1,
+        "from": "2026-01-01T00:00:00Z",
+        "through": "2027-01-01T00:00:00Z",
+        "review_hash": {
+          "$from": "report_preview",
+          "pointer": "/reviewHash"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "report_read",
+      "tool": "orbit.reports.read",
+      "args": {
+        "id": {
+          "$from": "report_snapshot",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "forecast",
+      "tool": "orbit.forecasts.read",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "forecast_update",
+      "tool": "orbit.forecasts.update",
+      "args": {
+        "id": {
+          "$from": "opportunity",
+          "pointer": "/id"
+        },
+        "forecast": {
+          "probability": 40,
+          "category": "pipeline",
+          "closeDate": null,
+          "schedules": [],
+          "reason": "CRM estimate from current buyer evidence"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "witness",
+      "tool": "orbit.operations.read",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "events",
+      "tool": "orbit.events.list",
+      "args": {
+        "limit": 200
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    }
+  ],
+  "verification": {
+    "owner": {
+      "bindings": {
+        "RER_MANAGEMENT_ORIGIN": "issuer",
+        "RER_INSTALLATION_ID": "installationId"
+      },
+      "initializer": "tests/agent-door/initialize-owner.mjs"
+    },
+    "journey": "tests/agent-door/native-journey.mjs"
+  }
+}

@@ -3,16 +3,20 @@ import type {TeamAdapter, ManagedMember} from '../../../base/modules/business-se
 import {createOrbitIdentity} from '../identity/auth';
 import {personColumns, personOf, type PersonRow} from '../identity/store';
 import type {PlatformBindings} from '../../platform/assets';
+import {AuthError} from '@runeditrun/rer/modules/operator-auth';
+
+export const nativePersonAdmission = `(o.setup_owner=1 OR NOT EXISTS(SELECT 1 FROM identity_domain_policies p WHERE p.domain=substr(lower(o.email),instr(o.email,'@')+1)) OR EXISTS(
+ SELECT 1 FROM identity_domain_policies p JOIN oa_identity_providers ip ON ip.provider_id=p.provider_id
+ JOIN identity_bindings b ON b.issuer=ip.issuer AND b.operator_id=o.id
+ WHERE p.domain=substr(lower(o.email),instr(o.email,'@')+1) AND ip.status='linked'
+ AND EXISTS(SELECT 1 FROM identity_settings WHERE id=1 AND idp_sign_in=1)))`;
 
 /** Business subjects bind to operators.id. Roster email is never a bearer identity. */
 export function orbitPeople(bindings: PlatformBindings): PeopleAdapter {
   const db = bindings.DB;
   async function person(id: string): Promise<Person | null> {
-    const native = personOf(await db.prepare(`SELECT ${personColumns('o')} FROM operators o WHERE o.id=?`).bind(id).first<PersonRow>());
+    const native = personOf(await db.prepare(`SELECT ${personColumns('o')} FROM operators o WHERE o.id=? AND ${nativePersonAdmission}`).bind(id).first<PersonRow>());
     if (!native || native.status !== 'active') return null;
-    // A domain that requires native provider admission cannot be bypassed by a
-    // Business token. The owner keeps the same native recovery admission.
-    if (!native.owner && await db.prepare("SELECT 1 FROM identity_domain_policies WHERE domain=?").bind(native.email.split('@')[1]).first()) return null;
     const membership = await db.prepare("SELECT 1 FROM access_memberships WHERE operator_id=? AND status='active'").bind(id).first();
     if (!membership) return null;
     return {id: native.id, email: native.email, name: native.displayName, role: native.role, active: true};
@@ -39,8 +43,8 @@ export function orbitPeople(bindings: PlatformBindings): PeopleAdapter {
     async session(request) {
       const identity = createOrbitIdentity(bindings);
       if (!identity) return null;
-      const current = await identity.auth.getSession(request);
-      return current ? person(current.operator.id) : null;
+      try {const current = await identity.auth.getSession(request);return current ? person(current.operator.id) : null;}
+      catch(error) {if(error instanceof AuthError)return null;throw error;}
     },
   };
 }

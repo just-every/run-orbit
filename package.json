@@ -46,7 +46,8 @@
     "build:artifact": "node scripts/build-delivery-artifact.mjs",
     "test:launch-runtime": "tsx --test --test-concurrency=1 tests/launch-runtime/*.test.ts",
     "test:core": "tsx --test --test-concurrency=1 tests/core/*.test.ts",
-    "verify:release": "rer queue verify:app -- node scripts/verify.mjs --release"
+    "verify:release": "rer queue verify:app -- node scripts/verify.mjs --release",
+    "agent:surface": "tsx scripts/agent-surface.ts --check"
   },
   "dependencies": {
     "@tanstack/react-router": "1.170.41",
