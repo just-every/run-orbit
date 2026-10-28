@@ -4015,7 +4015,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "4330bd2aa6ff20c4d516d14e40495f21e17de5e0e14afceef2b70223ee3fbff3",
+      "sha256": "708982732a6fb2f123b2f2339a7cc907ea1f9c724e5827d339f42374405a824f",
       "executable": false
     },
     "scripts/verification-reuse.sh": {
@@ -8475,7 +8475,7 @@
       "executable": false
     },
     "TESTING.md": {
-      "sha256": "a44aa39c1a0a9f012ea44931633ee6dcb9e23f2309e27d0d12edabfe439706e4",
+      "sha256": "2168d55bf8c6c2bd7dd493d0ce68440df9e8938d241d5aaec2f06697ca680f93",
       "executable": false
     },
     "tests/acceptance/edition-source.mjs": {

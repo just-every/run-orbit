@@ -9,7 +9,7 @@ const playwright = (files, result, config) => ({ files, args: ['exec', 'playwrig
 
 // Installer/README clone and complete historical archive qualification are deliberately
 // separate from push sanity. The ordinary restore and migration journeys remain on push.
-export const journeyFiles = ['tests/rer/journey.test.mjs', 'newtests/t096/forward-upgrade.test.ts', 'newtests/t096/archive-native.test.ts'];
+export const journeyFiles = ['tests/rer/journey.test.mjs', 'newtests/t096/forward-upgrade.test.ts', 'newtests/t096/archive-native.test.ts', 'tests/core/onboarding-archive.test.ts'];
 
 // Relative execution costs. Largest journeys go first into the lightest runner;
 // each file is executed once, regardless of how many contract clauses it exercises.
@@ -29,7 +29,7 @@ const minutes = {
   'tests/core/capture-calendar.test.ts': 6,
   'tests/core/capture-erasure.test.ts': 6,
   'tests/core/source-onboarding.test.ts': 4,
-  'tests/core/onboarding-archive.test.ts': 4,
+  'tests/core/onboarding-archive.test.ts': 15,
   'tests/core/crm-import.test.ts': 6,
   'tests/core/crm-vendor.test.ts': 3,
   'tests/core/launch-suppression.test.ts': 5,
