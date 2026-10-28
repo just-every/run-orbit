@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import type {CaptureFixture} from './capture-fixture';
 import type {launchFixture} from './launch-fixture';
+import {testAuth} from './test-auth';
 
 type WorkflowData={
  delayed:{id:string;previewId:string;runId:string;recordId:string;before:string|null};
@@ -59,9 +60,11 @@ export async function seedWorkflowCustody(f:CaptureFixture,call:Call):Promise<Wo
 }
 
 /** Verify archive import keeps the evidence while discarding every executable source grant. */
-export async function proveWorkflowCustody(source:CaptureFixture,target:Awaited<ReturnType<typeof launchFixture>>,data:WorkflowData,call:Call){
- // The receiver fixture's local operator is the authorized reviewer for this public-door proof.
- await target.db.prepare("UPDATE operators SET setup_owner=1 WHERE id=? AND status='active'").bind(target.actor).run();
+export async function proveWorkflowCustody(source:CaptureFixture,target:Awaited<ReturnType<typeof launchFixture>>,data:WorkflowData,request:(path:string,body?:unknown,method?:string,cookie?:string)=>Promise<Response>){
+ const ownerId=await target.db.prepare("SELECT id FROM operators WHERE setup_owner=1 AND status='active'").first<string>('id');assert.ok(ownerId);
+ const ownerSession=await testAuth(target.db).createSession(ownerId),ownerCookie=`__Host-orbit_session=${ownerSession.token}`;
+ const asOwner=(path:string,body:unknown)=>request(path,body,'POST',ownerCookie);
+ if(ownerId!==target.actor){const session=await testAuth(target.db).createSession(target.actor);assert.equal((await request('/api/workflows/process',{},'POST',`__Host-orbit_session=${session.token}`)).status,403,'full receiver access alone never grants workflow authority');}
  const receipt=await target.db.prepare('SELECT * FROM workflow_record_writes WHERE id=?').bind(data.written.writeId).first<Record<string,unknown>>();
  const sourceReceipt=await source.db.prepare('SELECT * FROM workflow_record_writes WHERE id=?').bind(data.written.writeId).first<Record<string,unknown>>();
  const versions=(await target.db.prepare('SELECT workflow_id,version,status,preview_id,preview_json FROM workflow_versions WHERE workflow_id IN(?,?,?)').bind(data.delayed.id,data.written.id,data.approval.id).all<any>()).results;
@@ -85,12 +88,12 @@ export async function proveWorkflowCustody(source:CaptureFixture,target:Awaited<
  assert.equal(delayBefore,'Workflow delayed target');
  const beforeProcess=await target.db.prepare('SELECT job_title FROM contacts WHERE id=?').bind(data.written.recordId).first<string>('job_title');
  const amountBefore=await target.db.prepare('SELECT value_cents FROM opportunities WHERE id=?').bind(data.approval.recordId).first<number>('value_cents');
- await call('/api/workflows/process',{},'POST');
+ const processed=await asOwner('/api/workflows/process',{});assert.equal(processed.status,200,await processed.clone().text());
  assert.equal(await target.db.prepare('SELECT job_title FROM contacts WHERE id=?').bind(data.delayed.recordId).first<string>('job_title'),delayBefore);
  assert.equal(await target.db.prepare('SELECT job_title FROM contacts WHERE id=?').bind(data.written.recordId).first<string>('job_title'),beforeProcess);
  assert.equal(await target.db.prepare('SELECT value_cents FROM opportunities WHERE id=?').bind(data.approval.recordId).first<number>('value_cents'),amountBefore);
- const request=await target.app.request(`https://orbit.test/api/workflows/${data.written.id}/activate`,{method:'POST',headers:{Cookie:target.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({previewId:data.written.previewId})});
- assert.equal(request.status,409,'source preview cannot reactivate a restored workflow');
+ const activation=await asOwner(`/api/workflows/${data.written.id}/activate`,{previewId:data.written.previewId});
+ assert.equal(activation.status,409,'source preview cannot reactivate a restored workflow');
  const stillPaused=(await target.db.prepare('SELECT workflow_id,status,preview_id FROM workflow_versions WHERE workflow_id IN(?,?,?)').bind(data.delayed.id,data.written.id,data.approval.id).all<any>()).results;
  assert.ok(stillPaused.every(row=>row.status==='paused'&&row.preview_id===null),'processing and source preview do not resume source authority');
 }

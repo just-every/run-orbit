@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "6273934e97b81a86858168e13604ce808136402e8c3b88b478b8e54c156c51e5",
+      "sha256": "847e4e4189fafad5c97b9a4518193f6078e53887798cc7e875a98e0b49b732c3",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "5c94ab7dd1f1261c8eba619e78a5bf7b31c08955ba1cfa2e3e8a4b705566174b",
+      "sha256": "18664b0c1d56f40693720adbc0e5ec2428efb3b72538cc983cf51636470b72fe",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "596894323816fad1ff4e195aa1a6862c3515442992b596e1e7c1e24b2a0a17ab",
+      "sha256": "c2086092a62066be6fc9ed2eaad5df09af017a4b349377f7f003e108e45f8bc4",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -9683,7 +9683,7 @@
       "executable": false
     },
     "tests/support/current-sales-archive.ts": {
-      "sha256": "6b750e0dc0f97edb235f23c59b6dc45446dad10d64e5c8fdc8b67b75586c82c1",
+      "sha256": "105e845372717ef3357b47ba752f1788d7e809f27d8610e7ad76ae069525b9dd",
       "executable": false
     },
     "tests/support/current-sales-data.ts": {
@@ -9691,7 +9691,7 @@
       "executable": false
     },
     "tests/support/current-sales-local.ts": {
-      "sha256": "0cb0b502377d4867f0309825dbafb865b02245b2ca48514cc9e2f900b9598b6b",
+      "sha256": "3cfabbb57ebc5a23a5dd3af5f907b7837f6e5b282a234c588f82e62a90a2e6f8",
       "executable": false
     },
     "tests/support/d1-clock-witness.ts": {
@@ -9903,7 +9903,7 @@
       "executable": false
     },
     "tests/support/workflow-archive-proof.ts": {
-      "sha256": "08049ae5478440e2d20b9dcc589d7f0eb9dc8a7c5743421ed2d7762a6950bb59",
+      "sha256": "fd859e8fcd2371384151ab5215c038adbe5d94f20f7b6351662de5a9bc714187",
       "executable": false
     },
     "tests/support/workflow-form-journey.ts": {
