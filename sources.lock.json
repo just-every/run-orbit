@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "2b346fc263655fd854022e4f4d98d9d78a32962e38544c24fa371405fe632f03",
+      "sha256": "dd6dfc9c277fa05961d100d04263b0363dec1beb4d0e80530043cf270dcf667c",
       "executable": false
     },
     "AGENTS.md": {
@@ -675,7 +675,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "3c0ade2682d8dec0543516f7ecb4fb7570aa83caf7217d3f11dd39c35d20038f",
+      "sha256": "9c86c47cd8447c9b7a76000c273576582611aa59ace4701099afa32bcbabbe7a",
       "executable": false
     },
     "CLAUDE.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "0fec220a25a36790b3801a007ba12bc28a802d2c2e5060318b388707e0321cee",
+      "sha256": "e4a7495cd6cbdcc4961dd930d94e17725423040bf3e5558a095c6d9f3a720539",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "ec080a59a70bcccffc25bc8e65fc99bf4afcab3a6c87b027c7c6db6c5cec62fb",
+      "sha256": "be79ccd03a9efa11e31ef8524a3bff545fbc44a5d780061b47c6c579d34c474d",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -744,6 +744,14 @@
     },
     "docs/CONNECTED-APPLICATIONS.md": {
       "sha256": "a774c379028e0ce70941d0e820972e4d31fa8b113ec5d588db7ea96d1dcd873a",
+      "executable": false
+    },
+    "docs/contract/COVERAGE.json": {
+      "sha256": "ab3edeb9d29bf3f7df0ee74e76d046f4aaddd6a0c3c3ceff6c336b22f6144c9e",
+      "executable": false
+    },
+    "docs/contract/ID-MAP.json": {
+      "sha256": "89b4dbab0ea5d930743bb81e92f8ec974639223c36cb214e83463fa5ea0d7b1c",
       "executable": false
     },
     "docs/DELEGATION-PROTOCOL.md": {
@@ -1832,6 +1840,10 @@
     },
     "docs/verification-runtime-checks.md": {
       "sha256": "9a73e2557bebb601a2cb51896f68c1c4be80d4fc591da2233f1838253b432bdc",
+      "executable": false
+    },
+    "docs/verify.md": {
+      "sha256": "2b346fc263655fd854022e4f4d98d9d78a32962e38544c24fa371405fe632f03",
       "executable": false
     },
     "edition.json": {
@@ -4100,6 +4112,10 @@
     },
     "src/assets/design/right-arrow.svg": {
       "sha256": "9959499a056fed2c6147c1e98a1dc12be61f6df90fcf2da1ec02ab19acd2c878",
+      "executable": false
+    },
+    "src/base/contract-docs.mjs": {
+      "sha256": "d98e14f489c57f60446c2cc68310db09f298f7974d77026dbaa2c62868cc4838",
       "executable": false
     },
     "src/base/contract-filter.ts": {

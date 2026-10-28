@@ -1,10 +1,8 @@
-# CONTRACT.md — Orbit
+# CONTRACT.md — Orbit target product contract
 
 Target product, approved scope dated 16 October 2026. This is the sales CRM Orbit is building towards, not a description of only today's interface. Clause IDs are stable. Each clause has a public-door acceptance journey here and in [ACCEPTANCE.md](ACCEPTANCE.md); the final status table distinguishes `done`, `partial` and `missing` against current code.
 
-Existing bold published clauses retain the unchanged verifier's execution catalog. New target clauses use named headings and are explicit build obligations; they are not falsely presented as executed tests. `rer verify` continues gating every retained published ID. A green existing-code report cannot establish completion of the added target clauses; product acceptance requires every journey below. No test, manifest, workflow or product behavior changes in this documentation round. [BASELINE.md](BASELINE.md) remains applicable with only the named replacements in SIGNAL-009, DATA-001 and DELEGATE-001. Existing rate/capacity declarations in `seed.json` are current limits, not proof of target capacity; OUT-018 states the target sending capacity.
-
-## Product target — 16 October 2026
+## Product target
 
 Orbit is the owned sales CRM a US small sales team buys instead of HubSpot Sales Hub, Pipedrive or Salesforce Sales Cloud. This contract describes that product, which is what Orbit is being built towards, and marks how close the current code is (see [Status](#status)).
 
@@ -14,134 +12,685 @@ Orbit is the owned sales CRM a US small sales team buys instead of HubSpot Sales
 | Incumbents a buyer switches from | HubSpot Sales Hub, Pipedrive, Salesforce Sales Cloud (up-and-comers it must also beat: Attio, Day.ai, Twenty) |
 | First buyer | A US small-business sales manager and their reps, selling in USD, using Google Workspace or Microsoft 365, working across US timezones and US daylight-saving transitions |
 
-## Scope
+The primary journey: Exercise the capabilities and acceptance journeys below.
 
-Orbit is a full small-team Sales CRM: a US business can replace HubSpot Sales Hub, Pipedrive or Salesforce Sales Cloud for leads, contacts, accounts, configurable deal pipelines, complete activity capture, accountable follow-up, sequences, calling, forecasts and sales reporting. Attio, Day.ai and Twenty set the modern relationship/context baseline; licensed Clay enrichment complements it. First buyer: a US small-business sales manager and their reps, selling in USD, using Google Workspace or Microsoft 365, working across US timezones and US daylight-saving transitions.
+## How to read this contract
 
-A rep can migrate the old CRM, connect authorized mail and calendar, inspect the complete account/deal history, work a due task or sales sequence, call or prepare the next exact reviewed message, and see whether the buyer replied or the deal advanced. A manager configures data and permissions and inspects an explainable pipeline and forecast. Evidence-led NOW queues and daily briefs serve that entire sales job. Throughout this contract an operator may act only within the current TEAM-005 permission; existing wording such as any operator never overrides restricted-role, private-record or field-access rules.
+- This follows the RER contract standard.
+- Core, Agent surface and Later are reported separately.
+- Done means every acceptance point has recorded proof.
+- Field proof is kept in its register.
+- ACCEPTANCE.md and the homepage claims document are generated from this file.
 
-[Buoy](https://github.com/just-every/run-buoy) owns Gainsight/ChurnZero-style customer success after the sale. Orbit links the handoff and account context without becoming the customer-success platform. [Dial](https://github.com/just-every/run-dial) owns booking, [Nectar](https://github.com/just-every/run-nectar) billing, and [HappyToHelp](https://github.com/just-every/run-happytohelp) support. Their integration obligations below do not merge these products. The approved category list's unowned gaps are not new Orbit products.
+## Shared duties (Base)
 
-## Operators and workspace
+| Base duty | Duty | Delta clauses | Base journey |
+| --- | --- | --- | --- |
 
-- **TEAM-001 — Equal operators.** Every active full operator has equal access to the whole workspace: every record, field and action. An invited collaborator reaches only the records, fields and actions shared with them, and the server refuses the rest; a hidden control never stands in for that refusal. Restricted sellers, managers and analysts with role grants are TEAM-005. **Acceptance:** Sign in as two full operators and an invited collaborator; confirm both operators reach every record and action, and that the collaborator is refused records, fields and actions outside the share through UI and APIs.
-- **TEAM-002 — Management.** Any active full operator invites and removes operators in Settings. An invitation sends no email: the invited person requests their own sign-in link. Removing an operator revokes their sessions at once, and later sign-in requests for their address send no link. The setup owner can be removed only by themselves, and only while another active full operator exists. Invitations and removals are audited. Roles, teams and access review are TEAM-005; policy `operator.management.v1` may narrow who invites or removes without bypassing server-side checks. **Acceptance:** Invite an operator, sign in as them, remove them, and attempt a previously issued session and a new sign-in request; try to remove the setup owner as another operator and as the only operator.
-- **TEAM-003 — One workspace.** A deployment holds one business workspace. Its name, US operating timezone, USD default currency, working hours, stale and awaiting-response intervals, signal sources and free-mail domains are configured in Settings. Multiple sales pipelines are configured under OPP-009 inside that workspace; a second isolated deployment is a separate installation, not an extra pipeline. **Acceptance:** Complete first-run setup with US timezone and USD, change working hours and stale intervals, reload, and observe the persisted settings across records.
-- **TEAM-004 — Removal handover.** Removing an operator revokes their sessions, cancels their scheduled messages, and hands over or unassigns their open opportunities, open sales tasks and delegated handoffs. The removal review lists each of those sets, the remover chooses a receiving full operator or explicit unassignment for each, and the removal is refused until every set has a recorded choice or if the reviewed work changed meanwhile; revocation, cancellation and handover then happen together. Each handed-over opportunity gets one attributed owner-change timeline entry. Their notes, drafts, sent messages and timeline entries remain and stay attributed to them. Handing over owned contacts, leads, companies and custom-object records is RECORD-016, and active sequence enrollments are SEQUENCE-001. **Acceptance:** Remove an operator who owns an open opportunity, an open sales task, a delegated handoff and a scheduled message; choose a receiver for the opportunity and explicit unassignment for the rest, and verify revoked sessions, cancellation, the recorded choice per set, the attributed owner-change entry and attributed historical notes.
+## Published clauses
 
-## Customer records
+- `TEAM-001`: *Tier:* Core
+- `TEAM-002`: *Tier:* Core
+- `TEAM-003`: *Tier:* Core
+- `TEAM-004`: *Tier:* Core
+- `RECORD-001`: *Tier:* Core
+- `RECORD-002`: *Tier:* Core
+- `RECORD-003`: *Tier:* Core
+- `RECORD-004`: *Tier:* Core
+- `RECORD-005`: *Tier:* Core
+- `RECORD-006`: *Tier:* Core
+- `RECORD-007`: *Tier:* Core
+- `RECORD-008`: *Tier:* Core
+- `RECORD-009`: *Tier:* Core
+- `RECORD-010`: *Tier:* Core
+- `RECORD-011`: *Tier:* Core
+- `RECORD-012`: *Tier:* Core
+- `RECORD-013`: *Tier:* Core
+- `SIGNAL-001`: *Tier:* Core
+- `SIGNAL-002`: *Tier:* Core
+- `SIGNAL-003`: *Tier:* Core
+- `SIGNAL-004`: *Tier:* Core
+- `SIGNAL-005`: *Tier:* Core
+- `SIGNAL-006`: *Tier:* Core
+- `SIGNAL-007`: *Tier:* Core
+- `SIGNAL-008`: *Tier:* Core
+- `SIGNAL-009`: *Tier:* Core
+- `CAPTURE-001`: *Tier:* Core
+- `CAPTURE-002`: *Tier:* Core
+- `CAPTURE-003`: *Tier:* Core
+- `CAPTURE-004`: *Tier:* Core
+- `CAPTURE-005`: *Tier:* Core
+- `CAPTURE-006`: *Tier:* Core
+- `CAPTURE-007`: *Tier:* Core
+- `CAPTURE-008`: *Tier:* Core
+- `CAPTURE-009`: *Tier:* Core
+- `OPP-001`: *Tier:* Core
+- `OPP-002`: *Tier:* Core
+- `OPP-003`: *Tier:* Core
+- `OPP-004`: *Tier:* Core
+- `OPP-005`: *Tier:* Core
+- `OPP-006`: *Tier:* Core
+- `OPP-007`: *Tier:* Core
+- `OPP-008`: *Tier:* Core
+- `OPP-009`: *Tier:* Core
+- `ACTION-001`: *Tier:* Core
+- `ACTION-002`: *Tier:* Core
+- `ACTION-003`: *Tier:* Core
+- `ACTION-004`: *Tier:* Core
+- `ACTION-005`: *Tier:* Core
+- `OUT-001`: *Tier:* Core
+- `OUT-002`: *Tier:* Core
+- `OUT-003`: *Tier:* Core
+- `OUT-004`: *Tier:* Core
+- `OUT-005`: *Tier:* Core
+- `OUT-006`: *Tier:* Core
+- `OUT-007`: *Tier:* Core
+- `OUT-008`: *Tier:* Core
+- `OUT-009`: *Tier:* Core
+- `OUT-010`: *Tier:* Core
+- `OUT-011`: *Tier:* Core
+- `OUT-012`: *Tier:* Core
+- `AI-001`: *Tier:* Core
+- `AI-002`: *Tier:* Core
+- `AI-003`: *Tier:* Core
+- `AI-004`: *Tier:* Core
+- `BRIEF-001`: *Tier:* Core
+- `BRIEF-002`: *Tier:* Core
+- `BRIEF-003`: *Tier:* Core
+- `BRIEF-004`: *Tier:* Core
+- `BRIEF-005`: *Tier:* Core
+- `NOTIFY-001`: *Tier:* Core
+- `NOTIFY-002`: *Tier:* Core
+- `PUBLIC-001`: *Tier:* Core
+- `PUBLIC-002`: *Tier:* Core
+- `PUBLIC-003`: *Tier:* Core
+- `PUBLIC-004`: *Tier:* Core
+- `DATA-001`: *Tier:* Core
+- `DATA-002`: *Tier:* Core
+- `DELEGATE-001`: *Tier:* Core
 
-- **RECORD-001 — Core records.** Operators can create, edit, and delete contacts, companies, and opportunities. A contact requires a name or an email address and may also hold a phone number, job title, and timezone; a company requires a name and may hold one primary domain; an opportunity requires a title and holds a pipeline stage, a value in the workspace currency, zero or one owner, an expected close date, at most one company, and any number of contacts. Each entity listed in `seed.json → customFieldEntities` also holds custom fields. Contact, lead, company and custom-object owners, independent of opportunity owners, are defined in RECORD-016. **Acceptance:** Through authenticated Records, create and edit a company, contact and USD opportunity with custom fields; reload and read back the associations and values.
-- **RECORD-002 — Associations.** A contact has at most one primary company and can have further explicit company relationships under RECORD-015, and can belong to any number of opportunities. An opportunity with contacts names one primary as its default outreach recipient; a deal without a contact is never recommended an email follow-up. Changing an association moves no old timeline entry. **Acceptance:** Associate two contacts and a company with a deal, choose the primary recipient, change the associations, and confirm historical timeline entries stay put.
-- **RECORD-003 — Identity keys.** A contact's key is its email address lowercased with surrounding whitespace removed; a company's key is its primary domain lowercased with a leading `www.` removed. A domain on the configured free-mail list is never a company key. Creating or changing a record to a key another record already holds returns 409 with that record's ID and writes nothing. A record with no key is created and edited normally, and signals never link to it automatically. Orbit never merges records by name similarity, fuzzy match, or score. *Policy: `record.identity.v1`; default: the rules in this clause.* **Acceptance:** Create case/whitespace email and domain collisions through Records; require a 409 naming the existing identity and no extra row; exercise free-mail and keyless records.
-- **RECORD-004 — Duplicate merge.** Merging two contacts or two companies requires an operator to choose the surviving record and the value of every conflicting field. The request is bound to both reviewed record states; a changed record refuses the merge without modifying either record, requiring a new review. Contactability is not a reviewed choice: a do-not-contact stop that lands after review is inherited by the merge. The merge moves associations and timeline entries once, retires the other record's key as an alias so later signals carrying it link to the survivor, creates no signal, recommendation, or outreach, and records the retired ID in the audit trail. **Acceptance:** Review two duplicates, choose field values and survivor, then change one reviewed record and require refusal; review again and merge once, inheriting a concurrent stop.
-- **RECORD-005 — Timeline.** A record's timeline lists its signals, stage and owner changes, notes, logged calls and meetings, recommendations, drafts, outbound attempts, replies, and merges, most recent occurred time first with ties broken by ID. Every entry shows its occurred time, its recorded time, and the operator, source, or feature that created it. **Acceptance:** Open a record containing mail, meetings, notes, changes and a merge; inspect occurred/recorded times, source and actor, including out-of-order events.
-- **RECORD-006 — Search and views.** Operators can search contacts, companies, opportunities, and timeline text, and can filter opportunities by state, stage, owner, band, and queue. A first page holds at most 50 matches. Answering that first page within 500ms at the declared capacity in `seed.json` is a capacity target qualified separately; this release makes no capacity promise. **Acceptance:** Search records and timeline text, apply state/stage/owner/band/queue filters and verify results and the first-page cap; qualify the 500 ms p95 at declared capacity separately.
-- **RECORD-007 — Ownership.** An opportunity has zero or one owner. Any operator can assign, reassign or unassign it; each change appears on its timeline as an attributed owner change and leaves its score unchanged. *Policy: `opportunity.assignment.v1`; default: an opportunity an operator creates is unassigned.* An opportunity created from a published form's enquiry belongs to the operator who published the form. Owners of contacts, leads, companies and custom-object records, and notifications to a deal's new owner, are RECORD-016. **Acceptance:** Assign, reassign and unassign an opportunity through its native control; reload and inspect its attributed timeline without changing score.
-- **RECORD-008 — Import.** Full native operators move contacts, companies, deals and notes through explicit CSV mappings and a mandatory saved dry run. New contacts are held by default unless mapped explicit subscribed permission or an explicit per-import operator contactability attestation permits contact. Existing do-not-contact stops always win. All suppression and remaining absent-consent holds publish before customer creation or sending; malformed suppression rows block application. Source IDs and explicit associations are retained with inert provenance. Existing native identities are associated without replacing their fields. Every rejected row names its file, row and reason and creates no customer record. Unchanged re-imports reuse native records, associations and notes. Base import-kit records originals, current-session authority, atomic progress and conflict-preserving undo; undo removes or restores only owned, unchanged effects and keeps native edits, independent suppression and their dependency closure. No import approves outreach or grants operator access. Contact-owner and company-owner columns are mapped under RECORD-016. **Acceptance:** Move mapped HubSpot/Pipedrive CSV contacts, companies, deals, notes and suppression through saved preview and Apply; replay, change a source row, interrupt and undo while preserving native edits and stops.
-- **RECORD-009 — Duplicate candidates.** Orbit lists contacts sharing a name across companies, including contacts with no company, and companies sharing a name, as duplicate candidates; names are compared lowercased with runs of whitespace collapsed. A candidate is a review item only: nothing is merged, altered, or hidden until an operator completes RECORD-004. **Acceptance:** Create same-name contacts across companies and keyless records; review candidates without a mutation, then complete a chosen merge explicitly.
-- **RECORD-010 — Manual entries.** An operator can add a note to any record and log a call or meeting with an occurred time, duration, and attending contacts. A manual entry is attributed to its author, editable and deletable by any operator, never sent to a customer, and never contributes to a score. RECORD-017 adds @mentions of colleagues in these entries, and RECORD-018 attaches files to them. **Acceptance:** Log, edit and delete a note, call and meeting on a customer record; verify time, duration and attendees, and verify no score or external message changed.
-- **RECORD-011 — Related records.** A company page lists its contacts and its opportunities with each opportunity's stage, owner, and value, plus the total value of its open opportunities. A contact page lists their opportunities. Both reflect an association change on the next load. **Acceptance:** Open a company and contact, move a deal association, reload and compare linked deals, owner/stage and open-value total with the underlying records.
-- **RECORD-012 — Contactability.** A contact is contactable or do-not-contact. An operator can set do-not-contact at any time, and an unsubscribe event that identifies the person (OUT-012, OUT-020) or a permanent bounce also sets it, for that person only. An opt-out that cannot name one recipient of a multi-recipient message pauses those recipients' scheduled work rather than suppressing them (OUT-020). No operation sends customer email to a do-not-contact contact, the state is shown wherever the contact appears, and only an operator can clear it. A contact an operator creates by hand on a record page or through the Records API starts contactable unless the operator chooses do-not-contact or its address matches a retained suppression proof, in which case it starts do-not-contact; other doors state their own default (RECORD-008, CAPTURE-005, CAPTURE-012, FORM-001, OUT-019). **Acceptance:** Set do-not-contact, process unsubscribe and permanent-bounce events, then try immediate and scheduled sending; all remain blocked until an explicit current-state clear. Create a contact by hand and see it start contactable; recreate an erased contact's address and see it start do-not-contact.
-- **RECORD-013 — Deletion.** Deleting a company detaches its contacts and opportunities and deletes neither. Deleting an opportunity deletes its recommendations, drafts, and unsent scheduled messages, and leaves its contacts, its company, and their entries for messages already sent. Deleting a contact follows DATA-002. Each deletion is confirmed before it runs. **Acceptance:** Confirm each record deletion; company removal detaches dependents, deal removal preserves sent history, and contact removal performs the erasure journey.
+### Operators and workspace
 
-## Signals
+#### TEAM-001 — Equal operators
 
-- **SIGNAL-001 — Ingestion.** A valid event from a configured source, carrying that source's signature, becomes one normalized signal within 10 seconds. The signal keeps its source, source event ID, type, subject, occurred time, received time, payload hash, and linking basis, and is never edited afterwards. **Acceptance:** POST a signed configured-source event through its ingestion route and read one attributed signal and linked timeline within the bound.
-- **SIGNAL-002 — Signal types.** Orbit accepts form submissions; email sent, opened, replied, bounced, and unsubscribed events; meeting viewed, booked, completed, and canceled events; page views; chats; content downloads; and firmographic changes. A source can add a type namespaced to itself, which changes no existing type. An event whose type is neither standard nor namespaced is rejected with 400. **Acceptance:** Submit every standard type, a source-namespaced type and an unknown type; accept the first two classes and reject the unknown without writes.
-- **SIGNAL-003 — Idempotency.** Repeated or concurrent delivery of one `(source, source event ID)` produces one signal and one set of downstream evaluations. Reusing that identity with a different payload hash is rejected and recorded as an error on that source. **Acceptance:** Deliver identical events concurrently and after restart, then change the payload under the same source identity; retain one effect and a visible conflict.
-- **SIGNAL-004 — Linking.** A signal links first by an Orbit record ID the source supplies, then by RECORD-003. A uniquely linked signal appears once on that record's timeline. A signal with no unique match is held in the unlinked queue, where it changes no score; an operator linking it later appends it to the chosen record's timeline exactly once and triggers one evaluation. **Acceptance:** Ingest exact, ambiguous and unknown identities; verify linked and held queues, then manually link the held event once and inspect evaluation.
-- **SIGNAL-005 — Event time.** A late or out-of-order event keeps its occurred time, appears in that position on the timeline, and triggers a fresh evaluation. It never overwrites a record field that a later-occurring event wrote. **Acceptance:** Deliver older evidence after newer evidence and inspect chronological history and fresh evaluation without overwriting later record state.
-- **SIGNAL-006 — Evidence confidence.** Every signal carries one confidence: observed, when the customer acted deliberately (form submission, reply, booking, meeting, download, chat), or inferred, when a tool reported activity (email open, page view). An inferred signal alone cannot create an opportunity, produce a high band, or satisfy ACTION-001's evidence requirement. **Acceptance:** Compare open/page-view inference with observed reply/booking evidence; inferred activity alone cannot create a deal, high band or evidence-backed action.
-- **SIGNAL-007 — No tracking.** Orbit serves no tracking script, pixel, or cookie, and performs no fingerprinting or cross-site collection. A page-view, chat, or download signal is accepted only when its source supplies the visitor identity it already holds and the basis for holding it; without that basis the event is held unlinked under SIGNAL-004 and never becomes contact history. The one exception is OUT-016's disclosed, opt-in, per-message open and link-click tracking of Orbit-sent customer mail, which adds nothing to Orbit's public pages, its app or any other site. **Acceptance:** Inspect public assets/network and submit identity-free page/chat events; no Orbit tracker runs and unsupported identity stays outside customer history.
-- **SIGNAL-008 — Ingestion failure.** A missing or invalid signature returns 401, a request naming a source this deployment has not configured returns 403, and a payload over `seed.json → limits.signalPayloadBytes` returns 413; none of them writes anything. A persistence failure returns 503 and writes no partial signal, timeline entry, or evaluation, so the source can safely replay the same event identity. Each source shows its last accepted event, its last error, and its rejected-event count in settings. **Acceptance:** POST invalid signatures, unknown sources, oversized input and injected persistence failure; verify status, no partial writes, replay safety and source diagnostics.
-- **SIGNAL-009 — Signed sources.** This clause supersedes BASE-ACCESS-004 for the paths `/api/v1/signals/` and `/api/v1/mail/events/` only: a request there is authorized by a signature from a source or mail provider configured in this deployment (or, at a source’s `/automation` endpoint only, its current private secret in an HTTPS Authorization Bearer header) instead of an operator session, and may write only signals, delivery states, and their timeline entries. Native operator mutations require a valid operator session and a server-side ownership check. The separately scoped application-delegation boundary below is the only additional authorization exception. **Acceptance:** Exercise signed callbacks and HTTPS source-scoped automation; refuse invalid, disabled and rotated authority while retaining native session and ownership checks.
+**Requirement.** Every active full operator has equal access to the whole workspace: every record, field and action. An invited collaborator reaches only the records, fields and actions shared with them, and the server refuses the rest; a hidden control never stands in for that refusal. Restricted sellers, managers and analysts with role grants are TEAM-005.
 
-## Mail and calendar capture
+**Acceptance.**
+1. Sign in as two full operators and an invited collaborator; confirm both operators reach every record and action, and that the collaborator is refused records, fields and actions outside the share through UI and APIs.
 
-- **CAPTURE-001 — File capture.** An operator adds `.eml` files, an mbox or `.ics` calendar files on the Capture page. Each message or calendar event becomes one signal with the same columns, confidence and linking rules as SIGNAL-001 to SIGNAL-006, and keeps its original headers, body and non-inline attachments (RECORD-018) as the evidence the signal points to. Replay identity is the Message-ID, or the event UID with its SEQUENCE and what happened (booked, completed or canceled): adding the same item again changes nothing, and a changed copy with the same identity is refused and recorded on the capture source under SIGNAL-003. A calendar event keeps its original start and end times; a missing identity, a missing date or an unknown time zone is reported, never guessed. **Acceptance:** Upload mail and calendar files on Capture, replay and conflict them, then inspect original evidence and explicit invalid-date/identity/timezone errors.
-- **CAPTURE-002 — Known participants only.** A captured message or event is stored only when a participant other than an operator holds a contact's exact email key or a company's exact domain key (RECORD-003). Anything else is not stored, and the import reports how many items were not stored and why. An operator may keep unknown senders for one import; those signals wait in the unlinked queue under SIGNAL-004 and change no record. For a connected mailbox or calendar source (CAPTURE-010), an unknown external participant in a conversation with an operator becomes a held CAPTURE-012 new-prospect proposal instead of being discarded. **Acceptance:** Capture known and unknown participants; unknown mail is not retained by default and explicit one-import retention creates only held evidence.
-- **CAPTURE-003 — What capture applies at once.** A reply from the recipient of an Orbit send that carries that send's message headers attaches once to its opportunity under OUT-004. A delivery report for an Orbit send to that recipient records the bounce, and a permanent one sets do-not-contact under RECORD-012. A captured reply or booked meeting from a known contact cancels that contact's scheduled messages and marks their unsent drafts stale under OUT-007 and ACTION-005 in the same commit, while the proposals from the same message wait for review. An automatic reply stops nothing. **Acceptance:** Capture a threaded reply, booked meeting, permanent bounce and automatic reply; inspect atomic linking/stale/cancellation effects and verify automatic reply stops nothing.
-- **CAPTURE-004 — Reviewed proposals.** Everything else capture finds is a proposal that shows its evidence (sender, date, subject and the quoted lines it rests on): link this evidence to these records, create a contact at a known company by its exact email address, set a contact's name or phone, change an opportunity's next action, or set do-not-contact. A proposal that touches an existing value shows the current and proposed values side by side and is refused with 409 if the current value changed after it was offered. A person accepts, edits or declines each one. Accepting appends one timeline entry attributed to that person and to the capture source; a declined proposal is never offered again for the same evidence. Capture proposes no bought data and no identity guessed from a name, a lookalike address or a similar domain. **Acceptance:** Open evidence-backed field/link proposals, accept/edit/decline and repeat; a concurrent field edit refuses stale acceptance and a decline stays declined.
-- **CAPTURE-005 — Human boundary.** Capture never creates a draft, approves or starts a message, or makes a contact contactable. A contact created from a proposal is do-not-contact until an operator clears it under RECORD-012; the person accepting a CAPTURE-012 new-prospect proposal makes that choice explicitly in the same review, with the basis it records, and an unsubscribe request in a captured message is a do-not-contact proposal. Capture endpoints accept only a full native operator's session: a source signature, a delegation credential or an invited collaborator is refused, and the signed paths of SIGNAL-009 cannot write into a capture source. Mail delivered to an operator-created Orbit address (CAPTURE-008) is the only intake without a session; its authority is that address's private tag, and it writes only into that address's source. **Acceptance:** Attempt capture with native, collaborator, source and delegation authority; only permitted native/address intake succeeds, and a proposed new contact stays blocked.
-- **CAPTURE-006 — Capture sources (`capture.source.v1`).** A source declares the mail folders or labels and the calendars it may read, keeps its cursor exactly as its provider gave it (a Gmail history ID or a Microsoft Graph delta link, for example), and shows its state, last success, last error, items captured, items not stored and proposals waiting. A crash before a page's cursor is stored re-reads that page without duplicating anything. A revoked grant stops intake and shows its error until the source is reconnected; a provider outage records its error and leaves records, queues and manual work unchanged. Disconnecting stops intake at once, deletes the stored credential and keeps captured evidence, shown as coming from a disconnected source. The file import is the first adapter and has no cursor or credential. **Acceptance:** Connect each Google/Microsoft read adapter, choose folders/calendars, page and crash before cursor commit; resume without duplicates, revoke, reconnect and disconnect with visible errors.
-- **CAPTURE-007 — Captured data.** Captured evidence, including its attachments (RECORD-018), proposals and source state are part of every export and restore under DATA-001; source credentials never are, so a restored provider source must be reconnected. Erasing a contact erases the captured evidence and proposals that carry them under DATA-002. The audit trail keeps counts and anonymous keyed replay proofs with erasure times, without addresses, original item identifiers or content, so later intake cannot recreate erased originals. Private matching contexts and proofs travel in archives; restoring an owner's historical archive retains DATA-001's existing behavior. **Acceptance:** Export/restore captured evidence and proposals, verify no source credential travels, erase a contact and replay intake to prove erased originals stay fenced.
-- **CAPTURE-008 — Orbit address.** When the installation names a receiving mailbox (`CAPTURE_MAIL_ADDRESS`, reached through Cloudflare Email Routing or signed SendGrid Inbound Parse), an operator can create a private Orbit address on the Capture page with no provider console: the mailbox with a random tag, kept sealed like a credential and never in archives. Only mail whose envelope names that exact tagged address is read, so a BCC copy, a forwarded message and automatic forwarding all count, and anything else is refused without storing. Each accepted message follows CAPTURE-001 to CAPTURE-004 exactly as an imported `.eml` file, and a forwarded message counts as coming from the sender it names. A forwarding confirmation from Gmail or Google Workspace is shown to the operator with its code and link instead of being stored as evidence. Replacing the address stops the old one at once and keeps everything captured; a message larger than 10 MB is counted as not stored rather than bounced. **Acceptance:** Create and rotate a tagged Orbit address, forward/BCC mail and a Gmail confirmation; accept exact envelope tags only and count oversized mail without retaining it.
-- **CAPTURE-009 — Calendar link.** An operator can add a calendar by the private iCal address its own calendar offers (Google, Outlook or iCloud), with no provider console. Orbit checks the link returns a calendar before saving it, keeps it sealed like a credential, reads it only with GET, and refreshes it about every 15 minutes. Each event inside the last 180 days or the next year is one calendar item under CAPTURE-001 to CAPTURE-004; an unchanged calendar is not read again event by event. A link that stops working (refused, missing or no longer a calendar) stops that source and shows its error under CAPTURE-006 until the calendar is added again. **Acceptance:** Add a private ICS link, advance the refresh clock, change/cancel an event, then break the link; inspect dedupe, preserved times and the halted-source reason.
+#### TEAM-002 — Management
 
-## Opportunities and priority
+**Requirement.** Any active full operator invites and removes operators in Settings. An invitation sends no email: the invited person requests their own sign-in link. Removing an operator revokes their sessions at once, and later sign-in requests for their address send no link. The setup owner can be removed only by themselves, and only while another active full operator exists. Invitations and removals are audited. Roles, teams and access review are TEAM-005; policy `operator.management.v1` may narrow who invites or removes without bypassing server-side checks.
 
-- **OPP-001 — Lifecycle.** An opportunity is open, won, or lost. Closing it as won or lost records the operator, the time, and a reason, and removes it from NOW and NEXT. Later signals append to its timeline and never reopen it; only an operator can reopen it, which returns it to open without changing its stage or owner. **Acceptance:** Close a deal as won and lost with reasons, ingest later evidence, and explicitly reopen; inspect history and queue membership at every step.
-- **OPP-002 — Independent state.** Stage, owner, score, band, and queue state are independent fields. A score or band change never changes stage, owner, or won/lost state, and a stage change never changes a score. **Acceptance:** Change stage and owner and ingest scoring evidence; verify lifecycle, queue, stage, owner and score remain independently represented.
-- **OPP-003 — Evaluation.** A linked signal whose type carries a non-zero weight in the scoring policy, or a change to an open opportunity's stage, expected close date, value, owner, or associations, evaluates that opportunity within 30 seconds. The result records a 0–100 score, a low, medium, or high band, the evaluation time, the policy version, and each contributing signal's contribution. A closed opportunity is not evaluated. *Policy: `opportunity.scoring.v1`; default: each contributing signal's configured weight decays linearly to zero over the 30 days after its occurred time, the sum is clamped to 0–100, and 0–39 is low, 40–69 is medium, 70–100 is high.* **Acceptance:** Ingest weighted signals and edit an open opportunity; inspect computed score, band, contributions and policy version, including decay and closed-deal exclusion.
-- **OPP-004 — Explainability.** The opportunity view shows every signal the current score used, by ID, with its source, occurred time, confidence, and positive or negative contribution, and shows the reason for the current recommendation beside them. **Acceptance:** Open a scored deal and follow every contribution to its source evidence and current action reason.
-- **OPP-005 — Evaluation failure.** If an evaluation fails or returns output that does not validate, the previous score, band, and evidence remain readable and are marked stale with the time of the failed attempt. Orbit shows no score, band, or recommendation it did not compute. **Acceptance:** Cause evaluation to fail after a valid score; read the last value as stale with failure time and verify no fabricated replacement.
-- **OPP-006 — NOW ordering.** NOW lists the open opportunities that OPP-007 placed there, ordered by score descending, then by the occurred time of their most recent contributing signal descending, then by ID. Operators can filter it by owner, stage, and band. *Policy: `opportunity.prioritization.v1`; default: the ordering in this clause, and every factor it uses is shown in the opportunity view.* **Acceptance:** Create tied and untied NOW opportunities, filter by rep/stage/band and verify deterministic persisted ordering.
-- **OPP-007 — Queue entry.** An open opportunity enters NOW when its band rises, a customer form submission, reply or delivery problem arrives, a scheduled message cannot be sent, its expected close date passes, its last timeline entry becomes older than the stale interval, or an operator puts it there. It is in NEXT while it waits for a scheduled send or for a customer response inside the awaiting-response interval, and in neither when no action is pending. The stale interval defaults to 14 days and the awaiting-response interval to 5 working days, counted Monday to Friday in the workspace timezone. Every entry, move, and removal records its reason and actor on the timeline. **Acceptance:** Advance close/stale/awaiting clocks and deliver a form, reply, booking and send failure; inspect NOW/NEXT reasons and one timeline transition per event.
-- **OPP-008 — Manual completion.** An operator can complete or skip the current recommended action without sending anything, with an optional note; the outcome, note, and operator appear on the timeline. *Policy: `opportunity.next-action.v1`; default: evaluate once, keep the opportunity in NOW if that produces a new recommendation, and otherwise remove it from NOW and NEXT.* **Acceptance:** Complete or skip the current action without sending; inspect the recorded outcome and only a genuinely new recommendation.
-- **OPP-009 — Pipeline stages.** Operators configure multiple named pipelines with ordered stages, stage probabilities, required fields and stage-specific stale intervals. Deals retain their pipeline, stage and movement history; permitted users move a deal within or between pipelines with explicit destination mapping. Stage moves record previous stage, actor and time without silently changing lifecycle or score; a move by an AUTO-002 workflow applies the same required fields and records the workflow, its version and the trigger as actor. An occupied stage or pipeline cannot be deleted until its deals have been explicitly moved. Pipeline boards and list views expose the same records and filters. **Acceptance:** Create two pipelines with different ordered stages, move deals between stages and pipelines, and refuse deletion of an occupied stage; preserve move history and independent lifecycle.
+**Acceptance.**
+1. Invite an operator, sign in as them, remove them, and attempt a previously issued session and a new sign-in request; try to remove the setup owner as another operator and as the only operator.
 
-## Recommendations and drafts
+#### TEAM-003 — One workspace
 
-- **ACTION-001 — Current recommendation.** An open opportunity has at most one current recommended action, which is either an email follow-up or a manual action. It names the action, cites at least one observed signal by ID, and records the policy or model version that produced it. Its written explanation is generated under AI-001 and is absent when AI-003 applies. **Acceptance:** Read an open deal recommendation with observed evidence and version; disable AI and retain the named action/evidence without an invented explanation.
-- **ACTION-002 — Replacement.** A new contributing signal, a changed opportunity, a completed or skipped action, or an operator request replaces the current recommendation. The replaced one stays on the timeline marked superseded and can no longer be drafted from, sent, or completed. **Acceptance:** Supersede an action by new evidence or an operator change; the old action remains historical and cannot be drafted, sent or completed.
-- **ACTION-003 — Draft on request.** An operator can request a one-to-one email draft for the current recommendation. Generation reads the opportunity, the primary or operator-selected contact, that contact's company, the cited signals, the messages already exchanged with that contact, and the configured instructions, and sends nothing. *Policy: `outreach.instructions.v1`; default: at most 150 words, and no fact, price, discount, or commitment that a cited record or signal field does not carry.* OUT-017 offers the same draft request from a contact, lead or company record, with no recommendation or open opportunity, under the same preview and policy. **Acceptance:** Preview and request a draft from current customer evidence; inspect the unsent result for cited facts and configured instructions.
-- **ACTION-004 — Durable draft.** Recipient, subject, and body are visible and editable (the recipient being OUT-019's To, CC and BCC lists), and the draft is stored with its author, source recommendation, created time, and last edit time, and is readable after signing out and back in. **Acceptance:** Edit recipient/subject/body, sign out, return and read the saved draft with its original source and edit attribution.
-- **ACTION-005 — Stale draft.** A reply, meeting, unsubscribe, do-not-contact, permanent bounce, changed recipient, changed opportunity, or replaced recommendation marks a draft stale. A stale draft is shown as stale, and sending it returns 409 and writes no outbound message until an operator opens it, sees what changed, and confirms. **Acceptance:** Change the customer/deal or deliver a stop event after drafting; refuse sending until the operator sees and explicitly reviews current differences.
+**Requirement.** A deployment holds one business workspace. Its name, US operating timezone, USD default currency, working hours, stale and awaiting-response intervals, signal sources and free-mail domains are configured in Settings. Multiple sales pipelines are configured under OPP-009 inside that workspace; a second isolated deployment is a separate installation, not an extra pipeline.
 
-## One-to-one outreach
+**Acceptance.**
+1. Complete first-run setup with US timezone and USD, change working hours and stale intervals, reload, and observe the persisted settings across records.
 
-- **OUT-001 — Human send boundary.** No signal, score, recommendation, draft, job, or AI result can approve or start a customer message. A send requires an authenticated operator who has seen the exact recipient, subject, and body to invoke it, and a worker may dispatch only the unchanged content an operator approved for the schedule in OUT-009. For a message with several recipients, the exact recipient is the complete To, CC and BCC lists under OUT-019. For a SEQUENCE-003 batch, one approval covers each listed message whose exact recipient, subject and body the batch review rendered and made inspectable, and nothing else. No policy, adapter, extension, or setting removes this requirement. **Acceptance:** Attempt sending from ingestion, an agent and an unreviewed draft; only native exact-recipient/subject/body approval permits the unchanged message to dispatch.
-- **OUT-002 — Message states.** Customer mail is submitted through `mail.sender.v1`. An outbound message is draft, scheduled, queued, reconciling, accepted, delivered, bounced, failed, canceled, or delivery-unknown. The operator view calls a message sent only after the provider accepts it, and delivered only after a delivery event. **Acceptance:** Drive provider acceptance, delivery, bounce, failure and ambiguous responses; inspect each persisted state and truthful buyer-visible labels.
-- **OUT-003 — Send idempotency.** Repeated or concurrent use of one send idempotency key creates one outbound message and at most one provider submission. **Acceptance:** Submit the same approval key concurrently and after restart; observe one outbound intent and at most one provider submission.
-- **OUT-004 — Threading.** An outbound message carries message and reference headers that return the customer's reply to the same opportunity. A reply carrying those headers is attached once; a reply without them becomes an unlinked activity for operator review rather than a subject-based guess. For a message sent with no linked opportunity, or to a contact whose deals are won or lost, OUT-017 returns the reply by the same headers to that contact and their company. A reply from any external recipient of the message, To, CC or BCC, threads back the same way onto that replier's contact (OUT-019). **Acceptance:** Deliver correct, foreign and absent reply headers with sender checks; attach the correct reply once and hold ambiguous mail for review.
-- **OUT-005 — Accepted outcome.** When the provider accepts a submission, one local transaction records the reviewed content and provider message ID as a timeline activity, completes the recommendation, sets the next action to awaiting response, moves the opportunity from NOW to NEXT, and creates one notification for the responsible operator. A replayed provider event repeats none of it. This clause governs a send linked to an open opportunity; a send with no linked open opportunity records the same timeline activity and notification and opens OUT-017's contact-level awaiting-response obligation instead of a queue move. **Acceptance:** Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and notification.
-- **OUT-006 — Delivery failure.** A transient submission failure retries up to 5 times over 1 hour. A permanent failure or an exhausted retry returns the opportunity to NOW, notifies the responsible operator once, and shows the provider's reason on the message. A permanent bounce also sets the contact do-not-contact under RECORD-012. **Acceptance:** Fail a submission transiently, permanently and ambiguously; verify bounded known-unsent retries, visible exhausted failure, one notification and permanent-bounce stop.
-- **OUT-007 — Stop conditions.** A reply, a booked meeting, an unsubscribe, a do-not-contact, or a permanent bounce cancels that contact's scheduled messages and marks their unsent drafts stale under ACTION-005. A reply or a bounce ends awaiting response and returns the opportunity to NOW with the reply or the delivery problem as its next action. An OUT-020 unattributed stop request pauses, rather than cancels, the scheduled messages and sequence enrollments of every external recipient of its message until a user resolves it. **Acceptance:** Schedule a message, deliver reply/booking/unsubscribe/bounce or a manual stop, then advance dispatch; cancel the message and stale the draft without duplicates.
-- **OUT-008 — Quiet hours.** A draft can be written at any time. Sending outside 08:00–18:00 Monday to Friday in the contact's timezone, or the workspace timezone when the contact has none, requires a second confirmation naming the recipient's local time; a scheduled send waits for the next permitted minute. *Policy: `outreach.quiet-hours.v1`; default: the window in this clause, with no holiday calendar.* **Acceptance:** Approve outside recipient-local quiet hours, including daylight-saving boundaries; require the extra immediate confirmation or delay the schedule to the permitted window.
-- **OUT-009 — Scheduled send.** An operator can schedule one reviewed message for a future time and cancel it until it dispatches. Dispatch re-checks ACTION-005, RECORD-012, OUT-007, OUT-008, and OUT-010 against the current record and submits only the approved content; a stale or prohibited message is not sent, returns the opportunity to NOW, and shows the reason. **Acceptance:** Schedule/cancel approved content, then change its evidence, permission and recipient before dispatch; only unchanged current authorized content can reach the provider.
-- **OUT-010 — Sending limits.** Before submission Orbit checks the shared transport's rate and each sender's one-to-one budget under OUT-018 (`seed.json` limits: 100 messages a minute and 1,000 a user per rolling day by default). A message over a limit stays unsent and visible with the limit that stopped it and the time it may be sent; Orbit neither retries it silently nor merges it with another message. Sequence budgets and mailbox pacing are OUT-018's. **Acceptance:** Exceed the per-minute and per-operator daily limits before immediate and scheduled submission; retain a visible unsent item with its reason and next permitted time, and see no silent retry.
-- **OUT-011 — Unresolved submission.** Orbit records the outbound intent and its provider idempotency key durably before submitting. If the transaction in OUT-005 fails the message becomes reconciling; if the provider's response is a timeout it becomes delivery-unknown. In both states a job queries the provider by that idempotency key every 5 minutes, submits nothing again, and applies the OUT-005 outcome exactly once if acceptance is confirmed. With SendGrid the query uses its Email Activity API; on an account without that API each attempt records the lookup failure on the message. A SendGrid message still unresolved after 24 hours becomes a failure the operator can see, and notifies the responsible operator. Run Edit Run managed mail offers no lookup, so such a message stays delivery-unknown with that explanation, is never submitted again, and is left for the operator to reconcile. **Acceptance:** Lose the acceptance transaction or provider response; restart and reconcile the durable intent without submitting again, ending once as accepted or visibly unresolved.
-- **OUT-012 — Unsubscribe.** An outbound customer message that carries opt-out under OUT-020 carries `List-Unsubscribe` and `List-Unsubscribe-Post` headers handled by the mail provider, or by the installation origin for managed relay mail and OUT-013 mailbox sends. An unsubscribe event that identifies one recipient sets that contact do-not-contact under RECORD-012 within 60 seconds and cancels their scheduled messages. OUT-020 sets which message types carry opt-out (sequence email on and one-to-one email off by default) and the scope of an opt-out from a message with more than one external recipient. **Acceptance:** Inspect unsubscribe headers on actual submitted mail of a type set to carry opt-out, receive a signed unsubscribe and confirm future sending and scheduled work are suppressed.
+#### TEAM-004 — Removal handover
 
-## AI
+**Requirement.** Removing an operator revokes their sessions, cancels their scheduled messages, and hands over or unassigns their open opportunities, open sales tasks and delegated handoffs. The removal review lists each of those sets, the remover chooses a receiving full operator or explicit unassignment for each, and the removal is refused until every set has a recorded choice or if the reviewed work changed meanwhile; revocation, cancellation and handover then happen together. Each handed-over opportunity gets one attributed owner-change timeline entry. Their notes, drafts, sent messages and timeline entries remain and stay attributed to them. Handing over owned contacts, leads, companies and custom-object records is RECORD-016, and active sequence enrollments are SEQUENCE-001.
 
-- **AI-001 — Provider and input.** Recommendation explanations and email drafts go through `ai.provider.v1`. The request preview shows the operator every field, timeline entry, and instruction the request will carry, and nothing outside the preview is sent. **Acceptance:** Open an AI request preview, inspect all customer fields and instructions, then compare the provider-edge request with that exact unchanged preview.
-- **AI-002 — Output validation.** AI output must validate against its operation's schema and cite only evidence IDs present on the record. Output failing either check fails visibly and is never repaired with invented content or a semantic fallback. Only a transient transport failure is retried, at most twice within 30 seconds. **Acceptance:** Return invalid schema, foreign citations and a transport error at the provider edge; fail invalid content visibly with no invented repair and bound transport retry.
-- **AI-003 — Provider failure.** When the AI provider is unconfigured or unavailable, records, signal ingestion, linking, scoring, queue placement, search, manual updates, hand-written drafts, and sending all continue to work, and a recommendation still names its action and evidence. A generation request shows the failure and produces no explanation or draft. **Acceptance:** Leave AI unconfigured and fail a configured request; finish manual CRM, ingestion, scoring and handwritten outreach flows while generation reports failure.
-- **AI-004 — Cost.** Every AI call records provider, model, input and output tokens, feature, duration, status, and estimated cost. Operators can view totals by day and by feature in settings. **Acceptance:** Generate successful and failed requests, then inspect provider/model/tokens/duration/status/cost and day/feature totals in Settings.
+**Acceptance.**
+1. Remove an operator who owns an open opportunity, an open sales task, a delegated handoff and a scheduled message; choose a receiver for the opportunity and explicit unassignment for the rest, and verify revoked sessions, cancellation, the recorded choice per set, the attributed owner-change entry and attributed historical notes.
 
-## Daily brief and meeting plans
+### Customer records
 
-- **BRIEF-001 — Today's brief.** The top of the operator home is a brief built from records only, so it works with the AI provider unconfigured (AI-003). Per account (the company when one is known, otherwise the opportunity, otherwise the contact) it lists the customer signals linked since the operator last marked the brief seen, or, before they ever have, over the stale interval counted from the start of the day (UTC), with replies and booked, completed or canceled meetings first and observed signals kept apart from inferred ones (SIGNAL-006); the account's overdue promises (BRIEF-002); and application handoffs waiting for review (BRIEF-005). Signals that match no record and replies without thread headers are listed as unresolved identity, never guessed; captured replies and meetings waiting for a person to accept or decline their proposed link are listed as held for capture review. Every line shows its occurred time and links to the record, timeline entry, draft, task or review item it rests on; a line without such evidence is not shown. Marking the brief seen records the operator and the time the brief was built in the audit trail, so anything arriving later stays new. A day with nothing says so. The brief is for full native operators; invited collaborators cannot read it. **Acceptance:** Open Today with fresh, held and unlinked events; follow every line to evidence, mark seen, receive a later event and confirm it remains new.
-- **BRIEF-002 — Overdue promises.** Computed from records when the brief is built: an open internal next action (a handoff task a person wrote or accepted) or an open opportunity's next action past its due time; the latest customer reply on a record with no approved outbound message, captured sent message, logged call or meeting, or completed action on that record since, once the awaiting-response interval (TEAM-003, working days in the workspace timezone) has passed; a meeting completed within the last 120 days with no note, logged call or meeting, completed action, handoff, draft, approved message or captured sent message on its records after it; and a draft on an open opportunity left untouched longer than the workspace stale interval, with no outbound attempt and no customer stop event. A recommendation carries no due time and is never a promise by itself. **Acceptance:** Advance past each task/reply/meeting/draft deadline, complete the corresponding obligation and verify overdue lines appear and clear from actual records.
-- **BRIEF-003 — Account summary.** With a provider configured (AI-001), an operator can ask for a one-paragraph summary of one account's brief lines. The request preview shows every field sent, and the request is sent only unchanged from that preview; a brief that changed since the preview is refused with 409. Output must validate and cite only evidence IDs from that account's lines (AI-002); failing or uncited output is recorded (AI-004) and shown as failed, never repaired or replaced. Summaries are not stored, and a provider failure leaves the brief whole. **Acceptance:** Preview an account summary, alter the brief before generation and require refusal; generate on a fresh preview and reject uncited provider output.
-- **BRIEF-004 — Meeting plan.** A meeting signal linked to a record (booked, completed or canceled, from a source or from capture) has a plan page: its time exactly as the source gave it or the statement that none was given; attendees resolved by exact email key (RECORD-003) with their company and open opportunities; attendees with no record listed as unresolved, never guessed, with a way to create a contact with that exact address; the opportunities with value, stage and owner and their total open value; the last interactions on its records and the outstanding promises on them (BRIEF-002), each citing its timeline entry or record. The agenda and prep notes are saved as one note under RECORD-010 on the meeting's opportunity (or its company or contact) and edited in place. A person can turn a cited plan line into an internal next action on the meeting's opportunity that cites that line. Planning creates no draft and sends nothing (OUT-001). **Acceptance:** Open a linked meeting, inspect resolved/unresolved attendees and promises, save agenda/prep and create a cited internal task without customer outreach.
-- **BRIEF-005 — Agent handoff.** Within the scoped application delegation below and with no new scope: `crm.evidence.read` also reads the brief, narrowed to lines resting on selected records, and the plan of a meeting that is selected or linked to a selected record, narrowed to the selected records and the contacts and company of selected opportunities; a line or interaction resting only on opportunities outside the grant is left out even when it shares a contact or company, records outside the grant are left off the lines shown, and unresolved attendees show only their address. A line seen only through a signal selected by id keeps only selected records; one left with none is listed apart from the accounts and links to that signal's evidence read. A held line names a proposed contact or company only when it is selected, and a selected contact's line is filed under its company only when that company is selected too. `orbit.handoff.upsert` content may cite evidence IDs; each must be a signal, timeline entry, draft or task on that opportunity, its contacts or its company, or the write is refused with 422. A handoff an application wrote is a proposal, shown in the brief and on the opportunity with its cited evidence (or the statement that it cites none), until a person accepts it, saves an edited version or dismisses it; that review appends one timeline entry attributed to the person and naming the application. No handoff can approve or start a message (OUT-001). Without consent, without the write scope or after revocation an application cannot write, and revocation stops its reads at once. **Acceptance:** Read a selected-record brief/meeting through delegation, propose a cited handoff, review it natively and revoke the grant; no outside evidence or sending becomes available.
+#### RECORD-001 — Core records
 
-## Notifications
+**Requirement.** Operators can create, edit, and delete contacts, companies, and opportunities. A contact requires a name or an email address and may also hold a phone number, job title, and timezone; a company requires a name and may hold one primary domain; an opportunity requires a title and holds a pipeline stage, a value in the workspace currency, zero or one owner, an expected close date, at most one company, and any number of contacts. Each entity listed in `seed.json → customFieldEntities` also holds custom fields. Contact, lead, company and custom-object owners, independent of opportunity owners, are defined in RECORD-016.
 
-- **NOTIFY-001 — Responsible operator.** The responsible operator for an opportunity is its owner, or, when it is unassigned, the operator whose action appears most recently on its timeline. They receive one in-app notification when it enters NOW, when a customer reply arrives on it, and when one of its outbound messages fails, bounces, or becomes delivery-unknown. When an unassigned opportunity that no operator has acted on enters NOW, every operator is notified instead. Duplicate source or provider events add no notification. **Acceptance:** Trigger queue entry, reply and delivery problems on assigned and unassigned deals; verify responsible recipients and one notification on replay.
-- **NOTIFY-002 — Read state.** A notification is unread until the operator opens it or marks it read. The unread count updates within 5 seconds and never counts one event twice. **Acceptance:** Open and mark notifications read across sessions; inspect recipient-specific state and an unread count without duplicate events.
+**Acceptance.**
+1. Through authenticated Records, create and edit a company, contact and USD opportunity with custom fields; reload and read back the associations and values.
 
-## Public surfaces
+#### RECORD-002 — Associations
 
-- **PUBLIC-001 — Landing page.** GET / at the app origin returns the public Base Lobby without a session and links to native sign-in. The separate approved run site uses Orbit's public identity and images. Neither surface exposes this installation's contacts, companies, opportunities or signals. This target-contract round leaves the approved homepage and app interface untouched. **Acceptance:** Visit the public app Lobby and separate run site without a session; verify branding/sign-in links and no installation customer data in HTML or network.
-- **PUBLIC-002 — Safe demo.** When enabled in `ext/config.ts`, `/demo` presents a separate read-only example workspace with twelve fictional deals, relative dates, signals, drafts and a sent-message/reply story. It clearly labels these as examples before displaying them. No example data is written to the owner's database. The demo cannot load owner records, send mail, call AI, approve outreach or mutate data. Unknown demo paths return the styled not-found page. Disabling it returns 404. This deliberately replaces the former dedicated hosted-record walkthrough; all native session, exact-message review and customer-sending requirements remain unchanged. **Acceptance:** Browse the labeled fictional demo and unknown paths at desktop/mobile sizes; verify no owner-data read, D1 write, AI request or send.
-- **PUBLIC-003 — Unconfigured sign-in.** While no sign-in mail is configured, `GET /signin` answers without an operator session and states that sign-in email is unavailable. It presents no credential field, demo account, local-login action, or session bypass. **Acceptance:** Visit sign-in without configured mail/provider; see unavailable state and attempt to obtain a session without a valid native proof.
+**Requirement.** A contact has at most one primary company and can have further explicit company relationships under RECORD-015, and can belong to any number of opportunities. An opportunity with contacts names one primary as its default outreach recipient; a deal without a contact is never recommended an email follow-up. Changing an association moves no old timeline entry.
 
-- **PUBLIC-004 — Native sign-in.** Base operator-auth over Orbit's own operators: configured email-link delivery sends only to an existing active operator, gives the same request response for unknown and inactive addresses, and exchanges a hashed, single-use link, confirmed by POST from a read-only confirmation page within 15 minutes, for a secure native session. An optional linked identity provider (an Auth install) admits only existing operators and stays off until the owner turns it on. Return locations stay inside the operator app. Sign-out revokes that session. A missing or failed mail configuration cannot issue a session. Orbit’s sign-in path, brand and theme are declared in `src/identity.ts`. **Acceptance:** Request and confirm a native magic link, test unknown/inactive and expired/reused links, sign out and exercise optional linked identity without admitting new operators.
+**Acceptance.**
+1. Associate two contacts and a company with a deal, choose the primary recipient, change the associations, and confirm historical timeline entries stay put.
 
-## Data
+#### RECORD-003 — Identity keys
 
-- **DATA-001 — Export contents.** The buyer can export and restore contacts, companies, opportunities, associations, custom data, source definitions without secrets, signals and captured evidence, evaluations with policy versions, recommendations, drafts, outbound content/status, tasks, timeline, notifications, settings, reports and audit as versioned data. Both supported archive paths disclose their format and eligible receiving state. Installation-local sessions, identity proofs, source/OAuth credentials, delegation authority, private import originals/custody and collaborator/public-form authority do not travel; reconnection and renewed authorization are explicit. DATA-003 extends these guarantees to every target feature. This records Orbit's installation-authority replacement for literal BASE-DATA-001 credential portability; it does not claim that excluded private originals are portable product records. INTEGRATE-005’s Slack routing choices, mappings, notices and deletion history export as definitions and provenance without authority. Bot tokens, signing secrets and unconsumed action capabilities never travel; restored routes and mappings require fresh administrator confirmation. **Acceptance:** INTEGRATE-005’s Slack routing choices, mappings, notices and deletion history export as definitions and provenance without authority. Bot tokens, signing secrets and unconsumed action capabilities never travel; restored routes and mappings require fresh administrator confirmation. Exercise this inherited behavior through its public door.  Export through both supported archive doors, restore into eligible empty product state, export again and compare domain contents, captured evidence and audit with declared authority exclusions.
-- **DATA-002 — Contact erasure.** Within 5 minutes of an operator deleting a contact, their email addresses, signal payloads, drafts, message bodies, and the notifications naming them are absent from records, search results, exports, and every later AI or mail request. Only audit entries survive, with the contact's reference anonymized, as BASE-DATA-003 requires. Erasing a contact, company or deal redacts INTEGRATE-005’s stored notice content and issues tracked chat.delete requests for its bot messages, with each deletion outcome visible. Copies already held outside Slack cannot be recalled. **Acceptance:** Erasing a contact, company or deal redacts INTEGRATE-005’s stored notice content and issues tracked chat.delete requests for its bot messages, with each deletion outcome visible. Copies already held outside Slack cannot be recalled. Exercise this inherited behavior through its public door.  Delete a contact containing aliases, imported/captured mail and notes, drafts and transfer copies; verify search/export/AI/mail absence and anonymized audit within five minutes, including replay.
+**Requirement.** A contact's key is its email address lowercased with surrounding whitespace removed; a company's key is its primary domain lowercased with a leading `www.` removed. A domain on the configured free-mail list is never a company key. Creating or changing a record to a key another record already holds returns 409 with that record's ID and writes nothing. A record with no key is created and edited normally, and signals never link to it automatically. Orbit never merges records by name similarity, fuzzy match, or score. *Policy: `record.identity.v1`; default: the rules in this clause.*
 
-## Scoped application delegation
+**Acceptance.**
+1. Create case/whitespace email and domain collisions through Records; require a 409 naming the existing identity and no extra row; exercise free-mail and keyless records.
 
-### DELEGATE-001 — Selected application authority.
+#### RECORD-004 — Duplicate merge
 
-The 27 September native delegation outcome supersedes BASE-ACCESS-002 and
+**Requirement.** Merging two contacts or two companies requires an operator to choose the surviving record and the value of every conflicting field. The request is bound to both reviewed record states; a changed record refuses the merge without modifying either record, requiring a new review. Contactability is not a reviewed choice: a do-not-contact stop that lands after review is inherited by the merge. The merge moves associations and timeline entries once, retires the other record's key as an alias so later signals carrying it link to the survivor, creates no signal, recommendation, or outreach, and records the retired ID in the audit trail.
+
+**Acceptance.**
+1. Review two duplicates, choose field values and survivor, then change one reviewed record and require refusal; review again and merge once, inheriting a concurrent stop.
+
+#### RECORD-005 — Timeline
+
+**Requirement.** A record's timeline lists its signals, stage and owner changes, notes, logged calls and meetings, recommendations, drafts, outbound attempts, replies, and merges, most recent occurred time first with ties broken by ID. Every entry shows its occurred time, its recorded time, and the operator, source, or feature that created it.
+
+**Acceptance.**
+1. Open a record containing mail, meetings, notes, changes and a merge; inspect occurred/recorded times, source and actor, including out-of-order events.
+
+#### RECORD-006 — Search and views
+
+**Requirement.** Operators can search contacts, companies, opportunities, and timeline text, and can filter opportunities by state, stage, owner, band, and queue. A first page holds at most 50 matches. Answering that first page within 500ms at the declared capacity in `seed.json` is a capacity target qualified separately; this release makes no capacity promise.
+
+**Acceptance.**
+1. Search records and timeline text, apply state/stage/owner/band/queue filters and verify results and the first-page cap; qualify the 500 ms p95 at declared capacity separately.
+
+#### RECORD-007 — Ownership
+
+**Requirement.** An opportunity has zero or one owner. Any operator can assign, reassign or unassign it; each change appears on its timeline as an attributed owner change and leaves its score unchanged. *Policy: `opportunity.assignment.v1`; default: an opportunity an operator creates is unassigned.* An opportunity created from a published form's enquiry belongs to the operator who published the form. Owners of contacts, leads, companies and custom-object records, and notifications to a deal's new owner, are RECORD-016.
+
+**Acceptance.**
+1. Assign, reassign and unassign an opportunity through its native control; reload and inspect its attributed timeline without changing score.
+
+#### RECORD-008 — Import
+
+**Requirement.** Full native operators move contacts, companies, deals and notes through explicit CSV mappings and a mandatory saved dry run. New contacts are held by default unless mapped explicit subscribed permission or an explicit per-import operator contactability attestation permits contact. Existing do-not-contact stops always win. All suppression and remaining absent-consent holds publish before customer creation or sending; malformed suppression rows block application. Source IDs and explicit associations are retained with inert provenance. Existing native identities are associated without replacing their fields. Every rejected row names its file, row and reason and creates no customer record. Unchanged re-imports reuse native records, associations and notes. Base import-kit records originals, current-session authority, atomic progress and conflict-preserving undo; undo removes or restores only owned, unchanged effects and keeps native edits, independent suppression and their dependency closure. No import approves outreach or grants operator access. Contact-owner and company-owner columns are mapped under RECORD-016.
+
+**Acceptance.**
+1. Move mapped HubSpot/Pipedrive CSV contacts, companies, deals, notes and suppression through saved preview and Apply; replay, change a source row, interrupt and undo while preserving native edits and stops.
+
+#### RECORD-009 — Duplicate candidates
+
+**Requirement.** Orbit lists contacts sharing a name across companies, including contacts with no company, and companies sharing a name, as duplicate candidates; names are compared lowercased with runs of whitespace collapsed. A candidate is a review item only: nothing is merged, altered, or hidden until an operator completes RECORD-004.
+
+**Acceptance.**
+1. Create same-name contacts across companies and keyless records; review candidates without a mutation, then complete a chosen merge explicitly.
+
+#### RECORD-010 — Manual entries
+
+**Requirement.** An operator can add a note to any record and log a call or meeting with an occurred time, duration, and attending contacts. A manual entry is attributed to its author, editable and deletable by any operator, never sent to a customer, and never contributes to a score. RECORD-017 adds @mentions of colleagues in these entries, and RECORD-018 attaches files to them.
+
+**Acceptance.**
+1. Log, edit and delete a note, call and meeting on a customer record; verify time, duration and attendees, and verify no score or external message changed.
+
+#### RECORD-011 — Related records
+
+**Requirement.** A company page lists its contacts and its opportunities with each opportunity's stage, owner, and value, plus the total value of its open opportunities. A contact page lists their opportunities. Both reflect an association change on the next load.
+
+**Acceptance.**
+1. Open a company and contact, move a deal association, reload and compare linked deals, owner/stage and open-value total with the underlying records.
+
+#### RECORD-012 — Contactability
+
+**Requirement.** A contact is contactable or do-not-contact. An operator can set do-not-contact at any time, and an unsubscribe event that identifies the person (OUT-012, OUT-020) or a permanent bounce also sets it, for that person only. An opt-out that cannot name one recipient of a multi-recipient message pauses those recipients' scheduled work rather than suppressing them (OUT-020). No operation sends customer email to a do-not-contact contact, the state is shown wherever the contact appears, and only an operator can clear it. A contact an operator creates by hand on a record page or through the Records API starts contactable unless the operator chooses do-not-contact or its address matches a retained suppression proof, in which case it starts do-not-contact; other doors state their own default (RECORD-008, CAPTURE-005, CAPTURE-012, FORM-001, OUT-019).
+
+**Acceptance.**
+1. Set do-not-contact, process unsubscribe and permanent-bounce events, then try immediate and scheduled sending; all remain blocked until an explicit current-state clear.
+2. Create a contact by hand and see it start contactable; recreate an erased contact's address and see it start do-not-contact.
+
+#### RECORD-013 — Deletion
+
+**Requirement.** Deleting a company detaches its contacts and opportunities and deletes neither. Deleting an opportunity deletes its recommendations, drafts, and unsent scheduled messages, and leaves its contacts, its company, and their entries for messages already sent. Deleting a contact follows DATA-002. Each deletion is confirmed before it runs.
+
+**Acceptance.**
+1. Confirm each record deletion; company removal detaches dependents, deal removal preserves sent history, and contact removal performs the erasure journey.
+
+### Signals
+
+#### SIGNAL-001 — Ingestion
+
+**Requirement.** A valid event from a configured source, carrying that source's signature, becomes one normalized signal within 10 seconds. The signal keeps its source, source event ID, type, subject, occurred time, received time, payload hash, and linking basis, and is never edited afterwards.
+
+**Acceptance.**
+1. POST a signed configured-source event through its ingestion route and read one attributed signal and linked timeline within the bound.
+
+#### SIGNAL-002 — Signal types
+
+**Requirement.** Orbit accepts form submissions; email sent, opened, replied, bounced, and unsubscribed events; meeting viewed, booked, completed, and canceled events; page views; chats; content downloads; and firmographic changes. A source can add a type namespaced to itself, which changes no existing type. An event whose type is neither standard nor namespaced is rejected with 400.
+
+**Acceptance.**
+1. Submit every standard type, a source-namespaced type and an unknown type; accept the first two classes and reject the unknown without writes.
+
+#### SIGNAL-003 — Idempotency
+
+**Requirement.** Repeated or concurrent delivery of one `(source, source event ID)` produces one signal and one set of downstream evaluations. Reusing that identity with a different payload hash is rejected and recorded as an error on that source.
+
+**Acceptance.**
+1. Deliver identical events concurrently and after restart, then change the payload under the same source identity; retain one effect and a visible conflict.
+
+#### SIGNAL-004 — Linking
+
+**Requirement.** A signal links first by an Orbit record ID the source supplies, then by RECORD-003. A uniquely linked signal appears once on that record's timeline. A signal with no unique match is held in the unlinked queue, where it changes no score; an operator linking it later appends it to the chosen record's timeline exactly once and triggers one evaluation.
+
+**Acceptance.**
+1. Ingest exact, ambiguous and unknown identities; verify linked and held queues, then manually link the held event once and inspect evaluation.
+
+#### SIGNAL-005 — Event time
+
+**Requirement.** A late or out-of-order event keeps its occurred time, appears in that position on the timeline, and triggers a fresh evaluation. It never overwrites a record field that a later-occurring event wrote.
+
+**Acceptance.**
+1. Deliver older evidence after newer evidence and inspect chronological history and fresh evaluation without overwriting later record state.
+
+#### SIGNAL-006 — Evidence confidence
+
+**Requirement.** Every signal carries one confidence: observed, when the customer acted deliberately (form submission, reply, booking, meeting, download, chat), or inferred, when a tool reported activity (email open, page view). An inferred signal alone cannot create an opportunity, produce a high band, or satisfy ACTION-001's evidence requirement.
+
+**Acceptance.**
+1. Compare open/page-view inference with observed reply/booking evidence; inferred activity alone cannot create a deal, high band or evidence-backed action.
+
+#### SIGNAL-007 — No tracking
+
+**Requirement.** Orbit serves no tracking script, pixel, or cookie, and performs no fingerprinting or cross-site collection. A page-view, chat, or download signal is accepted only when its source supplies the visitor identity it already holds and the basis for holding it; without that basis the event is held unlinked under SIGNAL-004 and never becomes contact history. The one exception is OUT-016's disclosed, opt-in, per-message open and link-click tracking of Orbit-sent customer mail, which adds nothing to Orbit's public pages, its app or any other site.
+
+**Acceptance.**
+1. Inspect public assets/network and submit identity-free page/chat events; no Orbit tracker runs and unsupported identity stays outside customer history.
+
+#### SIGNAL-008 — Ingestion failure
+
+**Requirement.** A missing or invalid signature returns 401, a request naming a source this deployment has not configured returns 403, and a payload over `seed.json → limits.signalPayloadBytes` returns 413; none of them writes anything. A persistence failure returns 503 and writes no partial signal, timeline entry, or evaluation, so the source can safely replay the same event identity. Each source shows its last accepted event, its last error, and its rejected-event count in settings.
+
+**Acceptance.**
+1. POST invalid signatures, unknown sources, oversized input and injected persistence failure; verify status, no partial writes, replay safety and source diagnostics.
+
+#### SIGNAL-009 — Signed sources
+
+**Requirement.** This clause supersedes BASE-ACCESS-004 for the paths `/api/v1/signals/` and `/api/v1/mail/events/` only: a request there is authorized by a signature from a source or mail provider configured in this deployment (or, at a source’s `/automation` endpoint only, its current private secret in an HTTPS Authorization Bearer header) instead of an operator session, and may write only signals, delivery states, and their timeline entries. Native operator mutations require a valid operator session and a server-side ownership check. The separately scoped application-delegation boundary below is the only additional authorization exception.
+
+**Acceptance.**
+1. Exercise signed callbacks and HTTPS source-scoped automation; refuse invalid, disabled and rotated authority while retaining native session and ownership checks.
+
+### Mail and calendar capture
+
+#### CAPTURE-001 — File capture
+
+**Requirement.** An operator adds `.eml` files, an mbox or `.ics` calendar files on the Capture page. Each message or calendar event becomes one signal with the same columns, confidence and linking rules as SIGNAL-001 to SIGNAL-006, and keeps its original headers, body and non-inline attachments (RECORD-018) as the evidence the signal points to. Replay identity is the Message-ID, or the event UID with its SEQUENCE and what happened (booked, completed or canceled): adding the same item again changes nothing, and a changed copy with the same identity is refused and recorded on the capture source under SIGNAL-003. A calendar event keeps its original start and end times; a missing identity, a missing date or an unknown time zone is reported, never guessed.
+
+**Acceptance.**
+1. Upload mail and calendar files on Capture, replay and conflict them, then inspect original evidence and explicit invalid-date/identity/timezone errors.
+
+#### CAPTURE-002 — Known participants only
+
+**Requirement.** A captured message or event is stored only when a participant other than an operator holds a contact's exact email key or a company's exact domain key (RECORD-003). Anything else is not stored, and the import reports how many items were not stored and why. An operator may keep unknown senders for one import; those signals wait in the unlinked queue under SIGNAL-004 and change no record. For a connected mailbox or calendar source (CAPTURE-010), an unknown external participant in a conversation with an operator becomes a held CAPTURE-012 new-prospect proposal instead of being discarded.
+
+**Acceptance.**
+1. Capture known and unknown participants; unknown mail is not retained by default and explicit one-import retention creates only held evidence.
+
+#### CAPTURE-003 — What capture applies at once
+
+**Requirement.** A reply from the recipient of an Orbit send that carries that send's message headers attaches once to its opportunity under OUT-004. A delivery report for an Orbit send to that recipient records the bounce, and a permanent one sets do-not-contact under RECORD-012. A captured reply or booked meeting from a known contact cancels that contact's scheduled messages and marks their unsent drafts stale under OUT-007 and ACTION-005 in the same commit, while the proposals from the same message wait for review. An automatic reply stops nothing.
+
+**Acceptance.**
+1. Capture a threaded reply, booked meeting, permanent bounce and automatic reply; inspect atomic linking/stale/cancellation effects and verify automatic reply stops nothing.
+
+#### CAPTURE-004 — Reviewed proposals
+
+**Requirement.** Everything else capture finds is a proposal that shows its evidence (sender, date, subject and the quoted lines it rests on): link this evidence to these records, create a contact at a known company by its exact email address, set a contact's name or phone, change an opportunity's next action, or set do-not-contact. A proposal that touches an existing value shows the current and proposed values side by side and is refused with 409 if the current value changed after it was offered. A person accepts, edits or declines each one. Accepting appends one timeline entry attributed to that person and to the capture source; a declined proposal is never offered again for the same evidence. Capture proposes no bought data and no identity guessed from a name, a lookalike address or a similar domain.
+
+**Acceptance.**
+1. Open evidence-backed field/link proposals, accept/edit/decline and repeat; a concurrent field edit refuses stale acceptance and a decline stays declined.
+
+#### CAPTURE-005 — Human boundary
+
+**Requirement.** Capture never creates a draft, approves or starts a message, or makes a contact contactable. A contact created from a proposal is do-not-contact until an operator clears it under RECORD-012; the person accepting a CAPTURE-012 new-prospect proposal makes that choice explicitly in the same review, with the basis it records, and an unsubscribe request in a captured message is a do-not-contact proposal. Capture endpoints accept only a full native operator's session: a source signature, a delegation credential or an invited collaborator is refused, and the signed paths of SIGNAL-009 cannot write into a capture source. Mail delivered to an operator-created Orbit address (CAPTURE-008) is the only intake without a session; its authority is that address's private tag, and it writes only into that address's source.
+
+**Acceptance.**
+1. Attempt capture with native, collaborator, source and delegation authority; only permitted native/address intake succeeds, and a proposed new contact stays blocked.
+
+#### CAPTURE-006 — Capture sources (capture.source.v1)
+
+**Requirement.** A source declares the mail folders or labels and the calendars it may read, keeps its cursor exactly as its provider gave it (a Gmail history ID or a Microsoft Graph delta link, for example), and shows its state, last success, last error, items captured, items not stored and proposals waiting. A crash before a page's cursor is stored re-reads that page without duplicating anything. A revoked grant stops intake and shows its error until the source is reconnected; a provider outage records its error and leaves records, queues and manual work unchanged. Disconnecting stops intake at once, deletes the stored credential and keeps captured evidence, shown as coming from a disconnected source. The file import is the first adapter and has no cursor or credential.
+
+**Acceptance.**
+1. Connect each Google/Microsoft read adapter, choose folders/calendars, page and crash before cursor commit; resume without duplicates, revoke, reconnect and disconnect with visible errors.
+
+#### CAPTURE-007 — Captured data
+
+**Requirement.** Captured evidence, including its attachments (RECORD-018), proposals and source state are part of every export and restore under DATA-001; source credentials never are, so a restored provider source must be reconnected. Erasing a contact erases the captured evidence and proposals that carry them under DATA-002. The audit trail keeps counts and anonymous keyed replay proofs with erasure times, without addresses, original item identifiers or content, so later intake cannot recreate erased originals. Private matching contexts and proofs travel in archives; restoring an owner's historical archive retains DATA-001's existing behavior.
+
+**Acceptance.**
+1. Export/restore captured evidence and proposals, verify no source credential travels, erase a contact and replay intake to prove erased originals stay fenced.
+
+#### CAPTURE-008 — Orbit address
+
+**Requirement.** When the installation names a receiving mailbox (`CAPTURE_MAIL_ADDRESS`, reached through Cloudflare Email Routing or signed SendGrid Inbound Parse), an operator can create a private Orbit address on the Capture page with no provider console: the mailbox with a random tag, kept sealed like a credential and never in archives. Only mail whose envelope names that exact tagged address is read, so a BCC copy, a forwarded message and automatic forwarding all count, and anything else is refused without storing. Each accepted message follows CAPTURE-001 to CAPTURE-004 exactly as an imported `.eml` file, and a forwarded message counts as coming from the sender it names. A forwarding confirmation from Gmail or Google Workspace is shown to the operator with its code and link instead of being stored as evidence. Replacing the address stops the old one at once and keeps everything captured; a message larger than 10 MB is counted as not stored rather than bounced.
+
+**Acceptance.**
+1. Create and rotate a tagged Orbit address, forward/BCC mail and a Gmail confirmation; accept exact envelope tags only and count oversized mail without retaining it.
+
+#### CAPTURE-009 — Calendar link
+
+**Requirement.** An operator can add a calendar by the private iCal address its own calendar offers (Google, Outlook or iCloud), with no provider console. Orbit checks the link returns a calendar before saving it, keeps it sealed like a credential, reads it only with GET, and refreshes it about every 15 minutes. Each event inside the last 180 days or the next year is one calendar item under CAPTURE-001 to CAPTURE-004; an unchanged calendar is not read again event by event. A link that stops working (refused, missing or no longer a calendar) stops that source and shows its error under CAPTURE-006 until the calendar is added again.
+
+**Acceptance.**
+1. Add a private ICS link, advance the refresh clock, change/cancel an event, then break the link; inspect dedupe, preserved times and the halted-source reason.
+
+### Opportunities and priority
+
+#### OPP-001 — Lifecycle
+
+**Requirement.** An opportunity is open, won, or lost. Closing it as won or lost records the operator, the time, and a reason, and removes it from NOW and NEXT. Later signals append to its timeline and never reopen it; only an operator can reopen it, which returns it to open without changing its stage or owner.
+
+**Acceptance.**
+1. Close a deal as won and lost with reasons, ingest later evidence, and explicitly reopen; inspect history and queue membership at every step.
+
+#### OPP-002 — Independent state
+
+**Requirement.** Stage, owner, score, band, and queue state are independent fields. A score or band change never changes stage, owner, or won/lost state, and a stage change never changes a score.
+
+**Acceptance.**
+1. Change stage and owner and ingest scoring evidence; verify lifecycle, queue, stage, owner and score remain independently represented.
+
+#### OPP-003 — Evaluation
+
+**Requirement.** A linked signal whose type carries a non-zero weight in the scoring policy, or a change to an open opportunity's stage, expected close date, value, owner, or associations, evaluates that opportunity within 30 seconds. The result records a 0–100 score, a low, medium, or high band, the evaluation time, the policy version, and each contributing signal's contribution. A closed opportunity is not evaluated. *Policy: `opportunity.scoring.v1`; default: each contributing signal's configured weight decays linearly to zero over the 30 days after its occurred time, the sum is clamped to 0–100, and 0–39 is low, 40–69 is medium, 70–100 is high.*
+
+**Acceptance.**
+1. Ingest weighted signals and edit an open opportunity; inspect computed score, band, contributions and policy version, including decay and closed-deal exclusion.
+
+#### OPP-004 — Explainability
+
+**Requirement.** The opportunity view shows every signal the current score used, by ID, with its source, occurred time, confidence, and positive or negative contribution, and shows the reason for the current recommendation beside them.
+
+**Acceptance.**
+1. Open a scored deal and follow every contribution to its source evidence and current action reason.
+
+#### OPP-005 — Evaluation failure
+
+**Requirement.** If an evaluation fails or returns output that does not validate, the previous score, band, and evidence remain readable and are marked stale with the time of the failed attempt. Orbit shows no score, band, or recommendation it did not compute.
+
+**Acceptance.**
+1. Cause evaluation to fail after a valid score; read the last value as stale with failure time and verify no fabricated replacement.
+
+#### OPP-006 — NOW ordering
+
+**Requirement.** NOW lists the open opportunities that OPP-007 placed there, ordered by score descending, then by the occurred time of their most recent contributing signal descending, then by ID. Operators can filter it by owner, stage, and band. *Policy: `opportunity.prioritization.v1`; default: the ordering in this clause, and every factor it uses is shown in the opportunity view.*
+
+**Acceptance.**
+1. Create tied and untied NOW opportunities, filter by rep/stage/band and verify deterministic persisted ordering.
+
+#### OPP-007 — Queue entry
+
+**Requirement.** An open opportunity enters NOW when its band rises, a customer form submission, reply or delivery problem arrives, a scheduled message cannot be sent, its expected close date passes, its last timeline entry becomes older than the stale interval, or an operator puts it there. It is in NEXT while it waits for a scheduled send or for a customer response inside the awaiting-response interval, and in neither when no action is pending. The stale interval defaults to 14 days and the awaiting-response interval to 5 working days, counted Monday to Friday in the workspace timezone. Every entry, move, and removal records its reason and actor on the timeline.
+
+**Acceptance.**
+1. Advance close/stale/awaiting clocks and deliver a form, reply, booking and send failure; inspect NOW/NEXT reasons and one timeline transition per event.
+
+#### OPP-008 — Manual completion
+
+**Requirement.** An operator can complete or skip the current recommended action without sending anything, with an optional note; the outcome, note, and operator appear on the timeline. *Policy: `opportunity.next-action.v1`; default: evaluate once, keep the opportunity in NOW if that produces a new recommendation, and otherwise remove it from NOW and NEXT.*
+
+**Acceptance.**
+1. Complete or skip the current action without sending; inspect the recorded outcome and only a genuinely new recommendation.
+
+#### OPP-009 — Pipeline stages
+
+**Requirement.** Operators configure multiple named pipelines with ordered stages, stage probabilities, required fields and stage-specific stale intervals. Deals retain their pipeline, stage and movement history; permitted users move a deal within or between pipelines with explicit destination mapping. Stage moves record previous stage, actor and time without silently changing lifecycle or score; a move by an AUTO-002 workflow applies the same required fields and records the workflow, its version and the trigger as actor. An occupied stage or pipeline cannot be deleted until its deals have been explicitly moved. Pipeline boards and list views expose the same records and filters.
+
+**Acceptance.**
+1. Create two pipelines with different ordered stages, move deals between stages and pipelines, and refuse deletion of an occupied stage; preserve move history and independent lifecycle.
+
+### Recommendations and drafts
+
+#### ACTION-001 — Current recommendation
+
+**Requirement.** An open opportunity has at most one current recommended action, which is either an email follow-up or a manual action. It names the action, cites at least one observed signal by ID, and records the policy or model version that produced it. Its written explanation is generated under AI-001 and is absent when AI-003 applies.
+
+**Acceptance.**
+1. Read an open deal recommendation with observed evidence and version; disable AI and retain the named action/evidence without an invented explanation.
+
+#### ACTION-002 — Replacement
+
+**Requirement.** A new contributing signal, a changed opportunity, a completed or skipped action, or an operator request replaces the current recommendation. The replaced one stays on the timeline marked superseded and can no longer be drafted from, sent, or completed.
+
+**Acceptance.**
+1. Supersede an action by new evidence or an operator change; the old action remains historical and cannot be drafted, sent or completed.
+
+#### ACTION-003 — Draft on request
+
+**Requirement.** An operator can request a one-to-one email draft for the current recommendation. Generation reads the opportunity, the primary or operator-selected contact, that contact's company, the cited signals, the messages already exchanged with that contact, and the configured instructions, and sends nothing. *Policy: `outreach.instructions.v1`; default: at most 150 words, and no fact, price, discount, or commitment that a cited record or signal field does not carry.* OUT-017 offers the same draft request from a contact, lead or company record, with no recommendation or open opportunity, under the same preview and policy.
+
+**Acceptance.**
+1. Preview and request a draft from current customer evidence; inspect the unsent result for cited facts and configured instructions.
+
+#### ACTION-004 — Durable draft
+
+**Requirement.** Recipient, subject, and body are visible and editable (the recipient being OUT-019's To, CC and BCC lists), and the draft is stored with its author, source recommendation, created time, and last edit time, and is readable after signing out and back in.
+
+**Acceptance.**
+1. Edit recipient/subject/body, sign out, return and read the saved draft with its original source and edit attribution.
+
+#### ACTION-005 — Stale draft
+
+**Requirement.** A reply, meeting, unsubscribe, do-not-contact, permanent bounce, changed recipient, changed opportunity, or replaced recommendation marks a draft stale. A stale draft is shown as stale, and sending it returns 409 and writes no outbound message until an operator opens it, sees what changed, and confirms.
+
+**Acceptance.**
+1. Change the customer/deal or deliver a stop event after drafting; refuse sending until the operator sees and explicitly reviews current differences.
+
+### One-to-one outreach
+
+#### OUT-001 — Human send boundary
+
+**Requirement.** No signal, score, recommendation, draft, job, or AI result can approve or start a customer message. A send requires an authenticated operator who has seen the exact recipient, subject, and body to invoke it, and a worker may dispatch only the unchanged content an operator approved for the schedule in OUT-009. For a message with several recipients, the exact recipient is the complete To, CC and BCC lists under OUT-019. For a SEQUENCE-003 batch, one approval covers each listed message whose exact recipient, subject and body the batch review rendered and made inspectable, and nothing else. No policy, adapter, extension, or setting removes this requirement.
+
+**Acceptance.**
+1. Attempt sending from ingestion, an agent and an unreviewed draft; only native exact-recipient/subject/body approval permits the unchanged message to dispatch.
+
+#### OUT-002 — Message states
+
+**Requirement.** Customer mail is submitted through `mail.sender.v1`. An outbound message is draft, scheduled, queued, reconciling, accepted, delivered, bounced, failed, canceled, or delivery-unknown. The operator view calls a message sent only after the provider accepts it, and delivered only after a delivery event.
+
+**Acceptance.**
+1. Drive provider acceptance, delivery, bounce, failure and ambiguous responses; inspect each persisted state and truthful buyer-visible labels.
+
+#### OUT-003 — Send idempotency
+
+**Requirement.** Repeated or concurrent use of one send idempotency key creates one outbound message and at most one provider submission.
+
+**Acceptance.**
+1. Submit the same approval key concurrently and after restart; observe one outbound intent and at most one provider submission.
+
+#### OUT-004 — Threading
+
+**Requirement.** An outbound message carries message and reference headers that return the customer's reply to the same opportunity. A reply carrying those headers is attached once; a reply without them becomes an unlinked activity for operator review rather than a subject-based guess. For a message sent with no linked opportunity, or to a contact whose deals are won or lost, OUT-017 returns the reply by the same headers to that contact and their company. A reply from any external recipient of the message, To, CC or BCC, threads back the same way onto that replier's contact (OUT-019).
+
+**Acceptance.**
+1. Deliver correct, foreign and absent reply headers with sender checks; attach the correct reply once and hold ambiguous mail for review.
+
+#### OUT-005 — Accepted outcome
+
+**Requirement.** When the provider accepts a submission, one local transaction records the reviewed content and provider message ID as a timeline activity, completes the recommendation, sets the next action to awaiting response, moves the opportunity from NOW to NEXT, and creates one notification for the responsible operator. A replayed provider event repeats none of it. This clause governs a send linked to an open opportunity; a send with no linked open opportunity records the same timeline activity and notification and opens OUT-017's contact-level awaiting-response obligation instead of a queue move.
+
+**Acceptance.**
+1. Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and notification.
+
+#### OUT-006 — Delivery failure
+
+**Requirement.** A transient submission failure retries up to 5 times over 1 hour. A permanent failure or an exhausted retry returns the opportunity to NOW, notifies the responsible operator once, and shows the provider's reason on the message. A permanent bounce also sets the contact do-not-contact under RECORD-012.
+
+**Acceptance.**
+1. Fail a submission transiently, permanently and ambiguously; verify bounded known-unsent retries, visible exhausted failure, one notification and permanent-bounce stop.
+
+#### OUT-007 — Stop conditions
+
+**Requirement.** A reply, a booked meeting, an unsubscribe, a do-not-contact, or a permanent bounce cancels that contact's scheduled messages and marks their unsent drafts stale under ACTION-005. A reply or a bounce ends awaiting response and returns the opportunity to NOW with the reply or the delivery problem as its next action. An OUT-020 unattributed stop request pauses, rather than cancels, the scheduled messages and sequence enrollments of every external recipient of its message until a user resolves it.
+
+**Acceptance.**
+1. Schedule a message, deliver reply/booking/unsubscribe/bounce or a manual stop, then advance dispatch; cancel the message and stale the draft without duplicates.
+
+#### OUT-008 — Quiet hours
+
+**Requirement.** A draft can be written at any time. Sending outside 08:00–18:00 Monday to Friday in the contact's timezone, or the workspace timezone when the contact has none, requires a second confirmation naming the recipient's local time; a scheduled send waits for the next permitted minute. *Policy: `outreach.quiet-hours.v1`; default: the window in this clause, with no holiday calendar.*
+
+**Acceptance.**
+1. Approve outside recipient-local quiet hours, including daylight-saving boundaries; require the extra immediate confirmation or delay the schedule to the permitted window.
+
+#### OUT-009 — Scheduled send
+
+**Requirement.** An operator can schedule one reviewed message for a future time and cancel it until it dispatches. Dispatch re-checks ACTION-005, RECORD-012, OUT-007, OUT-008, and OUT-010 against the current record and submits only the approved content; a stale or prohibited message is not sent, returns the opportunity to NOW, and shows the reason.
+
+**Acceptance.**
+1. Schedule/cancel approved content, then change its evidence, permission and recipient before dispatch; only unchanged current authorized content can reach the provider.
+
+#### OUT-010 — Sending limits
+
+**Requirement.** Before submission Orbit checks the shared transport's rate and each sender's one-to-one budget under OUT-018 (`seed.json` limits: 100 messages a minute and 1,000 a user per rolling day by default). A message over a limit stays unsent and visible with the limit that stopped it and the time it may be sent; Orbit neither retries it silently nor merges it with another message. Sequence budgets and mailbox pacing are OUT-018's.
+
+**Acceptance.**
+1. Exceed the per-minute and per-operator daily limits before immediate and scheduled submission; retain a visible unsent item with its reason and next permitted time, and see no silent retry.
+
+#### OUT-011 — Unresolved submission
+
+**Requirement.** Orbit records the outbound intent and its provider idempotency key durably before submitting. If the transaction in OUT-005 fails the message becomes reconciling; if the provider's response is a timeout it becomes delivery-unknown. In both states a job queries the provider by that idempotency key every 5 minutes, submits nothing again, and applies the OUT-005 outcome exactly once if acceptance is confirmed. With SendGrid the query uses its Email Activity API; on an account without that API each attempt records the lookup failure on the message. A SendGrid message still unresolved after 24 hours becomes a failure the operator can see, and notifies the responsible operator. Run Edit Run managed mail offers no lookup, so such a message stays delivery-unknown with that explanation, is never submitted again, and is left for the operator to reconcile.
+
+**Acceptance.**
+1. Lose the acceptance transaction or provider response; restart and reconcile the durable intent without submitting again, ending once as accepted or visibly unresolved.
+
+#### OUT-012 — Unsubscribe
+
+**Requirement.** An outbound customer message that carries opt-out under OUT-020 carries `List-Unsubscribe` and `List-Unsubscribe-Post` headers handled by the mail provider, or by the installation origin for managed relay mail and OUT-013 mailbox sends. An unsubscribe event that identifies one recipient sets that contact do-not-contact under RECORD-012 within 60 seconds and cancels their scheduled messages. OUT-020 sets which message types carry opt-out (sequence email on and one-to-one email off by default) and the scope of an opt-out from a message with more than one external recipient.
+
+**Acceptance.**
+1. Inspect unsubscribe headers on actual submitted mail of a type set to carry opt-out, receive a signed unsubscribe and confirm future sending and scheduled work are suppressed.
+
+### AI
+
+#### AI-001 — Provider and input
+
+**Requirement.** Recommendation explanations and email drafts go through `ai.provider.v1`. The request preview shows the operator every field, timeline entry, and instruction the request will carry, and nothing outside the preview is sent.
+
+**Acceptance.**
+1. Open an AI request preview, inspect all customer fields and instructions, then compare the provider-edge request with that exact unchanged preview.
+
+#### AI-002 — Output validation
+
+**Requirement.** AI output must validate against its operation's schema and cite only evidence IDs present on the record. Output failing either check fails visibly and is never repaired with invented content or a semantic fallback. Only a transient transport failure is retried, at most twice within 30 seconds.
+
+**Acceptance.**
+1. Return invalid schema, foreign citations and a transport error at the provider edge; fail invalid content visibly with no invented repair and bound transport retry.
+
+#### AI-003 — Provider failure
+
+**Requirement.** When the AI provider is unconfigured or unavailable, records, signal ingestion, linking, scoring, queue placement, search, manual updates, hand-written drafts, and sending all continue to work, and a recommendation still names its action and evidence. A generation request shows the failure and produces no explanation or draft.
+
+**Acceptance.**
+1. Leave AI unconfigured and fail a configured request; finish manual CRM, ingestion, scoring and handwritten outreach flows while generation reports failure.
+
+#### AI-004 — Cost
+
+**Requirement.** Every AI call records provider, model, input and output tokens, feature, duration, status, and estimated cost. Operators can view totals by day and by feature in settings.
+
+**Acceptance.**
+1. Generate successful and failed requests, then inspect provider/model/tokens/duration/status/cost and day/feature totals in Settings.
+
+### Daily brief and meeting plans
+
+#### BRIEF-001 — Today's brief
+
+**Requirement.** The top of the operator home is a brief built from records only, so it works with the AI provider unconfigured (AI-003). Per account (the company when one is known, otherwise the opportunity, otherwise the contact) it lists the customer signals linked since the operator last marked the brief seen, or, before they ever have, over the stale interval counted from the start of the day (UTC), with replies and booked, completed or canceled meetings first and observed signals kept apart from inferred ones (SIGNAL-006); the account's overdue promises (BRIEF-002); and application handoffs waiting for review (BRIEF-005). Signals that match no record and replies without thread headers are listed as unresolved identity, never guessed; captured replies and meetings waiting for a person to accept or decline their proposed link are listed as held for capture review. Every line shows its occurred time and links to the record, timeline entry, draft, task or review item it rests on; a line without such evidence is not shown. Marking the brief seen records the operator and the time the brief was built in the audit trail, so anything arriving later stays new. A day with nothing says so. The brief is for full native operators; invited collaborators cannot read it.
+
+**Acceptance.**
+1. Open Today with fresh, held and unlinked events; follow every line to evidence, mark seen, receive a later event and confirm it remains new.
+
+#### BRIEF-002 — Overdue promises
+
+**Requirement.** Computed from records when the brief is built: an open internal next action (a handoff task a person wrote or accepted) or an open opportunity's next action past its due time; the latest customer reply on a record with no approved outbound message, captured sent message, logged call or meeting, or completed action on that record since, once the awaiting-response interval (TEAM-003, working days in the workspace timezone) has passed; a meeting completed within the last 120 days with no note, logged call or meeting, completed action, handoff, draft, approved message or captured sent message on its records after it; and a draft on an open opportunity left untouched longer than the workspace stale interval, with no outbound attempt and no customer stop event. A recommendation carries no due time and is never a promise by itself.
+
+**Acceptance.**
+1. Advance past each task/reply/meeting/draft deadline, complete the corresponding obligation and verify overdue lines appear and clear from actual records.
+
+#### BRIEF-003 — Account summary
+
+**Requirement.** With a provider configured (AI-001), an operator can ask for a one-paragraph summary of one account's brief lines. The request preview shows every field sent, and the request is sent only unchanged from that preview; a brief that changed since the preview is refused with 409. Output must validate and cite only evidence IDs from that account's lines (AI-002); failing or uncited output is recorded (AI-004) and shown as failed, never repaired or replaced. Summaries are not stored, and a provider failure leaves the brief whole.
+
+**Acceptance.**
+1. Preview an account summary, alter the brief before generation and require refusal; generate on a fresh preview and reject uncited provider output.
+
+#### BRIEF-004 — Meeting plan
+
+**Requirement.** A meeting signal linked to a record (booked, completed or canceled, from a source or from capture) has a plan page: its time exactly as the source gave it or the statement that none was given; attendees resolved by exact email key (RECORD-003) with their company and open opportunities; attendees with no record listed as unresolved, never guessed, with a way to create a contact with that exact address; the opportunities with value, stage and owner and their total open value; the last interactions on its records and the outstanding promises on them (BRIEF-002), each citing its timeline entry or record. The agenda and prep notes are saved as one note under RECORD-010 on the meeting's opportunity (or its company or contact) and edited in place. A person can turn a cited plan line into an internal next action on the meeting's opportunity that cites that line. Planning creates no draft and sends nothing (OUT-001).
+
+**Acceptance.**
+1. Open a linked meeting, inspect resolved/unresolved attendees and promises, save agenda/prep and create a cited internal task without customer outreach.
+
+#### BRIEF-005 — Agent handoff
+
+**Requirement.** Within the scoped application delegation below and with no new scope: `crm.evidence.read` also reads the brief, narrowed to lines resting on selected records, and the plan of a meeting that is selected or linked to a selected record, narrowed to the selected records and the contacts and company of selected opportunities; a line or interaction resting only on opportunities outside the grant is left out even when it shares a contact or company, records outside the grant are left off the lines shown, and unresolved attendees show only their address. A line seen only through a signal selected by id keeps only selected records; one left with none is listed apart from the accounts and links to that signal's evidence read. A held line names a proposed contact or company only when it is selected, and a selected contact's line is filed under its company only when that company is selected too. `orbit.handoff.upsert` content may cite evidence IDs; each must be a signal, timeline entry, draft or task on that opportunity, its contacts or its company, or the write is refused with 422. A handoff an application wrote is a proposal, shown in the brief and on the opportunity with its cited evidence (or the statement that it cites none), until a person accepts it, saves an edited version or dismisses it; that review appends one timeline entry attributed to the person and naming the application. No handoff can approve or start a message (OUT-001). Without consent, without the write scope or after revocation an application cannot write, and revocation stops its reads at once.
+
+**Acceptance.**
+1. Read a selected-record brief/meeting through delegation, propose a cited handoff, review it natively and revoke the grant; no outside evidence or sending becomes available.
+
+### Notifications
+
+#### NOTIFY-001 — Responsible operator
+
+**Requirement.** The responsible operator for an opportunity is its owner, or, when it is unassigned, the operator whose action appears most recently on its timeline. They receive one in-app notification when it enters NOW, when a customer reply arrives on it, and when one of its outbound messages fails, bounces, or becomes delivery-unknown. When an unassigned opportunity that no operator has acted on enters NOW, every operator is notified instead. Duplicate source or provider events add no notification.
+
+**Acceptance.**
+1. Trigger queue entry, reply and delivery problems on assigned and unassigned deals; verify responsible recipients and one notification on replay.
+
+#### NOTIFY-002 — Read state
+
+**Requirement.** A notification is unread until the operator opens it or marks it read. The unread count updates within 5 seconds and never counts one event twice.
+
+**Acceptance.**
+1. Open and mark notifications read across sessions; inspect recipient-specific state and an unread count without duplicate events.
+
+### Public surfaces
+
+#### PUBLIC-001 — Landing page
+
+**Requirement.** GET / at the app origin returns the public Base Lobby without a session and links to native sign-in. The separate approved run site uses Orbit's public identity and images. Neither surface exposes this installation's contacts, companies, opportunities or signals. This target-contract round leaves the approved homepage and app interface untouched.
+
+**Acceptance.**
+1. Visit the public app Lobby and separate run site without a session; verify branding/sign-in links and no installation customer data in HTML or network.
+
+#### PUBLIC-002 — Safe demo
+
+**Requirement.** When enabled in `ext/config.ts`, `/demo` presents a separate read-only example workspace with twelve fictional deals, relative dates, signals, drafts and a sent-message/reply story. It clearly labels these as examples before displaying them. No example data is written to the owner's database. The demo cannot load owner records, send mail, call AI, approve outreach or mutate data. Unknown demo paths return the styled not-found page. Disabling it returns 404. This deliberately replaces the former dedicated hosted-record walkthrough; all native session, exact-message review and customer-sending requirements remain unchanged.
+
+**Acceptance.**
+1. Browse the labeled fictional demo and unknown paths at desktop/mobile sizes; verify no owner-data read, D1 write, AI request or send.
+
+#### PUBLIC-003 — Unconfigured sign-in
+
+**Requirement.** While no sign-in mail is configured, `GET /signin` answers without an operator session and states that sign-in email is unavailable. It presents no credential field, demo account, local-login action, or session bypass.
+
+**Acceptance.**
+1. Visit sign-in without configured mail/provider; see unavailable state and attempt to obtain a session without a valid native proof.
+
+#### PUBLIC-004 — Native sign-in
+
+**Requirement.** Base operator-auth over Orbit's own operators: configured email-link delivery sends only to an existing active operator, gives the same request response for unknown and inactive addresses, and exchanges a hashed, single-use link, confirmed by POST from a read-only confirmation page within 15 minutes, for a secure native session. An optional linked identity provider (an Auth install) admits only existing operators and stays off until the owner turns it on. Return locations stay inside the operator app. Sign-out revokes that session. A missing or failed mail configuration cannot issue a session. Orbit’s sign-in path, brand and theme are declared in `src/identity.ts`.
+
+**Acceptance.**
+1. Request and confirm a native magic link, test unknown/inactive and expired/reused links, sign out and exercise optional linked identity without admitting new operators.
+
+### Data
+
+#### DATA-001 — Export contents
+
+**Requirement.** The buyer can export and restore contacts, companies, opportunities, associations, custom data, source definitions without secrets, signals and captured evidence, evaluations with policy versions, recommendations, drafts, outbound content/status, tasks, timeline, notifications, settings, reports and audit as versioned data. Both supported archive paths disclose their format and eligible receiving state. Installation-local sessions, identity proofs, source/OAuth credentials, delegation authority, private import originals/custody and collaborator/public-form authority do not travel; reconnection and renewed authorization are explicit. DATA-003 extends these guarantees to every target feature. This records Orbit's installation-authority replacement for literal BASE-DATA-001 credential portability; it does not claim that excluded private originals are portable product records. INTEGRATE-005’s Slack routing choices, mappings, notices and deletion history export as definitions and provenance without authority. Bot tokens, signing secrets and unconsumed action capabilities never travel; restored routes and mappings require fresh administrator confirmation.
+
+**Acceptance.**
+1. INTEGRATE-005’s Slack routing choices, mappings, notices and deletion history export as definitions and provenance without authority.
+2. Bot tokens, signing secrets and unconsumed action capabilities never travel; restored routes and mappings require fresh administrator confirmation.
+3. Exercise this inherited behavior through its public door.
+4. Export through both supported archive doors, restore into eligible empty product state, export again and compare domain contents, captured evidence and audit with declared authority exclusions.
+
+#### DATA-002 — Contact erasure
+
+**Requirement.** Within 5 minutes of an operator deleting a contact, their email addresses, signal payloads, drafts, message bodies, and the notifications naming them are absent from records, search results, exports, and every later AI or mail request. Only audit entries survive, with the contact's reference anonymized, as BASE-DATA-003 requires. Erasing a contact, company or deal redacts INTEGRATE-005’s stored notice content and issues tracked chat.delete requests for its bot messages, with each deletion outcome visible. Copies already held outside Slack cannot be recalled.
+
+**Acceptance.**
+1. Erasing a contact, company or deal redacts INTEGRATE-005’s stored notice content and issues tracked chat.delete requests for its bot messages, with each deletion outcome visible.
+2. Copies already held outside Slack cannot be recalled.
+3. Exercise this inherited behavior through its public door.
+4. Delete a contact containing aliases, imported/captured mail and notes, drafts and transfer copies; verify search/export/AI/mail absence and anonymized audit within five minutes, including replay.
+
+### Scoped application delegation
+
+#### DELEGATE-001 — Selected application authority
+
+**Requirement.** The 27 September native delegation outcome supersedes BASE-ACCESS-002 and
 BASE-ACCESS-004 only for `/api/delegation/v1/`: an allowlisted application exchanges
 a single-use consent code bound to the native operator, workspace, exact callback,
 PKCE challenge, scopes and selected targets for a bearer credential expiring within
@@ -162,15 +711,21 @@ and native-browser regressions as well as all retained contract gates.
 
 An INTEGRATE-005 Slack mapping confers no delegation or outreach authority. Its acknowledgment never accepts an application-proposed handoff; its only writes are acknowledgment and an attributed internal task under current native access.
 
-**Acceptance:** An INTEGRATE-005 Slack mapping confers no delegation or outreach authority. Its acknowledgment never accepts an application-proposed handoff; its only writes are acknowledgment and an attributed internal task under current native access. Exercise this inherited behavior through its public door.  Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority.
+**Acceptance.**
+1. An INTEGRATE-005 Slack mapping confers no delegation or outreach authority.
+2. Its acknowledgment never accepts an application-proposed handoff; its only writes are acknowledgment and an attributed internal task under current native access.
+3. Exercise this inherited behavior through its public door.
+4. Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority.
 
 ## Target clauses
 
 ### Permissions, records and migration
 
-#### TEAM-005 — Sales roles and private records.
+#### TEAM-005 — Sales roles and private records
 
-An owner assigns sales-admin, manager, seller and read-only roles, teams and record ownership. Managers may see their team; a seller can be restricted to assigned/shared records. Assigned records are exactly the records that seller owns: opportunities under RECORD-007, and contacts, leads, companies and custom-object records under RECORD-016. A restricted role may additionally see records explicitly shared with the seller or their team and, when the administrator enables it for that role, the contacts and company associated with a deal they own. A manager's team scope is the records owned by the team's members. Reassigning an owner changes who may see the record on the next request. Field-level grants protect sensitive amounts, notes, mail and files (RECORD-018). Import/export, forecast override, source connection, deletion, workflow authoring and activation, sequence authoring and sequence enrollment have distinct permissions. By default only sales-admins activate workflows (AUTO-001), whose record writes stay within the activating user's grants (AUTO-002), and sales-admin, manager and seller roles may author sequences (SEQUENCE-001). Current authorization applies to UI, search, APIs, reports, AI input and exports; changes and revocation take effect on the next request, and access changes are audited.
+*Tier:* Core
+
+**Requirement.** An owner assigns sales-admin, manager, seller and read-only roles, teams and record ownership. Managers may see their team; a seller can be restricted to assigned/shared records. Assigned records are exactly the records that seller owns: opportunities under RECORD-007, and contacts, leads, companies and custom-object records under RECORD-016. A restricted role may additionally see records explicitly shared with the seller or their team and, when the administrator enables it for that role, the contacts and company associated with a deal they own. A manager's team scope is the records owned by the team's members. Reassigning an owner changes who may see the record on the next request. Field-level grants protect sensitive amounts, notes, mail and files (RECORD-018). Import/export, forecast override, source connection, deletion, workflow authoring and activation, sequence authoring and sequence enrollment have distinct permissions. By default only sales-admins activate workflows (AUTO-001), whose record writes stay within the activating user's grants (AUTO-002), and sales-admin, manager and seller roles may author sequences (SEQUENCE-001). Current authorization applies to UI, search, APIs, reports, AI input and exports; changes and revocation take effect on the next request, and access changes are audited.
 
 Before teams ship, they must carry FORECAST-001’s real team quota membership, team-scoped forecast and override permissions, and rep/team quota-attainment acceptance. The installation owner administers forecast inputs and per-rep quotas until then.
 
@@ -190,23 +745,39 @@ INTEGRATE-005’s Slack mappings confer no role, record or field access. Permiss
 
 Before teams and restricted sales roles ship, TEAM-005 carries REPORT-002's Team filter, team dashboard sharing, administrator team default that each user can override, and restricted-seller dashboards: every tile, total, drill row, CSV, PDF and email copy uses only that seller's current permitted records and fields, with no count or sum of hidden records.
 
-**Acceptance:** INTEGRATE-005’s Slack mappings confer no role, record or field access. Permission changes apply on the next request and require fresh mapping confirmation. A seller-, team- or otherwise restricted record never counts as visible to every active full operator; a team channel never widens access. Exercise this inherited behavior through its public door.  TEAM-005 inherits INTEGRATE-005’s real administrator roles and team-scoped Slack channel and audience rules, including the dashboard-ready notice. Until teams exist, the installation owner chooses its channel and explicitly enables its saved schedule. Exercise the inherited Slack rules or notice through the receiving step.  Invite a manager and two reps, make one account private, deny its record and field through direct URLs/search/API/report/export/AI preview, share it intentionally, then revoke and repeat after sign-out and restore. Restrict one rep to owned records and verify that their lists, search, API and export show only the contacts and companies they own under RECORD-016, and that reassigning one of those contacts removes it from their next request. Share a deal with a collaborator including its notes, calls and meetings, make one of its notes private, and confirm the collaborator does not see that note on Shared records or through a mention of them.
+**Acceptance.**
+1. INTEGRATE-005’s Slack mappings confer no role, record or field access.
+2. Permission changes apply on the next request and require fresh mapping confirmation.
+3. A seller-, team- or otherwise restricted record never counts as visible to every active full operator; a team channel never widens access.
+4. Exercise this inherited behavior through its public door.
+5. TEAM-005 inherits INTEGRATE-005’s real administrator roles and team-scoped Slack channel and audience rules, including the dashboard-ready notice.
+6. Until teams exist, the installation owner chooses its channel and explicitly enables its saved schedule.
+7. Exercise the inherited Slack rules or notice through the receiving step.
+8. Invite a manager and two reps, make one account private, deny its record and field through direct URLs/search/API/report/export/AI preview, share it intentionally, then revoke and repeat after sign-out and restore. Restrict one rep to owned records and verify that their lists, search, API and export show only the contacts and companies they own under RECORD-016, and that reassigning one of those contacts removes it from their next request. Share a deal with a collaborator including its notes, calls and meetings, make one of its notes private, and confirm the collaborator does not see that note on Shared records or through a mention of them.
 
-#### RECORD-014 — Configurable sales data and custom objects.
+#### RECORD-014 — Configurable sales data and custom objects
 
-Administrators define typed custom fields, required/unique values, picklists, validation, layouts, custom objects and explicit relationships with contacts, companies and deals. Changes preview affected records before applying; archived fields retain readable history and export meaning. A field can be marked "approve each workflow change" (AUTO-002), and its history names the source of each change: a user, an import, capture, the API or a workflow and its version. Users create saved filtered lists, select columns, sort and bulk-edit permitted records through a review showing individual failures. Leads qualify and convert to associated contact/company/deal records without losing source, activities or consent.
+*Tier:* Core
 
-**Acceptance:** Create a Territory object and required deal field, validate bad input, qualify a lead, link stakeholders, save a filtered view, bulk-change selected records with one denied item, then archive a field and inspect history/export.
+**Requirement.** Administrators define typed custom fields, required/unique values, picklists, validation, layouts, custom objects and explicit relationships with contacts, companies and deals. Changes preview affected records before applying; archived fields retain readable history and export meaning. A field can be marked "approve each workflow change" (AUTO-002), and its history names the source of each change: a user, an import, capture, the API or a workflow and its version. Users create saved filtered lists, select columns, sort and bulk-edit permitted records through a review showing individual failures. Leads qualify and convert to associated contact/company/deal records without losing source, activities or consent.
 
-#### RECORD-015 — Deal stakeholders and buying context.
+**Acceptance.**
+1. Create a Territory object and required deal field, validate bad input, qualify a lead, link stakeholders, save a filtered view, bulk-change selected records with one denied item, then archive a field and inspect history/export.
 
-A deal records multiple contacts with roles such as champion, decision-maker, evaluator and procurement, company relationships, products, next step and mutual commitments. A person can represent more than one company via explicit relationship records while retaining an exact identity and a primary company. Sales users can distinguish a missing stakeholder from an inferred role; no inferred identity or relationship grants contact permission.
+#### RECORD-015 — Deal stakeholders and buying context
 
-**Acceptance:** Associate champion and evaluator with a USD deal, add a verified decision-maker and a second-company relationship, move the primary association and inspect the preserved customer history and authorization.
+*Tier:* Core
 
-#### RECORD-016 — Owners for contacts, leads, companies and custom objects.
+**Requirement.** A deal records multiple contacts with roles such as champion, decision-maker, evaluator and procurement, company relationships, products, next step and mutual commitments. A person can represent more than one company via explicit relationship records while retaining an exact identity and a primary company. Sales users can distinguish a missing stakeholder from an inferred role; no inferred identity or relationship grants contact permission.
 
-Every contact, lead (RECORD-014), company and custom-object record holds zero or one owner, an active user, independent of the owners of its deals (RECORD-007). A new record is unassigned unless an assignment rule below, an import mapping, FORM-001, CAPTURE-012 or an AUTO-001 workflow sets its owner. Automatic rules fill only an empty owner and never overwrite an existing one, except the explicit always-sync company rule.
+**Acceptance.**
+1. Associate champion and evaluator with a USD deal, add a verified decision-maker and a second-company relationship, move the primary association and inspect the preserved customer history and authorization.
+
+#### RECORD-016 — Owners for contacts, leads, companies and custom objects
+
+*Tier:* Core
+
+**Requirement.** Every contact, lead (RECORD-014), company and custom-object record holds zero or one owner, an active user, independent of the owners of its deals (RECORD-007). A new record is unassigned unless an assignment rule below, an import mapping, FORM-001, CAPTURE-012 or an AUTO-001 workflow sets its owner. Automatic rules fill only an empty owner and never overwrite an existing one, except the explicit always-sync company rule.
 
 **Assigning.** A permitted user assigns, reassigns or unassigns the owner on the record page. From any list, search result or saved view (RECORD-014) they can bulk-assign selected records through one review that shows each record's current and new owner and lists individual failures: no permission, an inactive target user, or a record changed since review. Each change appends one timeline entry with the previous owner, new owner, actor (user, import, workflow or rule) and time. A bulk action is one audited batch and can be undone for the records nobody has changed since.
 
@@ -241,11 +812,21 @@ RECORD-016 inherits REPORT-001's owner grouping: every REPORT-001 measure whose 
 
 Before those owners ship, RECORD-016 carries REPORT-002's Owner filter for contact, lead, company and custom-object owners, including Unassigned, under the viewer's current record and field access. Today the dashboard Owner filter applies to deal owners, activity authors and task assignees; bookings disclose that the Owner filter is not applied.
 
-**Acceptance:** NOTIFY-003 inherits personal Slack assignment DMs under INTEGRATE-005: only the explicitly mapped, opted-in new owner with current access, one notice per bulk batch, none on replay or undo. Assignment never grants access. Exercise this inherited behavior through its public door.  Import HubSpot contacts and companies with Contact owner and Company owner columns, one owner value unmatched; map it in the dry run, apply, and see each record's owner and attributed import entry. Bulk-reassign 20 contacts with one denied item and see 19 changes, one listed failure and 19 timeline entries. Enable the company-to-contact rule, preview it, change a company owner and see only its unowned contacts take that owner. Enable the first-email rule, send a first email to an unowned lead and see the sender become its owner. Sign in as a seller restricted to owned records: "My contacts" opens by default, and lists, search, API and export show only their own contacts and companies. Remove a rep and hand over their contacts and companies explicitly under TEAM-004. Assign a company to a rep and see one notification naming it and the assigner; bulk-assign 20 contacts to another rep and see one notification listing them; assign a contact to yourself and see none.
+**Acceptance.**
+1. NOTIFY-003 inherits personal Slack assignment DMs under INTEGRATE-005: only the explicitly mapped, opted-in new owner with current access, one notice per bulk batch, none on replay or undo.
+2. Assignment never grants access.
+3. Exercise this inherited behavior through its public door.
+4. Import HubSpot contacts and companies with Contact owner and Company owner columns, one owner value unmatched; map it in the dry run, apply, and see each record's owner and attributed import entry.
+5. Bulk-reassign 20 contacts with one denied item and see 19 changes, one listed failure and 19 timeline entries.
+6. Enable the company-to-contact rule, preview it, change a company owner and see only its unowned contacts take that owner.
+7. Enable the first-email rule, send a first email to an unowned lead and see the sender become its owner.
+8. Sign in as a seller restricted to owned records: "My contacts" opens by default, and lists, search, API and export show only their own contacts and companies. Remove a rep and hand over their contacts and companies explicitly under TEAM-004. Assign a company to a rep and see one notification naming it and the assigner; bulk-assign 20 contacts to another rep and see one notification listing them; assign a contact to yourself and see none.
 
-#### RECORD-017 — Mentions in notes and activities.
+#### RECORD-017 — Mentions in notes and activities
 
-In a note, a logged call or meeting (RECORD-010), a task note (TASK-001) or an internal handoff, a user can @mention a colleague or a team. Autocomplete offers only active users and teams. Mentioning someone who cannot see the record under TEAM-005 asks the author either to share the record with them explicitly or to remove the mention; a mention never grants access by itself.
+*Tier:* Core
+
+**Requirement.** In a note, a logged call or meeting (RECORD-010), a task note (TASK-001) or an internal handoff, a user can @mention a colleague or a team. Autocomplete offers only active users and teams. Mentioning someone who cannot see the record under TEAM-005 asks the author either to share the record with them explicitly or to remove the mention; a mention never grants access by itself.
 
 Each mentioned user receives one in-app notification (NOTIFY-001, NOTIFY-002) naming the author and record and linking to the exact entry, plus email, push or Slack under NOTIFY-003 by their preference. Editing an entry notifies only newly added mentions. Deleting the entry withdraws that entry's unread mention notifications and leaves an attributed timeline record of the deletion. A "Mentions" view lists every entry that mentions the user. Mentions are internal: they are never sent to a customer, never included in an AI request unless the preview shows them (AI-001), and they are exported with the entry and erased with it (DATA-002).
 
@@ -253,11 +834,21 @@ Today a user mentions a colleague as `@Display Name`, or as `@email` when two ac
 
 Its NOTIFY-003 inheritance adopts INTEGRATE-005’s Slack rules: no entry text enters Slack, private entries get a generic notice and exact authenticated entry link, and an undelivered mention is withdrawn on deletion. Slack acknowledgment never accepts an application-proposed handoff.
 
-**Acceptance:** Its NOTIFY-003 inheritance adopts INTEGRATE-005’s Slack rules: no entry text enters Slack, private entries get a generic notice and exact authenticated entry link, and an undelivered mention is withdrawn on deletion. Slack acknowledgment never accepts an application-proposed handoff. Exercise this inherited behavior through its public door.  On a deal, a rep writes a note mentioning their manager and a call log mentioning a colleague without access to the deal. The manager receives one notification linking to the note. Before saving, the author is asked to share the deal or remove the second mention; they share it explicitly, and only then is the colleague notified. Edit the note to add a third user; only that user is notified. Delete the call log, and the colleague's unread mention notification is withdrawn. Verify that no access was granted without the explicit share and that no customer message or score changed. A collaborator mentioned after the deal is shared with them including its notes, calls and meetings opens the exact entry from their own notifications at 1440 and 390; with that option off the save asks first; after the grant is revoked the notification is hidden from them, and a new grant shows it again.
+**Acceptance.**
+1. Its NOTIFY-003 inheritance adopts INTEGRATE-005’s Slack rules: no entry text enters Slack, private entries get a generic notice and exact authenticated entry link, and an undelivered mention is withdrawn on deletion.
+2. Slack acknowledgment never accepts an application-proposed handoff.
+3. Exercise this inherited behavior through its public door.
+4. On a deal, a rep writes a note mentioning their manager and a call log mentioning a colleague without access to the deal.
+5. The manager receives one notification linking to the note.
+6. Before saving, the author is asked to share the deal or remove the second mention; they share it explicitly, and only then is the colleague notified.
+7. Edit the note to add a third user; only that user is notified.
+8. Delete the call log, and the colleague's unread mention notification is withdrawn. Verify that no access was granted without the explicit share and that no customer message or score changed. A collaborator mentioned after the deal is shared with them including its notes, calls and meetings opens the exact entry from their own notifications at 1440 and 390; with that option off the save asks first; after the grant is revoked the notification is hidden from them, and a new grant shows it again.
 
-#### RECORD-018 — Files on records, activities and mail.
+#### RECORD-018 — Files on records, activities and mail
 
-**Files on records and activities.** A user with edit permission on a record (TEAM-005) attaches files to a contact, lead, company, deal or custom-object record (RECORD-014), and to a note, logged call or meeting (RECORD-010) or a task (TASK-001). Files are added by picker or drag and drop on desktop, and from the phone's files or camera on 390px web and the native apps (MOBILE-001). Each record has a Files list that includes the files on its activities and mail. For each file it shows the name, type, size, uploader or source (a user, a captured message, an Orbit send or a migration), the time and the activity it belongs to. File names are searchable (RECORD-006). Uploading a file with the same name to the same record adds a new version and keeps the earlier ones downloadable; OUT-014 records which version was sent.
+*Tier:* Core
+
+**Requirement.** **Files on records and activities.** A user with edit permission on a record (TEAM-005) attaches files to a contact, lead, company, deal or custom-object record (RECORD-014), and to a note, logged call or meeting (RECORD-010) or a task (TASK-001). Files are added by picker or drag and drop on desktop, and from the phone's files or camera on 390px web and the native apps (MOBILE-001). Each record has a Files list that includes the files on its activities and mail. For each file it shows the name, type, size, uploader or source (a user, a captured message, an Orbit send or a migration), the time and the activity it belongs to. File names are searchable (RECORD-006). Uploading a file with the same name to the same record adds a new version and keeps the earlier ones downloadable; OUT-014 records which version was sent.
 
 **Limits.** A file may be up to 100 MB by default, and an administrator can lower the limit. Allowed types are documents (PDF, Word, Excel, PowerPoint, OpenDocument, plain text and CSV), images and ZIP archives, and an administrator can narrow the list. An over-size or disallowed file, including executables and scripts, is refused with a visible reason naming the limit or the type, and nothing is stored. Files are stored in the installation's own Cloudflare R2 bucket, and Settings shows the workspace's stored bytes and their USD cost (OPS-001).
 
@@ -282,43 +873,71 @@ Before template attachments ship, RECORD-018 must also satisfy OUT-014: authoriz
 - API-001 lists, uploads, downloads and deletes files under the same permissions and limits, and its webhooks report files added and deleted.
 - A file's contents are never sent to an AI provider unless the AI-001 preview shows that file.
 
-**Acceptance:** Upload a PDF to a deal and a file to a logged call; see both on the deal's Files list with name, type, size, uploader and time; upload a new version of the PDF; and see an executable and a 150 MB file refused with the reason. Receive a captured Gmail reply with a signed PDF attachment and an inline logo: see the PDF on the contact, company and deal and open it from the timeline entry, with the logo not listed. As a restricted rep, be refused a direct download of a file on a deal you cannot see. Migrate a HubSpot deal with two record attachments and a note attachment, and reconcile file counts and bytes in the dry run and after applying. Export and restore, and compare every file's bytes by SHA-256. Delete a file and see the attributed timeline entry. Erase the contact: their mail attachments are gone from the deal, while the user-uploaded PDF stays.
+**Acceptance.**
+1. Upload a PDF to a deal and a file to a logged call; see both on the deal's Files list with name, type, size, uploader and time; upload a new version of the PDF; and see an executable and a 150 MB file refused with the reason.
+2. Receive a captured Gmail reply with a signed PDF attachment and an inline logo: see the PDF on the contact, company and deal and open it from the timeline entry, with the logo not listed.
+3. As a restricted rep, be refused a direct download of a file on a deal you cannot see.
+4. Migrate a HubSpot deal with two record attachments and a note attachment, and reconcile file counts and bytes in the dry run and after applying.
+5. Export and restore, and compare every file's bytes by SHA-256.
+6. Delete a file and see the attributed timeline entry.
+7. Erase the contact: their mail attachments are gone from the deal, while the user-uploaded PDF stays.
 
-#### MIGRATE-001 — HubSpot Sales Hub migration.
+#### MIGRATE-001 — HubSpot Sales Hub migration
 
-Connect HubSpot with least-privilege authorization and start one guided migration covering contacts/leads, companies, deals, pipelines/stages, owners (Contact owner, Company owner and deal owner, each kept separate under RECORD-016 and RECORD-007), custom fields, notes, tasks, calls, meetings, email activity, record and activity attachments (RECORD-018) and associations. A saved dry run reconciles source totals, file counts and bytes, mappings, unsupported or unavailable fields, duplicates and consent. Source owners are mapped to explicitly chosen Orbit users without invitations. Resume checkpoints, stable source IDs, rerun reconciliation and conflict-preserving undo carry RECORD-008 safeguards. Provider permission or export restrictions name exactly what the buyer must export; they never silently drop history. HubSpot workflows are listed with each "Edit record" and create action named as mapped to an AUTO-002 action, needing approval under AUTO-002, or having no Orbit equivalent; none is activated without an administrator's preview.
+*Tier:* Core
 
-**Acceptance:** From Import choose HubSpot, authorize a test account and preview a multi-company export/API pull including activities, associations, separate Contact, Company and deal owners, and a deal with two record attachments and a note attachment; apply, interrupt/resume and rerun; compare source totals and file counts and bytes, inspect a deal workflow's actions listed against AUTO-002, and undo around native edits. Final acceptance includes a real authorized customer export.
+**Requirement.** Connect HubSpot with least-privilege authorization and start one guided migration covering contacts/leads, companies, deals, pipelines/stages, owners (Contact owner, Company owner and deal owner, each kept separate under RECORD-016 and RECORD-007), custom fields, notes, tasks, calls, meetings, email activity, record and activity attachments (RECORD-018) and associations. A saved dry run reconciles source totals, file counts and bytes, mappings, unsupported or unavailable fields, duplicates and consent. Source owners are mapped to explicitly chosen Orbit users without invitations. Resume checkpoints, stable source IDs, rerun reconciliation and conflict-preserving undo carry RECORD-008 safeguards. Provider permission or export restrictions name exactly what the buyer must export; they never silently drop history. HubSpot workflows are listed with each "Edit record" and create action named as mapped to an AUTO-002 action, needing approval under AUTO-002, or having no Orbit equivalent; none is activated without an administrator's preview.
 
-#### MIGRATE-002 — Pipedrive migration.
+**Acceptance.**
+1. From Import choose HubSpot, authorize a test account and preview a multi-company export/API pull including activities, associations, separate Contact, Company and deal owners, and a deal with two record attachments and a note attachment; apply, interrupt/resume and rerun; compare source totals and file counts and bytes, inspect a deal workflow's actions listed against AUTO-002, and undo around native edits.
+2. Final acceptance includes a real authorized customer export.
 
-One guided Pipedrive connection migrates people, organizations, leads, deals, multiple pipelines/stages, products, owners (person, organization and deal owners, kept separate under RECORD-016 and RECORD-007), custom fields, notes, tasks, calls, meetings, mail activity, files on deals, people, organizations, notes and activities (RECORD-018) and linked associations using the saved review, consent, idempotency, source-count reconciliation and safe undo rules of MIGRATE-001. An unavailable provider field or file must be listed with a concrete export step and retained source reference. Pipedrive automations' update and create actions are listed against AUTO-002 as in MIGRATE-001.
+#### MIGRATE-002 — Pipedrive migration
 
-**Acceptance:** Choose Pipedrive, connect an authorized account containing two pipelines, cross-linked activities and deal files, preview/apply, resume a rate-limited page and rerun; reconcile every exported entity and association, then undo without losing a native note. Include a real authorized export.
+*Tier:* Core
 
-#### MIGRATE-003 — Salesforce Sales Cloud migration.
+**Requirement.** One guided Pipedrive connection migrates people, organizations, leads, deals, multiple pipelines/stages, products, owners (person, organization and deal owners, kept separate under RECORD-016 and RECORD-007), custom fields, notes, tasks, calls, meetings, mail activity, files on deals, people, organizations, notes and activities (RECORD-018) and linked associations using the saved review, consent, idempotency, source-count reconciliation and safe undo rules of MIGRATE-001. An unavailable provider field or file must be listed with a concrete export step and retained source reference. Pipedrive automations' update and create actions are listed against AUTO-002 as in MIGRATE-001.
 
-A guided Salesforce OAuth migration maps Leads and conversions, Accounts, Contacts, Opportunities, record types, stages, users, custom fields/objects, products, Notes, Tasks, Events, EmailMessage history, Files (`ContentDocument`, `ContentVersion` and `ContentDocumentLink`) and legacy Attachments (RECORD-018) and associations into the reviewed Orbit model. It previews mapping choices, owner/role translation (Lead, Account, Contact and Opportunity `OwnerId` mapped separately under RECORD-016 and RECORD-007), field permissions and unsupported metadata, preserves original IDs and source currency, and uses incremental checkpoints, repeat-safe application, reconciliation and safe undo. Orbit does not claim to execute Salesforce Apex or rebuild the buyer's Salesforce apps; Flow, Process Builder and workflow-rule field updates and record creations are listed against AUTO-002 actions as in MIGRATE-001, and other unresolved automation is listed for explicit Orbit workflow mapping.
+**Acceptance.**
+1. Choose Pipedrive, connect an authorized account containing two pipelines, cross-linked activities and deal files, preview/apply, resume a rate-limited page and rerun; reconcile every exported entity and association, then undo without losing a native note.
+2. Include a real authorized export.
 
-**Acceptance:** Connect a Salesforce sandbox with converted leads, two record types, linked activity/custom-object data and Files on an Opportunity; dry-run, map, apply, interrupt/resume and rerun, reconcile record/association totals and file counts and bytes, and demonstrate conflict-preserving undo. Repeat with an authorized real export.
+#### MIGRATE-003 — Salesforce Sales Cloud migration
+
+*Tier:* Core
+
+**Requirement.** A guided Salesforce OAuth migration maps Leads and conversions, Accounts, Contacts, Opportunities, record types, stages, users, custom fields/objects, products, Notes, Tasks, Events, EmailMessage history, Files (`ContentDocument`, `ContentVersion` and `ContentDocumentLink`) and legacy Attachments (RECORD-018) and associations into the reviewed Orbit model. It previews mapping choices, owner/role translation (Lead, Account, Contact and Opportunity `OwnerId` mapped separately under RECORD-016 and RECORD-007), field permissions and unsupported metadata, preserves original IDs and source currency, and uses incremental checkpoints, repeat-safe application, reconciliation and safe undo. Orbit does not claim to execute Salesforce Apex or rebuild the buyer's Salesforce apps; Flow, Process Builder and workflow-rule field updates and record creations are listed against AUTO-002 actions as in MIGRATE-001, and other unresolved automation is listed for explicit Orbit workflow mapping.
+
+**Acceptance.**
+1. Connect a Salesforce sandbox with converted leads, two record types, linked activity/custom-object data and Files on an Opportunity; dry-run, map, apply, interrupt/resume and rerun, reconcile record/association totals and file counts and bytes, and demonstrate conflict-preserving undo.
+2. Repeat with an authorized real export.
 
 ### Connected selling, follow-up and automation
 
-#### CAPTURE-010 — Continuous authorized mail and calendar reads.
+#### CAPTURE-010 — Continuous authorized mail and calendar reads
 
-Connect Gmail/Google Workspace and Microsoft 365/Outlook by OAuth, select mail folders/labels, calendars and history window, and continuously capture past and future authorized activity with durable cursors, refresh, replay protection and visible lag. Threads and calendar occurrences link automatically only by exact contact/deal or trusted message identity; ambiguous multi-deal mail is held for review by default. An administrator may instead choose a workspace rule for mail with a contact who is on several open deals: associate it with that contact's most recently active open deal, or with all of that contact's open deals. Each automatic association names the rule on the timeline entry and can be moved to another deal or removed in one action, and mail to a contact with no open deal attaches to the contact and company only (OUT-017). An unknown external participant becomes a CAPTURE-012 new-prospect proposal rather than being dropped, and a contact created later with that exact address receives its synced history. Attachments of captured messages are fetched and kept under RECORD-018. Raw permission and privacy boundaries of CAPTURE-002 through CAPTURE-007 remain. Provider app registration, Google verification and Microsoft tenant/admin consent are delivery work with actionable setup states, not reasons to substitute files for live sync.
+*Tier:* Core
 
-**Acceptance:** Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, switch the multi-deal rule to most recently active open deal and see the next such thread associated automatically with the rule named and then moved in one action, see an unknown correspondent become a CAPTURE-012 proposal, see a captured reply's PDF attachment listed on its contact, company and deal with its inline image not listed, revoke/reconnect and verify no unauthorized folder/mailbox is read. Complete an authorized live Gmail and Microsoft tenant journey.
+**Requirement.** Connect Gmail/Google Workspace and Microsoft 365/Outlook by OAuth, select mail folders/labels, calendars and history window, and continuously capture past and future authorized activity with durable cursors, refresh, replay protection and visible lag. Threads and calendar occurrences link automatically only by exact contact/deal or trusted message identity; ambiguous multi-deal mail is held for review by default. An administrator may instead choose a workspace rule for mail with a contact who is on several open deals: associate it with that contact's most recently active open deal, or with all of that contact's open deals. Each automatic association names the rule on the timeline entry and can be moved to another deal or removed in one action, and mail to a contact with no open deal attaches to the contact and company only (OUT-017). An unknown external participant becomes a CAPTURE-012 new-prospect proposal rather than being dropped, and a contact created later with that exact address receives its synced history. Attachments of captured messages are fetched and kept under RECORD-018. Raw permission and privacy boundaries of CAPTURE-002 through CAPTURE-007 remain. Provider app registration, Google verification and Microsoft tenant/admin consent are delivery work with actionable setup states, not reasons to substitute files for live sync.
 
-#### CAPTURE-011 — Two-way calendar and CRM activity.
+**Acceptance.**
+1. Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, switch the multi-deal rule to most recently active open deal and see the next such thread associated automatically with the rule named and then moved in one action, see an unknown correspondent become a CAPTURE-012 proposal, see a captured reply's PDF attachment listed on its contact, company and deal with its inline image not listed, revoke/reconnect and verify no unauthorized folder/mailbox is read.
+2. Complete an authorized live Gmail and Microsoft tenant journey.
 
-Authorized reps create, reschedule and cancel record-linked meetings from Orbit into Google Calendar or Outlook, and provider-side changes update the same activity and attendees. Explicit calendar/write consent is separate from read access. Recurring exceptions, US daylight-saving changes, organizer rights, attendee privacy, conflict handling and replay are visible. A stale edit requires a fresh review; a cancellation never cancels unrelated occurrences. External invitations require the rep to review exact attendees and message before dispatch.
+#### CAPTURE-011 — Two-way calendar and CRM activity
 
-**Acceptance:** For both calendars create an approved meeting in Orbit, verify it in the provider, reschedule it there and read it back, edit concurrently, cancel one recurring occurrence and reconnect after revocation without duplicate invitations.
+*Tier:* Core
 
-#### CAPTURE-012 — New prospects from connected mail and calendars.
+**Requirement.** Authorized reps create, reschedule and cancel record-linked meetings from Orbit into Google Calendar or Outlook, and provider-side changes update the same activity and attendees. Explicit calendar/write consent is separate from read access. Recurring exceptions, US daylight-saving changes, organizer rights, attendee privacy, conflict handling and replay are visible. A stale edit requires a fresh review; a cancellation never cancels unrelated occurrences. External invitations require the rep to review exact attendees and message before dispatch.
 
-For a connected mailbox or calendar source (CAPTURE-010), a message or meeting whose external participant matches no contact or company key is not discarded. When that participant exchanged mail with an operator (the operator wrote to them, or they wrote to the operator) or attended a meeting with one, Orbit holds a new-prospect proposal showing the exact address, display name, domain, thread subjects, dates and message direction. Held mail stays sealed as held evidence in the SIGNAL-004 unlinked queue for 30 days, changes no record or score, and is purged if nobody accepts it. Automated, bulk and list senders (`List-Unsubscribe` or `Precedence: bulk` mail, no-reply and mailer-daemon addresses, calendar notifications), operator and configured internal domains, and an administrator-maintained exclusion list never produce proposals.
+**Acceptance.**
+1. For both calendars create an approved meeting in Orbit, verify it in the provider, reschedule it there and read it back, edit concurrently, cancel one recurring occurrence and reconnect after revocation without duplicate invitations.
+
+#### CAPTURE-012 — New prospects from connected mail and calendars
+
+*Tier:* Core
+
+**Requirement.** For a connected mailbox or calendar source (CAPTURE-010), a message or meeting whose external participant matches no contact or company key is not discarded. When that participant exchanged mail with an operator (the operator wrote to them, or they wrote to the operator) or attended a meeting with one, Orbit holds a new-prospect proposal showing the exact address, display name, domain, thread subjects, dates and message direction. Held mail stays sealed as held evidence in the SIGNAL-004 unlinked queue for 30 days, changes no record or score, and is purged if nobody accepts it. Automated, bulk and list senders (`List-Unsubscribe` or `Precedence: bulk` mail, no-reply and mailer-daemon addresses, calendar notifications), operator and configured internal domains, and an administrator-maintained exclusion list never produce proposals.
 
 The proposal offers a new contact with that exact email key, plus a new company from its domain unless the domain is free-mail (RECORD-003); a domain a company already holds links to that company. Nothing is guessed from a name or a lookalike domain. The mailbox owner, or a reviewer permitted under TEAM-005, accepts, edits or declines it. Accepting makes the mailbox owner the contact owner (RECORD-016) unless the reviewer chooses another. A decline is remembered by a keyed hash, so that source does not propose the same address again.
 
@@ -326,13 +945,18 @@ Accepting the proposal, or creating a contact with that exact email through any 
 
 Approved engineering policy: an authorized connected source may retain unknown external participants only within its selected folders, calendars and time window, as sealed review evidence for 30 days from intake. Retention does not create a customer, score, sending permission or research authority. Use exact normalized email identity and exact non-free-mail company domain only; apply the clause’s automated, bulk, internal and administrator exclusions before proposing. The mailbox owner or currently permitted reviewer must explicitly accept or decline. Acceptance records the reviewer, time, source evidence, owner and chosen contactability basis. Inbound conversation and rep-initiated conversation are relationship provenance, not proof of marketing consent. A reviewer may permit relevant US business email after checking purpose and suppression; an unsubscribe or stop always wins. Telephone and automated outreach require separately recorded channel-specific authority under the applicable TCPA policy. Non-US contacts require a recorded purpose and lawful basis with GDPR-style objection, access and erasure handling; uncertain jurisdiction or basis leaves contactability blocked. Unaccepted evidence expires after 30 days; decline and erasure retain only necessary keyed suppression and replay proofs. Provider authorization and jurisdiction-specific legal qualification remain explicit gaps.
 
-**Acceptance:** With a connected Gmail source, send from Gmail to an unknown address at an unknown non-free-mail domain and receive their reply; also receive cold inbound mail from a second unknown person and a bulk newsletter. Verify proposals for the two people (none for the newsletter) with direction and evidence; accept the first with the `rep-initiated conversation` basis and see the full thread back-filled once on the new contact and company, then reply from Orbit on the same thread. Decline the second and confirm it is not proposed again, then create a contact manually for a third earlier correspondent and see their history back-filled. Repeat the inbound case through Microsoft 365.
+**Acceptance.**
+1. With a connected Gmail source, send from Gmail to an unknown address at an unknown non-free-mail domain and receive their reply; also receive cold inbound mail from a second unknown person and a bulk newsletter.
+2. Verify proposals for the two people (none for the newsletter) with direction and evidence; accept the first with the `rep-initiated conversation` basis and see the full thread back-filled once on the new contact and company, then reply from Orbit on the same thread.
+3. Decline the second and confirm it is not proposed again, then create a contact manually for a third earlier correspondent and see their history back-filled.
+4. Repeat the inbound case through Microsoft 365.
+5. Exercise the original Gmail and Microsoft journeys and additionally assert expiry at 30 days, every exclusion, exact-key collision, concurrent stop, denied reviewer, explicit basis, non-US uncertainty, decline replay, archive authority removal and erasure replay; accepting a prospect never authorizes a message.
 
-Exercise the original Gmail and Microsoft journeys and additionally assert expiry at 30 days, every exclusion, exact-key collision, concurrent stop, denied reviewer, explicit basis, non-US uncertainty, decline replay, archive authority removal and erasure replay; accepting a prospect never authorizes a message.
+#### FORM-001 — Lead capture forms on the buyer's website
 
-#### FORM-001 — Lead capture forms on the buyer's website.
+*Tier:* Core
 
-Administrators build forms such as Contact sales and Request a demo, with fields mapped to contact, company and deal properties, including custom fields (RECORD-014). Fields can be required, picklist or free text, and hidden fields can carry a fixed value or a query parameter of the embedding page that the form declares. Each published form is reviewed as exact content before publication. It is available as a hosted page on the installation origin and as an embed on the buyer's allowlisted HTTPS site domains, either framed or posting directly from that origin. Neither form sets a cookie or loads a tracking script (SIGNAL-007), and a submission from any other origin is refused.
+**Requirement.** Administrators build forms such as Contact sales and Request a demo, with fields mapped to contact, company and deal properties, including custom fields (RECORD-014). Fields can be required, picklist or free text, and hidden fields can carry a fixed value or a query parameter of the embedding page that the form declares. Each published form is reviewed as exact content before publication. It is available as a hosted page on the installation origin and as an embed on the buyer's allowlisted HTTPS site domains, either framed or posting directly from that origin. Neither form sets a cookie or loads a tracking script (SIGNAL-007), and a submission from any other origin is refused.
 
 Abuse protection combines a honeypot field, a minimum fill time, per-form and per-network rate limits and optional Cloudflare Turnstile. Refused and suspected-spam submissions are counted with their reason, write no customer record, and can be released by a person from a spam list. A repeated submission key is idempotent. The current checks use a signed fill proof valid for one hour and at least two seconds old, 30 submissions per form and 10 per network in a one-minute window. Only trusted Cloudflare connection metadata supplies the network address; an installation-keyed digest expires with the counter, and raw addresses are not stored. Local submissions share one local network bucket. Opted-in Turnstile loads only after interaction and verifies the form hostname and `orbit_form` action. Release keeps the original consent and current publication/capture authority; erased payloads cannot be released.
 
@@ -340,11 +964,15 @@ A submission creates or updates by exact email key (RECORD-003). A new person be
 
 Owner assignment keeps an existing contact owner (RECORD-016). Otherwise it uses the form's rule: a fixed owner, round-robin rotation across a chosen team (skipping inactive users, persisting its position across restarts and recording the choice on the timeline) or an unassigned team queue. The owner, or the chosen users and team, receive one in-app notification per submission (NOTIFY-001), plus email or push under NOTIFY-003. The new or existing deal enters NOW with the submission as its reason (OPP-007); a lead without a deal appears in the owner's lead view (RECORD-014). Submissions are listed per form, exported (DATA-001) and erased with the contact (DATA-002).
 
-**Acceptance:** Build a Contact sales form mapping name, email, company, phone and a custom deal-size field, publish it hosted and embedded on an allowlisted test HTTPS domain, and submit from that domain both framed and by direct post: a new person, an existing contact with a changed name, a honeypot-filled bot entry, a too-fast entry, a replay and a post from a non-allowlisted origin. Verify the contact, company and deal creation, the reviewed proposal for the changed name with the stored value untouched, the consent record, round-robin owners alternating across two reps, one notification per accepted submission, NOW entry, spam and origin refusals with counts, and no cookie or tracker on either page.
+**Acceptance.**
+1. Build a Contact sales form mapping name, email, company, phone and a custom deal-size field, publish it hosted and embedded on an allowlisted test HTTPS domain, and submit from that domain both framed and by direct post: a new person, an existing contact with a changed name, a honeypot-filled bot entry, a too-fast entry, a replay and a post from a non-allowlisted origin.
+2. Verify the contact, company and deal creation, the reviewed proposal for the changed name with the stored value untouched, the consent record, round-robin owners alternating across two reps, one notification per accepted submission, NOW entry, spam and origin refusals with counts, and no cookie or tracker on either page.
 
-#### OUT-013 — Gmail and Microsoft 365 mailbox sending.
+#### OUT-013 — Gmail and Microsoft 365 mailbox sending
 
-After separate send authorization, a rep sends a reviewed one-to-one message or approved sequence step as their connected Gmail/Workspace or Microsoft 365/Outlook mailbox. The message may be composed from any permitted contact, lead, company or deal record, with or without a deal (OUT-017). The same conversation appears in Sent and returns replies to the correct contact, their company and the exactly linked deal when there is one. Signatures, approved attachments, thread references and provider message IDs are retained, and sent attachments are listed on the recipients' records under RECORD-018. Opt-out headers and the link are added only where OUT-020's setting puts them, handled at the installation origin. To, CC and BCC lists, reply and reply all follow OUT-019, sent as one provider message on the provider's own thread or conversation. Current recipient permission, unchanged-content review, quiet hours, OUT-018 per-user budgets, OUT-010 visible deferral, cancellation and ambiguous-outcome rules apply identically across mailbox and existing mail transports; a mailbox is paced per mailbox within its provider's limits (OUT-018), never by a deployment-wide throttle. A disconnected mailbox visibly blocks its sends; it never silently switches identities or transport.
+*Tier:* Core
+
+**Requirement.** After separate send authorization, a rep sends a reviewed one-to-one message or approved sequence step as their connected Gmail/Workspace or Microsoft 365/Outlook mailbox. The message may be composed from any permitted contact, lead, company or deal record, with or without a deal (OUT-017). The same conversation appears in Sent and returns replies to the correct contact, their company and the exactly linked deal when there is one. Signatures, approved attachments, thread references and provider message IDs are retained, and sent attachments are listed on the recipients' records under RECORD-018. Opt-out headers and the link are added only where OUT-020's setting puts them, handled at the installation origin. To, CC and BCC lists, reply and reply all follow OUT-019, sent as one provider message on the provider's own thread or conversation. Current recipient permission, unchanged-content review, quiet hours, OUT-018 per-user budgets, OUT-010 visible deferral, cancellation and ambiguous-outcome rules apply identically across mailbox and existing mail transports; a mailbox is paced per mailbox within its provider's limits (OUT-018), never by a deployment-wide throttle. A disconnected mailbox visibly blocks its sends; it never silently switches identities or transport.
 
 Before mailbox sending ships, it must satisfy OUT-015’s separate acceptance/delivery/inferred-report/human-reply provenance and genuine-reply stop semantics, with open/click not tracked unless OUT-016 is explicitly enabled.
 
@@ -354,29 +982,47 @@ Before mailbox sending ships, it must satisfy OUT-018: each mailbox paced within
 
 Before mailbox sending ships, it must reuse OUT-020's installation-origin capability handler, exact approved headers and visible link, per-recipient suppression, erasure invalidation and atomic stops. The handler may ship independently for single-recipient managed-relay mail (ct, 20 October 07:15Z).
 
-**Acceptance:** Connect each provider, review recipient/subject/body/signature/attachment, send once and verify provider Sent, a real recipient reply and Orbit threading; revoke before a scheduled send and cause a timeout to demonstrate visible uncertainty with no duplicate or transport switch.
+**Acceptance.**
+1. Connect each provider, review recipient/subject/body/signature/attachment, send once and verify provider Sent, a real recipient reply and Orbit threading; revoke before a scheduled send and cause a timeout to demonstrate visible uncertainty with no duplicate or transport switch.
 
-#### OUT-014 — Reusable personalized templates and sales content.
+#### OUT-014 — Reusable personalized templates and sales content
 
-Reps save and share permission-controlled templates, snippets and signatures with a reviewed fixed list of supported contact/company/deal merge fields. Current full operators may read and use workspace-shared entries and create and edit their own private entries; only the installation owner may create or edit workspace-shared entries. Collaborators cannot read, author, share or apply library entries. The installation owner acts as administrator until TEAM-005 supplies real teams, restricted roles and team-restricted sharing; TEAM-005 inherits those permissions and their acceptance before shipping. Library sharing never grants record or field access.
+*Tier:* Core
+
+**Requirement.** Reps save and share permission-controlled templates, snippets and signatures with a reviewed fixed list of supported contact/company/deal merge fields. Current full operators may read and use workspace-shared entries and create and edit their own private entries; only the installation owner may create or edit workspace-shared entries. Collaborators cannot read, author, share or apply library entries. The installation owner acts as administrator until TEAM-005 supplies real teams, restricted roles and team-restricted sharing; TEAM-005 inherits those permissions and their acceptance before shipping. Library sharing never grants record or field access.
 
 Missing merge values and stale rendered inputs block approval and sending until the user reviews a fresh render. Review shows the exact rendered recipient, subject, body and signature together with the message's OUT-020 opt-out state. Approval binds an immutable snapshot of the rendered bytes and their content hash; later template, snippet or signature revisions never rewrite approved content. A changed source is visible for review, and dispatch retains OUT-001's revision and staleness fences.
 
 RECORD-018 inherits authorized versioned proposal/file selection, size/type limits, explicit access/size failures, attachment preview before approval and before files ship, and the precise sent-version record on recipients' records. Its acceptance must send an authorized attachment and refuse a forbidden one; this work is required before template attachments ship. SEQUENCE-001 and SEQUENCE-003 each inherit template expansion, per-recipient/per-step rendered-byte snapshots and approval hashing, including missing/stale merge-field blocks, before their execution paths ship.
 
-**Acceptance:** As the installation owner, save a workspace-shared template, snippet and signature; as another full operator, read and use them, create a private entry and be refused a shared-entry write. Render for two contacts and inspect the exact body, signature and OUT-020 state. Refuse a collaborator's library read, authoring, sharing and application attempts. Block approval with a missing merge field and after a merge value changes until a fresh render is reviewed. Approve one render, revise the library entries and verify the approved byte snapshot remains unchanged and dispatch submits exactly those approved bytes under the existing staleness rules. Inspect the library and rendered review at 1440 and 390. TEAM-005 repeats the sharing journey with real teams and restricted roles; RECORD-018 sends an authorized attachment, refuses a forbidden one, shows size/access failures and preview, and records the exact version sent; SEQUENCE-001 and SEQUENCE-003 each repeat expansion and approval-hash checks per recipient and step.
+**Acceptance.**
+1. As the installation owner, save a workspace-shared template, snippet and signature; as another full operator, read and use them, create a private entry and be refused a shared-entry write.
+2. Render for two contacts and inspect the exact body, signature and OUT-020 state.
+3. Refuse a collaborator's library read, authoring, sharing and application attempts.
+4. Block approval with a missing merge field and after a merge value changes until a fresh render is reviewed.
+5. Approve one render, revise the library entries and verify the approved byte snapshot remains unchanged and dispatch submits exactly those approved bytes under the existing staleness rules.
+6. Inspect the library and rendered review at 1440 and 390.
+7. TEAM-005 repeats the sharing journey with real teams and restricted roles; RECORD-018 sends an authorized attachment, refuses a forbidden one, shows size/access failures and preview, and records the exact version sent; SEQUENCE-001 and SEQUENCE-003 each repeat expansion and approval-hash checks per recipient and step.
 
-#### OUT-015 — Honest open and reply tracking.
+#### OUT-015 — Honest open and reply tracking
 
-Account and deal timelines distinguish provider acceptance, delivery, an open report and an actual human reply, retaining source and observed time. Open reports are explicitly inferred and may be unavailable or privacy-proxied; they never prove reading, intent or a human response. Reply tracking rejects automatic replies and ambiguous identity for stop/completion decisions. Gmail and Microsoft 365 report no opens or clicks through their APIs, so new open and link-click collection for Orbit-sent mail is solely OUT-016's disclosed, opt-in per-message tracking obligation; mail without it shows `open/click not tracked`, never `not opened`. Existing unsolicited provider open/click reports are retained only as inferred historical provider evidence, explicitly labelled unreliable and possibly proxied or automated; they introduce no collection or human-reading claim (ct, 19 October 2026 06:03Z). SIGNAL-007 otherwise remains: no covert tracking script, pixel, fingerprint or cross-site collection.
+*Tier:* Core
+
+**Requirement.** Account and deal timelines distinguish provider acceptance, delivery, an open report and an actual human reply, retaining source and observed time. Open reports are explicitly inferred and may be unavailable or privacy-proxied; they never prove reading, intent or a human response. Reply tracking rejects automatic replies and ambiguous identity for stop/completion decisions. Gmail and Microsoft 365 report no opens or clicks through their APIs, so new open and link-click collection for Orbit-sent mail is solely OUT-016's disclosed, opt-in per-message tracking obligation; mail without it shows `open/click not tracked`, never `not opened`. Existing unsolicited provider open/click reports are retained only as inferred historical provider evidence, explicitly labelled unreliable and possibly proxied or automated; they introduce no collection or human-reading claim (ct, 19 October 2026 06:03Z). SIGNAL-007 otherwise remains: no covert tracking script, pixel, fingerprint or cross-site collection.
 
 OUT-013 inherits these reporting/provenance and genuine-reply semantics for mailbox sending; OUT-016 inherits disclosed opt-in collection and proxy/automated classification; OUT-019 inherits genuine multi-recipient attribution; SEQUENCE-002 inherits genuine-reply exits. Each must pass the corresponding expanded journey before shipping.
 
-**Acceptance:** Ingest accepted/delivered/open events and genuine/automatic/foreign replies; show separate provider acceptance, reported delivery, inferred historical open/click reports and human replies with source and occurred/recorded time on account/contact/deal history. Duplicate reports have one effect; automatic replies, foreign senders and ambiguous threads leave scheduled follow-up unchanged, including after manual linking of nonhuman evidence. Without tracking, show `open/click not tracked`. Only a genuine exact-identity linked reply stops follow-up; add no pixel, redirect token or tracking collection.
+**Acceptance.**
+1. Ingest accepted/delivered/open events and genuine/automatic/foreign replies; show separate provider acceptance, reported delivery, inferred historical open/click reports and human replies with source and occurred/recorded time on account/contact/deal history.
+2. Duplicate reports have one effect; automatic replies, foreign senders and ambiguous threads leave scheduled follow-up unchanged, including after manual linking of nonhuman evidence.
+3. Without tracking, show `open/click not tracked`.
+4. Only a genuine exact-identity linked reply stops follow-up; add no pixel, redirect token or tracking collection.
 
-#### OUT-016 — Disclosed per-message open and click tracking.
+#### OUT-016 — Disclosed per-message open and click tracking
 
-An administrator enables tracking for the workspace, choosing open tracking, link-click tracking or both, and the disclosure text Orbit adds to tracked mail and the workspace privacy notice. Each rep then turns tracking on or off per one-to-one message, template and sequence email step (workspace default off; a rep may set their own default on). The OUT-001 review shows the tracking state, every tracked link and its exact destination, and the approval binds that state with the content. For opted-in mail sent through any Orbit transport, including OUT-013 Gmail and Microsoft 365 mailbox sending and `mail.sender.v1`, Orbit embeds one per-message, per-recipient image token and rewrites each tracked link to a per-message redirect on the installation origin that answers 302 to the reviewed destination unchanged. Gmail and Microsoft 365 report no opens or clicks through their APIs, so these tokens are the only source of open and click evidence and Orbit claims no other.
+*Tier:* Core
+
+**Requirement.** An administrator enables tracking for the workspace, choosing open tracking, link-click tracking or both, and the disclosure text Orbit adds to tracked mail and the workspace privacy notice. Each rep then turns tracking on or off per one-to-one message, template and sequence email step (workspace default off; a rep may set their own default on). The OUT-001 review shows the tracking state, every tracked link and its exact destination, and the approval binds that state with the content. For opted-in mail sent through any Orbit transport, including OUT-013 Gmail and Microsoft 365 mailbox sending and `mail.sender.v1`, Orbit embeds one per-message, per-recipient image token and rewrites each tracked link to a per-message redirect on the installation origin that answers 302 to the reviewed destination unchanged. Gmail and Microsoft 365 report no opens or clicks through their APIs, so these tokens are the only source of open and click evidence and Orbit claims no other.
 
 No cookie, script, fingerprint or cross-message identifier is set or read, and a token resolves only to its one message and recipient. Each open or click becomes an inferred signal (SIGNAL-006) on the contact, message and deal timeline with first and last time, count and the clicked link. Machine traffic is labeled and not counted as a human event: Apple Mail Privacy Protection and Gmail or Outlook image-proxy prefetches, security-scanner link checks within seconds of delivery, and requests before provider acceptance are classified `proxy` or `automated` with the reason. The sending rep receives a real-time in-app notification (NOTIFY-001), and optionally push or email under NOTIFY-003, for the first human-classified open and the first click on each link, deduplicated per message.
 
@@ -386,13 +1032,15 @@ Before tracking collection ships, it must satisfy OUT-015’s source/time, infer
 
 Approved engineering policy: tracking is off by default. An administrator may enable disclosed open tracking, link tracking or both, and a rep must review the tracking state and exact destinations with the message. Use cryptographically random opaque tokens with at least 128 bits of entropy, scoped to the approved message and recipient or the existing multi-recipient message rule; tokens contain no address or CRM identifier and cannot authorize another operation. Collect only token event identity, approved link identity, timestamps, counts and classification reason. Inspect network metadata transiently for abuse and classification without retaining raw IP addresses or full user-agent strings. Collection expires 90 days after provider acceptance; retained CRM evidence then contains only aggregate counts, times and inference labels under the workspace’s documented retention policy. Keep reviewed redirect destinations available without further collection after expiry, disablement, suppression or erasure, without retaining erased recipient identity. Known image proxies are proxy traffic; known scanners and requests before acceptance are automated; uncertain traffic remains unknown, never verified human reading. All reports remain inferred. Only non-machine, human-classified events may trigger the existing deduplicated notification, with an uncertainty label. No report grants contactability, advances a sequence or proves a reply. Non-US collection requires recorded applicable consent or another qualified basis; uncertainty disables tracking for that recipient. Provider and jurisdiction-specific legal qualification remain explicit gaps.
 
-**Acceptance:** Enable open and click tracking with disclosure, approve a tracked one-to-one message sent through OUT-013 Gmail and a tracked sequence step sent through Microsoft 365, open each in a real mail client and click a link; verify one inferred open and one click signal on the deal, a 302 to the unchanged reviewed destination, one deduplicated real-time rep notification, a proxy prefetch and a scanner click labeled automated, no cookie or script, no sequence exit or high band from the open, and `not tracked` on an untracked message; mark the contact do-not-track, erase another contact and verify nothing further is recorded.
+**Acceptance.**
+1. Enable open and click tracking with disclosure, approve a tracked one-to-one message sent through OUT-013 Gmail and a tracked sequence step sent through Microsoft 365, open each in a real mail client and click a link; verify one inferred open and one click signal on the deal, a 302 to the unchanged reviewed destination, one deduplicated real-time rep notification, a proxy prefetch and a scanner click labeled automated, no cookie or script, no sequence exit or high band from the open, and `not tracked` on an untracked message; mark the contact do-not-track, erase another contact and verify nothing further is recorded.
+2. Assert opaque-token isolation, exact approved destinations, disabled and expired collection, transient metadata handling, proxy, scanner and unknown classifications, notification deduplication, multi-recipient attribution, suppression and erasure without breaking the reviewed redirect, in addition to every original acceptance step.
 
-Assert opaque-token isolation, exact approved destinations, disabled and expired collection, transient metadata handling, proxy, scanner and unknown classifications, notification deduplication, multi-recipient attribution, suppression and erasure without breaking the reviewed redirect, in addition to every original acceptance step.
+#### OUT-017 — One-to-one email from any permitted record
 
-#### OUT-017 — One-to-one email from any permitted record.
+*Tier:* Core
 
-From a contact, lead (RECORD-014), company or deal record, a user with send permission under TEAM-005 composes a one-to-one email To one or more of that record's contacts. On a company record the To recipients are chosen explicitly from its contacts (RECORD-011). The user may add further To, CC and BCC recipients, internal colleagues and reviewed external addresses under OUT-019. The message can be written by hand, rendered from an OUT-014 template, or drafted on request as in ACTION-003, reading that record's evidence under the AI-001 preview. No open opportunity is required. The following can all be emailed:
+**Requirement.** From a contact, lead (RECORD-014), company or deal record, a user with send permission under TEAM-005 composes a one-to-one email To one or more of that record's contacts. On a company record the To recipients are chosen explicitly from its contacts (RECORD-011). The user may add further To, CC and BCC recipients, internal colleagues and reviewed external addresses under OUT-019. The message can be written by hand, rendered from an OUT-014 template, or drafted on request as in ACTION-003, reading that record's evidence under the AI-001 preview. No open opportunity is required. The following can all be emailed:
 - a lead or contact with no company or deal;
 - a contact whose only deals are won or lost;
 - a contact on an open deal, emailed from their contact or company record.
@@ -414,11 +1062,16 @@ Every send keeps the existing guarantees:
 
 Sequence enrollment (SEQUENCE-001, SEQUENCE-003) needs no deal, and each deal-less step lands as above.
 
-**Acceptance:** Through OUT-013, email a lead with no company or deal from its record and receive a real reply; from a contact record, email a contact whose only deal is closed won and receive their reply; bulk-enroll ten deal-less contacts in a sequence under SEQUENCE-003 and receive a reply to one first step. For each, verify exact-content approval, the sent message and reply threaded onto the contact timeline and, where the contact has one, the company timeline, no deal created or required, the won deal's lifecycle unchanged, and the deal-less awaiting-response line appearing in the brief after the interval and clearing on the reply. Attempt a send to a do-not-contact lead and see it refused; email a contact on an open deal from their company record, link it to the deal and see OUT-005's NEXT move.
+**Acceptance.**
+1. Through OUT-013, email a lead with no company or deal from its record and receive a real reply; from a contact record, email a contact whose only deal is closed won and receive their reply; bulk-enroll ten deal-less contacts in a sequence under SEQUENCE-003 and receive a reply to one first step.
+2. For each, verify exact-content approval, the sent message and reply threaded onto the contact timeline and, where the contact has one, the company timeline, no deal created or required, the won deal's lifecycle unchanged, and the deal-less awaiting-response line appearing in the brief after the interval and clearing on the reply.
+3. Attempt a send to a do-not-contact lead and see it refused; email a contact on an open deal from their company record, link it to the deal and see OUT-005's NEXT move.
 
-#### OUT-018 — Sending capacity for a whole sales team.
+#### OUT-018 — Sending capacity for a whole sales team
 
-Orbit carries the sending volume of the declared team (`seed.json → limits.operators`, 25 users) on separate per-user budgets, so one SDR's sequences never use up another rep's capacity or their own one-to-one replies. The values in this clause are the target. Today's `seed.json → limits` values (`outboundMessagesPerMinute: 3` for the whole deployment and `outboundMessagesPerOperatorPerRollingDay: 100`) are current limits that this clause replaces as build work. `seed.json` keeps declaring the values in force, marked `estimated-until-load-tested` until the acceptance load journey below passes.
+*Tier:* Core
+
+**Requirement.** Orbit carries the sending volume of the declared team (`seed.json → limits.operators`, 25 users) on separate per-user budgets, so one SDR's sequences never use up another rep's capacity or their own one-to-one replies. The values in this clause are the target. Today's `seed.json → limits` values (`outboundMessagesPerMinute: 3` for the whole deployment and `outboundMessagesPerOperatorPerRollingDay: 100`) are current limits that this clause replaces as build work. `seed.json` keeps declaring the values in force, marked `estimated-until-load-tested` until the acceptance load journey below passes.
 
 **Per-user budgets.** Each user has two rolling 24-hour budgets, counted per provider-submitted message:
 - sequence email (SEQUENCE-001, SEQUENCE-003 and AUTO-001 enrollments): 500 per user by default, the volume of an incumbent Professional seat;
@@ -438,11 +1091,18 @@ An administrator can lower either budget per user or per team, and raise it up t
 
 Today every message is one-to-one mail through the shared transport, and these values are in force: each user's one-to-one budget (1,000 a rolling day by default) and the shared rate (100 a minute by default, 4 for each of the 25 declared users) replace the former deployment-wide 3 a minute and 100 per user, and a change applies to the next claim. Until TEAM-005 adds the administrator role, the installation owner sets each user's one-to-one budget, up to the shared rate's daily capacity, and the shared rate, and each change is audited with the owner, the old and new values and the time; per-team budgets come with TEAM-005's teams. A held message names the limit that stopped it with its value, and the time it may be sent. Settings → Sending capacity shows each user their own budget used and remaining, and the owner every user's. SEQUENCE-001, SEQUENCE-003 and AUTO-001 inherit the sequence budget and pace, one-to-one priority, the 75% sequence share and fair draining; OUT-013 inherits per-mailbox pacing, provider quota and `Retry-After` deferral and mailbox usage in the administrator's view. `seed.json` declares 100 a minute and 1,000 a user per rolling day, still marked `estimated-until-load-tested`: no measured submission latency is claimed until the acceptance load journey runs.
 
-**Acceptance:** With 12 users (nine AEs, two SDRs and one manager) sending through Gmail and Microsoft 365 mailboxes and the shared transport, in one business morning each user approves 40 one-to-one messages while two SDRs each approve a 100-recipient, four-step SEQUENCE-003 batch. Verify that every one-to-one message is submitted within 60 seconds of its approval while the batches drain; that each SDR's 100 first steps are submitted within the business day inside their own sequence budget, interleaved with the other SDR's; and that no deployment-wide throttle delays a mailbox send. Inject a provider 429 for one mailbox and see only that mailbox's mail deferred, visibly, until its `Retry-After`. Lower one SDR's sequence budget to 50: only that SDR's remaining steps defer, visibly, naming the limit and the next permitted time, while the other SDR's steps and everyone's one-to-one mail continue. Record the measured submission latencies at the declared 25-user capacity before `seed.json` drops `estimated-until-load-tested`.
+**Acceptance.**
+1. With 12 users (nine AEs, two SDRs and one manager) sending through Gmail and Microsoft 365 mailboxes and the shared transport, in one business morning each user approves 40 one-to-one messages while two SDRs each approve a 100-recipient, four-step SEQUENCE-003 batch.
+2. Verify that every one-to-one message is submitted within 60 seconds of its approval while the batches drain; that each SDR's 100 first steps are submitted within the business day inside their own sequence budget, interleaved with the other SDR's; and that no deployment-wide throttle delays a mailbox send.
+3. Inject a provider 429 for one mailbox and see only that mailbox's mail deferred, visibly, until its `Retry-After`.
+4. Lower one SDR's sequence budget to 50: only that SDR's remaining steps defer, visibly, naming the limit and the next permitted time, while the other SDR's steps and everyone's one-to-one mail continue.
+5. Record the measured submission latencies at the declared 25-user capacity before `seed.json` drops `estimated-until-load-tested`.
 
-#### OUT-019 — To, CC and BCC, reply and reply all.
+#### OUT-019 — To, CC and BCC, reply and reply all
 
-**Fields.** Every one-to-one composer and every reply has To, CC and BCC fields. That covers OUT-017 composes from any record, ACTION-003 drafts, OUT-013 mailbox sends and the reply after a CAPTURE-012 acceptance. Autocomplete offers active users and the contacts the user may see under TEAM-005. The draft (ACTION-004) stores the three ordered lists, and changing any of them marks a reviewed draft stale (ACTION-005).
+*Tier:* Core
+
+**Requirement.** **Fields.** Every one-to-one composer and every reply has To, CC and BCC fields. That covers OUT-017 composes from any record, ACTION-003 drafts, OUT-013 mailbox sends and the reply after a CAPTURE-012 acceptance. Autocomplete offers active users and the contacts the user may see under TEAM-005. The draft (ACTION-004) stores the three ordered lists, and changing any of them marks a reviewed draft stale (ACTION-005).
 
 **Who can be a recipient.**
 - A contact is checked against RECORD-012 at approval and again at dispatch (OUT-009). A do-not-contact recipient in any field blocks the send. The refusal names that recipient and the reason and offers to remove them, which re-renders the message for a fresh review; Orbit never drops a recipient silently. An address that belongs to a contact the user cannot see is checked the same way without revealing that record.
@@ -470,11 +1130,19 @@ Before multi-recipient sending ships, it must satisfy OUT-015’s exact-identity
 
 Before sequence steps with CC ship, a genuine reply from any external participant of a step's thread must exit that enrollment under SEQUENCE-002.
 
-**Acceptance:** Through Gmail, receive a captured thread from a contact with two CC'd colleagues, one of them unknown. Reply all from Orbit, adding the team's internal sales engineer in CC and another existing contact in BCC. Verify that the pre-filled To and CC lists leave out the rep's own mailbox; that the unknown colleague needs an explicit choice and becomes a contact with basis `inbound conversation`; that the provider records one message with exactly the approved To, CC and BCC lists and no BCC header in delivered copies; that the reply is logged once on each external contact and once on their company and the linked deal; that the BCC address is absent from the other contacts' timelines and the other recipients' copies; and that a later reply from the CC'd colleague threads back onto their contact, company and deal and closes the awaiting-response obligation. Add a do-not-contact contact in CC and see the send refused, naming them; remove them and approve the re-rendered message. Add a one-off external address and an erased contact's address: the first is sent with its basis recorded, and the second is refused without naming the person. Repeat the reply-all journey through Microsoft 365, and once through `mail.sender.v1` with one-to-one opt-out turned on, where one recipient's opt-out through the message's link stops only that recipient (OUT-020).
+**Acceptance.**
+1. Through Gmail, receive a captured thread from a contact with two CC'd colleagues, one of them unknown.
+2. Reply all from Orbit, adding the team's internal sales engineer in CC and another existing contact in BCC.
+3. Verify that the pre-filled To and CC lists leave out the rep's own mailbox; that the unknown colleague needs an explicit choice and becomes a contact with basis `inbound conversation`; that the provider records one message with exactly the approved To, CC and BCC lists and no BCC header in delivered copies; that the reply is logged once on each external contact and once on their company and the linked deal; that the BCC address is absent from the other contacts' timelines and the other recipients' copies; and that a later reply from the CC'd colleague threads back onto their contact, company and deal and closes the awaiting-response obligation.
+4. Add a do-not-contact contact in CC and see the send refused, naming them; remove them and approve the re-rendered message.
+5. Add a one-off external address and an erased contact's address: the first is sent with its basis recorded, and the second is refused without naming the person.
+6. Repeat the reply-all journey through Microsoft 365, and once through `mail.sender.v1` with one-to-one opt-out turned on, where one recipient's opt-out through the message's link stops only that recipient (OUT-020).
 
-#### OUT-020 — Opt-out links by message type and per-person opt-out.
+#### OUT-020 — Opt-out links by message type and per-person opt-out
 
-**Setting per message type.** In Settings an administrator chooses, separately for each message type, whether Orbit adds opt-out headers (`List-Unsubscribe` and `List-Unsubscribe-Post`, OUT-012) and a visible opt-out link to the message:
+*Tier:* Core
+
+**Requirement.** **Setting per message type.** In Settings an administrator chooses, separately for each message type, whether Orbit adds opt-out headers (`List-Unsubscribe` and `List-Unsubscribe-Post`, OUT-012) and a visible opt-out link to the message:
 - sequence email steps (SEQUENCE-001, SEQUENCE-003) and AUTO-001 workflow email: on by default;
 - one-to-one email and replies (OUT-017, OUT-019, ACTION-003 drafts and OUT-009 scheduled one-to-one messages): off by default, as in the incumbent with its data-privacy settings off.
 
@@ -499,21 +1167,36 @@ A user with permission resolves the request by naming the person or people who o
 
 Today Settings → Opt-out links holds the setting for each type, and each change is audited with the user, the old and new values and the time; the page counts the approved unsent messages bound to each state. The installation owner acts for the administrator until TEAM-005. One-to-one email starts off on a new installation; an installation upgraded with users already present keeps one-to-one opt-out on until an administrator changes it, and the page shows that basis (ct, 19 October). Messages approved before the setting existed keep their original unsubscribe group. Through SendGrid, opt-out is the installation's unsubscribe group: SendGrid adds `List-Unsubscribe`, `List-Unsubscribe-Post` and its footer links together, and a message without opt-out carries none of them. A rep's relationship or transactional removal, or addition, marks that draft for review again, and a change of the one-to-one setting does the same for every draft not yet approved (ACTION-005); the approval binds the reviewed state. ct approved the independent single-recipient managed-relay handler on 20 October at 07:15Z. With that approved path implemented and proved, new managed messages that need opt-out carry the installation-origin capability in the visible footer and both list headers, including replies; they do not use the former reply exception to remove opt-out. Approval and dispatch preserve older SendGrid approvals' opt-out-on state when switching to the relay, and approvals predating the setting remain opt-out-on. An explicit opt-out-off approval, including a permitted relationship or transactional removal, stays off. A historical `transport` marking retains the refusal policy; it is never silently treated as an explicit removal. If the managed path cannot carry the approved state, review and dispatch retain “This relay cannot carry your opt-out link yet (OUT-013)”; refusals remain audited and counted in Settings. The handler no longer depends on OUT-013 mailbox sending shipping first. OUT-013 inherits its mailbox reuse; OUT-019 inherits the several-recipient page and unattributed stop requests; SEQUENCE-001, SEQUENCE-003 and AUTO-001 inherit the stored settings, per-step removal, approval binding and per-person stops before those execution paths ship.
 
-**Acceptance:** On the managed relay, turn one-to-one opt-out on and approve a single-recipient message: inspect the reviewed footer and the exact submitted `List-Unsubscribe` URL and `List-Unsubscribe-Post: List-Unsubscribe=One-Click`, all bound to the same capability at `AUTH_ORIGIN`. Change the type setting after approval and verify the approved unsent state and Settings counts remain unchanged. Check a new-installation default, an established-installation upgrade, allowed and forbidden removal, explicit addition, a pre-setting approval, a SendGrid opt-out-on approval after a transport switch, an explicit removed/off approval and a historical `transport` marking; none may silently lose its approved opt-out state or refusal. Open the public link and verify GET changes nothing; use the plain POST button and separately the RFC 8058 POST, replay each, and verify only the bound contact is suppressed and all of that contact's scheduled work is canceled atomically, with a different contact's work unchanged and no late dispatch. Try malformed and foreign capabilities and one invalidated by erasure without recipient disclosure or mutation. Round-trip the private capability table through the archive and retain no-expiry behavior. Inspect review, settings, confirmation, unsubscribed and invalid states at 1440 and 390. Relay-edge byte inspection is not live relay delivery qualification.
+**Acceptance.**
+1. On the managed relay, turn one-to-one opt-out on and approve a single-recipient message: inspect the reviewed footer and the exact submitted `List-Unsubscribe` URL and `List-Unsubscribe-Post: List-Unsubscribe=One-Click`, all bound to the same capability at `AUTH_ORIGIN`.
+2. Change the type setting after approval and verify the approved unsent state and Settings counts remain unchanged.
+3. Check a new-installation default, an established-installation upgrade, allowed and forbidden removal, explicit addition, a pre-setting approval, a SendGrid opt-out-on approval after a transport switch, an explicit removed/off approval and a historical `transport` marking; none may silently lose its approved opt-out state or refusal.
+4. Open the public link and verify GET changes nothing; use the plain POST button and separately the RFC 8058 POST, replay each, and verify only the bound contact is suppressed and all of that contact's scheduled work is canceled atomically, with a different contact's work unchanged and no late dispatch.
+5. Try malformed and foreign capabilities and one invalidated by erasure without recipient disclosure or mutation.
+6. Round-trip the private capability table through the archive and retain no-expiry behavior.
+7. Inspect review, settings, confirmation, unsubscribed and invalid states at 1440 and 390.
+8. Relay-edge byte inspection is not live relay delivery qualification. The following execution paths remain inherited acceptance: With the defaults (one-to-one opt-out off, sequence opt-out on), reply all through Gmail (OUT-013) to a three-person buyer thread and verify that the delivered message has no `List-Unsubscribe` header and no opt-out link; send a sequence step to one of them and verify that it carries `List-Unsubscribe`, `List-Unsubscribe-Post: List-Unsubscribe=One-Click` and the link; remove opt-out from one step as relationship mail and see the review show the marking and the delivered step carry neither. Turn one-to-one opt-out on, see the audit entry, and send a three-recipient message through `mail.sender.v1`: verify that it has no one-click header and one link; one recipient opts out on the page with their own address, and only that contact becomes do-not-contact while the other two can still be emailed and keep their scheduled messages; an address not on the message is refused without listing the recipients. Deliver a signed provider unsubscribe event for that message without a single recipient address: verify that nobody becomes do-not-contact, that every recipient's scheduled message and sequence enrollment pauses with the reason shown, that a new message to one of them is refused naming the request, and that a reply to an inbound message one of them sent after the event can be sent. Resolve the request by naming one person: only they become do-not-contact, the others' paused work resumes, and the resolution is recorded with the user and time.
 
-The following execution paths remain inherited acceptance: With the defaults (one-to-one opt-out off, sequence opt-out on), reply all through Gmail (OUT-013) to a three-person buyer thread and verify that the delivered message has no `List-Unsubscribe` header and no opt-out link; send a sequence step to one of them and verify that it carries `List-Unsubscribe`, `List-Unsubscribe-Post: List-Unsubscribe=One-Click` and the link; remove opt-out from one step as relationship mail and see the review show the marking and the delivered step carry neither. Turn one-to-one opt-out on, see the audit entry, and send a three-recipient message through `mail.sender.v1`: verify that it has no one-click header and one link; one recipient opts out on the page with their own address, and only that contact becomes do-not-contact while the other two can still be emailed and keep their scheduled messages; an address not on the message is refused without listing the recipients. Deliver a signed provider unsubscribe event for that message without a single recipient address: verify that nobody becomes do-not-contact, that every recipient's scheduled message and sequence enrollment pauses with the reason shown, that a new message to one of them is refused naming the request, and that a reply to an inbound message one of them sent after the event can be sent. Resolve the request by naming one person: only they become do-not-contact, the others' paused work resumes, and the resolution is recorded with the user and time.
+#### TASK-001 — Assigned prioritized recurring sales tasks
 
-#### TASK-001 — Assigned prioritized recurring sales tasks.
+*Tier:* Core
 
-Reps create contact/company/deal-linked tasks with owner, due date and time, priority, type, notes, recurrence, reminders and open/completed/canceled states. A Today/overdue view and activity calendar support reassignment, rescheduling and completion with attribution. A recurring occurrence is distinct and completion schedules the next one once; cancellation stops future instances. Removing a rep offers an explicit task handover and never leaves due work silently ownerless. A task assigned or reassigned to someone else notifies its new owner once under RECORD-016's assignment notifications.
+**Requirement.** Reps create contact/company/deal-linked tasks with owner, due date and time, priority, type, notes, recurrence, reminders and open/completed/canceled states. A Today/overdue view and activity calendar support reassignment, rescheduling and completion with attribution. A recurring occurrence is distinct and completion schedules the next one once; cancellation stops future instances. Removing a rep offers an explicit task handover and never leaves due work silently ownerless. A task assigned or reassigned to someone else notifies its new owner once under RECORD-016's assignment notifications.
 
 Personal email, push and Slack reminders remain visibly unavailable until NOTIFY-003 ships those channels. INTEGRATE-005’s administrator-routed due-work channel notices do not claim personal reminder preferences. Slack-created internal tasks retain the mapped operator, source Slack and single-use action identity.
 
-**Acceptance:** Personal email, push and Slack reminders remain visibly unavailable until NOTIFY-003 ships those channels. INTEGRATE-005’s administrator-routed due-work channel notices do not claim personal reminder preferences. Slack-created internal tasks retain the mapped operator, source Slack and single-use action identity. Exercise this inherited behavior through its public door.  Create a high-priority due call and weekly follow-up, assign/reassign and complete from the daily task view, see the new assignee notified once, restart around recurrence and verify one next occurrence; remove the rep and hand over remaining tasks.
+**Acceptance.**
+1. Personal email, push and Slack reminders remain visibly unavailable until NOTIFY-003 ships those channels.
+2. INTEGRATE-005’s administrator-routed due-work channel notices do not claim personal reminder preferences.
+3. Slack-created internal tasks retain the mapped operator, source Slack and single-use action identity.
+4. Exercise this inherited behavior through its public door.
+5. Create a high-priority due call and weekly follow-up, assign/reassign and complete from the daily task view, see the new assignee notified once, restart around recurrence and verify one next occurrence; remove the rep and hand over remaining tasks.
 
-#### NOTIFY-003 — Reminders that reach an absent seller.
+#### NOTIFY-003 — Reminders that reach an absent seller
 
-An operator chooses due/overdue task reminders and a daily sales digest by email and mobile push, with Slack as an optional team destination. Reminders honor working hours, timezone, recipient preferences and current access, deduplicate per obligation/due revision, stop on completion and escalate overdue work to an explicitly configured manager. The app shows queued, acknowledged, failed and uncertain attempts; provider acknowledgment is not receipt. A missed scheduled run is visible and resumed without a burst of obsolete reminders.
+*Tier:* Core
+
+**Requirement.** An operator chooses due/overdue task reminders and a daily sales digest by email and mobile push, with Slack as an optional team destination. Reminders honor working hours, timezone, recipient preferences and current access, deduplicate per obligation/due revision, stop on completion and escalate overdue work to an explicitly configured manager. The app shows queued, acknowledged, failed and uncertain attempts; provider acknowledgment is not receipt. A missed scheduled run is visible and resumed without a burst of obsolete reminders.
 
 Before email, push or Slack notifications ship, they must deliver RECORD-017's mention notifications by each mentioned user's preference, once per entry, task or handoff, and withdraw an undelivered one when its entry is deleted.
 
@@ -521,11 +1204,19 @@ INTEGRATE-005’s Slack safety rules govern this clause. Personal reminders, dig
 
 NOTIFY-003 carries REPORT-002's dashboard schedule delivery model when it ships: queued, sent, failed and uncertain attempts, recipient-specific access checked at send time, retry of only an explicitly failed recipient, and no resend after an uncertain provider answer. Keep the implemented dashboard schedule definitions and Slack delivery history; this inheritance does not claim that dashboard email delivery exists today.
 
-**Acceptance:** INTEGRATE-005’s Slack safety rules govern this clause. Personal reminders, digests and RECORD-017 mentions use only opt-in DMs to explicitly mapped operators with current record access. An authorized DM may name a contact, but never entry text, amounts or contact details; private entries get generic notices. Withdraw an undelivered mention when its source is deleted. Exercise this inherited behavior through its public door.  Leave Orbit closed, advance a task reminder/digest schedule, receive it in a real mailbox/device and inspect its evidence link; complete or reassign the task before dispatch, simulate a provider failure and restart without stale or duplicate reminders.
+**Acceptance.**
+1. INTEGRATE-005’s Slack safety rules govern this clause.
+2. Personal reminders, digests and RECORD-017 mentions use only opt-in DMs to explicitly mapped operators with current record access.
+3. An authorized DM may name a contact, but never entry text, amounts or contact details; private entries get generic notices.
+4. Withdraw an undelivered mention when its source is deleted.
+5. Exercise this inherited behavior through its public door.
+6. Leave Orbit closed, advance a task reminder/digest schedule, receive it in a real mailbox/device and inspect its evidence link; complete or reassign the task before dispatch, simulate a provider failure and restart without stale or duplicate reminders.
 
-#### SEQUENCE-001 — Multi-step sales sequences.
+#### SEQUENCE-001 — Multi-step sales sequences
 
-Any user whose role holds the sequence-authoring permission (TEAM-005; by default sales-admin, manager and seller) defines versioned ordered email, wait, call-task, meeting and manual LinkedIn steps, conditions and business-day delays, keeps the sequence private or shares it with a team or the workspace, and can copy a shared one to edit; a manager can lock a shared sequence against edits. Sends draw on each sender's OUT-018 sequence budget and pace. Email steps are addressed To the enrolled contact, and a step may CC named internal colleagues only (OUT-019). Email steps carry opt-out headers and the link while OUT-020's sequence setting is on (the default); the author may remove them from one step as relationship mail where OUT-020 allows it. Enrollment requires no deal: any contact or lead with an email address can be enrolled, and a deal-less enrollment's messages and replies land on the contact and company timelines under OUT-017. Each later email step is set by the author either to reply in the thread of the enrollment's previous sent step (the same subject with `Re:`, and `In-Reply-To`/`References` to that message) or to start a new subject. The review shows which. A threaded step whose earlier step was never sent starts a new thread, and the review says so. A rep reviews enrollment and the fully rendered exact email content for each recipient and step, individually or as one reviewed batch of up to 100 contacts under SEQUENCE-003; all external emails keep OUT-001 approval and revision fences. Call and LinkedIn steps require a human action and recorded completion, with no protected-network scraping or auto-posting. The enrollment view shows current step, owner, due time, history, paused/failed state and remaining approved work; bulk enrollment cannot bypass individual contact permission.
+*Tier:* Core
+
+**Requirement.** Any user whose role holds the sequence-authoring permission (TEAM-005; by default sales-admin, manager and seller) defines versioned ordered email, wait, call-task, meeting and manual LinkedIn steps, conditions and business-day delays, keeps the sequence private or shares it with a team or the workspace, and can copy a shared one to edit; a manager can lock a shared sequence against edits. Sends draw on each sender's OUT-018 sequence budget and pace. Email steps are addressed To the enrolled contact, and a step may CC named internal colleagues only (OUT-019). Email steps carry opt-out headers and the link while OUT-020's sequence setting is on (the default); the author may remove them from one step as relationship mail where OUT-020 allows it. Enrollment requires no deal: any contact or lead with an email address can be enrolled, and a deal-less enrollment's messages and replies land on the contact and company timelines under OUT-017. Each later email step is set by the author either to reply in the thread of the enrollment's previous sent step (the same subject with `Re:`, and `In-Reply-To`/`References` to that message) or to start a new subject. The review shows which. A threaded step whose earlier step was never sent starts a new thread, and the review says so. A rep reviews enrollment and the fully rendered exact email content for each recipient and step, individually or as one reviewed batch of up to 100 contacts under SEQUENCE-003; all external emails keep OUT-001 approval and revision fences. Call and LinkedIn steps require a human action and recorded completion, with no protected-network scraping or auto-posting. The enrollment view shows current step, owner, due time, history, paused/failed state and remaining approved work; bulk enrollment cannot bypass individual contact permission.
 
 Before enrollments ship, they must satisfy SEQUENCE-002: an enrollment exits atomically on a genuine reply (including one from an external participant of a step's thread), a meeting booking, a stage change, a won or lost close, an unsubscribe, a permanent bounce or a human stop; reassignment, revoked permission and mailbox disconnect pause it visibly with the reason; and restart, replay or a late job never revives an exited enrollment.
 
@@ -537,11 +1228,14 @@ Before sequence sending ships, each step must satisfy OUT-020's per-type setting
 
 Before sequence reports ship, they must carry REPORT-001's enrollment-level sequence reply reports: for each sequence version, step and enrolling rep, the enrollments, sent, delivered, genuine replies, meetings booked and stage/revenue outcomes are counted separately under SEQUENCE-002, an inferred open never counts as success and an automatic reply never counts as a reply, and each figure drills through to the authorized enrollments behind it. REPORT-001's own requirement for sequence reports stays.
 
-**Acceptance:** As a seller, create and share with the team a five-step email/call/manual-LinkedIn sequence whose second email step is threaded and CCs the account's sales engineer, and see a read-only user refused authoring; enroll eligible contacts with and without deals with exact-content approvals, complete the manual task, advance business time and restart mid-step; verify one action per due step, the second email arriving in the first email's thread with the internal CC, OUT-018 per-user budget enforcement and no unapproved send.
+**Acceptance.**
+1. As a seller, create and share with the team a five-step email/call/manual-LinkedIn sequence whose second email step is threaded and CCs the account's sales engineer, and see a read-only user refused authoring; enroll eligible contacts with and without deals with exact-content approvals, complete the manual task, advance business time and restart mid-step; verify one action per due step, the second email arriving in the first email's thread with the internal CC, OUT-018 per-user budget enforcement and no unapproved send.
 
-#### SEQUENCE-002 — Immediate sequence exits and accountable outcomes.
+#### SEQUENCE-002 — Immediate sequence exits and accountable outcomes
 
-Before every step and atomically when a stop arrives, an enrollment exits on a genuine reply (from the enrolled contact or, on a step's thread, from any external participant such as a CC'd colleague, under OUT-019), meeting booking, configured deal-stage change, won/lost outcome, unsubscribe, permanent bounce or human stop. An automatic reply does not count as a successful customer response. Reassignment, revoked permissions and mailbox disconnect pause with a reason. Reports distinguish delivered messages, replies, booked meetings and actual stage/revenue advancement; an open does not count as success. Restart, replay or a late scheduled job cannot revive an exited enrollment.
+*Tier:* Core
+
+**Requirement.** Before every step and atomically when a stop arrives, an enrollment exits on a genuine reply (from the enrolled contact or, on a step's thread, from any external participant such as a CC'd colleague, under OUT-019), meeting booking, configured deal-stage change, won/lost outcome, unsubscribe, permanent bounce or human stop. An automatic reply does not count as a successful customer response. Reassignment, revoked permissions and mailbox disconnect pause with a reason. Reports distinguish delivered messages, replies, booked meetings and actual stage/revenue advancement; an open does not count as success. Restart, replay or a late scheduled job cannot revive an exited enrollment.
 
 Before sequence exits ship, they must satisfy OUT-015: only a genuine attributed human reply exits on reply; automatic mail and inferred open/click reports never do.
 
@@ -549,11 +1243,14 @@ Until SEQUENCE-001 enrollments exist, these exits govern each reviewed single sc
 
 SEQUENCE-001 and SEQUENCE-003 inherit enrollment exits, pause with a reason on reassignment, revoked permission and mailbox disconnect, and no revival of an exited enrollment; AUTO-001 inherits them for workflow-triggered enrollments; OUT-019 inherits exits on a genuine reply from any external participant of a step's thread; OUT-013 inherits mailbox-disconnect pause and provider-thread exits; REPORT-001 reports these outcomes for reviewed single scheduled messages, and SEQUENCE-001 inherits enrollment-level sequence outcome reporting. Each must pass this clause's acceptance before shipping.
 
-**Acceptance:** Race an approved due step with each reply/booking/stage/stop event, including a reply on the step's thread from a colleague the buyer CC'd, restart and replay; verify no prohibited send, one exit reason and separate reply/meeting/deal-outcome measures.
+**Acceptance.**
+1. Race an approved due step with each reply/booking/stage/stop event, including a reply on the step's thread from a colleague the buyer CC'd, restart and replay; verify no prohibited send, one exit reason and separate reply/meeting/deal-outcome measures.
 
-#### SEQUENCE-003 — Bulk enrollment with one reviewed batch approval.
+#### SEQUENCE-003 — Bulk enrollment with one reviewed batch approval
 
-A rep or SDR with the sequence-enrollment permission (TEAM-005) selects up to 100 contacts or leads from a saved list, search result or report drill-through (RECORD-014), with or without deals (OUT-017), and enrolls them into one sequence version in a single action. Before anything sends, Orbit renders every email step for every selected recipient with current merge data and shows one batch review. It lists each recipient's eligibility (do-not-contact, missing email, already enrolled, owner mismatch, missing variable, permission), with excluded recipients and their reasons. It gives a navigable list of every rendered message, each opening to its exact recipient, subject, body, signature, attachments, tracking state (OUT-016) and send window, and it shows the schedule each step will follow. The rep may remove recipients or edit any message before approving; an edit re-renders only that item.
+*Tier:* Core
+
+**Requirement.** A rep or SDR with the sequence-enrollment permission (TEAM-005) selects up to 100 contacts or leads from a saved list, search result or report drill-through (RECORD-014), with or without deals (OUT-017), and enrolls them into one sequence version in a single action. Before anything sends, Orbit renders every email step for every selected recipient with current merge data and shows one batch review. It lists each recipient's eligibility (do-not-contact, missing email, already enrolled, owner mismatch, missing variable, permission), with excluded recipients and their reasons. It gives a navigable list of every rendered message, each opening to its exact recipient, subject, body, signature, attachments, tracking state (OUT-016) and send window, and it shows the schedule each step will follow. The rep may remove recipients or edit any message before approving; an edit re-renders only that item.
 
 One approval of that batch is the OUT-001 approval for every message it lists, bound to the sequence version and a content hash of each rendered message. After approval each due step sends on its own schedule with no further click whenever its re-render at dispatch equals the approved bytes. If merge data, the template, the step content or the recipient's permission changed since approval (OUT-014), only that recipient's step is held as `needs review` with the difference shown, and that enrollment pauses at that step while the rest of the batch continues. Each sender's OUT-018 sequence budget and pace, mailbox limits and the shared-transport rate spread due steps over the next permitted windows in enrollment order, drained fairly across users and never ahead of one-to-one mail, visibly, instead of refusing the batch, silently retrying or merging messages; quiet hours (OUT-008) delay scheduled steps to the next permitted minute.
 
@@ -567,11 +1264,15 @@ Before batch sending ships, each recipient's email step must satisfy OUT-014's t
 
 Before batch sending ships, each recipient's message must satisfy OUT-020's setting, permitted removal, exact approval binding and installation-origin capability headers/link, with per-person atomic stops and no revival. If its transport cannot carry that approved state, the managed-relay refusal remains applicable.
 
-**Acceptance:** From a saved list of 50 eligible contacts (ten of them on no deal) and 3 ineligible contacts, enroll all of them in a five-step sequence with four email steps in one action; inspect the excluded reasons, open any rendered message, edit one and remove one, then approve once. Advance business time and verify one provider submission per due email step per remaining recipient with no further approval, a per-rep limit of 40 per day deferring the rest visibly to the next window, a merge-field change on one contact holding only that recipient's step for review, and a workflow-triggered contact waiting in the owner's approval queue until its batch is approved.
+**Acceptance.**
+1. From a saved list of 50 eligible contacts (ten of them on no deal) and 3 ineligible contacts, enroll all of them in a five-step sequence with four email steps in one action; inspect the excluded reasons, open any rendered message, edit one and remove one, then approve once.
+2. Advance business time and verify one provider submission per due email step per remaining recipient with no further approval, a per-rep limit of 40 per day deferring the rest visibly to the next window, a merge-field change on one contact holding only that recipient's step for review, and a workflow-triggered contact waiting in the owner's approval queue until its batch is approved.
 
-#### AUTO-001 — Configurable sales workflows and visible execution.
+#### AUTO-001 — Configurable sales workflows and visible execution
 
-Admins build versioned trigger/condition/action workflows for record changes, activities, form submissions (FORM-001), scheduled stale checks and authorized enrichment signals. Actions assign an owner to a deal, contact, lead, company or custom-object record (fixed, the account owner, meaning the company owner under RECORD-016, or round-robin rotation across a team that skips inactive users and records each choice), create/remind tasks, update records under AUTO-002 (set, copy, stamp and clear fields, move a deal's stage and create associated deals, leads and custom-object records, applied without a per-record proposal), notify a team, enroll into an approved sequence through the owner's SEQUENCE-003 batch approval queue, or call a declared webhook. A preview and dry run show affected records and each external effect; human approval binds external content (OUT-001) and, per record, the material changes AUTO-002 lists: deal amount, products, quote values and forecast category, close date, and moving a deal to won or lost or reopening it. Every run retains owner, source evidence, version, due time, stop condition, attempts and outcome; loops, rate limits, revoked authority, errors and dead letters remain visible and manually resumable.
+*Tier:* Core
+
+**Requirement.** Admins build versioned trigger/condition/action workflows for record changes, activities, form submissions (FORM-001), scheduled stale checks and authorized enrichment signals. Actions assign an owner to a deal, contact, lead, company or custom-object record (fixed, the account owner, meaning the company owner under RECORD-016, or round-robin rotation across a team that skips inactive users and records each choice), create/remind tasks, update records under AUTO-002 (set, copy, stamp and clear fields, move a deal's stage and create associated deals, leads and custom-object records, applied without a per-record proposal), notify a team, enroll into an approved sequence through the owner's SEQUENCE-003 batch approval queue, or call a declared webhook. A preview and dry run show affected records and each external effect; human approval binds external content (OUT-001) and, per record, the material changes AUTO-002 lists: deal amount, products, quote values and forecast category, close date, and moving a deal to won or lost or reopening it. Every run retains owner, source evidence, version, due time, stop condition, attempts and outcome; loops, rate limits, revoked authority, errors and dead letters remain visible and manually resumable.
 
 Before workflow-triggered enrollment or workflow email ships, it must satisfy SEQUENCE-002's exits, pauses with a reason and no-revival rules.
 
@@ -579,11 +1280,14 @@ Before workflow email ships, it must satisfy OUT-018: each sender's sequence bud
 
 Before workflow email ships, it must satisfy OUT-020's setting, permitted removal, exact approval binding and installation-origin capability headers/link, with per-person atomic stops and no revival. If its transport cannot carry that approved state, the managed-relay refusal remains applicable.
 
-**Acceptance:** Preview and activate a stale-deal rule, trigger it twice, change the record and revoke permission before dispatch; inspect one authorized task/notification, one AUTO-002 field write applied without a proposal, no stale field write/send, and an actionable failed webhook run after restart.
+**Acceptance.**
+1. Preview and activate a stale-deal rule, trigger it twice, change the record and revoke permission before dispatch; inspect one authorized task/notification, one AUTO-002 field write applied without a proposal, no stale field write/send, and an actionable failed webhook run after restart.
 
-#### AUTO-002 — Workflow record updates applied without per-record review.
+#### AUTO-002 — Workflow record updates applied without per-record review
 
-An active AUTO-001 workflow changes CRM data with nobody clicking anything, as HubSpot's "Edit record" action and Pipedrive's update and create actions do. Its triggers include a record created or changed (including a deal entering a stage or being won), an activity logged (RECORD-010, CAPTURE-010, CALL-001), a form submission (FORM-001) and a schedule.
+*Tier:* Core
+
+**Requirement.** An active AUTO-001 workflow changes CRM data with nobody clicking anything, as HubSpot's "Edit record" action and Pipedrive's update and create actions do. Its triggers include a record created or changed (including a deal entering a stage or being won), an activity logged (RECORD-010, CAPTURE-010, CALL-001), a form submission (FORM-001) and a schedule.
 
 **Record-changing actions.** Each action names its target: the triggering record, or associated records chosen explicitly. These are the primary company, all or the primary associated contacts, contacts holding a named deal role (RECORD-015), the company's or contact's deals filtered by pipeline and stage, or a related custom-object record (RECORD-014). On each target an action can:
 - set a field to a stated value, including picklist fields such as lead status and lifecycle stage, checkboxes, numbers and users;
@@ -614,41 +1318,65 @@ For each such change, the run creates one approval item for the record's owner, 
 
 **Migration.** MIGRATE-001/002/003 list each source workflow's record-update and record-create actions against these actions. Each is named as mapped, needing approval under this clause, or having no Orbit equivalent. Nothing is activated without an administrator's preview.
 
-**Acceptance:** As a sales admin, activate three workflows, each after its preview shows per-record current and resulting values: "deal created" sets the primary contact's lead status to "Open deal" and the company's lifecycle stage to "Opportunity"; "deal closed won" sets the company and all its contacts to "Customer", stamps "Became customer" with the run date and creates an onboarding task; "meeting logged on a deal in Qualified" moves the deal to "Meeting held". Create a deal, close another won and log a meeting; verify every field value and the stage move are written with no proposal, each with a timeline entry naming the workflow, its version and the trigger, and replay a trigger to see no second write, task or record. Close a deal won whose company lifecycle stage a user edited after the trigger and verify that write is skipped as changed by that user while the contacts and task are updated. Activate a rule that sets a deal amount and verify an approval item waits for the deal owner, with no change until it is accepted. As a manager without the grant to edit a protected field, try to activate a rule writing it and see the refusal naming the field; reduce a sales admin's grant after activation and see the next run refuse that action visibly. Chain two workflows into a loop and see it stop at the depth limit. Undo the closed-won run after a user edited one contact; verify the other values are restored, that contact is listed as skipped and the stage history records the undo. Restart mid-run and resume without a duplicate write.
+**Acceptance.**
+1. As a sales admin, activate three workflows, each after its preview shows per-record current and resulting values: "deal created" sets the primary contact's lead status to "Open deal" and the company's lifecycle stage to "Opportunity"; "deal closed won" sets the company and all its contacts to "Customer", stamps "Became customer" with the run date and creates an onboarding task; "meeting logged on a deal in Qualified" moves the deal to "Meeting held".
+2. Create a deal, close another won and log a meeting; verify every field value and the stage move are written with no proposal, each with a timeline entry naming the workflow, its version and the trigger, and replay a trigger to see no second write, task or record.
+3. Close a deal won whose company lifecycle stage a user edited after the trigger and verify that write is skipped as changed by that user while the contacts and task are updated.
+4. Activate a rule that sets a deal amount and verify an approval item waits for the deal owner, with no change until it is accepted.
+5. As a manager without the grant to edit a protected field, try to activate a rule writing it and see the refusal naming the field; reduce a sales admin's grant after activation and see the next run refuse that action visibly.
+6. Chain two workflows into a loop and see it stop at the depth limit.
+7. Undo the closed-won run after a user edited one contact; verify the other values are restored, that contact is listed as skipped and the stage history records the undo.
+8. Restart mid-run and resume without a duplicate write.
 
-#### CALL-001 — Provider-backed click-to-call.
+#### CALL-001 — Provider-backed click-to-call
 
-An authorized rep clicks a contact phone number and calls through Twilio or Aircall from the deal. Connection, ringing, answered, no-answer, canceled and failed outcomes remain distinct; provider callback identities are idempotent. The call log retains rep, participants, time, duration, disposition, next action and deal/contact links. Calls a rep places or takes in the connected Twilio or Aircall app outside Orbit, including inbound calls and callbacks, are logged once from the provider's call events onto the contact matched by exact phone number and, when that contact has one open deal, that deal; a number matching no contact, several contacts or several open deals is held for the rep's review. Calling respects blocked numbers and provider permissions; no failed call is represented as a completed conversation. Provisioning, US number verification and provider approval are explicit setup work. It carries the calls on BOUNDARY-001's US buyer walk: Twilio and Aircall remain the PSTN carrier, and a provider not yet connected or approved appears as unresolved setup while manual call logging stays usable.
+*Tier:* Core
+
+**Requirement.** An authorized rep clicks a contact phone number and calls through Twilio or Aircall from the deal. Connection, ringing, answered, no-answer, canceled and failed outcomes remain distinct; provider callback identities are idempotent. The call log retains rep, participants, time, duration, disposition, next action and deal/contact links. Calls a rep places or takes in the connected Twilio or Aircall app outside Orbit, including inbound calls and callbacks, are logged once from the provider's call events onto the contact matched by exact phone number and, when that contact has one open deal, that deal; a number matching no contact, several contacts or several open deals is held for the rep's review. Calling respects blocked numbers and provider permissions; no failed call is represented as a completed conversation. Provisioning, US number verification and provider approval are explicit setup work. It carries the calls on BOUNDARY-001's US buyer walk: Twilio and Aircall remain the PSTN carrier, and a provider not yet connected or approved appears as unresolved setup while manual call logging stays usable.
 
 Before provider calls ship, they must carry REPORT-001's rep activities: each provider-logged call counts once as a call by its rep, dated when it happened, with answered, no-answer, canceled and failed outcomes kept distinct so a failed call never counts as a completed conversation, and drill-through opens the linked call.
 
-**Acceptance:** Connect Twilio and Aircall in turn, initiate a call from a real deal to an authorized test number, record answered/no-answer/failed dispositions, replay callbacks and revoke the connection; verify one truthful linked call each time. Place one call and receive one inbound call in the Aircall app outside Orbit and verify each is logged once on the matched contact and deal, with an unknown number held for review. As part of BOUNDARY-001's walk, call the walk's USD deal contact and inspect the provider link, the carrier boundary and an unapproved provider shown as unresolved setup with manual logging still available. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+**Acceptance.**
+1. Connect Twilio and Aircall in turn, initiate a call from a real deal to an authorized test number, record answered/no-answer/failed dispositions, replay callbacks and revoke the connection; verify one truthful linked call each time.
+2. Place one call and receive one inbound call in the Aircall app outside Orbit and verify each is logged once on the matched contact and deal, with an unknown number held for review.
+3. As part of BOUNDARY-001's walk, call the walk's USD deal contact and inspect the provider link, the carrier boundary and an unapproved provider shown as unresolved setup with manual logging still available.
+4. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
-#### CALL-002 — Consented recordings and cited transcripts.
+#### CALL-002 — Consented recordings and cited transcripts
 
-With the business's selected recording policy and the participants' required consent, calls and meetings attach provider recordings and timecoded transcripts to the right deal/contact under current access. A recording refused or unavailable is stated plainly; no transcript is fabricated. Reps review speaker identity, recap, commitments and proposed CRM changes against cited timestamps before accepting material updates or sending follow-up. Erasure covers stored recordings, transcripts, derived notes and provider-deletion requests, showing external completion separately. Consented transcript lines become AGENT-002 risk evidence with their timestamps. On BOUNDARY-001's US buyer walk, recordings and transcripts stay with the call or meeting provider and only consented, cited evidence reaches the deal; an unavailable recording provider appears as unresolved setup.
+*Tier:* Core
+
+**Requirement.** With the business's selected recording policy and the participants' required consent, calls and meetings attach provider recordings and timecoded transcripts to the right deal/contact under current access. A recording refused or unavailable is stated plainly; no transcript is fabricated. Reps review speaker identity, recap, commitments and proposed CRM changes against cited timestamps before accepting material updates or sending follow-up. Erasure covers stored recordings, transcripts, derived notes and provider-deletion requests, showing external completion separately. Consented transcript lines become AGENT-002 risk evidence with their timestamps. On BOUNDARY-001's US buyer walk, recordings and transcripts stay with the call or meeting provider and only consented, cited evidence reaches the deal; an unavailable recording provider appears as unresolved setup.
 
 Approved engineering policy: implement consented recording and transcript evidence using a business-authorized Twilio or Aircall account; enable only an adapter with verified recording, consent and deletion capabilities. Recording starts off for every call and meeting. Apply the stricter applicable participant-state requirement, using affirmative consent from every participant as the product default, including when location is unknown. Record the disclosure version, participants, consent time and evidence; adding a participant pauses recording until their consent is recorded. Refusal permits an unrecorded call and manual notes, never a fabricated transcript. Recording consent is separate from TCPA authority to place a call; check applicable consent, do-not-call and suppression before calling, with no assumed automated or prerecorded calling authority. Keep recordings and transcripts at the selected provider, retain only protected references and consented cited evidence locally, and default provider retention to 90 days with shorter administrator settings supported. Provider access uses current record permissions. Erasure immediately removes local access and derivatives, requests provider deletion and visibly tracks pending, failed and confirmed outcomes; never report completion from request acceptance alone. State-law, provider-contract and non-US consent qualification remain explicit gaps.
 
-**Acceptance:** Record an authorized test call, decline consent on another, read timestamped transcript evidence from the deal, correct a speaker and approve a stale-guarded proposal; deny an unauthorized user and erase local and provider copies. Contradict a recorded commitment in a transcript and inspect AGENT-002's cited conflict. As part of BOUNDARY-001's walk, record a consented call on the walk's USD deal and inspect the provider link and an unavailable recording provider shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
-
-Exercise consent refusal, an unknown state, a newly joined participant, withdrawal, expired retention, inaccessible provider media, speaker correction, stale acceptance, unauthorized playback, transcript-risk citations and local and provider deletion outcomes, while retaining every original buyer-walk obligation.
+**Acceptance.**
+1. Record an authorized test call, decline consent on another, read timestamped transcript evidence from the deal, correct a speaker and approve a stale-guarded proposal; deny an unauthorized user and erase local and provider copies.
+2. Contradict a recorded commitment in a transcript and inspect AGENT-002's cited conflict.
+3. As part of BOUNDARY-001's walk, record a consented call on the walk's USD deal and inspect the provider link and an unavailable recording provider shown as unresolved setup.
+4. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+5. Exercise consent refusal, an unknown state, a newly joined participant, withdrawal, expired retention, inaccessible provider media, speaker correction, stale acceptance, unauthorized playback, transcript-risk citations and local and provider deletion outcomes, while retaining every original buyer-walk obligation.
 
 ### Sales management
 
-#### REPORT-001 — Sales dashboards and saved reports.
+#### REPORT-001 — Sales dashboards and saved reports
 
-Managers and reps view pipeline value/count by pipeline/stage/owner, won/lost reasons, revenue, conversion, win rate, stage age, sales cycle, rep activities, task completion, sequence replies and bookings. Save, share and export filtered/grouped reports with period, timezone, source fields, definitions, currency, missing data and freshness disclosed. Drill-through reconciles aggregates to authorized deals and activities; access changes cannot leak hidden amounts through totals. Historical snapshots preserve their definition and distinguish late-arriving data from the original measured result. REPORT-002 composes these reports into shared, filtered and scheduled dashboards.
+*Tier:* Core
+
+**Requirement.** Managers and reps view pipeline value/count by pipeline/stage/owner, won/lost reasons, revenue, conversion, win rate, stage age, sales cycle, rep activities, task completion, sequence replies and bookings. Save, share and export filtered/grouped reports with period, timezone, source fields, definitions, currency, missing data and freshness disclosed. Drill-through reconciles aggregates to authorized deals and activities; access changes cannot leak hidden amounts through totals. Historical snapshots preserve their definition and distinguish late-arriving data from the original measured result. REPORT-002 composes these reports into shared, filtered and scheduled dashboards.
 
 Before sequence reports ship, they must show SEQUENCE-002's delivered, reply, meeting and stage/revenue measures separately and never count an open as success.
 
 Today follow-up outcomes measure reviewed single scheduled messages (OUT-009), with SEQUENCE-002's delivered, genuine reply, meeting and stage/revenue measures counted separately; an inferred open never counts as success and an automatic reply never counts as a reply. The installation owner administers the sharing of every report until TEAM-005, and until roles exist every full operator reads every record while a collaborator sees only their grants. SEQUENCE-001 inherits enrollment-level sequence reply reports; TEAM-005 inherits manager team scope, team sharing of reports and restricted-seller totals; RECORD-016 inherits grouping by contact, lead, company and custom-object owners with "Unassigned"; CALL-001 inherits provider call activity in rep activities; REPORT-002 inherits dashboard composition.
 
-**Acceptance:** Build and save a US monthly report for two pipelines containing won/lost/open deals and rep activities, reconcile every total and reason by drill-through, export and reopen it after access revocation and late evidence.
+**Acceptance.**
+1. Build and save a US monthly report for two pipelines containing won/lost/open deals and rep activities, reconcile every total and reason by drill-through, export and reopen it after access revocation and late evidence.
 
-#### REPORT-002 — Shared sales dashboards.
+#### REPORT-002 — Shared sales dashboards
 
-A manager composes a dashboard from saved REPORT-001 reports and FORECAST-001 forecast views as up to 24 tiles: chart, table, single number or forecast against quota. The tiles sit in a grid that reflows on a phone (MOBILE-001). Dashboard filters apply to every tile that has the field: owner, team, pipeline, a date range in the workspace's US timezone, and any shared report field. A tile that cannot take a filter says so on the tile instead of silently showing unfiltered data.
+*Tier:* Core
+
+**Requirement.** A manager composes a dashboard from saved REPORT-001 reports and FORECAST-001 forecast views as up to 24 tiles: chart, table, single number or forecast against quota. The tiles sit in a grid that reflows on a phone (MOBILE-001). Dashboard filters apply to every tile that has the field: owner, team, pipeline, a date range in the workspace's US timezone, and any shared report field. A tile that cannot take a filter says so on the tile instead of silently showing unfiltered data.
 
 A dashboard is private, shared with named users or teams to view or edit, or shared workspace-wide, under TEAM-005. Sharing grants no record access. Each viewer's tiles, totals and drill-through are computed from the records and fields that viewer may see now, labeled `limited to your access`, with no count or sum of hidden records. Each user picks a default dashboard that opens from Reports; an administrator can set a team default that a user can override.
 
@@ -662,57 +1390,100 @@ Today the installation owner administers dashboard sharing and schedules. Full o
 
 Current delivery gap: the managed mail relay cannot carry PDF/CSV attachments and Orbit has no system notification sender for active operators or collaborators. Email stays paused with no outbound. Weekly recipient-specific email copies, next-send email revocation, queued/sent/failed/uncertain email attempts and email retry/uncertain behavior remain unproven. Slack is a separate destination under ct's 22 October 22:40Z ruling: the installation owner may explicitly enable a saved schedule version for a channel that chose Dashboard ready, regardless of its email recipients. Every new schedule version, restore, reconnect or destination safety suspension leaves Slack paused; it never auto-resumes or replays historical notices. The Worker-native PDF writer supports WinAnsi text and explicitly refuses characters outside that repertoire rather than corrupting an export.
 
-**Acceptance:** INTEGRATE-005 carries only a generic dashboard-ready notice and authenticated link. No PDF, CSV, image, count or sum goes to a Slack channel; the signed-in viewer renders the dashboard under their current access. Exercise this inherited behavior through its public door.  As a manager, build a dashboard with at least four tiles: open pipeline by stage across two pipelines, won/lost reasons this quarter, activities by rep, and forecast against quota. Apply owner, team and date-range filters, share it with the sales team and set it as the team default. Sign in as a restricted rep and verify that the same dashboard opens by default and shows only totals that reconcile with that rep's permitted drill-through, with no hidden count. Schedule a weekly email to the manager and the rep and verify each received copy matches its recipient's access. Delete one source report and see an unavailable tile.
+**Acceptance.**
+1. INTEGRATE-005 carries only a generic dashboard-ready notice and authenticated link.
+2. No PDF, CSV, image, count or sum goes to a Slack channel; the signed-in viewer renders the dashboard under their current access.
+3. Exercise this inherited behavior through its public door.
+4. As a manager, build a dashboard with at least four tiles: open pipeline by stage across two pipelines, won/lost reasons this quarter, activities by rep, and forecast against quota.
+5. Apply owner, team and date-range filters, share it with the sales team and set it as the team default.
+6. Sign in as a restricted rep and verify that the same dashboard opens by default and shows only totals that reconcile with that rep's permitted drill-through, with no hidden count.
+7. Schedule a weekly email to the manager and the rep and verify each received copy matches its recipient's access.
+8. Delete one source report and see an unavailable tile.
 
-#### FORECAST-001 — Weighted forecasts, quotas and revenue schedules.
+#### FORECAST-001 — Weighted forecasts, quotas and revenue schedules
 
-Managers set stage probabilities, forecast categories, per-rep/team monthly or quarterly USD quotas and revenue schedules for one-time and recurring deal lines. Forecasts separate open unweighted value, weighted expected value, committed/best-case/pipeline, closed-won bookings, recurring revenue and quota attainment. Inputs and overrides retain actor, reason, timestamp and an as-of snapshot; stale or missing close dates/probabilities are visible, and sales forecast never claims to be recognized accounting revenue. Weighted value is amount times reviewed probability, independent of engagement score.
+*Tier:* Core
+
+**Requirement.** Managers set stage probabilities, forecast categories, per-rep/team monthly or quarterly USD quotas and revenue schedules for one-time and recurring deal lines. Forecasts separate open unweighted value, weighted expected value, committed/best-case/pipeline, closed-won bookings, recurring revenue and quota attainment. Inputs and overrides retain actor, reason, timestamp and an as-of snapshot; stale or missing close dates/probabilities are visible, and sales forecast never claims to be recognized accounting revenue. Weighted value is amount times reviewed probability, independent of engagement score.
 
 Until TEAM-005 ships team roles and membership, the installation owner acts as forecast administrator and reviews stage inputs, deal overrides, schedules and per-rep monthly or quarterly quotas. Current full operators may read forecasts; collaborators have no forecast access. TEAM-005 inherits real team quota membership, team-scoped access and the rep/team quota comparison in this acceptance. QUOTE-001 inherits product/quote-line linkage and its schedule comparison. These inheritances do not remove one-time or recurring schedules for current deals. Every saved as-of snapshot retains its original inputs and values; privacy erasure withdraws an affected snapshot in full and leaves unrelated snapshots unchanged.
 
-**Acceptance:** Create USD 10,000 at 30% and USD 20,000 at 60%, require USD 15,000 weighted total, apply a documented override and close one won; compare rep/team quota attainment, recurring schedule and preserved prior-period snapshot.
+**Acceptance.**
+1. Create USD 10,000 at 30% and USD 20,000 at 60%, require USD 15,000 weighted total, apply a documented override and close one won; compare rep/team quota attainment, recurring schedule and preserved prior-period snapshot.
 
-#### QUOTE-001 — Products, quotes and signatures.
+#### QUOTE-001 — Products, quotes and signatures
 
-Reps maintain products and price books and create versioned deal quotes with quantities, USD unit prices, discounts, explicit US sales-tax treatment, expiration and approval thresholds. Review the exact proposal and recipient before sharing; the customer receives a hosted quote page and a PDF of exactly the approved version, with an optional Stripe or Nectar payment link when the quote says so; DocuSign handles signature envelopes and a signed or declined outcome returns to the deal without silently marking an unsigned quote won. Approved versions, signers, provider IDs and signed-document links remain attributable and portable. Stripe/Nectar and QuickBooks Online/Xero receive only a reviewed billing/accounting handoff, preventing duplicate customers or invoices. Quote versions, dates and prices become AGENT-002 risk evidence, so a quote that contradicts a recorded commitment or call is a cited conflict. It carries the signed-quote step of BOUNDARY-001's US buyer walk: the walk's USD deal is quoted with explicit US sales-tax treatment, DocuSign holds the signature envelope, and an unconfigured DocuSign or payment provider appears as unresolved setup; no quote shows as signed without DocuSign's returned outcome.
+*Tier:* Core
+
+**Requirement.** Reps maintain products and price books and create versioned deal quotes with quantities, USD unit prices, discounts, explicit US sales-tax treatment, expiration and approval thresholds. Review the exact proposal and recipient before sharing; the customer receives a hosted quote page and a PDF of exactly the approved version, with an optional Stripe or Nectar payment link when the quote says so; DocuSign handles signature envelopes and a signed or declined outcome returns to the deal without silently marking an unsigned quote won. Approved versions, signers, provider IDs and signed-document links remain attributable and portable. Stripe/Nectar and QuickBooks Online/Xero receive only a reviewed billing/accounting handoff, preventing duplicate customers or invoices. Quote versions, dates and prices become AGENT-002 risk evidence, so a quote that contradicts a recorded commitment or call is a cited conflict. It carries the signed-quote step of BOUNDARY-001's US buyer walk: the walk's USD deal is quoted with explicit US sales-tax treatment, DocuSign holds the signature envelope, and an unconfigured DocuSign or payment provider appears as unresolved setup; no quote shows as signed without DocuSign's returned outcome.
 
 QUOTE-001 inherits FORECAST-001’s product/quote-line linkage and the comparison of those lines’ one-time and recurring USD schedules; current deals already keep their schedules under FORECAST-001.
 
 QUOTE-001 inherits INTEGRATE-005’s signed-quote Slack notice, using its fixed allowed fields and authenticated Orbit link.
 
-**Acceptance:** QUOTE-001 inherits INTEGRATE-005’s signed-quote Slack notice, using its fixed allowed fields and authenticated Orbit link. Exercise the inherited Slack rules or notice through the receiving step.  Quote two products with discount and tax disclosure, require manager approval above its threshold, send the approved version through DocuSign, reject an old version and process signed/declined callbacks once; review the resulting billing handoff. As AGENT-002 evidence, contradict a quote date with a logged call and inspect the cited conflict. As the signed-quote step of BOUNDARY-001's walk, quote and sign the walk's USD deal after its support context and inspect the DocuSign link, the signature boundary and an unconfigured provider shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+**Acceptance.**
+1. QUOTE-001 inherits INTEGRATE-005’s signed-quote Slack notice, using its fixed allowed fields and authenticated Orbit link.
+2. Exercise the inherited Slack rules or notice through the receiving step.
+3. Quote two products with discount and tax disclosure, require manager approval above its threshold, send the approved version through DocuSign, reject an old version and process signed/declined callbacks once; review the resulting billing handoff.
+4. As AGENT-002 evidence, contradict a quote date with a logged call and inspect the cited conflict.
+5. As the signed-quote step of BOUNDARY-001's walk, quote and sign the walk's USD deal after its support context and inspect the DocuSign link, the signature boundary and an unconfigured provider shown as unresolved setup without a substituted mock.
+6. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
 ### Category integrations and enrichment
 
-#### INTEGRATE-001 — Dial and Calendly bookings.
+#### INTEGRATE-001 — Dial and Calendly bookings
 
-An account/contact/deal shows Dial and Calendly booking links and booked/rescheduled/canceled/completed appointments with exact attendee identity, provider ID, times and meeting context. Reps share an appropriate booking link in reviewed outreach; availability, routing and booking-page configuration remain in the booking product. Duplicate/late booking events update one activity and apply reply/booking sequence stops, while ambiguous attendees wait for review. Disconnect and signature failures are visible. It carries the booking step of BOUNDARY-001's US buyer walk: the walk's USD deal shows its Dial and Calendly product links, availability and routing stay in the booking product, and a provider not yet connected or failing appears as unresolved setup, never as a substituted connection.
+*Tier:* Core
 
-**Acceptance:** Connect Dial and Calendly, share a reviewed link, book/reschedule/cancel from each provider and inspect the same deal activity and sequence exit; replay and reject a forged callback. As the booking step of BOUNDARY-001's walk, book the walk's USD deal from each provider and inspect its product links, the booking product's ownership of availability and routing, and a disconnected provider shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+**Requirement.** An account/contact/deal shows Dial and Calendly booking links and booked/rescheduled/canceled/completed appointments with exact attendee identity, provider ID, times and meeting context. Reps share an appropriate booking link in reviewed outreach; availability, routing and booking-page configuration remain in the booking product. Duplicate/late booking events update one activity and apply reply/booking sequence stops, while ambiguous attendees wait for review. Disconnect and signature failures are visible. It carries the booking step of BOUNDARY-001's US buyer walk: the walk's USD deal shows its Dial and Calendly product links, availability and routing stay in the booking product, and a provider not yet connected or failing appears as unresolved setup, never as a substituted connection.
 
-#### INTEGRATE-002 — Zoom meetings and preparation.
+**Acceptance.**
+1. Connect Dial and Calendly, share a reviewed link, book/reschedule/cancel from each provider and inspect the same deal activity and sequence exit; replay and reject a forged callback.
+2. As the booking step of BOUNDARY-001's walk, book the walk's USD deal from each provider and inspect its product links, the booking product's ownership of availability and routing, and a disconnected provider shown as unresolved setup without a substituted mock.
+3. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
-Connect Zoom to link the actual meeting URL, attendees, provider meeting ID, recording/transcript permission and completion to a scheduled deal activity. Orbit supplies record-backed meeting preparation and reviewed follow-up; Zoom runs the meeting. Provider unavailable, consent denied, missing transcript and ambiguous participants remain visible. A meeting cancellation stops associated preparation/follow-up work and never cancels unrelated events. It carries the meeting held from the booking on BOUNDARY-001's US buyer walk: Zoom stays the meeting service, and an unconnected Zoom appears as unresolved setup.
+#### INTEGRATE-002 — Zoom meetings and preparation
 
-**Acceptance:** Connect Zoom, attach an authorized meeting to a deal, open its preparation, finish it and review a cited recap; deny recording permission, replay completion and cancel a second meeting without fabricated context. As part of BOUNDARY-001's booking step, run this on the walk's booked USD deal and inspect the Zoom link, Zoom's ownership of the meeting and an unconnected Zoom shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+*Tier:* Core
 
-#### INTEGRATE-003 — Nectar and Stripe billing context.
+**Requirement.** Connect Zoom to link the actual meeting URL, attendees, provider meeting ID, recording/transcript permission and completion to a scheduled deal activity. Orbit supplies record-backed meeting preparation and reviewed follow-up; Zoom runs the meeting. Provider unavailable, consent denied, missing transcript and ambiguous participants remain visible. A meeting cancellation stops associated preparation/follow-up work and never cancels unrelated events. It carries the meeting held from the booking on BOUNDARY-001's US buyer walk: Zoom stays the meeting service, and an unconnected Zoom appears as unresolved setup.
 
-Account and deal records link Nectar and Stripe customers, subscriptions, invoices and payment status using explicitly reviewed identity mappings. Show currency, amount, overdue/paid/canceled/refunded state and source freshness; a billing event is evidence, not automatic proof that a deal is won. Reps hand an approved order to Nectar/Stripe and follow a deep link to collection, with idempotent external references and no duplicate invoice on replay. Orbit neither stores card/ACH credentials nor becomes a billing ledger. It carries the billing step of BOUNDARY-001's US buyer walk: the walk's signed USD quote hands off to Nectar or Stripe, which own collection, and a disconnected billing product appears as unresolved setup.
+**Acceptance.**
+1. Connect Zoom, attach an authorized meeting to a deal, open its preparation, finish it and review a cited recap; deny recording permission, replay completion and cancel a second meeting without fabricated context.
+2. As part of BOUNDARY-001's booking step, run this on the walk's booked USD deal and inspect the Zoom link, Zoom's ownership of the meeting and an unconnected Zoom shown as unresolved setup.
+3. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+
+#### INTEGRATE-003 — Nectar and Stripe billing context
+
+*Tier:* Core
+
+**Requirement.** Account and deal records link Nectar and Stripe customers, subscriptions, invoices and payment status using explicitly reviewed identity mappings. Show currency, amount, overdue/paid/canceled/refunded state and source freshness; a billing event is evidence, not automatic proof that a deal is won. Reps hand an approved order to Nectar/Stripe and follow a deep link to collection, with idempotent external references and no duplicate invoice on replay. Orbit neither stores card/ACH credentials nor becomes a billing ledger. It carries the billing step of BOUNDARY-001's US buyer walk: the walk's signed USD quote hands off to Nectar or Stripe, which own collection, and a disconnected billing product appears as unresolved setup.
 
 INTEGRATE-003 inherits INTEGRATE-005’s billing Slack notice, using its fixed allowed fields and authenticated Orbit link.
 
-**Acceptance:** INTEGRATE-003 inherits INTEGRATE-005’s billing Slack notice, using its fixed allowed fields and authenticated Orbit link. Exercise the inherited Slack rules or notice through the receiving step.  Link a Stripe test customer and Nectar account to a USD deal, ingest invoice paid/past-due/refund events, replay them and inspect one status timeline; approve a billing handoff and deny a mismatched customer. As the billing step of BOUNDARY-001's walk, hand the walk's signed USD quote to each billing product and inspect its link, the collection boundary and a disconnected provider shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+**Acceptance.**
+1. INTEGRATE-003 inherits INTEGRATE-005’s billing Slack notice, using its fixed allowed fields and authenticated Orbit link.
+2. Exercise the inherited Slack rules or notice through the receiving step.
+3. Link a Stripe test customer and Nectar account to a USD deal, ingest invoice paid/past-due/refund events, replay them and inspect one status timeline; approve a billing handoff and deny a mismatched customer.
+4. As the billing step of BOUNDARY-001's walk, hand the walk's signed USD quote to each billing product and inspect its link, the collection boundary and a disconnected provider shown as unresolved setup without a substituted mock.
+5. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
-#### INTEGRATE-004 — HappyToHelp, Help Scout and Zendesk account context.
+#### INTEGRATE-004 — HappyToHelp, Help Scout and Zendesk account context
 
-Accounts show authorized ticket summary, severity, status, last update and deep links from HappyToHelp, Help Scout and Zendesk. Sales users may raise or hand off a ticket with reviewed context and see its outcome; support replies and SLA work remain in the support product. Ticket visibility follows both systems' grants, sensitive ticket content is excluded unless specifically authorized, and disconnect or deleted tickets show unavailable state rather than a healthy account inference. It carries the support-context step of BOUNDARY-001's US buyer walk: the walk's account shows each support product's link, support replies and SLAs stay in that product, and a disconnected service appears as unresolved setup rather than a healthy account.
+*Tier:* Core
 
-**Acceptance:** Connect each support service, map a customer, open a ticket on its sales account, restrict a ticket and revoke access; verify current visibility and one reviewed handoff with a returned support outcome. As the support-context step of BOUNDARY-001's walk, open the walk's USD account after its booking and inspect each support product link, the support product's ownership boundary and a disconnected service shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+**Requirement.** Accounts show authorized ticket summary, severity, status, last update and deep links from HappyToHelp, Help Scout and Zendesk. Sales users may raise or hand off a ticket with reviewed context and see its outcome; support replies and SLA work remain in the support product. Ticket visibility follows both systems' grants, sensitive ticket content is excluded unless specifically authorized, and disconnect or deleted tickets show unavailable state rather than a healthy account inference. It carries the support-context step of BOUNDARY-001's US buyer walk: the walk's account shows each support product's link, support replies and SLAs stay in that product, and a disconnected service appears as unresolved setup rather than a healthy account.
 
-#### INTEGRATE-005 — Slack sales notifications and handoffs.
+**Acceptance.**
+1. Connect each support service, map a customer, open a ticket on its sales account, restrict a ticket and revoke access; verify current visibility and one reviewed handoff with a returned support outcome.
+2. As the support-context step of BOUNDARY-001's walk, open the walk's USD account after its booking and inspect each support product link, the support product's ownership boundary and a disconnected service shown as unresolved setup without a substituted mock.
+3. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
-The installation owner connects Slack in Settings and chooses bot-member, workspace-internal channels and stage movement, won-deal, due-work and internal-handoff event types. The bot token and app signing secret use Capture's installation-local encrypted credential custody: entered once, verified with `auth.test`, never shown again, exported or logged. TEAM-005 inherits real administrator roles and team-scoped channel and audience rules; until then the installation owner administers Slack.
+#### INTEGRATE-005 — Slack sales notifications and handoffs
+
+*Tier:* Core
+
+**Requirement.** The installation owner connects Slack in Settings and chooses bot-member, workspace-internal channels and stage movement, won-deal, due-work and internal-handoff event types. The bot token and app signing secret use Capture's installation-local encrypted credential custody: entered once, verified with `auth.test`, never shown again, exported or logged. TEAM-005 inherits real administrator roles and team-scoped channel and audience rules; until then the installation owner administers Slack.
 
 The fixed outbound allowlist is event kind, deal or company display name, stage from and to, owner display name, due date, due-work task type/priority and an authenticated Orbit link. The link contains no token and requires Orbit sign-in. No entry, note, call, meeting, task-note or handoff text, free-text task title, person/lead name, contact email or phone, amount, score, file or AI output enters a channel message. Restricted records and their account-linked people get a generic event notice and authenticated link, with name, owner, stage and date withheld visibly; shared/external channels and channels the bot has not joined are refused at setup and checked again before delivery.
 
@@ -724,39 +1495,72 @@ One source event has one durable notice per channel. HTTP 429 respects Retry-Aft
 
 Along BOUNDARY-001's walk, Slack carries notices for existing signed bookings, logged calls/meetings, accepted internal handoffs, stage moves and the won deal. INTEGRATE-008 inherits the Buoy-handoff notice; QUOTE-001 inherits the signed-quote notice; INTEGRATE-003 inherits the billing notice, each proving its own notice when that step exists. The full buyer journey remains the acceptance of whichever named BOUNDARY-001 clause ships last. Channel routing, event choices, explicit user mappings and delivery/action history round-trip through Records and local archives without credentials; restoring needs fresh credentials. Erasing an underlying contact, company or deal redacts stored notice content and issues tracked chat.delete requests with visible outcomes. Restored pending deletions need fresh administrator confirmation; copies already held cannot be recalled.
 
-**Acceptance:** In Settings connect a bot and generated test-installation signing secret, select eligible channels and event types including Dashboard ready, and refuse an external/nonmember channel. Route a stage event, overdue task and explicitly enabled dashboard-ready schedule, replay them without another message, and inspect only the fixed allowed fields and a token-free link requiring Orbit sign-in. Deliver a generic private-account notice with all identifying details withheld. Suspend a route on a mid-route share/pending-share or bot departure; unsharing never resumes it automatically. Refuse foreign app/enterprise/user.team_id requests and a mapped operator who lost record access. Changing a Slack timestamp cannot reuse a spent Orbit action ID. Exercise a 429 then success, an unaccepted failure, a timeout held uncertain, unsigned and stale requests, unmapped/foreign/revoked/replayed/removed-operator actions, an attributed acknowledgment and internal task, and a revoked workspace shown as unresolved setup with manual work unaffected. Export/import configuration, mappings and delivery history without token/signing secret; erase the underlying contact and deal and inspect redacted stored content plus tracked provider deletions. Confirm restored routes and mappings are inactive until fresh administrator confirmation, and reconnect replays nothing. Refuse mail approval and never accept a proposed handoff from Slack. Inspect Settings, notice status and unresolved setup at 1440 and 390. TEAM-005 repeats this with real administrator roles and team-scoped channel/audience rules, including the dashboard-ready notice; until then the installation owner chooses its channel and enables its saved schedule. On BOUNDARY-001's walk inspect notices for the existing booking, call/meeting, internal handoff and won deal. INTEGRATE-008 inherits the Buoy-handoff notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice, each inspecting allowed fields and authenticated links when it ships. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+**Acceptance.**
+1. In Settings connect a bot and generated test-installation signing secret, select eligible channels and event types including Dashboard ready, and refuse an external/nonmember channel.
+2. Route a stage event, overdue task and explicitly enabled dashboard-ready schedule, replay them without another message, and inspect only the fixed allowed fields and a token-free link requiring Orbit sign-in.
+3. Deliver a generic private-account notice with all identifying details withheld.
+4. Suspend a route on a mid-route share/pending-share or bot departure; unsharing never resumes it automatically.
+5. Refuse foreign app/enterprise/user.team_id requests and a mapped operator who lost record access.
+6. Changing a Slack timestamp cannot reuse a spent Orbit action ID.
+7. Exercise a 429 then success, an unaccepted failure, a timeout held uncertain, unsigned and stale requests, unmapped/foreign/revoked/replayed/removed-operator actions, an attributed acknowledgment and internal task, and a revoked workspace shown as unresolved setup with manual work unaffected.
+8. Export/import configuration, mappings and delivery history without token/signing secret; erase the underlying contact and deal and inspect redacted stored content plus tracked provider deletions. Confirm restored routes and mappings are inactive until fresh administrator confirmation, and reconnect replays nothing. Refuse mail approval and never accept a proposed handoff from Slack. Inspect Settings, notice status and unresolved setup at 1440 and 390. TEAM-005 repeats this with real administrator roles and team-scoped channel/audience rules, including the dashboard-ready notice; until then the installation owner chooses its channel and enables its saved schedule. On BOUNDARY-001's walk inspect notices for the existing booking, call/meeting, internal handoff and won deal. INTEGRATE-008 inherits the Buoy-handoff notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice, each inspecting allowed fields and authenticated links when it ships. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
-#### INTEGRATE-006 — QuickBooks Online and Xero accounting handoff.
+#### INTEGRATE-006 — QuickBooks Online and Xero accounting handoff
 
-Connect QuickBooks Online and Xero to map customer/product IDs and hand reviewed accepted quotes/orders into invoices while reading invoice and payment status back onto the deal. Preview account/currency, line, discount and sales-tax mappings and reconciliation conflicts. Orbit does not calculate tax filings, post an independent ledger or claim to collect payment; the accounting service owns those records. A retry reuses the approved external reference and never duplicates an invoice. It carries the accounting step of BOUNDARY-001's US buyer walk: the walk's signed USD quote becomes a reviewed QuickBooks Online or Xero invoice, the accounting service owns the ledger and tax filings, and a disconnected service appears as unresolved setup.
+*Tier:* Core
 
-**Acceptance:** For both services approve a USD quote-to-invoice handoff, inspect provider lines/tax/identity, receive partial and full payment status and replay a timed-out result without a second invoice. As the accounting step of BOUNDARY-001's walk, hand the walk's signed USD quote to each accounting service and inspect its link, the ledger boundary and a disconnected service shown as unresolved setup without a substituted mock. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+**Requirement.** Connect QuickBooks Online and Xero to map customer/product IDs and hand reviewed accepted quotes/orders into invoices while reading invoice and payment status back onto the deal. Preview account/currency, line, discount and sales-tax mappings and reconciliation conflicts. Orbit does not calculate tax filings, post an independent ledger or claim to collect payment; the accounting service owns those records. A retry reuses the approved external reference and never duplicates an invoice. It carries the accounting step of BOUNDARY-001's US buyer walk: the walk's signed USD quote becomes a reviewed QuickBooks Online or Xero invoice, the accounting service owns the ledger and tax filings, and a disconnected service appears as unresolved setup.
 
-#### INTEGRATE-007 — Mailchimp audience and suppression handoff.
+**Acceptance.**
+1. For both services approve a USD quote-to-invoice handoff, inspect provider lines/tax/identity, receive partial and full payment status and replay a timed-out result without a second invoice.
+2. As the accounting step of BOUNDARY-001's walk, hand the walk's signed USD quote to each accounting service and inspect its link, the ledger boundary and a disconnected service shown as unresolved setup without a substituted mock.
+3. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
-Sales users preview and hand explicitly consented contacts and selected fields to a Mailchimp audience, with source/basis of consent and stable external IDs. Unsubscribe, permanent bounce and do-not-contact remain the stricter state across both systems; a later sync never silently re-subscribes a stopped person. Mailchimp owns bulk campaigns and marketing automation; Orbit owns individual sales sequences and their outcomes. On BOUNDARY-001's US buyer walk it keeps the marketing boundary: the walk's consented buyer may join a Mailchimp audience, Mailchimp owns campaigns, and a disconnected account appears as unresolved setup.
+#### INTEGRATE-007 — Mailchimp audience and suppression handoff
 
-**Acceptance:** Preview an audience containing subscribed, unknown and stopped contacts; sync only the authorized subset, ingest unsubscribe and replay a prior subscription update; verify no resumed outreach or duplicate subscriber. On BOUNDARY-001's walk, preview the walk's consented buyer for a Mailchimp audience and inspect the Mailchimp link, its campaign ownership and a disconnected account shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+*Tier:* Core
 
-#### INTEGRATE-008 — Buoy post-sale handoff.
+**Requirement.** Sales users preview and hand explicitly consented contacts and selected fields to a Mailchimp audience, with source/basis of consent and stable external IDs. Unsubscribe, permanent bounce and do-not-contact remain the stricter state across both systems; a later sync never silently re-subscribes a stopped person. Mailchimp owns bulk campaigns and marketing automation; Orbit owns individual sales sequences and their outcomes. On BOUNDARY-001's US buyer walk it keeps the marketing boundary: the walk's consented buyer may join a Mailchimp audience, Mailchimp owns campaigns, and a disconnected account appears as unresolved setup.
 
-After a human confirms a won deal, Orbit previews and transfers the approved account/contact identity, purchased products, commercial commitments, sales evidence references and receiving owner to Buoy. A stable handoff ID links the products, records Buoy acceptance or an actionable failure and reconciles replay without duplicate accounts. Only permitted account context flows back; health scores, onboarding playbooks, adoption, renewals and customer-success intervention remain in Buoy. Orbit retains the original sales history and can reopen a sales opportunity without rewriting the success record. It carries the final, post-sale step of BOUNDARY-001's US buyer walk: Buoy receives the walk's won USD deal, and a disconnected Buoy appears as unresolved setup rather than a completed handoff.
+**Acceptance.**
+1. Preview an audience containing subscribed, unknown and stopped contacts; sync only the authorized subset, ingest unsubscribe and replay a prior subscription update; verify no resumed outreach or duplicate subscriber.
+2. On BOUNDARY-001's walk, preview the walk's consented buyer for a Mailchimp audience and inspect the Mailchimp link, its campaign ownership and a disconnected account shown as unresolved setup.
+3. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+
+#### INTEGRATE-008 — Buoy post-sale handoff
+
+*Tier:* Core
+
+**Requirement.** After a human confirms a won deal, Orbit previews and transfers the approved account/contact identity, purchased products, commercial commitments, sales evidence references and receiving owner to Buoy. A stable handoff ID links the products, records Buoy acceptance or an actionable failure and reconciles replay without duplicate accounts. Only permitted account context flows back; health scores, onboarding playbooks, adoption, renewals and customer-success intervention remain in Buoy. Orbit retains the original sales history and can reopen a sales opportunity without rewriting the success record. It carries the final, post-sale step of BOUNDARY-001's US buyer walk: Buoy receives the walk's won USD deal, and a disconnected Buoy appears as unresolved setup rather than a completed handoff.
 
 INTEGRATE-008 inherits INTEGRATE-005’s post-sale Buoy-handoff Slack notice, using its fixed allowed fields and authenticated Orbit link.
 
 Its inherited INTEGRATE-005 Buoy notice contains no products, commitments or amounts. The actual reviewed Buoy handoff retains its commitments and evidence; disconnected Slack is unresolved setup.
 
-**Acceptance:** Its inherited INTEGRATE-005 Buoy notice contains no products, commitments or amounts. The actual reviewed Buoy handoff retains its commitments and evidence; disconnected Slack is unresolved setup. Exercise this inherited behavior through its public door.  INTEGRATE-008 inherits INTEGRATE-005’s post-sale Buoy-handoff Slack notice, using its fixed allowed fields and authenticated Orbit link. Exercise the inherited Slack rules or notice through the receiving step.  Close an authorized USD deal won, preview and approve its Buoy handoff, inspect the linked receiving account/owner and acceptance, then replay, revoke access and fail the provider; verify one handoff, visible failure and no customer-success workflow built inside Orbit. As the post-sale step of BOUNDARY-001's walk, hand the walk's won USD deal to Buoy and inspect the Buoy link, Buoy's ownership of customer success and a disconnected Buoy shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
+**Acceptance.**
+1. Its inherited INTEGRATE-005 Buoy notice contains no products, commitments or amounts.
+2. The actual reviewed Buoy handoff retains its commitments and evidence; disconnected Slack is unresolved setup.
+3. Exercise this inherited behavior through its public door.
+4. INTEGRATE-008 inherits INTEGRATE-005’s post-sale Buoy-handoff Slack notice, using its fixed allowed fields and authenticated Orbit link.
+5. Exercise the inherited Slack rules or notice through the receiving step.
+6. Close an authorized USD deal won, preview and approve its Buoy handoff, inspect the linked receiving account/owner and acceptance, then replay, revoke access and fail the provider; verify one handoff, visible failure and no customer-success workflow built inside Orbit.
+7. As the post-sale step of BOUNDARY-001's walk, hand the walk's won USD deal to Buoy and inspect the Buoy link, Buoy's ownership of customer success and a disconnected Buoy shown as unresolved setup.
+8. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.
 
-#### ENRICH-001 — Licensed enrichment and change signals.
+#### ENRICH-001 — Licensed enrichment and change signals
 
-An admin selects licensed sources including Clay and its approved providers, chooses contact/company fields, freshness, schedule and USD spending limits, and previews a multi-provider waterfall. Enrichment adds provenance, confidence, fetched time and a conflict proposal alongside existing customer evidence. Company news, hiring and job changes refresh on schedule; failed or empty provider results remain distinct from verified absence. Human-reviewed identity and material changes are required, buying data never makes a person contactable, and erasure/suppression fences prevent re-creation.
+*Tier:* Core
 
-**Acceptance:** Configure a Clay waterfall with two permitted providers, preview cost/fields, enrich a company and contact, refresh a verified job change and conflicting phone, exceed budget, fail one provider and erase/replay; no guessed identity, invented value or outreach permission appears.
+**Requirement.** An admin selects licensed sources including Clay and its approved providers, chooses contact/company fields, freshness, schedule and USD spending limits, and previews a multi-provider waterfall. Enrichment adds provenance, confidence, fetched time and a conflict proposal alongside existing customer evidence. Company news, hiring and job changes refresh on schedule; failed or empty provider results remain distinct from verified absence. Human-reviewed identity and material changes are required, buying data never makes a person contactable, and erasure/suppression fences prevent re-creation.
 
-#### API-001 — Public REST API and outbound webhooks.
+**Acceptance.**
+1. Configure a Clay waterfall with two permitted providers, preview cost/fields, enrich a company and contact, refresh a verified job change and conflicting phone, exceed budget, fail one provider and erase/replay; no guessed identity, invented value or outreach permission appears.
 
-Publish a versioned REST API for permitted contact, company, deal, custom-object, association, note, activity, file (RECORD-018), task, pipeline, report and sequence operations. Admin-issued scoped credentials, pagination, filters, schema errors, rate-limit headers, idempotent writes and optimistic concurrency match native permissions and erasure rules. Signed versioned outgoing webhooks cover changes and sales outcomes, expose event identity, delivery history, retry/dead-letter controls and safe manual replay. Incoming owned-system events keep SIGNAL-009; generic API access never grants exact-message approval or restores expired authority.
+#### API-001 — Public REST API and outbound webhooks
+
+*Tier:* Core
+
+**Requirement.** Publish a versioned REST API for permitted contact, company, deal, custom-object, association, note, activity, file (RECORD-018), task, pipeline, report and sequence operations. Admin-issued scoped credentials, pagination, filters, schema errors, rate-limit headers, idempotent writes and optimistic concurrency match native permissions and erasure rules. Signed versioned outgoing webhooks cover changes and sales outcomes, expose event identity, delivery history, retry/dead-letter controls and safe manual replay. Incoming owned-system events keep SIGNAL-009; generic API access never grants exact-message approval or restores expired authority.
 
 An INTEGRATE-005 Slack mapping is neither an API nor a delegation credential. It grants no outreach authority, exact-message approval, sequence execution, record sharing or stage/owner/amount changes.
 
@@ -764,41 +1568,66 @@ Approved engineering policy: administrators may issue separately named, expiring
 
 The standalone credential resource door is `/api/rest/v1/`; credential administration remains a native-session operation. Explicit deal creation adds only the newly created deal to that credential’s permitted records, within the existing bounded record scope.
 
-**Acceptance:** An INTEGRATE-005 Slack mapping is neither an API nor a delegation credential. It grants no outreach authority, exact-message approval, sequence execution, record sharing or stage/owner/amount changes. Exercise this inherited behavior through its public door.  Create/update/list a deal with a scoped API credential, test pagination, stale writes, revoked scope and denied fields, subscribe an endpoint and verify signed replay-safe change events and visible failed delivery; erase the contact and verify API/export absence.
-
-Assert credential expiry, rotation, revocation during a write, field and record denial, every original resource operation, retry idempotency, endpoint ownership, private-address and DNS-rebinding refusal, redirect refusal, signature rotation, restore pause and erasure during queued delivery; Slack mappings and delegation grants never become general API credentials.
+**Acceptance.**
+1. An INTEGRATE-005 Slack mapping is neither an API nor a delegation credential.
+2. It grants no outreach authority, exact-message approval, sequence execution, record sharing or stage/owner/amount changes.
+3. Exercise this inherited behavior through its public door.
+4. Create/update/list a deal with a scoped API credential, test pagination, stale writes, revoked scope and denied fields, subscribe an endpoint and verify signed replay-safe change events and visible failed delivery; erase the contact and verify API/export absence.
+5. Assert credential expiry, rotation, revocation during a write, field and record denial, every original resource operation, retry idempotency, endpoint ownership, private-address and DNS-rebinding refusal, redirect refusal, signature rotation, restore pause and erasure during queued delivery; Slack mappings and delegation grants never become general API credentials.
 
 ### Mobile, portability and operation
 
-#### MOBILE-001 — Sales on mobile and desktop.
+#### MOBILE-001 — Sales on mobile and desktop
 
-At 1440px desktop and 390px phone widths, sellers can search customers, inspect full deal/activity history, work due tasks, change stage, log/call, compose and send new one-to-one email and replies including reply all (OUT-017, OUT-019) under the same exact-message approval, review/send approved outreach and inspect current sync/send failures with keyboard and assistive-technology support. Native iOS and Android apps add push reminders, permitted contact capture and offline notes/tasks with explicit pending/conflict states; offline capture cannot queue an unreviewed external message or show unsynced changes as committed. A revoked session or device loses private data and sending authority.
+*Tier:* Core
 
-**Acceptance:** Use the same realistic USD account on desktop, 390px web, iOS and Android; complete task/call/note/stage journeys and exact-message journeys for a new one-to-one email, a reply all and an approved outreach, lose network mid-edit, resolve a conflict, receive push and revoke the device without stale sends.
+**Requirement.** At 1440px desktop and 390px phone widths, sellers can search customers, inspect full deal/activity history, work due tasks, change stage, log/call, compose and send new one-to-one email and replies including reply all (OUT-017, OUT-019) under the same exact-message approval, review/send approved outreach and inspect current sync/send failures with keyboard and assistive-technology support. Native iOS and Android apps add push reminders, permitted contact capture and offline notes/tasks with explicit pending/conflict states; offline capture cannot queue an unreviewed external message or show unsynced changes as committed. A revoked session or device loses private data and sending authority.
 
-#### DATA-003 — Full-target portability, privacy and audit.
+**Acceptance.**
+1. Use the same realistic USD account on desktop, 390px web, iOS and Android; complete task/call/note/stage journeys and exact-message journeys for a new one-to-one email, a reply all and an approved outreach, lose network mid-edit, resolve a conflict, receive push and revoke the device without stale sends.
 
-Every added sales feature inherits BASE-DATA retention, erasure, declared external flows and the permanent anonymized audit. Complete product exports include custom schemas/relationships, multi-pipeline definitions/history, tasks/recurrence, workflow and sequence definitions/enrollment/outcomes, call/transcript evidence, quotes, forecast snapshots/quotas, integration identities/provenance, files and their versions with SHA-256 digests (RECORD-018) and agent decisions. Restore validates integrity into eligible empty data, preserves customer history but pauses external work until fresh authorization and review; it never replays messages, charges or calls. Erasure covers local evidence/derivatives and tracks required provider-deletion requests separately; downloaded archives and already sent external content cannot be recalled. Export permission is independently enforced and external costs are visible in USD.
+#### DATA-003 — Full-target portability, privacy and audit
+
+*Tier:* Core
+
+**Requirement.** Every added sales feature inherits BASE-DATA retention, erasure, declared external flows and the permanent anonymized audit. Complete product exports include custom schemas/relationships, multi-pipeline definitions/history, tasks/recurrence, workflow and sequence definitions/enrollment/outcomes, call/transcript evidence, quotes, forecast snapshots/quotas, integration identities/provenance, files and their versions with SHA-256 digests (RECORD-018) and agent decisions. Restore validates integrity into eligible empty data, preserves customer history but pauses external work until fresh authorization and review; it never replays messages, charges or calls. Erasure covers local evidence/derivatives and tracks required provider-deletion requests separately; downloaded archives and already sent external content cannot be recalled. Export permission is independently enforced and external costs are visible in USD.
 
 The baseline applies to every currently supported category, including custom fields and relationships, pipelines and movement history, recurring tasks, saved reports, reviewed forecasts and immutable forecast snapshots, reviewed form submissions and spam, capture/proposals, and agent handoff decisions. Before shipping, TEAM-005; RECORD-014/016/017/018; MIGRATE-001–003; CAPTURE-010–012; FORM-001; OUT-013–020; NOTIFY-003; SEQUENCE-001–003; AUTO-001–002; CALL-001–002; REPORT-001–002; FORECAST-001; QUOTE-001; INTEGRATE-001–008; ENRICH-001; API-001; MOBILE-001; OPS-001; and AGENT-001–004 inherit these same export, integrity, erasure, anonymized audit, declared external-deletion and fresh-authority obligations for each added record and derivative. Existing subsets remain covered now; future file versions must round-trip identical bytes and SHA-256 digests.
 
 INTEGRATE-005 adopts definition-only Slack routing/mapping portability, fresh administrator confirmation after restore, excluded bot/signing/action credentials and tracked provider chat.delete on erasure. Restored pending deletions are held for fresh administrator confirmation; copies already held cannot be recalled.
 
-**Acceptance:** INTEGRATE-005 adopts definition-only Slack routing/mapping portability, fresh administrator confirmation after restore, excluded bot/signing/action credentials and tracked provider chat.delete on erasure. Restored pending deletions are held for fresh administrator confirmation; copies already held cannot be recalled. Exercise this inherited behavior through its public door.  Populate every currently supported category, export through authenticated HTTP, restore into empty product data, export again and reconcile complete content digests and anonymous audit; refuse unauthorized export and show that credentials, sessions, collaborator/publication/agent authority and scheduled dispatch approval do not travel. Erase a contact and inspect every current read/search/report/AI/export and replay fence. Repeat this journey for each target feature before it ships, including its required provider-deletion requests and separately confirmed outcomes, without claiming recall of downloads or already sent content.
+**Acceptance.**
+1. INTEGRATE-005 adopts definition-only Slack routing/mapping portability, fresh administrator confirmation after restore, excluded bot/signing/action credentials and tracked provider chat.delete on erasure.
+2. Restored pending deletions are held for fresh administrator confirmation; copies already held cannot be recalled.
+3. Exercise this inherited behavior through its public door.
+4. Populate every currently supported category, export through authenticated HTTP, restore into empty product data, export again and reconcile complete content digests and anonymous audit; refuse unauthorized export and show that credentials, sessions, collaborator/publication/agent authority and scheduled dispatch approval do not travel.
+5. Erase a contact and inspect every current read/search/report/AI/export and replay fence.
+6. Repeat this journey for each target feature before it ships, including its required provider-deletion requests and separately confirmed outcomes, without claiming recall of downloads or already sent content.
 
-#### OPS-001 — Owned operation and explicit provider failures.
+#### OPS-001 — Owned operation and explicit provider failures
 
-Keep native sign-in, secret custody, origin checks, baseline audit, health, safe migration and source independence as deployable product obligations. When an administrator enables it, users also sign in with Google Workspace or Microsoft 365 (Microsoft Entra ID) through OpenID Connect. Only an invited, active user whose provider-verified email matches their Orbit identity signs in. The administrator may require provider sign-in for the workspace's email domain. Magic-link sign-in remains available unless disabled, and removing the user or the provider configuration ends their access on the next request. Each connector declares fields sent, scopes, credential custody, expected costs, freshness and disable/reconnect controls before activation. Provider apps, tenant approvals, recording consent, US sending requirements, native distribution and provider agreements are tracked setup/engineering obligations. An optional provider failure leaves authorized manual CRM work usable with honest unavailable states; it never fabricates a successful sync, call, forecast or send.
+*Tier:* Core
+
+**Requirement.** Keep native sign-in, secret custody, origin checks, baseline audit, health, safe migration and source independence as deployable product obligations. When an administrator enables it, users also sign in with Google Workspace or Microsoft 365 (Microsoft Entra ID) through OpenID Connect. Only an invited, active user whose provider-verified email matches their Orbit identity signs in. The administrator may require provider sign-in for the workspace's email domain. Magic-link sign-in remains available unless disabled, and removing the user or the provider configuration ends their access on the next request. Each connector declares fields sent, scopes, credential custody, expected costs, freshness and disable/reconnect controls before activation. Provider apps, tenant approvals, recording consent, US sending requirements, native distribution and provider agreements are tracked setup/engineering obligations. An optional provider failure leaves authorized manual CRM work usable with honest unavailable states; it never fabricates a successful sync, call, forecast or send.
 
 The INTEGRATE-005 connector declares chat:write, channels:read, groups:read for private channels and signed Interactivity/Events callbacks, never users:read.email. User-deactivation subscriptions require users:read. It declares the fixed allowed fields and installation-local encrypted token/secret custody. Membership can change between checks and a newly linked organization may see channel history; pre-post checks and safety events suspend routing. Disable and reconnect replay no old notice or action.
 
-**Acceptance:** The INTEGRATE-005 connector declares chat:write, channels:read, groups:read for private channels and signed Interactivity/Events callbacks, never users:read.email. User-deactivation subscriptions require users:read. It declares the fixed allowed fields and installation-local encrypted token/secret custody. Membership can change between checks and a newly linked organization may see channel history; pre-post checks and safety events suspend routing. Disable and reconnect replay no old notice or action. Exercise this inherited behavior through its public door.  Install an empty edition through the supported CLI, sign in, enable Google and Microsoft sign-in and sign in with each as an invited user while an uninvited and an unverified address are refused, configure one mail provider, revoke it, restart and upgrade with populated data; inspect credential-free diagnostics, working manual records and preserved audit, then reconnect without replaying customer actions.
+**Acceptance.**
+1. The INTEGRATE-005 connector declares chat:write, channels:read, groups:read for private channels and signed Interactivity/Events callbacks, never users:read.email.
+2. User-deactivation subscriptions require users:read.
+3. It declares the fixed allowed fields and installation-local encrypted token/secret custody.
+4. Membership can change between checks and a newly linked organization may see channel history; pre-post checks and safety events suspend routing.
+5. Disable and reconnect replay no old notice or action.
+6. Exercise this inherited behavior through its public door.
+7. Install an empty edition through the supported CLI, sign in, enable Google and Microsoft sign-in and sign in with each as an invited user while an uninvited and an unverified address are refused, configure one mail provider, revoke it, restart and upgrade with populated data; inspect credential-free diagnostics, working manual records and preserved audit, then reconnect without replaying customer actions.
 
 ### Honest boundaries
 
-#### BOUNDARY-001 — Separate products and US-first delivery.
+#### BOUNDARY-001 — Separate products and US-first delivery
 
-The RunEditRun product links are [Envelope](https://github.com/just-every/run-envelope) (small-business payroll), [Pegboard](https://github.com/just-every/run-pegboard) (work and project management) and [Porthole](https://github.com/just-every/run-porthole) (observability). These are product links without a capability claim.
+*Tier:* Core
+
+**Requirement.** The RunEditRun product links are [Envelope](https://github.com/just-every/run-envelope) (small-business payroll), [Pegboard](https://github.com/just-every/run-pegboard) (work and project management) and [Porthole](https://github.com/just-every/run-porthole) (observability). These are product links without a capability claim.
 
 Orbit owns the complete sales CRM job, including calling, sales sequences, quoting, forecasts, automation and native mobile. It does not become a marketing CMS/ads-attribution suite, customer-success platform, support inbox, booking engine, payment processor, lender, accounting/tax ledger, PSTN carrier or signature trust service. Buyers reach those jobs through Buoy, HappyToHelp/Help Scout/Zendesk, Dial/Calendly, Nectar/Stripe, Mailchimp, QuickBooks Online/Xero, Twilio/Aircall and DocuSign integrations named above. US-first means USD defaults, US operating timezones and daylight-saving behavior, US business/accounting handoffs and explicit sales-tax treatment on quotes. Broader currency/locale support can extend the model without replacing source monetary values. No difficulty, missing provider approval or pending agreement removes a named CRM obligation. Agents never self-authorize customer outreach or scrape protected prospect networks.
 
@@ -806,84 +1635,83 @@ Today Orbit receives signed Calendly and Cal.com bookings and sends configured S
 
 INTEGRATE-005’s existing won-deal and internal handoff notices carry no products, commitments or amounts. INTEGRATE-008 inherits the Buoy notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice. Slack disconnection is unresolved setup; the last-shipping clause retains the full buyer journey.
 
-**Acceptance:** INTEGRATE-005’s existing won-deal and internal handoff notices carry no products, commitments or amounts. INTEGRATE-008 inherits the Buoy notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice. Slack disconnection is unresolved setup; the last-shipping clause retains the full buyer journey. Exercise this inherited behavior through its public door.  Walk a US buyer's USD deal through every current capability: signed Calendly booking intake onto the deal, a manual call log, and an exact-message review and send, with the USD amount unchanged and no mail sent by a booking, a manual entry or provider setup. In Settings at 1440 and 390, inspect Connected products: Calendly and Cal.com show their real delivery state, and Dial, Zoom, Twilio/Aircall, HappyToHelp/Help Scout/Zendesk, DocuSign, Nectar/Stripe, QuickBooks Online/Xero, Mailchimp and Buoy show as not available in Orbit; Slack shows its actual connected or unresolved setup state with the job each owns, with no substituted connector or mock and no reduced CRM scope. The complete walk from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff is carried by INTEGRATE-001–008, CALL-001/002 and QUOTE-001, each in its own acceptance, and run end to end by whichever ships last.
+**Acceptance.**
+1. INTEGRATE-005’s existing won-deal and internal handoff notices carry no products, commitments or amounts.
+2. INTEGRATE-008 inherits the Buoy notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice.
+3. Slack disconnection is unresolved setup; the last-shipping clause retains the full buyer journey.
+4. Exercise this inherited behavior through its public door.
+5. Walk a US buyer's USD deal through every current capability: signed Calendly booking intake onto the deal, a manual call log, and an exact-message review and send, with the USD amount unchanged and no mail sent by a booking, a manual entry or provider setup.
+6. In Settings at 1440 and 390, inspect Connected products: Calendly and Cal.com show their real delivery state, and Dial, Zoom, Twilio/Aircall, HappyToHelp/Help Scout/Zendesk, DocuSign, Nectar/Stripe, QuickBooks Online/Xero, Mailchimp and Buoy show as not available in Orbit; Slack shows its actual connected or unresolved setup state with the job each owns, with no substituted connector or mock and no reduced CRM scope.
+7. The complete walk from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff is carried by INTEGRATE-001–008, CALL-001/002 and QUOTE-001, each in its own acceptance, and run end to end by whichever ships last.
+
+### Agent surface
+
+Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every call.
+
+| Tool | Core clauses | Classes this call can carry |
+| --- | --- | --- |
 
 ## Push further
 
-### AGENT-001 — Keep the customer graph current with evidence.
+### Push further
 
-On an authorized schedule the agent compares allowed inbox/calendar conversations, consented call transcripts, native records and licensed enrichment against the customer graph. It proposes contact/company relationships, stakeholder roles, field corrections, amount/stage/close-date and next-step updates with exact message lines or transcript timestamps, source freshness and observed-versus-inferred labels. Missing decision-makers and contradictory identity remain questions, not invented contacts. Humans accept/edit/decline material updates with current-state guards; low-risk normalization can run only under an explicit reversible field policy, never granting contactability. Every proposal, decline and approved write has an attributable history and can be inspected without granting the agent broader access.
+#### AGENT-001 — Keep the customer graph current with evidence
 
-**Acceptance:** Authorize one account, introduce a job change and contradictory spoken/written commitment, inspect cited proposals and missing decision-maker question, change a field before acceptance and require conflict; accept another, decline one, revoke the source and erase/replay without re-creation.
+*Tier:* Core
 
-### AGENT-002 — Explain stalled deals and contradictory commitments.
+**Requirement.** On an authorized schedule the agent compares allowed inbox/calendar conversations, consented call transcripts, native records and licensed enrichment against the customer graph. It proposes contact/company relationships, stakeholder roles, field corrections, amount/stage/close-date and next-step updates with exact message lines or transcript timestamps, source freshness and observed-versus-inferred labels. Missing decision-makers and contradictory identity remain questions, not invented contacts. Humans accept/edit/decline material updates with current-state guards; low-risk normalization can run only under an explicit reversible field policy, never granting contactability. Every proposal, decline and approved write has an attributable history and can be inspected without granting the agent broader access.
 
-The agent joins authorized stage history, actual customer replies, decision-maker coverage, task/quote commitments and call evidence to flag a stalled or risky deal. It shows the exact missed promise, conflicting date/price or absent stakeholder, separates observations from inference, and proposes a concrete next experiment or assigned task. Evidence conflicts remain visible and the manager approves changes to stage, forecast, amount, close date and commercial commitments. Owners can dismiss a finding with a reason or adjust the rule; a confidence score alone cannot move a deal.
+**Acceptance.**
+1. Authorize one account, introduce a job change and contradictory spoken/written commitment, inspect cited proposals and missing decision-maker question, change a field before acceptance and require conflict; accept another, decline one, revoke the source and erase/replay without re-creation.
+
+#### AGENT-002 — Explain stalled deals and contradictory commitments
+
+*Tier:* Core
+
+**Requirement.** The agent joins authorized stage history, actual customer replies, decision-maker coverage, task/quote commitments and call evidence to flag a stalled or risky deal. It shows the exact missed promise, conflicting date/price or absent stakeholder, separates observations from inference, and proposes a concrete next experiment or assigned task. Evidence conflicts remain visible and the manager approves changes to stage, forecast, amount, close date and commercial commitments. Owners can dismiss a finding with a reason or adjust the rule; a confidence score alone cannot move a deal.
 
 A missing stakeholder means no contact is recorded in that role on the deal. The agent shows recorded roles as observations; any suggested stakeholder is a labelled inference with its source and is never written as a recorded role without a person's confirmation. Current sources are the stage's last change against its stale interval, genuine customer replies, provider open reports (labelled inferred), recorded stakeholder roles, overdue internal next actions, assigned tasks and unanswered replies, mutual commitments, the next step and logged calls, meetings and notes. The decision-maker role is required by default, and owners change a deal's required roles with an attributed reason. Conflicting recorded dates and prices come from a previewed AI check that sends only those recorded lines; every conflict must quote two lines exactly or the whole result fails, and without AI the check shows as unavailable. Findings, dismissals and approved tasks never change stage, amount, close date, forecast, stakeholders or commitments and send nothing; the owner acts as approving manager until TEAM-005. QUOTE-001 adds quote dates and prices, and CALL-002 transcript evidence, as risk sources before they ship.
 
-**Acceptance:** Use deals with reported opens but no reply, no recorded decision-maker, an overdue promise and task, a deal past its stage's stale interval and contradictory recorded commitment and call dates; inspect precise cited risk, observation apart from inference and next action at 1440 and 390, reject an AI result whose citation is not an exact recorded quote, dismiss one with a reason and reload, adjust a required role and approve another task, then verify no autonomous stage, amount, close date, stakeholder, commitment, forecast or mail change. QUOTE-001 repeats this with contradictory quote dates, and CALL-002 with transcript evidence, before they ship.
+**Acceptance.**
+1. Use deals with reported opens but no reply, no recorded decision-maker, an overdue promise and task, a deal past its stage's stale interval and contradictory recorded commitment and call dates; inspect precise cited risk, observation apart from inference and next action at 1440 and 390, reject an AI result whose citation is not an exact recorded quote, dismiss one with a reason and reload, adjust a required role and approve another task, then verify no autonomous stage, amount, close date, stakeholder, commitment, forecast or mail change.
+2. QUOTE-001 repeats this with contradictory quote dates, and CALL-002 with transcript evidence, before they ship.
 
-### AGENT-003 — Follow the next action through to a customer outcome.
+#### AGENT-003 — Follow the next action through to a customer outcome
 
-For an accepted promise, pending quote, unanswered request or meeting, the agent owns an explicit obligation with human owner, due time, source evidence and stop condition. It prepares a cited draft, call agenda or internal handoff and waits for exact human approval before any external message or commercial commitment. After the action it checks authorized replies, bookings and actual deal-stage movement, distinguishing submission from response and advancement. It follows up at the approved cadence until the specified outcome, an explicit human stop or an actionable failure; it never silently marks an unanswered customer promise complete.
+*Tier:* Core
 
-**Acceptance:** Accept a meeting follow-up obligation, review and approve its exact draft, fail then reconcile its provider outcome, receive a reply without stage movement and inspect the still-open advancement goal; advance the deal or stop explicitly and verify all remaining work exits once.
+**Requirement.** For an accepted promise, pending quote, unanswered request or meeting, the agent owns an explicit obligation with human owner, due time, source evidence and stop condition. It prepares a cited draft, call agenda or internal handoff and waits for exact human approval before any external message or commercial commitment. After the action it checks authorized replies, bookings and actual deal-stage movement, distinguishing submission from response and advancement. It follows up at the approved cadence until the specified outcome, an explicit human stop or an actionable failure; it never silently marks an unanswered customer promise complete.
 
-### AGENT-004 — Controlled research and agent workflow blocks.
+**Acceptance.**
+1. Accept a meeting follow-up obligation, review and approve its exact draft, fail then reconcile its provider outcome, receive a reply without stage movement and inspect the still-open advancement goal; advance the deal or stop explicitly and verify all remaining work exits once.
 
-Admins compose research agents from selected CRM evidence, licensed web research and explicitly allowlisted MCP tools. Each run previews allowed records, destinations, fields, tool permissions, USD token/provider budget, schedule and proposed outputs. Structured cited results feed reviewed workflow steps or enrichment proposals, with no hidden expansion of data access. Tool content is untrusted evidence and cannot authorize a send, buy data beyond budget, change commercial terms or override human approval. Revocation stops future reads/effects; failed or schema-invalid output remains failed without fabricated repairs.
+#### AGENT-004 — Controlled research and agent workflow blocks
+
+*Tier:* Core
+
+**Requirement.** Admins compose research agents from selected CRM evidence, licensed web research and explicitly allowlisted MCP tools. Each run previews allowed records, destinations, fields, tool permissions, USD token/provider budget, schedule and proposed outputs. Structured cited results feed reviewed workflow steps or enrichment proposals, with no hidden expansion of data access. Tool content is untrusted evidence and cannot authorize a send, buy data beyond budget, change commercial terms or override human approval. Revocation stops future reads/effects; failed or schema-invalid output remains failed without fabricated repairs.
 
 Approved engineering policy: administrators may configure selected-account research using OpenAI for structured synthesis, a licensed Brave Search API account for public web discovery, and licensed Clay enrichment only under ENRICH-001’s separately reviewed fields and providers. These selections authorize adapter implementation, not an assertion of entitlement or completed provider qualification. Arbitrary MCP servers are disabled; an administrator may enable a named, authenticated read-only MCP adapter only after documenting its provider license, destination, returned schema and exact tools. Preview the selected records, fields, destinations, schedule, proposed outputs and maximum charge before each approved run definition. Default limits are USD 1 per run and USD 20 per workspace day, adjustable only by the administrator. Atomically reserve worst-case provider cost before each call, bound tokens and requests, charge retries to the same cap and refuse unknown pricing or exhausted budget. Recheck access before every read, external call and proposed effect; revocation cancels remaining work and invalidates unaccepted output. Public and tool content is untrusted data and cannot add tools, destinations, records or authority. Results require exact source citations and schema validation and may create only reviewed internal proposals or workflow tasks. No message, purchase beyond the reserved budget, commercial change or protected-network scraping is authorized. Non-US personal data requires recorded purpose and applicable basis with GDPR-style opt-out and erasure handling. Licensing, provider retention and jurisdiction-specific legal qualification remain explicit gaps.
 
-**Acceptance:** Configure a selected-account web/MCP research block with a USD cap, preview its data, return structured citations into a proposed workflow task, inject untrusted instructions and revoke access mid-run; verify only allowed evidence leaves, no external message runs and budget/schema failures remain visible.
+**Acceptance.**
+1. Configure a selected-account web/MCP research block with a USD cap, preview its data, return structured citations into a proposed workflow task, inject untrusted instructions and revoke access mid-run; verify only allowed evidence leaves, no external message runs and budget/schema failures remain visible.
+2. Exercise each selected adapter with exact preview and destination assertions, hostile tool instructions, denied records, mid-run revocation, concurrent budget reservations, retries, unknown pricing, invalid schema and unsupported citations; verify visible failure and no external message, autonomous commercial change or authority restored from an archive.
 
-Exercise each selected adapter with exact preview and destination assertions, hostile tool instructions, denied records, mid-run revocation, concurrent budget reservations, retries, unknown pricing, invalid schema and unsupported citations; verify visible failure and no external message, autonomous commercial change or authority restored from an archive.
+## Field proof register
 
-## Approved scope mapping
+No field proof is recorded yet.
 
-The owner-approved scope entry (16 October 2026) maps to named clauses as follows.
+## Boundaries
 
-| Approved scope item | Clauses |
-| --- | --- |
-| Live two-way Gmail and Microsoft 365 sync: OAuth inbox and calendar, automatic thread-to-contact/deal linking, open and reply tracking | `CAPTURE-010`, `CAPTURE-011`, `CAPTURE-012`, `OUT-013`, `OUT-015`, `OUT-016` |
-| Multiple configurable pipelines, custom objects and fields, weighted forecasting, quotas, won/lost reason reporting | `OPP-009`, `RECORD-014`, `FORECAST-001`, `REPORT-001`, `REPORT-002` |
-| Multi-step sequences with tasks, call and LinkedIn steps, per-rep sending limits, exit on reply, meeting booked or stage change | `SEQUENCE-001`, `SEQUENCE-002`, `SEQUENCE-003`, `TASK-001`, `OUT-018` |
-| Calling: click-to-call through Twilio or Aircall, call logging, recording and transcript on the deal | `CALL-001`, `CALL-002` |
-| One-click migration from HubSpot, Pipedrive and Salesforce with notes, activities and associations, plus enrichment | `MIGRATE-001`, `MIGRATE-002`, `MIGRATE-003`, `ENRICH-001` |
-| Public REST API, webhooks, native links to Dial bookings, Nectar/Stripe billing and HappyToHelp tickets | `API-001`, `INTEGRATE-001`, `INTEGRATE-003`, `INTEGRATE-004` |
-| Push further: an agent keeps the customer graph current, flags missing decision-makers, stalled deals and contradictory commitments with cited evidence, prepares the next action and checks the outcome | `AGENT-001`, `AGENT-002`, `AGENT-003`, `AGENT-004` |
-| Sibling line: Buoy owns post-sale customer success | `INTEGRATE-008`, `BOUNDARY-001` |
+No additional boundaries are recorded.
+
+## Homepage claims
+
+No homepage claims are mapped yet.
 
 ## Status
 
 Judged from the code and tests at commit `b300e460a20da7f09122dc4a9157499430c4f8d5` (27 October 2026).
-
-On 27 October 2026, ct reviewed main `32b5b45ff201e65606dfad369c171df5a1db22ac` and approved the five engineering policies with riders.
-
-Status is an implementation judgment, not a live-provider or deployed-product acceptance claim. The inventory audit at `64f66dd936b78c84ef1d839c68fd735851752ae9` is the starting point; evidence changed by main `fdbb2ed628d0aedd0041397f45709ed6ab940a91` and by the 20 October RECORD-017 collaborator notifications and shared entries was re-read. `done` requires implementation and an exercising test; `partial` names the implemented subset and remaining obligation. Unrelated clause evidence remains the earlier source inspection. The FORECAST-001 build round runs its named browser and upgrade journeys, affected native data tests and typecheck; exact branch/main CI remains the full gate. The OUT-020 round exercised its HTTP/relay-edge test (1/1), archive transfer (4/4), extended onboarding archive (1/1), exact released-schema forward upgrade (1/1), typecheck and built-Worker pages at 1440/390; these checks were repeated after rebasing onto FORECAST-001. The inventory remains 200 cases and qualification flows, with none added, deleted or weakened. The OUT-014 round passed the extended outreach file (16/16), archive transfer (4/4), extended onboarding archive (1/1), forward upgrade (1/1), contact/operator erasure (4/4) and typecheck. The library, exact rendered review, missing/stale inputs and approved snapshot after a library revision were exercised and inspected at 1440/390. The forward-upgrade comparison retains every original column and separately checks the new additive defaults; no original-value assertion was dropped. The CI follow-up updates `tests/core/capture-upgrade.test.ts` to retain every original column and verify additive defaults, and replaces the transient-status checks in `tests/rer/onboarding.test.mjs` and `tests/rer/managed-mail.mjs` with public accepted-state and exact saved-byte checks before and after reload. The capture upgrade (1/1), both native onboarding journeys (2/2 at 1440/390) and typecheck passed locally; no test case was added, deleted or weakened. OUT-020 applies ct’s 20 October 07:15Z design and its named inheritors. Existing historical release results belong to their recorded source commits. BASELINE.md remains independently applicable and is not included in these product-clause counts.
-
-The INTEGRATE-005 round extends one existing source-onboarding case, keeping 198 cases plus two qualification flows (200 total). The revised native case passed (1/1), the full source-onboarding file passed (3/3), and the native public HTTP case covers fixed fields, privacy, all identity refusals, single-use writes, channel safety events, 429 recovery, unaccepted adapter failures, uncertain submissions, revocation, archive round trips and erasure. Archive transfer (4/4), released v0.3.0 / accepted-main forward upgrade (1/1) and typecheck passed. Migration 0051 preserves every original row/value. Settings, notice states, mapping and unresolved setup were exercised in the emitted product at 1440/390. Ct’s 20 October 18:20Z ruling and every named receiving clause are carried in CONTRACT and ACCEPTANCE. Live bot delivery/deletion and fake-edge/native acceptance are separately identified in retained verification; no live inbound click or hosted callback is claimed.
-
-The REPORT-001 round extends and retitles one existing report-disclosure case, keeping 198 cases plus two qualification flows (200 total). The extended file passed (2/2) with the report population race (1/1) and time boundaries (1/1); onboarding archive (1/1), archive transfer (4/4), released v0.3.0 / accepted-main forward upgrade (1/1) and typecheck also passed. Migration 0052 adds only the report-sharing table and preserves every original row/value. The Reports list, built-in suite, a saved report, drill-through, the limited-access view and export were exercised in the emitted Worker at 1440/390. Ct's standing patterns 1, 2 and 4 carry the named inheritors in CONTRACT and ACCEPTANCE. The routine fold-domain shard is split into two balanced shards so push Verify stays near ten minutes. CI follow-up: the first branch Verify (39569731861) found the deployment spec without migration 0052, now republished from the build, and an axe contrast finding in CI sampled while an opened drill figure was mid-way through the shared button colour transition; drill figures now change state at once. The extended file passed again locally (2/2); no case was added, deleted or weakened.
-
-The initial REPORT-002 Tile board round passed the extended report-disclosure file (2/2), the source-onboarding file (3/3), report population/time-boundary cases (1/1 each), populated forward upgrade (1/1), onboarding archive (1/1), build and typecheck. It extends and retitles the existing report-disclosure and source-onboarding journeys, keeping 198 cases plus two qualification flows (200 total). Migration 0053 is additive and registered in the deployment spec; populated released v0.3.0 and accepted-main upgrades preserve every original row and column. The emitted Worker and built UI exercise nine-tile composition, every permitted cell against its drill rows, Owner/Pipeline/US date/Region filters, named/workspace sharing, personal defaults, unavailable sources, saved period results with late evidence, errors, no-value states, PDF and tile CSV at 1440/390. Records and local CLI archives round-trip definitions without authority, restore schedules paused and withdraw erased saved-result pointers. Loading and refetch, both access classes, the full-screen phone drill, Share, paused Schedule and Edit tiles are retained as PNGs. The existing Reports journey explicitly opens the built-in list when saved definitions exist; its original assertions remain. An unrelated saved-result history request from a collaborator is explicitly asserted denied with no source data before that exact expected 409 is accepted by browser error monitoring. The source-onboarding journey proves DST scheduling and no outbound from paused definitions while retaining existing Slack transport assertions. The fold-domain workload is divided into three shards, with the extended report journey isolated. REPORT-002 remains partial: the relay has no attachments or system notification sender; recipient copies, send-time revocation and delivery states/retries are unproven. Ct approved team inheritance on 22 October 21:32Z and accepted all-paused progress with scheduled Slack as a Gap at 22:40Z. PDF refuses text outside WinAnsi. No real provider call or consent was used.
-
-For the 0.2.0 release record (18 October 2026, commit `5c72dc85b7d4627e8b655246102981992f48a7fa`), the fifteen published clauses that were partial were restated to what that commit ships and its independent release gate proved, and each larger obligation stays with the target clause named in its text. The 19 October TEAM-002 automated HTTP journey now proves its setup-owner refusals and permitted self-removal; all 79 published clauses are done.
-
-Historical REPORT-002 evidence dated 23 October 2026 follows.
-
-The scheduled-Slack REPORT-002 round extends and retitles the same source-onboarding case, keeping 198 cases plus two qualification flows (200 total); no case is added or deleted. Its three native cases and the two emitted report cases pass, with 1440/390 Schedule, delivery history, saved Slack event choices, channel status, anonymous sign-in and shared hover/long-press tooltip states. Generic content, DST, one-occurrence replay, Retry-After, failed-only retry, held uncertainty, owner-access withdrawal and non-resuming suspension are asserted through authenticated routes with Slack faked only at the network edge. Existing migration 0053 and its custody remain; this round adds no migration. Records and local CLI archives retain channel IDs and notice rows without credentials and restore schedules/routes paused. INTEGRATE-005 and TEAM-005 carry the Dashboard ready event in both texts. REPORT-002 remains partial on the exact email and PDF gaps above. Counts stay 93 done, 22 partial, 16 missing of 131; published 79/0/0 of 79 and target/push-further 14/22/16 of 52.
-
-The RECORD-016 round adds independent contact/company ownership in migration 0054, reviewed single and bulk changes, individual refusals, attributed timeline history, guarded undo and grouped in-app notices. The authenticated records/search case passes 20 selected contacts with one becoming unavailable after review, 19 changes and entries, restoration of all 19 prior owners, stale review/undo refusal, replay, inactive targets, grouped notices and retired-owner erasure. Released v0.3.0, accepted main and historical native-0042 populated upgrades, Records restore, local portability and contact erasure pass. Contact/company review and timeline, bulk review/undo and assignment notifications pass at 1440/390 with no serious/critical axe finding, overflow or browser error; their PNGs are retained under `docs/retained-verification/RECORD-016/`. Its existing records/search, populated forward-upgrade and browser registrations are extended, with 198 cases plus two qualification flows (200 total); no case is added or deleted. Current totals are 93 done, 23 partial, 15 missing of 131; published 79/0/0 of 79 and target/push-further 14/23/15 of 52. The remaining RECORD-016 sentences are named in its Gap; every existing receiving duty remains in both texts.
-
-The FORM-001 round retains the existing four native registrations and extends the mapped-capture and HTTP abuse journeys. Allowlisted cross-origin preflight, challenge and intake, denied-origin counts, company/deal/custom mappings, empty fills, reviewed populated changes, existing-owner retention, two-rep rotation across restart, inactive-member skipping, fixed assignment and one owner notice pass. An allowlist removal held at the Turnstile network edge prevents intake; a later allowed submission verifies the submitting hostname. Records and local CLI custody pass, and a fresh post-erasure archive contains no erased mailbox in source, proposal or mapped destination copies. Builder, hosted form, receipt and owner inbox pass at 1440/390 with no serious/critical axe finding, overflow or browser error; eight inspected PNGs are retained under `docs/retained-verification/FORM-001/`. FORM-001 stays partial on its named fields, team, future-kind and external-notification gaps. Receiving duties are added to TEAM-005, RECORD-014 and NOTIFY-003 in both texts; no acceptance sentence is removed or narrowed. Counts remain 93/23/15 and registrations 198 plus two qualification flows (200).
-
-The OUT-017 rounds retain migration 0056’s additive mail store and add migration 0066’s current promise owner without rebuilding native or owner-added columns. The existing record-mail registration now exercises contact/company AI previews and unchanged provider input, cited unsent editable drafts, stale/refused/erased requests, provider failure and usage; contact-only held-reply attach/dismiss, attribution, replay and genuine/automatic classification; and reviewed removal transfer/unassignment, changed-set refusal, historical sender attribution and overdue receiver Today. Records/local custody and contact/operator erasure retain the new data. The populated forward-upgrade registration preserves accepted mail, an open promise and an owner-added promise column. Inspected 1440/390 PNGs for the record AI preview, contact held-reply review and promise removal review are retained under `docs/retained-verification/OUT-017/`; the built Worker journey exercises their end states. OUT-017 remains partial on its unchanged Acceptance and inherited OUT-013, OUT-019, RECORD-014, CAPTURE-010, SEQUENCE-001/003 and OUT-016 obligations. Status counts remain 93 done / 24 partial / 14 missing of 131, id for id; registrations remain 198 cases plus two qualification flows (200/200), with none deleted, skipped or weakened.
-
-The FORM-001 picklist and hidden-field round extends and retitles the existing mapped-capture HTTP case and the shared browser journey; no case is added or deleted. Builder definitions gain picklist choices and hidden fields with a fixed value or one declared query parameter, each value validated against its mapped property, and publication review lists the hidden fields beside the compiled page. The real D1 HTTP journey covers the compiled select, fill-empty and a CAPTURE-004 proposal for a changed populated choice, the reviewed fixed value recorded with each submission, a picklist mapped to a native contact property, six forged inputs (undeclared choices for an existing and a new person, an empty required choice, an over-long page value, an undeclared name and a fixed-value override) refused as `invalid_fields` with no customer or proposal write, unchanged consent and contactability, exactly-once replay, a saved definition change that keeps the form offline until its new revision is compiled, approved and published, Records and local CLI transfer of the extended definitions and submissions, and contact erasure removing the submitted hidden value from every archived copy. At 1440 and 390 the browser journey builds the fields in the existing builder, reviews the hidden values, loads the hosted page with a declared and an undeclared parameter and refuses an unchosen required picklist. Because every local browser shares one visitor network whose ten counted enquiries a minute the earlier public form journeys use, it sends one enquiry per width: hosted at 1440 and, through the generated embed on an allowlisted HTTPS site, framed at 390, each sending only the visible fields and the declared parameter, with no cookie or other third-party request and no serious/critical axe finding, overflow or browser error; eight inspected PNGs are added under `docs/retained-verification/FORM-001/`. No migration is added: definitions remain in `content_entities` and submitted values in `marketing_form_submissions`, so populated-main forward upgrade is unchanged. FORM-001 stays partial on its team, future-kind and external-notification gaps. Counts remain 93/23/15 and registrations 198 plus two qualification flows (200).
-
-26 October 2026 (sd-orbit-c46): RECORD-014 gains a paged, authenticated definition-history reader and its existing Settings disclosure, including original labels and choices after rename/archive and an editor that opens from Change. The extended native typed-field/history/archive case and retained erasure case pass (2/2); a fresh native session reads all three restored record kinds. The existing records browser registration passes, including rename/archive/history at 1440/390. An independent own-rer-dev inspection at 1440×900 and 390×844 passes border, nested-field, text, tooltip, overflow and phone-target probes with no serious/critical axe finding or page error. No storage, migration, new customer copy or provider access is added; the existing archive/erasure schema remains unchanged. Registrations stay 198 cases plus two qualification flows (200/200), with none added, deleted or weakened. RECORD-014 remains partial, with no DONE proposal. Counts remain 93 done / 23 partial / 15 missing of 131 (published 79/0/0; target 14/23/15); CONTRACT and ACCEPTANCE match id for id.
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
