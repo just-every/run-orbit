@@ -29,6 +29,8 @@ test('CAPTURE-007 DATA-002 DATA-003 current sales records restore without author
     assert.equal(await target.db.prepare('SELECT count(*) n FROM capture_credentials').first('n'), 0, 'a restored provider source has no credential and must be reconnected');
     await proveCurrentArchive(f,target,current,archive);
 
+    // After transfer work, the owner confirms identity again before privacy operations.
+    await f.refreshSignIn();
     await eraseCapturedOriginals(f);
     const original=fixtureMailbox(f).reply;
     const destination=await target.records.save('contact',{name:'Destination private history',email:'destination@acme.example'},target.actor);
@@ -36,6 +38,7 @@ test('CAPTURE-007 DATA-002 DATA-003 current sales records restore without author
     assert.equal((await target.request(`records/contact/${destination.id}`,'DELETE',{confirmed:true},{Cookie:`__Host-orbit_session=${targetSession.token}`})).status,200);
     const retained=(await target.db.prepare("SELECT id FROM audit_entries WHERE action='capture.erased_mailbox'").all<{id:string}>()).results;
     assert.ok(retained.length,'destination has independent anonymous erasure history');
+    await f.refreshSignIn();
     const erasedArchive=await exported(f);
     const session=await testAuth(target.db).createSession(target.actor);
     const call=async(path:string,method='GET',body?:unknown)=>{const response=await target.request(path,method,body,{Cookie:`__Host-orbit_session=${session.token}`});assert.ok(response.ok,await response.clone().text());return response.json() as Promise<any>;};
