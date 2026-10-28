@@ -11,7 +11,7 @@ export async function salesReadResponse(db:D1Database,operator:AuthenticatedOper
  const path=new URL(request.url).pathname;
  if(request.method!=='GET')return null;
  if(path==='/api/v1/settings'){
-  const settings=await new SettingsRepository(db).read();return Response.json({...settings,operators:settings.operators.map((person:any)=>({id:person.id,display_name:person.display_name,status:person.status})),owner:null,local:false});
+  const settings=await new SettingsRepository(db).read();return Response.json({...settings,operators:settings.operators.map((person:any)=>({id:person.id,display_name:person.display_name,status:person.status,collaborator:person.collaborator})),owner:null,local:false});
  }
  if(path.startsWith('/api/v1/workbench')&&!['/api/v1/workbench','/api/v1/workbench/','/api/v1/workbench/onboarding'].includes(path))return null;
  const mount=path.startsWith('/api/v1/opportunities')?'/api/v1/opportunities':path.startsWith('/api/v1/workbench')?'/api/v1/workbench':path.startsWith('/api/v1/today')?'/api/v1/today':path==='/api/v1/workspace/presentation'?'/api/v1/workspace':null;if(!mount)return null;
