@@ -8639,7 +8639,7 @@
       "executable": false
     },
     "tests/delegation/authority-journey.test.ts": {
-      "sha256": "be1ada637eedd2c223659e43cc3a10312ea19b92a576a90327c293776d836ea3",
+      "sha256": "44ce4a3e7beb4bd7407a872d2d660596be0ab847091319a303ec7a7f5b67f9b3",
       "executable": false
     },
     "tests/delegation/scenario.ts": {

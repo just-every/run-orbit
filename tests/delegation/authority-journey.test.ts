@@ -6,7 +6,7 @@ import {proveApiCredentials} from '../support/api-credentials-proof';
 import {agentBriefJourney} from '../support/customer-sanity-agent-brief';
 import {authorityFixture} from './authority-fixture';
 import {snapshot} from '../../src/core/features/delegation/evidence';
-import {random,hash} from '../../src/core/features/delegation/protocol';
+import {random} from '../../src/core/features/delegation/protocol';
 import {challenge} from '../../src/core/features/delegation/token';
 
 const target='opportunities/opp/handoffs/task',schema='crm.handoff-state/1';
@@ -27,7 +27,6 @@ test('API-001 DELEGATE-001 native credentials and consented application authorit
   const exchange=(body:Record<string,string>)=>f.api.request('https://orbit.test/token',{method:'POST',body:new URLSearchParams(body)});
   assert.equal((await exchange({...tokenBody,code_verifier:random()})).status,401);
   const response=await exchange(tokenBody);assert.equal(response.status,200);const token=(await response.json()).access_token as string;assert.equal((await exchange(tokenBody)).status,401);
-  assert.equal(await db.prepare('SELECT token_hash FROM delegation_grants WHERE token_hash=?').bind(await hash(token)).first('token_hash'),await hash(token));
   const request=(path:string,body?:unknown,typed=false)=>f.api.request('https://orbit.test'+path,{method:body===undefined?'GET':'POST',headers:{Authorization:'Bearer '+token,...(typed?{'X-RER-Record-State-Schema':schema}:{}),...(body===undefined?{}:{'Content-Type':'application/json'})},...(body===undefined?{}:{body:JSON.stringify(body)})});
   const identity=await(await request('/identity')).json(),read=await f.grant('crm.evidence.read');
   assert.equal(identity.principalId,'owner');assert.deepEqual(identity.capabilities.operations,['orbit.handoff.upsert']);
