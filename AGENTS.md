@@ -61,3 +61,15 @@ when they would save work in another edition. Their natural home may be this
 edition, a family, Base or an independent repository; no separate repository per
 module or universal compatibility interface is required. Verify adoption against
 the receiving product's requirements, including deliberate local differences.
+
+## Lander-Regenerate
+
+After resolving CONTRACT.md, synchronize the touched clause metadata without changing any acceptance text:
+
+```sh
+node scripts/contract-docs.mjs write --clauses AUTO-001,AUTO-002
+node scripts/contract-docs.mjs check --clauses AUTO-001,AUTO-002
+```
+
+Pass the touched clause IDs in `--clauses`. Regenerate the source lock last with
+`node scripts/edition-authoring/cli.mjs lock`, then run its `check` command.

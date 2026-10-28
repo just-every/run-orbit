@@ -1,6 +1,6 @@
 export type FieldDefinition={label:string;valueType:string;required:number;unique:number;options:string[];archived:number};
 
-export const typeLabels:Record<string,string>={text:'Text',number:'Number',date:'Date',picklist:'Picklist'};
+export const typeLabels:Record<string,string>={text:'Text',number:'Number',date:'Date',picklist:'Picklist',boolean:'Yes or no',user:'Operator',datetime:'Date and time'};
 
 const listed=(noun:string,items:string[])=>`${noun}${items.length>1?'s':''} ${items.join(', ')}`;
 
