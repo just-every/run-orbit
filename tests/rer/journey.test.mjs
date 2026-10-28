@@ -114,8 +114,11 @@ test('README installation lifecycle: native setup, first customer and reviewed m
   console.info('Installed journey: reviewed provider mail');
   await continueReviewedMail({checkout,page:operator,port,origin,result:customer,evidence});
   console.info('Installed journey: resumed owner startup');
-  dev=await checkout.serve(['dev']);await dev.ready;
-  await localOwnerSignIn(operator,origin,checkout.root);
+  dev=await checkout.serve(['dev']);
+  // Return from hosted HTTPS through this dev runtime's key exchange. A native
+  // CLI session alone does not admit the dev-only persona-switching routes.
+  await operator.goto(openLink(await dev.ready));
+  await operator.waitForURL(`${origin}/app`);
   await installedPersonas(operator,origin,customer.opportunityURL);
 
   const api = (path, data) => operator.evaluate(async ([path, data]) => (await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })).status, [path, data]);
