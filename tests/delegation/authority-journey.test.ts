@@ -34,6 +34,19 @@ test('API-001 DELEGATE-001 native credentials and consented application authorit
   assert.equal('recordStateSchemas' in identity.capabilities,false);
   assert.deepEqual((await(await request('/identity',undefined,true)).json()).capabilities.recordStateSchemas,[schema]);
   const publicApp=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}});
+  assert.equal((await publicApp.request('https://orbit.test/delegation/clients',{method:'POST',headers:{Cookie:f.cookie,Origin:'https://orbit.test'},body:new URLSearchParams({id:'synthetic-orbit-1',redirect_uri:'https://orbit.test/delegation/callback'})})).status,303);
+  // Use the browser's ordinary Accept negotiation for both valid selection and refusals.
+  const connect=(kind:string)=>publicApp.request('https://orbit.test/delegation/connect?'+new URLSearchParams({client:'synthetic-orbit-1',kind}),{headers:{Cookie:f.cookie}});
+  for(const kind of ['opportunities','contacts','companies'])assert.equal((await connect(kind)).status,200,kind);
+  const inherited=['constructor','toString','__proto__','hasOwnProperty','valueOf'],refusals=[];
+  for(const kind of inherited){
+   const response=await connect(kind),body=await response.text();
+   assert.equal(response.headers.get('Cache-Control'),'no-store',kind);
+   assert.doesNotMatch(body,/\bbinding\b|\bstack\b|D1_ERROR|SQLITE|\[native code\]|\b(?:Type|Reference|Syntax)Error\b|\bat\s+\S+\s+\(/i,kind);
+   assert.equal(JSON.parse(body).error.code,'INVALID_REQUEST',kind);
+   refusals.push(response.status);
+  }
+  assert.deepEqual(refusals,inherited.map(()=>400),'Inherited record kinds take the normal invalid request path');
   assert.equal((await publicApp.request('https://orbit.test/api/rest/v1/deals',{headers:{Authorization:'Bearer '+token,Cookie:f.cookie}})).status,401,'a delegation grant cannot act as an API credential');
   assert.equal((await publicApp.request('https://orbit.test/api/rest/v1/deals',{headers:{'X-Slack-User':'owner',Cookie:f.cookie}})).status,401);
   assert.equal((await f.api.request('https://orbit.test/identity',{headers:{Cookie:f.cookie}})).status,401);

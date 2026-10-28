@@ -65,7 +65,7 @@ test('signed mail ingress, declared sign-in and native source stops retain truth
   const result=await fetch(origin+`/api/v1/records/contact/${contact.id}`,{headers:{Cookie:`__Host-orbit_session=${session.token}`}});assert.equal(result.status,200);assert.equal((await result.json() as any).record.contactability,'contactable');
   await context.close();if(worker&&worker.exitCode===null){const exited=once(worker,'exit');worker.kill('SIGTERM');await exited;}
   await fixture.reopen();await fixture.db.prepare('DELETE FROM public_rate_limits').run();
-  await sourceMailboxStopJourney(fixture,origin=>declaredSignInJourney(browser!,origin));
+  await sourceMailboxStopJourney(fixture,stage,origin=>declaredSignInJourney(browser!,origin));
  }finally{
   await browser?.close();if(worker&&worker.exitCode===null){const exited=once(worker,'exit');worker.kill('SIGTERM');await exited;}await fixture.dispose();
  }

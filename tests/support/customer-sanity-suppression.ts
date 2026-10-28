@@ -54,7 +54,11 @@ export async function ordinarySuppression(f:Launch) {
 }
 async function inheritedStop(f:Launch) {
  const merge=async(survivor:string,retired:string)=>{const response=await f.request('records/contact/merge','POST',{survivorId:survivor,retiredId:retired,choices:{email:'survivor',contactability:'survivor'},reviewed:await reviewTokens(f.db,'contact',survivor,retired),confirmed:true});assert.equal(response.status,200,await response.clone().text());};
- const stop=async(contact:string)=>{assert.equal((await f.request(`records/contact/${contact}`,'PUT',{contactability:'do_not_contact'})).status,200);};
+ const stop=async(contact:string)=>{
+  const record=(await f.records.detail('contact',contact)).record;
+  const response=await f.request(`records/contact/${contact}`,'PUT',{name:record.name,email:record.email,contactability:'do_not_contact'});
+  assert.equal(response.status,200,await response.clone().text());
+ };
  const clear=async(contact:string)=>{const row=(await f.records.detail('contact',contact)).record;assert.equal((await f.request(`records/contact/${contact}/clear-do-not-contact`,'POST',{confirmed:true,email:row.email,updatedAt:row.updated_at,revision:row.contactability_revision})).status,200);};
  const survivor=await f.customer(),retired=await f.customer(),alias=await f.customer();
  await stop(alias.contactId);await merge(retired.contactId,alias.contactId);await clear(retired.contactId);

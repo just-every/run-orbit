@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import {todayApp} from './today-workspace';
+import {recordChangesProof} from './record-changes-proof';
 export async function salesFieldMeaning(db:D1Database){const t=await todayApp(db);await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(t.actor).run();const stage=await db.prepare('SELECT id FROM pipeline_stages LIMIT 1').first<string>('id'),base='/api/v1/settings/custom-fields';
+ await recordChangesProof(db,t);
  assert.equal((await t.call(base+'/preview',{body:{kind:'contact',fieldKey:'constructor',label:'Reserved field',valueType:'text',required:false,unique:false,options:[],archived:false}})).status,400,'reserved object keys cannot become field definitions');
  async function configure(input:any){const review=await t.json<any>(base+'/preview',{body:input},200);await t.json(base+'/confirm',{body:{input,reviewHash:review.reviewHash,confirmed:true}},200);return review;}
  for(const kind of ['contact','company','opportunity'] as const){

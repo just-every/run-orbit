@@ -10,12 +10,13 @@ import { ApprovalRepository } from '../../src/core/features/outreach/approval-re
 import { suppressionHashes } from '../../src/core/features/records/suppression';
 import type { SignalEvent } from '../../src/core/features/ingestion/contracts';
 
-export async function sourceMailboxStopJourney(fixture:Awaited<ReturnType<typeof isolatedDatabase>>,inspectSignIn:(origin:string)=>Promise<void>){
- const source=createId(),actor=createId(),stage=createId();
+export async function sourceMailboxStopJourney(fixture:Awaited<ReturnType<typeof isolatedDatabase>>,stage:string,inspectSignIn:(origin:string)=>Promise<void>){
+ const source=createId(),actor=createId();
  const worker=await emittedMailWorker(fixture.directory,{ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex'),MAIL_PROVIDER:'development',MAIL_FROM:'auth@localhost.test'});
  try{
   const deps=createDependencies(fixture.db);await deps.auth.ensureOperator({id:actor,email:'source-runtime@operator.test',displayName:'Source runtime operator'});
-  await deps.workspace.ensureWorkspace({name:'Source runtime',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});await deps.workspace.ensurePipelineStage({id:stage,name:'Qualified',position:0});
+  // This phase uses the caller's installed workspace and stage. Creating another
+  // stage at position zero conflicts with the preceding mail-ingress phase.
   const session=await deps.auth.createSession(actor),headers={Cookie:`__Host-orbit_session=${session.token}`,Origin:worker.origin,'Content-Type':'application/json'};
   const cases:Array<{contactId:string;opportunityId:string;draftId:string;messageId:string;event:SignalEvent;signalId?:string}>=[];
   for(const type of ['email.unsubscribed','email.bounced'])for(const shape of ['opportunity','email-only','contact-only'] as const){

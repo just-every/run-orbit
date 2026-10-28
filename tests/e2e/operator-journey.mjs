@@ -123,6 +123,7 @@ export const operatorJourney5 = async ({ page }) => {
     await expect(timeline).toContainText("Recorded");
     await expect(timeline).toContainText("Actor Website form (Source)");
     await expect(timeline).toContainText("source Signals");
+    await recordHistoryValues(page);
     await expectNoHorizontalOverflow(page);
     expect(failures).toEqual([]);
   };
@@ -180,3 +181,67 @@ export const operatorJourney6 = async ({ browser, page }) => {
       await secondContext.close();
     }
   };
+
+
+async function recordHistoryValues(page) {
+  const issued = await authenticateOperator(page.context()), origin = new URL(page.url()).origin;
+  const call = async (path, method = "GET", body, status = 200) => {
+    const response = await page.request.fetch(path, { method, headers: { Origin: origin }, ...(body === undefined ? {} : { data: body }) });
+    expect(response.status(), `${method} ${path}`).toBe(status);
+    return response.json();
+  };
+  const name = `History values ${Date.now()}`;
+  const created = await call("/api/v1/records/contact", "POST", { name }, 201);
+  const path = `/api/v1/records/contact/${created.id}`, read = () => call(path);
+  const initial = await read();
+  await page.goto(`/app/records?kind=contact&record=${created.id}`, { waitUntil: "networkidle" });
+  await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Edit details", exact: true }).click();
+  const saved = page.waitForResponse(response => new URL(response.url()).pathname === path && response.request().method() === "PUT");
+  await page.getByRole("button", { name: "Save changes", exact: true }).click();
+  expect((await (await saved).json()).changed).toBe(false);
+  await expect(page.getByRole("status").filter({ hasText: /no changes/i })).toBeVisible();
+  expect(await read()).toEqual(initial); // Includes updated_at, complete details and timeline.
+
+  const values = { member_names: '["ada","bo"]', empty_list: "[]", empty_object: "{}", is_ready: false, zero: 0 };
+  expect((await call(path, "PUT", { name, custom_fields: values })).changed).toBe(true);
+  const changed = await read(), entry = changed.timeline.find(item => item.kind === "record.updated");
+  const settings = await call("/api/v1/settings"), actor = settings.operators.find(operator => operator.id === issued.draft.authorId);
+  expect(entry.actor_id).toBe(issued.draft.authorId);
+  expect(entry.actor_name).toBe(actor.display_name);
+  const lines = [
+    'Changed Member names: Empty → ["ada","bo"]',
+    "Changed Empty list: Empty → []", "Changed Empty object: Empty → {}",
+    "Changed Is ready: Empty → false", "Changed Zero: Empty → 0"
+  ];
+  for (const line of lines) expect(JSON.parse(entry.payload_json).text).toContain(line);
+  expect((await call(path, "PUT", { name, custom_fields: Object.fromEntries(Object.entries(values).reverse()) })).changed).toBe(false);
+  expect(await read()).toEqual(changed);
+  await page.reload({ waitUntil: "networkidle" });
+  const field = label => page.locator(".records-detail-list > div").filter({ has: page.locator("dt").filter({ hasText: new RegExp(`^${label}$`) }) }).locator(":scope > dd");
+  for (const [label, value] of [["Member names", values.member_names], ["Empty list", "[]"], ["Empty object", "{}"], ["Is ready", "false"], ["Zero", "0"]]) {
+    await expect(field(label)).toHaveText(value);
+  }
+  const timelineEntry = page.locator(`#entry-${entry.id}`);
+  await expect(timelineEntry).toContainText(actor.display_name);
+  for (const line of lines) await expect(timelineEntry).toContainText(line);
+
+  const literal = { ...values, member_names: "ada; bo" };
+  expect((await call(path, "PUT", { name, custom_fields: literal })).changed).toBe(true);
+  expect((await read()).timeline.some(item => item.kind === "record.updated" && JSON.parse(item.payload_json).text.includes('["ada","bo"] → ada; bo'))).toBe(true);
+  const importSource = JSON.stringify({ vendor: "hubspot", account: "CRM 42", sourceId: "old-42", owner: "Ada", stage: null, description: null });
+  await call(path, "PUT", { name, custom_fields: { ...literal, import_source: importSource } });
+  const provenance = await read();
+  expect(JSON.parse(provenance.record.custom_fields_json).import_source).toBe(importSource);
+  expect(provenance.timeline.some(item => item.kind === "record.updated" && JSON.parse(item.payload_json).text.includes("Changed Import source: Empty → Imported from: CRM 42 (HubSpot export); ID in old system: old-42; Owner in old system: Ada"))).toBe(true);
+  await page.reload({ waitUntil: "networkidle" });
+  await expect(field("Member names")).toHaveText("ada; bo");
+  await expect(field("Import source")).toContainText("CRM 42 (HubSpot export)");
+  await call(path, "PUT", { name, custom_fields: { ...literal, import_source: "Reviewed by Ada" } });
+  const replaced = await read();
+  const replacement = replaced.timeline.find(item => item.kind === "record.updated" && JSON.parse(item.payload_json).text.includes("Changed Import source: Replaced import details from CRM 42 (HubSpot export) with text: Reviewed by Ada"));
+  expect(replacement).toBeTruthy();
+  await page.reload({ waitUntil: "networkidle" });
+  await expect(field("Import source")).toHaveText("Reviewed by Ada");
+  await expect(page.locator(`#entry-${replacement.id}`)).toContainText("Replaced import details from CRM 42 (HubSpot export) with text: Reviewed by Ada");
+}
