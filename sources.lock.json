@@ -1335,19 +1335,19 @@
       "executable": false
     },
     "docs/retained-verification/RECORD-016/import-owner-notices-1440.png": {
-      "sha256": "42d626fa68badc070a6f2e796ac87e5e96f7f264099add5667389a6773fc3e8f",
+      "sha256": "88c7264e83f2cb84f83f43dc1d5c28ff250821740700cd34fb23b3ee393eb486",
       "executable": false
     },
     "docs/retained-verification/RECORD-016/import-owner-notices-390.png": {
-      "sha256": "66e46af595dfae3c44bcd4387a58c30b2c2c735d38d0c958f4d1b33a6726c570",
+      "sha256": "7f3555ebfbd41011c79f14e31099bd448d08abe4fafb3bcaff4b186472a71c3d",
       "executable": false
     },
     "docs/retained-verification/RECORD-016/import-owner-review-1440.png": {
-      "sha256": "6172e74580ce2133635eb746e474c392889d3230794a29d8e054f240c67f4a9d",
+      "sha256": "0e392f8241c762f9be667dbbbc0a8bfc948d02b9bdaf619ee25c083197037f3e",
       "executable": false
     },
     "docs/retained-verification/RECORD-016/import-owner-review-390.png": {
-      "sha256": "4738e2acd04f85fa7435123f724457b39ed0caecf71c233e1ddd577e40fcefa3",
+      "sha256": "3acf48b513226bfbaf46b57999d5a151f4029d3741cb89bdbe03c2c706e4228e",
       "executable": false
     },
     "docs/retained-verification/RECORD-016/ownership-bulk-review-1440.png": {
@@ -5567,7 +5567,7 @@
       "executable": false
     },
     "src/core/features/imports/owner-targets.ts": {
-      "sha256": "89b62cfa44dd55115c3a95b592fa95a42c94e74b989c299573bc2ecd25ad1e00",
+      "sha256": "46c595f340d541b6c91a791cd5e306d3acd283827883011f482e0ca6cf690697",
       "executable": false
     },
     "src/core/features/imports/owners.ts": {
@@ -5579,7 +5579,7 @@
       "executable": false
     },
     "src/core/features/imports/repository.ts": {
-      "sha256": "4b267b9924ea5721a1f4cfff5e29c60d4560050c7ebed07baf4ecd61b82955a3",
+      "sha256": "96a54b801d4509abc201b85cd79781cf52371d757b0031bd05486c00c9a2c225",
       "executable": false
     },
     "src/core/features/imports/review-erasure.ts": {
@@ -9591,7 +9591,7 @@
       "executable": false
     },
     "tests/support/import-owners.ts": {
-      "sha256": "779bfd9da0728d2804ceefa2fb6e98bbec21bf0f7122045e8451284c204d4cf7",
+      "sha256": "7329b1e0efae7d190ce26e9c8f7b337716732008258fc9942aa6600eca770aac",
       "executable": false
     },
     "tests/support/isolated-database.ts": {
