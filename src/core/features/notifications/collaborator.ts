@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import type { AuthenticatedOperator } from '../identity';
 import { entriesGrantSql, readsEntries } from '../access/grant-entries';
 import { mentionsOf } from '../records/mentions';
-/** RECORD-017 (ct, 19 October): a collaborator's notifications are only their own mentions about a record they read now
+/** RECORD-023 (ct, 19 October): a collaborator's notifications are only their own mentions about a record they read now
  * through a live grant that includes its notes, calls and meetings. Losing that grant hides them (nothing is deleted)
  * and a new grant shows them again; no other operator's notification or count is ever read here. */
 const targets=`WITH mention_targets AS MATERIALIZED(

@@ -1,5 +1,14 @@
 # Working on Orbit
 
+Lander-Regenerate: node src/base/contract-docs.mjs write
+Lander-Regenerate: node src/base/contract-docs.mjs check
+Lander-Regenerate: node scripts/edition-authoring/cli.mjs lock
+
+After editing `CONTRACT.md`, run `node src/base/contract-docs.mjs write`, then
+`node src/base/contract-docs.mjs check`. Regenerate `sources.lock.json` last with
+`node scripts/edition-authoring/cli.mjs lock` and validate it with
+`node scripts/edition-authoring/cli.mjs check`.
+
 ## Run it locally
 
 Start the app this way in every checkout, in this order (Node 22.20.0 and pnpm 10.12.4 are pinned):

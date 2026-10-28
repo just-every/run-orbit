@@ -1,3 +1,4 @@
+import {importOwnerFlow} from '../support/import-owners';
 import {reviewTokens} from '../support/reviewed-merge';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
@@ -33,7 +34,7 @@ test('RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-
   assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(scheduled.id).first<any>())!.state,'cancelled','Undo never resumes cancelled mail');
   const survivingProofs=new Set((await f.db.prepare("SELECT id FROM audit_entries WHERE action='contact.suppressed'").all<{id:string}>()).results.map(row=>row.id));assert.ok(independentProofs.every(id=>survivingProofs.has(id)));
   t.diagnostic(`${vendor}: ${dry.counts.input} rows, one listed rejection; records, associations, notes, replay and kit undo reconciled.`);
- }await genericCsvFlow(f);}finally{await f.dispose();}
+ }await genericCsvFlow(f);await importOwnerFlow(f);}finally{await f.dispose();}
 });
 test('RECORD-008 stops block exact approved sends; undo preserves edits and independent stops, authority and malformed mapping fail closed',async()=>{
  const f=await launchFixture();try{

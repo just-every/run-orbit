@@ -64,6 +64,7 @@ export function verificationPlan({ journeys = false } = {}) {
   const prepared = (...gates) => [gate('exec', 'tsx', 'tests/support/prepare-state.ts'), ...gates];
   const plan = {
     source: [
+      gate('exec', 'node', 'src/base/contract-docs.mjs', 'check'),
       gate('run', 'source:check'),
       gate('exec', 'node', 'node_modules/@runeditrun/rer/bin/rer.mjs', 'check', '--profile', 'first-party'),
       gate('run', 'check:boundaries'),

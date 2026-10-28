@@ -4,7 +4,7 @@ import { recordsRequest } from './records-api';
 import { OperatorState } from './operator-shell';
 interface User {id:string;name:string;budget:number;used:number;remaining:number;overridden:boolean;default:number}
 interface Capacity {owner:boolean;status:string;declaredUsers:number;perUserPerMinute:number;sequencePerDay:number;shared:{perMinute:number;used:number;overridden:boolean;default:number};users:User[]}
-/** OUT-018: each user's one-to-one budget used and remaining, and the shared transport rate; the owner sets both until TEAM-005 adds the administrator role. */
+/** OUT-026: each user's one-to-one budget used and remaining, and the shared transport rate; the owner sets both until TEAM-005 adds the administrator role. */
 export function SendingCapacity(){
  const [data,setData]=useState<Capacity>(),[error,setError]=useState(''),[notice,setNotice]=useState(''),[rate,setRate]=useState(''),[budgets,setBudgets]=useState<Record<string,string>>({});
  async function load(){try{const result=await recordsRequest<Capacity>('settings/sending');setData(result);setRate(String(result.shared.perMinute));setBudgets(Object.fromEntries(result.users.map(user=>[user.id,String(user.budget)])));}catch(e){setError((e as Error).message);}}

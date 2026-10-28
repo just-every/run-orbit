@@ -1,3 +1,4 @@
+import {ownerKinds,readOwnerTarget} from './owner-targets';
 import {canonicalJson,sha256,type D1Database,type D1UndoEffect,type TargetRow} from '../../../modules/import-kit/d1/index';
 import {tables,type NativeValue} from './targets';
 import {stopRead} from './targets-stop';
@@ -14,6 +15,7 @@ export async function readUndoTargets(db:D1Database,destination:string,effects:D
   for(const row of rows){const marker=markerMap.get(`${kind}:${row.id}`),original=marker?JSON.parse(marker.original_json):null,value:NativeValue={row,links:relationRows.filter(link=>link[foreign]===row.id),...original?.suppressionTokens?{suppressionTokens:original.suppressionTokens}:{}};
    values.set(`${kind}:${row.id}`,{destination,targetKind:kind,targetId:row.id,value,revision:marker?.revision??sha256(canonicalJson(value))});}
  }
+ for(const effect of effects.filter(e=>ownerKinds.includes(e.expected.targetKind))){const {targetKind:kind,targetId:id}=effect.expected,value=await readOwnerTarget(db,destination,kind,id);if(value)values.set(`${kind}:${id}`,value);}
  for(const effect of effects.filter(e=>e.expected.targetKind==='suppression')){const value=await stopRead(db,destination,effect.expected.targetId);if(value)values.set(`suppression:${effect.expected.targetId}`,value);}
  return values;
 }
