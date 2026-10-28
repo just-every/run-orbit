@@ -5015,7 +5015,7 @@
       "executable": false
     },
     "src/core/features/capture/providers/writeback.ts": {
-      "sha256": "6612fcadf1a006f20ad99302a08df1d23ed9abc3a0de1b07920bd4fa90dcefdb",
+      "sha256": "9c2948145909815cded980145e8a8a97357bc8c3dac34c9dce8f1a5dd318119f",
       "executable": false
     },
     "src/core/features/capture/routes.ts": {
@@ -9471,7 +9471,7 @@
       "executable": false
     },
     "tests/support/calendar-writeback.ts": {
-      "sha256": "e914a0f1221de21a560cf7f3a118254f0afbc6cc7f2e31e4a6ff06f00fe68acf",
+      "sha256": "52e3089895f3a255e2c3432ffa2723897bbfa6babff69048c68cc0819f3bfdf4",
       "executable": false
     },
     "tests/support/capture-browser-source.ts": {
