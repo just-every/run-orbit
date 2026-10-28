@@ -1,6 +1,6 @@
 import {schemas} from '../records/schema';
 import {RecordError,type RecordKind} from '../records/shared';
-import {fieldReason,type TypedField} from '../records/typed-fields';
+import {fieldReason,typedUserFieldFences,type TypedField} from '../records/typed-fields';
 import {stagePolicy} from '../pipelines/stage-policy';
 import {targetKind} from './record-targets';
 import {canonicalField,customKey,recordKind,type WorkflowRecordAction} from './record-types';
@@ -17,7 +17,7 @@ export async function workflowField(db:D1Database,kind:RecordKind,raw:string){
  const field=canonicalField(raw),key=customKey(field);
  if(key===null){
   if(!(nativeFields[kind] as string[]).includes(field))throw new RecordError(400,`Unsupported workflow field: ${field}.`);
-  return {field,type:field==='value_cents'?'number':field==='expected_close_at'?'datetime':'text',definition:null};
+  return {field,type:field==='value_cents'?'number':field==='expected_close_at'?'datetime':field==='owner_id'?'user':'text',definition:null};
  }
  const definition=await db.prepare('SELECT * FROM record_custom_fields WHERE kind=? AND field_key=?').bind(kind,key).first<TypedField>();
  if(!definition||definition.archived)throw new RecordError(400,`Workflow field ${field} is unavailable or archived.`);
@@ -47,7 +47,7 @@ export async function validateAction(db:D1Database,actorId:string,action:Workflo
  if(spec.field==='contactability'&&(action.kind!=='set'||action.value!=='do_not_contact'))throw new RecordError(400,'Workflows can only set Do not contact; permission and consent cannot be granted.');
  if(['add','subtract'].includes(action.kind)&&(spec.type!=='number'||typeof action.value!=='number'||!Number.isFinite(action.value)))throw new RecordError(400,`${field}: arithmetic requires a finite number and a numeric field.`);
  if(action.kind==='stamp'&&(!['date','datetime'].includes(spec.type)||!Number.isSafeInteger(action.offsetDays??0)))throw new RecordError(400,`${field}: stamps require a date field and a whole-day offset.`);
- if(action.kind==='set'&&spec.definition){const reason=fieldReason(spec.definition,action.value);if(reason)throw new RecordError(400,`${field}: ${reason}.`);}
+ if(action.kind==='set'&&spec.definition){const reason=fieldReason(spec.definition,action.value);if(reason)throw new RecordError(400,`${field}: ${reason}.`);await typedUserFieldFences(db,spec.definition,action.value,undefined);}
  if((action.kind==='set'||action.kind==='clear')&&!spec.definition){
   const value=action.kind==='clear'?null:action.value;
   if(spec.field==='lifecycle'){
