@@ -24,7 +24,8 @@ not a reason to merge unrelated behaviors into one registration.
   empty D1 template and gives every fixture its own private copy. Historical
   upgrade journeys still apply the original migrations themselves.
 - Pushes exercise routine sanity. Nightly jobs run only the installer and full
-  historical archive qualification, plus declared capacity, and skip a SHA that
+  historical archive qualification (including old HTTP archive generations and
+  hosted-owner continuity), plus declared capacity, and skip a SHA that
   already passed nightly qualification. Release tags include all journeys and
   capacity. `rer verify` runs all journeys sequentially; `pnpm run verify:release`
   adds the unchanged declared-capacity program.
