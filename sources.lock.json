@@ -9459,7 +9459,7 @@
       "executable": false
     },
     "tests/support/browser-temp.mjs": {
-      "sha256": "4b6f327a58579395db0f5178fd963f48d641f6c3981aadd17a241c3e0b27abf4",
+      "sha256": "c96d116430068140bb167a86c90da7b29ff03a3b8fd0ccd60b7d92f7f2ff7ceb",
       "executable": false
     },
     "tests/support/buying-context.ts": {
