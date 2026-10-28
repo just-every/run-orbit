@@ -8663,7 +8663,7 @@
       "executable": false
     },
     "tests/delegation-browser/customer-record.mjs": {
-      "sha256": "7922f6133a55df242772295fd7a8ef53d0b47d95ee4bf6e2f3053ff14f636e39",
+      "sha256": "70765ea25f0312711715fc90edb85e18c68b2c69bdb65d09efb057e2144ffc8d",
       "executable": false
     },
     "tests/delegation-browser/customer-review.mjs": {
@@ -9203,7 +9203,7 @@
       "executable": false
     },
     "tests/rer/journey.test.mjs": {
-      "sha256": "ba55837350366e844a28da11619f85706c2146eb15511eabcbf8d5fdd902048a",
+      "sha256": "c5e015298bbe65d040a0346cb7141f17c83c0b14e2e8bd30a59ba38826da27b4",
       "executable": false
     },
     "tests/rer/managed-mail.mjs": {
