@@ -1,0 +1,10 @@
+import {spawnSync} from 'node:child_process';
+import {mkdirSync,rmSync,writeFileSync} from 'node:fs';
+import {checkCapacityResult} from './verification-capacity.mjs';
+mkdirSync('verification',{recursive:true});
+for(const file of ['records-capacity.json','records-capacity-d1.json','records-capacity-d1.jsonl'])rmSync(`verification/${file}`,{force:true});
+const startedAt=Date.now(),result=spawnSync('pnpm',['run','test:capacity'],{stdio:'inherit'});
+const run={exitCode:result.status,startedAt,finishedAt:Date.now()};
+writeFileSync('verification/capacity-run.json',JSON.stringify(run,null,2)+'\n');
+if(result.status!==0)process.exit(result.status??1);
+checkCapacityResult(run,startedAt);

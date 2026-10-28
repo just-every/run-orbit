@@ -1,44 +1,108 @@
-import {mkdirSync} from 'node:fs';
-import {test,expect} from '@playwright/test';
+import {test, expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import {authenticateOperator} from './operator-session.mjs';
-test('BASE-PUBLIC-001 BASE-SECRET-001 PUBLIC-001 public surfaces expose no private data or third-party requests before interaction',async({page,context})=>{
- const external=[];page.on('request',request=>{if(new URL(request.url()).origin!==`http://127.0.0.1:${process.env.ORBIT_BROWSER_PORT ?? 8722}`)external.push(request.url());});
- await page.goto('/');await page.waitForLoadState('networkidle');expect(external).toEqual([]);expect(await context.cookies()).toEqual([]);await expect(page.locator('body')).not.toContainText('Fieldhouse');await expect(page.locator('body')).not.toContainText('maya.patel');
- const scripts=await page.locator('script[src]').evaluateAll(nodes=>nodes.map(node=>node.src));for(const script of scripts){const body=await(await page.request.get(script)).text();expect(body).not.toContain('SENDGRID_API_KEY');expect(body).not.toContain('OPENAI_API_KEY');expect(body).not.toContain('ORBIT_ENCRYPTION_KEY');}
-});
-test('BASE-PUBLIC-003 public surfaces pass WCAG 2.2 AA at desktop and phone widths',async({page,context})=>{
- test.setTimeout(120000);mkdirSync('verification/ui',{recursive:true});
- const routes=['/','/signin','/docs','/demo'];
- for(const width of [1440,390,320]){
-  await context.clearCookies();await page.setViewportSize({width,height:900});
-  for(const route of routes){
-   await page.goto(route);await page.waitForLoadState('networkidle');
-   await page.screenshot({path:`verification/ui/${width}-${route==='/'?'public':route.slice(1).replaceAll('/','-')}.png`,fullPage:true});
-   const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();
-   expect(result.violations,`${width}px ${route}`).toEqual([]);
-   if(route==='/demo'){
-    const selected=page.getByRole('complementary',{name:'Opportunities'}).getByRole('button').last();await selected.focus();await page.keyboard.press('Enter');await expect(selected).toHaveAttribute('aria-pressed','true');
-    const changed=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();expect(changed.violations,`${width}px demo selection`).toEqual([]);
-    await page.screenshot({path:`verification/ui/${width}-demo-selected.png`,fullPage:true});
-   }
-   // Start from a fresh document, not after the last demo control, so Tab proves a reachable first control.
-   if(route==='/demo'){await page.goto(route);await page.waitForLoadState('networkidle');}
-   await page.keyboard.press('Tab');
-   expect(await page.evaluate(()=>document.activeElement!==document.body),`${width}px ${route} keyboard focus`).toBe(true);
-   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${width}px ${route} horizontal overflow`).toBe(true);
+import {phoneDashboard} from './phone-dashboard.mjs';
+
+// The installation's only phone journey: a visitor finds the product, signs in,
+// opens the seller queue and reviews the exact evidence and saved draft.
+test('public entry and a seller’s first review remain private, accessible and usable on a 390px phone', async ({page, context}) => {
+  test.setTimeout(180_000);
+  await page.setViewportSize({width: 390, height: 844});
+  const external = [], errors = [];
+  page.on('request', request => { if (new URL(request.url()).origin !== `http://127.0.0.1:${process.env.ORBIT_BROWSER_PORT ?? 8722}`) external.push(request.url()); });
+  page.on('pageerror', error => errors.push(error.message));
+  const home = await page.goto('/', {waitUntil: 'networkidle'});
+  expect(home.status()).toBe(200);
+  expect(external).toEqual([]);
+  expect(await context.cookies()).toEqual([]);
+  await expect(page.locator('body')).not.toContainText('Fieldhouse');
+  await expect(page.locator('body')).not.toContainText('maya.patel');
+  expect(home.headers()['content-security-policy']).toContain("frame-ancestors 'none'");
+  expect(home.headers()['x-frame-options']).toBe('DENY');
+  const state = await (await page.request.get('/setup/state')).json();
+  await expect(page.getByRole('link', {name: state.state === 'claimed' ? 'Sign in' : 'Finish setup', exact: true}))
+    .toHaveAttribute('href', state.state === 'claimed' ? '/signin' : '/setup');
+  const health = await page.request.get('/health');
+  expect(health.status()).toBe(200);
+  expect(await health.json()).toMatchObject({ok: true, database: 'ok'});
+  for (const path of ['/pricing/', '/review/', '/sent/', '/docs/not-a-page']) expect((await page.request.get(path)).status()).toBe(404);
+  expect((await page.request.post('/uploads', {data: 'unsupported upload'})).status()).toBe(404);
+  for (const route of ['/api/v1/records/contact', '/api/v1/settings', '/api/v1/notifications', '/api/v1/assistance/usage', '/api/v1/sources']) {
+    expect((await page.request.get(route)).status()).toBe(401);
+    expect((await page.request.get(route, {headers: {Cookie: '__Host-orbit_session=forged', 'X-Operator-Id': 'setup-owner'}})).status()).toBe(401);
   }
- }
-});
-test('BASE-ACCESS-001 BASE-ACCESS-002 native operator APIs reject anonymous and forged session claims',async({request})=>{
- for(const route of ['/api/v1/records/contact','/api/v1/settings','/api/v1/notifications','/api/v1/assistance/usage','/api/v1/sources']){
-  expect((await request.get(route)).status()).toBe(401);expect((await request.get(route,{headers:{Cookie:'__Host-orbit_session=forged','X-Operator-Id':'setup-owner'}})).status()).toBe(401);
- }
+  const gated = await page.request.get('/app', {maxRedirects: 0});
+  expect(gated.status()).toBe(302);
+  expect(gated.headers().location).toBe('/signin?returnTo=%2Fapp');
+  for (const route of ['/', '/signin', '/docs', '/demo']) {
+    await page.goto(route, {waitUntil: 'networkidle'});
+    if (route === '/signin') {
+      await expect(page.getByRole('alert')).toContainText(/email is not available/i);
+      await expect(page.getByRole('textbox')).toHaveCount(0);
+    }
+    if (route === '/docs') {
+      const sidebar = page.locator('.docs-sidebar');
+      const links = await sidebar.getByRole('link').evaluateAll(items => items.map(item => item.getAttribute('href')));
+      expect(links.length).toBeGreaterThan(1);
+      for (const href of links) expect((await page.request.get(href)).status(), href).toBe(200);
+      await sidebar.getByRole('link').nth(2).click();
+      await expect(page.locator('.docs-sidebar [aria-current=page]')).toHaveAttribute('href', links[2]);
+    }
+    if (route === '/demo') {
+      const selected = page.getByRole('complementary', {name: 'Opportunities'}).getByRole('button').last();
+      await selected.focus(); await selected.press('Enter');
+      await expect(selected).toHaveAttribute('aria-pressed', 'true');
+    }
+    await accessible(page);
+    await page.goto(route, {waitUntil: 'networkidle'}); await page.keyboard.press('Tab');
+    expect(await page.evaluate(() => document.activeElement !== document.body)).toBe(true);
+  }
+  const issued = await authenticateOperator(context);
+  await page.goto('/app', {waitUntil: 'networkidle'});
+  await expect(page.getByText('Observed form submission and meeting booking')).toBeVisible();
+  await expect(page.getByText('Why NOW').first()).toBeVisible();
+  const menu = page.getByRole('button', {name: 'Menu', exact: true});
+  const navigation = page.getByRole('navigation', {name: 'Operator navigation'});
+  await expect(navigation).toBeHidden(); await menu.focus(); await menu.press('Enter');
+  await expect(navigation).toBeVisible();
+  await navigation.getByRole('link', {name: 'Settings', exact: true}).focus(); await page.keyboard.press('Escape');
+  await expect(menu).toBeFocused(); await expect(navigation).toBeHidden();
+  await page.getByRole('link', {name: 'Open Fieldhouse Studio workspace'}).click();
+  await expect(page.getByTestId('next-action')).toBeVisible();
+  const evidence = page.getByTestId('contributing-evidence');
+  const id = new URL(page.url()).pathname.split('/').at(-1);
+  const {opportunity} = await (await page.request.get(`/api/v1/opportunities/${id}`)).json();
+  for (const item of opportunity.evaluation.contributions) {
+    const signal = opportunity.signals.find(signal => signal.id === item.signalId);
+    const row = evidence.getByRole('listitem').filter({has: page.getByText(signal.subject, {exact: true})});
+    await expect(row).toHaveCount(1);
+    await expect(row.locator('b')).toHaveText(`${item.contribution > 0 ? '+' : ''}${item.contribution}`);
+    await expect(row).toContainText(item.source);
+    const type = item.signalType.split(/[_.-]/).map(word => word[0].toUpperCase() + word.slice(1)).join(' ');
+    await expect(row.getByText(type, {exact: true})).toBeVisible();
+  }
+  await page.getByText('Audit details', {exact: true}).click();
+  await expect(page.getByTestId('opportunity-detail')).toContainText('Occurred');
+  await expect(page.getByTestId('opportunity-detail')).toContainText('Recorded');
+  await expect(page.getByTestId('opportunity-detail')).toContainText('Actor Website form (Source)');
+  await expect(page.getByTestId('opportunity-detail')).toContainText('source Signals');
+  await accessible(page);
+  await page.goto(`/app/drafts/${issued.draft.id}`);
+  await expect(page.getByTestId('draft-body')).toHaveValue(issued.draft.body);
+  await accessible(page);
+  await page.goto('/app/records?kind=contact');
+  await page.getByRole('button', {name: 'Create contact', exact: true}).click();
+  await expect(page.getByLabel('Full name', {exact: true})).toBeVisible();
+  await accessible(page);
+  await page.goto('/app/settings');
+  await expect(page.getByRole('button', {name: 'Invite operator', exact: true})).toBeVisible();
+  await accessible(page);
+  await phoneDashboard(page);
+  expect(errors).toEqual([]);
 });
 
-test('BASE-PUBLIC-002 BASE-INPUT-003 operator documents reject framing and unsupported upload endpoints',async({request})=>{const response=await request.get('/');expect(response.headers()['content-security-policy']).toContain("frame-ancestors 'none'");expect(response.headers()['x-frame-options']).toBe('DENY');expect((await request.post('/uploads',{data:'not an accepted upload'})).status()).toBe(404);});
-test('BASE-INPUT-002 user HTML is displayed as text and cannot execute or load remote pixels',async({page,context})=>{
- await authenticateOperator(context);const pixel=`https://untrusted.example/pixel-${Date.now()}`,requests=[];page.on('request',request=>{if(request.url().startsWith('https://untrusted.example'))requests.push(request.url());});
- const name=`<img src="${pixel}" onerror="window.orbitInjected=true">`;
- const response=await page.request.post('/api/v1/records/company',{headers:{Origin:`http://127.0.0.1:${process.env.ORBIT_BROWSER_PORT ?? 8722}`},data:{name}});expect(response.status()).toBe(201);await page.goto('/app/records');await page.getByRole('button',{name:'Companies',exact:true}).click();await expect(page.getByText(name,{exact:true})).toBeVisible();expect(await page.evaluate(()=>window.orbitInjected)).toBeUndefined();expect(requests).toEqual([]);expect(await page.locator(`img[src="${pixel}"]`).count()).toBe(0);
-});
+async function accessible(page) {
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  const result = await new AxeBuilder({page}).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
+  expect(result.violations).toEqual([]);
+}

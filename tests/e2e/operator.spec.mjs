@@ -1,188 +1,95 @@
-import { expect, test } from "@playwright/test";
-
-import { contract } from "../contract.mjs";
-import { authenticateOperator } from "./operator-session.mjs";
-
-function watchFailures(page, expectedConsoleErrors = []) {
-  const failures = [];
-  page.on("console", (message) => {
-    if (message.type() === "error" && !expectedConsoleErrors.some((expected) => message.text().includes(expected))) {
-      failures.push(`console: ${message.text()}`);
-    }
-  });
-  page.on("pageerror", (error) => failures.push(`pageerror: ${error.message}`));
-  page.on("requestfailed", (request) => failures.push(`requestfailed: ${request.url()} ${request.failure()?.errorText}`));
-  return failures;
-}
-
-async function expectNoHorizontalOverflow(page) {
-  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-}
-
-async function openOpportunity(page) {
-  await page.goto("/app", { waitUntil: "networkidle" });
-  await page.getByRole("link", { name: "Open Fieldhouse Studio workspace" }).click();
-  await expect(page.getByTestId("opportunity-detail")).toBeVisible();
-}
-
-test.describe("authenticated operator UI", () => {
-  test.beforeEach(async ({ context }) => {
-    await authenticateOperator(context);
-  });
-
-  contract("OPP-006", "the desktop NOW queue applies persisted filters before ordered results", async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
-    const failures = watchFailures(page);
-    await page.goto("/app", { waitUntil: "networkidle" });
-
-    await expect(page.getByTestId("now-queue")).toBeVisible();
-    const {opportunities}=await (await page.request.get('/api/v1/opportunities/now')).json();
-    const ordered=[...opportunities].sort((a,b)=>b.score-a.score || (b.lastContributingSignalAt??'').localeCompare(a.lastContributingSignalAt??'') || a.id.localeCompare(b.id));
-    expect(await page.locator('.operator-queue-card > a').evaluateAll(links=>links.map(link=>link.getAttribute('href')))).toEqual(ordered.map(row=>`/app/opportunities/${row.id}`));
-    await expect(page.locator(".operator-queue-card").first()).toContainText("Ordering proof X");
-    await page.getByLabel("Filter by owner").selectOption("unassigned");
-    await expect(page.getByText("Fieldhouse Studio workspace", { exact: true })).toHaveCount(0);
-    await expect(page.locator(".operator-queue-card")).toHaveCount(3);
-    await page.getByLabel("Filter by owner").selectOption("all");
-    const stageFilter = page.getByLabel("Filter by stage");
-    const firstPersistedStage = await stageFilter.locator("option").nth(1).getAttribute("value");
-    expect(firstPersistedStage).toBeTruthy();
-    const stageResponse = page.waitForResponse((response) => {
-      const url = new URL(response.url());
-      return url.pathname === "/api/v1/opportunities/now" && url.searchParams.get("stageId") === firstPersistedStage;
-    });
-    await stageFilter.selectOption(firstPersistedStage);
-    await stageResponse;
-    const bandResponse = page.waitForResponse((response) => {
-      const url = new URL(response.url());
-      return url.pathname === "/api/v1/opportunities/now" && url.searchParams.get("band") === "high";
-    });
-    await page.getByLabel("Filter by band").selectOption("high");
-    await bandResponse;
-    await expect(page.locator(".operator-queue-card")).toHaveCount(4);
-    await expectNoHorizontalOverflow(page);
-    expect(failures).toEqual([]);
-  });
-
-  contract("OPP-007", "the mobile NOW queue exposes each persisted queue reason", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    const failures = watchFailures(page);
-    await page.goto("/app", { waitUntil: "networkidle" });
-
-    await expect(page.getByText("Observed form submission and meeting booking")).toBeVisible();
-    await expect(page.getByText("Why NOW").first()).toBeVisible();
-    await expectNoHorizontalOverflow(page);
-    expect(failures).toEqual([]);
-  });
-
-  contract("OPP-002", "the desktop opportunity detail keeps independent fields visible", async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
-    const failures = watchFailures(page);
-    await openOpportunity(page);
-
-    const fields = page.getByTestId("opportunity-detail");
-    await expect(fields).toContainText("Lifecycle");
-    await expect(fields).toContainText("Qualified");
-    await expect(fields).toContainText("Maya Patel");
-    await expect(fields).toContainText("92");
-    await expect(fields).toContainText("High");
-    await expect(fields).toContainText("Now");
-    await expectNoHorizontalOverflow(page);
-    expect(failures).toEqual([]);
-  });
-
-  contract("OPP-004", "the mobile detail renders current score evidence and recommendation reason", async ({ page }, info) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    const failures = watchFailures(page);
-    await openOpportunity(page);
-
-    const evidence = page.getByTestId("contributing-evidence");
-    await expect(evidence).toContainText("Used for this recommendation");
-    await expect(page.getByTestId("next-action")).toContainText("Write follow-up");
-    const id=new URL(page.url()).pathname.split('/').at(-1);
-    const {opportunity}=await(await page.request.get(`/api/v1/opportunities/${id}`)).json();
-    for(const item of opportunity.evaluation.contributions){
-      const signal=opportunity.signals.find(signal=>signal.id===item.signalId);
-      expect(signal?.subject).toBeTruthy();
-      const signalType=item.signalType.split(/[_.-]/).map(word=>word[0].toUpperCase()+word.slice(1)).join(' ');
-      const row=evidence.getByRole('listitem').filter({has:page.getByText(signal.subject,{exact:true})});
-      await expect(row).toHaveCount(1);
-      await expect(row.getByText(signalType,{exact:true})).toBeVisible();
-      await expect(row.locator('b')).toHaveText(`${item.contribution>0?'+':''}${item.contribution}`);
-      await expect(row.locator('b')).toBeVisible();
-      await expect(row).toContainText(item.source);
-    }
-    await expectNoHorizontalOverflow(page);
-    await page.screenshot({path:info.outputPath('evidence-390.png'),fullPage:true});
-    await page.setViewportSize({width:1440,height:900});
-    await expectNoHorizontalOverflow(page);
-    await page.screenshot({path:info.outputPath('evidence-1440.png'),fullPage:true});
-    expect(failures).toEqual([]);
-  });
-
-  contract("RECORD-005", "the mobile opportunity timeline shows occurred, recorded, actor, and source", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    const failures = watchFailures(page);
-    await openOpportunity(page);
-
-    await page.getByText("Audit details", {exact:true}).click();
-    const timeline = page.getByTestId("opportunity-detail");
-    await expect(timeline).toContainText("Occurred");
-    await expect(timeline).toContainText("Recorded");
-    await expect(timeline).toContainText("Actor Website form (Source)");
-    await expect(timeline).toContainText("source Signals");
-    await expectNoHorizontalOverflow(page);
-    expect(failures).toEqual([]);
-  });
-
-  contract("ACTION-004", "the desktop draft editor saves D1 state and surfaces a revision conflict", async ({ browser, page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
-    const failures = watchFailures(page);
-    const issued = await authenticateOperator(page.context());
-    const draftHref = `/app/drafts/${issued.draft.id}`;
-
-    const secondContext = await browser.newContext({ baseURL: `http://127.0.0.1:${process.env.ORBIT_BROWSER_PORT ?? 8722}` });
-    await authenticateOperator(secondContext);
-    const staleEditor = await secondContext.newPage();
-    const staleFailures = watchFailures(staleEditor, ["the server responded with a status of 409"]);
-    await staleEditor.goto(draftHref, { waitUntil: "networkidle" });
-
-    await page.goto(draftHref, { waitUntil: "networkidle" });
-    await expect(page.getByTestId("draft-recipient")).toHaveValue(issued.draft.recipientEmail);
-    await expect(page.getByTestId("draft-subject")).toHaveValue(issued.draft.subject);
-    await expect(page.getByTestId("draft-body")).toHaveValue(issued.draft.body);
-    await page.getByText("Audit details", {exact:true}).click();
-    const metadata = page.getByText("Draft history").locator("..");
-    const {operators}=await (await page.request.get('/api/v1/settings')).json();
-    await expect(metadata).toContainText(operators.find(operator=>operator.id===issued.draft.authorId).display_name);
-    await expect(metadata.getByRole('link')).toHaveAttribute('href',`/app/opportunities/${issued.draft.opportunityId}`);
-    await expect(metadata).toContainText("Created");
-    await expect(metadata).toContainText("Last updated");
-    const savedBody = `Persisted operator edit ${Date.now()}.`;
-    await page.getByTestId("draft-body").fill(savedBody);
-    const refreshedOpportunity = page.waitForResponse(response => response.url().endsWith(`/api/v1/opportunities/${issued.draft.opportunityId}`) && response.request().method() === "GET");
-    await page.getByTestId("save-draft").click();
-    await (await refreshedOpportunity).finished();
-    await expect(page.getByText(/Saved revision \d+\. Your changes are saved\./)).toBeVisible();
-    await page.waitForLoadState("networkidle");
-    await page.reload({ waitUntil: "networkidle" });
-    await expect(page.getByTestId("draft-body")).toHaveValue(savedBody);
-
-    const newPage = await page.context().newPage();
-    const newPageFailures = watchFailures(newPage);
-    await newPage.goto(draftHref, { waitUntil: "networkidle" });
-    await expect(newPage.getByTestId("draft-body")).toHaveValue(savedBody);
-    await newPage.close();
-
-    await staleEditor.getByTestId("draft-body").fill(`Conflicting operator edit ${Date.now()}.`);
-    await staleEditor.getByTestId("save-draft").click();
-    await expect(staleEditor.getByText("The draft changed or is stale. Reload it before editing.")).toBeVisible();
-    await staleEditor.getByRole("button", { name: "Reload saved draft" }).click();
-    await expect(staleEditor.getByTestId("draft-body")).toHaveValue(savedBody);
-    await expectNoHorizontalOverflow(page);
-    expect(failures).toEqual([]);
-    expect(newPageFailures).toEqual([]);
-    expect(staleFailures).toEqual([]);
-    await secondContext.close();
-  });
+import { test, expect } from '@playwright/test';
+import { authenticateOperator } from './operator-session.mjs';
+import {inspectQueue} from './sales-queue.mjs';
+import {reviewSavedDraft} from './sales-review.mjs';
+import {inspectAssistance} from './sales-assistance.mjs';
+test('a seller prioritises the queue, opens a new-account notification and reviews a durable draft against current evidence',async({page,context,browser})=>{
+  test.setTimeout(180_000);
+  await authenticateOperator(context);
+  await inspectQueue(page);
+  const beforeNotifications=await(await page.request.get('/api/v1/notifications')).json();
+  const failures=[];page.on('pageerror',error=>failures.push(error.message));
+  await page.goto('/app/records');
+  await page.getByRole('link',{name:'Create opportunity'}).click();
+  await expect(page.getByRole('button',{name:'Save opportunity'})).toBeEnabled();
+  await page.waitForLoadState('networkidle');
+  const timeOrigin=await page.evaluate(()=>performance.timeOrigin), label=`Owner opportunity ${Date.now()}`;
+  await page.getByLabel('Company name',{exact:true}).fill('Owner account');
+  await page.getByLabel('Contact name',{exact:true}).fill('Owner contact');
+  await page.getByLabel('Contact email',{exact:true}).fill(`owner-${Date.now()}@example.test`);
+  await page.getByLabel('Opportunity title',{exact:true}).fill(label);
+  await page.getByLabel('Estimated value in workspace currency',{exact:true}).fill('5000');
+  await page.getByRole('button',{name:'Save opportunity'}).click();
+  await expect(page.getByRole('heading',{name:label,exact:true})).toBeVisible();
+  expect(await page.evaluate(()=>performance.timeOrigin)).toBe(timeOrigin);
+  const opportunityId=new URL(page.url()).pathname.split('/').pop();
+  await page.goto('/app/notifications',{waitUntil:'networkidle'});
+  await expect(page.getByRole('link',{name:`${beforeNotifications.unread+1} unread notifications`})).toBeVisible({timeout:5000});
+  const title=page.getByRole('link',{name:label,exact:true}),item=page.locator('.notification-list--inbox li').filter({has:title}),mark=item.getByRole('button',{name:'Mark read',exact:true});
+  await title.focus();await expect(title).toBeFocused();await expect(mark).toBeInViewport();await mark.focus();await expect(mark).toBeFocused();await expect(mark).toBeEnabled();
+  await title.press('Enter');await expect(page.getByRole('heading',{name:label,exact:true,level:1})).toBeVisible();
+  const notification=async()=>(await(await page.request.get('/api/v1/notifications')).json()).notifications.find(row=>row.opportunityId===opportunityId);
+  await expect.poll(async()=>(await notification()).readAt).toBeTruthy();
+  const read=await notification();
+  expect((await(await page.request.get('/api/v1/notifications')).json()).unread).toBe(beforeNotifications.unread);
+  await page.request.post(`/api/v1/notifications/${read.id}/read`,{headers:{Origin:new URL(page.url()).origin}});
+  expect((await(await page.request.get('/api/v1/notifications')).json()).unread).toBe(beforeNotifications.unread);
+  const createdResponse=await page.request.get(`/api/v1/records/opportunity/${opportunityId}`),created=await createdResponse.json();
+  expect(created.record.owner_id).toBeTruthy();
+  const companiesBefore=(await (await page.request.get('/api/v1/records/company')).json()).records;
+  const contactsBefore=(await (await page.request.get('/api/v1/records/contact')).json()).records;
+  await page.goto('/app/new');
+  await page.getByLabel('Company name',{exact:true}).fill('Owner account');
+  await page.getByRole('list',{name:'Company search results',exact:true}).getByRole('button').filter({hasText:'Owner account'}).click();
+  await page.getByRole('searchbox',{name:'Find contacts',exact:true}).fill(created.contacts[0].email);
+  await page.getByRole('list',{name:'Contact search results',exact:true}).getByRole('button').filter({hasText:created.contacts[0].email}).click();
+  await page.getByLabel('Opportunity title',{exact:true}).fill(label+' existing');
+  await page.getByRole('button',{name:'Save opportunity',exact:true}).click();
+  await expect(page.getByRole('heading',{name:label+' existing',exact:true})).toBeVisible();
+  const linkedId=new URL(page.url()).pathname.split('/').pop();
+  const linked=(await (await page.request.get(`/api/v1/records/opportunity/${linkedId}`)).json());
+  expect(linked.record.company_id).toBe(created.record.company_id);
+  expect(linked.contacts.map(contact=>contact.id)).toEqual(created.contacts.map(contact=>contact.id));
+  expect(linked.record.owner_id).toBe(created.record.owner_id);
+  expect((await (await page.request.get('/api/v1/records/company')).json()).records.length).toBe(companiesBefore.length);
+  expect((await (await page.request.get('/api/v1/records/contact')).json()).records.length).toBe(contactsBefore.length);
+  await page.goto(`/app/records?kind=opportunity&record=${opportunityId}`);
+  await page.getByRole('button',{name:'Edit details',exact:true}).click();
+  await expect(page.getByLabel('Estimated value in workspace currency',{exact:true})).toHaveValue('5000');
+  await page.getByLabel('Estimated value in workspace currency',{exact:true}).fill('12000');
+  const savedValue=page.waitForResponse(response=>response.request().method()==='PUT'&&new URL(response.url()).pathname===`/api/v1/records/opportunity/${opportunityId}`);
+  await page.getByRole('button',{name:'Save changes',exact:true}).click();expect((await savedValue).ok()).toBe(true);
+  await expect(page.locator('.records-detail-list')).toContainText('12,000');
+  const persisted=await page.request.get(`/api/v1/records/opportunity/${opportunityId}`);expect((await persisted.json()).record.value_cents).toBe(1200000);
+  await page.getByRole('button',{name:'Edit details',exact:true}).click();await expect(page.getByLabel('Estimated value in workspace currency',{exact:true})).toHaveValue('12000');
+  await page.getByRole('button',{name:'Cancel',exact:true}).click();await page.getByRole('link',{name:'Evidence and outreach',exact:true}).click();
+  await page.getByText('Log activity',{exact:true}).click();
+  await page.getByRole('combobox',{name:'Event type',exact:true}).selectOption('email.replied');
+  await page.getByLabel(/^Occurred time/).fill('2026-09-11T12:00');
+  await page.getByLabel('Evidence subject',{exact:true}).fill('The customer requested a follow-up call.');
+  await page.getByRole('button',{name:'Record event',exact:true}).click();
+  await expect(page.getByText('Customer event recorded with your operator attribution.')).toBeVisible();
+  await expect(page.getByText('Customer reply',{exact:true}).first()).toBeVisible();
+  await page.getByRole('button',{name:'Write follow-up',exact:true}).click();
+  await page.getByLabel('Subject',{exact:true}).fill('Your requested follow-up');
+  await page.getByLabel('Email body',{exact:true}).fill('Thank you for requesting a follow-up. What time suits you?');
+  await page.getByRole('button',{name:'Save draft for review'}).click();
+  await expect(page.getByTestId('draft-subject')).toHaveValue('Your requested follow-up');
+  await page.reload();
+  await expect(page.getByTestId('draft-body')).toHaveValue('Thank you for requesting a follow-up. What time suits you?');
+  const preview=page.waitForResponse(response=>new URL(response.url()).pathname.endsWith('/approval-preview'));
+  await page.getByRole('button',{name:'Approve and send exact revision'}).click();
+  expect((await preview).status()).toBe(503);
+  await expect(page.getByRole('alert').locator('a[href="/app/settings#mail-sender"]')).toBeVisible();
+  await expect(page.getByRole('button',{name:'Confirm send now',exact:true})).toHaveCount(0);
+  await page.reload();
+  await expect(page.getByTestId('draft-body')).toHaveValue('Thank you for requesting a follow-up. What time suits you?');
+  await reviewSavedDraft({page,browser,opportunityId});
+  await inspectAssistance(page,opportunityId);
+  await page.goto('/app/sources');
+  await expect(page.getByRole('heading',{name:'Connected sources'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Replies needing a thread'})).toBeVisible();
+  for(const path of ['/api/v1/sources','/api/v1/sources/unlinked','/api/v1/sources/replies'])expect((await page.request.get(path)).status()).toBe(200);
+  await expect(page.getByRole('alert')).toHaveCount(0);
+  expect(failures).toEqual([]);
 });

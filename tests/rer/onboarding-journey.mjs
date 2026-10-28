@@ -3,7 +3,7 @@ import {spawn} from 'node:child_process';
 import {writeFile} from 'node:fs/promises';
 import {expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import {exerciseAutomationRecipe,exerciseBookingRecipes} from './source-recipes.mjs';
+import {exerciseAutomationRecipe,exerciseBookingRecipes,exerciseSourceRemoval} from './source-recipes.mjs';
 import {browserAPI,fontEvidence} from './browser-api.mjs';
 import {editOpportunityHistory} from './opportunity-editing.mjs';
 export async function accessible(page){assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'No horizontal scrolling');const result=await new AxeBuilder({page}).analyze();assert.deepEqual(result.violations.filter(v=>['serious','critical'].includes(v.impact)).map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),[]);}
@@ -30,6 +30,7 @@ export async function firstHour(page,origin,width,evidence){
  await page.goto(origin+'/app/sources');await page.getByRole('button',{name:'Open recipes',exact:true}).click();await page.getByText('Run a form submission in Node',{exact:true}).click();const snippets={embed,website:await runRenderedCode(page,'website',opportunityId)};
  snippets.automation=await exerciseAutomationRecipe(page,secret,opportunityId,source.id);
  await exerciseBookingRecipes(page,secret,opportunityId);await accessible(page);
+ await exerciseSourceRemoval(page,{contactId:context.contacts[0].id,opportunityId});
  await page.goto(opportunityURL);await expect(page.getByTestId('next-action')).toBeVisible();await ordinaryText(page);const bounds=await page.getByRole('button',{name:'Write follow-up',exact:true}).boundingBox();assert.ok(bounds&&bounds.y+bounds.height<=900,`Write follow-up bottom ${bounds?.y+bounds?.height}`);await accessible(page);await page.screenshot({path:`${evidence}/opportunity-${width}.png`,fullPage:true});fonts.opportunity=await fontEvidence(page);await editOpportunityHistory(page);await page.getByRole('button',{name:'Write follow-up',exact:true}).click();await page.getByLabel('Subject',{exact:true}).fill('Your team walkthrough');await page.getByLabel('Email body',{exact:true}).fill('Hi Maya, thank you for your inquiry. Would Thursday suit a team walkthrough?');await page.getByRole('button',{name:'Save draft for review',exact:true}).click();await expect(page.getByTestId('draft-subject')).toHaveValue('Your team walkthrough');await ordinaryText(page);await accessible(page);await page.screenshot({path:`${evidence}/draft-${width}.png`,fullPage:true});fonts.draft=await fontEvidence(page);const draftURL=page.url();await page.goto(origin+'/app');await expect(page.locator('[data-complete="true"]')).toHaveCount(4);
  return{opportunityURL,draftURL,buttonMs,formMs,snippets,fonts};
 }

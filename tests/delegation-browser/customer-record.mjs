@@ -1,0 +1,32 @@
+import {expect} from '@playwright/test';
+export async function maintainCustomerRecord(page,customer) {
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));const unique=Date.now();
+ await page.goto(`/app/records?kind=contact&record=${customer.ana}`);await expect(page.getByRole('heading',{name:'Ana Ruiz',exact:true})).toBeVisible();
+ await page.getByRole('button',{name:'Edit details',exact:true}).click();await page.getByLabel('Phone',{exact:true}).fill('+61 400 123 456');await page.getByLabel('New custom field name',{exact:true}).fill('Owner segment');await page.getByRole('button',{name:'Add custom field',exact:true}).click();await page.getByLabel('Owner segment',{exact:true}).fill('Independent studio');
+ const segment=page.locator('.record-custom-fields__row').filter({has:page.getByLabel('Owner segment',{exact:true})});
+ await segment.getByRole('combobox',{name:'Value type',exact:true}).selectOption('number');
+ await expect(segment.getByRole('alert')).toBeVisible();await expect(page.getByLabel('Owner segment',{exact:true})).toHaveValue('Independent studio');
+ await segment.getByRole('button',{name:'Keep current value',exact:true}).click();
+ await page.getByLabel('New custom field name',{exact:true}).fill('Seats');await page.getByRole('button',{name:'Add custom field',exact:true}).click();await page.getByLabel('Seats',{exact:true}).fill('25');
+ const seats=page.locator('.record-custom-fields__row').filter({has:page.getByLabel('Seats',{exact:true})});await seats.getByRole('combobox',{name:'Value type',exact:true}).selectOption('number');await expect(page.getByLabel('Seats',{exact:true})).toHaveValue('25');
+ await page.getByRole('combobox',{name:'Contactability',exact:true}).selectOption('do_not_contact');await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByText('+61 400 123 456',{exact:true})).toBeVisible();await expect(page.getByText('Independent studio',{exact:true})).toBeVisible();
+ const noteStarted=await page.evaluate(()=>Date.now());await page.getByLabel('Text',{exact:true}).fill('Browser manual note');
+ const noteSaved=page.waitForResponse(response=>response.request().method()==='POST'&&new URL(response.url()).pathname.endsWith('/entries'));
+ await page.getByRole('button',{name:'Save entry',exact:true}).click();const noteResponse=await noteSaved;expect(noteResponse.ok()).toBe(true);
+ const contactPath=new URL(noteResponse.url()).pathname.replace(/\/entries$/,''),readNote=async()=>{const response=await page.request.get(contactPath);expect(response.ok()).toBe(true);return(await response.json()).timeline.find(entry=>JSON.parse(entry.payload_json).text==='Browser manual note');};
+ const savedNote=await readNote();expect(Math.abs(Date.parse(savedNote.occurred_at)-noteStarted)).toBeLessThan(60000);
+ await page.goto(`/app/records?kind=contact&record=${contactPath.split('/').pop()}`);const note=page.locator('article[id^="entry-"]').filter({hasText:'Browser manual note'});await expect(note).toBeVisible();await expect(note).toHaveCount(1);
+ await note.getByRole('button',{name:'Edit entry',exact:true}).click();const edited=page.waitForResponse(response=>response.request().method()==='PUT'&&new URL(response.url()).pathname.includes('/entries/'));
+ await page.getByRole('button',{name:'Save entry',exact:true}).click();expect((await edited).ok()).toBe(true);expect((await readNote()).occurred_at).toBe(savedNote.occurred_at);
+ await page.getByRole('button',{name:'Edit details',exact:true}).click();await expect(page.getByRole('combobox',{name:'Contactability',exact:true})).toHaveValue('do_not_contact');await expect(page.getByLabel('Seats',{exact:true})).toHaveValue('25');await expect(page.getByLabel('Seats',{exact:true})).toHaveAttribute('type','number');if(process.env.RECORDS_SCREENSHOT)await page.screenshot({path:process.env.RECORDS_SCREENSHOT,fullPage:true});
+ await page.goto('/app/settings');await expect(page.getByRole('heading',{name:'Workspace settings',exact:true})).toBeVisible();await page.getByLabel('Name',{exact:true}).fill(`Invited ${unique}`);await page.getByLabel('Email',{exact:true}).fill(`operator-${unique}@example.test`);await page.getByRole('button',{name:'Invite operator',exact:true}).click();const operator=page.locator('article').filter({has:page.getByRole('heading',{name:`Invited ${unique}`,exact:true})});await expect(operator).toContainText('active');await operator.getByRole('button',{name:'Remove operator',exact:true}).click();const review=page.getByRole('region',{name:'Operator removal review',exact:true});await expect(review).toBeVisible();await expect(review.getByRole('button',{name:'Confirm handover and remove',exact:true})).toBeEnabled();await review.getByRole('button',{name:'Confirm handover and remove',exact:true}).click();await page.getByText(/^Removed operators \(\d+\)$/).click();await expect(operator).toContainText('removed');await operator.getByRole('button',{name:'Erase personal details',exact:true}).click();await page.getByRole('dialog',{name:'Erase personal details',exact:true}).getByRole('button',{name:'Erase personal details',exact:true}).click();await expect(page.getByRole('heading',{name:`Invited ${unique}`,exact:true})).toHaveCount(0);await expect(page.getByText(`operator-${unique}@example.test`,{exact:false})).toHaveCount(0);await expect(page.getByRole('heading',{name:'Erased operator',exact:true}).first()).toBeVisible();expect(errors).toEqual([]);
+}
+
+export async function inspectUntrustedCustomer(page) {
+ const origin=new URL(page.url()).origin,pixel=`https://untrusted.example/pixel-${Date.now()}`,requests=[];
+ page.on('request',request=>{if(request.url().startsWith('https://untrusted.example'))requests.push(request.url());});
+ const name=`<img src="${pixel}" onerror="window.orbitInjected=true">`;
+ const response=await page.request.post('/api/v1/records/company',{headers:{Origin:origin},data:{name}});expect(response.status()).toBe(201);
+ await page.goto('/app/records');await page.getByRole('button',{name:'Companies',exact:true}).click();await expect(page.getByText(name,{exact:true})).toBeVisible();
+ expect(await page.evaluate(()=>window.orbitInjected)).toBeUndefined();expect(requests).toEqual([]);expect(await page.locator(`img[src="${pixel}"]`).count()).toBe(0);
+}

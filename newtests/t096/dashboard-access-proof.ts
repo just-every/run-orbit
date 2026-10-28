@@ -1,65 +1,285 @@
 import assert from 'node:assert/strict';
-import {writeFile} from 'node:fs/promises';
-import {join} from 'node:path';
-import {expect,type Browser,type BrowserContext,type Page} from '@playwright/test';
-import {emittedRequest} from './emitted-request';
-import {watchBrowser} from './browser-observations';
-import type {seedSalesReport} from './sales-report-fixture';
-import type {DashboardView} from '../../src/core/features/dashboards/repository';
-import {reconcileDashboard} from './browser-dashboard';
-type Worker={origin:string;certificate:{cert:string}};
-type Run={context:BrowserContext;errors:ReturnType<typeof watchBrowser>;page:Page};
-const root='/api/v2/workspaces/workspace',ops=root+'/operations';
-export async function dashboardAccessProof({worker,ownerCookie,seller,seed,id,evidence,open,shot,call}:{browser:Browser;worker:Worker;ownerCookie:string;seller:{cookie:string;operatorId:string};seed:Awaited<ReturnType<typeof seedSalesReport>>;id:string;evidence:string;open:(width:number,cookie?:string)=>Promise<Run>;shot:(page:Page,name:string)=>Promise<void>;call:<T=any>(cookie:string,path:string,method?:string,body?:unknown)=>Promise<T>}){
- const base=root+'/dashboards/'+id,document='/app/dashboards/'+id;
- assert.equal((await emittedRequest(worker,'',document)).status,401,'dashboard documents require native sign-in');
- const full=await call<DashboardView>(ownerCookie,base);reconcileDashboard(full);
- for(const width of [1440,390]){
-  const run=await open(width),page=run.page,releases:(()=>void)[]=[];
-  try{
-   // Delay an actual request, never replace an application response, to inspect the real first-load frames.
-   let release!:()=>void;const hold=new Promise<void>(resolve=>{release=resolve;});releases.push(()=>release());await page.route('**'+base,async route=>{await hold;await route.continue();});
-   await page.goto(document,{waitUntil:'domcontentloaded'});await expect(page.locator('.dash-tile').filter({hasText:'Computing under your access…'}).first()).toBeVisible();await shot(page,`loading-${width}`);release();await page.unrouteAll({behavior:'wait'});await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy','false');
-   await shot(page,`dashboard-operator-${width}`);await expect(page.locator('.dash-summary')).toContainText('9 tiles');
-   // While the filters equal the saved ones the saved period is selected as itself, with no date inputs until a custom range is chosen.
-   await expect(page.getByLabel('Date range',{exact:true})).toHaveValue('saved');await expect(page.getByLabel('Start date',{exact:true})).toHaveCount(0);const readyTitles=await page.locator('.dash-tile h2').allTextContents();
-   for(const detail of await page.locator('.dash-tile>details').all()){await detail.locator('summary').click();await expect(detail.locator('.sales-basis, p').first()).toBeVisible();await detail.locator('summary').click();}
-   const stage=page.locator('.dash-tile--chart'),cell=stage.getByRole('button').filter({hasText:/^[1-9]\d*$/}).first(),shown=(await cell.textContent())!.trim();await cell.click();const drawer=page.getByRole('dialog');await expect(drawer.locator('.sales-drill')).toBeVisible();await expect(drawer.locator('.sales-drill [role=status]')).toContainText(`${shown} record`);await shot(page,`drill-${width}`);await page.keyboard.press('Escape');await expect(drawer).toHaveCount(0);await expect(cell).toBeFocused();
-   // The default menu closes on Escape and gives focus back to its button; every action is reachable without a More menu at both widths.
-   const defaults=page.getByRole('button',{name:'Your default dashboard',exact:true});await defaults.click();await expect(page.getByRole('menuitem',{name:'Remove as my default',exact:true})).toBeFocused();await page.keyboard.press('Escape');await expect(page.getByRole('menu')).toHaveCount(0);await expect(defaults).toBeFocused();
-   await page.getByRole('button',{name:'Edit tiles',exact:true}).click();await shot(page,`edit-tiles-${width}`);await page.getByRole('button',{name:'Save dashboard version',exact:true}).click();await expect(page.getByRole('dialog')).toHaveCount(0);
-   await page.getByRole('button',{name:'Share',exact:true}).click();await expect(page.getByRole('dialog').getByLabel('Add a person',{exact:true})).toBeVisible();await shot(page,`share-${width}`);await page.getByRole('button',{name:'Close dialog',exact:true}).click();
-   await page.getByRole('button',{name:'Schedule email',exact:true}).click();await expect(page.getByRole('dialog').getByLabel('Slack channel',{exact:true})).toHaveValue('');await shot(page,`schedule-${width}`);await page.getByRole('dialog').evaluate(dialog=>{dialog.scrollTop=dialog.scrollHeight;});await shot(page,`schedule-footer-${width}`);await page.getByRole('button',{name:'Close dialog',exact:true}).click();
-   await page.goto('/app/reports?dashboards=all');await expect(page.getByRole('region',{name:'Dashboards',exact:true}).getByText('Your default',{exact:true})).toBeVisible();await shot(page,`reports-default-${width}`);
-   await page.goto(document);await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy','false');if(width===390)await page.locator('.dash-filters summary').click();
-   let resume!:()=>void;const blocked=new Promise<void>(resolve=>{resume=resolve;});releases.push(()=>resume());await page.route('**'+base+'/compute',async route=>{await blocked;await route.continue();});await page.getByLabel('Owner',{exact:true}).selectOption(seed.ownerId);await expect(page.locator('.dash-summary')).toHaveText('Updating…');await shot(page,`refetch-${width}`);resume();await page.unrouteAll({behavior:'wait'});await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy','false');if(width===390){await page.getByRole('button',{name:'Remove owner filter',exact:true}).click();await expect(page.getByLabel('Owner',{exact:true})).toHaveValue('');await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy','false');await page.getByLabel('Owner',{exact:true}).selectOption(seed.ownerId);await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy','false');}await expect(page.locator('.dash-tile--pipeline').first()).toContainText('Date range not applied');assert.deepEqual(full.fields,[{name:'Region',values:['Northeast','West']}]);assert.deepEqual(await page.getByLabel('Region',{exact:true}).locator('option').evaluateAll(options=>options.map(option=>(option as HTMLOptionElement).value).filter(Boolean)),['Region:Northeast','Region:West']);await page.getByLabel('Region',{exact:true}).selectOption('Region:Northeast');await expect(page.locator('.dash-tile--number.dash-tile--pipeline .dash-number')).toContainText('$8,000.00');await shot(page,`filter-not-applied-${width}`);
-   const filtered=await call<DashboardView>(ownerCookie,base+'/compute','POST',{...full.filters,ownerIds:[seed.ownerId],field:{name:'Region',value:'Northeast'}});reconcileDashboard(filtered);const pipeline=filtered.tiles.find(t=>t.status==='ready'&&t.tile.measure==='pipeline');assert.ok(pipeline?.status==='ready'&&pipeline.report);assert.equal(pipeline.report.sections[0]!.totals.find(c=>c.key==='value')!.value,800_000,'only the manager’s Northeast open deal is counted; the West deal is excluded');
-   await page.getByLabel('Date range',{exact:true}).selectOption('custom');await page.getByLabel('Start date',{exact:true}).fill('1900-01-01');await page.getByLabel('End date',{exact:true}).fill('1900-01-31');await expect(page.locator('.dash-tile--win_rate')).toContainText('Not available');await shot(page,`no-value-${width}`);
-   // The filter refuses an end before the start: an alert, no computation, and the period stays.
-   let computes=0;page.on('request',request=>{if(request.url().endsWith(base+'/compute'))computes++;});const period=await page.locator('.dash-tile--win_rate>.dash-meta').textContent();await page.getByLabel('Start date',{exact:true}).fill('1901-01-01');await expect(page.locator('.dash-filters').getByRole('alert')).toBeVisible();await expect(page.locator('.dash-tile--win_rate>.dash-meta')).toHaveText(period!);await Promise.all([page.waitForResponse(response=>response.url().endsWith(base+'/compute')),page.getByLabel('Start date',{exact:true}).fill('1900-01-01')]);assert.equal(computes,1,'only the valid range is computed');
-   // A reversed range saved through the dashboards door is a real cause: every live tile's error frame keeps that tile's own name.
-   const saved=await call(ownerCookie,base+'/definition'),savedFilters=saved.definition.filters,reversed=await call(ownerCookie,base,'PUT',{version:saved.version,definition:{...saved.definition,filters:{...savedFilters,from:savedFilters.through,through:savedFilters.from,dateRange:{from:`${savedFilters.through}-28`,through:`${savedFilters.from}-01`}}}});
-   await page.goto(document);await expect(page.locator('.dash-tile__error').first()).toBeVisible();const errors=await call<DashboardView>(ownerCookie,base),titles=await page.locator('.dash-tile h2').allTextContents();assert.ok(errors.tiles.some(tile=>tile.status==='error'));for(const [index,tile] of errors.tiles.entries())if(tile.status==='error')assert.equal(titles[index],readyTitles[index]);await shot(page,`tile-error-${width}`);
-   await call(ownerCookie,base,'PUT',{version:reversed.version,definition:saved.definition});
-   await run.errors.check(evidence,`operator-states-${width}`);
-  }finally{for(const release of releases)release();await page.unrouteAll({behavior:'wait'});await run.context.close();}
- }
- const empty='synthetic-orbit-empty';await call(ownerCookie,root+'/dashboards/'+empty,'PUT',{version:0,definition:{name:'A new dashboard',filters:full.filters,tiles:[]}});
- for(const width of [1440,390]){const run=await open(width);try{await run.page.goto('/app/dashboards/'+empty);await expect(run.page.getByRole('heading',{name:'No tiles yet',exact:true})).toBeVisible();await shot(run.page,`dashboard-empty-${width}`);await run.page.goto('/app/reports');await expect(run.page.getByRole('region',{name:'Dashboards',exact:true}).getByRole('button',{name:'Make this my default',exact:true})).toBeVisible();await shot(run.page,`reports-with-choices-${width}`);await run.errors.check(evidence,`dashboard-empty-${width}`);}finally{await run.context.close();}}
- // The collaborator has report-reading permission alone and explicit current record grants.
- await call(ownerCookie,root.replace('/workspaces/workspace','')+'/access/workspaces/workspace/roles/seller','PUT',{actions:['analytics.read'],fields:['*']});
- const grants=[];for(const deal of [seed.deals.dune,seed.deals.elm])grants.push(await call(ownerCookie,'/api/v2/access/workspaces/workspace/grants','POST',{subjectKind:'operator',subjectId:seller.operatorId,resourceType:'opportunity',resourceId:deal,actions:['graph.read','entries.read'],fields:['*'],purpose:'Dashboard review',expiresAt:null}));
- const deniedHistory=[1440,390].map(width=>`${ops}/metrics/disclosed-value-${width}/versions/1/snapshots`);for(const path of deniedHistory){const denied=await emittedRequest(worker,seller.cookie,path);assert.equal(denied.status,409,'an unrelated Sum snapshot is refused by its current source-lineage fence');assert.doesNotMatch(await denied.text(),/First open deal|Second open deal|Harbor Freight|195000|1,950/);}
- await call(seller.cookie,base+'/default','PUT',{enabled:true});const limited=await call<DashboardView>(seller.cookie,base);assert.equal(limited.limited,true);reconcileDashboard(limited);assert.equal(limited.unavailable,2);const text=JSON.stringify(limited);for(const hidden of ['Atlas expansion','Birch rollout','Cedar renewal','Hazel expansion','Riley Chen'])assert.ok(!text.includes(hidden),hidden);
- for(const width of [1440,390]){const run=await open(width,seller.cookie);for(const path of deniedHistory)run.errors.allowDeniedResource(path,409);try{await run.page.goto('/app/reports');const directory=run.page.getByRole('region',{name:'Dashboards',exact:true});await expect(directory.getByText('Your default',{exact:true})).toBeVisible();await directory.getByRole('link',{name:full.name,exact:true}).click();await expect(run.page).toHaveURL(new RegExp('/app/dashboards/'+id+'$'));await expect(run.page.locator('.dash-access')).toContainText('Limited to your access');await expect(run.page.locator('.dash-grid')).toHaveAttribute('aria-busy','false');await expect(run.page.locator('.dash-tile--activities')).toContainText('per-person groups are withheld');await shot(run.page,`dashboard-restricted-${width}`);const permittedCell=run.page.locator('.dash-tile--chart').getByRole('button').filter({hasText:/^[1-9]\d*$/}).first(),count=(await permittedCell.textContent())!.trim();await permittedCell.click();await expect(run.page.getByRole('dialog').locator('.sales-drill [role=status]')).toContainText(`${count} record`);await shot(run.page,`drill-restricted-${width}`);await run.page.keyboard.press('Escape');await run.errors.check(evidence,`dashboard-restricted-${width}`);}finally{await run.context.close();}}
- const shared=await call(ownerCookie,base+'/sharing');await call(ownerCookie,base+'/sharing','PUT',{version:shared.version,audience:'workspace',grants:[]});assert.equal((await call(seller.cookie,base)).name,full.name,'workspace sharing opens the definition without granting another record');
- // Source sharing is independent of dashboard sharing.
- const sourceShare=await call(ownerCookie,ops+'/reports/synthetic-orbit-sales/sharing');await call(ownerCookie,ops+'/reports/synthetic-orbit-sales/sharing','PUT',{revision:sourceShare.revision,audience:'private',operatorIds:[]});const unavailable=await call<DashboardView>(seller.cookie,base);assert.equal(unavailable.unavailable,9);for(const tile of unavailable.tiles)assert.deepEqual(Object.keys(tile).sort(),['height','id','status','width']);
- for(const width of [1440,390]){const run=await open(width,seller.cookie);try{await run.page.goto(document);await expect(run.page.locator('.dash-tile--unavailable')).toHaveCount(9);await shot(run.page,`source-no-longer-shared-${width}`);}finally{await run.context.close();}}
- await call(ownerCookie,ops+'/reports/synthetic-orbit-sales/sharing','PUT',{revision:sourceShare.revision+1,audience:'workspace',operatorIds:[]});
- // Revocation changes the very next computation, CSV and PDF; neither export reuses an on-screen result.
- await call(ownerCookie,'/api/v2/access/workspaces/workspace/grants/'+grants[1].id,'DELETE',{});const revoked=await call<DashboardView>(seller.cookie,base);reconcileDashboard(revoked);assert.ok(!JSON.stringify(revoked).includes('Elm upgrade'));const number=revoked.tiles.find(t=>t.status==='ready'&&t.tile.measure==='pipeline');assert.ok(number?.status==='ready'&&number.report);assert.equal(number.report.sections[0]!.totals.find(c=>c.key==='value')!.value,800_000);
- for(const width of [1440,390]){const run=await open(width,seller.cookie);try{await run.page.goto(document);await expect(run.page.locator('.dash-tile--number.dash-tile--pipeline .dash-number')).toContainText('$8,000.00');await shot(run.page,`access-revoked-${width}`);await run.errors.check(evidence,`access-revoked-${width}`);}finally{await run.context.close();}}
- const csv=await emittedRequest(worker,seller.cookie,`${base}/tiles/${number.id}/csv`);assert.equal(csv.status,200);assert.ok((await csv.text()).includes('$8,000.00'));const pdf=await emittedRequest(worker,seller.cookie,base+'/pdf');assert.equal(pdf.status,200);const bytes=Buffer.from(await pdf.arrayBuffer());await writeFile(join(evidence,'dashboard-restricted.pdf'),bytes);assert.equal(bytes.subarray(0,5).toString(),'%PDF-');assert.ok(!bytes.toString().includes('Elm upgrade'));
- for(const grant of grants)await call(ownerCookie,'/api/v2/access/workspaces/workspace/grants/'+grant.id,'DELETE',{});await call(seller.cookie,base+'/default','PUT',{enabled:false});
+import { writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { expect, type Browser, type BrowserContext, type Page } from '@playwright/test';
+import { emittedRequest } from './emitted-request';
+import { watchBrowser } from './browser-observations';
+import type { seedSalesReport } from './sales-report-fixture';
+import type { DashboardView } from '../../src/core/features/dashboards/repository';
+import { reconcileDashboard } from './browser-dashboard';
+type Worker = {
+    origin: string;
+    certificate: {
+        cert: string;
+    };
+};
+type Run = {
+    context: BrowserContext;
+    errors: ReturnType<typeof watchBrowser>;
+    page: Page;
+};
+const root = '/api/v2/workspaces/workspace', ops = root + '/operations';
+export async function dashboardAccessProof({ worker, ownerCookie, seller, seed, id, evidence, open, shot, call }: {
+    browser: Browser;
+    worker: Worker;
+    ownerCookie: string;
+    seller: {
+        cookie: string;
+        operatorId: string;
+    };
+    seed: Awaited<ReturnType<typeof seedSalesReport>>;
+    id: string;
+    evidence: string;
+    open: (width: number, cookie?: string) => Promise<Run>;
+    shot: (page: Page, name: string) => Promise<void>;
+    call: <T = any>(cookie: string, path: string, method?: string, body?: unknown) => Promise<T>;
+}) {
+    const base = root + '/dashboards/' + id, document = '/app/dashboards/' + id;
+    assert.equal((await emittedRequest(worker, '', document)).status, 401, 'dashboard documents require native sign-in');
+    const full = await call<DashboardView>(ownerCookie, base);
+    reconcileDashboard(full);
+    {
+        const width = 1440;
+        const run = await open(width), page = run.page, releases: (() => void)[] = [];
+        try {
+            // Delay an actual request, never replace an application response, to inspect the real first-load frames.
+            let release!: () => void;
+            const hold = new Promise<void>(resolve => { release = resolve; });
+            releases.push(() => release());
+            await page.route('**' + base, async (route) => { await hold; await route.continue(); });
+            await page.goto(document, { waitUntil: 'domcontentloaded' });
+            await expect(page.locator('.dash-tile').filter({ hasText: 'Computing under your access…' }).first()).toBeVisible();
+            await shot(page, `loading-${width}`);
+            release();
+            await page.unrouteAll({ behavior: 'wait' });
+            await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy', 'false');
+            await shot(page, `dashboard-operator-${width}`);
+            await expect(page.locator('.dash-summary')).toContainText('9 tiles');
+            // While the filters equal the saved ones the saved period is selected as itself, with no date inputs until a custom range is chosen.
+            await expect(page.getByLabel('Date range', { exact: true })).toHaveValue('saved');
+            await expect(page.getByLabel('Start date', { exact: true })).toHaveCount(0);
+            const readyTitles = await page.locator('.dash-tile h2').allTextContents();
+            for (const detail of await page.locator('.dash-tile>details').all()) {
+                await detail.locator('summary').click();
+                await expect(detail.locator('.sales-basis, p').first()).toBeVisible();
+                await detail.locator('summary').click();
+            }
+            const stage = page.locator('.dash-tile--chart'), cell = stage.getByRole('button').filter({ hasText: /^[1-9]\d*$/ }).first(), shown = (await cell.textContent())!.trim();
+            await cell.click();
+            const drawer = page.getByRole('dialog');
+            await expect(drawer.locator('.sales-drill')).toBeVisible();
+            await expect(drawer.locator('.sales-drill [role=status]')).toContainText(`${shown} record`);
+            await shot(page, `drill-${width}`);
+            await page.keyboard.press('Escape');
+            await expect(drawer).toHaveCount(0);
+            await expect(cell).toBeFocused();
+            // The default menu closes on Escape and gives focus back to its button; every action is reachable without a More menu at both widths.
+            const defaults = page.getByRole('button', { name: 'Your default dashboard', exact: true });
+            await defaults.click();
+            await expect(page.getByRole('menuitem', { name: 'Remove as my default', exact: true })).toBeFocused();
+            await page.keyboard.press('Escape');
+            await expect(page.getByRole('menu')).toHaveCount(0);
+            await expect(defaults).toBeFocused();
+            await page.getByRole('button', { name: 'Edit tiles', exact: true }).click();
+            await shot(page, `edit-tiles-${width}`);
+            await page.getByRole('button', { name: 'Save dashboard version', exact: true }).click();
+            await expect(page.getByRole('dialog')).toHaveCount(0);
+            await page.getByRole('button', { name: 'Share', exact: true }).click();
+            await expect(page.getByRole('dialog').getByLabel('Add a person', { exact: true })).toBeVisible();
+            await shot(page, `share-${width}`);
+            await page.getByRole('button', { name: 'Close dialog', exact: true }).click();
+            await page.getByRole('button', { name: 'Schedule email', exact: true }).click();
+            await expect(page.getByRole('dialog').getByLabel('Slack channel', { exact: true })).toHaveValue('');
+            await shot(page, `schedule-${width}`);
+            await page.getByRole('dialog').evaluate(dialog => { dialog.scrollTop = dialog.scrollHeight; });
+            await shot(page, `schedule-footer-${width}`);
+            await page.getByRole('button', { name: 'Close dialog', exact: true }).click();
+            await page.goto('/app/reports?dashboards=all');
+            await expect(page.getByRole('region', { name: 'Dashboards', exact: true }).getByText('Your default', { exact: true })).toBeVisible();
+            await shot(page, `reports-default-${width}`);
+            await page.goto(document);
+            await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy', 'false');
+            ;
+            let resume!: () => void;
+            const blocked = new Promise<void>(resolve => { resume = resolve; });
+            releases.push(() => resume());
+            await page.route('**' + base + '/compute', async (route) => { await blocked; await route.continue(); });
+            await page.getByLabel('Owner', { exact: true }).selectOption(seed.ownerId);
+            await expect(page.locator('.dash-summary')).toHaveText('Updating…');
+            await shot(page, `refetch-${width}`);
+            resume();
+            await page.unrouteAll({ behavior: 'wait' });
+            await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy', 'false');
+            {
+                await page.getByRole('button', { name: 'Remove owner filter', exact: true }).click();
+                await expect(page.getByLabel('Owner', { exact: true })).toHaveValue('');
+                await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy', 'false');
+                await page.getByLabel('Owner', { exact: true }).selectOption(seed.ownerId);
+                await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy', 'false');
+            }
+            await expect(page.locator('.dash-tile--pipeline').first()).toContainText('Date range not applied');
+            assert.deepEqual(full.fields, [{ name: 'Region', values: ['Northeast', 'West'] }]);
+            assert.deepEqual(await page.getByLabel('Region', { exact: true }).locator('option').evaluateAll(options => options.map(option => (option as HTMLOptionElement).value).filter(Boolean)), ['Region:Northeast', 'Region:West']);
+            await page.getByLabel('Region', { exact: true }).selectOption('Region:Northeast');
+            await expect(page.locator('.dash-tile--number.dash-tile--pipeline .dash-number')).toContainText('$8,000.00');
+            await shot(page, `filter-not-applied-${width}`);
+            const filtered = await call<DashboardView>(ownerCookie, base + '/compute', 'POST', { ...full.filters, ownerIds: [seed.ownerId], field: { name: 'Region', value: 'Northeast' } });
+            reconcileDashboard(filtered);
+            const pipeline = filtered.tiles.find(t => t.status === 'ready' && t.tile.measure === 'pipeline');
+            assert.ok(pipeline?.status === 'ready' && pipeline.report);
+            assert.equal(pipeline.report.sections[0]!.totals.find(c => c.key === 'value')!.value, 800000, 'only the manager’s Northeast open deal is counted; the West deal is excluded');
+            await page.getByLabel('Date range', { exact: true }).selectOption('custom');
+            await page.getByLabel('Start date', { exact: true }).fill('1900-01-01');
+            await page.getByLabel('End date', { exact: true }).fill('1900-01-31');
+            await expect(page.locator('.dash-tile--win_rate')).toContainText('Not available');
+            await shot(page, `no-value-${width}`);
+            // The filter refuses an end before the start: an alert, no computation, and the period stays.
+            let computes = 0;
+            page.on('request', request => { if (request.url().endsWith(base + '/compute'))
+                computes++; });
+            const period = await page.locator('.dash-tile--win_rate>.dash-meta').textContent();
+            await page.getByLabel('Start date', { exact: true }).fill('1901-01-01');
+            await expect(page.locator('.dash-filters').getByRole('alert')).toBeVisible();
+            await expect(page.locator('.dash-tile--win_rate>.dash-meta')).toHaveText(period!);
+            await Promise.all([page.waitForResponse(response => response.url().endsWith(base + '/compute')), page.getByLabel('Start date', { exact: true }).fill('1900-01-01')]);
+            assert.equal(computes, 1, 'only the valid range is computed');
+            // A reversed range saved through the dashboards door is a real cause: every live tile's error frame keeps that tile's own name.
+            const saved = await call(ownerCookie, base + '/definition'), savedFilters = saved.definition.filters, reversed = await call(ownerCookie, base, 'PUT', { version: saved.version, definition: { ...saved.definition, filters: { ...savedFilters, from: savedFilters.through, through: savedFilters.from, dateRange: { from: `${savedFilters.through}-28`, through: `${savedFilters.from}-01` } } } });
+            await page.goto(document);
+            await expect(page.locator('.dash-tile__error').first()).toBeVisible();
+            const errors = await call<DashboardView>(ownerCookie, base), titles = await page.locator('.dash-tile h2').allTextContents();
+            assert.ok(errors.tiles.some(tile => tile.status === 'error'));
+            for (const [index, tile] of errors.tiles.entries())
+                if (tile.status === 'error')
+                    assert.equal(titles[index], readyTitles[index]);
+            await shot(page, `tile-error-${width}`);
+            await call(ownerCookie, base, 'PUT', { version: reversed.version, definition: saved.definition });
+            await run.errors.check(evidence, `operator-states-${width}`);
+        }
+        finally {
+            for (const release of releases)
+                release();
+            await page.unrouteAll({ behavior: 'wait' });
+            await run.context.close();
+        }
+    }
+    const empty = 'synthetic-orbit-empty';
+    await call(ownerCookie, root + '/dashboards/' + empty, 'PUT', { version: 0, definition: { name: 'A new dashboard', filters: full.filters, tiles: [] } });
+    {
+        const width = 1440;
+        const run = await open(width);
+        try {
+            await run.page.goto('/app/dashboards/' + empty);
+            await expect(run.page.getByRole('heading', { name: 'No tiles yet', exact: true })).toBeVisible();
+            await shot(run.page, `dashboard-empty-${width}`);
+            await run.page.goto('/app/reports');
+            await expect(run.page.getByRole('region', { name: 'Dashboards', exact: true }).getByRole('button', { name: 'Make this my default', exact: true })).toBeVisible();
+            await shot(run.page, `reports-with-choices-${width}`);
+            await run.errors.check(evidence, `dashboard-empty-${width}`);
+        }
+        finally {
+            await run.context.close();
+        }
+    }
+    // The collaborator has report-reading permission alone and explicit current record grants.
+    await call(ownerCookie, root.replace('/workspaces/workspace', '') + '/access/workspaces/workspace/roles/seller', 'PUT', { actions: ['analytics.read'], fields: ['*'] });
+    const grants = [];
+    for (const deal of [seed.deals.dune, seed.deals.elm])
+        grants.push(await call(ownerCookie, '/api/v2/access/workspaces/workspace/grants', 'POST', { subjectKind: 'operator', subjectId: seller.operatorId, resourceType: 'opportunity', resourceId: deal, actions: ['graph.read', 'entries.read'], fields: ['*'], purpose: 'Dashboard review', expiresAt: null }));
+    const deniedHistory = [1440].map(width => `${ops}/metrics/disclosed-value-${width}/versions/1/snapshots`);
+    for (const path of deniedHistory) {
+        const denied = await emittedRequest(worker, seller.cookie, path);
+        assert.equal(denied.status, 409, 'an unrelated Sum snapshot is refused by its current source-lineage fence');
+        assert.doesNotMatch(await denied.text(), /First open deal|Second open deal|Harbor Freight|195000|1,950/);
+    }
+    await call(seller.cookie, base + '/default', 'PUT', { enabled: true });
+    const limited = await call<DashboardView>(seller.cookie, base);
+    assert.equal(limited.limited, true);
+    reconcileDashboard(limited);
+    assert.equal(limited.unavailable, 2);
+    const text = JSON.stringify(limited);
+    for (const hidden of ['Atlas expansion', 'Birch rollout', 'Cedar renewal', 'Hazel expansion', 'Riley Chen'])
+        assert.ok(!text.includes(hidden), hidden);
+    {
+        const width = 1440;
+        const run = await open(width, seller.cookie);
+        for (const path of deniedHistory)
+            run.errors.allowDeniedResource(path, 409);
+        try {
+            await run.page.goto('/app/reports');
+            const directory = run.page.getByRole('region', { name: 'Dashboards', exact: true });
+            await expect(directory.getByText('Your default', { exact: true })).toBeVisible();
+            await directory.getByRole('link', { name: full.name, exact: true }).click();
+            await expect(run.page).toHaveURL(new RegExp('/app/dashboards/' + id + '$'));
+            await expect(run.page.locator('.dash-access')).toContainText('Limited to your access');
+            await expect(run.page.locator('.dash-grid')).toHaveAttribute('aria-busy', 'false');
+            await expect(run.page.locator('.dash-tile--activities')).toContainText('per-person groups are withheld');
+            await shot(run.page, `dashboard-restricted-${width}`);
+            const permittedCell = run.page.locator('.dash-tile--chart').getByRole('button').filter({ hasText: /^[1-9]\d*$/ }).first(), count = (await permittedCell.textContent())!.trim();
+            await permittedCell.click();
+            await expect(run.page.getByRole('dialog').locator('.sales-drill [role=status]')).toContainText(`${count} record`);
+            await shot(run.page, `drill-restricted-${width}`);
+            await run.page.keyboard.press('Escape');
+            await run.errors.check(evidence, `dashboard-restricted-${width}`);
+        }
+        finally {
+            await run.context.close();
+        }
+    }
+    const shared = await call(ownerCookie, base + '/sharing');
+    await call(ownerCookie, base + '/sharing', 'PUT', { version: shared.version, audience: 'workspace', grants: [] });
+    assert.equal((await call(seller.cookie, base)).name, full.name, 'workspace sharing opens the definition without granting another record');
+    // Source sharing is independent of dashboard sharing.
+    const sourceShare = await call(ownerCookie, ops + '/reports/synthetic-orbit-sales/sharing');
+    await call(ownerCookie, ops + '/reports/synthetic-orbit-sales/sharing', 'PUT', { revision: sourceShare.revision, audience: 'private', operatorIds: [] });
+    const unavailable = await call<DashboardView>(seller.cookie, base);
+    assert.equal(unavailable.unavailable, 9);
+    for (const tile of unavailable.tiles)
+        assert.deepEqual(Object.keys(tile).sort(), ['height', 'id', 'status', 'width']);
+    {
+        const width = 1440;
+        const run = await open(width, seller.cookie);
+        try {
+            await run.page.goto(document);
+            await expect(run.page.locator('.dash-tile--unavailable')).toHaveCount(9);
+            await shot(run.page, `source-no-longer-shared-${width}`);
+        }
+        finally {
+            await run.context.close();
+        }
+    }
+    await call(ownerCookie, ops + '/reports/synthetic-orbit-sales/sharing', 'PUT', { revision: sourceShare.revision + 1, audience: 'workspace', operatorIds: [] });
+    // Revocation changes the very next computation, CSV and PDF; neither export reuses an on-screen result.
+    await call(ownerCookie, '/api/v2/access/workspaces/workspace/grants/' + grants[1].id, 'DELETE', {});
+    const revoked = await call<DashboardView>(seller.cookie, base);
+    reconcileDashboard(revoked);
+    assert.ok(!JSON.stringify(revoked).includes('Elm upgrade'));
+    const number = revoked.tiles.find(t => t.status === 'ready' && t.tile.measure === 'pipeline');
+    assert.ok(number?.status === 'ready' && number.report);
+    assert.equal(number.report.sections[0]!.totals.find(c => c.key === 'value')!.value, 800000);
+    {
+        const width = 1440;
+        const run = await open(width, seller.cookie);
+        try {
+            await run.page.goto(document);
+            await expect(run.page.locator('.dash-tile--number.dash-tile--pipeline .dash-number')).toContainText('$8,000.00');
+            await shot(run.page, `access-revoked-${width}`);
+            await run.errors.check(evidence, `access-revoked-${width}`);
+        }
+        finally {
+            await run.context.close();
+        }
+    }
+    const csv = await emittedRequest(worker, seller.cookie, `${base}/tiles/${number.id}/csv`);
+    assert.equal(csv.status, 200);
+    assert.ok((await csv.text()).includes('$8,000.00'));
+    const pdf = await emittedRequest(worker, seller.cookie, base + '/pdf');
+    assert.equal(pdf.status, 200);
+    const bytes = Buffer.from(await pdf.arrayBuffer());
+    await writeFile(join(evidence, 'dashboard-restricted.pdf'), bytes);
+    assert.equal(bytes.subarray(0, 5).toString(), '%PDF-');
+    assert.ok(!bytes.toString().includes('Elm upgrade'));
+    for (const grant of grants)
+        await call(ownerCookie, '/api/v2/access/workspaces/workspace/grants/' + grant.id, 'DELETE', {});
+    await call(seller.cookie, base + '/default', 'PUT', { enabled: false });
 }
