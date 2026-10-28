@@ -9207,7 +9207,7 @@
       "executable": false
     },
     "tests/rer/editor-admission.mjs": {
-      "sha256": "8961cd93f2219b8831853cc25aedf12a496e47891fdaf673fd771faf6913bae5",
+      "sha256": "d65125b1e4e2b8ac781a2d40abb4f1cf3fe44553e1807ec90d34359e0e8da113",
       "executable": false
     },
     "tests/rer/editor-provider.mjs": {
