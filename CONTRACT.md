@@ -1784,7 +1784,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | --- | --- | --- | --- | --- |
 | `orbit.team.management` | Management | TEAM-002 | access | planned |
 | `orbit.team.removal_handover` | Removal handover | TEAM-004 | access | planned |
-| `orbit.record.core_records` | Core records | RECORD-001 | standard or destructive (+ access · sensitive) | planned |
+| `orbit.record.core_records` | Core records | RECORD-001 | standard or destructive (+ external · access · sensitive) | planned |
 | `orbit.record.associations` | Associations | RECORD-002 | standard | planned |
 | `orbit.record.identity_keys` | Identity keys | RECORD-003 | standard | planned |
 | `orbit.record.duplicate_merge` | Duplicate merge | RECORD-004 | standard or destructive (+ access) | planned |
@@ -1810,7 +1810,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `orbit.capture.what_capture_applies_at_once` | What capture applies at once | CAPTURE-003 | standard or external (+ sensitive · gated) | planned |
 | `orbit.capture.reviewed_proposals` | Reviewed proposals | CAPTURE-004 | standard or external (+ sensitive · gated) | planned |
 | `orbit.capture.human_boundary` | Human boundary | CAPTURE-005 | standard or external (+ sensitive · gated) | planned |
-| `orbit.capture.capture_sources_capture_source_v1` | Capture sources (capture.source.v1) | CAPTURE-006 | standard or external (+ sensitive · gated) | planned |
+| `orbit.capture.capture_sources_capture_source_v1` | Capture sources (capture.source.v1) | CAPTURE-006 | standard or external (+ sensitive · gated · security) | planned |
 | `orbit.capture.captured_data` | Captured data | CAPTURE-007 | standard or external (+ sensitive · gated) | planned |
 | `orbit.capture.orbit_address` | Orbit address | CAPTURE-008 | standard or external (+ sensitive · gated · security) | planned |
 | `orbit.capture.calendar_link` | Calendar link | CAPTURE-009 | standard or external (+ sensitive · gated · security) | planned |
@@ -1858,7 +1858,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `orbit.record.configurable_sales_data_and_custom_objects` | Configurable sales data and custom objects | RECORD-014 | standard | planned |
 | `orbit.team.team_forecast_reports_and_dashboards` | Team forecast, reports and dashboards | TEAM-006 | access | planned |
 | `orbit.team.team_libraries_mentions_and_entry_privacy` | Team libraries, mentions and entry privacy | TEAM-007 | access | planned |
-| `orbit.team.team_sending_budgets_and_slack_audiences` | Team sending budgets and Slack audiences | TEAM-008 | access | planned |
+| `orbit.team.team_sending_budgets_and_slack_audiences` | Team sending budgets and Slack audiences | TEAM-008 | standard or access (+ live) | planned |
 | `orbit.record.deal_stakeholders_and_buying_context` | Deal stakeholders and buying context | RECORD-015 | standard | planned |
 | `orbit.record.owners_for_contacts_leads_companies_and_custom_objects` | Owners for contacts, leads, companies and custom objects | RECORD-016 | standard or access | planned |
 | `orbit.record.mentions_in_notes_and_activities` | Mentions in notes and activities | RECORD-017 | standard or destructive | planned |
@@ -1872,16 +1872,16 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `orbit.record.file_access_previews_and_deletion` | File access, previews and deletion | RECORD-025 | standard or destructive (+ sensitive) | planned |
 | `orbit.record.captured_and_sent_mail_attachments` | Captured and sent mail attachments | RECORD-026 | standard or external (+ sensitive) | planned |
 | `orbit.record.file_migration_and_portable_bytes` | File migration and portable bytes | RECORD-027 | standard or external (+ destructive · sensitive) | planned |
-| `orbit.capture.continuous_authorized_mail_and_calendar_reads` | Continuous authorized mail and calendar reads | CAPTURE-010 | standard or external (+ sensitive · gated) | planned |
-| `orbit.capture.two_way_calendar_and_crm_activity` | Two-way calendar and CRM activity | CAPTURE-011 | standard or external (+ sensitive · gated) | planned |
+| `orbit.capture.continuous_authorized_mail_and_calendar_reads` | Continuous authorized mail and calendar reads | CAPTURE-010 | standard or external (+ sensitive · gated · security) | planned |
+| `orbit.capture.two_way_calendar_and_crm_activity` | Two-way calendar and CRM activity | CAPTURE-011 | standard or external (+ sensitive · gated · security) | planned |
 | `orbit.capture.unknown_participant_proposal_custody` | Unknown-participant proposal custody | CAPTURE-012 | standard or external (+ sensitive · gated) | planned |
-| `orbit.capture.prospect_acceptance_and_history_back_fill` | Prospect acceptance and history back-fill | CAPTURE-013 | standard or external (+ sensitive · gated) | planned |
+| `orbit.capture.prospect_acceptance_and_history_back_fill` | Prospect acceptance and history back-fill | CAPTURE-013 | standard or external (+ access · sensitive · gated) | planned |
 | `orbit.capture.prospect_purpose_retention_and_suppression` | Prospect purpose, retention and suppression | CAPTURE-014 | standard or external (+ sensitive · gated) | planned |
 | `orbit.form.forms_on_the_buyer_s_website` | Forms on the buyer’s website | FORM-001 | standard or external | planned |
-| `orbit.out.gmail_and_microsoft_365_mailbox_sending` | Gmail and Microsoft 365 mailbox sending | OUT-013 | standard or external (+ gated) | planned |
+| `orbit.out.gmail_and_microsoft_365_mailbox_sending` | Gmail and Microsoft 365 mailbox sending | OUT-013 | standard or external (+ gated · security) | planned |
 | `orbit.form.form_abuse_refusals_and_release` | Form abuse refusals and release | FORM-002 | standard or external (+ destructive) | planned |
 | `orbit.form.form_customer_identity_and_consent` | Form customer identity and consent | FORM-003 | standard or external | planned |
-| `orbit.form.form_owner_routing_and_sales_follow_up` | Form owner routing and sales follow-up | FORM-004 | standard or external | planned |
+| `orbit.form.form_owner_routing_and_sales_follow_up` | Form owner routing and sales follow-up | FORM-004 | standard or external (+ access) | planned |
 | `orbit.out.reusable_personalized_templates_and_sales_content` | Reusable personalized templates and sales content | OUT-014 | standard or external | planned |
 | `orbit.out.honest_open_and_reply_tracking` | Honest open and reply tracking | OUT-015 | standard or external | planned |
 | `orbit.out.disclosed_per_message_tracking` | Disclosed per-message tracking | OUT-016 | standard or external | planned |
@@ -1902,7 +1902,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `orbit.out.unattributed_stop_requests` | Unattributed stop requests | OUT-031 | standard or external | planned |
 | `orbit.out.opt_out_upgrades_and_transport_changes` | Opt-out upgrades and transport changes | OUT-032 | standard | planned |
 | `orbit.task.assigned_prioritized_recurring_sales_tasks` | Assigned prioritized recurring sales tasks | TASK-001 | standard | planned |
-| `orbit.notify.reminders_that_reach_an_absent_seller` | Reminders that reach an absent seller | NOTIFY-003 | standard | planned |
+| `orbit.notify.reminders_that_reach_an_absent_seller` | Reminders that reach an absent seller | NOTIFY-003 | standard or external (+ live) | planned |
 | `orbit.sequence.versioned_sales_sequence_authoring` | Versioned sales sequence authoring | SEQUENCE-001 | standard or external | planned |
 | `orbit.sequence.sequence_enrollment_and_scheduled_steps` | Sequence enrollment and scheduled steps | SEQUENCE-004 | standard or external | planned |
 | `orbit.sequence.sequence_outcome_reports` | Sequence outcome reports | SEQUENCE-005 | standard or external | planned |
@@ -1910,8 +1910,8 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `orbit.sequence.bulk_enrollment_and_rendered_batch_review` | Bulk enrollment and rendered batch review | SEQUENCE-003 | standard or external | planned |
 | `orbit.sequence.batch_dispatch_and_isolated_review_holds` | Batch dispatch and isolated review holds | SEQUENCE-006 | standard or external | planned |
 | `orbit.sequence.workflow_triggered_enrollment_review` | Workflow-triggered enrollment review | SEQUENCE-007 | standard or external | planned |
-| `orbit.auto.configurable_sales_workflows_and_visible_execution` | Configurable sales workflows and visible execution | AUTO-001 | standard or commitment (+ live) | planned |
-| `orbit.auto.workflow_record_changing_actions` | Workflow record-changing actions | AUTO-002 | standard or commitment (+ live) | planned |
+| `orbit.auto.configurable_sales_workflows_and_visible_execution` | Configurable sales workflows and visible execution | AUTO-001 | standard or commitment (+ external · access · live) | planned |
+| `orbit.auto.workflow_record_changing_actions` | Workflow record-changing actions | AUTO-002 | standard or commitment (+ access · live) | planned |
 | `orbit.auto.workflow_activation_and_history` | Workflow activation and history | AUTO-003 | standard or commitment (+ live) | planned |
 | `orbit.auto.material_workflow_changes` | Material workflow changes | AUTO-004 | standard or commitment (+ live) | planned |
 | `orbit.auto.workflow_guards_and_recovery` | Workflow guards and recovery | AUTO-005 | standard or commitment (+ live) | planned |
@@ -1922,21 +1922,21 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `orbit.report.sales_dashboards_and_saved_reports` | Sales dashboards and saved reports | REPORT-001 | standard or external (+ destructive) | planned |
 | `orbit.report.saved_dashboard_tiles_and_filters` | Saved dashboard tiles and filters | REPORT-002 | standard or external (+ destructive) | planned |
 | `orbit.report.dashboard_sharing_and_defaults` | Dashboard sharing and defaults | REPORT-003 | standard or external | planned |
-| `orbit.report.dashboard_export_and_scheduled_delivery` | Dashboard export and scheduled delivery | REPORT-004 | standard or external | planned |
+| `orbit.report.dashboard_export_and_scheduled_delivery` | Dashboard export and scheduled delivery | REPORT-004 | standard or external (+ live) | planned |
 | `orbit.forecast.weighted_forecasts_quotas_and_revenue_schedules` | Weighted forecasts, quotas and revenue schedules | FORECAST-001 | standard | planned |
-| `orbit.quote.products_quotes_and_signatures` | Products, quotes and signatures | QUOTE-001 | commitment · external (+ money) | planned |
+| `orbit.quote.products_quotes_and_signatures` | Products, quotes and signatures | QUOTE-001 | standard or external (+ commitment · money) | planned |
 | `orbit.integrate.dial_and_calendly_bookings` | Dial and Calendly bookings | INTEGRATE-001 | standard or external (+ gated · security) | planned |
-| `orbit.integrate.zoom_meetings_and_preparation` | Zoom meetings and preparation | INTEGRATE-002 | standard or external (+ gated) | planned |
-| `orbit.integrate.nectar_and_stripe_billing_context` | Nectar and Stripe billing context | INTEGRATE-003 | standard or external (+ money) | planned |
-| `orbit.integrate.happytohelp_help_scout_and_zendesk_account_context` | HappyToHelp, Help Scout and Zendesk account context | INTEGRATE-004 | standard or external (+ gated) | planned |
+| `orbit.integrate.zoom_meetings_and_preparation` | Zoom meetings and preparation | INTEGRATE-002 | standard or external (+ gated · security) | planned |
+| `orbit.integrate.nectar_and_stripe_billing_context` | Nectar and Stripe billing context | INTEGRATE-003 | standard or external (+ money · gated · security) | planned |
+| `orbit.integrate.happytohelp_help_scout_and_zendesk_account_context` | HappyToHelp, Help Scout and Zendesk account context | INTEGRATE-004 | standard or external (+ gated · security) | planned |
 | `orbit.integrate.slack_notice_routing_and_allowed_content` | Slack notice routing and allowed content | INTEGRATE-005 | standard or external (+ gated · security · live) | planned |
-| `orbit.integrate.slack_identity_and_single_use_actions` | Slack identity and single-use actions | INTEGRATE-009 | standard or external (+ gated) | planned |
-| `orbit.integrate.slack_delivery_failures_and_destination_safety` | Slack delivery failures and destination safety | INTEGRATE-010 | standard or external (+ gated) | planned |
-| `orbit.integrate.slack_portable_definitions_and_deletion` | Slack portable definitions and deletion | INTEGRATE-011 | standard or external (+ gated · destructive) | planned |
-| `orbit.integrate.quickbooks_online_and_xero_accounting_handoff` | QuickBooks Online and Xero accounting handoff | INTEGRATE-006 | standard or external (+ money · gated) | planned |
-| `orbit.integrate.mailchimp_audience_and_suppression_handoff` | Mailchimp audience and suppression handoff | INTEGRATE-007 | standard or external (+ gated) | planned |
-| `orbit.integrate.buoy_post_sale_handoff` | Buoy post-sale handoff | INTEGRATE-008 | standard or external (+ gated) | planned |
-| `orbit.enrich.licensed_enrichment_and_change_signals` | Licensed enrichment and change signals | ENRICH-001 | external (+ money · sensitive) | planned |
+| `orbit.integrate.slack_identity_and_single_use_actions` | Slack identity and single-use actions | INTEGRATE-009 | standard or external (+ access · gated) | planned |
+| `orbit.integrate.slack_delivery_failures_and_destination_safety` | Slack delivery failures and destination safety | INTEGRATE-010 | standard or external (+ gated · security · live) | planned |
+| `orbit.integrate.slack_portable_definitions_and_deletion` | Slack portable definitions and deletion | INTEGRATE-011 | standard or external (+ access · gated · security · destructive · live) | planned |
+| `orbit.integrate.quickbooks_online_and_xero_accounting_handoff` | QuickBooks Online and Xero accounting handoff | INTEGRATE-006 | standard or external (+ money · gated · security) | planned |
+| `orbit.integrate.mailchimp_audience_and_suppression_handoff` | Mailchimp audience and suppression handoff | INTEGRATE-007 | standard or external (+ gated · security) | planned |
+| `orbit.integrate.buoy_post_sale_handoff` | Buoy post-sale handoff | INTEGRATE-008 | standard or external (+ gated · security) | planned |
+| `orbit.enrich.licensed_enrichment_and_change_signals` | Licensed enrichment and change signals | ENRICH-001 | standard or external (+ money · sensitive) | planned |
 | `orbit.api.versioned_public_record_api` | Versioned public record API | API-001 | standard or external (+ destructive) | planned |
 | `orbit.api.named_api_credential_lifecycle` | Named API credential lifecycle | API-002 | access · security | planned |
 | `orbit.api.outgoing_webhooks_and_safe_replay` | Outgoing webhooks and safe replay | API-003 | standard or external (+ security) | planned |
