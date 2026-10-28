@@ -3747,7 +3747,7 @@
       "executable": false
     },
     "scripts/browser-results.mjs": {
-      "sha256": "2242c12452a9f1e761520851b9c1a714860dc7f244fbf042386fdb601a834526",
+      "sha256": "47a2ebd19cac36299ff19a9a1336fd73af8a082e67907ca9be4b0bc9cbde50dd",
       "executable": false
     },
     "scripts/browser-runtime.mjs": {
@@ -8566,10 +8566,6 @@
       "sha256": "d7a85e1cab5166dddbbbd38dac1e5ad29220954a620dd67e6e501788e21c9e22",
       "executable": false
     },
-    "tests/contract.mjs": {
-      "sha256": "6163b8869396b3fb4e770fbc1dc55037b80acefd11c60912ab12d594eb15c4b3",
-      "executable": false
-    },
     "tests/core/archive-transfer.test.ts": {
       "sha256": "67d541ad838fc49b8dd9827244ec83bcf99db70e82f8aef09c745fc50e3268a4",
       "executable": false
@@ -9314,10 +9310,6 @@
       "sha256": "707e662d58d44bb1aefb6d10d391e4f88e9c6e8df7810817b40266ef64394f6b",
       "executable": false
     },
-    "tests/support/capture-mail-rule.ts": {
-      "sha256": "abc84423e31043ca88acb9ee4d185e1af0cc3b2f65f2601cfd74e7af720189aa",
-      "executable": false
-    },
     "tests/support/capture-mail.ts": {
       "sha256": "82d00984e517af689e505a2165c05486fd70f4e16aed07dc14dd57801510530e",
       "executable": false
@@ -9415,7 +9407,7 @@
       "executable": false
     },
     "tests/support/isolated-database.ts": {
-      "sha256": "918a0e83743aa21b1dad914cd86525cdad18d48940d3506889ccd056d5cf5e1d",
+      "sha256": "0d47536bb74ef0d4da962d50a3b4d818fa0680262440924a4977b4693241a8fd",
       "executable": false
     },
     "tests/support/issue-operator-session.ts": {
