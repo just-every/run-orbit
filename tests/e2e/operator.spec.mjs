@@ -5,7 +5,7 @@ import {reviewSavedDraft} from './sales-review.mjs';
 import {inspectAssistance} from './sales-assistance.mjs';
 test('a seller prioritises the queue, opens a new-account notification and reviews a durable draft against current evidence',async({page,context,browser})=>{
   test.setTimeout(180_000);
-  await authenticateOperator(context);
+  const issued = await authenticateOperator(context);
   await inspectQueue(page);
   const beforeNotifications=await(await page.request.get('/api/v1/notifications')).json();
   const failures=[];page.on('pageerror',error=>failures.push(error.message));
@@ -84,7 +84,10 @@ test('a seller prioritises the queue, opens a new-account notification and revie
   await expect(page.getByRole('button',{name:'Confirm send now',exact:true})).toHaveCount(0);
   await page.reload();
   await expect(page.getByTestId('draft-body')).toHaveValue('Thank you for requesting a follow-up. What time suits you?');
-  await reviewSavedDraft({page,browser,opportunityId});
+  // Continue the seller's queue with a recommendation-backed draft: its source
+  // link, concurrent edits and changed evidence remain part of the same review.
+  await page.goto(`/app/drafts/${issued.draft.id}`);
+  await reviewSavedDraft({page,browser,opportunityId:issued.draft.opportunityId});
   await inspectAssistance(page,opportunityId);
   await page.goto('/app/sources');
   await expect(page.getByRole('heading',{name:'Connected sources'})).toBeVisible();

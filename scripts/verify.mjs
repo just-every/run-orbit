@@ -11,7 +11,7 @@ resetVerification();
 let passed=true;
 const options={journeys:true};
 for(const name of Object.keys(verificationPlan(options))){
- if(!runShard(name,options)){passed=false;break;}
+ if(!runShard(name,options)){passed=false;if(name==='source')break;else continue;}
  if(name==='source'){
   const sealed=spawnSync(process.execPath,['scripts/verification-build.mjs','seal'],{stdio:'inherit'});
   if(sealed.status!==0){passed=false;break;}
