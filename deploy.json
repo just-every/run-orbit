@@ -75,7 +75,8 @@
     },
     {
       "binding": "ORBIT_ENCRYPTION_KEY",
-      "environment": "ORBIT_ENCRYPTION_KEY"
+      "environment": "ORBIT_ENCRYPTION_KEY",
+      "verifyStandIn": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
       "binding": "OPENAI_API_KEY",
@@ -90,17 +91,20 @@
     {
       "binding": "AI_INPUT_COST_PER_MILLION",
       "environment": "AI_INPUT_COST_PER_MILLION",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "1"
     },
     {
       "binding": "AI_OUTPUT_COST_PER_MILLION",
       "environment": "AI_OUTPUT_COST_PER_MILLION",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "1"
     },
     {
       "binding": "AI_CACHED_INPUT_COST_PER_MILLION",
       "environment": "AI_CACHED_INPUT_COST_PER_MILLION",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "1"
     },
     {
       "binding": "SESSION_SECRET",
