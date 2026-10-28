@@ -101,6 +101,7 @@ export function recordTools(bindings:PlatformBindings) {
       }}),
     defineTool({name:'orbit.records.update',title:'Update permitted CRM fields',description:'Edit supported fields at the native graph revision; field grants and recipient restrictions remain authoritative.',scope:'records:write',readOnly:false,
       inputSchema:objectSchema({kind:kindSchema,id:string,fields:fieldSchema}),outputSchema,classes:['standard'],clauses:['RECORD-014','RECORD-018'],
+      target:async(args,ctx)=>{const record=await readRecord(bindings,ctx,args.kind as RecordKind,String(args.id));return {kind:record.kind,id:record.ref.id};},
       revision:async(args,ctx)=>(await readRecord(bindings,ctx,args.kind as RecordKind,String(args.id))).ref.revision,
       classify:async(args,ctx)=>{await readRecord(bindings,ctx,args.kind as RecordKind,String(args.id),Object.keys(args.fields as object));return standard();},
       summary:async(args,ctx)=>{const record=await readRecord(bindings,ctx,args.kind as RecordKind,String(args.id));return {target:{id:String(args.id),name:String(record.fields.title??record.fields.name??args.id)},items:Object.entries(args.fields as object).map(([key,value])=>`${key}: ${JSON.stringify(value)}`)};},

@@ -32,14 +32,12 @@ export default async function sellerDay({tool,request,origin,cookie}) {
  const audit=await auditResponse.json();
  assert.equal(audit.differs_from_policy,0);
  const write=audit.rows.find(row=>row.tool==='orbit.records.update'&&row.outcome==='done');
- // PENDING-BASE-AUDIT-TARGET-2026-10-28: pinned Base audit.ts:15 records
- // resource:null on native writes. Keep this assertion intact for the repin.
- assert.equal(write?.resource,`orbit://records/opportunity/${id}`,'PENDING-BASE-AUDIT-TARGET-2026-10-28');
+ assert.deepEqual(write?.resource,{kind:'opportunity',id},'native write audit identifies its actual opportunity');
 }
 
-// Other pinned Base dependencies remain assertions of the shared, unmodified
-// conformance suite: PENDING-BASE-RESOURCE-CODE-2026-10-28 (transport.ts:50),
-// PENDING-BASE-REPLAY-AUTHORITY-2026-10-28 (pipeline.ts:62),
-// PENDING-BASE-SPONSOR-ESCALATIONS-2026-10-28 (conformance/surface.mjs:63),
-// PENDING-BASE-NATIVE-REVIEWER-2026-10-28 (native reviewer lifecycle).
-// No seed fallback supplies any of these shared guarantees.
+// PENDING-CT-SURFACE-2026-10-28: the complete CLI conformance run is refused
+// while CONTRACT.md lacks BASE-AGENT-010. The existing native proof now also
+// asserts resource data.code, current-policy replay refusal and an independent
+// native reviewer session. No access/security tool is declared, so sponsor
+// self-widening fixtures are inapplicable; the standard handoff assignee still
+// uses the shared {$sponsor:'id'} fixture syntax.

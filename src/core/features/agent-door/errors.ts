@@ -15,5 +15,5 @@ function refusal(error:unknown):never {
 }
 export function nativeTool(tool:ToolDefinition):ToolDefinition {
   const wrap = <A extends unknown[],R>(fn:(...args:A)=>R|Promise<R>) => async(...args:A):Promise<R>=>{try{return await fn(...args);}catch(error){return refusal(error);}};
-  return {...tool,classify:wrap(tool.classify),run:wrap(tool.run),...(tool.revision?{revision:wrap(tool.revision)}:{}),...(tool.summary?{summary:wrap(tool.summary)}:{}),...(tool.authority?{authority:wrap(tool.authority)}:{})};
+  return {...tool,classify:wrap(tool.classify),run:wrap(tool.run),...(tool.revision?{revision:wrap(tool.revision)}:{}),...(tool.summary?{summary:wrap(tool.summary)}:{}),...(typeof tool.authority==='function'?{authority:wrap(tool.authority)}:{}),...(tool.target?{target:wrap(tool.target)}:{})};
 }

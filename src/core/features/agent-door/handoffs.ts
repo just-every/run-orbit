@@ -1,4 +1,4 @@
-import {defineTool, ToolRefusal, type ToolContext, type ResourceDefinition} from '../../../base/modules/agent-door/index.ts';
+import {defineTool, type ToolContext, type ResourceDefinition} from '../../../base/modules/agent-door/index.ts';
 import {nativeAuthority} from '../delegation/native-authority';
 import {snapshot} from '../delegation/evidence';
 import {writeHandoff} from '../delegation/effects';
@@ -23,7 +23,9 @@ export function handoffTools(bindings:PlatformBindings) {
     defineTool({name:'orbit.handoffs.upsert',title:'Save a cited internal handoff',description:'Save one real native handoff at current source and audience revisions, with eligible assignee and immutable evidence. It cannot approve or start mail.',scope:'handoffs:write',readOnly:false,
       inputSchema:objectSchema({target:{type:'string',pattern:'^opportunities/[^/]+/handoffs/[^/]+$'},source_revision:{type:'string',pattern:'^[a-f0-9]{64}$'},audience_revision:{type:'string',pattern:'^[a-f0-9]{64}$'},content:z.toJSONSchema(contentSchema)}),outputSchema,classes:['standard'],clauses:['DELEGATE-001','BRIEF-005'],revisionType:'string',untrusted:true,
       revision:async(args,ctx)=>(await readable(bindings,ctx,String(args.target),true)).revision,
-      classify:async(args,ctx)=>{const current=await readable(bindings,ctx,String(args.target),true);if(current.revision!==args.source_revision)throw new ToolRefusal('revision_conflict');if(current.audience.audienceRevision!==args.audience_revision)throw new ToolRefusal('audience_changed');return standard();},
+      // Replay rechecks current authority here; writeHandoff atomically checks source
+      // and audience revisions on first execution, after the door's replay lookup.
+      classify:async(args,ctx)=>{await readable(bindings,ctx,String(args.target),true);return standard();},
       summary:async(args,ctx)=>{const saved=await readable(bindings,ctx,String(args.target),true),content=contentSchema.parse(args.content);return {target:{id:String(args.target),name:saved.title},items:[content.title,content.description,`Assignee: ${content.assigneeId??'unassigned'}`,`Due: ${content.dueAt??'none'}`,`Status: ${content.status}`,...content.evidence??[]]};},
       run:async(args,ctx)=>{
         await readable(bindings,ctx,String(args.target),true);

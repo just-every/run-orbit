@@ -13,6 +13,7 @@ step('fixture','records.list',{kind:'opportunity',query:'Door specialist fixture
 step('public_company','records.create',{kind:'company',record:{name:'Brightwork public seller context'}});
 step('public_read','records.read',{kind:'company',id:from('public_company','/id')});
 step('public_update','records.update',{kind:'company',id:from('public_company','/id'),fields:{name:'Brightwork public seller context updated'},expected_revision:from('public_read','/ref/revision')});
+journey.find(item=>item.id==='public_update').target={kind:'company',id:from('public_company','/id')};
 step('contact','records.create',{kind:'contact',record:{name:'Maya Chen',email:'buyer@example.test',company_id:from('public_company','/id')}});
 step('opportunity','records.create',{kind:'opportunity',record:{title:'Brightwork Team plan',stage_id:from('fixture','/items/0/fields/stage_id'),value_cents:750000,company_id:from('public_company','/id'),contact_ids:[from('contact','/id')],primary_contact_id:from('contact','/id')}});
 step('protected_company','records.create',{kind:'company',record:{name:'Protected seller context',custom_fields:{private_note:'Protected internal buyer context'}}});
@@ -43,7 +44,7 @@ step('protected_report','reports.read',{id:from('protected_snapshot','/id')},sen
 step('forecast_update','forecasts.update',{id:from('opportunity','/id'),forecast:{probability:40,category:'pipeline',closeDate:null,schedules:[],reason:'CRM estimate from current buyer evidence'}});
 step('witness','operations.read',{});
 step('events','events.list',{limit:200});
-const surface={schema:'rer-agent-surface/1',seed:'orbit',specialist:'sales rep',tools,resources:orbitResources(bindings).map(item=>item.uriTemplate).sort(),notTools:[{clauses:['DATA-001'],reason:'import-door'},{clauses:['PUBLIC-003'],reason:'installation'}],witness:{tool:'orbit.operations.read',args:{}},escalations:[],journey,verification:{owner:{bindings:{RER_MANAGEMENT_ORIGIN:'issuer',RER_INSTALLATION_ID:'installationId'},initializer:'tests/agent-door/initialize-owner.mjs'},journey:'tests/agent-door/native-journey.mjs'}};
+const surface={schema:'rer-agent-surface/1',seed:'orbit',specialist:'sales rep',tools,resources:orbitResources(bindings).map(item=>item.uriTemplate).sort(),notTools:[{clauses:['DATA-001'],reason:'import-door'},{clauses:['PUBLIC-003'],reason:'installation'}],witness:{tool:'orbit.operations.read',args:{}},escalations:[],journey,verification:{owner:{bindings:{RER_MANAGEMENT_ORIGIN:'issuer',RER_INSTALLATION_ID:'installationId'},initializer:'tests/agent-door/initialize-owner.mjs'},journey:'tests/agent-door/native-journey.mjs',replayAdmission:{prepare:['public_company','public_read','public_update']},reviewers:[{label:'sales-review',email:'jamie-review@example.test',initializer:'tests/agent-door/initialize-reviewer.mjs'}]}};
 const encoded=JSON.stringify(surface,null,2)+'\n';
 if(process.argv.includes('--check')) {if(await readFile('agent-surface.json','utf8')!==encoded)throw new Error('Agent surface drift: run pnpm exec tsx scripts/agent-surface.ts');}
 else await writeFile('agent-surface.json',encoded);

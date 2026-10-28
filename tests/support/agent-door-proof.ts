@@ -46,6 +46,18 @@ export async function agentDoorProof() {
     assert.equal(rosterApplied!.status,200,await rosterApplied!.clone().text());
     const mappedTeammate=await people.sponsor({sub:'business-jamie'});assert.equal(mappedTeammate?.id,teammate.id);
     assert.deepEqual(await people.businessMember!(mappedTeammate!),{id:'business-jamie',role:'editor'});
+    const reviewerMail:Array<{text?:string}>=[];
+    const reviewerBindings={...bindings,MAIL_FROM:'auth@example.test'};
+    const reviewerOptions={...ownerOptions,mailSender:{async send(message:{text?:string}){reviewerMail.push(message);return {status:'accepted' as const,provider:'test-mail-edge',providerMessageId:'native-reviewer-mail'};}}};
+    assert.equal((await identityResponse(post('/auth/magic-link',{email:mappedTeammate!.email,returnTo:'/agents'}),reviewerBindings,reviewerOptions))!.status,202);
+    const reviewerLink=reviewerMail.flatMap(mail=>mail.text?.match(/https:\/\/[^\s]+/g)??[]).map(link=>new URL(link)).find(link=>link.pathname==='/auth/confirm');
+    assert.ok(reviewerLink);assert.equal(reviewerLink.origin,origin);
+    const reviewerConfirmed=await identityResponse(post('/auth/confirm',{token:reviewerLink.searchParams.get('token')}),reviewerBindings,reviewerOptions);
+    assert.equal(reviewerConfirmed!.status,303);
+    const reviewerCookie=reviewerConfirmed!.headers.get('set-cookie')!.split(';')[0]!;
+    assert.notEqual(reviewerCookie,cookie,'native reviewer signs in with an independent session');
+    assert.equal((await operatorFromRequest(new Request(origin+'/agents',{headers:{Cookie:reviewerCookie}}),bindings))?.operatorId,teammate.id);
+
 
     const door=orbitAgentDoor(bindings);
     const metadata=await door.handle(new Request(origin+'/.well-known/oauth-protected-resource/mcp'));
@@ -63,11 +75,14 @@ export async function agentDoorProof() {
     const envelope=await policyEnvelope({origin,business:'door-company',seq:0,revision:0,signer:{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation}},autonomousPolicy());
     const adopted=await door.handle(post('/api/rer/agent-policy',{policy:envelope.policy}));
     assert.equal(adopted!.status,200,await adopted!.clone().text());
-    async function businessCall(name:string,args:Record<string,unknown>,overrides:Record<string,unknown>={}) {
+    async function businessCall(name:string,args:Record<string,unknown>,overrides:Record<string,unknown>={},method='tools/call') {
       const bearer=await sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:'business-owner',email:bindings.OWNER_EMAIL,act:{sub:'business-ari',name:'Ari'},client_id:'business-client',business:'door-company',scope:principal.scopes.join(' '),consent:'door-test-consent',jti:crypto.randomUUID(),iat:now,exp:now+300,...overrides});
-      const response=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+bearer,'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','MCP-Method':'tools/call','MCP-Name':name},body:JSON.stringify({jsonrpc:'2.0',id:2,method:'tools/call',params:{name,arguments:args,_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}})}));
+      const response=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+bearer,'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','MCP-Method':method,'MCP-Name':method==='resources/read'?String(args.uri):name},body:JSON.stringify({jsonrpc:'2.0',id:2,method,params:{...(method==='tools/call'?{name,arguments:args}:args),_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}})}));
       return {status:response!.status,body:await response!.json() as any};
     }
+    const unavailableResource=await businessCall('',{uri:'unregistered://missing'},{},'resources/read');
+    assert.equal(unavailableResource.body.error?.data?.code,'tool_not_found','resource refusal retains its JSON-RPC data.code');
+    assert.equal(unavailableResource.body.result,undefined);
     assert.equal((await businessCall('orbit.records.list',{}, {sub:'unmapped-person'})).status,401);
     assert.equal((await businessCall('orbit.records.list',{}, {aud:origin+'/wrong-audience'})).status,401);
     assert.equal((await businessCall('orbit.records.list',{}, {scope:'events:read'})).status,403);
@@ -87,6 +102,25 @@ export async function agentDoorProof() {
     assert.equal(edited.outcome,'done',JSON.stringify(edited));
     const replay=await door.invoke('orbit.records.update',updateArgs,principal);
     assert.deepEqual(replay.result,edited.result,'same native key has one retained outcome');
+    const auditRow=await fixture.db.prepare("SELECT row FROM agent_door_audit WHERE json_extract(row,'$.idempotency_key')=? AND json_extract(row,'$.outcome')='done'").bind(updateArgs.idempotency_key).first<{row:string}>();
+    assert.deepEqual(JSON.parse(auditRow!.row).resource,{kind:'company',id:companyId},'native write audit identifies its actual record');
+    const readWitness=async()=>JSON.stringify((await fixture.db.prepare('SELECT * FROM companies WHERE id=?').bind(companyId).first()));
+    const beforeReplay=await readWitness();
+    let policySeq=0;
+    const adopt=async(policy:ReturnType<typeof autonomousPolicy>,paused=false)=>{
+      const signed=await policyEnvelope({origin,business:'door-company',seq:++policySeq,revision:policySeq,signer:{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation}},policy,{paused});
+      assert.equal((await door.handle(post('/api/rer/agent-policy',{policy:signed.policy})))!.status,200);
+    };
+    await adopt(autonomousPolicy(),true);
+    const pausedReplay=await door.invoke('orbit.records.update',updateArgs,principal);
+    assert.equal(pausedReplay.code,'agents_paused');assert.equal(pausedReplay.result,undefined);
+    const blockedReplayPolicy=autonomousPolicy();blockedReplayPolicy.rules=[{id:'all',class:'*',do:'blocked'}];
+    await adopt(blockedReplayPolicy);
+    const blockedReplay=await door.invoke('orbit.records.update',updateArgs,principal);
+    assert.equal(blockedReplay.code,'policy_blocked');assert.equal(blockedReplay.result,undefined);
+    assert.equal(await readWitness(),beforeReplay,'current replay refusals cannot repeat a native effect');
+    await adopt(autonomousPolicy());
+
     assert.equal((await door.invoke('orbit.records.update',{...updateArgs,idempotency_key:'stale-company-update'},principal)).code,'revision_conflict');
     assert.equal(await fixture.db.prepare('SELECT name FROM companies WHERE id=?').bind(companyId).first('name'),'Brightwork Studio North');
     const timeline=await fixture.db.prepare("SELECT actor_type,payload_json FROM timeline_entries WHERE source='records' AND json_extract(payload_json,'$.preparedBy.agent.id')='ari' ORDER BY recorded_at DESC LIMIT 1").first<{actor_type:string;payload_json:string}>();
@@ -130,7 +164,7 @@ export async function agentDoorProof() {
     const privateReport=await call('orbit.reports.compute',{...privatePeriod,review_hash:privatePreview.reviewHash,idempotency_key:'private-report'});
     await call('orbit.forecasts.read',{opportunity_id:privateOpportunity.id});
     const sensitiveBlocked=autonomousPolicy();sensitiveBlocked.rules.push({id:'protected',class:'sensitive',do:'blocked'});
-    const blockEnvelope=await policyEnvelope({origin,business:'door-company',seq:1,revision:1,signer:{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation}},sensitiveBlocked);
+    const blockEnvelope=await policyEnvelope({origin,business:'door-company',seq:++policySeq,revision:policySeq,signer:{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation}},sensitiveBlocked);
     assert.equal((await door.handle(post('/api/rer/agent-policy',{policy:blockEnvelope.policy})))!.status,200);
     for(const [name,args]of [['orbit.forecasts.read',{opportunity_id:privateOpportunity.id}],['orbit.reports.preview',privatePeriod],['orbit.reports.read',{id:privateReport.id}]] as const) {
       const refused=await door.invoke(name,args,principal);assert.equal(refused.code,'policy_blocked',JSON.stringify(refused));

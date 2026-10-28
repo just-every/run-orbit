@@ -417,6 +417,13 @@
           "standard"
         ],
         "policy": "autonomous"
+      },
+      "target": {
+        "kind": "company",
+        "id": {
+          "$from": "public_company",
+          "pointer": "/id"
+        }
       }
     },
     {
@@ -1359,6 +1366,20 @@
       },
       "initializer": "tests/agent-door/initialize-owner.mjs"
     },
-    "journey": "tests/agent-door/native-journey.mjs"
+    "journey": "tests/agent-door/native-journey.mjs",
+    "replayAdmission": {
+      "prepare": [
+        "public_company",
+        "public_read",
+        "public_update"
+      ]
+    },
+    "reviewers": [
+      {
+        "label": "sales-review",
+        "email": "jamie-review@example.test",
+        "initializer": "tests/agent-door/initialize-reviewer.mjs"
+      }
+    ]
   }
 }

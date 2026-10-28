@@ -11,6 +11,13 @@ export async function fullSeller(bindings:PlatformBindings,ctx:{person:{id:strin
   if(ctx.clientId?.startsWith('orbit-delegation:'))throw new ToolRefusal('insufficient_scope');
   await nativeAuthority(bindings.DB,ctx.person.id);
 }
+
+async function readSignal(bindings:PlatformBindings,id:string) {
+  const signal=await bindings.DB.prepare('SELECT id,source_id,source_event_id,type,subject,occurred_at,received_at FROM signals WHERE id=?').bind(id).first();
+  if(!signal)throw new ToolRefusal('resource_unavailable');
+  const links=(await bindings.DB.prepare('SELECT record_type,record_id FROM signal_links WHERE signal_id=? ORDER BY record_type,record_id').bind(id).all()).results;
+  return {signal,links};
+}
 export function evidenceTools(bindings:PlatformBindings) {
   const read = (area:string,title:string,description:string,clauses:string[],properties:Record<string,object>,run:(args:Record<string,unknown>,ctx:ToolContext)=>Promise<object>,required=Object.keys(properties)) => defineTool({
     name:`orbit.${area}.read`,title,description,clauses,scope:`${area}:read`,readOnly:true,inputSchema:objectSchema(properties as Record<string,Record<string,unknown>>,required),outputSchema,classes:['standard'],untrusted:true,
@@ -18,12 +25,7 @@ export function evidenceTools(bindings:PlatformBindings) {
   });
   return [
     defineTool({name:'orbit.signals.list',title:'Find linked signal evidence',description:'List immutable native signal metadata on a current opportunity. It does not fetch providers or record new observations.',scope:'signals:read',readOnly:true,inputSchema:objectSchema({opportunity_id:string}),outputSchema,classes:['standard'],clauses:['SIGNAL-001'],untrusted:true,classify:async(_args,ctx)=>{await fullSeller(bindings,ctx);return standard();},run:async(args,ctx)=>{await fullSeller(bindings,ctx);return {result:{signals:(await bindings.DB.prepare("SELECT s.id,s.type,s.subject,s.occurred_at,s.received_at FROM signals s JOIN signal_links l ON l.signal_id=s.id WHERE l.record_type='opportunity' AND l.record_id=? ORDER BY s.occurred_at DESC,s.id LIMIT 50").bind(args.opportunity_id).all()).results}};}}),
-    read('signals','Read immutable signal evidence','Read the native signal and explicit record links. A signal is evidence, never approval.',['SIGNAL-001'],{id:string},async args=>{
-      const signal=await bindings.DB.prepare('SELECT id,source_id,source_event_id,type,subject,occurred_at,received_at FROM signals WHERE id=?').bind(args.id).first();
-      if(!signal)throw new ToolRefusal('resource_unavailable');
-      const links=(await bindings.DB.prepare('SELECT record_type,record_id FROM signal_links WHERE signal_id=? ORDER BY record_type,record_id').bind(args.id).all()).results;
-      return {signal,links};
-    }),
+    read('signals','Read immutable signal evidence','Read the native signal and explicit record links. A signal is evidence, never approval.',['SIGNAL-001'],{id:string},args=>readSignal(bindings,String(args.id))),
     read('briefs','Prepare the seller’s day','Read the native brief with cited current records. Forecasts, promises and delivery remain independent facts.',['BRIEF-001','BRIEF-002'],{},async(_args,ctx)=>({brief:await buildBrief(bindings.DB,{operatorId:ctx.person.id})})),
     read('meetings','Read a cited meeting plan','Read the real meeting plan, unresolved attendees and cited evidence without creating a draft or sending.',['BRIEF-004'],{id:string},async(args,ctx)=>({plan:await buildMeetingPlan(bindings.DB,String(args.id),{operatorId:ctx.person.id})})),
     read('risks','Read opportunity risks','Read native findings and cited evidence; no generated causal outcome is implied.',['AGENT-001'],{id:string},async args=>({risks:await dealRisks(bindings.DB,String(args.id))})),
@@ -40,19 +42,17 @@ export function evidenceTools(bindings:PlatformBindings) {
   ];
 }
 export function evidenceResources(bindings:PlatformBindings):ResourceDefinition[] {
-  const tools=evidenceTools(bindings);
   return [
     {uriTemplate:'orbit://signals/{id}',name:'Immutable signal',tool:'orbit.signals.read',pattern:/^orbit:\/\/signals\/([^/?#]+)$/},
     {uriTemplate:'orbit://meetings/{id}/plan',name:'Meeting plan',tool:'orbit.meetings.read',pattern:/^orbit:\/\/meetings\/([^/?#]+)\/plan$/},
     {uriTemplate:'orbit://opportunities/{id}/risks',name:'Opportunity risks',tool:'orbit.risks.read',pattern:/^orbit:\/\/opportunities\/([^/?#]+)\/risks$/},
-  ].map(({uriTemplate,name,tool,pattern})=>({uriTemplate,name,scope:tools.find(item=>item.name===tool)!.scope,classes:['standard'],classify:standard,
+  ].map(({uriTemplate,name,tool,pattern})=>({uriTemplate,name,scope:tool.split('.')[1]+':read',classes:['standard'],classify:standard,
     async read(uri,ctx) {
       const id=pattern.exec(uri)?.[1];if(!id)return null;
       try {
         await fullSeller(bindings,ctx);
-        const native=tools.find(item=>item.name===tool)!;
-        const result=await native.run({id},{...ctx,seed:'orbit',origin:bindings.AUTH_ORIGIN!,now:Date.now,door:'mcp',actor:{agent:ctx.agent,for:{id:ctx.person.id,name:ctx.person.name},label:`${ctx.agent.name} for ${ctx.person.name}`},approvers:[],emit(){}});
-        return {json:result.result,untrusted:true};
+        const result=tool==='orbit.signals.read'?await readSignal(bindings,id):tool==='orbit.meetings.read'?{plan:await buildMeetingPlan(bindings.DB,id,{operatorId:ctx.person.id})}:{risks:await dealRisks(bindings.DB,id)};
+        return {json:result,untrusted:true};
       } catch {return null;}
     }}));
 }

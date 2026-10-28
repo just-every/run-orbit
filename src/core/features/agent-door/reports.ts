@@ -1,4 +1,4 @@
-import {defineTool,ToolRefusal,type ToolContext,type ResourceDefinition} from '../../../base/modules/agent-door/index.ts';
+import {defineTool,ToolRefusal,type ToolContext,type ResourceContext,type ResourceDefinition} from '../../../base/modules/agent-door/index.ts';
 import {AnalyticsMetrics,metricDefinition} from '../analytics/metrics';
 import {NativeAnalyticsSources} from '../analytics/native-sources';
 import {OperationsStore} from '../operations/store';
@@ -12,8 +12,8 @@ import {nativeRecords,recordRisk,projectedValue,objectSchema,outputSchema,standa
 import {fullSeller} from './evidence';
 import {agentDatabase} from './native-access';
 
-async function nativeReports(bindings:PlatformBindings,ctx:ToolContext) {
-  await fullSeller(bindings,ctx);const {access,actor}=await nativeRecords(bindings,ctx),db=agentDatabase(bindings.DB,access,actor,ctx);
+async function nativeReports(bindings:PlatformBindings,ctx:ToolContext|ResourceContext) {
+  await fullSeller(bindings,ctx);const {access,actor}=await nativeRecords(bindings,ctx),db='actor' in ctx?agentDatabase(bindings.DB,access,actor,ctx):bindings.DB;
   return {actor,metrics:new AnalyticsMetrics(new OperationsStore(db,access,domainEventStatements),new NativeAnalyticsSources(access)),forecast:new ForecastRepository(db,access)};
 }
 /** The classification uses the exact native lineage/returned fields, never
@@ -31,7 +31,7 @@ async function reportRisk(bindings:PlatformBindings,value:any,workspaceId:string
   const rows=(await bindings.DB.prepare(`SELECT g.kind,g.id AS record_id,g.fields_json FROM graph_records g WHERE g.workspace_id=? AND EXISTS(SELECT 1 FROM json_each(?) wanted WHERE json_extract(wanted.value,'$.type')=g.kind AND json_extract(wanted.value,'$.id')=g.id)`).bind(workspaceId,JSON.stringify([...requested.values()])).all<{kind:string;record_id:string;fields_json:string}>()).results;
   return recordRisk(bindings.DB,rows.map(row=>{const source=JSON.parse(row.fields_json),fields=requested.get(row.kind+':'+row.record_id)!.fields;return {ref:{workspaceId},kind:row.kind,fields:Object.fromEntries([...fields].map(field=>[field,projectedValue(source,field)]))};}));
 }
-async function readForecast(bindings:PlatformBindings,args:Record<string,unknown>,ctx:ToolContext) {
+async function readForecast(bindings:PlatformBindings,args:Record<string,unknown>,ctx:ToolContext|ResourceContext) {
   const {actor,forecast}=await nativeReports(bindings,ctx);
   if(args.id&&args.id!=='current') {
     if(args.opportunity_id)throw new ToolRefusal('invalid_arguments');
@@ -81,14 +81,14 @@ export function reportResources(bindings:PlatformBindings):ResourceDefinition[] 
     {uriTemplate:'orbit://reports/{id}/definition/{version}',name:'Native report definition',scope:'reports:read',tool:'orbit.reports.read'},
     {uriTemplate:'orbit://forecasts/{id}',name:'Immutable forecast snapshot',scope:'forecasts:read',tool:'orbit.forecasts.read'},
   ].map(({uriTemplate,name,scope,tool})=>({uriTemplate,name,scope,classes:uriTemplate.includes('/definition/')?['standard']:['standard','sensitive'],classify:async(record,ctx)=>{if(uriTemplate.includes('/definition/'))return standard();const {actor}=await nativeRecords(bindings,ctx);return tool==='orbit.forecasts.read'?forecastRisk(bindings,record.json,actor.workspaceId):reportRisk(bindings,record.json,actor.workspaceId);},
-    async read(uri,ctx) {try {await fullSeller(bindings,ctx);const id=uri.split('/').at(-1)!;const definition=reportTools(bindings).find(item=>item.name===tool)!;
-      const principal={...ctx,seed:'orbit',origin:bindings.AUTH_ORIGIN!,now:Date.now,door:'mcp' as const,actor:{agent:ctx.agent,for:{id:ctx.person.id,name:ctx.person.name},label:`${ctx.agent.name} for ${ctx.person.name}`},approvers:[],emit(){}};
+    async read(uri,ctx) {try {await fullSeller(bindings,ctx);const id=uri.split('/').at(-1)!;
       const definitionUri=/^orbit:\/\/reports\/([^/?#]+)\/definition\/(\d+)$/.exec(uri);
       if(definitionUri) {
-        const {actor,metrics}=await nativeReports(bindings,principal);await metrics.permit(actor,'analytics.read',definitionUri[1]);await metrics.sales.shares.assertVisible(actor,definitionUri[1]!);
+        const {actor,metrics}=await nativeReports(bindings,ctx);await metrics.permit(actor,'analytics.read',definitionUri[1]);await metrics.sales.shares.assertVisible(actor,definitionUri[1]!);
         const row=await bindings.DB.prepare('SELECT body_json FROM analytics_definitions WHERE workspace_id=? AND id=? AND version=?').bind(actor.workspaceId,definitionUri[1],Number(definitionUri[2])).first<{body_json:string}>();
         await metrics.checkSources(actor,[]);return row?{json:JSON.parse(row.body_json),untrusted:true}:null;
       }
-      const result=await definition.run({id},principal);
-      return {json:result.result,untrusted:true};}catch{return null;}}}));
+      const {actor,metrics}=await nativeReports(bindings,ctx);
+      const result=tool==='orbit.forecasts.read'?await readForecast(bindings,{id},ctx):await metrics.read(actor,id);
+      return {json:result,untrusted:true};}catch{return null;}}}));
 }

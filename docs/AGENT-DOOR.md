@@ -95,7 +95,10 @@ metadata, not source signing keys or provider credentials. Outside text is
 untrusted and cannot change policy or establish approval.
 
 Native CRM and handoff changes retain agent-for-person attribution in their
-activity. Forecast overrides retain agent preparer and actual approvers
+activity. Record-update audit rows identify the native record as `{kind,id}`.
+Replaying a successful mutation rechecks current sponsor authority, scopes,
+Pause and company policy before returning its retained result. Handoff source
+and audience revisions still fence the native first write atomically. Forecast overrides retain agent preparer and actual approvers
 separately. Native person and agent record changes share stable activity IDs in
 the retained event stream, whose readers recheck current access. Native activity
 remains in Records archives; installation-bound policy, approvals, door audit,

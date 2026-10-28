@@ -21,7 +21,7 @@ export class AgentAccess extends AccessService {
     const scope = await this.originalWorkspace();
     const row = await this.db.prepare("SELECT w.policy_epoch FROM access_workspaces w JOIN access_memberships m ON m.workspace_id=w.id WHERE w.id=? AND m.operator_id=? AND m.status='active'").bind(scope.workspaceId,person.id).first<{policy_epoch:number}>();
     if (!row) deny();
-    const c: ActorContext = {...scope,requestId:crypto.randomUUID(),policyEpoch:row.policy_epoch,agentApprovers:'approvers' in this.who?this.who.approvers:[],principal:{kind:'operator',operatorId:person.id,sessionId:'',agent:{id:this.who.agent.id,name:this.who.agent.name,label:`${this.who.agent.name} for ${person.name}`,sponsorName:person.name}}};
+    const c: ActorContext = {...scope,requestId:crypto.randomUUID(),policyEpoch:row.policy_epoch,agentApprovers:'approvers' in this.who?this.who.approvers.map(person=>({...person})):[],principal:{kind:'operator',operatorId:person.id,sessionId:'',agent:{id:this.who.agent.id,name:this.who.agent.name,label:`${this.who.agent.name} for ${person.name}`,sponsorName:person.name}}};
     this.contexts.add(c);
     if(person.role!=='member')this.addDependencyFences(c,fullOperatorFence(c),'native-class');
     if(this.who.clientId?.startsWith('orbit-delegation:')) {
