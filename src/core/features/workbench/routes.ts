@@ -21,7 +21,8 @@ import { OutreachRepository } from './outreach-repository';
 import { weights } from './policies';
 import {logUnexpected} from '../../platform/unexpected-error';
 const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
-const createSchema=z.object({title:z.string().trim().min(1).max(200),companyName:z.string().trim().min(1).max(200),contactName:z.string().trim().min(1).max(200),email:z.string().trim().email(),stageId:id,valueCents:z.number().int().min(0).max(100000000000)});
+const optionalText=z.preprocess(value=>typeof value==='string'&&!value.trim()?undefined:value,z.string().trim().min(1).max(200).optional());
+const createSchema=z.object({title:z.string().trim().min(1).max(200),companyId:id.optional(),companyName:optionalText,contactIds:z.array(id).max(1000).refine(values=>new Set(values).size===values.length).optional(),primaryContactId:id.optional(),contactName:optionalText,email:z.preprocess(value=>typeof value==='string'&&!value.trim()?undefined:value,z.string().trim().email().optional()),stageId:id,valueCents:z.number().int().min(0).max(100000000000)}).refine(input=>!!input.companyId!==!!input.companyName,'Choose an existing company or enter a new company.').refine(input=>!!input.contactName===!!input.email&&!!(input.contactIds?.length||input.email),'Choose existing contacts or enter a new contact.').refine(input=>!input.primaryContactId||input.contactIds?.includes(input.primaryContactId),'The primary contact must be selected.');
 export function createWorkbenchRoutes(database: D1Database, mail?: OutboundMail, aiConfigured=false, hosted=false, mailEvents:DeliveryOutcomeKeys={}, origin='', mailSettings?:CustomerMailStatus) {
   const rootDatabase=database;
   const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(), repository=new WorkbenchRepository(database), outreach=new OutreachRepository(database);

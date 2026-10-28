@@ -64,11 +64,15 @@ export async function nativeLongRecordLayoutJourney(page) {
 
     await editRecordThroughKeyboard(page, 'opportunity', target.title, 'Opportunity title', editedOpportunityTitle, async () => {
       await page.getByRole('combobox', { name: 'Linked company', exact: true }).selectOption(company.id);
-      const contactOption = page.locator('.record-editor fieldset label').filter({ hasText: editedContactName }).locator('input[type="checkbox"]');
-      await contactOption.check();
+      await page.getByRole('searchbox', { name: 'Find contacts', exact: true }).fill(editedContactName);
+      await page.getByRole('list', { name: 'Contact search results', exact: true }).getByRole('button').filter({ hasText: editedContactName }).click();
       await page.getByRole('combobox', { name: 'Primary recipient', exact: true }).selectOption(contact.id);
     });
     await expectRecordList(page, 'opportunity', editedOpportunityTitle, 'opportunity', diagnostics);
+    const savedOpportunity = await page.request.get(`/api/v1/records/opportunity/${target.id}`);
+    const savedDetail = await savedOpportunity.json();
+    expect(savedDetail.contacts.some(item => item.id === contact.id && item.is_primary === 1)).toBe(true);
+    expect(savedDetail.record.company_id).toBe(company.id);
 
     for (const viewport of viewports) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
@@ -149,6 +153,13 @@ async function expectRecordList(page, kind, title, evidenceName, diagnostics) {
     await awaitRecordReload(page, kind, title, () => page.getByRole('searchbox', { name: 'Search records and timeline', exact: true }).fill(title));
     const heading = page.getByRole('heading', { name: title, exact: true });
     await expect(heading).toBeVisible();
+    if (kind !== 'opportunity') {
+      const selection = page.getByRole('checkbox', { name: `Select ${title}`, exact: true });
+      await selection.check();
+      await expect(page.getByRole('button', { name: 'Review assignment', exact: true })).toBeVisible();
+      await selection.uncheck();
+      await expect(page.getByRole('button', { name: 'Review assignment', exact: true })).toHaveCount(0);
+    }
     const metrics = await assertReadablePage(page, viewport, heading, title);
     diagnostics.viewportChecks.push({ name: viewport.name, surface: evidenceName, ...metrics });
     await page.screenshot({ path: `${evidence}/${evidenceName}-${viewport.name}.png`, fullPage: true });

@@ -10,6 +10,7 @@ import {movementHistory,movementPayload} from '../pipelines/movement';
 import {contactPrimaryCompanyActivity} from '../relationships';
 import { suppressionContextFence, suppressionHashes, suppressionPredicate, clearSuppressionStatements, suppressionStatements, contactSuppressionStatements } from './suppression';
 import { opportunityAssignmentPolicy } from '../../../ext/records';
+import { eligibleOpportunityOwners } from '../ownership/writes';
 import { contactEmailKey, companyDomainKey } from './identity';
 import { RecordSeedRepository } from './seed-repository';
 import { evaluationStatements } from '../workbench/evaluation-repository';
@@ -71,7 +72,7 @@ export class RecordsRepository extends RecordSeedRepository {
   if(keyColumn){data[keyColumn]=key;if(key){const duplicate=await this.db.prepare(`SELECT id FROM ${tables[kind]} WHERE ${keyColumn}=? AND id<>? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type=? AND identity_key=? AND survivor_id<>?`).bind(key,id,kind,key,id).first<{id:string}>();if(duplicate)throw new RecordError(409,'Identity already belongs to another record.',duplicate.id);}}
   const contacts:string[]=data.contact_ids??[];delete data.contact_ids;const primary=data.primary_contact_id;delete data.primary_contact_id;
   if(kind==='opportunity'){
-   if(!before&&data.owner_id===undefined)data.owner_id=opportunityAssignmentPolicy.ownerForNewOpportunity({actorId:actor});
+   if(!before&&data.owner_id===undefined)data.owner_id=opportunityAssignmentPolicy.ownerForNewOpportunity({actorId:actor,eligibleOperatorIds:await eligibleOpportunityOwners(this.db)});
    const current=await stagePolicy(this.db,data.stage_id);policies.push(current);
    if(before&&before.stage_id!==data.stage_id){
     const previous=await stagePolicy(this.db,before.stage_id);policies.push(previous);
@@ -147,7 +148,7 @@ export class RecordsRepository extends RecordSeedRepository {
   if(kind==='opportunity'&&filters.owner_id==='unassigned'){clauses.push('owner_id IS NULL');delete filters.owner_id;}
   if(kind==='opportunity')for(const field of ['lifecycle','stage_id','owner_id','band','queue_state'])if(filters[field]){clauses.push(`${field}=?`);values.push(filters[field]);}
   if(kind==='opportunity'&&filters.pipeline_id){clauses.push('stage_id IN(SELECT stage_id FROM pipeline_stage_rules WHERE pipeline_id=?)');values.push(filters.pipeline_id);}
-  const selection=kind==='opportunity'?'*,(SELECT pipeline_id FROM pipeline_stage_rules WHERE stage_id=opportunities.stage_id) AS pipeline_id':'*';
+  const selection=kind==='opportunity'?'*,(SELECT pipeline_id FROM pipeline_stage_rules WHERE stage_id=opportunities.stage_id) AS pipeline_id,(SELECT name FROM companies WHERE id=opportunities.company_id) AS company_name,(SELECT name FROM pipeline_stages WHERE id=opportunities.stage_id) AS stage_name':kind==='contact'?'*,(SELECT name FROM companies WHERE id=contacts.company_id) AS company_name':'*';
   const records=(await this.db.prepare(`SELECT ${selection} FROM ${tables[kind]} WHERE ${clauses.join(' AND ')} ORDER BY updated_at DESC,id LIMIT 50`).bind(...values).all()).results;
   if(kind!=='opportunity'&&options.ownership!==false&&!legacyActorContext(this.db)){const owners=await ownershipForRecords(this.db,kind,records.map(record=>String(record.id)));return records.map(record=>({...record,ownership:owners.get(String(record.id))??{ownerId:null,ownerName:null,revision:0}}));}
   return records;

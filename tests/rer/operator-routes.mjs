@@ -3,7 +3,7 @@ import {expectProvenance} from './operator-provenance.mjs';
 export function operatorRoutes(f){return [
  {name:'now',path:'/app',ready:page=>page.getByTestId('now-queue').waitFor()},
  {name:'imports',path:'/app/imports',ready:page=>page.getByRole('heading',{name:'Move in your customer records',exact:true}).waitFor()},
- {name:'records',path:'/app/records',ready:page=>page.getByRole('button',{name:'Create from existing records'}).waitFor()},
+ {name:'records',path:'/app/records',ready:page=>page.locator('.operator-queue-card').first().waitFor()},
  {name:'contacts',path:'/app/records?kind=contact',ready:page=>page.getByRole('button',{name:'Create contact',exact:true}).waitFor()},
  {name:'companies',path:'/app/records?kind=company',ready:page=>page.getByRole('button',{name:'Create company',exact:true}).waitFor()},
  {name:'new',path:'/app/new',ready:page=>expect(page.getByRole('button',{name:'Save opportunity'})).toBeEnabled()},
@@ -11,7 +11,7 @@ export function operatorRoutes(f){return [
  {name:'company',path:`/app/records?kind=company&record=${f.companyId}`,ready:page=>page.getByRole('heading',{name:'Record details'}).waitFor()},
  {name:'contact-create',path:'/app/records?kind=contact',ready:async page=>{await page.getByRole('button',{name:'Create contact',exact:true}).click();await page.getByLabel('Full name',{exact:true}).waitFor();}},
  {name:'company-create',path:'/app/records?kind=company',ready:async page=>{await page.getByRole('button',{name:'Create company',exact:true}).click();await page.getByLabel('Company name',{exact:true}).waitFor();}},
- {name:'opportunity-create-existing',path:'/app/records',ready:async page=>{await page.getByRole('button',{name:'Create from existing records',exact:true}).click();await page.getByLabel('Opportunity title',{exact:true}).waitFor();}},
+ {name:'opportunity-create-existing',path:'/app/records',ready:async page=>{await page.getByRole('link',{name:'Create opportunity',exact:true}).click();await page.getByLabel('Opportunity title',{exact:true}).waitFor();await page.getByLabel('Company name',{exact:true}).fill('Operator');await page.getByRole('list',{name:'Company search results'}).getByRole('button').first().waitFor();}},
  {name:'record-edit',path:`/app/records?kind=contact&record=${f.contactId}`,ready:async page=>{await page.getByRole('button',{name:'Edit details',exact:true}).click();await page.getByLabel('Full name',{exact:true}).waitFor();await expectProvenance(page,f.provenance);}},
  {name:'record-tools',path:'/app/records?kind=contact',ready:async page=>{await page.getByRole('button',{name:'Create contact',exact:true}).waitFor();await page.getByText('Import, duplicate review and data export',{exact:true}).click();}},
  {name:'opportunity',path:`/app/opportunities/${f.opportunityId}`,ready:page=>page.getByTestId('next-action').waitFor()},
