@@ -9219,7 +9219,7 @@
       "executable": false
     },
     "tests/rer/journey.test.mjs": {
-      "sha256": "dfc1e987f653c2378f0590c99f9058845bed024b3116c36f5d2c64c5f3f72273",
+      "sha256": "f5f9fd0211489432a69133c692e8e2ed8bccf19113e6f0bcf00e69d29f85c3f3",
       "executable": false
     },
     "tests/rer/managed-mail.mjs": {
@@ -9251,7 +9251,7 @@
       "executable": false
     },
     "tests/rer/scheduled-outreach.mjs": {
-      "sha256": "9c78aadc79748298a4d8ded464ab11f4cc01c8188dd826911648420a16ff9c77",
+      "sha256": "81975d12b7c439ef55dfb259fd0366c717d5e0b4bd391ea1badd218537c89053",
       "executable": false
     },
     "tests/rer/sent-message-proof.mjs": {
