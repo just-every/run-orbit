@@ -13,8 +13,6 @@ import {portableReports} from './portability-sanity-reports';
 import {createApp,TEST_SESSION_SECRET} from '../../tests/support/app';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
 import {connectSource} from '../../src/core/features/capture/sources';
-import {OutreachRepository} from '../../src/core/features/workbench/outreach-repository';
-import {ApprovalRepository} from '../../src/core/features/outreach/approval-repository';
 import {archiveHash} from '../../src/core/features/records/archive-schema';
 import {readArchiveFile} from '../../src/core/shared/archive-file';
 import {fixture,signIn} from './fixture';
@@ -79,9 +77,20 @@ export async function populatedPortabilityJourney(){
   const retained=(await target.db.prepare("SELECT id FROM audit_entries WHERE action='capture.erased_mailbox'").all<{id:string}>()).results;assert.ok(retained.length);
   cookie=(await signIn(source.db,'seller@orbit.test')).cookie;
   const removedSource=await removeSourceWithEvidence(source.db,sourceClient(source.db,cookie,source.ana),source.ana);
-  // Population edits intentionally stale earlier work; retain one newly reviewed dispatch approval to prove that both doors strip it.
-  const freshDraft=await new OutreachRepository(source.db).createDraft(source.opportunity,{contactId:source.bob,subject:'Reviewed immediately before export',body:'Requires receiver review'},source.operator);
-  assert.equal((await new ApprovalRepository(source.db).approve(freshDraft.id,1,source.operator,{scheduledAt:new Date(Date.now()+2*86400000).toISOString()})).state,'scheduled');
+  // The captured permanent bounce keeps Bob stopped. A separate permissioned control supplies the approval that both archive doors must strip.
+  const sourceDoor=source.request.bind(source),bounced=await value(sourceDoor,`/api/v1/records/contact/${source.bob}`);
+  assert.equal(bounced.record.contactability,'do_not_contact','Captured bounce safety remains in force');
+  const control=await value(sourceDoor,'/api/v1/records/contact',{name:'Permissioned portability control',email:'synthetic-orbit-portability-control@example.test',contactability:'contactable',timezone:'UTC'});
+  assert.equal((await value(sourceDoor,`/api/v1/records/contact/${control.id}`)).record.contactability,'contactable');
+  await value(sourceDoor,`/api/v1/records/contact/${control.id}/entries`,{kind:'note',text:'This synthetic control permits the scheduled portability follow-up.',occurredAt:new Date().toISOString()});
+  const existing=await value(sourceDoor,`/api/v1/records/opportunity/${source.opportunity}`),controlDeal=await value(sourceDoor,'/api/v1/records/opportunity',{title:'Scheduled portability control',stage_id:existing.record.stage_id,owner_id:source.operator,value_cents:0,contact_ids:[control.id],primary_contact_id:control.id});
+  const mailApp=createApp({database:source.db,assets:{fetch:async()=>new Response('')},outboundMail:{send:async()=>{throw Error('A scheduled portability control must not be dispatched before restore');}}});
+  const mailDoor:Door=(path,init={})=>mailApp.request('https://orbit.test'+path,{...init,headers:{Cookie:cookie,Origin:'https://orbit.test',...init.headers}});
+  const freshDraft=await value(mailDoor,`/api/v1/workbench/opportunities/${controlDeal.id}/drafts`,{contactId:control.id,subject:'Reviewed immediately before export',body:'Requires receiver review'});
+  const rendered=await value(mailDoor,`/api/v1/library/drafts/${freshDraft.id}/render`);
+  await value(mailDoor,`/api/v1/library/drafts/${freshDraft.id}/render`,{revision:1,reviewHash:rendered.reviewHash});
+  const scheduledAt=new Date(Date.now()+2*86400000).toISOString(),schedule=await value(mailDoor,`/api/v1/workbench/drafts/${freshDraft.id}/approval-preview?${new URLSearchParams({scheduledAt})}`);
+  assert.equal((await value(mailDoor,`/api/v1/workbench/drafts/${freshDraft.id}/approve`,{revision:1,scheduledAt,scheduledAtConfirmation:schedule.scheduledAt})).state,'scheduled');
   const reportTables=(await source.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND (name GLOB 'forecast_*' OR name GLOB 'sales_dashboard*') AND name<>'forecast_source_clock'").all<{name:string}>()).results.map(row=>row.name),reportRows=new Map<string,Record<string,unknown>[]>();
   for(const name of reportTables)reportRows.set(name,(await source.db.prepare(`SELECT * FROM ${name}`).all<Record<string,unknown>>()).results);
   const stable=(rows:Record<string,unknown>[])=>rows.map(row=>JSON.stringify(row)).sort();
