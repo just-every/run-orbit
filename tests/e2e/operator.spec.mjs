@@ -88,7 +88,7 @@ test('a seller prioritises the queue, opens a new-account notification and revie
   // link, concurrent edits and changed evidence remain part of the same review.
   await page.goto(`/app/drafts/${issued.draft.id}`);
   await reviewSavedDraft({page,browser,opportunityId:issued.draft.opportunityId});
-  await inspectAssistance(page,opportunityId);
+  await inspectAssistance(page,issued.draft.opportunityId);
   await page.goto('/app/sources');
   await expect(page.getByRole('heading',{name:'Connected sources'})).toBeVisible();
   await expect(page.getByRole('heading',{name:'Replies needing a thread'})).toBeVisible();

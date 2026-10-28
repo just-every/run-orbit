@@ -3655,7 +3655,7 @@
       "executable": false
     },
     "playwright.config.mjs": {
-      "sha256": "d988cc8668e13a9b1a8cdb78b8d8a51cf1013e3f6d49cc60ce9a0cbdf37a9e7d",
+      "sha256": "bbeda171cde2ca186c595a0e7a1df27a6ea0c5dd5dd289167463fe22d60fa7ac",
       "executable": false
     },
     "pnpm-lock.yaml": {
@@ -8791,15 +8791,15 @@
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
-      "sha256": "bf9409734f852a8ed4bcf7eec89e822b3ae957cbe2065b8a906b789c5403fa18",
+      "sha256": "19fd1d7d48099f60bdf1df4d3bb4786b83c056ab7f843fd1a190af36c50632ea",
       "executable": false
     },
     "tests/e2e/phone-dashboard.mjs": {
-      "sha256": "63afc601cb068f132200e8a25c2b968520aa6e5a662aabee5a3d822b1ab8e6da",
+      "sha256": "525cb753f8ebb5ac7a70de8d360ca20b5efab2d412f097857b7a61a6cb812af4",
       "executable": false
     },
     "tests/e2e/sales-assistance.mjs": {
-      "sha256": "f66def168ed9692474a63b57d568521e8790fbdcff56684b183fe758cc697c6b",
+      "sha256": "73a8631e15acafe4adabaa2b163843a8ca3bb3863ea5ec5038c56e0c0deb9a2c",
       "executable": false
     },
     "tests/e2e/sales-queue.mjs": {
