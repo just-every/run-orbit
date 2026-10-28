@@ -3695,7 +3695,7 @@
       "executable": false
     },
     "scripts/browser-server.mjs": {
-      "sha256": "fe771108effc127ea03e0bb4b15964b354904740db58ec2c1863293a411a34e7",
+      "sha256": "40820d3a97505fa793818167d1fb65719420dcd85a2de8d9f2e476e79af0dece",
       "executable": false
     },
     "scripts/build-delivery-artifact.mjs": {
@@ -3983,7 +3983,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "db2c3f1a730b5d4d393d82905e55a9c76e42a71c17742617686d2ed30d1973cd",
+      "sha256": "78ec25f4ac2193a75e670afa1c7d3f35fc47e8e33801581f81c5a0f5ee8354ee",
       "executable": false
     },
     "scripts/verification-reuse.sh": {
@@ -3999,7 +3999,7 @@
       "executable": false
     },
     "scripts/verify.mjs": {
-      "sha256": "19e67168ad9b6701b85daed89502aaf50d5f081fc2dff91307e9f82d1f9d10a2",
+      "sha256": "ce76d2b30aa15dcd1b7764d92f5fc9f474b4de6fc76393fb2f9999b626752f43",
       "executable": false
     },
     "SEED-COMMAND-CONTRACT.md": {

@@ -10,10 +10,12 @@ if(process.argv.slice(2).some(arg=>arg!=='--release'))throw Error('Usage: node s
 resetVerification();
 let passed=true;
 const started=Date.now();
-for(const name of Object.keys(verificationPlan({journeys:true})))if(!runShard(name,{journeys:true})){
- passed=false;
- // All journey groups are independent, but none can run without the build.
- if(name==='source')break;
+for(const name of Object.keys(verificationPlan({journeys:true}))){
+ if(!runShard(name,{journeys:true})){
+  passed=false;
+  // All journey groups are independent, but none can run without the build.
+  if(name==='source')break;
+ }else if(name==='source')process.env.ORBIT_VERIFY_PREBUILT='1';
 }
 let capacity;
 if(passed&&release){

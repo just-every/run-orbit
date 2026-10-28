@@ -52,9 +52,8 @@ export function verificationPlan({journeys = false} = {}) {
     const browser = bin.files.filter(file => file.startsWith('tests/e2e/'));
     const archive = bin.files.filter(file => file.startsWith('tests/archive/'));
     const stages = [];
-    // Retained native tests use isolated D1 fixtures. Only the Playwright and
-    // launch-runtime journeys share the seeded emitted-worker sample state.
-    if (bin.files.some(file => /tests\/(?:e2e|archive|launch-runtime)\//.test(file))) stages.push(gate('exec', 'tsx', 'tests/support/prepare-state.ts'));
+    // Native journeys own their D1 fixtures. Playwright servers prepare their
+    // own sample or empty state when they start against the shared app build.
     if (node.length) stages.push(nodeTests(node, `verification/${name}-results.jsonl`));
     if (browser.length) stages.push(playwright(undefined, browser));
     if (archive.length) stages.push(playwright('tests/archive/playwright.config.mjs', archive));
