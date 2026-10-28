@@ -4,12 +4,12 @@ import {join} from 'node:path';
 
 let directory;
 
-// Workers inherit the original OS temporary root, not a parent's browser
-// directory. Keep each process's directory short enough for Chromium sockets.
+// POSIX sockets have a small pathname limit. Runner-owned TMPDIR paths can
+// already fill it before Chromium or the fixture broker adds its socket name.
+// Give each process a private, short directory and remove only that directory.
 export function isolateBrowserTemp() {
   if (!directory) {
-    const root = process.env.ORBIT_BROWSER_TEMP_ROOT ?? tmpdir();
-    process.env.ORBIT_BROWSER_TEMP_ROOT = root;
+    const root = process.platform === 'win32' ? tmpdir() : '/tmp';
     directory = mkdtempSync(join(root, 'ob-'));
     const ownedDirectory = directory;
     process.once('exit', () => rmSync(ownedDirectory, {recursive: true, force: true}));
