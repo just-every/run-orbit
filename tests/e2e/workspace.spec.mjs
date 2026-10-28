@@ -2,7 +2,7 @@ import {mkdir} from 'node:fs/promises';
 import {test,expect} from '@playwright/test';
 import {authenticateOperator} from './operator-session.mjs';
 import {baselineJourney1,baselineJourney2,baselineJourney3,baselineJourney4,baselineJourney5} from './baseline-journey.mjs';
-import {operatorJourney1,operatorJourney2,operatorJourney3,operatorJourney4,operatorJourney5,operatorJourney6} from './operator-journey.mjs';
+import {operatorJourney1,operatorJourney2,operatorJourney3,operatorJourney4,operatorJourney5,operatorJourney6,watchFailures} from './operator-journey.mjs';
 import {stale_reviewJourney1,stale_reviewJourney2} from './stale-review-journey.mjs';
 import {recordsJourney1,recordsJourney3} from './records-journey.mjs';
 import {workbenchJourney1} from './workbench-journey.mjs';
@@ -48,13 +48,23 @@ test('an operator follows scored evidence into an opportunity and saves reviewed
 test('an operator imports customer records, reviews captured changes and follows their notifications',async({page,context,browser,request},info)=>{
  test.setTimeout(300_000);
  const input={page,context,browser,request};await authenticateOperator(context);
+ let failures=watchFailures(page);
  await stale_reviewJourney2(input,info);
  await recordsJourney1(input,info);
  await recordsJourney3(input,info);
  await captureJourney1(input,info);
+ // The provider fixture deliberately stops the Worker while it owns D1.
+ // Finish checking the live page, then close its notification poller before that outage.
+ expect(failures).toEqual([]);
+ await input.page.close();
+ input.page=await context.newPage();
+ failures=watchFailures(input.page);
+ // The context keeps its pre-restart synthetic cookie; this step must use the
+ // persisted native session rather than hiding lost authority behind a new sign-in.
  await captureJourney2(input,info);
  await importsJourney1(input,info);
  await zz_notificationsJourney1(input,info);
  await baselineJourney5(input,info);
- await page.goto('/app/records');await mkdir('verification/ui',{recursive:true});await page.screenshot({path:'verification/ui/workspace-1440.png',fullPage:true});
+ await input.page.goto('/app/records');await mkdir('verification/ui',{recursive:true});await input.page.screenshot({path:'verification/ui/workspace-1440.png',fullPage:true});
+ expect(failures).toEqual([]);
 });

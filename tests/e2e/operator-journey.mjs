@@ -2,7 +2,7 @@ import {expect} from "@playwright/test";
 
 import { authenticateOperator } from "./operator-session.mjs";
 
-function watchFailures(page, expectedConsoleErrors = []) {
+export function watchFailures(page, expectedConsoleErrors = []) {
   const failures = [];
   page.on("console", (message) => {
     if (message.type() === "error" && !expectedConsoleErrors.some((expected) => message.text().includes(expected))) {
@@ -134,7 +134,8 @@ export const operatorJourney6 = async ({ browser, page }) => {
     const draftHref = `/app/drafts/${issued.draft.id}`;
 
     const secondContext = await browser.newContext({viewport:{width:1440,height:900},baseURL:`http://127.0.0.1:${process.env.ORBIT_BROWSER_PORT ?? 8722}`});
-    await authenticateOperator(secondContext);
+    try {
+    await authenticateOperator(secondContext, issued);
     const staleEditor = await secondContext.newPage();
     const staleFailures = watchFailures(staleEditor, ["the server responded with a status of 409"]);
     await staleEditor.goto(draftHref, { waitUntil: "networkidle" });
@@ -164,6 +165,7 @@ export const operatorJourney6 = async ({ browser, page }) => {
     const newPageFailures = watchFailures(newPage);
     await newPage.goto(draftHref, { waitUntil: "networkidle" });
     await expect(newPage.getByTestId("draft-body")).toHaveValue(savedBody);
+    expect(newPageFailures).toEqual([]);
     await newPage.close();
 
     await staleEditor.getByTestId("draft-body").fill(`Conflicting operator edit ${Date.now()}.`);
@@ -173,7 +175,8 @@ export const operatorJourney6 = async ({ browser, page }) => {
     await expect(staleEditor.getByTestId("draft-body")).toHaveValue(savedBody);
     await expectNoHorizontalOverflow(page);
     expect(failures).toEqual([]);
-    expect(newPageFailures).toEqual([]);
     expect(staleFailures).toEqual([]);
-    await secondContext.close();
+    } finally {
+      await secondContext.close();
+    }
   };

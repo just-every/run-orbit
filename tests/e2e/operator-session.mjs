@@ -17,9 +17,11 @@ function issueSession() {
 
 const issued = new WeakMap();
 
-export async function authenticateOperator(context) {
+export async function authenticateOperator(context, existingSession) {
   if (issued.has(context)) return issued.get(context);
-  const session = issueSession();
+  // Another browser context can use the same synthetic native session without
+  // taking the Worker offline to mint another sign-in.
+  const session = existingSession ?? issueSession();
   await context.setExtraHTTPHeaders({ Cookie: `${session.cookieName}=${session.token}` });
   // Browser navigations after a native form redirect use the cookie jar, not
   // Playwright's injected request header. Match the native session attributes.
