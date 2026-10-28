@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "1861355831cfe6e0b4f9522c10fc8012e7df6a5cb2ebc17e3e1c1cd6ae0fe339",
+      "sha256": "c64479667079d1a84b8e227647bf8d09387d5108349b4da0b58dedef5643d3ce",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "11b895ba56d25c0aab2a4be4cf245c6a28d20311b70a33df16a135523cb42370",
+      "sha256": "8297ae66f1c291992d5d173686aec43928fe83c7bce302b9f86bf6efc3528e7e",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "32cf8c43adf0517a2f8276636a32c5fe95d05efb3ddcf68226687ca3a7f8ece4",
+      "sha256": "5010ed38068fc7e3b8d4d652fa3c65a956c8592cfa00684a4c6c12ff5d6ade34",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -1335,19 +1335,19 @@
       "executable": false
     },
     "docs/retained-verification/RECORD-016/import-owner-notices-1440.png": {
-      "sha256": "88c7264e83f2cb84f83f43dc1d5c28ff250821740700cd34fb23b3ee393eb486",
+      "sha256": "f0b442c683927a06b7fff18a4acd3a7c79869ca8cb86efd5de5506d450975e7e",
       "executable": false
     },
     "docs/retained-verification/RECORD-016/import-owner-notices-390.png": {
-      "sha256": "7f3555ebfbd41011c79f14e31099bd448d08abe4fafb3bcaff4b186472a71c3d",
+      "sha256": "4b44c922fc24994a0224264fba78fa0102f6e8f3a2459ffe6a573e7c61fe4da5",
       "executable": false
     },
     "docs/retained-verification/RECORD-016/import-owner-review-1440.png": {
-      "sha256": "0e392f8241c762f9be667dbbbc0a8bfc948d02b9bdaf619ee25c083197037f3e",
+      "sha256": "71d897cb50a239ecbcf9510de2fbb96075dc3f7c7be496a9bd8aaeb17bcd63bf",
       "executable": false
     },
     "docs/retained-verification/RECORD-016/import-owner-review-390.png": {
-      "sha256": "3acf48b513226bfbaf46b57999d5a151f4029d3741cb89bdbe03c2c706e4228e",
+      "sha256": "eb523ed0779bfec7d64f8cadc10f57c31557ecea92fd92dee38e9721827f71f2",
       "executable": false
     },
     "docs/retained-verification/RECORD-016/ownership-bulk-review-1440.png": {
@@ -5567,7 +5567,11 @@
       "executable": false
     },
     "src/core/features/imports/owner-targets.ts": {
-      "sha256": "46c595f340d541b6c91a791cd5e306d3acd283827883011f482e0ca6cf690697",
+      "sha256": "4458a80bec75dba273bb57592c5ee29ad584ee0864ba23c97ea94991ef6e257e",
+      "executable": false
+    },
+    "src/core/features/imports/owner-undo.ts": {
+      "sha256": "e11572938eea0c47fd456295ba96b2d5abacafe2e9c0adbdbb86acc22242c91f",
       "executable": false
     },
     "src/core/features/imports/owners.ts": {
@@ -5971,7 +5975,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/imports-owners.tsx": {
-      "sha256": "c7485fbca838cf7a16b1e827293f655ed8c5e656a28ac71ed36d176a75323d88",
+      "sha256": "87ee6db59cc901bcb3b73d5ea6bf18114705959a9f3eee0cb55f1b7871993770",
       "executable": false
     },
     "src/core/features/operator/ui/imports-page.tsx": {
@@ -5979,7 +5983,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/imports.css": {
-      "sha256": "741878ba55e8f8d820fcdfacb70b127e06c29f6734ea84be8bd601378d966303",
+      "sha256": "50423f5dc44ed3cdbdce770f194515dac94a67204ee88bd4c486e9627835ecda",
       "executable": false
     },
     "src/core/features/operator/ui/mail-evidence.tsx": {

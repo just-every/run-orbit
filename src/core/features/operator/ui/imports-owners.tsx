@@ -17,5 +17,5 @@ export function ImportOwnerMapping({files,owners,mapping,onChange}:{files:Import
 }
 export function ImportOwnerReview({owners}:{owners?:{value:string;count:number;ownerName:string|null;explicit?:boolean}[]}){
  if(!owners?.length)return null;
- return <section aria-label="Reviewed import owners"><h3>Reviewed owners</h3><p>These assignments are saved in this dry run. Unmatched values never assign the importer.</p><ul className="crm-results">{owners.map(owner=><li key={owner.value}>{owner.value} · {owner.count} {owner.count===1?'row':'rows'} → {owner.ownerName??(owner.explicit?'Unassigned':'Unmatched · Unassigned')}</li>)}</ul></section>;
+ return <section aria-label="Reviewed import owners"><h3>Reviewed owners</h3><p>These assignments are saved in this dry run. Unmatched values never assign the importer.</p><ul className="crm-owner-results">{owners.map(owner=><li key={owner.value}>{owner.value} · {owner.count} {owner.count===1?'row':'rows'} → {owner.ownerName??(owner.explicit?'Unassigned':'Unmatched · Unassigned')}</li>)}</ul></section>;
 }
