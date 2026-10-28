@@ -7,7 +7,7 @@ export async function undoWorkflowRun(db:D1Database,actor:string,id:string,at:st
  if(['running','queued'].includes(r.status))throw new WorkflowError(409,'Stop or finish this run before undoing it.');
  const v=await db.prepare('SELECT * FROM workflow_versions WHERE workflow_id=? AND version=?').bind(r.workflow_id,r.version).first<Version>(),e=await eventById(db,r.event_id);if(!v||!e)throw new WorkflowError(409,'Run evidence is unavailable.');
  const writes=(await db.prepare("SELECT id FROM workflow_record_writes WHERE run_id=? AND id NOT LIKE '%:undo' ORDER BY occurred_at DESC,rowid DESC").bind(r.id).all<{id:string}>()).results,results=[];
- for(const w of writes){const ctx=workflowContext(db,v,e,r.id,at,0);ctx.actorId=actor;ctx.writeFences=[authorityFence(db,actor,authority.version)];results.push(await undoRecordWrite(ctx,w.id));}
+ for(const w of writes){const ctx=workflowContext(db,v,e,r.id,at,0);ctx.actorId=actor;ctx.writeFences=[authorityFence(db,actor,authority.version),db.prepare("INSERT INTO runtime_controls(name,value) VALUES('workflow_suppressed','undo') ON CONFLICT(name) DO UPDATE SET value=excluded.value")];ctx.afterWriteStatements=[db.prepare("DELETE FROM runtime_controls WHERE name='workflow_suppressed'")];results.push(await undoRecordWrite(ctx,w.id));}
  await db.batch([authorityFence(db,actor,authority.version),workflowAudit(db,actor,'undone',r.workflow_id,{runId:r.id,results},at),db.prepare("UPDATE workflow_runs SET status='undone',reason='Undo inspected every recorded write',outcome_json=? WHERE id=?").bind(JSON.stringify(results),r.id)]);
  return {runId:r.id,results};
 }

@@ -1,3 +1,5 @@
+import {workflowOwnerNotice} from './owner-notices';
+import {typedUserFieldFences} from '../records/typed-fields';
 import {guard,clearGuards} from '../identity/store';
 import {createId} from '../../shared/ids';
 import {RecordsRepository} from '../records/repository';
@@ -39,6 +41,8 @@ async function write(context:WorkflowContext,plan:WorkflowRecordPlan,undoOf?:str
  const at=new Date().toISOString(),db=context.db;
  const statements:D1PreparedStatement[]=[...(context.writeFences??[]),guard(db,{sql:"EXISTS(SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active' AND updated_at IS ? AND NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=operators.id)) AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN('restore','archive_import'))",args:[context.actorId,actor??null]})];
  if(!undoOf&&context.approvedWriteId!==plan.id)statements.push(guard(db,{sql:'NOT EXISTS(SELECT 1 FROM workflow_field_policies WHERE record_type=? AND field IN(SELECT value FROM json_each(?)) AND needs_approval=1)',args:[plan.recordType,JSON.stringify(approvalFields(plan))]}));
+ if(plan.field==='owner_id')statements.push(...await typedUserFieldFences(db,{label:'Owner',value_type:'user'},plan.after,plan.before));
+ if(plan.createdValues?.owner_id)statements.push(...await typedUserFieldFences(db,{label:'Owner',value_type:'user'},plan.createdValues.owner_id,undefined));
  const repo=new RecordsRepository(db);
  if(plan.field==='create_record'){
   if(!plan.createdValues)throw new RecordError(400,'The saved create plan is incomplete.');
@@ -66,7 +70,7 @@ async function write(context:WorkflowContext,plan:WorkflowRecordPlan,undoOf?:str
    }
   }
  }
- statements.push(db.prepare('INSERT INTO workflow_record_writes(id,workflow_id,version,event_id,run_id,record_id,record_type,field,before_json,after_json,actor_id,occurred_at,evidence,workflow_name,plan_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)').bind(plan.id,context.workflowId,context.version,context.eventId,context.runId,plan.recordId,plan.recordType,plan.field,JSON.stringify(plan.before??null),JSON.stringify(plan.after??null),context.actorId,at,context.evidence,context.workflowName,JSON.stringify(plan)),...workflowTimeline(context,plan,at,undoOf));
+ statements.push(db.prepare('INSERT INTO workflow_record_writes(id,workflow_id,version,event_id,run_id,record_id,record_type,field,before_json,after_json,actor_id,occurred_at,evidence,workflow_name,plan_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)').bind(plan.id,context.workflowId,context.version,context.eventId,context.runId,plan.recordId,plan.recordType,plan.field,JSON.stringify(plan.before??null),JSON.stringify(plan.after??null),context.actorId,at,context.evidence,context.workflowName,JSON.stringify(plan)),...workflowTimeline(context,plan,at,undoOf),...(!undoOf?workflowOwnerNotice(context,plan,at):[]));
  if(undoOf)statements.push(guard(db,{sql:'EXISTS(SELECT 1 FROM workflow_record_writes WHERE id=? AND undone_at IS NULL)',args:[undoOf]}),db.prepare('UPDATE workflow_record_writes SET undone_at=?,undo_actor_id=? WHERE id=? AND undone_at IS NULL').bind(at,context.actorId,undoOf));
  statements.push(clearGuards(db),...(context.afterWriteStatements??[]));
  try{await db.batch(statements);}catch(error){

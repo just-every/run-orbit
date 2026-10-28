@@ -7,7 +7,7 @@ export default {
  excludeTables: ['api_credentials', 'call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'record_owner_reviews', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
  derivedTables: ['record_search', 'timeline_search', 'record_search_fields'],
  // Migrations seed these rows in every empty database; the archive's rows replace them.
- replaceableTables: ['graph_workspace_epochs', 'schema_types', 'pipelines', 'forecast_source_clock'],
+ replaceableTables: ['graph_workspace_epochs', 'schema_types', 'pipelines', 'forecast_source_clock','workflow_journal_metadata'],
  secretColumns: { signal_sources: ['secret_ciphertext'] },
  // Older valid archives may still contain schedules. Strip that installation-local
  // approval in staging, after integrity validation and before atomic publication.

@@ -1,3 +1,6 @@
+import {applyOwnershipStatements} from '../ownership/writes';
+import {ownershipFence} from '../ownership/authority';
+import type {OwnershipItem} from '../ownership/types';
 import type {ProviderFetch} from '../capture/providers/config';
 import {createId} from '../../shared/ids';
 import {guard} from '../identity/store';
@@ -54,7 +57,7 @@ export async function applyEffect(db:D1Database,v:Version,run:Run,plan:EffectPla
   if(current===plan.ownerId)return {kind:'assign_owner',ownerId:plan.ownerId};
   if(run.record_type==='opportunity')throw new WorkflowError(400,'Deal assignment must use the guarded record action.');
   const repo=new OwnershipRepository(db);let batchId=plan.batchId;if(!batchId){const batch=await repo.review(run.record_type as 'contact'|'company',[run.record_id],plan.ownerId!,actor);batchId=batch.id;await db.prepare('UPDATE workflow_steps SET result_json=? WHERE run_id=? AND ordinal=?').bind(JSON.stringify({batchId}),run.id,index).run();}
-  await db.batch(fences());const batch=await repo.apply(batchId,actor);if(batch.items.some(x=>x.failure))throw new WorkflowError(409,batch.items.find(x=>x.failure)!.failure!);
+  const header=await repo.batch(batchId,actor),items=(await db.prepare('SELECT * FROM ownership_batch_items WHERE batch_id=? ORDER BY ordinal').bind(batchId).all<OwnershipItem>()).results;await db.batch([...fences(),...ownershipFence(db,actor),guard(db,{sql:"EXISTS(SELECT 1 FROM operators WHERE id=? AND status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=operators.id))",args:[plan.ownerId!]}),...applyOwnershipStatements(db,header,items,actor),db.prepare("UPDATE notifications SET message=?||COALESCE((SELECT display_name FROM operators WHERE id=?),'Unassigned') WHERE event_key=? AND kind='record.assigned'").bind(`Assigned by workflow ${v.name}, version ${v.version}; previous owner: `,plan.beforeOwner??null,`ownership:${batchId}`)]);const batch=await repo.describe(batchId,actor);if(batch.items.some(x=>x.failure))throw new WorkflowError(409,batch.items.find(x=>x.failure)!.failure!);
   await db.batch([workflowAudit(db,actor,'owner_assigned',v.workflow_id,{runId:run.id,ownerId:plan.ownerId,mode:action.mode},at)]);return {kind:'assign_owner',ownerId:plan.ownerId,batchId};
  }
  throw new WorkflowError(400,'This action is unavailable.');
