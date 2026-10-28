@@ -9155,7 +9155,7 @@
       "executable": false
     },
     "tests/launch-runtime/mail-ingress.test.ts": {
-      "sha256": "cd7cf8c9d945043824e8f7062e089b9a112caa6a9e3ebc6b9e72766e8dfbf82f",
+      "sha256": "ecddf7a7406f897dc668836f944e2cf8ffd56203067ab3c3c4ffb447c31d207c",
       "executable": false
     },
     "tests/launch-runtime/mail-transport.ts": {
@@ -9163,7 +9163,7 @@
       "executable": false
     },
     "tests/launch-runtime/session-boundaries.ts": {
-      "sha256": "22a1347cbbc2dea42f4c44cfad8f668fd5f97001f9e418da6705e60c66dc63bf",
+      "sha256": "f0c069b7367682cbcf0ea502ebd4907c60b3ce1507e28389686a373163b44c46",
       "executable": false
     },
     "tests/launch-runtime/unconfigured-host.ts": {
