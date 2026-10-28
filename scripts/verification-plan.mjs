@@ -16,34 +16,45 @@ export const journeyFiles = ['tests/rer/journey.test.mjs', 'newtests/t096/forwar
 // Two Node workers use independent fixture databases and ports; browser spec gates
 // stay sequential. This overlaps the native D1 proxy waits on each two-core CI host.
 const minutes = {
-  'newtests/t096/report-disclosure.test.ts': 5,
+  'newtests/t096/report-disclosure.test.ts': 6,
   'newtests/t096/browser-journeys.test.ts': 5,
   'newtests/t096/forms-native.test.ts': 4,
   'newtests/t096/team-native.test.ts': 3,
-  'newtests/t096/archive-recovery.test.ts': 4,
+  'newtests/t096/archive-recovery.test.ts': 6,
   'tests/delegation-browser/records-layout.test.ts': 4,
   'tests/delegation-browser/today-brief.test.ts': 3,
   'tests/core/capture-providers.test.ts': 4,
-  'tests/core/capture-erasure.test.ts': 4,
+  'tests/core/capture-microsoft.test.ts': 3,
+  'tests/core/capture-calendar.test.ts': 6,
+  'tests/core/capture-erasure.test.ts': 6,
   'tests/core/source-onboarding.test.ts': 4,
   'tests/core/onboarding-archive.test.ts': 4,
-  'tests/core/crm-import.test.ts': 6,
-  'tests/core/crm-vendor.test.ts': 4,
+  'tests/core/crm-import.test.ts': 5,
+  'tests/core/crm-vendor.test.ts': 3,
+  'tests/core/launch-suppression.test.ts': 5,
+  'tests/core/records-search.test.ts': 3,
   'tests/core/signals-outreach.test.ts': 3,
-  'tests/e2e/operator.spec.mjs': 3,
-  'tests/e2e/baseline.spec.mjs': 2,
-  'tests/archive/browser.spec.mjs': 3,
+  'tests/e2e/operator.spec.mjs': 1,
+  'tests/e2e/baseline.spec.mjs': 1,
+  'tests/archive/browser.spec.mjs': 2,
   'tests/launch-runtime/mail-ingress.test.ts': 3,
   'tests/rer/journey.test.mjs': 9,
   'newtests/t096/forward-upgrade.test.ts': 10,
   'newtests/t096/archive-native.test.ts': 7,
 };
 const browserFile = file => /\/e2e\/|\/archive\/|\/delegation-browser\/|\/launch-runtime\/|\/rer\/|newtests\/t096\/(?:browser-journeys|report-disclosure|team-native|archive-native)/.test(file);
+const specFile = file => file.includes('/e2e/') || file.includes('/archive/');
+const weight = file => minutes[file] ?? 1;
+function duration(files) {
+  const node = files.filter(file => !specFile(file)).map(weight);
+  // Two independent Node files overlap; Playwright spec gates follow them.
+  return Math.max(0, ...node, node.reduce((sum, value) => sum + value, 0) / 2)
+    + files.filter(specFile).reduce((sum, file) => sum + weight(file), 0);
+}
 function balance(files) {
-  const bins = Array.from({ length: Math.min(7, files.length) }, () => ({ minutes: 0, files: [] }));
-  for (const file of [...files].sort((a, b) => (minutes[b] ?? 1) - (minutes[a] ?? 1) || a.localeCompare(b))) {
-    const bin = bins.reduce((smallest, candidate) => candidate.minutes < smallest.minutes ? candidate : smallest);
-    bin.minutes += minutes[file] ?? 1;
+  const bins = Array.from({ length: Math.min(7, files.length) }, () => ({ files: [] }));
+  for (const file of [...files].sort((a, b) => weight(b) - weight(a) || a.localeCompare(b))) {
+    const bin = bins.reduce((smallest, candidate) => duration([...candidate.files, file]) < duration([...smallest.files, file]) ? candidate : smallest);
     bin.files.push(file);
   }
   return bins;
