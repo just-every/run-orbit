@@ -58,6 +58,10 @@ export function define<T extends z.ZodRawShape>(area:string,verb:string,schema:z
  async run(args,ctx){await localFence(`orbit.${area}.${verb}`,args,ctx);const result=await nativeCall(()=>run(schema.parse(args),ctx));return{result:result??{saved:true}};}};
 }
 export async function currentRecord(ctx:ToolContext,k:RecordKind,recordId:string){return record(ctx,k,recordId);}
+async function recordTarget(args:Record<string,unknown>,ctx:ToolContext){
+ const saved=await record(ctx,String(args.kind),String(args.id));
+ return{kind:saved.ref.type,id:saved.ref.id};
+}
 export async function recordRevision(ctx:ToolContext,k:RecordKind,recordId:string){
  await record(ctx,k,recordId);const row=await ctx.db.prepare('SELECT revision FROM graph_records WHERE kind=? AND id=?').bind(k,recordId).first<{revision:number}>();return row?.revision??null;
 }
@@ -70,6 +74,7 @@ export function coreTools():ToolDefinition[]{return [
  }),
  define('records','read',z.object({kind,id,fields:z.array(z.string()).max(100).default([])}),{
   description:'Read a current native CRM projection at its actual revision.',readOnly:true,classes:['standard','sensitive'],clauses:['RECORD-001','RECORD-005','TEAM-001'],untrusted:true,
+  target:recordTarget,
   async classify(a,c){const r=await record(c,a.kind,a.id,a.fields);return classifications(c,a.kind,r.fields);},
   async run(a,c){const state=await localState(c.db,c);if(state?.type==='api'){const fields=a.fields.length?a.fields:JSON.parse((state.row as ApiCredential).fields_json);return new ApiDeals(c.db,systemClock).read(state.row as ApiCredential,a.id,fields);}return record(c,a.kind,a.id,a.fields);}
  }),
@@ -80,6 +85,7 @@ export function coreTools():ToolDefinition[]{return [
  }),
  define('records','update',z.object({kind,id,patch:z.record(z.string(),z.unknown())}),{
   description:'Update permitted CRM fields with current record/field grants and revision fencing. Ownership has its own tool.',readOnly:false,classes:['standard'],clauses:['RECORD-001','TEAM-001','RECORD-005'],revisionType:'integer',
+  target:recordTarget,
   revision:(a,c)=>recordRevision(c,a.kind as RecordKind,String(a.id)),summary,
   async classify(a,c){await record(c,a.kind,a.id);if(Object.keys(a.patch).some(key=>key==='owner_id'||!(nativeEditableFields[a.kind as RecordKind] as readonly string[]).includes(key)))throw new ToolRefusal('native_permission');return standard;},
   async run(a,c){const db=await agentDatabase(c,{fullOperator:false}),state=await localState(c.db,c);if(state?.type==='api'){const deals=new ApiDeals(db,systemClock),before=await deals.read(state.row as ApiCredential,a.id,JSON.parse((state.row as ApiCredential).fields_json));return deals.update(state.row as ApiCredential,a.id,a.patch,before.etag);}const access=new AccessService(db),actor=await access.resolveAgentContext(c.person.id,c.agent.id,crypto.randomUUID());const saved=await restrictedEdit(db,actor,a.kind,a.id,a.patch);return saved;}

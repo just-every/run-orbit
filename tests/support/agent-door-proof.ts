@@ -11,11 +11,12 @@ import { outreachTools } from '../../src/core/features/agent-door/outreach-tools
 import { signJws, policyEnvelope, autonomousPolicy } from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 import { snapshot } from '../../src/core/features/delegation/evidence';
 import type { PlatformBindings } from '../../src/core/platform/assets';
+import { emailLinkSignIn } from './email-link';
 
-// PENDING-BASE-2026-10-28: the pinned runner's full conformance retains failing
-// assertions for native audit targets, resource error.data.code, replay admission,
-// narrowing escalation fixtures and reviewer lifecycle. Do not weaken them here.
-// The normal declarative journey remains the completion gate after the Base re-pin.
+// PENDING-SEED-2026-10-28: the full declarative journey still lacks coverage of
+// every declared tool/class and native grant-subset fixtures. BASE-AGENT shared
+// clauses and ct's customer-send reconciliation have not landed on seed main.
+// The native assertions below exercise the v2 fixes without waiving that gate.
 export async function exerciseAgentDoor(){
  const platform=await isolatedDatabase();
  try{
@@ -47,11 +48,23 @@ export async function exerciseAgentDoor(){
    return{status:response!.status,body:await response!.json() as any};
   };
   const code=(r:any)=>r.body.result?._meta?.['com.runeditrun/error']?.code??r.body.error?.data?.code;
+  const resource=async(uri:string,token?:string)=>{
+   token??=await credential();
+   const response=await door.handle(jsonRequest('/mcp',{jsonrpc:'2.0',id:++rpcId,method:'resources/read',params:{uri,_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}},{Authorization:`Bearer ${token}`,Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2026-07-28','Mcp-Method':'resources/read','Mcp-Name':uri}));
+   return{status:response!.status,body:await response!.json() as any};
+  };
+  const adopt=async(document:ReturnType<typeof autonomousPolicy>,options:Record<string,unknown>={})=>{
+   const next=await policyEnvelope(context,document,options);
+   const response=await door.handle(jsonRequest('/api/rer/agent-policy',{policy:next.policy}));
+   assert.equal(response!.status,200,await response!.clone().text());context.seq=next.payload.seq;context.revision=next.payload.revision;
+  };
+  const latestAudit=async(key:string)=>JSON.parse((await db.prepare('SELECT row FROM agent_door_audit WHERE json_extract(row,\'$.idempotency_key\')=? ORDER BY sequence DESC LIMIT 1').bind(key).first<{row:string}>())!.row);
   assert.equal(code(await call('orbit.records.create',{kind:'company',fields:{name:'Not admitted'},idempotency_key:'unset'})),'policy_unset');
   assert.equal((await db.prepare('SELECT count(*) AS n FROM companies').first<{n:number}>())!.n,0);
   const context={signer:{privateKey:pair.privateKey,kid,issuer,installationId},origin,business:'Northstar',seq:0,revision:0};
   const envelope=await policyEnvelope(context,autonomousPolicy());
   const adoption=await door.handle(jsonRequest('/api/rer/agent-policy',{policy:envelope.policy}));assert.equal(adoption!.status,200);assert.deepEqual(Object.keys(await adoption!.json() as object).sort(),['adopted','door']);
+  context.seq=envelope.payload.seq;context.revision=envelope.payload.revision;
   const created=await call('orbit.records.create',{kind:'company',fields:{name:'Northstar Buyer'},idempotency_key:'create-company'});
   assert.equal(created.body.result?.isError,false,JSON.stringify(created.body));
   const companyId=created.body.result.structuredContent.id;
@@ -61,6 +74,9 @@ export async function exerciseAgentDoor(){
   const current=await call('orbit.records.read',{kind:'company',id:companyId,confirmExternal:true,classes:['standard'],approved:true});assert.equal(current.body.result?.isError,false,JSON.stringify(current.body));assert.equal(current.body.result.structuredContent.fields.name,'Northstar Buyer');
   const before=current.body.result.structuredContent.ref.revision;
   const update=await call('orbit.records.update',{kind:'company',id:companyId,patch:{name:'Reviewed Buyer'},expected_revision:before,idempotency_key:'edit-company'});assert.equal(update.body.result?.isError,false,JSON.stringify(update.body));
+  // BASE-AGENT-009: v2 records the resolved visible native identity, not a caller label.
+  assert.deepEqual((await latestAudit('edit-company')).resource,{kind:'company',id:companyId});
+  assert.deepEqual((await call('orbit.records.update',{kind:'company',id:companyId,patch:{name:'Reviewed Buyer'},expected_revision:before,idempotency_key:'edit-company'})).body.result.structuredContent,update.body.result.structuredContent,'A successful edit replay survives the revision advanced by its own effect');
   assert.equal(code(await call('orbit.records.update',{kind:'company',id:companyId,patch:{name:'Stale edit'},expected_revision:before,idempotency_key:'stale-edit'})),'revision_conflict');
   const history=(await db.prepare("SELECT actor_type,payload_json FROM timeline_entries WHERE kind='record.updated' ORDER BY recorded_at DESC").all<{actor_type:string;payload_json:string}>()).results;
   assert.equal(history[0].actor_type,'agent');const attribution=await db.prepare("SELECT actor FROM orbit_native_attribution WHERE table_name='timeline_entries' ORDER BY rowid DESC LIMIT 1").first<{actor:string}>();assert.equal(JSON.parse(attribution!.actor).label,'Riley Sales Agent for Avery Seller');
@@ -83,10 +99,52 @@ export async function exerciseAgentDoor(){
   const draft=await call('orbit.drafts.create',{opportunityId,contactId,subject:'Renewal meeting',body:'Jordan, here is the agenda for our renewal discussion.',idempotency_key:'buyer-draft'});
   assert.equal(draft.body.result?.isError,false,JSON.stringify(draft.body));
   assert.equal((await db.prepare('SELECT count(*) AS n FROM outbound_messages').first<{n:number}>())!.n,0,'Preparing the seller day and draft never submits customer mail');
+  // BASE-AGENT-003: resource refusals always expose their machine code in data.
+  const absent=await resource('orbit://records/company/missing');assert.equal(code(absent),'resource_unavailable');assert.equal(absent.body.result,undefined);
+  const noReadScope=await resource(`orbit://records/company/${companyId}`,await credential({scope:'events:read'}));assert.equal(noReadScope.status,403);assert.equal(code(noReadScope),'insufficient_scope');
+  // BASE-AGENT-005: the real native access grant's self-widening path refuses
+  // before creating a grant. Revoke-only tools still owe grant-subset fixtures.
+  const grantArgs={subjectId:owner.operatorId,resourceType:'company',resourceId:companyId,actions:['graph.read'],fields:['name'],purpose:'Self grant must refuse',expiresAt:null,idempotency_key:'self-grant'};
+  const grantsBefore=await db.prepare('SELECT count(*) n FROM access_grants').first('n');
+  assert.equal(code(await call('orbit.access.update',grantArgs)),'self_escalation');assert.equal(await db.prepare('SELECT count(*) n FROM access_grants').first('n'),grantsBefore);
+  // BASE-AGENT-012: current policy and scope run before a cached native result.
+  const replayArgs={kind:'company',id:companyId,patch:{name:'Reviewed Buyer'},expected_revision:before,idempotency_key:'edit-company'};
+  await adopt(autonomousPolicy(),{paused:true});
+  const pausedReplay=await call('orbit.records.update',replayArgs);assert.equal(code(pausedReplay),'agents_paused');assert.equal(pausedReplay.body.result.structuredContent,undefined);
+  const replayAudit=await latestAudit('edit-company');assert.equal(replayAudit.outcome,'refused');assert.equal(replayAudit.decision,'paused');assert.deepEqual(replayAudit.resource,{kind:'company',id:companyId});assert.deepEqual(replayAudit.classes,[{class:'standard',facts:{measure:1}}]);
+  const blocked=autonomousPolicy();blocked.rules=[{id:'all',class:'*',do:'blocked'}];await adopt(blocked);
+  assert.equal(code(await resource(`orbit://records/company/${companyId}`)),'policy_blocked');
+  const blockedReplay=await call('orbit.records.update',replayArgs);assert.equal(code(blockedReplay),'policy_blocked');assert.equal(blockedReplay.body.result.structuredContent,undefined);
+  const held={...autonomousPolicy(),rules:[{id:'all',class:'*',do:'approval',approver:['sponsor'],wait:'PT1H'}]};await adopt(held);
+  const heldReplay=await call('orbit.records.update',replayArgs);assert.equal(code(heldReplay),'approval_required');assert.equal(heldReplay.body.result.structuredContent,undefined);
+  await adopt(autonomousPolicy());const scopedReplay=await call('orbit.records.update',replayArgs,await credential({scope:'events:read'}));assert.equal(scopedReplay.status,403);assert.equal(code(scopedReplay),'insufficient_scope');assert.equal(scopedReplay.body.result?.structuredContent,undefined);
+  assert.equal((await db.prepare('SELECT name FROM companies WHERE id=?').bind(companyId).first<{name:string}>())!.name,'Reviewed Buyer');
+  // BASE-AGENT-007/008: a second native person completes the real email-link
+  // lifecycle and approves an exact summary separately from the agent preparer.
+  const reviewerEmail='reviewer@orbit.example.test',reviewerSub=randomUUID();
+  const invitation=await person('/api/v1/settings/operators',{email:reviewerEmail,displayName:'Morgan Reviewer'});assert.equal(invitation.status,201);
+  const reviewerId=(await invitation.json() as {id:string}).id;
+  const signedIn=await emailLinkSignIn(db,reviewerEmail,{origin});assert.equal(signedIn.operator.operatorId,reviewerId);
+  const mapped=await signJws(pair.privateKey,kid,'rer-business-settings+jwt',{v:1,iss:issuer,aud:origin,sub:installationId,business:'Northstar',email,jti:randomUUID(),iat,exp:iat+300,rev:2,values:{},logo:null,team:[{id:reviewerSub,email:reviewerEmail,name:'Morgan Reviewer',role:'admin',invite:1}],owner_id:sub});
+  assert.equal((await agentDoorResponse(jsonRequest('/api/rer/business-settings',{settings:mapped}),b))!.status,200);
+  const reviewerPolicy={...autonomousPolicy(),rules:[{id:'all',class:'*',do:'approval',approver:[`person:${reviewerSub}`],wait:'PT1H'}]};await adopt(reviewerPolicy);
+  const pending=await call('orbit.records.update',{kind:'company',id:companyId,patch:{name:'Independently approved buyer'},idempotency_key:'reviewer-edit'});assert.equal(pending.body.result.resultType,'input_required');assert.equal((await db.prepare('SELECT name FROM companies WHERE id=?').bind(companyId).first<{name:string}>())!.name,'Reviewed Buyer');
+  const approvalId=pending.body.result._meta['com.runeditrun/approval'].id;
+  const approvalRequest=async(path:string,body?:unknown)=>door.handle(new Request(origin+path,{method:body===undefined?'GET':'POST',headers:{Origin:origin,Cookie:signedIn.cookie,'content-type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}));
+  const view=await (await approvalRequest(`/agents/api/approvals/${approvalId}`))!.json() as any;
+  assert.deepEqual(view.approval.summary.nativeTarget,{kind:'company',id:companyId});assert.equal(view.approval.prepared_by.agent.name,agent.name);
+  const stale=await approvalRequest(`/agents/api/approvals/${approvalId}/approve`,{revision:view.approval.revision,summary_sha256:'stale'});assert.equal(stale!.status,409);assert.equal((await db.prepare('SELECT name FROM companies WHERE id=?').bind(companyId).first<{name:string}>())!.name,'Reviewed Buyer');
+  const approved=await approvalRequest(`/agents/api/approvals/${approvalId}/approve`,{revision:view.approval.revision,summary_sha256:view.approval.summary_sha256});assert.equal(approved!.status,200);assert.equal((await approved!.json() as any).approval.state,'executed');
+  const nativeActor=JSON.parse((await db.prepare("SELECT actor FROM orbit_native_attribution WHERE table_name='timeline_entries' ORDER BY rowid DESC LIMIT 1").first<{actor:string}>())!.actor);assert.equal(nativeActor.agent.id,agent.id);assert.equal(nativeActor.approvers[0].id,reviewerId);
+  const reviewed={...autonomousPolicy(),rules:[{id:'all',class:'*',do:'review'}],reviewers:[`person:${reviewerSub}`]};await adopt(reviewed);
+  const reviewCall=await call('orbit.records.update',{kind:'company',id:companyId,patch:{name:'Reviewed Buyer'},idempotency_key:'review-mark'});assert.equal(reviewCall.body.result.isError,false);
+  const reviewId=(await db.prepare("SELECT id FROM agent_door_reviews ORDER BY rowid DESC LIMIT 1").first<{id:string}>())!.id;
+  const marked=await approvalRequest(`/agents/api/reviews/${reviewId}/reviewed`,{});assert.equal(marked!.status,200);assert.equal((await marked!.json() as any).review.marked_by,reviewerId);
+  await adopt(autonomousPolicy());
   // Invalid Business identities refuse before native reads; email never supplies identity.
   assert.equal((await call('orbit.records.read',{kind:'company',id:companyId},await credential({sub:'unmapped',email}))).status,401);
   assert.equal((await call('orbit.records.read',{kind:'company',id:companyId},await credential({aud:'https://elsewhere.test/mcp'}))).status,401);
-  const paused=await policyEnvelope({...context,seq:1,revision:1},autonomousPolicy(),{paused:true});
+  const paused=await policyEnvelope(context,autonomousPolicy(),{paused:true});
   assert.equal((await door.handle(jsonRequest('/api/rer/agent-policy',{policy:paused.policy})))!.status,200);
   assert.equal(code(await call('orbit.records.update',{kind:'company',id:companyId,patch:{name:'Paused edit'},idempotency_key:'paused'})),'agents_paused');
   assert.equal((await db.prepare('SELECT name FROM companies WHERE id=?').bind(companyId).first<{name:string}>())!.name,'Reviewed Buyer');

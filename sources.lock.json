@@ -723,7 +723,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "acd1d27b23bdd2ec65187ace943a4fbe4eb2b1ea9d2109356edd44887f1bfaa2",
+      "sha256": "668281c313426e4e46b1161cfcfbd8dc3a459bdb9f1a1b2e2ca412876f256f67",
       "executable": false
     },
     "AGENTS.md": {
@@ -795,7 +795,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "425368dea08fb1ffcb3882e3f833ece4fbfe80bba4acca3f55be95d886d708dc",
+      "sha256": "6fb7552faefc40831ef6b1e873664df5668a125cc5b1efe242306166b974c12d",
       "executable": false
     },
     "docs/artifact/CONTRACT.md": {
@@ -4019,11 +4019,11 @@
       "executable": false
     },
     "scripts/generate-agent-docs.ts": {
-      "sha256": "f0dd81711589dd62608248988b9426d03a0cecb80ddcb5af5228234799ebf4d6",
+      "sha256": "cdc0b259ec94562e1ef702589603751a02ad046c80d47cb68f23db04c359c73b",
       "executable": false
     },
     "scripts/generate-agent-surface.ts": {
-      "sha256": "7768cf1d82cbc1d7a1cab9823a084431b6267b441d30c9ef31b1d58da796ee4c",
+      "sha256": "8731603587faba3e933de61a78c3593b2d3c93b368e431285042087a9f1cb829",
       "executable": false
     },
     "scripts/install-chromium-deps.py": {
@@ -5855,7 +5855,7 @@
       "executable": false
     },
     "src/core/features/agent-door/tools.ts": {
-      "sha256": "fe7aee38ca3abd14555894ece541ef313d6fef1418e13653104af2a58d4bdfb4",
+      "sha256": "137d583eda7504fd301bfccb8c6cb75c4e811e5f2411550acc0eb360a80f137b",
       "executable": false
     },
     "src/core/features/agent-door/work.ts": {
@@ -9759,7 +9759,11 @@
       "executable": false
     },
     "tests/agent-door-owner.mjs": {
-      "sha256": "8a5c0a41cb29bd4d0daffaea3864e6a2a35e5d6530fd7d4174d481a755cbf579",
+      "sha256": "06e60c0e2b52020e8e97f5f9f0885b27afac29bea2e4a173acb6ccb53bbe6ea4",
+      "executable": false
+    },
+    "tests/agent-door-reviewer.mjs": {
+      "sha256": "feeeccf6c33e4b63a3184cd4c6862888220c952af9120063efe44e6070b761bb",
       "executable": false
     },
     "tests/agent-provider-edge.mjs": {
@@ -10663,7 +10667,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "a64831a89701be442adb9a77ca9b2d5c554ddaa08cbf8d1591b62337feccf971",
+      "sha256": "a01c9140ea3323805547c980981da985a0fc3347165433600baecfeea84e38e4",
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {

@@ -10,6 +10,8 @@ External sends preserve saved content, current contact permission, native stalen
 
 The Agents page shows named preparer, sponsor and actual approvers. Approval binds the exact revision and summary hash; a changed summary refuses. A machine cannot manufacture native human verification. Import, owner claim, OAuth credentials and person authentication retain their native doors.
 
+CRM reads and field edits resolve their native record identity under current visibility for audit and approval summaries. Resource refusals expose their machine code in JSON-RPC error.data.code. A successful mutation key retains its outcome, while replay still requires current scope, policy and an unpaused agent; a new approval requirement cannot reuse an earlier autonomous receipt.
+
 Spend caps are **not enforced** by this Base revision. Native quotas, provider consent and uncertainty rules still apply. No quote, signature, payment, Zoom or post-sale executor is added. The current native full-operator/collaborator model remains; a Business editor is not a sales manager.
 
 This adoption is a draft candidate. The retained versioned REST adapters still use their original native admission and are not yet covered by company policy through this door. Agents activity covers the shared door only. Contract alignment, complete production conformance and a single policy boundary remain release requirements; the tool inventory is not an acceptance claim.

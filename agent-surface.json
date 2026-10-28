@@ -2064,6 +2064,13 @@
           "name"
         ]
       },
+      "target": {
+        "kind": "company",
+        "id": {
+          "$from": "create-company",
+          "pointer": "/id"
+        }
+      },
       "expect": [
         {
           "class": "standard",
@@ -2088,6 +2095,13 @@
         "expected_revision": {
           "$from": "read-company",
           "pointer": "/ref/revision"
+        }
+      },
+      "target": {
+        "kind": "company",
+        "id": {
+          "$from": "create-company",
+          "pointer": "/id"
         }
       },
       "expect": [
@@ -2185,6 +2199,18 @@
   "verification": {
     "owner": {
       "initializer": "tests/agent-door-owner.mjs"
+    },
+    "reviewers": [
+      {
+        "label": "sales-reviewer",
+        "email": "reviewer@native-orbit.example.test",
+        "initializer": "tests/agent-door-reviewer.mjs"
+      }
+    ],
+    "replayAdmission": {
+      "prepare": [
+        "create-company"
+      ]
     },
     "network": {
       "module": "tests/agent-provider-edge.mjs",
