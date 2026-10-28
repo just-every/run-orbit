@@ -71,6 +71,7 @@ export function verificationPlan({ journeys = false } = {}) {
       gate('exec', 'rer', 'build'),
       gate('exec', 'node', 'scripts/publish-deployment-spec.mjs', '--check'),
       gate('run', 'typecheck'),
+      gate('run', 'agent:check'),
     ],
     // This single 100-table lineage case took 12.7 minutes in Verify 39577822567;
     // put it near the front of the matrix so runner allocation does not leave it last.
@@ -80,6 +81,7 @@ export function verificationPlan({ journeys = false } = {}) {
       gate('run', 'build:app'),
       nodeTests(testFiles('tests/launch-runtime'), 'verification/launch-results.jsonl'),
       gate('run', 'test:worker'),
+      gate('run', 'verify:agent'),
     ),
     'runtime-delegation': prepared(
       gate('run', 'build:app'),

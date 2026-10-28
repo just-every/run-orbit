@@ -17,7 +17,7 @@ export type ArchiveTable = {
     columns: ArchiveColumn[];
     dependencies: string[];
 };
-const excluded = new Set(['api_credentials', 'call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'first_run_setup', 'd1_migrations', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'capture_credentials','capture_oauth','capture_locks','slack_credentials','slack_action_tokens','record_owner_reviews']);
+const excluded = new Set(['orbit_native_changes', 'api_credentials', 'call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'first_run_setup', 'd1_migrations', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'capture_credentials','capture_oauth','capture_locks','slack_credentials','slack_action_tokens','record_owner_reviews']);
 export const secretColumns: Record<string, readonly string[]> = { signal_sources: ['secret_ciphertext'] };
 const catalogCache = new WeakMap<D1Database, Promise<ArchiveTable[]>>();
 export function archiveCatalog(db: D1Database): Promise<ArchiveTable[]> { let cached = catalogCache.get(db); if (!cached) {
@@ -28,7 +28,7 @@ export function archiveCatalog(db: D1Database): Promise<ArchiveTable[]> { let ca
 async function readCatalog(db: D1Database): Promise<ArchiveTable[]> {
     const names = (await db.prepare("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").all<{
         name: string;
-    }>()).results.map(r => r.name).filter(n => !excluded.has(n) && !['ik_', 'crm_import_', 'delegation_', 'identity_', 'oa_', 'sqlite_', '_cf_', 'rer_', 'record_search', 'timeline_search', 'archive_'].some(p => n.startsWith(p)));
+    }>()).results.map(r => r.name).filter(n => !excluded.has(n) && !['agent_door_', 'orbit_agent_', 'bs_', 'ik_', 'crm_import_', 'delegation_', 'identity_', 'oa_', 'sqlite_', '_cf_', 'rer_', 'record_search', 'timeline_search', 'archive_'].some(p => n.startsWith(p)));
     for (const name of names) if (!/^[a-z_][a-z0-9_]*$/.test(name)) throw new RecordError(400, `Archive table ${name} uses an unsupported identifier. Use lowercase letters, digits and underscores, beginning with a letter or underscore.`);
     if (names.length > 100) throw new RecordError(400, 'Archive schema exceeds the version 2 limit of 100 tables.');
     // Bind the validated inventory once per metadata query. Return individual rows:
