@@ -10007,7 +10007,7 @@
       "executable": false
     },
     "tests/support/workflow-record-journey.ts": {
-      "sha256": "652ae56a583a2ae1b87b53fde5cfabf98a6a9968bb7b0e4952e195d5eb9e5c44",
+      "sha256": "99ffeb1d9f835810ad08adb670febedf810d317656db088ad3ac5d6879b3d3fe",
       "executable": false
     },
     "tests/support/workflow-safety-journey.ts": {
