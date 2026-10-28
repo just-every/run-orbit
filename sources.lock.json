@@ -2179,7 +2179,7 @@
       "executable": false
     },
     "newtests/t096/browser-guest-edit-grant.ts": {
-      "sha256": "9d376e63699065761eb8db6a4c4576df33d9da57828c58e83329473a05f13d93",
+      "sha256": "69e993a17f14974bf88ba6d0be734e52dcf15bc7d33816a603f20ce12c62ee8a",
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
@@ -4011,7 +4011,7 @@
       "executable": false
     },
     "scripts/verification-inventory.mjs": {
-      "sha256": "345c752cfd83e7cab2ce183f09fba78fb31d1af40c7dc558ac5c35cb0ddb925d",
+      "sha256": "9346d1761cd3f42025c47ac8b7fe1b531f20406228eca1b1855edd1f972e0934",
       "executable": false
     },
     "scripts/verification-plan.mjs": {
@@ -8475,7 +8475,7 @@
       "executable": false
     },
     "TESTING.md": {
-      "sha256": "49a45c67125dff6074e13039683fdb374db8b7f0a1462e9372ddea49231a28cc",
+      "sha256": "a44aa39c1a0a9f012ea44931633ee6dcb9e23f2309e27d0d12edabfe439706e4",
       "executable": false
     },
     "tests/acceptance/edition-source.mjs": {
@@ -8683,7 +8683,7 @@
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
-      "sha256": "1bc24df45753c72f737a3e53a443ec34896d3e34fca6f771c92f6989cc7dc4fa",
+      "sha256": "43b4bb05116d8c86698ef82337c0ea73c2727950a975804a4b3ecd6291baf206",
       "executable": false
     },
     "tests/delegation/authority-fixture.ts": {
