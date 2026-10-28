@@ -105,9 +105,9 @@ jobs:
         env:
           GIT_ALLOW_PROTOCOL: file
         run: |
-          node scripts/edition-authoring/cli.mjs check > /tmp/source-check.json
+          node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check > /tmp/source-check.json
           pnpm exec rer describe --json > /tmp/operations.json
-          node scripts/edition-authoring/cli.mjs release /tmp/orbit-source-release > /tmp/source-release.json
+          node node_modules/@runeditrun/rer/edition-authoring/cli.mjs release /tmp/orbit-source-release > /tmp/source-release.json
           git -C /tmp/orbit-source-release bundle create /tmp/orbit-source.bundle --all
       - name: Seal the emitted app for this exact commit
         run: |

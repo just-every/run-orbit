@@ -1,7 +1,7 @@
 # Edition-owned source authoring 1.1.0
 
-Copy this directory's `.mjs` files into `scripts/edition-authoring/` of any edition.
-Node 22+ and Git are the only authoring dependencies. Builds and integration remain
+Use the authoring CLI included in Orbit's exact `@runeditrun/rer` package pin.
+Install the frozen package dependencies first; Node 22+ and Git run the tool. Builds and integration remain
 ordinary edition code. This tool never runs source-provided scripts.
 
 The recommended path is a maintained complete edition with tested component
@@ -45,7 +45,7 @@ tests; unique paths alone do not establish compatibility.
 
 Commands, run at the edition root:
 
-- `node scripts/edition-authoring/cli.mjs inspect`: validate and describe selections.
+- `node node_modules/@runeditrun/rer/edition-authoring/cli.mjs inspect`: validate and describe selections.
 - `... lock`: resolve exact source bytes and retain comparison snapshots under
   `.edition/sources/`; writes `sources.lock.json`. Commit both with the recipe.
 - `... check`: verify recipe, tool version, retained baselines and selected bytes

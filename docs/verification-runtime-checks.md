@@ -79,11 +79,11 @@ exit/wall time for each command separately; stop on any failure. Execute in this
 order in the same checkout:
 
 ```sh
-node scripts/edition-authoring/cli.mjs check
+node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check
 nice -n 15 rer verify
 git diff --exit-code HEAD -- .
 git status --porcelain --untracked-files=no
-node scripts/edition-authoring/cli.mjs check
+node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check
 ```
 
 Save the generated `verification/` directory to a distinct external evidence
@@ -100,7 +100,7 @@ the second output separately. Then run:
 nice -n 15 pnpm run verify:release
 git diff --exit-code HEAD -- .
 git status --porcelain --untracked-files=no
-node scripts/edition-authoring/cli.mjs check
+node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check
 ```
 
 Save this output separately. Require every routine gate plus the unchanged full
