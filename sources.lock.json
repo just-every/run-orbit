@@ -8619,7 +8619,7 @@
       "executable": false
     },
     "tests/core/outreach-limits.test.ts": {
-      "sha256": "00c3c0f3a93349b44c04228b35fd6b2f490367eb4d7a063ebd894cd3266c3b9f",
+      "sha256": "f901ff25d215641ce92ceda4c4e5a6e629ee848aeda29272a59a8d2dae3e959b",
       "executable": false
     },
     "tests/core/prior-auth-upgrade.test.ts": {
@@ -8683,7 +8683,7 @@
       "executable": false
     },
     "tests/delegation-browser/customer-review.mjs": {
-      "sha256": "ef6d43a172ba6fd1968ea6ea1a9d31523867cb33854a256217cf9d226855231c",
+      "sha256": "4c64098e22a0de385b0fa3e4f433d5c5309c55c68b72dd22bdeaf0f779544d45",
       "executable": false
     },
     "tests/delegation-browser/mention-link.mjs": {
@@ -9163,7 +9163,7 @@
       "executable": false
     },
     "tests/launch-runtime/session-boundaries.ts": {
-      "sha256": "4058c5c5c1b6a53bad0ab75786ee58b597b0d8543b7d071c09901ae4437edada",
+      "sha256": "22a1347cbbc2dea42f4c44cfad8f668fd5f97001f9e418da6705e60c66dc63bf",
       "executable": false
     },
     "tests/launch-runtime/unconfigured-host.ts": {
