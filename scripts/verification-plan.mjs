@@ -11,40 +11,41 @@ const playwright = (files, result, config) => ({ files, args: ['exec', 'playwrig
 // separate from push sanity. The ordinary restore and migration journeys remain on push.
 export const journeyFiles = ['tests/rer/journey.test.mjs', 'newtests/t096/forward-upgrade.test.ts', 'newtests/t096/archive-native.test.ts', 'tests/core/onboarding-archive.test.ts'];
 
-// Relative execution costs. Largest journeys go first into the lightest runner;
+// Relative costs calibrated from the m1-runner command and focused journey runs.
+// Largest journeys go first into the lightest runner;
 // each file is executed once, regardless of how many contract clauses it exercises.
 // Two Node workers use independent fixture databases and ports; browser spec gates
 // stay sequential. This overlaps the native D1 proxy waits on each two-core CI host.
 const minutes = {
-  'newtests/t096/report-disclosure.test.ts': 6,
-  'newtests/t096/browser-journeys.test.ts': 5,
-  'newtests/t096/forms-native.test.ts': 4,
+  'newtests/t096/report-disclosure.test.ts': 12,
+  'newtests/t096/browser-journeys.test.ts': 13,
+  'newtests/t096/forms-native.test.ts': 10,
   'newtests/t096/team-native.test.ts': 3,
-  'newtests/t096/archive-recovery.test.ts': 6,
-  'tests/delegation-browser/records-layout.test.ts': 4,
-  'tests/delegation-browser/today-brief.test.ts': 3,
-  'tests/core/capture-providers.test.ts': 3,
-  'tests/core/capture-associations.test.ts': 7,
-  'tests/core/capture-microsoft.test.ts': 3,
-  'tests/core/capture-calendar.test.ts': 6,
-  'tests/core/capture-erasure.test.ts': 6,
-  'tests/core/customer-portability.test.ts': 7,
-  'tests/core/source-onboarding.test.ts': 4,
+  'newtests/t096/archive-recovery.test.ts': 11,
+  'tests/delegation-browser/records-layout.test.ts': 5,
+  'tests/delegation-browser/today-brief.test.ts': 2,
+  'tests/core/capture-providers.test.ts': 4,
+  'tests/core/capture-associations.test.ts': 10,
+  'tests/core/capture-microsoft.test.ts': 4,
+  'tests/core/capture-calendar.test.ts': 3,
+  'tests/core/capture-erasure.test.ts': 9,
+  'tests/core/customer-portability.test.ts': 12,
+  'tests/core/source-onboarding.test.ts': 6,
   'tests/core/onboarding-archive.test.ts': 15,
-  'tests/core/crm-import.test.ts': 6,
-  'tests/core/crm-vendor.test.ts': 3,
-  'tests/core/launch-suppression.test.ts': 5,
-  'tests/core/mailchimp.test.ts': 5,
-  'tests/core/records-search.test.ts': 4,
+  'tests/core/crm-import.test.ts': 7,
+  'tests/core/crm-vendor.test.ts': 4,
+  'tests/core/launch-suppression.test.ts': 6,
+  'tests/core/mailchimp.test.ts': 6,
+  'tests/core/records-search.test.ts': 3,
   'tests/core/signals-outreach.test.ts': 2,
-  'tests/core/record-mail-compose.test.ts': 6,
-  'tests/core/record-mail-follow-up.test.ts': 5,
+  'tests/core/record-mail-compose.test.ts': 10,
+  'tests/core/record-mail-follow-up.test.ts': 10,
   'tests/e2e/operator.spec.mjs': 1,
   'tests/e2e/baseline.spec.mjs': 1,
   'tests/archive/browser.spec.mjs': 2,
   'tests/launch-runtime/mail-ingress.test.ts': 3,
   'tests/rer/journey.test.mjs': 9,
-  'newtests/t096/forward-upgrade.test.ts': 10,
+  'newtests/t096/forward-upgrade.test.ts': 30,
   'newtests/t096/archive-native.test.ts': 7,
 };
 const browserFile = file => /\/e2e\/|\/archive\/|\/delegation-browser\/|\/launch-runtime\/|\/rer\/|newtests\/t096\/(?:browser-journeys|report-disclosure|team-native|archive-native)/.test(file);

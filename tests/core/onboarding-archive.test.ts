@@ -5,7 +5,7 @@ import {preCallingCatalog} from '../../src/core/features/records/archive-generat
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {launchFixture} from '../support/launch-fixture';
-import {mailedIdentity} from '../support/email-link';
+import {emailLinkSignIn,mailedIdentity} from '../support/email-link';
 import {identityResponse} from '../../src/core/features/identity';
 import {createApp} from '../support/app';
 import {createDependencies} from '../support/dependencies';
@@ -37,9 +37,6 @@ function sourceRequests(db:D1Database,cookie:string){
 }
 
 test('API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions',async context=>{
- // Keep session activity time fixed while comparing the exact pre-restore metadata.
- // The journey still authenticates every request and restores the real database.
- context.mock.timers.enable({apis:['Date'],now:Date.now()});
  const source=await launchFixture(),target=await launchFixture();
  const request=async(f:Awaited<ReturnType<typeof launchFixture>>,path:string,method='GET',body?:unknown)=>{const response=await f.request(path,method,body);assert.ok(response.ok,`${method} ${path}: ${response.status} ${(await response.clone().text()).slice(0,300)}`);return response.json() as Promise<any>;};
  try{
@@ -95,7 +92,10 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
   assert.equal(imported.state,'complete');
   assert.equal(imported.completedSteps,imported.totalSteps);assert.equal(imported.nextPart,document.manifest.parts);
  };
- await abortInvalidRestore(target,archive);
+ // Freeze activity timestamps only for the exact rollback comparison. Delegation
+ // expiry must continue to agree with the database's real wall clock afterward.
+ context.mock.timers.enable({apis:['Date'],now:Date.now()});
+ try{await abortInvalidRestore(target,archive);}finally{context.mock.timers.reset();}
  const historicalCatalog=preSlackCatalog(preReportShareCatalog(preDashboardCatalog(preOwnershipCatalog(preFormAssignmentCatalog(preRecordMailCatalog(preCaptureMailRuleCatalog(preCallingCatalog(await foldInstalledCatalog(source.db)))))))));
  for(const catalog of [preLibraryCatalog(historicalCatalog),preForecastCatalog(preOptOutCapabilityCatalog(preLibraryCatalog(historicalCatalog)))]){
  const previous=await launchFixture();
@@ -124,14 +124,16 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
   assert.deepEqual(await local.db.prepare('SELECT * FROM signal_sources WHERE id=?').bind(removedSource.id).first(),removedSource.source,'The local archive keeps removed sources retired');
   assert.deepEqual(await local.db.prepare('SELECT * FROM signals WHERE id=?').bind(removedSource.signalId).first(),removedSource.signal);
  }finally{await local.dispose();}
+ const freshSignIn=await emailLinkSignIn(target.db,'hosted-owner@example.test');
+ const signedInTarget={...target,request:(path:string,method='GET',body?:unknown,headers:Record<string,string>={})=>target.request(path,method,body,{Cookie:freshSignIn.cookie,...headers})};
  // Prepare the destination grant after the failed restore has rolled back, then
  // erase its customer records through the API so the real restore can begin.
  const destinationCustomer=await target.customer('destination@example.test');
- const destinationGrant=await archiveDelegation(target,destinationCustomer.opportunityId,destinationCustomer.contactId,target.actor);
- await request(target,`records/contact/${destinationCustomer.contactId}`,'DELETE',{confirmed:true});
- await request(target,`records/opportunity/${destinationCustomer.opportunityId}`,'DELETE',{confirmed:true});
+ const destinationGrant=await archiveDelegation(signedInTarget,destinationCustomer.opportunityId,destinationCustomer.contactId,target.actor);
+ await request(signedInTarget,`records/contact/${destinationCustomer.contactId}`,'DELETE',{confirmed:true});
+ await request(signedInTarget,`records/opportunity/${destinationCustomer.opportunityId}`,'DELETE',{confirmed:true});
  assert.equal((await destinationGrant.request('/identity')).status,200,'the destination grant is active immediately before restore');
- await restore(target,archive);
+ await restore(signedInTarget,archive);
  assert.equal((await destinationGrant.request('/identity')).status,401,'restore revokes the destination application grant');
  for(const table of ['delegation_grants','delegation_codes','delegation_receipts'])assert.equal(await target.db.prepare(`SELECT count(*) FROM ${table}`).first('count(*)'),0);
  for(const table of ['handoff_tasks','handoff_contacts'])assert.deepEqual((await target.db.prepare(`SELECT * FROM ${table}`).all()).results,sourceGrant.rows[table],'handoff provenance survives detached contacts and restore');

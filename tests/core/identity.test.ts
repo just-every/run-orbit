@@ -15,7 +15,7 @@ test('PUBLIC-004 AUTH-5 OPS-001 TEAM-002 native sign-in, domain policy, session 
  const fixture=await isolatedDatabase(),opportunity=createId(),now=new Date().toISOString(),auth=testAuth(fixture.db);
  try{
   const origin='https://orbit.test',bindings={...identityBindings(fixture.db,new Request(origin)),OWNER_EMAIL:'synthetic-orbit-owner@example.com',SETUP_TOKEN:'synthetic-orbit-setup-token-0123456789'};
-  const claim=(token=bindings.SETUP_TOKEN)=>identityResponse(new Request(origin+'/auth/bootstrap',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({token,displayName:'Owner'})}),bindings,{ownerClaimed:async()=>true});
+  const claim=(token=bindings.SETUP_TOKEN)=>identityResponse(new Request(origin+'/auth/bootstrap',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json','CF-Connecting-IP':'192.0.2.10'},body:JSON.stringify({token,displayName:'Owner'})}),bindings,{ownerClaimed:async()=>true});
   assert.equal((await claim('synthetic-wrong-setup-token-0123456789'))!.status,403);
   const claimed=await claim();assert.equal(claimed!.status,303);assert.ok(claimed!.headers.get('set-cookie'));
   assert.equal((await claim())!.status,409);

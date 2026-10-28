@@ -51,6 +51,7 @@ export async function eraseCapturedOriginals(f:CaptureFixture){
     assert.ok(!archive.includes('Private budget details from Ana.'));
     assert.ok(!privacy.matches(archive) && !archive.includes('Can we talk on Tuesday?'), 'later exports carry none of it');
     await privacy.undo();
-    assert.ok(!privacy.matches(JSON.stringify(await exported(f))), 'import undo cannot restore erased capture evidence');
+    // Release this inspected snapshot so the caller can export the final erased workspace.
+    assert.ok(!privacy.matches(JSON.stringify(await exported(f, true))), 'import undo cannot restore erased capture evidence');
 
 }

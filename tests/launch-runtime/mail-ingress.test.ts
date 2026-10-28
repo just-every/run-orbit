@@ -32,6 +32,9 @@ test('the emitted installation protects seller sessions and consumes authenticat
   await deps.auth.revoke(revoked.id);await db.prepare("UPDATE sessions SET expires_at='2000-01-01T00:00:00.000Z' WHERE id=?").bind(expired.id).run();
   const opportunity=await new WorkbenchRepository(db).createOpportunity({title:'Runtime outreach',companyName:'Runtime Co',contactName:'Runtime buyer',email:'runtime-buyer@orbit.test',stageId:stage,valueCents:0},actor);
   const buyer=(await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(opportunity.id).first<{contact_id:string}>())!.contact_id;
+  // The sent deal moves to NEXT; retain real pending work for the NOW document
+  // and client-transport authority checks before processing delivery receipts.
+  const pending=await new WorkbenchRepository(db).createOpportunity({title:'Customer awaiting review',companyName:'Pending customer',contactName:'Pending buyer',email:'pending-buyer@orbit.test',stageId:stage,valueCents:0},actor);
   const outreach=new OutreachRepository(db),approval=new ApprovalRepository(db);
   const draft=await outreach.createDraft(opportunity.id,{contactId:buyer,subject:'Runtime subject',body:'Runtime body'},actor);
   const message=await approval.approve(draft.id,1,actor,{quietHoursConfirmation:(await approval.preview(draft.id)).localTime});
@@ -41,7 +44,7 @@ test('the emitted installation protects seller sessions and consumes authenticat
   const stopped=await new RecordsRepository(db).save('contact',{name:'Runtime suppressed contact',email:'runtime-customer@orbit.test',contactability:'do_not_contact'},actor);
   await fixture.close();await unconfiguredHost(fixture.directory);await worker.start();
   browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
-  await sessionBoundaries({fixture,worker,browser,session,revoked,expired,opportunity,canary});
+  await sessionBoundaries({fixture,worker,browser,session,revoked,expired,opportunity:pending,canary});
   await publicQuota(fixture,worker);
   const headers={Cookie:`__Host-orbit_session=${session.token}`,Origin:worker.origin,'Content-Type':'application/json'};
   const api=async(path:string)=>{const response=await fetch(worker.origin+'/api/v1/workbench'+path,{headers});assert.equal(response.status,200);return response.json() as any;};
