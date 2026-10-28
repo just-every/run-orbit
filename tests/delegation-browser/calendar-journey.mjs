@@ -20,7 +20,7 @@ export async function calendarJourney(page,data){
    await page.goto(`/app/capture/connect/${provider}?step=5`);
    const form=page.getByRole('form',{name:`Connect ${name}`,exact:true});
    await form.getByLabel('Client ID',{exact:true}).fill('synthetic-orbit-client');
-   await form.getByLabel('Client secret',{exact:true}).fill('synthetic-orbit-secret');
+   await form.getByLabel('Client secret',{exact:true}).fill('synthetic-orbit-1');
    await form.getByLabel('Name this connection').fill(`Sales ${name} calendar`);
    const consent=form.getByRole('checkbox',{name:`Allow reviewed calendar writeback (${writeScope})`,exact:true});await expect(consent).not.toBeChecked();
    if(writeback)await consent.check();
@@ -39,11 +39,37 @@ export async function calendarJourney(page,data){
   }
  }
  await page.goto(`/app/records?kind=contact&record=${data.contact}`);const panel=page.getByRole('region',{name:'Calendar writeback',exact:true});await expect(panel).toContainText('Provider edited the meeting.');
- for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('provider-conflict',width,panel);}
- await panel.getByText('Plan calendar meeting',{exact:true}).click();await panel.getByLabel('Calendar connection',{exact:true}).selectOption(data.source);await panel.getByLabel('Calendar',{exact:true}).selectOption('calendar');await panel.getByLabel('Meeting title',{exact:true}).fill('Synthetic invitation review');await panel.getByLabel('Invitation message',{exact:true}).fill('Review the exact rollout invitation.');await panel.getByLabel('Exact attendee emails',{exact:true}).fill('synthetic-orbit-calendar@example.test');await panel.getByLabel(/^Start \(/).fill('2026-11-02T15:00');await panel.getByLabel(/^End \(/).fill('2026-11-02T15:30');await panel.getByRole('button',{name:'Review invitation',exact:true}).click();
+ const meeting=panel.getByRole('listitem').filter({hasText:data.currentMeeting.title});
+ const original=meeting.locator('details').filter({has:page.getByText('Original invitation',{exact:true})});
+ for(const width of [1440,390]){
+  await page.setViewportSize({width,height:900});
+  await expect(meeting).toContainText('Updated from Google');
+  await assertMeeting(meeting,data.currentMeeting);
+  await proof('provider-conflict',width,panel);
+  await proof('provider-current-details',width,panel);
+  await original.getByText('Original invitation',{exact:true}).click();
+  await assertMeeting(original,data.originalMeeting);
+  await proof('provider-original-invitation',width,panel);
+  await original.getByText('Original invitation',{exact:true}).click();
+  await panel.getByText('Plan calendar meeting',{exact:true}).click();
+  await panel.getByLabel('Meeting',{exact:true}).selectOption(data.writebackId);
+  await expect(panel.getByLabel('Meeting title',{exact:true})).toHaveValue(data.currentMeeting.title);
+  await expect(panel.getByLabel('Invitation message',{exact:true})).toHaveValue(data.currentMeeting.message);
+  await expect(panel.getByLabel('Exact attendee emails',{exact:true})).toHaveValue(data.currentMeeting.attendees.join('\n'));
+  await expect(panel.getByLabel(/^Start \(/)).toHaveValue(localInput(data.currentMeeting.start));
+  await expect(panel.getByLabel(/^End \(/)).toHaveValue(localInput(data.currentMeeting.end));
+  await proof('provider-current-form',width,panel);
+  await panel.getByText('Plan calendar meeting',{exact:true}).click();
+ }
+ await panel.getByText('Plan calendar meeting',{exact:true}).click();await panel.getByLabel('Meeting',{exact:true}).selectOption('');await panel.getByLabel('Calendar connection',{exact:true}).selectOption(data.source);await panel.getByLabel('Calendar',{exact:true}).selectOption('calendar');await panel.getByLabel('Meeting title',{exact:true}).fill('Synthetic invitation review');await panel.getByLabel('Invitation message',{exact:true}).fill('Review the exact rollout invitation.');await panel.getByLabel('Exact attendee emails',{exact:true}).fill('synthetic-orbit-calendar@example.test');await panel.getByLabel(/^Start \(/).fill('2026-11-02T15:00');await panel.getByLabel(/^End \(/).fill('2026-11-02T15:30');await panel.getByRole('button',{name:'Review invitation',exact:true}).click();
  const review=panel.getByRole('region',{name:'Invitation review',exact:true});await expect(review).toContainText('synthetic-orbit-calendar@example.test');await expect(review).toContainText('Review the exact rollout invitation.');
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('invitation-review',width,panel);}
  await review.getByRole('button',{name:'Cancel review',exact:true}).click();await expect(review).toHaveCount(0);expect(errors).toEqual([]);
  }finally{await edge.send('Fetch.disable');await edge.detach();}
+ function localInput(instant){
+  const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:data.timeZone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(instant)).map(part=>[part.type,part.value]));
+  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
+ }
+ async function assertMeeting(region,meeting){for(const value of [meeting.title,meeting.message,meeting.start,meeting.end,...meeting.attendees])await expect(region).toContainText(value);}
  async function proof(name,width,region,selector='[aria-labelledby^="meeting-writeback-"]'){await expect(region).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);const axe=await new AxeBuilder({page}).include(selector).analyze();expect(axe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);if(selector==='.capture-key-form')await page.screenshot({path:`${evidence}/${name}-${width}.png`,fullPage:true});else await region.screenshot({path:`${evidence}/${name}-${width}.png`});}
 }
