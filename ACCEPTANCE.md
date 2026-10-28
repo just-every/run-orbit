@@ -872,7 +872,7 @@ Status: **partial** (target).
 
 Choose Pipedrive, connect an authorized account containing two pipelines, cross-linked activities and deal files, preview/apply, resume a rate-limited page and rerun; reconcile every exported entity and association, then undo without losing a native note. Include a real authorized export.
 
-Evidence: `src/core/features/imports/contracts.ts`; `tests/core/crm-import.test.ts`
+Evidence: `src/core/features/imports/contracts.ts`; `tests/core/crm-vendor.test.ts`
 
 Remaining scope: Pipedrive core CSV presets exist; complete connected migration, products, activity history and files remain missing.
 
