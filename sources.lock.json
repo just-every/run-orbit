@@ -835,7 +835,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-captured-review-390.png": {
-      "sha256": "452b2d9aebb9de7334ce0e8b9c7ff60feae2c2b120058ddfec313885e064b26d",
+      "sha256": "67ee83f30cfc023507e7663cfab643e074e90f732c266814a71b7f3d690347a7",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-conflict-review-1440.png": {
@@ -843,7 +843,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-conflict-review-390.png": {
-      "sha256": "ebf20f3e6c66a410b0a1403dcc5052dd4a45cbff924d2cbfe187c5735eeaa38c",
+      "sha256": "a5b0a704941d5cb2b4a508a8756f2fa675996f13cc95ac6b245ec8886ccef65d",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-occurrence-cancel-1440.png": {
@@ -851,7 +851,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-occurrence-cancel-390.png": {
-      "sha256": "65a21cc208f5f16f9a691fbe3ba2b40a74fff0c89c2c44778c2ca69dec3ef743",
+      "sha256": "e51a075904d66859ba1e0d9f597b46300a4b52e6cf0990e07c68cebdbce0cd7e",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-occurrence-reschedule-1440.png": {
@@ -859,23 +859,23 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-occurrence-reschedule-390.png": {
-      "sha256": "119c947243f011ade379af2369f3bebde545d91d9041c4639dd773b5c0b58be9",
+      "sha256": "4d7adf8be9d0610e9fedc6ef67b896285671c3bc4f1d1c13d34548bca5e25bf7",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-organizer-refusal-1440.png": {
-      "sha256": "5c5860d0f38fb2395dc7a92ad3f7fb082c1b61a6cd6d07112eeba486378a2752",
+      "sha256": "3f920dfc8617fba35e78271a9c3e26d31bc8a975bee0fe028012ad509042db67",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-organizer-refusal-390.png": {
-      "sha256": "2629d1f97fc4eb32802d740a1e0779ddfcc397bca1dec7ca5bb0fdb4c7a87619",
+      "sha256": "59f5d863bf539ad28833da4ff13b3fb47e05be27b9f47726d483fd8de888ad9e",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-reconnect-consent-1440.png": {
-      "sha256": "b928c4f69ec4b1cbcc83e47c0094c4fdfc277b357ad9b918853109c33b49d850",
+      "sha256": "4a82b01540d0ff70da3f80547bb497bcaa7f2f8d6e14680a9343d1d07f9dce41",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-reconnect-consent-390.png": {
-      "sha256": "d403e636242572464052ad2ef34a19e78f09bd5f3e076491fa4bec35d0e7913b",
+      "sha256": "79280da418bc46bdf1b1def4aeed1a47422870ea7c5409ca66b95210c9e3e8e0",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-series-review-1440.png": {
@@ -883,7 +883,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-series-review-390.png": {
-      "sha256": "397d2888135a9ad7d7ebd6049fd7f6dac207eef8087dbaebd7c8233ceeeea2dd",
+      "sha256": "6a41a5fa0359f3d9944b37309d9b0fe8848195257a807c128ad20d8029c07087",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-unresolved-setup-1440.png": {
@@ -899,7 +899,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-captured-review-390.png": {
-      "sha256": "314aad4b82478037671a509e5fb5588b04f26820bed47106295af8729ad8c2aa",
+      "sha256": "5ff0ec5cccd7971daf8333a8e0aeb5d49c66826f17139702930f54343afa760b",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-conflict-review-1440.png": {
@@ -907,7 +907,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-conflict-review-390.png": {
-      "sha256": "971ed206f007728b797576132f597c85f295f389c9d3f2c1c408b428730e1490",
+      "sha256": "7e2991fdd9a2838310344d3e1b5dabf270fb0e4fbbe1b4450b29f3edc17fe892",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-occurrence-cancel-1440.png": {
@@ -923,7 +923,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-occurrence-reschedule-390.png": {
-      "sha256": "c9a28f5bb4cae0a7be1d71185f9cc3d6545b20e54ea65a5c05572392b8602d2d",
+      "sha256": "1e7684b60e4ea98aca598f10b8a95a2a5239c9ac3df242ec043ca6e4d0f2b08a",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-organizer-refusal-1440.png": {
@@ -931,7 +931,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-organizer-refusal-390.png": {
-      "sha256": "9c35a6cffc997a46758a98749702f0af6c4bd65e8e10b9401597ca956ebae0cc",
+      "sha256": "78df3d0d1eb72b3fa5eb9f25f70bac7ce6bc67a981fbd975e112ee97efb7dd56",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-reconnect-consent-1440.png": {
@@ -947,7 +947,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-series-review-390.png": {
-      "sha256": "4842deed128f6fc269e0d032273b7b669fcfff8edec841d392f314e57402575b",
+      "sha256": "866e33876c39053428f36182afa77761b73bbeeefd64fe4f383812803a6b08a6",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-unresolved-setup-1440.png": {
@@ -8847,7 +8847,7 @@
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {
-      "sha256": "8bbfd0fd9fa9adfc8aca9b45103fe74db9c96bc49d84148afe17f6f570046ddf",
+      "sha256": "7d71b1f0054439a72df15b74c4df882542aad61660c7c7a2700652edda74ecbf",
       "executable": false
     },
     "tests/delegation-browser/calling-journey.mjs": {
@@ -9567,7 +9567,7 @@
       "executable": false
     },
     "tests/support/calendar-writeback-extended.ts": {
-      "sha256": "158ab6761dff392382824249bde0313c0f8c3c30e6a62baf857b56d23d67f932",
+      "sha256": "bf3031673f9368a0a8dd010133446e9172fb96f38248319add0ab48dbc9e4b9e",
       "executable": false
     },
     "tests/support/calendar-writeback.ts": {
