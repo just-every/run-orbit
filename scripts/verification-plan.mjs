@@ -16,26 +16,26 @@ export const journeyFiles = [
   'tests/core/migration-recovery.test.ts',
 ];
 
-// Measured m1 journey minutes; incomplete flows use conservative estimates
-// until their focused run completes. Browser entries also budget server setup.
+// m1 full/focused journey timings, including browser-server setup allowance.
+// Historical component totals and variable request-budget windows round up.
 // Longest first into the lightest runner keeps setup and browser costs shared.
 const minutes = {
   'newtests/t096/archive-import-recovery.test.ts': 7.74,
   'newtests/t096/archive-lineage-accepted-main.test.ts': 40,
-  'newtests/t096/browser-journeys.test.ts': 1.73,
-  'newtests/t096/empty-native.test.ts': 0.54,
+  'newtests/t096/browser-journeys.test.ts': 2.34,
+  'newtests/t096/empty-native.test.ts': 0.57,
   'newtests/t096/forward-upgrade.test.ts': 0.45,
   'newtests/t096/portability-journey.test.ts': 8,
   'newtests/t096/report-disclosure.test.ts': 2.95,
-  'tests/archive/browser.spec.mjs': 4.88,
+  'tests/archive/browser.spec.mjs': 5.5,
   'tests/core/capture-upgrade.test.ts': 0.22,
   'tests/core/customer-capture.test.ts': 9.83,
-  'tests/core/customer-contact-permission.test.ts': 2,
+  'tests/core/customer-contact-permission.test.ts': 5.0,
   'tests/core/customer-google-source.test.ts': 9.41,
   'tests/core/customer-identity.test.ts': 1.53,
   'tests/core/customer-microsoft-source.test.ts': 6.8,
   'tests/core/customer-opt-out.test.ts': 1.22,
-  'tests/core/customer-privacy.test.ts': 2.5,
+  'tests/core/customer-privacy.test.ts': 2.67,
   'tests/core/customer-replies.test.ts': 0.62,
   'tests/core/customer-sending.test.ts': 0.75,
   'tests/core/migration-recovery.test.ts': 0.88,
@@ -46,10 +46,10 @@ const minutes = {
   'tests/core/sales-records.test.ts': 3.28,
   'tests/core/sales-sources.test.ts': 3.82,
   'tests/core/sales-today.test.ts': 2.17,
-  'tests/delegation-browser/native.test.ts': 4,
+  'tests/delegation-browser/native.test.ts': 1.58,
   'tests/delegation-browser/today-brief.test.ts': 0.72,
   'tests/delegation/authority-journey.test.ts': 2.5,
-  'tests/e2e/workspace.spec.mjs': 3,
+  'tests/e2e/workspace.spec.mjs': 1.83,
   'tests/launch-runtime/mail-body-transport.release.test.ts': 0.5,
   'tests/launch-runtime/mail-ingress.test.ts': 0.75,
   'tests/rer/admission.release.test.mjs': 3.43,

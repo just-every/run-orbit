@@ -3499,7 +3499,7 @@
       "executable": false
     },
     "newtests/t096/portability-sanity-custody.ts": {
-      "sha256": "908352a8f3ec1c6dce80e453c9a208dbd647d8cc713c1fba37e0ee345fcc4918",
+      "sha256": "2c25e43f94984f2608f7783c06db7151a167a1876eb8105d80f1c1c63e7649cd",
       "executable": false
     },
     "newtests/t096/portability-sanity-library.ts": {
@@ -3983,7 +3983,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "d9bfca0fad9bee900f04949f5f113b3cbc673b9d77e86b8f8eb82fa712879217",
+      "sha256": "808d141eb7227fec7310e461555373628e26387e085b0f24021b89a511af41ce",
       "executable": false
     },
     "scripts/verification-reuse.sh": {
@@ -9339,7 +9339,7 @@
       "executable": false
     },
     "tests/support/current-sales-archive.ts": {
-      "sha256": "3268b6769451f5f70bbd377abe93e780b88a82b517aea73d41435a37538f45e8",
+      "sha256": "dbfd0cd78e43eda31d11905e161b39582e83d229c8b21775c45af26a7e77a27e",
       "executable": false
     },
     "tests/support/current-sales-data.ts": {

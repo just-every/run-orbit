@@ -2,17 +2,25 @@ import assert from 'node:assert/strict';
 import {fixtureMailbox,type CaptureFixture} from './capture-fixture';
 import type {currentSalesData} from './current-sales-data';
 import {archiveHash,type ArchivePart} from '../../src/core/features/records/archive-schema';
-import {lineageHash} from '../../src/core/shared/archive-lineage';
 import {proveLocalSalesArchive,type PortabilityCopyHooks} from './current-sales-local';
 import {testAuth} from './test-auth';
 import {createApp} from './app';
 
-export type CurrentArchiveHooks=PortabilityCopyHooks&{erased?(db:D1Database,request:(path:string,init?:RequestInit)=>Promise<Response>):Promise<void>;afterComparison?(db:D1Database,request:(path:string,init?:RequestInit)=>Promise<Response>):Promise<void>};
+export type CurrentArchiveHooks=PortabilityCopyHooks&{replacedOwnerId?:string;erased?(db:D1Database,request:(path:string,init?:RequestInit)=>Promise<Response>):Promise<void>;afterComparison?(db:D1Database,request:(path:string,init?:RequestInit)=>Promise<Response>):Promise<void>};
+const canonicalRows=(rows:Record<string,unknown>[])=>rows
+ .map(row=>Object.fromEntries(Object.entries(row).sort(([left],[right])=>left.localeCompare(right))))
+ .sort((left,right)=>JSON.stringify(left).localeCompare(JSON.stringify(right)));
+
 export async function proveCurrentArchive(source:CaptureFixture,target:{db:D1Database;actor:string},data:Awaited<ReturnType<typeof currentSalesData>>,archive:{manifest:any;parts:ArchivePart[]},hooks:CurrentArchiveHooks={}){
  for(const part of archive.parts)assert.equal(await archiveHash(part.records),part.sha256,'all exported part digests validate');
  const rows=(document:typeof archive,table:string)=>document.parts.flatMap(part=>part.records.filter(row=>row.table===table).map(row=>row.row));
  const categories=['workspace_settings','pipeline_stages','signal_sources','signal_links','timeline_entry_records','evaluations','evaluation_contributions','recommendations','recommendation_evidence','notifications','outbound_messages','drafts','schema_types','ai_calls','ai_previews','contacts','companies','opportunities','record_aliases','pipelines','pipeline_stage_rules','sales_tasks','sales_task_series','sales_task_timeline','opportunity_stakeholder_roles','opportunity_buying_context','contact_company_relationships','analytics_definitions','analytics_snapshots','analytics_snapshot_sources','content_entities','content_revisions','publication_operations','form_spam','marketing_form_submissions','consent_events','capture_sources','capture_items','capture_proposals','handoff_tasks','timeline_entries','signals','audit_entries'];
  for(const table of categories.filter(name=>name!=='record_aliases'))assert.ok(rows(archive,table).length>0,`${table} has populated current data`);
+ if(hooks.replacedOwnerId){
+  assert.equal(rows(archive,'operators').find(row=>row.id===hooks.replacedOwnerId)?.setup_owner,1,'The caller declares the archived setup owner replaced by the hosted owner');
+  assert.notEqual(hooks.replacedOwnerId,target.actor);
+  assert.deepEqual(await target.db.prepare('SELECT status,setup_owner FROM operators WHERE id=?').bind(hooks.replacedOwnerId).first(),{status:'removed',setup_owner:0});
+ }
  const text=JSON.stringify(archive);assert.ok(!text.includes('anonymous-before-export@example.test'));
  assert.ok(rows(archive,'audit_entries').some(row=>row.entity_id==='erased'),'anonymized deletion audit travels');
  for(const table of ['capture_credentials','sessions','access_grants','access_invitations','access_form_authorities','delegation_grants','delegation_codes'])assert.ok(!archive.manifest.tables.some((entry:any)=>entry.name===table),`${table} never travels`);
@@ -28,12 +36,28 @@ export async function proveCurrentArchive(source:CaptureFixture,target:{db:D1Dat
   if(table==='audit_entries'){for(const row of original)assert.ok(restored.some(candidate=>JSON.stringify(candidate)===JSON.stringify(row)),'every original audit row remains');continue;}
   if(table==='signal_sources'){for(const row of original){const actual=restored.find(candidate=>candidate.id===row.id);assert.deepEqual(actual,{...row,enabled:row.type==='fixed_form'?0:row.enabled});}continue;}
   if(table==='publication_operations'){assert.ok(restored.every(row=>row.state!=='published'));for(const row of original){const actual=restored.find(candidate=>candidate.id===row.id);assert.deepEqual(actual,{...row,state:row.state==='published'?'withdrawn':row.state});}continue;}
-  if(table==='outbound_messages'){for(const row of original){const actual=restored.find(candidate=>candidate.id===row.id);assert.ok(actual);if(row.state==='scheduled'){assert.equal(actual.state,'cancelled');assert.ok(String(actual.failure).includes('restore'));assert.deepEqual(actual,{...row,state:'cancelled',failure:actual.failure,updated_at:actual.updated_at});}else assert.deepEqual(actual,row);}continue;}
+  if(table==='outbound_messages'){for(const row of original){const actual=restored.find(candidate=>candidate.id===row.id);assert.ok(actual);if(row.state==='scheduled'){
+   assert.equal(actual.state,'cancelled');
+   if(row.operator_id===hooks.replacedOwnerId){
+    assert.match(String(actual.failure),/owner.*replaced.*restore/i);
+    assert.deepEqual(actual,{...row,state:'cancelled',failure:actual.failure},'Retiring the source owner cancels its approval without rewriting the original timestamp or message');
+   }else{
+    assert.match(String(actual.failure),/restore.*review/i);
+    const changedAt=Date.parse(String(actual.updated_at));assert.ok(changedAt>=Date.parse(archive.manifest.exportedAt)&&changedAt<=Date.now(),'Fresh-review cancellation records its restore time');
+    assert.deepEqual(actual,{...row,state:'cancelled',failure:actual.failure,updated_at:actual.updated_at});
+   }
+  }else assert.deepEqual(actual,row);}continue;}
   if(table==='timeline_entries'){
    for(const row of original)assert.ok(restored.some(candidate=>candidate.id===row.id&&JSON.stringify(candidate)===JSON.stringify(row)),'immutable agent, task and customer history survives');continue;
   }
-  const stable=(entries:typeof original)=>entries.map(row=>JSON.stringify(row)).sort();
-  assert.equal(await lineageHash(stable(restored)),await lineageHash(stable(original)),`${table} complete content digest survives`);
+  let expected=original;
+  if(table==='opportunities'&&hooks.replacedOwnerId){
+   assert.ok(original.some(row=>row.lifecycle==='open'&&row.owner_id===hooks.replacedOwnerId),'The fixture includes future work assigned to the replaced owner');
+   // Hosted restore retires the source setup owner and leaves their open deals unassigned.
+   // Every other field, including queue state and updated_at, must remain exact.
+   expected=original.map(row=>row.lifecycle==='open'&&row.owner_id===hooks.replacedOwnerId?{...row,owner_id:null}:row);
+  }
+  assert.deepEqual(canonicalRows(restored),canonicalRows(expected),`${table} complete contents survive the declared authority changes`);
  }
  const peer=await target.db.prepare("SELECT id FROM operators WHERE status='active' AND id<>? LIMIT 1").bind(target.actor).first<string>('id');assert.ok(peer,'a second full operator exists');
  const otherSession=await testAuth(target.db).createSession(peer!);assert.equal((await request(`/api/v1/records/archive/exports/${job.id}/download`,undefined,'GET',`__Host-orbit_session=${otherSession.token}`)).status,404,'one full operator cannot download another operator export job');
