@@ -11,7 +11,7 @@ import {WorkbenchRepository} from '../../src/core/features/workbench/repository'
 import {OutreachService} from '../../src/core/features/outreach/service';
 import type {OutboundMessage} from '../../src/core/features/outreach/approval-repository';
 import {databaseDigest} from '../support/stop-attribution';
-test('OUT-020 managed opt-out is approval-bound, suppresses only its recipient and stops replayed dispatch',async context=>{
+test('OUT-020 OUT-029 OUT-032 managed opt-out is approval-bound, suppresses only its recipient and stops replayed dispatch',async context=>{
  const actual=globalThis.fetch,requests:{url:string;body:any}[]=[];
  const relayUrl='https://managed-mail.example.test/send';
  globalThis.fetch=async(input,init)=>{const url=String(input);requests.push({url,body:JSON.parse(String(init?.body??'{}'))});if(url===relayUrl)return Response.json({messageId:`<relay-${requests.length}@example.test>`},{status:202});if(url==='https://api.sendgrid.com/v3/mail/send')return new Response(null,{status:202,headers:{'x-message-id':'test-provider-receipt'}});if(url==='https://api.openai.com/v1/responses')return Response.json({status:'completed',usage:{input_tokens:1,output_tokens:1,input_tokens_details:{cached_tokens:0}},output:[{content:[{type:'output_text',text:JSON.stringify({explanation:'Observed request.',subject:'Request',body:'Thank you for your request.',evidenceIds:['test-evidence']})}]}]});throw new Error('Unexpected outbound target');};

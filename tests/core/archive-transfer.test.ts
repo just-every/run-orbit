@@ -65,7 +65,7 @@ finally {
     await source.dispose();
     await target.dispose();
 } });
-test('API-001 credential custody and DATA-002 contact erasure invalidate exports, downloads and restore copies and fences a snapshot created during discovery', async () => {
+test('API-002 credential custody and DATA-002 contact erasure invalidate exports, downloads and restore copies and fences a snapshot created during discovery', async () => {
     const fixture = await isolatedDatabase();
     try {
         const actor = await owner(fixture.db), contact = createId();

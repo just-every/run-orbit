@@ -30,7 +30,7 @@ export async function restrictedEdit(db:D1Database,c:ActorContext,kind:keyof typ
 export function collaboratorNativeBoundary(db:D1Database):MiddlewareHandler<{Variables:{operator:AuthenticatedOperator}}>{return async(c,next)=>{
  const operator=c.get('operator');if(await isFullOperator(db,operator.operatorId)){await next();return;}
  try{const path=c.req.path;
-  // RECORD-017: a collaborator reads only their own mention notifications about records shared with them with entries now.
+  // RECORD-023: a collaborator reads only their own mention notifications about records shared with them with entries now.
   // The scoped reads require an active membership and a live grant, so someone who has not accepted an invitation reads none.
   if(path==='/api/v1/notifications'||path.startsWith('/api/v1/notifications/')||(path==='/api/v1/records/mentions'&&c.req.method==='GET')){
    if(path==='/api/v1/records/mentions')return c.json({mentions:await collaboratorMentions(db,operator.operatorId)});
