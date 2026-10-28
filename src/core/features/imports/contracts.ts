@@ -4,6 +4,7 @@ export type ImportKind = typeof kinds[number];
 export const importInput = z.object({
  vendor:z.enum(['csv','hubspot','pipedrive']), account:z.string().trim().min(1).max(100),
  files:z.array(z.object({kind:z.enum(kinds),name:z.string().min(1).max(150),csv:z.string().max(2_000_000),mapping:z.record(z.string().max(60),z.string().max(200)),customFields:z.array(z.string().min(1).max(200)).max(100).optional(),separator:z.enum([';',',','|']).default(';')}).strict()).min(1).max(5),
+ owners:z.record(z.string().max(200),z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/).nullable()).optional(),
  stages:z.record(z.string().max(200),z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/)).default({}),
  contactability:z.enum(['mapped_permission','confirmed_contactable']).default('mapped_permission'),
 }).strict();
@@ -34,7 +35,7 @@ export function defaultMapping(vendor:ImportInput['vendor'],kind:ImportKind,head
  return Object.fromEntries(fields[kind].flatMap(field=>{
   const expected=presets[vendor][kind][field],exact=expected?headers.filter(header=>header.trim().toLowerCase()===expected.toLowerCase()):[];
   if(exact.length)return exact.length===1?[[field,exact[0]]]:[];
-  const aliases=[...(expected?[expected]:[]),field,...(field==='name'?(kind==='company'?['company name','name']:['full name','contact name']):csvHeaderAliases[field]??[])].map(normalizedHeader);
+  const aliases=[...(expected?[expected]:[]),field,...(field==='owner'?[`${kind} owner`]:field==='name'?(kind==='company'?['company name','name']:['full name','contact name']):csvHeaderAliases[field]??[])].map(normalizedHeader);
   const matches=headers.filter(header=>aliases.includes(normalizedHeader(header)));
   return matches.length===1?[[field,matches[0]]]:[];
  }));

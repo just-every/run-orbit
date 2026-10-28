@@ -44,6 +44,7 @@ export function undoOwnershipStatements(db:D1Database,batch:OwnershipBatch,items
  for(const item of items.filter(item=>item.applied)){
   const gate=itemGate(batch,item,'applied');
   statements.push(db.prepare(`UPDATE ownership_batch_items SET failure=CASE
+   WHEN failure='Record changed during import' THEN failure
    WHEN NOT EXISTS(SELECT 1 FROM ${tables[batch.record_type]} WHERE id=record_id) THEN 'No permission or record unavailable'
    WHEN previous_owner_id IS NOT NULL AND NOT EXISTS(SELECT 1 FROM operators WHERE id=previous_owner_id AND status='active') THEN 'Previous owner is inactive or unavailable'
    WHEN NOT EXISTS(SELECT 1 FROM record_ownership x WHERE x.record_type=? AND x.record_id=ownership_batch_items.record_id AND x.revision=applied_revision AND x.owner_id IS ?) OR COALESCE((SELECT revision FROM graph_records WHERE workspace_id='workspace' AND kind=? AND id=ownership_batch_items.record_id AND retired_into_id IS NULL),0)<>reviewed_record_revision OR (SELECT updated_at FROM ${tables[batch.record_type]} WHERE id=record_id) IS NOT reviewed_updated_at THEN 'Record changed since assignment'

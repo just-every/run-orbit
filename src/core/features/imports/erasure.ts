@@ -1,3 +1,4 @@
+import {eraseImportOwnerNotices} from './owner-notices';
 import { eraseD1ImportTarget,type D1Sql,type D1ImportContext } from '../../../modules/import-kit/d1/index';
 import {targets,sql} from './targets';
 import {containsMailbox,withdrawImportReviews} from './review-erasure';
@@ -14,6 +15,8 @@ export function captureImportErasure(database:D1Database){
 export function erasureContext(db:D1Database,actor:string,sessionId?:string):D1ImportContext{return{destination:'workspace',namespace:'orbit-privacy-erasure',mappingVersion:'orbit-csv-v1',originalErasurePolicy:'withdraw-all-job-artifacts',storage:{database:db,targets},authorization:{principalId:actor,predicate:()=>sql("EXISTS(SELECT 1 FROM operators o JOIN access_memberships m ON m.operator_id=o.id WHERE o.id=? AND o.status='active' AND m.workspace_id='workspace' AND m.status='active' AND m.role='legacy_operator' AND NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=o.id)) AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN('restore','archive_import')) AND (? IS NULL OR EXISTS(SELECT 1 FROM sessions WHERE id=? AND operator_id=? AND revoked_at IS NULL AND expires_at>strftime('%Y-%m-%dT%H:%M:%fZ','now')))",actor,sessionId??null,sessionId??null,actor)}};}
 export async function withdrawRelatedImportCopies(db:D1Database,actor:string,id:string,emails:string[],sessionId?:string){
  const context=erasureContext(db,actor,sessionId);
+ await db.batch([eraseImportOwnerNotices(db,'contact',id)]);
+ await eraseD1ImportTarget('contact-owner',id,targets.remove('workspace','contact-owner',id),context);
  const references=(await db.prepare("SELECT id FROM crm_import_references WHERE (record_kind='contact' AND record_id=?) OR lower(mailbox) IN(SELECT value FROM json_each(?))").bind(id,JSON.stringify(emails.map(e=>e.toLowerCase()))).all<{id:string}>()).results;
  for(const reference of references)await eraseD1ImportTarget('reference',reference.id,targets.remove('workspace','reference',reference.id),context);
  const copies=(await db.prepare("SELECT kind,id,original_json FROM crm_import_targets WHERE kind='note'").all<{kind:string;id:string;original_json:string}>()).results;
