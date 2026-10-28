@@ -4,7 +4,7 @@ export const testFiles = directory => discoverTests(directory);
 export const verificationOptions = () => ({ journeys: process.env.ORBIT_VERIFY_JOURNEYS === '1', nightly: process.env.ORBIT_VERIFY_NIGHTLY === '1' });
 const gate = (...args) => ({ args });
 const reporter = file => ['--test-reporter=spec', '--test-reporter-destination=stdout', '--test-reporter=./scripts/core-results.mjs', `--test-reporter-destination=${file}`];
-const nodeTests = (files, result) => ({ args: ['exec', 'tsx', '--test', '--no-test-only', '--test-concurrency=1', ...reporter(result), ...files], files, result });
+const nodeTests = (files, result) => ({ args: ['exec', 'tsx', '--test', '--no-test-only', '--test-concurrency=2', ...reporter(result), ...files], files, result });
 const playwright = (files, result, config) => ({ files, args: ['exec', 'playwright', 'test', ...(config ? ['--config', config] : []), ...files, '--workers=1', '--forbid-only', '--reporter=list,./scripts/browser-results.mjs'], result, browser: true });
 
 // Installer/README clone and complete historical archive qualification are deliberately
@@ -13,6 +13,8 @@ export const journeyFiles = ['tests/rer/journey.test.mjs', 'newtests/t096/forwar
 
 // Relative execution costs. Largest journeys go first into the lightest runner;
 // each file is executed once, regardless of how many contract clauses it exercises.
+// Two Node workers use independent fixture databases and ports; browser spec gates
+// stay sequential. This overlaps the native D1 proxy waits on each two-core CI host.
 const minutes = {
   'newtests/t096/report-disclosure.test.ts': 5,
   'newtests/t096/browser-journeys.test.ts': 5,
