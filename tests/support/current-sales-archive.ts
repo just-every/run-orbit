@@ -3,22 +3,25 @@ import {fixtureMailbox,type CaptureFixture} from './capture-fixture';
 import type {launchFixture} from './launch-fixture';
 import type {currentSalesData} from './current-sales-data';
 import {archiveHash,type ArchivePart} from '../../src/core/features/records/archive-schema';
-import {lineageHash} from '../../src/core/shared/archive-lineage';
+import {lineageHash,workflowArchiveTables} from '../../src/core/shared/archive-lineage';
 import {proveLocalSalesArchive} from './current-sales-local';
+import {proveWorkflowCustody} from './workflow-archive-proof';
 import {testAuth} from './test-auth';
 import {createApp} from './app';
 
 export async function proveCurrentArchive(source:CaptureFixture,target:Awaited<ReturnType<typeof launchFixture>>,data:Awaited<ReturnType<typeof currentSalesData>>,archive:{manifest:any;parts:ArchivePart[]}){
  for(const part of archive.parts)assert.equal(await archiveHash(part.records),part.sha256,'all exported part digests validate');
  const rows=(document:typeof archive,table:string)=>document.parts.flatMap(part=>part.records.filter(row=>row.table===table).map(row=>row.row));
- const categories=['workspace_settings','pipeline_stages','signal_sources','signal_links','timeline_entry_records','evaluations','evaluation_contributions','recommendations','recommendation_evidence','notifications','outbound_messages','drafts','schema_types','ai_calls','ai_previews','contacts','companies','opportunities','record_aliases','pipelines','pipeline_stage_rules','sales_tasks','sales_task_series','sales_task_timeline','opportunity_stakeholder_roles','opportunity_buying_context','contact_company_relationships','analytics_definitions','analytics_snapshots','analytics_snapshot_sources','content_entities','content_revisions','publication_operations','form_spam','marketing_form_submissions','consent_events','capture_sources','capture_items','capture_proposals','handoff_tasks','timeline_entries','signals','audit_entries'];
- for(const table of categories.filter(name=>name!=='record_aliases'))assert.ok(rows(archive,table).length>0,`${table} has populated current data`);
+ const categories=['workspace_settings','pipeline_stages','signal_sources','signal_links','timeline_entry_records','evaluations','evaluation_contributions','recommendations','recommendation_evidence','notifications','outbound_messages','drafts','schema_types','ai_calls','ai_previews','contacts','companies','opportunities','record_aliases','pipelines','pipeline_stage_rules','sales_tasks','sales_task_series','sales_task_timeline','opportunity_stakeholder_roles','opportunity_buying_context','contact_company_relationships','analytics_definitions','analytics_snapshots','analytics_snapshot_sources','content_entities','content_revisions','publication_operations','form_spam','marketing_form_submissions','consent_events','capture_sources','capture_items','capture_proposals','handoff_tasks','timeline_entries','signals','audit_entries',...workflowArchiveTables];
+ const emptyWorkflowTables=['workflow_field_policies','workflow_rotation'];
+ for(const table of categories.filter(name=>name!=='record_aliases'&&!emptyWorkflowTables.includes(name)))assert.ok(rows(archive,table).length>0,`${table} has populated current data`);
  const text=JSON.stringify(archive);assert.ok(!text.includes('anonymous-before-export@example.test'));
  assert.ok(rows(archive,'audit_entries').some(row=>row.entity_id==='erased'),'anonymized deletion audit travels');
  for(const table of ['capture_credentials','sessions','access_grants','access_invitations','access_form_authorities','delegation_grants','delegation_codes'])assert.ok(!archive.manifest.tables.some((entry:any)=>entry.name===table),`${table} never travels`);
  const session=await testAuth(target.db).createSession(target.actor),cookie=`__Host-orbit_session=${session.token}`,app=createApp({database:target.db,assets:{fetch:async()=>new Response(null,{status:404})}});
  const request=(path:string,body?:unknown,method=body===undefined?'GET':'POST',override?:string)=>app.request('https://orbit.test'+path,{method,headers:{Cookie:override??cookie,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
  const call=async(path:string,body?:unknown,method?:string)=>{const response=await request(path,body,method);assert.ok(response.ok,`${path}: ${response.status} ${await response.clone().text()}`);return response.json() as Promise<any>;};
+ await proveWorkflowCustody(source,target,data.workflow,call);
  let job=await call('/api/v1/records/archive/exports',{});
  while(job.state==='preparing')job=await call(`/api/v1/records/archive/exports/${job.id}/advance`,{});
  assert.equal(job.state,'ready');const again=await call(`/api/v1/records/archive/exports/${job.id}/download`) as typeof archive;
@@ -31,6 +34,15 @@ export async function proveCurrentArchive(source:CaptureFixture,target:Awaited<R
   if(table==='outbound_messages'){for(const row of original){const actual=restored.find(candidate=>candidate.id===row.id);assert.ok(actual);if(row.state==='scheduled'){assert.equal(actual.state,'cancelled');assert.ok(String(actual.failure).includes('restore'));assert.deepEqual(actual,{...row,state:'cancelled',failure:actual.failure,updated_at:actual.updated_at});}else assert.deepEqual(actual,row);}continue;}
   if(table==='timeline_entries'){
    for(const row of original)assert.ok(restored.some(candidate=>candidate.id===row.id&&JSON.stringify(candidate)===JSON.stringify(row)),'immutable agent, task and customer history survives');continue;
+  }
+  if(table==='workflow_versions'){
+   for(const row of original){const actual=restored.find(candidate=>candidate.workflow_id===row.workflow_id&&candidate.version===row.version);assert.ok(actual);assert.deepEqual(actual,{...row,status:row.status==='active'||row.status==='needs_reactivation'?'paused':row.status,preview_id:null,preview_json:null});}continue;
+  }
+  if(table==='workflow_runs'){
+   for(const row of original){const actual=restored.find(candidate=>candidate.id===row.id);assert.ok(actual);assert.deepEqual(actual,{...row,status:row.status==='completed'||row.status==='undone'?row.status:'stopped',reason:row.status==='completed'||row.status==='undone'?row.reason:'Restored run needs fresh activation'});}continue;
+  }
+  if(table==='workflow_approvals'){
+   for(const row of original){const actual=restored.find(candidate=>candidate.id===row.id);assert.ok(actual);assert.deepEqual(actual,{...row,status:row.status==='pending'?'expired':row.status});}continue;
   }
   const stable=(entries:typeof original)=>entries.map(row=>JSON.stringify(row)).sort();
   assert.equal(await lineageHash(stable(restored)),await lineageHash(stable(original)),`${table} complete content digest survives`);

@@ -136,7 +136,7 @@ export async function planRecordAction(context:WorkflowContext,action:WorkflowRe
   if(field!=='lifecycle')await new RecordsRepository(context.db).prepareSave(target.kind,input,context.actorId,target.id,{ordinaryEdit:true});
   // Native edits do not yet store per-field old values. Refuse a target edited
   // after the event rather than treating its later value as trigger-time state.
-  const changedAfterTrigger=snapshot?JSON.stringify(fieldValue(raw,field)??null)!==JSON.stringify(fieldValue(snapshot,field)??null):Date.parse(String(row.updated_at))>Date.parse(context.occurredAt);
+  const changedAfterTrigger=context.previewHistorical?false:snapshot?JSON.stringify(fieldValue(raw,field)??null)!==JSON.stringify(fieldValue(snapshot,field)??null):Date.parse(String(row.updated_at))>Date.parse(context.occurredAt);
   plans.push({id:await identity(context,action,target.kind,target.id),recordId:target.id,recordType:target.kind,field,before,after,needsApproval:await needsRecordApproval(context,target.kind,field),action,readAt:String(row.updated_at),relatedRecords,...(changedAfterTrigger?{reason:'Record changed after the triggering event.'}:{})});
   if(!changedAfterTrigger&&context.plannedValues){
    const key=`${target.kind}:${target.id}`,values=context.plannedValues.get(key)??{};

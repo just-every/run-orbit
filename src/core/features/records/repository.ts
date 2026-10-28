@@ -1,3 +1,4 @@
+import {workflowAssociationEvent} from '../workflows/events';
 import {normalizedTypedFields,typedFieldFences,typedFieldSave,type TypedField} from './typed-fields';
 import {fieldLabel,valueText} from '../operator/ui/data-value';
 import {importProvenance} from '../operator/ui/import-provenance';
@@ -121,6 +122,7 @@ export class RecordsRepository extends RecordSeedRepository {
   if(kind==='contact')statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure='Contact set do-not-contact',updated_at=? WHERE contact_id=? AND state='scheduled' AND EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')").bind(now,id,id));
   if(kind==='contact')statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Contact changed',updated_at=? WHERE recipient_contact_id=?").bind(now,id));
   if(explicitClear)statements.push(audit(this.db,actor,'contactability.cleared','contact',id));
+  if(associationsChanged)statements.push(...workflowAssociationEvent(this.db,id,now));
   const history=associationsChanged?{text:[changes&&'text' in changes?changes.text:null,'Changed Associated contacts'].filter(Boolean).join('\n')}:changes;
   if(history)statements.push(...timeline(this.db,actor,kind,id,before?'record.updated':'record.created',{...history,...(options.workflowContactIds?.length?{contactIds:options.workflowContactIds}:{})}));
   statements.push(audit(this.db,actor,before?'record.updated':'record.created',kind,id));

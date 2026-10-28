@@ -13,7 +13,7 @@ export function targetKind(trigger:RecordKind,target='trigger'):RecordKind {
  throw new Error(`Unsupported workflow record target: ${target}.`);
 }
 export async function resolveRecordTargets(context:WorkflowContext,action:WorkflowRecordAction,target=action.target??'trigger'):Promise<RecordTarget[]> {
- const {db}=context,kind=recordKind(context.recordType),root=await requireRecord(db,kind,context.recordId);
+ const {db}=context,kind=recordKind(context.recordType),root=context.triggerSnapshots?.get(`${kind}:${context.recordId}`)??await requireRecord(db,kind,context.recordId);
  const resultKind=targetKind(kind,target);
  if(target==='trigger')return [{kind,id:root.id}];
  if(target==='company'||target==='primary_company')return kind==='company'?[{kind,id:root.id}]:root.company_id?[{kind:'company',id:root.company_id}]:[];
@@ -28,6 +28,7 @@ export async function resolveRecordTargets(context:WorkflowContext,action:Workfl
    const rows=await db.prepare('SELECT id FROM contacts WHERE company_id=? OR EXISTS(SELECT 1 FROM contact_company_relationships r WHERE r.contact_id=contacts.id AND r.company_id=?) ORDER BY id').bind(root.id,root.id).all<{id:string}>();
    return rows.results.map(row=>({kind:'contact',id:row.id}));
   }
+  if(context.triggerSnapshots&&Array.isArray(root.contact_ids)&&!target.startsWith('contacts_by_role:')){const ids=target==='primary_contact'?(root.primary_contact_id?[root.primary_contact_id]:[]):root.contact_ids;return ids.map((id:string)=>({kind:'contact' as const,id}));}
   const role=target.startsWith('contacts_by_role:')?target.slice(17):null;
   if(role!==null&&!role.trim())throw new Error('Name the associated contact role.');
   const rows=await db.prepare(`SELECT contact_id AS id FROM opportunity_contacts c WHERE opportunity_id=? ${target==='primary_contact'?'AND is_primary=1':''} ${role!==null?'AND EXISTS(SELECT 1 FROM opportunity_stakeholder_roles r,json_each(r.roles_json) role WHERE r.opportunity_id=c.opportunity_id AND r.contact_id=c.contact_id AND role.value=?)':''} ORDER BY contact_id`).bind(root.id,...(role!==null?[role]:[])).all<{id:string}>();

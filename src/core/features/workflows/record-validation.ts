@@ -57,6 +57,7 @@ export async function validateAction(db:D1Database,actorId:string,action:Workflo
    if(!schema[spec.field]?.safeParse(value).success)throw new RecordError(400,`${field}: incompatible field value.`);
   }
  }
+ if(spec.field==='owner_id'&&action.kind==='set')await typedUserFieldFences(db,{label:'Owner',value_type:'user'},action.value,undefined);
  if(action.kind==='copy'){
   if(!action.sourceField)throw new RecordError(400,'Name the source field.');
   if(action.sourceTarget!=='form'){
