@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "3512ca0a4ed68da8682b95a4a386c109102301dedc5d9213f7e7291bec2d3000",
+      "sha256": "d63432133f7b5248b56c48d4151a1b02720bdc73bbbfba1a375242fe790f3655",
       "executable": false
     },
     "DEMO.md": {
@@ -5223,11 +5223,11 @@
       "executable": false
     },
     "src/core/features/delegation/listing.ts": {
-      "sha256": "38885058277b8aaa1b5a4d2bbc3237af2d6fc9b4208a608a75aac246dddfdc4e",
+      "sha256": "8dad4db53273ac2a92fde80c885a631126cfcb5a60aa08ebcefa89ac5e2b2aa3",
       "executable": false
     },
     "src/core/features/delegation/manual-connection.ts": {
-      "sha256": "827310553c0b2f47bdbd097accaef6b13a7ba8a321572ad31c1dddd9b8dba966",
+      "sha256": "2ddf4115bc2185b86b5ffd76f9e7ede3597a66b4210993beae7d4fa88a511938",
       "executable": false
     },
     "src/core/features/delegation/native-authority.ts": {
@@ -5251,7 +5251,7 @@
       "executable": false
     },
     "src/core/features/delegation/settings-page.ts": {
-      "sha256": "80d83edabc46995156e72bd5ec855c543313d91430e0b63e2211c7ec665f95a0",
+      "sha256": "781ff18a939ccf88946594a2fd316925fa00fac4e4e5624896743966af31b4a0",
       "executable": false
     },
     "src/core/features/delegation/token.ts": {
@@ -9039,7 +9039,7 @@
       "executable": false
     },
     "tests/delegation/authority-regressions.test.ts": {
-      "sha256": "734a5b3959063fb661a25c6e86d0af9dbd0efcf1a268ad1eb423e1ebbbc1971f",
+      "sha256": "d7ebfb71a0eace113286e0bff91369853f78ed47398af5a6b65b8acbc246746b",
       "executable": false
     },
     "tests/delegation/brief-handoff.test.ts": {
