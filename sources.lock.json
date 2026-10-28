@@ -2199,7 +2199,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "735ae73e0e1b3e97e3b9c2ae3420b528cda20d59c1d13b903e85c5e44a0b154e",
+      "sha256": "787b8ce6e5cc18268e6e35dd2f0cabae7306c5685c1ab40b4c42dc72225c36ad",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -2227,7 +2227,7 @@
       "executable": false
     },
     "newtests/t096/browser-team-journey.ts": {
-      "sha256": "cdcc998669365d43758eee87f0ceec23e840555b0ca86ed69b6feb00901c83aa",
+      "sha256": "6b40095c4595be4f6671337762c03046be931e0172a9804312e86f6d223d622f",
       "executable": false
     },
     "newtests/t096/capture-rule-browser-seed.ts": {
