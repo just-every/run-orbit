@@ -6,6 +6,7 @@ import { tables,type NativeValue } from './targets';
 import type { StopValue } from './targets-stop';
 import {mailboxListSql} from './mailboxes';
 import type { ImportInput } from './contracts';
+import {plannedOwner} from './owner-targets';
 import {mapImportOwners,importOwners} from './owners';
 import {namedCompanies} from './named-companies';
 
@@ -65,11 +66,12 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  for(const row of rows.sort((a,b)=>['suppression','company','contact','deal','note'].indexOf(a.kind)-['suppression','company','contact','deal','note'].indexOf(b.kind))){try{
   if(row.error)throw new Error(row.error);if(duplicates.has(`${row.kind}:${row.id}`))throw new Error('Duplicate source ID in this file.');
   if(row.kind==='suppression'){const reference=nativeId(namespace,'suppression-reference',row.id);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:'suppression',record_id:stopId,source_id:row.id,mailbox:email(row.data.email)!},links:[]}}]});continue;}
-  if(existing.has(row)){const reference=nativeId(namespace,'reference',`${row.kind}:${row.id}`);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:row.kind,record_id:references.get(`${row.kind}:${row.id}`)!,source_id:row.id,mailbox:row.kind==='contact'?email(row.data.email)??null:null},links:[]}}],unmapped:[{reason:'Already in Orbit, with the same email or website domain. Orbit keeps the saved record and does not apply differences from the file. Only a stop in the file (unsubscribed, bounced or Do not contact) changes whether Orbit may email them.'}]});continue;}
+  const ownerMapping=(row.source.payload as any).ownerMapping,ownerEffects=ownerMapping?await plannedOwner(db,namespace,row.kind,references.get(`${row.kind}:${row.id}`)!,row.id,ownerMapping,context.authorization.principalId,at,input.account):[];
+  if(existing.has(row)){const reference=nativeId(namespace,'reference',`${row.kind}:${row.id}`);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:row.kind,record_id:references.get(`${row.kind}:${row.id}`)!,source_id:row.id,mailbox:row.kind==='contact'?email(row.data.email)??null:null},links:[]}},...ownerEffects],unmapped:[{reason:'Already in Orbit, with the same email or website domain. Orbit keeps the saved record and does not apply differences from the file. Only a stop in the file (unsubscribed, bounced or Do not contact) changes whether Orbit may email them.'}]});continue;}
   const id=references.get(`${row.kind}:${row.id}`)!,original=originals.get(`${row.kind}:${id}`);
-  if(original){results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:JSON.parse(original)}]});continue;}
+  if(original){results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:JSON.parse(original)},...ownerEffects]});continue;}
   const data=row.data,native:Record<string,any>={...shapes[row.kind],id,created_at:at,updated_at:at},links:Record<string,any>[]=[];
-  const provenance={vendor:input.vendor,account:input.account,sourceId:row.id,owner:data.owner??null,stage:data.stage??null,description:data.description??null};
+  const provenance={vendor:input.vendor,account:input.account,sourceId:row.id,owner:data.owner??null,...ownerMapping?{ownerId:ownerMapping.ownerId}:{},stage:data.stage??null,description:data.description??null};
   if(row.kind!=='note')native.custom_fields_json=JSON.stringify({...customValues(row.custom),import_source:JSON.stringify(provenance)});
   if(row.kind==='company'){
    if(!data.name)throw new Error('Company name is required.');const domain=data.domain?.trim().toLowerCase().replace(/^www\./,'')||null;
@@ -97,11 +99,16 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
   }
   links.sort((a,b)=>row.kind==='deal'?a.contact_id.localeCompare(b.contact_id):`${a.record_type}:${a.record_id}`.localeCompare(`${b.record_type}:${b.record_id}`));
   if(Object.values(native).some(v=>typeof v==='number'&&!Number.isFinite(v)))throw new Error('Native record has an unsupported default.');
-  results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:{row:native,links,...row.kind==='contact'?{suppressionTokens:emailTokens.get(native.email)??[]}:{} } as any}],...row.derivedContacts?{unmapped:[{reason:'New company, from the Company name column of the contacts file. Orbit does not reuse a company it already has just because the name matches.'}]}:{}});
+  results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:{row:native,links,...row.kind==='contact'?{suppressionTokens:emailTokens.get(native.email)??[]}:{} } as any},...ownerEffects],...row.derivedContacts?{unmapped:[{reason:'New company, from the Company name column of the contacts file. Orbit does not reuse a company it already has just because the name matches.'}]}:{}});
  }catch(error){row.error=(error as Error).message;results.set(row.source,{effects:[],rejection:row.error});
   // The exact original remains in kit custody. Rejected rows need only their location and reason in the resumable plan, avoiding unindexed personal-data copies.
   row.source.sourceId=`rejected:${sha256(row.source.sourceId)}`;row.source.payload={rejected:true,...row.reviewColumns?{reviewColumns:row.reviewColumns}:{}};row.source.payloadHash=sha256(canonicalJson(row.source.payload));}}
  for(const row of rows)if(!row.error&&row.unmapped.length){const result=results.get(row.source)!;result.unmapped=[...result.unmapped??[],...row.unmapped.map(column=>({field:`column:${column}`,reason:`Column “${column}” is not imported. Orbit keeps it only in its private copy of the original file.`}))];}
+ // Ownership has its own source identity, so erasure can withdraw either native target without sharing a reversible effect.
+ const ownershipSources:SourceRecord[]=[];
+ for(const row of rows){const result=results.get(row.source);if(!result||result.rejection)continue;const effects=result.effects.filter(effect=>effect.targetKind.endsWith('-owner'));if(!effects.length)continue;result.effects=result.effects.filter(effect=>!effect.targetKind.endsWith('-owner'));
+  const history=(effects[0].value as any).history,payload={ownerMapping:(row.source.payload as any).ownerMapping,recordId:effects[0].targetId,actorId:history.actor,previousOwnerId:history.previous},ownerSource:SourceRecord={...row.source,kind:`${row.kind}-owner`,payload,payloadHash:sha256(canonicalJson(payload))};ownershipSources.push(ownerSource);results.set(ownerSource,{effects});
+ }
  // All positive stops and no-consent holds publish in the first atomic kit entry, before any customer creation.
  const saved=await db.prepare('SELECT value_json FROM crm_import_stops WHERE id=?').bind(stopId).first();
  const value:StopValue=saved?JSON.parse(saved.value_json):{emails,proofs:[],contacts:[],at};
@@ -109,7 +116,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  const contacts=(await db.prepare(`SELECT c.id,c.contactability,c.contactability_revision,${mailboxListSql('c')} AS mailboxes_json FROM contacts c WHERE lower(trim(c.email)) IN(SELECT value FROM json_each(?)) OR c.id IN(SELECT survivor_id FROM record_aliases WHERE record_type='contact' AND lower(trim(identity_key)) IN(SELECT value FROM json_each(?))) ORDER BY c.id`).bind(JSON.stringify(emails),JSON.stringify(emails)).all()).results;
  value.contacts=await Promise.all(contacts.map(async c=>{const mailboxes=JSON.parse(c.mailboxes_json) as string[],mailboxDigests=[...new Set((await Promise.all(mailboxes.map(address=>match(address)))).flat())].sort();return{id:c.id,contactability:'do_not_contact',contactability_revision:c.contactability_revision+1,prior:c.contactability,priorRevision:c.contactability_revision,mailboxes,mailboxDigests};}));}
  const payload={emails},safety:SourceRecord={namespace,kind:'safety',sourceId:stopId,payload,payloadHash:sha256(canonicalJson(payload)),artifactHash:source.artifacts[0].sha256,location:{artifact:source.artifacts[0].name,pointer:'/suppression-first'}};
- const effect:TargetEffect={targetKind:'suppression',targetId:stopId,value:value as any};source.records=[safety,...rows.map((r,i)=>duplicates.has(`${r.kind}:${r.id}`)?{...r.source,sourceId:`duplicate-row-${i}:${sha256(r.id)}`} :r.source)];results.set(safety,{effects:emails.length?[effect]:[]});
- const plan=await planD1Import(source,{version:'orbit-csv-v1',map:record=>results.get(record)??results.get(rows.find(r=>r.source.kind===record.kind&&r.source.location.artifact===record.location.artifact&&r.source.location.row===record.location.row)?.source??safety)!},{...context,namespace});
+ const effect:TargetEffect={targetKind:'suppression',targetId:stopId,value:value as any};source.records=[safety,...rows.map((r,i)=>duplicates.has(`${r.kind}:${r.id}`)?{...r.source,sourceId:`duplicate-row-${i}:${sha256(r.id)}`} :r.source),...ownershipSources];results.set(safety,{effects:emails.length?[effect]:[]});
+ const plan=await planD1Import(source,{version:'orbit-csv-v1',map:record=>{const original=record.kind==='safety'?safety:[...rows.map(row=>row.source),...ownershipSources].find(other=>other.kind===record.kind&&other.location.artifact===record.location.artifact&&other.location.row===record.location.row),result=original?results.get(original):undefined;if(!result)throw new Error('Import source mapping is unavailable.');return result;}},{...context,namespace});
  return plan;
 }

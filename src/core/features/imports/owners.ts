@@ -5,7 +5,7 @@ import type {Row} from './source';
 export interface ImportOwner {id:string;email:string;display_name:string}
 /** Only active full operators can receive native ownership. Assignment grants no access. */
 export async function importOwners(db:D1Database):Promise<ImportOwner[]>{
- return (await db.prepare("SELECT id,email,display_name FROM operators WHERE status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=operators.id) ORDER BY display_name,id").all<ImportOwner>()).results;
+ return (await db.prepare("SELECT id,email,display_name FROM operators WHERE status='active' AND EXISTS(SELECT 1 FROM access_memberships m WHERE m.operator_id=operators.id AND m.workspace_id='workspace' AND m.status='active' AND m.role='legacy_operator') AND NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=operators.id) ORDER BY display_name,id").all<ImportOwner>()).results;
 }
 export function resolveImportOwner(value:string,input:ImportInput,owners:ImportOwner[]){
  if(Object.hasOwn(input.owners??{},value))return owners.find(owner=>owner.id===input.owners?.[value])??null;
@@ -21,6 +21,6 @@ export function mapImportOwners(rows:Row[],input:ImportInput,owners:ImportOwner[
 }
 export function importOwnerSummary(plan:ImportPlan){
  const groups=new Map<string,{value:string;ownerId:string|null;ownerName:string|null;explicit:boolean;count:number}>();
- for(const entry of plan.entries){const mapping=(entry.source.payload as any).ownerMapping;if(!mapping)continue;const group=groups.get(mapping.value)??{...mapping,count:0};group.count++;groups.set(mapping.value,group);}
+ for(const entry of plan.entries.filter(entry=>!entry.source.kind.endsWith('-owner'))){const mapping=(entry.source.payload as any).ownerMapping;if(!mapping)continue;const group=groups.get(mapping.value)??{...mapping,count:0};group.count++;groups.set(mapping.value,group);}
  return [...groups.values()].sort((a,b)=>a.value.localeCompare(b.value));
 }

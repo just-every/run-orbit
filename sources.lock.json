@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "2b346fc263655fd854022e4f4d98d9d78a32962e38544c24fa371405fe632f03",
+      "sha256": "1861355831cfe6e0b4f9522c10fc8012e7df6a5cb2ebc17e3e1c1cd6ae0fe339",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "0fec220a25a36790b3801a007ba12bc28a802d2c2e5060318b388707e0321cee",
+      "sha256": "11b895ba56d25c0aab2a4be4cf245c6a28d20311b70a33df16a135523cb42370",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "ec080a59a70bcccffc25bc8e65fc99bf4afcab3a6c87b027c7c6db6c5cec62fb",
+      "sha256": "32cf8c43adf0517a2f8276636a32c5fe95d05efb3ddcf68226687ca3a7f8ece4",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -2195,7 +2195,7 @@
       "executable": false
     },
     "newtests/t096/browser-ownership.ts": {
-      "sha256": "1a1a6be5509854a0139f456cdfbc73cdb99aaca9ac466725645f1041032ad104",
+      "sha256": "f92763577076d482d873ccf9afbabac7006db58dbce1bddcb57b312e8cb7cae6",
       "executable": false
     },
     "newtests/t096/browser-record-mail.ts": {
@@ -3547,7 +3547,7 @@
       "executable": false
     },
     "newtests/t096/ownership-upgrade.ts": {
-      "sha256": "58a1aa54faca83101a3fdbd2b5bdbab44c38f46cf945a08f577051a94d79c3c9",
+      "sha256": "dc73416d6b64d250d55ac70c91e6fed9ff9b835c02218e41baeee069ebcbf04a",
       "executable": false
     },
     "newtests/t096/private-entries-proof.ts": {
@@ -5515,7 +5515,7 @@
       "executable": false
     },
     "src/core/features/imports/erasure.ts": {
-      "sha256": "77d81824c75d3e19f429eadc5dced94015578a6b51d70c42b825bfe79df3d461",
+      "sha256": "7a8c69c7b9d9bf535020b74bdc52804bc5c5d9f7cd27a3f7abc540533bfbdef2",
       "executable": false
     },
     "src/core/features/imports/mailboxes.ts": {
@@ -5530,12 +5530,16 @@
       "sha256": "4ed8e827b30cf257436e2c89e0eef30483805511ee1e0e15613f76dbfd101851",
       "executable": false
     },
+    "src/core/features/imports/owners.ts": {
+      "sha256": "ceabedea535588dfb27ff65469eea648e4d0b9821d1391073b17da9257e6597f",
+      "executable": false
+    },
     "src/core/features/imports/planner.ts": {
-      "sha256": "c9bf49aedb4d8010da09b55efe933677ed23691afc15995e961fa37a1a77c500",
+      "sha256": "725f412ac26728f1af3d4c2da5c56dc7849280ef4cb268c6d9bcf07a5faaa641",
       "executable": false
     },
     "src/core/features/imports/repository.ts": {
-      "sha256": "1e22209b41d3e0240a7318ecaa6af3c2da75c1330f16b13f4b29742753c6980b",
+      "sha256": "a2c79cf996b1e88a80e435c21be6559b7260f4f90e8effdf4409043c23dfb708",
       "executable": false
     },
     "src/core/features/imports/review-erasure.ts": {
@@ -5563,15 +5567,15 @@
       "executable": false
     },
     "src/core/features/imports/targets.ts": {
-      "sha256": "a01cbb755b1f1e184e5a2f1fa23450491c819a2cdf47809b18248ca88208c595",
+      "sha256": "f3c3c4486e28a51d68ceb1d5625a33dd290413ca9a00ed58e094894b74d9d9da",
       "executable": false
     },
     "src/core/features/imports/undo-targets.ts": {
-      "sha256": "6b3878c49a7afd99241e44cdf3f5780bbc808ae30089123fab1ea044100045ef",
+      "sha256": "cc26e04c5b5016bda8fe5f53227dbe3a0b6eef038fdc0c676c96b1304be363e0",
       "executable": false
     },
     "src/core/features/imports/undo.ts": {
-      "sha256": "92b056fc1b16eab1e6de47163fc9e61272889dde729d24ca91ddaa4ef76bf92d",
+      "sha256": "e130cefd1a9282b839fc776b9d7af890e8dc925daace0c10a3e443e2a36ca1f4",
       "executable": false
     },
     "src/core/features/ingestion/automation-auth.ts": {
@@ -5667,7 +5671,7 @@
       "executable": false
     },
     "src/core/features/notifications/routes.ts": {
-      "sha256": "af2c792b8787dd21582d9f00665eb0135dfcae4b93bdad607b2e4b5f064a39b8",
+      "sha256": "74b1e8611084d1a6c96fb3bce5f6a749f4d6183aa38b53f6edbb750ff132d1c1",
       "executable": false
     },
     "src/core/features/operations/store.ts": {
@@ -5923,15 +5927,15 @@
       "executable": false
     },
     "src/core/features/operator/ui/imports-mapping.tsx": {
-      "sha256": "ab05d432dc67ab2e8aa549ff0aae6e91b8f75bcbd265211025865fce82c6e7ee",
+      "sha256": "1540fbcc11ffea06a6bd244aef8e303c082d266cf22a2b1b8afd42c1255b25af",
       "executable": false
     },
     "src/core/features/operator/ui/imports-page.tsx": {
-      "sha256": "e212f5b212a0187a9c5f37134172ce4821a2f5f427e6732bbf0aa340c23dd347",
+      "sha256": "2e60769628e08c6d5d57119ea62c38150da835c118698f8fec03f8ab771043e5",
       "executable": false
     },
     "src/core/features/operator/ui/imports.css": {
-      "sha256": "1de8c37c98b269592e9fdaeb97d4198f5f3fe8a1407117472dbc5bdf0180c037",
+      "sha256": "b64ecb9284892963e2b991fc667a50242242da6666d8dac19001bcbf2588cabd",
       "executable": false
     },
     "src/core/features/operator/ui/mail-evidence.tsx": {
@@ -6439,7 +6443,7 @@
       "executable": false
     },
     "src/core/features/ownership/privacy.ts": {
-      "sha256": "bd7bf0a5eed83976c7c42f04dc3325882f758bb04f834c455e8d7d8df72e1fcb",
+      "sha256": "37ded4afc0feadf545824f0138004df00e08539f80c4449aad19a74536af9223",
       "executable": false
     },
     "src/core/features/ownership/read.ts": {
@@ -6459,7 +6463,7 @@
       "executable": false
     },
     "src/core/features/ownership/writes.ts": {
-      "sha256": "a96b494dfe83578284a5f6020fa614ec72f1ede8664760a3595bf080ac325cf6",
+      "sha256": "d3985f7af46d06e4399626349fd8a06d0205af51e33f1aad4550b91a4aed6f0b",
       "executable": false
     },
     "src/core/features/pipelines/archive-compatibility.ts": {
@@ -7063,7 +7067,7 @@
       "executable": false
     },
     "src/core/features/settings/erasure.ts": {
-      "sha256": "9748ef083c92b3c6770b2067dc367ec8a0fbd31ef4299502d1e68bf82f3b8553",
+      "sha256": "b15e9fb4639f6c5effc89ec53d80ab9850b4db5d745946d7475cd3b9da61b2f9",
       "executable": false
     },
     "src/core/features/settings/owner-email.ts": {
@@ -8575,7 +8579,7 @@
       "executable": false
     },
     "tests/core/crm-import.test.ts": {
-      "sha256": "6f6f03531ecfeb3faa459c15dde9e6c2c79f5d976b9a475d75345c6cac6b861d",
+      "sha256": "7c33b660d5bc0fa57d32d7444165ff2ce9770cd74cdc2784091dd6f60e4e9ad8",
       "executable": false
     },
     "tests/core/identity.test.ts": {
