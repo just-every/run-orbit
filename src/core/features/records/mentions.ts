@@ -12,7 +12,7 @@ const kindName=(kind:RecordKind)=>kind==='opportunity'?'deal':kind;
 export class MentionAccessError extends RecordError {
  constructor(readonly colleagues:UnreachedColleague[],kind:RecordKind){const names=(ask:string)=>colleagues.filter(c=>c.ask===ask).map(c=>c.name).join(', ');super(409,[names('share')&&`${names('share')} cannot see this ${kindName(kind)}.`,names('entries')&&`${names('entries')} cannot see this ${kindName(kind)}'s notes, calls and meetings.`].filter(Boolean).join(' ')+` Share them with ${colleagues.length===1?'this person':'each person'} explicitly or remove the mention; a mention never grants access.`);}
 }
-/** Active colleagues an author may mention: active full operators and collaborators who accepted their invitation. Teams arrive with TEAM-005. */
+/** Active colleagues an author may mention: active full operators and collaborators who accepted their invitation. Teams arrive with TEAM-007. */
 export async function mentionable(db:D1Database){return (await db.prepare("SELECT o.id,o.display_name AS name,o.email FROM operators o WHERE o.status='active' AND (NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id) OR EXISTS(SELECT 1 FROM access_memberships m WHERE m.operator_id=o.id AND m.status='active')) ORDER BY o.display_name COLLATE NOCASE,o.id").all<Colleague>()).results;}
 /** Colleagues the text mentions as @Display Name or @email. At each @ the longest matching name wins; a name two colleagues share must be written as an email. */
 export function parseMentions(text:string,colleagues:Colleague[]){
