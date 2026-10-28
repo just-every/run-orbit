@@ -6655,7 +6655,7 @@
       "executable": false
     },
     "src/core/features/public/docs/build/render.ts": {
-      "sha256": "10bea021bd2b2838245a6b6bd28e5217cd0639fd20f4d9503abce4ca1ada56c5",
+      "sha256": "71d7fbc0b4618f0051938b5c0a5e0972d5b0df7e39c286c24a3167e49e265683",
       "executable": false
     },
     "src/core/features/public/docs/build/site.ts": {
@@ -6671,7 +6671,7 @@
       "executable": false
     },
     "src/core/features/public/docs/docs.css": {
-      "sha256": "602d138c26091a8913f271993c9b1dbebbc615754f368ee27294bc9e566d142b",
+      "sha256": "3fa49ad2369566bd3d40437865966e053accab2ca97849b90450734b7818303f",
       "executable": false
     },
     "src/core/features/public/docs/DocsArticle.tsx": {

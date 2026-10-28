@@ -73,6 +73,8 @@
   color: #f5f1ea; white-space: pre; box-shadow: var(--ob-shadow-card); }
 .ob-docs .docs-prose pre:focus-visible { outline: 3px solid var(--ob-ink); outline-offset: 4px; }
 .ob-docs .docs-prose pre code { display: block; width: max-content; min-width: 100%; padding: 0; border-radius: 0; background: none; color: inherit; font-size: 15px; line-height: 1.65; white-space: inherit; }
+/* The one-line launch recipe stays complete and copyable at every width. */
+.ob-docs .docs-prose pre.docs-start code { width: auto; min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .ob-docs .docs-prose pre [class*="hljs-"] { color: inherit; background: none; font-style: normal; font-weight: inherit; }
 .ob-docs .docs-prose pre :is(.hljs-keyword, .hljs-built_in, .hljs-literal, .hljs-section, .hljs-title, .hljs-name) { color: #fff; font-weight: 700; }
 .ob-docs .docs-prose pre :is(.language-bash, .language-sh, .language-shell, .language-zsh) :is(.hljs-keyword, .hljs-built_in, .hljs-literal) { color: inherit; font-weight: inherit; }
