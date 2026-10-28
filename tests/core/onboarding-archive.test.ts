@@ -55,8 +55,6 @@ test('API-001 credentials stay local while DATA-001 local archive restores recor
  const apiCredential=await issueNativeCredential(source.db,source.actor,trialOwned.opportunityId);
  const scheduled=await source.message(trialOwned.contactId,trialOwned.opportunityId);
  const sourceGrant=await archiveDelegation(source,trialOwned.opportunityId,trialOwned.contactId,teammate);
- const destinationCustomer=await target.customer('destination@example.test');
- const destinationGrant=await archiveDelegation(target,destinationCustomer.opportunityId,destinationCustomer.contactId,target.actor);
  const libraryRows=['template','snippet','signature'].map((kind,index)=>({id:createId(),kind,name:`Archive ${kind}`,subject:kind==='template'?'Hello {{contact.name}}':'',body:`Saved ${kind} 雪`,visibility:index===1?'private':'shared',owner_id:source.actor,revision:index+1,updated_at:new Date().toISOString()}));
  for(const row of libraryRows)await source.db.prepare('INSERT INTO message_library(id,kind,name,subject,body,visibility,owner_id,revision,updated_at) VALUES(?,?,?,?,?,?,?,?,?)').bind(...Object.values(row)).run();
  const draft=createId(),draftMetadata={library_selection_json:JSON.stringify(Object.fromEntries(libraryRows.map(row=>[row.kind,{id:row.id,revision:row.revision}]))),merge_review_json:null};
@@ -123,6 +121,13 @@ test('API-001 credentials stay local while DATA-001 local archive restores recor
   assert.deepEqual(await local.db.prepare('SELECT * FROM signal_sources WHERE id=?').bind(removedSource.id).first(),removedSource.source,'The local archive keeps removed sources retired');
   assert.deepEqual(await local.db.prepare('SELECT * FROM signals WHERE id=?').bind(removedSource.signalId).first(),removedSource.signal);
  }finally{await local.dispose();}
+ // Prepare the destination grant after the failed restore has rolled back, then
+ // erase its customer records through the API so the real restore can begin.
+ const destinationCustomer=await target.customer('destination@example.test');
+ const destinationGrant=await archiveDelegation(target,destinationCustomer.opportunityId,destinationCustomer.contactId,target.actor);
+ await request(target,`records/contact/${destinationCustomer.contactId}`,'DELETE',{confirmed:true});
+ await request(target,`records/opportunity/${destinationCustomer.opportunityId}`,'DELETE',{confirmed:true});
+ assert.equal((await destinationGrant.request('/identity')).status,200,'the destination grant is active immediately before restore');
  await restore(target,archive);
  assert.equal((await destinationGrant.request('/identity')).status,401,'restore revokes the destination application grant');
  for(const table of ['delegation_grants','delegation_codes','delegation_receipts'])assert.equal(await target.db.prepare(`SELECT count(*) FROM ${table}`).first('count(*)'),0);
