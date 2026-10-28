@@ -2387,10 +2387,10 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-006 · Ru
 
 Agent surface · target · **missing** · From new · Cites BASE-AGENT-006 · Rules D-3
 
-**Requirement.** Outside mail, published forms, tracking, exports/shares and provider requests compute external from their destinations.
+**Requirement.** Outside mail, published forms, tracking, exports/shares and provider requests compute external from their destinations, including AI draft/summary inputs and provider-deletion requests during erasure.
 
 **Acceptance.**
-1. Exercise internal, known, new and public counterparties and exact external recipient counts, including a move that exposes previously internal data.
+1. Exercise internal, known, new and public counterparties and exact external recipient counts, including a move that exposes previously internal data, AI draft/summary inputs and tracked provider-deletion requests.
 2. A record claiming that an outside destination is internal leaves its computed class unchanged.
 
 **Evidence.** None.
@@ -2416,7 +2416,7 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-006, BASE
 **Requirement.** Provider consent, verification and hosted checkout compute gated from that provider’s actual step.
 
 **Acceptance.**
-1. Exercise each declared provider-person step, including a provider response that newly requires it; report provider and step.
+1. Exercise each declared provider-person step, including Gmail/Microsoft 365 send authorization, QuickBooks Online/Xero connection consent and a provider response that newly requires a person; report provider and step.
 2. Use a supported company-credential/API route and apply its classes under the company’s policy.
 
 **Evidence.** None.
@@ -2426,11 +2426,11 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-006, BASE
 
 Agent surface · target · **missing** · From new · Cites BASE-AGENT-005, BASE-AGENT-006 · Rules D-3
 
-**Requirement.** Team, membership and record/application grants compute access; protective connection changes compute security.
+**Requirement.** Team, membership and record/application/agent grants compute access; protective connection changes and credential handling compute security, including authenticated research-adapter setup.
 
 **Acceptance.**
-1. Compute widening/narrowing and people for team, user and grant changes.
-2. Compute setting/provider for credential rotation and protective settings; Orbit’s own sales examples retain the Base self-escalation rule.
+1. Compute widening/narrowing and people for team, user and record/application/agent grant changes, including research-tool allowlists and authenticated adapter enablement.
+2. Compute setting/provider for entering, sealing, rotating and revoking provider tokens, signing secrets, private capture addresses and authenticated adapter credentials, and for protective settings; Orbit’s own sales examples retain the Base self-escalation rule.
 
 **Evidence.** None.
 **Gap.** No complete MCP registry, class computation and company-policy conformance journey proves this Orbit delta.
@@ -2439,10 +2439,10 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-005, BASE
 
 Agent surface · target · **missing** · From new · Cites BASE-AGENT-006 · Rules D-3
 
-**Requirement.** Erasure computes destructive; regulated data computes sensitive only when the actual permitted content contains that data.
+**Requirement.** Any deletion or erasure that cannot be undone in Orbit computes destructive; regulated data computes sensitive only when the actual permitted content contains that data.
 
 **Acceptance.**
-1. Compute affected item count for irreversible contact/file erasure and keep reversible Undo standard.
+1. Compute affected item count for irreversible manual-entry, pipeline/stage and saved-report/snapshot deletion, refused-form payload erasure, and contact/file/recording/transcript erasure (including provider copies); keep reversible Undo standard.
 2. Compute record count and kind for regulated identifiers in an attachment or transcript, while ordinary contact data does not acquire an invented sensitive label.
 
 **Evidence.** None.
@@ -2455,7 +2455,7 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-006 · Ru
 **Requirement.** Changing active workflows or provider routing computes live for the affected running service.
 
 **Acceptance.**
-1. Compute installation and workflow/route facts on activation and route changes.
+1. Compute installation and workflow/route facts on activation and route changes, including Slack channel/event routing that changes running notice delivery.
 2. Changing a draft definition without changing running behavior remains standard.
 
 **Evidence.** None.

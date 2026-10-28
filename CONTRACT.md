@@ -1770,13 +1770,13 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 **How Orbit computes each class.**
 
 - **standard:** reversible internal records, tasks, drafts, scores, links, views and findings, with item counts.
-- **external:** customer messages, disclosed tracking/public forms, provider requests, outside shares and integration handoffs, with recipient count and known/new/public counterparty from current company/customer/vendor records and verified domains.
+- **external:** customer messages, disclosed tracking/public forms, provider requests (including AI draft/summary input and provider-deletion requests), outside shares and integration handoffs, with recipient count and known/new/public counterparty from current company/customer/vendor records and verified domains.
 - **money:** purchasing licensed enrichment, paid provider work, payment or invoice actions, with amount, USD currency and counterparty; editing a nonbinding deal estimate alone is standard.
 - **commitment:** signature, accepted quote, binding commercial terms or a sign-off relied upon outside the business, with version, value and counterparty.
 - **gated:** provider consent, business verification or hosted checkout that the provider keeps for a person, with provider and exact step; an available company API route follows the policy for its computed classes.
 - **access:** changes to staff, teams, record audiences (including collaborator entry grants) and application/agent grants, with affected people and widening/narrowing direction; a mention that changes no access stays standard.
-- **security:** protective connection settings or credential handling, with the setting and provider.
-- **destructive:** irreversible erasure of records, files or provider-held data, with affected item count; reversible archive/undo stays standard.
+- **security:** protective connection settings or credential handling, including entering, sealing, rotating or revoking provider tokens, signing secrets, private capture addresses and authenticated research-adapter credentials, with the setting and provider.
+- **destructive:** operations that cannot be undone in Orbit, including deleting manual entries, pipeline stages/pipelines, saved reports and their snapshots, erasing refused form payloads, and erasing records, files, recordings, transcripts or provider-held data, with affected item count; reversible archive/undo stays standard.
 - **sensitive:** regulated identifiers or financial/health/payroll data present in permitted records, files or transcripts, with kind and record count, rather than a blanket label on ordinary CRM contacts.
 - **live:** changing an active workflow or routing configuration that changes the running service, with installation and affected workflow/route.
 
@@ -1984,10 +1984,10 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 *Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-006 · *Rules:* D-3
 
-**Requirement.** Outside mail, published forms, tracking, exports/shares and provider requests compute external from their destinations.
+**Requirement.** Outside mail, published forms, tracking, exports/shares and provider requests compute external from their destinations, including AI draft/summary inputs and provider-deletion requests during erasure.
 
 **Acceptance.**
-1. Exercise internal, known, new and public counterparties and exact external recipient counts, including a move that exposes previously internal data.
+1. Exercise internal, known, new and public counterparties and exact external recipient counts, including a move that exposes previously internal data, AI draft/summary inputs and tracked provider-deletion requests.
 2. A record claiming that an outside destination is internal leaves its computed class unchanged.
 
 #### SURFACE-004 — Money and commitments
@@ -2007,27 +2007,27 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 **Requirement.** Provider consent, verification and hosted checkout compute gated from that provider’s actual step.
 
 **Acceptance.**
-1. Exercise each declared provider-person step, including a provider response that newly requires it; report provider and step.
+1. Exercise each declared provider-person step, including Gmail/Microsoft 365 send authorization, QuickBooks Online/Xero connection consent and a provider response that newly requires a person; report provider and step.
 2. Use a supported company-credential/API route and apply its classes under the company’s policy.
 
 #### SURFACE-006 — Access and protective settings
 
 *Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-005, BASE-AGENT-006 · *Rules:* D-3
 
-**Requirement.** Team, membership and record/application grants compute access; protective connection changes compute security.
+**Requirement.** Team, membership and record/application/agent grants compute access; protective connection changes and credential handling compute security, including authenticated research-adapter setup.
 
 **Acceptance.**
-1. Compute widening/narrowing and people for team, user and grant changes.
-2. Compute setting/provider for credential rotation and protective settings; Orbit’s own sales examples retain the Base self-escalation rule.
+1. Compute widening/narrowing and people for team, user and record/application/agent grant changes, including research-tool allowlists and authenticated adapter enablement.
+2. Compute setting/provider for entering, sealing, rotating and revoking provider tokens, signing secrets, private capture addresses and authenticated adapter credentials, and for protective settings; Orbit’s own sales examples retain the Base self-escalation rule.
 
 #### SURFACE-007 — Irreversible and sensitive data
 
 *Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-006 · *Rules:* D-3
 
-**Requirement.** Erasure computes destructive; regulated data computes sensitive only when the actual permitted content contains that data.
+**Requirement.** Any deletion or erasure that cannot be undone in Orbit computes destructive; regulated data computes sensitive only when the actual permitted content contains that data.
 
 **Acceptance.**
-1. Compute affected item count for irreversible contact/file erasure and keep reversible Undo standard.
+1. Compute affected item count for irreversible manual-entry, pipeline/stage and saved-report/snapshot deletion, refused-form payload erasure, and contact/file/recording/transcript erasure (including provider copies); keep reversible Undo standard.
 2. Compute record count and kind for regulated identifiers in an attachment or transcript, while ordinary contact data does not acquire an invented sensitive label.
 
 #### SURFACE-008 — Running automation
@@ -2037,7 +2037,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 **Requirement.** Changing active workflows or provider routing computes live for the affected running service.
 
 **Acceptance.**
-1. Compute installation and workflow/route facts on activation and route changes.
+1. Compute installation and workflow/route facts on activation and route changes, including Slack channel/event routing that changes running notice delivery.
 2. Changing a draft definition without changing running behavior remains standard.
 
 #### SURFACE-009 — Saved sales actions under company policy
