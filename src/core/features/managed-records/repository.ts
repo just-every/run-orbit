@@ -42,7 +42,7 @@ export class ManagedRecordsRepository {
   const context=await managedContext(this.db,this.access,operator),type=await findManagedType(this.db,kind);
   await this.access.authorize(context,'graph.update',{...context,type:'managed-record-create',id:kind},[]);await requireManagedFields(this.db,operator,type,input.fields);validateValues(type,input.fields);
   const owners=await ownerGuard(this.db,operator,input.owner_id),id=createId(),now=new Date().toISOString();
-  await fencedBatch(this.db,this.access,context,[...this.typeGuard(type),...owners,this.db.prepare('INSERT INTO managed_records(id,kind,owner_id,fields_json,revision,created_at,updated_at) VALUES(?,?,?,?,1,?,?)').bind(id,kind,input.owner_id,JSON.stringify(input.fields),now,now),audit(this.db,operator.operatorId,'managed.record.created',kind,id,{ownerId:input.owner_id,fields:Object.keys(input.fields)})]);
+  await fencedBatch(this.db,this.access,context,[...this.typeGuard(type),...owners,this.db.prepare("INSERT INTO schema_types(workspace_id,name,fields_json,version) SELECT 'workspace',name,fields_json,version FROM managed_record_types WHERE name=? ON CONFLICT(workspace_id,name) DO NOTHING").bind(kind),this.db.prepare('INSERT INTO managed_records(id,kind,owner_id,fields_json,revision,created_at,updated_at) VALUES(?,?,?,?,1,?,?)').bind(id,kind,input.owner_id,JSON.stringify(input.fields),now,now),audit(this.db,operator.operatorId,'managed.record.created',kind,id,{ownerId:input.owner_id,fields:Object.keys(input.fields)})]);
   return{id,kind};
  }
  async update(operator:AuthenticatedOperator,kind:string,id:string,input:UpdateManagedInput){

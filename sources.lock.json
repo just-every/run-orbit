@@ -2115,7 +2115,7 @@
       "executable": false
     },
     "migrations/core/0069_managed_records.sql": {
-      "sha256": "44bc2adef363ce5159fb747cf840774e9146f82145c078a37c8b56a1fc17fe28",
+      "sha256": "74b06b5507527ecebb6a5a256a20d9298d28d11f5a476a330efcb1e8d7de6e81",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -3783,7 +3783,7 @@
       "executable": false
     },
     "schema/fold/0069_managed_records.sql": {
-      "sha256": "44bc2adef363ce5159fb747cf840774e9146f82145c078a37c8b56a1fc17fe28",
+      "sha256": "74b06b5507527ecebb6a5a256a20d9298d28d11f5a476a330efcb1e8d7de6e81",
       "executable": false
     },
     "scripts/browser-results.mjs": {
@@ -5723,7 +5723,7 @@
       "executable": false
     },
     "src/core/features/managed-records/repository.ts": {
-      "sha256": "58e1091218179db9da5bcb89fdd93c981cee95c44f1b259957aad4ccd6e68c9a",
+      "sha256": "d05aa7a7f71b5ea2c2b112a82a99290ae04e4497a916fbf28b281202f3cfbf81",
       "executable": false
     },
     "src/core/features/managed-records/routes.ts": {
