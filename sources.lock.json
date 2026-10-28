@@ -9339,7 +9339,7 @@
       "executable": false
     },
     "tests/support/current-sales-archive.ts": {
-      "sha256": "dbfd0cd78e43eda31d11905e161b39582e83d229c8b21775c45af26a7e77a27e",
+      "sha256": "cb98f2ea3ba4e3135d9d4003d500d71716ca7919374990aaf1fbb3a0b6a0e3fc",
       "executable": false
     },
     "tests/support/current-sales-data.ts": {

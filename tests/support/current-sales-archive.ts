@@ -57,6 +57,18 @@ export async function proveCurrentArchive(source:CaptureFixture,target:{db:D1Dat
    // Every other field, including queue state and updated_at, must remain exact.
    expected=original.map(row=>row.lifecycle==='open'&&row.owner_id===hooks.replacedOwnerId?{...row,owner_id:null}:row);
   }
+  if(table==='handoff_tasks'&&hooks.replacedOwnerId){
+   // delegation_operator_removed releases only open work assigned to that owner.
+   // Its fresh revision invalidates stale edits; provenance and timestamps are unchanged.
+   expected=original.map(row=>{
+    if(row.status!=='open'||row.assignee_id!==hooks.replacedOwnerId)return row;
+    const actual=restored.find(candidate=>candidate.id===row.id);assert.ok(actual,'An unassigned handoff remains in customer history');
+    assert.equal(actual.assignee_id,null);
+    assert.equal(typeof actual.revision,'string');assert.ok(String(actual.revision).trim().length>0);
+    assert.notEqual(actual.revision,row.revision,'Releasing the retired owner changes the handoff revision');
+    return {...row,assignee_id:null,revision:actual.revision};
+   });
+  }
   assert.deepEqual(canonicalRows(restored),canonicalRows(expected),`${table} complete contents survive the declared authority changes`);
  }
  const peer=await target.db.prepare("SELECT id FROM operators WHERE status='active' AND id<>? LIMIT 1").bind(target.actor).first<string>('id');assert.ok(peer,'a second full operator exists');
