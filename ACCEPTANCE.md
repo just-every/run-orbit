@@ -182,7 +182,7 @@ Status: **done** (published).
 
 POST a signed configured-source event through its ingestion route and read one attributed signal and linked timeline within the bound.
 
-Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope:
 
@@ -192,7 +192,7 @@ Status: **done** (published).
 
 Submit every standard type, a source-namespaced type and an unknown type; accept the first two classes and reject the unknown without writes.
 
-Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope:
 
@@ -202,7 +202,7 @@ Status: **done** (published).
 
 Deliver identical events concurrently and after restart, then change the payload under the same source identity; retain one effect and a visible conflict.
 
-Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope:
 
@@ -212,7 +212,7 @@ Status: **done** (published).
 
 Ingest exact, ambiguous and unknown identities; verify linked and held queues, then manually link the held event once and inspect evaluation.
 
-Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope:
 
@@ -222,7 +222,7 @@ Status: **done** (published).
 
 Deliver older evidence after newer evidence and inspect chronological history and fresh evaluation without overwriting later record state.
 
-Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope:
 
@@ -232,7 +232,7 @@ Status: **done** (published).
 
 Compare open/page-view inference with observed reply/booking evidence; inferred activity alone cannot create a deal, high band or evidence-backed action.
 
-Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope:
 
@@ -242,7 +242,7 @@ Status: **done** (published).
 
 Inspect public assets/network and submit identity-free page/chat events; no Orbit tracker runs and unsupported identity stays outside customer history.
 
-Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope: Implemented source and exercising tests for the no-tracker rule; OUT-016's opt-in mail tracking exception is tracked under OUT-016. Live hosted/provider acceptance remains separate.
 
@@ -252,7 +252,7 @@ Status: **done** (published).
 
 POST invalid signatures, unknown sources, oversized input and injected persistence failure; verify status, no partial writes, replay safety and source diagnostics.
 
-Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope:
 
@@ -262,7 +262,7 @@ Status: **done** (published).
 
 Exercise signed callbacks and HTTPS source-scoped automation; refuse invalid, disabled and rotated authority while retaining native session and ownership checks.
 
-Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope:
 
@@ -362,7 +362,7 @@ Status: **done** (published).
 
 Close a deal as won and lost with reasons, ingest later evidence, and explicitly reopen; inspect history and queue membership at every step.
 
-Evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope: The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
@@ -382,7 +382,7 @@ Status: **done** (published).
 
 Ingest weighted signals and edit an open opportunity; inspect computed score, band, contributions and policy version, including decay and closed-deal exclusion.
 
-Evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`; `src/core/features/workbench/policies.ts`; `src/core/features/records/repository.ts`
+Evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/source-onboarding.test.ts`; `src/core/features/workbench/policies.ts`; `src/core/features/records/repository.ts`
 
 Remaining scope: Every opportunity save and every linked weighted signal evaluates in the same write. The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
@@ -402,7 +402,7 @@ Status: **done** (published).
 
 Cause evaluation to fail after a valid score; read the last value as stale with failure time and verify no fabricated replacement.
 
-Evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope:
 
@@ -422,7 +422,7 @@ Status: **done** (published).
 
 Advance close/stale/awaiting clocks and deliver a form, reply, booking and send failure; inspect NOW/NEXT reasons and one timeline transition per event.
 
-Evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope:
 
@@ -432,7 +432,7 @@ Status: **done** (published).
 
 Complete or skip the current action without sending; inspect the recorded outcome and only a genuinely new recommendation.
 
-Evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope:
 
@@ -452,7 +452,7 @@ Status: **done** (published).
 
 Read an open deal recommendation with observed evidence and version; disable AI and retain the named action/evidence without an invented explanation.
 
-Evidence: `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/source-onboarding.test.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/source-onboarding.test.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope: The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
@@ -462,7 +462,7 @@ Status: **done** (published).
 
 Supersede an action by new evidence or an operator change; the old action remains historical and cannot be drafted, sent or completed.
 
-Evidence: `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/source-onboarding.test.ts`; `src/core/features/workbench/action-repository.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/source-onboarding.test.ts`; `src/core/features/workbench/action-repository.ts`; `tests/core/source-onboarding.test.ts`
 
 Remaining scope: The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
@@ -512,7 +512,7 @@ Status: **done** (published).
 
 Drive provider acceptance, delivery, bounce, failure and ambiguous responses; inspect each persisted state and truthful buyer-visible labels.
 
-Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/outreach-limits.test.ts`
 
 Remaining scope:
 
@@ -522,7 +522,7 @@ Status: **done** (published).
 
 Submit the same approval key concurrently and after restart; observe one outbound intent and at most one provider submission.
 
-Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `src/core/features/workbench/routes.ts`
+Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/outreach-limits.test.ts`; `src/core/features/workbench/routes.ts`
 
 Remaining scope: The v0.2.0 release gate exercised the restated clause through its public door on 5c72dc8.
 
@@ -542,7 +542,7 @@ Status: **done** (published).
 
 Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and notification.
 
-Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/outreach-limits.test.ts`
 
 Remaining scope: Implemented source and exercising tests for sends linked to an open opportunity; the deal-less awaiting-response obligation is tracked under OUT-017. Live hosted/provider acceptance remains separate.
 
@@ -552,7 +552,7 @@ Status: **done** (published).
 
 Fail a submission transiently, permanently and ambiguously; verify bounded known-unsent retries, visible exhausted failure, one notification and permanent-bounce stop.
 
-Evidence: `src/core/features/outreach/service.ts`; `tests/core/outreach-limits.test.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/outreach/service.ts`; `tests/core/outreach-limits.test.ts`; `tests/core/outreach-limits.test.ts`
 
 Remaining scope: Transient retries, exhaustion, permanent failure and the permanent-bounce stop are each exercised by the cited tests.
 
@@ -562,7 +562,7 @@ Status: **done** (published).
 
 Schedule a message, deliver reply/booking/unsubscribe/bounce or a manual stop, then advance dispatch; cancel the message and stale the draft without duplicates.
 
-Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/request-scheduling.test.ts`
 
 Remaining scope: Implemented source and exercising tests; pausing for an unattributed multi-recipient stop request is inherited by OUT-019; live hosted/provider acceptance remains separate.
 
@@ -572,7 +572,7 @@ Status: **done** (published).
 
 Approve outside recipient-local quiet hours, including daylight-saving boundaries; require the extra immediate confirmation or delay the schedule to the permitted window.
 
-Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
+Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/request-scheduling.test.ts`
 
 Remaining scope:
 
@@ -592,7 +592,7 @@ Status: **done** (published).
 
 Exceed the per-minute and per-operator daily limits before immediate and scheduled submission; retain a visible unsent item with its reason and next permitted time, and see no silent retry.
 
-Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/outreach-limits.test.ts`
+Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/outreach-limits.test.ts`; `tests/core/outreach-limits.test.ts`
 
 Remaining scope: Per-user one-to-one budgets and the team-scaled shared rate are exercised by OUT-018's journey; sequence budgets and mailbox pacing remain OUT-018 obligations inherited by the sequence and mailbox clauses.
 
@@ -602,7 +602,7 @@ Status: **done** (published).
 
 Lose the acceptance transaction or provider response; restart and reconcile the durable intent without submitting again, ending once as accepted or visibly unresolved.
 
-Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `src/core/platform/outbound-mail.ts`
+Evidence: `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/outreach-limits.test.ts`; `src/core/platform/outbound-mail.ts`
 
 Remaining scope: Live Email Activity lookup depends on the owner's SendGrid account and was not exercised.
 
@@ -892,7 +892,7 @@ Status: **partial** (target).
 
 Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, switch the multi-deal rule to most recently active open deal and see the next such thread associated automatically with the rule named and then moved in one action, see an unknown correspondent become a CAPTURE-012 proposal, see a captured reply's PDF attachment listed on its contact, company and deal with its inline image not listed, revoke/reconnect and verify no unauthorized folder/mailbox is read. Complete an authorized live Gmail and Microsoft tenant journey.
 
-Evidence: `src/core/features/capture/providers/`; `src/core/features/capture/mail-association.ts`; `src/core/features/capture/mail-rule.ts`; `src/core/features/capture/deal-links.ts`; `migrations/core/0057_capture_mail_rule.sql`; `tests/core/capture-providers.test.ts`; `tests/core/capture-microsoft.test.ts`; `tests/support/capture-rule-custody.ts`; `newtests/t096/forward-upgrade.test.ts`; `newtests/t096/browser-capture-rule.ts`; `docs/retained-verification/CAPTURE-010/`; `tests/core/capture-providers.test.ts` — “CAPTURE-010 workspace mail rules and one-action corrections preserve CAPTURE-006 selected scope, crash replay, incremental reads and unknown-mail exclusion” (Verify core-0); `newtests/t096/browser-capture-rule.ts` via `newtests/t096/browser-journeys.test.ts` (Verify fold-domain-0), 1440/390 closed unrelated deal moves
+Evidence: `src/core/features/capture/providers/`; `src/core/features/capture/mail-association.ts`; `src/core/features/capture/mail-rule.ts`; `src/core/features/capture/deal-links.ts`; `migrations/core/0057_capture_mail_rule.sql`; `tests/core/capture-providers.test.ts`; `tests/core/capture-microsoft.test.ts`; `tests/core/capture-associations.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `newtests/t096/browser-capture-rule.ts`; `docs/retained-verification/CAPTURE-010/`; `tests/core/capture-associations.test.ts` — “CAPTURE-010 workspace mail rules and one-action corrections preserve CAPTURE-006 selected scope, crash replay, incremental reads and unknown-mail exclusion” (Verify core-0); `newtests/t096/browser-capture-rule.ts` via `newtests/t096/browser-journeys.test.ts` (Verify fold-domain-0), 1440/390 closed unrelated deal moves
 
 Remaining scope: Durable provider reads retain their selected-scope and OAuth safeguards. The owner chooses held review (default), most recently active open deal or all open deals for exact-contact connected mail; trusted message identity retains priority. Automatic evidence names its rule, and one reviewed action moves or removes deal links without rewriting the original. No-open-deal mail links only the contact and primary company. Reviewed corrections permit any deal the current full operator may view and change, including closed deals and deals unrelated to the captured contact; the original contact and company history remain. TEAM-005 retains real administrator and restricted-record policy; current full operators retain existing workspace access and collaborators gain no capture door. Live Gmail and Microsoft acceptance requires the owner's authorized journey and remains unmeasured; attachments inherit RECORD-018, unknown-participant proposals CAPTURE-012, and the fixed calendar window still needs explicit extension. Implemented first slice: the installation owner acts as administrator until TEAM-005 supplies sales roles. An open deal's activity is the latest recorded source or operator timeline entry, or its creation time when no later entry exists; ties use deal identity order. Active full operators may move captured mail to any currently accessible, changeable deal or remove its deal links. A fingerprint binds the reviewed association, correction history and offered deal revisions; stale reviews return 409, unavailable targets return 403, and collaborators or restricted roles are refused. Replay repeats no mutation or audit. Ownership grants no access. ct approved this first slice at 02:08Z on 24 October 2026. Default adopted: held review for automatic association; current full-workspace operators only for corrections, with denied access and stale reviews refused.
 
@@ -972,7 +972,7 @@ Status: **partial** (target).
 
 Through OUT-013, email a lead with no company or deal from its record and receive a real reply; from a contact record, email a contact whose only deal is closed won and receive their reply; bulk-enroll ten deal-less contacts in a sequence under SEQUENCE-003 and receive a reply to one first step. For each, verify exact-content approval, the sent message and reply threaded onto the contact timeline and, where the contact has one, the company timeline, no deal created or required, the won deal's lifecycle unchanged, and the deal-less awaiting-response line appearing in the brief after the interval and clearing on the reply. Attempt a send to a do-not-contact lead and see it refused; email a contact on an open deal from their company record, link it to the deal and see OUT-005's NEXT move.
 
-Evidence: `src/core/features/outreach/`; `src/core/features/assistance/record-routes.ts`; `src/core/features/assistance/record-preview.ts`; `migrations/core/0056_record_mail.sql`; `migrations/core/0066_record_mail_completion.sql`; `src/core/features/operator/ui/record-mail.tsx`; `src/core/features/operator/ui/unlinked-replies.tsx`; `src/core/features/settings/removal-handover.ts`; `src/core/features/operator/ui/operator-removal-review.tsx`; `tests/core/signals-outreach.test.ts` — “OUT-017 record mail preserves exact approval”; `tests/support/record-mail.ts`; `tests/support/record-mail-ai.ts`; `tests/support/record-mail-held-replies.ts`; `tests/support/record-mail-handover.ts`; `tests/support/record-mail-custody.ts`; `tests/core/contact-erasure.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/support/record-mail-upgrade.ts`; `newtests/t096/browser-record-mail.ts`; `docs/retained-verification/OUT-017/`
+Evidence: `src/core/features/outreach/`; `src/core/features/assistance/record-routes.ts`; `src/core/features/assistance/record-preview.ts`; `migrations/core/0056_record_mail.sql`; `migrations/core/0066_record_mail_completion.sql`; `src/core/features/operator/ui/record-mail.tsx`; `src/core/features/operator/ui/unlinked-replies.tsx`; `src/core/features/settings/removal-handover.ts`; `src/core/features/operator/ui/operator-removal-review.tsx`; `tests/core/record-mail-compose.test.ts` — “OUT-017 record mail preserves exact approval”; `tests/support/record-mail.ts`; `tests/support/record-mail-ai.ts`; `tests/core/record-mail-follow-up.test.ts`; `tests/support/record-mail-handover.ts`; `tests/support/record-mail-custody.ts`; `tests/core/contact-erasure.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/support/record-mail-upgrade.ts`; `newtests/t096/browser-record-mail.ts`; `docs/retained-verification/OUT-017/`
 
 Remaining scope: Reviewed manual composition from contacts, companies and closed deals uses one explicitly selected recipient, an optional current open-deal link and separate closed-deal history; sending creates or reopens no deal. Exact rendered approval, active/contactable identity, shared sending budgets, clocks, scheduling, reconciliation and contact-wide stops apply to the additive mail store. One accepted activity links reviewed content and provider identity to the contact, primary company and linked/history deal; verified native message headers thread one genuine reply, while missing headers are held. An unlinked accepted message opens one sender-owned contact promise, due in workspace working days and shown in Today when overdue; human replies, booked meetings, later acceptance and explicit sender completion close it. Automatic replies do not; permanent bounce suppresses and cancels contact schedules. Sender/owner reply notices and contact outcomes are native in-app. Full operators retain current authority and collaborators get no new mail door. Record AI drafting from contacts and explicitly selected company contacts uses the assistance preview, exact unchanged evidence and configured instructions through ai.provider.v1, validated citations and length, durable editable unsent drafts and ai_calls accounting; unavailable providers fail visibly. Existing held-reply review attaches genuine or automatic replies to the contact and primary company or dismisses them once with operator attribution; automatic replies and dismissal leave promises open. Removal review includes open contact promises, explicit receiving full operator or unassignment, stale-set refusal and atomic handover with one attributed contact/company entry; original sender attribution remains, receiving overdue promises appear in Today, and unassigned promises remain on their contact. Remaining gaps: additional To/CC/BCC and reply-all inherit OUT-019, mailbox sending and live replies OUT-013, leads RECORD-014, provider-thread capture CAPTURE-010, sequence steps SEQUENCE-001/003 and tracking choice OUT-016.
 
@@ -1042,7 +1042,7 @@ Status: **done** (target).
 
 Race an approved due step with each reply/booking/stage/stop event, including a reply on the step's thread from a colleague the buyer CC'd, restart and replay; verify no prohibited send, one exit reason and separate reply/meeting/deal-outcome measures.
 
-Evidence: `tests/core/signals-outreach.test.ts` — “OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not”; `src/core/features/pipelines/movement.ts`; `src/core/features/records/repository.ts`; `src/core/features/outreach/follow-up-outcomes.ts`; `src/core/features/operator/ui/follow-up-outcomes.tsx`; `tests/evidence/contract/SEQUENCE-002/`
+Evidence: `tests/core/request-scheduling.test.ts` — “OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not”; `src/core/features/pipelines/movement.ts`; `src/core/features/records/repository.ts`; `src/core/features/outreach/follow-up-outcomes.ts`; `src/core/features/operator/ui/follow-up-outcomes.tsx`; `tests/evidence/contract/SEQUENCE-002/`
 
 Remaining scope: Single scheduled messages exit in the event's commit on genuine reply, booking, unsubscribe, bounce, any stage move and won/lost, never revive on reopen, replay or late dispatch, and the deal shows separate outcomes at 1440/390. ct ruled on 19 October that removal cancels (fresh approval) and pause belongs to enrollments. SEQUENCE-001/003, AUTO-001, OUT-019, OUT-013 and REPORT-001 inherit enrollment exits, pauses, thread-participant exits and sequence reports before shipping.
 

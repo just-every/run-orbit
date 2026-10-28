@@ -7,6 +7,7 @@ import { createServer } from 'node:net';
 import { release, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { promisify } from 'node:util';
+import { pathToFileURL } from 'node:url';
 
 const source = resolve(import.meta.dirname, '../..');
 const execute = promisify(execFile);
@@ -42,12 +43,21 @@ export async function freshCheckout() {
   const ownedServers=new Map();
   const stop=async(verb)=>{const server=ownedServers.get(verb);if(!server)return {code:0,output:''};if(server.child.exitCode===null&&server.child.signalCode===null)server.child.kill('SIGTERM');const result=await server.exited;ownedServers.delete(verb);return result;};
   const serve = async (args) => {
-    const child = spawn(process.execPath, ['node_modules/@runeditrun/rer/bin/rer.mjs', ...args], { cwd: root, env, stdio: ['ignore', 'pipe', 'pipe'] });
+    let trace;
+    const serveEnv = {...env};
+    if (process.env.ORBIT_STARTUP_DIAGNOSTICS) {
+      trace = join(servers, `${args[0]}-startup.jsonl`);
+      await writeFile(trace, '', {mode: 0o600});
+      serveEnv.ORBIT_STARTUP_TRACE = trace;
+      const preload = pathToFileURL(join(root, 'tests/rer/startup-trace.mjs')).href;
+      serveEnv.NODE_OPTIONS = `${env.NODE_OPTIONS ?? ''} --import=${preload}`.trim();
+    }
+    const child = spawn(process.execPath, ['node_modules/@runeditrun/rer/bin/rer.mjs', ...args], { cwd: root, env: serveEnv, stdio: ['ignore', 'pipe', 'pipe'] });
     let output = '', becameReady = false;
     const ready = new Promise((done, fail) => {
       const read = (chunk) => { output += chunk; if ((args[0] === 'preview' ? /^RER_READY /m : /^RER_(SIGN_IN|OPEN) /m).test(output)) { becameReady = true; done(output); } };
       child.stdout.on('data', read); child.stderr.on('data', read);
-      child.on('close', async (code) => { if (!becameReady) fail(await startupFailure(root, args[0], code, output, testPort)); });
+      child.on('close', async (code, signal) => { if (!becameReady) fail(await startupFailure(root, args[0], code, output, testPort, {trace, pid: child.pid, signal})); });
     });
     const server={ child, ready, exited: new Promise((done) => child.on('close', (code) => done({ code, output }))) };ownedServers.set(args[0],server);return server;
   };
@@ -70,7 +80,7 @@ function redactStartupDiagnostics(value) {
 
 // Keep the original owner-only copy outside the disposable checkout. Public
 // diagnostics are a separate, redacted copy outside the shard's temporary tree.
-async function startupFailure(root, verb, code, output, testPort) {
+async function startupFailure(root, verb, code, output, testPort, lifecycle) {
   const message = `rer ${verb} exited ${code} before readiness`;
   const lastLine = redactStartupDiagnostics(output.trim().split(/\r?\n/).filter(line => line.trim()).at(-1) ?? '').slice(0, 300);
   const refusal = output.split(/\r?\n/).find(line => /Server startup requires|Not started:|cannot be used/i.test(line));
@@ -84,11 +94,13 @@ async function startupFailure(root, verb, code, output, testPort) {
       const installer = (await Promise.all(logs.map(path => readFile(path, 'utf8').catch(error => { if (error.code !== 'ENOENT') throw error; return ''; })))).join('\n');
       const filesystem = async path => {
         const state = await statfs(path, { bigint: true });
-        return { path, type: String(state.type), sizeBytes: String(state.blocks * state.bsize), freeBytes: String(state.bavail * state.bsize) };
+        return { path, realpath: await realpath(path), type: String(state.type), sizeBytes: String(state.blocks * state.bsize), freeBytes: String(state.bavail * state.bsize) };
       };
       const rer = JSON.parse(await readFile(join(root, 'node_modules/@runeditrun/rer/package.json'), 'utf8'));
       const ports = text => [...new Set([...text.matchAll(/(?:--port(?:=|\s+)|\bport\s+|https?:\/\/[^\s/:]+:)(\d{1,5})\b/gi)].map(match => Number(match[1])))];
       const meta = { verb, exitCode: code, testPort: testPort ?? ports(installer)[0] ?? null, outputPorts: ports(output),
+        pid: lifecycle.pid, signal: lifecycle.signal,
+        inheritedEnv: Object.fromEntries(['NODE_OPTIONS', 'NODE_PATH', 'NODE_ENV', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'NO_PROXY', 'MINIFLARE_REGISTRY_PATH', 'RER_STATE_DIR', 'RER_DEV_ORIGIN', 'RER_DEV_KEY', 'RER_SETUP_TOKEN', 'VSCODE_INSPECTOR_OPTIONS'].map(name => [name, Object.hasOwn(process.env, name)])),
         nodeVersion: process.version, rerVersion: rer.version, osRelease: release(),
         imageOS: process.env.ImageOS ?? null, imageVersion: process.env.ImageVersion ?? null, tmpdir: tmpdir(),
         filesystems: { checkout: await filesystem(root), temporary: await filesystem(tmpdir()), repository: await filesystem(source) } };
@@ -96,6 +108,7 @@ async function startupFailure(root, verb, code, output, testPort) {
       publicDirectory = await mkdtemp(join(process.env.ORBIT_STARTUP_DIAGNOSTICS, 'failure-'));
       await writeFile(join(publicDirectory, 'command.log'), redactStartupDiagnostics(output));
       await writeFile(join(publicDirectory, 'installer.log'), redactStartupDiagnostics(installer));
+      if (lifecycle.trace) await writeFile(join(publicDirectory, 'lifecycle.jsonl'), redactStartupDiagnostics(await readFile(lifecycle.trace, 'utf8')));
       await writeFile(join(publicDirectory, 'meta.json'), redactStartupDiagnostics(JSON.stringify(meta, null, 2)) + '\n');
     } catch {
       if (publicDirectory) await rm(publicDirectory, { recursive: true, force: true }).catch(() => {});
