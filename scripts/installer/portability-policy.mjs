@@ -24,6 +24,9 @@ export default {
   if(tables.slack_channels)await db.prepare(`UPDATE "${tables.slack_channels.replaceAll('"','""')}" SET enabled=0`).run();
   if(tables.slack_mappings)await db.prepare(`UPDATE "${tables.slack_mappings.replaceAll('"','""')}" SET revoked_at=COALESCE(revoked_at,?)`).bind(new Date().toISOString()).run();
   if(tables.slack_deletions)await db.prepare(`UPDATE "${tables.slack_deletions.replaceAll('"','""')}" SET state='held',error='Restored deletion needs administrator confirmation' WHERE state<>'deleted'`).run();
+  if(tables.workflow_versions)await db.prepare(`UPDATE "${tables.workflow_versions.replaceAll('"','""')}" SET status='paused',preview_id=NULL,preview_json=NULL WHERE status IN('active','needs_reactivation')`).run();
+  if(tables.workflow_runs)await db.prepare(`UPDATE "${tables.workflow_runs.replaceAll('"','""')}" SET status='stopped',reason='Archive restored; fresh activation required' WHERE status NOT IN('completed','undone')`).run();
+  if(tables.workflow_approvals)await db.prepare(`UPDATE "${tables.workflow_approvals.replaceAll('"','""')}" SET status='expired' WHERE status='pending'`).run();
   const table = tables.outbound_messages;
   if (!table) return; // A supported archive predating outbound mail has no approval to strip.
   const quoted = '"' + table.replaceAll('"', '""') + '"';
@@ -32,6 +35,9 @@ export default {
  requiredConfiguration: ['OWNER_EMAIL', 'SESSION_SECRET', 'SETUP_TOKEN'],
  // Dev personas are real operators in local dev only; an archive carries them suspended.
  exportRow: (table, row) => {
+  if(table==='workflow_versions')return {...row,status:'paused',preview_id:null,preview_json:null};
+  if(table==='workflow_runs'&&!['completed','undone'].includes(row.status))return {...row,status:'stopped',reason:'Archive transfer requires fresh activation'};
+  if(table==='workflow_approvals'&&row.status==='pending')return {...row,status:'expired'};
   if(table==='record_mail_outbound_messages'&&['draft','scheduled','queued'].includes(row.state))return {...row,state:'cancelled',failure:'Archive transfer requires fresh review and approval before sending'};
   if(table==='record_mail_drafts')return {...row,is_stale:1,stale_reason:'Archive transfer requires fresh review'};
   if (table === 'ownership_batches') return {...row,state:'held'};
