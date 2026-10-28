@@ -26,7 +26,7 @@ export async function exerciseTwilio(db:D1Database){
  providerStatus=307;assert.equal((await t.call(`/api/v1/calls/contacts/${contact}/dial`,{body:{...dial,operationKey:createId()}})).status,502);assert.equal(submits,2,'redirect is neither followed nor retried');
  // Creation refusals are durable outcomes, not conversations; every operation remains one attempt.
  const log=()=>t.json<any>(`/api/v1/calls/contacts/${contact}/log`,{},200);
- for(const code of [21210,21212,21214,21215,21216,21217]){
+ for(const code of [21210,21211,21212,21214,21215,21216,21217]){
   providerStatus=400;providerReply={code,status:400,message:'Synthetic refusal with private provider details'};
   const operationKey=createId(),before=submits;
   const response=await t.json<any>(`/api/v1/calls/contacts/${contact}/dial`,{body:{...dial,operationKey}},502);

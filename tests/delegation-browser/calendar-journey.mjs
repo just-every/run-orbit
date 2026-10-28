@@ -38,7 +38,8 @@ export async function calendarJourney(page,data){
    expect(authorization.searchParams.get('scope').split(/\s+/).sort()).toEqual([...scopes,...(google?[]:['offline_access'])].sort());
   }
  }
- await page.goto(`/app/records?kind=contact&record=${data.contact}`);const panel=page.getByRole('region',{name:'Calendar writeback',exact:true});await expect(panel).toContainText('Provider edited the meeting.');
+ const writebackLoaded=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/capture/writeback/records/contact/${data.contact}`);
+ await page.goto(`/app/records?kind=contact&record=${data.contact}`);expect((await writebackLoaded).status()).toBe(200);const panel=page.getByRole('region',{name:'Calendar writeback',exact:true});await expect(panel).toContainText('Provider edited the meeting.');
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('provider-conflict',width,panel);}
  await panel.getByText('Plan calendar meeting',{exact:true}).click();await panel.getByLabel('Calendar connection',{exact:true}).selectOption(data.source);await panel.getByLabel('Calendar',{exact:true}).selectOption('calendar');await panel.getByLabel('Meeting title',{exact:true}).fill('Synthetic invitation review');await panel.getByLabel('Invitation message',{exact:true}).fill('Review the exact rollout invitation.');await panel.getByLabel('Exact attendee emails',{exact:true}).fill('synthetic-orbit-calendar@example.test');await panel.getByLabel(/^Start \(/).fill('2026-11-02T15:00');await panel.getByLabel(/^End \(/).fill('2026-11-02T15:30');await panel.getByRole('button',{name:'Review invitation',exact:true}).click();
  const review=panel.getByRole('region',{name:'Invitation review',exact:true});await expect(review).toContainText('synthetic-orbit-calendar@example.test');await expect(review).toContainText('Review the exact rollout invitation.');

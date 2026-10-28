@@ -43,9 +43,9 @@ export function callRoutes(db:D1Database,config:Config){const app=new Hono<{Vari
   let response:Response;try{response=await(config.fetcher??fetch)(`https://api.twilio.com/2010-04-01/Accounts/${credentials.accountSid}/Calls.json`,{method:'POST',headers:{Authorization:`Basic ${btoa(`${credentials.accountSid}:${credentials.token}`)}`,'Content-Type':'application/x-www-form-urlencoded'},body,redirect:'manual'});}catch{await uncertain();return c.json({error:'Call outcome is unknown. Check Twilio before placing another call.',status:'uncertain'},502);}
   if(!response.ok){
    // Only documented call-creation validation refusals prove that no call was created.
-   // https://www.twilio.com/docs/iam/test-credentials
+   // https://www.twilio.com/docs/iam/test-credentials and https://www.twilio.com/docs/api/errors/21211
    let code:unknown;try{const failure=await response.json() as {code?:unknown;status?:unknown};if(failure?.status===400)code=failure.code;}catch{}
-   if(response.status===400&&typeof code==='number'&&[21210,21212,21214,21215,21216,21217].includes(code)){
+   if(response.status===400&&typeof code==='number'&&[21210,21211,21212,21214,21215,21216,21217].includes(code)){
     await repo.dialOutcome(input.data.operationKey,'failed',code);
     return c.json({error:`Twilio refused the call (code ${code}). No call was created. Review Settings and the numbers before placing a new call.`,status:'failed',providerErrorCode:code},502);
    }
