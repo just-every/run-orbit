@@ -68,8 +68,8 @@ The primary journey: Bring customer records across, connect sales evidence, work
 | BASE-AGENT-003 | Records are resources | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, SURFACE-010 | not run |
 | BASE-AGENT-004 | Business identity and short-lived, audience-bound tokens | none | not run |
 | BASE-AGENT-005 | An agent acts as a person in a role, never more | DELEGATE-001, AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, SURFACE-006 | not run |
-| BASE-AGENT-006 | Every action declares its risk class | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, SURFACE-001, SURFACE-002, SURFACE-003, SURFACE-004, SURFACE-005, SURFACE-006, SURFACE-007, SURFACE-008 | not run |
-| BASE-AGENT-007 | The company's policy decides, at one chokepoint | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, SURFACE-009, SURFACE-012 | not run |
+| BASE-AGENT-006 | Every action declares its risk class | ENRICH-001, AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, SURFACE-001, SURFACE-002, SURFACE-003, SURFACE-004, SURFACE-005, SURFACE-006, SURFACE-007, SURFACE-008 | not run |
+| BASE-AGENT-007 | The company's policy decides, at one chokepoint | ENRICH-001, AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, SURFACE-009, SURFACE-012 | not run |
 | BASE-AGENT-008 | Truthful attribution | SURFACE-005, SURFACE-009 | not run |
 | BASE-AGENT-009 | Every agent action is audited with its class and decision | SURFACE-011 | not run |
 | BASE-AGENT-010 | Agents can follow changes | SURFACE-010 | not run |
@@ -1670,9 +1670,9 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 #### ENRICH-001 — Licensed enrichment and change signals
 
-*Tier:* Core · *Cites:* BASE-ROLE-001, BASE-DATA-004 · *Rules:* D-1 · *Register:* R-8
+*Tier:* Core · *Cites:* BASE-ROLE-001, BASE-DATA-004, BASE-AGENT-006, BASE-AGENT-007 · *Rules:* D-1 · *Register:* R-8
 
-**Requirement.** An admin selects licensed sources including Clay and its approved providers, chooses contact/company fields, freshness, schedule and USD spending limits, and previews a multi-provider waterfall. Enrichment adds provenance, confidence, fetched time and a conflict proposal alongside existing customer evidence. Company news, hiring and job changes refresh on schedule; failed or empty provider results remain distinct from verified absence. Human-reviewed identity and material changes are required, buying data never makes a person contactable, and erasure/suppression fences prevent re-creation.
+**Requirement.** An admin selects licensed sources including Clay and its approved providers, chooses contact/company fields, freshness, schedule and USD spending limits, and previews a multi-provider waterfall. Enrichment adds provenance, confidence, fetched time and a conflict proposal alongside existing customer evidence. Company news, hiring and job changes refresh on schedule; failed or empty provider results remain distinct from verified absence. For an agent, a provider lookup carries external and any provider purchase carries money; filing a reversible field or identity correction carries standard. The company's policy decides these calls and any person review it asks for. Under the held company policy identity and material changes wait for that review. Buying data never makes a person contactable, and erasure/suppression fences prevent re-creation.
 
 **Acceptance.**
 1. Configure a Clay waterfall with two permitted providers, preview cost/fields, enrich a company and contact, refresh a verified job change and conflicting phone, exceed budget, fail one provider and erase/replay; no guessed identity, invented value or outreach permission appears.

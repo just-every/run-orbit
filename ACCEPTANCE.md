@@ -2176,9 +2176,9 @@ Core · target · **missing** · Cites BASE-ROLE-001, BASE-SECRET-001, BASE-DATA
 
 #### ENRICH-001 — Licensed enrichment and change signals
 
-Core · target · **partial** · Cites BASE-ROLE-001, BASE-DATA-004 · Rules D-1 · Register R-8
+Core · target · **partial** · Cites BASE-ROLE-001, BASE-DATA-004, BASE-AGENT-006, BASE-AGENT-007 · Rules D-1 · Register R-8
 
-**Requirement.** An admin selects licensed sources including Clay and its approved providers, chooses contact/company fields, freshness, schedule and USD spending limits, and previews a multi-provider waterfall. Enrichment adds provenance, confidence, fetched time and a conflict proposal alongside existing customer evidence. Company news, hiring and job changes refresh on schedule; failed or empty provider results remain distinct from verified absence. Human-reviewed identity and material changes are required, buying data never makes a person contactable, and erasure/suppression fences prevent re-creation.
+**Requirement.** An admin selects licensed sources including Clay and its approved providers, chooses contact/company fields, freshness, schedule and USD spending limits, and previews a multi-provider waterfall. Enrichment adds provenance, confidence, fetched time and a conflict proposal alongside existing customer evidence. Company news, hiring and job changes refresh on schedule; failed or empty provider results remain distinct from verified absence. For an agent, a provider lookup carries external and any provider purchase carries money; filing a reversible field or identity correction carries standard. The company's policy decides these calls and any person review it asks for. Under the held company policy identity and material changes wait for that review. Buying data never makes a person contactable, and erasure/suppression fences prevent re-creation.
 
 **Acceptance.**
 1. Configure a Clay waterfall with two permitted providers, preview cost/fields, enrich a company and contact, refresh a verified job change and conflicting phone, exceed budget, fail one provider and erase/replay; no guessed identity, invented value or outreach permission appears.
