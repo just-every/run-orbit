@@ -2235,7 +2235,7 @@
       "executable": false
     },
     "newtests/t096/collaborator-lifecycle.test.ts": {
-      "sha256": "fbb64f0c4967ae1212e5b5492ad7840be5100c0b889fae24084d04176576164f",
+      "sha256": "21d369cd7e4fa940ed52354abc1862b213a43cc7c62ed620d4ba5096a7b74975",
       "executable": false
     },
     "newtests/t096/collaborator-links.test.ts": {
@@ -3571,7 +3571,7 @@
       "executable": false
     },
     "newtests/t096/private-entries-proof.ts": {
-      "sha256": "358c9ffa2e6d4cf6a68f046b1dbe9a1b00816036680363d37771eaf2c143c126",
+      "sha256": "49fe28d1bc4a7fb804489b6c1374286557a7ce5ec805b3f57009d1ddcb1f2767",
       "executable": false
     },
     "newtests/t096/publication-fixture.ts": {
@@ -3615,7 +3615,7 @@
       "executable": false
     },
     "newtests/t096/team-access-proof.ts": {
-      "sha256": "56bac6dd9d3c3826d8521fd0d92a1b8162a9b16a1fc8958c809d9d99e60ae5ab",
+      "sha256": "962b4fa12a49d5fe39f24f946d0d714c0f9aaf516fc3fc579600287a5c09e1a5",
       "executable": false
     },
     "newtests/t096/team-reports-proof.ts": {
@@ -4855,7 +4855,7 @@
       "executable": false
     },
     "src/core/features/assistance/routes.ts": {
-      "sha256": "10905da9393d840ab1ed76c849b474d7b5d64a0c3033d398a3deded33d37c2ef",
+      "sha256": "808c476ac8262e62104f0711d268cf6e6300e3080c5de91bf57a06c7d50ff83b",
       "executable": false
     },
     "src/core/features/audit/index.ts": {
@@ -6339,7 +6339,7 @@
       "executable": false
     },
     "src/core/features/outreach/approval-repository.ts": {
-      "sha256": "08fbf4063aaf02ace2da51701dd2148749c260901f88665202a318895e3b0e2c",
+      "sha256": "65ec671c4c6d389af30db9674a6b07a06faa5f1afe339c1a8203ec76856bc3a1",
       "executable": false
     },
     "src/core/features/outreach/automatic-replies.ts": {
@@ -7302,12 +7302,20 @@
       "sha256": "714e09a163b356c7aee8b0883e3b365c3342eee6e916b83a21e0aeed0353d04f",
       "executable": false
     },
+    "src/core/features/teams/ai-authority.ts": {
+      "sha256": "c7fae28d88f43e612bba2370acc68027c8463e74ed4fbab007c641558a5366c6",
+      "executable": false
+    },
     "src/core/features/teams/archive.ts": {
       "sha256": "58edc7c441f2c730c6d4ce66e91413e0316535211f63211f57b2897c35323d82",
       "executable": false
     },
     "src/core/features/teams/contracts.ts": {
       "sha256": "d5aaa16e0031d0b9cd15e38d856e75138341a1f99be4f7481f67935215a07e96",
+      "executable": false
+    },
+    "src/core/features/teams/entry-authority.ts": {
+      "sha256": "c60c0da0b80ee74169fe6cc91cb5c934ececb932358adc72ee08dd2d7e15de9e",
       "executable": false
     },
     "src/core/features/teams/export.ts": {
@@ -7323,7 +7331,7 @@
       "executable": false
     },
     "src/core/features/teams/native-boundary.ts": {
-      "sha256": "7c952ad5710a37e0df8f55e5156c78c8937499a42b0ec502f18d7b55873df37e",
+      "sha256": "89030f62822a8c6b787a5a8116a7fc4b0195aa0260b8624024e64ad3f57301cd",
       "executable": false
     },
     "src/core/features/teams/notifications.ts": {
@@ -7376,6 +7384,10 @@
     },
     "src/core/features/teams/team-editor.tsx": {
       "sha256": "1073c46f81bb9fc28b72662421702cc4481fc84e24bf3c15e17b49cb24b3ebbe",
+      "executable": false
+    },
+    "src/core/features/teams/workbench-authority.ts": {
+      "sha256": "307a297093533fde603b2cb0e8461196c719c55b4cad07ef4cca602e53651e63",
       "executable": false
     },
     "src/core/features/timeline/index.ts": {
@@ -8815,7 +8827,7 @@
       "executable": false
     },
     "tests/core/outreach-limits.test.ts": {
-      "sha256": "2f4f2ec1a801638d65b59c2c5ecc530b46c2a14bcf3a69d9807635a20f291706",
+      "sha256": "be12077768a35911beedfac247db959996038658652902ed61a1dab4d7690127",
       "executable": false
     },
     "tests/core/platform-boundaries.test.ts": {
@@ -9851,7 +9863,7 @@
       "executable": false
     },
     "tests/support/slack-notices-proof.ts": {
-      "sha256": "b48a345e1f56037f74b3d984b4df3418feae6ff891b7b8941026b8a79a192866",
+      "sha256": "e359a2fca8d93d8b949c8bab86a390915d91cbf221f75e1d75ff036d8e770e14",
       "executable": false
     },
     "tests/support/source-stop-fixture.ts": {

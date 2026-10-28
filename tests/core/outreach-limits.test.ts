@@ -49,22 +49,20 @@ test('OUT-010 OUT-018 one user\'s volume never consumes another\'s budget and ev
   const teamHeld=await send(lowered,'Team daily cap applies to next claim');assert.equal(teamHeld.status,409);assert.match(teamHeld.body.error!,/one-to-one budget of 1 messages a rolling day/);
   const untouched=users[4]!;assert.equal((await send(untouched,'Outside this team')).body.state,'accepted','Team budgets are per member and never consume another team’s capacity');
   assert.equal((await api(owner,`settings/sending/teams/${team.id}`,'PUT',{perDay:5})).status,200);
-  assert.equal((await api(lowered,`workbench/messages/${teamHeld.body.id}/retry`,'POST',{})).body.state,'accepted','Raising a team budget applies on the next explicit claim');
+  const raisedRetry=await api(lowered,`workbench/messages/${teamHeld.body.id}/retry`,'POST',{});assert.equal(raisedRetry.status,200,JSON.stringify(raisedRetry.body));assert.equal(raisedRetry.body.state,'accepted','Raising a team budget applies on the next explicit claim');
   assert.equal((await api(owner,`settings/sending/teams/${team.id}`,'PUT',{kind:'sequence',perDay:25})).status,200);
   const capacity=await api<any>(owner,'settings/sending');assert.equal(capacity.body.teams.find((t:any)=>t.id===team.id).sequenceBudget,25);
   const teamAudits=(await db.prepare("SELECT actor_id,details_json FROM audit_entries WHERE action='sending.team_budget.changed' AND entity_id=? ORDER BY occurred_at,id").bind(team.id).all<{actor_id:string;details_json:string}>()).results;assert.equal(teamAudits.length,3);assert.ok(teamAudits.every(row=>row.actor_id===owner));assert.ok(teamAudits.some(row=>JSON.parse(row.details_json).current===5));
   const senderRole={role:'seller',scope:'all',fields:['mail'],permissions:['export'],includeAssociations:false};
-  assert.equal((await api(owner,`settings/teams/roles/${other}`,'PUT',senderRole)).status,200);
-  const scheduledFor='2030-01-10T10:00:00.000Z',scheduled=async(subject:string)=>{const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject,body:'Exact approved scheduled bytes'},other);const result=await api<any>(other,`workbench/drafts/${draft.id}/approve`,'POST',{revision:1,scheduledAt:scheduledFor});assert.equal(result.status,200,JSON.stringify(result.body));return result.body;};
-  const lostField=await scheduled('Field authority revoked after approval');
+  const scheduled=async(subject:string,scheduledFor:string)=>{const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject,body:'Exact approved scheduled bytes'},other);const result=await api<any>(other,`workbench/drafts/${draft.id}/approve`,'POST',{revision:1,scheduledAt:scheduledFor});assert.equal(result.status,200,JSON.stringify(result.body));return result.body;};
+  // Save actual approvals while this operator still has the current full-operator role.
+  const lostField=await scheduled('Field authority revoked after approval','2030-01-10T10:00:00.000Z'),restored=await scheduled('Current sender grants restored','2030-01-11T10:00:00.000Z'),lostScope=await scheduled('Assigned-record scope revoked after approval','2030-01-14T10:00:00.000Z');
   assert.equal((await api(owner,`settings/teams/roles/${other}`,'PUT',{...senderRole,fields:[]})).status,200);const noFieldCalls=calls;
-  await service.dispatchDue(new Date(scheduledFor));assert.equal(calls,noFieldCalls,'A saved approval never grants continuing access to a revoked mail field');assert.equal((await approval.message(lostField.id)).state,'failed');
+  await service.dispatchDue(new Date('2030-01-10T10:00:00.000Z'));assert.equal(calls,noFieldCalls,'A saved approval never grants continuing access to a revoked mail field');assert.equal((await approval.message(lostField.id)).state,'failed');
   assert.equal((await api(owner,`settings/teams/roles/${other}`,'PUT',senderRole)).status,200);
-  const restored=await scheduled('Current sender grants restored');await service.dispatchDue(new Date(scheduledFor));assert.equal(calls,noFieldCalls+1);assert.equal((await approval.message(restored.id)).state,'accepted');
-  const lostScope=await scheduled('Assigned-record scope revoked after approval');
+  await service.dispatchDue(new Date('2030-01-11T10:00:00.000Z'));assert.equal(calls,noFieldCalls+1);assert.equal((await approval.message(restored.id)).state,'accepted');
   assert.equal((await api(owner,`settings/teams/roles/${other}`,'PUT',{...senderRole,scope:'assigned'})).status,200);const noScopeCalls=calls;
-  await service.dispatchDue(new Date(scheduledFor));assert.equal(calls,noScopeCalls,'Changing the sender to assigned records stops an approval for someone else’s account');assert.equal((await approval.message(lostScope.id)).state,'failed');
-
+  await service.dispatchDue(new Date('2030-01-14T10:00:00.000Z'));assert.equal(calls,noScopeCalls,'Changing the sender to assigned records stops an approval for someone else’s account');assert.equal((await approval.message(lostScope.id)).state,'failed');
 
  }finally{context.mock.timers.reset();await p.dispose();}
 });

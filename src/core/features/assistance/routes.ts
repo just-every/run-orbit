@@ -1,3 +1,4 @@
+import {assertSalesAiPreview} from '../teams/ai-authority';
 import {recordAssistanceRoutes} from './record-routes';
 import { Hono } from 'hono';
 import { z } from 'zod';
@@ -17,6 +18,7 @@ export function createAssistanceRoutes(db:D1Database,provider?:AIProvider) {
   const input=z.object({opportunityId:id,contactId:id.optional(),feature:z.enum(['draft','explanation'])}).strict().safeParse(await c.req.json().catch(()=>null));
   if(!input.success)return c.json({error:'Choose an opportunity, recipient and AI operation.'},400);
   const preview=await buildPreview(db,input.data.opportunityId,input.data.contactId,input.data.feature),previewId=createId();
+  await assertSalesAiPreview(db,c.get('operator'),input.data.opportunityId,input.data.contactId,input.data.feature,preview);
   await db.prepare('INSERT INTO ai_previews(id,operator_id,opportunity_id,recommendation_id,recipient_contact_id,feature,content_json,created_at) VALUES(?,?,?,?,?,?,?,?)').bind(previewId,c.get('operator').operatorId,input.data.opportunityId,preview.recommendation.id,preview.contact?.id??null,input.data.feature,JSON.stringify(preview),new Date().toISOString()).run();
   return c.json({id:previewId,configured:Boolean(provider),provider:provider?.provider,model:provider?.model,preview});
  });
@@ -28,6 +30,7 @@ export function createAssistanceRoutes(db:D1Database,provider?:AIProvider) {
   const saved=await db.prepare('SELECT * FROM ai_previews WHERE id=? AND operator_id=? AND consumed_at IS NULL').bind(input.data.previewId,actor).first<{id:string;opportunity_id:string;recommendation_id:string;recipient_contact_id:string|null;feature:'draft'|'explanation';content_json:string}>();
   if(!saved)return c.json({error:'The preview was already used or is unavailable.'},409);
   const current=await buildPreview(db,saved.opportunity_id,saved.recipient_contact_id??undefined,saved.feature);
+  await assertSalesAiPreview(db,c.get('operator'),saved.opportunity_id,saved.recipient_contact_id??undefined,saved.feature,current);
   if(JSON.stringify(current)!==saved.content_json)return c.json({error:'The record changed. Review a fresh preview.'},409);
   const at=new Date().toISOString(),claimed=await db.prepare('UPDATE ai_previews SET consumed_at=? WHERE id=? AND consumed_at IS NULL').bind(at,saved.id).run();
   if(claimed.meta.changes!==1)return c.json({error:'The preview was already used.'},409);
@@ -37,6 +40,7 @@ export function createAssistanceRoutes(db:D1Database,provider?:AIProvider) {
    const output=outputSchema.parse(result.output),allowed=new Set(current.evidence.map(e=>e.id));
    if(output.evidenceIds.some(e=>!allowed.has(e))||output.body.trim().split(/\s+/).filter(Boolean).length>150)throw new Error('AI output violated the evidence or length requirement.');
    const fresh=await buildPreview(db,saved.opportunity_id,saved.recipient_contact_id??undefined,saved.feature);
+   await assertSalesAiPreview(db,c.get('operator'),saved.opportunity_id,saved.recipient_contact_id??undefined,saved.feature,fresh);
    if(JSON.stringify(fresh)!==saved.content_json)throw new Error('The record changed during generation. Review a fresh preview.');
    let draftId:string|undefined;
    if(saved.feature==='draft') {

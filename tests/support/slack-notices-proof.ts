@@ -66,14 +66,14 @@ export async function proveSlackNotices(f:SlackFixture,deal:string,contact:strin
   edge.setMembers(['UBOT','UOWNER','UTEAM']);
   for(const [slackUserId,operatorId] of [['UOWNER',f.actor],['UTEAM',seller.id]])assert.equal((await adminRequest('mappings','PUT',{slackUserId,operatorId,revoked:false})).status,200);
   assert.equal((await adminRequest('channels','PUT',{id:'CINTERNAL',events:['stage'],enabled:true,teamId:team.id})).status,200);
-  const hiddenBefore=posts.length;await move(f.stage,second);assert.equal(posts.length,hiddenBefore,'Team membership and a mapping do not emit even a generic notice for a hidden record');
+  const hiddenBefore=posts.length;await move(second,f.stage);assert.equal(posts.length,hiddenBefore,'Team membership and a mapping do not emit even a generic notice for a hidden record');
   const company=await f.db.prepare('SELECT company_id FROM opportunities WHERE id=?').bind(deal).first<string>('company_id');
   for(const [kind,recordId] of [['opportunity',deal],['contact',contact],['company',company]])assert.equal((await f.request('settings/teams/shares','POST',{kind,recordId,subjectKind:'user',subjectId:seller.id,fields:['*'],canEdit:true})).status,201);
   // Access changes invalidate every old mapping until an administrator explicitly confirms it.
-  const staleBefore=posts.length;await move(second,f.stage);assert.equal(posts.length,staleBefore);assert.equal((await call('')).channels.find((c:any)=>c.id==='CINTERNAL').enabled,0);
+  const staleBefore=posts.length;await move(f.stage,second);assert.equal(posts.length,staleBefore);assert.equal((await call('')).channels.find((c:any)=>c.id==='CINTERNAL').enabled,0);
   for(const [slackUserId,operatorId] of [['UOWNER',f.actor],['UTEAM',seller.id]])assert.equal((await adminRequest('mappings','PUT',{slackUserId,operatorId,revoked:false})).status,200);
   assert.equal((await adminRequest('channels','PUT',{id:'CINTERNAL',events:['stage'],enabled:true,teamId:team.id})).status,200);
-  const allowedBefore=posts.length;await move(f.stage,second);assert.ok(posts.length>allowedBefore,'An explicitly shared record reaches its authorized team audience');
+  const allowedBefore=posts.length;await move(second,f.stage);assert.ok(posts.length>allowedBefore,'An explicitly shared record reaches its authorized team audience');
   const dashboardPath='/api/v2/workspaces/workspace/dashboards/synthetic-orbit-team-ready';
   const dashboardRequest=(path:string,method='GET',body?:unknown,session=f.token)=>f.app.request('https://orbit.test'+dashboardPath+path,{method,headers:{Cookie:'__Host-orbit_session='+session,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
   assert.equal((await dashboardRequest('','PUT',{version:0,definition:{name:'Team sales dashboard',filters:{ownerIds:[],pipelineIds:[],from:'2026-10',through:'2026-12',field:null},tiles:[]}})).status,200);
@@ -85,7 +85,7 @@ export async function proveSlackNotices(f:SlackFixture,deal:string,contact:strin
   assert.equal((await dashboardRequest('/sharing','PUT',{version:2,audience:'private',grants:[],teamGrants:[]})).status,200);
   f.setClock(new Date(Date.parse(teamSchedule.nextAt)+86400000));const privateReadyBefore=posts.length;await process();assert.equal(posts.length,privateReadyBefore,'Removing dashboard team sharing suppresses even the generic dashboard-ready link');f.setClock(undefined);
   edge.setMembers(['UBOT','UOWNER','UTEAM','UOUTSIDER']);assert.equal((await adminRequest('channels','PUT',{id:'CINTERNAL',events:['stage'],enabled:true,teamId:team.id})).status,403,'An unmapped Slack member cannot join a team audience');
-  const outsiderBefore=posts.length;await move(second,f.stage);assert.equal(posts.length,outsiderBefore,'Membership is checked again before posting');
+  const outsiderBefore=posts.length;await move(f.stage,second);assert.equal(posts.length,outsiderBefore,'Membership is checked again before posting');
   edge.setMembers(['UBOT','UOWNER','UTEAM']);
   assert.equal((await f.request(`settings/teams/roles/${seller.id}`,'PUT',{...sellerRole,role:'read-only',fields:[]})).status,200);
   assert.equal((await adminRequest('channels','PUT',{id:'CINTERNAL',events:['stage'],enabled:true,teamId:team.id})).status,403,'A role change requires fresh mapping confirmation');

@@ -1,3 +1,5 @@
+import {salesEntryAuthority} from './entry-authority';
+import {salesWorkbenchAllowed} from './workbench-authority';
 import {salesMutationResponse} from './mutation-routes';
 import {salesReadResponse} from './read-routes';
 import {salesNotificationRoutes} from './notifications';
@@ -15,8 +17,11 @@ export function salesNativeBoundary(db:D1Database):MiddlewareHandler<{Variables:
  const actor=c.get('operator'),profile=await salesProfile(db,actor.operatorId);if(!profile){await next();return;}
  try{
   const path=c.req.path,read=['GET','HEAD'].includes(c.req.method),admin=await salesAdmin(db,actor.operatorId);
+  if(['/api/v1/assistance/preview','/api/v1/assistance/generate'].includes(path)){await next();return;}
   if(path.startsWith('/api/v1/settings/teams')||path.startsWith('/api/v1/settings/slack')||path.startsWith('/api/v1/library')||path.startsWith('/api/v1/settings/sending')){await next();return;}
   const owner=await db.prepare("SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active'").bind(actor.operatorId).first();if(owner){await next();return;}
+  if(await salesEntryAuthority(db,actor.operatorId,path)){await next();return;}
+  if(await salesWorkbenchAllowed(db,actor,c.req.raw)){await next();return;}
   const scopedRead=await salesReadResponse(db,actor,c.req.raw);if(scopedRead)return scopedRead;
   if(admin&&(path.startsWith('/api/v1/settings')||path.startsWith('/api/v1/setup')||path.startsWith('/api/v1/workspace'))){await next();return;}
   if(path.startsWith('/api/v1/settings')||path.startsWith('/api/v1/setup')||path.startsWith('/api/v1/workspace'))return c.json({error:'Sales administration permission is required.'},403);
