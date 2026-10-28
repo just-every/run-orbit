@@ -7,7 +7,7 @@ import {AccessError} from '../access/errors';
 import type {AnalyticsSourcePort} from './sources';
 import type {GraphRef,SalesRow} from './sales-rows';
 
-/** What one viewer may read now, resolved through graphReadPolicy and RECORD-017 entry grants. */
+/** What one viewer may read now, resolved through graphReadPolicy and RECORD-023 entry grants. */
 export interface ViewerAccess{
  full:boolean;operatorId:string;
  deals:Map<string,{ref:DependencyRef;values:Record<string,Json>;fields:Set<string>}>;

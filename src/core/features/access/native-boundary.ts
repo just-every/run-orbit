@@ -24,13 +24,13 @@ export async function restrictedEdit(db:D1Database,c:ActorContext,kind:keyof typ
  const table={contact:'contacts',company:'companies',opportunity:'opportunities'}[kind],current=await db.prepare(`SELECT * FROM ${table} WHERE id=?`).bind(id).first<Record<string,any>>();if(!current)deny('Record is unavailable.');const merged:Record<string,unknown>={...Object.fromEntries(nativeEditableFields[kind].filter(key=>key in current).map(key=>[key,current[key]])),...patch,custom_fields:{...JSON.parse(current.custom_fields_json),...(patch.custom_fields??{}) as object}};
  if(kind==='opportunity'){const related=(await db.prepare('SELECT contact_id,is_primary FROM opportunity_contacts WHERE opportunity_id=?').bind(id).all<{contact_id:string;is_primary:number}>()).results;merged.contact_ids??=related.map(r=>r.contact_id);merged.primary_contact_id??=related.find(r=>r.is_primary)?.contact_id??null;}
  const plan=await new RecordsRepository(db).prepareSave(kind,merged,c.principal.kind==='operator'?c.principal.operatorId:'',id,{ordinaryEdit:true});
- await db.batch([...access.fence(c),...revisionGuard('graph_records',id,c.workspaceId,row.revision,kind),...relatedFences].map(s=>db.prepare(s.sql).bind(...s.bindings)).concat(plan.statements));return{id:plan.id};
+ await db.batch([...access.fence(c),...revisionGuard('graph_records',id,c.workspaceId,row.revision,kind),...relatedFences].map(s=>db.prepare(s.sql).bind(...s.bindings)).concat(plan.statements));return{id:plan.id,changed:plan.changed};
 }
 /** Every native API has a class boundary. Restricted reads use the same fenced native repositories. */
 export function collaboratorNativeBoundary(db:D1Database):MiddlewareHandler<{Variables:{operator:AuthenticatedOperator}}>{return async(c,next)=>{
  const operator=c.get('operator');if(await isFullOperator(db,operator.operatorId)){await next();return;}
  try{const path=c.req.path;
-  // RECORD-017: a collaborator reads only their own mention notifications about records shared with them with entries now.
+  // RECORD-023: a collaborator reads only their own mention notifications about records shared with them with entries now.
   // The scoped reads require an active membership and a live grant, so someone who has not accepted an invitation reads none.
   if(path==='/api/v1/notifications'||path.startsWith('/api/v1/notifications/')||(path==='/api/v1/records/mentions'&&c.req.method==='GET')){
    if(path==='/api/v1/records/mentions')return c.json({mentions:await collaboratorMentions(db,operator.operatorId)});
