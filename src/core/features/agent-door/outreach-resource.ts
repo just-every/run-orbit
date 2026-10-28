@@ -9,7 +9,8 @@ export function outreachResource(bindings:PlatformBindings):ResourceDefinition {
     async read(uri,ctx) {
       try {await fullSeller(bindings,ctx);const id=/^orbit:\/\/outreach\/([^/?#]+)$/.exec(uri)?.[1];if(!id)return null;
         const db=await messageMailDatabase(bindings.DB,id);
-        const message=await db.prepare('SELECT id,draft_id,revision,recipient_email,subject,body,state,provider_message_id,scheduled_at,updated_at FROM outbound_messages WHERE id=?').bind(id).first();
+        // Receipt metadata never substitutes for an authorized saved-content read.
+        const message=await db.prepare('SELECT id,draft_id,revision,recipient_email,state,provider_message_id,scheduled_at,updated_at FROM outbound_messages WHERE id=?').bind(id).first();
         return message?{json:message,untrusted:true}:null;
       }catch{return null;}
     }};

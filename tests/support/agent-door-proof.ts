@@ -124,6 +124,8 @@ export async function agentDoorProof() {
     const privateDefinition=await call('orbit.reports.update',{definition:{name:'Protected amount sum',description:'Native protected source measurement',aggregation:'count',unit:'opportunities',sourceTypes:['opportunity'],sourceOperation:'graph.read',sourceFields:['custom_fields_json'],groupBy:'custom_fields_json',filters:{id:privateOpportunity.id},currency:null,missingPolicy:'incomplete',lateArrival:'recompute',attributionModel:'none',attributionWindowDays:30},idempotency_key:'private-definition'});
     const privatePeriod={...period,id:privateDefinition.id};
     const privatePreview=await call('orbit.reports.preview',privatePeriod);
+    const privateMcpPreview=await businessCall('orbit.reports.preview',privatePeriod);
+    assert.equal(privateMcpPreview.status,200);assert.equal(privateMcpPreview.body.result._meta['com.runeditrun/untrusted'],true,'native protected report groups remain data, never instructions');
     assert.equal(privatePreview.values.value,1);assert.ok(JSON.stringify(privatePreview.values.groups).includes('private_amount'));
     const privateReport=await call('orbit.reports.compute',{...privatePeriod,review_hash:privatePreview.reviewHash,idempotency_key:'private-report'});
     await call('orbit.forecasts.read',{opportunity_id:privateOpportunity.id});
