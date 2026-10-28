@@ -5015,7 +5015,7 @@
       "executable": false
     },
     "src/core/features/capture/providers/writeback.ts": {
-      "sha256": "1019d4c54530e95d88ea4d8cd4c38a872d8f36813e5166560cc0493be0d3a817",
+      "sha256": "6612fcadf1a006f20ad99302a08df1d23ed9abc3a0de1b07920bd4fa90dcefdb",
       "executable": false
     },
     "src/core/features/capture/routes.ts": {
@@ -8611,7 +8611,7 @@
       "executable": false
     },
     "tests/core/capture-providers.test.ts": {
-      "sha256": "795d64256ca65dd4224166744f1ef0f5443372b18a662924d817d54bbef9d366",
+      "sha256": "9e763ce40b906e7c72e1882381e849b0ab5982b2df38909413bef7e60c76de10",
       "executable": false
     },
     "tests/core/capture-replay-archive.test.ts": {

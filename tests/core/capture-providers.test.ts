@@ -62,6 +62,6 @@ test('CAPTURE-006 oversized mail skips once while both providers finish other me
  for(const provider of ['google','microsoft'] as const)await oversizedMessageProof(provider);
 });
 
-test('CAPTURE-006 provider deletion respects occurrence and erasure; CAPTURE-011 separate consent and provider rescheduling preserve one activity through replay and revocation',async()=>{
+test('CAPTURE-006 provider deletion respects occurrence and erasure; CAPTURE-011 read-only and writeback consent request and store distinct scopes',async()=>{
  for(const provider of ['google','microsoft'] as const){await deletedEventProof(provider);await calendarWritebackProof(provider);}
 });
