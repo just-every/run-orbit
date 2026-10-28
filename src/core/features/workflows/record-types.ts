@@ -19,12 +19,16 @@ export interface WorkflowContext {
  previewHistorical?:boolean;
  triggerSnapshots?:Map<string,Record<string,unknown>>;
  plannedValues?:Map<string,Record<string,unknown>>;
+ plannedOrigins?:Map<string,string[]>;
 }
 export interface WorkflowRecordPlan {
  id:string;recordId:string;recordType:RecordKind;field:string;before:unknown;
  after:unknown;needsApproval:boolean;reason?:string;error?:string;failed?:true;action:WorkflowRecordAction;
  readAt:string;createdValues?:Record<string,unknown>;
  relatedRecords?:Array<{recordId:string;recordType:RecordKind}>;
+ copiedContactIds?:string[];
+ beforeContactIds?:string[];
+ createdFieldContactIds?:Record<string,string[]>;
 }
 export interface WorkflowRecordReceipt {
  id:string;recordId:string;recordType:RecordKind;field:string;before:unknown;

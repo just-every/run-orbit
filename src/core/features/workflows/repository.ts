@@ -7,6 +7,11 @@ export const activeFence=(db:D1Database,v:Version)=>guard(db,{sql:"EXISTS(SELECT
 export async function currentVersion(db:D1Database,id:string){const v=await db.prepare('SELECT * FROM workflow_versions WHERE workflow_id=? ORDER BY version DESC LIMIT 1').bind(id).first<Version>();if(!v)throw new WorkflowError(404,'Workflow not found.');return v;}
 export async function runById(db:D1Database,id:string){const r=await db.prepare('SELECT * FROM workflow_runs WHERE id=?').bind(id).first<Run>();if(!r)throw new WorkflowError(404,'Workflow run not found.');return r;}
 export const eventById=(db:D1Database,id:string)=>db.prepare('SELECT * FROM workflow_events WHERE id=?').bind(id).first<Event>();
+export function matchesEvent(event:Event,d:Definition){
+ if(event.kind!==d.trigger.kind||event.record_type!==d.trigger.recordType)return false;
+ const kind=d.trigger.activityKind;
+ return event.kind!=='activity_logged'||!kind||[`Activity manual.${kind}`,`Activity ${kind}.${kind==='note'?'created':'logged'}`].includes(event.evidence);
+}
 export async function record(db:D1Database,kind:string,id:string){if(!Object.hasOwn(tables,kind))throw new WorkflowError(400,'Unsupported record type.');return db.prepare(`SELECT * FROM ${tables[kind as RecordKind]} WHERE id=?`).bind(id).first<Record<string,any>>();}
 export function fieldValue(row:Record<string,any>,field:string){return field.startsWith('custom:')?JSON.parse(row.custom_fields_json??'{}')[field.slice(7)]??null:row[field]??null;}
 export function matches(row:Record<string,any>,d:Definition,at:string){if(d.trigger.kind==='schedule'&&Date.parse(row.updated_at)>Date.parse(at)-(d.trigger.staleDays??14)*86400000)return false;return d.conditions.every(c=>{const value=fieldValue(row,c.field),empty=value===null||value==='';switch(c.operator){case 'equals':return value===c.value;case 'not_equals':return value!==c.value;case 'empty':return empty;case 'not_empty':return !empty;case 'lt':return typeof value==='number'&&typeof c.value==='number'&&value<c.value;case 'gt':return typeof value==='number'&&typeof c.value==='number'&&value>c.value;}});}

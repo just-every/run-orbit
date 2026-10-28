@@ -9,6 +9,8 @@ export async function workflowBrowserJourney({page,fixture,origin,directory},wid
  await page.setViewportSize({width,height:900});await page.goto(origin+'/app/settings');
  const settings=page.locator('.workflows-settings');await expect(settings.getByRole('heading',{name:'Sales workflows',exact:true})).toBeVisible();
  await settings.getByRole('button',{name:'New workflow',exact:true}).click();
+ await settings.getByLabel('Trigger',{exact:true}).selectOption('activity_logged');
+ await settings.getByLabel('Activity type',{exact:true}).selectOption('meeting');
  await settings.getByLabel('Workflow name',{exact:true}).fill('Prepare account review');
  await settings.locator('.workflows-editor').getByLabel('Field',{exact:true}).fill('title');
  await settings.getByLabel('Value',{exact:true}).fill('Account review ready');
@@ -23,6 +25,10 @@ export async function workflowBrowserJourney({page,fixture,origin,directory},wid
  const current=await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET');
  await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,{...current.record,title:'Account review candidate',custom_fields:JSON.parse(current.record.custom_fields_json)},'PUT');
  await settings.getByRole('button',{name:'Execution history',exact:true}).click();
+ await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}/entries`,{kind:'note',text:'Information requested without a meeting',occurredAt:new Date().toISOString()});
+ await settings.getByRole('button',{name:'Process due runs',exact:true}).click();
+ assert.equal((await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET')).record.title,'Account review candidate');
+ await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}/entries`,{kind:'meeting',text:'Customer account review',durationMinutes:30,occurredAt:new Date().toISOString()});
  await settings.getByRole('button',{name:'Process due runs',exact:true}).click();
  await expect(settings.getByText('Completed',{exact:false}).first()).toBeVisible();
  const record=await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET');assert.equal(record.record.title,'Account review ready');

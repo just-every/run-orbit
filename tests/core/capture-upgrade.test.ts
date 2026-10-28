@@ -40,8 +40,9 @@ test('CAPTURE-007 the capture migration upgrades a store from the previous main 
     assert.ok(before.timeline_entries!.length > 10);
 
     // The real upgrade applies every pending migration to the prior installation.
+    const migrationStarted=Date.now();
     execFileSync(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', directory], { env: { ...process.env, CI: '1' }, encoding: 'utf8', timeout: 120_000 });
-    const { columns: currentColumns, rows: after } = read(file);
+    const migrationFinished=Date.now(),{ columns: currentColumns, rows: after } = read(file);
     for (const table of Object.keys(before)) {
       const columns = originalColumns[table]!;
       assert.ok(columns.every(column => currentColumns[table]?.includes(column)), `${table} keeps every prior column`);
@@ -58,7 +59,9 @@ test('CAPTURE-007 the capture migration upgrades a store from the previous main 
     // Pipeline migration deliberately backfills metadata for every existing stage, and
     // OUT-020 records that an upgraded installation keeps one-to-one opt-out on.
     // The forecast source clock is installation metadata; all other new feature storage starts empty.
-    for (const table of addedTables.filter(name=>!['pipelines','pipeline_stage_rules','opt_out_settings','forecast_source_clock'].includes(name))) assert.deepEqual(after[table], [], `${table} starts empty`);
+    for (const table of addedTables.filter(name=>!['pipelines','pipeline_stage_rules','opt_out_settings','forecast_source_clock','workflow_journal_metadata'].includes(name))) assert.deepEqual(after[table], [], `${table} starts empty`);
+    const journal=after.workflow_journal_metadata!.map(row=>JSON.parse(row));assert.equal(journal.length,1);
+    const recordedFrom=Date.parse(journal[0].recorded_from);assert.ok(recordedFrom>=migrationStarted&&recordedFrom<=migrationFinished,'workflow history coverage begins at the real migration, without inventing prior events');
     assert.deepEqual(after.opt_out_settings!.map(row=>{const {message_type,carries,basis}=JSON.parse(row);return {message_type,carries,basis};}),[{message_type:'one_to_one',carries:1,basis:'kept on for an upgraded installation'}],'an upgraded installation keeps one-to-one opt-out on');
     const pipelines=after.pipelines!.map(row=>JSON.parse(row)),rules=after.pipeline_stage_rules!.map(row=>JSON.parse(row));
     assert.equal(pipelines.length,1);assert.equal(pipelines[0].is_default,1);
