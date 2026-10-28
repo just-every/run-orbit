@@ -1851,7 +1851,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "3292e8eba2e91c9f1083ba99b9d887408814d1ff57a35c4b02896d4a29ddb664",
+      "sha256": "1bfcecb27c04af6e2c4a4ceaa081d86cee2c60965648883b8aab933ef90cb5fc",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -7687,7 +7687,7 @@
       "executable": false
     },
     "src/core/shared/archive-transfer-profile.ts": {
-      "sha256": "f15fad71c099f58e1e076da71b0e3ec8138618b6908dc67bfea8687f94b6d459",
+      "sha256": "693b94cd1e3e449b23b8d84c02331866d287c23c2a43012ecf406c0ec11a966f",
       "executable": false
     },
     "src/core/shared/csv.ts": {
