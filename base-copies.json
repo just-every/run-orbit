@@ -596,10 +596,10 @@
     {
       "path": "src/base/modules/agent-door",
       "originPath": "modules/agent-door",
-      "revision": "e1b4265eb0d839a67dae3c36a04f83fa48c9d480",
+      "revision": "f96363bf919ea3e7ed1837daba6894810a50e4a6",
       "files": {
         "src/base/modules/agent-door/admission.ts": "c67ee28a1ae61b963619ffc64807baaa37b618aec41d6a2d90f1852f5beebf9e",
-        "src/base/modules/agent-door/ADOPTING.md": "32226371c21871a96294e5fb7b4b0669e0ee48c576b56db0d91ca649db1d0d12",
+        "src/base/modules/agent-door/ADOPTING.md": "4c2308559c5d989c2547805aeb4a42b1cb06939942e79a44b6a36c0b9a71c0be",
         "src/base/modules/agent-door/approval-execution.ts": "184b7fd7f016fb58121746873f4bf8fab621c4d09a1a00e61cf53eedad2fc3b3",
         "src/base/modules/agent-door/approvals.ts": "45757936fac519de054ca754fd45ea3e6def75f18f1e71cb6a651e6451bf767c",
         "src/base/modules/agent-door/audit.ts": "dba2eec2f97a5580af7b2b0a997617ef0aed8bcd4a36467914aeeb7b439b94ed",

@@ -735,7 +735,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "a442dd5e18536dbcab7a89e429a910de15bcea49ddedf575bf7fa45bebfea9bd",
+      "sha256": "ecd29d29716170c96a1b2dc7ff862e9fa0f00d8ce7817a84eed83d6d35d76522",
       "executable": false
     },
     "BASELINE.md": {
@@ -795,7 +795,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "6fb7552faefc40831ef6b1e873664df5668a125cc5b1efe242306166b974c12d",
+      "sha256": "349764f960458ee2a5e5f534565bc6015ffbbdeff814e243c4361c3d1a731b4b",
       "executable": false
     },
     "docs/artifact/CONTRACT.md": {
@@ -3723,7 +3723,7 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "17f39905387268a3b5fbcaf07b8f0cdb1b7de7a7445297b30a9523be7b2790af",
+      "sha256": "01e677e2233b811c3136c03bf0a8ee934a92fd45dabc1f46c1abf95af046ca44",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
@@ -3739,7 +3739,7 @@
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "d225da9aa0dfd22561ebc9fc8c5694c82f994b8b277b04cd30d1ae2945c0c4bb",
+      "sha256": "0415f1ea8e924a1aba409db0ac587d2f8881dd75ffcb6c6dddbc9fe1fbc54565",
       "executable": false
     },
     "pnpm-workspace.yaml": {
@@ -4043,7 +4043,7 @@
       "executable": false
     },
     "scripts/generate-agent-docs.ts": {
-      "sha256": "cdc0b259ec94562e1ef702589603751a02ad046c80d47cb68f23db04c359c73b",
+      "sha256": "a75e51c6177eef0f4398c76c89a231304e3d8116cea457782b7ec4346addec20",
       "executable": false
     },
     "scripts/generate-agent-surface.ts": {
@@ -4163,7 +4163,7 @@
       "executable": false
     },
     "scripts/verify-agent-door.mjs": {
-      "sha256": "b8603c421e558fea4f53797aa2cff0399e7a4ad818f09005ba50f3f84c3a5ead",
+      "sha256": "0f957b51c6267943cea37ed0d8e4ee0ac966cf511bd3ed9a92847721288c1535",
       "executable": false
     },
     "scripts/verify-fold.mjs": {
@@ -4443,7 +4443,7 @@
       "executable": false
     },
     "src/base/modules/agent-door/ADOPTING.md": {
-      "sha256": "32226371c21871a96294e5fb7b4b0669e0ee48c576b56db0d91ca649db1d0d12",
+      "sha256": "4c2308559c5d989c2547805aeb4a42b1cb06939942e79a44b6a36c0b9a71c0be",
       "executable": false
     },
     "src/base/modules/agent-door/approval-execution.ts": {
@@ -8707,7 +8707,7 @@
       "executable": false
     },
     "src/core/shared/archive-transfer-profile.ts": {
-      "sha256": "c35d66b7c6c1ddc0caf29c0475977208bfcbf9b2acc500d0817d96d439edad52",
+      "sha256": "43c04954fd428dd0497b62051471aac687ccf3d7248a045705f9f532e920d3ac",
       "executable": false
     },
     "src/core/shared/csv.ts": {
@@ -10695,7 +10695,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "8f7c71219682331b0dd84093f998cd0df409746f5324fbffa142578d35167e82",
+      "sha256": "5a3f8d42d7e194e9e951fec69639fac6b720cd9970fbfac98717083478671d18",
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {

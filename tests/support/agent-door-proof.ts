@@ -16,9 +16,9 @@ import { random } from '../../src/core/features/delegation/protocol';
 import { challenge } from '../../src/core/features/delegation/token';
 
 // PENDING-SEED-2026-10-28: the full declarative journey still lacks coverage of
-// every declared tool/class and native grant-subset fixtures. BASE-AGENT shared
-// clauses and ct's customer-send reconciliation have not landed on seed main.
-// The native assertions below exercise the v2 fixes without waiving that gate.
+// every declared tool/class and native grant-subset fixtures. Main's ct clauses
+// remain authoritative; these native assertions exercise the published 0.2.86
+// fixes without waiving full production conformance.
 export async function exerciseAgentDoor(){
  const platform=await isolatedDatabase();
  try{
