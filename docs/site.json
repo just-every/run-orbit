@@ -59,6 +59,11 @@
           "label": "Connected applications"
         },
         {
+          "slug": "agents",
+          "source": "docs/AGENT-DOOR.md",
+          "label": "Agents and company policy"
+        },
+        {
           "slug": "updating",
           "source": "MIGRATION-RECOVERY.md",
           "label": "Updating and recovery"

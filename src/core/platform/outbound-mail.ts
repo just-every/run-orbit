@@ -5,7 +5,7 @@ import { sendSendGrid, SendGridSendError } from '../../base/modules/mail/src/sen
 export interface OutboundMail {
  provider?:'rer'|'sendgrid'|'development';
  optOutOrigin?:string;
- send(input:{id:string;recipient_email:string;subject:string;body:string;message_id?:string;reference_ids?:string;idempotency_key?:string;opt_out?:boolean;opt_out_url?:string}):Promise<{providerMessageId:string|null;messageId?:string}>;
+ send(input:{senderLabel?:string;id:string;recipient_email:string;subject:string;body:string;message_id?:string;reference_ids?:string;idempotency_key?:string;opt_out?:boolean;opt_out_url?:string}):Promise<{providerMessageId:string|null;messageId?:string}>;
  lookup?(idempotencyKey:string):Promise<{providerMessageId:string}|undefined>;
  /** The sender's domain, so each Message-ID names a real domain instead of a placeholder. */
  messageIdDomain?:string;
@@ -34,7 +34,7 @@ export function createOutboundMail(env:OutreachEnvironment):OutboundMail|undefin
    if(demo){const result=await sendDevelopment({provider:'development',mode:'development'},{deliveryId:message.idempotency_key??message.id,from:env.MAIL_FROM??'Orbit Demo <demo@demo.invalid>',to:[message.recipient_email],subject:message.subject,text:message.body});return {providerMessageId:result.providerMessageId};}
    // OUT-020: the unsubscribe group brings SendGrid's List-Unsubscribe headers and its footer links together, or neither; a message approved before OUT-020 keeps the group.
    const groupId=Number(env.SENDGRID_UNSUBSCRIBE_GROUP_ID);
-   return sendSendGrid({apiKey:env.SENDGRID_API_KEY!,message:{from:await senderWithName(env.MAIL_FROM!,env.DB),to:[message.recipient_email],subject:message.subject,text:message.body,deliveryId:message.idempotency_key??message.id,replyTo:env.MAIL_REPLY_TO,...(message.opt_out===false?{}:{asmGroupId:groupId}),subscriptionTracking:false,customArgs:{rer_product:'orbit'},headers:{'Message-ID':message.message_id??`<${message.id}@${senderDomain(env.MAIL_FROM)}>`,...(message.reference_ids?{'References':message.reference_ids,'In-Reply-To':message.reference_ids}:{})}}});
+   return sendSendGrid({apiKey:env.SENDGRID_API_KEY!,message:{from:message.senderLabel?attributedSender(env.MAIL_FROM!,message.senderLabel):await senderWithName(env.MAIL_FROM!,env.DB),to:[message.recipient_email],subject:message.subject,text:message.body,deliveryId:message.idempotency_key??message.id,replyTo:env.MAIL_REPLY_TO,...(message.opt_out===false?{}:{asmGroupId:groupId}),subscriptionTracking:false,customArgs:{rer_product:'orbit'},headers:{'Message-ID':message.message_id??`<${message.id}@${senderDomain(env.MAIL_FROM)}>`,...(message.reference_ids?{'References':message.reference_ids,'In-Reply-To':message.reference_ids}:{})}}});
   },
   async lookup(id){
    const url=new URL('https://api.sendgrid.com/v3/messages');url.searchParams.set('limit','10');url.searchParams.set('query',`unique_args['rer_delivery_id']="${id.replace(/["\\]/g,'')}"`);
@@ -57,3 +57,5 @@ async function senderWithName(from:string,db?:D1Database){
 export function senderDomain(from:string|undefined){return /@([a-z0-9.-]+\.[a-z]{2,})>?\s*$/i.exec(from?.trim()??'')?.[1]?.toLowerCase();}
 export function submissionOutcome(error:unknown):'failed'|'delivery-unknown'{return error instanceof ManagedMailError?error.status==='uncertain'?'delivery-unknown':'failed':error instanceof SendGridSendError&&error.outcome!=='ambiguous'?'failed':'delivery-unknown';}
 export function transientSubmission(error:unknown){return error instanceof ManagedMailError?error.status==='rate_limited':error instanceof SendGridSendError&&error.outcome==='rate_limited';}
+
+export function attributedSender(from:string,label:string){const address=/<([^<>]+)>/.exec(from)?.[1]??from.trim();return `"${label.replace(/[<>"\\\r\n]/g,'').slice(0,200)}" <${address}>`;}

@@ -7,7 +7,7 @@ import {isFullOperator,fullOperatorFence} from './identity-class';
 export interface Fragment{sql:string;bindings:SqlValue[]}
 export async function baseGraphReadPolicy(access:AccessService,c:ActorContext,alias='r'):Promise<{row:Fragment;field:(expression:string,pathsSql?:string)=>Fragment}>{
  if(!['r','record','account','person'].includes(alias))throw new Error('Invalid internal record alias');
- const current=await access.refreshContext(c);if(c.principal.kind!=='operator')deny();
+ const current=await access.refreshContext(c);if(c.principal.kind!=='operator'&&c.principal.kind!=='agent')deny();
  if(await isFullOperator(access.db,c.principal.operatorId)){access.addDependencyFences(c,fullOperatorFence(c),'native-class');return{row:{sql:'1',bindings:[]},field:()=>({sql:'1',bindings:[]})};}
  if(current.policyEpoch!==c.policyEpoch)throw new AccessError('conflict','Permissions changed; refresh workspace context.');
  const operator=c.principal.operatorId,membership=await access.db.prepare('SELECT role FROM access_memberships WHERE workspace_id=? AND operator_id=?').bind(c.workspaceId,operator).first<{role:string}>();

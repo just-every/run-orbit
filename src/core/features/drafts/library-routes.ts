@@ -6,14 +6,14 @@ import {WorkbenchError} from '../workbench/repository';
 import {LibraryRepository} from './library-repository';
 import {renderDraft} from './render';
 const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/),revision=z.number().int().positive();
-const content=z.object({kind:z.enum(['template','snippet','signature']),name:z.string().trim().min(1).max(120),subject:z.string().max(998).default(''),body:z.string().min(1).max(100000),visibility:z.enum(['private','shared'])});
+export const libraryContent=z.object({kind:z.enum(['template','snippet','signature']),name:z.string().trim().min(1).max(120),subject:z.string().max(998).default(''),body:z.string().min(1).max(100000),visibility:z.enum(['private','shared'])});
 export function createLibraryRoutes(db:D1Database){
  const rootDatabase=db;
  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),library=new LibraryRepository(db);
  app.onError((error,c)=>{if(error instanceof WorkbenchError)return c.json({error:error.message},error.status);if(/runtime_controls.value/.test(String(error)))return c.json({error:'Permissions, library content or merge values changed. Reload and review again.'},409);throw error;});
  app.get('/',async c=>c.json(await library.list(c.get('operator').operatorId)));
- app.post('/',async c=>{const input=content.strict().safeParse(await c.req.json());if(!input.success)return c.json({error:'Enter a name, supported kind, body and visibility.'},400);return c.json(await library.save(c.get('operator').operatorId,input.data),201);});
- app.put('/:id',async c=>{const input=content.extend({revision}).strict().safeParse(await c.req.json()),key=id.safeParse(c.req.param('id'));if(!input.success||!key.success)return c.json({error:'Enter valid library content and its current revision.'},400);return c.json(await library.save(c.get('operator').operatorId,input.data,key.data,input.data.revision));});
+ app.post('/',async c=>{const input=libraryContent.strict().safeParse(await c.req.json());if(!input.success)return c.json({error:'Enter a name, supported kind, body and visibility.'},400);return c.json(await library.save(c.get('operator').operatorId,input.data),201);});
+ app.put('/:id',async c=>{const input=libraryContent.extend({revision}).strict().safeParse(await c.req.json()),key=id.safeParse(c.req.param('id'));if(!input.success||!key.success)return c.json({error:'Enter valid library content and its current revision.'},400);return c.json(await library.save(c.get('operator').operatorId,input.data,key.data,input.data.revision));});
  app.delete('/:id',async c=>{const input=z.object({revision}).strict().safeParse(await c.req.json()),key=id.safeParse(c.req.param('id'));if(!input.success||!key.success)return c.json({error:'Choose the current library revision.'},400);return c.json(await library.remove(c.get('operator').operatorId,key.data,input.data.revision));});
  app.post('/drafts/:id/apply',async c=>{const db=await draftMailDatabase(rootDatabase,c.req.param('id'));
   const input=z.object({revision,templateId:id.optional(),snippetId:id.optional(),signatureId:id.optional()}).strict().safeParse(await c.req.json()),key=id.safeParse(c.req.param('id'));if(!input.success||!key.success)return c.json({error:'Choose content and the saved draft revision.'},400);

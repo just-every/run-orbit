@@ -1,5 +1,5 @@
 import {stagePolicy,assertRequiredFields,stagePolicyFence} from '../pipelines/stage-policy';
-import type {AuthenticatedOperator} from '../identity';
+import type {NativeActor} from '../identity';
 import {RecordError,requireRecord} from '../records/shared';
 import type {OpportunityContext,OpportunityContextInput,Stakeholder} from './contracts';
 import {relationshipActivity,type RelationshipReference} from './activity';
@@ -18,7 +18,7 @@ export function opportunityView(id:string,snapshot:Snapshot):OpportunityContext{
 }
 export async function readOpportunityContext(db:D1Database,id:string){return opportunityView(id,await readSnapshot(db,'opportunity',id));}
 
-export async function saveOpportunityContext(db:D1Database,id:string,input:OpportunityContextInput,actor:AuthenticatedOperator){
+export async function saveOpportunityContext(db:D1Database,id:string,input:OpportunityContextInput,actor:NativeActor){
  const snapshot=await readSnapshot(db,'opportunity',id),before=opportunityView(id,snapshot);
  if(snapshot.revision!==input.revision)throw new RecordError(409,'The deal or relationships changed. Reload and review before saving.');
  const deal=await requireRecord(db,'opportunity',id);
@@ -42,6 +42,7 @@ export async function saveOpportunityContext(db:D1Database,id:string,input:Oppor
   for(const item of input.stakeholders)statements.push(db.prepare('INSERT INTO opportunity_contacts(opportunity_id,contact_id,is_primary,created_at) VALUES(?,?,?,?) ON CONFLICT(opportunity_id,contact_id) DO UPDATE SET is_primary=excluded.is_primary').bind(id,item.contactId,item.contactId===input.primaryContactId?1:0,now));
  }
  for(const item of input.stakeholders){
+  if(!('sessionId' in actor)&&item.verified&&!before.stakeholders.find(previous=>previous.contactId===item.contactId)?.verified)throw new RecordError(403,'A person must verify a stakeholder assertion.');
   const old=oldById.get(item.contactId),roles=[...item.roles].sort();
   if(old&&same([...old.roles].sort(),roles)&&old.verified===item.verified)continue;
   changed=true;

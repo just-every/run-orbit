@@ -22,6 +22,9 @@ export async function eraseOperator(db:D1Database,id:string,actor:string){
  }
  const now=new Date().toISOString(),statements=[db.prepare(`DELETE FROM api_credentials WHERE principal_id=? OR ${identityMatch('name')}`).bind(id,...identityPatterns(operator.email)),db.prepare('DELETE FROM sessions WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_proofs WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_bindings WHERE operator_id=?').bind(id),db.prepare('DELETE FROM notifications WHERE operator_id=?').bind(id)];
  statements.push(...await eraseImportOwnerIdentity(db,id,operator.email,actor));
+ const preparedActors=(await db.prepare("SELECT table_name,id,actor FROM orbit_native_attribution WHERE json_extract(actor,'$.for.id')=? OR EXISTS(SELECT 1 FROM json_each(actor,'$.approvers') WHERE json_extract(value,'$.id')=?)").bind(id,id).all<{table_name:string;id:string;actor:string}>()).results;
+ for(const row of preparedActors){const value=JSON.parse(row.actor);if(value.for?.id===id){value.for.name='Erased operator';value.label=`${value.agent.name} for Erased operator`;}for(const approver of value.approvers??[])if(approver.id===id)approver.name='Erased operator';statements.push(db.prepare('UPDATE orbit_native_attribution SET actor=? WHERE table_name=? AND id=? AND actor=?').bind(JSON.stringify(value),row.table_name,row.id,row.actor));}
+ statements.push(db.prepare("DELETE FROM orbit_agent_work WHERE json_extract(principal,'$.person.id')=?").bind(id));
  statements.push(...ownershipOperatorErasure(db,id));
  statements.push(...forecastErasureStatements(db,'operator',id,[operator.email]));
  statements.push(...await messageReviewOperatorErasure(db,id,name,operator.email));
