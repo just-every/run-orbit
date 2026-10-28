@@ -1,0 +1,22 @@
+import {guard,version} from '../identity/store';
+import {audit,tables,type RecordKind} from '../records/shared';
+import {WorkflowError,type Version,type Run,type Event,type Definition} from './contracts';
+export async function owner(db:D1Database,actor:string){const row=await db.prepare(`SELECT ${version('o')} AS version FROM operators o WHERE id=? AND setup_owner=1 AND status='active'`).bind(actor).first<{version:number}>();if(!row)throw new WorkflowError(403,'Only the installation owner manages workflows until sales roles are available.');return row;}
+export const authorityFence=(db:D1Database,actor:string,authority:number)=>guard(db,{sql:`EXISTS(SELECT 1 FROM operators o WHERE id=? AND setup_owner=1 AND status='active' AND ${version('o')}=?) AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import')`,args:[actor,authority]});
+export const activeFence=(db:D1Database,v:Version)=>guard(db,{sql:"EXISTS(SELECT 1 FROM workflow_versions WHERE workflow_id=? AND version=? AND status='active' AND activated_by=? AND authority_version=?)",args:[v.workflow_id,v.version,v.activated_by,v.authority_version]});
+export async function currentVersion(db:D1Database,id:string){const v=await db.prepare('SELECT * FROM workflow_versions WHERE workflow_id=? ORDER BY version DESC LIMIT 1').bind(id).first<Version>();if(!v)throw new WorkflowError(404,'Workflow not found.');return v;}
+export async function runById(db:D1Database,id:string){const r=await db.prepare('SELECT * FROM workflow_runs WHERE id=?').bind(id).first<Run>();if(!r)throw new WorkflowError(404,'Workflow run not found.');return r;}
+export const eventById=(db:D1Database,id:string)=>db.prepare('SELECT * FROM workflow_events WHERE id=?').bind(id).first<Event>();
+export async function record(db:D1Database,kind:string,id:string){if(!Object.hasOwn(tables,kind))throw new WorkflowError(400,'Unsupported record type.');return db.prepare(`SELECT * FROM ${tables[kind as RecordKind]} WHERE id=?`).bind(id).first<Record<string,any>>();}
+export function fieldValue(row:Record<string,any>,field:string){return field.startsWith('custom:')?JSON.parse(row.custom_fields_json??'{}')[field.slice(7)]??null:row[field]??null;}
+export function matches(row:Record<string,any>,d:Definition,at:string){if(d.trigger.kind==='schedule'&&Date.parse(row.updated_at)>Date.parse(at)-(d.trigger.staleDays??14)*86400000)return false;return d.conditions.every(c=>{const value=fieldValue(row,c.field),empty=value===null||value==='';switch(c.operator){case 'equals':return value===c.value;case 'not_equals':return value!==c.value;case 'empty':return empty;case 'not_empty':return !empty;case 'lt':return typeof value==='number'&&typeof c.value==='number'&&value<c.value;case 'gt':return typeof value==='number'&&typeof c.value==='number'&&value>c.value;}});}
+export const workflowAudit=(db:D1Database,actor:string,action:string,id:string,details:unknown,at:string)=>audit(db,actor,'workflow.'+action,'workflow',id,details,at);
+export async function sourceAvailable(db:D1Database,event:Event,actor:string,definition?:Definition){
+ if(event.kind!=='activity_logged')return true;
+ const entry=await db.prepare("SELECT kind FROM timeline_entries t WHERE t.id=? AND NOT EXISTS(SELECT 1 FROM entry_privacy p WHERE p.source='entry' AND p.entry_id=t.id AND p.author_id<>?)").bind(event.id.split(':')[0],actor).first<{kind:string}>();
+ if(!entry)return false;
+ const kind=definition?.trigger.activityKind;
+ return !kind||entry.kind===`manual.${kind}`||entry.kind===(kind==='note'?'note.created':`${kind}.logged`);
+}
+export function rateFence(db:D1Database,id:string,at:string,limit:number){return guard(db,{sql:'(SELECT count(*) FROM workflow_record_writes WHERE workflow_id=? AND occurred_at>=?)<?',args:[id,new Date(Date.parse(at)-3600000).toISOString(),limit]});}
+export async function writeAllowance(db:D1Database,id:string,at:string,limit:number){const row=await db.prepare('SELECT count(*) AS count,min(occurred_at) AS first FROM workflow_record_writes WHERE workflow_id=? AND occurred_at>=?').bind(id,new Date(Date.parse(at)-3600000).toISOString()).first<{count:number;first:string|null}>();return {available:(row?.count??0)<limit,nextAt:new Date(Date.parse(row?.first??at)+3600000).toISOString()};}

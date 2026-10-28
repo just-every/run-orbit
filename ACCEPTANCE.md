@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 8 | 138 | 31 | 177 |
+| Core | 8 | 139 | 30 | 177 |
 | Agent surface | 0 | 0 | 13 | 13 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 8 | 138 | 44 | 190 |
+| Full target | 8 | 139 | 43 | 190 |
 
 Judged from the code and tests at commit `b300e460a20da7f09122dc4a9157499430c4f8d5` (27 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -1817,12 +1817,12 @@ Core · target · **partial** · Cites BASE-ROLE-001, BASE-AUDIT-001
 **Acceptance.**
 1. Preview and activate a stale-deal rule, trigger it twice, change the record and revoke permission before dispatch; inspect one authorized task/notification, one AUTO-002 field write applied without a proposal, no stale field write/send, and an actionable failed webhook run after restart.
 
-**Evidence.** `src/core/features/capture/proposals.ts`; `src/core/features/delegation/effects.ts`; `tests/core/capture-review.test.ts`
-**Gap.** Fixed reviewed proposals and handoffs exist; configurable workflow authoring, unattended record updates (AUTO-002) and durable run management are missing.
+**Evidence.** `tests/core/capture-review.test.ts` — “CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority”; `tests/core/capture-data.test.ts` — “DATA-003 current sales capabilities round-trip without authority and erase across public reads”; `tests/rer/operator-desktop.test.mjs` — “BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px”. Workflow helpers include `tests/support/workflow-journey.ts`, `tests/support/workflow-record-journey.ts`, `tests/support/workflow-safety-journey.ts`, `tests/support/workflow-form-journey.ts` and `tests/rer/workflow-journey.mjs`
+**Gap.** Native version drafts, retained-snapshot dry runs, preview and activation, persisted runs, internal writes, tasks, explicit operator notices and declared static webhooks are implemented. Remaining: TEAM-005 real sales-admin grants, teams and team rotation or notices; RECORD-014 leads and custom objects; captured and provider call activity trigger integration; ENRICH-001 authorized provider signals; SEQUENCE-003 approval-queue enrollment and inherited sequence exits; OUT-018 and OUT-020 workflow-email obligations; pre-journal 30-day reconstruction, large-population previews and complete execution-history pagination. The conservative interim administration boundary is the installation owner under the standing scope rule; scoped delegation and provider boundaries remain unproved. Exact candidate qualification is recorded in Verify.
 
 #### AUTO-002 — Workflow record-changing actions
 
-Core · target · **missing** · Cites BASE-ROLE-001, BASE-AUDIT-001
+Core · target · **partial** · Cites BASE-ROLE-001, BASE-AUDIT-001
 
 **Requirement.** An active AUTO-001 workflow changes CRM data with nobody clicking anything, as HubSpot's "Edit record" action and Pipedrive's update and create actions do. Its triggers include a record created or changed (including a deal entering a stage or being won), an activity logged (RECORD-010, CAPTURE-010, CALL-001), a form submission (FORM-001) and a schedule. Record-changing actions. Each action names its target: the triggering record, or associated records chosen explicitly. These are the primary company, all or the primary associated contacts, contacts holding a named deal role (RECORD-015), the company's or contact's deals filtered by pipeline and stage, or a related custom-object record (RECORD-014). On each target an action can: set a field to a stated value, including picklist fields such as lead status and lifecycle stage, checkboxes, numbers and users; stamp a date or date-time field with the trigger time, the run time, or an offset from either (for example run time plus 14 days, in the workspace timezone under TEAM-003); copy a value from the triggering record, from an associated record or from the triggering form submission (such as UTM fields onto the contact), converting between compatible types as the editor states and refusing incompatible ones when the rule is saved; clear a field, or add to or subtract from a number field; move a deal to a named stage of its pipeline, applying OPP-009 required fields and history; a move into a stage whose required fields are empty fails visibly and never skips them; create an associated deal (in a named pipeline and stage), lead or custom-object record from stated or copied field values, with its owner set by an AUTO-001 owner rule. A run creates each record once: a repeated trigger event, replay or resume finds the record it already created.
 
@@ -1830,8 +1830,8 @@ Core · target · **missing** · Cites BASE-ROLE-001, BASE-AUDIT-001
 1. As a sales admin, activate three workflows, each after its preview shows per-record current and resulting values: "deal created" sets the primary contact's lead status to "Open deal" and the company's lifecycle stage to "Opportunity"; "deal closed won" sets the company and all its contacts to "Customer", stamps "Became customer" with the run date and creates an onboarding task; "meeting logged on a deal in Qualified" moves the deal to "Meeting held".
 2. Create a deal, close another won and log a meeting; verify every field value and the stage move are written with no proposal, each with a timeline entry naming the workflow, its version and the trigger, and replay a trigger to see no second write, task or record.
 
-**Evidence.** None.
-**Gap.** No implementation found. No workflow engine writes records: the only writes outside a person's own edit are capture proposals accepted one at a time in `src/core/features/capture/proposals.ts`, whose compare-and-set fence on the current value is the guard this clause extends to unattended workflow writes.
+**Evidence.** `tests/core/capture-review.test.ts` — “CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority”; `tests/core/capture-data.test.ts` — “DATA-003 current sales capabilities round-trip without authority and erase across public reads”; `tests/rer/operator-desktop.test.mjs` — “BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px”. Workflow helpers include `tests/support/workflow-journey.ts`, `tests/support/workflow-record-journey.ts`, `tests/support/workflow-safety-journey.ts`, `tests/support/workflow-form-journey.ts` and `tests/rer/workflow-journey.mjs`
+**Gap.** Native contact, company and deal set, copy, stamp, clear, arithmetic, stage and associated-deal writes are implemented with typed validation, per-record material approval, current-value guards, durable receipts, loop stops and conditional field or stage undo. Remaining: TEAM-005 scoped sales-admin record and field grants; RECORD-014 leads, custom objects and related targets; product, quote and forecast sidecar actions; created-record archival undo and complete owner-rule selection; pre-journal 30-day reconstruction, form-copy previews without a submission value, per-action preview counts, large previews and full-history pagination; complete per-field intervening-edit attribution and record-atomic failure qualification; named typed-user rendering in record summaries; workflow source in reports and API change webhooks; migration mappings and declared rate-limit qualification. The conservative interim activator is the installation owner under the standing scope rule. Exact candidate qualification is recorded in Verify.
 
 #### AUTO-003 — Workflow activation and history
 

@@ -1,3 +1,4 @@
+import {workflowContactErasure} from '../workflows/privacy';
 import {apiCredentialErasure} from '../api/privacy';
 import {payloadHash} from '../../platform/source-security';
 import {normalizedPhone} from '../calls/provider';
@@ -49,6 +50,7 @@ export class DataRepository {
    const aliases=(await db.prepare("SELECT identity_key FROM record_aliases WHERE record_type='contact' AND survivor_id=?").bind(id).all<{identity_key:string}>()).results.map(row=>row.identity_key);
    const identities=[...new Set([record.email,...aliases].filter((value):value is string=>typeof value==='string'&&value.length>0))];
    contactEmails=identities;
+   statements.push(...await workflowContactErasure(db,id,identities));
    statements.push(...apiCredentialErasure(db,kind,id,identities));
    statements.push(...messageContactErasure(db,identities));
    statements.push(...formAbuseErasure(db,identities));
