@@ -103,7 +103,7 @@ test('README installation lifecycle: native setup, first customer and reviewed m
   assert.equal(new URL(page.url()).pathname, '/app', 'finished setup continues into the app');
 
   // The CLI's own request is proven by the checkout, so it never spends the owner's sign-in allowance.
-  const operator = (await openOwner(origin, await browser.newContext({viewport:{width:1440,height:900}}))).page;
+  const operator = (await openOwner(origin, await browser.newContext({viewport:{width:1440,height:900},ignoreHTTPSErrors:true}))).page;
   const evidence=join(process.env.ORBIT_EVIDENCE_DIR??checkout.root,'native-first-hour');await mkdir(evidence,{recursive:true});
   const customer=await firstHour(operator,origin,1440,evidence);
   await recoverOperatorRoutes(operator,origin);
