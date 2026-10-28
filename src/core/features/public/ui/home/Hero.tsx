@@ -4,7 +4,7 @@ import { alternativeSegments } from "../alternative-line";
 import { siteLinks } from "../brand/links";
 import { OrbitDrawing } from "./OrbitDrawing";
 
-const steps = ["A customer acts", "Orbit moves the deal to your NOW queue", "You follow up with context"];
+const steps = ["A customer acts", "Orbit moves the deal", "You follow up with context"];
 
 /** The first view: the promise, the two actions and the orbit drawing of a customer signal moving a deal to the NOW queue. */
 export function Hero({ description }: { description: string }) {

@@ -7,12 +7,14 @@ type DocsLinkProps = {
   slug: string;
   className?: string;
   rel?: string;
+  /** The rendered page for static navigation, where there is no router. */
+  current?: boolean;
   children: ReactNode;
 };
 
-/** A client-side link to a published docs page. Only the page itself counts as active, so `/docs` is not marked on every page. */
-export function DocsLink({ slug, children, ...props }: DocsLinkProps) {
-  if (useSiteVariant()) return <a href={slug ? `/docs/${slug}` : '/docs'} {...props}>{children}</a>;
+/** A published docs link. Installed navigation follows the router; static navigation uses the rendered page. */
+export function DocsLink({ slug, current = false, children, ...props }: DocsLinkProps) {
+  if (useSiteVariant()) return <a href={slug ? `/docs/${slug}` : '/docs'} aria-current={current ? 'page' : undefined} {...props}>{children}</a>;
   return slug
     ? <Link to="/docs/$slug" params={{ slug }} activeOptions={{ exact: true }} {...props}>{children}</Link>
     : <Link to="/docs" activeOptions={{ exact: true }} {...props}>{children}</Link>;
