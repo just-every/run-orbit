@@ -1,0 +1,19 @@
+import {ownerSchema} from './archive-rollback-step';
+import assert from 'node:assert/strict';
+import {fixture,signIn} from './fixture';
+import {archiveHttp,httpArchive} from './archive-http-proof';
+import {createApp} from '../../tests/support/app';
+export async function terminalRecovery(archive:Awaited<ReturnType<typeof httpArchive>>,source:Awaited<ReturnType<typeof fixture>>,restrictedEmail:string){
+ const target=await fixture();try{await ownerSchema(target.db);
+  const application=(database:D1Database)=>createApp({database,assets:{fetch:async()=>{throw Error('Native archive API proof');}}});
+  let id='',failed=false;const db=new Proxy(target.db,{get(real,key){if(key==='batch')return async(statements:D1PreparedStatement[])=>{const before=id?await real.prepare('SELECT state FROM archive_jobs WHERE id=?').bind(id).first<string>('state'):undefined;const result=await real.batch(statements),after=id?await real.prepare('SELECT state FROM archive_jobs WHERE id=?').bind(id).first<string>('state'):undefined;if(!failed&&before==='restoring'&&after==='complete'){failed=true;throw new TypeError('Injected committed finish acknowledgement loss');}return result;};const value=Reflect.get(real,key);return typeof value==='function'?value.bind(real):value;}}),app=application(db),request=archiveHttp(app,()=>target.cookie);
+  const job=await(await request('/imports','POST',{confirmed:true,manifest:archive.manifest})).json() as any;id=job.id;for(const part of archive.parts)await request(`/imports/${id}/parts/${part.index}`,'PUT',part);
+  let response:Response|undefined;for(let steps=0;steps<2000&&!failed;steps++){response=await app.request(`https://orbit.test/api/v1/records/archive/imports/${id}/finalize`,{method:'POST',headers:{Cookie:target.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:'{}'});if(!failed)assert.equal(response.status,200);}
+  assert.equal(failed,true);assert.ok(response!.status>=400);assert.equal(await target.db.prepare('SELECT state FROM archive_jobs WHERE id=?').bind(id).first('state'),'complete');assert.equal(await target.db.prepare('SELECT count(*) n FROM archive_storage_reservations').first('n'),1);assert.equal(await target.db.prepare('SELECT count(*) n FROM operators WHERE id=?').bind(target.operator.operatorId).first('n'),0);assert.equal(await target.db.prepare('SELECT name FROM contacts').first('name'),'New live export');
+  assert.equal((await app.request('https://orbit.test/api/v1/records/archive/exports',{headers:{Cookie:target.cookie}})).status,401);
+  const denied=await signIn(target.db,restrictedEmail);assert.equal((await app.request('https://orbit.test/api/v1/records/archive/exports',{method:'POST',headers:{Cookie:denied.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:'{}'})).status,403);assert.equal(await target.db.prepare('SELECT count(*) n FROM archive_storage_reservations').first('n'),1);
+  const fresh=await signIn(target.db,source.operator.email);assert.equal(fresh.operator.operatorId,source.operator.operatorId);const current=archiveHttp(app,()=>fresh.cookie),exported=await httpArchive(current);
+  assert.equal(exported.parts.flatMap(part=>part.records).find(row=>row.table==='contacts')!.row.name,'New live export');assert.equal(await target.db.prepare('SELECT count(*) n FROM archive_storage_reservations WHERE job_id=?').bind(id).first('n'),0);assert.equal(await target.db.prepare('SELECT count(*) n FROM archive_parts WHERE job_id=?').bind(id).first('n'),0);assert.equal(await target.db.prepare("SELECT count(*) n FROM sqlite_master WHERE name GLOB 'archive_stage_*'").first('n'),0);assert.equal(await target.db.prepare('SELECT count(*) n FROM operators WHERE id=?').bind(target.operator.operatorId).first('n'),0);
+  await current(`/exports/${exported.id}/abort`,'POST',{});assert.equal(await target.db.prepare('SELECT count(*) n FROM archive_storage_reservations').first('n'),0);
+ }finally{await target.close();}
+}

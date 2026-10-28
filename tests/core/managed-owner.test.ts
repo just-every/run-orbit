@@ -1,3 +1,4 @@
+import {installationAdmission,ownerEditorAdmission} from '../support/sanity-identity-installation';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {isolatedDatabase} from '../support/isolated-database';
@@ -6,6 +7,7 @@ import {identityResponse, operatorFromRequest} from '../../src/core/features/ide
 test('Managed owner claim verifies RER authority and creates the native owner/session exactly once', async () => {
   const fixture = await isolatedDatabase();
   try {
+    await installationAdmission(fixture.db);
     const origin = 'https://orbit.example.test', issuer = 'https://rer.example.test';
     const keys = await crypto.subtle.generateKey({name: 'ECDSA', namedCurve: 'P-256'}, true, ['sign', 'verify']);
     const publicKey = await crypto.subtle.exportKey('jwk', keys.publicKey);
@@ -45,5 +47,6 @@ test('Managed owner claim verifies RER authority and creates the native owner/se
     }), bindings, options);
     assert.equal(direct!.status, 409);
     assert.equal((await direct!.json() as {error: string}).error, 'already_initialized');
+    await ownerEditorAdmission(fixture.db,bindings,owner!.operatorId,cookie);
   } finally { await fixture.dispose(); }
 });
