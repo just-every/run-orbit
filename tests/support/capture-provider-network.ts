@@ -27,7 +27,7 @@ export function captureProviderNetwork(provider:Provider){
    if(event)assert.equal(new Headers(init.headers).get('if-match'),event.etag??event['@odata.etag']);
    state.writes.push({method:init.method!,body,url:raw});
    if(init.method==='DELETE'||url.pathname.endsWith('/cancel')){assert.ok(event);state.writeEvents.delete(eventId);return new Response(null,{status:provider==='google'?204:202});}
-   const nextId=event?eventId:`synthetic-orbit-event-${state.writeEvents.size+1}`,revision=`"synthetic-${state.writes.length}"`,next={...body,id:nextId,...(provider==='google'?{etag:revision}:{'@odata.etag':revision})};state.writeEvents.set(nextId,next);return json(next,init.method==='POST'?201:200);
+   const nextId=event?eventId:`synthetic-orbit-event-${state.writeEvents.size+1}`,revision=`"synthetic-${state.writes.length}"`,next={...body,...(provider==='google'?{organizer:{self:true}}:{isOrganizer:true}),id:nextId,...(provider==='google'?{etag:revision}:{'@odata.etag':revision})};state.writeEvents.set(nextId,next);return json(next,init.method==='POST'?201:200);
   }
   assert.equal(init.method,'GET','capture never writes provider data');assert.ok(new Headers(init.headers).get('authorization'));state.reads.push(raw);
   if(state.outage)return json({},503);if(state.malformed)return json({});if(state.redirect)return new Response(null,{status:302,headers:{location:'https://evil.test/stolen'}});if(state.early401){state.early401=false;return json({},401);}if(state.revoked)return json({},401);

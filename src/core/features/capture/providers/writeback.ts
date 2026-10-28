@@ -7,7 +7,8 @@ import {payloadHash,type SourceSecurity} from '../../../platform/source-security
 import {audit,RecordError,requireRecord} from '../../records/shared';
 import {leaseSource,activeLease} from './session';
 import {readProviderSource} from './service';
-import {writeScopes,encodeId,type Credential,type ProviderFetch} from './config';
+import {writeScopes,type Credential,type ProviderFetch} from './config';
+import {calendarEventUrl as eventUrl,requireCalendarOrganizer,calendarMeeting} from './writeback-event';
 const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 const meeting=z.object({title:z.string().trim().min(1).max(200),message:z.string().trim().min(1).max(10000),start:z.iso.datetime({offset:true}),end:z.iso.datetime({offset:true}),attendees:z.array(z.email()).min(1).max(50)}).strict().refine(m=>Date.parse(m.end)>Date.parse(m.start),'End must follow start.');
 const inputSchema=z.object({sourceId:z.string().min(1).max(100),calendarId:z.string().min(1).max(512),recordType:z.enum(['contact','opportunity']),recordId:id,contactId:id,writebackId:id.optional(),operation:z.enum(['create','reschedule','cancel']),meeting}).strict();
@@ -18,7 +19,6 @@ export function calendarWritebackRoutes(db:D1Database,config:{security?:SourceSe
  app.onError((e,c)=>c.json({error:e instanceof RecordError?e.message:'Calendar writeback failed. No automatic retry is made.'},e instanceof RecordError?e.status:503));
  const security=()=>{if(!config.security)throw new RecordError(409,'Calendar credentials are not configured.');return config.security;};
  async function credential(sourceId:string){const row=await db.prepare('SELECT ciphertext FROM capture_credentials WHERE source_id=?').bind(sourceId).first<{ciphertext:string}>();if(!row)throw new RecordError(409,'Reconnect this calendar.');return JSON.parse(await security().open(row.ciphertext)) as Credential;}
- const eventUrl=(adapter:string,calendar:string,event?:string)=>adapter==='google'?`https://www.googleapis.com/calendar/v3/calendars/${encodeId(calendar)}/events${event?'/'+encodeId(event):''}`:`https://graph.microsoft.com/v1.0/me/calendars/${encodeId(calendar)}/events${event?'/'+encodeId(event):''}`;
  async function inspect(input:Input){
   const source=await readProviderSource(db,input.sourceId),scope=JSON.parse(source.scope_json),token=await credential(source.id);
   if(!token.writebackConsent||!token.scope.split(/\s+/).some(value=>value===writeScopes[source.adapter]||source.adapter==='microsoft'&&value==='https://graph.microsoft.com/'+writeScopes.microsoft))throw new RecordError(409,'Calendar writeback needs separate consent. Reconnect and opt in.');
@@ -32,7 +32,7 @@ export function calendarWritebackRoutes(db:D1Database,config:{security?:SourceSe
    if(!input.writebackId)throw new RecordError(400,'Choose the meeting to change.');row=await db.prepare('SELECT * FROM calendar_writebacks WHERE id=?').bind(input.writebackId).first<Row>();
    if(!row||row.source_id!==source.id||row.connection_id!==source.connection_id||row.calendar_id!==input.calendarId||row.record_type!==input.recordType||row.record_id!==input.recordId||row.contact_id!==input.contactId||!row.provider_event_id||!['written','conflict'].includes(row.state))throw new RecordError(409,'This meeting cannot be changed. Review its connection and outcome.');
    const response=await fetcher(eventUrl(source.adapter,input.calendarId,row.provider_event_id),{method:'GET',redirect:'error',headers:{Authorization:`Bearer ${token.accessToken}`},signal:AbortSignal.timeout(20000)});
-   if(!response.ok)throw new RecordError(409,'The provider meeting is unavailable. Reconcile it before sending another invitation.');current=await response.json();
+   if(!response.ok)throw new RecordError(409,'The provider meeting is unavailable. Reconcile it before sending another invitation.');current=await response.json();requireCalendarOrganizer(source.adapter,current);
    const etag=response.headers.get('etag')??current.etag??current['@odata.etag'];if(typeof etag!=='string'||!etag)throw new RecordError(409,'The provider supplied no revision. No calendar change is allowed.');
    current={etag,details:current};
   }else if(input.writebackId)throw new RecordError(400,'A new meeting must not name an existing writeback.');
@@ -41,7 +41,7 @@ export function calendarWritebackRoutes(db:D1Database,config:{security?:SourceSe
  }
  app.get('/',async c=>{const sources=(await db.prepare("SELECT id,name,adapter,scope_json FROM capture_sources WHERE adapter IN('google','microsoft') AND state IN('connected','syncing')").all<any>()).results,options=[];for(const source of sources){const token=await credential(source.id);options.push({id:source.id,name:source.name,provider:source.adapter,consented:token.writebackConsent===true,calendars:JSON.parse(source.scope_json).calendars??[]});}return c.json({sources:options});});
  app.get('/records/:kind/:id',async c=>{const kind=z.enum(['contact','opportunity']).parse(c.req.param('kind')),record=id.parse(c.req.param('id'));return c.json({meetings:(await db.prepare('SELECT id,source_id,calendar_id,contact_id,state,payload_json,error FROM calendar_writebacks WHERE record_type=? AND record_id=? ORDER BY updated_at DESC').bind(kind,record).all()).results});});
- app.post('/preview',async c=>{const input=inputSchema.parse(await c.req.json()),review=await inspect(input);return c.json({input,reviewHash:review.reviewHash,providerEvent:review.current?.details??null,warning:review.row?.state==='conflict'?'Provider edits conflict with the last Orbit version. Review every attendee and message again.':null});});
+ app.post('/preview',async c=>{const input=inputSchema.parse(await c.req.json()),review=await inspect(input);return c.json({input,reviewHash:review.reviewHash,providerEvent:review.current?calendarMeeting(review.source.adapter,review.current.details):null,warning:review.row?.state==='conflict'?'Provider edits conflict with the last Orbit version. Review every attendee and message again.':null});});
  app.post('/confirm',async c=>{
   const body=z.object({input:inputSchema,reviewHash:z.string().regex(/^[a-f0-9]{64}$/),operationKey:id,confirmed:z.literal(true)}).strict().parse(await c.req.json()),input=body.input,lease=await leaseSource(db,input.sourceId);
   try{

@@ -5003,7 +5003,7 @@
       "executable": false
     },
     "src/core/features/capture/providers/writeback.ts": {
-      "sha256": "63509b0113ffbf52216a982e668f6e5c6e5e910e550915b34fbd97ed8fab57d2",
+      "sha256": "619219b78b907ea688e5b60346a5c6981e3c0122280b2abc9f644ef14220f5c2",
       "executable": false
     },
     "src/core/features/capture/routes.ts": {
@@ -9455,7 +9455,7 @@
       "executable": false
     },
     "tests/support/capture-provider-network.ts": {
-      "sha256": "1b141794ce4268499a9b680ea000733378eee5a8874a9a1b5ae020ccb0d4e754",
+      "sha256": "ea657e68ffccbe98b3f11db659d2dadea3087408ed5ba08863ab747707943789",
       "executable": false
     },
     "tests/support/capture-recovery-fixture.ts": {
