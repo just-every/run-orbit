@@ -39,7 +39,7 @@
 .operator-nav a[aria-current="page"] { color: var(--ob-ink); font-weight: 650; }
 .operator-nav a[aria-current="page"]::after { opacity: 1; transform: none; background: var(--ob-tangerine); }
 .operator-header > form { margin-left: auto; }
-.operator-header .operator-back-link { min-height: 40px; }
+.operator-header :is(.operator-back-link, .operator-menu-toggle) { min-height: 44px; min-width: 44px; }
 
 /* Page title: a quiet eyebrow, the big ink title, a hairline. */
 .operator-main { width: min(1440px, 100%); min-width: 0; margin: 0 auto; padding: clamp(28px, 3.6vw, 52px) var(--ob-gutter) 80px; }
@@ -296,3 +296,9 @@
 .mention-suggestions button { display: inline-flex; gap: 6px; align-items: baseline; max-width: 100%; overflow-wrap: anywhere; }
 .mention-access { display: grid; gap: 12px; padding: 12px 16px; border: 1.5px solid var(--ob-line); border-radius: 12px; }
 .mention-access .workbench-actions { flex-wrap: wrap; }
+
+/* Agent-native activity is readable alongside controls usable by touch. */
+.ob-app :is(.operator-detail,.operator-draft-editor,.records-workspace) button { min-height:44px; min-width:44px; }
+.ob-app .operator-detail label:has(> input:is([type="checkbox"],[type="radio"])) { display:inline-flex; align-items:center; min-height:44px; min-width:44px; gap:6px; }
+
+.ob-app main:has(.operator-draft-editor) button { min-height:44px; min-width:44px; }

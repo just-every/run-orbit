@@ -30,6 +30,7 @@ import { publicDemoConfig } from "./mounts/public-config.server";
 import { invitationLanding } from "../features/access/invitation-landing";
 import { collaboratorLanding } from "../features/access/collaborator-home";
 import { optOutResponse } from '../features/outreach/opt-out-public';
+import {orbitAgentDoor, orbitBusinessSettings} from '../features/agent-door';
 export default withDemo({
   async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);context.waitUntil(runHostedTimers(bindings.DB,createOutboundMail(bindings)));context.waitUntil(sweepArchiveTrash(bindings.DB));context.waitUntil(dispatchSalesTaskReminders(bindings.DB));const security=createSourceSecurity(bindings);context.waitUntil(processSlack(bindings.DB,{security,origin:bindings.AUTH_ORIGIN}));context.waitUntil(pollProviders(bindings.DB,security));if(security)context.waitUntil(pollCalendarLinks(bindings.DB,security));},
   // Cloudflare Email Routing delivers mail for the Orbit address here.
@@ -50,6 +51,12 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
     if (expectedHost && url.host !== expectedHost && !["127.0.0.1", "localhost", "[::1]"].includes(url.hostname)) return new Response("Not found", { status: 404 });
     const asset = await staticAssetResponse(request, bindings);
     if (asset) return asset;
+    if (path === '/mcp' || path.startsWith('/agents') || path === '/api/rer/agent-policy' || path.startsWith('/.well-known/oauth-protected-resource') || path === '/api/rer/business-settings' || path.startsWith('/rer-business')) {
+      try {
+        const response = await orbitBusinessSettings(bindings).handle(request) ?? await orbitAgentDoor(bindings).handle(request);
+        if (response) return response;
+      } catch {return Response.json({code:'agent_door_unavailable'},{status:503,headers:{'Cache-Control':'no-store'}});}
+    }
     const publicBindings = { DB: bindings.DB, AUTH_ORIGIN: bindings.AUTH_ORIGIN ?? '' };
     const state = await setupStateResponse(request, publicBindings, claimed);
     if (state) return state;
