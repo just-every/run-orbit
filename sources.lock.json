@@ -1331,23 +1331,23 @@
       "executable": false
     },
     "docs/retained-verification/RECORD-016/import-owner-mapping-390.png": {
-      "sha256": "f6ad5f0d7040cbe1bbf601a07f1690c90ba025c31bc200e8f37c9daa7db86cfb",
+      "sha256": "9c248e7a9e7a1d8fad60d57d5673fd7e02027666d10a415ecdf282ffe928ab12",
       "executable": false
     },
     "docs/retained-verification/RECORD-016/import-owner-notices-1440.png": {
-      "sha256": "c356075697baea7e3ac9f3f1e3d2c61a0d10f039bce09c8b07437fca26c9031f",
+      "sha256": "42d626fa68badc070a6f2e796ac87e5e96f7f264099add5667389a6773fc3e8f",
       "executable": false
     },
     "docs/retained-verification/RECORD-016/import-owner-notices-390.png": {
-      "sha256": "c52e6ba3547e3dc45110f54b67edc2ea2680b1da27481ecced9e0d9b51b6354c",
+      "sha256": "66e46af595dfae3c44bcd4387a58c30b2c2c735d38d0c958f4d1b33a6726c570",
       "executable": false
     },
     "docs/retained-verification/RECORD-016/import-owner-review-1440.png": {
-      "sha256": "a6bebc7515fbc5d661edbdc1c121fffd0866142d49e2975d15a28ab7f362cebe",
+      "sha256": "6172e74580ce2133635eb746e474c392889d3230794a29d8e054f240c67f4a9d",
       "executable": false
     },
     "docs/retained-verification/RECORD-016/import-owner-review-390.png": {
-      "sha256": "3b7412593a82991aaf9066fa88249ab3d9d1e9f5204da1f7770aa8b71697ddf8",
+      "sha256": "4738e2acd04f85fa7435123f724457b39ed0caecf71c233e1ddd577e40fcefa3",
       "executable": false
     },
     "docs/retained-verification/RECORD-016/ownership-bulk-review-1440.png": {
@@ -5971,7 +5971,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/imports-owners.tsx": {
-      "sha256": "ae532ed7f724d554420f98ff2922b1aa5bd6d3acebbe7c5f1f6d0f02044c6af3",
+      "sha256": "c7485fbca838cf7a16b1e827293f655ed8c5e656a28ac71ed36d176a75323d88",
       "executable": false
     },
     "src/core/features/operator/ui/imports-page.tsx": {
@@ -5979,7 +5979,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/imports.css": {
-      "sha256": "b64ecb9284892963e2b991fc667a50242242da6666d8dac19001bcbf2588cabd",
+      "sha256": "741878ba55e8f8d820fcdfacb70b127e06c29f6734ea84be8bd601378d966303",
       "executable": false
     },
     "src/core/features/operator/ui/mail-evidence.tsx": {
