@@ -2107,7 +2107,7 @@
       "executable": false
     },
     "migrations/core/0067_workflows.sql": {
-      "sha256": "b6664bf1942b5972ef180f59df90074dc88980980af768d8d44b2dc387d3c655",
+      "sha256": "e0d5308023499c64f2ec88fad8354a78fc08e808c4ba8a8f2c0cbe9ae78ef177",
       "executable": false
     },
     "migrations/core/0068_typed_workflow_values.sql": {
