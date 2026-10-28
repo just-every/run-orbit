@@ -8631,7 +8631,7 @@
       "executable": false
     },
     "tests/delegation-browser/worker-security.ts": {
-      "sha256": "8fe080b077b6e02d719b84900b5c0e5cabcc9f7bffb777751d55e21d5d7a3209",
+      "sha256": "68bc886cbce89301a903ac2e932f782416dc0b3ed3ce100bcc2cd22d2ede19d0",
       "executable": false
     },
     "tests/delegation/authority-fixture.ts": {
@@ -9135,7 +9135,7 @@
       "executable": false
     },
     "tests/rer/admission.release.test.mjs": {
-      "sha256": "3b927a9ad162da48d459b16a448877f3f8de90e73664bdc8a685dcada67b3800",
+      "sha256": "e6438505d141a662989d573b539ad2e49e63ca0ee51ebe039a809ed3ebcf913e",
       "executable": false
     },
     "tests/rer/browser-api.mjs": {

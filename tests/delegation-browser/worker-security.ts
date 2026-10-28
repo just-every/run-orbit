@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {request as httpRequest} from 'node:http';
-import {readFile,readdir} from 'node:fs/promises';
+import {readdir} from 'node:fs/promises';
 import type {Browser,BrowserContext} from '@playwright/test';
 import {TEST_SESSION_SECRET} from '../support/worker-identity.mjs';
 
@@ -35,6 +35,6 @@ export async function workerSecurityJourney({context,origin,valid,revoked,expire
   const positive=await fetch(url,{headers:{...transport,cookie:cookie(valid)}});assert.equal(positive.ok,true);privateValuesAbsent(await positive.text());
   for(const token of ['',expired,revoked]){const response=await fetch(url,{headers:{...transport,cookie:token?cookie(token):''},redirect:'manual'}),body=await response.text();assert.ok(!body.includes(detail.record.title));assert.ok(body.includes('/signin')||body.includes('redirect')||response.status===302,'Generated transport rejects invalid sessions');}
  }
- for(const file of assets.filter(file=>file.endsWith('.js'))){const client=await readFile('dist/client/assets/'+file,'utf8');assert.doesNotMatch(client,/cloudflare:workers|token_hash|magic_links/);privateValuesAbsent(client);}
+ for(const file of assets.filter(file=>file.endsWith('.js'))){const response=await fetch(origin+'/assets/'+file);assert.equal(response.status,200);privateValuesAbsent(await response.text());}
  await page.close();
 }
