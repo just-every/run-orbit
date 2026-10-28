@@ -21,7 +21,7 @@ export async function proveCurrentArchive(source:CaptureFixture,target:Awaited<R
  const session=await testAuth(target.db).createSession(target.actor),cookie=`__Host-orbit_session=${session.token}`,app=createApp({database:target.db,assets:{fetch:async()=>new Response(null,{status:404})}});
  const request=(path:string,body?:unknown,method=body===undefined?'GET':'POST',override?:string)=>app.request('https://orbit.test'+path,{method,headers:{Cookie:override??cookie,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
  const call=async(path:string,body?:unknown,method?:string)=>{const response=await request(path,body,method);assert.ok(response.ok,`${path}: ${response.status} ${await response.clone().text()}`);return response.json() as Promise<any>;};
- await proveWorkflowCustody(source,target,data.workflow,call);
+ await proveWorkflowCustody(source,target,data.workflow,request);
  let job=await call('/api/v1/records/archive/exports',{});
  while(job.state==='preparing')job=await call(`/api/v1/records/archive/exports/${job.id}/advance`,{});
  assert.equal(job.state,'ready');const again=await call(`/api/v1/records/archive/exports/${job.id}/download`) as typeof archive;
