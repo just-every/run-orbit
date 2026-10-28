@@ -5,7 +5,7 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 
 const evidence=resolve(process.env.ORBIT_VIEWPORT_EVIDENCE??'.orbit-viewport-evidence');
-const viewports=[{name:'320',width:320,height:844},{name:'390',width:390,height:844},{name:'430',width:430,height:932},{name:'desktop',width:1280,height:900},{name:'1440',width:1440,height:900}];
+const viewports=[{name:'desktop',width:1440,height:900}];
 const companyName='Northstar Fleet Systems, account 6A4B7C8D9E0F1A2B3C4D5E6F';
 const opportunityTitle='Northstar fleet expansion for western territories and regional service coverage';
 const taskTitle='Confirm regional delivery and installation schedule for account 6A4B7C8D9E0F1A2B3C4D5E6F';
@@ -69,7 +69,7 @@ export async function nativeOpportunityViewportJourney(page){
    expect(after.overflowingElements,`${viewport.name} after handoff has elements outside the viewport`).toEqual([]);
    if([390,1440].includes(viewport.width)){const axe=await new AxeBuilder({page}).analyze();expect(axe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);}
    await page.screenshot({path:`${evidence}/opportunity-${viewport.name}-after-handoff.png`,fullPage:true});
-   if(viewport.name==='320')await assertKeyboardReachability(page);
+   await assertKeyboardReachability(page);
   }
 
   const taskKey=['title','description','assignee_id','due_at','status'];

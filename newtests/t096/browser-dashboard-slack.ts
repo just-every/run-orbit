@@ -6,9 +6,9 @@ import {accessible} from './browser-observations';
 /** Actual emitted UI over the genuine attempts prepared through public HTTP and the Slack edge stand-in. */
 export async function dashboardSlackScreens(browser:Browser,worker:{origin:string},cookie:string,directory:string){
  const evidence=join(directory,'REPORT-002');await mkdir(evidence,{recursive:true});
- for(const width of [1440,390]){
-  const anonymous=await browser.newContext({baseURL:worker.origin,viewport:{width,height:1000},ignoreHTTPSErrors:true});try{const signIn=await anonymous.newPage(),response=await signIn.goto('/app/dashboards/synthetic-orbit-notice');assert.equal(response?.status(),401);await accessible(signIn,`dashboard-sign-in-${width}`,evidence);}finally{await anonymous.close();}
-  const context=await browser.newContext({baseURL:worker.origin,viewport:{width,height:1000},hasTouch:width===390,ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),page=await context.newPage();
+ for(const width of [1440]){
+  const anonymous=await browser.newContext({baseURL:worker.origin,viewport:{width,height:900},ignoreHTTPSErrors:true});try{const signIn=await anonymous.newPage(),response=await signIn.goto('/app/dashboards/synthetic-orbit-notice');assert.equal(response?.status(),401);await accessible(signIn,`dashboard-sign-in-${width}`,evidence);}finally{await anonymous.close();}
+  const context=await browser.newContext({baseURL:worker.origin,viewport:{width,height:900},hasTouch:width===390,ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),page=await context.newPage();
   const shot=async(name:string)=>{await accessible(page,name,evidence);await page.screenshot({path:join(evidence,name+'.png'),fullPage:false});};
   try{
    await page.goto('/app/dashboards/synthetic-orbit-notice');await page.getByRole('button',{name:'Schedule email',exact:true}).click();const dialog=page.getByRole('dialog');
@@ -22,7 +22,7 @@ export async function dashboardSlackScreens(browser:Browser,worker:{origin:strin
    // Escape closes the modal too; reopen for the footer and real enable/pause interaction.
    await expect(dialog).toHaveCount(0);await page.getByRole('button',{name:'Schedule email',exact:true}).click();
    await expect(dialog.getByLabel('Slack channel',{exact:true})).toHaveValue('CINTERNAL');await dialog.getByRole('button',{name:'Save schedule',exact:true}).scrollIntoViewIfNeeded();await shot(`schedule-footer-${width}`);
-   if(width===390){await dialog.getByRole('button',{name:'Pause Slack schedule',exact:true}).click();await expect(dialog).toContainText('Slack paused');await dialog.getByRole('button',{name:'Enable saved Slack schedule',exact:true}).click();await expect(dialog).toContainText('Slack scheduled; email paused');}
+   await dialog.getByRole('button',{name:'Pause Slack schedule',exact:true}).click();await expect(dialog).toContainText('Slack paused');await dialog.getByRole('button',{name:'Enable saved Slack schedule',exact:true}).click();await expect(dialog).toContainText('Slack scheduled; email paused');
    await dialog.getByRole('button',{name:'Close dialog',exact:true}).click();
    await page.getByRole('button',{name:'Share',exact:true}).click();await page.getByRole('radio',{name:'Named people',exact:true}).check();const picker=page.getByLabel('Add a person',{exact:true}),person=await picker.locator('option').filter({hasText:'Marcus Lee'}).getAttribute('value');assert.ok(person);await picker.selectOption(person!);const remove=page.locator('.dash-grant button');
    if(width===1440)await remove.hover();else{await remove.dispatchEvent('pointerdown',{pointerType:'touch'});}

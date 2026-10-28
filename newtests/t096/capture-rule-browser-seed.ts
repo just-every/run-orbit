@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {fixture} from './fixture';
+import type {fixture} from './fixture';
 import {createApp} from '../../tests/support/app';
 import {captureProviderNetwork} from '../../tests/support/capture-provider-network';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
-export async function captureRuleBrowserSeed(f:Awaited<ReturnType<typeof fixture>>){
+export async function captureRuleBrowserSeed(f:Pick<Awaited<ReturnType<typeof fixture>>,'db'|'cookie'|'stage'>){
  const network=captureProviderNetwork('google'),security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'72'.repeat(32)})!,app=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:security,captureOrigin:'https://orbit.test',captureFetch:network.fetcher});
  const call=async(path:string,method='GET',body?:unknown,status=200)=>{const response=await app.request('https://orbit.test/api/v1'+path,{method,headers:{Cookie:f.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});assert.equal(response.status,status,await response.clone().text());return response;};
  const company=await(await call('/records/company','POST',{name:'Harborline Distribution',primary_domain:'harborline.example'},201)).json() as any,contact=await(await call('/records/contact','POST',{name:'Avery Kim',email:'synthetic-orbit-avery@harborline.example',company_id:company.id},201)).json() as any;

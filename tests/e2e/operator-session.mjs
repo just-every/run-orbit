@@ -15,7 +15,10 @@ function issueSession() {
   return JSON.parse(output);
 }
 
+const issued = new WeakMap();
+
 export async function authenticateOperator(context) {
+  if (issued.has(context)) return issued.get(context);
   const session = issueSession();
   await context.setExtraHTTPHeaders({ Cookie: `${session.cookieName}=${session.token}` });
   // Browser navigations after a native form redirect use the cookie jar, not
@@ -23,5 +26,6 @@ export async function authenticateOperator(context) {
   await context.addCookies([{ name: session.cookieName, value: session.token,
     url: `https://127.0.0.1:${process.env.ORBIT_BROWSER_PORT ?? 8722}`,
     secure: true, httpOnly: true, sameSite: 'Lax', expires: Date.parse(session.expiresAt) / 1000 }]);
+  issued.set(context, session);
   return session;
 }

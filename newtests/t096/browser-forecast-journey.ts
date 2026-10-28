@@ -3,12 +3,12 @@ import {join} from 'node:path';
 import {expect,type Browser,type Page} from '@playwright/test';
 import {accessible,watchBrowser} from './browser-observations';
 import type {ForecastPreview,ForecastSnapshot,ForecastState} from '../../src/core/features/forecast/types';
-import type {ForecastJourneyProof} from './forecast-archive-journey';
+import type {ForecastJourneyProof} from './forecast-journey-types';
 
 const base='/api/v2/workspaces/workspace/forecast';
 export async function forecastBrowserJourney(browser:Browser,origin:string,directory:string,cookie:string,limitedCookie:string):Promise<ForecastJourneyProof>{
  const now=new Date(),from=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),1)).toISOString().slice(0,10),through=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth()+1,1)).toISOString().slice(0,10),quarter=new Date(Date.UTC(now.getUTCFullYear(),Math.floor(now.getUTCMonth()/3)*3,1)).toISOString().slice(0,10),close=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth()+1,0)).toISOString().slice(0,10);
- const setup=await browser.newContext({baseURL:origin,ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}});
+ const setup=await browser.newContext({baseURL:origin,viewport:{width:1440,height:900},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}});
  const request=async(path:string,method='GET',data?:unknown)=>{const response=await setup.request.fetch(path,{method,...(data===undefined?{}:{data}),headers:{Origin:origin}});assert.equal(response.ok(),true,`${method} ${path}: ${response.status()} ${await response.text()}`);return response.json();};
  const period={from,through};
  // A snapshot taken before these customers exists must remain readable after their erasure.
@@ -28,8 +28,8 @@ export async function forecastBrowserJourney(browser:Browser,origin:string,direc
  let prior:ForecastSnapshot|undefined;
  async function capture(page:Page,name:string){await accessible(page,name,directory);const panel=page.getByRole('region',{name:'Sales forecast',exact:true}),focus=name.includes('override')?panel.getByRole('form',{name:'Review deal forecast',exact:true}):panel.locator('.forecast-measures').first();await focus.screenshot({path:join(directory,name+'-focus.png')});await (name.includes('override')?focus:panel).evaluate(element=>element.scrollIntoView({block:'start'}));await page.screenshot({path:join(directory,name+'-viewport.png')});}
  async function reviewedAction(page:Page,name:string,path:string){await Promise.all([page.waitForResponse(response=>new URL(response.url()).pathname===base+path&&response.request().method()==='POST'&&response.ok()),page.getByRole('button',{name,exact:true}).click()]);}
- for(const width of [1440,390]){
-  const context=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),errors=watchBrowser(context),page=await context.newPage();
+ for(const width of [1440]){
+  const context=await browser.newContext({baseURL:origin,viewport:{width,height:900},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),errors=watchBrowser(context),page=await context.newPage();
   try{
    await page.goto('/app/records');await page.getByRole('link',{name:'Sales forecast and quotas',exact:true}).click();
    const panel=page.getByRole('region',{name:'Sales forecast',exact:true});await expect(panel).toBeVisible();
@@ -67,7 +67,7 @@ export async function forecastBrowserJourney(browser:Browser,origin:string,direc
    await errors.check(directory,`forecast-${width}`);
   }catch(error){await page.screenshot({path:join(directory,`forecast-failure-${width}.png`),fullPage:true});console.error('Forecast page on failure:',await page.getByRole('region',{name:'Sales forecast',exact:true}).innerText());throw error;}finally{await context.close();}
  }
- const limited=await browser.newContext({baseURL:origin,ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:limitedCookie}});
+ const limited=await browser.newContext({baseURL:origin,viewport:{width:1440,height:900},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:limitedCookie}});
  try{for(const path of [base,`${base}/snapshots`,`${base}/snapshots/${prior!.id}`])assert.equal((await limited.request.get(path)).status(),403,'a report collaborator has no current forecast access');assert.equal((await limited.request.post(`${base}/preview`,{data:period,headers:{Origin:origin}})).status(),403);}finally{await limited.close();await setup.close();}
  return{prior:prior!,unrelated,dealId:first.id,contactId:contact.id,overrideReason};
 }

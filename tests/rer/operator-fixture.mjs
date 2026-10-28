@@ -43,7 +43,7 @@ export async function prepareOperatorFixture(page,browser,origin,key,ownerEmail)
  await request(page,`${base}/publications/${publication.operationId}/publish`,{});
  const publicPage=await page.context().newPage();await publicPage.goto(origin+'/p/operator-inquiry');await publicPage.getByLabel('Name',{exact:true}).fill('Operator review contact');await publicPage.getByLabel('Email',{exact:true}).fill('review@example.test');await publicPage.getByLabel('Message',{exact:true}).fill('A form submission shown as labelled values.');await publicPage.getByRole('button',{name:'Submit enquiry'}).click();await expect(publicPage.getByRole('status')).toContainText('Your enquiry was received');await publicPage.close();
  // Use the native dev collaborator; role and grants still go through public access routes.
- const collaboratorContext=await browser.newContext({baseURL:origin,extraHTTPHeaders:{'x-rer-dev-key':key}}),collaborator=settled(await collaboratorContext.newPage());
+ const collaboratorContext=await browser.newContext({baseURL:origin,viewport:{width:1440,height:900},extraHTTPHeaders:{'x-rer-dev-key':key}}),collaborator=settled(await collaboratorContext.newPage());
  await collaborator.goto(origin+'/auth/dev/enter?as=collaborator&returnTo=/app/access');
  const administration=await request(page,`/api/v2/access/workspaces/${workspace}/administration`,undefined,'GET'),member=administration.members.find(item=>item.email==='collaborator@dev.localhost');
  await request(page,`/api/v2/access/workspaces/${workspace}/members/${member.operator_id}`,{role:'guest',status:'active'},'PUT');

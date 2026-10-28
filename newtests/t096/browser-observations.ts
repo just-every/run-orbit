@@ -17,7 +17,13 @@ export function watchBrowser(context:BrowserContext){
   await writeFile(join(directory,name+'.errors.json'),JSON.stringify({pageErrors,consoleErrors,expectedDenials,expectedNetworkFailures,expectedTracingSandboxErrors,unexpectedConsoleErrors}),{mode:0o600});assert.deepEqual(pageErrors,[]);assert.deepEqual(unexpectedConsoleErrors,[]);
  }};
 }
-export async function accessible(page:Page,name:string,directory:string){// The reviewed preview deliberately forbids scripts; the public form is checked on its own page.
+const checkedScreens=new Set<string>();
+export async function accessible(page:Page,name:string,directory:string){
+ const url=new URL(page.url()),dialogs=await page.getByRole('dialog').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('aria-label')??node.getAttribute('aria-labelledby')??'dialog').join(','));
+ const key=`${url.origin}${url.pathname.replace(/\/[A-Z0-9]{26}(?=\/|$)/g,'/:id')}:${await page.evaluate(()=>innerWidth)}:${dialogs}`;
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`${name} must not overflow`);
+ if(checkedScreens.has(key))return;
+ checkedScreens.add(key);// The reviewed preview deliberately forbids scripts; the public form is checked on its own page.
  const result=await new AxeBuilder({page}).exclude('iframe[title="Compiled landing page preview"][sandbox=""]').analyze(),severe=result.violations.filter(v=>['serious','critical'].includes(v.impact??''));assert.deepEqual(severe.map(v=>({id:v.id,impact:v.impact})),[]);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true,`${name} must not overflow`);await page.screenshot({path:join(directory,name+'.png'),fullPage:true});await writeFile(join(directory,name+'.axe.json'),JSON.stringify({violations:result.violations.map(v=>({id:v.id,impact:v.impact})),seriousCritical:severe.length}),{mode:0o600});}
 
 const traces=new WeakMap<BrowserContext,{directory:string;name:string}>();

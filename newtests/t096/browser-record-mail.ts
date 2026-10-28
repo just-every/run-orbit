@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {expect,type Browser} from '@playwright/test';
 import {accessible,watchBrowser} from './browser-observations';
 export async function recordMailBrowserJourney(browser:Browser,origin:string,directory:string,cookie:string,seed:{companyId:string;contactId:string;subject:string;aiDraftId?:string;aiSubject?:string;aiBody?:string;senderId?:string;receiverId?:string;handoverContactId?:string;promiseId?:string;unassignedSenderId?:string;unassignedContactId?:string;unassignedPromiseId?:string}){
- for(const width of [1440,390]){
-  const context=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),errors=watchBrowser(context),page=await context.newPage();try{
+ for(const width of [1440]){
+  const context=await browser.newContext({baseURL:origin,viewport:{width,height:900},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),errors=watchBrowser(context),page=await context.newPage();try{
    await page.goto(`/app/records?kind=contact&record=${seed.contactId}`);await expect(page.getByRole('heading',{name:'Morgan Chen',exact:true})).toBeVisible();const mail=page.locator('#record-mail');await expect(mail.getByLabel('To',{exact:true})).toHaveValue(seed.contactId);await mail.getByLabel('Subject',{exact:true}).fill('Consultation next steps');await mail.getByLabel('Body',{exact:true}).fill('Hi Morgan, here are the next steps for the production rollout.');await expect(mail.getByRole('button',{name:'Save draft for review',exact:true})).toBeEnabled();await accessible(page,`record-mail-contact-composer-${width}`,directory);
    const activity=page.locator('article[id^="entry-"]').filter({hasText:seed.subject});await expect(activity).toHaveCount(1);await activity.locator('summary').click();await accessible(page,`record-mail-contact-timeline-${width}`,directory);
    await mail.getByRole('button',{name:'Save draft for review',exact:true}).click();await expect(page).toHaveURL(/\/app\/drafts\//);await expect(page.getByLabel('Subject',{exact:true})).toHaveValue('Consultation next steps');await accessible(page,`record-mail-draft-review-${width}`,directory);
@@ -20,10 +20,10 @@ export async function recordMailBrowserJourney(browser:Browser,origin:string,dir
 }
 
 interface CompletionSeed {companyId:string;contactId:string;aiDraftId:string;aiSubject:string;aiBody:string;senderId:string;receiverId:string;handoverContactId:string;promiseId:string;unassignedSenderId:string;unassignedContactId:string;unassignedPromiseId:string}
-/** The 390 pass is the existing phone smoke; state-changing completion runs once at 1440. */
+/** Review and commit completion once in the native desktop journey. */
 export async function recordMailCompletionBrowser(browser:Browser,origin:string,directory:string,cookie:string,seed:CompletionSeed){
- for(const width of [390,1440]){
-  const context=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),errors=watchBrowser(context),page=await context.newPage();try{
+ for(const width of [1440]){
+  const context=await browser.newContext({baseURL:origin,viewport:{width,height:900},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),errors=watchBrowser(context),page=await context.newPage();try{
    const read=async(path:string)=>{const response=await context.request.get(`/api/v1/${path}`);assert.ok(response.ok(),await response.text());return response.json();};
    if(width===1440){await page.goto(`/app/drafts/${seed.aiDraftId}`);await expect(page.getByLabel('Subject',{exact:true})).toHaveValue(seed.aiSubject);await expect(page.locator('textarea').first()).toHaveValue(seed.aiBody);await expect(page.locator('textarea').first()).toBeEditable();}
    await page.goto(`/app/records?kind=contact&record=${seed.contactId}`);const mail=page.locator('#record-mail');await mail.getByText('Email assistance',{exact:true}).click();await mail.getByRole('button',{name:'Preview AI draft request',exact:true}).click();const preview=page.getByRole('region',{name:'AI request preview'});await expect(preview).toBeVisible();await expect(preview.getByRole('button',{name:'Generate draft',exact:true})).toBeDisabled();

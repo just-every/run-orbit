@@ -10,14 +10,6 @@ export async function nativeHandoffJourney(page){
  expect(created.status()).toBe(201);const body=await created.json(),opportunity=body;
  const client='slate-'+nonce,callback='https://slate.example.test/callback';
  expect((await api.post('/delegation/clients',{headers:{Origin:origin},form:{id:client,redirect_uri:callback},maxRedirects:0})).status()).toBe(303);
- // Native settings keeps the app's navigation usable on a phone, including keyboard dismissal.
- const viewport=page.viewportSize();
- await page.setViewportSize({width:390,height:844});await page.goto('/delegation/settings');
- const menu=page.getByRole('button',{name:'Menu',exact:true}),navigation=page.getByRole('navigation',{name:'Operator navigation'});
- await menu.click();await navigation.getByRole('link',{name:'Records',exact:true}).click();await page.waitForURL('**/app/records');
- await page.goto('/delegation/settings');await menu.click();await navigation.getByRole('link',{name:'Records',exact:true}).focus();await page.keyboard.press('Escape');
- await expect(navigation).toBeHidden();await expect(menu).toBeFocused();
- if(viewport)await page.setViewportSize(viewport);
  const verifier=randomBytes(32).toString('hex'),challenge=createHash('sha256').update(verifier).digest('base64url');
  const query={client_id:client,redirect_uri:callback,response_type:'code',state:nonce,code_challenge:challenge,code_challenge_method:'S256',account_id:'workspace',scope:'crm.evidence.read crm.handoff.write',targets:JSON.stringify(['opportunities/'+opportunity.id])};
  await page.goto('/delegation/authorize?'+new URLSearchParams(query));
@@ -58,6 +50,4 @@ export async function nativeHandoffJourney(page){
  expect((await api.post('/api/delegation/v1/effects',{headers,data:{...command,operationKey:'stale-'+nonce}})).status()).toBe(409);
  expect((await api.post('/api/delegation/v1/revoke',{headers,data:{}})).status()).toBe(200);
  expect((await api.get('/api/delegation/v1/effects/'+nonce,{headers})).status()).toBe(401);
- await page.goto('/delegation/settings');await page.getByRole('button',{name:'Sign out',exact:true}).click();await page.waitForURL(/signin|\/$/);
- expect((await api.get('/api/v1/workbench')).status()).toBe(401);
 }

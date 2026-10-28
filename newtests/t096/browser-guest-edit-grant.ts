@@ -12,7 +12,7 @@ export async function guestEditGrantJourney(page:Page,owner:Page,operatorId:stri
  await share(['Name','Phone'],'See and edit these fields',`Guest phone update ${width}`);await expect(owner.getByText('invited@browser.test may see and edit: Name, Phone',{exact:true})).toBeVisible();
  await share(['Email'],'See these fields',`Guest email check ${width}`);
  // Signing in again from the emailed link lands on their shared records with the Guest's menu, and owner pages send them back there.
- const origin=new URL(page.url()).origin,again=await page.context().browser()!.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true}),returned=await again.newPage();
+ const origin=new URL(page.url()).origin,again=await page.context().browser()!.newContext({baseURL:origin,viewport:{width,height:900},ignoreHTTPSErrors:true}),returned=await again.newPage();
  try{await returned.goto(returning);await returned.getByRole('button',{name:/Confirm|Sign in/}).first().click();await returned.waitForURL(url=>url.pathname==='/app/shared-records');
   if(width<600)await returned.getByRole('button',{name:'Menu',exact:true}).click();const menu=returned.getByRole('navigation',{name:'Operator navigation'});await expect(menu.getByRole('link',{name:'Shared records',exact:true})).toBeAttached();assert.equal(await menu.getByRole('link',{name:'Records',exact:true}).count(),0);assert.equal(await menu.getByRole('link',{name:'Reports',exact:true}).count(),0);
   await expect(returned.getByRole('button',{name,exact:true})).toBeVisible();await returned.evaluate(()=>Promise.all(document.getAnimations().map(animation=>animation.finished)));await accessible(returned,`guest-return-${width}`,directory);

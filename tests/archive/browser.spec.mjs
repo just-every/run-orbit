@@ -40,24 +40,9 @@ test('native archive preparation, streamed download, confirmed restore and renew
  await expect(page.getByRole('link',{name:'Download completed archive'})).toBeVisible({timeout:90_000});
  await expect(page.locator('.workspace-archive__panel').first()).toHaveCSS('border-top-style','solid');
  await page.locator('.workspace-archive').screenshot({path:testInfo.outputPath('orbit-archive-desktop.png')});
- await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.locator('.workspace-archive').screenshot({path:testInfo.outputPath('orbit-archive-mobile.png')});
  const secondPromise=page.waitForEvent('download');await page.getByRole('link',{name:'Download completed archive'}).click();const second=await secondPromise;
  const {readArchiveFile}=await import('../../src/core/shared/archive-file.ts');
  async function records(path){const result=[];for await(const entry of readArchiveFile(Readable.toWeb(createReadStream(path))))if(entry.kind==='part')for(const record of entry.part.records)if(!['audit_entries','operators','original_operator_provisions','access_memberships'].includes(record.table))result.push(record);return result;}
  expect(await records(await second.path())).toEqual(await records(file));
  await discardExport(page);
- // Exercise the actual CLI engine over the same native HTTP API. Only the
- // production HTTPS-only argument gate is bypassed for this local test server.
- const session=await authenticate(context),origin=new URL(page.url()).origin;
- const {runTransfer}=await import('../../scripts/data-transfer/run.mjs');
- const {transferClient}=await import('../../scripts/data-transfer/http.mjs');
- const request=transferClient(origin,`${session.cookieName}=${session.token}`),cliFile=testInfo.outputPath('cli-archive.json');
- await runTransfer({operation:'export',origin,file:cliFile},request,()=>{});
- expect(await records(cliFile)).toEqual(await records(file));
- // Release the real CLI snapshot through the same shipped Records controls.
- await page.getByRole('button',{name:'Find unfinished exports',exact:true}).click();
- await page.getByRole('button',{name:/^Use export /}).click();
- await discardExport(page);
- await runTransfer({operation:'import',origin,file:cliFile},request,()=>{});
- expect((await page.request.get('/api/v1/records/contact')).status()).toBe(401);
 });

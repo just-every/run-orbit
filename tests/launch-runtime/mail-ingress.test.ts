@@ -1,3 +1,6 @@
+import {verifyUnconfiguredHost} from '../../scripts/verify-unconfigured-host';
+import {sourceMailboxStopJourney} from './source-mailbox-stop-journey';
+import {declaredSignInJourney} from './declared-signin-journey';
 import {isolateBrowserTemp} from '../support/browser-temp.mjs';
 isolateBrowserTemp();
 import assert from 'node:assert/strict';
@@ -20,10 +23,11 @@ import {signRelayBody} from '../../src/base/sendgrid-event-relay/crypto';
 import {publicIdentity} from '../../src/core/platform/public-rate-limit';
 import {identityVarArgs} from '../support/worker-identity.mjs';
 
-test('emitted Worker verifies each provider before its separate limit, shows a signed bounce as the message outcome, and supports the reviewed native do-not-contact clear',async()=>{
+test('signed mail ingress, declared sign-in and native source stops retain truthful delivery and reviewed contact permissions',async()=>{
  const fixture=await isolatedDatabase(),port=await availablePort(),origin=`http://127.0.0.1:${port}`,secret=crypto.randomUUID()+crypto.randomUUID(),keys=generateKeyPairSync('ec',{namedCurve:'prime256v1'}),publicKey=keys.publicKey.export({type:'spki',format:'der'}).toString('base64');
  let worker:ReturnType<typeof spawn>|undefined,browser:Awaited<ReturnType<typeof chromium.launch>>|undefined;
  try{
+  await fixture.close();await verifyUnconfiguredHost(Number(process.env.PROOF_PORT??4197)+1,fixture.directory);await fixture.reopen();
   const db=fixture.db,actor=createId(),deps=createDependencies(db);await deps.auth.ensureOperator({id:actor,email:'runtime-operator@orbit.test',displayName:'Runtime operator'});await deps.workspace.ensureWorkspace({name:'Runtime',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});const session=await deps.auth.createSession(actor);
   const contact=await new RecordsRepository(db).save('contact',{name:'Runtime suppressed contact',email:'runtime-customer@orbit.test',contactability:'do_not_contact'},actor);
   // One approved message SendGrid accepted; its signed bounce must become the message's visible outcome.
@@ -53,12 +57,15 @@ test('emitted Worker verifies each provider before its separate limit, shows a s
   const form=new FormData();form.set('from','unmatched@customer.test');form.set('text','Runtime genuine reply');form.set('headers',`Message-ID: <${createId()}@customer.test>\r\nDate: ${new Date().toUTCString()}`);const request=new Request(origin+'/api/v1/mail/events/reply',{method:'POST',body:form}),raw=Buffer.from(await request.arrayBuffer());
   assert.equal((await fetch(request.url,{method:'POST',headers:{'CF-Connecting-IP':ip,'Content-Type':request.headers.get('Content-Type')!,'X-Twilio-Email-Event-Webhook-Timestamp':timestamp,'X-Twilio-Email-Event-Webhook-Signature':sign('sha256',Buffer.concat([Buffer.from(timestamp),raw]),keys.privateKey).toString('base64')},body:raw})).status,200);
   assert.equal((await relay()).status,200);const limited=await relay();assert.equal(limited.status,429);assert.ok(Number(limited.headers.get('Retry-After'))>0);
-  browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});const context=await browser.newContext({extraHTTPHeaders:{Cookie:`__Host-orbit_session=${session.token}`}}),page=await context.newPage();
+  browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});const context=await browser.newContext({viewport:{width:1440,height:900},extraHTTPHeaders:{Cookie:`__Host-orbit_session=${session.token}`}}),page=await context.newPage();
   await page.goto(origin+`/app/opportunities/${opportunity.id}`);await expect(page.getByTestId('message-outcome')).toContainText('bounced');await expect(page.locator('#approved-outreach')).toContainText('550 5.1.1 Address does not exist');
   await page.goto(origin+'/app/records');await page.getByRole('button',{name:'Contacts',exact:true}).click();await page.getByRole('button').filter({has:page.getByRole('heading',{name:'Runtime suppressed contact',exact:true})}).click();
   await page.getByRole('button',{name:'Edit details',exact:true}).click();assert.equal(await page.getByRole('combobox',{name:'Contactability',exact:true}).inputValue(),'do_not_contact');assert.equal(await page.getByRole('combobox',{name:'Contactability',exact:true}).locator('option[value="contactable"]').evaluate(option=>(option as HTMLOptionElement).disabled),true,'The native contactable option is disabled for a stopped contact');await page.getByRole('button',{name:'Cancel',exact:true}).click();
   await page.getByRole('button',{name:'Clear do-not-contact',exact:true}).click();const review=page.getByRole('dialog',{name:'Clear do-not-contact',exact:true});await expect(review).toContainText('runtime-customer@orbit.test');await expect(review.getByRole('button',{name:'Cancel',exact:true})).toBeFocused();await review.getByRole('button',{name:'Clear do-not-contact',exact:true}).click();await expect(review).toHaveCount(0);await page.getByRole('button',{name:'Clear do-not-contact',exact:true}).waitFor({state:'detached'});
   const result=await fetch(origin+`/api/v1/records/contact/${contact.id}`,{headers:{Cookie:`__Host-orbit_session=${session.token}`}});assert.equal(result.status,200);assert.equal((await result.json() as any).record.contactability,'contactable');
+  await context.close();if(worker&&worker.exitCode===null){const exited=once(worker,'exit');worker.kill('SIGTERM');await exited;}
+  await fixture.reopen();await fixture.db.prepare('DELETE FROM public_rate_limits').run();
+  await sourceMailboxStopJourney(fixture,origin=>declaredSignInJourney(browser!,origin));
  }finally{
   await browser?.close();if(worker&&worker.exitCode===null){const exited=once(worker,'exit');worker.kill('SIGTERM');await exited;}await fixture.dispose();
  }

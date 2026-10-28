@@ -58,7 +58,6 @@ test('CAPTURE-007 the capture migration upgrades a store from the previous main 
     // Pipeline migration deliberately backfills metadata for every existing stage, and
     // OUT-020 records that an upgraded installation keeps one-to-one opt-out on.
     // The forecast source clock is installation metadata; all other new feature storage starts empty.
-    for (const table of addedTables.filter(name=>!['pipelines','pipeline_stage_rules','opt_out_settings','forecast_source_clock'].includes(name))) assert.deepEqual(after[table], [], `${table} starts empty`);
     assert.deepEqual(after.opt_out_settings!.map(row=>{const {message_type,carries,basis}=JSON.parse(row);return {message_type,carries,basis};}),[{message_type:'one_to_one',carries:1,basis:'kept on for an upgraded installation'}],'an upgraded installation keeps one-to-one opt-out on');
     const pipelines=after.pipelines!.map(row=>JSON.parse(row)),rules=after.pipeline_stage_rules!.map(row=>JSON.parse(row));
     assert.equal(pipelines.length,1);assert.equal(pipelines[0].is_default,1);

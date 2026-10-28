@@ -9,7 +9,8 @@ if(process.argv.slice(2).some(arg=>arg!=='--release'))throw Error('Usage: node s
 // Local verification is deliberately sequential; CI gives each shard its own runner.
 resetVerification();
 let passed=true;
-for(const name of Object.keys(verificationPlan({journeys:true})))if(!runShard(name)){passed=false;break;}
+const started=Date.now();
+for(const name of Object.keys(verificationPlan({journeys:true})))if(!runShard(name,{journeys:true})){passed=false;break;}
 let capacity;
 if(passed&&release){
  console.log('\nVerification: pnpm run test:capacity (full release qualification)');
@@ -19,4 +20,5 @@ if(passed&&release){
  writeFileSync('verification/capacity-run.json',JSON.stringify(capacity,null,2)+'\n',{mode:0o600});
 }
 if(passed)passed=aggregate('verification/ci-shards',{release,capacity,journeys:true});
+console.log(`Full suite wall minutes: ${((Date.now()-started)/60000).toFixed(2)}`);
 if(!passed)process.exitCode=1;

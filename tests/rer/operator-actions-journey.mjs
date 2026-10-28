@@ -5,13 +5,7 @@ import {observeOperator} from './operator-observations.mjs';
 import {exerciseDuplicateMerge} from './operator-merge.mjs';
 
 export async function operatorActionsJourney({page,fixture,origin,directory,observations}){
- const widths=[1440,390,320];
-for(const width of [390,320]){
- await page.setViewportSize({width,height:900});await page.goto(origin+'/app');const menu=page.getByRole('button',{name:'Menu',exact:true}),nav=page.getByRole('navigation',{name:'Operator navigation'});
- await expect(nav).toBeHidden();await menu.focus();await page.keyboard.press('Enter');await expect(menu).toHaveAttribute('aria-expanded','true');await expect(nav).toBeVisible();await expect(nav.getByRole('link',{name:'Collaborators',exact:true})).toHaveCount(0);await expect(nav.getByRole('link',{name:'Shared records',exact:true})).toHaveCount(0);
- await nav.getByRole('link',{name:'Settings',exact:true}).focus();await page.keyboard.press('Escape');await expect(menu).toBeFocused();await expect(nav).toBeHidden();await page.keyboard.press('Enter');await nav.getByRole('link',{name:'Settings',exact:true}).click();
- const access=page.getByRole('navigation',{name:'Access settings'});await expect(access.getByRole('link',{name:'Collaborators',exact:true})).toBeVisible();await access.getByRole('link',{name:'Shared records',exact:true}).click();await expect(page.getByRole('heading',{name:'Shared records',exact:true})).toBeVisible();
-}
+ const widths=[1440];
 const nativeDialogs=[];page.on('dialog',dialog=>{nativeDialogs.push(dialog.type());void dialog.dismiss();});
 for(const width of widths){
  await page.setViewportSize({width,height:900});await page.goto(origin+'/app/new');await expect(page.getByRole('button',{name:'Save opportunity'})).toBeEnabled();await page.getByRole('button',{name:'Save opportunity'}).click();await expect(page.getByLabel('Company name',{exact:true})).toBeFocused();

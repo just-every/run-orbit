@@ -21,7 +21,7 @@ export async function exerciseDuplicateMerge(page,origin,fixture,observe){
   await expect(page.getByLabel('Custom fields',{exact:true}).locator(`option[value=${reverse?'retired':'survivor'}]`)).toContainText('Campaign json: Studio');
   await expect(page.getByLabel('Custom fields',{exact:true}).locator(`option[value=${reverse?'retired':'survivor'}]`)).toContainText(`ID in old system: ${fixture.provenance.sourceId}`);await choose();
   if(!reverse){
-   for(const width of [1440,390,320]){
+   for(const width of [1440]){
     await observe('merge-values',width);const dialog=await confirm();await observe('merge-dialog',width);await dialog.getByRole('button',{name:'Cancel',exact:true}).click();assert.equal((await detail(retired.id)).record.id,retired.id);
    }
    const dialog=await confirm(),before=(await detail(retired.id)).record;

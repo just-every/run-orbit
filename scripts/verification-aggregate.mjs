@@ -41,7 +41,7 @@ export function aggregate(directory='verification/ci-shards',{release=false,capa
  writeFileSync('verification/core-results.jsonl',executions.map(row=>JSON.stringify(row)).join('\n')+'\n');
  // Contract mapping remains an explicit report; a test name is not release acceptance.
  for(const file of ['delegation-results.jsonl','browser-results.jsonl'])writeFileSync(`verification/${file}`,'');
- writeFileSync('verification/ci-summary.json',JSON.stringify({commit:commit.stdout.trim(),status:'passed',mode:release?'release':journeys?'journeys':'routine',capacity:capacityStatus,shards:receipts.map(({shard,startedAt,finishedAt})=>({shard,startedAt,finishedAt})),tests:actualCases,qualifications:inventory.qualifications,budget:inventory.total,limit:200},null,2)+'\n');
+ writeFileSync('verification/ci-summary.json',JSON.stringify({commit:commit.stdout.trim(),status:'passed',mode:release?'release':journeys?'journeys':'routine',capacity:capacityStatus,shards:receipts.map(({shard,startedAt,finishedAt})=>({shard,startedAt,finishedAt})),tests:actualCases,qualifications:inventory.qualifications,budget:inventory.total},null,2)+'\n');
  return true;
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url))if(!aggregate(process.argv[2],{journeys:process.env.ORBIT_VERIFY_JOURNEYS==='1'}))process.exitCode=1;

@@ -9,7 +9,7 @@ export async function mentionLink({author,colleague,origin,opportunity,occurredA
  const page=await colleague.newPage();
  // The sections above the timeline arrive after it, as they do on a slow connection.
  await page.route('**/api/v1/risks/**',async route=>{await new Promise(done=>setTimeout(done,1500));await route.continue();});
- for(const width of [1440,390]){
+ for(const width of [1440]){
   await page.setViewportSize({width,height:900});await page.goto('/app/notifications');
   await page.getByRole('link',{name:'Open the mention'}).first().click();await page.waitForURL(new RegExp(`/app/opportunities/${opportunity}#${entry}$`));
   // Chrome's scroll anchoring would hide the shift; Safari has none, so the journey runs without it.

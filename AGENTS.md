@@ -1,5 +1,12 @@
 # Working on Orbit
 
+## Contract companions
+
+CONTRACT.md is the acceptance and status source. After changing it, generate and
+check its complete companion documents before regenerating sources.lock.json.
+Lander-Regenerate: `node scripts/contract-docs.mjs write` then
+`node scripts/contract-docs.mjs check`.
+
 ## Run it locally
 
 Start the app this way in every checkout, in this order (Node 22.20.0 and pnpm 10.12.4 are pinned):

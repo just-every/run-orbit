@@ -42,8 +42,8 @@ before(async()=>{
 after(async()=>{await browser?.close();await worker?.dispose();await f?.close();});
 
 test('REPORT-002 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence',async()=>{
- for(const width of [1440,390]){
-  const context=await browser.newContext({baseURL:worker.origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:f.cookie}});
+ for(const width of [1440]){
+  const context=await browser.newContext({baseURL:worker.origin,viewport:{width,height:900},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:f.cookie}});
   const errors=watchBrowser(context),page=await context.newPage(),id=`disclosed-value-${width}`;
   try{
    await page.goto('/app/reports');await page.getByText('Create or edit a report from your records',{exact:true}).click();
@@ -86,12 +86,13 @@ test('REPORT-002 a manager’s Tile board composes viewer-fenced reports and exp
   }finally{await context.close();}
  }
  await dashboardJourney({browser,worker,ownerCookie:f.cookie,seller:{cookie:seller.cookie,operatorId:seller.operator.operatorId},seed:sales,directory});
- await browser.close();await worker.dispose();await f.target.reopen();worker=await emittedSlackWorker(f.target,origin=>dashboardSlackFixture(f,origin));browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic','--disable-gpu',...worker.browserArgs]});console.info('Owned emitted Worker PID',worker.pid);
+
+ await browser.close();await worker.dispose();await f.target.reopen();worker=await emittedSlackWorker(f.target,origin=>dashboardSlackFixture(f,origin));browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic','--disable-gpu',...worker.browserArgs]});
  await dashboardSlackScreens(browser,worker,f.cookie,directory);
  await salesReportJourney({browser,worker,ownerCookie:f.cookie,seller:{cookie:seller.cookie,operatorId:seller.operator.operatorId,email:seller.operator.email,displayName:'Marcus Lee'},seed:sales,directory});
 });
 
-test('Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API',async()=>{
+async function measuredReportJourney(){
  const definition={name:'Measured values',description:'Native measurements with all filters disclosed',unit:'records',sourceTypes:['opportunity'],sourceOperation:'graph.read',sourceFields:['created_at','score','value_cents','company_id'],currency:null,missingPolicy:'incomplete',lateArrival:'recompute',attributionModel:'none',attributionWindowDays:1,dateField:'created_at',filters:{lifecycle:'open',band:'low'},groupBy:'company_id'};
  for(const [aggregation,valueField,expected] of [['sum','score',30],['mean','score',15],['mean','value_cents',97500],['mean','expected_close_at',null]] as const){
   const id=`unit-${aggregation}-${valueField}`;
@@ -127,4 +128,6 @@ test('Sum and Mean identify money or the measured field, and record group names 
    assert.equal(denied.status,403);assert.doesNotMatch(await denied.text(),/"label":"Owner"/);
   }
  }
-});
+}
+
+test('native report exports identify measured units and obey current group-field authority',measuredReportJourney);

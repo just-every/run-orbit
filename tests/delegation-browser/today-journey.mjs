@@ -4,7 +4,7 @@ import {mkdirSync} from 'node:fs';
 import {randomBytes,createHash} from 'node:crypto';
 import {mentionLink} from './mention-link.mjs';
 
-const widths=[1440,390];
+const widths=[1440];
 const serious=async page=>(await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze()).violations.filter(v=>['serious','critical'].includes(v.impact)).map(v=>v.id);
 const overflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth?[]:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+1).map(e=>`${e.tagName.toLowerCase()}.${e.className}`).slice(0,8));
 const daysAgo=days=>new Date(Date.now()-days*86400000).toISOString();

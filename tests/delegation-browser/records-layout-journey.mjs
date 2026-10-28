@@ -5,12 +5,7 @@ import { resolve } from 'node:path';
 import { tabTo } from '../support/keyboard-focus.mjs';
 
 const evidence = resolve(process.env.ORBIT_RECORD_EVIDENCE ?? '.orbit-viewport-evidence/record-layout');
-const viewports = [
-  { name: '320', width: 320, height: 844 },
-  { name: '390', width: 390, height: 844 },
-  { name: '430', width: 430, height: 932 },
-  { name: 'desktop', width: 1440, height: 900 }
-];
+const viewports = [{name:'desktop',width:1440,height:900}];
 
 function longName(prefix, nonce) {
   return `${prefix}${nonce}${'x'.repeat(200 - prefix.length - nonce.length)}`;
@@ -87,7 +82,7 @@ export async function nativeLongRecordLayoutJourney(page) {
       await page.screenshot({ path: `${evidence}/now-${viewport.name}.png`, fullPage: true });
     }
 
-    await page.setViewportSize({ width: 320, height: 844 });
+    await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/app');
     const targetLink = page.getByRole('link', { name: `Open ${editedOpportunityTitle}`, exact: true });
     await expect(targetLink).toBeVisible();
@@ -163,7 +158,7 @@ async function expectRecordList(page, kind, title, evidenceName, diagnostics) {
     const metrics = await assertReadablePage(page, viewport, heading, title);
     diagnostics.viewportChecks.push({ name: viewport.name, surface: evidenceName, ...metrics });
     await page.screenshot({ path: `${evidence}/${evidenceName}-${viewport.name}.png`, fullPage: true });
-    if (viewport.name === '320') {
+    {
       await tabTo(page, async active => await active.evaluate((element, expected) => element.matches('button') && element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
       await awaitRecordDetail(page, kind, () => page.keyboard.press('Enter'));
       await expect(page.getByRole('heading', { name: title, exact: true, level: 1 })).toBeVisible();

@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import {fixtureMailbox,type CaptureFixture} from './capture-fixture';
-import type {launchFixture} from './launch-fixture';
 import type {currentSalesData} from './current-sales-data';
 import {archiveHash,type ArchivePart} from '../../src/core/features/records/archive-schema';
 import {lineageHash} from '../../src/core/shared/archive-lineage';
-import {proveLocalSalesArchive} from './current-sales-local';
+import {proveLocalSalesArchive,type PortabilityCopyHooks} from './current-sales-local';
 import {testAuth} from './test-auth';
 import {createApp} from './app';
 
-export async function proveCurrentArchive(source:CaptureFixture,target:Awaited<ReturnType<typeof launchFixture>>,data:Awaited<ReturnType<typeof currentSalesData>>,archive:{manifest:any;parts:ArchivePart[]}){
+export type CurrentArchiveHooks=PortabilityCopyHooks&{erased?(db:D1Database,request:(path:string,init?:RequestInit)=>Promise<Response>):Promise<void>;afterComparison?(db:D1Database,request:(path:string,init?:RequestInit)=>Promise<Response>):Promise<void>};
+export async function proveCurrentArchive(source:CaptureFixture,target:{db:D1Database;actor:string},data:Awaited<ReturnType<typeof currentSalesData>>,archive:{manifest:any;parts:ArchivePart[]},hooks:CurrentArchiveHooks={}){
  for(const part of archive.parts)assert.equal(await archiveHash(part.records),part.sha256,'all exported part digests validate');
  const rows=(document:typeof archive,table:string)=>document.parts.flatMap(part=>part.records.filter(row=>row.table===table).map(row=>row.row));
  const categories=['workspace_settings','pipeline_stages','signal_sources','signal_links','timeline_entry_records','evaluations','evaluation_contributions','recommendations','recommendation_evidence','notifications','outbound_messages','drafts','schema_types','ai_calls','ai_previews','contacts','companies','opportunities','record_aliases','pipelines','pipeline_stage_rules','sales_tasks','sales_task_series','sales_task_timeline','opportunity_stakeholder_roles','opportunity_buying_context','contact_company_relationships','analytics_definitions','analytics_snapshots','analytics_snapshot_sources','content_entities','content_revisions','publication_operations','form_spam','marketing_form_submissions','consent_events','capture_sources','capture_items','capture_proposals','handoff_tasks','timeline_entries','signals','audit_entries'];
@@ -35,7 +35,8 @@ export async function proveCurrentArchive(source:CaptureFixture,target:Awaited<R
   const stable=(entries:typeof original)=>entries.map(row=>JSON.stringify(row)).sort();
   assert.equal(await lineageHash(stable(restored)),await lineageHash(stable(original)),`${table} complete content digest survives`);
  }
- const otherSession=await testAuth(target.db).createSession(source.operator);assert.equal((await request(`/api/v1/records/archive/exports/${job.id}/download`,undefined,'GET',`__Host-orbit_session=${otherSession.token}`)).status,404,'one full operator cannot download another operator export job');
+ const peer=await target.db.prepare("SELECT id FROM operators WHERE status='active' AND id<>? LIMIT 1").bind(target.actor).first<string>('id');assert.ok(peer,'a second full operator exists');
+ const otherSession=await testAuth(target.db).createSession(peer!);assert.equal((await request(`/api/v1/records/archive/exports/${job.id}/download`,undefined,'GET',`__Host-orbit_session=${otherSession.token}`)).status,404,'one full operator cannot download another operator export job');
  assert.equal(await target.db.prepare('SELECT count(*) n FROM access_form_authorities').first('n'),0);
  assert.equal(await target.db.prepare('SELECT count(*) n FROM publication_targets').first('n'),0);
  assert.equal(await target.db.prepare('SELECT count(*) n FROM delegation_grants').first('n'),0);
@@ -47,10 +48,15 @@ export async function proveCurrentArchive(source:CaptureFixture,target:Awaited<R
  assert.equal(await target.db.prepare("SELECT status FROM access_memberships WHERE operator_id=?").bind(data.reader.operator.operatorId).first('status'),'removed','restored collaborator requires renewed authority');
  assert.ok((await request('/api/public/forms/portability-enquiry',{},'POST')).status>=400,'publication is withdrawn until fresh review');
  assert.equal(Number(await target.db.prepare("SELECT count(*) n FROM outbound_messages WHERE state='scheduled'").first('n')),0,'restore never transfers approved scheduled dispatch authority');
+ const door=(path:string,init:RequestInit={})=>app.request('https://orbit.test'+path,{...init,headers:{Cookie:cookie,Origin:'https://orbit.test',...init.headers}});
+ await hooks.restored?.(target.db,door);
+ await hooks.afterComparison?.(target.db,door);
+ const inFlight=(await request(`/api/v1/records/archive/exports/${job.id}/download`)).body!.getReader();await inFlight.read();
  const before=Date.now();await call(`/api/v1/records/contact/${source.ana}`,{confirmed:true},'DELETE');assert.ok(Date.now()-before<300000);
  const absent=(value:unknown)=>{const serialized=JSON.stringify(value);for(const privateValue of data.privateValues)assert.ok(!serialized.includes(privateValue),`erased ${privateValue} absent`);};
  for(const kind of ['contact','company','opportunity'])absent(await call(`/api/v1/records/${kind}?q=${encodeURIComponent('ana@acme.example')}`));
  assert.equal((await request(`/api/v1/records/contact/${source.ana}`)).status,404);
+ await assert.rejects(async()=>{while(!(await inFlight.read()).done){}},/removed|incomplete/,'erasure interrupts an already opened archive download');
  absent(await call(`/api/v1/records/company/${source.company}`));absent(await call(`/api/v1/records/opportunity/${source.opportunity}`));
  absent(await call('/api/v1/tasks?view=all'));absent(await call('/api/v1/capture/proposals'));absent(await call('/api/v1/today'));
  const report=await request(`/api/v2/workspaces/workspace/operations/snapshots/${data.report.id}/export`);assert.ok(report.status>=400,'erased report sources cannot be read');
@@ -62,6 +68,7 @@ export async function proveCurrentArchive(source:CaptureFixture,target:Awaited<R
  let erased=await call('/api/v1/records/archive/exports',{});while(erased.state==='preparing')erased=await call(`/api/v1/records/archive/exports/${erased.id}/advance`,{});
  absent(await call(`/api/v1/records/archive/exports/${erased.id}/download`));
  assert.equal((await request(`/api/v1/records/archive/exports/${job.id}/download`)).status,404,'pre-erasure materialized export is withdrawn');
- await proveLocalSalesArchive(source);
+ await hooks.erased?.(target.db,door);
+ await proveLocalSalesArchive(source,hooks);
  const audit=(await target.db.prepare("SELECT entity_id,details_json FROM audit_entries WHERE action='record.deleted' AND entity_type='contact'").all()).results;assert.ok(audit.length);assert.ok(audit.every(row=>row.entity_id==='erased'));absent(audit);
 }

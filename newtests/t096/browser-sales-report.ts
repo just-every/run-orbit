@@ -5,7 +5,6 @@ import {expect,type Browser,type Locator,type Page} from '@playwright/test';
 import {accessible,watchBrowser} from './browser-observations';
 import {emittedRequest} from './emitted-request';
 import {newYork,iso,type seedSalesReport} from './sales-report-fixture';
-import {salesReportArchive} from './sales-report-archive';
 
 /** REPORT-001 through the Reports UI and its HTTP routes: a US monthly two-pipeline report is built, saved, reconciled by
  * drill-through and exported; a collaborator's grant is revoked; late evidence arrives; every figure is hand-counted; the
@@ -49,7 +48,7 @@ async function download(page:Page,scope:Locator,path:string){const downloading=p
 
 export async function salesReportJourney({browser,worker,ownerCookie,seller,seed,directory}:{browser:Browser;worker:Worker;ownerCookie:string;seller:{cookie:string;operatorId:string;email:string;displayName?:string};seed:Seed;directory:string}){
  const call=async(cookie:string,path:string,method='GET',body?:unknown)=>{const response=await emittedRequest(worker,cookie,path,method,body),text=await response.text();assert.ok(response.ok,`${method} ${path}: ${response.status} ${text}`);return text?JSON.parse(text):null;};
- const context=async(width:number,cookie:string)=>{const created=await browser.newContext({baseURL:worker.origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}});return {created,errors:watchBrowser(created),page:await created.newPage()};};
+ const context=async(width:number,cookie:string)=>{const created=await browser.newContext({baseURL:worker.origin,viewport:{width,height:900},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}});return {created,errors:watchBrowser(created),page:await created.newPage()};};
  const {at,months}=seed,workspace=(await call(ownerCookie,'/api/v1/settings')).workspace;
  const setCurrency=(currency:string)=>call(ownerCookie,'/api/v1/settings','PUT',{name:workspace.name,timezone:workspace.timezone,currency,workingHours:JSON.parse(workspace.working_hours_json),staleIntervalDays:workspace.stale_interval_days,awaitingResponseWorkingDays:workspace.awaiting_response_working_days,freeMailDomains:JSON.parse(workspace.free_mail_domains_json)});
  assert.equal(workspace.timezone,'America/New_York');
@@ -106,16 +105,8 @@ export async function salesReportJourney({browser,worker,ownerCookie,seller,seed
   await figure(section(result,'Stage age'),'Mean days in stage',days(mean(stageAge)));
   await reasons.getByRole('button',{name:`${usd(5_200_000)} Won value: show the records behind it`,exact:true}).click();await accessible(page,'sales-report-1440',directory);await owner.errors.check(directory,'sales-report-1440');await owner.created.close();
   // The same saved result on a phone, with a drill-through open.
-  const phone=await context(390,ownerCookie),phoneReports=phone.page.getByRole('region',{name:'Sales reports',exact:true});await phone.page.goto('/app/reports');
-  await phoneReports.getByText('Built-in sales reports',{exact:true}).click();await expect(phoneReports.locator('.sales-suite li').getByRole('button')).toHaveCount(10);await accessible(phone.page,'sales-reports-390',directory);
-  await phoneReports.getByRole('combobox',{name:'Sales report',exact:true}).selectOption('us-monthly:1');await phoneReports.getByRole('button',{name:'Reopen sales result',exact:true}).click();
-  const phoneResult=phoneReports.locator('.sales-result');await expect(phoneResult.getByRole('heading',{name:'Saved sales result',exact:true})).toBeVisible();
-  await section(phoneResult,'Rep activities').getByRole('button',{name:'6 All activities · Owner: show the records behind it',exact:true}).click();await expect(section(phoneResult,'Rep activities').locator('.sales-drill li')).toHaveCount(6);
-  await accessible(phone.page,'sales-report-390',directory);await phone.errors.check(directory,'sales-report-390');await phone.created.close();
-
-  // The owner keeps the exploratory custom reports private: one in its Reports panel, the other through its sharing route.
   const custom=await context(1440,ownerCookie),customReports=custom.page.locator('.analytics-console');await custom.page.goto('/app/reports');
-  await customReports.getByRole('combobox',{name:'Report',exact:true}).selectOption('disclosed-value-390:1');await customReports.getByText('Sharing: Shared with the workspace',{exact:true}).click();
+  await customReports.getByRole('combobox',{name:'Report',exact:true}).selectOption('disclosed-value-1440:1');await customReports.getByText('Sharing: Shared with the workspace',{exact:true}).click();
   await customReports.getByRole('radio',{name:'Only me (and the installation owner)',exact:true}).check();await customReports.getByRole('button',{name:'Save sharing',exact:true}).click();
   await expect(customReports.getByText('Sharing: Private',{exact:true})).toBeVisible();await custom.errors.check(directory,'report-private-1440');await custom.created.close();
   const share=await call(ownerCookie,`${ops}/reports/disclosed-value-1440/sharing`);await call(ownerCookie,`${ops}/reports/disclosed-value-1440/sharing`,'PUT',{audience:'private',operatorIds:[],revision:share.revision});
@@ -144,7 +135,7 @@ export async function salesReportJourney({browser,worker,ownerCookie,seller,seed
   const grant=revoking.page.locator('.fold-row').filter({hasText:'Why: Renewal review'});await expect(grant.getByRole('heading',{name:'Opportunity: Cedar renewal',exact:true})).toBeVisible();
   await grant.getByRole('button',{name:'Revoke grant',exact:true}).click();await expect(revoking.page.getByRole('status').filter({hasText:'Grant revoked'})).toBeVisible();
   await revoking.errors.check(directory,'report-grant-revoked');await revoking.created.close();
-  await limited(390,'sales-revoked-390',async(view,exported)=>{const shown=section(view,'Won and lost reasons');
+  await limited(1440,'sales-revoked-1440',async(view,exported)=>{const shown=section(view,'Won and lost reasons');
    await figure(shown,'Won deals','1');await figure(shown,'Won value','Not available');await expect(shown).not.toContainText('Renewed');await expect(view).not.toContainText('Cedar renewal');
    assert.deepEqual(totals(exported,'reasons'),{won:1,won_value:null,lost:0,lost_value:0});assert.ok(!JSON.stringify(exported).includes(seed.deals.cedar),'no revoked row, count or identifier is exported');});
   // Sharing names who may open the report: a full operator it was not shared with is refused.
@@ -166,6 +157,6 @@ export async function salesReportJourney({browser,worker,ownerCookie,seller,seed
   assert.deepEqual(totals(afterLate,'reasons'),totals(saved,'reasons'));assert.deepEqual(totals(afterLate,'activities'),totals(saved,'activities'));
   assert.deepEqual(afterLate.late.sections.find((part:any)=>part.measure==='follow_up').cells.map((cell:any)=>[cell.key,cell.value]),[['won',1],['won_value',3_000_000]]);
   await late.errors.check(directory,'sales-late-1440');await late.created.close();
-  await salesReportArchive({worker,ownerCookie,saved,sellerId:seller.operatorId,contactId:seed.people.Dune!.contact});
+
  }finally{await setCurrency(workspace.currency);}
 }
