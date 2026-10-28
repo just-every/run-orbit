@@ -1,3 +1,4 @@
+import {workflowCopyErasureJourney} from './workflow-copy-erasure-journey';
 import {workflowFormJourney} from './workflow-form-journey';
 import {workflowSafetyJourney} from './workflow-safety-journey';
 import {workflowRecordJourney} from './workflow-record-journey';
@@ -61,6 +62,7 @@ export async function workflowJourney(f:CaptureFixture){
  const createdDeal=await db.prepare('SELECT id FROM opportunities WHERE company_id=?').bind(eraseCompany.id).first<string>('id');assert.ok(createdDeal);assert.equal(await db.prepare('SELECT count(*) n FROM opportunities WHERE company_id=?').bind(eraseCompany.id).first('n'),1,'replay creates one associated deal');assert.equal(await db.prepare('SELECT title FROM opportunities WHERE id=?').bind(createdDeal).first('title'),'Disposable workflow person');
  const eraseResponse=await app.request(`https://orbit.test/api/v1/records/contact/${contact.id}`,{method:'DELETE',headers:{cookie:f.cookie,origin:'https://orbit.test','content-type':'application/json'},body:JSON.stringify({confirmed:true})});assert.equal(eraseResponse.status,200,await eraseResponse.text());await process();assert.equal(await db.prepare('SELECT count(*) n FROM workflow_record_writes WHERE record_id=?').bind(contact.id).first('n'),0);assert.equal(await db.prepare('SELECT count(*) n FROM workflow_runs WHERE record_id=?').bind(contact.id).first('n'),0);const remaining=JSON.parse(await db.prepare('SELECT custom_fields_json FROM companies WHERE id=?').bind(eraseCompany.id).first<string>('custom_fields_json')!);assert.equal(remaining.contact_label??null,null);assert.equal(remaining.sales_status,'Customer','erasure preserves unrelated company business state');assert.equal(await db.prepare('SELECT title FROM opportunities WHERE id=?').bind(createdDeal).first('title'),'Erased source');
 
+ await workflowCopyErasureJourney({db,operator:f.operator,request:(path:string,body?:unknown,method?:string)=>app.request(`https://orbit.test${path}`,{method:method??(body===undefined?'GET':'POST'),headers:{cookie:f.cookie,origin:'https://orbit.test','content-type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})})});
  await workflowFormJourney({db,operator:f.operator,cookie:f.cookie});
 
 }

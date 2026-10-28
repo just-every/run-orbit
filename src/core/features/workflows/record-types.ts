@@ -6,6 +6,7 @@ export interface WorkflowRecordAction {
  offsetDays?:number;clock?:'trigger'|'run';recordType?:string;pipelineId?:string;
  stage?:string;values?:Record<string,unknown>;
 }
+export type WorkflowRecordReference={recordId:string;recordType:RecordKind};
 export interface WorkflowContext {
  db:D1Database;actorId:string;workflowId:string;workflowName:string;version:number;
  eventId:string;occurredAt:string;runAt:string;runId:string;recordId:string;
@@ -19,12 +20,14 @@ export interface WorkflowContext {
  previewHistorical?:boolean;
  triggerSnapshots?:Map<string,Record<string,unknown>>;
  plannedValues?:Map<string,Record<string,unknown>>;
+ plannedSources?:Map<string,WorkflowRecordReference[]>;
 }
 export interface WorkflowRecordPlan {
  id:string;recordId:string;recordType:RecordKind;field:string;before:unknown;
  after:unknown;needsApproval:boolean;reason?:string;error?:string;failed?:true;action:WorkflowRecordAction;
  readAt:string;createdValues?:Record<string,unknown>;
- relatedRecords?:Array<{recordId:string;recordType:RecordKind}>;
+ relatedRecords?:WorkflowRecordReference[];
+ sources?:Record<string,WorkflowRecordReference[]>;
 }
 export interface WorkflowRecordReceipt {
  id:string;recordId:string;recordType:RecordKind;field:string;before:unknown;

@@ -6303,7 +6303,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/workflows-editor.tsx": {
-      "sha256": "830bad81060d5961ba9c3b143cc5320c972aac502c5895e55ec98bb208733d8e",
+      "sha256": "bcfdd6f2994b729a77a225d27e26d771ca101312a55aad6be1c3f3676943dea6",
       "executable": false
     },
     "src/core/features/operator/ui/workflows-field-policies.tsx": {
@@ -6327,7 +6327,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/workflows-types.tsx": {
-      "sha256": "f53ec96e9ad15018d4a190911cb568fc478b229874aa411a57e14e55a3f08972",
+      "sha256": "77e7377156ce7bbab2b37d0fd0bf137f4691748b5c5161086fa4025c563a0898",
       "executable": false
     },
     "src/core/features/operator/ui/workflows-version-undo.tsx": {
@@ -7419,11 +7419,11 @@
       "executable": false
     },
     "src/core/features/workflows/contracts.ts": {
-      "sha256": "0be24b7e5dfc79fa21c5b5164fdc67d80087ddf4d5b1f9b0a61b28bdfeb88188",
+      "sha256": "98bb362509bc8ebd4b917c8abf5a1319ce652fa8f8a34c66c5af7d612dfcebcf",
       "executable": false
     },
     "src/core/features/workflows/controls.ts": {
-      "sha256": "42ba6721fe5a354efcccac1c8d3890ce228d031a4c346c7aa8d39c6dc19843f4",
+      "sha256": "f962256b2475eec91de158b936a97c15e069e25e0c40ec43164ceafc02bb72e1",
       "executable": false
     },
     "src/core/features/workflows/effects.ts": {
@@ -7431,7 +7431,7 @@
       "executable": false
     },
     "src/core/features/workflows/engine.ts": {
-      "sha256": "72d6a61a598631cd9804613b8b890f7d23b62fbde350893823185a5ad633af45",
+      "sha256": "6d30fca6fb3dc98a02987f218e2335a7e1cad62c317114206642ddc9b5b4dea1",
       "executable": false
     },
     "src/core/features/workflows/events.ts": {
@@ -7443,15 +7443,19 @@
       "executable": false
     },
     "src/core/features/workflows/planning.ts": {
-      "sha256": "2411d07b3fe3b44487745da38a8b9d429a7d5cf32475c87eb74e6e5d681e3073",
+      "sha256": "a5763a79981f5048e3ca11af1f34a0ffde01f7d2f11f6f08c624ab0b1d11f2ab",
       "executable": false
     },
     "src/core/features/workflows/privacy.ts": {
-      "sha256": "799bf5fa97c95fa018aee03cc0a05a5bdf3d68b0a564c4eef96da8f645a9f31e",
+      "sha256": "9373591a83615e727a357c69e4a18c850408a60bf4f7706408d7083dccbb3776",
+      "executable": false
+    },
+    "src/core/features/workflows/record-lineage.ts": {
+      "sha256": "b87b76a3a9e3228fd8315e23cf9f6892fd968441e7b5ce35624ff08d172eae4b",
       "executable": false
     },
     "src/core/features/workflows/record-plans.ts": {
-      "sha256": "8a412f1a6206c122fca9d33938b9f5e2217ca75b722d6e11e7c4dcad4928d726",
+      "sha256": "cd87262873278f59d4b844cc208ba19133029aedb2f38aae7155a4973148b074",
       "executable": false
     },
     "src/core/features/workflows/record-targets.ts": {
@@ -7459,7 +7463,7 @@
       "executable": false
     },
     "src/core/features/workflows/record-types.ts": {
-      "sha256": "67f9c61198a09416d03a27247d1db4f13acebf803c165d8ac9a9a3deaa21fe38",
+      "sha256": "c9774881f843b425f9915a3233316e48920791dce379748d19b32aa9ec235cab",
       "executable": false
     },
     "src/core/features/workflows/record-validation.ts": {
@@ -7471,11 +7475,11 @@
       "executable": false
     },
     "src/core/features/workflows/repository.ts": {
-      "sha256": "d01c72b8366519c1192b876a39ae73fd59def0c8891bd4b180a47fa1c6dd2b5e",
+      "sha256": "34a3de793f62aacfe5cacc8ce289bebbcbf91687deffab1d22b5b44be3e8c095",
       "executable": false
     },
     "src/core/features/workflows/routes.ts": {
-      "sha256": "be0a914088a3792c0d9ab0f66d1e485e55126458c52686e8e3fbae1f036fc0f1",
+      "sha256": "0edc390e169be98a5bcf5034737b800b5457daa5b3aeba8c8b6a02600b739776",
       "executable": false
     },
     "src/core/features/workspace/index.ts": {
@@ -8743,7 +8747,7 @@
       "executable": false
     },
     "tests/core/capture-upgrade.test.ts": {
-      "sha256": "85ae786a393b24f370a4b7124a94781d160aaf50fcbfc828b6aa28e21469d6e6",
+      "sha256": "b2ebd2b761c8502e766d739e99d16b06b1c86396fc8f2950af0175d88ac4ae14",
       "executable": false
     },
     "tests/core/contact-erasure.test.ts": {
@@ -8803,7 +8807,7 @@
       "executable": false
     },
     "tests/core/onboarding-archive.test.ts": {
-      "sha256": "2d63848aae35f7c88355e55d226c62395098263f2b6fcbd1d6902b9897bd0962",
+      "sha256": "08cd73be607c6744b78be11051769392d8ee769bd7de85a4d894ea3741af4757",
       "executable": false
     },
     "tests/core/operator-erasure.test.ts": {
@@ -9563,7 +9567,7 @@
       "executable": false
     },
     "tests/rer/workflow-journey.mjs": {
-      "sha256": "feb2efbea76b4fa8f1cc76a6ec9eabbda4a9ce0c694d4cc5f26c471578f10952",
+      "sha256": "49df84d44a9001fa10f0fd13b9e13a2b266a9b9095cf96cd174ee00502ce5b6b",
       "executable": false
     },
     "tests/rer/workflow-values-journey.mjs": {
@@ -9906,20 +9910,24 @@
       "sha256": "fd859e8fcd2371384151ab5215c038adbe5d94f20f7b6351662de5a9bc714187",
       "executable": false
     },
+    "tests/support/workflow-copy-erasure-journey.ts": {
+      "sha256": "c19d47056d2bf6c49fdf2ebb1dc31540be27d47ffb93fa7b256237ad4c43e509",
+      "executable": false
+    },
     "tests/support/workflow-form-journey.ts": {
       "sha256": "7ecee72508611a7e3461e8940ef38a6728bac1ea244270ff04be5679ecfc774c",
       "executable": false
     },
     "tests/support/workflow-journey.ts": {
-      "sha256": "fa7874601b5901367610e13788b8db9d7e4b41087cff0e4f71ca0262e02bccdc",
+      "sha256": "4d67a7f0fe4d3b9de3208fcce5a1720fe865cba10288de6e8aedf14051bb556c",
       "executable": false
     },
     "tests/support/workflow-record-journey.ts": {
-      "sha256": "80e5fafa6af35e2eb457862f3e0628766e69c79c65e60097a1274e8c760a3fe4",
+      "sha256": "0eb87505c3cf51177f8ffdf48aea51f5c47a8ae79f801a13d4739ae10c46231f",
       "executable": false
     },
     "tests/support/workflow-safety-journey.ts": {
-      "sha256": "fde9d6a12a8b44854a40c7ff88cc26c41c568ca160bfc45aaca16d78432bda00",
+      "sha256": "ef3e31e906de83a825d79aa4eaf24bffdbf7dfcbcf76b64cb5de260b9ec859a0",
       "executable": false
     },
     "tools/seed-schema/dependencies.mjs": {

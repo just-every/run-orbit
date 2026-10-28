@@ -1,3 +1,5 @@
+import {copySources,distinctSources,sourceKey} from './record-lineage';
+import type {WorkflowRecordReference} from './record-types';
 import {createId} from '../../shared/ids';
 import {payloadHash} from '../../platform/source-security';
 import {RecordError,requireRecord,type RecordKind} from '../records/shared';
@@ -14,7 +16,7 @@ export type {WorkflowContext,WorkflowRecordAction,WorkflowRecordPlan,WorkflowRec
 async function identity(context:WorkflowContext,action:WorkflowRecordAction,kind:RecordKind,id:string){
  return payloadHash(JSON.stringify([context.workflowId,context.version,context.eventId,context.actionIndex??action,kind,id]));
 }
-async function stamp(context:WorkflowContext,action:WorkflowRecordAction,type:string){
+export async function stamp(context:WorkflowContext,action:WorkflowRecordAction,type:string){
  const timezone=await context.db.prepare('SELECT timezone FROM workspace_settings WHERE id=?').bind('workspace').first<string>('timezone');
  if(!timezone)throw new RecordError(409,'Workspace timezone is unavailable.');
  const clock=action.clock==='trigger'?context.occurredAt:context.runAt;
@@ -57,7 +59,7 @@ async function proposed(context:WorkflowContext,action:WorkflowRecordAction,kind
 /** Explicit copy descriptors keep stated object values distinct from lookups. */
 async function creationValues(context:WorkflowContext,action:WorkflowRecordAction){
  const values=structuredClone(action.values??{});
- const records:Array<{recordId:string;recordType:RecordKind}>=[];
+ const records:WorkflowRecordReference[]=[],sources:Record<string,WorkflowRecordReference[]>={};
  async function resolve(field:string,value:unknown){
   if(!value||typeof value!=='object'||Array.isArray(value)||!Object.hasOwn(value,'sourceField'))return value;
   const copy=value as {sourceField:unknown;sourceTarget?:unknown};
@@ -65,8 +67,8 @@ async function creationValues(context:WorkflowContext,action:WorkflowRecordActio
   const descriptor:WorkflowRecordAction={kind:'copy',field,sourceField:copy.sourceField,sourceTarget:copy.sourceTarget as string|undefined};
   if(descriptor.sourceTarget!=='form'){
    await workflowField(context.db,targetKind(recordKind(context.recordType),descriptor.sourceTarget),descriptor.sourceField!);
-   for(const source of await resolveRecordTargets(context,descriptor,descriptor.sourceTarget??'trigger'))records.push({recordId:source.id,recordType:source.kind});
   }
+  sources[canonicalField(field)]=await copySources(context,descriptor);records.push(...sources[canonicalField(field)]);
   return proposed(context,descriptor,'opportunity',field,null);
  }
  for(const [field,value]of Object.entries(values)){
@@ -74,7 +76,7 @@ async function creationValues(context:WorkflowContext,action:WorkflowRecordActio
    for(const [key,input]of Object.entries(value)) (value as Record<string,unknown>)[key]=await resolve(`custom:${key}`,input);
   }else values[field]=await resolve(field,value);
  }
- return {values,records};
+ return {values,records:distinctSources(records),sources};
 }
 export async function needsRecordApproval(context:WorkflowContext,kind:RecordKind,field:string){
  const protectedField=kind==='opportunity'&&['value_cents','expected_close_at','lifecycle','products','products_json','line_items','quote_values','forecast_category','probability_override'].includes(field);
@@ -85,7 +87,8 @@ export async function planRecordAction(context:WorkflowContext,action:WorkflowRe
  await validateAction(context.db,context.actorId,action,context.recordType);
  const targets=await resolveRecordTargets(context,action),plans:WorkflowRecordPlan[]=[];
  const relatedRecords=[{recordId:context.recordId,recordType:recordKind(context.recordType)}];
- if(action.kind==='copy'&&action.sourceTarget!=='form')for(const source of await resolveRecordTargets(context,action,action.sourceTarget??'trigger'))relatedRecords.push({recordId:source.id,recordType:source.kind});
+ const sources=action.kind==='copy'?await copySources(context,action):[];
+ relatedRecords.push(...sources);
  for(const target of targets){
   try {
   const raw=await requireRecord(context.db,target.kind,target.id),snapshot=context.triggerSnapshots?.get(`${target.kind}:${target.id}`),row=plannedRecord(context,target.kind,target.id,snapshot??raw);
@@ -110,7 +113,7 @@ export async function planRecordAction(context:WorkflowContext,action:WorkflowRe
    await new RecordsRepository(context.db).prepareSave(kind,values,context.actorId,undefined,{ordinaryEdit:true,createId:recordId});
    const policy=await context.db.prepare('SELECT 1 FROM workflow_field_policies WHERE record_type=? AND needs_approval=1 AND field IN(SELECT value FROM json_each(?)) LIMIT 1').bind(kind,JSON.stringify(approvalFields({field:'create_record',createdValues:values}))).first();
    const needsApproval=Number(values.value_cents)!==0||!!values.expected_close_at||!!policy;
-   plans.push({id,recordId,recordType:kind,field:'create_record',before:null,after:values,needsApproval,action,readAt:String(row.updated_at),createdValues:values,relatedRecords:[...relatedRecords,...copied.records]});continue;
+   plans.push({id,recordId,recordType:kind,field:'create_record',before:null,after:values,needsApproval,action,readAt:String(row.updated_at),createdValues:values,relatedRecords:distinctSources([...relatedRecords,...copied.records]),sources:copied.sources});continue;
   }
   const field=canonicalField(action.kind==='move_stage'?'stage_id':action.field!),spec=await workflowField(context.db,target.kind,field);
   const before=fieldValue(row,field);let after=await proposed(context,action,target.kind,field,before);
@@ -137,10 +140,11 @@ export async function planRecordAction(context:WorkflowContext,action:WorkflowRe
   // Native edits do not yet store per-field old values. Refuse a target edited
   // after the event rather than treating its later value as trigger-time state.
   const changedAfterTrigger=context.previewHistorical?false:snapshot?JSON.stringify(fieldValue(raw,field)??null)!==JSON.stringify(fieldValue(snapshot,field)??null):Date.parse(String(row.updated_at))>Date.parse(context.occurredAt);
-  plans.push({id:await identity(context,action,target.kind,target.id),recordId:target.id,recordType:target.kind,field,before,after,needsApproval:await needsRecordApproval(context,target.kind,field),action,readAt:String(row.updated_at),relatedRecords,...(changedAfterTrigger?{reason:'Record changed after the triggering event.'}:{})});
+  plans.push({id:await identity(context,action,target.kind,target.id),recordId:target.id,recordType:target.kind,field,before,after,needsApproval:await needsRecordApproval(context,target.kind,field),action,readAt:String(row.updated_at),relatedRecords:distinctSources(relatedRecords),sources:{[field]:sources},...(changedAfterTrigger?{reason:'Record changed after the triggering event.'}:{})});
   if(!changedAfterTrigger&&context.plannedValues){
    const key=`${target.kind}:${target.id}`,values=context.plannedValues.get(key)??{};
    values[field]=after;context.plannedValues.set(key,values);
+   context.plannedSources?.set(sourceKey(target.kind,target.id,field),sources);
   }
   }catch(error){
    const field=action.kind==='create_record'?'create_record':canonicalField(action.kind==='move_stage'?'stage_id':action.field!);

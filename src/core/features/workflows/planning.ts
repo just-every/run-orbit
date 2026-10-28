@@ -4,8 +4,9 @@ import {tables,type RecordKind} from '../records/shared';
 import {planRecordAction,validateAction,type WorkflowContext,type WorkflowRecordPlan,type WorkflowRecordAction} from './record-plans';
 import {planEffect,declaredWebhook,type EffectPlan} from './effects';
 import {matches,record,sourceAvailable} from './repository';
+import type {WorkflowRecordReference} from './record-types';
 import {WorkflowError,type Version,type Event,type Definition,type Action} from './contracts';
-export interface PlannedAction {action:Action;writes:WorkflowRecordPlan[];effect?:EffectPlan;error?:string}
+export interface PlannedAction {action:Action;writes:WorkflowRecordPlan[];effect?:EffectPlan;error?:string;stampedAt?:string}
 export const recordKinds=new Set(['set','copy','stamp','clear','add','subtract','move_stage','create_record']);
 export function workflowContext(db:D1Database,v:Version,e:Event,runId:string,at:string,index:number):WorkflowContext{return {db,actorId:v.activated_by??v.created_by,workflowId:v.workflow_id,workflowName:v.name,version:v.version,eventId:e.id,occurredAt:e.occurred_at,runAt:at,runId,recordId:e.record_id,recordType:e.record_type,evidence:e.evidence,actionIndex:index};}
 export async function validateDefinition(db:D1Database,actor:string,d:Definition){
@@ -14,11 +15,11 @@ export async function validateDefinition(db:D1Database,actor:string,d:Definition
  for(const a of d.actions){if(a.approverId&&!await isFullOperator(db,a.approverId))throw new WorkflowError(400,'Choose an active operator as the approval assignee.');if(recordKinds.has(a.kind))await validateAction(db,actor,a as WorkflowRecordAction,d.trigger.recordType);else if(a.kind==='webhook'){if(!a.url)throw new WorkflowError(400,'Declare a webhook URL.');declaredWebhook(a.url);}else if(['notify','create_task','remind_task'].includes(a.kind)&&!a.title?.trim())throw new WorkflowError(400,'Enter action content.');}
 }
 export async function planActions(db:D1Database,v:Version,e:Event,runId:string,at:string,options:{historical?:boolean}={}):Promise<PlannedAction[]>{
- const d=JSON.parse(v.definition_json) as Definition,plans:PlannedAction[]=[],plannedValues=new Map<string,Record<string,unknown>>();
+ const d=JSON.parse(v.definition_json) as Definition,plans:PlannedAction[]=[],plannedValues=new Map<string,Record<string,unknown>>(),plannedSources=new Map<string,WorkflowRecordReference[]>();
  const formValues=e.kind==='form_submitted'?JSON.parse(await db.prepare('SELECT values_json FROM marketing_form_submissions WHERE id=?').bind(e.id).first<string>('values_json')??'{}'):undefined;
  const snapshots=(await db.prepare('SELECT record_type,record_id,values_json FROM workflow_event_snapshots WHERE event_id=?').bind(e.id).all<{record_type:string;record_id:string;values_json:string}>()).results;
  const triggerSnapshots=new Map(snapshots.map(s=>[`${s.record_type}:${s.record_id}`,JSON.parse(s.values_json)]));
- const context=(index:number)=>({...workflowContext(db,v,e,runId,at,index),plannedValues,formValues,triggerSnapshots,previewHistorical:options.historical});
+ const context=(index:number)=>({...workflowContext(db,v,e,runId,at,index),plannedValues,plannedSources,formValues,triggerSnapshots,previewHistorical:options.historical});
  for(const [index,a]of d.actions.entries()){
   try{
    if(recordKinds.has(a.kind)){plans.push({action:a,writes:await planRecordAction(context(index),a as WorkflowRecordAction)});continue;}
@@ -37,7 +38,7 @@ export async function previewVersion(db:D1Database,v:Version,at:string){
  for(const row of rows){if(!matches(row,d,at))continue;const e:Event={id:'preview:'+row.id,kind:d.trigger.kind,record_type:kind,record_id:row.id,occurred_at:at,evidence:'Activation preview',chain_json:'[]'},plans=await planActions(db,v,e,'preview',at);
  records.push({recordId:row.id,label:row.title??row.name??row.id,changes:plans.flatMap(p=>p.writes.map(w=>({field:w.field,before:w.before,after:w.after,needsApproval:w.needsApproval,recordId:w.recordId}))),effects:plans.filter(p=>p.effect).map(p=>p.effect!.action),errors:plans.flatMap(p=>[...(p.error?[p.error]:[]),...p.writes.filter(w=>w.error).map(w=>w.error)]),updatedAt:row.updated_at});}
  const history=[];
- for(const e of historical){const saved=await db.prepare('SELECT values_json FROM workflow_event_snapshots WHERE event_id=? AND record_type=? AND record_id=?').bind(e.id,e.record_type,e.record_id).first<string>('values_json');if(!saved||!await record(db,e.record_type,e.record_id)||!await sourceAvailable(db,e,v.activated_by??v.created_by))continue;const row=JSON.parse(saved);if(!matches(row,d,e.occurred_at))continue;const plans=await planActions(db,v,e,'historical-preview',e.occurred_at,{historical:true});history.push({eventId:e.id,recordId:e.record_id,occurredAt:e.occurred_at,label:row.title??row.name??row.id,changes:plans.flatMap(p=>p.writes.filter(w=>!w.error).map(w=>({recordId:w.recordId,field:w.field,before:w.before,after:w.after,needsApproval:w.needsApproval}))),effects:plans.filter(p=>p.effect).map(p=>p.effect!.action),errors:plans.flatMap(p=>[...(p.error?[p.error]:[]),...p.writes.filter(w=>w.error).map(w=>w.error)])});}
+ for(const e of historical){const saved=await db.prepare('SELECT values_json FROM workflow_event_snapshots WHERE event_id=? AND record_type=? AND record_id=?').bind(e.id,e.record_type,e.record_id).first<string>('values_json');if(!saved||!await record(db,e.record_type,e.record_id)||!await sourceAvailable(db,e,v.activated_by??v.created_by,d))continue;const row=JSON.parse(saved);if(!matches(row,d,e.occurred_at))continue;const plans=await planActions(db,v,e,'historical-preview',e.occurred_at,{historical:true});history.push({eventId:e.id,recordId:e.record_id,occurredAt:e.occurred_at,label:row.title??row.name??row.id,changes:plans.flatMap(p=>p.writes.filter(w=>!w.error).map(w=>({recordId:w.recordId,field:w.field,before:w.before,after:w.after,needsApproval:w.needsApproval}))),effects:plans.filter(p=>p.effect).map(p=>p.effect!.action),errors:plans.flatMap(p=>[...(p.error?[p.error]:[]),...p.writes.filter(w=>w.error).map(w=>w.error)])});}
  const from=new Date(Date.parse(at)-30*86400000).toISOString(),recordedFrom=await db.prepare('SELECT recorded_from FROM workflow_journal_metadata WHERE id=1').first<string>('recorded_from');
  return {records,historical:history,historyCoverage:{from,through:at,recordedFrom,complete:!!recordedFrom&&recordedFrom<=from},counts:{records:records.length,historical:history.length,changes:records.reduce((n,r)=>n+r.changes.length,0),approvals:records.reduce((n,r)=>n+r.changes.filter(c=>c.needsApproval).length,0),effects:records.reduce((n,r)=>n+r.effects.length,0)},asOf:at};
 }
