@@ -17,7 +17,9 @@ export async function exerciseProvenanceEditing(page,origin,fixture){
  // Owner-authored JSON-looking text remains exact text; only the typed provenance format is decoded.
  const literal='{"owner_note":"Keep this JSON-looking customer text literally"}';
  await page.getByRole('button',{name:'Edit details',exact:true}).click();await page.getByRole('button',{name:'Replace Import source with text',exact:true}).click();await page.getByLabel('Import source',{exact:true}).fill(literal);await page.getByLabel('Campaign json',{exact:true}).fill(literal);await page.getByRole('button',{name:'Save changes',exact:true}).click();
- await page.getByRole('heading',{name:'Record details',exact:true}).waitFor();await expect(page.getByText(literal,{exact:true})).toHaveCount(2);
+ await page.getByRole('heading',{name:'Record details',exact:true}).waitFor();
+ const saved=JSON.parse((await request(page,`/api/v1/records/contact/${fixture.contactId}`,undefined,'GET')).record.custom_fields_json);assert.equal(saved.import_source,literal,'Record edit stores the literal import-source text');assert.equal(saved.campaign_json,literal,'Record edit stores the literal campaign text');
+ await expect(page.getByText(literal,{exact:true})).toHaveCount(2);
  await page.reload();await expect(page.getByText(literal,{exact:true})).toHaveCount(2);
  await page.getByRole('button',{name:'Edit details',exact:true}).click();await expect(page.getByLabel('Import source',{exact:true})).toHaveValue(literal);await expect(page.getByLabel('Campaign json',{exact:true})).toHaveValue(literal);
  await fixture.collaborator.goto(origin+`/app/shared-records?kind=contact&id=${fixture.contactId}`);await expect(fixture.collaborator.getByText(literal,{exact:true})).toHaveCount(2);
