@@ -2227,7 +2227,7 @@
       "executable": false
     },
     "newtests/t096/browser-team-journey.ts": {
-      "sha256": "55fc453aba4e41017ae7c4927b4469cb72d4af41599991843475cf23f7df1810",
+      "sha256": "cdcc998669365d43758eee87f0ceec23e840555b0ca86ed69b6feb00901c83aa",
       "executable": false
     },
     "newtests/t096/capture-rule-browser-seed.ts": {
@@ -4811,7 +4811,7 @@
       "executable": false
     },
     "src/core/features/api/authority.ts": {
-      "sha256": "9d6ca8c78b2069d360de101a180fa1d2dbf52b988eb1ac600b005bf74cd26fed",
+      "sha256": "4004626c95203a204f7e41e42d2af3526095ce5da4b8e3a4dbe95ce39fe9ddc9",
       "executable": false
     },
     "src/core/features/api/credentials.ts": {
@@ -9575,7 +9575,7 @@
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {
-      "sha256": "cde088f3ee4737170f6d1b3ec7d054de4d5fe88440ea1e1e29d7168db947d1bd",
+      "sha256": "56bcd05a62a938b78c545a0a07ba89d04e94c730b6fbd1ae3d3f0788e7f73fa1",
       "executable": false
     },
     "tests/support/app.ts": {

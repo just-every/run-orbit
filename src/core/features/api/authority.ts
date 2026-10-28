@@ -27,11 +27,11 @@ export function apiScope(credential:ApiCredential,operation:string,id?:string,fi
 }
 export async function apiTransaction(db:D1Database,credential:ApiCredential,clock:Clock,statements:D1PreparedStatement[]){
  const guard=createId(),profile=await salesProfile(db,credential.principal_id),epoch=profile?await db.prepare('SELECT policy_epoch FROM access_workspaces LIMIT 1').first<number>('policy_epoch'):null;
- try{return await db.batch([
+ try{const results=await db.batch([
   db.prepare(atClock(`INSERT INTO access_write_guards VALUES(?,CASE WHEN EXISTS(SELECT 1 FROM api_credentials a WHERE a.id=? AND ${current} AND ${bound.map(field=>`a.${field} IS ?`).join(' AND ')}) THEN 1 ELSE 0 END)`,clock)).bind(guard,credential.id,clock.now().toISOString(),...bound.map(field=>credential[field])),
   ...(epoch!==null?[db.prepare('INSERT INTO access_write_guards VALUES(?,CASE WHEN (SELECT policy_epoch FROM access_workspaces LIMIT 1)=? THEN 1 ELSE 0 END)').bind(guard+'-sales',epoch),db.prepare('DELETE FROM access_write_guards WHERE id=?').bind(guard+'-sales')]:[]),
   ...statements,db.prepare('DELETE FROM access_write_guards WHERE id=?').bind(guard),
- ]);}catch(error){
+ ]);return epoch!==null?[results[0]!,...results.slice(3)]:results;}catch(error){
   if(/access_write_guards|allowed=1/.test(String(error)))throw new ApiError(401,'API authority changed; authenticate again.');
   throw error;
  }

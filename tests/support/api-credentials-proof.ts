@@ -136,6 +136,19 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  const audits=JSON.stringify((await db.prepare("SELECT * FROM audit_entries WHERE action LIKE 'api.%'").all()).results);
  for(const secret of [issued.secret,rotated.secret,raced.secret])assert.ok(!audits.includes(secret));
  assert.equal(await db.prepare('SELECT count(*) n FROM outbound_messages').first('n'),0);
+ // Native sales scopes remain authoritative over an independently issued API credential.
+ const salesRole=async(fields:string[])=>{const response=await app().request('https://orbit.test/api/v1/settings/teams/roles/'+principalId,{method:'PUT',headers,body:JSON.stringify({role:'seller',scope:'assigned',fields,permissions:[],includeAssociations:false})});assert.equal(response.status,200,await response.clone().text());};
+ const scoped=await(await request('','POST',{...definition,fields:['title','value_cents']})).json() as typeof issued;
+ await salesRole([]);assert.equal((await publicRequest('/deals/'+record+'?fields=title','GET',undefined,scoped.secret)).status,403,'An API credential never widens assigned-record access');
+ const currentRecord=await(await app().request('https://orbit.test/api/v1/records/opportunity/'+record,{headers})).json() as any,ownerChange={title:currentRecord.record.title,stage_id:currentRecord.record.stage_id,value_cents:currentRecord.record.value_cents,company_id:currentRecord.record.company_id,contact_ids:currentRecord.contacts.map((c:any)=>c.id),primary_contact_id:null,custom_fields:JSON.parse(currentRecord.record.custom_fields_json)};
+ const owned=await app().request('https://orbit.test/api/v1/records/opportunity/'+record,{method:'PUT',headers,body:JSON.stringify({...ownerChange,owner_id:principalId})});assert.equal(owned.status,200,await owned.clone().text());
+ assert.equal((await publicRequest('/deals/'+record+'?fields=title','GET',undefined,scoped.secret)).status,200,'The same credential reads a currently assigned permitted field');
+ assert.equal((await publicRequest('/deals/'+record+'?fields=value_cents','GET',undefined,scoped.secret)).status,403,'A credential cannot widen a sensitive field grant');
+ await salesRole(['amounts']);assert.equal((await publicRequest('/deals/'+record+'?fields=value_cents','GET',undefined,scoped.secret)).status,200,'An explicit current sensitive-field grant takes effect on the next API request');
+ const unassigned=await app().request('https://orbit.test/api/v1/records/opportunity/'+record,{method:'PUT',headers,body:JSON.stringify({...ownerChange,owner_id:null})});assert.equal(unassigned.status,200,await unassigned.clone().text());
+ assert.equal((await publicRequest('/deals/'+record+'?fields=title','GET',undefined,scoped.secret)).status,403,'Reassignment withdraws the API record on the next request');
+ const salesList=await publicRequest('/deals?fields=title','GET',undefined,scoped.secret);assert.equal(salesList.status,200);assert.deepEqual((await salesList.json() as any).deals,[],'Lists omit records removed by current sales ownership');
+ await db.prepare('DELETE FROM sales_roles WHERE operator_id=?').bind(principalId).run();
  await db.prepare('DELETE FROM api_credentials').run();for(const deal of [record,created.id,outsideRecord])await db.prepare('DELETE FROM opportunities WHERE id=?').bind(deal).run();
  await db.prepare('DELETE FROM pipeline_stage_rules WHERE stage_id=?').bind(apiStage).run();await db.prepare('DELETE FROM pipeline_stages WHERE id=?').bind(apiStage).run();
 }
