@@ -1,5 +1,5 @@
 import {spawnSync} from 'node:child_process';
-import {rmSync,writeFileSync} from 'node:fs';
+import {readFileSync,rmSync,writeFileSync} from 'node:fs';
 import {verificationPlan} from './verification-plan.mjs';
 import {runShard,resetVerification} from './verification-shard.mjs';
 import {aggregate} from './verification-aggregate.mjs';
@@ -20,5 +20,11 @@ if(passed&&release){
  writeFileSync('verification/capacity-run.json',JSON.stringify(capacity,null,2)+'\n',{mode:0o600});
 }
 if(passed)passed=aggregate('verification/ci-shards',{release,capacity,journeys:true});
+if(passed){
+ const minutes={};
+ for(const row of readFileSync('verification/core-results.jsonl','utf8').trim().split('\n').filter(Boolean).map(line=>JSON.parse(line)))
+  if(row.file&&row.type!=='suite'&&Number.isFinite(row.durationMs))minutes[row.file]=(minutes[row.file]??0)+row.durationMs/60000;
+ console.log('Journey minutes: '+JSON.stringify(minutes));
+}
 console.log(`Full suite wall minutes: ${((Date.now()-started)/60000).toFixed(2)}`);
 if(!passed)process.exitCode=1;
