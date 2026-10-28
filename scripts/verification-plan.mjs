@@ -20,7 +20,7 @@ export const journeyFiles = [
 // Longest first into the lightest runner keeps setup and browser costs shared.
 const minutes = {};
 const weight = file => minutes[file] ?? 1;
-const isBrowser = file => /tests\/(?:e2e|archive|delegation-browser|launch-runtime|rer)\//.test(file) || /(?:browser-journeys|report-disclosure)\.test\.ts$/.test(file);
+const isBrowser = file => /tests\/(?:e2e|archive|delegation-browser|launch-runtime|rer)\//.test(file) || /(?:browser-journeys|report-disclosure|empty-native)\.test\.ts$/.test(file);
 function balanced(files) {
   const bins = Array.from({length: Math.min(8, files.length)}, () => ({minutes: 0, files: []}));
   for (const file of [...files].sort((a, b) => weight(b) - weight(a) || a.localeCompare(b))) {
