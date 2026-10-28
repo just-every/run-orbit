@@ -979,7 +979,7 @@ Core · published · **partial** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUD
 2. Delete a contact containing aliases, imported/captured mail and notes, drafts and transfer copies; verify search/export/AI/mail absence and anonymized audit within five minutes, including replay.
 
 **Evidence.** `src/core/features/records/data.ts`; `tests/core/contact-erasure.test.ts`; `tests/core/crm-import-erasure.test.ts`
-**Gap.** Unasserted in the carried evidence: contact erasure redacts stored Slack content; company erasure redacts stored Slack content; deal erasure redacts stored Slack content; provider delete requests tracked; each provider-deletion outcome visible; aliases erased; imported/captured evidence erased; drafts erased; transfer copies withdrawn; search absence; export absence; AI absence; mail absence; anonymous audit; completion within five minutes; replay cannot recreate erased content. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Gap.** Unasserted in the carried evidence: contact erasure redacts stored Slack content; company erasure redacts stored Slack content; deal erasure redacts stored Slack content; provider delete requests tracked; each provider-deletion outcome visible; aliases erased; imported/captured evidence erased; drafts erased; transfer copies withdrawn; AI absence; mail absence; anonymous audit; completion within five minutes; replay cannot recreate erased content. Asserted: search absence; export absence.
 
 ### Scoped application delegation
 
