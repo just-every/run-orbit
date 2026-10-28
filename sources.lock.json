@@ -8687,7 +8687,7 @@
       "executable": false
     },
     "tests/core/onboarding-archive.test.ts": {
-      "sha256": "2d63848aae35f7c88355e55d226c62395098263f2b6fcbd1d6902b9897bd0962",
+      "sha256": "43aa37743f3c047e4279f5b4a92ca269a7f2cc024b57faccb0326bd2695532a0",
       "executable": false
     },
     "tests/core/operator-erasure.test.ts": {
@@ -8759,7 +8759,7 @@
       "executable": false
     },
     "tests/delegation-browser/calling-journey.mjs": {
-      "sha256": "ebf4d21f72416381af1ccebc1f3751538729bbff0f84728c0381a58cc0c70fb7",
+      "sha256": "2a5e874fcb0610c97f8909e1fce4aaeb833976a79abe9c45b6c240cb6eb32c50",
       "executable": false
     },
     "tests/delegation-browser/journey.mjs": {
@@ -8783,7 +8783,7 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {
-      "sha256": "c5d098a58e38f55c39140aba46c92a53a0573161bcb2f3e8de77eee8706a01be",
+      "sha256": "8c201566e6fce4f7e41c610aafa585443f25e8d7b4ac4eb63ab76016b04f69fc",
       "executable": false
     },
     "tests/delegation-browser/related-records.test.ts": {

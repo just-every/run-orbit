@@ -12,6 +12,7 @@ import { test } from 'node:test';
 import {unstable_DevEnv} from 'wrangler';
 import {customCertificate} from '../support/http-listener-fixture';
 import {join} from 'node:path';
+import {certificateTrust} from '../../newtests/t096/emitted-fixture';
 import { chromium } from '@playwright/test';
 import { isolatedDatabase } from '../support/isolated-database';
 import { createTestDependencies } from '../support/test-dependencies';
@@ -47,12 +48,12 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
       callingProvider.submissions++;return Response.json({status:callingProvider.status,code:callingProvider.code},{status:callingProvider.status});
     }}});await worker.ready;
     if((await worker.fetch(origin+'/health')).status!==200)throw new Error('Emitted Worker did not become healthy.');
-    browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
-    const context = await browser.newContext({ baseURL: origin, ignoreHTTPSErrors:true, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
+    browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic',...certificateTrust(certificate.cert)]});
+    const context = await browser.newContext({ baseURL: origin,  extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
     // Emitted documents and HTTP routes share one Worker; only Twilio's outbound network edge is faked.
     await callingJourney(await context.newPage(),{fetch:worker.fetch.bind(worker),origin,provider:callingProvider,accountSid:callingAccount,token:callingToken});
     await calendarJourney(await context.newPage(),calendarData);
-    const collaboratorContext=await browser.newContext({baseURL:origin,ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:privateData.cookie}});
+    const collaboratorContext=await browser.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:privateData.cookie}});
     await privateEntriesJourney(await context.newPage(),await collaboratorContext.newPage(),privateData);
     await collaboratorContext.close();
     await nativeLongRecordLayoutJourney(await context.newPage());

@@ -4,7 +4,8 @@ import {mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
 export async function callingJourney(page,calling){
  const evidence=resolve(process.env.ORBIT_CALL_EVIDENCE??'.orbit-viewport-evidence/calling');await mkdir(evidence,{recursive:true});
- const errors=[],expectedConsoleErrors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+ page.on('requestfailed',request=>console.error('Calling browser request failed',new URL(request.url()).pathname,request.failure()?.errorText));
+ const errors=[],expectedConsoleErrors=[];page.on('pageerror',e=>errors.push({text:e.message,url:'pageerror'}));page.on('console',m=>{if(m.type()==='error')errors.push({text:m.text(),url:m.location().url});});
  await page.goto('/app/settings');
  const settings=page.getByRole('region',{name:'Calling',exact:true});
  await expect(settings.getByRole('status').filter({hasText:'Twilio connected'})).toBeVisible();
@@ -30,7 +31,7 @@ export async function callingJourney(page,calling){
  let refusalConsole=page.waitForEvent('console',{predicate:message=>message.type()==='error'&&message.location().url===origin+dialPath&&/^Failed to load resource:.*\b502\b/.test(message.text())});
  let dialResponse=page.waitForResponse(response=>new URL(response.url()).pathname===dialPath&&response.request().method()==='POST');
  await call.getByRole('button',{name:'Confirm and call once',exact:true}).click();
- const failed=await dialResponse;expect(failed.status()).toBe(502);expect(await failed.json()).toMatchObject({status:'failed',providerErrorCode:21217});expectedConsoleErrors.push((await refusalConsole).text());
+ const failed=await dialResponse;expect(failed.status()).toBe(502);expect(await failed.json()).toMatchObject({status:'failed',providerErrorCode:21217});{const message=await refusalConsole;expectedConsoleErrors.push({text:message.text(),url:message.location().url});}
  await expect(call.getByRole('alert')).toContainText(/Twilio refused the call.*21217/);await expect(call.getByRole('alert')).toContainText('No call was created');
  await expect(call.getByRole('button',{name:'Confirm and call once',exact:true})).toHaveCount(0);
  await expect(attempts.getByRole('listitem')).toHaveCount(1);await expect(attempts.getByRole('listitem')).toContainText(/Call failed.*Twilio code 21217/);
@@ -41,7 +42,7 @@ export async function callingJourney(page,calling){
  refusalConsole=page.waitForEvent('console',{predicate:message=>message.type()==='error'&&message.location().url===origin+dialPath&&/^Failed to load resource:.*\b502\b/.test(message.text())});
  dialResponse=page.waitForResponse(response=>new URL(response.url()).pathname===dialPath&&response.request().method()==='POST');
  await call.getByRole('button',{name:'Confirm and call once',exact:true}).click();
- const uncertain=await dialResponse;expect(uncertain.status()).toBe(502);expect(await uncertain.json()).toMatchObject({status:'uncertain'});expectedConsoleErrors.push((await refusalConsole).text());
+ const uncertain=await dialResponse;expect(uncertain.status()).toBe(502);expect(await uncertain.json()).toMatchObject({status:'uncertain'});{const message=await refusalConsole;expectedConsoleErrors.push({text:message.text(),url:message.location().url});}
  await expect(call.getByRole('alert')).toContainText(/Check Twilio before placing another call/);
  await expect(call.getByRole('button',{name:'Confirm and call once',exact:true})).toHaveCount(0);
  await expect(attempts.getByRole('listitem')).toHaveCount(2);await expect(attempts.getByRole('listitem').filter({hasText:/outcome unknown/})).toContainText(/Check Twilio/);
