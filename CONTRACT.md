@@ -1776,7 +1776,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 - **gated:** provider consent, business verification or hosted checkout that the provider keeps for a person, with provider and exact step; an available company API route follows the policy for its computed classes.
 - **access:** changes to staff, teams, record audiences (including collaborator entry grants) and application/agent grants, with affected people and widening/narrowing direction; a mention that changes no access stays standard.
 - **security:** protective connection settings or credential handling, with the setting and provider.
-- **destructive:** irreversible record/file erasure, with affected item count; reversible archive/undo stays standard.
+- **destructive:** irreversible erasure of records, files or provider-held data, with affected item count; reversible archive/undo stays standard.
 - **sensitive:** regulated identifiers or financial/health/payroll data present in permitted records, files or transcripts, with kind and record count, rather than a blanket label on ordinary CRM contacts.
 - **live:** changing an active workflow or routing configuration that changes the running service, with installation and affected workflow/route.
 
@@ -1932,15 +1932,15 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `orbit.integrate.slack_notice_routing_and_allowed_content` | Slack notice routing and allowed content | INTEGRATE-005 | standard or external (+ gated) | planned |
 | `orbit.integrate.slack_identity_and_single_use_actions` | Slack identity and single-use actions | INTEGRATE-009 | standard or external (+ gated) | planned |
 | `orbit.integrate.slack_delivery_failures_and_destination_safety` | Slack delivery failures and destination safety | INTEGRATE-010 | standard or external (+ gated) | planned |
-| `orbit.integrate.slack_portable_definitions_and_deletion` | Slack portable definitions and deletion | INTEGRATE-011 | standard or external (+ gated) | planned |
+| `orbit.integrate.slack_portable_definitions_and_deletion` | Slack portable definitions and deletion | INTEGRATE-011 | standard or external (+ gated · destructive) | planned |
 | `orbit.integrate.quickbooks_online_and_xero_accounting_handoff` | QuickBooks Online and Xero accounting handoff | INTEGRATE-006 | standard or external (+ money) | planned |
 | `orbit.integrate.mailchimp_audience_and_suppression_handoff` | Mailchimp audience and suppression handoff | INTEGRATE-007 | standard or external (+ gated) | planned |
 | `orbit.integrate.buoy_post_sale_handoff` | Buoy post-sale handoff | INTEGRATE-008 | standard or external (+ gated) | planned |
 | `orbit.enrich.licensed_enrichment_and_change_signals` | Licensed enrichment and change signals | ENRICH-001 | external (+ money · sensitive) | planned |
-| `orbit.api.versioned_public_record_api` | Versioned public record API | API-001 | standard or external | planned |
+| `orbit.api.versioned_public_record_api` | Versioned public record API | API-001 | standard or external (+ destructive) | planned |
 | `orbit.api.named_api_credential_lifecycle` | Named API credential lifecycle | API-002 | access · security | planned |
 | `orbit.api.outgoing_webhooks_and_safe_replay` | Outgoing webhooks and safe replay | API-003 | standard or external | planned |
-| `orbit.data.full_target_portability_privacy_and_audit` | Full-target portability, privacy and audit | DATA-003 | standard or sensitive | planned |
+| `orbit.data.full_target_portability_privacy_and_audit` | Full-target portability, privacy and audit | DATA-003 | standard or sensitive (+ destructive) | planned |
 | `orbit.agent.keep_the_customer_graph_current_with_evidence` | Keep the customer graph current with evidence | AGENT-001 | standard or external (+ money · commitment · sensitive) | planned |
 | `orbit.agent.explain_stalled_deals_and_contradictory_commitments` | Explain stalled deals and contradictory commitments | AGENT-002 | standard or external (+ money · commitment · sensitive) | planned |
 | `orbit.agent.follow_the_next_action_through_to_a_customer_outcome` | Follow the next action through to a customer outcome | AGENT-003 | standard or external (+ money · commitment · sensitive) | planned |
