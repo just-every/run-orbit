@@ -8635,7 +8635,7 @@
       "executable": false
     },
     "tests/core/capture-providers.test.ts": {
-      "sha256": "5b5d3f358860b0b7e36ad32ea7a291ea5fddcc798d6077d75dd17f84892d5558",
+      "sha256": "22beee65453c7eaabce5fb3667d784c4921b0b1dcd269a4f8fba2e5fb117fb4d",
       "executable": false
     },
     "tests/core/capture-upgrade.test.ts": {
