@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "67721fb665993ac4265b2c3ee95400c8df1729b11ba9ae25b58c387d4bfab933",
+      "sha256": "2bf85f98c3b078e5bc417250285f11c379fcdab45e3928f2875469523eb50b5c",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "d98bfdd13cfc6b885670a8e1784855b0df13b7047333ce1f89c93ea9196ce582",
+      "sha256": "397d073fc8d53de761fbe84b24886e2988c85130d2594741914df6b0e2424f4c",
       "executable": false
     },
     "DEMO.md": {
@@ -4039,7 +4039,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "307764f62b1372e4edbcf4aa4ddd252c4c71b1984218ef49c79f527c5c8de8fc",
+      "sha256": "80d436661f1060d4e6e30cfb2e53fbbaed3cf5a7008fda5df1dac5f6886b4f14",
       "executable": false
     },
     "scripts/verification-reuse.sh": {
@@ -8599,7 +8599,11 @@
       "executable": false
     },
     "tests/core/crm-import.test.ts": {
-      "sha256": "48a51e7a8b37df471e37cf123250bca4d34f0d68ec4d053624b2efcf32e2921f",
+      "sha256": "8c1884980b5eaf5a15450d442830ba1fb804ff0513518cce52310dce1081eba4",
+      "executable": false
+    },
+    "tests/core/crm-vendor.test.ts": {
+      "sha256": "a3a8263df1deefe8555cd0d36d5f0bc73b64c1b286edbda2b6fa05bdd7393f68",
       "executable": false
     },
     "tests/core/identity.test.ts": {
@@ -9360,6 +9364,10 @@
     },
     "tests/support/crm-import-privacy.ts": {
       "sha256": "e3d38ea1acc0f955cb8241708877217a8bd3c6fc4ec192dad1716402e36cec74",
+      "executable": false
+    },
+    "tests/support/crm-vendor-journey.ts": {
+      "sha256": "80872604644e19f8eb9fce3e9c6a83eeb4bae450033dd717deabf3893fdb53e0",
       "executable": false
     },
     "tests/support/current-archive.ts": {
