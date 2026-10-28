@@ -1,4 +1,6 @@
-import {typedFieldFences,typedFieldSave,type TypedField} from './typed-fields';
+import {normalizedTypedFields,typedFieldFences,typedFieldSave,type TypedField} from './typed-fields';
+import {fieldLabel,valueText} from '../operator/ui/data-value';
+import {importProvenance} from '../operator/ui/import-provenance';
 import {legacyActorContext} from '../access/legacy-database';
 import {reconcileLegacyOwnership} from '../ownership/legacy';
 import {readOwnership,ownershipForRecords} from '../ownership/read';
@@ -15,29 +17,21 @@ import { evaluationStatements } from '../workbench/evaluation-repository';
 import { createId } from '../../shared/ids';
 import { schemas } from './schema';
 import { audit, mutationJob, RecordError, requireRecord, tables, timeline, type RecordKind } from './shared';
-const changeLabels:Record<string,string>={company_id:'Company',stage_id:'Stage',owner_id:'Owner',value_cents:'Value',expected_close_at:'Expected close date',primary_domain:'Website domain',custom_fields_json:'Custom fields'};
+const changeLabels:Record<string,string>={company_id:'Company',stage_id:'Stage',owner_id:'Owner',value_cents:'Value',expected_close_at:'Expected close date',primary_domain:'Website domain'};
 const bookkeeping=new Set(['updated_at','email_key','primary_domain_key']);
-const comparable=(key:string,value:unknown)=>{if(key!=='custom_fields_json'||typeof value!=='string')return value??null;const fields=JSON.parse(value);return JSON.stringify(Object.keys(fields).sort().map(name=>[name,fields[name]]));};
 /** The timeline says which fields an edit changed, so the owner reads who changed what. */
 function changedText(before:Record<string,any>,after:Record<string,any>,definitions:TypedField[]){
- const changed=Object.keys(after).filter(key=>!bookkeeping.has(key)&&key in before&&comparable(key,before[key])!==comparable(key,after[key]));
- const lines=changed.filter(key=>key!=='custom_fields_json').map(key=>changeLabels[key]??key.replaceAll('_',' ').replace(/^./,letter=>letter.toUpperCase()));
+ const changed=Object.keys(after).filter(key=>key!=='custom_fields_json'&&!bookkeeping.has(key)&&key in before&&(before[key]??null)!==(after[key]??null));
+ const lines=changed.map(key=>changeLabels[key]??fieldLabel(key));
  const text=lines.length?[`Changed ${lines.join(', ')}`]:[];
- if(changed.includes('custom_fields_json')){
-  const oldValues=JSON.parse(before.custom_fields_json),newValues=JSON.parse(after.custom_fields_json);
-  const labels=new Map(definitions.map(field=>[field.field_key,field.label]));
-  const display=(value:unknown):string=>{
-   if(value===undefined||value===null||value==='')return 'Empty';
-   if(typeof value==='string'){
-    try{const structured=JSON.parse(value);if(structured&&typeof structured==='object')return display(structured);}catch{}
-    return value;
-   }
-   if(Array.isArray(value))return value.length?value.map(display).join('; '):'No items';
-   if(typeof value==='object')return Object.entries(value).map(([name,item])=>`${name}: ${display(item)}`).join('; ')||'No fields';
-   return String(value);
-  };
-  for(const key of new Set([...Object.keys(oldValues),...Object.keys(newValues)])){
-   if(JSON.stringify(oldValues[key])!==JSON.stringify(newValues[key]))text.push(`Changed ${labels.get(key)??key}: ${display(oldValues[key])} → ${display(newValues[key])}`);
+ const oldValues=JSON.parse(before.custom_fields_json),newValues=JSON.parse(after.custom_fields_json);
+ const labels=new Map(definitions.map(field=>[field.field_key,field.label]));
+ const display=(key:string,value:unknown)=>value===undefined||value===null||value===''?'Empty':valueText(importProvenance(key,value)??value);
+ for(const key of new Set([...Object.keys(oldValues),...Object.keys(newValues)])){
+  if(oldValues[key]!==newValues[key]){
+   const label=labels.get(key)??fieldLabel(key),previousImport=importProvenance(key,oldValues[key]);
+   if(previousImport&&typeof newValues[key]==='string'&&!importProvenance(key,newValues[key]))text.push(`Changed ${label}: Replaced import details from ${previousImport.imported_from} with ${newValues[key]===''?'empty text':`text: ${newValues[key]}`}`);
+   else text.push(`Changed ${label}: ${display(key,oldValues[key])} → ${display(key,newValues[key])}`);
   }
  }
  return text.length?{text:text.join('\n')}:null;
@@ -46,9 +40,10 @@ export class RecordsRepository extends RecordSeedRepository {
  constructor(readonly db:D1Database){super(db);}
  async prepareSave(kind:RecordKind,input:unknown,actor:string,id?:string, options:{ordinaryEdit?:boolean}={}){
   const before=id?await requireRecord(this.db,kind,id):null;
+  const links=kind==='opportunity'&&before?(await this.db.prepare('SELECT contact_id,is_primary FROM opportunity_contacts WHERE opportunity_id=?').bind(id).all<{contact_id:string;is_primary:number}>()).results:[];
   let source=input;
   if(kind==='opportunity'&&before&&input&&typeof input==='object'&&!Array.isArray(input)){
-   const provided=input as Record<string,unknown>,links=(await this.db.prepare('SELECT contact_id,is_primary FROM opportunity_contacts WHERE opportunity_id=?').bind(id).all<{contact_id:string;is_primary:number}>()).results;
+   const provided=input as Record<string,unknown>;
    source={...provided,
     custom_fields:Object.hasOwn(provided,'custom_fields')?provided.custom_fields:JSON.parse(before.custom_fields_json),
     contact_ids:Object.hasOwn(provided,'contact_ids')?provided.contact_ids:links.map(link=>link.contact_id),
@@ -88,8 +83,11 @@ export class RecordsRepository extends RecordSeedRepository {
    if(data.owner_id&&!await this.db.prepare("SELECT id FROM operators WHERE id=? AND status='active'").bind(data.owner_id).first())throw new RecordError(400,'Owner must be an active operator.');
    for(const contact of contacts)await requireRecord(this.db,'contact',contact);
   }
-  const typedSave=await typedFieldSave(this.db,kind,id,data.custom_fields,JSON.parse(before?.custom_fields_json??'{}'));
-  data.custom_fields_json=JSON.stringify(data.custom_fields);delete data.custom_fields;data.updated_at=now;
+  const previousFields=JSON.parse(before?.custom_fields_json??'{}');
+  const typedSave=await typedFieldSave(this.db,kind,id,data.custom_fields,previousFields);
+  data.custom_fields_json=JSON.stringify(normalizedTypedFields(data.custom_fields,previousFields,typedSave.fields));delete data.custom_fields;data.updated_at=now;
+  const changes=before?changedText(before,data,typedSave.fields):{};
+  const associationsChanged=kind==='opportunity'&&before&&(links.length!==contacts.length||links.some(link=>!contacts.includes(link.contact_id)||Boolean(link.is_primary)!==(link.contact_id===primary)));
   const columns=Object.keys(data),values=columns.map(k=>data[k]??null);
   const statements:D1PreparedStatement[]=policies.length?stagePolicyFence(this.db,policies,before?{id,stage_id:before.stage_id,updated_at:before.updated_at}:undefined):[];
   const emailTokens=kind==='contact'?await suppressionHashes(this.db,data.email):[];
@@ -102,6 +100,9 @@ export class RecordsRepository extends RecordSeedRepository {
   if(kind==='contact'&&data.contactability==='do_not_contact')statements.push(...await suppressionStatements(this.db,[data.email]));
   if(explicitClear)statements.push(this.db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'contact_clear_class',NULL WHERE NOT EXISTS(SELECT 1 FROM operators WHERE id=? AND status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=operators.id))").bind(actor),...clearSuppressionStatements(this.db,emailTokens));
   const contactabilityValue=(update:boolean)=>`CASE WHEN ${update&&!explicitClear?"contactability='do_not_contact' OR ":''}${suppressionPredicate(emailTokens)} THEN 'do_not_contact' ELSE ? END`;
+
+  // Validation and authority fences still run; an ordinary no-op changes no record or history.
+  if(before&&options.ordinaryEdit&&!changes&&!associationsChanged)return {id,statements,key,keyColumn,kind,changed:false};
 
   if(before)statements.push(this.db.prepare(`UPDATE ${tables[kind]} SET ${columns.map(k=>`${k}=${kind==='contact'&&k==='contactability'?contactabilityValue(true):'?'}`).join(',')} WHERE id=?`).bind(...values,id));
   else {
@@ -120,15 +121,15 @@ export class RecordsRepository extends RecordSeedRepository {
   if(kind==='contact')statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure='Contact set do-not-contact',updated_at=? WHERE contact_id=? AND state='scheduled' AND EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')").bind(now,id,id));
   if(kind==='contact')statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Contact changed',updated_at=? WHERE recipient_contact_id=?").bind(now,id));
   if(explicitClear)statements.push(audit(this.db,actor,'contactability.cleared','contact',id));
-  const changes=before?changedText(before,data,typedSave.fields):{};
-  if(changes)statements.push(...timeline(this.db,actor,kind,id,before?'record.updated':'record.created',changes));
+  const history=associationsChanged?{text:[changes&&'text' in changes?changes.text:null,'Changed Associated contacts'].filter(Boolean).join('\n')}:changes;
+  if(history)statements.push(...timeline(this.db,actor,kind,id,before?'record.updated':'record.created',history));
   statements.push(audit(this.db,actor,before?'record.updated':'record.created',kind,id));
-  return {id,statements,key,keyColumn,kind};
+  return {id,statements,key,keyColumn,kind,changed:true};
  }
  async save(kind:RecordKind,input:unknown,actor:string,id?:string,options:{ordinaryEdit?:boolean}={}){
   const prepared=await this.prepareSave(kind,input,actor,id,options);id=prepared.id;const {statements,key,keyColumn}=prepared;
   try{await this.db.batch(statements);}catch(error){if(/identity_guards|CHECK constraint failed: value\s*=\s*1/.test(String(error))){const current=await requireRecord(this.db,kind,id).catch(()=>null);await typedFieldFences(this.db,kind,id,(input as any)?.custom_fields??{},JSON.parse(current?.custom_fields_json??'{}'));throw new RecordError(409,'Custom fields changed concurrently. Review their definitions and values before saving.');}if(/runtime_controls.value/.test(String(error)))throw new RecordError(409,'The opportunity or pipeline rules changed. Reload before saving.');if(String(error).includes('UNIQUE')||String(error).includes('RECORD_IDENTITY_CONFLICT')){const duplicate=key&&keyColumn?await this.db.prepare(`SELECT id FROM ${tables[kind]} WHERE ${keyColumn}=? AND id<>? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type=? AND identity_key=? AND survivor_id<>?`).bind(key,id,kind,key,id).first<{id:string}>():null;throw new RecordError(409,'Identity or association changed concurrently; reload records.',duplicate?.id);}throw error;}
-  return {id};
+  return {id,changed:prepared.changed};
  }
  // Scoped record reads omit native ownership enrichment, as the collaborator route does.
  async detail(kind:RecordKind,id:string,options:{ownership?:boolean}={}){const record=await requireRecord(this.db,kind,id);if(kind==='opportunity'){const policy=await stagePolicy(this.db,record.stage_id);Object.assign(record,{pipeline_id:policy.pipeline_id,pipeline_name:policy.pipeline_name,stage_name:policy.stage_name});}const entries=await this.db.prepare("SELECT t.*,o.display_name AS actor_name,s.name AS source_name,e.type AS signal_type FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id LEFT JOIN operators o ON t.actor_type='operator' AND o.id=t.actor_id LEFT JOIN signal_sources s ON s.id=t.source LEFT JOIN signals e ON e.id=t.id WHERE r.record_type=? AND r.record_id=? ORDER BY t.occurred_at DESC,t.id ASC").bind(kind,id).all();
