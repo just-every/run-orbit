@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "ace0ffd689b94c61b1cc51a9d269903b3f015fa7e2a39b2dd329c0d5acd43281",
+      "sha256": "059e4c7788efd67fe314712783305cb2c874d8187fd31a4733521f382d0e6431",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "0dafa5dc3bb15719466392ecb25df49df7dc65453b1afa3297ab7ee0f98d1678",
+      "sha256": "50d0f0c71e5912a7299fac74dc33d818dc002b94df3d65b9b53b0a07b5abcc8b",
       "executable": false
     },
     "DEMO.md": {
@@ -747,11 +747,11 @@
       "executable": false
     },
     "docs/contract/COVERAGE.json": {
-      "sha256": "a52efdae2b4aef38db0df8146c0d19a726347414a7072417a6c8ce140f87adaf",
+      "sha256": "798d65ec7eae65c8d3564d245b6d29e9937026243402faaec13f5f00789bdf8a",
       "executable": false
     },
     "docs/contract/ID-MAP.json": {
-      "sha256": "3943143fb8fab71049802f209bb142c429a53ebf94b1444eea53bd5fcceee62c",
+      "sha256": "d235a432bffbe0e9fdb2e1780dfb77d6be434449595cca76331351a8ab8ff5fd",
       "executable": false
     },
     "docs/DELEGATION-PROTOCOL.md": {

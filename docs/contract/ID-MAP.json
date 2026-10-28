@@ -588,33 +588,45 @@
       ]
     },
     "OUT-016": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "OUT-016"
+        "OUT-016",
+        "OUT-021",
+        "OUT-022"
       ]
     },
     "OUT-017": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     "OUT-018": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "OUT-018"
+        "OUT-018",
+        "OUT-024",
+        "OUT-025",
+        "OUT-026"
       ]
     },
     "OUT-019": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     "OUT-020": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     "TASK-001": {
@@ -630,9 +642,11 @@
       ]
     },
     "SEQUENCE-001": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "SEQUENCE-001"
+        "SEQUENCE-001",
+        "SEQUENCE-004",
+        "SEQUENCE-005"
       ]
     },
     "SEQUENCE-002": {
@@ -642,9 +656,11 @@
       ]
     },
     "SEQUENCE-003": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "SEQUENCE-003"
+        "SEQUENCE-003",
+        "SEQUENCE-006",
+        "SEQUENCE-007"
       ]
     },
     "AUTO-001": {
@@ -654,9 +670,13 @@
       ]
     },
     "AUTO-002": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     "CALL-001": {
@@ -678,9 +698,11 @@
       ]
     },
     "REPORT-002": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "REPORT-002"
+        "REPORT-002",
+        "REPORT-003",
+        "REPORT-004"
       ]
     },
     "FORECAST-001": {
@@ -720,9 +742,12 @@
       ]
     },
     "INTEGRATE-005": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "INTEGRATE-005"
+        "INTEGRATE-005",
+        "INTEGRATE-009",
+        "INTEGRATE-010",
+        "INTEGRATE-011"
       ]
     },
     "INTEGRATE-006": {
@@ -750,9 +775,11 @@
       ]
     },
     "API-001": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "API-001"
+        "API-001",
+        "API-002",
+        "API-003"
       ]
     },
     "MOBILE-001": {

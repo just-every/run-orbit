@@ -2039,7 +2039,9 @@
       "text": "An administrator enables tracking for the workspace, choosing open tracking, link-click tracking or both, and the disclosure text Orbit adds to tracked mail and the workspace privacy notice. Each rep then turns tracking on or off per one-to-one message, template and sequence email step (workspace default off; a rep may set their own default on). The OUT-001 review shows the tracking state, every tracked link and its exact destination, and the approval binds that state with the content. For opted-in mail sent through any Orbit transport, including OUT-013 Gmail and Microsoft 365 mailbox sending and `mail.sender.v1`, Orbit embeds one per-message, per-recipient image token and rewrites each tracked link to a per-message redirect on the installation origin that answers 302 to the reviewed destination unchanged. Gmail and Microsoft 365 report no opens or clicks through their APIs, so these tokens are the only source of open and click evidence and Orbit claims no other.",
       "to": "clause",
       "ids": [
-        "OUT-016"
+        "OUT-016",
+        "OUT-021",
+        "OUT-022"
       ]
     },
     {
@@ -2048,7 +2050,9 @@
       "text": "No cookie, script, fingerprint or cross-message identifier is set or read, and a token resolves only to its one message and recipient. Each open or click becomes an inferred signal (SIGNAL-006) on the contact, message and deal timeline with first and last time, count and the clicked link. Machine traffic is labeled and not counted as a human event: Apple Mail Privacy Protection and Gmail or Outlook image-proxy prefetches, security-scanner link checks within seconds of delivery, and requests before provider acceptance are classified `proxy` or `automated` with the reason. The sending rep receives a real-time in-app notification (NOTIFY-001), and optionally push or email under NOTIFY-003, for the first human-classified open and the first click on each link, deduplicated per message.",
       "to": "clause",
       "ids": [
-        "OUT-016"
+        "OUT-016",
+        "OUT-021",
+        "OUT-022"
       ]
     },
     {
@@ -2057,7 +2061,9 @@
       "text": "Opens and clicks never satisfy ACTION-001 evidence, exit or advance a sequence, count as a reply or meeting, or raise a band to high (SIGNAL-006, SEQUENCE-002); reports show them as engagement, separate from replies. A contact can be marked do-not-track, and an administrator can switch tracking off for the workspace at once; do-not-contact, do-not-track, erasure (DATA-002) and contact deletion void that contact's tokens, so later requests still redirect the link but record nothing. Mail not sent through Orbit, or sent with tracking off, shows `not tracked`, never `not opened`. A message with more than one external recipient carries one message-level token whose events are attributed to \"a recipient\", and is sent untracked if any external recipient is do-not-track (OUT-019).",
       "to": "clause",
       "ids": [
-        "OUT-016"
+        "OUT-016",
+        "OUT-021",
+        "OUT-022"
       ]
     },
     {
@@ -2066,7 +2072,9 @@
       "text": "Before tracking collection ships, it must satisfy OUT-015\u2019s source/time, inferred/unreliable report and proxy/automated classifications; reports never become human replies or stop follow-up.",
       "to": "clause",
       "ids": [
-        "OUT-016"
+        "OUT-016",
+        "OUT-021",
+        "OUT-022"
       ]
     },
     {
@@ -2075,7 +2083,9 @@
       "text": "Approved engineering policy: tracking is off by default. An administrator may enable disclosed open tracking, link tracking or both, and a rep must review the tracking state and exact destinations with the message. Use cryptographically random opaque tokens with at least 128 bits of entropy, scoped to the approved message and recipient or the existing multi-recipient message rule; tokens contain no address or CRM identifier and cannot authorize another operation. Collect only token event identity, approved link identity, timestamps, counts and classification reason. Inspect network metadata transiently for abuse and classification without retaining raw IP addresses or full user-agent strings. Collection expires 90 days after provider acceptance; retained CRM evidence then contains only aggregate counts, times and inference labels under the workspace\u2019s documented retention policy. Keep reviewed redirect destinations available without further collection after expiry, disablement, suppression or erasure, without retaining erased recipient identity. Known image proxies are proxy traffic; known scanners and requests before acceptance are automated; uncertain traffic remains unknown, never verified human reading. All reports remain inferred. Only non-machine, human-classified events may trigger the existing deduplicated notification, with an uncertainty label. No report grants contactability, advances a sequence or proves a reply. Non-US collection requires recorded applicable consent or another qualified basis; uncertainty disables tracking for that recipient. Provider and jurisdiction-specific legal qualification remain explicit gaps.",
       "to": "clause",
       "ids": [
-        "OUT-016"
+        "OUT-016",
+        "OUT-021",
+        "OUT-022"
       ]
     },
     {
@@ -2084,7 +2094,9 @@
       "text": "**Acceptance:** Enable open and click tracking with disclosure, approve a tracked one-to-one message sent through OUT-013 Gmail and a tracked sequence step sent through Microsoft 365, open each in a real mail client and click a link; verify one inferred open and one click signal on the deal, a 302 to the unchanged reviewed destination, one deduplicated real-time rep notification, a proxy prefetch and a scanner click labeled automated, no cookie or script, no sequence exit or high band from the open, and `not tracked` on an untracked message; mark the contact do-not-track, erase another contact and verify nothing further is recorded.",
       "to": "clause",
       "ids": [
-        "OUT-016"
+        "OUT-016",
+        "OUT-021",
+        "OUT-022"
       ]
     },
     {
@@ -2093,7 +2105,9 @@
       "text": "Assert opaque-token isolation, exact approved destinations, disabled and expired collection, transient metadata handling, proxy, scanner and unknown classifications, notification deduplication, multi-recipient attribution, suppression and erasure without breaking the reviewed redirect, in addition to every original acceptance step.",
       "to": "clause",
       "ids": [
-        "OUT-016"
+        "OUT-016",
+        "OUT-021",
+        "OUT-022"
       ]
     },
     {
@@ -2102,7 +2116,8 @@
       "text": "From a contact, lead (RECORD-014), company or deal record, a user with send permission under TEAM-005 composes a one-to-one email To one or more of that record's contacts. On a company record the To recipients are chosen explicitly from its contacts (RECORD-011). The user may add further To, CC and BCC recipients, internal colleagues and reviewed external addresses under OUT-019. The message can be written by hand, rendered from an OUT-014 template, or drafted on request as in ACTION-003, reading that record's evidence under the AI-001 preview. No open opportunity is required. The following can all be emailed:",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2111,7 +2126,8 @@
       "text": "a lead or contact with no company or deal;",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2120,7 +2136,8 @@
       "text": "a contact whose only deals are won or lost;",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2129,7 +2146,8 @@
       "text": "a contact on an open deal, emailed from their contact or company record.",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2138,7 +2156,8 @@
       "text": "Every send keeps the existing guarantees:",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2147,7 +2166,8 @@
       "text": "OUT-001 exact-content approval;",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2156,7 +2176,8 @@
       "text": "RECORD-012 contactability, including CAPTURE-012's recorded basis;",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2165,7 +2186,8 @@
       "text": "OUT-008 quiet hours, OUT-009 scheduling, and OUT-010 limits with OUT-018's per-user budgets, under which one-to-one mail is never queued behind sequences;",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2174,7 +2196,8 @@
       "text": "OUT-012 opt-out headers and link where OUT-020's setting puts them (off by default for one-to-one mail);",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2183,7 +2206,8 @@
       "text": "OUT-003 and OUT-011 idempotency and reconciliation;",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2192,7 +2216,8 @@
       "text": "OUT-016 tracking choice;",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2201,7 +2226,8 @@
       "text": "OUT-002 states, whether through `mail.sender.v1` or an OUT-013 connected mailbox.",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2210,7 +2236,8 @@
       "text": "**Deal link.** The composer shows the recipient's open deals. A message composed from an open deal is linked to it; from any other record, the sender may link it to at most one of the recipient's open deals or leave it unlinked. Sending never creates a deal and never reopens a closed one (OPP-001). A message composed from a won or lost deal appears on that deal's timeline as history and changes neither its lifecycle nor its queue.",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2219,7 +2246,8 @@
       "text": "**Where it lands.** On provider acceptance, one transaction records the reviewed content and provider message ID as one timeline activity on each external recipient contact, To, CC or BCC, on each of their primary companies and on the linked deal when there is one, with BCC disclosure limited as in OUT-019. A reply carrying the message's headers (OUT-004), or captured on the same provider thread (CAPTURE-010), threads once onto the same contact, company and linked deal. A reply without them is held for review, never guessed by subject. A send linked to an open deal then follows OUT-005 unchanged.",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2228,7 +2256,8 @@
       "text": "**Without an open deal.** Instead of OUT-005's NOW\u2192NEXT move, acceptance opens one contact-level awaiting-response obligation owned by the sender. The obligation appears in the sender's Today brief (BRIEF-001) as an overdue promise once the TEAM-003 awaiting-response interval passes, counted in working days in the workspace timezone. It closes on a genuine reply from any external recipient of the message (OUT-019), a booked meeting, a later sent message to that contact, or the sender's explicit completion; an automatic reply does not close it (OUT-015). A reply notifies the sender, and the contact owner (RECORD-016) when that is someone else, once each (NOTIFY-001). A failure, bounce or delivery-unknown outcome notifies the sender and shows on the contact (OUT-006, OUT-011), and a permanent bounce sets do-not-contact. OUT-007 stop conditions cancel the contact's scheduled messages whether or not they are linked to a deal.",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2237,7 +2266,8 @@
       "text": "Sequence enrollment (SEQUENCE-001, SEQUENCE-003) needs no deal, and each deal-less step lands as above.",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2246,7 +2276,8 @@
       "text": "**Acceptance:** Through OUT-013, email a lead with no company or deal from its record and receive a real reply; from a contact record, email a contact whose only deal is closed won and receive their reply; bulk-enroll ten deal-less contacts in a sequence under SEQUENCE-003 and receive a reply to one first step. For each, verify exact-content approval, the sent message and reply threaded onto the contact timeline and, where the contact has one, the company timeline, no deal created or required, the won deal's lifecycle unchanged, and the deal-less awaiting-response line appearing in the brief after the interval and clearing on the reply. Attempt a send to a do-not-contact lead and see it refused; email a contact on an open deal from their company record, link it to the deal and see OUT-005's NEXT move.",
       "to": "clause",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -2255,7 +2286,10 @@
       "text": "Orbit carries the sending volume of the declared team (`seed.json \u2192 limits.operators`, 25 users) on separate per-user budgets, so one SDR's sequences never use up another rep's capacity or their own one-to-one replies. The values in this clause are the target. Today's `seed.json \u2192 limits` values (`outboundMessagesPerMinute: 3` for the whole deployment and `outboundMessagesPerOperatorPerRollingDay: 100`) are current limits that this clause replaces as build work. `seed.json` keeps declaring the values in force, marked `estimated-until-load-tested` until the acceptance load journey below passes.",
       "to": "clause",
       "ids": [
-        "OUT-018"
+        "OUT-018",
+        "OUT-024",
+        "OUT-025",
+        "OUT-026"
       ]
     },
     {
@@ -2264,7 +2298,10 @@
       "text": "**Per-user budgets.** Each user has two rolling 24-hour budgets, counted per provider-submitted message:",
       "to": "clause",
       "ids": [
-        "OUT-018"
+        "OUT-018",
+        "OUT-024",
+        "OUT-025",
+        "OUT-026"
       ]
     },
     {
@@ -2273,7 +2310,10 @@
       "text": "sequence email (SEQUENCE-001, SEQUENCE-003 and AUTO-001 enrollments): 500 per user by default, the volume of an incumbent Professional seat;",
       "to": "clause",
       "ids": [
-        "OUT-018"
+        "OUT-018",
+        "OUT-024",
+        "OUT-025",
+        "OUT-026"
       ]
     },
     {
@@ -2282,7 +2322,10 @@
       "text": "one-to-one email (OUT-017 composes, OUT-019 replies, ACTION-003 drafts and OUT-009 scheduled one-to-one messages): 1,000 per user by default, never reduced by that user's sequence sends.",
       "to": "clause",
       "ids": [
-        "OUT-018"
+        "OUT-018",
+        "OUT-024",
+        "OUT-025",
+        "OUT-026"
       ]
     },
     {
@@ -2291,7 +2334,10 @@
       "text": "An administrator can lower either budget per user or per team, and raise it up to the transport limits below. Each change is audited and applies to the next claim. A message counts once however many recipients it has (OUT-019); the provider's recipient count still applies to the provider's own limits.",
       "to": "clause",
       "ids": [
-        "OUT-018"
+        "OUT-018",
+        "OUT-024",
+        "OUT-025",
+        "OUT-026"
       ]
     },
     {
@@ -2300,7 +2346,10 @@
       "text": "**Connected mailboxes.** Mail sent through an OUT-013 Gmail/Workspace or Microsoft 365 mailbox is paced per mailbox, never by a throttle shared across the deployment. Orbit keeps each mailbox inside its provider's published sending limits for that account type, such as Google Workspace's per-user daily message and recipient limits and Exchange Online's per-minute message and daily recipient limits, using the lower limits of trial and consumer accounts where they apply. That mailbox's sequence steps are paced at no more than 3 per minute by default, adjustable by an administrator. A provider throttling or quota response, such as a Gmail API `429` or a Microsoft Graph `429` with `Retry-After`, defers only that mailbox's queued mail, visibly, until the provider's stated time or next window. It is never a silent retry or a switch of transport or identity.",
       "to": "clause",
       "ids": [
-        "OUT-018"
+        "OUT-018",
+        "OUT-024",
+        "OUT-025",
+        "OUT-026"
       ]
     },
     {
@@ -2309,7 +2358,10 @@
       "text": "**Shared transport.** Mail sent through the shared `mail.sender.v1` transport has a deployment rate that scales with the declared team: by default at least 4 messages per minute per declared user, which is 100 per minute at 25 users. An administrator sets it to the connected SendGrid account's own rate. Each user's sequence steps on this transport are paced at no more than 3 per minute by default.",
       "to": "clause",
       "ids": [
-        "OUT-018"
+        "OUT-018",
+        "OUT-024",
+        "OUT-025",
+        "OUT-026"
       ]
     },
     {
@@ -2318,7 +2370,10 @@
       "text": "**One-to-one first.** On every transport, one-to-one messages are claimed ahead of every queued sequence step. Sequence steps may use at most 75% of the shared transport's per-minute rate, so the rest is always available to one-to-one mail. A one-to-one message is submitted to its transport within 60 seconds of its approval or scheduled time at the declared team load, whatever any user's sequence backlog, when it is within its sender's one-to-one budget, has passed OUT-008 and is not stopped.",
       "to": "clause",
       "ids": [
-        "OUT-018"
+        "OUT-018",
+        "OUT-024",
+        "OUT-025",
+        "OUT-026"
       ]
     },
     {
@@ -2327,7 +2382,10 @@
       "text": "**Fair draining.** Due sequence steps drain round-robin across users, then in enrollment order within each user's batches, so two SDRs' batches progress side by side. A user's steps beyond their own budget or pace wait for that user's next window (OUT-010) and never hold another user's mail.",
       "to": "clause",
       "ids": [
-        "OUT-018"
+        "OUT-018",
+        "OUT-024",
+        "OUT-025",
+        "OUT-026"
       ]
     },
     {
@@ -2336,7 +2394,10 @@
       "text": "**Visible deferral.** A genuine over-limit message keeps OUT-010's visible unsent state. It names the limit that stopped it (sequence budget, one-to-one budget, mailbox pace, provider throttle or shared transport rate) and the time it may be sent. Each user sees their own budgets used and remaining; administrators see every user's and mailbox's usage.",
       "to": "clause",
       "ids": [
-        "OUT-018"
+        "OUT-018",
+        "OUT-024",
+        "OUT-025",
+        "OUT-026"
       ]
     },
     {
@@ -2345,7 +2406,10 @@
       "text": "Today every message is one-to-one mail through the shared transport, and these values are in force: each user's one-to-one budget (1,000 a rolling day by default) and the shared rate (100 a minute by default, 4 for each of the 25 declared users) replace the former deployment-wide 3 a minute and 100 per user, and a change applies to the next claim. Until TEAM-005 adds the administrator role, the installation owner sets each user's one-to-one budget, up to the shared rate's daily capacity, and the shared rate, and each change is audited with the owner, the old and new values and the time; per-team budgets come with TEAM-005's teams. A held message names the limit that stopped it with its value, and the time it may be sent. Settings \u2192 Sending capacity shows each user their own budget used and remaining, and the owner every user's. SEQUENCE-001, SEQUENCE-003 and AUTO-001 inherit the sequence budget and pace, one-to-one priority, the 75% sequence share and fair draining; OUT-013 inherits per-mailbox pacing, provider quota and `Retry-After` deferral and mailbox usage in the administrator's view. `seed.json` declares 100 a minute and 1,000 a user per rolling day, still marked `estimated-until-load-tested`: no measured submission latency is claimed until the acceptance load journey runs.",
       "to": "clause",
       "ids": [
-        "OUT-018"
+        "OUT-018",
+        "OUT-024",
+        "OUT-025",
+        "OUT-026"
       ]
     },
     {
@@ -2354,7 +2418,10 @@
       "text": "**Acceptance:** With 12 users (nine AEs, two SDRs and one manager) sending through Gmail and Microsoft 365 mailboxes and the shared transport, in one business morning each user approves 40 one-to-one messages while two SDRs each approve a 100-recipient, four-step SEQUENCE-003 batch. Verify that every one-to-one message is submitted within 60 seconds of its approval while the batches drain; that each SDR's 100 first steps are submitted within the business day inside their own sequence budget, interleaved with the other SDR's; and that no deployment-wide throttle delays a mailbox send. Inject a provider 429 for one mailbox and see only that mailbox's mail deferred, visibly, until its `Retry-After`. Lower one SDR's sequence budget to 50: only that SDR's remaining steps defer, visibly, naming the limit and the next permitted time, while the other SDR's steps and everyone's one-to-one mail continue. Record the measured submission latencies at the declared 25-user capacity before `seed.json` drops `estimated-until-load-tested`.",
       "to": "clause",
       "ids": [
-        "OUT-018"
+        "OUT-018",
+        "OUT-024",
+        "OUT-025",
+        "OUT-026"
       ]
     },
     {
@@ -2363,7 +2430,9 @@
       "text": "**Fields.** Every one-to-one composer and every reply has To, CC and BCC fields. That covers OUT-017 composes from any record, ACTION-003 drafts, OUT-013 mailbox sends and the reply after a CAPTURE-012 acceptance. Autocomplete offers active users and the contacts the user may see under TEAM-005. The draft (ACTION-004) stores the three ordered lists, and changing any of them marks a reviewed draft stale (ACTION-005).",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2372,7 +2441,9 @@
       "text": "**Who can be a recipient.**",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2381,7 +2452,9 @@
       "text": "A contact is checked against RECORD-012 at approval and again at dispatch (OUT-009). A do-not-contact recipient in any field blocks the send. The refusal names that recipient and the reason and offers to remove them, which re-renders the message for a fresh review; Orbit never drops a recipient silently. An address that belongs to a contact the user cannot see is checked the same way without revealing that record.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2390,7 +2463,9 @@
       "text": "An internal colleague, meaning an active user's address or an address at a configured internal domain (TEAM-003), can always be added. Internal colleagues are never subject to contactability, unsubscribe or tracking, and never become customer contacts.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2399,7 +2474,9 @@
       "text": "An external address with no record is allowed when the user types it. The review requires one explicit choice for each such address: create a contact (RECORD-001) with its contactability basis recorded (`rep-initiated conversation`, or `inbound conversation` when the address is already a participant in the thread being answered); accept that address's pending CAPTURE-012 proposal; or send to it as a one-off recipient. A one-off recipient's address and the user's stated basis are recorded on the message, no contact is created, and a later reply from that address becomes a CAPTURE-012 proposal. An address matching a retained suppression proof (RECORD-012, DATA-002) is refused in every case, without naming the erased person.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2408,7 +2485,9 @@
       "text": "**Reply and reply all.** Every captured (CAPTURE-010) or Orbit-sent thread offers Reply and Reply all. Reply addresses the latest message's sender, or its `Reply-To`. Reply all adds that message's other To and CC participants, removes every address of the replying user's own mailbox and its aliases, and de-duplicates. Earlier BCC recipients are never pre-filled. The pre-filled lists are editable and pass the same per-recipient checks. The reply stays in the thread: its subject takes `Re:`, its `In-Reply-To` and `References` point to the answered message, and it joins the provider's own thread or conversation (OUT-013).",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2417,7 +2496,9 @@
       "text": "**Approval and transport.**",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2426,7 +2507,9 @@
       "text": "OUT-001 approval binds the exact To, CC and BCC lists with the subject and body, and the review shows every list in full.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2435,7 +2518,9 @@
       "text": "OUT-013, or `mail.sender.v1`, submits the approved lists as one provider message. BCC addresses travel only in the envelope, never in delivered headers.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2444,7 +2529,9 @@
       "text": "Opt-out follows OUT-020. By default a one-to-one message or reply carries none. When it does, a message with more than one external recipient carries no one-click header; a person's opt-out through its link sets only that person do-not-contact, or records a suppression proof for that one-off address; and an opt-out that cannot name one recipient opens an unattributed stop request instead of stopping everyone.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2453,7 +2540,9 @@
       "text": "OUT-016 tracking on a message with more than one external recipient records message-level opens and clicks attributed to \"a recipient\", never to a named contact. A message with any do-not-track external recipient is sent untracked, and the review says so.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2462,7 +2551,9 @@
       "text": "Under OUT-018 one message counts once against the sender's budget.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2471,7 +2562,9 @@
       "text": "**Where it lands.** On provider acceptance, one transaction records one timeline activity on each external recipient contact (To, CC or BCC), once on each of their primary companies and once on the linked deal (OUT-017). Each activity shows the To and CC lists, limited to what the viewer may see under TEAM-005. A BCC address appears only on that BCC'd contact's own activity and to the sender. It is never shown on another contact's, company's or deal's timeline view, in another recipient's copy, in a report or in another record's export. Internal colleagues are shown by name and get no customer activity.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2480,7 +2573,9 @@
       "text": "**Who counts as a reply.**",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2489,7 +2584,9 @@
       "text": "A genuine reply from any external recipient of the message (To, CC or BCC) threads back under OUT-004 and CAPTURE-010 onto the replier's contact, their company and the linked deal. It closes OUT-017's awaiting-response obligation and, for a deal-linked message, applies OUT-005 and OUT-007 as a customer reply.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2498,7 +2595,9 @@
       "text": "A reply from an internal colleague is logged on the thread as internal and closes nothing.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2507,7 +2606,9 @@
       "text": "A reply from an address with no record follows CAPTURE-012.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2516,7 +2617,9 @@
       "text": "Sequence email steps (SEQUENCE-001) are addressed To the enrolled contact, with CC limited to the internal colleagues the step names. Under SEQUENCE-002, a genuine reply on a step's thread from any external participant, including a CC'd contact or a colleague the buyer added, exits that enrollment.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2525,7 +2628,9 @@
       "text": "Before multi-recipient sending ships, it must satisfy OUT-015\u2019s exact-identity genuine-reply attribution for every external recipient; automatic, foreign and ambiguous replies never complete awaiting-response or stop follow-up.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2534,7 +2639,9 @@
       "text": "Before sequence steps with CC ship, a genuine reply from any external participant of a step's thread must exit that enrollment under SEQUENCE-002.",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2543,7 +2650,9 @@
       "text": "**Acceptance:** Through Gmail, receive a captured thread from a contact with two CC'd colleagues, one of them unknown. Reply all from Orbit, adding the team's internal sales engineer in CC and another existing contact in BCC. Verify that the pre-filled To and CC lists leave out the rep's own mailbox; that the unknown colleague needs an explicit choice and becomes a contact with basis `inbound conversation`; that the provider records one message with exactly the approved To, CC and BCC lists and no BCC header in delivered copies; that the reply is logged once on each external contact and once on their company and the linked deal; that the BCC address is absent from the other contacts' timelines and the other recipients' copies; and that a later reply from the CC'd colleague threads back onto their contact, company and deal and closes the awaiting-response obligation. Add a do-not-contact contact in CC and see the send refused, naming them; remove them and approve the re-rendered message. Add a one-off external address and an erased contact's address: the first is sent with its basis recorded, and the second is refused without naming the person. Repeat the reply-all journey through Microsoft 365, and once through `mail.sender.v1` with one-to-one opt-out turned on, where one recipient's opt-out through the message's link stops only that recipient (OUT-020).",
       "to": "clause",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -2552,7 +2661,11 @@
       "text": "**Setting per message type.** In Settings an administrator chooses, separately for each message type, whether Orbit adds opt-out headers (`List-Unsubscribe` and `List-Unsubscribe-Post`, OUT-012) and a visible opt-out link to the message:",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2561,7 +2674,11 @@
       "text": "sequence email steps (SEQUENCE-001, SEQUENCE-003) and AUTO-001 workflow email: on by default;",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2570,7 +2687,11 @@
       "text": "one-to-one email and replies (OUT-017, OUT-019, ACTION-003 drafts and OUT-009 scheduled one-to-one messages): off by default, as in the incumbent with its data-privacy settings off.",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2579,7 +2700,11 @@
       "text": "Each change of the setting is recorded in the audit trail with the administrator, the old and new values and the time, and applies to messages approved after it. Approved unsent messages keep the state their approval bound, and the settings page shows how many there are. Orbit never changes mail a rep writes in Gmail or Outlook outside Orbit. Internal colleagues (OUT-019) are never offered an opt-out.",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2588,7 +2713,11 @@
       "text": "**One message.** When the setting puts opt-out on a message, the rep may remove it from that one message, or from one sequence step, by marking it relationship or transactional mail, unless an administrator has forbidden removal for that message type (allowed by default). A rep may always add opt-out to a one-to-one message. The OUT-001 review shows the opt-out state and, when it was removed, the rep's marking. The approval binds that state with the content, and changing it marks a reviewed draft stale (ACTION-005). The delivered message carries exactly the reviewed state: the headers and the link together, or neither.",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2597,7 +2726,11 @@
       "text": "**One external recipient.** A message with opt-out and exactly one external recipient carries one-click headers (`List-Unsubscribe-Post: List-Unsubscribe=One-Click`) and a visible link. Every sequence step is such a message, because SEQUENCE-001 addresses it To the enrolled contact with internal-only CC. For managed relay mail, the header and link use the same opaque message/recipient capability at the installation's configured `AUTH_ORIGIN`; approval binds the capability and the reviewed opt-out state. Base's existing relay serializer carries both list headers. OUT-013 inherits this installation-origin handler for mailbox sends.",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2606,7 +2739,11 @@
       "text": "The public GET opens a confirmation page without changing contactability or scheduled work. Its plain button posts to the capability; an RFC 8058 POST with `List-Unsubscribe=One-Click` uses that same capability without sign-in. Either POST sets only its bound contact do-not-contact under OUT-012 and RECORD-012 and atomically cancels that contact's scheduled outbound work. Replay is idempotent and a late dispatch cannot revive that work. Neither the capability nor any public response enumerates identities or other recipients; malformed, foreign and erased capabilities disclose no recipient identity and change nothing. Erasure invalidates the capability. Otherwise it has no expiry or automatic rotation. CAN-SPAM requires the opt-out to keep working for at least 30 days after the send; a link that works forever is the honest choice (ct, 20 October 07:15Z). The private archive carries `outbound_opt_out_capabilities`; it does not expire them.",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2615,7 +2752,11 @@
       "text": "**Several external recipients.** A message with opt-out and more than one external recipient (OUT-019) carries no one-click header, because a one-click request cannot say who sent it. Its opt-out link opens one page on the installation origin, with no sign-in, on which the person enters the address at which they received the message. When that address is an external recipient of that message (To, CC or BCC), that one person becomes do-not-contact with basis `opt-out page` and the message cited, and the page confirms it. Any other address is refused without revealing the message's recipients. Nobody else on the message changes.",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2624,7 +2765,11 @@
       "text": "**Unattributed requests.** An opt-out that names a message with several external recipients but not one of them, such as a provider unsubscribe event or spam report without a single recipient address, never sets anyone do-not-contact. It opens one unattributed stop request on that message. The request is shown on each external recipient's contact, on the linked deal and in the sender's Today brief (BRIEF-001), naming the message and the time. Until it is resolved:",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2633,7 +2778,11 @@
       "text": "every external recipient's scheduled messages and sequence enrollments are paused, visibly, with that reason, and not canceled;",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2642,7 +2791,11 @@
       "text": "a new message to any of them is refused at review, naming the request, except a reply to that recipient's own inbound message received after the request, which can still be sent;",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2651,7 +2804,11 @@
       "text": "the sender, and each contact owner who is someone else, is notified once (NOTIFY-001).",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2660,7 +2817,11 @@
       "text": "A user with permission resolves the request by naming the person or people who opted out, who become do-not-contact with the basis `unattributed opt-out` and the resolving user recorded, while everyone else's paused work resumes. Alternatively, the user records that it cannot be determined, which sets every external recipient do-not-contact. The resolution is recorded on the message and in the audit trail with the user and time.",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2669,7 +2830,11 @@
       "text": "**A person's own opt-out.** A reply asking to stop (CAPTURE-005's do-not-contact proposal, OUT-007) or an opt-out through the page applies to that person only. RECORD-012's suppression and OUT-007's stops for the person who opted out are unchanged.",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2678,7 +2843,11 @@
       "text": "Today Settings \u2192 Opt-out links holds the setting for each type, and each change is audited with the user, the old and new values and the time; the page counts the approved unsent messages bound to each state. The installation owner acts for the administrator until TEAM-005. One-to-one email starts off on a new installation; an installation upgraded with users already present keeps one-to-one opt-out on until an administrator changes it, and the page shows that basis (ct, 19 October). Messages approved before the setting existed keep their original unsubscribe group. Through SendGrid, opt-out is the installation's unsubscribe group: SendGrid adds `List-Unsubscribe`, `List-Unsubscribe-Post` and its footer links together, and a message without opt-out carries none of them. A rep's relationship or transactional removal, or addition, marks that draft for review again, and a change of the one-to-one setting does the same for every draft not yet approved (ACTION-005); the approval binds the reviewed state. ct approved the independent single-recipient managed-relay handler on 20 October at 07:15Z. With that approved path implemented and proved, new managed messages that need opt-out carry the installation-origin capability in the visible footer and both list headers, including replies; they do not use the former reply exception to remove opt-out. Approval and dispatch preserve older SendGrid approvals' opt-out-on state when switching to the relay, and approvals predating the setting remain opt-out-on. An explicit opt-out-off approval, including a permitted relationship or transactional removal, stays off. A historical `transport` marking retains the refusal policy; it is never silently treated as an explicit removal. If the managed path cannot carry the approved state, review and dispatch retain \u201cThis relay cannot carry your opt-out link yet (OUT-013)\u201d; refusals remain audited and counted in Settings. The handler no longer depends on OUT-013 mailbox sending shipping first. OUT-013 inherits its mailbox reuse; OUT-019 inherits the several-recipient page and unattributed stop requests; SEQUENCE-001, SEQUENCE-003 and AUTO-001 inherit the stored settings, per-step removal, approval binding and per-person stops before those execution paths ship.",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2687,7 +2856,11 @@
       "text": "**Acceptance:** On the managed relay, turn one-to-one opt-out on and approve a single-recipient message: inspect the reviewed footer and the exact submitted `List-Unsubscribe` URL and `List-Unsubscribe-Post: List-Unsubscribe=One-Click`, all bound to the same capability at `AUTH_ORIGIN`. Change the type setting after approval and verify the approved unsent state and Settings counts remain unchanged. Check a new-installation default, an established-installation upgrade, allowed and forbidden removal, explicit addition, a pre-setting approval, a SendGrid opt-out-on approval after a transport switch, an explicit removed/off approval and a historical `transport` marking; none may silently lose its approved opt-out state or refusal. Open the public link and verify GET changes nothing; use the plain POST button and separately the RFC 8058 POST, replay each, and verify only the bound contact is suppressed and all of that contact's scheduled work is canceled atomically, with a different contact's work unchanged and no late dispatch. Try malformed and foreign capabilities and one invalidated by erasure without recipient disclosure or mutation. Round-trip the private capability table through the archive and retain no-expiry behavior. Inspect review, settings, confirmation, unsubscribed and invalid states at 1440 and 390. Relay-edge byte inspection is not live relay delivery qualification.",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2696,7 +2869,11 @@
       "text": "The following execution paths remain inherited acceptance: With the defaults (one-to-one opt-out off, sequence opt-out on), reply all through Gmail (OUT-013) to a three-person buyer thread and verify that the delivered message has no `List-Unsubscribe` header and no opt-out link; send a sequence step to one of them and verify that it carries `List-Unsubscribe`, `List-Unsubscribe-Post: List-Unsubscribe=One-Click` and the link; remove opt-out from one step as relationship mail and see the review show the marking and the delivered step carry neither. Turn one-to-one opt-out on, see the audit entry, and send a three-recipient message through `mail.sender.v1`: verify that it has no one-click header and one link; one recipient opts out on the page with their own address, and only that contact becomes do-not-contact while the other two can still be emailed and keep their scheduled messages; an address not on the message is refused without listing the recipients. Deliver a signed provider unsubscribe event for that message without a single recipient address: verify that nobody becomes do-not-contact, that every recipient's scheduled message and sequence enrollment pauses with the reason shown, that a new message to one of them is refused naming the request, and that a reply to an inbound message one of them sent after the event can be sent. Resolve the request by naming one person: only they become do-not-contact, the others' paused work resumes, and the resolution is recorded with the user and time.",
       "to": "clause",
       "ids": [
-        "OUT-020"
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
       ]
     },
     {
@@ -2777,7 +2954,9 @@
       "text": "Any user whose role holds the sequence-authoring permission (TEAM-005; by default sales-admin, manager and seller) defines versioned ordered email, wait, call-task, meeting and manual LinkedIn steps, conditions and business-day delays, keeps the sequence private or shares it with a team or the workspace, and can copy a shared one to edit; a manager can lock a shared sequence against edits. Sends draw on each sender's OUT-018 sequence budget and pace. Email steps are addressed To the enrolled contact, and a step may CC named internal colleagues only (OUT-019). Email steps carry opt-out headers and the link while OUT-020's sequence setting is on (the default); the author may remove them from one step as relationship mail where OUT-020 allows it. Enrollment requires no deal: any contact or lead with an email address can be enrolled, and a deal-less enrollment's messages and replies land on the contact and company timelines under OUT-017. Each later email step is set by the author either to reply in the thread of the enrollment's previous sent step (the same subject with `Re:`, and `In-Reply-To`/`References` to that message) or to start a new subject. The review shows which. A threaded step whose earlier step was never sent starts a new thread, and the review says so. A rep reviews enrollment and the fully rendered exact email content for each recipient and step, individually or as one reviewed batch of up to 100 contacts under SEQUENCE-003; all external emails keep OUT-001 approval and revision fences. Call and LinkedIn steps require a human action and recorded completion, with no protected-network scraping or auto-posting. The enrollment view shows current step, owner, due time, history, paused/failed state and remaining approved work; bulk enrollment cannot bypass individual contact permission.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-001"
+        "SEQUENCE-001",
+        "SEQUENCE-004",
+        "SEQUENCE-005"
       ]
     },
     {
@@ -2786,7 +2965,9 @@
       "text": "Before enrollments ship, they must satisfy SEQUENCE-002: an enrollment exits atomically on a genuine reply (including one from an external participant of a step's thread), a meeting booking, a stage change, a won or lost close, an unsubscribe, a permanent bounce or a human stop; reassignment, revoked permission and mailbox disconnect pause it visibly with the reason; and restart, replay or a late job never revives an exited enrollment.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-001"
+        "SEQUENCE-001",
+        "SEQUENCE-004",
+        "SEQUENCE-005"
       ]
     },
     {
@@ -2795,7 +2976,9 @@
       "text": "Before sequence sending ships, it must satisfy OUT-018: each sender's sequence budget (500 a rolling day by default) and pace (3 a minute), at most 75% of the shared transport's rate, one-to-one mail claimed first, round-robin draining across users, and deferrals that name the sequence budget or pace and the time.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-001"
+        "SEQUENCE-001",
+        "SEQUENCE-004",
+        "SEQUENCE-005"
       ]
     },
     {
@@ -2804,7 +2987,9 @@
       "text": "Before sequence sending ships, each recipient's email step must satisfy OUT-014's template/snippet/signature expansion, missing/stale merge-field approval blocks, exact rendered review, immutable rendered-byte snapshot and content-hash approval binding. Later library revisions never rewrite that approved snapshot; changed inputs retain the step's review hold and revision fences.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-001"
+        "SEQUENCE-001",
+        "SEQUENCE-004",
+        "SEQUENCE-005"
       ]
     },
     {
@@ -2813,7 +2998,9 @@
       "text": "Before sequence sending ships, each step must satisfy OUT-020's per-type setting, permitted per-step removal, exact approval binding and installation-origin capability headers/link, with per-person atomic stops and no revival. If its transport cannot carry that approved state, the managed-relay refusal remains applicable.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-001"
+        "SEQUENCE-001",
+        "SEQUENCE-004",
+        "SEQUENCE-005"
       ]
     },
     {
@@ -2822,7 +3009,9 @@
       "text": "Before sequence reports ship, they must carry REPORT-001's enrollment-level sequence reply reports: for each sequence version, step and enrolling rep, the enrollments, sent, delivered, genuine replies, meetings booked and stage/revenue outcomes are counted separately under SEQUENCE-002, an inferred open never counts as success and an automatic reply never counts as a reply, and each figure drills through to the authorized enrollments behind it. REPORT-001's own requirement for sequence reports stays.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-001"
+        "SEQUENCE-001",
+        "SEQUENCE-004",
+        "SEQUENCE-005"
       ]
     },
     {
@@ -2831,7 +3020,9 @@
       "text": "**Acceptance:** As a seller, create and share with the team a five-step email/call/manual-LinkedIn sequence whose second email step is threaded and CCs the account's sales engineer, and see a read-only user refused authoring; enroll eligible contacts with and without deals with exact-content approvals, complete the manual task, advance business time and restart mid-step; verify one action per due step, the second email arriving in the first email's thread with the internal CC, OUT-018 per-user budget enforcement and no unapproved send.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-001"
+        "SEQUENCE-001",
+        "SEQUENCE-004",
+        "SEQUENCE-005"
       ]
     },
     {
@@ -2885,7 +3076,9 @@
       "text": "A rep or SDR with the sequence-enrollment permission (TEAM-005) selects up to 100 contacts or leads from a saved list, search result or report drill-through (RECORD-014), with or without deals (OUT-017), and enrolls them into one sequence version in a single action. Before anything sends, Orbit renders every email step for every selected recipient with current merge data and shows one batch review. It lists each recipient's eligibility (do-not-contact, missing email, already enrolled, owner mismatch, missing variable, permission), with excluded recipients and their reasons. It gives a navigable list of every rendered message, each opening to its exact recipient, subject, body, signature, attachments, tracking state (OUT-016) and send window, and it shows the schedule each step will follow. The rep may remove recipients or edit any message before approving; an edit re-renders only that item.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-003"
+        "SEQUENCE-003",
+        "SEQUENCE-006",
+        "SEQUENCE-007"
       ]
     },
     {
@@ -2894,7 +3087,9 @@
       "text": "One approval of that batch is the OUT-001 approval for every message it lists, bound to the sequence version and a content hash of each rendered message. After approval each due step sends on its own schedule with no further click whenever its re-render at dispatch equals the approved bytes. If merge data, the template, the step content or the recipient's permission changed since approval (OUT-014), only that recipient's step is held as `needs review` with the difference shown, and that enrollment pauses at that step while the rest of the batch continues. Each sender's OUT-018 sequence budget and pace, mailbox limits and the shared-transport rate spread due steps over the next permitted windows in enrollment order, drained fairly across users and never ahead of one-to-one mail, visibly, instead of refusing the batch, silently retrying or merging messages; quiet hours (OUT-008) delay scheduled steps to the next permitted minute.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-003"
+        "SEQUENCE-003",
+        "SEQUENCE-006",
+        "SEQUENCE-007"
       ]
     },
     {
@@ -2903,7 +3098,9 @@
       "text": "Workflow-triggered enrollment (AUTO-001) never sends unreviewed: triggered contacts join their owner's sequence approval queue, grouped per sequence and day, and the owner approves each group as one batch under the same rules. The batch, its approver, every listed message hash and each later hold remain in the enrollment history and audit.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-003"
+        "SEQUENCE-003",
+        "SEQUENCE-006",
+        "SEQUENCE-007"
       ]
     },
     {
@@ -2912,7 +3109,9 @@
       "text": "Before batch enrollment ships, each enrollment in a batch must satisfy SEQUENCE-002's exits, pauses with a reason and no-revival rules on its own, without stopping the rest of the batch.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-003"
+        "SEQUENCE-003",
+        "SEQUENCE-006",
+        "SEQUENCE-007"
       ]
     },
     {
@@ -2921,7 +3120,9 @@
       "text": "Before batch sending ships, it must satisfy OUT-018: each sender's sequence budget (500 a rolling day by default) and pace (3 a minute), at most 75% of the shared transport's rate, one-to-one mail claimed first, round-robin draining across users, and deferrals that name the sequence budget or pace and the time.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-003"
+        "SEQUENCE-003",
+        "SEQUENCE-006",
+        "SEQUENCE-007"
       ]
     },
     {
@@ -2930,7 +3131,9 @@
       "text": "Before batch sending ships, each recipient's email step must satisfy OUT-014's template/snippet/signature expansion, missing/stale merge-field approval blocks, exact rendered review, immutable rendered-byte snapshot and content-hash approval binding. A library revision cannot rewrite an approved batch item; changed inputs hold only that recipient's affected step for review under this clause's rules.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-003"
+        "SEQUENCE-003",
+        "SEQUENCE-006",
+        "SEQUENCE-007"
       ]
     },
     {
@@ -2939,7 +3142,9 @@
       "text": "Before batch sending ships, each recipient's message must satisfy OUT-020's setting, permitted removal, exact approval binding and installation-origin capability headers/link, with per-person atomic stops and no revival. If its transport cannot carry that approved state, the managed-relay refusal remains applicable.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-003"
+        "SEQUENCE-003",
+        "SEQUENCE-006",
+        "SEQUENCE-007"
       ]
     },
     {
@@ -2948,7 +3153,9 @@
       "text": "**Acceptance:** From a saved list of 50 eligible contacts (ten of them on no deal) and 3 ineligible contacts, enroll all of them in a five-step sequence with four email steps in one action; inspect the excluded reasons, open any rendered message, edit one and remove one, then approve once. Advance business time and verify one provider submission per due email step per remaining recipient with no further approval, a per-rep limit of 40 per day deferring the rest visibly to the next window, a merge-field change on one contact holding only that recipient's step for review, and a workflow-triggered contact waiting in the owner's approval queue until its batch is approved.",
       "to": "clause",
       "ids": [
-        "SEQUENCE-003"
+        "SEQUENCE-003",
+        "SEQUENCE-006",
+        "SEQUENCE-007"
       ]
     },
     {
@@ -3002,7 +3209,11 @@
       "text": "An active AUTO-001 workflow changes CRM data with nobody clicking anything, as HubSpot's \"Edit record\" action and Pipedrive's update and create actions do. Its triggers include a record created or changed (including a deal entering a stage or being won), an activity logged (RECORD-010, CAPTURE-010, CALL-001), a form submission (FORM-001) and a schedule.",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3011,7 +3222,11 @@
       "text": "**Record-changing actions.** Each action names its target: the triggering record, or associated records chosen explicitly. These are the primary company, all or the primary associated contacts, contacts holding a named deal role (RECORD-015), the company's or contact's deals filtered by pipeline and stage, or a related custom-object record (RECORD-014). On each target an action can:",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3020,7 +3235,11 @@
       "text": "set a field to a stated value, including picklist fields such as lead status and lifecycle stage, checkboxes, numbers and users;",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3029,7 +3248,11 @@
       "text": "stamp a date or date-time field with the trigger time, the run time, or an offset from either (for example run time plus 14 days, in the workspace timezone under TEAM-003);",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3038,7 +3261,11 @@
       "text": "copy a value from the triggering record, from an associated record or from the triggering form submission (such as UTM fields onto the contact), converting between compatible types as the editor states and refusing incompatible ones when the rule is saved;",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3047,7 +3274,11 @@
       "text": "clear a field, or add to or subtract from a number field;",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3056,7 +3287,11 @@
       "text": "move a deal to a named stage of its pipeline, applying OPP-009 required fields and history; a move into a stage whose required fields are empty fails visibly and never skips them;",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3065,7 +3300,11 @@
       "text": "create an associated deal (in a named pipeline and stage), lead or custom-object record from stated or copied field values, with its owner set by an AUTO-001 owner rule. A run creates each record once: a repeated trigger event, replay or resume finds the record it already created.",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3074,7 +3313,11 @@
       "text": "**What activation authorizes.** Activating a workflow version is the approval for its internal writes. The activation preview and dry run evaluate the version against the records that match it now and those it would have triggered on in the past 30 days. For each record they show every field's current and resulting value, each stage move and each record to be created, counted per action, alongside AUTO-001's external effects. The version records the administrator who activated it and when. Each run then applies that version's internal writes with no per-record proposal. Every write appears on the record's timeline and field history with the workflow, its version, the trigger event and its evidence, and the previous and new values. Reports and API-001 change webhooks give the change source as `workflow`. Editing an active workflow creates a new version that writes nothing until it is previewed and activated. Before a delayed action runs, it re-checks that its version is still active; if not, it stops as \"version replaced\".",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3083,7 +3326,11 @@
       "text": "**What still needs a per-record approval.** An activated version alone never applies:",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3092,7 +3339,11 @@
       "text": "a deal's amount, products, line items or quote values (QUOTE-001), or its forecast category or probability override (FORECAST-001);",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3101,7 +3352,11 @@
       "text": "a deal's close date;",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3110,7 +3365,11 @@
       "text": "moving a deal to won or lost, or reopening one;",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3119,7 +3378,11 @@
       "text": "any field an administrator marks \"approve each workflow change\" in RECORD-014 field settings.",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3128,7 +3391,11 @@
       "text": "For each such change, the run creates one approval item for the record's owner, or for the approver the action names. The item shows the exact current and proposed value and the triggering evidence, and it is guarded by the current value. Accepting applies the change. Declining, or leaving the item for 7 days, closes it visibly, and the run history records the outcome. The rule editor labels these actions \"needs approval\", and the preview counts them. Customer-facing content, including email and sequence enrollment, is always approved under OUT-001 and SEQUENCE-003. A workflow can set a contact to do-not-contact. It never makes anyone contactable (RECORD-012), never changes a consent basis, and never deletes or merges records.",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3137,7 +3404,11 @@
       "text": "**Limits on every write.**",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3146,7 +3417,11 @@
       "text": "Permissions: a workflow writes only the records and fields its activating administrator may edit under TEAM-005, including field-level grants. Saving or activating a rule with an action on a field outside those grants is refused, naming the field. If the activator's grants later shrink or their access is revoked, the next run refuses that action visibly and the workflow shows \"needs re-activation\".",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3155,7 +3430,11 @@
       "text": "Validation: writes pass RECORD-014 type, picklist, required and unique validation. An invalid value fails that action on that record visibly in the run history, with the reason. Each action is atomic per record. A failed action stops the run's later actions on that record and leaves its earlier ones applied, listed and undoable.",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3164,7 +3443,11 @@
       "text": "Current-state guard: a run evaluates its conditions when triggered and again at dispatch against the current record, and a false condition stops it as \"condition no longer true\". Each write is a compare-and-set against the value the run read. If a user, an import or another run changed the target field after the trigger event, that action is skipped as \"changed by <who> at <time>\" and shown in the run history. It is never overwritten blindly.",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3173,7 +3456,11 @@
       "text": "Ordering and loops: workflows triggered by the same event run in the administrator's stated order. A workflow's writes may trigger other workflows up to 5 levels deep per originating event, and never re-trigger the same workflow. A deeper chain stops visibly as a loop. AUTO-001's rate limits, revocation, dead-letter and manual resume apply, with a default of 10,000 record writes per workflow per hour beyond which runs queue visibly.",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3182,7 +3469,11 @@
       "text": "Notifications: field writes notify no one unless the workflow has a notify action; owner changes notify under RECORD-016.",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3191,7 +3482,11 @@
       "text": "**Undo.** A user with workflow permission undoes one run, or every run of a version over a chosen time range. Undo restores each field written by a run only where the field still holds the value the run wrote. It reverses a stage move the same way, recording the reversal in OPP-009 history. It archives a record the run created only if nobody has edited or associated it since. Each skipped item is listed with who changed it and when. Undo is attributed and audited, sends nothing, and never reopens or deletes tasks or messages.",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3200,7 +3495,11 @@
       "text": "**Migration.** MIGRATE-001/002/003 list each source workflow's record-update and record-create actions against these actions. Each is named as mapped, needing approval under this clause, or having no Orbit equivalent. Nothing is activated without an administrator's preview.",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3209,7 +3508,11 @@
       "text": "**Acceptance:** As a sales admin, activate three workflows, each after its preview shows per-record current and resulting values: \"deal created\" sets the primary contact's lead status to \"Open deal\" and the company's lifecycle stage to \"Opportunity\"; \"deal closed won\" sets the company and all its contacts to \"Customer\", stamps \"Became customer\" with the run date and creates an onboarding task; \"meeting logged on a deal in Qualified\" moves the deal to \"Meeting held\". Create a deal, close another won and log a meeting; verify every field value and the stage move are written with no proposal, each with a timeline entry naming the workflow, its version and the trigger, and replay a trigger to see no second write, task or record. Close a deal won whose company lifecycle stage a user edited after the trigger and verify that write is skipped as changed by that user while the contacts and task are updated. Activate a rule that sets a deal amount and verify an approval item waits for the deal owner, with no change until it is accepted. As a manager without the grant to edit a protected field, try to activate a rule writing it and see the refusal naming the field; reduce a sales admin's grant after activation and see the next run refuse that action visibly. Chain two workflows into a loop and see it stop at the depth limit. Undo the closed-won run after a user edited one contact; verify the other values are restored, that contact is listed as skipped and the stage history records the undo. Restart mid-run and resume without a duplicate write.",
       "to": "clause",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -3317,7 +3620,9 @@
       "text": "A manager composes a dashboard from saved REPORT-001 reports and FORECAST-001 forecast views as up to 24 tiles: chart, table, single number or forecast against quota. The tiles sit in a grid that reflows on a phone (MOBILE-001). Dashboard filters apply to every tile that has the field: owner, team, pipeline, a date range in the workspace's US timezone, and any shared report field. A tile that cannot take a filter says so on the tile instead of silently showing unfiltered data.",
       "to": "clause",
       "ids": [
-        "REPORT-002"
+        "REPORT-002",
+        "REPORT-003",
+        "REPORT-004"
       ]
     },
     {
@@ -3326,7 +3631,9 @@
       "text": "A dashboard is private, shared with named users or teams to view or edit, or shared workspace-wide, under TEAM-005. Sharing grants no record access. Each viewer's tiles, totals and drill-through are computed from the records and fields that viewer may see now, labeled `limited to your access`, with no count or sum of hidden records. Each user picks a default dashboard that opens from Reports; an administrator can set a team default that a user can override.",
       "to": "clause",
       "ids": [
-        "REPORT-002"
+        "REPORT-002",
+        "REPORT-003",
+        "REPORT-004"
       ]
     },
     {
@@ -3335,7 +3642,9 @@
       "text": "A dashboard exports as PDF, with CSV per tile. It can be scheduled for email delivery daily, weekly or monthly in the workspace timezone, and to an authorized Slack channel (INTEGRATE-005). Each email recipient's copy is rendered under that recipient's own access at send time, and delivery attempts show queued, sent, failed or uncertain states as under NOTIFY-003. Tile definitions, filters, shares and schedules are versioned and portable (DATA-003). A deleted or inaccessible source report shows as unavailable on its tile.",
       "to": "clause",
       "ids": [
-        "REPORT-002"
+        "REPORT-002",
+        "REPORT-003",
+        "REPORT-004"
       ]
     },
     {
@@ -3344,7 +3653,9 @@
       "text": "INTEGRATE-005 carries only a generic dashboard-ready notice and authenticated link. No PDF, CSV, image, count or sum goes to a Slack channel; the signed-in viewer renders the dashboard under their current access.",
       "to": "clause",
       "ids": [
-        "REPORT-002"
+        "REPORT-002",
+        "REPORT-003",
+        "REPORT-004"
       ]
     },
     {
@@ -3353,7 +3664,9 @@
       "text": "REPORT-002 inherits REPORT-001's dashboard composition: each report tile is a saved, versioned REPORT-001 definition that keeps its disclosed period, timezone, definitions, source fields, currency, missing data and freshness, opens REPORT-001's drill-through under the viewer's access, and shows late-arriving evidence beside a saved result.",
       "to": "clause",
       "ids": [
-        "REPORT-002"
+        "REPORT-002",
+        "REPORT-003",
+        "REPORT-004"
       ]
     },
     {
@@ -3362,7 +3675,9 @@
       "text": "Today the installation owner administers dashboard sharing and schedules. Full operators read every workspace record; collaborators read only their current grants. TEAM-005 inherits REPORT-002's Team filter, team sharing, administrator team default with a personal override, and restricted-seller dashboards computed only from permitted records and fields, with no hidden count. RECORD-016 inherits the Owner filter for contacts, leads, companies and custom objects; today it applies to deal owners, activity authors and task assignees, with a not-applied note where no owner exists. NOTIFY-003 inherits the queued, sent, failed and uncertain per-recipient delivery model, retaining these versioned schedules and the existing Slack transport's failure and uncertain holds.",
       "to": "clause",
       "ids": [
-        "REPORT-002"
+        "REPORT-002",
+        "REPORT-003",
+        "REPORT-004"
       ]
     },
     {
@@ -3371,7 +3686,9 @@
       "text": "Current delivery gap: the managed mail relay cannot carry PDF/CSV attachments and Orbit has no system notification sender for active operators or collaborators. Email stays paused with no outbound. Weekly recipient-specific email copies, next-send email revocation, queued/sent/failed/uncertain email attempts and email retry/uncertain behavior remain unproven. Slack is a separate destination under ct's 22 October 22:40Z ruling: the installation owner may explicitly enable a saved schedule version for a channel that chose Dashboard ready, regardless of its email recipients. Every new schedule version, restore, reconnect or destination safety suspension leaves Slack paused; it never auto-resumes or replays historical notices. The Worker-native PDF writer supports WinAnsi text and explicitly refuses characters outside that repertoire rather than corrupting an export.",
       "to": "clause",
       "ids": [
-        "REPORT-002"
+        "REPORT-002",
+        "REPORT-003",
+        "REPORT-004"
       ]
     },
     {
@@ -3380,7 +3697,9 @@
       "text": "**Acceptance:** INTEGRATE-005 carries only a generic dashboard-ready notice and authenticated link. No PDF, CSV, image, count or sum goes to a Slack channel; the signed-in viewer renders the dashboard under their current access. Exercise this inherited behavior through its public door.  As a manager, build a dashboard with at least four tiles: open pipeline by stage across two pipelines, won/lost reasons this quarter, activities by rep, and forecast against quota. Apply owner, team and date-range filters, share it with the sales team and set it as the team default. Sign in as a restricted rep and verify that the same dashboard opens by default and shows only totals that reconcile with that rep's permitted drill-through, with no hidden count. Schedule a weekly email to the manager and the rep and verify each received copy matches its recipient's access. Delete one source report and see an unavailable tile.",
       "to": "clause",
       "ids": [
-        "REPORT-002"
+        "REPORT-002",
+        "REPORT-003",
+        "REPORT-004"
       ]
     },
     {
@@ -3533,7 +3852,10 @@
       "text": "The installation owner connects Slack in Settings and chooses bot-member, workspace-internal channels and stage movement, won-deal, due-work and internal-handoff event types. The bot token and app signing secret use Capture's installation-local encrypted credential custody: entered once, verified with `auth.test`, never shown again, exported or logged. TEAM-005 inherits real administrator roles and team-scoped channel and audience rules; until then the installation owner administers Slack.",
       "to": "clause",
       "ids": [
-        "INTEGRATE-005"
+        "INTEGRATE-005",
+        "INTEGRATE-009",
+        "INTEGRATE-010",
+        "INTEGRATE-011"
       ]
     },
     {
@@ -3542,7 +3864,10 @@
       "text": "The fixed outbound allowlist is event kind, deal or company display name, stage from and to, owner display name, due date, due-work task type/priority and an authenticated Orbit link. The link contains no token and requires Orbit sign-in. No entry, note, call, meeting, task-note or handoff text, free-text task title, person/lead name, contact email or phone, amount, score, file or AI output enters a channel message. Restricted records and their account-linked people get a generic event notice and authenticated link, with name, owner, stage and date withheld visibly; shared/external channels and channels the bot has not joined are refused at setup and checked again before delivery.",
       "to": "clause",
       "ids": [
-        "INTEGRATE-005"
+        "INTEGRATE-005",
+        "INTEGRATE-009",
+        "INTEGRATE-010",
+        "INTEGRATE-011"
       ]
     },
     {
@@ -3551,7 +3876,10 @@
       "text": "The owner-chosen Dashboard ready event has a separate fixed allowlist: event kind plus an authenticated Orbit link only, with no dashboard name, figure, count, PDF, CSV or image, and no dashboard action. It uses the same pre-post channel check, rate limits, uncertainty holds and TEAM-005 audience rules.",
       "to": "clause",
       "ids": [
-        "INTEGRATE-005"
+        "INTEGRATE-005",
+        "INTEGRATE-009",
+        "INTEGRATE-010",
+        "INTEGRATE-011"
       ]
     },
     {
@@ -3560,7 +3888,10 @@
       "text": "An audited explicit administrator mapping binds (Slack team, enterprise if present, app, user ID) to an active full Orbit operator, never inferred from email. The first accepted bot notice binds the verified bot app ID. Mappings are visible to their operator, dead after removal/access change/disconnect, and require fresh administrator confirmation after restore. Routes also restore paused, and reconnect replays no old notice or action. Users acknowledge a notice or create an attributed internal task. Incoming actions require the installation's app signing secret and a five-minute timestamp window, the connected Slack team/app/enterprise and user.team_id, configured channel and exact bot-authored message Orbit sent, and an Orbit-issued single-use action ID bound to notice, event, route, record and action kind. Current native access is checked on each action; consumption commits atomically with the task and its Slack-sourced timeline. HTTP acknowledgment is immediate and generic outcomes use response_url without retaining its capability. Unmapped or revoked mappings, foreign teams/channels/messages, replays and removed operators change nothing and receive an explicit refusal. No Slack action approves, edits or sends customer mail.",
       "to": "clause",
       "ids": [
-        "INTEGRATE-005"
+        "INTEGRATE-005",
+        "INTEGRATE-009",
+        "INTEGRATE-010",
+        "INTEGRATE-011"
       ]
     },
     {
@@ -3569,7 +3900,10 @@
       "text": "One source event has one durable notice per channel. HTTP 429 respects Retry-After with visible notice/channel status; unaccepted failures remain failed until an administrator retries. Timeouts, connection loss after submission and interrupted claims become uncertain, held for a human to inspect and confirm an observed message timestamp or keep held, never blindly resent. Shared, pending-shared, org-shared, frozen, archived and foreign-context channels are refused. A conversations.info check immediately precedes every post; share/unshare, archive and bot-departure events suspend routing until administrator re-confirmation. Signed safety events deduplicate by event_id. Disconnect and `invalid_auth`, `account_inactive` or `token_revoked` show unresolved setup in Settings and Connected products and visibly pause notices; manual in-app sales work remains available.",
       "to": "clause",
       "ids": [
-        "INTEGRATE-005"
+        "INTEGRATE-005",
+        "INTEGRATE-009",
+        "INTEGRATE-010",
+        "INTEGRATE-011"
       ]
     },
     {
@@ -3578,7 +3912,10 @@
       "text": "Along BOUNDARY-001's walk, Slack carries notices for existing signed bookings, logged calls/meetings, accepted internal handoffs, stage moves and the won deal. INTEGRATE-008 inherits the Buoy-handoff notice; QUOTE-001 inherits the signed-quote notice; INTEGRATE-003 inherits the billing notice, each proving its own notice when that step exists. The full buyer journey remains the acceptance of whichever named BOUNDARY-001 clause ships last. Channel routing, event choices, explicit user mappings and delivery/action history round-trip through Records and local archives without credentials; restoring needs fresh credentials. Erasing an underlying contact, company or deal redacts stored notice content and issues tracked chat.delete requests with visible outcomes. Restored pending deletions need fresh administrator confirmation; copies already held cannot be recalled.",
       "to": "clause",
       "ids": [
-        "INTEGRATE-005"
+        "INTEGRATE-005",
+        "INTEGRATE-009",
+        "INTEGRATE-010",
+        "INTEGRATE-011"
       ]
     },
     {
@@ -3587,7 +3924,10 @@
       "text": "**Acceptance:** In Settings connect a bot and generated test-installation signing secret, select eligible channels and event types including Dashboard ready, and refuse an external/nonmember channel. Route a stage event, overdue task and explicitly enabled dashboard-ready schedule, replay them without another message, and inspect only the fixed allowed fields and a token-free link requiring Orbit sign-in. Deliver a generic private-account notice with all identifying details withheld. Suspend a route on a mid-route share/pending-share or bot departure; unsharing never resumes it automatically. Refuse foreign app/enterprise/user.team_id requests and a mapped operator who lost record access. Changing a Slack timestamp cannot reuse a spent Orbit action ID. Exercise a 429 then success, an unaccepted failure, a timeout held uncertain, unsigned and stale requests, unmapped/foreign/revoked/replayed/removed-operator actions, an attributed acknowledgment and internal task, and a revoked workspace shown as unresolved setup with manual work unaffected. Export/import configuration, mappings and delivery history without token/signing secret; erase the underlying contact and deal and inspect redacted stored content plus tracked provider deletions. Confirm restored routes and mappings are inactive until fresh administrator confirmation, and reconnect replays nothing. Refuse mail approval and never accept a proposed handoff from Slack. Inspect Settings, notice status and unresolved setup at 1440 and 390. TEAM-005 repeats this with real administrator roles and team-scoped channel/audience rules, including the dashboard-ready notice; until then the installation owner chooses its channel and enables its saved schedule. On BOUNDARY-001's walk inspect notices for the existing booking, call/meeting, internal handoff and won deal. INTEGRATE-008 inherits the Buoy-handoff notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice, each inspecting allowed fields and authenticated links when it ships. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.",
       "to": "clause",
       "ids": [
-        "INTEGRATE-005"
+        "INTEGRATE-005",
+        "INTEGRATE-009",
+        "INTEGRATE-010",
+        "INTEGRATE-011"
       ]
     },
     {
@@ -3686,7 +4026,9 @@
       "text": "Publish a versioned REST API for permitted contact, company, deal, custom-object, association, note, activity, file (RECORD-018), task, pipeline, report and sequence operations. Admin-issued scoped credentials, pagination, filters, schema errors, rate-limit headers, idempotent writes and optimistic concurrency match native permissions and erasure rules. Signed versioned outgoing webhooks cover changes and sales outcomes, expose event identity, delivery history, retry/dead-letter controls and safe manual replay. Incoming owned-system events keep SIGNAL-009; generic API access never grants exact-message approval or restores expired authority.",
       "to": "clause",
       "ids": [
-        "API-001"
+        "API-001",
+        "API-002",
+        "API-003"
       ]
     },
     {
@@ -3695,7 +4037,9 @@
       "text": "An INTEGRATE-005 Slack mapping is neither an API nor a delegation credential. It grants no outreach authority, exact-message approval, sequence execution, record sharing or stage/owner/amount changes.",
       "to": "clause",
       "ids": [
-        "API-001"
+        "API-001",
+        "API-002",
+        "API-003"
       ]
     },
     {
@@ -3704,7 +4048,9 @@
       "text": "Approved engineering policy: administrators may issue separately named, expiring and immediately revocable API credentials, bound to one installation, an accountable principal, explicit resource operations, permitted records and fields, and a maximum 90-day lifetime. Show a secret once, retain only its verifier and exclude secrets from exports and diagnostics. Recheck current principal and record authority on every request and durable write; credentials cannot approve exact messages, execute customer sends or restore expired approval. Provide versioned pagination, filters, schema errors, rate-limit headers, idempotency and optimistic concurrency across the original resource surface. Administrators may register HTTPS outbound-webhook endpoints after ownership challenge. Reject embedded credentials, non-HTTPS endpoints, local and private destinations, metadata services and redirects; revalidate resolved destinations on each attempt to prevent DNS rebinding. Send only explicitly subscribed, currently permitted fields. Sign the exact body with a per-subscription rotating secret, timestamp and stable event identity; support receiver replay protection, bounded retries, dead-letter history and audited manual replay with the same event identity. Restore subscriptions paused and require fresh authority. Provider security and legal qualification remain explicit gaps.",
       "to": "clause",
       "ids": [
-        "API-001"
+        "API-001",
+        "API-002",
+        "API-003"
       ]
     },
     {
@@ -3713,7 +4059,9 @@
       "text": "The standalone credential resource door is `/api/rest/v1/`; credential administration remains a native-session operation. Explicit deal creation adds only the newly created deal to that credential\u2019s permitted records, within the existing bounded record scope.",
       "to": "clause",
       "ids": [
-        "API-001"
+        "API-001",
+        "API-002",
+        "API-003"
       ]
     },
     {
@@ -3722,7 +4070,9 @@
       "text": "**Acceptance:** An INTEGRATE-005 Slack mapping is neither an API nor a delegation credential. It grants no outreach authority, exact-message approval, sequence execution, record sharing or stage/owner/amount changes. Exercise this inherited behavior through its public door.  Create/update/list a deal with a scoped API credential, test pagination, stale writes, revoked scope and denied fields, subscribe an endpoint and verify signed replay-safe change events and visible failed delivery; erase the contact and verify API/export absence.",
       "to": "clause",
       "ids": [
-        "API-001"
+        "API-001",
+        "API-002",
+        "API-003"
       ]
     },
     {
@@ -3731,7 +4081,9 @@
       "text": "Assert credential expiry, rotation, revocation during a write, field and record denial, every original resource operation, retry idempotency, endpoint ownership, private-address and DNS-rebinding refusal, redirect refusal, signature rotation, restore pause and erasure during queued delivery; Slack mappings and delegation grants never become general API credentials.",
       "to": "clause",
       "ids": [
-        "API-001"
+        "API-001",
+        "API-002",
+        "API-003"
       ]
     },
     {
@@ -4523,7 +4875,9 @@
       "text": "OUT-016: the complete original tracking journey, token and retention controls, classification and notification behavior, authorized provider acceptance and legal qualification remain unproved. Mailbox delivery remains OUT-013, sequence execution SEQUENCE-001 and SEQUENCE-003, additional notification channels NOTIFY-003 and multi-recipient behavior OUT-019.",
       "to": "gap",
       "ids": [
-        "OUT-016"
+        "OUT-016",
+        "OUT-021",
+        "OUT-022"
       ]
     },
     {
@@ -4533,7 +4887,8 @@
       "text": "Reviewed manual composition from contacts, companies and closed deals uses one explicitly selected recipient, an optional current open-deal link and separate closed-deal history; sending creates or reopens no deal. Exact rendered approval, active/contactable identity, shared sending budgets, clocks, scheduling, reconciliation and contact-wide stops apply to the additive mail store. One accepted activity links reviewed content and provider identity to the contact, primary company and linked/history deal; verified native message headers thread one genuine reply, while missing headers are held. An unlinked accepted message opens one sender-owned contact promise, due in workspace working days and shown in Today when overdue; human replies, booked meetings, later acceptance and explicit sender completion close it. Automatic replies do not; permanent bounce suppresses and cancels contact schedules. Sender/owner reply notices and contact outcomes are native in-app. Full operators retain current authority and collaborators get no new mail door. Record AI drafting from contacts and explicitly selected company contacts uses the assistance preview, exact unchanged evidence and configured instructions through ai.provider.v1, validated citations and length, durable editable unsent drafts and ai_calls accounting; unavailable providers fail visibly. Existing held-reply review attaches genuine or automatic replies to the contact and primary company or dismisses them once with operator attribution; automatic replies and dismissal leave promises open. Removal review includes open contact promises, explicit receiving full operator or unassignment, stale-set refusal and atomic handover with one attributed contact/company entry; original sender attribution remains, receiving overdue promises appear in Today, and unassigned promises remain on their contact. Remaining gaps: additional To/CC/BCC and reply-all inherit OUT-019, mailbox sending and live replies OUT-013, leads RECORD-014, provider-thread capture CAPTURE-010, sequence steps SEQUENCE-001/003 and tracking choice OUT-016.",
       "to": "gap",
       "ids": [
-        "OUT-017"
+        "OUT-017",
+        "OUT-023"
       ]
     },
     {
@@ -4550,7 +4905,9 @@
       "text": "No implementation found. Drafts and outbound messages hold a single `recipient_email` matched to one `contact_id`, and the dispatcher in `src/core/features/outreach/service.ts` joins on it; there are no CC or BCC lists, internal or one-off recipients, reply-all pre-fill or per-recipient landing.",
       "to": "gap",
       "ids": [
-        "OUT-019"
+        "OUT-019",
+        "OUT-027",
+        "OUT-028"
       ]
     },
     {
@@ -4584,7 +4941,9 @@
       "text": "Reviewed single scheduled messages exist; multi-step definitions, rep authoring and sharing, deal-less enrollments, step threading, internal CC and manual step execution are missing.",
       "to": "gap",
       "ids": [
-        "SEQUENCE-001"
+        "SEQUENCE-001",
+        "SEQUENCE-004",
+        "SEQUENCE-005"
       ]
     },
     {
@@ -4601,7 +4960,9 @@
       "text": "No implementation found. Reviewed single scheduled messages exist under OUT-009; sequences, batch rendering and batch approval do not.",
       "to": "gap",
       "ids": [
-        "SEQUENCE-003"
+        "SEQUENCE-003",
+        "SEQUENCE-006",
+        "SEQUENCE-007"
       ]
     },
     {
@@ -4621,7 +4982,11 @@
       "text": "No implementation found. No workflow engine writes records: the only writes outside a person's own edit are capture proposals accepted one at a time in `src/core/features/capture/proposals.ts`, whose compare-and-set fence on the current value is the guard this clause extends to unattended workflow writes.",
       "to": "gap",
       "ids": [
-        "AUTO-002"
+        "AUTO-002",
+        "AUTO-003",
+        "AUTO-004",
+        "AUTO-005",
+        "AUTO-006"
       ]
     },
     {
@@ -4658,7 +5023,9 @@
       "text": "Nine-tile composition, viewer-fenced figures/drill rows, Owner/Pipeline/US date/Region filters, named/workspace sharing, personal defaults, unavailable/error/no-value/late evidence, PDF and tile CSV, versioned custody, paused restore and erasure are implemented. TEAM-005 inherits team filter/sharing/default/restricted sellers; RECORD-016 later owner kinds; NOTIFY-003 the later delivery model. Owner-chosen Dashboard ready routing and separately audited owner enablement send one generic Slack notice and authenticated link per occurrence/channel; replay, rate limits, failure/retry, held uncertainty and non-resuming safety suspension are proven. Email remains paused: the relay rejects attachments and no system notification sender exists; weekly recipient-specific email, next-send email revocation, email attempts and email retry/uncertain behavior remain gaps. PDF rejects text outside WinAnsi. Live forecasts apply the workspace calendar day and shared-field bindings; saved forecasts keep their original UTC definition and measured result. Every composed response rechecks its original dashboard, saved sources and permitted source rows after the final metadata read. The sd-orbit-c24 UI round judged every dashboard screen and state against the picked Tile board (PICK-DASHBOARD.md, SPEC-DASHBOARD.md) at 1440/390 on its own demo and fixed each difference: operator and collaborator boards, the drill drawer and its full-screen phone form, Share, Schedule, Edit tiles, empty, loading/refetch, unavailable, saved result with late evidence, error, no value and Reports' Dashboards section, with no serious, critical or moderate axe finding (the heading-order findings are fixed) and no text under 13px, one-sided rounded border, nested field border, icon-only control without a tooltip, horizontal overflow or phone target under 44px. uip's UI-pass gate on the candidate is pending. Real team roles, audiences/defaults and restricted sellers remain TEAM-005; daily/weekly/monthly recipient-specific email and its revocation, failure, uncertainty and no-resend provider proof remain blocked on the system sender and attachment transport. No real provider delivery or release acceptance is claimed.",
       "to": "gap",
       "ids": [
-        "REPORT-002"
+        "REPORT-002",
+        "REPORT-003",
+        "REPORT-004"
       ]
     },
     {
@@ -4772,7 +5139,9 @@
       "text": "API-001: the remaining original versioned resource surface and complete acceptance journey, outbound subscription security, delivery and replay controls, their custody and erasure, provider security and legal qualification remain unproved. The standalone scoped deal credential journey is asserted; current inbound-source authority remains SIGNAL-009; narrow application delegation remains DELEGATE-001; later resource behavior remains with its named owning clauses.",
       "to": "gap",
       "ids": [
-        "API-001"
+        "API-001",
+        "API-002",
+        "API-003"
       ]
     },
     {
