@@ -16,6 +16,7 @@ export interface WorkflowContext {
  /** Immutable, already authorized form values, when the trigger is a form. */
  formValues?:Record<string,unknown>;
  /** One shared map per preview or run plan, preserving sequential action values. */
+ previewHistorical?:boolean;
  triggerSnapshots?:Map<string,Record<string,unknown>>;
  plannedValues?:Map<string,Record<string,unknown>>;
 }
