@@ -1,3 +1,4 @@
+import {createId} from '../../src/core/shared/ids';
 import {scheduleReview} from '../support/sanity-schedule-review';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
@@ -14,11 +15,11 @@ test('OUT-007 OUT-008 OUT-009 BASE-DATA-002 reviewed schedules respect recipient
  let release!:()=>void;
  const submitted=new Promise<void>(resolve=>{release=resolve;});
  try{
-  const deps=createDependencies(db),actor='request-timer-operator';
+  const deps=createDependencies(db),actor=createId(),stage=createId();
   await deps.auth.ensureOperator({id:actor,email:'owner@request-timer.test',displayName:'Avery Patel'});
   await deps.workspace.ensureWorkspace({name:'Northstar Studio',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
-  await deps.workspace.ensurePipelineStage({id:'request-timer-stage',name:'Proposal',position:1});
-  const opportunity=await new WorkbenchRepository(db).createOpportunity({title:'Northstar renewal',companyName:'Northstar Studio',contactName:'Maya Chen',email:'maya@northstar.example',stageId:'request-timer-stage',valueCents:240000},actor);
+  await deps.workspace.ensurePipelineStage({id:stage,name:'Proposal',position:1});
+  const opportunity=await new WorkbenchRepository(db).createOpportunity({title:'Northstar renewal',companyName:'Northstar Studio',contactName:'Maya Chen',email:'maya@northstar.example',stageId:stage,valueCents:240000},actor);
   const contact=await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(opportunity.id).first<{contact_id:string}>();
   let calls=0,start!:()=>void;
   const started=new Promise<void>(resolve=>{start=resolve;});
@@ -33,7 +34,7 @@ test('OUT-007 OUT-008 OUT-009 BASE-DATA-002 reviewed schedules respect recipient
   await request(`opportunities/${opportunity.id}/messages`);await Promise.all(background.splice(0));
   assert.equal((await schedulerStatus(db)).lastRunAt,null);assert.equal(calls,0);
   // Another customer's awaiting-response deadline is processed by the same kick.
-  const followup=await new WorkbenchRepository(db).createOpportunity({title:'Harbor follow-up',companyName:'Harbor Labs',contactName:'Sam Lee',email:'sam@harbor.example',stageId:'request-timer-stage',valueCents:90000},actor);
+  const followup=await new WorkbenchRepository(db).createOpportunity({title:'Harbor follow-up',companyName:'Harbor Labs',contactName:'Sam Lee',email:'sam@harbor.example',stageId:stage,valueCents:90000},actor);
   await db.prepare("UPDATE opportunities SET queue_state='next',next_due_at='2030-01-07T10:02:00.000Z' WHERE id=?").bind(followup.id).run();
   context.mock.timers.tick(120001);
   await request(`opportunities/${opportunity.id}/messages`);await Promise.race([started,Promise.all(background).then(()=>{throw new Error('Due request completed without submitting the scheduled message');})]);
@@ -48,6 +49,6 @@ test('OUT-007 OUT-008 OUT-009 BASE-DATA-002 reviewed schedules respect recipient
   assert.equal(await db.prepare('SELECT queue_state FROM opportunities WHERE id=?').bind(followup.id).first('queue_state'),'now');
   assert.equal(await db.prepare("SELECT COUNT(*) FROM timeline_entry_records r JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE r.record_id=? AND t.kind='queue.now'").bind(followup.id).first('COUNT(*)'),1);
   await Promise.all(background);
-  await scheduleReview(context,db,actor,session.token,'request-timer-stage',mail,()=>calls);
+  await scheduleReview(context,db,actor,session.token,stage,mail,()=>calls);
  }finally{release();await Promise.allSettled(background);context.mock.timers.reset();await platform.dispose();}
 });

@@ -13,7 +13,7 @@ export async function installationAdmission(db:D1Database){
   const page=await ask(bindings,new Request(origin+'/signin'));assert.equal(page!.status,200);assert.doesNotMatch(await page!.text(),/<input/,'no credential field without working sign-in');
  }
  const installed={...base,AUTH_LOCAL:'false',SESSION_SECRET:TEST_SESSION_SECRET,OWNER_EMAIL:'owner@orbit.test'};
- const response=await ask(installed,new Request(origin+'/auth/magic-link',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({email:'owner@orbit.test'})}));
+ const response=await ask(installed,new Request(origin+'/auth/magic-link',{method:'POST',headers:{Origin:origin,'CF-Connecting-IP':'192.0.2.10','Content-Type':'application/json'},body:JSON.stringify({email:'owner@orbit.test'})}));
  assert.equal(response!.status,503);assert.deepEqual(await response!.json(),{error:'mail_unavailable'});
  assert.equal((await ask({...installed,AUTH_ORIGIN:'http://invalid.test'},new Request('http://invalid.test/signin')))!.status,503);
 }
