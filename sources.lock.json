@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "6b87f5eee386f088fc00739874c0aaeb8897d9955a4164813998df6a041e126d",
+      "sha256": "3bd92d4d35cf2919a61dd383c75bf9fc98590828da4aa9ab89fa63ea789c67fe",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "69d324a0eddb7f72a48c5bdc687dda7a2d70aa9268d64892cf6c8bba62ef72bb",
+      "sha256": "02a08df2930dfeb03aa1447f46364cc1b0b47ab08dcf78732588d1f5013dd9bd",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "d53b97fef287a4d3af0f00e6ce4e185ef21dba1d979a7ad5ed417c8d4f7b39ef",
+      "sha256": "17c704c73cf1b309efb7ed36f0fb3c613ea03d6271646c89a80727349c8d326c",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -4015,7 +4015,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "b37b78c8094a6a50e36318d2db80b0b21b2e64b55f2813357ed384de16ff4ab2",
+      "sha256": "5b580ec4a69b90b151bc14331c7c7e115effbfc9bb76740d406ed871586eecf7",
       "executable": false
     },
     "scripts/verification-reuse.sh": {
@@ -8587,7 +8587,11 @@
       "executable": false
     },
     "tests/core/launch-suppression.test.ts": {
-      "sha256": "fa6de9a270c07af306718ab0f67a601dfa5558bb5ce49609ff352a75950ef775",
+      "sha256": "7de10a618ca585a98b0dc7cb8601b4feab589a9a5c379a403a92ef87a2ab521d",
+      "executable": false
+    },
+    "tests/core/mailchimp.test.ts": {
+      "sha256": "09bdaf495020561b9fffb71c475a2c3e3d5d0ac08a88aa3c1258c4079e9642b5",
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
@@ -9387,7 +9391,7 @@
       "executable": false
     },
     "tests/support/isolated-database.ts": {
-      "sha256": "0d47536bb74ef0d4da962d50a3b4d818fa0680262440924a4977b4693241a8fd",
+      "sha256": "85c9fc12f9256b549fa1486081410a9b5fd17405d3214b3b2ee6525cc0b43580",
       "executable": false
     },
     "tests/support/issue-operator-session.ts": {
