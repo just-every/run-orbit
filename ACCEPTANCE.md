@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 105 | 45 | 27 | 177 |
+| Core | 11 | 135 | 31 | 177 |
 | Agent surface | 0 | 0 | 13 | 13 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 105 | 45 | 40 | 190 |
+| Full target | 11 | 135 | 44 | 190 |
 
 Judged from the code and tests at commit `b300e460a20da7f09122dc4a9157499430c4f8d5` (27 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -21,7 +21,7 @@ Judged from the code and tests at commit `b300e460a20da7f09122dc4a9157499430c4f8
 
 #### TEAM-001 — Equal operators
 
-Core · published · **done** · Cites BASE-ROLE-001, BASE-ACCESS-004
+Core · published · **partial** · Cites BASE-ROLE-001, BASE-ACCESS-004
 
 **Requirement.** Every active full operator has equal access to the whole workspace: every record, field and action. An invited collaborator reaches only the records, fields and actions shared with them, and the server refuses the rest; a hidden control never stands in for that refusal. Restricted sellers, managers and analysts with role grants are TEAM-005.
 
@@ -29,11 +29,11 @@ Core · published · **done** · Cites BASE-ROLE-001, BASE-ACCESS-004
 1. Sign in as two full operators and an invited collaborator; confirm both operators reach every record and action, and that the collaborator is refused records, fields and actions outside the share through UI and APIs.
 
 **Evidence.** `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`; `newtests/t096/browser-journeys.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: two full operators reach every record; full operators reach every action; UI refusal for every corresponding door. Asserted: collaborator record refusal; collaborator field refusal; collaborator action refusal.
 
 #### TEAM-002 — Management
 
-Core · published · **done** · Cites BASE-ROLE-001, BASE-ACCESS-004
+Core · published · **partial** · Cites BASE-ROLE-001, BASE-ACCESS-004
 
 **Requirement.** Any active full operator invites and removes operators in Settings. An invitation sends no email: the invited person requests their own sign-in link. Removing an operator revokes their sessions at once, and later sign-in requests for their address send no link. The setup owner can be removed only by themselves, and only while another active full operator exists. Invitations and removals are audited. Roles, teams and access review are TEAM-005; policy `operator.management.v1` may narrow who invites or removes without bypassing server-side checks.
 
@@ -41,11 +41,11 @@ Core · published · **done** · Cites BASE-ROLE-001, BASE-ACCESS-004
 1. Invite an operator, sign in as them, remove them, and attempt a previously issued session and a new sign-in request; try to remove the setup owner as another operator and as the only operator.
 
 **Evidence.** `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`; `src/core/features/settings/repository.ts`; `src/core/features/settings/removal-handover.ts`; `tests/core/today-brief.test.ts`; `tests/core/local-owner.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: invited person signs in through their own link. Asserted: invitation emits no unsolicited email; removed session is refused; removed operator receives no new link; another operator cannot remove the owner; sole owner cannot remove themselves; self-removal with another active operator ends the session.
 
 #### TEAM-003 — One workspace
 
-Core · published · **done** · Cites BASE-ROLE-001, BASE-ACCESS-004
+Core · published · **partial** · Cites BASE-ROLE-001, BASE-ACCESS-004
 
 **Requirement.** A deployment holds one business workspace. Its name, US operating timezone, USD default currency, working hours, stale and awaiting-response intervals, signal sources and free-mail domains are configured in Settings. Multiple sales pipelines are configured under OPP-009 inside that workspace; a second isolated deployment is a separate installation, not an extra pipeline.
 
@@ -53,11 +53,11 @@ Core · published · **done** · Cites BASE-ROLE-001, BASE-ACCESS-004
 1. Complete first-run setup with US timezone and USD, change working hours and stale intervals, reload, and observe the persisted settings across records.
 
 **Evidence.** `tests/core/records-search.test.ts`; `src/core/features/pipelines/`; `tests/evidence/contract/TEAM-003/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: persisted US timezone; persisted USD default; persisted working hours; persisted stale intervals; reload reads the settings across records. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### TEAM-004 — Removal handover
 
-Core · published · **done** · Cites BASE-ROLE-001, BASE-ACCESS-004
+Core · published · **partial** · Cites BASE-ROLE-001, BASE-ACCESS-004
 
 **Requirement.** Removing an operator revokes their sessions, cancels their scheduled messages, and hands over or unassigns their open opportunities, open sales tasks and delegated handoffs. The removal review lists each of those sets, the remover chooses a receiving full operator or explicit unassignment for each, and the removal is refused until every set has a recorded choice or if the reviewed work changed meanwhile; revocation, cancellation and handover then happen together. Each handed-over opportunity gets one attributed owner-change timeline entry. Their notes, drafts, sent messages and timeline entries remain and stay attributed to them. Handing over owned contacts, leads, companies and custom-object records is RECORD-016, and active sequence enrollments are SEQUENCE-001.
 
@@ -65,13 +65,13 @@ Core · published · **done** · Cites BASE-ROLE-001, BASE-ACCESS-004
 1. Remove an operator who owns an open opportunity, an open sales task, a delegated handoff and a scheduled message; choose a receiver for the opportunity and explicit unassignment for the rest, and verify revoked sessions, cancellation, the recorded choice per set, the attributed owner-change entry and attributed historical notes.
 
 **Evidence.** `src/core/features/settings/removal-handover.ts`; `src/core/features/tasks/handover.ts`; `tests/core/today-brief.test.ts`; `tests/evidence/contract/TEAM-004/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: delegated handoff unassignment; scheduled-message cancellation; choice recorded for every set; one attributed owner-change entry. Asserted: reviewed task handover; reviewed opportunity handover; revoked session; historical note retains its actor.
 
 ### Customer records
 
 #### RECORD-001 — Core records
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** Operators can create, edit, and delete contacts, companies, and opportunities. A contact requires a name or an email address and may also hold a phone number, job title, and timezone; a company requires a name and may hold one primary domain; an opportunity requires a title and holds a pipeline stage, a value in the workspace currency, zero or one owner, an expected close date, at most one company, and any number of contacts. Each entity listed in the declared custom-field entities also holds custom fields. Contact, lead, company and custom-object owners, independent of opportunity owners, are defined in RECORD-016.
 
@@ -79,11 +79,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 1. Through authenticated Records, create and edit a company, contact and USD opportunity with custom fields; reload and read back the associations and values.
 
 **Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: contact create/read through authenticated Records; contact edits persist; company create/read through authenticated Records; company edits persist; USD opportunity create/edit; custom-field values read back; associations read back. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### RECORD-002 — Associations
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** A contact has at most one primary company and can have further explicit company relationships under RECORD-015, and can belong to any number of opportunities. An opportunity with contacts names one primary as its default outreach recipient; a deal without a contact is never recommended an email follow-up. Changing an association moves no old timeline entry.
 
@@ -91,11 +91,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 1. Associate two contacts and a company with a deal, choose the primary recipient, change the associations, and confirm historical timeline entries stay put.
 
 **Evidence.** `src/core/features/relationships/`; `src/core/features/records/repository.ts`; `tests/core/records-search.test.ts`; `tests/core/records-merge-review.test.ts`; `tests/evidence/contract/RECORD-002/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: two contact associations; company association; primary recipient choice; association change; historical timeline remains unchanged. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### RECORD-003 — Identity keys
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** A contact's key is its email address lowercased with surrounding whitespace removed; a company's key is its primary domain lowercased with a leading `www.` removed. A domain on the configured free-mail list is never a company key. Creating or changing a record to a key another record already holds returns 409 with that record's ID and writes nothing. A record with no key is created and edited normally, and signals never link to it automatically. Orbit never merges records by name similarity, fuzzy match, or score. The default is the rules in this clause.
 
@@ -103,11 +103,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 1. Create case/whitespace email and domain collisions through Records; require a 409 naming the existing identity and no extra row; exercise free-mail and keyless records.
 
 **Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: case and whitespace contact collision; domain collision; conflict names existing identity; no extra row after either conflict; free-mail keys excluded; keyless record create/edit. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### RECORD-004 — Duplicate merge
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
 
 **Requirement.** Merging two contacts or two companies requires an operator to choose the surviving record and the value of every conflicting field. The request is bound to both reviewed record states; a changed record refuses the merge without modifying either record, requiring a new review. Contactability is not a reviewed choice: a do-not-contact stop that lands after review is inherited by the merge. The merge moves associations and timeline entries once, retires the other record's key as an alias so later signals carrying it link to the survivor, creates no signal, recommendation, or outreach, and records the retired ID in the audit trail.
 
@@ -115,11 +115,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 1. Review two duplicates, choose field values and survivor, then change one reviewed record and require refusal; review again and merge once, inheriting a concurrent stop.
 
 **Evidence.** `src/core/features/records/merge-review.ts`; `tests/core/records-merge-review.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: concurrent stop inherited. Asserted: reviewed survivor and field value; stale review returns refusal; stale review preserves both records; merge occurs once; retired id and choices audited.
 
 #### RECORD-005 — Timeline
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** A record's timeline lists its signals, stage and owner changes, notes, logged calls and meetings, recommendations, drafts, outbound attempts, replies, and merges, most recent occurred time first with ties broken by ID. Every entry shows its occurred time, its recorded time, and the operator, source, or feature that created it.
 
@@ -127,7 +127,7 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 1. Open a record containing mail, meetings, notes, changes and a merge; inspect occurred/recorded times, source and actor, including out-of-order events.
 
 **Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: mail entry; meeting entry; note entry; stage/owner change entry; merge entry; occurred and recorded times; source and actor; out-of-order history. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### RECORD-006 — Search and views
 
@@ -143,7 +143,7 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 
 #### RECORD-007 — Ownership
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** An opportunity has zero or one owner. Any operator can assign, reassign or unassign it; each change appears on its timeline as an attributed owner change and leaves its score unchanged. The default is an opportunity an operator creates is unassigned. An opportunity created from a published form's enquiry belongs to the operator who published the form. Owners of contacts, leads, companies and custom-object records, and notifications to a deal's new owner, are RECORD-016.
 
@@ -151,11 +151,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 1. Assign, reassign and unassign an opportunity through its native control; reload and inspect its attributed timeline without changing score.
 
 **Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`; `tests/core/records-search.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: assign owner; reassign owner; unassign owner; owner persists after reload; attributed timeline entry; score unchanged. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### RECORD-008 — Import
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
 
 **Requirement.** Full native operators move contacts, companies, deals and notes through explicit CSV mappings and a mandatory saved dry run. New contacts are held by default unless mapped explicit subscribed permission or an explicit per-import operator contactability attestation permits contact. Existing do-not-contact stops always win. All suppression and remaining absent-consent holds publish before customer creation or sending; malformed suppression rows block application. Source IDs and explicit associations are retained with inert provenance. Existing native identities are associated without replacing their fields. Every rejected row names its file, row and reason and creates no customer record. Unchanged re-imports reuse native records, associations and notes. Base import-kit records originals, current-session authority, atomic progress and conflict-preserving undo; undo removes or restores only owned, unchanged effects and keeps native edits, independent suppression and their dependency closure. No import approves outreach or grants operator access. Contact-owner and company-owner columns are mapped under RECORD-016.
 
@@ -163,11 +163,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 1. Move mapped HubSpot/Pipedrive CSV contacts, companies, deals, notes and suppression through saved preview and Apply; replay, change a source row, interrupt and undo while preserving native edits and stops.
 
 **Evidence.** `src/core/features/imports/contracts.ts`; `tests/core/crm-import.test.ts`; `tests/core/crm-import-erasure.test.ts`; `tests/e2e/imports.spec.mjs`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: changed source row conflict; interrupted apply resumes without losing progress. Asserted: HubSpot and Pipedrive saved dry run has no writes; contacts and associations applied; deal values retained; notes preserved once; reimport has no duplicate records; undo preserves native edit; independent stop survives undo.
 
 #### RECORD-009 — Duplicate candidates
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** Orbit lists contacts sharing a name across companies, including contacts with no company, and companies sharing a name, as duplicate candidates; names are compared lowercased with runs of whitespace collapsed. A candidate is a review item only: nothing is merged, altered, or hidden until an operator completes RECORD-004.
 
@@ -175,11 +175,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 1. Create same-name contacts across companies and keyless records; review candidates without a mutation, then complete a chosen merge explicitly.
 
 **Evidence.** `src/core/features/records/import-merge.ts`; `tests/core/records-merge-review.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: keyless candidate listed. Asserted: same-name contacts across companies listed; same-name companies listed; review changes no records; chosen merge retires exactly one record.
 
 #### RECORD-010 — Manual entries
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** An operator can add a note to any record and log a call or meeting with an occurred time, duration, and attending contacts. A manual entry is attributed to its author, editable and deletable by any operator, never sent to a customer, and never contributes to a score. RECORD-017 adds @mentions of colleagues in these entries, and RECORD-018 attaches files to them.
 
@@ -187,11 +187,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 1. Log, edit and delete a note, call and meeting on a customer record; verify time, duration and attendees, and verify no score or external message changed.
 
 **Evidence.** `src/core/features/records/manual.ts`; `tests/core/today-brief.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: note create/edit/delete; call create/edit/delete; meeting create/edit/delete; occurred time retained; duration retained; attendees retained; score unchanged; no external message. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### RECORD-011 — Related records
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** A company page lists its contacts and its opportunities with each opportunity's stage, owner, and value, plus the total value of its open opportunities. A contact page lists their opportunities. Both reflect an association change on the next load.
 
@@ -199,11 +199,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 1. Open a company and contact, move a deal association, reload and compare linked deals, owner/stage and open-value total with the underlying records.
 
 **Evidence.** `src/core/features/records/repository.ts`; `src/core/features/operator/ui/records-page.tsx`; `tests/core/records-search.test.ts`; `tests/evidence/contract/RECORD-011/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: company linked deals; contact linked deals; owner and stage shown; open-value total reconciles; reassociation reflected on next load. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### RECORD-012 — Contactability
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
 
 **Requirement.** A contact is contactable or do-not-contact. An operator can set do-not-contact at any time, and an unsubscribe event that identifies the person (OUT-012, OUT-020) or a permanent bounce also sets it, for that person only. An opt-out that cannot name one recipient of a multi-recipient message pauses those recipients' scheduled work rather than suppressing them (OUT-020). No operation sends customer email to a do-not-contact contact, the state is shown wherever the contact appears, and only an operator can clear it. A contact an operator creates by hand on a record page or through the Records API starts contactable unless the operator chooses do-not-contact or its address matches a retained suppression proof, in which case it starts do-not-contact; other doors state their own default (RECORD-008, CAPTURE-005, CAPTURE-012, FORM-001, OUT-019).
 
@@ -212,11 +212,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 2. Create a contact by hand and see it start contactable; recreate an erased contact's address and see it start do-not-contact.
 
 **Evidence.** `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts`; `tests/core/outreach-limits.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: permanent-bounce stop; immediate send refuses stopped contact; manual contact starts contactable. Asserted: manual stop stays stopped; unsubscribe stop; scheduled work cancelled; explicit current-state clear read back; normalized recreation starts do-not-contact.
 
 #### RECORD-013 — Deletion
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** Deleting a company detaches its contacts and opportunities and deletes neither. Deleting an opportunity deletes its recommendations, drafts, and unsent scheduled messages, and leaves its contacts, its company, and their entries for messages already sent. Deleting a contact follows DATA-002. Each deletion is confirmed before it runs.
 
@@ -224,13 +224,13 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 1. Confirm each record deletion; company removal detaches dependents, deal removal preserves sent history, and contact removal performs the erasure journey.
 
 **Evidence.** `src/core/features/records/data.ts`; `tests/core/records-complete.test.ts`; `tests/core/contact-erasure.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: deletion confirmation enforced; company deletion detaches contacts; company deletion detaches opportunities. Asserted: deal deletion preserves sent history; contact deletion erases mail and linked signals.
 
 ### Signals
 
 #### SIGNAL-001 — Ingestion
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** A valid event from a configured source, carrying that source's signature, becomes one normalized signal within 10 seconds. The signal keeps its source, source event ID, type, subject, occurred time, received time, payload hash, and linking basis, and is never edited afterwards.
 
@@ -238,11 +238,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS
 1. POST a signed configured-source event through its ingestion route and read one attributed signal and linked timeline within the bound.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: attributed configured source; linked timeline entry; ingestion within ten seconds. Asserted: one stored signal.
 
 #### SIGNAL-002 — Signal types
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** Orbit accepts form submissions; email sent, opened, replied, bounced, and unsubscribed events; meeting viewed, booked, completed, and canceled events; page views; chats; content downloads; and firmographic changes. A source can add a type namespaced to itself, which changes no existing type. An event whose type is neither standard nor namespaced is rejected with 400.
 
@@ -250,11 +250,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS
 1. Submit every standard type, a source-namespaced type and an unknown type; accept the first two classes and reject the unknown without writes.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: every standard type stored/read back; source-namespaced type stored/read back; unknown type leaves no writes. Asserted: unknown type refused.
 
 #### SIGNAL-003 — Idempotency
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** Repeated or concurrent delivery of one `(source, source event ID)` produces one signal and one set of downstream evaluations. Reusing that identity with a different payload hash is rejected and recorded as an error on that source.
 
@@ -262,11 +262,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS
 1. Deliver identical events concurrently and after restart, then change the payload under the same source identity; retain one effect and a visible conflict.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: replay after restart. Asserted: concurrent delivery returns one identity; one persisted effect; changed payload returns conflict.
 
 #### SIGNAL-004 — Linking
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** A signal links first by an Orbit record ID the source supplies, then by RECORD-003. A uniquely linked signal appears once on that record's timeline. A signal with no unique match is held in the unlinked queue, where it changes no score; an operator linking it later appends it to the chosen record's timeline exactly once and triggers one evaluation.
 
@@ -274,11 +274,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS
 1. Ingest exact, ambiguous and unknown identities; verify linked and held queues, then manually link the held event once and inspect evaluation.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: ambiguous identity held; exactly one evaluation after link. Asserted: exact identity affects the intended deal; unknown identity held; one manual link allowed; linked timeline retains event time.
 
 #### SIGNAL-005 — Event time
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** A late or out-of-order event keeps its occurred time, appears in that position on the timeline, and triggers a fresh evaluation. It never overwrites a record field that a later-occurring event wrote.
 
@@ -286,11 +286,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS
 1. Deliver older evidence after newer evidence and inspect chronological history and fresh evaluation without overwriting later record state.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: history sorted around newer evidence; fresh evaluation after late event; later-written fields not overwritten. Asserted: older event retains occurred time.
 
 #### SIGNAL-006 — Evidence confidence
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** Every signal carries one confidence: observed, when the customer acted deliberately (form submission, reply, booking, meeting, download, chat), or inferred, when a tool reported activity (email open, page view). An inferred signal alone cannot create an opportunity, produce a high band, or satisfy ACTION-001's evidence requirement.
 
@@ -298,11 +298,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS
 1. Compare open/page-view inference with observed reply/booking evidence; inferred activity alone cannot create a deal, high band or evidence-backed action.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: inferred activity cannot create any new deal. Asserted: observed reply/booking classification; inferred activity cannot raise high band; inferred activity creates no current recommendation.
 
 #### SIGNAL-007 — No tracking
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** Orbit serves no tracking script, pixel, or cookie, and performs no fingerprinting or cross-site collection. A page-view, chat, or download signal is accepted only when its source supplies the visitor identity it already holds and the basis for holding it; without that basis the event is held unlinked under SIGNAL-004 and never becomes contact history. The one exception is OUT-016's disclosed, opt-in, per-message open and link-click tracking of Orbit-sent customer mail, which adds nothing to Orbit's public pages, its app or any other site.
 
@@ -310,11 +310,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS
 1. Inspect public assets/network and submit identity-free page/chat events; no Orbit tracker runs and unsupported identity stays outside customer history.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: no tracking script/pixel/cookie in public assets/network; identity-free chat held; unsupported identity absent from customer history. Asserted: identity-free page view held.
 
 #### SIGNAL-008 — Ingestion failure
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** A missing or invalid signature returns 401, a request naming a source this deployment has not configured returns 403, and a payload over `seed.json → limits.signalPayloadBytes` returns 413; none of them writes anything. A persistence failure returns 503 and writes no partial signal, timeline entry, or evaluation, so the source can safely replay the same event identity. Each source shows its last accepted event, its last error, and its rejected-event count in settings.
 
@@ -322,11 +322,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS
 1. POST invalid signatures, unknown sources, oversized input and injected persistence failure; verify status, no partial writes, replay safety and source diagnostics.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: unknown source refused; all downstream effects rolled back. Asserted: bad signature refused; oversized input refused; persistence failure leaves no signal; replay safety; source rejection diagnostic.
 
 #### SIGNAL-009 — Signed sources
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** Supersedes BASE-ACCESS-004 for the paths the signed signal door and the signed mail-event door only: a request there is authorized by a signature from a source or mail provider configured in this deployment (or, at a source’s the source’s automation door endpoint only, its current private secret in an HTTPS Authorization Bearer header) instead of an operator session, and may write only signals, delivery states, and their timeline entries. The separately scoped application-delegation boundary below is the only additional authorization exception.
 
@@ -334,13 +334,13 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS
 1. Exercise signed callbacks and HTTPS source-scoped automation; refuse invalid, disabled and rotated authority while retaining native session and ownership checks.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: signed provider callback; HTTPS source-scoped automation; disabled authority refused; rotated authority refused; native session checks retained; native ownership checks retained. Asserted: invalid authority refused.
 
 ### Mail and calendar capture
 
 #### CAPTURE-001 — File capture
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
 
 **Requirement.** An operator adds `.eml` files, an mbox or `.ics` calendar files on the Capture page. Each message or calendar event becomes one signal with the same columns, confidence and linking rules as SIGNAL-001 to SIGNAL-006, and keeps its original headers, body and non-inline attachments (RECORD-018) as the evidence the signal points to. Replay identity is the Message-ID, or the event UID with its SEQUENCE and what happened (booked, completed or canceled): adding the same item again changes nothing, and a changed copy with the same identity is refused and recorded on the capture source under SIGNAL-003. A calendar event keeps its original start and end times; a missing identity, a missing date or an unknown time zone is reported, never guessed.
 
@@ -348,7 +348,7 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRE
 1. Upload mail and calendar files on Capture, replay and conflict them, then inspect original evidence and explicit invalid-date/identity/timezone errors.
 
 **Evidence.** `src/core/features/capture/intake.ts`; `src/core/features/capture/proposals.ts`; `tests/core/capture-intake.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: invalid-identity error; invalid-timezone error. Asserted: mail and calendar files captured; replay has no duplicate effect; changed content conflict; original evidence headers and body; invalid-date error.
 
 #### CAPTURE-002 — Known participants only
 
@@ -364,7 +364,7 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRE
 
 #### CAPTURE-003 — What capture applies at once
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
 
 **Requirement.** A reply from the recipient of an Orbit send that carries that send's message headers attaches once to its opportunity under OUT-004. A delivery report for an Orbit send to that recipient records the bounce, and a permanent one sets do-not-contact under RECORD-012. A captured reply or booked meeting from a known contact cancels that contact's scheduled messages and marks their unsent drafts stale under OUT-007 and ACTION-005 in the same commit, while the proposals from the same message wait for review. An automatic reply stops nothing.
 
@@ -372,7 +372,7 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRE
 1. Capture a threaded reply, booked meeting, permanent bounce and automatic reply; inspect atomic linking/stale/cancellation effects and verify automatic reply stops nothing.
 
 **Evidence.** `src/core/features/capture/intake.ts`; `src/core/features/capture/proposals.ts`; `tests/core/capture-intake.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: booked meeting cancels scheduled work; drafts staled atomically; automatic reply stops no scheduled work. Asserted: threaded reply linked; permanent bounce stops contact.
 
 #### CAPTURE-004 — Reviewed proposals
 
@@ -388,7 +388,7 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRE
 
 #### CAPTURE-005 — Human boundary
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
 
 **Requirement.** Capture never creates a draft, approves or starts a message, or makes a contact contactable. A contact created from a proposal is do-not-contact until an operator clears it under RECORD-012; the person accepting a CAPTURE-012 new-prospect proposal makes that choice explicitly in the same review, with the basis it records, and an unsubscribe request in a captured message is a do-not-contact proposal. Capture endpoints accept only a full native operator's session: a source signature, a delegation credential or an invited collaborator is refused, and the signed paths of SIGNAL-009 cannot write into a capture source. Mail delivered to an operator-created Orbit address (CAPTURE-008) is the only intake without a session; its authority is that address's private tag, and it writes only into that address's source.
 
@@ -396,11 +396,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRE
 1. Attempt capture with native, collaborator, source and delegation authority; only permitted native/address intake succeeds, and a proposed new contact stays blocked.
 
 **Evidence.** `src/core/features/capture/providers/oauth.ts`; `tests/core/capture-providers.test.ts`; `tests/core/capture-boundaries.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: native intake works; delegation credential refused; address-only intake works; proposed new contact stays blocked. Asserted: collaborator intake refused; source signature refused.
 
 #### CAPTURE-006 — Capture sources (capture.source.v1)
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
 
 **Requirement.** A source declares the mail folders or labels and the calendars it may read, keeps its cursor exactly as its provider gave it (a Gmail history ID or a Microsoft Graph delta link, for example), and shows its state, last success, last error, items captured, items not stored and proposals waiting. A crash before a page's cursor is stored re-reads that page without duplicating anything. A revoked grant stops intake and shows its error until the source is reconnected; a provider outage records its error and leaves records, queues and manual work unchanged. Disconnecting stops intake at once, deletes the stored credential and keeps captured evidence, shown as coming from a disconnected source. The file import is the first adapter and has no cursor or credential.
 
@@ -408,11 +408,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRE
 1. Connect each Google/Microsoft read adapter, choose folders/calendars, page and crash before cursor commit; resume without duplicates, revoke, reconnect and disconnect with visible errors.
 
 **Evidence.** `src/core/features/capture/providers/service.ts`; `tests/core/capture-providers.test.ts`; `tests/core/capture-connector.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: Google adapter read; Microsoft adapter read; selected folders/calendars. Asserted: interruption before cursor commit; resumed cursor and deduplication; revoke halts reads and preserves records; reconnect restores capture; disconnect removes credential; visible error reason.
 
 #### CAPTURE-007 — Captured data
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
 
 **Requirement.** Captured evidence, including its attachments (RECORD-018), proposals and source state are part of every export and restore under DATA-001; source credentials never are, so a restored provider source must be reconnected. Erasing a contact erases the captured evidence and proposals that carry them under DATA-002. The audit trail keeps counts and anonymous keyed replay proofs with erasure times, without addresses, original item identifiers or content, so later intake cannot recreate erased originals. Private matching contexts and proofs travel in archives; restoring an owner's historical archive retains DATA-001's existing behavior.
 
@@ -420,11 +420,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRE
 1. Export/restore captured evidence and proposals, verify no source credential travels, erase a contact and replay intake to prove erased originals stay fenced.
 
 **Evidence.** `src/core/features/capture/privacy.ts`; `tests/core/capture-data.test.ts`; `tests/core/capture-upgrade.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: contact evidence erased; replayed erased originals remain absent. Asserted: captured originals exported; proposals restored equivalently; source credentials absent.
 
 #### CAPTURE-008 — Orbit address
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2 · Register R-6
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2 · Register R-6
 
 **Requirement.** When the installation names a receiving mailbox (the configured receiving mailbox, reached through Cloudflare Email Routing or signed SendGrid Inbound Parse), an operator can create a private Orbit address on the Capture page with no provider console: the mailbox with a random tag, kept sealed like a credential and never in archives. Only mail whose envelope names that exact tagged address is read, so a BCC copy, a forwarded message and automatic forwarding all count, and anything else is refused without storing. Each accepted message follows CAPTURE-001 to CAPTURE-004 exactly as an imported `.eml` file, and a forwarded message counts as coming from the sender it names. A forwarding confirmation from Gmail or Google Workspace is shown to the operator with its code and link instead of being stored as evidence. Replacing the address stops the old one at once and keeps everything captured; a message larger than 10 MB is counted as not stored rather than bounced.
 
@@ -432,11 +432,11 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRE
 1. Create and rotate a tagged Orbit address, forward/BCC mail and a Gmail confirmation; accept exact envelope tags only and count oversized mail without retaining it.
 
 **Evidence.** `tests/core/capture-no-console.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: oversized mail counted; oversized content not retained. Asserted: private tagged address created; tag rotation differs; exact envelope tag accepted; wrong envelope tag stores no signal; forwarded/BCC mail captured; Gmail confirmation read back.
 
 #### CAPTURE-009 — Calendar link
 
-Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
+Core · published · **partial** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
 
 **Requirement.** An operator can add a calendar by the private iCal address its own calendar offers (Google, Outlook or iCloud), with no provider console. Orbit checks the link returns a calendar before saving it, keeps it sealed like a credential, reads it only with GET, and refreshes it about every 15 minutes. Each event inside the last 180 days or the next year is one calendar item under CAPTURE-001 to CAPTURE-004; an unchanged calendar is not read again event by event. A link that stops working (refused, missing or no longer a calendar) stops that source and shows its error under CAPTURE-006 until the calendar is added again.
 
@@ -444,13 +444,13 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRE
 1. Add a private ICS link, advance the refresh clock, change/cancel an event, then break the link; inspect dedupe, preserved times and the halted-source reason.
 
 **Evidence.** `tests/core/capture-no-console.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: calendar link validated; clock advancement refreshes; event changes deduplicate; event cancellation retained; original event times retained. Asserted: broken link halts with reason.
 
 ### Opportunities and priority
 
 #### OPP-001 — Lifecycle
 
-Core · published · **done** · Cites BASE-INPUT-001
+Core · published · **partial** · Cites BASE-INPUT-001
 
 **Requirement.** An opportunity is open, won, or lost. Closing it as won or lost records the operator, the time, and a reason, and removes it from NOW and NEXT. Later signals append to its timeline and never reopen it; only an operator can reopen it, which returns it to open without changing its stage or owner.
 
@@ -458,11 +458,11 @@ Core · published · **done** · Cites BASE-INPUT-001
 1. Close a deal as won and lost with reasons, ingest later evidence, and explicitly reopen; inspect history and queue membership at every step.
 
 **Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: won close retains reason; lost close retains reason; later evidence never silently reopens; explicit reopen restores correct queue; history records every lifecycle transition. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OPP-002 — Independent state
 
-Core · published · **done** · Cites BASE-INPUT-001
+Core · published · **partial** · Cites BASE-INPUT-001
 
 **Requirement.** Stage, owner, score, band, and queue state are independent fields. A score or band change never changes stage, owner, or won/lost state, and a stage change never changes a score.
 
@@ -470,11 +470,11 @@ Core · published · **done** · Cites BASE-INPUT-001
 1. Change stage and owner and ingest scoring evidence; verify lifecycle, queue, stage, owner and score remain independently represented.
 
 **Evidence.** `src/core/features/records/repository.ts`; `tests/e2e/operator.spec.mjs`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: stage/owner changes preserve independent fields. Asserted: lifecycle independently visible; stage independently visible; owner independently visible; score independently visible; band independently visible; queue independently visible.
 
 #### OPP-003 — Evaluation
 
-Core · published · **done** · Cites BASE-INPUT-001
+Core · published · **partial** · Cites BASE-INPUT-001
 
 **Requirement.** A linked signal whose type carries a non-zero weight in the scoring policy, or a change to an open opportunity's stage, expected close date, value, owner, or associations, evaluates that opportunity within 30 seconds. The result records a 0–100 score, a low, medium, or high band, the evaluation time, the policy version, and each contributing signal's contribution. A closed opportunity is not evaluated. The default is each contributing signal's configured weight decays linearly to zero over the 30 days after its occurred time, the sum is clamped to 0–100, and 0–39 is low, 40–69 is medium, 70–100 is high.
 
@@ -482,11 +482,11 @@ Core · published · **done** · Cites BASE-INPUT-001
 1. Ingest weighted signals and edit an open opportunity; inspect computed score, band, contributions and policy version, including decay and closed-deal exclusion.
 
 **Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`; `src/core/features/workbench/policies.ts`; `src/core/features/records/repository.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: band; contribution values; policy version; decay; closed-deal exclusion. Asserted: computed score after signal.
 
 #### OPP-004 — Explainability
 
-Core · published · **done** · Cites BASE-INPUT-001
+Core · published · **partial** · Cites BASE-INPUT-001
 
 **Requirement.** The opportunity view shows every signal the current score used, by ID, with its source, occurred time, confidence, and positive or negative contribution, and shows the reason for the current recommendation beside them.
 
@@ -494,7 +494,7 @@ Core · published · **done** · Cites BASE-INPUT-001
 1. Open a scored deal and follow every contribution to its source evidence and current action reason.
 
 **Evidence.** `src/core/features/opportunities/repository.ts`; `tests/e2e/operator.spec.mjs`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: source evidence link. Asserted: every contribution shown; contribution signal type; contribution value; contribution source; current recommendation reason.
 
 #### OPP-005 — Evaluation failure
 
@@ -510,7 +510,7 @@ Core · published · **done** · Cites BASE-INPUT-001
 
 #### OPP-006 — NOW ordering
 
-Core · published · **done** · Cites BASE-INPUT-001
+Core · published · **partial** · Cites BASE-INPUT-001
 
 **Requirement.** NOW lists the open opportunities that OPP-007 placed there, ordered by score descending, then by the occurred time of their most recent contributing signal descending, then by ID. Operators can filter it by owner, stage, and band. The default is the ordering in this clause, and every factor it uses is shown in the opportunity view.
 
@@ -518,11 +518,11 @@ Core · published · **done** · Cites BASE-INPUT-001
 1. Create tied and untied NOW opportunities, filter by rep/stage/band and verify deterministic persisted ordering.
 
 **Evidence.** `src/core/features/opportunities/repository.ts`; `tests/e2e/operator.spec.mjs`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: tied NOW order; rep filter; stage filter; band filter; ordering persists after reload. Asserted: untied NOW order.
 
 #### OPP-007 — Queue entry
 
-Core · published · **done** · Cites BASE-INPUT-001
+Core · published · **partial** · Cites BASE-INPUT-001
 
 **Requirement.** An open opportunity enters NOW when its band rises, a customer form submission, reply or delivery problem arrives, a scheduled message cannot be sent, its expected close date passes, its last timeline entry becomes older than the stale interval, or an operator puts it there. It is in NEXT while it waits for a scheduled send or for a customer response inside the awaiting-response interval, and in neither when no action is pending. The stale interval defaults to 14 days and the awaiting-response interval to 5 working days, counted Monday to Friday in the workspace timezone. Every entry, move, and removal records its reason and actor on the timeline.
 
@@ -530,11 +530,11 @@ Core · published · **done** · Cites BASE-INPUT-001
 1. Advance close/stale/awaiting clocks and deliver a form, reply, booking and send failure; inspect NOW/NEXT reasons and one timeline transition per event.
 
 **Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: close clock; stale clock; awaiting-response clock; form NOW reason; reply NOW reason; booking NOW reason; one transition per triggering event. Asserted: failed-send NOW reason.
 
 #### OPP-008 — Manual completion
 
-Core · published · **done** · Cites BASE-INPUT-001
+Core · published · **partial** · Cites BASE-INPUT-001
 
 **Requirement.** An operator can complete or skip the current recommended action without sending anything, with an optional note; the outcome, note, and operator appear on the timeline. The default is evaluate once, keep the opportunity in NOW if that produces a new recommendation, and otherwise remove it from NOW and NEXT.
 
@@ -542,11 +542,11 @@ Core · published · **done** · Cites BASE-INPUT-001
 1. Complete or skip the current action without sending; inspect the recorded outcome and only a genuinely new recommendation.
 
 **Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: skip retains historical recommendation; no message sent. Asserted: manual completion changes queue; only new recommendation gets a new identity.
 
 #### OPP-009 — Pipeline stages
 
-Core · published · **done** · Cites BASE-INPUT-001
+Core · published · **partial** · Cites BASE-INPUT-001
 
 **Requirement.** Operators configure multiple named pipelines with ordered stages, stage probabilities, required fields and stage-specific stale intervals. Deals retain their pipeline, stage and movement history; permitted users move a deal within or between pipelines with explicit destination mapping. Stage moves record previous stage, actor and time without silently changing lifecycle or score; a move by an AUTO-002 workflow applies the same required fields and records the workflow, its version and the trigger as actor. An occupied stage or pipeline cannot be deleted until its deals have been explicitly moved. Pipeline boards and list views expose the same records and filters.
 
@@ -554,13 +554,13 @@ Core · published · **done** · Cites BASE-INPUT-001
 1. Create two pipelines with different ordered stages, move deals between stages and pipelines, and refuse deletion of an occupied stage; preserve move history and independent lifecycle.
 
 **Evidence.** `migrations/core/0039_sales_pipelines.sql`; `src/core/features/pipelines/`; `tests/core/records-search.test.ts`; `tests/evidence/contract/OPP-009/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: two pipelines with distinct stages; moves between stages; moves between pipelines; occupied stage cannot be deleted; stage move history preserved; lifecycle independent. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 ### Recommendations and drafts
 
 #### ACTION-001 — Current recommendation
 
-Core · published · **done** · Cites BASE-ROLE-001
+Core · published · **partial** · Cites BASE-ROLE-001
 
 **Requirement.** An open opportunity has at most one current recommended action, which is either an email follow-up or a manual action. It names the action, cites at least one observed signal by ID, and records the policy or model version that produced it. Its written explanation is generated under AI-001 and is absent when AI-003 applies.
 
@@ -568,11 +568,11 @@ Core · published · **done** · Cites BASE-ROLE-001
 1. Read an open deal recommendation with observed evidence and version; disable AI and retain the named action/evidence without an invented explanation.
 
 **Evidence.** `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: current action evidence; current action version; named action remains with AI disabled; no invented explanation. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### ACTION-002 — Replacement
 
-Core · published · **done** · Cites BASE-ROLE-001
+Core · published · **partial** · Cites BASE-ROLE-001
 
 **Requirement.** A new contributing signal, a changed opportunity, a completed or skipped action, or an operator request replaces the current recommendation. The replaced one stays on the timeline marked superseded and can no longer be drafted from, sent, or completed.
 
@@ -580,11 +580,11 @@ Core · published · **done** · Cites BASE-ROLE-001
 1. Supersede an action by new evidence or an operator change; the old action remains historical and cannot be drafted, sent or completed.
 
 **Evidence.** `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`; `src/core/features/workbench/action-repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: new evidence supersedes old recommendation; operator change supersedes recommendation; old action stays historical; old action cannot draft; old action cannot send; old action cannot complete. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### ACTION-003 — Draft on request
 
-Core · published · **done** · Cites BASE-ROLE-001
+Core · published · **partial** · Cites BASE-ROLE-001
 
 **Requirement.** An operator can request a one-to-one email draft for the current recommendation. Generation reads the opportunity, the primary or operator-selected contact, that contact's company, the cited signals, the messages already exchanged with that contact, and the configured instructions, and sends nothing. The default is at most 150 words, and no fact, price, discount, or commitment that a cited record or signal field does not carry. OUT-017 offers the same draft request from a contact, lead or company record, with no recommendation or open opportunity, under the same preview and policy.
 
@@ -592,11 +592,11 @@ Core · published · **done** · Cites BASE-ROLE-001
 1. Preview and request a draft from current customer evidence; inspect the unsent result for cited facts and configured instructions.
 
 **Evidence.** `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: draft facts cite current evidence; configured instructions honored. Asserted: request preview matches generated input; draft saved; no outbound message created.
 
 #### ACTION-004 — Durable draft
 
-Core · published · **done** · Cites BASE-ROLE-001
+Core · published · **partial** · Cites BASE-ROLE-001
 
 **Requirement.** Recipient, subject, and body are visible and editable (the recipient being OUT-019's To, CC and BCC lists), and the draft is stored with its author, source recommendation, created time, and last edit time, and is readable after signing out and back in.
 
@@ -604,11 +604,11 @@ Core · published · **done** · Cites BASE-ROLE-001
 1. Edit recipient/subject/body, sign out, return and read the saved draft with its original source and edit attribution.
 
 **Evidence.** `src/core/features/drafts/service.ts`; `tests/e2e/operator.spec.mjs`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: recipient and subject survive sign-out/sign-in. Asserted: recipient saved; subject saved; body saved; source recommendation retained; author metadata retained; body survives new session.
 
 #### ACTION-005 — Stale draft
 
-Core · published · **done** · Cites BASE-ROLE-001
+Core · published · **partial** · Cites BASE-ROLE-001
 
 **Requirement.** A reply, meeting, unsubscribe, do-not-contact, permanent bounce, changed recipient, changed opportunity, or replaced recommendation marks a draft stale. A stale draft is shown as stale, and sending it returns 409 and writes no outbound message until an operator opens it, sees what changed, and confirms.
 
@@ -616,13 +616,13 @@ Core · published · **done** · Cites BASE-ROLE-001
 1. Change the customer/deal or deliver a stop event after drafting; refuse sending until the operator sees and explicitly reviews current differences.
 
 **Evidence.** `src/core/features/drafts/service.ts`; `tests/e2e/stale-review.spec.mjs`; `tests/core/capture-boundaries.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: customer/deal mutation stales draft; stale send refused; current differences shown before new review. Asserted: reply stop stales draft.
 
 ### One-to-one outreach
 
 #### OUT-001 — Exact-content customer sending
 
-Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** A person’s send binds the exact saved recipients, subject, body, attachments and message settings, and scheduled dispatch uses that unchanged snapshot. Signals, scores, recommendations and generated text are evidence, never authority. An agent’s customer-message call carries external; the company’s policy decides whether it runs, enters review, waits for approval or is off. Under the held company policy a signed-in person approves the exact saved revision before it dispatches. A later content, recipient, permission or evidence change invalidates that approval. Batch and sequence messages retain the exact per-item snapshots in their own clauses.
 
@@ -630,11 +630,11 @@ Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 1. Under the held company policy, attempt sending from ingestion, an agent and an unreviewed draft; only a signed-in person’s approval of the unchanged saved recipient, subject and body permits dispatch.
 
 **Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/source-onboarding.test.ts`; `tests/rer/onboarding.test.mjs`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: ingestion cannot dispatch; held company policy computes external; unreviewed agent call has no effect under held policy; signed-in person approves unchanged saved revision. Asserted: exact reviewed bytes dispatched.
 
 #### OUT-002 — Message states
 
-Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Customer mail is submitted through the shared customer-mail transport. An outbound message is draft, scheduled, queued, reconciling, accepted, delivered, bounced, failed, canceled, or delivery-unknown. The operator view calls a message sent only after the provider accepts it, and delivered only after a delivery event.
 
@@ -642,11 +642,11 @@ Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 1. Drive provider acceptance, delivery, bounce, failure and ambiguous responses; inspect each persisted state and truthful buyer-visible labels.
 
 **Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: provider acceptance state; bounce state; persisted buyer-visible labels distinct. Asserted: delivery state; failed state; ambiguous state.
 
 #### OUT-003 — Send idempotency
 
-Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Repeated or concurrent use of one send idempotency key creates one outbound message and at most one provider submission.
 
@@ -654,11 +654,11 @@ Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 1. Submit the same approval key concurrently and after restart; observe one outbound intent and at most one provider submission.
 
 **Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `src/core/features/workbench/routes.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: concurrent approval has one outbound intent; same key after restart; at most one provider submission. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OUT-004 — Threading
 
-Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** An outbound message carries message and reference headers that return the customer's reply to the same opportunity. A reply carrying those headers is attached once; a reply without them becomes an unlinked activity for operator review rather than a subject-based guess. For a message sent with no linked opportunity, or to a contact whose deals are won or lost, OUT-017 returns the reply by the same headers to that contact and their company. A reply from any external recipient of the message, To, CC or BCC, threads back the same way onto that replier's contact (OUT-019).
 
@@ -666,11 +666,11 @@ Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 1. Deliver correct, foreign and absent reply headers with sender checks; attach the correct reply once and hold ambiguous mail for review.
 
 **Evidence.** `src/core/features/outreach/reply-matching.ts`; `tests/core/launch-reply-authority.test.ts`; `tests/core/launch-reply-sender.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: absent headers held for review. Asserted: genuine reply stored once; foreign sender leaves schedule/draft unchanged; ambiguous references leave business state unchanged.
 
 #### OUT-005 — Accepted outcome
 
-Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** When the provider accepts a submission, one local transaction records the reviewed content and provider message ID as a timeline activity, completes the recommendation, sets the next action to awaiting response, moves the opportunity from NOW to NEXT, and creates one notification for the responsible operator. A replayed provider event repeats none of it. This clause governs a send linked to an open opportunity; a send with no linked open opportunity records the same timeline activity and notification and opens OUT-017's contact-level awaiting-response obligation instead of a queue move.
 
@@ -678,11 +678,11 @@ Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 1. Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and notification.
 
 **Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: one sent timeline activity; recommendation completed; NEXT transition (assertion is in uncited tests/core/source-onboarding.test.ts); one notification; replayed provider response has no second effect. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OUT-006 — Delivery failure
 
-Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** A transient submission failure retries up to 5 times over 1 hour. A permanent failure or an exhausted retry returns the opportunity to NOW, notifies the responsible operator once, and shows the provider's reason on the message. A permanent bounce also sets the contact do-not-contact under RECORD-012.
 
@@ -690,11 +690,11 @@ Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 1. Fail a submission transiently, permanently and ambiguously; verify bounded known-unsent retries, visible exhausted failure, one notification and permanent-bounce stop.
 
 **Evidence.** `src/core/features/outreach/service.ts`; `tests/core/outreach-limits.test.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: ambiguous outcome distinct; permanent bounce stops contact; provider reason retained. Asserted: known-unsent retry bounded to five attempts; exhausted failure visible; one failure notification.
 
 #### OUT-007 — Stop conditions
 
-Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** A reply, a booked meeting, an unsubscribe, a do-not-contact, or a permanent bounce cancels that contact's scheduled messages and marks their unsent drafts stale under ACTION-005. A reply or a bounce ends awaiting response and returns the opportunity to NOW with the reply or the delivery problem as its next action. An OUT-020 unattributed stop request pauses, rather than cancels, the scheduled messages and sequence enrollments of every external recipient of its message until a user resolves it.
 
@@ -702,11 +702,11 @@ Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 1. Schedule a message, deliver reply/booking/unsubscribe/bounce or a manual stop, then advance dispatch; cancel the message and stale the draft without duplicates.
 
 **Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: booking cancels scheduled mail; unsubscribe cancels scheduled mail; bounce cancels scheduled mail; manual stop cancels scheduled mail; replay has no second effect. Asserted: reply cancels scheduled mail; stop stales unsent draft.
 
 #### OUT-008 — Quiet hours
 
-Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** A draft can be written at any time. Sending outside 08:00–18:00 Monday to Friday in the contact's timezone, or the workspace timezone when the contact has none, requires a second confirmation naming the recipient's local time; a scheduled send waits for the next permitted minute. The default is the window in this clause, with no holiday calendar.
 
@@ -714,11 +714,11 @@ Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 1. Approve outside recipient-local quiet hours, including daylight-saving boundaries; require the extra immediate confirmation or delay the schedule to the permitted window.
 
 **Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: extra immediate confirmation. Asserted: recipient-local weekday/DST window; expired confirmation cannot send; scheduled message waits for reviewed next window.
 
 #### OUT-009 — Scheduled send
 
-Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** An operator can schedule one reviewed message for a future time and cancel it until it dispatches. Dispatch re-checks ACTION-005, RECORD-012, OUT-007, OUT-008, and OUT-010 against the current record and submits only the approved content; a stale or prohibited message is not sent, returns the opportunity to NOW, and shows the reason.
 
@@ -726,11 +726,11 @@ Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 1. Schedule/cancel approved content, then change its evidence, permission and recipient before dispatch; only unchanged current authorized content can reach the provider.
 
 **Evidence.** `src/core/features/outreach/scheduler.ts`; `tests/core/outreach-limits.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: schedule and cancel; changed evidence blocks dispatch; changed permission blocks dispatch; changed recipient blocks dispatch; unchanged authorized content submitted. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OUT-010 — Sending limits
 
-Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Before submission Orbit checks the shared transport's rate and each sender's one-to-one budget under OUT-018 (the installation manifest limits: 100 messages a minute and 1,000 a user per rolling day by default). A message over a limit stays unsent and visible with the limit that stopped it and the time it may be sent; Orbit neither retries it silently nor merges it with another message. Sequence budgets and mailbox pacing are OUT-018's.
 
@@ -738,11 +738,11 @@ Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 1. Exceed the per-minute and per-operator daily limits before immediate and scheduled submission; retain a visible unsent item with its reason and next permitted time, and see no silent retry.
 
 **Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/outreach-limits.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: immediate submission limit; scheduled submission limit. Asserted: per-minute limit visibly holds; per-user daily limit visibly holds; held item shows reason; next permitted time; no silent retry.
 
 #### OUT-011 — Unresolved submission
 
-Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Orbit records the outbound intent and its provider idempotency key durably before submitting. If the transaction in OUT-005 fails the message becomes reconciling; if the provider's response is a timeout it becomes delivery-unknown. In both states a job queries the provider by that idempotency key every 5 minutes, submits nothing again, and applies the OUT-005 outcome exactly once if acceptance is confirmed. With SendGrid the query uses its Email Activity API; on an account without that API each attempt records the lookup failure on the message. A SendGrid message still unresolved after 24 hours becomes a failure the operator can see, and notifies the responsible operator. Run Edit Run managed mail offers no lookup, so such a message stays delivery-unknown with that explanation, is never submitted again, and is left for the operator to reconcile.
 
@@ -750,11 +750,11 @@ Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 1. Lose the acceptance transaction or provider response; restart and reconcile the durable intent without submitting again, ending once as accepted or visibly unresolved.
 
 **Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `src/core/platform/outbound-mail.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: lost acceptance transaction; restart reconciles durable intent; unresolved stays visible. Asserted: lost provider response becomes uncertain; provider never resubmitted; one accepted final outcome.
 
 #### OUT-012 — Unsubscribe
 
-Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** An outbound customer message that carries opt-out under OUT-020 carries the opt-out URL header and the one-click opt-out header headers handled by the mail provider, or by the installation origin for managed relay mail and OUT-013 mailbox sends. An unsubscribe event that identifies one recipient sets that contact do-not-contact under RECORD-012 within 60 seconds and cancels their scheduled messages. OUT-020 sets which message types carry opt-out (sequence email on and one-to-one email off by default) and the scope of an opt-out from a message with more than one external recipient.
 
@@ -762,7 +762,7 @@ Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 1. Inspect unsubscribe headers on actual submitted mail of a type set to carry opt-out, receive a signed unsubscribe and confirm future sending and scheduled work are suppressed.
 
 **Evidence.** `tests/core/outbound-boundaries.test.ts`; `tests/core/outreach-limits.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: future immediate send refused. Asserted: submitted opt-out headers; authenticated unsubscribe suppresses contact; all scheduled work cancelled.
 
 ### AI
 
@@ -780,7 +780,7 @@ Core · published · **done** · Cites BASE-DATA-004, BASE-SECRET-001
 
 #### AI-002 — Output validation
 
-Core · published · **done** · Cites BASE-DATA-004, BASE-SECRET-001
+Core · published · **partial** · Cites BASE-DATA-004, BASE-SECRET-001
 
 **Requirement.** AI output must validate against its operation's schema and cite only evidence IDs present on the record. Output failing either check fails visibly and is never repaired with invented content or a semantic fallback. Only a transient transport failure is retried, at most twice within 30 seconds.
 
@@ -788,11 +788,11 @@ Core · published · **done** · Cites BASE-DATA-004, BASE-SECRET-001
 1. Return invalid schema, foreign citations and a transport error at the provider edge; fail invalid content visibly with no invented repair and bound transport retry.
 
 **Evidence.** `src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: invalid schema visibly fails; transport error visibly fails; no fabricated repair; bounded transport retries. Asserted: foreign citation leaves no draft.
 
 #### AI-003 — Provider failure
 
-Core · published · **done** · Cites BASE-DATA-004, BASE-SECRET-001
+Core · published · **partial** · Cites BASE-DATA-004, BASE-SECRET-001
 
 **Requirement.** When the AI provider is unconfigured or unavailable, records, signal ingestion, linking, scoring, queue placement, search, manual updates, hand-written drafts, and sending all continue to work, and a recommendation still names its action and evidence. A generation request shows the failure and produces no explanation or draft.
 
@@ -800,11 +800,11 @@ Core · published · **done** · Cites BASE-DATA-004, BASE-SECRET-001
 1. Leave AI unconfigured and fail a configured request; finish manual CRM, ingestion, scoring and handwritten outreach flows while generation reports failure.
 
 **Evidence.** `src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: failed generation visible; manual CRM still works; ingestion still works; scoring still works; handwritten sending still works. Asserted: unconfigured generation unavailable.
 
 #### AI-004 — Cost
 
-Core · published · **done** · Cites BASE-DATA-004, BASE-SECRET-001
+Core · published · **partial** · Cites BASE-DATA-004, BASE-SECRET-001
 
 **Requirement.** Every AI call records provider, model, input and output tokens, feature, duration, status, and estimated cost. Operators can view totals by day and by feature in settings.
 
@@ -812,7 +812,7 @@ Core · published · **done** · Cites BASE-DATA-004, BASE-SECRET-001
 1. Generate successful and failed requests, then inspect provider/model/tokens/duration/status/cost and day/feature totals in Settings.
 
 **Evidence.** `src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: failed call accounting; provider; model; duration; cost; daily totals; feature totals in Settings. Asserted: successful token counts; status.
 
 ### Daily brief and meeting plans
 
@@ -830,7 +830,7 @@ Core · published · **done** · Cites BASE-ROLE-001
 
 #### BRIEF-002 — Overdue promises
 
-Core · published · **done** · Cites BASE-ROLE-001
+Core · published · **partial** · Cites BASE-ROLE-001
 
 **Requirement.** Computed from records when the brief is built: an open internal next action (a handoff task a person wrote or accepted) or an open opportunity's next action past its due time; the latest customer reply on a record with no approved outbound message, captured sent message, logged call or meeting, or completed action on that record since, once the awaiting-response interval (TEAM-003, working days in the workspace timezone) has passed; a meeting completed within the last 120 days with no note, logged call or meeting, completed action, handoff, draft, approved message or captured sent message on its records after it; and a draft on an open opportunity left untouched longer than the workspace stale interval, with no outbound attempt and no customer stop event. A recommendation carries no due time and is never a promise by itself.
 
@@ -838,11 +838,11 @@ Core · published · **done** · Cites BASE-ROLE-001
 1. Advance past each task/reply/meeting/draft deadline, complete the corresponding obligation and verify overdue lines appear and clear from actual records.
 
 **Evidence.** `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: overdue task; overdue draft; task completion clears line; draft completion clears line. Asserted: overdue reply; overdue meeting; reply completion clears line; meeting completion clears line.
 
 #### BRIEF-003 — Account summary
 
-Core · published · **done** · Cites BASE-ROLE-001
+Core · published · **partial** · Cites BASE-ROLE-001
 
 **Requirement.** With a provider configured (AI-001), an operator can ask for a one-paragraph summary of one account's brief lines. The request preview shows every field sent, and the request is sent only unchanged from that preview; a brief that changed since the preview is refused with 409. Output must validate and cite only evidence IDs from that account's lines (AI-002); failing or uncited output is recorded (AI-004) and shown as failed, never repaired or replaced. Summaries are not stored, and a provider failure leaves the brief whole.
 
@@ -850,11 +850,11 @@ Core · published · **done** · Cites BASE-ROLE-001
 1. Preview an account summary, alter the brief before generation and require refusal; generate on a fresh preview and reject uncited provider output.
 
 **Evidence.** `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: actual brief change before generation refused. Asserted: preview sends exact request; fresh summary result succeeds; uncited output fails with no summary.
 
 #### BRIEF-004 — Meeting plan
 
-Core · published · **done** · Cites BASE-ROLE-001
+Core · published · **partial** · Cites BASE-ROLE-001
 
 **Requirement.** A meeting signal linked to a record (booked, completed or canceled, from a source or from capture) has a plan page: its time exactly as the source gave it or the statement that none was given; attendees resolved by exact email key (RECORD-003) with their company and open opportunities; attendees with no record listed as unresolved, never guessed, with a way to create a contact with that exact address; the opportunities with value, stage and owner and their total open value; the last interactions on its records and the outstanding promises on them (BRIEF-002), each citing its timeline entry or record. The agenda and prep notes are saved as one note under RECORD-010 on the meeting's opportunity (or its company or contact) and edited in place. A person can turn a cited plan line into an internal next action on the meeting's opportunity that cites that line. Planning creates no draft and sends nothing (OUT-001).
 
@@ -862,7 +862,7 @@ Core · published · **done** · Cites BASE-ROLE-001
 1. Open a linked meeting, inspect resolved/unresolved attendees and promises, save agenda/prep and create a cited internal task without customer outreach.
 
 **Evidence.** `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: promises on meeting plan. Asserted: resolved attendee fields; unresolved attendee address; agenda/prep read after save; cited internal task; uncited task refused; no draft or customer message created.
 
 #### BRIEF-005 — Agent handoff
 
@@ -906,7 +906,7 @@ Core · published · **done** · Cites BASE-ROLE-001
 
 #### PUBLIC-001 — Landing page
 
-Core · published · **done** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001 · Register R-4, R-5
+Core · published · **partial** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001 · Register R-4, R-5
 
 **Requirement.** The public home at the app origin returns the public Base Lobby without a session and links to native sign-in. The separate approved run site uses Orbit's public identity and images. Neither surface exposes this installation's contacts, companies, opportunities or signals. This target-contract round leaves the approved homepage and app interface untouched.
 
@@ -914,11 +914,11 @@ Core · published · **done** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-AC
 1. Visit the public app Lobby and separate run site without a session; verify branding/sign-in links and no installation customer data in HTML or network.
 
 **Evidence.** `src/base/lobby.ts`; `tests/e2e/baseline.spec.mjs`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: app Lobby branding and sign-in links; separate run-site branding and sign-in links; no customer data in public HTML; no customer data in network responses. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### PUBLIC-002 — Safe demo
 
-Core · published · **done** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001
+Core · published · **partial** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001
 
 **Requirement.** When enabled in `ext/config.ts`, `/demo` presents a separate read-only example workspace with twelve fictional deals, relative dates, signals, drafts and a sent-message/reply story. It clearly labels these as examples before displaying them. No example data is written to the owner's database. The demo cannot load owner records, send mail, call AI, approve outreach or mutate data. Unknown demo paths return the styled not-found page. Disabling it returns 404. This deliberately replaces the former dedicated hosted-record walkthrough; all native session, exact-message review and customer-sending requirements remain unchanged.
 
@@ -926,11 +926,11 @@ Core · published · **done** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-AC
 1. Browse the labeled fictional demo and unknown paths at desktop/mobile sizes; verify no owner-data read, D1 write, AI request or send.
 
 **Evidence.** `src/demo.ts`; `tests/core/public-demo.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: unknown demo paths; desktop and phone journey; no owner-data read over populated owner data; no D1 mutation across all tables; no AI request; no customer send. Asserted: fictional demo labeled.
 
 #### PUBLIC-003 — Unconfigured sign-in
 
-Core · published · **done** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001
+Core · published · **partial** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001
 
 **Requirement.** While no sign-in mail is configured, the native sign-in page answers without an operator session and states that sign-in email is unavailable. It presents no credential field, demo account, local-login action, or session bypass.
 
@@ -938,11 +938,11 @@ Core · published · **done** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-AC
 1. Visit sign-in without configured mail/provider; see unavailable state and attempt to obtain a session without a valid native proof.
 
 **Evidence.** `src/base/lobby.ts`; `tests/e2e/baseline.spec.mjs`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: unconfigured mail/provider state visible; no session without valid native proof. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### PUBLIC-004 — Native sign-in
 
-Core · published · **done** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001
+Core · published · **partial** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001
 
 **Requirement.** Native sign-in uses Orbit’s existing operator identities and admits no new operator merely from an identity-provider assertion. Its optional linked provider stays off until the owner enables it, and return locations remain inside the operator app. Missing or failed mail setup remains visible without issuing an Orbit session; the sign-in identity plate carries Orbit’s declared brand and theme.
 
@@ -950,13 +950,13 @@ Core · published · **done** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-AC
 1. Request and confirm a native magic link, test unknown/inactive and expired/reused links, sign out and exercise optional linked identity without admitting new operators.
 
 **Evidence.** `src/core/features/identity/index.ts`; `tests/core/identity.test.ts`; `tests/core/prior-auth-upgrade.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: expired link refused; linked provider admits no new operator. Asserted: valid native link creates current person session; unknown/inactive response matches; single-use link signs in only once; sign-out revokes session.
 
 ### Data
 
 #### DATA-001 — Export contents
 
-Core · published · **done** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUDIT-001
+Core · published · **partial** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUDIT-001
 
 **Requirement.** The buyer can export and restore contacts, companies, opportunities, associations, custom data, source definitions without secrets, signals and captured evidence, evaluations with policy versions, recommendations, drafts, outbound content/status, tasks, timeline, notifications, settings, reports and audit as versioned data. Both supported archive paths disclose their format and eligible receiving state. Installation-local sessions, identity proofs, source/OAuth credentials, delegation authority, private import originals/custody and collaborator/public-form authority do not travel; reconnection and renewed authorization are explicit. DATA-003 extends these guarantees to every target feature. This records Orbit's installation-authority replacement for literal BASE-DATA-001 credential portability; it does not claim that excluded private originals are portable product records. INTEGRATE-005’s Slack routing choices, mappings, notices and deletion history export as definitions and provenance without authority. Bot tokens, signing secrets and unconsumed action capabilities never travel; restored routes and mappings require fresh administrator confirmation.
 
@@ -966,11 +966,11 @@ Core · published · **done** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUDIT-
 3. Export through both supported archive doors, restore into eligible empty product state, export again and compare domain contents, captured evidence and audit with declared authority exclusions.
 
 **Evidence.** `src/core/features/records/archive-export.ts`; `src/core/features/records/archive-import.ts`; `tests/core/archive-transfer.test.ts`; `newtests/t096/archive-import-recovery.test.ts`; `src/core/shared/archive-identity.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: Slack routing choices portable; Slack mappings portable without authority; Slack notices and deletion history portable; bot credentials absent from both archive doors; signing secrets absent; unconsumed action capabilities absent; restored routes require new confirmation; restored mappings require new confirmation; both supported archive doors round-trip all domain content; captured evidence round-trips; audit round-trips; all declared authority exclusions. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### DATA-002 — Contact erasure
 
-Core · published · **done** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUDIT-001
+Core · published · **partial** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUDIT-001
 
 **Requirement.** Within 5 minutes of an operator deleting a contact, their email addresses, signal payloads, drafts, message bodies, and the notifications naming them are absent from records, search results, exports, and every later AI or mail request. Erasing a contact, company or deal redacts INTEGRATE-005’s stored notice content and issues tracked chat.delete requests for its bot messages, with each deletion outcome visible. Copies already held outside Slack cannot be recalled. Copies already held outside Slack cannot be recalled.
 
@@ -979,13 +979,13 @@ Core · published · **done** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUDIT-
 2. Delete a contact containing aliases, imported/captured mail and notes, drafts and transfer copies; verify search/export/AI/mail absence and anonymized audit within five minutes, including replay.
 
 **Evidence.** `src/core/features/records/data.ts`; `tests/core/contact-erasure.test.ts`; `tests/core/crm-import-erasure.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: contact erasure redacts stored Slack content; company erasure redacts stored Slack content; deal erasure redacts stored Slack content; provider delete requests tracked; each provider-deletion outcome visible; aliases erased; imported/captured evidence erased; drafts erased; transfer copies withdrawn; search absence; export absence; AI absence; mail absence; anonymous audit; completion within five minutes; replay cannot recreate erased content. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 ### Scoped application delegation
 
 #### DELEGATE-001 — Selected application authority
 
-Core · published · **done** · Cites BASE-ACCESS-002, BASE-ACCESS-004, BASE-AGENT-005
+Core · published · **partial** · Cites BASE-ACCESS-002, BASE-ACCESS-004, BASE-AGENT-005
 
 **Requirement.** Supersedes BASE-ACCESS-002 and BASE-ACCESS-004 only for the selected-application delegation door: an allowlisted application exchanges a single-use consent code bound to the native operator, workspace, exact callback, PKCE challenge, scopes and selected targets for a bearer credential expiring within 30 days. Ambient cookies confer no authority there. Every operation rechecks scope, expiry, active operator, enabled application and revocation; restore invalidates authority. Native consent, settings and task editing still require the operator session. the selected-record evidence read reads only selected records, and lists them (with the handoffs on selected opportunities) by name and target ID only, so an application can offer them by name. `crm.handoff.write` permits only the internal handoff action, an internal task with title, description, assignee, due time and open/completed/canceled status. It confers no outreach or account-activation authority. Writes bind current source and audience revisions and commit task, timeline, contact provenance and receipt atomically. Exact key replay produces one effect; changed content conflicts. Immutable receipts remain separate from current authorized source readback. Native UI edits the same records. Actual archives retain tasks and contact provenance, exclude codes, credentials and receipts, and revoke restored-installation authority. Full verification includes the delegation D1, archive and native-browser regressions as well as all retained contract gates. An INTEGRATE-005 Slack mapping confers no delegation or outreach authority. Its acknowledgment never accepts an application-proposed handoff; its only writes are acknowledgment and an attributed internal task under current native access.
 
@@ -995,7 +995,7 @@ Core · published · **done** · Cites BASE-ACCESS-002, BASE-ACCESS-004, BASE-AG
 3. Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority.
 
 **Evidence.** `src/core/features/delegation/protocol.ts`; `tests/delegation/authority-regressions.test.ts`; `tests/delegation/archive-regression.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: Slack mapping grants no delegation authority; Slack mapping grants no outreach authority; Slack acknowledgment does not accept a proposed handoff; Slack writes only acknowledgment/internal task; task retains current native access and actor; native consent and PKCE scope; selected records readable; outside-scope read refused. Asserted: internal handoff proposed; revocation stops every door; restored credential authority absent; restored history preserved.
 
 ### Permissions, records and migration
 
@@ -1069,7 +1069,7 @@ Core · target · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 
 #### RECORD-015 — Deal stakeholders and buying context
 
-Core · target · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · target · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** A deal records multiple contacts with roles such as champion, decision-maker, evaluator and procurement, company relationships, products, next step and mutual commitments. A person can represent more than one company via explicit relationship records while retaining an exact identity and a primary company. Sales users can distinguish a missing stakeholder from an inferred role; no inferred identity or relationship grants contact permission.
 
@@ -1077,7 +1077,7 @@ Core · target · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-00
 1. Associate champion and evaluator with a USD deal, add a verified decision-maker and a second-company relationship, move the primary association and inspect the preserved customer history and authorization.
 
 **Evidence.** `src/core/features/relationships/`; `src/core/features/operator/ui/buying-context.tsx`; `tests/core/records-search.test.ts`; `tests/evidence/contract/RECORD-015/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: champion association; evaluator association; verified decision-maker; second-company relationship; primary association move; history preserved; authorization preserved. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### RECORD-016 — Owners for contacts, leads, companies and custom objects
 
@@ -1166,7 +1166,7 @@ Core · target · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-00
 
 #### RECORD-023 — Collaborator entry grants and mention access
 
-Core · target · **done** · From RECORD-017 · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · target · **partial** · From RECORD-017 · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** A collaborator can read a record’s notes, logged calls, meetings, task notes and handoffs only through its live Include notes, calls and meetings grant, initially off. Whoever shares changes the option explicitly; the installation owner acts for the administrator until team roles ship. Grant creation and option changes record actor and old/new value. Saving a mention of someone without that access names the person and asks the author to share explicitly, enable the option or remove the mention. The read-only Shared records view opens the exact entry and never another record’s entries. The collaborator’s notification inbox and Mentions view contain only their own currently permitted mentions and unread count. Revocation or expiry hides them without deleting them; a new grant reveals them again.
 
@@ -1176,11 +1176,11 @@ Core · target · **done** · From RECORD-017 · Cites BASE-INPUT-001, BASE-ROLE
 3. A collaborator reads only their own currently accessible mention notices and unread count, never another operator’s notifications or counts.
 
 **Evidence.** `src/core/features/records/mentions.ts`; `src/core/features/records/manual.ts`; `src/core/features/access/grant-entries.ts`; `src/core/features/notifications/collaborator.ts`; `src/core/features/records/shared-entries.ts`; `src/core/features/access/shared-entries.tsx`; `src/core/features/operator/ui/mention-field.tsx`; `tests/core/today-brief.test.ts`; `tests/evidence/contract/RECORD-017/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: browser proof at 1440; browser proof at 390. Asserted: own notification opens exact Shared entry; entries-off save asks first; revocation hides notice; fresh grant reveals notice; grant creation actor and initial option; option change actor and old/new values; mention does not grant access; mention does not turn option on; only own notifications and unread count; other operators have excluded notices; cannot read another record’s entries.
 
 #### RECORD-024 — Mention delivery through personal channels
 
-Core · target · **done** · From RECORD-017 · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · target · **missing** · From RECORD-017 · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** Its NOTIFY-003 inheritance adopts INTEGRATE-005’s Slack rules: no entry text enters Slack, private entries get a generic notice and exact authenticated entry link, and an undelivered mention is withdrawn on deletion. Slack acknowledgment never accepts an application-proposed handoff.
 
@@ -1190,7 +1190,7 @@ Core · target · **done** · From RECORD-017 · Cites BASE-INPUT-001, BASE-ROLE
 3. Deliver personal email, push and Slack mentions under the receiving user’s preference; no entry text enters Slack, private entries have generic notices, and deletion withdraws an undelivered mention.
 
 **Evidence.** `src/core/features/records/mentions.ts`; `src/core/features/records/manual.ts`; `src/core/features/access/grant-entries.ts`; `src/core/features/notifications/collaborator.ts`; `src/core/features/records/shared-entries.ts`; `src/core/features/access/shared-entries.tsx`; `src/core/features/operator/ui/mention-field.tsx`; `tests/core/today-brief.test.ts`; `tests/evidence/contract/RECORD-017/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: personal email mentions; personal push mentions; opted-in Slack mentions; private-entry generic notice; undelivered mention withdrawn on source deletion. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### RECORD-018 — Files and versions on records and activities
 
@@ -1420,7 +1420,7 @@ Core · target · **missing** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 
 #### OUT-014 — Reusable personalized templates and sales content
 
-Core · target · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · target · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Reps save and share permission-controlled templates, snippets and signatures with a reviewed fixed list of supported contact/company/deal merge fields. Current full operators may read and use workspace-shared entries and create and edit their own private entries; only the installation owner may create or edit workspace-shared entries. Collaborators cannot read, author, share or apply library entries. The installation owner acts as administrator until TEAM-005 supplies real teams, restricted roles and team-restricted sharing; TEAM-005 inherits those permissions and their acceptance before shipping. Missing merge values and stale rendered inputs block approval and sending until the user reviews a fresh render. Review shows the exact rendered recipient, subject, body and signature together with the message's OUT-020 opt-out state. Approval binds an immutable snapshot of the rendered bytes and their content hash; later template, snippet or signature revisions never rewrite approved content. A changed source is visible for review, and dispatch retains OUT-001's revision and staleness fences. RECORD-018 inherits authorized versioned proposal/file selection, size/type limits, explicit access/size failures, attachment preview before approval and before files ship, and the precise sent-version record on recipients' records. Its acceptance must send an authorized attachment and refuse a forbidden one; this work is required before template attachments ship. SEQUENCE-001 and SEQUENCE-003 each inherit template expansion, per-recipient/per-step rendered-byte snapshots and approval hashing, including missing/stale merge-field blocks, before their execution paths ship.
 
@@ -1434,11 +1434,11 @@ Core · target · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 �
 7. TEAM-005 repeats the sharing journey with real teams and restricted roles; RECORD-018 sends an authorized attachment, refuses a forbidden one, shows size/access failures and preview, and records the exact version sent; SEQUENCE-001 and SEQUENCE-003 each repeat expansion and approval-hash checks per recipient and step.
 
 **Evidence.** `src/core/features/drafts/`; `src/core/features/outreach/approval-repository.ts`; `src/core/features/outreach/service.ts`; `migrations/core/0050_message_library.sql`; `tests/core/signals-outreach.test.ts`; `tests/core/onboarding-archive.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `docs/retained-verification/OUT-014/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: another operator reads/uses library; signature bytes; reviewed opt-out state; library screen at 1440; library screen at 390; rendered review at 1440; rendered review at 390; real teams retain library sharing; authorized and forbidden attachments; attachment size/type failures; exact attachment-version preview; sent attachment version retained; per-recipient sequence expansion; per-step approval hash. Asserted: owner creates template/snippet/signature; private entry hidden from others; shared entry write refused; two distinct contact renders; exact body read back; collaborator read refused; collaborator authoring refused; collaborator sharing refused; collaborator application refused; missing field prevents rendering; missing field prevents approval; changed merge value prevents approval; stale preview cannot approve; saved subject/body match rendered snapshot; library revision does not alter approved body; library revision does not alter approved subject; snapshot remains byte-identical; provider receives exactly approved rendered bytes once.
 
 #### OUT-015 — Honest open and reply tracking
 
-Core · target · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · target · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Account and deal timelines distinguish provider acceptance, delivery, an open report and an actual human reply, retaining source and observed time. Open reports are explicitly inferred and may be unavailable or privacy-proxied; they never prove reading, intent or a human response. Reply tracking rejects automatic replies and ambiguous identity for stop/completion decisions. Gmail and Microsoft 365 report no opens or clicks through their APIs, so new open and link-click collection for Orbit-sent mail is solely OUT-016's disclosed, opt-in per-message tracking obligation; mail without it shows `open/click not tracked`, never `not opened`. Existing unsolicited provider open/click reports are retained only as inferred historical provider evidence, explicitly labelled unreliable and possibly proxied or automated; they introduce no collection or human-reading claim. SIGNAL-007 otherwise remains: no covert tracking script, pixel, fingerprint or cross-site collection. OUT-013 inherits these reporting/provenance and genuine-reply semantics for mailbox sending; OUT-016 inherits disclosed opt-in collection and proxy/automated classification; OUT-019 inherits genuine multi-recipient attribution; SEQUENCE-002 inherits genuine-reply exits. Each must pass the corresponding expanded journey before shipping.
 
@@ -1449,7 +1449,7 @@ Core · target · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 �
 4. Only a genuine exact-identity linked reply stops follow-up; add no pixel, redirect token or tracking collection.
 
 **Evidence.** `tests/core/launch-reply-authority.test.ts`; `tests/core/signals-outreach.test.ts`; `src/core/features/outreach/provider-replies.ts`; `src/core/features/operator/ui/mail-evidence.tsx`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: no new tracking pixel; no redirect collection; no tracking token collection. Asserted: acceptance distinct from delivery; delivery time read back; historical open/click inference; human reply stored once; source on each timeline; occurred time; recorded time; duplicate event retained once; automatic reply changes no business state; foreign sender changes no business state; ambiguous thread changes no business state; manually linked nonhuman evidence changes no business state; no-tracking label; exact-identity genuine reply stops work.
 
 #### OUT-016 — Disclosed per-message tracking
 
@@ -1522,7 +1522,7 @@ Core · target · **partial** · From OUT-017 · Cites BASE-MAIL-001, BASE-ROLE-
 
 #### OUT-018 — Sending budgets for each user
 
-Core · target · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · target · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Orbit carries the declared 25-user team on separate budgets so one user’s sequences never consume another user’s capacity or their own one-to-one replies. Per-user budgets. Each user has two rolling 24-hour budgets, counted per provider-submitted message: sequence email (SEQUENCE-001, SEQUENCE-003 and AUTO-001 enrollments): 500 per user by default, the volume of an incumbent Professional seat; one-to-one email (OUT-017 composes, OUT-019 replies, ACTION-003 drafts and OUT-009 scheduled one-to-one messages): 1,000 per user by default, never reduced by that user's sequence sends. An administrator can lower either budget per user or per team, and raise it up to the transport limits below. Each change is audited and applies to the next claim. A message counts once however many recipients it has (OUT-019); the provider's recipient count still applies to the provider's own limits. Until team administrator roles exist the installation owner administers per-user settings; every change records actor, old/new value and time.
 
@@ -1531,11 +1531,11 @@ Core · target · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 �
 2. Lower one SDR’s sequence budget to 50 and verify only that user’s excess steps defer visibly while the other SDR and everyone’s one-to-one mail continue.
 
 **Evidence.** `tests/core/outreach-limits.test.ts`; `src/core/features/outreach/sending-limits.ts`; `src/core/features/outreach/service.ts`; `src/core/features/outreach/approval-repository.ts`; `src/core/features/operator/ui/sending-capacity.tsx`; `tests/evidence/contract/OUT-018/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: separate sequence budget; provider-submitted count once across recipients; sequence budget of 50 isolates one SDR; other SDR continues; everyone’s one-to-one continues. Asserted: one-to-one budget independent per user; changed limit applies next claim.
 
 #### OUT-024 — Connected-mailbox pace and provider quotas
 
-Core · target · **done** · From OUT-018 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · target · **missing** · From OUT-018 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Connected mailboxes. Mail sent through an OUT-013 Gmail/Workspace or Microsoft 365 mailbox is paced per mailbox, never by a throttle shared across the deployment. Orbit keeps each mailbox inside its provider's published sending limits for that account type, such as Google Workspace's per-user daily message and recipient limits and Exchange Online's per-minute message and daily recipient limits, using the lower limits of trial and consumer accounts where they apply. That mailbox's sequence steps are paced at no more than 3 per minute by default, adjustable by an administrator. A provider throttling or quota response, such as a Gmail API `429` or a Microsoft Graph `429` with `Retry-After`, defers only that mailbox's queued mail, visibly, until the provider's stated time or next window. It is never a silent retry or a switch of transport or identity.
 
@@ -1544,11 +1544,11 @@ Core · target · **done** · From OUT-018 · Cites BASE-MAIL-001, BASE-ROLE-001
 2. Inject one mailbox’s provider quota response and verify only that mailbox defers visibly until its stated next window, with no transport or identity switch.
 
 **Evidence.** `tests/core/outreach-limits.test.ts`; `src/core/features/outreach/sending-limits.ts`; `src/core/features/outreach/service.ts`; `src/core/features/outreach/approval-repository.ts`; `src/core/features/operator/ui/sending-capacity.tsx`; `tests/evidence/contract/OUT-018/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: Gmail account-specific pace; Microsoft 365 account-specific pace; trial/consumer lower limits; no deployment-wide mailbox throttle; only throttled mailbox deferred; visible provider next window; no transport switch; no identity switch. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OUT-025 — Shared-transport priority and fair draining
 
-Core · target · **done** · From OUT-018 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · target · **partial** · From OUT-018 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Shared transport. Mail sent through the shared the shared customer-mail transport transport has a deployment rate that scales with the declared team: by default at least 4 messages per minute per declared user, which is 100 per minute at 25 users. An administrator sets it to the connected SendGrid account's own rate. Each user's sequence steps on this transport are paced at no more than 3 per minute by default. One-to-one first. On every transport, one-to-one messages are claimed ahead of every queued sequence step. Sequence steps may use at most 75% of the shared transport's per-minute rate, so the rest is always available to one-to-one mail. A one-to-one message is submitted to its transport within 60 seconds of its approval or scheduled time at the declared team load, whatever any user's sequence backlog, when it is within its sender's one-to-one budget, has passed OUT-008 and is not stopped. Fair draining. Due sequence steps drain round-robin across users, then in enrollment order within each user's batches, so two SDRs' batches progress side by side. A user's steps beyond their own budget or pace wait for that user's next window (OUT-010) and never hold another user's mail.
 
@@ -1558,11 +1558,11 @@ Core · target · **done** · From OUT-018 · Cites BASE-MAIL-001, BASE-ROLE-001
 3. On the shared transport, reserve one-to-one capacity while sequences take at most 75 percent; progress both SDR batches round-robin and preserve enrollment order within each user.
 
 **Evidence.** `tests/core/outreach-limits.test.ts`; `src/core/features/outreach/sending-limits.ts`; `src/core/features/outreach/service.ts`; `src/core/features/outreach/approval-repository.ts`; `src/core/features/operator/ui/sending-capacity.tsx`; `tests/evidence/contract/OUT-018/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: 12-user mixed-mailbox/shared morning; 40 one-to-one approvals each; two 100-recipient four-step batches; every one-to-one submitted within 60 seconds; both 100-first-step batches drain in business day; batches interleave; provider/mailbox limits respected; 75-percent sequence share; reserved one-to-one capacity; per-user round-robin; per-user enrollment order. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OUT-026 — Sending usage and submission latency
 
-Core · target · **done** · From OUT-018 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · target · **partial** · From OUT-018 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Visible deferral. A genuine over-limit message keeps OUT-010's visible unsent state. It names the limit that stopped it (sequence budget, one-to-one budget, mailbox pace, provider throttle or shared transport rate) and the time it may be sent. Each user sees their own budgets used and remaining; administrators see every user's and mailbox's usage. Settings shows users their own used and remaining budgets and administrators every user and mailbox. The declared capacity remains an estimate until its measured load journey passes.
 
@@ -1572,7 +1572,7 @@ Core · target · **done** · From OUT-018 · Cites BASE-MAIL-001, BASE-ROLE-001
 3. Inspect one’s own usage and, as administrator, every user’s and mailbox’s usage under the 12-user morning load.
 
 **Evidence.** `tests/core/outreach-limits.test.ts`; `src/core/features/outreach/sending-limits.ts`; `src/core/features/outreach/service.ts`; `src/core/features/outreach/approval-repository.ts`; `src/core/features/operator/ui/sending-capacity.tsx`; `tests/evidence/contract/OUT-018/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: declared 25-user measured submission latencies; sequence budget refusal; mailbox pace refusal; provider throttle refusal; mailbox usage; 12-user mixed-transport morning. Asserted: one-to-one budget refusal reason/value/time; shared rate refusal reason/value/time; own budget use and remaining; administrator sees all users.
 
 #### OUT-019 — To, CC and BCC recipient review
 
@@ -1618,7 +1618,7 @@ Core · target · **missing** · From OUT-019 · Cites BASE-MAIL-001, BASE-ROLE-
 
 #### OUT-020 — Opt-out settings and exact message state
 
-Core · target · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · target · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Setting per message type. In Settings an administrator chooses, separately for each message type, whether Orbit adds opt-out headers (the opt-out URL header and the one-click opt-out header, OUT-012) and a visible opt-out link to the message: sequence email steps (SEQUENCE-001, SEQUENCE-003) and AUTO-001 workflow email: on by default; one-to-one email and replies (OUT-017, OUT-019, ACTION-003 drafts and OUT-009 scheduled one-to-one messages): off by default, as in the incumbent with its data-privacy settings off. Each change of the setting is recorded in the audit trail with the administrator, the old and new values and the time, and applies to messages approved after it. Approved unsent messages keep the state their approval bound, and the settings page shows how many there are. Orbit never changes mail a rep writes in Gmail or Outlook outside Orbit. Internal colleagues (OUT-019) are never offered an opt-out. One message. When the setting puts opt-out on a message, the rep may remove it from that one message, or from one sequence step, by marking it relationship or transactional mail, unless an administrator has forbidden removal for that message type (allowed by default). A rep may always add opt-out to a one-to-one message. The OUT-001 review shows the opt-out state and, when it was removed, the rep's marking. The approval binds that state with the content, and changing it marks a reviewed draft stale (ACTION-005). The delivered message carries exactly the reviewed state: the headers and the link together, or neither.
 
@@ -1628,11 +1628,11 @@ Core · target · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 �
 3. For Gmail one-to-one mail with opt-out off inspect no header/link; a sequence step has both, and a permitted relationship removal has neither with its review marking.
 
 **Evidence.** `src/core/features/outreach/opt-out.ts`; `src/core/platform/outbound-mail.ts`; `src/core/platform/managed-outbound-mail.ts`; `src/core/features/operator/ui/opt-out-settings.tsx`; `src/core/features/operator/ui/draft-opt-out.tsx`; `tests/core/outbound-boundaries.test.ts`; `tests/evidence/contract/OUT-020/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: established-installation upgrade; pre-setting approvals; Gmail one-to-one no opt-out header/link; sequence step includes both; relationship-marked sequence step omits both. Asserted: approved unsent state preserved; Settings counts unchanged for bound state; new-installation defaults; allowed removal; forbidden removal; explicit addition; SendGrid-to-relay opt-out continuity; explicit off state; historical transport refusal.
 
 #### OUT-029 — Single-recipient opt-out capabilities
 
-Core · target · **done** · From OUT-020 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1 · Register R-6
+Core · target · **partial** · From OUT-020 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1 · Register R-6
 
 **Requirement.** One external recipient. A message with opt-out and exactly one external recipient carries one-click headers (the one-click opt-out header and value) and a visible link. Every sequence step is such a message, because SEQUENCE-001 addresses it To the enrolled contact with internal-only CC. For managed relay mail, the header and link use the same opaque message/recipient capability at the installation's configured the installation’s configured public origin; approval binds the capability and the reviewed opt-out state. Base's existing relay serializer carries both list headers. OUT-013 inherits this installation-origin handler for mailbox sends. The public GET opens a confirmation page without changing contactability or scheduled work. Its plain button posts to the capability; an RFC 8058 POST with the standard one-click request value uses that same capability without sign-in. Either POST sets only its bound contact do-not-contact under OUT-012 and RECORD-012 and atomically cancels that contact's scheduled outbound work. Replay is idempotent and a late dispatch cannot revive that work. Neither the capability nor any public response enumerates identities or other recipients; malformed, foreign and erased capabilities disclose no recipient identity and change nothing. Erasure invalidates the capability. Otherwise it has no expiry or automatic rotation. CAN-SPAM requires the opt-out to keep working for at least 30 days after the send; a link that works forever is the honest choice. The private archive carries the private opt-out capability records; it does not expire them.
 
@@ -1644,11 +1644,11 @@ Core · target · **done** · From OUT-020 · Cites BASE-MAIL-001, BASE-ROLE-001
 5. Inspect review, settings, confirmation, unsubscribed and invalid states at 1440 and 390.
 
 **Evidence.** `src/core/features/outreach/opt-out.ts`; `src/core/platform/outbound-mail.ts`; `src/core/platform/managed-outbound-mail.ts`; `src/core/features/operator/ui/opt-out-settings.tsx`; `src/core/features/operator/ui/draft-opt-out.tsx`; `tests/core/outbound-boundaries.test.ts`; `tests/evidence/contract/OUT-020/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: private capability archive round-trip; review at 1440 and 390; settings at 1440 and 390; confirmation at 1440 and 390; unsubscribed state at 1440 and 390; invalid state at 1440 and 390. Asserted: durable capability bound to message; exact footer bytes; matching opt-out URL header; one-click header; configured installation origin; GET changes no state; plain POST suppresses bound contact; RFC 8058 replay preserves digest; all held/claimed/scheduled work cancelled; different contact untouched; different contact’s schedule untouched; late dispatch sends nothing; malformed and foreign same refusal; invalid request leaves state unchanged; erasure invalidates capability; invalid response discloses no recipient; capability has no arbitrary expiry.
 
 #### OUT-030 — Several-recipient opt-out
 
-Core · target · **done** · From OUT-020 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · target · **missing** · From OUT-020 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Several external recipients. A message with opt-out and more than one external recipient (OUT-019) carries no one-click header, because a one-click request cannot say who sent it. Its opt-out link opens one page on the installation origin, with no sign-in, on which the person enters the address at which they received the message. When that address is an external recipient of that message (To, CC or BCC), that one person becomes do-not-contact with basis `opt-out page` and the message cited, and the page confirms it. Any other address is refused without revealing the message's recipients. Nobody else on the message changes. A person's own opt-out. A reply asking to stop (CAPTURE-005's do-not-contact proposal, OUT-007) or an opt-out through the page applies to that person only. RECORD-012's suppression and OUT-007's stops for the person who opted out are unchanged.
 
@@ -1658,11 +1658,11 @@ Core · target · **done** · From OUT-020 · Cites BASE-MAIL-001, BASE-ROLE-001
 3. Refuse a nonrecipient without revealing identities and suppress only a one-off address when it is the actual recipient.
 
 **Evidence.** `src/core/features/outreach/opt-out.ts`; `src/core/platform/outbound-mail.ts`; `src/core/platform/managed-outbound-mail.ts`; `src/core/features/operator/ui/opt-out-settings.tsx`; `src/core/features/operator/ui/draft-opt-out.tsx`; `tests/core/outbound-boundaries.test.ts`; `tests/evidence/contract/OUT-020/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: three-recipient message has no one-click header; one opt-out page link; posted recipient address; only named recipient stopped; basis and message citation stored; other recipients remain contactable; other recipients retain schedules; nonrecipient refusal leaks no identity; one-off address stopped without creating a contact. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OUT-031 — Unattributed stop requests
 
-Core · target · **done** · From OUT-020 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · target · **missing** · From OUT-020 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Unattributed requests. An opt-out that names a message with several external recipients but not one of them, such as a provider unsubscribe event or spam report without a single recipient address, never sets anyone do-not-contact. It opens one unattributed stop request on that message. The request is shown on each external recipient's contact, on the linked deal and in the sender's Today brief (BRIEF-001), naming the message and the time. Until it is resolved: every external recipient's scheduled messages and sequence enrollments are paused, visibly, with that reason, and not canceled; a new message to any of them is refused at review, naming the request, except a reply to that recipient's own inbound message received after the request, which can still be sent; the sender, and each contact owner who is someone else, is notified once (NOTIFY-001). A user with permission resolves the request by naming the person or people who opted out, who become do-not-contact with the basis `unattributed opt-out` and the resolving user recorded, while everyone else's paused work resumes. Alternatively, the user records that it cannot be determined, which sets every external recipient do-not-contact. The resolution is recorded on the message and in the audit trail with the user and time.
 
@@ -1672,11 +1672,11 @@ Core · target · **done** · From OUT-020 · Cites BASE-MAIL-001, BASE-ROLE-001
 3. Resolve by naming actual people and resume the others; alternatively record cannot determine and stop all; message and audit retain the resolving user and time.
 
 **Evidence.** `src/core/features/outreach/opt-out.ts`; `src/core/platform/outbound-mail.ts`; `src/core/platform/managed-outbound-mail.ts`; `src/core/features/operator/ui/opt-out-settings.tsx`; `src/core/features/operator/ui/draft-opt-out.tsx`; `tests/core/outbound-boundaries.test.ts`; `tests/evidence/contract/OUT-020/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: unattributed provider stop creates one request; nobody becomes do-not-contact; all external schedules/enrollments visibly paused; new mail refused with request; later inbound reply exception; sender and distinct owners notified once; named people stopped; others’ paused work resumes; cannot-determine stops everyone; resolution user and time in message and audit. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OUT-032 — Opt-out upgrades and transport changes
 
-Core · target · **done** · From OUT-020 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · target · **partial** · From OUT-020 · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** Settings → Opt-out links holds the setting for each type, and each change is audited with the user, the old and new values and the time; the page counts the approved unsent messages bound to each state. The installation owner acts for the administrator until TEAM-005. One-to-one email starts off on a new installation; an installation upgraded with users already present keeps one-to-one opt-out on until an administrator changes it, and the page shows that basis. Messages approved before the setting existed keep their original unsubscribe group. Through SendGrid, opt-out is the installation's unsubscribe group: SendGrid adds the opt-out URL header, the one-click opt-out header and its footer links together, and a message without opt-out carries none of them. A rep's relationship or transactional removal, or addition, marks that draft for review again, and a change of the one-to-one setting does the same for every draft not yet approved (ACTION-005); the approval binds the reviewed state. The single-recipient managed-relay handler is independent of mailbox sending. With that approved path implemented and proved, new managed messages that need opt-out carry the installation-origin capability in the visible footer and both list headers, including replies; they do not use the former reply exception to remove opt-out. Approval and dispatch preserve older SendGrid approvals' opt-out-on state when switching to the relay, and approvals predating the setting remain opt-out-on. An explicit opt-out-off approval, including a permitted relationship or transactional removal, stays off. A historical `transport` marking retains the refusal policy; it is never silently treated as an explicit removal. If the managed path cannot carry the approved state, review and dispatch retain “This relay cannot carry your opt-out link yet (OUT-013)”; refusals remain audited and counted in Settings. The handler no longer depends on OUT-013 mailbox sending shipping first. OUT-013 inherits its mailbox reuse; OUT-019 inherits the several-recipient page and unattributed stop requests; SEQUENCE-001, SEQUENCE-003 and AUTO-001 inherit the stored settings, per-step removal, approval binding and per-person stops before those execution paths ship.
 
@@ -1686,11 +1686,11 @@ Core · target · **done** · From OUT-020 · Cites BASE-MAIL-001, BASE-ROLE-001
 3. An unsupported transport refuses review and dispatch visibly, with audited Settings counts; connected mailboxes, sequences, batches and workflows preserve the exact reviewed opt-out choice.
 
 **Evidence.** `src/core/features/outreach/opt-out.ts`; `src/core/platform/outbound-mail.ts`; `src/core/platform/managed-outbound-mail.ts`; `src/core/features/operator/ui/opt-out-settings.tsx`; `src/core/features/operator/ui/draft-opt-out.tsx`; `tests/core/outbound-boundaries.test.ts`; `tests/evidence/contract/OUT-020/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: established upgrade keeps on; basis shown; pre-setting approvals preserve state; all mailbox/sequence/batch/workflow paths preserve same state. Asserted: new one-to-one default off; SendGrid-to-relay exact header/link continuity; explicit off has no capability; historical transport state refuses; unsupported review refusal; unsupported dispatch refusal; audited Settings refusal count.
 
 #### TASK-001 — Assigned prioritized recurring sales tasks
 
-Core · target · **done** · Cites BASE-ROLE-001
+Core · target · **partial** · Cites BASE-ROLE-001
 
 **Requirement.** Reps create contact/company/deal-linked tasks with owner, due date and time, priority, type, notes, recurrence, reminders and open/completed/canceled states. A Today/overdue view and activity calendar support reassignment, rescheduling and completion with attribution. A recurring occurrence is distinct and completion schedules the next one once; cancellation stops future instances. Removing a rep offers an explicit task handover and never leaves due work silently ownerless. A task assigned or reassigned to someone else notifies its new owner once under RECORD-016's assignment notifications. Personal email, push and Slack reminders remain visibly unavailable until NOTIFY-003 ships those channels. INTEGRATE-005’s administrator-routed due-work channel notices do not claim personal reminder preferences. Slack-created internal tasks retain the mapped operator, source Slack and single-use action identity.
 
@@ -1701,7 +1701,7 @@ Core · target · **done** · Cites BASE-ROLE-001
 4. Create a high-priority due call and weekly follow-up, assign/reassign and complete from the daily task view, see the new assignee notified once, restart around recurrence and verify one next occurrence; remove the rep and hand over remaining tasks.
 
 **Evidence.** `src/core/features/tasks/`; `tests/core/today-brief.test.ts`; `tests/evidence/contract/TASK-001/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: personal email visibly unavailable; personal push visibly unavailable; personal Slack preference unavailable; channel due-work notice does not claim a personal preference; Slack task names mapped operator; Slack task retains source; single-use action identity; high-priority due call; weekly follow-up; assignment and reassignment; daily task view completion; one receiving-user notification; restart around recurrence; exactly one next occurrence. Asserted: operator removal handover.
 
 #### NOTIFY-003 — Reminders that reach an absent seller
 
@@ -1760,7 +1760,7 @@ Core · target · **partial** · From SEQUENCE-001 · Cites BASE-MAIL-001, BASE-
 
 #### SEQUENCE-002 — Immediate sequence exits and accountable outcomes
 
-Core · target · **done** · Cites BASE-MAIL-001, BASE-ROLE-001 · Rules D-1
+Core · target · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001 · Rules D-1
 
 **Requirement.** Before every step and atomically when a stop arrives, an enrollment exits on a genuine reply (from the enrolled contact or, on a step's thread, from any external participant such as a CC'd colleague, under OUT-019), meeting booking, configured deal-stage change, won/lost outcome, unsubscribe, permanent bounce or human stop. An automatic reply does not count as a successful customer response. Reassignment, revoked permissions and mailbox disconnect pause with a reason. Reports distinguish delivered messages, replies, booked meetings and actual stage/revenue advancement; an open does not count as success. Restart, replay or a late scheduled job cannot revive an exited enrollment. Before sequence exits ship, they must satisfy OUT-015: only a genuine attributed human reply exits on reply; automatic mail and inferred open/click reports never do. Until SEQUENCE-001 enrollments exist, these exits govern each reviewed single scheduled message (OUT-009). A genuine attributed reply or meeting booking (OUT-007, OUT-015), an unsubscribe, a permanent bounce or do-not-contact (RECORD-012), any stage move of its deal (every move counts until a sequence configures which stages exit) and a won or lost close each cancel the affected scheduled messages in the same commit as the event, with the reason recorded on the message; a human cancel does the same. Reopening the deal, replaying the event, restarting or a late dispatch revives none of them, and a new send needs a fresh review. For a single scheduled message, removing the user who approved it cancels it and it needs a fresh approval, which is stricter than a pause; reassigning the deal leaves the message with that approving user. Pausing with a reason on reassignment, revoked permission and mailbox disconnect belongs to enrollments. Each deal's Approved outreach view shows Follow-up outcomes since its first provider-accepted message: accepted, delivery-reported, human replies, meetings booked and stage advances counted separately with the won or lost outcome, and open/click reports and automatic replies listed as not counted. SEQUENCE-001 and SEQUENCE-003 inherit enrollment exits, pause with a reason on reassignment, revoked permission and mailbox disconnect, and no revival of an exited enrollment; AUTO-001 inherits them for workflow-triggered enrollments; OUT-019 inherits exits on a genuine reply from any external participant of a step's thread; OUT-013 inherits mailbox-disconnect pause and provider-thread exits; REPORT-001 reports these outcomes for reviewed single scheduled messages, and SEQUENCE-001 inherits enrollment-level sequence outcome reporting. Each must pass this clause's acceptance before shipping.
 
@@ -1768,7 +1768,7 @@ Core · target · **done** · Cites BASE-MAIL-001, BASE-ROLE-001 · Rules D-1
 1. Race an approved due step with each reply/booking/stage/stop event, including a reply on the step's thread from a colleague the buyer CC'd, restart and replay; verify no prohibited send, one exit reason and separate reply/meeting/deal-outcome measures.
 
 **Evidence.** `tests/core/signals-outreach.test.ts`; `src/core/features/pipelines/movement.ts`; `src/core/features/records/repository.ts`; `src/core/features/outreach/follow-up-outcomes.ts`; `src/core/features/operator/ui/follow-up-outcomes.tsx`; `tests/evidence/contract/SEQUENCE-002/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: external colleague reply exit; manual stop; unsubscribe/permanent-bounce stop; restart preserves exit. Asserted: reply exit; booking exit; stage exit atomic with stage change; one first exit reason; replay/reopen/late dispatch revive nothing; separate customer outcome counts.
 
 #### SEQUENCE-003 — Bulk enrollment and rendered batch review
 
@@ -1996,7 +1996,7 @@ Core · target · **partial** · From REPORT-002 · Cites BASE-ROLE-001, BASE-DA
 
 #### FORECAST-001 — Weighted forecasts, quotas and revenue schedules
 
-Core · target · **done** · Cites BASE-ROLE-001, BASE-AUDIT-001
+Core · target · **partial** · Cites BASE-ROLE-001, BASE-AUDIT-001
 
 **Requirement.** Managers set stage probabilities, forecast categories, per-rep/team monthly or quarterly USD quotas and revenue schedules for one-time and recurring deal lines. Forecasts separate open unweighted value, weighted expected value, committed/best-case/pipeline, closed-won bookings, recurring revenue and quota attainment. Inputs and overrides retain actor, reason, timestamp and an as-of snapshot; stale or missing close dates/probabilities are visible, and sales forecast never claims to be recognized accounting revenue. Weighted value is amount times reviewed probability, independent of engagement score. Until TEAM-005 ships team roles and membership, the installation owner acts as forecast administrator and reviews stage inputs, deal overrides, schedules and per-rep monthly or quarterly quotas. Current full operators may read forecasts; collaborators have no forecast access. TEAM-005 inherits real team quota membership, team-scoped access and the rep/team quota comparison in this acceptance. QUOTE-001 inherits product/quote-line linkage and its schedule comparison. These inheritances do not remove one-time or recurring schedules for current deals. Every saved as-of snapshot retains its original inputs and values; privacy erasure withdraws an affected snapshot in full and leaves unrelated snapshots unchanged.
 
@@ -2004,7 +2004,7 @@ Core · target · **done** · Cites BASE-ROLE-001, BASE-AUDIT-001
 1. Create USD 10,000 at 30% and USD 20,000 at 60%, require USD 15,000 weighted total, apply a documented override and close one won; compare rep/team quota attainment, recurring schedule and preserved prior-period snapshot.
 
 **Evidence.** `src/core/features/forecast/`; `migrations/core/0048_forecasts.sql`; `newtests/t096/browser-journeys.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `docs/retained-verification/FORECAST-001/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: weighted total USD 15000; documented override; won close; rep quota attainment; team quota attainment; recurring schedule; prior-period snapshot preserved. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### QUOTE-001 — Products, quotes and signatures
 
@@ -2077,7 +2077,7 @@ Core · target · **missing** · Cites BASE-ROLE-001, BASE-SECRET-001, BASE-DATA
 
 #### INTEGRATE-005 — Slack notice routing and allowed content
 
-Core · target · **done** · Cites BASE-ROLE-001, BASE-SECRET-001, BASE-DATA-004 · Register R-11
+Core · target · **partial** · Cites BASE-ROLE-001, BASE-SECRET-001, BASE-DATA-004 · Register R-11
 
 **Requirement.** The installation owner connects Slack in Settings and chooses bot-member, workspace-internal channels and stage movement, won-deal, due-work and internal-handoff event types. The bot token and app signing secret use Capture's installation-local encrypted credential custody: entered once, verified with `auth.test`, never shown again, exported or logged. TEAM-005 inherits real administrator roles and team-scoped channel and audience rules; until then the installation owner administers Slack. The fixed outbound allowlist is event kind, deal or company display name, stage from and to, owner display name, due date, due-work task type/priority and an authenticated Orbit link. The link contains no token and requires Orbit sign-in. No entry, note, call, meeting, task-note or handoff text, free-text task title, person/lead name, contact email or phone, amount, score, file or AI output enters a channel message. Restricted records and their account-linked people get a generic event notice and authenticated link, with name, owner, stage and date withheld visibly; shared/external channels and channels the bot has not joined are refused at setup and checked again before delivery. The owner-chosen Dashboard ready event has a separate fixed allowlist: event kind plus an authenticated Orbit link only, with no dashboard name, figure, count, PDF, CSV or image, and no dashboard action. It uses the same pre-post channel check, rate limits, uncertainty holds and TEAM-005 audience rules.
 
@@ -2088,11 +2088,11 @@ Core · target · **done** · Cites BASE-ROLE-001, BASE-SECRET-001, BASE-DATA-00
 4. Choose and deliver Dashboard ready with only event kind and an authenticated link; no name, figure, count, PDF, CSV, image or action appears.
 
 **Evidence.** `src/core/features/slack/`; `migrations/core/0051_slack_notices.sql`; `tests/core/source-onboarding.test.ts`; `tests/support/slack-notices-proof.ts`; `tests/support/slack-actions-proof.ts`; `tests/support/slack-archive-proof.ts`; `docs/retained-verification/INTEGRATE-005/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: Dashboard-ready event selection; explicit dashboard-ready schedule; token-free authenticated link; dashboard event/link only; no dashboard name/figures/count/PDF/CSV/image/action. Asserted: connected bot identity read back; eligible channel list; external/nonmember channel refused; one stage notice with replay safety; due-work notice; exact allowed content keys; forbidden text absent; private notice has event/link only; private name/owner/stage absent.
 
 #### INTEGRATE-009 — Slack identity and single-use actions
 
-Core · target · **done** · From INTEGRATE-005 · Cites BASE-ROLE-001, BASE-SECRET-001, BASE-DATA-004
+Core · target · **partial** · From INTEGRATE-005 · Cites BASE-ROLE-001, BASE-SECRET-001, BASE-DATA-004
 
 **Requirement.** An audited explicit administrator mapping binds (Slack team, enterprise if present, app, user ID) to an active full Orbit operator, never inferred from email. The first accepted bot notice binds the verified bot app ID. Mappings are visible to their operator, dead after removal/access change/disconnect, and require fresh administrator confirmation after restore. Routes also restore paused, and reconnect replays no old notice or action. Users acknowledge a notice or create an attributed internal task. Incoming actions require the installation's app signing secret and a five-minute timestamp window, the connected Slack team/app/enterprise and user.team_id, configured channel and exact bot-authored message Orbit sent, and an Orbit-issued single-use action ID bound to notice, event, route, record and action kind. Current native access is checked on each action; consumption commits atomically with the task and its Slack-sourced timeline. HTTP acknowledgment is immediate and generic outcomes use response_url without retaining its capability. Unmapped or revoked mappings, foreign teams/channels/messages, replays and removed operators change nothing and receive an explicit refusal. No Slack action approves, edits or sends customer mail.
 
@@ -2103,11 +2103,11 @@ Core · target · **done** · From INTEGRATE-005 · Cites BASE-ROLE-001, BASE-SE
 4. An acknowledgment never approves/edits/sends mail or accepts an application-proposed handoff; mappings confer no native role, content, delegation or outreach authority.
 
 **Evidence.** `src/core/features/slack/`; `migrations/core/0051_slack_notices.sql`; `tests/core/source-onboarding.test.ts`; `tests/support/slack-notices-proof.ts`; `tests/support/slack-actions-proof.ts`; `tests/support/slack-archive-proof.ts`; `docs/retained-verification/INTEGRATE-005/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: foreign app refused; foreign enterprise refused; foreign user.team_id refused; lost native access refused; changed timestamp cannot reuse spent action id; failure during action consumption remains atomic; no mail editing; no mail approval; acknowledgment cannot accept proposed handoff; mapping grants no native/content/delegation authority. Asserted: unsigned signature refusal; stale signature refusal; unmapped/foreign/revoked/removed identities leave state unchanged; acknowledgment names operator; task names creator/owner; task retains Slack source; no customer send from Slack.
 
 #### INTEGRATE-010 — Slack delivery failures and destination safety
 
-Core · target · **done** · From INTEGRATE-005 · Cites BASE-ROLE-001, BASE-SECRET-001, BASE-DATA-004
+Core · target · **partial** · From INTEGRATE-005 · Cites BASE-ROLE-001, BASE-SECRET-001, BASE-DATA-004
 
 **Requirement.** One source event has one durable notice per channel. HTTP 429 respects Retry-After with visible notice/channel status; unaccepted failures remain failed until an administrator retries. Timeouts, connection loss after submission and interrupted claims become uncertain, held for a human to inspect and confirm an observed message timestamp or keep held, never blindly resent. Shared, pending-shared, org-shared, frozen, archived and foreign-context channels are refused. A conversations.info check immediately precedes every post; share/unshare, archive and bot-departure events suspend routing until administrator re-confirmation. Signed safety events deduplicate by event_id. Disconnect and `invalid_auth`, `account_inactive` or `token_revoked` show unresolved setup in Settings and Connected products and visibly pause notices; manual in-app sales work remains available.
 
@@ -2118,11 +2118,11 @@ Core · target · **done** · From INTEGRATE-005 · Cites BASE-ROLE-001, BASE-SE
 4. Revoke workspace credentials and read unresolved setup with in-app sales work still usable; reconnect replays neither old notices nor old actions.
 
 **Evidence.** `src/core/features/slack/`; `migrations/core/0051_slack_notices.sql`; `tests/core/source-onboarding.test.ts`; `tests/support/slack-notices-proof.ts`; `tests/support/slack-actions-proof.ts`; `tests/support/slack-archive-proof.ts`; `docs/retained-verification/INTEGRATE-005/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: pending-share suspension; bot departure suspension; shared/pending/org/foreign channel refused before delivery; manual in-app work unaffected; reconnect replays no historic notice; reconnect replays no historic action. Asserted: shared route suspended; unshare remains paused; rate limited state visible; successful retry creates one notice; unaccepted failure remains failed; uncertain claim held without resending; frozen/archived refusal suspends route; safety replay has one effect; unshare never resumes; revoked installation shows unresolved setup.
 
 #### INTEGRATE-011 — Slack portable definitions and deletion
 
-Core · target · **done** · From INTEGRATE-005 · Cites BASE-ROLE-001, BASE-SECRET-001, BASE-DATA-004
+Core · target · **partial** · From INTEGRATE-005 · Cites BASE-ROLE-001, BASE-SECRET-001, BASE-DATA-004
 
 **Requirement.** Along BOUNDARY-001's walk, Slack carries notices for existing signed bookings, logged calls/meetings, accepted internal handoffs, stage moves and the won deal. INTEGRATE-008 inherits the Buoy-handoff notice; QUOTE-001 inherits the signed-quote notice; INTEGRATE-003 inherits the billing notice, each proving its own notice when that step exists. The full buyer journey remains the acceptance of whichever named BOUNDARY-001 clause ships last. Channel routing, event choices, explicit user mappings and delivery/action history round-trip through Records and local archives without credentials; restoring needs fresh credentials. Erasing an underlying contact, company or deal redacts stored notice content and issues tracked chat.delete requests with visible outcomes. Restored pending deletions need fresh administrator confirmation; copies already held cannot be recalled.
 
@@ -2132,7 +2132,7 @@ Core · target · **done** · From INTEGRATE-005 · Cites BASE-ROLE-001, BASE-SE
 3. At 1440 and 390 inspect Settings, notice status and unresolved setup; existing booking, call/meeting, handoff and won-deal notices keep allowed fields and authenticated links.
 
 **Evidence.** `src/core/features/slack/`; `migrations/core/0051_slack_notices.sql`; `tests/core/source-onboarding.test.ts`; `tests/support/slack-notices-proof.ts`; `tests/support/slack-actions-proof.ts`; `tests/support/slack-archive-proof.ts`; `docs/retained-verification/INTEGRATE-005/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: restored pending deletion held for fresh confirmation; Settings/status/unresolved at 1440; Settings/status/unresolved at 390; call/meeting notice; exact allowed field/link safety. Asserted: history portable exactly; bot/signing credentials absent; routing restored paused; mapping provenance portable without authority; no restored action credentials; stored notice content redacted; provider deletion requested; nonempty deletion set has confirmed outcomes; booking notice; won-deal and handoff notices.
 
 #### INTEGRATE-006 — QuickBooks Online and Xero accounting handoff
 
@@ -2246,7 +2246,7 @@ Core · target · **partial** · Cites BASE-ACCESSIBILITY-001, BASE-ACCESS-002 �
 
 #### DATA-003 — Full-target portability, privacy and audit
 
-Core · target · **done** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUDIT-001
+Core · target · **partial** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUDIT-001
 
 **Requirement.** Complete product exports include custom schemas/relationships, multi-pipeline definitions/history, tasks/recurrence, workflow and sequence definitions/enrollment/outcomes, call/transcript evidence, quotes, forecast snapshots/quotas, integration identities/provenance, files and their versions with SHA-256 digests (RECORD-018) and agent decisions. Restore validates integrity into eligible empty data, preserves customer history but pauses external work until fresh authorization and review; it never replays messages, charges or calls. Erasure covers local evidence/derivatives and tracks required provider-deletion requests separately; downloaded archives and already sent external content cannot be recalled. Export permission is independently enforced and external costs are visible in USD. The baseline applies to every currently supported category, including custom fields and relationships, pipelines and movement history, recurring tasks, saved reports, reviewed forecasts and immutable forecast snapshots, reviewed form submissions and spam, capture/proposals, and agent handoff decisions. Before shipping, TEAM-005; RECORD-014/016/017/018; MIGRATE-001–003; CAPTURE-010–012; FORM-001; OUT-013–020; NOTIFY-003; SEQUENCE-001–003; AUTO-001–002; CALL-001–002; REPORT-001–002; FORECAST-001; QUOTE-001; INTEGRATE-001–008; ENRICH-001; API-001; MOBILE-001; OPS-001; and AGENT-001–004 inherit these same export, integrity, erasure, anonymized audit, declared external-deletion and fresh-authority obligations for each added record and derivative. Existing subsets remain covered now; future file versions must round-trip identical bytes and SHA-256 digests. INTEGRATE-005 adopts definition-only Slack routing/mapping portability, fresh administrator confirmation after restore, excluded bot/signing/action credentials and tracked provider chat.delete on erasure. Restored pending deletions are held for fresh administrator confirmation; copies already held cannot be recalled. INTEGRATE-005 adopts definition-only Slack routing/mapping portability, fresh administrator confirmation after restore, excluded bot/signing/action credentials and tracked provider chat.delete on erasure.
 
@@ -2257,7 +2257,7 @@ Core · target · **done** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUDIT-001
 4. Repeat this journey for each target feature before it ships, including its required provider-deletion requests and separately confirmed outcomes, without claiming recall of downloads or already sent content.
 
 **Evidence.** `tests/core/capture-data.test.ts`; `tests/support/current-sales-data.ts`; `tests/support/current-sales-archive.ts`; `tests/support/current-sales-local.ts`; `scripts/installer/portability-policy.mjs`; `newtests/t096/forms-native.test.ts`; `tests/core/crm-import-erasure.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: restored pending Slack deletions held; outside copies cannot be recalled; every current search and AI/mail door checked; future-feature provider-deletion requests; future-feature separately confirmed outcomes; future-feature complete portability and erasure. Asserted: each current table populated; part content digests match; all category content digests reconcile; anonymous audit retained; export independent permission refusal; credentials excluded; source sessions unusable; collaborator authority renewed; publication authority withdrawn; agent authority unusable; scheduled approval withdrawn; current serialized data has no erased identity; direct public record absence; report source inaccessible; replay cannot recreate erased capture; old export withdrawn; audit references anonymized.
 
 #### OPS-001 — Owned operation and explicit provider failures
 
@@ -2280,7 +2280,7 @@ Core · target · **partial** · Cites BASE-SIGNIN-001, BASE-INSTALL-001, BASE-O
 
 #### BOUNDARY-001 — Separate products and US-first delivery
 
-Core · target · **done** · Cites BASE-DATA-004
+Core · target · **partial** · Cites BASE-DATA-004
 
 **Requirement.** The RunEditRun product links are [Envelope](https://github.com/just-every/run-envelope) (small-business payroll), [Pegboard](https://github.com/just-every/run-pegboard) (work and project management) and [Porthole](https://github.com/just-every/run-porthole) (observability). These are product links without a capability claim. Orbit owns the complete sales CRM job, including calling, sales sequences, quoting, forecasts, automation and native mobile. It does not become a marketing CMS/ads-attribution suite, customer-success platform, support inbox, booking engine, payment processor, lender, accounting/tax ledger, PSTN carrier or signature trust service. Buyers reach those jobs through Buoy, HappyToHelp/Help Scout/Zendesk, Dial/Calendly, Nectar/Stripe, Mailchimp, QuickBooks Online/Xero, Twilio/Aircall and DocuSign integrations named above. US-first means USD defaults, US operating timezones and daylight-saving behavior, US business/accounting handoffs and explicit sales-tax treatment on quotes. Broader currency/locale support can extend the model without replacing source monetary values. No difficulty, missing provider approval or pending agreement removes a named CRM obligation. An agent's outreach carries external under the company's policy; record text never grants that authority. Protected prospect-network scraping remains outside Orbit's research job. Today Orbit receives signed Calendly and Cal.com bookings and sends configured Slack sales notices; Settings shows Slack’s connected or unresolved setup state and names every other product above as not available in Orbit, with the job it owns, never as a connection or a substitute. The cross-product buyer walk moves with the clause that ships each step, carried in that clause's own text and acceptance: booking (INTEGRATE-001, with meetings under INTEGRATE-002 and calls under CALL-001 and CALL-002), support context (INTEGRATE-004), signed quote with explicit sales tax (QUOTE-001), billing and accounting (INTEGRATE-003, INTEGRATE-006), handoff notices and marketing audiences (INTEGRATE-005, INTEGRATE-007) and the post-sale Buoy handoff (INTEGRATE-008); whichever ships last runs the complete walk. SEQUENCE-001–003, AUTO-001–002, FORECAST-001, MOBILE-001, ENRICH-001 and AGENT-001–004 inherit the rule that an agent's external outreach follows the company's policy and protected-network scraping remains outside Orbit's research job. INTEGRATE-005’s existing won-deal and internal handoff notices carry no products, commitments or amounts. INTEGRATE-008 inherits the Buoy notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice. Slack disconnection is unresolved setup; the last-shipping clause retains the full buyer journey. INTEGRATE-008 inherits the Buoy notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice. The complete walk from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff is carried by INTEGRATE-001–008, CALL-001/002 and QUOTE-001, each in its own acceptance, and run end to end by whichever ships last.
 
@@ -2291,7 +2291,7 @@ Core · target · **done** · Cites BASE-DATA-004
 4. In Settings at 1440 and 390, inspect Connected products: Calendly and Cal.com show their real delivery state, and Dial, Zoom, Twilio/Aircall, HappyToHelp/Help Scout/Zendesk, DocuSign, Nectar/Stripe, QuickBooks Online/Xero, Mailchimp and Buoy show as not available in Orbit; Slack shows its actual connected or unresolved setup state with the job each owns, with no substituted connector or mock and no reduced CRM scope.
 
 **Evidence.** `tests/core/source-onboarding.test.ts`; `src/core/features/settings/connected-products.ts`; `src/core/features/operator/ui/connected-products.tsx`; `src/core/features/ingestion/booking-webhooks.ts`; `tests/core/signals-outreach.test.ts`; `tests/support/sales-tasks.ts`; `tests/evidence/contract/BOUNDARY-001/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: no products/commitments/amounts in Slack won/handoff notices; last-shipping clause retains full buyer journey; product states and owned jobs; 1440 browser proof; 390 browser proof; full CRM scope retained. Asserted: Slack disconnected state; signed Calendly intake links deal; manual call log on deal; exact review and send; USD amount unchanged; booking/manual/setup sends no mail; connected/awaiting Calendly and Cal.com state; unavailable products enumerated; Slack actual state; no substituted connector.
 
 ### Push further
 
@@ -2309,7 +2309,7 @@ Core · push-further · **partial** · Cites BASE-AGENT-002, BASE-AGENT-003, BAS
 
 #### AGENT-002 — Explain stalled deals and contradictory commitments
 
-Core · push-further · **done** · Cites BASE-AGENT-002, BASE-AGENT-003, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-011 · Rules D-2, D-3
+Core · push-further · **partial** · Cites BASE-AGENT-002, BASE-AGENT-003, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-011 · Rules D-2, D-3
 
 **Requirement.** The agent joins authorized stage history, actual customer replies, decision-maker coverage, task/quote commitments and call evidence to flag a stalled or risky deal. It shows the exact missed promise, conflicting date/price or absent stakeholder, separates observations from inference, and proposes a concrete next experiment or assigned task. Evidence conflicts remain visible. An agent's reversible CRM update carries standard and a binding commercial decision adds commitment; the company's policy decides whether a manager approves it. Owners can dismiss a finding with a reason or adjust the rule; a confidence score alone cannot move a deal. A missing stakeholder means no contact is recorded in that role on the deal. The agent shows recorded roles as observations; any suggested stakeholder is a labelled inference with its source and its filing as a recorded role carries standard, decided by the company's policy. Risk sources are the stage's last change against its stale interval, genuine customer replies, provider open reports (labelled inferred), recorded stakeholder roles, overdue internal next actions, assigned tasks and unanswered replies, mutual commitments, the next step and logged calls, meetings and notes. The decision-maker role is required by default, and owners change a deal's required roles with an attributed reason. Conflicting recorded dates and prices come from a previewed AI check that sends only those recorded lines; every conflict must quote two lines exactly or the whole result fails, and without AI the check shows as unavailable. Findings, dismissals and approved tasks never change stage, amount, close date, forecast, stakeholders or commitments and send nothing; under the held company policy the owner acts as approving manager until TEAM-005. QUOTE-001 adds quote dates and prices, and CALL-002 transcript evidence, as risk sources before they ship. QUOTE-001 repeats this with contradictory quote dates, and CALL-002 with transcript evidence, before they ship.
 
@@ -2317,7 +2317,7 @@ Core · push-further · **done** · Cites BASE-AGENT-002, BASE-AGENT-003, BASE-A
 1. Use deals with reported opens but no reply, no recorded decision-maker, an overdue promise and task, a deal past its stage's stale interval and contradictory recorded commitment and call dates; inspect precise cited risk, observation apart from inference and next action at 1440 and 390, reject an AI result whose citation is not an exact recorded quote, dismiss one with a reason and reload, adjust a required role and approve another task, then verify under the held company policy no unapproved stage, amount, close date, stakeholder, commitment, forecast or mail change.
 
 **Evidence.** `tests/core/today-brief.test.ts`; `tests/core/launch-reply-authority.test.ts`; `src/core/features/risks/`; `src/core/features/operator/ui/deal-risks.tsx`; `src/core/features/operator/ui/deal-risk-finding.tsx`; `src/core/features/today/promises.ts`; `tests/evidence/contract/AGENT-002/`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: risk display at 1440; risk display at 390; company policy actually decides class. Asserted: opens without reply cited as inferred; missing recorded stakeholder exact quote; overdue promise citation; overdue task citation; stage stall citation; exact contradictory date/call citations; observation distinct from inference; bad AI quote leaves no findings; dismissal reason persists; changed required role persists; reviewed task content read back; held-policy findings change no sales state or mail.
 
 #### AGENT-003 — Follow the next action through to a customer outcome
 

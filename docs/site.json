@@ -181,6 +181,10 @@
     {
       "source": "docs/contract/MECHANISM.md",
       "reason": "Protocol and implementation details kept out of acceptance prose"
+    },
+    {
+      "source": "docs/contract/DONE-AUDIT.md",
+      "reason": "Acceptance-point assertion audit for every carried-done clause and split part"
     }
   ]
 }

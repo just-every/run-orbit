@@ -304,7 +304,25 @@
     {
       "file": "CONTRACT.md",
       "line": 58,
-      "text": "**SIGNAL-009 \u2014 Signed sources.** This clause supersedes BASE-ACCESS-004 for the paths `/api/v1/signals/` and `/api/v1/mail/events/` only: a request there is authorized by a signature from a source or mail provider configured in this deployment (or, at a source\u2019s `/automation` endpoint only, its current private secret in an HTTPS Authorization Bearer header) instead of an operator session, and may write only signals, delivery states, and their timeline entries. Native operator mutations require a valid operator session and a server-side ownership check. The separately scoped application-delegation boundary below is the only additional authorization exception. **Acceptance:** Exercise signed callbacks and HTTPS source-scoped automation; refuse invalid, disabled and rotated authority while retaining native session and ownership checks.",
+      "text": "**SIGNAL-009 \u2014 Signed sources.** This clause supersedes BASE-ACCESS-004 for the paths `/api/v1/signals/` and `/api/v1/mail/events/` only: a request there is authorized by a signature from a source or mail provider configured in this deployment (or, at a source\u2019s `/automation` endpoint only, its current private secret in an HTTPS Authorization Bearer header) instead of an operator session, and may write only signals, delivery states, and their timeline entries. ",
+      "to": "clause",
+      "ids": [
+        "SIGNAL-009"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 58,
+      "text": "Native operator mutations require a valid operator session and a server-side ownership check.",
+      "to": "base",
+      "ids": [
+        "BASE-ACCESS-004"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 58,
+      "text": " The separately scoped application-delegation boundary below is the only additional authorization exception. **Acceptance:** Exercise signed callbacks and HTTPS source-scoped automation; refuse invalid, disabled and rotated authority while retaining native session and ownership checks.",
       "to": "clause",
       "ids": [
         "SIGNAL-009"
@@ -754,7 +772,25 @@
     {
       "file": "CONTRACT.md",
       "line": 133,
-      "text": "**PUBLIC-004 \u2014 Native sign-in.** Base operator-auth over Orbit's own operators: configured email-link delivery sends only to an existing active operator, gives the same request response for unknown and inactive addresses, and exchanges a hashed, single-use link, confirmed by POST from a read-only confirmation page within 15 minutes, for a secure native session. An optional linked identity provider (an Auth install) admits only existing operators and stays off until the owner turns it on. Return locations stay inside the operator app. Sign-out revokes that session. A missing or failed mail configuration cannot issue a session. Orbit\u2019s sign-in path, brand and theme are declared in `src/identity.ts`. **Acceptance:** Request and confirm a native magic link, test unknown/inactive and expired/reused links, sign out and exercise optional linked identity without admitting new operators.",
+      "text": "**PUBLIC-004 \u2014 Native sign-in.** Base operator-auth over Orbit's own operators: configured email-link delivery sends only to an existing active operator, gives the same request response for unknown and inactive addresses, and exchanges a hashed, single-use link, confirmed by POST from a read-only confirmation page within 15 minutes, for a secure native session. An optional linked identity provider (an Auth install) admits only existing operators and stays off until the owner turns it on. Return locations stay inside the operator app. ",
+      "to": "clause",
+      "ids": [
+        "PUBLIC-004"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 133,
+      "text": "Sign-out revokes that session.",
+      "to": "base",
+      "ids": [
+        "BASE-ACCESS-002"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 133,
+      "text": " A missing or failed mail configuration cannot issue a session. Orbit\u2019s sign-in path, brand and theme are declared in `src/identity.ts`. **Acceptance:** Request and confirm a native magic link, test unknown/inactive and expired/reused links, sign out and exercise optional linked identity without admitting new operators.",
       "to": "clause",
       "ids": [
         "PUBLIC-004"
@@ -772,7 +808,25 @@
     {
       "file": "CONTRACT.md",
       "line": 138,
-      "text": "**DATA-002 \u2014 Contact erasure.** Within 5 minutes of an operator deleting a contact, their email addresses, signal payloads, drafts, message bodies, and the notifications naming them are absent from records, search results, exports, and every later AI or mail request. Only audit entries survive, with the contact's reference anonymized, as BASE-DATA-003 requires. Erasing a contact, company or deal redacts INTEGRATE-005\u2019s stored notice content and issues tracked chat.delete requests for its bot messages, with each deletion outcome visible. Copies already held outside Slack cannot be recalled. **Acceptance:** Erasing a contact, company or deal redacts INTEGRATE-005\u2019s stored notice content and issues tracked chat.delete requests for its bot messages, with each deletion outcome visible. Copies already held outside Slack cannot be recalled. Exercise this inherited behavior through its public door.  Delete a contact containing aliases, imported/captured mail and notes, drafts and transfer copies; verify search/export/AI/mail absence and anonymized audit within five minutes, including replay.",
+      "text": "**DATA-002 \u2014 Contact erasure.** Within 5 minutes of an operator deleting a contact, their email addresses, signal payloads, drafts, message bodies, and the notifications naming them are absent from records, search results, exports, and every later AI or mail request. ",
+      "to": "clause",
+      "ids": [
+        "DATA-002"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 138,
+      "text": "Only audit entries survive, with the contact's reference anonymized, as BASE-DATA-003 requires.",
+      "to": "base",
+      "ids": [
+        "BASE-DATA-003"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 138,
+      "text": " Erasing a contact, company or deal redacts INTEGRATE-005\u2019s stored notice content and issues tracked chat.delete requests for its bot messages, with each deletion outcome visible. Copies already held outside Slack cannot be recalled. **Acceptance:** Erasing a contact, company or deal redacts INTEGRATE-005\u2019s stored notice content and issues tracked chat.delete requests for its bot messages, with each deletion outcome visible. Copies already held outside Slack cannot be recalled. Exercise this inherited behavior through its public door.  Delete a contact containing aliases, imported/captured mail and notes, drafts and transfer copies; verify search/export/AI/mail absence and anonymized audit within five minutes, including replay.",
       "to": "clause",
       "ids": [
         "DATA-002"
@@ -952,13 +1006,43 @@
     {
       "file": "CONTRACT.md",
       "line": 173,
-      "text": "An owner assigns sales-admin, manager, seller and read-only roles, teams and record ownership. Managers may see their team; a seller can be restricted to assigned/shared records. Assigned records are exactly the records that seller owns: opportunities under RECORD-007, and contacts, leads, companies and custom-object records under RECORD-016. A restricted role may additionally see records explicitly shared with the seller or their team and, when the administrator enables it for that role, the contacts and company associated with a deal they own. A manager's team scope is the records owned by the team's members. Reassigning an owner changes who may see the record on the next request. Field-level grants protect sensitive amounts, notes, mail and files (RECORD-018). Import/export, forecast override, source connection, deletion, workflow authoring and activation, sequence authoring and sequence enrollment have distinct permissions. By default only sales-admins activate workflows (AUTO-001), whose record writes stay within the activating user's grants (AUTO-002), and sales-admin, manager and seller roles may author sequences (SEQUENCE-001). Current authorization applies to UI, search, APIs, reports, AI input and exports; changes and revocation take effect on the next request, and access changes are audited.",
+      "text": "An owner assigns sales-admin, manager, seller and read-only roles, teams and record ownership. Managers may see their team; a seller can be restricted to assigned/shared records. Assigned records are exactly the records that seller owns: opportunities under RECORD-007, and contacts, leads, companies and custom-object records under RECORD-016. A restricted role may additionally see records explicitly shared with the seller or their team and, when the administrator enables it for that role, the contacts and company associated with a deal they own. A manager's team scope is the records owned by the team's members. ",
       "to": "clause",
       "ids": [
         "TEAM-005",
         "TEAM-006",
         "TEAM-007",
         "TEAM-008"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 173,
+      "text": "Reassigning an owner changes who may see the record on the next request.",
+      "to": "base",
+      "ids": [
+        "BASE-ROLE-001"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 173,
+      "text": " Field-level grants protect sensitive amounts, notes, mail and files (RECORD-018). Import/export, forecast override, source connection, deletion, workflow authoring and activation, sequence authoring and sequence enrollment have distinct permissions. By default only sales-admins activate workflows (AUTO-001), whose record writes stay within the activating user's grants (AUTO-002), and sales-admin, manager and seller roles may author sequences (SEQUENCE-001). ",
+      "to": "clause",
+      "ids": [
+        "TEAM-005",
+        "TEAM-006",
+        "TEAM-007",
+        "TEAM-008"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 173,
+      "text": "Current authorization applies to UI, search, APIs, reports, AI input and exports; changes and revocation take effect on the next request, and access changes are audited.",
+      "to": "base",
+      "ids": [
+        "BASE-ROLE-001"
       ]
     },
     {
@@ -1380,7 +1464,7 @@
     {
       "file": "CONTRACT.md",
       "line": 238,
-      "text": "NOTIFY-003 inherits personal Slack assignment DMs under INTEGRATE-005: only the explicitly mapped, opted-in new owner with current access, one notice per bulk batch, none on replay or undo. Assignment never grants access.",
+      "text": "NOTIFY-003 inherits personal Slack assignment DMs under INTEGRATE-005: only the explicitly mapped, opted-in new owner with current access, one notice per bulk batch, none on replay or undo. ",
       "to": "clause",
       "ids": [
         "RECORD-016",
@@ -1388,6 +1472,15 @@
         "RECORD-020",
         "RECORD-021",
         "RECORD-022"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 238,
+      "text": "Assignment never grants access.",
+      "to": "base",
+      "ids": [
+        "BASE-ROLE-001"
       ]
     },
     {
@@ -1419,7 +1512,29 @@
     {
       "file": "CONTRACT.md",
       "line": 244,
-      "text": "**Acceptance:** NOTIFY-003 inherits personal Slack assignment DMs under INTEGRATE-005: only the explicitly mapped, opted-in new owner with current access, one notice per bulk batch, none on replay or undo. Assignment never grants access. Exercise this inherited behavior through its public door.  Import HubSpot contacts and companies with Contact owner and Company owner columns, one owner value unmatched; map it in the dry run, apply, and see each record's owner and attributed import entry. Bulk-reassign 20 contacts with one denied item and see 19 changes, one listed failure and 19 timeline entries. Enable the company-to-contact rule, preview it, change a company owner and see only its unowned contacts take that owner. Enable the first-email rule, send a first email to an unowned lead and see the sender become its owner. Sign in as a seller restricted to owned records: \"My contacts\" opens by default, and lists, search, API and export show only their own contacts and companies. Remove a rep and hand over their contacts and companies explicitly under TEAM-004. Assign a company to a rep and see one notification naming it and the assigner; bulk-assign 20 contacts to another rep and see one notification listing them; assign a contact to yourself and see none.",
+      "text": "**Acceptance:** NOTIFY-003 inherits personal Slack assignment DMs under INTEGRATE-005: only the explicitly mapped, opted-in new owner with current access, one notice per bulk batch, none on replay or undo. ",
+      "to": "clause",
+      "ids": [
+        "RECORD-016",
+        "RECORD-019",
+        "RECORD-020",
+        "RECORD-021",
+        "RECORD-022"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 244,
+      "text": "Assignment never grants access.",
+      "to": "base",
+      "ids": [
+        "BASE-ROLE-001"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 244,
+      "text": " Exercise this inherited behavior through its public door.  Import HubSpot contacts and companies with Contact owner and Company owner columns, one owner value unmatched; map it in the dry run, apply, and see each record's owner and attributed import entry. Bulk-reassign 20 contacts with one denied item and see 19 changes, one listed failure and 19 timeline entries. Enable the company-to-contact rule, preview it, change a company owner and see only its unowned contacts take that owner. Enable the first-email rule, send a first email to an unowned lead and see the sender become its owner. Sign in as a seller restricted to owned records: \"My contacts\" opens by default, and lists, search, API and export show only their own contacts and companies. Remove a rep and hand over their contacts and companies explicitly under TEAM-004. Assign a company to a rep and see one notification naming it and the assigner; bulk-assign 20 contacts to another rep and see one notification listing them; assign a contact to yourself and see none.",
       "to": "clause",
       "ids": [
         "RECORD-016",
@@ -1454,7 +1569,27 @@
     {
       "file": "CONTRACT.md",
       "line": 252,
-      "text": "Today a user mentions a colleague as `@Display Name`, or as `@email` when two active colleagues share a name, in a note, a logged call or meeting, a task note or a person's handoff; while they type, autocomplete offers active full operators and collaborators who accepted their invitation. Until TEAM-005's roles exist every full operator sees every record (pattern 4), so only a collaborator can be without access. A collaborator opens a mention only through a live grant on that record that includes its notes, calls and meetings (ct, 19 October): the collaborator grant carries an \"Include notes, calls and meetings\" option, off by default, set by whoever shares (the installation owner acts for the administrator until TEAM-005, pattern 2), and creating the grant and each change of the option are audited with who changed it and the old and new value. Saving text that mentions a collaborator who cannot see the record, or whose grant leaves out its notes, calls and meetings, is refused with their names; the author shares the record with them including its notes, calls and meetings, or turns the option on for that grant, explicitly, or removes the mention, and a mention never grants access or turns the option on. Each mentioned colleague other than the author receives one in-app notification naming the author and the record and opening the exact entry, task or handoff; an edit notifies only colleagues not yet notified for that entry; deleting an entry withdraws its unread mention notifications and leaves an attributed \"entry deleted\" timeline record. Notifications \u2192 Mentions lists every entry, task note and handoff that mentions the user now. An application's proposed handoff notifies nobody until a person accepts or edits it. Mentions are internal: no customer message carries entry text, AI-001 previews carry no notes, and AGENT-002's conflict check sends note lines only exactly as its preview shows them. An entry's mentions are saved with it (a task note or handoff keeps them in its text), so they are exported with it, and deleting or erasing the record erases its mention notifications (DATA-002). With the option on, the collaborator sees that record's notes, logged calls and meetings, task notes and handoffs on Shared records, read-only, and never another record's entries; a mention opens there at the exact entry. A collaborator's notifications (`GET /api/v1/notifications` and Notifications \u2192 Mentions) are only their own mention notifications about records they can read now under such a grant, with only their own unread count, never another operator's notifications or counts; when the grant is revoked or expires they are hidden, not deleted, and a new grant shows them again. TEAM-005 inherits team mentions and per-entry private visibility, and NOTIFY-003 inherits email, push and Slack delivery by preference.",
+      "text": "Today a user mentions a colleague as `@Display Name`, or as `@email` when two active colleagues share a name, in a note, a logged call or meeting, a task note or a person's handoff; while they type, autocomplete offers active full operators and collaborators who accepted their invitation. Until TEAM-005's roles exist every full operator sees every record (pattern 4), so only a collaborator can be without access. A collaborator opens a mention only through a live grant on that record that includes its notes, calls and meetings ",
+      "to": "clause",
+      "ids": [
+        "RECORD-017",
+        "RECORD-023",
+        "RECORD-024"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 252,
+      "text": "(ct, 19 October)",
+      "to": "rulings",
+      "ids": [
+        "RL-1"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 252,
+      "text": ": the collaborator grant carries an \"Include notes, calls and meetings\" option, off by default, set by whoever shares (the installation owner acts for the administrator until TEAM-005, pattern 2), and creating the grant and each change of the option are audited with who changed it and the old and new value. Saving text that mentions a collaborator who cannot see the record, or whose grant leaves out its notes, calls and meetings, is refused with their names; the author shares the record with them including its notes, calls and meetings, or turns the option on for that grant, explicitly, or removes the mention, and a mention never grants access or turns the option on. Each mentioned colleague other than the author receives one in-app notification naming the author and the record and opening the exact entry, task or handoff; an edit notifies only colleagues not yet notified for that entry; deleting an entry withdraws its unread mention notifications and leaves an attributed \"entry deleted\" timeline record. Notifications \u2192 Mentions lists every entry, task note and handoff that mentions the user now. An application's proposed handoff notifies nobody until a person accepts or edits it. Mentions are internal: no customer message carries entry text, AI-001 previews carry no notes, and AGENT-002's conflict check sends note lines only exactly as its preview shows them. An entry's mentions are saved with it (a task note or handoff keeps them in its text), so they are exported with it, and deleting or erasing the record erases its mention notifications (DATA-002). With the option on, the collaborator sees that record's notes, logged calls and meetings, task notes and handoffs on Shared records, read-only, and never another record's entries; a mention opens there at the exact entry. A collaborator's notifications (`GET /api/v1/notifications` and Notifications \u2192 Mentions) are only their own mention notifications about records they can read now under such a grant, with only their own unread count, never another operator's notifications or counts; when the grant is revoked or expires they are hidden, not deleted, and a new grant shows them again. TEAM-005 inherits team mentions and per-entry private visibility, and NOTIFY-003 inherits email, push and Slack delivery by preference.",
       "to": "clause",
       "ids": [
         "RECORD-017",
@@ -1778,10 +1913,20 @@
     {
       "file": "CONTRACT.md",
       "line": 311,
-      "text": "**Acceptance:** Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, switch the multi-deal rule to most recently active open deal and see the next such thread associated automatically with the rule named and then moved in one action, see an unknown correspondent become a CAPTURE-012 proposal, see a captured reply's PDF attachment listed on its contact, company and deal with its inline image not listed, revoke/reconnect and verify no unauthorized folder/mailbox is read. Complete an authorized live Gmail and Microsoft tenant journey.",
+      "text": "**Acceptance:** Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, switch the multi-deal rule to most recently active open deal and see the next such thread associated automatically with the rule named and then moved in one action, see an unknown correspondent become a CAPTURE-012 proposal, see a captured reply's PDF attachment listed on its contact, company and deal with its inline image not listed, revoke/reconnect and verify no unauthorized folder/mailbox is read. ",
       "to": "clause",
       "ids": [
         "CAPTURE-010"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 311,
+      "text": "Complete an authorized live Gmail and Microsoft tenant journey.",
+      "to": "register",
+      "ids": [
+        "R-1",
+        "R-2"
       ]
     },
     {
@@ -1838,12 +1983,21 @@
     {
       "file": "CONTRACT.md",
       "line": 327,
-      "text": "Approved engineering policy: an authorized connected source may retain unknown external participants only within its selected folders, calendars and time window, as sealed review evidence for 30 days from intake. Retention does not create a customer, score, sending permission or research authority. Use exact normalized email identity and exact non-free-mail company domain only; apply the clause\u2019s automated, bulk, internal and administrator exclusions before proposing. The mailbox owner or currently permitted reviewer must explicitly accept or decline. Acceptance records the reviewer, time, source evidence, owner and chosen contactability basis. Inbound conversation and rep-initiated conversation are relationship provenance, not proof of marketing consent. A reviewer may permit relevant US business email after checking purpose and suppression; an unsubscribe or stop always wins. Telephone and automated outreach require separately recorded channel-specific authority under the applicable TCPA policy. Non-US contacts require a recorded purpose and lawful basis with GDPR-style objection, access and erasure handling; uncertain jurisdiction or basis leaves contactability blocked. Unaccepted evidence expires after 30 days; decline and erasure retain only necessary keyed suppression and replay proofs. Provider authorization and jurisdiction-specific legal qualification remain explicit gaps.",
+      "text": "Approved engineering policy: an authorized connected source may retain unknown external participants only within its selected folders, calendars and time window, as sealed review evidence for 30 days from intake. Retention does not create a customer, score, sending permission or research authority. Use exact normalized email identity and exact non-free-mail company domain only; apply the clause\u2019s automated, bulk, internal and administrator exclusions before proposing. The mailbox owner or currently permitted reviewer must explicitly accept or decline. Acceptance records the reviewer, time, source evidence, owner and chosen contactability basis. Inbound conversation and rep-initiated conversation are relationship provenance, not proof of marketing consent. A reviewer may permit relevant US business email after checking purpose and suppression; an unsubscribe or stop always wins. Telephone and automated outreach require separately recorded channel-specific authority under the applicable TCPA policy. Non-US contacts require a recorded purpose and lawful basis with GDPR-style objection, access and erasure handling; uncertain jurisdiction or basis leaves contactability blocked. Unaccepted evidence expires after 30 days; decline and erasure retain only necessary keyed suppression and replay proofs. ",
       "to": "clause",
       "ids": [
         "CAPTURE-012",
         "CAPTURE-013",
         "CAPTURE-014"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 327,
+      "text": "Provider authorization and jurisdiction-specific legal qualification remain explicit gaps.",
+      "to": "register",
+      "ids": [
+        "R-10"
       ]
     },
     {
@@ -1967,7 +2121,25 @@
     {
       "file": "CONTRACT.md",
       "line": 355,
-      "text": "Before mailbox sending ships, it must reuse OUT-020's installation-origin capability handler, exact approved headers and visible link, per-recipient suppression, erasure invalidation and atomic stops. The handler may ship independently for single-recipient managed-relay mail (ct, 20 October 07:15Z).",
+      "text": "Before mailbox sending ships, it must reuse OUT-020's installation-origin capability handler, exact approved headers and visible link, per-recipient suppression, erasure invalidation and atomic stops. The handler may ship independently for single-recipient managed-relay mail ",
+      "to": "clause",
+      "ids": [
+        "OUT-013"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 355,
+      "text": "(ct, 20 October 07:15Z)",
+      "to": "rulings",
+      "ids": [
+        "RL-2"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 355,
+      "text": ".",
       "to": "clause",
       "ids": [
         "OUT-013"
@@ -1985,10 +2157,19 @@
     {
       "file": "CONTRACT.md",
       "line": 361,
-      "text": "Reps save and share permission-controlled templates, snippets and signatures with a reviewed fixed list of supported contact/company/deal merge fields. Current full operators may read and use workspace-shared entries and create and edit their own private entries; only the installation owner may create or edit workspace-shared entries. Collaborators cannot read, author, share or apply library entries. The installation owner acts as administrator until TEAM-005 supplies real teams, restricted roles and team-restricted sharing; TEAM-005 inherits those permissions and their acceptance before shipping. Library sharing never grants record or field access.",
+      "text": "Reps save and share permission-controlled templates, snippets and signatures with a reviewed fixed list of supported contact/company/deal merge fields. Current full operators may read and use workspace-shared entries and create and edit their own private entries; only the installation owner may create or edit workspace-shared entries. Collaborators cannot read, author, share or apply library entries. The installation owner acts as administrator until TEAM-005 supplies real teams, restricted roles and team-restricted sharing; TEAM-005 inherits those permissions and their acceptance before shipping. ",
       "to": "clause",
       "ids": [
         "OUT-014"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 361,
+      "text": "Library sharing never grants record or field access.",
+      "to": "base",
+      "ids": [
+        "BASE-ROLE-001"
       ]
     },
     {
@@ -2021,7 +2202,25 @@
     {
       "file": "CONTRACT.md",
       "line": 371,
-      "text": "Account and deal timelines distinguish provider acceptance, delivery, an open report and an actual human reply, retaining source and observed time. Open reports are explicitly inferred and may be unavailable or privacy-proxied; they never prove reading, intent or a human response. Reply tracking rejects automatic replies and ambiguous identity for stop/completion decisions. Gmail and Microsoft 365 report no opens or clicks through their APIs, so new open and link-click collection for Orbit-sent mail is solely OUT-016's disclosed, opt-in per-message tracking obligation; mail without it shows `open/click not tracked`, never `not opened`. Existing unsolicited provider open/click reports are retained only as inferred historical provider evidence, explicitly labelled unreliable and possibly proxied or automated; they introduce no collection or human-reading claim (ct, 19 October 2026 06:03Z). SIGNAL-007 otherwise remains: no covert tracking script, pixel, fingerprint or cross-site collection.",
+      "text": "Account and deal timelines distinguish provider acceptance, delivery, an open report and an actual human reply, retaining source and observed time. Open reports are explicitly inferred and may be unavailable or privacy-proxied; they never prove reading, intent or a human response. Reply tracking rejects automatic replies and ambiguous identity for stop/completion decisions. Gmail and Microsoft 365 report no opens or clicks through their APIs, so new open and link-click collection for Orbit-sent mail is solely OUT-016's disclosed, opt-in per-message tracking obligation; mail without it shows `open/click not tracked`, never `not opened`. Existing unsolicited provider open/click reports are retained only as inferred historical provider evidence, explicitly labelled unreliable and possibly proxied or automated; they introduce no collection or human-reading claim ",
+      "to": "clause",
+      "ids": [
+        "OUT-015"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 371,
+      "text": "(ct, 19 October 2026 06:03Z)",
+      "to": "rulings",
+      "ids": [
+        "RL-1"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 371,
+      "text": ". SIGNAL-007 otherwise remains: no covert tracking script, pixel, fingerprint or cross-site collection.",
       "to": "clause",
       "ids": [
         "OUT-015"
@@ -2092,12 +2291,21 @@
     {
       "file": "CONTRACT.md",
       "line": 387,
-      "text": "Approved engineering policy: tracking is off by default. An administrator may enable disclosed open tracking, link tracking or both, and a rep must review the tracking state and exact destinations with the message. Use cryptographically random opaque tokens with at least 128 bits of entropy, scoped to the approved message and recipient or the existing multi-recipient message rule; tokens contain no address or CRM identifier and cannot authorize another operation. Collect only token event identity, approved link identity, timestamps, counts and classification reason. Inspect network metadata transiently for abuse and classification without retaining raw IP addresses or full user-agent strings. Collection expires 90 days after provider acceptance; retained CRM evidence then contains only aggregate counts, times and inference labels under the workspace\u2019s documented retention policy. Keep reviewed redirect destinations available without further collection after expiry, disablement, suppression or erasure, without retaining erased recipient identity. Known image proxies are proxy traffic; known scanners and requests before acceptance are automated; uncertain traffic remains unknown, never verified human reading. All reports remain inferred. Only non-machine, human-classified events may trigger the existing deduplicated notification, with an uncertainty label. No report grants contactability, advances a sequence or proves a reply. Non-US collection requires recorded applicable consent or another qualified basis; uncertainty disables tracking for that recipient. Provider and jurisdiction-specific legal qualification remain explicit gaps.",
+      "text": "Approved engineering policy: tracking is off by default. An administrator may enable disclosed open tracking, link tracking or both, and a rep must review the tracking state and exact destinations with the message. Use cryptographically random opaque tokens with at least 128 bits of entropy, scoped to the approved message and recipient or the existing multi-recipient message rule; tokens contain no address or CRM identifier and cannot authorize another operation. Collect only token event identity, approved link identity, timestamps, counts and classification reason. Inspect network metadata transiently for abuse and classification without retaining raw IP addresses or full user-agent strings. Collection expires 90 days after provider acceptance; retained CRM evidence then contains only aggregate counts, times and inference labels under the workspace\u2019s documented retention policy. Keep reviewed redirect destinations available without further collection after expiry, disablement, suppression or erasure, without retaining erased recipient identity. Known image proxies are proxy traffic; known scanners and requests before acceptance are automated; uncertain traffic remains unknown, never verified human reading. All reports remain inferred. Only non-machine, human-classified events may trigger the existing deduplicated notification, with an uncertainty label. No report grants contactability, advances a sequence or proves a reply. Non-US collection requires recorded applicable consent or another qualified basis; uncertainty disables tracking for that recipient. ",
       "to": "clause",
       "ids": [
         "OUT-016",
         "OUT-021",
         "OUT-022"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 387,
+      "text": "Provider and jurisdiction-specific legal qualification remain explicit gaps.",
+      "to": "register",
+      "ids": [
+        "R-9"
       ]
     },
     {
@@ -2748,7 +2956,29 @@
     {
       "file": "CONTRACT.md",
       "line": 487,
-      "text": "The public GET opens a confirmation page without changing contactability or scheduled work. Its plain button posts to the capability; an RFC 8058 POST with `List-Unsubscribe=One-Click` uses that same capability without sign-in. Either POST sets only its bound contact do-not-contact under OUT-012 and RECORD-012 and atomically cancels that contact's scheduled outbound work. Replay is idempotent and a late dispatch cannot revive that work. Neither the capability nor any public response enumerates identities or other recipients; malformed, foreign and erased capabilities disclose no recipient identity and change nothing. Erasure invalidates the capability. Otherwise it has no expiry or automatic rotation. CAN-SPAM requires the opt-out to keep working for at least 30 days after the send; a link that works forever is the honest choice (ct, 20 October 07:15Z). The private archive carries `outbound_opt_out_capabilities`; it does not expire them.",
+      "text": "The public GET opens a confirmation page without changing contactability or scheduled work. Its plain button posts to the capability; an RFC 8058 POST with `List-Unsubscribe=One-Click` uses that same capability without sign-in. Either POST sets only its bound contact do-not-contact under OUT-012 and RECORD-012 and atomically cancels that contact's scheduled outbound work. Replay is idempotent and a late dispatch cannot revive that work. Neither the capability nor any public response enumerates identities or other recipients; malformed, foreign and erased capabilities disclose no recipient identity and change nothing. Erasure invalidates the capability. Otherwise it has no expiry or automatic rotation. CAN-SPAM requires the opt-out to keep working for at least 30 days after the send; a link that works forever is the honest choice ",
+      "to": "clause",
+      "ids": [
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 487,
+      "text": "(ct, 20 October 07:15Z)",
+      "to": "rulings",
+      "ids": [
+        "RL-2"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 487,
+      "text": ". The private archive carries `outbound_opt_out_capabilities`; it does not expire them.",
       "to": "clause",
       "ids": [
         "OUT-020",
@@ -2852,7 +3082,29 @@
     {
       "file": "CONTRACT.md",
       "line": 500,
-      "text": "Today Settings \u2192 Opt-out links holds the setting for each type, and each change is audited with the user, the old and new values and the time; the page counts the approved unsent messages bound to each state. The installation owner acts for the administrator until TEAM-005. One-to-one email starts off on a new installation; an installation upgraded with users already present keeps one-to-one opt-out on until an administrator changes it, and the page shows that basis (ct, 19 October). Messages approved before the setting existed keep their original unsubscribe group. Through SendGrid, opt-out is the installation's unsubscribe group: SendGrid adds `List-Unsubscribe`, `List-Unsubscribe-Post` and its footer links together, and a message without opt-out carries none of them. A rep's relationship or transactional removal, or addition, marks that draft for review again, and a change of the one-to-one setting does the same for every draft not yet approved (ACTION-005); the approval binds the reviewed state. ct approved the independent single-recipient managed-relay handler on 20 October at 07:15Z. With that approved path implemented and proved, new managed messages that need opt-out carry the installation-origin capability in the visible footer and both list headers, including replies; they do not use the former reply exception to remove opt-out. Approval and dispatch preserve older SendGrid approvals' opt-out-on state when switching to the relay, and approvals predating the setting remain opt-out-on. An explicit opt-out-off approval, including a permitted relationship or transactional removal, stays off. A historical `transport` marking retains the refusal policy; it is never silently treated as an explicit removal. If the managed path cannot carry the approved state, review and dispatch retain \u201cThis relay cannot carry your opt-out link yet (OUT-013)\u201d; refusals remain audited and counted in Settings. The handler no longer depends on OUT-013 mailbox sending shipping first. OUT-013 inherits its mailbox reuse; OUT-019 inherits the several-recipient page and unattributed stop requests; SEQUENCE-001, SEQUENCE-003 and AUTO-001 inherit the stored settings, per-step removal, approval binding and per-person stops before those execution paths ship.",
+      "text": "Today Settings \u2192 Opt-out links holds the setting for each type, and each change is audited with the user, the old and new values and the time; the page counts the approved unsent messages bound to each state. The installation owner acts for the administrator until TEAM-005. One-to-one email starts off on a new installation; an installation upgraded with users already present keeps one-to-one opt-out on until an administrator changes it, and the page shows that basis ",
+      "to": "clause",
+      "ids": [
+        "OUT-020",
+        "OUT-029",
+        "OUT-030",
+        "OUT-031",
+        "OUT-032"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 500,
+      "text": "(ct, 19 October)",
+      "to": "rulings",
+      "ids": [
+        "RL-1"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 500,
+      "text": ". Messages approved before the setting existed keep their original unsubscribe group. Through SendGrid, opt-out is the installation's unsubscribe group: SendGrid adds `List-Unsubscribe`, `List-Unsubscribe-Post` and its footer links together, and a message without opt-out carries none of them. A rep's relationship or transactional removal, or addition, marks that draft for review again, and a change of the one-to-one setting does the same for every draft not yet approved (ACTION-005); the approval binds the reviewed state. ct approved the independent single-recipient managed-relay handler on 20 October at 07:15Z. With that approved path implemented and proved, new managed messages that need opt-out carry the installation-origin capability in the visible footer and both list headers, including replies; they do not use the former reply exception to remove opt-out. Approval and dispatch preserve older SendGrid approvals' opt-out-on state when switching to the relay, and approvals predating the setting remain opt-out-on. An explicit opt-out-off approval, including a permitted relationship or transactional removal, stays off. A historical `transport` marking retains the refusal policy; it is never silently treated as an explicit removal. If the managed path cannot carry the approved state, review and dispatch retain \u201cThis relay cannot carry your opt-out link yet (OUT-013)\u201d; refusals remain audited and counted in Settings. The handler no longer depends on OUT-013 mailbox sending shipping first. OUT-013 inherits its mailbox reuse; OUT-019 inherits the several-recipient page and unattributed stop requests; SEQUENCE-001, SEQUENCE-003 and AUTO-001 inherit the stored settings, per-step removal, approval binding and per-person stops before those execution paths ship.",
       "to": "clause",
       "ids": [
         "OUT-020",
@@ -3567,11 +3819,20 @@
     {
       "file": "CONTRACT.md",
       "line": 631,
-      "text": "Approved engineering policy: implement consented recording and transcript evidence using a business-authorized Twilio or Aircall account; enable only an adapter with verified recording, consent and deletion capabilities. Recording starts off for every call and meeting. Apply the stricter applicable participant-state requirement, using affirmative consent from every participant as the product default, including when location is unknown. Record the disclosure version, participants, consent time and evidence; adding a participant pauses recording until their consent is recorded. Refusal permits an unrecorded call and manual notes, never a fabricated transcript. Recording consent is separate from TCPA authority to place a call; check applicable consent, do-not-call and suppression before calling, with no assumed automated or prerecorded calling authority. Keep recordings and transcripts at the selected provider, retain only protected references and consented cited evidence locally, and default provider retention to 90 days with shorter administrator settings supported. Provider access uses current record permissions. Erasure immediately removes local access and derivatives, requests provider deletion and visibly tracks pending, failed and confirmed outcomes; never report completion from request acceptance alone. State-law, provider-contract and non-US consent qualification remain explicit gaps.",
+      "text": "Approved engineering policy: implement consented recording and transcript evidence using a business-authorized Twilio or Aircall account; enable only an adapter with verified recording, consent and deletion capabilities. Recording starts off for every call and meeting. Apply the stricter applicable participant-state requirement, using affirmative consent from every participant as the product default, including when location is unknown. Record the disclosure version, participants, consent time and evidence; adding a participant pauses recording until their consent is recorded. Refusal permits an unrecorded call and manual notes, never a fabricated transcript. Recording consent is separate from TCPA authority to place a call; check applicable consent, do-not-call and suppression before calling, with no assumed automated or prerecorded calling authority. Keep recordings and transcripts at the selected provider, retain only protected references and consented cited evidence locally, and default provider retention to 90 days with shorter administrator settings supported. Provider access uses current record permissions. Erasure immediately removes local access and derivatives, requests provider deletion and visibly tracks pending, failed and confirmed outcomes; never report completion from request acceptance alone. ",
       "to": "clause",
       "ids": [
         "CALL-002",
         "CALL-003"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 631,
+      "text": "State-law, provider-contract and non-US consent qualification remain explicit gaps.",
+      "to": "register",
+      "ids": [
+        "R-7"
       ]
     },
     {
@@ -3644,7 +3905,27 @@
     {
       "file": "CONTRACT.md",
       "line": 653,
-      "text": "A dashboard is private, shared with named users or teams to view or edit, or shared workspace-wide, under TEAM-005. Sharing grants no record access. Each viewer's tiles, totals and drill-through are computed from the records and fields that viewer may see now, labeled `limited to your access`, with no count or sum of hidden records. Each user picks a default dashboard that opens from Reports; an administrator can set a team default that a user can override.",
+      "text": "A dashboard is private, shared with named users or teams to view or edit, or shared workspace-wide, under TEAM-005. ",
+      "to": "clause",
+      "ids": [
+        "REPORT-002",
+        "REPORT-003",
+        "REPORT-004"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 653,
+      "text": "Sharing grants no record access.",
+      "to": "base",
+      "ids": [
+        "BASE-ROLE-001"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 653,
+      "text": " Each viewer's tiles, totals and drill-through are computed from the records and fields that viewer may see now, labeled `limited to your access`, with no count or sum of hidden records. Each user picks a default dashboard that opens from Reports; an administrator can set a team default that a user can override.",
       "to": "clause",
       "ids": [
         "REPORT-002",
@@ -4123,7 +4404,16 @@
     {
       "file": "CONTRACT.md",
       "line": 781,
-      "text": "Every added sales feature inherits BASE-DATA retention, erasure, declared external flows and the permanent anonymized audit. Complete product exports include custom schemas/relationships, multi-pipeline definitions/history, tasks/recurrence, workflow and sequence definitions/enrollment/outcomes, call/transcript evidence, quotes, forecast snapshots/quotas, integration identities/provenance, files and their versions with SHA-256 digests (RECORD-018) and agent decisions. Restore validates integrity into eligible empty data, preserves customer history but pauses external work until fresh authorization and review; it never replays messages, charges or calls. Erasure covers local evidence/derivatives and tracks required provider-deletion requests separately; downloaded archives and already sent external content cannot be recalled. Export permission is independently enforced and external costs are visible in USD.",
+      "text": "Every added sales feature inherits BASE-DATA retention, erasure, declared external flows and the permanent anonymized audit.",
+      "to": "base",
+      "ids": [
+        "BASE-DATA-003"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 781,
+      "text": " Complete product exports include custom schemas/relationships, multi-pipeline definitions/history, tasks/recurrence, workflow and sequence definitions/enrollment/outcomes, call/transcript evidence, quotes, forecast snapshots/quotas, integration identities/provenance, files and their versions with SHA-256 digests (RECORD-018) and agent decisions. Restore validates integrity into eligible empty data, preserves customer history but pauses external work until fresh authorization and review; it never replays messages, charges or calls. Erasure covers local evidence/derivatives and tracks required provider-deletion requests separately; downloaded archives and already sent external content cannot be recalled. Export permission is independently enforced and external costs are visible in USD.",
       "to": "clause",
       "ids": [
         "DATA-003"
@@ -4159,7 +4449,16 @@
     {
       "file": "CONTRACT.md",
       "line": 791,
-      "text": "Keep native sign-in, secret custody, origin checks, baseline audit, health, safe migration and source independence as deployable product obligations. When an administrator enables it, users also sign in with Google Workspace or Microsoft 365 (Microsoft Entra ID) through OpenID Connect. Only an invited, active user whose provider-verified email matches their Orbit identity signs in. The administrator may require provider sign-in for the workspace's email domain. Magic-link sign-in remains available unless disabled, and removing the user or the provider configuration ends their access on the next request. Each connector declares fields sent, scopes, credential custody, expected costs, freshness and disable/reconnect controls before activation. Provider apps, tenant approvals, recording consent, US sending requirements, native distribution and provider agreements are tracked setup/engineering obligations. An optional provider failure leaves authorized manual CRM work usable with honest unavailable states; it never fabricates a successful sync, call, forecast or send.",
+      "text": "Keep native sign-in, secret custody, origin checks, baseline audit, health, safe migration and source independence as deployable product obligations.",
+      "to": "base",
+      "ids": [
+        "BASE-INSTALL-001"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 791,
+      "text": " When an administrator enables it, users also sign in with Google Workspace or Microsoft 365 (Microsoft Entra ID) through OpenID Connect. Only an invited, active user whose provider-verified email matches their Orbit identity signs in. The administrator may require provider sign-in for the workspace's email domain. Magic-link sign-in remains available unless disabled, and removing the user or the provider configuration ends their access on the next request. Each connector declares fields sent, scopes, credential custody, expected costs, freshness and disable/reconnect controls before activation. Provider apps, tenant approvals, recording consent, US sending requirements, native distribution and provider agreements are tracked setup/engineering obligations. An optional provider failure leaves authorized manual CRM work usable with honest unavailable states; it never fabricates a successful sync, call, forecast or send.",
       "to": "clause",
       "ids": [
         "OPS-001"
@@ -4304,11 +4603,39 @@
     {
       "file": "CONTRACT.md",
       "line": 837,
-      "text": "Approved engineering policy: administrators may configure selected-account research using OpenAI for structured synthesis, a licensed Brave Search API account for public web discovery, and licensed Clay enrichment only under ENRICH-001\u2019s separately reviewed fields and providers. These selections authorize adapter implementation, not an assertion of entitlement or completed provider qualification. Arbitrary MCP servers are disabled; an administrator may enable a named, authenticated read-only MCP adapter only after documenting its provider license, destination, returned schema and exact tools. Preview the selected records, fields, destinations, schedule, proposed outputs and maximum charge before each approved run definition. Default limits are USD 1 per run and USD 20 per workspace day, adjustable only by the administrator. Atomically reserve worst-case provider cost before each call, bound tokens and requests, charge retries to the same cap and refuse unknown pricing or exhausted budget. Recheck access before every read, external call and proposed effect; revocation cancels remaining work and invalidates unaccepted output. Public and tool content is untrusted data and cannot add tools, destinations, records or authority. Results require exact source citations and schema validation and may create only reviewed internal proposals or workflow tasks. No message, purchase beyond the reserved budget, commercial change or protected-network scraping is authorized. Non-US personal data requires recorded purpose and applicable basis with GDPR-style opt-out and erasure handling. Licensing, provider retention and jurisdiction-specific legal qualification remain explicit gaps.",
+      "text": "Approved engineering policy: administrators may configure selected-account research using OpenAI for structured synthesis, a licensed Brave Search API account for public web discovery, and licensed Clay enrichment only under ENRICH-001\u2019s separately reviewed fields and providers. These selections authorize adapter implementation, not an assertion of entitlement or completed provider qualification. Arbitrary MCP servers are disabled; an administrator may enable a named, authenticated read-only MCP adapter only after documenting its provider license, destination, returned schema and exact tools. Preview the selected records, fields, destinations, schedule, proposed outputs and maximum charge before each approved run definition. Default limits are USD 1 per run and USD 20 per workspace day, adjustable only by the administrator. Atomically reserve worst-case provider cost before each call, bound tokens and requests, charge retries to the same cap and refuse unknown pricing or exhausted budget. Recheck access before every read, external call and proposed effect; revocation cancels remaining work and invalidates unaccepted output. ",
       "to": "clause",
       "ids": [
         "AGENT-004",
         "AGENT-005"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 837,
+      "text": "Public and tool content is untrusted data and cannot add tools, destinations, records or authority.",
+      "to": "base",
+      "ids": [
+        "BASE-AGENT-005"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 837,
+      "text": " Results require exact source citations and schema validation and may create only reviewed internal proposals or workflow tasks. No message, purchase beyond the reserved budget, commercial change or protected-network scraping is authorized. Non-US personal data requires recorded purpose and applicable basis with GDPR-style opt-out and erasure handling. ",
+      "to": "clause",
+      "ids": [
+        "AGENT-004",
+        "AGENT-005"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 837,
+      "text": "Licensing, provider retention and jurisdiction-specific legal qualification remain explicit gaps.",
+      "to": "register",
+      "ids": [
+        "R-8"
       ]
     },
     {
@@ -7111,7 +7438,23 @@
     {
       "file": "ACCEPTANCE.md",
       "line": 706,
-      "text": "NOTIFY-003 inherits personal Slack assignment DMs under INTEGRATE-005: only the explicitly mapped, opted-in new owner with current access, one notice per bulk batch, none on replay or undo. Assignment never grants access. Exercise this inherited behavior through its public door.",
+      "text": "NOTIFY-003 inherits personal Slack assignment DMs under INTEGRATE-005: only the explicitly mapped, opted-in new owner with current access, one notice per bulk batch, none on replay or undo. ",
+      "to": "generated",
+      "note": "The contract generator writes this status or count."
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 706,
+      "text": "Assignment never grants access.",
+      "to": "base",
+      "ids": [
+        "BASE-ROLE-001"
+      ]
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 706,
+      "text": " Exercise this inherited behavior through its public door.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
@@ -7146,7 +7489,23 @@
     {
       "file": "ACCEPTANCE.md",
       "line": 718,
-      "text": "Today a user mentions a colleague as `@Display Name`, or as `@email` when two active colleagues share a name, in a note, a logged call or meeting, a task note or a person's handoff; while they type, autocomplete offers active full operators and collaborators who accepted their invitation. Until TEAM-005's roles exist every full operator sees every record (pattern 4), so only a collaborator can be without access. A collaborator opens a mention only through a live grant on that record that includes its notes, calls and meetings (ct, 19 October): the collaborator grant carries an \"Include notes, calls and meetings\" option, off by default, set by whoever shares (the installation owner acts for the administrator until TEAM-005, pattern 2), and creating the grant and each change of the option are audited with who changed it and the old and new value. Saving text that mentions a collaborator who cannot see the record, or whose grant leaves out its notes, calls and meetings, is refused with their names; the author shares the record with them including its notes, calls and meetings, or turns the option on for that grant, explicitly, or removes the mention, and a mention never grants access or turns the option on. Each mentioned colleague other than the author receives one in-app notification naming the author and the record and opening the exact entry, task or handoff; an edit notifies only colleagues not yet notified for that entry; deleting an entry withdraws its unread mention notifications and leaves an attributed \"entry deleted\" timeline record. Notifications \u2192 Mentions lists every entry, task note and handoff that mentions the user now. An application's proposed handoff notifies nobody until a person accepts or edits it. Mentions are internal: no customer message carries entry text, AI-001 previews carry no notes, and AGENT-002's conflict check sends note lines only exactly as its preview shows them. An entry's mentions are saved with it (a task note or handoff keeps them in its text), so they are exported with it, and deleting or erasing the record erases its mention notifications (DATA-002). With the option on, the collaborator sees that record's notes, logged calls and meetings, task notes and handoffs on Shared records, read-only, and never another record's entries; a mention opens there at the exact entry. A collaborator's notifications (`GET /api/v1/notifications` and Notifications \u2192 Mentions) are only their own mention notifications about records they can read now under such a grant, with only their own unread count, never another operator's notifications or counts; when the grant is revoked or expires they are hidden, not deleted, and a new grant shows them again. TEAM-005 inherits team mentions and per-entry private visibility, and NOTIFY-003 inherits email, push and Slack delivery by preference.",
+      "text": "Today a user mentions a colleague as `@Display Name`, or as `@email` when two active colleagues share a name, in a note, a logged call or meeting, a task note or a person's handoff; while they type, autocomplete offers active full operators and collaborators who accepted their invitation. Until TEAM-005's roles exist every full operator sees every record (pattern 4), so only a collaborator can be without access. A collaborator opens a mention only through a live grant on that record that includes its notes, calls and meetings ",
+      "to": "copy",
+      "of": 252
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 718,
+      "text": "(ct, 19 October)",
+      "to": "rulings",
+      "ids": [
+        "RL-1"
+      ]
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 718,
+      "text": ": the collaborator grant carries an \"Include notes, calls and meetings\" option, off by default, set by whoever shares (the installation owner acts for the administrator until TEAM-005, pattern 2), and creating the grant and each change of the option are audited with who changed it and the old and new value. Saving text that mentions a collaborator who cannot see the record, or whose grant leaves out its notes, calls and meetings, is refused with their names; the author shares the record with them including its notes, calls and meetings, or turns the option on for that grant, explicitly, or removes the mention, and a mention never grants access or turns the option on. Each mentioned colleague other than the author receives one in-app notification naming the author and the record and opening the exact entry, task or handoff; an edit notifies only colleagues not yet notified for that entry; deleting an entry withdraws its unread mention notifications and leaves an attributed \"entry deleted\" timeline record. Notifications \u2192 Mentions lists every entry, task note and handoff that mentions the user now. An application's proposed handoff notifies nobody until a person accepts or edits it. Mentions are internal: no customer message carries entry text, AI-001 previews carry no notes, and AGENT-002's conflict check sends note lines only exactly as its preview shows them. An entry's mentions are saved with it (a task note or handoff keeps them in its text), so they are exported with it, and deleting or erasing the record erases its mention notifications (DATA-002). With the option on, the collaborator sees that record's notes, logged calls and meetings, task notes and handoffs on Shared records, read-only, and never another record's entries; a mention opens there at the exact entry. A collaborator's notifications (`GET /api/v1/notifications` and Notifications \u2192 Mentions) are only their own mention notifications about records they can read now under such a grant, with only their own unread count, never another operator's notifications or counts; when the grant is revoked or expires they are hidden, not deleted, and a new grant shows them again. TEAM-005 inherits team mentions and per-entry private visibility, and NOTIFY-003 inherits email, push and Slack delivery by preference.",
       "to": "copy",
       "of": 252
     },
@@ -7272,9 +7631,19 @@
     {
       "file": "ACCEPTANCE.md",
       "line": 764,
-      "text": "Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, switch the multi-deal rule to most recently active open deal and see the next such thread associated automatically with the rule named and then moved in one action, see an unknown correspondent become a CAPTURE-012 proposal, see a captured reply's PDF attachment listed on its contact, company and deal with its inline image not listed, revoke/reconnect and verify no unauthorized folder/mailbox is read. Complete an authorized live Gmail and Microsoft tenant journey.",
+      "text": "Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, switch the multi-deal rule to most recently active open deal and see the next such thread associated automatically with the rule named and then moved in one action, see an unknown correspondent become a CAPTURE-012 proposal, see a captured reply's PDF attachment listed on its contact, company and deal with its inline image not listed, revoke/reconnect and verify no unauthorized folder/mailbox is read. ",
       "to": "generated",
       "note": "The contract generator writes this status or count."
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 764,
+      "text": "Complete an authorized live Gmail and Microsoft tenant journey.",
+      "to": "register",
+      "ids": [
+        "R-1",
+        "R-2"
+      ]
     },
     {
       "file": "ACCEPTANCE.md",
@@ -7314,9 +7683,18 @@
     {
       "file": "ACCEPTANCE.md",
       "line": 780,
-      "text": "Approved engineering policy: an authorized connected source may retain unknown external participants only within its selected folders, calendars and time window, as sealed review evidence for 30 days from intake. Retention does not create a customer, score, sending permission or research authority. Use exact normalized email identity and exact non-free-mail company domain only; apply the clause\u2019s automated, bulk, internal and administrator exclusions before proposing. The mailbox owner or currently permitted reviewer must explicitly accept or decline. Acceptance records the reviewer, time, source evidence, owner and chosen contactability basis. Inbound conversation and rep-initiated conversation are relationship provenance, not proof of marketing consent. A reviewer may permit relevant US business email after checking purpose and suppression; an unsubscribe or stop always wins. Telephone and automated outreach require separately recorded channel-specific authority under the applicable TCPA policy. Non-US contacts require a recorded purpose and lawful basis with GDPR-style objection, access and erasure handling; uncertain jurisdiction or basis leaves contactability blocked. Unaccepted evidence expires after 30 days; decline and erasure retain only necessary keyed suppression and replay proofs. Provider authorization and jurisdiction-specific legal qualification remain explicit gaps.",
+      "text": "Approved engineering policy: an authorized connected source may retain unknown external participants only within its selected folders, calendars and time window, as sealed review evidence for 30 days from intake. Retention does not create a customer, score, sending permission or research authority. Use exact normalized email identity and exact non-free-mail company domain only; apply the clause\u2019s automated, bulk, internal and administrator exclusions before proposing. The mailbox owner or currently permitted reviewer must explicitly accept or decline. Acceptance records the reviewer, time, source evidence, owner and chosen contactability basis. Inbound conversation and rep-initiated conversation are relationship provenance, not proof of marketing consent. A reviewer may permit relevant US business email after checking purpose and suppression; an unsubscribe or stop always wins. Telephone and automated outreach require separately recorded channel-specific authority under the applicable TCPA policy. Non-US contacts require a recorded purpose and lawful basis with GDPR-style objection, access and erasure handling; uncertain jurisdiction or basis leaves contactability blocked. Unaccepted evidence expires after 30 days; decline and erasure retain only necessary keyed suppression and replay proofs. ",
       "to": "copy",
       "of": 327
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 780,
+      "text": "Provider authorization and jurisdiction-specific legal qualification remain explicit gaps.",
+      "to": "register",
+      "ids": [
+        "R-10"
+      ]
     },
     {
       "file": "ACCEPTANCE.md",
@@ -7377,7 +7755,23 @@
     {
       "file": "ACCEPTANCE.md",
       "line": 802,
-      "text": "Before mailbox sending ships, it must reuse OUT-020's installation-origin capability handler, exact approved headers and visible link, per-recipient suppression, erasure invalidation and atomic stops. The handler may ship independently for single-recipient managed-relay mail (ct, 20 October 07:15Z).",
+      "text": "Before mailbox sending ships, it must reuse OUT-020's installation-origin capability handler, exact approved headers and visible link, per-recipient suppression, erasure invalidation and atomic stops. The handler may ship independently for single-recipient managed-relay mail ",
+      "to": "copy",
+      "of": 355
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 802,
+      "text": "(ct, 20 October 07:15Z)",
+      "to": "rulings",
+      "ids": [
+        "RL-2"
+      ]
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 802,
+      "text": ".",
       "to": "copy",
       "of": 355
     },
@@ -7482,9 +7876,18 @@
     {
       "file": "ACCEPTANCE.md",
       "line": 838,
-      "text": "Approved engineering policy: tracking is off by default. An administrator may enable disclosed open tracking, link tracking or both, and a rep must review the tracking state and exact destinations with the message. Use cryptographically random opaque tokens with at least 128 bits of entropy, scoped to the approved message and recipient or the existing multi-recipient message rule; tokens contain no address or CRM identifier and cannot authorize another operation. Collect only token event identity, approved link identity, timestamps, counts and classification reason. Inspect network metadata transiently for abuse and classification without retaining raw IP addresses or full user-agent strings. Collection expires 90 days after provider acceptance; retained CRM evidence then contains only aggregate counts, times and inference labels under the workspace\u2019s documented retention policy. Keep reviewed redirect destinations available without further collection after expiry, disablement, suppression or erasure, without retaining erased recipient identity. Known image proxies are proxy traffic; known scanners and requests before acceptance are automated; uncertain traffic remains unknown, never verified human reading. All reports remain inferred. Only non-machine, human-classified events may trigger the existing deduplicated notification, with an uncertainty label. No report grants contactability, advances a sequence or proves a reply. Non-US collection requires recorded applicable consent or another qualified basis; uncertainty disables tracking for that recipient. Provider and jurisdiction-specific legal qualification remain explicit gaps.",
+      "text": "Approved engineering policy: tracking is off by default. An administrator may enable disclosed open tracking, link tracking or both, and a rep must review the tracking state and exact destinations with the message. Use cryptographically random opaque tokens with at least 128 bits of entropy, scoped to the approved message and recipient or the existing multi-recipient message rule; tokens contain no address or CRM identifier and cannot authorize another operation. Collect only token event identity, approved link identity, timestamps, counts and classification reason. Inspect network metadata transiently for abuse and classification without retaining raw IP addresses or full user-agent strings. Collection expires 90 days after provider acceptance; retained CRM evidence then contains only aggregate counts, times and inference labels under the workspace\u2019s documented retention policy. Keep reviewed redirect destinations available without further collection after expiry, disablement, suppression or erasure, without retaining erased recipient identity. Known image proxies are proxy traffic; known scanners and requests before acceptance are automated; uncertain traffic remains unknown, never verified human reading. All reports remain inferred. Only non-machine, human-classified events may trigger the existing deduplicated notification, with an uncertainty label. No report grants contactability, advances a sequence or proves a reply. Non-US collection requires recorded applicable consent or another qualified basis; uncertainty disables tracking for that recipient. ",
       "to": "copy",
       "of": 387
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 838,
+      "text": "Provider and jurisdiction-specific legal qualification remain explicit gaps.",
+      "to": "register",
+      "ids": [
+        "R-9"
+      ]
     },
     {
       "file": "ACCEPTANCE.md",
@@ -7608,7 +8011,23 @@
     {
       "file": "ACCEPTANCE.md",
       "line": 882,
-      "text": "Today Settings \u2192 Opt-out links holds the setting for each type, and each change is audited with the user, the old and new values and the time; the page counts the approved unsent messages bound to each state. The installation owner acts for the administrator until TEAM-005. One-to-one email starts off on a new installation; an installation upgraded with users already present keeps one-to-one opt-out on until an administrator changes it, and the page shows that basis (ct, 19 October). Messages approved before the setting existed keep their original unsubscribe group. Through SendGrid, opt-out is the installation's unsubscribe group: SendGrid adds `List-Unsubscribe`, `List-Unsubscribe-Post` and its footer links together, and a message without opt-out carries none of them. A rep's relationship or transactional removal, or addition, marks that draft for review again, and a change of the one-to-one setting does the same for every draft not yet approved (ACTION-005); the approval binds the reviewed state. ct approved the independent single-recipient managed-relay handler on 20 October at 07:15Z. With that approved path implemented and proved, new managed messages that need opt-out carry the installation-origin capability in the visible footer and both list headers, including replies; they do not use the former reply exception to remove opt-out. Approval and dispatch preserve older SendGrid approvals' opt-out-on state when switching to the relay, and approvals predating the setting remain opt-out-on. An explicit opt-out-off approval, including a permitted relationship or transactional removal, stays off. A historical `transport` marking retains the refusal policy; it is never silently treated as an explicit removal. If the managed path cannot carry the approved state, review and dispatch retain \u201cThis relay cannot carry your opt-out link yet (OUT-013)\u201d; refusals remain audited and counted in Settings. The handler no longer depends on OUT-013 mailbox sending shipping first. OUT-013 inherits its mailbox reuse; OUT-019 inherits the several-recipient page and unattributed stop requests; SEQUENCE-001, SEQUENCE-003 and AUTO-001 inherit the stored settings, per-step removal, approval binding and per-person stops before those execution paths ship.",
+      "text": "Today Settings \u2192 Opt-out links holds the setting for each type, and each change is audited with the user, the old and new values and the time; the page counts the approved unsent messages bound to each state. The installation owner acts for the administrator until TEAM-005. One-to-one email starts off on a new installation; an installation upgraded with users already present keeps one-to-one opt-out on until an administrator changes it, and the page shows that basis ",
+      "to": "copy",
+      "of": 500
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 882,
+      "text": "(ct, 19 October)",
+      "to": "rulings",
+      "ids": [
+        "RL-1"
+      ]
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 882,
+      "text": ". Messages approved before the setting existed keep their original unsubscribe group. Through SendGrid, opt-out is the installation's unsubscribe group: SendGrid adds `List-Unsubscribe`, `List-Unsubscribe-Post` and its footer links together, and a message without opt-out carries none of them. A rep's relationship or transactional removal, or addition, marks that draft for review again, and a change of the one-to-one setting does the same for every draft not yet approved (ACTION-005); the approval binds the reviewed state. ct approved the independent single-recipient managed-relay handler on 20 October at 07:15Z. With that approved path implemented and proved, new managed messages that need opt-out carry the installation-origin capability in the visible footer and both list headers, including replies; they do not use the former reply exception to remove opt-out. Approval and dispatch preserve older SendGrid approvals' opt-out-on state when switching to the relay, and approvals predating the setting remain opt-out-on. An explicit opt-out-off approval, including a permitted relationship or transactional removal, stays off. A historical `transport` marking retains the refusal policy; it is never silently treated as an explicit removal. If the managed path cannot carry the approved state, review and dispatch retain \u201cThis relay cannot carry your opt-out link yet (OUT-013)\u201d; refusals remain audited and counted in Settings. The handler no longer depends on OUT-013 mailbox sending shipping first. OUT-013 inherits its mailbox reuse; OUT-019 inherits the several-recipient page and unattributed stop requests; SEQUENCE-001, SEQUENCE-003 and AUTO-001 inherit the stored settings, per-step removal, approval binding and per-person stops before those execution paths ship.",
       "to": "copy",
       "of": 500
     },
@@ -7622,7 +8041,23 @@
     {
       "file": "ACCEPTANCE.md",
       "line": 886,
-      "text": "The public GET opens a confirmation page without changing contactability or scheduled work. Its plain button posts to the capability; an RFC 8058 POST with `List-Unsubscribe=One-Click` uses that same capability without sign-in. Either POST sets only its bound contact do-not-contact under OUT-012 and RECORD-012 and atomically cancels that contact's scheduled outbound work. Replay is idempotent and a late dispatch cannot revive that work. Neither the capability nor any public response enumerates identities or other recipients; malformed, foreign and erased capabilities disclose no recipient identity and change nothing. Erasure invalidates the capability. Otherwise it has no expiry or automatic rotation. CAN-SPAM requires the opt-out to keep working for at least 30 days after the send; a link that works forever is the honest choice (ct, 20 October 07:15Z). The private archive carries `outbound_opt_out_capabilities`; it does not expire them.",
+      "text": "The public GET opens a confirmation page without changing contactability or scheduled work. Its plain button posts to the capability; an RFC 8058 POST with `List-Unsubscribe=One-Click` uses that same capability without sign-in. Either POST sets only its bound contact do-not-contact under OUT-012 and RECORD-012 and atomically cancels that contact's scheduled outbound work. Replay is idempotent and a late dispatch cannot revive that work. Neither the capability nor any public response enumerates identities or other recipients; malformed, foreign and erased capabilities disclose no recipient identity and change nothing. Erasure invalidates the capability. Otherwise it has no expiry or automatic rotation. CAN-SPAM requires the opt-out to keep working for at least 30 days after the send; a link that works forever is the honest choice ",
+      "to": "copy",
+      "of": 487
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 886,
+      "text": "(ct, 20 October 07:15Z)",
+      "to": "rulings",
+      "ids": [
+        "RL-2"
+      ]
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 886,
+      "text": ". The private archive carries `outbound_opt_out_capabilities`; it does not expire them.",
       "to": "copy",
       "of": 487
     },
@@ -7965,9 +8400,18 @@
     {
       "file": "ACCEPTANCE.md",
       "line": 1002,
-      "text": "Approved engineering policy: implement consented recording and transcript evidence using a business-authorized Twilio or Aircall account; enable only an adapter with verified recording, consent and deletion capabilities. Recording starts off for every call and meeting. Apply the stricter applicable participant-state requirement, using affirmative consent from every participant as the product default, including when location is unknown. Record the disclosure version, participants, consent time and evidence; adding a participant pauses recording until their consent is recorded. Refusal permits an unrecorded call and manual notes, never a fabricated transcript. Recording consent is separate from TCPA authority to place a call; check applicable consent, do-not-call and suppression before calling, with no assumed automated or prerecorded calling authority. Keep recordings and transcripts at the selected provider, retain only protected references and consented cited evidence locally, and default provider retention to 90 days with shorter administrator settings supported. Provider access uses current record permissions. Erasure immediately removes local access and derivatives, requests provider deletion and visibly tracks pending, failed and confirmed outcomes; never report completion from request acceptance alone. State-law, provider-contract and non-US consent qualification remain explicit gaps.",
+      "text": "Approved engineering policy: implement consented recording and transcript evidence using a business-authorized Twilio or Aircall account; enable only an adapter with verified recording, consent and deletion capabilities. Recording starts off for every call and meeting. Apply the stricter applicable participant-state requirement, using affirmative consent from every participant as the product default, including when location is unknown. Record the disclosure version, participants, consent time and evidence; adding a participant pauses recording until their consent is recorded. Refusal permits an unrecorded call and manual notes, never a fabricated transcript. Recording consent is separate from TCPA authority to place a call; check applicable consent, do-not-call and suppression before calling, with no assumed automated or prerecorded calling authority. Keep recordings and transcripts at the selected provider, retain only protected references and consented cited evidence locally, and default provider retention to 90 days with shorter administrator settings supported. Provider access uses current record permissions. Erasure immediately removes local access and derivatives, requests provider deletion and visibly tracks pending, failed and confirmed outcomes; never report completion from request acceptance alone. ",
       "to": "copy",
       "of": 631
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 1002,
+      "text": "State-law, provider-contract and non-US consent qualification remain explicit gaps.",
+      "to": "register",
+      "ids": [
+        "R-7"
+      ]
     },
     {
       "file": "ACCEPTANCE.md",
@@ -8574,9 +9018,34 @@
     {
       "file": "ACCEPTANCE.md",
       "line": 1218,
-      "text": "Approved engineering policy: administrators may configure selected-account research using OpenAI for structured synthesis, a licensed Brave Search API account for public web discovery, and licensed Clay enrichment only under ENRICH-001\u2019s separately reviewed fields and providers. These selections authorize adapter implementation, not an assertion of entitlement or completed provider qualification. Arbitrary MCP servers are disabled; an administrator may enable a named, authenticated read-only MCP adapter only after documenting its provider license, destination, returned schema and exact tools. Preview the selected records, fields, destinations, schedule, proposed outputs and maximum charge before each approved run definition. Default limits are USD 1 per run and USD 20 per workspace day, adjustable only by the administrator. Atomically reserve worst-case provider cost before each call, bound tokens and requests, charge retries to the same cap and refuse unknown pricing or exhausted budget. Recheck access before every read, external call and proposed effect; revocation cancels remaining work and invalidates unaccepted output. Public and tool content is untrusted data and cannot add tools, destinations, records or authority. Results require exact source citations and schema validation and may create only reviewed internal proposals or workflow tasks. No message, purchase beyond the reserved budget, commercial change or protected-network scraping is authorized. Non-US personal data requires recorded purpose and applicable basis with GDPR-style opt-out and erasure handling. Licensing, provider retention and jurisdiction-specific legal qualification remain explicit gaps.",
+      "text": "Approved engineering policy: administrators may configure selected-account research using OpenAI for structured synthesis, a licensed Brave Search API account for public web discovery, and licensed Clay enrichment only under ENRICH-001\u2019s separately reviewed fields and providers. These selections authorize adapter implementation, not an assertion of entitlement or completed provider qualification. Arbitrary MCP servers are disabled; an administrator may enable a named, authenticated read-only MCP adapter only after documenting its provider license, destination, returned schema and exact tools. Preview the selected records, fields, destinations, schedule, proposed outputs and maximum charge before each approved run definition. Default limits are USD 1 per run and USD 20 per workspace day, adjustable only by the administrator. Atomically reserve worst-case provider cost before each call, bound tokens and requests, charge retries to the same cap and refuse unknown pricing or exhausted budget. Recheck access before every read, external call and proposed effect; revocation cancels remaining work and invalidates unaccepted output. ",
       "to": "copy",
       "of": 837
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 1218,
+      "text": "Public and tool content is untrusted data and cannot add tools, destinations, records or authority.",
+      "to": "base",
+      "ids": [
+        "BASE-AGENT-005"
+      ]
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 1218,
+      "text": " Results require exact source citations and schema validation and may create only reviewed internal proposals or workflow tasks. No message, purchase beyond the reserved budget, commercial change or protected-network scraping is authorized. Non-US personal data requires recorded purpose and applicable basis with GDPR-style opt-out and erasure handling. ",
+      "to": "copy",
+      "of": 837
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 1218,
+      "text": "Licensing, provider retention and jurisdiction-specific legal qualification remain explicit gaps.",
+      "to": "register",
+      "ids": [
+        "R-8"
+      ]
     },
     {
       "file": "ACCEPTANCE.md",
