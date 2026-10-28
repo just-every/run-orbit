@@ -91,7 +91,7 @@ export class Dashboards{
    else{
     let field=filters.field?{...filters.field,name:Object.hasOwn(tile.bindings,filters.field.name)?tile.bindings[filters.field.name]!:filters.field.name}:null;if(field&&tile.measure==='bookings'){notes.push(`${field.name} filter not applied: this report's records have no ${field.name} field.`);field=null;}
     if(measuredNow)notes.push(tile.measure==='pipeline'?'Date range not applied: open pipeline is measured when computed, not over a period.':'Date range not applied: stage age is measured when computed.');
-    if(tile.measure==='bookings'&&filters.ownerIds.length)notes.push('Owner filter not applied: bookings are not filtered by rep.');
+    if(tile.measure==='bookings'&&filters.ownerIds.length&&!definition.recordOwnerType)notes.push('Owner filter not applied: bookings are not filtered by rep.');
     report=await this.metrics.sales.preview(c,tile.sourceId,version,filters.from,filters.through,{...filters,field});notes.push(...report.filters.notes.filter(note=>note.includes(' filter not applied:')));if(field&&!report.filters.notes.some(note=>note.includes(' filter not applied:')))report.filters.notes.push(`${filters.field!.name}: ${field.value}${field.name!==filters.field!.name?` (report field ${field.name})`:''}.`);
    }
    proofs.push(...this.metrics.sales.proofs(report));

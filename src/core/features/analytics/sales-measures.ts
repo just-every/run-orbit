@@ -33,7 +33,7 @@ const fact=(row:SalesRow,name:string)=>!Object.hasOwn(row.facts,name)?undefined:
 export function aggregate(definition:SalesDefinition,period:SalesPeriod,asOf:string,rows:SalesRow[],labels:Labels):Section[]{
  const pipelines=new Set(definition.pipelineIds),reps=new Set(definition.repIds),now=Date.parse(asOf),full=labels.operators!==null;
  const pipelineOk=(row:SalesRow)=>{if(!pipelines.size)return true;const ids=Array.isArray(row.facts.deal_pipelines)?row.facts.deal_pipelines:[row.facts.pipeline_id];return ids.some(id=>typeof id==='string'&&pipelines.has(id));};
- const repOk=(value:Json|undefined)=>!reps.size||(typeof value==='string'&&reps.has(value));
+ const repOk=(value:Json|undefined)=>!reps.size||(value===null?reps.has('unassigned'):typeof value==='string'&&reps.has(value));
  const month=(row:SalesRow)=>row.at?monthKey(Date.parse(row.at),period.timezone):undefined;
  const byMonth=(members:SalesRow[],cells:(rows:SalesRow[])=>Cell[])=>period.months.map(item=>({key:item.key,label:item.label,cells:cells(members.filter(row=>month(row)===item.key))}));
  const deals=rows.filter(row=>row.kind==='deal'&&pipelineOk(row)&&repOk(row.facts.owner_id));

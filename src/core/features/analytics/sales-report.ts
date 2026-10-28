@@ -1,3 +1,4 @@
+import {salesRecordOwners,recordOwnerSections,matchesRecordOwner} from './sales-record-owners';
 import {operatorListingPredicate} from '../identity/operator-listing';
 import type {ActorContext,DependencyRef,Json,MetricSnapshot,SqlStatement} from '../../shared/expansion-contracts';
 import {salesFilterValue} from './sales-filter';
@@ -13,7 +14,7 @@ import {salesPeriod,salesDateRange,type SalesPeriod} from './sales-period';
 import {dealFacts,type NativePopulation} from './sales-population';
 import {viewerAccess,applyAccess,accessProofs,type ViewerAccess} from './sales-access';
 import {isFullOperator,fullOperatorFence} from '../access/identity-class';
-import {aggregate,citedRows,type Labels} from './sales-measures';
+import {citedRows,type Labels} from './sales-measures';
 import {dealGoverned,type GraphRef,type SalesRow,type StageConfig} from './sales-rows';
 import {salesView,lateArriving,type SalesView} from './sales-view';
 
@@ -60,10 +61,11 @@ export class SalesReports{
   for(const [id,deal] of facts){const closed=typeof deal.closed_at==='string'?deal.closed_at:null;rows.push({key:`deal:${id}`,kind:'deal',id,refs:[{type:'opportunity',id}],dealId:id,governed:dealGoverned,at:closed,recordedAt:closed??(typeof deal.created_at==='string'?deal.created_at:null),facts:deal});}
   for(const row of native.rows)rows.push(this.withDeal(row,facts));
   const fieldApplied=!field||[...access.deals.values()].some(deal=>salesFilterValue(deal.values,field.name)!==null);
-  const visible=applyAccess(access,rows).filter(row=>!field||!fieldApplied||Boolean(row.dealId&&salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.value!==undefined&&String(salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.value)===field.value)),asOf=new Date().toISOString(),sections=aggregate(definition,period,asOf,visible,this.labels(native.stages,access)),cited=citedRows(sections);
+  const ownerPopulation=definition.recordOwnerType?await salesRecordOwners(this.metrics,c,definition.recordOwnerType,applyAccess(access,rows),access):{rows:applyAccess(access,rows),proofs:[]};
+  const visible=ownerPopulation.rows.filter(row=>matchesRecordOwner(row,definition.recordOwnerIds??[])).filter(row=>!field||!fieldApplied||Boolean(row.dealId&&salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.value!==undefined&&String(salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.value)===field.value)),asOf=new Date().toISOString(),sections=recordOwnerSections(definition,period,asOf,visible,this.labels(native.stages,access)),cited=citedRows(sections);
   // A saved result keeps the rows its figures cite, with each cited movement's deal, whose owner and creation it was measured by.
   for(const row of visible)if(cited.has(row.key)&&row.kind==='movement')cited.add(`deal:${row.dealId}`);
-  return {native,access,asOf,sections,fieldApplied,rows:visible.filter(row=>cited.has(row.key)).map(row=>field&&fieldApplied&&row.dealId?{...row,facts:{...row.facts,dashboard_filter:field.value},governed:{...row.governed,dashboard_filter:[salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.sourceField??field.name]}}:row)};
+  return {native,access,asOf,sections,fieldApplied,ownerProofs:ownerPopulation.proofs,rows:visible.filter(row=>cited.has(row.key)).map(row=>field&&fieldApplied&&row.dealId?{...row,facts:{...row.facts,dashboard_filter:field.value},governed:{...row.governed,dashboard_filter:[salesFilterValue(access.deals.get(row.dealId)?.values??{},field.name)?.sourceField??field.name]}}:row)};
  }
  /** A row linked to a deal takes the deal's pipeline (governed by its stage), and a message the deal's later win and amount. */
  private withDeal(row:SalesRow,deals:Map<string,Record<string,Json>>):SalesRow{
@@ -79,13 +81,13 @@ export class SalesReports{
   }
   return next;
  }
- private async hash(c:ActorContext,id:string,version:number,period:SalesPeriod,currency:string,stages:StageConfig[],rows:SalesRow[]){return sha256(JSON.stringify({tenantId:c.tenantId,workspaceId:c.workspaceId,principal:c.principal,policyEpoch:c.policyEpoch,id,version,period:[period.from,period.through,period.timezone],currency,stages,rows:rows.map(row=>[row.key,row.at,row.recordedAt,row.facts])}));}
+ private async hash(c:ActorContext,id:string,version:number,period:SalesPeriod,currency:string,stages:StageConfig[],rows:SalesRow[]){return sha256(JSON.stringify({tenantId:c.tenantId,workspaceId:c.workspaceId,principal:c.principal,policyEpoch:c.policyEpoch,id,version,period:[period.from,period.through,period.timezone],currency,stages,rows:rows.map(row=>[row.key,row.at,row.recordedAt,row.facts,row.recordOwners])}));}
  private async compute(c:ActorContext,id:string,version:number,fromMonth:string,throughMonth:string,filters?:{ownerIds:string[];pipelineIds:string[];field:{name:string;value:string}|null;dateRange?:{from:string;through:string}}){
   c=await this.metrics.permit(c,'analytics.read',id);const shareFence=await this.shares.assertVisible(c,id),definition=await this.definition(c,id,version),settings=await this.settings();
   // Dashboard predicates narrow the saved definition; they never replace its restrictions.
-  if(filters){const intersect=(saved:string[],chosen:string[])=>!chosen.length?saved:!saved.length?chosen:saved.filter(id=>chosen.includes(id));definition.repIds=intersect(definition.repIds,filters.ownerIds);definition.pipelineIds=intersect(definition.pipelineIds,filters.pipelineIds);if(filters.ownerIds.length&&!definition.repIds.length)definition.repIds=['no-matching-owner'];if(filters.pipelineIds.length&&!definition.pipelineIds.length)definition.pipelineIds=['no-matching-pipeline'];}
+  if(filters){const intersect=(saved:string[],chosen:string[])=>!chosen.length?saved:!saved.length?chosen:saved.filter(id=>chosen.includes(id));if(definition.recordOwnerType){definition.recordOwnerIds=intersect(definition.recordOwnerIds??[],filters.ownerIds);if(filters.ownerIds.length&&!definition.recordOwnerIds.length)definition.recordOwnerIds=['no-matching-owner'];}else definition.repIds=intersect(definition.repIds,filters.ownerIds);definition.pipelineIds=intersect(definition.pipelineIds,filters.pipelineIds);if(!definition.recordOwnerType&&filters.ownerIds.length&&!definition.repIds.length)definition.repIds=['no-matching-owner'];if(filters.pipelineIds.length&&!definition.pipelineIds.length)definition.pipelineIds=['no-matching-pipeline'];}
   const period=filters?.dateRange?salesDateRange(filters.dateRange.from,filters.dateRange.through,settings.timezone):salesPeriod(fromMonth,throughMonth,settings.timezone),result=await this.population(c,definition,period,filters?.field??undefined);
-  const proofs=[...shareFence,...await accessProofs(this.sources,c,result.access,result.rows,'lineage'),...this.metrics.store.guard("EXISTS(SELECT 1 FROM workspace_settings WHERE id='workspace' AND timezone=? AND currency=?)",[settings.timezone,settings.currency])];
+  const proofs=[...shareFence,...result.ownerProofs,...await accessProofs(this.sources,c,result.access,result.rows,'lineage'),...this.metrics.store.guard("EXISTS(SELECT 1 FROM workspace_settings WHERE id='workspace' AND timezone=? AND currency=?)",[settings.timezone,settings.currency])];
   return {c,definition,period,currency:settings.currency,...result,proofs,reviewHash:await this.hash(c,id,version,period,settings.currency,result.native.stages,result.rows)};
  }
  /** The whole native population must be unchanged when the result commits, as graph sources are by their epoch and revisions. */
@@ -113,10 +115,11 @@ export class SalesReports{
  /** Reopen a saved result under the viewer's access now: the original rows they may read, plus evidence recorded since. */
  async read(c:ActorContext,snapshot:SalesSnapshotBody):Promise<SalesView>{
   const shareFence=await this.shares.assertVisible(c,snapshot.definitionId),access=await viewerAccess(this.graph,c,snapshot.rows.flatMap(row=>row.refs));
+  const ownerAuthority=snapshot.definition.recordOwnerType?await salesRecordOwners(this.metrics,c,snapshot.definition.recordOwnerType,applyAccess(access,snapshot.rows),access):{proofs:[]};
   const visible=applyAccess(access,snapshot.rows),complete=access.full&&visible.length===snapshot.rows.length&&visible.every((row,index)=>JSON.stringify(row.facts)===JSON.stringify(snapshot.rows[index]!.facts));
-  const sections=aggregate(snapshot.definition,snapshot.period,snapshot.asOf,visible,this.labels(snapshot.stages,access)),current=await this.population(c,snapshot.definition,snapshot.period);
+  const sections=recordOwnerSections(snapshot.definition,snapshot.period,snapshot.asOf,visible,this.labels(snapshot.stages,access)),current=await this.population(c,snapshot.definition,snapshot.period);
   const late=lateArriving(sections,current.sections,new Map(current.rows.map(row=>[row.key,row])),snapshot.asOf);
-  const proofs=[...shareFence,...await accessProofs(this.sources,c,access,visible,'current'),...await accessProofs(this.sources,c,current.access,current.rows,'lineage')];
+  const proofs=[...shareFence,...ownerAuthority.proofs,...current.ownerProofs,...await accessProofs(this.sources,c,access,visible,'current'),...await accessProofs(this.sources,c,current.access,current.rows,'lineage')];
   await this.metrics.checkSources(c,proofs);
   const view=salesView({id:snapshot.id,saved:true,definitionId:snapshot.definitionId,definitionVersion:snapshot.definitionVersion,definition:snapshot.definition,period:snapshot.period,currency:snapshot.currency,asOf:snapshot.asOf,stages:snapshot.stages,sections,rows:visible,access,limited:!complete,late:{sections:late,rows:current.rows,computedAt:current.asOf,access:current.access}});
   this.readFences.set(view,[...this.metrics.store.access.fence(c),...proofs]);return view;
@@ -128,8 +131,9 @@ export class SalesReports{
   const snapshots:SalesSnapshotBody[]=[];for(const row of rows){const body=await this.db.prepare('SELECT body_json FROM analytics_snapshots WHERE id=?').bind(row.id).first<string>('body_json'),snapshot=body?await hydrateSnapshot(this.db,body):null;if(isSalesSnapshot(snapshot))snapshots.push(snapshot);}
   const access=await viewerAccess(this.graph,c,snapshots.flatMap(snapshot=>snapshot.rows.flatMap(row=>row.refs))),proofs:SqlStatement[]=[...fence];
   const items=[];for(const snapshot of snapshots){
-   const visible=applyAccess(access,snapshot.rows),view=salesView({id:snapshot.id,saved:true,definitionId:id,definitionVersion:version,definition:snapshot.definition,period:snapshot.period,currency:snapshot.currency,asOf:snapshot.asOf,stages:snapshot.stages,sections:aggregate(snapshot.definition,snapshot.period,snapshot.asOf,visible,this.labels(snapshot.stages,access)),rows:[],access,limited:!access.full||visible.length!==snapshot.rows.length,late:null});
-   proofs.push(...await accessProofs(this.sources,c,access,visible,'current'));
+   const ownerAuthority=snapshot.definition.recordOwnerType?await salesRecordOwners(this.metrics,c,snapshot.definition.recordOwnerType,applyAccess(access,snapshot.rows),access):{proofs:[]};
+   const visible=applyAccess(access,snapshot.rows),view=salesView({id:snapshot.id,saved:true,definitionId:id,definitionVersion:version,definition:snapshot.definition,period:snapshot.period,currency:snapshot.currency,asOf:snapshot.asOf,stages:snapshot.stages,sections:recordOwnerSections(snapshot.definition,snapshot.period,snapshot.asOf,visible,this.labels(snapshot.stages,access)),rows:[],access,limited:!access.full||visible.length!==snapshot.rows.length,late:null});
+   proofs.push(...ownerAuthority.proofs,...await accessProofs(this.sources,c,access,visible,'current'));
    items.push({kind:'sales',id:snapshot.id,asOf:snapshot.asOf,period:view.period,timezone:view.timezone,currency:view.currency,freshness:view.freshness,access:view.access,definitions:view.sections.map(section=>({measure:section.measure,title:section.title,definition:section.definition,sources:section.sources})),missing:view.missing});
   }
   await this.metrics.checkSources(c,proofs);
@@ -146,6 +150,6 @@ export class SalesReports{
   const members=full?await this.shares.members(c):[];
   const canDefine=await this.metrics.store.access.authorize(c,'analytics.define',{...c,type:'analytics',id:'*'},[]).then(()=>true,()=>false);
   await this.metrics.checkSources(c,full?fullOperatorFence(c):[]);
-  return {templates:salesSuite,timezone:settings.timezone,currency:settings.currency,pipelines,reps,members,canDefine};
+  return {templates:salesSuite,timezone:settings.timezone,currency:settings.currency,pipelines,reps:full?[...reps,{id:'unassigned',name:'Unassigned'}]:reps,members,canDefine};
  }
 }

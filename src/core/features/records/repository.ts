@@ -1,3 +1,5 @@
+import {companyOwnerRule,assignmentRuleEnabled} from '../ownership/automatic';
+import {dealAssignmentNotice} from '../ownership/deal-notices';
 import {typedFieldFences,typedFieldSave,type TypedField} from './typed-fields';
 import {legacyActorContext} from '../access/legacy-database';
 import {reconcileLegacyOwnership} from '../ownership/legacy';
@@ -116,6 +118,8 @@ export class RecordsRepository extends RecordSeedRepository {
    for(const field of ['stage_id','owner_id'])if(before&&before[field]!==data[field])statements.push(...timeline(this.db,actor,kind,id,field==='stage_id'?'stage.changed':'owner.changed',field==='stage_id'?stageMovement:{previous:before[field],current:data[field]}));
    if(before&&before.stage_id!==data.stage_id)statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE opportunity_id=? AND state='scheduled'").bind(stageChangedReason,now,id));
   }
+  if(kind==='opportunity'&&data.owner_id&&before?.owner_id!==data.owner_id)statements.push(dealAssignmentNotice(this.db,id,data.owner_id,before?.owner_id??null,actor,now));
+  if(kind==='contact'&&(!before||(Object.hasOwn(data,'company_id')&&before.company_id!==data.company_id))&&await assignmentRuleEnabled(this.db,'company'))statements.push(...companyOwnerRule(this.db,actor,{contactId:id}));
   if(kind==='contact'&&before&&Object.hasOwn(data,'company_id'))statements.push(...contactPrimaryCompanyActivity(this.db,actor,id,before.company_id??null,data.company_id??null,now));
   if(kind==='contact')statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure='Contact set do-not-contact',updated_at=? WHERE contact_id=? AND state='scheduled' AND EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')").bind(now,id,id));
   if(kind==='contact')statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Contact changed',updated_at=? WHERE recipient_contact_id=?").bind(now,id));

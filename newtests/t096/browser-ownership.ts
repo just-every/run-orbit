@@ -1,3 +1,4 @@
+import {ownershipCompletionBrowser} from './browser-ownership-completion';
 import assert from 'node:assert/strict';
 import type {Browser} from '@playwright/test';
 import {expect} from '@playwright/test';
@@ -30,7 +31,7 @@ export async function ownershipBrowserJourney(browser:Browser,origin:string,dire
     const ownerEntry=page.locator('article[id^="entry-"]').filter({hasText:'Jordan Reyes'});await expect(ownerEntry).toHaveCount(1);await ownerEntry.locator('summary').click();await expect(ownerEntry.getByText('Jordan Reyes',{exact:true})).toBeVisible();
     await accessible(page,`ownership-${kind}-assigned-${width}`,directory);
    }
-   await page.goto('/app/records?kind=contact');
+   await page.goto('/app/records?kind=contact');await page.getByLabel('Record owner',{exact:true}).selectOption('');
    await expect(page.getByRole('checkbox',{name:`Select Morgan Chen ${width}`,exact:true})).toBeVisible();
    await page.getByRole('checkbox',{name:`Select Morgan Chen ${width}`,exact:true}).check();
    const review=page.getByRole('region',{name:'Record ownership'});
@@ -58,4 +59,5 @@ export async function ownershipBrowserJourney(browser:Browser,origin:string,dire
    await errors.check(directory,`ownership-${width}`);
   } finally {await context.close();}
  }
+ await ownershipCompletionBrowser(browser,origin,directory,cookie,receiver.id);
 }

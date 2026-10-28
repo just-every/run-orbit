@@ -1,3 +1,6 @@
+import {exerciseRecordOwnerViews} from '../support/record-owner-views';
+import {exerciseRecordOwnerReports} from '../support/record-owner-reports';
+import {exerciseOwnershipRules} from '../support/record-owner-rules';
 import {exerciseRecordOwnership} from '../support/record-ownership';
 import {exerciseOpportunityCreation} from '../support/opportunity-creation';
 import {salesPipelinesJourney} from '../support/sales-pipelines';
@@ -44,5 +47,11 @@ test('RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-
  const receiverSession=await deps.auth.createSession(other);
  await exerciseRecordOwnership((path,method='GET',body)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),actor,other,path=>app.request('https://orbit.test/api/v1/'+path,{headers:{Cookie:`__Host-orbit_session=${receiverSession.token}`}}));
  await exerciseOpportunityCreation((path,method='GET',body)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),db,actor,other,stage);
+ const nativeRequest=(path:string,method='GET',body?:unknown)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
+ const receiverRequest=(path:string,method='GET',body?:unknown)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${receiverSession.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
+ await exerciseRecordOwnerViews(nativeRequest,actor,other,receiverRequest);
+ const limitedId=createId();await db.prepare('INSERT INTO access_collaborators(operator_id,invited_at) VALUES(?,?)').bind(limitedId,now).run();await deps.auth.ensureOperator({id:limitedId,email:`${limitedId}@search.test`,displayName:'Limited report reader'});const limitedSession=await deps.auth.createSession(limitedId);
+ await exerciseRecordOwnerReports((path,method='GET',body)=>app.request('https://orbit.test'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),actor,other,(path,method='GET',body)=>app.request('https://orbit.test'+path,{method,headers:{Cookie:`__Host-orbit_session=${limitedSession.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}));
+ await exerciseOwnershipRules(db,actor,other);
  } finally {await fixture.dispose();}
 });

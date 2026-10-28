@@ -1,3 +1,4 @@
+import {firstEmailOwnerRule,assignmentRuleEnabled} from '../ownership/automatic';
 import {recordMailTimeline} from './record-mail-repository';
 import {isRecordMailDatabase} from './record-mail-storage';
 import {createId} from '../../shared/ids';
@@ -12,7 +13,7 @@ export async function settlementStatements(db:D1Database,id:string,actor:string,
     const statements = [db.prepare('UPDATE outbound_messages SET state=?,provider_message_id=?,message_id=COALESCE(?,message_id),failure=?,updated_at=?,settlement_id=? WHERE id=? AND (state IN (\'queued\',\'reconciling\',\'delivery-unknown\') OR (?=\'accepted\' AND ? IS NOT NULL AND state=\'cancelled\' AND first_attempt_at IS NOT NULL))').bind(state,providerId,messageId??null,failure,at,settlementId,id,state,providerId),
       ...(isRecordMailDatabase(db)?recordMailTimeline(db,message.draft_id,actor,`message.${state}`,{messageId:id,providerId,failure,...(state==='accepted'?{recipient:message.recipient_email,subject:message.subject,body:message.body}:{})},at,settlementId):new WorkbenchRepository(db).timeline(message.opportunity_id!,actor,`message.${state}`,{messageId:id,providerId,failure,...(state==='accepted'?{recipient:message.recipient_email,subject:message.subject,body:message.body}:{})},at,at,settlementId))];
     if(state==='accepted') {
-      statements.push(...acceptedHistoryLinks(db,id,settlementId));
+      statements.push(...acceptedHistoryLinks(db,id,settlementId),...(await assignmentRuleEnabled(db,'firstEmail')?firstEmailOwnerRule(db,message.contact_id,message.operator_id,settlementId):[]));
       const settings=await db.prepare("SELECT timezone,awaiting_response_working_days FROM workspace_settings WHERE id='workspace'").first<{timezone:string;awaiting_response_working_days:number}>();
       if(!settings)throw new Error('Workspace settings missing.');
       const due=workingDaysAfter(now,settings.awaiting_response_working_days,settings.timezone);

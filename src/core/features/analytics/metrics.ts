@@ -1,3 +1,4 @@
+import {reportOwners,type ReportOwner} from './record-owners';
 import {snapshotStatements,hydrateSnapshot} from './snapshot-storage';
 import {reportMeasurement} from './measurement';
 import {labelReportGroups} from './group-labels';
@@ -23,7 +24,7 @@ export class AnalyticsMetrics {
   * sharing; a later version of a shared report belongs to whoever manages that sharing. */
  async define(ctx:ActorContext,id:string,version:number,input:unknown,sharing?:{audience:Audience;operatorIds:string[]}){
   ctx=await this.permit(ctx,'analytics.define',id);let body:MetricDefinition|SalesDefinition;
-  if(isSalesBody(input)){body=salesDefinition.parse(input);await this.sales.validate(body);}
+  if(isSalesBody(input)){body=salesDefinition.parse(input);await this.sales.validate(body);if(body.recordOwnerType)await reportOwners(this,ctx,[]);}
   else{body=metricDefinition.parse(input);if(body.currency!==null||body.attributionModel!=='none'||body.sourceOperation!=='graph.read'||body.sourceTypes.some(type=>!['contact','company','opportunity'].includes(type)))throw new AccessError('validation','Reports use native CRM fields, without FX or attribution.');}
   if(!/^[a-z0-9_-]{1,100}$/.test(id)||!Number.isSafeInteger(version)||version<1)throw new AccessError('validation','A stable definition ID and positive version are required.');
   const share=await this.sales.shares.read(ctx,id);if(version>1&&share.stored&&!await this.sales.shares.canManage(ctx,share))throw new AccessError('permission','Only the report owner or the installation owner saves a new version of this report.');
@@ -44,7 +45,7 @@ export class AnalyticsMetrics {
    definitionId:snapshot.definitionId,definitionVersion:snapshot.definitionVersion,
    scope:{tenantId:context.tenantId,workspaceId:context.workspaceId,principal:context.principal,policyEpoch:context.policyEpoch},
    from:snapshot.from,through:snapshot.through,watermark:snapshot.watermark,inputs:snapshot.inputs,
-   values:snapshot.values,incompleteReasons:snapshot.incompleteReasons,fxSnapshots:snapshot.fxSnapshots,
+   values:snapshot.values,sourceOwners:(snapshot as MetricSnapshot&{sourceOwners?:ReportOwner[]}).sourceOwners,incompleteReasons:snapshot.incompleteReasons,fxSnapshots:snapshot.fxSnapshots,
   }));
  }
  async preview(ctx:ActorContext,id:string,version:number,from:string,through:string){
@@ -61,7 +62,8 @@ export class AnalyticsMetrics {
   return result.snapshot;
  }
  /** A saved sales result reopens under the viewer's access now; any other saved result keeps its exact lineage fence. */
- async read(ctx:ActorContext,id:string):Promise<MetricSnapshot|SalesView>{ctx=await this.permit(ctx,'analytics.read',id);const row=await this.store.db.prepare('SELECT body_json FROM analytics_snapshots WHERE id=? AND workspace_id=?').bind(id,ctx.workspaceId).first<{body_json:string}>();if(!row)throw new AccessError('validation','Snapshot not found.');const snapshot:MetricSnapshot & {sourceLineageVersion?:number;sourceFields?:string[]}=await hydrateSnapshot(this.store.db,row.body_json);if(isSalesSnapshot(snapshot))return this.sales.read(ctx,snapshot);if(snapshot.sourceLineageVersion!==1)throw new AccessError('prerequisite','This legacy snapshot lacks verifiable historical source lineage and cannot be read. Recompute this snapshot only to create a separate result; it does not repair this retained record or unblock backup.');const definition=await this.definition(ctx,snapshot.definitionId,snapshot.definitionVersion);const proofs=[...await this.sales.shares.assertVisible(ctx,snapshot.definitionId),...await this.sourceProofs(ctx,{...definition,sourceFields:[...new Set([...definition.sourceFields,...(snapshot.sourceFields??[])])]},snapshot.inputs)];
+ async read(ctx:ActorContext,id:string):Promise<MetricSnapshot|SalesView>{ctx=await this.permit(ctx,'analytics.read',id);const row=await this.store.db.prepare('SELECT body_json FROM analytics_snapshots WHERE id=? AND workspace_id=?').bind(id,ctx.workspaceId).first<{body_json:string}>();if(!row)throw new AccessError('validation','Snapshot not found.');const snapshot:MetricSnapshot & {sourceLineageVersion?:number;sourceFields?:string[];sourceOwners?:ReportOwner[]}=await hydrateSnapshot(this.store.db,row.body_json);if(isSalesSnapshot(snapshot))return this.sales.read(ctx,snapshot);if(snapshot.sourceLineageVersion!==1)throw new AccessError('prerequisite','This legacy snapshot lacks verifiable historical source lineage and cannot be read. Recompute this snapshot only to create a separate result; it does not repair this retained record or unblock backup.');const definition=await this.definition(ctx,snapshot.definitionId,snapshot.definitionVersion);const proofs=[...await this.sales.shares.assertVisible(ctx,snapshot.definitionId),...await this.sourceProofs(ctx,{...definition,sourceFields:[...new Set([...definition.sourceFields,...(snapshot.sourceFields??[])])]},snapshot.inputs)];
+  if(snapshot.sourceOwners){const currentOwners=await reportOwners(this,ctx,snapshot.inputs);proofs.push(...currentOwners.proofs);}
   if(!snapshot.measurement){
    const workspace=await this.store.db.prepare("SELECT currency FROM workspace_settings WHERE id='workspace'").first<{currency:string}>();
    if(!workspace)throw new AccessError('prerequisite','Workspace currency is unavailable.');

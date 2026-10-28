@@ -68,7 +68,7 @@ export function applyAccess(access:ViewerAccess,rows:SalesRow[]):SalesRow[]{
 export async function accessProofs(sources:AnalyticsSourcePort,c:ActorContext,access:ViewerAccess,rows:SalesRow[],mode:'lineage'|'current'):Promise<SqlStatement[]>{
  const used=new Map<string,{ref:DependencyRef;fields:Set<string>;entries:boolean}>();
  for(const row of rows){
-  for(const ref of row.refs){const record=access.records.get(keyOf(ref));if(!record)throw new AccessError('permission','A report source is unavailable to you.');const entry=used.get(keyOf(ref))??{ref:record.ref,fields:new Set<string>(),entries:false};if(row.entries&&!access.full&&keyOf(row.entries)===keyOf(ref))entry.entries=true;used.set(keyOf(ref),entry);}
+  for(const ref of row.refs){const record=access.records.get(keyOf(ref));if(!record)throw new AccessError('permission','A report source is unavailable to you.');const entry=used.get(keyOf(ref))??{ref:record.ref,fields:new Set<string>(),entries:false};if(row.recordOwners?.some(owner=>owner.type===ref.type&&owner.id===ref.id))entry.fields.add('owner_id');if(row.entries&&!access.full&&keyOf(row.entries)===keyOf(ref))entry.entries=true;used.set(keyOf(ref),entry);}
   if(row.dealId&&used.has(`opportunity:${row.dealId}`)){const entry=used.get(`opportunity:${row.dealId}`)!;for(const field of row.needs??[])entry.fields.add(field);for(const [fact,needs] of Object.entries(row.governed??{}))if(Object.hasOwn(row.facts,fact))for(const field of needs)entry.fields.add(field);}
  }
  return sources.traceStatements(c,[...used.values()].map(entry=>({ref:entry.ref,fields:[...entry.fields],...(entry.entries?{entries:true}:{})})),mode);

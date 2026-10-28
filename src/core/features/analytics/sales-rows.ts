@@ -1,3 +1,4 @@
+import type {ReportOwner} from './record-owners';
 import type {Json} from '../../shared/expansion-contracts';
 
 /** One native record behind a sales figure. Facts are the measured values; refs are the graph records it names. */
@@ -17,6 +18,7 @@ export interface SalesRow{
  /** `at` dates the row into a month; `recordedAt` is when its evidence was recorded, which finds late-arriving evidence. */
  at:string|null;recordedAt:string|null;
  facts:Record<string,Json>;
+ recordOwners?:ReportOwner[];
 }
 /** Deal fields a report may measure, and the derived deal facts with the fields that govern them. */
 export const dealFields=['lifecycle','stage_id','owner_id','value_cents','close_reason','closed_at','created_at'] as const;

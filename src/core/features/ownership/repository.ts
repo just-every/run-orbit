@@ -1,3 +1,4 @@
+import {companyOwnerRule,assignmentRuleEnabled} from './automatic';
 import {createId} from '../../shared/ids';
 import {RecordError,tables} from '../records/shared';
 import {requireOwnershipOperator,ownershipFence} from './authority';
@@ -31,14 +32,14 @@ export class OwnershipRepository {
   const batch=await this.batch(id,actor);if(batch.state==='held')throw new RecordError(409,'Restored ownership history requires a fresh review.');
   if(batch.state!=='reviewed')return this.describe(id,actor);
   const items=(await this.db.prepare('SELECT * FROM ownership_batch_items WHERE batch_id=? ORDER BY ordinal').bind(id).all<OwnershipItem>()).results;
-  await this.db.batch([...ownershipFence(this.db,actor),...applyOwnershipStatements(this.db,batch,items,actor)]);
+  await this.db.batch([...ownershipFence(this.db,actor),...applyOwnershipStatements(this.db,batch,items,actor),...(batch.record_type==='company'&&await assignmentRuleEnabled(this.db,'company')?items.flatMap(item=>companyOwnerRule(this.db,actor,{companyId:item.record_id,batchId:batch.id,undo:false})):[])]);
   return this.describe(id,actor);
  }
  async undo(id:string,actor:string){
   const batch=await this.batch(id,actor);if(batch.state==='held'||batch.state==='reviewed')throw new RecordError(409,'Only an applied local ownership batch can be undone.');
   if(batch.state==='undone')return this.describe(id,actor);
   const items=(await this.db.prepare('SELECT * FROM ownership_batch_items WHERE batch_id=? ORDER BY ordinal').bind(id).all<OwnershipItem>()).results;
-  await this.db.batch([...ownershipFence(this.db,actor),...undoOwnershipStatements(this.db,batch,items,actor)]);
+  await this.db.batch([...ownershipFence(this.db,actor),...undoOwnershipStatements(this.db,batch,items,actor),...(batch.record_type==='company'&&await assignmentRuleEnabled(this.db,'company')?items.flatMap(item=>companyOwnerRule(this.db,actor,{companyId:item.record_id,batchId:batch.id,undo:true})):[])]);
   return this.describe(id,actor);
  }
 }

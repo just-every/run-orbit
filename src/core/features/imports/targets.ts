@@ -1,3 +1,4 @@
+import {ownerRead,ownerMatches,ownerWrite,ownerRemove} from './targets-owner';
 import {suppressionPredicate} from '../records/suppression';
 import { canonicalJson,sha256,type D1TargetAdapter,type D1Sql,type TargetRow,type D1Database } from '../../../modules/import-kit/d1/index';
 import { stopRead,stopWrite,stopRemove,stopMatches } from './targets-stop';
@@ -6,6 +7,7 @@ export const tables:Record<string,string>={company:'companies',contact:'contacts
 export type NativeValue={row:Record<string,any>;links:Record<string,any>[];suppressionTokens?:string[]};
 export const targets:D1TargetAdapter={
  async read(db,destination,kind,id){
+  if(kind==='owner')return ownerRead(db,destination,id);
   if(kind==='suppression')return stopRead(db,destination,id);
   const table=tables[kind];if(!table)throw new Error('Unsupported import target.');
   const row=await db.prepare(`SELECT * FROM ${table} WHERE id=?`).bind(id).first();if(!row)return undefined;
@@ -14,6 +16,7 @@ export const targets:D1TargetAdapter={
   return {destination,targetKind:kind,targetId:id,value:{row,links,...marker&&JSON.parse(marker.original_json).suppressionTokens?{suppressionTokens:JSON.parse(marker.original_json).suppressionTokens}:{}},revision:marker?.revision??sha256(canonicalJson({row,links}))};
  },
  matches(row,destination,kind,id){
+  if(kind==='owner')return ownerMatches(row,id);
   if(kind==='suppression')return stopMatches(row,id);
   const table=tables[kind];if(!table)throw new Error('Unsupported target.');
   if(!row)return sql(`NOT EXISTS(SELECT 1 FROM ${table} WHERE id=?)`,id);
@@ -25,6 +28,7 @@ export const targets:D1TargetAdapter={
   return sql(predicates.join(' AND '),...args);
  },
  write(target){
+  if(target.targetKind==='owner')return ownerWrite(target);
   if(target.targetKind==='suppression')return stopWrite(target);
   const {row,links,suppressionTokens}=target.value as NativeValue,table=tables[target.targetKind];if(!table)throw new Error('Unsupported target.');
   const fields=Object.keys(row);if(fields.some(f=>!/^[_a-z][_a-z0-9]*$/.test(f)))throw new Error('Invalid native field.');
@@ -35,7 +39,7 @@ export const targets:D1TargetAdapter={
   statements.push(sql('INSERT INTO crm_import_targets(kind,id,revision,original_json) VALUES(?,?,?,?) ON CONFLICT(kind,id) DO UPDATE SET revision=excluded.revision,original_json=excluded.original_json',target.targetKind,target.targetId,target.revision,canonicalJson(target.value)));
   return statements;
  },
- remove(_destination,kind,id){if(kind==='suppression')return stopRemove(id);return[sql(`DELETE FROM ${tables[kind]} WHERE id=?`,id),sql('DELETE FROM crm_import_targets WHERE kind=? AND id=?',kind,id)];},
- async list(db,destination){const list:TargetRow[]=[];for(const kind of Object.keys(tables)){const rows=await db.prepare(`SELECT id FROM ${tables[kind]}`).all();for(const row of rows.results)list.push((await this.read(db,destination,kind,row.id))!);}for(const row of (await db.prepare('SELECT id FROM crm_import_stops').all()).results)list.push((await this.read(db,destination,'suppression',row.id))!);return list;},
- matchesCount(count){return sql(`(${Object.values(tables).map(table=>`(SELECT count(*) FROM ${table})`).join('+')}+(SELECT count(*) FROM crm_import_stops))=?`,count);},
+ remove(_destination,kind,id){if(kind==='owner')return ownerRemove(id);if(kind==='suppression')return stopRemove(id);return[sql(`DELETE FROM ${tables[kind]} WHERE id=?`,id),sql('DELETE FROM crm_import_targets WHERE kind=? AND id=?',kind,id)];},
+ async list(db,destination){const list:TargetRow[]=[];for(const kind of Object.keys(tables)){const rows=await db.prepare(`SELECT id FROM ${tables[kind]}`).all();for(const row of rows.results)list.push((await this.read(db,destination,kind,row.id))!);}for(const row of (await db.prepare("SELECT record_type||':'||record_id AS id FROM record_ownership").all()).results)list.push((await ownerRead(db,destination,row.id))!);for(const row of (await db.prepare('SELECT id FROM crm_import_stops').all()).results)list.push((await this.read(db,destination,'suppression',row.id))!);return list;},
+ matchesCount(count){return sql(`(${Object.values(tables).map(table=>`(SELECT count(*) FROM ${table})`).join('+')}+(SELECT count(*) FROM crm_import_stops)+(SELECT count(*) FROM record_ownership))=?`,count);},
 };

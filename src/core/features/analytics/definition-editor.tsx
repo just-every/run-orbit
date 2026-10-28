@@ -17,7 +17,7 @@ export function ReportDefinitionEditor({workspaceId}:{workspaceId:string}){
      ...(data.get('value')?{valueField:String(data.get('value'))}:{}),
      ...(data.get('denominator')?{denominatorField:String(data.get('denominator'))}:{}),
      ...(data.get('group')?{groupBy:String(data.get('group'))}:{}),
-     ...(data.get('filter')?{filters:{[String(data.get('filter'))]:String(data.get('filterValue'))}}:{}),
+     ...(data.get('filter')?{filters:{[String(data.get('filter'))]:data.get('filter')==='owner_id'&&data.get('filterValue')==='unassigned'?null:String(data.get('filterValue'))}}:{}),
     },
    });window.location.reload();
   }catch(e){setError(e instanceof Error?e.message:'Report definition was not saved.');setTimeout(()=>feedback.current?.focus(),0);}finally{setBusy(false);}

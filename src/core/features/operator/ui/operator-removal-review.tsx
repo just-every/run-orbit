@@ -1,6 +1,8 @@
 import {useEffect,useState} from 'react';
 import {recordsRequest} from './records-api';
 const reviewSets=[
+ {key:'contacts',title:'Owned contacts',label:'contacts'},
+ {key:'companies',title:'Owned companies',label:'companies'},
  {key:'opportunities',title:'Open opportunities',label:'opportunities'},
  {key:'tasks',title:'Open sales tasks',label:'tasks'},
  {key:'handoffs',title:'Open handoffs',label:'handoffs'},

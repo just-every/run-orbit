@@ -12,6 +12,8 @@ export const salesDefinition=z.object({
  description:z.string().trim().min(1).max(2000),
  measures:z.array(z.enum(salesMeasures)).min(1).max(salesMeasures.length).refine(unique,'Choose each measure once.'),
  pipelineIds:z.array(recordId).max(50).refine(unique,'Choose each pipeline once.'),
+ recordOwnerType:z.enum(['contact','company']).optional(),
+ recordOwnerIds:z.array(z.union([recordId,z.literal('unassigned')])).max(200).refine(unique,'Choose each record owner once.').optional(),
  repIds:z.array(recordId).max(200).refine(unique,'Choose each rep once.'),
  groupBy:z.enum(['pipeline','stage','owner']),
  bucket:z.literal('month'),
