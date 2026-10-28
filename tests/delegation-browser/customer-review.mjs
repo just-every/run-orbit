@@ -19,6 +19,14 @@ export async function reviewImportedData(page,collaborator,customer,viewerId) {
  await expect(page.getByText(literal,{exact:true})).toHaveCount(2);await page.reload();await expect(page.getByText(literal,{exact:true})).toHaveCount(2);
  await page.getByRole('button',{name:'Edit details',exact:true}).click();await expect(page.getByLabel('Import source',{exact:true})).toHaveValue(literal);await expect(page.getByLabel('Campaign json',{exact:true})).toHaveValue(literal);
  await collaborator.goto(`/app/shared-records?kind=contact&id=${customer.bob}`);await expect(collaborator.getByText(literal,{exact:true})).toHaveCount(2);
+ // The new deal needs observed evidence before it has a recommendation to
+ // explain. Recording a completed customer meeting evaluates it synchronously.
+ const meeting=await page.request.post(`/api/v1/workbench/opportunities/${customer.deal}/events`,{
+  headers:{Origin:origin},
+  data:{type:'meeting.completed',subject:'Reviewed the imported customer history with Bob',contactId:customer.bob,occurredAt:new Date(Date.now()-60000).toISOString(),eventId:`import-review-${customer.deal}`}
+ });
+ expect(meeting.status(),await meeting.text()).toBe(201);
+ const evidence=await meeting.json();
  await page.goto(`/app/assistance/${customer.deal}`);
  // Imported Bob remains do-not-contact. Inspect his data in an explanation;
  // an email draft must first be refused, not silently made contactable.
@@ -33,6 +41,8 @@ export async function reviewImportedData(page,collaborator,customer,viewerId) {
  await page.getByRole('combobox',{name:'Request',exact:true}).selectOption('explanation');
  const prepared=await previewRequest();expect(prepared.status(),await prepared.text()).toBe(200);
  const preview=await prepared.json();expect(preview.preview.contact.id).toBe(customer.bob);
+ expect(preview.preview.evidence.map(item=>item.id)).toContain(evidence.id);
+ expect(preview.preview.contact.contactability).toBe('do_not_contact');
  expect(JSON.parse(preview.preview.contact.custom_fields_json)).toMatchObject({import_source:literal,campaign_json:literal});
  await page.getByText('View complete request',{exact:true}).click();await expect(page.getByText(literal,{exact:true})).toHaveCount(2);
  expect(JSON.parse((await read()).custom_fields_json).import_source).toBe(literal);
