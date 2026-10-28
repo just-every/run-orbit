@@ -6527,7 +6527,7 @@
       "executable": false
     },
     "src/core/features/public/ui/alternative-line.ts": {
-      "sha256": "217834fc01d43f0a92135d26e878f9484dfc49414935dbc540e79c972b265254",
+      "sha256": "0e27ee76cb13e58067a50cda89731c90b04c7c9425b023fe0692a3a9515a5984",
       "executable": false
     },
     "src/core/features/public/ui/auth/auth.css": {
@@ -6671,11 +6671,11 @@
       "executable": false
     },
     "src/core/features/public/ui/home/sections.css": {
-      "sha256": "0c7bf4380433b5766ca0f5ada58bbdeacd22498c3550767d101207cd0a6d28b5",
+      "sha256": "1162455fab47a0460a3eaba5d8785c8095cc5c6cea8f7600a934b7f84120f157",
       "executable": false
     },
     "src/core/features/public/ui/home/Sections.tsx": {
-      "sha256": "5a5f6a8900f5823b19e1fbfa9dfdf7e6bf53dce69dd280c0c0bd5648a68bb5fc",
+      "sha256": "18f58d5f7e2839fa70300c1a260568a7e31e9de90eb70ec712c8e48b9b4d6d11",
       "executable": false
     },
     "src/core/features/public/ui/home/SignalIcons.tsx": {
