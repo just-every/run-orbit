@@ -212,7 +212,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 2. Create a contact by hand and see it start contactable; recreate an erased contact's address and see it start do-not-contact.
 
 **Evidence.** `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts`; `tests/core/outreach-limits.test.ts`
-**Gap.** Unasserted in the carried evidence: permanent-bounce stop; immediate send refuses stopped contact; manual contact starts contactable. Asserted: manual stop stays stopped; unsubscribe stop; scheduled work cancelled; explicit current-state clear read back; normalized recreation starts do-not-contact.
+**Gap.** Unasserted in the carried evidence: manual contact starts contactable. Asserted: manual stop stays stopped; unsubscribe stop; permanent-bounce stop; immediate send refuses stopped contact; scheduled work cancelled; explicit current-state clear read back; normalized recreation starts do-not-contact.
 
 #### RECORD-013 — Deletion
 
@@ -238,7 +238,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 1. POST a signed configured-source event through its ingestion route and read one attributed signal and linked timeline within the bound.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: attributed configured source attribution.; linked timeline entry; ingestion within ten seconds. Asserted: one stored signal.
+**Gap.** Unasserted in the carried evidence: linked timeline entry; ingestion within ten seconds. Asserted: one stored signal; attributed configured source attribution..
 
 #### SIGNAL-002 — Signal types
 
@@ -396,7 +396,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SE
 1. Attempt capture with native, collaborator, source and delegation authority; only permitted native/address intake succeeds, and a proposed new contact stays blocked.
 
 **Evidence.** `src/core/features/capture/providers/oauth.ts`; `tests/core/capture-providers.test.ts`; `tests/core/capture-boundaries.test.ts`
-**Gap.** Unasserted in the carried evidence: native intake works; delegation credential refused; address-only intake works; proposed new contact stays blocked. Asserted: collaborator intake refused; source signature refused.
+**Gap.** Unasserted in the carried evidence: delegation credential refused; address-only intake works; proposed new contact stays blocked. Asserted: native intake works; collaborator intake refused; source signature refused.
 
 #### CAPTURE-006 — Capture sources
 
@@ -2255,7 +2255,7 @@ Core · target · **partial** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUDIT-
 3. Erase a contact and inspect every current read/search/report/AI/export and replay fence.
 
 **Evidence.** `tests/core/capture-data.test.ts`; `tests/support/current-sales-data.ts`; `tests/support/current-sales-archive.ts`; `tests/support/current-sales-local.ts`; `scripts/installer/portability-policy.mjs`; `newtests/t096/forms-native.test.ts`; `tests/core/crm-import-erasure.test.ts`
-**Gap.** Unasserted in the carried evidence: restored pending Slack deletions held; every current search and AI/mail door checked. Asserted: each current table populated; part content digests match; all category content digests reconcile; anonymous audit retained; export independent permission refusal; credentials excluded; source sessions unusable; collaborator authority renewed; publication authority withdrawn; agent authority unusable; scheduled approval withdrawn; current serialized data has no erased identity; direct public record absence; report source inaccessible; replay cannot recreate erased capture; old export withdrawn; audit references anonymized.
+**Gap.** Unasserted in the carried evidence: restored pending Slack deletions held. Asserted: each current table populated; part content digests match; all category content digests reconcile; anonymous audit retained; export independent permission refusal; credentials excluded; source sessions unusable; collaborator authority renewed; publication authority withdrawn; agent authority unusable; scheduled approval withdrawn; current serialized data has no erased identity; direct public record absence; report source inaccessible; replay cannot recreate erased capture; old export withdrawn; audit references anonymized; contact/company/opportunity search contains no erased private value; AI preview contains no erased private value.
 
 #### OPS-001 — Owned operation and explicit provider failures
 
