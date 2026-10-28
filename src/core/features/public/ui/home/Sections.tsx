@@ -9,18 +9,19 @@ import { FormDrawing } from "./drawings/rest/FormDrawing";
 import { RecordsDrawing } from "./drawings/rest/RecordsDrawing";
 import { ScoreDrawing } from "./drawings/ScoreDrawing";
 
-/** Free as in code and as in cost, with the real licence drawn. */
+/** One pipeline for the whole team, owned and run by you, with the real licence drawn. */
 export function Free() {
   const site = useSiteVariant();
   return (
     <section className="ob-section ob-split" id="free" aria-labelledby="ob-free-title">
       <div className="ob-section-copy">
-        <h2 id="ob-free-title">Free for the whole team.</h2>
-        <p>Orbit is 100% free and open source. Free as in code, and free as in cost. It's MIT licensed, so it's yours to use, change and run however you like.</p>
+        <h2 id="ob-free-title">One pipeline for the whole team.</h2>
+        <p>Everyone works the same deals in one pipeline, on a server you run. Orbit is open source under the MIT licence, so the code and your data are yours to change and keep.</p>
         <ul className="ob-proof" aria-label="What Orbit never charges for">
           <li>No seats.</li><li>No plans.</li><li>No fees.</li>
         </ul>
         <div className="ob-actions"><a className="ob-pill" href={site ? '/run' : siteLinks.source}>{site ? 'Run Orbit' : 'Get the code'}</a></div>
+        <p className="ob-footnote">You can also have all the source for free.</p>
       </div>
       <LicenceDrawing />
     </section>
