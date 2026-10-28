@@ -19,7 +19,7 @@ export function manualConnectionRoutes(db:D1Database){
  const client=async(id:string,origin:string)=>{const row=await db.prepare('SELECT id FROM delegation_clients WHERE id=? AND redirect_uri=? AND enabled=1').bind(id,ownCallback(origin)).first<{id:string}>();if(!row)deny(400,'INVALID_REQUEST');return row!.id;};
  app.get('/connect',async c=>{
   const origin=new URL(c.req.url).origin,id=await client(c.req.query('client')??'',origin),kind=(c.req.query('kind')??'opportunities') as keyof typeof kinds,q=(c.req.query('q')??'').slice(0,200);
-  if(!kinds[kind])deny(400,'INVALID_REQUEST');
+  if(!Object.hasOwn(kinds,kind))deny(400,'INVALID_REQUEST');
   const picked=all(c.req.queries('picked')).filter(t=>targetSchema.safeParse(t).success).slice(0,100),chosen=all(c.req.queries('scope')),wanted=chosen.length?chosen:['crm.evidence.read'];
   const named=await recordsFor(db,picked),found=(await db.prepare(`SELECT id,${kinds[kind].name} AS name FROM ${kind} WHERE instr(lower(${kinds[kind].name}),lower(?))>0 ORDER BY ${kinds[kind].name} LIMIT 25`).bind(q).all<{id:string;name:string|null}>()).results.filter(r=>!picked.includes(`${kind}/${r.id}`));
   const box=(target:string,label:string,checked:boolean)=>`<label class="check"><input type="checkbox" name="picked" value="${esc(target)}"${checked?' checked':''}>${esc(label)}</label>`;

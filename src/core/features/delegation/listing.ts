@@ -16,7 +16,7 @@ export async function recordsFor(db:D1Database,targets:readonly string[]):Promis
  for(const target of targets){
   const [table,id,,handoff]=target.split('/') as [keyof typeof tables,string,string?,string?];
   if(handoff){const task=await db.prepare('SELECT title FROM handoff_tasks WHERE id=? AND opportunity_id=?').bind(handoff,id).first<{title:string}>();if(task)add({target,kind:'crm.handoff',name:task.title});continue;}
-  const source=tables[table];if(!source)continue;
+  const source=Object.hasOwn(tables,table)?tables[table]:undefined;if(!source)continue;
   const row=await db.prepare(`SELECT ${source.name} AS name FROM ${table} WHERE id=?`).bind(id).first<{name:string|null}>();if(!row)continue;
   add({target,kind:source.kind,name:row.name??target});
   if(table==='opportunities')for(const task of (await db.prepare('SELECT id,title FROM handoff_tasks WHERE opportunity_id=? ORDER BY created_at,id').bind(id).all<{id:string;title:string}>()).results)add({target:`${target}/handoffs/${task.id}`,kind:'crm.handoff',name:task.title});
