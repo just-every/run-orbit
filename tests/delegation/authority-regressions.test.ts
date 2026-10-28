@@ -6,6 +6,7 @@ import {createApp} from '../support/app';
 import {authorityFixture} from './authority-fixture';
 import {challenge} from '../../src/core/features/delegation/token';
 import {random} from '../../src/core/features/delegation/protocol';
+import {delegationRoutes} from '../../src/core/features/delegation/routes';
 
 const target='opportunities/opp/handoffs/task',schema='crm.handoff-state/1';
 test('API-001 DELEGATE-001 consent, scoped credentials, atomic handoff replay, current state and revocation preserve only selected application authority',async()=>{
@@ -82,6 +83,27 @@ test('API-001 DELEGATE-001 consent, scoped credentials, atomic handoff replay, c
   const nativeList=await f.native.request('https://orbit.test/handoffs/opp',{headers:{Cookie:f.cookie}});assert.equal((await nativeList.json()).tasks[0].task.title,'Native open');
   for(const path of ['/evidence?target=opportunities/opp','/check?target=opportunities/opp/handoffs/absent','/evidence?target=opportunities/foreign/handoffs/task'])assert.equal((await request(path,undefined,schema)).status,path.includes('target=opportunities/opp')&&!path.includes('/handoffs')?422:404);
   assert.equal(await db.prepare('SELECT count(*) FROM outbound_messages').first('count(*)'),0);
+  // Force the retry to miss the receipt initially, then observe the winner's
+  // committed revision. This interleaving must recover the identical receipt.
+  let resume!:()=>void,noticed!:()=>void;
+  const paused=new Promise<void>(resolve=>{resume=resolve;}),missed=new Promise<void>(resolve=>{noticed=resolve;});
+  const retryDb=new Proxy(db,{get(database,key){
+   if(key==='prepare')return(sql:string)=>{
+    const wrap=(statement:D1PreparedStatement):D1PreparedStatement=>new Proxy(statement,{get(target,method){
+     if(method==='bind')return(...values:unknown[])=>wrap(target.bind(...values));
+     if(method==='first')return async()=>{const result=await target.first();if(!result){noticed();await paused;}return result;};
+     const value=Reflect.get(target,method,target);return typeof value==='function'?value.bind(target):value;
+    }});
+    const statement=database.prepare(sql);return sql.startsWith('SELECT request_hash FROM delegation_receipts')?wrap(statement):statement;
+   };
+   const value=Reflect.get(database,key,database);return typeof value==='function'?value.bind(database):value;
+  }});
+  const retryInput=await effect('late-replay'),late=delegationRoutes(retryDb).request('https://orbit.test/effects',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(retryInput)});
+  await missed;
+  let winner:Response;
+  try{winner=await request('/effects',retryInput);}finally{resume();}
+  const recovered=await late;assert.equal(winner.status,200);assert.equal(recovered.status,200);
+  assert.deepEqual((await recovered.json()).receipt,(await winner.json()).receipt);
   const deniedInput=await effect('denied');
   for(const mode of ['expired','revoked','removed','disabled']){
    const grant=await f.grant();

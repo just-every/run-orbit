@@ -19,8 +19,12 @@ export async function writeHandoff(db:D1Database,input:Effect,identity:{grant?:G
  if(g){const previous=await db.prepare('SELECT request_hash FROM delegation_receipts WHERE client_id=? AND principal_id=? AND account_id=? AND operation_key=?').bind(g.client_id,g.principal_id,g.account_id,input.operationKey).first<{request_hash:string}>();if(previous){if(previous.request_hash!==requestHash)deny(409,'OPERATION_CONFLICT');return receipt(db,g,input.operationKey);}}
  if(!/^opportunities\/[^/]+\/handoffs\/[^/]+$/.test(input.target))deny(422,'UNSUPPORTED_OPERATION');
  const before=await snapshot(db,input.target,true);
- if(before.revision!==input.expectedRevision)deny(409,'REVISION_CONFLICT');
- if(before.audience.audienceRevision!==input.expectedAudienceRevision)deny(409,'AUDIENCE_CHANGED');
+ // A concurrent identical operation may commit between the first receipt lookup
+ // and this snapshot. Recover its receipt before refusing a stale precondition.
+ if(before.revision!==input.expectedRevision||before.audience.audienceRevision!==input.expectedAudienceRevision){
+  if(g){const existing=await db.prepare('SELECT request_hash FROM delegation_receipts WHERE client_id=? AND principal_id=? AND account_id=? AND operation_key=?').bind(g.client_id,g.principal_id,g.account_id,input.operationKey).first<{request_hash:string}>();if(existing){if(existing.request_hash!==requestHash)deny(409,'OPERATION_CONFLICT');return receipt(db,g,input.operationKey);}}
+  deny(409,before.revision!==input.expectedRevision?'REVISION_CONFLICT':'AUDIENCE_CHANGED');
+ }
  if((before.value.opportunity as Record<string,unknown>).lifecycle!=='open')deny(409,'REVISION_CONFLICT');
  if(input.content.assigneeId&&!before.audience.principalIds.includes(input.content.assigneeId))deny(400,'INVALID_REQUEST');
  const now=new Date().toISOString(),id=random(),parts=input.target.split('/'),old=before.value.handoff as Record<string,unknown>|null;
