@@ -4015,7 +4015,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "0b230df3456b58cdf76827755ad40375bc5c0356330b374811879ee624f8af6d",
+      "sha256": "626dc7aaf3606a607dd0531ff07186041a672647578a0b6cbf23e61f50673659",
       "executable": false
     },
     "scripts/verification-reuse.sh": {
