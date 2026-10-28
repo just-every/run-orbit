@@ -4967,7 +4967,7 @@
       "executable": false
     },
     "src/core/features/capture/providers/calendar.ts": {
-      "sha256": "7b2f6301ec75b4ffbf999ffd39984e48b47792eb358f7f0d3be6630bec2dab22",
+      "sha256": "9ab2de690af192c23611f72ccb9d37cae0b535bb1c2b4ddfb67542ecd46562c6",
       "executable": false
     },
     "src/core/features/capture/providers/config.ts": {
