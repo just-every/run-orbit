@@ -298,7 +298,7 @@
 .mention-access .workbench-actions { flex-wrap: wrap; }
 
 /* Agent-native activity is readable alongside controls usable by touch. */
-.ob-app :is(.operator-detail,.operator-draft-editor) button { min-height:44px; min-width:44px; }
+.ob-app :is(.operator-detail,.operator-draft-editor,.records-workspace) button { min-height:44px; min-width:44px; }
 .ob-app .operator-detail label:has(> input:is([type="checkbox"],[type="radio"])) { display:inline-flex; align-items:center; min-height:44px; min-width:44px; gap:6px; }
 
 .ob-app main:has(.operator-draft-editor) button { min-height:44px; min-width:44px; }

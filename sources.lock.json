@@ -6407,7 +6407,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator.css": {
-      "sha256": "ae1a80e1af8c8d98579a13c14a8c9ef640e402b360f6b091867b28600caea3ae",
+      "sha256": "e08083707ff4717ca0351d59490d39b0dfb6b40dd822cdc0f6d028561fdbad37",
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-evidence.tsx": {
@@ -6515,7 +6515,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records.css": {
-      "sha256": "9a89800d72ba8c5578df232ad74be3098b3e3c2665e42baed765aedfd1a9c632",
+      "sha256": "9776b2ea36e2d0900d625779b93b64d6f516cecf15e1810771af0fda18c81d5b",
       "executable": false
     },
     "src/core/features/operator/ui/reviewed-call.tsx": {
