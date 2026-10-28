@@ -2239,7 +2239,7 @@
       "executable": false
     },
     "newtests/t096/browser-team-journey.ts": {
-      "sha256": "17c3ecd4021716f9c7fbead2ce55e3dec8030ade2d096ed630b71e87f233116a",
+      "sha256": "0d941090d72fbde4f59d69ebbd285821d181b7021ca91c1cfb9e83bdb14af7e4",
       "executable": false
     },
     "newtests/t096/capture-rule-browser-seed.ts": {
