@@ -1,3 +1,4 @@
+import {updateCapturedMeeting} from './providers/writeback-capture-update';
 import {payloadHash} from '../../platform/source-security';
 import {createId} from '../../shared/ids';
 import {privacyMatcher,suppressionContextFence} from '../records/suppression';
@@ -39,7 +40,10 @@ export async function rememberProviderKeys(db:D1Database,source:CaptureSource,si
 }
 export async function readProviderItem(db:D1Database,source:CaptureSource,item:CaptureItem):Promise<Read[]>{
  if(item.kind!=='calendar'||!item.providerEvent)return readItem(item);
- const event=item.providerEvent,keys=await identityKeys(db,source,['calendar',event.calendarId,event.id]);
+ const event=item.providerEvent;
+ if(await db.prepare("SELECT 1 FROM calendar_writebacks WHERE source_id=? AND calendar_id=? AND (provider_event_id=? OR provider_event_id=?)").bind(source.id,event.calendarId,event.id,event.seriesId??event.id).first())return [];
+ if(await updateCapturedMeeting(db,source,item))return [];
+ const keys=await identityKeys(db,source,['calendar',event.calendarId,event.id]);
  if(!event.deleted&&typeof event.seriesId==='string'&&event.seriesId)keys.push(...await identityKeys(db,source,['calendar',event.calendarId,event.seriesId]));
  let originals=[{raw:item.raw,keys}];
  if(event.deleted){
@@ -68,6 +72,7 @@ export async function readProviderItem(db:D1Database,source:CaptureSource,item:C
  for(const original of originals)for(const read of await readItem({...item,raw:original.raw})){
   if('fact' in read&&read.fact.kind==='event'){
    read.fact.providerKeys=original.keys;
+   if(event.writebackHeader&&!event.deleted){const marker='X-ORBIT-CALENDAR-WRITEBACK: ',metadata=JSON.parse(event.writebackHeader.slice(marker.length));metadata.meeting.start=read.fact.start;metadata.meeting.end=read.fact.end;read.fact.headers+='\n'+marker+JSON.stringify(metadata);}
    read.fact.headers+=original.keys.map(key=>`\n${keyHeader}${key}\n`).join('');
   }
   reads.push(read);

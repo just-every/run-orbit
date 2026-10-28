@@ -3,6 +3,12 @@ import {boundedResponse,objectResponse} from './response';
 import {CaptureError,CaptureProviderError} from '../contracts';
 export type Provider='google'|'microsoft';
 export type ProviderFetch=(input:string,init?:RequestInit)=>Promise<Response>;
+// Workers supports manual redirects. Refuse the redirect before any second request.
+export const providerNetworkFetch:ProviderFetch=async(input,init)=>{
+ const response=await fetch(input,{...init,redirect:'manual'});
+ if(response.status>=300&&response.status<400){await response.body?.cancel();throw new CaptureProviderError('unavailable','The provider returned a redirect. No further request was made.');}
+ return response;
+};
 export const scopes={google:['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/calendar.readonly'],microsoft:['Mail.Read','Calendars.Read']};
 export function providerId(value:string):Provider{if(value!=='google'&&value!=='microsoft')throw new CaptureError(404,'Unknown capture provider.');return value;}
 export function tenantId(value:unknown){if(typeof value!=='string'||!/^([a-zA-Z0-9][a-zA-Z0-9.-]{0,200})$/.test(value))throw new CaptureError(400,'Enter a valid Microsoft tenant ID or domain.');return value;}

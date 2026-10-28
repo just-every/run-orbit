@@ -3,6 +3,7 @@ import {createId} from '../../../shared/ids';
 import type {SourceSecurity} from '../../../platform/source-security';
 import {CaptureError,CaptureProviderError} from '../contracts';
 import {checkedScopes,tokenRequest,type Credential,type Provider,type ProviderFetch} from './config';
+import {providerNetworkFetch} from './config';
 export interface ProviderSource{id:string;name:string;adapter:Provider;scope_json:string;state:string;connection_id:string|null;cursor:string|null}
 /** A durable lease fences every read, refresh, intake and cursor update. Expired workers cannot write. */
 export async function leaseSource(db:D1Database,id:string){
@@ -15,7 +16,7 @@ export async function activeLease(db:D1Database,source:{id:string;connection_id:
  const result=await db.prepare(`UPDATE capture_locks SET expires_at=? WHERE source_id=? AND lease=? AND expires_at>? AND EXISTS(SELECT 1 FROM capture_sources WHERE id=? AND connection_id IS ? AND state IN('connected','syncing'))`).bind(Date.now()+60000,source.id,lease,Date.now(),source.id,source.connection_id).run();
  if(result.meta.changes!==1)throw new CaptureError(409,'This source was disconnected; intake stopped. Its connection or scope may have changed.');
 }
-export function providerSession(db:D1Database,source:ProviderSource,lease:string,security:SourceSecurity,fetcher:ProviderFetch=fetch){
+export function providerSession(db:D1Database,source:ProviderSource,lease:string,security:SourceSecurity,fetcher:ProviderFetch=providerNetworkFetch){
  const check=()=>activeLease(db,source,lease);
  async function credential(force=false){
   await check();

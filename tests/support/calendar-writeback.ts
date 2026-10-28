@@ -1,3 +1,4 @@
+import {extendedCalendarProof} from './calendar-writeback-extended';
 import assert from 'node:assert/strict';
 import {providerFixture,captureFixtureSecurity} from './capture-provider-fixture';
 import {type Provider,type Credential} from '../../src/core/features/capture/providers/config';
@@ -33,4 +34,5 @@ export async function calendarWritebackProof(provider:Provider){const f=await pr
  const cancelled=await confirm(await preview({...reschedule,operation:'cancel'}));assert.equal(cancelled.status,201,await cancelled.clone().text());assert.equal(await f.db.prepare('SELECT state FROM calendar_writebacks WHERE id=?').bind(one.id).first('state'),'cancelled');assert.equal(await f.db.prepare('SELECT state FROM calendar_writebacks WHERE id=?').bind(two.id).first('state'),'written','one cancelled occurrence never cancels another');
  const timeline=await f.db.prepare("SELECT count(*) n FROM timeline_entries WHERE source='calendar-writeback'").first('n');assert.equal(timeline,2,'changes update a single activity per meeting');
  const uncertainReview=await preview({...input(),meeting:{...meeting,title:'Synthetic Orbit uncertain'}});f.state.uncertainWrite=true;const failedKey=createId();assert.equal((await confirm(uncertainReview,failedKey)).status,409);assert.equal((await confirm(uncertainReview,failedKey)).status,409);assert.equal(await f.db.prepare('SELECT state FROM calendar_writebacks WHERE id=?').bind(failedKey).first('state'),'uncertain');
+ await extendedCalendarProof(provider,f,source,input,preview,confirm);
  }finally{await f.dispose();}}

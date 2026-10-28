@@ -11,7 +11,7 @@
  */
 export interface CaptureScope {mail?:{folders:string[]};calendars?:string[];calendarWindow?:{start:string;end:string}}
 interface ProviderCalendarEvent {
- calendarId:string;id:string;seriesId?:string;deleted:boolean;
+ calendarId:string;id:string;seriesId?:string;deleted:boolean;writebackHeader?:string;
  /** Provider modification time normalized as an iCalendar UTC value. */
  modifiedAt?:string;
  /** A deletion may still resolve stored occurrences, but cannot stand alone. */

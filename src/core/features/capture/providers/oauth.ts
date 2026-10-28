@@ -6,6 +6,7 @@ import {payloadHash,type SourceSecurity} from '../../../platform/source-security
 import {CaptureError} from '../contracts';
 import {connectSource} from '../sources';
 import {checkedScopes,redirectUri,scopes,writeScopes,tenantId,tokenRequest,type Credential,type Provider,type ProviderFetch} from './config';
+import {providerNetworkFetch} from './config';
 const random=()=>btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 interface Pending{writebackConsent:boolean;clientId:string;clientSecret:string;name:string;tenant:string;verifier:string}
 interface Flow{state_hash:string;provider:Provider;operator_id:string;session_id:string;origin:string;source_id:string;connection_id:string|null;ciphertext:string;expires_at:number}
@@ -23,7 +24,7 @@ export async function startOAuth(db:D1Database,security:SourceSecurity,provider:
  url.search=new URLSearchParams({client_id:pending.clientId,redirect_uri:redirectUri(origin,provider),response_type:'code',scope:[...scopes[provider],...(writebackConsent?[writeScopes[provider]]:[]),...(provider==='microsoft'?['offline_access']:[])].join(' '),state,code_challenge:challenge,code_challenge_method:'S256',...(provider==='google'?{access_type:'offline',prompt:'consent select_account'}:{prompt:'select_account',response_mode:'query'})}).toString();
  return {authorizationUrl:url.href};
 }
-export async function finishOAuth(db:D1Database,security:SourceSecurity,provider:Provider,origin:string,actor:AuthenticatedOperator,query:Record<string,string>,fetcher:ProviderFetch=fetch){
+export async function finishOAuth(db:D1Database,security:SourceSecurity,provider:Provider,origin:string,actor:AuthenticatedOperator,query:Record<string,string>,fetcher:ProviderFetch=providerNetworkFetch){
  if(!query.state||query.state.length>200)throw new CaptureError(400,'The provider connection expired or does not belong to this session.');
  const hash=await payloadHash(query.state),flow=await db.prepare('SELECT * FROM capture_oauth WHERE state_hash=? AND provider=? AND operator_id=? AND session_id=? AND origin=? AND expires_at>? AND claimed=0').bind(hash,provider,actor.operatorId,actor.sessionId,origin,Date.now()).first<Flow>();
  if(!flow)throw new CaptureError(400,'The provider connection expired or does not belong to this session.');

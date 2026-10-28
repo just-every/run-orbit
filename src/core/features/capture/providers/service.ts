@@ -7,6 +7,7 @@ import type {SourceSecurity} from '../../../platform/source-security';
 import {CaptureError,CaptureProviderError,type CaptureScope,type CaptureSourceAdapter} from '../contracts';
 import {syncSource} from '../sources';
 import {providerId,type ProviderFetch} from './config';
+import {providerNetworkFetch} from './config';
 import {leaseSource,providerSession,type ProviderSource} from './session';
 import {googleMail,googleCalendar,googleOptions,validateGoogleScope} from './google';
 import {microsoftPage,microsoftOptions,validateMicrosoftScope} from './microsoft';
@@ -50,7 +51,7 @@ export function selectScope(db:D1Database,id:string,scope:CaptureScope,security:
  if(results[fence.length]!.meta.changes!==1)throw new CaptureError(409,'The provider connection changed. Choose its scope again.');
  return {saved:true,scope};
  });}
-export async function syncProvider(db:D1Database,id:string,security:SourceSecurity,fetcher:ProviderFetch=fetch,maxPages=4){
+export async function syncProvider(db:D1Database,id:string,security:SourceSecurity,fetcher:ProviderFetch=providerNetworkFetch,maxPages=4){
  const source=await readProviderSource(db,id),scope=JSON.parse(source.scope_json) as CaptureScope;
  if(!(scope.mail?.folders?.length||scope.calendars?.length))throw new CaptureError(409,'Choose the labels, folders or calendars to read first.');
  const result=await syncSource(db,id,(current,lease)=>sourceAdapter(current,providerSession(db,current,lease,security,fetcher)),security,{maxPages});
@@ -62,5 +63,5 @@ export async function pollProviders(db:D1Database,security:SourceSecurity|undefi
  if(await db.prepare("SELECT 1 FROM runtime_controls WHERE name='archive_import'").first())return;
  await db.prepare('DELETE FROM capture_oauth WHERE expires_at<?').bind(Date.now()).run();
  const sources=(await db.prepare(`SELECT id FROM capture_sources WHERE adapter IN('google','microsoft') AND state IN('connected','syncing') AND EXISTS(SELECT 1 FROM capture_credentials WHERE source_id=capture_sources.id) AND (json_array_length(scope_json,'$.mail.folders')>0 OR json_array_length(scope_json,'$.calendars')>0) ORDER BY updated_at,id LIMIT 4`).all<{id:string}>()).results;
- for(const source of sources){try{await syncProvider(db,source.id,security,fetch,1);}catch{/* Durable status records provider failures; contention waits until the next minute. */}}
+ for(const source of sources){try{await syncProvider(db,source.id,security,providerNetworkFetch,1);}catch{/* Durable status records provider failures; contention waits until the next minute. */}}
 }

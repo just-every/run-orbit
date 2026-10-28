@@ -9,22 +9,22 @@ import {todayApp} from '../support/today-workspace';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
 import {callingJourney} from './calling-journey.mjs';
 import { test } from 'node:test';
-import { spawn } from 'node:child_process';
-import { once } from 'node:events';
+import {unstable_DevEnv} from 'wrangler';
+import {resolve} from 'node:path';
 import { chromium } from '@playwright/test';
 import { isolatedDatabase } from '../support/isolated-database';
 import { createTestDependencies } from '../support/test-dependencies';
 import { sampleData } from '../fixtures/sample-data';
 import { sessionCookieName } from '../support/test-auth';
 import { nativeLongRecordLayoutJourney } from './records-layout-journey.mjs';
-import { identityVarArgs } from '../support/worker-identity.mjs';
+import { identityVars } from '../support/worker-identity.mjs';
 
 test('emitted Worker record and NOW lists wrap full valid long names at mobile and desktop widths', async () => {
   const fixture = await isolatedDatabase();
   const port = Number(process.env.ORBIT_RECORD_LAYOUT_PORT ?? 8728);
-  const inspectorPort = Number(process.env.ORBIT_RECORD_LAYOUT_INSPECTOR_PORT ?? 8733);
+  
   const origin = `http://127.0.0.1:${port}`;
-  let worker: ReturnType<typeof spawn> | undefined;
+  const runtime=new unstable_DevEnv();
   let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
   try {
     const deps = createTestDependencies(fixture.db);
@@ -40,22 +40,9 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
     const calendarData=await browserCalendarData(fixture.db,sampleData.operators[0].id);
     const privateData=await browserPrivateData(fixture.db,sampleData.operators[0].id);
     await fixture.close();
-    worker = spawn(process.execPath, [
-      'node_modules/wrangler/bin/wrangler.js', 'dev', '--config', 'dist/server/wrangler.json',
-      '--local', '--persist-to', fixture.directory, '--port', String(port), '--inspector-port', String(inspectorPort), '--var','ORBIT_ENCRYPTION_KEY:'+ 'ab'.repeat(32), ...identityVarArgs(origin)
-    ], { stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, CI: '1' } });
-    let output = '';
-    worker.stdout!.on('data', chunk => output += chunk);
-    worker.stderr!.on('data', chunk => output += chunk);
-    let ready = false;
-    for (let attempt = 0; attempt < 300; attempt++) {
-      try {
-        if ((await fetch(origin+'/health')).ok) { ready = true; break; }
-      } catch {}
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-    if (!ready) throw new Error(output || `Emitted Worker did not start at ${origin}.`);
-    browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
+    const worker=await runtime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries({...identityVars(origin),ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)}).map(([name,value])=>[name,{type:'plain_text',value}])),dev:{remote:false,persist:fixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:calendarData.outbound}});
+    await worker.ready;
+    browser = await chromium.launch({headless:true,...(process.env.ORBIT_CHROMIUM_PATH?{executablePath:process.env.ORBIT_CHROMIUM_PATH}:{}),args:[...(process.env.ORBIT_CHROMIUM_PATH?['--no-sandbox']:[]),'--use-mock-keychain','--password-store=basic']});
     const context = await browser.newContext({ baseURL: origin, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
     await callingJourney(await context.newPage());
     await calendarJourney(await context.newPage(),calendarData);
@@ -66,7 +53,7 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
     await typedFieldsJourney(await context.newPage(),calendarData.contact);
   } finally {
     await browser?.close();
-    if (worker && worker.exitCode === null) { worker.kill('SIGTERM'); await once(worker, 'exit'); }
+    await runtime.teardown();
     await fixture.dispose();
   }
 });

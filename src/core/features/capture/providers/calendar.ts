@@ -1,3 +1,4 @@
+import {capturedCalendarHeader} from './writeback-captured';
 import {parseCalendar} from '../ics';
 import {CaptureProviderError,type CaptureItem} from '../contracts';
 /** Provider facts rendered as iCalendar for the same normalization/review path as files. */
@@ -16,7 +17,7 @@ export function calendarItem(provider:'google'|'microsoft',event:any,calendarId:
  const google=provider==='google',lines=['BEGIN:VCALENDAR','VERSION:2.0','BEGIN:VEVENT'];
  const uid=google?event.iCalUID:event.iCalUId;
  if(typeof event.id!=='string'||!event.id)throw new CaptureProviderError('unavailable','The calendar returned an invalid event identity.');
- const providerEvent={calendarId,id:event.id,seriesId:google?(event.recurringEventId??seriesId):event.seriesMasterId,deleted:Boolean(google?event.status==='cancelled':event['@removed']),modifiedAt:google?instant(event.updated):undefined};
+ const providerEvent={calendarId,id:event.id,seriesId:google?(event.recurringEventId??seriesId):event.seriesMasterId,writebackHeader:capturedCalendarHeader(provider,event,calendarId),deleted:Boolean(google?event.status==='cancelled':event['@removed']),modifiedAt:google?instant(event.updated):undefined};
  const start=time('DTSTART',event.start,event.isAllDay),end=time('DTEND',event.end,event.isAllDay);
  // Every cancellation resolves captured provider identities first. Only a complete
  // Google event can stand alone when no captured association exists.
@@ -34,7 +35,7 @@ export function calendarItem(provider:'google'|'microsoft',event:any,calendarId:
  if(!google&&event.originalStart){const value=instant(event.originalStart);if(value)lines.push(`RECURRENCE-ID:${value}`);}
  const organizer=google?event.organizer:event.organizer?.emailAddress;
  if(organizer?.email||organizer?.address)lines.push(`ORGANIZER;CN="${clean(organizer.displayName??organizer.name)}":mailto:${clean(organizer.email??organizer.address)}`);
- for(const attendee of event.attendees??[]){const person=google?attendee:attendee.emailAddress;if(person?.email||person?.address)lines.push(`ATTENDEE;CN="${clean(person.displayName??person.name)}":mailto:${clean(person.email??person.address)}`);}
+ for(const attendee of (event.attendeesOmitted||event.hideAttendees||event.sensitivity==='private'||event.visibility==='private'?[]:event.attendees??[])){const person=google?attendee:attendee.emailAddress;if(person?.email||person?.address)lines.push(`ATTENDEE;CN="${clean(person.displayName??person.name)}":mailto:${clean(person.email??person.address)}`);}
  lines.push('END:VEVENT','END:VCALENDAR');return {kind:'calendar',raw:lines.join('\r\n'),providerEvent};
 }
 

@@ -1,13 +1,18 @@
 import type {ProviderSource,ProviderSession} from './session';
-import {encodeId} from './config';
-/** Provider edits become visible conflicts, scoped to the exact occurrence written by Orbit. */
+import {calendarEventUrl,calendarMeeting} from './writeback-event';
+
+/** Read the stored provider identity after edits or reconnect. Never dispatch or retry invitations. */
 export async function reconcileWritebacks(db:D1Database,source:ProviderSource,session:ProviderSession){
- const rows=(await db.prepare("SELECT id,calendar_id,provider_event_id,etag,entry_id FROM calendar_writebacks WHERE source_id=? AND connection_id=? AND state='written' ORDER BY updated_at LIMIT 100").bind(source.id,source.connection_id).all<{id:string;calendar_id:string;provider_event_id:string;etag:string;entry_id:string}>()).results;
- for(const row of rows){const path=source.adapter==='google'?`https://www.googleapis.com/calendar/v3/calendars/${encodeId(row.calendar_id)}/events/${encodeId(row.provider_event_id)}`:`https://graph.microsoft.com/v1.0/me/calendars/${encodeId(row.calendar_id)}/events/${encodeId(row.provider_event_id)}`;
-  const response=await session.read(path);await session.check();
-  if(response.status===404||response.status===410){await db.batch([db.prepare("UPDATE calendar_writebacks SET state='cancelled',error=NULL,updated_at=? WHERE id=? AND state='written'").bind(new Date().toISOString(),row.id),db.prepare("UPDATE timeline_entries SET payload_json=json_set(payload_json,'$.cancelled',json('true'),'$.text','Meeting cancelled by provider') WHERE id=?").bind(row.entry_id)]);continue;}
-  const event=await response.json() as any,etag=response.headers.get('etag')??event.etag??event['@odata.etag'];
-  if(event.status==='cancelled'||event.isCancelled===true){await db.batch([db.prepare("UPDATE calendar_writebacks SET state='cancelled',error=NULL,updated_at=? WHERE id=? AND state='written'").bind(new Date().toISOString(),row.id),db.prepare("UPDATE timeline_entries SET payload_json=json_set(payload_json,'$.cancelled',json('true'),'$.text','Meeting cancelled by provider') WHERE id=?").bind(row.entry_id)]);}
-  else if(etag!==row.etag)await db.prepare("UPDATE calendar_writebacks SET state='conflict',error='Provider edited the meeting. Review its current attendees, message and time before writing again.',updated_at=? WHERE id=? AND state='written' AND etag=?").bind(new Date().toISOString(),row.id,row.etag).run();
+ const rows=(await db.prepare("SELECT * FROM calendar_writebacks WHERE source_id=? AND provider_event_id IS NOT NULL AND state IN('written','conflict','uncertain','attempted') ORDER BY updated_at LIMIT 100").bind(source.id).all<any>()).results;
+ for(const row of rows){
+  const response=await session.read(calendarEventUrl(source.adapter,row.calendar_id,row.provider_event_id),{Prefer:'IdType="ImmutableId", outlook.timezone="UTC"'});await session.check();
+  const missing=response.status===404||response.status===410,event=missing?{}:await response.json() as any;
+  const cancelled=missing||event.status==='cancelled'||event.isCancelled===true,etag=response.headers.get('etag')??event.etag??event['@odata.etag'];
+  if(!cancelled&&etag===row.etag&&row.connection_id===source.connection_id&&row.state==='written')continue;
+  const saved=JSON.parse(row.payload_json),meeting=cancelled?saved:{...saved,...calendarMeeting(source.adapter,event)};
+  if(event.attendeesOmitted||event.hideAttendees||event.visibility==='private'||event.sensitivity==='private')meeting.attendees=[];
+  const state=cancelled?'cancelled':'conflict',error=cancelled?null:'Provider edited the meeting. The connection may also have changed. Review its current attendees, message and time before writing again.';
+  const activity=JSON.stringify({text:cancelled?'Meeting cancelled by provider':`Meeting: ${meeting.title}\n${meeting.message}`,subject:meeting.title,attendees:meeting.attendees,start:meeting.start,end:meeting.end,cancelled,contactIds:[row.contact_id],calendarWritebackId:row.id});
+  await db.batch([db.prepare('UPDATE calendar_writebacks SET state=?,payload_json=?,error=?,updated_at=? WHERE id=? AND updated_at=?').bind(state,JSON.stringify(meeting),error,new Date().toISOString(),row.id,row.updated_at),db.prepare('UPDATE timeline_entries SET payload_json=? WHERE id=?').bind(activity,row.entry_id)]);
  }
 }
