@@ -31,15 +31,19 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
     await deps.sampleData.seed();
     await fixture.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(sampleData.operators[0].id).run();
     const session = await deps.auth.createSession(sampleData.operators[0].id);
-    const caller=await todayApp(fixture.db,{operatorId:sampleData.operators[0].id,calling:{sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)})!,captureOrigin:'https://orbit.test'}});
-    await caller.json('/api/v1/calls/settings',{method:'PUT',body:{accountSid:'AC'+'1'.repeat(32),token:'synthetic-orbit-twilio-token',from:'+12025550101',operatorPhone:'+12025550102'}},200);
-    const heldForm=new URLSearchParams({AccountSid:'AC'+'1'.repeat(32),CallSid:'CA'+'5'.repeat(32),SequenceNumber:'0',Direction:'inbound',From:'+12025550999',To:'+12025550101',CallStatus:'completed',CallDuration:'120'}),callback='https://orbit.test/api/v1/calls/twilio/events';
-    const key=await crypto.subtle.importKey('raw',new TextEncoder().encode('synthetic-orbit-twilio-token'),{name:'HMAC',hash:'SHA-1'},false,['sign']);
+    const callingProvider={submissions:0,status:400,code:21217},callingToken='synthetic-orbit-301',callingAccount='AC'+'1'.repeat(32);
+    const caller=await todayApp(fixture.db,{operatorId:sampleData.operators[0].id,calling:{sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)})!,captureOrigin:'https://orbit.test',captureFetch:async(url,init)=>{
+      if(new URL(String(url)).hostname!=='api.twilio.com'||init?.method!=='POST'||init.redirect!=='manual')throw new Error('Unexpected calling provider request.');
+      callingProvider.submissions++;
+      return Response.json({status:callingProvider.status,code:callingProvider.code},{status:callingProvider.status});
+    }}});
+    await caller.json('/api/v1/calls/settings',{method:'PUT',body:{accountSid:callingAccount,token:callingToken,from:'+12025550101',operatorPhone:'+12025550102'}},200);
+    const heldForm=new URLSearchParams({AccountSid:callingAccount,CallSid:'CA'+'5'.repeat(32),SequenceNumber:'0',Direction:'inbound',From:'+12025550999',To:'+12025550101',CallStatus:'completed',CallDuration:'120'}),callback='https://orbit.test/api/v1/calls/twilio/events';
+    const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(callingToken),{name:'HMAC',hash:'SHA-1'},false,['sign']);
     const raw=callback+[...heldForm.keys()].sort().map(name=>name+heldForm.get(name)).join(''),signature=Buffer.from(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(raw))).toString('base64');
     const held=await caller.app.request(callback,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-Twilio-Signature':signature},body:heldForm});if(held.status!==200)throw new Error('Held-call browser fixture failed.');
     const calendarData=await browserCalendarData(fixture.db,sampleData.operators[0].id);
     const privateData=await browserPrivateData(fixture.db,sampleData.operators[0].id);
-    await fixture.close();
     worker = spawn(process.execPath, [
       'node_modules/wrangler/bin/wrangler.js', 'dev', '--config', 'dist/server/wrangler.json',
       '--local', '--persist-to', fixture.directory, '--port', String(port), '--inspector-port', String(inspectorPort), '--var','ORBIT_ENCRYPTION_KEY:'+ 'ab'.repeat(32), ...identityVarArgs(origin)
@@ -57,7 +61,8 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
     if (!ready) throw new Error(output || `Emitted Worker did not start at ${origin}.`);
     browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
     const context = await browser.newContext({ baseURL: origin, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
-    await callingJourney(await context.newPage());
+    // Emitted documents remain real; calls use the native in-process HTTP app with only Twilio's network edge faked.
+    await callingJourney(await context.newPage(),{app:caller.app,provider:callingProvider,accountSid:callingAccount,token:callingToken});
     await calendarJourney(await context.newPage(),calendarData);
     const collaboratorContext=await browser.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:privateData.cookie}});
     await privateEntriesJourney(await context.newPage(),await collaboratorContext.newPage(),privateData);
