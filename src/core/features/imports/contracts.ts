@@ -35,7 +35,7 @@ export function defaultMapping(vendor:ImportInput['vendor'],kind:ImportKind,head
  return Object.fromEntries(fields[kind].flatMap(field=>{
   const expected=presets[vendor][kind][field],exact=expected?headers.filter(header=>header.trim().toLowerCase()===expected.toLowerCase()):[];
   if(exact.length)return exact.length===1?[[field,exact[0]]]:[];
-  const aliases=[...(expected?[expected]:[]),field,...(field==='name'?(kind==='company'?['company name','name']:['full name','contact name']):csvHeaderAliases[field]??[])].map(normalizedHeader);
+  const aliases=[...(expected?[expected]:[]),field,...(field==='owner'?[`${kind} owner`]:field==='name'?(kind==='company'?['company name','name']:['full name','contact name']):csvHeaderAliases[field]??[])].map(normalizedHeader);
   const matches=headers.filter(header=>aliases.includes(normalizedHeader(header)));
   return matches.length===1?[[field,matches[0]]]:[];
  }));

@@ -12,7 +12,7 @@ export async function eraseImportOwnerIdentity(db:D1Database,id:string,email:str
  for(const marker of affected){native.push(sql("DELETE FROM notifications WHERE event_key IN(SELECT 'import-ownership:'||p.job_id||':'||o.id FROM ik_provenance p CROSS JOIN operators o WHERE p.target_kind=? AND p.target_id=?)",marker.kind,marker.id),sql('DELETE FROM crm_import_targets WHERE kind=? AND id=?',marker.kind,marker.id));}
  // Related-source erasure severs reversible import effects while preserving each current native owner.
  await eraseD1ImportTarget('reference',`operator-erasure:${id}`,native,erasureContext(db,actor),{
-  source:record=>{const payload=record.payload as any;return payload.ownerMapping?.ownerId===id||payload.actorId===id||payload.previousOwnerId===id||containsMailbox(JSON.stringify(payload),[email]);},
+  source:record=>{const payload=record.payload as any;return payload.ownerMapping?.ownerId===id||payload.owners?.some((owner:any)=>owner.ownerId===id)||payload.actorId===id||payload.previousOwnerId===id||containsMailbox(JSON.stringify(payload),[email]);},
   original:bytes=>containsMailbox(Buffer.from(bytes).toString('utf8'),[email])
  });
  const statements=[...await withdrawImportReviews(db,id,[email]),...await redactImportedNativeCopies(db,'',[email])];

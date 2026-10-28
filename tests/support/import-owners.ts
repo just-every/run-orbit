@@ -1,3 +1,5 @@
+import {createApp} from './app';
+import {emailLinkSignIn} from './email-link';
 import {createDependencies} from './dependencies';
 import assert from 'node:assert/strict';
 import {defaultMapping} from '../../src/core/features/imports/contracts';
@@ -6,6 +8,7 @@ import {json,finish} from './crm-import-flow';
 
 /** Ownership uses the same saved dry run and guarded import reversal as customer data. */
 export async function importOwnerFlow(f:any){
+ assert.equal(defaultMapping('csv','contact',['email','contact-owner']).owner,'contact-owner');assert.equal(defaultMapping('csv','company',['id','name','company-owner']).owner,'company-owner');
  const owner=await json(await f.request('settings/operators','POST',{email:'synthetic-orbit-716@ownership.test',displayName:'Import receiving rep'}));
  const contactHeaders=['Record ID','First Name','Email','Contact owner'],companyHeaders=['Record ID','Company name','Company owner'];
  const source={vendor:'hubspot',account:'Synthetic owner mapping',files:[
@@ -45,7 +48,16 @@ export async function importOwnerFlow(f:any){
  const privacySource={...mapped,account:'Synthetic owner privacy',files:[{...source.files[0],csv:contactHeaders.join(',')+'\r\n721,Private import,synthetic-orbit-721@ownership.test,Former rep'}]};
  const privacy=await json(await f.request('imports/dry-run','POST',privacySource));await finish(f,privacy);const privateId=nativeId('orbit:hubspot:Synthetic owner privacy','contact','721');
  await json(await f.request(`records/contact/${privateId}`,'DELETE',{confirmed:true}));assert.equal(await f.db.prepare('SELECT id FROM crm_import_targets WHERE id=?').bind(privateId).first(),null);assert.equal(await f.db.prepare('SELECT id FROM record_ownership_history WHERE record_id=?').bind(privateId).first(),null);assert.ok(!(await notices()).some((item:any)=>item.message.includes('Private import')));
- await f.db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(owner.id).run();assert.equal((await f.request('imports/dry-run','POST',mapped)).status,409);
+ await json(await f.request(`records/contact/${native.id}`,'DELETE',{confirmed:true}));assert.ok(!(await notices()).some((item:any)=>item.message.includes('Synthetic company')),'Erasure withdraws grouped notices from older undone imports sharing the mailbox');
+ const app=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})}}),nativeSession=await createDependencies(f.db).auth.createSession(f.actor),headers={Cookie:`__Host-orbit_session=${nativeSession.token}`,Origin:'https://orbit.test','Content-Type':'application/json'};
+ const expiresAt=await f.db.prepare("SELECT strftime('%Y-%m-%dT%H:%M:%fZ','now','+1 day') AS expires").first('expires');
+ const invitation=await json(await app.request('https://orbit.test/api/v2/access/workspaces/workspace/invitations',{method:'POST',headers,body:JSON.stringify({email:'synthetic-orbit-729@ownership.test',role:'guest',expiresAt})}));
+ const viewer=await emailLinkSignIn(f.db,'synthetic-orbit-729@ownership.test'),collaborator={id:viewer.operator.operatorId},collaboratorCookie={Cookie:viewer.cookie};
+ await json(await app.request('https://orbit.test/api/v2/access/invitations/accept',{method:'POST',headers:{...headers,...collaboratorCookie},body:JSON.stringify({token:invitation.token})}));
+ assert.equal((await f.request('imports/owners','GET',undefined,collaboratorCookie)).status,403);assert.equal((await f.request('imports/dry-run','POST',source,collaboratorCookie)).status,403);assert.equal((await f.request('imports/dry-run','POST',{...source,owners:{'Former rep':collaborator.id}})).status,409);
+ const inactiveSource={...mapped,account:'Synthetic inactive owner',files:[{...source.files[0],csv:contactHeaders.join(',')+'\r\n728,Inactive owner contact,synthetic-orbit-728@ownership.test,Former rep'}]},inactiveReview=await json(await f.request('imports/dry-run','POST',inactiveSource));
+ await f.db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(owner.id).run();
+ assert.equal((await f.request(`imports/${inactiveReview.id}/apply`,'POST',{confirmed:true,fingerprint:inactiveReview.fingerprint})).status,409);await finish(f,inactiveReview,'undo');assert.equal((await f.request('imports/dry-run','POST',mapped)).status,409);
  await json(await f.request(`settings/operators/${owner.id}/erase`,'POST',{confirmed:true}));
  assert.equal((await json(await f.request(`imports/${guarded.id}`))).sourceWithdrawn,true);
  const copies=JSON.stringify((await f.db.prepare('SELECT original_json FROM crm_import_targets').all()).results);assert.ok(!copies.includes('Import receiving rep'));assert.ok(!copies.includes('synthetic-orbit-716@ownership.test'));

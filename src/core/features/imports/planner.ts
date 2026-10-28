@@ -6,7 +6,7 @@ import { tables,type NativeValue } from './targets';
 import type { StopValue } from './targets-stop';
 import {mailboxListSql} from './mailboxes';
 import type { ImportInput } from './contracts';
-import {plannedOwner} from './owner-targets';
+import {plannedOwner,importOwnerSnapshots} from './owner-targets';
 import {mapImportOwners,importOwners} from './owners';
 import {namedCompanies} from './named-companies';
 
@@ -15,8 +15,7 @@ function customValues(values:Record<string,string>){return Object.fromEntries(Ob
 
 export async function prepareImport(input:ImportInput,context:D1ImportContext){
  const {source,rows,namespace}=readImport(input),db=context.storage.database,at=new Date().toISOString(),results=new Map<SourceRecord,MappingResult>(),references=new Map<string,string>();
- mapImportOwners(rows,input,await importOwners(db));
- for(const row of rows)row.source.payloadHash=sha256(canonicalJson(row.source.payload));
+ const ownerMappingTable=mapImportOwners(rows,input,await importOwners(db));
  const settings=await db.prepare('SELECT free_mail_domains_json FROM workspace_settings').first();
  const stages=new Set((await db.prepare('SELECT id FROM pipeline_stages').all()).results.map(r=>r.id));
  const shapes:Record<string,Record<string,any>>={};
@@ -60,13 +59,14 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  }
  // A linked native contact keeps its company and fields. Do not create an unused company for it.
  for(let index=rows.length-1;index>=0;index--){const row=rows[index];if(row.derivedContacts?.every(contact=>existing.has(contact)||contact.error||duplicates.has(`${contact.kind}:${contact.id}`)))rows.splice(index,1);}
+ const ownerSnapshots=await importOwnerSnapshots(db,rows.filter(row=>['contact','company'].includes(row.kind)).map(row=>({kind:row.kind,id:references.get(`${row.kind}:${row.id}`)!})));
  const companyFor=new Map(rows.filter(row=>row.derivedContacts).flatMap(row=>row.derivedContacts!.map(contact=>[contact,row] as const)));
  function permission(row:Row){return row.data.permission?.toLowerCase()==='subscribed'||(!row.data.permission&&input.contactability==='confirmed_contactable');}
  function linked(row:Row,kind:string,field:string){const values=ids(row.data[field],row.separator);return values.map(value=>{const key=`${kind}:${value}`,match=references.get(key);if(!match||duplicates.has(key)||rows.some(other=>other.kind===kind&&other.id===value&&other.error))throw new Error(`This row names a ${kind==='deal'?'deal':kind} ID that is not in the ${kind==='deal'?'deals':kind==='company'?'companies':'contacts'} file. Add that file, or check the ID.`);return match;});}
  for(const row of rows.sort((a,b)=>['suppression','company','contact','deal','note'].indexOf(a.kind)-['suppression','company','contact','deal','note'].indexOf(b.kind))){try{
   if(row.error)throw new Error(row.error);if(duplicates.has(`${row.kind}:${row.id}`))throw new Error('Duplicate source ID in this file.');
   if(row.kind==='suppression'){const reference=nativeId(namespace,'suppression-reference',row.id);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:'suppression',record_id:stopId,source_id:row.id,mailbox:email(row.data.email)!},links:[]}}]});continue;}
-  const ownerMapping=(row.source.payload as any).ownerMapping,ownerEffects=ownerMapping?await plannedOwner(db,namespace,row.kind,references.get(`${row.kind}:${row.id}`)!,row.id,ownerMapping,context.authorization.principalId,at,input.account):[];
+  const ownerMapping=row.ownerMapping,ownerEffects=ownerMapping?plannedOwner(ownerSnapshots,namespace,row.kind,references.get(`${row.kind}:${row.id}`)!,row.id,ownerMapping,context.authorization.principalId,at,input.account):[];
   if(existing.has(row)){const reference=nativeId(namespace,'reference',`${row.kind}:${row.id}`);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:row.kind,record_id:references.get(`${row.kind}:${row.id}`)!,source_id:row.id,mailbox:row.kind==='contact'?email(row.data.email)??null:null},links:[]}},...ownerEffects],unmapped:[{reason:'Already in Orbit, with the same email or website domain. Orbit keeps the saved record and does not apply differences from the file. Only a stop in the file (unsubscribed, bounced or Do not contact) changes whether Orbit may email them.'}]});continue;}
   const id=references.get(`${row.kind}:${row.id}`)!,original=originals.get(`${row.kind}:${id}`);
   if(original){results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:JSON.parse(original)},...ownerEffects]});continue;}
@@ -106,9 +106,11 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  for(const row of rows)if(!row.error&&row.unmapped.length){const result=results.get(row.source)!;result.unmapped=[...result.unmapped??[],...row.unmapped.map(column=>({field:`column:${column}`,reason:`Column “${column}” is not imported. Orbit keeps it only in its private copy of the original file.`}))];}
  // Ownership has its own source identity, so erasure can withdraw either native target without sharing a reversible effect.
  const ownershipSources:SourceRecord[]=[];
- for(const row of rows){const result=results.get(row.source);if(!result||result.rejection)continue;const effects=result.effects.filter(effect=>effect.targetKind.endsWith('-owner'));if(!effects.length)continue;result.effects=result.effects.filter(effect=>!effect.targetKind.endsWith('-owner'));
-  const history=(effects[0].value as any).history,payload={ownerMapping:(row.source.payload as any).ownerMapping,recordId:effects[0].targetId,actorId:history.actor,previousOwnerId:history.previous},ownerSource:SourceRecord={...row.source,kind:`${row.kind}-owner`,payload,payloadHash:sha256(canonicalJson(payload))};ownershipSources.push(ownerSource);results.set(ownerSource,{effects});
+ const referenceKinds=new Map((await db.prepare("SELECT target_id,json_extract(record_json,'$.sourceKind') AS source_kind FROM ik_provenance WHERE target_kind='reference' AND reversed=0 AND target_id IN(SELECT value FROM json_each(?))").bind(JSON.stringify(rows.flatMap(row=>results.get(row.source)?.effects.filter(effect=>effect.targetKind==='reference').map(effect=>effect.targetId)??[]))).all<{target_id:string;source_kind:string}>()).results.map(row=>[row.target_id,row.source_kind]));
+ for(const row of rows){const result=results.get(row.source);if(!result||result.rejection)continue;const reference=result.effects.find(effect=>effect.targetKind==='reference');if(reference&&row.kind!=='suppression')row.source.kind=referenceKinds.get(reference.targetId)??`${row.kind}-reference`;const effects=result.effects.filter(effect=>effect.targetKind.endsWith('-owner'));if(!effects.length)continue;result.effects=result.effects.filter(effect=>!effect.targetKind.endsWith('-owner'));
+  const history=(effects[0].value as any).history,payload={ownerMapping:row.ownerMapping!,sourceRowId:row.id,mailbox:row.kind==='contact'?row.data.email??null:null,recordId:effects[0].targetId,actorId:history.actor,previousOwnerId:history.previous},ownerSource:SourceRecord={...row.source,sourceId:nativeId(namespace,'owner-source',`${row.kind}:${row.id}:${effects[0].targetId}`),kind:`${row.kind}-owner`,payload,payloadHash:sha256(canonicalJson(payload))};ownershipSources.push(ownerSource);results.set(ownerSource,{effects});
  }
+ if(ownerMappingTable.length){const payload={owners:ownerMappingTable},ownerSource:SourceRecord={namespace,kind:'owner-mapping',sourceId:nativeId(namespace,'owner-mapping',canonicalJson(payload)),payload,payloadHash:sha256(canonicalJson(payload)),artifactHash:source.artifacts[0].sha256,location:{artifact:source.artifacts[0].name,pointer:'/owner-mapping'}};ownershipSources.push(ownerSource);results.set(ownerSource,{effects:[]});}
  // All positive stops and no-consent holds publish in the first atomic kit entry, before any customer creation.
  const saved=await db.prepare('SELECT value_json FROM crm_import_stops WHERE id=?').bind(stopId).first();
  const value:StopValue=saved?JSON.parse(saved.value_json):{emails,proofs:[],contacts:[],at};

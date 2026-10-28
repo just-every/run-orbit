@@ -34,12 +34,23 @@ export function writeOwnerTarget(target:TargetRow){
  return statements;
 }
 export function removeOwnerTarget(kind:string,id:string){return [invalidateOwnershipReviews(kind,id),...removeOwnerHistory(kind,id),sql('DELETE FROM record_ownership WHERE record_type=? AND record_id=?',recordKind(kind),id),sql('DELETE FROM crm_import_targets WHERE kind=? AND id=?',kind,id)];}
+export interface OwnerSnapshot {row:Record<string,any>|null;recordUpdatedAt:string|null;ownerName:string|null;marker:{revision:string;original_json:string}|null}
+/** Read the reviewed owner set in two bounded queries, including matched native records. */
+export async function importOwnerSnapshots(db:D1Database,records:{kind:string;id:string}[]){
+ const snapshots=new Map<string,OwnerSnapshot>();
+ for(const kind of ['contact','company']){
+  const ids=JSON.stringify([...new Set(records.filter(record=>record.kind===kind).map(record=>record.id))]);
+  const rows=(await db.prepare(`SELECT n.id,n.updated_at AS record_updated_at,x.owner_id,x.revision,x.updated_at,o.display_name,t.revision AS marker_revision,t.original_json
+   FROM ${kind==='contact'?'contacts':'companies'} n LEFT JOIN record_ownership x ON x.record_type=? AND x.record_id=n.id LEFT JOIN operators o ON o.id=x.owner_id LEFT JOIN crm_import_targets t ON t.kind=? AND t.id=n.id WHERE n.id IN(SELECT value FROM json_each(?))`).bind(kind,`${kind}-owner`,ids).all<any>()).results;
+  for(const row of rows)snapshots.set(`${kind}:${row.id}`,{row:row.revision===null?null:{record_type:kind,record_id:row.id,owner_id:row.owner_id,revision:row.revision,updated_at:row.updated_at},recordUpdatedAt:row.record_updated_at,ownerName:row.display_name,marker:row.marker_revision?{revision:row.marker_revision,original_json:row.original_json}:null});
+ }
+ return snapshots;
+}
 /** Each mapping is an independent, reviewed Kit effect with its own before-image. */
-export async function plannedOwner(db:D1Database,namespace:string,kind:string,id:string,sourceId:string,owner:{ownerId:string|null;ownerName:string|null},actor:string,at:string,importName:string){
- const targetKind=`${kind}-owner`,current=await readOwnerTarget(db,'workspace',`${kind}-owner`,id),expected=current?{expectedRevision:current.revision}:{},saved=await db.prepare('SELECT original_json FROM crm_import_targets WHERE kind=? AND id=?').bind(targetKind,id).first();
+export function plannedOwner(snapshots:Map<string,OwnerSnapshot>,namespace:string,kind:string,id:string,sourceId:string,owner:{ownerId:string|null;ownerName:string|null},actor:string,at:string,importName:string){
+ const targetKind=`${kind}-owner`,snapshot=snapshots.get(`${kind}:${id}`),previous=snapshot?.row,saved=snapshot?.marker;
  if(saved){const value=JSON.parse(saved.original_json),revision=value.history?.reviewedRevision;return [{targetKind,targetId:id,...revision?{expectedRevision:revision}:{},value}];}
- const previous=await db.prepare('SELECT x.owner_id,x.revision,o.display_name FROM record_ownership x LEFT JOIN operators o ON o.id=x.owner_id WHERE x.record_type=? AND x.record_id=?').bind(kind,id).first();
  if((previous?.owner_id??null)===owner.ownerId)return [];
- const record=await db.prepare(`SELECT updated_at FROM ${kind==='contact'?'contacts':'companies'} WHERE id=?`).bind(id).first();
- return [{targetKind,targetId:id,...expected,value:{recordUpdatedAt:record?.updated_at??at,row:{record_type:kind,record_id:id,owner_id:owner.ownerId,revision:(previous?.revision??0)+1,updated_at:at},history:{reviewedRevision:current?.revision??null,id:nativeId(namespace,'owner-history',`${kind}:${sourceId}`),previous:previous?.owner_id??null,previousOwnerName:previous?.display_name??null,ownerName:owner.ownerName,actor,importName}}}];
+ const value=previous?{row:previous,recordUpdatedAt:snapshot!.recordUpdatedAt,history:null}:null,revision=value?sha256(canonicalJson(value)):null;
+ return [{targetKind,targetId:id,...revision?{expectedRevision:revision}:{},value:{recordUpdatedAt:snapshot?.recordUpdatedAt??at,row:{record_type:kind,record_id:id,owner_id:owner.ownerId,revision:(previous?.revision??0)+1,updated_at:at},history:{reviewedRevision:revision,id:nativeId(namespace,'owner-history',`${kind}:${sourceId}`),previous:previous?.owner_id??null,previousOwnerName:snapshot?.ownerName??null,ownerName:owner.ownerName,actor,importName}}}];
 }

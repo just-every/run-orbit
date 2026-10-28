@@ -15,12 +15,13 @@ export function resolveImportOwner(value:string,input:ImportInput,owners:ImportO
 export function mapImportOwners(rows:Row[],input:ImportInput,owners:ImportOwner[]){
  for(const id of Object.values(input.owners??{}))if(id!==null&&!owners.some(owner=>owner.id===id))throw new Error('Choose an active full operator for every owner mapping.');
  for(const row of rows)if(['contact','company'].includes(row.kind)&&row.data.owner){
-  const owner=resolveImportOwner(row.data.owner,input,owners),payload={...row.source.payload as object,ownerMapping:{value:row.data.owner,ownerId:owner?.id??null,ownerName:owner?.display_name??null,explicit:Object.hasOwn(input.owners??{},row.data.owner)}};
-  row.source.payload=payload;
+  const owner=resolveImportOwner(row.data.owner,input,owners);
+  row.ownerMapping={value:row.data.owner,ownerId:owner?.id??null,ownerName:owner?.display_name??null,explicit:Object.hasOwn(input.owners??{},row.data.owner)};
  }
+ const groups=new Map<string,{value:string;ownerId:string|null;ownerName:string|null;explicit:boolean;count:number}>();
+ for(const row of rows){if(!row.ownerMapping)continue;const group=groups.get(row.ownerMapping.value)??{...row.ownerMapping,count:0};group.count++;groups.set(group.value,group);}
+ return [...groups.values()].sort((a,b)=>a.value.localeCompare(b.value));
 }
 export function importOwnerSummary(plan:ImportPlan){
- const groups=new Map<string,{value:string;ownerId:string|null;ownerName:string|null;explicit:boolean;count:number}>();
- for(const entry of plan.entries.filter(entry=>!entry.source.kind.endsWith('-owner'))){const mapping=(entry.source.payload as any).ownerMapping;if(!mapping)continue;const group=groups.get(mapping.value)??{...mapping,count:0};group.count++;groups.set(mapping.value,group);}
- return [...groups.values()].sort((a,b)=>a.value.localeCompare(b.value));
+ return (plan.entries.find(entry=>entry.source.kind==='owner-mapping')?.source.payload as any)?.owners??[];
 }
