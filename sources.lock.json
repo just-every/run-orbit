@@ -8699,7 +8699,7 @@
       "executable": false
     },
     "tests/e2e/baseline.spec.mjs": {
-      "sha256": "84821d659e80b0415d3d85f55d7a533f745a2bd6c996c26e8c1d97a9b8527b95",
+      "sha256": "10a4ce39022d016178f90f8b6349ca698413b34e7b3908729b510eff35c10b55",
       "executable": false
     },
     "tests/e2e/operator-session.mjs": {
@@ -8723,7 +8723,7 @@
       "executable": false
     },
     "tests/e2e/sales-review.mjs": {
-      "sha256": "2d4ebc05e33505345262213b77ac3a692350941d89cf7b13efc4246cad38c433",
+      "sha256": "e6064f543782de017299e63b91deabe31cf23e55e585b8cde9483c513dbbf28f",
       "executable": false
     },
     "tests/evidence/contract/AGENT-002/deal-risks-open-1440.png": {
