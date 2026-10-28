@@ -21,7 +21,7 @@ test('CAPTURE-005 CAPTURE-006 CAPTURE-010 native source authority, selected incr
   const response=await f.callback(start);assert.match(response.headers.get('location')!,/connected=/);assert.equal(f.state.tokens,1);assert.match((await f.callback(start)).headers.get('location')!,/error=/);assert.equal(f.state.tokens,1);
   const id=new URL(response.headers.get('location')!,'https://orbit.test').searchParams.get('connected')!;
   const stored=await f.db.prepare('SELECT ciphertext FROM capture_credentials WHERE source_id=?').bind(id).first<string>('ciphertext');assert.ok(stored&&!stored.includes('test-secret')&&!stored.includes('access-'));
-  const archive=JSON.stringify(await exported({...f,request:(path:string,init:RequestInit={})=>f.app.request('https://orbit.test'+path,{...init,headers:{cookie:f.cookie,origin:'https://orbit.test',...init.headers}})}));assert.ok(!archive.includes(stored!)&&!archive.includes('test-secret')&&!archive.includes('access-'),'native credentials never travel');
+  const archive=JSON.stringify(await exported({...f,request:(path:string,init:RequestInit={})=>f.app.request('https://orbit.test'+path,{...init,headers:{cookie:f.cookie,origin:'https://orbit.test',...init.headers}})},true));assert.ok(!archive.includes(stored!)&&!archive.includes('test-secret')&&!archive.includes('access-'),'native credentials never travel');
   const status=await (await f.request('/sources')).text();assert.ok(!status.includes('test-secret')&&!status.includes('access-')&&!status.includes('refresh-'));
 
   const expired=await f.start();await f.db.prepare('UPDATE capture_oauth SET expires_at=0').run();assert.match((await f.callback(expired)).headers.get('location')!,/error=/);
