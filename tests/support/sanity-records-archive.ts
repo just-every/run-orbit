@@ -31,6 +31,9 @@ export async function beginErasureTransfer(f:RecordsFixture,contact:string,email
 
 /** One rejected restore on the same destination precedes its successful import. */
 export async function abortInvalidRestore(f:RecordsFixture,document:any){
+ // Record ordinary authenticated activity at the caller's fixed clock before
+ // taking the exact snapshot that rollback must preserve.
+ await responseJson(await f.request('settings'));
  const before=async()=>Object.fromEntries(await Promise.all(['operators','sessions','pipeline_stages','workspace_settings'].map(async table=>[table,(await f.db.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()).results])));
  const original=await before(),copy=structuredClone(document),part=copy.parts.find((part:any)=>part.records.some((record:any)=>record.table==='operators'));
  part.records.find((record:any)=>record.table==='operators').row.setup_owner=2;part.sha256=await archiveHash(part.records);

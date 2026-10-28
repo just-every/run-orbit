@@ -8,7 +8,10 @@ export async function exported(f: CaptureFixture, discard = false) {
   for (let n = 0; n < 300 && job.state !== 'ready'; n++) job = await call(`/api/v1/records/archive/exports/${job.id}/advance`, { method: 'POST', headers: json, body: '{}' });
   assert.equal(job.state, 'ready');
   const archive = await call(`/api/v1/records/archive/exports/${job.id}/download`);
-  if (discard) await call(`/api/v1/records/archive/exports/${job.id}/abort`, { method: 'POST', headers: json, body: '{}' });
+  if (discard) {
+    const discarded = await call(`/api/v1/records/archive/exports/${job.id}/abort`, { method: 'POST', headers: json, body: '{}' });
+    assert.equal(discarded.state, 'aborted');
+  }
   return archive;
 }
 export async function captured(f: CaptureFixture) {
