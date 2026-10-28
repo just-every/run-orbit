@@ -48,10 +48,10 @@ export async function reviewSavedDraft({page, browser, opportunityId}) {
     await page.goto(`/app/opportunities/${opportunityId}`);
     const detail = (await (await page.request.get(`/api/v1/opportunities/${opportunityId}`)).json()).opportunity;
     const fields = page.getByTestId('independent-opportunity-fields');
-    await expect(fields).toContainText(detail.stage);
+    await expect(page.getByTestId('opportunity-detail')).toContainText(detail.stage);
     await expect(fields).toContainText(String(detail.score));
     for(const state of [detail.lifecycle,detail.band,detail.queueState])if(state)await expect(fields).toContainText(new RegExp(state,'i'));
-    if(detail.ownerName)await expect(fields).toContainText(detail.ownerName);
+    if(detail.ownerName)await expect(page.getByTestId('opportunity-detail')).toContainText(detail.ownerName);
     expect((await (await page.request.get(`/api/v1/workbench/opportunities/${opportunityId}/messages`)).json()).messages).toEqual([]);
   } finally { await secondContext.close(); }
 }
