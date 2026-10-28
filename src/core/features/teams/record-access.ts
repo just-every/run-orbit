@@ -1,3 +1,4 @@
+import {privatePaths,coversPrivatePath} from '../access/field-policy';
 import {salesProfile,teamIds,type SalesProfile} from './policy';
 import type {SqlValue} from '../../shared/expansion-contracts';
 export interface SalesFragment {sql:string;bindings:SqlValue[]}
@@ -25,6 +26,8 @@ export function salesFieldPolicy(profile:SalesProfile,expression:string):SalesFr
 }
 export async function salesCanRead(db:D1Database,id:string,kind:string,recordId:string,fields:readonly string[]=[]){
  const profile=await salesProfile(db,id);if(!profile||fields.some(field=>!salesFieldAllowed(profile,field)))return false;
+ const stored=fields.length?await db.prepare('SELECT fields_json FROM graph_records WHERE kind=? AND id=? AND retired_into_id IS NULL').bind(kind,recordId).first<{fields_json:string}>():null,definitions=fields.length?await db.prepare("SELECT fields_json FROM schema_types WHERE workspace_id='workspace' AND name=?").bind(kind).first<{fields_json:string}>():null;
+ if(fields.length&&!stored)return false;for(const field of fields)if(privatePaths(field,JSON.parse(definitions?.fields_json??'{}'),JSON.parse(stored?.fields_json??'{}')).some(path=>!profile.fields.some(grant=>coversPrivatePath(grant,path))))return false;
  const row=await salesRowPolicy(db,id);for(const field of fields){const permitted=await salesScopedFieldPolicy(db,id,literal(field));if(!await db.prepare(`SELECT 1 FROM graph_records r WHERE r.kind=? AND r.id=? AND ${row.sql} AND ${permitted.sql}`).bind(kind,recordId,...row.bindings,...permitted.bindings).first())return false;}return Boolean(await db.prepare(`SELECT 1 FROM graph_records r WHERE r.kind=? AND r.id=? AND r.retired_into_id IS NULL AND ${row.sql}`).bind(kind,recordId,...row.bindings).first());
 }
 export async function salesCanEdit(db:D1Database,id:string,kind:string,recordId:string,fields:readonly string[]=[]){
@@ -40,8 +43,8 @@ export async function salesCanEdit(db:D1Database,id:string,kind:string,recordId:
 /** Field grants on a share restrict that share; membership never broadens a share's fields. */
 export async function salesScopedFieldPolicy(db:D1Database,id:string,expression:string,alias='r'):Promise<SalesFragment>{
  const profile=await salesProfile(db,id);if(!profile)return{sql:'0',bindings:[]};
- const field=salesFieldPolicy(profile,expression),row=await salesRowPolicy(db,id,alias);if(!row.base)return field;
+ const field=salesFieldPolicy(profile,expression),row=await salesRowPolicy(db,id,alias);const parent=await salesRowPolicy(db,id,'sales_parent');const association=`(${expression}<>'company_id' OR json_extract(${alias}.fields_json,'$.company_id') IS NULL OR EXISTS(SELECT 1 FROM main.graph_records sales_parent WHERE sales_parent.kind='company' AND sales_parent.id=json_extract(${alias}.fields_json,'$.company_id') AND sales_parent.retired_into_id IS NULL AND ${parent.sql}))`;if(!row.base)return{sql:`(${field.sql} AND ${association})`,bindings:field.bindings};
  const teams=literal(JSON.stringify(await teamIds(db,id))),who=literal(id);
  const shared=`EXISTS(SELECT 1 FROM main.sales_record_shares share,json_each(share.fields_json) permission WHERE share.kind=${alias}.kind AND share.record_id=${alias}.id AND ((share.subject_kind='user' AND share.subject_id=${who}) OR (share.subject_kind='team' AND share.subject_id IN(SELECT value FROM json_each(${teams})))) AND (permission.value='*' OR permission.value=${expression} OR substr(${expression},1,length(permission.value)+1)=permission.value||'.'))`;
- return{sql:`(${field.sql} AND (${row.base} OR ${shared}))`,bindings:field.bindings};
+ return{sql:`(${field.sql} AND (${row.base} OR ${shared}) AND ${association})`,bindings:field.bindings};
 }

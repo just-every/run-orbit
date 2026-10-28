@@ -40,6 +40,7 @@ export class ApiDeals {
  async create(credential:ApiCredential,input:Record<string,unknown>,key:string){
   apiScope(credential,'deal.create',undefined,Object.keys(input));
   const sales=await salesProfile(this.db,credential.principal_id);if(sales?.role==='read-only')throw new ApiError(403,'This sales role cannot create deals.');
+  if(typeof input.company_id==='string'&&sales&&!await salesCanRead(this.db,credential.principal_id,'company',input.company_id))throw new ApiError(403,'The selected company is outside current sales access.');
   const fingerprint=await hash(JSON.stringify(Object.keys(input).sort().map(field=>[field,input[field]]))),keyHash=await hash(key);
   const previous=await this.receipt(credential,keyHash,fingerprint);if(previous)return previous;
   // Explicit creation authority includes only the new records this credential creates.
@@ -62,6 +63,7 @@ export class ApiDeals {
  async update(credential:ApiCredential,id:string,input:Record<string,unknown>,expected:string){
   apiScope(credential,'deal.update',id,Object.keys(input));
   if(await salesProfile(this.db,credential.principal_id)&&!await salesCanEdit(this.db,credential.principal_id,'opportunity',id,Object.keys(input)))throw new ApiError(403,'Current sales edit permission is required.');
+  if(typeof input.company_id==='string'&&await salesProfile(this.db,credential.principal_id)&&!await salesCanRead(this.db,credential.principal_id,'company',input.company_id))throw new ApiError(403,'The selected company is outside current sales access.');
   const before=await this.db.prepare('SELECT * FROM opportunities WHERE id=?').bind(id).first<Deal>();
   if(!before)throw new ApiError(404,'Deal not found.');
   if(await dealRevision(before)!==expected)throw new ApiError(409,'The deal changed; read it again.');

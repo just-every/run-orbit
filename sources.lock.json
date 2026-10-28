@@ -4627,7 +4627,7 @@
       "executable": false
     },
     "src/core/features/access/legacy-projection.ts": {
-      "sha256": "4c57058b07ee0958459ca0699e49d32fbe3d6b9313678782ad0778fceeeec81d",
+      "sha256": "4378903b831521c8ed7d246eed4c2d227080cec423a2b89e09b0b7576c102ad2",
       "executable": false
     },
     "src/core/features/access/mutations.ts": {
@@ -4827,7 +4827,7 @@
       "executable": false
     },
     "src/core/features/api/resources.ts": {
-      "sha256": "36ec23ab559f8a1bcfaf88212944e38c9ce430129b869f3a9661157c7f35fe6d",
+      "sha256": "85e66860a49f89ca5de099b7fdcb6d4fa375575529795495954d1dd7a973fe6d",
       "executable": false
     },
     "src/core/features/api/routes.ts": {
@@ -7335,7 +7335,7 @@
       "executable": false
     },
     "src/core/features/teams/notifications.ts": {
-      "sha256": "a6cc1cae3b9ae60e5e21e174ca03b0f3e891baa8c82d8637bc17f2ecae7aaf33",
+      "sha256": "46fe7d55a85e85261fe35354750b4a98973d77d5760cf43f1f5b8f0f81d9450f",
       "executable": false
     },
     "src/core/features/teams/permissions.ts": {
@@ -7351,7 +7351,7 @@
       "executable": false
     },
     "src/core/features/teams/record-access.ts": {
-      "sha256": "acf0b4c1baf1b88efa41b525813d92cc3c90162fc285e1acb109f5a7e9ef1eb7",
+      "sha256": "96c3d4d65ca9cd56e9af0b77d86c0d07b082667d7866d12edf41e7f649a3c57b",
       "executable": false
     },
     "src/core/features/teams/record-privacy.tsx": {
@@ -8815,7 +8815,7 @@
       "executable": false
     },
     "tests/core/onboarding-archive.test.ts": {
-      "sha256": "55bb0611a578beba31f91075639d8400acd5e8106c7ec57456a068af6fa28946",
+      "sha256": "ec20d7b8842b58c4bb03089d43d1998d47654571eac3c8bebf3e49dece46d24a",
       "executable": false
     },
     "tests/core/operator-erasure.test.ts": {

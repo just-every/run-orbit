@@ -15,7 +15,7 @@ export function salesNotificationRoutes(db:D1Database){const app=new Hono<{Varia
  if(c.req.method!=='GET')return mounted.fetch(new Request(url,c.req.raw));
  const response=await mounted.fetch(new Request(url,c.req.raw));if(!response.ok)return response;const body=await response.json() as {notifications:{id:string;readAt:string|null}[]},visible=[];
  for(const notice of body.notifications){const row=await db.prepare('SELECT event_key,opportunity_id FROM notifications WHERE id=? AND operator_id=?').bind(notice.id,actor.operatorId).first<{event_key:string;opportunity_id:string|null}>();if(!row)continue;const refs=await target(db,row.event_key,row.opportunity_id);if(!refs.length)continue;let allowed=true;
- for(const ref of refs){if(!await salesCanRead(db,actor.operatorId,ref.kind,ref.id,ref.source?['notes']:[])){allowed=false;break;}if(ref.source){if(!await readsEntries(db,actor.operatorId,ref.kind,ref.id)||await db.prepare('SELECT 1 FROM entry_privacy WHERE source=? AND entry_id=? AND author_id<>?').bind(ref.source,ref.entry,actor.operatorId).first()){allowed=false;break;}}}
+ for(const ref of refs){if(!await salesCanRead(db,actor.operatorId,ref.kind,ref.id,ref.source?['notes']:[ref.kind==='opportunity'?'title':'name'])){allowed=false;break;}if(ref.source){if(!await readsEntries(db,actor.operatorId,ref.kind,ref.id)||await db.prepare('SELECT 1 FROM entry_privacy WHERE source=? AND entry_id=? AND author_id<>?').bind(ref.source,ref.entry,actor.operatorId).first()){allowed=false;break;}}}
  if(allowed)visible.push(notice);
  }
  return c.json({notifications:visible,unread:visible.filter(notice=>!notice.readAt).length});

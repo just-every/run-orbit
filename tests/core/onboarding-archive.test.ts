@@ -1,3 +1,4 @@
+import {preTeamsCatalog} from '../../src/core/features/teams/archive';
 import {issueNativeCredential} from '../support/api-credentials-proof';
 import {preCallingCatalog} from '../../src/core/features/records/archive-generations';
 import assert from 'node:assert/strict';
@@ -75,7 +76,7 @@ test('API-001 credentials stay local while DATA-001 local archive restores recor
  assert.ok(archive.parts.flatMap((part:any)=>part.records).filter((record:any)=>record.table==='signal_sources').every((record:any)=>record.row.secret_ciphertext===undefined),'Signing credentials do not travel in archives');
  const archivedSignal=archive.parts.flatMap((part:ArchivePart)=>part.records).find((record:ArchivePart['records'][number])=>record.table==='signals'&&record.row.id===removedSource.signalId);
  assert.deepEqual(archivedSignal?.row,removedSource.signal,'Removing a source retains the complete immutable evidence in exports');
- const previousCatalog=preSourceRemovalCatalog(await foldInstalledCatalog(source.db)),previousManifest={...archive.manifest,schemaHash:await foldSchemaHash(previousCatalog),tables:archive.manifest.tables.map((table:any)=>table.name==='signal_sources'?{...table,columns:table.columns.filter((column:string)=>column!=='removed_at')}:table)};
+ const previousCatalog=preSourceRemovalCatalog(preTeamsCatalog(await foldInstalledCatalog(source.db))),previousManifest={...archive.manifest,schemaHash:await foldSchemaHash(previousCatalog),tables:archive.manifest.tables.filter((table:any)=>previousCatalog.some(t=>t.name===table.name)).map((table:any)=>({...table,columns:previousCatalog.find(t=>t.name===table.name)!.columns.map(c=>c.name)}))};
  const previousImport=await request(target,'records/archive/imports','POST',{confirmed:true,manifest:previousManifest});
  await request(target,`records/archive/imports/${previousImport.id}/abort`,'POST',{});
  for(const tables of [archive.manifest.tables.filter((t:any)=>t.name!=='form_embed_origins'),[...archive.manifest.tables,{name:'unknown_records',columns:['id'],rows:0}]]){
