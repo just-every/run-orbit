@@ -1,3 +1,4 @@
+import {emailLinkSignIn} from './email-link';
 import { isolatedDatabase } from './isolated-database';
 import { createDependencies } from './dependencies';
 import { createApp } from './app';
@@ -35,7 +36,8 @@ export async function captureFixture() {
   const scheduled = await approval.approve(scheduledDraft.id, 1, operator, { scheduledAt: new Date(Date.now() + 2 * 86400000).toISOString() });
   const unsentDraft = await outreach.createDraft(opportunity, { contactId: ana, subject: 'Unsent idea', body: 'Not yet approved' }, operator);
   const session = await deps.auth.createSession(operator), app = createApp({ database: db, assets: { fetch: async () => new Response('') } });
-  const cookie = `__Host-orbit_session=${session.token}`;
+  let cookie = `__Host-orbit_session=${session.token}`;
+  const refreshSignIn = async () => { cookie = (await emailLinkSignIn(db, 'seller@orbit.test')).cookie; };
   const request = (path: string, init: RequestInit = {}) => app.request(`https://orbit.test${path}`, { ...init, headers: { cookie, origin: 'https://orbit.test', ...init.headers } });
   const upload = (files: { name: string; text: string }[], includeUnknown = false, headers: Record<string, string> = { cookie, origin: 'https://orbit.test' }) => {
     const form = new FormData();
@@ -43,7 +45,7 @@ export async function captureFixture() {
     if (includeUnknown) form.append('includeUnknown', 'on');
     return app.request('https://orbit.test/api/v1/capture/imports', { method: 'POST', headers, body: form });
   };
-  return { platform, db, deps, app, cookie, operator, company, ana, bob, opportunity, anaThread, bobThread, scheduled: scheduled.id, scheduledDraft: scheduledDraft.id, unsentDraft: unsentDraft.id, sent, request, upload, dispose: () => platform.dispose() };
+  return { platform, db, deps, app, get cookie(){return cookie;}, refreshSignIn, operator, company, ana, bob, opportunity, anaThread, bobThread, scheduled: scheduled.id, scheduledDraft: scheduledDraft.id, unsentDraft: unsentDraft.id, sent, request, upload, dispose: () => platform.dispose() };
 }
 export type CaptureFixture = Awaited<ReturnType<typeof captureFixture>>;
 

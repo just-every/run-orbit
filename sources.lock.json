@@ -8631,7 +8631,7 @@
       "executable": false
     },
     "tests/core/capture-erasure.test.ts": {
-      "sha256": "05cc2396fcff15cce97b193368f1685fcf1c254993c832c5746cedcb42d53a4b",
+      "sha256": "4bf157405db7f2d124e676cb33b71c7bb3fde142a7b5af42d130051048ca78aa",
       "executable": false
     },
     "tests/core/capture-intake.test.ts": {
@@ -9235,7 +9235,7 @@
       "executable": false
     },
     "tests/launch-runtime/mail-ingress.test.ts": {
-      "sha256": "b1ef39d6344eeadec8fbe0e60af06c78a018029a5befd550b462464569b4f992",
+      "sha256": "1fea731abcb48de0001a78f8e7416ad55ca84316557b1715d4766f9e6400f259",
       "executable": false
     },
     "tests/launch-runtime/mail-transport.ts": {
@@ -9387,7 +9387,7 @@
       "executable": false
     },
     "tests/support/capture-fixture.ts": {
-      "sha256": "707e662d58d44bb1aefb6d10d391e4f88e9c6e8df7810817b40266ef64394f6b",
+      "sha256": "cde1ca8d164dd843fe747e23aaba9ff2d49cd43ed57a4483faa3c845fe1c294a",
       "executable": false
     },
     "tests/support/capture-mail.ts": {

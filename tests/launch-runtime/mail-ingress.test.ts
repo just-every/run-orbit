@@ -28,7 +28,6 @@ test('the emitted installation protects seller sessions and consumes authenticat
   await deps.auth.ensureOperator({id:actor,email:'runtime-operator@orbit.test',displayName:'Runtime operator'});
   await deps.workspace.ensureWorkspace({name:'Runtime',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
   await deps.workspace.ensurePipelineStage({id:stage,name:'Lead',position:0});
-  await db.prepare("INSERT INTO first_run_setup(id,completed_at) VALUES('workspace',?)").bind(new Date().toISOString()).run();
   const session=await deps.auth.createSession(actor),revoked=await deps.auth.createSession(actor),expired=await deps.auth.createSession(actor);
   await deps.auth.revoke(revoked.id);await db.prepare("UPDATE sessions SET expires_at='2000-01-01T00:00:00.000Z' WHERE id=?").bind(expired.id).run();
   const opportunity=await new WorkbenchRepository(db).createOpportunity({title:'Runtime outreach',companyName:'Runtime Co',contactName:'Runtime buyer',email:'runtime-buyer@orbit.test',stageId:stage,valueCents:0},actor);
