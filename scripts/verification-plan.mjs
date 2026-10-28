@@ -32,6 +32,7 @@ const minutes = {
   'tests/core/crm-import.test.ts': 5,
   'tests/core/crm-vendor.test.ts': 3,
   'tests/core/launch-suppression.test.ts': 5,
+  'tests/core/mailchimp.test.ts': 5,
   'tests/core/records-search.test.ts': 3,
   'tests/core/signals-outreach.test.ts': 3,
   'tests/e2e/operator.spec.mjs': 1,
