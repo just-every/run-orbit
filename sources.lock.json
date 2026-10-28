@@ -643,7 +643,7 @@
       "executable": false
     },
     ".github/workflows/verify.yml": {
-      "sha256": "390601f451296454ad91a19995032e217f91f31d7e5d0ac4b4595ae4283f79f4",
+      "sha256": "5741d1b48cf916a42f133d9236967a429ab1e391285f788d9bc79d031b9216d6",
       "executable": false
     },
     ".gitignore": {
@@ -4015,7 +4015,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "af186eefc3e49dd1e94226ed1ec30650a8200efff2fc3461938ce4a6a99b667a",
+      "sha256": "efceaba318468ea7ced4774c1ada1778a28d51d52d3e9015bc9311b906caa8fa",
       "executable": false
     },
     "scripts/verification-reuse.sh": {
@@ -8699,7 +8699,7 @@
       "executable": false
     },
     "tests/e2e/baseline.spec.mjs": {
-      "sha256": "0cfe15638fa588a01575170f40759721f26dcf277fa6106610a8e98c8621bf62",
+      "sha256": "84821d659e80b0415d3d85f55d7a533f745a2bd6c996c26e8c1d97a9b8527b95",
       "executable": false
     },
     "tests/e2e/operator-session.mjs": {
