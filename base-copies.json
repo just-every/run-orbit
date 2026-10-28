@@ -13,7 +13,16 @@
       },
       "originFiles": [
         "export/run-demo.yml"
-      ]
+      ],
+      "adapted": {
+        ".github/workflows/run-demo.yml": "f96363bf919ea3e7ed1837daba6894810a50e4a6"
+      },
+      "acknowledged": {
+        ".github/workflows/run-demo.yml": {
+          "sha256": "cd478e5acaa5b7ecac7c8d93069a928886b59bc48e72c495700e42aa3c1b5232",
+          "mode": "100644"
+        }
+      }
     },
     {
       "path": ".github/workflows/run-site.yml",
@@ -27,7 +36,39 @@
       },
       "originFiles": [
         "export/run-site.yml"
-      ]
+      ],
+      "adapted": {
+        ".github/workflows/run-site.yml": "f96363bf919ea3e7ed1837daba6894810a50e4a6"
+      },
+      "acknowledged": {
+        ".github/workflows/run-site.yml": {
+          "sha256": "658103b85a474849d81eecd2143bba4cd586c783541ee605332d2866220da1e6",
+          "mode": "100644"
+        }
+      }
+    },
+    {
+      "path": ".github/workflows/verify.yml",
+      "originPath": "export/verify.yml",
+      "revision": "f96363bf919ea3e7ed1837daba6894810a50e4a6",
+      "files": {
+        ".github/workflows/verify.yml": "09fe6d2a0b274d4925950ef0ddde9c8c7099e15edb5333a601ead2bbcec73a86"
+      },
+      "modes": {
+        ".github/workflows/verify.yml": "100644"
+      },
+      "originFiles": [
+        "export/verify.yml"
+      ],
+      "adapted": {
+        ".github/workflows/verify.yml": "f96363bf919ea3e7ed1837daba6894810a50e4a6"
+      },
+      "acknowledged": {
+        ".github/workflows/verify.yml": {
+          "sha256": "1f8cb3b6f01c60d0b47bfccc7ffca9935f32b5310a4027f0c52f44f56a92f8e1",
+          "mode": "100644"
+        }
+      }
     },
     {
       "path": ".node-version",
@@ -461,6 +502,48 @@
       },
       "originFiles": [
         "foundation/template/scripts/installer/ui/background.svg"
+      ]
+    },
+    {
+      "path": "scripts/verify-evidence.mjs",
+      "originPath": "export/verify-evidence.mjs",
+      "revision": "f96363bf919ea3e7ed1837daba6894810a50e4a6",
+      "files": {
+        "scripts/verify-evidence.mjs": "9224f772d6a17f043448694eca3c149df83070417b995a2840497e36a9ad0100"
+      },
+      "modes": {
+        "scripts/verify-evidence.mjs": "100644"
+      },
+      "originFiles": [
+        "export/verify-evidence.mjs"
+      ]
+    },
+    {
+      "path": "scripts/verify-light.mjs",
+      "originPath": "export/verify-light.mjs",
+      "revision": "f96363bf919ea3e7ed1837daba6894810a50e4a6",
+      "files": {
+        "scripts/verify-light.mjs": "f9b126130837144e43a65d10d370d602b63daad2be7ff66c93178d461a7521d9"
+      },
+      "modes": {
+        "scripts/verify-light.mjs": "100644"
+      },
+      "originFiles": [
+        "export/verify-light.mjs"
+      ]
+    },
+    {
+      "path": "scripts/verify-plan.mjs",
+      "originPath": "export/verify-plan.mjs",
+      "revision": "f96363bf919ea3e7ed1837daba6894810a50e4a6",
+      "files": {
+        "scripts/verify-plan.mjs": "45fe2ab9c5cbc72d0186bf77fab32c985605caae6ecee50676dd618612c3e78f"
+      },
+      "modes": {
+        "scripts/verify-plan.mjs": "100644"
+      },
+      "originFiles": [
+        "export/verify-plan.mjs"
       ]
     },
     {
