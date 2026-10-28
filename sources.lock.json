@@ -1851,7 +1851,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "3292e8eba2e91c9f1083ba99b9d887408814d1ff57a35c4b02896d4a29ddb664",
+      "sha256": "b509e12a46b0df65bae27dedccd544cc38ee4fb5c924f53cbe553dccfecb4a61",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -8759,7 +8759,7 @@
       "executable": false
     },
     "tests/delegation-browser/calling-journey.mjs": {
-      "sha256": "57e9c6f18d8f0743f077d2149ceae55de41dca9e4ca4a3ee032d2ca4355bed6f",
+      "sha256": "ebf4d21f72416381af1ccebc1f3751538729bbff0f84728c0381a58cc0c70fb7",
       "executable": false
     },
     "tests/delegation-browser/journey.mjs": {
@@ -8783,7 +8783,7 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {
-      "sha256": "0ec370bac90f5c71fdd98bd28c1dce07dfe2ac9c5abcd94ddb2ef90b70b577ca",
+      "sha256": "c5d098a58e38f55c39140aba46c92a53a0573161bcb2f3e8de77eee8706a01be",
       "executable": false
     },
     "tests/delegation-browser/related-records.test.ts": {
