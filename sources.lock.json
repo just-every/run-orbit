@@ -3499,7 +3499,7 @@
       "executable": false
     },
     "newtests/t096/portability-sanity-custody.ts": {
-      "sha256": "2c25e43f94984f2608f7783c06db7151a167a1876eb8105d80f1c1c63e7649cd",
+      "sha256": "3795fb3aadc1a05a7542219bdd87fddf2c1d73b57d138b3caec1ac6811a32500",
       "executable": false
     },
     "newtests/t096/portability-sanity-library.ts": {
