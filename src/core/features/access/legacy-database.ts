@@ -16,7 +16,7 @@ export function legacyCursorScope(db:D1Database):Record<string,string>{const act
 export function legacyDatabase(db:D1Database,actor:ActorContext):D1Database {
   const access=new AccessService(db),statements=new WeakMap<object,{sql:string;bindings:unknown[];owned?:boolean}>();
   const run=async(items:Array<{sql:string;bindings:unknown[];raw?:boolean;owned?:boolean}>)=>{
-    const full=actor.principal.kind==='operator'&&await isFullOperator(db,actor.principal.operatorId);
+    const full=(actor.principal.kind==='operator'||actor.principal.kind==='agent')&&await isFullOperator(db,actor.principal.operatorId);
     if(full)access.addDependencyFences(actor,fullOperatorFence(actor),'native-class');
     if(!full)for(const item of items){if(/^\s*(SELECT|WITH)\b/i.test(item.sql))continue;const mutation=/^\s*UPDATE\s+(companies|contacts|opportunities)\s+SET\s+(name|title)\s*=\s*\?\s+WHERE\s+id\s*=\s*\?\s*;?$/i.exec(item.sql);if(!mutation||item.bindings.length!==2)deny('Use the native record edit boundary for this mutation.');const kind=({companies:'company',contacts:'contact',opportunities:'opportunity'} as Record<string,string>)[mutation[1].toLowerCase()]!;await access.authorize(actor,'graph.update',{...actor,type:kind,id:String(item.bindings[1])},[mutation[2].toLowerCase()]);}
     const projected=await Promise.all(items.map(item=>full||item.owned?{sql:item.sql,bindings:[]}:legacyProjection(db,actor,item.sql)));const prepared=projected.map((p,i)=>db.prepare(items[i].raw&&/^\s*(SELECT|WITH)\b/i.test(p.sql)?`SELECT * FROM (${p.sql})`:p.sql).bind(...p.bindings,...items[i].bindings));

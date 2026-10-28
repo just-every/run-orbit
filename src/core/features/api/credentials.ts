@@ -1,4 +1,4 @@
-import type {AuthenticatedOperator} from '../identity';
+import type {NativeActor} from '../identity';
 import {AccessService} from '../access/service';
 import {AccessError} from '../access/errors';
 import {z} from 'zod';
@@ -32,9 +32,9 @@ export class ApiCredentials {
   if(!row?.allowed)throw new RecordError(403,'An active installation administrator is required outside archive restore.');
  }
  async list(actor:string){await this.requireAdministrator(actor);return(await this.db.prepare(`SELECT * FROM api_credentials WHERE ${administrator} AND ${available} ORDER BY created_at,id`).bind(actor).all<Credential>()).results.map(projection);}
- private async commit(actor:AuthenticatedOperator,condition:string,args:(string|number)[],statements:D1PreparedStatement[]){
+ private async commit(actor:NativeActor,condition:string,args:(string|number)[],statements:D1PreparedStatement[]){
   const guard=createId();
-  try{const access=new AccessService(this.db),context=await access.authorizeLegacy(actor,createId(),'legacy.write');await this.db.batch([
+  try{const access=new AccessService(this.db),context='sessionId' in actor?await access.authorizeLegacy(actor,createId(),'legacy.write'):await access.resolveAgentContext(actor.operatorId,actor.agentId,createId());await access.authorize(context,'legacy.write',{...context,type:'legacy',id:'*'},[]);await this.db.batch([
    ...access.fence(context).map(statement=>this.db.prepare(statement.sql).bind(...statement.bindings)),
    this.db.prepare(`INSERT INTO access_write_guards VALUES(?,CASE WHEN ${administrator} AND ${available} AND (${condition}) THEN 1 ELSE 0 END)`).bind(guard,actor.operatorId,...args),
    ...statements,this.db.prepare('DELETE FROM access_write_guards WHERE id=?').bind(guard),
@@ -44,7 +44,7 @@ export class ApiCredentials {
    throw error;
   }
  }
- async issue(actor:AuthenticatedOperator,input:Definition){
+ async issue(actor:NativeActor,input:Definition){
   await this.requireAdministrator(actor.operatorId);
   const now=this.clock.now(),expires=new Date(input.expiresAt),records=JSON.stringify([...new Set(input.recordIds)].sort());
   if(expires<=now||expires.getTime()-now.getTime()>90*86400000)throw new RecordError(400,'Choose a future expiry within 90 days.');
@@ -57,7 +57,7 @@ export class ApiCredentials {
   ]);
   return {credential:(await this.list(actor.operatorId)).find(row=>row.id===id)!,secret};
  }
- async rotate(actor:AuthenticatedOperator,id:string,revision:number){
+ async rotate(actor:NativeActor,id:string,revision:number){
   await this.requireAdministrator(actor.operatorId);
   const row=await this.db.prepare('SELECT * FROM api_credentials WHERE id=?').bind(id).first<Credential>();
   if(!row)throw new RecordError(404,'Credential not found.');
@@ -70,7 +70,7 @@ export class ApiCredentials {
   ]);
   return {credential:(await this.list(actor.operatorId)).find(candidate=>candidate.id===id)!,secret};
  }
- async revoke(actor:AuthenticatedOperator,id:string,revision:number){
+ async revoke(actor:NativeActor,id:string,revision:number){
   await this.requireAdministrator(actor.operatorId);
   await this.commit(actor,'EXISTS(SELECT 1 FROM api_credentials WHERE id=? AND revision=?)',[id,revision],[
    this.db.prepare('UPDATE api_credentials SET revoked_at=COALESCE(revoked_at,?),revision=revision+1,verifier=? WHERE id=?').bind(this.clock.now().toISOString(),await hash(random()),id),

@@ -21,7 +21,7 @@ export class ForecastRepository {
  constructor(readonly db:D1Database){this.access=new AccessService(db);this.store=new OperationsStore(db,this.access,domainEventStatements);}
  async permit(context:ActorContext,owner=false){
   const current=await this.access.refreshContext(context);
-  if(current.principal.kind!=='operator'||!await isFullOperator(this.db,current.principal.operatorId))deny('Forecasts require a current full operator.');
+  if((current.principal.kind!=='operator'&&current.principal.kind!=='agent')||!await isFullOperator(this.db,current.principal.operatorId))deny('Forecasts require a current full operator.');
   this.access.addDependencyFences(current,fullOperatorFence(current),'forecast-class');
   await this.access.authorize(current,owner?'forecast.configure':'forecast.read',{...current,type:'forecast',id:'*'},[]);
   if(owner){const actor=current.principal.operatorId;if(!await this.db.prepare("SELECT 1 FROM operators WHERE id=? AND status='active' AND setup_owner=1").bind(actor).first())deny('Only the installation owner configures forecasts until TEAM-005 adds administrators.');this.access.addDependencyFences(current,this.store.guard("EXISTS(SELECT 1 FROM operators WHERE id=? AND status='active' AND setup_owner=1)",[actor]),'forecast-owner');}
@@ -55,13 +55,13 @@ export class ForecastRepository {
    else quotas.push({...review.body as QuotaInput,...attribution});
   }
   const deals=rows[4].results as unknown as NativeForecastDeal[];
-  const state:ForecastState={canManage:operators.some(o=>o.id===(context.principal.kind==='operator'?context.principal.operatorId:'')&&o.setup_owner===1),stages:rows[1].results as {id:string;name:string}[],operators:operators.map(({id,name})=>({id,name})),stageRules,dealInputs,quotas,deals,reviewHistory:history};
+  const state:ForecastState={canManage:operators.some(o=>o.id===((context.principal.kind==='operator'||context.principal.kind==='agent')?context.principal.operatorId:'')&&o.setup_owner===1),stages:rows[1].results as {id:string;name:string}[],operators:operators.map(({id,name})=>({id,name})),stageRules,dealInputs,quotas,deals,reviewHistory:history};
   const references=[...rows[6].results as {kind:string;id:string}[],...deals.map(d=>({kind:'opportunity',id:d.id})),...operators.map(o=>({kind:'operator',id:o.id})),...history.flatMap(r=>[{kind:'operator',id:r.actorId},...(r.kind==='deal'?[{kind:'opportunity',id:r.subjectId}]:r.kind==='quota'?[{kind:'operator',id:r.subjectId}]:[])])];
   return {state,clock,classStamp:(rows[7].results[0] as {value:string}).value,staleDays:settings.stale_interval_days,references:[...new Map(references.map(r=>[`${r.kind}:${r.id}`,r])).values()]};
  }
  async read(context:ActorContext){return (await this.load(await this.permit(context))).state;}
  private async revise(context:ActorContext,kind:RevisionRow['kind'],targetKey:string,subjectId:string,input:StageRuleInput|DealForecastInput|QuotaInput,guard:SqlStatement[]){
-  const current=await this.permit(context,true),actor=current.principal.kind==='operator'?current.principal.operatorId:'',id=createId(),now=new Date().toISOString();
+  const current=await this.permit(context,true),actor=(current.principal.kind==='operator'||current.principal.kind==='agent')?current.principal.operatorId:'',id=createId(),now=new Date().toISOString();
   const sql:SqlStatement={sql:'INSERT INTO forecast_revisions(id,workspace_id,kind,target_key,subject_id,revision,body_json,actor_id,reason,reviewed_at) SELECT ?,?,?,?,?,COALESCE(MAX(revision),0)+1,?,?,?,? FROM forecast_revisions WHERE workspace_id=? AND kind=? AND target_key=?',bindings:[id,current.workspaceId,kind,targetKey,subjectId,JSON.stringify(input),actor,input.reason,now,current.workspaceId,kind,targetKey]};
   await this.store.commit(current,`forecast.${kind}.reviewed`,id,1,[...guard,sql],{kind,targetKey});
   return {id};
@@ -78,7 +78,7 @@ export class ForecastRepository {
  async saveSnapshot(context:ActorContext,period:ForecastPeriod,reviewHash:string):Promise<ForecastSnapshot>{
   const current=await this.permit(context,true),loaded=await this.load(current),hash=await this.reviewed(loaded,period);
   if(hash!==reviewHash)throw new AccessError('conflict','Forecast inputs changed after preview. Preview and review the current forecast.');
-  const asOf=new Date().toISOString(),id=createId(),actorId=current.principal.kind==='operator'?current.principal.operatorId:'',result=calculateForecast(loaded.state,period,asOf,loaded.staleDays);
+  const asOf=new Date().toISOString(),id=createId(),actorId=(current.principal.kind==='operator'||current.principal.kind==='agent')?current.principal.operatorId:'',result=calculateForecast(loaded.state,period,asOf,loaded.staleDays);
   const snapshot:ForecastSnapshot={id,...period,asOf,actorId,reviewHash:hash,result};
   const references=JSON.stringify(loaded.references);
   await this.store.commit(current,'forecast.snapshot.created',id,1,[...this.store.guard(`EXISTS(SELECT 1 FROM forecast_source_clock WHERE id=1 AND revision=?) AND ${classStampSql}=?`,[loaded.clock,loaded.classStamp]),{sql:'INSERT INTO forecast_snapshots VALUES(?,?,?,?,?,?,?,?)',bindings:[id,current.workspaceId,period.from,period.through,asOf,actorId,hash,JSON.stringify(snapshot)]},{sql:"INSERT INTO forecast_snapshot_records(snapshot_id,kind,record_id) SELECT ?,json_extract(value,'$.kind'),json_extract(value,'$.id') FROM json_each(?)",bindings:[id,references]}],{from:period.from,through:period.through,reviewHash:hash});

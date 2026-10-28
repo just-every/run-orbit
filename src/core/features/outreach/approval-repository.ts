@@ -7,7 +7,7 @@ import { permitted, localTime, nextPermitted, recentLocalTime } from './time';
 import { deferral, oneToOneLimitSql, sharedLimitSql } from './sending-limits';
 import { bindOptOut, draftOptOut, relayRefusalAudit } from './opt-out';
 import { capabilityStatement } from './opt-out-capability';
-export interface ApprovalInput {idempotencyKey?:string;scheduledAt?:string;scheduledAtConfirmation?:string;quietHoursConfirmation?:string;now?:Date;messageIdDomain?:string;optOutTransport?:boolean;optOutOrigin?:string}
+export interface ApprovalInput {agentReviewHash?:string;idempotencyKey?:string;scheduledAt?:string;scheduledAtConfirmation?:string;quietHoursConfirmation?:string;now?:Date;messageIdDomain?:string;optOutTransport?:boolean;optOutOrigin?:string}
 export class ApprovalRepository {
  constructor(readonly db:D1Database){}
  async preview(draftId:string,now=new Date(),scheduledAt?:string) {
@@ -27,7 +27,7 @@ export class ApprovalRepository {
   if(input.scheduledAt&&(!Number.isFinite(Date.parse(input.scheduledAt))||Date.parse(input.scheduledAt)<=now.getTime()))throw new WorkbenchError(400,'Schedule a future time.');
   const scheduled=input.scheduledAt?nextPermitted(new Date(input.scheduledAt),preview.timezone).toISOString():null;
   if(input.scheduledAtConfirmation&&input.scheduledAtConfirmation!==scheduled)throw new WorkbenchError(409,'The permitted schedule changed. Review the schedule again before approving.');
-  const rendered=await renderDraft(this.db,draftId,actor);requireRendered(rendered.review);
+  const rendered=await renderDraft(this.db,draftId,actor);requireRendered(rendered.review,input.agentReviewHash);
   const id=createId(),key=input.idempotencyKey??`${draftId}:${revision}`,messageId=`<${id}@${input.messageIdDomain??'orbit.local'}>`;
   const optOut=await draftOptOut(this.db,draftId,input.optOutTransport??true);
   if(optOut.refusal){await relayRefusalAudit(this.db,actor,'draft',draftId).run();throw new WorkbenchError(409,optOut.refusal);}

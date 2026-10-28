@@ -28,7 +28,8 @@ export class OutreachService {
   const optOut=await boundOptOut(this.db,message.id);
   try{
    const url=this.mail.provider==='rer'&&this.mail.optOutOrigin&&optOut!==false?await messageOptOutUrl(this.db,message.id,this.mail.optOutOrigin):undefined;
-   receipt=await this.mail.send({...message,...(optOut===undefined?{}:{opt_out:optOut}),...(url?{opt_out_url:url}:{})});
+   const attribution=await this.db.prepare('SELECT actor FROM orbit_agent_work WHERE message_id=?').bind(message.id).first<{actor:string}>();
+   receipt=await this.mail.send({...message,...(attribution?{senderLabel:JSON.parse(attribution.actor).label}:{}),...(optOut===undefined?{}:{opt_out:optOut}),...(url?{opt_out_url:url}:{})});
   }catch(error){
    const now=new Date(),at=now.toISOString();
    if(transientSubmission(error)&&message.attempt_count<5&&now.getTime()-Date.parse(message.first_attempt_at??message.approved_at)<3600000){await this.db.prepare("UPDATE outbound_messages SET state='scheduled',next_attempt_at=?,failure=?,updated_at=? WHERE id=? AND state='queued'").bind(new Date(now.getTime()+message.attempt_count*60000).toISOString(),error instanceof Error?error.message:'Provider rate limit',at,message.id).run();return {id:message.id,state:'scheduled'};}
@@ -42,10 +43,10 @@ export class OutreachService {
   }
   return {id:message.id,state:'accepted'};
  }
- async dispatchDue(now=new Date(),limit=50){
+ async dispatchDue(now=new Date(),limit=50,admittedAgentMessage?:string){
   const rows=await this.db.prepare("SELECT id FROM outbound_messages WHERE state='scheduled' AND COALESCE(next_attempt_at,scheduled_at)<=? ORDER BY COALESCE(next_attempt_at,scheduled_at) LIMIT ?").bind(now.toISOString(),limit).all<{id:string}>();
   const approval=new ApprovalRepository(this.db);
-  for(const row of rows.results){const message=await approval.message(row.id);
+  for(const row of rows.results){if(row.id!==admittedAgentMessage&&await this.db.prepare('SELECT 1 FROM orbit_agent_work WHERE message_id=?').bind(row.id).first())continue;const message=await approval.message(row.id);
    if(message.first_attempt_at&&(message.attempt_count>=5||now.getTime()-Date.parse(message.first_attempt_at)>=3600000)){
     await this.db.batch([this.db.prepare("UPDATE outbound_messages SET state='failed',failure='Provider retry window expired; operator review is required',updated_at=? WHERE id=? AND state='scheduled'").bind(now.toISOString(),message.id),this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason='Provider retry window expired',next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open'").bind(now.toISOString(),message.opportunity_id)]);continue;
    }

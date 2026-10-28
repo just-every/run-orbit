@@ -9,7 +9,7 @@ import { createTask, updateTask } from './mutations';
 import { listTasks, readTask, taskHistory } from './repository';
 const id = z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 const timezone = z.string().min(1).max(100).refine(value => {try {new Intl.DateTimeFormat('en', {timeZone: value}); return true;} catch {return false;}}, 'Choose a recognized IANA timezone.');
-const content = z.object({
+export const taskContent = z.object({
  title: z.string().trim().min(1).max(300), recordType: z.enum(['contact','company','opportunity']), recordId: id,
  ownerId: id.nullable(), dueAt: z.iso.datetime().refine(value => Number.isFinite(Date.parse(value))),
  priority: z.enum(['low','normal','high','urgent']), type: z.enum(['call','email','meeting','follow_up','other']),
@@ -33,13 +33,13 @@ export function createSalesTaskRoutes(db: D1Database) {
   return c.json({task, history: await taskHistory(db, parsed.data)});
  });
  app.post('/', async c => {
-  const parsed = content.safeParse(await c.req.json().catch(() => null));
+  const parsed = taskContent.safeParse(await c.req.json().catch(() => null));
   if (!parsed.success) return c.json({error: parsed.error.issues[0]?.message ?? 'Enter the task details.'}, 400);
   return c.json(await createTask(db, c.get('operator'), parsed.data), 201);
  });
  app.put('/:id', async c => {
   const parsedId = id.safeParse(c.req.param('id'));
-  const parsed = content.extend({revision: id, status: z.enum(['open','completed','cancelled'])}).strict().safeParse(await c.req.json().catch(() => null));
+  const parsed = taskContent.extend({revision: id, status: z.enum(['open','completed','cancelled'])}).strict().safeParse(await c.req.json().catch(() => null));
   if (!parsedId.success || !parsed.success) return c.json({error: 'Enter valid task details and its current revision.'}, 400);
   return c.json(await updateTask(db, c.get('operator'), parsedId.data, parsed.data));
  });

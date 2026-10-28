@@ -21,17 +21,22 @@ export class TimelineService {
       actorType: entry.actorType,
       actorName: resolveActorName(entry),
       sourceName: humanizeIdentity(entry.source),
-      payloadJson: entry.payloadJson
+      payloadJson: entry.agentAttribution?JSON.stringify({...JSON.parse(entry.payloadJson),preparedBy:JSON.parse(entry.agentAttribution)}):entry.payloadJson
     }));
   }
 }
 
 function resolveActorName(entry: {
   actorType: string;
+  agentAttribution?: string | null;
   operatorName: string | null;
   signalSourceName: string | null;
   source: string;
 }): string {
+  if (entry.actorType === 'agent') {
+    if(!entry.agentAttribution)throw new Error('Timeline agent attribution is missing.');
+    return JSON.parse(entry.agentAttribution).label;
+  }
   if (entry.actorType === "operator") {
     if (!entry.operatorName) throw new Error("Timeline operator actor is missing.");
     return entry.operatorName;

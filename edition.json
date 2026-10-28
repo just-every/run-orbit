@@ -569,7 +569,9 @@
           "src/base/modules/business-settings",
           "src/base/modules/operator-auth",
           "src/base/modules/dependencies",
-          "src/base/foundation/runtime"
+          "src/base/foundation/runtime",
+          "src/base/modules/owner-claim",
+          "src/base/modules/demo"
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
@@ -580,7 +582,9 @@
             "modules/business-settings",
             "modules/operator-auth",
             "modules/dependencies",
-            "foundation/runtime"
+            "foundation/runtime",
+            "modules/owner-claim",
+            "modules/demo"
           ]
         },
         "mappings": [
@@ -603,6 +607,14 @@
           {
             "path": "src/base/foundation/runtime",
             "originPath": "foundation/runtime"
+          },
+          {
+            "path": "src/base/modules/owner-claim",
+            "originPath": "modules/owner-claim"
+          },
+          {
+            "path": "src/base/modules/demo",
+            "originPath": "modules/demo"
           }
         ]
       }
