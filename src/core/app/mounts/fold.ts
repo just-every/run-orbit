@@ -1,3 +1,4 @@
+import {readableRecordKind} from '../../features/teams/record-kind';
 import {salesExportRoutes} from '../../features/teams/export';
 import {systemClock,type Clock} from '../../platform/clock';
 import {Hono} from 'hono';
@@ -28,8 +29,8 @@ export function createFoldRoutes(db:D1Database,clock:Clock=systemClock){const ap
  app.route('/workspaces/:workspace/forecast',createForecastRoutes(db));
  app.route('/workspaces/:workspace/record-export',salesExportRoutes(db));
  const recordKind=z.enum(['company','contact','opportunity']);
- app.get('/workspaces/:workspace/records',async c=>c.json(await graph.searchRecords(c.get('actor'),{types:[recordKind.parse(c.req.query('kind')??'contact')],query:c.req.query('q')??'',fields:[],filters:{},limit:50,...(c.req.query('cursor')?{cursor:c.req.query('cursor')}: {})})));
- app.get('/workspaces/:workspace/records/:kind/:id',async c=>{const actor=c.get('actor'),kind=recordKind.parse(c.req.param('kind')),record=await graph.getRecord(actor,{...actor,type:kind,id:c.req.param('id')},[]);return c.json({...record,editableFields:await recordEditableFields(access,actor,kind,record)});});
+ app.get('/workspaces/:workspace/records',async c=>c.json(await graph.searchRecords(c.get('actor'),{types:[await readableRecordKind(db,c.req.query('kind')??'contact')],query:c.req.query('q')??'',fields:[],filters:{},limit:50,...(c.req.query('cursor')?{cursor:c.req.query('cursor')}: {})})));
+ app.get('/workspaces/:workspace/records/:kind/:id',async c=>{const actor=c.get('actor'),kind=await readableRecordKind(db,c.req.param('kind')),record=await graph.getRecord(actor,{...actor,type:kind,id:c.req.param('id')},[]);return c.json({...record,editableFields:recordKind.safeParse(kind).success?await recordEditableFields(access,actor,kind as 'contact'|'company'|'opportunity',record):[]});});
  // RECORD-017: the record's notes, calls and meetings, read-only, only when the reader's grant on it includes them.
  app.get('/workspaces/:workspace/records/:kind/:id/entries',async c=>{const actor=c.get('actor'),kind=recordKind.parse(c.req.param('kind')),id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/).parse(c.req.param('id'));await graph.getRecord(actor,{...actor,type:kind,id},[]);return c.json(await sharedEntries(db,actor.principal.kind==='operator'?actor.principal.operatorId:'',kind,id));});
  app.put('/workspaces/:workspace/records/:kind/:id',async c=>c.json(await restrictedEdit(db,c.get('actor'),recordKind.parse(c.req.param('kind')),z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/).parse(c.req.param('id')),await c.req.json())));

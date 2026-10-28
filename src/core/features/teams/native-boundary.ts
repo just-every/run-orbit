@@ -19,6 +19,7 @@ export function salesNativeBoundary(db:D1Database):MiddlewareHandler<{Variables:
  try{
   const path=c.req.path,read=['GET','HEAD'].includes(c.req.method),admin=await salesAdmin(db,actor.operatorId);
   if(['/api/v1/assistance/preview','/api/v1/assistance/generate'].includes(path)){await next();return;}
+  if(path.startsWith('/api/v1/managed-records')){await next();return;}
   if(path.startsWith('/api/v1/settings/teams')||path.startsWith('/api/v1/settings/slack')||path.startsWith('/api/v1/library')||path.startsWith('/api/v1/settings/sending')){await next();return;}
   const owner=await db.prepare("SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active'").bind(actor.operatorId).first();if(owner){await next();return;}
   if(await salesEntryAuthority(db,actor.operatorId,path)){await next();return;}

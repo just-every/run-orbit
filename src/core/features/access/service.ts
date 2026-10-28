@@ -26,7 +26,7 @@ export class AccessService implements AccessPort{
   const sales=await salesProfile(this.db,c.principal.operatorId);
   if(sales){
    if(!salesOperationAllowed(sales,operation))deny('Your sales role does not permit this action.');
-   if(['contact','company','opportunity'].includes(resource.type)){
+   if(['contact','company','opportunity'].includes(resource.type)||await this.db.prepare('SELECT 1 FROM managed_record_types WHERE name=?').bind(resource.type).first()){
     const allowed=operation==='graph.update'?await salesCanEdit(this.db,c.principal.operatorId,resource.type,resource.id,fields):await salesCanRead(this.db,c.principal.operatorId,resource.type,resource.id,fields);
     if(!allowed)deny('Record or field access is not permitted.');
    }

@@ -1,0 +1,16 @@
+.managed-records,.managed-record-settings{font-size:14px;min-width:0}
+.managed-records *,.managed-record-settings *{font-size:max(13px,1em)}
+.managed-records h2,.managed-record-settings h2{font-size:20px}
+.managed-records h3,.managed-record-settings h3{font-size:16px}
+.managed-records__toolbar,.managed-records__actions{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+.managed-records__toolbar>label{flex:1;min-width:180px}
+.managed-records__form,.managed-records__detail,.managed-records__delete,.managed-record-settings__editor{margin-top:16px;padding:16px;border:1px solid var(--border,#d7dce3);border-radius:8px}
+.managed-records fieldset,.managed-record-settings fieldset{border:0;padding:0;margin:0;display:grid;gap:14px;min-width:0}
+.managed-records label,.managed-record-settings label{display:grid;gap:6px}
+.managed-records input,.managed-records select,.managed-records button,.managed-record-settings input,.managed-record-settings select,.managed-record-settings button{font:inherit;font-size:14px;min-height:38px;max-width:100%}
+.managed-records__list{list-style:none;padding:0;display:grid;gap:8px}
+.managed-records__list button{text-align:left;width:100%;padding:10px 12px;border:1px solid var(--border,#d7dce3);border-radius:6px;overflow-wrap:anywhere}
+.managed-records__detail dl{display:grid;gap:12px}.managed-records__detail dt{font-weight:600}.managed-records__detail dd{margin:4px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.managed-record-settings__fields{display:grid;gap:12px}.managed-record-settings__field{border:1px solid var(--border,#d7dce3);border-radius:6px;padding:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;align-items:end}
+.managed-record-settings__field label:has(input[type=checkbox]){display:flex;align-items:center;gap:8px}
+@media(max-width:600px){.managed-records__toolbar{align-items:stretch}.managed-records__toolbar>label{min-width:100%}.managed-records__form,.managed-records__detail,.managed-record-settings__editor{padding:12px}}

@@ -1,3 +1,4 @@
+import {restoreManagedRecordStatements} from '../managed-records/archive';
 import {restoreRecordMailStatements} from '../outreach/record-mail-archive';
 import {archiveHash} from './archive-schema';
 import {RecordError} from './shared';
@@ -29,7 +30,7 @@ export async function foldedImportContext(db:D1Database,job:ImportJob):Promise<I
  db.prepare("INSERT INTO access_memberships SELECT 'workspace',id,'legacy_operator',status,created_at FROM operators WHERE NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=operators.id) AND EXISTS(SELECT 1 FROM access_workspaces) ON CONFLICT(workspace_id,operator_id) DO UPDATE SET status=excluded.status,role='legacy_operator' WHERE access_memberships.status<>excluded.status OR access_memberships.role<>'legacy_operator'"),
  db.prepare("INSERT OR IGNORE INTO graph_workspace_epochs VALUES('workspace',1)"),
  ...['contact','company','opportunity'].map(kind=>db.prepare("INSERT OR IGNORE INTO schema_types VALUES('workspace',?,'{}',1)").bind(kind)),
- ...restoreNativeProjectionSql.map(sql=>db.prepare(sql)),
+ ...restoreNativeProjectionSql.map(sql=>db.prepare(sql)),...restoreManagedRecordStatements(db),
  // No imported operator session or captured publication capability is an execution grant.
  ];},async cleanup(current){const progress=JSON.parse(current.progress_json||'{}'),ids=[current.id,...(progress.backupId?[progress.backupId]:[])];await db.batch(ids.flatMap(id=>[...catalog.map(t=>db.prepare(`DROP TABLE IF EXISTS ${stageName(id,t.name)}`)),db.prepare('DELETE FROM archive_parts WHERE job_id=?').bind(id)]));await releaseArchiveStorage(db,current.id);}};
 }
