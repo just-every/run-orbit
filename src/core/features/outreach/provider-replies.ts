@@ -6,6 +6,7 @@ import {matchingReplyMessages} from './reply-matching';
 import {providerConflictStatements,recordProviderConflict} from './provider-conflicts';
 import {mailHistoryLinks} from './history-links';
 import {providerReplyEvent,unlinkedAutomaticReply} from './automatic-replies';
+import {replyEventKey,replyNotificationStatements} from '../notifications/reply-events';
 export interface ProviderReply {id:string;sender:string;subject:string;body:string;messageId:string;references:string;occurredAt:string;automatic?:boolean}
 export async function recordProviderReply(db:D1Database,input:ProviderReply,hash:string){
  // Do not retain an erased sender's raw Message-ID in the durable receipt ledger.
@@ -39,6 +40,8 @@ export async function recordProviderReply(db:D1Database,input:ProviderReply,hash
    statements.push(db.prepare("INSERT INTO signal_links VALUES(?,'contact',?,'Verified native reply sender',?)").bind(plan.id,contact,at));
    if(!input.automatic)statements.push(db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Customer reply',updated_at=? WHERE recipient_contact_id=?").bind(at,contact),db.prepare("UPDATE outbound_messages SET state='cancelled',failure='Customer reply',updated_at=? WHERE contact_id=? AND state='scheduled'").bind(at,contact));
   }
+  const notificationEventKey=await replyEventKey(plan.id,event);
+  if(notificationEventKey)statements.push(...replyNotificationStatements(db,plan.id,notificationEventKey,[opportunityId],at,contacts));
  }else if(input.automatic)statements.push(...unlinkedAutomaticReply(db,source,event,hash,at));
  // The old reply-review door always records human evidence. Automatic mail
  // uses typed signals instead, so later manual linking cannot stop follow-up.

@@ -2,9 +2,9 @@ import {isolateBrowserTemp} from '../support/browser-temp.mjs';
 isolateBrowserTemp();
 import { execFile, spawn } from 'node:child_process';
 import { constants } from 'node:fs';
-import { copyFile, cp, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
+import { copyFile, cp, mkdir, mkdtemp, readFile, readdir, realpath, rm, statfs, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
-import { tmpdir } from 'node:os';
+import { release, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { promisify } from 'node:util';
 
@@ -29,7 +29,9 @@ export async function freshCheckout() {
   // The verification caller's local operation belongs to the source checkout, not this copy.
   const env = { ...process.env, RER_SERVER_JOURNEY: '1', RER_SERVERS_DIR: servers, WRANGLER_SEND_METRICS: 'false' };
   delete env.RER_LOCAL_OPERATION; delete env.RER_ONBOARDING_PROCESS_OWNER; delete env.ORBIT_TEST_STATE;
+  let testPort;
   const rer = (args, options = {}) => new Promise((done) => {
+    if (args[0] === 'setup' && args.includes('--port')) testPort = Number(args[args.indexOf('--port') + 1]);
     const child = spawn(process.execPath, ['node_modules/@runeditrun/rer/bin/rer.mjs', ...args], { cwd: root, env: { ...env, ...options.env }, stdio: [options.input === undefined ? 'ignore' : 'pipe', 'pipe', 'pipe'] });
     let output = '';
     child.stdout.on('data', (chunk) => { output += chunk; });
@@ -45,27 +47,70 @@ export async function freshCheckout() {
     const ready = new Promise((done, fail) => {
       const read = (chunk) => { output += chunk; if ((args[0] === 'preview' ? /^RER_READY /m : /^RER_(SIGN_IN|OPEN) /m).test(output)) { becameReady = true; done(output); } };
       child.stdout.on('data', read); child.stderr.on('data', read);
-      child.on('close', async (code) => { if (!becameReady) fail(await startupFailure(root, args[0], code, output)); });
+      child.on('close', async (code) => { if (!becameReady) fail(await startupFailure(root, args[0], code, output, testPort)); });
     });
     const server={ child, ready, exited: new Promise((done) => child.on('close', (code) => done({ code, output }))) };ownedServers.set(args[0],server);return server;
   };
   return { root, rer, serve, stop, async close() { for(const verb of [...ownedServers.keys()])await stop(verb); await rm(root, { recursive: true, force: true }); await rm(servers, { recursive: true, force: true }); } };
 }
 
-// Keep failure evidence outside the disposable checkout and any public proof
-// tree. CLI output can contain private URLs; only this owner-only path is printed.
-async function startupFailure(root, verb, code, output) {
+// Public failure evidence must never retain a sign-in link or credential.
+function redactStartupDiagnostics(value) {
+  return String(value)
+    .replace(/^.*(?:\bCookie\b|\bAuthorization\b|\bBearer\b|RER_(?:OPEN|SIGN_IN)\s+https?:).*$/gmi, '[redacted]')
+    .replace(/https?:\/\/[^\s<>"'`]+/gi, value => {
+      try { const url = new URL(value); url.search = ''; url.hash = ''; url.username = ''; url.password = ''; return url.href; }
+      catch { return '[redacted]'; }
+    })
+    .replace(/rer-dev=[^\s;"']*/gi, '[redacted]')
+    .replace(/[A-Z0-9._%+-]+@([A-Z0-9.-]+\.[A-Z]{2,})/gi, (value, domain) => domain.endsWith('.test') ? value : '[redacted]')
+    .replace(/[A-Za-z0-9_-]{24,}/g, '[redacted]')
+    .replace(/[?#]/g, '');
+}
+
+// Keep the original owner-only copy outside the disposable checkout. Public
+// diagnostics are a separate, redacted copy outside the shard's temporary tree.
+async function startupFailure(root, verb, code, output, testPort) {
   const message = `rer ${verb} exited ${code} before readiness`;
+  const lastLine = redactStartupDiagnostics(output.trim().split(/\r?\n/).filter(line => line.trim()).at(-1) ?? '').slice(0, 300);
+  const refusal = output.split(/\r?\n/).find(line => /Server startup requires|Not started:|cannot be used/i.test(line));
+  const suffix = ` · rer: ${lastLine}${refusal ? ` · refusal: ${redactStartupDiagnostics(refusal).slice(0, 300)}` : ''}`;
+  if (process.env.ORBIT_STARTUP_DIAGNOSTICS) {
+    let publicDirectory;
+    try {
+      const installerRoot = join(root, '.seed/installer');
+      const logs = [join(installerRoot, 'install.log'), ...(await readdir(installerRoot).catch(() => []))
+        .filter(name => /^commands-\d+$/.test(name)).sort().map(name => join(installerRoot, name, 'install.log'))];
+      const installer = (await Promise.all(logs.map(path => readFile(path, 'utf8').catch(error => { if (error.code !== 'ENOENT') throw error; return ''; })))).join('\n');
+      const filesystem = async path => {
+        const state = await statfs(path, { bigint: true });
+        return { path, type: String(state.type), sizeBytes: String(state.blocks * state.bsize), freeBytes: String(state.bavail * state.bsize) };
+      };
+      const rer = JSON.parse(await readFile(join(root, 'node_modules/@runeditrun/rer/package.json'), 'utf8'));
+      const ports = text => [...new Set([...text.matchAll(/(?:--port(?:=|\s+)|\bport\s+|https?:\/\/[^\s/:]+:)(\d{1,5})\b/gi)].map(match => Number(match[1])))];
+      const meta = { verb, exitCode: code, testPort: testPort ?? ports(installer)[0] ?? null, outputPorts: ports(output),
+        nodeVersion: process.version, rerVersion: rer.version, osRelease: release(),
+        imageOS: process.env.ImageOS ?? null, imageVersion: process.env.ImageVersion ?? null, tmpdir: tmpdir(),
+        filesystems: { checkout: await filesystem(root), temporary: await filesystem(tmpdir()), repository: await filesystem(source) } };
+      await mkdir(process.env.ORBIT_STARTUP_DIAGNOSTICS, { recursive: true });
+      publicDirectory = await mkdtemp(join(process.env.ORBIT_STARTUP_DIAGNOSTICS, 'failure-'));
+      await writeFile(join(publicDirectory, 'command.log'), redactStartupDiagnostics(output));
+      await writeFile(join(publicDirectory, 'installer.log'), redactStartupDiagnostics(installer));
+      await writeFile(join(publicDirectory, 'meta.json'), redactStartupDiagnostics(JSON.stringify(meta, null, 2)) + '\n');
+    } catch {
+      if (publicDirectory) await rm(publicDirectory, { recursive: true, force: true }).catch(() => {});
+    }
+  }
   let directory;
   try {
     directory = await mkdtemp(join(tmpdir(), 'orbit-rer-startup-failure-'));
     await writeFile(join(directory, 'command.log'), output, { mode: 0o600, flag: 'wx' });
     const installer = await readFile(join(root, '.seed/installer/install.log')).catch((error) => { if (error.code !== 'ENOENT') throw error; });
     if (installer) await writeFile(join(directory, 'installer.log'), installer, { mode: 0o600, flag: 'wx' });
-    return new Error(`${message}; private diagnostics retained at ${directory}`);
+    return new Error(`${message}; private diagnostics retained at ${directory}${suffix}`);
   } catch {
     if (directory) await rm(directory, { recursive: true, force: true }).catch(() => {});
-    return new Error(`${message}; private output withheld (diagnostic capture unavailable)`);
+    return new Error(`${message}; private output withheld (diagnostic capture unavailable)${suffix}`);
   }
 }
 

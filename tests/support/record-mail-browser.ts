@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import {mock} from 'node:test';
+import {fixture,signIn} from '../../newtests/t096/fixture';
+import {createApp} from './app';
+import {signedReplies,replyForm} from './signed-reply';
+import {createId} from '../../src/core/shared/ids';
+export async function recordMailCompletionSeed(f:Awaited<ReturnType<typeof fixture>>,seed:{companyId:string;contactId:string}){
+ const provider={provider:'network-edge',model:'structured-draft',inputCostPerMillion:0,outputCostPerMillion:0,async generate(preview:any){return{output:{explanation:'The recipient and company are the cited fields.',subject:'Northstar consultation draft',body:'Hi Morgan, would a consultation help Northstar Manufacturing?',evidenceIds:[preview.contact.id,preview.company.id]},inputTokens:30,outputTokens:12};}};
+ const app=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},aiProvider:provider,outboundMail:{send:async()=>({providerMessageId:createId()})}});let cookie=f.cookie;
+ const call=async(path:string,method='GET',body?:unknown,status=200)=>{const response=await app.request(`https://orbit.test/api/v1/${path}`,{method,headers:{Cookie:cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});assert.equal(response.status,status,await response.clone().text());return response.json() as Promise<any>;};
+ const preview=await call('assistance/record-mail/preview','POST',{kind:'contact',recordId:seed.contactId,contactId:seed.contactId,opportunityId:null}),generated=await call('assistance/record-mail/generate','POST',{previewId:preview.id});
+ const sender=await call('settings/operators','POST',{email:'jamie@record-mail-browser.test',displayName:'Jamie Patel'},201),senderSession=await signIn(f.db,'jamie@record-mail-browser.test');
+ const contact=await call('records/contact','POST',{name:'Alex Rivera',email:'alex@record-mail-browser.test',company_id:seed.companyId,contactability:'contactable'},201);
+ async function sentPromise(contactId:string,senderCookie:string,subject:string){cookie=senderCookie;mock.timers.enable({apis:['Date'],now:Date.now()-14*86400000});try{
+  const draft=await call(`workbench/records/contact/${contactId}/drafts`,'POST',{contactId,opportunityId:null,subject,body:'Can we review your production consultation?'},201),render=await call(`library/drafts/${draft.id}/render`);await call(`library/drafts/${draft.id}/render`,'POST',{revision:1,reviewHash:render.reviewHash});const approval=await call(`workbench/drafts/${draft.id}/approval-preview`);const sent=await call(`workbench/drafts/${draft.id}/approve`,'POST',{revision:1,quietHoursConfirmation:approval.localTime});assert.equal(sent.state,'accepted');return sent;
+ }finally{mock.timers.reset();}}
+ const message=await sentPromise(contact.id,senderSession.cookie,'Alex’s production consultation');cookie=f.cookie;
+ const unassignedSender=await call('settings/operators','POST',{email:'sam@record-mail-browser.test',displayName:'Sam Okafor'},201),unassignedSession=await signIn(f.db,'sam@record-mail-browser.test'),unassignedContact=await call('records/contact','POST',{name:'Casey Brooks',email:'casey@record-mail-browser.test',company_id:seed.companyId,contactability:'contactable'},201),unassignedMessage=await sentPromise(unassignedContact.id,unassignedSession.cookie,'Casey’s production consultation');
+ const incoming=signedReplies(f.db);for(const [automatic,body]of [[true,'I am away until Friday.'],[false,'Yes, let’s arrange the production consultation.'],[false,'This note belongs to a different conversation.']] as const){const form=replyForm('synthetic-orbit-morgan@northstar-mail.example',`<${createId()}@reply.test>`,'');form.set('text',body);form.set('subject',automatic?'Away from the office':'Production consultation reply');if(automatic)form.set('headers',String(form.get('headers'))+'\r\nAuto-Submitted: auto-replied');assert.equal((await incoming(form)).status,200);}
+ return {aiDraftId:generated.draftId,aiSubject:generated.output.subject,aiBody:generated.output.body,senderId:sender.id,receiverId:f.operator.operatorId,handoverContactId:contact.id,promiseId:message.id,unassignedSenderId:unassignedSender.id,unassignedContactId:unassignedContact.id,unassignedPromiseId:unassignedMessage.id};
+}

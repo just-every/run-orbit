@@ -4,6 +4,7 @@ import type {SignalTarget} from '../ingestion/linking-repository';
 import {providerReplyEvent} from './automatic-replies';
 import type {ProviderReply} from './provider-replies';
 import type {ReplyMessage} from './reply-matching';
+import {replyEventKey} from '../notifications/reply-events';
 /** Verified references choose one recipient and historical context; never expand to their other deals. */
 export async function recordMailReplyStatements(db:D1Database,input:ProviderReply,messages:ReplyMessage[],hash:string,at:string){
  const first=messages[0]!,id=createId(),event=providerReplyEvent(input,null),basis='Verified native message references';
@@ -18,10 +19,10 @@ export async function recordMailReplyStatements(db:D1Database,input:ProviderRepl
  const history=[...new Set(messages.map(m=>m.history_opportunity_id).filter((value):value is string=>!!value))];
  for(const deal of history)statements.push(db.prepare("INSERT OR IGNORE INTO timeline_entry_records VALUES(?,'opportunity',?)").bind(id,deal));
  if(!input.automatic){
-  const senders=[...new Set(messages.map(m=>m.operator_id))];
+  const senders=[...new Set(messages.map(m=>m.operator_id))],notificationEventKey=await replyEventKey(id,event);
   statements.push(db.prepare(`INSERT OR IGNORE INTO notifications(id,operator_id,opportunity_id,event_key,kind,message,created_at)
-   SELECT lower(hex(randomblob(16))),o.id,NULL,?,'customer.reply','Customer reply received · '||COALESCE(c.name,c.email,'Contact'),? FROM operators o CROSS JOIN contacts c
-   WHERE c.id=? AND o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators a WHERE a.operator_id=o.id) AND (o.id IN(SELECT value FROM json_each(?)) OR o.id=(SELECT owner_id FROM record_ownership WHERE record_type='contact' AND record_id=c.id))`).bind(`reply:${id}`,at,first.contact_id,JSON.stringify(senders)));
+   SELECT lower(hex(randomblob(16))),o.id,?,?,'customer.reply','Customer reply received · '||COALESCE(c.name,c.email,'Contact'),? FROM operators o CROSS JOIN contacts c
+   WHERE c.id=? AND o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators a WHERE a.operator_id=o.id) AND (o.id IN(SELECT value FROM json_each(?)) OR o.id=(SELECT owner_id FROM record_ownership WHERE record_type='contact' AND record_id=c.id))`).bind(first.opportunity_id,notificationEventKey,at,first.contact_id,JSON.stringify(senders)));
  }
  return statements;
 }

@@ -1,3 +1,4 @@
+import './now-page.css';
 import {SalesTasks} from './sales-tasks';
 import {OnboardingChecklist,readOnboarding} from './onboarding-checklist';
 import { useCallback, useState } from "react";
@@ -29,6 +30,7 @@ export function NowPage({ initialData }: { initialData?: Awaited<ReturnType<type
   const filtered = owner !== "all" || stage !== "all" || band !== "all";
 
   const facets = resource.data?.facets;
+  const showOwners = new Set(opportunities.map(opportunity => opportunity.ownerId)).size > 1;
 
   return (
     <OperatorShell eyebrow="Today" title="Your brief">
@@ -39,7 +41,7 @@ export function NowPage({ initialData }: { initialData?: Awaited<ReturnType<type
       {onboarding.error ? <p role="alert">{onboarding.error.message}</p> : <OnboardingChecklist state={onboarding.data}/>}
       <section className="operator-queue" data-testid="now-queue">
         <div className="operator-queue__intro">
-          <details className="operator-queue__policy"><summary>Ordering details</summary><p>First 50 open opportunities, ordered by score, then the most recent contributing signal, then ID.</p><p data-testid="now-ordering">Policy: opportunity.prioritization.v1</p></details>
+          <details className="operator-queue__policy"><summary>Ordering details</summary><p>The first 50 open opportunities are ordered by score, then the most recent contributing signal. Ties keep a consistent order.</p><p data-testid="now-ordering">Priority order version 1</p></details>
         </div>
         <fieldset className="operator-filters">
           <legend>Filter this queue</legend>
@@ -72,14 +74,8 @@ export function NowPage({ initialData }: { initialData?: Awaited<ReturnType<type
                 <span className="operator-queue-card__rank">{String(index + 1).padStart(2, "0")}</span>
                 <div className="operator-queue-card__headline">
                   <h2>{opportunity.title}</h2>
-                  <p>{opportunity.companyName ?? "No company"}</p>
+                  <p>{[opportunity.companyName, opportunity.stage, ...(showOwners ? [opportunity.ownerName ?? "Unassigned"] : [])].filter(Boolean).join(" · ")}</p>
                 </div>
-                <dl className="operator-state-grid">
-                  <div><dt>Stage</dt><dd>{opportunity.stage}</dd></div>
-                  <div><dt>Owner</dt><dd>{opportunity.ownerName ?? "Unassigned"}</dd></div>
-                  <div><dt>Score</dt><dd>{opportunity.score}</dd></div>
-                  <div><dt>Band</dt><dd>{label(opportunity.band)}</dd></div>
-                </dl>
                 <div className="operator-queue-card__reason">
                   <strong>Why NOW</strong>
                   <span>{opportunity.queueReason ?? "No queue reason recorded."}</span>

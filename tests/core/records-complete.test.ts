@@ -9,7 +9,7 @@ import { createId } from '../../src/core/shared/ids';
 const platform=await getPlatformProxy<{DB:D1Database}>({configPath:'wrangler.jsonc',envFiles:['tests/support/no-local-settings.env'],persist:{path:process.env.RECORDS_TEST_STATE??`${testState()}/v3`},remoteBindings:false});after(()=>platform.dispose());
 const db=platform.env.DB,records=new RecordsRepository(db),data=new DataRepository(db);
 async function fixture(){const actor=createId(),stage=createId(),now=new Date().toISOString();await db.prepare("INSERT INTO operators(id,email,display_name,status,created_at,updated_at) VALUES(?,?,?,'active',?,?)").bind(actor,`${actor}@test.example`,'Records operator',now,now).run();await db.prepare('INSERT INTO pipeline_stages SELECT ?,?,COALESCE(MAX(position),0)+1,?,? FROM pipeline_stages').bind(stage,'Records stage',now,now).run();return {actor,stage};}
-test('RECORD-014 typed contact, company and deal fields preview changes, refuse invalid and concurrent duplicate values, and preserve archived meaning',async()=>{
+test('RECORD-014 typed fields validate edits and preserve paged archived definition meaning through public history and export',async()=>{
  await typedFieldsProof();
 });
 test('RECORD-013 DATA-002 customer history survives one deal deletion, then contact erasure removes mail and linked signals and recomputes the surviving deal',async()=>{

@@ -1,3 +1,4 @@
+import {operatorListingPredicate} from '../identity/operator-listing';
 import { PipelinesRepository } from '../pipelines/repository';
 import {removeWithHandover,type RemovalChoices} from './removal-handover';
 import { operatorManagementPolicy } from '../../../ext/records';
@@ -6,7 +7,7 @@ import { createId } from '../../shared/ids';
 import { audit, RecordError, timeline, mutationJob } from '../records/shared';
 export class SettingsRepository {
  constructor(readonly db:D1Database){}
- async read(){const [workspace,operators,pipelines]=await Promise.all([this.db.prepare("SELECT * FROM workspace_settings WHERE id='workspace'").first(),this.db.prepare('SELECT id,email,display_name,status,setup_owner,EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=operators.id) AS collaborator,(EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=operators.id) AND NOT EXISTS(SELECT 1 FROM access_memberships m WHERE m.operator_id=operators.id)) AS invited FROM operators ORDER BY created_at,id').all(),new PipelinesRepository(this.db).read()]);return {workspace,operators:operators.results,...pipelines};}
+ async read(){const [workspace,operators,pipelines]=await Promise.all([this.db.prepare("SELECT * FROM workspace_settings WHERE id='workspace'").first(),this.db.prepare(`SELECT id,email,display_name,status,setup_owner,EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=operators.id) AS collaborator,(EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=operators.id) AND NOT EXISTS(SELECT 1 FROM access_memberships m WHERE m.operator_id=operators.id)) AS invited FROM operators WHERE ${operatorListingPredicate('operators')} ORDER BY created_at,id`).all(),new PipelinesRepository(this.db).read()]);return {workspace,operators:operators.results,...pipelines};}
  async update(input:{name:string;timezone:string;currency:string;workingHours:{days:number[];start:string;end:string};staleIntervalDays:number;awaitingResponseWorkingDays:number;freeMailDomains:string[]},actor:string){
   try{new Intl.DateTimeFormat('en',{timeZone:input.timezone});}catch{throw new RecordError(400,'Unknown workspace timezone.');}
   if(input.workingHours.start>=input.workingHours.end)throw new RecordError(400,'Working hours must end after they start.');

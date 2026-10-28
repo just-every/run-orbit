@@ -5,10 +5,11 @@ import {cellValue,recordNoun} from './sales-format';
 
 /** A sales result: its disclosed basis, every figure, and the exact rows behind any figure on request. */
 export type Drill={id:string;title:string;cell:Cell;amounts?:Record<string,number>};
-export function DrillList({drill,rows,currency,table=false}:{drill:Drill;rows:Record<string,RowView>;currency:string;table?:boolean}){
+export function DrillList({drill,rows,currency,table=false,timezone}:{drill:Drill;rows:Record<string,RowView>;currency:string;table?:boolean;timezone?:string}){
  const {cell}=drill,listed=cell.rows.map(key=>rows[key]).filter((row):row is RowView=>Boolean(row)),numerator=new Set(cell.numerator??[]),panel=useRef<HTMLElement>(null);
  useEffect(()=>{panel.current?.focus();},[drill.id]);
  const amounts=drill.amounts??(cell.format==='money'?cell.values:undefined),amount=amounts?cellValue({format:'money',value:listed.reduce((total,row)=>total+(amounts[row.key]??0),0)},currency):null;
+ const day=(at:string|null)=>at&&timezone&&Number.isFinite(Date.parse(at))?new Intl.DateTimeFormat('en-US',{timeZone:timezone,month:'short',day:'numeric',year:'numeric'}).format(new Date(at)):at?.slice(0,10)??'Not entered';
  const summary=cell.format==='percent'?`${numerator.size} of ${listed.length} ${recordNoun(listed.length)} meet the measure (${cellValue(cell,currency)}).`
   :cell.format==='days'?`${listed.length} ${recordNoun(listed.length)}, mean ${cellValue(cell,currency)}.`
   :`${listed.length} ${recordNoun(listed.length)}${amount?` totalling ${amount}`:''}.`;
@@ -16,8 +17,8 @@ export function DrillList({drill,rows,currency,table=false}:{drill:Drill;rows:Re
   <h5>Records behind {drill.title}</h5>
   <p role="status">{summary} They reconcile to the figure shown.</p>
   {cell.note&&<p>{cell.note}</p>}
-  {table&&listed.length>0&&<div className="sales-table dash-drill-table"><table><caption>Permitted records</caption><thead><tr><th>Deal</th><th>Account</th><th>Owner</th><th>Expected close</th><th>Amount</th></tr></thead><tbody>{listed.map(row=><tr key={row.key}><th>{row.href?<a href={row.href}>{row.label}</a>:row.label}</th><td>{row.account??'Not available'}</td><td>{row.owner??'Not available'}</td><td>{row.expectedClose?.slice(0,10)??'Not entered'}</td><td>{amounts?.[row.key]===undefined?'Not available':cellValue({format:'money',value:amounts[row.key]!},currency)}</td></tr>)}</tbody><tfoot><tr><th>Total</th><td colSpan={3}>{listed.length} {recordNoun(listed.length)}</td><td>{amount??cellValue(cell,currency)}</td></tr></tfoot></table></div>}
-  {listed.length>0&&<ol className={table?'dash-drill-lines':undefined}>{listed.map(row=><li key={row.key}>{row.href?<a href={row.href}>{row.label}</a>:row.label}{table?<span> · {row.account??'Not available'} · {row.owner??'Not available'} · {row.expectedClose?.slice(0,10)??'Not entered'}</span>:<span> · {row.detail}</span>}{(amounts?.[row.key]??cell.values?.[row.key])!==undefined&&<span> · {amounts?cellValue({format:'money',value:amounts[row.key]!},currency):cellValue({format:'days',value:cell.values![row.key]!},currency)}</span>}{cell.format==='percent'&&<span> · {numerator.has(row.key)?'counted in the rate':'in the base only'}</span>}</li>)}</ol>}
+  {table&&listed.length>0&&<div className="sales-table dash-drill-table"><table><caption>Permitted records</caption><thead><tr><th>Deal</th><th>Account</th><th>Owner</th><th>Expected close</th><th>Amount</th></tr></thead><tbody>{listed.map(row=><tr key={row.key}><th>{row.href?<a href={row.href}>{row.label}</a>:row.label}</th><td>{row.account??'Not available'}</td><td>{row.owner??'Not available'}</td><td>{day(row.expectedClose)}</td><td>{amounts?.[row.key]===undefined?'Not available':cellValue({format:'money',value:amounts[row.key]!},currency)}</td></tr>)}</tbody><tfoot><tr><th>Total</th><td colSpan={3}>{listed.length} {recordNoun(listed.length)}</td><td>{amount??cellValue(cell,currency)}</td></tr></tfoot></table></div>}
+  {listed.length>0&&<ol className={table?'dash-drill-lines':undefined}>{listed.map(row=><li key={row.key}>{row.href?<a href={row.href}>{row.label}</a>:row.label}{table?<span> · {row.account??'Not available'} · {row.owner??'Not available'} · {day(row.expectedClose)}</span>:<span> · {row.detail}</span>}{(amounts?.[row.key]??cell.values?.[row.key])!==undefined&&<span> · {amounts?cellValue({format:'money',value:amounts[row.key]!},currency):cellValue({format:'days',value:cell.values![row.key]!},currency)}</span>}{cell.format==='percent'&&<span> · {numerator.has(row.key)?'counted in the rate':'in the base only'}</span>}</li>)}</ol>}
  </section>;
 }
 export function CellButton({cell,group,currency,open,onOpen,text}:{cell:Cell;group:string|null;currency:string;open:boolean;onOpen:()=>void;text?:string}){
@@ -44,11 +45,12 @@ function SectionView({section,view,prefix}:{section:Section;view:SalesView;prefi
 }
 const local=(at:string,timeZone:string)=>new Intl.DateTimeFormat('en-US',{timeZone,year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'}).format(new Date(at));
 /** Late-arriving evidence per measure: each changed figure once, then the records behind those changes once. */
-export function LateEvidence({view,late,prefix}:{view:SalesView;late:NonNullable<SalesView['late']>;prefix:string}){
+export function LateEvidence({view,late,prefix,level=4}:{view:SalesView;late:NonNullable<SalesView['late']>;prefix:string;level?:3|4}){
+ const Heading=level===3?'h3':'h4',Section=level===3?'h4':'h5';
  return <section className="sales-late" aria-labelledby={`${prefix}-late-title`}>
-  <h4 id={`${prefix}-late-title`}>Late-arriving evidence</h4>
+  <Heading id={`${prefix}-late-title`}>Late-arriving evidence</Heading>
   <p>{late.note} Checked {local(late.computedAt,view.timezone)}.</p>
-  {late.sections.length?late.sections.map(section=><div key={section.measure} className="sales-late__section"><h5>{section.title}</h5>
+  {late.sections.length?late.sections.map(section=><div key={section.measure} className="sales-late__section"><Section>{section.title}</Section>
    <ul className="sales-late__figures" aria-label={`${section.title}: late changes`}>{section.cells.map(cell=><li key={`${cell.group}:${cell.key}`}>{cell.label}{cell.group?` · ${cell.group}`:''}: +{cellValue({format:cell.format,value:cell.value},view.currency)}</li>)}</ul>
    <ol aria-label={`${section.title}: late records`}>{[...new Set(section.cells.flatMap(cell=>cell.rows))].map(key=>{const row=late.rows[key];return row?<li key={key}>{row.href?<a href={row.href}>{row.label}</a>:row.label} · {row.detail}</li>:null;})}</ol>
   </div>):<p>No late-arriving evidence has been recorded for this period.</p>}

@@ -3,6 +3,7 @@ import type {AuthenticatedOperator} from '../identity';
 import {audit,mutationJob} from '../records/shared';
 import {captureAccess} from './mail-rule';
 import {CaptureError} from './contracts';
+import {prepareReplyLink,replyNotificationStatements} from '../notifications/reply-events';
 
 interface RecordLink{record_type:'contact'|'company'|'opportunity';record_id:string}
 interface Association{source_id:string;payload_json:string}
@@ -49,13 +50,18 @@ export async function correctDealLinks(db:D1Database,id:string,operator:Authenti
  if(opportunityId&&!snapshotReview.available.some(deal=>deal.id===opportunityId))throw new CaptureError(403,'Choose a deal you can view and change.');
  const changed=!((opportunityId===null&&!current.length)||(current.length===1&&current[0]===opportunityId));
  const at=new Date().toISOString(),actor=operator.operatorId,trace=`capture-correction:${actor}:${requestId}`,next=opportunityId?[opportunityId]:[],contactCompany=linked.filter(row=>row.record_type!=='opportunity');
+ const notificationEventKey=JSON.parse(original.payload_json).notificationEventKey as string|undefined;
  const snapshot=JSON.stringify(linked),statements=[...fences,
   db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_correction_current',NULL WHERE NOT EXISTS(SELECT 1 FROM capture_items i JOIN timeline_entries t ON t.id=i.signal_id WHERE i.signal_id=? AND i.kind='message' AND t.payload_json=?) OR (SELECT json_group_array(json_object('record_type',record_type,'record_id',record_id)) FROM (SELECT record_type,record_id FROM signal_links WHERE signal_id=? ORDER BY record_type,record_id))<>?").bind(id,original.payload_json,id,snapshot),
   db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_correction_choices',NULL WHERE (SELECT json_group_array(json_array(id,title,lifecycle,updated_at)) FROM ("+choiceQuery+"))<>?").bind(JSON.stringify(snapshotReview.available.map(row=>[row.id,row.title,row.lifecycle,row.updated_at]))),
   db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_correction_revision',NULL WHERE (SELECT json_group_array(id) FROM ("+correctionQuery+"))<>?").bind(id,JSON.stringify(snapshotReview.history.map(row=>row.id))),
-  ...(changed?[db.prepare("DELETE FROM signal_links WHERE signal_id=? AND record_type='opportunity'").bind(id),
+  ...(changed?[
+  ...(notificationEventKey?[prepareReplyLink(db,id,notificationEventKey)]:[]),
+  db.prepare("DELETE FROM signal_links WHERE signal_id=? AND record_type='opportunity'").bind(id),
   db.prepare("DELETE FROM timeline_entry_records WHERE timeline_entry_id=? AND record_type='opportunity'").bind(id),
-  ...next.flatMap(deal=>[db.prepare("INSERT INTO signal_links(signal_id,record_type,record_id,linking_basis,linked_at) VALUES(?,'opportunity',?,'Operator corrected captured mail association',?)").bind(id,deal,at),db.prepare("INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) VALUES(?,'opportunity',?)").bind(id,deal)])]:[]),
+  ...next.flatMap(deal=>[db.prepare("INSERT INTO signal_links(signal_id,record_type,record_id,linking_basis,linked_at) VALUES(?,'opportunity',?,'Operator corrected captured mail association',?)").bind(id,deal,at),db.prepare("INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) VALUES(?,'opportunity',?)").bind(id,deal)]),
+  ...(notificationEventKey?[...replyNotificationStatements(db,id,notificationEventKey,next,at,contacts),
+  db.prepare("UPDATE notifications SET opportunity_id=? WHERE event_key=? AND kind='customer.reply'").bind(opportunityId,notificationEventKey)]:[])]:[]),
   db.prepare("INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) VALUES(?,'capture.association_corrected',?,?,'operator',?,?,?)").bind(trace,at,at,actor,original.source_id,JSON.stringify({signalId:id,previousOpportunityIds:current,opportunityId,contactIds:contacts,requestId,reviewedRevision:revision,associationRule:JSON.parse(original.payload_json).associationRule})),
   ...contactCompany.map(row=>db.prepare('INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) VALUES(?,?,?)').bind(trace,row.record_type,row.record_id)),
   ...[...new Set([...current,...next])].flatMap(deal=>[db.prepare("INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) VALUES(?,'opportunity',?)").bind(trace,deal),...(changed?[mutationJob(db,deal,actor,'Captured mail association corrected')]:[])]),

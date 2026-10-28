@@ -1,3 +1,4 @@
+import {issueNativeCredential} from '../support/api-credentials-proof';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
@@ -9,6 +10,8 @@ import { readCurrentArchive } from '../support/current-archive';
 import { TestDataRepository } from '../support/record-data';
 import { createId } from '../../src/core/shared/ids';
 import { createDependencies } from '../../src/core/app/dependencies';
+import {createApp} from '../support/app';
+import {createDependencies as authenticatedDependencies} from '../support/dependencies';
 const now = '2026-09-13T00:00:00.000Z';
 async function owner(db: D1Database, email = 'original@example.test') { const id = createId(); await db.prepare("INSERT INTO operators(id,email,display_name,status,setup_owner,created_at,updated_at) VALUES(?,?,'Original administrator','active',1,?,?)").bind(id, email, now, now).run(); await db.prepare("INSERT INTO sessions(id,operator_id,token_hash,expires_at,created_at) VALUES(?,?,'original-session','2099-01-01',?)").bind(createId(), id, now).run(); await workspace(db); return id; }
 // An installed Orbit always has its workspace; erasure authority is a current workspace membership.
@@ -62,12 +65,21 @@ finally {
     await source.dispose();
     await target.dispose();
 } });
-test('DATA-002 contact erasure invalidates exports, downloads and restore copies and fences a snapshot created during discovery', async () => {
+test('API-001 credential custody and DATA-002 contact erasure invalidate exports, downloads and restore copies and fences a snapshot created during discovery', async () => {
     const fixture = await isolatedDatabase();
     try {
         const actor = await owner(fixture.db), contact = createId();
         await fixture.db.prepare("INSERT INTO contacts(id,name,email,email_key,contactability,created_at,updated_at) VALUES(?,'Private archive contact','erase@example.test','erase@example.test','contactable',?,?)").bind(contact, now, now).run();
+        const stage=createId(),deal=createId();
+        await fixture.db.prepare("INSERT INTO pipeline_stages VALUES(?,'synthetic-orbit-1',1,?,?)").bind(stage,now,now).run();
+        await fixture.db.prepare("INSERT INTO opportunities(id,title,lifecycle,stage_id,value_cents,score,band,queue_state,created_at,updated_at) VALUES(?,'synthetic-orbit-1','open',?,0,0,'low','none',?,?)").bind(deal,stage,now,now).run();
+        await fixture.db.prepare('INSERT INTO opportunity_contacts(opportunity_id,contact_id,is_primary,created_at) VALUES(?,?,1,?)').bind(deal,contact,now).run();
+        const credential=await issueNativeCredential(fixture.db,actor,deal);
+        const app=createApp({database:fixture.db,clock:{now:()=>new Date('2026-10-27T00:00:00.000Z')},assets:{fetch:async()=>new Response(null,{status:404})}});
+        const api=()=>app.request('https://orbit.test/api/rest/v1/deals/'+deal,{headers:{Authorization:'Bearer '+credential.secret}});
+        const visible=await api();assert.equal(visible.status,200,await visible.clone().text());assert.equal((await visible.json() as any).deal.id,deal,'The scoped deal is readable before erasure');
         const document = await archive(fixture.db), exports = new ArchiveExportRepository(fixture.db, foldExportProfile);
+        assert.ok(!document.manifest.tables.some(table=>table.name==='api_credentials'));assert.ok(!JSON.stringify(document).includes(credential.secret));
         const exportId = (await fixture.db.prepare("SELECT id FROM archive_jobs WHERE kind='export'").first<{id:string}>())!.id;
         const response = await exports.download(exportId, actor), reader = response.body!.getReader();
         await reader.read(); // Header consumed; no customer data has been read.
@@ -75,7 +87,11 @@ test('DATA-002 contact erasure invalidates exports, downloads and restore copies
         // Current Records permits one retained transfer at a time. Exercise each
         // private copy through its real door rather than bypassing that boundary.
         await assert.rejects(imports.create(document.manifest, actor), /Another archive transfer/);
-        await new TestDataRepository(fixture.db).remove('contact', contact, actor);
+        const session=await authenticatedDependencies(fixture.db).auth.createSession(actor);
+        const erased=await app.request('https://orbit.test/api/v1/records/contact/'+contact,{method:'DELETE',headers:{Cookie:'__Host-orbit_session='+session.token,Origin:'https://orbit.test','Content-Type':Response.json(null).headers.get('Content-Type')!},body:JSON.stringify({confirmed:true})});
+        assert.equal(erased.status,200,await erased.clone().text());
+        const hidden=await api();assert.equal(hidden.status,401,'Contact erasure withdraws API access on the next HTTP request');assert.ok(!(await hidden.text()).includes(deal));
+        assert.equal(await fixture.db.prepare('SELECT count(*) FROM api_credentials').first('count(*)'),0,'Erasure withdraws scoped API credentials before removing contact edges');
         assert.equal((await fixture.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND (name LIKE 'archive_snapshot_%' OR name LIKE 'archive_stage_%')").all()).results.length, 0);
         for (const table of ['archive_jobs', 'archive_parts', 'archive_part_segments']) assert.equal((await fixture.db.prepare(`SELECT count(*) AS n FROM ${table}`).first<{n:number}>())!.n, 0);
         await assert.rejects(exports.download(exportId, actor), /not found/);

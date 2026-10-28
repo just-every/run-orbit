@@ -415,7 +415,7 @@ export function AnalyticsConsole({ workspaceId }: { workspaceId: string }) {
                 ? t("The source has not confirmed that all updates are complete through this period.")
                 : `${t("Source updates are confirmed through")} ${formatDate(visibleResult.watermark)}.`}
             </p>
-            <p>{visibleResult.inputs.length} source records. Opening a record checks current access.</p><details><summary>Audit details: source records</summary><ol>{visibleResult.inputs.slice(sourcePage*50,sourcePage*50+50).map(ref=><li key={`${ref.type}:${ref.id}`}><a href={`/app/shared-records?${new URLSearchParams({kind:ref.type,id:ref.id})}`}>Open {label(ref.type)}</a> · <code>{ref.id}</code></li>)}</ol><button disabled={sourcePage===0} onClick={()=>setSourcePage(page=>page-1)}>Previous source records</button><button disabled={(sourcePage+1)*50>=visibleResult.inputs.length} onClick={()=>setSourcePage(page=>page+1)}>Next source records</button></details>
+            <p>{visibleResult.inputs.length} source records. Opening a record checks current access.</p><details><summary>Audit details: source records</summary><ol>{visibleResult.inputs.slice(sourcePage*50,sourcePage*50+50).map(ref=><li key={`${ref.type}:${ref.id}`}><a href={`/app/shared-records?${new URLSearchParams({kind:ref.type,id:ref.id})}`}>Open {label(ref.type)}</a></li>)}</ol><button disabled={sourcePage===0} onClick={()=>setSourcePage(page=>page-1)}>Previous source records</button><button disabled={(sourcePage+1)*50>=visibleResult.inputs.length} onClick={()=>setSourcePage(page=>page+1)}>Next source records</button></details>
           </details>
           {preview && (
             <button className="analytics-console__submit" disabled={busy} onClick={saveReviewed}>

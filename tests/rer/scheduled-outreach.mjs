@@ -32,9 +32,10 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  const preview=await response.json();
  assert.equal(preview.requestedAt,requestedAt);
  assert.equal(preview.scheduledAt,requestedAt,'The permitted requested time is preserved');
- // Orbit shows every date one way, in workspace time and labelled: "19 Oct 2026, 10:00 am (UTC)".
- const displayedTime=`${new Intl.DateTimeFormat('en-AU',{dateStyle:'medium',timeStyle:'short',timeZone:'UTC'}).format(new Date(preview.scheduledAt))} (UTC)`;
- await expect(approval.getByRole('alert')).toContainText(displayedTime);
+ // The reviewed time identifies the exact permitted instant that approval saves.
+ const reviewedTime=approval.getByRole('alert').locator('strong time');
+ await expect(reviewedTime).toBeVisible();
+ await expect(reviewedTime).toHaveAttribute('datetime',preview.scheduledAt);
  assert.equal((await browserAPI(page,messagesPath)).messages.some(message=>message.draftId===draft.id),false,'Schedule preview does not approve a send');
  await page.screenshot({path:`${evidence}/schedule-approval-preview-${width}.png`,fullPage:true});
  const approvedResponse=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/workbench/drafts/${draft.id}/approve`&&response.request().method()==='POST');
@@ -43,12 +44,12 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  const scheduled=await approved.json();
  assert.equal(scheduled.state,'scheduled');assert.equal(scheduled.scheduledAt,preview.scheduledAt);
  assert.deepEqual(approved.request().postDataJSON(),{revision:savedDraft.revision,scheduledAt:requestedAt,scheduledAtConfirmation:preview.scheduledAt});
- await expect(approval.getByText(/This exact revision is scheduled/)).toContainText(displayedTime);
+ await expect(page.getByTestId('draft-editor').locator('time')).toHaveAttribute('datetime',preview.scheduledAt);
  await page.goto(opportunityURL);
  const history=page.locator('#approved-outreach'),message=history.locator('article').filter({has:page.getByRole('heading',{name:subject,exact:true})});
  await expect(message).toContainText(contact.email);
  await expect(message).toContainText('scheduled');
- await expect(message.locator('strong')).toContainText(displayedTime);
+ await expect(message.locator('strong time')).toHaveAttribute('datetime',preview.scheduledAt);
  const startup=history.getByRole('status');
  await expect(startup).toContainText(/Cloudflare has not started its timer/);
  await expect(startup).toContainText(/Due sends go out when Orbit is next used/);

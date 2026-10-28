@@ -4,13 +4,16 @@ on:
   pull_request:
   # Installer and README clone journeys run nightly and on release tags, not on every push.
   schedule:
-    - cron: '17 3 * * *'
+    - cron: '17 3 * * 1,4'
   workflow_dispatch:
     inputs:
       release:
         description: Run the complete release qualification, including full declared capacity
         type: boolean
         default: false
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref == 'refs/heads/main' && github.run_id || github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 permissions:
   contents: read
 env:
@@ -30,13 +33,59 @@ env:
   WRANGLER_SEND_METRICS: 'false'
 jobs:
   plan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
     outputs:
+      skip: ${{ steps.reuse.outputs.skip }}
       matrix: ${{ steps.plan.outputs.matrix }}
       journeys: ${{ steps.plan.outputs.journeys }}
     steps:
       - uses: actions/checkout@v4
         with:
+          fetch-depth: 2
+          persist-credentials: false
+      - id: reuse
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          SAME_REPO: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          WF_REF: ${{ github.workflow_ref }}
+        run: bash scripts/verification-reuse.sh
+      - if: steps.reuse.outputs.skip != 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - if: steps.reuse.outputs.skip != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - if: steps.reuse.outputs.skip != 'true'
+        name: Install the plan's TypeScript reader
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - id: plan
+        if: steps.reuse.outputs.skip != 'true'
+        name: Read the shared local and CI verification plan
+        env:
+          JOURNEYS: ${{ github.ref_type == 'tag' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.release) }}
+        run: |
+          node --input-type=module -e 'import {verificationBatches} from "./scripts/verification-plan.mjs"; const include=verificationBatches({journeys:process.env.JOURNEYS==="true"}); console.log("matrix="+JSON.stringify({include}));' >> "$GITHUB_OUTPUT"
+          echo "journeys=$([ "$JOURNEYS" = true ] && echo 1 || echo 0)" >> "$GITHUB_OUTPUT"
+  source:
+    name: source and shared build
+    needs: plan
+    if: needs.plan.outputs.skip != 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: pnpm/action-setup@v4
         with:
@@ -45,20 +94,52 @@ jobs:
         with:
           node-version-file: .node-version
           cache: pnpm
-      - name: Install the plan's TypeScript reader
-        run: pnpm install --frozen-lockfile --ignore-scripts
-      - id: plan
-        name: Read the shared local and CI verification plan
+      - run: pnpm install --frozen-lockfile
+      - name: Verify source, types, boundaries and the single shared app build
+        run: node scripts/verification-shard.mjs source
+      - name: Retain clean authoritative source candidate
         env:
-          JOURNEYS: ${{ github.ref_type == 'tag' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.release) }}
+          GIT_ALLOW_PROTOCOL: file
         run: |
-          node --input-type=module -e 'import {verificationPlan,shardNeeds} from "./scripts/verification-plan.mjs"; const include=Object.keys(verificationPlan({journeys:process.env.JOURNEYS==="true"})).map(shard=>({shard,...shardNeeds(shard)})); console.log("matrix="+JSON.stringify({include}));' >> "$GITHUB_OUTPUT"
-          echo "journeys=$([ "$JOURNEYS" = true ] && echo 1 || echo 0)" >> "$GITHUB_OUTPUT"
+          node scripts/edition-authoring/cli.mjs check > /tmp/source-check.json
+          pnpm exec rer describe --json > /tmp/operations.json
+          node scripts/edition-authoring/cli.mjs release /tmp/orbit-source-release > /tmp/source-release.json
+          git -C /tmp/orbit-source-release bundle create /tmp/orbit-source.bundle --all
+      - name: Seal the emitted app for this exact commit
+        run: |
+          node scripts/verification-build.mjs seal
+          tar -cf "$RUNNER_TEMP/orbit-build.tar" dist .wrangler/deploy verification/shared-build.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: orbit-shared-build
+          path: ${{ runner.temp }}/orbit-build.tar
+          if-no-files-found: error
+      - name: Retain source shard completion
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbit-shard-source
+          path: verification/ci-shards/source.json
+          if-no-files-found: error
+      - name: Retain authoritative source candidate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbit-authoritative-source
+          path: |
+            /tmp/orbit-source.bundle
+            /tmp/source-check.json
+            /tmp/source-release.json
+          if-no-files-found: error
   shards:
-    name: shards (${{ matrix.shard }})
-    needs: plan
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
+    name: shards (${{ matrix.batch }})
+    needs: [plan, source]
+    if: needs.plan.outputs.skip != 'true'
+    env:
+      ORBIT_VERIFY_PREBUILT: '1'
+      ORBIT_VERIFY_JOURNEYS: ${{ needs.plan.outputs.journeys }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
@@ -76,15 +157,14 @@ jobs:
           cache: pnpm
       - name: Install pinned package CLI for every shard
         run: pnpm install --frozen-lockfile
-      - name: Check authoritative inputs and retain clean source candidate
-        if: matrix.shard == 'source'
-        env:
-          GIT_ALLOW_PROTOCOL: file
+      - uses: actions/download-artifact@v4
+        with:
+          name: orbit-shared-build
+          path: ${{ runner.temp }}/orbit-build
+      - name: Restore the exact-commit build
         run: |
-          node scripts/edition-authoring/cli.mjs check > /tmp/source-check.json
-          pnpm exec rer describe --json > /tmp/operations.json
-          node scripts/edition-authoring/cli.mjs release /tmp/orbit-source-release > /tmp/source-release.json
-          git -C /tmp/orbit-source-release bundle create /tmp/orbit-source.bundle --all
+          tar -xf "$RUNNER_TEMP/orbit-build/orbit-build.tar"
+          node scripts/verification-build.mjs check
       - name: Check fixed verification ports are outside automatic allocation
         run: |
           read -r ephemeral_first ephemeral_last < /proc/sys/net/ipv4/ip_local_port_range
@@ -95,48 +175,19 @@ jobs:
               exit 1
             fi
           done
-      - name: Install Chromium system libraries
+      - name: Cache fallback apt archives
         if: matrix.browsers
-        run: |
-          mirrors=(http://azure.archive.ubuntu.com/ubuntu http://mirrors.edge.kernel.org/ubuntu http://us-east-1.ec2.archive.ubuntu.com/ubuntu)
-          sudo mkdir -p /var/tmp/orbit-apt/archives
-          cat <<'APT' | sudo tee /var/tmp/orbit-apt/apt.conf > /dev/null
-          Dir::Cache::archives "/var/tmp/orbit-apt/archives";
-          APT::Keep-Downloaded-Packages "true";
-          APT::Update::Error-Mode "any";
-          Acquire::Retries "2";
-          Acquire::http::Timeout "30";
-          Acquire::https::Timeout "30";
-          APT
-          started=$SECONDS
-          for attempt in 1 2 3; do
-            mirror=${mirrors[attempt - 1]}
-            sudo sed -i -E "s@^(URIs:[[:space:]]*)https?://(([a-z0-9.-]+\.)?archive\.ubuntu\.com|security\.ubuntu\.com|mirrors\.edge\.kernel\.org)/ubuntu/?@\1${mirror}/@" /etc/apt/sources.list.d/ubuntu.sources
-            # Hosted images can resolve Ubuntu through mirror+file URIs instead
-            # of the direct URIs above. Rotate those lists as well.
-            for apt_mirror_list in /etc/apt/apt-mirrors.txt /etc/apt/apt-mirrors-security.txt; do
-              if [ -f "$apt_mirror_list" ]; then
-                printf '%s\n' "$mirror" | sudo tee "$apt_mirror_list" > /dev/null
-              fi
-            done
-            printf 'Chromium apt: libraries attempt %s/3 (60s deadline; mirror %s)\n' "$attempt" "$mirror"
-            if sudo env "PATH=$PATH" APT_CONFIG=/var/tmp/orbit-apt/apt.conf timeout --kill-after=5s 60s bash -ec '
-              dpkg --configure -a
-              ./node_modules/.bin/playwright install-deps chromium
-            '; then
-              printf 'Chromium apt: libraries complete (attempts=%s mirror=%s seconds=%s)\n' "$attempt" "$mirror" "$((SECONDS - started))"
-              exit 0
-            else
-              status=$?
-              printf 'Chromium apt: libraries attempt %s/3 failed (mirror %s, exit %s, seconds=%s)\n' "$attempt" "$mirror" "$status" "$((SECONDS - started))" >&2
-            fi
-            if (( attempt < 3 )); then sleep "$((attempt * 2))"; fi
-          done
-          printf 'Chromium apt: libraries failed after 3 attempts (exit %s; 60s per attempt; seconds=%s). Inspect the apt download log.\n' "$status" "$((SECONDS - started))" >&2
-          exit 1
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/rer-apt/archives
+          key: chromium-apt-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'scripts/install-chromium-deps.py') }}
       - name: Install Chromium
         if: matrix.browsers
-        run: pnpm exec playwright install chromium
+        run: |
+          set -euo pipefail
+          pnpm exec playwright install chromium
+          pnpm exec node scripts/chromium-probe.mjs || \
+            sudo env "PATH=$PATH" "APT_ARCHIVES=$RUNNER_TEMP/rer-apt/archives" python3 scripts/install-chromium-deps.py
       # rer refuses to start local servers below 15 GiB free; the archive lineage needs more.
       # Remove unused toolchains only until 25 GiB is free.
       - name: Reserve disk for local servers and immutable archive lineage
@@ -149,63 +200,79 @@ jobs:
           done
           df -h /
       - name: Verify routine product shard
-        run: node scripts/verification-shard.mjs "${{ matrix.shard }}"
+        run: node scripts/verification-batch.mjs '${{ toJSON(matrix.shards) }}'
+      - name: Retain rer startup diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbit-startup-diagnostics-${{ matrix.batch }}
+          path: verification/startup-diagnostics/
+          if-no-files-found: ignore
       - name: Retain shard completion
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: orbit-shard-${{ matrix.shard }}
-          path: verification/ci-shards/${{ matrix.shard }}.json
+          name: orbit-shard-${{ matrix.batch }}
+          path: verification/ci-shards/*.json
           if-no-files-found: error
       - name: Retain product execution evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: orbit-evidence-${{ matrix.shard }}
+          name: orbit-evidence-${{ matrix.batch }}
           path: |
             verification/
             test-results/
             .orbit-viewport-evidence/
           include-hidden-files: true
           if-no-files-found: error
-      - name: Retain authoritative source candidate
-        if: always() && matrix.shard == 'source'
-        uses: actions/upload-artifact@v4
-        with:
-          name: orbit-authoritative-source
-          path: |
-            /tmp/orbit-source.bundle
-            /tmp/source-check.json
-            /tmp/source-release.json
-          if-no-files-found: error
   verify:
-    needs: [plan, shards]
+    needs: [plan, source, shards]
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    env:
+      ORBIT_VERIFY_PREBUILT: '1'
     steps:
-      - uses: actions/checkout@v4
+      - name: Require a successful plan and all required work
+        env:
+          PLAN: ${{ needs.plan.result }}
+          SKIP: ${{ needs.plan.outputs.skip }}
+          SOURCE: ${{ needs.source.result }}
+          SHARDS: ${{ needs.shards.result }}
+        run: |
+          test "$PLAN" = success
+          if [ "$SKIP" = true ]; then exit 0; fi
+          test "$SOURCE" = success
+          test "$SHARDS" = success
+      - if: needs.plan.outputs.skip != 'true'
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - if: needs.plan.outputs.skip != 'true'
+        uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-      - uses: pnpm/action-setup@v4
+      - if: needs.plan.outputs.skip != 'true'
+        uses: pnpm/action-setup@v4
         with:
           run_install: false
-      - run: pnpm install --frozen-lockfile --ignore-scripts
-      - uses: actions/download-artifact@v4
+      - if: needs.plan.outputs.skip != 'true'
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - if: needs.plan.outputs.skip != 'true'
+        uses: actions/download-artifact@v4
         with:
           pattern: orbit-shard-*
           path: verification/ci-shards
           merge-multiple: true
-      - name: Require every planned shard on this commit
+      - if: needs.plan.outputs.skip != 'true'
+        name: Require every planned shard on this commit
         env:
           ORBIT_VERIFY_JOURNEYS: ${{ needs.plan.outputs.journeys }}
         run: |
           test '${{ needs.shards.result }}' = success
           node scripts/verification-aggregate.mjs
       - name: Retain combined routine verdicts (capacity pending)
-        if: always()
+        if: always() && needs.plan.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: orbit-routine-verification
@@ -214,9 +281,9 @@ jobs:
             verification/ci-summary.json
           if-no-files-found: error
   release:
-    if: github.event_name == 'workflow_dispatch' && inputs.release
-    needs: verify
-    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && inputs.release && needs.plan.outputs.skip != 'true'
+    needs: [plan, verify]
+    runs-on: ubuntu-24.04
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
@@ -240,46 +307,17 @@ jobs:
             fi
           done
       - run: pnpm install --frozen-lockfile
-      - name: Install Chromium system libraries
-        run: |
-          mirrors=(http://azure.archive.ubuntu.com/ubuntu http://mirrors.edge.kernel.org/ubuntu http://us-east-1.ec2.archive.ubuntu.com/ubuntu)
-          sudo mkdir -p /var/tmp/orbit-apt/archives
-          cat <<'APT' | sudo tee /var/tmp/orbit-apt/apt.conf > /dev/null
-          Dir::Cache::archives "/var/tmp/orbit-apt/archives";
-          APT::Keep-Downloaded-Packages "true";
-          APT::Update::Error-Mode "any";
-          Acquire::Retries "2";
-          Acquire::http::Timeout "30";
-          Acquire::https::Timeout "30";
-          APT
-          started=$SECONDS
-          for attempt in 1 2 3; do
-            mirror=${mirrors[attempt - 1]}
-            sudo sed -i -E "s@^(URIs:[[:space:]]*)https?://(([a-z0-9.-]+\.)?archive\.ubuntu\.com|security\.ubuntu\.com|mirrors\.edge\.kernel\.org)/ubuntu/?@\1${mirror}/@" /etc/apt/sources.list.d/ubuntu.sources
-            # Hosted images can resolve Ubuntu through mirror+file URIs instead
-            # of the direct URIs above. Rotate those lists as well.
-            for apt_mirror_list in /etc/apt/apt-mirrors.txt /etc/apt/apt-mirrors-security.txt; do
-              if [ -f "$apt_mirror_list" ]; then
-                printf '%s\n' "$mirror" | sudo tee "$apt_mirror_list" > /dev/null
-              fi
-            done
-            printf 'Chromium apt: libraries attempt %s/3 (60s deadline; mirror %s)\n' "$attempt" "$mirror"
-            if sudo env "PATH=$PATH" APT_CONFIG=/var/tmp/orbit-apt/apt.conf timeout --kill-after=5s 60s bash -ec '
-              dpkg --configure -a
-              ./node_modules/.bin/playwright install-deps chromium
-            '; then
-              printf 'Chromium apt: libraries complete (attempts=%s mirror=%s seconds=%s)\n' "$attempt" "$mirror" "$((SECONDS - started))"
-              exit 0
-            else
-              status=$?
-              printf 'Chromium apt: libraries attempt %s/3 failed (mirror %s, exit %s, seconds=%s)\n' "$attempt" "$mirror" "$status" "$((SECONDS - started))" >&2
-            fi
-            if (( attempt < 3 )); then sleep "$((attempt * 2))"; fi
-          done
-          printf 'Chromium apt: libraries failed after 3 attempts (exit %s; 60s per attempt; seconds=%s). Inspect the apt download log.\n' "$status" "$((SECONDS - started))" >&2
-          exit 1
+      - name: Cache fallback apt archives
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/rer-apt/archives
+          key: chromium-apt-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'scripts/install-chromium-deps.py') }}
       - name: Install Chromium
-        run: pnpm exec playwright install chromium
+        run: |
+          set -euo pipefail
+          pnpm exec playwright install chromium
+          pnpm exec node scripts/chromium-probe.mjs || \
+            sudo env "PATH=$PATH" "APT_ARCHIVES=$RUNNER_TEMP/rer-apt/archives" python3 scripts/install-chromium-deps.py
       - name: Reserve disk for full-capacity D1 roundtrip
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/share/swift

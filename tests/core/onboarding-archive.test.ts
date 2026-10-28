@@ -1,3 +1,4 @@
+import {issueNativeCredential} from '../support/api-credentials-proof';
 import {preCallingCatalog} from '../../src/core/features/records/archive-generations';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
@@ -31,7 +32,7 @@ function sourceRequests(db:D1Database,cookie:string){
  return {request,signed};
 }
 
-test('DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions',async()=>{
+test('API-001 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions',async()=>{
  const source=await launchFixture(),target=await launchFixture();
  const request=async(f:Awaited<ReturnType<typeof launchFixture>>,path:string,method='GET',body?:unknown)=>{const response=await f.request(path,method,body);assert.ok(response.ok,`${method} ${path}: ${response.status} ${(await response.clone().text()).slice(0,300)}`);return response.json() as Promise<any>;};
  try{
@@ -46,6 +47,7 @@ test('DATA-001 local archive restores records and keeps the hosted owner able to
  const customer=await request(source,'records/contact','POST',{name:'Archive customer',email:'archive@example.test'});
  const trialOwned=await source.customer('trial-owned@example.test');
  await source.db.prepare('UPDATE opportunities SET owner_id=? WHERE id=?').bind(source.actor,trialOwned.opportunityId).run();
+ const apiCredential=await issueNativeCredential(source.db,source.actor,trialOwned.opportunityId);
  const scheduled=await source.message(trialOwned.contactId,trialOwned.opportunityId);
  const libraryRows=['template','snippet','signature'].map((kind,index)=>({id:createId(),kind,name:`Archive ${kind}`,subject:kind==='template'?'Hello {{contact.name}}':'',body:`Saved ${kind} 雪`,visibility:index===1?'private':'shared',owner_id:source.actor,revision:index+1,updated_at:new Date().toISOString()}));
  for(const row of libraryRows)await source.db.prepare('INSERT INTO message_library(id,kind,name,subject,body,visibility,owner_id,revision,updated_at) VALUES(?,?,?,?,?,?,?,?,?)').bind(...Object.values(row)).run();
@@ -63,6 +65,7 @@ test('DATA-001 local archive restores records and keeps the hosted owner able to
  for(let n=0;n<300&&exported.state!=='ready';n++)exported=await request(source,`records/archive/exports/${exported.id}/advance`,'POST',{});
  assert.equal(exported.state,'ready');
  const archive=await request(source,`records/archive/exports/${exported.id}/download`);
+ assert.ok(!JSON.stringify(archive).includes(apiCredential.secret));assert.ok(!archive.manifest.tables.some((table:{name:string})=>table.name==='api_credentials'));
  const exportedLibrary=archive.parts.flatMap((part:ArchivePart)=>part.records).filter((record:ArchivePart['records'][number])=>record.table==='message_library').map((record:ArchivePart['records'][number])=>record.row);
  assert.deepEqual(exportedLibrary.sort((a:any,b:any)=>a.id.localeCompare(b.id)),libraryRows.sort((a,b)=>a.id.localeCompare(b.id)));
  assert.deepEqual(archive.parts.flatMap((part:ArchivePart)=>part.records).filter((record:ArchivePart['records'][number])=>record.table==='outbound_opt_out_capabilities').map((record:ArchivePart['records'][number])=>record.row),[capability]);
@@ -97,12 +100,14 @@ test('DATA-001 local archive restores records and keeps the hosted owner able to
  const local=await isolatedDatabase();
  try{
   await localArchiveRoundTrip(source.db,local.db);
+  assert.equal(await local.db.prepare('SELECT count(*) FROM api_credentials').first('count(*)'),0,'CLI restore creates no API credential authority');
   assert.deepEqual((await local.db.prepare('SELECT * FROM message_library ORDER BY id').all()).results,libraryRows,'The local CLI preserves library content, permissions, ownership and revision');
   assert.deepEqual(await local.db.prepare('SELECT library_selection_json,merge_review_json FROM drafts WHERE id=?').bind(draft).first(),draftMetadata);
   assert.deepEqual(await local.db.prepare('SELECT * FROM outbound_opt_out_capabilities WHERE token=?').bind(capability.token).first(),capability,'The local CLI preserves the exact capability and origin');
   assert.deepEqual(await local.db.prepare('SELECT * FROM outbound_message_opt_out WHERE message_id=?').bind(scheduled.id).first(),approvedOptOut);
  }finally{await local.dispose();}
  await restore(target,archive);
+ assert.equal(await target.db.prepare('SELECT count(*) FROM api_credentials').first('count(*)'),0,'Records restore creates no API credential authority');
  assert.deepEqual((await target.db.prepare('SELECT * FROM message_library ORDER BY id').all()).results,libraryRows,'Records restore preserves library content, permissions, ownership and revision');
  assert.deepEqual(await target.db.prepare('SELECT library_selection_json,merge_review_json FROM drafts WHERE id=?').bind(draft).first(),draftMetadata);
  assert.deepEqual(await target.db.prepare('SELECT * FROM outbound_opt_out_capabilities WHERE token=?').bind(capability.token).first(),capability,'Records restore preserves the exact capability and origin');

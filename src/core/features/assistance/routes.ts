@@ -1,3 +1,4 @@
+import {recordAssistanceRoutes} from './record-routes';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AuthenticatedOperator } from '../identity';
@@ -9,6 +10,7 @@ import { outputSchema,type AIProvider } from './provider';
 const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 export function createAssistanceRoutes(db:D1Database,provider?:AIProvider) {
  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
+ app.route('/record-mail',recordAssistanceRoutes(db,provider));
  app.onError((error,c)=>error instanceof WorkbenchError?c.json({error:error.message},error.status):c.json({error:'AI request failed. No explanation or draft was created.'},502));
  app.get('/usage',async c=>c.json({configured:Boolean(provider),totals:(await db.prepare("SELECT substr(created_at,1,10) AS day,feature,provider,model,count(*) AS calls,sum(input_tokens) AS inputTokens,sum(output_tokens) AS outputTokens,sum(cached_input_tokens) AS cachedInputTokens,sum(estimated_cost) AS estimatedCost FROM ai_calls GROUP BY day,feature,provider,model ORDER BY day DESC").all()).results}));
  app.post('/preview',async c=>{

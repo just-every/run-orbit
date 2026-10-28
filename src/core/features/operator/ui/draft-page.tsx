@@ -1,3 +1,5 @@
+import {messageStatus} from './message-status';
+import {recordsRequest} from './records-api';
 import {DraftLibraryPicker} from '../../drafts/ui/library-picker';
 import { DraftApproval } from "./draft-approval";
 import { useCallback, useEffect, useState } from "react";
@@ -15,14 +17,15 @@ const submittedTitles: Record<string, string> = { scheduled: "Scheduled message"
 export function DraftPage() {
   const { id } = useParams({ from: "/app/drafts/$id" });
   const loadDraft = useCallback(async () => {
-    const [{ draft }, { presentation }] = await Promise.all([operatorApi.readDraft(id), operatorApi.readWorkspacePresentation()]);
+    const [{ draft }, { presentation }, {operators}] = await Promise.all([operatorApi.readDraft(id), operatorApi.readWorkspacePresentation(), recordsRequest<{operators:{id:string;display_name:string}[]}>('settings')]);
     const opportunity=draft.opportunityId?(await operatorApi.readOpportunity(draft.opportunityId)).opportunity:null;
     const contactContext=!opportunity?await fetch(`/api/v1/workbench/records/contact/${draft.recipientContactId}/mail-context`).then(async response=>{if(!response.ok)throw new Error('Recipient context could not load.');return response.json() as Promise<{contacts:{id:string;name:string|null;email:string|null;contactability:string}[]}>;}):null;
     const path=draft.opportunityId?`opportunities/${draft.opportunityId}/messages`:`records/contact/${draft.recipientContactId}/mail`;
     const history=await fetch(`/api/v1/workbench/${path}`).then(async response=>{if(!response.ok)throw new Error('Saved message history could not load.');return response.json() as Promise<{messages:SubmittedMessage[];mailProvider?:string}>;});
     // This exact revision was already approved: show what happened to it instead of an editor.
     const submitted = history.messages.find(message => message.draftId === draft.id && message.revision === draft.revision && !["draft", "cancelled"].includes(message.state)) ?? null;
-    return { draft, presentation, opportunity, contactContext, submitted, mailProvider:history.mailProvider };
+    const authorName=operators.find(operator=>operator.id===draft.authorId)?.display_name;
+    return { draft, presentation, opportunity, contactContext, submitted, authorName, mailProvider:history.mailProvider };
   }, [id]);
   const resource = useOperatorResource(`draft:${id}`, loadDraft);
   const [draft, setDraft] = useState<OperatorDraft | null>(null);
@@ -79,7 +82,7 @@ export function DraftPage() {
       action={draft.opportunityId?<Link className="operator-back-link" to="/app/opportunities/$id" params={{ id: draft.opportunityId }}>← Opportunity detail</Link>:<a className="operator-back-link" href={`/app/records?kind=contact&record=${draft.recipientContactId}#record-mail`}>← Contact detail</a>}
     >
       <section className="operator-draft-editor" style={{display:"block"}} data-testid="draft-editor">
-        {submitted ? <OperatorState>{submitted.state === "scheduled" && submitted.scheduledAt ? `This message is scheduled for ${formatDateTime(submitted.scheduledAt, presentation)}. To change it, cancel it from the record first.` : `This message was approved and handed to the mail service (state: ${label(submitted.state)}). It can no longer be edited. To write to this customer again, start a new follow-up from the record.`}</OperatorState> : null}
+        {submitted ? <OperatorState>{submitted.state === "scheduled" && submitted.scheduledAt ? <>This message is scheduled for <time dateTime={submitted.scheduledAt}>{formatDateTime(submitted.scheduledAt, presentation)}</time>. To change it, cancel it from the record first.</> : <>{messageStatus(submitted.state)} It can no longer be edited. To write to this customer again, start a new follow-up from the record.</>}</OperatorState> : null}
         {submitted ? <SentMessage recipient={resource.data.submitted?.recipientEmail??draft.recipientEmail} subject={resource.data.submitted?.subject??draft.subject} body={resource.data.submitted?.body??draft.body} /> : <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}><fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
           <label>Recipient
             <input data-testid="draft-recipient" required onChange={(event) => setDraft({ ...draft, recipientEmail: event.target.value })} type="email" value={draft.recipientEmail} />
@@ -111,8 +114,8 @@ export function DraftPage() {
         <details className="operator-surface operator-detail__section"><summary>Audit details</summary>
           <p className="operator-eyebrow">Draft history</p>
           <dl>
-            <div><dt>Author</dt><dd>{draft.authorId}</dd></div>
-            <div><dt>Source recommendation</dt><dd>{draft.recommendationId ?? "No source recommendation"}</dd></div>
+            <div><dt>Author</dt><dd>{resource.data.authorName??'Author record unavailable'}</dd></div>
+            <div><dt>Source recommendation</dt><dd>{draft.recommendationId&&draft.opportunityId?<Link data-row-action to="/app/opportunities/$id" params={{id:draft.opportunityId}}>View the related opportunity</Link>:"No source recommendation"}</dd></div>
             <div><dt>Created</dt><dd>{formatDateTime(draft.createdAt, presentation)}</dd></div>
             <div><dt>Last updated</dt><dd>{formatDateTime(draft.updatedAt, presentation)}</dd></div>
             <div><dt>Revision</dt><dd>{draft.revision}</dd></div>

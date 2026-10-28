@@ -59,6 +59,8 @@ export async function nativeLongRecordLayoutJourney(page) {
     const now = await nowResponse.json();
     expect(now.opportunities.length).toBeGreaterThan(0);
     const target = now.opportunities[0];
+    const multipleOwners = new Set(now.opportunities.map(item => item.ownerId)).size > 1;
+    const expectedMeta = [editedCompanyName, target.stage, ...(multipleOwners ? [target.ownerName ?? 'Unassigned'] : [])].filter(Boolean).join(' · ');
 
     await editRecordThroughKeyboard(page, 'opportunity', target.title, 'Opportunity title', editedOpportunityTitle, async () => {
       await page.getByRole('combobox', { name: 'Linked company', exact: true }).selectOption(company.id);
@@ -78,8 +80,8 @@ export async function nativeLongRecordLayoutJourney(page) {
       const row = page.getByRole('link', { name: `Open ${editedOpportunityTitle}`, exact: true });
       await expect(row).toBeVisible();
       const companyLine = row.locator('.operator-queue-card__headline p');
-      await expect(companyLine).toHaveText(editedCompanyName);
-      await assertWrappedText(companyLine, editedCompanyName);
+      await expect(companyLine).toHaveText(expectedMeta);
+      await assertWrappedText(companyLine, expectedMeta);
       const metrics = await assertReadablePage(page, viewport, row.getByRole('heading', { name: editedOpportunityTitle, exact: true }), editedOpportunityTitle);
       diagnostics.viewportChecks.push({ name: viewport.name, surface: 'now', ...metrics });
       await page.screenshot({ path: `${evidence}/now-${viewport.name}.png`, fullPage: true });

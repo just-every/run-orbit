@@ -1,3 +1,4 @@
+import {apiCredentialErasure} from '../api/privacy';
 import {payloadHash} from '../../platform/source-security';
 import {normalizedPhone} from '../calls/provider';
 import {recordMailContactErasure,recordMailRecordErasure} from '../outreach/record-mail-privacy';
@@ -20,9 +21,11 @@ import { createId } from '../../shared/ids';
 import { audit, RecordError, requireRecord, type RecordKind } from './shared';
 import {relationshipContactErasure} from '../relationships/erasure';
 import {messageContactErasure} from '../drafts/privacy';
+import {mailchimpErasure} from '../marketing/deletions';
 export class DataRepository {
  constructor(readonly db:D1Database){}
  async remove(kind:RecordKind,id:string,actor:string,sessionId?:string){const capture=captureImportErasure(this.db),db=capture.db;const record=await requireRecord(db,kind,id);const statements:D1PreparedStatement[]=[];let contactEmails:string[]=[];
+  if(kind!=='contact')statements.push(...apiCredentialErasure(db,kind,id));
   if(kind!=='opportunity')statements.push(...ownershipErasureStatements(db,kind,id));
   statements.push(...forecastErasureStatements(db,kind,id,typeof record.email==='string'?[record.email]:[]));
   if(kind!=='contact')statements.push(...recordMailRecordErasure(db,kind,id));
@@ -46,6 +49,7 @@ export class DataRepository {
    const aliases=(await db.prepare("SELECT identity_key FROM record_aliases WHERE record_type='contact' AND survivor_id=?").bind(id).all<{identity_key:string}>()).results.map(row=>row.identity_key);
    const identities=[...new Set([record.email,...aliases].filter((value):value is string=>typeof value==='string'&&value.length>0))];
    contactEmails=identities;
+   statements.push(...apiCredentialErasure(db,kind,id,identities));
    statements.push(...messageContactErasure(db,identities));
    statements.push(...formAbuseErasure(db,identities));
    statements.push(...taskContactErasure(db,id,identities));
@@ -69,6 +73,7 @@ export class DataRepository {
    statements.push(db.prepare(`DELETE FROM recommendations WHERE id IN(SELECT recommendation_id FROM recommendation_evidence WHERE signal_id IN (${signalIds}))`).bind(id),db.prepare(`DELETE FROM evaluations WHERE id IN(SELECT evaluation_id FROM evaluation_contributions WHERE signal_id IN (${signalIds}))`).bind(id));
    statements.push(db.prepare(`DELETE FROM timeline_entries WHERE id IN(SELECT timeline_entry_id FROM timeline_entry_records WHERE record_type='contact' AND record_id=?) OR json_extract(payload_json,'$.contactId')=? OR json_extract(payload_json,'$.signalId') IN (${signalIds}) OR EXISTS(SELECT 1 FROM json_each(timeline_entries.payload_json,'$.contactIds') WHERE value=?)`).bind(id,id,id,id));
    statements.push(...captureErasureStatements(db,id,actor));
+   statements.push(...await mailchimpErasure(db,id,actor));
    statements.push(db.prepare(`DELETE FROM signals WHERE id IN(${signalIds})`).bind(id),db.prepare("UPDATE audit_entries SET entity_id='erased',details_json='{}' WHERE (entity_type='contact' AND entity_id=?) OR instr(details_json,?)>0").bind(id,id),db.prepare('DELETE FROM contacts WHERE id=?').bind(id));
    statements.push(db.prepare("UPDATE opportunity_contacts SET is_primary=1 WHERE contact_id=(SELECT MIN(c.contact_id) FROM opportunity_contacts c WHERE c.opportunity_id=opportunity_contacts.opportunity_id) AND NOT EXISTS(SELECT 1 FROM opportunity_contacts p WHERE p.opportunity_id=opportunity_contacts.opportunity_id AND p.is_primary=1)"));
    statements.push(db.prepare('DELETE FROM record_erasure_signals WHERE contact_id=?').bind(id));

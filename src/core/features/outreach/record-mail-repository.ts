@@ -13,7 +13,7 @@ export class RecordMailRepository {
   const deals=(await this.db.prepare("SELECT o.id,o.title,oc.contact_id AS contactId FROM opportunities o JOIN opportunity_contacts oc ON oc.opportunity_id=o.id WHERE o.lifecycle='open' AND oc.contact_id IN(SELECT value FROM json_each(?)) ORDER BY o.updated_at DESC,o.id").bind(JSON.stringify(contacts.map(c=>c.id))).all<{id:string;title:string;contactId:string}>()).results;
   return {record,contacts,deals};
  }
- async create(kind:MailRecordKind,originId:string,input:{contactId:string;opportunityId?:string|null;subject:string;body:string},actor:string){
+ async create(kind:MailRecordKind,originId:string,input:{contactId:string;opportunityId?:string|null;subject:string;body:string},actor:string,generation?:{callId:string;evidenceIds:string[];explanation:string}){
   await reconcileLegacyOwnership(this.db);
   const context=await this.context(kind,originId),contact=context.contacts.find(c=>c.id===input.contactId);
   if(!contact?.email)throw new WorkbenchError(400,'Choose a contact on this record with an email address.');
@@ -30,23 +30,23 @@ export class RecordMailRepository {
    ...(kind==='company'?[mailDb.prepare("INSERT INTO runtime_controls(name,value) SELECT 'record_mail_relationship',NULL WHERE NOT EXISTS(SELECT 1 FROM contacts WHERE id=? AND (company_id=? OR EXISTS(SELECT 1 FROM contact_company_relationships WHERE contact_id=? AND company_id=?)))").bind(contact.id,originId,contact.id,originId)]:[]),
    mailDb.prepare('INSERT INTO drafts(id,opportunity_id,recommendation_id,author_id,recipient_contact_id,recipient_email,subject,body,revision,is_stale,created_at,updated_at) VALUES(?,?,(SELECT id FROM recommendations WHERE opportunity_id=? AND is_current=1),?,?,?,?,?,1,0,?,?)').bind(id,linked,linked,actor,contact.id,contact.email.trim().toLowerCase(),input.subject,input.body,at,at),
    mailDb.prepare('INSERT INTO record_mail_context VALUES(?,?,?,?)').bind(id,kind,originId,history),
-   ...recordMailTimeline(mailDb,id,actor,'draft.created',{draftId:id,manual:true,dealLink:linked??'Unlinked'},at)
+   ...recordMailTimeline(mailDb,id,actor,'draft.created',{draftId:id,manual:!generation,...generation,dealLink:linked??'Unlinked'},at)
   ]);
   return {id};
  }
  async history(contactId:string){
   const messages=(await this.db.prepare(`SELECT id,draft_id AS draftId,revision,state,recipient_email AS recipientEmail,subject,body,failure,scheduled_at AS scheduledAt,next_attempt_at AS retryAfter,created_at AS createdAt FROM record_mail_outbound_messages WHERE contact_id=? ORDER BY created_at DESC`).bind(contactId).all()).results;
   const drafts=(await this.db.prepare('SELECT id,subject,is_stale AS isStale FROM record_mail_drafts WHERE recipient_contact_id=? ORDER BY updated_at DESC').bind(contactId).all()).results;
-  const obligations=(await this.db.prepare('SELECT message_id AS messageId,operator_id AS operatorId,due_at AS dueAt,closed_at AS closedAt,closed_reason AS closedReason FROM record_mail_obligations WHERE contact_id=? ORDER BY opened_at DESC').bind(contactId).all()).results;
+  const obligations=(await this.db.prepare('SELECT message_id AS messageId,operator_id AS operatorId,owner_id AS ownerId,due_at AS dueAt,closed_at AS closedAt,closed_reason AS closedReason FROM record_mail_obligations WHERE contact_id=? ORDER BY opened_at DESC').bind(contactId).all()).results;
   return {messages,drafts,obligations};
  }
  async complete(messageId:string,actor:string){
   const at=new Date().toISOString();
   const result=await this.db.batch([
-   this.db.prepare("UPDATE record_mail_obligations SET closed_at=?,closed_reason='Completed by sender' WHERE message_id=? AND operator_id=? AND closed_at IS NULL").bind(at,messageId,actor),
-   this.db.prepare("INSERT OR IGNORE INTO audit_entries(id,actor_id,action,entity_type,entity_id,details_json,occurred_at) SELECT ?,?,'mail.follow_up.completed','outbound_message',?,'{}',? WHERE EXISTS(SELECT 1 FROM record_mail_obligations WHERE message_id=? AND operator_id=? AND closed_at=? AND closed_reason='Completed by sender')").bind('mail-complete:'+messageId,actor,messageId,at,messageId,actor,at)
+   this.db.prepare("UPDATE record_mail_obligations SET closed_at=?,closed_reason='Completed by promise owner' WHERE message_id=? AND owner_id=? AND closed_at IS NULL").bind(at,messageId,actor),
+   this.db.prepare("INSERT OR IGNORE INTO audit_entries(id,actor_id,action,entity_type,entity_id,details_json,occurred_at) SELECT ?,?,'mail.follow_up.completed','outbound_message',?,'{}',? WHERE EXISTS(SELECT 1 FROM record_mail_obligations WHERE message_id=? AND owner_id=? AND closed_at=? AND closed_reason='Completed by promise owner')").bind('mail-complete:'+messageId,actor,messageId,at,messageId,actor,at)
   ]);
-  if(!result[0]!.meta.changes)throw new WorkbenchError(409,'Only the sender can complete an open awaiting-response obligation.');
+  if(!result[0]!.meta.changes)throw new WorkbenchError(409,'Only the current promise owner can complete an open awaiting-response obligation.');
   return {completed:true};
  }
 }

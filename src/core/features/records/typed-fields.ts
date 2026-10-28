@@ -1,3 +1,4 @@
+import {typedFieldHistory} from './typed-field-history';
 import {Hono} from 'hono';
 import {z} from 'zod';
 import type {AuthenticatedOperator} from '../identity';
@@ -20,6 +21,10 @@ export function fieldReason(field:{label:string;value_type:string;required:numbe
 const policyVersion=(db:D1Database,recordKind:RecordKind)=>db.prepare("SELECT COALESCE(sum(revision),0)||':'||count(*) AS value FROM record_custom_fields WHERE kind=?").bind(recordKind).first<string>('value');
 /** Repeat schema and uniqueness checks inside the record's write transaction. */
 export async function typedFieldFences(db:D1Database,recordKind:RecordKind,id:string,values:Record<string,unknown>,before:Record<string,unknown>){
+ return (await typedFieldSave(db,recordKind,id,values,before)).statements;
+}
+/** Keep Timeline labels bound to the same definition snapshot as validation. */
+export async function typedFieldSave(db:D1Database,recordKind:RecordKind,id:string,values:Record<string,unknown>,before:Record<string,unknown>){
  const snapshot=await db.prepare("SELECT COALESCE(sum(revision),0)||':'||count(*) AS value,json_group_array(json_object('kind',kind,'field_key',field_key,'label',label,'value_type',value_type,'required',required,'is_unique',is_unique,'options_json',options_json,'archived',archived,'revision',revision)) AS fields FROM record_custom_fields WHERE kind=?").bind(recordKind).first<{value:string;fields:string}>();
  if(!snapshot)throw new RecordError(409,'Custom field definitions are unavailable.');
  const revision=snapshot.value,fields=JSON.parse(snapshot.fields) as TypedField[],statements=[guard(db,{sql:"(SELECT COALESCE(sum(revision),0)||':'||count(*) FROM record_custom_fields WHERE kind=?)=?",args:[recordKind,revision]})];
@@ -31,10 +36,11 @@ export async function typedFieldFences(db:D1Database,recordKind:RecordKind,id:st
    statements.push(guard(db,{sql,args}));
   }
  }
- return [...statements,clearGuards(db)];
+ return {statements:[...statements,clearGuards(db)],fields};
 }
 export function typedFieldRoutes(db:D1Database){const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
  app.onError((e,c)=>c.json({error:e instanceof RecordError?e.message:e instanceof z.ZodError?'Enter a valid typed field definition.':'Custom field settings could not be saved.'},e instanceof RecordError?e.status:e instanceof z.ZodError?400:503));
+ app.get('/history',async c=>c.json(await typedFieldHistory(db,c.req.query())));
  async function owner(actor:AuthenticatedOperator){if(!await db.prepare("SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active'").bind(actor.operatorId).first())throw new RecordError(403,'Only the installation owner defines custom fields.');}
  async function preview(input:Definition){
   const epoch=await db.prepare('SELECT COALESCE((SELECT epoch FROM identity_custom_field_epochs WHERE kind=?),0) AS epoch').bind(input.kind).first<number>('epoch'),revision=await policyVersion(db,input.kind),field={label:input.label,value_type:input.valueType,required:Number(input.required),options_json:JSON.stringify(input.options)},affected:{id:string;name:string;reason:string}[]=[],duplicates=new Map<string,string[]>();
@@ -47,9 +53,11 @@ export function typedFieldRoutes(db:D1Database){const app=new Hono<{Variables:{o
  app.post('/preview',async c=>{await owner(c.get('operator'));return c.json(await preview(definition.parse(await c.req.json())));});
  app.post('/confirm',async c=>{const actor=c.get('operator');await owner(actor);const body=z.object({input:definition,reviewHash:z.string().regex(/^[a-f0-9]{64}$/),confirmed:z.literal(true)}).strict().parse(await c.req.json()),review=await preview(body.input);if(review.reviewHash!==body.reviewHash)throw new RecordError(409,'Records or field definitions changed. Preview the affected records again.');if(review.duplicateCount)throw new RecordError(409,`${body.input.label}: resolve duplicate values before requiring uniqueness.`);
   const previous=await db.prepare('SELECT * FROM record_custom_fields WHERE kind=? AND field_key=?').bind(body.input.kind,body.input.fieldKey).first<TypedField>();
-  if(previous?.archived)throw new RecordError(409,`${previous.label}: archived definitions keep their meaning and cannot be replaced.`);
-  if(previous&&body.input.archived&&(previous.value_type!==body.input.valueType||previous.label!==body.input.label||previous.options_json!==JSON.stringify(body.input.options)))throw new RecordError(409,`${previous.label}: archive it without changing its type, name or options.`);
-  const person=await db.prepare(`SELECT ${version('o')} AS version FROM operators o WHERE id=?`).bind(actor.operatorId).first<{version:number}>();if(!person)throw new RecordError(403,'Operator access ended.');const d=body.input;
-  await db.batch([guard(db,actorFence({id:actor.sessionId,operator:{id:actor.operatorId,version:person.version}},Date.now())),guard(db,ownerFence({operator:{id:actor.operatorId}})),guard(db,{sql:"COALESCE((SELECT epoch FROM identity_custom_field_epochs WHERE kind=?),0)=? AND (SELECT COALESCE(sum(revision),0)||':'||count(*) FROM record_custom_fields WHERE kind=?)=?",args:[d.kind,review.epoch,d.kind,review.revision]}),db.prepare('INSERT INTO record_custom_fields VALUES(?,?,?,?,?,?,?,?,1) ON CONFLICT(kind,field_key) DO UPDATE SET label=excluded.label,value_type=excluded.value_type,required=excluded.required,is_unique=excluded.is_unique,options_json=excluded.options_json,archived=excluded.archived,revision=record_custom_fields.revision+1').bind(d.kind,d.fieldKey,d.label,d.valueType,Number(d.required),Number(d.unique),JSON.stringify(d.options),Number(d.archived)),db.prepare("INSERT INTO record_custom_field_history SELECT kind,field_key,revision,json_object('label',label,'valueType',value_type,'required',required,'unique',is_unique,'options',json(options_json),'archived',archived),? FROM record_custom_fields WHERE kind=? AND field_key=?").bind(new Date().toISOString(),d.kind,d.fieldKey),audit(db,actor.operatorId,'custom-field.configured','installation','workspace',{kind:d.kind,field:d.fieldKey,archived:d.archived}),clearGuards(db)]);return c.json({saved:true});
+  // Archiving and restoring keep a field's meaning: a restore makes the archived definition active again, unchanged.
+  const meaningChanged=previous&&(previous.value_type!==body.input.valueType||previous.label!==body.input.label||previous.options_json!==JSON.stringify(body.input.options));
+  if(previous?.archived&&(body.input.archived||meaningChanged))throw new RecordError(409,`${previous.label} is archived: restore it without changing its type, name or options.`);
+  if(previous&&body.input.archived&&meaningChanged)throw new RecordError(409,`${previous.label}: archive it without changing its type, name or options.`);
+  const person=await db.prepare(`SELECT ${version('o')} AS version FROM operators o WHERE id=?`).bind(actor.operatorId).first<{version:number}>();if(!person)throw new RecordError(403,'Operator access ended.');const d=body.input,changedAt=new Date().toISOString();
+  await db.batch([guard(db,actorFence({id:actor.sessionId,operator:{id:actor.operatorId,version:person.version}},Date.now())),guard(db,ownerFence({operator:{id:actor.operatorId}})),guard(db,{sql:"COALESCE((SELECT epoch FROM identity_custom_field_epochs WHERE kind=?),0)=? AND (SELECT COALESCE(sum(revision),0)||':'||count(*) FROM record_custom_fields WHERE kind=?)=?",args:[d.kind,review.epoch,d.kind,review.revision]}),db.prepare('INSERT INTO record_custom_fields VALUES(?,?,?,?,?,?,?,?,1) ON CONFLICT(kind,field_key) DO UPDATE SET label=excluded.label,value_type=excluded.value_type,required=excluded.required,is_unique=excluded.is_unique,options_json=excluded.options_json,archived=excluded.archived,revision=record_custom_fields.revision+1').bind(d.kind,d.fieldKey,d.label,d.valueType,Number(d.required),Number(d.unique),JSON.stringify(d.options),Number(d.archived)),db.prepare("INSERT INTO record_custom_field_history SELECT kind,field_key,revision,json_object('label',label,'valueType',value_type,'required',required,'unique',is_unique,'options',json(options_json),'archived',archived),? FROM record_custom_fields WHERE kind=? AND field_key=?").bind(changedAt,d.kind,d.fieldKey),audit(db,actor.operatorId,'custom-field.configured','installation','workspace',{kind:d.kind,field:d.fieldKey,archived:d.archived},changedAt),clearGuards(db)]);return c.json({saved:true});
  });return app;
 }
