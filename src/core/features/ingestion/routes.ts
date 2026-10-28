@@ -14,7 +14,7 @@ export function createSignalIngress(db:D1Database,security?:SourceSecurity){
     const vendor=c.req.param('vendor');if(vendor&&vendor!=='calcom'&&vendor!=='calendly'&&vendor!=='automation')return c.notFound();
     if(!/^[a-zA-Z0-9_-]{1,80}$/.test(c.req.param('source')))return c.json({error:'Invalid source ID.'},400);
     const source=await repository.source(c.req.param('source'));
-    if(isNativeSource(c.req.param('source'),source?.type)||!source||!source.enabled||!source.secret_ciphertext)return c.json({error:'Source is not configured.'},403);
+    if(isNativeSource(c.req.param('source'),source?.type)||!source||source.removed_at||!source.enabled||!source.secret_ciphertext)return c.json({error:'Source is not configured.'},403);
     if(!security)return c.json({error:'ORBIT_ENCRYPTION_KEY is required for configured sources.'},503);
     if(vendor==='automation'&&!await verifyAutomationSecret(await security.open(source.secret_ciphertext),c.req.header('Authorization')??''))return c.json({error:'Source credential is missing or invalid.'},401);
     let raw:string;

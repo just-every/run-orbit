@@ -1,6 +1,6 @@
 /* Content layout converted by 12ui from import-wizard/candidates/A.png, drawn in Orbit's brand (tokens.css): ink steps,
    a card panel, pill controls and the ink primary. Native OperatorShell supplies navigation. */
-.crm-import .crm-workspace{margin:36px 57px 0}
+.crm-import .crm-workspace{margin:36px 0 0}
 .crm-import .crm-steps{display:flex;align-items:center;margin:0;padding:0;list-style:none;width:520px;max-width:100%;color:var(--ob-muted)}
 .crm-import .crm-steps li{display:flex;align-items:center;gap:10px;flex:1;position:relative;font-size:15px;font-weight:500}
 .crm-import .crm-steps li:not(:last-child)::after{content:'';height:1.5px;background:var(--ob-line-strong);flex:1;margin-right:10px}
@@ -33,11 +33,6 @@
 .crm-import .crm-submit{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;margin-top:24px;padding:10px 22px;border:1.5px solid var(--ob-ink);border-radius:999px;background:var(--ob-ink);color:var(--ob-paper);box-shadow:var(--ob-shadow-pill);font:inherit;font-size:16px;font-weight:600;line-height:1.25;cursor:pointer}
 .crm-import .crm-submit:hover:not(:disabled){background:#000}
 .crm-import .crm-submit:focus-visible,.crm-import a:focus-visible{outline:3px solid var(--ob-tangerine);outline-offset:4px}
-/* width:auto lets the side margins below fit inside the shared full-width operator column; flow-root keeps
-   the column's bottom margin inside the shell's paper. */
-.crm-import .operator-shell{display:flow-root}
-.crm-import .operator-main{width:auto;max-width:926px;margin:50px auto 89px;padding:0}
-.crm-import .crm-workspace{margin-top:36px}
 .crm-import .crm-panel label:not(.crm-choose):not(.crm-source-option){display:grid;gap:6px;margin:14px 0}
 .crm-import .crm-panel input:not([type=checkbox]):not([type=file]):not([type=radio]),.crm-import .crm-panel select{width:100%;min-width:0}
 .crm-import .crm-panel > button:not(.crm-submit){margin-top:12px}
@@ -50,6 +45,6 @@
 .crm-import .crm-history > p{margin:0 0 14px;color:var(--ob-body);font-size:15.5px;line-height:1.55}
 .crm-import .crm-history article{border-top:1.5px solid var(--ob-line);padding:14px 0}
 .crm-import button:disabled{opacity:.5;cursor:wait}
-@media(max-width:1023px){.crm-import .operator-main{margin:40px 32px 60px}.crm-import .crm-workspace{margin:30px 0 0}}
-@media(max-width:599px){.crm-import .operator-main{margin:30px 20px 40px}.crm-import .crm-workspace{margin:26px 0 0}.crm-import .crm-steps{width:100%;flex-wrap:wrap;gap:14px 0;justify-content:space-between}.crm-import .crm-steps li{font-size:14px;gap:6px;flex:0 0 auto}.crm-import .crm-steps li:not(:last-child)::after{display:none}.crm-import .number{width:26px;height:26px;flex-basis:26px}.crm-import .crm-intro{font-size:15px;margin:24px 0 20px}.crm-import .crm-panel{padding:20px 16px}.crm-import .crm-source-picker{width:100%}.crm-import .crm-file-row{padding:12px;gap:10px 12px;flex-wrap:wrap}.crm-import .crm-file-copy{flex-basis:calc(100% - 50px)}.crm-import .crm-choose{margin-left:50px;width:calc(100% - 50px)}.crm-import .crm-field-grid{grid-template-columns:1fr}.crm-import .crm-submit{margin-top:20px}}
+@media(max-width:1023px){.crm-import .crm-workspace{margin:30px 0 0}}
+@media(max-width:599px){.crm-import .crm-workspace{margin:26px 0 0}.crm-import .crm-steps{width:100%;flex-wrap:wrap;gap:14px 0;justify-content:space-between}.crm-import .crm-steps li{font-size:14px;gap:6px;flex:0 0 auto}.crm-import .crm-steps li:not(:last-child)::after{display:none}.crm-import .number{width:26px;height:26px;flex-basis:26px}.crm-import .crm-intro{font-size:15px;margin:24px 0 20px}.crm-import .crm-panel{padding:20px 16px}.crm-import .crm-source-picker{width:100%}.crm-import .crm-file-row{padding:12px;gap:10px 12px;flex-wrap:wrap}.crm-import .crm-file-copy{flex-basis:calc(100% - 50px)}.crm-import .crm-choose{margin-left:50px;width:calc(100% - 50px)}.crm-import .crm-field-grid{grid-template-columns:1fr}.crm-import .crm-submit{margin-top:20px}}
 .crm-import .crm-panel p,.crm-import .crm-mapping p{margin:6px 0 14px;line-height:1.5}.crm-import .crm-other-columns{margin-top:12px}

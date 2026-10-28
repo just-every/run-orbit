@@ -39,7 +39,7 @@ export function createTodayRoutes(db:D1Database,provider?:AIProvider){
   const result=await generateSummary(db,provider,c.get('operator').operatorId,input.data.account,input.data.requestHash);
   return c.json(result,result.status==='failed'?502:200);
  });
- app.get('/meetings/:id',async c=>{const id=signalId.safeParse(c.req.param('id'));if(!id.success)return c.json({error:'Meeting not found.'},404);return c.json({plan:await buildMeetingPlan(db,id.data,{operatorId:c.get('operator').operatorId})});});
+ app.get('/meetings/:id',async c=>{const id=signalId.safeParse(c.req.param('id'));if(!id.success)return c.json({error:'That meeting does not exist.'},404);return c.json({plan:await buildMeetingPlan(db,id.data,{operatorId:c.get('operator').operatorId})});});
  app.put('/meetings/:id/plan',async c=>{
   const id=signalId.safeParse(c.req.param('id')),input=z.object({agenda:z.string().max(20000),prep:z.string().max(20000)}).strict().safeParse(await c.req.json().catch(()=>null));
   if(!id.success||!input.success)return c.json({error:'Enter an agenda and prep notes.'},400);

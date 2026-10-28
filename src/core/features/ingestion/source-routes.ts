@@ -22,6 +22,12 @@ export function createSourceRoutes(db:D1Database,security?:SourceSecurity){
     await repository.configure({...parsed.data,secret,id:c.req.param('id')},security);return c.json({saved:true,secret},200,{'Cache-Control':'no-store'});
   });
   app.patch('/:id',async c=>{const parsed=z.object({enabled:z.boolean()}).strict().safeParse(await c.req.json());if(!parsed.success)return c.json({error:'Choose whether this source is enabled.'},400);await repository.setEnabled(c.req.param('id'),parsed.data.enabled,security);return c.json({saved:true});});
+  app.delete('/:id',async c=>{
+    const input=z.object({confirmed:z.literal(true)}).strict().safeParse(await c.req.json());
+    if(!input.success)return c.json({error:'Confirm removing this source.'},400);
+    if(!/^[a-zA-Z0-9_-]{1,80}$/.test(c.req.param('id')))return c.json({error:'Invalid source ID.'},400);
+    await repository.remove(c.req.param('id'));return c.json({removed:true});
+  });
   app.get('/recipe-context',async c=>c.json({contacts:await repository.recipeContacts(),forms:await repository.publishedForms()}));
   app.post('/:id/calendly',async c=>{
     c.header('Cache-Control','no-store');
@@ -32,10 +38,10 @@ export function createSourceRoutes(db:D1Database,security?:SourceSecurity){
     const input=z.object({token:z.string().trim().min(16).max(4096).regex(/^[\x21-\x7e]+$/)}).strict().safeParse(await c.req.json());
     if(!input.success)return c.json({error:'Paste your Calendly personal access token.'},400);
     const source=await repository.source(c.req.param('id'));
-    if(!source||isNativeSource(source.id,source.type)||!source.enabled||!source.secret_ciphertext)return c.json({error:'Enable or reconnect this source before connecting Calendly.'},403);
+    if(!source||source.removed_at||isNativeSource(source.id,source.type)||!source.enabled||!source.secret_ciphertext)return c.json({error:'Enable or reconnect this source before connecting Calendly.'},403);
     const result=await connectCalendly(input.data.token,`${origin.origin}/api/v1/signals/${source.id}/calendly`,await security.open(source.secret_ciphertext));
     const current=await repository.source(source.id);
-    if(!current?.enabled||current.secret_ciphertext!==source.secret_ciphertext)return c.json({error:'The Orbit source changed during setup. Reconnect Calendly with the current source secret before testing.'},409);
+    if(!current?.enabled||current.removed_at||current.secret_ciphertext!==source.secret_ciphertext)return c.json({error:'The Orbit source changed during setup. Reconnect Calendly with the current source secret before testing.'},409);
     return c.json(result);
   });
   app.post('/:id/test',async c=>{
@@ -43,7 +49,7 @@ export function createSourceRoutes(db:D1Database,security?:SourceSecurity){
     const input=z.object({contactId:z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/)}).strict().safeParse(await c.req.json());
     if(!input.success)return c.json({error:'Choose a contact for the test event.'},400);
     const source=await repository.source(c.req.param('id'));
-    if(isNativeSource(c.req.param('id'),source?.type)||!source)return c.json({error:'Source is not configured.'},403);
+    if(isNativeSource(c.req.param('id'),source?.type)||!source||source.removed_at)return c.json({error:'Source is not configured.'},403);
     if(!source.secret_ciphertext)return c.json({error:'Reconnect this source in Sources, then copy its new signing secret into your tool before sending events.'},403);
     if(!source.enabled)return c.json({error:'Enable this source before sending a test event.'},403);
     if(!await repository.contact(input.data.contactId))return c.json({error:'Contact not found.'},404);

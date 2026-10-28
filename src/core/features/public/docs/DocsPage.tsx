@@ -20,9 +20,9 @@ export function DocsPage({ page, sections, repository, signedIn = false, variant
     <a className="ob-skip" href="#docs-content">Skip to the page</a>
     <SiteHeader name={name} imageUrl={imageUrl} current="docs" signedIn={signedIn} />
     <div className="docs-shell">
-      <DocsSidebar sections={sections} />
+      <DocsSidebar sections={sections} currentSlug={page.slug} />
       <main id="docs-content" tabIndex={-1} className="docs-main">
-        <DocsMenu sections={sections} label={current.label} />
+        <DocsMenu sections={sections} label={current.label} currentSlug={page.slug} />
         <DocsArticle page={page} section={current.section} />
         <DocsPager previous={order[index - 1]} next={order[index + 1]} editUrl={`${repository.url}/edit/${repository.branch}/${page.source}`} />
       </main>

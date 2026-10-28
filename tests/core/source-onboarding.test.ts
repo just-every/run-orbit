@@ -131,17 +131,19 @@ test('SIGNAL-009 source rotation and disabling atomically refuse an already stre
  const f=await fixture();try{
  await f.request('workbench/opportunities','POST',{title:'Source race customer',companyName:'Harbour',contactName:'Maya',email:'maya@harbour.test',stageId:f.stage,valueCents:10000});
  const counts=async()=>{const result=[];for(const table of ['signals','signal_links','timeline_entries','evaluations'])result.push(await f.db.prepare(`SELECT count(*) AS n FROM ${table}`).first());return result;};
- for(const vendor of ['orbit','calcom','calendly','automation'])for(const change of ['rotate','disable','disable-enable']){
-  const{secret}=await(await f.request('sources/race','PUT',{name:'Streaming source',enabled:true})).json() as any;
+ for(const vendor of ['orbit','calcom','calendly','automation'])for(const change of ['rotate','disable','disable-enable','remove']){
+  const sourceId=createId(),sourcePath=`sources/${sourceId}`;
+  const{secret}=await(await f.request(sourcePath,'PUT',{name:'Streaming source',enabled:true})).json() as any;
   const now=new Date().toISOString(),eventId=crypto.randomUUID(),payload=(vendor==='orbit'||vendor==='automation')?{eventId,type:'form.submitted',subject:'Streaming inquiry',occurredAt:now,email:'maya@harbour.test'}:vendor==='calcom'?{triggerEvent:'BOOKING_CREATED',createdAt:now,payload:{uid:eventId,attendees:[{email:'maya@harbour.test'}]}}:{event:'invitee.created',created_at:now,payload:{uri:'https://api.calendly.com/scheduled_events/event/invitees/'+eventId,event:'https://api.calendly.com/scheduled_events/event',email:'maya@harbour.test'}};
   const raw=JSON.stringify(payload),timestamp=String(Math.floor(Date.now()/1000)),signature=createHmac('sha256',secret).update(vendor==='calcom'?raw:timestamp+'.'+raw).digest('hex');
   const headers=vendor==='automation'?{Authorization:`Bearer ${secret}`}:vendor==='orbit'?{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':signature}:vendor==='calcom'?{'X-Cal-Signature-256':signature}:{'Calendly-Webhook-Signature':`t=${timestamp},v1=${signature}`};
   let release!:()=>void,reading!:()=>void;const bodyRead=new Promise<void>(resolve=>reading=resolve),finish=new Promise<void>(resolve=>release=resolve);
   const stream=new ReadableStream<Uint8Array>({async pull(controller){reading();await finish;controller.enqueue(new TextEncoder().encode(raw));controller.close();}},{highWaterMark:0});
-  const before=await counts(),pending=f.app.request(new Request('https://orbit.test/api/v1/signals/race'+(vendor==='orbit'?'':'/'+vendor),{method:'POST',headers,body:stream,duplex:'half'} as RequestInit));
+  const before=await counts(),pending=f.app.request(new Request(`https://orbit.test/api/v1/signals/${sourceId}`+(vendor==='orbit'?'':'/'+vendor),{method:'POST',headers,body:stream,duplex:'half'} as RequestInit));
   await Promise.race([bodyRead,pending.then(response=>{throw Error(`Signed stream ended before reading its body (${response.status})`);})]);
-  try{if(change==='rotate')assert.equal((await f.request('sources/race','PUT',{name:'Streaming source',enabled:true})).status,200);
-  else{assert.equal((await f.request('sources/race','PATCH',{enabled:false})).status,200);if(change==='disable-enable')assert.equal((await f.request('sources/race','PATCH',{enabled:true})).status,200);}
+  try{if(change==='rotate')assert.equal((await f.request(sourcePath,'PUT',{name:'Streaming source',enabled:true})).status,200);
+  else if(change==='remove')assert.equal((await f.request(sourcePath,'DELETE',{confirmed:true})).status,200);
+  else{assert.equal((await f.request(sourcePath,'PATCH',{enabled:false})).status,200);if(change==='disable-enable')assert.equal((await f.request(sourcePath,'PATCH',{enabled:true})).status,200);}
   }finally{release();}assert.equal((await pending).status,403,`${vendor} ${change} revokes the pending request`);assert.deepEqual(await counts(),before,'Revoked delivery leaves no signal, link, timeline or scoring effects');
  }
  }finally{await f.dispose();}

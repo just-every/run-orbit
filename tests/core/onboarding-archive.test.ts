@@ -24,11 +24,13 @@ import {preDashboardCatalog} from '../../src/core/features/dashboards/archive';
 import {preSlackCatalog} from '../../src/core/features/slack/archive';
 import {preReportShareCatalog} from '../../src/core/features/analytics/archive-compatibility';
 import {archiveHash,type ArchivePart} from '../../src/core/features/records/archive-schema';
+import {preSourceRemovalCatalog} from '../../src/core/features/ingestion/archive';
+import {removeSourceWithEvidence,assertRemovedSourceEvidence} from '../support/removed-source-proof';
 
 function sourceRequests(db:D1Database,cookie:string){
  const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex')})});
  const request=(path:string,method='GET',body?:unknown)=>app.request(`https://orbit.test/api/v1/sources${path}`,{method,headers:{Cookie:cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});
- const signed=(secret:string)=>{const body=JSON.stringify({eventId:crypto.randomUUID(),type:'form.submitted',subject:'Restored source inquiry',occurredAt:new Date().toISOString(),email:'archive@example.test'}),timestamp=String(Math.floor(Date.now()/1000));return app.request('https://orbit.test/api/v1/signals/website',{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':createHmac('sha256',secret).update(timestamp+'.'+body).digest('hex')},body});};
+ const signed=(secret:string,id='website')=>{const body=JSON.stringify({eventId:crypto.randomUUID(),type:'form.submitted',subject:'Restored source inquiry',occurredAt:new Date().toISOString(),email:'archive@example.test'}),timestamp=String(Math.floor(Date.now()/1000));return app.request(`https://orbit.test/api/v1/signals/${id}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':createHmac('sha256',secret).update(timestamp+'.'+body).digest('hex')},body});};
  return {request,signed};
 }
 
@@ -45,6 +47,7 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
  assert.equal((await connected.request('').then(r=>r.json()) as any).sources.find((row:any)=>row.id==='website').has_signing_secret,1);
  await request(target,'../v2/access/workspaces/workspace/invitations','POST',{email:'old-guest@example.test',role:'guest',expiresAt:new Date(Date.now()+86400000).toISOString()});
  const customer=await request(source,'records/contact','POST',{name:'Archive customer',email:'archive@example.test'});
+ const removedSource=await removeSourceWithEvidence(source.db,connected,customer.id);
  const trialOwned=await source.customer('trial-owned@example.test');
  await source.db.prepare('UPDATE opportunities SET owner_id=? WHERE id=?').bind(source.actor,trialOwned.opportunityId).run();
  const apiCredential=await issueNativeCredential(source.db,source.actor,trialOwned.opportunityId);
@@ -70,6 +73,11 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
  assert.deepEqual(exportedLibrary.sort((a:any,b:any)=>a.id.localeCompare(b.id)),libraryRows.sort((a,b)=>a.id.localeCompare(b.id)));
  assert.deepEqual(archive.parts.flatMap((part:ArchivePart)=>part.records).filter((record:ArchivePart['records'][number])=>record.table==='outbound_opt_out_capabilities').map((record:ArchivePart['records'][number])=>record.row),[capability]);
  assert.ok(archive.parts.flatMap((part:any)=>part.records).filter((record:any)=>record.table==='signal_sources').every((record:any)=>record.row.secret_ciphertext===undefined),'Signing credentials do not travel in archives');
+ const archivedSignal=archive.parts.flatMap((part:ArchivePart)=>part.records).find((record:ArchivePart['records'][number])=>record.table==='signals'&&record.row.id===removedSource.signalId);
+ assert.deepEqual(archivedSignal?.row,removedSource.signal,'Removing a source retains the complete immutable evidence in exports');
+ const previousCatalog=preSourceRemovalCatalog(await foldInstalledCatalog(source.db)),previousManifest={...archive.manifest,schemaHash:await foldSchemaHash(previousCatalog),tables:archive.manifest.tables.map((table:any)=>table.name==='signal_sources'?{...table,columns:table.columns.filter((column:string)=>column!=='removed_at')}:table)};
+ const previousImport=await request(target,'records/archive/imports','POST',{confirmed:true,manifest:previousManifest});
+ await request(target,`records/archive/imports/${previousImport.id}/abort`,'POST',{});
  for(const tables of [archive.manifest.tables.filter((t:any)=>t.name!=='form_embed_origins'),[...archive.manifest.tables,{name:'unknown_records',columns:['id'],rows:0}]]){
   assert.equal((await target.request('records/archive/imports','POST',{confirmed:true,manifest:{...archive.manifest,tables}})).status,400);
  }
@@ -105,6 +113,8 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
   assert.deepEqual(await local.db.prepare('SELECT library_selection_json,merge_review_json FROM drafts WHERE id=?').bind(draft).first(),draftMetadata);
   assert.deepEqual(await local.db.prepare('SELECT * FROM outbound_opt_out_capabilities WHERE token=?').bind(capability.token).first(),capability,'The local CLI preserves the exact capability and origin');
   assert.deepEqual(await local.db.prepare('SELECT * FROM outbound_message_opt_out WHERE message_id=?').bind(scheduled.id).first(),approvedOptOut);
+  assert.deepEqual(await local.db.prepare('SELECT * FROM signal_sources WHERE id=?').bind(removedSource.id).first(),removedSource.source,'The local archive keeps removed sources retired');
+  assert.deepEqual(await local.db.prepare('SELECT * FROM signals WHERE id=?').bind(removedSource.signalId).first(),removedSource.signal);
  }finally{await local.dispose();}
  await restore(target,archive);
  assert.equal(await target.db.prepare('SELECT count(*) FROM api_credentials').first('count(*)'),0,'Records restore creates no API credential authority');
@@ -131,6 +141,7 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
  const restoredSettings=await target.request('settings','GET',undefined,{Cookie:cookie.split(';')[0]!});assert.equal(restoredSettings.status,200);
  assert.ok(!(await restoredSettings.json() as any).operators.some((operator:any)=>operator.email==='old-guest@example.test'),'A destination collaborator never becomes a full restored operator');
  const restored=sourceRequests(target.db,cookie.split(';')[0]!);
+ await assertRemovedSourceEvidence(target.db,restored,removedSource,customer.id);
  const sourceState=async()=>{const response=await restored.request('');assert.equal(response.status,200);const body=await response.json() as any;assert.ok(!JSON.stringify(body).includes(secret));return body.sources.find((row:any)=>row.id==='website');};
  assert.equal((await sourceState()).has_signing_secret,0,'An enabled restored source still needs reconnect when its secret was excluded');
  assert.equal((await restored.request('/website/test','POST',{contactId:customer.id})).status,403);
@@ -141,5 +152,9 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
  assert.equal((await restored.request('/website/test','POST',{contactId:customer.id})).status,201);
  assert.equal((await restored.signed(secret)).status,401);
  assert.equal((await restored.signed(replacement.secret)).status,201);
+ const erased=await target.request(`records/contact/${customer.id}`,'DELETE',{confirmed:true},{Cookie:cookie.split(';')[0]!});assert.equal(erased.status,200,await erased.text());
+ assert.equal(await target.db.prepare('SELECT id FROM signals WHERE id=?').bind(removedSource.signalId).first(),null,'Contact erasure still removes evidence belonging to a removed source');
+ assert.equal(await target.db.prepare('SELECT id FROM timeline_entries WHERE id=?').bind(removedSource.signalId).first(),null);
+ assert.ok(await target.db.prepare('SELECT removed_at FROM signal_sources WHERE id=?').bind(removedSource.id).first('removed_at'),'Erasure never reconnects a removed source');
  }finally{await source.dispose();await target.dispose();}
 });
