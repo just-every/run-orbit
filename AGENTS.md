@@ -70,3 +70,10 @@ when they would save work in another edition. Their natural home may be this
 edition, a family, Base or an independent repository; no separate repository per
 module or universal compatibility interface is required. Verify adoption against
 the receiving product's requirements, including deliberate local differences.
+
+## Lander-Regenerate
+
+CONTRACT.md owns acceptance and status. After a contract citation change, run
+`node scripts/contract-docs.mjs write` and `node scripts/contract-docs.mjs check`.
+Commit generated ACCEPTANCE.md and docs/CLAIMS.md whole, then regenerate
+`sources.lock.json` last with `node scripts/edition-authoring/cli.mjs lock`.

@@ -97,9 +97,8 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
  assert.equal((await leaving.call('/api/v1/tasks?view=all')).status,401);
  const notifications=await db.prepare("SELECT count(*) n FROM notifications WHERE operator_id=? AND kind='task.assigned' AND event_key LIKE 'task.handover:%'").bind(receiver).first<{n:number}>();assert.equal(notifications!.n,1);
 
-});
-
-test('BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks',async()=>{
+ // Ask for the account explanation only after reviewing the day's own evidence.
+ {
  const config={OPENAI_API_KEY:'test-only',AI_MODEL:'test-model',AI_INPUT_COST_PER_MILLION:'1',AI_OUTPUT_COST_PER_MILLION:'2'};
  const operator=createId(),t=await todayApp(db,{provider:createAIProvider(config),operatorId:operator}),off=await todayApp(db,{operatorId:operator});
  const brief=await t.brief(),account=brief.accounts.find(a=>a.name==='Acme Logistics')!,ids=account.lines.map(l=>l.evidence.id);
@@ -127,7 +126,10 @@ test('BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as p
  assert.equal((await off.json<{configured:boolean}>('/api/v1/today/summary/preview',{body:{account:account.key}},200)).configured,false);
  assert.equal((await off.call('/api/v1/today/summary',{body:{account:account.key,requestHash:'0'.repeat(64)}})).status,503);
  await agentRisks(t,off);
+ }
 });
+
+
 
 /** AGENT-002 on current sources: recorded roles, commitments and calls; observation apart from inference; nothing moves the deal. */
 async function agentRisks(t:TodayApp,off:TodayApp){

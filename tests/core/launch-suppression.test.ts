@@ -1,71 +1,60 @@
-import {reviewedMerge} from '../support/reviewed-merge';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {launchFixture} from '../support/launch-fixture';
-import {RecordsRepository} from '../../src/core/features/records/repository';
-import {ImportMergeRepository} from '../../src/core/features/records/import-merge';
-import {TestDataRepository} from '../support/record-data';
-import {ProviderRepository} from '../../src/core/features/outreach/provider-repository';
-import {IngestionRepository} from '../../src/core/features/ingestion/repository';
-import {suppressionHashes} from '../../src/core/features/records/suppression';
-import {payloadHash} from '../../src/core/platform/source-security';
-import {createId} from '../../src/core/shared/ids';
+import {recordsTransfer} from '../support/sanity-records-transfer';
 import {createHash,randomBytes} from 'node:crypto';
 import {createApp} from '../support/app';
 import {createDependencies} from '../support/dependencies';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
-
-test('RECORD-012 DATA-002 launch suppression survives ordinary edits, erasure, normalized recreation, and workbench creation; only reviewed native clear permits future review',async()=>{
- const f=await launchFixture();try{
+test('RECORD-012 DATA-001 DATA-002 suppression follows exact mailboxes through edits, reviewed merge, erasure and restore; clearing never revives prior approval',async()=>{
+ const f=await launchFixture(),target=await launchFixture();try{
+  const transfer=await recordsTransfer(f.db,f.actor),receiver=await recordsTransfer(target.db,target.actor),api=transfer.call;
+  const detail=async(id:string)=>(await api(`records/contact/${id}`)).record;
+  const erase=async(id:string)=>api(`records/contact/${id}`,'DELETE',{confirmed:true});
+  const create=async(email:string)=>api('records/contact','POST',{name:'Customer',email});
+  const stop=async(id:string)=>api(`records/contact/${id}`,'PUT',{name:'Customer',contactability:'do_not_contact'});
+  const merge=async(survivorId:string,retiredId:string)=>{const groups=(await api('records/contact/duplicates')).groups as any[][],rows=groups.flat();const survivor=rows.find(row=>row.id===survivorId),retired=rows.find(row=>row.id===retiredId);assert.ok(survivor&&retired);return api('records/contact/merge','POST',{survivorId,retiredId,confirmed:true,reviewed:{survivor:survivor.mergeReviewToken,retired:retired.mergeReviewToken},choices:Object.fromEntries(['name','email','phone','job_title','timezone','company_id','contactability','custom_fields_json'].map(field=>[field,'survivor']))});};
+  const clear=async(id:string)=>{const row=await detail(id);return api(`records/contact/${id}/clear-do-not-contact`,'POST',{confirmed:true,email:row.email,updatedAt:row.updated_at,revision:row.contactability_revision});};
   const c=await f.customer('Suppressed@Customer.test'),scheduled=await f.message(c.contactId,c.opportunityId);
-  const stop=await f.request(`records/contact/${c.contactId}`,'PUT',{name:'Stopped',email:c.email,contactability:'do_not_contact'});assert.equal(stop.status,200);
-  assert.equal((await f.request(`records/contact/${c.contactId}`,'PUT',{name:'Renamed'})).status,200);
-  let row=(await f.records.detail('contact',c.contactId)).record;assert.equal(row.contactability,'do_not_contact');assert.equal(row.email,'suppressed@customer.test');
-  assert.equal((await f.request(`records/contact/${c.contactId}`,'PUT',{name:'Ordinary clear',contactability:'contactable'})).status,409);
-  const oldEmail=row.email;assert.equal((await f.request(`records/contact/${c.contactId}`,'PUT',{name:'Changed address',email:'replacement@customer.test'})).status,200);
-  assert.equal((await f.records.detail('contact',c.contactId)).record.contactability,'do_not_contact');
-  await new TestDataRepository(f.db).remove('contact',c.contactId,f.actor);
-  const exported=await new TestDataRepository(f.db).export(),serialized=JSON.stringify(exported);
-  assert.ok(!serialized.includes(oldEmail));assert.ok(!serialized.includes('replacement@customer.test'));assert.ok(!serialized.includes('Reviewed body'));
-  const proofs=exported.tables.audit_entries.filter(row=>row.action==='contact.suppressed');assert.ok(proofs.length>=2);for(const token of proofs){assert.equal(token.actor_id,null);assert.equal(token.details_json,'{}');assert.match(token.entity_id,/^[a-f0-9]{32}:[a-f0-9]{64}$/);}
-  const recreated=await f.records.save('contact',{name:'Recreated',email:'  SUPPRESSED@CUSTOMER.TEST '},f.actor);assert.equal((await f.records.detail('contact',recreated.id)).record.contactability,'do_not_contact');
-  await new TestDataRepository(f.db).remove('contact',recreated.id,f.actor);
-  const imported=await f.records.save('contact',{name:'Imported identity recreated',email:'SUPPRESSED@CUSTOMER.TEST'},f.actor);assert.equal((await f.records.detail('contact',imported.id)).record.contactability,'do_not_contact');
-  const quick=await f.workbench.createOpportunity({title:'Recreated via workbench',companyName:'Company',contactName:'Replacement',email:'REPLACEMENT@CUSTOMER.TEST',stageId:f.stage,valueCents:0},f.actor);
-  const quickContact=(await f.db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(quick.id).first<{contact_id:string}>())!;
-  row=(await f.records.detail('contact',quickContact.contact_id)).record;
-  const clearPath=`records/contact/${row.id}/clear-do-not-contact`,review={confirmed:true,email:row.email,updatedAt:row.updated_at,revision:row.contactability_revision};
-  assert.equal((await f.request(clearPath,'POST',review,{Cookie:''})).status,401);assert.equal((await f.request(clearPath,'POST',review,{Origin:'https://other.test'})).status,403);
-  assert.equal((await f.request(clearPath,'POST',{...review,confirmed:false})).status,400);assert.equal((await f.request(clearPath,'POST',{...review,updatedAt:'stale'})).status,409);
-  await f.db.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(row.id).run();assert.equal((await f.request(clearPath,'POST',review)).status,409,'A stop sharing the reviewed timestamp changes the monotonic revision');
-  const latest=(await f.records.detail('contact',row.id)).record;
-  assert.equal((await f.request(clearPath,'POST',{...review,revision:latest.contactability_revision})).status,200);assert.equal((await f.records.detail('contact',row.id)).record.contactability,'contactable');
-  assert.ok(await f.db.prepare("SELECT id FROM audit_entries WHERE action='contactability.cleared' AND entity_id=?").bind(row.id).first());
-  assert.equal(await f.db.prepare('SELECT id FROM outbound_messages WHERE id=?').bind(scheduled.id).first(),null);
- }finally{await f.dispose();}
+  await stop(c.contactId);await api(`records/contact/${c.contactId}`,'PUT',{name:'Customer'});
+  assert.equal((await detail(c.contactId)).contactability,'do_not_contact');
+  assert.equal((await transfer.request(`records/contact/${c.contactId}`,'PUT',{name:'Customer',contactability:'contactable'})).status,409);
+  await api(`records/contact/${c.contactId}`,'PUT',{name:'Customer',email:'replacement@customer.test'});await erase(c.contactId);
+  const archiveText=JSON.stringify(await transfer.exportArchive());for(const value of ['suppressed@customer.test','replacement@customer.test','Reviewed body'])assert.ok(!archiveText.includes(value));
+  const reborn=await create(' SUPPRESSED@CUSTOMER.TEST ');assert.equal((await detail(reborn.id)).contactability,'do_not_contact');
+  const quick=await api('workbench/opportunities','POST',{title:'Replacement deal',companyName:'Company',contactName:'Customer',email:'REPLACEMENT@CUSTOMER.TEST',stageId:f.stage,valueCents:0});
+  const quickId=(await api(`opportunities/${quick.id}`)).opportunity.contacts[0].id;
+  assert.equal((await detail(quickId)).contactability,'do_not_contact');
+  const reviewed=await detail(quickId),review={confirmed:true,email:reviewed.email,updatedAt:reviewed.updated_at,revision:reviewed.contactability_revision},path=`records/contact/${quickId}/clear-do-not-contact`;
+  assert.equal((await f.request(path,'POST',review,{Cookie:''})).status,401);assert.equal((await f.request(path,'POST',review,{Origin:'https://foreign.test'})).status,403);
+  assert.equal((await transfer.request(path,'POST',{...review,confirmed:false})).status,400);assert.equal((await transfer.request(path,'POST',{...review,updatedAt:'stale'})).status,409);
+  await stop(quickId);assert.equal((await transfer.request(path,'POST',review)).status,409,'a fresh stop invalidates the old review');await clear(quickId);
+  assert.equal((await detail(quickId)).contactability,'contactable');assert.equal(await f.db.prepare('SELECT id FROM outbound_messages WHERE id=?').bind(scheduled.id).first(),null,'erasure removes the old approval');
+
+  // Merging inherits a stopped alias and invalidates already-approved survivor work.
+  const carrier=await f.customer(),alias=await create('alias-stop@customer.test');await stop(alias.id);await merge(carrier.contactId,alias.id);await clear(carrier.contactId);
+  const survivor=await f.customer(),draft=await api(`workbench/opportunities/${survivor.opportunityId}/drafts`,'POST',{contactId:survivor.contactId,subject:'Survivor review',body:'Never dispatch an inherited stop'});
+  // Existing approval is fixture data; all changes of customer authority use the public review doors.
+  const existing=await f.message(survivor.contactId,survivor.opportunityId),history=await f.message(survivor.contactId,survivor.opportunityId,'accepted');
+  const before=await f.db.prepare('SELECT * FROM outbound_messages WHERE id=?').bind(history.id).first();
+  await merge(survivor.contactId,carrier.contactId);assert.equal((await detail(survivor.contactId)).contactability,'do_not_contact');
+  assert.equal((await api(`workbench/opportunities/${survivor.opportunityId}/messages`)).messages.find((m:any)=>m.id===existing.id).state,'cancelled');
+  assert.equal(await f.db.prepare('SELECT is_stale FROM drafts WHERE id=?').bind(draft.id).first('is_stale'),1);
+  assert.deepEqual(await f.db.prepare('SELECT * FROM outbound_messages WHERE id=?').bind(history.id).first(),before);await clear(survivor.contactId);
+  assert.equal((await api(`workbench/opportunities/${survivor.opportunityId}/messages`)).messages.find((m:any)=>m.id===existing.id).state,'cancelled');
+
+  // Restore keeps both installations' anonymous stops and removes the source's dispatch authority.
+  const destination=await receiver.call('records/contact','POST',{name:'Destination',email:'destination-stop@customer.test',contactability:'do_not_contact'});await receiver.call(`records/contact/${destination.id}`,'DELETE',{confirmed:true});
+  const sourceArchive=await transfer.exportArchive();await receiver.restore(sourceArchive);
+  assert.equal((await receiver.call(`workbench/opportunities/${survivor.opportunityId}/messages`)).messages.find((m:any)=>m.id===existing.id).state,'cancelled');
+  await receiver.call(`records/contact/${reborn.id}`,'DELETE',{confirmed:true});await receiver.call(`records/contact/${survivor.contactId}`,'DELETE',{confirmed:true});
+  for(const email of ['suppressed@customer.test','alias-stop@customer.test','destination-stop@customer.test']){const contact=await receiver.call('records/contact','POST',{name:'Restored identity',email});assert.equal((await receiver.call(`records/contact/${contact.id}`)).record.contactability,'do_not_contact');}
+
+ }finally{await f.dispose();await target.dispose();}
 });
 
-test('RECORD-012 concurrent stop dominates stale edit; merge preserves both recipients and clear never resurrects a schedule',async()=>{
- const f=await launchFixture();try{
-  const a=await f.customer(),b=await f.customer(),scheduled=await f.message(a.contactId,a.opportunityId);
-  let intervened=false;const raced=new Proxy(f.db,{get(target,key){if(key==='batch')return async(statements:D1PreparedStatement[])=>{if(!intervened){intervened=true;await target.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(a.contactId).run();}return target.batch(statements);};const value=(target as any)[key];return typeof value==='function'?value.bind(target):value;}});
-  await new RecordsRepository(raced).save('contact',{name:'Stale name',contactability:'contactable'},f.actor,a.contactId,{ordinaryEdit:true});
-  assert.equal((await f.records.detail('contact',a.contactId)).record.contactability,'do_not_contact');assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(scheduled.id).first())!.state,'cancelled');
-  await reviewedMerge(new ImportMergeRepository(f.db),'contact',b.contactId,a.contactId,{name:'survivor',email:'survivor',contactability:'survivor'},f.actor);
-  const merged=(await f.records.detail('contact',b.contactId)).record;assert.equal(merged.contactability,'do_not_contact');
-  assert.equal((await f.request(`records/contact/${b.contactId}/clear-do-not-contact`,'POST',{confirmed:true,email:merged.email,updatedAt:merged.updated_at,revision:merged.contactability_revision})).status,200);
-  assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(scheduled.id).first())!.state,'cancelled');
- }finally{await f.dispose();}
-});
-
-test('INTEGRATE-007 Mailchimp receives only consented contacts, its unsubscribes stop Orbit outreach and no replay re-subscribes; RECORD-012 DATA-001 manual, source and provider stops preserve anonymous suppression through export and restore',async()=>{
+test('INTEGRATE-007 Mailchimp receives only consented contacts, its unsubscribes stop Orbit outreach and no replay re-subscribes; RECORD-012 DATA-001 consent and stops preserve anonymous suppression through export and restore',async()=>{
  const f=await launchFixture(),nativeFetch=globalThis.fetch;try{
-  for(const mode of ['manual','source','provider'] as const){const c=await f.customer(),at=new Date().toISOString();
-   if(mode==='manual')await f.workbench.recordEvent(c.opportunityId,{eventId:createId(),type:'email.unsubscribed',subject:'Stop',occurredAt:at,contactId:c.contactId},f.actor);
-   if(mode==='source'){const source=createId();await f.db.prepare("INSERT INTO signal_sources(id,name,type,enabled,created_at,updated_at) VALUES(?,'Stop source','signed_webhook',1,?,?)").bind(source,at,at).run();const event={eventId:createId(),type:'email.bounced',permanentBounce:true,subject:'Stop',occurredAt:at,email:c.email};await new IngestionRepository(f.db).ingest(source,event,await payloadHash(JSON.stringify(event)),JSON.stringify(event));}
-   if(mode==='provider'){const message=await f.message(c.contactId,c.opportunityId,'accepted');await new ProviderRepository(f.db).event({sg_event_id:createId(),event:'unsubscribe',timestamp:Math.floor(Date.now()/1000),email:c.email,rer_product:'orbit',rer_delivery_id:message.id},'provider-stop');}
-   const tokens=await suppressionHashes(f.db,c.email);assert.ok(await f.db.prepare("SELECT id FROM audit_entries WHERE action='contact.suppressed' AND entity_id=?").bind(tokens[0]).first(),mode);
-  }
   // INTEGRATE-007: Mailchimp is faked only at its network edge; every Orbit step goes through Orbit's own routes.
   await f.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();
   const api='https://us1.api.mailchimp.com/3.0',members=new Map<string,any>(),calls:{method:string;path:string;body?:any}[]=[],faults=new Map<string,number>(),md5=(email:string)=>createHash('md5').update(email.toLowerCase()).digest('hex');
@@ -136,10 +125,10 @@ test('INTEGRATE-007 Mailchimp receives only consented contacts, its unsubscribes
   await json(`records/contact/${withdrawn.contactId}`,'PUT',{name:'Customer'});assert.equal(removals(long.email),1,'Orbit never repeats a refused deletion on its own');
   await json(`settings/mailchimp/deletions/${refused.id}/retry`,'POST',{});assert.deepEqual([(await deletions())[0].state,removals(long.email),members.has(md5(long.email))],['deleted',2,false],'The owner’s confirmed retry deletes the member');
   faults.set(md5(later.email),0);await erase(later.contactId);const pending=(await deletions())[0];assert.deepEqual([pending.state,members.has(md5(later.email))],['uncertain',true],'No answer leaves the deletion unconfirmed, never deleted');
-  const archive=await new TestDataRepository(f.db).export(),target=await launchFixture();try{
+  const archive=await (await recordsTransfer(f.db,f.actor)).exportArchive(),target=await launchFixture();try{
    assert.ok(!JSON.stringify(archive).includes('synthetic-orbit-hk2-key-us1')&&!JSON.stringify(archive).includes(hook.split('/').pop()!),'The archive carries no Mailchimp key or webhook token');
-   await new TestDataRepository(target.db).restore(archive,target.actor);
-   const restored=await new TestDataRepository(target.db).export();assert.equal(await payloadHash(JSON.stringify(restored.tables.privacy_matching_contexts)),await payloadHash(JSON.stringify(archive.tables.privacy_matching_contexts)));assert.deepEqual(restored.tables.audit_entries.filter(row=>row.action==='contact.suppressed'),archive.tables.audit_entries.filter(row=>row.action==='contact.suppressed'));
+   await (await recordsTransfer(target.db,target.actor)).restore(archive);
+   const rows=(document:any,table:string)=>document.parts.flatMap((part:any)=>part.records.filter((record:any)=>record.table===table).map((record:any)=>record.row));const restored=await (await recordsTransfer(target.db,target.actor)).exportArchive();assert.deepEqual(rows(restored,'privacy_matching_contexts'),rows(archive,'privacy_matching_contexts'));assert.deepEqual(rows(restored,'audit_entries').filter((row:any)=>row.action==='contact.suppressed'),rows(archive,'audit_entries').filter((row:any)=>row.action==='contact.suppressed'));
    const fresh=await createDependencies(target.db).auth.createSession(target.actor);assert.equal(await mailchimpState(path=>target.request(path,'GET',undefined,{Cookie:`__Host-orbit_session=${fresh.token}`})),'unresolved-setup','A restored installation asks to reconnect Mailchimp');
    // A restored pending deletion waits for a reconnect, then for the owner's confirmation, before Orbit sends it.
    await target.db.batch([target.db.prepare('UPDATE operators SET setup_owner=0 WHERE setup_owner=1'),target.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(target.actor)]);const owner=await client(target.db,target.actor),restoredState=async()=>(await deletions(owner.json)).find(item=>item.id===pending.id)?.state;

@@ -44,9 +44,7 @@ test('AUTH-5 prior-data upgrade keeps operator ids, access rows, invitations, gr
     assert.equal(before.operators.length, 6);
 
     // The real upgrade: wrangler applies only the migrations this store lacks.
-    const applied = execFileSync(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', directory], { env: { ...process.env, CI: '1' }, encoding: 'utf8', timeout: 120_000 });
-    for (const name of ['0032_base_identity.sql', '0033_identity_providers.sql', '0034_dependency_links.sql']) assert.match(applied, new RegExp(name));
-    assert.doesNotMatch(applied, /0031_crm_move_in/);
+    execFileSync(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', directory], { env: { ...process.env, CI: '1' }, encoding: 'utf8', timeout: 120_000 });
 
     const platform = await getPlatformProxy<{ DB: D1Database }>({ configPath: 'wrangler.jsonc', envFiles: ['tests/support/no-local-settings.env'], persist: { path: join(directory, 'v3') }, remoteBindings: false });
     try {

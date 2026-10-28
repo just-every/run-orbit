@@ -1,3 +1,5 @@
+import {sourceEvidence} from '../support/sanity-source-evidence';
+import {bookingSources} from '../support/sanity-booking-sources';
 import {proveSlackNotices} from '../support/slack-notices-proof';
 import {createOutboundMail,type OutboundMail} from '../../src/core/platform/outbound-mail';
 import assert from 'node:assert/strict';
@@ -9,7 +11,7 @@ import {createDependencies} from '../support/dependencies';
 import {createId} from '../../src/core/shared/ids';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
 
-async function fixture(mail?:OutboundMail,sendCount?:()=>number){const platform=await isolatedDatabase(),db=platform.db,deps=createDependencies(db),actor=createId(),stage=createId();await deps.auth.ensureOperator({id:actor,email:'owner@example.test',displayName:'Owner'});await deps.workspace.ensureWorkspace({name:'First hour',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});await deps.workspace.ensurePipelineStage({id:stage,name:'Discovery',position:0});const session=await deps.auth.createSession(actor);let sends=0,clockNow:Date|undefined;const app=createApp({clock:{now:()=>clockNow??new Date()},database:db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex')}),outboundMail:mail??{send:async()=>{sends++;return{providerMessageId:'paid-edge-acceptance'};}}});const headers={Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'};const request=(path:string,method='GET',body?:unknown,override:Record<string,string>={})=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{...headers,...override},body:body===undefined?undefined:JSON.stringify(body)});return{db,app,stage,actor,token:session.token,setClock:(value:Date|undefined)=>{clockNow=value;},request,dispose:platform.dispose,sends:()=>sendCount?sendCount():sends};}
+async function fixture(mail?:OutboundMail,sendCount?:()=>number){const platform=await isolatedDatabase(),db=platform.db,deps=createDependencies(db),actor=createId(),stage=createId();await deps.auth.ensureOperator({id:actor,email:'owner@example.test',displayName:'Owner'});await deps.workspace.ensureWorkspace({name:'First hour',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});await deps.workspace.ensurePipelineStage({id:stage,name:'Discovery',position:0});const session=await deps.auth.createSession(actor);let sends=0,clockNow:Date|undefined;const app=createApp({clock:{now:()=>clockNow??new Date()},database:db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex')}),outboundMail:mail??{send:async()=>{sends++;return{providerMessageId:'paid-edge-acceptance'};}}});const headers={Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'};const request=async(path:string,method='GET',body?:unknown,override:Record<string,string>={})=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{...headers,...override},body:body===undefined?undefined:JSON.stringify(body)});return{db,app,stage,actor,token:session.token,setClock:(value:Date|undefined)=>{clockNow=value;},request,dispose:platform.dispose,sends:()=>sendCount?sendCount():sends};}
 test('REPORT-004 explicitly enabled Slack schedules respect DST, hold uncertainty and never resume; email stays paused; INTEGRATE-005 INTEGRATE-009 INTEGRATE-010 INTEGRATE-011 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions; BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send',async()=>{
  let relayOutcome:'accepted'|'rejected'|'uncertain'='accepted';
  const nativeFetch=globalThis.fetch,relayUrl='https://managed-mail.example.test/send',bodies:Record<string,unknown>[]=[];
@@ -73,78 +75,11 @@ test('REPORT-004 explicitly enabled Slack schedules respect DST, hold uncertaint
  assert.ok(JSON.stringify(detail).includes('Discovery call: Maya wants a USD 100 pilot.'),'Manual sales work stays on the deal');
  const deal=(await(await f.request(`opportunities/${customer.id}`)).json() as any).opportunity;assert.equal(deal.valueCents??deal.value_cents,10000,'The USD source amount is unchanged');assert.ok(deal.evaluation.contributions.some((c:any)=>c.signalId===bookedSignal.id),'A signed booking is customer evidence on the deal');
  assert.equal(bodies.length,sendsBeforeSales,'Bookings, manual work and provider setup never send customer mail');
- // INTEGRATE-007 on the walk: the consented US buyer may join a Mailchimp audience (faked only at its network edge), Mailchimp owns campaigns, and a disconnected account is unresolved setup.
- await f.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();const relayFetch=globalThis.fetch,mailchimpApi='https://us1.api.mailchimp.com/3.0',audience=new Map<string,any>(),mailchimpCalls:string[]=[];
- globalThis.fetch=async(input,init)=>{const url=String(input);if(!url.startsWith(mailchimpApi+'/'))return relayFetch(input,init);const path=url.slice(mailchimpApi.length).split('?')[0]!,method=init?.method??'GET',body=init?.body?JSON.parse(String(init.body)):undefined;mailchimpCalls.push(`${method} ${path}`);
-  if(path==='/ping')return Response.json({health_status:'ok'});if(path==='/lists/synthwalk1')return Response.json({id:'synthwalk1',name:'US buyers',web_id:5150});
-  if(path==='/lists/synthwalk1/merge-fields')return Response.json(method==='POST'?{tag:'ORBITCONS'}:{merge_fields:[{tag:'FNAME'},{tag:'LNAME'}]});
-  const hash=/^\/lists\/synthwalk1\/members\/([a-f0-9]{32})$/.exec(path)?.[1];if(hash&&method==='PUT'){const member={id:hash,unique_email_id:'w'+hash.slice(0,9),status:audience.get(hash)?.status??body.status_if_new,merge_fields:body.merge_fields};audience.set(hash,member);return Response.json(member);}
-  return Response.json({title:'Resource Not Found'},{status:404});};
- assert.equal((await f.request('settings/mailchimp/connect','POST',{apiKey:'synthetic-orbit-hk2-walk-us1'})).status,200);assert.equal(named(await products(),'Mailchimp').state,'unresolved-setup','A passing key check without an audience is not yet connected');
- assert.equal((await f.request('settings/mailchimp/audience','PUT',{audienceId:'synthwalk1'})).status,200);
- assert.equal((await f.request(`marketing/mailchimp/consents/${contact.id}`,'POST',{source:'Harbour pilot booking form',basis:'Asked for US product news on the discovery call',confirmed:true})).status,200);
- const walkPreview=await(await f.request('marketing/mailchimp/preview?fields=name')).json() as any,buyer=walkPreview.groups.subscribed.find((item:any)=>item.contactId===contact.id);
- assert.deepEqual([buyer?.email,buyer?.consent?.source,buyer?.consent?.basis],[contact.email,'Harbour pilot booking form','Asked for US product news on the discovery call'],'The walk’s consented buyer previews as subscribed with the basis of consent');
- assert.ok(walkPreview.groups.unknown.some((item:any)=>item.email==='latest@harbour.test'),'A contact without recorded consent is never handed over');
- const handed=await f.request('marketing/mailchimp/handoffs','POST',{fields:walkPreview.fields,previewDigest:walkPreview.digest,operationId:crypto.randomUUID()});assert.equal(handed.status,200,await handed.clone().text());assert.equal(audience.size,1,'Only the consented buyer joins the audience');
- assert.equal([...audience.values()][0]?.merge_fields?.ORBITCONS,'Harbour pilot booking form: Asked for US product news on the discovery call','The buyer’s Mailchimp member carries the recorded consent source and basis');
- const marketing=named(await products(),'Mailchimp');assert.deepEqual([marketing.state,marketing.link?.href],['connected','https://us1.admin.mailchimp.com/lists/members?id=5150'],'Connected products links the chosen audience in Mailchimp');
- assert.match(marketing.owns,/campaign/i);assert.ok(!mailchimpCalls.some(call=>call.includes('/campaigns')),'Orbit never creates or sends a Mailchimp campaign');assert.equal(bodies.length,sendsBeforeSales,'The audience handoff sends no customer mail');
- assert.equal((await f.request('settings/mailchimp/disconnect','POST',{})).status,200);const disconnected=named(await products(),'Mailchimp');assert.deepEqual([disconnected.state,disconnected.link],['unresolved-setup',undefined],'A disconnected account is unresolved setup');
- assert.equal((await f.request('marketing/mailchimp/preview?fields=name')).status,409,'A disconnected account hands nothing over');
+ await f.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();
+ await sourceEvidence(f,customer.id,contact.id,contact.email);
+ await bookingSources(f);
  await proveSlackNotices(f,customer.id,contact.id);
  assert.equal(bodies.length,sendsBeforeSales,'Slack actions never approve, edit or send customer mail');
 
  }finally{globalThis.fetch=nativeFetch;await f.dispose();}
-});
-test('SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor-native booking signatures reject tampering, expiry and replay while unknown invitees remain unlinked',async()=>{
- const f=await fixture();try{
- const{secret}=await(await f.request('sources/bookings','PUT',{name:'Booking tools',enabled:true})).json() as any;
- await f.request('workbench/opportunities','POST',{title:'Booking customer',companyName:'Harbour',contactName:'Maya',email:'maya@harbour.test',stageId:f.stage,valueCents:10000});
- const originalFetch=globalThis.fetch;let registration:any;
- globalThis.fetch=async(input,init)=>{
-  const url=new URL(String(input));assert.equal(url.origin,'https://api.calendly.com');
-  if(url.pathname==='/users/me')return Response.json({resource:{uri:'https://api.calendly.com/users/test-user',current_organization:'https://api.calendly.com/organizations/test-org'}});
-  if((init?.method??'GET')==='GET')return Response.json({collection:[]});
-  registration=JSON.parse(String(init?.body));return Response.json({resource:{uri:'https://api.calendly.com/webhook_subscriptions/test-subscription',callback_url:registration.url,state:'active'}});
- };
- try{
-  const connected=await f.request('sources/bookings/calendly','POST',{token:'test-only-calendly-token'});assert.equal(connected.status,200,await connected.clone().text());
-  assert.equal(registration.url,'https://orbit.test/api/v1/signals/bookings/calendly');assert.equal(registration.signing_key,secret);assert.deepEqual(registration.events,['invitee.created','invitee.canceled']);
-  assert.equal(JSON.stringify(await connected.json()).includes('test-only-calendly-token'),false);
- }finally{globalThis.fetch=originalFetch;}
-
- for(const vendor of ['calcom','calendly'])for(const cancel of [false,true]){
- const occurredAt=new Date().toISOString(),type=cancel?'meeting.cancelled':'meeting.booked';
- const payload=vendor==='calcom'?{triggerEvent:cancel?'BOOKING_CANCELLED':'BOOKING_CREATED',createdAt:occurredAt,payload:{uid:crypto.randomUUID(),attendees:[{email:'maya@harbour.test'}]}}:{event:cancel?'invitee.canceled':'invitee.created',created_at:occurredAt,payload:{uri:'https://api.calendly.com/scheduled_events/event/invitees/'+crypto.randomUUID(),event:'https://api.calendly.com/scheduled_events/event',email:'maya@harbour.test'}};
- const raw=JSON.stringify(payload),timestamp=String(Math.floor(Date.now()/1000));
- const post=(body:string,ts=timestamp,signature?:string)=>{const hash=signature??createHmac('sha256',secret).update(vendor==='calcom'?body:ts+'.'+body).digest('hex');return f.app.request('https://orbit.test/api/v1/signals/bookings/'+vendor,{method:'POST',headers:{[vendor==='calcom'?'X-Cal-Signature-256':'Calendly-Webhook-Signature']:vendor==='calcom'?hash:'t='+ts+',v1='+hash},body});};
- assert.equal((await post(raw,timestamp,'0'.repeat(64))).status,401);const hash=createHmac('sha256',secret).update(vendor==='calcom'?raw:timestamp+'.'+raw).digest('hex');assert.equal((await post(raw+' ',timestamp,hash)).status,401);
- if(vendor==='calcom')assert.equal((await post(JSON.stringify({...payload,createdAt:new Date(Date.now()-600000).toISOString()}))).status,401);else assert.equal((await post(raw,String(Number(timestamp)-240))).status,401);
- const accepted=await post(raw);assert.equal(accepted.status,201,await accepted.clone().text());const signal=await accepted.json() as any;assert.equal(signal.linked,true);assert.equal((await post(raw)).status,409);assert.equal((await f.db.prepare('SELECT type FROM signals WHERE id=?').bind(signal.id).first<any>()).type,type);
- }
- const unknown=JSON.stringify({triggerEvent:'BOOKING_CREATED',createdAt:new Date().toISOString(),payload:{uid:crypto.randomUUID(),attendees:[{email:'unknown@example.test'}]}});const response=await f.app.request('https://orbit.test/api/v1/signals/bookings/calcom',{method:'POST',headers:{'X-Cal-Signature-256':createHmac('sha256',secret).update(unknown).digest('hex')},body:unknown});const unlinked=await response.json() as any;assert.equal(unlinked.linked,false);assert.match(JSON.stringify(await(await f.request('sources/unlinked')).json()),/No unique record match/);const contact=(await(await f.request('sources/recipe-context')).json() as any).contacts[0];assert.equal((await f.request(`sources/unlinked/${unlinked.id}/link`,'POST',{type:'contact',id:contact.id})).status,200);assert.ok(await f.db.prepare('SELECT signal_id FROM signal_links WHERE signal_id=? AND record_id=?').bind(unlinked.id,contact.id).first());
- }finally{await f.dispose();}
-});
-
-test('SIGNAL-009 source rotation and disabling atomically refuse an already streaming signed event',{timeout:60000},async()=>{
- const f=await fixture();try{
- await f.request('workbench/opportunities','POST',{title:'Source race customer',companyName:'Harbour',contactName:'Maya',email:'maya@harbour.test',stageId:f.stage,valueCents:10000});
- const counts=async()=>{const result=[];for(const table of ['signals','signal_links','timeline_entries','evaluations'])result.push(await f.db.prepare(`SELECT count(*) AS n FROM ${table}`).first());return result;};
- for(const vendor of ['orbit','calcom','calendly','automation'])for(const change of ['rotate','disable','disable-enable','remove']){
-  const sourceId=createId(),sourcePath=`sources/${sourceId}`;
-  const{secret}=await(await f.request(sourcePath,'PUT',{name:'Streaming source',enabled:true})).json() as any;
-  const now=new Date().toISOString(),eventId=crypto.randomUUID(),payload=(vendor==='orbit'||vendor==='automation')?{eventId,type:'form.submitted',subject:'Streaming inquiry',occurredAt:now,email:'maya@harbour.test'}:vendor==='calcom'?{triggerEvent:'BOOKING_CREATED',createdAt:now,payload:{uid:eventId,attendees:[{email:'maya@harbour.test'}]}}:{event:'invitee.created',created_at:now,payload:{uri:'https://api.calendly.com/scheduled_events/event/invitees/'+eventId,event:'https://api.calendly.com/scheduled_events/event',email:'maya@harbour.test'}};
-  const raw=JSON.stringify(payload),timestamp=String(Math.floor(Date.now()/1000)),signature=createHmac('sha256',secret).update(vendor==='calcom'?raw:timestamp+'.'+raw).digest('hex');
-  const headers=vendor==='automation'?{Authorization:`Bearer ${secret}`}:vendor==='orbit'?{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':signature}:vendor==='calcom'?{'X-Cal-Signature-256':signature}:{'Calendly-Webhook-Signature':`t=${timestamp},v1=${signature}`};
-  let release!:()=>void,reading!:()=>void;const bodyRead=new Promise<void>(resolve=>reading=resolve),finish=new Promise<void>(resolve=>release=resolve);
-  const stream=new ReadableStream<Uint8Array>({async pull(controller){reading();await finish;controller.enqueue(new TextEncoder().encode(raw));controller.close();}},{highWaterMark:0});
-  const before=await counts(),pending=f.app.request(new Request(`https://orbit.test/api/v1/signals/${sourceId}`+(vendor==='orbit'?'':'/'+vendor),{method:'POST',headers,body:stream,duplex:'half'} as RequestInit));
-  await Promise.race([bodyRead,pending.then(response=>{throw Error(`Signed stream ended before reading its body (${response.status})`);})]);
-  try{if(change==='rotate')assert.equal((await f.request(sourcePath,'PUT',{name:'Streaming source',enabled:true})).status,200);
-  else if(change==='remove')assert.equal((await f.request(sourcePath,'DELETE',{confirmed:true})).status,200);
-  else{assert.equal((await f.request(sourcePath,'PATCH',{enabled:false})).status,200);if(change==='disable-enable')assert.equal((await f.request(sourcePath,'PATCH',{enabled:true})).status,200);}
-  }finally{release();}assert.equal((await pending).status,403,`${vendor} ${change} revokes the pending request`);assert.deepEqual(await counts(),before,'Revoked delivery leaves no signal, link, timeline or scoring effects');
- }
- }finally{await f.dispose();}
 });
