@@ -12,11 +12,11 @@ export async function workflowBrowserJourney({page,fixture,origin,directory},wid
  await settings.getByLabel('Workflow name',{exact:true}).fill('Prepare account review');
  await settings.locator('.workflows-editor').getByLabel('Field',{exact:true}).fill('title');
  await settings.getByLabel('Value',{exact:true}).fill('Account review ready');
- await settings.getByLabel('Trigger',{exact:true}).selectOption('activity_logged');
- await settings.getByLabel('Activity type',{exact:true}).selectOption('meeting');
- await expect(settings.getByLabel('Activity type',{exact:true})).toHaveValue('meeting');
+ await settings.getByLabel(/^Trigger\b/).selectOption('activity_logged');
+ await settings.getByLabel(/^Activity type\b/).selectOption('meeting');
+ await expect(settings.getByLabel(/^Activity type\b/)).toHaveValue('meeting');
  await settings.getByRole('heading',{name:'Sales workflows',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,`workflow-activity-editor-${width}.png`)});
- await settings.getByLabel('Trigger',{exact:true}).selectOption('record_changed');
+ await settings.getByLabel(/^Trigger\b/).selectOption('record_changed');
  await settings.getByRole('heading',{name:'Sales workflows',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,`workflow-editor-${width}.png`)});
  await settings.getByRole('button',{name:'Preview changes',exact:true}).click();
  await expect(settings.getByRole('region',{name:'Workflow activation preview'})).toBeVisible();
