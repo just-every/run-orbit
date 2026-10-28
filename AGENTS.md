@@ -74,6 +74,6 @@ the receiving product's requirements, including deliberate local differences.
 ## Lander-Regenerate
 
 CONTRACT.md owns acceptance and status. After a contract citation change, run
-`node scripts/contract-docs.mjs write` and `node scripts/contract-docs.mjs check`.
+`node src/base/contract-docs.mjs write` and `node src/base/contract-docs.mjs check`.
 Commit generated ACCEPTANCE.md and docs/CLAIMS.md whole, then regenerate
 `sources.lock.json` last with `node scripts/edition-authoring/cli.mjs lock`.
