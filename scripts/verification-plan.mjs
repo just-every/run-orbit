@@ -21,8 +21,8 @@ export const journeyFiles = [
 const minutes = {};
 const weight = file => minutes[file] ?? 1;
 const isBrowser = file => /tests\/(?:e2e|archive|delegation-browser|launch-runtime|rer)\//.test(file) || /(?:browser-journeys|report-disclosure|empty-native)\.test\.ts$/.test(file);
-function balanced(files) {
-  const bins = Array.from({length: Math.min(8, files.length)}, () => ({minutes: 0, files: []}));
+function balanced(files, count) {
+  const bins = Array.from({length: Math.min(count, files.length)}, () => ({minutes: 0, files: []}));
   for (const file of [...files].sort((a, b) => weight(b) - weight(a) || a.localeCompare(b))) {
     const bin = bins.reduce((smallest, candidate) => candidate.minutes < smallest.minutes ? candidate : smallest);
     bin.minutes += weight(file);
@@ -45,7 +45,9 @@ export function verificationPlan({journeys = false} = {}) {
     gate('exec', 'node', 'scripts/publish-deployment-spec.mjs', '--check'),
     gate('run', 'typecheck'),
   ]};
-  for (const [index, bin] of balanced(selected).entries()) {
+  // Historical qualifications are deliberately slow. Fewer release runners
+  // balance their single long lineage flow without adding push work.
+  for (const [index, bin] of balanced(selected, journeys ? 4 : 8).entries()) {
     const name = `sanity-${index}`, node = bin.files.filter(file => !file.endsWith('.spec.mjs'));
     const browser = bin.files.filter(file => file.startsWith('tests/e2e/'));
     const archive = bin.files.filter(file => file.startsWith('tests/archive/'));
