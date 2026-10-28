@@ -45,11 +45,13 @@ export function ContactPicker({contacts,ids,primaryId,onChange,disabled=false}:{
 }
 
 export function CompanySearch({name,companyId,onChange,disabled=false}:{name:string;companyId:string;onChange:(name:string,id:string)=>void;disabled?:boolean}) {
- const input=useRef<HTMLInputElement>(null),resultsId=useId(),query=companyId?'':name,{matches,loading,error}=useRecordMatches('company',query);
+ const input=useRef<HTMLInputElement>(null),restoreFocus=useRef(false),resultsId=useId(),query=companyId?'':name,{matches,loading,error}=useRecordMatches('company',query);
+ useEffect(()=>{if(!companyId&&restoreFocus.current){input.current?.focus();restoreFocus.current=false;}},[companyId]);
  return <div className="record-link-picker">
-  <label>Company name<input ref={input} type="search" maxLength={200} placeholder="Search or enter a company name" autoComplete="off" required value={name} disabled={disabled} aria-controls={resultsId} onChange={event=>onChange(event.target.value,'')}/></label>
-  <ul id={resultsId} className="record-link-picker__results" aria-label="Company search results">{(query.trim()?matches:[]).map(company=><li key={company.id}><button type="button" disabled={disabled} onClick={()=>onChange(company.name??'',company.id)}><strong>{company.name}</strong>{company.primary_domain?<span>{company.primary_domain}</span>:null}</button></li>)}</ul>
-  {error?<p role="alert">{error}</p>:loading?<p className="record-link-picker__status" role="status">Searching…</p>:null}
-  {companyId?<div className="record-link-picker__chip"><span>{name}</span><ActionTooltip label="Remove company"><button className="record-link-picker__remove" type="button" disabled={disabled} onClick={()=>{onChange('','');input.current?.focus();}}><span aria-hidden="true">×</span></button></ActionTooltip></div>:null}
+  {companyId?<div className="record-link-picker__chip"><span>{name}</span><ActionTooltip label="Remove company"><button className="record-link-picker__remove" type="button" disabled={disabled} onClick={()=>{restoreFocus.current=true;onChange('','');}}><span aria-hidden="true">×</span></button></ActionTooltip></div>:<>
+   <label>Company name<input ref={input} type="search" maxLength={200} placeholder="Search or enter a company name" autoComplete="off" required value={name} disabled={disabled} aria-controls={resultsId} onChange={event=>onChange(event.target.value,'')}/></label>
+   <ul id={resultsId} className="record-link-picker__results" aria-label="Company search results">{(query.trim()?matches:[]).map(company=><li key={company.id}><button type="button" disabled={disabled} onClick={()=>onChange(company.name??'',company.id)}><strong>{company.name}</strong>{company.primary_domain?<span>{company.primary_domain}</span>:null}</button></li>)}</ul>
+   {error?<p role="alert">{error}</p>:loading?<p className="record-link-picker__status" role="status">Searching…</p>:null}
+  </>}
  </div>;
 }

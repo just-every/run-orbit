@@ -3,7 +3,7 @@ import {ActionTooltip} from './action-tooltip';
 import {recordStateLabel} from './record-presentation';
 
 type Filters=Record<string,string>;
-const names:Record<string,string>={pipeline_id:'Pipeline',lifecycle:'Status',band:'Priority',queue_state:'Queue',stage_id:'Stage',owner_id:'Owner'};
+const names:Record<string,string>={pipeline_id:'Pipeline',lifecycle:'Status',band:'Priority',queue_state:'Attention',stage_id:'Stage',owner_id:'Owner'};
 export function RecordsFilters({query,onQuery,filters,onFilters,settings,opportunities}:{query:string;onQuery:(query:string)=>void;filters:Filters;onFilters:(filters:Filters)=>void;settings:any;opportunities:boolean}){
  const [open,setOpen]=useState(false),id=useId();
  const applied=Object.entries(filters).filter(([,value])=>value);

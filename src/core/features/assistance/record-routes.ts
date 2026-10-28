@@ -1,11 +1,9 @@
-import {processEvaluationJobs} from '../workbench/evaluation-repository';
 import {Hono} from 'hono';
 import {z} from 'zod';
 import type {AuthenticatedOperator} from '../identity';
 import {createId} from '../../shared/ids';
 import {RecordMailRepository} from '../outreach/record-mail-repository';
 import {heldRecordReplies,resolveHeldRecordReply} from '../outreach/held-record-replies';
-import {SettingsRepository} from '../settings/repository';
 import {RecordError} from '../records/shared';
 import {WorkbenchError} from '../workbench/repository';
 import {outputSchema,type AIProvider} from './provider';
@@ -39,6 +37,5 @@ export function recordAssistanceRoutes(db:D1Database,provider?:AIProvider){
  });
  app.get('/replies',async c=>{const contactId=c.req.query('contactId');if(contactId&&!id.safeParse(contactId).success)return c.json({error:'Choose a contact.'},400);return c.json({replies:await heldRecordReplies(db,contactId)});});
  app.post('/replies/:id/resolve',async c=>{const input=z.object({contactId:id,decision:z.enum(['attach','dismiss'])}).strict().safeParse(await c.req.json().catch(()=>null));if(!id.safeParse(c.req.param('id')).success||!input.success)return c.json({error:'Choose a reply, contact and resolution.'},400);return c.json(await resolveHeldRecordReply(db,c.req.param('id'),input.data.contactId,input.data.decision,c.get('operator').operatorId));});
- app.post('/operators/:id/remove',async c=>{const receiver=id.nullable(),input=z.object({confirmed:z.literal(true),handover:z.object({review:z.string().regex(/^[a-f0-9]{64}$/),opportunities:receiver,tasks:receiver,handoffs:receiver,recordMailObligations:receiver.optional()}).strict()}).strict().safeParse(await c.req.json().catch(()=>null));if(!id.safeParse(c.req.param('id')).success||!input.success)return c.json({error:'Review owned work and confirm removal.'},400);const actor=c.get('operator');const result=await new SettingsRepository(db).remove(c.req.param('id'),actor.operatorId,input.data.handover,actor.sessionId);try{await processEvaluationJobs(db);}catch{c.header('X-Orbit-Evaluation','failed; inspect stale evaluation');}return c.json(result);});
  return app;
 }

@@ -35,8 +35,8 @@ export async function recordMailHandover(context:TestContext){
   assert.equal(before.recordMailObligations[0].subject,'First buyer promise');
   assert.equal(before.recordMailObligations[0].contact_name,'Promise buyer');
   const plan=(value:any,target:string|null=receiver.id)=>({review:value.review,opportunities:null,tasks:null,handoffs:null,recordMailObligations:target});
-  const remove=(id:string,handover?:unknown,status=200)=>call(`assistance/record-mail/operators/${id}/remove`,'POST',{confirmed:true,...(handover?{handover}:{})},status);
-  await remove(sender.id,undefined,400);
+  const remove=(id:string,handover?:unknown,status=200)=>call(`settings/operators/${id}`,'DELETE',{confirmed:true,...(handover?{handover}:{})},status);
+  await remove(sender.id,undefined,409);
   const missing:any=plan(before);delete missing.recordMailObligations;
   await remove(sender.id,missing,409);
   await remove(sender.id,plan(before,'invalid-id'),400);

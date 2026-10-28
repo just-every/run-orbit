@@ -249,6 +249,7 @@
 .ob-app .notification-title:hover:not(:disabled) { background: none; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
 
 .operator-draft-editor + * { margin-top: 18px; }
+.assistance-card { min-width: 0; padding: 24px; }
 .ob-app .assistance-card { border: 1.5px solid var(--ob-ink); border-radius: var(--ob-radius); background: var(--ob-card); box-shadow: var(--app-shadow); }
 
 @media (max-width: 1100px) {

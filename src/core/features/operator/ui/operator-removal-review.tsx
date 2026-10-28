@@ -14,7 +14,7 @@ export function OperatorRemovalReview({operator,operators,onCancel,onRemoved}:{o
  }catch(e){setError((e as Error).message);}}
  useEffect(()=>{void load();},[operator.id]);
  async function remove(){setBusy(true);setError('');try{
-  await recordsRequest(`assistance/record-mail/operators/${operator.id}/remove`,'POST',{confirmed:true,handover:{review:data.review,...Object.fromEntries(Object.entries(choices).map(([k,v])=>[k,v==='unassigned'?null:v]))}});
+  await recordsRequest(`settings/operators/${operator.id}`,'DELETE',{confirmed:true,handover:{review:data.review,...Object.fromEntries(Object.entries(choices).map(([k,v])=>[k,v==='unassigned'?null:v]))}});
   await onRemoved();
  }catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  return <section className="operator-surface workbench-form" aria-label="Operator removal review">

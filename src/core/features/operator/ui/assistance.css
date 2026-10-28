@@ -6,7 +6,7 @@
 .assistance-page .operator-titlebar>a {color:var(--assistance-muted);font-size:14px;text-decoration:none}
 .assistance-intro {max-width:820px;margin:20px 0 30px;color:var(--assistance-muted);line-height:1.75;font-size:15px}
 .assistance-preview {display:grid;gap:18px}
-.assistance-card {min-width:0;padding:24px;border:1px solid var(--assistance-line);border-radius:11px;background:var(--ob-card);box-shadow:0 2px 5px rgb(26 35 40 / 3%)}
+.assistance-card {border:1px solid var(--assistance-line);border-radius:11px;background:var(--ob-card);box-shadow:0 2px 5px rgb(26 35 40 / 3%)}
 .assistance-label {display:block;margin:0;color:var(--ob-muted);font-size:13px;font-weight:750;line-height:1.5;letter-spacing:0;text-transform:none}
 .assistance-opportunity {display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:140px}
 .assistance-opportunity h2 {margin:7px 0 12px;font-family:var(--font-display);font-size:clamp(25px,3vw,36px);font-weight:720;line-height:1.16;letter-spacing:-.012em}
