@@ -111,7 +111,7 @@ export async function dashboardAccessProof({ worker, ownerCookie, seller, seed, 
             await page.unrouteAll({ behavior: 'wait' });
             await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy', 'false');
             {
-                await page.getByRole('button', { name: 'Remove owner filter', exact: true }).click();
+                await page.getByLabel('Owner', { exact: true }).selectOption('');
                 await expect(page.getByLabel('Owner', { exact: true })).toHaveValue('');
                 await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy', 'false');
                 await page.getByLabel('Owner', { exact: true }).selectOption(seed.ownerId);
