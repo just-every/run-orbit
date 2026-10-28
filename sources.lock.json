@@ -8731,7 +8731,7 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {
-      "sha256": "251ae15959839cd2be0ce6b41c00c99b9d63784353438d7f95743dc4c7b9df5a",
+      "sha256": "b7c65493bd91ba20396536787b8d7fc600b946461c89affe0dc89362d42ecea7",
       "executable": false
     },
     "tests/delegation-browser/today-brief.test.ts": {
@@ -9187,7 +9187,7 @@
       "executable": false
     },
     "tests/launch-runtime/mail-ingress.test.ts": {
-      "sha256": "ecddf7a7406f897dc668836f944e2cf8ffd56203067ab3c3c4ffb447c31d207c",
+      "sha256": "ef26b82b37111f0f2481fdc42ac2390ac9b17115f04adbc053a203755d2a96d7",
       "executable": false
     },
     "tests/launch-runtime/mail-transport.ts": {
@@ -9247,11 +9247,11 @@
       "executable": false
     },
     "tests/rer/installed-identity.mjs": {
-      "sha256": "5b0615f9e4ecd358f06424d56f88f6778b58c0693dd5f462f40ee9d554a0508a",
+      "sha256": "552951379c36d99eddf78971d2e2c904e91cc90f33a71bd80bf74acb3448fbd7",
       "executable": false
     },
     "tests/rer/journey.test.mjs": {
-      "sha256": "f5f9fd0211489432a69133c692e8e2ed8bccf19113e6f0bcf00e69d29f85c3f3",
+      "sha256": "28446401259348324aa8cd4ab4703432801400adb41e9ec261fc3b017153afd0",
       "executable": false
     },
     "tests/rer/managed-mail.mjs": {
