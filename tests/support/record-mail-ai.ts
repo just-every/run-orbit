@@ -1,0 +1,37 @@
+import {replyForm,signedReplies} from './signed-reply';
+import {createId} from '../../src/core/shared/ids';
+import assert from 'node:assert/strict';
+import {fixture,collaborator} from '../../newtests/t096/fixture';
+import {createApp} from './app';
+import type {AIProvider} from '../../src/core/features/assistance/provider';
+/** Real authenticated preview and durable composer; the model alone is a network-edge fake. */
+export async function recordMailAI(){
+ const f=await fixture();try{
+  let mode='success',calls=0,received:any,sends=0,sentHeader='';
+  const provider:AIProvider={provider:'network-edge',model:'structured-draft',inputCostPerMillion:1,outputCostPerMillion:2,async generate(preview:any){calls++;received=preview;if(mode==='failure')throw new Error('Provider unavailable');return {output:{explanation:'The selected contact and their primary company are cited.',subject:'Northstar consultation',body:mode==='long'?Array(151).fill('word').join(' '):'Hi Morgan, would a consultation help Northstar Manufacturing?',evidenceIds:mode==='foreign'?['foreign-evidence']:[preview.contact.id,preview.company.id,...preview.messages.map((message:any)=>message.id)]},inputTokens:48,outputTokens:18};}};
+  const app=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},aiProvider:provider,outboundMail:{send:async(input)=>{sentHeader=input.message_id;sends++;return{providerMessageId:'accepted-ai-draft'};}}});let cookie=f.cookie;
+  const request=(path:string,method='GET',body?:unknown)=>app.request(`https://orbit.test/api/v1/${path}`,{method,headers:{Cookie:cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});
+  const call=async(path:string,method='GET',body?:unknown,status=200)=>{const response=await request(path,method,body);assert.equal(response.status,status,await response.clone().text());return response.json() as Promise<any>;};
+  const company=await call('records/company','POST',{name:'Northstar Manufacturing',primary_domain:'northstar-ai.test'},201),contact=await call('records/contact','POST',{name:'Morgan Chen',email:'morgan@northstar-ai.test',company_id:company.id,contactability:'contactable'},201);
+  const baseline=await call(`workbench/records/contact/${contact.id}/drafts`,'POST',{contactId:contact.id,opportunityId:null,subject:'Requested consultation',body:'Can we discuss production readiness?'},201),render=await call(`library/drafts/${baseline.id}/render`);await call(`library/drafts/${baseline.id}/render`,'POST',{revision:1,reviewHash:render.reviewHash});const approval=await call(`workbench/drafts/${baseline.id}/approval-preview`);const accepted=await call(`workbench/drafts/${baseline.id}/approve`,'POST',{revision:1,quietHoursConfirmation:approval.localTime});assert.equal(accepted.state,'accepted');const alreadySent=sends;
+  const reply=replyForm('morgan@northstar-ai.test',`<${createId()}@reply.test>`,sentHeader);reply.set('text','Please discuss our production readiness.');assert.equal((await signedReplies(f.db)(reply)).status,200);
+  await call(`records/contact/${contact.id}/entries`,'POST',{kind:'note',text:'Internal planning note withheld from drafting',occurredAt:new Date().toISOString()});
+  const input={kind:'contact',recordId:contact.id,contactId:contact.id,opportunityId:null};
+  for(const [kind,recordId]of [['contact',contact.id],['company',company.id]]){
+   const preview=await call('assistance/record-mail/preview','POST',{...input,kind,recordId});assert.equal(preview.preview.origin.id,recordId);assert.equal(preview.preview.contact.id,contact.id);assert.equal(preview.preview.company.id,company.id);assert.ok(preview.preview.instructions);assert.ok(Array.isArray(preview.preview.timeline));assert.ok(preview.preview.messages.some((message:any)=>message.id===accepted.id&&message.body==='Can we discuss production readiness?'));assert.ok(preview.preview.evidence.some((item:any)=>item.type==='email.replied'));assert.ok(!JSON.stringify(preview.preview).includes('Internal planning note withheld from drafting'));
+   const result=await call('assistance/record-mail/generate','POST',{previewId:preview.id});assert.deepEqual(received,preview.preview);assert.equal(sends,alreadySent);const saved=(await call(`drafts/${result.draftId}`)).draft;assert.equal(saved.body,result.output.body);assert.equal(saved.opportunityId,null);assert.equal(saved.recommendationId,null);
+   const timeline=(await call(`records/contact/${contact.id}`)).timeline.find((entry:any)=>JSON.parse(entry.payload_json).draftId===result.draftId);assert.deepEqual(JSON.parse(timeline.payload_json).evidenceIds,result.output.evidenceIds);
+   await call(`drafts/${saved.id}`,'PUT',{revision:saved.revision,recipientEmail:saved.recipientEmail,subject:saved.subject,body:saved.body+' Please suggest a time.'});assert.equal((await call(`drafts/${saved.id}`)).draft.revision,saved.revision+1);
+   await call('assistance/record-mail/generate','POST',{previewId:preview.id},409);
+   const approval=await call(`workbench/drafts/${saved.id}/approval-preview`);await call(`workbench/drafts/${saved.id}/approve`,'POST',{revision:saved.revision,quietHoursConfirmation:approval.localTime},409);assert.equal(sends,alreadySent);
+  }
+  const before=(await call(`workbench/records/contact/${contact.id}/mail`)).drafts.length;
+  for(mode of ['foreign','long','failure']){const preview=await call('assistance/record-mail/preview','POST',input);await call('assistance/record-mail/generate','POST',{previewId:preview.id},502);assert.equal((await call(`workbench/records/contact/${contact.id}/mail`)).drafts.length,before);}
+  const usage=await call('assistance/usage');assert.equal(usage.totals.filter((row:any)=>row.feature==='record-draft').reduce((sum:number,row:any)=>sum+row.calls,0),calls);assert.equal(await f.db.prepare("SELECT count(*) n FROM ai_calls WHERE status='failed' AND feature='record-draft'").first('n'),3);
+  const stale=await call('assistance/record-mail/preview','POST',input),prior=calls;await call(`records/contact/${contact.id}`,'PUT',{name:'Morgan Chen',email:'morgan@northstar-ai.test',job_title:'Operations director',company_id:company.id,contactability:'contactable'});await call('assistance/record-mail/generate','POST',{previewId:stale.id},409);assert.equal(calls,prior);
+  const off=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})}}),unconfigured=await off.request('https://orbit.test/api/v1/assistance/record-mail/generate',{method:'POST',headers:{Cookie:cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({previewId:stale.id})});assert.equal(unconfigured.status,503);
+  cookie=(await collaborator(f)).cookie;await call('assistance/record-mail/preview','POST',input,403);await call('assistance/record-mail/generate','POST',{previewId:stale.id},403);assert.equal(calls,prior);cookie=f.cookie;
+  const erased=await call('assistance/record-mail/preview','POST',input);await call(`records/contact/${contact.id}`,'DELETE',{confirmed:true});await call('assistance/record-mail/generate','POST',{previewId:erased.id},409);assert.equal(calls,prior);assert.equal(await f.db.prepare("SELECT count(*) n FROM runtime_controls WHERE name LIKE 'record_ai_preview:%'").first('n'),0);
+  console.log('OUT-017 AI: contact/company exact preview -> editable unsent draft; stale/refused/erased no call; foreign/long/provider/off fail; usage recorded');
+ }finally{await f.close();}
+}

@@ -115,7 +115,7 @@ export function DraftPage() {
           <p className="operator-eyebrow">Draft history</p>
           <dl>
             <div><dt>Author</dt><dd>{resource.data.authorName??'Author record unavailable'}</dd></div>
-            <div><dt>Source recommendation</dt><dd>{draft.recommendationId&&draft.opportunityId?<Link to="/app/opportunities/$id" params={{id:draft.opportunityId}}>View the related opportunity</Link>:"No source recommendation"}</dd></div>
+            <div><dt>Source recommendation</dt><dd>{draft.recommendationId&&draft.opportunityId?<Link data-row-action to="/app/opportunities/$id" params={{id:draft.opportunityId}}>View the related opportunity</Link>:"No source recommendation"}</dd></div>
             <div><dt>Created</dt><dd>{formatDateTime(draft.createdAt, presentation)}</dd></div>
             <div><dt>Last updated</dt><dd>{formatDateTime(draft.updatedAt, presentation)}</dd></div>
             <div><dt>Revision</dt><dd>{draft.revision}</dd></div>

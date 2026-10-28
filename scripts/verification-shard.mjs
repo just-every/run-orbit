@@ -26,7 +26,7 @@ export function runShard(name){
   for(const gate of gates){
    if(gate.result)rmSync(gate.result,{force:true});
    console.log(`\nVerification (${name}): pnpm ${gate.args.join(' ')}`);
-   const env={...process.env,...gate.env,TMPDIR:state,ORBIT_FOLD_BROWSER_EVIDENCE:browserEvidence,RER_SERVER_JOURNEY:'1',...(gate.browser?{}:{ORBIT_TEST_STATE:state})};
+   const env={...process.env,...gate.env,TMPDIR:state,ORBIT_STARTUP_DIAGNOSTICS:resolve(`verification/startup-diagnostics/${name}`),ORBIT_FOLD_BROWSER_EVIDENCE:browserEvidence,RER_SERVER_JOURNEY:'1',...(gate.browser?{}:{ORBIT_TEST_STATE:state})};
    if(gate.browser)delete env.ORBIT_TEST_STATE;
    const start=Date.now(),run=spawnSync('pnpm',gate.args,{stdio:'inherit',env});
    const events=gate.result?rowsFrom(gate.result):[],report=events.filter(row=>row.kind!=='test');

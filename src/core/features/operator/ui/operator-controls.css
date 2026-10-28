@@ -54,6 +54,10 @@
 .operator-record-actions{display:flex;flex-wrap:wrap;gap:10px}
 /* Standalone actions placed directly in a row keep a 24px pointer target (WCAG 2.2 target size). */
 :where(.operator-shell) article > a{display:inline-block;min-block-size:24px;line-height:24px}
+/* Standalone row actions keep a full-height touch target on phones. */
+@media (max-width: 640px) {
+  .operator-shell a[data-row-action] { display: inline-flex; align-items: center; min-height: 44px; }
+}
 /* Captured evidence: the quoted lines a proposal rests on, and its old/new values. */
 .operator-shell .capture-quote{margin:8px 0;padding:4px 0 4px 12px;border-left:3px solid var(--operator-border,#ded5cc);white-space:pre-wrap;overflow-wrap:anywhere}
 .operator-shell .capture-quote p{margin:2px 0}

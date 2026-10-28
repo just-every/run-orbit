@@ -1,3 +1,4 @@
+import {issueNativeCredential} from '../support/api-credentials-proof';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
@@ -13,10 +14,11 @@ test('OUT-017 BASE-DATA-003 operator erasure redacts only the erased operator\'s
  try{
   const deps=createDependencies(db),records=new RecordsRepository(db),manual=new ManualRepository(db),admin=createId();
   await deps.auth.ensureOperator({id:admin,email:'admin@example.test',displayName:'Administrator'});
+  await deps.workspace.ensureWorkspace({name:'synthetic-orbit-1',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
   const session=await deps.auth.createSession(admin),app=createApp({database:db,assets:{fetch:async()=>new Response('')}});
   const erase=(id:string)=>app.request(`https://orbit.test/api/v1/settings/operators/${id}/erase`,{method:'POST',headers:{cookie:`__Host-orbit_session=${session.token}`,origin:'https://orbit.test','content-type':'application/json'},body:JSON.stringify({confirmed:true})});
   const stage=createId();await db.prepare('INSERT INTO pipeline_stages VALUES(?,?,0,?,?)').bind(stage,'Qualified',now,now).run();
-  const contact=await records.save('contact',{name:'Customer',email:'customer@example.test'},admin);
+  const contact=await records.save('contact',{name:'Customer',email:'customer@example.test',contactability:'contactable'},admin);
   const opportunity=await records.save('opportunity',{title:'Account',stage_id:stage,value_cents:0,contact_ids:[contact.id],primary_contact_id:contact.id},admin);
   const operator=async(email:string,displayName:string,text:string)=>{
    const id=createId(),call=createId();await deps.auth.ensureOperator({id,email,displayName});
@@ -32,13 +34,17 @@ test('OUT-017 BASE-DATA-003 operator erasure redacts only the erased operator\'s
    const scheduledDraft=createId(),scheduledMessage=createId();await db.batch([db.prepare('INSERT INTO record_mail_drafts SELECT ?,opportunity_id,recommendation_id,author_id,recipient_contact_id,recipient_email,subject,body,revision,is_stale,stale_reason,created_at,updated_at,library_selection_json,merge_review_json FROM record_mail_drafts WHERE id=?').bind(scheduledDraft,recordDraft),db.prepare("INSERT INTO record_mail_context VALUES(?,'contact',?,NULL)").bind(scheduledDraft,contact.id),db.prepare("INSERT INTO record_mail_outbound_messages(id,draft_id,revision,operator_id,contact_id,recipient_email,subject,body,state,created_at,updated_at,idempotency_key,message_id,approved_at) VALUES(?,?,1,?,?,'customer@example.test',?,?,'scheduled',?,?,?,?,?)").bind(scheduledMessage,scheduledDraft,id,contact.id,text,text,now,now,scheduledMessage,`<${scheduledMessage}@orbit.test>`,now)]);
    return {id,call,entry:entry.id,library,draft,message,recordDraft,recordMessage,scheduledMessage};
   };
+  await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(admin).run();
   const mark=await operator('mark@example.test','Mark','Marketing plan drafted by Mark at MARK@example.test. Also jomark@example.test.');
+  const markCredential=await issueNativeCredential(db,admin,opportunity.id,mark.id);
   const other=await operator('jomark@example.test','Marketing lead','Marketing review: Mark asked for the Marketing plan');
   const snapshot=async(row:{id:string;call:string;entry:string})=>({operator:await db.prepare('SELECT * FROM operators WHERE id=?').bind(row.id).first(),call:await db.prepare('SELECT * FROM ai_calls WHERE id=?').bind(row.call).first(),entry:await db.prepare('SELECT * FROM timeline_entries WHERE id=?').bind(row.entry).first()});
   const otherBefore=await snapshot(other);
   const content=async(row:{library:string;draft:string;message:string;recordDraft:string;recordMessage:string})=>({library:await db.prepare('SELECT * FROM message_library WHERE id=?').bind(row.library).first(),draft:await db.prepare('SELECT * FROM drafts WHERE id=?').bind(row.draft).first(),message:await db.prepare('SELECT * FROM outbound_messages WHERE id=?').bind(row.message).first(),recordDraft:await db.prepare('SELECT * FROM record_mail_drafts WHERE id=?').bind(row.recordDraft).first(),recordMessage:await db.prepare('SELECT * FROM record_mail_outbound_messages WHERE id=?').bind(row.recordMessage).first()});
   const otherContentBefore=await content(other);
+  const aiPreview=await app.request('https://orbit.test/api/v1/assistance/record-mail/preview',{method:'POST',headers:{cookie:`__Host-orbit_session=${session.token}`,origin:'https://orbit.test','content-type':'application/json'},body:JSON.stringify({kind:'contact',recordId:contact.id,contactId:contact.id,opportunityId:null})});assert.equal(aiPreview.status,200);const pendingAI=await aiPreview.json() as any;
   const removal=await app.request(`https://orbit.test/api/v1/settings/operators/${mark.id}/removal-review`,{headers:{cookie:`__Host-orbit_session=${session.token}`}});assert.equal(removal.status,200);assert.ok((await removal.json() as any).scheduledMessages.some((row:any)=>row.id===mark.scheduledMessage));await new SettingsRepository(db).remove(mark.id,admin);assert.equal(await db.prepare('SELECT state FROM record_mail_outbound_messages WHERE id=?').bind(mark.scheduledMessage).first('state'),'cancelled');assert.equal((await erase(mark.id)).status,200);
+  const erasedPreview=await app.request('https://orbit.test/api/v1/assistance/record-mail/generate',{method:'POST',headers:{cookie:`__Host-orbit_session=${session.token}`,origin:'https://orbit.test','content-type':'application/json'},body:JSON.stringify({previewId:pendingAI.id})});assert.equal(erasedPreview.status,503);assert.equal(await db.prepare("SELECT count(*) n FROM runtime_controls WHERE name LIKE 'record_ai_preview:%'").first('n'),0,'Removed or erased operator content cannot remain in a pending record preview');
   const call=await db.prepare('SELECT error FROM ai_calls WHERE id=?').bind(mark.call).first<{error:string}>();
   assert.equal(call!.error,'Marketing plan drafted by Erased operator at Erased operator. Also jomark@example.test.');
   const entry=await db.prepare('SELECT actor_id,payload_json FROM timeline_entries WHERE id=?').bind(mark.entry).first<{actor_id:string;payload_json:string}>();
@@ -53,6 +59,7 @@ test('OUT-017 BASE-DATA-003 operator erasure redacts only the erased operator\'s
   for(const text of [(erasedContent.draft as {merge_review_json:string}).merge_review_json,(erasedContent.message as {render_snapshot_json:string}).render_snapshot_json,(erasedContent.recordDraft as {merge_review_json:string}).merge_review_json,(erasedContent.recordMessage as {render_snapshot_json:string}).render_snapshot_json]){
    const review=JSON.parse(text);assert.equal(review.fields[0].name,'owner.name');assert.equal(review.fields[0].value,'Erased operator');assert.deepEqual(JSON.parse(review.context),{'owner.name':'Erased operator','owner.email':'Erased operator'});
   }
+  assert.equal(await db.prepare('SELECT id FROM api_credentials WHERE id=?').bind(markCredential.credential.id).first(),null,'Operator erasure removes their credential verifier and scope');
   const erased=await db.prepare('SELECT display_name,email FROM operators WHERE id=?').bind(mark.id).first<{display_name:string;email:string}>();assert.equal(erased!.display_name,'Erased operator');assert.ok(erased!.email.endsWith('@example.invalid'));
 
   // 'Ann' is also part of another operator's name, so whose name attributed text means is ambiguous.

@@ -354,6 +354,18 @@
       "name": "0064_signal_source_removal.sql",
       "sha256": "398e591ff91b1d83ebeae303675c276b0f0b94dff63e49b1e6e0a8e304afd67f",
       "sql": "ALTER TABLE signal_sources ADD COLUMN removed_at TEXT;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0065_api_credentials.sql",
+      "sha256": "7d7f3b89926b30b78d284fced9a2a69d30cc27acccfc2f702876ca6933ba2bc9",
+      "sql": "-- Installation authority is excluded from both archive formats.\nCREATE TABLE api_credentials (\n id TEXT PRIMARY KEY NOT NULL,\n installation_id TEXT NOT NULL,\n name TEXT NOT NULL,\n principal_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n operations_json TEXT NOT NULL CHECK(json_valid(operations_json)),\n records_json TEXT NOT NULL CHECK(json_valid(records_json)),\n fields_json TEXT NOT NULL CHECK(json_valid(fields_json)),\n verifier TEXT NOT NULL UNIQUE,\n created_at TEXT NOT NULL,\n expires_at TEXT NOT NULL,\n revoked_at TEXT,\n revision INTEGER NOT NULL DEFAULT 1\n);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0066_record_mail_completion.sql",
+      "sha256": "d74e32d081bffc36788e39959b69b26029a71f6c9df360a5c08222303bba2a89",
+      "sql": "-- Current promise ownership is independent of the historical sender.\nALTER TABLE record_mail_obligations ADD COLUMN owner_id TEXT REFERENCES operators(id);\nALTER TABLE record_mail_obligations ADD COLUMN owner_recorded_at TEXT;\nUPDATE record_mail_obligations SET owner_id=operator_id,owner_recorded_at=opened_at;\nCREATE INDEX record_mail_promise_owner_index ON record_mail_obligations(owner_id,closed_at,due_at);\nCREATE TRIGGER record_mail_promise_owner AFTER INSERT ON record_mail_obligations\nWHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN('restore','archive_import'))\nBEGIN UPDATE record_mail_obligations SET owner_id=NEW.operator_id,owner_recorded_at=NEW.opened_at WHERE message_id=NEW.message_id; END;\n-- Request previews are transient, never restored as sending or generation authority.\nCREATE TRIGGER record_ai_contact_erased AFTER DELETE ON contacts BEGIN\n DELETE FROM runtime_controls WHERE name LIKE 'record_ai_preview:%';\nEND;\nCREATE TRIGGER record_ai_operator_changed AFTER UPDATE OF status,email,display_name ON operators\nWHEN NEW.status IS NOT OLD.status OR NEW.email IS NOT OLD.email OR NEW.display_name IS NOT OLD.display_name BEGIN\n DELETE FROM runtime_controls WHERE name LIKE 'record_ai_preview:%';\nEND;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

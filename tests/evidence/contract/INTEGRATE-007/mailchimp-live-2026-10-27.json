@@ -1,0 +1,562 @@
+{
+ "clause": "INTEGRATE-007",
+ "kind": "held-key live proof (dated, one-time evidence; never a permanent test)",
+ "code": {
+  "commit": "4e174284f78e3be6dae040a423290648cd1aae60",
+  "tree": "e3ab4b8b48cc569b2c682042a4c34bb417cd7585",
+  "srcTree": "52358a477869a0c76b995ca3cae9095574f7bc84",
+  "cleanTree": true,
+  "statusPorcelain": "",
+  "checkedAt": "2026-10-27T13:52:00Z"
+ },
+ "window": {
+  "start": "2026-10-27T13:52:27.953Z",
+  "finish": "2026-10-27T13:53:13.768Z"
+ },
+ "harness": "built Worker of commit 4e174284f78e3be6dae040a423290648cd1aae60 (dist/server/wrangler.json, built from a clean tree) in wrangler DevEnv at https://127.0.0.1:4987, self-signed TLS on loopback; Mailchimp Marketing API the only permitted egress; refused outbound requests: 0",
+ "dataCentre": "us1",
+ "audience": {
+  "audiences": 1,
+  "listsStatus": 200,
+  "membersBefore": 1,
+  "automationsStatus": 200,
+  "automations": 0,
+  "journeysStatus": 200,
+  "customerJourneys": 0,
+  "active": 0,
+  "disposableAudience": {
+   "request": "POST /3.0/lists",
+   "status": 403,
+   "title": "User action not permitted",
+   "detail": "User does not have access to the requested operation"
+  },
+  "used": "existing audience …268b with synthetic members only",
+  "membersAfter": 1
+ },
+ "contacts": {
+  "n1": "qa+synthetic-orbit-hk3-1@… consent recorded, later erased in Orbit",
+  "n2": "qa+synthetic-orbit-hk3-2@… consent recorded, then Do not contact in Orbit",
+  "n3": "qa+synthetic-orbit-hk3-3@… consent recorded, unsubscribed in Mailchimp, erased while disconnected",
+  "n4": "qa+synthetic-orbit-hk3-4@… no consent"
+ },
+ "steps": [
+  {
+   "orbit": "POST /api/v1/workbench/opportunities ×4",
+   "status": 201,
+   "result": "USD deals and contacts n1..n4"
+  },
+  {
+   "orbit": "POST /api/v1/settings/mailchimp/connect",
+   "status": 200,
+   "mailchimp": [
+    "GET /3.0/ping 200"
+   ]
+  },
+  {
+   "orbit": "GET /api/v1/settings/products",
+   "result": "Mailchimp unresolved-setup until an audience is chosen"
+  },
+  {
+   "orbit": "PUT /api/v1/settings/mailchimp/audience",
+   "status": 200,
+   "mailchimp": [
+    "GET /3.0/lists/…268b 200",
+    "GET /3.0/lists/…268b/merge-fields 200",
+    "POST /3.0/lists/…268b/merge-fields 200 sent {\"statusField\":\"absent\",\"statusIfNew\":null,\"mergeFields\":null,\"consentField\":null}"
+   ],
+   "result": "Mailchimp connected"
+  },
+  {
+   "orbit": "POST /api/v1/marketing/mailchimp/consents/:id for n1, n2, n3",
+   "status": 200,
+   "consent": {
+    "n1": {
+     "source": "synthetic-orbit-hk3 webinar form",
+     "basis": "Ticked product news on 27 October 2026"
+    },
+    "n2": {
+     "source": "synthetic-orbit-hk3 pricing call",
+     "basis": "Asked for the monthly product newsletter"
+    },
+    "n3": {
+     "source": "synthetic-orbit-hk3 trade show scan",
+     "basis": "Asked at the booth for event invitations"
+    }
+   },
+   "n4": "no consent recorded"
+  },
+  {
+   "orbit": "GET /api/v1/marketing/mailchimp/preview?fields=name, then POST /api/v1/marketing/mailchimp/handoffs",
+   "label": "first",
+   "status": 200,
+   "groups": {
+    "n1": "subscribed",
+    "n2": "subscribed",
+    "n3": "subscribed",
+    "n4": "unknown"
+   },
+   "counts": {
+    "sent": 3,
+    "unchanged": 0,
+    "unsubscribed": 0,
+    "checked": 0,
+    "stoppedInMailchimp": 0,
+    "refused": 0,
+    "uncertain": 0,
+    "remaining": 0
+   },
+   "mailchimp": [
+    {
+     "method": "PUT",
+     "path": "/3.0/lists/…268b/members/…fde5",
+     "status": 200,
+     "sent": {
+      "statusField": "absent",
+      "statusIfNew": "subscribed",
+      "mergeFields": [
+       "FNAME",
+       "LNAME",
+       "ORBITCONS"
+      ],
+      "consentField": "synthetic-orbit-hk3 webinar form: Ticked product news on 27 October 2026"
+     },
+     "memberStatus": "subscribed"
+    },
+    {
+     "method": "PUT",
+     "path": "/3.0/lists/…268b/members/…b2b5",
+     "status": 200,
+     "sent": {
+      "statusField": "absent",
+      "statusIfNew": "subscribed",
+      "mergeFields": [
+       "FNAME",
+       "LNAME",
+       "ORBITCONS"
+      ],
+      "consentField": "synthetic-orbit-hk3 pricing call: Asked for the monthly product newsletter"
+     },
+     "memberStatus": "subscribed"
+    },
+    {
+     "method": "PUT",
+     "path": "/3.0/lists/…268b/members/…1a94",
+     "status": 200,
+     "sent": {
+      "statusField": "absent",
+      "statusIfNew": "subscribed",
+      "mergeFields": [
+       "FNAME",
+       "LNAME",
+       "ORBITCONS"
+      ],
+      "consentField": "synthetic-orbit-hk3 trade show scan: Asked at the booth for event invitations"
+     },
+     "memberStatus": "subscribed"
+    }
+   ]
+  },
+  {
+   "proof": "GET /3.0/lists/{id}/members/{hash} n1..n4",
+   "result": {
+    "n1": {
+     "http": 200,
+     "id": "…fde5",
+     "status": "subscribed",
+     "consentField": "synthetic-orbit-hk3 webinar form: Ticked product news on 27 October 2026",
+     "mergeKeys": [
+      "FNAME",
+      "LNAME",
+      "ORBITCONS"
+     ]
+    },
+    "n2": {
+     "http": 200,
+     "id": "…b2b5",
+     "status": "subscribed",
+     "consentField": "synthetic-orbit-hk3 pricing call: Asked for the monthly product newsletter",
+     "mergeKeys": [
+      "FNAME",
+      "LNAME",
+      "ORBITCONS"
+     ]
+    },
+    "n3": {
+     "http": 200,
+     "id": "…1a94",
+     "status": "subscribed",
+     "consentField": "synthetic-orbit-hk3 trade show scan: Asked at the booth for event invitations",
+     "mergeKeys": [
+      "FNAME",
+      "LNAME",
+      "ORBITCONS"
+     ]
+    },
+    "n4": {
+     "http": 404,
+     "title": "Resource Not Found"
+    }
+   },
+   "expectedConsentField": {
+    "n1": "synthetic-orbit-hk3 webinar form: Ticked product news on 27 October 2026",
+    "n2": "synthetic-orbit-hk3 pricing call: Asked for the monthly product newsletter",
+    "n3": "synthetic-orbit-hk3 trade show scan: Asked at the booth for event invitations"
+   }
+  },
+  {
+   "orbit": "PUT /api/v1/records/contact/:n2 (Do not contact)",
+   "status": 200
+  },
+  {
+   "orbit": "GET /api/v1/marketing/mailchimp/preview?fields=name, then POST /api/v1/marketing/mailchimp/handoffs",
+   "label": "after stopping n2 in Orbit",
+   "status": 200,
+   "groups": {
+    "n1": "subscribed",
+    "n2": "stopped",
+    "n3": "subscribed",
+    "n4": "unknown"
+   },
+   "counts": {
+    "sent": 0,
+    "unchanged": 2,
+    "unsubscribed": 1,
+    "checked": 0,
+    "stoppedInMailchimp": 0,
+    "refused": 0,
+    "uncertain": 0,
+    "remaining": 0
+   },
+   "mailchimp": [
+    {
+     "method": "PATCH",
+     "path": "/3.0/lists/…268b/members/…b2b5",
+     "status": 200,
+     "sent": {
+      "statusField": "unsubscribed",
+      "statusIfNew": null,
+      "mergeFields": null,
+      "consentField": null
+     },
+     "memberStatus": "unsubscribed"
+    }
+   ]
+  },
+  {
+   "proof": "GET member n2",
+   "result": {
+    "http": 200,
+    "id": "…b2b5",
+    "status": "unsubscribed",
+    "consentField": "synthetic-orbit-hk3 pricing call: Asked for the monthly product newsletter",
+    "mergeKeys": [
+     "FNAME",
+     "LNAME",
+     "ORBITCONS"
+    ]
+   }
+  },
+  {
+   "proof": "POST /3.0/lists/{id}/webhooks (unsubscribe and cleaned, all sources)",
+   "status": 200,
+   "id": "…e052",
+   "title": null,
+   "webhookCheckedAt": "2026-10-27T13:52:50.852Z"
+  },
+  {
+   "proof": "PATCH /3.0/lists/{id}/members/{n3} status unsubscribed (made in Mailchimp)",
+   "status": 200,
+   "memberStatus": "unsubscribed"
+  },
+  {
+   "orbit": "GET /api/v1/records/contact/:n3 after Mailchimp’s webhook",
+   "result": "do_not_contact",
+   "secondsWaited": 6,
+   "lastEventAt": "2026-10-27T13:52:53.058Z"
+  },
+  {
+   "orbit": "GET /api/v1/marketing/mailchimp/preview?fields=name, then POST /api/v1/marketing/mailchimp/handoffs",
+   "label": "first after the webhook stop",
+   "status": 200,
+   "groups": {
+    "n1": "subscribed",
+    "n2": "stopped",
+    "n3": "stopped",
+    "n4": "unknown"
+   },
+   "counts": {
+    "sent": 0,
+    "unchanged": 1,
+    "unsubscribed": 0,
+    "checked": 1,
+    "stoppedInMailchimp": 0,
+    "refused": 0,
+    "uncertain": 0,
+    "remaining": 0
+   },
+   "mailchimp": [
+    {
+     "method": "GET",
+     "path": "/3.0/lists/…268b/members/…1a94",
+     "status": 200,
+     "memberStatus": "unsubscribed"
+    }
+   ]
+  },
+  {
+   "orbit": "GET /api/v1/marketing/mailchimp/preview?fields=name, then POST /api/v1/marketing/mailchimp/handoffs",
+   "label": "second after the webhook stop",
+   "status": 200,
+   "groups": {
+    "n1": "subscribed",
+    "n2": "stopped",
+    "n3": "stopped",
+    "n4": "unknown"
+   },
+   "counts": {
+    "sent": 0,
+    "unchanged": 1,
+    "unsubscribed": 0,
+    "checked": 0,
+    "stoppedInMailchimp": 0,
+    "refused": 0,
+    "uncertain": 0,
+    "remaining": 0
+   },
+   "mailchimp": []
+  },
+  {
+   "proof": "GET member n3 after two handoffs",
+   "result": {
+    "http": 200,
+    "id": "…1a94",
+    "status": "unsubscribed",
+    "consentField": "synthetic-orbit-hk3 trade show scan: Asked at the booth for event invitations",
+    "mergeKeys": [
+     "FNAME",
+     "LNAME",
+     "ORBITCONS"
+    ]
+   }
+  },
+  {
+   "orbit": "DELETE /api/v1/records/contact/:n1 {confirmed:true}",
+   "status": 200,
+   "mailchimp": [
+    "POST /3.0/lists/…268b/members/…fde5/actions/delete-permanent 204"
+   ],
+   "readBack": {
+    "n1": {
+     "http": 404,
+     "title": "Resource Not Found"
+    }
+   },
+   "deletions": [
+    {
+     "state": "deleted",
+     "audience": "Just Every",
+     "reason": null
+    }
+   ]
+  },
+  {
+   "orbit": "POST /api/v1/settings/mailchimp/disconnect",
+   "status": 200,
+   "result": "Mailchimp unresolved-setup"
+  },
+  {
+   "orbit": "DELETE /api/v1/records/contact/:n3 {confirmed:true} while disconnected",
+   "status": 200,
+   "mailchimpRequests": 0,
+   "deletions": [
+    {
+     "state": "paused",
+     "reason": "Mailchimp is not connected. Connect it again to finish this deletion."
+    },
+    {
+     "state": "deleted",
+     "reason": null
+    }
+   ]
+  },
+  {
+   "orbit": "POST /api/v1/settings/mailchimp/connect, PUT /api/v1/settings/mailchimp/audience (a new connection)",
+   "status": 200,
+   "mailchimp": [
+    "GET /3.0/ping 200",
+    "GET /3.0/lists/…268b 200",
+    "GET /3.0/lists/…268b/merge-fields 200"
+   ],
+   "deletions": [
+    {
+     "state": "held",
+     "reason": "Mailchimp was connected again, or Orbit was restored from an archive, after this deletion was requested. Confirm it to send it with the current connection."
+    },
+    {
+     "state": "deleted",
+     "reason": null
+    }
+   ],
+   "result": "Mailchimp connected"
+  },
+  {
+   "orbit": "POST /api/v1/settings/mailchimp/deletions/:id/retry (owner confirms)",
+   "status": 200,
+   "mailchimp": [
+    "POST /3.0/lists/…268b/members/…1a94/actions/delete-permanent 204"
+   ],
+   "readBack": {
+    "n3": {
+     "http": 404,
+     "title": "Resource Not Found"
+    }
+   },
+   "deletions": [
+    {
+     "state": "deleted"
+    },
+    {
+     "state": "deleted"
+    }
+   ]
+  },
+  {
+   "orbit": "POST /api/v1/settings/mailchimp/disconnect (again)",
+   "status": 200,
+   "result": "Mailchimp unresolved-setup"
+  }
+ ],
+ "objects": {
+  "created": [
+   {
+    "kind": "merge field",
+    "id": "ORBITCONS",
+    "audience": "…268b"
+   },
+   {
+    "kind": "member",
+    "id": "…fde5"
+   },
+   {
+    "kind": "member",
+    "id": "…b2b5"
+   },
+   {
+    "kind": "member",
+    "id": "…1a94"
+   },
+   {
+    "kind": "webhook",
+    "id": "…e052"
+   }
+  ],
+  "deleted": [
+   {
+    "kind": "member",
+    "id": "…fde5",
+    "by": "Orbit erasure (delete-permanent 204), read back 404"
+   },
+   {
+    "kind": "member",
+    "id": "…1a94",
+    "by": "Orbit erasure confirmed by the owner (delete-permanent 204), read back 404"
+   },
+   {
+    "kind": "webhook",
+    "id": "…e052"
+   },
+   {
+    "kind": "member",
+    "id": "…b2b5",
+    "by": "proof cleanup"
+   },
+   {
+    "kind": "merge field",
+    "id": "ORBITCONS"
+   }
+  ]
+ },
+ "cleanup": {
+  "webhooksLeft": 0,
+  "webhooksStatus": 200,
+  "member n1": 404,
+  "member n2": 404,
+  "member n3": 404,
+  "member n4": 404,
+  "mergeFieldLeft": false,
+  "existingMembersAfter": 1,
+  "existingMembersBefore": 1
+ },
+ "requestCounts": {
+  "orbit": {
+   "GET us1.api.mailchimp.com": 8,
+   "POST us1.api.mailchimp.com": 3,
+   "PUT us1.api.mailchimp.com": 3,
+   "PATCH us1.api.mailchimp.com": 1
+  },
+  "proof": {
+   "GET us1.api.mailchimp.com": 27,
+   "POST us1.api.mailchimp.com": 3,
+   "PATCH us1.api.mailchimp.com": 1,
+   "DELETE us1.api.mailchimp.com": 2
+  },
+  "orbitTotal": 15,
+  "proofTotal": 33
+ },
+ "screens": [
+  "deleted-mailchimp-1440.png",
+  "deleted-deletions-1440.png",
+  "deleted-mailchimp-390.png",
+  "deleted-deletions-390.png",
+  "held-mailchimp-1440.png",
+  "held-deletions-1440.png",
+  "held-mailchimp-390.png",
+  "held-deletions-390.png"
+ ],
+ "targets": {
+  "deleted": {
+   "measured": 9,
+   "under44": [],
+   "confirm": []
+  },
+  "held": {
+   "measured": 10,
+   "under44": [],
+   "confirm": [
+    {
+     "tag": "button",
+     "text": "Confirm deletion retry",
+     "width": 204,
+     "height": 44
+    }
+   ]
+  }
+ },
+ "overflow": {
+  "deleted-390": {
+   "scrollWidth": 390,
+   "innerWidth": 390
+  },
+  "deleted-320": {
+   "scrollWidth": 320,
+   "innerWidth": 320
+  },
+  "held-390": {
+   "scrollWidth": 390,
+   "innerWidth": 390
+  },
+  "held-320": {
+   "scrollWidth": 320,
+   "innerWidth": 320
+  }
+ },
+ "browser": {
+  "version": "156.0.8078.4"
+ },
+ "tunnel": {
+  "started": "for the webhook window only",
+  "stoppedAt": "2026-10-27T13:53:13.748Z"
+ },
+ "error": null,
+ "cleanupError": null
+}
