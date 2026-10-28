@@ -20,12 +20,15 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  await expect(approval).toContainText(contact.email);
  await expect(approval).toContainText(subject);
  await expect(approval).toContainText(body);
- // Workspace and recipient use UTC. Choose a future weekday in sending hours;
- // the field reads workspace time, as its label says.
- const requested=new Date(Date.now()+86400000);requested.setUTCHours(10,0,0,0);
+ // First-run setup selected Brisbane (UTC+10 year-round); this recipient inherits
+ // that zone. The field takes workspace wall time, even in a UTC browser.
+ // Use UTC calendar operations on the Brisbane date to select tomorrow at 10am.
+ const brisbaneOffset=10*60*60*1000;
+ const requested=new Date(Date.now()+brisbaneOffset+86400000);requested.setUTCHours(10,0,0,0);
  while([0,6].includes(requested.getUTCDay()))requested.setUTCDate(requested.getUTCDate()+1);
- const requestedAt=requested.toISOString();
- await approval.getByLabel(/Schedule for later/).fill(requestedAt.slice(0,16));
+ const requestedLocal=requested.toISOString().slice(0,16);
+ const requestedAt=new Date(requested.getTime()-brisbaneOffset).toISOString();
+ await approval.getByLabel(/Schedule for later/).fill(requestedLocal);
  const previewResponse=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/workbench/drafts/${draft.id}/approval-preview`);
  await approval.getByRole('button',{name:'Review schedule for exact revision',exact:true}).click();
  const response=await previewResponse;assert.equal(response.status(),200);
