@@ -22,8 +22,8 @@ export async function calendarJourney(page,data){
   }
   for(const item of data.providers){
    const {provider,contact,source,network}=item,google=provider==='google';
-   await openRecord(contact);let panel=region();await expect(panel).toContainText('Provider edited the meeting.');await proof(`${provider}-conflict-review`,panel);
-   await panel.getByText('Plan calendar meeting',{exact:true}).click();await panel.getByLabel('Meeting',{exact:true}).selectOption(item.captured);
+   await openRecord(contact);let panel=region();await expect(panel).toContainText('Provider edited the meeting.');await panel.getByText('Plan calendar meeting',{exact:true}).click();await panel.getByLabel('Meeting',{exact:true}).selectOption(item.conflict);await panel.getByRole('button',{name:'Review invitation',exact:true}).click();await expect(review()).toContainText('Provider edits conflict with the last Orbit version.');await proof(`${provider}-conflict-review`,panel);await review().getByRole('button',{name:'Cancel review',exact:true}).click();
+   await panel.getByLabel('Meeting',{exact:true}).selectOption(item.captured);
    const captured=network.state.calendarEvent;if(google)captured.organizer.self=false;else captured.isOrganizer=false;
    const before=network.state.writes.length;
    await panel.getByRole('button',{name:'Review invitation',exact:true}).click();await expect(panel).toContainText('Only the connected calendar organizer');expect(network.state.writes.length).toBe(before);await proof(`${provider}-organizer-refusal`,panel);
@@ -39,7 +39,7 @@ export async function calendarJourney(page,data){
    const form=page.getByRole('form',{name:`Reconnect ${name}`,exact:true});await form.getByLabel('Client ID',{exact:true}).fill('synthetic-orbit-client');await form.getByLabel('Client secret',{exact:true}).fill('synthetic-orbit-secret');const consent=form.getByRole('checkbox',{name:`Allow reviewed calendar writeback (${writeScope})`,exact:true});await expect(consent).not.toBeChecked();await consent.check();await proof(`${provider}-reconnect-consent`,form,'.capture-key-form');
    network.state.revoked=false;await authorize(form,`Reconnect ${name}`,google,readScopes,writeScope,true);network.state.challenge=authorization.searchParams.get('code_challenge');
    await page.goto(`/api/v1/capture/oauth/${provider}/callback?`+new URLSearchParams({state:authorization.searchParams.get('state'),code:'synthetic-orbit-code'}));
-   const scope=await page.request.post(`/api/v1/capture/sources/${source}/scope`,{data:{calendars:['calendar'],calendarWindow:{start:'2026-01-01T00:00:00.000Z',end:'2027-01-01T00:00:00.000Z'}}});expect(scope.status()).toBe(200);const sync=await page.request.post(`/api/v1/capture/sources/${source}/sync`,{data:{}});expect(sync.status()).toBe(200);expect(network.state.writes.length).toBe(before+4,'fresh consent and identity reconciliation send no invitations');
+   const scope=await page.request.post(`/api/v1/capture/sources/${source}/scope`,{headers:{origin:new URL(item.origin??data.origin).origin},data:{calendars:['calendar'],calendarWindow:{start:'2026-01-01T00:00:00.000Z',end:'2027-01-01T00:00:00.000Z'}}});expect(scope.status()).toBe(200);const sync=await page.request.post(`/api/v1/capture/sources/${source}/sync`,{headers:{origin:new URL(item.origin??data.origin).origin},data:{}});expect(sync.status()).toBe(200);expect(network.state.writes.length).toBe(before+4,'fresh consent and identity reconciliation send no invitations');
    await openRecord(contact);await expect(region()).not.toContainText('unresolved setup');
   }
   expect(errors).toEqual(Array(4).fill('Failed to load resource: the server responded with a status of 409 (Conflict)'));

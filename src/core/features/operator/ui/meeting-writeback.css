@@ -1,0 +1,7 @@
+.calendar-writeback { overflow-wrap: anywhere; }
+.calendar-writeback fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.calendar-writeback :is(input, select, textarea, button, summary) { min-height: 44px; }
+.calendar-writeback .calendar-reconnect { display: inline-flex; align-items: center; min-height: 44px; }
+.calendar-writeback-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.calendar-writeback ol { padding-inline-start: 24px; list-style: decimal; }
+.record-editor .calendar-writeback.workbench-form :is(input, select, textarea, button, summary) { min-height: 44px; }

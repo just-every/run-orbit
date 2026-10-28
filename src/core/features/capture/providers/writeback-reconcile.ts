@@ -13,6 +13,6 @@ export async function reconcileWritebacks(db:D1Database,source:ProviderSource,se
   if(event.attendeesOmitted||event.hideAttendees||event.visibility==='private'||event.sensitivity==='private')meeting.attendees=[];
   const state=cancelled?'cancelled':'conflict',error=cancelled?null:'Provider edited the meeting. The connection may also have changed. Review its current attendees, message and time before writing again.';
   const activity=JSON.stringify({text:cancelled?'Meeting cancelled by provider':`Meeting: ${meeting.title}\n${meeting.message}`,subject:meeting.title,attendees:meeting.attendees,start:meeting.start,end:meeting.end,cancelled,contactIds:[row.contact_id],calendarWritebackId:row.id});
-  await db.batch([db.prepare('UPDATE calendar_writebacks SET state=?,payload_json=?,error=?,updated_at=? WHERE id=? AND updated_at=?').bind(state,JSON.stringify(meeting),error,new Date().toISOString(),row.id,row.updated_at),db.prepare('UPDATE timeline_entries SET payload_json=? WHERE id=?').bind(activity,row.entry_id)]);
+  await db.batch([db.prepare('UPDATE calendar_writebacks SET state=?,payload_json=?,error=?,updated_at=? WHERE id=? AND updated_at=?').bind(state,JSON.stringify(meeting),error,new Date().toISOString(),row.id,row.updated_at),db.prepare('UPDATE timeline_entries SET payload_json=json_patch(payload_json,?) WHERE id=?').bind(activity,row.entry_id)]);
  }
 }

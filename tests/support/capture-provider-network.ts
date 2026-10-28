@@ -3,7 +3,7 @@ import {eml} from './capture-mail';
 import {scopes,type Provider,type ProviderFetch} from '../../src/core/features/capture/providers/config';
 /** Only the external HTTP edge is replaced. Orbit auth, D1, normalizers and intake run unchanged. */
 export function captureProviderNetwork(provider:Provider){
- const state={calendarEvent:null as any,writeInstances:new Map<string,any[]>(),writeEvents:new Map<string,any>(),writes:[] as {method:string;body:any;url:string}[],conflictNext:false,uncertainWrite:false,reads:[] as string[],tokens:0,total:25,incremental:false,incrementalIds:['new'],mailHeaders:{} as Record<string,Record<string,string>>,outage:false,revoked:false,expireHistory:false,scope:scopes[provider].join(' '),unsafeLink:'',malformed:false,redirect:false,early401:false,tombstones:false,recurring:false,challenge:'',pause:undefined as undefined|((url:string)=>Promise<void>),calendarRound:0};
+ const state={calendarRole:'owner',calendarEvent:null as any,writeInstances:new Map<string,any[]>(),writeEvents:new Map<string,any>(),writes:[] as {method:string;body:any;url:string}[],conflictNext:false,revokeOnWrite:false,uncertainWrite:false,reads:[] as string[],tokens:0,total:25,incremental:false,incrementalIds:['new'],mailHeaders:{} as Record<string,Record<string,string>>,outage:false,revoked:false,expireHistory:false,scope:scopes[provider].join(' '),unsafeLink:'',malformed:false,redirect:false,early401:false,tombstones:false,recurring:false,challenge:'',pause:undefined as undefined|((url:string)=>Promise<void>),calendarRound:0};
  const mail=(id:string)=>eml({From:id==='unknown'?'other@unknown.test':'Ana <ana@acme.example>',To:'seller@orbit.test',Subject:`Provider ${id}`,Date:'Mon, 05 Oct 2026 10:00:00 +0000','Message-ID':`<${provider}-${id}@acme.example>`,...state.mailHeaders[id]},`Evidence ${id}`);
  const calendar=(cancelled=false)=>state.calendarEvent??(provider==='google'?{id:'event',iCalUID:'meeting@acme.example',summary:'Acme meeting',sequence:cancelled?1:0,created:'2026-10-01T10:00:00Z',updated:cancelled?'2026-10-06T10:00:00Z':'2026-10-01T10:00:00Z',status:cancelled?'cancelled':'confirmed',start:{date:'2026-10-20'},end:{date:'2026-10-21'},organizer:{email:'ana@acme.example'},attendees:[{email:'seller@orbit.test'}]}:{id:'event',iCalUId:'meeting@acme.example',subject:'Acme meeting',createdDateTime:'2026-10-01T10:00:00Z',lastModifiedDateTime:cancelled?'2026-10-06T10:00:00Z':'2026-10-01T10:00:00Z',isCancelled:cancelled,isAllDay:true,start:{dateTime:'2026-10-20T00:00:00',timeZone:'UTC'},end:{dateTime:'2026-10-21T00:00:00',timeZone:'UTC'},organizer:{emailAddress:{address:'ana@acme.example'}},attendees:[{emailAddress:{address:'seller@orbit.test'}}]});
  const occurrences=()=>[1,2].map(n=>provider==='google'?{...calendar(),id:`occurrence-${n}`,iCalUID:'series@acme.example',start:{dateTime:`2026-11-0${n===1?1:8}T01:30:00${n===1?'-04:00':'-05:00'}`,timeZone:'America/New_York'},end:{dateTime:`2026-11-0${n===1?1:8}T02:30:00${n===1?'-05:00':'-05:00'}`,timeZone:'America/New_York'},originalStartTime:{dateTime:`2026-11-0${n===1?1:8}T01:30:00${n===1?'-04:00':'-05:00'}`}}:{...calendar(),id:`occurrence-${n}`,iCalUId:`series-${n}@acme.example`,isAllDay:false,start:{dateTime:`2026-11-0${n===1?1:8}T0${n===1?5:6}:30:00`,timeZone:'UTC'},end:{dateTime:`2026-11-0${n===1?1:8}T07:30:00`,timeZone:'UTC'},originalStart:`2026-11-0${n===1?1:8}T0${n===1?5:6}:30:00Z`});
@@ -17,19 +17,20 @@ export function captureProviderNetwork(provider:Provider){
    state.tokens++;return json({access_token:`access-${state.tokens}`,refresh_token:`refresh-${state.tokens}`,expires_in:3600,scope:state.scope});
   }
   if(state.revoked&&!url.pathname.endsWith('/token'))return json({},401);
-  if(url.pathname.endsWith('/instances')&&state.writeInstances.has(url.pathname.split('/').at(-2)!)){const values=state.writeInstances.get(url.pathname.split('/').at(-2)!)!;return json(provider==='google'?{items:values}:{value:values});}
+  if(url.pathname.endsWith('/instances')&&state.writeInstances.has(url.pathname.split('/').at(-2)!)){const values=state.writeInstances.get(url.pathname.split('/').at(-2)!)!.map(event=>state.writeEvents.get(event.id)).filter(Boolean);return json(provider==='google'?{items:values}:{value:values});}
   if(/\/events(?:\/[^/]+)?(?:\/cancel)?$/.test(url.pathname)&&(init.method!=='GET'||/\/events\/[^/]+$/.test(url.pathname))){
    assert.ok(new Headers(init.headers).get('authorization'));
    const parts=url.pathname.split('/'),eventId=parts.at(-1)==='cancel'?parts.at(-2)!:parts.at(-1)!,event=state.writeEvents.get(eventId);
    if(init.method==='GET')return event?json(event):json({},404);
    assert.ok(state.scope.includes(provider==='google'?'calendar.events':'Calendars.ReadWrite'),'writes require separate scope');
+   if(state.revokeOnWrite){state.revokeOnWrite=false;state.revoked=true;return json({},401);}
    if(state.uncertainWrite)throw new Error('Synthetic provider disconnect');
    if(state.conflictNext){state.conflictNext=false;return json({},412);}
    const body=init.body?JSON.parse(String(init.body)):null;
    if(event)assert.equal(new Headers(init.headers).get('if-match'),event.etag??event['@odata.etag']);
    state.writes.push({method:init.method!,body,url:raw});
    if(init.method==='DELETE'||url.pathname.endsWith('/cancel')){assert.ok(event);state.writeEvents.delete(eventId);return new Response(null,{status:provider==='google'?204:202});}
-   const nextId=event?eventId:`synthetic-orbit-event-${state.writeEvents.size+1}`,revision=`"synthetic-${state.writes.length}"`,next={...body,...(provider==='google'?{organizer:{self:true}}:{isOrganizer:true}),id:nextId,...(provider==='google'?{etag:revision}:{'@odata.etag':revision})};state.writeEvents.set(nextId,next);return json(next,init.method==='POST'?201:200);
+   const nextId=event?eventId:`synthetic-orbit-event-${state.writeEvents.size+1}`,revision=`"synthetic-${state.writes.length}"`,next={...event,...body,...(provider==='google'?{organizer:{self:true}}:{isOrganizer:true}),id:nextId,...(provider==='google'?{etag:revision}:{'@odata.etag':revision})};state.writeEvents.set(nextId,next);return json(next,init.method==='POST'?201:200);
   }
   assert.equal(init.method,'GET','capture never writes provider data');assert.ok(new Headers(init.headers).get('authorization'));state.reads.push(raw);
   if(state.outage)return json({},503);if(state.malformed)return json({});if(state.redirect)return new Response(null,{status:302,headers:{location:'https://evil.test/stolen'}});if(state.early401){state.early401=false;return json({},401);}if(state.revoked)return json({},401);
@@ -37,7 +38,7 @@ export function captureProviderNetwork(provider:Provider){
    if(url.pathname.endsWith('/profile'))return json({historyId:'900719925474099312345'});
    if(url.pathname.endsWith('/labels'))return json({labels:[{id:'INBOX',name:'Inbox'},{id:'SENT',name:'Sent'}]});
    if(url.pathname.endsWith('/users/me/calendarList'))return json(url.searchParams.has('pageToken')?{items:[]}:{items:[{id:'calendar',summary:'Calendar'}],nextPageToken:'metadata-next'});
-   if(url.pathname.endsWith('/calendarList/calendar'))return json({id:'calendar'});
+   if(url.pathname.endsWith('/calendarList/calendar'))return json({id:'calendar',accessRole:state.calendarRole});
    if(url.pathname.endsWith('/messages')){const page=Number(url.searchParams.get('pageToken')??0),ids=Array.from({length:state.total},(_,i)=>String(i)).concat('unknown'),slice=ids.slice(page,page+10);return json({messages:slice.map(id=>({id})),...(page+10<ids.length?{nextPageToken:String(page+10)}:{})});}
    if(url.pathname.endsWith('/history')){if(state.expireHistory){state.expireHistory=false;return json({},404);}return json({historyId:'900719925474099312346',history:state.incremental?[{messagesAdded:state.incrementalIds.map(id=>({message:{id}}))}]:[]});}
    if(url.pathname.includes('/messages/'))return json({raw:Buffer.from(mail(url.pathname.split('/').at(-1)!)).toString('base64url'),labelIds:['INBOX','SENT']});

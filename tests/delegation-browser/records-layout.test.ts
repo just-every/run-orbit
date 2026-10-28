@@ -37,7 +37,7 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
     const key=await crypto.subtle.importKey('raw',new TextEncoder().encode('synthetic-orbit-twilio-token'),{name:'HMAC',hash:'SHA-1'},false,['sign']);
     const raw=callback+[...heldForm.keys()].sort().map(name=>name+heldForm.get(name)).join(''),signature=Buffer.from(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(raw))).toString('base64');
     const held=await caller.app.request(callback,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-Twilio-Signature':signature},body:heldForm});if(held.status!==200)throw new Error('Held-call browser fixture failed.');
-    const calendarData=await browserCalendarData(fixture.db,sampleData.operators[0].id);
+    const calendarData={...await browserCalendarData(fixture.db,sampleData.operators[0].id),origin};
     const privateData=await browserPrivateData(fixture.db,sampleData.operators[0].id);
     await fixture.close();
     const worker=await runtime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries({...identityVars(origin),ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)}).map(([name,value])=>[name,{type:'plain_text',value}])),dev:{remote:false,persist:fixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:calendarData.outbound}});

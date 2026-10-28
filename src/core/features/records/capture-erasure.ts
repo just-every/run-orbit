@@ -1,11 +1,13 @@
+import {identityMatch,identityPatterns} from './erasure-identity';
 import {createId} from '../../shared/ids';
 
 /** Follow proposal provenance while it still exists, in the contact erasure transaction. */
-export function captureErasureStatements(db:D1Database,contactId:string,actor:string){
+export function captureErasureStatements(db:D1Database,contactId:string,actor:string,identities:string[]=[]){
  const signals='SELECT signal_id FROM record_erasure_signals WHERE contact_id=?';
  const proposals=`SELECT id FROM capture_proposals WHERE signal_id IN(${signals}) OR (record_type='contact' AND record_id=?) OR EXISTS(SELECT 1 FROM json_each(capture_proposals.details_json,'$.contactIds') WHERE value=?)`;
  const person=[contactId,contactId,contactId];
  return [
+  ...identities.map(value=>db.prepare(`DELETE FROM calendar_writebacks WHERE ${identityMatch('payload_json')}`).bind(...identityPatterns(value))),
   // Accepted field, contact, stop and queue changes copy evidence without a signalId.
   // Remove that whole evidence entry. Destination text is separately redacted
   // only where it contains an erased mailbox, preserving the accepted decision.
