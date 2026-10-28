@@ -14,24 +14,32 @@ import { Route as DemoRouteImport } from './routes/demo'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppAccessRouteImport } from './routes/app.access'
+import { Route as AppCompaniesRouteImport } from './routes/app.companies'
+import { Route as AppContactsRouteImport } from './routes/app.contacts'
 import { Route as AppFormsRouteImport } from './routes/app.forms'
 import { Route as AppImportsRouteImport } from './routes/app.imports'
 import { Route as AppLibraryRouteImport } from './routes/app.library'
 import { Route as AppNewRouteImport } from './routes/app.new'
 import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
+import { Route as AppNowRouteImport } from './routes/app.now'
 import { Route as AppRecordsRouteImport } from './routes/app.records'
 import { Route as AppReportsRouteImport } from './routes/app.reports'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppSharedRecordsRouteImport } from './routes/app.shared-records'
 import { Route as AppSourcesRouteImport } from './routes/app.sources'
+import { Route as AppTodayRouteImport } from './routes/app.today'
 import { Route as DocsIndexRouteImport } from './routes/docs.index'
 import { Route as DocsSlugRouteImport } from './routes/docs.$slug'
+import { Route as AppAssistanceIndexRouteImport } from './routes/app.assistance.index'
 import { Route as AppAssistanceIdRouteImport } from './routes/app.assistance.$id'
 import { Route as AppCaptureIndexRouteImport } from './routes/app.capture.index'
 import { Route as AppCaptureReviewRouteImport } from './routes/app.capture.review'
 import { Route as AppDashboardsIdRouteImport } from './routes/app.dashboards.$id'
+import { Route as AppDraftsIndexRouteImport } from './routes/app.drafts.index'
 import { Route as AppDraftsIdRouteImport } from './routes/app.drafts.$id'
+import { Route as AppMeetingsIndexRouteImport } from './routes/app.meetings.index'
 import { Route as AppMeetingsIdRouteImport } from './routes/app.meetings.$id'
+import { Route as AppOpportunitiesIndexRouteImport } from './routes/app.opportunities.index'
 import { Route as AppOpportunitiesIdRouteImport } from './routes/app.opportunities.$id'
 import { Route as AppCaptureConnectMethodRouteImport } from './routes/app.capture.connect.$method'
 
@@ -60,6 +68,16 @@ const AppAccessRoute = AppAccessRouteImport.update({
   path: '/access',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCompaniesRoute = AppCompaniesRouteImport.update({
+  id: '/companies',
+  path: '/companies',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppContactsRoute = AppContactsRouteImport.update({
+  id: '/contacts',
+  path: '/contacts',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppFormsRoute = AppFormsRouteImport.update({
   id: '/forms',
   path: '/forms',
@@ -83,6 +101,11 @@ const AppNewRoute = AppNewRouteImport.update({
 const AppNotificationsRoute = AppNotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNowRoute = AppNowRouteImport.update({
+  id: '/now',
+  path: '/now',
   getParentRoute: () => AppRoute,
 } as any)
 const AppRecordsRoute = AppRecordsRouteImport.update({
@@ -110,6 +133,11 @@ const AppSourcesRoute = AppSourcesRouteImport.update({
   path: '/sources',
   getParentRoute: () => AppRoute,
 } as any)
+const AppTodayRoute = AppTodayRouteImport.update({
+  id: '/today',
+  path: '/today',
+  getParentRoute: () => AppRoute,
+} as any)
 const DocsIndexRoute = DocsIndexRouteImport.update({
   id: '/docs/',
   path: '/docs/',
@@ -119,6 +147,11 @@ const DocsSlugRoute = DocsSlugRouteImport.update({
   id: '/docs/$slug',
   path: '/docs/$slug',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppAssistanceIndexRoute = AppAssistanceIndexRouteImport.update({
+  id: '/assistance/',
+  path: '/assistance/',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppAssistanceIdRoute = AppAssistanceIdRouteImport.update({
   id: '/assistance/$id',
@@ -140,14 +173,29 @@ const AppDashboardsIdRoute = AppDashboardsIdRouteImport.update({
   path: '/dashboards/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDraftsIndexRoute = AppDraftsIndexRouteImport.update({
+  id: '/drafts/',
+  path: '/drafts/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDraftsIdRoute = AppDraftsIdRouteImport.update({
   id: '/drafts/$id',
   path: '/drafts/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMeetingsIndexRoute = AppMeetingsIndexRouteImport.update({
+  id: '/meetings/',
+  path: '/meetings/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppMeetingsIdRoute = AppMeetingsIdRouteImport.update({
   id: '/meetings/$id',
   path: '/meetings/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOpportunitiesIndexRoute = AppOpportunitiesIndexRouteImport.update({
+  id: '/opportunities/',
+  path: '/opportunities/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppOpportunitiesIdRoute = AppOpportunitiesIdRouteImport.update({
@@ -166,16 +214,20 @@ export interface FileRoutesByFullPath {
   '/demo': typeof DemoRoute
   '/setup': typeof SetupRoute
   '/app/access': typeof AppAccessRoute
+  '/app/companies': typeof AppCompaniesRoute
+  '/app/contacts': typeof AppContactsRoute
   '/app/forms': typeof AppFormsRoute
   '/app/imports': typeof AppImportsRoute
   '/app/library': typeof AppLibraryRoute
   '/app/new': typeof AppNewRoute
   '/app/notifications': typeof AppNotificationsRoute
+  '/app/now': typeof AppNowRoute
   '/app/records': typeof AppRecordsRoute
   '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/shared-records': typeof AppSharedRecordsRoute
   '/app/sources': typeof AppSourcesRoute
+  '/app/today': typeof AppTodayRoute
   '/docs/$slug': typeof DocsSlugRoute
   '/app/': typeof AppIndexRoute
   '/docs/': typeof DocsIndexRoute
@@ -185,23 +237,31 @@ export interface FileRoutesByFullPath {
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/assistance/': typeof AppAssistanceIndexRoute
   '/app/capture/': typeof AppCaptureIndexRoute
+  '/app/drafts/': typeof AppDraftsIndexRoute
+  '/app/meetings/': typeof AppMeetingsIndexRoute
+  '/app/opportunities/': typeof AppOpportunitiesIndexRoute
   '/app/capture/connect/$method': typeof AppCaptureConnectMethodRoute
 }
 export interface FileRoutesByTo {
   '/demo': typeof DemoRoute
   '/setup': typeof SetupRoute
   '/app/access': typeof AppAccessRoute
+  '/app/companies': typeof AppCompaniesRoute
+  '/app/contacts': typeof AppContactsRoute
   '/app/forms': typeof AppFormsRoute
   '/app/imports': typeof AppImportsRoute
   '/app/library': typeof AppLibraryRoute
   '/app/new': typeof AppNewRoute
   '/app/notifications': typeof AppNotificationsRoute
+  '/app/now': typeof AppNowRoute
   '/app/records': typeof AppRecordsRoute
   '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/shared-records': typeof AppSharedRecordsRoute
   '/app/sources': typeof AppSourcesRoute
+  '/app/today': typeof AppTodayRoute
   '/docs/$slug': typeof DocsSlugRoute
   '/app': typeof AppIndexRoute
   '/docs': typeof DocsIndexRoute
@@ -211,7 +271,11 @@ export interface FileRoutesByTo {
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/assistance': typeof AppAssistanceIndexRoute
   '/app/capture': typeof AppCaptureIndexRoute
+  '/app/drafts': typeof AppDraftsIndexRoute
+  '/app/meetings': typeof AppMeetingsIndexRoute
+  '/app/opportunities': typeof AppOpportunitiesIndexRoute
   '/app/capture/connect/$method': typeof AppCaptureConnectMethodRoute
 }
 export interface FileRoutesById {
@@ -220,16 +284,20 @@ export interface FileRoutesById {
   '/demo': typeof DemoRoute
   '/setup': typeof SetupRoute
   '/app/access': typeof AppAccessRoute
+  '/app/companies': typeof AppCompaniesRoute
+  '/app/contacts': typeof AppContactsRoute
   '/app/forms': typeof AppFormsRoute
   '/app/imports': typeof AppImportsRoute
   '/app/library': typeof AppLibraryRoute
   '/app/new': typeof AppNewRoute
   '/app/notifications': typeof AppNotificationsRoute
+  '/app/now': typeof AppNowRoute
   '/app/records': typeof AppRecordsRoute
   '/app/reports': typeof AppReportsRoute
   '/app/settings': typeof AppSettingsRoute
   '/app/shared-records': typeof AppSharedRecordsRoute
   '/app/sources': typeof AppSourcesRoute
+  '/app/today': typeof AppTodayRoute
   '/docs/$slug': typeof DocsSlugRoute
   '/app/': typeof AppIndexRoute
   '/docs/': typeof DocsIndexRoute
@@ -239,7 +307,11 @@ export interface FileRoutesById {
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/assistance/': typeof AppAssistanceIndexRoute
   '/app/capture/': typeof AppCaptureIndexRoute
+  '/app/drafts/': typeof AppDraftsIndexRoute
+  '/app/meetings/': typeof AppMeetingsIndexRoute
+  '/app/opportunities/': typeof AppOpportunitiesIndexRoute
   '/app/capture/connect/$method': typeof AppCaptureConnectMethodRoute
 }
 export interface FileRouteTypes {
@@ -249,16 +321,20 @@ export interface FileRouteTypes {
     | '/demo'
     | '/setup'
     | '/app/access'
+    | '/app/companies'
+    | '/app/contacts'
     | '/app/forms'
     | '/app/imports'
     | '/app/library'
     | '/app/new'
     | '/app/notifications'
+    | '/app/now'
     | '/app/records'
     | '/app/reports'
     | '/app/settings'
     | '/app/shared-records'
     | '/app/sources'
+    | '/app/today'
     | '/docs/$slug'
     | '/app/'
     | '/docs/'
@@ -268,23 +344,31 @@ export interface FileRouteTypes {
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
+    | '/app/assistance/'
     | '/app/capture/'
+    | '/app/drafts/'
+    | '/app/meetings/'
+    | '/app/opportunities/'
     | '/app/capture/connect/$method'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/demo'
     | '/setup'
     | '/app/access'
+    | '/app/companies'
+    | '/app/contacts'
     | '/app/forms'
     | '/app/imports'
     | '/app/library'
     | '/app/new'
     | '/app/notifications'
+    | '/app/now'
     | '/app/records'
     | '/app/reports'
     | '/app/settings'
     | '/app/shared-records'
     | '/app/sources'
+    | '/app/today'
     | '/docs/$slug'
     | '/app'
     | '/docs'
@@ -294,7 +378,11 @@ export interface FileRouteTypes {
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
+    | '/app/assistance'
     | '/app/capture'
+    | '/app/drafts'
+    | '/app/meetings'
+    | '/app/opportunities'
     | '/app/capture/connect/$method'
   id:
     | '__root__'
@@ -302,16 +390,20 @@ export interface FileRouteTypes {
     | '/demo'
     | '/setup'
     | '/app/access'
+    | '/app/companies'
+    | '/app/contacts'
     | '/app/forms'
     | '/app/imports'
     | '/app/library'
     | '/app/new'
     | '/app/notifications'
+    | '/app/now'
     | '/app/records'
     | '/app/reports'
     | '/app/settings'
     | '/app/shared-records'
     | '/app/sources'
+    | '/app/today'
     | '/docs/$slug'
     | '/app/'
     | '/docs/'
@@ -321,7 +413,11 @@ export interface FileRouteTypes {
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
+    | '/app/assistance/'
     | '/app/capture/'
+    | '/app/drafts/'
+    | '/app/meetings/'
+    | '/app/opportunities/'
     | '/app/capture/connect/$method'
   fileRoutesById: FileRoutesById
 }
@@ -370,6 +466,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccessRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/companies': {
+      id: '/app/companies'
+      path: '/companies'
+      fullPath: '/app/companies'
+      preLoaderRoute: typeof AppCompaniesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/contacts': {
+      id: '/app/contacts'
+      path: '/contacts'
+      fullPath: '/app/contacts'
+      preLoaderRoute: typeof AppContactsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/forms': {
       id: '/app/forms'
       path: '/forms'
@@ -403,6 +513,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/app/notifications'
       preLoaderRoute: typeof AppNotificationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/now': {
+      id: '/app/now'
+      path: '/now'
+      fullPath: '/app/now'
+      preLoaderRoute: typeof AppNowRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/records': {
@@ -440,6 +557,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSourcesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/today': {
+      id: '/app/today'
+      path: '/today'
+      fullPath: '/app/today'
+      preLoaderRoute: typeof AppTodayRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/docs/': {
       id: '/docs/'
       path: '/docs'
@@ -453,6 +577,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/docs/$slug'
       preLoaderRoute: typeof DocsSlugRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/app/assistance/': {
+      id: '/app/assistance/'
+      path: '/assistance'
+      fullPath: '/app/assistance/'
+      preLoaderRoute: typeof AppAssistanceIndexRouteImport
+      parentRoute: typeof AppRoute
     }
     '/app/assistance/$id': {
       id: '/app/assistance/$id'
@@ -482,6 +613,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardsIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/drafts/': {
+      id: '/app/drafts/'
+      path: '/drafts'
+      fullPath: '/app/drafts/'
+      preLoaderRoute: typeof AppDraftsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/drafts/$id': {
       id: '/app/drafts/$id'
       path: '/drafts/$id'
@@ -489,11 +627,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDraftsIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/meetings/': {
+      id: '/app/meetings/'
+      path: '/meetings'
+      fullPath: '/app/meetings/'
+      preLoaderRoute: typeof AppMeetingsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/meetings/$id': {
       id: '/app/meetings/$id'
       path: '/meetings/$id'
       fullPath: '/app/meetings/$id'
       preLoaderRoute: typeof AppMeetingsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/opportunities/': {
+      id: '/app/opportunities/'
+      path: '/opportunities'
+      fullPath: '/app/opportunities/'
+      preLoaderRoute: typeof AppOpportunitiesIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/opportunities/$id': {
@@ -515,16 +667,20 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAccessRoute: typeof AppAccessRoute
+  AppCompaniesRoute: typeof AppCompaniesRoute
+  AppContactsRoute: typeof AppContactsRoute
   AppFormsRoute: typeof AppFormsRoute
   AppImportsRoute: typeof AppImportsRoute
   AppLibraryRoute: typeof AppLibraryRoute
   AppNewRoute: typeof AppNewRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
+  AppNowRoute: typeof AppNowRoute
   AppRecordsRoute: typeof AppRecordsRoute
   AppReportsRoute: typeof AppReportsRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppSharedRecordsRoute: typeof AppSharedRecordsRoute
   AppSourcesRoute: typeof AppSourcesRoute
+  AppTodayRoute: typeof AppTodayRoute
   AppIndexRoute: typeof AppIndexRoute
   AppAssistanceIdRoute: typeof AppAssistanceIdRoute
   AppCaptureReviewRoute: typeof AppCaptureReviewRoute
@@ -532,22 +688,30 @@ interface AppRouteChildren {
   AppDraftsIdRoute: typeof AppDraftsIdRoute
   AppMeetingsIdRoute: typeof AppMeetingsIdRoute
   AppOpportunitiesIdRoute: typeof AppOpportunitiesIdRoute
+  AppAssistanceIndexRoute: typeof AppAssistanceIndexRoute
   AppCaptureIndexRoute: typeof AppCaptureIndexRoute
+  AppDraftsIndexRoute: typeof AppDraftsIndexRoute
+  AppMeetingsIndexRoute: typeof AppMeetingsIndexRoute
+  AppOpportunitiesIndexRoute: typeof AppOpportunitiesIndexRoute
   AppCaptureConnectMethodRoute: typeof AppCaptureConnectMethodRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppAccessRoute: AppAccessRoute,
+  AppCompaniesRoute: AppCompaniesRoute,
+  AppContactsRoute: AppContactsRoute,
   AppFormsRoute: AppFormsRoute,
   AppImportsRoute: AppImportsRoute,
   AppLibraryRoute: AppLibraryRoute,
   AppNewRoute: AppNewRoute,
   AppNotificationsRoute: AppNotificationsRoute,
+  AppNowRoute: AppNowRoute,
   AppRecordsRoute: AppRecordsRoute,
   AppReportsRoute: AppReportsRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppSharedRecordsRoute: AppSharedRecordsRoute,
   AppSourcesRoute: AppSourcesRoute,
+  AppTodayRoute: AppTodayRoute,
   AppIndexRoute: AppIndexRoute,
   AppAssistanceIdRoute: AppAssistanceIdRoute,
   AppCaptureReviewRoute: AppCaptureReviewRoute,
@@ -555,7 +719,11 @@ const AppRouteChildren: AppRouteChildren = {
   AppDraftsIdRoute: AppDraftsIdRoute,
   AppMeetingsIdRoute: AppMeetingsIdRoute,
   AppOpportunitiesIdRoute: AppOpportunitiesIdRoute,
+  AppAssistanceIndexRoute: AppAssistanceIndexRoute,
   AppCaptureIndexRoute: AppCaptureIndexRoute,
+  AppDraftsIndexRoute: AppDraftsIndexRoute,
+  AppMeetingsIndexRoute: AppMeetingsIndexRoute,
+  AppOpportunitiesIndexRoute: AppOpportunitiesIndexRoute,
   AppCaptureConnectMethodRoute: AppCaptureConnectMethodRoute,
 }
 

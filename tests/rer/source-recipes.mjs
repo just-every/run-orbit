@@ -54,3 +54,25 @@ export async function exerciseBookingRecipes(page,secret,opportunityId){
   await expect(page.getByText('Your tools cannot reach this Orbit address.',{exact:true})).toBeVisible();
  }
 }
+
+export async function exerciseSourceRemoval(page,{contactId,opportunityId}){
+ const sourceId=crypto.randomUUID(),name='Removal proof source';
+ const {secret}=await browserAPI(page,`/api/v1/sources/${sourceId}`,'PUT',{name,enabled:true});
+ const url=`/api/v1/signals/${sourceId}/automation`,headers={Authorization:`Bearer ${secret}`,'Content-Type':'application/json'};
+ const body=JSON.stringify({eventId:crypto.randomUUID(),type:`${sourceId}:recorded`,subject:'Evidence retained after source removal',occurredAt:new Date().toISOString(),record:{type:'contact',id:contactId}});
+ const accepted=await post(page,url,headers,body);assert.equal(accepted.status,201);
+ const read=async()=>(await browserAPI(page,`/api/v1/opportunities/${opportunityId}`)).opportunity;
+ const before=await read();assert.equal(before.signals.find(signal=>signal.id===accepted.body.id)?.source,name);
+ await page.reload();
+ const card=page.locator('article').filter({has:page.getByRole('heading',{name,exact:true})});
+ await card.getByText('Advanced',{exact:true}).click();
+ await card.getByRole('button',{name:'Remove',exact:true}).click();
+ await card.getByRole('button',{name:'Cancel',exact:true}).click();
+ assert.equal((await browserAPI(page,'/api/v1/sources')).sources.some(source=>source.id===sourceId),true);
+ await card.getByRole('button',{name:'Remove',exact:true}).click();
+ await card.getByRole('button',{name:'Confirm remove',exact:true}).click();
+ await expect(card).toHaveCount(0);
+ assert.equal((await browserAPI(page,'/api/v1/sources')).sources.some(source=>source.id===sourceId),false);
+ assert.equal((await post(page,url,headers,body)).status,403);
+ assert.deepEqual(await read(),before,'Removing a source keeps all existing evidence and its source name');
+}

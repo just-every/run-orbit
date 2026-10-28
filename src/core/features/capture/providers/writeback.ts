@@ -59,7 +59,8 @@ export function calendarWritebackRoutes(db:D1Database,config:{security?:SourceSe
    }else if(JSON.parse(row.payload_json).recurrence)throw new RecordError(409,'Choose one exact occurrence. Series-wide edits and cancellation are not allowed.');
    if(input.meeting.recurrence)throw new RecordError(400,'An occurrence change cannot replace the series recurrence.');
    const saved=JSON.parse(row.payload_json);
-   if(!series&&saved.seriesId){const master=await fetcher(eventUrl(source.adapter,input.calendarId,saved.seriesId),{method:'GET',redirect:'error',headers:{Authorization:`Bearer ${token.accessToken}`},signal:AbortSignal.timeout(20000)});if(!master.ok)throw new RecordError(409,'The series is unavailable. Review the calendar before editing its exception.');series=await master.json();requireCalendarOrganizer(source.adapter,series);}
+   const parentSeries=saved.seriesId??current.recurringEventId??current.seriesMasterId;
+   if(!series&&parentSeries){const master=await fetcher(eventUrl(source.adapter,input.calendarId,parentSeries),{method:'GET',redirect:'error',headers:{Authorization:`Bearer ${token.accessToken}`},signal:AbortSignal.timeout(20000)});if(!master.ok)throw new RecordError(409,'The series is unavailable. Review the calendar before editing its exception.');series=await master.json();requireCalendarOrganizer(source.adapter,series);}
    const people=calendarMeeting(source.adapter,current).attendees;
    if(JSON.stringify([...people].sort())!==JSON.stringify([...input.meeting.attendees].sort()))throw new RecordError(409,'Provider attendees changed. Sync this calendar in Capture, then reload the meeting and review its exact attendees.');
    const etag=(input.occurrenceStart?null:response.headers.get('etag'))??current.etag??current['@odata.etag'];if(typeof etag!=='string'||!etag)throw new RecordError(409,'The provider supplied no revision. No calendar change is allowed.');

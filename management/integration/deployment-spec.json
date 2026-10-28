@@ -351,6 +351,12 @@
     },
     {
       "binding": "DB",
+      "name": "0064_signal_source_removal.sql",
+      "sha256": "398e591ff91b1d83ebeae303675c276b0f0b94dff63e49b1e6e0a8e304afd67f",
+      "sql": "ALTER TABLE signal_sources ADD COLUMN removed_at TEXT;\n"
+    },
+    {
+      "binding": "DB",
       "name": "0065_api_credentials.sql",
       "sha256": "7d7f3b89926b30b78d284fced9a2a69d30cc27acccfc2f702876ca6933ba2bc9",
       "sql": "-- Installation authority is excluded from both archive formats.\nCREATE TABLE api_credentials (\n id TEXT PRIMARY KEY NOT NULL,\n installation_id TEXT NOT NULL,\n name TEXT NOT NULL,\n principal_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n operations_json TEXT NOT NULL CHECK(json_valid(operations_json)),\n records_json TEXT NOT NULL CHECK(json_valid(records_json)),\n fields_json TEXT NOT NULL CHECK(json_valid(fields_json)),\n verifier TEXT NOT NULL UNIQUE,\n created_at TEXT NOT NULL,\n expires_at TEXT NOT NULL,\n revoked_at TEXT,\n revision INTEGER NOT NULL DEFAULT 1\n);\n"

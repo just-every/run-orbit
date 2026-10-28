@@ -1,0 +1,3 @@
+@media (max-width: 640px) {
+  .ob-app .source-removal button { min-height: 44px; }
+}

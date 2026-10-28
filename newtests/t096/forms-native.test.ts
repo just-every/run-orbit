@@ -1,3 +1,4 @@
+import {publicationAvailabilityJourney} from './forms-publication-availability';
 import {formsMappedJourney} from './forms-mapped-journey';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
@@ -25,6 +26,7 @@ test('FORM-001 mapped cross-origin capture with picklist and declared hidden fie
  await submitInquiry('person@example.com');assert.equal(await f.db.prepare("SELECT contactability FROM contacts WHERE email='person@example.com'").first('contactability'),'do_not_contact','An enquiry never clears an existing sending stop');
  const other=await collaborator(f),actor=await f.access.resolveOperatorContext(other.operator,'workspace','denied-publication');await assert.rejects(p.forms.save(actor,{form:{},landing:{}}));await assert.rejects(p.forms.approve(actor,p.compiled.operationId,{artifactHash:p.compiled.hash,formRevision:p.saved.revision}));
  await p.forms.withdraw(await f.nativeContext(),p.compiled.operationId);await assert.rejects(p.forms.publicDocument(p.slug));await assert.rejects(submitForm(p.forms,p.slug,{...intake,idempotencyKey:crypto.randomUUID()}));
+ await publicationAvailabilityJourney(f);
  }finally{await f.close();}await formsMappedJourney();});
 
 test('public capture is one atomic native batch across publication revoke, source stop, consent failure and concurrent replay',async()=>{const f=await fixture();try{

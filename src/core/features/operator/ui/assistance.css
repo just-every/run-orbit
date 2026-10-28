@@ -1,6 +1,6 @@
 /* 12ui assistance kit: its token patch contains no shared token changes. */
 .assistance-page {--assistance-line:var(--ob-line);--assistance-ink:var(--ob-ink);--assistance-muted:var(--ob-muted);--assistance-green:var(--ob-ink)}
-.assistance-page .operator-main {max-width:1160px;padding-top:28px;color:var(--assistance-ink)}
+.assistance-page .operator-main {padding-top:28px;color:var(--assistance-ink)}
 .assistance-page .operator-titlebar {flex-direction:column-reverse;align-items:flex-start;gap:26px;border:0;padding-bottom:0}
 .assistance-page .operator-titlebar h1 {max-width:100%;font-size:clamp(2.4rem,4.5vw,3.7rem);line-height:1.04;letter-spacing:-.012em}
 .assistance-page .operator-titlebar>a {color:var(--assistance-muted);font-size:14px;text-decoration:none}

@@ -12,4 +12,4 @@ The line installs `rer`, the Run Edit Run command, clones Orbit's `main` into a 
 
 If the installer prints a line that puts `rer` on your PATH, run that line too. To start Orbit again later, run the same line from the same folder, or `cd run-orbit && rer dev`. `rer dev --stop` stops it.
 
-Next: the [Overview](overview.md) explains NOW, scores and approvals, the [Local command reference](../RUN-LOCALLY.md) lists every command, and [Operations](../OPERATIONS.md) covers deploying Orbit to your own Cloudflare account.
+Next: the [Overview](overview.md) explains NOW, scores and approvals, [Run it locally](../RUN-LOCALLY.md) lists every command, and [Operations](../OPERATIONS.md) covers deploying Orbit to your own Cloudflare account.

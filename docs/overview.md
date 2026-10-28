@@ -50,7 +50,7 @@ To remove the hosted installation, first save a private backup, then run `rer de
 
 ## Where to go next
 
-1. [Local command reference](../RUN-LOCALLY.md) covers every local command, including reset, export and import.
+1. [Run it locally](../RUN-LOCALLY.md) covers every local command, including reset, export and import.
 2. [Operations](../OPERATIONS.md) shows how to deploy Orbit for your team and keep a backup.
 3. [Signals and customer mail](../SIGNALS-AND-OUTREACH.md) connects your email and other tools, so replies and activity reach your deals.
 4. [Updating and recovery](../MIGRATION-RECOVERY.md) explains how to update a deployed Orbit safely, with a backup first.
