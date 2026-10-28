@@ -1,4 +1,5 @@
 import {Hono} from 'hono';
+import {CaptureError} from '../contracts';
 import {meetingActivity} from './writeback-details';
 import {z} from 'zod';
 import type {AuthenticatedOperator} from '../../identity';
@@ -16,7 +17,7 @@ type Input=z.infer<typeof inputSchema>;
 type Row={updated_at:string;id:string;source_id:string;connection_id:string;calendar_id:string;provider_event_id:string|null;record_type:'contact'|'opportunity';record_id:string;contact_id:string;entry_id:string|null;state:string;payload_json:string;etag:string|null};
 export function calendarWritebackRoutes(db:D1Database,config:{security?:SourceSecurity;fetcher?:ProviderFetch}){
  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),fetcher=config.fetcher??fetch;
- app.onError((e,c)=>c.json({error:e instanceof RecordError?e.message:'Calendar writeback failed. No automatic retry is made.'},e instanceof RecordError?e.status:503));
+ app.onError((e,c)=>c.json({error:e instanceof RecordError||e instanceof CaptureError?e.message:'Calendar writeback failed. No automatic retry is made.'},e instanceof RecordError||e instanceof CaptureError?e.status:503));
  const security=()=>{if(!config.security)throw new RecordError(409,'Calendar credentials are not configured.');return config.security;};
  async function credential(sourceId:string){const row=await db.prepare('SELECT ciphertext FROM capture_credentials WHERE source_id=?').bind(sourceId).first<{ciphertext:string}>();if(!row)throw new RecordError(409,'Reconnect this calendar.');return JSON.parse(await security().open(row.ciphertext)) as Credential;}
  const eventUrl=(adapter:string,calendar:string,event?:string)=>adapter==='google'?`https://www.googleapis.com/calendar/v3/calendars/${encodeId(calendar)}/events${event?'/'+encodeId(event):''}`:`https://graph.microsoft.com/v1.0/me/calendars/${encodeId(calendar)}/events${event?'/'+encodeId(event):''}`;

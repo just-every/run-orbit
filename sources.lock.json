@@ -4995,7 +4995,7 @@
       "executable": false
     },
     "src/core/features/capture/providers/service.ts": {
-      "sha256": "337b381eb9976ddf053138309fe6da0bac39489141549c9aae07d4a6110b97cf",
+      "sha256": "f841461108737b6723562c003e08e57b96635e83046d216b7e308b3570346bc1",
       "executable": false
     },
     "src/core/features/capture/providers/session.ts": {
@@ -5015,7 +5015,7 @@
       "executable": false
     },
     "src/core/features/capture/providers/writeback.ts": {
-      "sha256": "7a35581e6152fe0ab2daf714d858f9d241771b671b70a2407bb7a68aef8f50ba",
+      "sha256": "1019d4c54530e95d88ea4d8cd4c38a872d8f36813e5166560cc0493be0d3a817",
       "executable": false
     },
     "src/core/features/capture/routes.ts": {
@@ -9471,7 +9471,7 @@
       "executable": false
     },
     "tests/support/calendar-writeback.ts": {
-      "sha256": "76ca3c3e9ce2109856fec37afd75608c68ab63271e95d65d019f9855ba2f966b",
+      "sha256": "1bf0fbc7d6c904f08a4b4cb49b4247f6a1f8eb442c20bd549c3eadab38be4ac7",
       "executable": false
     },
     "tests/support/capture-browser-source.ts": {
@@ -9515,7 +9515,7 @@
       "executable": false
     },
     "tests/support/capture-provider-network.ts": {
-      "sha256": "cc7eed0d6a313ab50909a7f243760f9fb64dd22b430dd8b4ee2798a89b42eb50",
+      "sha256": "3aa2794115aa037c23770af374cbde6059a20f6c5a1258edb63c61f44f595122",
       "executable": false
     },
     "tests/support/capture-recovery-fixture.ts": {
