@@ -7,6 +7,8 @@ import { manifestPath, readManifest } from './manifest.ts';
 import type { ManifestPage } from './manifest.ts';
 import { renderPage } from './render.ts';
 import type { RenderedPage } from './render.ts';
+import { startLine } from '../../../../../base/run-site.ts';
+import { run } from '../../../../../site/run.ts';
 
 // The whole docs site from the tree as it is: every page listed in docs/site.json rendered, every link and anchor
 // checked across pages, and nothing that names a build machine's paths. The Vite plugin and the tests share this.
@@ -39,7 +41,10 @@ export function buildSite(root: string): Site {
   const files = [join(root, manifestPath), join(root, 'rer-project.json')];
   const read = (source: string) => {
     files.push(join(root, source));
-    return readFileSync(join(root, source), 'utf8');
+    const markdown = readFileSync(join(root, source), 'utf8');
+    // Keep the repository's executable Markdown, deriving its rendered start
+    // command from the same RunData as the chooser and hosting page.
+    return markdown.replace(/curl -fsSL https:\/\/runeditrun\.com\/install\.sh \| sh -s -- dev [A-Za-z0-9_./-]+/g, startLine(run));
   };
   const pages: SitePage[] = manifest.pages.map(page => ({ ...page, ...renderPage(read(page.source), context(page.source)) }));
   const problems: string[] = [];
