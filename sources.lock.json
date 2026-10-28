@@ -2215,7 +2215,7 @@
       "executable": false
     },
     "newtests/t096/browser-report-authoring.ts": {
-      "sha256": "b6c5b50827c716eda8461afbed1880f62a4515183405d6e1661a1ef3838d4c07",
+      "sha256": "167b778491072490209051a30bd6bfd87727c9a6666c4486f1197193c60cb548",
       "executable": false
     },
     "newtests/t096/browser-report-revocation.ts": {
