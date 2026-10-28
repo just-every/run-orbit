@@ -16,7 +16,7 @@ test('API-001 native credential lifecycle and delegation D1 reject ambient cooki
   const f=await authorityFixture(db);await proveApiCredentials(db,'owner',f.cookie,'stage');const g=await f.grant(),read=await f.grant('crm.evidence.read');
   const publicApp=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}});
   assert.equal((await publicApp.request('https://orbit.test/delegation/clients',{method:'POST',headers:{Cookie:f.cookie,Origin:'https://orbit.test'},body:new URLSearchParams({id:'synthetic-orbit-1',redirect_uri:'https://orbit.test/delegation/callback'})})).status,303);
-  const connect=(kind:string)=>publicApp.request('https://orbit.test/delegation/connect?'+new URLSearchParams({client:'synthetic-orbit-1',kind}),{headers:{Cookie:f.cookie,Accept:'application/json'}});
+  const connect=(kind:string)=>publicApp.request('https://orbit.test/delegation/connect?'+new URLSearchParams({client:'synthetic-orbit-1',kind}),{headers:{Cookie:f.cookie}});
   for(const kind of ['opportunities','contacts','companies'])assert.equal((await connect(kind)).status,200,kind);
   const inherited=['constructor','toString','__proto__','hasOwnProperty','valueOf'],refusals=[];
   for(const kind of inherited){
