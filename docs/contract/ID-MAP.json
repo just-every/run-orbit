@@ -477,9 +477,12 @@
       ]
     },
     "TEAM-005": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "TEAM-005"
+        "TEAM-005",
+        "TEAM-006",
+        "TEAM-007",
+        "TEAM-008"
       ]
     },
     "RECORD-014": {
@@ -495,21 +498,30 @@
       ]
     },
     "RECORD-016": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "RECORD-016"
+        "RECORD-016",
+        "RECORD-019",
+        "RECORD-020",
+        "RECORD-021",
+        "RECORD-022"
       ]
     },
     "RECORD-017": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "RECORD-017"
+        "RECORD-017",
+        "RECORD-023",
+        "RECORD-024"
       ]
     },
     "RECORD-018": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "RECORD-018"
+        "RECORD-018",
+        "RECORD-025",
+        "RECORD-026",
+        "RECORD-027"
       ]
     },
     "MIGRATE-001": {
@@ -549,9 +561,12 @@
       ]
     },
     "FORM-001": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "FORM-001"
+        "FORM-001",
+        "FORM-002",
+        "FORM-003",
+        "FORM-004"
       ]
     },
     "OUT-013": {
