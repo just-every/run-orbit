@@ -719,7 +719,7 @@
       "executable": false
     },
     "deploy.json": {
-      "sha256": "d602ded1e3a991d9a6f6434befd6b5e30d166195cebca823914ab48a35006a18",
+      "sha256": "77a3aeaeebe9e225dc7c066fd4aa8b80b40cb4e1578e4ee0de84b260254f7bf1",
       "executable": false
     },
     "DIVERGENCE.md": {
@@ -3971,7 +3971,7 @@
       "executable": false
     },
     "scripts/installer/deploy.mjs": {
-      "sha256": "9b8eb3a40f55863aab38fb751093f78d0d701a873610b45636ef6f22a5e11723",
+      "sha256": "b9e9c01c140b386e09783cfafe1c9dcf5bae30f1e8094381e8d35d8a3b942fc8",
       "executable": false
     },
     "scripts/installer/local-owner.mjs": {
@@ -10219,7 +10219,7 @@
       "executable": false
     },
     "wrangler.jsonc": {
-      "sha256": "c900188a1bcdde53c2ac938048f2ab4dd5b93186a98e75a68a26f60aed3d83db",
+      "sha256": "71db837cf060e319f0c8d513fd11cb5bad1f8fe8cb1424cf32613861bec4ee4a",
       "executable": false
     }
   }
