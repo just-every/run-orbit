@@ -4,7 +4,12 @@ interface Proposal { id: string; kind: string; record_id: string; field: string 
 const rfc = (minutes: number) => new Date(Date.now() - minutes * 60000).toUTCString().replace('GMT', '+0000');
 
 export async function reviewCapturedEvidence(f:CaptureFixture,mail:ReturnType<typeof fixtureMailbox>){
-    const direct = eml({ From: '"Ana Ruiz-Lopez" <ana@acme.example>', To: 'seller@orbit.test', Cc: 'Dan Ito <dan@acme.example>', Subject: 'Budget', Date: rfc(12), 'Message-ID': '<direct-1@acme.example>' }, 'We have budget for Q1.\nMobile: +44 20 7946 0000\n\n--\nAna');
+    const list = async (query = '') => ((await (await f.request(`/api/v1/capture/proposals${query}`)).json()) as { proposals: Proposal[] }).proposals;
+    // Source-boundary setup already captured Bob's mail. Its proposals remain pending
+    // while this import offers a separate set of changes for review.
+    const proposalsBefore = await list(), priorIds = new Set(proposalsBefore.map(proposal => proposal.id));
+    // Use the identity the preceding signed-source attempt tried to pre-empt.
+    const direct = eml({ From: '"Ana Ruiz-Lopez" <ana@acme.example>', To: 'seller@orbit.test', Cc: 'Dan Ito <dan@acme.example>', Subject: 'Budget', Date: rfc(12), 'Message-ID': '<question-1@acme.example>' }, 'We have budget for Q1.\nMobile: +44 20 7946 0000\n\n--\nAna');
     const lookalike = eml({ From: '"Ana Ruiz" <ana.ruiz@freemail.example>', To: 'seller@orbit.test', Subject: 'Hello', Date: rfc(11), 'Message-ID': '<lookalike-1@freemail.example>' }, 'Same name, different person.');
     const files = [{ name: 'direct.eml', text: direct }, { name: 'forward.eml', text: mail.forward }, { name: 'invite.ics', text: mail.invite }, { name: 'lookalike.eml', text: lookalike }];
     // The stop a reply or booking makes at once (OUT-007) records its own cancellation entry; everything else waits for review.
@@ -18,19 +23,19 @@ export async function reviewCapturedEvidence(f:CaptureFixture,mail:ReturnType<ty
     assert.deepEqual({ ...opportunityAfter, queue_state: undefined, queue_reason: undefined, next_due_at: undefined }, { ...opportunityBefore, queue_state: undefined, queue_reason: undefined, next_due_at: undefined }, 'stage, owner and score wait for review');
     assert.deepEqual([opportunityAfter!.queue_state, opportunityAfter!.queue_reason], ['now', 'Customer reply'], 'only the stopped scheduled send returned it to NOW (OUT-009)');
 
-    assert.equal(await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(f.scheduled).first('state'), 'cancelled');
+    assert.deepEqual(await f.db.prepare('SELECT state,failure FROM outbound_messages WHERE id=?').bind(f.scheduled).first(), { state: 'cancelled', failure: 'Customer reply' }, 'the genuine reply cancels the scheduled send despite the planted source identity');
     for (const draft of [f.scheduledDraft,f.unsentDraft]) assert.equal(await f.db.prepare('SELECT is_stale FROM drafts WHERE id=?').bind(draft).first('is_stale'),1);
-    const list = async (query = '') => ((await (await f.request(`/api/v1/capture/proposals${query}`)).json()) as { proposals: Proposal[] }).proposals;
-    const proposals = await list();
+    const allProposals = await list(), proposals = allProposals.filter(proposal => !priorIds.has(proposal.id));
+    assert.deepEqual(allProposals.filter(proposal => priorIds.has(proposal.id)), proposalsBefore, 'earlier evidence stays pending and unchanged');
     const of = (kind: string, field?: string) => proposals.filter(p => p.kind === kind && (field === undefined || p.field === field));
     assert.deepEqual(proposals.map(p => p.kind).sort(), ['create_contact', 'create_contact', 'link_signal', 'link_signal', 'link_signal', 'next_action', 'set_field', 'set_field'].sort());
-    assert.ok(proposals.every(p => p.details.evidence.date && p.details.evidence.quote.length), 'every proposal carries its evidence');
+    assert.ok(allProposals.every(p => p.details.evidence.date && p.details.evidence.quote.length), 'every proposal carries its evidence');
     const name = of('set_field', 'name')[0]!, phone = of('set_field', 'phone')[0]!;
     assert.deepEqual([name.current_value, name.proposed_value], ['Ana Ruiz', 'Ana Ruiz-Lopez'], 'old and new side by side');
     assert.deepEqual([phone.current_value, phone.proposed_value], [null, '+44 20 7946 0000']);
     assert.match(phone.details.evidence.quote.join('\n') + '\n' + JSON.stringify(phone), /Mobile: \+44 20 7946 0000/);
-    assert.ok(!proposals.some(p => JSON.stringify(p).includes('ana.ruiz@freemail.example')), 'a guessed identity is never proposed');
-    assert.equal((await list(`?recordType=company&recordId=${f.company}`)).length, proposals.length, 'the account shows every proposal for its people');
+    assert.ok(!allProposals.some(p => JSON.stringify(p).includes('ana.ruiz@freemail.example')), 'a guessed identity is never proposed');
+    assert.deepEqual((await list(`?recordType=company&recordId=${f.company}`)).map(proposal => proposal.id).sort(), allProposals.map(proposal => proposal.id).sort(), 'the account shows every proposal for its people, including earlier intake');
 
     // Accept a link: the evidence appears once, attributed to the person and to the capture source.
     const meeting = proposals.find(p => p.kind === 'link_signal' && p.details.evidence.subject === 'Acme rollout review')!;
