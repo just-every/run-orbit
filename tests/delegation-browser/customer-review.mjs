@@ -19,7 +19,22 @@ export async function reviewImportedData(page,collaborator,customer,viewerId) {
  await expect(page.getByText(literal,{exact:true})).toHaveCount(2);await page.reload();await expect(page.getByText(literal,{exact:true})).toHaveCount(2);
  await page.getByRole('button',{name:'Edit details',exact:true}).click();await expect(page.getByLabel('Import source',{exact:true})).toHaveValue(literal);await expect(page.getByLabel('Campaign json',{exact:true})).toHaveValue(literal);
  await collaborator.goto(`/app/shared-records?kind=contact&id=${customer.bob}`);await expect(collaborator.getByText(literal,{exact:true})).toHaveCount(2);
- await page.goto(`/app/assistance/${customer.deal}`);await page.getByRole('button',{name:'Preview request',exact:true}).click();await page.getByText('View complete request',{exact:true}).click();await expect(page.getByText(literal,{exact:true})).toHaveCount(2);
+ await page.goto(`/app/assistance/${customer.deal}`);
+ // Imported Bob remains do-not-contact. Inspect his data in an explanation;
+ // an email draft must first be refused, not silently made contactable.
+ expect((await read()).contactability).toBe('do_not_contact');
+ const previewRequest=async()=>{
+  const pending=page.waitForResponse(response=>response.request().method()==='POST'&&new URL(response.url()).pathname==='/api/v1/assistance/preview');
+  await page.getByRole('button',{name:'Preview request',exact:true}).click();
+  return pending;
+ };
+ const refused=await previewRequest();expect(refused.status(),await refused.text()).toBe(409);
+ const refusal=await refused.json();await expect(page.getByRole('alert')).toContainText(refusal.error);
+ await page.getByRole('combobox',{name:'Request',exact:true}).selectOption('explanation');
+ const prepared=await previewRequest();expect(prepared.status(),await prepared.text()).toBe(200);
+ const preview=await prepared.json();expect(preview.preview.contact.id).toBe(customer.bob);
+ expect(JSON.parse(preview.preview.contact.custom_fields_json)).toMatchObject({import_source:literal,campaign_json:literal});
+ await page.getByText('View complete request',{exact:true}).click();await expect(page.getByText(literal,{exact:true})).toHaveCount(2);
  expect(JSON.parse((await read()).custom_fields_json).import_source).toBe(literal);
 }
 
