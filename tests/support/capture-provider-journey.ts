@@ -49,7 +49,7 @@ export async function captureProviderJourney(provider:Provider):Promise<void>{
   assert.equal((await f.request(`/sources/${id}/disconnect`,{confirmed:true})).status,200);assert.equal(await f.db.prepare('SELECT count(*) n FROM capture_credentials WHERE source_id=?').bind(id).first('n'),0);
 
  }
- await reviewMailAssociations(f,provider==='google');
+ if(provider==='microsoft')await reviewMailAssociations(f);
  if(provider==='microsoft'){
  const id=await f.connect();await f.request(`/sources/${id}/scope`,selected);
  for(const link of ['https://evil.test/v1.0/me/mailFolders/INBOX/messages/delta','https://graph.microsoft.com/v1.0/users/other/mailFolders/INBOX/messages/delta','https://graph.microsoft.com/v1.0/me/mailFolders/OTHER/messages/delta','https://graph.microsoft.com/v1.0/me/calendars/OTHER/calendarView/delta']){

@@ -41,18 +41,28 @@ export async function nativeLongRecordLayoutJourney(page,customer) {
     await editRecordThroughKeyboard(page, 'contact', contactName, 'Full name', editedContactName);
     await expectRecordList(page, 'contact', editedContactName, 'contact', diagnostics);
 
-    const inventory=await(await page.request.get('/api/v1/workbench')).json();
-    const created=await page.request.post('/api/v1/records/opportunity',{headers:{Origin:origin},data:{title:opportunityTitle,stage_id:inventory.stages[0].id,company_id:company.id,contact_ids:[contact.id],primary_contact_id:contact.id,value_cents:0}});
-    expect(created.status()).toBe(201);const target=await created.json();target.title=opportunityTitle;
-    await editRecordThroughKeyboard(page, 'opportunity', target.title, 'Opportunity title', editedOpportunityTitle, async () => {
+    const inventoryResponse = await page.request.get('/api/v1/workbench');
+    expect(inventoryResponse.status(), await inventoryResponse.text()).toBe(200);
+    const inventory = await inventoryResponse.json();
+    // The operator's create door puts new work in NOW. A raw Records create
+    // starts with no queue action, so it cannot supply this journey's NOW row.
+    const created = await page.request.post('/api/v1/workbench/opportunities', {
+      headers: { Origin: origin },
+      data: { title: opportunityTitle, stageId: inventory.stages[0].id, companyId: company.id, contactIds: [contact.id], primaryContactId: contact.id, valueCents: 0 }
+    });
+    expect(created.status(), await created.text()).toBe(201);
+    const target = await created.json();
+    await editRecordThroughKeyboard(page, 'opportunity', opportunityTitle, 'Opportunity title', editedOpportunityTitle, async () => {
       await page.getByRole('combobox', { name: 'Linked company', exact: true }).selectOption(company.id);
       await page.getByRole('combobox', { name: 'Primary recipient', exact: true }).selectOption(contact.id);
     });
     await expectRecordList(page, 'opportunity', editedOpportunityTitle, 'opportunity', diagnostics);
     const savedOpportunity = await page.request.get(`/api/v1/records/opportunity/${target.id}`);
+    expect(savedOpportunity.status(), await savedOpportunity.text()).toBe(200);
     const savedDetail = await savedOpportunity.json();
     expect(savedDetail.contacts.some(item => item.id === contact.id && item.is_primary === 1)).toBe(true);
     expect(savedDetail.record.company_id).toBe(company.id);
+    expect(savedDetail.record.queue_state).toBe('now');
 
     for (const viewport of viewports) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
