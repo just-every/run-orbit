@@ -1,4 +1,4 @@
-Old reference: `1f53313a1554c9a30348fbbe6bbea96492932057`.
+Old reference: `28a1db90f135fe783af1c30ba3cf33c339405f9a`.
 
 | Clause | Point | Outcome | Asserting test | Result |
 | --- | --- | --- | --- | --- |
@@ -478,9 +478,9 @@ Old reference: `1f53313a1554c9a30348fbbe6bbea96492932057`.
 | `DELEGATE-001` | 2. Its acknowledgment never accepts an application-proposed handoff; its only writes are acknowledgment and an attributed internal task under current native access. | task retains current native access and actor | none | none |
 | `DELEGATE-001` | 3. Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority. | native consent and PKCE scope | none | none |
 | `DELEGATE-001` | 3. Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority. | selected records readable | none | none |
-| `DELEGATE-001` | 3. Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority. | internal handoff proposed | `tests/delegation/authority-regressions.test.ts:50` | asserted |
+| `DELEGATE-001` | 3. Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority. | internal handoff proposed | `tests/delegation/authority-regressions.test.ts:62` | asserted |
 | `DELEGATE-001` | 3. Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority. | outside-scope read refused | none | none |
-| `DELEGATE-001` | 3. Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority. | revocation stops every door | `tests/delegation/authority-regressions.test.ts:32` | asserted |
+| `DELEGATE-001` | 3. Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority. | revocation stops every door | `tests/delegation/authority-regressions.test.ts:44` | asserted |
 | `DELEGATE-001` | 3. Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority. | restored credential authority absent | `tests/delegation/archive-regression.test.ts:28` | asserted |
 | `DELEGATE-001` | 3. Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority. | restored history preserved | `tests/delegation/archive-regression.test.ts:29` | asserted |
 | `RECORD-015` | 1. Associate champion and evaluator with a USD deal, add a verified decision-maker and a second-company relationship, move the primary association and inspect the preserved customer history and authorization. | champion association | none | none |

@@ -2,7 +2,7 @@
   "schema": 1,
   "seed": "contract-md-orbit",
   "old": {
-    "commit": "1f53313a1554c9a30348fbbe6bbea96492932057",
+    "commit": "28a1db90f135fe783af1c30ba3cf33c339405f9a",
     "files": [
       "CONTRACT.md",
       "ACCEPTANCE.md",

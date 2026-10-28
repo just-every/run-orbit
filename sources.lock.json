@@ -747,15 +747,15 @@
       "executable": false
     },
     "docs/contract/COVERAGE.json": {
-      "sha256": "d46365c09e19b57024396b9b7418c2bac49c9fcba07071cfc8e67936eb04e0ab",
+      "sha256": "da8433ffb673d05bb1fa533c0a6cc6feb2092dc4f9385c1e9e869d29a9663d24",
       "executable": false
     },
     "docs/contract/DONE-AUDIT.md": {
-      "sha256": "11dd1d3d00b6defd7c3c0c83b3f74d9aa56908076988e1e8810eee17171b5773",
+      "sha256": "343ea5e885b63ec06d8155168a994935529247945f533e951bf654abed87d30b",
       "executable": false
     },
     "docs/contract/ID-MAP.json": {
-      "sha256": "a9d62b7cc092a97223c860c2e4ce1f52c97ac26a9392d260a05f58475e109140",
+      "sha256": "28189bf1df54d4d3d2b31ab89260958941c297787cf422ece847ff16a942dd73",
       "executable": false
     },
     "docs/contract/MECHANISM.md": {
@@ -5203,11 +5203,11 @@
       "executable": false
     },
     "src/core/features/delegation/listing.ts": {
-      "sha256": "38885058277b8aaa1b5a4d2bbc3237af2d6fc9b4208a608a75aac246dddfdc4e",
+      "sha256": "8dad4db53273ac2a92fde80c885a631126cfcb5a60aa08ebcefa89ac5e2b2aa3",
       "executable": false
     },
     "src/core/features/delegation/manual-connection.ts": {
-      "sha256": "827310553c0b2f47bdbd097accaef6b13a7ba8a321572ad31c1dddd9b8dba966",
+      "sha256": "2ddf4115bc2185b86b5ffd76f9e7ede3597a66b4210993beae7d4fa88a511938",
       "executable": false
     },
     "src/core/features/delegation/native-authority.ts": {
@@ -5231,7 +5231,7 @@
       "executable": false
     },
     "src/core/features/delegation/settings-page.ts": {
-      "sha256": "80d83edabc46995156e72bd5ec855c543313d91430e0b63e2211c7ec665f95a0",
+      "sha256": "781ff18a939ccf88946594a2fd316925fa00fac4e4e5624896743966af31b4a0",
       "executable": false
     },
     "src/core/features/delegation/token.ts": {
@@ -8839,7 +8839,7 @@
       "executable": false
     },
     "tests/delegation/authority-regressions.test.ts": {
-      "sha256": "7f922680370aa570f5fc914090ba8dee30371363728ee08587a57dc39bf3ffb1",
+      "sha256": "8d969caa18f75f68b4503066bd677d05cf6d0ca20ece1209eea09dbb9e833c1c",
       "executable": false
     },
     "tests/delegation/brief-handoff.test.ts": {
