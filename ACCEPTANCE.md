@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 11 | 135 | 31 | 177 |
+| Core | 8 | 138 | 31 | 177 |
 | Agent surface | 0 | 0 | 13 | 13 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 11 | 135 | 44 | 190 |
+| Full target | 8 | 138 | 44 | 190 |
 
 Judged from the code and tests at commit `b300e460a20da7f09122dc4a9157499430c4f8d5` (27 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -768,7 +768,7 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 
 #### AI-001 — Provider and input
 
-Core · published · **done** · Cites BASE-DATA-004, BASE-SECRET-001
+Core · published · **partial** · Cites BASE-DATA-004, BASE-SECRET-001
 
 **Requirement.** Recommendation explanations and email drafts go through `ai.provider.v1`. The request preview shows the operator every field, timeline entry, and instruction the request will carry, and nothing outside the preview is sent.
 
@@ -776,7 +776,7 @@ Core · published · **done** · Cites BASE-DATA-004, BASE-SECRET-001
 1. Open an AI request preview, inspect all customer fields and instructions, then compare the provider-edge request with that exact unchanged preview.
 
 **Evidence.** `src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: expected complete customer-field set visible in the preview; configured instructions visible in the preview. Asserted: provider request equals the saved preview.
 
 #### AI-002 — Output validation
 
@@ -880,7 +880,7 @@ Core · published · **done** · Cites BASE-ROLE-001
 
 #### NOTIFY-001 — Responsible operator
 
-Core · published · **done** · Cites BASE-ROLE-001
+Core · published · **partial** · Cites BASE-ROLE-001
 
 **Requirement.** The responsible operator for an opportunity is its owner, or, when it is unassigned, the operator whose action appears most recently on its timeline. They receive one in-app notification when it enters NOW, when a customer reply arrives on it, and when one of its outbound messages fails, bounces, or becomes delivery-unknown. When an unassigned opportunity that no operator has acted on enters NOW, every operator is notified instead. Duplicate source or provider events add no notification.
 
@@ -888,11 +888,11 @@ Core · published · **done** · Cites BASE-ROLE-001
 1. Trigger queue entry, reply and delivery problems on assigned and unassigned deals; verify responsible recipients and one notification on replay.
 
 **Evidence.** `src/core/features/notifications/routes.ts`; `tests/core/assistance.test.ts`; `tests/e2e/zz-notifications.spec.mjs`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: assigned-deal responsible recipient (the fixture leaves the deal unassigned). Asserted: unassigned queue recipient; unassigned reply recipient and replay count; delivery-problem recipient once; no-actor fallback goes to every active operator.
 
 #### NOTIFY-002 — Read state
 
-Core · published · **done** · Cites BASE-ROLE-001
+Core · published · **partial** · Cites BASE-ROLE-001
 
 **Requirement.** A notification is unread until the operator opens it or marks it read. The unread count updates within 5 seconds and never counts one event twice.
 
@@ -900,7 +900,7 @@ Core · published · **done** · Cites BASE-ROLE-001
 1. Open and mark notifications read across sessions; inspect recipient-specific state and an unread count without duplicate events.
 
 **Evidence.** `src/core/features/notifications/routes.ts`; `tests/core/assistance.test.ts`; `tests/e2e/zz-notifications.spec.mjs`
-**Gap.** None.
+**Gap.** Unasserted in the carried evidence: read state persists after a new sign-in session. Asserted: recipient read mark stored; another recipient cannot mark it; unread count returns to previous value; queue notice not duplicated.
 
 ### Public surfaces
 
@@ -1152,7 +1152,7 @@ Core · target · **partial** · From RECORD-016 · Cites BASE-INPUT-001, BASE-R
 
 Core · target · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
-**Requirement.** In a note, a logged call or meeting (RECORD-010), a task note (TASK-001) or an internal handoff, a user can @mention a colleague or a team. Autocomplete offers only active users and teams. Mentioning someone who cannot see the record under TEAM-005 asks the author either to share the record with them explicitly or to remove the mention; a mention never grants access by itself. Each mentioned user receives one in-app notification (NOTIFY-001, NOTIFY-002) naming the author and record and linking to the exact entry, plus email, push or Slack under NOTIFY-003 by their preference. Editing an entry notifies only newly added mentions. Deleting the entry withdraws that entry's unread mention notifications and leaves an attributed timeline record of the deletion. A "Mentions" view lists every entry that mentions the user. Mentions are internal: they are never sent to a customer, never included in an AI request unless the preview shows them (AI-001), and they are exported with the entry and erased with it (DATA-002).
+**Requirement.** In a note, a logged call or meeting (RECORD-010), a task note (TASK-001) or an internal handoff, a user can @mention a colleague. Autocomplete offers only active users. Team mentions and per-entry private audiences are TEAM-007. Mentioning someone who cannot see the record under TEAM-005 asks the author either to share the record with them explicitly or to remove the mention; a mention never grants access by itself. Each mentioned user receives one in-app notification (NOTIFY-001, NOTIFY-002) naming the author and record and linking to the exact entry, plus email, push or Slack under NOTIFY-003 by their preference. Editing an entry notifies only newly added mentions. Deleting the entry withdraws that entry's unread mention notifications and leaves an attributed timeline record of the deletion. A "Mentions" view lists every entry that mentions the user. Mentions are internal: they are never sent to a customer, never included in an AI request unless the preview shows them (AI-001), and they are exported with the entry and erased with it (DATA-002).
 
 **Acceptance.**
 1. On a deal, a rep writes a note mentioning their manager and a call log mentioning a colleague without access to the deal.
