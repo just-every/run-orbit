@@ -25,7 +25,8 @@ async function expectRouteRecovery(page){
    await expect(page.getByRole('main').locator('form')).toHaveCount(0);
    const back=page.getByRole('main').locator('a[href="/app/records"]');await expect(back).toBeVisible();await back.click();
    await expect(page).toHaveURL(origin+'/app/records');
-   await page.getByRole('button',{name:'Create from existing records'}).waitFor();
+   const create=page.getByRole('link',{name:'Create opportunity',exact:true});
+   await expect(create).toBeVisible();await expect(create).toHaveAttribute('href','/app/new');
   }
  }
  await page.goto(origin+'/app');await page.getByTestId('now-queue').waitFor();
