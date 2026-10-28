@@ -60,8 +60,9 @@ export async function editorAdmission({checkout,browser,page,origin,management})
     await owner.locator('[data-rer-editor]').waitFor({state:'detached',timeout:20_000});
     await owner.goto(origin+'/signin');
     assert.equal(await owner.locator('[data-rer-editor]').count(),0);
-    // Base's sign-in page allows no in-page fetch (default-src 'none'), so ask with this browser's own cookies.
-    await owner.waitForURL(url => url.pathname === '/signin');
+    // Dev sign-in requires the checkout key again after revocation. Query with
+    // this browser's own cookies to prove that the old owner session is powerless.
+    await owner.waitForURL(url => url.pathname === '/__dev/key');
     assert.equal((await owner.context().request.get(origin+'/api/editor/config')).status(),403);
     await visitor.close();
 
