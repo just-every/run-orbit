@@ -1,3 +1,4 @@
+import {workflowBrowserJourney} from './workflow-journey.mjs';
 import {expect} from '@playwright/test';
 import {observeOperator} from './operator-observations.mjs';
 import {operatorRoutes} from './operator-routes.mjs';
@@ -12,4 +13,5 @@ for(const width of widths){
  await fixture.collaborator.goto(origin+'/app/access');await fixture.collaborator.getByRole('heading',{name:'Your collaborator access'}).waitFor();await expect(fixture.collaborator.getByRole('link',{name:'Connected applications and delegations',exact:true})).toHaveCount(0);await observeOperator(fixture.collaborator,'collaborator-access',width,directory,observations);
 }
 await exerciseProvenanceEditing(page,origin,fixture);
+await workflowBrowserJourney({page,fixture,origin,directory},width);
 }

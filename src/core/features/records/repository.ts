@@ -38,7 +38,7 @@ function changedText(before:Record<string,any>,after:Record<string,any>,definiti
 }
 export class RecordsRepository extends RecordSeedRepository {
  constructor(readonly db:D1Database){super(db);}
- async prepareSave(kind:RecordKind,input:unknown,actor:string,id?:string, options:{ordinaryEdit?:boolean}={}){
+ async prepareSave(kind:RecordKind,input:unknown,actor:string,id?:string, options:{ordinaryEdit?:boolean;createId?:string;workflowContactIds?:string[]}={}){
   const before=id?await requireRecord(this.db,kind,id):null;
   const links=kind==='opportunity'&&before?(await this.db.prepare('SELECT contact_id,is_primary FROM opportunity_contacts WHERE opportunity_id=?').bind(id).all<{contact_id:string;is_primary:number}>()).results:[];
   let source=input;
@@ -51,7 +51,7 @@ export class RecordsRepository extends RecordSeedRepository {
    };
   }
   const parsed=schemas[kind].safeParse(source);if(!parsed.success)throw new RecordError(400,parsed.error.issues.map(i=>i.message).join(' '));
-  const data:Record<string,any>={...parsed.data};id??=createId();
+  const data:Record<string,any>={...parsed.data};id??=options.createId??createId();
   const policies:StagePolicy[]=[];let stageMovement:ReturnType<typeof movementPayload>|undefined;
   const now=new Date().toISOString();
   if(data.company_id)await requireRecord(this.db,'company',data.company_id);
@@ -122,11 +122,11 @@ export class RecordsRepository extends RecordSeedRepository {
   if(kind==='contact')statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Contact changed',updated_at=? WHERE recipient_contact_id=?").bind(now,id));
   if(explicitClear)statements.push(audit(this.db,actor,'contactability.cleared','contact',id));
   const history=associationsChanged?{text:[changes&&'text' in changes?changes.text:null,'Changed Associated contacts'].filter(Boolean).join('\n')}:changes;
-  if(history)statements.push(...timeline(this.db,actor,kind,id,before?'record.updated':'record.created',history));
+  if(history)statements.push(...timeline(this.db,actor,kind,id,before?'record.updated':'record.created',{...history,...(options.workflowContactIds?.length?{contactIds:options.workflowContactIds}:{})}));
   statements.push(audit(this.db,actor,before?'record.updated':'record.created',kind,id));
   return {id,statements,key,keyColumn,kind,changed:true};
  }
- async save(kind:RecordKind,input:unknown,actor:string,id?:string,options:{ordinaryEdit?:boolean}={}){
+ async save(kind:RecordKind,input:unknown,actor:string,id?:string,options:{ordinaryEdit?:boolean;createId?:string;workflowContactIds?:string[]}={}){
   const prepared=await this.prepareSave(kind,input,actor,id,options);id=prepared.id;const {statements,key,keyColumn}=prepared;
   try{await this.db.batch(statements);}catch(error){if(/identity_guards|CHECK constraint failed: value\s*=\s*1/.test(String(error))){const current=await requireRecord(this.db,kind,id).catch(()=>null);await typedFieldFences(this.db,kind,id,(input as any)?.custom_fields??{},JSON.parse(current?.custom_fields_json??'{}'));throw new RecordError(409,'Custom fields changed concurrently. Review their definitions and values before saving.');}if(/runtime_controls.value/.test(String(error)))throw new RecordError(409,'The opportunity or pipeline rules changed. Reload before saving.');if(String(error).includes('UNIQUE')||String(error).includes('RECORD_IDENTITY_CONFLICT')){const duplicate=key&&keyColumn?await this.db.prepare(`SELECT id FROM ${tables[kind]} WHERE ${keyColumn}=? AND id<>? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type=? AND identity_key=? AND survivor_id<>?`).bind(key,id,kind,key,id).first<{id:string}>():null;throw new RecordError(409,'Identity or association changed concurrently; reload records.',duplicate?.id);}throw error;}
   return {id,changed:prepared.changed};

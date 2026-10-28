@@ -1,3 +1,4 @@
+import {workflowJourney} from '../support/workflow-journey';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { captureFixture, fixtureMailbox, eml } from '../support/capture-fixture';
@@ -5,7 +6,7 @@ import { captureFixture, fixtureMailbox, eml } from '../support/capture-fixture'
 interface Proposal { id: string; kind: string; record_id: string; field: string | null; current_value: string | null; proposed_value: string | null; details: { evidence: { sender: string; date: string; subject: string; quote: string[] } } }
 const rfc = (minutes: number) => new Date(Date.now() - minutes * 60000).toUTCString().replace('GMT', '+0000');
 
-test('CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence', async () => {
+test('CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority', async () => {
   const f = await captureFixture();
   try {
     const mail = fixtureMailbox(f);
@@ -65,5 +66,6 @@ test('CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person 
     assert.equal(await f.db.prepare("SELECT count(*) n FROM capture_proposals WHERE proposed_value='cara@acme.example'").first('n'), 1);
     assert.equal(await f.db.prepare("SELECT count(*) n FROM contacts WHERE email='cara@acme.example'").first('n'), 0);
     assert.ok(await f.db.prepare("SELECT 1 FROM audit_entries WHERE action='capture.declined' AND entity_id=?").bind(cara.id).first());
+    await workflowJourney(f);
   } finally { await f.dispose(); }
 });
