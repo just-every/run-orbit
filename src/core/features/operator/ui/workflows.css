@@ -1,0 +1,35 @@
+.workflows-settings { display:grid; gap:24px; padding:28px; min-width:0; margin-top:24px; }
+.workflows-settings [hidden] { display:none; }
+.workflows-settings h2 { margin:0; font-size:22px; }
+.workflows-settings h3 { margin:0; font-size:18px; }
+.workflows-settings h4 { margin:0; font-size:15px; }
+.workflows-settings p { margin:0; font-size:15px; line-height:1.55; }
+.workflows-settings label { display:grid; gap:8px; min-width:0; }
+.workflows-heading { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; min-width:0; }
+.workflows-heading > div { flex:1 1 280px; }
+.workflows-heading > label { flex:1 1 300px; }
+.workflows-heading p { margin-top:8px; color:var(--ob-muted); }
+.workflows-tabs, .workflows-buttons { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+.workflows-tabs button[aria-pressed=true] { background:var(--ob-tangerine-soft); }
+.workflows-editor.workbench-form { padding:0; gap:24px; }
+.workflows-stack { display:grid; gap:16px; min-width:0; }
+.workflows-settings .workflows-card { display:grid; gap:16px; padding:20px; margin:0; min-width:0; border:1px solid var(--ob-line); border-radius:12px; }
+.workflows-card legend { padding:0 6px; }
+.workflows-grid, .workflows-value { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; min-width:0; }
+.workflows-settings :is(input:not([type=checkbox]),select,textarea) { width:100%; min-width:0; }
+.workflows-settings .workflows-note, .workflows-meta { color:var(--ob-muted); font-size:14px; line-height:1.5; overflow-wrap:anywhere; }
+.workflows-reason { display:block; font-size:14px; margin-top:8px; color:var(--ob-ink); overflow-wrap:anywhere; }
+.workflows-settings details > summary { cursor:pointer; font-size:15px; line-height:1.5; }
+.workflows-settings details > summary .workflows-meta { display:block; margin-top:5px; }
+.workflows-settings details[open] > summary { margin-bottom:16px; }
+.workflows-settings pre { white-space:pre-wrap; overflow-wrap:anywhere; margin:0; padding:12px; border-radius:8px; background:var(--ob-paper); font-size:13px; line-height:1.6; }
+.workflows-change { display:grid; gap:12px; min-width:0; }
+.workflows-change span { display:block; color:var(--ob-muted); font-size:13px; margin-bottom:6px; }
+.workflows-counts { display:flex; flex-wrap:wrap; gap:16px 28px; padding:0; margin:0; }
+.workflows-counts dt { font-size:13px; color:var(--ob-muted); }
+.workflows-counts dd { font-size:15px; margin:4px 0 0; overflow-wrap:anywhere; }
+.workflows-settings .workflows-people { display:grid; gap:12px; margin:0; padding:0; border:0; border-radius:0; }
+.workflows-people legend { padding:0; margin-bottom:12px; }
+.workflows-people label { display:flex; gap:10px; align-items:center; }
+.workflows-settings .workflows-check { display:flex; gap:10px; align-items:center; }
+@media(max-width:640px) { .workflows-settings { padding:20px; }.workflows-grid,.workflows-value { grid-template-columns:minmax(0,1fr); }.workflows-settings .workflows-card { padding:16px; }.workflows-settings button { min-height:44px; } }
