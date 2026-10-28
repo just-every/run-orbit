@@ -659,7 +659,7 @@
       "executable": false
     },
     "AGENTS.md": {
-      "sha256": "4ae9c6bd40acfbd81f2d49c3206509a960224c42f11fe84f963a708ddb9f3f9e",
+      "sha256": "7fdafb9a939facc97c9ca1d674b0503f38ae43c3f5ee8bd9d0844531d532f2c2",
       "executable": false
     },
     "AUTHORING.md": {
@@ -671,7 +671,7 @@
       "executable": false
     },
     "BASELINE.md": {
-      "sha256": "c88673b381fb2b38181819e55fcd6802d237402791ea0d59a6b1687195370afe",
+      "sha256": "7edf11ce7f54181e40afcf424209b9527bd1e0f7cf6fee7bf84d7811f082042f",
       "executable": false
     },
     "CHANGELOG.md": {
@@ -1835,7 +1835,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "6ee5edd2ece3eb836dbe21302fbf73d79185bf48d785eb2e00692f53fd01bfff",
+      "sha256": "a1ab84a4ce0f4ae85a3151c16ddd5471e73070b7b8cfc339d6aefedbf42dc1c2",
       "executable": false
     },
     "docs/verification-runtime-checks.md": {
@@ -4003,7 +4003,7 @@
       "executable": false
     },
     "scripts/report-contract-results.mjs": {
-      "sha256": "197c3f17db08f87d5a0e35be9f7a1ec1f11c2fc4a9bfdc1dbe928806c78c2149",
+      "sha256": "c20dc04349ef010c1298590a24e964fa4f3946aef9a04b36fc249d6ab3c58f59",
       "executable": false
     },
     "scripts/report-source-identity.mjs": {
@@ -4035,7 +4035,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "4bf43ecf4e48fa79fd3e7e3514a64eacfc792b9b668ae69543305437d6c924bf",
+      "sha256": "03516704cd8a38ae276bf621f309debff716fc19a42c1ad461cd4ff9f53deb84",
       "executable": false
     },
     "scripts/verification-reuse.sh": {

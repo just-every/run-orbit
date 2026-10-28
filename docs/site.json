@@ -41,6 +41,8 @@
     { "source": "docs/fold/RELEASE-NOTES.md", "reason": "Fold release notes for maintainers, which cite internal requirement records" },
     { "source": "docs/retained-verification/README.md", "reason": "Explains the retained historical verification reports, for maintainers" },
     { "source": "docs/retained-verification/visual-review.md", "reason": "A retained visual review of the working journey, for maintainers" },
-    { "source": "docs/verification-runtime-checks.md", "reason": "Prepared one-off acceptance probes outside the product suite, for maintainers" }
+    { "source": "docs/verification-runtime-checks.md", "reason": "Prepared one-off acceptance probes outside the product suite, for maintainers" },
+    {"source": "docs/CLAIMS.md", "reason": "Homepage claim status generated from CONTRACT.md for maintainers and reviewers"},
+    {"source": "docs/verify.md", "reason": "Retained verification instructions from the contract conversion, for maintainers"}
   ]
 }
