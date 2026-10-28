@@ -28,7 +28,7 @@ if [ "$EVENT" = pull_request ] && [ "$SAME_REPO" = true ]; then
 fi
 # Documentation/lock-only changes inherit the parent's full push proof and
 # still check the current source lock, contract, CLI and public site build.
-if [ "$skip" = false ] && [ "$EVENT" = push ] && parent=$(git rev-parse -q --verify HEAD~1) && green "$parent"; then
+if [ "$skip" = false ] && [ "$EVENT" = push ] && [[ "$REF" == refs/heads/* ]] && parent=$(git rev-parse -q --verify HEAD~1) && green "$parent"; then
   changed=$(git diff --name-only "$parent" HEAD)
   if [ -n "$changed" ] && ! printf '%s\n' "$changed" | grep -Ev '^(sources\.lock\.json|CONTRACT\.md|ACCEPTANCE\.md|CLAIMS\.md|docs/CLAIMS\.md|HANDOVER\.md|STATUS\.md|evidence/.*|\.artifacts/.*)$' >/dev/null; then light=true; fi
 fi
