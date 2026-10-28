@@ -68,6 +68,7 @@ export function verificationPlan({ journeys = false } = {}) {
       gate('exec', 'node', 'node_modules/@runeditrun/rer/bin/rer.mjs', 'check', '--profile', 'first-party'),
       gate('run', 'check:boundaries'),
       gate('run', 'check:manifest'),
+      gate('run', 'agent:surface'),
       gate('exec', 'rer', 'build'),
       gate('exec', 'node', 'scripts/publish-deployment-spec.mjs', '--check'),
       gate('run', 'typecheck'),
