@@ -4,7 +4,7 @@
 // with an installation, as in the Records archive.
 export default {
  product: 'just-every/sales-orbit',
- excludeTables: ['api_credentials', 'call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'record_owner_reviews', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
+ excludeTables: ['bs_%', 'agent_door_%', 'orbit_agent_%', 'orbit_native_changes', 'api_credentials', 'call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'record_owner_reviews', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
  derivedTables: ['record_search', 'timeline_search', 'record_search_fields'],
  // Migrations seed these rows in every empty database; the archive's rows replace them.
  replaceableTables: ['graph_workspace_epochs', 'schema_types', 'pipelines', 'forecast_source_clock'],

@@ -1,0 +1,11 @@
+import { existsSync } from 'node:fs';
+import { resolve,join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+const args=process.argv.slice(2);
+if(args.length&&!(args.length===2&&args[0]==='--cli-root'))throw Error('Usage: verify-agent-door.mjs [--cli-root <pinned Base archive>]');
+const cliRoot=resolve(args[1]??'node_modules/@runeditrun/rer');
+const entry=join(cliRoot,'cli/agent-door.mjs');
+if(!existsSync(entry))throw Error('PENDING-BASE-2026-10-28: the installed rer CLI lacks agent-door conformance. Publish and pin the matching 0.2.86 continuation; the adoption cannot pass normal rer verify before that.');
+const result=spawnSync(process.execPath,[entry,process.cwd()],{stdio:'inherit'});
+if(result.error)throw result.error;
+process.exitCode=result.status??1;

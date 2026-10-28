@@ -1,3 +1,4 @@
+import {exerciseAgentDoor} from '../support/agent-door-proof';
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
@@ -28,7 +29,8 @@ async function operator(email = `${createId().toLowerCase()}@example.test`) {
   return { id, email, auth };
 }
 
-test('PUBLIC-004 email link: one answer for every address, inert preview, one-use POST confirmation, refused for a removed operator', async () => {
+test('DELEGATE-001 RECORD-001 OUT-004 TEAM-001 signed agent door; PUBLIC-004 email link: one answer for every address, inert preview, one-use POST confirmation, refused for a removed operator', async () => {
+  await exerciseAgentDoor();
   const mail = mailedIdentity(fixture.db), person = await operator();
   // The deployed route selects the RER relay, even when old SendGrid credentials remain.
   const relayBindings={...mail.bindings,AUTH_LOCAL:'false',MAIL_PROVIDER:'rer',MAIL_FROM:'managed@example.test',MAIL_API_KEY:'fixture-relay-key',MAIL_RELAY_URL:'https://managed-mail.example.test/send',SENDGRID_API_KEY:'must-not-be-used'};

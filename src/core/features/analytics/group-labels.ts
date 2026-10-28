@@ -19,7 +19,7 @@ export async function labelReportGroups(metrics:AnalyticsMetrics,context:ActorCo
    label=stage.name;
    proofs.push(...metrics.store.guard('EXISTS(SELECT 1 FROM pipeline_stages WHERE id=? AND name=?)',[group,label]));
   }else if(typeof group==='string'&&['owner_id','closed_by'].includes(definition.groupBy??'')){
-   if(context.principal.kind!=='operator'||!await isFullOperator(metrics.store.db,context.principal.operatorId))throw new AccessError('permission','Operator names require workspace settings access.');
+   if((context.principal.kind!=='operator'&&context.principal.kind!=='agent')||!await isFullOperator(metrics.store.db,context.principal.operatorId))throw new AccessError('permission','Operator names require workspace settings access.');
    const owner=await metrics.store.db.prepare('SELECT display_name FROM operators WHERE id=?').bind(group).first<{display_name:string}>();
    if(!owner)throw new AccessError('prerequisite','A report operator name is unavailable.');
    label=owner.display_name;
