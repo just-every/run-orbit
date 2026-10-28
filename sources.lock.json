@@ -8751,7 +8751,7 @@
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {
-      "sha256": "09eb1a42eac05b0dfb0836fc887c9eb5905cc774fdb96dddb97314d21c9acd18",
+      "sha256": "e106edd5cb5b56220115c049148f112ecec30d91425bec4682737825bc650fc2",
       "executable": false
     },
     "tests/delegation-browser/calling-journey.mjs": {
@@ -9455,7 +9455,7 @@
       "executable": false
     },
     "tests/support/browser-calendar-data.ts": {
-      "sha256": "83e34f4d1fc1aa93f3926693487a5b9d9a6359c5743118605c10e0fd0d587849",
+      "sha256": "e9930eedd13bb77ffc0afdf61fb3e80c7cfcad62e293c047be91fd4e68c984e2",
       "executable": false
     },
     "tests/support/browser-private-data.ts": {

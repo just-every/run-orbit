@@ -56,8 +56,8 @@ export async function calendarJourney(page,data){
   await expect(panel.getByLabel('Meeting title',{exact:true})).toHaveValue(data.currentMeeting.title);
   await expect(panel.getByLabel('Invitation message',{exact:true})).toHaveValue(data.currentMeeting.message);
   await expect(panel.getByLabel('Exact attendee emails',{exact:true})).toHaveValue(data.currentMeeting.attendees.join('\n'));
-  await expect(panel.getByLabel(/^Start \(/)).toHaveValue(data.currentMeeting.start.slice(0,16));
-  await expect(panel.getByLabel(/^End \(/)).toHaveValue(data.currentMeeting.end.slice(0,16));
+  await expect(panel.getByLabel(/^Start \(/)).toHaveValue(localInput(data.currentMeeting.start));
+  await expect(panel.getByLabel(/^End \(/)).toHaveValue(localInput(data.currentMeeting.end));
   await proof('provider-current-form',width,panel);
   await panel.getByText('Plan calendar meeting',{exact:true}).click();
  }
@@ -66,6 +66,10 @@ export async function calendarJourney(page,data){
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('invitation-review',width,panel);}
  await review.getByRole('button',{name:'Cancel review',exact:true}).click();await expect(review).toHaveCount(0);expect(errors).toEqual([]);
  }finally{await edge.send('Fetch.disable');await edge.detach();}
+ function localInput(instant){
+  const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:data.timeZone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(instant)).map(part=>[part.type,part.value]));
+  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
+ }
  async function assertMeeting(region,meeting){for(const value of [meeting.title,meeting.message,meeting.start,meeting.end,...meeting.attendees])await expect(region).toContainText(value);}
  async function proof(name,width,region,selector='[aria-labelledby^="meeting-writeback-"]'){await expect(region).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);const axe=await new AxeBuilder({page}).include(selector).analyze();expect(axe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);if(selector==='.capture-key-form')await page.screenshot({path:`${evidence}/${name}-${width}.png`,fullPage:true});else await region.screenshot({path:`${evidence}/${name}-${width}.png`});}
 }

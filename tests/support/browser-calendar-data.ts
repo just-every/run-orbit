@@ -22,5 +22,5 @@ export async function browserCalendarData(db:D1Database,operatorId:string){
  Object.assign(providerEvent,{summary:currentMeeting.title,description:currentMeeting.message,start:{dateTime:currentMeeting.start},end:{dateTime:currentMeeting.end},attendees:currentMeeting.attendees.map(email=>({email})),etag:'"provider-edit"'});
  await t.json(`/api/v1/capture/sources/${source}/sync`,{body:{}},200);
  await db.prepare("INSERT INTO oa_identity_providers(preset,status,issuer,client_id,jwks_uri,authorization_endpoint,token_endpoint,algorithms,token_auth_method,response_iss,provider_id,linked_at) VALUES('legacy-rs256','linked','https://issuer.example.invalid','synthetic-orbit-client','https://issuer.example.invalid/jwks','https://issuer.example.invalid/authorize','https://issuer.example.invalid/token','[\"RS256\"]','client_secret_post',0,'auth',?)").bind(Date.now()).run();
- return {contact,deal,source,writebackId:created.id,originalMeeting,currentMeeting};
+ return {contact,deal,source,writebackId:created.id,originalMeeting,currentMeeting,timeZone:(await t.json<any>('/api/v1/settings')).workspace.timezone};
 }
