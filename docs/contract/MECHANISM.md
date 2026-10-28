@@ -155,3 +155,11 @@ Settings → Opt-out links holds the setting for each type, and each change is a
 ## 28 — API-001
 
 Publish a versioned REST API for permitted contact, company, deal, custom-object, association, note, activity, file (RECORD-018), task, pipeline, report and sequence operations. Admin-issued scoped credentials, pagination, filters, schema errors, rate-limit headers, idempotent writes and optimistic concurrency match native permissions and erasure rules. An INTEGRATE-005 Slack mapping is neither an API nor a delegation credential. It grants no outreach authority, exact-message approval, sequence execution, record sharing or stage/owner/amount changes. The standalone credential resource door is `/api/rest/v1/`; credential administration remains a native-session operation. Explicit deal creation adds only the newly created deal to that credential’s permitted records, within the existing bounded record scope.
+
+## 29 — PUBLIC-004
+
+Base operator-auth over Orbit's own operators: configured email-link delivery sends only to an existing active operator, gives the same request response for unknown and inactive addresses, and exchanges a hashed, single-use link, confirmed by POST from a read-only confirmation page within 15 minutes, for a secure native session. An optional linked identity provider (an Auth install) admits only existing operators and stays off until the owner turns it on. Return locations stay inside the operator app.  A missing or failed mail configuration cannot issue a session. Orbit’s sign-in path, brand and theme are declared in `src/identity.ts`.
+
+## 30 — PUBLIC-002
+
+When enabled in `ext/config.ts`, `/demo` presents a separate read-only example workspace with twelve fictional deals, relative dates, signals, drafts and a sent-message/reply story. It clearly labels these as examples before displaying them. No example data is written to the owner's database. The demo cannot load owner records, send mail, call AI, approve outreach or mutate data. Unknown demo paths return the styled not-found page. Disabling it returns 404. This deliberately replaces the former dedicated hosted-record walkthrough; all native session, exact-message review and customer-sending requirements remain unchanged.
