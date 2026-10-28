@@ -1,4 +1,7 @@
-import {AccessService} from '../access/service';
+import {captureAccess} from './mail-rule';
+import {sourceConnectionAccess,sourceGlobalAccess,isMailboxLifecyclePath,mailboxOwnerSql} from './source-access';
+import {salesAdmin} from '../teams/policy';
+import {isFullOperator} from '../access/identity-class';
 import {createProviderRoutes,type ProviderConfig} from './providers/routes';
 import {Hono,type Context} from 'hono';
 import {z} from 'zod';
@@ -17,6 +20,7 @@ import {correctDealLinks,readDealLinks} from './deal-links';
 export function createCaptureRoutes(db:D1Database,providers:ProviderConfig={}){
  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),recordId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
  app.onError((error,c)=>error instanceof CaptureError?c.json({error:error.message},error.status):c.json({error:'Capture failed; nothing was confirmed.'},500));
+ app.use('*',async(c,next)=>{if(!isMailboxLifecyclePath(c.req.path)){await db.batch(await captureAccess(db,c.get('operator'),!['GET','HEAD'].includes(c.req.method)));if(/\/(imports|forward|calendar-links|mail-rule)(?:\/|$)/.test(c.req.path))await db.batch(await sourceGlobalAccess(db,c.get('operator')));}await next();});
  app.get('/mail-rule',async c=>c.json(await mailRuleSettings(db,c.get('operator'))));
  app.put('/mail-rule',async c=>{
   const input=z.object({rule:z.enum(['review','recent','all'])}).strict().safeParse(await c.req.json().catch(()=>null));
@@ -53,13 +57,13 @@ export function createCaptureRoutes(db:D1Database,providers:ProviderConfig={}){
  app.route('/',createProviderRoutes(db,providers));
  app.route('/forward',createForwardRoutes(db,{security:providers.security,address:providers.mailAddress,local:providers.local}));
  app.route('/calendar-links',createCalendarLinkRoutes(db,{security:providers.security,fetcher:providers.fetcher}));
- app.get('/sources',async c=>c.json({sources:await listSources(db)}));
+ app.get('/sources',async c=>{const actor=c.get('operator');await db.batch(await sourceConnectionAccess(db,actor));const sources=await listSources(db),global=await salesAdmin(db,actor.operatorId)||await isFullOperator(db,actor.operatorId);const ids=global?null:new Set((await db.prepare(`SELECT c.id FROM capture_sources c WHERE c.adapter IN('google','microsoft') AND ${mailboxOwnerSql}=?`).bind(actor.operatorId).all<{id:string}>()).results.map(row=>row.id));return c.json({sources:ids?sources.filter(source=>ids.has(String(source.id))):sources});});
  app.post('/sources/:id/disconnect',async c=>{
   const form=!(c.req.header('content-type')??'').includes('application/json');
   const confirmed=form?(await c.req.formData()).get('confirmed')==='true':(await c.req.json().catch(()=>({}))).confirmed===true;
   if(!confirmed)throw new CaptureError(400,'Confirm disconnecting this source.');
-  const operator=c.get('operator'),access=new AccessService(db),actor=await access.authorizeLegacy(operator,crypto.randomUUID(),'legacy.write');
-  const result=await disconnectSource(db,c.req.param('id'),operator.operatorId,access.fence(actor).map(statement=>db.prepare(statement.sql).bind(...statement.bindings)));
+  const operator=c.get('operator'),fence=await sourceConnectionAccess(db,operator,c.req.param('id'));
+  const result=await disconnectSource(db,c.req.param('id'),operator.operatorId,fence);
   return form?c.redirect('/app/capture',303):c.json(result);
  });
  app.get('/proposals',async c=>{

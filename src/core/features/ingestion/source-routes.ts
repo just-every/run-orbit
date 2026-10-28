@@ -1,3 +1,8 @@
+import {sourceGlobalAccess} from '../capture/source-access';
+import {captureAccess} from '../capture/mail-rule';
+import {CaptureError} from '../capture/contracts';
+import {salesProfile} from '../teams/policy';
+import {salesCanRead} from '../teams/record-access';
 import {isNativeSource} from './source-authority';
 import {publicRateLimit} from '../../platform/public-rate-limit';
 import {Hono} from 'hono';
@@ -12,7 +17,8 @@ import {signSource} from './booking-webhooks';
 import {connectCalendly} from './calendly-setup';
 export function createSourceRoutes(db:D1Database,security?:SourceSecurity){
   const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),repository=new IngestionRepository(db);
-  app.onError((error,c)=>c.json({error:error instanceof IngestionError?error.message:'Source operation failed; no success was confirmed.'},error instanceof IngestionError?error.status:500));
+  app.onError((error,c)=>c.json({error:error instanceof IngestionError||error instanceof CaptureError?error.message:'Source operation failed; no success was confirmed.'},error instanceof IngestionError||error instanceof CaptureError?error.status:500));
+  app.use('*',async(c,next)=>{const actor=c.get('operator');await db.batch(await sourceGlobalAccess(db,actor));if(/\/(recipe-context|replies|unlinked)(?:\/|$)/.test(c.req.path))await db.batch(await captureAccess(db,actor,!['GET','HEAD'].includes(c.req.method)));await next();});
   app.get('/',async c=>c.json({sources:await repository.sources(),configured:Boolean(security)}));
   app.put('/:id',async c=>{
     if(!security)return c.json({error:'ORBIT_ENCRYPTION_KEY is required to encrypt source secrets.'},503);
@@ -52,6 +58,7 @@ export function createSourceRoutes(db:D1Database,security?:SourceSecurity){
     if(isNativeSource(c.req.param('id'),source?.type)||!source||source.removed_at)return c.json({error:'Source is not configured.'},403);
     if(!source.secret_ciphertext)return c.json({error:'Reconnect this source in Sources, then copy its new signing secret into your tool before sending events.'},403);
     if(!source.enabled)return c.json({error:'Enable this source before sending a test event.'},403);
+    if(await salesProfile(db,c.get('operator').operatorId)&&!await salesCanRead(db,c.get('operator').operatorId,'contact',input.data.contactId,['email','mail']))return c.json({error:'Contact is outside your current record or field access.'},403);
     if(!await repository.contact(input.data.contactId))return c.json({error:'Contact not found.'},404);
     const raw=JSON.stringify({eventId:crypto.randomUUID(),type:'form.submitted',subject:'Form submitted · test',occurredAt:new Date().toISOString(),record:{type:'contact',id:input.data.contactId},data:{test:true}}),timestamp=String(Math.floor(Date.now()/1000));
     const signature=await signSource(await security.open(source.secret_ciphertext),`${timestamp}.${raw}`);

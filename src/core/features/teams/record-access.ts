@@ -4,7 +4,7 @@ import type {SqlValue} from '../../shared/expansion-contracts';
 export interface SalesFragment {sql:string;bindings:SqlValue[]}
 const literal=(value:string)=>`'${value.replaceAll("'","''")}'`;
 /** Ownership is read from the native owner register on every request. Shares never change it. */
-export async function salesRowPolicy(db:D1Database,id:string,alias='r'):Promise<SalesFragment & {base?:string}>{
+export async function salesRowPolicy(db:D1Database,id:string,alias='r'):Promise<SalesFragment & {base?:string;editable?:string}>{
  const profile=await salesProfile(db,id);if(!profile)return{sql:'0',bindings:[]};
  if(!/^[a-z_]+$/.test(alias))throw new Error('Invalid internal record alias.');
  if(profile.role==='sales-admin')return{sql:'1',bindings:[]};
@@ -13,7 +13,7 @@ export async function salesRowPolicy(db:D1Database,id:string,alias='r'):Promise<
  const ordinary=`((${owned}) AND (${alias}.visibility='workspace' OR ${owner}=${who}))`;
  const shared=`EXISTS(SELECT 1 FROM main.sales_record_shares share WHERE share.kind=${alias}.kind AND share.record_id=${alias}.id AND ((share.subject_kind='user' AND share.subject_id=${who}) OR (share.subject_kind='team' AND share.subject_id IN(SELECT value FROM json_each(${teams})))))`;
  const associated=profile.includeAssociations?` OR (${alias}.kind IN('contact','company') AND EXISTS(SELECT 1 FROM main.opportunities deal WHERE deal.owner_id=${who} AND ((${alias}.kind='company' AND deal.company_id=${alias}.id) OR (${alias}.kind='contact' AND EXISTS(SELECT 1 FROM main.opportunity_contacts link WHERE link.opportunity_id=deal.id AND link.contact_id=${alias}.id)))))`:'';
- return{sql:`(${ordinary} OR ${shared}${associated})`,base:`(${ordinary}${associated})`,bindings:[]};
+ return{sql:`(${ordinary} OR ${shared}${associated})`,base:`(${ordinary}${associated})`,editable:ordinary,bindings:[]};
 }
 export function salesFieldAllowed(profile:SalesProfile,field:string){
  if(profile.fields.includes('*')||profile.fields.some(path=>field===path||field.startsWith(path+'.')))return true;
@@ -32,12 +32,11 @@ export async function salesCanRead(db:D1Database,id:string,kind:string,recordId:
 }
 export async function salesCanEdit(db:D1Database,id:string,kind:string,recordId:string,fields:readonly string[]=[]){
  const profile=await salesProfile(db,id);if(!profile||profile.role==='read-only'||!await salesCanRead(db,id,kind,recordId,fields))return false;
- const teams=await teamIds(db,id),shares=(await db.prepare("SELECT can_edit FROM sales_record_shares WHERE kind=? AND record_id=? AND ((subject_kind='user' AND subject_id=?) OR (subject_kind='team' AND subject_id IN(SELECT value FROM json_each(?))))").bind(kind,recordId,id,JSON.stringify(teams)).all<{can_edit:number}>()).results;
- if(shares.length&&shares.every(share=>!share.can_edit)){
-  const own=await db.prepare('SELECT owner_id FROM record_ownership WHERE record_type=? AND record_id=?').bind(kind,recordId).first<{owner_id:string|null}>();
-  if(profile.scope==='assigned'&&own?.owner_id!==id)return false;
- }
- return true;
+ const policy=await salesRowPolicy(db,id);
+ if(!policy.editable)return profile.role==='sales-admin';
+ if(await db.prepare(`SELECT 1 FROM graph_records r WHERE r.kind=? AND r.id=? AND (${policy.editable})`).bind(kind,recordId,...policy.bindings).first())return true;
+ const teams=await teamIds(db,id);
+ return Boolean(await db.prepare("SELECT 1 FROM sales_record_shares WHERE kind=? AND record_id=? AND can_edit=1 AND ((subject_kind='user' AND subject_id=?) OR (subject_kind='team' AND subject_id IN(SELECT value FROM json_each(?))))").bind(kind,recordId,id,JSON.stringify(teams)).first());
 }
 
 /** Field grants on a share restrict that share; membership never broadens a share's fields. */

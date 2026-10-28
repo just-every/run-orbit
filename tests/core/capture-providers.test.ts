@@ -1,3 +1,4 @@
+import {scopes} from '../../src/core/features/capture/providers/config';
 import {calendarWritebackProof} from '../support/calendar-writeback';
 import {providerFixture as fixture,captureFixtureSecurity as security} from '../support/capture-provider-fixture';
 import {oversizedMessageProof,deletedEventProof} from '../support/capture-provider-items';
@@ -26,6 +27,24 @@ test('CAPTURE-005 OAuth binds native session, provider, origin, expiry and one u
   const denied=await f.start();f.state.scope='https://www.googleapis.com/auth/gmail.readonly';assert.match((await f.callback(denied)).headers.get('location')!,/error=/);assert.equal(await f.db.prepare('SELECT count(*) n FROM capture_credentials').first('n'),1);
   const pending=await f.start(id);assert.equal((await f.request(`/sources/${id}/disconnect`,{confirmed:true})).status,200);assert.match((await f.callback(pending)).headers.get('location')!,/error=/);
   const collaborator=createId();await f.db.prepare('INSERT INTO access_collaborators VALUES(?,?)').bind(collaborator,new Date().toISOString()).run();await f.deps.auth.ensureOperator({id:collaborator,email:'collaborator@orbit.test',displayName:'Analyst'});const restricted=await f.deps.auth.createSession(collaborator);assert.equal((await f.request('/providers',undefined,`__Host-orbit_session=${restricted.token}`)).status,403);
+  // TEAM-005 source.connect grants mailbox lifecycle, never workspace evidence or recipient access.
+  await f.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.operator).run();
+  const delegated=createId();await f.deps.auth.ensureOperator({id:delegated,email:'synthetic-orbit-source-admin'+'@'+'example.test',displayName:'Source administrator'});const delegatedSession=await f.deps.auth.createSession(delegated),delegatedCookie=`__Host-orbit_session=${delegatedSession.token}`;
+  const role={role:'sales-admin',scope:'all',fields:['*'],permissions:['source.connect'],includeAssociations:false};
+  const setRole=async(profile:unknown)=>{const result=await f.app.request(`https://orbit.test/api/v1/settings/teams/roles/${delegated}`,{method:'PUT',headers:{cookie:f.cookie,origin:'https://orbit.test','content-type':'application/json'},body:JSON.stringify(profile)});assert.equal(result.status,200,await result.clone().text());};
+  await setRole(role);assert.equal((await f.request('/providers',undefined,delegatedCookie)).status,200);
+  f.state.scope=scopes.google.join(' ');f.state.total=1;
+  const delegatedStart=await f.start(undefined,delegatedCookie),delegatedCallback=await f.callback(delegatedStart,delegatedCookie),delegatedId=new URL(delegatedCallback.headers.get('location')!,'https://orbit.test').searchParams.get('connected');assert.ok(delegatedId,delegatedCallback.headers.get('location')!);
+  assert.equal((await f.request(`/sources/${delegatedId}/options`,undefined,delegatedCookie)).status,200);
+  assert.equal((await f.request(`/sources/${delegatedId}/scope`,{mail:{folders:['INBOX']}},delegatedCookie)).status,200);
+  const adminSync=await f.request(`/sources/${delegatedId}/sync`,{},delegatedCookie);assert.equal(adminSync.status,200,await adminSync.clone().text());assert.ok((await adminSync.json() as any).summary.captured>0);
+  const manager={...role,role:'manager',scope:'assigned',fields:['mail','notes']};await setRole(manager);
+  const ownSources=await(await f.request('/sources',undefined,delegatedCookie)).json() as any;assert.deepEqual(ownSources.sources.map((source:any)=>source.id),[delegatedId],'A scoped connector sees only their own mailbox metadata');
+  assert.equal((await f.request(`/sources/${id}/options`,undefined,delegatedCookie)).status,403,'Source permission cannot use another operator’s provider credential');
+  assert.equal((await f.request('/proposals',undefined,delegatedCookie)).status,403,'A mailbox connection never exposes workspace capture proposals');
+  f.state.incremental=true;f.state.incrementalIds=['synthetic-hidden-recipient'];const beforeProposals=await f.db.prepare('SELECT count(*) FROM capture_proposals').first('count(*)'),beforeRecipient=await f.db.prepare('SELECT name,phone,contactability,updated_at FROM contacts WHERE id=?').bind(f.ana).first(),beforeSignals=await f.count(delegatedId!),hidden=await f.request(`/sources/${delegatedId}/sync`,{},delegatedCookie);assert.equal(hidden.status,200,await hidden.clone().text());assert.equal((await hidden.json() as any).summary.captured,0);assert.equal(await f.count(delegatedId!),beforeSignals,'A current hidden recipient receives no captured evidence');assert.equal(await f.db.prepare('SELECT count(*) FROM capture_proposals').first('count(*)'),beforeProposals,'No proposal is authored for a hidden recipient');assert.deepEqual(await f.db.prepare('SELECT name,phone,contactability,updated_at FROM contacts WHERE id=?').bind(f.ana).first(),beforeRecipient,'The hidden recipient record stays unchanged');
+  const revocable=await f.start(delegatedId!,delegatedCookie),tokensBefore=f.state.tokens;await setRole({...manager,permissions:[]});assert.equal((await f.request('/providers',undefined,delegatedCookie)).status,403);assert.equal((await f.callback(revocable,delegatedCookie)).status,403);assert.equal(f.state.tokens,tokensBefore,'Revoked source permission is checked before exchanging an OAuth code');
+  await setRole(role);assert.match((await f.callback(revocable,delegatedCookie)).headers.get('location')!,/error=/);assert.equal(f.state.tokens,tokensBefore,'Restoring a role never revives OAuth authority started before its permission epoch changed');const rule=await f.app.request('https://orbit.test/api/v1/capture/mail-rule',{method:'PUT',headers:{cookie:delegatedCookie,origin:'https://orbit.test','content-type':'application/json'},body:JSON.stringify({rule:'review'})});assert.equal(rule.status,200,'A current sales administrator manages the global mail rule');
  }finally{await f.dispose();}
 });
 

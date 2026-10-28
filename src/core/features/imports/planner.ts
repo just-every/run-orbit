@@ -13,6 +13,7 @@ function customValues(values:Record<string,string>){return Object.fromEntries(Ob
 
 export async function prepareImport(input:ImportInput,context:D1ImportContext){
  const {source,rows,namespace}=readImport(input),db=context.storage.database,at=new Date().toISOString(),results=new Map<SourceRecord,MappingResult>(),references=new Map<string,string>();
+ for(const owner of new Set(Object.values(input.owners??{})))if(!await db.prepare("SELECT 1 FROM operators o WHERE o.id=? AND o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=o.id)").bind(owner).first())throw new Error('Map source owners to active native users.');
  const settings=await db.prepare('SELECT free_mail_domains_json FROM workspace_settings').first();
  const stages=new Set((await db.prepare('SELECT id FROM pipeline_stages').all()).results.map(r=>r.id));
  const shapes:Record<string,Record<string,any>>={};
@@ -83,7 +84,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
    const stage=input.stages[data.stage];if(!stage||!stages.has(stage))throw new Error('Map this row’s source stage to a current Orbit stage.');
    const amount=data.amount?Number(data.amount):0;if(!Number.isFinite(amount)||amount<0||Math.round(amount*100)>100000000000)throw new Error('Amount must be a non-negative decimal in the workspace currency.');
    if(!data.title)throw new Error('Deal title is required.');const close=data.close_date?new Date(data.close_date):null;if(close&&!Number.isFinite(+close))throw new Error('Close date is invalid.');
-   Object.assign(native,{title:data.title,lifecycle:'open',stage_id:stage,owner_id:null,company_id:companies[0]??null,value_cents:Math.round(amount*100),expected_close_at:close?.toISOString()??null,score:0,band:'low',queue_state:'none',queue_reason:'Imported history; no action approved'});
+   Object.assign(native,{title:data.title,lifecycle:'open',stage_id:stage,owner_id:input.owners?.[data.owner]??null,company_id:companies[0]??null,value_cents:Math.round(amount*100),expected_close_at:close?.toISOString()??null,score:0,band:'low',queue_state:'none',queue_reason:'Imported history; no action approved'});
    for(const [i,contact] of [...new Set(contacts)].entries())links.push({opportunity_id:id,contact_id:contact,is_primary:i===0?1:0,created_at:at});
   }
   if(row.kind==='note'){
@@ -94,7 +95,8 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
   }
   links.sort((a,b)=>row.kind==='deal'?a.contact_id.localeCompare(b.contact_id):`${a.record_type}:${a.record_id}`.localeCompare(`${b.record_type}:${b.record_id}`));
   if(Object.values(native).some(v=>typeof v==='number'&&!Number.isFinite(v)))throw new Error('Native record has an unsupported default.');
-  results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:{row:native,links,...row.kind==='contact'?{suppressionTokens:emailTokens.get(native.email)??[]}:{} } as any}],...row.derivedContacts?{unmapped:[{reason:'New company, from the Company name column of the contacts file. Orbit does not reuse a company it already has just because the name matches.'}]}:{}});
+  const owner=input.owners?.[data.owner],ownership=owner&&['contact','company'].includes(row.kind)?{record_type:row.kind,record_id:id,owner_id:owner,revision:1,updated_at:at,actor_id:context.authorization.principalId}:null;
+  results.set(row.source,{effects:[{targetKind:row.kind,targetId:id,value:{row:native,links,...ownership?{ownership}:{},...row.kind==='contact'?{suppressionTokens:emailTokens.get(native.email)??[]}:{} } as any}],...row.derivedContacts?{unmapped:[{reason:'New company, from the Company name column of the contacts file. Orbit does not reuse a company it already has just because the name matches.'}]}:{}});
  }catch(error){row.error=(error as Error).message;results.set(row.source,{effects:[],rejection:row.error});
   // The exact original remains in kit custody. Rejected rows need only their location and reason in the resumable plan, avoiding unindexed personal-data copies.
   row.source.sourceId=`rejected:${sha256(row.source.sourceId)}`;row.source.payload={rejected:true,...row.reviewColumns?{reviewColumns:row.reviewColumns}:{}};row.source.payloadHash=sha256(canonicalJson(row.source.payload));}}

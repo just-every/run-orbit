@@ -1,6 +1,6 @@
+import {sourceConnectionAccess,sourcePollAccess} from '../source-access';
 import {reconcileWritebacks} from './writeback-reconcile';
 import {audit} from '../../records/shared';
-import {AccessService} from '../../access/service';
 import type {AuthenticatedOperator} from '../../identity';
 import {createId} from '../../../shared/ids';
 import type {SourceSecurity} from '../../../platform/source-security';
@@ -41,16 +41,17 @@ async function withProvider<T>(db:D1Database,id:string,security:SourceSecurity,f
 }
 export function providerOptions(db:D1Database,id:string,security:SourceSecurity,fetcher:ProviderFetch,continuation?:string){return withProvider(db,id,security,fetcher,(source,session)=>source.adapter==='google'?googleOptions(session,continuation):microsoftOptions(session,continuation));}
 export function selectScope(db:D1Database,id:string,scope:CaptureScope,security:SourceSecurity,fetcher:ProviderFetch,actor:AuthenticatedOperator){return withProvider(db,id,security,fetcher,async(source,session)=>{
- const access=new AccessService(db),context=await access.authorizeLegacy(actor,createId(),'legacy.write');
+ const accessFences=await sourceConnectionAccess(db,actor,id);await db.batch(accessFences);
  if((scope.calendars?.length??0)>0&&!scope.calendarWindow)throw new CaptureError(400,'Choose a fixed start and end date for calendars.');
  if(source.adapter==='google')await validateGoogleScope(session,scope);else await validateMicrosoftScope(session,scope);
  await session.check();
- const fence=[...access.fence(context).map(statement=>db.prepare(statement.sql).bind(...statement.bindings)),db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_scope_fence',NULL WHERE NOT EXISTS(SELECT 1 FROM capture_sources WHERE id=? AND connection_id IS ? AND state IN('connected','syncing'))").bind(id,source.connection_id)];
+ const fence=[...accessFences,db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_scope_fence',NULL WHERE NOT EXISTS(SELECT 1 FROM capture_sources WHERE id=? AND connection_id IS ? AND state IN('connected','syncing'))").bind(id,source.connection_id)];
  const results=await db.batch([...fence,db.prepare(`UPDATE capture_sources SET scope_json=?,cursor=NULL,connection_id=?,last_error=NULL,last_error_at=NULL,updated_at=? WHERE id=? AND connection_id IS ? AND state IN('connected','syncing')`).bind(JSON.stringify(scope),createId(),new Date().toISOString(),id,source.connection_id),db.prepare('DELETE FROM capture_oauth WHERE source_id=?').bind(id),audit(db,actor.operatorId,'capture.scope_changed','capture_source',id,{scope})]);
  if(results[fence.length]!.meta.changes!==1)throw new CaptureError(409,'The provider connection changed. Choose its scope again.');
  return {saved:true,scope};
  });}
 export async function syncProvider(db:D1Database,id:string,security:SourceSecurity,fetcher:ProviderFetch=fetch,maxPages=4){
+ await sourcePollAccess(db,id);
  const source=await readProviderSource(db,id),scope=JSON.parse(source.scope_json) as CaptureScope;
  if(!(scope.mail?.folders?.length||scope.calendars?.length))throw new CaptureError(409,'Choose the labels, folders or calendars to read first.');
  const result=await syncSource(db,id,(current,lease)=>sourceAdapter(current,providerSession(db,current,lease,security,fetcher)),security,{maxPages});

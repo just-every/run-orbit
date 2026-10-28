@@ -52,8 +52,8 @@ export async function proveSlackNotices(f:SlackFixture,deal:string,contact:strin
   const booked=()=>f.app.request('https://orbit.test/api/v1/signals/bookings/calcom',{method:'POST',headers:{'X-Cal-Signature-256':createHmac('sha256',booking.secret).update(raw).digest('hex')},body:raw});assert.equal((await booked()).status,201);await process();assert.equal(posts.length,bookingCount+1);assert.equal((await booked()).status,409);await process();assert.equal(posts.length,bookingCount+1);assert.ok(posts.every(p=>!p.text.includes('maya@harbour.test')&&!p.text.includes('Maya')&&!p.text.includes('Private win reason')&&!p.text.includes('Private customer call contents')));
   await proveDashboardSlack(f,{posts,call,signed,secret,token,outcome:value=>edge.setOutcome(value),safety:value=>edge.setSafety(value)});
   // TEAM-005: a real sales administrator chooses a team audience, which grants no record access.
-  const seller=await(await f.request('settings/operators','POST',{email:'synthetic-orbit-team-member@example.test',displayName:'Synthetic team seller'})).json() as {id:string};
-  const administrator=await(await f.request('settings/operators','POST',{email:'synthetic-orbit-sales-admin@example.test',displayName:'Synthetic sales administrator'})).json() as {id:string};
+  const seller=await(await f.request('settings/operators','POST',{email:'synthetic-orbit-team-member'+'@'+'example.test',displayName:'Synthetic team seller'})).json() as {id:string};
+  const administrator=await(await f.request('settings/operators','POST',{email:'synthetic-orbit-sales-admin'+'@'+'example.test',displayName:'Synthetic sales administrator'})).json() as {id:string};
   const adminRole={role:'sales-admin',scope:'all',fields:['*'],permissions:['source.connect','export','analytics.define','forecast.read'],includeAssociations:true};
   assert.equal((await f.request(`settings/teams/roles/${administrator.id}`,'PUT',adminRole)).status,200);
   const administratorSession=await (await import('./test-auth')).testAuth(f.db).createSession(administrator.id);

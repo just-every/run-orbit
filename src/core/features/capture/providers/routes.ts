@@ -1,3 +1,5 @@
+import {captureAccess} from '../mail-rule';
+import {sourceConnectionAccess} from '../source-access';
 import {calendarWritebackRoutes} from './writeback';
 import {Hono} from 'hono';
 import {z} from 'zod';
@@ -21,6 +23,8 @@ export function createProviderRoutes(db:D1Database,config:ProviderConfig){
   const provider=/\/oauth\/(google|microsoft)\//.exec(c.req.path)?.[1],page=provider?`/app/capture/connect/${provider}?step=5&`:'/app/capture?';
   return (c.req.header('accept')??'').includes('text/html')?c.redirect(`${page}error=${encodeURIComponent(message)}`,303):c.json({error:message},status);
  });
+ app.use('*',async(c,next)=>{const id=/\/sources\/([^/]+)\//.exec(c.req.path)?.[1];await db.batch(await sourceConnectionAccess(db,c.get('operator'),id));await next();});
+ app.use('/writeback/*',async(c,next)=>{await db.batch(await captureAccess(db,c.get('operator'),true));await next();});
  app.route('/writeback',calendarWritebackRoutes(db,config));
  app.get('/providers',c=>{
   const origin=trustedOrigin(config.origin,c.req.url);

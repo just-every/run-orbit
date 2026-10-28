@@ -1,3 +1,4 @@
+import {isMailboxLifecyclePath} from '../capture/source-access';
 import {salesEntryAuthority} from './entry-authority';
 import {salesWorkbenchAllowed} from './workbench-authority';
 import {salesMutationResponse} from './mutation-routes';
@@ -25,9 +26,9 @@ export function salesNativeBoundary(db:D1Database):MiddlewareHandler<{Variables:
   const scopedRead=await salesReadResponse(db,actor,c.req.raw);if(scopedRead)return scopedRead;
   if(admin&&(path.startsWith('/api/v1/settings')||path.startsWith('/api/v1/setup')||path.startsWith('/api/v1/workspace'))){await next();return;}
   if(path.startsWith('/api/v1/settings')||path.startsWith('/api/v1/setup')||path.startsWith('/api/v1/workspace'))return c.json({error:'Sales administration permission is required.'},403);
-  if(admin&&profile.scope==='all'&&profile.fields.includes('*')&&profile.permissions.includes('source.connect')&&(path.startsWith('/api/v1/sources')||path.startsWith('/api/v1/capture'))){await next();return;}
+  if(profile.permissions.includes('source.connect')&&(isMailboxLifecyclePath(path)||admin&&(path.startsWith('/api/v1/sources')||path==='/api/v1/capture/mail-rule'||profile.fields.includes('*')&&path.startsWith('/api/v1/capture')))){await next();return;}
   if(path.startsWith('/api/v1/records/archive/')){const permission=path.startsWith('/api/v1/records/archive/imports')?'import':'export';if(admin&&profile.scope==='all'&&profile.fields.includes('*')&&profile.permissions.includes(permission)){await next();return;}return c.json({error:'Installation archives require the corresponding permission and full sales administration access.'},403);}
-  if(admin&&profile.scope==='all'&&profile.fields.includes('*')&&profile.permissions.includes('import')&&path.startsWith('/api/v1/imports')){await next();return;}
+  if(profile.permissions.includes('import')&&path.startsWith('/api/v1/imports')){await next();return;}
   const mutation=await salesMutationResponse(db,actor,c.req.raw);if(mutation)return mutation;
   if(path.startsWith('/api/v1/sources')||path.startsWith('/api/v1/capture')||path.startsWith('/api/v1/imports'))return c.json({error:'This source or import operation requires sales administration.'},403);
   if(path.startsWith('/api/v1/records/')){

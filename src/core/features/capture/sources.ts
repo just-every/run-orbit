@@ -1,3 +1,4 @@
+import {sourcePollAccess} from './source-access';
 import type {ProviderSource} from './providers/session';
 import {leaseSource,activeLease} from './providers/session';
 import {createId} from '../../shared/ids';
@@ -58,7 +59,7 @@ export async function listSources(db:D1Database){
  return (await db.prepare(`SELECT c.id,c.adapter,c.name,c.scope_json,CASE WHEN c.state='syncing' AND NOT EXISTS(SELECT 1 FROM capture_locks l WHERE l.source_id=c.id AND l.expires_at>unixepoch('now')*1000) THEN 'connected' ELSE c.state END AS state,c.last_success_at,c.last_error,c.last_error_at,c.captured_count,c.skipped_count,c.connected_at,c.disconnected_at,
    (SELECT count(*) FROM capture_credentials k WHERE k.source_id=c.id) AS has_credential,
    (SELECT count(*) FROM capture_proposals p JOIN signals s ON s.id=p.signal_id WHERE s.source_id=c.id AND p.status='pending') AS proposals_waiting
-   FROM capture_sources c ORDER BY c.created_at,c.id`).all<Record<string,unknown>&{scope_json:string}>()).results.map(({scope_json,...row})=>({...row,scope:JSON.parse(scope_json)}));
+   FROM capture_sources c ORDER BY c.created_at,c.id`).all<Record<string,unknown>&{id:string;scope_json:string}>()).results.map(({scope_json,...row})=>({...row,scope:JSON.parse(scope_json)}));
 }
 
 /** Read every fact in the items and commit each through intake. Stops at once when the source is disconnected. */
@@ -71,6 +72,7 @@ export async function captureItems(db:D1Database,source:CaptureSource,items:Capt
   summary.skipped++;summary.skipReasons[reason]=(summary.skipReasons[reason]??0)+1;
  };
  for(const item of items)for(const read of await readProviderItem(db,source,item)){
+  source.authorityActor=await sourcePollAccess(db,source.id)??undefined;
   if(source.lease)await activeLease(db,source,source.lease);
   if('skip' in read){await skip(item,read.skip);continue;}
   let outcome;
@@ -111,6 +113,7 @@ export async function syncSource(db:D1Database,id:string,adapter:CaptureSourceAd
   await db.prepare(`UPDATE capture_sources SET state='syncing',updated_at=? WHERE ${current()}`).bind(new Date().toISOString(),id,source.connection_id).run();
   let cursor=source.cursor;
   for(let page=0;page<(options.maxPages??20);page++){
+   await sourcePollAccess(db,id);
    await activeLease(db,source,lease);
    const result=await reader.pull(cursor,credential);
    await activeLease(db,source,lease);

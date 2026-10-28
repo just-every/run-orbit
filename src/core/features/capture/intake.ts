@@ -1,3 +1,4 @@
+import {permittedCaptureFact,captureAuthorityFence} from './source-access';
 import {captureFences} from './fences';
 import {rememberProviderKeys} from './provider-evidence';
 import {createId} from '../../shared/ids';
@@ -13,7 +14,7 @@ import {capturePrivacy} from './privacy';
 import {CaptureError} from './contracts';
 import {automaticMailAssociation} from './mail-association';
 
-export interface CaptureSource {id:string;name:string;connection_id:string|null;lease?:string}
+export interface CaptureSource {id:string;name:string;connection_id:string|null;lease?:string;authorityActor?:string}
 export interface Known {email:string;name:string;role:Participant['role'];contact:{id:string;name:string|null;phone:string|null;company_id:string|null}|null;company:{id:string;name:string}|null}
 export type Outcome =
  | {result:'captured';signalId:string;type:string;attached:boolean;stopped:number;proposals:number;bounce:'permanent'|'transient'|null}
@@ -80,6 +81,8 @@ async function unknownReason(db:D1Database,participants:Participant[],operators:
  * the immediate stop for a reply or booking, and proposals for everything else.
  */
 export async function intake(db:D1Database,source:CaptureSource,fact:Fact,options:{includeUnknown:boolean}):Promise<Outcome>{
+ const authority=source.authorityActor?[await captureAuthorityFence(db,source.authorityActor)]:[];
+ if(source.authorityActor&&!await permittedCaptureFact(db,source.authorityActor,fact))return {result:'skipped',reason:'Outside current capture permissions'};
  const ingestion=new IngestionRepository(db),existing=await db.prepare('SELECT id,payload_hash FROM signals WHERE source_id=? AND source_event_id=?').bind(source.id,fact.eventId).first<{id:string;payload_hash:string}>();
  if(existing){
   if(existing.payload_hash===fact.hash){if(fact.kind==='event'&&fact.providerKeys)await rememberProviderKeys(db,source,existing.id,fact.providerKeys);return {result:'replayed'};}
@@ -98,7 +101,7 @@ export async function intake(db:D1Database,source:CaptureSource,fact:Fact,option
  const event=signalEvent(fact,type,itemId,senderEmail),evidence=evidenceSummary(fact,source.name);
  event.data={...event.data,capturePrivacyKeys:privacy.keys};
  const contactIds=[...new Set(known.flatMap(person=>person.contact?[person.contact.id]:[]))];
- const statements:D1PreparedStatement[]=[...captureFences(db,source),...privacy.fences(),db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_contact_fence',NULL WHERE EXISTS(SELECT 1 FROM json_each(?) WHERE value NOT IN(SELECT id FROM contacts))").bind(JSON.stringify(contactIds))];
+ const statements:D1PreparedStatement[]=[...authority,...captureFences(db,source),...privacy.fences(),db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_contact_fence',NULL WHERE EXISTS(SELECT 1 FROM json_each(?) WHERE value NOT IN(SELECT id FROM contacts))").bind(JSON.stringify(contactIds))];
  const signal=(basis:string)=>db.prepare('INSERT INTO signals(id,source_id,source_event_id,type,subject,occurred_at,received_at,payload_hash,confidence,linking_basis,created_at,payload_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)')
   .bind(signalId,source.id,fact.eventId,type,fact.subject,fact.occurredAt,at,fact.hash,confidence(type),basis,at,JSON.stringify(event));
  const item=db.prepare('INSERT INTO capture_items(id,source_id,signal_id,kind,headers,body,captured_at) VALUES(?,?,?,?,?,?,?)').bind(itemId,source.id,signalId,fact.kind,fact.headers,fact.body,at);
