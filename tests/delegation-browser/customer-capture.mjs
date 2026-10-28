@@ -1,12 +1,26 @@
 import {expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import {mkdirSync} from 'node:fs';
+import {writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {fixtureMailbox} from '../support/capture-mail.ts';
 
 const serious=async page=>(await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze()).violations.filter(violation=>['serious','critical'].includes(violation.impact));
 // Nothing may push the page wider than the screen.
 const overflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth?[]:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+1).map(e=>`${e.tagName.toLowerCase()}.${e.className} ${Math.round(e.getBoundingClientRect().right)}`).slice(0,8));
+
+async function addCaptureFiles(page,screenshots,phase,expected) {
+ // Intake commits each message and meeting before returning the summary.
+ // Wait for that one upload to finish before starting the UI assertion clock.
+ const imported=page.waitForResponse(response=>response.request().method()==='POST'&&new URL(response.url()).pathname==='/api/v1/capture/imports');
+ await page.getByRole('button',{name:'Add files',exact:true}).click();
+ const response=await imported,native=response.request().isNavigationRequest();
+ const body=native?response.headers().location:await response.text();
+ await writeFile(join(screenshots,`${phase}-response.json`),JSON.stringify({status:response.status(),body},null,2)+'\n');
+ expect(response.status(),body).toBe(native?303:201);
+ const summary=native?JSON.parse(new URL(body,page.url()).searchParams.get('result')):JSON.parse(body).summary;
+ expect(summary).toMatchObject(expected);
+}
 
 export async function captureCustomerEvidence({page,context},info,customer) {
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
@@ -23,7 +37,7 @@ export async function captureCustomerEvidence({page,context},info,customer) {
   await page.getByRole('link',{name:'Set up mail and calendar files'}).click();
   await expect(page.getByRole('heading',{name:'Upload mail and calendar files',level:1})).toBeVisible();
   await page.getByLabel('Mail (.eml or mbox) and calendar (.ics) files').setInputFiles(files);
-  await page.getByRole('button',{name:'Add files',exact:true}).click();
+  await addCaptureFiles(page,screenshots,'capture',{captured:6,skipped:1,skipReasons:{'No known contact or company domain':1}});
   const result=page.getByRole('region',{name:'Import result'});
   await expect(result.getByRole('row',{name:/^Captured 6$/})).toBeVisible();
   await expect(result.getByRole('row',{name:/^Not stored 1$/})).toBeVisible();
@@ -62,7 +76,7 @@ export async function captureCustomerEvidence({page,context},info,customer) {
   await page.screenshot({path:join(screenshots,`account-after-review-${width}.png`),fullPage:true});
 
   // Adding the same files again changes nothing and the declined proposal does not return.
-  await page.goto('/app/capture/connect/files');await page.getByLabel('Mail (.eml or mbox) and calendar (.ics) files').setInputFiles(files);await page.getByRole('button',{name:'Add files',exact:true}).click();
+  await page.goto('/app/capture/connect/files');await page.getByLabel('Mail (.eml or mbox) and calendar (.ics) files').setInputFiles(files);await addCaptureFiles(page,screenshots,'capture-replay',{captured:0,replayed:6});
   await expect(page.getByRole('region',{name:'Import result'}).getByRole('row',{name:/^Already captured 6$/})).toBeVisible();
   await page.goto(`/app/records?kind=company&record=${company}`);
   await expect(page.getByRole('article',{name:'Set name from this message'})).toBeVisible();

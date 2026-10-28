@@ -2215,7 +2215,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-access-proof.ts": {
-      "sha256": "1bf1170f18f7f1ebad07ce842d67b337eb6e019411fc297483b3df5f0ff40848",
+      "sha256": "4eff72fb97154cf283e2f65a4f63f53bdd49e9a1ef498f708df2abdc5b4998bc",
       "executable": false
     },
     "newtests/t096/dashboard-archive.ts": {
@@ -8667,7 +8667,7 @@
       "executable": false
     },
     "tests/delegation-browser/customer-capture.mjs": {
-      "sha256": "1566f7c7536e063dfc2fdfbfa60acb1eb6ea701d7d1ec15a23a5a45d640bc602",
+      "sha256": "b1536a65b3278940597467de3af795bb9173c234c4736bd88cb1a95a802b1ec6",
       "executable": false
     },
     "tests/delegation-browser/customer-import.mjs": {
