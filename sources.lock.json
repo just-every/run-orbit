@@ -1851,7 +1851,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "3292e8eba2e91c9f1083ba99b9d887408814d1ff57a35c4b02896d4a29ddb664",
+      "sha256": "67374eada1de66787b006f00d2fae098b5812f95ae748270ca7b50809ab587a9",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -9919,7 +9919,7 @@
       "executable": false
     },
     "tests/support/workflow-safety-journey.ts": {
-      "sha256": "c7aaab087b2e23c505adf85a0343ff81a16e45386b75483d43a80e51fcbe310d",
+      "sha256": "fde9d6a12a8b44854a40c7ff88cc26c41c568ca160bfc45aaca16d78432bda00",
       "executable": false
     },
     "tools/seed-schema/dependencies.mjs": {
