@@ -49,7 +49,7 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
     }}});await worker.ready;
     if((await worker.fetch(origin+'/health')).status!==200)throw new Error('Emitted Worker did not become healthy.');
     browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic',...certificateTrust(certificate.cert)]});
-    const context = await browser.newContext({ baseURL: origin,  extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
+    const context = await browser.newContext({ baseURL: origin, ignoreHTTPSErrors:true, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
     // Emitted documents and HTTP routes share one Worker; only Twilio's outbound network edge is faked.
     await callingJourney(await context.newPage(),{fetch:worker.fetch.bind(worker),origin,provider:callingProvider,accountSid:callingAccount,token:callingToken});
     await calendarJourney(await context.newPage(),calendarData);
