@@ -53,6 +53,7 @@ test('public entry and a seller’s first review remain private, accessible and 
       expect(initialCurrent).toEqual([[links[0]], [links[0]]]);
       for (const href of links) expect((await page.request.get(href)).status(), href).toBe(200);
       for (const index of [2, 1]) {
+        if (await menu.locator('details').getAttribute('open') === null) await menu.locator('summary').click();
         await menu.getByRole('link').nth(index).click();
         await expect(menu.locator('[aria-current="page"]')).toHaveCount(1);
         await expect(menu.locator('[aria-current="page"]')).toHaveAttribute('href', links[index]);
