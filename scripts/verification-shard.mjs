@@ -35,7 +35,9 @@ export function runShard(name,{journeys=process.env.ORBIT_VERIFY_JOURNEYS==='1'}
    const covered=new Set(rows.map(row=>row.file)),missingFiles=gate.files?.filter(file=>!covered.has(file))??[];
    const passed=run.status===0&&!eventError;
    stages.push({args:gate.args,env:gate.env??{},files:gate.files??[],status:passed?'passed':'failed',exitCode:run.status,durationMs:Date.now()-start,missingFiles,eventError,report,executions:rows});executions.push(...rows);
-   if(!passed){failed=true;break;}
+   // Keep independent test runners observable after one fails. A failed setup
+   // still stops this shard, and every failure remains in its final verdict.
+   if(!passed){failed=true;if(!gate.files)break;}
   }
  }finally{
   rmSync(state,{recursive:true,force:true});
