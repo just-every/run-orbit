@@ -66,6 +66,7 @@ test('README installation lifecycle: native setup, first customer and reviewed m
   management.state.allowed=origin;
   await writeFile(join(checkout.root,'src/editor/visual-edits.json'),JSON.stringify({revision:1,edits:[{id:'notfound-title',revision:1,path:'/missing-admission-route',target:{selector:'div:nth-child(1) > div:nth-child(1) > main:nth-child(1) > section:nth-child(2) > h1:nth-child(1)',tag:'h1',role:'',beforeText:'Page not found'},change:{text:'Published test not found'}}]}));
   await writeFile(settings,(await readFile(settings,'utf8'))+`\nRER_MANAGEMENT_ORIGIN=${management.origin}\nRER_INSTALLATION_ID=synthetic-orbit-installation\n`,{mode:0o600});
+  console.info('Installed journey: first owner startup');
   let dev = await checkout.serve(['dev']);
   const ready = await dev.ready, key = await devKey(checkout.root);
   assert.match(ready, new RegExp(`^RER_READY ${origin}$`, 'm'));
@@ -106,10 +107,13 @@ test('README installation lifecycle: native setup, first customer and reviewed m
   const evidence=join(process.env.ORBIT_EVIDENCE_DIR??checkout.root,'native-first-hour');await mkdir(evidence,{recursive:true});
   const customer=await firstHour(operator,origin,1440,evidence);
   await recoverOperatorRoutes(operator,origin);
+  console.info('Installed journey: editor admission');
   await editorAdmission({checkout,browser,page:operator,origin,management});
   await localOwnerSignIn(operator,origin,checkout.root);
   await checkout.stop('dev');await dev.exited;
+  console.info('Installed journey: reviewed provider mail');
   await continueReviewedMail({checkout,page:operator,port,origin,result:customer,evidence});
+  console.info('Installed journey: resumed owner startup');
   dev=await checkout.serve(['dev']);await dev.ready;
   await localOwnerSignIn(operator,origin,checkout.root);
   await installedPersonas(operator,origin,customer.opportunityURL);
@@ -121,6 +125,7 @@ test('README installation lifecycle: native setup, first customer and reviewed m
   assert.equal((await dev.exited).code, 143);
   assert.equal(await listening(port), false, 'dev stop closes the port');
 
+  console.info('Installed journey: preview and archive transfer');
   const preview=await checkout.serve(['preview']);await preview.ready;await previewAssets(browser,origin);
   await assertPrivateRoutes(origin,privatePaths.filter(p=>!p.endsWith('.rer')));
   await exitOf(await checkout.stop('preview'),143,'preview stop');
@@ -150,6 +155,7 @@ test('README installation lifecycle: native setup, first customer and reviewed m
 
   // The restored owner signs in again through setup, with search rebuilt.
   await exitOf(await checkout.rer(['setup', '--owner-email', owner, '--port', String(port), '--non-interactive']), 0, 'setup after import');
+  console.info('Installed journey: restored owner startup');
   const restored = await checkout.serve(['dev']);
   await restored.ready;
   const again = await openOwner(origin, await browser.newContext({javaScriptEnabled:false,viewport:{width:1440,height:900}}));
@@ -162,5 +168,6 @@ test('README installation lifecycle: native setup, first customer and reviewed m
 
   await exitOf(await checkout.rer(['reset', '--yes']), 0, 'reset before fresh setup');
   await exitOf(await checkout.rer(['setup', '--owner-email', 'fresh@example.test', '--port', String(port), '--non-interactive']), 0, 'fresh setup after reset');
+  console.info('Installed journey: prior-store upgrade');
   await upgradeInstalledStore(checkout,browser);
 });
