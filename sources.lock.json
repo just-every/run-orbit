@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "5f3f0049fbf15fd9361b023bd926ced17b49791a85ec91e411a362f126757fbc",
+      "sha256": "40488f2d7fb1bd6d68f6629ca63dec1d22f3e97af8c79c32b11c25a75a64b991",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "f222791a84f268786b5e797a32e47fe213169ec749212764f27b3cb3974c839e",
+      "sha256": "19627368aee4a213b245854699bc418a37b447580d79dab3e21040b8efb2a7e3",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "38eab115d074528992fa49f75b484d4fd2f234cb25ec9e5b7834b79cd7052e5e",
+      "sha256": "ccfc85570f2b1c4ded5472d798ff37717b706179761f73fcc4e5339ec6663cf7",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -835,7 +835,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-captured-review-390.png": {
-      "sha256": "67ee83f30cfc023507e7663cfab643e074e90f732c266814a71b7f3d690347a7",
+      "sha256": "a2261cba24b3dfbd74825f53e8e54790557b089b804b4e0bac09f35c48af29a6",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-conflict-review-1440.png": {
@@ -843,7 +843,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-conflict-review-390.png": {
-      "sha256": "a5b0a704941d5cb2b4a508a8756f2fa675996f13cc95ac6b245ec8886ccef65d",
+      "sha256": "4434191e1485f29ea6279cef9aabd252055b648904d4fe6250f1ecd69b9998eb",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-occurrence-cancel-1440.png": {
@@ -851,7 +851,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-occurrence-cancel-390.png": {
-      "sha256": "e51a075904d66859ba1e0d9f597b46300a4b52e6cf0990e07c68cebdbce0cd7e",
+      "sha256": "4e09674560c8c1b4f37094c99bd0a70d3fe934dc720e91557febab4c2c7128d6",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-occurrence-reschedule-1440.png": {
@@ -859,15 +859,15 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-occurrence-reschedule-390.png": {
-      "sha256": "4d7adf8be9d0610e9fedc6ef67b896285671c3bc4f1d1c13d34548bca5e25bf7",
+      "sha256": "5645f75b0049da326f271b43dfaf7eb13f6c42701867318fd2968945f43c0206",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-organizer-refusal-1440.png": {
-      "sha256": "3f920dfc8617fba35e78271a9c3e26d31bc8a975bee0fe028012ad509042db67",
+      "sha256": "5c5860d0f38fb2395dc7a92ad3f7fb082c1b61a6cd6d07112eeba486378a2752",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-organizer-refusal-390.png": {
-      "sha256": "59f5d863bf539ad28833da4ff13b3fb47e05be27b9f47726d483fd8de888ad9e",
+      "sha256": "2629d1f97fc4eb32802d740a1e0779ddfcc397bca1dec7ca5bb0fdb4c7a87619",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-reconnect-consent-1440.png": {
@@ -883,7 +883,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-series-review-390.png": {
-      "sha256": "6a41a5fa0359f3d9944b37309d9b0fe8848195257a807c128ad20d8029c07087",
+      "sha256": "02482e789b59eb8bf7a3a8f4b0b6f15754d15fc57163abb9866e96dd4c45b293",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/google-unresolved-setup-1440.png": {
@@ -899,7 +899,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-captured-review-390.png": {
-      "sha256": "5ff0ec5cccd7971daf8333a8e0aeb5d49c66826f17139702930f54343afa760b",
+      "sha256": "5bcb5b06a4a9e6260f99fa47f4636649b8f84a58db5fbe44c3633768c6c5401d",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-conflict-review-1440.png": {
@@ -907,7 +907,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-conflict-review-390.png": {
-      "sha256": "7e2991fdd9a2838310344d3e1b5dabf270fb0e4fbbe1b4450b29f3edc17fe892",
+      "sha256": "d6adceb9581f0de131e112f48f559e005084e2380b60187d46b3bd00317827ea",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-occurrence-cancel-1440.png": {
@@ -915,7 +915,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-occurrence-cancel-390.png": {
-      "sha256": "b238ff4aac8e711805c36c2fd723cc60711b750e4228610da620b8669297ebe7",
+      "sha256": "b8a668fa7261d7ed5d5c95132aa979183f148464ab83275ac5281c24488476e7",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-occurrence-reschedule-1440.png": {
@@ -923,15 +923,15 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-occurrence-reschedule-390.png": {
-      "sha256": "1e7684b60e4ea98aca598f10b8a95a2a5239c9ac3df242ec043ca6e4d0f2b08a",
+      "sha256": "adb8a19f5b217aeae4dc7c812b836f3cee90796cf033138e916f492ae094e98c",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-organizer-refusal-1440.png": {
-      "sha256": "a2410e9790c52ad4ece5f1a21c21715e47ea6eeb5dbec6e3bb78702df80d60af",
+      "sha256": "363584545b0bdd317c20587dcc4015547044a81b28f7eb8282e428c94f2f1e1a",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-organizer-refusal-390.png": {
-      "sha256": "78df3d0d1eb72b3fa5eb9f25f70bac7ce6bc67a981fbd975e112ee97efb7dd56",
+      "sha256": "63cdd78ea3abaaa89cb6d386f9ccc60cfc7425509f404e2cf52c59f46af82ddf",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-reconnect-consent-1440.png": {
@@ -947,7 +947,7 @@
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-series-review-390.png": {
-      "sha256": "866e33876c39053428f36182afa77761b73bbeeefd64fe4f383812803a6b08a6",
+      "sha256": "908381260a584b85e8741f83dd295140e51facb653665167263004b7928d794f",
       "executable": false
     },
     "docs/retained-verification/CAPTURE-011/microsoft-unresolved-setup-1440.png": {
@@ -5003,7 +5003,7 @@
       "executable": false
     },
     "src/core/features/capture/facts.ts": {
-      "sha256": "9f8a5e8dd2d68446737a3a489313af6c8f1424056710390db4e735819cc184b0",
+      "sha256": "b10c55d9c2b3d8d47d11a9eada7eb177667e85b2dcd7571caa1f49554fb724c0",
       "executable": false
     },
     "src/core/features/capture/fences.ts": {
@@ -5047,7 +5047,7 @@
       "executable": false
     },
     "src/core/features/capture/intake.ts": {
-      "sha256": "be030cf03bee5d6f2989742a8e6ca15bafe6f25e07e7f0985c5b6c498f757666",
+      "sha256": "414bcb9043161642dc4bed8dffef5e12e99a82d2fedc963bec44678b64be9a99",
       "executable": false
     },
     "src/core/features/capture/mail-association.ts": {
@@ -5083,7 +5083,7 @@
       "executable": false
     },
     "src/core/features/capture/provider-evidence.ts": {
-      "sha256": "d3132050c9d3a1675e14d80a37b7175c52e124a5e5be8a88ac310c3c6479bd61",
+      "sha256": "b645033d579bfa028f855cff5cd0181956e6d66dc0eb77ea347e77b6efece25c",
       "executable": false
     },
     "src/core/features/capture/providers/calendar.ts": {
@@ -9567,7 +9567,7 @@
       "executable": false
     },
     "tests/support/calendar-writeback-extended.ts": {
-      "sha256": "bf3031673f9368a0a8dd010133446e9172fb96f38248319add0ab48dbc9e4b9e",
+      "sha256": "603aacb39f36de261f8fa1e7018da9ca04a03b8069786b1b8a23c9253838e45e",
       "executable": false
     },
     "tests/support/calendar-writeback.ts": {

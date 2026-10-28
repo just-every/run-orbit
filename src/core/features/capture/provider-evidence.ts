@@ -34,8 +34,8 @@ export async function recordProviderSkip(db:D1Database,source:CaptureSource,item
  * archive and contact-erasure lifecycle applies without a second evidence store.
  * Never accept association headers from imported files or provider-written text.
  */
-export async function rememberProviderKeys(db:D1Database,source:CaptureSource,signalId:string,keys:string[]){
- await db.batch([...captureFences(db,source),...suppressionContextFence(db,keys),...keys.map(key=>
+export async function rememberProviderKeys(db:D1Database,source:CaptureSource,signalId:string,keys:string[],writebackHeader?:string,privacyFences:D1PreparedStatement[]=[]){
+ await db.batch([...captureFences(db,source),...privacyFences,...suppressionContextFence(db,keys),...(writebackHeader?[db.prepare("UPDATE capture_items SET headers=headers||? WHERE signal_id=? AND source_id=? AND instr(headers,'X-ORBIT-CALENDAR-WRITEBACK: ')=0").bind('\n'+writebackHeader,signalId,source.id)]:[]),...keys.map(key=>
   db.prepare("UPDATE capture_items SET headers=headers||? WHERE signal_id=? AND source_id=? AND instr(headers,?)=0").bind(`\n${keyHeader}${key}\n`,signalId,source.id,`${keyHeader}${key}\n`))]);
 }
 export async function readProviderItem(db:D1Database,source:CaptureSource,item:CaptureItem):Promise<Read[]>{
@@ -72,7 +72,7 @@ export async function readProviderItem(db:D1Database,source:CaptureSource,item:C
  for(const original of originals)for(const read of await readItem({...item,raw:original.raw})){
   if('fact' in read&&read.fact.kind==='event'){
    read.fact.providerKeys=original.keys;
-   if(event.writebackHeader&&!event.deleted){const marker='X-ORBIT-CALENDAR-WRITEBACK: ',metadata=JSON.parse(event.writebackHeader.slice(marker.length));metadata.meeting.start=read.fact.start;metadata.meeting.end=read.fact.end;read.fact.headers+='\n'+marker+JSON.stringify(metadata);}
+   if(event.writebackHeader&&!event.deleted){const marker='X-ORBIT-CALENDAR-WRITEBACK: ',metadata=JSON.parse(event.writebackHeader.slice(marker.length));metadata.meeting.start=read.fact.start;metadata.meeting.end=read.fact.end;read.fact.writebackHeader=marker+JSON.stringify(metadata);read.fact.headers+='\n'+read.fact.writebackHeader;}
    read.fact.headers+=original.keys.map(key=>`\n${keyHeader}${key}\n`).join('');
   }
   reads.push(read);

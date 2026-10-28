@@ -10,7 +10,7 @@ export interface MessageFact extends FactBase {
  kind:'message';messageId:string;sender:Mailbox|null;references:string;autoReply:boolean;
  bounce:Bounce|null;forwarded:Mailbox|null;unsubscribe:string|null;phone:{value:string;line:string}|null;senderLine:string;
 }
-export interface EventFact extends FactBase {kind:'event';providerKeys?:string[];uid:string;recurrenceId:string|null;originalAt:string|null;sequence:number;phase:'booked'|'completed'|'cancelled';start:string|null;end:string|null}
+export interface EventFact extends FactBase {kind:'event';providerKeys?:string[];writebackHeader?:string;uid:string;recurrenceId:string|null;originalAt:string|null;sequence:number;phase:'booked'|'completed'|'cancelled';start:string|null;end:string|null}
 export type Fact = MessageFact | EventFact;
 export type Read = {fact:Fact} | {skip:string};
 

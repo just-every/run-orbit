@@ -82,7 +82,13 @@ async function unknownReason(db:D1Database,participants:Participant[],operators:
 export async function intake(db:D1Database,source:CaptureSource,fact:Fact,options:{includeUnknown:boolean}):Promise<Outcome>{
  const ingestion=new IngestionRepository(db),existing=await db.prepare('SELECT id,payload_hash FROM signals WHERE source_id=? AND source_event_id=?').bind(source.id,fact.eventId).first<{id:string;payload_hash:string}>();
  if(existing){
-  if(existing.payload_hash===fact.hash){if(fact.kind==='event'&&fact.providerKeys)await rememberProviderKeys(db,source,existing.id,fact.providerKeys);return {result:'replayed'};}
+  if(existing.payload_hash===fact.hash){
+   if(fact.kind==='event'&&fact.providerKeys){
+    const privacy=fact.writebackHeader?await capturePrivacy(db,fact):null;if(privacy&&await privacy.blocked())return privacy.skipped;
+    await rememberProviderKeys(db,source,existing.id,fact.providerKeys,fact.writebackHeader,privacy?.fences());
+   }
+   return {result:'replayed'};
+  }
   await ingestion.reject(source.id,fact.eventId,'Captured item identity already carries different content',captureFences(db,source));return {result:'conflict'};
  }
  // Orbit's own inbound reply route may already have attached this exact message.
