@@ -101,8 +101,11 @@ export class RecordsRepository extends RecordSeedRepository {
   if(explicitClear)statements.push(this.db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'contact_clear_class',NULL WHERE NOT EXISTS(SELECT 1 FROM operators WHERE id=? AND status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=operators.id))").bind(actor),...clearSuppressionStatements(this.db,emailTokens));
   const contactabilityValue=(update:boolean)=>`CASE WHEN ${update&&!explicitClear?"contactability='do_not_contact' OR ":''}${suppressionPredicate(emailTokens)} THEN 'do_not_contact' ELSE ? END`;
 
+  // An explicit stop renews the contactability revision even when already stopped,
+  // so a previously reviewed clear cannot undo this newer privacy instruction.
+  const explicitStop=kind==='contact'&&(input as any)?.contactability==='do_not_contact';
   // Validation and authority fences still run; an ordinary no-op changes no record or history.
-  if(before&&options.ordinaryEdit&&!changes&&!associationsChanged)return {id,statements,key,keyColumn,kind,changed:false};
+  if(before&&options.ordinaryEdit&&!changes&&!associationsChanged&&!explicitStop)return {id,statements,key,keyColumn,kind,changed:false};
 
   if(before)statements.push(this.db.prepare(`UPDATE ${tables[kind]} SET ${columns.map(k=>`${k}=${kind==='contact'&&k==='contactability'?contactabilityValue(true):'?'}`).join(',')} WHERE id=?`).bind(...values,id));
   else {

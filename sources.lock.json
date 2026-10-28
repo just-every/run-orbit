@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "2d8c95d722a056f579e073ce7016cdfdcf0bbde29c8c850e768a605026c417c5",
+      "sha256": "6b87f5eee386f088fc00739874c0aaeb8897d9955a4164813998df6a041e126d",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "131a9adb461ffb66745092be170984a11d90f2fc3fee6c337f39cbe62253b9cb",
+      "sha256": "69d324a0eddb7f72a48c5bdc687dda7a2d70aa9268d64892cf6c8bba62ef72bb",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "3d7335f3cb3862adeec4760722950595be9ddda539f2efe066e801a2210441fd",
+      "sha256": "d53b97fef287a4d3af0f00e6ce4e185ef21dba1d979a7ad5ed417c8d4f7b39ef",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -6939,7 +6939,7 @@
       "executable": false
     },
     "src/core/features/records/repository.ts": {
-      "sha256": "95ca369c0feaaa08c27446148617b2cb836e5d4a05a799fb3778c452df1f2178",
+      "sha256": "bf2e4e97f4075121c8f75afa785190d97a4db681c7684fab0d2efa3f5105ddce",
       "executable": false
     },
     "src/core/features/records/routes.ts": {
@@ -8538,6 +8538,10 @@
       "sha256": "d7a85e1cab5166dddbbbd38dac1e5ad29220954a620dd67e6e501788e21c9e22",
       "executable": false
     },
+    "tests/core/capture-calendar.test.ts": {
+      "sha256": "7f428ec29219cbc61bb22c606e4a935d4c23885f1235d1e4fbbebfa181800b38",
+      "executable": false
+    },
     "tests/core/capture-erasure.test.ts": {
       "sha256": "05cc2396fcff15cce97b193368f1685fcf1c254993c832c5746cedcb42d53a4b",
       "executable": false
@@ -8546,12 +8550,16 @@
       "sha256": "9bdbb3bef9fc35bae305f79f965b8112ecb8417c535e47417aed70e1131fa682",
       "executable": false
     },
+    "tests/core/capture-microsoft.test.ts": {
+      "sha256": "73656b047b8fff517381fbeab1fb03e4aeb53595c2baf411052a0c1fd926b0fd",
+      "executable": false
+    },
     "tests/core/capture-no-console.test.ts": {
       "sha256": "7ca8ac89a46d10b6e785dd6c16ea40adc8f21007652730ad6806516462eab94d",
       "executable": false
     },
     "tests/core/capture-providers.test.ts": {
-      "sha256": "22beee65453c7eaabce5fb3667d784c4921b0b1dcd269a4f8fba2e5fb117fb4d",
+      "sha256": "b2d5d8a29e3a90cd0689552ecb7e5f47bc5512faa405444897b51273e0025b97",
       "executable": false
     },
     "tests/core/capture-upgrade.test.ts": {
@@ -9296,6 +9304,10 @@
     },
     "tests/support/capture-provider-items.ts": {
       "sha256": "b96fe3341023f2e890ac8929e0b0a1f83004470e0fd976a91eca4ba955bb1163",
+      "executable": false
+    },
+    "tests/support/capture-provider-journey.ts": {
+      "sha256": "b096eb5fb1d1d6d1c052f4bbf787a87e14a211d05d4412d9aa053c769c85b2dc",
       "executable": false
     },
     "tests/support/capture-provider-network.ts": {
