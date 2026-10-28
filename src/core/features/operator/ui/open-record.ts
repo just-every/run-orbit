@@ -14,3 +14,10 @@ export function reloadedOpenRecord(): { kind: RecordKind; id: string } | null {
     return value && ['opportunity', 'contact', 'company'].includes(value.kind) && /^[0-9A-HJKMNP-TV-Z]{26}$/.test(value.id) ? value : null;
   } catch { return null; }
 }
+
+/** Closing or deleting a record clears both ways this tab can reopen it. */
+export function clearOpenRecord(){
+ rememberOpenRecord('opportunity',undefined);
+ const address=new URL(window.location.href);
+ if(address.searchParams.has('record')){address.searchParams.delete('record');window.history.replaceState(window.history.state,'',address.pathname+address.search+address.hash);}
+}

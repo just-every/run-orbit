@@ -13,7 +13,7 @@ export interface RecordIdentityPolicy {
 }
 export interface OpportunityAssignmentPolicy {
  id:'opportunity.assignment.v1';
- ownerForNewOpportunity(input:{actorId:string}):string|null;
+ ownerForNewOpportunity(input:{actorId:string;eligibleOperatorIds?:readonly string[]}):string|null;
 }
 export const operatorManagementPolicy:OperatorManagementPolicy={
  id:'operator.management.v1',
@@ -27,5 +27,5 @@ export const recordIdentityPolicy:RecordIdentityPolicy={
 };
 export const opportunityAssignmentPolicy:OpportunityAssignmentPolicy={
  id:'opportunity.assignment.v1',
- ownerForNewOpportunity:()=>null
+ ownerForNewOpportunity:({actorId,eligibleOperatorIds})=>eligibleOperatorIds?.length===1?eligibleOperatorIds[0]!:actorId
 };

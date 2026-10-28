@@ -27,13 +27,26 @@ test('record creation, edits, manual entries and workspace operator management p
 test('record editor and workspace settings remain usable at mobile width',async({page,context})=>{await authenticateOperator(context);await page.setViewportSize({width:375,height:812});await page.goto('/app/records');await page.getByRole('button',{name:'Contacts',exact:true}).click();await page.getByRole('button',{name:'Create contact',exact:true}).click();await expect(page.getByLabel('Full name',{exact:true})).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);await page.goto('/app/settings');await expect(page.getByRole('button',{name:'Invite operator',exact:true})).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);if(process.env.RECORDS_MOBILE_SCREENSHOT)await page.screenshot({path:process.env.RECORDS_MOBILE_SCREENSHOT,fullPage:true});});
 test('record list summaries use company, contact and opportunity fields without missing-value text',async({page,context})=>{
  await authenticateOperator(context);await page.goto('/app/records');const unique=Date.now(),origin=new URL(page.url()).origin;
- for(const [kind,body]of [['company',{name:`No domain ${unique}`}],['company',{name:`With domain ${unique}`,primary_domain:`summary-${unique}.example`}],['contact',{name:`Do not contact ${unique}`,email:`summary-${unique}@example.test`,contactability:'do_not_contact'}]]){
+ async function create(kind,body){
   const response=await page.request.post(`/api/v1/records/${kind}`,{headers:{Origin:origin},data:body});expect(response.status()).toBe(201);
+  const {id}=await response.json(),read=await page.request.get(`/api/v1/records/${kind}/${id}`);expect(read.ok()).toBe(true);return(await read.json()).record;
  }
+ const noDomain=await create('company',{name:`No domain ${unique}`}),withDomain=await create('company',{name:`With domain ${unique}`,primary_domain:`summary-${unique}.example`});
+ const blocked=await create('contact',{name:`Do not contact ${unique}`,email:`summary-${unique}@example.test`,contactability:'do_not_contact'}),contactable=await create('contact',{name:`Contact ${unique}`,email:`summary-contactable-${unique}@example.test`,contactability:'contactable'});
+ const settingsResponse=await page.request.get('/api/v1/settings');expect(settingsResponse.ok()).toBe(true);const settings=await settingsResponse.json(),stage=settings.stages[0];
+ const opportunity=await create('opportunity',{title:`Summary opportunity ${unique}`,company_id:withDomain.id,contact_ids:[contactable.id],primary_contact_id:contactable.id,stage_id:stage.id,value_cents:123400});
+ expect(noDomain.primary_domain).toBeNull();expect(withDomain.primary_domain).toBe(`summary-${unique}.example`);expect(blocked.contactability).toBe('do_not_contact');expect(contactable.contactability).toBe('contactable');
+ expect(opportunity.company_id).toBe(withDomain.id);expect(opportunity.stage_id).toBe(stage.id);expect(opportunity.value_cents).toBe(123400);
  await page.getByRole('button',{name:'Companies',exact:true}).click();
  const card=name=>page.locator('.operator-queue-card').filter({has:page.getByRole('heading',{name,exact:true})});
- await expect(card(`No domain ${unique}`)).toContainText('No primary domain');await expect(card(`With domain ${unique}`)).toContainText(`summary-${unique}.example`);if(process.env.RECORD_SUMMARY_SCREENSHOT)await page.screenshot({path:process.env.RECORD_SUMMARY_SCREENSHOT,fullPage:true});
+ await expect(card(noDomain.name)).toBeVisible();await expect(card(noDomain.name).locator('p')).toBeEmpty();await expect(card(withDomain.name).locator('p')).toHaveText(withDomain.primary_domain);if(process.env.RECORD_SUMMARY_SCREENSHOT)await page.screenshot({path:process.env.RECORD_SUMMARY_SCREENSHOT,fullPage:true});
  await expect(page.locator('.operator-queue__list')).not.toContainText(/undefined|null/);
- await page.getByRole('button',{name:'Contacts',exact:true}).click();await expect(card(`Do not contact ${unique}`).locator('p')).toHaveText('Do not contact');await expect(page.locator('.operator-queue__list')).not.toContainText(/undefined|null|do_not_contact/);
- await page.getByRole('button',{name:'Opportunities',exact:true}).click();await expect(page.locator('.operator-queue-card').first()).toBeVisible();await expect(page.locator('.operator-queue-card p').first()).toContainText(/open|won|lost/);await expect(page.locator('.operator-queue__list')).not.toContainText(/undefined|null/);
+ await page.getByRole('button',{name:'Contacts',exact:true}).click();
+ const blockedMeta=card(blocked.name).locator('p');await expect(blockedMeta).toContainText(blocked.email);await expect(card(contactable.name).locator('p')).toHaveText(contactable.email);
+ const blockedParts=(await blockedMeta.innerText()).split(' · ');expect(blockedParts[0]).toBe(blocked.email);expect(blockedParts).toHaveLength(2);expect(blockedParts[1].toLowerCase().replaceAll(' ','_')).toBe(blocked.contactability);
+ await expect(page.locator('.operator-queue__list')).not.toContainText(/undefined|null|do_not_contact/);
+ await page.getByRole('button',{name:'Opportunities',exact:true}).click();const opportunityMeta=card(opportunity.title).locator('p');
+ await expect(opportunityMeta).toContainText(withDomain.name);await expect(opportunityMeta).toContainText(stage.name);await expect(opportunityMeta).toContainText(new Intl.NumberFormat('en-AU',{maximumFractionDigits:0}).format(opportunity.value_cents/100));
+ for(const state of [opportunity.lifecycle,opportunity.band,opportunity.queue_state])await expect(opportunityMeta).not.toContainText(new RegExp(`\\b${state}\\b`));
+ await expect(page.locator('.operator-queue__list')).not.toContainText(/undefined|null/);
 });

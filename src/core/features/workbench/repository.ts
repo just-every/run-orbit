@@ -7,6 +7,7 @@ import { evaluationStatements } from './evaluation-repository';
 import { createId } from '../../shared/ids';
 import { contactEmailKey } from '../records/identity';
 import { opportunityAssignmentPolicy } from '../../../ext/records';
+import { eligibleOpportunityOwners } from '../ownership/writes';
 import { assertCommercialRelationship } from '../../../family/sales/relationships';
 import { stopReason } from '../outreach/stop-reason';
 import {replyNotificationStatements} from '../notifications/reply-events';
@@ -25,23 +26,31 @@ export class WorkbenchRepository {
     ]);
     return { companies: companies.results, contacts: contacts.results, stages: stages.results.map(({required_fields_json,...stage})=>({...stage,required_fields:JSON.parse(required_fields_json)})), opportunities: opportunities.results, pipelines:pipelines.results };
   }
-  async createOpportunity(input: { title: string; companyName: string; contactName: string; email: string; stageId: string; valueCents: number }, actor: string) {
-    const email=input.email.trim().toLowerCase(),emailKey=contactEmailKey(email),ownerId=opportunityAssignmentPolicy.ownerForNewOpportunity({actorId:actor});
+  async createOpportunity(input: { title: string; companyId?:string; companyName?: string; contactIds?:string[]; primaryContactId?:string; contactName?: string; email?: string; stageId: string; valueCents: number }, actor: string) {
+    const email=input.email?.trim().toLowerCase()||null,emailKey=contactEmailKey(email),ownerId=opportunityAssignmentPolicy.ownerForNewOpportunity({actorId:actor,eligibleOperatorIds:await eligibleOpportunityOwners(this.db)});
     if(ownerId&&!await this.db.prepare("SELECT id FROM operators WHERE id=? AND status='active'").bind(ownerId).first())throw new WorkbenchError(400,'Assignment policy selected an inactive or unknown operator.');
-    const duplicate = await this.db.prepare("SELECT id FROM contacts WHERE email_key = ? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type='contact' AND identity_key=?").bind(emailKey,emailKey).first<{ id: string }>();
+    if(!!input.companyId===!!input.companyName)throw new WorkbenchError(400,'Choose an existing company or enter a new company.');
+    if(!!input.contactName!==!!email||!(input.contactIds?.length||email))throw new WorkbenchError(400,'Choose existing contacts or enter a new contact.');
+    if(input.companyId&&!await this.db.prepare('SELECT id FROM companies WHERE id=?').bind(input.companyId).first())throw new WorkbenchError(400,'The selected company is unavailable.');
+    const contactIds=[...new Set(input.contactIds??[])];
+    if(contactIds.length!==(input.contactIds?.length??0)||input.primaryContactId&&!contactIds.includes(input.primaryContactId))throw new WorkbenchError(400,'Choose distinct contacts and a primary contact from the selection.');
+    for(const contactId of contactIds)if(!await this.db.prepare('SELECT id FROM contacts WHERE id=?').bind(contactId).first())throw new WorkbenchError(400,'A selected contact is unavailable.');
+    const duplicate = emailKey?await this.db.prepare("SELECT id FROM contacts WHERE email_key = ? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type='contact' AND identity_key=?").bind(emailKey,emailKey).first<{ id: string }>():null;
     if (duplicate) throw new WorkbenchError(409, `A contact already uses that email: ${duplicate.id}. Use the existing record.`,duplicate.id);
     const policy=await stagePolicy(this.db,input.stageId).catch(error=>{if(error instanceof RecordError)throw new WorkbenchError(400,error.message);throw error;});
-    const emailTokens=await suppressionHashes(this.db,email);
-    const now = new Date().toISOString(), companyId = createId(), contactId = createId(), id = createId();
-    try{assertRequiredFields(policy,{title:input.title,stage_id:input.stageId,owner_id:ownerId,company_id:companyId,value_cents:input.valueCents,contact_ids:[contactId],primary_contact_id:contactId,custom_fields:{}});}catch(error){if(error instanceof RecordError)throw new WorkbenchError(409,error.message);throw error;}
-    assertCommercialRelationship({ contactId, opportunityId: id }, { contactIds: new Set([contactId]), opportunityIds: new Set([id]) });
+    const emailTokens=email?await suppressionHashes(this.db,email):[];
+    const now = new Date().toISOString(), companyId = input.companyId??createId(), contactId = email?createId():null, id = createId();
+    if(contactId)contactIds.push(contactId);
+    const primaryContactId=input.primaryContactId??contactIds[0]!;
+    try{assertRequiredFields(policy,{title:input.title,stage_id:input.stageId,owner_id:ownerId,company_id:companyId,value_cents:input.valueCents,contact_ids:contactIds,primary_contact_id:primaryContactId,custom_fields:{}});}catch(error){if(error instanceof RecordError)throw new WorkbenchError(409,error.message);throw error;}
+    for(const linkedId of contactIds)assertCommercialRelationship({ contactId:linkedId, opportunityId: id }, { contactIds: new Set(contactIds), opportunityIds: new Set([id]) });
     try{await this.db.batch([
       ...suppressionContextFence(this.db,emailTokens),
       ...stagePolicyFence(this.db,[policy]),
-      this.db.prepare('INSERT INTO companies(id,name,created_at,updated_at) VALUES(?,?,?,?)').bind(companyId,input.companyName,now,now),
-      this.db.prepare(`INSERT INTO contacts(id,company_id,name,email,email_key,contactability,created_at,updated_at) VALUES(?,?,?,?,?,CASE WHEN ${suppressionPredicate(emailTokens)} THEN 'do_not_contact' ELSE 'contactable' END,?,?)`).bind(contactId,companyId,input.contactName,email,emailKey,now,now),
+      ...(!input.companyId?[this.db.prepare('INSERT INTO companies(id,name,created_at,updated_at) VALUES(?,?,?,?)').bind(companyId,input.companyName!,now,now)]:[]),
+      ...(contactId?[this.db.prepare(`INSERT INTO contacts(id,company_id,name,email,email_key,contactability,created_at,updated_at) VALUES(?,?,?,?,?,CASE WHEN ${suppressionPredicate(emailTokens)} THEN 'do_not_contact' ELSE 'contactable' END,?,?)`).bind(contactId,companyId,input.contactName!,email,emailKey,now,now)]:[]),
       this.db.prepare("INSERT INTO opportunities(id,title,lifecycle,stage_id,owner_id,company_id,value_cents,score,band,queue_state,queue_reason,created_at,updated_at) VALUES(?,?,'open',?,?,?,?,0,'low','now','Operator created opportunity',?,?)").bind(id,input.title,input.stageId,ownerId,companyId,input.valueCents,now,now),
-      this.db.prepare('INSERT INTO opportunity_contacts(opportunity_id,contact_id,is_primary,created_at) VALUES(?,?,1,?)').bind(id,contactId,now),
+      ...contactIds.map(linkedId=>this.db.prepare('INSERT INTO opportunity_contacts(opportunity_id,contact_id,is_primary,created_at) VALUES(?,?,?,?)').bind(id,linkedId,linkedId===primaryContactId?1:0,now)),
       ...this.timeline(id,actor,'opportunity.created',{title:input.title},now)
     ]);}catch(error){if(/runtime_controls.value/.test(String(error)))throw new WorkbenchError(409,'The pipeline rules changed. Reload before creating an opportunity.');const duplicate=await this.db.prepare("SELECT id FROM contacts WHERE email_key=? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type='contact' AND identity_key=?").bind(emailKey,emailKey).first<{id:string}>();if(duplicate)throw new WorkbenchError(409,`A contact already uses that identity: ${duplicate.id}.`,duplicate.id);throw error;}
     return { id };
