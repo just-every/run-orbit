@@ -3,7 +3,7 @@ import { readsEntries } from '../access/grant-entries';
 import type { RecordKind } from './shared';
 /** One internal entry as Shared records shows it, read-only: no attendees, no plan fields, no other record's entries. */
 export interface SharedEntry {source:'entry'|'task'|'handoff';id:string;kind:string;title:string|null;text:string;durationMinutes:number|null;author:string|null;at:string}
-/** RECORD-017: a record's notes, logged calls and meetings, task notes and handoffs, for someone whose live grant on
+/** RECORD-023: a record's notes, logged calls and meetings, task notes and handoffs, for someone whose live grant on
  * this record includes them (ct, 19 October). `included` is false, with no entries, for anyone else. */
 export async function sharedEntries(db:D1Database,operatorId:string,kind:RecordKind,recordId:string):Promise<{included:boolean;entries:SharedEntry[]}>{
  if(!await isFullOperator(db,operatorId)&&!await readsEntries(db,operatorId,kind,recordId))return {included:false,entries:[]};

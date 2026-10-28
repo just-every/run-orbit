@@ -1,3 +1,4 @@
+import {eraseImportOwnerIdentity} from '../imports/owner-privacy';
 import {ownershipOperatorErasure} from '../ownership/privacy';
 import {forecastErasureStatements} from '../forecast/privacy';
 import { executeArchiveErasure } from '../records';
@@ -20,6 +21,7 @@ export async function eraseOperator(db:D1Database,id:string,actor:string){
   if(others.some(other=>other.name&&containsWord(other.name,name)))throw new RecordError(409,'Another operator or contact has a name containing this display name, so Orbit cannot tell whose name attributed text means. Nothing was erased.');
  }
  const now=new Date().toISOString(),statements=[db.prepare(`DELETE FROM api_credentials WHERE principal_id=? OR ${identityMatch('name')}`).bind(id,...identityPatterns(operator.email)),db.prepare('DELETE FROM sessions WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_proofs WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_bindings WHERE operator_id=?').bind(id),db.prepare('DELETE FROM notifications WHERE operator_id=?').bind(id)];
+ statements.push(...await eraseImportOwnerIdentity(db,id,operator.email,actor));
  statements.push(...ownershipOperatorErasure(db,id));
  statements.push(...forecastErasureStatements(db,'operator',id,[operator.email]));
  statements.push(...await messageReviewOperatorErasure(db,id,name,operator.email));

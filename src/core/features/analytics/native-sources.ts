@@ -11,7 +11,7 @@ export class NativeAnalyticsSources implements AnalyticsSourcePort{
  constructor(readonly access:AccessService){}
  /** `lineage` proves the exact revisions a result was computed from; `current` proves that the
   * viewer may read each source and field now, as a saved result reopens after its sources changed. A source marked
-  * `entries` also needs the viewer's live RECORD-017 grant to that record's notes, calls, meetings and tasks. */
+  * `entries` also needs the viewer's live RECORD-023 grant to that record's notes, calls, meetings and tasks. */
  async traceStatements(c:ActorContext,sources:readonly {ref:DependencyRef;fields:string[];entries?:boolean}[],mode:'lineage'|'current'='lineage'):Promise<SqlStatement[]>{
   const policy=await graphReadPolicy(this.access,c),statements:SqlStatement[]=[];
   for(let offset=0;offset<sources.length;offset+=250){const chunk=sources.slice(offset,offset+250);for(const source of chunk){check(source.ref.workspaceId===c.workspaceId&&source.ref.tenantId===c.tenantId,'Source is outside workspace scope.');check(Number.isSafeInteger(source.ref.revision)&&source.ref.revision>0&&Number.isSafeInteger(source.ref.dataEpoch)&&source.ref.dataEpoch!>0,'Source revision and epoch must be explicit.');}

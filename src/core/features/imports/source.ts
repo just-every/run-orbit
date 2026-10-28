@@ -1,7 +1,7 @@
 import { parseCsv } from '../../shared/csv';
 import { canonicalJson,sha256,type SourceBundle,type SourceRecord } from '../../../modules/import-kit/d1/index';
 import { customFieldKinds,fields,type ImportInput } from './contracts';
-export interface Row {kind:string;id:string;data:Record<string,string>;custom:Record<string,string>;source:SourceRecord;separator:string;unmapped:string[];reviewColumns?:Record<string,number>;error?:string;derivedContacts?:Row[]}
+export interface Row {ownerMapping?:{value:string;ownerId:string|null;ownerName:string|null;explicit:boolean};kind:string;id:string;data:Record<string,string>;custom:Record<string,string>;source:SourceRecord;separator:string;unmapped:string[];reviewColumns?:Record<string,number>;error?:string;derivedContacts?:Row[]}
 export function readImport(input:ImportInput){
  const namespace=`orbit:${input.vendor}:${input.account}`,source:SourceBundle={records:[],artifacts:[],diagnostics:[]},rows:Row[]=[];
  if(new Set(input.files.map(f=>f.kind)).size!==input.files.length)throw new Error('Choose at most one file of each type.');

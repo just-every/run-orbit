@@ -1,4 +1,4 @@
-/** RECORD-017 (ct, 19 October): a collaborator grant on one record may include that record's internal entries (notes,
+/** RECORD-023 (ct, 19 October): a collaborator grant on one record may include that record's internal entries (notes,
  * logged calls and meetings, task notes and handoffs). It is off unless whoever shares turns it on, and each change is audited. */
 export const entriesAction='entries.read';
 export const recordKinds=['contact','company','opportunity'];
