@@ -10,6 +10,15 @@ const definition=z.object({kind,fieldKey:z.string().regex(/^[a-z][a-z0-9_]{0,63}
 type Definition=z.infer<typeof definition>;
 export type TypedField={kind:RecordKind;field_key:string;label:string;value_type:string;required:number;is_unique:number;options_json:string;archived:number;revision:number};
 const empty=(value:unknown)=>value===null||value===undefined||value==='';
+/** Empty typed inputs keep an existing empty representation, or remain absent. */
+export function normalizedTypedFields(values:Record<string,unknown>,before:Record<string,unknown>,fields:TypedField[]){
+ const next={...values};
+ for(const field of fields)if(!field.archived&&empty(next[field.field_key])){
+  if(empty(before[field.field_key])&&Object.hasOwn(before,field.field_key))next[field.field_key]=before[field.field_key];
+  else delete next[field.field_key];
+ }
+ return next;
+}
 export function fieldReason(field:{label:string;value_type:string;required:number;options_json:string},value:unknown){
  if(empty(value))return field.required?'a value is required':null;
  if(field.value_type==='text'&&typeof value!=='string')return 'enter text';

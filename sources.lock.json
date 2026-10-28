@@ -4575,7 +4575,7 @@
       "executable": false
     },
     "src/core/features/access/native-boundary.ts": {
-      "sha256": "ab13368b32d38354db4b91238824b7ee061231dcf09728bee7728df4a886e9d8",
+      "sha256": "9a82f1100ab11e68d0adf0cbed8e7b1c4769dcad0d13f76854d785b5bd5febae",
       "executable": false
     },
     "src/core/features/access/policy.ts": {
@@ -6051,7 +6051,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record-editor.tsx": {
-      "sha256": "e7df92792ef5037aeb17c97d9f19eeda3d756836a1e1cbd49cac6970eb5407a9",
+      "sha256": "cb061dd70d10dc6be30956719443720ced93a3738b8d446d8ce3b54df64264f1",
       "executable": false
     },
     "src/core/features/operator/ui/record-entry-details.tsx": {
@@ -6083,7 +6083,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records-page.tsx": {
-      "sha256": "21e97be071ff9eed50c4baf96be8cc04eb5b17ae45fd727e4e39006d29852630",
+      "sha256": "9aae27db782e83527f590930ccd57485a84297d608a75f73c2cff01a5c8b4c8e",
       "executable": false
     },
     "src/core/features/operator/ui/records.css": {
@@ -6883,7 +6883,7 @@
       "executable": false
     },
     "src/core/features/records/repository.ts": {
-      "sha256": "0387a757f1133e786cc2b159a9807e643e4a1ba6364c19976d66505049638354",
+      "sha256": "b0b0a6be76598d7f3b8aedae822e1563f35b81b3ae5ab375fb8be5322c72e5b6",
       "executable": false
     },
     "src/core/features/records/routes.ts": {
@@ -6931,7 +6931,7 @@
       "executable": false
     },
     "src/core/features/records/typed-fields.ts": {
-      "sha256": "864a6d572f5b28568daea7cf482a19eabcf64acedd5e2c99e253a6e5bd0dc96c",
+      "sha256": "7960511ac9ab665ccc139d58a6ef9040ff12d2f52d31a3d24bad9fca48b4f792",
       "executable": false
     },
     "src/core/features/relationships/activity.ts": {
@@ -9518,6 +9518,10 @@
       "sha256": "850b4074e72c36869acb4ab0787c3ef700100eed51c0df8357a67ab23cf49815",
       "executable": false
     },
+    "tests/support/record-changes-proof.ts": {
+      "sha256": "b8efe0d9b25c1bd38c700eb27210cc6eb48476dc4962f4285be5249f95b9b146",
+      "executable": false
+    },
     "tests/support/record-data.ts": {
       "sha256": "a83d1ff05d69f3151bc3bf5241294d7b90734ab90616345a6966be035d7e738d",
       "executable": false
@@ -9611,7 +9615,7 @@
       "executable": false
     },
     "tests/support/typed-fields-proof.ts": {
-      "sha256": "224d82d14443d76d2f90ff8b69994e3e66a159288e1fb0ceef690365f222e201",
+      "sha256": "39f56b26e19695b9165d3aed253cec213d1d52c58c90c9b7b61d76631444b9a3",
       "executable": false
     },
     "tests/support/upload-close-fixture.ts": {
