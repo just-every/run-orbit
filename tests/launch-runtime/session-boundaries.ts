@@ -10,7 +10,7 @@ export async function sessionBoundaries({worker,browser,session,revoked,expired,
  const secrets=[TEST_SESSION_SECRET,canary,session.token,revoked.token,expired.token];
  const absent=(body:string)=>{for(const value of secrets)assert.ok(!body.includes(value),'Private credentials stay on the Worker');};
  const headers={Cookie:cookie(session.token),Origin:origin,'Content-Type':'application/json'};
- const document=await fetch(origin+'/app',{headers}),html=await document.text();assert.equal(document.status,200);assert.ok(html.includes(opportunity.title),JSON.stringify({path:new URL(document.url).pathname,heading:html.match(/<h1[^>]*>(.*?)<\/h1>/)?.[1],hasQueue:html.includes('now-queue'),expectedTitle:opportunity.title}));absent(html);
+ const document=await fetch(origin+'/app',{headers}),html=await document.text();assert.equal(document.status,200);assert.ok(html.includes(opportunity.title),'The authenticated document renders the pending customer opportunity');absent(html);
  const recordURL=origin+`/api/v1/records/opportunity/${opportunity.id}`;
  const detail=await(await fetch(recordURL,{headers})).json() as any;
  const input={...detail.record,contact_ids:detail.contacts.map((row:any)=>row.id),primary_contact_id:detail.contacts.find((row:any)=>row.is_primary)?.id??null,custom_fields:JSON.parse(detail.record.custom_fields_json??'{}')};
