@@ -2207,7 +2207,7 @@
       "executable": false
     },
     "newtests/t096/browser-managed-records.ts": {
-      "sha256": "a67941d378689825b5dc937a06238a68dc5c2ca55d5912daf7c628362516b2d9",
+      "sha256": "199963a1a003ab97607ba0d6c1794bb89ab2f20a710d742f620703788130e3d7",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
