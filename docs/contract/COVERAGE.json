@@ -1808,7 +1808,9 @@
       "text": "For a connected mailbox or calendar source (CAPTURE-010), a message or meeting whose external participant matches no contact or company key is not discarded. When that participant exchanged mail with an operator (the operator wrote to them, or they wrote to the operator) or attended a meeting with one, Orbit holds a new-prospect proposal showing the exact address, display name, domain, thread subjects, dates and message direction. Held mail stays sealed as held evidence in the SIGNAL-004 unlinked queue for 30 days, changes no record or score, and is purged if nobody accepts it. Automated, bulk and list senders (`List-Unsubscribe` or `Precedence: bulk` mail, no-reply and mailer-daemon addresses, calendar notifications), operator and configured internal domains, and an administrator-maintained exclusion list never produce proposals.",
       "to": "clause",
       "ids": [
-        "CAPTURE-012"
+        "CAPTURE-012",
+        "CAPTURE-013",
+        "CAPTURE-014"
       ]
     },
     {
@@ -1817,7 +1819,9 @@
       "text": "The proposal offers a new contact with that exact email key, plus a new company from its domain unless the domain is free-mail (RECORD-003); a domain a company already holds links to that company. Nothing is guessed from a name or a lookalike domain. The mailbox owner, or a reviewer permitted under TEAM-005, accepts, edits or declines it. Accepting makes the mailbox owner the contact owner (RECORD-016) unless the reviewer chooses another. A decline is remembered by a keyed hash, so that source does not propose the same address again.",
       "to": "clause",
       "ids": [
-        "CAPTURE-012"
+        "CAPTURE-012",
+        "CAPTURE-013",
+        "CAPTURE-014"
       ]
     },
     {
@@ -1826,7 +1830,9 @@
       "text": "Accepting the proposal, or creating a contact with that exact email through any other door (RECORD-001, RECORD-008, MIGRATE-001 to MIGRATE-003, FORM-001), back-fills that address's already-synced and provider-available history within the source's selected window onto the new contact, its company and any exactly linked deal. The back-fill runs once and creates no duplicate signal (SIGNAL-003). Contactability is the reviewer's explicit choice in the same review and is recorded with its basis: a person who wrote to the rep first is offered `contactable` with basis `inbound conversation` citing their message, and a person the rep emailed first is offered `contactable` with basis `rep-initiated conversation`. The reviewer can set do-not-contact instead, and an unsubscribe or stop request in the thread always wins. Right after acceptance the rep can reply, or reply all, from Orbit on the same thread (OUT-013, OUT-017, OUT-019); no deal is required.",
       "to": "clause",
       "ids": [
-        "CAPTURE-012"
+        "CAPTURE-012",
+        "CAPTURE-013",
+        "CAPTURE-014"
       ]
     },
     {
@@ -1835,7 +1841,9 @@
       "text": "Approved engineering policy: an authorized connected source may retain unknown external participants only within its selected folders, calendars and time window, as sealed review evidence for 30 days from intake. Retention does not create a customer, score, sending permission or research authority. Use exact normalized email identity and exact non-free-mail company domain only; apply the clause\u2019s automated, bulk, internal and administrator exclusions before proposing. The mailbox owner or currently permitted reviewer must explicitly accept or decline. Acceptance records the reviewer, time, source evidence, owner and chosen contactability basis. Inbound conversation and rep-initiated conversation are relationship provenance, not proof of marketing consent. A reviewer may permit relevant US business email after checking purpose and suppression; an unsubscribe or stop always wins. Telephone and automated outreach require separately recorded channel-specific authority under the applicable TCPA policy. Non-US contacts require a recorded purpose and lawful basis with GDPR-style objection, access and erasure handling; uncertain jurisdiction or basis leaves contactability blocked. Unaccepted evidence expires after 30 days; decline and erasure retain only necessary keyed suppression and replay proofs. Provider authorization and jurisdiction-specific legal qualification remain explicit gaps.",
       "to": "clause",
       "ids": [
-        "CAPTURE-012"
+        "CAPTURE-012",
+        "CAPTURE-013",
+        "CAPTURE-014"
       ]
     },
     {
@@ -1844,7 +1852,9 @@
       "text": "**Acceptance:** With a connected Gmail source, send from Gmail to an unknown address at an unknown non-free-mail domain and receive their reply; also receive cold inbound mail from a second unknown person and a bulk newsletter. Verify proposals for the two people (none for the newsletter) with direction and evidence; accept the first with the `rep-initiated conversation` basis and see the full thread back-filled once on the new contact and company, then reply from Orbit on the same thread. Decline the second and confirm it is not proposed again, then create a contact manually for a third earlier correspondent and see their history back-filled. Repeat the inbound case through Microsoft 365.",
       "to": "clause",
       "ids": [
-        "CAPTURE-012"
+        "CAPTURE-012",
+        "CAPTURE-013",
+        "CAPTURE-014"
       ]
     },
     {
@@ -1853,7 +1863,9 @@
       "text": "Exercise the original Gmail and Microsoft journeys and additionally assert expiry at 30 days, every exclusion, exact-key collision, concurrent stop, denied reviewer, explicit basis, non-US uncertainty, decline replay, archive authority removal and erasure replay; accepting a prospect never authorizes a message.",
       "to": "clause",
       "ids": [
-        "CAPTURE-012"
+        "CAPTURE-012",
+        "CAPTURE-013",
+        "CAPTURE-014"
       ]
     },
     {
@@ -3548,7 +3560,8 @@
       "text": "With the business's selected recording policy and the participants' required consent, calls and meetings attach provider recordings and timecoded transcripts to the right deal/contact under current access. A recording refused or unavailable is stated plainly; no transcript is fabricated. Reps review speaker identity, recap, commitments and proposed CRM changes against cited timestamps before accepting material updates or sending follow-up. Erasure covers stored recordings, transcripts, derived notes and provider-deletion requests, showing external completion separately. Consented transcript lines become AGENT-002 risk evidence with their timestamps. On BOUNDARY-001's US buyer walk, recordings and transcripts stay with the call or meeting provider and only consented, cited evidence reaches the deal; an unavailable recording provider appears as unresolved setup.",
       "to": "clause",
       "ids": [
-        "CALL-002"
+        "CALL-002",
+        "CALL-003"
       ]
     },
     {
@@ -3557,7 +3570,8 @@
       "text": "Approved engineering policy: implement consented recording and transcript evidence using a business-authorized Twilio or Aircall account; enable only an adapter with verified recording, consent and deletion capabilities. Recording starts off for every call and meeting. Apply the stricter applicable participant-state requirement, using affirmative consent from every participant as the product default, including when location is unknown. Record the disclosure version, participants, consent time and evidence; adding a participant pauses recording until their consent is recorded. Refusal permits an unrecorded call and manual notes, never a fabricated transcript. Recording consent is separate from TCPA authority to place a call; check applicable consent, do-not-call and suppression before calling, with no assumed automated or prerecorded calling authority. Keep recordings and transcripts at the selected provider, retain only protected references and consented cited evidence locally, and default provider retention to 90 days with shorter administrator settings supported. Provider access uses current record permissions. Erasure immediately removes local access and derivatives, requests provider deletion and visibly tracks pending, failed and confirmed outcomes; never report completion from request acceptance alone. State-law, provider-contract and non-US consent qualification remain explicit gaps.",
       "to": "clause",
       "ids": [
-        "CALL-002"
+        "CALL-002",
+        "CALL-003"
       ]
     },
     {
@@ -3566,7 +3580,8 @@
       "text": "**Acceptance:** Record an authorized test call, decline consent on another, read timestamped transcript evidence from the deal, correct a speaker and approve a stale-guarded proposal; deny an unauthorized user and erase local and provider copies. Contradict a recorded commitment in a transcript and inspect AGENT-002's cited conflict. As part of BOUNDARY-001's walk, record a consented call on the walk's USD deal and inspect the provider link and an unavailable recording provider shown as unresolved setup. Whichever of BOUNDARY-001's named clauses ships last also walks a US buyer from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff, inspecting the correct product links, ownership boundaries and unresolved provider setup without a substituted mock or a reduced CRM scope.",
       "to": "clause",
       "ids": [
-        "CALL-002"
+        "CALL-002",
+        "CALL-003"
       ]
     },
     {
@@ -3575,7 +3590,8 @@
       "text": "Exercise consent refusal, an unknown state, a newly joined participant, withdrawal, expired retention, inaccessible provider media, speaker correction, stale acceptance, unauthorized playback, transcript-risk citations and local and provider deletion outcomes, while retaining every original buyer-walk obligation.",
       "to": "clause",
       "ids": [
-        "CALL-002"
+        "CALL-002",
+        "CALL-003"
       ]
     },
     {
@@ -4281,7 +4297,8 @@
       "text": "Admins compose research agents from selected CRM evidence, licensed web research and explicitly allowlisted MCP tools. Each run previews allowed records, destinations, fields, tool permissions, USD token/provider budget, schedule and proposed outputs. Structured cited results feed reviewed workflow steps or enrichment proposals, with no hidden expansion of data access. Tool content is untrusted evidence and cannot authorize a send, buy data beyond budget, change commercial terms or override human approval. Revocation stops future reads/effects; failed or schema-invalid output remains failed without fabricated repairs.",
       "to": "clause",
       "ids": [
-        "AGENT-004"
+        "AGENT-004",
+        "AGENT-005"
       ]
     },
     {
@@ -4290,7 +4307,8 @@
       "text": "Approved engineering policy: administrators may configure selected-account research using OpenAI for structured synthesis, a licensed Brave Search API account for public web discovery, and licensed Clay enrichment only under ENRICH-001\u2019s separately reviewed fields and providers. These selections authorize adapter implementation, not an assertion of entitlement or completed provider qualification. Arbitrary MCP servers are disabled; an administrator may enable a named, authenticated read-only MCP adapter only after documenting its provider license, destination, returned schema and exact tools. Preview the selected records, fields, destinations, schedule, proposed outputs and maximum charge before each approved run definition. Default limits are USD 1 per run and USD 20 per workspace day, adjustable only by the administrator. Atomically reserve worst-case provider cost before each call, bound tokens and requests, charge retries to the same cap and refuse unknown pricing or exhausted budget. Recheck access before every read, external call and proposed effect; revocation cancels remaining work and invalidates unaccepted output. Public and tool content is untrusted data and cannot add tools, destinations, records or authority. Results require exact source citations and schema validation and may create only reviewed internal proposals or workflow tasks. No message, purchase beyond the reserved budget, commercial change or protected-network scraping is authorized. Non-US personal data requires recorded purpose and applicable basis with GDPR-style opt-out and erasure handling. Licensing, provider retention and jurisdiction-specific legal qualification remain explicit gaps.",
       "to": "clause",
       "ids": [
-        "AGENT-004"
+        "AGENT-004",
+        "AGENT-005"
       ]
     },
     {
@@ -4299,7 +4317,8 @@
       "text": "**Acceptance:** Configure a selected-account web/MCP research block with a USD cap, preview its data, return structured citations into a proposed workflow task, inject untrusted instructions and revoke access mid-run; verify only allowed evidence leaves, no external message runs and budget/schema failures remain visible.",
       "to": "clause",
       "ids": [
-        "AGENT-004"
+        "AGENT-004",
+        "AGENT-005"
       ]
     },
     {
@@ -4308,7 +4327,8 @@
       "text": "Exercise each selected adapter with exact preview and destination assertions, hostile tool instructions, denied records, mid-run revocation, concurrent budget reservations, retries, unknown pricing, invalid schema and unsupported citations; verify visible failure and no external message, autonomous commercial change or authority restored from an archive.",
       "to": "clause",
       "ids": [
-        "AGENT-004"
+        "AGENT-004",
+        "AGENT-005"
       ]
     },
     {
@@ -4828,7 +4848,9 @@
       "text": "CAPTURE-012: connected unknown-participant proposals, explicit reviewed contactability basis, exclusion and retention enforcement, all named back-fill doors, replay and erasure, authorized Gmail and Microsoft proof, provider qualification and jurisdiction-specific legal qualification remain unproved. Same-thread mailbox sending remains OUT-013, record composition OUT-017, reply all OUT-019, expanded roles TEAM-005 and ownership behavior RECORD-016.",
       "to": "gap",
       "ids": [
-        "CAPTURE-012"
+        "CAPTURE-012",
+        "CAPTURE-013",
+        "CAPTURE-014"
       ]
     },
     {
@@ -5006,7 +5028,8 @@
       "text": "CALL-002: recording and participant-consent enforcement, cited transcripts and speaker review, stale proposals, transcript-based risk evidence, current-access playback, retention, local derivatives and confirmed provider deletion, original buyer-walk steps, provider qualification and state-specific legal qualification remain unproved. Dialing authority remains CALL-001; the complete cross-product steps remain with BOUNDARY-001\u2019s named receiving clauses.",
       "to": "gap",
       "ids": [
-        "CALL-002"
+        "CALL-002",
+        "CALL-003"
       ]
     },
     {
@@ -5205,7 +5228,8 @@
       "text": "AGENT-004: configurable selected-account research, licensed adapter qualification, allowlisted MCP tools, exact egress preview, enforceable USD budgets, cited schema-valid workflow proposals, hostile-content and revocation journeys, custody, provider retention and legal qualification remain unproved. Purchased enrichment remains ENRICH-001, workflow execution AUTO-001 and AUTO-002, narrow delegation DELEGATE-001 and expanded roles TEAM-005.",
       "to": "gap",
       "ids": [
-        "AGENT-004"
+        "AGENT-004",
+        "AGENT-005"
       ]
     },
     {

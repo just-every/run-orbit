@@ -1,6 +1,7 @@
 # Working on Orbit
 
 Lander-Regenerate: node src/base/contract-docs.mjs write
+Lander-Regenerate: node src/base/contract-docs.mjs check
 Lander-Regenerate: node scripts/edition-authoring/cli.mjs lock
 
 After editing `CONTRACT.md`, run `node src/base/contract-docs.mjs write`, then

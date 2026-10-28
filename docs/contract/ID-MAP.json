@@ -555,9 +555,11 @@
       ]
     },
     "CAPTURE-012": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "CAPTURE-012"
+        "CAPTURE-012",
+        "CAPTURE-013",
+        "CAPTURE-014"
       ]
     },
     "FORM-001": {
@@ -686,9 +688,10 @@
       ]
     },
     "CALL-002": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "CALL-002"
+        "CALL-002",
+        "CALL-003"
       ]
     },
     "REPORT-001": {
@@ -819,9 +822,10 @@
       ]
     },
     "AGENT-004": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "AGENT-004"
+        "AGENT-004",
+        "AGENT-005"
       ]
     },
     "BOUNDARY-001": {
