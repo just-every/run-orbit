@@ -6,7 +6,7 @@ export async function calendarJourney(page,data){
  const evidence=resolve(process.env.ORBIT_CALENDAR_EVIDENCE??'.orbit-viewport-evidence/calendar-writeback');await mkdir(evidence,{recursive:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
  let authorization;
  const edge=await page.context().newCDPSession(page);
- edge.on('Fetch.requestPaused',async event=>{authorization=new URL(event.request.url);await edge.send('Fetch.fulfillRequest',{requestId:event.requestId,responseCode:200,responseHeaders:[{name:'Content-Type',value:'text/html'}],body:Buffer.from('<!doctype html><html lang="en"><title>Provider edge</title><h1>Provider authorization received</h1></html>').toString('base64')});});
+ edge.on('Fetch.requestPaused',async event=>{authorization=new URL(event.request.url);await edge.send('Fetch.fulfillRequest',{requestId:event.requestId,responseCode:200,responseHeaders:[{name:'Content-Type',value:'text/html'}],body:Buffer.from('<!doctype html><html lang="en"><title>Provider edge</title><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22/%3E"><h1>Provider authorization received</h1></html>').toString('base64')});});
  await edge.send('Fetch.enable',{patterns:[{urlPattern:'https://accounts.google.com/o/oauth2/v2/auth*',requestStage:'Request'},{urlPattern:'https://login.microsoftonline.com/*/oauth2/v2.0/authorize*',requestStage:'Request'}]});
  try{
   await page.setViewportSize({width:1440,height:1000});
@@ -17,6 +17,7 @@ export async function calendarJourney(page,data){
     await form.getByLabel('Client ID',{exact:true}).fill('synthetic-orbit-client');await form.getByLabel('Client secret',{exact:true}).fill('synthetic-orbit-secret');await form.getByLabel('Name this connection').fill(`Sales ${name} calendar`);
     const consent=form.getByRole('checkbox',{name:`Allow reviewed calendar writeback (${writeScope})`,exact:true});await expect(consent).not.toBeChecked();if(writeback)await consent.check();
     await expect(form.getByRole('list',{name:'Requested permissions',exact:true}).locator('code')).toHaveText([...readScopes,...(writeback?[writeScope]:[])]);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(1440);const consentAudit=await new AxeBuilder({page}).include('.capture-key-form').analyze();expect(consentAudit.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);
     await authorize(form,`Connect ${name}`,google,readScopes,writeScope,writeback);
    }
   }
@@ -50,7 +51,7 @@ export async function calendarJourney(page,data){
  async function dispatch(){const response=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/v1/capture/writeback/confirm'&&r.request().method()==='POST');await review().getByRole('button',{name:'Confirm exact invitation once',exact:true}).click();const result=await response;expect(result.status(),await result.text()).toBe(201);await expect(region()).toContainText('Provider confirmed the calendar change.');}
  async function authorize(form,button,google,readScopes,writeScope,writeback){authorization=undefined;const starting=page.waitForResponse(r=>/\/oauth\/(google|microsoft)\/start$/.test(new URL(r.url()).pathname)&&r.request().method()==='POST');await form.getByRole('button',{name:button,exact:true}).click();const started=await starting;expect(started.status()).toBe(303);await expect(page.getByRole('heading',{name:'Provider authorization received',exact:true})).toBeVisible();expect(authorization.origin).toBe(google?'https://accounts.google.com':'https://login.microsoftonline.com');const scopes=[...readScopes,...(writeback?[writeScope]:[])].map(scope=>google?'https://www.googleapis.com/auth/'+scope:scope);expect(authorization.searchParams.get('scope').split(/\s+/).sort()).toEqual([...scopes,...(google?[]:['offline_access'])].sort());}
  async function proof(name,region,selector='[aria-labelledby^="meeting-writeback-"]'){
-  await page.setViewportSize({width:1440,height:1000});await expect(region).toBeVisible();const axe=await new AxeBuilder({page}).include(selector).analyze();expect(axe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);
+  await page.setViewportSize({width:1440,height:1000});await expect(region).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(1440);const axe=await new AxeBuilder({page}).include(selector).analyze();expect(axe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);
   for(const width of [1440,390]){await page.setViewportSize({width,height:1000});await region.screenshot({path:`${evidence}/${name}-${width}.png`});}await page.setViewportSize({width:1440,height:1000});
  }
 }
