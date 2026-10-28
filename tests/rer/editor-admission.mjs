@@ -2,7 +2,11 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 export async function editorAdmission({checkout,browser,page,origin,management}) {
- const manager=management.origin;
+ const manager=management.origin, ownerURL=page.url();
+ // Earlier installed-user steps already opened the editor. Suspend that page while
+ // measuring anonymous navigation, so its legitimate traffic cannot enter the count.
+ await page.goto('about:blank');
+ const priorRequests=management.state.requests;
     const denied = await fetch(origin + '/api/editor/config'); assert.equal(denied.status, 403);
     assert.match(denied.headers.get('cache-control'), /no-store/);
     const visitor = await browser.newPage({viewport:{width:1440,height:900}});
@@ -16,8 +20,9 @@ export async function editorAdmission({checkout,browser,page,origin,management})
     const notfound=await visitor.goto(origin+'/missing-admission-route');assert.equal(notfound.status(),404);
     await visitor.getByRole('heading',{name:'Published test not found',exact:true}).waitFor();
     await visitor.reload();await visitor.getByRole('heading',{name:'Published test not found',exact:true}).waitFor();
-    assert.equal(management.state.requests, 0, 'public pages never contact management');
+    assert.equal(management.state.requests, priorRequests, 'public pages never contact management');
     const owner=page;
+    await owner.goto(ownerURL);
     for (const width of [1440]) {
       await owner.setViewportSize({width,height:900}); await owner.reload();
       const response = await owner.evaluate(async () => { const response=await fetch('/api/editor/config');return {status:response.status,headers:Object.fromEntries(response.headers),body:await response.json()}; }); assert.equal(response.status,200);
