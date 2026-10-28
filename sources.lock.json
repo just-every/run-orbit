@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "179bc95a1cfd5a92638ee2dad1636b0a9a01ab544fb7d7c47be37a1520fe134c",
+      "sha256": "2d8c95d722a056f579e073ce7016cdfdcf0bbde29c8c850e768a605026c417c5",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "06dcb915d7ff7f6f68d0234afe7a04a64a05cd49bcd2bedbcebd55dc618a3df6",
+      "sha256": "131a9adb461ffb66745092be170984a11d90f2fc3fee6c337f39cbe62253b9cb",
       "executable": false
     },
     "DEMO.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "ac5b7dd4936820f815ab2804cebfc04463c085c18d02462b7cee3d8ad5d242c4",
+      "sha256": "3d7335f3cb3862adeec4760722950595be9ddda539f2efe066e801a2210441fd",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -4015,7 +4015,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "efceaba318468ea7ced4774c1ada1778a28d51d52d3e9015bc9311b906caa8fa",
+      "sha256": "0b230df3456b58cdf76827755ad40375bc5c0356330b374811879ee624f8af6d",
       "executable": false
     },
     "scripts/verification-reuse.sh": {
@@ -8567,7 +8567,11 @@
       "executable": false
     },
     "tests/core/crm-import.test.ts": {
-      "sha256": "48a51e7a8b37df471e37cf123250bca4d34f0d68ec4d053624b2efcf32e2921f",
+      "sha256": "8c1884980b5eaf5a15450d442830ba1fb804ff0513518cce52310dce1081eba4",
+      "executable": false
+    },
+    "tests/core/crm-vendor.test.ts": {
+      "sha256": "a3a8263df1deefe8555cd0d36d5f0bc73b64c1b286edbda2b6fa05bdd7393f68",
       "executable": false
     },
     "tests/core/identity.test.ts": {
@@ -9328,6 +9332,10 @@
     },
     "tests/support/crm-import-privacy.ts": {
       "sha256": "e3d38ea1acc0f955cb8241708877217a8bd3c6fc4ec192dad1716402e36cec74",
+      "executable": false
+    },
+    "tests/support/crm-vendor-journey.ts": {
+      "sha256": "80872604644e19f8eb9fce3e9c6a83eeb4bae450033dd717deabf3893fdb53e0",
       "executable": false
     },
     "tests/support/current-archive.ts": {
