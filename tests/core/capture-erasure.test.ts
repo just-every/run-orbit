@@ -21,7 +21,7 @@ test('CAPTURE-007 DATA-002 captured originals erase across public reads and cann
     const retained=(await target.db.prepare("SELECT id FROM audit_entries WHERE action='capture.erased_mailbox'").all<{id:string}>()).results;
     assert.ok(retained.length,'destination has independent anonymous erasure history');
     await f.refreshSignIn();
-    const erasedArchive=await exported(f);
+    const erasedArchive=await exported(f,true);
     const session=await testAuth(target.db).createSession(target.actor);
     const call=async(path:string,method='GET',body?:unknown)=>{const response=await target.request(path,method,body,{Cookie:`__Host-orbit_session=${session.token}`});assert.ok(response.ok,await response.clone().text());return response.json() as Promise<any>;};
     let job=await call('records/archive/imports','POST',{confirmed:true,manifest:erasedArchive.manifest});
