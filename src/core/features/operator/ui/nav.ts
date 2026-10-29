@@ -8,7 +8,7 @@ export const dailyItems: readonly NavItem[] = [
  {label: 'NOW', path: '/app', match: ['/app']},
  {label: 'Brief', path: '/app/brief', match: ['/app/brief']},
  {label: 'Tasks', path: '/app/tasks', match: ['/app/tasks/*']},
- {label: 'Records', path: '/app/records', match: ['/app/records', '/app/opportunities/*', '/app/new']},
+ {label: 'Records', path: '/app/opportunities', match: ['/app/opportunities/*', '/app/contacts/*', '/app/companies/*']},
  {label: 'Reports', path: '/app/reports', match: ['/app/reports', '/app/dashboards/*']},
  {label: 'Notifications', path: '/app/notifications', match: ['/app/notifications']},
 ];

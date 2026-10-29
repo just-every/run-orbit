@@ -1,5 +1,5 @@
-import {useCallback,useState,type FormEvent} from 'react';
-import {Link,useNavigate} from '@tanstack/react-router';
+import {useCallback,useEffect,useState,type FormEvent} from 'react';
+import {Link,useNavigate,useSearch} from '@tanstack/react-router';
 import {OperatorShell,OperatorState} from './operator-shell';
 import {CompanySearch,ContactPicker} from './record-link-picker';
 import {workbenchRequest,type Inventory} from './workbench-api';
@@ -11,6 +11,14 @@ export function CreateOpportunityPage() {
  const [values,setValues]=useState({companyName:'',companyId:'',contactName:'',email:'',title:'',value:'0',stageId:''});
  const [contactIds,setContactIds]=useState<string[]>([]),[primaryContactId,setPrimaryContactId]=useState<string|null>(null);
  const [error,setError]=useState<string|null>(null),[saving,setSaving]=useState(false),disabled=!resource.data||saving;
+ // Opened from a contact or a company (?contact=<id>, ?company=<id>), the form starts with it chosen.
+ const start=useSearch({strict:false}) as {contact?:string;company?:string};
+ useEffect(()=>{
+  const data=resource.data;if(!data)return;
+  const company=data.companies.find(item=>item.id===start.company),contact=data.contacts.find(item=>item.id===start.contact);
+  if(company)setValues(current=>current.companyId?current:{...current,companyId:company.id,companyName:company.name});
+  if(contact){setContactIds(current=>current.length?current:[contact.id]);setPrimaryContactId(current=>current??contact.id);}
+ },[resource.data]);
  function field(name:'contactName'|'email'|'title'|'value',label:string,type='text') {
   const required=name==='contactName'?!contactIds.length||!!values.email.trim():name==='email'?!contactIds.length||!!values.contactName.trim():true;
   return <label>{label}<input disabled={disabled} required={required} type={type} maxLength={type==='text'?200:undefined} min={type==='number'?'0':undefined} max={type==='number'?'1000000000':undefined} step={type==='number'?'0.01':undefined} value={values[name]} onChange={event=>setValues({...values,[name]:event.target.value})}/></label>;
@@ -27,7 +35,7 @@ export function CreateOpportunityPage() {
    await navigate({to:'/app/opportunities/$id',params:{id}});
   }catch(reason){setError((reason as Error).message);}finally{setSaving(false);}
  }
- return <OperatorShell title="Create opportunity" action={<Link to="/app/records">← Back to opportunities</Link>}>
+ return <OperatorShell title="Create opportunity" action={<Link to="/app/opportunities">← Back to opportunities</Link>}>
   {resource.error?<OperatorState kind="error">{resource.error.message}</OperatorState>:null}
   <form onSubmit={save} className="workbench-create workbench-create--entry">
    <div className="workbench-create__fields">
@@ -36,7 +44,7 @@ export function CreateOpportunityPage() {
     <section className="operator-surface workbench-form"><h2>Opportunity details</h2>{field('title','Opportunity title')}{field('value','Estimated value in workspace currency','number')}</section>
     <section className="operator-surface workbench-form"><h2>Pipeline</h2><label>Pipeline stage<select disabled={disabled} required value={values.stageId||resource.data?.stages[0]?.id||''} onChange={event=>setValues({...values,stageId:event.target.value})}>{resource.data?.stages.map(stage=><option key={stage.id} value={stage.id}>{stage.pipelineName?`${stage.pipelineName} / `:''}{stage.name}</option>)}</select></label></section>
    </div>
-   <div className="operator-surface workbench-actions"><Link to="/app/records">Cancel</Link>{error?<OperatorState kind="error">{error}</OperatorState>:null}<button className="operator-button" disabled={disabled}>{saving?'Saving…':'Save opportunity'}</button></div>
+   <div className="operator-surface workbench-actions"><Link to="/app/opportunities">Cancel</Link>{error?<OperatorState kind="error">{error}</OperatorState>:null}<button className="operator-button" disabled={disabled}>{saving?'Saving…':'Save opportunity'}</button></div>
   </form>
  </OperatorShell>;
 }

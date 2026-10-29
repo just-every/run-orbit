@@ -15,11 +15,7 @@ import { Route as SetupRouteImport } from './routes/setup'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppAccessRouteImport } from './routes/app.access'
 import { Route as AppBriefRouteImport } from './routes/app.brief'
-import { Route as AppCompaniesRouteImport } from './routes/app.companies'
-import { Route as AppContactsRouteImport } from './routes/app.contacts'
-import { Route as AppNewRouteImport } from './routes/app.new'
 import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
-import { Route as AppRecordsRouteImport } from './routes/app.records'
 import { Route as AppReportsRouteImport } from './routes/app.reports'
 import { Route as AppReviewRouteImport } from './routes/app.review'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
@@ -29,6 +25,12 @@ import { Route as DocsIndexRouteImport } from './routes/docs.index'
 import { Route as DocsSlugRouteImport } from './routes/docs.$slug'
 import { Route as AppAssistanceIndexRouteImport } from './routes/app.assistance.index'
 import { Route as AppAssistanceIdRouteImport } from './routes/app.assistance.$id'
+import { Route as AppCompaniesIndexRouteImport } from './routes/app.companies.index'
+import { Route as AppCompaniesIdRouteImport } from './routes/app.companies.$id'
+import { Route as AppCompaniesNewRouteImport } from './routes/app.companies.new'
+import { Route as AppContactsIndexRouteImport } from './routes/app.contacts.index'
+import { Route as AppContactsIdRouteImport } from './routes/app.contacts.$id'
+import { Route as AppContactsNewRouteImport } from './routes/app.contacts.new'
 import { Route as AppDashboardsIdRouteImport } from './routes/app.dashboards.$id'
 import { Route as AppDraftsIndexRouteImport } from './routes/app.drafts.index'
 import { Route as AppDraftsIdRouteImport } from './routes/app.drafts.$id'
@@ -36,6 +38,7 @@ import { Route as AppMeetingsIndexRouteImport } from './routes/app.meetings.inde
 import { Route as AppMeetingsIdRouteImport } from './routes/app.meetings.$id'
 import { Route as AppOpportunitiesIndexRouteImport } from './routes/app.opportunities.index'
 import { Route as AppOpportunitiesIdRouteImport } from './routes/app.opportunities.$id'
+import { Route as AppOpportunitiesNewRouteImport } from './routes/app.opportunities.new'
 import { Route as AppSettingsFormsRouteImport } from './routes/app.settings.forms'
 import { Route as AppSettingsIntegrationsRouteImport } from './routes/app.settings.integrations'
 import { Route as AppSettingsPipelineRouteImport } from './routes/app.settings.pipeline'
@@ -80,29 +83,9 @@ const AppBriefRoute = AppBriefRouteImport.update({
   path: '/brief',
   getParentRoute: () => AppRoute,
 } as any)
-const AppCompaniesRoute = AppCompaniesRouteImport.update({
-  id: '/companies',
-  path: '/companies',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppContactsRoute = AppContactsRouteImport.update({
-  id: '/contacts',
-  path: '/contacts',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppNewRoute = AppNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppNotificationsRoute = AppNotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppRecordsRoute = AppRecordsRouteImport.update({
-  id: '/records',
-  path: '/records',
   getParentRoute: () => AppRoute,
 } as any)
 const AppReportsRoute = AppReportsRouteImport.update({
@@ -150,6 +133,36 @@ const AppAssistanceIdRoute = AppAssistanceIdRouteImport.update({
   path: '/assistance/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCompaniesIndexRoute = AppCompaniesIndexRouteImport.update({
+  id: '/companies/',
+  path: '/companies/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCompaniesIdRoute = AppCompaniesIdRouteImport.update({
+  id: '/companies/$id',
+  path: '/companies/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCompaniesNewRoute = AppCompaniesNewRouteImport.update({
+  id: '/companies/new',
+  path: '/companies/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppContactsIndexRoute = AppContactsIndexRouteImport.update({
+  id: '/contacts/',
+  path: '/contacts/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppContactsIdRoute = AppContactsIdRouteImport.update({
+  id: '/contacts/$id',
+  path: '/contacts/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppContactsNewRoute = AppContactsNewRouteImport.update({
+  id: '/contacts/new',
+  path: '/contacts/new',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDashboardsIdRoute = AppDashboardsIdRouteImport.update({
   id: '/dashboards/$id',
   path: '/dashboards/$id',
@@ -183,6 +196,11 @@ const AppOpportunitiesIndexRoute = AppOpportunitiesIndexRouteImport.update({
 const AppOpportunitiesIdRoute = AppOpportunitiesIdRouteImport.update({
   id: '/opportunities/$id',
   path: '/opportunities/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOpportunitiesNewRoute = AppOpportunitiesNewRouteImport.update({
+  id: '/opportunities/new',
+  path: '/opportunities/new',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSettingsFormsRoute = AppSettingsFormsRouteImport.update({
@@ -258,11 +276,7 @@ export interface FileRoutesByFullPath {
   '/setup': typeof SetupRoute
   '/app/access': typeof AppAccessRoute
   '/app/brief': typeof AppBriefRoute
-  '/app/companies': typeof AppCompaniesRoute
-  '/app/contacts': typeof AppContactsRoute
-  '/app/new': typeof AppNewRoute
   '/app/notifications': typeof AppNotificationsRoute
-  '/app/records': typeof AppRecordsRoute
   '/app/reports': typeof AppReportsRoute
   '/app/review': typeof AppReviewRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
@@ -272,10 +286,15 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
+  '/app/companies/$id': typeof AppCompaniesIdRoute
+  '/app/companies/new': typeof AppCompaniesNewRoute
+  '/app/contacts/$id': typeof AppContactsIdRoute
+  '/app/contacts/new': typeof AppContactsNewRoute
   '/app/dashboards/$id': typeof AppDashboardsIdRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/opportunities/new': typeof AppOpportunitiesNewRoute
   '/app/settings/forms': typeof AppSettingsFormsRoute
   '/app/settings/integrations': typeof AppSettingsIntegrationsRoute
   '/app/settings/pipeline': typeof AppSettingsPipelineRoute
@@ -283,6 +302,8 @@ export interface FileRoutesByFullPath {
   '/app/settings/workspace': typeof AppSettingsWorkspaceRoute
   '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/assistance/': typeof AppAssistanceIndexRoute
+  '/app/companies/': typeof AppCompaniesIndexRoute
+  '/app/contacts/': typeof AppContactsIndexRoute
   '/app/drafts/': typeof AppDraftsIndexRoute
   '/app/meetings/': typeof AppMeetingsIndexRoute
   '/app/opportunities/': typeof AppOpportunitiesIndexRoute
@@ -299,11 +320,7 @@ export interface FileRoutesByTo {
   '/setup': typeof SetupRoute
   '/app/access': typeof AppAccessRoute
   '/app/brief': typeof AppBriefRoute
-  '/app/companies': typeof AppCompaniesRoute
-  '/app/contacts': typeof AppContactsRoute
-  '/app/new': typeof AppNewRoute
   '/app/notifications': typeof AppNotificationsRoute
-  '/app/records': typeof AppRecordsRoute
   '/app/reports': typeof AppReportsRoute
   '/app/review': typeof AppReviewRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
@@ -312,10 +329,15 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/docs': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
+  '/app/companies/$id': typeof AppCompaniesIdRoute
+  '/app/companies/new': typeof AppCompaniesNewRoute
+  '/app/contacts/$id': typeof AppContactsIdRoute
+  '/app/contacts/new': typeof AppContactsNewRoute
   '/app/dashboards/$id': typeof AppDashboardsIdRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/opportunities/new': typeof AppOpportunitiesNewRoute
   '/app/settings/forms': typeof AppSettingsFormsRoute
   '/app/settings/integrations': typeof AppSettingsIntegrationsRoute
   '/app/settings/pipeline': typeof AppSettingsPipelineRoute
@@ -323,6 +345,8 @@ export interface FileRoutesByTo {
   '/app/settings/workspace': typeof AppSettingsWorkspaceRoute
   '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/assistance': typeof AppAssistanceIndexRoute
+  '/app/companies': typeof AppCompaniesIndexRoute
+  '/app/contacts': typeof AppContactsIndexRoute
   '/app/drafts': typeof AppDraftsIndexRoute
   '/app/meetings': typeof AppMeetingsIndexRoute
   '/app/opportunities': typeof AppOpportunitiesIndexRoute
@@ -341,11 +365,7 @@ export interface FileRoutesById {
   '/setup': typeof SetupRoute
   '/app/access': typeof AppAccessRoute
   '/app/brief': typeof AppBriefRoute
-  '/app/companies': typeof AppCompaniesRoute
-  '/app/contacts': typeof AppContactsRoute
-  '/app/new': typeof AppNewRoute
   '/app/notifications': typeof AppNotificationsRoute
-  '/app/records': typeof AppRecordsRoute
   '/app/reports': typeof AppReportsRoute
   '/app/review': typeof AppReviewRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
@@ -355,10 +375,15 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
+  '/app/companies/$id': typeof AppCompaniesIdRoute
+  '/app/companies/new': typeof AppCompaniesNewRoute
+  '/app/contacts/$id': typeof AppContactsIdRoute
+  '/app/contacts/new': typeof AppContactsNewRoute
   '/app/dashboards/$id': typeof AppDashboardsIdRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/opportunities/new': typeof AppOpportunitiesNewRoute
   '/app/settings/forms': typeof AppSettingsFormsRoute
   '/app/settings/integrations': typeof AppSettingsIntegrationsRoute
   '/app/settings/pipeline': typeof AppSettingsPipelineRoute
@@ -366,6 +391,8 @@ export interface FileRoutesById {
   '/app/settings/workspace': typeof AppSettingsWorkspaceRoute
   '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/assistance/': typeof AppAssistanceIndexRoute
+  '/app/companies/': typeof AppCompaniesIndexRoute
+  '/app/contacts/': typeof AppContactsIndexRoute
   '/app/drafts/': typeof AppDraftsIndexRoute
   '/app/meetings/': typeof AppMeetingsIndexRoute
   '/app/opportunities/': typeof AppOpportunitiesIndexRoute
@@ -385,11 +412,7 @@ export interface FileRouteTypes {
     | '/setup'
     | '/app/access'
     | '/app/brief'
-    | '/app/companies'
-    | '/app/contacts'
-    | '/app/new'
     | '/app/notifications'
-    | '/app/records'
     | '/app/reports'
     | '/app/review'
     | '/app/settings'
@@ -399,10 +422,15 @@ export interface FileRouteTypes {
     | '/app/'
     | '/docs/'
     | '/app/assistance/$id'
+    | '/app/companies/$id'
+    | '/app/companies/new'
+    | '/app/contacts/$id'
+    | '/app/contacts/new'
     | '/app/dashboards/$id'
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
+    | '/app/opportunities/new'
     | '/app/settings/forms'
     | '/app/settings/integrations'
     | '/app/settings/pipeline'
@@ -410,6 +438,8 @@ export interface FileRouteTypes {
     | '/app/settings/workspace'
     | '/app/tasks/$id'
     | '/app/assistance/'
+    | '/app/companies/'
+    | '/app/contacts/'
     | '/app/drafts/'
     | '/app/meetings/'
     | '/app/opportunities/'
@@ -426,11 +456,7 @@ export interface FileRouteTypes {
     | '/setup'
     | '/app/access'
     | '/app/brief'
-    | '/app/companies'
-    | '/app/contacts'
-    | '/app/new'
     | '/app/notifications'
-    | '/app/records'
     | '/app/reports'
     | '/app/review'
     | '/app/settings'
@@ -439,10 +465,15 @@ export interface FileRouteTypes {
     | '/app'
     | '/docs'
     | '/app/assistance/$id'
+    | '/app/companies/$id'
+    | '/app/companies/new'
+    | '/app/contacts/$id'
+    | '/app/contacts/new'
     | '/app/dashboards/$id'
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
+    | '/app/opportunities/new'
     | '/app/settings/forms'
     | '/app/settings/integrations'
     | '/app/settings/pipeline'
@@ -450,6 +481,8 @@ export interface FileRouteTypes {
     | '/app/settings/workspace'
     | '/app/tasks/$id'
     | '/app/assistance'
+    | '/app/companies'
+    | '/app/contacts'
     | '/app/drafts'
     | '/app/meetings'
     | '/app/opportunities'
@@ -467,11 +500,7 @@ export interface FileRouteTypes {
     | '/setup'
     | '/app/access'
     | '/app/brief'
-    | '/app/companies'
-    | '/app/contacts'
-    | '/app/new'
     | '/app/notifications'
-    | '/app/records'
     | '/app/reports'
     | '/app/review'
     | '/app/settings'
@@ -481,10 +510,15 @@ export interface FileRouteTypes {
     | '/app/'
     | '/docs/'
     | '/app/assistance/$id'
+    | '/app/companies/$id'
+    | '/app/companies/new'
+    | '/app/contacts/$id'
+    | '/app/contacts/new'
     | '/app/dashboards/$id'
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
+    | '/app/opportunities/new'
     | '/app/settings/forms'
     | '/app/settings/integrations'
     | '/app/settings/pipeline'
@@ -492,6 +526,8 @@ export interface FileRouteTypes {
     | '/app/settings/workspace'
     | '/app/tasks/$id'
     | '/app/assistance/'
+    | '/app/companies/'
+    | '/app/contacts/'
     | '/app/drafts/'
     | '/app/meetings/'
     | '/app/opportunities/'
@@ -556,39 +592,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBriefRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/companies': {
-      id: '/app/companies'
-      path: '/companies'
-      fullPath: '/app/companies'
-      preLoaderRoute: typeof AppCompaniesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/contacts': {
-      id: '/app/contacts'
-      path: '/contacts'
-      fullPath: '/app/contacts'
-      preLoaderRoute: typeof AppContactsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/new': {
-      id: '/app/new'
-      path: '/new'
-      fullPath: '/app/new'
-      preLoaderRoute: typeof AppNewRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/app/notifications': {
       id: '/app/notifications'
       path: '/notifications'
       fullPath: '/app/notifications'
       preLoaderRoute: typeof AppNotificationsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/records': {
-      id: '/app/records'
-      path: '/records'
-      fullPath: '/app/records'
-      preLoaderRoute: typeof AppRecordsRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/reports': {
@@ -654,6 +662,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAssistanceIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/companies/': {
+      id: '/app/companies/'
+      path: '/companies'
+      fullPath: '/app/companies/'
+      preLoaderRoute: typeof AppCompaniesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/companies/$id': {
+      id: '/app/companies/$id'
+      path: '/companies/$id'
+      fullPath: '/app/companies/$id'
+      preLoaderRoute: typeof AppCompaniesIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/companies/new': {
+      id: '/app/companies/new'
+      path: '/companies/new'
+      fullPath: '/app/companies/new'
+      preLoaderRoute: typeof AppCompaniesNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/contacts/': {
+      id: '/app/contacts/'
+      path: '/contacts'
+      fullPath: '/app/contacts/'
+      preLoaderRoute: typeof AppContactsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/contacts/$id': {
+      id: '/app/contacts/$id'
+      path: '/contacts/$id'
+      fullPath: '/app/contacts/$id'
+      preLoaderRoute: typeof AppContactsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/contacts/new': {
+      id: '/app/contacts/new'
+      path: '/contacts/new'
+      fullPath: '/app/contacts/new'
+      preLoaderRoute: typeof AppContactsNewRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/dashboards/$id': {
       id: '/app/dashboards/$id'
       path: '/dashboards/$id'
@@ -701,6 +751,13 @@ declare module '@tanstack/react-router' {
       path: '/opportunities/$id'
       fullPath: '/app/opportunities/$id'
       preLoaderRoute: typeof AppOpportunitiesIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/opportunities/new': {
+      id: '/app/opportunities/new'
+      path: '/opportunities/new'
+      fullPath: '/app/opportunities/new'
+      preLoaderRoute: typeof AppOpportunitiesNewRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/settings/forms': {
@@ -846,11 +903,7 @@ const AppTasksRouteWithChildren = AppTasksRoute._addFileChildren(
 interface AppRouteChildren {
   AppAccessRoute: typeof AppAccessRoute
   AppBriefRoute: typeof AppBriefRoute
-  AppCompaniesRoute: typeof AppCompaniesRoute
-  AppContactsRoute: typeof AppContactsRoute
-  AppNewRoute: typeof AppNewRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
-  AppRecordsRoute: typeof AppRecordsRoute
   AppReportsRoute: typeof AppReportsRoute
   AppReviewRoute: typeof AppReviewRoute
   AppSettingsRoute: typeof AppSettingsRouteWithChildren
@@ -858,11 +911,18 @@ interface AppRouteChildren {
   AppTasksRoute: typeof AppTasksRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
   AppAssistanceIdRoute: typeof AppAssistanceIdRoute
+  AppCompaniesIdRoute: typeof AppCompaniesIdRoute
+  AppCompaniesNewRoute: typeof AppCompaniesNewRoute
+  AppContactsIdRoute: typeof AppContactsIdRoute
+  AppContactsNewRoute: typeof AppContactsNewRoute
   AppDashboardsIdRoute: typeof AppDashboardsIdRoute
   AppDraftsIdRoute: typeof AppDraftsIdRoute
   AppMeetingsIdRoute: typeof AppMeetingsIdRoute
   AppOpportunitiesIdRoute: typeof AppOpportunitiesIdRoute
+  AppOpportunitiesNewRoute: typeof AppOpportunitiesNewRoute
   AppAssistanceIndexRoute: typeof AppAssistanceIndexRoute
+  AppCompaniesIndexRoute: typeof AppCompaniesIndexRoute
+  AppContactsIndexRoute: typeof AppContactsIndexRoute
   AppDraftsIndexRoute: typeof AppDraftsIndexRoute
   AppMeetingsIndexRoute: typeof AppMeetingsIndexRoute
   AppOpportunitiesIndexRoute: typeof AppOpportunitiesIndexRoute
@@ -871,11 +931,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAccessRoute: AppAccessRoute,
   AppBriefRoute: AppBriefRoute,
-  AppCompaniesRoute: AppCompaniesRoute,
-  AppContactsRoute: AppContactsRoute,
-  AppNewRoute: AppNewRoute,
   AppNotificationsRoute: AppNotificationsRoute,
-  AppRecordsRoute: AppRecordsRoute,
   AppReportsRoute: AppReportsRoute,
   AppReviewRoute: AppReviewRoute,
   AppSettingsRoute: AppSettingsRouteWithChildren,
@@ -883,11 +939,18 @@ const AppRouteChildren: AppRouteChildren = {
   AppTasksRoute: AppTasksRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
   AppAssistanceIdRoute: AppAssistanceIdRoute,
+  AppCompaniesIdRoute: AppCompaniesIdRoute,
+  AppCompaniesNewRoute: AppCompaniesNewRoute,
+  AppContactsIdRoute: AppContactsIdRoute,
+  AppContactsNewRoute: AppContactsNewRoute,
   AppDashboardsIdRoute: AppDashboardsIdRoute,
   AppDraftsIdRoute: AppDraftsIdRoute,
   AppMeetingsIdRoute: AppMeetingsIdRoute,
   AppOpportunitiesIdRoute: AppOpportunitiesIdRoute,
+  AppOpportunitiesNewRoute: AppOpportunitiesNewRoute,
   AppAssistanceIndexRoute: AppAssistanceIndexRoute,
+  AppCompaniesIndexRoute: AppCompaniesIndexRoute,
+  AppContactsIndexRoute: AppContactsIndexRoute,
   AppDraftsIndexRoute: AppDraftsIndexRoute,
   AppMeetingsIndexRoute: AppMeetingsIndexRoute,
   AppOpportunitiesIndexRoute: AppOpportunitiesIndexRoute,

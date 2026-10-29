@@ -96,7 +96,8 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
       // page lands on the pages their profile can use instead of an owner page that refuses them.
       if (!setupPath) { const landing = await collaboratorLanding(bindings.DB, operator.operatorId, path); if (landing) return new Response(null, { status: 302, headers: { Location: landing } }); }
       if (!setupPath && (request.method === "GET" || request.method === "HEAD")) { const moved = await movedPage(bindings.DB, url, operator.operatorId); if (moved) return moved; }
-      if(path!=="/app/records"&&await archiveImportActive(bindings.DB))return new Response(null,{status:302,headers:{Location:"/app/records"}});
+      // While an archive is restored every page waits on Settings › Data, which shows the restore's progress.
+      if(path!=="/app/settings/data"&&await archiveImportActive(bindings.DB))return new Response(null,{status:302,headers:{Location:"/app/settings/data"}});
       if(bindings.AUTH_LOCAL!=="true"&&request.method==='GET')executionContext.waitUntil(runRequestTimers(bindings.DB,createOutboundMail(bindings)));
     }
     return start.fetch(request);

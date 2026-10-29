@@ -79,7 +79,7 @@ export function DraftPage() {
     <OperatorShell
       eyebrow="Human-reviewed outreach"
       title={submitted ? submittedTitles[submitted.state] ?? "Sent message" : "Editable draft"}
-      action={draft.opportunityId?<Link className="operator-back-link" to="/app/opportunities/$id" params={{ id: draft.opportunityId }}>← Opportunity detail</Link>:<a className="operator-back-link" href={`/app/records?kind=contact&record=${draft.recipientContactId}#record-mail`}>← Contact detail</a>}
+      action={draft.opportunityId?<Link className="operator-back-link" to="/app/opportunities/$id" params={{ id: draft.opportunityId }}>← Opportunity detail</Link>:<a className="operator-back-link" href={`/app/contacts/${draft.recipientContactId}#record-mail`}>← Contact detail</a>}
     >
       <section className="operator-draft-editor" style={{display:"block"}} data-testid="draft-editor">
         {draft.preparedByLabel&&<p>Prepared by {draft.preparedByLabel}</p>}
@@ -97,7 +97,7 @@ export function DraftPage() {
           <DraftLibraryPicker draft={draft} disabled={saving} onApplied={resource.reload}/>
           {draft.isStale ? <section className="operator-state operator-state--error" data-testid="stale-review">
             <h2>Review what changed</h2><p>{draft.staleReason ?? "Customer context changed."}</p>
-            {resource.data.opportunity?<p>Current opportunity: {resource.data.opportunity.title} · {resource.data.opportunity.stage} · {resource.data.opportunity.queueReason}</p>:<p>Contact email: {contacts[0]?.email} · {contacts[0]?.contactability}. Review the <a href={`/app/records?kind=contact&record=${draft.recipientContactId}`}>current customer evidence</a> before confirming.</p>}
+            {resource.data.opportunity?<p>Current opportunity: {resource.data.opportunity.title} · {resource.data.opportunity.stage} · {resource.data.opportunity.queueReason}</p>:<p>Contact email: {contacts[0]?.email} · {contacts[0]?.contactability}. Review the <a href={`/app/contacts/${draft.recipientContactId}`}>current customer evidence</a> before confirming.</p>}
             <ul>{(resource.data.opportunity?.signals??[]).slice(0,5).map(signal=><li key={signal.id}>{signal.subject??label(signal.type)} · {formatDateTime(signal.occurredAt,presentation)}</li>)}</ul>
             <label>Confirm the current recipient<select value={draft.recipientContactId??''} onChange={event=>{const contact=contacts.find(contact=>contact.id===event.target.value);if(contact)setDraft({...draft,recipientContactId:contact.id,recipientEmail:contact.email??''});}}><option value="">Choose a linked contact</option>{contacts.map(contact=><option key={contact.id} value={contact.id} disabled={contact.contactability!=='contactable'}>{contact.name??contact.email} — {contact.email} ({contact.contactability})</option>)}</select></label>
             <label style={{display:"flex",gap:8,alignItems:"flex-start"}}><input style={{width:"auto",flex:"none"}} type="checkbox" checked={reviewed} onChange={event=>setReviewed(event.target.checked)}/> I reviewed the changed evidence, current recipient, subject and body above.</label>

@@ -74,7 +74,7 @@ export function NowPage({ initialData }: { initialData?: Awaited<ReturnType<type
         <ReviewLine summary={review.data} />
         {onboarding.error ? <OperatorState kind="error">{onboarding.error.message}</OperatorState> : <SetupLine state={onboarding.data} />}
         {resource.error ? <OperatorState kind="error">{resource.error.message}</OperatorState> : null}
-        {!loading && !resource.error && opportunities.length === 0 ? <div className="operator-state">{filtered ? <><h2>No customers match these filters</h2><button type="button" onClick={() => setFilters({})}>Clear filters</button></> : <><h2>No customers need attention yet</h2>{onboarding.data ? <>{onboarding.data.records ? <a href="/app/records">View customer records</a> : <a href="/app/new">Add your first customer</a>} · </> : null}<a href="/demo">See an example</a></>}</div> : null}
+        {!loading && !resource.error && opportunities.length === 0 ? <div className="operator-state">{filtered ? <><h2>No customers match these filters</h2><button type="button" onClick={() => setFilters({})}>Clear filters</button></> : <><h2>No customers need attention yet</h2>{onboarding.data ? <>{onboarding.data.records ? <a href="/app/opportunities">View customer records</a> : <a href="/app/opportunities/new">Add your first customer</a>} · </> : null}<a href="/demo">See an example</a></>}</div> : null}
         <ol className="operator-queue__list" aria-busy={loading}>
           {opportunities.map((opportunity, index) => (
             <li className="operator-queue-card" key={opportunity.id}>

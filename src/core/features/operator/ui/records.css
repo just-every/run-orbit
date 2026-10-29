@@ -4,10 +4,9 @@
 .records-workspace {display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
 .records-workspace > :not(.records-tabs) {margin-block:0}
 .records-tabs {display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 6px;border-bottom:1.5px solid var(--ob-line);padding-bottom:18px}
-.ob-app .records-tabs button {min-height:44px;padding:0 18px;border-color:var(--ob-line-strong);color:var(--ob-muted);font-size:15px;font-weight:600}
-.ob-app .records-tabs button:hover:not(:disabled) {border-color:var(--ob-ink);background:transparent;color:var(--ob-ink)}
-.ob-app .records-tabs button[aria-pressed=true] {border-color:var(--ob-ink);background:var(--ob-tangerine-soft);color:var(--ob-ink);font-weight:650}
-.records-tabs button:disabled {cursor:wait}
+.ob-app .records-tabs a {display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border:1.5px solid var(--ob-line-strong);border-radius:999px;color:var(--ob-muted);font-size:15px;font-weight:600;text-decoration:none}
+.ob-app .records-tabs a:hover {border-color:var(--ob-ink);color:var(--ob-ink)}
+.ob-app .records-tabs a[aria-current=page] {border-color:var(--ob-ink);background:var(--ob-tangerine-soft);color:var(--ob-ink);font-weight:650}
 .records-filters {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding-top:18px}
 .records-filters[hidden] {display:none}
 .record-editor {gap:20px;margin-top:20px;grid-template-columns:minmax(0,1.94fr) minmax(240px,1fr)}
@@ -35,7 +34,7 @@
 .records-detail-list {display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr));margin:0}
 .records-detail-list dt {color:var(--ob-muted);font-size:13px;text-transform:none;letter-spacing:0}
 .records-detail-list dd {margin:5px 0 0;overflow-wrap:anywhere;font-size:14px}
-.records-workspace .operator-queue-card>button {display:block;width:100%;min-width:0;max-width:100%;white-space:normal;text-align:left;padding:20px 24px}
+.records-workspace .operator-queue-card>a {display:block;width:100%;min-width:0;max-width:100%;padding:20px 24px;color:inherit;text-decoration:none}
 .records-workspace .operator-queue-card h2 {font-size:22px;margin:0 0 8px}
 .records-workspace .operator-queue-card p {margin:0;color:var(--ob-muted);font-size:13px}
 .records-workspace fieldset,.settings-layout fieldset,.manual-entry fieldset {min-width:0}
@@ -69,7 +68,7 @@
 .pipeline-stage-editor p,.pipeline-column>p,.pipeline-deal span{font-size:13px;color:var(--ob-muted)}
 .pipeline-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;align-items:start}
 .pipeline-column{min-width:0;padding:18px}.pipeline-column h3{margin:0;overflow-wrap:anywhere}
-.ob-app .pipeline-deal{display:grid;gap:8px;width:100%;padding:16px;margin-top:12px;text-align:left;white-space:normal;border-radius:10px;background:var(--ob-paper)}
+.ob-app .pipeline-deal{display:grid;gap:8px;width:100%;padding:16px;margin-top:12px;border:1.5px solid var(--ob-ink);border-radius:10px;background:var(--ob-paper);color:inherit;text-decoration:none}
 .pipeline-deal strong{overflow-wrap:anywhere}.pipeline-boards{display:grid;gap:20px}
 @media(max-width:700px){.pipeline-board{grid-template-columns:minmax(0,1fr)}}
 .settings-layout fieldset.pipeline-stage-editor{display:grid;padding:16px;border:0;border-radius:12px}
@@ -88,7 +87,7 @@
 .records-filter-chips li {display:flex;align-items:center;gap:4px;min-width:0;padding-left:12px;border-radius:999px;background:var(--ob-tangerine-soft);font-size:14px}
 .records-filter-chips button {min-width:44px;min-height:44px;padding:0;border:0}
 .records-list .operator-queue-card {display:flex;align-items:center;min-width:0}
-.records-workspace .records-list .operator-queue-card>button {flex:1;min-width:0;padding:16px 20px}
+.records-workspace .records-list .operator-queue-card>a {flex:1;min-width:0;padding:16px 20px}
 .records-workspace .records-list h2 {font-size:20px;margin-bottom:5px}
 .records-workspace .records-list .record-selection--row {display:flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;min-height:44px;padding:0;margin:0 12px 0 0}
 .records-list .record-selection--row input {margin:0}
@@ -108,3 +107,11 @@
 .ob-app .record-link-picker__remove {flex:0 0 44px;width:44px;height:44px;min-height:44px;padding:0;border:0}
 .workbench-create--entry .workbench-form h3 {font-size:15px;margin:0}
 @media(max-width:700px){.records-filters{grid-template-columns:minmax(0,1fr)}.records-search__bar>label{flex-basis:100%}.record-editor .workbench-form input,.record-editor .workbench-form select{min-height:44px}}
+
+/* Creating a contact or a company: a few fields and one Create. */
+.record-create {display:grid;gap:16px;max-width:640px;margin-top:24px;padding:24px}
+.record-create label {display:grid;gap:7px;margin:0}
+.record-create__label {display:block;margin-bottom:7px;color:var(--ob-ink);font-size:14.5px;font-weight:600}
+.record-create__taken {margin:-6px 0 0;color:var(--ob-tangerine-deep);font-size:14.5px;font-weight:600}
+.record-create__taken a {color:var(--ob-ink)}
+.record-search-field input {width:100%}
