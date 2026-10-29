@@ -32,7 +32,7 @@ function resolveActorName(entry: {
   signalSourceName: string | null;
   source: string;
 }): string {
-  if (entry.actorType === "operator") {
+  if (entry.actorType === "operator" || entry.actorType === "agent") {
     if (!entry.operatorName) throw new Error("Timeline operator actor is missing.");
     return entry.operatorName;
   }
