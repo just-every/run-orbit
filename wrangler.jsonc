@@ -6,7 +6,7 @@
   "compatibility_date": "2026-09-08",
   "compatibility_flags": ["nodejs_compat"],
   "assets": { "binding": "ASSETS" },
-  "vars": { "MAIL_PROVIDER": "sendgrid", "MAIL_RELAY_URL": "" },
+  "vars": { "MAIL_PROVIDER": "sendgrid", "MAIL_FROM": "", "MAIL_RELAY_URL": "" },
   "d1_databases": [
     {
       "binding": "DB",

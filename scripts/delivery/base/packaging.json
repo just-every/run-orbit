@@ -67,6 +67,7 @@
         "AUTH_ORIGIN",
         "OWNER_EMAIL",
         "MAIL_PROVIDER",
+        "MAIL_FROM",
         "MAIL_RELAY_URL",
         "MAIL_REPLY_TO",
         "SENDGRID_UNSUBSCRIBE_GROUP_ID",
@@ -89,8 +90,7 @@
         "MAIL_API_KEY",
         "SENDGRID_API_KEY",
         "OPENAI_API_KEY",
-        "ORBIT_FORM_TURNSTILE_SECRET",
-        "MAIL_FROM"
+        "ORBIT_FORM_TURNSTILE_SECRET"
       ],
       "providerEffects": [
         "outbound-mail",
