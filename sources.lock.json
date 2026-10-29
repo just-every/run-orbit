@@ -6642,6 +6642,10 @@
       "sha256": "e786a78f02e6b2becc8f1784d6d6f7e42878d10fcbb5af27223aa762ea2b8a8d",
       "executable": false
     },
+    "src/core/features/operator/ui/phone-targets.css": {
+      "sha256": "9f1659d3e34f667ffab3e8dbed0ad66e8b4eed36aa5a9e34be9d6ce3993c4ca9",
+      "executable": false
+    },
     "src/core/features/operator/ui/pipeline-board.tsx": {
       "sha256": "bf599b906da87aace7a7363e143e8c4563e6a0a2f30dfeb458bb249ce926e3ed",
       "executable": false
