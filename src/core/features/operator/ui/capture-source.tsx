@@ -146,20 +146,20 @@ export function CaptureSource({
       {source.last_error ? <div className="capture-source-error"><dt>Last error</dt><dd>{source.last_error}</dd></div> : null}
     </dl>
 
-    {source.adapter === 'file' ? <p className="capture-file-source-note"><a href="/app/capture/connect/files">Upload more files</a> to add evidence from this source.</p>
+    {source.adapter === 'file' ? <p className="capture-file-source-note"><a href="/app/settings/capture/connect/files">Upload more files</a> to add evidence from this source.</p>
     : source.adapter === 'forward' ? <>
       {actionError ? <OperatorState kind="error">{actionError}</OperatorState> : null}
-      {!receivesMail ? <p className="capture-file-source-note">This Orbit can’t receive mail yet, so nothing new arrives at this address. Its earlier captures stay. <a href="/app/capture/connect/address">See the one-time setup</a>.</p> : null}
+      {!receivesMail ? <p className="capture-file-source-note">This Orbit can’t receive mail yet, so nothing new arrives at this address. Its earlier captures stay. <a href="/app/settings/capture/connect/address">See the one-time setup</a>.</p> : null}
       <div className="capture-source-actions">
-        {source.state !== 'disconnected' ? <a className="orbit-button orbit-button--primary" href="/app/capture/connect/address">{source.has_credential ? 'Show my Orbit address' : 'Create a new address'}</a> : <a className="orbit-button orbit-button--primary" href="/app/capture/connect/address">Create a new address</a>}
+        {source.state !== 'disconnected' ? <a className="orbit-button orbit-button--primary" href="/app/settings/capture/connect/address">{source.has_credential ? 'Show my Orbit address' : 'Create a new address'}</a> : <a className="orbit-button orbit-button--primary" href="/app/settings/capture/connect/address">Create a new address</a>}
         {source.state !== 'disconnected' ? <button className="orbit-button orbit-button--quiet" type="button" disabled={disconnectPending} onClick={() => void disconnect()}>Disconnect {source.name}</button> : null}
       </div>
     </> : <>
       {needsReconnect ? <section className="capture-source-reconnect" aria-label={`Reconnect ${source.name}`}>
         <h4>{accessRevoked ? 'Reconnect after access was revoked' : source.state === 'disconnected' ? 'Reconnect this disconnected source' : !source.has_credential ? 'Reconnect after restore' : 'Reconnect this source'}</h4>
         {oauth ? <><p>Paste the same Client ID and a current Client secret. Your captured evidence and proposal history stay in place.</p>
-          <a className="orbit-button orbit-button--primary" href={`/app/capture/connect/${source.adapter}?step=5&source=${encodeURIComponent(source.id)}`}>Reconnect {source.name}</a></>
-        : <><p>Paste the calendar’s current link. Captured meetings stay in place.</p><a className="orbit-button orbit-button--primary" href="/app/capture/connect/calendar">Add the calendar again</a></>}
+          <a className="orbit-button orbit-button--primary" href={`/app/settings/capture/connect/${source.adapter}?step=5&source=${encodeURIComponent(source.id)}`}>Reconnect {source.name}</a></>
+        : <><p>Paste the calendar’s current link. Captured meetings stay in place.</p><a className="orbit-button orbit-button--primary" href="/app/settings/capture/connect/calendar">Add the calendar again</a></>}
       </section> : oauth ? <CaptureScope
         source={source}
         onChanged={() => { if (isCurrent(scopeLifetime)) onChanged(); }}

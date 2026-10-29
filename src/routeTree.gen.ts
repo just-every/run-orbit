@@ -14,26 +14,21 @@ import { Route as DemoRouteImport } from './routes/demo'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppAccessRouteImport } from './routes/app.access'
+import { Route as AppBriefRouteImport } from './routes/app.brief'
 import { Route as AppCompaniesRouteImport } from './routes/app.companies'
 import { Route as AppContactsRouteImport } from './routes/app.contacts'
-import { Route as AppFormsRouteImport } from './routes/app.forms'
-import { Route as AppImportsRouteImport } from './routes/app.imports'
-import { Route as AppLibraryRouteImport } from './routes/app.library'
 import { Route as AppNewRouteImport } from './routes/app.new'
 import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
-import { Route as AppNowRouteImport } from './routes/app.now'
 import { Route as AppRecordsRouteImport } from './routes/app.records'
 import { Route as AppReportsRouteImport } from './routes/app.reports'
+import { Route as AppReviewRouteImport } from './routes/app.review'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppSharedRecordsRouteImport } from './routes/app.shared-records'
-import { Route as AppSourcesRouteImport } from './routes/app.sources'
-import { Route as AppTodayRouteImport } from './routes/app.today'
+import { Route as AppTasksRouteImport } from './routes/app.tasks'
 import { Route as DocsIndexRouteImport } from './routes/docs.index'
 import { Route as DocsSlugRouteImport } from './routes/docs.$slug'
 import { Route as AppAssistanceIndexRouteImport } from './routes/app.assistance.index'
 import { Route as AppAssistanceIdRouteImport } from './routes/app.assistance.$id'
-import { Route as AppCaptureIndexRouteImport } from './routes/app.capture.index'
-import { Route as AppCaptureReviewRouteImport } from './routes/app.capture.review'
 import { Route as AppDashboardsIdRouteImport } from './routes/app.dashboards.$id'
 import { Route as AppDraftsIndexRouteImport } from './routes/app.drafts.index'
 import { Route as AppDraftsIdRouteImport } from './routes/app.drafts.$id'
@@ -41,7 +36,19 @@ import { Route as AppMeetingsIndexRouteImport } from './routes/app.meetings.inde
 import { Route as AppMeetingsIdRouteImport } from './routes/app.meetings.$id'
 import { Route as AppOpportunitiesIndexRouteImport } from './routes/app.opportunities.index'
 import { Route as AppOpportunitiesIdRouteImport } from './routes/app.opportunities.$id'
-import { Route as AppCaptureConnectMethodRouteImport } from './routes/app.capture.connect.$method'
+import { Route as AppSettingsFormsRouteImport } from './routes/app.settings.forms'
+import { Route as AppSettingsIntegrationsRouteImport } from './routes/app.settings.integrations'
+import { Route as AppSettingsPipelineRouteImport } from './routes/app.settings.pipeline'
+import { Route as AppSettingsTeamRouteImport } from './routes/app.settings.team'
+import { Route as AppSettingsWorkspaceRouteImport } from './routes/app.settings.workspace'
+import { Route as AppTasksIndexRouteImport } from './routes/app.tasks.index'
+import { Route as AppTasksIdRouteImport } from './routes/app.tasks.$id'
+import { Route as AppSettingsCaptureIndexRouteImport } from './routes/app.settings.capture.index'
+import { Route as AppSettingsDataIndexRouteImport } from './routes/app.settings.data.index'
+import { Route as AppSettingsDataImportRouteImport } from './routes/app.settings.data.import'
+import { Route as AppSettingsMailIndexRouteImport } from './routes/app.settings.mail.index'
+import { Route as AppSettingsMailLibraryRouteImport } from './routes/app.settings.mail.library'
+import { Route as AppSettingsCaptureConnectMethodRouteImport } from './routes/app.settings.capture.connect.$method'
 
 const AppRoute = AppRouteImport.update({
   id: '/app',
@@ -68,6 +75,11 @@ const AppAccessRoute = AppAccessRouteImport.update({
   path: '/access',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBriefRoute = AppBriefRouteImport.update({
+  id: '/brief',
+  path: '/brief',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCompaniesRoute = AppCompaniesRouteImport.update({
   id: '/companies',
   path: '/companies',
@@ -76,21 +88,6 @@ const AppCompaniesRoute = AppCompaniesRouteImport.update({
 const AppContactsRoute = AppContactsRouteImport.update({
   id: '/contacts',
   path: '/contacts',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppFormsRoute = AppFormsRouteImport.update({
-  id: '/forms',
-  path: '/forms',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppImportsRoute = AppImportsRouteImport.update({
-  id: '/imports',
-  path: '/imports',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppLibraryRoute = AppLibraryRouteImport.update({
-  id: '/library',
-  path: '/library',
   getParentRoute: () => AppRoute,
 } as any)
 const AppNewRoute = AppNewRouteImport.update({
@@ -103,11 +100,6 @@ const AppNotificationsRoute = AppNotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => AppRoute,
 } as any)
-const AppNowRoute = AppNowRouteImport.update({
-  id: '/now',
-  path: '/now',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppRecordsRoute = AppRecordsRouteImport.update({
   id: '/records',
   path: '/records',
@@ -116,6 +108,11 @@ const AppRecordsRoute = AppRecordsRouteImport.update({
 const AppReportsRoute = AppReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReviewRoute = AppReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
@@ -128,14 +125,9 @@ const AppSharedRecordsRoute = AppSharedRecordsRouteImport.update({
   path: '/shared-records',
   getParentRoute: () => AppRoute,
 } as any)
-const AppSourcesRoute = AppSourcesRouteImport.update({
-  id: '/sources',
-  path: '/sources',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppTodayRoute = AppTodayRouteImport.update({
-  id: '/today',
-  path: '/today',
+const AppTasksRoute = AppTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
   getParentRoute: () => AppRoute,
 } as any)
 const DocsIndexRoute = DocsIndexRouteImport.update({
@@ -156,16 +148,6 @@ const AppAssistanceIndexRoute = AppAssistanceIndexRouteImport.update({
 const AppAssistanceIdRoute = AppAssistanceIdRouteImport.update({
   id: '/assistance/$id',
   path: '/assistance/$id',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCaptureIndexRoute = AppCaptureIndexRouteImport.update({
-  id: '/capture/',
-  path: '/capture/',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCaptureReviewRoute = AppCaptureReviewRouteImport.update({
-  id: '/capture/review',
-  path: '/capture/review',
   getParentRoute: () => AppRoute,
 } as any)
 const AppDashboardsIdRoute = AppDashboardsIdRouteImport.update({
@@ -203,80 +185,154 @@ const AppOpportunitiesIdRoute = AppOpportunitiesIdRouteImport.update({
   path: '/opportunities/$id',
   getParentRoute: () => AppRoute,
 } as any)
-const AppCaptureConnectMethodRoute = AppCaptureConnectMethodRouteImport.update({
-  id: '/capture/connect/$method',
-  path: '/capture/connect/$method',
-  getParentRoute: () => AppRoute,
+const AppSettingsFormsRoute = AppSettingsFormsRouteImport.update({
+  id: '/forms',
+  path: '/forms',
+  getParentRoute: () => AppSettingsRoute,
 } as any)
+const AppSettingsIntegrationsRoute = AppSettingsIntegrationsRouteImport.update({
+  id: '/integrations',
+  path: '/integrations',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
+const AppSettingsPipelineRoute = AppSettingsPipelineRouteImport.update({
+  id: '/pipeline',
+  path: '/pipeline',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
+const AppSettingsTeamRoute = AppSettingsTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
+const AppSettingsWorkspaceRoute = AppSettingsWorkspaceRouteImport.update({
+  id: '/workspace',
+  path: '/workspace',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
+const AppTasksIndexRoute = AppTasksIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppTasksRoute,
+} as any)
+const AppTasksIdRoute = AppTasksIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppTasksRoute,
+} as any)
+const AppSettingsCaptureIndexRoute = AppSettingsCaptureIndexRouteImport.update({
+  id: '/capture/',
+  path: '/capture/',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
+const AppSettingsDataIndexRoute = AppSettingsDataIndexRouteImport.update({
+  id: '/data/',
+  path: '/data/',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
+const AppSettingsDataImportRoute = AppSettingsDataImportRouteImport.update({
+  id: '/data/import',
+  path: '/data/import',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
+const AppSettingsMailIndexRoute = AppSettingsMailIndexRouteImport.update({
+  id: '/mail/',
+  path: '/mail/',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
+const AppSettingsMailLibraryRoute = AppSettingsMailLibraryRouteImport.update({
+  id: '/mail/library',
+  path: '/mail/library',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
+const AppSettingsCaptureConnectMethodRoute =
+  AppSettingsCaptureConnectMethodRouteImport.update({
+    id: '/capture/connect/$method',
+    path: '/capture/connect/$method',
+    getParentRoute: () => AppSettingsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/demo': typeof DemoRoute
   '/setup': typeof SetupRoute
   '/app/access': typeof AppAccessRoute
+  '/app/brief': typeof AppBriefRoute
   '/app/companies': typeof AppCompaniesRoute
   '/app/contacts': typeof AppContactsRoute
-  '/app/forms': typeof AppFormsRoute
-  '/app/imports': typeof AppImportsRoute
-  '/app/library': typeof AppLibraryRoute
   '/app/new': typeof AppNewRoute
   '/app/notifications': typeof AppNotificationsRoute
-  '/app/now': typeof AppNowRoute
   '/app/records': typeof AppRecordsRoute
   '/app/reports': typeof AppReportsRoute
-  '/app/settings': typeof AppSettingsRoute
+  '/app/review': typeof AppReviewRoute
+  '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/shared-records': typeof AppSharedRecordsRoute
-  '/app/sources': typeof AppSourcesRoute
-  '/app/today': typeof AppTodayRoute
+  '/app/tasks': typeof AppTasksRouteWithChildren
   '/docs/$slug': typeof DocsSlugRoute
   '/app/': typeof AppIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
-  '/app/capture/review': typeof AppCaptureReviewRoute
   '/app/dashboards/$id': typeof AppDashboardsIdRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/settings/forms': typeof AppSettingsFormsRoute
+  '/app/settings/integrations': typeof AppSettingsIntegrationsRoute
+  '/app/settings/pipeline': typeof AppSettingsPipelineRoute
+  '/app/settings/team': typeof AppSettingsTeamRoute
+  '/app/settings/workspace': typeof AppSettingsWorkspaceRoute
+  '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/assistance/': typeof AppAssistanceIndexRoute
-  '/app/capture/': typeof AppCaptureIndexRoute
   '/app/drafts/': typeof AppDraftsIndexRoute
   '/app/meetings/': typeof AppMeetingsIndexRoute
   '/app/opportunities/': typeof AppOpportunitiesIndexRoute
-  '/app/capture/connect/$method': typeof AppCaptureConnectMethodRoute
+  '/app/tasks/': typeof AppTasksIndexRoute
+  '/app/settings/data/import': typeof AppSettingsDataImportRoute
+  '/app/settings/mail/library': typeof AppSettingsMailLibraryRoute
+  '/app/settings/capture/': typeof AppSettingsCaptureIndexRoute
+  '/app/settings/data/': typeof AppSettingsDataIndexRoute
+  '/app/settings/mail/': typeof AppSettingsMailIndexRoute
+  '/app/settings/capture/connect/$method': typeof AppSettingsCaptureConnectMethodRoute
 }
 export interface FileRoutesByTo {
   '/demo': typeof DemoRoute
   '/setup': typeof SetupRoute
   '/app/access': typeof AppAccessRoute
+  '/app/brief': typeof AppBriefRoute
   '/app/companies': typeof AppCompaniesRoute
   '/app/contacts': typeof AppContactsRoute
-  '/app/forms': typeof AppFormsRoute
-  '/app/imports': typeof AppImportsRoute
-  '/app/library': typeof AppLibraryRoute
   '/app/new': typeof AppNewRoute
   '/app/notifications': typeof AppNotificationsRoute
-  '/app/now': typeof AppNowRoute
   '/app/records': typeof AppRecordsRoute
   '/app/reports': typeof AppReportsRoute
-  '/app/settings': typeof AppSettingsRoute
+  '/app/review': typeof AppReviewRoute
+  '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/shared-records': typeof AppSharedRecordsRoute
-  '/app/sources': typeof AppSourcesRoute
-  '/app/today': typeof AppTodayRoute
   '/docs/$slug': typeof DocsSlugRoute
   '/app': typeof AppIndexRoute
   '/docs': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
-  '/app/capture/review': typeof AppCaptureReviewRoute
   '/app/dashboards/$id': typeof AppDashboardsIdRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/settings/forms': typeof AppSettingsFormsRoute
+  '/app/settings/integrations': typeof AppSettingsIntegrationsRoute
+  '/app/settings/pipeline': typeof AppSettingsPipelineRoute
+  '/app/settings/team': typeof AppSettingsTeamRoute
+  '/app/settings/workspace': typeof AppSettingsWorkspaceRoute
+  '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/assistance': typeof AppAssistanceIndexRoute
-  '/app/capture': typeof AppCaptureIndexRoute
   '/app/drafts': typeof AppDraftsIndexRoute
   '/app/meetings': typeof AppMeetingsIndexRoute
   '/app/opportunities': typeof AppOpportunitiesIndexRoute
-  '/app/capture/connect/$method': typeof AppCaptureConnectMethodRoute
+  '/app/tasks': typeof AppTasksIndexRoute
+  '/app/settings/data/import': typeof AppSettingsDataImportRoute
+  '/app/settings/mail/library': typeof AppSettingsMailLibraryRoute
+  '/app/settings/capture': typeof AppSettingsCaptureIndexRoute
+  '/app/settings/data': typeof AppSettingsDataIndexRoute
+  '/app/settings/mail': typeof AppSettingsMailIndexRoute
+  '/app/settings/capture/connect/$method': typeof AppSettingsCaptureConnectMethodRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -284,35 +340,42 @@ export interface FileRoutesById {
   '/demo': typeof DemoRoute
   '/setup': typeof SetupRoute
   '/app/access': typeof AppAccessRoute
+  '/app/brief': typeof AppBriefRoute
   '/app/companies': typeof AppCompaniesRoute
   '/app/contacts': typeof AppContactsRoute
-  '/app/forms': typeof AppFormsRoute
-  '/app/imports': typeof AppImportsRoute
-  '/app/library': typeof AppLibraryRoute
   '/app/new': typeof AppNewRoute
   '/app/notifications': typeof AppNotificationsRoute
-  '/app/now': typeof AppNowRoute
   '/app/records': typeof AppRecordsRoute
   '/app/reports': typeof AppReportsRoute
-  '/app/settings': typeof AppSettingsRoute
+  '/app/review': typeof AppReviewRoute
+  '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/shared-records': typeof AppSharedRecordsRoute
-  '/app/sources': typeof AppSourcesRoute
-  '/app/today': typeof AppTodayRoute
+  '/app/tasks': typeof AppTasksRouteWithChildren
   '/docs/$slug': typeof DocsSlugRoute
   '/app/': typeof AppIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/app/assistance/$id': typeof AppAssistanceIdRoute
-  '/app/capture/review': typeof AppCaptureReviewRoute
   '/app/dashboards/$id': typeof AppDashboardsIdRoute
   '/app/drafts/$id': typeof AppDraftsIdRoute
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
+  '/app/settings/forms': typeof AppSettingsFormsRoute
+  '/app/settings/integrations': typeof AppSettingsIntegrationsRoute
+  '/app/settings/pipeline': typeof AppSettingsPipelineRoute
+  '/app/settings/team': typeof AppSettingsTeamRoute
+  '/app/settings/workspace': typeof AppSettingsWorkspaceRoute
+  '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/assistance/': typeof AppAssistanceIndexRoute
-  '/app/capture/': typeof AppCaptureIndexRoute
   '/app/drafts/': typeof AppDraftsIndexRoute
   '/app/meetings/': typeof AppMeetingsIndexRoute
   '/app/opportunities/': typeof AppOpportunitiesIndexRoute
-  '/app/capture/connect/$method': typeof AppCaptureConnectMethodRoute
+  '/app/tasks/': typeof AppTasksIndexRoute
+  '/app/settings/data/import': typeof AppSettingsDataImportRoute
+  '/app/settings/mail/library': typeof AppSettingsMailLibraryRoute
+  '/app/settings/capture/': typeof AppSettingsCaptureIndexRoute
+  '/app/settings/data/': typeof AppSettingsDataIndexRoute
+  '/app/settings/mail/': typeof AppSettingsMailIndexRoute
+  '/app/settings/capture/connect/$method': typeof AppSettingsCaptureConnectMethodRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -321,104 +384,124 @@ export interface FileRouteTypes {
     | '/demo'
     | '/setup'
     | '/app/access'
+    | '/app/brief'
     | '/app/companies'
     | '/app/contacts'
-    | '/app/forms'
-    | '/app/imports'
-    | '/app/library'
     | '/app/new'
     | '/app/notifications'
-    | '/app/now'
     | '/app/records'
     | '/app/reports'
+    | '/app/review'
     | '/app/settings'
     | '/app/shared-records'
-    | '/app/sources'
-    | '/app/today'
+    | '/app/tasks'
     | '/docs/$slug'
     | '/app/'
     | '/docs/'
     | '/app/assistance/$id'
-    | '/app/capture/review'
     | '/app/dashboards/$id'
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
+    | '/app/settings/forms'
+    | '/app/settings/integrations'
+    | '/app/settings/pipeline'
+    | '/app/settings/team'
+    | '/app/settings/workspace'
+    | '/app/tasks/$id'
     | '/app/assistance/'
-    | '/app/capture/'
     | '/app/drafts/'
     | '/app/meetings/'
     | '/app/opportunities/'
-    | '/app/capture/connect/$method'
+    | '/app/tasks/'
+    | '/app/settings/data/import'
+    | '/app/settings/mail/library'
+    | '/app/settings/capture/'
+    | '/app/settings/data/'
+    | '/app/settings/mail/'
+    | '/app/settings/capture/connect/$method'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/demo'
     | '/setup'
     | '/app/access'
+    | '/app/brief'
     | '/app/companies'
     | '/app/contacts'
-    | '/app/forms'
-    | '/app/imports'
-    | '/app/library'
     | '/app/new'
     | '/app/notifications'
-    | '/app/now'
     | '/app/records'
     | '/app/reports'
+    | '/app/review'
     | '/app/settings'
     | '/app/shared-records'
-    | '/app/sources'
-    | '/app/today'
     | '/docs/$slug'
     | '/app'
     | '/docs'
     | '/app/assistance/$id'
-    | '/app/capture/review'
     | '/app/dashboards/$id'
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
+    | '/app/settings/forms'
+    | '/app/settings/integrations'
+    | '/app/settings/pipeline'
+    | '/app/settings/team'
+    | '/app/settings/workspace'
+    | '/app/tasks/$id'
     | '/app/assistance'
-    | '/app/capture'
     | '/app/drafts'
     | '/app/meetings'
     | '/app/opportunities'
-    | '/app/capture/connect/$method'
+    | '/app/tasks'
+    | '/app/settings/data/import'
+    | '/app/settings/mail/library'
+    | '/app/settings/capture'
+    | '/app/settings/data'
+    | '/app/settings/mail'
+    | '/app/settings/capture/connect/$method'
   id:
     | '__root__'
     | '/app'
     | '/demo'
     | '/setup'
     | '/app/access'
+    | '/app/brief'
     | '/app/companies'
     | '/app/contacts'
-    | '/app/forms'
-    | '/app/imports'
-    | '/app/library'
     | '/app/new'
     | '/app/notifications'
-    | '/app/now'
     | '/app/records'
     | '/app/reports'
+    | '/app/review'
     | '/app/settings'
     | '/app/shared-records'
-    | '/app/sources'
-    | '/app/today'
+    | '/app/tasks'
     | '/docs/$slug'
     | '/app/'
     | '/docs/'
     | '/app/assistance/$id'
-    | '/app/capture/review'
     | '/app/dashboards/$id'
     | '/app/drafts/$id'
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
+    | '/app/settings/forms'
+    | '/app/settings/integrations'
+    | '/app/settings/pipeline'
+    | '/app/settings/team'
+    | '/app/settings/workspace'
+    | '/app/tasks/$id'
     | '/app/assistance/'
-    | '/app/capture/'
     | '/app/drafts/'
     | '/app/meetings/'
     | '/app/opportunities/'
-    | '/app/capture/connect/$method'
+    | '/app/tasks/'
+    | '/app/settings/data/import'
+    | '/app/settings/mail/library'
+    | '/app/settings/capture/'
+    | '/app/settings/data/'
+    | '/app/settings/mail/'
+    | '/app/settings/capture/connect/$method'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -466,6 +549,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccessRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/brief': {
+      id: '/app/brief'
+      path: '/brief'
+      fullPath: '/app/brief'
+      preLoaderRoute: typeof AppBriefRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/companies': {
       id: '/app/companies'
       path: '/companies'
@@ -478,27 +568,6 @@ declare module '@tanstack/react-router' {
       path: '/contacts'
       fullPath: '/app/contacts'
       preLoaderRoute: typeof AppContactsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/forms': {
-      id: '/app/forms'
-      path: '/forms'
-      fullPath: '/app/forms'
-      preLoaderRoute: typeof AppFormsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/imports': {
-      id: '/app/imports'
-      path: '/imports'
-      fullPath: '/app/imports'
-      preLoaderRoute: typeof AppImportsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/library': {
-      id: '/app/library'
-      path: '/library'
-      fullPath: '/app/library'
-      preLoaderRoute: typeof AppLibraryRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/new': {
@@ -515,13 +584,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppNotificationsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/now': {
-      id: '/app/now'
-      path: '/now'
-      fullPath: '/app/now'
-      preLoaderRoute: typeof AppNowRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/app/records': {
       id: '/app/records'
       path: '/records'
@@ -534,6 +596,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/app/reports'
       preLoaderRoute: typeof AppReportsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/review': {
+      id: '/app/review'
+      path: '/review'
+      fullPath: '/app/review'
+      preLoaderRoute: typeof AppReviewRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/settings': {
@@ -550,18 +619,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSharedRecordsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/sources': {
-      id: '/app/sources'
-      path: '/sources'
-      fullPath: '/app/sources'
-      preLoaderRoute: typeof AppSourcesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/today': {
-      id: '/app/today'
-      path: '/today'
-      fullPath: '/app/today'
-      preLoaderRoute: typeof AppTodayRouteImport
+    '/app/tasks': {
+      id: '/app/tasks'
+      path: '/tasks'
+      fullPath: '/app/tasks'
+      preLoaderRoute: typeof AppTasksRouteImport
       parentRoute: typeof AppRoute
     }
     '/docs/': {
@@ -590,20 +652,6 @@ declare module '@tanstack/react-router' {
       path: '/assistance/$id'
       fullPath: '/app/assistance/$id'
       preLoaderRoute: typeof AppAssistanceIdRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/capture/': {
-      id: '/app/capture/'
-      path: '/capture'
-      fullPath: '/app/capture/'
-      preLoaderRoute: typeof AppCaptureIndexRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/capture/review': {
-      id: '/app/capture/review'
-      path: '/capture/review'
-      fullPath: '/app/capture/review'
-      preLoaderRoute: typeof AppCaptureReviewRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/dashboards/$id': {
@@ -655,76 +703,194 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOpportunitiesIdRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/capture/connect/$method': {
-      id: '/app/capture/connect/$method'
+    '/app/settings/forms': {
+      id: '/app/settings/forms'
+      path: '/forms'
+      fullPath: '/app/settings/forms'
+      preLoaderRoute: typeof AppSettingsFormsRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/app/settings/integrations': {
+      id: '/app/settings/integrations'
+      path: '/integrations'
+      fullPath: '/app/settings/integrations'
+      preLoaderRoute: typeof AppSettingsIntegrationsRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/app/settings/pipeline': {
+      id: '/app/settings/pipeline'
+      path: '/pipeline'
+      fullPath: '/app/settings/pipeline'
+      preLoaderRoute: typeof AppSettingsPipelineRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/app/settings/team': {
+      id: '/app/settings/team'
+      path: '/team'
+      fullPath: '/app/settings/team'
+      preLoaderRoute: typeof AppSettingsTeamRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/app/settings/workspace': {
+      id: '/app/settings/workspace'
+      path: '/workspace'
+      fullPath: '/app/settings/workspace'
+      preLoaderRoute: typeof AppSettingsWorkspaceRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/app/tasks/': {
+      id: '/app/tasks/'
+      path: '/'
+      fullPath: '/app/tasks/'
+      preLoaderRoute: typeof AppTasksIndexRouteImport
+      parentRoute: typeof AppTasksRoute
+    }
+    '/app/tasks/$id': {
+      id: '/app/tasks/$id'
+      path: '/$id'
+      fullPath: '/app/tasks/$id'
+      preLoaderRoute: typeof AppTasksIdRouteImport
+      parentRoute: typeof AppTasksRoute
+    }
+    '/app/settings/capture/': {
+      id: '/app/settings/capture/'
+      path: '/capture'
+      fullPath: '/app/settings/capture/'
+      preLoaderRoute: typeof AppSettingsCaptureIndexRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/app/settings/data/': {
+      id: '/app/settings/data/'
+      path: '/data'
+      fullPath: '/app/settings/data/'
+      preLoaderRoute: typeof AppSettingsDataIndexRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/app/settings/data/import': {
+      id: '/app/settings/data/import'
+      path: '/data/import'
+      fullPath: '/app/settings/data/import'
+      preLoaderRoute: typeof AppSettingsDataImportRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/app/settings/mail/': {
+      id: '/app/settings/mail/'
+      path: '/mail'
+      fullPath: '/app/settings/mail/'
+      preLoaderRoute: typeof AppSettingsMailIndexRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/app/settings/mail/library': {
+      id: '/app/settings/mail/library'
+      path: '/mail/library'
+      fullPath: '/app/settings/mail/library'
+      preLoaderRoute: typeof AppSettingsMailLibraryRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/app/settings/capture/connect/$method': {
+      id: '/app/settings/capture/connect/$method'
       path: '/capture/connect/$method'
-      fullPath: '/app/capture/connect/$method'
-      preLoaderRoute: typeof AppCaptureConnectMethodRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/app/settings/capture/connect/$method'
+      preLoaderRoute: typeof AppSettingsCaptureConnectMethodRouteImport
+      parentRoute: typeof AppSettingsRoute
     }
   }
 }
 
+interface AppSettingsRouteChildren {
+  AppSettingsFormsRoute: typeof AppSettingsFormsRoute
+  AppSettingsIntegrationsRoute: typeof AppSettingsIntegrationsRoute
+  AppSettingsPipelineRoute: typeof AppSettingsPipelineRoute
+  AppSettingsTeamRoute: typeof AppSettingsTeamRoute
+  AppSettingsWorkspaceRoute: typeof AppSettingsWorkspaceRoute
+  AppSettingsDataImportRoute: typeof AppSettingsDataImportRoute
+  AppSettingsMailLibraryRoute: typeof AppSettingsMailLibraryRoute
+  AppSettingsCaptureIndexRoute: typeof AppSettingsCaptureIndexRoute
+  AppSettingsDataIndexRoute: typeof AppSettingsDataIndexRoute
+  AppSettingsMailIndexRoute: typeof AppSettingsMailIndexRoute
+  AppSettingsCaptureConnectMethodRoute: typeof AppSettingsCaptureConnectMethodRoute
+}
+
+const AppSettingsRouteChildren: AppSettingsRouteChildren = {
+  AppSettingsFormsRoute: AppSettingsFormsRoute,
+  AppSettingsIntegrationsRoute: AppSettingsIntegrationsRoute,
+  AppSettingsPipelineRoute: AppSettingsPipelineRoute,
+  AppSettingsTeamRoute: AppSettingsTeamRoute,
+  AppSettingsWorkspaceRoute: AppSettingsWorkspaceRoute,
+  AppSettingsDataImportRoute: AppSettingsDataImportRoute,
+  AppSettingsMailLibraryRoute: AppSettingsMailLibraryRoute,
+  AppSettingsCaptureIndexRoute: AppSettingsCaptureIndexRoute,
+  AppSettingsDataIndexRoute: AppSettingsDataIndexRoute,
+  AppSettingsMailIndexRoute: AppSettingsMailIndexRoute,
+  AppSettingsCaptureConnectMethodRoute: AppSettingsCaptureConnectMethodRoute,
+}
+
+const AppSettingsRouteWithChildren = AppSettingsRoute._addFileChildren(
+  AppSettingsRouteChildren,
+)
+
+interface AppTasksRouteChildren {
+  AppTasksIdRoute: typeof AppTasksIdRoute
+  AppTasksIndexRoute: typeof AppTasksIndexRoute
+}
+
+const AppTasksRouteChildren: AppTasksRouteChildren = {
+  AppTasksIdRoute: AppTasksIdRoute,
+  AppTasksIndexRoute: AppTasksIndexRoute,
+}
+
+const AppTasksRouteWithChildren = AppTasksRoute._addFileChildren(
+  AppTasksRouteChildren,
+)
+
 interface AppRouteChildren {
   AppAccessRoute: typeof AppAccessRoute
+  AppBriefRoute: typeof AppBriefRoute
   AppCompaniesRoute: typeof AppCompaniesRoute
   AppContactsRoute: typeof AppContactsRoute
-  AppFormsRoute: typeof AppFormsRoute
-  AppImportsRoute: typeof AppImportsRoute
-  AppLibraryRoute: typeof AppLibraryRoute
   AppNewRoute: typeof AppNewRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
-  AppNowRoute: typeof AppNowRoute
   AppRecordsRoute: typeof AppRecordsRoute
   AppReportsRoute: typeof AppReportsRoute
-  AppSettingsRoute: typeof AppSettingsRoute
+  AppReviewRoute: typeof AppReviewRoute
+  AppSettingsRoute: typeof AppSettingsRouteWithChildren
   AppSharedRecordsRoute: typeof AppSharedRecordsRoute
-  AppSourcesRoute: typeof AppSourcesRoute
-  AppTodayRoute: typeof AppTodayRoute
+  AppTasksRoute: typeof AppTasksRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
   AppAssistanceIdRoute: typeof AppAssistanceIdRoute
-  AppCaptureReviewRoute: typeof AppCaptureReviewRoute
   AppDashboardsIdRoute: typeof AppDashboardsIdRoute
   AppDraftsIdRoute: typeof AppDraftsIdRoute
   AppMeetingsIdRoute: typeof AppMeetingsIdRoute
   AppOpportunitiesIdRoute: typeof AppOpportunitiesIdRoute
   AppAssistanceIndexRoute: typeof AppAssistanceIndexRoute
-  AppCaptureIndexRoute: typeof AppCaptureIndexRoute
   AppDraftsIndexRoute: typeof AppDraftsIndexRoute
   AppMeetingsIndexRoute: typeof AppMeetingsIndexRoute
   AppOpportunitiesIndexRoute: typeof AppOpportunitiesIndexRoute
-  AppCaptureConnectMethodRoute: typeof AppCaptureConnectMethodRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppAccessRoute: AppAccessRoute,
+  AppBriefRoute: AppBriefRoute,
   AppCompaniesRoute: AppCompaniesRoute,
   AppContactsRoute: AppContactsRoute,
-  AppFormsRoute: AppFormsRoute,
-  AppImportsRoute: AppImportsRoute,
-  AppLibraryRoute: AppLibraryRoute,
   AppNewRoute: AppNewRoute,
   AppNotificationsRoute: AppNotificationsRoute,
-  AppNowRoute: AppNowRoute,
   AppRecordsRoute: AppRecordsRoute,
   AppReportsRoute: AppReportsRoute,
-  AppSettingsRoute: AppSettingsRoute,
+  AppReviewRoute: AppReviewRoute,
+  AppSettingsRoute: AppSettingsRouteWithChildren,
   AppSharedRecordsRoute: AppSharedRecordsRoute,
-  AppSourcesRoute: AppSourcesRoute,
-  AppTodayRoute: AppTodayRoute,
+  AppTasksRoute: AppTasksRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
   AppAssistanceIdRoute: AppAssistanceIdRoute,
-  AppCaptureReviewRoute: AppCaptureReviewRoute,
   AppDashboardsIdRoute: AppDashboardsIdRoute,
   AppDraftsIdRoute: AppDraftsIdRoute,
   AppMeetingsIdRoute: AppMeetingsIdRoute,
   AppOpportunitiesIdRoute: AppOpportunitiesIdRoute,
   AppAssistanceIndexRoute: AppAssistanceIndexRoute,
-  AppCaptureIndexRoute: AppCaptureIndexRoute,
   AppDraftsIndexRoute: AppDraftsIndexRoute,
   AppMeetingsIndexRoute: AppMeetingsIndexRoute,
   AppOpportunitiesIndexRoute: AppOpportunitiesIndexRoute,
-  AppCaptureConnectMethodRoute: AppCaptureConnectMethodRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

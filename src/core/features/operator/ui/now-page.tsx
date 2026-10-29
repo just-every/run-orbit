@@ -1,14 +1,20 @@
 import './now-page.css';
-import {SalesTasks} from './sales-tasks';
 import {OnboardingChecklist,readOnboarding} from './onboarding-checklist';
 import { useCallback, useState } from "react";
-import { TodayBrief } from "./today-brief";
+import { useHashMap } from "./hash-target";
 import { Link } from "@tanstack/react-router";
 
 import { formatDateTime, label } from "./formatters";
 import { operatorApi } from "./operator-api";
 import { OperatorShell, OperatorState } from "./operator-shell";
 import { useOperatorResource } from "./use-operator-resource";
+
+// Notification links stored before tasks had their own page read /app#sales-task-<id> (or #sales-tasks).
+function storedTaskLink(hash: string) {
+  if (hash === "sales-tasks") return "/app/tasks";
+  const id = /^sales-task-([0-9A-HJKMNP-TV-Z]{26})$/.exec(hash)?.[1];
+  return id ? `/app/tasks/${id}` : null;
+}
 
 export function NowPage({ initialData }: { initialData?: Awaited<ReturnType<typeof import("../../../app/loaders").loadNow>> }) {
   const [owner, setOwner] = useState("all");
@@ -31,12 +37,10 @@ export function NowPage({ initialData }: { initialData?: Awaited<ReturnType<type
 
   const facets = resource.data?.facets;
   const showOwners = new Set(opportunities.map(opportunity => opportunity.ownerId)).size > 1;
+  useHashMap(storedTaskLink);
 
   return (
     <OperatorShell eyebrow="Today" title="Your brief">
-      <a className="today-now-jump" href="#now-queue-title">Skip to your NOW queue <span aria-hidden="true">↓</span></a>
-      <TodayBrief />
-      <SalesTasks/>
       <h2 className="today-now-title" id="now-queue-title" tabIndex={-1}>NOW queue</h2>
       {onboarding.error ? <p role="alert">{onboarding.error.message}</p> : <OnboardingChecklist state={onboarding.data}/>}
       <section className="operator-queue" data-testid="now-queue">

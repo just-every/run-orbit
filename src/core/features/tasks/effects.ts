@@ -24,6 +24,6 @@ export function taskAssignment(db: D1Database, task: TaskRow, actorId: string, p
    .bind(createId(), key, task.updated_at, actorId, previousOwnerId, task.id, task.owner_id, task.owner_id),
   db.prepare(`INSERT OR IGNORE INTO sales_task_notification_links(notification_id,task_id,href)
    SELECT n.id,?,? FROM notifications n WHERE n.operator_id=? AND n.event_key=?`)
-   .bind(task.id, `/app#sales-task-${task.id}`, task.owner_id, key)
+   .bind(task.id, `/app/tasks/${task.id}`, task.owner_id, key)
  ];
 }

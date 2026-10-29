@@ -26,20 +26,33 @@
 :where(.ob-app) :where(a) { color: inherit; }
 :where(.ob-app) :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible { outline: 3px solid var(--ob-tangerine); outline-offset: 3px; }
 
-/* Header: the lockup, the navigation row and Sign out, on one hairline. */
-.operator-header { display: flex; align-items: center; gap: clamp(18px, 2.4vw, 36px); min-height: 72px; padding: 12px var(--ob-gutter); border-bottom: 1.5px solid var(--ob-line); }
+/* Header: the lockup, the menu (the daily jobs, or the Settings areas on Settings pages), then Settings and Sign out
+   apart at the right end, on one hairline. The current item is ink at 650 with a tangerine underline inside the bar. */
+.operator-header { position: relative; display: flex; align-items: center; gap: clamp(18px, 2.4vw, 36px); min-height: 72px; padding: 12px var(--ob-gutter); border-bottom: 1.5px solid var(--ob-line); background: var(--ob-paper); }
 .operator-mark { flex: none; border-radius: 9px; text-decoration: none; }
 .operator-mark .ob-brand-name { font-size: 25px; }
 .operator-mark .ob-mark { width: 34px; }
-.operator-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px clamp(14px, 1.6vw, 26px); }
-.operator-nav a { position: relative; padding: 10px 0; color: var(--ob-body); font-size: 15.5px; font-weight: 500; text-decoration: none; white-space: nowrap; transition: color 0.18s; }
-.operator-nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 3px; height: 2px; border-radius: 2px; background: currentColor; opacity: 0; transform: scaleX(0.4); transition: opacity 0.2s, transform 0.2s var(--ob-ease); }
-.operator-nav a:hover { color: var(--ob-ink); }
-.operator-nav a:hover::after { opacity: 0.3; transform: none; }
-.operator-nav a[aria-current="page"] { color: var(--ob-ink); font-weight: 650; }
-.operator-nav a[aria-current="page"]::after { opacity: 1; transform: none; background: var(--ob-tangerine); }
-.operator-header > form { margin-left: auto; }
+.operator-nav { display: flex; flex-wrap: nowrap; align-items: center; gap: 4px clamp(14px, 1.6vw, 26px); }
+.operator-nav a, .operator-header__end > a { position: relative; padding: 10px 0; color: var(--ob-body); font-size: 15.5px; font-weight: 500; text-decoration: none; white-space: nowrap; transition: color 0.18s; }
+.operator-nav a::after, .operator-header__end > a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 3px; height: 2px; border-radius: 2px; background: currentColor; opacity: 0; transform: scaleX(0.4); transition: opacity 0.2s, transform 0.2s var(--ob-ease); }
+.operator-nav a:hover, .operator-header__end > a:hover { color: var(--ob-ink); }
+.operator-nav a:hover::after, .operator-header__end > a:hover::after { opacity: 0.3; transform: none; }
+.operator-nav a[aria-current="page"], .operator-header__end > a[aria-current="page"] { color: var(--ob-ink); font-weight: 650; }
+.operator-nav a[aria-current="page"]::after, .operator-header__end > a[aria-current="page"]::after { opacity: 1; transform: none; background: var(--ob-tangerine); }
+.operator-nav__count { margin-left: 6px; color: var(--ob-tangerine-deep); font-weight: 700; font-variant-numeric: tabular-nums; }
+/* Settings mode: an underlined ← NOW, a divider, the muted word Settings, then the areas. */
+.operator-nav .operator-nav__back { color: var(--ob-ink); font-weight: 600; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 5px; }
+.operator-nav .operator-nav__back::after { display: none; }
+.operator-nav__label { display: inline-flex; align-items: center; gap: 14px; color: var(--ob-muted); font-size: 14px; font-weight: 500; white-space: nowrap; }
+.operator-nav__label::before { content: ""; width: 1.5px; height: 22px; background: var(--ob-line-strong); }
+.operator-header__end { display: flex; flex: none; align-items: center; gap: clamp(14px, 1.6vw, 26px); margin-left: auto; }
+.operator-header__end > form { margin: 0; }
 .operator-header :is(.operator-back-link, .operator-menu-toggle) { min-height: 44px; min-width: 44px; }
+/* 901-1100 px: the Settings areas take the header's second row (wrapping if they must), never a sideways scroll. */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .operator-header[data-menu="settings"] { flex-wrap: wrap; row-gap: 0; padding-bottom: 6px; }
+  .operator-header[data-menu="settings"] .operator-nav { order: 3; flex-basis: 100%; flex-wrap: wrap; gap: 0 18px; }
+}
 
 /* Page title: a quiet eyebrow, the big ink title, a hairline. */
 .operator-main { width: min(1440px, 100%); min-width: 0; margin: 0 auto; padding: clamp(28px, 3.6vw, 52px) var(--ob-gutter) 80px; }
@@ -259,9 +272,8 @@
   .operator-detail-fields div:nth-child(2n + 1) { border-left: 0; }
 }
 @media (max-width: 900px) {
-  .operator-header { flex-wrap: wrap; gap: 4px 18px; padding-block: 10px 6px; }
-  .operator-nav { order: 3; flex-basis: 100%; gap: 0 18px; }
-  .operator-nav a { padding: 8px 0; font-size: 15px; }
+  .operator-header { min-height: 64px; padding-block: 10px; }
+  .operator-header :is(.operator-nav, .operator-header__end) { display: none; }
   .operator-detail__columns, .operator-draft-editor { grid-template-columns: minmax(0, 1fr); }
   .operator-queue-card > a { grid-template-columns: 52px minmax(0, 1fr); gap: 14px 16px; }
   .operator-state-grid, .operator-queue-card__reason { grid-column: 1 / -1; }

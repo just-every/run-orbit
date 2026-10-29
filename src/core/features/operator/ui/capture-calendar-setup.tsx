@@ -16,7 +16,7 @@ export function CaptureCalendarSetup({ error: initialError }: { error?: string }
       const response = await fetch('/api/v1/capture/calendar-links', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ url: form.get('url'), name: form.get('name') }) });
       const result = await response.json().catch(() => ({})) as { id?: string; error?: string };
       if (!response.ok || !result.id) throw new Error(result.error ?? 'The calendar could not be added.');
-      window.location.assign(`/app/capture?connected=${encodeURIComponent(result.id)}`);
+      window.location.assign(`/app/settings/capture?connected=${encodeURIComponent(result.id)}`);
     } catch (next) {
       setError((next as Error).message);
       setBusy(false);

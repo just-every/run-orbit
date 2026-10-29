@@ -127,7 +127,7 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
     await next();
   });
   // Base step-up: exporting all data, replacing it from an archive and permanently erasing an operator need a fresh app-local email proof.
-  const stepUps: [RegExp, StepUpAction, string][] = [[/^\/api\/v1\/records\/archive\/exports$/, 'export', '/app/records'], [/^\/api\/v1\/records\/archive\/imports$/, 'delete', '/app/records'], [/^\/api\/v1\/settings\/operators\/[^/]+\/erase$/, 'delete', '/app/settings']];
+  const stepUps: [RegExp, StepUpAction, string][] = [[/^\/api\/v1\/records\/archive\/exports$/, 'export', '/app/records'], [/^\/api\/v1\/records\/archive\/imports$/, 'delete', '/app/records'], [/^\/api\/v1\/settings\/operators\/[^/]+\/erase$/, 'delete', '/app/settings/team']];
   app.use("/api/*", async (context, next) => {
     const guarded = context.req.method === "POST" ? stepUps.find(([path]) => path.test(context.req.path)) : undefined;
     if (guarded) { const refused = await input.stepUp(context.req.raw, guarded[1], guarded[2]); if (refused) return refused; }
@@ -168,7 +168,7 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
   app.route("/api/v1/records", createRecordsRoutes(input.database));
   app.route('/api/v1/tasks',createSalesTaskRoutes(input.database));
   app.route('/api/v1/relationships',createRelationshipRoutes(input.database));
-  app.route("/api/v1/settings", createSettingsRoutes(input.database,request=>input.stepUp(request,'email:change','/app/settings')));
+  app.route("/api/v1/settings", createSettingsRoutes(input.database,request=>input.stepUp(request,'email:change','/app/settings/team')));
   app.route("/api/v1/setup", createSetupRoutes(input.database));
   app.route("/api/v1/sources", createSourceRoutes(input.database,input.sourceSecurity));
   app.route("/api/v1/notifications", createNotificationRoutes(input.database,{clock:input.clock,security:input.sourceSecurity,origin:input.captureOrigin}));

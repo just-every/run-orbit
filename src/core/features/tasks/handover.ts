@@ -35,7 +35,7 @@ export async function taskHandoverStatements(db: D1Database, input: {
    SELECT ?,?,NULL,?,'task.assigned',?||'Assigned by '||a.display_name||'; previous owner: '||p.display_name||'.',?
    FROM operators a JOIN operators p ON p.id=? WHERE a.id=?`)
    .bind(createId(), input.toOwnerId, key, message, now, input.fromOwnerId, input.actorId));
-  for (const task of rows) statements.push(db.prepare("INSERT OR IGNORE INTO sales_task_notification_links(notification_id,task_id,href) SELECT id,?,'/app#sales-tasks' FROM notifications WHERE operator_id=? AND event_key=?").bind(task.id, input.toOwnerId, key));
+  for (const task of rows) statements.push(db.prepare("INSERT OR IGNORE INTO sales_task_notification_links(notification_id,task_id,href) SELECT id,?,'/app/tasks' FROM notifications WHERE operator_id=? AND event_key=?").bind(task.id, input.toOwnerId, key));
  }
  // Parent also uses task guards for record handover; clear only at the end of its batch.
  return statements;
