@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "a7850d4c6532b2540f27d466ba368c3f663b38388429fa4108fa7b9e59fa11bc",
+      "sha256": "64b8e12b81545d1d4496538eba757b00b6d1cf1ffb28eacfe0643bcbee6e4de7",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "3baddae9eccc77fdfd46cf509b251ab9120132c2dc974c429c014c9f6ed5e937",
+      "sha256": "38a8c07de07ed0a63c047bcdc27804c2bf0469289516004e858f4ca1dbebd2ad",
       "executable": false
     },
     "DEMO.md": {
@@ -2168,6 +2168,10 @@
     },
     "migrations/core/0070_personal_slack_mentions.sql": {
       "sha256": "cc319156255ce5fcd8aaba720253e72d10f1b73c3520157dcbbbaff3748e5832",
+      "executable": false
+    },
+    "migrations/core/0071_personal_slack_deletions.sql": {
+      "sha256": "dd3168ac80db24d39555b4aee5a4786c463e3bd96e52a2662849818623534796",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -5806,6 +5810,10 @@
       "sha256": "25b945191e39b53c797231b417e811583e6407e3d8f9b0cdeb5934afe5ab222e",
       "executable": false
     },
+    "src/core/features/notifications/personal-deletions.ts": {
+      "sha256": "8c329ab398d611d81e21c134a153d5ab2a8c42095dc9715e6adf14a518dc91e4",
+      "executable": false
+    },
     "src/core/features/notifications/personal-delivery.ts": {
       "sha256": "a6af24aef863dd92777bb8d390c8570307c152bfc8dc54fa35edf0ad8a37a457",
       "executable": false
@@ -9247,7 +9255,7 @@
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
-      "sha256": "388e042a9f9b534f4112b6180b1bc90701df63ce303a3d9c312c25ac90747a23",
+      "sha256": "89a215b6333aa7e3ee8726249280988178e7165b988e62b6f18c0cca2b91806c",
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
