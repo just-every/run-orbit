@@ -15,10 +15,23 @@ import {GraphRecords} from '../../src/core/features/graph/repository';
 import {domainEventStatements} from '../../src/core/features/effects/event-statements';
 import {isFullOperator} from '../../src/core/features/access/identity-class';
 import {createApp} from '../../tests/support/app';
-import {foldInstalledCatalog} from '../../src/core/features/records/archive-fold-catalog';
+import type {FoldArchiveTable} from '../../src/core/features/records/archive-fold-catalog';
+import type {ArchiveColumn} from '../../src/core/features/records/archive-schema';
+import {archiveSchemaObjects} from '../../src/core/features/records/archive-schema-objects';
 import {preCallFailureCatalog} from '../../src/core/features/calls/archive';
 
 const quote=(name:string)=>'"'+name.replaceAll('"','""')+'"';
+
+/** Snapshot the actual intermediate migration, before later native tables exist. */
+async function migrationCatalog(db:D1Database):Promise<FoldArchiveTable[]>{
+ const names=(await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT GLOB 'sqlite_*' AND name NOT GLOB '_cf_*' ORDER BY name").all<{name:string}>()).results.map(row=>row.name),inventory=JSON.stringify(names);
+ const columns=(await db.prepare('SELECT n.value AS table_name,c.cid,c.name,c.type,c."notnull",c.dflt_value,c.pk FROM json_each(?) n CROSS JOIN pragma_table_info(n.value) c ORDER BY n.value,c.cid').bind(inventory).all<ArchiveColumn&{table_name:string}>()).results;
+ const objects=(await db.prepare('SELECT tbl_name,type,name,sql FROM sqlite_master ORDER BY tbl_name,type,name').all<{tbl_name:string;type:string;name:string;sql:string|null}>()).results;
+ const fks=(await db.prepare('SELECT n.value AS table_name,f."table" AS dependency FROM json_each(?) n CROSS JOIN pragma_foreign_key_list(n.value) f ORDER BY n.value,f.id,f.seq').bind(inventory).all<{table_name:string;dependency:string}>()).results;
+ const catalog=names.map(name=>({name,columns:columns.filter(column=>column.table_name===name).map(({table_name,...column})=>column),objects:objects.filter(object=>object.tbl_name===name).map(({tbl_name,...object})=>object),dependencies:[...new Set(fks.filter(fk=>fk.table_name===name).map(fk=>fk.dependency))]})) as FoldArchiveTable[];
+ catalog[0]!.schemaObjects=await archiveSchemaObjects(db);
+ return catalog;
+}
 
 test('API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact',async()=>{const target=await exactMainDatabase();try{let db=target.db;const owner=createId(),stage=createId(),company=createId(),contact=createId(),opportunity=createId(),now=new Date().toISOString();await db.prepare('INSERT INTO owner_bootstrap VALUES(?,?,?,?,?,?,?,?,?)').bind('initial-owner',owner,'upgrade@fold.test','Upgrade owner','Existing workspace','UTC','USD',JSON.stringify([{id:stage,name:'Existing stage'}]),now).run();
  await db.batch([db.prepare("CREATE TABLE owner_custom(id TEXT PRIMARY KEY,contact_id TEXT REFERENCES contacts(id),payload BLOB,amount INTEGER,twice INTEGER GENERATED ALWAYS AS(amount*2) STORED) WITHOUT ROWID"),db.prepare('CREATE INDEX owner_custom_amount ON owner_custom(amount)'),db.prepare('ALTER TABLE contacts ADD COLUMN owner_note TEXT')]);
@@ -34,11 +47,12 @@ test('API-002 credential storage and RECORD-016 ownership and accepted main and 
  const attemptDdl=await db.prepare("SELECT sql FROM sqlite_master WHERE name='owner_call_attempt_note'").first('sql');
  const oldAttempts=[{id:createId(),state:'attempted',call_sid:null},{id:createId(),state:'submitted',call_sid:'synthetic-orbit-304'},{id:createId(),state:'uncertain',call_sid:null}].map((attempt,index)=>({...attempt,contact_id:contact,actor_id:owner,created_at:now,owner_note:`synthetic-orbit-${305+index}`}));
  for(const attempt of oldAttempts)await db.prepare('INSERT INTO call_dial_attempts(id,contact_id,actor_id,created_at,state,call_sid,owner_note) VALUES(?,?,?,?,?,?,?)').bind(attempt.id,attempt.contact_id,attempt.actor_id,attempt.created_at,attempt.state,attempt.call_sid,attempt.owner_note).run();
- const catalogBeforeCallFailures=await foldInstalledCatalog(db);
+ const catalogBeforeCallFailures=await migrationCatalog(db);
+ await target.migrateFold('0067_call_failures.sql');db=target.db;
+ assert.deepEqual(preCallFailureCatalog(await migrationCatalog(db)),catalogBeforeCallFailures,'Prior archive catalogs retain their exact owner columns and objects across the additive call migration');
  await target.migrateFold();db=target.db;for(const name of tableNames){const original=before.get(name)!;assert.equal(JSON.stringify((await db.prepare(`SELECT ${original.columns.map(quote).join(',')} FROM ${quote(name)}`).all()).results),original.rows,name);}
  assert.deepEqual((await db.prepare('SELECT * FROM call_dial_attempts ORDER BY id').all()).results,oldAttempts.map(attempt=>({...attempt,creation_outcome:null,provider_error_code:null})).sort((a,b)=>a.id.localeCompare(b.id)),'Every historical dial attempt and owner value survives the additive failure migration without an invented provider error');
  assert.equal(await db.prepare("SELECT sql FROM sqlite_master WHERE name='owner_call_attempt_note'").first('sql'),attemptDdl,'An owner index over historical attempts survives the additive migration');
- assert.deepEqual(preCallFailureCatalog(await foldInstalledCatalog(db)),catalogBeforeCallFailures,'Prior archive catalogs retain their exact owner columns and objects across the additive call migration');
  const callSession=await createDependencies(db).auth.createSession(owner),callApp=createApp({database:db,assets:{fetch:async()=>new Response('')}}),callLog=await callApp.request(`https://orbit.test/api/v1/calls/contacts/${contact}/log`,{headers:{Cookie:`__Host-orbit_session=${callSession.token}`}});
  assert.equal(callLog.status,200,await callLog.clone().text());
  const upgradedLog=await callLog.json() as {calls:unknown[];attempts:{id:string;created_at:string;state:string;call_sid:string|null;provider_error_code:number|null}[]};

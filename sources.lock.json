@@ -2375,7 +2375,7 @@
       "executable": false
     },
     "newtests/t096/forward-upgrade.test.ts": {
-      "sha256": "225e49b1566988b831a61ef173a3f7683a664b44436012fd0d1dba336e03b4e2",
+      "sha256": "9b0905ee53b99bd1b0eb14eee03469f7167f9328d13a02379e610778b5098d35",
       "executable": false
     },
     "newtests/t096/immutable-native-app.ts": {
