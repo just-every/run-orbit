@@ -6,8 +6,8 @@ import { SalesTaskCard } from '../../tasks/ui/task-card';
 import { SalesTaskForm } from '../../tasks/ui/task-form';
 import { useOperatorDialog } from './operator-dialog';
 import './sales-tasks.css';
-/** Native tasks on Today; deliberately independent of delegated onboarding handoffs. */
-export function SalesTasks() {
+/** Native sales tasks; deliberately independent of delegated onboarding handoffs. */
+export function SalesTasks({openId}: {openId?: string}) {
  const [data, setData] = useState<TaskList | null>(null), [error, setError] = useState(''), [notice, setNotice] = useState('');
  const [view, setView] = useState<'today' | 'overdue' | 'all' | 'calendar'>('today'), [owner, setOwner] = useState('mine');
  const [date, setDate] = useState(''), [offset, setOffset] = useState(0), [refresh, setRefresh] = useState(0);
@@ -24,15 +24,12 @@ export function SalesTasks() {
  }, [view, owner, date, offset, refresh]);
  useEffect(() => {
   let active = true;
-  function locate() {
-   const id = /^#sales-task-([0-9A-HJKMNP-TV-Z]{26})$/.exec(window.location.hash)?.[1];
-   setTargetId(id ?? null);
-   if (!id) {setFocused(null); return;}
-   void readSalesTask(id).then(result => {if (active) setFocused(result.task);}).catch(reason => {if (active) setError((reason as Error).message);});
-  }
-  locate(); window.addEventListener('hashchange', locate);
-  return () => {active = false; window.removeEventListener('hashchange', locate);};
- }, [refresh]);
+  const id = openId && /^[0-9A-HJKMNP-TV-Z]{26}$/.test(openId) ? openId : undefined;
+  setTargetId(id ?? null);
+  if (!id) setFocused(null);
+  else void readSalesTask(id).then(result => {if (active) setFocused(result.task);}).catch(reason => {if (active) setError((reason as Error).message);});
+  return () => {active = false;};
+ }, [openId, refresh]);
  useEffect(() => {
   if (!focused || loading) return;
   const element = document.getElementById(`sales-task-${focused.id}`);

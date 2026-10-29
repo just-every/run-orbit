@@ -5,7 +5,7 @@ export async function readOnboarding():Promise<OnboardingState>{const response=a
 export function OnboardingChecklist({state}:{state:OnboardingState|null}){
  if(!state)return null;
  const opportunity=state.opportunityId?`/app/opportunities/${state.opportunityId}`:'/app/new',review=state.draftId?`/app/drafts/${state.draftId}`:opportunity;
- const steps=[[state.mailChecked?'Mail sender set up and test received':state.mailConfigured?'Check your mail sender: send yourself a test':'Set up your mail sender',state.mailChecked,'/app/settings#mail-sender'],['Add your first customer',state.customer,'/app/new'],['Connect a source',state.source,'/app/sources'],['Send a test event',state.test,'/app/sources'],['Write your first follow-up',state.draft,opportunity],['Approve and send',state.sent,review]] as const;
+ const steps=[[state.mailChecked?'Mail sender set up and test received':state.mailConfigured?'Check your mail sender: send yourself a test':'Set up your mail sender',state.mailChecked,'/app/settings/mail'],['Add your first customer',state.customer,'/app/new'],['Connect a source',state.source,'/app/settings/capture'],['Send a test event',state.test,'/app/settings/capture'],['Write your first follow-up',state.draft,opportunity],['Approve and send',state.sent,review]] as const;
  const complete=steps.every(([,done])=>Boolean(done));
  return <details className="operator-surface operator-detail__section onboarding-checklist" open={!complete}><summary>{complete?'Setup complete':'Get started with Orbit'}</summary><ol>{steps.map(([name,done,path])=><li key={name} data-complete={Boolean(done)}>{done?<span>Done · {name}</span>:<a href={path}>{name}</a>}</li>)}</ol><a href="/demo">See an example</a></details>;
 }

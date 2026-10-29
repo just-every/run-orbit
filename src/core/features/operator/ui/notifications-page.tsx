@@ -11,7 +11,8 @@ export function useNotifications(){
  async function read(id:string){try{const response=await fetch(`/api/v1/notifications/${id}/read`,{method:'POST',keepalive:true});if(!response.ok)throw new Error('Could not mark the notification read.');setData(old=>({notifications:old.notifications.map(item=>item.id===id?{...item,readAt:new Date().toISOString()}:item),unread:Math.max(0,old.unread-(old.notifications.find(item=>item.id===id)?.readAt?0:1))}));}catch(e){setError(e instanceof Error?e.message:'Could not mark the notification read.');}}
  return {data,error,read};
 }
-export function NotificationCount(){const {data,error}=useNotifications();return <Link to="/app/notifications" aria-label={error?'Notifications unavailable':`${data.unread} unread notifications`}>Notifications{data.unread?` (${data.unread})`:''}</Link>;}
+/** The unread count the menu shows beside Notifications. A failed read keeps the last count, so the menu never flashes. */
+export function useUnreadCount(){return useNotifications().data.unread;}
 /** Ink line icons, one per category: a flag for NOW, a speech bubble for a reply, an envelope with a mark for delivery. */
 const notificationIconPaths={
  assignment:<><circle cx="16" cy="10" r="5"/><path d="M6 28v-4a10 10 0 0 1 20 0v4"/></>,

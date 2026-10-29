@@ -1,0 +1,8 @@
+/* Settings areas: their cards one under another in the shell's content column. */
+.settings-stack { display: grid; gap: 18px; max-width: 960px; padding-top: 24px; }
+.settings-stack > * { min-width: 0; margin: 0; }
+.settings-card { display: grid; gap: 12px; padding: 22px 26px; }
+.settings-card__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.settings-card h2 { margin: 0; font-size: 20px; font-weight: 720; letter-spacing: -0.01em; line-height: 1.2; }
+.settings-card__line { margin: 0; color: var(--ob-body); font-size: 15.5px; line-height: 1.5; }
+@media (max-width: 700px) { .settings-card { padding: 20px; } .ob-app .settings-card__head .orbit-button { min-height: 44px; } }

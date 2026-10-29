@@ -49,7 +49,7 @@ export function CaptureFilesSetup({ error: initialError }: { error?: string }) {
     {error ? <OperatorState kind="error">{error}</OperatorState> : null}
     {summary ? <div role="status"><h3>Import result</h3><div role="region" aria-label="Import result"><table className="capture-summary"><tbody>{rows.map(([name, count]) => <tr key={name}><th scope="row">{name}</th><td>{count}</td></tr>)}</tbody></table></div>
       {summary.skipped > 0 ? <><h4>Why items were not stored</h4><ul>{Object.entries(summary.skipReasons).map(([reason, count]) => <li key={reason}>{reason}: {count}</li>)}</ul></> : null}
-      {summary.proposals > 0 ? <p><a className="orbit-button orbit-button--quiet" href="/app/capture/review">Review {summary.proposals} proposed {summary.proposals === 1 ? 'change' : 'changes'}</a></p> : null}
+      {summary.proposals > 0 ? <p><a className="orbit-button orbit-button--quiet" href="/app/review">Review {summary.proposals} proposed {summary.proposals === 1 ? 'change' : 'changes'}</a></p> : null}
     </div> : null}
   </div>;
 }

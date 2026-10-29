@@ -27,7 +27,7 @@ export async function dispatchSalesTaskReminders(db: D1Database, now = new Date(
   db.prepare(`INSERT OR IGNORE INTO sales_task_notification_links(notification_id,task_id,href)
    SELECT n.id,t.id,? FROM notifications n JOIN sales_tasks t ON t.id=? AND t.reminder_revision=? AND t.owner_id=n.operator_id
    WHERE n.operator_id=? AND n.event_key=? AND t.status='open' AND ${tasksAvailable}`)
-   .bind(`/app#sales-task-${task.id}`, task.id, task.reminder_revision, task.owner_id, key)];
+   .bind(`/app/tasks/${task.id}`, task.id, task.reminder_revision, task.owner_id, key)];
  });
  const results = await db.batch(statements);
  return {created: results.filter((_, index) => index % 2 === 0).reduce((total, result) => total + result.meta.changes, 0), blocked: false};

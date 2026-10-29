@@ -59,7 +59,7 @@ export function erasedMentions(db:D1Database){return db.prepare(`DELETE FROM not
 /** Where a mention notification opens: the exact entry, task or handoff. */
 export const mentionHrefSql=`CASE WHEN n.kind='record.mention' THEN COALESCE(
  (SELECT CASE WHEN r.record_type='opportunity' THEN '/app/opportunities/'||r.record_id ELSE '/app/records?kind='||r.record_type||'&record='||r.record_id END||'#entry-'||r.timeline_entry_id FROM timeline_entry_records r WHERE n.event_key LIKE 'mention:entry:%' AND r.timeline_entry_id=substr(n.event_key,15) LIMIT 1),
- (SELECT '/app#sales-task-'||t.id FROM sales_tasks t WHERE n.event_key LIKE 'mention:task:%' AND t.id=substr(n.event_key,14)),
+ (SELECT '/app/tasks/'||t.id FROM sales_tasks t WHERE n.event_key LIKE 'mention:task:%' AND t.id=substr(n.event_key,14)),
  (SELECT '/app/opportunities/'||h.opportunity_id||'#handoff-'||h.id FROM handoff_tasks h WHERE n.event_key LIKE 'mention:handoff:%' AND h.id=substr(n.event_key,17))) END`;
 export interface Mention {source:MentionSource;id:string;kind:string;text:string;author:string|null;recordType:RecordKind;recordId:string;at:string;href:string}
 const recordHref=(type:RecordKind,id:string)=>type==='opportunity'?`/app/opportunities/${id}`:`/app/records?kind=${type}&record=${id}`;
@@ -72,6 +72,6 @@ export async function mentionsOf(db:D1Database,operatorId:string):Promise<Mentio
  const handoffs=(await db.prepare("SELECT h.id,'handoff' AS kind,h.description AS text,a.display_name AS author,'opportunity' AS recordType,h.opportunity_id AS recordId,h.updated_at AS at FROM notifications n JOIN handoff_tasks h ON n.event_key LIKE 'mention:handoff:%' AND h.id=substr(n.event_key,17) LEFT JOIN operators a ON a.id=h.actor_id WHERE n.operator_id=? AND n.kind='record.mention'").bind(operatorId).all<Omit<Mention,'source'|'href'>>()).results;
  const full=await isFullOperator(db,operatorId),privateRows=full?[]:(await db.prepare('SELECT source,entry_id FROM entry_privacy WHERE entry_id IN(SELECT value FROM json_each(?))').bind(JSON.stringify([...entries,...tasks,...handoffs].map(row=>row.id))).all<{source:string;entry_id:string}>()).results,hidden=new Set(privateRows.map(p=>`${p.source}:${p.entry_id}`));
  return [...entries.filter(row=>!hidden.has(`entry:${row.id}`)).map(row=>({...row,source:'entry' as const,href:`${recordHref(row.recordType,row.recordId)}#entry-${row.id}`})),
-  ...tasks.filter(row=>!hidden.has(`task:${row.id}`)&&still(row.text)).map(row=>({...row,source:'task' as const,href:`/app#sales-task-${row.id}`})),
+  ...tasks.filter(row=>!hidden.has(`task:${row.id}`)&&still(row.text)).map(row=>({...row,source:'task' as const,href:`/app/tasks/${row.id}`})),
   ...handoffs.filter(row=>!hidden.has(`handoff:${row.id}`)&&still(row.text)).map(row=>({...row,source:'handoff' as const,href:`/app/opportunities/${row.recordId}#handoff-${row.id}`}))].sort((a,b)=>b.at.localeCompare(a.at));
 }

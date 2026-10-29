@@ -12,7 +12,7 @@ export function ConnectedProducts(){
   {products&&<ul className="connected-products" style={{listStyle:'none',padding:0,margin:0,display:'grid',gap:12}}>{products.map(product=><li key={product.products.join()} data-state={product.state} style={{borderTop:'1px solid var(--operator-border,#d8dce3)',paddingTop:8,overflowWrap:'anywhere'}}>
    <h3 style={{margin:'0 0 4px'}}>{product.products.join(', ')} <small>· {product.job}</small></h3>
    <p style={{margin:'0 0 4px'}}><strong>{label[product.state]}</strong>{product.lastDeliveryAt?` · Last delivery ${formatDate(product.lastDeliveryAt)}`:''}</p>
-   <p style={{margin:'0 0 4px'}}>{product.inOrbit}{product.state==='awaiting-delivery'&&<> <a href="/app/sources">Open Signal sources</a></>}</p>
+   <p style={{margin:'0 0 4px'}}>{product.inOrbit}{product.state==='awaiting-delivery'&&<> <a href="/app/settings/capture">Open Settings › Capture</a></>}</p>
    {product.link&&<p style={{margin:'0 0 4px'}}><a href={product.link.href} target="_blank" rel="noreferrer" style={{display:'inline-flex',alignItems:'center',minHeight:44}}>{product.link.label}</a></p>}
    <p style={{margin:0}}>Owns: {product.owns}.</p>
   </li>)}</ul>}

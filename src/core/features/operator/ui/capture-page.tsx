@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import './records.css';
 import './capture-providers.css';
 import './capture-setup.css';
-import { OperatorShell, OperatorState } from './operator-shell';
+import { OperatorState } from './operator-shell';
 import { useOperatorResource } from './use-operator-resource';
 import { CaptureSource } from './capture-source';
 import type { CaptureSource as CaptureSourceRecord } from './capture-types';
@@ -19,10 +19,10 @@ const icons = {
   files: <svg viewBox="0 0 24 24" aria-hidden="true"><path {...stroke} d="M8 7V3h8l4 4v11h-4M16 3v4h4M4 7h8l4 4v10H4zM12 7v4h4" /></svg>,
 };
 const ways = [
-  { href: '/app/capture/connect/calendar', icon: icons.calendar, title: 'Calendar link', text: 'Paste your calendar’s private iCal address. Works with Google, Outlook and Apple calendars.' },
-  { href: '/app/capture/connect/google', icon: icons.google, title: 'Google account', text: 'Read the Gmail labels and calendars you choose. About 10 minutes in Google Cloud.' },
-  { href: '/app/capture/connect/microsoft', icon: icons.microsoft, title: 'Microsoft account', text: 'Read the Outlook folders and calendars you choose. About 10 minutes in Microsoft Entra.' },
-  { href: '/app/capture/connect/files', icon: icons.files, title: 'Mail and calendar files', text: 'Upload .eml, mbox or .ics files.' },
+  { href: '/app/settings/capture/connect/calendar', icon: icons.calendar, title: 'Calendar link', text: 'Paste your calendar’s private iCal address. Works with Google, Outlook and Apple calendars.' },
+  { href: '/app/settings/capture/connect/google', icon: icons.google, title: 'Google account', text: 'Read the Gmail labels and calendars you choose. About 10 minutes in Google Cloud.' },
+  { href: '/app/settings/capture/connect/microsoft', icon: icons.microsoft, title: 'Microsoft account', text: 'Read the Outlook folders and calendars you choose. About 10 minutes in Microsoft Entra.' },
+  { href: '/app/settings/capture/connect/files', icon: icons.files, title: 'Mail and calendar files', text: 'Upload .eml, mbox or .ics files.' },
 ];
 
 function OtherWays({ title, skip }: { title: string; skip?: string }) {
@@ -46,7 +46,7 @@ function Start({ forward }: { forward: Overview['forward'] }) {
         <h2 id="capture-start-heading">Your Orbit address</h2>
         <p>Send customer mail to a private address and Orbit files it against the right contact.</p>
         {ready ? <form method="post" action="/api/v1/capture/forward"><button className="orbit-button orbit-button--primary capture-start__button" type="submit">Create my Orbit address</button></form>
-          : <a className="orbit-button orbit-button--primary capture-start__button" href="/app/capture/connect/address">Get my Orbit address</a>}
+          : <a className="orbit-button orbit-button--primary capture-start__button" href="/app/settings/capture/connect/address">Get my Orbit address</a>}
         {ready ? null : <p className="capture-note">A one-time step first: the address needs Orbit hosted on Cloudflare with a domain of your own. Without one, use the calendar link, a file upload, or Google or Microsoft below.</p>}
       </div>
       <ol className="capture-start__hints">
@@ -69,7 +69,7 @@ function Daily({ data, onChanged, focus }: { data: Overview; onChanged: () => vo
     card?.focus({ preventScroll: true });
   }, [focus]);
   return <>
-    <a className={`capture-review-banner${waiting ? '' : ' capture-review-banner--quiet'}`} href="/app/capture/review">
+    <a className={`capture-review-banner${waiting ? '' : ' capture-review-banner--quiet'}`} href="/app/review">
       <span><strong>{waiting ? `${waiting} proposed ${waiting === 1 ? 'change' : 'changes'} to review` : 'No proposed changes are waiting'}</strong>
         <small>{waiting ? 'Orbit changes nothing until you accept.' : 'New evidence shows up here first.'}</small></span>
       <span className="capture-review-banner__go">Review <span aria-hidden="true">→</span></span>
@@ -80,12 +80,13 @@ function Daily({ data, onChanged, focus }: { data: Overview; onChanged: () => vo
     </section>
     {!hasAddress ? <section className="capture-ways-list" aria-labelledby="capture-address-way"><h2 id="capture-address-way">Add your Orbit address</h2><ul><li>
       <span className="capture-ways-list__icon">{icons.mail}</span><h3>Orbit address</h3><p>Bcc or forward customer mail to a private address. No setup in Google or Microsoft.</p>
-      <a href="/app/capture/connect/address" aria-label="Set up your Orbit address">Set up <span aria-hidden="true">→</span></a></li></ul></section> : null}
+      <a href="/app/settings/capture/connect/address" aria-label="Set up your Orbit address">Set up <span aria-hidden="true">→</span></a></li></ul></section> : null}
     <OtherWays title="Connect another" />
   </>;
 }
 
-export function CapturePage() {
+/** Settings › Capture: the mail and meetings Orbit reads, and the ways to add more. */
+export function CaptureSettings() {
   const load = useCallback(async () => {
     const [sources, forward] = await Promise.all([fetch('/api/v1/capture/sources', { credentials: 'same-origin' }), fetch('/api/v1/capture/forward', { credentials: 'same-origin' })]);
     if (!sources.ok || !forward.ok) throw new Error('Capture could not load.');
@@ -106,15 +107,15 @@ export function CapturePage() {
     if (saved) { setFocus(saved); setNotice('Saved. Orbit reads only the labels, folders and calendars you chose, and checks for new mail every few minutes.'); }
     if (failure) setError(failure);
     reload.current();
-    window.history.replaceState(null, '', '/app/capture');
+    window.history.replaceState(null, '', '/app/settings/capture');
   }, []);
   const live = overview.data?.sources.filter((source) => source.state !== 'disconnected' || source.captured_count > 0) ?? [];
-  return <OperatorShell eyebrow="Customer evidence" title="Capture mail and meetings">
+  return <section aria-label="Mail and meetings">
     {notice ? <OperatorState>{notice}</OperatorState> : null}
     {error ? <OperatorState kind="error">{error}</OperatorState> : null}
     {overview.loading ? <OperatorState>Loading Capture…</OperatorState> : null}
     {overview.error ? <OperatorState kind="error">{overview.error.message}</OperatorState> : null}
     {overview.data ? <CaptureMailRule/> : null}
     {overview.data ? live.length ? <Daily data={{ ...overview.data, sources: live }} onChanged={overview.reload} focus={focus} /> : <Start forward={overview.data.forward} /> : null}
-  </OperatorShell>;
+  </section>;
 }
