@@ -43,14 +43,14 @@ export default async function sellerDay({tool,request,origin,cookie}) {
  assert.deepEqual(write?.resource,{kind:'opportunity',id},'native write audit identifies its actual opportunity');
 }
 
-// The installed 0.2.86 runner exercises the native target, resource refusal,
+// The installed 0.2.87 runner exercises the native target, resource refusal,
 // replay admission, signed owner binding and independent reviewer lifecycle.
 // Access/security tools remain undeclared, so no self-widening probe applies.
-// PENDING-BASE-ARCHIVE-2026-10-28: 0.2.86 archive record-base succeeds,
-// but refresh-base still needs historical workflow matching at Base
-// edition-authoring/workflow-copies.mjs:51; archive-source.mjs:34 refuses it.
-// Keep the recorded release source; do not invent Git ancestry for an archive.
-// PENDING-BASE-INJECTION-2026-10-28: Base modules/agent-door/conformance/
-// journey.mjs:92 reissues completed mutations with a new key and their old
-// native revisions. public_update, save_handoff and draft_update must refuse
-// that stale request. Keep the injection assertions and native fences intact.
+// The runner refreshes native revisions for injection variants. The stale
+// public_update, save_handoff and draft_update requests still refuse, while
+// fresh injection variants assert the original classes and native effects.
+// PENDING-BASE-ARCHIVE-ANCESTRY-2026-10-29: 0.2.87 refresh --base-archive
+// succeeds for the door/settings record, but a whole-record refresh crosses
+// an edition migration at Base edition-authoring/edition-migrations.mjs:33-34.
+// archive-source.mjs:34 correctly refuses unavailable Git ancestry. Preserve
+// the other pins; never invent ancestry or skip their migration obligations.

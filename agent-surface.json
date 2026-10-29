@@ -1392,7 +1392,8 @@
     "owner": {
       "bindings": {
         "RER_MANAGEMENT_ORIGIN": "issuer",
-        "RER_INSTALLATION_ID": "installationId"
+        "RER_INSTALLATION_ID": "installationId",
+        "MAIL_FROM": "email"
       },
       "initializer": "tests/agent-door/initialize-owner.mjs"
     },
