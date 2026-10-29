@@ -6,11 +6,12 @@ import './autosave.css';
 
 /** A labelled value that saves itself: the label with ✓ Saved beside it, the control, and the one line under it when the
  * value did not save. Quiet fields read as text until hovered or focused; standard fields keep their border. */
-export function AutosaveField({form,field,label,labelText,quiet=false,describe,className='',children}:{form:AutosaveForm;field:string;label:ReactNode;labelText?:string;quiet?:boolean;describe?:(value:unknown)=>string;className?:string;children:ReactNode}){
+export function AutosaveField({form,field,label,labelText,quiet=false,describe,className='',after,children}:{form:AutosaveForm;field:string;label:ReactNode;labelText?:string;quiet?:boolean;describe?:(value:unknown)=>string;className?:string;after?:ReactNode;children:ReactNode}){
  const box=useRef<HTMLDivElement>(null),status=form.status(field);
  useEffect(()=>{form.describe(field,labelText??(typeof label==='string'?label:'A value'),()=>box.current);});
  return <div ref={box} data-autosave="" className={`${quiet?'r-quiet':'r-field'} ${status.state==='failed'||status.state==='conflict'?'is-failed':''} ${className}`}>
   <label><span className="r-label"><span>{label}</span><SavedLabel show={form.saved(field)}/></span>{children}</label>
+  {after}
   <SaveFailure status={status} describe={describe} onRetry={()=>form.retry(field)} onDiscard={()=>form.discard(field)} onUseMine={()=>form.useMine(field)}/>
  </div>;
 }

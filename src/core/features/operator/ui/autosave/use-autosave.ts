@@ -7,7 +7,8 @@ export type Values=Record<string,any>;
 export interface SaveAnswer<D extends Values>{copy:D;changed:boolean}
 /** A save the server refused, in its own words; a 409 may carry the copy that holds now and who saved it. */
 export class SaveRefused extends Error{
- constructor(message:string,readonly status:number,readonly current?:Values,readonly changedBy?:string|null){super(message);}
+ /** revert: the field goes back to its saved value with these words under it (a move the stage refuses), no Retry. */
+ constructor(message:string,readonly status:number,readonly current?:Values,readonly changedBy?:string|null,readonly revert=false){super(message);}
 }
 
 export interface AutosaveOptions<D extends Values>{
@@ -59,7 +60,7 @@ export function useAutosave<D extends Values>(options:AutosaveOptions<D>){
  const newer=(next:D)=>{const version=settings.current.version,current=copy.current;if(!current||!version)return true;return (version(next)??'')>=(version(current)??'');};
 
  /** A copy read by the page (a reload, a teammate's change) replaces the hook's own unless a save answered a newer one. */
- function adopt(next:D|null){if(!next||next===copy.current||!newer(next))return;copy.current=next;render(value=>value+1);}
+ function adopt(next:D|null){if(!next||next===copy.current||!newer(next))return;if(!settings.current.version&&copy.current&&(inflight.current||queue.current.size))return;copy.current=next;render(value=>value+1);}
  const restored=useRef(false);
  useEffect(()=>{adopt(options.copy);if(!restored.current&&copy.current){restored.current=true;restore(copy.current);}},[options.copy]);
 
@@ -91,6 +92,7 @@ export function useAutosave<D extends Values>(options:AutosaveOptions<D>){
   if(answer.changed)settings.current.onSaved?.(answer.copy);
  }
  async function refused(changes:Partial<D>,base:Partial<D>,error:unknown){
+  if(error instanceof SaveRefused&&error.revert){for(const field of Object.keys(changes)){if(queue.current.has(field))continue;dropEdit(key,field);status(field,{state:'failed',message:error.message,local:true});}return;}
   if(error instanceof SaveRefused&&error.status===409){
    let fresh=error.current as D|undefined;
    if(!fresh){try{fresh=await settings.current.reread();}catch{fresh=undefined;}}

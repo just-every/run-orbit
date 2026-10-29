@@ -9,11 +9,14 @@ export async function stagePolicy(db:D1Database,stageId:string){
  if(!policy)throw new RecordError(400,'Unknown pipeline stage.');
  return policy;
 }
+// A stage's required deal fields in the owner's words.
+const requiredWords:Record<string,string>={title:'a title',value_cents:'a value',owner_id:'an owner',company_id:'a company',expected_close_at:'an expected close date',contact_ids:'contacts',primary_contact_id:'a primary contact'};
+const listed=(items:string[])=>items.length>1?`${items.slice(0,-1).join(', ')} and ${items.at(-1)}`:items[0]??'';
 export function assertRequiredFields(policy:StagePolicy,deal:Record<string,unknown>){
  const fields=JSON.parse(policy.required_fields_json) as string[];
  const custom=(deal.custom_fields??JSON.parse(String(deal.custom_fields_json??'{}'))) as Record<string,unknown>;
  const missing=fields.filter(field=>{const value=field.startsWith('custom:')?(Object.hasOwn(custom,field.slice(7))?custom[field.slice(7)]:undefined):deal[field];return value===undefined||value===null||(typeof value==='string'&&!value.trim())||(Array.isArray(value)&&!value.length);});
- if(missing.length)throw new RecordError(409,`Complete required fields for ${policy.stage_name}: ${missing.map(field=>field.startsWith('custom:')?field.slice(7):field.replaceAll('_',' ')).join(', ')}.`);
+ if(missing.length)throw new RecordError(409,`${policy.stage_name} needs ${listed(missing.map(field=>field.startsWith('custom:')?field.slice(7).replaceAll('_',' '):requiredWords[field]??field.replaceAll('_',' ')))}.`);
 }
 /** Bind the rules and labels reviewed by the request to the transaction that writes. */
 export function stagePolicyFence(db:D1Database,policies:StagePolicy[],deal?:{id:string;stage_id:string;updated_at:string}){

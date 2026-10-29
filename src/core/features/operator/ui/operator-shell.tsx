@@ -13,6 +13,8 @@ import { MenuLink } from "./menu-link";
 interface OperatorShellProps extends PropsWithChildren {
   eyebrow?: ReactNode;
   title: string;
+  /** Replaces the plain title: a record's title is a quiet field drawn as the H1. */
+  heading?: ReactNode;
   action?: ReactNode;
   restricted?: boolean;
   /** For a restricted (collaborator) shell: whether their profile reads Reports. */
@@ -21,7 +23,7 @@ interface OperatorShellProps extends PropsWithChildren {
 
 /** The console's frame in Orbit's brand: the lockup, the daily jobs (or, on Settings pages, the Settings areas), Settings
  * and Sign out apart at the right end; at phone width the lockup and Menu, which opens the same menu as a sheet. */
-export function OperatorShell({ action, children, eyebrow, title, restricted=false, reports=true }: OperatorShellProps) {
+export function OperatorShell({ action, children, eyebrow, title, heading, restricted=false, reports=true }: OperatorShellProps) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const menu = operatorMenu(pathname, restricted, reports), unread = useUnreadCount();
   // Leaving a page waits for its saves; a refused one keeps the page with a note at its top.
@@ -45,7 +47,7 @@ export function OperatorShell({ action, children, eyebrow, title, restricted=fal
         <header className="operator-titlebar">
           <div>
             {typeof eyebrow === 'string' ? <p className="operator-eyebrow">{eyebrow}</p> : eyebrow ? <div className="operator-eyebrow">{eyebrow}</div> : null}
-            <h1>{title}</h1>
+            {heading ?? <h1>{title}</h1>}
           </div>
           {action ? <div className="operator-titlebar__action">{action}</div> : null}
         </header>
