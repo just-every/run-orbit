@@ -52,7 +52,7 @@ export function verificationInventory() {
   const files = testInventory(), cases = files.reduce((sum, row) => sum + row.cases, 0);
   // Capacity is the only separate product qualification. Count the source validators,
   // generated docs, shared-build integrity check and Chromium launch assertion too.
-  const qualifications = 1, sourceAssertions = 7;
+  const qualifications = 1, sourceAssertions = 9;
   return { cases, qualifications, sourceAssertions, total: cases + qualifications + sourceAssertions, files };
 }
 

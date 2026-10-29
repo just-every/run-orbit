@@ -14,9 +14,11 @@ export function OpportunityTimeline({opportunity,presentation,reload}:{opportuni
  return <section className="operator-surface operator-detail__section" data-testid="opportunity-timeline"><h2>Timeline</h2>
   {opportunity.timeline.length?<ol className="operator-timeline">{opportunity.timeline.map(entry=>{
    const payload=entry.payload&&typeof entry.payload==='object'?entry.payload as Record<string,unknown>:{};
+   const approvers=Array.isArray(payload.approvers)?payload.approvers.filter((person):person is {name:string}=>Boolean(person)&&typeof person==='object'&&typeof person.name==='string').map(person=>person.name):[];
    const signalType=opportunity.signals.find(signal=>signal.id===entry.id)?.type;
    return <li key={entry.id} id={`entry-${entry.id}`}><strong>{mailEvidenceTitle(entry.kind,signalType)}</strong>
     <MailEvidenceNote kind={entry.kind} signalType={signalType}/>
+    {entry.actorType==='agent'&&<p>Prepared by {entry.actorName}{approvers.length?` · Approved by ${approvers.join(', ')}`:''}</p>}
     {typeof payload.text==='string'&&<p style={{whiteSpace:'pre-wrap'}}>{payload.text}</p>}
     {typeof payload.subject==='string'&&<p>{payload.subject}</p>}
     {typeof payload.outcome==='string'&&<p>Outcome: {label(payload.outcome)}</p>}

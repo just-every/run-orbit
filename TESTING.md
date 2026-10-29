@@ -11,7 +11,7 @@ There is one 390-wide phone smoke; other browser journeys use 1440.
 
 `pnpm run test:list` prints the complete inventory. Every registration counts,
 including wrappers and loops that generate registrations. The capacity program
-and the seven direct source and environment assertion programs also count. Internal helper tests,
+and the nine direct source and environment assertion programs also count. Internal helper tests,
 repository pins and repeated feature checks have been removed; the inventory is
 not a reason to merge unrelated behaviors into one registration.
 
