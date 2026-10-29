@@ -8,7 +8,7 @@ function candidateLabel(record:CustomerRecord,kind:'contact'|'company'){
  return (kind==='contact'?[record.name,record.email,record.companyName??'No company']:[record.name,record.primary_domain??'No domain']).filter(Boolean).join(' · ');
 }
 
-export function DuplicateReview({kind,fields,onChanged}:{kind:'contact'|'company';fields:string[];onChanged:()=>void}){
+export function DuplicateReview({kind,fields,onChanged=()=>{}}:{kind:'contact'|'company';fields:string[];onChanged?:()=>void}){
  const [groups,setGroups]=useState<CustomerRecord[][]>([]),[pair,setPair]=useState<CustomerRecord[]>([]),[choices,setChoices]=useState<Record<string,string>>({});
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),[status,setStatus]=useState('');
  const {ask,dialog}=useOperatorDialog();
@@ -19,7 +19,7 @@ export function DuplicateReview({kind,fields,onChanged}:{kind:'contact'|'company
   try{await recordsRequest(`records/${kind}/merge`,'POST',{survivorId:pair[0].id,retiredId:pair[1].id,choices,reviewed:{survivor:pair[0].mergeReviewToken,retired:pair[1].mergeReviewToken},confirmed:true});setPair([]);setGroups([]);setStatus('Records merged. Find matching names to review remaining candidates.');onChanged();}
   catch(reason){setError((reason as Error).message);}finally{setBusy(false);}
  }
- return <section className="duplicate-review"><h2>Duplicate candidates</h2><button type="button" disabled={busy} onClick={()=>void find()}>Find matching names</button>
+ return <section className="duplicate-review" aria-label={kind==='contact'?'Duplicate contacts':'Duplicate companies'}><button type="button" disabled={busy} onClick={()=>void find()}>{kind==='contact'?'Find matching contacts':'Find matching companies'}</button>
   {groups.map((group,index)=><div className="duplicate-group" key={index}>{group.map(record=><button type="button" disabled={busy} key={record.id} aria-pressed={pair.some(selected=>selected.id===record.id)} onClick={()=>{setPair(pair.length===1&&pair[0].id!==record.id?[pair[0],record]:[record]);setChoices({});}}>{candidateLabel(record,kind)}</button>)}</div>)}
   {pair.length===1&&<p>Survivor: {candidateLabel(pair[0],kind)}. Select a second record to retire.</p>}
   {pair.length===2&&<form onSubmit={event=>{event.preventDefault();void merge();}}><h3>Survivor: {candidateLabel(pair[0],kind)}</h3><p>Retiring: {candidateLabel(pair[1],kind)}</p>

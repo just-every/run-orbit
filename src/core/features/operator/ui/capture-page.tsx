@@ -27,7 +27,7 @@ const ways = [
 
 function OtherWays({ title, skip }: { title: string; skip?: string }) {
   return <section className="capture-ways-list" aria-labelledby="capture-other-ways">
-    <h2 id="capture-other-ways">{title}</h2>
+    <h3 id="capture-other-ways">{title}</h3>
     <ul>{ways.filter((way) => way.href !== skip).map((way) => <li key={way.href}>
       <span className="capture-ways-list__icon">{way.icon}</span><h3>{way.title}</h3><p>{way.text}</p>
       <a href={way.href} aria-label={`Set up ${way.title.toLowerCase()}`}>Set up <span aria-hidden="true">→</span></a>
@@ -39,11 +39,11 @@ function OtherWays({ title, skip }: { title: string; skip?: string }) {
 function Start({ forward }: { forward: Overview['forward'] }) {
   const ready = forward.configured && forward.available;
   return <>
-    <p className="capture-lead">Orbit reads customer email and meetings so it can stop outreach when someone replies and suggest record updates you approve. Nothing is sent from here.</p>
+    <p className="settings-card__line">Orbit reads customer mail and meetings to stop outreach on a reply and to suggest updates you approve.</p>
     <section className="capture-start" aria-labelledby="capture-start-heading">
       <span className="capture-start__icon">{icons.mail}</span>
       <div className="capture-start__main">
-        <h2 id="capture-start-heading">Your Orbit address</h2>
+        <h3 id="capture-start-heading">Your Orbit address</h3>
         <p>Send customer mail to a private address and Orbit files it against the right contact.</p>
         {ready ? <form method="post" action="/api/v1/capture/forward"><button className="orbit-button orbit-button--primary capture-start__button" type="submit">Create my Orbit address</button></form>
           : <a className="orbit-button orbit-button--primary capture-start__button" href="/app/settings/capture/connect/address">Get my Orbit address</a>}
@@ -60,7 +60,6 @@ function Start({ forward }: { forward: Overview['forward'] }) {
 }
 
 function Daily({ data, onChanged, focus }: { data: Overview; onChanged: () => void; focus: string }) {
-  const waiting = data.sources.reduce((total, source) => total + source.proposals_waiting, 0);
   const hasAddress = data.sources.some((source) => source.adapter === 'forward' && source.state !== 'disconnected');
   useEffect(() => {
     if (!focus) return;
@@ -69,23 +68,19 @@ function Daily({ data, onChanged, focus }: { data: Overview; onChanged: () => vo
     card?.focus({ preventScroll: true });
   }, [focus]);
   return <>
-    <a className={`capture-review-banner${waiting ? '' : ' capture-review-banner--quiet'}`} href="/app/review">
-      <span><strong>{waiting ? `${waiting} proposed ${waiting === 1 ? 'change' : 'changes'} to review` : 'No proposed changes are waiting'}</strong>
-        <small>{waiting ? 'Orbit changes nothing until you accept.' : 'New evidence shows up here first.'}</small></span>
-      <span className="capture-review-banner__go">Review <span aria-hidden="true">→</span></span>
-    </a>
     <section className="capture-sources-section" aria-labelledby="capture-sources">
-      <h2 id="capture-sources">Connected</h2>
+      <h3 id="capture-sources">Connected</h3>
       {data.sources.map((source) => <CaptureSource key={source.id} source={source} onChanged={onChanged} receivesMail={data.forward.configured && data.forward.available} />)}
     </section>
-    {!hasAddress ? <section className="capture-ways-list" aria-labelledby="capture-address-way"><h2 id="capture-address-way">Add your Orbit address</h2><ul><li>
+    {!hasAddress ? <section className="capture-ways-list" aria-labelledby="capture-address-way"><h3 id="capture-address-way">Add your Orbit address</h3><ul><li>
       <span className="capture-ways-list__icon">{icons.mail}</span><h3>Orbit address</h3><p>Bcc or forward customer mail to a private address. No setup in Google or Microsoft.</p>
       <a href="/app/settings/capture/connect/address" aria-label="Set up your Orbit address">Set up <span aria-hidden="true">→</span></a></li></ul></section> : null}
     <OtherWays title="Connect another" />
   </>;
 }
 
-/** Settings › Capture: the mail and meetings Orbit reads, and the ways to add more. */
+/** Settings › Capture › Mail and meetings: what Orbit reads and the ways to add more; then the rule for mail on a
+ * contact with several open deals. What Orbit found waits on Review. */
 export function CaptureSettings() {
   const load = useCallback(async () => {
     const [sources, forward] = await Promise.all([fetch('/api/v1/capture/sources', { credentials: 'same-origin' }), fetch('/api/v1/capture/forward', { credentials: 'same-origin' })]);
@@ -110,12 +105,15 @@ export function CaptureSettings() {
     window.history.replaceState(null, '', '/app/settings/capture');
   }, []);
   const live = overview.data?.sources.filter((source) => source.state !== 'disconnected' || source.captured_count > 0) ?? [];
-  return <section aria-label="Mail and meetings">
-    {notice ? <OperatorState>{notice}</OperatorState> : null}
-    {error ? <OperatorState kind="error">{error}</OperatorState> : null}
-    {overview.loading ? <OperatorState>Loading Capture…</OperatorState> : null}
-    {overview.error ? <OperatorState kind="error">{overview.error.message}</OperatorState> : null}
+  return <>
+    <section className="operator-surface settings-card capture-card" aria-labelledby="capture-mail-meetings">
+      <h2 id="capture-mail-meetings">Mail and meetings</h2>
+      {notice ? <OperatorState>{notice}</OperatorState> : null}
+      {error ? <OperatorState kind="error">{error}</OperatorState> : null}
+      {overview.loading ? <OperatorState>Loading Capture…</OperatorState> : null}
+      {overview.error ? <OperatorState kind="error">{overview.error.message}</OperatorState> : null}
+      {overview.data ? live.length ? <Daily data={{ ...overview.data, sources: live }} onChanged={overview.reload} focus={focus} /> : <Start forward={overview.data.forward} /> : null}
+    </section>
     {overview.data ? <CaptureMailRule/> : null}
-    {overview.data ? live.length ? <Daily data={{ ...overview.data, sources: live }} onChanged={overview.reload} focus={focus} /> : <Start forward={overview.data.forward} /> : null}
-  </section>;
+  </>;
 }

@@ -40,10 +40,6 @@
 .records-workspace .operator-queue-card p {margin:0;color:var(--ob-muted);font-size:13px}
 .records-workspace fieldset,.settings-layout fieldset,.manual-entry fieldset {min-width:0}
 .record-editor input[type=checkbox],.settings-layout input[type=checkbox],.manual-entry input[type=checkbox] {width:16px;min-height:16px;margin-right:8px}
-.settings-layout .workbench-summary article {padding:18px 0;border-bottom:1px solid var(--ob-line)}
-.settings-layout .workbench-summary article p {overflow-wrap:anywhere;font-size:13px}
-.settings-layout .workbench-summary button {font-size:13px;text-decoration:underline}
-.settings-layout .workbench-summary form {margin-top:24px}
 @media(max-width:700px){.record-editor{grid-template-columns:minmax(0,1fr)}.record-editor .workbench-summary{grid-row:auto}.record-editor .workbench-summary dl div{grid-template-columns:100px minmax(0,1fr)}.record-editor .workbench-form,.record-editor .workbench-summary{padding:20px}.records-detail-list{grid-template-columns:1fr}.record-custom-fields__row{grid-template-columns:minmax(0,1fr)}.record-editor .workbench-actions{margin-top:0}}
 
 /* Preserve full related names without intrinsic grid expansion or clipped text. */
@@ -61,15 +57,26 @@
 .records-workspace .workbench-actions {flex-wrap:wrap}
 .records-contactability-note{margin:12px 0;padding:12px 14px;border:0;border-radius:10px;background:var(--ob-paper);color:var(--ob-body);line-height:1.5}
 
-.pipeline-stage-editor{display:grid;gap:14px;padding:18px;border:1px solid var(--ob-line);border-radius:10px}
+.pipeline-form{display:grid;gap:14px}
+.pipeline-stage-editor{display:grid;gap:12px;padding:16px;border:0;border-radius:12px;background:var(--ob-paper)}
+.pipeline-stage-editor__fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.pipeline-required{display:flex;flex-wrap:wrap;gap:8px}
+.pipeline-required-fold summary{display:list-item;padding-block:10px;line-height:24px;font-weight:600}
+.pipeline-stage-editor__foot{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:8px 12px}
+.pipeline-stage-editor__foot>.pipeline-required-fold{flex:1 1 280px;min-width:0}
+.pipeline-stage-editor__foot>.workbench-actions{flex-wrap:wrap;justify-content:flex-end;gap:10px;padding:0}
+.pipeline-required-fold .pipeline-required{margin-top:8px}
 .pipeline-stage-editor p,.pipeline-column>p,.pipeline-deal span{font-size:13px;color:var(--ob-muted)}
 .pipeline-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;align-items:start}
 .pipeline-column{min-width:0;padding:18px}.pipeline-column h3{margin:0;overflow-wrap:anywhere}
 .ob-app .pipeline-deal{display:grid;gap:8px;width:100%;padding:16px;margin-top:12px;text-align:left;white-space:normal;border-radius:10px;background:var(--ob-paper)}
 .pipeline-deal strong{overflow-wrap:anywhere}.pipeline-boards{display:grid;gap:20px}
 @media(max-width:700px){.pipeline-board{grid-template-columns:minmax(0,1fr)}}
-.settings-layout fieldset.pipeline-stage-editor{display:grid;padding:18px;border:1px solid var(--ob-line);border-radius:10px}
+.settings-layout fieldset.pipeline-stage-editor{display:grid;padding:16px;border:0;border-radius:12px}
 .settings-layout .pipeline-stage-editor label{display:grid;align-items:stretch;padding:0;border:0;border-radius:0;font-weight:500}
+.ob-app .settings-layout .pipeline-required label{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px 0 12px;border:1.5px solid var(--ob-line-strong);border-radius:999px;font-weight:600}
+.ob-app .settings-layout .pipeline-required label:has(input:checked){border-color:var(--ob-ink)}
+@media(max-width:700px){.pipeline-stage-editor__fields{grid-template-columns:minmax(0,1fr)}}
 
 /* Search sits directly over the list; only each field draws a border. */
 .records-search {min-width:0;border:0;padding:0}
