@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {launchFixture} from '../support/launch-fixture';
+import {createApp} from '../support/app';
+import {createDependencies} from '../support/dependencies';
 
 test('RECORD-004 RECORD-009 matching names across companies remain review-only and native merges refuse missing and stale reviews',async()=>{
  const f=await launchFixture();try{
@@ -22,7 +24,20 @@ test('RECORD-004 RECORD-009 matching names across companies remain review-only a
     const baseline=await counts();assert.equal((await f.request(path,'POST',{...body,reviewed})).status,409);
     assert.deepEqual(await Promise.all([read(survivorId),read(retiredId)]),current);assert.deepEqual(await counts(),baseline);
    }
+   let retiredMail:any;
+   if(kind==='contact'){
+    const session=await createDependencies(f.db).auth.createSession(f.actor),app=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:{send:async()=>({providerMessageId:'synthetic-orbit-1'})}});
+    const mail=async(path:string,method='GET',body?:unknown,status=200)=>{const response=await app.request(`https://orbit.test/api/v1/${path}`,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});assert.equal(response.status,status,await response.clone().text());return response.json() as Promise<any>;};
+    const compose=async(subject:string)=>mail(`workbench/records/contact/${retiredId}/drafts`,'POST',{contactId:retiredId,opportunityId:null,subject,body:'Please keep the original consultation details.'},201);
+    const sentDraft=await compose('Sent consultation'),render=await mail(`library/drafts/${sentDraft.id}/render`);
+    await mail(`library/drafts/${sentDraft.id}/render`,'POST',{revision:1,reviewHash:render.reviewHash});
+    const preview=await mail(`workbench/drafts/${sentDraft.id}/approval-preview`);
+    const sent=await mail(`workbench/drafts/${sentDraft.id}/approve`,'POST',{revision:1,quietHoursConfirmation:preview.localTime});assert.equal(sent.state,'accepted');
+    await compose('Unsent consultation');
+    retiredMail=await mail(`workbench/records/contact/${retiredId}/mail`);retiredMail.drafts.sort((a:any,b:any)=>a.id.localeCompare(b.id));
+   }
    assert.equal((await f.request(path,'POST',{...body,reviewed:await review()})).status,200);
+   if(retiredMail){const history=await (await f.request(`workbench/records/contact/${survivorId}/mail`)).json() as any;history.drafts.sort((a:any,b:any)=>a.id.localeCompare(b.id));assert.deepEqual(history,{...retiredMail,drafts:retiredMail.drafts.map((draft:any)=>({...draft,isStale:1}))});}
    const result=await read(survivorId);assert.equal(result.record[kind==='company'?'primary_domain':'email'],kind==='company'?'company-2.example':'contact-2@example.test');
    assert.equal((await f.request(`records/${kind}/${retiredId}`)).status,404);
    assert.equal(result.timeline.filter((entry:any)=>entry.kind==='record.merged').length,1);
