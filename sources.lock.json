@@ -9711,7 +9711,7 @@
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
-      "sha256": "3677014779e8f624c86e2988fa0e5c75bc31476e39f14bf2251771c7ce49b243",
+      "sha256": "76d7c27ac137bf54c3fe06dcfa9f3b7ecde580c3e3fc6950458449e7d0bfcac9",
       "executable": false
     },
     "tests/rer/operator-actions-journey.mjs": {

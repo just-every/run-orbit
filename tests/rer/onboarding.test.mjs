@@ -40,8 +40,11 @@ paidRuntime=new unstable_DevEnv();const paidWorker=await paidRuntime.startWorker
  await managedMail({checkout,page,port,bindings:paidBindings,opportunityURL:result.opportunityURL,evidence,width});
  await hostedScheduling({checkout,page,port,bindings:paidBindings,opportunityURL:result.opportunityURL,evidence});
  if(width===1440){
-  // Without Cloudflare credentials a dry run builds and validates, then exits 3 because it cannot read the target secret bindings (rer 0.2.58); the real deploy refuses before building or any provider request.
-  const dry=await checkout.rer(['deploy','--dry-run']);assert.equal(dry.code,3,'A dry run without Cloudflare credentials refuses to claim the secret bindings');assert.match(dry.output,/cannot read the target secret bindings/);assert.equal(dry.output.includes(key),false);
+  // An offline dry run validates the local plan and names unchecked inputs;
+  // a real deploy still refuses local-only sign-in before any upload.
+  const dry=await checkout.rer(['deploy','--dry-run','--json'],{env:{CLOUDFLARE_ACCOUNT_ID:'',CLOUDFLARE_API_TOKEN:''}});assert.equal(dry.code,0,'An offline dry run validates without claiming remote readiness');
+  const planned=dry.output.split('\n').filter(line=>line.startsWith('{')).map(line=>JSON.parse(line)).findLast(item=>item.event==='result'&&item.verb==='deploy');
+  assert.equal(planned?.dryRun,true);assert.equal(planned.deployed,false);assert.ok(planned.plan?.worker);assert.ok(planned.neededForRealDeploy?.length);assert.equal(dry.output.includes(key),false);
   const real=await checkout.rer(['deploy'],{env:{CLOUDFLARE_ACCOUNT_ID:'',CLOUDFLARE_API_TOKEN:''}});assert.equal(real.code,4,'A production deploy must refuse local-only sign-in settings; configure hosted mail or Auth SSO.');assert.match(real.output,/Production sign-in is not configured[\s\S]*Nothing was built or uploaded/);assert.equal(real.output.includes(key),false);
  }
  }finally{await browser?.close();if(paidRuntime)await paidRuntime.teardown();if(dev){dev.child.kill('SIGTERM');await dev.exited;}await checkout.stop('dev');await checkout.close();}
