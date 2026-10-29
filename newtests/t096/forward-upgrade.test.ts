@@ -14,6 +14,9 @@ import {AccessService} from '../../src/core/features/access/service';
 import {GraphRecords} from '../../src/core/features/graph/repository';
 import {domainEventStatements} from '../../src/core/features/effects/event-statements';
 import {isFullOperator} from '../../src/core/features/access/identity-class';
+import {createApp} from '../../tests/support/app';
+import {foldInstalledCatalog} from '../../src/core/features/records/archive-fold-catalog';
+import {preCallFailureCatalog} from '../../src/core/features/calls/archive';
 
 const quote=(name:string)=>'"'+name.replaceAll('"','""')+'"';
 
@@ -26,7 +29,20 @@ test('API-002 credential storage and RECORD-016 ownership and accepted main and 
  const tableNames=(await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name NOT LIKE 'record_search%' AND name NOT LIKE 'timeline_search%' AND name<>'d1_migrations' ORDER BY name").all<{name:string}>()).results.map(t=>t.name),before=new Map<string,{columns:string[];rows:string}>();
  for(const name of tableNames){const columns=(await db.prepare('SELECT name FROM pragma_table_xinfo(?) WHERE hidden<>1 ORDER BY cid').bind(name).all<{name:string}>()).results.map(column=>column.name);before.set(name,{columns,rows:JSON.stringify((await db.prepare(`SELECT ${columns.map(quote).join(',')} FROM ${quote(name)}`).all()).results)});}
  const ddl=(await db.prepare("SELECT type,name,sql FROM sqlite_master WHERE name IN('owner_custom','owner_custom_amount') ORDER BY name").all()).results;
+ await target.migrateFold('0066_record_mail_completion.sql');db=target.db;
+ await db.prepare('ALTER TABLE call_dial_attempts ADD COLUMN owner_note TEXT').run();await db.prepare('CREATE INDEX owner_call_attempt_note ON call_dial_attempts(owner_note) WHERE owner_note IS NOT NULL').run();
+ const attemptDdl=await db.prepare("SELECT sql FROM sqlite_master WHERE name='owner_call_attempt_note'").first('sql');
+ const oldAttempts=[{id:createId(),state:'attempted',call_sid:null},{id:createId(),state:'submitted',call_sid:'synthetic-orbit-304'},{id:createId(),state:'uncertain',call_sid:null}].map((attempt,index)=>({...attempt,contact_id:contact,actor_id:owner,created_at:now,owner_note:`synthetic-orbit-${305+index}`}));
+ for(const attempt of oldAttempts)await db.prepare('INSERT INTO call_dial_attempts(id,contact_id,actor_id,created_at,state,call_sid,owner_note) VALUES(?,?,?,?,?,?,?)').bind(attempt.id,attempt.contact_id,attempt.actor_id,attempt.created_at,attempt.state,attempt.call_sid,attempt.owner_note).run();
+ const catalogBeforeCallFailures=await foldInstalledCatalog(db);
  await target.migrateFold();db=target.db;for(const name of tableNames){const original=before.get(name)!;assert.equal(JSON.stringify((await db.prepare(`SELECT ${original.columns.map(quote).join(',')} FROM ${quote(name)}`).all()).results),original.rows,name);}
+ assert.deepEqual((await db.prepare('SELECT * FROM call_dial_attempts ORDER BY id').all()).results,oldAttempts.map(attempt=>({...attempt,creation_outcome:null,provider_error_code:null})).sort((a,b)=>a.id.localeCompare(b.id)),'Every historical dial attempt and owner value survives the additive failure migration without an invented provider error');
+ assert.equal(await db.prepare("SELECT sql FROM sqlite_master WHERE name='owner_call_attempt_note'").first('sql'),attemptDdl,'An owner index over historical attempts survives the additive migration');
+ assert.deepEqual(preCallFailureCatalog(await foldInstalledCatalog(db)),catalogBeforeCallFailures,'Prior archive catalogs retain their exact owner columns and objects across the additive call migration');
+ const callSession=await createDependencies(db).auth.createSession(owner),callApp=createApp({database:db,assets:{fetch:async()=>new Response('')}}),callLog=await callApp.request(`https://orbit.test/api/v1/calls/contacts/${contact}/log`,{headers:{Cookie:`__Host-orbit_session=${callSession.token}`}});
+ assert.equal(callLog.status,200,await callLog.clone().text());
+ const upgradedLog=await callLog.json() as {calls:unknown[];attempts:{id:string;created_at:string;state:string;call_sid:string|null;provider_error_code:number|null}[]};
+ assert.deepEqual(upgradedLog.attempts.map(attempt=>({...attempt})).sort((a,b)=>a.id.localeCompare(b.id)),oldAttempts.map(({id,created_at,state,call_sid})=>({id,created_at,state,call_sid,provider_error_code:null})).sort((a,b)=>a.id.localeCompare(b.id)),'The authenticated call log retains pending, submitted and uncertain history after upgrade');
  const credential=await issueNativeCredential(db,owner,opportunity);assert.ok(credential.secret);assert.equal(await db.prepare('SELECT count(*) FROM api_credentials').first('count(*)'),1);
  assert.deepEqual((await db.prepare('SELECT library_selection_json,merge_review_json FROM drafts').all()).results,JSON.parse(before.get('drafts')!.rows).map(()=>({library_selection_json:'{}',merge_review_json:null})),'Every prior draft receives the additive metadata defaults');
  assert.deepEqual((await db.prepare('SELECT render_snapshot_json FROM outbound_messages').all()).results,JSON.parse(before.get('outbound_messages')!.rows).map(()=>({render_snapshot_json:null})),'Existing approved messages retain their original bytes without invented render snapshots');

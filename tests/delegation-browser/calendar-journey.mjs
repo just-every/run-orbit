@@ -38,7 +38,8 @@ export async function calendarJourney(page,data){
    expect(authorization.searchParams.get('scope').split(/\s+/).sort()).toEqual([...scopes,...(google?[]:['offline_access'])].sort());
   }
  }
- await page.goto(`/app/records?kind=contact&record=${data.contact}`);const panel=page.getByRole('region',{name:'Calendar writeback',exact:true});await expect(panel).toContainText('Provider edited the meeting.');
+ const writebackLoaded=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/capture/writeback/records/contact/${data.contact}`);
+ await page.goto(`/app/records?kind=contact&record=${data.contact}`);expect((await writebackLoaded).status()).toBe(200);const panel=page.getByRole('region',{name:'Calendar writeback',exact:true});await expect(panel).toContainText('Provider edited the meeting.');
  const meeting=panel.getByRole('listitem').filter({hasText:data.currentMeeting.title});
  const original=meeting.locator('details').filter({has:page.getByText('Original invitation',{exact:true})});
  for(const width of [1440,390]){
