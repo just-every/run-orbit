@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "1a5399737d077ef8154b37e7eb683d3e9810f6478ee5c6e4fe878ef3c9575109",
+      "sha256": "8ea3d36a6cd4b25539b3d7001bf7079840436ee83f89e8131a984454e1e65957",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "57aaf32bd181193ded423d674083701bd159b31fd998152122f0552237761d1e",
+      "sha256": "f3cfd838a94cce5c7fc7b4e295a31f357fe5eb0691697c1945e93f1a1bb83d07",
       "executable": false
     },
     "DEMO.md": {
@@ -4071,7 +4071,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "44f07b844c7e3a38e541951890e4080492e73609fae64a28ea794998d5cefac0",
+      "sha256": "a379e79d13e19afab961f6434ea288a50411a03387818498dadc684e45086f08",
       "executable": false
     },
     "scripts/verification-reuse.sh": {
@@ -8683,7 +8683,11 @@
       "executable": false
     },
     "tests/core/launch-suppression.test.ts": {
-      "sha256": "fa6de9a270c07af306718ab0f67a601dfa5558bb5ce49609ff352a75950ef775",
+      "sha256": "7de10a618ca585a98b0dc7cb8601b4feab589a9a5c379a403a92ef87a2ab521d",
+      "executable": false
+    },
+    "tests/core/mailchimp.test.ts": {
+      "sha256": "09bdaf495020561b9fffb71c475a2c3e3d5d0ac08a88aa3c1258c4079e9642b5",
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
@@ -9491,7 +9495,7 @@
       "executable": false
     },
     "tests/support/isolated-database.ts": {
-      "sha256": "0d47536bb74ef0d4da962d50a3b4d818fa0680262440924a4977b4693241a8fd",
+      "sha256": "85c9fc12f9256b549fa1486081410a9b5fd17405d3214b3b2ee6525cc0b43580",
       "executable": false
     },
     "tests/support/issue-operator-session.ts": {
