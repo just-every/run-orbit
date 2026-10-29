@@ -29,6 +29,7 @@
   --ob-gutter: clamp(20px, 5vw, 80px);
   --ob-header-h: clamp(76px, 7vw, 100px);
   --ob-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --ob-text-min: 13px; /* the smallest text anywhere: nothing under it, raised here rather than per place */
 
   min-height: 100svh;
   color: var(--ob-ink);
