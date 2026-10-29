@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "15d9993bf6cccfe97f09446e5f3443a92e08df5e1bbdf3072eb3ad6c510f0838",
+      "sha256": "5479cef72a770d68075f257d0d84a9bc29db6b8a0833a45db8cf757cf40d917b",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "08a6a1497b9c55e4a8b04872fd41991a49746eef3fcece39c78d047d786b4349",
+      "sha256": "61f60f182171093fecaa6ccbb7da45b61dad22cd964c9e31a4c4a7867366ec37",
       "executable": false
     },
     "DEMO.md": {
@@ -9651,7 +9651,7 @@
       "executable": false
     },
     "tests/core/records-merge-review.test.ts": {
-      "sha256": "ca2bedd0d1ba52743a54ff5d85ba5b1008a3bc7b2a91970c042225e6373e0a86",
+      "sha256": "1a7378c6e675690c049e282c60b40948d047bd2faa459d7f4bf3ea4b63fde382",
       "executable": false
     },
     "tests/core/records-search.test.ts": {

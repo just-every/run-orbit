@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 9 | 140 | 29 | 178 |
+| Core | 10 | 139 | 29 | 178 |
 | Agent surface | 0 | 0 | 26 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 9 | 140 | 55 | 204 |
+| Full target | 10 | 139 | 55 | 204 |
 
 Judged from the code and tests at commit `03963b1a17ecd6d0c2cc1eec9a1d6285fd9240b5` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -167,15 +167,15 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 
 #### RECORD-009 — Duplicate candidates
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** Orbit lists contacts sharing a name across companies, including contacts with no company, and companies sharing a name, as duplicate candidates; names are compared lowercased with runs of whitespace collapsed. A candidate is a review item only: nothing is merged, altered, or hidden until an operator completes RECORD-004.
 
 **Acceptance.**
 1. Create same-name contacts across companies and keyless records; review candidates without a mutation, then complete a chosen merge explicitly.
 
-**Evidence.** `src/core/features/records/import-merge.ts`; `tests/core/records-merge-review.test.ts`
-**Gap.** Unasserted in the carried evidence: keyless candidate listed. Asserted: same-name contacts across companies listed; same-name companies listed; review changes no records; chosen merge retires exactly one record.
+**Evidence.** `tests/core/records-merge-review.test.ts` — RECORD-004 RECORD-009 matching names across companies and keyless records remain review-only and native merges refuse missing and stale reviews: authenticated candidate reads include same-name contacts at different companies, a keyed contact without a company, contacts without email keys and companies without domain keys; case and whitespace normalization; review preserves every participant and history; explicit chosen merge retires only the selected record, preserves other candidates and audits the choices.
+**Gap.** None.
 
 #### RECORD-010 — Manual entries
 
