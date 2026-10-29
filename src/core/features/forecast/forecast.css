@@ -11,7 +11,7 @@
 .forecast-console .forecast-schedule legend{font-weight:650;padding:0 6px}
 .forecast-console .forecast-measures{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0}
 .forecast-console .forecast-measures>div{padding:12px;border:1px solid var(--operator-line);border-radius:6px;background:var(--operator-paper);min-width:0}
-.forecast-console .forecast-measures dt{font-size:.78rem;font-weight:700;color:var(--ob-muted)}
+.forecast-console .forecast-measures dt{font-size:var(--ob-text-min);font-weight:700;color:var(--ob-muted)}
 .forecast-console .forecast-measures dd{margin:6px 0 0;font-weight:650;overflow-wrap:anywhere}
 .forecast-console :is(.forecast-detail,.forecast-quota-totals){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:8px 0}
 .forecast-console :is(.forecast-detail,.forecast-quota-totals)>div{min-width:0}

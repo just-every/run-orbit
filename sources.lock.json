@@ -3783,7 +3783,7 @@
       "executable": false
     },
     "public/operator-native.css": {
-      "sha256": "78cc11c801cbb2be54490c376f768e20fa892a1c1356233e4ac42e86df641ee4",
+      "sha256": "1aa3d54b5a6793865f6148d5b01252b2aec36ecd49181602b319eea581b29282",
       "executable": false
     },
     "public/orbit-auth.css": {
@@ -4995,7 +4995,7 @@
       "executable": false
     },
     "src/core/app/demo.css": {
-      "sha256": "8b14c7a8800d8f2049b9518187f3d0081f84253ef8391e93a8d2c0a326c155a1",
+      "sha256": "db1fa18b8ae358d764a82cbe988f506195c34fda57a99764c11bd25777f6a232",
       "executable": false
     },
     "src/core/app/dependencies.ts": {
@@ -5035,7 +5035,7 @@
       "executable": false
     },
     "src/core/app/styles.css": {
-      "sha256": "699db0bb6a3012d6725399d5e724187b89b086a7f04fbb14cde7e979da6541a8",
+      "sha256": "6b088448246baad3394467c161399a45c4c20f44b22b54a065c09aa0f85940bc",
       "executable": false
     },
     "src/core/app/ui/page-frame.tsx": {
@@ -5199,7 +5199,7 @@
       "executable": false
     },
     "src/core/features/analytics/console.css": {
-      "sha256": "f154061c05ebaedb7fe3933d14688f877d6d8594246bc0691c65eeea8f457325",
+      "sha256": "3abdb7caa7c0f6117c0d536c9413e00103bf0ace5e36d238a73a16300d017d84",
       "executable": false
     },
     "src/core/features/analytics/console.tsx": {
@@ -5315,7 +5315,7 @@
       "executable": false
     },
     "src/core/features/analytics/sales.css": {
-      "sha256": "3592d113afd2580b8c4478810c0a51eedaa12754eae5837e10cde6a853776d8f",
+      "sha256": "d31c3bdd3cecb50f18181f86fc79a508dee4dc9f0471efb4219bf2903b02d174",
       "executable": false
     },
     "src/core/features/analytics/snapshot-storage.ts": {
@@ -5851,7 +5851,7 @@
       "executable": false
     },
     "src/core/features/forecast/forecast.css": {
-      "sha256": "cf0c8d42a27903a9f7cd79cc55f98a9c2c90677532dc7aad15b39de429ef0b00",
+      "sha256": "05abf40ae842c006090a2a6596621396009a4d55aae3a1326c400170e94803bb",
       "executable": false
     },
     "src/core/features/forecast/history.tsx": {
@@ -6299,7 +6299,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/assistance.css": {
-      "sha256": "2a5a15352f09a351d026648479e39fa5b811593c1cb39423083ecda4965ec5fe",
+      "sha256": "a0b066d6f89ac6d1572287cc33de8bd0db8952d8f9a73af42eab8600eb37c34a",
       "executable": false
     },
     "src/core/features/operator/ui/audit-value.tsx": {
@@ -6415,7 +6415,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/capture-providers.css": {
-      "sha256": "1ad9ebd2872f1b61975da22e72b6b154e9d6c73b5b0da6ed31b9d43f02d4a7d0",
+      "sha256": "216180d984c91a668ddcb48c9bf0910b2a9d4775c4c9b0197c9af559eced29d3",
       "executable": false
     },
     "src/core/features/operator/ui/capture-scope.tsx": {
@@ -6423,7 +6423,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/capture-setup.css": {
-      "sha256": "bcc16df4a78a8c2cfe445a669af1d26a15c4412bca8440a3c9937020f24d3050",
+      "sha256": "0ca276e49b0fb8be3f2abecc003aca9d7ccd639cf41d4f2e8ba0018c68e00ace",
       "executable": false
     },
     "src/core/features/operator/ui/capture-source.tsx": {
@@ -6515,7 +6515,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/handoff-tasks.css": {
-      "sha256": "21ee381e8643b3f41d1739c0cb2c641f58f9c3bb102b313b50c10680876eb6f9",
+      "sha256": "4cc7691d89e57e979d227f01c1304daa1d3db5a7912e6e32c656c8d6a2d82b8d",
       "executable": false
     },
     "src/core/features/operator/ui/handoff-tasks.tsx": {
@@ -6567,7 +6567,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/mailchimp-settings.tsx": {
-      "sha256": "3a023f8e2162157c0f6c217c4364c8d4e84f6bddd25279942cb2fdf0201b9b4b",
+      "sha256": "2137b9d1a9430956ca1c403fe418ef5a589a89ff339ac82e0a52eca0eaceac36",
       "executable": false
     },
     "src/core/features/operator/ui/manual-action.tsx": {
@@ -6651,7 +6651,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator.css": {
-      "sha256": "9785a0d64878beac53e9d27aebf904abaf9a614650c1e7faec576d5f47b442f4",
+      "sha256": "06f789b24e07d2b4b1971a4cd16a31e56ee1f7a95bb892dd08a5123b813d91a9",
       "executable": false
     },
     "src/core/features/operator/ui/opt-out-settings.tsx": {
@@ -7439,7 +7439,7 @@
       "executable": false
     },
     "src/core/features/public/ui/brand/tokens.css": {
-      "sha256": "d5a275ca7d87af638c8113d240da900e1df7aa9d697b5e28273f62c0ef2bcd8b",
+      "sha256": "add5308544417f3cc3ba8b6d810235e23f4ea9854cb81e5284a9ca0258efc305",
       "executable": false
     },
     "src/core/features/public/ui/demo-opportunities.tsx": {
