@@ -2,7 +2,7 @@ import {useEffect,useState} from 'react';
 import {recordsRequest} from './records-api';
 import {OperatorState} from './operator-shell';
 import {formatDateTime} from './formatters';
-interface PersonalSettings {enabled:boolean;slackUserId:string|null;mappings:string[];notices:{id:string;state:string;error:string|null;createdAt:string}[]}
+interface PersonalSettings {enabled:boolean;slackUserId:string|null;mappings:string[];deletions:{id:string;state:string;error:string|null;createdAt:string}[];notices:{id:string;state:string;error:string|null;createdAt:string}[]}
 export function PersonalSlackSettings(){
  const [data,setData]=useState<PersonalSettings>(),[user,setUser]=useState(''),[enabled,setEnabled]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
  async function load(){const next=await recordsRequest<PersonalSettings>('notifications/slack');setData(next);setUser(next.slackUserId??next.mappings[0]??'');setEnabled(next.enabled);}
@@ -16,6 +16,7 @@ export function PersonalSlackSettings(){
  <label><input type="checkbox" checked={enabled} disabled={!data.mappings.length} onChange={e=>setEnabled(e.target.checked)}/> Send my mentions as Slack direct messages</label>
  <button className="operator-button" disabled={enabled&&!user}>Save personal mention preference</button></form>
  <p>Email, mobile push, task reminders and daily digests are not available yet. The Slack bot needs users:read, im:write, im:read and chat:write for personal delivery.</p>
- <h3>Your mention deliveries</h3>{data.notices.length?<ul className="notification-list">{data.notices.map(n=><li key={n.id}><div><p>{n.state==='sent'?'Acknowledged by Slack':n.state==='uncertain'?'Uncertain — inspect Slack; no resend':n.state} · {formatDateTime(n.createdAt)}</p>{n.state==='failed'&&<button type="button" onClick={()=>void save('/'+n.id+'/retry',{})}>Retry failed mention</button>}</div></li>)}</ul>:<p>No personal Slack deliveries yet.</p>}</>:<OperatorState>Loading your preference…</OperatorState>}
+ <h3>Your mention deliveries</h3>{data.notices.length?<ul className="notification-list">{data.notices.map(n=><li key={n.id}><div><p>{n.state==='sent'?'Acknowledged by Slack':n.state==='uncertain'?'Uncertain — inspect Slack; no resend':n.state} · {formatDateTime(n.createdAt)}</p>{n.state==='failed'&&<button type="button" onClick={()=>void save('/'+n.id+'/retry',{})}>Retry failed mention</button>}</div></li>)}</ul>:<p>No personal Slack deliveries yet.</p>}
+ <h3>Personal message deletions</h3><p>Deleting a source or erasing its record requests deletion of accepted bot messages. Copies held elsewhere cannot be recalled. Restored requests require explicit confirmation.</p>{data.deletions.map(d=><p key={d.id}>{d.state}{d.error?' · '+d.error:''}{['failed','uncertain','paused','held'].includes(d.state)&&<button type="button" onClick={()=>void save('/deletions/'+d.id+'/retry',{confirmed:true})}>Confirm deletion retry</button>}</p>)}</>:<OperatorState>Loading your preference…</OperatorState>}
  </section>;
 }

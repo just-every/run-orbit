@@ -23,6 +23,6 @@ export async function slackStatus(db:D1Database){
  return{policyEpoch:await currentEpoch(db),installation:item?{...item,state:!held&&item.state==='connected'?'disconnected':item.state,error:held?item.error:item.error??'Credentials excluded from archive; reconnect in Settings.'}:null,
  channels:channels.map(channel=>({...channel,noticeStates:Object.fromEntries(counts.filter(row=>row.channel_id===channel.id).map(row=>[row.state,row.total]))})),
  mappings:(await db.prepare('SELECT m.*,o.display_name,o.status AS operator_status FROM slack_mappings m JOIN operators o ON o.id=m.operator_id ORDER BY m.slack_user_id').all()).results,
- deletions:(await db.prepare('SELECT d.*,c.name AS channel_name FROM slack_deletions d JOIN slack_channels c ON c.id=d.channel_id ORDER BY d.created_at DESC LIMIT 100').all()).results,
+ deletions:[...(await db.prepare('SELECT d.*,c.name AS channel_name FROM slack_deletions d JOIN slack_channels c ON c.id=d.channel_id ORDER BY d.created_at DESC LIMIT 100').all()).results,...(await db.prepare("SELECT *,1 AS personal,'Personal message' AS channel_name FROM slack_personal_deletions ORDER BY created_at DESC LIMIT 100").all()).results],
  notices:(await db.prepare('SELECT n.*,c.name AS channel_name,o.display_name AS acknowledged_name FROM slack_notices n JOIN slack_channels c ON c.id=n.channel_id LEFT JOIN operators o ON o.id=n.acknowledged_by ORDER BY n.created_at DESC,n.id DESC LIMIT 100').all()).results};
 }

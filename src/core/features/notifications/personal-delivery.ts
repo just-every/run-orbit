@@ -31,7 +31,10 @@ export async function processPersonalSlack(db:D1Database,config:SlackConfig){
    const link=item.origin+source.href,text='Orbit · You were mentioned in a private entry. Open it securely in Orbit.';
    const result=await slackCall(token,'chat.postMessage',{channel,client_msg_id:notice.id,text:text+'\n'+link,unfurl_links:false,unfurl_media:false,parse:'none',blocks:[{type:'section',text:{type:'plain_text',text,emoji:false}},{type:'actions',elements:[{type:'button',action_id:'orbit_personal_open',text:{type:'plain_text',text:'Open in Orbit'},url:link}]}]},config.fetcher);
    if(typeof result.ts!=='string'||result.channel!==channel||(result.message?.app_id??result.message?.bot_profile?.app_id)!==item.app_id)throw new SlackProviderError('unaccepted_response',true);
-   await db.prepare("UPDATE slack_personal_notices SET state='sent',message_ts=?,updated_at=? WHERE id=? AND state='submitting'").bind(result.ts,clock.now().toISOString(),notice.id).run();
+   await db.batch([
+    db.prepare("UPDATE slack_personal_notices SET state='sent',message_ts=?,updated_at=? WHERE id=? AND state='submitting'").bind(result.ts,clock.now().toISOString(),notice.id),
+    db.prepare('INSERT OR IGNORE INTO slack_personal_receipts(notice_id,team_id,app_id,channel_id,message_ts) VALUES(?,?,?,?,?)').bind(notice.id,item.team_id,item.app_id,channel,result.ts)
+   ]);
   }catch(error){
    await providerFailure(db,error);
    const provider=error instanceof SlackProviderError?error:null,rate=provider?.retryAfter,state=submitted&&(!provider||provider.uncertain)?'uncertain':rate?'rate-limited':'failed';

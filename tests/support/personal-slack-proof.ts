@@ -44,6 +44,23 @@ export async function provePersonalSlack(f:SlackFixture,deal:string,edge:ReturnT
  const handoff=await f.app.request('https://orbit.test/delegation/handoffs',{method:'POST',headers:{Cookie:`__Host-orbit_session=${f.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({operationKey:createId(),operation:'orbit.handoff.upsert',target,expectedRevision:state.revision,expectedAudienceRevision:state.audience.audienceRevision,content:{title:'Mention handoff',description:'@Personal Recipient synthetic-orbit-3',assigneeId:f.actor,dueAt:null,status:'open'}})});assert.equal(handoff.status,200,await handoff.clone().text());await process();assert.ok(dm().at(-1).text.includes('#handoff-'+handoffId));
  const quiet=edge.attempts;await process();await process();assert.equal(edge.attempts,quiet,'Task and handoff deliveries survive repeated ticks without duplicates');
  const unchanged=await paused();await opt();assert.equal((await row(unchanged.id)).state,'sent','Saving an unchanged opt-in preserves eligible pending delivery');
+ // Accepted personal messages keep original provider custody after opt-out and erasure.
+ const erase=async(id:string)=>{const r=await f.request(`records/opportunity/${deal}/entries/${id}`,'DELETE',{});assert.equal(r.status,200,await r.clone().text());};
+ const deletion=async(id:string)=>f.db.prepare('SELECT * FROM slack_personal_deletions WHERE notice_id=?').bind(id).first<any>();
+ const retract=await note(),receipt=await row(retract.id),post=dm().at(-1);await opt(false);const postsBefore=dm().length;await erase(retract.id);await process();
+ assert.equal((await deletion(receipt.id)).state,'deleted');assert.ok(edge.deletes.some(d=>d.channel===post.channel&&d.ts===post.ts),'Source deletion retracts its original personal message even after consent ends');assert.equal(dm().length,postsBefore,'Deletion never posts a replacement');await opt();
+ for(const outcome of ['denied','timeout','wrong','missing','rate'] as const){
+  const source=await note(),attempt=await row(source.id),original=dm().at(-1);edge.setDeletionOutcome(outcome);await erase(source.id);await process();
+  const state=(await deletion(attempt.id)).state;assert.equal(state,outcome==='denied'?'failed':outcome==='missing'?'deleted':outcome==='rate'?'rate-limited':'uncertain');
+  if(['failed','uncertain'].includes(state)){
+   const count=edge.deletes.length;await process();assert.equal(edge.deletes.length,count,'Uncertain or failed deletion waits for explicit confirmation');
+   assert.equal((await f.request('notifications/slack/deletions/'+attempt.id+'/retry','POST',{confirmed:true})).status,409,'A different operator cannot confirm personal deletion');
+   edge.setDeletionOutcome('sent');assert.equal((await own('/deletions/'+attempt.id+'/retry','POST',{})).status,400);assert.equal((await own('/deletions/'+attempt.id+'/retry','POST',{confirmed:true})).status,200);
+   assert.deepEqual(edge.deletes.at(-1),{channel:original.channel,ts:original.ts},'Retry targets the original receipt, never the latest message');
+  }else if(state==='rate-limited'){f.setClock(new Date(Date.now()+3000));await process();f.setClock(undefined);}
+  edge.setDeletionOutcome('sent');assert.equal((await deletion(attempt.id)).state,'deleted');
+ }
+ const heldSource=await note(),heldNotice=await row(heldSource.id);edge.setDeletionOutcome('denied');await erase(heldSource.id);await process();assert.equal((await deletion(heldNotice.id)).state,'failed');edge.setDeletionOutcome('sent');
  // Leave a pending attempt in the export: restore must retain history but strip authority.
  await paused();
  return {recipient,headers};

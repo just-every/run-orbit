@@ -1,3 +1,4 @@
+import {processPersonalDeletions} from '../notifications/personal-deletions';
 import {processPersonalSlack} from '../notifications/personal-delivery';
 import {suspendDashboardSchedules} from './dashboard-suspension';
 import {systemClock} from '../../platform/clock';
@@ -26,7 +27,7 @@ async function enqueueDue(db:D1Database){
 
 }
 export async function processSlack(db:D1Database,config:SlackConfig){
- try{await processSlackDeletions(db,config);await processPending(db,config);await processPersonalSlack(db,config);}catch{await db.batch([...suspendDashboardSchedules(db,'Slack processing failed; enable the saved schedule again after resolving setup.'),db.prepare("UPDATE slack_installation SET state='error',error='Slack processing failed; inspect setup and reconnect'"),db.prepare("UPDATE slack_notices SET state='paused',error='Slack processing failed; notices paused' WHERE state IN ('queued','rate-limited')")]);}
+ try{await processSlackDeletions(db,config);await processPersonalDeletions(db,config);await processPending(db,config);await processPersonalSlack(db,config);}catch{await db.batch([...suspendDashboardSchedules(db,'Slack processing failed; enable the saved schedule again after resolving setup.'),db.prepare("UPDATE slack_installation SET state='error',error='Slack processing failed; inspect setup and reconnect'"),db.prepare("UPDATE slack_notices SET state='paused',error='Slack processing failed; notices paused' WHERE state IN ('queued','rate-limited')")]);}
 }
 async function processPending(db:D1Database,config:SlackConfig){
  const clock=config.clock??systemClock;

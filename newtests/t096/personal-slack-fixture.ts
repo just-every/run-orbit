@@ -13,4 +13,9 @@ export async function personalSlackFixture(f:Awaited<ReturnType<typeof fixture>>
  const record=await call('records/company','POST',{name:'Mention review account'});
  for(const outcome of ['sent','denied','timeout'] as const){edge.setOutcome(outcome);await call(`records/company/${record.id}/entries`,'POST',{kind:'note',text:'@Owner synthetic-orbit-private',occurredAt:new Date().toISOString()},`__Host-orbit_session=${session.token}`);}
  edge.setOutcome('sent');
+ for(const state of ['sent','denied'] as const){
+  const entry=await call(`records/company/${record.id}/entries`,'POST',{kind:'note',text:'@Owner synthetic-orbit-retract',occurredAt:new Date().toISOString()},`__Host-orbit_session=${session.token}`);
+  edge.setDeletionOutcome(state);await call(`records/company/${record.id}/entries/${entry.id}`,'DELETE',{},`__Host-orbit_session=${session.token}`);
+ }
+ edge.setDeletionOutcome('sent');
 }

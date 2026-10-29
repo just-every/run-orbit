@@ -7,13 +7,15 @@ import {credentials,installation,providerFailure} from '../slack/installation';
 import {checkedPersonalUser,SlackProviderError} from '../slack/provider';
 import {SlackError,type SlackConfig} from '../slack/contracts';
 import {personalAuthority} from './personal-access';
+import {processPersonalDeletions} from './personal-deletions';
 import {processPersonalSlack} from './personal-delivery';
 export function personalSlackRoutes(db:D1Database,config:SlackConfig){
  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
  app.onError(async(e,c)=>{await providerFailure(db,e);return c.json({error:e instanceof SlackError?e.message:e instanceof SlackProviderError?'Slack identity could not be verified. Check the connection in Settings.':'Personal notification settings could not be saved.'},e instanceof SlackError?e.status:503);});
  app.get('/',async c=>{const actor=c.get('operator').operatorId,item=await installation(db),current=await personalAuthority(db,actor),mappings=item?.state==='connected'?(await db.prepare(`SELECT m.slack_user_id FROM slack_mappings m JOIN access_workspaces w ON w.policy_epoch=m.policy_epoch WHERE w.id='workspace' AND m.operator_id=? AND m.team_id=? AND m.enterprise_id=? AND m.app_id=? AND m.revoked_at IS NULL ORDER BY m.slack_user_id`).bind(actor,item.team_id,item.enterprise_id,item.app_id).all<{slack_user_id:string}>()).results:[];
   const notices=(await db.prepare('SELECT id,state,error,created_at AS createdAt FROM slack_personal_notices WHERE operator_id=? ORDER BY created_at DESC,id DESC LIMIT 100').bind(actor).all()).results;
-  return c.json({enabled:Boolean(current),slackUserId:current?.p.slack_user_id??null,mappings:mappings.map(m=>m.slack_user_id),notices});});
+  const deletions=(await db.prepare('SELECT notice_id AS id,state,error,created_at AS createdAt FROM slack_personal_deletions WHERE operator_id=? ORDER BY created_at DESC LIMIT 100').bind(actor).all()).results;
+  return c.json({deletions,enabled:Boolean(current),slackUserId:current?.p.slack_user_id??null,mappings:mappings.map(m=>m.slack_user_id),notices});});
  app.put('/',async c=>{const actor=c.get('operator').operatorId,input=z.object({enabled:z.boolean(),slackUserId:z.string().regex(/^U[A-Z0-9]{1,40}$/).optional()}).strict().safeParse(await c.req.json());if(!input.success)throw new SlackError(400,'Choose your mapped Slack identity and mention preference.');
   if(!input.data.enabled){await db.batch([db.prepare('UPDATE slack_personal_preferences SET enabled=0,revision=?,updated_at=? WHERE operator_id=?').bind(crypto.randomUUID(),new Date().toISOString(),actor),db.prepare("UPDATE slack_personal_notices SET state='withdrawn',error='Personal consent withdrawn' WHERE operator_id=? AND state IN('queued','rate-limited','failed')").bind(actor),audit(db,actor,'slack.personal-consent','operator',actor,{enabled:false})]);return c.json({saved:true});}
   const item=await installation(db),user=input.data.slackUserId;if(!item||item.state!=='connected'||!user||(await actionMapping(db,item,user))?.operator_id!==actor)throw new SlackError(409,'Ask the installation owner to explicitly map your current Slack identity first.');
@@ -27,6 +29,8 @@ export function personalSlackRoutes(db:D1Database,config:SlackConfig){
   if(!saved.meta.changes)throw new SlackError(409,'Mapping or authority changed; review your preference again.');
   await db.batch([audit(db,actor,'slack.personal-consent','operator',actor,{enabled:true,slackUserId:user}),db.prepare("UPDATE slack_personal_notices SET state='withdrawn',error='Personal consent changed' WHERE operator_id=? AND state IN('queued','rate-limited','failed')").bind(actor)]);return c.json({saved:true});
  });
+ app.post('/deletions/:id/retry',async c=>{const actor=c.get('operator').operatorId,input=z.object({confirmed:z.literal(true)}).strict().safeParse(await c.req.json());if(!input.success)throw new SlackError(400,'Confirm deletion of the original personal message.');
+  const result=await db.prepare("UPDATE slack_personal_deletions SET state='queued',retry_at=NULL,error=NULL WHERE notice_id=? AND operator_id=? AND state IN('held','failed','uncertain','paused')").bind(c.req.param('id'),actor).run();if(!result.meta.changes)throw new SlackError(409,'No deletion awaiting your confirmation.');await audit(db,actor,'slack.personal-deletion-retry','slack',c.req.param('id'),{confirmed:true}).run();await processPersonalDeletions(db,config);return c.json({checked:true});});
  app.post('/:id/retry',async c=>{const actor=c.get('operator').operatorId,id=c.req.param('id');const changed=await db.prepare("UPDATE slack_personal_notices SET state='queued',retry_at=NULL,error=NULL WHERE id=? AND operator_id=? AND state='failed'").bind(id,actor).run();if(!changed.meta.changes)throw new SlackError(409,'Only your explicitly failed notice can be retried. Uncertain attempts are never resent.');await processPersonalSlack(db,config);return c.json({checked:true});});
  return app;
 }
