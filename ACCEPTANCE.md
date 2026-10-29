@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 8 | 138 | 31 | 177 |
+| Core | 8 | 138 | 32 | 178 |
 | Agent surface | 0 | 0 | 13 | 13 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 8 | 138 | 44 | 190 |
+| Full target | 8 | 138 | 45 | 191 |
 
 Judged from the code and tests at commit `b300e460a20da7f09122dc4a9157499430c4f8d5` (27 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -2228,6 +2228,22 @@ Core · target · **partial** · From API-001 · Cites BASE-ROLE-001, BASE-INPUT
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/delegation/protocol.ts`; `tests/core/source-onboarding.test.ts`; `tests/delegation/authority-regressions.test.ts`; `src/core/features/api/credentials.ts`; `src/core/features/api/routes.ts`; `migrations/core/0065_api_credentials.sql`; `tests/support/api-credentials-proof.ts`; `tests/core/archive-transfer.test.ts`; `tests/core/onboarding-archive.test.ts`; `tests/core/operator-erasure.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/core/contact-erasure.test.ts`
 **Gap.** API-001: the remaining original versioned resource surface and complete acceptance journey, outbound subscription security, delivery and replay controls, their custody and erasure, provider security and legal qualification remain unproved. The standalone scoped deal credential journey is asserted; current inbound-source authority remains SIGNAL-009; narrow application delegation remains DELEGATE-001; later resource behavior remains with its named owning clauses.
+
+#### API-004 — A scoped integration reads a deal's close date, owner and product fields
+
+Core · target · **missing** · From new · Cites BASE-ROLE-001, BASE-INPUT-001, BASE-SECRET-001
+
+**Requirement.** A scoped integration reads a deal's close date, owner and product fields through Orbit's scoped API, within the caller's current deals scope, installation, workspace and record authority. Values are read live from Orbit rather than copied into the integration.
+
+**Acceptance.**
+1. An integration whose scope grants deals reads each deal's expected close date, owner and product (line-item or product-family) fields through Orbit's scoped API.
+2. An integration without the deals scope, or with scope for another installation, receives none of those fields and a clear refusal; nothing is written.
+3. Connect two installations to two separate Orbit workspaces, each with populated deals, and prove through one public-door journey that each reads only its own workspace's deals, including an allowed read and a refused cross-installation read.
+4. A deal the actor cannot read is absent; revoking access makes the next call read nothing.
+5. Change a close date in Orbit and verify the next integration read returns the changed value, read live rather than copied into the integration.
+
+**Evidence.** None.
+**Gap.** Orbit's scoped API does not yet expose close date, owner and product fields, and no two-installation journey exists.
 
 ### Mobile, portability and operation
 
