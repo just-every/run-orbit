@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "02a61384da85abcc554ed05082ff662710ba673e862d1088591579c4f87a9097",
+      "sha256": "fcedf72d46b0bdf798acd1cf2a66be55c02a031d9923fa210477192416d96956",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "fd74c013ab88c7da11f9a519349e9a1491331463691875e80082e75d46827f8f",
+      "sha256": "eae7f1f3f6f37c74688bf1093215f4b1f4f7112255308c58bf0ecb0f6519e0e0",
       "executable": false
     },
     "DEMO.md": {
@@ -9863,7 +9863,7 @@
       "executable": false
     },
     "tests/rer/operator-merge.mjs": {
-      "sha256": "1577e25e464ce27e1aedca1cf47db6622d5a44afc50cd60d3aaf337cd3f4c02b",
+      "sha256": "99b8362554fdb6db8e81798a9c9be4a64a39c39138b84f84322cd7b31b9c6c60",
       "executable": false
     },
     "tests/rer/operator-observations.mjs": {

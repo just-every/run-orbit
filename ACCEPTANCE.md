@@ -8,12 +8,12 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 10 | 138 | 30 | 178 |
+| Core | 11 | 137 | 30 | 178 |
 | Agent surface | 0 | 0 | 26 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 10 | 138 | 56 | 204 |
+| Full target | 11 | 137 | 56 | 204 |
 
-Judged from the code and tests at commit `03963b1a17ecd6d0c2cc1eec9a1d6285fd9240b5` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
+Judged from the code and tests at commit `c7950b8b5050051aa99235a1bf0048070f105991` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
 ## Core
 
@@ -107,15 +107,15 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 
 #### RECORD-004 — Duplicate merge
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
+Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
 
 **Requirement.** Merging two contacts or two companies requires an operator to choose the surviving record and the value of every conflicting field. The request is bound to both reviewed record states; a changed record refuses the merge without modifying either record, requiring a new review. Contactability is not a reviewed choice: a do-not-contact stop that lands after review is inherited by the merge. The merge moves associations and timeline entries once, retires the other record's key as an alias so later signals carrying it link to the survivor, creates no signal, recommendation, or outreach, and records the retired ID in the audit trail.
 
 **Acceptance.**
 1. Review two duplicates, choose field values and survivor, then change one reviewed record and require refusal; review again and merge once, inheriting a concurrent stop.
 
-**Evidence.** `src/core/features/records/merge-review.ts`; `tests/core/records-merge-review.test.ts`
-**Gap.** Concurrent stop inheritance is implemented without a contactability choice and the native Records journey covers stops on either participant, cancelled scheduled work, unchanged refusal and replay. Browser qualification of the contact merge controls remains pending.
+**Evidence.** `tests/core/records-merge-review.test.ts` — RECORD-004 RECORD-009 matching names across companies and keyless records remain review-only and native merges refuse missing and stale reviews: chosen survivor and field values, changed reviewed records refused without mutation, stops on either participant inherited without a choice, both schedules cancelled and replay unchanged; `tests/rer/operator-actions.test.mjs` — BASE-PUBLIC-003 T099 native keyboard navigation, form validation, dialog focus and reviewed record changes, via `tests/rer/operator-merge.mjs`: explicit native merge, stale review, alias reservation, retired identity, attributed choices and inherited stops.
+**Gap.** None.
 
 #### RECORD-005 — Timeline
 
@@ -174,7 +174,7 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 **Acceptance.**
 1. Create same-name contacts across companies and keyless records; review candidates without a mutation, then complete a chosen merge explicitly.
 
-**Evidence.** `tests/core/records-merge-review.test.ts` — RECORD-004 RECORD-009 matching names across companies and keyless records remain review-only and native merges refuse missing and stale reviews: authenticated candidate reads include same-name contacts at different companies, a keyed contact without a company, contacts without email keys and companies without domain keys; case and whitespace normalization; review preserves every participant and history; explicit chosen merge retires only the selected record, preserves other candidates and audits the choices.
+**Evidence.** `tests/core/records-merge-review.test.ts` — RECORD-004 RECORD-009 matching names across companies and keyless records remain review-only and native merges refuse missing and stale reviews: authenticated candidate reads include same-name contacts at different companies, a keyed contact without a company, contacts without email keys and companies without domain keys; case and whitespace normalization; review preserves every participant and history; explicit chosen merge retires only the selected record, preserves other candidates and audits the choices; `tests/rer/operator-actions.test.mjs` — BASE-PUBLIC-003 T099 native keyboard navigation, form validation, dialog focus and reviewed record changes, via `tests/rer/operator-merge.mjs`: visible keyless companies and contacts, unchanged review and explicit native merge.
 **Gap.** None.
 
 #### RECORD-010 — Manual entries
