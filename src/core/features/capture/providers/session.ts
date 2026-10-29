@@ -1,4 +1,5 @@
 import {boundedResponse,objectResponse,ResponseTooLarge,MessageTooLarge} from './response';
+import {guard} from '../../identity/store';
 import {createId} from '../../../shared/ids';
 import type {SourceSecurity} from '../../../platform/source-security';
 import {CaptureError,CaptureProviderError} from '../contracts';
@@ -51,6 +52,7 @@ export function providerSession(db:D1Database,source:ProviderSource,lease:string
   if(!response.ok&&response.status!==404&&response.status!==410&&!allowedErrors.includes(response.status)){await response.body?.cancel();throw new CaptureProviderError('unavailable','The provider could not finish the read.');}
   try{return await boundedResponse(response);}catch(error){if(message&&response.ok&&error instanceof ResponseTooLarge)throw new MessageTooLarge();throw error;}
  }
- return {check,read,message:(url:string,headers?:Record<string,string>)=>read(url,headers,[],true),async json(url:string,headers?:Record<string,string>){const response=await read(url,headers);if(!response.ok)throw new CaptureProviderError('unavailable','The selected provider resource is no longer available.');return objectResponse(response);}};
+ const fence=()=>guard(db,{sql:"EXISTS(SELECT 1 FROM capture_sources WHERE id=? AND connection_id IS ? AND state IN('connected','syncing')) AND EXISTS(SELECT 1 FROM capture_credentials WHERE source_id=?) AND EXISTS(SELECT 1 FROM capture_locks WHERE source_id=? AND lease=? AND expires_at>?)",args:[source.id,source.connection_id,source.id,source.id,lease,Date.now()]});
+ return {check,fence,read,message:(url:string,headers?:Record<string,string>)=>read(url,headers,[],true),async json(url:string,headers?:Record<string,string>){const response=await read(url,headers);if(!response.ok)throw new CaptureProviderError('unavailable','The selected provider resource is no longer available.');return objectResponse(response);}};
 }
 export type ProviderSession=ReturnType<typeof providerSession>;

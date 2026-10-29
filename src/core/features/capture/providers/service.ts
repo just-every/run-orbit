@@ -11,7 +11,7 @@ import {leaseSource,providerSession,type ProviderSource} from './session';
 import {googleMail,googleCalendar,googleOptions,validateGoogleScope} from './google';
 import {microsoftPage,microsoftOptions,validateMicrosoftScope} from './microsoft';
 interface Progress{turn:number;done:string[];parts:Record<string,any>}
-export function sourceAdapter(source:ProviderSource,session:ReturnType<typeof providerSession>):CaptureSourceAdapter{
+export function sourceAdapter(db:D1Database,source:ProviderSource,session:ReturnType<typeof providerSession>):CaptureSourceAdapter{
  const scope=JSON.parse(source.scope_json) as CaptureScope,tasks=[...(scope.mail?.folders??[]).map(id=>({kind:'mail' as const,id})),...(scope.calendars??[]).map(id=>({kind:'calendar' as const,id}))];
  return {adapter:source.adapter,scope,async pull(raw){
   if(!tasks.length)throw new CaptureError(409,'Choose the labels, folders or calendars to read first.');
@@ -22,7 +22,14 @@ export function sourceAdapter(source:ProviderSource,session:ReturnType<typeof pr
   const key=`${task.kind}:${task.id}`,cursor=progress.parts[key]??{};
   const result=source.adapter==='google'?(task.kind==='mail'?await googleMail(session,task.id,cursor):await googleCalendar(session,task.id,cursor,scope)):await microsoftPage(session,task.kind,task.id,cursor,scope);
   progress.parts[key]=result.cursor;if(!result.more)progress.done.push(key);progress.turn=(progress.turn+1)%tasks.length;
-  return {items:result.items,cursor:JSON.stringify(progress),more:progress.done.length<tasks.length};
+  // Orbit-created events already have one linked activity. Their feed copies must
+  // not enter the independent captured-event timeline, including after reconnect.
+  const items=[];
+  for(const item of result.items){
+   if(item.kind==='calendar'&&item.providerEvent&&await db.prepare('SELECT 1 FROM calendar_writebacks WHERE source_id=? AND calendar_id=? AND provider_event_id=?').bind(source.id,item.providerEvent.calendarId,item.providerEvent.id).first())continue;
+   items.push(item);
+  }
+  return {items,cursor:JSON.stringify(progress),more:progress.done.length<tasks.length};
  }};
 }
 export async function readProviderSource(db:D1Database,id:string){
@@ -53,7 +60,7 @@ export function selectScope(db:D1Database,id:string,scope:CaptureScope,security:
 export async function syncProvider(db:D1Database,id:string,security:SourceSecurity,fetcher:ProviderFetch=fetch,maxPages=4){
  const source=await readProviderSource(db,id),scope=JSON.parse(source.scope_json) as CaptureScope;
  if(!(scope.mail?.folders?.length||scope.calendars?.length))throw new CaptureError(409,'Choose the labels, folders or calendars to read first.');
- const result=await syncSource(db,id,(current,lease)=>sourceAdapter(current,providerSession(db,current,lease,security,fetcher)),security,{maxPages});
+ const result=await syncSource(db,id,(current,lease)=>sourceAdapter(db,current,providerSession(db,current,lease,security,fetcher)),security,{maxPages});
  if(!('halted' in result))await withProvider(db,id,security,fetcher,(current,session)=>reconcileWritebacks(db,current,session));
  return result;
 }

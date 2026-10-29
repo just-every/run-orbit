@@ -21,6 +21,7 @@ export async function withdrawImportReviews(db:D1Database,contactId:string,email
  // A concurrently saved review must not appear between discovery and erasure.
  // The existing NOT NULL constraint aborts the whole native deletion on drift.
  return [sql("INSERT INTO runtime_controls(name,value) SELECT 'crm_review_erasure_fence',NULL WHERE (SELECT json_group_array(json_array(id,plan_json)) FROM (SELECT id,plan_json FROM crm_import_reviews ORDER BY id))<>?",JSON.stringify(reviews.map(review=>[review.id,review.plan_json]))),
+  sql("DELETE FROM notifications WHERE EXISTS(SELECT 1 FROM crm_import_reviews r WHERE r.id IN(SELECT value FROM json_each(?)) AND substr(notifications.event_key,1,length('import-ownership:'||r.job_id||':'))='import-ownership:'||r.job_id||':')",JSON.stringify(affected)),
   sql('DELETE FROM crm_import_review_chunks WHERE review_id IN(SELECT value FROM json_each(?))',JSON.stringify(affected)),
   sql("UPDATE crm_import_reviews SET plan_json='null',fingerprint='',safety_pending=0 WHERE id IN(SELECT value FROM json_each(?))",JSON.stringify(affected))];
 }

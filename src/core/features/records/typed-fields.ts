@@ -5,8 +5,9 @@ import type {AuthenticatedOperator} from '../identity';
 import {actorFence,ownerFence,guard,clearGuards,version} from '../identity/store';
 import {payloadHash} from '../../platform/source-security';
 import {tables,RecordError,audit,type RecordKind} from './shared';
+import {isFullOperator} from '../access/identity-class';
 const kind=z.enum(['contact','company','opportunity']);
-const definition=z.object({kind,fieldKey:z.string().regex(/^[a-z][a-z0-9_]{0,63}$/).refine(value=>!['constructor','prototype'].includes(value),'Choose a different field key.'),label:z.string().trim().min(1).max(100),valueType:z.enum(['text','number','date','picklist']),required:z.boolean(),unique:z.boolean(),options:z.array(z.string().trim().min(1).max(100)).max(100),archived:z.boolean()}).strict().refine(d=>d.valueType!=='picklist'||d.options.length>0&&new Set(d.options).size===d.options.length,'Picklists need distinct options.');
+const definition=z.object({kind,fieldKey:z.string().regex(/^[a-z][a-z0-9_]{0,63}$/).refine(value=>!['constructor','prototype'].includes(value),'Choose a different field key.'),label:z.string().trim().min(1).max(100),valueType:z.enum(['text','number','date','picklist','boolean','user','datetime']),required:z.boolean(),unique:z.boolean(),options:z.array(z.string().trim().min(1).max(100)).max(100),archived:z.boolean()}).strict().refine(d=>d.valueType!=='picklist'||d.options.length>0&&new Set(d.options).size===d.options.length,'Picklists need distinct options.');
 type Definition=z.infer<typeof definition>;
 export type TypedField={kind:RecordKind;field_key:string;label:string;value_type:string;required:number;is_unique:number;options_json:string;archived:number;revision:number};
 const empty=(value:unknown)=>value===null||value===undefined||value==='';
@@ -23,9 +24,21 @@ export function fieldReason(field:{label:string;value_type:string;required:numbe
  if(empty(value))return field.required?'a value is required':null;
  if(field.value_type==='text'&&typeof value!=='string')return 'enter text';
  if(field.value_type==='number'&&(typeof value!=='number'||!Number.isFinite(value)))return 'enter a finite number';
+ if(field.value_type==='boolean'&&typeof value!=='boolean')return 'choose Yes or No';
+ if(field.value_type==='user'&&(typeof value!=='string'||!operatorId.safeParse(value).success))return 'choose a native operator';
+ if(field.value_type==='datetime'&&(typeof value!=='string'||!dateTime.safeParse(value).success||!Number.isFinite(Date.parse(value))))return 'enter an ISO date and time with a timezone';
  if(field.value_type==='date'&&(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(value)||!Number.isFinite(Date.parse(value))||new Date(value).toISOString().slice(0,10)!==value))return 'enter a real date as YYYY-MM-DD';
  if(field.value_type==='picklist'&&(typeof value!=='string'||!JSON.parse(field.options_json).includes(value)))return 'choose a listed option';
  return null;
+}
+const operatorId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+const dateTime=z.iso.datetime({offset:true});
+/** Existing historical assignments remain readable; a changed assignment needs
+ * current native authority, repeated by the record's transaction. */
+export async function typedUserFieldFences(db:D1Database,field:{label:string;value_type:string},value:unknown,before:unknown){
+ if(field.value_type!=='user'||empty(value)||value===before)return [];
+ if(typeof value!=='string'||!await isFullOperator(db,value))throw new RecordError(400,`${field.label}: choose an active native operator.`);
+ return [guard(db,{sql:"EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id))",args:[value]})];
 }
 const policyVersion=(db:D1Database,recordKind:RecordKind)=>db.prepare("SELECT COALESCE(sum(revision),0)||':'||count(*) AS value FROM record_custom_fields WHERE kind=?").bind(recordKind).first<string>('value');
 /** Repeat schema and uniqueness checks inside the record's write transaction. */
@@ -39,8 +52,9 @@ export async function typedFieldSave(db:D1Database,recordKind:RecordKind,id:stri
  const revision=snapshot.value,fields=JSON.parse(snapshot.fields) as TypedField[],statements=[guard(db,{sql:"(SELECT COALESCE(sum(revision),0)||':'||count(*) FROM record_custom_fields WHERE kind=?)=?",args:[recordKind,revision]})];
  for(const field of fields){const value=values[field.field_key];if(field.archived){if(JSON.stringify(value)!==JSON.stringify(before[field.field_key]))throw new RecordError(400,`${field.label}: archived values are read-only.`);continue;}
   const reason=fieldReason(field,value);if(reason)throw new RecordError(400,`${field.label}: ${reason}.`);
+  statements.push(...await typedUserFieldFences(db,field,value,before[field.field_key]));
   if(field.is_unique&&!empty(value)){
-   const path='$.'+JSON.stringify(field.field_key),sql=`NOT EXISTS(SELECT 1 FROM ${tables[recordKind]} WHERE id<>? AND json_extract(custom_fields_json,?)=?)`,args=[id,path,value as string|number];
+   const path='$.'+JSON.stringify(field.field_key),sql=field.value_type==='boolean'?`NOT EXISTS(SELECT 1 FROM ${tables[recordKind]} WHERE id<>? AND json_type(custom_fields_json,?)=?)`:`NOT EXISTS(SELECT 1 FROM ${tables[recordKind]} WHERE id<>? AND json_extract(custom_fields_json,?)=?)`,args=[id,path,field.value_type==='boolean'?String(value):value as string|number];
    if(!await db.prepare('SELECT '+sql+' AS valid').bind(...args).first<number>('valid'))throw new RecordError(409,`${field.label}: this value already belongs to another record.`);
    statements.push(guard(db,{sql,args}));
   }
@@ -54,7 +68,8 @@ export function typedFieldRoutes(db:D1Database){const app=new Hono<{Variables:{o
  async function preview(input:Definition){
   const epoch=await db.prepare('SELECT COALESCE((SELECT epoch FROM identity_custom_field_epochs WHERE kind=?),0) AS epoch').bind(input.kind).first<number>('epoch'),revision=await policyVersion(db,input.kind),field={label:input.label,value_type:input.valueType,required:Number(input.required),options_json:JSON.stringify(input.options)},affected:{id:string;name:string;reason:string}[]=[],duplicates=new Map<string,string[]>();
   const rows=(await db.prepare(`SELECT id,${input.kind==='opportunity'?'title':input.kind==='contact'?"COALESCE(name,email,'Unnamed contact')":'name'} AS name,custom_fields_json FROM ${tables[input.kind]} ORDER BY id`).all<{id:string;name:string;custom_fields_json:string}>()).results;
-  for(const row of rows){const value=JSON.parse(row.custom_fields_json)[input.fieldKey],reason=fieldReason(field,value);if(!input.archived&&reason)affected.push({id:row.id,name:row.name,reason});if(!input.archived&&input.unique&&!empty(value)){const key=JSON.stringify(value),ids=duplicates.get(key)??[];ids.push(row.id);duplicates.set(key,ids);}}
+  const activeUsers=input.valueType==='user'?new Set((await db.prepare("SELECT o.id FROM operators o WHERE o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id)").all<{id:string}>()).results.map(user=>user.id)):undefined;
+  for(const row of rows){const value=JSON.parse(row.custom_fields_json)[input.fieldKey],reason=fieldReason(field,value)??(activeUsers&&!empty(value)&&!activeUsers.has(String(value))?'choose an active native operator':null);if(!input.archived&&reason)affected.push({id:row.id,name:row.name,reason});if(!input.archived&&input.unique&&!empty(value)){const key=JSON.stringify(value),ids=duplicates.get(key)??[];ids.push(row.id);duplicates.set(key,ids);}}
   const duplicateIds=new Set([...duplicates.values()].filter(ids=>ids.length>1).flat());for(const row of rows)if(duplicateIds.has(row.id))affected.push({id:row.id,name:row.name,reason:'value is duplicated'});
   const reviewHash=await payloadHash(JSON.stringify({input,epoch,revision}));return {input,epoch,revision,reviewHash,affected,duplicateCount:duplicateIds.size,recordCount:rows.length};
  }

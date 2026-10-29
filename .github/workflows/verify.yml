@@ -4,7 +4,7 @@ on:
   pull_request:
   # Installer and README clone journeys run nightly and on release tags, not on every push.
   schedule:
-    - cron: '17 3 * * 1,4'
+    - cron: '54 5 * * 1,4'
   workflow_dispatch:
     inputs:
       release:
@@ -39,7 +39,10 @@ jobs:
       contents: read
       actions: read
     outputs:
-      skip: ${{ steps.reuse.outputs.skip }}
+      skip: ${{ steps.plan.outputs.skip }}
+      coverage: ${{ steps.plan.outputs.coverage }}
+      tier: ${{ steps.plan.outputs.tier }}
+      readers: ${{ steps.plan.outputs.readers }}
       matrix: ${{ steps.plan.outputs.matrix }}
       journeys: ${{ steps.plan.outputs.journeys }}
     steps:
@@ -47,39 +50,35 @@ jobs:
         with:
           fetch-depth: 2
           persist-credentials: false
-      - id: reuse
-        env:
-          GH_TOKEN: ${{ github.token }}
-          EVENT: ${{ github.event_name }}
-          REF: ${{ github.ref }}
-          SAME_REPO: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
-          PR_HEAD: ${{ github.event.pull_request.head.sha }}
-          WF_REF: ${{ github.workflow_ref }}
-        run: bash scripts/verification-reuse.sh
-      - if: steps.reuse.outputs.skip != 'true'
-        uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v4
         with:
           run_install: false
-      - if: steps.reuse.outputs.skip != 'true'
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-          cache: pnpm
-      - if: steps.reuse.outputs.skip != 'true'
-        name: Install the plan's TypeScript reader
+      - name: Set runner-owned pnpm store
+        run: pnpm config set store-dir "$RUNNER_TEMP/pnpm-store"
+      - name: Install the plan's TypeScript reader
         run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Look up complete nightly marker
+        id: nightly
+        if: github.event_name == 'schedule'
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/nightly-green
+          key: nightly-green-${{ github.sha }}
+          lookup-only: true
       - id: plan
-        if: steps.reuse.outputs.skip != 'true'
-        name: Read the shared local and CI verification plan
+        name: Select coverage with Base's planner and Orbit's unchanged partitions
         env:
-          JOURNEYS: ${{ github.ref_type == 'tag' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.release) }}
-        run: |
-          node --input-type=module -e 'import {verificationBatches} from "./scripts/verification-plan.mjs"; const include=verificationBatches({journeys:process.env.JOURNEYS==="true"}); console.log("matrix="+JSON.stringify({include}));' >> "$GITHUB_OUTPUT"
-          echo "journeys=$([ "$JOURNEYS" = true ] && echo 1 || echo 0)" >> "$GITHUB_OUTPUT"
+          GITHUB_TOKEN: ${{ github.token }}
+          TIER: ${{ github.event_name == 'workflow_dispatch' && inputs.release && 'all' || 'push' }}
+          NIGHTLY_CACHE_HIT: ${{ steps.nightly.outputs.cache-hit }}
+        run: node --import ./scripts/verify-plan.mjs scripts/verification-ci.mjs --plan
   source:
     name: source and shared build
     needs: plan
-    if: needs.plan.outputs.skip != 'true'
+    if: needs.plan.outputs.coverage == 'full'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -93,7 +92,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-          cache: pnpm
+      - name: Set runner-owned pnpm store
+        run: pnpm config set store-dir "$RUNNER_TEMP/pnpm-store"
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pnpm-store
+          key: orbit-ubuntu24-temp-pnpm-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
       - name: Verify source, types, boundaries and the single shared app build
         run: node scripts/verification-shard.mjs source
@@ -101,9 +105,9 @@ jobs:
         env:
           GIT_ALLOW_PROTOCOL: file
         run: |
-          node scripts/edition-authoring/cli.mjs check > /tmp/source-check.json
+          node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check > /tmp/source-check.json
           pnpm exec rer describe --json > /tmp/operations.json
-          node scripts/edition-authoring/cli.mjs release /tmp/orbit-source-release > /tmp/source-release.json
+          node node_modules/@runeditrun/rer/edition-authoring/cli.mjs release /tmp/orbit-source-release > /tmp/source-release.json
           git -C /tmp/orbit-source-release bundle create /tmp/orbit-source.bundle --all
       - name: Seal the emitted app for this exact commit
         run: |
@@ -134,10 +138,11 @@ jobs:
   shards:
     name: shards (${{ matrix.batch }})
     needs: [plan, source]
-    if: needs.plan.outputs.skip != 'true'
+    if: needs.plan.outputs.coverage == 'full'
     env:
       ORBIT_VERIFY_PREBUILT: '1'
       ORBIT_VERIFY_JOURNEYS: ${{ needs.plan.outputs.journeys }}
+      ORBIT_VERIFY_TIER: ${{ needs.plan.outputs.tier }}
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     strategy:
@@ -154,7 +159,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-          cache: pnpm
+      - name: Set runner-owned pnpm store
+        run: pnpm config set store-dir "$RUNNER_TEMP/pnpm-store"
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pnpm-store
+          key: orbit-ubuntu24-temp-pnpm-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install pinned package CLI for every shard
         run: pnpm install --frozen-lockfile
       - uses: actions/download-artifact@v4
@@ -175,12 +185,16 @@ jobs:
               exit 1
             fi
           done
+      - name: Set runner-owned browser cache
+        run: printf 'PLAYWRIGHT_BROWSERS_PATH=%s/ms-playwright\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
       - name: Cache fallback apt archives
         if: matrix.browsers
         uses: actions/cache@v4
         with:
-          path: ${{ runner.temp }}/rer-apt/archives
-          key: chromium-apt-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'scripts/install-chromium-deps.py') }}
+          path: |
+            ${{ runner.temp }}/ms-playwright
+            ${{ runner.temp }}/rer-apt/archives/*.deb
+          key: chromium-ubuntu24-temp-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'scripts/install-chromium-deps.py') }}
       - name: Install Chromium
         if: matrix.browsers
         run: |
@@ -226,8 +240,45 @@ jobs:
             .orbit-viewport-evidence/
           include-hidden-files: true
           if-no-files-found: error
+  light:
+    needs: plan
+    if: needs.plan.outputs.coverage == 'light'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - run: pnpm config set store-dir "$RUNNER_TEMP/pnpm-store"
+      - run: pnpm install --frozen-lockfile
+      - name: Check source, command contract, reviewed readers and built run site
+        env:
+          LIGHT_READERS: ${{ needs.plan.outputs.readers }}
+        run: node scripts/verification-ci.mjs --light
+  full-push-proof:
+    needs: [plan, verify]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && needs.plan.outputs.tier == 'push' && needs.plan.outputs.coverage == 'full' && needs.verify.result == 'success'
+    runs-on: ubuntu-24.04
+    steps:
+      - run: test '${{ needs.verify.result }}' = success
+  nightly-proof:
+    needs: [plan, verify]
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && (needs.plan.outputs.tier == 'nightly' || needs.plan.outputs.tier == 'all') && needs.plan.outputs.coverage == 'full' && needs.verify.result == 'success'
+    runs-on: ubuntu-24.04
+    steps:
+      - run: mkdir -p "$RUNNER_TEMP/nightly-green" && printf '%s\n' '${{ github.sha }}' > "$RUNNER_TEMP/nightly-green/sha"
+      - uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/nightly-green
+          key: nightly-green-${{ github.sha }}
   verify:
-    needs: [plan, source, shards]
+    needs: [plan, source, shards, light]
     if: always()
     runs-on: ubuntu-24.04
     env:
@@ -237,42 +288,48 @@ jobs:
         env:
           PLAN: ${{ needs.plan.result }}
           SKIP: ${{ needs.plan.outputs.skip }}
+          COVERAGE: ${{ needs.plan.outputs.coverage }}
+          LIGHT: ${{ needs.light.result }}
           SOURCE: ${{ needs.source.result }}
           SHARDS: ${{ needs.shards.result }}
         run: |
           test "$PLAN" = success
-          if [ "$SKIP" = true ]; then exit 0; fi
-          test "$SOURCE" = success
-          test "$SHARDS" = success
-      - if: needs.plan.outputs.skip != 'true'
+          case "$COVERAGE" in
+            reuse) test "$SKIP" = true && test "$SOURCE" = skipped && test "$SHARDS" = skipped && test "$LIGHT" = skipped ;;
+            light) test "$SKIP" = false && test "$LIGHT" = success && test "$SOURCE" = skipped && test "$SHARDS" = skipped ;;
+            full) test "$SOURCE" = success && test "$SHARDS" = success && test "$LIGHT" = skipped ;;
+            *) exit 1 ;;
+          esac
+      - if: needs.plan.outputs.coverage == 'full'
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - if: needs.plan.outputs.skip != 'true'
+      - if: needs.plan.outputs.coverage == 'full'
         uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-      - if: needs.plan.outputs.skip != 'true'
+      - if: needs.plan.outputs.coverage == 'full'
         uses: pnpm/action-setup@v4
         with:
           run_install: false
-      - if: needs.plan.outputs.skip != 'true'
-        run: pnpm install --frozen-lockfile --ignore-scripts
-      - if: needs.plan.outputs.skip != 'true'
+      - if: needs.plan.outputs.coverage == 'full'
+        run: pnpm config set store-dir "$RUNNER_TEMP/pnpm-store" && pnpm install --frozen-lockfile --ignore-scripts
+      - if: needs.plan.outputs.coverage == 'full'
         uses: actions/download-artifact@v4
         with:
           pattern: orbit-shard-*
           path: verification/ci-shards
           merge-multiple: true
-      - if: needs.plan.outputs.skip != 'true'
+      - if: needs.plan.outputs.coverage == 'full'
         name: Require every planned shard on this commit
         env:
           ORBIT_VERIFY_JOURNEYS: ${{ needs.plan.outputs.journeys }}
+          ORBIT_VERIFY_TIER: ${{ needs.plan.outputs.tier }}
         run: |
           test '${{ needs.shards.result }}' = success
           node scripts/verification-aggregate.mjs
       - name: Retain combined routine verdicts (capacity pending)
-        if: always() && needs.plan.outputs.skip != 'true'
+        if: always() && needs.plan.outputs.coverage == 'full'
         uses: actions/upload-artifact@v4
         with:
           name: orbit-routine-verification
@@ -306,12 +363,22 @@ jobs:
               exit 1
             fi
           done
+      - name: Set runner-owned pnpm store
+        run: pnpm config set store-dir "$RUNNER_TEMP/pnpm-store"
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pnpm-store
+          key: orbit-ubuntu24-temp-pnpm-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
+      - name: Set runner-owned browser cache
+        run: printf 'PLAYWRIGHT_BROWSERS_PATH=%s/ms-playwright\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
       - name: Cache fallback apt archives
         uses: actions/cache@v4
         with:
-          path: ${{ runner.temp }}/rer-apt/archives
-          key: chromium-apt-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'scripts/install-chromium-deps.py') }}
+          path: |
+            ${{ runner.temp }}/ms-playwright
+            ${{ runner.temp }}/rer-apt/archives/*.deb
+          key: chromium-ubuntu24-temp-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'scripts/install-chromium-deps.py') }}
       - name: Install Chromium
         run: |
           set -euo pipefail

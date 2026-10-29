@@ -7,6 +7,7 @@ import {random} from '../../src/core/features/delegation/protocol';
 import {challenge} from '../../src/core/features/delegation/token';
 import {OutreachRepository} from '../../src/core/features/workbench/outreach-repository';
 import {ApprovalRepository} from '../../src/core/features/outreach/approval-repository';
+import {seedWorkflowCustody} from './workflow-archive-proof';
 import {createApp,TEST_SESSION_SECRET} from './app';
 
 /** Populate the current product through the same authenticated doors as the UI. */
@@ -68,5 +69,6 @@ export async function currentSalesData(f:CaptureFixture){
  const reader=await emailLinkSignIn(f.db,'archive-reader@example.test');
  const accepted=await f.app.request('https://orbit.test/api/v2/access/invitations/accept',{method:'POST',headers:{Cookie:reader.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({token:invitation.token})});assert.equal(accepted.status,200);
  const denied=await f.app.request('https://orbit.test/api/v1/records/archive/exports',{method:'POST',headers:{Cookie:reader.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:'{}'});assert.equal(denied.status,403,'report access never grants complete export');
- return {reader,call,report,forms:forms+'/'+saved.id,operation:compiled.operationId,token,privateValues:['ana@acme.example','Private reviewed form enquiry','Private rollout task','Private account planning']};
+ const workflow=await seedWorkflowCustody(f,call);
+ return {reader,call,report,forms:forms+'/'+saved.id,operation:compiled.operationId,token,workflow,privateValues:['ana@acme.example','Private reviewed form enquiry','Private rollout task','Private account planning']};
 }
