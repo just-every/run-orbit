@@ -22,7 +22,7 @@
 .demo-story .company { font-size:16px;line-height:1.3;font-weight:650 }
 .demo-story .industry { font-size:14px;line-height:1.35;color:var(--ob-muted) }
 .demo-story .queue { color:var(--ob-body);font-size:13.5px;line-height:1.3 }
-.demo-story .queue small { display:block;font-size:12.5px;color:var(--ob-muted) }
+.demo-story .queue small { display:block;font-size:var(--ob-text-min);color:var(--ob-muted) }
 .demo-story .chevron { color:var(--ob-ink);font-size:24px;line-height:1;text-align:right }
 .demo-story .detail-panel { display:grid;grid-template-columns:minmax(0,1.48fr) minmax(0,1fr);padding:22px 0 32px }
 .demo-story .detail { padding:0 28px 0 30px }
