@@ -81,12 +81,13 @@ test('an owner moves a customer book into Orbit, reviews captured activity and c
     await reviewImportedData(page,await guest.newPage(),customer,viewer.operator.operatorId);await guest.close();
     await calendarJourney(page,calendarData);
     await callingJourney(page,{fetch:worker.fetch.bind(worker),origin,provider:callingProvider,accountSid:callingAccount,token:callingToken});
-    await typedFieldsJourney(page,calendarData.contact);
     await reviewCustomerChanges(page,customer);
     const workflowRecord=await context.request.post('/api/v1/workbench/opportunities',{headers:{Origin:origin},data:{title:'Operator review opportunity',companyName:'Workflow account',contactName:'Workflow buyer',email:'workflow-buyer@example.test',stageId:sampleData.pipelineStages[0].id,valueCents:0}});
     if(!workflowRecord.ok())throw new Error('Workflow browser record could not be created: '+await workflowRecord.text());
     const workflowDeal=await workflowRecord.json();
     await workflowBrowserJourney({page,fixture:{opportunityId:workflowDeal.id,contactId:customer.bob},origin,directory:evidence},1440);
+    // Restoring a required field ends the workspace journey; later edits must supply it.
+    await typedFieldsJourney(page,calendarData.contact);
   } finally {
     await browser?.close();
     await runtime.teardown();

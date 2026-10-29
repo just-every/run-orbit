@@ -9,7 +9,10 @@ export async function maintainCustomerRecord(page,customer) {
  await segment.getByRole('button',{name:'Keep current value',exact:true}).click();
  await page.getByLabel('New custom field name',{exact:true}).fill('Licensed seats');await page.getByRole('button',{name:'Add custom field',exact:true}).click();await page.getByLabel('Licensed seats',{exact:true}).fill('25');
  const seats=page.locator('.record-custom-fields__row').filter({has:page.getByLabel('Licensed seats',{exact:true})});await seats.getByRole('combobox',{name:'Value type',exact:true}).selectOption('number');await expect(page.getByLabel('Licensed seats',{exact:true})).toHaveValue('25');
- await page.getByRole('combobox',{name:'Contactability',exact:true}).selectOption('do_not_contact');await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByText('+61 400 123 456',{exact:true})).toBeVisible();await expect(page.getByText('Independent studio',{exact:true})).toBeVisible();
+ await page.getByRole('combobox',{name:'Contactability',exact:true}).selectOption('do_not_contact');
+ const recordSaved=page.waitForResponse(response=>response.request().method()==='PUT'&&new URL(response.url()).pathname===`/api/v1/records/contact/${customer.ana}`);
+ await page.getByRole('button',{name:'Save changes',exact:true}).click();expect((await recordSaved).ok()).toBe(true);
+ await expect(page.getByRole('button',{name:'Edit details',exact:true})).toBeVisible();await expect(page.getByText('+61 400 123 456',{exact:true})).toBeVisible();await expect(page.getByText('Independent studio',{exact:true})).toBeVisible();
  const noteStarted=await page.evaluate(()=>Date.now());await page.getByLabel('Text',{exact:true}).fill('Browser manual note');
  const noteSaved=page.waitForResponse(response=>response.request().method()==='POST'&&new URL(response.url()).pathname.endsWith('/entries'));
  await page.getByRole('button',{name:'Save entry',exact:true}).click();const noteResponse=await noteSaved;expect(noteResponse.ok()).toBe(true);

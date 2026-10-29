@@ -24,6 +24,10 @@ export async function isolatedDatabase() {
    execFileSync(process.execPath,['node_modules/wrangler/bin/wrangler.js','d1','migrations','apply','DB','--local','--config','wrangler.jsonc','--persist-to',directory],{env:{...process.env,CI:'1'},timeout:60000,stdio:'pipe'});
   }
   let platform=await getPlatformProxy<{DB:D1Database}>({configPath:'wrangler.jsonc',envFiles:['tests/support/no-local-settings.env'],persist:{path:join(directory,'v3')},remoteBindings:false});
+  // The migrated template contains a generated installation identity. A fresh
+  // fixture is a separate installation, while reopen must retain that identity.
+  if (process.env.ORBIT_TEST_DATABASE_TEMPLATE)
+   await platform.env.DB.prepare('UPDATE delegation_installation SET id=lower(hex(randomblob(16))), epoch=0').run();
   let prepared=preparedDatabase(platform.env.DB),closed=false;
   const close=async()=>{if(!closed){await platform.dispose();prepared.clear();closed=true;}};
   return {

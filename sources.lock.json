@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "35bd31b6043742d1985ffbe51a97a05df0b2dd1146ad57dcd7991bb894dddba0",
+      "sha256": "acdeefc3b999fbfbeb630e3c2c49ef02b1b50ba4df5d78123416016db2439c2e",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "6fac62742f6f67b55bffa02febfcf29a7f04c52aeca6b5b859ac527d2393752d",
+      "sha256": "9d5f4923758a5379ec9af0b732bcb2bc0f7911a0705ecd3c7af74366e3251830",
       "executable": false
     },
     "DEMO.md": {
@@ -9143,7 +9143,7 @@
       "executable": false
     },
     "tests/delegation-browser/calling-journey.mjs": {
-      "sha256": "69374abe2be96c260438ae51c7349c1a5d42ebcf4c347c4e8af62c4106db0d5c",
+      "sha256": "935866148223e8c1e160e5a6ccd9c79982040cbc8798bc3fd6b3029a80ab36a4",
       "executable": false
     },
     "tests/delegation-browser/capture-status-fixture.ts": {
@@ -9159,11 +9159,11 @@
       "executable": false
     },
     "tests/delegation-browser/customer-record.mjs": {
-      "sha256": "70765ea25f0312711715fc90edb85e18c68b2c69bdb65d09efb057e2144ffc8d",
+      "sha256": "5d28de7c47fa2692d8624317f5f21e1a71a29fd6af7f2e8298e54e356b197fac",
       "executable": false
     },
     "tests/delegation-browser/customer-review.mjs": {
-      "sha256": "49a8781d9e411f855ed80efd0716e41e1cb6a0398de8993b3f89611b2ff20483",
+      "sha256": "ce67f0572c638747006b625371ea45437c2be88fb00553dcc09c79bc39c3e2b3",
       "executable": false
     },
     "tests/delegation-browser/mention-link.mjs": {
@@ -9179,7 +9179,7 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {
-      "sha256": "e9c79e62c53137662526b8dae69f0283c6a361813e4d496b5d401924a319c0fa",
+      "sha256": "0db8b4bcd8b9cbf03f99075e41e92d954445b52e18e6510f0fea2b819861734c",
       "executable": false
     },
     "tests/delegation-browser/today-brief.test.ts": {
@@ -9191,7 +9191,7 @@
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
-      "sha256": "43b4bb05116d8c86698ef82337c0ea73c2727950a975804a4b3ecd6291baf206",
+      "sha256": "353ad789b1c20fced1116a8af95c096fabb7e8de42946ef3d7ec440443e1c3ed",
       "executable": false
     },
     "tests/delegation/authority-fixture.ts": {
@@ -9903,7 +9903,7 @@
       "executable": false
     },
     "tests/support/isolated-database.ts": {
-      "sha256": "0d47536bb74ef0d4da962d50a3b4d818fa0680262440924a4977b4693241a8fd",
+      "sha256": "bdbbd8b4bba0f37f52420be03a1d8148d182a8c8e45f48d8edab424b973b7c4b",
       "executable": false
     },
     "tests/support/issue-operator-session.ts": {

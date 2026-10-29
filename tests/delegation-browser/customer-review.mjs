@@ -4,6 +4,11 @@ import {expect} from '@playwright/test';
 export async function reviewImportedData(page,collaborator,customer,viewerId) {
  const origin=new URL(page.url()).origin,path=`/api/v1/records/contact/${customer.bob}`;
  const read=async()=>(await(await page.request.get(path)).json()).record;
+ const saveChanges=async()=>{
+  const saved=page.waitForResponse(response=>response.request().method()==='PUT'&&new URL(response.url()).pathname===path);
+  await page.getByRole('button',{name:'Save changes',exact:true}).click();expect((await saved).ok()).toBe(true);
+  await expect(page.getByRole('button',{name:'Edit details',exact:true})).toBeVisible();
+ };
  const before=await read(),values=JSON.parse(before.custom_fields_json),provenance=JSON.parse(values.import_source);
  const granted=await page.request.post('/api/v2/access/workspaces/workspace/grants',{headers:{Origin:origin},data:{subjectKind:'operator',subjectId:viewerId,resourceType:'contact',resourceId:customer.bob,actions:['graph.read'],fields:['name','email','custom_fields_json'],purpose:'Review imported customer context',expiresAt:null}});expect(granted.status()).toBe(200);
  const update=await page.request.put(path,{headers:{Origin:origin},data:{...before,custom_fields:{...values,campaign_json:'Ordinary campaign text'}}});expect(update.status()).toBe(200);
@@ -11,11 +16,11 @@ export async function reviewImportedData(page,collaborator,customer,viewerId) {
  await expect(page.getByText(`${provenance.account} (spreadsheet)`,{exact:true})).toBeVisible();
  await expect(page.getByText(values.import_source,{exact:true})).toHaveCount(0);
  await page.getByRole('button',{name:'Edit details',exact:true}).click();
- await page.getByLabel('Phone',{exact:true}).fill('+1 202 555 0103');await page.getByRole('button',{name:'Save changes',exact:true}).click();
+ await page.getByLabel('Phone',{exact:true}).fill('+1 202 555 0103');await saveChanges();
  expect(JSON.parse((await read()).custom_fields_json).import_source).toBe(values.import_source);
  const literal='{"owner_note":"Keep this JSON-looking customer text literally"}';
  await page.getByRole('button',{name:'Edit details',exact:true}).click();await page.getByRole('button',{name:'Replace Import source with text',exact:true}).click();
- await page.getByLabel('Import source',{exact:true}).fill(literal);await page.getByLabel('Campaign json',{exact:true}).fill(literal);await page.getByRole('button',{name:'Save changes',exact:true}).click();
+ await page.getByLabel('Import source',{exact:true}).fill(literal);await page.getByLabel('Campaign json',{exact:true}).fill(literal);await saveChanges();
  const saved=JSON.parse((await read()).custom_fields_json);expect(saved.import_source).toBe(literal);expect(saved.campaign_json).toBe(literal);
  await expect(page.getByText(literal,{exact:true})).toHaveCount(2);await page.reload();await expect(page.getByText(literal,{exact:true})).toHaveCount(2);
  await page.getByRole('button',{name:'Edit details',exact:true}).click();await expect(page.getByLabel('Import source',{exact:true})).toHaveValue(literal);await expect(page.getByLabel('Campaign json',{exact:true})).toHaveValue(literal);
