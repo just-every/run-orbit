@@ -67,5 +67,4 @@ export async function reviewCapturedEvidence(f:CaptureFixture,mail:ReturnType<ty
     assert.equal(await f.db.prepare("SELECT count(*) n FROM capture_proposals WHERE proposed_value='cara@acme.example'").first('n'), 1);
     assert.equal(await f.db.prepare("SELECT count(*) n FROM contacts WHERE email='cara@acme.example'").first('n'), 0);
     assert.ok(await f.db.prepare("SELECT 1 FROM audit_entries WHERE action='capture.declined' AND entity_id=?").bind(cara.id).first());
-
 }

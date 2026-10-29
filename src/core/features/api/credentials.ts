@@ -8,13 +8,14 @@ import {createId} from '../../shared/ids';
 import {hash,random} from '../delegation/protocol';
 import {audit,RecordError} from '../records/shared';
 
+export const dealReadFields=['title','stage_id','value_cents','company_id','expected_close_at','owner_id','products'] as const;
 const recordId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 export const credentialDefinition=z.object({
  name:z.string().trim().min(1).max(100),
  principalId:recordId,
  operations:z.array(z.enum(['deal.read','deal.create','deal.update'])).min(1).max(3),
  recordIds:z.array(recordId).min(1).max(100),
- fields:z.array(z.enum(['title','stage_id','value_cents','company_id'])).min(1).max(4),
+ fields:z.array(z.enum(dealReadFields)).min(1).max(dealReadFields.length),
  expiresAt:z.iso.datetime(),
 }).strict();
 type Definition=z.infer<typeof credentialDefinition>;

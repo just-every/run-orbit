@@ -1,3 +1,5 @@
+import {foldInstalledCatalog} from '../../src/core/features/records/archive-fold-catalog';
+import {archiveSchemaFence} from '../../src/core/features/records/archive-schema-fence';
 import assert from 'node:assert/strict';
 import {fixture,collaborator} from './fixture';
 import {archiveHttp,httpArchive} from './archive-http-proof';
@@ -20,6 +22,7 @@ async function targetPair(db:D1Database){return{
 };}
 
 export async function rollbackRestore(source:Awaited<ReturnType<typeof fixture>>,target:Awaited<ReturnType<typeof fixture>>,archive:Awaited<ReturnType<typeof httpArchive>>){
+ await verifyColumnFence(source);
  const restricted=await collaborator(target,'seller');
   const before=await targetPair(target.db),app=createApp({database:target.db,assets:{fetch:async()=>{throw Error('API-only fixture');}}}),request=archiveHttp(app,()=>target.cookie);
   const invalid=structuredClone(archive.manifest);invalid.tables.pop();const refused=await app.request('https://orbit.test/api/v1/records/archive/imports',{method:'POST',headers:{Cookie:target.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({confirmed:true,manifest:invalid})});assert.equal(refused.status,400);assert.equal(await target.db.prepare('SELECT count(*) n FROM archive_jobs').first('n'),0);
@@ -37,4 +40,27 @@ export async function rollbackRestore(source:Awaited<ReturnType<typeof fixture>>
   let status=await(await request(`/imports/${job.id}/abort`,'POST',{})).json() as any;for(let steps=0;status.state!=='aborted';steps++){assert.ok(steps<2000);status=await(await request(`/imports/${job.id}/abort`,'POST',{})).json() as any;}
   assert.deepEqual(await targetPair(target.db),before);assert.equal(await target.db.prepare('SELECT count(*) n FROM archive_storage_reservations').first('n'),0);assert.equal(await target.db.prepare("SELECT count(*) n FROM sqlite_master WHERE name GLOB 'archive_stage_*'").first('n'),0);assert.ok(await createDependencies(target.db).auth.authenticate(target.cookie));assert.equal(await target.db.prepare('SELECT count(*) n FROM operators WHERE id=?').bind(source.operator.operatorId).first('n'),0);
 
+}
+
+async function verifyColumnFence(f:{db:D1Database}){
+ await f.db.prepare("CREATE TABLE owner_column_data(id INTEGER PRIMARY KEY,value TEXT NOT NULL DEFAULT 'kept',amount REAL DEFAULT 2.5)").run();
+ const columns=await foldInstalledCatalog(f.db),owner=columns.find(table=>table.name==='owner_column_data')!;
+ // Older catalogs may omit SQL objects; ordered column metadata still guards writes.
+ delete (owner as {objects?:unknown}).objects;
+ await f.db.batch([...archiveSchemaFence(f.db,columns),f.db.prepare('INSERT INTO owner_column_data(id) VALUES(1)')]);
+ assert.deepEqual(await f.db.prepare('SELECT value,amount FROM owner_column_data').first(),{value:'kept',amount:2.5});
+ await f.db.prepare('DELETE FROM owner_column_data').run();
+ for(const drift of ['order','missing','extra','type','nullability','key','default'] as const){
+  const changed=structuredClone(columns),table=changed.find(table=>table.name===owner.name)!;
+  if(drift==='order')table.columns.reverse();
+  else if(drift==='missing')table.columns.pop();
+  else if(drift==='extra')table.columns.push({...table.columns[0]!,name:'absent_column'});
+  else if(drift==='type')table.columns[2]!.type='INTEGER';
+  else if(drift==='nullability')table.columns[1]!.notnull=0;
+  else if(drift==='key')table.columns[0]!.pk=0;
+  else table.columns[1]!.dflt_value=null;
+  await assert.rejects(f.db.batch([...archiveSchemaFence(f.db,changed),f.db.prepare('INSERT INTO owner_column_data(id) VALUES(1)')]),drift);
+  assert.equal(await f.db.prepare('SELECT count(*) n FROM owner_column_data').first('n'),0,drift);
+ }
+ await f.db.prepare('DROP TABLE owner_column_data').run();
 }

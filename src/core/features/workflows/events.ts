@@ -1,0 +1,9 @@
+import {createId} from '../../shared/ids';
+/** Finish the event's association snapshot inside the record mutation transaction. */
+export function workflowAssociationEvent(db:D1Database,id:string,at:string){
+ const event="SELECT id FROM workflow_events WHERE record_type='opportunity' AND record_id=? AND occurred_at=? ORDER BY rowid DESC LIMIT 1";
+ return [db.prepare("INSERT INTO workflow_events(id,kind,record_type,record_id,occurred_at,evidence,chain_json) SELECT ?,'record_changed','opportunity',?,?, 'Associated contacts changed',COALESCE((SELECT value FROM runtime_controls WHERE name='workflow_chain'),'[]') WHERE NOT EXISTS(SELECT 1 FROM workflow_events WHERE record_type='opportunity' AND record_id=? AND occurred_at=?)").bind(createId(),id,at,id,at),
+ db.prepare(`UPDATE workflow_event_snapshots SET values_json=json_set(values_json,'$.contact_ids',json((SELECT json_group_array(contact_id) FROM opportunity_contacts WHERE opportunity_id=?)),'$.primary_contact_id',(SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=? AND is_primary=1)) WHERE record_type='opportunity' AND record_id=? AND event_id=(${event})`).bind(id,id,id,id,at),
+ db.prepare(`DELETE FROM workflow_event_snapshots WHERE record_type='contact' AND record_id NOT IN(SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?) AND event_id=(${event})`).bind(id,id,at),
+ db.prepare(`INSERT OR IGNORE INTO workflow_event_snapshots SELECT (${event}),'contact',c.id,json_object('id',c.id,'name',c.name,'email',c.email,'phone',c.phone,'job_title',c.job_title,'timezone',c.timezone,'company_id',c.company_id,'contactability',c.contactability,'custom_fields_json',c.custom_fields_json,'updated_at',c.updated_at) FROM contacts c JOIN opportunity_contacts l ON l.contact_id=c.id WHERE l.opportunity_id=?`).bind(id,at,id)];
+}

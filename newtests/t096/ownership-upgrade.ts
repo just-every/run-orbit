@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {nativeId} from '../../src/core/features/imports/source';
 import {exactMainDatabase,ownershipStartingMain,legacyOwnershipMain} from './main-fixture';
 import {createId} from '../../src/core/shared/ids';
 import {createApp} from '../../tests/support/app';
@@ -20,12 +21,16 @@ export async function assertUpgradedOwnership(db:D1Database,cookie:string,contac
   assert.equal((await call(`records/${kind}/${id}`)).ownership.ownerId,legacy?null:owner);
  }
  if(legacy)return;
+ const operator=await db.prepare('SELECT email FROM operators WHERE id=?').bind(owner).first<{email:string}>();
+ const source={vendor:'hubspot',account:'Synthetic upgraded owners',files:[{kind:'contact',name:'contacts.csv',csv:`Record ID,First Name,Email,Contact owner\r\n722,Upgraded imported contact,synthetic-orbit-722@ownership.test,${operator!.email}`,mapping:{id:'Record ID',first_name:'First Name',email:'Email',owner:'Contact owner'}}]};
+ const review=await call('imports/dry-run','POST',source);let imported;do{imported=await call(`imports/${review.id}/apply`,'POST',{confirmed:true,fingerprint:review.fingerprint});}while(['queued','applying'].includes(imported.job.state));assert.equal(imported.job.state,'completed');
+ const importedContact=nativeId('orbit:hubspot:Synthetic upgraded owners','contact','722');assert.equal((await call(`records/contact/${importedContact}`)).ownership.ownerId,owner);
  const archive=await httpArchive(archiveHttp(app,()=>cookie)),target=await fixture();
  try {
   let restoredCookie=target.cookie;const restored=createApp({database:target.db,assets:{fetch:async()=>new Response('')}});
   await httpRestore(archiveHttp(restored,()=>restoredCookie),archive);
   restoredCookie=(await signIn(target.db,'owner@fold.test')).cookie;
-  for(const [kind,id]of [['contact',contact],['company',company]]) {
+  for(const [kind,id]of [['contact',contact],['company',company],['contact',importedContact]]) {
    const response=await restored.request(`https://orbit.test/api/v1/records/${kind}/${id}`,{headers:{Cookie:restoredCookie}});
    assert.equal(response.status,200);const record=await response.json() as any;
    assert.equal(record.ownership.ownerId,owner);assert.equal(record.timeline.filter((entry:any)=>entry.kind==='owner.changed').length,1);

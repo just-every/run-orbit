@@ -3,7 +3,7 @@ import {api} from '../fold-ui/workspace';
 import {formatDate} from '../operator/ui/formatters';
 interface Entry {source:'entry'|'task'|'handoff';id:string;kind:string;title:string|null;text:string;durationMinutes:number|null;author:string|null;at:string}
 const kindNames:Record<string,string>={'manual.note':'Note','manual.call':'Call','manual.meeting':'Meeting',task:'Task note',handoff:'Handoff'};
-/** RECORD-017: a shared record's notes, logged calls and meetings, task notes and handoffs, read-only, when the share includes them.
+/** RECORD-023: a shared record's notes, logged calls and meetings, task notes and handoffs, read-only, when the share includes them.
  * A mention notification opens here at #entry-, #task- or #handoff- and the named entry is brought into view. */
 export function SharedEntries({base,kind,id}:{base:string;kind:string;id:string}){
  const [data,setData]=useState<{included:boolean;entries:Entry[]}|null>(null),[error,setError]=useState('');

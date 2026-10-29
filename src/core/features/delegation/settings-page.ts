@@ -7,8 +7,8 @@ export const kindWords:Record<string,string>={'crm.opportunity':'Opportunity','c
 /** Orbit's own callback, for an application with no callback page of its own: Orbit shows the access key instead. */
 export const ownCallback=(origin:string)=>`${origin}/delegation/callback`;
 export const day=(iso:string)=>new Date(iso).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
-export const recordList=(records:ListedRecord[],empty='None of the chosen records exists any more.')=>records.length?`<ul>${records.map(r=>`<li>${esc(kindWords[r.kind]??r.kind)}: ${esc(r.name)}</li>`).join('')}</ul>`:`<p>${esc(empty)}</p>`;
-export const scopeList=(scopes:string[])=>`<ul>${scopes.map(s=>`<li>${esc(scopeWords[s]??s)}</li>`).join('')}</ul>`;
+export const recordList=(records:ListedRecord[],empty='None of the chosen records exists any more.')=>records.length?`<ul>${records.map(r=>`<li>${esc(Object.hasOwn(kindWords,r.kind)?kindWords[r.kind]:r.kind)}: ${esc(r.name)}</li>`).join('')}</ul>`:`<p>${esc(empty)}</p>`;
+export const scopeList=(scopes:string[])=>`<ul>${scopes.map(s=>`<li>${esc(Object.hasOwn(scopeWords,s)?scopeWords[s]:s)}</li>`).join('')}</ul>`;
 
 interface Client{id:string;redirect_uri:string;enabled:number}
 interface Delegation{id:string;client_id:string;person:string|null;expires_at:string;revoked_at:string|null;scopes_json:string;records:ListedRecord[]}

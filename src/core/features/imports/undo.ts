@@ -7,11 +7,12 @@ export async function prepareUndo(db:D1Database,destination:string,effects:D1Und
  const observations=[],dependencies:D1UndoDependency[]=[],guards=[],byTarget=new Map(effects.map(e=>[`${e.expected.targetKind}:${e.expected.targetId}`,e]));
  const currentValues=await readUndoTargets(db,destination,effects),requiredTargets=JSON.stringify(effects.map(e=>`${e.expected.targetKind}:${e.expected.targetId}`));
  const queries=[
+  {sql:"SELECT record_type AS required_kind,record_id AS required_id,record_type||'-owner' AS dependent_kind,record_id AS dependent_id FROM record_ownership"},
   {sql:"SELECT record_kind AS required_kind,record_id AS required_id,'reference' AS dependent_kind,id AS dependent_id FROM crm_import_references"},
   {sql:"SELECT 'company' AS required_kind,company_id AS required_id,'contact' AS dependent_kind,id AS dependent_id FROM contacts WHERE company_id IS NOT NULL"},
   {sql:"SELECT 'company' AS required_kind,company_id AS required_id,'deal' AS dependent_kind,id AS dependent_id FROM opportunities WHERE company_id IS NOT NULL"},
   {sql:"SELECT 'contact' AS required_kind,contact_id AS required_id,'deal' AS dependent_kind,opportunity_id AS dependent_id FROM opportunity_contacts"},
-  {sql:"SELECT CASE record_type WHEN 'opportunity' THEN 'deal' ELSE record_type END AS required_kind,record_id AS required_id,'note' AS dependent_kind,timeline_entry_id AS dependent_id FROM timeline_entry_records"},
+  {sql:"SELECT CASE record_type WHEN 'opportunity' THEN 'deal' ELSE record_type END AS required_kind,record_id AS required_id,'note' AS dependent_kind,timeline_entry_id AS dependent_id FROM timeline_entry_records WHERE timeline_entry_id NOT IN(SELECT id FROM timeline_entries WHERE kind='owner.changed' AND source='import')"},
   {sql:"SELECT 'contact' AS required_kind,recipient_contact_id AS required_id,'draft' AS dependent_kind,id AS dependent_id FROM drafts WHERE recipient_contact_id IS NOT NULL"},
   {sql:"SELECT 'deal' AS required_kind,opportunity_id AS required_id,'draft' AS dependent_kind,id AS dependent_id FROM drafts"},
   {sql:"SELECT 'contact' AS required_kind,contact_id AS required_id,'message' AS dependent_kind,id AS dependent_id FROM outbound_messages WHERE contact_id IS NOT NULL"},

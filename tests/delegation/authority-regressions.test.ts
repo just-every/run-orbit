@@ -8,7 +8,7 @@ import {challenge} from '../../src/core/features/delegation/token';
 import {random} from '../../src/core/features/delegation/protocol';
 
 const target='opportunities/opp/handoffs/task',schema='crm.handoff-state/1';
-test('API-001 DELEGATE-001 consent, scoped credentials, atomic handoff replay, current state and revocation preserve only selected application authority',async()=>{
+test('API-002 native credential lifecycle and delegation D1 reject ambient cookies, scope escalation, expiration, disable and revocation on every read and write; DELEGATE-001 consent, atomic handoff replay and current state preserve selected authority',async()=>{
  const fixture=await isolatedDatabase(),db=fixture.db;
  try{
   const f=await authorityFixture(db);
@@ -33,6 +33,20 @@ test('API-001 DELEGATE-001 consent, scoped credentials, atomic handoff replay, c
   assert.equal((await request('/identity',undefined,'unknown/1')).status,422);
   const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}});
   for(const headers of [{Authorization:'Bearer '+token,Cookie:f.cookie},{'X-Slack-User':'owner',Cookie:f.cookie}])assert.equal((await app.request('https://orbit.test/api/rest/v1/deals',{headers})).status,401);
+
+  const publicApp=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}});
+  assert.equal((await publicApp.request('https://orbit.test/delegation/clients',{method:'POST',headers:{Cookie:f.cookie,Origin:'https://orbit.test'},body:new URLSearchParams({id:'synthetic-orbit-1',redirect_uri:'https://orbit.test/delegation/callback'})})).status,303);
+  const connect=(kind:string)=>publicApp.request('https://orbit.test/delegation/connect?'+new URLSearchParams({client:'synthetic-orbit-1',kind}),{headers:{Cookie:f.cookie}});
+  for(const kind of ['opportunities','contacts','companies'])assert.equal((await connect(kind)).status,200,kind);
+  const inherited=['constructor','toString','__proto__','hasOwnProperty','valueOf'],refusals=[];
+  for(const kind of inherited){
+   const response=await connect(kind),body=await response.text();
+   assert.equal(response.headers.get('Cache-Control'),'no-store',kind);
+   assert.doesNotMatch(body,/\bbinding\b|\bstack\b|D1_ERROR|SQLITE|\[native code\]|\b(?:Type|Reference|Syntax)Error\b|\bat\s+\S+\s+\(/i,kind);
+   assert.equal(JSON.parse(body).error.code,'INVALID_REQUEST',kind);
+   refusals.push(response.status);
+  }
+  assert.deepEqual(refusals,inherited.map(()=>400),'Inherited record kinds take the normal invalid request path');
   assert.equal((await f.api.request('https://orbit.test/identity',{headers:{Cookie:f.cookie}})).status,401);
   assert.equal((await request('/evidence?target=contacts/private')).status,404);
   assert.equal((await request('/audience?operation=outreach.send&target='+target)).status,422);

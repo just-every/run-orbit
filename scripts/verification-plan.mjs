@@ -1,7 +1,7 @@
 import { discoverTests, verificationInventory } from './verification-inventory.mjs';
 
 export const testFiles = directory => discoverTests(directory);
-export const verificationOptions = () => ({ journeys: process.env.ORBIT_VERIFY_JOURNEYS === '1', nightly: process.env.ORBIT_VERIFY_NIGHTLY === '1' });
+export const verificationOptions = () => ({ journeys: process.env.ORBIT_VERIFY_JOURNEYS === '1', nightly: process.env.ORBIT_VERIFY_NIGHTLY === '1' || process.env.ORBIT_VERIFY_TIER === 'nightly' });
 const gate = (...args) => ({ args });
 const reporter = file => ['--test-reporter=spec', '--test-reporter-destination=stdout', '--test-reporter=./scripts/core-results.mjs', `--test-reporter-destination=${file}`];
 const nodeTests = (files, result) => ({ args: ['exec', 'tsx', '--test', '--no-test-only', '--test-concurrency=2', ...reporter(result), ...files], files, result });
@@ -72,11 +72,11 @@ export function verificationPlan(options = verificationOptions()) {
   const files = inventory.files.map(row => row.file).filter(file => nightly ? journeyFiles.includes(file) : journeys || !journeyFiles.includes(file));
   const plan = {
     source: [
+      gate('exec', 'node', 'src/base/contract-docs.mjs', 'check'),
       gate('run', 'source:check'),
       gate('exec', 'node', 'node_modules/@runeditrun/rer/bin/rer.mjs', 'check', '--profile', 'first-party'),
       gate('run', 'check:boundaries'),
       gate('run', 'check:manifest'),
-      gate('exec', 'node', 'scripts/contract-docs.mjs', 'check'),
       gate('exec', 'rer', 'build'),
       gate('exec', 'node', 'scripts/publish-deployment-spec.mjs', '--check'),
       gate('run', 'typecheck'),

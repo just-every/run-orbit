@@ -1,3 +1,4 @@
+import {importOwnersBrowserJourney} from './browser-import-owners';
 import assert from 'node:assert/strict';
 import type { Browser } from '@playwright/test';
 import { expect } from '@playwright/test';
@@ -76,4 +77,5 @@ export async function ownershipBrowserJourney(browser: Browser, origin: string, 
             await context.close();
         }
     }
+    await importOwnersBrowserJourney(browser,origin,directory,cookie,receiver);
 }

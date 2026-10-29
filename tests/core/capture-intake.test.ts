@@ -1,3 +1,4 @@
+import {workflowJourney} from '../support/workflow-journey';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { captureFixture, fixtureMailbox, eml } from '../support/capture-fixture';
@@ -135,5 +136,6 @@ test('CAPTURE-001 CAPTURE-002 CAPTURE-003 CAPTURE-004 CAPTURE-005 SIGNAL-003 OUT
 
 
  }
+ await workflowJourney(f);
  }finally{await f.dispose();}
 });

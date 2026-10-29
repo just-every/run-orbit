@@ -37,8 +37,9 @@ export async function sourceEvidence(f:any,opportunityId:string,contactId:string
  const prior=await api(`opportunities/${opportunityId}`);
  await f.db.prepare("CREATE TRIGGER test_fail_refresh BEFORE INSERT ON evaluations BEGIN SELECT RAISE(ABORT,'test evaluation failed'); END").run();
  try{assert.equal((await f.request(`workbench/opportunities/${opportunityId}/recommendation`,'POST',{})).status,500);}finally{await f.db.prepare('DROP TRIGGER test_fail_refresh').run();}
- const failed=(await api(`opportunities/${opportunityId}`)).opportunity;assert.ok(failed.evaluation.failureAt);assert.deepEqual(failed.evaluation.contributions,prior.opportunity.evaluation.contributions);
- await api(`workbench/opportunities/${opportunityId}/recommendation`,{});assert.equal((await api(`opportunities/${opportunityId}`)).opportunity.evaluation.failureAt,null);
+ const failed=(await api(`opportunities/${opportunityId}`)).opportunity;assert.ok(failed.evaluation.failureAt);assert.equal(failed.evaluation.id,prior.opportunity.evaluation.id,'failure keeps the last successful evaluation');assert.equal(failed.score,prior.opportunity.score);assert.equal(failed.band,prior.opportunity.band);assert.deepEqual(failed.evaluation.contributions,prior.opportunity.evaluation.contributions);
+ await api(`workbench/opportunities/${opportunityId}/recommendation`,{});
+ const refreshed=(await api(`opportunities/${opportunityId}`)).opportunity;assert.equal(refreshed.evaluation.failureAt,null);assert.notEqual(refreshed.evaluation.id,prior.opportunity.evaluation.id,'recovery records a fresh successful evaluation');
  // No provider remains a working, named and cited recommendation; AI produces only an unsent draft on request.
  assert.equal((await f.request('assistance/generate','POST',{previewId:createId()})).status,503);
  let receivedInput:unknown,calls=0,invalid=false;

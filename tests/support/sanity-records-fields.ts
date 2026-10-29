@@ -1,3 +1,4 @@
+import {createId} from '../../src/core/shared/ids';
 import assert from 'node:assert/strict';
 import {isolatedDatabase} from './isolated-database';
 import {todayApp,type TodayApp} from './today-workspace';
@@ -6,6 +7,7 @@ import {recordChangesProof} from './record-changes-proof';
 export async function configureSalesFields(db:D1Database,t:TodayApp){await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(t.actor).run();const operatorName=await db.prepare('SELECT display_name FROM operators WHERE id=?').bind(t.actor).first('display_name');const stage=await db.prepare('SELECT id FROM pipeline_stages LIMIT 1').first<string>('id'),base='/api/v1/settings/custom-fields';
  await recordChangesProof(db,t);
  assert.equal((await t.call(base+'/preview',{body:{kind:'contact',fieldKey:'constructor',label:'Reserved field',valueType:'text',required:false,unique:false,options:[],archived:false}})).status,400,'reserved object keys cannot become field definitions');
+ const inactive=createId();await db.prepare("INSERT INTO operators(id,email,display_name,status,created_at,updated_at) VALUES(?,?,?,'removed',?,?)").bind(inactive,['synthetic-orbit-inactive','example.invalid'].join('@'),'Former seller',new Date().toISOString(),new Date().toISOString()).run();
  async function configure(input:any){const review=await t.json<any>(base+'/preview',{body:input},200);await t.json(base+'/confirm',{body:{input,reviewHash:review.reviewHash,confirmed:true}},200);return review;}
  for(const kind of ['contact','company','opportunity'] as const){
   const content=(n:number)=>kind==='opportunity'?{title:`Synthetic typed deal ${n}`,stage_id:stage,value_cents:0,contact_ids:[]}:kind==='company'?{name:`Synthetic typed company ${n}`}:{name:`Synthetic typed contact ${n}`,email:`synthetic-orbit-typed-${n}@example.test`};
@@ -14,9 +16,9 @@ export async function configureSalesFields(db:D1Database,t:TodayApp){await db.pr
   const preview=await configure(definition);assert.ok(preview.affected.some((r:any)=>r.id===first.id&&r.reason==='a value is required'));assert.ok(preview.affected.some((r:any)=>r.id===second.id));
   assert.deepEqual((await db.prepare(`SELECT id,custom_fields_json FROM ${kind==='contact'?'contacts':kind==='company'?'companies':'opportunities'} ORDER BY id`).all()).results,before.results,'requiring a field rewrites no existing value');
   const refused=await t.call(`/api/v1/records/${kind}`,{body:content(3)});assert.equal(refused.status,400);assert.match(await refused.text(),/Synthetic code: a value is required/);
-  const fields=[{fieldKey:'synthetic_number',label:'Synthetic number',valueType:'number',bad:'not a number',good:42},{fieldKey:'synthetic_date',label:'Synthetic date',valueType:'date',bad:'2026-02-30',good:'2026-11-01'},{fieldKey:'synthetic_tier',label:'Synthetic tier',valueType:'picklist',bad:'Foreign option',good:'Standard'}];
+  const fields=[{fieldKey:'synthetic_number',label:'Synthetic number',valueType:'number',bad:'not a number',good:42},{fieldKey:'synthetic_date',label:'Synthetic date',valueType:'date',bad:'2026-02-30',good:'2026-11-01'},{fieldKey:'synthetic_tier',label:'Synthetic tier',valueType:'picklist',bad:'Foreign option',good:'Standard'},{fieldKey:'synthetic_checked',label:'Review checked',valueType:'boolean',bad:'yes',good:true},{fieldKey:'synthetic_user',label:'Review operator',valueType:'user',bad:inactive,good:t.actor},{fieldKey:'synthetic_datetime',label:'Review time',valueType:'datetime',bad:'2026-11-01 12:00',good:'2026-11-01T12:00:00.000Z'}];
   for(const field of fields)await configure({...definition,fieldKey:field.fieldKey,label:field.label,valueType:field.valueType,required:false,unique:false,options:field.valueType==='picklist'?['Standard','Enterprise']:[]});
-  const values:any={synthetic_code:'synthetic-unique-one',synthetic_number:42,synthetic_date:'2026-11-01',synthetic_tier:'Standard'};
+  const values:any={synthetic_code:'synthetic-unique-one',synthetic_number:42,synthetic_date:'2026-11-01',synthetic_tier:'Standard',synthetic_checked:true,synthetic_user:t.actor,synthetic_datetime:'2026-11-01T12:00:00.000Z'};
   for(const field of fields){const response=await t.call(`/api/v1/records/${kind}/${first.id}`,{method:'PUT',body:{...content(1),custom_fields:{...values,[field.fieldKey]:field.bad}}});assert.equal(response.status,400);assert.ok((await response.text()).includes(field.label+':'));}
   await t.json(`/api/v1/records/${kind}/${first.id}`,{method:'PUT',body:{...content(1),custom_fields:values}},200);
   const duplicate=await t.call(`/api/v1/records/${kind}/${second.id}`,{method:'PUT',body:{...content(2),custom_fields:values}});assert.equal(duplicate.status,409);assert.match(await duplicate.text(),/Synthetic code: this value already belongs/);

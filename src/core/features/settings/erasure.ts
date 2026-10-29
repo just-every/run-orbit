@@ -1,3 +1,5 @@
+import {workflowOperatorErasure} from '../workflows/privacy';
+import {eraseImportOwnerIdentity} from '../imports/owner-privacy';
 import {ownershipOperatorErasure} from '../ownership/privacy';
 import {forecastErasureStatements} from '../forecast/privacy';
 import { executeArchiveErasure } from '../records';
@@ -20,12 +22,13 @@ export async function eraseOperator(db:D1Database,id:string,actor:string){
   if(others.some(other=>other.name&&containsWord(other.name,name)))throw new RecordError(409,'Another operator or contact has a name containing this display name, so Orbit cannot tell whose name attributed text means. Nothing was erased.');
  }
  const now=new Date().toISOString(),statements=[db.prepare(`DELETE FROM api_credentials WHERE principal_id=? OR ${identityMatch('name')}`).bind(id,...identityPatterns(operator.email)),db.prepare('DELETE FROM sessions WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_proofs WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_bindings WHERE operator_id=?').bind(id),db.prepare('DELETE FROM notifications WHERE operator_id=?').bind(id)];
- statements.push(...ownershipOperatorErasure(db,id));
+ statements.push(...await eraseImportOwnerIdentity(db,id,operator.email,actor));
+ statements.push(...ownershipOperatorErasure(db,id),...workflowOperatorErasure(db,id));
  statements.push(...forecastErasureStatements(db,'operator',id,[operator.email]));
  statements.push(...await messageReviewOperatorErasure(db,id,name,operator.email));
  // JSON replacement uses escaped text so quotes in a display name cannot invalidate stored JSON.
- const contentColumns:Record<string,string[]>={audit_entries:['details_json'],timeline_entries:['payload_json'],ai_previews:['content_json'],ai_calls:['error'],notifications:['message'],drafts:['subject','body'],outbound_messages:['subject','body','failure'],record_mail_drafts:['subject','body'],record_mail_outbound_messages:['subject','body','failure'],message_library:['name','subject','body'],source_event_errors:['reason'],signal_sources:['last_error']};
- const attribution:Record<string,string>={audit_entries:"(actor_id=? OR (entity_type='operator' AND entity_id=?))",timeline_entries:'actor_id=?',ai_previews:'operator_id=?',ai_calls:'operator_id=?',notifications:'operator_id=?',drafts:'author_id=?',outbound_messages:'operator_id=?',record_mail_drafts:'author_id=?',record_mail_outbound_messages:'operator_id=?',message_library:'owner_id=?'};
+ const contentColumns:Record<string,string[]>={workflow_versions:['name','definition_json','preview_json'],audit_entries:['details_json'],timeline_entries:['payload_json'],ai_previews:['content_json'],ai_calls:['error'],notifications:['message'],drafts:['subject','body'],outbound_messages:['subject','body','failure'],record_mail_drafts:['subject','body'],record_mail_outbound_messages:['subject','body','failure'],message_library:['name','subject','body'],source_event_errors:['reason'],signal_sources:['last_error']};
+ const attribution:Record<string,string>={workflow_versions:'created_by=?',audit_entries:"(actor_id=? OR (entity_type='operator' AND entity_id=?))",timeline_entries:'actor_id=?',ai_previews:'operator_id=?',ai_calls:'operator_id=?',notifications:'operator_id=?',drafts:'author_id=?',outbound_messages:'operator_id=?',record_mail_drafts:'author_id=?',record_mail_outbound_messages:'operator_id=?',message_library:'owner_id=?'};
  // Structured content is rewritten value by value, never as text, so a name can never alter a key or the JSON itself.
  // Each row is fenced on the value read here and runs before the mailbox redaction below.
  if(redactName)for(const [table,columns]of Object.entries(contentColumns))for(const column of columns.filter(column=>column.endsWith('_json'))){

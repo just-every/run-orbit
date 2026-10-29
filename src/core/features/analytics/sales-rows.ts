@@ -8,7 +8,7 @@ export interface SalesRow{
  key:string;kind:RowKind;id:string;
  /** Every graph record the row names: each must be readable now, and erasing one withdraws a saved result. */
  refs:GraphRef[];
- /** RECORD-017: a collaborator reads notes, calls, meetings and tasks only through a grant on this record that includes them. */
+ /** RECORD-023: a collaborator reads notes, calls, meetings and tasks only through a grant on this record that includes them. */
  entries?:GraphRef;
  /** Messages and bookings are customer evidence that only full operators read. */
  full?:true;

@@ -1,5 +1,6 @@
 import {strict as assert} from 'node:assert';
 import {createApp} from './app';
+import {isolatedDatabase} from './isolated-database';
 import {createDependencies} from './dependencies';
 import {createId} from '../../src/core/shared/ids';
 import {hash} from '../../src/core/features/delegation/protocol';
@@ -115,10 +116,110 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  assert.equal(await db.prepare('SELECT count(*) n FROM outbound_messages').first('n'),0);
  await db.prepare('DELETE FROM api_credentials').run();for(const deal of [record,created.id,outsideRecord])await db.prepare('DELETE FROM opportunities WHERE id=?').bind(deal).run();
  await db.prepare('DELETE FROM pipeline_stage_rules WHERE stage_id=?').bind(apiStage).run();await db.prepare('DELETE FROM pipeline_stages WHERE id=?').bind(apiStage).run();
+ await proveScopedDealFields();
 }
 
 export async function issueNativeCredential(db:D1Database,actor:string,recordId:string,principalId=actor,name='synthetic-orbit-1'){
  const session=await createDependencies(db).auth.createSession(actor),app=createApp({database:db,clock:{now:()=>new Date('2026-10-27T00:00:00.000Z')},assets:{fetch:async()=>new Response(null,{status:404})}});
  const response=await app.request('https://orbit.test/api/v1/settings/api-credentials',{method:'POST',headers:{Cookie:'__Host-orbit_session='+session.token,Origin:'https://orbit.test','Content-Type':jsonType},body:JSON.stringify({name,principalId,operations:['deal.read'],recordIds:[recordId],fields:['title'],expiresAt:'2026-11-26T00:00:00.000Z'})});
  assert.equal(response.status,201,await response.clone().text());return response.json() as Promise<{credential:{id:string;revision:number};secret:string}>;
+}
+
+/** One integration connects two real installations, then follows live edits and withdrawn authority. */
+async function proveScopedDealFields(){
+ const fixtures:Awaited<ReturnType<typeof isolatedDatabase>>[]=[],now='2026-10-27T00:00:00.000Z';let clockNow=new Date(now);
+ const fields=['title','stage_id','value_cents','company_id','expected_close_at','owner_id','products'];
+ const payload=async(response:Response,status=200)=>{assert.equal(response.status,status,await response.clone().text());return response.json() as Promise<any>;};
+ try{
+  async function installation(index:number){
+   const fixture=await isolatedDatabase();fixtures.push(fixture);
+   const db=fixture.db,deps=createDependencies(db),owner=createId(),stage=createId();
+   await deps.workspace.ensureWorkspace({name:`synthetic-orbit-${index}`,timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
+   await deps.auth.ensureOperator({id:owner,email:`synthetic-orbit-${index}@dev.localhost`,displayName:`synthetic-orbit-${index}`});
+   await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(owner).run();
+   await db.prepare('INSERT INTO pipeline_stages(id,name,position,created_at,updated_at) VALUES(?,?,0,?,?)').bind(stage,`synthetic-orbit-${index}`,now,now).run();
+   const session=await deps.auth.createSession(owner),cookie='__Host-orbit_session='+session.token;
+   const app=()=>createApp({database:fixture.db,clock:{now:()=>clockNow},assets:{fetch:async()=>new Response(null,{status:404})}});
+   const native=(path:string,method='GET',body?:unknown)=>app().request('https://orbit.test/api/v1'+path,{method,headers:{Cookie:cookie,Origin:'https://orbit.test','Content-Type':jsonType},body:body===undefined?undefined:JSON.stringify(body)});
+   const principal=await payload(await native('/settings/operators','POST',{email:`synthetic-orbit-${index+10}@dev.localhost`,displayName:`synthetic-orbit-${index+10}`}),201);
+   const contactName=`synthetic-orbit-${index+20}`,contactEmail=`synthetic-orbit-${index+20}@dev.localhost`;
+   const contact=await payload(await native('/records/contact','POST',{name:contactName,email:contactEmail}),201);
+   const close=index===1?'2026-11-12T15:00:00.000Z':'2026-12-18T18:30:00.000Z',products=[`synthetic-orbit-${index} family`,`synthetic-orbit-${index} service`];
+   const input={title:`synthetic-orbit-${index} deal`,stage_id:stage,value_cents:index*10000,owner_id:principal.id,expected_close_at:close,contact_ids:[contact.id],primary_contact_id:contact.id};
+   const record=(await payload(await native('/records/opportunity','POST',input),201)).id as string;
+   const outside=(await payload(await native('/records/opportunity','POST',{title:`synthetic-orbit-${index} outside`,stage_id:stage,value_cents:0,owner_id:owner}),201)).id as string;
+   const context=async(id:string,values:string[])=>{
+    const current=await payload(await native('/relationships/opportunity/'+id));
+    await payload(await native('/relationships/opportunity/'+id,'PUT',{revision:current.revision,companyId:current.company?.id??null,primaryContactId:current.stakeholders.find((person:any)=>person.isPrimary)?.contactId??null,stakeholders:current.stakeholders.map((person:any)=>({contactId:person.contactId,roles:person.roles,verified:person.verified})),products:values,nextStep:current.nextStep,mutualCommitments:current.mutualCommitments}));
+   };
+   await context(record,products);
+   const definition={name:`synthetic-orbit-${index}`,principalId:principal.id,operations:['deal.read'],recordIds:[record],fields,expiresAt:'2026-11-26T00:00:00.000Z'};
+   const issue=async(change:Record<string,unknown>={})=>payload(await native('/settings/api-credentials','POST',{...definition,...change}),201) as Promise<{credential:{id:string;revision:number};secret:string}>;
+   const credential=await issue();
+   const api=(path:string,secret=credential.secret,method='GET',body?:unknown)=>app().request('https://orbit.test/api/rest/v1'+path,{method,headers:{Authorization:'Bearer '+secret,'Content-Type':jsonType},body:body===undefined?undefined:JSON.stringify(body)});
+   return {fixture,owner,principal:principal.id,record,outside,input,products,close,contact:contact.id,contactName,contactEmail,credential,native,context,issue,api,expected:{id:record,title:input.title,stage_id:stage,value_cents:input.value_cents,company_id:null,expected_close_at:close,owner_id:principal.id,products}};
+  }
+  const first=await installation(1),second=await installation(2),workspaces=[first,second];
+  assert.notEqual(first.fixture.directory,second.fixture.directory,'The workspaces use separate persistent D1 databases');
+  assert.notEqual(await first.fixture.db.prepare('SELECT id FROM delegation_installation').first('id'),await second.fixture.db.prepare('SELECT id FROM delegation_installation').first('id'));
+  const effects=async()=>Promise.all(fixtures.map(async fixture=>Promise.all(['opportunities','opportunity_buying_context','api_credentials','access_memberships','access_grants','audit_entries','timeline_entries'].map(table=>fixture.db.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all().then(result=>result.results)))));
+  const denied=async(call:()=>Promise<Response>,status:number,message:string)=>{
+   const before=await effects(),response=await call(),body=await payload(response,status);
+   assert.deepEqual(Object.keys(body),['error'],message);assert.ok(typeof body.error==='string'&&body.error.length>0,message);
+   assert.deepEqual(await effects(),before,message+' leaves deals, credentials, record scopes and domain effects unchanged');
+  };
+  for(const workspace of workspaces){
+   assert.deepEqual((await payload(await workspace.api('/deals'))).deals,[workspace.expected],'Each installation lists only its own populated, permitted deal');
+   assert.deepEqual((await payload(await workspace.api('/deals/'+workspace.record+'?fields='+fields.join(',')))).deal,workspace.expected,'All seven selected fields are available together');
+   assert.deepEqual((await payload(await workspace.api('/deals/'+workspace.record+'?fields=expected_close_at,owner_id,products'))).deal,{id:workspace.record,expected_close_at:workspace.close,owner_id:workspace.principal,products:workspace.products},'Selection exposes an owner id and saved product names without owner email or stakeholder data');
+   await denied(()=>workspace.api('/deals/'+workspace.outside),403,'A deal outside the credential record scope is absent from read');
+   const noDeals=await workspace.issue({operations:['deal.update']});
+   await denied(()=>workspace.api('/deals',noDeals.secret),403,'A credential without deal read scope cannot list fields');
+   await denied(()=>workspace.api('/deals/'+workspace.record,noDeals.secret),403,'A credential without deal read scope cannot read fields');
+   const narrow=await workspace.issue({fields:['title']});
+   for(const field of ['expected_close_at','owner_id','products'])await denied(()=>workspace.api('/deals/'+workspace.record+'?fields='+field,narrow.secret),403,'An unscoped field remains private');
+   await denied(()=>workspace.api('/deals/'+workspace.record+'?fields=email'),403,'An undeclared field cannot disclose an email');
+   await denied(()=>workspace.api('/deals/'+workspace.record,workspace.credential.secret,'PATCH',{expected_close_at:'2026-11-01T00:00:00.000Z'}),400,'The new read fields grant no API write surface');
+  }
+  for(const [own,other] of [[first,second],[second,first]]){
+   await denied(()=>own.api('/deals',other.credential.secret),401,'The other installation credential cannot list this workspace');
+   await denied(()=>own.api('/deals/'+own.record,other.credential.secret),401,'The other installation credential cannot read this workspace');
+   await denied(()=>own.api('/deals/'+other.record),403,'A local credential cannot read the other workspace record');
+  }
+  // A persisted verifier with the wrong installation binding must also be refused.
+  const mismatched=await first.issue(),otherInstallation=await second.fixture.db.prepare('SELECT id FROM delegation_installation').first('id');
+  await first.fixture.db.prepare('UPDATE api_credentials SET installation_id=? WHERE id=?').bind(otherInstallation,mismatched.credential.id).run();
+  await denied(()=>first.api('/deals',mismatched.secret),401,'Installation binding is checked even when the verifier exists locally');
+  const changedClose='2026-12-22T16:45:00.000Z';
+  await payload(await first.native('/records/opportunity/'+first.record,'PUT',{...first.input,expected_close_at:changedClose}));
+  assert.equal((await payload(await first.api('/deals/'+first.record))).deal.expected_close_at,changedClose,'The very next integration read sees the native deal edit');
+  assert.equal((await payload(await second.api('/deals/'+second.record))).deal.expected_close_at,second.close,'A native edit in one workspace does not change the other');
+  const changedProducts=['synthetic-orbit-30 family'];await first.context(first.record,changedProducts);
+  assert.deepEqual((await payload(await first.api('/deals'))).deals,[{...first.expected,expected_close_at:changedClose,products:changedProducts}],'Product reads also use current buying context');
+  await first.fixture.close();await first.fixture.reopen();
+  assert.deepEqual((await payload(await first.api('/deals/'+first.record))).deal,{...first.expected,expected_close_at:changedClose,products:changedProducts},'The scoped read survives reopening its real D1 database');
+  const expiring=await first.issue({expiresAt:'2026-10-28T00:00:00.000Z'});clockNow=new Date('2026-10-28T00:00:00.000Z');
+  await denied(()=>first.api('/deals/'+first.record,expiring.secret),401,'Expiry refuses the next integration read at the injected boundary');clockNow=new Date(now);
+  const revoked=await first.issue();await payload(await first.native('/settings/api-credentials/'+revoked.credential.id+'/revoke','POST',{revision:1}));
+  await denied(()=>first.api('/deals',revoked.secret),401,'Credential revocation refuses the very next integration read');
+  await denied(()=>first.api('/deals/'+first.record,revoked.secret),401,'A revoked credential cannot read a known deal');
+  const review=await payload(await second.native('/settings/operators/'+second.principal+'/removal-review'));
+  await payload(await second.native('/settings/operators/'+second.principal,'DELETE',{confirmed:true,handover:{review:review.review,opportunities:second.owner,tasks:null,handoffs:null}}));
+  await denied(()=>second.api('/deals'),401,'Removing the principal withdraws all current record authority from the next list');
+  await denied(()=>second.api('/deals/'+second.record),401,'A principal without current authority cannot read a known deal');
+  await payload(await second.native('/settings/operators/'+second.principal+'/erase','POST',{confirmed:true}));
+  await denied(()=>second.api('/deals/'+second.record),401,'An erased principal never regains authority');
+  // Context copied to an unrelated deal follows native erasure even when that credential remains valid.
+  await first.context(first.outside,[first.contactName+' '+first.contactEmail]);
+  const unrelated=await first.issue({recordIds:[first.outside],principalId:first.owner});
+  assert.deepEqual((await payload(await first.api('/deals/'+first.outside,unrelated.secret))).deal.products,[first.contactName+' '+first.contactEmail]);
+  await payload(await first.native('/records/contact/'+first.contact,'DELETE',{confirmed:true}));
+  await denied(()=>first.api('/deals/'+first.record),401,'Contact erasure withdraws credentials on the affected deal');
+  const erasedRead=(await payload(await first.api('/deals/'+first.outside,unrelated.secret))).deal;
+  assert.deepEqual(erasedRead.products,[],'Erasure removes copied personal product context from a still-readable deal');
+  assert.equal(erasedRead.owner_id,first.owner);assert.ok(!JSON.stringify(erasedRead).includes(first.contactName)&&!JSON.stringify(erasedRead).includes(first.contactEmail),'An erased contact name and email never return through the new fields');
+  const empty=await first.issue({recordIds:[first.outside],principalId:first.owner,fields:['expected_close_at','owner_id','products']});
+  await payload(await first.native('/records/opportunity/'+first.outside,'PUT',{title:'synthetic-orbit-1 outside',stage_id:first.input.stage_id,value_cents:0,owner_id:null,expected_close_at:null}));
+  assert.deepEqual((await payload(await first.api('/deals/'+first.outside,empty.secret))).deal,{id:first.outside,expected_close_at:null,owner_id:null,products:[]},'Unassigned and empty fields are represented without invented data');
+ }finally{for(const fixture of fixtures)await fixture.dispose();}
 }

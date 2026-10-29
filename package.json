@@ -35,8 +35,8 @@
     "report:contract": "node scripts/report-contract-results.mjs",
     "test:capacity": "tsx tests/performance/records-capacity.ts",
     "test:archive": "playwright test --config tests/archive/playwright.config.mjs",
-    "source:check": "node scripts/edition-authoring/cli.mjs check",
-    "source:release": "node scripts/edition-authoring/cli.mjs release",
+    "source:check": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "source:release": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs release",
     "test:delegation": "tsx --test --test-concurrency=1 tests/delegation/*.test.ts",
     "test:delegation-browser": "tsx --test --test-concurrency=1 tests/delegation-browser/*.test.ts",
     "test:records-layout": "tsx --test tests/delegation-browser/records-layout.test.ts",
@@ -44,7 +44,7 @@
     "test:launch-runtime": "tsx --test --test-concurrency=1 tests/launch-runtime/*.test.ts",
     "test:core": "tsx --test --test-concurrency=1 tests/core/*.test.ts",
     "verify:release": "rer queue verify:app -- node scripts/verify.mjs --release",
-    "check:contract": "node scripts/contract-docs.mjs check"
+    "check:contract": "node src/base/contract-docs.mjs check"
   },
   "dependencies": {
     "@tanstack/react-router": "1.170.41",
@@ -61,7 +61,7 @@
     "@cloudflare/vite-plugin": "1.54.5",
     "@cloudflare/workers-types": "5.20260908.1",
     "@playwright/test": "1.64.1",
-    "@runeditrun/rer": "0.2.72",
+    "@runeditrun/rer": "0.2.86",
     "@tailwindcss/vite": "4.3.3",
     "@types/node": "22.19.17",
     "@types/react": "19.2.18",

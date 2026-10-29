@@ -7,7 +7,7 @@ type Projection={ref:{id:string};fields:Record<string,unknown>};
 type Act=(work:()=>Promise<void>)=>void;
 /** Editing a field includes seeing it: every read, list and search admits only grants that carry graph.read. */
 const grantActions={see:['graph.read'],edit:['graph.read','graph.update']};
-/** RECORD-017: the record's notes, calls and meetings join a grant only when the person sharing ticks it; it starts off. */
+/** RECORD-023: the record's notes, calls and meetings join a grant only when the person sharing ticks it; it starts off. */
 const entriesAction='entries.read';
 /** Sharing a record's Company shares that company's name, so the collaborator reads it as a name rather than an ID. */
 const companyOf=(record:Projection)=>typeof record.fields.company_id==='string'?record.fields.company_id:null;

@@ -16,6 +16,7 @@ export async function reviewImportedData(page,collaborator,customer,viewerId) {
  const literal='{"owner_note":"Keep this JSON-looking customer text literally"}';
  await page.getByRole('button',{name:'Edit details',exact:true}).click();await page.getByRole('button',{name:'Replace Import source with text',exact:true}).click();
  await page.getByLabel('Import source',{exact:true}).fill(literal);await page.getByLabel('Campaign json',{exact:true}).fill(literal);await page.getByRole('button',{name:'Save changes',exact:true}).click();
+ const saved=JSON.parse((await read()).custom_fields_json);expect(saved.import_source).toBe(literal);expect(saved.campaign_json).toBe(literal);
  await expect(page.getByText(literal,{exact:true})).toHaveCount(2);await page.reload();await expect(page.getByText(literal,{exact:true})).toHaveCount(2);
  await page.getByRole('button',{name:'Edit details',exact:true}).click();await expect(page.getByLabel('Import source',{exact:true})).toHaveValue(literal);await expect(page.getByLabel('Campaign json',{exact:true})).toHaveValue(literal);
  await collaborator.goto(`/app/shared-records?kind=contact&id=${customer.bob}`);await expect(collaborator.getByText(literal,{exact:true})).toHaveCount(2);

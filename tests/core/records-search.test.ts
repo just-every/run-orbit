@@ -40,7 +40,7 @@ test('RECORD-002 RECORD-004 RECORD-006 RECORD-009 RECORD-011 RECORD-014 RECORD-0
   for(const [field,value]of Object.entries(expected))assert.deepEqual((await search('opportunity',new URLSearchParams({[field]:value}).toString())).sort(),rows.filter(row=>row[field as keyof typeof row]===value).map(row=>row.id).sort(),field);
   assert.deepEqual(await search('opportunity',new URLSearchParams(expected).toString()),[opportunity.id]);
   for(let i=0;i<55;i++)await records.save('contact',{name:`Pagebound ${i}`,email:`page-${i}@search.test`},actor);
-  const page=await search('contact','q=Pagebound');assert.ok(page.length>0&&page.length<55,'the public list is bounded');
+  const page=await search('contact','q=Pagebound');assert.equal(page.length,50,'the first page contains exactly 50 of the 55 matching contacts');
   await salesPipelinesJourney((path,method='GET',body)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),actor);
  await exerciseBuyingContext((path,method='GET',body)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),actor);
  const receiverSession=await deps.auth.createSession(other);

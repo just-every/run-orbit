@@ -22,7 +22,7 @@ import { authorReport } from './browser-report-authoring';
 import { collaboratorJourney } from './browser-access-journey';
 import { fixture, nativeRecord, signIn, signInLink } from './fixture';
 import { emittedWorker } from './emitted-fixture';
-test('CAPTURE-010 workspace rules, OUT-017 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots', async () => {
+test('CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots', async () => {
     const f = await fixture(), directory = process.env.ORBIT_FOLD_BROWSER_EVIDENCE;
     if (!directory)
         throw new Error('Private browser evidence directory is required.');

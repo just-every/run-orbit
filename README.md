@@ -42,13 +42,13 @@ This repository is the complete source for Orbit. Public source: [just-every/run
 
 ## Run it on your computer
 
-You install nothing first. The same one line as [run-orbit.com/run](https://run-orbit.com/run) gets Orbit and starts it:
+The same one line as [run-orbit.com/run](https://run-orbit.com/run) gets Orbit and starts it:
 
 ```sh
-npx -y @runeditrun/rer dev just-every/run-orbit
+curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit
 ```
 
-No Node? `curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit` brings its own and does the same.
+Git is required; rer brings Node and pnpm. Already have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-orbit` does the same. The [getting-started guide](https://run-orbit.com/docs/getting-started) walks through the first launch.
 
 To start it again later: `cd run-orbit && rer dev`.
 
@@ -72,6 +72,10 @@ Open the opportunity from NOW, choose **Write follow-up**, save the exact messag
 Open **Capture** to import mail/calendar files or connect Gmail and Google Calendar, or Outlook mail and calendars. Each connection uses your own OAuth client and read-only permissions. Choose labels or folders and calendars before intake starts; calendar capture also has a fixed date window. Capture shows evidence and proposals for review, with the existing reply, bounce and stop-condition safeguards.
 
 Follow [Google setup](docs/CONNECT-GMAIL.md) or [Microsoft setup](docs/CONNECT-OUTLOOK.md). [OWNER-STEPS.md](OWNER-STEPS.md) contains the remaining live-account proof. Copy each provider's exact callback URI from Capture; a successful `rer deploy` also prints them. `rer dev` does not print callback URIs. Disconnect stops intake and deletes the saved provider credentials.
+
+### Read scoped deals from an integration
+
+An installation administrator can issue a named, expiring API credential through `POST /api/v1/settings/api-credentials`, choosing an active principal, `deal.read`, explicit deal ids and readable fields. Send that credential as a bearer token to `GET /api/rest/v1/deals` or `GET /api/rest/v1/deals/:id`; select `expected_close_at`, `owner_id` and `products` in the credential and optionally in the request's `fields` query. These return the current expected close timestamp, Orbit owner id and an array of the product names saved in the deal's buying context. Each credential works only in its issuing installation and workspace, within its selected records and fields and its principal's current access. Native deal edits appear on the next read; expiry, revocation and erasure withdraw access immediately.
 
 ### Verify, reset and move data
 
@@ -147,4 +151,4 @@ The maintained edition defaults save integration and verification work. Configur
 
 Feed useful mechanisms, defaults and verification cases back into shared source when they would save work in another edition. Their natural home may be this edition, a family, Base or an independent repository; no separate repository per module or universal compatibility interface is required. Verify adoption against the receiving product's requirements, including deliberate local differences.
 
-The edition carries editable shared SendGrid transport and authoring 1.1 source. `node scripts/edition-authoring/cli.mjs changes` explains changed inputs; `extract` and `compare` provide retained source and incoming comparison context. SendGrid 202 is accepted with a nullable provider receipt: local correlation identifies the command, not remote delivery, and uncertain submissions are reconciled without automatic repetition.
+The edition carries editable shared SendGrid transport and uses the pinned package’s authoring tool. `node node_modules/@runeditrun/rer/edition-authoring/cli.mjs changes` explains changed inputs; `extract` and `compare` provide retained source and incoming comparison context. SendGrid 202 is accepted with a nullable provider receipt: local correlation identifies the command, not remote delivery, and uncertain submissions are reconciled without automatic repetition.

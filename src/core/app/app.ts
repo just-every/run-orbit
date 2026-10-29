@@ -1,3 +1,5 @@
+import {workflowRoutes} from '../features/workflows/routes';
+import {collectWorkflowRuns} from '../features/workflows/engine';
 import {apiCredentialRoutes} from '../features/api/routes';
 import {publicApiRoutes} from '../features/api/public-routes';
 import {entryPrivacyRoutes} from '../features/records/entry-privacy';
@@ -131,6 +133,8 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
     if (guarded) { const refused = await input.stepUp(context.req.raw, guarded[1], guarded[2]); if (refused) return refused; }
     await next();
   });
+  app.route('/api/workflows',workflowRoutes(input.database,{fetcher:input.captureFetch,now:input.clock?()=>input.clock!.now():undefined}));
+  app.use('/api/v1/*',async(c,next)=>{await next();if(!['GET','HEAD','OPTIONS'].includes(c.req.method)&&c.res.status<400&&!c.req.path.includes('/archive/'))await collectWorkflowRuns(input.database,input.clock?.now().toISOString());});
   app.route('/api/v2',createFoldRoutes(input.database,input.clock));
   app.use('/api/v1/*',collaboratorNativeBoundary(input.database));
   app.use("/api/v1/records/*", async (context,next) => {
