@@ -3783,7 +3783,7 @@
       "executable": false
     },
     "public/operator-native.css": {
-      "sha256": "78cc11c801cbb2be54490c376f768e20fa892a1c1356233e4ac42e86df641ee4",
+      "sha256": "ba006ae394b747e97fa76de96b5a78d123092ad2db62e6aff98ed0e9b0d531dc",
       "executable": false
     },
     "public/orbit-auth.css": {
@@ -6623,7 +6623,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator.css": {
-      "sha256": "cfba5cb8c160991d1b2a0aa34f60fcfc4f5cf4d6b9847bf0ec3be6732f38e4cb",
+      "sha256": "917c960ede1fb7b6551f41d47c452514e0002caafb6cdd364be7fe4be9b16cde",
       "executable": false
     },
     "src/core/features/operator/ui/opportunity-evidence.tsx": {
