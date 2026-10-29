@@ -631,7 +631,7 @@
       "executable": false
     },
     ".github/workflows/rer-managed.yml": {
-      "sha256": "4438b6e2ab1aa8eac1ccb92a7a6063ed222ac3b8575417824951e80a0bf4c40a",
+      "sha256": "505e641e1ef3e8f41cb35657b4d4101cc80279bda55f78537ead0b7f5fa794c1",
       "executable": false
     },
     ".github/workflows/run-demo.yml": {
@@ -3967,7 +3967,7 @@
       "executable": false
     },
     "scripts/delivery/base/packaging.json": {
-      "sha256": "28909fad62001750e40d7e6a0573094015bf11acc3f0aac55010b68beca13a6d",
+      "sha256": "7f67f81376de92cf2d6d7267c517975c7930b2b070dc3d1df4d4e4add7daea0a",
       "executable": false
     },
     "scripts/delivery/base/paths.mjs": {
