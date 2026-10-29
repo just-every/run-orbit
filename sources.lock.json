@@ -4067,11 +4067,11 @@
       "executable": false
     },
     "scripts/verification-inventory.mjs": {
-      "sha256": "9346d1761cd3f42025c47ac8b7fe1b531f20406228eca1b1855edd1f972e0934",
+      "sha256": "909efe8e1d8541b6a49cdc0c160ec5a414350cc66965e70b77379fed40c53671",
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "293665ba75ff5b22dab28068c6537c9517c1f6a8181690af54c945c4cefc6619",
+      "sha256": "44f07b844c7e3a38e541951890e4080492e73609fae64a28ea794998d5cefac0",
       "executable": false
     },
     "scripts/verification-reuse.sh": {
