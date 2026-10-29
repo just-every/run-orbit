@@ -2387,18 +2387,18 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 ## Status
 
-Judged from the code and tests at commit `7cfcb6d7dc70c8d6b7a255810c75fb2ecfa67fcb` (29 October 2026).
+Judged from the code and tests at commit `373d8818a42e3208c5d9ea2ffea9cea33c470dc6` (29 October 2026).
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 8 | 71 | 0 | 79 |
+| Published | 9 | 70 | 0 | 79 |
 | Target and push further | 3 | 67 | 55 | 125 |
-| All | 11 | 138 | 55 | 204 |
+| All | 12 | 137 | 55 | 204 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
 | `TEAM-001` | Equal operators | published | partial | `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`; `newtests/t096/browser-journeys.test.ts` | Unasserted in the carried evidence: two full operators reach every record; full operators reach every action; UI refusal for every corresponding door. Asserted: collaborator record refusal; collaborator field refusal; collaborator action refusal. |
-| `TEAM-002` | Management | published | partial | `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`; `src/core/features/settings/repository.ts`; `src/core/features/settings/removal-handover.ts`; `tests/core/today-brief.test.ts`; `tests/core/local-owner.test.ts` | Unasserted in the carried evidence: invited person signs in through their own link. Asserted: invitation emits no unsolicited email; removed session is refused; removed operator receives no new link; another operator cannot remove the owner; sole owner cannot remove themselves; self-removal with another active operator ends the session. |
+| `TEAM-002` | Management | published | done | `tests/core/local-owner.test.ts` — TEAM-002 PUBLIC-004 owner mailbox changes and setup-owner removal preserve sign-in authority: invitation without unsolicited mail, the invited address requests and confirms its own native link, exact full-operator identity and authenticated Settings access, removal revokes that cookie and refuses new mail, owner-removal refusals, permitted owner self-removal, and invitation and removal audit; `tests/core/today-brief.test.ts`; `src/core/features/settings/repository.ts`; `src/core/features/settings/removal-handover.ts`; `src/core/features/identity/auth.ts` | |
 | `TEAM-003` | One workspace | published | partial | `tests/core/records-search.test.ts`; `src/core/features/pipelines/`; `tests/evidence/contract/TEAM-003/` | Unasserted in the carried evidence: persisted US timezone; persisted USD default; persisted working hours; persisted stale intervals; reload reads the settings across records. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |
 | `TEAM-004` | Removal handover | published | partial | `src/core/features/settings/removal-handover.ts`; `src/core/features/tasks/handover.ts`; `tests/core/today-brief.test.ts`; `tests/evidence/contract/TEAM-004/` | Unasserted in the carried evidence: delegated handoff unassignment; scheduled-message cancellation; choice recorded for every set; one attributed owner-change entry. Asserted: reviewed task handover; reviewed opportunity handover; revoked session; historical note retains its actor. |
 | `RECORD-001` | Core records | published | partial | `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts` | Unasserted in the carried evidence: contact create/read through authenticated Records; contact edits persist; company create/read through authenticated Records; company edits persist; USD opportunity create/edit; custom-field values read back; associations read back. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |
