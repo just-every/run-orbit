@@ -28,5 +28,30 @@ test('RECORD-004 RECORD-009 matching names across companies remain review-only a
    assert.equal(result.timeline.filter((entry:any)=>entry.kind==='record.merged').length,1);
    const audit=await f.db.prepare("SELECT details_json FROM audit_entries WHERE action='record.merged' AND entity_id=?").bind(survivorId).all<{details_json:string}>();assert.equal(audit.results.length,1);assert.deepEqual(JSON.parse(audit.results[0].details_json),{retiredId,choices});
   }
+  for(const stopped of ['survivor','retired'] as const){
+   const survivor=await f.customer(),retired=await f.customer(),scheduled=await Promise.all([f.message(survivor.contactId,survivor.opportunityId),f.message(retired.contactId,retired.opportunityId)]);
+   const survivorId=survivor.contactId,retiredId=retired.contactId,path='records/contact/merge';
+   const read=async(id:string)=>{const response=await f.request(`records/contact/${id}`);assert.equal(response.status,200);return response.json() as Promise<any>;};
+   const duplicates=await f.request('records/contact/duplicates');assert.equal(duplicates.status,200);
+   const rows=(await duplicates.json() as {groups:Record<string,any>[][]}).groups.flat(),pair=[survivorId,retiredId].map(id=>rows.find(row=>row.id===id)!);
+   assert.deepEqual(pair.map(row=>row.contactability),['contactable','contactable']);
+   const body={survivorId,retiredId,choices:{email:'survivor'},reviewed:{survivor:pair[0].mergeReviewToken,retired:pair[1].mergeReviewToken},confirmed:true};
+   assert.equal((await f.request(path,'POST',body,{Cookie:''})).status,401);
+   assert.equal((await f.request(path,'POST',body,{Origin:'https://other.test'})).status,403);
+   const stoppedId=stopped==='survivor'?survivorId:retiredId,before=(await read(stoppedId)).record;
+   assert.equal((await f.request(`records/contact/${stoppedId}`,'PUT',{name:before.name,contactability:'do_not_contact'})).status,200);
+   const reviewedValues=({contactability,contactability_revision,updated_at,...fields}:Record<string,any>)=>fields;
+   assert.deepEqual(reviewedValues((await read(stoppedId)).record),reviewedValues(before),'Only the inherited stop changed after review');
+   const merged=await f.request(path,'POST',body);assert.equal(merged.status,200,await merged.clone().text());
+   const result=await read(survivorId);assert.equal(result.record.contactability,'do_not_contact',`${stopped} stop is inherited without a contactability choice`);
+   assert.equal((await f.request(`records/contact/${retiredId}`)).status,404);
+   for(const message of scheduled)assert.deepEqual(await f.db.prepare('SELECT contact_id,state FROM outbound_messages WHERE id=?').bind(message.id).first(),{contact_id:survivorId,state:'cancelled'},'Both participants’ scheduled work stays cancelled on the survivor');
+   assert.deepEqual(result.opportunities.map((row:any)=>row.id).sort(),[survivor.opportunityId,retired.opportunityId].sort(),'Both deals now belong to the surviving contact');
+   assert.equal(result.timeline.filter((entry:any)=>entry.kind==='record.merged').length,1);
+   const audits=async()=>(await f.db.prepare("SELECT details_json FROM audit_entries WHERE action='record.merged' AND entity_id=?").bind(survivorId).all<{details_json:string}>()).results;
+   assert.deepEqual((await audits()).map(row=>JSON.parse(row.details_json)),[{retiredId,choices:body.choices}]);
+   assert.equal((await f.request(path,'POST',body)).status,404,'Replaying the original review cannot merge twice');
+   assert.deepEqual(await read(survivorId),result);assert.equal((await audits()).length,1);
+  }
  }finally{await f.dispose();}
 });

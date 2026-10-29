@@ -6007,7 +6007,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/duplicate-review.tsx": {
-      "sha256": "1bf79a2075705492382e2314048f54827b69577f60fa0b1b601cb51d22bc6400",
+      "sha256": "c77057cb514636b404bc356b23bc4d0db71fcbd2fe24bca4cf12486bcf8c001e",
       "executable": false
     },
     "src/core/features/operator/ui/entry-privacy.tsx": {
@@ -6259,7 +6259,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records-data-tools.tsx": {
-      "sha256": "2243aa6f59f8a16f60b6944a1cf223332292b3c67a1145b18f031b6c1de31586",
+      "sha256": "66b2d640d17a91ec0b598d7018c7e35d47782237c68d9a5bc5986e0b7b021e14",
       "executable": false
     },
     "src/core/features/operator/ui/records-filters.tsx": {
@@ -7103,7 +7103,7 @@
       "executable": false
     },
     "src/core/features/records/import-merge.ts": {
-      "sha256": "2ce9119f4dff6aa4d9fa1f525e25458201f2d3b2e010f787b4692c1d0e8a3218",
+      "sha256": "5f2d9c89cd3ae87e7d945253f5bcfd0c59d2af16119b1815b5f66ad29150e1d9",
       "executable": false
     },
     "src/core/features/records/index.ts": {
@@ -9195,7 +9195,7 @@
       "executable": false
     },
     "tests/core/records-merge-review.test.ts": {
-      "sha256": "a5005b30296eea2eb6cd4a99832d816010e3d73f802b9d916781bfa36f18906c",
+      "sha256": "5887817a4a434117a873f41d3817f5e1a35370cf0af236e3961a50efe552a0fe",
       "executable": false
     },
     "tests/core/records-search.test.ts": {
@@ -9331,7 +9331,7 @@
       "executable": false
     },
     "tests/e2e/imports.spec.mjs": {
-      "sha256": "146378fb040160be083914a6f115a761470479bbd213faa92b598f3915328cec",
+      "sha256": "ead07b559d2a63a827cccb10d12f5c1a88c7c8fd33362f10db843406b0a1a497",
       "executable": false
     },
     "tests/e2e/operator-session.mjs": {
