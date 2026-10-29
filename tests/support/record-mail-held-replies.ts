@@ -1,10 +1,13 @@
 import assert from 'node:assert/strict';
+import type {TestContext} from 'node:test';
+import {recordMailHandover} from './record-mail-handover';
 import {fixture,signIn,collaborator} from '../../newtests/t096/fixture';
 import {createApp} from './app';
 import {replyForm,signedReplies} from './signed-reply';
 import {createId} from '../../src/core/shared/ids';
 import {recordMailCustody} from './record-mail-custody';
-export async function recordMailHeldReplies(){
+/** Resolve held customer replies, hand the next promise over, then restore and erase that history. */
+export async function recordMailHeldReplies(context:TestContext){
  const f=await fixture();try{
   const app=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},aiProvider:{provider:'network-edge',model:'cited-draft',inputCostPerMillion:0,outputCostPerMillion:0,generate:async(preview:any)=>({output:{explanation:'The selected contact is cited.',subject:'Cited consultation draft',body:'Would a production consultation help?',evidenceIds:[preview.contact.id]},inputTokens:20,outputTokens:10})},outboundMail:{send:async()=>({providerMessageId:createId()})}});let cookie=f.cookie;
   const request=(path:string,method='GET',body?:unknown)=>app.request(`https://orbit.test/api/v1/${path}`,{method,headers:{Cookie:cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)}),call=async(path:string,method='GET',body?:unknown,status=200)=>{const response=await request(path,method,body);assert.equal(response.status,status,await response.clone().text());return response.json() as Promise<any>;};
@@ -25,7 +28,9 @@ export async function recordMailHeldReplies(){
   cookie=otherSession.cookie;const second=await compose();cookie=f.cookie;await hold();const dismissed=(await list())[0];await call(`assistance/record-mail/replies/${dismissed.id}/resolve`,'POST',{contactId:contact.id,decision:'dismiss'});assert.equal((await call(`workbench/records/contact/${contact.id}/mail`)).obligations.find((row:any)=>row.messageId===second.id).closedAt,null);assert.equal((await call(`records/contact/${contact.id}`)).timeline.filter((entry:any)=>entry.kind==='mail.reply.dismissed'&&JSON.parse(entry.payload_json).replyId===dismissed.id).length,1);
   const removal=await call(`settings/operators/${other.id}/removal-review`);await call(`assistance/record-mail/operators/${other.id}/remove`,'POST',{confirmed:true,handover:{review:removal.review,opportunities:null,tasks:null,handoffs:null,recordMailObligations:null}});assert.equal((await call(`workbench/records/contact/${contact.id}/mail`)).obligations.find((row:any)=>row.messageId===second.id).ownerId,null);
   const deal=await call('records/opportunity','POST',{title:'Existing deal reply review',stage_id:f.stage,contact_ids:[contact.id],primary_contact_id:contact.id,value_cents:0},201);await hold();const dealReply=(await list())[0];await call(`sources/replies/${dealReply.id}/link`,'POST',{opportunityId:deal.id});const linkedDeal=(await call(`records/opportunity/${deal.id}`)).timeline.filter((entry:any)=>entry.kind==='signal.recorded');assert.equal(linkedDeal.length,1);await call(`sources/replies/${dealReply.id}/link`,'POST',{opportunityId:deal.id},409);assert.equal((await call(`records/opportunity/${deal.id}`)).timeline.filter((entry:any)=>entry.kind==='signal.recorded').length,1);
-  await hold();const aiPreview=await call('assistance/record-mail/preview','POST',{kind:'contact',recordId:contact.id,contactId:contact.id,opportunityId:null});await call('assistance/record-mail/generate','POST',{previewId:aiPreview.id});assert.equal((await call(`workbench/records/contact/${contact.id}/mail`)).messages.length,2);await call('assistance/record-mail/preview','POST',{kind:'contact',recordId:contact.id,contactId:contact.id,opportunityId:null});await recordMailCustody(f,app,cookie,contact.id,'morgan@held-replies.test');
+  await hold();const aiPreview=await call('assistance/record-mail/preview','POST',{kind:'contact',recordId:contact.id,contactId:contact.id,opportunityId:null});await call('assistance/record-mail/generate','POST',{previewId:aiPreview.id});assert.equal((await call(`workbench/records/contact/${contact.id}/mail`)).messages.length,2);await call('assistance/record-mail/preview','POST',{kind:'contact',recordId:contact.id,contactId:contact.id,opportunityId:null});
+  await recordMailHandover(context,f,{contact:{...contact,name:'Morgan Chen'},company,restricted});
+  await recordMailCustody(f,app,cookie,contact.id,'morgan@held-replies.test');
   console.log('OUT-017 held reply: contact/company attributed once; concurrent/replay no duplicate; automatic and dismissal leave promise open; genuine attach closes; custody and erasure pass');
  }finally{await f.close();}
 }

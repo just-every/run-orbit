@@ -237,7 +237,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 **Acceptance.**
 1. POST a signed configured-source event through its ingestion route and read one attributed signal and linked timeline within the bound.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: linked timeline entry; ingestion within ten seconds. Asserted: one stored signal; attributed configured source attribution..
 
 #### SIGNAL-002 — Signal types
@@ -249,7 +249,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 **Acceptance.**
 1. Submit every standard type, a source-namespaced type and an unknown type; accept the first two classes and reject the unknown without writes.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: every standard type stored/read back; source-namespaced type stored/read back; unknown type leaves no writes. Asserted: unknown type refused.
 
 #### SIGNAL-003 — Idempotency
@@ -261,7 +261,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 **Acceptance.**
 1. Deliver identical events concurrently and after restart, then change the payload under the same source identity; retain one effect and a visible conflict.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: replay after restart. Asserted: concurrent delivery returns one identity; one persisted effect; changed payload returns conflict.
 
 #### SIGNAL-004 — Linking
@@ -273,7 +273,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 **Acceptance.**
 1. Ingest exact, ambiguous and unknown identities; verify linked and held queues, then manually link the held event once and inspect evaluation.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: ambiguous identity held; exactly one evaluation after link. Asserted: exact identity affects the intended deal; unknown identity held; one manual link allowed; linked timeline retains event time.
 
 #### SIGNAL-005 — Event time
@@ -285,7 +285,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 **Acceptance.**
 1. Deliver older evidence after newer evidence and inspect chronological history and fresh evaluation without overwriting later record state.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: history sorted around newer evidence; fresh evaluation after late event; later-written fields not overwritten. Asserted: older event retains occurred time.
 
 #### SIGNAL-006 — Evidence confidence
@@ -297,7 +297,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 **Acceptance.**
 1. Compare open/page-view inference with observed reply/booking evidence; inferred activity alone cannot create a deal, high band or evidence-backed action.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: inferred activity cannot create any new deal. Asserted: observed reply/booking classification; inferred activity cannot raise high band; inferred activity creates no current recommendation.
 
 #### SIGNAL-007 — No tracking
@@ -309,7 +309,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 **Acceptance.**
 1. Inspect public assets/network and submit identity-free page/chat events; no Orbit tracker runs and unsupported identity stays outside customer history.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: no tracking script/pixel/cookie in public assets/network; identity-free chat held; unsupported identity absent from customer history. Asserted: identity-free page view held.
 
 #### SIGNAL-008 — Ingestion failure
@@ -321,7 +321,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 **Acceptance.**
 1. POST invalid signatures, unknown sources, oversized input and injected persistence failure; verify status, no partial writes, replay safety and source diagnostics.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: unknown source refused; all downstream effects rolled back. Asserted: bad signature refused; oversized input refused; persistence failure leaves no signal; replay safety; source rejection diagnostic.
 
 #### SIGNAL-009 — Signed sources
@@ -333,7 +333,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 **Acceptance.**
 1. Exercise signed callbacks and HTTPS source-scoped automation; refuse invalid, disabled and rotated authority while retaining native session and ownership checks.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: signed provider callback; HTTPS source-scoped automation; disabled authority refused; rotated authority refused; native session checks retained; native ownership checks retained. Asserted: invalid authority refused.
 
 ### Mail and calendar capture
@@ -457,7 +457,7 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Close a deal as won and lost with reasons, ingest later evidence, and explicitly reopen; inspect history and queue membership at every step.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: won close retains reason; lost close retains reason; later evidence never silently reopens; explicit reopen restores correct queue; history records every lifecycle transition. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OPP-002 — Independent state
@@ -481,7 +481,7 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Ingest weighted signals and edit an open opportunity; inspect computed score, band, contributions and policy version, including decay and closed-deal exclusion.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`; `src/core/features/workbench/policies.ts`; `src/core/features/records/repository.ts`
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/source-onboarding.test.ts`; `src/core/features/workbench/policies.ts`; `src/core/features/records/repository.ts`
 **Gap.** Unasserted in the carried evidence: band; contribution values; policy version; decay; closed-deal exclusion. Asserted: computed score after signal.
 
 #### OPP-004 — Explainability
@@ -505,7 +505,7 @@ Core · published · **done** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Cause evaluation to fail after a valid score; read the last value as stale with failure time and verify no fabricated replacement.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** None.
 
 #### OPP-006 — NOW ordering
@@ -529,7 +529,7 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Advance close/stale/awaiting clocks and deliver a form, reply, booking and send failure; inspect NOW/NEXT reasons and one timeline transition per event.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: close clock; stale clock; awaiting-response clock; form NOW reason; reply NOW reason; booking NOW reason; one transition per triggering event. Asserted: failed-send NOW reason.
 
 #### OPP-008 — Manual completion
@@ -541,7 +541,7 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Complete or skip the current action without sending; inspect the recorded outcome and only a genuinely new recommendation.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: skip retains historical recommendation; no message sent. Asserted: manual completion changes queue; only new recommendation gets a new identity.
 
 #### OPP-009 — Pipeline stages
@@ -567,7 +567,7 @@ Core · published · **partial** · Cites BASE-ROLE-001
 **Acceptance.**
 1. Read an open deal recommendation with observed evidence and version; disable AI and retain the named action/evidence without an invented explanation.
 
-**Evidence.** `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/source-onboarding.test.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/source-onboarding.test.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: current action evidence; current action version; named action remains with AI disabled; no invented explanation. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### ACTION-002 — Replacement
@@ -579,7 +579,7 @@ Core · published · **partial** · Cites BASE-ROLE-001
 **Acceptance.**
 1. Supersede an action by new evidence or an operator change; the old action remains historical and cannot be drafted, sent or completed.
 
-**Evidence.** `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/source-onboarding.test.ts`; `src/core/features/workbench/action-repository.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/source-onboarding.test.ts`; `src/core/features/workbench/action-repository.ts`; `tests/core/source-onboarding.test.ts`
 **Gap.** Unasserted in the carried evidence: new evidence supersedes old recommendation; operator change supersedes recommendation; old action stays historical; old action cannot draft; old action cannot send; old action cannot complete. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### ACTION-003 — Draft on request
@@ -641,7 +641,7 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 **Acceptance.**
 1. Drive provider acceptance, delivery, bounce, failure and ambiguous responses; inspect each persisted state and truthful buyer-visible labels.
 
-**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/outreach-limits.test.ts`
 **Gap.** Unasserted in the carried evidence: provider acceptance state; bounce state; persisted buyer-visible labels distinct. Asserted: delivery state; failed state; ambiguous state.
 
 #### OUT-003 — Send idempotency
@@ -653,7 +653,7 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 **Acceptance.**
 1. Submit the same approval key concurrently and after restart; observe one outbound intent and at most one provider submission.
 
-**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `src/core/features/workbench/routes.ts`
+**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/outreach-limits.test.ts`; `src/core/features/workbench/routes.ts`
 **Gap.** Unasserted in the carried evidence: concurrent approval has one outbound intent; same key after restart; at most one provider submission. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OUT-004 — Threading
@@ -677,7 +677,7 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 **Acceptance.**
 1. Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and notification.
 
-**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/outreach-limits.test.ts`
 **Gap.** Unasserted in the carried evidence: one sent timeline activity; recommendation completed; NEXT transition (assertion is in uncited tests/core/source-onboarding.test.ts); one notification; replayed provider response has no second effect. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OUT-006 — Delivery failure
@@ -689,7 +689,7 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 **Acceptance.**
 1. Fail a submission transiently, permanently and ambiguously; verify bounded known-unsent retries, visible exhausted failure, one notification and permanent-bounce stop.
 
-**Evidence.** `src/core/features/outreach/service.ts`; `tests/core/outreach-limits.test.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/outreach/service.ts`; `tests/core/outreach-limits.test.ts`; `tests/core/outreach-limits.test.ts`
 **Gap.** Unasserted in the carried evidence: ambiguous outcome distinct; permanent bounce stops contact; provider reason retained. Asserted: known-unsent retry bounded to five attempts; exhausted failure visible; one failure notification.
 
 #### OUT-007 — Stop conditions
@@ -701,7 +701,7 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 **Acceptance.**
 1. Schedule a message, deliver reply/booking/unsubscribe/bounce or a manual stop, then advance dispatch; cancel the message and stale the draft without duplicates.
 
-**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/request-scheduling.test.ts`
 **Gap.** Unasserted in the carried evidence: booking cancels scheduled mail; unsubscribe cancels scheduled mail; bounce cancels scheduled mail; manual stop cancels scheduled mail; replay has no second effect. Asserted: reply cancels scheduled mail; stop stales unsent draft.
 
 #### OUT-008 — Quiet hours
@@ -713,7 +713,7 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 **Acceptance.**
 1. Approve outside recipient-local quiet hours, including daylight-saving boundaries; require the extra immediate confirmation or delay the schedule to the permitted window.
 
-**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
+**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/request-scheduling.test.ts`
 **Gap.** Unasserted in the carried evidence: extra immediate confirmation. Asserted: recipient-local weekday/DST window; expired confirmation cannot send; scheduled message waits for reviewed next window.
 
 #### OUT-009 — Scheduled send
@@ -737,7 +737,7 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 **Acceptance.**
 1. Exceed the per-minute and per-operator daily limits before immediate and scheduled submission; retain a visible unsent item with its reason and next permitted time, and see no silent retry.
 
-**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/outreach-limits.test.ts`
+**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/outreach-limits.test.ts`; `tests/core/outreach-limits.test.ts`
 **Gap.** Unasserted in the carried evidence: immediate submission limit; scheduled submission limit. Asserted: per-minute limit visibly holds; per-user daily limit visibly holds; held item shows reason; next permitted time; no silent retry.
 
 #### OUT-011 — Unresolved submission
@@ -749,7 +749,7 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 **Acceptance.**
 1. Lose the acceptance transaction or provider response; restart and reconcile the durable intent without submitting again, ending once as accepted or visibly unresolved.
 
-**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `src/core/platform/outbound-mail.ts`
+**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/outreach-limits.test.ts`; `src/core/platform/outbound-mail.ts`
 **Gap.** Unasserted in the carried evidence: lost acceptance transaction; restart reconciles durable intent; unresolved stays visible. Asserted: lost provider response becomes uncertain; provider never resubmitted; one accepted final outcome.
 
 #### OUT-012 — Unsubscribe
@@ -1297,7 +1297,7 @@ Core · target · **partial** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRE
 **Acceptance.**
 1. Connect each provider through Capture, import historical and new Inbox/Sent/calendar items, crash/resume an incremental page, resolve ambiguous deal links, switch the multi-deal rule to most recently active open deal and see the next such thread associated automatically with the rule named and then moved in one action, see an unknown correspondent become a CAPTURE-012 proposal, see a captured reply's PDF attachment listed on its contact, company and deal with its inline image not listed, revoke/reconnect and verify no unauthorized folder/mailbox is read.
 
-**Evidence.** `src/core/features/capture/providers/`; `src/core/features/capture/mail-association.ts`; `src/core/features/capture/mail-rule.ts`; `src/core/features/capture/deal-links.ts`; `migrations/core/0057_capture_mail_rule.sql`; `tests/core/capture-microsoft.test.ts`; `tests/core/capture-microsoft.test.ts`; `tests/support/capture-rule-custody.ts`; `newtests/t096/forward-upgrade.test.ts`; `newtests/t096/browser-capture-rule.ts`; `docs/retained-verification/CAPTURE-010/`; `newtests/t096/browser-journeys.test.ts`
+**Evidence.** `src/core/features/capture/providers/`; `src/core/features/capture/mail-association.ts`; `src/core/features/capture/mail-rule.ts`; `src/core/features/capture/deal-links.ts`; `migrations/core/0057_capture_mail_rule.sql`; `tests/core/capture-microsoft.test.ts`; `tests/core/capture-microsoft.test.ts`; `tests/core/capture-associations.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `newtests/t096/browser-capture-rule.ts`; `docs/retained-verification/CAPTURE-010/`; `newtests/t096/browser-journeys.test.ts`
 **Gap.** Durable provider reads retain their selected-scope and OAuth safeguards. The owner chooses held review (default), most recently active open deal or all open deals for exact-contact connected mail; trusted message identity retains priority. Automatic evidence names its rule, and one reviewed action moves or removes deal links without rewriting the original. No-open-deal mail links only the contact and primary company. Reviewed corrections permit any deal the current full operator may view and change, including closed deals and deals unrelated to the captured contact; the original contact and company history remain. TEAM-005 retains real administrator and restricted-record policy; current full operators retain existing workspace access and collaborators gain no capture door. Live Gmail and Microsoft acceptance requires the owner's authorized journey and remains unmeasured; attachments inherit RECORD-018, unknown-participant proposals CAPTURE-012, and the fixed calendar window still needs explicit extension. Implemented first slice: the installation owner acts as administrator until TEAM-005 supplies sales roles. An open deal's activity is the latest recorded source or operator timeline entry, or its creation time when no later entry exists; ties use deal identity order. Active full operators may move captured mail to any currently accessible, changeable deal or remove its deal links. A fingerprint binds the reviewed association, correction history and offered deal revisions; stale reviews return 409, unavailable targets return 403, and collaborators or restricted roles are refused. Replay repeats no mutation or audit.
 
 #### CAPTURE-011 — Two-way calendar and CRM activity
@@ -1502,7 +1502,7 @@ Core · target · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-00
 2. Choose a recipient explicitly, use handwriting, a template and a previewed draft, then verify exact content and current contactability, quiet-hour, schedule, budget, tracking and opt-out rules.
 3. Sending creates no deal, reopens none and changes neither a closed deal’s lifecycle nor queue; an optional link selects at most one open deal and a prohibited contact is refused.
 
-**Evidence.** `src/core/features/outreach/`; `src/core/features/assistance/record-routes.ts`; `src/core/features/assistance/record-preview.ts`; `migrations/core/0056_record_mail.sql`; `migrations/core/0066_record_mail_completion.sql`; `src/core/features/operator/ui/record-mail.tsx`; `src/core/features/operator/ui/unlinked-replies.tsx`; `src/core/features/settings/removal-handover.ts`; `src/core/features/operator/ui/operator-removal-review.tsx`; `tests/core/signals-outreach.test.ts`; `tests/support/record-mail.ts`; `tests/support/record-mail-ai.ts`; `tests/support/record-mail-held-replies.ts`; `tests/support/record-mail-handover.ts`; `tests/support/record-mail-custody.ts`; `tests/core/contact-erasure.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/support/record-mail-upgrade.ts`; `newtests/t096/browser-record-mail.ts`; `docs/retained-verification/OUT-017/`
+**Evidence.** `src/core/features/outreach/`; `src/core/features/assistance/record-routes.ts`; `src/core/features/assistance/record-preview.ts`; `migrations/core/0056_record_mail.sql`; `migrations/core/0066_record_mail_completion.sql`; `src/core/features/operator/ui/record-mail.tsx`; `src/core/features/operator/ui/unlinked-replies.tsx`; `src/core/features/settings/removal-handover.ts`; `src/core/features/operator/ui/operator-removal-review.tsx`; `tests/core/record-mail-compose.test.ts`; `tests/support/record-mail.ts`; `tests/support/record-mail-ai.ts`; `tests/core/record-mail-follow-up.test.ts`; `tests/support/record-mail-handover.ts`; `tests/support/record-mail-custody.ts`; `tests/core/contact-erasure.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/support/record-mail-upgrade.ts`; `newtests/t096/browser-record-mail.ts`; `docs/retained-verification/OUT-017/`
 **Gap.** Reviewed manual composition from contacts, companies and closed deals uses one explicitly selected recipient, an optional current open-deal link and separate closed-deal history; sending creates or reopens no deal. Exact rendered approval, active/contactable identity, shared sending budgets, clocks, scheduling, reconciliation and contact-wide stops apply to the additive mail store. One accepted activity links reviewed content and provider identity to the contact, primary company and linked/history deal; verified native message headers thread one genuine reply, while missing headers are held. An unlinked accepted message opens one sender-owned contact promise, due in workspace working days and shown in Today when overdue; human replies, booked meetings, later acceptance and explicit sender completion close it. Automatic replies do not; permanent bounce suppresses and cancels contact schedules. Sender/owner reply notices and contact outcomes are native in-app. Full operators retain current authority and collaborators get no new mail door. Record AI drafting from contacts and explicitly selected company contacts uses the assistance preview, exact unchanged evidence and configured instructions through ai.provider.v1, validated citations and length, durable editable unsent drafts and ai_calls accounting; unavailable providers fail visibly. Existing held-reply review attaches genuine or automatic replies to the contact and primary company or dismisses them once with operator attribution; automatic replies and dismissal leave promises open. Removal review includes open contact promises, explicit receiving full operator or unassignment, stale-set refusal and atomic handover with one attributed contact/company entry; original sender attribution remains, receiving overdue promises appear in Today, and unassigned promises remain on their contact. Remaining gaps: additional To/CC/BCC and reply-all inherit OUT-019, mailbox sending and live replies OUT-013, leads RECORD-014, provider-thread capture CAPTURE-010, sequence steps SEQUENCE-001/003 and tracking choice OUT-016.
 
 #### OUT-023 — Record mail history and deal-less obligations
@@ -1766,7 +1766,7 @@ Core · target · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001 · Rules D-1
 **Acceptance.**
 1. Race an approved due step with each reply/booking/stage/stop event, including a reply on the step's thread from a colleague the buyer CC'd, restart and replay; verify no prohibited send, one exit reason and separate reply/meeting/deal-outcome measures.
 
-**Evidence.** `tests/core/signals-outreach.test.ts`; `src/core/features/pipelines/movement.ts`; `src/core/features/records/repository.ts`; `src/core/features/outreach/follow-up-outcomes.ts`; `src/core/features/operator/ui/follow-up-outcomes.tsx`; `tests/evidence/contract/SEQUENCE-002/`
+**Evidence.** `tests/core/request-scheduling.test.ts`; `src/core/features/pipelines/movement.ts`; `src/core/features/records/repository.ts`; `src/core/features/outreach/follow-up-outcomes.ts`; `src/core/features/operator/ui/follow-up-outcomes.tsx`; `tests/evidence/contract/SEQUENCE-002/`
 **Gap.** Unasserted in the carried evidence: external colleague reply exit; manual stop; unsubscribe/permanent-bounce stop; restart preserves exit. Asserted: reply exit; booking exit; stage exit atomic with stage change; one first exit reason; replay/reopen/late dispatch revive nothing; separate customer outcome counts.
 
 #### SEQUENCE-003 — Bulk enrollment and rendered batch review

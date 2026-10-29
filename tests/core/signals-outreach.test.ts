@@ -1,19 +1,17 @@
-import {exerciseRecordMail} from '../support/record-mail';
+import {recordMailAI} from '../support/record-mail-ai';
 import assert from 'node:assert/strict';
 import { after,test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
 import { createDependencies } from '../support/dependencies';
 import { createApp } from '../support/app';
 import { createId } from '../../src/core/shared/ids';
-import { createSourceSecurity,payloadHash } from '../../src/core/platform/source-security';
 import { WorkbenchRepository } from '../../src/core/features/workbench/repository';
-import { OutreachRepository } from '../../src/core/features/workbench/outreach-repository';
 import { ApprovalRepository } from '../../src/core/features/outreach/approval-repository';
 import { OutreachService } from '../../src/core/features/outreach/service';
 const platform=await isolatedDatabase();after(()=>platform.dispose());const db=platform.db;
 async function fixture(){const deps=createDependencies(db),actor=createId(),stage=createId(),at=new Date().toISOString();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.example`,displayName:'Signals operator'});await deps.workspace.ensureWorkspace({name:'Signals workspace',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:['gmail.com']});const position=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Test',position:position!.n});const email=`${createId()}@customer.example`;const opportunity=await new WorkbenchRepository(db).createOpportunity({title:'Signals test',companyName:'Customer',contactName:'Contact',email,stageId:stage,valueCents:100},actor);const contact=await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(opportunity.id).first<{contact_id:string}>();return{actor,opportunityId:opportunity.id,contactId:contact!.contact_id,email,at};}
-test('OUT-014 OUT-017 ACTION-005 exact personalized library and record mail stay human-reviewed, durable and private across changes, replies and custody',async context=>{
- const f=await fixture(),second=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db);await db.prepare("UPDATE outbound_messages SET claimed_at='2000-01-01T00:00:00.000Z' WHERE claimed_at IS NOT NULL").run();
+test('OUT-014 OUT-017 ACTION-005 personalized library and AI drafts preserve exact evidence, private content and human review',async()=>{
+ const f=await fixture(),second=await fixture(),approval=new ApprovalRepository(db);await db.prepare("UPDATE outbound_messages SET claimed_at='2000-01-01T00:00:00.000Z' WHERE claimed_at IS NOT NULL").run();
  await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();
  const ownerSession=await createDependencies(db).auth.createSession(f.actor),repSession=await createDependencies(db).auth.createSession(second.actor);
  const edge:{recipient_email:string;subject:string;body:string}[]=[];
@@ -59,5 +57,5 @@ test('OUT-014 OUT-017 ACTION-005 exact personalized library and record mail stay
  const libraryService=new OutreachService(db,{send:async input=>{edge.push(input);return{providerMessageId:'library-receipt'};}});await libraryService.dispatchDue(new Date(schedule.scheduledAt));await libraryService.dispatchDue(new Date(schedule.scheduledAt));
  assert.deepEqual(edge.map(({recipient_email,subject,body})=>({recipient_email,subject,body})),[{recipient_email:f.email.toLowerCase(),subject:rendered.subject,body:rendered.body}],'Dispatch sends exactly the approved rendered bytes once after a library revision');
  const after=await approval.message(approvedMessage.id);assert.equal(after.body,before.body);assert.equal(after.subject,before.subject);assert.equal(after.render_snapshot_json,before.render_snapshot_json);
- await exerciseRecordMail(context);
+ await recordMailAI();
 });

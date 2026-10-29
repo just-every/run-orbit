@@ -105,7 +105,10 @@ export async function todayJourney({first,second,colleague,collaborator,collabor
  await proposal.getByRole('button',{name:'Accept'}).click();await expect(again.getByText(`Proposed by ${client}.`)).toHaveCount(0);
  await expect(again.getByTestId('opportunity-timeline').getByText('Handoff Accepted').first()).toBeVisible();
  // The person edits the same delegated task, while the application's original receipt stays immutable.
- const committed=await written.json(),section=again.getByTestId('handoff-tasks');
+ // The meeting-plan action is also on this record; keep every edit on the
+ // delegated task's stable ID, including after its title and status change.
+ const committed=await written.json(),section=again.getByTestId('handoff-tasks').locator(`form[id="handoff-${nonce}"]`);
+ await expect(section.getByLabel('Title',{exact:true})).toHaveValue('Prepare renewal pricing for the review');
  const assignee=await section.getByLabel('Assignee').locator('option').evaluateAll(nodes=>nodes.map(n=>n.value).find(Boolean));
  for(const status of ['completed','cancelled','open']){
   await section.getByLabel('Title',{exact:true}).fill('Native '+status);
