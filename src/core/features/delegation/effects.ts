@@ -16,7 +16,9 @@ export async function writeHandoff(db:D1Database,input:Effect,identity:{grant?:G
  const {grant:g,actor}=identity;
  if(g){await currentGrant(db,g.id,g);scoped(g,input.target,'crm.handoff.write');}else await nativeAuthority(db,actor);
  const requestHash=await revision({operation:input.operation,target:input.target,expectedRevision:input.expectedRevision,expectedAudienceRevision:input.expectedAudienceRevision,content:input.content});
- if(g){const previous=await db.prepare('SELECT request_hash FROM delegation_receipts WHERE client_id=? AND principal_id=? AND account_id=? AND operation_key=?').bind(g.client_id,g.principal_id,g.account_id,input.operationKey).first<{request_hash:string}>();if(previous){if(previous.request_hash!==requestHash)deny(409,'OPERATION_CONFLICT');return receipt(db,g,input.operationKey);}}
+ const replay=async()=>{if(!g)return;const previous=await db.prepare('SELECT request_hash FROM delegation_receipts WHERE client_id=? AND principal_id=? AND account_id=? AND operation_key=?').bind(g.client_id,g.principal_id,g.account_id,input.operationKey).first<{request_hash:string}>();if(previous){if(previous.request_hash!==requestHash)deny(409,'OPERATION_CONFLICT');return receipt(db,g,input.operationKey);}};
+ const previous=await replay();if(previous)return previous;
+ try{
  if(!/^opportunities\/[^/]+\/handoffs\/[^/]+$/.test(input.target))deny(422,'UNSUPPORTED_OPERATION');
  const before=await snapshot(db,input.target,true);
  if(before.revision!==input.expectedRevision)deny(409,'REVISION_CONFLICT');
@@ -39,7 +41,12 @@ export async function writeHandoff(db:D1Database,input:Effect,identity:{grant?:G
  statements.push(db.prepare('INSERT OR IGNORE INTO handoff_contacts(handoff_id,contact_id) SELECT ?,contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(task.id,task.opportunity_id));
  if(g)statements.push(db.prepare('INSERT INTO delegation_receipts VALUES(?,?,?,?,?,?,?,?)').bind(id,g.client_id,g.principal_id,g.account_id,input.operationKey,input.target,requestHash,JSON.stringify(record)));
  statements.push(db.prepare('DELETE FROM delegation_guards WHERE id=?').bind(id));
- try{await db.batch(statements);}catch(error){if(g){const existing=await db.prepare('SELECT request_hash FROM delegation_receipts WHERE client_id=? AND principal_id=? AND account_id=? AND operation_key=?').bind(g.client_id,g.principal_id,g.account_id,input.operationKey).first<{request_hash:string}>();if(existing){if(existing.request_hash!==requestHash)deny(409,'OPERATION_CONFLICT');return receipt(db,g,input.operationKey);}}if(String(error).includes('delegation_guards'))deny(409,'REVISION_CONFLICT');throw error;}
+ try{await db.batch(statements);}catch(error){if(String(error).includes('delegation_guards'))deny(409,'REVISION_CONFLICT');throw error;}
  if(g)await currentGrant(db,g.id,g);else await nativeAuthority(db,actor);
  return {state:'confirmed' as const,receipt:record,observed:{target:input.target,revision:afterRevision,content:input.content,observedAt:now}};
+ }catch(error){
+  // A concurrent identical call may commit after the first receipt lookup and
+  // before (or during) the snapshot. Its retained outcome wins over a stale read.
+  const committed=await replay();if(committed)return committed;throw error;
+ }
 }

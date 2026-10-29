@@ -5651,7 +5651,7 @@
       "executable": false
     },
     "src/core/features/delegation/effects.ts": {
-      "sha256": "89a1e8b90445d31491ccdbab3838f9e900d57e8bf1c689ad1b43d5d189a47105",
+      "sha256": "93510df440f384c77ecca0338e48a6dd9389cdec07b6968467882289b91cbd04",
       "executable": false
     },
     "src/core/features/delegation/evidence.ts": {
@@ -9579,11 +9579,11 @@
       "executable": false
     },
     "tests/delegation-browser/customer-capture.mjs": {
-      "sha256": "b1536a65b3278940597467de3af795bb9173c234c4736bd88cb1a95a802b1ec6",
+      "sha256": "1d7bbfbb6bb0c66d53f197803d65ef7d9eecdccd535cdea1d4df01c40853db2d",
       "executable": false
     },
     "tests/delegation-browser/customer-import.mjs": {
-      "sha256": "0122d5db885521a1487402f20d6ec488be8ad81c802d0378f43cf7bed50942d4",
+      "sha256": "bbbe36798910256f5f3c3b1ffd3d6f819c591f76dc1026ea8f6ca1d47bde74b8",
       "executable": false
     },
     "tests/delegation-browser/customer-record.mjs": {
@@ -9615,7 +9615,7 @@
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {
-      "sha256": "000d88193d73b4e7cdbf6f8926635e734143b28cf3807895fed2b526e3bdb1b6",
+      "sha256": "480df0f7222e253c1a1ad1cc08a84f90b22323e44ae2b2d5717497eed65ff3e0",
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
@@ -9627,7 +9627,7 @@
       "executable": false
     },
     "tests/delegation/authority-regressions.test.ts": {
-      "sha256": "cd1662c5ef3449729ff73d0944922b5fb535a966d6e4a2b9f5a59697c0f7d161",
+      "sha256": "08e16849fb24c90384aa91f7e7ed4941fea700f293fece9f5342750adccba3d1",
       "executable": false
     },
     "tests/delegation/brief-handoff.test.ts": {
@@ -10316,6 +10316,10 @@
     },
     "tests/support/dashboard-slack-proof.ts": {
       "sha256": "391035bab19a543061f1a22805666cd88e2bbd82328a7d800d079d34ba79f2ba",
+      "executable": false
+    },
+    "tests/support/delegation-replay-race.ts": {
+      "sha256": "71be12a779e9d73938037f4c66e6a0ee12bec0477f2d5532c47330abab47acc5",
       "executable": false
     },
     "tests/support/dependencies.ts": {

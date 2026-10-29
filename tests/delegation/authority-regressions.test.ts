@@ -1,3 +1,4 @@
+import {delegationReplayRace} from '../support/delegation-replay-race';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {isolatedDatabase} from '../support/isolated-database';
@@ -9,7 +10,7 @@ import {random} from '../../src/core/features/delegation/protocol';
 
 const target='opportunities/opp/handoffs/task',schema='crm.handoff-state/1';
 test('API-002 native credential lifecycle and delegation D1 reject ambient cookies, scope escalation, expiration, disable and revocation on every read and write; DELEGATE-001 consent, atomic handoff replay and current state preserve selected authority',async()=>{
- const fixture=await isolatedDatabase(),db=fixture.db;
+ const fixture=await isolatedDatabase(),race=delegationReplayRace(fixture.db),db=race.db;
  try{
   const f=await authorityFixture(db);
   await proveApiCredentials(db,'owner',f.cookie,'stage');
@@ -63,7 +64,8 @@ test('API-002 native credential lifecycle and delegation D1 reject ambient cooki
   assert.equal((await request('/effects',input)).status,503,'failure to retain the receipt refuses the whole public write');assert.deepEqual(await counts(),before);
   assert.equal(await db.prepare("SELECT count(*) FROM timeline_entries WHERE source='orbit-handoff'").first('count(*)'),0);
   await db.exec('DROP TRIGGER fail_receipt');
-  const replay=await Promise.all([request('/effects',input),request('/effects',input)]);assert.deepEqual(replay.map(r=>r.status),[200,200]);
+  race.start();
+  const replay=await Promise.all([request('/effects',input),request('/effects',input)]);race.stop();assert.deepEqual(replay.map(r=>r.status),[200,200]);
   const committed=await replay[0].json();assert.deepEqual((await(await request('/effects/atomic')).json()).receipt,committed.receipt);
   assert.deepEqual(await counts(),[1,1,1,0]);assert.equal(await db.prepare("SELECT count(*) FROM timeline_entries WHERE source='orbit-handoff'").first('count(*)'),1);
   assert.equal((await request('/effects',{...input,content:{...input.content,title:'Different'}})).status,409);

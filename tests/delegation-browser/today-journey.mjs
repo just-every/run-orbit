@@ -118,6 +118,8 @@ export async function todayJourney({first,second,colleague,collaborator,collabor
   await section.getByLabel('Status').selectOption(status);
   const saved=again.waitForResponse(r=>r.url().endsWith('/delegation/handoffs')&&r.request().method()==='POST');
   await section.getByRole('button',{name:'Save handoff',exact:true}).click();expect((await saved).status()).toBe(200);
+  await expect(section.getByRole('heading',{name:'Native '+status,exact:true})).toBeVisible();
+  await expect(section.getByRole('button',{name:'Save handoff',exact:true})).toBeEnabled();
   const observed=await(await agent.get('/api/delegation/v1/effects/'+nonce,{headers})).json();expect(observed.receipt).toEqual(committed.receipt);
   expect(observed.observed.content).toMatchObject({title:'Native '+status,description:'Synthetic handoff notes',assigneeId:status==='cancelled'?null:assignee,dueAt:'2026-10-15T09:30:00.000Z',status});
  }

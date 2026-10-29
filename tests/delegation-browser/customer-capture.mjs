@@ -42,6 +42,7 @@ export async function captureCustomerEvidence({page,context},info,customer) {
   await expect(result.getByRole('row',{name:/^Captured 6$/})).toBeVisible();
   await expect(result.getByRole('row',{name:/^Not stored 1$/})).toBeVisible();
   await expect(page.getByText('No known contact or company domain: 1',{exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Add files',exact:true})).toBeEnabled();
   expect(await overflow(page)).toEqual([]);expect(await serious(page)).toEqual([]);
   await page.screenshot({path:join(screenshots,`capture-${width}.png`),fullPage:true});
   // Review is its own place once something is captured.
