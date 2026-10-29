@@ -1270,7 +1270,7 @@ Core · target · **partial** · Cites BASE-DATA-001, BASE-INPUT-001 · Rules D-
 1. Choose Pipedrive, connect an authorized account containing two pipelines, cross-linked activities and deal files, preview/apply, resume a rate-limited page and rerun; reconcile every exported entity and association, then undo without losing a native note.
 2. Include a real authorized export.
 
-**Evidence.** `src/core/features/imports/contracts.ts`; `tests/core/crm-import.test.ts`
+**Evidence.** `src/core/features/imports/contracts.ts`; `tests/core/crm-vendor.test.ts`
 **Gap.** Pipedrive core CSV presets exist; complete connected migration, products, activity history and files remain missing.
 
 #### MIGRATE-003 — Salesforce Sales Cloud migration
