@@ -10,7 +10,7 @@ import { missing, invalid, refuse } from '@runeditrun/rer/errors';
 
 // Optional features are uploaded only when the owner supplies them; deployed
 // secrets are kept by name on later deploys.
-export const optionalSecrets = ['MAIL_FROM', 'MAIL_API_KEY', 'SENDGRID_API_KEY', 'MAIL_REPLY_TO', 'CAPTURE_MAIL_ADDRESS', 'SENDGRID_UNSUBSCRIBE_GROUP_ID', 'RER_MAIL_RELAY_SECRET', 'SENDGRID_WEBHOOK_PUBLIC_KEY', 'SENDGRID_PARSE_PUBLIC_KEY', 'ORBIT_ENCRYPTION_KEY', 'OPENAI_API_KEY', 'AI_MODEL', 'AI_INPUT_COST_PER_MILLION', 'AI_OUTPUT_COST_PER_MILLION', 'AI_CACHED_INPUT_COST_PER_MILLION'];
+export const optionalSecrets = ['MAIL_API_KEY', 'SENDGRID_API_KEY', 'MAIL_REPLY_TO', 'CAPTURE_MAIL_ADDRESS', 'SENDGRID_UNSUBSCRIBE_GROUP_ID', 'RER_MAIL_RELAY_SECRET', 'SENDGRID_WEBHOOK_PUBLIC_KEY', 'SENDGRID_PARSE_PUBLIC_KEY', 'ORBIT_ENCRYPTION_KEY', 'OPENAI_API_KEY', 'AI_MODEL', 'AI_INPUT_COST_PER_MILLION', 'AI_OUTPUT_COST_PER_MILLION', 'AI_CACHED_INPUT_COST_PER_MILLION'];
 const required = ['OWNER_EMAIL'];
 // Each optional value and the feature it turns on, for the dry run's plain list.
 const optionalFeatures = [
@@ -27,8 +27,9 @@ export async function declaration(root, env = process.env) {
  // The root declaration makes every supported secret available to preflight and
  // --set-secret. Only supplied optional features enter a new upload.
  value.secrets = value.secrets.filter(item => !optionalSecrets.includes(item.binding) || item.binding === 'ORBIT_ENCRYPTION_KEY' || env[item.environment]?.trim());
+ // Mail identity is public configuration; provider credentials stay secrets.
  // Managed mail uses the assigned relay; direct deployments retain SendGrid by default.
- for (const name of ['MAIL_PROVIDER', 'MAIL_RELAY_URL']) if (env[name]?.trim()) value.vars[name] = env[name].trim();
+ for (const name of ['MAIL_PROVIDER', 'MAIL_FROM', 'MAIL_RELAY_URL']) if (env[name]?.trim()) value.vars[name] = env[name].trim();
  // The optional oidc-provider@1 address; left empty, the app keeps email links.
  if (env.IDENTITY_PROVIDER?.trim()) value.vars.IDENTITY_PROVIDER = env.IDENTITY_PROVIDER.trim();
  return value;

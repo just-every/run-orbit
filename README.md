@@ -42,13 +42,13 @@ This repository is the complete source for Orbit. Public source: [just-every/run
 
 ## Run it on your computer
 
-You install nothing first. The same one line as [run-orbit.com/run](https://run-orbit.com/run) gets Orbit and starts it:
+The same one line as [run-orbit.com/run](https://run-orbit.com/run) gets Orbit and starts it:
 
 ```sh
-npx -y @runeditrun/rer dev just-every/run-orbit
+curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit
 ```
 
-No Node? `curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit` brings its own and does the same.
+Git is required; rer brings Node and pnpm. Already have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-orbit` does the same. The [getting-started guide](https://run-orbit.com/docs/getting-started) walks through the first launch.
 
 To start it again later: `cd run-orbit && rer dev`.
 
@@ -147,4 +147,4 @@ The maintained edition defaults save integration and verification work. Configur
 
 Feed useful mechanisms, defaults and verification cases back into shared source when they would save work in another edition. Their natural home may be this edition, a family, Base or an independent repository; no separate repository per module or universal compatibility interface is required. Verify adoption against the receiving product's requirements, including deliberate local differences.
 
-The edition carries editable shared SendGrid transport and authoring 1.1 source. `node scripts/edition-authoring/cli.mjs changes` explains changed inputs; `extract` and `compare` provide retained source and incoming comparison context. SendGrid 202 is accepted with a nullable provider receipt: local correlation identifies the command, not remote delivery, and uncertain submissions are reconciled without automatic repetition.
+The edition carries editable shared SendGrid transport and uses the pinned package’s authoring tool. `node node_modules/@runeditrun/rer/edition-authoring/cli.mjs changes` explains changed inputs; `extract` and `compare` provide retained source and incoming comparison context. SendGrid 202 is accepted with a nullable provider receipt: local correlation identifies the command, not remote delivery, and uncertain submissions are reconciled without automatic repetition.
