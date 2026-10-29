@@ -136,7 +136,7 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
  // Prepare the destination grant after the failed restore has rolled back, then
  // erase its customer records through the API so the real restore can begin.
  const destinationCustomer=await target.customer('destination@example.test');
- const destinationGrant=await archiveDelegation(signedInTarget,destinationCustomer.opportunityId,destinationCustomer.contactId,target.actor);
+ const destinationGrant=await archiveDelegation(signedInTarget,destinationCustomer.opportunityId,destinationCustomer.contactId,target.actor,{writeHandoff:false});
  await request(signedInTarget,`records/contact/${destinationCustomer.contactId}`,'DELETE',{confirmed:true});
  await request(signedInTarget,`records/opportunity/${destinationCustomer.opportunityId}`,'DELETE',{confirmed:true});
  assert.equal((await destinationGrant.request('/identity')).status,200,'the destination grant is active immediately before restore');
