@@ -6795,7 +6795,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/record.css": {
-      "sha256": "666c72f942c8df6b7960d3f29fbe218490d24be27660425ca752042d2982c460",
+      "sha256": "061c512439031d544bcb8d0f95f47762a3028fbf46b78d9ceb0f9ab6c64650b6",
       "executable": false
     },
     "src/core/features/operator/ui/record/recorded-details.tsx": {
@@ -9915,7 +9915,7 @@
       "executable": false
     },
     "tests/delegation-browser/mention-link.mjs": {
-      "sha256": "a351847d3d90b4110087c0c25eddbf6303bcff99c61c755131e29c8fbcf1e04a",
+      "sha256": "56e6aaa1ef6a34fac3ccb76f83460d77a7a5ddad02c556fa837768c3ee05df06",
       "executable": false
     },
     "tests/delegation-browser/native.test.ts": {
@@ -9943,7 +9943,7 @@
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {
-      "sha256": "ba3dd4b014fb25227d3c87c536d63ca01abb66da2644901c0cc0def469cd4225",
+      "sha256": "1185c41a4a44369e65240e98136ea721c09ac0c8bacd5ba1f1dcecf72e26daf3",
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
@@ -9951,7 +9951,7 @@
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
-      "sha256": "d6463341f84144bda66b14c13f06c064a356e0338b823bd6a32da70e986fabe3",
+      "sha256": "19ed2b86dff6969cb5aaa987fd0f4f9899a704457c01f7f2484f4f057e280c11",
       "executable": false
     },
     "tests/delegation-browser/viewport.test.ts": {
