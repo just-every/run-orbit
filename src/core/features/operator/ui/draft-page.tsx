@@ -24,7 +24,7 @@ export function DraftPage() {
     const history=await fetch(`/api/v1/workbench/${path}`).then(async response=>{if(!response.ok)throw new Error('Saved message history could not load.');return response.json() as Promise<{messages:SubmittedMessage[];mailProvider?:string}>;});
     // This exact revision was already approved: show what happened to it instead of an editor.
     const submitted = history.messages.find(message => message.draftId === draft.id && message.revision === draft.revision && !["draft", "cancelled"].includes(message.state)) ?? null;
-    const authorName=operators.find(operator=>operator.id===draft.authorId)?.display_name;
+    const authorName=draft.authorLabel??operators.find(operator=>operator.id===draft.authorId)?.display_name;
     return { draft, presentation, opportunity, contactContext, submitted, authorName, mailProvider:history.mailProvider };
   }, [id]);
   const resource = useOperatorResource(`draft:${id}`, loadDraft);
@@ -82,6 +82,7 @@ export function DraftPage() {
       action={draft.opportunityId?<Link className="operator-back-link" to="/app/opportunities/$id" params={{ id: draft.opportunityId }}>← Opportunity detail</Link>:<a className="operator-back-link" href={`/app/records?kind=contact&record=${draft.recipientContactId}#record-mail`}>← Contact detail</a>}
     >
       <section className="operator-draft-editor" style={{display:"block"}} data-testid="draft-editor">
+        {draft.preparedByLabel&&<p>Prepared by {draft.preparedByLabel}</p>}
         {submitted ? <OperatorState>{submitted.state === "scheduled" && submitted.scheduledAt ? <>This message is scheduled for <time dateTime={submitted.scheduledAt}>{formatDateTime(submitted.scheduledAt, presentation)}</time>. To change it, cancel it from the record first.</> : <>{messageStatus(submitted.state)} It can no longer be edited. To write to this customer again, start a new follow-up from the record.</>}</OperatorState> : null}
         {submitted ? <SentMessage recipient={resource.data.submitted?.recipientEmail??draft.recipientEmail} subject={resource.data.submitted?.subject??draft.subject} body={resource.data.submitted?.body??draft.body} /> : <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}><fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
           <label>Recipient
@@ -114,7 +115,7 @@ export function DraftPage() {
         <details className="operator-surface operator-detail__section"><summary>Audit details</summary>
           <p className="operator-eyebrow">Draft history</p>
           <dl>
-            <div><dt>Author</dt><dd>{resource.data.authorName??'Author record unavailable'}</dd></div>
+            <div><dt>{draft.authorLabel?'Created by':'Author'}</dt><dd>{resource.data.authorName??'Author record unavailable'}</dd></div>
             <div><dt>Source recommendation</dt><dd>{draft.recommendationId&&draft.opportunityId?<Link data-row-action to="/app/opportunities/$id" params={{id:draft.opportunityId}}>View the related opportunity</Link>:"No source recommendation"}</dd></div>
             <div><dt>Created</dt><dd>{formatDateTime(draft.createdAt, presentation)}</dd></div>
             <div><dt>Last updated</dt><dd>{formatDateTime(draft.updatedAt, presentation)}</dd></div>

@@ -18,7 +18,7 @@ export class ForecastRepository {
  readonly access:AccessService;readonly store:OperationsStore;
  private readonly readFences=new WeakMap<ForecastPreview,SqlStatement[]>();
  proofs(view:ForecastPreview){return this.readFences.get(view)??[];}
- constructor(readonly db:D1Database){this.access=new AccessService(db);this.store=new OperationsStore(db,this.access,domainEventStatements);}
+ constructor(readonly db:D1Database,access=new AccessService(db)){this.access=access;this.store=new OperationsStore(db,this.access,domainEventStatements);}
  async permit(context:ActorContext,owner=false){
   const current=await this.access.refreshContext(context);
   if(current.principal.kind!=='operator'||!await isFullOperator(this.db,current.principal.operatorId))deny('Forecasts require a current full operator.');
@@ -34,7 +34,7 @@ export class ForecastRepository {
    this.db.prepare('SELECT revision FROM forecast_source_clock WHERE id=1'),
    this.db.prepare('SELECT id,name FROM pipeline_stages ORDER BY position,id'),
    this.db.prepare(`SELECT o.id,o.display_name AS name,o.setup_owner FROM operators o WHERE o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id) AND ${operatorListingPredicate('o')} ORDER BY o.display_name,o.id`),
-   this.db.prepare('SELECT r.*,o.display_name AS actor_name FROM forecast_revisions r LEFT JOIN operators o ON o.id=r.actor_id WHERE r.workspace_id=? ORDER BY r.kind,r.target_key,r.revision').bind(context.workspaceId),
+   this.db.prepare('SELECT r.*,COALESCE(json_extract(r.body_json,\'$.preparedBy.label\'),o.display_name) AS actor_name FROM forecast_revisions r LEFT JOIN operators o ON o.id=r.actor_id WHERE r.workspace_id=? ORDER BY r.kind,r.target_key,r.revision').bind(context.workspaceId),
    this.db.prepare('SELECT * FROM opportunities ORDER BY id'),
    this.db.prepare("SELECT stale_interval_days,currency FROM workspace_settings WHERE id='workspace'"),
    this.db.prepare("SELECT 'contact' AS kind,contact_id AS id FROM opportunity_contacts UNION SELECT 'company',company_id FROM opportunities WHERE company_id IS NOT NULL"),
@@ -62,7 +62,9 @@ export class ForecastRepository {
  async read(context:ActorContext){return (await this.load(await this.permit(context))).state;}
  private async revise(context:ActorContext,kind:RevisionRow['kind'],targetKey:string,subjectId:string,input:StageRuleInput|DealForecastInput|QuotaInput,guard:SqlStatement[]){
   const current=await this.permit(context,true),actor=current.principal.kind==='operator'?current.principal.operatorId:'',id=createId(),now=new Date().toISOString();
-  const sql:SqlStatement={sql:'INSERT INTO forecast_revisions(id,workspace_id,kind,target_key,subject_id,revision,body_json,actor_id,reason,reviewed_at) SELECT ?,?,?,?,?,COALESCE(MAX(revision),0)+1,?,?,?,? FROM forecast_revisions WHERE workspace_id=? AND kind=? AND target_key=?',bindings:[id,current.workspaceId,kind,targetKey,subjectId,JSON.stringify(input),actor,input.reason,now,current.workspaceId,kind,targetKey]};
+  const agent=current.principal.kind==='operator'?current.principal.agent:undefined;
+  const body=agent?{...input,preparedBy:{agent:{id:agent.id,name:agent.name},for:{id:actor,name:agent.sponsorName},label:agent.label},approvers:current.agentApprovers??[]}:input;
+  const sql:SqlStatement={sql:'INSERT INTO forecast_revisions(id,workspace_id,kind,target_key,subject_id,revision,body_json,actor_id,reason,reviewed_at) SELECT ?,?,?,?,?,COALESCE(MAX(revision),0)+1,?,?,?,? FROM forecast_revisions WHERE workspace_id=? AND kind=? AND target_key=?',bindings:[id,current.workspaceId,kind,targetKey,subjectId,JSON.stringify(body),actor,input.reason,now,current.workspaceId,kind,targetKey]};
   await this.store.commit(current,`forecast.${kind}.reviewed`,id,1,[...guard,sql],{kind,targetKey});
   return {id};
  }

@@ -4,7 +4,7 @@
 // with an installation, as in the Records archive.
 export default {
  product: 'just-every/sales-orbit',
- excludeTables: ['api_credentials', 'call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'record_owner_reviews', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
+ excludeTables: ['agent_door_state','agent_door_agents','agent_door_audit','agent_door_calls','agent_door_approvals','agent_door_reviews','agent_door_events','agent_door_usage','bs_settings','bs_overrides','bs_logo','bs_team','bs_audit','bs_assert','orbit_agent_write_context', 'api_credentials', 'call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'record_owner_reviews', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
  derivedTables: ['record_search', 'timeline_search', 'record_search_fields'],
  // Migrations seed these rows in every empty database; the archive's rows replace them.
  replaceableTables: ['graph_workspace_epochs', 'schema_types', 'pipelines', 'forecast_source_clock','workflow_journal_metadata'],
@@ -20,6 +20,8 @@ export default {
   if(tables.ownership_batches)await db.prepare(`UPDATE "${tables.ownership_batches.replaceAll('"','""')}" SET state='held'`).run();
   if(tables.sales_dashboards)await db.prepare(`UPDATE "${tables.sales_dashboards.replaceAll('"','""')}" SET authority=0`).run();
   if(tables.sales_dashboard_schedules)await db.prepare(`UPDATE "${tables.sales_dashboard_schedules.replaceAll('"','""')}" SET state='paused'`).run();
+  if(tables.slack_personal_preferences)await db.prepare(`UPDATE "${tables.slack_personal_preferences.replaceAll('"','""')}" SET enabled=0`).run();
+  if(tables.slack_personal_notices)await db.prepare(`UPDATE "${tables.slack_personal_notices.replaceAll('"','""')}" SET state='held',error='Archive restored; fresh personal opt-in required' WHERE state IN('queued','rate-limited','failed','submitting')`).run();
   if(tables.slack_installation){const quoted='"'+tables.slack_installation.replaceAll('"','""')+'"';await db.prepare(`UPDATE ${quoted} SET state='disconnected',error='Archive restored; reconnect Slack credentials'`).run();}
   if(tables.slack_channels)await db.prepare(`UPDATE "${tables.slack_channels.replaceAll('"','""')}" SET enabled=0`).run();
   if(tables.slack_mappings)await db.prepare(`UPDATE "${tables.slack_mappings.replaceAll('"','""')}" SET revoked_at=COALESCE(revoked_at,?)`).bind(new Date().toISOString()).run();
