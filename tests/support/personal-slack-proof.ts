@@ -11,8 +11,8 @@ export async function provePersonalSlack(f:SlackFixture,deal:string,edge:ReturnT
  const session=await deps.auth.createSession(recipient),headers={Cookie:`__Host-orbit_session=${session.token}`};
  const own=async(path='',method='GET',body?:unknown)=>f.request('notifications/slack'+path,method,body,headers);
  const prefs=async()=>{const r=await own();assert.equal(r.status,200);return await r.json() as any;};
- const opt=async(enabled=true)=>{const r=await own('','PUT',{enabled,slackUserId:'UPERSONAL'});assert.equal(r.status,200,await r.clone().text());};
- const map=async(revoked=false)=>{const r=await f.request('settings/slack/mappings','PUT',{slackUserId:'UPERSONAL',operatorId:recipient,revoked});assert.equal(r.status,200,await r.clone().text());};
+ const opt=async(enabled=true,slackUserId='UPERSONAL')=>{const r=await own('','PUT',{enabled,slackUserId});assert.equal(r.status,200,await r.clone().text());};
+ const map=async(revoked=false,slackUserId='UPERSONAL')=>{const r=await f.request('settings/slack/mappings','PUT',{slackUserId,operatorId:recipient,revoked});assert.equal(r.status,200,await r.clone().text());};
  const process=async()=>{assert.equal((await f.request('settings/slack/process','POST',{})).status,200);};
  const dm=()=>edge.posts.filter(p=>p.channel==='DPERSONAL');
  const note=async(text='@Personal Recipient review synthetic-orbit-1 and amount 12345',id?:string)=>{const r=await f.request(`records/opportunity/${deal}/entries`+(id?'/'+id:''),id?'PUT':'POST',{kind:'note',text,occurredAt:new Date().toISOString()});assert.equal(r.status,200,await r.clone().text());return await r.json() as any;};
@@ -44,6 +44,8 @@ export async function provePersonalSlack(f:SlackFixture,deal:string,edge:ReturnT
  const handoff=await f.app.request('https://orbit.test/delegation/handoffs',{method:'POST',headers:{Cookie:`__Host-orbit_session=${f.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({operationKey:createId(),operation:'orbit.handoff.upsert',target,expectedRevision:state.revision,expectedAudienceRevision:state.audience.audienceRevision,content:{title:'Mention handoff',description:'@Personal Recipient synthetic-orbit-3',assigneeId:f.actor,dueAt:null,status:'open'}})});assert.equal(handoff.status,200,await handoff.clone().text());await process();assert.ok(dm().at(-1).text.includes('#handoff-'+handoffId));
  const quiet=edge.attempts;await process();await process();assert.equal(edge.attempts,quiet,'Task and handoff deliveries survive repeated ticks without duplicates');
  const unchanged=await paused();await opt();assert.equal((await row(unchanged.id)).state,'sent','Saving an unchanged opt-in preserves eligible pending delivery');
+ const wUser='W012A3CDE';await map(false,wUser);await opt(true,wUser);const wEntry=await note(),wPreference=await prefs();
+ assert.deepEqual([wPreference.enabled,wPreference.slackUserId,(await row(wEntry.id)).state,edge.personalUser,dm().at(-1).channel],[true,wUser,'sent',wUser,'DPERSONAL'],'A W-prefixed mapped identity saves personal opt-in and resolves as its DM target');await opt();
  // Leave a pending attempt in the export: restore must retain history but strip authority.
  await paused();
  return {recipient,headers};

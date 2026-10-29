@@ -1,6 +1,6 @@
 import {preCallFailureCatalog} from '../calls/archive';
 import {preTypedWorkflowCatalog} from '../workflows/archive';
-import {callingArchiveTables,calendarWritebackArchiveTables,typedFieldArchiveTables,workflowArchiveTables} from '../../shared/archive-lineage';
+import {personalSlackArchiveTables,callingArchiveTables,calendarWritebackArchiveTables,typedFieldArchiveTables,workflowArchiveTables} from '../../shared/archive-lineage';
 import type {FoldArchiveTable} from './archive-fold-catalog';
 import {preCaptureMailRuleCatalog} from '../capture/archive';
 import {preRecordMailCatalog} from '../outreach/record-mail-archive';
