@@ -22,7 +22,7 @@ async function expectNoHorizontalOverflow(page) {
 async function openOpportunity(page) {
   await page.goto("/app", { waitUntil: "networkidle" });
   await page.getByRole("link", { name: "Open Fieldhouse Studio workspace" }).click();
-  await expect(page.getByTestId("opportunity-detail")).toBeVisible();
+  await expect(page.getByTestId("next-action")).toBeVisible();
 }
 
 test.describe("authenticated operator UI", () => {
@@ -83,13 +83,14 @@ test.describe("authenticated operator UI", () => {
     const failures = watchFailures(page);
     await openOpportunity(page);
 
-    const fields = page.getByTestId("opportunity-detail");
-    await expect(fields).toContainText("Lifecycle");
-    await expect(fields).toContainText("Qualified");
-    await expect(fields).toContainText("Maya Patel");
-    await expect(fields).toContainText("92");
-    await expect(fields).toContainText("High");
-    await expect(fields).toContainText("Now");
+    // OR3: stage and owner are values in Details; score, band, queue and lifecycle read in Recorded details.
+    const details = page.getByTestId("record-details");
+    await expect(details.getByLabel("Stage", { exact: true }).locator("option:checked")).toHaveText("Qualified");
+    await expect(details.getByLabel("Owner", { exact: true }).locator("option:checked")).toHaveText("Maya Patel");
+    await expect(page.getByTestId("contributing-evidence").locator("summary")).toContainText("score 92");
+    const recorded = page.getByTestId("recorded-details");
+    await recorded.locator("summary").click();
+    await expect(recorded).toContainText("Needs attention · Open deal · score 92, High priority");
     await expectNoHorizontalOverflow(page);
     expect(failures).toEqual([]);
   });
@@ -100,6 +101,7 @@ test.describe("authenticated operator UI", () => {
     await openOpportunity(page);
 
     const evidence = page.getByTestId("contributing-evidence");
+    await evidence.locator("summary").click();
     await expect(evidence).toContainText("Used for this recommendation");
     await expect(page.getByTestId("next-action")).toContainText("Write follow-up");
     const id=new URL(page.url()).pathname.split('/').at(-1);
@@ -128,8 +130,8 @@ test.describe("authenticated operator UI", () => {
     const failures = watchFailures(page);
     await openOpportunity(page);
 
-    await page.getByText("Audit details", {exact:true}).click();
-    const timeline = page.getByTestId("opportunity-detail");
+    const timeline = page.getByTestId("recorded-details");
+    await timeline.locator("summary").click();
     await expect(timeline).toContainText("Occurred");
     await expect(timeline).toContainText("Recorded");
     await expect(timeline).toContainText("Actor Website form (Source)");

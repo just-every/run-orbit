@@ -6,13 +6,17 @@ Orbit is a CRM that keeps every deal moving. When a customer replies, Orbit puts
 
 - **NOW** is your list of deals that need you, highest score first. Each one shows why it is there: a customer reply, a delivery problem, or a score that just moved up a band.
 - **Brief** shows what changed in your customer records since you last looked, account by account, and **Tasks** holds your calls, meetings and follow-ups by when they are due.
-- **Each deal's page** shows its stage, owner, value and score, the customer activity behind the score, the suggested next action, and every message you have sent.
-- **Customer records** hold your contacts, companies and deals, with your own fields. You can bring records in from CSV files, review the mappings and check a dry run before applying the import.
+- **Each deal's page** opens on its next action: why it is in NOW, the newest customer activity behind it, and Write follow-up. Under it, one Activity list holds its drafts, sent messages, replies, notes, calls, meetings and stage moves, newest first. Its details sit beside the work: stage, value, owner, expected close, company, the people on the deal with their roles, and its products, next step and commitments.
+- **Customer records** hold your contacts, companies and deals, with your own fields. Records lists opportunities, contacts and companies, each at its own address (`/app/opportunities`, `/app/contacts`, `/app/companies`) with its search, filters and view in the address, and every record has one page of its own (`/app/contacts/<id>` and so on), so a link to it always opens it. You can bring records in from CSV files, review the mappings and check a dry run before applying the import.
 - **Your contact form** is a simple landing page you write and publish from Orbit. Each enquiry becomes a contact with the enquiry on its timeline.
 - **Collaborators** sign in with their own email address. You choose what each one can see and change.
 - **Reports** count what is in your records, and **Notifications** tell you when a deal needs you or a message could not be delivered.
 
 Set-up lives under **Settings**: Workspace, Team, Pipeline, Capture, Mail, Forms, Integrations and Data, each a page of its own.
+
+## Everything saves as you go
+
+A record's values and your workspace settings save as you change them. A value saves when you leave its field or press Enter, and a choice saves as you make it; a quiet ✓ Saved shows beside its label. If Orbit cannot be reached, or refuses a value, the field keeps what you typed with one line saying why and a Retry. Leaving the page waits for any save still on its way, and a save that failed keeps you on the page with a note at the top, so an edit is never lost without a word; the change also stays in this browser until Orbit has it. A change with effects outside its field asks once, right under it: moving a deal to a stage that cancels scheduled follow-ups, closing or deleting a record, stopping mail to a contact, switching the workspace currency, changing the owner email or sign-in rules, letting a website embed your forms, or removing a pipeline stage that holds deals. If a teammate changed the same value meanwhile, the field shows their value and offers Use mine.
 
 ## What Orbit connects to
 
@@ -29,6 +33,8 @@ Scores run from 0 to 100. A score of 70 or more is high and 40 or more is medium
 Orbit sends nothing to a customer on its own. You review the exact message, the recipient and the subject, then approve it. If anything changes after you looked, such as a new reply from the customer, Orbit asks you to look again.
 
 When a customer replies, Orbit cancels any follow-up you scheduled for that person. Messages you send outside the recipient's working hours wait for your confirmation of their local time.
+
+Each sent message states what Orbit knows about it in its line on the deal. *Accepted by the mail provider* means your mail provider took the message; it does not confirm delivery or that anyone read it. *Delivered* appears only when your provider reports deliveries back to Orbit. Opens and clicks are inferred by the provider, can come from privacy proxies or scanners, and never count as a reply.
 
 ## Run it on your computer
 

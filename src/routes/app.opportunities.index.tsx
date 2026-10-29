@@ -1,5 +1,8 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
-
-export const Route = createFileRoute('/app/opportunities/')({
-  beforeLoad: () => { throw redirect({ to: '/app/records', statusCode: 302 }); },
+import { editorLeaf } from "../editor/leaf";
+import { createFileRoute } from "@tanstack/react-router";
+import { OpportunitiesList } from "../core/features/operator/ui/records-page";
+import { recordsSearch } from "../core/features/operator/ui/records-query";
+export const Route = createFileRoute("/app/opportunities/")({
+  validateSearch: recordsSearch,
+  component: editorLeaf(OpportunitiesList),
 });

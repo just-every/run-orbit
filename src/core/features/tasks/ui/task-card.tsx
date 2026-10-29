@@ -4,7 +4,8 @@ import {ActionTooltip} from '../../operator/ui/action-tooltip';
 import {formatDate, formatTime, label, workspaceTimeZone, zoneLabel} from '../../operator/ui/formatters';
 import type {SalesTask} from '../contracts';
 
-export const recordHref = (task: SalesTask) => task.recordType === 'opportunity' ? `/app/opportunities/${task.recordId}` : `/app/records?kind=${task.recordType}&record=${task.recordId}`;
+const recordPaths = {opportunity: '/app/opportunities', contact: '/app/contacts', company: '/app/companies'} as const;
+export const recordHref = (task: SalesTask) => `${recordPaths[task.recordType]}/${task.recordId}`;
 /** A task's time in its own zone, named only when that zone is not the workspace's. */
 export const taskTime = (task: SalesTask, value: string, timeOnly = false) => `${timeOnly ? formatTime(value, task.timezone) : formatDate(value, task.timezone)}${task.timezone !== workspaceTimeZone() ? ` (${zoneLabel(task.timezone)})` : ''}`;
 

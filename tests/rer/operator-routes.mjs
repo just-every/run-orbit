@@ -2,10 +2,10 @@ import {expect} from '@playwright/test';
 import {expectProvenance} from './operator-provenance.mjs';
 import {exerciseSourceRemoval} from './source-recipes.mjs';
 
-async function expectRouteRecovery(page){
+async function expectRouteRecovery(page,f){
  const origin=new URL(page.url()).origin;
  for(const [path,destination] of [
-  ['/app/opportunities','/app/records'],['/app/companies','/app/records?kind=company'],['/app/contacts','/app/records?kind=contact'],
+  ['/app/opportunities','/app/opportunities'],['/app/companies','/app/companies'],['/app/contacts','/app/contacts'],
   ...['now','today','meetings','drafts','assistance'].map(name=>[`/app/${name}`,'/app']),
  ]){
   const response=await page.request.get(origin+path);
@@ -13,20 +13,27 @@ async function expectRouteRecovery(page){
   const url=new URL(response.url());expect(url.pathname+url.search).toBe(destination);
   await response.dispose();
  }
- for(const kind of ['opportunities','meetings','drafts','assistance']){
+ // OR3: a record address with an id that is not a record says Not found in the frame and offers its kind's list.
+ const lists={opportunities:'/app/opportunities',contacts:'/app/contacts',companies:'/app/companies',meetings:'/app/meetings',drafts:'/app/drafts',assistance:'/app/opportunities'};
+ for(const kind of ['opportunities','contacts','companies','meetings','drafts','assistance']){
   for(const id of ['invalid.id','00000000000000000000000000']){
-   const read=kind==='meetings'?`/api/v1/today/meetings/${id}`:kind==='drafts'?`/api/v1/drafts/${id}`:`/api/v1/opportunities/${id}`;
-   const response=await page.request.get(origin+read);expect(response.status()).toBe(404);await response.dispose();
+   if(!['contacts','companies'].includes(kind)){
+    const read=kind==='meetings'?`/api/v1/today/meetings/${id}`:kind==='drafts'?`/api/v1/drafts/${id}`:`/api/v1/opportunities/${id}`;
+    const response=await page.request.get(origin+read);expect(response.status()).toBe(404);await response.dispose();
+   }
    if(kind==='opportunities'){
     const drafts=await page.request.get(origin+`/api/v1/drafts?opportunityId=${id}`);expect(drafts.status()).toBe(404);await drafts.dispose();
    }
    await page.goto(origin+`/app/${kind}/${id}`);
    await expect(page.getByRole('main').getByRole('alert')).toBeVisible();
+   if(['opportunities','contacts','companies'].includes(kind))await expect(page.getByRole('main').getByRole('alert')).toContainText(`This ${{opportunities:'opportunity',contacts:'contact',companies:'company'}[kind]} does not exist.`);
    await expect(page.getByRole('main').locator('form')).toHaveCount(0);
-   const back=page.getByRole('main').locator('a[href="/app/records"]');await expect(back).toBeVisible();await back.click();
-   await expect(page).toHaveURL(origin+'/app/records');
-   const create=page.getByRole('link',{name:'Create opportunity',exact:true});
-   await expect(create).toBeVisible();await expect(create).toHaveAttribute('href','/app/new');
+   const back=page.getByRole('main').locator(`a[href="${lists[kind]}"]`);await expect(back).toBeVisible();
+   if(kind==='opportunities'){
+    await back.click();await expect(page).toHaveURL(origin+'/app/opportunities');
+    const create=page.getByRole('link',{name:'New opportunity',exact:true});
+    await expect(create).toBeVisible();await expect(create).toHaveAttribute('href','/app/opportunities/new');
+   }
   }
  }
  // OR1/OR2: every moved address answers one 308 straight to its new page, the query string kept as it came.
@@ -35,6 +42,11 @@ async function expectRouteRecovery(page){
   ['/app/capture?connected=abc&result=%7B%22a%22%3A1%7D','/app/settings/capture?connected=abc&result=%7B%22a%22%3A1%7D'],
   ['/app/capture/connect/google?step=5','/app/settings/capture/connect/google?step=5'],['/app/capture/review','/app/review'],
   ['/app/forms','/app/settings/forms'],['/app/imports','/app/settings/data/import'],['/app/library','/app/settings/mail/library'],['/app/access','/app/settings/team'],
+  // OR3: Records' one address per kind and per record, every stored link landing in one hop.
+  ['/app/records','/app/opportunities'],['/app/records?kind=contact','/app/contacts'],['/app/records?kind=company&q=operator','/app/companies?q=operator'],
+  [`/app/records?kind=contact&record=${f.contactId}`,`/app/contacts/${f.contactId}`],[`/app/records?kind=company&record=${f.companyId}&from=brief`,`/app/companies/${f.companyId}?from=brief`],
+  [`/app/records?record=${f.opportunityId}`,`/app/opportunities/${f.opportunityId}`],['/app/records?kind=contact&record=not-an-id','/app/contacts'],
+  ['/app/new',`/app/opportunities/new`],[`/app/new?contact=${f.contactId}`,`/app/opportunities/new?contact=${f.contactId}`],
  ]){
   const moved=await page.request.get(origin+path,{maxRedirects:0});
   expect(moved.status(),path).toBe(308);expect(moved.headers().location,path).toBe(destination);await moved.dispose();
@@ -50,25 +62,25 @@ async function expectHashTarget(page,id){
 }
 
 export function operatorRoutes(f){return [
- {name:'now',path:'/app',ready:async page=>{await page.getByTestId('now-queue').waitFor();await expectRouteRecovery(page);}},
+ {name:'now',path:'/app',ready:async page=>{await page.getByTestId('now-queue').waitFor();await expectRouteRecovery(page,f);}},
  {name:'brief',path:'/app/brief',ready:page=>page.getByTestId('today-brief').waitFor()},
  {name:'tasks',path:'/app/tasks',ready:page=>page.getByTestId('sales-tasks').waitFor()},
  {name:'review',path:'/app/review',ready:page=>page.getByRole('heading',{name:'Review',exact:true,level:1}).waitFor()},
  {name:'imports',path:'/app/settings/data/import',ready:page=>page.getByRole('heading',{name:'Move in',exact:true,level:1}).waitFor()},
- {name:'records',path:'/app/records',ready:page=>page.locator('.operator-queue-card').first().waitFor()},
- {name:'contacts',path:'/app/records?kind=contact',ready:page=>page.getByRole('button',{name:'Create contact',exact:true}).waitFor()},
- {name:'companies',path:'/app/records?kind=company',ready:page=>page.getByRole('button',{name:'Create company',exact:true}).waitFor()},
- {name:'new',path:'/app/new',ready:page=>expect(page.getByRole('button',{name:'Save opportunity'})).toBeEnabled()},
- {name:'contact',path:`/app/records?kind=contact&record=${f.contactId}`,ready:async page=>{await page.getByRole('heading',{name:'Record details'}).waitFor();await expectProvenance(page,f.provenance);}},
- {name:'company',path:`/app/records?kind=company&record=${f.companyId}`,ready:page=>page.getByRole('heading',{name:'Record details'}).waitFor()},
- {name:'contact-create',path:'/app/records?kind=contact',ready:async page=>{await page.getByRole('button',{name:'Create contact',exact:true}).click();await page.getByLabel('Full name',{exact:true}).waitFor();}},
- {name:'company-create',path:'/app/records?kind=company',ready:async page=>{await page.getByRole('button',{name:'Create company',exact:true}).click();await page.getByLabel('Company name',{exact:true}).waitFor();}},
- {name:'opportunity-create-existing',path:'/app/records',ready:async page=>{await page.getByRole('link',{name:'Create opportunity',exact:true}).click();await page.getByLabel('Opportunity title',{exact:true}).waitFor();await page.getByLabel('Company name',{exact:true}).fill('Operator');await page.getByRole('list',{name:'Company search results'}).getByRole('button').first().waitFor();}},
- {name:'record-edit',path:`/app/records?kind=contact&record=${f.contactId}`,ready:async page=>{await page.getByRole('button',{name:'Edit details',exact:true}).click();await page.getByLabel('Full name',{exact:true}).waitFor();await expectProvenance(page,f.provenance);}},
+ {name:'records',path:'/app/opportunities',ready:page=>page.locator('.operator-queue-card').first().waitFor()},
+ {name:'contacts',path:'/app/contacts',ready:page=>page.getByRole('link',{name:'New contact',exact:true}).waitFor()},
+ {name:'companies',path:'/app/companies',ready:page=>page.getByRole('link',{name:'New company',exact:true}).waitFor()},
+ {name:'new',path:'/app/opportunities/new',ready:page=>expect(page.getByRole('button',{name:'Save opportunity'})).toBeEnabled()},
+ {name:'contact',path:`/app/contacts/${f.contactId}`,ready:async page=>{await page.getByTestId('record-details').waitFor();await expectProvenance(page,f.provenance);}},
+ {name:'company',path:`/app/companies/${f.companyId}`,ready:page=>page.getByTestId('record-details').waitFor()},
+ {name:'contact-create',path:'/app/contacts',ready:async page=>{await page.getByRole('link',{name:'New contact',exact:true}).click();await page.getByLabel('Name',{exact:true}).waitFor();}},
+ {name:'company-create',path:'/app/companies',ready:async page=>{await page.getByRole('link',{name:'New company',exact:true}).click();await page.getByLabel('Name',{exact:true}).waitFor();}},
+ {name:'opportunity-create-existing',path:'/app/opportunities',ready:async page=>{await page.getByRole('link',{name:'New opportunity',exact:true}).click();await page.getByLabel('Opportunity title',{exact:true}).waitFor();await page.getByLabel('Company name',{exact:true}).fill('Operator');await page.getByRole('list',{name:'Company search results'}).getByRole('button').first().waitFor();}},
+ {name:'record-edit',path:`/app/contacts/${f.contactId}`,ready:async page=>{const title=page.getByLabel('Job title',{exact:true});await title.fill('Operations lead');await title.press('Enter');await expect(page.getByTestId('record-details').getByRole('status').filter({hasText:'Saved'})).toBeVisible();await expectProvenance(page,f.provenance);}},
  {name:'settings-data',path:'/app/settings/data',ready:async page=>{await page.getByRole('heading',{name:'Duplicates',exact:true}).waitFor();await page.getByRole('heading',{name:'Export and restore',exact:true}).waitFor();}},
  {name:'opportunity',path:`/app/opportunities/${f.opportunityId}`,ready:page=>page.getByTestId('next-action').waitFor()},
- {name:'opportunity-audit',path:`/app/opportunities/${f.opportunityId}`,ready:async page=>{await page.getByTestId('next-action').waitFor();await page.getByText('Audit details',{exact:true}).click();await page.getByText('Log activity',{exact:true}).click();await page.getByRole('button',{name:'Write follow-up',exact:true}).click();await page.getByText('Complete or skip this action',{exact:true}).click();for(const details of await page.getByTestId('opportunity-timeline').getByText('Recorded details',{exact:true}).all())await details.click();}},
- {name:'timeline-edit',path:`/app/opportunities/${f.opportunityId}`,ready:async page=>{await page.getByTestId('opportunity-timeline').getByRole('button',{name:'Edit entry',exact:true}).click();await expect(page.getByRole('heading',{name:'Edit entry',exact:true}).locator('..').getByLabel('Text',{exact:true})).toBeFocused();}},
+ {name:'opportunity-audit',path:`/app/opportunities/${f.opportunityId}`,ready:async page=>{await page.getByTestId('next-action').waitFor();await page.getByTestId('recorded-details').getByText('Recorded details',{exact:true}).click();await page.getByRole('button',{name:'Add a note',exact:true}).click();await page.getByText('Log verified customer activity',{exact:true}).click();await page.getByRole('button',{name:'Write follow-up',exact:true}).click();await page.getByTestId('contributing-evidence').locator('summary').click();for(const details of await page.getByTestId('record-activity').getByText('Recorded details',{exact:true}).all())await details.click();}},
+ {name:'timeline-edit',path:`/app/opportunities/${f.opportunityId}`,ready:async page=>{await page.getByTestId('record-activity').getByText('Edit entry',{exact:true}).first().click();await expect(page.getByTestId('record-activity').getByLabel('Text',{exact:true})).toBeFocused();}},
  {name:'draft',path:`/app/drafts/${f.draftId}`,ready:page=>page.getByTestId('draft-subject').waitFor()},
  {name:'draft-audit',path:`/app/drafts/${f.draftId}`,ready:async page=>{await page.getByTestId('draft-subject').waitFor();await page.getByText('Audit details',{exact:true}).click();}},
  {name:'assistance',path:`/app/assistance/${f.opportunityId}`,ready:page=>expect(page.getByRole('button',{name:'Preview request',exact:true})).toBeEnabled()},
@@ -81,7 +93,7 @@ export function operatorRoutes(f){return [
   else await page.getByLabel('Booking provider',{exact:true}).selectOption(recipe);
  }})),
  {name:'sources-disabled',path:'/app/settings/capture',ready:async page=>{await page.getByText('Advanced',{exact:true}).click();await page.getByRole('button',{name:'Disable source',exact:true}).click();await page.getByRole('button',{name:'Enable source',exact:true}).waitFor();await page.getByRole('button',{name:'Open recipes',exact:true}).click();await expect(page.getByRole('button',{name:'Send test event',exact:true})).toBeDisabled();},after:async page=>{await page.getByRole('button',{name:'Enable source',exact:true}).click();await page.getByRole('button',{name:'Disable source',exact:true}).waitFor();await exerciseSourceRemoval(page,f);}},
- {name:'settings',path:'/app/settings/workspace',ready:page=>page.getByRole('button',{name:'Save workspace',exact:true}).waitFor()},
+ {name:'settings',path:'/app/settings/workspace',ready:page=>page.getByLabel('Name',{exact:true}).waitFor()},
  {name:'settings-mail',path:'/app/settings#mail-sender',ready:async page=>{await expect(page).toHaveURL(/\/app\/settings\/mail$/);await page.getByRole('heading',{name:'Sender',exact:true}).waitFor();}},
  ...['team','pipeline','integrations'].map(area=>({name:`settings-${area}`,path:`/app/settings/${area}`,ready:page=>page.getByRole('heading',{name:area[0].toUpperCase()+area.slice(1),exact:true,level:1}).waitFor()})),
  {name:'notifications',path:'/app/notifications',ready:page=>page.getByRole('link',{name:'Operator review opportunity',exact:true}).first().waitFor()},

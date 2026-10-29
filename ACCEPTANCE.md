@@ -1076,7 +1076,7 @@ Core · target · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 **Acceptance.**
 1. Associate champion and evaluator with a USD deal, add a verified decision-maker and a second-company relationship, move the primary association and inspect the preserved customer history and authorization.
 
-**Evidence.** `src/core/features/relationships/`; `src/core/features/operator/ui/buying-context.tsx`; `tests/core/records-search.test.ts`; `tests/evidence/contract/RECORD-015/`
+**Evidence.** `src/core/features/relationships/`; `src/core/features/operator/ui/record/people.tsx`; `src/core/features/operator/ui/record/deal-context.tsx`; `tests/core/records-search.test.ts`; `tests/evidence/contract/RECORD-015/`
 **Gap.** Unasserted in the carried evidence: champion association; evaluator association; verified decision-maker; second-company relationship; primary association move; history preserved; authorization preserved. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### RECORD-016 — Owners for contacts, leads, companies and custom objects

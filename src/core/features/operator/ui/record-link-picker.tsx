@@ -2,7 +2,7 @@ import {useEffect,useId,useRef,useState} from 'react';
 import {ActionTooltip} from './action-tooltip';
 import {recordsRequest,type CustomerRecord} from './records-api';
 
-function useRecordMatches(kind:'company'|'contact',query:string) {
+export function useRecordMatches(kind:'company'|'contact',query:string) {
  const [matches,setMatches]=useState<CustomerRecord[]>([]),[loading,setLoading]=useState(false),[error,setError]=useState('');
  useEffect(()=>{
   let current=true;

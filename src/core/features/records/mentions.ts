@@ -58,11 +58,12 @@ export function withdrawMentions(db:D1Database,source:MentionSource,sourceId:str
 export function erasedMentions(db:D1Database){return db.prepare(`DELETE FROM notifications WHERE kind='record.mention' AND CASE WHEN event_key LIKE 'mention:entry:%' THEN NOT EXISTS(SELECT 1 FROM timeline_entry_records WHERE timeline_entry_id=substr(notifications.event_key,15)) WHEN event_key LIKE 'mention:task:%' THEN NOT EXISTS(SELECT 1 FROM sales_tasks WHERE id=substr(notifications.event_key,14)) ELSE NOT EXISTS(SELECT 1 FROM handoff_tasks WHERE id=substr(notifications.event_key,17)) END`);}
 /** Where a mention notification opens: the exact entry, task or handoff. */
 export const mentionHrefSql=`CASE WHEN n.kind='record.mention' THEN COALESCE(
- (SELECT CASE WHEN r.record_type='opportunity' THEN '/app/opportunities/'||r.record_id ELSE '/app/records?kind='||r.record_type||'&record='||r.record_id END||'#entry-'||r.timeline_entry_id FROM timeline_entry_records r WHERE n.event_key LIKE 'mention:entry:%' AND r.timeline_entry_id=substr(n.event_key,15) LIMIT 1),
+ (SELECT CASE r.record_type WHEN 'opportunity' THEN '/app/opportunities/' WHEN 'company' THEN '/app/companies/' ELSE '/app/contacts/' END||r.record_id||'#entry-'||r.timeline_entry_id FROM timeline_entry_records r WHERE n.event_key LIKE 'mention:entry:%' AND r.timeline_entry_id=substr(n.event_key,15) LIMIT 1),
  (SELECT '/app/tasks/'||t.id FROM sales_tasks t WHERE n.event_key LIKE 'mention:task:%' AND t.id=substr(n.event_key,14)),
  (SELECT '/app/opportunities/'||h.opportunity_id||'#handoff-'||h.id FROM handoff_tasks h WHERE n.event_key LIKE 'mention:handoff:%' AND h.id=substr(n.event_key,17))) END`;
 export interface Mention {source:MentionSource;id:string;kind:string;text:string;author:string|null;recordType:RecordKind;recordId:string;at:string;href:string}
-const recordHref=(type:RecordKind,id:string)=>type==='opportunity'?`/app/opportunities/${id}`:`/app/records?kind=${type}&record=${id}`;
+const recordPaths:Record<RecordKind,string>={opportunity:'/app/opportunities',contact:'/app/contacts',company:'/app/companies'};
+export const recordHref=(type:RecordKind,id:string)=>`${recordPaths[type]}/${id}`;
 /** The Mentions view: every entry, task note and handoff that mentions this colleague now. */
 export async function mentionsOf(db:D1Database,operatorId:string):Promise<Mention[]>{
  const entries=(await db.prepare("SELECT t.id,t.kind,json_extract(t.payload_json,'$.text') AS text,a.display_name AS author,r.record_type AS recordType,r.record_id AS recordId,t.occurred_at AS at FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id LEFT JOIN operators a ON a.id=t.actor_id WHERE t.kind IN('manual.note','manual.call','manual.meeting') AND EXISTS(SELECT 1 FROM json_each(t.payload_json,'$.mentions') WHERE value=?) ORDER BY t.occurred_at DESC,t.id DESC LIMIT 200").bind(operatorId).all<Omit<Mention,'source'|'href'>>()).results;

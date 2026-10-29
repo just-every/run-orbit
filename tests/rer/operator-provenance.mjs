@@ -8,20 +8,21 @@ export async function expectProvenance(page,provenance){
 }
 
 export async function exerciseProvenanceEditing(page,origin,fixture){
- const path=`/app/records?kind=contact&record=${fixture.contactId}`;
- await page.goto(origin+path);await page.getByRole('button',{name:'Edit details',exact:true}).click();
- await expectProvenance(page,fixture.provenance);await page.getByLabel('Phone',{exact:true}).fill('+61 7 5550 1042');await page.getByRole('button',{name:'Save changes',exact:true}).click();
- await page.getByRole('heading',{name:'Record details',exact:true}).waitFor();
+ const path=`/app/contacts/${fixture.contactId}`,details=page.getByTestId('record-details');
+ const saved=async()=>expect(details.getByRole('status').filter({hasText:'Saved'})).toBeVisible();
+ await page.goto(origin+path);await details.waitFor();
+ await expectProvenance(page,fixture.provenance);const phone=page.getByLabel('Phone',{exact:true});await phone.fill('+61 7 5550 1042');await phone.press('Enter');await saved();
  const detail=await request(page,`/api/v1/records/contact/${fixture.contactId}`,undefined,'GET');
  assert.equal(detail.record.phone,'+61 7 5550 1042');assert.equal(JSON.parse(detail.record.custom_fields_json).import_source,JSON.stringify(fixture.provenance));
  // Owner-authored JSON-looking text remains exact text; only the typed provenance format is decoded.
  const literal='{"owner_note":"Keep this JSON-looking customer text literally"}';
- await page.getByRole('button',{name:'Edit details',exact:true}).click();await page.getByRole('button',{name:'Replace Import source with text',exact:true}).click();await page.getByLabel('Import source',{exact:true}).fill(literal);await page.getByLabel('Campaign json',{exact:true}).fill(literal);await page.getByRole('button',{name:'Save changes',exact:true}).click();
- await page.getByRole('heading',{name:'Record details',exact:true}).waitFor();
- const saved=JSON.parse((await request(page,`/api/v1/records/contact/${fixture.contactId}`,undefined,'GET')).record.custom_fields_json);assert.equal(saved.import_source,literal,'Record edit stores the literal import-source text');assert.equal(saved.campaign_json,literal,'Record edit stores the literal campaign text');
- await expect(page.getByText(literal,{exact:true})).toHaveCount(2);
- await page.reload();await expect(page.getByText(literal,{exact:true})).toHaveCount(2);
- await page.getByRole('button',{name:'Edit details',exact:true}).click();await expect(page.getByLabel('Import source',{exact:true})).toHaveValue(literal);await expect(page.getByLabel('Campaign json',{exact:true})).toHaveValue(literal);
+ await page.getByRole('button',{name:'Replace Import source with text',exact:true}).click();
+ const source=page.getByLabel('Import source',{exact:true});await source.waitFor();await source.fill(literal);await source.press('Enter');await saved();
+ const campaign=page.getByLabel('Campaign json',{exact:true});await campaign.fill(literal);await campaign.press('Enter');
+ await expect.poll(async()=>JSON.parse((await request(page,`/api/v1/records/contact/${fixture.contactId}`,undefined,'GET')).record.custom_fields_json).campaign_json).toBe(literal);
+ const stored=JSON.parse((await request(page,`/api/v1/records/contact/${fixture.contactId}`,undefined,'GET')).record.custom_fields_json);assert.equal(stored.import_source,literal,'Record edit stores the literal import-source text');assert.equal(stored.campaign_json,literal,'Record edit stores the literal campaign text');
+ await expect(source).toHaveValue(literal);await expect(campaign).toHaveValue(literal);
+ await page.reload();await expect(page.getByLabel('Import source',{exact:true})).toHaveValue(literal);await expect(page.getByLabel('Campaign json',{exact:true})).toHaveValue(literal);
  await fixture.collaborator.goto(origin+`/app/shared-records?kind=contact&id=${fixture.contactId}`);await expect(fixture.collaborator.getByText(literal,{exact:true})).toHaveCount(2);
  await page.goto(origin+`/app/assistance/${fixture.opportunityId}`);await page.getByRole('button',{name:'Preview request',exact:true}).click();await page.getByText('View complete request',{exact:true}).click();await expect(page.getByText(literal,{exact:true})).toHaveCount(2);
  assert.equal(JSON.parse((await request(page,`/api/v1/records/contact/${fixture.contactId}`,undefined,'GET')).record.custom_fields_json).import_source,literal);

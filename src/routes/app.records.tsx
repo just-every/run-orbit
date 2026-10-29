@@ -1,4 +1,0 @@
-import { editorLeaf } from "../editor/leaf";
-import {createFileRoute} from "@tanstack/react-router";
-import {RecordsPage} from "../core/features/operator/ui/records-page";
-export const Route=createFileRoute("/app/records")({component: editorLeaf(RecordsPage)});

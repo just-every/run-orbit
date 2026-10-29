@@ -1,6 +1,7 @@
 import type {RecordRef,RecordType} from './types';
 
-export const recordHref=(ref:RecordRef)=>ref.type==='opportunity'?`/app/opportunities/${ref.id}`:`/app/records?kind=${ref.type}&record=${ref.id}`;
+const recordPaths:Record<RecordRef['type'],string>={opportunity:'/app/opportunities',contact:'/app/contacts',company:'/app/companies'};
+export const recordHref=(ref:RecordRef)=>`${recordPaths[ref.type]}/${ref.id}`;
 export const entryHref=(ref:RecordRef,entryId:string|null)=>recordHref(ref)+(entryId?`#entry-${entryId}`:'');
 export const planHref=(signalId:string)=>`/app/meetings/${signalId}`;
 /** Where an application reads a signal it selected: a line resting on no record it may see links here. */

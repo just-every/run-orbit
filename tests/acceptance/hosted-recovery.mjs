@@ -52,7 +52,7 @@ try{
   assert.deepEqual(sorted(actual),sorted(rows),`Equivalent restored ${name}`);
   tables[name]={rows:rows.length,sha256:createHash('sha256').update(JSON.stringify(sorted(rows))).digest('hex')};
  }
- await restoredPage.goto(origin+'/app/records',{waitUntil:'networkidle'});
+ await restoredPage.goto(origin+'/app/opportunities',{waitUntil:'networkidle'});
  await mkdir('verification',{recursive:true});await restoredPage.screenshot({path:'verification/hosted-recovery.png',fullPage:true});
  await writeFile(root+'/restored-native-state.json',JSON.stringify(await restored.storageState()),{mode:0o600});
  const lock=JSON.parse(await readFile('composition.lock.json','utf8'));

@@ -128,7 +128,7 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
     await next();
   });
   // Base step-up: exporting all data, replacing it from an archive and permanently erasing an operator need a fresh app-local email proof.
-  const stepUps: [RegExp, StepUpAction, string][] = [[/^\/api\/v1\/records\/archive\/exports$/, 'export', '/app/records'], [/^\/api\/v1\/records\/archive\/imports$/, 'delete', '/app/records'], [/^\/api\/v1\/settings\/operators\/[^/]+\/erase$/, 'delete', '/app/settings/team']];
+  const stepUps: [RegExp, StepUpAction, string][] = [[/^\/api\/v1\/records\/archive\/exports$/, 'export', '/app/settings/data'], [/^\/api\/v1\/records\/archive\/imports$/, 'delete', '/app/settings/data'], [/^\/api\/v1\/settings\/operators\/[^/]+\/erase$/, 'delete', '/app/settings/team']];
   app.use("/api/*", async (context, next) => {
     const guarded = context.req.method === "POST" ? stepUps.find(([path]) => path.test(context.req.path)) : undefined;
     if (guarded) { const refused = await input.stepUp(context.req.raw, guarded[1], guarded[2]); if (refused) return refused; }

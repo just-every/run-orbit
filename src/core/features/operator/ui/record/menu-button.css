@@ -1,0 +1,18 @@
+/* Small menus under their buttons (+ Role, + Add, ⋯) and the × that removes a chip, wherever a record or a Settings
+   table uses them. Brand tokens only; 44 px targets at phone width. */
+.r-menu-box { position: relative; display: inline-flex; }
+.r-menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 8; display: grid; min-width: 210px; margin: 0; padding: 6px; border: 1.5px solid var(--ob-ink); border-radius: 14px; background: var(--ob-card); box-shadow: var(--ob-shadow-card); list-style: none; }
+.ob-app .r-menu button { justify-content: flex-start; width: 100%; min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; box-shadow: none; font-size: 15px; font-weight: 550; text-align: left; }
+.ob-app .r-menu button:hover, .ob-app .r-menu button:focus-visible { background: var(--ob-paper-deep); }
+.ob-app .r-menu button[aria-checked="true"]::after { content: "✓"; margin-left: auto; padding-left: 12px; }
+.ob-app .r-role-add { min-height: 32px; padding: 0 12px; border: 1.5px solid var(--ob-line-strong); border-radius: 999px; background: none; box-shadow: none; color: var(--ob-ink); font-size: 13.5px; font-weight: 600; }
+.ob-app .r-more { display: inline-grid; place-items: center; width: 32px; min-height: 32px; padding: 0; border: 0; border-radius: 999px; background: none; box-shadow: none; color: var(--ob-ink); font-size: 18px; font-weight: 700; line-height: 1; }
+.ob-app .r-more:hover { background: var(--ob-paper-deep); }
+.ob-app .r-chip-remove { display: inline-grid; place-items: center; width: 26px; min-height: 26px; padding: 0; border: 0; border-radius: 999px; background: none; box-shadow: none; color: var(--ob-muted); font-size: 16px; line-height: 1; }
+.ob-app .r-chip-remove:hover { background: var(--ob-line); color: var(--ob-ink); }
+@media (max-width: 640px) {
+  .ob-app .r-role-add { min-height: 44px; }
+  .ob-app .r-more { width: 44px; min-height: 44px; }
+  .ob-app .r-chip-remove { width: 44px; min-height: 44px; }
+  .ob-app .r-menu button { min-height: 44px; }
+}

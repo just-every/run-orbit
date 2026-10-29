@@ -36,7 +36,8 @@ export async function nativeHandoffJourney(page){
  const audience=await(await api.get('/api/delegation/v1/audience',{headers,params:{target,operation:'orbit.handoff.upsert'}})).json();
  const command={operationKey:nonce,operation:'orbit.handoff.upsert',target,expectedRevision:check.revision,expectedAudienceRevision:audience.audienceRevision,content:{title:'Arrange onboarding',description:'Confirm the internal owner',assigneeId:null,dueAt:null,status:'open'}};
  const effect=await api.post('/api/delegation/v1/effects',{headers,data:command});expect(effect.status()).toBe(200);const committed=await effect.json();
- await page.goto('/app/opportunities/'+opportunity.id);
+ // OR3: a hand-off is a line in the deal's Activity; its cited link opens the task in place.
+ await page.goto('/app/opportunities/'+opportunity.id+'#handoff-'+nonce);
  const section=page.getByTestId('handoff-tasks');await expect(section.getByLabel('Title',{exact:true})).toHaveValue('Arrange onboarding');
  // The sample workspace uses Brisbane: 09:30 local is 23:30 UTC the previous day.
  const assignees=await section.getByLabel('Assignee').locator('option').evaluateAll(nodes=>nodes.map(n=>n.value).filter(Boolean));expect(assignees.length).toBeGreaterThan(0);
@@ -46,7 +47,7 @@ export async function nativeHandoffJourney(page){
   await section.getByLabel('Assignee').selectOption(status==='cancelled'?'':assignees[0]);
   await section.getByLabel(/^Due time \(/).fill('2026-10-15T09:30');
   await section.getByLabel('Status').selectOption(status);
-  const saved=page.waitForResponse(r=>r.url().endsWith('/delegation/handoffs')&&r.request().method()==='POST');await section.getByRole('button',{name:'Save handoff',exact:true}).click();expect((await saved).status()).toBe(200);
+  const saved=page.waitForResponse(r=>r.url().endsWith('/delegation/handoffs')&&r.request().method()==='POST');await section.getByRole('button',{name:/^(Accept with my changes|Update hand-off)$/}).click();expect((await saved).status()).toBe(200);
   await expect(section.getByRole('heading',{name:'Native '+status,exact:true})).toBeVisible();
   const read=await(await api.get('/api/delegation/v1/effects/'+nonce,{headers})).json();
   expect(read.receipt).toEqual(committed.receipt);expect(read.observed.content).toEqual({title:'Native '+status,description:'Reviewed '+status,assigneeId:status==='cancelled'?null:assignees[0],dueAt:'2026-10-14T23:30:00.000Z',status});

@@ -40,7 +40,7 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
   await page.getByRole('checkbox',{name:'I checked these rows, including any that will not import and any marked Do not contact.'}).check();await page.getByRole('button',{name:'Apply reviewed import',exact:true}).click();await expect(page.getByRole('heading',{name:'Import complete',exact:true})).toBeVisible({timeout:90_000});
   const imported=await page.request.get(`/api/v1/records/contact?q=${vendor}-0%40example.test`);expect(imported.ok()).toBe(true);const contacts=(await imported.json()).records;expect(contacts).toHaveLength(1);expect(contacts[0].contactability).toBe('do_not_contact');
   if(vendor==='csv'){const recordPage=await context.newPage();try{
-   await recordPage.goto(`/app/records?kind=contact&record=${contacts[0].id}`);await expect(recordPage.getByText(`${source.account} (spreadsheet)`,{exact:true})).toBeVisible();await expect(recordPage.getByText('Seats',{exact:true})).toBeVisible();
+   await recordPage.goto(`/app/contacts/${contacts[0].id}`);await expect(recordPage.getByText(`${source.account} (spreadsheet)`,{exact:true})).toBeVisible();await expect(recordPage.getByText('Seats',{exact:true})).toBeVisible();
    await recordPage.goto('/app/settings/data');
    await recordPage.getByRole('button',{name:'Find matching contacts',exact:true}).click();
    for(const [email,company] of [['csv-0@example.test','Spreadsheet Company'],['csv-1@example.test','Another Company'],['csv-2@example.test','No company']])await expect(recordPage.getByRole('button',{name:`Spreadsheet Person · ${email} · ${company}`,exact:true})).toBeVisible();
@@ -72,7 +72,7 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
   await review.getByRole('button',{name:'Confirm merge',exact:true}).click();await page.getByRole('dialog',{name:'Merge records',exact:true}).getByRole('button',{name:'Merge records',exact:true}).click();
   await expect(review.getByRole('status')).toContainText('Records merged.');
   const survivor=await page.request.get(`/api/v1/records/contact/${contacts[0].id}`);expect(survivor.ok()).toBe(true);expect((await survivor.json()).record.contactability).toBe('do_not_contact');expect((await page.request.get(`/api/v1/records/contact/${contacts[1].id}`)).status()).toBe(404);
-  await page.goto(`/app/records?kind=contact&record=${contacts[0].id}`);await expect(page.getByRole('button',{name:'Clear do-not-contact',exact:true})).toBeVisible();
+  await page.goto(`/app/contacts/${contacts[0].id}`);await expect(page.getByTestId('record-details').getByLabel('Email permission',{exact:true})).toHaveValue('do_not_contact');
   if(phase==='after'){
    await page.screenshot({path:join(screenshots,'merge-stopped-survivor-1440.png'),fullPage:true});
    await page.setViewportSize({width:390,height:900});await page.screenshot({path:join(screenshots,'merge-stopped-survivor-390.png'),fullPage:true});await page.setViewportSize({width:1440,height:900});

@@ -55,8 +55,8 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access', { 
   assert.deepEqual(await browserAPI(page, '/api/v2/access/class'), { access_class: 'native_full' });
   assert.deepEqual(await browserAPI(page, '/api/v2/access/pages'), { access_class: 'native_full', workspace: true, reports: true });
   assert.equal((await browserAPI(page, '/api/v2/workspaces/workspace/records/contact/' + contact.id)).fields.phone, '+1 555 0199', 'a full operator sees every field');
-  await page.goto(`${origin}/app/records?kind=contact&record=${contact.id}`);
-  await page.getByText('+1 555 0199').first().waitFor();
+  await page.goto(`${origin}/app/contacts/${contact.id}`);
+  await page.waitForFunction(() => [...document.querySelectorAll('input')].some((input) => input.value === '+1 555 0199'));
   await shot(page, 'seller-contact');
 
   await enter(page, origin, 'collaborator');

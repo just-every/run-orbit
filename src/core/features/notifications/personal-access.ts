@@ -1,6 +1,6 @@
 import {actionMapping} from '../slack/identity';
 import {installation} from '../slack/installation';
-import {mentionable,parseMentions,type MentionSource} from '../records/mentions';
+import {mentionable,parseMentions,recordHref,type MentionSource} from '../records/mentions';
 import type {RecordKind} from '../records/shared';
 export interface PersonalPreference {operator_id:string;enabled:number;revision:string;slack_user_id:string;team_id:string;enterprise_id:string;app_id:string;policy_epoch:number;mapping_confirmed_at:string;installation_epoch:string}
 export interface PersonalNotice {id:string;operator_id:string;event_key:string;preference_revision:string;state:string;updated_at:string}
@@ -21,6 +21,6 @@ export async function personalSource(db:D1Database,notice:Pick<PersonalNotice,'e
  // Personal delivery requires current record authority, including its company.
  const visible=await db.prepare(`SELECT 1 FROM graph_records g WHERE g.workspace_id='workspace' AND g.kind=? AND g.id=? AND g.retired_into_id IS NULL AND (g.visibility='workspace' OR g.owner_id=?) AND NOT EXISTS(SELECT 1 FROM graph_records parent WHERE parent.kind='company' AND parent.id IN(SELECT company_id FROM contacts WHERE ?='contact' AND id=? UNION SELECT company_id FROM opportunities WHERE ?='opportunity' AND id=?) AND (parent.retired_into_id IS NOT NULL OR parent.visibility<>'workspace' AND parent.owner_id IS NOT ?))`).bind(row.kind,row.recordId,notice.operator_id,row.kind,row.recordId,row.kind,row.recordId,notice.operator_id).first();
  if(!visible)return null;
- const href=source==='task'?`/app#sales-task-${id}`:source==='handoff'?`/app/opportunities/${row.recordId}#handoff-${id}`:row.kind==='opportunity'?`/app/opportunities/${row.recordId}#entry-${id}`:`/app/records?kind=${row.kind}&record=${row.recordId}#entry-${id}`;
+ const href=source==='task'?`/app#sales-task-${id}`:source==='handoff'?`/app/opportunities/${row.recordId}#handoff-${id}`:`${recordHref(row.kind,row.recordId)}#entry-${id}`;
  return {href};
 }

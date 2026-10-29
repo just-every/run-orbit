@@ -35,21 +35,20 @@ export async function workflowValuesBrowserJourney({page,fixture,origin,director
   custom_fields:savedCustom,
  },'PUT');
 
- await page.goto(`${origin}/app/records?kind=contact&record=${fixture.contactId}`);
- await page.getByRole('button',{name:'Edit details',exact:true}).click();
- const editor=page.locator('.record-editor'),custom=editor.locator('.record-custom-fields');
- const checked=page.getByLabel('Review checked',{exact:true}),operator=page.getByLabel('Review operator',{exact:true}),time=page.getByLabel('Review time',{exact:true});
+ // OR4: typed values are quiet fields on the contact's page; a choice saves on change, a time when left.
+ await page.goto(`${origin}/app/contacts/${fixture.contactId}`);
+ const editor=page.getByTestId('record-details');
+ const checked=editor.getByLabel('Review checked',{exact:true}),operator=editor.getByLabel('Review operator',{exact:true}),time=editor.getByLabel('Review time',{exact:true});
  await expect(checked).toBeVisible();await expect(checked).toHaveValue('true');await expect(checked).toHaveJSProperty('tagName','SELECT');
  await expect(operator).toBeVisible();await expect(operator).toHaveValue(ownerId);await expect(operator).toHaveJSProperty('tagName','SELECT');
  await expect(time).toBeVisible();await expect(time).toHaveAttribute('type','datetime-local');await expect(time).toHaveValue('2026-11-03T15:30');
 
- await custom.scrollIntoViewIfNeeded();
+ await time.scrollIntoViewIfNeeded();
  await page.screenshot({path:join(directory,`workflow-values-editor-${width}.png`)});
- await checked.selectOption('false');await operator.selectOption(ownerId);await time.fill('2026-11-04T12:15');
+ await checked.selectOption('false');await operator.selectOption(ownerId);await time.fill('2026-11-04T12:15');await time.press('Enter');
  const smallText=await editor.evaluate(root=>Array.from(root.querySelectorAll('*')).filter(el=>el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden'&&Array.from(el.childNodes).some(node=>node.nodeType===Node.TEXT_NODE&&node.textContent.trim())&&parseFloat(getComputedStyle(el).fontSize)<13).map(el=>el.tagName));
- assert.deepEqual(smallText,[],'Visible record editor text is at least 13px.');
- await page.getByRole('button',{name:'Save changes',exact:true}).click();
- await expect(page.getByRole('button',{name:'Edit details',exact:true})).toBeVisible();
+ assert.deepEqual(smallText,[],'Visible record details text is at least 13px.');
+ await expect.poll(async()=>JSON.parse((await request(page,`/api/v1/records/contact/${fixture.contactId}`,undefined,'GET')).record.custom_fields_json).review_time).toBe('2026-11-04T12:15:00.000Z');
  const saved=await request(page,`/api/v1/records/contact/${fixture.contactId}`,undefined,'GET');
  const values=JSON.parse(saved.record.custom_fields_json);
  assert.equal(values.review_checked,false);
