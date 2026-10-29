@@ -36,7 +36,10 @@ export function generateMailSetupFields(mail) {
 export function validateMailSpec(spec) {
   if (!usesManagedMail(spec.mail)) return;
   for (const name of publicNames) {
-    if (!Object.hasOwn(spec.publicVariables, name)) throw Error(`Managed mail requires public ${name}`);
+    // Orbit deploys its sender through the existing named secret binding.
+    // Require a declared sender in either transport; never invent a value.
+    const declaredSender = name === 'MAIL_FROM' && [...spec.secretNames, ...(spec.optionalSecretNames ?? [])].includes(name);
+    if (!Object.hasOwn(spec.publicVariables, name) && !declaredSender) throw Error(`Managed mail requires declared ${name}`);
   }
   if (![...spec.secretNames, ...(spec.optionalSecretNames ?? [])].includes('MAIL_API_KEY')) {
     throw Error('Managed mail requires secret MAIL_API_KEY');
