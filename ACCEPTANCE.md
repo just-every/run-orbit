@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 8 | 139 | 31 | 178 |
+| Core | 8 | 140 | 30 | 178 |
 | Agent surface | 0 | 0 | 26 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 8 | 139 | 57 | 204 |
+| Full target | 8 | 140 | 56 | 204 |
 
 Judged from the code and tests at commit `b300e460a20da7f09122dc4a9157499430c4f8d5` (27 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -2231,9 +2231,11 @@ Core · target · **partial** · From API-001 · Cites BASE-ROLE-001, BASE-INPUT
 
 #### API-004 — A scoped integration reads a deal's close date, owner and product fields
 
-Core · target · **missing** · From new · Cites BASE-ROLE-001, BASE-INPUT-001, BASE-SECRET-001
+Core · target · **partial** · From new · Cites BASE-ROLE-001, BASE-INPUT-001, BASE-SECRET-001
 
 **Requirement.** A scoped integration reads a deal's close date, owner and product fields through Orbit's scoped API, within the caller's current deals scope, installation, workspace and record authority. Values are read live from Orbit rather than copied into the integration.
+
+**API semantics.** `GET /api/rest/v1/deals` and `GET /api/rest/v1/deals/:id` require an installation-local credential with `deal.read`, explicit record ids and explicit readable fields. Alongside the four existing fields, `expected_close_at` is the saved timestamp or null, `owner_id` is the Orbit operator id or null, and `products` is the array of product names held in the deal's buying context, or an empty array. No operator display name or email is added. Omitted `fields` selects the credential's fields; an explicit selection may include all seven permitted fields. Reads use the current D1 rows in the authority-checked batch. Authentication, expiry, revocation, removed principal and wrong-installation refusals return 401; an ungranted operation, record or field returns 403 with an error and no domain write. The three new fields are read-only through this API; the native deal and relationship edit doors retain their existing validation and erasure. QUOTE-001 inherits real product and quote-line linkage; the buying-context names do not claim that later surface.
 
 **Acceptance.**
 1. An integration whose scope grants deals reads each deal's expected close date, owner and product (line-item or product-family) fields through Orbit's scoped API.
@@ -2242,8 +2244,8 @@ Core · target · **missing** · From new · Cites BASE-ROLE-001, BASE-INPUT-001
 4. A deal the actor cannot read is absent; revoking access makes the next call read nothing.
 5. Change a close date in Orbit and verify the next integration read returns the changed value, read live rather than copied into the integration.
 
-**Evidence.** None.
-**Gap.** Orbit's scoped API does not yet expose close date, owner and product fields, and no two-installation journey exists.
+**Evidence.** Acceptance 1 through 5: `tests/delegation/authority-regressions.test.ts` — API-002 native credential lifecycle and delegation D1 reject ambient cookies, scope escalation, expiration, disable and revocation on every read and write; extended `tests/support/api-credentials-proof.ts` — proveScopedDealFields; push Verify core-6.
+**Gap.** All five outcomes pass the local two-installation journey; exact candidate Verify remains pending.
 
 ### Mobile, portability and operation
 

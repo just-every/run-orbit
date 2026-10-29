@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "6e287e8e3d98764f665c82fbb493e1e1bf4cf738618e0d13572e8f13d7dd5507",
+      "sha256": "4d7850f828de7285d51978ecf9ffdfa9239496fe0b14e4d42fe778c54263b120",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "f17942345f58c21b33fa599cd7bf48fdd2f235628a18cfc2a9a24714d5fcbde4",
+      "sha256": "c5e8e15d81528c65e02762e637da2338f8274ed019610126565ff05b59e2a627",
       "executable": false
     },
     "DEMO.md": {
@@ -3759,7 +3759,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "7ddd7c0b8fdc1252728837526f1cdac6768c2ccb51992af8dfde63d98cb42658",
+      "sha256": "0cd125da602d9c0f9f9e5a2a8921f7c537049def04307899b12218ae8ff7369c",
       "executable": false
     },
     "RECORD-POLICIES.md": {
@@ -4083,7 +4083,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "03516704cd8a38ae276bf621f309debff716fc19a42c1ad461cd4ff9f53deb84",
+      "sha256": "e7a2304d0129a964918db94f58eb35d8d4cebced805ad31b9f8f2fe8df9141d1",
       "executable": false
     },
     "scripts/verification-shard.mjs": {
@@ -4875,7 +4875,7 @@
       "executable": false
     },
     "src/core/features/api/credentials.ts": {
-      "sha256": "9940ad37def1bbc944843bc0222f2bda54fe8ebf3dd1786d57fb03bab9ceea68",
+      "sha256": "f79a94188b55c40eb5d369f3e7d4d44a7450c0f082dfec63893120f5573ee28a",
       "executable": false
     },
     "src/core/features/api/privacy.ts": {
@@ -4883,11 +4883,11 @@
       "executable": false
     },
     "src/core/features/api/public-routes.ts": {
-      "sha256": "1a7a350bb9c54e9b8b7a9a8ab06ef09ac55527977206f1742c3eec1474511ce5",
+      "sha256": "067d695629bfe4a94b6cd2c7fa765385f146562265dd9949b0d64688844de34f",
       "executable": false
     },
     "src/core/features/api/resources.ts": {
-      "sha256": "4e51be7802ab52e27488a75b1053a93b2d972a673d0c4a3195b301f57e7ec543",
+      "sha256": "a5d117c4b15bb3c4a1c1a3d3663ca6caf95909f1feeb6725c08efade510a6fd5",
       "executable": false
     },
     "src/core/features/api/routes.ts": {
@@ -9927,7 +9927,7 @@
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {
-      "sha256": "cde088f3ee4737170f6d1b3ec7d054de4d5fe88440ea1e1e29d7168db947d1bd",
+      "sha256": "e98f98b92987f9dfa4c6df0891e366d360ef6267bab6cc101997f628a319b371",
       "executable": false
     },
     "tests/support/app.ts": {

@@ -6,6 +6,7 @@ import {consumeRateLimit,publicIdentity} from '../../platform/public-rate-limit'
 import {RecordError} from '../records/shared';
 import {authenticateApi,ApiError,type ApiCredential} from './authority';
 import {ApiDeals} from './resources';
+import {dealReadFields} from './credentials';
 
 const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 const fields=z.object({title:z.string().trim().min(1).max(500),stage_id:id,value_cents:z.number().int().min(0).max(100000000000),company_id:id.nullable()}).partial().strict();
@@ -35,7 +36,7 @@ export function publicApiRoutes(db:D1Database,clock:Clock=systemClock){
   if(Object.values(c.req.queries()).some(values=>values.length!==1))throw new ApiError(400,'Repeated query parameters are not supported.');
   return parse(z.object({fields:z.string().optional(),...(list?{limit:z.coerce.number().int().min(1).max(100).default(50),cursor:id.optional(),title:z.string().max(500).optional()}:{} )}).strict(),c.req.query()) as {fields?:string;limit:number;cursor?:string;title?:string};
  };
- const selection=(credential:ApiCredential,requested?:string)=>requested===undefined?JSON.parse(credential.fields_json) as string[]:parse(z.array(z.string().min(1)).min(1).max(4),requested.split(','));
+ const selection=(credential:ApiCredential,requested?:string)=>requested===undefined?JSON.parse(credential.fields_json) as string[]:parse(z.array(z.string().min(1)).min(1).max(dealReadFields.length),requested.split(','));
  app.get('/deals',async c=>{const input=query(c,true),credential=c.get('credential');return c.json(await deals.list(credential,input,selection(credential,input.fields)));});
  app.get('/deals/:id',async c=>{const input=query(c),credential=c.get('credential'),result=await deals.read(credential,parse(id,c.req.param('id')),selection(credential,input.fields));c.header('ETag',result.etag);return c.json({deal:result.deal});});
  app.post('/deals',async c=>{

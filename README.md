@@ -73,6 +73,10 @@ Open **Capture** to import mail/calendar files or connect Gmail and Google Calen
 
 Follow [Google setup](docs/CONNECT-GMAIL.md) or [Microsoft setup](docs/CONNECT-OUTLOOK.md). [OWNER-STEPS.md](OWNER-STEPS.md) contains the remaining live-account proof. Copy each provider's exact callback URI from Capture; a successful `rer deploy` also prints them. `rer dev` does not print callback URIs. Disconnect stops intake and deletes the saved provider credentials.
 
+### Read scoped deals from an integration
+
+An installation administrator can issue a named, expiring API credential through `POST /api/v1/settings/api-credentials`, choosing an active principal, `deal.read`, explicit deal ids and readable fields. Send that credential as a bearer token to `GET /api/rest/v1/deals` or `GET /api/rest/v1/deals/:id`; select `expected_close_at`, `owner_id` and `products` in the credential and optionally in the request's `fields` query. These return the current expected close timestamp, Orbit owner id and an array of the product names saved in the deal's buying context. Each credential works only in its issuing installation and workspace, within its selected records and fields and its principal's current access. Native deal edits appear on the next read; expiry, revocation and erasure withdraw access immediately.
+
 ### Verify, reset and move data
 
 Stop `dev` and `preview` before CLI export, import, reset, build or verification (`rer dev --stop` and `rer preview --stop`).
