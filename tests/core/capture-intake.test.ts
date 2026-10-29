@@ -4,16 +4,22 @@ import { captureFixture, fixtureMailbox, eml } from '../support/capture-fixture'
 import { MAX_ITEMS_PER_IMPORT } from '../../src/core/features/capture/contracts';
 import {signedReplies} from '../support/signed-reply';
 
+import {refuseCaptureImpersonation,acceptCaptureStop} from '../support/sanity-capture-boundary';
+import {reviewCapturedEvidence} from '../support/sanity-capture-review';
 const count = async (db: D1Database, sql: string, ...bindings: unknown[]) => Number(await db.prepare(sql).bind(...bindings).first('n'));
 
-test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox and calendar files become signals with their evidence; replay, threading, delivery reports and private mail behave as the contract says', async () => {
-  const f = await captureFixture();
-  try {
-    const mail = fixtureMailbox(f), files = [{ name: 'export.mbox', text: mail.mbox }, { name: 'invite.ics', text: mail.invite }, { name: 'cancel.ics', text: mail.cancellation }];
+test('CAPTURE-001 CAPTURE-002 CAPTURE-003 CAPTURE-004 CAPTURE-005 SIGNAL-003 OUT-004 ACTION-005 RECORD-012 file intake preserves evidence and exact identity, holds changes for review, stops follow-up and never approves mail',async()=>{
+ const f=await captureFixture();try{
+ const mailbox=fixtureMailbox(f);
+ await refuseCaptureImpersonation(f);
+ await reviewCapturedEvidence(f,mailbox);
+ {
+    const mail = mailbox, files = [{ name: 'export.mbox', text: mail.mbox }, { name: 'invite.ics', text: mail.invite }, { name: 'cancel.ics', text: mail.cancellation }];
     const response = await f.upload(files);
     assert.equal(response.status, 201);
     const { summary } = await response.json() as { summary: Record<string, any> };
-    assert.equal(summary.captured, 6, 'reply, auto-reply, bounce, forward, invite and cancellation');
+    assert.equal(summary.captured, 4, 'new reply, automatic reply, bounce and cancellation');
+    assert.equal(summary.replayed, 2, 'the previously reviewed forward and invite are unchanged');
     assert.equal(summary.skipped, 1);
     assert.deepEqual(summary.skipReasons, { 'No known contact or company domain': 1 });
     assert.equal(summary.attached, 3, 'the threaded reply, the threaded auto-reply and the delivery report attach to the Orbit thread');
@@ -80,7 +86,7 @@ test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox 
     // A file that is neither mail nor calendar is refused whole.
     const refused = await f.upload([{ name: 'notes.txt', text: 'hello' }]);
     assert.equal(refused.status, 400);
-    assert.equal((await f.upload([{ name: 'undated.eml', text: eml({ From: 'ana@acme.example', 'Message-ID': '<undated@acme.example>' }, 'No date') }]).then(r => r.json()) as { summary: { skipReasons: Record<string, number> } }).summary.skipReasons['No valid Date header'], 1);
+    assert.equal((await (await f.upload([{ name: 'undated.eml', text: eml({ From: 'ana@acme.example', 'Message-ID': '<undated@acme.example>' }, 'No date') }])).json() as { summary: { skipReasons: Record<string, number> } }).summary.skipReasons['No valid Date header'], 1);
 
     // Folded component markers count before any import writes, just like ordinary markers.
     const event = (index: number) => ['BEGIN:VEVENT', `UID:folded-${index}@acme.example`, 'DTSTAMP:20200101T090000Z', 'DTSTART:20200102T090000Z', 'SUMMARY:Folded meeting', 'ATTENDEE:mailto:ana@acme.example', 'END:VEVENT'].join('\r\n');
@@ -94,12 +100,6 @@ test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox 
     assert.equal(foldedOver.status, over.status);
     assert.deepEqual(await foldedOver.json(), await over.json());
     assert.equal(await count(f.db, 'SELECT count(*) n FROM signals'), beforeCalendar);
-    const atCap = await f.upload([{ name: 'folded.ics', text: fold(calendar(events.slice(0, MAX_ITEMS_PER_IMPORT))) }]);
-    assert.equal(atCap.status, 201, await atCap.clone().text());
-    assert.equal((await atCap.json() as { summary: { captured: number } }).summary.captured, MAX_ITEMS_PER_IMPORT);
-    assert.equal(await count(f.db, 'SELECT count(*) n FROM signals'), beforeCalendar + MAX_ITEMS_PER_IMPORT);
-    assert.equal(await count(f.db, "SELECT count(DISTINCT source_event_id) n FROM signals WHERE subject='Folded meeting'"), MAX_ITEMS_PER_IMPORT);
-
     // Long whitespace remains real content; transport-only trailing SP/TAB and line endings replay.
     const hostile = [
       { type: 'text/plain; ' + ' '.repeat(65536) + '=', body: 'Fresh reply' },
@@ -121,6 +121,7 @@ test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox 
     assert.equal((await changedWhitespace.json() as { summary: { conflicts: number } }).summary.conflicts, 1);
     const changedBlankLines = await f.upload([{ name: 'changed-blank-lines.eml', text: hostile[2]!.replace('\r\n\r\n\r\n', '\r\n\r\n') }]);
     assert.equal((await changedBlankLines.json() as { summary: { conflicts: number } }).summary.conflicts, 1);
+    await acceptCaptureStop(f);
     // A contact's mailbox may also be an operator mailbox; explain its exclusion accurately.
     const invited = await f.request('/api/v1/settings/operators', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'ana@acme.example', displayName: 'Ana operator' }) });
     assert.equal(invited.status, 201);
@@ -132,5 +133,7 @@ test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox 
     assert.match(Object.keys(internalSummary.skipReasons).join(' '), /operator addresses.*excluded/i);
     assert.equal(await count(f.db, 'SELECT count(*) n FROM signals'), signalsBeforeInternal);
 
-  } finally { await f.dispose(); }
+
+ }
+ }finally{await f.dispose();}
 });

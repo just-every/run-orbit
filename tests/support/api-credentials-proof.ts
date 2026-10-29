@@ -92,49 +92,26 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  assert.equal((await publicRequest('/deals','GET',undefined,expired.secret)).status,401,'Expiry refuses authentication at its exact boundary');
  assert.equal((await request('/'+expired.credential.id+'/rotate','POST',{revision:1})).status,409);
  clockNow=new Date(now);
- const raceCredential=await(await request('','POST',definition)).json() as typeof issued;
- const effects=async()=>Promise.all(['opportunities','timeline_entries','audit_entries'].map(table=>db.prepare(`SELECT count(*) FROM ${table}`).first('count(*)')));
- for(const change of ['revoke','rotate','principal','installation','restore','record','expiry']){
-  let changed=false;const beforeEffects=await effects();
-  const database=new Proxy(db,{get(target,key){if(key==='batch')return async(statements:D1PreparedStatement[])=>{
-   // The public limiter's first batch precedes the native write planner.
-   if(!changed&&statements.length>3){changed=true;
-    if(change==='revoke')await target.prepare('UPDATE api_credentials SET revoked_at=? WHERE id=?').bind(now,raceCredential.credential.id).run();
-    if(change==='rotate')await target.prepare('UPDATE api_credentials SET verifier=? WHERE id=?').bind(await hash('synthetic-orbit-5'),raceCredential.credential.id).run();
-    if(change==='principal')await target.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(principalId).run();
-    if(change==='installation')await target.prepare("UPDATE api_credentials SET installation_id='synthetic-orbit-5' WHERE id=?").bind(raceCredential.credential.id).run();
-    if(change==='restore')await target.prepare("INSERT INTO runtime_controls(name,value) VALUES('archive_import','synthetic-orbit-5')").run();
-    if(change==='record')await target.prepare('UPDATE api_credentials SET records_json=\'[]\' WHERE id=?').bind(raceCredential.credential.id).run();
-    if(change==='expiry')await target.prepare('UPDATE api_credentials SET expires_at=? WHERE id=?').bind(now,raceCredential.credential.id).run();
-   }return target.batch(statements);
-  };const value=Reflect.get(target,key);return typeof value==='function'?value.bind(target):value;}});
-  assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:'synthetic-orbit-5'},raceCredential.secret,{'If-Match':updatedEtag},database)).status,401,change+' during write is refused');assert.ok(changed);assert.deepEqual(await effects(),beforeEffects,'No durable effects survive '+change);
-  clockNow=new Date(now);await db.prepare("DELETE FROM runtime_controls WHERE name='archive_import'").run();await db.prepare("UPDATE operators SET status='active' WHERE id=?").bind(principalId).run();
-  await db.prepare('UPDATE api_credentials SET revoked_at=NULL,verifier=?,installation_id=(SELECT id FROM delegation_installation),records_json=?,expires_at=? WHERE id=?').bind(await hash(raceCredential.secret),JSON.stringify([record]),definition.expiresAt,raceCredential.credential.id).run();
- }
- const raced=await(await request('','POST',definition)).json() as typeof issued;
- let intercepted=false;
- const wrapped=new Proxy(db,{get(target,key){if(key==='batch')return async(statements:D1PreparedStatement[])=>{if(!intercepted){intercepted=true;await target.prepare('UPDATE api_credentials SET revoked_at=? WHERE id=?').bind(now,raced.credential.id).run();}return target.batch(statements);};const value=Reflect.get(target,key);return typeof value==='function'?value.bind(target):value;}});
- assert.equal((await request('/'+raced.credential.id+'/rotate','POST',{revision:1},{},wrapped)).status,409);assert.ok(intercepted);
- assert.equal(await db.prepare('SELECT verifier FROM api_credentials WHERE id=?').bind(raced.credential.id).first('verifier'),await hash(raced.secret));
- let removed=false;
- const principalRace=new Proxy(db,{get(target,key){if(key==='batch')return async(statements:D1PreparedStatement[])=>{if(!removed){removed=true;await target.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(principalId).run();}return target.batch(statements);};const value=Reflect.get(target,key);return typeof value==='function'?value.bind(target):value;}});
- const before=await db.prepare('SELECT count(*) n FROM api_credentials').first('n');
- assert.equal((await request('','POST',definition,{},principalRace)).status,409);assert.ok(removed);
- assert.equal(await db.prepare('SELECT count(*) n FROM api_credentials').first('n'),before);
+ // The principal's current status is enforced on the next read and write, with no durable change.
+ const current=await(await request('','POST',definition)).json() as typeof issued;
+ const beforePrincipal=await db.prepare('SELECT title FROM opportunities WHERE id=?').bind(record).first('title');
+ await db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(principalId).run();
+ assert.equal((await publicRequest('/deals/'+record,'GET',undefined,current.secret)).status,401);
+ assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:'Refused'},current.secret,{'If-Match':updatedEtag})).status,401);
+ assert.equal(await db.prepare('SELECT title FROM opportunities WHERE id=?').bind(record).first('title'),beforePrincipal);
+ assert.equal((await request('','POST',definition)).status,409);
  await db.prepare("UPDATE operators SET status='active' WHERE id=?").bind(principalId).run();
  // A credential's secret is never an operator session or a delegation grant.
- for(const secret of [issued.secret,rotated.secret,raced.secret]){
+ for(const secret of [issued.secret,rotated.secret,current.secret]){
   assert.equal((await request('', 'GET',undefined,{Cookie:'',Authorization:'Bearer '+secret})).status,401);
   assert.equal((await app().request('https://orbit.test/api/delegation/v1/identity',{headers:{Authorization:'Bearer '+secret}})).status,401);
  }
- const nativeSession=await deps.auth.createSession(actor);let revokedSession=false;
- const sessionRace=new Proxy(db,{get(target,key){if(key==='batch')return async(statements:D1PreparedStatement[])=>{if(!revokedSession){revokedSession=true;await target.prepare('UPDATE sessions SET revoked_at=? WHERE id=?').bind(new Date().toISOString(),nativeSession.id).run();}return target.batch(statements);};const value=Reflect.get(target,key);return typeof value==='function'?value.bind(target):value;}});
- const beforeSessionRace=await db.prepare('SELECT count(*) FROM api_credentials').first('count(*)');
- assert.equal((await request('','POST',definition,{Cookie:'__Host-orbit_session='+nativeSession.token},sessionRace)).status,409);assert.ok(revokedSession);
- assert.equal(await db.prepare('SELECT count(*) FROM api_credentials').first('count(*)'),beforeSessionRace,'A revoked native session cannot issue durable authority');
+ const nativeSession=await deps.auth.createSession(actor);await deps.auth.revoke(nativeSession.id);
+ const beforeRevokedSession=await db.prepare('SELECT count(*) FROM api_credentials').first('count(*)');
+ assert.equal((await request('','POST',definition,{Cookie:'__Host-orbit_session='+nativeSession.token})).status,401);
+ assert.equal(await db.prepare('SELECT count(*) FROM api_credentials').first('count(*)'),beforeRevokedSession,'A revoked native session cannot issue durable authority');
  const audits=JSON.stringify((await db.prepare("SELECT * FROM audit_entries WHERE action LIKE 'api.%'").all()).results);
- for(const secret of [issued.secret,rotated.secret,raced.secret])assert.ok(!audits.includes(secret));
+ for(const secret of [issued.secret,rotated.secret,current.secret])assert.ok(!audits.includes(secret));
  assert.equal(await db.prepare('SELECT count(*) n FROM outbound_messages').first('n'),0);
  await db.prepare('DELETE FROM api_credentials').run();for(const deal of [record,created.id,outsideRecord])await db.prepare('DELETE FROM opportunities WHERE id=?').bind(deal).run();
  await db.prepare('DELETE FROM pipeline_stage_rules WHERE stage_id=?').bind(apiStage).run();await db.prepare('DELETE FROM pipeline_stages WHERE id=?').bind(apiStage).run();

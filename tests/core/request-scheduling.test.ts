@@ -1,3 +1,4 @@
+import {scheduleReview} from '../support/sanity-schedule-review';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {isolatedDatabase} from '../support/isolated-database';
@@ -6,7 +7,7 @@ import {createDependencies} from '../support/dependencies';
 import {WorkbenchRepository} from '../../src/core/features/workbench/repository';
 import {runHostedTimers,schedulerStatus} from '../../src/core/features/outreach/scheduler';
 
-test('a fresh hosted schedule sends once through ordinary requests racing Cron, and due follow-ups return to NOW',async context=>{
+test('OUT-007 OUT-008 OUT-009 BASE-DATA-002 reviewed schedules respect recipient clocks, request/Cron races, current permission, cancellation and durable history',async context=>{
  const platform=await isolatedDatabase(),db=platform.db;
  context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T10:00:00Z')});
  const background:Promise<unknown>[]=[];
@@ -47,5 +48,6 @@ test('a fresh hosted schedule sends once through ordinary requests racing Cron, 
   assert.equal(await db.prepare('SELECT queue_state FROM opportunities WHERE id=?').bind(followup.id).first('queue_state'),'now');
   assert.equal(await db.prepare("SELECT COUNT(*) FROM timeline_entry_records r JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE r.record_id=? AND t.kind='queue.now'").bind(followup.id).first('COUNT(*)'),1);
   await Promise.all(background);
+  await scheduleReview(context,db,actor,session.token,'request-timer-stage',mail,()=>calls);
  }finally{release();await Promise.allSettled(background);context.mock.timers.reset();await platform.dispose();}
 });

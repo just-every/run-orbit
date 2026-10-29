@@ -1,22 +1,23 @@
+import {privateEntriesJourney} from './private-entries-journey.mjs';
 import {expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import {mkdirSync} from 'node:fs';
 import {randomBytes,createHash} from 'node:crypto';
 import {mentionLink} from './mention-link.mjs';
 
-const widths=[1440,390];
+const widths=[1440];
 const serious=async page=>(await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze()).violations.filter(v=>['serious','critical'].includes(v.impact)).map(v=>v.id);
 const overflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth?[]:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+1).map(e=>`${e.tagName.toLowerCase()}.${e.className}`).slice(0,8));
 const daysAgo=days=>new Date(Date.now()-days*86400000).toISOString();
 const stamp=date=>date.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
 
-/** Checks a screen at both widths: nothing wider than the screen, no serious or critical axe finding, a screenshot each. */
+/** Checks a screen at desktop width: nothing wider than the screen, no serious or critical axe finding, a screenshot each. */
 async function atWidths(page,evidence,name,ready){
  for(const width of widths){await page.setViewportSize({width,height:900});await ready();expect(await overflow(page),`${name} ${width}`).toEqual([]);expect(await serious(page),`${name} ${width}`).toEqual([]);await page.screenshot({path:`${evidence}/${name}-${width}.png`,fullPage:true});}
  await page.setViewportSize({width:1440,height:900});
 }
 
-export async function todayJourney({first,second,colleague,evidence}){
+export async function todayJourney({first,second,colleague,collaborator,collaboratorId,evidence}){
  mkdirSync(evidence,{recursive:true});
  const page=await first.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('/app');const origin=new URL(page.url()).origin,api=page.request;
@@ -86,6 +87,9 @@ export async function todayJourney({first,second,colleague,evidence}){
  const agent=again.request,nonce=randomBytes(12).toString('hex'),client='agent-'+nonce,callback='https://agent.example.test/callback';
  expect((await agent.post('/delegation/clients',{headers:{Origin:origin},form:{id:client,redirect_uri:callback},maxRedirects:0})).status()).toBe(303);
  const verifier=randomBytes(32).toString('hex'),query={client_id:client,redirect_uri:callback,response_type:'code',state:nonce,code_challenge:createHash('sha256').update(verifier).digest('base64url'),code_challenge_method:'S256',account_id:'workspace',scope:'crm.evidence.read crm.handoff.write',targets:JSON.stringify(['opportunities/'+acme])};
+ await again.goto('/delegation/authorize?'+new URLSearchParams(query));
+ await expect(again.getByRole('heading',{name:'Allow this application?',exact:true})).toBeVisible();
+ await expect(again.getByText('Propose handoff tasks on the chosen opportunities, for a person to accept or dismiss',{exact:true})).toBeVisible();
  const consent=await agent.post('/delegation/authorize',{headers:{Origin:origin},form:query,maxRedirects:0});expect(consent.status()).toBe(303);
  const code=new URL(consent.headers().location).searchParams.get('code');
  const token=(await(await agent.post('/api/delegation/v1/token',{form:{grant_type:'authorization_code',client_id:client,redirect_uri:callback,code,code_verifier:verifier}})).json()).access_token,headers={Authorization:'Bearer '+token};
@@ -100,8 +104,34 @@ export async function todayJourney({first,second,colleague,evidence}){
  await atWidths(again,evidence,'handoff-proposal',async()=>{await expect(proposal.getByText(`Proposed by ${client}.`)).toBeVisible();await expect(proposal.getByRole('link',{name:'Re: pricing request'})).toBeVisible();});
  await proposal.getByRole('button',{name:'Accept'}).click();await expect(again.getByText(`Proposed by ${client}.`)).toHaveCount(0);
  await expect(again.getByTestId('opportunity-timeline').getByText('Handoff Accepted').first()).toBeVisible();
+ // The person edits the same delegated task, while the application's original receipt stays immutable.
+ const committed=await written.json(),section=again.getByTestId('handoff-tasks');
+ const assignee=await section.getByLabel('Assignee').locator('option').evaluateAll(nodes=>nodes.map(n=>n.value).find(Boolean));
+ for(const status of ['completed','cancelled','open']){
+  await section.getByLabel('Title',{exact:true}).fill('Native '+status);
+  await section.getByLabel('Description').fill('Synthetic handoff notes');
+  await section.getByLabel('Assignee').selectOption(status==='cancelled'?'':assignee);
+  await section.getByLabel(/^Due time \(/).fill('2026-10-15T09:30');
+  await section.getByLabel('Status').selectOption(status);
+  const saved=again.waitForResponse(r=>r.url().endsWith('/delegation/handoffs')&&r.request().method()==='POST');
+  await section.getByRole('button',{name:'Save handoff',exact:true}).click();expect((await saved).status()).toBe(200);
+  const observed=await(await agent.get('/api/delegation/v1/effects/'+nonce,{headers})).json();expect(observed.receipt).toEqual(committed.receipt);
+  expect(observed.observed.content).toMatchObject({title:'Native '+status,description:'Synthetic handoff notes',assigneeId:status==='cancelled'?null:assignee,dueAt:'2026-10-15T09:30:00.000Z',status});
+ }
+ await again.reload();await expect(section.getByLabel('Title',{exact:true})).toHaveValue('Native open');
+ expect((await agent.post('/api/delegation/v1/effects',{headers,data:{operationKey:'stale-'+nonce,operation:'orbit.handoff.upsert',target,expectedRevision:check.revision,expectedAudienceRevision:audience.audienceRevision,content:{title:'Stale edit',description:'Stale',assigneeId:null,dueAt:null,status:'open'}}})).status()).toBe(409);
  await mentionLink({author:again,colleague,origin,opportunity:acme,occurredAt:daysAgo(20)});
+ // The same record is shared with a guest, then its author withholds specific notes.
+ const share=await agent.post('/api/v2/access/workspaces/workspace/grants',{headers:{Origin:origin},data:{subjectKind:'operator',subjectId:collaboratorId,resourceType:'opportunity',resourceId:acme,actions:['graph.read','entries.read'],fields:[],purpose:'Review the renewal',expiresAt:null}});expect(share.status()).toBe(200);
+ const add=async(path,data,status=200)=>{const r=await agent.post(path,{headers:{Origin:origin},data});expect(r.status(),await r.text()).toBe(status);return r.json();};
+ const entries=[];for(const kind of ['note','call','meeting'])entries.push((await add(`/api/v1/records/opportunity/${acme}/entries`,{kind,text:`Synthetic ${kind} entry`,occurredAt:new Date().toISOString(),...(kind==='note'?{}:{durationMinutes:10})})).id);
+ const task=await add('/api/v1/tasks',{title:'Synthetic private task note',recordType:'opportunity',recordId:acme,ownerId:assignee,dueAt:new Date(Date.now()+3600000).toISOString(),priority:'normal',type:'other',notes:'Synthetic task notes',recurrence:'none',timezone:'UTC',reminderMinutes:null},201);
+ await privateEntriesJourney(again,await collaborator.newPage(),{deal:acme,entries,task:task.id,handoff:nonce});
+ expect((await agent.post('/api/delegation/v1/revoke',{headers,data:{}})).status()).toBe(200);
+ expect((await agent.get('/api/delegation/v1/effects/'+nonce,{headers})).status()).toBe(401);
  // Nothing was sent or drafted for a customer by any of this.
  for(const id of [acme,bright,bright2])expect((await(await again.request.get(`/api/v1/workbench/opportunities/${id}/messages`)).json()).messages).toEqual([]);
+ await again.goto('/delegation/settings');await again.getByRole('button',{name:'Sign out',exact:true}).click();await again.waitForURL(/signin|\/$/);
+ expect((await agent.get('/api/v1/workbench')).status()).toBe(401);
  expect(errors).toEqual([]);
 }

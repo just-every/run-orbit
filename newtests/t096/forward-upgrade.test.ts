@@ -1,3 +1,6 @@
+import {activeTransferUpgrade} from './active-transfer-upgrade';
+import {proveArchiveLineage} from './archive-lineage-proof';
+import {acceptedMain} from './main-fixture';
 import {recordMailForwardUpgrade} from '../../tests/support/record-mail-upgrade';
 import {issueNativeCredential} from '../../tests/support/api-credentials-proof';
 import {ownershipStartingUpgrades} from './ownership-upgrade';
@@ -49,4 +52,4 @@ test('API-002 credential storage and RECORD-016 ownership and accepted main and 
  assert.deepEqual((await db.prepare('SELECT id,removed_at FROM signal_sources').all()).results,JSON.parse(before.get('signal_sources')!.rows).map((row:{id:string})=>({id:row.id,removed_at:null})),'An upgrade keeps every existing source available until its owner removes it');
  assert.deepEqual((await db.prepare("SELECT type,name,sql FROM sqlite_master WHERE name IN('owner_custom','owner_custom_amount') ORDER BY name").all()).results,ddl);assert.deepEqual((await db.prepare('PRAGMA foreign_key_check').all()).results,[]);
  const auth=await createDependencies(db).auth.authenticate(cookie);assert.ok(auth);assert.equal(auth.operatorId,owner);assert.equal(await isFullOperator(db,owner),true);const access=new AccessService(db),context=await access.resolveOperatorContext(auth,'workspace','forward'),graph=new GraphRecords(db,access,domainEventStatements);assert.equal((await graph.getRecord(context,{...context,type:'opportunity',id:opportunity},['score','value_cents'])).fields.score,63);assert.equal(await db.prepare('SELECT hex(payload) FROM owner_custom').first('hex(payload)'),'00FF80010D0A');assert.equal(await db.prepare('SELECT twice FROM owner_custom').first('twice'),14);assert.equal(await db.prepare("SELECT count(*) n FROM pragma_table_xinfo('contacts') WHERE hidden<>1").first('n'),100);await assert.rejects(db.prepare(`CREATE TABLE refused_101(${Array.from({length:101},(_,i)=>`c_${i} TEXT`).join(',')})`).run());assert.equal(await db.prepare("SELECT name FROM sqlite_master WHERE name='refused_101'").first(),null);
- }finally{await target.dispose();}await proveReleasedForecastUpgrade();await dashboardStartingUpgrade();await ownershipStartingUpgrades();await recordMailForwardUpgrade();});
+ }finally{await target.dispose();}await proveReleasedForecastUpgrade();await dashboardStartingUpgrade();await ownershipStartingUpgrades();await recordMailForwardUpgrade();await activeTransferUpgrade();await proveArchiveLineage(acceptedMain);});

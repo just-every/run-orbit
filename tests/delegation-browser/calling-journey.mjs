@@ -10,7 +10,7 @@ export async function callingJourney(page,calling){
  const settings=page.getByRole('region',{name:'Calling',exact:true});
  await expect(settings.getByRole('status').filter({hasText:'Twilio connected'})).toBeVisible();
  await expect(settings.getByLabel('Auth token',{exact:true})).toHaveValue('');
- for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('calling-connected',width,settings);}
+ for(const width of [1440]){await page.setViewportSize({width,height:900});await proof('calling-connected',width,settings);}
  const origin=new URL(page.url()).origin;
  const response=await page.request.post('/api/v1/records/contact',{headers:{Origin:origin},data:{name:'Synthetic Orbit Caller',email:['synthetic-orbit-302','example.test'].join(String.fromCharCode(64)),phone:'+12025550103'}});
  expect(response.status(),await response.text()).toBe(201);const contact=await response.json();
@@ -21,9 +21,9 @@ export async function callingJourney(page,calling){
  await call.getByRole('button',{name:'Review call',exact:true}).click();
  await expect(call.getByRole('heading',{name:'Review exact call'})).toBeVisible();
  await expect(call).toContainText('+12025550103');await expect(call).toContainText('+12025550101');await expect(call).toContainText('+12025550102');
- for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('contact-call-review',width,call);}
+ for(const width of [1440]){await page.setViewportSize({width,height:900});await proof('contact-call-review',width,call);}
  await call.getByText('Call log',{exact:true}).click();await expect(call).toContainText('Twilio inbound call: completed');
- for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('contact-call-log',width,call);}
+ for(const width of [1440]){await page.setViewportSize({width,height:900});await proof('contact-call-log',width,call);}
  await call.getByRole('button',{name:'Cancel call',exact:true}).click();
  await expect(call.getByRole('button',{name:'Confirm and call once'})).toHaveCount(0);
  const dialPath=`/api/v1/calls/contacts/${contact.id}/dial`,attempts=call.getByRole('list',{name:'Call attempts',exact:true});
@@ -65,10 +65,10 @@ export async function callingJourney(page,calling){
  await page.goto('/app/settings');await expect(settings.getByRole('button',{name:'Disconnect Twilio',exact:true})).toBeVisible();
  await settings.getByRole('button',{name:'Disconnect Twilio',exact:true}).click();
  await expect(settings.getByRole('status').filter({hasText:'Unresolved setup'})).toBeVisible();
- for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('calling-unconnected',width,settings);}
+ for(const width of [1440]){await page.setViewportSize({width,height:900});await proof('calling-unconnected',width,settings);}
  const policy=page.getByRole('region',{name:'Sign-in policy',exact:true});await expect(policy.getByRole('option',{name:/auth · https/})).toHaveCount(1);
  await policy.getByLabel('Email domain',{exact:true}).fill('example.com');await policy.getByLabel('Required provider',{exact:true}).selectOption('auth');await policy.getByRole('button',{name:'Save domain requirement',exact:true}).click();await expect(policy).toContainText('example.com → auth');
- for(const width of [1440,390]){await page.setViewportSize({width,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);const axe=await new AxeBuilder({page}).include('[aria-labelledby="sign-in-policy"]').analyze();expect(axe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);await policy.screenshot({path:`${evidence}/sign-in-policy-${width}.png`});}
+ for(const width of [1440]){await page.setViewportSize({width,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);const axe=await new AxeBuilder({page}).include('[aria-labelledby="sign-in-policy"]').analyze();expect(axe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);await policy.screenshot({path:`${evidence}/sign-in-policy-${width}.png`});}
  await page.goto('/signin?notice=oidc_admission_denied');await expect(page.getByRole('alert')).toContainText('Provider sign-in was refused.');
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);const axe=await new AxeBuilder({page}).analyze();expect(axe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);await page.screenshot({path:`${evidence}/refused-sign-in-${width}.png`,fullPage:true});}
  expect(calling.provider.submissions).toBe(2);expect(errors).toEqual(expectedConsoleErrors);

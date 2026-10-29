@@ -1,47 +1,158 @@
 import assert from 'node:assert/strict';
-import {expect,type Browser} from '@playwright/test';
-import {accessible,watchBrowser} from './browser-observations';
-import {formEmbedCode} from '../../src/core/features/forms/embed-code';
+import { expect, type Browser } from '@playwright/test';
+import { accessible, watchBrowser } from './browser-observations';
+import { formEmbedCode } from '../../src/core/features/forms/embed-code';
 /** Build a mapped form through its editor, publish the reviewed artifact and submit it. */
-export async function formMappingBrowserJourney(browser:Browser,origin:string,directory:string,cookie:string,operators:string[],cookies:Record<string,string>={}){
- for(const width of [1440,390]){
-  const context=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),errors=watchBrowser(context),page=await context.newPage();
-  const visitor=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true}),visitorErrors=watchBrowser(visitor),publicPage=await visitor.newPage(),requests:string[]=[];visitor.on('request',request=>requests.push(request.url()));
-  try{
-   await page.goto('/app/forms');await expect(page.getByLabel('New deal pipeline and stage',{exact:true}).locator('option').first()).toBeAttached();
-   await page.getByLabel('Page title',{exact:true}).fill(`Manufacturing consultation ${width}`);await page.getByLabel('Page heading',{exact:true}).fill('Plan your production rollout');await page.getByLabel('Form title',{exact:true}).fill('Talk with Northstar');await page.getByLabel('Page text',{exact:true}).fill('Tell us about the team and we will review your enquiry.');await page.getByLabel('Optional consent wording').fill('Send consultation updates');
-   await page.getByRole('button',{name:'Add visitor field',exact:true}).click();const company=page.locator('fieldset').filter({has:page.locator('legend').filter({hasText:/^Field 4$/})}).last();
-   await company.getByLabel('Field label',{exact:true}).fill('Company name');await company.getByLabel('Field identifier',{exact:true}).fill('business');await company.getByLabel('Save to',{exact:true}).selectOption('company');await company.getByLabel('Property',{exact:true}).selectOption('name');
-   await page.getByRole('button',{name:'Add visitor field',exact:true}).click();const seats=page.locator('fieldset').filter({has:page.locator('legend').filter({hasText:/^Field 5$/})}).last();
-   await seats.getByLabel('Field label',{exact:true}).fill('Required seats');await seats.getByLabel('Field identifier',{exact:true}).fill('seats');await seats.getByLabel('Save to',{exact:true}).selectOption('contact');await seats.getByLabel('Property',{exact:true}).selectOption('custom');await seats.getByLabel('Custom property key',{exact:true}).fill('seats');await seats.getByLabel('Custom property type',{exact:true}).selectOption('number');
-   const added=async(number:number,label:string,id:string,kind:string)=>{await page.getByRole('button',{name:'Add visitor field',exact:true}).click();const field=page.locator('fieldset').filter({has:page.locator('legend').filter({hasText:new RegExp(`^Field ${number}$`)})}).last();await field.getByLabel('Field label',{exact:true}).fill(label);await field.getByLabel('Field identifier',{exact:true}).fill(id);await field.getByLabel('Field type',{exact:true}).selectOption(kind);return field;};
-   const custom=async(field:ReturnType<typeof page.locator>,recordType:string,key:string)=>{await field.getByLabel('Save to',{exact:true}).selectOption(recordType);await field.getByLabel('Property',{exact:true}).selectOption('custom');await field.getByLabel('Custom property key',{exact:true}).fill(key);};
-   const planField=await added(6,'Plan','plan','picklist');await planField.getByLabel('Choices, one per line',{exact:true}).fill('Pilot\nRollout\n');await planField.getByLabel('Required',{exact:true}).check();await custom(planField,'contact','plan');
-   const campaignField=await added(7,'Campaign','campaign','query');await campaignField.getByLabel('Query parameter',{exact:true}).fill('utm_campaign');await expect(campaignField.getByLabel('Required',{exact:true})).toBeDisabled();await custom(campaignField,'contact','campaign');
-   const sourceField=await added(8,'Lead source','source','fixed');await sourceField.getByLabel('Fixed value',{exact:true}).fill('Website consultation');await custom(sourceField,'opportunity','lead_source');
-   await page.getByLabel('Match or create a company by exact business email domain').check();await page.getByLabel('Assignment',{exact:true}).selectOption('round_robin');await page.getByLabel('Selected operators',{exact:true}).selectOption(operators);
-   await accessible(page,`form-mapping-builder-${width}`,directory);await page.getByRole('button',{name:'Save form text',exact:true}).click();await expect(page.getByRole('button',{name:'Compile saved revision',exact:true})).toBeEnabled();await page.getByLabel('Public path',{exact:true}).fill(`mapped-browser-${width}`);await page.getByLabel('Publication expires',{exact:true}).fill(new Date(Date.now()+86400000).toISOString().slice(0,16));await page.getByRole('button',{name:'Compile saved revision',exact:true}).click();await expect(page.getByRole('heading',{name:'Review exact publication',exact:true})).toBeVisible();const hidden=page.getByRole('region',{name:'Hidden values',exact:true});await expect(hidden.getByRole('listitem')).toHaveText(['Campaign: page parameter “utm_campaign”','Lead source: fixed value “Website consultation”']);await accessible(page,`form-hidden-review-${width}`,directory);await page.getByRole('button',{name:'Approve reviewed page',exact:true}).click();await expect(page.getByRole('button',{name:'Publish approved page',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Publish approved page',exact:true}).click();await expect(page.getByRole('link',{name:'Open published page',exact:true})).toBeVisible();
-   await publicPage.goto(`/p/mapped-browser-${width}?utm_campaign=spring-${width}&owner=forged`);await expect(publicPage.getByLabel('Plan',{exact:true}).locator('option')).toHaveText(['Choose an option','Pilot','Rollout']);assert.equal(await publicPage.locator('[name="campaign"],[name="source"],[name="owner"]').count(),0);await publicPage.getByLabel('Name',{exact:true}).fill(`Avery Stone ${width}`);await publicPage.getByLabel('Email',{exact:true}).fill(`synthetic-orbit-${width}@northstar-mapped.test`);await publicPage.getByLabel('Message',{exact:true}).fill('We need a rollout consultation for our production team.');await publicPage.getByLabel('Company name',{exact:true}).fill('Northstar Manufacturing');await publicPage.getByLabel('Required seats',{exact:true}).fill('24');await publicPage.getByLabel('Send consultation updates',{exact:true}).check();await expect(publicPage.getByRole('button',{name:'Submit enquiry',exact:true})).toBeEnabled();await publicPage.getByRole('button',{name:'Submit enquiry',exact:true}).click();assert.equal(await publicPage.getByLabel('Plan',{exact:true}).evaluate((element:HTMLSelectElement)=>element.validity.valueMissing),true,'a required picklist needs a published choice');await publicPage.getByLabel('Plan',{exact:true}).selectOption('Rollout');await accessible(publicPage,`form-mapping-hosted-${width}`,directory);
-   // Every local browser shares one visitor network, whose ten counted enquiries a minute the earlier
-   // public form journeys already use; each width therefore sends one: hosted at 1440, framed at 390.
-   const framed=width===390,email=`synthetic-orbit-${width}@${framed?'framed':'northstar'}-mapped.test`,campaign=`${framed?'framed':'spring'}-${width}`,plan=framed?'Pilot':'Rollout',sent={name:`${framed?'Framed':'Avery'} Stone ${width}`,email,message:framed?'':'We need a rollout consultation for our production team.',business:`${framed?'Framed':'Northstar'} Manufacturing`,seats:'24',plan,campaign};
-   if(!framed){const posted=publicPage.waitForRequest(request=>request.method()==='POST'&&new URL(request.url()).pathname===`/api/public/forms/mapped-browser-${width}`);await publicPage.getByRole('button',{name:'Submit enquiry',exact:true}).click();assert.deepEqual(JSON.parse((await posted).postData()!).values,sent,'the page sends visible fields and declared parameters only');await expect(publicPage.getByRole('status')).toContainText('Your enquiry was received');await accessible(publicPage,`form-mapping-received-${width}`,directory);}
-   else{
-    // Framed on an allowlisted HTTPS site, the reviewed embed forwards only the declared page parameter.
-    const site='https://northstar-embed.test',allowed=await context.request.put('/api/v1/settings/form-embedding',{headers:{Origin:origin},data:{origins:[site]}});assert.ok(allowed.ok(),await allowed.text());const recipe=await (await context.request.get('/api/v1/sources/recipe-context')).json(),published=recipe.forms.find((form:any)=>form.slug===`mapped-browser-${width}`);assert.deepEqual(published.parameters,['utm_campaign']);
-    const embedder=await browser.newContext({viewport:{width,height:1000},ignoreHTTPSErrors:true}),embedderErrors=watchBrowser(embedder),embedded:string[]=[];embedder.on('request',request=>embedded.push(new URL(request.url()).origin));try{
-     // The test worker listens on loopback; a public embedding site needs Chrome's local network permission.
-     await embedder.grantPermissions(['local-network-access'],{origin:site});
-     await embedder.route(`${site}/**`,route=>route.fulfill({contentType:'text/html; charset=utf-8',body:`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Northstar consultation</title></head><body><main><h1>Northstar consultation</h1>${formEmbedCode(origin,published)}</main></body></html>`}));
-     const host=await embedder.newPage();await host.goto(`${site}/consultation?utm_campaign=${campaign}&owner=forged`);const frame=host.frameLocator('iframe[title="Contact form"]');await frame.getByLabel('Name',{exact:true}).fill(sent.name);await frame.getByLabel('Email',{exact:true}).fill(email);await frame.getByLabel('Company name',{exact:true}).fill(sent.business);await frame.getByLabel('Required seats',{exact:true}).fill('24');await frame.getByLabel('Plan',{exact:true}).selectOption(plan);await frame.getByLabel('Send consultation updates',{exact:true}).check();await expect(frame.getByRole('button',{name:'Submit enquiry',exact:true})).toBeEnabled();await accessible(host,`form-hidden-framed-${width}`,directory);
-     const posted=host.waitForRequest(request=>request.method()==='POST'&&new URL(request.url()).pathname===`/api/public/forms/mapped-browser-${width}`);await frame.getByRole('button',{name:'Submit enquiry',exact:true}).click();assert.deepEqual(JSON.parse((await posted).postData()!).values,sent,'the framed page sends visible fields and the forwarded declared parameter only');await expect(frame.getByRole('status')).toContainText('Your enquiry was received');await accessible(host,`form-mapping-received-${width}`,directory);
-     assert.deepEqual(await embedder.cookies(),[]);assert.deepEqual([...new Set(embedded)].sort(),[origin,site].sort());await embedderErrors.check(directory,`form-hidden-framed-${width}`);
-    }finally{await embedder.close();}
-   }
-   assert.deepEqual(await visitor.cookies(),[]);assert.ok(requests.every(url=>new URL(url).origin===origin));
-   const listed=await context.request.get(`/api/v1/records/contact?q=${encodeURIComponent(email)}`);assert.ok(listed.ok());const rows=await listed.json();const contact=(rows.records??rows).find((row:any)=>row.email===email);assert.ok(contact);const detail=await context.request.get(`/api/v1/records/contact/${contact.id}`),record=await detail.json();assert.ok(operators.includes(record.ownership.ownerId));assert.deepEqual(JSON.parse(record.record.custom_fields_json),{seats:24,plan,campaign});assert.ok(record.record.company_id);
-   const inboxContext=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookies[record.ownership.ownerId]??cookie}});try{const inbox=await inboxContext.newPage();await inbox.goto('/app/notifications');await inbox.getByLabel('Notification type',{exact:true}).selectOption('assignment');const href=`/app/records?kind=contact&record=${contact.id}`,notifications=await(await inboxContext.request.get('/api/v1/notifications')).json(),notification=notifications.notifications.find((item:any)=>item.kind==='form.submitted'&&item.href===href);assert.ok(notification);await inbox.locator('.notification-list li').filter({has:inbox.locator(`a[href="${href}"]`)}).first().getByRole('link').click();await expect(inbox.getByRole('heading',{name:record.record.name,exact:true,level:1})).toBeVisible();await expect.poll(async()=>(await(await inboxContext.request.get('/api/v1/notifications')).json()).notifications.find((item:any)=>item.id===notification.id)?.readAt).toBeTruthy();await accessible(inbox,`form-mapping-notification-${width}`,directory);}finally{await inboxContext.close();}
-   await errors.check(directory,`form-mapping-builder-${width}`);await visitorErrors.check(directory,`form-mapping-public-${width}`);
-  }finally{await visitor.close();await context.close();}
- }
+export async function formMappingBrowserJourney(browser: Browser, origin: string, directory: string, cookie: string, operators: string[], cookies: Record<string, string> = {}) {
+    {
+        const width = 1440;
+        const context = await browser.newContext({ baseURL: origin, viewport: { width, height: 1000 }, ignoreHTTPSErrors: true, extraHTTPHeaders: { Cookie: cookie } }), errors = watchBrowser(context), page = await context.newPage();
+        const visitor = await browser.newContext({ baseURL: origin, viewport: { width, height: 1000 }, ignoreHTTPSErrors: true }), visitorErrors = watchBrowser(visitor), publicPage = await visitor.newPage(), requests: string[] = [];
+        visitor.on('request', request => requests.push(request.url()));
+        try {
+            await page.goto('/app/forms');
+            await expect(page.getByLabel('New deal pipeline and stage', { exact: true }).locator('option').first()).toBeAttached();
+            await page.getByLabel('Page title', { exact: true }).fill(`Manufacturing consultation ${width}`);
+            await page.getByLabel('Page heading', { exact: true }).fill('Plan your production rollout');
+            await page.getByLabel('Form title', { exact: true }).fill('Talk with Northstar');
+            await page.getByLabel('Page text', { exact: true }).fill('Tell us about the team and we will review your enquiry.');
+            await page.getByLabel('Optional consent wording').fill('Send consultation updates');
+            await page.getByRole('button', { name: 'Add visitor field', exact: true }).click();
+            const company = page.locator('fieldset').filter({ has: page.locator('legend').filter({ hasText: /^Field 4$/ }) }).last();
+            await company.getByLabel('Field label', { exact: true }).fill('Company name');
+            await company.getByLabel('Field identifier', { exact: true }).fill('business');
+            await company.getByLabel('Save to', { exact: true }).selectOption('company');
+            await company.getByLabel('Property', { exact: true }).selectOption('name');
+            await page.getByRole('button', { name: 'Add visitor field', exact: true }).click();
+            const seats = page.locator('fieldset').filter({ has: page.locator('legend').filter({ hasText: /^Field 5$/ }) }).last();
+            await seats.getByLabel('Field label', { exact: true }).fill('Required seats');
+            await seats.getByLabel('Field identifier', { exact: true }).fill('seats');
+            await seats.getByLabel('Save to', { exact: true }).selectOption('contact');
+            await seats.getByLabel('Property', { exact: true }).selectOption('custom');
+            await seats.getByLabel('Custom property key', { exact: true }).fill('seats');
+            await seats.getByLabel('Custom property type', { exact: true }).selectOption('number');
+            const added = async (number: number, label: string, id: string, kind: string) => { await page.getByRole('button', { name: 'Add visitor field', exact: true }).click(); const field = page.locator('fieldset').filter({ has: page.locator('legend').filter({ hasText: new RegExp(`^Field ${number}$`) }) }).last(); await field.getByLabel('Field label', { exact: true }).fill(label); await field.getByLabel('Field identifier', { exact: true }).fill(id); await field.getByLabel('Field type', { exact: true }).selectOption(kind); return field; };
+            const custom = async (field: ReturnType<typeof page.locator>, recordType: string, key: string) => { await field.getByLabel('Save to', { exact: true }).selectOption(recordType); await field.getByLabel('Property', { exact: true }).selectOption('custom'); await field.getByLabel('Custom property key', { exact: true }).fill(key); };
+            const planField = await added(6, 'Plan', 'plan', 'picklist');
+            await planField.getByLabel('Choices, one per line', { exact: true }).fill('Pilot\nRollout\n');
+            await planField.getByLabel('Required', { exact: true }).check();
+            await custom(planField, 'contact', 'plan');
+            const campaignField = await added(7, 'Campaign', 'campaign', 'query');
+            await campaignField.getByLabel('Query parameter', { exact: true }).fill('utm_campaign');
+            await expect(campaignField.getByLabel('Required', { exact: true })).toBeDisabled();
+            await custom(campaignField, 'contact', 'campaign');
+            const sourceField = await added(8, 'Lead source', 'source', 'fixed');
+            await sourceField.getByLabel('Fixed value', { exact: true }).fill('Website consultation');
+            await custom(sourceField, 'opportunity', 'lead_source');
+            await page.getByLabel('Match or create a company by exact business email domain').check();
+            await page.getByLabel('Assignment', { exact: true }).selectOption('round_robin');
+            await page.getByLabel('Selected operators', { exact: true }).selectOption(operators);
+            await accessible(page, `form-mapping-builder-${width}`, directory);
+            await page.getByRole('button', { name: 'Save form text', exact: true }).click();
+            await expect(page.getByRole('button', { name: 'Compile saved revision', exact: true })).toBeEnabled();
+            await page.getByLabel('Public path', { exact: true }).fill(`mapped-browser-${width}`);
+            await page.getByLabel('Publication expires', { exact: true }).fill(new Date(Date.now() + 86400000).toISOString().slice(0, 16));
+            await page.getByRole('button', { name: 'Compile saved revision', exact: true }).click();
+            await expect(page.getByRole('heading', { name: 'Review exact publication', exact: true })).toBeVisible();
+            const hidden = page.getByRole('region', { name: 'Hidden values', exact: true });
+            await expect(hidden.getByRole('listitem')).toHaveText(['Campaign: page parameter “utm_campaign”', 'Lead source: fixed value “Website consultation”']);
+            await accessible(page, `form-hidden-review-${width}`, directory);
+            await page.getByRole('button', { name: 'Approve reviewed page', exact: true }).click();
+            await expect(page.getByRole('button', { name: 'Publish approved page', exact: true })).toBeEnabled();
+            await page.getByRole('button', { name: 'Publish approved page', exact: true }).click();
+            await expect(page.getByRole('link', { name: 'Open published page', exact: true })).toBeVisible();
+            await publicPage.goto(`/p/mapped-browser-${width}?utm_campaign=spring-${width}&owner=forged`);
+            await expect(publicPage.getByLabel('Plan', { exact: true }).locator('option')).toHaveText(['Choose an option', 'Pilot', 'Rollout']);
+            assert.equal(await publicPage.locator('[name="campaign"],[name="source"],[name="owner"]').count(), 0);
+            await publicPage.getByLabel('Name', { exact: true }).fill(`Avery Stone ${width}`);
+            await publicPage.getByLabel('Email', { exact: true }).fill(`synthetic-orbit-${width}@northstar-mapped.test`);
+            await publicPage.getByLabel('Message', { exact: true }).fill('We need a rollout consultation for our production team.');
+            await publicPage.getByLabel('Company name', { exact: true }).fill('Northstar Manufacturing');
+            await publicPage.getByLabel('Required seats', { exact: true }).fill('24');
+            await publicPage.getByLabel('Send consultation updates', { exact: true }).check();
+            await expect(publicPage.getByRole('button', { name: 'Submit enquiry', exact: true })).toBeEnabled();
+            await publicPage.getByRole('button', { name: 'Submit enquiry', exact: true }).click();
+            assert.equal(await publicPage.getByLabel('Plan', { exact: true }).evaluate((element: HTMLSelectElement) => element.validity.valueMissing), true, 'a required picklist needs a published choice');
+            await publicPage.getByLabel('Plan', { exact: true }).selectOption('Rollout');
+            await accessible(publicPage, `form-mapping-hosted-${width}`, directory);
+            for (const framed of [false, true]) {
+                const email = `synthetic-orbit-${width}@${framed ? 'framed' : 'northstar'}-mapped.test`, campaign = `${framed ? 'framed' : 'spring'}-${width}`, plan = framed ? 'Pilot' : 'Rollout', sent = { name: `${framed ? 'Framed' : 'Avery'} Stone ${width}`, email, message: framed ? '' : 'We need a rollout consultation for our production team.', business: `${framed ? 'Framed' : 'Northstar'} Manufacturing`, seats: '24', plan, campaign };
+                if (!framed) {
+                    const posted = publicPage.waitForRequest(request => request.method() === 'POST' && new URL(request.url()).pathname === `/api/public/forms/mapped-browser-${width}`);
+                    await publicPage.getByRole('button', { name: 'Submit enquiry', exact: true }).click();
+                    assert.deepEqual(JSON.parse((await posted).postData()!).values, sent, 'the page sends visible fields and declared parameters only');
+                    await expect(publicPage.getByRole('status')).toContainText('Your enquiry was received');
+                    await accessible(publicPage, `form-mapping-received-${width}`, directory);
+                }
+                else {
+                    // Framed on an allowlisted HTTPS site, the reviewed embed forwards only the declared page parameter.
+                    const site = 'https://northstar-embed.test', allowed = await context.request.put('/api/v1/settings/form-embedding', { headers: { Origin: origin }, data: { origins: [site] } });
+                    assert.ok(allowed.ok(), await allowed.text());
+                    const recipe = await (await context.request.get('/api/v1/sources/recipe-context')).json(), published = recipe.forms.find((form: any) => form.slug === `mapped-browser-${width}`);
+                    assert.deepEqual(published.parameters, ['utm_campaign']);
+                    const embedder = await browser.newContext({ viewport: { width, height: 1000 }, ignoreHTTPSErrors: true }), embedderErrors = watchBrowser(embedder), embedded: string[] = [];
+                    embedder.on('request', request => embedded.push(new URL(request.url()).origin));
+                    try {
+                        // The test worker listens on loopback; a public embedding site needs Chrome's local network permission.
+                        await embedder.grantPermissions(['local-network-access'], { origin: site });
+                        await embedder.route(`${site}/**`, route => route.fulfill({ contentType: 'text/html; charset=utf-8', body: `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Northstar consultation</title></head><body><main><h1>Northstar consultation</h1>${formEmbedCode(origin, published)}</main></body></html>` }));
+                        const host = await embedder.newPage();
+                        await host.goto(`${site}/consultation?utm_campaign=${campaign}&owner=forged`);
+                        const frame = host.frameLocator('iframe[title="Contact form"]');
+                        await frame.getByLabel('Name', { exact: true }).fill(sent.name);
+                        await frame.getByLabel('Email', { exact: true }).fill(email);
+                        await frame.getByLabel('Company name', { exact: true }).fill(sent.business);
+                        await frame.getByLabel('Required seats', { exact: true }).fill('24');
+                        await frame.getByLabel('Plan', { exact: true }).selectOption(plan);
+                        await frame.getByLabel('Send consultation updates', { exact: true }).check();
+                        await expect(frame.getByRole('button', { name: 'Submit enquiry', exact: true })).toBeEnabled();
+                        await accessible(host, `form-hidden-framed-${width}`, directory);
+                        const posted = host.waitForRequest(request => request.method() === 'POST' && new URL(request.url()).pathname === `/api/public/forms/mapped-browser-${width}`);
+                        await frame.getByRole('button', { name: 'Submit enquiry', exact: true }).click();
+                        assert.deepEqual(JSON.parse((await posted).postData()!).values, sent, 'the framed page sends visible fields and the forwarded declared parameter only');
+                        await expect(frame.getByRole('status')).toContainText('Your enquiry was received');
+                        await accessible(host, `form-mapping-received-${width}`, directory);
+                        assert.deepEqual(await embedder.cookies(), []);
+                        assert.deepEqual([...new Set(embedded)].sort(), [origin, site].sort());
+                        await embedderErrors.check(directory, `form-hidden-framed-${width}`);
+                    }
+                    finally {
+                        await embedder.close();
+                    }
+                }
+                assert.deepEqual(await visitor.cookies(), []);
+                assert.ok(requests.every(url => new URL(url).origin === origin));
+                const listed = await context.request.get(`/api/v1/records/contact?q=${encodeURIComponent(email)}`);
+                assert.ok(listed.ok());
+                const rows = await listed.json();
+                const contact = (rows.records ?? rows).find((row: any) => row.email === email);
+                assert.ok(contact);
+                const detail = await context.request.get(`/api/v1/records/contact/${contact.id}`), record = await detail.json();
+                assert.ok(operators.includes(record.ownership.ownerId));
+                assert.deepEqual(JSON.parse(record.record.custom_fields_json), { seats: 24, plan, campaign });
+                assert.ok(record.record.company_id);
+                const inboxContext = await browser.newContext({ baseURL: origin, viewport: { width, height: 1000 }, ignoreHTTPSErrors: true, extraHTTPHeaders: { Cookie: cookies[record.ownership.ownerId] ?? cookie } });
+                try {
+                    const inbox = await inboxContext.newPage();
+                    await inbox.goto('/app/notifications');
+                    await inbox.getByLabel('Notification type', { exact: true }).selectOption('assignment');
+                    const href = `/app/records?kind=contact&record=${contact.id}`, notifications = await (await inboxContext.request.get('/api/v1/notifications')).json(), notification = notifications.notifications.find((item: any) => item.kind === 'form.submitted' && item.href === href);
+                    assert.ok(notification);
+                    await inbox.locator('.notification-list li').filter({ has: inbox.locator(`a[href="${href}"]`) }).first().getByRole('link').click();
+                    await expect(inbox.getByRole('heading', { name: record.record.name, exact: true, level: 1 })).toBeVisible();
+                    await expect.poll(async () => (await (await inboxContext.request.get('/api/v1/notifications')).json()).notifications.find((item: any) => item.id === notification.id)?.readAt).toBeTruthy();
+                    await accessible(inbox, `form-mapping-notification-${width}`, directory);
+                }
+                finally {
+                    await inboxContext.close();
+                }
+            }
+            await errors.check(directory, `form-mapping-builder-${width}`);
+            await visitorErrors.check(directory, `form-mapping-public-${width}`);
+        }
+        finally {
+            await visitor.close();
+            await context.close();
+        }
+    }
 }

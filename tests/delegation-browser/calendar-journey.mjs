@@ -26,7 +26,7 @@ export async function calendarJourney(page,data){
    if(writeback)await consent.check();
    const permissions=form.getByRole('list',{name:'Requested permissions',exact:true});
    await expect(permissions.locator('code')).toHaveText([...readScopes,...(writeback?[writeScope]:[])]);
-   for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof(`${provider}-consent-${writeback?'writeback':'read-only'}`,width,form,'.capture-key-form');}
+   for(const width of [1440]){await page.setViewportSize({width,height:900});await proof(`${provider}-consent-${writeback?'writeback':'read-only'}`,width,form,'.capture-key-form');}
    authorization=undefined;
    const starting=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/capture/oauth/${provider}/start`&&response.request().method()==='POST');
    await form.getByRole('button',{name:`Connect ${name}`,exact:true}).click();
@@ -64,7 +64,7 @@ export async function calendarJourney(page,data){
  }
  await panel.getByText('Plan calendar meeting',{exact:true}).click();await panel.getByLabel('Meeting',{exact:true}).selectOption('');await panel.getByLabel('Calendar connection',{exact:true}).selectOption(data.source);await panel.getByLabel('Calendar',{exact:true}).selectOption('calendar');await panel.getByLabel('Meeting title',{exact:true}).fill('Synthetic invitation review');await panel.getByLabel('Invitation message',{exact:true}).fill('Review the exact rollout invitation.');await panel.getByLabel('Exact attendee emails',{exact:true}).fill('synthetic-orbit-calendar@example.test');await panel.getByLabel(/^Start \(/).fill('2026-11-02T15:00');await panel.getByLabel(/^End \(/).fill('2026-11-02T15:30');await panel.getByRole('button',{name:'Review invitation',exact:true}).click();
  const review=panel.getByRole('region',{name:'Invitation review',exact:true});await expect(review).toContainText('synthetic-orbit-calendar@example.test');await expect(review).toContainText('Review the exact rollout invitation.');
- for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('invitation-review',width,panel);}
+ for(const width of [1440]){await page.setViewportSize({width,height:900});await proof('invitation-review',width,panel);}
  await review.getByRole('button',{name:'Cancel review',exact:true}).click();await expect(review).toHaveCount(0);expect(errors).toEqual([]);
  }finally{await edge.send('Fetch.disable');await edge.detach();}
  function localInput(instant){

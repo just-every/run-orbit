@@ -3,6 +3,7 @@ import type {TodayApp} from './today-workspace';
 
 /** Ordinary authenticated saves distinguish typed emptiness from actual scalar changes. */
 export async function recordChangesProof(db:D1Database,t:TodayApp){
+ const operatorName=await db.prepare('SELECT display_name FROM operators WHERE id=?').bind(t.actor).first('display_name');
  const definition={kind:'contact',fieldKey:'licensed_seats',label:'Licensed seats',valueType:'number',required:false,unique:false,options:[],archived:false};
  const review=await t.json<any>('/api/v1/settings/custom-fields/preview',{body:definition},200);
  await t.json('/api/v1/settings/custom-fields/confirm',{body:{input:definition,reviewHash:review.reviewHash,confirmed:true}},200);
@@ -23,7 +24,7 @@ export async function recordChangesProof(db:D1Database,t:TodayApp){
   const values={member_names:'["ada","bo"]',empty_list:'[]',empty_object:'{}',is_ready:false,zero:0,...kind==='contact'?{licensed_seats:5}:{}};
   assert.equal((await t.json<any>(path,{method:'PUT',body:{...body,custom_fields:values}},200)).changed,true);
   const changed=await read(),history=changed.timeline.find((entry:any)=>entry.kind==='record.updated');
-  assert.equal(history.actor_id,t.actor);assert.equal(history.actor_name,'Sam Seller');
+  assert.equal(history.actor_id,t.actor);assert.equal(history.actor_name,operatorName);
   const text=JSON.parse(history.payload_json).text;
   for(const line of ['Changed Member names: Empty → ["ada","bo"]','Changed Empty list: Empty → []','Changed Empty object: Empty → {}','Changed Is ready: Empty → false','Changed Zero: Empty → 0'])assert.ok(text.includes(line),line);
   assert.deepEqual(await audits(),[{actor_id:t.actor}],'a real update retains attributed audit');
