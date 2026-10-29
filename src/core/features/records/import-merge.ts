@@ -17,9 +17,9 @@ export class ImportMergeRepository {
  async merge(kind:'contact'|'company',survivorId:string,retiredId:string,choices:Record<string,'survivor'|'retired'>,actor:string,reviewed:MergeReview){
   if(survivorId===retiredId)throw new RecordError(400,'Choose two different records.');const survivor=await requireRecord(this.db,kind,survivorId),retired=await requireRecord(this.db,kind,retiredId);
   if(!reviewed||reviewed.survivor!==await mergeReviewToken(survivor)||reviewed.retired!==await mergeReviewToken(retired))throw new RecordError(409,'Records changed; find matching names again and review the current values before merging.');
-  const fields=kind==='contact'?['name','email','phone','job_title','timezone','company_id','contactability','custom_fields_json']:['name','primary_domain','custom_fields_json'];const values:Record<string,any>={};
+  const fields=kind==='contact'?['name','email','phone','job_title','timezone','company_id','custom_fields_json']:['name','primary_domain','custom_fields_json'];const values:Record<string,any>={};
   for(const field of fields){if(survivor[field]!==retired[field]&&!choices[field])throw new RecordError(400,`Choose the surviving value for ${field}.`);values[field]=choices[field]==='retired'?retired[field]:survivor[field];}
-  if(kind==='contact'&&(survivor.contactability==='do_not_contact'||retired.contactability==='do_not_contact'))values.contactability='do_not_contact';
+  if(kind==='contact')values.contactability=survivor.contactability==='do_not_contact'||retired.contactability==='do_not_contact'?'do_not_contact':survivor.contactability;
   const keyColumn=kind==='contact'?'email_key':'primary_domain_key',key=choices[kind==='contact'?'email':'primary_domain']==='retired'?retired[keyColumn]:survivor[keyColumn];values[keyColumn]=key;values.updated_at=new Date().toISOString();
   const aliases=kind==='contact'?(await this.db.prepare("SELECT identity_key FROM record_aliases WHERE record_type='contact' AND survivor_id IN(?,?)").bind(survivorId,retiredId).all<{identity_key:string}>()).results:[];
   const match=kind==='contact'?await privacyMatcher(this.db):null;

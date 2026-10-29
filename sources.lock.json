@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "166864f32753cb70df92b4dd4400a43edc39fb7b07dd5b58995d91be69ec90e9",
+      "sha256": "02a61384da85abcc554ed05082ff662710ba673e862d1088591579c4f87a9097",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "8a55c1e0521edbd8ee14cb372684815d4995d4e7f2e24fa7c7dccc8f24f5e771",
+      "sha256": "fd74c013ab88c7da11f9a519349e9a1491331463691875e80082e75d46827f8f",
       "executable": false
     },
     "DEMO.md": {
@@ -6259,7 +6259,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records-data-tools.tsx": {
-      "sha256": "2243aa6f59f8a16f60b6944a1cf223332292b3c67a1145b18f031b6c1de31586",
+      "sha256": "66b2d640d17a91ec0b598d7018c7e35d47782237c68d9a5bc5986e0b7b021e14",
       "executable": false
     },
     "src/core/features/operator/ui/records-filters.tsx": {
@@ -7103,7 +7103,7 @@
       "executable": false
     },
     "src/core/features/records/import-merge.ts": {
-      "sha256": "2ce9119f4dff6aa4d9fa1f525e25458201f2d3b2e010f787b4692c1d0e8a3218",
+      "sha256": "7fdb34836b01dca35f48ffae0eb0c848d85beb75d54ba801823c21c82c07993a",
       "executable": false
     },
     "src/core/features/records/index.ts": {
@@ -9195,7 +9195,7 @@
       "executable": false
     },
     "tests/core/records-merge-review.test.ts": {
-      "sha256": "49bb5339204b0eea7d81abfd226449ead77cd8b9dc817f22ec026ac649e9d4b7",
+      "sha256": "a3760c779296c4dea6a9e3bcff57149e9228a6d713863d3f66d8fe0471db9ae4",
       "executable": false
     },
     "tests/core/records-search.test.ts": {
@@ -9863,7 +9863,7 @@
       "executable": false
     },
     "tests/rer/operator-merge.mjs": {
-      "sha256": "6f563fe89fcd73f05cbabd6288c5c1596a73d0a0c37c5f82b55ad27360d60c75",
+      "sha256": "1577e25e464ce27e1aedca1cf47db6622d5a44afc50cd60d3aaf337cd3f4c02b",
       "executable": false
     },
     "tests/rer/operator-observations.mjs": {
