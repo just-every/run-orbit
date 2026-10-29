@@ -1,0 +1,7 @@
+/* Phone width (TMPL-001): everything the console asks a thumb to hit is at least 44 px, after every feature's own sizing.
+   Folds keep their text where it is and take the rest of the 44 px as padding, so the same rule serves every summary. */
+@media (max-width: 700px) {
+  .ob-app :is(button, .orbit-button, .operator-button, .orbit-button--quiet, .operator-text-button) { min-height: 44px; min-width: 44px; }
+  .ob-app :is(.operator-titlebar__action a, .capture-breadcrumb a, .plan-line__what a, .plan-opportunity a, .capture-console-link) { display: inline-flex; align-items: center; min-height: 44px; }
+  :where(.ob-app) summary { min-height: 44px; padding-block: calc((44px - 1lh) / 2); }
+}

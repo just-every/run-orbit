@@ -67,11 +67,6 @@
   font: inherit;
 }
 
-.analytics-console__fields :is(input, select):focus-visible {
-  outline: 3px solid var(--orbit-focus);
-  outline-offset: 3px;
-}
-
 .analytics-console__submit {
   justify-self: start;
   min-height: 44px;
@@ -174,7 +169,7 @@
 
 .analytics-console__result dt {
   color: var(--orbit-muted);
-  font-size: 0.78rem;
+  font-size: var(--ob-text-min);
   font-weight: 700;
 }
 
