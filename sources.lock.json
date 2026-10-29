@@ -2195,7 +2195,7 @@
       "executable": false
     },
     "newtests/t096/archive-schema-objects.test.ts": {
-      "sha256": "60370afe37c42f3fc981bba3068b85d634d2e0a04e6cd118f117296fe52b7acd",
+      "sha256": "af4530059c4b8678006250fac12de4fcad75de17134cff6db1f076d3b61f0116",
       "executable": false
     },
     "newtests/t096/archive-terminal-recovery.test.ts": {
@@ -7015,7 +7015,7 @@
       "executable": false
     },
     "src/core/features/records/archive-schema-fence.ts": {
-      "sha256": "d8217f03d70603d0debbd8f994454c55fca8472c981f82869a47f7fc863fd9a4",
+      "sha256": "b5b5c47012d2016ac1d31f1792cc789188183e3b5d22ac5d325db23b50773247",
       "executable": false
     },
     "src/core/features/records/archive-schema-objects.ts": {
