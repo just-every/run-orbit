@@ -3599,7 +3599,7 @@
       "executable": false
     },
     "newtests/t096/released-database.ts": {
-      "sha256": "66800ae5bda0cb0cdf942a14fda27d2278a8c84e73df9df37215b47b32b3358a",
+      "sha256": "063d8ae9047727b079e5f200acc26634176027b17ff815abf7fdd4e4fb9587f1",
       "executable": false
     },
     "newtests/t096/released-forecast-upgrade.ts": {
@@ -4079,7 +4079,7 @@
       "executable": false
     },
     "scripts/verification-shard.mjs": {
-      "sha256": "c6cc47caa4c99a9f8bfcca24f4897dfe8a4d21e62215c0f2d4c07c3b82267634",
+      "sha256": "33bbb7bf00f8e4bc48b6ced38e1350393303137c6573489e2234d32dba70220b",
       "executable": false
     },
     "scripts/verify-capacity.mjs": {
@@ -4087,7 +4087,7 @@
       "executable": false
     },
     "scripts/verify.mjs": {
-      "sha256": "04585082215ac897a54ea2c41207d7f32837ac91276b40ac6b38121604836edf",
+      "sha256": "d95395de517c5929f905f1338cbc3615f6c7beafc2d89ee653d64e9b5e929a12",
       "executable": false
     },
     "SEED-COMMAND-CONTRACT.md": {
@@ -8795,7 +8795,7 @@
       "executable": false
     },
     "tests/e2e/baseline.spec.mjs": {
-      "sha256": "68aaa8a577a012bff1bda59c59ff471a1e60dccd2e760bdac2865582fc5ef95e",
+      "sha256": "0cfe15638fa588a01575170f40759721f26dcf277fa6106610a8e98c8621bf62",
       "executable": false
     },
     "tests/e2e/operator-session.mjs": {
@@ -8803,7 +8803,7 @@
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
-      "sha256": "89ddcbe0772bfd2b40612df06452a20a19cece659594428afd58bb4ec01cc825",
+      "sha256": "bf9409734f852a8ed4bcf7eec89e822b3ae957cbe2065b8a906b789c5403fa18",
       "executable": false
     },
     "tests/e2e/phone-dashboard.mjs": {
@@ -9350,6 +9350,10 @@
       "sha256": "e9930eedd13bb77ffc0afdf61fb3e80c7cfcad62e293c047be91fd4e68c984e2",
       "executable": false
     },
+    "tests/support/browser-private-data.ts": {
+      "sha256": "10d0ba4f0adfd1f53ca450a60a22655144cd4f85af23d79afb9a9d8fd7dab364",
+      "executable": false
+    },
     "tests/support/browser-temp.mjs": {
       "sha256": "4b6f327a58579395db0f5178fd963f48d641f6c3981aadd17a241c3e0b27abf4",
       "executable": false
@@ -9583,7 +9587,7 @@
       "executable": false
     },
     "tests/support/sanity-capture-review.ts": {
-      "sha256": "01f48647e0f71fcbb66359b7cfe423d94e8e419be7a1b49a0f6b702b0bcd659a",
+      "sha256": "da4f0e7ed481cd14afa8f969750b266f3a82d8cd34f2dcad7b6a062dda36f113",
       "executable": false
     },
     "tests/support/sanity-delivery-outcomes.ts": {
