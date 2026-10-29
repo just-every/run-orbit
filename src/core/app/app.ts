@@ -171,7 +171,7 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
   app.route("/api/v1/settings", createSettingsRoutes(input.database,request=>input.stepUp(request,'email:change','/app/settings')));
   app.route("/api/v1/setup", createSetupRoutes(input.database));
   app.route("/api/v1/sources", createSourceRoutes(input.database,input.sourceSecurity));
-  app.route("/api/v1/notifications", createNotificationRoutes(input.database));
+  app.route("/api/v1/notifications", createNotificationRoutes(input.database,{clock:input.clock,security:input.sourceSecurity,origin:input.captureOrigin}));
   app.route("/api/v1/assistance", createAssistanceRoutes(input.database,input.aiProvider));
   app.route("/api/v1/today", createTodayRoutes(input.database,input.aiProvider));
   app.route("/api/v1/risks", createRiskRoutes(input.database,input.aiProvider));

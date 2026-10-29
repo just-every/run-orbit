@@ -8,12 +8,12 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 10 | 138 | 30 | 178 |
+| Core | 12 | 137 | 29 | 178 |
 | Agent surface | 0 | 0 | 26 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 10 | 138 | 56 | 204 |
+| Full target | 12 | 137 | 55 | 204 |
 
-Judged from the code and tests at commit `8a376be48c1d65916c7c201535ee32113acede70` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
+Judged from the code and tests at commit `373d8818a42e3208c5d9ea2ffea9cea33c470dc6` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
 ## Core
 
@@ -107,15 +107,15 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 
 #### RECORD-004 — Duplicate merge
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
+Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
 
 **Requirement.** Merging two contacts or two companies requires an operator to choose the surviving record and the value of every conflicting field. The request is bound to both reviewed record states; a changed record refuses the merge without modifying either record, requiring a new review. Contactability is not a reviewed choice: a do-not-contact stop that lands after review is inherited by the merge. The merge moves associations and timeline entries once, retires the other record's key as an alias so later signals carrying it link to the survivor, creates no signal, recommendation, or outreach, and records the retired ID in the audit trail.
 
 **Acceptance.**
 1. Review two duplicates, choose field values and survivor, then change one reviewed record and require refusal; review again and merge once, inheriting a concurrent stop.
 
-**Evidence.** `src/core/features/records/merge-review.ts`; `tests/core/records-merge-review.test.ts`
-**Gap.** Unasserted in the carried evidence: concurrent stop inherited. Asserted: reviewed survivor and field value; stale review returns refusal; stale review preserves both records; merge occurs once; retired id and choices audited.
+**Evidence.** `tests/core/records-merge-review.test.ts` — RECORD-004 RECORD-009 matching names across companies remain review-only and native merges refuse missing and stale reviews (acceptance 1: reviewed survivor and conflicting values, stale refusal without writes, stops on either participant after review, both schedules cancelled, associations and both nonempty timelines transferred once, audited retired identity and replay refusal; signed later retired-email ingress read back on the survivor and both deals; native readback preserves existing signals, recommendations and outreach exactly, with no state created by the merge); `tests/e2e/imports.spec.mjs` — RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard (native duplicate merge before and after a stop, inherited contactability without a choice, retired identity absent; screens at 1440 and 390).
+**Gap.** None.
 
 #### RECORD-005 — Timeline
 
@@ -203,7 +203,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 
 #### RECORD-012 — Contactability
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
+Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
 
 **Requirement.** A contact is contactable or do-not-contact. An operator can set do-not-contact at any time, and an unsubscribe event that identifies the person (OUT-012, OUT-020) or a permanent bounce also sets it, for that person only. An opt-out that cannot name one recipient of a multi-recipient message pauses those recipients' scheduled work rather than suppressing them (OUT-031). No operation sends customer email to a do-not-contact contact, the state is shown wherever the contact appears, and only an operator can clear it. A contact an operator creates by hand on a record page or through the Records API starts contactable unless the operator chooses do-not-contact or its address matches a retained suppression proof, in which case it starts do-not-contact; other doors state their own default (RECORD-008, CAPTURE-005, CAPTURE-012, FORM-001, OUT-019).
 
@@ -211,8 +211,8 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 1. Set do-not-contact, process unsubscribe and permanent-bounce events, then try immediate and scheduled sending; all remain blocked until an explicit current-state clear.
 2. Create a contact by hand and see it start contactable; recreate an erased contact's address and see it start do-not-contact.
 
-**Evidence.** `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts`; `tests/core/outreach-limits.test.ts`
-**Gap.** Unasserted in the carried evidence: manual contact starts contactable. Asserted: manual stop stays stopped; unsubscribe stop; permanent-bounce stop; immediate send refuses stopped contact; scheduled work cancelled; explicit current-state clear read back; normalized recreation starts do-not-contact.
+**Evidence.** `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts` — RECORD-012 DATA-002 manual contacts start contactable; suppression survives ordinary edits, erasure, normalized recreation, and workbench creation; only reviewed native clear permits future review; RECORD-012 concurrent stop dominates stale edit; merge preserves both recipients and clear never resurrects a schedule; `tests/core/outreach-limits.test.ts` — OUT-007 OUT-009 OUT-012 a signed provider unsubscribe stops the recipient and schedule within sixty seconds and returns the opportunity to NOW once; `tests/core/signals-outreach.test.ts` — OUT-017 record mail preserves exact approval, sender promises, custody and OUT-004 header-only reply matching; OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not; OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do
+**Gap.** None.
 
 #### RECORD-013 — Deletion
 
@@ -1704,7 +1704,7 @@ Core · target · **partial** · Cites BASE-ROLE-001
 
 #### NOTIFY-003 — Reminders that reach an absent seller
 
-Core · target · **missing** · Cites BASE-ROLE-001 · Register R-6
+Core · target · **partial** · Cites BASE-ROLE-001 · Register R-6
 
 **Requirement.** An operator chooses due/overdue task reminders and a daily sales digest by email and mobile push, with Slack as an optional team destination. Reminders honor working hours, timezone, recipient preferences and current access, deduplicate per obligation/due revision, stop on completion and escalate overdue work to an explicitly configured manager. The app shows queued, acknowledged, failed and uncertain attempts; provider acknowledgment is not receipt. A missed scheduled run is visible and resumed without a burst of obsolete reminders. Before email, push or Slack notifications ship, they must deliver RECORD-017's mention notifications by each mentioned user's preference, once per entry, task or handoff, and withdraw an undelivered one when its entry is deleted. INTEGRATE-005’s Slack safety rules govern this clause. Personal reminders, digests and RECORD-017 mentions use only opt-in DMs to explicitly mapped operators with current record access. An authorized DM may name a contact, but never entry text, amounts or contact details; private entries get generic notices. Withdraw an undelivered mention when its source is deleted. NOTIFY-003 carries REPORT-002's dashboard schedule delivery model when it ships: queued, sent, failed and uncertain attempts, recipient-specific access checked at send time, retry of only an explicitly failed recipient, and no resend after an uncertain provider answer. Keep the implemented dashboard schedule definitions and Slack delivery history; this inheritance does not claim that dashboard email delivery exists today.
 
@@ -1715,8 +1715,8 @@ Core · target · **missing** · Cites BASE-ROLE-001 · Register R-6
 4. Withdraw an undelivered mention when its source is deleted.
 5. Leave Orbit closed, advance a task reminder/digest schedule, receive it in a real mailbox/device and inspect its evidence link; complete or reassign the task before dispatch, simulate a provider failure and restart without stale or duplicate reminders.
 
-**Evidence.** None.
-**Gap.** No implementation found. No implementation of this complete target flow was found. Implemented first slice: RECORD-016 assignment and FORM-001 submission notices use native in-app delivery. Assignment notices by email, push and Slack according to user preference, and form notices by email and push, remain NOTIFY-003 gaps with their existing deduplication, current-access, replay, undo and erasure duties retained. ct confirmed at 02:08Z on 24 October 2026 that in-app-only delivery stays MISSING. Default adopted: native in-app assignment and form notices only; external delivery remains a NOTIFY-003 gap.
+**Evidence.** `tests/core/source-onboarding.test.ts` — NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty (with `tests/support/personal-slack-proof.ts` and `tests/support/slack-archive-proof.ts`); `newtests/t096/report-disclosure.test.ts` — REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board (with `newtests/t096/browser-dashboard-slack.ts` personal preference and delivery screens); `newtests/t096/forward-upgrade.test.ts` — API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance
+**Gap.** Native personal mention DMs use self-managed opt-in bound to an explicit current installation mapping and active full-operator authority; generic private-entry notices contain only an authenticated exact-entry link. Team and restricted-role audiences remain TEAM-005. Due and overdue reminders, daily digests, working-hours and timezone scheduling, missed-run recovery and configured-manager escalation remain unbuilt. Personal assignment and form external channels, system notification email, REPORT-002 recipient-specific email, personal-DM provider deletion tracking, real opted-in Slack DM qualification and real mailbox and device receipt remain unproved. Dashboard email stays paused for the system sender and attachment transport prerequisites; mobile push needs Apple and Google accounts. Existing native in-app assignment and form notices, dashboard schedule definitions and Slack delivery history remain intact.
 
 #### SEQUENCE-001 — Versioned sales sequence authoring
 

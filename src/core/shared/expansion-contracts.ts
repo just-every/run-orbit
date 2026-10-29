@@ -1,11 +1,11 @@
 /** Admitted native report, collaborator and fixed-publication statement contracts. */
 export type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
 export type Principal =
-  | { kind: 'operator'; operatorId: string; sessionId: string }
+  | { kind: 'operator'; operatorId: string; sessionId: string; agent?: {id:string;name:string;label:string;sponsorName:string} }
   | { kind: 'service'; principalId: string; credentialId: string; custodianId: string }
   | { kind: 'guest'; principalId: string; grantId: string };
 export interface Scope { tenantId: string; workspaceId: string }
-export interface ActorContext extends Scope { principal: Principal; requestId: string; policyEpoch: number }
+export interface ActorContext extends Scope { agentApprovers?:Array<{id:string;name:string}>; principal: Principal; requestId: string; policyEpoch: number }
 export interface NativeOperator { sessionId: string; operatorId: string; email: string; displayName: string }
 export interface ResourceRef extends Scope { type: string; id: string; revision?: number }
 export interface DependencyRef extends ResourceRef { revision: number; dataEpoch?: number }

@@ -1,3 +1,5 @@
+import {personalSlackRoutes} from './personal-routes';
+import type {SlackConfig} from '../slack/contracts';
 import { mentionHrefSql } from '../records/mentions';
 import { Hono } from 'hono';
 import type { AuthenticatedOperator } from '../identity';
@@ -7,8 +9,9 @@ const replyContact=`SELECT l.record_id FROM signal_links l LEFT JOIN timeline_en
 const formContact="SELECT s.contact_id FROM marketing_form_submissions s WHERE n.kind='form.submitted' AND n.event_key='form:'||s.id";
 const contactId=`COALESCE((${recordMailContact}),(${replyContact}),(${formContact}))`;
 const assignmentTitle="SELECT CASE b.record_type WHEN 'contact' THEN (SELECT COALESCE(NULLIF(c.name,''),c.email) FROM contacts c WHERE c.id=i.record_id) WHEN 'company' THEN (SELECT c.name FROM companies c WHERE c.id=i.record_id) WHEN 'opportunity' THEN (SELECT o.title FROM opportunities o WHERE o.id=i.record_id) END FROM ownership_batches b JOIN ownership_batch_items i ON i.batch_id=b.id WHERE n.kind='record.assigned' AND n.event_key='ownership:'||b.id AND b.item_count=1 LIMIT 1";
-export function createNotificationRoutes(db:D1Database) {
+export function createNotificationRoutes(db:D1Database,config:SlackConfig={}) {
  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
+ app.route('/slack',personalSlackRoutes(db,config));
  app.get('/',async c=>{
   const actor=c.get('operator').operatorId;
   const [items,count]=await Promise.all([

@@ -29,7 +29,7 @@ function NotificationTitle({item,onOpen}:{item:Notification;onOpen:()=>void}){
 }
 export function NotificationsPage(){const {data,error,read}=useNotifications(),pages=useAccessPages();const [unreadOnly,setUnreadOnly]=useState(false),[kind,setKind]=useState('all');const items=data.notifications.filter(item=>(!unreadOnly||!item.readAt)&&(kind==='all'||category(item)===kind));
  return <OperatorShell eyebrow="Notifications" title="Notifications inbox" action={<span>{data.unread} unread</span>} restricted={pages.accessClass==="collaborator"} reports={pages.reports}>
-  <p>Review recent updates and open the record to take action.</p>
+  <p>Review recent updates and open the record to take action. <a href="/app/settings#personal-slack">Your Slack mention preference</a></p>
   <section className="operator-surface workbench-form notification-filters"><label><input type="checkbox" checked={unreadOnly} onChange={e=>setUnreadOnly(e.target.checked)}/> Show unread only</label><label>Notification type<select aria-label="Notification type" value={kind} onChange={e=>setKind(e.target.value)}><option value="all">All types</option><option value="assignment">Assignments</option><option value="task">Tasks</option><option value="now">Needs attention</option><option value="reply">Customer replies</option><option value="mention">Mentions</option><option value="failure">Delivery outcomes</option></select></label></section>
   {error&&<OperatorState kind="error">{error}</OperatorState>}
   <div className="notification-layout"><section className="operator-surface operator-detail__section">

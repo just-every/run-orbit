@@ -384,6 +384,42 @@
       "name": "0069_typed_workflow_values.sql",
       "sha256": "34ac7636143ffc263a9397ca21bdbc965da0798ff92997b04f12d183702f2c61",
       "sql": "-- Widen definitions without changing their column order, keys or revision meaning.\n-- Value storage and the append-only definition history retain their exact bytes.\nCREATE TABLE record_custom_fields_expanded (\n kind TEXT NOT NULL CHECK(kind IN('contact','company','opportunity')),\n field_key TEXT NOT NULL,\n label TEXT NOT NULL,\n value_type TEXT NOT NULL CHECK(value_type IN('text','number','date','picklist','boolean','user','datetime')),\n required INTEGER NOT NULL CHECK(required IN(0,1)),\n is_unique INTEGER NOT NULL CHECK(is_unique IN(0,1)),\n options_json TEXT NOT NULL CHECK(json_valid(options_json)),\n archived INTEGER NOT NULL CHECK(archived IN(0,1)),\n revision INTEGER NOT NULL,\n PRIMARY KEY(kind,field_key)\n);\nINSERT INTO record_custom_fields_expanded(kind,field_key,label,value_type,required,is_unique,options_json,archived,revision)\n SELECT kind,field_key,label,value_type,required,is_unique,options_json,archived,revision FROM record_custom_fields;\nDROP TABLE record_custom_fields;\nALTER TABLE record_custom_fields_expanded RENAME TO record_custom_fields;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0070_agent_door.sql",
+      "sha256": "016d8a98b964385f5c4a13447361c3c783910a76aaf4606b0e0081482bc819cc",
+      "sql": "CREATE TABLE IF NOT EXISTS agent_door_state (\n  id INTEGER PRIMARY KEY CHECK(id=1), envelope TEXT, local_document TEXT,\n  local_revision INTEGER NOT NULL DEFAULT 0, local_paused INTEGER NOT NULL DEFAULT 0,\n  decision_lock TEXT, decision_until INTEGER\n);\nCREATE TABLE IF NOT EXISTS agent_door_agents (\n  id TEXT PRIMARY KEY, name TEXT NOT NULL, specialist TEXT, sponsor TEXT NOT NULL,\n  sponsor_name TEXT NOT NULL, revoked INTEGER NOT NULL DEFAULT 0,\n  window INTEGER NOT NULL DEFAULT 0, requests INTEGER NOT NULL DEFAULT 0\n);\nCREATE TABLE IF NOT EXISTS agent_door_audit (\n  sequence INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT NOT NULL UNIQUE, at TEXT NOT NULL,\n  agent TEXT NOT NULL, classes TEXT NOT NULL, row TEXT NOT NULL, evidence TEXT\n);\nCREATE INDEX IF NOT EXISTS agent_door_audit_agent ON agent_door_audit(agent,sequence);\nCREATE TABLE IF NOT EXISTS agent_door_calls (\n  agent TEXT NOT NULL, key TEXT NOT NULL, digest TEXT NOT NULL, decision_id TEXT NOT NULL,\n  created_at INTEGER NOT NULL, state TEXT NOT NULL, outcome TEXT, PRIMARY KEY(agent,key)\n);\nCREATE TABLE IF NOT EXISTS agent_door_approvals (\n  id TEXT PRIMARY KEY, state TEXT NOT NULL, saved TEXT NOT NULL, approvals TEXT NOT NULL DEFAULT '[]',\n  result TEXT, version INTEGER NOT NULL DEFAULT 0\n);\nCREATE TABLE IF NOT EXISTS agent_door_reviews (\n  id TEXT PRIMARY KEY, state TEXT NOT NULL, saved TEXT NOT NULL, marked_by TEXT, marked_at TEXT\n);\nCREATE TABLE IF NOT EXISTS agent_door_events (\n  sequence INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT NOT NULL UNIQUE, uri TEXT NOT NULL, event TEXT NOT NULL\n);\nCREATE INDEX IF NOT EXISTS agent_door_events_uri ON agent_door_events(uri,sequence);\nCREATE TABLE IF NOT EXISTS agent_door_usage (\n  decision_id TEXT PRIMARY KEY, at INTEGER NOT NULL, seed TEXT NOT NULL, specialist TEXT, agent TEXT NOT NULL,\n  classes TEXT NOT NULL\n);\nCREATE INDEX IF NOT EXISTS agent_door_usage_day ON agent_door_usage(at);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0070_personal_slack_mentions.sql",
+      "sha256": "cc319156255ce5fcd8aaba720253e72d10f1b73c3520157dcbbbaff3748e5832",
+      "sql": "-- Personal consent is bound to one explicit identity mapping and installation.\nCREATE TABLE slack_personal_preferences(\n operator_id TEXT PRIMARY KEY REFERENCES operators(id) ON DELETE CASCADE,\n enabled INTEGER NOT NULL DEFAULT 0,\n revision TEXT NOT NULL,\n slack_user_id TEXT NOT NULL,\n team_id TEXT NOT NULL,\n enterprise_id TEXT NOT NULL,\n app_id TEXT NOT NULL,\n policy_epoch INTEGER NOT NULL,\n mapping_confirmed_at TEXT NOT NULL,\n installation_epoch TEXT NOT NULL,\n updated_at TEXT NOT NULL\n);\nCREATE TABLE slack_personal_notices(\n id TEXT PRIMARY KEY,\n notification_id TEXT NOT NULL REFERENCES notifications(id) ON DELETE CASCADE,\n operator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n event_key TEXT NOT NULL,\n preference_revision TEXT NOT NULL,\n state TEXT NOT NULL DEFAULT 'queued',\n channel_id TEXT,\n message_ts TEXT,\n error TEXT,\n retry_at TEXT,\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL,\n UNIQUE(operator_id,event_key)\n);\nCREATE INDEX slack_personal_pending ON slack_personal_notices(state,created_at);\nCREATE TRIGGER slack_personal_enqueue AFTER INSERT ON notifications\nWHEN NEW.kind='record.mention' AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='restore')\nBEGIN\n INSERT OR IGNORE INTO slack_personal_notices(id,notification_id,operator_id,event_key,preference_revision,created_at,updated_at)\n SELECT lower(hex(randomblob(16))),NEW.id,NEW.operator_id,NEW.event_key,p.revision,NEW.created_at,NEW.created_at\n FROM slack_personal_preferences p WHERE p.operator_id=NEW.operator_id AND p.enabled=1;\nEND;\nCREATE TRIGGER slack_personal_entry_delete BEFORE DELETE ON timeline_entries\nWHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='restore') BEGIN\n UPDATE slack_personal_notices SET state='withdrawn',error='Mention source deleted'\n WHERE event_key='mention:entry:'||OLD.id AND state IN('queued','rate-limited','failed');\nEND;\nCREATE TRIGGER slack_personal_task_delete BEFORE DELETE ON sales_tasks\nWHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='restore') BEGIN\n UPDATE slack_personal_notices SET state='withdrawn',error='Mention source deleted'\n WHERE event_key='mention:task:'||OLD.id AND state IN('queued','rate-limited','failed');\nEND;\nCREATE TRIGGER slack_personal_handoff_delete BEFORE DELETE ON handoff_tasks\nWHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='restore') BEGIN\n UPDATE slack_personal_notices SET state='withdrawn',error='Mention source deleted'\n WHERE event_key='mention:handoff:'||OLD.id AND state IN('queued','rate-limited','failed');\nEND;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0071_business_settings.sql",
+      "sha256": "a16f736a781aa3fe02a2e090c993f8c360c904f9fb6d86126acdab6e1f24e773",
+      "sql": "CREATE TABLE bs_settings (\n  singleton INTEGER PRIMARY KEY CHECK(singleton=1),\n  rev INTEGER NOT NULL DEFAULT 0,\n  document TEXT,\n  applied_at TEXT,\n  stopped INTEGER NOT NULL DEFAULT 0 CHECK(stopped IN(0,1)),\n  token TEXT NOT NULL DEFAULT ''\n);\nCREATE TABLE bs_overrides (\n  field TEXT PRIMARY KEY CHECK(field IN('display_name','owner_name','brand_color','logo','timezone')),\n  value TEXT NOT NULL,\n  actor TEXT NOT NULL,\n  changed_at TEXT NOT NULL\n);\nCREATE TABLE bs_logo (\n  singleton INTEGER PRIMARY KEY CHECK(singleton=1),\n  sha256 TEXT NOT NULL,\n  type TEXT NOT NULL,\n  bytes BLOB NOT NULL\n);\nCREATE TABLE bs_team (\n  email TEXT PRIMARY KEY,\n  operator_id TEXT,\n  invite INTEGER NOT NULL,\n  state TEXT NOT NULL CHECK(state IN('invited','active','inactive','conflict'))\n);\nCREATE TABLE bs_audit (\n  id INTEGER PRIMARY KEY,\n  actor TEXT NOT NULL,\n  action TEXT NOT NULL,\n  field TEXT,\n  changed_at TEXT NOT NULL\n);\n-- An INSERT of NULL fails the transaction if a concurrent write invalidated its fence.\nCREATE TABLE bs_assert (value INTEGER NOT NULL);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0072_business_people.sql",
+      "sha256": "51aa39622d866b987d71b6e37c9a8300e7f24c54a55611edaab669ed051b01cd",
+      "sql": "ALTER TABLE bs_settings ADD COLUMN owner_id TEXT CHECK(owner_id IS NULL OR owner_id <> '');\nALTER TABLE bs_team ADD COLUMN business_id TEXT CHECK(business_id IS NULL OR business_id <> '');\nALTER TABLE bs_team ADD COLUMN business_role TEXT CHECK(business_role IS NULL OR business_role IN('admin','member'));\nCREATE UNIQUE INDEX bs_team_business_id ON bs_team(business_id) WHERE business_id IS NOT NULL;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0073_native_agent_attribution.sql",
+      "sha256": "a4856446bdf367feef23607e2dc6947d500744d53f23ae28ac75d74da71cfebe",
+      "sql": "-- Transaction-local context is emptied by the writer in the same D1 batch.\n-- It cannot survive a rolled-back write and is never an admission credential.\nCREATE TABLE orbit_agent_write_context(singleton INTEGER PRIMARY KEY CHECK(singleton=1),actor_json TEXT NOT NULL CHECK(json_valid(actor_json)));\nCREATE TRIGGER orbit_agent_timeline BEFORE INSERT ON timeline_entries\nWHEN NEW.actor_type<>'agent' AND EXISTS(SELECT 1 FROM orbit_agent_write_context WHERE singleton=1)\nBEGIN\n INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json)\n VALUES(NEW.id,NEW.kind,NEW.occurred_at,NEW.recorded_at,'agent',NEW.actor_id,NEW.source,json_patch(NEW.payload_json,(SELECT actor_json FROM orbit_agent_write_context WHERE singleton=1)));\n SELECT RAISE(IGNORE);\nEND;\nCREATE TRIGGER orbit_agent_native_audit AFTER INSERT ON audit_entries\nWHEN EXISTS(SELECT 1 FROM orbit_agent_write_context WHERE singleton=1)\nBEGIN\n UPDATE audit_entries SET details_json=json_patch(details_json,(SELECT actor_json FROM orbit_agent_write_context WHERE singleton=1)) WHERE id=NEW.id;\nEND;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0074_native_agent_events.sql",
+      "sha256": "b6ebaf195c70159f77ba25487baef6cc4870f3c12c7fa23e5c078d51cb69fc64",
+      "sql": "-- Use the native timeline id for retained events. Restored historical rows do\n-- not become new events. The door still re-reads each URI at delivery time.\nCREATE TRIGGER orbit_native_record_event AFTER INSERT ON timeline_entry_records\nWHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN('restore','archive_import'))\n AND EXISTS(SELECT 1 FROM timeline_entries e WHERE e.id=NEW.timeline_entry_id AND e.actor_type IN('operator','agent'))\nBEGIN\n INSERT OR IGNORE INTO agent_door_events(id,uri,event)\n SELECT e.id||':'||NEW.record_type||':'||NEW.record_id,\n  'orbit://records/'||NEW.record_type||'/'||NEW.record_id,\n  json_object('id',e.id||':'||NEW.record_type||':'||NEW.record_id,'type',e.kind,\n   'uri','orbit://records/'||NEW.record_type||'/'||NEW.record_id,'at',e.recorded_at,\n   'native_activity_id',e.id,'actor',json(CASE WHEN e.actor_type='agent'\n    THEN json_patch(json_extract(e.payload_json,'$.preparedBy'),'{\"kind\":\"agent\"}')\n    ELSE json_object('kind','person','person',json_object('id',e.actor_id,'name',COALESCE(o.display_name,'Former operator'))) END))\n FROM timeline_entries e LEFT JOIN operators o ON o.id=e.actor_id WHERE e.id=NEW.timeline_entry_id;\nEND;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
@@ -394,7 +430,6 @@
   "durableObjectMigrations": [],
   "publicVariables": {
     "MAIL_PROVIDER": "sendgrid",
-    "MAIL_FROM": "",
     "MAIL_RELAY_URL": ""
   },
   "secretNames": [
@@ -406,7 +441,8 @@
     "MAIL_API_KEY",
     "SENDGRID_API_KEY",
     "OPENAI_API_KEY",
-    "ORBIT_FORM_TURNSTILE_SECRET"
+    "ORBIT_FORM_TURNSTILE_SECRET",
+    "MAIL_FROM"
   ],
   "schedules": [
     "* * * * *"

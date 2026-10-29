@@ -1,4 +1,4 @@
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 
 import { operators, signalSources, timelineEntries, timelineEntryRecords } from "../../platform/schema";
@@ -36,7 +36,7 @@ export class TimelineRepository {
         recordedAt: timelineEntries.recordedAt,
         actorType: timelineEntries.actorType,
         source: timelineEntries.source,
-        operatorName: operators.displayName,
+        operatorName: sql<string | null>`CASE WHEN ${timelineEntries.actorType}='agent' THEN json_extract(${timelineEntries.payloadJson},'$.preparedBy.label') ELSE ${operators.displayName} END`,
         signalSourceName: signalSources.name,
         payloadJson: timelineEntries.payloadJson
       })
