@@ -6251,7 +6251,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/action-tooltip.tsx": {
-      "sha256": "725af8d5ae8953ad860d25b1d10b60d1f72c2c3d708850a0baf57d527f186222",
+      "sha256": "d9f339d99c81eaf9780d9b3da54e8af73c2378523f42325a831003e2413b19dd",
       "executable": false
     },
     "src/core/features/operator/ui/ai-usage.tsx": {
@@ -6295,7 +6295,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/autosave/inline-confirm.tsx": {
-      "sha256": "8fbc82418895c4d4887903d42e469e8513ccb0f466a351c5d70c7d5c8e9be7b3",
+      "sha256": "a98a1480a95d309c19413306185d70648f3ba2a6d791b975f9d7d3ff054eb5fe",
       "executable": false
     },
     "src/core/features/operator/ui/autosave/kept-edits.ts": {
@@ -6675,7 +6675,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record-mail.tsx": {
-      "sha256": "ea14b20f89dab15e891126002385902347742c75b8f61195a72b98187e61428f",
+      "sha256": "feac658a69b26f97240f2c3c09b02c62a4e5d6dcbd8cc37a3cbbf4b34a47aedd",
       "executable": false
     },
     "src/core/features/operator/ui/record-owner.css": {
@@ -6703,7 +6703,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/activity.tsx": {
-      "sha256": "572031399deb137ab53d23129f1ff69592140eed2f91ec2e23b1061ee0bdd5de",
+      "sha256": "2dceaf2ea4b102f1fd2326b2207dc3f41d1e8c2efcb3bb4be1ded908885dc66c",
       "executable": false
     },
     "src/core/features/operator/ui/record/company-details.tsx": {
@@ -6727,7 +6727,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-activity.tsx": {
-      "sha256": "a83bf295a462b0289f0b0b901993a5dfa06b639722648ff543ec863981128aa2",
+      "sha256": "d15e9afeb1826b5c7e32b42e0fbf44194dddf521f877d90fbf0d020e28e77ff9",
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-context.tsx": {
@@ -7159,7 +7159,7 @@
       "executable": false
     },
     "src/core/features/outreach/record-mail-repository.ts": {
-      "sha256": "39bebf0f0bbaf8ea8c56a30f725935417779d1482df2d80c02cccf08ee72b6cc",
+      "sha256": "7dd715ab836b6a7f7c89ade2f74c74f1458a4872646c0146631490a147908b61",
       "executable": false
     },
     "src/core/features/outreach/record-mail-storage.ts": {
@@ -9927,7 +9927,7 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout-journey.mjs": {
-      "sha256": "1dd0d56c1bfe2f9faea4e7fc14df9e8c59bbd9d3b7545ca3b42de4f5f026530a",
+      "sha256": "7cad4ebd800d46501182b476e7a664171f5ee25610fee7213ba259f8e288a5a8",
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {
@@ -10447,7 +10447,7 @@
       "executable": false
     },
     "tests/launch-runtime/mail-ingress.test.ts": {
-      "sha256": "da640cddf6e69787f3e61c42e26243a3ad7b811fc5cee2bf65a6205726abfd54",
+      "sha256": "c5d5a50fc7f834294bdf31102b15fad7cd4f56e9d303e6bcf5423cc2f3f74373",
       "executable": false
     },
     "tests/launch-runtime/source-mailbox-stop.test.ts": {
@@ -10579,7 +10579,7 @@
       "executable": false
     },
     "tests/rer/scheduled-outreach.mjs": {
-      "sha256": "9c78aadc79748298a4d8ded464ab11f4cc01c8188dd826911648420a16ff9c77",
+      "sha256": "bebf785e155655efe556629ccf8822bdf0caefe912fe15e20918c2bf0461a3b8",
       "executable": false
     },
     "tests/rer/sent-message-proof.mjs": {
@@ -10855,7 +10855,7 @@
       "executable": false
     },
     "tests/support/record-mail.ts": {
-      "sha256": "ed4d3f609ea63dbd4a81661cd29465282eb2a1f95165a91753911dbda86cb145",
+      "sha256": "834864bf818946fe023c76804a22a419eedbc374aa7411ca0202ac3e9cccf76c",
       "executable": false
     },
     "tests/support/record-ownership.ts": {
