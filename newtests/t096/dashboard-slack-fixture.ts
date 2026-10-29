@@ -16,13 +16,12 @@ export async function dashboardSlackFixture(f:Awaited<ReturnType<typeof fixture>
   await call(base,'PUT',{version:0,definition:{name:'Quarterly pipeline review',filters:{ownerIds:[],pipelineIds:[],from:'2026-10',through:'2026-12',field:null},tiles:[]}});
   for(const [index,mode] of (['sent','denied','timeout','rate','auth-unavailable'] as const).entries()){
    now=new Date(Date.now()-(6-index)*7*86400000);const input={version,frequency:'weekly',hour:8,minute:0,weekday:1,day:1,recipientIds:[f.operator.operatorId],channelId:'CINTERNAL',pdf:false,csv:false};
-   const saved=await call(base+'/schedule','PUT',input);version=saved.definition.version;await call(base+'/schedule/slack','POST',{version,enabled:true});now=new Date(saved.nextAt);edge.setOutcome(mode);await call(slack+'/process','POST',{});
+   const saved=await call(base+'/schedule','PUT',input);version=saved.definition.version;await call(base+'/schedule/slack','POST',{version,enabled:true});now=new Date(saved.nextAt);edge.setOutcome(mode);await call(slack+'/process','POST',{});if(index===0)await personalSlackFixture(f,app,origin,edge);
   }
   // New authority starts from now; historic queued occurrences remain held when explicitly re-enabled.
   now=new Date();edge.setOutcome('auth-unavailable');
   // The final active version retains a genuinely queued occurrence, plus sent, failed and uncertain history.
   assert.ok((await call(base+'/schedule')).history.some((row:any)=>row.state==='queued'));
-  await personalSlackFixture(f,app,origin,edge);edge.setOutcome('auth-unavailable');
   return {key,base,id:'synthetic-orbit-notice',edge};
  }catch(error){edge.restore();throw error;}finally{edge.restore();}
 }

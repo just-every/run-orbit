@@ -43,6 +43,7 @@ export async function provePersonalSlack(f:SlackFixture,deal:string,edge:ReturnT
  const handoffId=createId(),target=`opportunities/${deal}/handoffs/${handoffId}`,state=await snapshot(f.db,target,true);
  const handoff=await f.app.request('https://orbit.test/delegation/handoffs',{method:'POST',headers:{Cookie:`__Host-orbit_session=${f.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({operationKey:createId(),operation:'orbit.handoff.upsert',target,expectedRevision:state.revision,expectedAudienceRevision:state.audience.audienceRevision,content:{title:'Mention handoff',description:'@Personal Recipient synthetic-orbit-3',assigneeId:f.actor,dueAt:null,status:'open'}})});assert.equal(handoff.status,200,await handoff.clone().text());await process();assert.ok(dm().at(-1).text.includes('#handoff-'+handoffId));
  const quiet=edge.attempts;await process();await process();assert.equal(edge.attempts,quiet,'Task and handoff deliveries survive repeated ticks without duplicates');
+ const unchanged=await paused();await opt();assert.equal((await row(unchanged.id)).state,'sent','Saving an unchanged opt-in preserves eligible pending delivery');
  // Leave a pending attempt in the export: restore must retain history but strip authority.
  await paused();
  return {recipient,headers};

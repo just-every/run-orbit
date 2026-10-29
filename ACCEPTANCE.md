@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 9 | 139 | 30 | 178 |
+| Core | 9 | 140 | 29 | 178 |
 | Agent surface | 0 | 0 | 26 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 9 | 139 | 56 | 204 |
+| Full target | 9 | 140 | 55 | 204 |
 
 Judged from the code and tests at commit `03963b1a17ecd6d0c2cc1eec9a1d6285fd9240b5` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -1704,7 +1704,7 @@ Core · target · **partial** · Cites BASE-ROLE-001
 
 #### NOTIFY-003 — Reminders that reach an absent seller
 
-Core · target · **missing** · Cites BASE-ROLE-001 · Register R-6
+Core · target · **partial** · Cites BASE-ROLE-001 · Register R-6
 
 **Requirement.** An operator chooses due/overdue task reminders and a daily sales digest by email and mobile push, with Slack as an optional team destination. Reminders honor working hours, timezone, recipient preferences and current access, deduplicate per obligation/due revision, stop on completion and escalate overdue work to an explicitly configured manager. The app shows queued, acknowledged, failed and uncertain attempts; provider acknowledgment is not receipt. A missed scheduled run is visible and resumed without a burst of obsolete reminders. Before email, push or Slack notifications ship, they must deliver RECORD-017's mention notifications by each mentioned user's preference, once per entry, task or handoff, and withdraw an undelivered one when its entry is deleted. INTEGRATE-005’s Slack safety rules govern this clause. Personal reminders, digests and RECORD-017 mentions use only opt-in DMs to explicitly mapped operators with current record access. An authorized DM may name a contact, but never entry text, amounts or contact details; private entries get generic notices. Withdraw an undelivered mention when its source is deleted. NOTIFY-003 carries REPORT-002's dashboard schedule delivery model when it ships: queued, sent, failed and uncertain attempts, recipient-specific access checked at send time, retry of only an explicitly failed recipient, and no resend after an uncertain provider answer. Keep the implemented dashboard schedule definitions and Slack delivery history; this inheritance does not claim that dashboard email delivery exists today.
 
@@ -1715,8 +1715,8 @@ Core · target · **missing** · Cites BASE-ROLE-001 · Register R-6
 4. Withdraw an undelivered mention when its source is deleted.
 5. Leave Orbit closed, advance a task reminder/digest schedule, receive it in a real mailbox/device and inspect its evidence link; complete or reassign the task before dispatch, simulate a provider failure and restart without stale or duplicate reminders.
 
-**Evidence.** None.
-**Gap.** No implementation found. No implementation of this complete target flow was found. Implemented first slice: RECORD-016 assignment and FORM-001 submission notices use native in-app delivery. Assignment notices by email, push and Slack according to user preference, and form notices by email and push, remain NOTIFY-003 gaps with their existing deduplication, current-access, replay, undo and erasure duties retained. ct confirmed at 02:08Z on 24 October 2026 that in-app-only delivery stays MISSING. Default adopted: native in-app assignment and form notices only; external delivery remains a NOTIFY-003 gap.
+**Evidence.** `tests/core/source-onboarding.test.ts` — NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty (with `tests/support/personal-slack-proof.ts` and `tests/support/slack-archive-proof.ts`); `newtests/t096/report-disclosure.test.ts` — REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board (with `newtests/t096/browser-dashboard-slack.ts` personal preference and delivery screens); `newtests/t096/forward-upgrade.test.ts` — API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance
+**Gap.** Native personal mention DMs use self-managed opt-in bound to an explicit current installation mapping and active full-operator authority; generic private-entry notices contain only an authenticated exact-entry link. Team and restricted-role audiences remain TEAM-005. Due and overdue reminders, daily digests, working-hours and timezone scheduling, missed-run recovery and configured-manager escalation remain unbuilt. Personal assignment and form external channels, system notification email, REPORT-002 recipient-specific email, personal-DM provider deletion tracking, real opted-in Slack DM qualification and real mailbox and device receipt remain unproved. Dashboard email stays paused for the system sender and attachment transport prerequisites; mobile push needs Apple and Google accounts. Existing native in-app assignment and form notices, dashboard schedule definitions and Slack delivery history remain intact.
 
 #### SEQUENCE-001 — Versioned sales sequence authoring
 
