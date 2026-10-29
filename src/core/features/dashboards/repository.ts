@@ -14,7 +14,7 @@ import {dashboardSave,dashboardShare,type DashboardDefinition,type DashboardFilt
 
 export type TileResult={id:string;width:number;height:number;status:'loading';name:string;version:number|string;period:string}|{id:string;width:number;height:number;status:'unavailable'}|{id:string;width:number;height:number;status:'error';message:string;name:string;version:string|number;period:string}|{id:string;width:number;height:number;status:'ready';tile:DashboardTile;notes:string[];report:SalesView|null;forecast:ForecastSnapshot|null};
 type Head={owner_id:string|null;version:number;sharing_version:number;authority:number;body_json:string;share_json:string};
-const actor=(c:ActorContext)=>c.principal.kind==='operator'?c.principal.operatorId:'';
+const actor=(c:ActorContext)=>(c.principal.kind==='operator'||c.principal.kind==='agent')?c.principal.operatorId:'';
 const unavailable=(tile:DashboardTile):TileResult=>({id:tile.id,width:tile.width,height:1,status:'unavailable'});
 /** A tile frame shown before or instead of its figures names its period the way the computed tile will. */
 /** A tile's own name, the same in its outline and its error frame. */
@@ -108,7 +108,7 @@ export class Dashboards{
  async read(c:ActorContext,id:string,filters?:DashboardFilters,pending=false){
   const current=await this.head(c,id),suite=await this.metrics.sales.suite(current.c),selected=filters??current.definition.filters,tiles:TileResult[]=[],proofs:SqlStatement[]=[];
   for(const tile of current.definition.tiles)tiles.push(await (pending?this.outlineTile(current.c,tile,selected,suite.timezone):this.tile(current.c,tile,selected,suite.timezone,proofs)));
-  const full=current.c.principal.kind==='operator'&&await isFullOperator(this.db,actor(current.c));
+  const full=(current.c.principal.kind==='operator'||current.c.principal.kind==='agent')&&await isFullOperator(this.db,actor(current.c));
   const limited=!full||tiles.some(t=>t.status==='ready'&&t.report?.access.limited);
   const fieldValues=new Map<string,Set<string>>();let cursor:string|undefined;do{const page=await this.metrics.sales.graph.scanRecords(current.c,{types:['opportunity'],query:'',fields:[],filters:{},limit:1000,...(cursor?{cursor}:{})});for(const item of page.items){const custom=typeof item.fields.custom_fields_json==='string'?JSON.parse(item.fields.custom_fields_json):{};for(const [name,value] of Object.entries(custom)){if(['string','number','boolean'].includes(typeof value)&&/^[a-zA-Z][a-zA-Z0-9_]{0,80}$/.test(name)){const values=fieldValues.get(name)??new Set<string>();values.add(String(value));fieldValues.set(name,values);}}}cursor=page.nextCursor??undefined;}while(cursor);await this.metrics.checkSources(current.c,[]);
   // Only the workspace's shared (custom) fields, the dashboard's saved field first; internal record states are not dashboard fields.

@@ -59,3 +59,9 @@ function refusal(error: unknown): Response {
   if (!(error instanceof AuthError)) throw error;
   return Response.json({ error: refusals[error.code] ?? 'The email confirmation is unavailable right now. Try again later.', code: error.code }, { status: error.status });
 }
+
+/** A machine effect names its sponsor and never carries a person session. */
+export interface AgentActor {
+ kind:'agent'; operatorId:string; agentId:string; email:string; displayName:string; devSession:false;
+}
+export type NativeActor = AuthenticatedOperator | AgentActor;

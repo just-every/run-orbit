@@ -10,7 +10,7 @@ import { missing, invalid, refuse } from '@runeditrun/rer/errors';
 
 // Optional features are uploaded only when the owner supplies them; deployed
 // secrets are kept by name on later deploys.
-export const optionalSecrets = ['MAIL_API_KEY', 'SENDGRID_API_KEY', 'MAIL_REPLY_TO', 'CAPTURE_MAIL_ADDRESS', 'SENDGRID_UNSUBSCRIBE_GROUP_ID', 'RER_MAIL_RELAY_SECRET', 'SENDGRID_WEBHOOK_PUBLIC_KEY', 'SENDGRID_PARSE_PUBLIC_KEY', 'ORBIT_ENCRYPTION_KEY', 'OPENAI_API_KEY', 'AI_MODEL', 'AI_INPUT_COST_PER_MILLION', 'AI_OUTPUT_COST_PER_MILLION', 'AI_CACHED_INPUT_COST_PER_MILLION'];
+export const optionalSecrets = ['RER_OWNER_CLAIM_ISSUER', 'RER_OWNER_CLAIM_INSTALLATION_ID', 'RER_OWNER_CLAIM_APP_ORIGIN', 'RER_OWNER_CLAIM_PUBLIC_KEYS', 'RER_BUSINESS_TRUST', 'MAIL_API_KEY', 'SENDGRID_API_KEY', 'MAIL_REPLY_TO', 'CAPTURE_MAIL_ADDRESS', 'SENDGRID_UNSUBSCRIBE_GROUP_ID', 'RER_MAIL_RELAY_SECRET', 'SENDGRID_WEBHOOK_PUBLIC_KEY', 'SENDGRID_PARSE_PUBLIC_KEY', 'ORBIT_ENCRYPTION_KEY', 'OPENAI_API_KEY', 'AI_MODEL', 'AI_INPUT_COST_PER_MILLION', 'AI_OUTPUT_COST_PER_MILLION', 'AI_CACHED_INPUT_COST_PER_MILLION'];
 const required = ['OWNER_EMAIL'];
 // Each optional value and the feature it turns on, for the dry run's plain list.
 const optionalFeatures = [

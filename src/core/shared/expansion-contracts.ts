@@ -2,6 +2,7 @@
 export type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
 export type Principal =
   | { kind: 'operator'; operatorId: string; sessionId: string }
+  | { kind: 'agent'; operatorId: string; agentId: string }
   | { kind: 'service'; principalId: string; credentialId: string; custodianId: string }
   | { kind: 'guest'; principalId: string; grantId: string };
 export interface Scope { tenantId: string; workspaceId: string }

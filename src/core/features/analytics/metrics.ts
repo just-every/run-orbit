@@ -73,7 +73,7 @@ export class AnalyticsMetrics {
   await this.checkSources(ctx,proofs);return snapshot;
  }
  /** Reports this viewer may open: workspace-wide, their own, named for them, or every report for the installation owner. */
- async list(ctx:ActorContext){ctx=await this.permit(ctx,'analytics.read');const rows=(await this.store.db.prepare(`SELECT d.id,d.version,d.body_json,d.created_at FROM analytics_definitions d WHERE d.workspace_id=?1 AND ${visibleSql('d.id')} ORDER BY d.created_at DESC LIMIT 100`).bind(ctx.workspaceId,ctx.principal.kind==='operator'?ctx.principal.operatorId:'').all()).results;await this.checkSources(ctx,[]);return rows;}
+ async list(ctx:ActorContext){ctx=await this.permit(ctx,'analytics.read');const rows=(await this.store.db.prepare(`SELECT d.id,d.version,d.body_json,d.created_at FROM analytics_definitions d WHERE d.workspace_id=?1 AND ${visibleSql('d.id')} ORDER BY d.created_at DESC LIMIT 100`).bind(ctx.workspaceId,(ctx.principal.kind==='operator'||ctx.principal.kind==='agent')?ctx.principal.operatorId:'').all()).results;await this.checkSources(ctx,[]);return rows;}
  async listSnapshots(ctx:ActorContext,id:string,version:number){
   ctx=await this.permit(ctx,'analytics.read',id);
   const body=await this.store.db.prepare('SELECT body_json FROM analytics_definitions WHERE workspace_id=? AND id=? AND version=?').bind(ctx.workspaceId,id,version).first<string>('body_json');

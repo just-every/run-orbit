@@ -1,3 +1,4 @@
+import {dialCall} from './dial';
 import {guard,clearGuards,refused} from '../identity/store';
 import type {ProviderFetch} from '../capture/providers/config';
 import {Hono} from 'hono';
@@ -33,26 +34,6 @@ export function callRoutes(db:D1Database,config:Config){const app=new Hono<{Vari
  app.get('/contacts/:id/preview',async c=>{const credentials=await repo.credentials();if(!credentials)return c.json({error:'Connect Twilio in Settings first.'},409);const contact=await db.prepare('SELECT name,phone,contactability FROM contacts WHERE id=?').bind(c.req.param('id')).first<{name:string;phone:string|null;contactability:string}>();if(!contact)return c.json({error:'Contact not found.'},404);const to=normalizedPhone(contact.phone??'');if(!phonePattern.test(to)||contact.contactability!=='contactable')return c.json({error:'The contact needs a valid international number and permission to be contacted.'},409);return c.json({contactId:c.req.param('id'),name:contact.name,to,from:credentials.from,operatorPhone:credentials.operatorPhone});});
  app.post('/contacts/:id/dial',async c=>{
   const input=z.object({operationKey:id,confirmed:z.literal(true),to:phone,from:phone,operatorPhone:phone}).strict().safeParse(await c.req.json());if(!input.success)return c.json({error:'Review and confirm the exact call numbers.'},400);
-  const snapshot=await repo.credentialSnapshot(),credentials=snapshot?.value;if(!credentials||!snapshot)return c.json({error:'Connect Twilio first.'},409);const contact=await db.prepare('SELECT phone,contactability FROM contacts WHERE id=?').bind(c.req.param('id')).first<{phone:string|null;contactability:string}>();
-  if(!contact||contact.contactability!=='contactable'||normalizedPhone(contact.phone??'')!==input.data.to||credentials.from!==input.data.from||credentials.operatorPhone!==input.data.operatorPhone)return c.json({error:'Call details changed. Review them again.'},409);
-  // Persist custody before the external attempt. An uncertain outcome is never retried automatically.
-  const actor=c.get('operator').operatorId;
-  try{await db.batch([guard(db,{sql:"EXISTS(SELECT 1 FROM contacts WHERE id=? AND phone IS ? AND contactability='contactable') AND EXISTS(SELECT 1 FROM call_credentials WHERE id=1 AND ciphertext=?) AND EXISTS(SELECT 1 FROM sessions s JOIN operators o ON o.id=s.operator_id WHERE s.id=? AND o.id=? AND o.status='active' AND s.revoked_at IS NULL AND s.expires_at>?)",args:[c.req.param('id'),contact.phone,snapshot.ciphertext,c.get('operator').sessionId,actor,new Date().toISOString()]}),db.prepare("INSERT INTO call_dial_attempts(id,contact_id,actor_id,created_at,state,call_sid) VALUES(?,?,?,?,'attempted',NULL)").bind(input.data.operationKey,c.req.param('id'),actor,new Date().toISOString()),audit(db,actor,'calls.dial-attempted','contact',c.req.param('id'),{operationKey:input.data.operationKey,to:input.data.to,from:input.data.from}),clearGuards(db)]);}catch(error){if(await db.prepare('SELECT 1 FROM call_dial_attempts WHERE id=?').bind(input.data.operationKey).first())return c.json({error:'This call was already attempted. Check Twilio before placing a new call.'},409);if(refused(error))return c.json({error:'Call details or access changed. Review the call again.'},409);throw error;}
-  const uncertain=()=>repo.dialOutcome(input.data.operationKey,'uncertain');
-  const body=new URLSearchParams({To:credentials.operatorPhone,From:credentials.from,Twiml:`<Response><Dial callerId="${credentials.from}"><Number statusCallback="${credentials.origin}/api/v1/calls/twilio/events" statusCallbackEvent="initiated ringing answered completed">${input.data.to}</Number></Dial></Response>`});
-  let response:Response;try{response=await(config.fetcher??fetch)(`https://api.twilio.com/2010-04-01/Accounts/${credentials.accountSid}/Calls.json`,{method:'POST',headers:{Authorization:`Basic ${btoa(`${credentials.accountSid}:${credentials.token}`)}`,'Content-Type':'application/x-www-form-urlencoded'},body,redirect:'manual'});}catch{await uncertain();return c.json({error:'Call outcome is unknown. Check Twilio before placing another call.',status:'uncertain'},502);}
-  if(!response.ok){
-   // Only documented call-creation validation refusals prove that no call was created.
-   // https://www.twilio.com/docs/iam/test-credentials and https://www.twilio.com/docs/api/errors/21211
-   let code:unknown;try{const failure=await response.json() as {code?:unknown;status?:unknown};if(failure?.status===400)code=failure.code;}catch{}
-   if(response.status===400&&typeof code==='number'&&[21210,21211,21212,21214,21215,21216,21217].includes(code)){
-    await repo.dialOutcome(input.data.operationKey,'failed',code);
-    return c.json({error:`Twilio refused the call (code ${code}). No call was created. Review Settings and the numbers before placing a new call.`,status:'failed',providerErrorCode:code},502);
-   }
-   await uncertain();return c.json({error:`Twilio did not confirm the call (HTTP ${response.status}). Check Twilio before placing another call.`,status:'uncertain'},502);
-  }
-  let result:{sid?:string}|null;try{result=await response.json() as {sid?:string}|null;}catch{await uncertain();return c.json({error:'Call outcome is unknown. Check Twilio before placing another call.',status:'uncertain'},502);}if(!/^CA[a-f0-9]{32}$/i.test(result?.sid??'')){await uncertain();return c.json({error:'Twilio returned no valid call receipt. Check Twilio before placing another call.',status:'uncertain'},502);}
-  await db.prepare("UPDATE call_dial_attempts SET state='submitted',call_sid=? WHERE id=?").bind(result!.sid!,input.data.operationKey).run();
-  return c.json({callSid:result!.sid,status:'submitted'},201);
+  return dialCall(db,config,c.req.param('id'),c.get('operator'),input.data);
  });return app;
 }
