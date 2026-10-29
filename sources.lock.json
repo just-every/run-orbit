@@ -9147,7 +9147,7 @@
       "executable": false
     },
     "tests/core/local-owner.test.ts": {
-      "sha256": "70a3efa7a1ccf10783be2aaf6a4d2e46ebe82c4ea5661aa1813d139d193a57b6",
+      "sha256": "e1744bf3230b95f2e4efd33cea56b2fb4f21d20c7979c597da3d5170ff50033f",
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
