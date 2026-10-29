@@ -8,12 +8,12 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 9 | 139 | 30 | 178 |
+| Core | 10 | 138 | 30 | 178 |
 | Agent surface | 0 | 0 | 26 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 9 | 139 | 56 | 204 |
+| Full target | 10 | 138 | 56 | 204 |
 
-Judged from the code and tests at commit `03963b1a17ecd6d0c2cc1eec9a1d6285fd9240b5` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
+Judged from the code and tests at commit `8a376be48c1d65916c7c201535ee32113acede70` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
 ## Core
 
@@ -33,15 +33,15 @@ Core · published · **partial** · Cites BASE-ROLE-001, BASE-ACCESS-004
 
 #### TEAM-002 — Management
 
-Core · published · **partial** · Cites BASE-ROLE-001, BASE-ACCESS-004
+Core · published · **done** · Cites BASE-ROLE-001, BASE-ACCESS-004
 
 **Requirement.** Any active full operator invites and removes operators in Settings. An invitation sends no email: the invited person requests their own sign-in link. Removing an operator revokes their sessions at once, and later sign-in requests for their address send no link. The setup owner can be removed only by themselves, and only while another active full operator exists. Invitations and removals are audited. Roles, teams and access review are TEAM-005; policy `operator.management.v1` may narrow who invites or removes without bypassing server-side checks.
 
 **Acceptance.**
 1. Invite an operator, sign in as them, remove them, and attempt a previously issued session and a new sign-in request; try to remove the setup owner as another operator and as the only operator.
 
-**Evidence.** `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`; `src/core/features/settings/repository.ts`; `src/core/features/settings/removal-handover.ts`; `tests/core/today-brief.test.ts`; `tests/core/local-owner.test.ts`
-**Gap.** Unasserted in the carried evidence: invited person signs in through their own link. Asserted: invitation emits no unsolicited email; removed session is refused; removed operator receives no new link; another operator cannot remove the owner; sole owner cannot remove themselves; self-removal with another active operator ends the session.
+**Evidence.** `tests/core/local-owner.test.ts` — TEAM-002 PUBLIC-004 owner mailbox changes and setup-owner removal preserve sign-in authority: invitation without unsolicited mail, the invited address requests and confirms its own native link, exact full-operator identity and authenticated Settings access, removal revokes that cookie and refuses new mail, owner-removal refusals, permitted owner self-removal, and invitation and removal audit; `tests/core/today-brief.test.ts`; `src/core/features/settings/repository.ts`; `src/core/features/settings/removal-handover.ts`; `src/core/features/identity/auth.ts`
+**Gap.** None.
 
 #### TEAM-003 — One workspace
 
