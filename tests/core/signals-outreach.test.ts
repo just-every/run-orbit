@@ -200,14 +200,39 @@ test('BASE-OPS-004 OPP-005 evaluation failure preserves readable prior evidence 
  await evaluateOpportunity(db,f.opportunityId,f.actor,'Operator refresh');const refreshed=await deps.opportunities.findDetail(f.opportunityId);assert.equal(refreshed!.evaluation?.failureAt,null);assert.notEqual(refreshed!.evaluation?.id,before!.evaluation?.id);
 });
 
-test('SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; inferred evidence cannot produce a high band or action',async()=>{
+test('SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; inferred evidence cannot create a deal, high band or action',async()=>{
  const {standardTypes}=await import('../../src/core/features/ingestion/contracts');const f=await fixture(),security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'33'.repeat(32)})!,repository=new IngestionRepository(db),source=createId(),secret='test-signal-types-'.repeat(3);await repository.configure({id:source,name:'Typed source',secret,enabled:true},security);const app=createSignalIngress(db,security),timestamp=String(Math.floor(Date.now()/1000));
  async function post(type:string,linked=false){const event={eventId:createId(),type,subject:type,occurredAt:f.at,...(linked?{record:{type:'opportunity',id:f.opportunityId},identityBasis:'Authenticated customer identity'}:{})};const raw=JSON.stringify(event);return app.request(`https://orbit.test/${source}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':await sign(secret,raw,timestamp)},body:raw});}
  for(const type of standardTypes)assert.equal((await post(type)).status,201,type);
  assert.equal((await post(`${source}:customer.custom`)).status,201);assert.equal((await post('other:customer.custom')).status,400);assert.equal((await post('unknown')).status,400);
  const deliberate=['form.submitted','email.replied','meeting.booked','meeting.completed','content.downloaded','chat.started'];for(const type of deliberate){const row=await db.prepare('SELECT confidence FROM signals WHERE source_id=? AND type=?').bind(source,type).first<{confidence:string}>();assert.equal(row?.confidence,'observed');}
+ const native=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}}),session=await createDependencies(db).auth.createSession(f.actor);
+ const email=[createId(),'customer.example'].join('@');
+ const created=await native.request('https://orbit.test/api/v1/records/contact',{method:'POST',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({name:'synthetic-orbit-1',email})});
+ assert.equal(created.status,201);const contact=await created.json() as {id:string};
+ async function contactDetail(){
+  const response=await native.request(`https://orbit.test/api/v1/records/contact/${contact.id}`,{headers:{Cookie:`__Host-orbit_session=${session.token}`}});
+  assert.equal(response.status,200);
+  return response.json() as Promise<{opportunities:{id:string}[];timeline:{id:string;signal_type:string}[]}>;
+ }
+ async function opportunityIds(){return (await db.prepare('SELECT id FROM opportunities ORDER BY id').all<{id:string}>()).results.map(row=>row.id);}
+ assert.deepEqual((await contactDetail()).opportunities,[],'The known contact starts without a deal');
+ const before=await opportunityIds();assert.ok(before.includes(f.opportunityId));
+ for(const type of ['email.opened','page.viewed']){
+  const event={eventId:createId(),type,subject:'synthetic-orbit-2',occurredAt:f.at,email,...(type==='page.viewed'?{identityBasis:'Authenticated customer identity'}:{})},raw=JSON.stringify(event);
+  const deliver=()=>app.request(`https://orbit.test/${source}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':signature},body:raw});
+  const signature=await sign(secret,raw,timestamp),accepted=await deliver();assert.equal(accepted.status,201);
+  const signal=await accepted.json() as {id:string;linked:boolean};assert.equal(signal.linked,true,'The signed inference reaches the known contact');
+  assert.equal((await db.prepare('SELECT confidence FROM signals WHERE id=?').bind(signal.id).first<{confidence:string}>())?.confidence,'inferred');
+  const delivered=await contactDetail();assert.ok(delivered.timeline.some(entry=>entry.id===signal.id&&entry.signal_type===type),'The accepted inference appears on the contact timeline');
+  assert.deepEqual(delivered.opportunities,[]);assert.deepEqual(await opportunityIds(),before,`${type} creates no deal anywhere in the workspace`);
+  const replay=await deliver();assert.equal(replay.status,201);assert.deepEqual(await replay.json(),{id:signal.id,replayed:true});
+  const replayed=await contactDetail();assert.equal(replayed.timeline.filter(entry=>entry.id===signal.id).length,1,'Replay retains one timeline event');
+  assert.deepEqual(replayed.opportunities,[]);assert.deepEqual(await opportunityIds(),before,`${type} replay creates no deal`);
+ }
  for(let i=0;i<36;i++)assert.equal((await post('email.opened',true)).status,201);
  const state=await db.prepare('SELECT score,band FROM opportunities WHERE id=?').bind(f.opportunityId).first<{score:number;band:string}>();assert.equal(state?.score,69);assert.equal(state?.band,'medium');assert.equal(await db.prepare('SELECT id FROM recommendations WHERE opportunity_id=? AND is_current=1').bind(f.opportunityId).first(),null);
+ assert.deepEqual(await opportunityIds(),before,'Inferred activity changes no opportunity identities');
  const count=await db.prepare('SELECT COUNT(*) AS n FROM opportunities WHERE id=?').bind(f.opportunityId).first<{n:number}>();assert.equal(count?.n,1);
 });
 test('OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not',async()=>{

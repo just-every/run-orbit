@@ -2391,9 +2391,9 @@ Judged from the code and tests at commit `373d8818a42e3208c5d9ea2ffea9cea33c470d
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 9 | 70 | 0 | 79 |
+| Published | 10 | 69 | 0 | 79 |
 | Target and push further | 3 | 67 | 55 | 125 |
-| All | 12 | 137 | 55 | 204 |
+| All | 13 | 136 | 55 | 204 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -2419,7 +2419,7 @@ Judged from the code and tests at commit `373d8818a42e3208c5d9ea2ffea9cea33c470d
 | `SIGNAL-003` | Idempotency | published | partial | `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: replay after restart. Asserted: concurrent delivery returns one identity; one persisted effect; changed payload returns conflict. |
 | `SIGNAL-004` | Linking | published | partial | `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: ambiguous identity held; exactly one evaluation after link. Asserted: exact identity affects the intended deal; unknown identity held; one manual link allowed; linked timeline retains event time. |
 | `SIGNAL-005` | Event time | published | partial | `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: history sorted around newer evidence; fresh evaluation after late event; later-written fields not overwritten. Asserted: older event retains occurred time. |
-| `SIGNAL-006` | Evidence confidence | published | partial | `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: inferred activity cannot create any new deal. Asserted: observed reply/booking classification; inferred activity cannot raise high band; inferred activity creates no current recommendation. |
+| `SIGNAL-006` | Evidence confidence | published | done | `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`: SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; inferred evidence cannot create a deal, high band or action. Signed ingestion and authenticated Records prove observed classification, accepted inferred contact history, unchanged complete opportunity identities after delivery and replay, the inferred band ceiling and no current recommendation. |  |
 | `SIGNAL-007` | No tracking | published | partial | `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: no tracking script/pixel/cookie in public assets/network; identity-free chat held; unsupported identity absent from customer history. Asserted: identity-free page view held. |
 | `SIGNAL-008` | Ingestion failure | published | partial | `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: unknown source refused; all downstream effects rolled back. Asserted: bad signature refused; oversized input refused; persistence failure leaves no signal; replay safety; source rejection diagnostic. |
 | `SIGNAL-009` | Signed sources | published | partial | `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: signed provider callback; HTTPS source-scoped automation; disabled authority refused; rotated authority refused; native session checks retained; native ownership checks retained. Asserted: invalid authority refused. |
