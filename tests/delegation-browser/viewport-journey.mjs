@@ -56,11 +56,14 @@ export async function nativeOpportunityViewportJourney(page){
   for(const viewport of viewports){
    await page.setViewportSize({width:viewport.width,height:viewport.height});
    // OR3: the hand-off is a line in Activity; its cited link (#handoff-<id>) opens the task in place.
+   // The page is already this deal's, so the link alone changes only the hash: reload to read the hand-off written since.
    await page.goto('/app/opportunities/'+opportunity.id+'#handoff-'+nonce);
+   await page.reload();
    await expect(page.getByRole('heading',{name:opportunityTitle,exact:true,level:1})).toBeVisible();
    await expect(page.getByRole('main').getByRole('link',{name:companyName,exact:true}).first()).toBeVisible();
+   // The opened task is a form named by its title (the line above it shows the title once).
    const section=page.getByTestId('handoff-tasks');
-   await expect(section.getByRole('heading',{name:taskTitle,exact:true})).toBeVisible();
+   await expect(section.getByRole('form',{name:taskTitle,exact:true})).toBeVisible();
    await expect(section.getByRole('textbox',{name:'Title',exact:true})).toHaveValue(taskTitle);
    for(const [role,name] of [['textbox','Description'],['combobox','Assignee'],['textbox',/^Due time \(/],['combobox','Status']])await expect(section.getByRole(role,{name,exact:true})).toBeVisible();
    await expect(section.getByRole('button',{name:/^(Accept with my changes|Update hand-off)$/})).toBeEnabled();
@@ -78,9 +81,10 @@ export async function nativeOpportunityViewportJourney(page){
   for(const viewport of viewports){
    await page.setViewportSize({width:viewport.width,height:viewport.height});
    await page.goto('/app/opportunities/'+opportunity.id+'#handoff-'+nonce);
+   await page.reload();
    await expect(page.getByRole('heading',{name:opportunityTitle,exact:true,level:1})).toBeVisible();
    const section=page.getByTestId('handoff-tasks');
-   await expect(section.getByRole('heading',{name:displayedTaskTitle,exact:true})).toBeVisible();
+   await expect(section.getByRole('form',{name:displayedTaskTitle,exact:true})).toBeVisible();
    const assigneeField=section.getByRole('combobox',{name:'Assignee',exact:true}),statusField=section.getByRole('combobox',{name:'Status',exact:true});
    const assignee=await assigneeField.locator('option').evaluateAll(nodes=>nodes.map(node=>node.value).find(Boolean));
    expect(assignee).toBeTruthy();
@@ -94,7 +98,7 @@ export async function nativeOpportunityViewportJourney(page){
     const saved=page.waitForResponse(response=>response.url().endsWith('/delegation/handoffs')&&response.request().method()==='POST');
     await section.getByRole('button',{name:/^(Accept with my changes|Update hand-off)$/}).click();
     expect((await saved).status()).toBe(200);
-    await expect(section.getByRole('heading',{name:editedTitle,exact:true})).toBeVisible();
+    await expect(section.getByRole('form',{name:editedTitle,exact:true})).toBeVisible();
     const readback=await(await api.get('/delegation/handoffs/'+opportunity.id)).json(),persisted=readback.tasks[0].task;
     expect(Object.fromEntries(taskKey.map(key=>[key,persisted[key]]))).toEqual({title:editedTitle,description:`Reviewed regional installation coordination for the Northstar fleet account; current status is ${status}.`,assignee_id:status==='cancelled'?null:assignee,due_at:'2026-10-14T23:30:00.000Z',status});
     displayedTaskTitle=editedTitle;

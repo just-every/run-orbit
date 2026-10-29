@@ -71,7 +71,8 @@
 .r-panel > .operator-surface { margin: 0; }
 .r-feed { display: grid; margin: 6px 0 0; padding: 0; list-style: none; }
 .r-feed > li { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 2px 16px; align-items: baseline; padding: 14px 0; border-top: 1.5px solid var(--ob-line); }
-.r-feed > li:target, .r-feed > li:focus { outline: none; background: var(--ob-paper-deep); border-radius: 12px; }
+/* A cited line in view: the card's paper behind it (muted words keep 4.5:1), spread past its edges without moving it. */
+.r-feed > li:target, .r-feed > li:focus { outline: none; background: var(--ob-card); box-shadow: 0 0 0 8px var(--ob-card); border-radius: 12px; }
 .r-kind { color: var(--ob-muted); font-size: 14px; font-weight: 650; }
 .r-kind--draft { color: var(--ob-tangerine-deep); }
 .r-entry { display: grid; gap: 2px; min-width: 0; }

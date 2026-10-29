@@ -15,7 +15,7 @@ export async function mentionLink({author,colleague,origin,opportunity,occurredA
   await page.getByRole('link',{name:'Open the mention'}).first().click();await page.waitForURL(new RegExp(`/app/opportunities/${opportunity}#${entry}$`));
   // Chrome's scroll anchoring would hide the shift; Safari has none, so the journey runs without it.
   await page.addStyleTag({content:'html,body{overflow-anchor:none}'});
-  expect((await risks).ok()).toBe(true);await expect(page.getByTestId('deal-risks').locator('summary')).toBeVisible();await expect(page.getByTestId('record-details').getByRole('heading',{name:'People',exact:true})).toBeVisible();
+  expect((await risks).ok()).toBe(true);await expect(page.getByTestId('deal-risks').locator(':scope > summary')).toBeVisible();await expect(page.getByTestId('record-details').getByRole('heading',{name:'People',exact:true})).toBeVisible();
   await expect.poll(async()=>{const box=await inView(page,entry);return box!==null&&box.top>=0&&box.bottom<=box.height;},{message:`the mentioned entry is in the viewport at ${width}`,timeout:5000}).toBe(true);
   await page.waitForTimeout(800);const settled=await inView(page,entry);expect(settled.top>=0&&settled.bottom<=settled.height,`still in view at ${width}: ${JSON.stringify(settled)}`).toBe(true);
  }
