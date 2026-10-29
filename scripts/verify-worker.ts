@@ -66,7 +66,7 @@ try {
   const context=await browser.newContext({extraHTTPHeaders:{Cookie:cookie(valid.token)}}),page=await context.newPage(),errors:string[]=[],rpc:string[]=[],rpcHeaders=new Map<string,Record<string,string>>();
   page.on('pageerror',error=>errors.push(error.message));page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
   page.on('request',request=>{if(new URL(request.url()).pathname.startsWith('/_serverFn/')){rpc.push(request.url());rpcHeaders.set(request.url(),request.headers());}});
-  await page.goto(origin+'/app/records',{waitUntil:'networkidle'});const timeOrigin=await page.evaluate(()=>performance.timeOrigin);
+  await page.goto(origin+'/app/opportunities',{waitUntil:'networkidle'});const timeOrigin=await page.evaluate(()=>performance.timeOrigin);
   await page.getByRole('link',{name:'NOW',exact:true}).click();await page.getByTestId('now-queue').waitFor();await page.waitForLoadState('networkidle');assert.equal(await page.evaluate(()=>performance.timeOrigin),timeOrigin);assert.deepEqual(errors,[]);assert.ok(rpc.length>0);
   const transports:Record<string,unknown>[]=[];
   for(const url of [...new Set(rpc)]){
@@ -77,7 +77,7 @@ try {
       transports.push({url:new URL(url).pathname,control:name,status:response.status,body});
     }
   }
-  await page.setViewportSize({width:1024,height:1536});await page.goto(origin+'/app/new',{waitUntil:'networkidle'});await mkdir('verification/ui',{recursive:true});await page.screenshot({path:'verification/ui/12-create-opportunity.png',fullPage:true});
+  await page.setViewportSize({width:1024,height:1536});await page.goto(origin+'/app/opportunities/new',{waitUntil:'networkidle'});await mkdir('verification/ui',{recursive:true});await page.screenshot({path:'verification/ui/12-create-opportunity.png',fullPage:true});
   evidence.serverFunctions=transports;evidence.browser={stableTimeOrigin:true,errors,rpcCount:rpc.length};
   for(const file of await readdir('dist/client/assets'))if(file.endsWith('.js')){
     const client=await readFile('dist/client/assets/'+file,'utf8');

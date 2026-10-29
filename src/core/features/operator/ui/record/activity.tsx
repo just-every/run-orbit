@@ -20,6 +20,12 @@ export interface ActivityEntry{
 }
 export interface ActivityAction{label:string;panel:ReactNode}
 
+/** A fold that renders what it holds only while open, so a closed row loads nothing and a field inside can take focus. */
+export function Opens({summary,initiallyOpen=false,children}:{summary:string;initiallyOpen?:boolean;children:()=>ReactNode}){
+ const [open,setOpen]=useState(initiallyOpen);
+ return <details open={open} onToggle={event=>setOpen(event.currentTarget.open)}><summary>{summary}</summary>{open?children():null}</details>;
+}
+
 /** Activity: three quiet actions at the heading's right, each opening its form in place under it, then one list,
  * newest first, with a hairline between entries. */
 export function Activity({entries,actions,empty='No activity recorded yet.'}:{entries:ActivityEntry[];actions:ActivityAction[];empty?:string}){

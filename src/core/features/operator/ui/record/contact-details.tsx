@@ -1,6 +1,6 @@
 import {useCallback,useMemo,useState} from 'react';
 import {Link} from '@tanstack/react-router';
-import {AutosaveField,choiceProps,textProps} from '../autosave/field';
+import {AutosaveField,choiceProps,labelId,textProps} from '../autosave/field';
 import {InlineConfirm} from '../autosave/inline-confirm';
 import {useAutosave,type AutosaveForm,type Parse,type Values} from '../autosave/use-autosave';
 import {DoNotContactReason} from '../do-not-contact-reason';
@@ -15,7 +15,7 @@ import type {RecordDeal} from './record-next-action';
 
 const zones=(()=>{try{return Intl.supportedValuesOf('timeZone');}catch{return [] as string[];}})();
 /** An email, or nothing when the contact keeps a name; a contact needs one or the other. */
-export const emailParse=(name:()=>string):Parse=>text=>{const value=text.trim();if(!value)return name().trim()?{value:null}:{error:'A contact needs a name or an email.'};return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)?{value}:{error:'Enter an email address such as name@their-company.com.'};};
+export const emailParse=(name:()=>string):Parse=>text=>{const value=text.trim();if(!value)return name().trim()?{value:null}:{error:'A contact needs a name or an email.'};return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)?{value}:{error:'Enter an email address such as name@company.example.'};};
 
 /** Deals: each deal's title as a link, then its stage, value and owner. */
 export function DealRows({deals,workspace}:{deals:RecordDeal[];workspace:any}){
@@ -39,7 +39,7 @@ function PermissionField({id,name,row,onSaved}:{id:string;name:string;row:Values
   after={<>{asking==='do_not_contact'?<InlineConfirm sentence={`Stop all mail to ${name}? Their scheduled follow-ups are cancelled.`} action="Stop mail" keep="Keep contactable" onConfirm={()=>{form.commit('contactability','do_not_contact');keep();}} onKeep={keep}/>:null}
    {asking==='contactable'?<InlineConfirm sentence={`Clear do-not-contact for ${row.email??name}? Future messages will require a new operator review. Cancelled messages stay cancelled.`} action="Clear do-not-contact" keep="Keep do not contact" onConfirm={()=>{form.commit('contactability','contactable');keep();}} onKeep={keep}/>:null}
    {saved==='do_not_contact'&&!asking?<DoNotContactReason record={row}/>:null}</>}>
-  <select value={asking??saved} onChange={event=>setAsking(event.target.value===saved?null:event.target.value)}><option value="contactable">Contactable</option><option value="do_not_contact">Do not contact</option></select>
+  <select aria-labelledby={labelId(form,'contactability')} value={asking??saved} onChange={event=>setAsking(event.target.value===saved?null:event.target.value)}><option value="contactable">Contactable</option><option value="do_not_contact">Do not contact</option></select>
  </AutosaveField>;
 }
 

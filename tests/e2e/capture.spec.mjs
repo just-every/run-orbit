@@ -42,11 +42,11 @@ test('CAPTURE-001 CAPTURE-004 an operator adds a mailbox and calendar files, rev
   expect(await overflow(page)).toEqual([]);expect(await serious(page)).toEqual([]);
 
   // Open the account: its proposals wait there, and nothing is on its timeline until a person accepts.
-  await page.goto(`/app/records?kind=company&record=${company}`);
+  await page.goto(`/app/companies/${company}`);
   await expect(page.getByRole('heading',{name:account,exact:true,level:1})).toBeVisible();
   const reply=page.getByRole('article',{name:'Link this reply to Ana Ruiz'});
   await expect(reply).toContainText('Can we talk on Tuesday?');
-  const timelineSignals=page.locator('article[id^="entry-"]').filter({hasText:'Re: Proposal for Acme'});
+  const timelineSignals=page.locator('li[id^="entry-"]').filter({hasText:'Re: Proposal for Acme'});
   const capturedTimeline=async()=>{
    const response=await page.request.get(`/api/v1/records/company/${company}`);expect(response.ok()).toBe(true);
    return (await response.json()).timeline.filter(entry=>JSON.parse(entry.payload_json).signalId);
@@ -69,7 +69,7 @@ test('CAPTURE-001 CAPTURE-004 an operator adds a mailbox and calendar files, rev
   // Adding the same files again changes nothing and the declined proposal does not return.
   await page.goto('/app/settings/capture/connect/files');await page.getByLabel('Mail (.eml or mbox) and calendar (.ics) files').setInputFiles(files);await page.getByRole('button',{name:'Add files',exact:true}).click();
   await expect(page.getByRole('region',{name:'Import result'}).getByRole('row',{name:/^Already captured 6$/})).toBeVisible();
-  await page.goto(`/app/records?kind=company&record=${company}`);
+  await page.goto(`/app/companies/${company}`);
   await expect(page.getByRole('article',{name:'Set name from this message'})).toBeVisible();
   await expect(page.getByRole('article',{name:`Create contact cara@${domain} at ${account}`})).toHaveCount(0);
   await expect(timelineSignals).toHaveCount(1);expect((await capturedTimeline()).map(entry=>entry.id)).toEqual(acceptedEntries.map(entry=>entry.id));

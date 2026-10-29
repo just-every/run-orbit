@@ -1,7 +1,7 @@
 import {useEffect,useState} from 'react';
 import {AutosaveField,textProps,choiceProps} from '../autosave/field';
 import type {AutosaveForm,Parse} from '../autosave/use-autosave';
-import {DataValue,fieldLabel} from '../data-value';
+import {DataValue,fieldLabel,valueText} from '../data-value';
 import {importProvenance} from '../import-provenance';
 import {recordsRequest,type RecordKind} from '../records-api';
 import {formatDateTime,workspaceInstant,workspaceLocalInput} from '../formatters';
@@ -39,7 +39,8 @@ export function CustomValues({form,definitions,operators}:{form:AutosaveForm;def
  return <>
   {typed.map(definition=>{const field=`custom:${definition.field_key}`;return definition.archived?<div className="r-quiet" key={field}><label><span className="r-label">{definition.label} · archived</span><span><DataValue value={copy[field]} emptyLabel="Not set"/></span></label></div>:<AutosaveField key={field} form={form} field={field} label={definition.label} quiet describe={value=>definition.value_type==='datetime'&&typeof value==='string'?formatDateTime(value):String(value??'')}><TypedValue form={form} field={field} definition={definition} operators={operators}/></AutosaveField>;})}
   {keys.filter(key=>!known.has(key)).map(key=>{const field=`custom:${key}`,current=copy[field],provenance=importProvenance(key,current);
-   if(provenance)return <div className="r-quiet" key={field}><label><span className="r-label">{fieldLabel(key)}</span><span><DataValue value={provenance} emptyLabel="Not set"/></span></label></div>;
+   // Import details read as they were imported; replacing them with text makes the field an ordinary value.
+   if(provenance)return <div className="r-quiet r-provenance" key={field}><span className="r-label">{fieldLabel(key)}</span><DataValue value={provenance} emptyLabel="Not set"/><button type="button" className="operator-text-button" onClick={()=>form.commit(field,valueText(provenance,'Not set'))}>Replace {fieldLabel(key)} with text</button></div>;
    return <AutosaveField key={field} form={form} field={field} label={fieldLabel(key)} quiet>{typeof current==='boolean'?<select {...choiceProps(form,field,value=>value==='true')}><option value="true">Yes</option><option value="false">No</option></select>:<input maxLength={500} placeholder="Add a value" {...textProps(form,field,typeof current==='number'?{parse:number}:{})}/>}</AutosaveField>;})}
   {adding?<div className="r-add-field"><input aria-label="Field name" placeholder="Field name" autoFocus maxLength={100} value={name} onChange={event=>setName(event.target.value)} onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();add();}if(event.key==='Escape')setAdding(false);}}/><button type="button" className="operator-text-button" disabled={!name.trim()} onClick={add}>Add</button><button type="button" className="operator-text-button" onClick={()=>setAdding(false)}>Cancel</button></div>:<button type="button" className="operator-text-button r-add-field" onClick={()=>setAdding(true)}>Add a field</button>}
  </>;

@@ -19,6 +19,7 @@ import {RecordActivity} from './record-activity';
 import {RecordFoot} from './record-foot';
 import {dealInNow,RecordNextAction} from './record-next-action';
 import {RecordFrame,RecordTitle} from './record-page';
+import {useRefresh} from './use-refresh';
 
 /** A record opened just after it was created puts the caret in its first empty field (SL9). */
 function useCaretOnCreate(ready:boolean){
@@ -40,7 +41,8 @@ function CustomerRecordPage({kind}:{kind:'contact'|'company'}){
  const record=useAutosave<Values>({key:`${kind}.${id}`,copy:recordCopy,version:copy=>copy.updated_at,send:(changes,base,_copy,init)=>patchRecord(kind,id,changes,base,init),reread:async()=>recordValues((await readRecord<{record:Values}>(kind,id)).record),onSaved:reload});
  const context=useAutosave<ContactContextValues>({key:`contact-context.${id}`,copy:contextCopy,send:(changes,_base,copy,init)=>saveContactContext(id,changes,copy,init),reread:async()=>contactContextValues(await readContext<ContactContext>('contact',id)),onSaved:reload});
  const [writing,setWriting]=useState(false);
- useCaretOnCreate(Boolean(data));
+ useRefresh(reload);
+ useCaretOnCreate(Boolean(data&&record.copy));
  if(!data)return <OperatorShell title={kind==='contact'?'Contact':'Company'}>{resource.error?<OperatorState kind="error">{resource.error.message}</OperatorState>:<OperatorState>Loading {kind}…</OperatorState>}</OperatorShell>;
  const {detail,settings}=data,row=detail.record,name=String(record.value('name')??row.name??row.email??(kind==='contact'?'This contact':'This company'));
  const deal=dealInNow(detail.opportunities),blocked=kind==='contact'&&row.contactability==='do_not_contact';
@@ -49,7 +51,7 @@ function CustomerRecordPage({kind}:{kind:'contact'|'company'}){
  return <OperatorShell title={name} eyebrow={<span className="r-eyebrow">{eyebrow}<SavedLabel show={record.saved('name')}/></span>} heading={<RecordTitle form={record} field="name" label={kind==='contact'?'Contact name':'Company name'} required={required}/>}>
   <RecordFrame
    waiting={<><CaptureProposals whenWaiting recordType={kind} recordId={id} onChanged={reload}/><WorkflowRecordApprovals kind={kind} id={id} workspace={settings.workspace} onChanged={reload}/></>}
-   next={<><RecordNextAction name={kind==='contact'?String(row.name??row.email??'them').split(/\s+/)[0]!:name} deal={deal} workspace={settings.workspace} writing={writing} onWrite={kind==='contact'||deal?()=>setWriting(!writing):undefined} email={kind==='contact'?`Email ${String(row.name??row.email??'them').split(/\s+/)[0]}`:undefined} newDeal={kind==='contact'?{contact:id}:{company:id}}
+   next={<><RecordNextAction name={kind==='contact'?String(row.name??row.email??'them').split(/\s+/)[0]!:name} deal={deal} workspace={settings.workspace} writing={writing} onWrite={()=>setWriting(!writing)} email={kind==='contact'?`Email ${String(row.name??row.email??'them').split(/\s+/)[0]}`:'Write an email'} newDeal={kind==='contact'?{contact:id}:{company:id}}
      blocked={blocked?<div className="r-blocked"><p className="r-note r-note--danger">{name} is marked do not contact</p><DoNotContactReason record={row}/></div>:undefined}/>
     {writing&&!blocked?<div className="r-composer"><RecordMailComposer kind={kind} id={id} context={mail.context} deal={deal?.id}/></div>:null}</>}
    activity={<RecordActivity kind={kind} id={id} record={row} timeline={detail.timeline} contacts={detail.contacts} mail={mail.history} reloadMail={mail.reload} reload={()=>{reload();void mail.reload();}}/>}

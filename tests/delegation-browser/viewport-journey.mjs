@@ -30,7 +30,7 @@ export async function nativeOpportunityViewportJourney(page){
    await page.setViewportSize({width:viewport.width,height:viewport.height});
    await page.goto('/app/opportunities/'+opportunity.id);
    await expect(page.getByRole('heading',{name:opportunityTitle,exact:true,level:1})).toBeVisible();
-   await expect(page.getByRole('heading',{name:companyName,exact:true,level:2})).toBeVisible();
+   await expect(page.getByRole('main').getByRole('link',{name:companyName,exact:true}).first()).toBeVisible();
    const taskSection=page.getByTestId('handoff-tasks');await expect(taskSection).toHaveCount(0);
    const before=await viewportMetrics(page,viewport.width);
    diagnostics.viewports.push({name:viewport.name,width:viewport.width,height:viewport.height,phase:'before-handoff',...before});
@@ -55,14 +55,15 @@ export async function nativeOpportunityViewportJourney(page){
 
   for(const viewport of viewports){
    await page.setViewportSize({width:viewport.width,height:viewport.height});
-   await page.goto('/app/opportunities/'+opportunity.id);
+   // OR3: the hand-off is a line in Activity; its cited link (#handoff-<id>) opens the task in place.
+   await page.goto('/app/opportunities/'+opportunity.id+'#handoff-'+nonce);
    await expect(page.getByRole('heading',{name:opportunityTitle,exact:true,level:1})).toBeVisible();
-   await expect(page.getByRole('heading',{name:companyName,exact:true,level:2})).toBeVisible();
+   await expect(page.getByRole('main').getByRole('link',{name:companyName,exact:true}).first()).toBeVisible();
    const section=page.getByTestId('handoff-tasks');
    await expect(section.getByRole('heading',{name:taskTitle,exact:true})).toBeVisible();
    await expect(section.getByRole('textbox',{name:'Title',exact:true})).toHaveValue(taskTitle);
    for(const [role,name] of [['textbox','Description'],['combobox','Assignee'],['textbox',/^Due time \(/],['combobox','Status']])await expect(section.getByRole(role,{name,exact:true})).toBeVisible();
-   await expect(section.getByRole('button',{name:'Save handoff',exact:true})).toBeEnabled();
+   await expect(section.getByRole('button',{name:/^(Accept with my changes|Update hand-off)$/})).toBeEnabled();
    const after=await viewportMetrics(page,viewport.width);
    diagnostics.viewports.push({name:viewport.name,width:viewport.width,height:viewport.height,phase:'after-handoff',...after});
    expect(after.documentWidth,`${viewport.name} after handoff: ${JSON.stringify(after.overflowingElements)}`).toBeLessThanOrEqual(viewport.width);
@@ -76,7 +77,7 @@ export async function nativeOpportunityViewportJourney(page){
   let displayedTaskTitle=taskTitle;
   for(const viewport of viewports){
    await page.setViewportSize({width:viewport.width,height:viewport.height});
-   await page.goto('/app/opportunities/'+opportunity.id);
+   await page.goto('/app/opportunities/'+opportunity.id+'#handoff-'+nonce);
    await expect(page.getByRole('heading',{name:opportunityTitle,exact:true,level:1})).toBeVisible();
    const section=page.getByTestId('handoff-tasks');
    await expect(section.getByRole('heading',{name:displayedTaskTitle,exact:true})).toBeVisible();
@@ -91,7 +92,7 @@ export async function nativeOpportunityViewportJourney(page){
     await section.getByRole('textbox',{name:/^Due time \(/,exact:true}).fill('2026-10-15T09:30');
     await statusField.selectOption(status);
     const saved=page.waitForResponse(response=>response.url().endsWith('/delegation/handoffs')&&response.request().method()==='POST');
-    await section.getByRole('button',{name:'Save handoff',exact:true}).click();
+    await section.getByRole('button',{name:/^(Accept with my changes|Update hand-off)$/}).click();
     expect((await saved).status()).toBe(200);
     await expect(section.getByRole('heading',{name:editedTitle,exact:true})).toBeVisible();
     const readback=await(await api.get('/delegation/handoffs/'+opportunity.id)).json(),persisted=readback.tasks[0].task;
@@ -123,7 +124,7 @@ async function assertKeyboardReachability(page){
  for(let index=0;index<40&&reached.size<6;index++){
   await page.keyboard.press('Tab');
   const active=await page.evaluate(()=>{const element=document.activeElement;if(!element)return null;const section=element.closest('[data-testid="handoff-tasks"]');return section?{name:element.getAttribute('name')??'',role:element.tagName==='BUTTON'?(element.textContent??'').trim():''}:null;});
-  if(active){if(active.name)reached.add(active.name);if(active.role==='Save handoff')reached.add('save');}
+  if(active){if(active.name)reached.add(active.name);if(['Update hand-off','Accept with my changes'].includes(active.role))reached.add('save');}
  }
  expect([...reached].sort()).toEqual(['assigneeId','description','dueAt','save','status','title'].sort());
 }

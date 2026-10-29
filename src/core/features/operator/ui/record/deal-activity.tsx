@@ -1,9 +1,8 @@
-import {useState,type ReactNode} from 'react';
-import {Link} from '@tanstack/react-router';
+import {Link,useRouterState} from '@tanstack/react-router';
 import type {OperatorDraft,OpportunityDetail} from '../operator-api';
 import {HandoffTasks} from '../handoff-tasks';
 import {formatDateTime,label} from '../formatters';
-import {Activity,type ActivityEntry} from './activity';
+import {Activity,Opens,type ActivityEntry} from './activity';
 import {MessageTools,type DealMessage} from './message-tools';
 import {timelineEntry} from './timeline-entries';
 import {CallPanel,MeetingPanel,NotePanel} from './activity-panels';
@@ -18,18 +17,14 @@ function messageState(message:DealMessage,tracked:boolean){
  if(message.state==='failed')return `failed · not delivered${message.failure?` · ${message.failure}`:''}`;
  if(message.state==='draft')return 'not sent · the provider refused it';
  if(['queued','reconciling','delivery-unknown'].includes(message.state))return 'approved · the provider has not answered yet';
- return label(message.state).toLowerCase();
-}
-
-/** Only renders what it holds while open, so a closed row loads nothing. */
-function Opens({summary,children}:{summary:string;children:()=>ReactNode}){
- const [open,setOpen]=useState(false);
- return <details onToggle={event=>setOpen(event.currentTarget.open)}><summary>{summary}</summary>{open?children():null}</details>;
+ return `${label(message.state).toLowerCase()}${message.failure?` · ${message.failure}`:''}`;
 }
 
 /** A deal's activity: its drafts not yet sent, its messages, its timeline, its hand-off tasks and stage moves in one
  * list, with Log a call, Plan a meeting and Add a note. */
 export function DealActivity({opportunity,drafts,messages,handoffs,reload}:{opportunity:OpportunityDetail;drafts:OperatorDraft[];messages:DealMessages|null;handoffs:HandoffEntry[];reload:()=>void}){
+ // A cited hand-off (#handoff-<id>) opens its task.
+ const hash=useRouterState({select:state=>state.location.hash});
  const names=new Map(opportunity.contacts.flatMap(contact=>{const name=contact.name??contact.email??'A contact';return [[contact.id,name],...(contact.email?[[contact.email.toLowerCase(),name]]:[])] as [string,string][];})),byEmail=new Map(opportunity.contacts.filter(contact=>contact.email).map(contact=>[contact.email!.toLowerCase(),contact.name??contact.email!]));
  const sent=new Set(messages?.messages.map(message=>message.draftId)??[]),messageIds=new Set(messages?.messages.map(message=>message.id)??[]);
  const to=(email:string)=>byEmail.get(email.toLowerCase())??email;
@@ -37,7 +32,7 @@ export function DealActivity({opportunity,drafts,messages,handoffs,reload}:{oppo
   ...drafts.filter(draft=>!sent.has(draft.id)).map(draft=>({key:`draft-${draft.id}`,kind:'Draft',draft:true,title:<Link to="/app/drafts/$id" params={{id:draft.id}}>{draft.subject}</Link>,line:`To ${to(draft.recipientEmail)} · revision ${draft.revision} · not sent${draft.isStale?' · review needed':''}`,at:draft.updatedAt})),
   ...(messages?.messages??[]).map(message=>({key:`message-${message.id}`,kind:'Sent',title:message.subject,line:`To ${to(message.recipientEmail)} · ${messageState(message,messages!.outcomesTracked)}`,at:message.acceptedAt??message.scheduledAt??message.createdAt,tools:['scheduled','draft'].includes(message.state)?<MessageTools message={message} mailProvider={messages!.mailProvider} reload={reload}/>:null})),
   ...opportunity.timeline.filter(entry=>!(entry.kind.startsWith('message.')&&messageIds.has(String((entry.payload as any)?.messageId)))).map(entry=>timelineEntry({line:{...entry,signalType:opportunity.signals.find(signal=>signal.id===entry.id)?.type??null,payload:(entry.payload&&typeof entry.payload==='object'?entry.payload:{}) as Record<string,unknown>},kind:'opportunity',recordId:opportunity.id,contactNames:names,reload,onChanged:reload})).filter((entry):entry is ActivityEntry=>Boolean(entry)),
-  ...handoffs.map(entry=>({key:`handoff-${entry.task.id}`,anchor:`handoff-${entry.task.id}`,kind:'Task',title:entry.task.title,line:[`Hand-off · ${label(entry.task.status).toLowerCase()}`,entry.task.source_client_id?`proposed by ${entry.task.source_client_id}`:'',entry.task.due_at?`due ${formatDateTime(entry.task.due_at)}`:''].filter(Boolean).join(' · '),at:entry.task.due_at,tools:<Opens summary="Open task">{()=><HandoffTasks opportunityId={opportunity.id} only={entry.task.id} onChange={reload}/>}</Opens>})),
+  ...handoffs.map(entry=>({key:`handoff-${entry.task.id}`,anchor:`handoff-${entry.task.id}`,kind:'Task',title:entry.task.title,line:[`Hand-off · ${label(entry.task.status).toLowerCase()}`,entry.task.source_client_id?`proposed by ${entry.task.source_client_id}`:'',entry.task.due_at?`due ${formatDateTime(entry.task.due_at)}`:''].filter(Boolean).join(' · '),at:entry.task.due_at,tools:<Opens summary="Open task" initiallyOpen={hash===`handoff-${entry.task.id}`}>{()=><HandoffTasks opportunityId={opportunity.id} only={entry.task.id} onChange={reload}/>}</Opens>})),
  ];
  const contacts=opportunity.contacts.map(contact=>({...contact,name:contact.name??undefined}));
  return <Activity entries={entries} actions={[

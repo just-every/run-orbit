@@ -10,16 +10,21 @@ export function AutosaveField({form,field,label,labelText,quiet=false,describe,c
  const box=useRef<HTMLDivElement>(null),status=form.status(field);
  useEffect(()=>{form.describe(field,labelText??(typeof label==='string'?label:'A value'),()=>box.current);});
  return <div ref={box} data-autosave="" className={`${quiet?'r-quiet':'r-field'} ${status.state==='failed'||status.state==='conflict'?'is-failed':''} ${className}`}>
-  <label><span className="r-label"><span>{label}</span><SavedLabel show={form.saved(field)}/></span>{children}</label>
+  <label><span className="r-label"><span id={labelId(form,field)}>{label}</span><SavedLabel show={form.saved(field)}/></span>{children}</label>
   {after}
   <SaveFailure status={status} describe={describe} onRetry={()=>form.retry(field)} onDiscard={()=>form.discard(field)} onUseMine={()=>form.useMine(field)}/>
  </div>;
 }
 
+/** The id of a field's label words. Its control names itself by them alone (aria-labelledby), so a choice's options,
+ * a text area's text and ✓ Saved never become part of its name. */
+export const labelId=(form:AutosaveForm,field:string)=>`f-${form.key}-${field}`.replace(/[^\w-]/g,'-');
+
 /** A text control's props: typing shows at once; leaving the field, or Enter in a one-line field, saves it. */
 /** show writes the saved value at rest (A$18,000); editText writes it for typing (18000); parse reads the typing back. */
 export function textProps(form:AutosaveForm,field:string,{multiline=false,parse,show=plain,editText=show}:{multiline?:boolean;parse?:Parse;show?:(value:unknown)=>string;editText?:(value:unknown)=>string}={}){
  return {
+  'aria-labelledby':labelId(form,field),
   value:form.typing(field)?String(form.value(field)??''):show(form.value(field)),
   onFocus:()=>{if(!form.typing(field))form.edit(field,editText(form.value(field)),parse);},
   onChange:(event:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>)=>form.edit(field,event.target.value,parse),
@@ -31,7 +36,7 @@ const plain=(value:unknown)=>value===null||value===undefined?'':String(value);
 
 /** A choice's props: it saves on change. */
 export function choiceProps(form:AutosaveForm,field:string,parse:(value:string)=>unknown=value=>value){
- return {value:String(form.value(field)??''),onChange:(event:React.ChangeEvent<HTMLSelectElement>)=>form.commit(field,parse(event.target.value))};
+ return {'aria-labelledby':labelId(form,field),value:String(form.value(field)??''),onChange:(event:React.ChangeEvent<HTMLSelectElement>)=>form.commit(field,parse(event.target.value))};
 }
 
 /** Grows a text area with its text (no resize handle). */

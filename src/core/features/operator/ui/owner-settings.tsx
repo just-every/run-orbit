@@ -1,5 +1,5 @@
 import {useCallback,useMemo,useState} from 'react';
-import {AutosaveField} from './autosave/field';
+import {AutosaveField,labelId} from './autosave/field';
 import {InlineConfirm} from './autosave/inline-confirm';
 import {useAutosave,type Values} from './autosave/use-autosave';
 import {saveRequest} from './record/record-api';
@@ -13,12 +13,12 @@ export function OwnerSettings({owner,onSaved}:{owner:{email:string;editable:bool
  const [typed,setTyped]=useState<string|null>(null),[asking,setAsking]=useState(false),[refused,setRefused]=useState('');
  if(!owner)return null;
  const current=String(form.value('email')??'');
- function left(){const next=(typed??'').trim().toLowerCase();if(typed===null||next===current){setTyped(null);return;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(next)){setRefused('Enter an email address such as you@your-company.com.');return;}setRefused('');setAsking(true);}
+ function left(){const next=(typed??'').trim().toLowerCase();if(typed===null||next===current){setTyped(null);return;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(next)){setRefused('Enter an email address such as you@company.example.');return;}setRefused('');setAsking(true);}
  const keep=()=>{setAsking(false);setTyped(null);setRefused('');};
  return <section className="operator-surface settings-card" aria-labelledby="team-owner-email"><h2 id="team-owner-email">Owner email</h2><p className="settings-card__line">Used to recover the owner's sign-in; it travels with your records archive.</p>
   {owner.editable?<AutosaveField form={form} field="email" label="Owner email"
    after={<>{refused?<p className="r-fail" role="alert">{refused}</p>:null}{asking&&typed?<InlineConfirm sentence={`Sign in with ${typed.trim().toLowerCase()}? Other owner sessions and old sign-in links end.`} action="Use this email" keep={`Keep ${current}`} onConfirm={()=>{form.commit('email',typed.trim().toLowerCase());setAsking(false);setTyped(null);}} onKeep={keep}/>:null}</>}>
-   <input type="email" maxLength={254} value={typed??current} onChange={event=>{setTyped(event.target.value);setAsking(false);}} onBlur={left} onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();left();}if(event.key==='Escape')keep();}}/>
+   <input type="email" aria-labelledby={labelId(form,'email')} maxLength={254} value={typed??current} onChange={event=>{setTyped(event.target.value);setAsking(false);}} onBlur={left} onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();left();}if(event.key==='Escape')keep();}}/>
   </AutosaveField>:<p>{owner.email}. Only the installation owner can change it.</p>}
  </section>;
 }

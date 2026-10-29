@@ -4,7 +4,7 @@ import {RecordOwner} from './record-owner';
 import {PipelineBoard} from './pipeline-board';
 import './records.css';
 import {useEffect,useRef,useState} from 'react';
-import {Link,useNavigate,useSearch} from '@tanstack/react-router';
+import {Link,useNavigate,useRouter,useSearch} from '@tanstack/react-router';
 import {OperatorShell,OperatorState} from './operator-shell';
 import {recordsRequest,type CustomerRecord,type RecordKind} from './records-api';
 import {listFilters,listPath,pluralName,searchFilters,type RecordsSearch} from './records-query';
@@ -15,12 +15,14 @@ const newWords:Record<RecordKind,string>={opportunity:'New opportunity',contact:
 /** Records: one list per kind at its own address, its search, filters and view in the address; each row opens its
  * record at the record's own address. */
 export function RecordsPage({kind}:{kind:RecordKind}){
- const search=useSearch({strict:false}) as RecordsSearch,navigate=useNavigate();
+ const search=useSearch({strict:false}) as RecordsSearch,navigate=useNavigate(),router=useRouter();
  const filters=listFilters(search),view=kind==='opportunity'&&search.view==='board'?'board':'list';
  const [query,setQuery]=useState(search.q??''),written=useRef(search.q??'');
  const [records,setRecords]=useState<CustomerRecord[]>([]),[settings,setSettings]=useState<any>(),[customers,setCustomers]=useState<boolean>(),[error,setError]=useState(''),[loadedFor,setLoadedFor]=useState(''),[selected,setSelected]=useState<string[]>([]);
  const filtersKey=JSON.stringify([kind,query,filters]),filtered=Boolean(query.trim()||Object.values(filters).some(Boolean)),loading=!error&&loadedFor!==filtersKey;
- function go(next:Partial<RecordsSearch>){void navigate({to:listPath[kind],search:previous=>({...previous,...next}),replace:true});}
+ // The list's address follows its search, filters and view only while the app is still headed for this list: a record
+ // opened meanwhile, its route checks still running, is never replaced by the list.
+ function go(next:Partial<RecordsSearch>){if(router.latestLocation.pathname!==listPath[kind])return;void navigate({to:listPath[kind],search:previous=>({...previous,...next}),replace:true});}
  // Typing filters the list at once; the address catches up after a pause, and Back or a link changes the box.
  useEffect(()=>{if(query===written.current)return;const timer=setTimeout(()=>{written.current=query;go({q:query||undefined});},300);return()=>clearTimeout(timer);},[query]);
  useEffect(()=>{if((search.q??'')!==written.current){written.current=search.q??'';setQuery(search.q??'');}},[search.q]);

@@ -1,6 +1,6 @@
 import {useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import {AIUsage} from '../ai-usage';
-import {AutosaveField,choiceProps,textProps} from '../autosave/field';
+import {AutosaveField,choiceProps,labelId,textProps} from '../autosave/field';
 import {InlineConfirm} from '../autosave/inline-confirm';
 import {SavedLabel} from '../autosave/saved-label';
 import {SaveFailure} from '../autosave/save-failure';
@@ -58,7 +58,7 @@ function WorkspaceCard({form}:{form:AutosaveForm}){
   <div className="settings-fields">
    <AutosaveField form={form} field="name" label="Name"><input maxLength={200} {...textProps(form,'name',{parse:text=>text.trim()?{value:text.trim()}:{error:'A workspace needs a name.'}})}/></AutosaveField>
    <AutosaveField form={form} field="timezone" label="Time zone"><select {...choiceProps(form,'timezone')}>{zones.map(zone=><option key={zone} value={zone}>{zone}</option>)}</select></AutosaveField>
-   <AutosaveField form={form} field="currency" label="Currency" describe={value=>currencyName(String(value))}><select value={asking??currency} onChange={event=>setAsking(event.target.value===currency?null:event.target.value)}>{currencies.map(code=><option key={code} value={code}>{currencyName(code)}</option>)}</select></AutosaveField>
+   <AutosaveField form={form} field="currency" label="Currency" describe={value=>currencyName(String(value))}><select aria-labelledby={labelId(form,'currency')} value={asking??currency} onChange={event=>setAsking(event.target.value===currency?null:event.target.value)}>{currencies.map(code=><option key={code} value={code}>{currencyName(code)}</option>)}</select></AutosaveField>
   </div>
   {asking?<InlineConfirm sentence={`Show every amount in ${currencyWords(asking)}s? Amounts are not converted.`} action={`Switch to ${asking}`} keep={`Keep ${currency}`} onConfirm={()=>{form.commit('currency',asking);setAsking(null);}} onKeep={()=>setAsking(null)}/>:null}
  </section>;
@@ -74,7 +74,7 @@ function HoursCard({form}:{form:AutosaveForm}){
   <fieldset className="settings-days"><legend className="sr-only">Working days</legend>{days.map((day,index)=><label key={day}><input type="checkbox" aria-label={dayNames[index]} checked={chosen.includes(index)} onChange={event=>form.commit('days',event.target.checked?[...chosen,index].sort():chosen.filter(item=>item!==index))}/>{day}</label>)}</fieldset>
   <SaveFailure status={form.status('days')} onRetry={()=>form.retry('days')} onDiscard={()=>form.discard('days')} onUseMine={()=>form.useMine('days')} describe={value=>((value??[]) as number[]).map(index=>days[index]).join(', ')}/>
   <div className="settings-fields settings-fields--two">
-   {(['start','end'] as const).map(field=><AutosaveField key={field} form={form} field={field} label={field==='start'?'Start':'End'} describe={value=>clock(String(value))}><select value={String(form.value(field))} onChange={event=>hours(field,event.target.value)}>{times.map(time=><option key={time} value={time}>{clock(time)}</option>)}</select></AutosaveField>)}
+   {(['start','end'] as const).map(field=><AutosaveField key={field} form={form} field={field} label={field==='start'?'Start':'End'} describe={value=>clock(String(value))}><select aria-labelledby={labelId(form,field)} value={String(form.value(field))} onChange={event=>hours(field,event.target.value)}>{times.map(time=><option key={time} value={time}>{clock(time)}</option>)}</select></AutosaveField>)}
   </div>
   {refused?<p className="r-fail" role="alert">{refused}</p>:null}
  </section>;

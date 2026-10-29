@@ -82,29 +82,23 @@ test('full related names and associated-contact labels remain readable in native
     for (const width of [320, 390, 430, 1440]) {
       await page.setViewportSize({ width, height: 1000 });
       for (const [tab, name, related] of [['Companies', company, [contact, title]], ['Contacts', contact, [title]], ['Opportunities', title, [contact]]] as const) {
-        await page.goto('/app/records');
-        const button = page.getByRole('button', { name: tab, exact: true });
-        await expect(button).toBeEnabled(); await button.click();
+        // OR3: each list has its own address; a row is a link to the record's own page, its related records in Details.
+        await page.goto(`/app/${tab.toLowerCase()}`);
         await page.getByRole('searchbox', { name: 'Search records and timeline', exact: true }).fill(name);
         const card = page.locator('.operator-queue-card').filter({ has: page.getByRole('heading', { name, exact: true }) });
-        await expect(card).toHaveCount(1); await card.getByRole('button').click();
+        await expect(card).toHaveCount(1); await card.getByRole('link').click();
         await expect(page.getByRole('heading', { name, exact: true, level: 1 })).toBeVisible();
-        for (const text of related) await readable(page.locator('.workbench-summary p').filter({ hasText: text }), text);
+        const details = page.getByTestId('record-details');
+        for (const text of related) await readable(details.locator('.r-person, .r-deal-rows li').filter({ hasText: text }).first(), text);
         await page.screenshot({ path: `${evidence}/${tab.toLowerCase()}-${width}.png`, fullPage: true });
         if (tab === 'Opportunities') {
-          await page.getByRole('button', { name: 'Edit details', exact: true }).click();
-          const chip = page.getByRole('list', { name: 'Associated contacts', exact: true }).getByRole('listitem').filter({ hasText: contact });
-          await expect(chip).toHaveCount(1);
-          await readable(chip, contact);
-          await expect(chip.getByRole('button', { name: 'Remove contact', exact: true })).toBeEnabled();
-          const primary = page.getByRole('combobox', { name: 'Primary recipient', exact: true });
-          await expect(primary).toHaveValue(linkedContact.id);
-          await expect(primary.locator('option:checked')).toHaveText(contact);
-          await primary.selectOption(linkedContact.id);
+          const person = details.locator('.r-person').filter({ hasText: contact });
+          await expect(person).toHaveCount(1);
+          await readable(person, contact);
+          await expect(person).toContainText('Primary recipient');
+          await expect(person.getByRole('button', { name: `More for ${contact}`, exact: true })).toBeEnabled();
           await expect(page.getByLabel('Opportunity title', { exact: true })).toHaveValue(title);
           await page.screenshot({ path: `${evidence}/editor-${width}.png`, fullPage: true });
-          await page.getByRole('button', { name: 'Save changes', exact: true }).click();
-          await expect(page.getByRole('heading', { name: title, exact: true, level: 1 })).toBeVisible();
           const saved = await (await context.request.get(`/api/v1/records/opportunity/${opportunity.id}`)).json();
           expect(saved.record.title).toBe(title);
           expect(saved.contacts.some((row: any) => row.name === contact)).toBe(true);

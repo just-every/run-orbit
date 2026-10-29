@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {CapturedMailLinks} from '../capture-deal-links';
 import {MeetingWriteback} from '../meeting-writeback';
-import {mailEntries,type MailHistory} from '../record-mail';
+import {MailTools,mailEntries,type MailHistory} from '../record-mail';
 import type {CustomerRecord} from '../records-api';
 import {UnlinkedReplies} from '../unlinked-replies';
 import {Activity,type ActivityEntry} from './activity';
@@ -22,14 +22,17 @@ function CompanyMeeting({contacts,onChanged}:{contacts:CustomerRecord[];onChange
  * replies that still need a thread, with Log a call, Plan a meeting and Add a note. */
 export function RecordActivity({kind,id,record,timeline,contacts,mail,reloadMail,reload}:{kind:'contact'|'company';id:string;record:CustomerRecord;timeline:TimelineRow[];contacts:CustomerRecord[];mail?:MailHistory;reloadMail:()=>Promise<void>;reload:()=>void}){
  const names=new Map([...contacts,record].flatMap(contact=>{const name=contact.name??contact.email??'A contact';return [[contact.id,name],...(contact.email?[[String(contact.email).toLowerCase(),name]]:[])] as [string,string][];}));
+ // A message the timeline holds (its acceptance) is one line: the timeline's, with the message's own actions.
+ const messages=new Map((mail?.messages??[]).map(message=>[message.id,message])),merged=new Set<string>();
  const entries:ActivityEntry[]=[
   ...timeline.map((row):ActivityEntry|null=>{
-   const payload=JSON.parse(row.payload_json??'{}') as Record<string,unknown>;
+   const payload=JSON.parse(row.payload_json??'{}') as Record<string,unknown>,message=row.kind==='message.accepted'?messages.get(String(payload.messageId)):undefined;
+   if(message)merged.add(message.id);
    const entry=timelineEntry({line:{id:row.id,kind:row.kind,occurredAt:row.occurred_at,recordedAt:row.recorded_at,actorType:row.actor_type,actorName:row.actor_name,sourceName:row.source_name??row.source,signalType:row.signal_type,payload},kind,recordId:id,contactNames:names,reload,onChanged:reload});
-   return entry?{...entry,tools:<>{entry.tools}<CapturedMailLinks payload={payload} onChanged={reload}/></>}:null;
+   return entry?{...entry,tools:<>{entry.tools}{message?<MailTools message={message} reload={reloadMail}/>:null}<CapturedMailLinks payload={payload} onChanged={reload}/></>}:null;
   }).filter((entry):entry is ActivityEntry=>Boolean(entry)),
-  ...mailEntries(mail,reloadMail),
  ];
+ entries.push(...mailEntries(mail,reloadMail,merged));
  const people=kind==='contact'?[record]:contacts;
  return <div className="r-activity-box" id={kind==='contact'?'record-mail':undefined}>
   <Activity entries={entries} actions={[

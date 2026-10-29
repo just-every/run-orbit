@@ -16,7 +16,7 @@ export async function guestEditGrantJourney(page:Page,owner:Page,operatorId:stri
  try{await returned.goto(returning);await returned.getByRole('button',{name:/Confirm|Sign in/}).first().click();await returned.waitForURL(url=>url.pathname==='/app/shared-records');
   if(width<600)await returned.getByRole('button',{name:'Menu',exact:true}).click();const menu=returned.getByRole('navigation',{name:'Main menu'});await expect(menu.getByRole('link',{name:'Shared records',exact:true})).toBeAttached();assert.equal(await menu.getByRole('link',{name:'Records',exact:true}).count(),0);assert.equal(await menu.getByRole('link',{name:'Reports',exact:true}).count(),0);
   await expect(returned.getByRole('button',{name,exact:true})).toBeVisible();await returned.evaluate(()=>Promise.all(document.getAnimations().map(animation=>animation.finished)));await accessible(returned,`guest-return-${width}`,directory);
-  for(const path of ['/app','/app/records','/app/settings']){await returned.goto(path);assert.equal(new URL(returned.url()).pathname,'/app/shared-records',`${path} sends a Guest to their shared records`);}
+  for(const path of ['/app','/app/opportunities','/app/settings']){await returned.goto(path);assert.equal(new URL(returned.url()).pathname,'/app/shared-records',`${path} sends a Guest to their shared records`);}
   await returned.getByRole('link',{name:'Orbit home'}).click();await returned.waitForURL(url=>url.pathname==='/app/shared-records');
  }finally{await again.close();}
  // The edit grant alone makes the record listed and searchable.
@@ -28,7 +28,7 @@ export async function guestEditGrantJourney(page:Page,owner:Page,operatorId:stri
  const current=await (await page.request.get(record)).json();assert.deepEqual(current.editableFields.sort(),['name','phone']);assert.deepEqual(Object.keys(current.fields).sort(),['email','name','phone']);
  for(const data of [{email:'guest-changed@browser.test'},{job_title:'Guest title'},{custom_fields:{private_note:'Guest note'}}])assert.equal((await page.request.put(record,{headers:{Origin:new URL(page.url()).origin},data})).status(),403);
  // The owner reads the change and who made it.
- await owner.goto(`/app/records?kind=contact`);await owner.getByRole('button',{name:new RegExp(`^${name}`)}).first().click();await expect(owner.getByText(`+61 7 3000 0${width}`,{exact:true}).first()).toBeVisible();await expect(owner.getByText('Changed Phone',{exact:true}).first()).toBeVisible();await expect(owner.locator('section').filter({has:owner.getByRole('heading',{name:'Timeline',exact:true})}).getByText(/invited@browser\.test/).first()).toBeVisible();
+ await owner.goto(`/app/contacts`);await owner.locator('.records-list a').filter({hasText:new RegExp(`^${name}`)}).first().click();await expect(owner.getByTestId('record-details').getByLabel('Phone',{exact:true})).toHaveValue(`+61 7 3000 0${width}`);await expect(owner.getByText('Changed Phone',{exact:true}).first()).toBeVisible();await expect(owner.getByTestId('record-activity').getByText(/invited@browser\.test/).first()).toBeVisible();
  await owner.goto('/app/settings/team');const revoke=owner.getByRole('button',{name:'Revoke grant',exact:true});await expect(revoke).toHaveCount(2);await settled();for(let open=2;open>0;open--){await revoke.first().click();await expect(revoke).toHaveCount(open-1);await settled();}
  await page.reload();await expect(page.getByText('No records match your current access.',{exact:true})).toBeVisible();
  // "See and edit" on Custom fields lets the Guest change each custom field, and both sides name the same fields.

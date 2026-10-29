@@ -18,7 +18,7 @@ export function EntryEditor({kind,recordId,entry,onSaved}:{kind:RecordKind;recor
  const form=useAutosave<Values>({key:`entry.${entry.id}`,copy,send,reread:async()=>copy,onSaved});
  const text=textProps(form,'text',{multiline:true}),grow=useGrow(String(text.value));
  return <div className="r-entry-editor">
-  <AutosaveField form={form} field="text" label="Text" quiet><textarea ref={grow} rows={1} maxLength={100000} {...text}/></AutosaveField>
+  <AutosaveField form={form} field="text" label="Text" quiet><textarea ref={grow} rows={1} autoFocus maxLength={100000} {...text}/></AutosaveField>
   <AutosaveField form={form} field="occurredAt" label={`When (${zoneLabel()})`} labelText="When" quiet><input type="datetime-local" {...textProps(form,'occurredAt',{show:value=>value?workspaceLocalInput(String(value)):'',parse:local=>{try{return {value:workspaceInstant(local)};}catch{return {error:'Enter a date and time.'};}}})}/></AutosaveField>
  </div>;
 }

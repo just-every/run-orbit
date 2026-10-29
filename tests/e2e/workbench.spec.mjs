@@ -3,8 +3,8 @@ import { authenticateOperator } from './operator-session.mjs';
 test('a real account, attributed event and durable reviewed draft can be created',async({page,context})=>{
   await authenticateOperator(context);
   const failures=[];page.on('pageerror',error=>failures.push(error.message));
-  await page.goto('/app/records');
-  await page.getByRole('link',{name:'Create opportunity'}).click();
+  await page.goto('/app/opportunities');
+  await page.getByRole('link',{name:'New opportunity'}).click();
   await expect(page.getByRole('button',{name:'Save opportunity'})).toBeEnabled();
   await page.waitForLoadState('networkidle');
   const timeOrigin=await page.evaluate(()=>performance.timeOrigin), label=`Owner opportunity ${Date.now()}`;
@@ -21,7 +21,7 @@ test('a real account, attributed event and durable reviewed draft can be created
   expect(created.record.owner_id).toBeTruthy();
   const companiesBefore=(await (await page.request.get('/api/v1/records/company')).json()).records;
   const contactsBefore=(await (await page.request.get('/api/v1/records/contact')).json()).records;
-  await page.goto('/app/new');
+  await page.goto('/app/opportunities/new');
   await page.getByLabel('Company name',{exact:true}).fill('Owner account');
   await page.getByRole('list',{name:'Company search results',exact:true}).getByRole('button').filter({hasText:'Owner account'}).click();
   await page.getByRole('searchbox',{name:'Find contacts',exact:true}).fill(created.contacts[0].email);
@@ -36,17 +36,18 @@ test('a real account, attributed event and durable reviewed draft can be created
   expect(linked.record.owner_id).toBe(created.record.owner_id);
   expect((await (await page.request.get('/api/v1/records/company')).json()).records.length).toBe(companiesBefore.length);
   expect((await (await page.request.get('/api/v1/records/contact')).json()).records.length).toBe(contactsBefore.length);
-  await page.goto(`/app/records?kind=opportunity&record=${opportunityId}`);
-  await page.getByRole('button',{name:'Edit details',exact:true}).click();
-  await expect(page.getByLabel('Estimated value in workspace currency',{exact:true})).toHaveValue('5000');
-  await page.getByLabel('Estimated value in workspace currency',{exact:true}).fill('12000');
-  const savedValue=page.waitForResponse(response=>response.request().method()==='PUT'&&new URL(response.url()).pathname===`/api/v1/records/opportunity/${opportunityId}`);
-  await page.getByRole('button',{name:'Save changes',exact:true}).click();expect((await savedValue).ok()).toBe(true);
-  await expect(page.locator('.records-detail-list')).toContainText('12,000');
+  // OR3+OR4: one page per deal; its value saves when left, with the PATCH carrying the value it replaces.
+  await page.goto(`/app/opportunities/${opportunityId}`);
+  const value=page.getByTestId('record-details').getByLabel('Value',{exact:true});
+  await expect(value).toHaveValue(/5,000/);
+  await value.click();await expect(value).toHaveValue('5000');await value.fill('12000');
+  const savedValue=page.waitForResponse(response=>response.request().method()==='PATCH'&&new URL(response.url()).pathname===`/api/v1/records/opportunity/${opportunityId}`);
+  await value.press('Enter');const patch=await savedValue;expect(patch.ok()).toBe(true);expect(patch.request().postDataJSON()).toEqual({changes:{value_cents:1200000},base:{value_cents:500000}});
+  await expect(value).toHaveValue(/12,000/);
   const persisted=await page.request.get(`/api/v1/records/opportunity/${opportunityId}`);expect((await persisted.json()).record.value_cents).toBe(1200000);
-  await page.getByRole('button',{name:'Edit details',exact:true}).click();await expect(page.getByLabel('Estimated value in workspace currency',{exact:true})).toHaveValue('12000');
-  await page.getByRole('button',{name:'Cancel',exact:true}).click();await page.getByRole('link',{name:'Evidence and outreach',exact:true}).click();
-  await page.getByText('Log activity',{exact:true}).click();
+  await page.reload();await expect(page.getByTestId('record-details').getByLabel('Value',{exact:true})).toHaveValue(/12,000/);
+  await page.getByRole('button',{name:'Add a note',exact:true}).click();
+  await page.getByText('Log verified customer activity',{exact:true}).click();
   await page.getByRole('combobox',{name:'Event type',exact:true}).selectOption('email.replied');
   await page.getByLabel(/^Occurred time/).fill('2026-09-11T12:00');
   await page.getByLabel('Evidence subject',{exact:true}).fill('The customer requested a follow-up call.');

@@ -7,8 +7,8 @@ import {OperatorState} from './operator-shell';
 import type {ActivityEntry} from './record/activity';
 interface Contact {id:string;name:string|null;email:string|null;contactability:string}
 export interface MailContext {record:{lifecycle?:string};contacts:Contact[];deals:{id:string;title:string;contactId:string}[]}
-type Message={id:string;draftId:string;state:string;subject:string;body:string;recipientEmail:string;failure:string|null;scheduledAt:string|null;createdAt?:string;acceptedAt?:string|null};
-export interface MailHistory {messages:Message[];drafts:{id:string;subject:string;isStale:number;updatedAt?:string;createdAt?:string}[];obligations:{messageId:string;dueAt:string;closedAt:string|null;closedReason:string|null;operatorId:string;ownerId:string|null}[]}
+export type MailMessage={id:string;draftId:string;state:string;subject:string;body:string;recipientEmail:string;failure:string|null;scheduledAt:string|null;createdAt?:string;acceptedAt?:string|null};
+export interface MailHistory {messages:MailMessage[];drafts:{id:string;subject:string;isStale:number;updatedAt?:string;createdAt?:string}[];obligations:{messageId:string;dueAt:string;closedAt:string|null;closedReason:string|null;operatorId:string;ownerId:string|null}[]}
 async function request<T>(path:string,body?:unknown):Promise<T>{const response=await fetch(`/api/v1/workbench/${path}`,body===undefined?undefined:{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const value=await response.json() as T&{error?:string};if(!response.ok)throw new Error(value.error??'The mail operation failed.');return value;}
 
 /** A record's mail: who it can go to and which deals it can link, and for a contact the drafts, messages and
@@ -42,7 +42,7 @@ export function RecordMailComposer({kind,id,context,deal:linked}:{kind:'contact'
 }
 
 /** One sent message's own actions: review a retry of one the provider refused, or cancel one that is scheduled. */
-function MailTools({message,reload}:{message:Message;reload:()=>Promise<void>}){
+export function MailTools({message,reload}:{message:MailMessage;reload:()=>Promise<void>}){
  const [retry,setRetry]=useState<{localTime:string;timezone:string;quietHours:boolean}>(),[error,setError]=useState(''),[busy,setBusy]=useState(false);
  async function run(work:()=>Promise<void>){setBusy(true);setError('');try{await work();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  return <>
@@ -58,13 +58,14 @@ function CompleteFollowUp({messageId,reload}:{messageId:string;reload:()=>Promis
  return <><button type="button" className="operator-text-button" disabled={busy} onClick={()=>void (async()=>{setBusy(true);setError('');try{await request(`record-mail/${messageId}/complete`,{});await reload();}catch(e){setError((e as Error).message);}finally{setBusy(false);}})()}>Complete my follow-up</button>{error?<p className="r-fail" role="alert">{error}</p>:null}</>;
 }
 
-/** A contact's mail as Activity lines: drafts not yet sent, messages with their state, follow-ups still owed. */
-export function mailEntries(history:MailHistory|undefined,reload:()=>Promise<void>):ActivityEntry[]{
+/** A contact's mail as Activity lines: drafts not yet sent, messages with their state (those the timeline already holds
+ * are skipped: their actions join that line), follow-ups still owed. */
+export function mailEntries(history:MailHistory|undefined,reload:()=>Promise<void>,skip:Set<string>=new Set()):ActivityEntry[]{
  if(!history)return [];
  const sent=new Set(history.messages.map(message=>message.draftId));
  return [
   ...history.drafts.filter(draft=>!sent.has(draft.id)).map(draft=>({key:`mail-draft-${draft.id}`,kind:'Draft',draft:true,title:<Link to="/app/drafts/$id" params={{id:draft.id}}>{draft.subject}</Link>,line:`Not sent${draft.isStale?' · review needed':''}`,at:draft.updatedAt??draft.createdAt??null})),
-  ...history.messages.map(message=>({key:`mail-${message.id}`,kind:'Sent',title:<Link to="/app/drafts/$id" params={{id:message.draftId}}>{message.subject}</Link>,line:[`To ${message.recipientEmail}`,message.state==='accepted'?'accepted by the mail provider':message.state,message.failure,message.scheduledAt?formatDate(message.scheduledAt):''].filter(Boolean).join(' · '),at:message.acceptedAt??message.scheduledAt??message.createdAt??null,tools:<MailTools message={message} reload={reload}/>})),
-  ...history.obligations.filter(obligation=>!obligation.closedAt).map(obligation=>({key:`owed-${obligation.messageId}`,kind:'Waiting',title:'Awaiting customer response',line:`${obligation.ownerId===null?'Unassigned · ':''}due ${formatDate(obligation.dueAt)}`,at:obligation.dueAt,tools:<CompleteFollowUp messageId={obligation.messageId} reload={reload}/>})),
+  ...history.messages.filter(message=>!skip.has(message.id)).map(message=>({key:`mail-${message.id}`,kind:'Sent',title:<Link to="/app/drafts/$id" params={{id:message.draftId}}>{message.subject}</Link>,line:[`To ${message.recipientEmail}`,message.state==='accepted'?'accepted by the mail provider':message.state,message.failure,message.scheduledAt?formatDate(message.scheduledAt):''].filter(Boolean).join(' · '),at:message.acceptedAt??message.scheduledAt??message.createdAt??null,tools:<MailTools message={message} reload={reload}/>})),
+  ...history.obligations.filter(obligation=>!obligation.closedAt).map(obligation=>({key:`owed-${obligation.messageId}`,kind:'Waiting',title:'Awaiting customer response',line:<>{obligation.ownerId===null?'Unassigned · ':''}due <time dateTime={obligation.dueAt}>{formatDate(obligation.dueAt)}</time></>,at:obligation.dueAt,tools:<CompleteFollowUp messageId={obligation.messageId} reload={reload}/>})),
  ];
 }

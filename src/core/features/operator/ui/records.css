@@ -82,3 +82,8 @@
 .record-create__taken {margin:-6px 0 0;color:var(--ob-tangerine-deep);font-size:14.5px;font-weight:600}
 .record-create__taken a {color:var(--ob-ink)}
 .record-search-field input {width:100%}
+/* A labelled list of facts (the capture source card's counts). */
+.records-detail-list {display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr));margin:0}
+.records-detail-list dt {color:var(--ob-muted);font-size:13px;text-transform:none;letter-spacing:0}
+.records-detail-list dd {margin:5px 0 0;overflow-wrap:anywhere;font-size:14px}
+@media(max-width:700px){.records-detail-list{grid-template-columns:1fr}}

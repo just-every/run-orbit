@@ -3,13 +3,14 @@
 
 /* Title: the record's name is a quiet field drawn as the H1. */
 .r-title { margin: 6px 0 0; }
-.ob-app .r-title textarea { display: block; width: calc(100% + 12px); max-width: none; min-height: 0; margin-left: -12px; padding: 0 12px; overflow: hidden; border: 1.5px solid transparent; border-radius: 14px; background: transparent; color: var(--ob-ink); font: inherit; font-size: clamp(38px, 4.2vw, 62px); font-weight: 760; letter-spacing: -0.012em; line-height: 1.12; resize: none; box-shadow: none; }
+.ob-app .r-title textarea { overflow-wrap: anywhere; display: block; width: calc(100% + 12px); max-width: none; min-height: 0; margin-left: -12px; padding: 0 12px; overflow: hidden; border: 1.5px solid transparent; border-radius: 14px; background: transparent; color: var(--ob-ink); font: inherit; font-size: clamp(38px, 4.2vw, 62px); font-weight: 760; letter-spacing: -0.012em; line-height: 1.12; resize: none; box-shadow: none; }
 .ob-app .r-title textarea:hover { border-color: var(--ob-line-strong); }
 .ob-app .r-title textarea:focus { border-color: var(--ob-ink); background: var(--ob-card); }
 .ob-app .is-failed .r-title textarea { border-color: var(--ob-tangerine-deep); }
 .r-title-box { min-width: 0; }
 .r-eyebrow { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 0; }
-.r-eyebrow-link { color: var(--ob-muted); font-weight: 600; text-decoration: underline 1.5px; text-underline-offset: 4px; }
+.r-eyebrow-link { display: inline-block; max-width: 100%; color: var(--ob-muted); font-weight: 600; text-decoration: underline 1.5px; text-underline-offset: 4px; overflow-wrap: anywhere; }
+.r-eyebrow { min-width: 0; max-width: 100%; }
 
 /* The two columns. */
 .r-a { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 420px); align-items: start; gap: 26px 30px; margin-top: 24px; }
@@ -53,6 +54,8 @@
 .r-why-list { display: grid; margin: 0 0 6px; padding: 0; list-style: none; }
 .r-why-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto 44px; gap: 14px; align-items: baseline; padding: 8px 0; border-top: 1.5px solid var(--ob-line); font-size: 15px; overflow-wrap: anywhere; }
 .r-why-list b { color: var(--ob-tangerine-deep); text-align: right; font-variant-numeric: tabular-nums; }
+.r-why-what { display: grid; gap: 2px; min-width: 0; }
+.r-why-meta { color: var(--ob-muted); font-size: 14px; }
 .r-why-list .r-none { color: var(--ob-muted); font-size: 14px; font-weight: 550; text-align: right; }
 .r-fold h3 { margin: 10px 0 2px; font-size: 15px; font-weight: 700; }
 .r-recorded { display: grid; gap: 4px; margin: 2px 0 12px 18px; padding: 0; list-style: none; color: var(--ob-body); font-size: 14.5px; overflow-wrap: anywhere; }
@@ -96,6 +99,8 @@
 .r-side .r-group > :is(.r-people, .record-search-field, .r-deal-rows, .r-dl, .r-add-field) { margin-top: 6px; }
 .r-add-field { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; justify-self: start; }
 .r-add-field input { flex: 1 1 160px; min-width: 0; }
+.r-provenance { display: grid; gap: 4px; padding: 8px 0; }
+.ob-app .r-provenance .operator-text-button { justify-self: start; }
 .r-note { margin: 4px 0 0; color: var(--ob-body); font-size: 14.5px; }
 .r-note--danger { color: var(--ob-tangerine-deep); font-weight: 600; }
 
@@ -132,14 +137,22 @@
   .r-side { padding: 0 18px 16px; }
   .r-side .r-quiet + .r-quiet { border-top: 1.5px solid var(--ob-line); }
   .r-side .r-quiet .r-fail, .r-side .r-quiet + .r-confirm, .r-side .r-quiet .r-confirm { margin-left: 0; }
-  .ob-app :is(.r-pill, .r-flag, .operator-text-button) { min-height: 44px; }
+  .ob-app :is(.r-pill, .r-flag, .operator-text-button), .ob-app button.r-flag { min-height: 44px; }
+  .ob-app .r-next-actions :is(.orbit-button, button), .ob-app .r-a :is(.r-fold-body, .operator-refresh) :is(button, summary) { min-height: 44px; }
+  .ob-app .r-a .r-fold-body label:has(> input:is([type="checkbox"], [type="radio"])) { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
   .r-eyebrow-link { display: inline-flex; align-items: center; min-height: 44px; }
   .r-person a, .r-deal-rows a, .r-next-deal a, .r-entry-title a { display: inline-flex; align-items: center; min-height: 44px; }
   .r-feed > li { grid-template-columns: minmax(0, 1fr) auto; }
   .r-feed .r-kind { grid-column: 1; grid-row: 1; }
   .r-feed .r-when { grid-column: 2; grid-row: 1; }
   .r-feed .r-entry { grid-column: 1 / -1; }
-  .r-entry details > summary { min-height: 44px; }
+  /* Phone spacing: entries and groups tighten; Recorded details keeps its 44 px target and lends its own white space
+     to the entry's spacing instead of adding to it. */
+  .r-a { row-gap: 20px; }
+  .r-group { padding: 12px 0 14px; }
+  .r-feed > li { padding: 10px 0; }
+  .r-entry details > summary { min-height: 44px; margin-top: -6px; }
+  .r-entry > details:last-child:not([open]) > summary { margin-bottom: -8px; }
   .r-quiet-actions { margin-left: 0; }
   .r-next { padding: 20px 18px 14px; }
   .r-next-actions .orbit-button--primary { flex: 1 1 100%; }

@@ -21,6 +21,7 @@ import {DealPeople} from './people';
 import {dealContextValues,patchRecord,readContext,readRecord,recordValues,saveDealContext,type DealContextValues} from './record-api';
 import {RecordFoot} from './record-foot';
 import {RecordFrame,RecordTitle} from './record-page';
+import {useRefresh} from './use-refresh';
 import {RecordedDetails} from './recorded-details';
 import {useFieldDefinitions} from './custom-values';
 
@@ -47,6 +48,7 @@ export function OpportunityRecordPage(){
   send:(changes,_base,copy,init)=>saveDealContext(id,changes,copy,init),
   reread:async()=>dealContextValues(await readContext<OpportunityContext>('opportunity',id)),onSaved:reload});
  const [composing,setComposing]=useState(false);
+ useRefresh(reload);
  if(!data)return <OperatorShell title="Opportunity">{resource.error?<OperatorState kind="error">{resource.error.message}</OperatorState>:<OperatorState>Loading opportunity…</OperatorState>}</OperatorShell>;
  const {detail,settings,opportunity,drafts,messages,handoffs}=data,workspace=settings.workspace,name=String(record.value('title')??opportunity.title);
  const titles=new Map(opportunity.contacts.map(contact=>[contact.id,contact.jobTitle]));

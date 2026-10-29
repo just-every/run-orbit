@@ -167,7 +167,7 @@ export function useAutosave<D extends Values>(options:AutosaveOptions<D>){
  } satisfies GuardedForm),[key]);
 
  return {
-  copy:copy.current,value,edit,commit,retry,discard,useMine,describe,
+  key,copy:copy.current,value,edit,commit,retry,discard,useMine,describe,
   status:(field:string):FieldStatus=>statuses[field]??{state:'idle'},
   saved:(field:string)=>saved===field,
   busy:Boolean(inflight.current)||queue.current.size>0,

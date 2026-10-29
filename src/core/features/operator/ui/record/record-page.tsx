@@ -10,7 +10,7 @@ export function RecordTitle({form,field,label,required}:{form:AutosaveForm;field
  const props=textProps(form,field,{parse:text=>required&&!text.trim()?{error:required}:{value:text.trim()||null}}),grow=useGrow(String(props.value));
  const status=form.status(field);
  return <div className={`r-title-box ${status.state==='failed'||status.state==='conflict'?'is-failed':''}`} data-autosave="">
-  <h1 className="r-title"><textarea ref={grow} rows={1} aria-label={label} maxLength={500} spellCheck={false} {...props}/></h1>
+  <h1 className="r-title" aria-label={String(props.value)}><textarea ref={grow} rows={1} aria-label={label} maxLength={500} spellCheck={false} {...props}/></h1>
   <SaveFailure status={status} onRetry={()=>form.retry(field)} onDiscard={()=>form.discard(field)} onUseMine={()=>form.useMine(field)}/>
  </div>;
 }

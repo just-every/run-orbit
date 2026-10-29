@@ -1,5 +1,5 @@
 import {useCallback,useMemo,useState} from 'react';
-import {AutosaveField,choiceProps,textProps} from '../autosave/field';
+import {AutosaveField,choiceProps,labelId,textProps} from '../autosave/field';
 import {InlineConfirm} from '../autosave/inline-confirm';
 import {SaveRefused,useAutosave,type AutosaveForm,type Parse,type Values} from '../autosave/use-autosave';
 import {formatCurrency,formatDay,workspaceInstant,workspaceLocalInput} from '../formatters';
@@ -43,6 +43,6 @@ function StageField({id,record,settings,scheduled}:{id:string;record:AutosaveFor
  const shown=asking??String(form.value('stage_id')??'');
  return <AutosaveField form={form} field="stage_id" label="Stage" quiet describe={value=>name(String(value))}
   after={asking?<InlineConfirm sentence={`Move to ${name(asking)}? Its ${scheduled} scheduled follow-up${scheduled===1?' is':'s are'} cancelled.`} action="Move" keep={`Keep ${name(stageId)}`} onConfirm={()=>{form.commit('stage_id',asking);setAsking(null);}} onKeep={()=>setAsking(null)}/>:null}>
-  <select value={shown} onChange={event=>{const next=event.target.value;if(scheduled>0)setAsking(next);else form.commit('stage_id',next);}}>{stages.map((stage:any)=><option key={stage.id} value={stage.id}>{stage.name}</option>)}</select>
+  <select aria-labelledby={labelId(form,'stage_id')} value={shown} onChange={event=>{const next=event.target.value;if(scheduled>0)setAsking(next);else form.commit('stage_id',next);}}>{stages.map((stage:any)=><option key={stage.id} value={stage.id}>{stage.name}</option>)}</select>
  </AutosaveField>;
 }

@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {AutosaveField} from '../autosave/field';
+import {AutosaveField,labelId} from '../autosave/field';
 import type {AutosaveForm} from '../autosave/use-autosave';
 import {useRecordMatches} from '../record-link-picker';
 
@@ -10,6 +10,6 @@ export function CompanyField({form,field,name,label='Company'}:{form:AutosaveFor
  const shown=query??(form.status(field).state==='saving'&&chosen!==null?chosen:name);
  return <AutosaveField form={form} field={field} label={label} quiet describe={()=>name||'no company'}
   after={query?.trim()&&matches.length?<ul className="record-link-picker__results" aria-label={`${label}: matches`}>{matches.slice(0,8).map(company=><li key={company.id}><button type="button" onMouseDown={event=>event.preventDefault()} onClick={()=>choose(company.id,company.name??'')}><strong>{company.name}</strong>{company.primary_domain?<span>{company.primary_domain}</span>:null}</button></li>)}</ul>:null}>
-  <input type="search" autoComplete="off" placeholder="Add a company" value={shown} onChange={event=>setQuery(event.target.value)} onBlur={()=>{if(query!==null&&!query.trim()&&name)choose(null,'');else setTimeout(()=>setQuery(null),200);}} onKeyDown={event=>{if(event.key==='Escape')setQuery(null);}}/>
+  <input type="search" aria-labelledby={labelId(form,field)} autoComplete="off" placeholder="Add a company" value={shown} onChange={event=>setQuery(event.target.value)} onBlur={()=>{if(query!==null&&!query.trim()&&name)choose(null,'');else setTimeout(()=>setQuery(null),200);}} onKeyDown={event=>{if(event.key==='Escape')setQuery(null);}}/>
  </AutosaveField>;
 }

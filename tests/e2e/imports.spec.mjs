@@ -40,7 +40,7 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
   await page.getByRole('checkbox',{name:'I checked these rows, including any that will not import and any marked Do not contact.'}).check();await page.getByRole('button',{name:'Apply reviewed import',exact:true}).click();await expect(page.getByRole('heading',{name:'Import complete',exact:true})).toBeVisible({timeout:90_000});
   const imported=await page.request.get(`/api/v1/records/contact?q=${vendor}-0%40example.test`);expect(imported.ok()).toBe(true);const contacts=(await imported.json()).records;expect(contacts).toHaveLength(1);expect(contacts[0].contactability).toBe('do_not_contact');
   if(vendor==='csv'){const recordPage=await context.newPage();try{
-   await recordPage.goto(`/app/records?kind=contact&record=${contacts[0].id}`);await expect(recordPage.getByText(`${source.account} (spreadsheet)`,{exact:true})).toBeVisible();await expect(recordPage.getByText('Seats',{exact:true})).toBeVisible();
+   await recordPage.goto(`/app/contacts/${contacts[0].id}`);await expect(recordPage.getByText(`${source.account} (spreadsheet)`,{exact:true})).toBeVisible();await expect(recordPage.getByText('Seats',{exact:true})).toBeVisible();
    await recordPage.goto('/app/settings/data');
    await recordPage.getByRole('button',{name:'Find matching contacts',exact:true}).click();
    for(const [email,company] of [['csv-0@example.test','Spreadsheet Company'],['csv-1@example.test','Another Company'],['csv-2@example.test','No company']])await expect(recordPage.getByRole('button',{name:`Spreadsheet Person · ${email} · ${company}`,exact:true})).toBeVisible();

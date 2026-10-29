@@ -35,7 +35,7 @@ export function CreateOpportunityPage() {
    await navigate({to:'/app/opportunities/$id',params:{id}});
   }catch(reason){setError((reason as Error).message);}finally{setSaving(false);}
  }
- return <OperatorShell title="Create opportunity" action={<Link to="/app/opportunities">← Back to opportunities</Link>}>
+ return <OperatorShell title="Create opportunity" action={<Link className="operator-back-link" to="/app/opportunities">← Back to opportunities</Link>}>
   {resource.error?<OperatorState kind="error">{resource.error.message}</OperatorState>:null}
   <form onSubmit={save} className="workbench-create workbench-create--entry">
    <div className="workbench-create__fields">

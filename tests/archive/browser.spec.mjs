@@ -14,13 +14,14 @@ async function discardExport(page){
  expect((await response).status()).toBe(200);
  await expect(page.getByRole('button',{name:'Discard export',exact:true})).toHaveCount(0);
 }
-async function openTools(page){await page.goto('/app/records');await page.getByText('Import, duplicate review and data export',{exact:true}).click();}
+// Export and restore live under Settings › Data, where a restore in progress also waits (OR3's restore guard).
+async function openTools(page){await page.goto('/app/settings/data');await page.getByRole('heading',{name:'Export and restore',exact:true}).waitFor();}
 test('native archive preparation, streamed download, confirmed restore and renewed session preserve workspace records',async({page,context},testInfo)=>{
  test.setTimeout(360_000);
  const sourceSession=await authenticate(context);await openTools(page);
  await page.getByRole('button',{name:'Prepare export',exact:true}).click();
  await expect(page.getByRole('link',{name:'Download completed archive'})).toBeVisible({timeout:90_000});
- const preparedId=await page.getByLabel('Export transfer ID').inputValue();await page.reload();await page.getByText('Import, duplicate review and data export',{exact:true}).click();await expect(page.getByLabel('Export transfer ID')).toHaveValue(preparedId);await page.getByRole('button',{name:'Resume export',exact:true}).click();await expect(page.getByRole('link',{name:'Download completed archive'})).toHaveAttribute('href',new RegExp(preparedId+'/download$'));
+ const preparedId=await page.getByLabel('Export transfer ID').inputValue();await page.reload();await page.getByRole('heading',{name:'Export and restore',exact:true}).waitFor();await expect(page.getByLabel('Export transfer ID')).toHaveValue(preparedId);await page.getByRole('button',{name:'Resume export',exact:true}).click();await expect(page.getByRole('link',{name:'Download completed archive'})).toHaveAttribute('href',new RegExp(preparedId+'/download$'));
  const downloadPromise=page.waitForEvent('download');await page.getByRole('link',{name:'Download completed archive'}).click();const download=await downloadPromise;const file=await download.path();expect(file).toBeTruthy();
  // Assert browser used a real streamed server response, not a generated object URL.
  expect(download.url()).toContain('/api/v1/records/archive/exports/');
