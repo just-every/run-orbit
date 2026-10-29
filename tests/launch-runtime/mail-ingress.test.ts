@@ -55,7 +55,7 @@ test('emitted Worker verifies each provider before its separate limit, shows a s
   assert.equal((await relay()).status,200);const limited=await relay();assert.equal(limited.status,429);assert.ok(Number(limited.headers.get('Retry-After'))>0);
   browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});const context=await browser.newContext({extraHTTPHeaders:{Cookie:`__Host-orbit_session=${session.token}`}}),page=await context.newPage();
   // OR3: the deal's Activity states each message in its own line, the provider's words included.
-  await page.goto(origin+`/app/opportunities/${opportunity.id}`);const sent=page.getByTestId('record-activity').locator('li').filter({hasText:'bounced'});await expect(sent).toHaveCount(1);await expect(sent).toContainText('550 5.1.1 Address does not exist');
+  await page.goto(origin+`/app/opportunities/${opportunity.id}`);const bounced=page.getByTestId('record-activity').locator('li').filter({hasText:'bounced'});await expect(bounced).toHaveCount(1);await expect(bounced).toContainText('550 5.1.1 Address does not exist');
   await page.goto(origin+'/app/contacts');await page.locator('.records-list a').filter({has:page.getByRole('heading',{name:'Runtime suppressed contact',exact:true})}).click();
   // Email permission: back to Contactable is the reviewed clear, asking once under the field.
   const permission=page.getByTestId('record-details').getByLabel('Email permission',{exact:true});assert.equal(await permission.inputValue(),'do_not_contact');

@@ -8,7 +8,7 @@ import type {ActivityEntry} from './record/activity';
 interface Contact {id:string;name:string|null;email:string|null;contactability:string}
 export interface MailContext {record:{lifecycle?:string};contacts:Contact[];deals:{id:string;title:string;contactId:string}[]}
 export type MailMessage={id:string;draftId:string;state:string;subject:string;body:string;recipientEmail:string;failure:string|null;scheduledAt:string|null;createdAt?:string;acceptedAt?:string|null};
-export interface MailHistory {messages:MailMessage[];drafts:{id:string;subject:string;isStale:number;updatedAt?:string;createdAt?:string}[];obligations:{messageId:string;dueAt:string;closedAt:string|null;closedReason:string|null;operatorId:string;ownerId:string|null}[]}
+export interface MailHistory {messages:MailMessage[];drafts:{id:string;subject:string;isStale:number;createdAt?:string}[];obligations:{messageId:string;dueAt:string;closedAt:string|null;closedReason:string|null;operatorId:string;ownerId:string|null}[]}
 async function request<T>(path:string,body?:unknown):Promise<T>{const response=await fetch(`/api/v1/workbench/${path}`,body===undefined?undefined:{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const value=await response.json() as T&{error?:string};if(!response.ok)throw new Error(value.error??'The mail operation failed.');return value;}
 
 /** A record's mail: who it can go to and which deals it can link, and for a contact the drafts, messages and
@@ -64,7 +64,7 @@ export function mailEntries(history:MailHistory|undefined,reload:()=>Promise<voi
  if(!history)return [];
  const sent=new Set(history.messages.map(message=>message.draftId));
  return [
-  ...history.drafts.filter(draft=>!sent.has(draft.id)).map(draft=>({key:`mail-draft-${draft.id}`,kind:'Draft',draft:true,title:<Link to="/app/drafts/$id" params={{id:draft.id}}>{draft.subject}</Link>,line:`Not sent${draft.isStale?' · review needed':''}`,at:draft.updatedAt??draft.createdAt??null})),
+  ...history.drafts.filter(draft=>!sent.has(draft.id)).map(draft=>({key:`mail-draft-${draft.id}`,kind:'Draft',draft:true,title:<Link to="/app/drafts/$id" params={{id:draft.id}}>{draft.subject}</Link>,line:`Not sent${draft.isStale?' · review needed':''}`,at:draft.createdAt??null})),
   ...history.messages.filter(message=>!skip.has(message.id)).map(message=>({key:`mail-${message.id}`,kind:'Sent',title:<Link to="/app/drafts/$id" params={{id:message.draftId}}>{message.subject}</Link>,line:[`To ${message.recipientEmail}`,message.state==='accepted'?'accepted by the mail provider':message.state,message.failure,message.scheduledAt?formatDate(message.scheduledAt):''].filter(Boolean).join(' · '),at:message.acceptedAt??message.scheduledAt??message.createdAt??null,tools:<MailTools message={message} reload={reload}/>})),
   ...history.obligations.filter(obligation=>!obligation.closedAt).map(obligation=>({key:`owed-${obligation.messageId}`,kind:'Waiting',title:'Awaiting customer response',line:<>{obligation.ownerId===null?'Unassigned · ':''}due <time dateTime={obligation.dueAt}>{formatDate(obligation.dueAt)}</time></>,at:obligation.dueAt,tools:<CompleteFollowUp messageId={obligation.messageId} reload={reload}/>})),
  ];

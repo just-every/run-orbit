@@ -28,12 +28,14 @@ export function Opens({summary,initiallyOpen=false,children}:{summary:string;ini
 
 /** Activity: three quiet actions at the heading's right, each opening its form in place under it, then one list,
  * newest first, with a hairline between entries. */
-export function Activity({entries,actions,empty='No activity recorded yet.'}:{entries:ActivityEntry[];actions:ActivityAction[];empty?:string}){
+/** note: one line the list needs said first (a scheduled send's timer). */
+export function Activity({entries,actions,note,empty='No activity recorded yet.'}:{entries:ActivityEntry[];actions:ActivityAction[];note?:ReactNode;empty?:string}){
  const [open,setOpen]=useState<string|null>(null),sorted=[...entries].sort((a,b)=>(b.at??'').localeCompare(a.at??''));
  const panel=actions.find(action=>action.label===open);
  return <section className="r-activity" aria-labelledby="record-activity" data-testid="record-activity">
   <div className="r-head"><h2 id="record-activity">Activity</h2><div className="r-head-actions">{actions.map(action=><button key={action.label} type="button" className="operator-text-button" aria-expanded={open===action.label} onClick={()=>setOpen(open===action.label?null:action.label)}>{action.label}</button>)}</div></div>
   {panel?<div className="r-panel">{panel.panel}</div>:null}
+  {note}
   {sorted.length?<ol className="r-feed">{sorted.map(entry=><li key={entry.key} id={entry.anchor}>
    <span className={`r-kind ${entry.draft?'r-kind--draft':''}`}>{entry.kind}</span>
    <div className="r-entry"><p className="r-entry-title">{entry.title}</p>{entry.line?<p className="r-entry-line">{entry.line}</p>:null}

@@ -153,8 +153,10 @@ async function editRecordThroughKeyboard(page, kind, title, fieldLabel, editedTi
   expect((await saved).ok()).toBe(true);
   if (afterTitle) await afterTitle();
   await expect(page.getByRole('heading', { name: editedTitle, exact: true, level: 1 })).toBeVisible();
-  // The record lives in the address bar, so a reload reopens the saved record itself.
-  await awaitRecordDetail(page, kind, () => page.reload({ waitUntil: 'networkidle' }));
+  // The record lives in the address bar, so a reload reopens the saved record itself. The reload commits before its
+  // reads are awaited, so a read the save started in the old page is never taken for the new page's.
+  await page.reload({ waitUntil: 'commit' });
+  await awaitRecordDetail(page, kind, () => page.waitForLoadState('networkidle'));
   await expect(page.getByRole('heading', { name: editedTitle, exact: true, level: 1 })).toBeVisible();
   await awaitRecordReload(page, kind, '', () => page.goto(listPath[kind], { waitUntil: 'networkidle' }));
   await awaitRecordReload(page, kind, editedTitle, () => page.getByRole('searchbox', { name: 'Search records and timeline', exact: true }).fill(editedTitle));
