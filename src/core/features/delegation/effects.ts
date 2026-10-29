@@ -18,7 +18,13 @@ export async function writeHandoff(db:D1Database,input:Effect,identity:{grant?:G
  const requestHash=await revision({operation:input.operation,target:input.target,expectedRevision:input.expectedRevision,expectedAudienceRevision:input.expectedAudienceRevision,content:input.content});
  if(g){const previous=await db.prepare('SELECT request_hash FROM delegation_receipts WHERE client_id=? AND principal_id=? AND account_id=? AND operation_key=?').bind(g.client_id,g.principal_id,g.account_id,input.operationKey).first<{request_hash:string}>();if(previous){if(previous.request_hash!==requestHash)deny(409,'OPERATION_CONFLICT');return receipt(db,g,input.operationKey);}}
  if(!/^opportunities\/[^/]+\/handoffs\/[^/]+$/.test(input.target))deny(422,'UNSUPPORTED_OPERATION');
- const before=await snapshot(db,input.target,true);
+ // The snapshot also fences its own multi-read epoch. An identical writer can
+ // commit during those reads, so recover its atomic receipt on that refusal too.
+ let before:Awaited<ReturnType<typeof snapshot>>;
+ try{before=await snapshot(db,input.target,true);}catch(error){
+  if(g){const existing=await db.prepare('SELECT request_hash FROM delegation_receipts WHERE client_id=? AND principal_id=? AND account_id=? AND operation_key=?').bind(g.client_id,g.principal_id,g.account_id,input.operationKey).first<{request_hash:string}>();if(existing){if(existing.request_hash!==requestHash)deny(409,'OPERATION_CONFLICT');return receipt(db,g,input.operationKey);}}
+  throw error;
+ }
  // A concurrent identical operation may commit between the first receipt lookup
  // and this snapshot. Recover its receipt before refusing a stale precondition.
  if(before.revision!==input.expectedRevision||before.audience.audienceRevision!==input.expectedAudienceRevision){
