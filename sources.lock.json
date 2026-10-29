@@ -6847,7 +6847,7 @@
       "executable": false
     },
     "src/core/features/publication/fixed-compiler.ts": {
-      "sha256": "175b3e56279749eea9b8c7d1d00f618161614231324867660db7957148404f5c",
+      "sha256": "a681c6d98e7c5ed4419fa1a79d98b13429c117624684316a0d40b4f78aca8c5d",
       "executable": false
     },
     "src/core/features/publication/read-only-preview.ts": {
