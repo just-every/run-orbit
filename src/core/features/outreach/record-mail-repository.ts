@@ -36,7 +36,7 @@ export class RecordMailRepository {
  }
  async history(contactId:string){
   const messages=(await this.db.prepare(`SELECT id,draft_id AS draftId,revision,state,recipient_email AS recipientEmail,subject,body,failure,scheduled_at AS scheduledAt,next_attempt_at AS retryAfter,created_at AS createdAt FROM record_mail_outbound_messages WHERE contact_id=? ORDER BY created_at DESC`).bind(contactId).all()).results;
-  const drafts=(await this.db.prepare('SELECT id,subject,is_stale AS isStale FROM record_mail_drafts WHERE recipient_contact_id=? ORDER BY updated_at DESC').bind(contactId).all()).results;
+  const drafts=(await this.db.prepare('SELECT id,subject,is_stale AS isStale,updated_at AS updatedAt FROM record_mail_drafts WHERE recipient_contact_id=? ORDER BY updated_at DESC').bind(contactId).all()).results;
   const obligations=(await this.db.prepare('SELECT message_id AS messageId,operator_id AS operatorId,owner_id AS ownerId,due_at AS dueAt,closed_at AS closedAt,closed_reason AS closedReason FROM record_mail_obligations WHERE contact_id=? ORDER BY opened_at DESC').bind(contactId).all()).results;
   return {messages,drafts,obligations};
  }

@@ -28,7 +28,7 @@ export function useOperatorResource<T>(key: string, load: () => Promise<T>, init
   }, [key, load, request]);
 
   // The main detail read owns the route's recovery state; nested panels keep their own errors.
-  if (error && (error as Error & { status?: number }).status === 404 && /^(opportunity|draft|meeting|assistance):/.test(key)) {
+  if (error && (error as Error & { status?: number }).status === 404 && /^(opportunity|contact|company|draft|meeting|assistance):/.test(key)) {
     throw notFound();
   }
 

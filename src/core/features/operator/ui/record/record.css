@@ -20,7 +20,7 @@
   .r-a > .r-main { display: contents; }
   .r-a .r-next, .r-a .r-composer { order: 1; }
   .r-a .r-side { order: 2; }
-  .r-a .r-activity { order: 3; }
+  .r-a .r-activity, .r-a .r-activity-box { order: 3; }
   .r-a .r-fold--foot { order: 4; }
 }
 
@@ -58,6 +58,7 @@
 .r-recorded { display: grid; gap: 4px; margin: 2px 0 12px 18px; padding: 0; list-style: none; color: var(--ob-body); font-size: 14.5px; overflow-wrap: anywhere; }
 
 /* Activity: one list, newest first, a hairline between entries. */
+.r-activity-box { display: grid; gap: 18px; min-width: 0; }
 .r-activity { display: grid; gap: 4px; min-width: 0; }
 .r-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 20px; }
 .r-head h2 { margin: 0; font-size: 24px; font-weight: 740; letter-spacing: -0.012em; }
