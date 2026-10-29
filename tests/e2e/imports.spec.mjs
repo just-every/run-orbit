@@ -8,7 +8,7 @@ const names={contact:'Contacts',company:'Companies',deal:'Deals',note:'Notes',su
 test('RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard',async({page,context},info)=>{
  test.setTimeout(240_000);await authenticateOperator(context);const errors=[];page.on('pageerror',error=>errors.push(error.message));
  const screenshots=process.env.IMPORT_SCREENSHOT_DIR??info.outputPath('visual');mkdirSync(screenshots,{recursive:true});
- await page.setViewportSize({width:1440,height:1024});await page.goto('/app/imports');await expect(page.getByRole('heading',{name:'Move in your customer records'})).toBeVisible();
+ await page.setViewportSize({width:1440,height:1024});await page.goto('/app/settings/data/import');await expect(page.getByRole('heading',{name:'Move in',level:1})).toBeVisible();
  await page.screenshot({path:join(screenshots,'desktop-upload.png'),fullPage:true});
  for(const width of [1440,390,320]){await page.setViewportSize({width,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect(page.getByLabel('Do not contact list',{exact:true})).toBeAttached();await page.screenshot({path:join(screenshots,`viewport-${width}-upload.png`),fullPage:true});const accessibility=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(accessibility.violations).toEqual([]);}
  const settingsResponse=await page.request.get('/api/v1/settings');expect(settingsResponse.ok()).toBe(true);const settings=await settingsResponse.json();
@@ -41,8 +41,8 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
   const imported=await page.request.get(`/api/v1/records/contact?q=${vendor}-0%40example.test`);expect(imported.ok()).toBe(true);const contacts=(await imported.json()).records;expect(contacts).toHaveLength(1);expect(contacts[0].contactability).toBe('do_not_contact');
   if(vendor==='csv'){const recordPage=await context.newPage();try{
    await recordPage.goto(`/app/records?kind=contact&record=${contacts[0].id}`);await expect(recordPage.getByText(`${source.account} (spreadsheet)`,{exact:true})).toBeVisible();await expect(recordPage.getByText('Seats',{exact:true})).toBeVisible();
-   await recordPage.getByRole('button',{name:'Back to records',exact:true}).click();await recordPage.getByText('Import, duplicate review and data export',{exact:true}).click();
-   await recordPage.getByRole('button',{name:'Find matching names',exact:true}).click();
+   await recordPage.goto('/app/settings/data');
+   await recordPage.getByRole('button',{name:'Find matching contacts',exact:true}).click();
    for(const [email,company] of [['csv-0@example.test','Spreadsheet Company'],['csv-1@example.test','Another Company'],['csv-2@example.test','No company']])await expect(recordPage.getByRole('button',{name:`Spreadsheet Person · ${email} · ${company}`,exact:true})).toBeVisible();
    expect(await recordPage.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   }finally{await recordPage.close();}}
@@ -61,9 +61,9 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
   }
   const stop=async()=>{const response=await page.request.put(`/api/v1/records/contact/${contacts[1].id}`,{headers:{Origin:origin},data:{name:`Merge stop ${phase}`,contactability:'do_not_contact'}});expect(response.ok()).toBe(true);};
   if(phase==='before')await stop();
-  await page.goto('/app/records?kind=contact');await page.getByText('Import, duplicate review and data export',{exact:true}).click();await page.getByRole('button',{name:'Find matching names',exact:true}).click();
+  await page.goto('/app/settings/data');const review=page.getByRole('region',{name:'Duplicate contacts',exact:true});await review.getByRole('button',{name:'Find matching contacts',exact:true}).click();
   for(const contact of contacts)await page.getByRole('button',{name:`Merge stop ${phase} · ${contact.email} · No company`,exact:true}).click();
-  const review=page.locator('.duplicate-review');await expect(review.getByRole('combobox')).toHaveCount(1);await review.getByRole('combobox',{name:'Email',exact:true}).selectOption('survivor');
+  await expect(review.getByRole('combobox')).toHaveCount(1);await review.getByRole('combobox',{name:'Email',exact:true}).selectOption('survivor');
   if(phase==='after')await stop();
   if(phase==='before'){
    await page.screenshot({path:join(screenshots,'merge-stop-review-1440.png'),fullPage:true});
