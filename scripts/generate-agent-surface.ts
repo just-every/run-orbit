@@ -11,7 +11,7 @@ const surface={schema:'rer-agent-surface/1',seed:'orbit',specialist:'sales rep',
  journey:[
   {id:'create-company',tool:'orbit.records.create',args:{kind:'company',fields:{name:'Native conformance buyer'}},expect:standard,inject:{confirmExternal:true,classes:['standard'],approved:true}},
   {id:'read-company',tool:'orbit.records.read',args:{kind:'company',id:{$from:'create-company',pointer:'/id'},fields:['name']},target:{kind:'company',id:{$from:'create-company',pointer:'/id'}},expect:standard},
-  {id:'update-company',tool:'orbit.records.update',args:{kind:'company',id:{$from:'create-company',pointer:'/id'},patch:{name:'Reviewed native buyer'},expected_revision:{$from:'read-company',pointer:'/ref/revision'}},target:{kind:'company',id:{$from:'create-company',pointer:'/id'}},expect:standard},
+  {id:'update-company',tool:'orbit.records.update',args:{kind:'company',id:{$from:'create-company',pointer:'/id'},patch:{name:'Reviewed native buyer'},expected_revision:{$from:'read-company',pointer:'/ref/revision'}},target:{kind:'company',id:{$from:'create-company',pointer:'/id'}},expect:standard,inject:{confirmExternal:true,classes:['standard'],approved:true}},
   {id:'list-companies',tool:'orbit.records.list',args:{kind:'company',query:'Reviewed',fields:['name']},expect:standard},
   {id:'seller-brief',tool:'orbit.briefs.read',args:{},expect:standard},
   {id:'native-witness',tool:'orbit.operations.read',args:{},expect:standard},

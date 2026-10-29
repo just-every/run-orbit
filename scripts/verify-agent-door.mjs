@@ -1,3 +1,9 @@
+// PENDING-BASE-2026-10-29: edition-authoring/edition-migrations.mjs:33 still
+// requests Git ancestry for an unadapted copy crossing a declared migration;
+// archive-source.mjs:34 correctly refuses to invent it. This release refresh
+// completed after normal record-base of the byte-identical run-site singleton
+// and the refreshed, unadapted foundation runtime directory. A later archive
+// refresh crossing a migration can still need that explicit reconciliation.
 import { existsSync } from 'node:fs';
 import { resolve,join } from 'node:path';
 import { spawnSync } from 'node:child_process';

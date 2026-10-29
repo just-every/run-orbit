@@ -2111,7 +2111,14 @@
             "measure": 1
           }
         }
-      ]
+      ],
+      "inject": {
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "approved": true
+      }
     },
     {
       "id": "list-companies",

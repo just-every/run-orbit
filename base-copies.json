@@ -1090,7 +1090,16 @@
         "modules/agent-door/transport.ts",
         "modules/agent-door/types.ts",
         "modules/agent-door/wire.ts"
-      ]
+      ],
+      "adapted": {
+        "src/base/modules/agent-door/page-style.ts": "5381ab872b5ab4de80e811bcb4b1a803dd713e0f"
+      },
+      "acknowledged": {
+        "src/base/modules/agent-door/page-style.ts": {
+          "sha256": "d2b953c6fdb81a177ed2cac554914c1e96bcdea7e427d698e6a91618245d544b",
+          "mode": "100644"
+        }
+      }
     },
     {
       "path": "src/base/modules/business-settings",

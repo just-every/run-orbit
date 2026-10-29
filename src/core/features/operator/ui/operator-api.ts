@@ -79,6 +79,7 @@ const draftSchema = z.object({
   opportunityId: z.string().nullable(),
   recommendationId: z.string().nullable(),
   authorId: z.string(),
+  authorLabel: z.string().optional(),
   recipientContactId: z.string().nullable(),
   recipientEmail: z.string().email(),
   subject: z.string(),

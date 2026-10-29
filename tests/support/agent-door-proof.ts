@@ -14,10 +14,12 @@ import type { PlatformBindings } from '../../src/core/platform/assets';
 import { emailLinkSignIn } from './email-link';
 import { random } from '../../src/core/features/delegation/protocol';
 import { challenge } from '../../src/core/features/delegation/token';
+import { injectionArgs } from '../../src/base/modules/agent-door/conformance/injection.mjs';
+import { auditRows } from '../../src/base/modules/agent-door/conformance/audit-pages.mjs';
 
 // PENDING-SEED-2026-10-28: the full declarative journey still lacks coverage of
 // every declared tool/class and native grant-subset fixtures. Main's ct clauses
-// remain authoritative; these native assertions exercise the published 0.2.86
+// remain authoritative; these native assertions exercise the published 0.2.87
 // fixes without waiving full production conformance.
 export async function exerciseAgentDoor(){
  const platform=await isolatedDatabase();
@@ -79,6 +81,18 @@ export async function exerciseAgentDoor(){
   // BASE-AGENT-009: v2 records the resolved visible native identity, not a caller label.
   assert.deepEqual((await latestAudit('edit-company')).resource,{kind:'company',id:companyId});
   assert.deepEqual((await call('orbit.records.update',{kind:'company',id:companyId,patch:{name:'Reviewed Buyer'},expected_revision:before,idempotency_key:'edit-company'})).body.result.structuredContent,update.body.result.structuredContent,'A successful edit replay survives the revision advanced by its own effect');
+  // The installed conformance algorithm refreshes read-only revision sources
+  // before its separate injected write, rather than replaying the stale read.
+  const readStep={id:'read-company',tool:'orbit.records.read',args:{kind:'company',id:companyId,fields:['name']}};
+  const injectedStep={id:'update-company',tool:'orbit.records.update',args:{kind:'company',id:companyId,patch:{name:'Reviewed Buyer'},expected_revision:{$from:'read-company',pointer:'/ref/revision'}},inject:{confirmExternal:true,classes:['standard'],approved:true}};
+  const outputs=new Map([[readStep.id,current.body.result.structuredContent]]);
+  const injected=await injectionArgs({surface:{journey:[readStep,injectedStep],tools:tools.map(t=>({name:t.name,readOnly:t.readOnly}))},
+   args:(step:any,values:Map<string,any>)=>({...step.args,...(step===injectedStep?{expected_revision:values.get(readStep.id).ref.revision,idempotency_key:'fresh-injection'}:{})}),
+   proof:async()=>({}),tool:async(name:string,args:unknown)=>{const answer=await call(name,args);return{status:answer.status,result:answer.body.result};},
+   resolve:(value:unknown)=>value},injectedStep,outputs);
+  assert.notEqual(injected.expected_revision,before,'The injection uses the revision after the original native effect');
+  const injection=await call('orbit.records.update',injected);assert.equal(injection.body.result.isError,false,JSON.stringify(injection.body));
+  assert.deepEqual((await latestAudit('fresh-injection')).classes,[{class:'standard',facts:{measure:1}}]);
   assert.equal(code(await call('orbit.records.update',{kind:'company',id:companyId,patch:{name:'Stale edit'},expected_revision:before,idempotency_key:'stale-edit'})),'revision_conflict');
   const history=(await db.prepare("SELECT actor_type,payload_json FROM timeline_entries WHERE kind='record.updated' ORDER BY recorded_at DESC").all<{actor_type:string;payload_json:string}>()).results;
   assert.equal(history[0].actor_type,'agent');const attribution=await db.prepare("SELECT actor FROM orbit_native_attribution WHERE table_name='timeline_entries' ORDER BY rowid DESC LIMIT 1").first<{actor:string}>();assert.equal(JSON.parse(attribution!.actor).label,'Riley Sales Agent for Avery Seller');
@@ -112,6 +126,10 @@ export async function exerciseAgentDoor(){
   assert.equal(code(await call('orbit.handoffs.upsert',{...handoff,idempotency_key:'stale-handoff'})),'native_conflict');
   const draft=await call('orbit.drafts.create',{opportunityId,contactId,subject:'Renewal meeting',body:'Jordan, here is the agenda for our renewal discussion.',idempotency_key:'buyer-draft'});
   assert.equal(draft.body.result?.isError,false,JSON.stringify(draft.body));
+  const nativeDraft=await person('/api/v1/drafts/'+draft.body.result.structuredContent.id);assert.equal(nativeDraft.status,200);
+  const savedDraft=(await nativeDraft.json() as any).draft;
+  assert.equal(savedDraft.authorId,owner.operatorId,'Native permissions retain the sponsoring operator ID');
+  assert.equal(savedDraft.authorLabel,'Riley Sales Agent for Avery Seller','Draft history names the agent preparer and sponsor separately');
   assert.equal((await db.prepare('SELECT count(*) AS n FROM outbound_messages').first<{n:number}>())!.n,0,'Preparing the seller day and draft never submits customer mail');
   // BASE-AGENT-003: resource refusals always expose their machine code in data.
   const absent=await resource('orbit://records/company/missing');assert.equal(code(absent),'resource_unavailable');assert.equal(absent.body.result,undefined);
@@ -160,9 +178,22 @@ export async function exerciseAgentDoor(){
   assert.equal((await call('orbit.records.read',{kind:'company',id:companyId},await credential({aud:'https://elsewhere.test/mcp'}))).status,401);
   const paused=await policyEnvelope(context,autonomousPolicy(),{paused:true});
   assert.equal((await door.handle(jsonRequest('/api/rer/agent-policy',{policy:paused.policy})))!.status,200);
+  context.seq=paused.payload.seq;context.revision=paused.payload.revision;
   assert.equal(code(await call('orbit.records.update',{kind:'company',id:companyId,patch:{name:'Paused edit'},idempotency_key:'paused'})),'agents_paused');
   assert.equal((await db.prepare('SELECT name FROM companies WHERE id=?').bind(companyId).first<{name:string}>())!.name,'Reviewed Buyer');
   // Native people still operate while agent policy is paused.
   assert.equal((await person('/api/v1/records/company/'+companyId,{name:'Person still works'},'PUT')).status,200);
+  await adopt(autonomousPolicy());
+  for(let index=0;index<201;index++){
+   const read=await call('orbit.records.read',{kind:'company',id:companyId,fields:['name']});
+   assert.equal(read.body.result.isError,false);
+  }
+  const paginated=await auditRows({agentId:agent.id,personJson:async(path:string)=>{
+   const response=await door.handle(new Request(origin+path,{headers:{Cookie:cookie}}));assert.equal(response!.status,200);return response!.json();
+  }});
+  assert.ok(paginated.rows.length>200,'Native target checks must read beyond the first audit page');
+  assert.equal(paginated.differs,0);
+  assert.ok(paginated.rows.some((row:any)=>row.idempotency_key==='edit-company'&&row.resource?.id===companyId));
+  assert.deepEqual(paginated.rows.at(-1).resource,{kind:'company',id:companyId});
  }finally{await platform.dispose();}
 }

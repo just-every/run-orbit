@@ -72,6 +72,6 @@
 
 /* Native pages reached from agent outcomes keep the same controls and layout,
    with a complete touch target at desktop and phone widths. */
-.operator-shell.ob-app:has(.operator-detail,.records-workspace) :is(button,select,summary,.orbit-button,.operator-back-link){min-width:44px;min-height:44px}
-.operator-shell.ob-app:has(.operator-detail,.records-workspace) label:has(input:is([type=checkbox],[type=radio])){display:flex;align-items:center;gap:8px;min-height:44px}
-.operator-shell.ob-app:has(.operator-detail,.records-workspace) :is(.operator-nav a,.operator-header a,.workbench-actions a){display:inline-flex;align-items:center;min-width:44px;min-height:44px}
+.operator-shell.ob-app:has(.operator-detail,.records-workspace,.operator-draft-editor) :is(button,select,summary,.orbit-button,.operator-back-link){min-width:44px;min-height:44px}
+.operator-shell.ob-app:has(.operator-detail,.records-workspace,.operator-draft-editor) label:has(input:is([type=checkbox],[type=radio])){display:flex;align-items:center;gap:8px;min-height:44px}
+.operator-shell.ob-app:has(.operator-detail,.records-workspace,.operator-draft-editor) a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}
