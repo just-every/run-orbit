@@ -6779,7 +6779,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/record-api.ts": {
-      "sha256": "2c5dd11544d5a7f51ee4a767363a1a7df2dcbb9318781c1670cd6c37fb123c5a",
+      "sha256": "bd2fd18fa52b4d8abfdf5073eb4dd2194f0d7e632ccc668ca145c18bf3b3fa16",
       "executable": false
     },
     "src/core/features/operator/ui/record/record-foot.tsx": {
@@ -6823,7 +6823,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records-page.tsx": {
-      "sha256": "a8de483898013f705a4addb7e0caf039830074bcb9534cac890991ceee21ec1a",
+      "sha256": "fdf42d5221dc6aa8b8041af8f153084a91d754a8c5f14aaee2875847a8ce57d5",
       "executable": false
     },
     "src/core/features/operator/ui/records-query.ts": {
@@ -6915,7 +6915,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/settings/workspace.tsx": {
-      "sha256": "fd010df7480842baf4932fe3e14524813d885eb785d001218cb9ea95b0085716",
+      "sha256": "daa9fb4190cf95b1a5ceb88e65267a82746d65ca44b04415a3b26f03ddece8dc",
       "executable": false
     },
     "src/core/features/operator/ui/setup-line.tsx": {
@@ -7871,11 +7871,11 @@
       "executable": false
     },
     "src/core/features/settings/repository.ts": {
-      "sha256": "6e93b475baea98fbd4179f6986c0546b011c5bffb567baac3ccb922862f796ae",
+      "sha256": "e1315042d00ede28a46302f18ce17e08f27447eb29e214d86adc45a8e1505247",
       "executable": false
     },
     "src/core/features/settings/routes.ts": {
-      "sha256": "f309769e057c48863d5be68b80daf627ae7f5d0e9d17c75257da156e61796fd4",
+      "sha256": "819bab7fc2bb966f315f7867ec48debe7c7f9a7cbfb276d67d391e3aa6fcc67e",
       "executable": false
     },
     "src/core/features/setup/loader.ts": {
