@@ -21,7 +21,7 @@ function CompanyMeeting({contacts,onChanged}:{contacts:CustomerRecord[];onChange
 /** A contact's or a company's activity: its timeline (manual entries editable in place), and a contact's mail and the
  * replies that still need a thread, with Log a call, Plan a meeting and Add a note. */
 export function RecordActivity({kind,id,record,timeline,contacts,mail,reloadMail,reload}:{kind:'contact'|'company';id:string;record:CustomerRecord;timeline:TimelineRow[];contacts:CustomerRecord[];mail?:MailHistory;reloadMail:()=>Promise<void>;reload:()=>void}){
- const names=new Map(contacts.map(contact=>[contact.id,contact.name??contact.email??'A contact']));
+ const names=new Map([...contacts,record].flatMap(contact=>{const name=contact.name??contact.email??'A contact';return [[contact.id,name],...(contact.email?[[String(contact.email).toLowerCase(),name]]:[])] as [string,string][];}));
  const entries:ActivityEntry[]=[
   ...timeline.map((row):ActivityEntry|null=>{
    const payload=JSON.parse(row.payload_json??'{}') as Record<string,unknown>;

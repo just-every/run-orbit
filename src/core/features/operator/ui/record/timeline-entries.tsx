@@ -18,7 +18,8 @@ const firstLine=(value:string)=>value.split('\n')[0]??'';
 const restLines=(value:string)=>value.split('\n').slice(1).join('\n');
 const quote=(value:string)=>value.length>160?`“${value.slice(0,157).trimEnd()}…”`:`“${value}”`;
 
-/** The kind word, title and quiet line for one timeline entry, in the owner's words; evaluations stay in Recorded details. */
+/** The kind word, title and quiet line for one timeline entry, in the owner's words; evaluations stay in Recorded details.
+ * contactNames names the record's people by id and by lowercased email. */
 export function timelineEntry({line,kind,recordId,contactNames,reload,onChanged}:{line:TimelineLine;kind:RecordKind;recordId:string;contactNames:Map<string,string>;reload:()=>void;onChanged?:()=>void}):ActivityEntry|null{
  if(line.kind==='opportunity.evaluated'||line.kind==='draft.created')return null;
  const payload=line.payload,type=line.signalType??text(payload.type)??'',by=line.actorType==='operator'&&line.actorName?`Recorded by ${line.actorName}`:`From ${sourceLabel(line.actorName??line.sourceName)}`;
@@ -26,7 +27,7 @@ export function timelineEntry({line,kind,recordId,contactNames,reload,onChanged}
  let title:ReactNode=text(payload.subject)||firstLine(text(payload.text))||mailEvidenceTitle(line.kind,type||undefined),rest:ReactNode=null,tools:ReactNode=null;
  if(line.kind==='signal.recorded'){kindWord=signalKind(type||'email.replied');rest=by;}
  else if(/^(email|meeting|form|page|content)\./.test(line.kind)){rest=text(payload.body)?quote(text(payload.body)):by;}
- else if(line.kind==='message.accepted'){const recipient=text(payload.recipient);rest=`To ${recipient||'the recipient'} · accepted by the mail provider`;}
+ else if(line.kind==='message.accepted'){const recipient=text(payload.recipient);rest=`To ${contactNames.get(recipient.toLowerCase())??(recipient||'the recipient')} · accepted by the mail provider`;}
  else if(line.kind==='stage.changed'){title=`${text(payload.previousStageName)||'A stage'} → ${text(payload.currentStageName)||'a stage'}`;rest=by;}
  else if(line.kind==='lifecycle.changed'){const state=text(payload.state);kindWord=state==='won'?'Won':state==='lost'?'Lost':'Reopened';title=state==='open'?'Reopened':`Closed as ${state}`;rest=text(payload.reason)||by;}
  else if(line.kind==='record.updated'||line.kind==='record.created'||line.kind.startsWith('relationship.')){title=firstLine(text(payload.text))||label(line.kind);rest=[restLines(text(payload.text)),line.actorName?`By ${line.actorName}`:''].filter(Boolean).join('\n');kindWord=words[line.kind]??'Changed';}

@@ -30,7 +30,7 @@ function Opens({summary,children}:{summary:string;children:()=>ReactNode}){
 /** A deal's activity: its drafts not yet sent, its messages, its timeline, its hand-off tasks and stage moves in one
  * list, with Log a call, Plan a meeting and Add a note. */
 export function DealActivity({opportunity,drafts,messages,handoffs,reload}:{opportunity:OpportunityDetail;drafts:OperatorDraft[];messages:DealMessages|null;handoffs:HandoffEntry[];reload:()=>void}){
- const names=new Map(opportunity.contacts.map(contact=>[contact.id,contact.name??contact.email??'A contact'])),byEmail=new Map(opportunity.contacts.filter(contact=>contact.email).map(contact=>[contact.email!.toLowerCase(),contact.name??contact.email!]));
+ const names=new Map(opportunity.contacts.flatMap(contact=>{const name=contact.name??contact.email??'A contact';return [[contact.id,name],...(contact.email?[[contact.email.toLowerCase(),name]]:[])] as [string,string][];})),byEmail=new Map(opportunity.contacts.filter(contact=>contact.email).map(contact=>[contact.email!.toLowerCase(),contact.name??contact.email!]));
  const sent=new Set(messages?.messages.map(message=>message.draftId)??[]),messageIds=new Set(messages?.messages.map(message=>message.id)??[]);
  const to=(email:string)=>byEmail.get(email.toLowerCase())??email;
  const entries:ActivityEntry[]=[

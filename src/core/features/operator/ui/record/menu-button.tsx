@@ -1,5 +1,6 @@
 import {useEffect,useId,useRef,useState,type ReactNode} from 'react';
 import {ActionTooltip} from '../action-tooltip';
+import './menu-button.css';
 
 export interface MenuChoice{label:string;checked?:boolean;onChoose:()=>void}
 

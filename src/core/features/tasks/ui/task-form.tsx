@@ -41,6 +41,6 @@ export function SalesTaskForm({task, data, busy, onSave, onCancel}: {
    {reminder && <label>Minutes before due time<input name="reminderMinutes" type="number" min={0} max={10080} step={1} required defaultValue={task?.reminderMinutes ?? 15}/></label>}
    <p className="sales-tasks__hint">Reminders appear in Notifications. Email, push and Slack reminders are not configured here.</p>
   </fieldset>
-  <div className="sales-tasks__actions"><button type="submit" className="operator-button" disabled={busy}>{busy ? 'Saving…' : 'Save task'}</button><button type="button" disabled={busy} onClick={onCancel}>Cancel editing</button></div>
+  <div className="sales-tasks__actions"><button type="submit" className="operator-button" disabled={busy}>{busy ? 'Saving…' : task ? 'Update task' : 'Add task'}</button><button type="button" disabled={busy} onClick={onCancel}>Cancel editing</button></div>
  </form>;
 }
