@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "2bf85f98c3b078e5bc417250285f11c379fcdab45e3928f2875469523eb50b5c",
+      "sha256": "1a5399737d077ef8154b37e7eb683d3e9810f6478ee5c6e4fe878ef3c9575109",
       "executable": false
     },
     "AGENTS.md": {
@@ -703,7 +703,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "397d073fc8d53de761fbe84b24886e2988c85130d2594741914df6b0e2424f4c",
+      "sha256": "57aaf32bd181193ded423d674083701bd159b31fd998152122f0552237761d1e",
       "executable": false
     },
     "DEMO.md": {
@@ -7031,7 +7031,7 @@
       "executable": false
     },
     "src/core/features/records/repository.ts": {
-      "sha256": "95ca369c0feaaa08c27446148617b2cb836e5d4a05a799fb3778c452df1f2178",
+      "sha256": "bf2e4e97f4075121c8f75afa785190d97a4db681c7684fab0d2efa3f5105ddce",
       "executable": false
     },
     "src/core/features/records/routes.ts": {
@@ -8634,6 +8634,10 @@
       "sha256": "67d541ad838fc49b8dd9827244ec83bcf99db70e82f8aef09c745fc50e3268a4",
       "executable": false
     },
+    "tests/core/capture-calendar.test.ts": {
+      "sha256": "7f428ec29219cbc61bb22c606e4a935d4c23885f1235d1e4fbbebfa181800b38",
+      "executable": false
+    },
     "tests/core/capture-erasure.test.ts": {
       "sha256": "05cc2396fcff15cce97b193368f1685fcf1c254993c832c5746cedcb42d53a4b",
       "executable": false
@@ -8642,12 +8646,16 @@
       "sha256": "9bdbb3bef9fc35bae305f79f965b8112ecb8417c535e47417aed70e1131fa682",
       "executable": false
     },
+    "tests/core/capture-microsoft.test.ts": {
+      "sha256": "73656b047b8fff517381fbeab1fb03e4aeb53595c2baf411052a0c1fd926b0fd",
+      "executable": false
+    },
     "tests/core/capture-no-console.test.ts": {
       "sha256": "7ca8ac89a46d10b6e785dd6c16ea40adc8f21007652730ad6806516462eab94d",
       "executable": false
     },
     "tests/core/capture-providers.test.ts": {
-      "sha256": "22beee65453c7eaabce5fb3667d784c4921b0b1dcd269a4f8fba2e5fb117fb4d",
+      "sha256": "b2d5d8a29e3a90cd0689552ecb7e5f47bc5512faa405444897b51273e0025b97",
       "executable": false
     },
     "tests/core/capture-upgrade.test.ts": {
@@ -9396,6 +9404,10 @@
     },
     "tests/support/capture-provider-items.ts": {
       "sha256": "b96fe3341023f2e890ac8929e0b0a1f83004470e0fd976a91eca4ba955bb1163",
+      "executable": false
+    },
+    "tests/support/capture-provider-journey.ts": {
+      "sha256": "b096eb5fb1d1d6d1c052f4bbf787a87e14a211d05d4412d9aa053c769c85b2dc",
       "executable": false
     },
     "tests/support/capture-provider-network.ts": {
