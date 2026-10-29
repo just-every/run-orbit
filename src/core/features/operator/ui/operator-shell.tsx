@@ -5,6 +5,9 @@ import { OrbitLockup } from "../../public/ui/brand/OrbitMark";
 import { publicProductConfig } from "../../../app/mounts/public-config";
 import { operatorMenu } from "./nav";
 import { OperatorMenuSheet } from "./operator-menu-sheet";
+import { useLeaveGuard } from "./autosave/leave-guard";
+import { LeaveNote } from "./autosave/leave-note";
+import "./autosave/autosave.css";
 import { MenuLink } from "./menu-link";
 
 interface OperatorShellProps extends PropsWithChildren {
@@ -21,6 +24,8 @@ interface OperatorShellProps extends PropsWithChildren {
 export function OperatorShell({ action, children, eyebrow, title, restricted=false, reports=true }: OperatorShellProps) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const menu = operatorMenu(pathname, restricted, reports), unread = useUnreadCount();
+  // Leaving a page waits for its saves; a refused one keeps the page with a note at its top.
+  useLeaveGuard();
   return (
     <div className="operator-shell ob-app">
       <a className="operator-skip-link" href="#operator-main">Skip to content</a>
@@ -44,6 +49,7 @@ export function OperatorShell({ action, children, eyebrow, title, restricted=fal
           </div>
           {action ? <div className="operator-titlebar__action">{action}</div> : null}
         </header>
+        <LeaveNote />
         {children}
       </main>
     </div>
