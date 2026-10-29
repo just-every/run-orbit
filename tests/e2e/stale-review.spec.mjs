@@ -22,9 +22,9 @@ contract('ACTION-005','an operator sees new evidence and confirms a stale draft 
 });
 
 test('source review loads genuine diagnostics and unmatched reply inventory',async({page})=>{
- const inventories=[];page.on('response',response=>{if(['/api/v1/sources','/api/v1/review/summary'].includes(new URL(response.url()).pathname))inventories.push(response.status());});
- await page.goto('/app/settings/capture');await expect(page.getByRole('heading',{name:'Website and app events'})).toBeVisible();
- await page.goto('/app/review');await expect(page.getByRole('heading',{name:'Review',level:1})).toBeVisible();
+ const inventory=path=>page.waitForResponse(response=>new URL(response.url()).pathname===path);
+ const sources=inventory('/api/v1/sources');await page.goto('/app/settings/capture');expect((await sources).status()).toBe(200);await expect(page.getByRole('heading',{name:'Website and app events'})).toBeVisible();
+ const summary=inventory('/api/v1/review/summary');await page.goto('/app/review');expect((await summary).status()).toBe(200);await expect(page.getByRole('heading',{name:'Review',level:1})).toBeVisible();
  const waiting=await (await page.request.get('/api/v1/review/summary')).json(),replies=await page.request.get('/api/v1/sources/replies');expect(replies.status()).toBe(200);expect((await replies.json()).replies.length).toBe(waiting.replies);
- await expect(page.getByRole('heading',{name:'Replies without a thread'})).toHaveCount(waiting.replies?1:0);await expect(page.getByRole('alert')).toHaveCount(0);await expect.poll(()=>inventories).toEqual([200,200]);
+ await expect(page.getByRole('heading',{name:'Replies without a thread'})).toHaveCount(waiting.replies?1:0);await expect(page.getByRole('alert')).toHaveCount(0);
 });

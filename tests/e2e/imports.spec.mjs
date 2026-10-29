@@ -51,5 +51,32 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
   const erased=await page.request.get(`/api/v1/records/contact?q=${vendor}-0%40example.test`);expect((await erased.json()).records).toHaveLength(0);
   await page.getByRole('button',{name:'Start another dry run',exact:true}).click();
  }
+ // Review and merge through the same native controls, with stops before and after review.
+ await page.setViewportSize({width:1440,height:900});const origin=new URL(page.url()).origin;
+ for(const phase of ['before','after']){
+  const contacts=[];
+  for(const index of [0,1]){
+   const response=await page.request.post('/api/v1/records/contact',{headers:{Origin:origin},data:{name:`Merge stop ${phase}`,email:`synthetic-orbit-merge-${phase}-${index}${'@'}example.test`}});expect(response.status()).toBe(201);
+   contacts.push({id:(await response.json()).id,email:`synthetic-orbit-merge-${phase}-${index}${'@'}example.test`});
+  }
+  const stop=async()=>{const response=await page.request.put(`/api/v1/records/contact/${contacts[1].id}`,{headers:{Origin:origin},data:{name:`Merge stop ${phase}`,contactability:'do_not_contact'}});expect(response.ok()).toBe(true);};
+  if(phase==='before')await stop();
+  await page.goto('/app/settings/data');const review=page.getByRole('region',{name:'Duplicate contacts',exact:true});await review.getByRole('button',{name:'Find matching contacts',exact:true}).click();
+  for(const contact of contacts)await page.getByRole('button',{name:`Merge stop ${phase} · ${contact.email} · No company`,exact:true}).click();
+  await expect(review.getByRole('combobox')).toHaveCount(1);await review.getByRole('combobox',{name:'Email',exact:true}).selectOption('survivor');
+  if(phase==='after')await stop();
+  if(phase==='before'){
+   await page.screenshot({path:join(screenshots,'merge-stop-review-1440.png'),fullPage:true});
+   await page.setViewportSize({width:390,height:900});await page.screenshot({path:join(screenshots,'merge-stop-review-390.png'),fullPage:true});await page.setViewportSize({width:1440,height:900});
+  }
+  await review.getByRole('button',{name:'Confirm merge',exact:true}).click();await page.getByRole('dialog',{name:'Merge records',exact:true}).getByRole('button',{name:'Merge records',exact:true}).click();
+  await expect(review.getByRole('status')).toContainText('Records merged.');
+  const survivor=await page.request.get(`/api/v1/records/contact/${contacts[0].id}`);expect(survivor.ok()).toBe(true);expect((await survivor.json()).record.contactability).toBe('do_not_contact');expect((await page.request.get(`/api/v1/records/contact/${contacts[1].id}`)).status()).toBe(404);
+  await page.goto(`/app/contacts/${contacts[0].id}`);await expect(page.getByTestId('record-details').getByLabel('Email permission',{exact:true})).toHaveValue('do_not_contact');
+  if(phase==='after'){
+   await page.screenshot({path:join(screenshots,'merge-stopped-survivor-1440.png'),fullPage:true});
+   await page.setViewportSize({width:390,height:900});await page.screenshot({path:join(screenshots,'merge-stopped-survivor-390.png'),fullPage:true});await page.setViewportSize({width:1440,height:900});
+  }
+ }
  expect(errors).toEqual([]);
 });

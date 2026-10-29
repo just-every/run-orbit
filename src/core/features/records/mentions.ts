@@ -63,7 +63,7 @@ export const mentionHrefSql=`CASE WHEN n.kind='record.mention' THEN COALESCE(
  (SELECT '/app/opportunities/'||h.opportunity_id||'#handoff-'||h.id FROM handoff_tasks h WHERE n.event_key LIKE 'mention:handoff:%' AND h.id=substr(n.event_key,17))) END`;
 export interface Mention {source:MentionSource;id:string;kind:string;text:string;author:string|null;recordType:RecordKind;recordId:string;at:string;href:string}
 const recordPaths:Record<RecordKind,string>={opportunity:'/app/opportunities',contact:'/app/contacts',company:'/app/companies'};
-const recordHref=(type:RecordKind,id:string)=>`${recordPaths[type]}/${id}`;
+export const recordHref=(type:RecordKind,id:string)=>`${recordPaths[type]}/${id}`;
 /** The Mentions view: every entry, task note and handoff that mentions this colleague now. */
 export async function mentionsOf(db:D1Database,operatorId:string):Promise<Mention[]>{
  const entries=(await db.prepare("SELECT t.id,t.kind,json_extract(t.payload_json,'$.text') AS text,a.display_name AS author,r.record_type AS recordType,r.record_id AS recordId,t.occurred_at AS at FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id LEFT JOIN operators a ON a.id=t.actor_id WHERE t.kind IN('manual.note','manual.call','manual.meeting') AND EXISTS(SELECT 1 FROM json_each(t.payload_json,'$.mentions') WHERE value=?) ORDER BY t.occurred_at DESC,t.id DESC LIMIT 200").bind(operatorId).all<Omit<Mention,'source'|'href'>>()).results;

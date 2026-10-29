@@ -37,7 +37,7 @@ The bounded expansion fold (`docs/fold/`) adds native reports, explicitly invite
 
 ## Data
 
-Local `rer export`/`import` use Base portability with Orbit's data policy (OPERATIONS.md lists the exclusions) and rebuild full-text search after restore; the journey test proves export/import/export equivalence of content hashes. Hosted restore retains current operators and the active owner, imports new archived operators as ordinary operators, revokes sessions and requires a fresh sign-in. Hosted installations keep Orbit's own Records archive (v3), reachable from Records → Import and data export and through `rer export|import --target remote`; the fold tests drive that remote path against an emitted Worker over loopback HTTPS.
+Local `rer export`/`import` use Base portability with Orbit's data policy (OPERATIONS.md lists the exclusions) and rebuild full-text search after restore; the journey test proves export/import/export equivalence of content hashes. Hosted restore retains current operators and the active owner, imports new archived operators as ordinary operators, revokes sessions and requires a fresh sign-in. Hosted installations keep Orbit's own Records archive (v3), reachable from Settings › Data › Export and restore and through `rer export|import --target remote`; the fold tests drive that remote path against an emitted Worker over loopback HTTPS.
 
 Contact deletion erases the person and makes every Records transfer copy unreachable in one atomic batch by replacing the transfer jobs, parts, segments and, when present, folded part inventory with empty tables, then removes the orphaned copies and old metadata in bounded batches; the minute timer resumes an interrupted removal.
 

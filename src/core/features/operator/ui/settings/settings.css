@@ -11,8 +11,9 @@
 .settings-rows > li { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; padding: 8px 0; border-top: 1.5px solid var(--ob-line); }
 .settings-rows > li:first-child { border-top: 0; }
 .settings-rows > li > div { min-width: 0; }
-.settings-rows strong { font-size: 16.5px; font-weight: 650; overflow-wrap: anywhere; }
-.settings-rows p { margin: 2px 0 0; color: var(--ob-muted); font-size: 14.5px; overflow-wrap: anywhere; }
+/* Only a row's own name and line; a setup opened under a row keeps its own text styles. */
+:is(.settings-rows > li, .settings-rows > li > div, .integration-row > div) > strong { font-size: 16.5px; font-weight: 650; overflow-wrap: anywhere; }
+:is(.settings-rows > li > div, .integration-row > div) > p { margin: 2px 0 0; color: var(--ob-muted); font-size: 14.5px; overflow-wrap: anywhere; }
 .ob-app .settings-row__action { flex: none; min-height: 40px; }
 @media (hover: hover) and (min-width: 701px) { .settings-rows > li .settings-row__action { opacity: 0; } .settings-rows > li:is(:hover, :focus-within) .settings-row__action { opacity: 1; } }
 .settings-inline-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto; align-items: end; gap: 14px; padding-top: 14px; border-top: 1.5px solid var(--ob-line); }

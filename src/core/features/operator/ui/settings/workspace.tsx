@@ -13,7 +13,7 @@ import {SettingsArea} from './area';
 import {useWorkspaceSettings} from './use-workspace-settings';
 
 // Sections of the old one-page Settings that are now areas of their own.
-const movedSections:Record<string,string>={'mail-sender':'/app/settings/mail','form-embedding':'/app/settings/forms','calling-settings':'/app/settings/integrations',access:'/app/settings/team'};
+const movedSections:Record<string,string>={'mail-sender':'/app/settings/mail','form-embedding':'/app/settings/forms','calling-settings':'/app/settings/integrations',access:'/app/settings/team','personal-slack':'/app/settings/integrations#personal-slack'};
 const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const zones=(()=>{try{return Intl.supportedValuesOf('timeZone');}catch{return [] as string[];}})();
 const currencies=(()=>{try{return Intl.supportedValuesOf('currency');}catch{return ['AUD','USD','EUR','GBP'];}})();

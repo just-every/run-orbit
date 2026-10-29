@@ -3,7 +3,7 @@ import {WorkspaceArchiveTools} from '../WorkspaceArchiveTools';
 import {SettingsArea} from './area';
 import {LinkCard} from './link-card';
 
-const contactFields=['name','email','phone','job_title','timezone','company_id','contactability','custom_fields_json'],companyFields=['name','primary_domain','custom_fields_json'];
+const contactFields=['name','email','phone','job_title','timezone','company_id','custom_fields_json'],companyFields=['name','primary_domain','custom_fields_json'];
 
 /** Settings › Data: moving records in, duplicate review and the workspace archive. */
 export function DataArea(){
