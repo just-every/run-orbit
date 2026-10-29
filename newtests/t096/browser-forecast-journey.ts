@@ -31,7 +31,7 @@ export async function forecastBrowserJourney(browser:Browser,origin:string,direc
  for(const width of [1440,390]){
   const context=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),errors=watchBrowser(context),page=await context.newPage();
   try{
-   await page.goto('/app/records');await page.getByRole('link',{name:'Sales forecast and quotas',exact:true}).click();
+   await page.goto('/app/reports#forecast');
    const panel=page.getByRole('region',{name:'Sales forecast',exact:true});await expect(panel).toBeVisible();
    await panel.getByRole('button',{name:'Review inputs',exact:true}).click();
    if(width===1440){

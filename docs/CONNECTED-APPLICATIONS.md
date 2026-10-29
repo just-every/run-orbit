@@ -1,6 +1,6 @@
 # Connected applications
 
-A connected application is another program, for example your own Penny, that reads records you choose in Orbit, and can propose handoff tasks, on your behalf. It never gets your password. It can never send or approve customer mail, invite people or change who signs in. You set it up in Orbit under **Settings → Access → Connected applications** (`/delegation/settings`), and everything below can be done from that page.
+A connected application is another program, for example your own Penny, that reads records you choose in Orbit, and can propose handoff tasks, on your behalf. It never gets your password. It can never send or approve customer mail, invite people or change who signs in. You set it up in Orbit under **Settings › Team › Connected applications** (`/delegation/settings`), and everything below can be done from that page.
 
 ## Do you need this?
 

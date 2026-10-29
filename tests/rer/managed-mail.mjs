@@ -15,7 +15,7 @@ export async function managedMail({checkout,page,port,bindings,opportunityURL,ev
    dev:{remote:false,persist:join(checkout.root,'.wrangler/state'),watch:false,inspector:false,server:{hostname:'127.0.0.1',port,secure:true},origin:{secure:true},outboundService:async request=>{
     assert.equal(request.url,'https://managed-mail.example.test/send');assert.equal(request.headers.get('authorization'),'Bearer fixture-managed-mail');submissions.push(await request.json());return Response.json({messageId:`<managed-${submissions.length}@example.test>`},{status:202});
    }}});await worker.ready;
-  await page.goto(origin+'/app/settings#mail-sender');await expect(page.getByTestId('mail-sender-status')).toContainText('passed');await page.locator('#mail-sender').scrollIntoViewIfNeeded();await shot('settings');
+  await page.goto(origin+'/app/settings/mail');await expect(page.getByTestId('mail-sender-status')).toContainText('set up and checked');await page.locator('#mail-sender').scrollIntoViewIfNeeded();await shot('settings');
   await page.getByRole('button',{name:'Review test email',exact:true}).click();await page.getByRole('button',{name:'Approve and send test email to me',exact:true}).waitFor();await shot('test-review');
   const opportunity=new URL(opportunityURL);opportunity.protocol='https:';await page.goto(opportunity.href);
   await page.getByRole('button',{name:'Write follow-up',exact:true}).first().click();await page.getByLabel('Subject',{exact:true}).fill('Managed walkthrough');await page.getByLabel('Email body',{exact:true}).fill('Hi Maya, here is the walkthrough we reviewed.');await page.getByRole('button',{name:'Save draft for review',exact:true}).click();

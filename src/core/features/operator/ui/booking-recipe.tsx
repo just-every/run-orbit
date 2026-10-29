@@ -3,8 +3,8 @@ import './capture-providers.css';
 import {useState,type FormEvent} from 'react';
 import {RecipeCredential,RecipeValue,WebhookWarning,isHostedWebhook} from './recipe-snippet';
 
-export function BookingRecipe({endpoint,sourceId,secret,onRefresh}:{endpoint:string;sourceId:string;secret?:string;onRefresh:()=>void}){
- const[vendor,setVendor]=useState('calcom'),[saving,setSaving]=useState(false),[status,setStatus]=useState(''),[error,setError]=useState('');
+export function BookingRecipe({endpoint,sourceId,secret,onRefresh,initialVendor='calcom'}:{endpoint:string;sourceId:string;secret?:string;onRefresh:()=>void;initialVendor?:'calcom'|'calendly'}){
+ const[vendor,setVendor]=useState<string>(initialVendor),[saving,setSaving]=useState(false),[status,setStatus]=useState(''),[error,setError]=useState('');
  const url=`${endpoint}/${vendor}`,hosted=isHostedWebhook(url);
  async function connect(event:FormEvent<HTMLFormElement>){
   event.preventDefault();const form=event.currentTarget,token=String(new FormData(form).get('token')??'');form.reset();setSaving(true);setError('');setStatus('');

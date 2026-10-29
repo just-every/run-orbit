@@ -28,9 +28,6 @@
 :where(.operator-shell) :where(summary){cursor:pointer}
 .operator-skip-link{position:absolute;left:16px;top:8px;z-index:10;padding:10px 18px;border:1.5px solid var(--ob-ink);border-radius:999px;background:var(--ob-card);color:var(--ob-ink);font-weight:600;transform:translateY(-200%)}
 .operator-skip-link:focus{transform:none}
-.operator-menu-toggle{display:none}
-.ob-app .operator-menu-toggle{min-height:40px;padding:8px 18px;font-size:15px;font-weight:600}
-.ob-app .operator-menu-toggle[aria-expanded=true]{background:var(--ob-ink);color:var(--ob-paper)}
 .operator-access-links{display:flex;flex-wrap:wrap;gap:12px 24px}
 .operator-data-fields{display:grid;gap:12px;margin:8px 0;min-width:0}
 .operator-data-fields>div{min-width:0;border-left:1.5px solid var(--ob-line);padding-left:12px}
@@ -47,7 +44,6 @@
 .operator-dialog label{display:grid;gap:8px}
 .operator-dialog textarea{width:100%;min-height:100px}
 .operator-dialog__actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end;margin-top:24px}
-@media(max-width:900px){.operator-menu-toggle{display:inline-flex;margin-left:auto}.operator-header>.operator-signout{margin-left:0}.operator-nav{width:100%}.operator-nav[data-open=false]{display:none}.operator-nav[data-open=true]{display:flex;flex-direction:column;align-items:stretch;gap:0}.operator-nav a{padding:12px}.operator-header{gap:8px 12px}}
 @media(max-width:390px){.operator-dialog{padding:18px}.operator-dialog__actions>*{flex:1}.operator-data-fields>div{padding-left:8px}}
 .operator-shell .operator-queue-card__reason small{color:var(--ob-muted)}
 .operator-shell .workbench-create__fields .workbench-form h2{color:var(--ob-muted)}

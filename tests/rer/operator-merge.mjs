@@ -11,12 +11,12 @@ export async function exerciseDuplicateMerge(page,origin,fixture,observe){
   const detail=id=>request(page,`/api/v1/records/company/${id}`,undefined,'GET');
   const select=async()=>{
    const candidates=await Promise.all([detail(survivor.id),detail(retired.id)]);
-   await page.getByRole('button',{name:'Find matching names',exact:true}).click();
+   await page.getByRole('button',{name:'Find matching companies',exact:true}).click();
    for(const {record} of candidates)await page.getByRole('button',{name:`${record.name} · ${record.primary_domain}`,exact:true}).click();
   };
   const choose=async()=>{await page.getByLabel('Primary domain',{exact:true}).selectOption(reverse?'survivor':'retired');await page.getByLabel('Custom fields',{exact:true}).selectOption(reverse?'retired':'survivor');};
   const confirm=async()=>{await page.getByRole('button',{name:'Confirm merge',exact:true}).click();return page.getByRole('dialog',{name:'Merge records',exact:true});};
-  await page.goto(origin+'/app/records?kind=company');await page.getByText('Import, duplicate review and data export',{exact:true}).click();await select();
+  await page.goto(origin+'/app/settings/data');await select();
   await page.getByRole('button',{name:'Confirm merge',exact:true}).click();await expect(page.getByLabel('Primary domain',{exact:true})).toBeFocused();
   await expect(page.getByLabel('Custom fields',{exact:true}).locator(`option[value=${reverse?'retired':'survivor'}]`)).toContainText('Campaign json: Studio');
   await expect(page.getByLabel('Custom fields',{exact:true}).locator(`option[value=${reverse?'retired':'survivor'}]`)).toContainText(`ID in old system: ${fixture.provenance.sourceId}`);await choose();

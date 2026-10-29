@@ -30,6 +30,7 @@ import { devGate } from "@runeditrun/rer/modules/operator-auth";
 import { publicDemoConfig } from "./mounts/public-config.server";
 import { invitationLanding } from "../features/access/invitation-landing";
 import { collaboratorLanding } from "../features/access/collaborator-home";
+import { movedPage } from "./moved-pages";
 import { optOutResponse } from '../features/outreach/opt-out-public';
 import {orbitAgentDoor, orbitBusinessSettings} from '../features/agent-door';
 export default withDemo({
@@ -94,6 +95,7 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
       // A collaborator signing in again (sign-in returns to /app), following an old link or typing an owner
       // page lands on the pages their profile can use instead of an owner page that refuses them.
       if (!setupPath) { const landing = await collaboratorLanding(bindings.DB, operator.operatorId, path); if (landing) return new Response(null, { status: 302, headers: { Location: landing } }); }
+      if (!setupPath && (request.method === "GET" || request.method === "HEAD")) { const moved = await movedPage(bindings.DB, url, operator.operatorId); if (moved) return moved; }
       if(path!=="/app/records"&&await archiveImportActive(bindings.DB))return new Response(null,{status:302,headers:{Location:"/app/records"}});
       if(bindings.AUTH_LOCAL!=="true"&&request.method==='GET')executionContext.waitUntil(runRequestTimers(bindings.DB,createOutboundMail(bindings)));
     }

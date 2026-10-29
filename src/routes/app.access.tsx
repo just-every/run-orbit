@@ -1,11 +1,10 @@
 import { editorLeaf } from "../editor/leaf";
-import {AccessNavigation} from '../core/features/operator/ui/access-navigation';
 import {useEffect,useRef,useState} from 'react';
 import {createFileRoute,useNavigate} from '@tanstack/react-router';
 import {FoldWorkspace,FoldShell,api} from '../core/features/fold-ui/workspace';
 import {CollaboratorConsole} from '../core/features/access/collaborator-console';
 export const Route=createFileRoute('/app/access')({component:editorLeaf(AccessPage)});
-function AccessPage(){const[accepted,setAccepted]=useState(false);return <FoldShell title="Collaborators"><AccessNavigation/><InvitationAcceptance onAccepted={()=>setAccepted(true)}/><FoldWorkspace key={String(accepted)} embedded title="Manage collaborator access">{workspace=><CollaboratorConsole workspaceId={workspace}/>}</FoldWorkspace></FoldShell>;}
+function AccessPage(){const[accepted,setAccepted]=useState(false);return <FoldShell title="Collaborators"><InvitationAcceptance onAccepted={()=>setAccepted(true)}/><FoldWorkspace key={String(accepted)} embedded title="Manage collaborator access">{workspace=><CollaboratorConsole workspaceId={workspace}/>}</FoldWorkspace></FoldShell>;}
 
 /** An invitation link (`?invitation=TOKEN`) is accepted for the signed-in person once, then dropped from the address bar. */
 function InvitationAcceptance({onAccepted}:{onAccepted:()=>void}){

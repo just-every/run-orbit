@@ -35,7 +35,7 @@ export function TypedFieldSettings(){
  const reviewAt=(place:string)=>review?.place===place&&<TypedFieldReview review={review} busy={busy} outcome={outcome?.at==='review'?outcome:undefined} onApply={()=>void apply(review)} onCancel={()=>{setReview(undefined);setOutcome(undefined);}}/>;
  // Archiving keeps the field's saved name, type and choices, so its inputs hold still while Archive field is ticked.
  const locked=value.archived;
- return <section className="operator-surface workbench-form" aria-labelledby="typed-fields"><h2 id="typed-fields">Custom field definitions</h2>
+ return <section className="operator-surface workbench-form" aria-labelledby="typed-fields"><h2 id="typed-fields">Fields</h2>
   <label>Record type<select aria-label="Field record type" value={kind} onChange={e=>{chosen.current=true;setKind(e.target.value);}}><option value="contact">Contacts</option><option value="company">Companies</option><option value="opportunity">Deals</option></select></label>
   {listFailure?<OperatorState kind="error">{listFailure} <button type="button" onClick={()=>void load()}>Retry</button></OperatorState>:<ul>{fields.map(f=><li key={f.field_key}><div className="typed-field-row"><span>{f.label} · {typeLabels[f.value_type]}{f.required?' · Required':''}{f.is_unique?' · Unique':''}{f.archived?' · Archived':''}</span>
    {editable&&!f.archived&&<button type="button" onClick={()=>{setChanging(f);setValue(saved(f));setReview(undefined);setOutcome(undefined);setOpen(true);setNamed(n=>n+1);}}>Change<span className="typed-field-visually-hidden"> {f.label}</span></button>}

@@ -2,7 +2,7 @@ const LABEL = "Drawing of Orbit's contact import: the CSV's Email and Full name 
 
 const mapping = [["email", "Email"], ["name", "Full name"]];
 
-/** The records page's contact import (records-data-tools.tsx) after a run, with its report's own keys. */
+/** The contact import (Settings › Data › Move in) after a run, with its report's own keys. */
 export function ImportDrawing() {
   return (
     <figure className="ob-figure ob-figure--import" role="img" aria-label={LABEL}>

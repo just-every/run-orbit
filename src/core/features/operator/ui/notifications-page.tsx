@@ -11,7 +11,8 @@ export function useNotifications(){
  async function read(id:string){try{const response=await fetch(`/api/v1/notifications/${id}/read`,{method:'POST',keepalive:true});if(!response.ok)throw new Error('Could not mark the notification read.');setData(old=>({notifications:old.notifications.map(item=>item.id===id?{...item,readAt:new Date().toISOString()}:item),unread:Math.max(0,old.unread-(old.notifications.find(item=>item.id===id)?.readAt?0:1))}));}catch(e){setError(e instanceof Error?e.message:'Could not mark the notification read.');}}
  return {data,error,read};
 }
-export function NotificationCount(){const {data,error}=useNotifications();return <Link to="/app/notifications" aria-label={error?'Notifications unavailable':`${data.unread} unread notifications`}>Notifications{data.unread?` (${data.unread})`:''}</Link>;}
+/** The unread count the menu shows beside Notifications. A failed read keeps the last count, so the menu never flashes. */
+export function useUnreadCount(){return useNotifications().data.unread;}
 /** Ink line icons, one per category: a flag for NOW, a speech bubble for a reply, an envelope with a mark for delivery. */
 const notificationIconPaths={
  assignment:<><circle cx="16" cy="10" r="5"/><path d="M6 28v-4a10 10 0 0 1 20 0v4"/></>,
@@ -29,7 +30,7 @@ function NotificationTitle({item,onOpen}:{item:Notification;onOpen:()=>void}){
 }
 export function NotificationsPage(){const {data,error,read}=useNotifications(),pages=useAccessPages();const [unreadOnly,setUnreadOnly]=useState(false),[kind,setKind]=useState('all');const items=data.notifications.filter(item=>(!unreadOnly||!item.readAt)&&(kind==='all'||category(item)===kind));
  return <OperatorShell eyebrow="Notifications" title="Notifications inbox" action={<span>{data.unread} unread</span>} restricted={pages.accessClass==="collaborator"} reports={pages.reports}>
-  <p>Review recent updates and open the record to take action. <a href="/app/settings#personal-slack">Your Slack mention preference</a></p>
+  <p>Review recent updates and open the record to take action. <a href="/app/settings/integrations#personal-slack">Your Slack mention preference</a></p>
   <section className="operator-surface workbench-form notification-filters"><label><input type="checkbox" checked={unreadOnly} onChange={e=>setUnreadOnly(e.target.checked)}/> Show unread only</label><label>Notification type<select aria-label="Notification type" value={kind} onChange={e=>setKind(e.target.value)}><option value="all">All types</option><option value="assignment">Assignments</option><option value="task">Tasks</option><option value="now">Needs attention</option><option value="reply">Customer replies</option><option value="mention">Mentions</option><option value="failure">Delivery outcomes</option></select></label></section>
   {error&&<OperatorState kind="error">{error}</OperatorState>}
   <div className="notification-layout"><section className="operator-surface operator-detail__section">

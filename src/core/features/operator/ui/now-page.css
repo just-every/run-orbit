@@ -1,3 +1,16 @@
+/* NOW: the count with one Filter, the review and setup lines only while they apply, then the queue. */
+.now-queue { gap: 16px; }
+.now-queue__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.now-queue__head p { margin: 0; color: var(--ob-muted); font-size: 15.5px; }
+.now-queue__head > button { flex: none; }
+.now-queue .now-queue__filters { grid-template-columns: repeat(auto-fit, minmax(180px, 260px)); padding-top: 0; }
+.now-queue__chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.now-line { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; min-height: 48px; margin: 0; padding: 8px 18px; border-radius: 12px; background: var(--ob-paper-deep); color: var(--ob-body); font-size: 15.5px; }
+.now-line__step { display: inline-flex; align-items: center; gap: 12px; }
+.now-line__sep { color: var(--ob-muted); }
+.now-line a { display: inline-flex; align-items: center; min-height: 32px; color: var(--ob-ink); font-weight: 600; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.now-line--review { background: var(--ob-tangerine-soft); color: #7a2a07; }
+.now-line--review span { font-weight: 650; }
 .operator-queue .operator-queue-card > a {
   grid-template-columns: 72px minmax(0, 1fr) minmax(210px, 0.7fr);
 }
@@ -5,4 +18,9 @@
 @media (max-width: 760px) {
   .operator-queue .operator-queue-card > a { grid-template-columns: 52px minmax(0, 1fr); }
   .operator-queue .operator-queue-card__reason { grid-column: 2 / -1; }
+}
+@media (max-width: 640px) {
+  .now-line { padding-block: 4px; }
+  .now-line a, .now-queue__chips .operator-text-button { min-height: 44px; }
+  .now-line__sep { display: none; }
 }

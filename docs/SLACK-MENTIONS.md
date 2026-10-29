@@ -1,8 +1,8 @@
 # Personal Slack mentions
 
-The installation owner connects the Slack bot under Settings → Slack sales notices, sends an allowed-field notice to bind the app identity, then explicitly maps a Slack user ID to an active full Orbit operator. An email address never supplies the mapping. Personal DMs require the bot scopes `users:read`, `im:write`, `im:read` and `chat:write` as well as the existing channel configuration scopes.
+The installation owner connects the Slack bot under Settings › Integrations › Slack (Slack sales notices), sends an allowed-field notice to bind the app identity, then explicitly maps a Slack user ID to an active full Orbit operator. An email address never supplies the mapping. Personal DMs require the bot scopes `users:read`, `im:write`, `im:read` and `chat:write` as well as the existing channel configuration scopes.
 
-Each mapped operator chooses Settings → Your Slack mentions and opts in for themselves. The preference applies to new mentions in notes, logged calls and meetings, task notes and internal handoffs. It does not send earlier mentions. The notifications inbox links to this preference.
+Each mapped operator chooses Settings › Integrations › Your Slack mentions and opts in for themselves. The preference applies to new mentions in notes, logged calls and meetings, task notes and internal handoffs. It does not send earlier mentions. The notifications inbox links to this preference.
 
 A DM contains a generic private-entry notice and a link requiring Orbit sign-in. Entry text, customer names, contact details and amounts stay in Orbit. The recipient must remain an active full operator with current record access and the same current installation mapping. Team and restricted-role audiences remain unavailable here.
 

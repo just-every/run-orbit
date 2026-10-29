@@ -59,7 +59,8 @@ test('NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdr
  const products=async()=>((await(await f.request('settings/products')).json()) as any).products as any[],named=(list:any[],name:string)=>list.find(item=>item.products.includes(name));
  assert.equal((await f.request('settings/products','GET',undefined,{Cookie:''})).status,401);
  const unresolved=await products();assert.equal(named(unresolved,'Calendly').state,'awaiting-delivery');
- for(const[name,clause]of[['Dial','INTEGRATE-001'],['Zoom','INTEGRATE-002'],['Twilio','CALL-001'],['Aircall','CALL-001'],['HappyToHelp','INTEGRATE-004'],['Help Scout','INTEGRATE-004'],['Zendesk','INTEGRATE-004'],['DocuSign','QUOTE-001'],['Nectar','INTEGRATE-003'],['Stripe','INTEGRATE-003'],['QuickBooks Online','INTEGRATE-006'],['Xero','INTEGRATE-006'],['Buoy','INTEGRATE-008']]){const product=named(unresolved,name);assert.deepEqual([product?.state,product?.clause,product?.lastDeliveryAt],['unavailable',clause,null],`${name} is unresolved setup, never a connection`);}
+ // BOUNDARY-001: Integrations lists only the products Orbit connects to; the others are named in the docs, never as a connection or a substitute.
+ for(const name of ['Dial','Zoom','Aircall','HappyToHelp','Help Scout','Zendesk','DocuSign','Nectar','Stripe','QuickBooks Online','Xero','Buoy'])assert.equal(named(unresolved,name),undefined,`${name} is not listed as a connection`);
  assert.deepEqual([named(unresolved,'Mailchimp').state,named(unresolved,'Mailchimp').clause,named(unresolved,'Mailchimp').link],['unresolved-setup','INTEGRATE-007',undefined],'Mailchimp is unresolved setup until a key check passes and an audience is chosen');
  assert.equal((await f.request('settings/products/dial','POST',{})).status,404,'No substituted connector exists for an unbuilt product');
  assert.equal(named(unresolved,'Slack').state,'unresolved-setup');

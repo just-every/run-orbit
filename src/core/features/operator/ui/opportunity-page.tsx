@@ -14,7 +14,7 @@ import {formatCurrency,formatDay,formatDateTime,label,sourceLabel} from './forma
 import {operatorApi} from './operator-api';
 import {OperatorShell,OperatorState} from './operator-shell';
 import {useOperatorResource} from './use-operator-resource';
-import {readOnboarding} from './onboarding-checklist';
+import {readOnboarding} from './setup-line';
 export function OpportunityPage(){
  const{id}=useParams({from:'/app/opportunities/$id'}),[compose,setCompose]=useState(false);
  const load=useCallback(async()=>{const[{opportunity},{drafts},{presentation},configuration]=await Promise.all([operatorApi.readOpportunity(id),operatorApi.listOpportunityDrafts(id),operatorApi.readWorkspacePresentation(),readOnboarding()]);return{opportunity,drafts,presentation,configuration};},[id]);
@@ -23,7 +23,7 @@ export function OpportunityPage(){
  if(resource.error)return <OperatorShell title="Opportunity"><OperatorState kind="error">{resource.error.message}</OperatorState></OperatorShell>;
  if(!resource.data)return null;
  const{opportunity,drafts,presentation,configuration}=resource.data,rec=opportunity.recommendation;
- return <OperatorShell eyebrow="Customer opportunity" title={opportunity.title} action={<Link to="/app">← NOW queue</Link>}>
+ return <OperatorShell eyebrow="Customer opportunity" title={opportunity.title} action={<Link to="/app">← NOW</Link>}>
  <section className="operator-detail" data-testid="opportunity-detail">
  <header className="operator-surface operator-detail__section"><h2>{opportunity.companyName??'No company associated'}</h2><p>{opportunity.contacts.map(c=>c.name??c.email??'Unnamed contact').join(' · ')}</p><p>{formatCurrency(opportunity.valueCents,presentation)} · {opportunity.stage} · {opportunity.ownerName??'Unassigned'}</p></header>
  <p><a href={`/app/records?kind=opportunity&record=${encodeURIComponent(id)}`}>Manage deal details, pipeline and lifecycle</a></p>

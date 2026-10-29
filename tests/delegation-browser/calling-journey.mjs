@@ -6,16 +6,19 @@ export async function callingJourney(page,calling){
  const evidence=resolve(process.env.ORBIT_CALL_EVIDENCE??'.orbit-viewport-evidence/calling');await mkdir(evidence,{recursive:true});
  page.on('requestfailed',request=>console.error('Calling browser request failed',new URL(request.url()).pathname,request.failure()?.errorText));
  const errors=[],expectedConsoleErrors=[];page.on('pageerror',e=>errors.push({text:e.message,url:'pageerror'}));page.on('console',m=>{if(m.type()==='error')errors.push({text:m.text(),url:m.location().url});});
- await page.goto('/app/settings');
- const settings=page.getByRole('region',{name:'Calling',exact:true});
+ // Twilio is a row in Settings › Integrations; its connection opens in place under the row.
+ await page.goto('/app/settings/integrations');await page.getByRole('button',{name:'Open Twilio',exact:true}).click();
+ const settings=page.getByRole('region',{name:'Twilio calling',exact:true});
  await expect(settings.getByRole('status').filter({hasText:'Twilio connected'})).toBeVisible();
  await expect(settings.getByLabel('Auth token',{exact:true})).toHaveValue('');
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('calling-connected',width,settings);}
  const origin=new URL(page.url()).origin;
  const response=await page.request.post('/api/v1/records/contact',{headers:{Origin:origin},data:{name:'Synthetic Orbit Caller',email:['synthetic-orbit-302','example.test'].join(String.fromCharCode(64)),phone:'+12025550103'}});
  expect(response.status(),await response.text()).toBe(201);const contact=await response.json();
- await settings.getByRole('searchbox',{name:'Find a contact',exact:true}).fill('Synthetic Orbit Caller');
- await expect(settings.getByRole('option',{name:'Synthetic Orbit Caller',exact:true})).toHaveCount(1);await settings.getByLabel('Match held call',{exact:true}).selectOption(contact.id);await settings.getByRole('button',{name:'Confirm call match',exact:true}).click();await expect(settings).toContainText('No calls awaiting a contact match.');
+ // A call from a number no contact has waits on Review until the owner matches it.
+ await page.goto('/app/review');const held=page.getByRole('region',{name:'Calls without a contact',exact:true});
+ await held.getByRole('searchbox',{name:'Find a contact',exact:true}).fill('Synthetic Orbit Caller');
+ await expect(held.getByRole('option',{name:'Synthetic Orbit Caller',exact:true})).toHaveCount(1);await held.getByLabel('Match held call',{exact:true}).selectOption(contact.id);await held.getByRole('button',{name:'Confirm call match',exact:true}).click();await expect(held).toHaveCount(0);
  await page.goto(`/app/records?kind=contact&record=${contact.id}`);
  const call=page.getByRole('region',{name:'Call contact',exact:true});
  await call.getByRole('button',{name:'Review call',exact:true}).click();
@@ -62,11 +65,11 @@ export async function callingJourney(page,calling){
  await page.goto(`/app/opportunities/${deal.id}`);await call.getByRole('button',{name:'Review call',exact:true}).click();await expect(call.getByRole('heading',{name:'Review exact call'})).toBeVisible();await call.getByText('Call log',{exact:true}).click();await expect(call).toContainText('Twilio inbound call: completed');
  for(const outcome of outcomes)await expect(call.locator('details').getByRole('listitem').filter({hasText:`Twilio outbound-dial call: ${outcome}`})).toHaveCount(1);await expect(attempts.getByRole('listitem')).toHaveCount(2);expect(calling.provider.submissions).toBe(2);
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('deal-call-review',width,call);}
- await page.goto('/app/settings');await expect(settings.getByRole('button',{name:'Disconnect Twilio',exact:true})).toBeVisible();
+ await page.goto('/app/settings/integrations');await page.getByRole('button',{name:'Open Twilio',exact:true}).click();await expect(settings.getByRole('button',{name:'Disconnect Twilio',exact:true})).toBeVisible();
  await settings.getByRole('button',{name:'Disconnect Twilio',exact:true}).click();
  await expect(settings.getByRole('status').filter({hasText:'Unresolved setup'})).toBeVisible();
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('calling-unconnected',width,settings);}
- const policy=page.getByRole('region',{name:'Sign-in policy',exact:true});await expect(policy.getByRole('option',{name:/auth · https/})).toHaveCount(1);
+ await page.goto('/app/settings/team');const policy=page.getByRole('region',{name:'Sign-in',exact:true});await expect(policy.getByRole('option',{name:/auth · https/})).toHaveCount(1);
  await policy.getByLabel('Email domain',{exact:true}).fill('example.com');await policy.getByLabel('Required provider',{exact:true}).selectOption('auth');await policy.getByRole('button',{name:'Save domain requirement',exact:true}).click();await expect(policy).toContainText('example.com → auth');
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);const axe=await new AxeBuilder({page}).include('[aria-labelledby="sign-in-policy"]').analyze();expect(axe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);await policy.screenshot({path:`${evidence}/sign-in-policy-${width}.png`});}
  await page.goto('/signin?notice=oidc_admission_denied');await expect(page.getByRole('alert')).toContainText('Provider sign-in was refused.');
