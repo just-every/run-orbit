@@ -15,8 +15,14 @@ import {createApp} from '../support/app';
 import {createDependencies} from '../support/dependencies';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
 
-test('RECORD-012 DATA-002 launch suppression survives ordinary edits, erasure, normalized recreation, and workbench creation; only reviewed native clear permits future review',async()=>{
+test('RECORD-012 DATA-002 manual contacts start contactable; suppression survives ordinary edits, erasure, normalized recreation, and workbench creation; only reviewed native clear permits future review',async()=>{
  const f=await launchFixture();try{
+  const email=['synthetic-orbit-1','customer.test'].join('@');
+  const created=await f.request('records/contact','POST',{name:'Manual contact',email});assert.equal(created.status,201);
+  const {id}=await created.json() as {id:string};
+  const saved=await f.request(`records/contact/${id}`);assert.equal(saved.status,200);
+  const manual=(await saved.json() as {record:{id:string;email:string;contactability:string}}).record;
+  assert.equal(manual.id,id);assert.equal(manual.email,email);assert.equal(manual.contactability,'contactable','A fresh manually created contact defaults to contactable when the field is omitted');
   const c=await f.customer('Suppressed@Customer.test'),scheduled=await f.message(c.contactId,c.opportunityId);
   const stop=await f.request(`records/contact/${c.contactId}`,'PUT',{name:'Stopped',email:c.email,contactability:'do_not_contact'});assert.equal(stop.status,200);
   assert.equal((await f.request(`records/contact/${c.contactId}`,'PUT',{name:'Renamed'})).status,200);
