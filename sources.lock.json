@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "5479cef72a770d68075f257d0d84a9bc29db6b8a0833a45db8cf757cf40d917b",
+      "sha256": "192c6611117c610f016957984b364eb1133c8c21fa83caa5545becfd6ed8a0da",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "61f60f182171093fecaa6ccbb7da45b61dad22cd964c9e31a4c4a7867366ec37",
+      "sha256": "70b05684fbb60c962be6e6a35dbe8f0f2e038a3c17f6ad34a9962c6904622a3a",
       "executable": false
     },
     "DEMO.md": {
@@ -6703,7 +6703,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records-data-tools.tsx": {
-      "sha256": "2243aa6f59f8a16f60b6944a1cf223332292b3c67a1145b18f031b6c1de31586",
+      "sha256": "66b2d640d17a91ec0b598d7018c7e35d47782237c68d9a5bc5986e0b7b021e14",
       "executable": false
     },
     "src/core/features/operator/ui/records-filters.tsx": {
@@ -7547,7 +7547,7 @@
       "executable": false
     },
     "src/core/features/records/import-merge.ts": {
-      "sha256": "551acf408092d83d685587d1df7d4cd9b650315d4901648214d440769f0e64c5",
+      "sha256": "103e8e48e6a4b76a03a731b29f693ea65cc77f3ca93a16bda4685c598e857504",
       "executable": false
     },
     "src/core/features/records/index.ts": {
@@ -9651,7 +9651,7 @@
       "executable": false
     },
     "tests/core/records-merge-review.test.ts": {
-      "sha256": "1a7378c6e675690c049e282c60b40948d047bd2faa459d7f4bf3ea4b63fde382",
+      "sha256": "eafd8cb6845fa855cc942f0320c5b66bb2aa48f4312d1d1147c285c31ba9e466",
       "executable": false
     },
     "tests/core/records-search.test.ts": {
@@ -10319,7 +10319,7 @@
       "executable": false
     },
     "tests/rer/operator-merge.mjs": {
-      "sha256": "6f563fe89fcd73f05cbabd6288c5c1596a73d0a0c37c5f82b55ad27360d60c75",
+      "sha256": "1577e25e464ce27e1aedca1cf47db6622d5a44afc50cd60d3aaf337cd3f4c02b",
       "executable": false
     },
     "tests/rer/operator-observations.mjs": {

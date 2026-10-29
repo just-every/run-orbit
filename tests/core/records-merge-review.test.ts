@@ -58,6 +58,29 @@ test('RECORD-004 RECORD-009 matching names across companies and keyless records 
    assert.deepEqual(await Promise.all(untouchedIds.map(read)),untouched);
    assert.equal(result.timeline.filter((entry:any)=>entry.kind==='record.merged').length,1);
    const audit=await f.db.prepare("SELECT details_json FROM audit_entries WHERE action='record.merged' AND entity_id=?").bind(survivorId).all<{details_json:string}>();assert.equal(audit.results.length,1);assert.deepEqual(JSON.parse(audit.results[0].details_json),{retiredId,choices});
+   if(kind==='contact')for(const [index,stopped] of ['survivor','retired'].entries()){
+    const pair={survivor:await create(6+index*2),retired:await create(7+index*2)};
+    for(const id of Object.values(pair))assert.equal((await read(id)).record.contactability,'contactable');
+    const opportunity=await f.request('records/opportunity','POST',{title:'synthetic-orbit-reviewed-stop',stage_id:f.stage,value_cents:0,contact_ids:Object.values(pair),primary_contact_id:pair.survivor});assert.equal(opportunity.status,201,await opportunity.clone().text());
+    const opportunityId=(await opportunity.json() as {id:string}).id;
+    const scheduled=await Promise.all(Object.values(pair).map(id=>f.message(id,opportunityId)));
+    const candidates=await f.request('records/contact/duplicates');assert.equal(candidates.status,200);
+    const rows=(await candidates.json() as {groups:Record<string,any>[][]}).groups.flat();
+    const reviewed={survivor:rows.find(row=>row.id===pair.survivor)!.mergeReviewToken,retired:rows.find(row=>row.id===pair.retired)!.mergeReviewToken};
+    const stoppedId=pair[stopped as keyof typeof pair],stoppedRecord=(await read(stoppedId)).record;
+    assert.equal((await f.request(`records/contact/${stoppedId}`,'PUT',{...stoppedRecord,custom_fields:JSON.parse(stoppedRecord.custom_fields_json),contactability:'do_not_contact'})).status,200);
+    const merge={survivorId:pair.survivor,retiredId:pair.retired,choices:{email:'survivor',custom_fields_json:'survivor'},reviewed,confirmed:true};
+    const before=await Promise.all(Object.values(pair).map(read)),beforeHistory=await history();
+    assert.equal((await f.request(path,'POST',merge,{Cookie:''})).status,401);
+    assert.deepEqual(await Promise.all(Object.values(pair).map(read)),before);assert.deepEqual(await history(),beforeHistory);
+    const merged=await f.request(path,'POST',merge);assert.equal(merged.status,200,await merged.clone().text());
+    const survivor=await read(pair.survivor);assert.equal(survivor.record.contactability,'do_not_contact');
+    assert.equal((await f.request(`records/contact/${pair.retired}`)).status,404);
+    for(const message of scheduled)assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(message.id).first<{state:string}>())!.state,'cancelled');
+    assert.equal(survivor.timeline.filter((entry:any)=>entry.kind==='record.merged').length,1);
+    const mergedHistory=await history();assert.equal((await f.request(path,'POST',merge)).status,404);
+    assert.deepEqual(await read(pair.survivor),survivor);assert.deepEqual(await history(),mergedHistory);
+   }
   }
  }finally{await f.dispose();}
 });

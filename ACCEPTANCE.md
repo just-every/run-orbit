@@ -115,7 +115,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 1. Review two duplicates, choose field values and survivor, then change one reviewed record and require refusal; review again and merge once, inheriting a concurrent stop.
 
 **Evidence.** `src/core/features/records/merge-review.ts`; `tests/core/records-merge-review.test.ts`
-**Gap.** Unasserted in the carried evidence: concurrent stop inherited. Asserted: reviewed survivor and field value; stale review returns refusal; stale review preserves both records; merge occurs once; retired id and choices audited.
+**Gap.** Concurrent stop inheritance is implemented without a contactability choice and the native Records journey covers stops on either participant, cancelled scheduled work, unchanged refusal and replay. Browser qualification of the contact merge controls remains pending.
 
 #### RECORD-005 — Timeline
 
