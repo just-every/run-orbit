@@ -1,4 +1,4 @@
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 
 import { operators, signalSources, timelineEntries, timelineEntryRecords } from "../../platform/schema";
@@ -35,6 +35,7 @@ export class TimelineRepository {
         occurredAt: timelineEntries.occurredAt,
         recordedAt: timelineEntries.recordedAt,
         actorType: timelineEntries.actorType,
+        agentAttribution: sql<string | null>`(SELECT actor FROM orbit_native_attribution WHERE table_name='timeline_entries' AND id=${timelineEntries.id})`,
         source: timelineEntries.source,
         operatorName: operators.displayName,
         signalSourceName: signalSources.name,

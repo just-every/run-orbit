@@ -18,7 +18,7 @@ export interface ViewerAccess{
 const keyOf=(ref:GraphRef)=>`${ref.type}:${ref.id}`;
 
 export async function viewerAccess(graph:GraphRecords,c:ActorContext,refs:GraphRef[]):Promise<ViewerAccess>{
- if(c.principal.kind!=='operator')throw new AccessError('permission','This surface requires a native session.');
+ if((c.principal.kind!=='operator'&&c.principal.kind!=='agent'))throw new AccessError('permission','This surface requires a native session.');
  const operatorId=c.principal.operatorId,full=await isFullOperator(graph.db,operatorId),deals:ViewerAccess['deals']=new Map();
  // Every deal the viewer may read, with only the fields they may read: the same scanner and fences as every report.
  let cursor:string|undefined;

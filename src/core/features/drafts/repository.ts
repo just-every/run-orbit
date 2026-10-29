@@ -29,7 +29,12 @@ export class DraftsRepository {
   }
 
   async findDraft(id: string) {
-    return (await drizzle(await draftMailDatabase(this.binding,id)).select().from(drafts).where(eq(drafts.id, id)).limit(1))[0];
+    const draft=(await drizzle(await draftMailDatabase(this.binding,id)).select().from(drafts).where(eq(drafts.id, id)).limit(1))[0];
+    if(!draft)return undefined;
+    // The native creation event retains the agent preparer separately from the
+    // sponsoring operator ID used by the draft's permissions and relationships.
+    const attribution=await this.binding.prepare("SELECT json_extract(a.actor,'$.label') AS label FROM timeline_entries t JOIN orbit_native_attribution a ON a.table_name='timeline_entries' AND a.id=t.id WHERE t.kind='draft.created' AND json_extract(t.payload_json,'$.draftId')=? AND json_extract(a.actor,'$.for.id')=? ORDER BY t.recorded_at,t.id LIMIT 1").bind(id,draft.authorId).first<{label:string}>();
+    return {...draft,...(attribution?{authorLabel:attribution.label}:{})};
   }
 
   async listOpportunityDrafts(opportunityId: string) {

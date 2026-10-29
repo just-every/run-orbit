@@ -558,6 +558,66 @@
           }
         ]
       }
+    },
+    {
+      "id": "runeditrun/base-agent-door",
+      "role": "module",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "src/base/modules/agent-door",
+          "src/base/modules/business-settings",
+          "src/base/modules/operator-auth",
+          "src/base/modules/dependencies",
+          "src/base/foundation/runtime",
+          "src/base/modules/owner-claim",
+          "src/base/modules/demo"
+        ],
+        "origin": {
+          "repository": "https://github.com/runeditrun/base.git",
+          "revision": "7ce44fa5b70b68b21d270ba54760dae28b4a37a7",
+          "path": ".",
+          "paths": [
+            "modules/agent-door",
+            "modules/business-settings",
+            "modules/operator-auth",
+            "modules/dependencies",
+            "foundation/runtime",
+            "modules/owner-claim",
+            "modules/demo"
+          ]
+        },
+        "mappings": [
+          {
+            "path": "src/base/modules/agent-door",
+            "originPath": "modules/agent-door"
+          },
+          {
+            "path": "src/base/modules/business-settings",
+            "originPath": "modules/business-settings"
+          },
+          {
+            "path": "src/base/modules/operator-auth",
+            "originPath": "modules/operator-auth"
+          },
+          {
+            "path": "src/base/modules/dependencies",
+            "originPath": "modules/dependencies"
+          },
+          {
+            "path": "src/base/foundation/runtime",
+            "originPath": "foundation/runtime"
+          },
+          {
+            "path": "src/base/modules/owner-claim",
+            "originPath": "modules/owner-claim"
+          },
+          {
+            "path": "src/base/modules/demo",
+            "originPath": "modules/demo"
+          }
+        ]
+      }
     }
   ]
 }

@@ -140,7 +140,7 @@ export class SalesReports{
   await this.metrics.store.commit(c,'analytics.deleted',id,share.revision,[...this.shares.fence(c,id),{sql:'DELETE FROM analytics_snapshot_sources WHERE snapshot_id IN(SELECT id FROM analytics_snapshots WHERE workspace_id=? AND definition_id=?)',bindings:[c.workspaceId,id]},{sql:'DELETE FROM analytics_snapshots WHERE workspace_id=? AND definition_id=?',bindings:[c.workspaceId,id]},{sql:'DELETE FROM analytics_definitions WHERE workspace_id=? AND id=?',bindings:[c.workspaceId,id]},{sql:'DELETE FROM analytics_report_shares WHERE workspace_id=? AND definition_id=?',bindings:[c.workspaceId,id]}]);return {deleted:true};
  }
  async suite(c:ActorContext){
-  c=await this.metrics.permit(c,'analytics.read');const settings=await this.settings(),full=c.principal.kind==='operator'&&await isFullOperator(this.db,c.principal.operatorId);
+  c=await this.metrics.permit(c,'analytics.read');const settings=await this.settings(),full=(c.principal.kind==='operator'||c.principal.kind==='agent')&&await isFullOperator(this.db,c.principal.operatorId);
   const pipelines=(await this.db.prepare('SELECT id,name FROM pipelines ORDER BY is_default DESC,name,id').all<{id:string;name:string}>()).results;
   const reps=full?(await this.db.prepare(`SELECT o.id,o.display_name AS name FROM operators o WHERE o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id) AND ${operatorListingPredicate('o')} ORDER BY o.display_name,o.id`).all<{id:string;name:string}>()).results:[];
   const members=full?await this.shares.members(c):[];

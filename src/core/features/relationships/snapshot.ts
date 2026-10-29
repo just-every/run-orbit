@@ -1,4 +1,4 @@
-import type {AuthenticatedOperator} from '../identity';
+import type {NativeActor} from '../identity';
 import {RecordError} from '../records/shared';
 
 const company=`(SELECT json_object('id',co.id,'name',co.name,'updatedAt',co.updated_at) FROM companies co WHERE co.id=r.company_id)`;
@@ -38,7 +38,9 @@ export async function readSnapshot(db:D1Database,kind:'contact'|'opportunity',id
 export function reviewedSnapshotFence(db:D1Database,kind:'contact'|'opportunity',id:string,raw:string){
  return db.prepare(`INSERT INTO runtime_controls(name,value) SELECT 'relationship_review',NULL WHERE COALESCE((${snapshotSql(kind)}),'')<>?`).bind(id,raw);
 }
-export function relationshipActorFence(db:D1Database,actor:AuthenticatedOperator){
+export function relationshipActorFence(db:D1Database,actor:NativeActor){
+ if(!('sessionId' in actor))return db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'relationship_authority',NULL WHERE NOT EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id))").bind(actor.operatorId);
+
  return db.prepare(`INSERT INTO runtime_controls(name,value) SELECT 'relationship_authority',NULL WHERE NOT EXISTS(
  SELECT 1 FROM operators o JOIN sessions s ON s.operator_id=o.id WHERE o.id=? AND o.status='active'
  AND s.id=? AND s.revoked_at IS NULL AND s.expires_at>strftime('%Y-%m-%dT%H:%M:%fZ','now')

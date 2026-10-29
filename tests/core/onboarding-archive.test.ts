@@ -1,5 +1,5 @@
 import {issueNativeCredential} from '../support/api-credentials-proof';
-import {preCallingCatalog} from '../../src/core/features/records/archive-generations';
+import {preAgentDoorCatalog,preCallingCatalog} from '../../src/core/features/records/archive-generations';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {launchFixture} from '../support/launch-fixture';
@@ -70,6 +70,8 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
  for(let n=0;n<300&&exported.state!=='ready';n++)exported=await request(source,`records/archive/exports/${exported.id}/advance`,'POST',{});
  assert.equal(exported.state,'ready');
  const archive=await request(source,`records/archive/exports/${exported.id}/download`);
+ assert.ok(!archive.manifest.tables.some((table:{name:string})=>/^(agent_door_|orbit_agent_|bs_)/.test(table.name)||table.name==='orbit_native_changes'),'Agent policy, people bindings and queued authority never travel');
+ assert.ok(archive.manifest.tables.some((table:{name:string})=>table.name==='orbit_native_attribution'),'Native actor history remains portable');
  assert.ok(!JSON.stringify(archive).includes(apiCredential.secret));assert.ok(!archive.manifest.tables.some((table:{name:string})=>table.name==='api_credentials'));
  const exportedLibrary=archive.parts.flatMap((part:ArchivePart)=>part.records).filter((record:ArchivePart['records'][number])=>record.table==='message_library').map((record:ArchivePart['records'][number])=>record.row);
  assert.deepEqual(exportedLibrary.sort((a:any,b:any)=>a.id.localeCompare(b.id)),libraryRows.sort((a,b)=>a.id.localeCompare(b.id)));

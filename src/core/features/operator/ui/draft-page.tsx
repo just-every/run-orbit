@@ -24,7 +24,7 @@ export function DraftPage() {
     const history=await fetch(`/api/v1/workbench/${path}`).then(async response=>{if(!response.ok)throw new Error('Saved message history could not load.');return response.json() as Promise<{messages:SubmittedMessage[];mailProvider?:string}>;});
     // This exact revision was already approved: show what happened to it instead of an editor.
     const submitted = history.messages.find(message => message.draftId === draft.id && message.revision === draft.revision && !["draft", "cancelled"].includes(message.state)) ?? null;
-    const authorName=operators.find(operator=>operator.id===draft.authorId)?.display_name;
+    const authorName=draft.authorLabel??operators.find(operator=>operator.id===draft.authorId)?.display_name;
     return { draft, presentation, opportunity, contactContext, submitted, authorName, mailProvider:history.mailProvider };
   }, [id]);
   const resource = useOperatorResource(`draft:${id}`, loadDraft);

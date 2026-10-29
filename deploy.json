@@ -31,6 +31,11 @@
       "environment": "SETUP_TOKEN"
     },
     {
+      "binding": "MAIL_FROM",
+      "environment": "MAIL_FROM",
+      "verifyStandIn": "Orbit <auth@native-orbit.example.test>"
+    },
+    {
       "binding": "SENDGRID_API_KEY",
       "environment": "SENDGRID_API_KEY",
       "optional": true
@@ -43,7 +48,8 @@
     {
       "binding": "MAIL_REPLY_TO",
       "environment": "MAIL_REPLY_TO",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "reply@native-orbit.example.test"
     },
     {
       "binding": "CAPTURE_MAIL_ADDRESS",
@@ -53,7 +59,8 @@
     {
       "binding": "SENDGRID_UNSUBSCRIBE_GROUP_ID",
       "environment": "SENDGRID_UNSUBSCRIBE_GROUP_ID",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "1"
     },
     {
       "binding": "RER_MAIL_RELAY_SECRET",
@@ -72,7 +79,8 @@
     },
     {
       "binding": "ORBIT_ENCRYPTION_KEY",
-      "environment": "ORBIT_ENCRYPTION_KEY"
+      "environment": "ORBIT_ENCRYPTION_KEY",
+      "verifyStandIn": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
     },
     {
       "binding": "OPENAI_API_KEY",
@@ -82,26 +90,50 @@
     {
       "binding": "AI_MODEL",
       "environment": "AI_MODEL",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "verification-network-edge"
     },
     {
       "binding": "AI_INPUT_COST_PER_MILLION",
       "environment": "AI_INPUT_COST_PER_MILLION",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "0"
     },
     {
       "binding": "AI_OUTPUT_COST_PER_MILLION",
       "environment": "AI_OUTPUT_COST_PER_MILLION",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "0"
     },
     {
       "binding": "AI_CACHED_INPUT_COST_PER_MILLION",
       "environment": "AI_CACHED_INPUT_COST_PER_MILLION",
-      "optional": true
+      "optional": true,
+      "verifyStandIn": "0"
     },
     {
       "binding": "SESSION_SECRET",
       "environment": "SESSION_SECRET"
+    },
+    {
+      "binding": "RER_OWNER_CLAIM_ISSUER",
+      "environment": "RER_OWNER_CLAIM_ISSUER"
+    },
+    {
+      "binding": "RER_OWNER_CLAIM_INSTALLATION_ID",
+      "environment": "RER_OWNER_CLAIM_INSTALLATION_ID"
+    },
+    {
+      "binding": "RER_OWNER_CLAIM_APP_ORIGIN",
+      "environment": "RER_OWNER_CLAIM_APP_ORIGIN"
+    },
+    {
+      "binding": "RER_OWNER_CLAIM_PUBLIC_KEYS",
+      "environment": "RER_OWNER_CLAIM_PUBLIC_KEYS"
+    },
+    {
+      "binding": "RER_BUSINESS_TRUST",
+      "environment": "RER_BUSINESS_TRUST"
     }
   ],
   "crons": [

@@ -1,4 +1,7 @@
 import {processWorkflows} from '../features/workflows/engine';
+import {flushNativeChanges} from '../features/agent-door/events';
+import {dispatchAgentWork} from '../features/agent-door/work';
+import {agentDoorResponse} from '../features/agent-door';
 import {processSlack} from '../features/slack/delivery';
 import {dispatchSalesTaskReminders} from '../features/tasks';
 import { withDemo } from '@runeditrun/rer/modules/demo';
@@ -32,10 +35,10 @@ import { invitationLanding } from "../features/access/invitation-landing";
 import { collaboratorLanding } from "../features/access/collaborator-home";
 import { optOutResponse } from '../features/outreach/opt-out-public';
 export default withDemo({
-  async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);context.waitUntil(runHostedTimers(bindings.DB,createOutboundMail(bindings)));context.waitUntil(sweepArchiveTrash(bindings.DB));context.waitUntil(dispatchSalesTaskReminders(bindings.DB));context.waitUntil(processWorkflows(bindings.DB));const security=createSourceSecurity(bindings);context.waitUntil(processSlack(bindings.DB,{security,origin:bindings.AUTH_ORIGIN}));context.waitUntil(pollProviders(bindings.DB,security));if(security)context.waitUntil(pollCalendarLinks(bindings.DB,security));},
+  async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);context.waitUntil(runHostedTimers(bindings.DB,createOutboundMail(bindings)));context.waitUntil(dispatchAgentWork(bindings));context.waitUntil(sweepArchiveTrash(bindings.DB));context.waitUntil(dispatchSalesTaskReminders(bindings.DB));context.waitUntil(processWorkflows(bindings.DB));const security=createSourceSecurity(bindings);context.waitUntil(processSlack(bindings.DB,{security,origin:bindings.AUTH_ORIGIN}));context.waitUntil(pollProviders(bindings.DB,security));if(security)context.waitUntil(pollCalendarLinks(bindings.DB,security));},
   // Cloudflare Email Routing delivers mail for the Orbit address here.
   async email(message:ForwardableEmailMessage,bindings:PlatformBindings){bindings=runtimeBindings(bindings);await receiveRoutedEmail(message,bindings.DB,{security:createSourceSecurity(bindings),address:bindings.CAPTURE_MAIL_ADDRESS});},
-  async fetch(request: Request, bindings: PlatformBindings, executionContext: ExecutionContext) {return protectResponse(await handle(request,runtimeBindings(bindings),executionContext),editorOrigin(bindings),request.method==='GET'&&/^\/p\/[a-z0-9][a-z0-9-]{0,79}$/.test(new URL(request.url).pathname)?await embeddingOrigins(bindings.DB):undefined);}
+  async fetch(request: Request, bindings: PlatformBindings, executionContext: ExecutionContext) {const response=await handle(request,runtimeBindings(bindings),executionContext);executionContext.waitUntil(flushNativeChanges(runtimeBindings(bindings)));return protectResponse(response,editorOrigin(bindings),request.method==='GET'&&/^\/p\/[a-z0-9][a-z0-9-]{0,79}$/.test(new URL(request.url).pathname)?await embeddingOrigins(bindings.DB):undefined);}
 }, { seed: seedDemo, owner: demoOwner });
 // rer dev and preview may serve a requested loopback origin; the saved local origin is never rewritten.
 export function runtimeBindings(bindings: PlatformBindings): PlatformBindings {
@@ -49,6 +52,8 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
     if(path.startsWith('/unsubscribe/'))return optOutResponse(request,bindings.DB);
     const expectedHost = bindings.AUTH_ORIGIN ? new URL(bindings.AUTH_ORIGIN).host : undefined;
     if (expectedHost && url.host !== expectedHost && !["127.0.0.1", "localhost", "[::1]"].includes(url.hostname)) return new Response("Not found", { status: 404 });
+    const agent = await agentDoorResponse(request,bindings);
+    if(agent)return agent;
     const asset = await staticAssetResponse(request, bindings);
     if (asset) return asset;
     const publicBindings = { DB: bindings.DB, AUTH_ORIGIN: bindings.AUTH_ORIGIN ?? '' };
