@@ -19,7 +19,11 @@ export async function phoneDashboard(page) {
  expect(chosen).toBeTruthy();await owner.selectOption(chosen);
  await page.getByRole('button',{name:'Remove owner filter',exact:true}).click();await expect(owner).toHaveValue('');
  await page.getByRole('button',{name:'Schedule email',exact:true}).click();
- const close=page.getByRole('dialog').getByRole('button',{name:'Close dialog',exact:true});
+ const dialog=page.getByRole('dialog');
+ // showModal first autofocuses the close button, then the modal's effect focuses
+ // its heading. That blur must finish before starting the touch-help timer.
+ await expect(dialog).toBeVisible();await expect(dialog.getByRole('heading')).toBeFocused();
+ const close=dialog.getByRole('button',{name:'Close dialog',exact:true});
  await close.dispatchEvent('pointerdown',{pointerType:'touch'});await expect(page.getByRole('tooltip',{name:'Close dialog',exact:true})).toBeVisible();await close.dispatchEvent('pointerup',{pointerType:'touch'});
  await page.keyboard.press('Escape');
  await page.getByRole('button',{name:'Share',exact:true}).click();await page.getByRole('radio',{name:'Named people',exact:true}).check();

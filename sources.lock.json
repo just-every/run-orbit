@@ -5211,7 +5211,7 @@
       "executable": false
     },
     "src/core/features/delegation/effects.ts": {
-      "sha256": "e188ef3a0d1dfc24f16e6c5fc52df38e000309c754d6ee021300d6653d03507e",
+      "sha256": "38364295069c2fa03da2c6b57d83802a12e750329b1b105793d6388c4658ee0d",
       "executable": false
     },
     "src/core/features/delegation/evidence.ts": {
@@ -8815,7 +8815,7 @@
       "executable": false
     },
     "tests/delegation/authority-regressions.test.ts": {
-      "sha256": "cf0be5f156698fab5386a4742c5453fe467c6eadca635cb3e9c8f6d07bf3c7ff",
+      "sha256": "25b9bc448ee81d33546253f2cbb59e49d6da00747359d63ad1037934749daead",
       "executable": false
     },
     "tests/delegation/brief-handoff.test.ts": {
@@ -8835,7 +8835,7 @@
       "executable": false
     },
     "tests/e2e/phone-dashboard.mjs": {
-      "sha256": "525cb753f8ebb5ac7a70de8d360ca20b5efab2d412f097857b7a61a6cb812af4",
+      "sha256": "82200d0479a284bc1a83dcebb9142e2b4e6620f1e8056a280b0f888de8ea4956",
       "executable": false
     },
     "tests/e2e/sales-assistance.mjs": {
