@@ -8,12 +8,12 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 10 | 139 | 29 | 178 |
+| Core | 13 | 136 | 29 | 178 |
 | Agent surface | 0 | 0 | 26 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 10 | 139 | 55 | 204 |
+| Full target | 13 | 136 | 55 | 204 |
 
-Judged from the code and tests at commit `a68464e062b20c530e660fa59818fe6cfe075c66` (29 October 2026). RECORD-004 is qualified here; other clause judgments retain commit `03963b1a17ecd6d0c2cc1eec9a1d6285fd9240b5`. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
+Judged from the code and tests at commit `373d8818a42e3208c5d9ea2ffea9cea33c470dc6` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
 ## Core
 
@@ -33,15 +33,15 @@ Core · published · **partial** · Cites BASE-ROLE-001, BASE-ACCESS-004
 
 #### TEAM-002 — Management
 
-Core · published · **partial** · Cites BASE-ROLE-001, BASE-ACCESS-004
+Core · published · **done** · Cites BASE-ROLE-001, BASE-ACCESS-004
 
 **Requirement.** Any active full operator invites and removes operators in Settings. An invitation sends no email: the invited person requests their own sign-in link. Removing an operator revokes their sessions at once, and later sign-in requests for their address send no link. The setup owner can be removed only by themselves, and only while another active full operator exists. Invitations and removals are audited. Roles, teams and access review are TEAM-005; policy `operator.management.v1` may narrow who invites or removes without bypassing server-side checks.
 
 **Acceptance.**
 1. Invite an operator, sign in as them, remove them, and attempt a previously issued session and a new sign-in request; try to remove the setup owner as another operator and as the only operator.
 
-**Evidence.** `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`; `src/core/features/settings/repository.ts`; `src/core/features/settings/removal-handover.ts`; `tests/core/today-brief.test.ts`; `tests/core/local-owner.test.ts`
-**Gap.** Unasserted in the carried evidence: invited person signs in through their own link. Asserted: invitation emits no unsolicited email; removed session is refused; removed operator receives no new link; another operator cannot remove the owner; sole owner cannot remove themselves; self-removal with another active operator ends the session.
+**Evidence.** `tests/core/local-owner.test.ts` — TEAM-002 PUBLIC-004 owner mailbox changes and setup-owner removal preserve sign-in authority: invitation without unsolicited mail, the invited address requests and confirms its own native link, exact full-operator identity and authenticated Settings access, removal revokes that cookie and refuses new mail, owner-removal refusals, permitted owner self-removal, and invitation and removal audit; `tests/core/today-brief.test.ts`; `src/core/features/settings/repository.ts`; `src/core/features/settings/removal-handover.ts`; `src/core/features/identity/auth.ts`
+**Gap.** None.
 
 #### TEAM-003 — One workspace
 
@@ -203,7 +203,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 
 #### RECORD-012 — Contactability
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
+Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
 
 **Requirement.** A contact is contactable or do-not-contact. An operator can set do-not-contact at any time, and an unsubscribe event that identifies the person (OUT-012, OUT-020) or a permanent bounce also sets it, for that person only. An opt-out that cannot name one recipient of a multi-recipient message pauses those recipients' scheduled work rather than suppressing them (OUT-031). No operation sends customer email to a do-not-contact contact, the state is shown wherever the contact appears, and only an operator can clear it. A contact an operator creates by hand on a record page or through the Records API starts contactable unless the operator chooses do-not-contact or its address matches a retained suppression proof, in which case it starts do-not-contact; other doors state their own default (RECORD-008, CAPTURE-005, CAPTURE-012, FORM-001, OUT-019).
 
@@ -211,8 +211,8 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 1. Set do-not-contact, process unsubscribe and permanent-bounce events, then try immediate and scheduled sending; all remain blocked until an explicit current-state clear.
 2. Create a contact by hand and see it start contactable; recreate an erased contact's address and see it start do-not-contact.
 
-**Evidence.** `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts`; `tests/core/outreach-limits.test.ts`
-**Gap.** Unasserted in the carried evidence: manual contact starts contactable. Asserted: manual stop stays stopped; unsubscribe stop; permanent-bounce stop; immediate send refuses stopped contact; scheduled work cancelled; explicit current-state clear read back; normalized recreation starts do-not-contact.
+**Evidence.** `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts` — RECORD-012 DATA-002 manual contacts start contactable; suppression survives ordinary edits, erasure, normalized recreation, and workbench creation; only reviewed native clear permits future review; RECORD-012 concurrent stop dominates stale edit; merge preserves both recipients and clear never resurrects a schedule; `tests/core/outreach-limits.test.ts` — OUT-007 OUT-009 OUT-012 a signed provider unsubscribe stops the recipient and schedule within sixty seconds and returns the opportunity to NOW once; `tests/core/signals-outreach.test.ts` — OUT-017 record mail preserves exact approval, sender promises, custody and OUT-004 header-only reply matching; OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not; OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do
+**Gap.** None.
 
 #### RECORD-013 — Deletion
 
@@ -290,15 +290,15 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 
 #### SIGNAL-006 — Evidence confidence
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** Every signal carries one confidence: observed, when the customer acted deliberately (form submission, reply, booking, meeting, download, chat), or inferred, when a tool reported activity (email open, page view). An inferred signal alone cannot create an opportunity, produce a high band, or satisfy ACTION-001's evidence requirement.
 
 **Acceptance.**
 1. Compare open/page-view inference with observed reply/booking evidence; inferred activity alone cannot create a deal, high band or evidence-backed action.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: inferred activity cannot create any new deal. Asserted: observed reply/booking classification; inferred activity cannot raise high band; inferred activity creates no current recommendation.
+**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`: SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; inferred evidence cannot create a deal, high band or action. Signed ingestion and authenticated Records prove observed classification, accepted inferred contact history, unchanged complete opportunity identities after delivery and replay, the inferred band ceiling and no current recommendation.
+**Gap.** None.
 
 #### SIGNAL-007 — No tracking
 
