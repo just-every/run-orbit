@@ -1,3 +1,4 @@
+import {personalSlackFixture} from './personal-slack-fixture';
 import assert from 'node:assert/strict';
 import {randomBytes} from 'node:crypto';
 import type {fixture} from './fixture';
@@ -21,6 +22,7 @@ export async function dashboardSlackFixture(f:Awaited<ReturnType<typeof fixture>
   now=new Date();edge.setOutcome('auth-unavailable');
   // The final active version retains a genuinely queued occurrence, plus sent, failed and uncertain history.
   assert.ok((await call(base+'/schedule')).history.some((row:any)=>row.state==='queued'));
+  await personalSlackFixture(f,app,origin,edge);edge.setOutcome('auth-unavailable');
   return {key,base,id:'synthetic-orbit-notice',edge};
  }catch(error){edge.restore();throw error;}finally{edge.restore();}
 }

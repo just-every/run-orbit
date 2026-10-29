@@ -20,6 +20,8 @@ export default {
   if(tables.ownership_batches)await db.prepare(`UPDATE "${tables.ownership_batches.replaceAll('"','""')}" SET state='held'`).run();
   if(tables.sales_dashboards)await db.prepare(`UPDATE "${tables.sales_dashboards.replaceAll('"','""')}" SET authority=0`).run();
   if(tables.sales_dashboard_schedules)await db.prepare(`UPDATE "${tables.sales_dashboard_schedules.replaceAll('"','""')}" SET state='paused'`).run();
+  if(tables.slack_personal_preferences)await db.prepare(`UPDATE "${tables.slack_personal_preferences.replaceAll('"','""')}" SET enabled=0`).run();
+  if(tables.slack_personal_notices)await db.prepare(`UPDATE "${tables.slack_personal_notices.replaceAll('"','""')}" SET state='held',error='Archive restored; fresh personal opt-in required' WHERE state IN('queued','rate-limited','failed','submitting')`).run();
   if(tables.slack_installation){const quoted='"'+tables.slack_installation.replaceAll('"','""')+'"';await db.prepare(`UPDATE ${quoted} SET state='disconnected',error='Archive restored; reconnect Slack credentials'`).run();}
   if(tables.slack_channels)await db.prepare(`UPDATE "${tables.slack_channels.replaceAll('"','""')}" SET enabled=0`).run();
   if(tables.slack_mappings)await db.prepare(`UPDATE "${tables.slack_mappings.replaceAll('"','""')}" SET revoked_at=COALESCE(revoked_at,?)`).bind(new Date().toISOString()).run();

@@ -4,7 +4,7 @@ import {randomBytes} from 'node:crypto';
 export function slackNetwork(){
  const native=globalThis.fetch,secret=randomBytes(32).toString('hex'),token='test-only-slack-bot',posts:any[]=[],deletes:any[]=[],responses:any[]=[];
  let lastMethod='';
- let outcome:'sent'|'rate'|'timeout'|'revoked'|'failed'|'denied'|'missing'|'frozen'|'archived'|'auth-unavailable'='sent',attempts=0,safety:Record<string,unknown>={};
+ let outcome:'sent'|'rate'|'timeout'|'revoked'|'failed'|'denied'|'missing'|'frozen'|'archived'|'auth-unavailable'='sent',attempts=0,safety:Record<string,unknown>={},userSafety:Record<string,unknown>={};
  const channel=(id='CINTERNAL')=>({id,name:id==='CINTERNAL'?'sales-internal':'external',is_channel:true,is_frozen:false,is_member:id!=='CNOTMEMBER',is_archived:false,is_shared:id==='CEXTERNAL',is_ext_shared:id==='CEXTERNAL',is_org_shared:false,is_pending_ext_shared:false,connected_team_ids:[],pending_connected_team_ids:[],context_team_id:'TWORKSPACE',...safety});
  const fetcher:typeof fetch=async(input,init)=>{
   if(String(input).startsWith('https://hooks.slack.com/actions/')){responses.push(JSON.parse(String(init?.body)));return new Response('ok');}
@@ -15,8 +15,10 @@ export function slackNetwork(){
   if(method!=='chat.postMessage')lastMethod=String(method);
   if(method==='auth.test'&&outcome==='auth-unavailable')return Response.json({ok:false,error:'missing_scope'});
   if(method==='auth.test')return Response.json({ok:true,team_id:'TWORKSPACE',user_id:'UBOT',bot_id:'BBOT',enterprise_id:null});
+  if(method==='users.info')return Response.json({ok:true,user:{id:body.user,team_id:'TWORKSPACE',deleted:false,is_bot:false,is_app_user:false,is_restricted:false,is_ultra_restricted:false,...userSafety}});
+  if(method==='conversations.open')return Response.json({ok:true,channel:{id:'DPERSONAL'}});
   if(method==='conversations.list')return Response.json({ok:true,channels:[channel(),channel('CEXTERNAL'),channel('CNOTMEMBER')],response_metadata:{next_cursor:''}});
-  if(method==='conversations.info')return Response.json({ok:true,channel:channel(body.channel)});
+  if(method==='conversations.info')return Response.json({ok:true,channel:body.channel==='DPERSONAL'?{id:'DPERSONAL',is_im:true,user:'UPERSONAL',is_user_deleted:false}:channel(body.channel)});
   if(method==='chat.delete'){deletes.push(body);return Response.json({ok:true,channel:body.channel,ts:body.ts});}
   assert.equal(method,'chat.postMessage');assert.equal(lastMethod,'conversations.info','Channel check immediately precedes every post');lastMethod='chat.postMessage';attempts++;
   if(outcome==='denied')return Response.json({ok:false,error:'restricted_action'});
@@ -24,5 +26,5 @@ export function slackNetwork(){
   const ts=`1800000000.${String(posts.length+1).padStart(6,'0')}`;posts.push({...body,ts});return Response.json({ok:true,channel:body.channel,ts,message:{user:'UBOT',bot_id:'BBOT',app_id:'AORBIT',text:body.text,blocks:body.blocks}});
  };
  globalThis.fetch=fetcher;
- return {fetcher,posts,deletes,responses,secret,token,get attempts(){return attempts;},setOutcome(value:typeof outcome){outcome=value;},setSafety(value:Record<string,unknown>){safety=value;},restore(){globalThis.fetch=native;}};
+ return {fetcher,posts,deletes,responses,secret,token,get attempts(){return attempts;},setOutcome(value:typeof outcome){outcome=value;},setUserSafety(value:Record<string,unknown>){userSafety=value;},setSafety(value:Record<string,unknown>){safety=value;},restore(){globalThis.fetch=native;}};
 }
