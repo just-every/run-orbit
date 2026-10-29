@@ -82,17 +82,18 @@ export async function nativeLongRecordLayoutJourney(page,customer) {
     const targetLink = page.getByRole('link', { name: `Open ${editedOpportunityTitle}`, exact: true });
     await expect(targetLink).toBeVisible();
     await tabTo(page, async active => await active.getAttribute('aria-label') === `Open ${editedOpportunityTitle}`);
-    await page.keyboard.press('Enter');
+    await awaitRelationshipPanels(page, 'opportunity', () => page.keyboard.press('Enter'), target.id);
     await expect(page.getByRole('heading', { name: editedOpportunityTitle, exact: true, level: 1 })).toBeVisible();
     await expect(page.getByRole('heading', { name: editedCompanyName, exact: true, level: 2 })).toBeVisible();
-    await page.goto(`/app/records?kind=opportunity&record=${target.id}`);
+    await awaitRecordDetail(page, 'opportunity', () => page.goto(`/app/records?kind=opportunity&record=${target.id}`));
     await expect(page.locator('.workbench-summary p').filter({hasText:editedContactName})).toContainText(editedContactName);
     await page.getByRole('button',{name:'Edit details',exact:true}).click();
     const chip=page.getByRole('list',{name:'Associated contacts',exact:true}).getByRole('listitem').filter({hasText:editedContactName});
     await expect(chip).toContainText(editedContactName);await expect(chip.getByRole('button',{name:'Remove contact',exact:true})).toBeEnabled();
     await expect(page.getByRole('combobox',{name:'Primary recipient',exact:true})).toHaveValue(contact.id);
-    await page.getByRole('button',{name:'Cancel',exact:true}).click();
-    await page.goto(`/app/opportunities/${target.id}`);
+    // Cancel remounts the detail panels and starts their reads again.
+    await awaitRelationshipPanels(page, 'opportunity', () => page.getByRole('button',{name:'Cancel',exact:true}).click(), target.id);
+    await awaitRelationshipPanels(page, 'opportunity', () => page.goto(`/app/opportunities/${target.id}`), target.id);
     // An opportunity without handoffs shows no empty handoff section; its next action is always present.
     await expect(page.getByTestId('next-action')).toBeVisible();
     for (const viewport of viewports) {
@@ -181,14 +182,7 @@ async function awaitRecordDetail(page, kind, action) {
     const url = new URL(response.url());
     return response.request().method() === 'GET' && url.pathname === '/api/v1/capture/proposals' && url.searchParams.get('recordType') === kind;
   });
-  const relationshipsLoad = kind === 'company' ? undefined : page.waitForResponse(response => {
-    return response.request().method() === 'GET' && new URL(response.url()).pathname.startsWith(`/api/v1/relationships/${kind}/`);
-  });
-  const optionLoads = kind === 'company' ? [] : (kind === 'contact' ? ['company'] : ['contact', 'company']).map(type => page.waitForResponse(response => {
-    const url = new URL(response.url());
-    return response.request().method() === 'GET' && url.pathname === `/api/v1/records/${type}` && url.searchParams.get('q') === '';
-  }));
-  const [detailResponse, proposalsResponse, relationshipsResponse, ...optionResponses] = await Promise.all([detailLoad, proposalsLoad, relationshipsLoad, ...optionLoads, action()]);
+  const [detailResponse, proposalsResponse, relationshipPath] = await Promise.all([detailLoad, proposalsLoad, awaitRelationshipPanels(page, kind, action)]);
   expect(detailResponse.ok(), `${detailResponse.url()}: ${await detailResponse.text()}`).toBe(true);
   const detail = await detailResponse.json();
   if (proposalsResponse) {
@@ -196,17 +190,30 @@ async function awaitRecordDetail(page, kind, action) {
     expect(proposalsResponse.ok(), `${proposalsResponse.url()}: ${await proposalsResponse.text()}`).toBe(true);
     expect(Array.isArray((await proposalsResponse.json()).proposals)).toBe(true);
   }
-  if (relationshipsResponse) {
-    expect(relationshipsResponse.ok(), `${relationshipsResponse.url()}: ${await relationshipsResponse.text()}`).toBe(true);
-    const context = await relationshipsResponse.json();
-    expect(new URL(relationshipsResponse.url()).pathname).toBe(`/api/v1/relationships/${kind}/${detail.record.id}`);
-    expect(context.kind).toBe(kind);
-  }
+  if (relationshipPath) expect(relationshipPath).toBe(`/api/v1/relationships/${kind}/${detail.record.id}`);
+}
+
+async function awaitRelationshipPanels(page, kind, action, recordId) {
+  if (kind === 'company') { await action(); return; }
+  // BuyingContext aborts these three requests when editing or navigating away.
+  // Consume their bodies before unmounting it, including after Cancel.
+  const relationshipsLoad = page.waitForResponse(response => {
+    const path = new URL(response.url()).pathname;
+    return response.request().method() === 'GET' && (recordId ? path === `/api/v1/relationships/${kind}/${recordId}` : path.startsWith(`/api/v1/relationships/${kind}/`));
+  });
+  const optionLoads = (kind === 'contact' ? ['company'] : ['contact', 'company']).map(type => page.waitForResponse(response => {
+    const url = new URL(response.url());
+    return response.request().method() === 'GET' && url.pathname === `/api/v1/records/${type}` && url.searchParams.get('q') === '';
+  }));
+  const [relationshipsResponse, ...optionResponses] = await Promise.all([relationshipsLoad, ...optionLoads, action()]);
+  expect(relationshipsResponse.ok(), `${relationshipsResponse.url()}: ${await relationshipsResponse.text()}`).toBe(true);
+  expect((await relationshipsResponse.json()).kind).toBe(kind);
   // The last Promise.all result belongs to the action itself.
   for (const response of optionResponses.slice(0, optionLoads.length)) {
     expect(response.ok(), `${response.url()}: ${await response.text()}`).toBe(true);
     expect(Array.isArray((await response.json()).records)).toBe(true);
   }
+  return new URL(relationshipsResponse.url()).pathname;
 }
 
 async function awaitRecordReload(page, kind, query, action) {
