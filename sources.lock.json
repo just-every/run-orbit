@@ -8779,7 +8779,7 @@
       "executable": false
     },
     "tests/delegation-browser/customer-review.mjs": {
-      "sha256": "4c64098e22a0de385b0fa3e4f433d5c5309c55c68b72dd22bdeaf0f779544d45",
+      "sha256": "a0139e8b70a2b16847ad1a6c539fbe1af7d07a5701a5c74f7db6d60ab1d3d904",
       "executable": false
     },
     "tests/delegation-browser/mention-link.mjs": {
@@ -9627,7 +9627,7 @@
       "executable": false
     },
     "tests/support/sanity-delivery-outcomes.ts": {
-      "sha256": "a34cff3d9312185893212e811a803a941b6e61e14bae03c2ba3603f4dd62057a",
+      "sha256": "63d7a8a62bb8a9f4e66f90f0cbadd1afeb3c01739287d3ab5c8608685fe4a18e",
       "executable": false
     },
     "tests/support/sanity-identity-domains.ts": {
