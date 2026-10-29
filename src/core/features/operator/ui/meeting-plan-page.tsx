@@ -51,7 +51,7 @@ function when(plan:MeetingPlan,presentation:WorkspacePresentation){
 export function MeetingPlanPage(){
  const {id}=useParams({from:'/app/meetings/$id'});
  const load=useCallback(async()=>{const [{plan},{presentation}]=await Promise.all([todayRequest<{plan:MeetingPlan}>(`/meetings/${id}`),operatorApi.readWorkspacePresentation()]);return {plan,presentation};},[id]);
- const resource=useOperatorResource(`meeting:${id}`,load),back=<a href="/app">← Today</a>;
+ const resource=useOperatorResource(`meeting:${id}`,load),back=<a href="/app">← NOW</a>;
  if(resource.error)return <OperatorShell eyebrow="Meeting plan" title="Meeting" action={back}><OperatorState kind="error">{resource.error.message}</OperatorState></OperatorShell>;
  if(!resource.data)return <OperatorShell eyebrow="Meeting plan" title="Meeting" action={back}><OperatorState>Loading meeting plan…</OperatorState></OperatorShell>;
  const {plan,presentation}=resource.data,canAct=Boolean(plan.primaryOpportunityId),reload=resource.reload;

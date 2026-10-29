@@ -1,5 +1,5 @@
 import {useCallback} from 'react';
-import {readOnboarding,type MailSettings} from './onboarding-checklist';
+import {readOnboarding,type MailSettings} from './setup-line';
 import {useOperatorResource} from './use-operator-resource';
 import {MailSenderSetup} from './mail-sender-setup';
 

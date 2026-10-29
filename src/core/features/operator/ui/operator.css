@@ -98,22 +98,8 @@
 .ob-app :is(.orbit-button--quiet, .operator-text-button) { min-height: 40px; padding: 0; border: 0; background: none; color: var(--ob-ink); box-shadow: none; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
 .ob-app :is(.orbit-button--quiet, .operator-text-button):hover:not(:disabled) { background: none; text-decoration-thickness: 2.5px; }
 
-/* NOW queue (pick A): ordering details, filters with the label inside each box, then one wide card per deal. */
+/* NOW queue (pick A): one wide card per deal. */
 .operator-queue { display: grid; gap: 20px; padding-top: 24px; }
-.operator-queue__intro { display: flex; align-items: center; justify-content: space-between; gap: 20px; color: var(--ob-muted); font-size: 15px; line-height: 1.5; }
-.operator-queue__intro p { margin: 6px 0 0; }
-.operator-queue__policy { color: var(--ob-ink); font-size: 15px; }
-.operator-queue__policy p { color: var(--ob-body); }
-.operator-queue__policy p[data-testid="now-ordering"] { font-family: var(--ob-mono); font-size: 13px; }
-.operator-filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.operator-filters legend { margin-bottom: 10px; font-size: 16px; font-weight: 700; }
-.operator-filters label { position: relative; display: grid; min-width: 0; color: var(--ob-muted); font-size: 12.5px; font-weight: 500; }
-.operator-filters label select { position: absolute; inset: 0; width: 100%; height: 100%; padding: 18px 38px 0 14px; background-color: transparent; font-weight: 600; }
-.operator-filters label { min-height: 56px; padding: 8px 14px 0; border: var(--app-field); border-radius: 12px; background: var(--ob-card); }
-.operator-filters label select { border-color: transparent; }
-.operator-filters label:hover { border-color: #bdb3a3; }
-.operator-filters label:focus-within { border-color: var(--ob-ink); box-shadow: 0 0 0 3px rgba(22, 23, 29, 0.12); }
-.operator-filters label select:focus { box-shadow: none; }
 .operator-queue__list, .operator-evidence-list, .operator-draft-list, .operator-timeline { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
 .operator-queue__list { grid-template-columns: minmax(0, 1fr); min-width: 0; }
 .operator-queue-card { min-width: 0; border: 1.5px solid var(--ob-ink); border-radius: var(--ob-radius); background: var(--ob-card); box-shadow: var(--app-shadow); transition: transform 0.2s var(--ob-ease), box-shadow 0.2s var(--ob-ease); }
@@ -294,7 +280,6 @@
   .operator-main { padding-top: 24px; padding-bottom: 48px; }
   .operator-titlebar { display: grid; align-items: start; gap: 14px; padding-bottom: 20px; }
   .operator-titlebar h1 { font-size: clamp(34px, 10vw, 44px); }
-  .operator-filters { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .operator-queue-card > a { padding: 18px; }
   .operator-state-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
   .operator-detail__identity { display: grid; padding: 20px; }
