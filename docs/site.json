@@ -77,6 +77,11 @@
           "slug": "delegation-protocol",
           "source": "docs/DELEGATION-PROTOCOL.md",
           "label": "Delegation protocol"
+        },
+        {
+          "slug": "agent-door",
+          "label": "Agents in Orbit",
+          "source": "docs/AGENT-DOOR.md"
         }
       ]
     }

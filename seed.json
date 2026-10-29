@@ -1,7 +1,7 @@
 {
   "id": "orbit",
   "name": "Orbit",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "maturity": "complete-workflow-implementation; acceptance requires pinned runtime and native receipts",
   "capabilities": [
     {
@@ -225,10 +225,11 @@
       "id": "slack",
       "required": false,
       "requiredWhen": "The installation owner connects Slack sales notices in Settings.",
-      "why": "Deliver allowed-field internal sales notices and accept signed actions under explicit mapped Orbit identities.",
+      "why": "Deliver allowed-field internal sales notices and opted-in personal mention DMs, and accept signed actions under explicit mapped Orbit identities.",
       "data": [
         "Encrypted installation bot token and app signing secret",
         "Workspace-internal bot-member channel IDs and explicit Slack user-to-operator mappings",
+        "Opted-in mapped operator DM IDs, generic mention notices and authenticated entry links",
         "Event kind, record display name, stage from/to, owner display name, due date and authenticated Orbit link"
       ],
       "adapters": []
