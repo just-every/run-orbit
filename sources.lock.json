@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "192c6611117c610f016957984b364eb1133c8c21fa83caa5545becfd6ed8a0da",
+      "sha256": "c5a8aa52b24c992739025f27a5e7b78d1541842f3643d59ec83cd20e420032c6",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "70b05684fbb60c962be6e6a35dbe8f0f2e038a3c17f6ad34a9962c6904622a3a",
+      "sha256": "85a267368a451521b28c9ba99dfa0f6e806e67d00f47f2ab01738d9d08b5e932",
       "executable": false
     },
     "DEMO.md": {
@@ -10319,7 +10319,7 @@
       "executable": false
     },
     "tests/rer/operator-merge.mjs": {
-      "sha256": "1577e25e464ce27e1aedca1cf47db6622d5a44afc50cd60d3aaf337cd3f4c02b",
+      "sha256": "99b8362554fdb6db8e81798a9c9be4a64a39c39138b84f84322cd7b31b9c6c60",
       "executable": false
     },
     "tests/rer/operator-observations.mjs": {
