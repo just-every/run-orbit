@@ -8,12 +8,12 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 8 | 140 | 30 | 178 |
+| Core | 9 | 139 | 30 | 178 |
 | Agent surface | 0 | 0 | 26 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 8 | 140 | 56 | 204 |
+| Full target | 9 | 139 | 56 | 204 |
 
-Judged from the code and tests at commit `b300e460a20da7f09122dc4a9157499430c4f8d5` (27 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
+Judged from the code and tests at commit `03963b1a17ecd6d0c2cc1eec9a1d6285fd9240b5` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
 ## Core
 
@@ -2199,7 +2199,7 @@ Core · target · **partial** · Cites BASE-ROLE-001, BASE-INPUT-001, BASE-SECRE
 4. Erase a contact and read API/export absence; Slack mappings and delegation grants never become general API credentials.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/delegation/protocol.ts`; `tests/core/source-onboarding.test.ts`; `tests/delegation/authority-regressions.test.ts`; `src/core/features/api/credentials.ts`; `src/core/features/api/routes.ts`; `migrations/core/0065_api_credentials.sql`; `tests/support/api-credentials-proof.ts`; `tests/core/archive-transfer.test.ts`; `tests/core/onboarding-archive.test.ts`; `tests/core/operator-erasure.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/core/contact-erasure.test.ts`
-**Gap.** API-001: the remaining original versioned resource surface and complete acceptance journey, outbound subscription security, delivery and replay controls, their custody and erasure, provider security and legal qualification remain unproved. The standalone scoped deal credential journey is asserted; current inbound-source authority remains SIGNAL-009; narrow application delegation remains DELEGATE-001; later resource behavior remains with its named owning clauses.
+**Gap.** API-001: the remaining original versioned resource surface and complete acceptance journey, outbound subscription security, delivery and replay controls, their custody and erasure, provider security and legal qualification remain unproved. The standalone scoped deal credential journey is asserted; current inbound-source authority remains SIGNAL-009; narrow application delegation remains DELEGATE-001; later resource behavior remains with its named owning clauses. API-004 now proves live scoped close-date, owner-id and buying-context product reads across two installations; the remaining original resource obligations above stay unproved.
 
 #### API-002 — Named API credential lifecycle
 
@@ -2213,7 +2213,7 @@ Core · target · **partial** · From API-001 · Cites BASE-ROLE-001, BASE-INPUT
 3. A credential cannot supply a person’s exact-message approval or revive expired authority.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/delegation/protocol.ts`; `tests/core/source-onboarding.test.ts`; `tests/delegation/authority-regressions.test.ts`; `src/core/features/api/credentials.ts`; `src/core/features/api/routes.ts`; `migrations/core/0065_api_credentials.sql`; `tests/support/api-credentials-proof.ts`; `tests/core/archive-transfer.test.ts`; `tests/core/onboarding-archive.test.ts`; `tests/core/operator-erasure.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/core/contact-erasure.test.ts`
-**Gap.** API-001: the remaining original versioned resource surface and complete acceptance journey, outbound subscription security, delivery and replay controls, their custody and erasure, provider security and legal qualification remain unproved. The standalone scoped deal credential journey is asserted; current inbound-source authority remains SIGNAL-009; narrow application delegation remains DELEGATE-001; later resource behavior remains with its named owning clauses.
+**Gap.** API-001: the remaining original versioned resource surface and complete acceptance journey, outbound subscription security, delivery and replay controls, their custody and erasure, provider security and legal qualification remain unproved. The standalone scoped deal credential journey is asserted; current inbound-source authority remains SIGNAL-009; narrow application delegation remains DELEGATE-001; later resource behavior remains with its named owning clauses. API-004 now proves live scoped close-date, owner-id and buying-context product reads across two installations; the remaining original resource obligations above stay unproved.
 
 #### API-003 — Outgoing webhooks and safe replay
 
@@ -2231,7 +2231,7 @@ Core · target · **partial** · From API-001 · Cites BASE-ROLE-001, BASE-INPUT
 
 #### API-004 — A scoped integration reads a deal's close date, owner and product fields
 
-Core · target · **partial** · From new · Cites BASE-ROLE-001, BASE-INPUT-001, BASE-SECRET-001
+Core · target · **done** · From new · Cites BASE-ROLE-001, BASE-INPUT-001, BASE-SECRET-001
 
 **Requirement.** A scoped integration reads a deal's close date, owner and product fields through Orbit's scoped API, within the caller's current deals scope, installation, workspace and record authority. Values are read live from Orbit rather than copied into the integration.
 
@@ -2244,8 +2244,8 @@ Core · target · **partial** · From new · Cites BASE-ROLE-001, BASE-INPUT-001
 4. A deal the actor cannot read is absent; revoking access makes the next call read nothing.
 5. Change a close date in Orbit and verify the next integration read returns the changed value, read live rather than copied into the integration.
 
-**Evidence.** Acceptance 1 through 5: `tests/delegation/authority-regressions.test.ts` — API-002 native credential lifecycle and delegation D1 reject ambient cookies, scope escalation, expiration, disable and revocation on every read and write; extended `tests/support/api-credentials-proof.ts` — proveScopedDealFields; push Verify core-6.
-**Gap.** All five outcomes pass the local two-installation journey; exact candidate Verify remains pending.
+**Evidence.** Acceptance 1 through 5: `tests/delegation/authority-regressions.test.ts` — API-002 native credential lifecycle and delegation D1 reject ambient cookies, scope escalation, expiration, disable and revocation on every read and write; extended `tests/support/api-credentials-proof.ts` — proveScopedDealFields; push Verify core-6 in shards (batch-9).
+**Gap.** None.
 
 ### Mobile, portability and operation
 
