@@ -32,7 +32,10 @@
 .operator-mark { flex: none; border-radius: 9px; text-decoration: none; }
 .operator-mark .ob-brand-name { font-size: 25px; }
 .operator-mark .ob-mark { width: 34px; }
-.operator-nav { display: flex; flex-wrap: nowrap; align-items: center; gap: 4px clamp(14px, 1.6vw, 26px); }
+/* The menu fits one row from 901 px (Settings from 1,101 px); should a longer name not fit, it wraps, never scrolls sideways. */
+.operator-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px clamp(14px, 1.6vw, 26px); }
+.operator-header[data-menu="settings"] { gap: clamp(16px, 2vw, 36px); }
+.operator-header[data-menu="settings"] .operator-nav { gap: 4px clamp(12px, 1.3vw, 26px); }
 .operator-nav a, .operator-header__end > a { position: relative; padding: 10px 0; color: var(--ob-body); font-size: 15.5px; font-weight: 500; text-decoration: none; white-space: nowrap; transition: color 0.18s; }
 .operator-nav a::after, .operator-header__end > a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 3px; height: 2px; border-radius: 2px; background: currentColor; opacity: 0; transform: scaleX(0.4); transition: opacity 0.2s, transform 0.2s var(--ob-ease); }
 .operator-nav a:hover, .operator-header__end > a:hover { color: var(--ob-ink); }
@@ -236,8 +239,6 @@
 .settings-layout fieldset label { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px 0 12px; border: var(--app-field); border-radius: 999px; font-weight: 600; }
 .settings-layout fieldset label:has(input:checked) { border-color: var(--ob-ink); }
 .settings-layout input[type=checkbox] { margin: 0; }
-.settings-layout .workbench-summary button:not(.operator-button) { min-height: 0; padding: 0; border: 0; border-radius: 0; background: none; font-size: 14px; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
-.settings-layout .workbench-summary .operator-button { text-decoration: none; }
 .settings-layout ~ p { margin: 24px 0 14px; }
 
 .records-workspace .operator-queue-card > button { justify-content: flex-start; min-height: 0; border: 0; border-radius: inherit; background: none; font-weight: inherit; }
@@ -277,6 +278,13 @@
   .notification-icon { width: 28px; height: 28px; }
 }
 @media (max-width: 640px) {
+  /* Phone targets of 44 px on this round's pages and the lockup (TMPL-001). */
+  .operator-mark { display: inline-flex; align-items: center; min-height: 44px; }
+  .ob-app :is(.now-queue, .tasks-page, .today, .review-stack, .settings-stack, .message-library-layout) :is(button, .orbit-button) { min-height: 44px; }
+  .ob-app :is(.settings-stack, .message-library-layout) summary { display: list-item; padding-block: 10px; line-height: 24px; }
+  .ob-app .settings-stack label:has(> input:is([type="checkbox"], [type="radio"])) { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+  .settings-layout fieldset label { min-height: 44px; }
+  .ob-app .capture-ways-list li > a { display: inline-flex; align-items: center; min-height: 44px; }
   .operator-main { padding-top: 24px; padding-bottom: 48px; }
   .operator-titlebar { display: grid; align-items: start; gap: 14px; padding-bottom: 20px; }
   .operator-titlebar h1 { font-size: clamp(34px, 10vw, 44px); }

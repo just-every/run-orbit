@@ -44,7 +44,7 @@ export function WorkspaceArchiveTools(){
  },[]);
  return <section className="workspace-archive" aria-label="Workspace archives">
   {returnMessage&&<p role="status">{returnMessage}</p>}
-  <header><p className="operator-kicker">Workspace data</p><h2>Export and restore</h2><p>Keep a complete archive of this workspace, or restore one into an empty customer database.</p></header>
+  <header><h2>Export and restore</h2><p>Your whole workspace as one private archive; restore only into an empty installation.</p></header>
   <section className="workspace-archive__panel" aria-labelledby="archive-export-title"><h3 id="archive-export-title">Export archive</h3><p>Prepare an immutable snapshot, then download its streamed JSON archive. If you leave, progress is saved and preparation resumes when you return to this panel.</p>
    <button disabled={!!busy} onClick={()=>void run('export',async()=>setUnfinishedExports(await unfinishedTransfers('exports')))}>Find unfinished exports</button>
    {unfinishedExports.map(status=><p key={status.id}><button disabled={!!busy} onClick={()=>updateExport(status)}>Use export {status.id}</button> — {status.state==='ready'?'Finished — ready to download':status.state}</p>)}

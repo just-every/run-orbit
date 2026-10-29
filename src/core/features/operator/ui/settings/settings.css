@@ -6,3 +6,36 @@
 .settings-card h2 { margin: 0; font-size: 20px; font-weight: 720; letter-spacing: -0.01em; line-height: 1.2; }
 .settings-card__line { margin: 0; color: var(--ob-body); font-size: 15.5px; line-height: 1.5; }
 @media (max-width: 700px) { .settings-card { padding: 20px; } .ob-app .settings-card__head .orbit-button { min-height: 44px; } }
+/* Rows inside a card: the name first, one quiet line, the row's action on hover and focus (H16). */
+.settings-rows { display: grid; margin: 0; padding: 0; list-style: none; }
+.settings-rows > li { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; padding: 8px 0; border-top: 1.5px solid var(--ob-line); }
+.settings-rows > li:first-child { border-top: 0; }
+.settings-rows > li > div { min-width: 0; }
+/* Only a row's own name and line; a setup opened under a row keeps its own text styles. */
+:is(.settings-rows > li, .settings-rows > li > div, .integration-row > div) > strong { font-size: 16.5px; font-weight: 650; overflow-wrap: anywhere; }
+:is(.settings-rows > li > div, .integration-row > div) > p { margin: 2px 0 0; color: var(--ob-muted); font-size: 14.5px; overflow-wrap: anywhere; }
+.ob-app .settings-row__action { flex: none; min-height: 40px; }
+@media (hover: hover) and (min-width: 701px) { .settings-rows > li .settings-row__action { opacity: 0; } .settings-rows > li:is(:hover, :focus-within) .settings-row__action { opacity: 1; } }
+.settings-inline-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto; align-items: end; gap: 14px; padding-top: 14px; border-top: 1.5px solid var(--ob-line); }
+.settings-inline-form label { display: grid; gap: 7px; margin: 0; }
+/* A fold keeps its disclosure marker and is a 44 px target. */
+.settings-card details > summary { display: list-item; padding-block: 10px; line-height: 24px; }
+.settings-card > p:not(.settings-card__line) { margin: 0; }
+@media (max-width: 700px) {
+  .settings-inline-form { grid-template-columns: minmax(0, 1fr); }
+  .settings-rows > li { flex-wrap: wrap; }
+  .ob-app .settings-row__action { min-height: 44px; }
+}
+.settings-inline-form--one { grid-template-columns: minmax(0, 1fr) auto; }
+/* Integrations: a row per product; its setup opens in place under the row, named by the row. */
+.settings-rows.integration-rows > li { display: grid; grid-template-columns: minmax(0, 1fr); justify-content: stretch; gap: 4px; }
+.integration-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-width: 0; }
+.integration-row > div { min-width: 0; }
+.integration-panel { min-width: 0; padding: 4px 0 16px; }
+.integration-panel .integration-setup { margin: 0; padding: 0; }
+.integration-panel .integration-setup > h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 700px) { .ob-app .integration-row__action { min-height: 44px; } }
+.settings-card__actions { display: grid; gap: 12px; }
+.sender-setup { display: grid; gap: 12px; min-width: 0; }
+.sender-setup h3 { margin: 4px 0 0; font-size: 17px; font-weight: 650; }
+.sender-setup details > :not(summary) { margin-top: 12px; }

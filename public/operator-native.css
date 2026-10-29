@@ -9,7 +9,9 @@
 .operator-mark{flex:none;border-radius:9px;text-decoration:none}
 .ob-brand{display:inline-flex;align-items:center;gap:8px;font:700 25px/1 var(--rer-font-heading);letter-spacing:-.03em}
 .ob-mark{width:34px;height:34px}
-.operator-nav{display:flex;flex-wrap:nowrap;align-items:center;gap:4px clamp(14px,1.6vw,26px)}
+.operator-nav{display:flex;flex-wrap:wrap;align-items:center;gap:4px clamp(14px,1.6vw,26px)}
+.operator-header[data-menu=settings]{gap:clamp(16px,2vw,36px)}
+.operator-header[data-menu=settings] .operator-nav{gap:4px clamp(12px,1.3vw,26px)}
 .operator-nav a{position:relative;padding:10px 0;color:var(--rer-muted);font-size:15.5px;font-weight:500;text-decoration:none;white-space:nowrap}
 .operator-nav a::after{content:"";position:absolute;left:0;right:0;bottom:3px;height:2px;border-radius:2px;background:currentColor;opacity:0}
 .operator-nav a:hover{color:var(--rer-text)}
@@ -58,7 +60,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .operator-menu-sheet__label{margin:8px 14px 2px;color:#6b6d76;font-size:14px;font-weight:500}
 .operator-menu-sheet hr{height:1.5px;margin:6px 8px;border:0;background:#e4ded3}
 .operator-menu-sheet form{margin:0;padding:0;border:0;border-radius:0;background:none}}
-@media(max-width:640px){.operator-eyebrow a{display:inline-flex;align-items:center;min-height:44px}.operator-main{padding-top:24px;padding-bottom:48px}.operator-titlebar{display:grid;align-items:start;gap:14px;padding-bottom:20px}.operator-titlebar h1{font-size:clamp(34px,10vw,44px)}}
+@media(max-width:640px){.operator-mark{display:inline-flex;align-items:center;min-height:44px}.operator-eyebrow a{display:inline-flex;align-items:center;min-height:44px}.operator-main{padding-top:24px;padding-bottom:48px}.operator-titlebar{display:grid;align-items:start;gap:14px;padding-bottom:20px}.operator-titlebar h1{font-size:clamp(34px,10vw,44px)}}
 
 /* Base #247: single-choice chevrons; list boxes keep native controls. */
 select:not([multiple],[size]:not([size="1"])) {
