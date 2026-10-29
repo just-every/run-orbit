@@ -8,12 +8,12 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 9 | 139 | 30 | 178 |
+| Core | 10 | 138 | 30 | 178 |
 | Agent surface | 0 | 0 | 26 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 9 | 139 | 56 | 204 |
+| Full target | 10 | 138 | 56 | 204 |
 
-Judged from the code and tests at commit `03963b1a17ecd6d0c2cc1eec9a1d6285fd9240b5` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
+Judged from the code and tests at commit `dea4d7a537cfe5634aa142ec181af3bc5dce6831` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
 ## Core
 
@@ -290,15 +290,15 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 
 #### SIGNAL-006 — Evidence confidence
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** Every signal carries one confidence: observed, when the customer acted deliberately (form submission, reply, booking, meeting, download, chat), or inferred, when a tool reported activity (email open, page view). An inferred signal alone cannot create an opportunity, produce a high band, or satisfy ACTION-001's evidence requirement.
 
 **Acceptance.**
 1. Compare open/page-view inference with observed reply/booking evidence; inferred activity alone cannot create a deal, high band or evidence-backed action.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: inferred activity cannot create any new deal. Asserted: observed reply/booking classification; inferred activity cannot raise high band; inferred activity creates no current recommendation.
+**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`: SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; inferred evidence cannot create a deal, high band or action. Signed ingestion and authenticated Records prove observed classification, accepted inferred contact history, unchanged complete opportunity identities after delivery and replay, the inferred band ceiling and no current recommendation.
+**Gap.** None.
 
 #### SIGNAL-007 — No tracking
 
