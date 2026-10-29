@@ -37,7 +37,10 @@ function sourceRequests(db:D1Database,cookie:string){
  return {request,signed};
 }
 
-test('API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions',async()=>{
+test('API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions',async context=>{
+ // Keep session activity time fixed while comparing the exact pre-restore metadata.
+ // The journey still authenticates every request and restores the real database.
+ context.mock.timers.enable({apis:['Date'],now:Date.now()});
  const source=await launchFixture(),target=await launchFixture();
  const request=async(f:Awaited<ReturnType<typeof launchFixture>>,path:string,method='GET',body?:unknown,headers:Record<string,string>={})=>{const response=await f.request(path,method,body,headers);assert.ok(response.ok,`${method} ${path}: ${response.status} ${(await response.clone().text()).slice(0,300)}`);return response.json() as Promise<any>;};
  try{
@@ -182,5 +185,5 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
  assert.ok(await target.db.prepare('SELECT removed_at FROM signal_sources WHERE id=?').bind(removedSource.id).first('removed_at'),'Erasure never reconnects a removed source');
  const erasedHandoff=await target.request(`records/contact/${trialOwned.contactId}`,'DELETE',{confirmed:true},{Cookie:cookie.split(';')[0]!});assert.equal(erasedHandoff.status,200);
  assert.equal(await target.db.prepare('SELECT * FROM handoff_tasks').first(),null,'erasing a detached customer still removes the archived handoff');
- }finally{await source.dispose();await target.dispose();}
+ }finally{context.mock.timers.reset();await source.dispose();await target.dispose();}
 });

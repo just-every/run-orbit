@@ -8703,7 +8703,7 @@
       "executable": false
     },
     "tests/core/onboarding-archive.test.ts": {
-      "sha256": "1d8bddeb0deff95af21373eaac71d73e6c2aa12d462b35bbfde7bfc46f3748f7",
+      "sha256": "a2bb909890beb044dfb3f3d72d21d39e39b3b57af80ec803c7e782815598a1b3",
       "executable": false
     },
     "tests/core/outbound-boundaries.test.ts": {
