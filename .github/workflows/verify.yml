@@ -98,14 +98,6 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - uses: actions/download-artifact@v4
-        with:
-          name: orbit-shared-build
-          path: ${{ runner.temp }}/orbit-build
-      - name: Restore the shared application build
-        run: |
-          tar -xf "$RUNNER_TEMP/orbit-build/orbit-build.tar"
-          node scripts/verification-build.mjs check
       - run: pnpm run source:check
       - run: pnpm exec rer check --profile first-party
       - run: node scripts/contract-docs.mjs check
@@ -346,6 +338,14 @@ jobs:
             fi
           done
       - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          name: orbit-shared-build
+          path: ${{ runner.temp }}/orbit-build
+      - name: Restore the shared application build
+        run: |
+          tar -xf "$RUNNER_TEMP/orbit-build/orbit-build.tar"
+          node scripts/verification-build.mjs check
       - name: Cache fallback apt archives
         uses: actions/cache@v4
         with:
