@@ -34,7 +34,8 @@ test('the emitted installation protects seller sessions and consumes authenticat
   const buyer=(await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(opportunity.id).first<{contact_id:string}>())!.contact_id;
   // The sent deal moves to NEXT; retain real pending work for the NOW document
   // and client-transport authority checks before processing delivery receipts.
-  const pending=await new WorkbenchRepository(db).createOpportunity({title:'Customer awaiting review',companyName:'Pending customer',contactName:'Pending buyer',email:'pending-buyer@orbit.test',stageId:stage,valueCents:0},actor);
+  const pendingInput={title:'Customer awaiting review',companyName:'Pending customer',contactName:'Pending buyer',email:'pending-buyer@orbit.test',stageId:stage,valueCents:0};
+  const pending={...await new WorkbenchRepository(db).createOpportunity(pendingInput,actor),title:pendingInput.title};
   const outreach=new OutreachRepository(db),approval=new ApprovalRepository(db);
   const draft=await outreach.createDraft(opportunity.id,{contactId:buyer,subject:'Runtime subject',body:'Runtime body'},actor);
   const message=await approval.approve(draft.id,1,actor,{quietHoursConfirmation:(await approval.preview(draft.id)).localTime});
