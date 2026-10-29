@@ -2387,13 +2387,13 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 ## Status
 
-Judged from the code and tests at commit `a68464e062b20c530e660fa59818fe6cfe075c66` (29 October 2026). RECORD-004 is qualified here; other clause judgments retain commit `03963b1a17ecd6d0c2cc1eec9a1d6285fd9240b5`.
+Judged from the code and tests at commit `7cfcb6d7dc70c8d6b7a255810c75fb2ecfa67fcb` (29 October 2026).
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 7 | 72 | 0 | 79 |
+| Published | 8 | 71 | 0 | 79 |
 | Target and push further | 3 | 67 | 55 | 125 |
-| All | 10 | 139 | 55 | 204 |
+| All | 11 | 138 | 55 | 204 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -2412,7 +2412,7 @@ Judged from the code and tests at commit `a68464e062b20c530e660fa59818fe6cfe075c
 | `RECORD-009` | Duplicate candidates | published | partial | `src/core/features/records/import-merge.ts`; `tests/core/records-merge-review.test.ts` | Unasserted in the carried evidence: keyless candidate listed. Asserted: same-name contacts across companies listed; same-name companies listed; review changes no records; chosen merge retires exactly one record. |
 | `RECORD-010` | Manual entries | published | partial | `src/core/features/records/manual.ts`; `tests/core/today-brief.test.ts` | Unasserted in the carried evidence: note create/edit/delete; call create/edit/delete; meeting create/edit/delete; occurred time retained; duration retained; attendees retained; score unchanged; no external message. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |
 | `RECORD-011` | Related records | published | partial | `src/core/features/records/repository.ts`; `src/core/features/operator/ui/records-page.tsx`; `tests/core/records-search.test.ts`; `tests/evidence/contract/RECORD-011/` | Unasserted in the carried evidence: company linked deals; contact linked deals; owner and stage shown; open-value total reconciles; reassociation reflected on next load. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |
-| `RECORD-012` | Contactability | published | partial | `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts`; `tests/core/outreach-limits.test.ts` | Unasserted in the carried evidence: manual contact starts contactable. Asserted: manual stop stays stopped; unsubscribe stop; permanent-bounce stop; immediate send refuses stopped contact; scheduled work cancelled; explicit current-state clear read back; normalized recreation starts do-not-contact. |
+| `RECORD-012` | Contactability | published | done | `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts` — RECORD-012 DATA-002 manual contacts start contactable; suppression survives ordinary edits, erasure, normalized recreation, and workbench creation; only reviewed native clear permits future review; RECORD-012 concurrent stop dominates stale edit; merge preserves both recipients and clear never resurrects a schedule; `tests/core/outreach-limits.test.ts` — OUT-007 OUT-009 OUT-012 a signed provider unsubscribe stops the recipient and schedule within sixty seconds and returns the opportunity to NOW once; `tests/core/signals-outreach.test.ts` — OUT-017 record mail preserves exact approval, sender promises, custody and OUT-004 header-only reply matching; OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not; OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do | |
 | `RECORD-013` | Deletion | published | partial | `src/core/features/records/data.ts`; `tests/core/records-complete.test.ts`; `tests/core/contact-erasure.test.ts` | Unasserted in the carried evidence: deletion confirmation enforced; company deletion detaches contacts; company deletion detaches opportunities. Asserted: deal deletion preserves sent history; contact deletion erases mail and linked signals. |
 | `SIGNAL-001` | Ingestion | published | partial | `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: linked timeline entry; ingestion within ten seconds. Asserted: one stored signal; attributed configured source attribution.. |
 | `SIGNAL-002` | Signal types | published | partial | `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: every standard type stored/read back; source-namespaced type stored/read back; unknown type leaves no writes. Asserted: unknown type refused. |
