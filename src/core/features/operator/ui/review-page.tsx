@@ -1,21 +1,35 @@
 import './records.css';
 import './capture-setup.css';
+import './review-page.css';
 import {useCallback} from 'react';
 import {CaptureProposals} from './capture-proposals';
 import {ScrollToHash} from './hash-target';
-import {OperatorShell} from './operator-shell';
+import {HeldCalls} from './held-calls';
+import {OperatorShell, OperatorState} from './operator-shell';
+import {readReviewSummary} from './review-line';
 import {UnlinkedReplies} from './unlinked-replies';
-import {UnlinkedReview,type Unlinked} from './unlinked-review';
+import {UnlinkedReview, type Unlinked} from './unlinked-review';
 import {useOperatorResource} from './use-operator-resource';
 
-/** What waits for a person: changes Orbit found in captured mail and meetings, events and replies without a record. */
-export function ReviewPage(){
- const load=useCallback(async()=>{const response=await fetch('/api/v1/sources/unlinked');if(!response.ok)throw new Error('Events without a record could not load.');return (await response.json() as {signals:Unlinked[]}).signals;},[]);
- const unlinked=useOperatorResource('review-unlinked',load);
+/** Review: what waits for a person, one card per kind that has something waiting, reached from NOW and the Brief. */
+export function ReviewPage() {
+ const summary = useOperatorResource('review-summary', useCallback(readReviewSummary, []));
+ const s = summary.data, nothing = s && !s.proposals && !s.events && !s.replies && !s.calls;
  return <OperatorShell title="Review">
-  <CaptureProposals standalone/>
-  <UnlinkedReview signals={unlinked.data??undefined} onChange={unlinked.reload}/>
-  <UnlinkedReplies/>
-  <ScrollToHash ready={Boolean(unlinked.data)}/>
+  <div className="review-stack">
+   {summary.error ? <OperatorState kind="error">{summary.error.message}</OperatorState> : null}
+   {s?.proposals ? <div className="operator-surface review-card"><CaptureProposals onChanged={summary.reload}/></div> : null}
+   {s?.events ? <UnlinkedEvents onChange={summary.reload}/> : null}
+   {s?.replies ? <UnlinkedReplies onResolved={summary.reload}/> : null}
+   {s?.calls ? <HeldCalls onChanged={summary.reload}/> : null}
+   {nothing ? <p className="review-empty">Nothing waits for review.</p> : null}
+  </div>
+  <ScrollToHash ready={Boolean(s)}/>
  </OperatorShell>;
+}
+
+function UnlinkedEvents({onChange}: {onChange: () => void}) {
+ const load = useCallback(async () => {const response = await fetch('/api/v1/sources/unlinked'); if (!response.ok) throw new Error('Events without a record could not load.'); return (await response.json() as {signals: Unlinked[]}).signals;}, []);
+ const events = useOperatorResource('review-events', load);
+ return events.error ? <OperatorState kind="error">{events.error.message}</OperatorState> : <UnlinkedReview signals={events.data ?? undefined} onChange={() => {events.reload(); onChange();}}/>;
 }
