@@ -3715,7 +3715,7 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "cfd9cd018a19c1e334980dd44c12cbf402314ac37ab079f85941bb0fd9c39912",
+      "sha256": "616f0ba4d6e97e82de0fc76b0b611feb0968ac075ecfd1499c5a89d87b1965c5",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
@@ -3807,7 +3807,7 @@
       "executable": false
     },
     "RELEASE.json": {
-      "sha256": "9968568f8f133a3cdc3343ffe49b7ae81c3b2e5fb413b68624ea4f6f08d8e5e4",
+      "sha256": "f3ea97ea216bdc2d11eb30037aee6ee2c9c5448dcb1f0c6888234a81f7d03ab9",
       "executable": false
     },
     "rer-project.json": {
@@ -4167,7 +4167,7 @@
       "executable": false
     },
     "seed.json": {
-      "sha256": "478d84ed8074d5a737f64d67c30f66f567b8ca40a54c36e327699ca934c0cd52",
+      "sha256": "9d5d472aec46c47a4a68531346f5cc50d6eb46d5568191990083811ca0b1f28e",
       "executable": false
     },
     "SIGNALS-AND-OUTREACH.md": {
