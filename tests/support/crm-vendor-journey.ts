@@ -1,3 +1,4 @@
+import {runOrbitTimers} from '../../src/core/features/outreach/timing-repository';
 import assert from 'node:assert/strict';
 import type {launchFixture} from './launch-fixture';
 import {crmFixture} from './crm-fixtures';
@@ -19,6 +20,8 @@ export async function migrateVendorExport(f:Awaited<ReturnType<typeof launchFixt
  await finish(f,dry);assert.equal((await f.db.prepare('SELECT count(*) n FROM contacts').first<any>())!.n,before+120);
  const namespace=`orbit:${vendor}:${source.account}`,person=nativeId(namespace,'contact','person-0'),deal=nativeId(namespace,'deal','deal-1');
  assert.equal((await f.records.detail('contact',person)).record.contactability,'do_not_contact');const opportunity=(await f.records.detail('opportunity',deal));assert.equal(opportunity.contacts.length,2);assert.equal(opportunity.record.value_cents,125025);assert.equal(opportunity.record.owner_id,null);assert.equal(opportunity.record.queue_state,'none');assert.equal(opportunity.timeline.length,1);assert.match(opportunity.timeline[0].payload_json,/not executable/);
+ await runOrbitTimers(f.db);
+ assert.deepEqual((await f.records.detail('opportunity',deal)).record,opportunity.record,'Historical notes do not make a newly imported deal stale or prevent unchanged import undo');
  const replay=await json(await f.request('imports/dry-run','POST',source));await finish(f,replay);assert.equal((await f.db.prepare('SELECT count(*) n FROM contacts').first<any>())!.n,before+120);assert.equal((await f.records.detail('opportunity',deal)).timeline.length,1);
  await finish(f,replay,'undo');assert.ok(await f.db.prepare('SELECT id FROM contacts WHERE id=?').bind(person).first(),'Undo of a reused import cannot steal the first job effects');
  assert.equal((await f.records.detail('contact',restorable.contactId)).record.contactability,'do_not_contact');
