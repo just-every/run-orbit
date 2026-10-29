@@ -12,8 +12,7 @@ export function LibraryPage(){
  function choose(entry:LibraryEntry|null){setSelected(entry);setForm(entry?{kind:entry.kind,name:entry.name,subject:entry.subject,body:entry.body,visibility:entry.visibility}:blank);setNotice('');setError('');setDeleting(false);}
  async function save(){setBusy(true);setError('');try{const entry=await libraryRequest<LibraryEntry>(selected?`/${selected.id}`:'',selected?'PUT':'POST',{...form,...(selected?{revision:selected.revision}:{})});setSelected(entry);setNotice(`Saved ${entry.name}, revision ${entry.revision}. Existing approved messages keep their rendered content.`);resource.reload();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  async function remove(){if(!selected)return;setBusy(true);setError('');try{await libraryRequest(`/${selected.id}`,'DELETE',{revision:selected.revision});choose(null);setNotice('Entry deleted. Existing approved messages keep their rendered content.');resource.reload();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
- return <OperatorShell eyebrow="Reusable sales content" title="Message library" action={<a className="operator-back-link" href="/app">← NOW</a>}>
-  <p className="library-intro">Create a message once, then review its rendered content for each customer. Private content is yours; shared content is managed by the installation owner.</p>
+ return <OperatorShell eyebrow="Settings" title="Message library">
   {resource.loading&&<OperatorState>Loading library…</OperatorState>}{resource.error&&<OperatorState kind="error">{resource.error.message}</OperatorState>}
   {state&&<div className="message-library-layout">
    <section className="operator-surface library-list" aria-label="Saved message content">

@@ -11,7 +11,7 @@ export function createForwardRoutes(db:D1Database,config:{security?:SourceSecuri
  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),mailbox=mailboxConfig(config.address);
  app.onError((error,c)=>{
   const message=error instanceof CaptureError?error.message:'The Orbit address could not be created.';
-  return (c.req.header('accept')??'').includes('text/html')?c.redirect(`/app/capture/connect/address?error=${encodeURIComponent(message)}`,303):c.json({error:message},error instanceof CaptureError?error.status:500);
+  return (c.req.header('accept')??'').includes('text/html')?c.redirect(`/app/settings/capture/connect/address?error=${encodeURIComponent(message)}`,303):c.json({error:message},error instanceof CaptureError?error.status:500);
  });
  app.get('/',async c=>c.json({...await forwardStatus(db,config.security,mailbox),local:Boolean(config.local)}));
  app.post('/',async c=>{
@@ -20,7 +20,7 @@ export function createForwardRoutes(db:D1Database,config:{security?:SourceSecuri
   if(!mailbox)throw new CaptureError(503,'This Orbit has no mail address yet. Set CAPTURE_MAIL_ADDRESS and deploy again.');
   const operator=c.get('operator'),access=new AccessService(db),actor=await access.authorizeLegacy(operator,crypto.randomUUID(),'legacy.write');
   const address=await createForwardAddress(db,config.security,mailbox,operator.operatorId,access.fence(actor).map(statement=>db.prepare(statement.sql).bind(...statement.bindings)));
-  return form?c.redirect('/app/capture/connect/address?created=1',303):c.json({address},201);
+  return form?c.redirect('/app/settings/capture/connect/address?created=1',303):c.json({address},201);
  });
  // On this computer no mail server can reach Orbit. A saved message goes through
  // the same receiving code as delivered mail, addressed to this installation's address.

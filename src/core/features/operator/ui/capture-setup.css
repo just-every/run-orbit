@@ -12,7 +12,7 @@
 .capture-start__icon { color: var(--ob-ink); }
 .capture-start__icon svg { width: 60px; height: 60px; }
 .capture-start__main { min-width: 0; }
-.capture-start h2 { margin: 0; font-size: clamp(25px, 2.4vw, 30px); font-weight: 720; letter-spacing: -.015em; }
+.capture-start h3 { margin: 0; font-size: 22px; font-weight: 720; letter-spacing: -.015em; }
 .capture-start__main > p { max-width: 44ch; margin: 10px 0 24px; color: var(--ob-body); font-size: 17px; line-height: 1.55; }
 .ob-app .capture-start__button { min-height: 52px; padding: 12px 28px; font-size: 17px; }
 .capture-start__hints { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 28px 0 0; padding: 24px 0 0; border-top: 1px solid var(--ob-line); list-style: none; }
@@ -21,7 +21,8 @@
 
 /* Quieter alternatives: icon, name, one sentence, one text link. */
 .capture-ways-list { max-width: 812px; margin-top: 52px; }
-.capture-ways-list h2 { margin: 0 0 8px; color: var(--ob-body); font-size: 18px; font-weight: 650; }
+.capture-card .capture-ways-list > h3 { margin: 0 0 8px; color: var(--ob-body); font-size: 17px; font-weight: 650; }
+.capture-card .capture-ways-list { margin-top: 20px; }
 .capture-ways-list ul { margin: 0; padding: 0; list-style: none; }
 .capture-ways-list li { display: grid; grid-template-columns: 40px minmax(150px, 200px) minmax(0, 1fr) auto; align-items: center; gap: 4px 24px; padding: 16px 0; border-bottom: 1px solid var(--ob-line); }
 .capture-ways-list__icon { display: inline-grid; width: 30px; height: 30px; place-items: center; color: var(--ob-ink); }
@@ -32,13 +33,8 @@
 .capture-ways-list a:hover { text-decoration: underline; text-underline-offset: 4px; }
 
 /* Daily use: review lives on its own page; this banner leads there. */
-.capture-review-banner { display: flex; max-width: 960px; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 28px; padding: 20px 24px; border: 1.5px solid var(--ob-ink); border-radius: var(--ob-radius); background: var(--ob-tangerine-soft); color: var(--ob-ink); text-decoration: none; }
-.capture-review-banner--quiet { background: var(--ob-card); border-color: var(--ob-line-strong); }
-.capture-review-banner strong { display: block; font-size: 19px; }
-.capture-review-banner small { display: block; margin-top: 3px; color: var(--ob-body); font-size: 14px; }
-.capture-review-banner__go { flex: none; font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
 .capture-sources-section { max-width: 960px; }
-.capture-sources-section > h2 { margin: 0; font-size: 22px; font-weight: 720; }
+.capture-sources-section > h3 { margin: 0; font-size: 17px; font-weight: 650; }
 
 /* Setup panels (address, calendar link, files). */
 .capture-panel { max-width: 860px; margin-bottom: 20px; padding: clamp(20px, 3vw, 32px); border: 1px solid var(--ob-line-strong); border-radius: var(--ob-radius); background: var(--ob-card); }
@@ -136,7 +132,6 @@
   .capture-start__hints { grid-template-columns: minmax(0, 1fr); }
   .capture-ways-list li { grid-template-columns: 36px minmax(0, 1fr) auto; }
   .capture-ways-list li p { grid-column: 2 / -1; grid-row: 2; }
-  .capture-review-banner { flex-direction: column; align-items: flex-start; }
   .capture-guide__body > ol { padding-left: 20px; font-size: 15.5px; }
   .capture-guide__actions .orbit-button { flex: 1 1 auto; }
   .ob-app .capture-start__button { width: 100%; }

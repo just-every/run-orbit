@@ -1,0 +1,20 @@
+/* The phone menu: Menu (the outline pill, 44 px) opens a sheet of 48 px rows under the header over the dimmed page.
+   The current row is a paper-deep rounded highlight inside the sheet, never a bar on its edge (H5, U2). */
+.operator-menu-toggle { display: none; }
+.ob-app .operator-menu-toggle { min-height: 44px; padding: 8px 18px; font-size: 15px; font-weight: 600; }
+.ob-app .operator-menu-toggle[aria-expanded="true"] { background: var(--ob-ink); color: var(--ob-paper); }
+.operator-menu-sheet[hidden], .operator-menu-scrim { display: none; }
+@media (max-width: 900px) {
+  .operator-menu-toggle { display: inline-flex; margin-left: auto; }
+  .operator-header:has(.operator-menu-sheet:not([hidden])) { z-index: 30; }
+  .operator-menu-scrim { position: fixed; inset: 0; z-index: 20; display: block; background: rgb(22 23 29 / 36%); }
+  .operator-menu-sheet:not([hidden]) { position: absolute; top: 100%; left: 0; right: 0; z-index: 30; display: grid; gap: 2px; padding: 10px 12px 14px; border-bottom: 1.5px solid var(--ob-line); background: var(--ob-paper); box-shadow: 0 26px 40px -24px rgb(22 23 29 / 55%); }
+  .ob-app .operator-menu-sheet :is(a, button) { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 48px; margin: 0; padding: 0 14px; border: 0; border-radius: 12px; background: none; box-shadow: none; color: var(--ob-ink); font: inherit; font-size: 17px; font-weight: 550; text-align: left; text-decoration: none; transform: none; }
+  .ob-app .operator-menu-sheet :is(a, button):hover { background: rgba(22, 23, 29, 0.05); }
+  .ob-app .operator-menu-sheet [aria-current="page"] { background: var(--ob-paper-deep); font-weight: 700; }
+  .ob-app .operator-menu-sheet .operator-menu-sheet__back { justify-content: flex-start; gap: 0.3em; font-weight: 600; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 5px; }
+  .operator-menu-sheet__label { margin: 8px 14px 2px; color: var(--ob-muted); font-size: 14px; font-weight: 500; }
+  .operator-menu-sheet .operator-nav__count { margin-left: auto; }
+  .operator-menu-sheet hr { height: 1.5px; margin: 6px 8px; border: 0; background: var(--ob-line); }
+  .operator-menu-sheet form { margin: 0; }
+}

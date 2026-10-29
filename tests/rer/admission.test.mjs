@@ -93,6 +93,9 @@ test('admission uses native owner authority, bounds editor framing and preserves
     const revoked = await owner.evaluate(async () => (await fetch('/auth/signout',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status);
     assert.equal(revoked,204);
     await owner.locator('[data-rer-editor]').waitFor({state:'detached',timeout:20_000});
+    // At phone width Sign out sits in the Menu sheet.
+    const menu = owner.getByRole('button',{name:'Menu',exact:true});
+    if (await menu.isVisible()) await menu.click();
     await owner.getByRole('button',{name:'Sign out',exact:true}).click();
     assert.equal(await owner.locator('[data-rer-editor]').count(),0);
     // Base's sign-in page allows no in-page fetch (default-src 'none'), so ask with this browser's own cookies.

@@ -37,7 +37,7 @@ export function createCaptureRoutes(db:D1Database,providers:ProviderConfig={}){
   // A form posted before hydration gets the Capture page back with its result; scripts get JSON.
   const page=(c.req.header('accept')??'').includes('text/html');
   try{return await importFiles(c,page);}
-  catch(error){if(!page||!(error instanceof CaptureError))throw error;return c.redirect(`/app/capture/connect/files?error=${encodeURIComponent(error.message)}`,303);}
+  catch(error){if(!page||!(error instanceof CaptureError))throw error;return c.redirect(`/app/settings/capture/connect/files?error=${encodeURIComponent(error.message)}`,303);}
  });
  async function importFiles(c:Context<{Variables:{operator:AuthenticatedOperator}}>,page:boolean){
   const form=await c.req.formData().catch(()=>null);if(!form)throw new CaptureError(400,'Add .eml, mbox or .ics files.');
@@ -48,7 +48,7 @@ export function createCaptureRoutes(db:D1Database,providers:ProviderConfig={}){
   if(source.state==='disconnected')throw new CaptureError(409,'File capture is disconnected.');
   const pulled=await fileAdapter(items).pull(null,null),summary=await captureItems(db,source,pulled.items,{includeUnknown});
   await db.batch([audit(db,operator,'capture.imported','capture_source',source.id,{files:files.length,includeUnknown,...summary})]);
-  return page?c.redirect(`/app/capture/connect/files?result=${encodeURIComponent(JSON.stringify(summary))}`,303):c.json({summary},201);
+  return page?c.redirect(`/app/settings/capture/connect/files?result=${encodeURIComponent(JSON.stringify(summary))}`,303):c.json({summary},201);
  }
  app.route('/',createProviderRoutes(db,providers));
  app.route('/forward',createForwardRoutes(db,{security:providers.security,address:providers.mailAddress,local:providers.local}));
@@ -60,7 +60,7 @@ export function createCaptureRoutes(db:D1Database,providers:ProviderConfig={}){
   if(!confirmed)throw new CaptureError(400,'Confirm disconnecting this source.');
   const operator=c.get('operator'),access=new AccessService(db),actor=await access.authorizeLegacy(operator,crypto.randomUUID(),'legacy.write');
   const result=await disconnectSource(db,c.req.param('id'),operator.operatorId,access.fence(actor).map(statement=>db.prepare(statement.sql).bind(...statement.bindings)));
-  return form?c.redirect('/app/capture',303):c.json(result);
+  return form?c.redirect('/app/settings/capture',303):c.json(result);
  });
  app.get('/proposals',async c=>{
   const query=z.object({status:z.enum(['pending','accepted','declined']).default('pending'),recordType:z.enum(['contact','company','opportunity']).optional(),recordId:recordId.optional()}).strict().safeParse(c.req.query());
