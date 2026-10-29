@@ -8759,7 +8759,7 @@
       "executable": false
     },
     "tests/delegation-browser/calling-journey.mjs": {
-      "sha256": "45cb007fb6c4c53d4777d487611b5f517d640d5bef794bfd29af442917ac61cb",
+      "sha256": "6be826c901696973aa6588b1b3c432161df8321b0893861265f55d64d926f09f",
       "executable": false
     },
     "tests/delegation-browser/capture-status-fixture.ts": {
