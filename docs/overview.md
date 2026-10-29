@@ -5,11 +5,18 @@ Orbit is a CRM that keeps every deal moving. When a customer replies, Orbit puts
 ## What you work with
 
 - **NOW** is your list of deals that need you, highest score first. Each one shows why it is there: a customer reply, a delivery problem, or a score that just moved up a band.
+- **Brief** shows what changed in your customer records since you last looked, account by account, and **Tasks** holds your calls, meetings and follow-ups by when they are due.
 - **Each deal's page** shows its stage, owner, value and score, the customer activity behind the score, the suggested next action, and every message you have sent.
 - **Customer records** hold your contacts, companies and deals, with your own fields. You can bring records in from CSV files, review the mappings and check a dry run before applying the import.
 - **Your contact form** is a simple landing page you write and publish from Orbit. Each enquiry becomes a contact with the enquiry on its timeline.
 - **Collaborators** sign in with their own email address. You choose what each one can see and change.
 - **Reports** count what is in your records, and **Notifications** tell you when a deal needs you or a message could not be delivered.
+
+Set-up lives under **Settings**: Workspace, Team, Pipeline, Capture, Mail, Forms, Integrations and Data, each a page of its own.
+
+## What Orbit connects to
+
+Settings › Integrations connects Slack (team notifications), Calendly and Cal.com (bookings), Mailchimp (marketing audiences) and Twilio (calls). Orbit does not connect to Dial, Zoom, Aircall, HappyToHelp, Help Scout, Zendesk, DocuSign, Nectar, Stripe, QuickBooks Online, Xero or Buoy: keep using them directly, and log a meeting or call from them by hand on the deal.
 
 ## How a score works
 
@@ -37,14 +44,14 @@ Git is required; rer brings Node and pnpm. Already have Node 22 or later? `npx -
 
 To start it again later, run the same line from the same folder, or `cd run-orbit && rer dev`.
 
-`rer` brings Orbit's pinned Node 22.20.0 and pnpm 10.12.4 into its own cache, so you install neither yourself. The line clones `main`; `dev` installs dependencies, prepares the local trial owner (`owner@run-orbit.test`) on the first launch and starts Orbit. Open the private `RER_OPEN` link it prints on this computer: you are already signed in. Local sign-in needs no email: `RER_OPEN` signs you in. Customer mail you approve is real: once you add your own SendGrid settings in Settings → Customer mail sender, it goes to the customer's inbox even from your computer. Your first sign-in asks for your business name, time zone, currency and pipeline stages, and then you are in. Change the trial email in Settings → Installation owner, or use your real owner mailbox from the start: run `npx -y @runeditrun/rer install just-every/run-orbit`, then `rer setup --owner-email EMAIL` from the checkout, before `rer dev`.
+`rer` brings Orbit's pinned Node 22.20.0 and pnpm 10.12.4 into its own cache, so you install neither yourself. The line clones `main`; `dev` installs dependencies, prepares the local trial owner (`owner@run-orbit.test`) on the first launch and starts Orbit. Open the private `RER_OPEN` link it prints on this computer: you are already signed in. Local sign-in needs no email: `RER_OPEN` signs you in. Customer mail you approve is real: once you add your own SendGrid settings in Settings › Mail › Sender, it goes to the customer's inbox even from your computer. Your first sign-in asks for your business name, time zone, currency and pipeline stages, and then you are in. Change the trial email in Settings › Team › Owner email, or use your real owner mailbox from the start: run `npx -y @runeditrun/rer install just-every/run-orbit`, then `rer setup --owner-email EMAIL` from the checkout, before `rer dev`.
 
 
 Stop it with `rer dev --stop`. Your data stays on your computer between runs. Stop `dev` and `preview` before CLI export, import, reset, build or verification.
 
 ## Hosted sign-in and removal
 
-After deployment, open `/signin` at your hosted origin, enter your active operator email, follow the emailed link and press **Confirm**. Hosted mail requires a verified `MAIL_FROM` and `SENDGRID_API_KEY`. Change the owner email in Settings → Installation owner while signed in. A restore retains current full operators and the active hosted owner, imports new archived operators as ordinary operators and revokes sessions, so sign in again afterwards.
+After deployment, open `/signin` at your hosted origin, enter your active operator email, follow the emailed link and press **Confirm**. Hosted mail requires a verified `MAIL_FROM` and `SENDGRID_API_KEY`. Change the owner email in Settings › Team › Owner email while signed in. A restore retains current full operators and the active hosted owner, imports new archived operators as ordinary operators and revokes sessions, so sign in again afterwards.
 
 To remove the hosted installation, first save a private backup, then run `rer deploy --remove --yes --env-file .dev.vars.deploy` from the deploying checkout, adding the same `--environment NAME` if you chose one. Keep its `.rer/deploy/<environment>.json` receipt so RER can identify the resources it created and verify their removal. Removal deletes hosted data.
 

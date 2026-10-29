@@ -1,15 +1,10 @@
-/* Today's brief and the meeting plan, drawn from 12ui picks evidence/12ui/today-picked-C.png and plan-picked-C.png in
+/* The Brief and the meeting plan, drawn from 12ui picks evidence/12ui/today-picked-C.png and plan-picked-C.png in
    the operator console's own language: card fill, 1.5px ink outline, ink pill for the one primary action, underlined
    links for every cited line, tangerine only for the counts. */
 .today { display: grid; gap: 20px; padding-top: 18px; }
-.today__since { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; }
-.today__since p { margin: 0; color: var(--ob-muted); font-size: 15.5px; }
+.today__since { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; }
+.today__since p { margin: 0; color: var(--ob-body); font-size: 15.5px; }
 .today__since strong { color: var(--ob-ink); }
-.today__counts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; padding: 22px 20px; border: 1.5px solid var(--ob-ink); border-radius: var(--ob-radius); background: var(--ob-card); box-shadow: var(--app-shadow); }
-.today__counts div { display: flex; flex-direction: row-reverse; justify-content: flex-end; align-items: baseline; gap: 17px; min-width: 0; padding: 4px 16px; border-left: 1.5px solid var(--ob-line); }
-.today__counts div:first-child { border-left: 0; }
-.today__counts dt { font-size: 15px; font-weight: 600; }
-.today__counts dd { flex-shrink: 0; white-space: nowrap; margin: 0; color: var(--ob-tangerine-deep); font-size: 36px; font-weight: 760; line-height: 1; font-variant-numeric: tabular-nums; }
 .today__accounts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 24px; }
 .today-account { display: grid; gap: 16px; min-width: 0; padding: 22px 25px; }
 .today-account header h3 { margin: 0; font-size: 26px; font-weight: 740; letter-spacing: -0.01em; line-height: 1.15; overflow-wrap: anywhere; }
@@ -28,6 +23,7 @@
 .today-line__when { display: grid; flex: none; justify-items: end; gap: 2px; color: var(--ob-body); font-size: 14px; text-align: right; }
 .today-line__when a { font-weight: 650; }
 .today-summary { display: grid; gap: 12px; justify-items: start; }
+.today-summary > .operator-text-button { min-height: 44px; font-size: 15px; font-weight: 600; }
 .today-summary__preview, .today-summary__result { width: 100%; padding: 14px 16px; border: 1.5px solid var(--ob-line); border-radius: 12px; }
 .today-summary__preview h4 { margin: 0; font-size: 15.5px; }
 .today-summary__preview p, .today-summary__result p { margin: 6px 0; }
@@ -36,7 +32,6 @@
 .today__empty { padding: 24px 28px; }
 .today__empty h3 { margin: 0; font-size: 22px; font-weight: 720; }
 .today__empty p, .today__note { margin: 8px 0 0; color: var(--ob-body); }
-.today-now-title { margin: 48px 0 0; font-size: clamp(32px, 3.4vw, 48px); font-weight: 760; letter-spacing: -0.012em; line-height: 1.05; }
 
 .meeting-plan .operator-detail__section { padding: 20px 24px; }
 .meeting-plan .operator-detail__section h2 { font-size: 20px; }
@@ -69,15 +64,14 @@
  .plan-opportunity span:nth-of-type(odd) { padding-left: 0; border-left: 0; }
 }
 @media (max-width: 640px) {
- .today__counts { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
- .today__counts div { gap: 12px; padding-inline: 10px; }
- .today__counts div:nth-child(3) { border-left: 0; }
  .today-account { padding: 20px; }
  .today-line { flex-direction: column; }
  .today-line__when { justify-items: start; text-align: left; }
+ /* A link alone on its line is a 44 px target at phone width. */
+ .today-line__what a { display: block; padding-block: 10px; }
+ .today-line__when a, .today-account header h3 a { display: inline-flex; align-items: center; min-height: 44px; }
  .plan-line { grid-template-columns: minmax(0, 1fr); }
  .plan-line__buttons { grid-column: auto; justify-content: flex-start; }
  .plan-opportunity { grid-template-columns: minmax(0, 1fr); }
  .plan-opportunity span { padding-left: 0; border-left: 0; }
 }
-.today-now-jump{display:none}@media (max-width:640px){.today-now-jump{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin:0 0 12px;font-weight:650;color:var(--ob-ink)}}.today-now-title{scroll-margin-top:16px}

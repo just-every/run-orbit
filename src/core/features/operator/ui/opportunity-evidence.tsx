@@ -20,6 +20,6 @@ export function OpportunityEvidence({opportunity,presentation}:{opportunity:Oppo
   </div><div><span>{sourceLabel(signal.source)} · {label(signal.confidence)} · {formatDateTime(signal.occurredAt,presentation)}</span></div>
    <span>No points</span>
   </li>)}</ul></>}
-  {!opportunity.signals.length&&<p>No customer signals yet. <a href="/app/sources">Connect a source</a></p>}
+  {!opportunity.signals.length&&<p>No customer signals yet. <a href="/app/settings/capture">Connect a source</a></p>}
  </section>;
 }

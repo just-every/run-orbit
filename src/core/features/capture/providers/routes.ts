@@ -18,7 +18,7 @@ export function createProviderRoutes(db:D1Database,config:ProviderConfig){
  app.onError((error,c)=>{
   const message=error instanceof CaptureError?error.message:error instanceof CaptureProviderError?'The provider connection could not finish. Check its status and try again.':'The provider connection could not finish.';
   const status=error instanceof CaptureError?error.status:error instanceof CaptureProviderError?503:500;
-  const provider=/\/oauth\/(google|microsoft)\//.exec(c.req.path)?.[1],page=provider?`/app/capture/connect/${provider}?step=5&`:'/app/capture?';
+  const provider=/\/oauth\/(google|microsoft)\//.exec(c.req.path)?.[1],page=provider?`/app/settings/capture/connect/${provider}?step=5&`:'/app/settings/capture?';
   return (c.req.header('accept')??'').includes('text/html')?c.redirect(`${page}error=${encodeURIComponent(message)}`,303):c.json({error:message},status);
  });
  app.route('/writeback',calendarWritebackRoutes(db,config));
@@ -33,8 +33,8 @@ export function createProviderRoutes(db:D1Database,config:ProviderConfig){
   return form?c.redirect(result.authorizationUrl,303):c.json(result);
  });
  app.get('/oauth/:provider/callback',async c=>{
-  try{const id=await finishOAuth(db,security(),providerId(c.req.param('provider')),trustedOrigin(config.origin,c.req.url),c.get('operator'),c.req.query(),fetcher);return c.redirect(`/app/capture/connect/${c.req.param('provider')}?step=6&connected=${encodeURIComponent(id)}`,303);}
-  catch(error){const message=error instanceof CaptureError?error.message:'The provider did not complete the connection. Start again.';return c.redirect(`/app/capture/connect/${providerId(c.req.param('provider'))}?step=5&error=${encodeURIComponent(message)}`,303);}
+  try{const id=await finishOAuth(db,security(),providerId(c.req.param('provider')),trustedOrigin(config.origin,c.req.url),c.get('operator'),c.req.query(),fetcher);return c.redirect(`/app/settings/capture/connect/${c.req.param('provider')}?step=6&connected=${encodeURIComponent(id)}`,303);}
+  catch(error){const message=error instanceof CaptureError?error.message:'The provider did not complete the connection. Start again.';return c.redirect(`/app/settings/capture/connect/${providerId(c.req.param('provider'))}?step=5&error=${encodeURIComponent(message)}`,303);}
  });
  app.get('/sources/:id/options',async c=>{
   const continuation=c.req.query('continuation');if(continuation&&continuation.length>100000)throw new CaptureError(400,'Invalid metadata continuation.');
@@ -44,12 +44,12 @@ export function createProviderRoutes(db:D1Database,config:ProviderConfig){
   const form=!(c.req.header('content-type')??'').includes('application/json');let body:unknown;
   if(form){const data=await c.req.formData();body={mail:{folders:data.getAll('folders')},calendars:data.getAll('calendars'),...(data.get('calendarStart')&&data.get('calendarEnd')?{calendarWindow:{start:`${data.get('calendarStart')}T00:00:00.000Z`,end:`${data.get('calendarEnd')}T00:00:00.000Z`}}:{})};}else body=await c.req.json();
   const parsed=scopeSchema.safeParse(body);if(!parsed.success)throw new CaptureError(400,'Choose valid labels, folders and calendars, with an increasing calendar window of at most ten years.');
-  const result=await selectScope(db,c.req.param('id'),parsed.data,security(),fetcher,c.get('operator'));return form?c.redirect(`/app/capture?scopeSaved=${encodeURIComponent(c.req.param('id'))}`,303):c.json(result);
+  const result=await selectScope(db,c.req.param('id'),parsed.data,security(),fetcher,c.get('operator'));return form?c.redirect(`/app/settings/capture?scopeSaved=${encodeURIComponent(c.req.param('id'))}`,303):c.json(result);
  });
  app.post('/sources/:id/sync',async c=>{
   const id=c.req.param('id'),adapter=await db.prepare('SELECT adapter FROM capture_sources WHERE id=?').bind(id).first<string>('adapter');
   const {more,...summary}=adapter==='ical'?await syncLinkedCalendar(db,id,config.security,fetcher):await syncProvider(db,id,security(),fetcher);
-  return (c.req.header('accept')??'').includes('text/html')?c.redirect(`/app/capture?result=${encodeURIComponent(JSON.stringify({...summary,more}))}`,303):c.json({summary,more});
+  return (c.req.header('accept')??'').includes('text/html')?c.redirect(`/app/settings/capture?result=${encodeURIComponent(JSON.stringify({...summary,more}))}`,303):c.json({summary,more});
  });
  return app;
 }

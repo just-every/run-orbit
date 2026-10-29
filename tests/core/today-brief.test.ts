@@ -54,7 +54,7 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
  assert.deepEqual(byKind(first,'meeting-no-next-step').map(l=>l.evidence.id),[completed]);
  assert.deepEqual(byKind(first,'draft-unsent'),[],'A newly saved draft is not overdue');
  assert.deepEqual(byKind(first,'handoff-due').map(l=>[l.evidence.id,l.href]),[[handoff,`/app/opportunities/${cobalt}#handoff-${handoff}`]]);
- assert.deepEqual(byKind(first,'unlinked-signal').map(l=>[l.evidence.id,l.href]),[[unlinked,`/app/sources#unlinked-${unlinked}`]]);
+ assert.deepEqual(byKind(first,'unlinked-signal').map(l=>[l.evidence.id,l.href]),[[unlinked,`/app/review#unlinked-${unlinked}`]]);
  // A signal line points at the timeline entry the signal made on its opportunity.
  const detail=await t.json<{opportunity:{timeline:{id:string;kind:string;payload:{signalId?:string}}[]}}>(`/api/v1/opportunities/${acme}`,{},200);
  const entry=detail.opportunity.timeline.find(item=>item.kind==='signal.recorded'&&item.payload.signalId===form)!;
@@ -258,7 +258,7 @@ test('BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a
  assert.equal(await caseyMentions(),0,'Deleting the entry withdraws its unread mention');
  assert.deepEqual(await db.prepare("SELECT t.actor_id,json_extract(t.payload_json,'$.entryId') AS entryId FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id WHERE t.kind='entry.deleted' AND r.record_id=?").bind(opportunity).first(),{actor_id:t.actor,entryId:callId});
  const priceTask=await t.json<{id:string}>('/api/v1/tasks',{body:{title:'Price review',recordType:'opportunity',recordId:opportunity,ownerId:t.actor,dueAt:new Date(Date.now()+86400000).toISOString(),priority:'normal',type:'follow_up',notes:'@Riley Rep owns the discount sheet',recurrence:'none',timezone:'UTC',reminderMinutes:null}},201);
- assert.deepEqual((await mentionCount(riley)).map(n=>n.href).sort(),[`/app#sales-task-${priceTask.id}`,`/app/opportunities/${opportunity}#entry-${noteId}`]);
+ assert.deepEqual((await mentionCount(riley)).map(n=>n.href).sort(),[`/app/opportunities/${opportunity}#entry-${noteId}`,`/app/tasks/${priceTask.id}`]);
  assert.deepEqual((await riley.json<{mentions:{source:string;id:string}[]}>('/api/v1/records/mentions',{},200)).mentions.map(m=>[m.source,m.id]).sort(),[['entry',noteId],['task',priceTask.id]],'The Mentions view lists every entry that mentions the user');
  assert.equal((await t.call('/api/v1/tasks',{body:{title:'Hidden',recordType:'opportunity',recordId:opportunity,ownerId:t.actor,dueAt:new Date(Date.now()+86400000).toISOString(),priority:'normal',type:'other',notes:'Ask @Casey Contractor',recurrence:'none',timezone:'UTC',reminderMinutes:null}})).status,201,'The explicit share covers task notes on the deal too');
  assert.equal(JSON.stringify(await db.prepare("SELECT payload_json FROM timeline_entries WHERE id=?").bind(noteId).first()).includes(riley.actor),true,'Mentions are saved with the entry, so they export and erase with it');

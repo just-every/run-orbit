@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import {useRouterState} from '@tanstack/react-router';
+import {useNavigate,useRouterState} from '@tanstack/react-router';
 
 /** Layout may keep settling for this long after the last change (sections above the target loading) before the target is left where it is. */
 const QUIET_MS=3000,LIMIT_MS=15000;
@@ -37,4 +37,11 @@ export function ScrollToHash({ready}:{ready:boolean}){
   return stop;
  },[ready,hash]);
  return null;
+}
+
+/** An old link's hash names a section that is now a page of its own (#mail-sender, #sales-task-…): on load, replace
+ * the address with that page, adding no history entry. A hash the map does not know stays where it is. */
+export function useHashMap(map:(hash:string)=>string|null){
+ const navigate=useNavigate();
+ useEffect(()=>{let hash:string;try{hash=decodeURIComponent(window.location.hash.slice(1));}catch{return;}const target=hash?map(hash):null;if(target)void navigate({href:target,replace:true});},[]);
 }

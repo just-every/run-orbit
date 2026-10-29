@@ -17,7 +17,7 @@ export async function calendarJourney(page,data){
   const google=provider==='google',name=google?'Google':'Microsoft',writeScope=google?'calendar.events':'Calendars.ReadWrite';
   const readScopes=google?['gmail.readonly','calendar.readonly']:['Mail.Read','Calendars.Read'];
   for(const writeback of [false,true]){
-   await page.goto(`/app/capture/connect/${provider}?step=5`);
+   await page.goto(`/app/settings/capture/connect/${provider}?step=5`);
    const form=page.getByRole('form',{name:`Connect ${name}`,exact:true});
    await form.getByLabel('Client ID',{exact:true}).fill('synthetic-orbit-client');
    await form.getByLabel('Client secret',{exact:true}).fill('synthetic-orbit-1');
