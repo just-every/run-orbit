@@ -8771,7 +8771,7 @@
       "executable": false
     },
     "tests/delegation-browser/customer-import.mjs": {
-      "sha256": "0122d5db885521a1487402f20d6ec488be8ad81c802d0378f43cf7bed50942d4",
+      "sha256": "66334c31158f4a7ffadadd280485f6ab617139018d647f8cd2391df03e0ca0fb",
       "executable": false
     },
     "tests/delegation-browser/customer-record.mjs": {

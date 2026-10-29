@@ -54,7 +54,7 @@ export async function importCustomerBook({page,context},info) {
    expect(errors).toEqual([]);
    return {company,ana:ana.id,bob:bob.id,domain,account:'Spreadsheet Company'};
   }
-  const history=page.locator('.crm-history article').filter({hasText:source.account}),undo=history.getByRole('button',{name:'Undo import',exact:true});await undo.click();const dialog=page.getByRole('dialog',{name:'Undo this import?',exact:true});await expect(dialog.getByRole('button',{name:'Cancel',exact:true})).toBeFocused();await page.keyboard.press('Escape');await expect(dialog).toHaveCount(0);await expect(undo).toBeFocused();await undo.click();await dialog.getByRole('button',{name:'Confirm undo',exact:true}).click();await expect(page.getByRole('status')).toContainText('Import undone',{timeout:90_000});
+  const history=page.locator('.crm-history article').filter({hasText:source.account}),undo=history.getByRole('button',{name:'Undo import',exact:true});await undo.click();const dialog=page.getByRole('dialog',{name:'Undo this import?',exact:true});await expect(dialog.getByRole('button',{name:'Cancel',exact:true})).toBeFocused();await page.keyboard.press('Escape');await expect(dialog).toHaveCount(0);await expect(undo).toBeFocused();await undo.click();await dialog.getByRole('button',{name:'Confirm undo',exact:true}).click();await expect(history).toContainText('Import undone',{timeout:90_000});await expect(undo).toHaveCount(0);await expect(page.getByRole('status')).toContainText('Import undone',{timeout:90_000});
   const erased=await page.request.get(`/api/v1/records/contact?q=${vendor}-0%40example.test`);expect((await erased.json()).records).toHaveLength(0);
   await page.getByRole('button',{name:'Start another dry run',exact:true}).click();
  }
