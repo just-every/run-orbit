@@ -12,7 +12,7 @@ function time(name:string,value:any,allDay=false){
  const date=value.dateTime.slice(0,19).replace(/[-:]/g,''),zone=value.timeZone;
  return zone==='UTC'?[`${name}:${date}Z`]:[`${name};TZID=${clean(zone)}:${date}`];
 }
-export function calendarItem(provider:'google'|'microsoft',event:any,calendarId:string,seriesId?:string):CaptureItem{
+export function calendarItem(provider:'google'|'microsoft',event:any,calendarId:string,seriesId?:string):Extract<CaptureItem,{kind:'calendar'}>{
  const google=provider==='google',lines=['BEGIN:VCALENDAR','VERSION:2.0','BEGIN:VEVENT'];
  const uid=google?event.iCalUID:event.iCalUId;
  if(typeof event.id!=='string'||!event.id)throw new CaptureProviderError('unavailable','The calendar returned an invalid event identity.');
