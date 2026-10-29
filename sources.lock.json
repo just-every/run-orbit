@@ -6,7 +6,7 @@
   "toolchain": {
     "id": "runeditrun/edition-authoring",
     "version": "1.1.0",
-    "sha256": "599b29dce5887f3741295c7a31fee0a339de7cf7c36fc14f4b75be04fbf073ac"
+    "sha256": "c52b4ddbfad26af8c28cdcad563e101f44d5a455a4f8133ca7235408c752a844"
   },
   "components": [
     {
@@ -663,7 +663,7 @@
       "executable": false
     },
     "AGENTS.md": {
-      "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9",
+      "sha256": "bd7c9a7846e97315c43937d4577221312bf29af5ade8b3665a399cc11f437ce1",
       "executable": false
     },
     "AUTHORING.md": {
@@ -4012,6 +4012,46 @@
     },
     "scripts/delivery/base/sql-statements.mjs": {
       "sha256": "8819f7f91b7781905796ea35b01dd1a55e08ed3893ff6d8aafaf03d2f35c1c9a",
+      "executable": false
+    },
+    "scripts/edition-authoring/base-copies.mjs": {
+      "sha256": "ca2e3b86aec67aaa5cb28d1a8311612a905fbd2116fac999a34185fa776cf876",
+      "executable": false
+    },
+    "scripts/edition-authoring/cli.mjs": {
+      "sha256": "d9bc25b361c056ec4bebe2b8e506baff95fdd06ec4d4f54a63f20d873025a89b",
+      "executable": false
+    },
+    "scripts/edition-authoring/files.mjs": {
+      "sha256": "eb0b8a0b9958c4ed84735d85f5298f3d1307ef60ddee1c2a3329c6ed7af0902e",
+      "executable": false
+    },
+    "scripts/edition-authoring/manifest.mjs": {
+      "sha256": "0c93bd39b1dd869b23a9d2727671fe8f9c933a9d56c7a3df1ba83c4a6f816e7b",
+      "executable": false
+    },
+    "scripts/edition-authoring/parent-comparison.mjs": {
+      "sha256": "fba6c894e2fe5a48c2f8706ab74b09d1935bd7fa38049a264d3d91ff6d336003",
+      "executable": false
+    },
+    "scripts/edition-authoring/projection-lock.mjs": {
+      "sha256": "bbb939b4e5bc6b5db8bf51156ec770fa30fc5df7a8fbb21a751c8ede69b1444b",
+      "executable": false
+    },
+    "scripts/edition-authoring/README.md": {
+      "sha256": "26988b6b5d0426377ee85fa7d61cbbaa29ad2ad93744159a842ab448b60a6c3a",
+      "executable": false
+    },
+    "scripts/edition-authoring/release.mjs": {
+      "sha256": "40acdb670edbde2eafa731f535bbe7403360a3327b576ed47355936bcc4a543a",
+      "executable": false
+    },
+    "scripts/edition-authoring/sources.mjs": {
+      "sha256": "1033adaaa5f1f52053c34552c0979b6f868907f00cc1005d39fd8f845df4be09",
+      "executable": false
+    },
+    "scripts/edition-authoring/updates.mjs": {
+      "sha256": "54e7246025a618ed16ee042c22dc9a8dc27b06175c30f81c4c6568992ed04799",
       "executable": false
     },
     "scripts/fold-schema.mjs": {
