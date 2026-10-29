@@ -37,7 +37,7 @@ export function WorkspaceArea(){
  const copy=useMemo(()=>settings.data?workspaceValues(settings.data.workspace):null,[settings.data]);
  const send=useCallback(async(changes:Values,_base:Values,current:Values,init:{keepalive?:boolean})=>{
   const next={...current,...changes};
-  const result=await saveRequest<{workspace:any}>('settings','PUT',{name:next.name,timezone:next.timezone,currency:next.currency,workingHours:{days:next.days,start:next.start,end:next.end},staleIntervalDays:Number(next.staleIntervalDays),awaitingResponseWorkingDays:Number(next.awaitingResponseWorkingDays),freeMailDomains:String(next.freeMailDomains).split(/[\s,]+/).filter(Boolean),ifUpdatedAt:current.updated_at},init);
+  const result=await saveRequest<{workspace:any}>('settings','PUT',{name:next.name,timezone:next.timezone,currency:next.currency,workingHours:{days:next.days,start:next.start,end:next.end},staleIntervalDays:Number(next.staleIntervalDays),awaitingResponseWorkingDays:Number(next.awaitingResponseWorkingDays),freeMailDomains:String(next.freeMailDomains).split(/[\s,]+/).filter(Boolean),ifUpdatedAt:current.updated_at},init,workspaceValues);
   return {copy:workspaceValues(result.workspace),changed:true};
  },[]);
  const form=useAutosave<Values>({key:'settings.workspace',copy,version:value=>value.updated_at,send,reread:async()=>workspaceValues((await recordsRequest<any>('settings')).workspace),onSaved:()=>void settings.changed()});

@@ -2,17 +2,18 @@ import type {ContactContext,OpportunityContext} from '../../../relationships/con
 import {SaveRefused,type SaveAnswer,type Values} from '../autosave/use-autosave';
 import type {RecordKind} from '../records-api';
 
-/** One JSON request for a record page's saves: a refusal keeps the server's words, a 409 its current copy. */
-export async function saveRequest<T>(path:string,method:string,body:unknown,init:{keepalive?:boolean}={}):Promise<T>{
+/** One JSON request for a record page's saves: a refusal keeps the server's words, a 409 its current copy, which
+ * values turns from the server's row into the form's own values (the hook compares and sends again on those). */
+export async function saveRequest<T>(path:string,method:string,body:unknown,init:{keepalive?:boolean}={},values?:(row:Values)=>Values):Promise<T>{
  const response=await fetch(`/api/v1/${path}`,{method,credentials:'same-origin',keepalive:init.keepalive,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
  const result=await response.json().catch(()=>({})) as T&{error?:string;current?:Values;changedBy?:string|null};
- if(!response.ok)throw new SaveRefused(result.error??'Orbit refused this change.',response.status,result.current,result.changedBy);
+ if(!response.ok)throw new SaveRefused(result.error??'Orbit refused this change.',response.status,result.current&&values?values(result.current):result.current,result.changedBy);
  return result;
 }
 
 /** A record's own values, saved one change at a time (PATCH, with the values each change replaces). */
 export async function patchRecord(kind:RecordKind,id:string,changes:Values,base:Values,init:{keepalive?:boolean}):Promise<SaveAnswer<Values>>{
- const result=await saveRequest<{changed:boolean;record:Values}>(`records/${kind}/${id}`,'PATCH',{changes,base},init);
+ const result=await saveRequest<{changed:boolean;record:Values}>(`records/${kind}/${id}`,'PATCH',{changes,base},init,recordValues);
  return {copy:recordValues(result.record),changed:result.changed};
 }
 export async function readRecord<T=any>(kind:RecordKind,id:string):Promise<T>{

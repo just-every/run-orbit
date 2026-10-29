@@ -3,8 +3,8 @@ import {RecordsList} from './records-list';
 import {RecordOwner} from './record-owner';
 import {PipelineBoard} from './pipeline-board';
 import './records.css';
-import {useEffect,useRef,useState} from 'react';
-import {Link,useNavigate,useRouter,useSearch} from '@tanstack/react-router';
+import {useEffect,useLayoutEffect,useRef,useState} from 'react';
+import {Link,useElementScrollRestoration,useNavigate,useRouter,useSearch} from '@tanstack/react-router';
 import {OperatorShell,OperatorState} from './operator-shell';
 import {recordsRequest,type CustomerRecord,type RecordKind} from './records-api';
 import {listFilters,listPath,pluralName,searchFilters,type RecordsSearch} from './records-query';
@@ -30,6 +30,10 @@ export function RecordsPage({kind}:{kind:RecordKind}){
  const requestId=useRef(0);
  async function reload(){const request=++requestId.current;try{setError('');setLoadedFor('');const [list,workspace]=await Promise.all([recordsRequest<{records:CustomerRecord[]}>(`records/${kind}?${new URLSearchParams({q:query,...filters})}`),settings?Promise.resolve(settings):recordsRequest('settings')]);if(request!==requestId.current)return;setRecords(list.records);setSettings(workspace);setLoadedFor(filtersKey);}catch(e){if(request===requestId.current)setError((e as Error).message);}}
  useEffect(()=>{void reload();return()=>{requestId.current++;};},[filtersKey]);
+ // Back to this list: the router restores its scroll as the route renders, before the list's read has answered, so the
+ // rows' first render takes the list back to where it was.
+ const scroll=useElementScrollRestoration({getElement:()=>window}),restored=useRef(false);
+ useLayoutEffect(()=>{if(loading||restored.current)return;restored.current=true;if(scroll)window.scrollTo({top:scroll.scrollY,left:scroll.scrollX});},[loading]);
  // An empty opportunity list says whether there are customers yet, which takes two more reads only then.
  const empty=kind==='opportunity'&&!loading&&!error&&!records.length&&!filtered;
  useEffect(()=>{if(!empty||customers!==undefined)return;void Promise.all([recordsRequest<{records:CustomerRecord[]}>('records/company'),recordsRequest<{records:CustomerRecord[]}>('records/contact')]).then(([companies,contacts])=>setCustomers(companies.records.length+contacts.records.length>0)).catch(()=>setCustomers(true));},[empty]);
