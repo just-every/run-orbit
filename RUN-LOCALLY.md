@@ -21,7 +21,7 @@ named after the checkout's folder
 (`owner@run-orbit.test` for the `run-orbit` folder above) and fills the setup answers the seed declares a
 `localDefault` for in `rer-setup.json`. Then it starts the app and prints the
 `RER_READY` lines. It never prompts or re-runs setup on a checkout that is set up.
-Change the trial owner email in Settings → Installation owner, or provide your real
+Change the trial owner email in Settings › Team › Owner email, or provide your real
 mailbox first with `rer setup --owner-email EMAIL`. A required setup answer
 with no value and no `localDefault` stops it
 with exit 3 and a message naming the field.

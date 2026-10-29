@@ -6,7 +6,7 @@ import {accessible,watchBrowser} from './browser-observations';
 export async function importOwnersBrowserJourney(browser:Browser,origin:string,directory:string,cookie:string,receiver:{id:string;cookie:string}){
  const context=await browser.newContext({baseURL:origin,viewport:{width:1440,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),errors=watchBrowser(context),page=await context.newPage();
  try{
-  await page.goto('/app/imports');await page.getByLabel('HubSpot CSV',{exact:true}).check();
+  await page.goto('/app/settings/data/import');await page.getByLabel('HubSpot CSV',{exact:true}).check();
   await page.getByLabel('Contacts',{exact:true}).setInputFiles({name:'contacts.csv',mimeType:'text/csv',buffer:Buffer.from('Record ID,First Name,Email,Contact owner\r\n723,Synthetic import contact,synthetic-orbit-723@ownership.test,Former rep\r\n724,Second import contact,synthetic-orbit-724@ownership.test,Former rep')});
   await page.getByLabel('Companies',{exact:true}).setInputFiles({name:'companies.csv',mimeType:'text/csv',buffer:Buffer.from('Record ID,Company name,Company owner\r\n725,Synthetic import company,Former rep')});
   await page.getByRole('button',{name:'Review dry run',exact:true}).click();

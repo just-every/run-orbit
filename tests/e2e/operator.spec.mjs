@@ -40,10 +40,13 @@ test.describe("authenticated operator UI", () => {
     const ordered=[...opportunities].sort((a,b)=>b.score-a.score || (b.lastContributingSignalAt??'').localeCompare(a.lastContributingSignalAt??'') || a.id.localeCompare(b.id));
     expect(await page.locator('.operator-queue-card > a').evaluateAll(links=>links.map(link=>link.getAttribute('href')))).toEqual(ordered.map(row=>`/app/opportunities/${row.id}`));
     await expect(page.locator(".operator-queue-card").first()).toContainText("Ordering proof X");
+    // The filters sit behind one Filter control; each set filter shows as a chip.
+    await page.getByRole("button", { name: /^Filter/ }).click();
     await page.getByLabel("Filter by owner").selectOption("unassigned");
     await expect(page.getByText("Fieldhouse Studio workspace", { exact: true })).toHaveCount(0);
     await expect(page.locator(".operator-queue-card")).toHaveCount(3);
-    await page.getByLabel("Filter by owner").selectOption("all");
+    await expect(page.getByRole("list", { name: "Applied filters" })).toContainText("Owner: Unassigned");
+    await page.getByLabel("Filter by owner").selectOption("");
     const stageFilter = page.getByLabel("Filter by stage");
     const firstPersistedStage = await stageFilter.locator("option").nth(1).getAttribute("value");
     expect(firstPersistedStage).toBeTruthy();

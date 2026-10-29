@@ -6,8 +6,8 @@ import {request} from './operator-fixture.mjs';
 
 /** Configure and inspect the real owner workflow surface using the native installation. */
 export async function workflowBrowserJourney({page,fixture,origin,directory},width){
- await page.setViewportSize({width,height:900});await page.goto(origin+'/app/settings');
- const settings=page.locator('.workflows-settings');await expect(settings.getByRole('heading',{name:'Sales workflows',exact:true})).toBeVisible();
+ await page.setViewportSize({width,height:900});await page.goto(origin+'/app/settings/pipeline');
+ const settings=page.locator('.workflows-settings');await expect(settings.getByRole('heading',{name:'Workflows',exact:true})).toBeVisible();
  await settings.getByRole('button',{name:'New workflow',exact:true}).click();
  await settings.getByLabel('Workflow name',{exact:true}).fill('Prepare account review');
  await settings.locator('.workflows-editor').getByLabel('Field',{exact:true}).fill('title');
@@ -15,9 +15,9 @@ export async function workflowBrowserJourney({page,fixture,origin,directory},wid
  await settings.getByLabel(/^Trigger/).selectOption('activity_logged');
  await settings.getByLabel(/^Activity type/).selectOption('meeting');
  await expect(settings.getByLabel(/^Activity type/)).toHaveValue('meeting');
- await settings.getByRole('heading',{name:'Sales workflows',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,`workflow-activity-editor-${width}.png`)});
+ await settings.getByRole('heading',{name:'Workflows',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,`workflow-activity-editor-${width}.png`)});
  await settings.getByLabel(/^Trigger/).selectOption('record_changed');
- await settings.getByRole('heading',{name:'Sales workflows',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,`workflow-editor-${width}.png`)});
+ await settings.getByRole('heading',{name:'Workflows',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,`workflow-editor-${width}.png`)});
  await settings.getByRole('button',{name:'Preview changes',exact:true}).click();
  await expect(settings.getByRole('region',{name:'Workflow activation preview'})).toBeVisible();
  await expect(settings.getByRole('region',{name:'Workflow activation preview'})).toContainText('Operator review opportunity');
@@ -40,7 +40,7 @@ export async function workflowBrowserJourney({page,fixture,origin,directory},wid
  const material=await request(page,'/api/workflows',{name:'Review the account budget',definition:{trigger:{kind:'record_changed',recordType:'opportunity'},conditions:[{field:'title',operator:'equals',value:'Budget request'}],actions:[{kind:'set',field:'value_cents',value:625000}],delayMinutes:0,order:0}});
  const review=await request(page,`/api/workflows/${material.workflow.id}/preview`,{});await request(page,`/api/workflows/${material.workflow.id}/activate`,{previewId:review.previewId});const budget=await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET');await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,{...budget.record,title:'Budget request',custom_fields:JSON.parse(budget.record.custom_fields_json)},'PUT');await request(page,'/api/workflows/process',{});
  await page.goto(origin+`/app/records?record=${fixture.opportunityId}`);const approval=page.getByRole('region',{name:'Workflow changes needing your approval'});await expect(approval).toBeVisible();await expect(approval).toContainText('Review the account budget');await approval.scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,`workflow-record-approval-${width}.png`)});await approval.getByRole('button',{name:'Accept change',exact:true}).click();await expect(approval.getByRole('status')).toContainText('Accepted');assert.equal((await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET')).record.value_cents,625000);await request(page,'/api/workflows/process',{});await request(page,`/api/workflows/${material.workflow.id}/pause`,{});
- await page.goto(origin+'/app/settings');
+ await page.goto(origin+'/app/settings/pipeline');
  const presentation=await settings.evaluate(root=>{const visible=Array.from(root.querySelectorAll('*')).filter(el=>el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden');return {small:visible.filter(el=>Array.from(el.childNodes).some(n=>n.nodeType===Node.TEXT_NODE&&n.textContent.trim())&&parseFloat(getComputedStyle(el).fontSize)<13).map(el=>el.tagName),icons:visible.filter(el=>['BUTTON','A'].includes(el.tagName)&&!el.textContent.trim()&&!el.getAttribute('title')&&!el.getAttribute('aria-describedby')).map(el=>el.tagName)};});
  await workflowValuesBrowserJourney({page,fixture,origin,directory},width);
  assert.deepEqual(presentation.small,[]);assert.deepEqual(presentation.icons,[]);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'workflow view fits viewport');

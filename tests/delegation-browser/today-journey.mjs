@@ -26,7 +26,7 @@ export async function todayJourney({first,second,colleague,evidence}){
  const lineIds=b=>[...b.accounts.flatMap(a=>a.lines),...b.unresolved].map(l=>l.id).sort();
 
  // A day with nothing: the brief says so plainly.
- await atWidths(page,evidence,'brief-empty',async()=>{await page.goto('/app');await expect(page.getByRole('heading',{name:'Nothing to do from your records today'})).toBeVisible();});
+ await atWidths(page,evidence,'brief-empty',async()=>{await page.goto('/app/brief');await expect(page.getByRole('heading',{name:'Nothing to do from your records today'})).toBeVisible();});
 
  // Earlier days, through the public doors.
  const stage=(await(await api.get('/api/v1/workbench')).json()).stages[0].id;
@@ -41,8 +41,8 @@ export async function todayJourney({first,second,colleague,evidence}){
  const start=new Date(Date.now()+86400000);start.setUTCMinutes(0,0,0);
  await files([['invite.ics','text/calendar',['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Fixture//EN','METHOD:REQUEST','BEGIN:VEVENT',`UID:${randomBytes(8).toString('hex')}@acme.test`,'SEQUENCE:0',`DTSTAMP:${stamp(new Date(Date.now()-600000))}`,`CREATED:${stamp(new Date(Date.now()-600000))}`,`DTSTART:${stamp(start)}`,`DTEND:${stamp(new Date(start.getTime()+1800000))}`,'SUMMARY:Renewal review call','ORGANIZER:mailto:owner@brief.test','ATTENDEE;CN=Ana Ruiz:mailto:ana@acme.test','ATTENDEE;CN=Sam Lee:mailto:sam@acme.test','STATUS:CONFIRMED','END:VEVENT','END:VCALENDAR'].join('\r\n')]]);
  await files([['unknown.eml','message/rfc822',['From: Pat Unknown <pat@unmatched.test>','To: owner@brief.test','Subject: Question about your product',`Date: ${new Date(Date.now()-3600000).toUTCString()}`,`Message-ID: <${randomBytes(8).toString('hex')}@unmatched.test>`,'','Is anyone there?'].join('\r\n')]],true);
- // Before review, the captured invite is on Today as held, so the day is not shown as empty.
- await page.goto('/app');await expect(page.locator('[data-line^="held-capture:"]')).toHaveCount(1);
+ // Before review, the captured invite is on the Brief as held, so the day is not shown as empty.
+ await page.goto('/app/brief');await expect(page.locator('[data-line^="held-capture:"]')).toHaveCount(1);
  const proposals=(await(await api.get('/api/v1/capture/proposals?status=pending')).json()).proposals;
  for(const proposal of proposals.filter(p=>p.kind==='link_signal'))await post(`/api/v1/capture/proposals/${proposal.id}/accept`,{},200);
 
@@ -50,7 +50,7 @@ export async function todayJourney({first,second,colleague,evidence}){
  const day1=await brief(),meeting=day1.accounts.flatMap(a=>a.lines).find(l=>l.kind==='meeting'&&l.title==='Renewal review call');
  const unlinked=day1.unresolved[0].evidence.id;
  expect(lineIds(day1)).toEqual([`meeting-no-next-step:${completed}`,`reply-unanswered:${oldReply}`,`signal:${completed}`,`signal:${form}`,`signal:${meeting.evidence.id}`,`signal:${oldReply}`,`signal:${view}`,`unlinked-signal:${unlinked}`].sort());
- await atWidths(page,evidence,'brief-day1',async()=>{await page.goto('/app');for(const id of lineIds(day1))await expect(page.locator(`[data-line="${id}"]`)).toBeVisible();});
+ await atWidths(page,evidence,'brief-day1',async()=>{await page.goto('/app/brief');for(const id of lineIds(day1))await expect(page.locator(`[data-line="${id}"]`)).toBeVisible();});
  await expect(page.getByRole('heading',{name:'Customer actions (observed)'}).first()).toBeVisible();await expect(page.getByRole('heading',{name:'Tool-reported activity (inferred)'})).toBeVisible();
  for(const line of [...day1.accounts.flatMap(a=>a.lines),...day1.unresolved]){
   await page.goto('about:blank');const response=await page.goto(line.href);expect(response.status(),line.href).toBe(200);
@@ -59,9 +59,9 @@ export async function todayJourney({first,second,colleague,evidence}){
  }
 
  // Mark seen; the next day only the new reply is new, and the promises remain.
- await page.goto('/app');await page.getByRole('button',{name:'Mark all as seen'}).click();await expect(page.locator(`[data-line="signal:${form}"]`)).toHaveCount(0);
+ await page.goto('/app/brief');await page.getByRole('button',{name:'Mark all as seen'}).click();await expect(page.locator(`[data-line="signal:${form}"]`)).toHaveCount(0);
  const reply=await event(acme,'email.replied','Re: pricing request',0);
- await page.goto('/app');await expect(page.locator(`[data-line="signal:${reply}"]`)).toBeVisible();await expect(page.locator(`[data-line="draft-unsent:${draft}"]`)).toHaveCount(0);
+ await page.goto('/app/brief');await expect(page.locator(`[data-line="signal:${reply}"]`)).toBeVisible();await expect(page.locator(`[data-line="draft-unsent:${draft}"]`)).toHaveCount(0);
 
  // AI-003: an unconfigured provider offers no AI action; the brief stays complete.
  await expect(page.getByRole('button',{name:/Summarise .* with AI/})).toHaveCount(0);
@@ -94,7 +94,7 @@ export async function todayJourney({first,second,colleague,evidence}){
  const target=`opportunities/${acme}/handoffs/${nonce}`,check=await(await agent.get('/api/delegation/v1/check',{headers,params:{target}})).json(),audience=await(await agent.get('/api/delegation/v1/audience',{headers,params:{target,operation:'orbit.handoff.upsert'}})).json();
  const written=await agent.post('/api/delegation/v1/effects',{headers,data:{operationKey:nonce,operation:'orbit.handoff.upsert',target,expectedRevision:check.revision,expectedAudienceRevision:audience.audienceRevision,content:{title:'Prepare renewal pricing for the review',description:'Ana asked for pricing before the call.',assigneeId:null,dueAt:null,status:'open',evidence:[reply,form]}}});
  expect(written.status(),await written.text()).toBe(200);
- await again.goto('/app');await expect(again.locator(`[data-line="handoff-proposed:${nonce}"]`)).toBeVisible();
+ await again.goto('/app/brief');await expect(again.locator(`[data-line="handoff-proposed:${nonce}"]`)).toBeVisible();
  await again.goto(`/app/opportunities/${acme}#handoff-${nonce}`);
  const proposal=again.locator(`[id="handoff-${nonce}"]`);
  await atWidths(again,evidence,'handoff-proposal',async()=>{await expect(proposal.getByText(`Proposed by ${client}.`)).toBeVisible();await expect(proposal.getByRole('link',{name:'Re: pricing request'})).toBeVisible();});
