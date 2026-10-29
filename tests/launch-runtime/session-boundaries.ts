@@ -64,13 +64,17 @@ export async function publicQuota(fixture:any,worker:any) {
   const response=await fetch(worker.origin+'/api/delegation/v1/token',{method:'POST',headers,body:new URLSearchParams({grant_type:'invalid'})});await response.arrayBuffer();
   if(response.status===429){limited=response;break;}
  }
- assert.ok(limited,'Anonymous requests eventually receive a bounded allowance');assert.ok(Number(limited.headers.get('Retry-After'))>0);
+ assert.ok(limited,'Anonymous requests eventually receive a bounded allowance');
+ const retryAfter=Number(limited.headers.get('Retry-After'));assert.ok(retryAfter>0);
+ const resetAt=Math.floor(Date.now()/1000)*1000+retryAfter*1000;
  assert.equal((await fetch(worker.origin+'/api/delegation/v1/identity',{headers})).status,429,'The read and token doors share the public allowance');
  await worker.stop();await fixture.reopen();
- const rows=(await fixture.db.prepare('SELECT bucket,expires_at FROM public_rate_limits').all()).results;
- assert.ok(rows.length>0);assert.ok(rows.every((row:any)=>!row.bucket.includes(ip)),'Durable identities disclose no clear client address');
+ const rows=(await fixture.db.prepare('SELECT bucket,count,expires_at FROM public_rate_limits').all()).results;
+ assert.ok(rows.some((row:any)=>row.count>0),'The consumed allowance is durable after the owning process stops');assert.ok(rows.every((row:any)=>!row.bucket.includes(ip)),'Durable identities disclose no clear client address');
  await fixture.close();await worker.start();
- assert.equal((await fetch(worker.origin+'/api/delegation/v1/identity',{headers})).status,429,'Restart retains the allowance');
+ const resumed=await fetch(worker.origin+'/api/delegation/v1/identity',{headers});
+ if(resumed.status===401)assert.ok(Date.now()>=resetAt,'Only the advertised window expiry renews the allowance');
+ else assert.equal(resumed.status,429,'Restart retains the allowance while its window is active');
  await worker.stop();await fixture.reopen();await fixture.db.prepare('UPDATE public_rate_limits SET expires_at=0').run();await fixture.close();await worker.start();
  assert.equal((await fetch(worker.origin+'/api/delegation/v1/identity',{headers})).status,401,'Expired anonymous state permits a fresh request, still without authority');
 }
