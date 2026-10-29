@@ -2387,13 +2387,13 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 ## Status
 
-Judged from the code and tests at commit `03963b1a17ecd6d0c2cc1eec9a1d6285fd9240b5` (29 October 2026).
+Judged from the code and tests at commit `a68464e062b20c530e660fa59818fe6cfe075c66` (29 October 2026). RECORD-004 is qualified here; other clause judgments retain commit `03963b1a17ecd6d0c2cc1eec9a1d6285fd9240b5`.
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 6 | 73 | 0 | 79 |
+| Published | 7 | 72 | 0 | 79 |
 | Target and push further | 3 | 66 | 56 | 125 |
-| All | 9 | 139 | 56 | 204 |
+| All | 10 | 138 | 56 | 204 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -2404,7 +2404,7 @@ Judged from the code and tests at commit `03963b1a17ecd6d0c2cc1eec9a1d6285fd9240
 | `RECORD-001` | Core records | published | partial | `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts` | Unasserted in the carried evidence: contact create/read through authenticated Records; contact edits persist; company create/read through authenticated Records; company edits persist; USD opportunity create/edit; custom-field values read back; associations read back. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |
 | `RECORD-002` | Associations | published | partial | `src/core/features/relationships/`; `src/core/features/records/repository.ts`; `tests/core/records-search.test.ts`; `tests/core/records-merge-review.test.ts`; `tests/evidence/contract/RECORD-002/` | Unasserted in the carried evidence: two contact associations; company association; primary recipient choice; association change; historical timeline remains unchanged. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |
 | `RECORD-003` | Identity keys | published | partial | `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts` | Unasserted in the carried evidence: case and whitespace contact collision; domain collision; conflict names existing identity; no extra row after either conflict; free-mail keys excluded; keyless record create/edit. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |
-| `RECORD-004` | Duplicate merge | published | partial | `src/core/features/records/merge-review.ts`; `tests/core/records-merge-review.test.ts` | Unasserted in the carried evidence: concurrent stop inherited. Asserted: reviewed survivor and field value; stale review returns refusal; stale review preserves both records; merge occurs once; retired id and choices audited. |
+| `RECORD-004` | Duplicate merge | published | done | `tests/core/records-merge-review.test.ts` — RECORD-004 RECORD-009 matching names across companies remain review-only and native merges refuse missing and stale reviews (reviewed survivor and values, stale refusal without writes, stops on either participant after review, both schedules cancelled, associations, one merge and audited retired identity, replay refusal); `tests/e2e/imports.spec.mjs` — RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard (native duplicate merge before and after a stop, inherited contactability without a choice, retired identity absent; screens at 1440 and 390). | |
 | `RECORD-005` | Timeline | published | partial | `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts` | Unasserted in the carried evidence: mail entry; meeting entry; note entry; stage/owner change entry; merge entry; occurred and recorded times; source and actor; out-of-order history. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |
 | `RECORD-006` | Search and views | published | done | `src/core/features/records/repository.ts`; `tests/core/records-search.test.ts`; `tests/performance/records-capacity.ts` |  |
 | `RECORD-007` | Ownership | published | partial | `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`; `tests/core/records-search.test.ts` | Unasserted in the carried evidence: assign owner; reassign owner; unassign owner; owner persists after reload; attributed timeline entry; score unchanged. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |
