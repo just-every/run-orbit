@@ -2227,7 +2227,7 @@
       "executable": false
     },
     "newtests/t096/browser-form-no-script.ts": {
-      "sha256": "2efed76a598a1f693f17cde9115c4b30374bed581cedb30213a24676445e2098",
+      "sha256": "1ae2d79b8039be4a62b1df5de5bca1450695975d69bab1f441959f0cdd8b888a",
       "executable": false
     },
     "newtests/t096/browser-form-spam.ts": {
@@ -4607,7 +4607,7 @@
       "executable": false
     },
     "src/core/app/worker.ts": {
-      "sha256": "73bdb57f6d587df1908927132e7bea66759d4d2cf7038c6e82058377502b2395",
+      "sha256": "3453a96a6c0c3384576ea34e91a5b30f6800e739543c138354452c414aca78f8",
       "executable": false
     },
     "src/core/features/access/administration.ts": {

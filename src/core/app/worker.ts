@@ -49,6 +49,9 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
     if(path.startsWith('/unsubscribe/'))return optOutResponse(request,bindings.DB);
     const expectedHost = bindings.AUTH_ORIGIN ? new URL(bindings.AUTH_ORIGIN).host : undefined;
     if (expectedHost && url.host !== expectedHost && !["127.0.0.1", "localhost", "[::1]"].includes(url.hostname)) return new Response("Not found", { status: 404 });
+    // Browsers request the conventional icon even on script-free public pages.
+    if (path === '/favicon.ico' && (request.method === 'GET' || request.method === 'HEAD'))
+      return Response.redirect(new URL('/favicon.svg', url).href, 308);
     const asset = await staticAssetResponse(request, bindings);
     if (asset) return asset;
     const publicBindings = { DB: bindings.DB, AUTH_ORIGIN: bindings.AUTH_ORIGIN ?? '' };
