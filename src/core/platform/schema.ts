@@ -6,7 +6,6 @@ const updatedAt = () => text("updated_at").notNull();
 export const workspaceSettings = sqliteTable("workspace_settings", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
-  localBusinessName: text("local_business_name"),
   timezone: text("timezone").notNull(),
   currency: text("currency").notNull(),
   workingHoursJson: text("working_hours_json").notNull(),

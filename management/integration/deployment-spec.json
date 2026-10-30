@@ -426,6 +426,12 @@
       "name": "0075_local_business_carry.sql",
       "sha256": "aba80edcf1d8a57b9849a650a6c589d03db447a06051d98ef5fef716812dea36",
       "sql": "-- Remember the last local Business name separately from the owner's workspace\n-- name, so an unchanged carry cannot undo an edit made inside Orbit.\nALTER TABLE workspace_settings ADD COLUMN local_business_name TEXT;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0076_local_business_carry_state.sql",
+      "sha256": "46bb6443a99501c5d47e20050e14ab4f85011b319d375e5f45904ad50779537a",
+      "sql": "-- Local carry observation belongs to this installation, like first-run state;\n-- it must not change the customer workspace schema or travel in Records archives.\nCREATE TABLE local_business_carry (\n  id TEXT PRIMARY KEY CHECK (id = 'workspace'),\n  name TEXT NOT NULL\n);\nINSERT INTO local_business_carry (id, name)\n  SELECT id, local_business_name FROM workspace_settings WHERE local_business_name IS NOT NULL;\nALTER TABLE workspace_settings DROP COLUMN local_business_name;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

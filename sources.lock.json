@@ -1907,7 +1907,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "e11041530f0b48be927daaeb1864ae66916c781d55e49cc55ca6857c857c5974",
+      "sha256": "88c0efdaec6d4f05125b7c68b7d10c90499bd4be6e42137c233e24afda4c03f7",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2200,6 +2200,10 @@
     },
     "migrations/core/0075_local_business_carry.sql": {
       "sha256": "aba80edcf1d8a57b9849a650a6c589d03db447a06051d98ef5fef716812dea36",
+      "executable": false
+    },
+    "migrations/core/0076_local_business_carry_state.sql": {
+      "sha256": "46bb6443a99501c5d47e20050e14ab4f85011b319d375e5f45904ad50779537a",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -7639,7 +7643,7 @@
       "executable": false
     },
     "src/core/features/records/archive-fold-catalog.ts": {
-      "sha256": "5cb24a85a2358a58390d9f67e516ca78acb10776bd955016d05db75b4d16308d",
+      "sha256": "0f48cc47cbcbe37ab4859a3cdec5855611ef89dc8be7025bcae1970deee176a4",
       "executable": false
     },
     "src/core/features/records/archive-fold-profile.ts": {
@@ -7695,7 +7699,7 @@
       "executable": false
     },
     "src/core/features/records/archive-schema.ts": {
-      "sha256": "2a5804fb6896d8949cd91305eabfe37fd88148a936de3f84e7b5cabac9a7ba85",
+      "sha256": "b233f9d48c749afde200e8c3ab98b5347ed838c946940c72ce75b45f8e15447d",
       "executable": false
     },
     "src/core/features/records/archive-size-plan.ts": {
@@ -8327,7 +8331,7 @@
       "executable": false
     },
     "src/core/platform/schema.ts": {
-      "sha256": "8fd3cb71982cfa4bb4a215efc52d581f19ef2167e8d692530649bcf427db46ab",
+      "sha256": "c6ecb462472c117efd756e2d5eaaccfdec1f396f8eed11e22fbf3d25cf5d2dee",
       "executable": false
     },
     "src/core/platform/source-security.ts": {
@@ -8427,7 +8431,7 @@
       "executable": false
     },
     "src/dev/local-business.ts": {
-      "sha256": "65f32de06dc805126a2bcf85bdfec134ad9f534227da307ab172947e850652cc",
+      "sha256": "cc6c6feb35b290b66dc22e6f786c07862edf3df56855f72a985c3b465312b8f2",
       "executable": false
     },
     "src/dev/server.ts": {
@@ -10839,7 +10843,7 @@
       "executable": false
     },
     "tests/support/isolated-database.ts": {
-      "sha256": "0079405dc889ae15751329af69d2a0fc81280008ad956c21b0d256e4de1433a0",
+      "sha256": "a8a817ea9958ad91462cac20df83b6f83fa7fd59e3f9745b043fe7a4bbea8169",
       "executable": false
     },
     "tests/support/issue-operator-session.ts": {
