@@ -3679,7 +3679,7 @@
       "executable": false
     },
     "newtests/t096/report-disclosure.test.ts": {
-      "sha256": "373a8dc0495f42fdb813f755d0997e9ef8bf855ad5037f1b13715a2972946275",
+      "sha256": "ebcbe8fd4f16971fc5c8cb3800d63e2e25da56d8547d42da6a8acdc620728e48",
       "executable": false
     },
     "newtests/t096/report-population-race.test.ts": {
@@ -5231,7 +5231,7 @@
       "executable": false
     },
     "src/core/features/analytics/report-details.tsx": {
-      "sha256": "cf9776f1e0553b993622fcc32d9f487bd3b3cc07c11581b01e21ed5cac25de94",
+      "sha256": "b490007c4e8f30f6e2ba6deaa55a8e0b6e32c40bd45f72d4741d306ed509a53b",
       "executable": false
     },
     "src/core/features/analytics/report-field-labels.ts": {
@@ -5591,7 +5591,7 @@
       "executable": false
     },
     "src/core/features/dashboards/dashboard-dialogs.css": {
-      "sha256": "cc90cb89963573c1c7f5771ccd4be881c7ab78d8bb494742ea5a8ecfcd61db7e",
+      "sha256": "1fdbff204416c8b06075b461093f5784fb47d81c2b01223c7a5ceca3b4b13010",
       "executable": false
     },
     "src/core/features/dashboards/dashboards.css": {
@@ -5619,7 +5619,7 @@
       "executable": false
     },
     "src/core/features/dashboards/editor.tsx": {
-      "sha256": "a21f75c47dee6ff65e708ad669fcba0d5928b4da7768bd0a9243107d71edab41",
+      "sha256": "7c3b2eb063dc594e6a3e6282876ce4f2958ab42d6ab9b8eb27d9f9b7e30e89c9",
       "executable": false
     },
     "src/core/features/dashboards/export.ts": {
@@ -5643,7 +5643,7 @@
       "executable": false
     },
     "src/core/features/dashboards/page.tsx": {
-      "sha256": "060c8ee54b6081653beb9efebdf47b0d18c5ec3f47289c0be4b241305143a1b0",
+      "sha256": "bdbe78109c60af05274dc121e41f1139b9e6551f4d18a5e5c92d647a9d83acf6",
       "executable": false
     },
     "src/core/features/dashboards/pdf.ts": {
@@ -5654,12 +5654,20 @@
       "sha256": "e246418b316a98e7284d02e1ff8c760011826226f600cc3cd2172899cb71de6d",
       "executable": false
     },
+    "src/core/features/dashboards/removal.tsx": {
+      "sha256": "6a6c5743a732935ed8a70c844e467a3be4b26e4a9da949797068a762a95151bb",
+      "executable": false
+    },
+    "src/core/features/dashboards/remove.ts": {
+      "sha256": "dffbf9b101d13ed055076cfc0d7d1c15c275b692f7dc2789b88ae0ecade7bd26",
+      "executable": false
+    },
     "src/core/features/dashboards/repository.ts": {
       "sha256": "06ad2dcbb83df5f8bd6e8ea1bdbf9be48d9d61304d0072296ab4ea6d639ccdf5",
       "executable": false
     },
     "src/core/features/dashboards/routes.ts": {
-      "sha256": "6b671e0ee24f973d1276dbe42edc9e0d668c9c88c7753952e864d03d84ac4d57",
+      "sha256": "23eb39b48d358e5278a170bd08dedff2c9451162f078e6868a272abb5db63acd",
       "executable": false
     },
     "src/core/features/dashboards/save-failure.tsx": {

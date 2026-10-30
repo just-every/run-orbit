@@ -8,6 +8,7 @@ import {dashboardPdf} from './pdf';
 import {dashboardTileCsv} from './export';
 import {dashboardSchedule} from './schedules';
 import {setDashboardSlack} from './schedule-state';
+import {removeDashboard,removeInput} from './remove';
 import {filtersSchema} from './schema';
 export function createDashboardRoutes(metrics:AnalyticsMetrics,clock:Clock=systemClock){
  const app=new Hono<AppEnvironment>(),dashboards=new Dashboards(metrics,clock),id=z.string().regex(/^[a-zA-Z0-9_-]{1,120}$/);
@@ -15,6 +16,7 @@ export function createDashboardRoutes(metrics:AnalyticsMetrics,clock:Clock=syste
  app.get('/',async c=>c.json(await dashboards.list(c.get('actor'))));
  app.put('/:id',async c=>c.json(await dashboards.save(c.get('actor'),id.parse(c.req.param('id')),await c.req.json())));
  app.get('/:id',async c=>c.json(await dashboards.read(c.get('actor'),id.parse(c.req.param('id')))));
+ app.delete('/:id',async c=>{removeInput.parse(await c.req.json());return c.json(await removeDashboard(dashboards,c.get('actor'),id.parse(c.req.param('id'))));});
  app.post('/:id/compute',async c=>c.json(await dashboards.read(c.get('actor'),id.parse(c.req.param('id')),filtersSchema.parse(await c.req.json()))));
  app.get('/:id/pdf',async c=>{const filters=c.req.query('filters'),view=await dashboards.read(c.get('actor'),id.parse(c.req.param('id')),filters?filtersSchema.parse(JSON.parse(filters)):undefined);return new Response(new Uint8Array(dashboardPdf(view)).buffer,{headers:{'Content-Type':'application/pdf','Cache-Control':'no-store','Content-Disposition':'attachment; filename="orbit-dashboard.pdf"'}});});
  app.get('/:id/tiles/:tile/csv',async c=>{const filters=c.req.query('filters'),view=await dashboards.read(c.get('actor'),id.parse(c.req.param('id')),filters?filtersSchema.parse(JSON.parse(filters)):undefined),tile=view.tiles.find(t=>t.id===id.parse(c.req.param('tile')));if(!tile||tile.status!=='ready')return c.json({error:'Source unavailable.'},404);return new Response(dashboardTileCsv(tile,view),{headers:{'Content-Type':'text/csv; charset=utf-8','Cache-Control':'no-store','Content-Disposition':'attachment; filename="orbit-dashboard-tile.csv"'}});});
