@@ -33,6 +33,9 @@ async function expectRouteRecovery(page,f){
     await back.click();await expect(page).toHaveURL(origin+'/app/opportunities');
     const create=page.getByRole('link',{name:'New opportunity',exact:true});
     await expect(create).toBeVisible();await expect(create).toHaveAttribute('href','/app/opportunities/new');
+    await create.click();await expect(page).toHaveURL(origin+'/app/opportunities/new');
+    await expect(page.getByRole('main').locator('form').getByRole('textbox').first()).toBeEditable();
+    await expect(page.getByRole('button',{name:'Save opportunity',exact:true})).toBeEnabled();
    }
   }
  }
