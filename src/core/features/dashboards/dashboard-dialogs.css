@@ -64,6 +64,8 @@
 .dash-editor .sales-reports__fields .dash-editor__wide{grid-column:1/-1}
 .dash-editor__advanced{grid-column:1/-1}
 .dash-editor__advanced>summary{display:flex;align-items:center;gap:6px;min-height:44px;width:fit-content;font-size:14px;font-weight:600;list-style:none}.dash-editor__advanced>summary::-webkit-details-marker{display:none}.dash-editor__advanced[open]>summary .dash-icon--chevron{transform:rotate(180deg)}
+.dash-removal{margin-top:16px;padding-top:12px;border-top:1px solid var(--ob-line)}.dash-removal p{margin:0 0 8px;font-size:14px}.dash-removal__actions{display:flex;flex-wrap:wrap;gap:8px}
+.dash-removal button{min-height:44px;padding:0 16px;font-size:14px;font-weight:600}
 .dash-editor__actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .dash-editor__actions button,.dash-editor__add{min-height:40px;padding:0 16px;font-size:14px;font-weight:600}
 
