@@ -1907,7 +1907,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "339dea3270cc14a057011bf5298806efc67bf65c106b4eae57cfa53ba0e3e34f",
+      "sha256": "e11041530f0b48be927daaeb1864ae66916c781d55e49cc55ca6857c857c5974",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2196,6 +2196,10 @@
     },
     "migrations/core/0074_native_agent_events.sql": {
       "sha256": "b6ebaf195c70159f77ba25487baef6cc4870f3c12c7fa23e5c078d51cb69fc64",
+      "executable": false
+    },
+    "migrations/core/0075_local_business_carry.sql": {
+      "sha256": "aba80edcf1d8a57b9849a650a6c589d03db447a06051d98ef5fef716812dea36",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -8323,7 +8327,7 @@
       "executable": false
     },
     "src/core/platform/schema.ts": {
-      "sha256": "c6ecb462472c117efd756e2d5eaaccfdec1f396f8eed11e22fbf3d25cf5d2dee",
+      "sha256": "8fd3cb71982cfa4bb4a215efc52d581f19ef2167e8d692530649bcf427db46ab",
       "executable": false
     },
     "src/core/platform/source-security.ts": {
@@ -8422,8 +8426,16 @@
       "sha256": "7ba8f678839fd7b6816ae8bd49b8bdb7d323da6887237fca0f4f57b04c4ec111",
       "executable": false
     },
+    "src/dev/local-business.ts": {
+      "sha256": "65f32de06dc805126a2bcf85bdfec134ad9f534227da307ab172947e850652cc",
+      "executable": false
+    },
     "src/dev/server.ts": {
-      "sha256": "191b11612623a28cd6e77d9f9d2ecdb7ecd33b912d816efbca9738447313ac75",
+      "sha256": "5049b9a9c3052c8988c1dbc5902da90a395193540c7529dc050d688a4c0567a7",
+      "executable": false
+    },
+    "src/dev/virtual-business.d.ts": {
+      "sha256": "662ffd35d6e233eaf09be354fcdb58f6551ca74ff82d85a744aa873e3dd71231",
       "executable": false
     },
     "src/editor/leaf.tsx": {
@@ -10547,7 +10559,7 @@
       "executable": false
     },
     "tests/rer/first-run-business.mjs": {
-      "sha256": "a28aff537d9aeae1953cf647a6868ecfb1331af04ef08672c246beb8a5ff6c2e",
+      "sha256": "b035f40ab0351ae70bc042988daf853f689d82e177203c1c542d9d35c9598d9c",
       "executable": false
     },
     "tests/rer/hosted-scheduling.mjs": {
@@ -11111,7 +11123,7 @@
       "executable": false
     },
     "vite.config.ts": {
-      "sha256": "8ea5e51cd2d715f2f78896a31e0dfc59d81c20017fd75241a1216f45d38bdfa7",
+      "sha256": "c29f8a26536e40c83184b06fbe5ff52bd3a11dd5e41703ab8f86e086c912dcf2",
       "executable": false
     },
     "vite.site.config.ts": {
@@ -11120,6 +11132,10 @@
     },
     "vite/exclude-local-variables.ts": {
       "sha256": "7b6b4be4551276e96b23156491334256d5b1a9fe4d0a62536e55c5bf561c93c2",
+      "executable": false
+    },
+    "vite/local-business.ts": {
+      "sha256": "14b732cf561640c38d7f6ad60305f0cf2e91a0f790f1f61255c658e93d51bd46",
       "executable": false
     },
     "wrangler.jsonc": {

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { appendFile, mkdir, writeFile } from 'node:fs/promises';
+import { appendFile, mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { expect } from '@playwright/test';
 import { freePort } from './checkout.mjs';
@@ -50,7 +50,50 @@ export async function firstRunBusiness(checkout, browser, evidence) {
       assert.equal(settings.workspace.name,'Harbour Business');
       assert.equal(settings.workspace.timezone,'UTC');
       await page.goto(origin+'/setup');await page.waitForURL(origin+'/app');
+      await page.goto(origin+'/app/settings/workspace');
+      await expect(page.getByLabel('Name',{exact:true})).toHaveValue('Harbour Business');
+      const carryPath=join(checkout.root,'.rer/local/business.json');
+      const updatedCarry=JSON.stringify({version:1,name:'Harbour Business renamed'});
+      await writeFile(carryPath,updatedCarry,{mode:0o600});
+      await page.reload();
+      const refreshed=await browserAPI(page,'/api/v1/settings');
+      console.log(`O-11 refresh API name: ${refreshed.workspace.name}`);
+      assert.equal(refreshed.workspace.name,'Harbour Business renamed');
+      await expect(page.getByLabel('Name',{exact:true})).toHaveValue('Harbour Business renamed');
+      await page.reload();
+      assert.equal((await browserAPI(page,'/api/v1/settings')).workspace.updated_at,refreshed.workspace.updated_at,'unchanged carry performs no duplicate workspace write');
+      assert.equal(await readFile(carryPath,'utf8'),updatedCarry,'Orbit never writes back to the Business carry');
+
     } finally { await checkout.stop('dev'); await server.exited; }
+    await writeFile(join(checkout.root,'.rer/local/business.json'),JSON.stringify({version:1,name:'Harbour Business restarted'}),{mode:0o600});
+    const restarted=await checkout.serve(['dev']);
+    try {
+      await page.goto(openLink(await restarted.ready));await page.goto(origin+'/app/settings/workspace');
+      await expect(page.getByLabel('Name',{exact:true})).toHaveValue('Harbour Business restarted');
+      const settings=await browserAPI(page,'/api/v1/settings');
+      assert.equal(settings.workspace.name,'Harbour Business restarted');
+      console.log(`O-11 restart API name: ${settings.workspace.name}`);
+      await page.getByLabel('Name',{exact:true}).fill('Owner edited Orbit name');
+      await page.getByLabel('Name',{exact:true}).press('Tab');
+      await expect.poll(async()=>(await browserAPI(page,'/api/v1/settings')).workspace.name).toBe('Owner edited Orbit name');
+      await page.reload();
+      await expect(page.getByLabel('Name',{exact:true})).toHaveValue('Owner edited Orbit name');
+      assert.equal((await browserAPI(page,'/api/v1/settings')).workspace.name,'Owner edited Orbit name','unchanged carry respects an Orbit edit');
+      const carryPath=join(checkout.root,'.rer/local/business.json');
+      assert.equal(JSON.parse(await readFile(carryPath,'utf8')).name,'Harbour Business restarted','owner edit stays one-way');
+      for (const empty of ['',JSON.stringify({version:1,name:''})]) {
+        await writeFile(carryPath,empty,{mode:0o600});await page.reload();
+        assert.equal((await browserAPI(page,'/api/v1/settings')).workspace.name,'Owner edited Orbit name','empty carry leaves the name alone');
+      }
+      await unlink(carryPath);await page.reload();
+      assert.equal((await browserAPI(page,'/api/v1/settings')).workspace.name,'Owner edited Orbit name','missing carry leaves the name alone');
+      await writeFile(carryPath,JSON.stringify({version:1,name:'Harbour Business restarted'}),{mode:0o600});
+    } finally { await checkout.stop('dev');await restarted.exited; }
+    const ownerRestart=await checkout.serve(['dev']);
+    try {
+      await page.goto(openLink(await ownerRestart.ready));
+      assert.equal((await browserAPI(page,'/api/v1/settings')).workspace.name,'Owner edited Orbit name','unchanged carry respects an Orbit edit after restart');
+    } finally { await checkout.stop('dev');await ownerRestart.exited; }
     await context.clearCookies();await reset();await setup();
     const emptyServer = await checkout.serve(['dev']);
     try {

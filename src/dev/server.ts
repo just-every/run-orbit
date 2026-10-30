@@ -3,6 +3,8 @@
 // `rer build` refuses output that contains this layer's marker.
 import worker, { runtimeBindings } from '../core/app/worker';
 import { cliSession } from './cli-session';
+import localBusinessName from 'virtual:orbit-local-business';
+import { applyLocalBusinessName } from './local-business';
 import { identityConfig } from '../core/features/identity/auth';
 // @ts-expect-error Base's HTML page helper is plain ESM.
 import { pageResponse } from '@runeditrun/rer/internal/modules/operator-auth/page.mjs';
@@ -104,6 +106,7 @@ export default {
     }
     const gate = devGate({ key: env.RER_DEV_KEY, origin: env.AUTH_ORIGIN ?? '', local: env.AUTH_LOCAL === 'true' });
     registerDevAdmission(gate ? (r: Request) => gate.admits(r) : null);
+    if (gate && await gate.admits(request)) await applyLocalBusinessName(env.DB, localBusinessName);
     if (path === '/auth/local/cli-session') return gate && env.RER_DEV_IDENTITY !== 'off' ? cliSession(request, env) : devNotFound();
     if (path === '/auth/dev/enter' || path === '/__dev/personas') {
       if (!gate || env.RER_DEV_IDENTITY === 'off' || !await gate.admits(request)) return devNotFound();

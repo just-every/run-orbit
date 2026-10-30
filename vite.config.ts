@@ -7,6 +7,7 @@ import { defineConfig } from "vite";
 import { excludeLocalVariables } from "./vite/exclude-local-variables.ts";
 import { archiveOutputGuard } from "@runeditrun/rer/archive-output";
 import { localBusinessName } from "./scripts/installer/business-carry.mjs";
+import { localBusiness } from "./vite/local-business";
 import { docsSite } from "./src/core/features/public/docs/build/plugin.ts";
 
 // Preflight runs before Vite can empty generated output, including direct Vite calls.
@@ -17,6 +18,7 @@ export default defineConfig(async ({ command }) => {
   const businessName = command === "serve" ? await localBusinessName(process.cwd()) : undefined;
   return ({
   plugins: [
+    localBusiness(process.cwd()),
     demoSockets(),
     cloudflare({ persistState: { path: statePath }, viteEnvironment: { name: "ssr" },
       config: {

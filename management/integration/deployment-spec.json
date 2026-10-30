@@ -420,6 +420,12 @@
       "name": "0074_native_agent_events.sql",
       "sha256": "b6ebaf195c70159f77ba25487baef6cc4870f3c12c7fa23e5c078d51cb69fc64",
       "sql": "-- Use the native timeline id for retained events. Restored historical rows do\n-- not become new events. The door still re-reads each URI at delivery time.\nCREATE TRIGGER orbit_native_record_event AFTER INSERT ON timeline_entry_records\nWHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN('restore','archive_import'))\n AND EXISTS(SELECT 1 FROM timeline_entries e WHERE e.id=NEW.timeline_entry_id AND e.actor_type IN('operator','agent'))\nBEGIN\n INSERT OR IGNORE INTO agent_door_events(id,uri,event)\n SELECT e.id||':'||NEW.record_type||':'||NEW.record_id,\n  'orbit://records/'||NEW.record_type||'/'||NEW.record_id,\n  json_object('id',e.id||':'||NEW.record_type||':'||NEW.record_id,'type',e.kind,\n   'uri','orbit://records/'||NEW.record_type||'/'||NEW.record_id,'at',e.recorded_at,\n   'native_activity_id',e.id,'actor',json(CASE WHEN e.actor_type='agent'\n    THEN json_patch(json_extract(e.payload_json,'$.preparedBy'),'{\"kind\":\"agent\"}')\n    ELSE json_object('kind','person','person',json_object('id',e.actor_id,'name',COALESCE(o.display_name,'Former operator'))) END))\n FROM timeline_entries e LEFT JOIN operators o ON o.id=e.actor_id WHERE e.id=NEW.timeline_entry_id;\nEND;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0075_local_business_carry.sql",
+      "sha256": "aba80edcf1d8a57b9849a650a6c589d03db447a06051d98ef5fef716812dea36",
+      "sql": "-- Remember the last local Business name separately from the owner's workspace\n-- name, so an unchanged carry cannot undo an edit made inside Orbit.\nALTER TABLE workspace_settings ADD COLUMN local_business_name TEXT;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
