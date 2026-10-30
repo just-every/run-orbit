@@ -27,3 +27,13 @@ export const loadNow = createServerFn({ method: "GET" }).handler(async () => {
   if (!presentation) throw new Error("Workspace is not configured. Run rer setup.");
   return { ...queue, presentation };
 });
+
+/** Business accent stays server-resolved, with native owner overrides winning. */
+export const loadAppAccent = createServerFn({ method: "GET" }).handler(async () => {
+  await requireOperator();
+  const { env } = await import('cloudflare:workers');
+  const { businessSetupDefaults } = await import('../features/setup/business');
+  const { ink } = await import('../../base/foundation/runtime/theme-frame');
+  const { brandColor } = await businessSetupDefaults(env as unknown as import('../platform/assets').PlatformBindings);
+  return brandColor ? { color: brandColor, text: ink(brandColor) } : null;
+});

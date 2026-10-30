@@ -47,11 +47,13 @@ test('Managed owner claim verifies RER authority and creates the native owner/se
     assert.equal(await fixture.db.prepare('SELECT count(*) n FROM operators WHERE setup_owner=1').first('n'), 1);
     // Business setup uses only deployment bindings or an authenticated signed document.
     const configured = {...bindings, WORKSPACE_NAME:'Configured Business', OWNER_NAME:'Configured owner', WORKSPACE_TIMEZONE:'UTC'} as unknown as PlatformBindings;
-    assert.deepEqual(await businessSetupDefaults(configured), {name:'Configured Business',ownerName:'Configured owner',timezone:'UTC'});
+    assert.deepEqual(await businessSetupDefaults(configured), {name:'Configured Business',ownerName:'Configured owner',timezone:'UTC',brandColor:undefined});
+    assert.equal((await businessSetupDefaults({...bindings,BRAND_COLOR:'red',WORKSPACE_TIMEZONE:'Invalid/Zone'} as PlatformBindings)).brandColor,undefined);
+    assert.equal((await businessSetupDefaults({...bindings,WORKSPACE_TIMEZONE:'Invalid/Zone'} as PlatformBindings)).timezone,undefined);
     const trust = {v:1,issuer,audience:origin,subject:'orbit-managed',email:bindings.OWNER_EMAIL,keys:{test:publicKey}};
     const managed = {...configured,RER_BUSINESS_TRUST:JSON.stringify(trust)};
     const now = Math.floor(Date.now()/1000);
-    const payload = {v:1,iss:issuer,aud:origin,sub:'orbit-managed',business:'business-test',email:bindings.OWNER_EMAIL,jti:crypto.randomUUID(),iat:now,exp:now+300,rev:1,values:{display_name:'Harbour Business',owner_name:'Hollis Reed',timezone:'America/New_York'},logo:null,team:null};
+    const payload = {v:1,iss:issuer,aud:origin,sub:'orbit-managed',business:'business-test',email:bindings.OWNER_EMAIL,jti:crypto.randomUUID(),iat:now,exp:now+300,rev:1,values:{display_name:'Harbour Business',owner_name:'Hollis Reed',timezone:'America/New_York',brand_color:'#2468ac'},logo:null,team:null};
     const message = `${encode({alg:'ES256',typ:'rer-business-settings+jwt',kid:'test'})}.${encode(payload)}`;
     const signature = Buffer.from(await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},keys.privateKey,new TextEncoder().encode(message))).toString('base64url');
     const settings = orbitBusinessSettings(managed);
@@ -59,11 +61,24 @@ test('Managed owner claim verifies RER authority and creates the native owner/se
     assert.equal((await deliver(message+'.'+signature.slice(0,-5)+'wrong'))!.status,403);
     assert.equal((await deliver(message+'.'+signature))!.status,200);
     const business = await businessSetupDefaults(managed);
-    assert.deepEqual(business,{name:'Harbour Business',ownerName:'Hollis Reed',timezone:'America/New_York'});
+    assert.deepEqual(business,{name:'Harbour Business',ownerName:'Hollis Reed',timezone:'America/New_York',brandColor:'#2468ac'});
     const app = createApp({database:fixture.db,assets:{fetch:async()=>new Response('asset')}});
-    const form = {ownerName:business.ownerName!,name:business.name!,timezone:business.timezone!,currency:'USD',stages:'Qualified\nProposal'};
+    const form = {brandColor:business.brandColor!,ownerName:business.ownerName!,name:business.name!,timezone:business.timezone!,currency:'USD',stages:'Qualified\nProposal'};
     const finish = (input:typeof form, sessionCookie=cookie) => app.request(origin+'/api/v1/setup',{method:'POST',headers:{Cookie:sessionCookie,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(input)});
     assert.equal((await finish(form,'' )).status,401);
+    assert.equal((await app.request(origin+'/api/v1/setup',{method:'POST',headers:{Cookie:cookie,Origin:issuer,'Content-Type':'application/json'},body:JSON.stringify(form)})).status,403);
+    assert.equal((await finish({...form,brandColor:'red'})).status,400);
+    assert.equal((await finish({...form,brandColor:''})).status,400);
+    assert.equal((await finish({...form,currency:''})).status,400);
+    assert.equal((await finish({...form,stages:''})).status,400);
+    const resign = async (changes:Record<string,unknown>) => {
+      const body = `${encode({alg:'ES256',typ:'rer-business-settings+jwt',kid:'test'})}.${encode({...payload,jti:crypto.randomUUID(),rev:2,...changes})}`;
+      return body+'.'+Buffer.from(await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},keys.privateKey,new TextEncoder().encode(body))).toString('base64url');
+    };
+    for (const changes of [{aud:issuer},{sub:'foreign-installation'},{email:'foreign@example.test'},{values:{brand_color:'red'}},{values:{timezone:'Invalid/Zone'}}]) {
+      assert.equal((await deliver(await resign(changes)))!.status,403);
+    }
+    assert.deepEqual(await businessSetupDefaults(managed),business,'refused documents change no defaults');
     const nullInput = await app.request(origin+'/api/v1/setup',{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},body:'null'});
     assert.equal(nullInput.status,400);
     const empty = await finish({...form,name:'  '});
@@ -72,12 +87,16 @@ test('Managed owner claim verifies RER authority and creates the native owner/se
     assert.equal(htmlEmpty.status,303);
     assert.equal(new URL(htmlEmpty.headers.get('location')!,origin).searchParams.get('error'),'Enter your business name');
     assert.equal((await readSetup(fixture.db,owner!.operatorId)).complete,false);
-    assert.equal((await finish({...form,name:'Owner chosen Business'})).status,200);
-    assert.deepEqual(await fixture.db.prepare("SELECT name,timezone FROM workspace_settings WHERE id='workspace'").first(),{name:'Owner chosen Business',timezone:'America/New_York'});
-    assert.equal(await fixture.db.prepare('SELECT display_name FROM operators WHERE id=?').bind(owner!.operatorId).first('display_name'),'Hollis Reed');
+    assert.equal((await finish({...form,name:'Owner chosen Business',ownerName:'Owner chosen name',timezone:'Europe/Paris',brandColor:'#813fa8'})).status,200);
+    assert.deepEqual(await fixture.db.prepare("SELECT name,timezone FROM workspace_settings WHERE id='workspace'").first(),{name:'Owner chosen Business',timezone:'Europe/Paris'});
+    assert.equal(await fixture.db.prepare('SELECT display_name FROM operators WHERE id=?').bind(owner!.operatorId).first('display_name'),'Owner chosen name');
     assert.equal((await readSetup(fixture.db,owner!.operatorId)).complete,true);
     assert.equal((await finish(form)).status,200);
     assert.equal(await fixture.db.prepare("SELECT name FROM workspace_settings WHERE id='workspace'").first('name'),'Owner chosen Business','repeat setup never overwrites the owner choice');
+    assert.equal((await deliver(await resign({values:{display_name:'Updated Business',owner_name:'Updated owner',timezone:'Asia/Tokyo',brand_color:'#11aa33'}})))!.status,200);
+    assert.equal((await businessSetupDefaults(managed)).brandColor,'#813fa8','later signed refresh preserves native owner accent');
+    assert.deepEqual(await fixture.db.prepare("SELECT name,timezone FROM workspace_settings WHERE id='workspace'").first(),{name:'Owner chosen Business',timezone:'Europe/Paris'});
+    assert.equal(await fixture.db.prepare('SELECT display_name FROM operators WHERE id=?').bind(owner!.operatorId).first('display_name'),'Owner chosen name');
     const direct = await identityResponse(new Request(origin + '/auth/bootstrap', {
       method: 'POST', headers: {Origin: origin, 'Content-Type': 'application/json', 'CF-Connecting-IP': '192.0.2.1'},
       body: JSON.stringify({token: bindings.SETUP_TOKEN, displayName: 'Replacement', returnTo: '/setup'}),

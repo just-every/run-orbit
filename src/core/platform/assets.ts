@@ -4,6 +4,7 @@ export interface AssetStore {
 
 export interface PlatformBindings {
   RER_BUSINESS_TRUST?: string;
+  BRAND_COLOR?: string;
   WORKSPACE_NAME?: string;
   OWNER_NAME?: string;
   WORKSPACE_TIMEZONE?: string;

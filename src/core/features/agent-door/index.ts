@@ -30,7 +30,7 @@ export function orbitAgentDoor(bindings: PlatformBindings, tools: ToolDefinition
   });
 }
 
-export function orbitBusinessSettings(bindings: PlatformBindings) {
+export function orbitBusinessSettings(bindings: Pick<PlatformBindings, 'DB' | 'RER_BUSINESS_TRUST'>) {
   return createBusinessSettings({db:bindings.DB,trust:bindings.RER_BUSINESS_TRUST,
-    business:{settings:1,values:['display_name','owner_name','timezone'],team:{roles:{admin:'native',member:'native'}}},team:orbitTeam(bindings.DB)});
+    business:{settings:1,values:['display_name','owner_name','timezone','brand_color'],team:{roles:{admin:'native',member:'native'}}},team:orbitTeam(bindings.DB)});
 }

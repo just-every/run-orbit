@@ -381,6 +381,21 @@
           "standard"
         ],
         "policy": "autonomous"
+      },
+      "resource": {
+        "uriTemplate": "orbit://records/{kind}/{id}",
+        "state": {
+          "ref": {
+            "id": {
+              "$from": "public_company",
+              "pointer": "/id"
+            }
+          },
+          "kind": "company",
+          "fields": {
+            "name": "Brightwork public seller context"
+          }
+        }
       }
     },
     {

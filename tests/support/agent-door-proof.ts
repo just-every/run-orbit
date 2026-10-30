@@ -92,8 +92,22 @@ export async function agentDoorProof() {
     const validBusiness=await businessCall('orbit.records.read',{kind:'company',id:companyId});
     assert.equal(validBusiness.status,200);assert.equal(validBusiness.body.result.structuredContent.ref.id,companyId);
     assert.equal(validBusiness.body.result.isError,false);
-    const teammateCall=await businessCall('orbit.records.read',{kind:'company',id:companyId},{sub:'business-jamie',email:bindings.OWNER_EMAIL,act:{sub:'jamie-assistant',name:'Jules'}});
-    assert.equal(teammateCall.status,200,JSON.stringify(teammateCall.body));assert.equal(teammateCall.body.result.isError,false,'Business subject selects the teammate despite a different token email');
+    // An outstanding Business token stops working when its mapped native sponsor changes email.
+    const teammateToken=await sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:'business-jamie',email:mappedTeammate!.email,act:{sub:'jamie-assistant',name:'Jules'},client_id:'business-client',business:'door-company',scope:principal.scopes.join(' '),consent:'door-test-consent',jti:crypto.randomUUID(),iat:now,exp:now+300});
+    const teammateRead=async()=>{
+      const response=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+teammateToken,'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','MCP-Method':'tools/call','MCP-Name':'orbit.records.read'},body:JSON.stringify({jsonrpc:'2.0',id:3,method:'tools/call',params:{name:'orbit.records.read',arguments:{kind:'company',id:companyId},_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}})}));
+      return {status:response!.status,body:await response!.json() as any};
+    };
+    const teammateCall=await teammateRead();
+    assert.equal(teammateCall.status,200,JSON.stringify(teammateCall.body));assert.equal(teammateCall.body.result.isError,false);
+    assert.equal(teammateCall.body.result.structuredContent.ref.id,companyId);
+    await fixture.db.prepare('UPDATE operators SET email=? WHERE id=?').bind('jamie.changed@example.test',teammate.id).run();
+    const changedEmailCall=await teammateRead();
+    assert.equal(changedEmailCall.status,401,'the same outstanding token must be refused after a native email change');
+    assert.equal(changedEmailCall.body.error.code,-32001);
+    assert.equal(changedEmailCall.body.error.message,'Unauthorized');
+    assert.equal(changedEmailCall.body.result,undefined);
+    await fixture.db.prepare('UPDATE operators SET email=? WHERE id=?').bind(mappedTeammate!.email,teammate.id).run();
     const read=await door.invoke('orbit.records.read',{kind:'company',id:companyId},principal);
     assert.equal(read.outcome,'done',JSON.stringify(read));
     const current=(read.result as {ref:{revision:number}}).ref.revision;
@@ -181,7 +195,7 @@ export async function agentDoorProof() {
     const witness=await call('orbit.operations.read',{});
     assert.ok(witness.record_mail_drafts.rows>0);
     await settingsRepository.remove(teammate.id,owner.operatorId,undefined,owner.sessionId);
-    assert.equal((await businessCall('orbit.records.read',{kind:'company',id:companyId},{sub:'business-jamie',act:{sub:'jamie-assistant',name:'Jules'}})).status,401,'native teammate removal overrides a still-applied Business mapping');
+    assert.equal((await businessCall('orbit.records.read',{kind:'company',id:companyId},{sub:'business-jamie',email:mappedTeammate!.email,act:{sub:'jamie-assistant',name:'Jules'}})).status,401,'native teammate removal overrides a still-applied Business mapping');
     await fixture.db.prepare('UPDATE operators SET email=? WHERE id=?').bind('renamed@example.test',owner.operatorId).run();
     assert.equal((await people.sponsor({sub:'business-owner'}))?.id,owner.operatorId);
     await fixture.db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(owner.operatorId).run();

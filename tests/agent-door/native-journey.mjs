@@ -43,7 +43,7 @@ export default async function sellerDay({tool,request,origin,cookie}) {
  assert.deepEqual(write?.resource,{kind:'opportunity',id},'native write audit identifies its actual opportunity');
 }
 
-// The installed 0.2.87 runner exercises the native target, resource refusal,
+// The installed 0.2.93 runner exercises the native target, resource refusal,
 // replay admission, signed owner binding and independent reviewer lifecycle.
 // Access/security tools remain undeclared, so no self-widening probe applies.
 // The runner refreshes native revisions for injection variants. The stale

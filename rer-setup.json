@@ -46,6 +46,14 @@
       "group": "owner"
     },
     {
+      "name": "BRAND_COLOR",
+      "label": "Business accent",
+      "kind": "text",
+      "required": false,
+      "businessField": "brand_color",
+      "group": "owner"
+    },
+    {
       "name": "SESSION_SECRET",
       "label": "Sign-in secret",
       "kind": "secret",
@@ -181,7 +189,8 @@
     "values": [
       "display_name",
       "owner_name",
-      "timezone"
+      "timezone",
+      "brand_color"
     ],
     "team": {
       "roles": {

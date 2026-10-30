@@ -10,6 +10,7 @@
   --operator-muted: var(--ob-muted);
   --operator-paper: var(--ob-card);
   --operator-canvas: var(--ob-paper);
+  --operator-column: #fff;
   --operator-line: var(--ob-line);
   --operator-border: var(--ob-line);
   --operator-orange: var(--ob-tangerine-deep);
@@ -20,11 +21,16 @@
   font-size: 16px;
   line-height: 1.5;
 }
+/* The main content column is pure white whatever the canvas token; the header keeps the paper tone and cards, fields and
+   insets are set apart by their own outline or the paper-deep tone, never by the canvas showing through. */
+.operator-shell.ob-app { background: var(--operator-column); }
 :where(.ob-app) :where(h1, h2, h3, h4) { font-family: var(--ob-sans); text-wrap: balance; }
 :where(.ob-app) :where(p, li, dd, small, label) { text-wrap: pretty; }
 :where(.ob-app) :where(button) { text-wrap: balance; }
 :where(.ob-app) :where(a) { color: inherit; }
-:where(.ob-app) :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible { outline: 3px solid var(--ob-tangerine); outline-offset: 3px; }
+/* Focus rings are for things without a border of their own. A text field, select or textarea shows focus on its one
+   border instead (below): never a ring drawn outside it. */
+:where(.ob-app) :where(a, button, input:is([type="checkbox"], [type="radio"], [type="file"]), summary, [tabindex]):focus-visible { outline: 3px solid var(--ob-tangerine); outline-offset: 3px; }
 
 /* Header: the lockup, the menu (the daily jobs, or the Settings areas on Settings pages), then Settings and Sign out
    apart at the right end, on one hairline. The current item is ink at 650 with a tangerine underline inside the bar. */
@@ -78,7 +84,9 @@
 :where(.ob-app) :where(input:not([type="checkbox"], [type="radio"], [type="hidden"], [type="file"]), select, textarea) { box-sizing: border-box; max-width: 100%; min-height: 44px; padding: 9px 13px; border: var(--app-field); border-radius: 12px; background-color: var(--ob-card); color: var(--ob-ink); font: inherit; font-size: 15.5px; transition: border-color 0.18s, box-shadow 0.18s; }
 :where(.ob-app) :where(textarea) { line-height: 1.5; resize: vertical; }
 :where(.ob-app) :where(input, select, textarea):hover { border-color: #bdb3a3; }
-:where(.ob-app) :where(input, select, textarea):focus { border-color: var(--ob-ink); outline: none; box-shadow: 0 0 0 3px rgba(22, 23, 29, 0.12); }
+/* Focus: the field's one border turns ink and doubles in weight (1.5 px plus 1.5 px drawn inside it), with no second ring. */
+.ob-app :is(input:not([type="checkbox"], [type="radio"], [type="file"], [type="hidden"]), select, textarea):is(:focus, :focus-visible) { border-color: var(--ob-ink); outline: none; box-shadow: inset 0 0 0 1.5px var(--ob-ink); }
+.ob-app .is-failed :is(input, select, textarea):is(:focus, :focus-visible) { border-color: var(--ob-tangerine-deep); box-shadow: inset 0 0 0 1.5px var(--ob-tangerine-deep); }
 :where(.ob-app) :where(input[type="checkbox"], input[type="radio"]) { width: 18px; height: 18px; accent-color: var(--ob-ink); }
 :where(.ob-app) :where(label) { color: var(--ob-ink); font-size: 14.5px; font-weight: 600; }
 :where(.ob-app) :where(fieldset) { min-width: 0; margin: 0; padding: 0; border: 0; }
@@ -93,8 +101,8 @@
 :where(.ob-app) :where(button) { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 8px 18px; border: 1.5px solid var(--ob-ink); border-radius: 999px; background: transparent; color: var(--ob-ink); cursor: pointer; font: inherit; font-size: 15px; font-weight: 600; line-height: 1.2; text-align: center; transition: background-color 0.18s, color 0.18s, transform 0.18s var(--ob-ease); }
 :where(.ob-app) :where(button):hover:not(:disabled) { background: rgba(22, 23, 29, 0.06); }
 :where(.ob-app) :where(button):disabled { cursor: not-allowed; opacity: 0.5; }
-.ob-app :is(.operator-button, .operator-primary-button, .orbit-button--primary, .assistance-button--generate, .analytics-console__submit) { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 22px; border: 1.5px solid var(--ob-ink); border-radius: 999px; background: var(--ob-ink); color: var(--ob-paper); box-shadow: var(--ob-shadow-pill); cursor: pointer; font: inherit; font-size: 15.5px; font-weight: 600; line-height: 1.25; text-align: center; text-decoration: none; justify-self: start; }
-.ob-app :is(.operator-button, .operator-primary-button, .orbit-button--primary, .assistance-button--generate, .analytics-console__submit):hover:not(:disabled) { background: #000; transform: translateY(-1px); }
+.ob-app :is(.operator-button, .operator-primary-button, .orbit-button--primary, .assistance-button--generate, .analytics-console__submit) { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 22px; border: 1.5px solid var(--ob-ink); border-radius: 999px; background: var(--rer-business-accent, var(--ob-ink)); color: var(--rer-business-accent-text, var(--ob-paper)); border-color: var(--rer-business-accent, var(--ob-ink)); box-shadow: var(--ob-shadow-pill); cursor: pointer; font: inherit; font-size: 15.5px; font-weight: 600; line-height: 1.25; text-align: center; text-decoration: none; justify-self: start; }
+.ob-app :is(.operator-button, .operator-primary-button, .orbit-button--primary, .assistance-button--generate, .analytics-console__submit):hover:not(:disabled) { background: var(--rer-business-accent, #000); transform: translateY(-1px); }
 .ob-app :is(.operator-button, .operator-primary-button, .orbit-button--primary, .assistance-button--generate, .analytics-console__submit):disabled { cursor: not-allowed; opacity: 0.5; box-shadow: none; transform: none; }
 .ob-app .orbit-button { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 8px 18px; line-height: 1.2; text-align: center; border-radius: 999px; cursor: pointer; font-size: 15px; font-weight: 600; text-decoration: none; }
 .ob-app .orbit-button--secondary { border: 1.5px solid var(--ob-ink); background: transparent; color: var(--ob-ink); }
@@ -205,7 +213,7 @@
 .source-table { width: 100%; min-width: 650px; border-collapse: collapse; font-size: 15px; text-align: left; }
 .source-table th, .source-table td { padding: 12px 12px 12px 0; border-bottom: 1.5px solid var(--ob-line); vertical-align: top; }
 .source-table th { border-bottom: 2px solid var(--ob-ink); color: var(--ob-ink); font-size: 13.5px; font-weight: 650; }
-.source-table td small { display: block; margin-top: 4px; overflow-wrap: anywhere; color: var(--ob-muted); font-family: var(--ob-mono); font-size: 12.5px; }
+.source-table td small { display: block; margin-top: 4px; overflow-wrap: anywhere; color: var(--ob-muted); font-family: var(--ob-mono); font-size: var(--ob-text-min); }
 .source-table td:first-child { min-width: 180px; }
 
 /* Notifications inbox. */

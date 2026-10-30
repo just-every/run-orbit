@@ -4,8 +4,9 @@ import type {DashboardDefinition,DashboardTile,DashboardFilters} from './schema'
 import {DashboardModal} from './modal';
 import {DashboardEditorTile,type ReportChoice,type ResultChoice} from './editor-tile';
 import {SaveFailure,plainFailure,rebase} from './save-failure';
+import {DashboardRemoval} from './removal';
 type Saved={version:number;definition:DashboardDefinition};
-export function DashboardEditor({base,workspace,filters,timezone,onClose,onSaved}:{base:string;workspace:string;filters:DashboardFilters;timezone:string;onClose:()=>void;onSaved:()=>void}){
+export function DashboardEditor({base,workspace,filters,timezone,canRemove,onClose,onSaved}:{base:string;workspace:string;filters:DashboardFilters;timezone:string;canRemove:boolean;onClose:()=>void;onSaved:()=>void}){
  const [data,setData]=useState<Saved|null>(null),[loaded,setLoaded]=useState<Saved|null>(null),[sources,setSources]=useState<ReportChoice[]>([]),[forecasts,setForecasts]=useState<{id:string;from:string;through:string}[]>([]),[results,setResults]=useState<Record<string,ResultChoice[]>>({}),[error,setError]=useState(''),[failed,setFailed]=useState(''),[busy,setBusy]=useState(false);
  const operations=`/api/v2/workspaces/${encodeURIComponent(workspace)}/operations`;
  useEffect(()=>{let active=true;Promise.all([api<Saved>(`${base}/definition`),api<{items:ReportChoice[]}>(`${operations}/metrics`)]).then(([d,list])=>{if(active){setLoaded(d);setData({...d,definition:{...d.definition,filters}});setSources(list.items.filter(s=>JSON.parse(s.body_json).kind==='sales'));}}).catch(e=>active&&setError(plainFailure(e)));api<{snapshots:{id:string;from:string;through:string}[]}>(`/api/v2/workspaces/${encodeURIComponent(workspace)}/forecast/snapshots`).then(r=>{if(active)setForecasts(r.snapshots);}).catch(e=>{if(active)setError(`Forecast views unavailable: ${plainFailure(e)}`);});return()=>{active=false;};},[base,operations,workspace]);
@@ -21,6 +22,7 @@ export function DashboardEditor({base,workspace,filters,timezone,onClose,onSaved
   {data?<><label>Dashboard name<input value={data.definition.name} onChange={e=>setData({...data,definition:{...data.definition,name:e.target.value}})}/></label><p className="dash-dialog__lead">{data.definition.tiles.length} of 24 tiles · saving creates a new dashboard version with the current filters.</p>
    <ol className="dash-editor">{data.definition.tiles.map((tile,index)=><li key={tile.id}><DashboardEditorTile tile={tile} index={index} sources={sources} forecasts={forecasts} results={results[`${tile.sourceId}:${tile.version}`]??[]} update={patch=>update(tile.id,patch)} timezone={timezone}/><div className="dash-editor__actions"><button type="button" disabled={index===0} onClick={()=>move(index,-1)}>Move up</button><button type="button" disabled={index===data.definition.tiles.length-1} onClick={()=>move(index,1)}>Move down</button><button type="button" onClick={()=>setData({...data,definition:{...data.definition,tiles:data.definition.tiles.filter(t=>t.id!==tile.id)}})}>Remove tile {index+1}</button></div></li>)}</ol>
    <button type="button" className="dash-editor__add" disabled={data.definition.tiles.length>=24||!sources.length&&!forecasts.length} onClick={add}>Add a tile</button>
+   {canRemove&&<DashboardRemoval base={base} name={loaded?.definition.name??data.definition.name}/>}
    {failed&&<SaveFailure message={failed} onRetry={()=>void save(true)}/>}
    <div className="operator-dialog__actions"><button type="button" onClick={onClose}>Cancel</button><button type="button" disabled={busy} className="ob-pill" onClick={()=>void save(Boolean(failed))}>Save dashboard version</button></div>
   </>:<p role="status">Loading tile definitions…</p>}

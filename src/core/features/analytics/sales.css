@@ -11,7 +11,7 @@
 .sales-reports button,.sales-reports select,.sales-reports input{min-height:44px;font:inherit}
 .sales-reports button{padding:8px 13px;border:1.5px solid var(--ob-line-strong);border-radius:12px;color:var(--operator-ink);background:var(--operator-paper);font-weight:650;cursor:pointer}
 .sales-reports button:disabled{color:var(--ob-muted);background:var(--ob-line);cursor:not-allowed}
-.sales-reports :is(button,a,select,input,[tabindex]):focus-visible{outline:3px solid var(--ob-tangerine);outline-offset:3px}
+.sales-reports :is(button,a,[tabindex]):focus-visible{outline:3px solid var(--ob-tangerine);outline-offset:3px}
 .sales-reports .sales-primary{border-color:var(--operator-green);color:#fff;background:var(--operator-green);justify-self:start}
 .sales-reports__fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;gap:14px;padding:16px;border:1px solid var(--operator-line);border-radius:12px;background:var(--ob-paper-deep)}
 .sales-reports__fields label,.sales-editor label{display:grid;gap:6px;min-width:0;font-size:.84rem;font-weight:600}
@@ -26,11 +26,11 @@
 .sales-result{display:grid;gap:14px;min-width:0;padding:16px;border:1px solid var(--operator-line);border-radius:12px;background:var(--ob-paper-deep)}
 .sales-basis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
 .sales-basis>div,.sales-totals>div{min-width:0;padding:12px;border:1px solid var(--operator-line);border-radius:8px;background:var(--operator-paper)}
-.sales-basis dt,.sales-totals dt{color:var(--ob-body);font-size:.78rem;font-weight:700}
+.sales-basis dt,.sales-totals dt{color:var(--ob-body);font-size:var(--ob-text-min);font-weight:700}
 .sales-basis dd,.sales-totals dd{margin:6px 0 0;overflow-wrap:anywhere}
 .sales-basis ul{margin:0;padding-inline-start:1.2rem}
 .sales-section{display:grid;gap:10px;min-width:0;padding-top:14px;border-top:1px solid var(--operator-line)}
-.sales-totals{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin:0}.sales-cell-note{display:block;margin-top:6px;color:var(--ob-body);font-size:.78rem;line-height:1.35}
+.sales-totals{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin:0}.sales-cell-note{display:block;margin-top:6px;color:var(--ob-body);font-size:var(--ob-text-min);line-height:1.35}
 .sales-totals .sales-not-success{border-style:dashed}
 .sales-reports .sales-cell{min-width:44px;padding:6px 10px;white-space:nowrap;overflow-wrap:normal;border-color:var(--operator-green);font-variant-numeric:tabular-nums;text-decoration:underline;text-underline-offset:3px;transition:none}
 .sales-reports .sales-cell[aria-expanded=true]{color:#fff;background:var(--operator-green)}

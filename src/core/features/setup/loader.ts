@@ -10,7 +10,8 @@ export const loadSetup = createServerFn({ method: 'GET' }).handler(async () => {
   const bindings = env as unknown as import('../../platform/assets').PlatformBindings;
   const setup = await readSetup(bindings.DB, operator.operatorId);
   if (setup.complete) throw redirect({ href: '/app', statusCode: 302 });
+  if (!setup.owner) return { complete: false, owner: false, workspace: null, stages: [], displayName: '' };
   const { businessSetupDefaults } = await import('./business');
-  const business = setup.owner ? await businessSetupDefaults(bindings) : undefined;
+  const business = await businessSetupDefaults(bindings);
   return { ...setup, displayName: operator.displayName, business };
 });

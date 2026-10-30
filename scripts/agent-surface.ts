@@ -12,6 +12,7 @@ const step=(id:string,tool:string,args:object,expect:object[]=std)=>journey.push
 step('fixture','records.list',{kind:'opportunity',query:'Door specialist fixture opportunity',limit:1});
 step('fixture_contact','records.list',{kind:'contact',query:'Maya Chen',limit:1});
 step('public_company','records.create',{kind:'company',record:{name:'Brightwork public seller context'}});
+journey.find(item=>item.id==='public_company').resource={uriTemplate:'orbit://records/{kind}/{id}',state:{ref:{id:from('public_company','/id')},kind:'company',fields:{name:'Brightwork public seller context'}}};
 step('public_read','records.read',{kind:'company',id:from('public_company','/id')});
 step('public_update','records.update',{kind:'company',id:from('public_company','/id'),fields:{name:'Brightwork public seller context updated'},expected_revision:from('public_read','/ref/revision')});
 journey.find(item=>item.id==='public_update').target={kind:'company',id:from('public_company','/id')};
