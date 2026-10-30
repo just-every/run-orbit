@@ -108,7 +108,7 @@ settings and policy after moving an installation.
 The source declaration is `agent-surface.json`; `pnpm exec tsx
 scripts/agent-surface.ts` regenerates it from the runtime registry. The Base
 runtime copy and the installed CLI are separate pins. The published CLI is
-pinned to `@runeditrun/rer` 0.2.87. Its installed
+pinned to `@runeditrun/rer` 0.2.93. Its installed
 conformance entry runs against the production build in the existing source
 verification stage, and normal `rer verify` runs the same harness after the
 product checks. Base-delivered clauses are synchronized with `rer door clauses

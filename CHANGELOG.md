@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.2 — 2026-10-30
+
+Orbit 0.4.2 is a security release. The agent door now refuses a still-valid access token whose email claim no longer matches the subject's current native email, with a typed 401 or 403 instead of serving the request (conformance point BASE-AGENT-004.sponsor.changed-email). It also carries the record changes made since 0.4.1: each deal's page opens on its next action, with one Activity list and its details beside the work; opportunities, contacts and companies each have their own address, and every record has its own page; record values and workspace settings save as you change them; and each sent message states what Orbit knows about its delivery. Orbit now runs on rer 0.2.93. It updates 0.4.1 in place with no migration and keeps every row.
+
 ## 0.3.0 — 2026-10-20
 
 Changes since v0.2.0 (2026-10-18). An independent release gate ran every homepage job on commit `7c2a636` before this record: once locally at desktop and phone widths, started with the README's one line, and once on a hosted Cloudflare installation with real SendGrid mail. On the hosted installation it took a backup, removed the deployment, deployed again and restored every row. Sending budgets, opt-out links and the end of follow-up on stage moves landed after that gate, so their journeys were run again on commit `0b2bb14`, locally at both widths with real SendGrid mail, and a populated 0.2.0 installation was updated in place to that commit with every row kept. Mentions and the move to rer 0.2.72 landed after that, so the mentions journey was run on commit `ee5d210`, locally at both widths, a populated 0.2.0 installation was updated in place to that commit with every row kept, and an archive made by 0.2.0 restored into it with every row unchanged.
