@@ -4022,6 +4022,14 @@
       "sha256": "a2e40a3ea1d6fb88330f3cc1b4076e17fd3600eef29da126911790ff360dbc38",
       "executable": false
     },
+    "scripts/installer/business-carry.d.mts": {
+      "sha256": "fa77b0bca37cc6e1b74772df5ec69852a739f76418950766d53af210b762fe6e",
+      "executable": false
+    },
+    "scripts/installer/business-carry.mjs": {
+      "sha256": "e3f55b8551f3a7b3380a3ab03023bf43515a30b14420a2ca3e36763c1e34f0f4",
+      "executable": false
+    },
     "scripts/installer/capture-notices.mjs": {
       "sha256": "ea7c43f3e4b4004e3926a945292bb973acb58f1df75fab8bf4b3937ffc1106e2",
       "executable": false
@@ -7878,6 +7886,10 @@
       "sha256": "819bab7fc2bb966f315f7867ec48debe7c7f9a7cbfb276d67d391e3aa6fcc67e",
       "executable": false
     },
+    "src/core/features/setup/business.ts": {
+      "sha256": "1f9cfb78f948d8ea04ad98a678504269a3dd660d04b667a9e5f74cc8bc1935ea",
+      "executable": false
+    },
     "src/core/features/setup/loader.ts": {
       "sha256": "3949d6521571eb3e6e60c091b14eab9f5aca7dce112c7c81224a91842dd1b78a",
       "executable": false
@@ -10496,6 +10508,10 @@
     },
     "tests/rer/editor-provider.mjs": {
       "sha256": "9f1ea44247c7e8f3b58ff2fd95ce75db41b83389989760c009da9e540abdebc1",
+      "executable": false
+    },
+    "tests/rer/first-run-business.mjs": {
+      "sha256": "a28aff537d9aeae1953cf647a6868ecfb1331af04ef08672c246beb8a5ff6c2e",
       "executable": false
     },
     "tests/rer/hosted-scheduling.mjs": {
