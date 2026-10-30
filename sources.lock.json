@@ -3783,7 +3783,7 @@
       "executable": false
     },
     "public/operator-native.css": {
-      "sha256": "1aa3d54b5a6793865f6148d5b01252b2aec36ecd49181602b319eea581b29282",
+      "sha256": "0cdc4c7d21286b00f64f3063208bd7c38c14838eec1d80419fde12b60dbb50cb",
       "executable": false
     },
     "public/orbit-auth.css": {
@@ -6659,7 +6659,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator.css": {
-      "sha256": "06f789b24e07d2b4b1971a4cd16a31e56ee1f7a95bb892dd08a5123b813d91a9",
+      "sha256": "346eed51e905efc8fad2b3356500202624a7fb569a8afb419f938b135a23e477",
       "executable": false
     },
     "src/core/features/operator/ui/opt-out-settings.tsx": {

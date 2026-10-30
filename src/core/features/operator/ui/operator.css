@@ -10,6 +10,7 @@
   --operator-muted: var(--ob-muted);
   --operator-paper: var(--ob-card);
   --operator-canvas: var(--ob-paper);
+  --operator-column: #fff;
   --operator-line: var(--ob-line);
   --operator-border: var(--ob-line);
   --operator-orange: var(--ob-tangerine-deep);
@@ -20,6 +21,9 @@
   font-size: 16px;
   line-height: 1.5;
 }
+/* The main content column is pure white whatever the canvas token; the header keeps the paper tone and cards, fields and
+   insets are set apart by their own outline or the paper-deep tone, never by the canvas showing through. */
+.operator-shell.ob-app { background: var(--operator-column); }
 :where(.ob-app) :where(h1, h2, h3, h4) { font-family: var(--ob-sans); text-wrap: balance; }
 :where(.ob-app) :where(p, li, dd, small, label) { text-wrap: pretty; }
 :where(.ob-app) :where(button) { text-wrap: balance; }

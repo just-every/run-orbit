@@ -4,7 +4,7 @@
 :root{font-family:var(--rer-font-body);font-size:16px;line-height:1.5;color:var(--rer-text);background:var(--rer-page);font-synthesis:none;-webkit-font-smoothing:antialiased}
 *{box-sizing:border-box}body{margin:0;min-width:320px;background:var(--rer-page)}
 /* Keep this native frame aligned with OperatorShell, including its phone disclosure. */
-.operator-shell{--ob-gutter:clamp(20px,5vw,80px);min-height:100svh}
+.operator-shell{--ob-gutter:clamp(20px,5vw,80px);min-height:100svh;background:#fff}
 .operator-header{position:relative;display:flex;align-items:center;gap:clamp(18px,2.4vw,36px);min-height:72px;padding:12px var(--ob-gutter);border-bottom:1.5px solid #e4ded3;background:var(--rer-page)}
 .operator-mark{flex:none;border-radius:9px;text-decoration:none}
 .ob-brand{display:inline-flex;align-items:center;gap:8px;font:700 25px/1 var(--rer-font-heading);letter-spacing:-.03em}
