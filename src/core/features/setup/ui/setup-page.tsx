@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { workspaceDefaults } from '../../identity/bootstrap';
 import { AuthFrame } from '../../public/ui/auth/AuthFrame';
 
@@ -7,35 +7,44 @@ export interface SetupView {
   displayName: string;
   workspace: { name: string; timezone: string; currency: string } | null;
   stages: string[];
+  business?: { name?: string; ownerName?: string; timezone?: string };
   error?: string;
 }
 
 /**
- * First-run setup. The plain form posts before hydration; finishing it opens the app. The business name starts empty
- * rather than showing the stored stand-in, and an untouched default time zone becomes the browser's own once scripts run.
+ * First-run setup uses server-provided Business defaults without replacing owner edits.
+ * The plain form posts before hydration; finishing it opens the app.
  */
 export function SetupPage({ view }: { view: SetupView }) {
   const timezone = useRef<HTMLInputElement>(null);
-  const storedZone = view.workspace?.timezone ?? workspaceDefaults.timezone;
+  const [nameError, setNameError] = useState(false);
+  const storedZone = view.workspace?.timezone && view.workspace.timezone !== workspaceDefaults.timezone
+    ? view.workspace.timezone : view.business?.timezone ?? view.workspace?.timezone ?? workspaceDefaults.timezone;
   useEffect(() => {
     const field = timezone.current;
     const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (field && detected && storedZone === workspaceDefaults.timezone && field.value === storedZone) field.value = detected;
-  }, [storedZone]);
-  const ownerName = view.displayName === 'Owner' ? '' : view.displayName;
-  const name = view.workspace?.name && view.workspace.name !== workspaceDefaults.name ? view.workspace.name : '';
+    if (field && detected && !view.business?.timezone && storedZone === workspaceDefaults.timezone && field.value === storedZone) field.value = detected;
+  }, [storedZone, view.business?.timezone]);
+  const ownerName = view.business?.ownerName ?? (view.displayName === 'Owner' ? '' : view.displayName);
+  const name = view.workspace?.name && view.workspace.name !== workspaceDefaults.name ? view.workspace.name : view.business?.name ?? '';
   const signOut = <form method="post" action="/auth/signout"><button className="ob-auth-signout">Sign out</button></form>;
   return <AuthFrame layout="bar" action={signOut}>
     <p className="ob-auth-eyebrow">First-run setup</p>
     <h1>Set up your workspace.</h1>
     {view.owner ? <>
       <p className="ob-auth-lead">Welcome{ownerName ? `, ${ownerName}` : ''}. Tell Orbit who you are and how to present your business. You can change these later in Settings.</p>
-      <form method="post" action="/api/v1/setup" className="ob-auth-form">
+      <form method="post" action="/api/v1/setup" className="ob-auth-form" noValidate onSubmit={event => {
+        const form = event.currentTarget;
+        const field = form.elements.namedItem('name') as HTMLInputElement;
+        if (!field.value.trim()) { event.preventDefault(); setNameError(true); field.focus(); return; }
+        if (!form.reportValidity()) event.preventDefault();
+      }}>
         <label htmlFor="setup-owner-name">Your name</label>
         <input id="setup-owner-name" name="ownerName" required maxLength={200} autoComplete="name" defaultValue={ownerName} aria-describedby="setup-owner-name-help" />
         <p id="setup-owner-name-help" className="ob-auth-help">Shown to your team as the owner of deals and actions.</p>
         <label htmlFor="setup-name">Business name</label>
-        <input id="setup-name" name="name" required maxLength={200} autoComplete="organization" defaultValue={name} aria-describedby="setup-name-help" />
+        <input id="setup-name" name="name" required maxLength={200} autoComplete="organization" defaultValue={name} aria-invalid={nameError || undefined} aria-describedby={nameError ? 'setup-name-error setup-name-help' : 'setup-name-help'} onChange={() => setNameError(false)} />
+        {nameError && <p id="setup-name-error" className="ob-auth-status" role="alert">Enter your business name</p>}
         <p id="setup-name-help" className="ob-auth-help">Customers see it as the sender name on the mail you approve.</p>
         <label htmlFor="setup-timezone">Time zone</label>
         <input id="setup-timezone" ref={timezone} name="timezone" required maxLength={100} defaultValue={storedZone} aria-describedby="setup-timezone-help" />

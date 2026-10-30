@@ -21,6 +21,7 @@ export function createSetupRoutes(db: D1Database) {
     const fail = (status: 400 | 403 | 409, error: string) => page ? context.redirect(`/setup?${new URLSearchParams({ error })}`, 303) : context.json({ error }, status);
     const body = context.req.header('Content-Type')?.includes('application/json') ? await context.req.json() : await context.req.parseBody();
     const parsed = setupInput.safeParse(body);
+    if (!parsed.success && (typeof body?.name !== 'string' || !body.name.trim())) return fail(400, 'Enter your business name');
     if (!parsed.success) return fail(400, 'Enter your name, a business name, time zone, three-letter currency and at least one pipeline stage.');
     if (new Set(parsed.data.stages).size !== parsed.data.stages.length) return fail(400, 'Use distinct pipeline stage names.');
     try { await completeSetup(db, context.get('operator').operatorId, parsed.data); }

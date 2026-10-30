@@ -7,6 +7,7 @@ import { chromium } from '@playwright/test';
 import { accessible } from './onboarding-journey.mjs';
 import { browserAPI } from './browser-api.mjs';
 import { freePort, freshCheckout } from './checkout.mjs';
+import { firstRunBusiness } from './first-run-business.mjs';
 import { devKey, openLink } from './sign-in.mjs';
 
 // Base sign-in in a fresh checkout through the public rer commands: rer dev
@@ -29,6 +30,7 @@ async function shot(page, name) {
 const enter = async (page, origin, as) => { await page.goto(`${origin}/auth/dev/enter?as=${as}&returnTo=${encodeURIComponent('/app/access')}`); await page.waitForLoadState('networkidle'); };
 
 test('AUTH-5 rer dev opens signed in, personas switch role and field access', { timeout: 30 * 60_000 }, async () => {
+  await firstRunBusiness(checkout,browser,evidence);
   const port = await freePort(), origin = `http://127.0.0.1:${port}`;
   await exitOf(await checkout.rer(['setup', '--owner-email', 'owner@example.test', '--port', String(port), '--non-interactive']), 0, 'setup');
   const dev = await checkout.serve(['dev']), ready = await dev.ready, key = await devKey(checkout.root);
