@@ -7935,7 +7935,7 @@
       "executable": false
     },
     "src/core/features/setup/routes.ts": {
-      "sha256": "566fc131034369538aa2b8a6b9d0477462071e526d4af8ed6238161dbf96e2a5",
+      "sha256": "e9fa663712eaed6f6d449c92d6423c01d1e1d74190ed71e2323eac9691630425",
       "executable": false
     },
     "src/core/features/setup/ui/setup-page.tsx": {
@@ -9875,7 +9875,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "ef9687bab68e590858d40dcec96e00768623d976d27f70df6f4a390d8a5de2a2",
+      "sha256": "36a554258cdfcc834f8b96e746b247383f9ef97767df5d40d1e2c65ce265542b",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {

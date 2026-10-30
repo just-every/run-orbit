@@ -64,6 +64,8 @@ test('Managed owner claim verifies RER authority and creates the native owner/se
     const form = {ownerName:business.ownerName!,name:business.name!,timezone:business.timezone!,currency:'USD',stages:'Qualified\nProposal'};
     const finish = (input:typeof form, sessionCookie=cookie) => app.request(origin+'/api/v1/setup',{method:'POST',headers:{Cookie:sessionCookie,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(input)});
     assert.equal((await finish(form,'' )).status,401);
+    const nullInput = await app.request(origin+'/api/v1/setup',{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},body:'null'});
+    assert.equal(nullInput.status,400);
     const empty = await finish({...form,name:'  '});
     assert.equal(empty.status,400);assert.deepEqual(await empty.json(),{error:'Enter your business name'});
     const htmlEmpty = await app.request(origin+'/api/v1/setup',{method:'POST',headers:{Cookie:cookie,Origin:origin,Accept:'text/html','Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({...form,name:''}).toString()});
