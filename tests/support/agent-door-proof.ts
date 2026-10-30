@@ -107,6 +107,7 @@ export async function agentDoorProof() {
     assert.equal(changedEmailCall.body.error.code,-32001);
     assert.equal(changedEmailCall.body.error.message,'Unauthorized');
     assert.equal(changedEmailCall.body.result,undefined);
+    await fixture.db.prepare('UPDATE operators SET email=? WHERE id=?').bind(mappedTeammate!.email,teammate.id).run();
     const read=await door.invoke('orbit.records.read',{kind:'company',id:companyId},principal);
     assert.equal(read.outcome,'done',JSON.stringify(read));
     const current=(read.result as {ref:{revision:number}}).ref.revision;
@@ -194,7 +195,7 @@ export async function agentDoorProof() {
     const witness=await call('orbit.operations.read',{});
     assert.ok(witness.record_mail_drafts.rows>0);
     await settingsRepository.remove(teammate.id,owner.operatorId,undefined,owner.sessionId);
-    assert.equal((await businessCall('orbit.records.read',{kind:'company',id:companyId},{sub:'business-jamie',act:{sub:'jamie-assistant',name:'Jules'}})).status,401,'native teammate removal overrides a still-applied Business mapping');
+    assert.equal((await businessCall('orbit.records.read',{kind:'company',id:companyId},{sub:'business-jamie',email:mappedTeammate!.email,act:{sub:'jamie-assistant',name:'Jules'}})).status,401,'native teammate removal overrides a still-applied Business mapping');
     await fixture.db.prepare('UPDATE operators SET email=? WHERE id=?').bind('renamed@example.test',owner.operatorId).run();
     assert.equal((await people.sponsor({sub:'business-owner'}))?.id,owner.operatorId);
     await fixture.db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(owner.operatorId).run();
