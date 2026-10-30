@@ -9907,7 +9907,7 @@
       "executable": false
     },
     "tests/core/records-merge-review.test.ts": {
-      "sha256": "4900fb85526738e402352f22a9f2962788a54e1b70ebe65b850254555e2616c0",
+      "sha256": "f509bd5354ddb2f2d40ed213c0030d7369f39438104e1a0183b7f2f14b30db3e",
       "executable": false
     },
     "tests/core/records-search.test.ts": {
@@ -10575,7 +10575,7 @@
       "executable": false
     },
     "tests/rer/operator-merge.mjs": {
-      "sha256": "1e81a47b85dc34ec79df58c10ec043fca95eb7bcf12ad8d27c1915878bdaab05",
+      "sha256": "8e245c8876478e8aacca38cce3ee6737f5c61e2403897ad2a2ce294be2450f15",
       "executable": false
     },
     "tests/rer/operator-observations.mjs": {
