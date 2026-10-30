@@ -6,13 +6,16 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { excludeLocalVariables } from "./vite/exclude-local-variables.ts";
 import { archiveOutputGuard } from "@runeditrun/rer/archive-output";
+import { localBusinessName } from "./scripts/installer/business-carry.mjs";
 import { docsSite } from "./src/core/features/public/docs/build/plugin.ts";
 
 // Preflight runs before Vite can empty generated output, including direct Vite calls.
 import { localState } from "./scripts/local-state.mjs";
 const statePath = localState(undefined, process.env.RER_STATE_DIR);
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(async ({ command }) => {
+  const businessName = command === "serve" ? await localBusinessName(process.cwd()) : undefined;
+  return ({
   plugins: [
     demoSockets(),
     cloudflare({ persistState: { path: statePath }, viteEnvironment: { name: "ssr" },
@@ -20,6 +23,7 @@ export default defineConfig(({ command }) => ({
         // `vite dev` alone loads the local-only dev identity entry; builds keep the deployed main.
         ...(command === "serve" ? { main: "src/dev/server.ts" } : {}),
         vars: {
+          ...(businessName ? { WORKSPACE_NAME: businessName } : {}),
           ...(process.env.RER_DEMO ? { RER_DEMO: process.env.RER_DEMO, RER_DEMO_EXPIRES: process.env.RER_DEMO_EXPIRES } : {}),
           // rer dev serves the requested loopback origin without rewriting private settings.
           ...(process.env.RER_DEV_ORIGIN ? { RER_DEV_ORIGIN: process.env.RER_DEV_ORIGIN } : {}),
@@ -42,4 +46,5 @@ export default defineConfig(({ command }) => ({
       deny: ['**/.rer/**', '**/.seed/**', '**/exports/**', '**/*.rer'],
     },
   }
-}));
+});
+});

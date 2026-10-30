@@ -2,6 +2,11 @@ import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {isolatedDatabase} from '../support/isolated-database';
 import {agentDoorProof} from '../support/agent-door-proof';
+import {businessSetupDefaults} from '../../src/core/features/setup/business';
+import {orbitBusinessSettings} from '../../src/core/features/agent-door';
+import {createApp} from '../support/app';
+import {readSetup} from '../../src/core/features/setup/repository';
+import type {PlatformBindings} from '../../src/core/platform/assets';
 import {identityResponse, operatorFromRequest} from '../../src/core/features/identity';
 
 test('Managed owner claim verifies RER authority and creates the native owner/session exactly once', async () => {
@@ -40,6 +45,39 @@ test('Managed owner claim verifies RER authority and creates the native owner/se
     const owner = await operatorFromRequest(new Request(origin + '/app', {headers: {Cookie: cookie}}), bindings);
     assert.equal(owner?.email, bindings.OWNER_EMAIL);
     assert.equal(await fixture.db.prepare('SELECT count(*) n FROM operators WHERE setup_owner=1').first('n'), 1);
+    // Business setup uses only deployment bindings or an authenticated signed document.
+    const configured = {...bindings, WORKSPACE_NAME:'Configured Business', OWNER_NAME:'Configured owner', WORKSPACE_TIMEZONE:'UTC'} as unknown as PlatformBindings;
+    assert.deepEqual(await businessSetupDefaults(configured), {name:'Configured Business',ownerName:'Configured owner',timezone:'UTC'});
+    const trust = {v:1,issuer,audience:origin,subject:'orbit-managed',email:bindings.OWNER_EMAIL,keys:{test:publicKey}};
+    const managed = {...configured,RER_BUSINESS_TRUST:JSON.stringify(trust)};
+    const now = Math.floor(Date.now()/1000);
+    const payload = {v:1,iss:issuer,aud:origin,sub:'orbit-managed',business:'business-test',email:bindings.OWNER_EMAIL,jti:crypto.randomUUID(),iat:now,exp:now+300,rev:1,values:{display_name:'Harbour Business',owner_name:'Hollis Reed',timezone:'America/New_York'},logo:null,team:null};
+    const message = `${encode({alg:'ES256',typ:'rer-business-settings+jwt',kid:'test'})}.${encode(payload)}`;
+    const signature = Buffer.from(await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},keys.privateKey,new TextEncoder().encode(message))).toString('base64url');
+    const settings = orbitBusinessSettings(managed);
+    const deliver = (settingsToken:string) => settings.handle(new Request(origin+'/api/rer/business-settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({settings:settingsToken})}));
+    assert.equal((await deliver(message+'.'+signature.slice(0,-5)+'wrong'))!.status,403);
+    assert.equal((await deliver(message+'.'+signature))!.status,200);
+    const business = await businessSetupDefaults(managed);
+    assert.deepEqual(business,{name:'Harbour Business',ownerName:'Hollis Reed',timezone:'America/New_York'});
+    const app = createApp({database:fixture.db,assets:{fetch:async()=>new Response('asset')}});
+    const form = {ownerName:business.ownerName!,name:business.name!,timezone:business.timezone!,currency:'USD',stages:'Qualified\nProposal'};
+    const finish = (input:typeof form, sessionCookie=cookie) => app.request(origin+'/api/v1/setup',{method:'POST',headers:{Cookie:sessionCookie,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(input)});
+    assert.equal((await finish(form,'' )).status,401);
+    const nullInput = await app.request(origin+'/api/v1/setup',{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},body:'null'});
+    assert.equal(nullInput.status,400);
+    const empty = await finish({...form,name:'  '});
+    assert.equal(empty.status,400);assert.deepEqual(await empty.json(),{error:'Enter your business name'});
+    const htmlEmpty = await app.request(origin+'/api/v1/setup',{method:'POST',headers:{Cookie:cookie,Origin:origin,Accept:'text/html','Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({...form,name:''}).toString()});
+    assert.equal(htmlEmpty.status,303);
+    assert.equal(new URL(htmlEmpty.headers.get('location')!,origin).searchParams.get('error'),'Enter your business name');
+    assert.equal((await readSetup(fixture.db,owner!.operatorId)).complete,false);
+    assert.equal((await finish({...form,name:'Owner chosen Business'})).status,200);
+    assert.deepEqual(await fixture.db.prepare("SELECT name,timezone FROM workspace_settings WHERE id='workspace'").first(),{name:'Owner chosen Business',timezone:'America/New_York'});
+    assert.equal(await fixture.db.prepare('SELECT display_name FROM operators WHERE id=?').bind(owner!.operatorId).first('display_name'),'Hollis Reed');
+    assert.equal((await readSetup(fixture.db,owner!.operatorId)).complete,true);
+    assert.equal((await finish(form)).status,200);
+    assert.equal(await fixture.db.prepare("SELECT name FROM workspace_settings WHERE id='workspace'").first('name'),'Owner chosen Business','repeat setup never overwrites the owner choice');
     const direct = await identityResponse(new Request(origin + '/auth/bootstrap', {
       method: 'POST', headers: {Origin: origin, 'Content-Type': 'application/json', 'CF-Connecting-IP': '192.0.2.1'},
       body: JSON.stringify({token: bindings.SETUP_TOKEN, displayName: 'Replacement', returnTo: '/setup'}),

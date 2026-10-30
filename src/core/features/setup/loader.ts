@@ -7,7 +7,10 @@ export const loadSetup = createServerFn({ method: 'GET' }).handler(async () => {
   if (!operator) throw redirect({ href: '/signin?returnTo=%2Fsetup', statusCode: 302 });
   const { env } = await import('cloudflare:workers');
   const { readSetup } = await import('./repository');
-  const setup = await readSetup((env as unknown as { DB: D1Database }).DB, operator.operatorId);
+  const bindings = env as unknown as import('../../platform/assets').PlatformBindings;
+  const setup = await readSetup(bindings.DB, operator.operatorId);
   if (setup.complete) throw redirect({ href: '/app', statusCode: 302 });
-  return { ...setup, displayName: operator.displayName };
+  const { businessSetupDefaults } = await import('./business');
+  const business = setup.owner ? await businessSetupDefaults(bindings) : undefined;
+  return { ...setup, displayName: operator.displayName, business };
 });
