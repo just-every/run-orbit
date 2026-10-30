@@ -59,6 +59,7 @@ export async function exerciseDuplicateMerge(page,origin,fixture,observe){
   await expect(page.getByRole('combobox',{name:'Contactability',exact:true})).toHaveCount(0);
   if(index===0)await stop();
   for(const width of [1440,390])await observe(`contact-${stopped}-stop-review`,width);
+  await page.setViewportSize({width:1440,height:900});
   await page.getByRole('button',{name:'Confirm merge',exact:true}).click();
   await page.getByRole('dialog',{name:'Merge records',exact:true}).getByRole('button',{name:'Merge records',exact:true}).click();
   await expect(page.getByRole('status').filter({hasText:'Records merged.'})).toBeVisible();

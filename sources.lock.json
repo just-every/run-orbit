@@ -10575,7 +10575,7 @@
       "executable": false
     },
     "tests/rer/operator-merge.mjs": {
-      "sha256": "8e245c8876478e8aacca38cce3ee6737f5c61e2403897ad2a2ce294be2450f15",
+      "sha256": "4335d524cd2cbf3e69687deb63fc79bf6f9d01902d771f76042510a0e3a2b664",
       "executable": false
     },
     "tests/rer/operator-observations.mjs": {
