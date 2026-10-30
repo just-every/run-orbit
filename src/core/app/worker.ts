@@ -1,3 +1,4 @@
+import {processWorkflows} from '../features/workflows/engine';
 import {processSlack} from '../features/slack/delivery';
 import {dispatchSalesTaskReminders} from '../features/tasks';
 import { withDemo } from '@runeditrun/rer/modules/demo';
@@ -29,10 +30,11 @@ import { devGate } from "@runeditrun/rer/modules/operator-auth";
 import { publicDemoConfig } from "./mounts/public-config.server";
 import { invitationLanding } from "../features/access/invitation-landing";
 import { collaboratorLanding } from "../features/access/collaborator-home";
+import { movedPage } from "./moved-pages";
 import { optOutResponse } from '../features/outreach/opt-out-public';
 import {orbitAgentDoor, orbitBusinessSettings} from '../features/agent-door';
 export default withDemo({
-  async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);context.waitUntil(runHostedTimers(bindings.DB,createOutboundMail(bindings)));context.waitUntil(sweepArchiveTrash(bindings.DB));context.waitUntil(dispatchSalesTaskReminders(bindings.DB));const security=createSourceSecurity(bindings);context.waitUntil(processSlack(bindings.DB,{security,origin:bindings.AUTH_ORIGIN}));context.waitUntil(pollProviders(bindings.DB,security));if(security)context.waitUntil(pollCalendarLinks(bindings.DB,security));},
+  async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);context.waitUntil(runHostedTimers(bindings.DB,createOutboundMail(bindings)));context.waitUntil(sweepArchiveTrash(bindings.DB));context.waitUntil(dispatchSalesTaskReminders(bindings.DB));context.waitUntil(processWorkflows(bindings.DB));const security=createSourceSecurity(bindings);context.waitUntil(processSlack(bindings.DB,{security,origin:bindings.AUTH_ORIGIN}));context.waitUntil(pollProviders(bindings.DB,security));if(security)context.waitUntil(pollCalendarLinks(bindings.DB,security));},
   // Cloudflare Email Routing delivers mail for the Orbit address here.
   async email(message:ForwardableEmailMessage,bindings:PlatformBindings){bindings=runtimeBindings(bindings);await receiveRoutedEmail(message,bindings.DB,{security:createSourceSecurity(bindings),address:bindings.CAPTURE_MAIL_ADDRESS});},
   async fetch(request: Request, bindings: PlatformBindings, executionContext: ExecutionContext) {return protectResponse(await handle(request,runtimeBindings(bindings),executionContext),editorOrigin(bindings),request.method==='GET'&&/^\/p\/[a-z0-9][a-z0-9-]{0,79}$/.test(new URL(request.url).pathname)?await embeddingOrigins(bindings.DB):undefined);}
@@ -93,7 +95,9 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
       // A collaborator signing in again (sign-in returns to /app), following an old link or typing an owner
       // page lands on the pages their profile can use instead of an owner page that refuses them.
       if (!setupPath) { const landing = await collaboratorLanding(bindings.DB, operator.operatorId, path); if (landing) return new Response(null, { status: 302, headers: { Location: landing } }); }
-      if(path!=="/app/records"&&await archiveImportActive(bindings.DB))return new Response(null,{status:302,headers:{Location:"/app/records"}});
+      if (!setupPath && (request.method === "GET" || request.method === "HEAD")) { const moved = await movedPage(bindings.DB, url, operator.operatorId); if (moved) return moved; }
+      // While an archive is restored every page waits on Settings › Data, which shows the restore's progress.
+      if(path!=="/app/settings/data"&&await archiveImportActive(bindings.DB))return new Response(null,{status:302,headers:{Location:"/app/settings/data"}});
       if(bindings.AUTH_LOCAL!=="true"&&request.method==='GET')executionContext.waitUntil(runRequestTimers(bindings.DB,createOutboundMail(bindings)));
     }
     return start.fetch(request);

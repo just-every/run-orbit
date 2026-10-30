@@ -1,0 +1,87 @@
+/* Settings areas: their cards one under another in the shell's content column. */
+.settings-stack { display: grid; gap: 18px; max-width: 960px; padding-top: 24px; }
+.settings-stack > * { min-width: 0; margin: 0; }
+.settings-card { display: grid; gap: 12px; padding: 22px 26px; }
+.settings-card__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.settings-card h2 { margin: 0; font-size: 20px; font-weight: 720; letter-spacing: -0.01em; line-height: 1.2; }
+.settings-card__line { margin: 0; color: var(--ob-body); font-size: 15.5px; line-height: 1.5; }
+@media (max-width: 700px) { .settings-card { padding: 20px; } .ob-app .settings-card__head .orbit-button { min-height: 44px; } }
+/* Rows inside a card: the name first, one quiet line, the row's action on hover and focus (H16). */
+.settings-rows { display: grid; margin: 0; padding: 0; list-style: none; }
+.settings-rows > li { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; padding: 8px 0; border-top: 1.5px solid var(--ob-line); }
+.settings-rows > li:first-child { border-top: 0; }
+.settings-rows > li > div { min-width: 0; }
+/* Only a row's own name and line; a setup opened under a row keeps its own text styles. */
+:is(.settings-rows > li, .settings-rows > li > div, .integration-row > div) > strong { font-size: 16.5px; font-weight: 650; overflow-wrap: anywhere; }
+:is(.settings-rows > li > div, .integration-row > div) > p { margin: 2px 0 0; color: var(--ob-muted); font-size: 14.5px; overflow-wrap: anywhere; }
+.ob-app .settings-row__action { flex: none; min-height: 40px; }
+@media (hover: hover) and (min-width: 701px) { .settings-rows > li .settings-row__action { opacity: 0; } .settings-rows > li:is(:hover, :focus-within) .settings-row__action { opacity: 1; } }
+.settings-inline-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto; align-items: end; gap: 14px; padding-top: 14px; border-top: 1.5px solid var(--ob-line); }
+.settings-inline-form label { display: grid; gap: 7px; margin: 0; }
+/* A fold keeps its disclosure marker and is a 44 px target. */
+.settings-card details > summary { display: list-item; padding-block: 10px; line-height: 24px; }
+.settings-card > p:not(.settings-card__line) { margin: 0; }
+@media (max-width: 700px) {
+  .settings-inline-form { grid-template-columns: minmax(0, 1fr); }
+  .settings-rows > li { flex-wrap: wrap; }
+  .ob-app .settings-row__action { min-height: 44px; }
+}
+.settings-inline-form--one { grid-template-columns: minmax(0, 1fr) auto; }
+/* Integrations: a row per product; its setup opens in place under the row, named by the row. */
+.settings-rows.integration-rows > li { display: grid; grid-template-columns: minmax(0, 1fr); justify-content: stretch; gap: 4px; }
+.integration-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-width: 0; }
+.integration-row > div { min-width: 0; }
+.integration-panel { min-width: 0; padding: 4px 0 16px; }
+.integration-panel .integration-setup { margin: 0; padding: 0; }
+.integration-panel .integration-setup > h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 700px) { .ob-app .integration-row__action { min-height: 44px; } }
+.settings-card__actions { display: grid; gap: 12px; }
+.sender-setup { display: grid; gap: 12px; min-width: 0; }
+.sender-setup h3 { margin: 4px 0 0; font-size: 17px; font-weight: 650; }
+.sender-setup details > :not(summary) { margin-top: 12px; }
+
+/* Values that save as they change (OR4): fields in a row (one column on a phone), day pills, numbers inside a sentence. */
+.settings-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.settings-fields--two { grid-template-columns: repeat(2, minmax(0, 220px)); }
+.settings-fields .r-label { min-height: 22px; }
+.settings-days { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; border: 0; }
+.ob-app .settings-days label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 12px; border: 1.5px solid var(--ob-line-strong); border-radius: 999px; font-weight: 600; cursor: pointer; }
+.ob-app .settings-days label:has(input:checked) { border-color: var(--ob-ink); }
+.settings-days input { margin: 0; }
+.settings-sentence { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; color: var(--ob-ink); font-size: 15.5px; }
+.ob-app .settings-sentence .settings-number { width: 76px; text-align: center; }
+.ob-app .is-failed .settings-number { border-color: var(--ob-tangerine-deep); }
+@media (max-width: 700px) {
+  .settings-fields, .settings-fields--two { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Settings › Pipeline: the stages as a table of quiet values; at phone width each stage is a block. */
+.s-stages { display: grid; margin: 0; padding: 0; list-style: none; }
+.s-stage { display: grid; grid-template-columns: 26px minmax(0, 1.2fr) minmax(0, 0.6fr) minmax(0, 1.1fr) minmax(0, 1.5fr); gap: 4px 14px; align-items: center; padding: 6px 0; border-top: 1.5px solid var(--ob-line); }
+.s-stage .r-label { min-height: 0; }
+.s-stage.is-dragging { opacity: 0.5; }
+.s-stage--head { padding: 0 0 4px; border-top: 0; color: var(--ob-muted); font-size: 14px; font-weight: 550; }
+.ob-app .s-handle { display: grid; place-items: center; width: 26px; min-height: 40px; padding: 0; border: 0; border-radius: 8px; background: none; box-shadow: none; color: var(--ob-muted); font-size: 18px; letter-spacing: -2px; cursor: grab; }
+.s-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.s-chip { display: inline-flex; align-items: center; gap: 2px; min-height: 28px; padding: 0 2px 0 10px; border: 1.5px solid var(--ob-ink); border-radius: 999px; font-size: 13.5px; font-weight: 600; }
+.s-none { color: var(--ob-muted); font-size: 15px; }
+.s-stage .r-confirm, .s-stage > .r-fail { grid-column: 2 / -1; margin-top: 4px; }
+.s-stage-cell { min-width: 0; }
+.ob-app .s-add { justify-self: start; }
+.s-foot { display: grid; padding-top: 10px; border-top: 1.5px solid var(--ob-line); }
+.ob-app .s-foot .r-danger { justify-self: start; margin: 0; color: var(--ob-lost); }
+.r-confirm select { width: auto; min-height: 36px; padding: 2px 10px; }
+@media (max-width: 700px) {
+  .s-stage { grid-template-columns: 44px minmax(0, 1fr); padding: 10px 0; }
+  .s-stage--head { display: none; }
+  .s-stage > .s-stage-cell:not(.s-stage-name) { grid-column: 2; }
+  .s-stage .r-confirm, .s-stage > .r-fail { grid-column: 1 / -1; }
+  .ob-app .s-handle { width: 44px; min-height: 44px; }
+}
+.settings-inline-form--two { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); }
+@media (max-width: 700px) { .settings-inline-form--two { grid-template-columns: minmax(0, 1fr); } }
+/* A box that saves itself: its whole labelled row is the target. */
+.settings-check label { display: flex; align-items: center; gap: 8px; min-height: 32px; }
+.settings-check .r-saved { margin-left: 4px; }
+@media (max-width: 700px) { .settings-check label { min-height: 44px; } }
+.sending-capacity__rate input { max-width: 220px; }

@@ -21,7 +21,7 @@ export const loadWorkspaceTimeZone = createServerFn({ method: "GET" }).handler(a
 export const loadNow = createServerFn({ method: "GET" }).handler(async () => {
   await requireOperator();
   const { requestScopedDependencies,archiveRestoring } = await import("../platform/request.server");
-  if(await archiveRestoring())throw redirect({href:"/app/records",statusCode:302});
+  if(await archiveRestoring())throw redirect({href:"/app/settings/data",statusCode:302});
   const deps = await requestScopedDependencies();
   const [queue, presentation] = await Promise.all([deps.opportunities.listNowView({}), deps.workspace.readPresentation()]);
   if (!presentation) throw new Error("Workspace is not configured. Run rer setup.");

@@ -1,0 +1,42 @@
+/* Saving as you go (OR4), in the brand's tokens only: the quiet field, ✓ Saved, the failure line, asking once under a
+   field, and the note at the page's top when leaving waited for a refused save. */
+
+.r-label { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 0; color: var(--ob-muted); font-size: 14px; font-weight: 550; }
+.r-saved { margin-left: 8px; color: var(--ob-muted); font-size: 13.5px; font-weight: 500; white-space: nowrap; }
+.r-field { min-width: 0; }
+.r-field label { display: grid; gap: 6px; margin: 0; }
+.r-field :is(input, select, textarea) { width: 100%; }
+
+/* A value reads as text at rest; its one border shows on hover and on focus. */
+.r-quiet { min-width: 0; }
+.r-quiet label { display: grid; gap: 2px; margin: 0; }
+.ob-app .r-quiet :is(input, select, textarea) { width: calc(100% + 12px); margin-left: -12px; padding-left: 12px; border-color: transparent; background-color: transparent; color: var(--ob-ink); font-size: 16px; font-weight: 620; }
+.ob-app .r-quiet textarea { min-height: 44px; overflow: hidden; font-weight: 500; resize: none; }
+.ob-app .r-quiet :is(input, textarea)::placeholder { color: var(--ob-muted); font-weight: 500; }
+.ob-app .r-quiet :is(input, select, textarea):hover { border-color: var(--ob-line-strong); }
+.ob-app .r-quiet :is(input, select, textarea):focus { border-color: var(--ob-ink); background-color: var(--ob-card); }
+
+/* A value that did not save keeps its text, draws its one border in deep tangerine and says why under it. */
+.ob-app .is-failed :is(input, select, textarea) { border-color: var(--ob-tangerine-deep); }
+.r-fail { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 14px; margin: 8px 0 0; color: var(--ob-tangerine-deep); font-size: 14.5px; font-weight: 600; line-height: 1.4; }
+.ob-app .r-fail .operator-text-button { min-height: 32px; color: var(--ob-ink); font-size: 14.5px; font-weight: 650; text-align: left; }
+
+/* Asking once, under the field: one sentence, the action's ink pill and an underlined way to keep things. */
+.r-confirm { display: grid; gap: 10px; margin-top: 10px; padding: 14px 16px; border-radius: 12px; background: var(--ob-paper-deep); }
+.r-confirm p { margin: 0; color: var(--ob-ink); font-size: 15px; line-height: 1.45; }
+.r-confirm > div { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; }
+.r-confirm label { display: grid; gap: 6px; margin: 0; }
+.r-confirm :is(input, select, textarea) { width: 100%; }
+.ob-app .r-confirm .operator-button { min-height: 40px; padding: 6px 18px; }
+
+/* Leaving waited for a refused save: the page stays and says so at its top. */
+.r-leave { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; margin-top: 20px; padding: 14px 20px; border-radius: 14px; background: var(--ob-tangerine-soft); color: #7a2a07; }
+.r-leave p { margin: 0; font-size: 15.5px; line-height: 1.45; }
+.r-leave b { font-weight: 700; }
+.r-leave > div { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; }
+.ob-app .r-leave .operator-button { min-height: 40px; padding: 6px 18px; }
+.ob-app .r-leave .operator-text-button { color: #7a2a07; font-weight: 650; text-align: left; }
+
+@media (max-width: 640px) {
+  .ob-app :is(.r-leave, .r-confirm) :is(.operator-button, .operator-text-button), .ob-app .r-fail .operator-text-button { min-height: 44px; }
+}

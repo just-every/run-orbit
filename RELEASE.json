@@ -1,5 +1,5 @@
 {
-  "version": "0.3.0",
+  "version": "0.4.1",
   "previousVersion": "0.2.0",
   "date": "2026-10-20",
   "publicReleaseNotes": "Orbit 0.3.0: cited deal risks with reasoned dismissal and person-approved tasks, form spam protection with a reviewed spam list, honest reply and open tracking that never lets an automatic reply stop a follow-up, a scheduled follow-up that ends on any stage move or close with per-deal follow-up outcomes, per-user sending budgets with held messages that name their limit, mentions of colleagues in notes, logged activities, task notes and handoffs with one notification that opens the exact entry, opt-out links chosen per message type and bound to each approval, every current sales category carried through export and restore, a Connected products page that names what Orbit works beside, and setup-owner removal protections. It updates 0.2.0 in place with three additive migrations and keeps every row. Product screenshot: .github/assets/release/orbit-now-queue-1600.png",

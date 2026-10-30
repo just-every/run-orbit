@@ -18,6 +18,7 @@
   "vars": {
     "AUTH_LOCAL": "false",
     "MAIL_PROVIDER": "sendgrid",
+    "MAIL_FROM": "",
     "MAIL_RELAY_URL": ""
   },
   "secrets": [
@@ -28,10 +29,6 @@
     {
       "binding": "SETUP_TOKEN",
       "environment": "SETUP_TOKEN"
-    },
-    {
-      "binding": "MAIL_FROM",
-      "environment": "MAIL_FROM"
     },
     {
       "binding": "SENDGRID_API_KEY",

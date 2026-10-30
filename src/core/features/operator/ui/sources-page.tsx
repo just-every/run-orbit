@@ -2,14 +2,12 @@ import './sources.css';
 import {formatDate} from './formatters';
 import {SourceRecipes,CopyText,type RecipeContext} from './source-recipes';
 import { useCallback,useState,type FormEvent } from 'react';
-import {UnlinkedReview,type Unlinked} from './unlinked-review';
-import { UnlinkedReplies } from './unlinked-replies';
-import { OperatorShell } from './operator-shell';
 import { useOperatorResource } from './use-operator-resource';
 interface Source {type:string;id:string;name:string;enabled:number;has_signing_secret:number;last_accepted_at:string|null;last_error:string|null;rejected_count:number}
 async function api<T>(path:string,init?:RequestInit):Promise<T>{const response=await fetch(`/api/v1/sources${path}`,init);const result=await response.json() as T&{error?:string};if(!response.ok)throw new Error(result.error??'Source request failed.');return result;}
-export function SourcesPage(){
- const load=useCallback(async()=>{const [sources,unlinked,context]=await Promise.all([api<{sources:Source[];configured:boolean}>(''),api<{signals:Unlinked[]}>('/unlinked'),api<RecipeContext>('/recipe-context')]);return {...sources,...unlinked,context};},[]);
+/** Settings › Capture › Website and app events: the sources that send customer events, and how to connect one. */
+export function SourcesSettings(){
+ const load=useCallback(async()=>{const [sources,context]=await Promise.all([api<{sources:Source[];configured:boolean}>(''),api<RecipeContext>('/recipe-context')]);return {...sources,context};},[]);
  const [reveal,setReveal]=useState<{id:string;secret:string}|null>(null),[selected,setSelected]=useState(''),[contact,setContact]=useState(''),[status,setStatus]=useState(''),[removing,setRemoving]=useState('');
  const resource=useOperatorResource('sources',load),[error,setError]=useState(''),[saving,setSaving]=useState(false);
  async function save(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget,values=new FormData(form);setSaving(true);setError('');try{const id=crypto.randomUUID();const result=await api<{secret:string}>(`/${id}`,{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({name:values.get('name'),enabled:true})});setReveal({id,secret:result.secret});setSelected(id);form.reset();resource.reload();}catch(error){setError((error as Error).message);}finally{setSaving(false);}}
@@ -18,8 +16,8 @@ export function SourcesPage(){
  async function renewSecret(source:Source){setSaving(true);setError('');setStatus('');try{const result=await api<{secret:string}>(`/${source.id}`,{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({name:source.name,enabled:!source.has_signing_secret||Boolean(source.enabled)})});setReveal({id:source.id,secret:result.secret});setSelected(source.id);resource.reload();}catch(error){setError((error as Error).message);}finally{setSaving(false);}}
  async function test(){setSaving(true);setError('');try{await api(`/${selected}/test`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({contactId:contact||resource.data?.context.contacts[0]?.id})});setStatus('Orbit received its internal connection test. This does not check delivery from your provider; follow the recipe’s provider test. Test events do not change customer scores or the brief.');resource.reload();}catch(error){setError((error as Error).message);}finally{setSaving(false);}}
  const selectedSource=resource.data?.sources.find(source=>source.id===selected);
- return <OperatorShell eyebrow="Customer evidence" title="Signal sources">
-  <section className="operator-surface operator-detail__section"><h2>Connected sources</h2><p>Review delivery and resolve customer events that need a record match.</p>
+ return <>
+  <section className="operator-surface settings-card sources-card" aria-labelledby="capture-website-events"><h2 id="capture-website-events">Website and app events</h2>
    {resource.loading&&<p>Loading sources…</p>}{(error||resource.error)&&<p role="alert">{error||resource.error?.message}</p>}
    {resource.data?.sources.filter(source=>source.type==='signed_webhook').length===0&&<p>No external sources connected yet.</p>}
    {resource.data?.sources.filter(source=>source.type==='signed_webhook').map(source=><article key={source.id}>
@@ -36,10 +34,9 @@ export function SourcesPage(){
    </article>)}
    {reveal&&<section role="status"><h3>Save your signing secret now</h3><p>This is its only display. Reloading hides it. Keep it in your tool's private settings.</p><code data-testid="source-secret" style={{display:'block',overflowWrap:'anywhere',margin:'8px 0 12px'}}>{reveal.secret}</code><CopyText text={reveal.secret} label="Copy secret"/><button type="button" onClick={()=>setReveal(null)}>I saved it</button></section>}
    {status&&<p role="status">{status} <a href="/app">Open NOW</a></p>}
-   {selected&&resource.data&&<><p>Recipes for <strong>{selectedSource?.name}</strong></p><SourceRecipes sourceId={selected} context={resource.data.context} secret={reveal?.id===selected?reveal.secret:undefined} onRefresh={resource.reload}/><p role="status">Latest delivery: {selectedSource?.last_accepted_at?formatDate(selectedSource.last_accepted_at):'No events received yet'}. This includes local connection checks.</p><form className="workbench-form" onSubmit={e=>{e.preventDefault();void test();}}><label>Test event customer<select value={contact||resource.data.context.contacts[0]?.id||''} onChange={e=>setContact(e.target.value)}>{resource.data.context.contacts.map(c=><option value={c.id} key={c.id}>{c.name} · {c.email}</option>)}</select></label><button disabled={saving||!selectedSource?.enabled||!selectedSource.has_signing_secret||!resource.data?.configured||!resource.data.context.contacts.length}>Send test event</button>{selectedSource&&!selectedSource.has_signing_secret?<p>Reconnect this source before sending a test event.</p>:selectedSource&&!selectedSource.enabled&&<p>Enable this source before sending a test event.</p>}{!resource.data.context.contacts.length&&<a href="/app/new">Add your first customer</a>}</form></>}
-
+   {selected&&resource.data&&<><p>Recipes for <strong>{selectedSource?.name}</strong></p><SourceRecipes sourceId={selected} context={resource.data.context} secret={reveal?.id===selected?reveal.secret:undefined} onRefresh={resource.reload}/><p role="status">Latest delivery: {selectedSource?.last_accepted_at?formatDate(selectedSource.last_accepted_at):'No events received yet'}. This includes local connection checks.</p><form className="workbench-form" onSubmit={e=>{e.preventDefault();void test();}}><label>Test event customer<select value={contact||resource.data.context.contacts[0]?.id||''} onChange={e=>setContact(e.target.value)}>{resource.data.context.contacts.map(c=><option value={c.id} key={c.id}>{c.name} · {c.email}</option>)}</select></label><button disabled={saving||!selectedSource?.enabled||!selectedSource.has_signing_secret||!resource.data?.configured||!resource.data.context.contacts.length}>Send test event</button>{selectedSource&&!selectedSource.has_signing_secret?<p>Reconnect this source before sending a test event.</p>:selectedSource&&!selectedSource.enabled&&<p>Enable this source before sending a test event.</p>}{!resource.data.context.contacts.length&&<a href="/app/opportunities/new">Add your first customer</a>}</form></>}
+  <section className="sources-connect" aria-labelledby="sources-connect-title"><h3 id="sources-connect-title">Connect a source</h3>{resource.data?(!resource.data?.configured?<p>Source security is unavailable. Run setup again before connecting a source.</p>:<form className="workbench-form" onSubmit={save}><label>Display name<input name="name" required maxLength={200}/></label><p>Orbit generates your private signing secret when you connect.</p><button className="orbit-button orbit-button--primary" disabled={saving}>{saving?'Connecting…':'Connect source'}</button></form>):null}</section>
   </section>
-  <div className="operator-detail__columns"><UnlinkedReview signals={resource.data?.signals} onChange={resource.reload}/><section className="operator-surface operator-detail__section"><h2>Connect a source</h2>{resource.data?(!resource.data?.configured?<p>Source security is unavailable. Run setup again before connecting a source.</p>:<form className="workbench-form" onSubmit={save}><label>Display name<input name="name" required maxLength={200}/></label><p>Orbit generates your private signing secret when you connect.</p><button className="orbit-button orbit-button--primary" disabled={saving}>{saving?'Connecting…':'Connect source'}</button></form>):null}</section></div>
- <UnlinkedReplies/>
- </OperatorShell>;
+
+ </>;
 }

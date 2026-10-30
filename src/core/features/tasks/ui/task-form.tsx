@@ -22,8 +22,8 @@ export function SalesTaskForm({task, data, busy, onSave, onCancel}: {
     recurrence: values.get('recurrence') as TaskInput['recurrence'], reminderMinutes: reminder ? Number(values.get('reminderMinutes')) : null});
   } catch (reason) {setError(reason instanceof Error ? reason.message : 'The task could not be saved.');}
  }
- return <form className="sales-task-form" aria-label={task ? `Edit task ${task.title}` : 'New sales task'} onSubmit={event => {event.preventDefault(); void submit(event.currentTarget);}}>
-  <h3>{task ? 'Edit task' : 'New sales task'}</h3>
+ return <form className="sales-task-form" aria-label={task ? `Edit task ${task.title}` : 'New task'} onSubmit={event => {event.preventDefault(); void submit(event.currentTarget);}}>
+  <h3>{task ? 'Edit task' : 'New task'}</h3>
   {error && <p role="alert">{error}</p>}
   <fieldset disabled={busy}>
    <label>Title<input name="title" required maxLength={300} defaultValue={task?.title ?? ''}/></label>
@@ -41,6 +41,6 @@ export function SalesTaskForm({task, data, busy, onSave, onCancel}: {
    {reminder && <label>Minutes before due time<input name="reminderMinutes" type="number" min={0} max={10080} step={1} required defaultValue={task?.reminderMinutes ?? 15}/></label>}
    <p className="sales-tasks__hint">Reminders appear in Notifications. Email, push and Slack reminders are not configured here.</p>
   </fieldset>
-  <div className="sales-tasks__actions"><button type="submit" className="operator-button" disabled={busy}>{busy ? 'Saving…' : 'Save task'}</button><button type="button" disabled={busy} onClick={onCancel}>Cancel editing</button></div>
+  <div className="sales-tasks__actions"><button type="submit" className="operator-button" disabled={busy}>{busy ? 'Saving…' : task ? 'Update task' : 'Add task'}</button><button type="button" disabled={busy} onClick={onCancel}>Cancel editing</button></div>
  </form>;
 }

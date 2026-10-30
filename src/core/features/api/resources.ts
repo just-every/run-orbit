@@ -7,22 +7,25 @@ import {ApiError,apiScope,apiTransaction,type ApiCredential} from './authority';
 
 type Deal=Record<string,string|number|null>;
 export const dealRevision=async(row:Deal)=>'"'+await hash(JSON.stringify(row))+'"';
-const projected=(row:Deal,fields:string[])=>Object.fromEntries(['id',...fields].map(field=>[field,row[field]]));
+// Products are the saved buying-context names, without stakeholder or operator identities.
+const readableDeal="d.*,(SELECT products_json FROM opportunity_buying_context WHERE opportunity_id=d.id) AS api_products";
+const projected=(row:Deal,fields:string[])=>Object.fromEntries(['id',...fields].map(field=>[field,field==='products'?JSON.parse(String(row.api_products??'[]')):row[field]]));
 
 export class ApiDeals {
  constructor(readonly db:D1Database,readonly clock:Clock){}
  async list(credential:ApiCredential,input:{limit:number;cursor?:string;title?:string},fields:string[]){
   apiScope(credential,'deal.read',undefined,fields);
-  const result=await apiTransaction(this.db,credential,this.clock,[this.db.prepare("SELECT * FROM opportunities WHERE id IN(SELECT value FROM json_each(?)) AND id>? AND (? IS NULL OR title=?) ORDER BY id LIMIT ?").bind(credential.records_json,input.cursor??'',input.title??null,input.title??null,input.limit+1)]);
+  const result=await apiTransaction(this.db,credential,this.clock,[this.db.prepare(`SELECT ${readableDeal} FROM opportunities d WHERE d.id IN(SELECT value FROM json_each(?)) AND d.id>? AND (? IS NULL OR d.title=?) ORDER BY d.id LIMIT ?`).bind(credential.records_json,input.cursor??'',input.title??null,input.title??null,input.limit+1)]);
   const rows=result[1]!.results as Deal[],more=rows.length>input.limit,page=rows.slice(0,input.limit);
   return {deals:page.map(row=>projected(row,fields)),nextCursor:more?String(page.at(-1)!.id):null};
  }
  async read(credential:ApiCredential,id:string,fields:string[]){
   apiScope(credential,'deal.read',id,fields);
-  const result=await apiTransaction(this.db,credential,this.clock,[this.db.prepare('SELECT * FROM opportunities WHERE id=?').bind(id)]);
+  const result=await apiTransaction(this.db,credential,this.clock,[this.db.prepare(`SELECT ${readableDeal} FROM opportunities d WHERE d.id=?`).bind(id)]);
   const row=result[1]!.results[0] as Deal|undefined;
   if(!row)throw new ApiError(404,'Deal not found.');
-  return {deal:projected(row,fields),etag:await dealRevision(row)};
+  const {api_products,...revision}=row;
+  return {deal:projected(row,fields),etag:await dealRevision(revision)};
  }
  private async receipt(credential:ApiCredential,key:string,fingerprint:string){
   const previous=await this.db.prepare("SELECT entity_id,json_extract(details_json,'$.fingerprint') AS fingerprint FROM audit_entries WHERE action='api.deal_created' AND json_extract(details_json,'$.credentialId')=? AND json_extract(details_json,'$.key')=?").bind(credential.id,key).first<{entity_id:string;fingerprint:string}>();

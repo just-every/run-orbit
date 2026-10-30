@@ -8,12 +8,12 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 8 | 138 | 31 | 177 |
+| Core | 13 | 136 | 29 | 178 |
 | Agent surface | 0 | 0 | 26 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 8 | 138 | 57 | 203 |
+| Full target | 13 | 136 | 55 | 204 |
 
-Judged from the code and tests at commit `b300e460a20da7f09122dc4a9157499430c4f8d5` (27 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
+Judged from the code and tests at commit `373d8818a42e3208c5d9ea2ffea9cea33c470dc6` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
 ## Core
 
@@ -33,15 +33,15 @@ Core · published · **partial** · Cites BASE-ROLE-001, BASE-ACCESS-004
 
 #### TEAM-002 — Management
 
-Core · published · **partial** · Cites BASE-ROLE-001, BASE-ACCESS-004
+Core · published · **done** · Cites BASE-ROLE-001, BASE-ACCESS-004
 
 **Requirement.** Any active full operator invites and removes operators in Settings. An invitation sends no email: the invited person requests their own sign-in link. Removing an operator revokes their sessions at once, and later sign-in requests for their address send no link. The setup owner can be removed only by themselves, and only while another active full operator exists. Invitations and removals are audited. Roles, teams and access review are TEAM-005; policy `operator.management.v1` may narrow who invites or removes without bypassing server-side checks.
 
 **Acceptance.**
 1. Invite an operator, sign in as them, remove them, and attempt a previously issued session and a new sign-in request; try to remove the setup owner as another operator and as the only operator.
 
-**Evidence.** `src/core/features/access/service.ts`; `src/core/features/records/routes.ts`; `newtests/t096/collaborator-lifecycle.test.ts`; `src/core/features/settings/repository.ts`; `src/core/features/settings/removal-handover.ts`; `tests/core/today-brief.test.ts`; `tests/core/local-owner.test.ts`
-**Gap.** Unasserted in the carried evidence: invited person signs in through their own link. Asserted: invitation emits no unsolicited email; removed session is refused; removed operator receives no new link; another operator cannot remove the owner; sole owner cannot remove themselves; self-removal with another active operator ends the session.
+**Evidence.** `tests/core/local-owner.test.ts` — TEAM-002 PUBLIC-004 owner mailbox changes and setup-owner removal preserve sign-in authority: invitation without unsolicited mail, the invited address requests and confirms its own native link, exact full-operator identity and authenticated Settings access, removal revokes that cookie and refuses new mail, owner-removal refusals, permitted owner self-removal, and invitation and removal audit; `tests/core/today-brief.test.ts`; `src/core/features/settings/repository.ts`; `src/core/features/settings/removal-handover.ts`; `src/core/features/identity/auth.ts`
+**Gap.** None.
 
 #### TEAM-003 — One workspace
 
@@ -107,15 +107,15 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 
 #### RECORD-004 — Duplicate merge
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
+Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
 
 **Requirement.** Merging two contacts or two companies requires an operator to choose the surviving record and the value of every conflicting field. The request is bound to both reviewed record states; a changed record refuses the merge without modifying either record, requiring a new review. Contactability is not a reviewed choice: a do-not-contact stop that lands after review is inherited by the merge. The merge moves associations and timeline entries once, retires the other record's key as an alias so later signals carrying it link to the survivor, creates no signal, recommendation, or outreach, and records the retired ID in the audit trail.
 
 **Acceptance.**
 1. Review two duplicates, choose field values and survivor, then change one reviewed record and require refusal; review again and merge once, inheriting a concurrent stop.
 
-**Evidence.** `src/core/features/records/merge-review.ts`; `tests/core/records-merge-review.test.ts`
-**Gap.** Unasserted in the carried evidence: concurrent stop inherited. Asserted: reviewed survivor and field value; stale review returns refusal; stale review preserves both records; merge occurs once; retired id and choices audited.
+**Evidence.** `tests/core/records-merge-review.test.ts` — RECORD-004 RECORD-009 matching names across companies remain review-only and native merges refuse missing and stale reviews (acceptance 1: reviewed survivor and conflicting values, stale refusal without writes, stops on either participant after review, both schedules cancelled, associations and both nonempty timelines transferred once, audited retired identity and replay refusal; signed later retired-email ingress read back on the survivor and both deals; native readback preserves existing signals, recommendations and outreach exactly, with no state created by the merge); `tests/e2e/imports.spec.mjs` — RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard (native duplicate merge before and after a stop, inherited contactability without a choice, retired identity absent; screens at 1440 and 390).
+**Gap.** None.
 
 #### RECORD-005 — Timeline
 
@@ -203,7 +203,7 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 
 #### RECORD-012 — Contactability
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
+Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
 
 **Requirement.** A contact is contactable or do-not-contact. An operator can set do-not-contact at any time, and an unsubscribe event that identifies the person (OUT-012, OUT-020) or a permanent bounce also sets it, for that person only. An opt-out that cannot name one recipient of a multi-recipient message pauses those recipients' scheduled work rather than suppressing them (OUT-031). No operation sends customer email to a do-not-contact contact, the state is shown wherever the contact appears, and only an operator can clear it. A contact an operator creates by hand on a record page or through the Records API starts contactable unless the operator chooses do-not-contact or its address matches a retained suppression proof, in which case it starts do-not-contact; other doors state their own default (RECORD-008, CAPTURE-005, CAPTURE-012, FORM-001, OUT-019).
 
@@ -211,8 +211,8 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 1. Set do-not-contact, process unsubscribe and permanent-bounce events, then try immediate and scheduled sending; all remain blocked until an explicit current-state clear.
 2. Create a contact by hand and see it start contactable; recreate an erased contact's address and see it start do-not-contact.
 
-**Evidence.** `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts`; `tests/core/outreach-limits.test.ts`
-**Gap.** Unasserted in the carried evidence: manual contact starts contactable. Asserted: manual stop stays stopped; unsubscribe stop; permanent-bounce stop; immediate send refuses stopped contact; scheduled work cancelled; explicit current-state clear read back; normalized recreation starts do-not-contact.
+**Evidence.** `src/core/features/records/suppression.ts`; `src/core/features/records/repository.ts`; `tests/core/launch-suppression.test.ts` — RECORD-012 DATA-002 manual contacts start contactable; suppression survives ordinary edits, erasure, normalized recreation, and workbench creation; only reviewed native clear permits future review; RECORD-012 concurrent stop dominates stale edit; merge preserves both recipients and clear never resurrects a schedule; `tests/core/outreach-limits.test.ts` — OUT-007 OUT-009 OUT-012 a signed provider unsubscribe stops the recipient and schedule within sixty seconds and returns the opportunity to NOW once; `tests/core/signals-outreach.test.ts` — OUT-017 record mail preserves exact approval, sender promises, custody and OUT-004 header-only reply matching; OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not; OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do
+**Gap.** None.
 
 #### RECORD-013 — Deletion
 
@@ -290,15 +290,15 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 
 #### SIGNAL-006 — Evidence confidence
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** Every signal carries one confidence: observed, when the customer acted deliberately (form submission, reply, booking, meeting, download, chat), or inferred, when a tool reported activity (email open, page view). An inferred signal alone cannot create an opportunity, produce a high band, or satisfy ACTION-001's evidence requirement.
 
 **Acceptance.**
 1. Compare open/page-view inference with observed reply/booking evidence; inferred activity alone cannot create a deal, high band or evidence-backed action.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: inferred activity cannot create any new deal. Asserted: observed reply/booking classification; inferred activity cannot raise high band; inferred activity creates no current recommendation.
+**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`: SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; inferred evidence cannot create a deal, high band or action. Signed ingestion and authenticated Records prove observed classification, accepted inferred contact history, unchanged complete opportunity identities after delivery and replay, the inferred band ceiling and no current recommendation.
+**Gap.** None.
 
 #### SIGNAL-007 — No tracking
 
@@ -820,10 +820,10 @@ Core · published · **partial** · Cites BASE-DATA-004, BASE-SECRET-001
 
 Core · published · **done** · Cites BASE-ROLE-001
 
-**Requirement.** The top of the operator home is a brief built from records only, so it works with the AI provider unconfigured (AI-003). Per account (the company when one is known, otherwise the opportunity, otherwise the contact) it lists the customer signals linked since the operator last marked the brief seen, or, before they ever have, over the stale interval counted from the start of the day (UTC), with replies and booked, completed or canceled meetings first and observed signals kept apart from inferred ones (SIGNAL-006); the account's overdue promises (BRIEF-002); and application handoffs waiting for review (BRIEF-005). Signals that match no record and replies without thread headers are listed as unresolved identity, never guessed; captured replies and meetings waiting for a person to accept or decline their proposed link are listed as held for capture review. Every line shows its occurred time and links to the record, timeline entry, draft, task or review item it rests on; a line without such evidence is not shown. Marking the brief seen records the operator and the time the brief was built in the audit trail, so anything arriving later stays new. A day with nothing says so. The brief is for full native operators; invited collaborators cannot read it.
+**Requirement.** The brief is its own page in the main menu (Brief) and is built from records only, so it works with the AI provider unconfigured (AI-003). Per account (the company when one is known, otherwise the opportunity, otherwise the contact) it lists the customer signals linked since the operator last marked the brief seen, or, before they ever have, over the stale interval counted from the start of the day (UTC), with replies and booked, completed or canceled meetings first and observed signals kept apart from inferred ones (SIGNAL-006); the account's overdue promises (BRIEF-002); and application handoffs waiting for review (BRIEF-005). Signals that match no record and replies without thread headers are listed as unresolved identity, never guessed; captured replies and meetings waiting for a person to accept or decline their proposed link are listed as held for capture review. Every line shows its occurred time and links to the record, timeline entry, draft, task or review item it rests on; a line without such evidence is not shown. Marking the brief seen records the operator and the time the brief was built in the audit trail, so anything arriving later stays new. A day with nothing says so. The brief is for full native operators; invited collaborators cannot read it.
 
 **Acceptance.**
-1. Open Today with fresh, held and unlinked events; follow every line to evidence, mark seen, receive a later event and confirm it remains new.
+1. Open Brief with fresh, held and unlinked events; follow every line to evidence, mark seen, receive a later event and confirm it remains new.
 
 **Evidence.** `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts`
 **Gap.** None.
@@ -1076,7 +1076,7 @@ Core · target · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 **Acceptance.**
 1. Associate champion and evaluator with a USD deal, add a verified decision-maker and a second-company relationship, move the primary association and inspect the preserved customer history and authorization.
 
-**Evidence.** `src/core/features/relationships/`; `src/core/features/operator/ui/buying-context.tsx`; `tests/core/records-search.test.ts`; `tests/evidence/contract/RECORD-015/`
+**Evidence.** `src/core/features/relationships/`; `src/core/features/operator/ui/record/people.tsx`; `src/core/features/operator/ui/record/deal-context.tsx`; `tests/core/records-search.test.ts`; `tests/evidence/contract/RECORD-015/`
 **Gap.** Unasserted in the carried evidence: champion association; evaluator association; verified decision-maker; second-company relationship; primary association move; history preserved; authorization preserved. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### RECORD-016 — Owners for contacts, leads, companies and custom objects
@@ -1704,7 +1704,7 @@ Core · target · **partial** · Cites BASE-ROLE-001
 
 #### NOTIFY-003 — Reminders that reach an absent seller
 
-Core · target · **missing** · Cites BASE-ROLE-001 · Register R-6
+Core · target · **partial** · Cites BASE-ROLE-001 · Register R-6
 
 **Requirement.** An operator chooses due/overdue task reminders and a daily sales digest by email and mobile push, with Slack as an optional team destination. Reminders honor working hours, timezone, recipient preferences and current access, deduplicate per obligation/due revision, stop on completion and escalate overdue work to an explicitly configured manager. The app shows queued, acknowledged, failed and uncertain attempts; provider acknowledgment is not receipt. A missed scheduled run is visible and resumed without a burst of obsolete reminders. Before email, push or Slack notifications ship, they must deliver RECORD-017's mention notifications by each mentioned user's preference, once per entry, task or handoff, and withdraw an undelivered one when its entry is deleted. INTEGRATE-005’s Slack safety rules govern this clause. Personal reminders, digests and RECORD-017 mentions use only opt-in DMs to explicitly mapped operators with current record access. An authorized DM may name a contact, but never entry text, amounts or contact details; private entries get generic notices. Withdraw an undelivered mention when its source is deleted. NOTIFY-003 carries REPORT-002's dashboard schedule delivery model when it ships: queued, sent, failed and uncertain attempts, recipient-specific access checked at send time, retry of only an explicitly failed recipient, and no resend after an uncertain provider answer. Keep the implemented dashboard schedule definitions and Slack delivery history; this inheritance does not claim that dashboard email delivery exists today.
 
@@ -1715,8 +1715,8 @@ Core · target · **missing** · Cites BASE-ROLE-001 · Register R-6
 4. Withdraw an undelivered mention when its source is deleted.
 5. Leave Orbit closed, advance a task reminder/digest schedule, receive it in a real mailbox/device and inspect its evidence link; complete or reassign the task before dispatch, simulate a provider failure and restart without stale or duplicate reminders.
 
-**Evidence.** None.
-**Gap.** No implementation found. No implementation of this complete target flow was found. Implemented first slice: RECORD-016 assignment and FORM-001 submission notices use native in-app delivery. Assignment notices by email, push and Slack according to user preference, and form notices by email and push, remain NOTIFY-003 gaps with their existing deduplication, current-access, replay, undo and erasure duties retained. ct confirmed at 02:08Z on 24 October 2026 that in-app-only delivery stays MISSING. Default adopted: native in-app assignment and form notices only; external delivery remains a NOTIFY-003 gap.
+**Evidence.** `tests/core/source-onboarding.test.ts` — NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty (with `tests/support/personal-slack-proof.ts` and `tests/support/slack-archive-proof.ts`); `newtests/t096/report-disclosure.test.ts` — REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board (with `newtests/t096/browser-dashboard-slack.ts` personal preference and delivery screens); `newtests/t096/forward-upgrade.test.ts` — API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance
+**Gap.** Native personal mention DMs use self-managed opt-in bound to an explicit current installation mapping and active full-operator authority; generic private-entry notices contain only an authenticated exact-entry link. Team and restricted-role audiences remain TEAM-005. Due and overdue reminders, daily digests, working-hours and timezone scheduling, missed-run recovery and configured-manager escalation remain unbuilt. Personal assignment and form external channels, system notification email, REPORT-002 recipient-specific email, personal-DM provider deletion tracking, real opted-in Slack DM qualification and real mailbox and device receipt remain unproved. Dashboard email stays paused for the system sender and attachment transport prerequisites; mobile push needs Apple and Google accounts. Existing native in-app assignment and form notices, dashboard schedule definitions and Slack delivery history remain intact.
 
 #### SEQUENCE-001 — Versioned sales sequence authoring
 
@@ -1817,12 +1817,12 @@ Core · target · **partial** · Cites BASE-ROLE-001, BASE-AUDIT-001
 **Acceptance.**
 1. Preview and activate a stale-deal rule, trigger it twice, change the record and revoke permission before dispatch; inspect one authorized task/notification, one AUTO-002 field write applied without a proposal, no stale field write/send, and an actionable failed webhook run after restart.
 
-**Evidence.** `src/core/features/capture/proposals.ts`; `src/core/features/delegation/effects.ts`; `tests/core/capture-review.test.ts`
-**Gap.** Fixed reviewed proposals and handoffs exist; configurable workflow authoring, unattended record updates (AUTO-002) and durable run management are missing.
+**Evidence.** `tests/core/capture-review.test.ts` — “CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority”; `tests/core/capture-data.test.ts` — “DATA-003 current sales capabilities round-trip without authority and erase across public reads”; `tests/rer/operator-desktop.test.mjs` — “BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px”. `tests/core/capture-upgrade.test.ts` — “CAPTURE-007 the capture migration upgrades a store from the previous main with every prior row and queue unchanged”. Workflow helpers include `tests/support/workflow-journey.ts`, `tests/support/workflow-record-journey.ts`, `tests/support/workflow-safety-journey.ts`, `tests/support/workflow-form-journey.ts` and `tests/rer/workflow-journey.mjs`
+**Gap.** Native version drafts, retained-snapshot dry runs, preview and activation, persisted runs, internal writes, tasks, explicit operator notices and declared static webhooks are implemented. Remaining: TEAM-005 real sales-admin grants, teams and team rotation or notices; RECORD-014 leads and custom objects; captured and provider call activity trigger integration; ENRICH-001 authorized provider signals; SEQUENCE-003 approval-queue enrollment and inherited sequence exits; OUT-018 and OUT-020 workflow-email obligations; pre-journal 30-day reconstruction, large-population previews and complete execution-history pagination. The conservative interim administration boundary is the installation owner under the standing scope rule; scoped delegation and provider boundaries remain unproved. Exact candidate qualification is recorded in Verify.
 
 #### AUTO-002 — Workflow record-changing actions
 
-Core · target · **missing** · Cites BASE-ROLE-001, BASE-AUDIT-001
+Core · target · **partial** · Cites BASE-ROLE-001, BASE-AUDIT-001
 
 **Requirement.** An active AUTO-001 workflow changes CRM data with nobody clicking anything, as HubSpot's "Edit record" action and Pipedrive's update and create actions do. Its triggers include a record created or changed (including a deal entering a stage or being won), an activity logged (RECORD-010, CAPTURE-010, CALL-001), a form submission (FORM-001) and a schedule. Record-changing actions. Each action names its target: the triggering record, or associated records chosen explicitly. These are the primary company, all or the primary associated contacts, contacts holding a named deal role (RECORD-015), the company's or contact's deals filtered by pipeline and stage, or a related custom-object record (RECORD-014). On each target an action can: set a field to a stated value, including picklist fields such as lead status and lifecycle stage, checkboxes, numbers and users; stamp a date or date-time field with the trigger time, the run time, or an offset from either (for example run time plus 14 days, in the workspace timezone under TEAM-003); copy a value from the triggering record, from an associated record or from the triggering form submission (such as UTM fields onto the contact), converting between compatible types as the editor states and refusing incompatible ones when the rule is saved; clear a field, or add to or subtract from a number field; move a deal to a named stage of its pipeline, applying OPP-009 required fields and history; a move into a stage whose required fields are empty fails visibly and never skips them; create an associated deal (in a named pipeline and stage), lead or custom-object record from stated or copied field values, with its owner set by an AUTO-001 owner rule. A run creates each record once: a repeated trigger event, replay or resume finds the record it already created.
 
@@ -1830,8 +1830,8 @@ Core · target · **missing** · Cites BASE-ROLE-001, BASE-AUDIT-001
 1. As a sales admin, activate three workflows, each after its preview shows per-record current and resulting values: "deal created" sets the primary contact's lead status to "Open deal" and the company's lifecycle stage to "Opportunity"; "deal closed won" sets the company and all its contacts to "Customer", stamps "Became customer" with the run date and creates an onboarding task; "meeting logged on a deal in Qualified" moves the deal to "Meeting held".
 2. Create a deal, close another won and log a meeting; verify every field value and the stage move are written with no proposal, each with a timeline entry naming the workflow, its version and the trigger, and replay a trigger to see no second write, task or record.
 
-**Evidence.** None.
-**Gap.** No implementation found. No workflow engine writes records: the only writes outside a person's own edit are capture proposals accepted one at a time in `src/core/features/capture/proposals.ts`, whose compare-and-set fence on the current value is the guard this clause extends to unattended workflow writes.
+**Evidence.** `tests/core/capture-review.test.ts` — “CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority”; `tests/core/capture-data.test.ts` — “DATA-003 current sales capabilities round-trip without authority and erase across public reads”; `tests/rer/operator-desktop.test.mjs` — “BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px”. `tests/core/records-complete.test.ts` — “RECORD-014 typed fields validate edits and preserve paged archived definition meaning through public history and export”. Workflow helpers include `tests/support/workflow-journey.ts`, `tests/support/workflow-record-journey.ts`, `tests/support/workflow-safety-journey.ts`, `tests/support/workflow-form-journey.ts`, `tests/support/workflow-copy-erasure-journey.ts`, `tests/support/workflow-archive-proof.ts` and `tests/rer/workflow-journey.mjs`
+**Gap.** Native contact, company and deal set, copy, stamp, clear, arithmetic, stage and associated-deal writes are implemented with typed validation, per-record material approval, current-value guards, durable receipts, loop stops and conditional field or stage undo. Remaining: TEAM-005 scoped sales-admin record and field grants; RECORD-014 leads, custom objects and related targets; product, quote and forecast sidecar actions; created-record archival undo and complete owner-rule selection; pre-journal 30-day reconstruction, form-copy previews without a submission value, per-action preview counts, large previews and full-history pagination; complete per-field intervening-edit attribution and record-atomic failure qualification; named typed-user rendering in record summaries; workflow source in reports and API change webhooks; migration mappings and declared rate-limit qualification. The conservative interim activator is the installation owner under the standing scope rule. Exact candidate qualification is recorded in Verify.
 
 #### AUTO-003 — Workflow activation and history
 
@@ -2199,7 +2199,7 @@ Core · target · **partial** · Cites BASE-ROLE-001, BASE-INPUT-001, BASE-SECRE
 4. Erase a contact and read API/export absence; Slack mappings and delegation grants never become general API credentials.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/delegation/protocol.ts`; `tests/core/source-onboarding.test.ts`; `tests/delegation/authority-regressions.test.ts`; `src/core/features/api/credentials.ts`; `src/core/features/api/routes.ts`; `migrations/core/0065_api_credentials.sql`; `tests/support/api-credentials-proof.ts`; `tests/core/archive-transfer.test.ts`; `tests/core/onboarding-archive.test.ts`; `tests/core/operator-erasure.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/core/contact-erasure.test.ts`
-**Gap.** API-001: the remaining original versioned resource surface and complete acceptance journey, outbound subscription security, delivery and replay controls, their custody and erasure, provider security and legal qualification remain unproved. The standalone scoped deal credential journey is asserted; current inbound-source authority remains SIGNAL-009; narrow application delegation remains DELEGATE-001; later resource behavior remains with its named owning clauses.
+**Gap.** API-001: the remaining original versioned resource surface and complete acceptance journey, outbound subscription security, delivery and replay controls, their custody and erasure, provider security and legal qualification remain unproved. The standalone scoped deal credential journey is asserted; current inbound-source authority remains SIGNAL-009; narrow application delegation remains DELEGATE-001; later resource behavior remains with its named owning clauses. API-004 now proves live scoped close-date, owner-id and buying-context product reads across two installations; the remaining original resource obligations above stay unproved.
 
 #### API-002 — Named API credential lifecycle
 
@@ -2213,7 +2213,7 @@ Core · target · **partial** · From API-001 · Cites BASE-ROLE-001, BASE-INPUT
 3. A credential cannot supply a person’s exact-message approval or revive expired authority.
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/delegation/protocol.ts`; `tests/core/source-onboarding.test.ts`; `tests/delegation/authority-regressions.test.ts`; `src/core/features/api/credentials.ts`; `src/core/features/api/routes.ts`; `migrations/core/0065_api_credentials.sql`; `tests/support/api-credentials-proof.ts`; `tests/core/archive-transfer.test.ts`; `tests/core/onboarding-archive.test.ts`; `tests/core/operator-erasure.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/core/contact-erasure.test.ts`
-**Gap.** API-001: the remaining original versioned resource surface and complete acceptance journey, outbound subscription security, delivery and replay controls, their custody and erasure, provider security and legal qualification remain unproved. The standalone scoped deal credential journey is asserted; current inbound-source authority remains SIGNAL-009; narrow application delegation remains DELEGATE-001; later resource behavior remains with its named owning clauses.
+**Gap.** API-001: the remaining original versioned resource surface and complete acceptance journey, outbound subscription security, delivery and replay controls, their custody and erasure, provider security and legal qualification remain unproved. The standalone scoped deal credential journey is asserted; current inbound-source authority remains SIGNAL-009; narrow application delegation remains DELEGATE-001; later resource behavior remains with its named owning clauses. API-004 now proves live scoped close-date, owner-id and buying-context product reads across two installations; the remaining original resource obligations above stay unproved.
 
 #### API-003 — Outgoing webhooks and safe replay
 
@@ -2228,6 +2228,24 @@ Core · target · **partial** · From API-001 · Cites BASE-ROLE-001, BASE-INPUT
 
 **Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/delegation/protocol.ts`; `tests/core/source-onboarding.test.ts`; `tests/delegation/authority-regressions.test.ts`; `src/core/features/api/credentials.ts`; `src/core/features/api/routes.ts`; `migrations/core/0065_api_credentials.sql`; `tests/support/api-credentials-proof.ts`; `tests/core/archive-transfer.test.ts`; `tests/core/onboarding-archive.test.ts`; `tests/core/operator-erasure.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/core/contact-erasure.test.ts`
 **Gap.** API-001: the remaining original versioned resource surface and complete acceptance journey, outbound subscription security, delivery and replay controls, their custody and erasure, provider security and legal qualification remain unproved. The standalone scoped deal credential journey is asserted; current inbound-source authority remains SIGNAL-009; narrow application delegation remains DELEGATE-001; later resource behavior remains with its named owning clauses.
+
+#### API-004 — A scoped integration reads a deal's close date, owner and product fields
+
+Core · target · **done** · From new · Cites BASE-ROLE-001, BASE-INPUT-001, BASE-SECRET-001
+
+**Requirement.** A scoped integration reads a deal's close date, owner and product fields through Orbit's scoped API, within the caller's current deals scope, installation, workspace and record authority. Values are read live from Orbit rather than copied into the integration.
+
+**API semantics.** `GET /api/rest/v1/deals` and `GET /api/rest/v1/deals/:id` require an installation-local credential with `deal.read`, explicit record ids and explicit readable fields. Alongside the four existing fields, `expected_close_at` is the saved timestamp or null, `owner_id` is the Orbit operator id or null, and `products` is the array of product names held in the deal's buying context, or an empty array. No operator display name or email is added. Omitted `fields` selects the credential's fields; an explicit selection may include all seven permitted fields. Reads use the current D1 rows in the authority-checked batch. Authentication, expiry, revocation, removed principal and wrong-installation refusals return 401; an ungranted operation, record or field returns 403 with an error and no domain write. The three new fields are read-only through this API; the native deal and relationship edit doors retain their existing validation and erasure. QUOTE-001 inherits real product and quote-line linkage; the buying-context names do not claim that later surface.
+
+**Acceptance.**
+1. An integration whose scope grants deals reads each deal's expected close date, owner and product (line-item or product-family) fields through Orbit's scoped API.
+2. An integration without the deals scope, or with scope for another installation, receives none of those fields and a clear refusal; nothing is written.
+3. Connect two installations to two separate Orbit workspaces, each with populated deals, and prove through one public-door journey that each reads only its own workspace's deals, including an allowed read and a refused cross-installation read.
+4. A deal the actor cannot read is absent; revoking access makes the next call read nothing.
+5. Change a close date in Orbit and verify the next integration read returns the changed value, read live rather than copied into the integration.
+
+**Evidence.** Acceptance 1 through 5: `tests/delegation/authority-regressions.test.ts` — API-002 native credential lifecycle and delegation D1 reject ambient cookies, scope escalation, expiration, disable and revocation on every read and write; extended `tests/support/api-credentials-proof.ts` — proveScopedDealFields; push Verify core-6 in shards (batch-9).
+**Gap.** None.
 
 ### Mobile, portability and operation
 
@@ -2280,13 +2298,13 @@ Core · target · **partial** · Cites BASE-SIGNIN-001, BASE-INSTALL-001, BASE-O
 
 Core · target · **partial** · Cites BASE-DATA-004
 
-**Requirement.** The RunEditRun product links are [Envelope](https://github.com/just-every/run-envelope) (small-business payroll), [Pegboard](https://github.com/just-every/run-pegboard) (work and project management) and [Porthole](https://github.com/just-every/run-porthole) (observability). These are product links without a capability claim. Orbit owns the complete sales CRM job, including calling, sales sequences, quoting, forecasts, automation and native mobile. It does not become a marketing CMS/ads-attribution suite, customer-success platform, support inbox, booking engine, payment processor, lender, accounting/tax ledger, PSTN carrier or signature trust service. Buyers reach those jobs through Buoy, HappyToHelp/Help Scout/Zendesk, Dial/Calendly, Nectar/Stripe, Mailchimp, QuickBooks Online/Xero, Twilio/Aircall and DocuSign integrations named above. US-first means USD defaults, US operating timezones and daylight-saving behavior, US business/accounting handoffs and explicit sales-tax treatment on quotes. Broader currency/locale support can extend the model without replacing source monetary values. No difficulty, missing provider approval or pending agreement removes a named CRM obligation. An agent's outreach carries external under the company's policy; record text never grants that authority. Protected prospect-network scraping remains outside Orbit's research job. Today Orbit receives signed Calendly and Cal.com bookings and sends configured Slack sales notices; Settings shows Slack’s connected or unresolved setup state and names every other product above as not available in Orbit, with the job it owns, never as a connection or a substitute. The cross-product buyer walk moves with the clause that ships each step, carried in that clause's own text and acceptance: booking (INTEGRATE-001, with meetings under INTEGRATE-002 and calls under CALL-001 and CALL-002), support context (INTEGRATE-004), signed quote with explicit sales tax (QUOTE-001), billing and accounting (INTEGRATE-003, INTEGRATE-006), handoff notices and marketing audiences (INTEGRATE-005, INTEGRATE-007) and the post-sale Buoy handoff (INTEGRATE-008); whichever ships last runs the complete walk. SEQUENCE-001–003, AUTO-001–002, FORECAST-001, MOBILE-001, ENRICH-001 and AGENT-001–004 inherit the rule that an agent's external outreach follows the company's policy and protected-network scraping remains outside Orbit's research job. INTEGRATE-005’s existing won-deal and internal handoff notices carry no products, commitments or amounts. INTEGRATE-008 inherits the Buoy notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice. Slack disconnection is unresolved setup; the last-shipping clause retains the full buyer journey. INTEGRATE-008 inherits the Buoy notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice. The complete walk from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff is carried by INTEGRATE-001–008, CALL-001/002 and QUOTE-001, each in its own acceptance, and run end to end by whichever ships last.
+**Requirement.** The RunEditRun product links are [Envelope](https://github.com/just-every/run-envelope) (small-business payroll), [Pegboard](https://github.com/just-every/run-pegboard) (work and project management) and [Porthole](https://github.com/just-every/run-porthole) (observability). These are product links without a capability claim. Orbit owns the complete sales CRM job, including calling, sales sequences, quoting, forecasts, automation and native mobile. It does not become a marketing CMS/ads-attribution suite, customer-success platform, support inbox, booking engine, payment processor, lender, accounting/tax ledger, PSTN carrier or signature trust service. Buyers reach those jobs through Buoy, HappyToHelp/Help Scout/Zendesk, Dial/Calendly, Nectar/Stripe, Mailchimp, QuickBooks Online/Xero, Twilio/Aircall and DocuSign integrations named above. US-first means USD defaults, US operating timezones and daylight-saving behavior, US business/accounting handoffs and explicit sales-tax treatment on quotes. Broader currency/locale support can extend the model without replacing source monetary values. No difficulty, missing provider approval or pending agreement removes a named CRM obligation. An agent's outreach carries external under the company's policy; record text never grants that authority. Protected prospect-network scraping remains outside Orbit's research job. Today Orbit receives signed Calendly and Cal.com bookings and sends configured Slack sales notices; Settings › Integrations lists only the products Orbit connects to (Slack, Calendly, Cal.com, Mailchimp, Twilio), each with its real state; the products Orbit does not connect to are named in the docs, never as a connection or a substitute. The cross-product buyer walk moves with the clause that ships each step, carried in that clause's own text and acceptance: booking (INTEGRATE-001, with meetings under INTEGRATE-002 and calls under CALL-001 and CALL-002), support context (INTEGRATE-004), signed quote with explicit sales tax (QUOTE-001), billing and accounting (INTEGRATE-003, INTEGRATE-006), handoff notices and marketing audiences (INTEGRATE-005, INTEGRATE-007) and the post-sale Buoy handoff (INTEGRATE-008); whichever ships last runs the complete walk. SEQUENCE-001–003, AUTO-001–002, FORECAST-001, MOBILE-001, ENRICH-001 and AGENT-001–004 inherit the rule that an agent's external outreach follows the company's policy and protected-network scraping remains outside Orbit's research job. INTEGRATE-005’s existing won-deal and internal handoff notices carry no products, commitments or amounts. INTEGRATE-008 inherits the Buoy notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice. Slack disconnection is unresolved setup; the last-shipping clause retains the full buyer journey. INTEGRATE-008 inherits the Buoy notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice. The complete walk from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff is carried by INTEGRATE-001–008, CALL-001/002 and QUOTE-001, each in its own acceptance, and run end to end by whichever ships last.
 
 **Acceptance.**
 1. INTEGRATE-005’s existing won-deal and internal handoff notices carry no products, commitments or amounts.
 2. Slack disconnection is unresolved setup.
 3. Walk a US buyer's USD deal through every current capability: signed Calendly booking intake onto the deal, a manual call log, and an exact-message review and send, with the USD amount unchanged and no mail sent by a booking, a manual entry or provider setup.
-4. In Settings at 1440 and 390, inspect Connected products: Calendly and Cal.com show their real delivery state, and Dial, Zoom, Twilio/Aircall, HappyToHelp/Help Scout/Zendesk, DocuSign, Nectar/Stripe, QuickBooks Online/Xero, Mailchimp and Buoy show as not available in Orbit; Slack shows its actual connected or unresolved setup state with the job each owns, with no substituted connector or mock and no reduced CRM scope.
+4. In Settings › Integrations at 1440 and 390, inspect Connected to Orbit: Slack, Calendly, Cal.com, Mailchimp and Twilio each show the job it does and its real state (Calendly and Cal.com their real delivery state, Slack its actual connected or unresolved setup state), the products Orbit does not connect to are not listed and are named in the docs, with no substituted connector or mock and no reduced CRM scope.
 
 **Evidence.** `tests/core/source-onboarding.test.ts`; `src/core/features/settings/connected-products.ts`; `src/core/features/operator/ui/connected-products.tsx`; `src/core/features/ingestion/booking-webhooks.ts`; `tests/core/signals-outreach.test.ts`; `tests/support/sales-tasks.ts`; `tests/evidence/contract/BOUNDARY-001/`
 **Gap.** Unasserted in the carried evidence: no products/commitments/amounts in Slack won/handoff notices; product states and owned jobs; 1440 browser proof; 390 browser proof; full CRM scope retained. Asserted: Slack disconnected state; signed Calendly intake links deal; manual call log on deal; exact review and send; USD amount unchanged; booking/manual/setup sends no mail; connected/awaiting Calendly and Cal.com state; unavailable products enumerated; Slack actual state; no substituted connector.

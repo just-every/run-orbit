@@ -39,7 +39,7 @@ function ChooseScope({ sourceId }: { sourceId: string | null }) {
   if (!source) return <OperatorState>Loading your connection…</OperatorState>;
   return <>
     <p className="capture-guide__lead">Connected. Choose at least one label, folder or calendar; Orbit reads only what you tick.</p>
-    <CaptureScope source={source} busy={false} onBusyChange={() => {}} onScopeChanged={() => {}} onChanged={() => window.location.assign(`/app/capture?scopeSaved=${encodeURIComponent(source.id)}`)} />
+    <CaptureScope source={source} busy={false} onBusyChange={() => {}} onScopeChanged={() => {}} onChanged={() => window.location.assign(`/app/settings/capture?scopeSaved=${encodeURIComponent(source.id)}`)} />
   </>;
 }
 
@@ -73,9 +73,9 @@ export function CaptureConnectPage() {
   const searchText = useRouterState({ select: (state) => state.location.searchStr });
   const search = new URLSearchParams(searchText);
   const page = titles[method ?? ''];
-  if (!page) return <OperatorShell eyebrow="Capture" title="Not found"><OperatorState kind="error">There is no such way to connect. <a href="/app/capture">Back to Capture</a></OperatorState></OperatorShell>;
+  if (!page) return <OperatorShell eyebrow="Capture" title="Not found"><OperatorState kind="error">There is no such way to connect. <a href="/app/settings/capture">Back to Capture</a></OperatorState></OperatorShell>;
   const error = search.get('error') ?? undefined;
-  return <OperatorShell eyebrow={<nav className="capture-breadcrumb" aria-label="Breadcrumb"><a href="/app/capture">Capture</a> <span aria-hidden="true">/</span> <span aria-current="page">{page.title}</span></nav>} title={page.title}>
+  return <OperatorShell eyebrow={<nav className="capture-breadcrumb" aria-label="Breadcrumb"><a href="/app/settings/capture">Capture</a> <span aria-hidden="true">/</span> <span aria-current="page">{page.title}</span></nav>} title={page.title}>
     <p className="capture-lead">{page.lead}</p>
     {method === 'google' || method === 'microsoft' ? <ProviderGuide key={method} method={method} search={search} />
       : method === 'address' ? <CaptureAddressSetup error={error} />

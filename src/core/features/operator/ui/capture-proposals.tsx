@@ -38,7 +38,8 @@ function Change({proposal}:{proposal:CaptureProposal}){
  const proposed=proposal.kind==='next_action'?queue(proposal.proposed_value):proposal.kind==='do_not_contact'?'Do not contact':proposal.proposed_value??'';
  return <table className="capture-change"><caption className="sr-only">Current and proposed value</caption><thead><tr><th scope="col">Current</th><th scope="col">Proposed</th></tr></thead><tbody><tr><td>{current}</td><td>{proposed}</td></tr></tbody></table>;
 }
-export function CaptureProposals({recordType,recordId,onChanged,standalone=false}:{recordType?:string;recordId?:string;onChanged?:()=>void;standalone?:boolean}){
+/** Proposed changes waiting for a person; on a record's page (whenWaiting) the card shows only while any wait. */
+export function CaptureProposals({recordType,recordId,onChanged,whenWaiting=false}:{recordType?:string;recordId?:string;onChanged?:()=>void;whenWaiting?:boolean}){
  const query=recordType&&recordId?`?${new URLSearchParams({recordType,recordId})}`:'';
  const load=useCallback(async()=>{const response=await fetch(`/api/v1/capture/proposals${query}`,{credentials:'same-origin'});if(!response.ok)throw new Error('Proposed changes could not load.');return await response.json() as {proposals:CaptureProposal[]};},[query]);
  const resource=useOperatorResource(`capture-proposals${query}`,load),[busy,setBusy]=useState(''),[editing,setEditing]=useState(''),[value,setValue]=useState(''),[error,setError]=useState(''),[status,setStatus]=useState('');
@@ -48,7 +49,8 @@ export function CaptureProposals({recordType,recordId,onChanged,standalone=false
   catch(e){setError((e as Error).message);}finally{setBusy('');}
  }
  const proposals=resource.data?.proposals??[];
- return <section className="operator-detail__section capture-proposals" aria-labelledby={`capture-proposals${recordId??''}`}><h2 id={`capture-proposals${recordId??''}`} className={standalone?'sr-only':undefined}>Proposed changes</h2>
+ if(whenWaiting&&!proposals.length&&!error&&!status)return null;
+ return <section className="operator-detail__section capture-proposals" aria-labelledby={`capture-proposals${recordId??''}`}><h2 id={`capture-proposals${recordId??''}`}>Proposed changes</h2>
   <p>Each change rests on the captured evidence shown with it. Nothing changes until a person accepts it.</p>
   {resource.loading&&<OperatorState>Loading proposed changes…</OperatorState>}{(error||resource.error)&&<OperatorState kind="error">{error||resource.error?.message}</OperatorState>}{status&&<OperatorState>{status}</OperatorState>}
   <ScrollToHash ready={Boolean(resource.data)}/>

@@ -18,7 +18,7 @@ export function TodaySummary({account,name,lines}:{account:string;name:string;li
  async function send(){if(!preview)return;setBusy(true);setError('');try{setResult(await todayRequest<Result>('/summary',{body:{account,requestHash:preview.requestHash}}));setPreview(null);}catch(e){setError(`Summary failed: ${(e as Error).message} Nothing was shown in its place.`);}finally{setBusy(false);}}
  const cited=(id:string)=>lines.find(line=>line.evidence.id===id);
  return <div className="today-summary">
-  {!preview&&<button ref={button} type="button" disabled={busy} onClick={()=>void open()} aria-label={`Summarise ${name} with AI`}>Summarise with AI</button>}
+  {!preview&&<button ref={button} type="button" className="operator-text-button" disabled={busy} onClick={()=>void open()} aria-label={`Summarise ${name} with AI`}>Summarise with AI</button>}
   {preview&&<section className="today-summary__preview" aria-label={`AI request for ${name}`}>
    <h4 ref={heading} tabIndex={-1}>Request preview</h4>
    <p>{preview.configured?`Orbit will send exactly this to ${preview.provider} (${preview.model}), and nothing else.`:'AI is not configured. The brief above is complete without a summary.'}</p>

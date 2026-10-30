@@ -51,7 +51,7 @@ function when(plan:MeetingPlan,presentation:WorkspacePresentation){
 export function MeetingPlanPage(){
  const {id}=useParams({from:'/app/meetings/$id'});
  const load=useCallback(async()=>{const [{plan},{presentation}]=await Promise.all([todayRequest<{plan:MeetingPlan}>(`/meetings/${id}`),operatorApi.readWorkspacePresentation()]);return {plan,presentation};},[id]);
- const resource=useOperatorResource(`meeting:${id}`,load),back=<a href="/app">← Today</a>;
+ const resource=useOperatorResource(`meeting:${id}`,load),back=<a href="/app">← NOW</a>;
  if(resource.error)return <OperatorShell eyebrow="Meeting plan" title="Meeting" action={back}><OperatorState kind="error">{resource.error.message}</OperatorState></OperatorShell>;
  if(!resource.data)return <OperatorShell eyebrow="Meeting plan" title="Meeting" action={back}><OperatorState>Loading meeting plan…</OperatorState></OperatorShell>;
  const {plan,presentation}=resource.data,canAct=Boolean(plan.primaryOpportunityId),reload=resource.reload;
@@ -61,7 +61,7 @@ export function MeetingPlanPage(){
    <section className="operator-surface operator-detail__section" aria-labelledby="plan-attendees"><h2 id="plan-attendees">Attendees</h2>
     <ul className="plan-list">
      {plan.attendees.map(person=><li key={person.contact.id} className="plan-line"><div className="plan-line__what"><a href={person.contact.href}><strong>{person.contact.name??person.email??'Unnamed contact'}</strong></a><span>{[person.contact.jobTitle,person.company?.name,...person.opportunities.map(o=>o.title)].filter(Boolean).join(' · ')||'No company or opportunity'}{person.contact.contactability==='do_not_contact'?' · Do not contact':''}</span></div></li>)}
-     {plan.unresolved.map(person=><li key={person.email} className="plan-line plan-line--unresolved"><div className="plan-line__what"><strong>{person.email}</strong><span>— no record. Orbit links only by this exact address and never guesses.</span></div><div className="plan-line__buttons"><CreateContact email={person.email} companyId={person.company?.id??null} onCreated={reload}/><a className="plan-link-button" href={person.company?`/app/records?kind=company&record=${person.company.id}`:'/app/records?kind=contact'}>Link by exact email</a></div></li>)}
+     {plan.unresolved.map(person=><li key={person.email} className="plan-line plan-line--unresolved"><div className="plan-line__what"><strong>{person.email}</strong><span>— no record. Orbit links only by this exact address and never guesses.</span></div><div className="plan-line__buttons"><CreateContact email={person.email} companyId={person.company?.id??null} onCreated={reload}/><a className="plan-link-button" href={person.company?`/app/companies/${person.company.id}`:'/app/contacts'}>Link by exact email</a></div></li>)}
      {!plan.attendees.length&&!plan.unresolved.length&&<li className="plan-line">The source named no attendees.</li>}
     </ul>
    </section>

@@ -20,6 +20,7 @@ const playwright = (config, files) => ({ files, args: ['exec', 'playwright', 'te
 // Fold-domain weights below are the actual per-file case minutes from Verify 40424898123.
 // A file missing here counts as half a minute.
 const minutes = {
+  'tests/delegation/authority-regressions.test.ts': 2.3, // Expanded two-installation credential journey measured locally.
   'tests/core/records-complete.test.ts': 2.2, 'tests/core/today-brief.test.ts': 1.2,
   'tests/core/capture-data.test.ts': 7.3, 'tests/core/capture-erasure.test.ts': 2.9, 'tests/core/capture-replay-archive.test.ts': 3.9,
   'tests/core/capture-mail-rules.test.ts': 11, 'tests/core/signals-outreach.test.ts': 7.5, 'tests/core/records-search.test.ts': 1.3, 'tests/core/capture-providers.test.ts': 7.8, 'tests/core/crm-import.test.ts': 8.5,

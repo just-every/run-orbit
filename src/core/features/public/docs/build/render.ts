@@ -10,6 +10,8 @@ import { highlight } from './highlight.ts';
 import { inlineCode } from './inline-code.ts';
 import type { AnchorCheck, LinkContext } from './links.ts';
 import { createSlugger } from './slug.ts';
+import { startLine } from '../../../../../base/run-site.ts';
+import { run } from '../../../../../site/run.ts';
 
 // One Markdown file to static HTML with the app's own react-markdown 6 and remark-gfm 1. Raw HTML is never rendered as
 // markup (the hast pass reports it as a problem), and the output carries classes only: no style or event attributes.
@@ -50,7 +52,7 @@ const label = (text: string) => text.length > 80 ? `${text.slice(0, 79).trimEnd(
 function pre({ node, children }: { node?: HastNode; children?: ReactNode }) {
   const block = node?.children?.find(child => child.tagName === 'code');
   const command = (block ? textOf(block) : '').replace(/\\\n\s*/g, '').split('\n').map(line => line.trim()).find(Boolean);
-  return createElement('pre', { className: 'docs-code', role: 'group', tabIndex: 0, 'aria-label': label(command ? `Code: ${command}` : 'Code') }, children);
+  return createElement('pre', { className: command === startLine(run) ? 'docs-code docs-start' : 'docs-code', role: 'group', tabIndex: 0, 'aria-label': label(command ? `Code: ${command}` : 'Code') }, children);
 }
 
 /** Tables scroll inside a labelled, focusable region when they cannot fit, so keyboard users can scroll them too. */

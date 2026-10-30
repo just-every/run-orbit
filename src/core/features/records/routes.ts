@@ -5,6 +5,7 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AuthenticatedOperator } from '../identity';
 import { RecordsRepository } from './repository';
+import { partialSave } from './partial-save';
 import { ImportMergeRepository } from './import-merge';
 import { ManualRepository } from './manual';
 import { DataRepository } from './data';
@@ -34,6 +35,13 @@ export function createRecordsRoutes(db:D1Database,options:{ownership?:boolean}={
   }
   app.get(`/${kind}/:id`,async c=>c.json(await repo.detail(kind,c.req.param('id'),options)));
   app.put(`/${kind}/:id`,async c=>c.json(await repo.save(kind,await c.req.json(),c.get('operator').operatorId,c.req.param('id'),{ordinaryEdit:true})));
+  // A record page saves each value as it changes; the whole-record PUT stays for imports and workflows.
+  app.patch(`/${kind}/:id`,async c=>{
+   const input=z.object({changes:z.record(z.string(),z.unknown()),base:z.record(z.string(),z.unknown()).default({})}).strict().safeParse(await c.req.json());
+   if(!input.success)return c.json({error:'Send the changed values and the values they replace.'},400);
+   const result=await partialSave(repo,kind,c.req.param('id'),input.data.changes,input.data.base,c.get('operator').operatorId);
+   return result.conflict?c.json({error:`${result.changedBy??'Someone'} changed this while you were editing.`,current:result.record,changedBy:result.changedBy,fields:result.fields},409):c.json({id:result.id,changed:result.changed,record:result.record});
+  });
   app.delete(`/${kind}/:id`,async c=>{if((await c.req.json()).confirmed!==true)return c.json({error:'Confirm record deletion.'},400);return c.json(await data.remove(kind,c.req.param('id'),c.get('operator').operatorId,c.get('operator').sessionId));});
   for(const method of ['post','put'] as const)app[method](`/${kind}/:id/entries${method==='put'?'/:entryId':''}`,async c=>{const input=z.object({kind:z.enum(['note','call','meeting']),text:z.string().max(100000),occurredAt:z.iso.datetime(),durationMinutes:z.number().int().min(0).optional(),contactIds:z.array(recordId).max(1000).optional()}).safeParse(await c.req.json());if(!input.success)return c.json({error:'Enter a valid manual entry.'},400);return c.json(await manual.save(kind,c.req.param('id'),input.data,c.get('operator').operatorId,c.req.param('entryId')));});
   app.delete(`/${kind}/:id/entries/:entryId`,async c=>c.json(await manual.remove(kind,c.req.param('id'),c.req.param('entryId'),c.get('operator').operatorId)));

@@ -24,7 +24,7 @@ export async function nativeLongRecordLayoutJourney(page) {
   page.on('requestfailed', request => diagnostics.failedRequests.push({ url: request.url(), error: request.failure()?.errorText }));
 
   try {
-    await page.goto('/app/records', { waitUntil: 'networkidle' });
+    await page.goto('/app/opportunities', { waitUntil: 'networkidle' });
     const origin = new URL(page.url()).origin;
     const nonce = randomBytes(10).toString('hex');
     const companyName = longName('company', nonce);
@@ -51,7 +51,7 @@ export async function nativeLongRecordLayoutJourney(page) {
     await editRecordThroughKeyboard(page, 'company', companyName, 'Company name', editedCompanyName);
     await expectRecordList(page, 'company', editedCompanyName, 'company', diagnostics);
 
-    await editRecordThroughKeyboard(page, 'contact', contactName, 'Full name', editedContactName);
+    await editRecordThroughKeyboard(page, 'contact', contactName, 'Contact name', editedContactName);
     await expectRecordList(page, 'contact', editedContactName, 'contact', diagnostics);
 
     const nowResponse = await page.request.get('/api/v1/opportunities/now');
@@ -62,11 +62,27 @@ export async function nativeLongRecordLayoutJourney(page) {
     const multipleOwners = new Set(now.opportunities.map(item => item.ownerId)).size > 1;
     const expectedMeta = [editedCompanyName, target.stage, ...(multipleOwners ? [target.ownerName ?? 'Unassigned'] : [])].filter(Boolean).join(' · ');
 
+    // OR3+OR4: a deal's company and people are values in its Details; each choice saves its relationships at once.
     await editRecordThroughKeyboard(page, 'opportunity', target.title, 'Opportunity title', editedOpportunityTitle, async () => {
-      await page.getByRole('combobox', { name: 'Linked company', exact: true }).selectOption(company.id);
-      await page.getByRole('searchbox', { name: 'Find contacts', exact: true }).fill(editedContactName);
-      await page.getByRole('list', { name: 'Contact search results', exact: true }).getByRole('button').filter({ hasText: editedContactName }).click();
-      await page.getByRole('combobox', { name: 'Primary recipient', exact: true }).selectOption(contact.id);
+      const details = page.getByTestId('record-details');
+      const relationships = () => page.waitForResponse(response => response.request().method() === 'PUT' && new URL(response.url()).pathname === `/api/v1/relationships/opportunity/${target.id}`);
+      let saved = relationships();
+      await details.getByRole('searchbox', { name: 'Company', exact: true }).fill(editedCompanyName);
+      await details.getByRole('list', { name: 'Company: matches', exact: true }).getByRole('button').filter({ hasText: editedCompanyName }).click();
+      expect((await saved).ok()).toBe(true);
+      saved = relationships();
+      await details.getByRole('searchbox', { name: 'Add a person', exact: true }).fill(editedContactName);
+      await details.getByRole('list', { name: 'Add a person: matches', exact: true }).getByRole('button').filter({ hasText: editedContactName }).click();
+      expect((await saved).ok()).toBe(true);
+      const person = details.locator('.r-person').filter({ hasText: editedContactName });
+      await expect(person).toHaveCount(1);
+      if (!(await person.innerText()).includes('Primary recipient')) {
+        saved = relationships();
+        await person.getByRole('button', { name: `More for ${editedContactName}`, exact: true }).click();
+        await page.getByRole('menuitem', { name: 'Make primary recipient', exact: true }).click();
+        expect((await saved).ok()).toBe(true);
+      }
+      await expect(person).toContainText('Primary recipient');
     });
     await expectRecordList(page, 'opportunity', editedOpportunityTitle, 'opportunity', diagnostics);
     const savedOpportunity = await page.request.get(`/api/v1/records/opportunity/${target.id}`);
@@ -94,17 +110,17 @@ export async function nativeLongRecordLayoutJourney(page) {
     await tabTo(page, async active => await active.getAttribute('aria-label') === `Open ${editedOpportunityTitle}`);
     await page.keyboard.press('Enter');
     await expect(page.getByRole('heading', { name: editedOpportunityTitle, exact: true, level: 1 })).toBeVisible();
-    await expect(page.getByRole('heading', { name: editedCompanyName, exact: true, level: 2 })).toBeVisible();
+    const companyLink = page.getByRole('main').getByRole('link', { name: editedCompanyName, exact: true }).first();
+    await expect(companyLink).toBeVisible();
     // An opportunity without handoffs shows no empty handoff section; its next action is always present.
     await expect(page.getByTestId('next-action')).toBeVisible();
     for (const viewport of viewports) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
-      const title = page.getByRole('heading', { name: editedOpportunityTitle, exact: true, level: 1 });
-      await expect(title).toBeVisible();
-      const companyHeading = page.getByRole('heading', { name: editedCompanyName, exact: true, level: 2 });
-      await expect(companyHeading).toBeVisible();
+      await expect(page.getByRole('heading', { name: editedOpportunityTitle, exact: true, level: 1 })).toBeVisible();
+      const title = page.getByLabel('Opportunity title', { exact: true });
+      await expect(companyLink).toBeVisible();
       const metrics = await assertReadablePage(page, viewport, title, editedOpportunityTitle);
-      await assertWrappedText(companyHeading, editedCompanyName);
+      await assertWrappedText(companyLink, editedCompanyName);
       diagnostics.viewportChecks.push({ name: viewport.name, surface: 'opportunity-detail', ...metrics });
       await page.screenshot({ path: `${evidence}/detail-${viewport.name}.png`, fullPage: true });
     }
@@ -117,39 +133,40 @@ export async function nativeLongRecordLayoutJourney(page) {
   }
 }
 
-async function editRecordThroughKeyboard(page, kind, title, fieldLabel, editedTitle, beforeSave) {
-  await page.goto('/app/records', { waitUntil: 'networkidle' });
-  if (kind === 'company') await awaitRecordReload(page, kind, '', () => page.getByRole('button', { name: 'Companies', exact: true }).click());
-  if (kind === 'contact') await awaitRecordReload(page, kind, '', () => page.getByRole('button', { name: 'Contacts', exact: true }).click());
+const listPath = { company: '/app/companies', contact: '/app/contacts', opportunity: '/app/opportunities' };
+
+async function editRecordThroughKeyboard(page, kind, title, fieldLabel, editedTitle, afterTitle) {
+  await awaitRecordReload(page, kind, '', () => page.goto(listPath[kind], { waitUntil: 'networkidle' }));
   const search = page.getByRole('searchbox', { name: 'Search records and timeline', exact: true });
   await awaitRecordReload(page, kind, title, () => search.fill(title));
   const card = page.locator('.operator-queue-card').filter({ has: page.getByRole('heading', { name: title, exact: true }) });
   await expect(card).toHaveCount(1);
-  await tabTo(page, async active => await active.evaluate((element, expected) => element.matches('button') && element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
-  await expect(card.getByRole('button')).toBeFocused();
+  await tabTo(page, async active => await active.evaluate((element, expected) => element.matches('a') && element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
+  await expect(card.getByRole('link')).toBeFocused();
   await awaitRecordDetail(page, kind, () => page.keyboard.press('Enter'));
-  await expect(page.getByRole('button', { name: 'Edit details', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Edit details', exact: true }).click();
-  await page.getByLabel(fieldLabel, { exact: true }).fill(editedTitle);
-  if (beforeSave) await beforeSave();
-  await awaitRecordDetail(page, kind, () => awaitRecordReload(page, kind, title, () => page.getByRole('button', { name: 'Save changes', exact: true }).click()));
+  await expect(page).toHaveURL(new RegExp(`${listPath[kind]}/[0-9A-HJKMNP-TV-Z]{26}$`));
+  // The title is the record's name as a field: Enter saves it, as leaving it would.
+  const field = page.getByLabel(fieldLabel, { exact: true });
+  await field.fill(editedTitle);
+  const saved = page.waitForResponse(response => response.request().method() === 'PATCH' && new URL(response.url()).pathname.startsWith(`/api/v1/records/${kind}/`));
+  await field.press('Enter');
+  expect((await saved).ok()).toBe(true);
+  if (afterTitle) await afterTitle();
   await expect(page.getByRole('heading', { name: editedTitle, exact: true, level: 1 })).toBeVisible();
-  // The open record lives in the address bar, so a reload reopens the saved record itself.
-  await awaitRecordDetail(page, kind, () => page.reload({ waitUntil: 'networkidle' }));
+  // The record lives in the address bar, so a reload reopens the saved record itself. The reload commits before its
+  // reads are awaited, so a read the save started in the old page is never taken for the new page's.
+  await page.reload({ waitUntil: 'commit' });
+  await awaitRecordDetail(page, kind, () => page.waitForLoadState('networkidle'));
   await expect(page.getByRole('heading', { name: editedTitle, exact: true, level: 1 })).toBeVisible();
-  await page.goto('/app/records', { waitUntil: 'networkidle' });
-  const tabName = kind === 'company' ? 'Companies' : kind === 'contact' ? 'Contacts' : 'Opportunities';
-  if (kind !== 'opportunity') await awaitRecordReload(page, kind, '', () => page.getByRole('button', { name: tabName, exact: true }).click());
+  await awaitRecordReload(page, kind, '', () => page.goto(listPath[kind], { waitUntil: 'networkidle' }));
   await awaitRecordReload(page, kind, editedTitle, () => page.getByRole('searchbox', { name: 'Search records and timeline', exact: true }).fill(editedTitle));
   await expect(page.getByRole('heading', { name: editedTitle, exact: true })).toBeVisible();
 }
 
 async function expectRecordList(page, kind, title, evidenceName, diagnostics) {
-  const tabName = kind === 'company' ? 'Companies' : kind === 'contact' ? 'Contacts' : 'Opportunities';
   for (const viewport of viewports) {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
-    await page.goto('/app/records', { waitUntil: 'networkidle' });
-    if (kind !== 'opportunity') await awaitRecordReload(page, kind, '', () => page.getByRole('button', { name: tabName, exact: true }).click());
+    await awaitRecordReload(page, kind, '', () => page.goto(listPath[kind], { waitUntil: 'networkidle' }));
     await awaitRecordReload(page, kind, title, () => page.getByRole('searchbox', { name: 'Search records and timeline', exact: true }).fill(title));
     const heading = page.getByRole('heading', { name: title, exact: true });
     await expect(heading).toBeVisible();
@@ -164,7 +181,7 @@ async function expectRecordList(page, kind, title, evidenceName, diagnostics) {
     diagnostics.viewportChecks.push({ name: viewport.name, surface: evidenceName, ...metrics });
     await page.screenshot({ path: `${evidence}/${evidenceName}-${viewport.name}.png`, fullPage: true });
     if (viewport.name === '320') {
-      await tabTo(page, async active => await active.evaluate((element, expected) => element.matches('button') && element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
+      await tabTo(page, async active => await active.evaluate((element, expected) => element.matches('a') && element.closest('.operator-queue-card')?.querySelector('h2')?.textContent === expected, title));
       await awaitRecordDetail(page, kind, () => page.keyboard.press('Enter'));
       await expect(page.getByRole('heading', { name: title, exact: true, level: 1 })).toBeVisible();
     }
@@ -172,24 +189,25 @@ async function expectRecordList(page, kind, title, evidenceName, diagnostics) {
 }
 
 async function awaitRecordDetail(page, kind, action) {
-  // The heading renders before the capture and relationship panels finish.
-  // Read every panel before editing, reloading, or leaving this record.
+  // The heading renders before the proposal and relationship reads finish.
+  // Read every one before editing, reloading, or leaving this record. Only reads this action starts count: a save's
+  // own re-read, or the open page's periodic one, may still be answering when a reload navigates away from it.
+  const started = new Set();
+  const track = request => { if (request.method() === 'GET') started.add(request); };
+  page.on('request', track);
+  const read = response => started.has(response.request());
   const detailLoad = page.waitForResponse(response => {
     const url = new URL(response.url());
-    return response.request().method() === 'GET' && url.pathname.startsWith(`/api/v1/records/${kind}/`);
+    return read(response) && new RegExp(`^/api/v1/records/${kind}/[0-9A-HJKMNP-TV-Z]{26}$`).test(url.pathname);
   });
   const proposalsLoad = kind === 'opportunity' ? undefined : page.waitForResponse(response => {
     const url = new URL(response.url());
-    return response.request().method() === 'GET' && url.pathname === '/api/v1/capture/proposals' && url.searchParams.get('recordType') === kind;
+    return read(response) && url.pathname === '/api/v1/capture/proposals' && url.searchParams.get('recordType') === kind;
   });
   const relationshipsLoad = kind === 'company' ? undefined : page.waitForResponse(response => {
-    return response.request().method() === 'GET' && new URL(response.url()).pathname.startsWith(`/api/v1/relationships/${kind}/`);
+    return read(response) && new URL(response.url()).pathname.startsWith(`/api/v1/relationships/${kind}/`);
   });
-  const optionLoads = kind === 'company' ? [] : (kind === 'contact' ? ['company'] : ['contact', 'company']).map(type => page.waitForResponse(response => {
-    const url = new URL(response.url());
-    return response.request().method() === 'GET' && url.pathname === `/api/v1/records/${type}` && url.searchParams.get('q') === '';
-  }));
-  const [detailResponse, proposalsResponse, relationshipsResponse, ...optionResponses] = await Promise.all([detailLoad, proposalsLoad, relationshipsLoad, ...optionLoads, action()]);
+  const [detailResponse, proposalsResponse, relationshipsResponse] = await Promise.all([detailLoad, proposalsLoad, relationshipsLoad, action()]).finally(() => page.off('request', track));
   expect(detailResponse.ok(), `${detailResponse.url()}: ${await detailResponse.text()}`).toBe(true);
   const detail = await detailResponse.json();
   if (proposalsResponse) {
@@ -203,39 +221,17 @@ async function awaitRecordDetail(page, kind, action) {
     expect(new URL(relationshipsResponse.url()).pathname).toBe(`/api/v1/relationships/${kind}/${detail.record.id}`);
     expect(context.kind).toBe(kind);
   }
-  // The last Promise.all result belongs to the action itself.
-  for (const response of optionResponses.slice(0, optionLoads.length)) {
-    expect(response.ok(), `${response.url()}: ${await response.text()}`).toBe(true);
-    expect(Array.isArray((await response.json()).records)).toBe(true);
-  }
 }
 
 async function awaitRecordReload(page, kind, query, action) {
-  // RecordsPage.reload loads these four responses together after tab/search/save.
-  // A saved detail heading (or a row still matching the new search) can appear
-  // before its supporting loads finish; navigating then aborts real requests.
-  const loads = [
-    { path: `/api/v1/records/${kind}`, query },
-    { path: '/api/v1/records/company' },
-    { path: '/api/v1/records/contact' },
-    { path: '/api/v1/settings' }
-  ].map(async ({ path, query: expectedQuery }) => {
-    const response = await page.waitForResponse(response => {
-      const url = new URL(response.url());
-      return response.request().method() === 'GET' && url.pathname === path &&
-        (expectedQuery === undefined ? url.search === '' : url.searchParams.get('q') === expectedQuery);
-    });
-    expect(response.ok(), `${response.url()}: ${await response.text()}`).toBe(true);
-    const body = await response.json();
-    if (path === '/api/v1/settings') {
-      expect(body.workspace).toBeTruthy();
-      expect(Array.isArray(body.stages)).toBe(true);
-      expect(Array.isArray(body.operators)).toBe(true);
-    } else {
-      expect(Array.isArray(body.records)).toBe(true);
-    }
+  // A list reads its kind's records for the search in its box; act only once that read has answered.
+  const load = page.waitForResponse(response => {
+    const url = new URL(response.url());
+    return response.request().method() === 'GET' && url.pathname === `/api/v1/records/${kind}` && (url.searchParams.get('q') ?? '') === query;
   });
-  await Promise.all([...loads, action()]);
+  const [response] = await Promise.all([load, action()]);
+  expect(response.ok(), `${response.url()}: ${await response.text()}`).toBe(true);
+  expect(Array.isArray((await response.json()).records)).toBe(true);
 }
 
 async function assertReadablePage(page, viewport, heading, expectedText) {
@@ -255,7 +251,7 @@ async function assertReadablePage(page, viewport, heading, expectedText) {
 
 async function assertWrappedText(element, expectedText) {
   const text = await element.evaluate(node => ({
-    value: node.textContent,
+    value: node instanceof HTMLTextAreaElement ? node.value : node.textContent,
     scrollWidth: node.scrollWidth,
     clientWidth: node.clientWidth,
     scrollHeight: node.scrollHeight,

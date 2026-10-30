@@ -3,7 +3,7 @@ import {preCallingCatalog} from '../../src/core/features/records/archive-generat
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {launchFixture} from '../support/launch-fixture';
-import {mailedIdentity} from '../support/email-link';
+import {mailedIdentity,emailLinkSignIn} from '../support/email-link';
 import {identityResponse} from '../../src/core/features/identity';
 import {createApp} from '../support/app';
 import {createDependencies} from '../support/dependencies';
@@ -24,7 +24,7 @@ import {preDashboardCatalog} from '../../src/core/features/dashboards/archive';
 import {preSlackCatalog} from '../../src/core/features/slack/archive';
 import {preReportShareCatalog} from '../../src/core/features/analytics/archive-compatibility';
 import {archiveHash,type ArchivePart} from '../../src/core/features/records/archive-schema';
-import {preSourceRemovalCatalog} from '../../src/core/features/ingestion/archive';
+import {nativeCatalogGenerations} from '../../src/core/features/records/archive-generations';
 import {removeSourceWithEvidence,assertRemovedSourceEvidence} from '../support/removed-source-proof';
 
 function sourceRequests(db:D1Database,cookie:string){
@@ -36,7 +36,7 @@ function sourceRequests(db:D1Database,cookie:string){
 
 test('API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions',async()=>{
  const source=await launchFixture(),target=await launchFixture();
- const request=async(f:Awaited<ReturnType<typeof launchFixture>>,path:string,method='GET',body?:unknown)=>{const response=await f.request(path,method,body);assert.ok(response.ok,`${method} ${path}: ${response.status} ${(await response.clone().text()).slice(0,300)}`);return response.json() as Promise<any>;};
+ const request=async(f:Awaited<ReturnType<typeof launchFixture>>,path:string,method='GET',body?:unknown,headers:Record<string,string>={})=>{const response=await f.request(path,method,body,headers);assert.ok(response.ok,`${method} ${path}: ${response.status} ${(await response.clone().text()).slice(0,300)}`);return response.json() as Promise<any>;};
  try{
  await source.db.prepare("UPDATE operators SET email='owner@orbit.test',setup_owner=1 WHERE id=?").bind(source.actor).run();
  await target.db.prepare("UPDATE operators SET email='hosted-owner@example.test',setup_owner=1 WHERE id=?").bind(target.actor).run();
@@ -47,6 +47,8 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
  assert.equal((await connected.request('').then(r=>r.json()) as any).sources.find((row:any)=>row.id==='website').has_signing_secret,1);
  await request(target,'../v2/access/workspaces/workspace/invitations','POST',{email:'old-guest@example.test',role:'guest',expiresAt:new Date(Date.now()+86400000).toISOString()});
  const customer=await request(source,'records/contact','POST',{name:'Archive customer',email:'archive@example.test'});
+ const callAttempts=[{id:createId(),contact_id:customer.id,actor_id:source.actor,created_at:new Date().toISOString(),state:'attempted',call_sid:null,creation_outcome:'failed',provider_error_code:21217},{id:createId(),contact_id:customer.id,actor_id:source.actor,created_at:new Date().toISOString(),state:'uncertain',call_sid:null,creation_outcome:null,provider_error_code:null}].sort((a,b)=>a.id.localeCompare(b.id));
+ for(const attempt of callAttempts)await source.db.prepare('INSERT INTO call_dial_attempts(id,contact_id,actor_id,created_at,state,call_sid,creation_outcome,provider_error_code) VALUES(?,?,?,?,?,?,?,?)').bind(...Object.values(attempt)).run();
  const removedSource=await removeSourceWithEvidence(source.db,connected,customer.id);
  const trialOwned=await source.customer('trial-owned@example.test');
  await source.db.prepare('UPDATE opportunities SET owner_id=? WHERE id=?').bind(source.actor,trialOwned.opportunityId).run();
@@ -75,16 +77,21 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
  assert.ok(archive.parts.flatMap((part:any)=>part.records).filter((record:any)=>record.table==='signal_sources').every((record:any)=>record.row.secret_ciphertext===undefined),'Signing credentials do not travel in archives');
  const archivedSignal=archive.parts.flatMap((part:ArchivePart)=>part.records).find((record:ArchivePart['records'][number])=>record.table==='signals'&&record.row.id===removedSource.signalId);
  assert.deepEqual(archivedSignal?.row,removedSource.signal,'Removing a source retains the complete immutable evidence in exports');
- const previousCatalog=preSourceRemovalCatalog(await foldInstalledCatalog(source.db)),previousManifest={...archive.manifest,schemaHash:await foldSchemaHash(previousCatalog),tables:archive.manifest.tables.map((table:any)=>table.name==='signal_sources'?{...table,columns:table.columns.filter((column:string)=>column!=='removed_at')}:table)};
+ const previousCatalog=nativeCatalogGenerations(await foldInstalledCatalog(source.db)).find(catalog=>!catalog.find(table=>table.name==='signal_sources')!.columns.some(column=>column.name==='removed_at'))!;
+ const previousTables=previousCatalog.map(table=>({...archive.manifest.tables.find((item:any)=>item.name===table.name)!,columns:table.columns.map(column=>column.name)}));
+ const previousManifest={...archive.manifest,schemaHash:await foldSchemaHash(previousCatalog),tables:previousTables,rows:previousTables.reduce((total,table)=>total+table.rows,0)};
  const previousImport=await request(target,'records/archive/imports','POST',{confirmed:true,manifest:previousManifest});
  await request(target,`records/archive/imports/${previousImport.id}/abort`,'POST',{});
  for(const tables of [archive.manifest.tables.filter((t:any)=>t.name!=='form_embed_origins'),[...archive.manifest.tables,{name:'unknown_records',columns:['id'],rows:0}]]){
   assert.equal((await target.request('records/archive/imports','POST',{confirmed:true,manifest:{...archive.manifest,tables}})).status,400);
  }
  const restore=async(destination:typeof target,document:typeof archive)=>{
-  let imported=await request(destination,'records/archive/imports','POST',{confirmed:true,manifest:document.manifest});
-  for(const part of document.parts)await request(destination,`records/archive/imports/${imported.id}/parts/${part.index}`,'PUT',part);
-  for(let n=0;n<700&&imported.state!=='complete';n++){imported=await request(destination,`records/archive/imports/${imported.id}/finalize`,'POST',{});assert.ok(imported.completedTables<=imported.totalTables);assert.ok(imported.completedSteps<=imported.totalSteps);}
+  // A slow archive qualification still confirms current authority through real email sign-in.
+  const email=await destination.db.prepare('SELECT email FROM operators WHERE id=?').bind(destination.actor).first<string>('email');assert.ok(email);
+  const restoredIdentity=await emailLinkSignIn(destination.db,email),headers={Cookie:restoredIdentity.cookie};
+  let imported=await request(destination,'records/archive/imports','POST',{confirmed:true,manifest:document.manifest},headers);
+  for(const part of document.parts)await request(destination,`records/archive/imports/${imported.id}/parts/${part.index}`,'PUT',part,headers);
+  for(let n=0;n<700&&imported.state!=='complete';n++){imported=await request(destination,`records/archive/imports/${imported.id}/finalize`,'POST',{},headers);assert.ok(imported.completedTables<=imported.totalTables);assert.ok(imported.completedSteps<=imported.totalSteps);}
   assert.equal(imported.state,'complete');
   assert.equal(imported.completedSteps,imported.totalSteps);assert.equal(imported.nextPart,document.manifest.parts);
  };
@@ -108,6 +115,7 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
  const local=await isolatedDatabase();
  try{
   await localArchiveRoundTrip(source.db,local.db);
+  assert.deepEqual((await local.db.prepare('SELECT * FROM call_dial_attempts ORDER BY id').all()).results,callAttempts,'The local archive preserves definite failure separately from uncertainty');
   assert.equal(await local.db.prepare('SELECT count(*) FROM api_credentials').first('count(*)'),0,'CLI restore creates no API credential authority');
   assert.deepEqual((await local.db.prepare('SELECT * FROM message_library ORDER BY id').all()).results,libraryRows,'The local CLI preserves library content, permissions, ownership and revision');
   assert.deepEqual(await local.db.prepare('SELECT library_selection_json,merge_review_json FROM drafts WHERE id=?').bind(draft).first(),draftMetadata);
@@ -117,6 +125,7 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
   assert.deepEqual(await local.db.prepare('SELECT * FROM signals WHERE id=?').bind(removedSource.signalId).first(),removedSource.signal);
  }finally{await local.dispose();}
  await restore(target,archive);
+ assert.deepEqual((await target.db.prepare('SELECT * FROM call_dial_attempts ORDER BY id').all()).results,callAttempts,'Records restore preserves failed outcomes, uncertainty and historical attribution');
  assert.equal(await target.db.prepare('SELECT count(*) FROM api_credentials').first('count(*)'),0,'Records restore creates no API credential authority');
  assert.deepEqual((await target.db.prepare('SELECT * FROM message_library ORDER BY id').all()).results,libraryRows,'Records restore preserves library content, permissions, ownership and revision');
  assert.deepEqual(await target.db.prepare('SELECT library_selection_json,merge_review_json FROM drafts WHERE id=?').bind(draft).first(),draftMetadata);
@@ -152,6 +161,7 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
  assert.equal((await restored.request('/website/test','POST',{contactId:customer.id})).status,201);
  assert.equal((await restored.signed(secret)).status,401);
  assert.equal((await restored.signed(replacement.secret)).status,201);
+ const restoredCalls=await target.request(`calls/contacts/${customer.id}/log`,'GET',undefined,{Cookie:cookie.split(';')[0]!});assert.equal(restoredCalls.status,200);assert.deepEqual((await restoredCalls.json() as any).attempts.map((attempt:any)=>[attempt.state,attempt.provider_error_code]).sort(),[['failed',21217],['uncertain',null]],'The restored contact shows truthful attempt outcomes without requiring provider credentials');
  const erased=await target.request(`records/contact/${customer.id}`,'DELETE',{confirmed:true},{Cookie:cookie.split(';')[0]!});assert.equal(erased.status,200,await erased.text());
  assert.equal(await target.db.prepare('SELECT id FROM signals WHERE id=?').bind(removedSource.signalId).first(),null,'Contact erasure still removes evidence belonging to a removed source');
  assert.equal(await target.db.prepare('SELECT id FROM timeline_entries WHERE id=?').bind(removedSource.signalId).first(),null);

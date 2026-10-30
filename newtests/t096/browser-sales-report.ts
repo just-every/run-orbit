@@ -140,7 +140,7 @@ export async function salesReportJourney({browser,worker,ownerCookie,seller,seed
    assert.deepEqual(totals(exported,'reasons'),{won:2,won_value:1_200_000,lost:0,lost_value:0});assert.deepEqual(totals(exported,'activities'),{note:0,call:1,meeting:1,sent:0,total:2});
    assert.doesNotMatch(JSON.stringify(exported),/:4000000\b/,'the hidden Atlas amount never leaves the server');});
   // Revoking Cedar's grant on the Access page changes the reopened report and its export on the next request.
-  const revoking=await context(1440,ownerCookie);await revoking.page.goto('/app/access');
+  const revoking=await context(1440,ownerCookie);await revoking.page.goto('/app/settings/team');
   const grant=revoking.page.locator('.fold-row').filter({hasText:'Why: Renewal review'});await expect(grant.getByRole('heading',{name:'Opportunity: Cedar renewal',exact:true})).toBeVisible();
   await grant.getByRole('button',{name:'Revoke grant',exact:true}).click();await expect(revoking.page.getByRole('status').filter({hasText:'Grant revoked'})).toBeVisible();
   await revoking.errors.check(directory,'report-grant-revoked');await revoking.created.close();

@@ -1,3 +1,5 @@
+import {workflowRoutes} from '../features/workflows/routes';
+import {collectWorkflowRuns} from '../features/workflows/engine';
 import {apiCredentialRoutes} from '../features/api/routes';
 import {publicApiRoutes} from '../features/api/public-routes';
 import {entryPrivacyRoutes} from '../features/records/entry-privacy';
@@ -50,6 +52,7 @@ import { createNotificationRoutes } from "../features/notifications/routes";
 import { createPublicDemoRoutes } from "../features/public/routes";
 import { createAssistanceRoutes } from "../features/assistance/routes";
 import { createTodayRoutes } from "../features/today/routes";
+import { createReviewRoutes } from "../features/today/review-summary";
 import { createRiskRoutes } from "../features/risks/routes";
 import type { AIProvider } from "../features/assistance/provider";
 
@@ -125,12 +128,14 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
     await next();
   });
   // Base step-up: exporting all data, replacing it from an archive and permanently erasing an operator need a fresh app-local email proof.
-  const stepUps: [RegExp, StepUpAction, string][] = [[/^\/api\/v1\/records\/archive\/exports$/, 'export', '/app/records'], [/^\/api\/v1\/records\/archive\/imports$/, 'delete', '/app/records'], [/^\/api\/v1\/settings\/operators\/[^/]+\/erase$/, 'delete', '/app/settings']];
+  const stepUps: [RegExp, StepUpAction, string][] = [[/^\/api\/v1\/records\/archive\/exports$/, 'export', '/app/settings/data'], [/^\/api\/v1\/records\/archive\/imports$/, 'delete', '/app/settings/data'], [/^\/api\/v1\/settings\/operators\/[^/]+\/erase$/, 'delete', '/app/settings/team']];
   app.use("/api/*", async (context, next) => {
     const guarded = context.req.method === "POST" ? stepUps.find(([path]) => path.test(context.req.path)) : undefined;
     if (guarded) { const refused = await input.stepUp(context.req.raw, guarded[1], guarded[2]); if (refused) return refused; }
     await next();
   });
+  app.route('/api/workflows',workflowRoutes(input.database,{fetcher:input.captureFetch,now:input.clock?()=>input.clock!.now():undefined}));
+  app.use('/api/v1/*',async(c,next)=>{await next();if(!['GET','HEAD','OPTIONS'].includes(c.req.method)&&c.res.status<400&&!c.req.path.includes('/archive/'))await collectWorkflowRuns(input.database,input.clock?.now().toISOString());});
   app.route('/api/v2',createFoldRoutes(input.database,input.clock));
   app.use('/api/v1/*',collaboratorNativeBoundary(input.database));
   app.use("/api/v1/records/*", async (context,next) => {
@@ -164,12 +169,13 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
   app.route("/api/v1/records", createRecordsRoutes(input.database));
   app.route('/api/v1/tasks',createSalesTaskRoutes(input.database));
   app.route('/api/v1/relationships',createRelationshipRoutes(input.database));
-  app.route("/api/v1/settings", createSettingsRoutes(input.database,request=>input.stepUp(request,'email:change','/app/settings')));
+  app.route("/api/v1/settings", createSettingsRoutes(input.database,request=>input.stepUp(request,'email:change','/app/settings/team')));
   app.route("/api/v1/setup", createSetupRoutes(input.database));
   app.route("/api/v1/sources", createSourceRoutes(input.database,input.sourceSecurity));
-  app.route("/api/v1/notifications", createNotificationRoutes(input.database));
+  app.route("/api/v1/notifications", createNotificationRoutes(input.database,{clock:input.clock,security:input.sourceSecurity,origin:input.captureOrigin}));
   app.route("/api/v1/assistance", createAssistanceRoutes(input.database,input.aiProvider));
   app.route("/api/v1/today", createTodayRoutes(input.database,input.aiProvider));
+  app.route("/api/v1/review", createReviewRoutes(input.database));
   app.route("/api/v1/risks", createRiskRoutes(input.database,input.aiProvider));
   app.route("/api/v1/workbench", createWorkbenchRoutes(input.database, input.outboundMail,Boolean(input.aiProvider),input.hosted,input.mailEventKeys??{},input.captureOrigin,input.mailSettings));
   app.route("/api/v1/opportunities", dependencies.opportunityRoutes);

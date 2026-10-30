@@ -46,10 +46,12 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  assert.deepEqual(approved.request().postDataJSON(),{revision:savedDraft.revision,scheduledAt:requestedAt,scheduledAtConfirmation:preview.scheduledAt});
  await expect(page.getByTestId('draft-editor').locator('time')).toHaveAttribute('datetime',preview.scheduledAt);
  await page.goto(opportunityURL);
- const history=page.locator('#approved-outreach'),message=history.locator('article').filter({has:page.getByRole('heading',{name:subject,exact:true})});
- await expect(message).toContainText(contact.email);
- await expect(message).toContainText('scheduled');
- await expect(message.locator('strong time')).toHaveAttribute('datetime',preview.scheduledAt);
+ // OR3: the deal's Activity holds the message in its own line (to whom, when it will send, to the instant) and says
+ // first how due sends go out.
+ const history=page.getByTestId('record-activity'),message=history.locator('li').filter({has:page.getByText(subject,{exact:true})});
+ await expect(message).toContainText(`To ${contact.name??contact.email}`);
+ await expect(message).toContainText('Scheduled');
+ await expect(message.locator('time')).toHaveAttribute('datetime',preview.scheduledAt);
  const startup=history.getByRole('status');
  await expect(startup).toContainText(/Cloudflare has not started its timer/);
  await expect(startup).toContainText(/Due sends go out when Orbit is next used/);
