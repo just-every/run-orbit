@@ -3811,11 +3811,11 @@
       "executable": false
     },
     "rer-project.json": {
-      "sha256": "66729b3f8b0c2041579a5d68c7854af1b4c43e8fa66a60831e5787f323ac35f6",
+      "sha256": "fc5097961ae10205eff4f41a2c4e065bd0000e2f3eb2aaed92fb646c39bf2b54",
       "executable": false
     },
     "rer-setup.json": {
-      "sha256": "b50fa9e6ead13cc81bd7a994833e3afec8c469cf66023a679d550da6b1ea8013",
+      "sha256": "71bf4d3888f5659bc93b672d3abc56c40bcfc8a021c2819a78d8e5c9642ffba1",
       "executable": false
     },
     "RULINGS.md": {
@@ -5139,7 +5139,7 @@
       "executable": false
     },
     "src/core/features/agent-door/index.ts": {
-      "sha256": "9863c281aa719787d98881513cb017678a75b3513bcfb223a86604bec926b741",
+      "sha256": "659fd190e728bd640b87b35c21b8d31ed7f75eec0bef66117ebf8aae6e9c2bb4",
       "executable": false
     },
     "src/core/features/agent-door/local-credentials.ts": {
@@ -7879,7 +7879,7 @@
       "executable": false
     },
     "src/core/features/setup/loader.ts": {
-      "sha256": "3d11970461b0a1106574c2dc9a9e80d8b23f4c171540b855a0a0f9f229584d6c",
+      "sha256": "3949d6521571eb3e6e60c091b14eab9f5aca7dce112c7c81224a91842dd1b78a",
       "executable": false
     },
     "src/core/features/setup/repository.ts": {
@@ -7887,11 +7887,11 @@
       "executable": false
     },
     "src/core/features/setup/routes.ts": {
-      "sha256": "19ef5c0a2c6ffa3fdc2181e6cd39aca53af4acaf65c5750af4d15e5eef9dadd0",
+      "sha256": "566fc131034369538aa2b8a6b9d0477462071e526d4af8ed6238161dbf96e2a5",
       "executable": false
     },
     "src/core/features/setup/ui/setup-page.tsx": {
-      "sha256": "d1b9da98d95168b3575d7e295d415f7509788b34f3212f2c800fa8976c9629de",
+      "sha256": "c38a52d23e82b8d059fd368942d78ba56bb6f491809201a8176c33d3757ccc6b",
       "executable": false
     },
     "src/core/features/signals/index.ts": {
@@ -8231,7 +8231,7 @@
       "executable": false
     },
     "src/core/platform/assets.ts": {
-      "sha256": "e2ad8a621c784b8aeb8ca1e9648843cf6b8fe9a59eb5d95714f0468a5cf1bdcb",
+      "sha256": "564bf5131ffa4da0d54edebc3277b8bd21a9824092d0b6305dcb2ef35f741792",
       "executable": false
     },
     "src/core/platform/base-mail.d.ts": {
@@ -9827,7 +9827,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "b6370cb0934102bf49ed3054f128c15ccf778baa6fc04b0fe675f18a7872a566",
+      "sha256": "ef9687bab68e590858d40dcec96e00768623d976d27f70df6f4a390d8a5de2a2",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
@@ -10503,7 +10503,7 @@
       "executable": false
     },
     "tests/rer/identity.test.mjs": {
-      "sha256": "ee83d8a59b0f1f12620bef83a839f3f41a218076f059e302063cbd2c8b079807",
+      "sha256": "f437a9330eecfba81ccb2fadd57a03c6e1309d295ad96eb1948352b4dd8846a1",
       "executable": false
     },
     "tests/rer/journey.test.mjs": {
@@ -11059,7 +11059,7 @@
       "executable": false
     },
     "vite.config.ts": {
-      "sha256": "70924ee1ee3ef22c11f4b3309c73a574942035263f9534d1aba2343ac8f5872d",
+      "sha256": "8ea5e51cd2d715f2f78896a31e0dfc59d81c20017fd75241a1216f45d38bdfa7",
       "executable": false
     },
     "vite.site.config.ts": {
