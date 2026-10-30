@@ -4431,7 +4431,7 @@
       "executable": false
     },
     "src/base/modules/agent-door/credentials.ts": {
-      "sha256": "eca02ffbe6261725b3b2f602770e691cec76cd1659308868e0a43836374c9ca7",
+      "sha256": "a3e4fdd6bb00c2b2ef6049a3dc1c1c69bc38922b5eafe8186fb3de5b4ebba501",
       "executable": false
     },
     "src/base/modules/agent-door/errors.ts": {
@@ -10607,7 +10607,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "1cb82e2225b9da42685ef8d33623b567f565cbc4b91b21b6ff1196fd21b0e239",
+      "sha256": "f6e371aadcd3e9709010509db147115d96e201b41d3a7ad25ffd3843a0717038",
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {
