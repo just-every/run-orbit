@@ -8,9 +8,9 @@ function dateValue(iso: string) {
 }
 
 function defaultCalendarWindow(now = new Date()): { start: string; end: string } {
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const day = now.getDate();
+  const year = now.getUTCFullYear();
+  const month = now.getUTCMonth();
+  const day = now.getUTCDate();
   const dateInYear = (targetYear: number) => new Date(Date.UTC(targetYear, month, Math.min(day, new Date(Date.UTC(targetYear, month + 1, 0)).getUTCDate())));
   const start = dateInYear(year - 1);
   const end = dateInYear(year + 1);

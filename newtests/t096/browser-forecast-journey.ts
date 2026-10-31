@@ -15,6 +15,14 @@ export async function forecastBrowserJourney(browser:Browser,origin:string,direc
  const empty=await request(`${base}/preview`,'POST',period) as ForecastPreview;
  const unrelated=await request(`${base}/snapshots`,'POST',{...period,reviewHash:empty.reviewHash}) as ForecastSnapshot;
  const settings=await request('/api/v1/settings');
+ // The default follows the workspace month even when the browser and UTC have crossed a boundary.
+ const workspace=settings.workspace,configureZone=(timezone:string)=>request('/api/v1/settings','PUT',{name:workspace.name,timezone,currency:workspace.currency,workingHours:JSON.parse(workspace.working_hours_json),staleIntervalDays:workspace.stale_interval_days,awaitingResponseWorkingDays:workspace.awaiting_response_working_days,freeMailDomains:JSON.parse(workspace.free_mail_domains_json)});
+ await configureZone('America/New_York');
+ try{for(const [instant,first,next] of [['2026-11-01T02:00:00Z','2026-10-01','2026-11-01'],['2027-01-01T02:00:00Z','2026-12-01','2027-01-01']]){
+  const context=await browser.newContext({baseURL:origin,timezoneId:'Asia/Tokyo',viewport:{width:1440,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}});
+  try{const page=await context.newPage();await page.clock.setFixedTime(new Date(instant!));await page.goto('/app/reports#forecast');const panel=page.getByRole('region',{name:'Sales forecast',exact:true});await expect(panel.getByLabel('Forecast from',{exact:true})).toHaveValue(first!);await expect(panel.getByLabel('Forecast through',{exact:true})).toHaveValue(next!);}finally{await context.close();}
+ }}finally{await configureZone(workspace.timezone);}
+
  await request('/api/v1/settings/stages','PUT',{stages:[...settings.stages.map((stage:any)=>({id:stage.id,name:stage.name})),{name:'Forecast proposal'},{name:'Unreviewed forecast'}]});
  const state=await request(base) as ForecastState;
  const firstStage=state.stages[0]!.id,secondStage=state.stages.find(stage=>stage.name==='Forecast proposal')!.id,unreviewed=state.stages.find(stage=>stage.name==='Unreviewed forecast')!.id;

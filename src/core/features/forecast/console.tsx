@@ -8,24 +8,24 @@ import {ForecastHistory,InputHistory} from './history';
 import type {ForecastPeriod,ForecastPreview,ForecastSnapshot,ForecastSnapshotMetadata,ForecastState} from './types';
 import './forecast.css';
 
-function currentMonth():ForecastPeriod{const now=new Date(),year=now.getUTCFullYear(),month=now.getUTCMonth();return {from:new Date(Date.UTC(year,month,1)).toISOString().slice(0,10),through:new Date(Date.UTC(year,month+1,1)).toISOString().slice(0,10)};}
+function currentMonth(timezone:string):ForecastPeriod{const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:timezone,year:'numeric',month:'2-digit'}).formatToParts(new Date()).filter(part=>part.type!=='literal').map(part=>[part.type,Number(part.value)])),year=parts.year!,month=parts.month!-1;return {from:new Date(Date.UTC(year,month,1)).toISOString().slice(0,10),through:new Date(Date.UTC(year,month+1,1)).toISOString().slice(0,10)};}
 export function ForecastConsole({workspaceId}:{workspaceId:string}){
  const {accessClass}=useAccessPages();
  if(accessClass!=='native_full')return null;
  return <ForecastEligibility key={workspaceId} workspaceId={workspaceId}/>;
 }
 function ForecastEligibility({workspaceId}:{workspaceId:string}){
- const [currency,setCurrency]=useState<string|null>(null),[error,setError]=useState(''),[refresh,setRefresh]=useState(0);
+ const [workspace,setWorkspace]=useState<{currency:string;timezone:string}|null>(null),[error,setError]=useState(''),[refresh,setRefresh]=useState(0);
  useEffect(()=>{
-  let active=true;setCurrency(null);setError('');
-  api<{workspace:{currency:string}}>('/api/v1/settings').then(settings=>{if(active)setCurrency(settings.workspace.currency);}).catch(cause=>{if(active)setError((cause as Error).message);});
+  let active=true;setWorkspace(null);setError('');
+  api<{workspace:{currency:string;timezone:string}}>('/api/v1/settings').then(settings=>{if(active)setWorkspace(settings.workspace);}).catch(cause=>{if(active)setError((cause as Error).message);});
   return()=>{active=false;};
  },[refresh]);
- if(currency==='USD')return <ForecastConsoleBody workspaceId={workspaceId}/>;
- return <section id="forecast" aria-label="Sales forecast" className="fold-panel analytics-console forecast-console"><h2>Sales forecast</h2>{error?<div role="alert"><p>{error}</p><button type="button" onClick={()=>setRefresh(value=>value+1)}>Retry forecast eligibility</button></div>:currency?<p>Sales forecasts require the workspace USD configuration. This workspace uses {currency}. Existing records retain their monetary values.</p>:<p role="status">Checking forecast availability…</p>}</section>;
+ if(workspace?.currency==='USD')return <ForecastConsoleBody workspaceId={workspaceId} timezone={workspace.timezone}/>;
+ return <section id="forecast" aria-label="Sales forecast" className="fold-panel analytics-console forecast-console"><h2>Sales forecast</h2>{error?<div role="alert"><p>{error}</p><button type="button" onClick={()=>setRefresh(value=>value+1)}>Retry forecast eligibility</button></div>:workspace?<p>Sales forecasts require the workspace USD configuration. This workspace uses {workspace.currency}. Existing records retain their monetary values.</p>:<p role="status">Checking forecast availability…</p>}</section>;
 }
-function ForecastConsoleBody({workspaceId}:{workspaceId:string}){
- const [state,setState]=useState<ForecastState|null>(null),[history,setHistory]=useState<ForecastSnapshotMetadata[]>([]),[period,setPeriod]=useState(currentMonth),[preview,setPreview]=useState<ForecastPreview|null>(null),[saved,setSaved]=useState<ForecastSnapshot|null>(null),[tab,setTab]=useState('overview'),[busy,setBusy]=useState(false),[loading,setLoading]=useState(true),[loadError,setLoadError]=useState(''),[error,setError]=useState(''),[status,setStatus]=useState(''),[refresh,setRefresh]=useState(0);
+function ForecastConsoleBody({workspaceId,timezone}:{workspaceId:string;timezone:string}){
+ const [state,setState]=useState<ForecastState|null>(null),[history,setHistory]=useState<ForecastSnapshotMetadata[]>([]),[period,setPeriod]=useState(()=>currentMonth(timezone)),[preview,setPreview]=useState<ForecastPreview|null>(null),[saved,setSaved]=useState<ForecastSnapshot|null>(null),[tab,setTab]=useState('overview'),[busy,setBusy]=useState(false),[loading,setLoading]=useState(true),[loadError,setLoadError]=useState(''),[error,setError]=useState(''),[status,setStatus]=useState(''),[refresh,setRefresh]=useState(0);
  const base=`/api/v2/workspaces/${encodeURIComponent(workspaceId)}/forecast`;
  useEffect(()=>{let active=true;setLoading(true);setLoadError('');setState(null);setPreview(null);setSaved(null);setHistory([]);Promise.all([api<ForecastState>(base),api<{snapshots:ForecastSnapshotMetadata[]}>(`${base}/snapshots`)]).then(([next,rows])=>{if(active){setState(next);setHistory(rows.snapshots);}}).catch(cause=>{if(active)setLoadError((cause as Error).message);}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;};},[base,refresh]);
  const write:ForecastWrite=async(path,body,message)=>{setBusy(true);setError('');setStatus('');setPreview(null);setSaved(null);try{await api(base+path,body);setState(await api<ForecastState>(base));setStatus(message);return true;}catch(cause){setError((cause as Error).message);return false;}finally{setBusy(false);}};

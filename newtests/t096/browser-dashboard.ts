@@ -36,7 +36,9 @@ export async function dashboardJourney({browser,worker,ownerCookie,seller,seed,d
  const forecastPreview=await call(ownerCookie,root+'/forecast/preview','POST',forecastPeriod),forecast=await call(ownerCookie,root+'/forecast/snapshots','POST',{...forecastPeriod,reviewHash:forecastPreview.reviewHash});
  const run=await open(1440),page=run.page;let id='';
  try{
+  await page.clock.setFixedTime(new Date('2026-11-01T02:00:00Z'));
   await page.goto('/app/reports');await page.getByLabel('Dashboard name',{exact:true}).fill('Quarterly pipeline review');await page.getByRole('button',{name:'Create a dashboard',exact:true}).click();await expect(page).toHaveURL(/\/app\/dashboards\/[a-zA-Z0-9_-]+$/);id=new URL(page.url()).pathname.split('/').at(-1)!;await expect(page.getByRole('heading',{name:'No tiles yet',exact:true})).toBeVisible();await shot(page,'dashboard-empty-1440');
+  const initial=await call(ownerCookie,root+'/dashboards/'+id+'/definition');assert.equal(initial.definition.filters.from,'2026-10');assert.equal(initial.definition.filters.through,'2026-10');await page.clock.setFixedTime(new Date());
   await page.getByRole('button',{name:'Add a tile',exact:true}).click();const editor=page.getByRole('dialog');
   const tiles=[['pipeline','number',3,1],['pipeline','chart',6,1],['pipeline','forecast',3,2],['win_rate','number',3,1],['reasons','table',3,1],['activities','table',3,1],['revenue','number',4,1],['stage_age','table',5,1],['bookings','table',3,1]] as const;
   for(const [index,[measure,kind,width,height]] of tiles.entries()){

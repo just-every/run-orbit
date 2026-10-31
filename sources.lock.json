@@ -2259,11 +2259,11 @@
       "executable": false
     },
     "newtests/t096/browser-dashboard.ts": {
-      "sha256": "2d0bdccbd1ae7491b4cbd2849374c89dcfdd9b265fbfaf282603d76c4702bdd5",
+      "sha256": "fbf22b04dd9a92194b314fec7dd02ba073667eea3485bac0d459f49cec4f4c91",
       "executable": false
     },
     "newtests/t096/browser-forecast-journey.ts": {
-      "sha256": "c7dccb9faa9ab50fb75afe2de1272e9a96cc2e992d2cab348be45845a6d000fe",
+      "sha256": "707c95e75c8751acfe7a8e6a0083a8544432e40545ad1921e4ec6e965776cc11",
       "executable": false
     },
     "newtests/t096/browser-form-mapping.ts": {
@@ -5607,7 +5607,7 @@
       "executable": false
     },
     "src/core/features/dashboards/directory.tsx": {
-      "sha256": "5abb73806125896271a79c607311750da1bc96c451d1ee611edbd0e28dc3c379",
+      "sha256": "6a1a64b011ff5437bd79fa1f21e994a0aab285866c99a94b2416f06ff20178ef",
       "executable": false
     },
     "src/core/features/dashboards/display.ts": {
@@ -5851,7 +5851,7 @@
       "executable": false
     },
     "src/core/features/forecast/console.tsx": {
-      "sha256": "3a5409c2b56e7124e4403799a38eebbb4463b9cdc8c60966f4c6bba8ce2f99b9",
+      "sha256": "f57134eb8f09ce0179306f770a95242ba29d0cb03a666d4cc482778dd9fd0351",
       "executable": false
     },
     "src/core/features/forecast/deal-editor.tsx": {
@@ -6427,7 +6427,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/capture-scope.tsx": {
-      "sha256": "5390e5dac5099a6807e28132c7b0c3ea4649df3738d7af02bb991992c1a0f230",
+      "sha256": "930f49b8ccb16e53f2b6018cb0e2ffe674da7faa7b2219023df9e47ef0d02b1f",
       "executable": false
     },
     "src/core/features/operator/ui/capture-setup.css": {
