@@ -20,7 +20,7 @@ export async function forecastBrowserJourney(browser:Browser,origin:string,direc
  await configureZone('America/New_York');
  try{for(const [instant,first,next] of [['2026-11-01T02:00:00Z','2026-10-01','2026-11-01'],['2027-01-01T02:00:00Z','2026-12-01','2027-01-01']]){
   const context=await browser.newContext({baseURL:origin,timezoneId:'Asia/Tokyo',viewport:{width:1440,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}});
-  try{const page=await context.newPage();await page.clock.setFixedTime(new Date(instant!));await page.goto('/app/reports#forecast');const panel=page.getByRole('region',{name:'Sales forecast',exact:true});await expect(panel.getByLabel('Forecast from',{exact:true})).toHaveValue(first!);await expect(panel.getByLabel('Forecast through',{exact:true})).toHaveValue(next!);}finally{await context.close();}
+  try{const page=await context.newPage();await page.clock.setFixedTime(new Date(instant!));await page.goto('/app/reports#forecast');await expect(page).toHaveURL(/\/app\/reports\/forecast$/);const panel=page.getByRole('region',{name:'Sales forecast',exact:true});await panel.getByRole('button',{name:/^Period: /}).click();await expect(panel.getByLabel('Forecast from',{exact:true})).toHaveValue(first!);await expect(panel.getByLabel('Forecast through',{exact:true})).toHaveValue(next!);}finally{await context.close();}
  }}finally{await configureZone(workspace.timezone);}
 
  await request('/api/v1/settings/stages','PUT',{stages:[...settings.stages.map((stage:any)=>({id:stage.id,name:stage.name})),{name:'Forecast proposal'},{name:'Unreviewed forecast'}]});
@@ -34,26 +34,29 @@ export async function forecastBrowserJourney(browser:Browser,origin:string,direc
  const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);await request('/api/v1/records/opportunity','POST',{title:'Past close date needs review',stage_id:firstStage,value_cents:0,expected_close_at:yesterday+'T12:00:00.000Z'});
  const overrideReason='Buyer confirmed budget after procurement review';
  let prior:ForecastSnapshot|undefined;
- async function capture(page:Page,name:string){await accessible(page,name,directory);const panel=page.getByRole('region',{name:'Sales forecast',exact:true}),focus=name.includes('override')?panel.getByRole('form',{name:'Review deal forecast',exact:true}):panel.locator('.forecast-measures').first();await focus.screenshot({path:join(directory,name+'-focus.png')});await (name.includes('override')?focus:panel).evaluate(element=>element.scrollIntoView({block:'start'}));await page.screenshot({path:join(directory,name+'-viewport.png')});}
+ async function capture(page:Page,name:string){await accessible(page,name,directory);const panel=page.getByRole('region',{name:'Sales forecast',exact:true}),focus=name.includes('override')?panel.getByRole('form',{name:'Review deal forecast',exact:true}):panel.getByRole('region',{name:'Open pipeline',exact:true}).locator('.reports-key');await focus.screenshot({path:join(directory,name+'-focus.png')});await (name.includes('override')?focus:panel).evaluate(element=>element.scrollIntoView({block:'start'}));await page.screenshot({path:join(directory,name+'-viewport.png')});}
  async function reviewedAction(page:Page,name:string,path:string){await Promise.all([page.waitForResponse(response=>new URL(response.url()).pathname===base+path&&response.request().method()==='POST'&&response.ok()),page.getByRole('button',{name,exact:true}).click()]);}
  for(const width of [1440,390]){
   const context=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),errors=watchBrowser(context),page=await context.newPage();
   try{
-   await page.goto('/app/reports#forecast');
+   await page.goto('/app/reports/forecast');
    const panel=page.getByRole('region',{name:'Sales forecast',exact:true});await expect(panel).toBeVisible();
-   await panel.getByRole('button',{name:'Review inputs',exact:true}).click();
+   // Overview is the page itself; closing "Inputs and history" returns to it.
+   const inputs=()=>panel.getByRole('button',{name:'Inputs and history',exact:true}).click(),overview=()=>page.getByRole('dialog',{name:'Inputs and history',exact:true}).getByRole('button',{name:'Close dialog',exact:true}).click();
+   const choosePeriod=async()=>{await panel.getByRole('button',{name:/^Period: /}).click();await panel.getByLabel('Forecast from',{exact:true}).fill(from);await panel.getByLabel('Forecast through',{exact:true}).fill(through);await reviewedAction(page,'Apply','/preview');};
+   await inputs();
    if(width===1440){
     for(const [stage,probability,category]of [[firstStage,'30','pipeline'],[secondStage,'60','best_case']] as const){await panel.getByLabel('Forecast stage',{exact:true}).selectOption(stage);await panel.getByLabel('Stage probability (%)',{exact:true}).fill(probability);await panel.getByLabel('Stage forecast category',{exact:true}).selectOption(category);await panel.getByLabel('Stage review reason',{exact:true}).fill(`Reviewed ${probability} percent with sales manager`);await reviewedAction(page,'Review stage','/stages');}
     for(const [period,start,amount]of [['monthly',from,'40000'],['quarterly',quarter,'80000']] as const){await panel.getByLabel('Quota rep',{exact:true}).selectOption(rep.id);await panel.getByLabel('Quota period',{exact:true}).selectOption(period);await panel.getByLabel('Quota start date',{exact:true}).fill(start);await panel.getByLabel('Quota amount (USD)',{exact:true}).fill(amount);await panel.getByLabel('Quota review reason',{exact:true}).fill(`Jordan reviewed ${period} target`);await reviewedAction(page,'Save quota','/quotas');}
-    await panel.getByRole('button',{name:'Overview',exact:true}).click();await panel.getByLabel('Forecast from',{exact:true}).fill(from);await panel.getByLabel('Forecast through',{exact:true}).fill(through);await reviewedAction(page,'Preview forecast','/preview');
+    await overview();await choosePeriod();
     const preview=await request(`${base}/preview`,'POST',period) as ForecastPreview;
     assert.equal(preview.result.totals.weightedExpectedCents,1500000,'10,000 × 30% + 20,000 × 60% = USD15,000, independent of engagement score');
-    await expect(panel.locator('.forecast-measures').first()).toContainText('$15,000.00');
-    await reviewedAction(page,'Save reviewed forecast','/snapshots');
+    await expect(panel.getByRole('region',{name:'Open pipeline',exact:true}).locator('.reports-key')).toContainText('$15,000.00');
+    await reviewedAction(page,'Save forecast','/snapshots');
     const history=await request(`${base}/snapshots`);prior=await request(`${base}/snapshots/${history.snapshots[0].id}`) as ForecastSnapshot;assert.equal(prior.result.totals.weightedExpectedCents,1500000);
     // Change the same public input after a preview: saving stale reviewed numbers must be refused.
     const stale=await request(`${base}/preview`,'POST',period) as ForecastPreview;
-    await panel.getByRole('button',{name:'Review inputs',exact:true}).click();await panel.getByLabel('Forecast deal',{exact:true}).selectOption(first.id);await panel.getByLabel('Deal probability override (%)',{exact:true}).fill('80');await panel.getByLabel('Deal category override',{exact:true}).selectOption('committed');
+    await inputs();await panel.getByLabel('Forecast deal',{exact:true}).selectOption(first.id);await panel.getByLabel('Deal probability override (%)',{exact:true}).fill('80');await panel.getByLabel('Deal category override',{exact:true}).selectOption('committed');
     await panel.getByRole('button',{name:'Add schedule line',exact:true}).click();await panel.getByLabel('Line 1 label',{exact:true}).fill('Platform subscription');await panel.getByLabel('Line 1 frequency',{exact:true}).selectOption('monthly');await panel.getByLabel('Line 1 amount (USD)',{exact:true}).fill('1000');await panel.getByLabel('Line 1 start date',{exact:true}).fill(from);
     await panel.getByRole('button',{name:'Add schedule line',exact:true}).click();await panel.getByLabel('Line 2 label',{exact:true}).fill('Implementation');await panel.getByLabel('Line 2 amount (USD)',{exact:true}).fill('500');await panel.getByLabel('Line 2 start date',{exact:true}).fill(from);await panel.getByLabel('Deal forecast reason',{exact:true}).fill(overrideReason);
     await capture(page,`forecast-override-${width}`);await reviewedAction(page,'Save deal forecast',`/deals/${first.id}`);
@@ -62,15 +65,16 @@ export async function forecastBrowserJourney(browser:Browser,origin:string,direc
    }else{
     await panel.getByLabel('Forecast deal',{exact:true}).selectOption(first.id);await expect(panel.getByLabel('Deal probability override (%)',{exact:true})).toHaveValue('80');await expect(panel.getByLabel('Line 1 label',{exact:true})).toHaveValue('Platform subscription');await capture(page,`forecast-override-${width}`);
    }
-   await panel.getByRole('button',{name:'Overview',exact:true}).click();await panel.getByLabel('Forecast from',{exact:true}).fill(from);await panel.getByLabel('Forecast through',{exact:true}).fill(through);await reviewedAction(page,'Preview forecast','/preview');
+   await overview();await choosePeriod();
    const current=await request(`${base}/preview`,'POST',period) as ForecastPreview;
    assert.equal(current.result.totals.weightedExpectedCents,800000);assert.equal(current.result.totals.wonBookingsCents,2000000);assert.equal(current.result.totals.committedCents,1000000);assert.equal(current.result.totals.recurringScheduledCents,100000);assert.equal(current.result.totals.oneTimeScheduledCents,50000);assert.equal(current.result.totals.mrrCents,100000);assert.equal(current.result.totals.arrCents,1200000);
    assert.deepEqual(current.result.quotaAttainment.map(row=>row.attainmentPercent).sort((a,b)=>a!-b!),[25,50]);
+   const showAll=panel.getByRole('complementary',{name:'Forecast input warnings'}).getByRole('button',{name:/^Show all \d+$/});if(await showAll.isVisible())await showAll.click();
    await expect(panel.getByRole('complementary',{name:'Forecast input warnings'})).toContainText('Missing close date');await expect(panel.getByRole('complementary',{name:'Forecast input warnings'})).toContainText('Missing reviewed probability');await expect(panel.getByRole('complementary',{name:'Forecast input warnings'})).toContainText('Close date is in the past');const override=current.result.inputs.dealInputs.find(input=>input.dealId===first.id)!;assert.equal(override.actorId,settings.operators.find((operator:any)=>operator.setup_owner===1)!.id);assert.equal(override.reason,overrideReason);assert.ok(Number.isFinite(Date.parse(override.reviewedAt)));
    await capture(page,`forecast-${width}`);
-   await panel.getByRole('button',{name:'History',exact:true}).click();
+   await inputs();
    await panel.getByLabel('Saved forecast snapshot',{exact:true}).selectOption(prior!.id);
-   await expect(panel).toContainText('$15,000.00');await expect(panel).toContainText(overrideReason);await capture(page,`forecast-history-${width}`);
+   const history=page.getByRole('dialog',{name:'Inputs and history',exact:true});await expect(history).toContainText('$15,000.00');await expect(history).toContainText(overrideReason);await capture(page,`forecast-history-${width}`);
    assert.deepEqual(await request(`${base}/snapshots/${prior!.id}`),prior,'win, new overrides and new reviews never rewrite prior as-of snapshot');
    await errors.check(directory,`forecast-${width}`);
   }catch(error){await page.screenshot({path:join(directory,`forecast-failure-${width}.png`),fullPage:true});console.error('Forecast page on failure:',await page.getByRole('region',{name:'Sales forecast',exact:true}).innerText());throw error;}finally{await context.close();}

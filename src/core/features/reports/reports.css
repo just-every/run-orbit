@@ -1,0 +1,231 @@
+/* OR9 Reports: the index, an opened report and the forecast. Brand tokens only. Every rule sits under .reports-page or the
+   drawer's .reports-drawer, so the dashboard page and the shared sales, forecast and fold rules keep their pixels.
+   Separators have jobs: the titlebar's rule ends the title block, 32px of space and a heading part sections, a 1px hairline
+   parts rows. Text never under 13px; phone targets 44px. */
+.operator-main:has(.reports-page)>header.operator-titlebar{display:none}
+.reports-page{min-width:0;color:var(--ob-ink)}
+.reports-page p{overflow-wrap:anywhere}
+
+/* Title block: "← Reports", the H1 with the period after it, the actions at the right, one quiet line under it. */
+.reports-page .reports-title{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"head actions" "line line";align-items:end;gap:14px 28px}
+.reports-page .reports-title__head{grid-area:head;min-width:0}
+.reports-page .reports-title__name{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px}
+.reports-page .reports-title h1{margin:6px 0 0}
+.reports-page .reports-title__actions{grid-area:actions;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:flex-end;gap:10px}
+.reports-page .reports-title__line{grid-area:line;margin:0;font-size:15px;line-height:1.5;color:var(--ob-body)}
+.reports-page .reports-back a,.reports-page .reports-title__line a{color:var(--ob-ink);font-weight:600;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.reports-page .reports-back a{display:inline-flex;align-items:center;gap:6px}
+.reports-page .reports-save{display:grid;justify-items:end;gap:6px}
+
+/* Pills and quiet actions. */
+:is(.reports-page,.reports-drawer) :is(.reports-pill,.reports-outline){display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:1.5px solid var(--ob-ink);border-radius:999px;font:600 15px/1.2 var(--ob-sans);text-decoration:none;cursor:pointer;box-shadow:none}
+:is(.reports-page,.reports-drawer) .reports-pill{background:var(--ob-ink);color:var(--ob-paper)}
+:is(.reports-page,.reports-drawer) .reports-pill:hover:not(:disabled){background:#000}
+:is(.reports-page,.reports-drawer) .reports-outline{background:var(--ob-card);color:var(--ob-ink)}
+:is(.reports-page,.reports-drawer) .reports-outline:hover:not(:disabled){background:var(--ob-paper-deep)}
+:is(.reports-page,.reports-drawer) .reports-text-button{display:inline-flex;align-items:center;min-height:40px;padding:0;border:0;border-radius:4px;background:none;color:var(--ob-ink);font:inherit;font-weight:600;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px;cursor:pointer;box-shadow:none}
+.reports-page .reports-new .dash-icon,.reports-page .reports-period__pill .dash-icon--chevron{width:14px;height:14px}
+.reports-page .r-menu{min-width:240px}
+:is(.reports-page,.reports-drawer) .reports-refusal{margin:8px 0 0;font-size:14.5px;font-weight:600;color:#7a2a07}
+.reports-page .reports-status{margin:28px 0 0;font-size:15.5px;color:var(--ob-body)}
+:is(.reports-page,.reports-drawer) :is(.reports-quiet,.reports-quiet-line,.reports-empty){margin:8px 0 0;font-size:14.5px;line-height:1.5;color:var(--ob-muted)}
+.reports-page .reports-quiet-line{margin-top:20px;font-size:16px;color:var(--ob-body)}
+.reports-page .reports-empty{margin:0;font-size:15.5px;color:var(--ob-body)}
+
+/* The period control: an outline pill, and a popover with today's two labelled fields side by side. */
+.reports-page .reports-period{position:relative}
+.reports-page .reports-period__pill{gap:10px;padding:0 16px;font-size:15px;font-variant-numeric:tabular-nums}
+.reports-page .reports-period__pill[aria-expanded=true] .dash-icon--chevron{transform:rotate(180deg)}
+.reports-page .reports-period__popover{position:absolute;top:calc(100% + 8px);left:0;z-index:12;width:min(520px,calc(100vw - 2 * var(--ob-gutter)));padding:20px;border:1.5px solid var(--ob-ink);border-radius:var(--ob-radius);background:var(--ob-card);box-shadow:var(--ob-shadow-card)}
+.reports-page .reports-period__fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:14px}
+.reports-page .reports-period__fields label{display:grid;gap:6px;margin:0;font-size:14.5px;font-weight:600}
+.reports-page .reports-period__fields input{width:100%;min-width:0}
+.reports-page .reports-period__actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:16px}
+
+/* Rows: a name, at most one quiet line and a chevron; the whole row is the target; hairlines between rows. */
+.reports-page .reports-section{margin-top:32px}
+.reports-page .reports-section>h2{margin:0 0 6px;font-size:22px;font-weight:720;letter-spacing:-.01em;line-height:1.25}
+.reports-page .reports-list{margin:0;padding:0;list-style:none}
+.reports-page .reports-row{display:flex;align-items:center;min-width:0}
+.reports-page .reports-row+.reports-row{border-top:1px solid var(--ob-line)}
+.reports-page .reports-row__link{display:flex;flex:1;align-items:center;gap:16px;min-width:0;padding:11px 0;color:var(--ob-ink);text-decoration:none}
+.reports-page .reports-row__link:focus-visible{outline:2px solid var(--ob-ink);outline-offset:2px;border-radius:8px}
+.reports-page .reports-row__text{display:grid;flex:1;gap:2px;min-width:0}
+.reports-page .reports-row__name{font-size:17px;font-weight:650;line-height:1.25;overflow-wrap:anywhere}
+.reports-page a.reports-row__link:hover .reports-row__name{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px}
+.reports-page .reports-row__line{overflow:hidden;font-size:14.5px;line-height:1.3;color:var(--ob-muted);text-overflow:ellipsis;white-space:nowrap}
+.reports-page .reports-row .dash-icon--chevron{flex:none;transform:rotate(-90deg);color:var(--ob-muted)}
+/* The row's default action takes no room at rest, so every chevron lines up; hover or focus anywhere in the row shows it, and Tab
+   still reaches it from the row's link. */
+.reports-page .reports-row__action{flex:none;max-width:0;overflow:hidden;font-size:14.5px;white-space:nowrap;opacity:0}
+.reports-page .reports-row:is(:hover,:focus-within) .reports-row__action{max-width:none;margin-left:16px;overflow:visible;opacity:1}
+
+/* A sales result: the figures lead unboxed, the breakdown reads in ruled columns, the basis folds into one line. */
+.reports-page .sales-result{display:block;margin-top:28px;padding:0;border:0;border-radius:0;background:none}
+.reports-page .sales-section{display:block;margin-top:32px;padding:0;border:0}
+.reports-page .sales-section.reports-lead{margin-top:0}
+.reports-page .sales-section>h2{margin:0 0 14px;font-size:20px;font-weight:700;line-height:1.3}
+.reports-page .sales-totals{display:flex;flex-wrap:wrap;gap:16px 0;margin:0}
+.reports-page .sales-totals>div{min-width:0;padding:0 28px;border:0;border-left:1px solid var(--ob-line);border-radius:0;background:none}
+.reports-page .sales-totals>div:first-child{padding-left:0;border-left:0}
+.reports-page .sales-totals dt{font-size:14.5px;font-weight:500;color:var(--ob-muted)}
+.reports-page .sales-totals dd{margin:4px 0 0}
+.reports-page .sales-cell{display:inline-flex;align-items:center;min-height:0;padding:0;border:0;border-radius:4px;background:none;color:var(--ob-ink);font:inherit;font-variant-numeric:tabular-nums;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px;white-space:nowrap;cursor:pointer;box-shadow:none;transition:none}
+.reports-page .sales-cell:hover{background:none;text-decoration-thickness:2.5px}
+.reports-page .sales-cell:focus-visible{outline:2px solid var(--ob-ink);outline-offset:3px}
+.reports-page .sales-totals .sales-cell{font-size:24px;font-weight:720;line-height:1.15;letter-spacing:-.01em}
+.reports-page .reports-lead .sales-totals .sales-cell{font-size:40px}
+.reports-page .reports-key .sales-cell{color:var(--ob-tangerine-deep)}
+.reports-page .sales-not-success :is(dt,.sales-cell){color:var(--ob-muted)}
+.reports-page .sales-cell-note{display:block;margin-top:4px;font-size:13.5px;color:var(--ob-muted)}
+/* Columns at least 300px wide with a hairline between them; the first column's hairline sits in the one clipped pixel. */
+.reports-page .reports-tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px 0;margin:24px 0 0 -21px;clip-path:inset(-12px -12px -12px 1px)}
+.reports-page .reports-tables .sales-table{min-width:0;padding:0 20px;border:0;border-left:1px solid var(--ob-line);border-radius:0;background:none}
+.reports-page .reports-tables .sales-table:is(:has(th:nth-child(4)),.reports-table--month){grid-column:1/-1}
+.reports-page .reports-tables .sales-table table{font-size:15px}
+.reports-page .reports-tables .sales-table caption{padding:0 0 6px;font-size:15px;font-weight:650;text-align:start}
+.reports-page .reports-tables .sales-table :is(th,td){padding:8px 16px 8px 0;border-top:1px solid var(--ob-line);font-variant-numeric:tabular-nums}
+.reports-page .reports-tables .sales-table thead th{border-top:0;font-size:13.5px;font-weight:500;color:var(--ob-muted)}
+.reports-page .reports-tables .sales-table tbody th{font-weight:500}
+.reports-page .reports-tables .sales-table .sales-cell{font-size:15px;font-weight:600}
+.reports-page .reports-tables .sales-table:focus-visible{outline:2px solid var(--ob-ink);outline-offset:4px}
+.reports-page :is(.sales-definition,.sales-note){margin:14px 0 0;font-size:14.5px;line-height:1.5;color:var(--ob-muted)}
+/* Tangerine stays for the one key figure; late-arriving evidence keeps its dashed edge in the line colour. */
+.reports-page .sales-late{margin-top:28px;border-color:var(--ob-line-strong)}
+
+/* The basis: one quiet line above a hairline, opening to today's disclosure word for word. */
+.reports-page .reports-basis{margin-top:32px}
+.reports-page .reports-basis>summary{display:flex;align-items:center;min-height:44px;padding:4px 0;border-bottom:1px solid var(--ob-line);font-size:14.5px;font-weight:500;line-height:1.45;color:var(--ob-muted)}
+.reports-page .reports-basis[open]>summary{color:var(--ob-ink)}
+.reports-page .reports-basis>p{margin:12px 0 0;font-size:14.5px;line-height:1.55;color:var(--ob-body)}
+.reports-page .sales-basis{display:grid;grid-template-columns:minmax(120px,max-content) minmax(0,1fr);gap:8px 24px;margin:12px 0 0}
+.reports-page .sales-basis>div{display:contents}
+.reports-page .sales-basis dt{font-size:14.5px;font-weight:650;color:var(--ob-ink)}
+.reports-page .sales-basis dd{margin:0;font-size:14.5px;line-height:1.5;color:var(--ob-body)}
+.reports-page .sales-result__name{font-weight:650;color:var(--ob-ink)}
+.reports-page .reports-basis-line{margin:28px 0 0;padding:4px 0 10px;border-bottom:1px solid var(--ob-line);font-size:14.5px;color:var(--ob-muted)}
+
+/* A custom report or Open opportunities: the value as the key figure, its quiet lines, and today's details folded. */
+.reports-page .reports-custom{display:block;margin-top:28px;padding:0;border:0;border-radius:0;background:none}
+.reports-page .reports-figure{display:block;margin:0}
+.reports-page .reports-figure>div{padding:0;border:0;background:none}
+/* The H1 names the figure; its term stays for assistive technology only. */
+.reports-page .reports-figure dt{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.reports-page .reports-figure dd{display:grid;justify-items:start;gap:2px;margin:0;font-size:40px;font-weight:720;line-height:1.15;letter-spacing:-.01em;color:var(--ob-tangerine-deep);font-variant-numeric:tabular-nums}
+.reports-page .reports-figure__unit{font-size:17px;font-weight:600;line-height:1.3;letter-spacing:0;color:var(--ob-ink)}
+.reports-page .reports-custom>ul{margin:12px 0 0;padding-left:20px;font-size:15px}
+.reports-page .reports-fold{margin-top:20px}
+.reports-page .reports-fold>summary{display:flex;align-items:center;min-height:44px;font-size:15px;font-weight:650}
+.reports-page .reports-custom .reports-fold dl{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin:10px 0 0}
+.reports-page .reports-custom .reports-fold dl>div{padding:0;border:0;background:none}
+.reports-page .reports-custom .reports-fold :is(p,li){font-size:15px;line-height:1.55}
+
+/* The forecast: the open-pipeline band, warnings on paper-deep, two groups, the detail fold and the basis. */
+.reports-page .reports-band{margin-top:28px;padding:24px 28px;border-radius:var(--ob-radius);background:var(--ob-paper-deep)}
+.reports-page .reports-band dl{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 28px;margin:0}
+.reports-page .reports-band dl>div{min-width:0}
+.reports-page .reports-band dt{font-size:14.5px;color:var(--ob-body)}
+.reports-page .reports-band dd{margin:4px 0 0;font-size:24px;font-weight:700;line-height:1.15;font-variant-numeric:tabular-nums}
+.reports-page .reports-band .reports-key{padding-right:32px;border-right:1px solid var(--ob-line-strong)}
+.reports-page .reports-band .reports-key dd{font-size:44px;font-weight:720;letter-spacing:-.01em;color:var(--ob-tangerine-deep)}
+.reports-page aside.analytics-console__message{margin:16px 0 0;padding:16px 20px;border:0;border-radius:var(--ob-radius);background:var(--ob-paper-deep);color:var(--ob-ink)}
+.reports-page aside.analytics-console__message h4{margin:0 0 6px;font-size:16px;font-weight:700}
+.reports-page aside.analytics-console__message ul{margin:0;padding-left:20px;font-size:15px;line-height:1.6}
+.reports-page aside.analytics-console__message a{color:var(--ob-ink);font-weight:600}
+.reports-page .reports-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:18px;margin-top:28px}
+.reports-page .reports-group{min-width:0;padding:24px;border:1.5px solid var(--ob-ink);border-radius:var(--ob-radius);background:var(--ob-card)}
+.reports-page .reports-group h2{margin:0 0 12px;font-size:17px;font-weight:700}
+.reports-page .reports-group p{margin:4px 0 0;font-size:15px;line-height:1.5}
+.reports-page .reports-quota+.reports-quota{margin-top:20px;padding-top:16px;border-top:1px solid var(--ob-line)}
+.reports-page .reports-quota__total{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;font-variant-numeric:tabular-nums}
+.reports-page .reports-quota h4{margin:14px 0 4px;font-size:14.5px;font-weight:600;color:var(--ob-muted)}
+.reports-page .reports-reps{display:grid;gap:0;margin:0;padding:0;list-style:none}
+.reports-page .reports-reps li{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(60px,1fr) auto;align-items:center;gap:12px;padding:8px 0;font-size:15px;font-variant-numeric:tabular-nums}
+.reports-page .reports-reps li+li{border-top:1px solid var(--ob-line)}
+.reports-page .reports-bar{display:block;height:8px;overflow:hidden;border-radius:999px;background:var(--ob-paper-deep)}
+.reports-page .reports-bar>span{display:block;height:100%;background:var(--ob-ink)}
+.reports-page .reports-ruled{margin:0}
+.reports-page .reports-ruled>div{display:flex;justify-content:space-between;gap:12px;padding:9px 0}
+.reports-page .reports-ruled>div+div{border-top:1px solid var(--ob-line)}
+.reports-page .reports-ruled dt{font-size:15px;color:var(--ob-body)}
+.reports-page .reports-ruled dd{margin:0;font-size:15px;font-weight:650;font-variant-numeric:tabular-nums}
+.reports-page .reports-detail{margin-top:28px}
+.reports-page .reports-detail :is(h4,p,li){overflow-wrap:anywhere}
+.reports-page .reports-detail :is(.forecast-detail,.forecast-measures){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 16px;margin:8px 0}
+.reports-page .reports-detail :is(.forecast-detail,.forecast-measures) dt{font-size:13.5px;color:var(--ob-muted)}
+.reports-page .reports-detail :is(.forecast-detail,.forecast-measures) dd{margin:2px 0 0;font-weight:600}
+.reports-page :is(.forecast-muted,.forecast-warning){font-size:14.5px;color:var(--ob-muted)}
+
+/* The drawer: the dashboard's, full screen at 900px and narrower; sections 28px apart with a hairline between, no card in a panel. */
+.reports-drawer{display:block;margin-top:20px}
+.reports-drawer>section+section{margin-top:28px;padding-top:28px;border-top:1px solid var(--ob-line)}
+.reports-drawer h3{margin:0 0 12px;font-size:17px;font-weight:700}
+.reports-drawer :is(h4,h5){margin:12px 0 6px;font-size:15px;font-weight:650}
+.reports-drawer p{font-size:15px;line-height:1.55}
+.reports-drawer :is(.fold-panel,.sales-history,.analytics-console__history,.forecast-card,.analytics-console__result){max-width:none;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+.reports-drawer .forecast-card+.forecast-card{margin-top:28px;padding-top:28px;border-top:1px solid var(--ob-line)}
+.reports-drawer fieldset,.reports-drawer .sales-editor fieldset{display:grid;gap:0;min-width:0;margin:16px 0 0;padding:0;border:0;border-radius:0;box-shadow:none}
+.reports-drawer legend{margin-bottom:6px;font-size:14.5px;font-weight:650}
+.reports-drawer :is(.fold-grid,.forecast-fields){display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:14px;margin:0}
+.reports-drawer label,.reports-drawer .sales-editor label{display:grid;gap:6px;margin:14px 0 0;font-size:14.5px;font-weight:600}
+.reports-drawer :is(.fold-grid,.forecast-fields) label{margin:0}
+.reports-drawer :is(input:not([type=checkbox],[type=radio]),select,textarea),.reports-drawer .sales-editor :is(input:not([type=checkbox],[type=radio]),select){width:100%;min-width:0;min-height:44px;padding:9px 13px;border-radius:12px;font:500 15.5px/1.4 var(--ob-sans)}
+.reports-drawer label.sales-check,.reports-drawer .sales-editor label.sales-check{display:flex;align-items:center;gap:10px;min-height:44px;margin:0;font-weight:500}
+.reports-drawer .sales-check input{width:20px;height:20px}
+.reports-drawer .report-sharing>summary{display:flex;align-items:center;min-height:44px;font-weight:650}
+.reports-drawer :is(.sales-editor,.report-editor,.reports-create)>button,.reports-drawer fieldset>button,.reports-drawer form button[type=submit]{margin-top:16px}
+.reports-drawer .sales-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-top:8px}
+.reports-drawer :is(.sales-history,.analytics-console__history) :is(ol,article){display:grid;gap:0;margin:0;padding:0;list-style:none}
+.reports-drawer :is(.sales-history li,.analytics-console__history article){display:grid;gap:6px;padding:12px 0;border-top:1px solid var(--ob-line)}
+.reports-drawer .forecast-schedule{margin:16px 0 0;padding:12px 0 0;border-top:1px solid var(--ob-line)}
+.reports-drawer :is(.forecast-measures,.forecast-detail,.forecast-quota-totals){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px;margin:8px 0}
+.reports-drawer :is(.forecast-muted,.forecast-reason){font-size:14.5px;color:var(--ob-body)}
+.reports-drawer .forecast-reason{white-space:pre-wrap}
+.reports-drawer .operator-dialog__actions{justify-content:flex-start}
+
+@media(max-width:900px){
+ .reports-page .reports-title{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "actions" "line"}
+ .reports-page .reports-back a{display:inline-flex;align-items:center;min-height:44px}
+ .reports-page .reports-title__name{display:grid;justify-items:start}
+ .reports-page .reports-period{width:100%}
+ .reports-page .reports-period__popover{right:0;width:auto}
+ .reports-page .reports-period__fields{grid-template-columns:minmax(0,1fr)}
+ .reports-page .reports-title__actions{justify-content:stretch}
+ .reports-page .reports-title__actions>*{flex:1 1 0}
+ .reports-page .reports-title__actions .reports-save{justify-items:stretch}
+ .reports-page .reports-title__actions :is(.reports-pill,.reports-outline){width:100%}
+ .reports-page.reports-index .reports-title{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"head actions"}
+ .reports-page.reports-index .reports-title__actions>*{flex:none}
+ .reports-page .reports-row__link{padding:14px 0}
+ .reports-page .reports-row__line{display:-webkit-box;overflow:hidden;white-space:normal;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+ .reports-page .reports-row__action{min-height:44px}
+ .reports-page .reports-tables{grid-template-columns:minmax(0,1fr);margin-left:0;clip-path:none}
+ .reports-page .reports-tables .sales-table{padding:0;border-left:0;overflow-x:auto}
+ .reports-page .sales-totals{gap:12px 28px}
+ .reports-page .sales-totals>div{padding:0;border-left:0}
+ .reports-page .reports-tables .sales-table table{width:100%;min-width:0}
+ .reports-page .reports-tables .sales-table tbody th{min-width:96px}
+ .reports-page .reports-tables .sales-table :is(th,td){padding-right:12px}
+ .reports-page .sales-totals .sales-cell,.reports-page .reports-tables .sales-table .sales-cell{min-height:44px}
+ .reports-page .reports-lead .sales-totals .sales-cell{font-size:36px}
+ .reports-page .sales-basis{grid-template-columns:minmax(0,1fr);gap:4px}
+ .reports-page .sales-basis dd{margin-bottom:8px}
+ .reports-page .reports-text-button,.reports-page .reports-title__line a{min-height:44px}
+ .reports-page .dash-drawer{width:100vw;padding:20px;border-left:0}
+ .reports-page .reports-band{padding:0;background:none}
+ .reports-page .reports-band dl{display:block}
+ .reports-page .reports-band dl>div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 0}
+ .reports-page .reports-band dl>div+div{border-top:1px solid var(--ob-line)}
+ .reports-page .reports-band dd{margin:0;font-size:17px}
+ .reports-page .reports-band .reports-key{display:block;margin-bottom:8px;padding:20px;border:0;border-radius:var(--ob-radius);background:var(--ob-paper-deep)}
+ .reports-page .reports-band .reports-key dd{margin-top:4px;font-size:40px}
+ .reports-page .reports-band .reports-key+div{border-top:0}
+ .reports-page .reports-groups{grid-template-columns:minmax(0,1fr)}
+ .reports-page .reports-group{padding:20px}
+ .reports-page .reports-group--ruled{padding:0;border:0;background:none}
+ .reports-page .reports-detail :is(.forecast-detail,.forecast-measures){grid-template-columns:repeat(2,minmax(0,1fr))}
+ .reports-page :is(.reports-fold,.reports-basis)>summary{min-height:44px}
+ /* A 44px hit area for links inside sentences, without changing the line they sit on. */
+ .reports-page :is(aside,.reports-detail,.reports-custom) a[href]{display:inline-block;padding-block:12px;margin-block:-12px}
+ .reports-drawer .sales-actions :is(a,button){min-height:44px}
+}

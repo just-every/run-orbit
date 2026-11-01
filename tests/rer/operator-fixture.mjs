@@ -54,6 +54,6 @@ export async function prepareOperatorFixture(page,browser,origin,key,ownerEmail)
  // Save consent through the public form handler without following the callback.
  const consent=Object.fromEntries(new URLSearchParams(authorize.split('?')[1]));
  await nativeForm(page,'/delegation/authorize',consent);
- await page.goto(origin+'/app/reports');await page.getByRole('button',{name:'Set up open opportunities report',exact:true}).click();await page.getByRole('combobox',{name:'Report',exact:true}).selectOption('open-opportunities:1');await page.getByRole('button',{name:'Preview report',exact:true}).click();await page.getByRole('button',{name:'Save reviewed report',exact:true}).click();await expect(page.getByRole('heading',{name:'Saved result',exact:true})).toBeVisible();
+ await page.goto(origin+'/app/reports');await page.getByRole('link',{name:'Open opportunities',exact:true}).click();await page.getByRole('button',{name:'Save result',exact:true}).click();await expect(page.getByText(/^Saved result · measured /)).toBeVisible();
  return {provenance,timelineEntryId:timelineEntry.id,opportunityId:created.id,contactId:contact.id,companyId:opportunity.opportunity.companyId,draftId:draft.id,authorize,collaboratorContext,collaborator};
 }
