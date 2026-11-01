@@ -1,9 +1,10 @@
 import {useLayoutEffect,useRef,useState} from 'react';
 import {useElementScrollRestoration} from '@tanstack/react-router';
+// Before the directory: the title block loads the shared stylesheets in the dashboard page's order.
+import {ReadFailure,ReportsTitle} from './title';
 import {useHashMap} from '../operator/ui/hash-target';
 import {DashboardDirectory,useDashboardDirectory} from '../dashboards/directory';
 import {builtInIds,useCatalog,OPEN_OPPORTUNITIES,type ReadyCatalog} from './catalog';
-import {ReadFailure,ReportsTitle} from './title';
 import {Row} from './rows';
 import {CreateDashboardDialog,CreateMenu,NewCustomReport,type CreateChoice} from './create-menu';
 
