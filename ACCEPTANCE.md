@@ -8,12 +8,12 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 13 | 136 | 29 | 178 |
-| Agent surface | 0 | 0 | 26 | 26 |
+| Core | 13 | 141 | 24 | 178 |
+| Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 13 | 136 | 55 | 204 |
+| Full target | 13 | 159 | 32 | 204 |
 
-Judged from the code and tests at commit `373d8818a42e3208c5d9ea2ffea9cea33c470dc6` (29 October 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
+Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
 ## Core
 
@@ -1180,7 +1180,7 @@ Core · target · **partial** · From RECORD-017 · Cites BASE-INPUT-001, BASE-R
 
 #### RECORD-024 — Mention delivery through personal channels
 
-Core · target · **missing** · From RECORD-017 · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · target · **partial** · From RECORD-017 · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** Its NOTIFY-003 inheritance adopts INTEGRATE-005’s Slack rules: no entry text enters Slack, private entries get a generic notice and exact authenticated entry link, and an undelivered mention is withdrawn on deletion. Slack acknowledgment never accepts an application-proposed handoff.
 
@@ -1189,8 +1189,8 @@ Core · target · **missing** · From RECORD-017 · Cites BASE-INPUT-001, BASE-R
 2. Slack acknowledgment never accepts an application-proposed handoff.
 3. Deliver personal email, push and Slack mentions under the receiving user’s preference; no entry text enters Slack, private entries have generic notices, and deletion withdraws an undelivered mention.
 
-**Evidence.** `src/core/features/records/mentions.ts`; `src/core/features/records/manual.ts`; `src/core/features/access/grant-entries.ts`; `src/core/features/notifications/collaborator.ts`; `src/core/features/records/shared-entries.ts`; `src/core/features/access/shared-entries.tsx`; `src/core/features/operator/ui/mention-field.tsx`; `tests/core/today-brief.test.ts`; `tests/evidence/contract/RECORD-017/`
-**Gap.** Unasserted in the carried evidence: personal email mentions; personal push mentions; opted-in Slack mentions; private-entry generic notice; undelivered mention withdrawn on source deletion. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `src/core/features/records/mentions.ts`; `src/core/features/slack/delivery.ts`; `src/core/features/slack/content.ts`; `tests/core/source-onboarding.test.ts`; `tests/support/personal-slack-proof.ts`
+**Gap.** Unasserted in the cited evidence: Slack acknowledgment never accepts an application-proposed handoff. Asserted: an opted-in personal Slack mention carries no entry text, a private entry gets a generic notice with an authenticated link, and deleting the source withdraws an undelivered mention. Personal email and push channels are not offered.
 
 #### RECORD-018 — Files and versions on records and activities
 
@@ -1835,7 +1835,7 @@ Core · target · **partial** · Cites BASE-ROLE-001, BASE-AUDIT-001
 
 #### AUTO-003 — Workflow activation and history
 
-Core · target · **missing** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
+Core · target · **partial** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
 
 **Requirement.** What activation authorizes. Activating a workflow version is the approval for its internal writes. The activation preview and dry run evaluate the version against the records that match it now and those it would have triggered on in the past 30 days. For each record they show every field's current and resulting value, each stage move and each record to be created, counted per action, alongside AUTO-001's external effects. The version records the administrator who activated it and when. Each run then applies that version's internal writes with no per-record proposal. Every write appears on the record's timeline and field history with the workflow, its version, the trigger event and its evidence, and the previous and new values. Reports and API-001 change webhooks give the change source as `workflow`. Editing an active workflow creates a new version that writes nothing until it is previewed and activated. Before a delayed action runs, it re-checks that its version is still active; if not, it stops as "version replaced". Migration. MIGRATE-001/002/003 list each source workflow's record-update and record-create actions against these actions. Each is named as mapped, needing approval under this clause, or having no Orbit equivalent. Nothing is activated without an administrator's preview.
 
@@ -1844,12 +1844,12 @@ Core · target · **missing** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDI
 2. Edit an active version and verify no new-version effect before preview/activation; dispatch a delayed old version and read version replaced.
 3. Timeline, field history, reports and API change events name workflow, version, trigger/evidence and old/new values; migrations list each action as mapped, needing approval or without equivalent.
 
-**Evidence.** None.
-**Gap.** No implementation found. No workflow engine writes records: the only writes outside a person's own edit are capture proposals accepted one at a time in `src/core/features/capture/proposals.ts`, whose compare-and-set fence on the current value is the guard this clause extends to unattended workflow writes.
+**Evidence.** `src/core/features/workflows/engine.ts`; `src/core/features/workflows/planning.ts`; `src/core/features/workflows/record-writes.ts`; `tests/support/workflow-journey.ts`; `tests/support/workflow-record-journey.ts`; `tests/rer/workflow-journey.mjs`
+**Gap.** Implemented: versioned activation recording the activating administrator, a preview with past-30-day history and its coverage, internal writes applied without a per-record proposal, and a replaced version stopping its delayed runs. Remaining: pre-journal 30-day reconstruction and large previews; workflow as the change source in reports and API change webhooks; migration mappings that list each action. No cited test asserts all three acceptance points.
 
 #### AUTO-004 — Material workflow changes
 
-Core · target · **missing** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
+Core · target · **partial** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
 
 **Requirement.** What still needs a per-record approval. An activated version alone never applies: a deal's amount, products, line items or quote values (QUOTE-001), or its forecast category or probability override (FORECAST-001); a deal's close date; moving a deal to won or lost, or reopening one; any field an administrator marks "approve each workflow change" in RECORD-014 field settings. For each such change, the run creates one approval item for the record's owner, or for the approver the action names. The item shows the exact current and proposed value and the triggering evidence, and it is guarded by the current value. Accepting applies the change. Declining, or leaving the item for 7 days, closes it visibly, and the run history records the outcome. The rule editor labels these actions "needs approval", and the preview counts them. Customer-facing content, including email and sequence enrollment, is always approved under OUT-001 and SEQUENCE-003. A workflow can set a contact to do-not-contact. It never makes anyone contactable (RECORD-012), never changes a consent basis, and never deletes or merges records.
 
@@ -1858,12 +1858,12 @@ Core · target · **missing** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDI
 2. Inspect guarded current/proposed value, evidence and named approver; decline or let seven days lapse and read the closed outcome, with counts in preview.
 3. A workflow may stop contactability but cannot create it, change consent, delete or merge; customer content and enrollment follow their own exact-content rules.
 
-**Evidence.** None.
-**Gap.** No implementation found. No workflow engine writes records: the only writes outside a person's own edit are capture proposals accepted one at a time in `src/core/features/capture/proposals.ts`, whose compare-and-set fence on the current value is the guard this clause extends to unattended workflow writes.
+**Evidence.** `src/core/features/workflows/engine.ts`; `src/core/features/workflows/record-plans.ts`; `src/core/features/operator/ui/workflows-record-approvals.tsx`; `tests/support/workflow-safety-journey.ts`; `tests/rer/workflow-journey.mjs`
+**Gap.** Implemented: amount, close date, won or lost, product, line-item, quote-value and forecast changes and fields marked for approval create one guarded approval item that is accepted, declined or closed after 7 days. Unasserted: the "needs approval" editor label and preview counts; that a workflow cannot create contactability, change consent, delete or merge. Quote and forecast targets await QUOTE-001 and FORECAST-001.
 
 #### AUTO-005 — Workflow guards and recovery
 
-Core · target · **missing** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
+Core · target · **partial** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
 
 **Requirement.** Limits on every write. Permissions: a workflow writes only the records and fields its activating administrator may edit under TEAM-005, including field-level grants. Saving or activating a rule with an action on a field outside those grants is refused, naming the field. If the activator's grants later shrink or their access is revoked, the next run refuses that action visibly and the workflow shows "needs re-activation". Validation: writes pass RECORD-014 type, picklist, required and unique validation. An invalid value fails that action on that record visibly in the run history, with the reason. Each action is atomic per record. A failed action stops the run's later actions on that record and leaves its earlier ones applied, listed and undoable. Current-state guard: a run evaluates its conditions when triggered and again at dispatch against the current record, and a false condition stops it as "condition no longer true". Each write is a compare-and-set against the value the run read. If a user, an import or another run changed the target field after the trigger event, that action is skipped as "changed by <who> at <time>" and shown in the run history. It is never overwritten blindly. Ordering and loops: workflows triggered by the same event run in the administrator's stated order. A workflow's writes may trigger other workflows up to 5 levels deep per originating event, and never re-trigger the same workflow. A deeper chain stops visibly as a loop. AUTO-001's rate limits, revocation, dead-letter and manual resume apply, with a default of 10,000 record writes per workflow per hour beyond which runs queue visibly. Notifications: field writes notify no one unless the workflow has a notify action; owner changes notify under RECORD-016.
 
@@ -1875,12 +1875,12 @@ Core · target · **missing** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDI
 5. Fail type, picklist, required or unique validation and inspect a per-record atomic action failure; earlier applied actions remain listed and undoable, later actions stop.
 6. Change a condition before dispatch and read the stopped run; preserve administrator event order, bounded depth and visibly queued rate excess without silently overwriting another actor.
 
-**Evidence.** None.
-**Gap.** No implementation found. No workflow engine writes records: the only writes outside a person's own edit are capture proposals accepted one at a time in `src/core/features/capture/proposals.ts`, whose compare-and-set fence on the current value is the guard this clause extends to unattended workflow writes.
+**Evidence.** `src/core/features/workflows/engine.ts`; `src/core/features/workflows/record-validation.ts`; `src/core/features/workflows/repository.ts`; `tests/support/workflow-safety-journey.ts`; `tests/support/workflow-journey.ts`
+**Gap.** Implemented: an authority check that marks a version needs re-activation, current-value guards, typed validation, a queued write-rate limit and restart-safe resume of failed runs. Remaining: TEAM-005 field-level grants, so no refusal names a protected field at activation; complete per-field intervening-edit attribution and record-atomic failure qualification; the loop depth limit is not asserted by a cited test.
 
 #### AUTO-006 — Undo workflow effects
 
-Core · target · **missing** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
+Core · target · **partial** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
 
 **Requirement.** Undo. A user with workflow permission undoes one run, or every run of a version over a chosen time range. Undo restores each field written by a run only where the field still holds the value the run wrote. It reverses a stage move the same way, recording the reversal in OPP-009 history. It archives a record the run created only if nobody has edited or associated it since. Each skipped item is listed with who changed it and when. Undo is attributed and audited, sends nothing, and never reopens or deletes tasks or messages.
 
@@ -1889,8 +1889,8 @@ Core · target · **missing** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDI
 2. Undo a run or version over a time range; archive a created record only while it has no later edit/association, list skipped records with who/time, and retain attributed stage reversal.
 3. Undo sends nothing and never reopens or deletes tasks or messages.
 
-**Evidence.** None.
-**Gap.** No implementation found. No workflow engine writes records: the only writes outside a person's own edit are capture proposals accepted one at a time in `src/core/features/capture/proposals.ts`, whose compare-and-set fence on the current value is the guard this clause extends to unattended workflow writes.
+**Evidence.** `src/core/features/workflows/controls.ts`; `src/core/features/workflows/record-writes.ts`; `src/core/features/operator/ui/workflows-version-undo.tsx`; `tests/support/workflow-record-journey.ts`; `tests/support/workflow-journey.ts`
+**Gap.** Implemented: undo of one run or of one version over a time range (at most 1,000 runs), restoring a field only where it still holds the written value, reversing stage moves into movement history and listing skipped items. Remaining: archival undo of created records and complete owner-rule selection; that undo sends nothing and never reopens or deletes tasks or messages is not asserted.
 
 #### CALL-001 — Provider-backed click-to-call
 
@@ -2377,7 +2377,7 @@ Core · push-further · **partial** · From AGENT-004 · Cites BASE-AGENT-002, B
 
 #### BASE-AGENT-001 — One MCP door per seed
 
-Agent surface · target · **missing**
+Agent surface · target · **partial**
 
 **Requirement.** Every seed, hosted or self-hosted, serves one remote MCP endpoint at `/mcp` over Streamable HTTP. It speaks the current revision (2026-07-28) and accepts 2025-11-25 clients through the twelve-month deprecation window. It implements `server / discover`, tools, resources and prompts. Lists are deterministic and carry `ttlMs` and `cacheScope: "private"`. Roots, Sampling and Logging are not served.
 
@@ -2389,12 +2389,12 @@ Agent surface · target · **missing**
 5. A foreign Origin returns 403, and a header and body method mismatch returns `HeaderMismatch`.
 6. An oversized body returns 413 with no effect.
 
-**Evidence.** None.
-**Gap.** Not yet judged through this seed's own doors.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert initialize on both the 2026-07-28 and 2025-11-25 revisions. Not asserted in the cited seed tests: server / discover, unsupported-version refusal, tools / list order and cache fields, foreign Origin 403, HeaderMismatch and the 413 oversize refusal. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 #### BASE-AGENT-002 — The seed's jobs are tools, through the UI's own actions
 
-Agent surface · target · **missing**
+Agent surface · target · **partial**
 
 **Requirement.** Each Core job a person does in the product is a tool. Where one is not, the Agent surface says why: it runs on a device, it is a person's interactive screen, it belongs to a connector or the import door, or it is an installation fact. Risk is never the reason: a risky job is a tool with its class (BASE-AGENT-006). Tools are named `<seed>.<area>.<verb>` and declare input and output schemas and truthful annotations. Each calls the same server action as the UI, so validation and authorization are written once, and the seed's embedded agents use the same registry. A business refusal returns `isError` with the seed's stable error code.
 
@@ -2406,12 +2406,12 @@ Agent surface · target · **missing**
 5. The UI action and its tool, on the same fixture, give the same record state and the same audit event type.
 6. The seed's embedded agents appear in the audit as calls to the same tools.
 
-**Evidence.** None.
-**Gap.** Not yet judged through this seed's own doors.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert tools that call the native record, draft and handoff actions and refuse with stable codes such as revision_conflict and policy_blocked. Not asserted in the cited seed tests: core clause coverage by tools or non-tool reasons for the planned jobs (messages, sequences, quotes, files, integrations), outputSchema validation of every fixture result and embedded agents appearing as calls to the same tools. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 #### BASE-AGENT-003 — Records are resources
 
-Agent surface · target · **missing**
+Agent surface · target · **partial**
 
 **Requirement.** Each primary record type has a URI template, and tools return `resource_link`s to the records they touch. A read returns exactly the fields the caller's role sees in the UI. File bytes count against any byte budget on the grant. A record the caller cannot open reads as not found, identical to a missing id. Text from customers, imports or files carries an untrusted marker in `_meta`.
 
@@ -2423,12 +2423,12 @@ Agent surface · target · **missing**
 5. Bytes over budget return `budget_exhausted` and no partial content.
 6. Customer-sourced text carries the untrusted marker.
 
-**Evidence.** None.
-**Gap.** Not yet judged through this seed's own doors.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert ten resource templates, the untrusted marker on report data and one refusal for an unregistered resource. Not asserted in the cited seed tests: two-role read parity with the UI, identical out-of-scope and missing responses, resource_link read-back and byte-budget refusal. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 #### BASE-AGENT-004 — Business identity and short-lived, audience-bound tokens
 
-Agent surface · target · **missing**
+Agent surface · target · **partial**
 
 **Requirement.** The door is an OAuth 2.1 resource server. Its RFC 9728 metadata names the authorization servers this installation trusts. That is the paired Business when Business provisioned it, verified with the owner-claim trust the installation already holds for its import door; otherwise it is the seed's own sign-in. Access tokens are RFC 9068 JWTs with `aud` set to the seed's canonical MCP URI, `sub` the sponsoring person, `act` the agent (RFC 8693) with its specialist, scopes per tool family, and a lifetime of 15 minutes or less (5 by default). The policy scopes rules on the sponsor, agent and specialist the token names. The consent behind the tokens can last longer and is revocable. Tokens travel only in the Authorization header, and there is no passthrough.
 
@@ -2441,12 +2441,12 @@ Agent surface · target · **missing**
 6. Revoking consent in the seed or in Business refuses the next call within 60 seconds.
 7. After unpairing, Business tokens are refused and the seed's own sign-in still works.
 
-**Evidence.** None.
-**Gap.** Not yet judged through this seed's own doors.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert RFC 9728 protected-resource metadata, Business-bound owner tokens, 401 for a wrong audience or unmapped subject, and refusal of an outstanding token after the sponsor changes email. Not asserted in the cited seed tests: token lifetime and consent-revocation limits. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 #### BASE-AGENT-005 — An agent acts as a person in a role, never more
 
-Agent surface · target · **missing**
+Agent surface · target · **partial**
 
 **Requirement.** Every call is authorized as the sponsoring person's current role and access (BASE-ACCESS-004), intersected with the grant's resources, actions and budget. A grant only narrows. No call widens the calling agent's own authority. A call that would widen its own grant or its sponsor's role, or change the company policy or Pause, is refused with `self_escalation`, whatever the policy says; narrowing its own grant is allowed. Other access and security changes are ordinary actions in the access and security classes. An agent never acts after its sponsor is suspended. Anything an agent reads (records, files, emails, imports, other seeds' results) is data and cannot change its scope, its targets or a call's class.
 
@@ -2457,12 +2457,12 @@ Agent surface · target · **missing**
 4. Calls that widen the agent's own grant or its sponsor's role, or change the policy or Pause, return `self_escalation` and change nothing, even under a policy with every class autonomous; dropping a scope from its own grant runs.
 5. An injection fixture yields no out-of-grant call and no change of class: record text asking for a wider action, or claiming that a recipient is internal.
 
-**Evidence.** None.
-**Gap.** Not yet judged through this seed's own doors.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert 403 when a scope is missing, action as the mapped person and refusal after native teammate removal. Not asserted in the cited seed tests: role narrowing per record and grant self-escalation probes. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 #### BASE-AGENT-006 — Every action declares its risk class
 
-Agent surface · target · **missing**
+Agent surface · target · **partial**
 
 **Requirement.** Classes come from the fleet list in RISK-POLICY.md: standard, external, money, commitment, accounts, gated, access, security, destructive, sensitive and live. In the registry, each tool declares the classes it can carry and a server-side classifier that decides them per call from the arguments, current records and, for gated, the provider's answer. The classifier also supplies each class's facts: the measure (items, recipients, amount and currency, people or records), the counterparty (internal, known, new or public), the direction for access, the provider and step for gated, and the data kind for sensitive. A classifier never reads a flag, label or claim supplied by the agent or by record text. A seed cannot add a class; it proposes one for the fleet list.
 
@@ -2474,12 +2474,12 @@ Agent surface · target · **missing**
 5. No tool in `tools / list` declares a class outside the fleet list, and `rer check` fails on one.
 6. A refused call's audit row still records its computed classes.
 
-**Evidence.** None.
-**Gap.** Not yet judged through this seed's own doors.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert standard and sensitive classes computed for orbit tools and sensitive calls blocked by company policy. Not asserted in the cited seed tests: the external, money, commitment, destructive, access, security, live and gated classes, which no declared tool computes (SURFACE-003 to SURFACE-008). The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 #### BASE-AGENT-007 — The company's policy decides, at one chokepoint
 
-Agent surface · target · **missing**
+Agent surface · target · **partial**
 
 **Requirement.** Every agent door calls one decision function: MCP, the integration API with agent tokens, and the seed's embedded agents. It evaluates the call's classes against the company's policy, as above. The seed ships no dispositions and fills no gap with one: agent access opens only under a complete policy that setup has asked for (RISK-POLICY.md), and before then every agent call returns `policy_unset` with the setup link and changes nothing. *Autonomous* runs the call. *Review* runs it and adds it to the review feed. *Approval* saves a pending action with server-computed facts and returns `input_required`, with a URL-mode elicitation to the seed's approval page and a pending handle. Each person the rule names approves the exact saved revision in a signed-in browser, and changed inputs need a new approval. The retried call returns the result and a receipt. A rejection returns `approval_rejected`, and a lapse past the wait the rule sets returns `approval_expired`. *Blocked* returns `policy_blocked`, naming the class, rule and revision.
 
@@ -2493,12 +2493,12 @@ Agent surface · target · **missing**
 7. A policy change applies to the next call within 60 seconds, and the audit cites the new revision.
 8. A policy document with a bad signature or another Business's id is rejected, and the door keeps the last valid revision.
 
-**Evidence.** None.
-**Gap.** Not yet judged through this seed's own doors.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert policy_unset before a company policy is adopted, then autonomous, paused and blocked decisions at the one door. Not asserted in the cited seed tests: held-class approvals executed through the door for a sales action. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 #### BASE-AGENT-008 — Truthful attribution
 
-Agent surface · target · **missing**
+Agent surface · target · **partial**
 
 **Requirement.** Every agent act is recorded and shown as `"<agent> for <person>"`, and mail and messages an agent sends outside name it that way as their sender. An approval, a review mark, a confirmation (a warning dialog, a typed-field confirmation, a delivery confirmation), a decision or a signature attributed to a person comes only from that person's signed-in session. When an agent does the equivalent act, the record names the agent, and the act carries its own class; a binding decision or a signature is commitment. Agent doors ignore arguments that stand for a person's confirmation. No tool solves a bot check, or enters a person's own password or 2FA code at an outside service. A provider step that demands a person goes to a person, whatever the policy says; the gated class marks such steps before they run.
 
@@ -2511,12 +2511,12 @@ Agent surface · target · **missing**
 6. Activity and exports at 1440 and 390 show `"<agent> for <person>"` for every agent act.
 7. Mail an agent sends to an outside address names `"<agent> for <person>"` as its sender.
 
-**Evidence.** None.
-**Gap.** Not yet judged through this seed's own doors.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert a native timeline entry naming the agent for its sponsor (for example "Ari for Morgan Lee"). Not asserted in the cited seed tests: attribution for provider steps and the person-only approval path. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 #### BASE-AGENT-009 — Every agent action is audited with its class and decision
 
-Agent surface · target · **missing**
+Agent surface · target · **partial**
 
 **Requirement.** Extending BASE-OPS-005, each call that reads private data or changes anything records the agent client, name and specialist, and the run or task id (`traceparent` when sent); the sponsoring person, the grant, the tool and the targets; the classes and their facts, and the policy revision and rule; the decision (autonomous, review, approval, blocked, unset or self_escalation) and the outcome (done, refused, pending or failed); the approval or review id and person, and the idempotency key. For a period, the seed's Agents page shows actions by class and decision with the notable ones, the review feed (Mark reviewed, Flag, and Undo where reversible), pending approvals, steps waiting for a person and setup questions. Business shows the same across seeds.
 
@@ -2529,12 +2529,12 @@ Agent surface · target · **missing**
 6. Removing the agent keeps its rows and its name.
 7. The Agents page works at 1440 and 390 with no serious or critical axe findings.
 
-**Evidence.** None.
-**Gap.** Not yet judged through this seed's own doors.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert audit rows with tool, outcome, idempotency key and the actual resource, and an audit page with no difference from policy. Not asserted in the cited seed tests: class and decision columns across every class. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 #### BASE-AGENT-010 — Agents can follow changes
 
-Agent surface · target · **missing**
+Agent surface · target · **partial**
 
 **Requirement.** The seed emits a typed event for every record change and for every approval, review and policy decision. Each event carries a stable id, a type, the record URI, the actor (a person, or an agent acting for a person) and a time. Events never carry secrets or more than the subscriber may read. Agents can read events three ways: `subscriptions / listen`, an `events.list` tool with a cursor, and signed webhooks from Base `integrations` using the same ids. Every channel delivers at least once and filters by access at delivery.
 
@@ -2546,12 +2546,12 @@ Agent surface · target · **missing**
 5. A failed webhook is visible and replays without duplicate effects.
 6. `approval.pending`, `approval.decided`, `review.flagged` and `policy.adopted` carry the class and decision and nothing the subscriber may not read.
 
-**Evidence.** None.
-**Gap.** Not yet judged through this seed's own doors.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert orbit.events.list returning attributed native activity. Not asserted in the cited seed tests: change-following subscriptions and signed outbound event delivery. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 #### BASE-AGENT-011 — Limits are policy, and Pause stops everything
 
-Agent surface · target · **missing**
+Agent surface · target · **partial**
 
 **Requirement.** Business limits are rules in the company's policy: per-call and per-day thresholds on any class's measure, such as money moved, outside recipients or items destroyed; spend caps on provider cost (models, SMS, email) per seed, specialist or agent, which setup asks with the classes; "no cap" is an answer. Tools with provider cost declare an estimate before they run, and an exhausted cap returns `budget_exhausted` before any partial effect. The seed's capacity limits (request rate, body and byte sizes) protect the installation: they bound rate and size, never daily business volume, are documented and are not policy. A grant carries budgets only when the person granting it sets them. A **Pause agents** control in the seed, and Pause all agents in Business when paired, refuses every agent token within 60 seconds until a person resumes; browser sessions and devices keep working.
 
@@ -2564,12 +2564,12 @@ Agent surface · target · **missing**
 6. Pause and Pause all agents each stop the next call within 60 seconds, and resume restores access.
 7. An agent token cannot resume.
 
-**Evidence.** None.
-**Gap.** Not yet judged through this seed's own doors.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert Pause stopping replays and a blocked class refusing without effect. Not asserted in the cited seed tests: capacity limits and provider-spend caps. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 #### BASE-AGENT-012 — Writes are idempotent and conflict-safe
 
-Agent surface · target · **missing**
+Agent surface · target · **partial**
 
 **Requirement.** Every mutating tool requires an idempotency key and takes an optional expected revision. The same key with the same arguments returns the first outcome for at least 24 hours; the same key with different arguments returns `idempotency_conflict`; a stale revision returns `revision_conflict` with the current revision. Long work returns a job handle and a status tool, with no dependence on the Tasks extension.
 
@@ -2580,12 +2580,12 @@ Agent surface · target · **missing**
 4. A stale revision returns a conflict naming the current revision.
 5. A job handle used by another person's token reads as not found.
 
-**Evidence.** None.
-**Gap.** Not yet judged through this seed's own doors.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert one retained outcome for a replayed idempotency key, revision_conflict for a stale revision, and paused or blocked replays leaving the record unchanged. Not asserted in the cited seed tests: the same key reused with different arguments and concurrent writes. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 #### BASE-AGENT-013 — Manifest, docs and the conformance journey
 
-Agent surface · target · **missing**
+Agent surface · target · **partial**
 
 **Requirement.** `server / discover` instructions and an on-site `/docs/agents` page are generated from the action registry. The page lists tools by job, with each tool's classes, the test that adds each computed class, its scopes, resource templates, event types, capacity limits and error codes, and the specialist role. `prompts / list` carries the specialist's jobs. Base ships the conformance journey, a harness that `rer verify` runs against `rer dev` and seeds run in CI. It is an MCP client; a signed-in test person takes a person's steps (setup answers, approvals, review marks, resume) through the URLs the door returns, and the same browser leg runs the UI-parity actions and the page checks at 1440 and 390. It runs every acceptance point of BASE-AGENT-001 to 012 and of the seed's SURFACE clauses under two company policies: *all autonomous* (`*`), and *held* (standard review, every other class the seed declares approval, which the test person grants), plus the single-class variants a point names. A point that names no disposition passes under both.
 
@@ -2596,14 +2596,14 @@ Agent surface · target · **missing**
 4. Every acceptance point runs under both policies, every decision matches the policy in force, and under all autonomous no call waits for a person or is refused by policy.
 5. A stranger agent given only the seed URL completes the specialist journey through MCP.
 
-**Evidence.** None.
-**Gap.** Not yet judged through this seed's own doors.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert a manifest generated from the registry (scripts/agent-surface.ts) and a seeded seller-day journey run by the Base harness. Not asserted in the cited seed tests: the generated /docs/agents page content for the planned jobs and the held-policy leg of the journey. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 ### Agent surface
 
 #### SURFACE-001 — Registry and complete sales jobs
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013 · Rules D-3
+Agent surface · target · **partial** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013 · Rules D-3
 
 **Requirement.** The action registry exposes the sales jobs and Core coverage in this table; existing selected-record delegation remains distinct until the complete MCP surface is implemented.
 
@@ -2611,12 +2611,12 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE
 1. Compare the registry’s jobs, Core ids and concrete non-tool reasons with this table, including every split part.
 2. Run the Base conformance journey on Orbit’s own customer, deal, message, sequence and integration fixtures.
 
-**Evidence.** None.
-**Gap.** No complete MCP registry, class computation and company-policy conformance journey proves this Orbit delta.
+**Evidence.** `agent-surface.json`; `scripts/agent-surface.ts`; `tests/agent-door/native-journey.mjs`; `tests/support/agent-door-proof.ts`
+**Gap.** Implemented: a registry of 23 tools, 10 resources and two non-tool reasons, and a seller-day journey on Orbit's own fixtures. Remaining: tools for customer messages, sequences, quotes, files and integrations, and Core ids and non-tool reasons covering every row of this table; the Base conformance result for the complete registry is not asserted by a cited test.
 
 #### SURFACE-002 — Internal sales work
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-006 · Rules D-3
+Agent surface · target · **partial** · From new · Cites BASE-AGENT-006 · Rules D-3
 
 **Requirement.** Reversible CRM, task, draft and research-finding operations compute standard from their actual effect.
 
@@ -2624,8 +2624,8 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-006 · Ru
 1. Compute standard for a reversible deal move, task, draft, owner-neutral field update and Undo; read item counts.
 2. Text or an argument claiming a different class changes none of those computed facts.
 
-**Evidence.** None.
-**Gap.** No complete MCP registry, class computation and company-policy conformance journey proves this Orbit delta.
+**Evidence.** `src/core/features/agent-door/records.ts`; `src/core/features/agent-door/drafts.ts`; `src/core/features/agent-door/handoffs.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`
+**Gap.** Implemented: record, draft, handoff, forecast and report-definition writes compute standard under company policy. Remaining: no task, deal-move or Undo tool is declared, and read item counts are not asserted.
 
 #### SURFACE-003 — Customer and provider exposure
 
@@ -2720,7 +2720,7 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-007, BASE
 
 #### SURFACE-010 — Sales events and handoffs
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-003, BASE-AGENT-010 · Rules D-3
+Agent surface · target · **partial** · From new · Cites BASE-AGENT-003, BASE-AGENT-010 · Rules D-3
 
 **Requirement.** Sales resources and events preserve links between customers, deals, obligations, messages and receiving products.
 
@@ -2728,12 +2728,12 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-003, BASE
 1. Read each declared sales resource and follow tool links to the changed record.
 2. Follow booking, reply, stage, quote and Buoy handoff outcomes by the same event identity across the supported channels.
 
-**Evidence.** None.
-**Gap.** No complete MCP registry, class computation and company-policy conformance journey proves this Orbit delta.
+**Evidence.** `src/core/features/agent-door/evidence.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`
+**Gap.** Implemented: orbit.events.list returns attributed native activity, and records, signals, drafts, reports and operations read as resources. Remaining: the declared contact, company, deal, message, sequence, workflow, quote and file resources, and booking, reply, stage, quote and Buoy handoff events by one identity across channels.
 
 #### SURFACE-011 — Sales overview and provider spend
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-009, BASE-AGENT-011 · Rules D-3
+Agent surface · target · **partial** · From new · Cites BASE-AGENT-009, BASE-AGENT-011 · Rules D-3
 
 **Requirement.** The Orbit overview reconciles sales calls, class facts, policy decisions and provider cost with the same fixture week.
 
@@ -2741,8 +2741,8 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-009, BASE
 1. Reconcile customer messages, binding quotes, financial/provider work and internal task calls by class and decision.
 2. Read reserved/actual provider cost, explicit company caps or no cap, and the review/approval/handoff entries the policy actually produced.
 
-**Evidence.** None.
-**Gap.** No complete MCP registry, class computation and company-policy conformance journey proves this Orbit delta.
+**Evidence.** `src/base/modules/agent-door/audit.ts`; `src/base/modules/agent-door/pages.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** Implemented: the /agents audit reads every call of the seller-day journey with its policy decision and reports no difference from policy. Remaining: reconciliation by class and decision for customer messages, binding quotes and financial work, reserved and actual provider cost with explicit caps, and the seeded fixture week.
 
 #### SURFACE-012 — Embedded sales agents
 
@@ -2759,7 +2759,7 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE
 
 #### SURFACE-013 — Stranger specialist’s seeded week
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-013 · Rules D-3 · Register R-12
+Agent surface · target · **partial** · From new · Cites BASE-AGENT-013 · Rules D-3 · Register R-12
 
 **Requirement.** Given only the installation URL, a stranger sales agent completes a seeded week through MCP under two company policies.
 
@@ -2768,8 +2768,8 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-013 · Ru
 2. Repeat under the held company policy: standard enters review and each other used class waits for the person the policy names, then runs once on that person’s approval.
 3. Compare records, sales outcomes, events, attributions, spend and the overview for both runs; class decisions equal the policy in force.
 
-**Evidence.** None.
-**Gap.** No complete MCP registry, class computation and company-policy conformance journey proves this Orbit delta.
+**Evidence.** `tests/agent-door/native-journey.mjs`; `agent-surface.json`; `docs/AGENT-DOOR.md`
+**Gap.** Implemented: a seller-day journey that reads fixtures, updates a record, replays a write and refuses a stale handoff, then reads the audited write. Remaining: link arrivals, explain a stalled deal, follow a promise, send permitted follow-up and hand a won deal to Buoy; the held-policy leg and the cross-run comparison.
 
 ## Later
 
