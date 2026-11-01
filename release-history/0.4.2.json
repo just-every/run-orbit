@@ -1,0 +1,12 @@
+{
+  "version": "0.4.2",
+  "previousVersion": "0.4.1",
+  "date": "2026-10-30",
+  "publicReleaseNotes": "Orbit 0.4.2 is a security release. The agent door now refuses a still-valid access token whose email claim no longer matches the subject's current native email, with a typed 401 or 403 instead of serving the request (conformance point BASE-AGENT-004.sponsor.changed-email). It also carries the record changes made since 0.4.1: each deal's page opens on its next action, with one Activity list and its details beside the work; opportunities, contacts and companies each have their own address, and every record has its own page; record values and workspace settings save as you change them; and each sent message states what Orbit knows about its delivery. Orbit now runs on rer 0.2.93. It updates 0.4.1 in place with no migration and keeps every row.",
+  "contractChanges": {},
+  "proseChanges": [],
+  "extensionPointChanges": [],
+  "migrations": [],
+  "breaking": false,
+  "agentUpdateInstructions": "Update from 0.4.1 in place; never reset or replace the installation. Before updating, stop rer dev and hosted writes and take a private backup outside the checkout: locally with rer export to a file outside the checkout, hosted through Records → Export archive after signing in (it asks for a fresh emailed confirmation). Check out v0.4.2, then rer install (Node 22.20.0, pnpm 10.12.4, rer 0.2.93 pinned exactly) and rer setup locally, or rer deploy --env-file .dev.vars.deploy for a hosted installation. This release adds no migration: it keeps the owner, operators, settings and every row, and every applied migration byte stays as it was. No new setting is required. After the update the agent door refuses an outstanding access token whose email claim no longer matches its subject's current native email, with a typed 401 or 403; an agent that receives that refusal signs in again for a new token instead of retrying the old one. Afterwards check records, custom fields, drafts and scheduled messages before resuming."
+}
