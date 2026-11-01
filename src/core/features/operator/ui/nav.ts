@@ -9,7 +9,7 @@ export const dailyItems: readonly NavItem[] = [
  {label: 'Brief', path: '/app/brief', match: ['/app/brief']},
  {label: 'Tasks', path: '/app/tasks', match: ['/app/tasks/*']},
  {label: 'Records', path: '/app/opportunities', match: ['/app/opportunities/*', '/app/contacts/*', '/app/companies/*']},
- {label: 'Reports', path: '/app/reports', match: ['/app/reports', '/app/dashboards/*']},
+ {label: 'Reports', path: '/app/reports', match: ['/app/reports/*', '/app/dashboards/*']},
  {label: 'Notifications', path: '/app/notifications', match: ['/app/notifications']},
 ];
 // Settings opens its first area straight away, so the menu never links through the /app/settings redirect.
@@ -27,7 +27,7 @@ export const settingsAreas: readonly NavItem[] = [
 ];
 const collaboratorPages: readonly NavItem[] = [
  {label: 'Shared records', path: '/app/shared-records', match: ['/app/shared-records']},
- {label: 'Reports', path: '/app/reports', match: ['/app/reports', '/app/dashboards/*']},
+ {label: 'Reports', path: '/app/reports', match: ['/app/reports/*', '/app/dashboards/*']},
  {label: 'Notifications', path: '/app/notifications', match: ['/app/notifications']},
 ];
 const collaboratorSettings: NavItem = {label: 'Settings', path: '/app/access', match: ['/app/access']};

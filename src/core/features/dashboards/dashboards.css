@@ -140,21 +140,10 @@ p.dash-breakdown{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:va
 .dash-rep{display:grid;grid-template-columns:96px minmax(0,1fr) 56px;align-items:center;gap:10px;font-size:13.5px}
 .dash-rep>span:first-child{overflow-wrap:anywhere}.dash-rep>span:last-child{text-align:right;font-variant-numeric:tabular-nums}
 
-/* States and Reports' Dashboards section. */
+/* States. */
 .dash-empty{display:grid;justify-items:start;gap:10px;padding:28px}
 .dash-empty h2{margin:0;font-size:22px;font-weight:720}.dash-empty p{margin:0;color:var(--ob-body)}
 .dash-empty .ob-pill{min-height:44px}
-.dash-directory{padding:24px;margin-bottom:28px}
-.dash-directory h2{margin:0 0 6px;font-size:22px;font-weight:720}
-.dash-directory p{color:var(--ob-body)}
-.dash-directory__list{margin:0;padding:0;list-style:none}
-.dash-directory__list li{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 16px;padding:8px 0;border-top:1px solid var(--ob-line)}
-.dash-directory__list li:first-child{border-top:0}
-.dash-directory__name{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;min-width:0}
-.dash-directory__name a{display:inline-flex;align-items:center;min-height:44px;font-size:16px;font-weight:650}
-.dash-directory__create{display:flex;flex-wrap:wrap;align-items:end;gap:14px;margin-top:16px}
-.dash-directory__create label{display:grid;flex:1 1 260px;max-width:420px;gap:8px}
-.dash-directory .ob-pill{min-height:44px;padding:0 20px;font-size:15px}
 
 @media(max-width:1099px){
  .dash-title{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "lines" "actions"}
@@ -187,6 +176,5 @@ p.dash-breakdown{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:va
  .dash-number .sales-cell{min-height:44px;font-size:36px}
  .dash-basis-fold>summary,.dash-forecast .sales-cell{min-width:44px;min-height:44px}
  .dash-tile .sales-late a{display:inline-flex;align-items:center;min-height:44px}
- .dash-directory{padding:18px}
 }
 @media print{.dash-actions,.dash-filter-chips{display:none}.dash-grid{grid-template-columns:repeat(12,minmax(0,1fr))}.dash-tile{break-inside:avoid}}

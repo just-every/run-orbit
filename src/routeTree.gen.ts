@@ -16,7 +16,6 @@ import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppAccessRouteImport } from './routes/app.access'
 import { Route as AppBriefRouteImport } from './routes/app.brief'
 import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
-import { Route as AppReportsRouteImport } from './routes/app.reports'
 import { Route as AppReviewRouteImport } from './routes/app.review'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppSharedRecordsRouteImport } from './routes/app.shared-records'
@@ -39,6 +38,9 @@ import { Route as AppMeetingsIdRouteImport } from './routes/app.meetings.$id'
 import { Route as AppOpportunitiesIndexRouteImport } from './routes/app.opportunities.index'
 import { Route as AppOpportunitiesIdRouteImport } from './routes/app.opportunities.$id'
 import { Route as AppOpportunitiesNewRouteImport } from './routes/app.opportunities.new'
+import { Route as AppReportsIndexRouteImport } from './routes/app.reports.index'
+import { Route as AppReportsIdRouteImport } from './routes/app.reports.$id'
+import { Route as AppReportsForecastRouteImport } from './routes/app.reports.forecast'
 import { Route as AppSettingsFormsRouteImport } from './routes/app.settings.forms'
 import { Route as AppSettingsIntegrationsRouteImport } from './routes/app.settings.integrations'
 import { Route as AppSettingsPipelineRouteImport } from './routes/app.settings.pipeline'
@@ -86,11 +88,6 @@ const AppBriefRoute = AppBriefRouteImport.update({
 const AppNotificationsRoute = AppNotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppReportsRoute = AppReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
   getParentRoute: () => AppRoute,
 } as any)
 const AppReviewRoute = AppReviewRouteImport.update({
@@ -203,6 +200,21 @@ const AppOpportunitiesNewRoute = AppOpportunitiesNewRouteImport.update({
   path: '/opportunities/new',
   getParentRoute: () => AppRoute,
 } as any)
+const AppReportsIndexRoute = AppReportsIndexRouteImport.update({
+  id: '/reports/',
+  path: '/reports/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportsIdRoute = AppReportsIdRouteImport.update({
+  id: '/reports/$id',
+  path: '/reports/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportsForecastRoute = AppReportsForecastRouteImport.update({
+  id: '/reports/forecast',
+  path: '/reports/forecast',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSettingsFormsRoute = AppSettingsFormsRouteImport.update({
   id: '/forms',
   path: '/forms',
@@ -277,7 +289,6 @@ export interface FileRoutesByFullPath {
   '/app/access': typeof AppAccessRoute
   '/app/brief': typeof AppBriefRoute
   '/app/notifications': typeof AppNotificationsRoute
-  '/app/reports': typeof AppReportsRoute
   '/app/review': typeof AppReviewRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/shared-records': typeof AppSharedRecordsRoute
@@ -295,6 +306,8 @@ export interface FileRoutesByFullPath {
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
   '/app/opportunities/new': typeof AppOpportunitiesNewRoute
+  '/app/reports/$id': typeof AppReportsIdRoute
+  '/app/reports/forecast': typeof AppReportsForecastRoute
   '/app/settings/forms': typeof AppSettingsFormsRoute
   '/app/settings/integrations': typeof AppSettingsIntegrationsRoute
   '/app/settings/pipeline': typeof AppSettingsPipelineRoute
@@ -307,6 +320,7 @@ export interface FileRoutesByFullPath {
   '/app/drafts/': typeof AppDraftsIndexRoute
   '/app/meetings/': typeof AppMeetingsIndexRoute
   '/app/opportunities/': typeof AppOpportunitiesIndexRoute
+  '/app/reports/': typeof AppReportsIndexRoute
   '/app/tasks/': typeof AppTasksIndexRoute
   '/app/settings/data/import': typeof AppSettingsDataImportRoute
   '/app/settings/mail/library': typeof AppSettingsMailLibraryRoute
@@ -321,7 +335,6 @@ export interface FileRoutesByTo {
   '/app/access': typeof AppAccessRoute
   '/app/brief': typeof AppBriefRoute
   '/app/notifications': typeof AppNotificationsRoute
-  '/app/reports': typeof AppReportsRoute
   '/app/review': typeof AppReviewRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/shared-records': typeof AppSharedRecordsRoute
@@ -338,6 +351,8 @@ export interface FileRoutesByTo {
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
   '/app/opportunities/new': typeof AppOpportunitiesNewRoute
+  '/app/reports/$id': typeof AppReportsIdRoute
+  '/app/reports/forecast': typeof AppReportsForecastRoute
   '/app/settings/forms': typeof AppSettingsFormsRoute
   '/app/settings/integrations': typeof AppSettingsIntegrationsRoute
   '/app/settings/pipeline': typeof AppSettingsPipelineRoute
@@ -350,6 +365,7 @@ export interface FileRoutesByTo {
   '/app/drafts': typeof AppDraftsIndexRoute
   '/app/meetings': typeof AppMeetingsIndexRoute
   '/app/opportunities': typeof AppOpportunitiesIndexRoute
+  '/app/reports': typeof AppReportsIndexRoute
   '/app/tasks': typeof AppTasksIndexRoute
   '/app/settings/data/import': typeof AppSettingsDataImportRoute
   '/app/settings/mail/library': typeof AppSettingsMailLibraryRoute
@@ -366,7 +382,6 @@ export interface FileRoutesById {
   '/app/access': typeof AppAccessRoute
   '/app/brief': typeof AppBriefRoute
   '/app/notifications': typeof AppNotificationsRoute
-  '/app/reports': typeof AppReportsRoute
   '/app/review': typeof AppReviewRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/shared-records': typeof AppSharedRecordsRoute
@@ -384,6 +399,8 @@ export interface FileRoutesById {
   '/app/meetings/$id': typeof AppMeetingsIdRoute
   '/app/opportunities/$id': typeof AppOpportunitiesIdRoute
   '/app/opportunities/new': typeof AppOpportunitiesNewRoute
+  '/app/reports/$id': typeof AppReportsIdRoute
+  '/app/reports/forecast': typeof AppReportsForecastRoute
   '/app/settings/forms': typeof AppSettingsFormsRoute
   '/app/settings/integrations': typeof AppSettingsIntegrationsRoute
   '/app/settings/pipeline': typeof AppSettingsPipelineRoute
@@ -396,6 +413,7 @@ export interface FileRoutesById {
   '/app/drafts/': typeof AppDraftsIndexRoute
   '/app/meetings/': typeof AppMeetingsIndexRoute
   '/app/opportunities/': typeof AppOpportunitiesIndexRoute
+  '/app/reports/': typeof AppReportsIndexRoute
   '/app/tasks/': typeof AppTasksIndexRoute
   '/app/settings/data/import': typeof AppSettingsDataImportRoute
   '/app/settings/mail/library': typeof AppSettingsMailLibraryRoute
@@ -413,7 +431,6 @@ export interface FileRouteTypes {
     | '/app/access'
     | '/app/brief'
     | '/app/notifications'
-    | '/app/reports'
     | '/app/review'
     | '/app/settings'
     | '/app/shared-records'
@@ -431,6 +448,8 @@ export interface FileRouteTypes {
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
     | '/app/opportunities/new'
+    | '/app/reports/$id'
+    | '/app/reports/forecast'
     | '/app/settings/forms'
     | '/app/settings/integrations'
     | '/app/settings/pipeline'
@@ -443,6 +462,7 @@ export interface FileRouteTypes {
     | '/app/drafts/'
     | '/app/meetings/'
     | '/app/opportunities/'
+    | '/app/reports/'
     | '/app/tasks/'
     | '/app/settings/data/import'
     | '/app/settings/mail/library'
@@ -457,7 +477,6 @@ export interface FileRouteTypes {
     | '/app/access'
     | '/app/brief'
     | '/app/notifications'
-    | '/app/reports'
     | '/app/review'
     | '/app/settings'
     | '/app/shared-records'
@@ -474,6 +493,8 @@ export interface FileRouteTypes {
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
     | '/app/opportunities/new'
+    | '/app/reports/$id'
+    | '/app/reports/forecast'
     | '/app/settings/forms'
     | '/app/settings/integrations'
     | '/app/settings/pipeline'
@@ -486,6 +507,7 @@ export interface FileRouteTypes {
     | '/app/drafts'
     | '/app/meetings'
     | '/app/opportunities'
+    | '/app/reports'
     | '/app/tasks'
     | '/app/settings/data/import'
     | '/app/settings/mail/library'
@@ -501,7 +523,6 @@ export interface FileRouteTypes {
     | '/app/access'
     | '/app/brief'
     | '/app/notifications'
-    | '/app/reports'
     | '/app/review'
     | '/app/settings'
     | '/app/shared-records'
@@ -519,6 +540,8 @@ export interface FileRouteTypes {
     | '/app/meetings/$id'
     | '/app/opportunities/$id'
     | '/app/opportunities/new'
+    | '/app/reports/$id'
+    | '/app/reports/forecast'
     | '/app/settings/forms'
     | '/app/settings/integrations'
     | '/app/settings/pipeline'
@@ -531,6 +554,7 @@ export interface FileRouteTypes {
     | '/app/drafts/'
     | '/app/meetings/'
     | '/app/opportunities/'
+    | '/app/reports/'
     | '/app/tasks/'
     | '/app/settings/data/import'
     | '/app/settings/mail/library'
@@ -597,13 +621,6 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/app/notifications'
       preLoaderRoute: typeof AppNotificationsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/reports': {
-      id: '/app/reports'
-      path: '/reports'
-      fullPath: '/app/reports'
-      preLoaderRoute: typeof AppReportsRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/review': {
@@ -760,6 +777,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOpportunitiesNewRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/reports/': {
+      id: '/app/reports/'
+      path: '/reports'
+      fullPath: '/app/reports/'
+      preLoaderRoute: typeof AppReportsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/reports/$id': {
+      id: '/app/reports/$id'
+      path: '/reports/$id'
+      fullPath: '/app/reports/$id'
+      preLoaderRoute: typeof AppReportsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/reports/forecast': {
+      id: '/app/reports/forecast'
+      path: '/reports/forecast'
+      fullPath: '/app/reports/forecast'
+      preLoaderRoute: typeof AppReportsForecastRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/settings/forms': {
       id: '/app/settings/forms'
       path: '/forms'
@@ -904,7 +942,6 @@ interface AppRouteChildren {
   AppAccessRoute: typeof AppAccessRoute
   AppBriefRoute: typeof AppBriefRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
-  AppReportsRoute: typeof AppReportsRoute
   AppReviewRoute: typeof AppReviewRoute
   AppSettingsRoute: typeof AppSettingsRouteWithChildren
   AppSharedRecordsRoute: typeof AppSharedRecordsRoute
@@ -920,19 +957,21 @@ interface AppRouteChildren {
   AppMeetingsIdRoute: typeof AppMeetingsIdRoute
   AppOpportunitiesIdRoute: typeof AppOpportunitiesIdRoute
   AppOpportunitiesNewRoute: typeof AppOpportunitiesNewRoute
+  AppReportsIdRoute: typeof AppReportsIdRoute
+  AppReportsForecastRoute: typeof AppReportsForecastRoute
   AppAssistanceIndexRoute: typeof AppAssistanceIndexRoute
   AppCompaniesIndexRoute: typeof AppCompaniesIndexRoute
   AppContactsIndexRoute: typeof AppContactsIndexRoute
   AppDraftsIndexRoute: typeof AppDraftsIndexRoute
   AppMeetingsIndexRoute: typeof AppMeetingsIndexRoute
   AppOpportunitiesIndexRoute: typeof AppOpportunitiesIndexRoute
+  AppReportsIndexRoute: typeof AppReportsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppAccessRoute: AppAccessRoute,
   AppBriefRoute: AppBriefRoute,
   AppNotificationsRoute: AppNotificationsRoute,
-  AppReportsRoute: AppReportsRoute,
   AppReviewRoute: AppReviewRoute,
   AppSettingsRoute: AppSettingsRouteWithChildren,
   AppSharedRecordsRoute: AppSharedRecordsRoute,
@@ -948,12 +987,15 @@ const AppRouteChildren: AppRouteChildren = {
   AppMeetingsIdRoute: AppMeetingsIdRoute,
   AppOpportunitiesIdRoute: AppOpportunitiesIdRoute,
   AppOpportunitiesNewRoute: AppOpportunitiesNewRoute,
+  AppReportsIdRoute: AppReportsIdRoute,
+  AppReportsForecastRoute: AppReportsForecastRoute,
   AppAssistanceIndexRoute: AppAssistanceIndexRoute,
   AppCompaniesIndexRoute: AppCompaniesIndexRoute,
   AppContactsIndexRoute: AppContactsIndexRoute,
   AppDraftsIndexRoute: AppDraftsIndexRoute,
   AppMeetingsIndexRoute: AppMeetingsIndexRoute,
   AppOpportunitiesIndexRoute: AppOpportunitiesIndexRoute,
+  AppReportsIndexRoute: AppReportsIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
