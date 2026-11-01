@@ -55,12 +55,6 @@ async function expectRouteRecovery(page,f){
  await page.goto(origin+'/app');await page.getByTestId('now-queue').waitFor();
 }
 
-async function expectHashTarget(page,id){
- const target=page.locator(`#${id}`);
- await expect(target).toBeFocused();
- await expect(target.getByRole('heading').first()).toBeInViewport();
-}
-
 export function operatorRoutes(f){return [
  {name:'now',path:'/app',ready:async page=>{await page.getByTestId('now-queue').waitFor();await expectRouteRecovery(page,f);}},
  {name:'brief',path:'/app/brief',ready:page=>page.getByTestId('today-brief').waitFor()},
@@ -103,7 +97,12 @@ export function operatorRoutes(f){return [
   await expect(page).toHaveURL(new RegExp(`/app/opportunities/${f.opportunityId}$`));
   await expect.poll(async()=>(await(await page.request.get('/api/v1/notifications')).json()).notifications.find(item=>item.id===notification.id).readAt).toBeTruthy();
  }},
- {name:'reports',path:'/app/reports#forecast',ready:async page=>{await expectHashTarget(page,'forecast');await page.getByRole('button',{name:'Reopen saved report'}).first().click();await page.getByText('How this report is calculated',{exact:true}).click();await page.getByText('Create or edit a report from your records',{exact:true}).click();}},
+ // An old #forecast link lands where the install's currency allows: the forecast in USD, otherwise Reports itself.
+ {name:'reports',path:'/app/reports#forecast',ready:async page=>{
+  const {workspace}=await(await page.request.get('/api/v1/settings')).json();await expect(page).toHaveURL(new RegExp(workspace.currency==='USD'?'/app/reports/forecast$':'/app/reports$'));
+  await page.goto(new URL('/app/reports/open-opportunities',page.url()).href);await page.getByRole('button',{name:'Report options',exact:true}).click();await page.getByRole('button',{name:'Reopen saved report'}).first().click();await page.getByText('How this report is calculated',{exact:true}).click();
+  await page.goto(new URL('/app/reports',page.url()).href);await page.getByRole('button',{name:'New',exact:true}).click();await page.getByRole('menuitem',{name:'New custom report',exact:true}).click();await page.getByRole('dialog',{name:'New custom report',exact:true}).waitFor();
+ }},
  {name:'forms',path:'/app/settings/forms',ready:async page=>{await page.getByRole('button',{name:'Reopen latest publication'}).first().click();await page.frameLocator('iframe[title="Compiled landing page preview"]').getByRole('heading',{name:'Tell us about your team',exact:true}).waitFor();await page.getByRole('button',{name:'Read submissions'}).first().click();await page.getByText('A form submission shown as labelled values.',{exact:true}).waitFor();}},
  {name:'access',path:'/app/settings/team',ready:page=>page.getByRole('button',{name:'Revoke grant',exact:true}).waitFor()},
  {name:'shared',path:`/app/shared-records?kind=contact&id=${f.contactId}`,ready:async page=>{await page.getByRole('region',{name:'Shared record details'}).waitFor();await expectProvenance(page,f.provenance);}},

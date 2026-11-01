@@ -22,6 +22,7 @@ let browser:Awaited<ReturnType<typeof chromium.launch>>,limitedCookie:string,com
 const directory=process.env.ORBIT_FOLD_BROWSER_EVIDENCE!;
 const from=new Date(Date.now()-86400000).toISOString().slice(0,16),through=new Date(Date.now()+86400000).toISOString().slice(0,16);
 const apiBase='/api/v2/workspaces/workspace/operations';
+const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 before(async()=>{
  assert.ok(directory,'Browser evidence directory is required');await mkdir(directory,{recursive:true});
@@ -43,18 +44,22 @@ before(async()=>{
 after(async()=>{await browser?.close();await worker?.dispose();await f?.close();});
 
 test('REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence',async()=>{
+ // Each width's report gets a generated id; later steps (dashboard access, sharing) use the ids read from the POST bodies.
+ const disclosed:Record<number,string>={};
  for(const width of [1440,390]){
   const context=await browser.newContext({baseURL:worker.origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:f.cookie}});
-  const errors=watchBrowser(context),page=await context.newPage(),id=`disclosed-value-${width}`;
+  const errors=watchBrowser(context),page=await context.newPage();
   try{
-   await page.goto('/app/reports');await page.getByText('Create or edit a report from your records',{exact:true}).click();
-   await page.getByLabel('Report key').fill(id);await page.getByLabel('Name',{exact:true}).fill('Open opportunity value');
+   await page.goto('/app/reports');await page.getByRole('button',{name:'New',exact:true}).click();await page.getByRole('menuitem',{name:'New custom report',exact:true}).click();
+   await page.getByLabel('Name',{exact:true}).fill('Open opportunity value');
    await page.getByRole('combobox',{name:'Calculation',exact:true}).selectOption('sum');await page.getByLabel('Value field',{exact:true}).selectOption('value_cents');
    await page.getByLabel('Group by field',{exact:true}).selectOption('stage_id');await page.getByLabel('Filter field',{exact:true}).selectOption('lifecycle');
    await page.getByLabel('Filter equals',{exact:true}).selectOption('open');await page.getByLabel('Description',{exact:true}).fill('Value of open opportunities by pipeline stage');
-   await Promise.all([page.waitForResponse(r=>r.url().endsWith('/operations/metrics')&&r.request().method()==='POST'&&r.status()===200),page.getByRole('button',{name:'Save report definition',exact:true}).click()]);
-   await page.getByRole('combobox',{name:'Report',exact:true}).selectOption(`${id}:1`);await page.getByLabel('Window start',{exact:true}).fill(from);
-   await page.getByLabel('Window end',{exact:true}).fill(through);await page.getByRole('button',{name:'Preview report',exact:true}).click();
+   const [defined]=await Promise.all([page.waitForResponse(r=>r.url().endsWith('/operations/metrics')&&r.request().method()==='POST'&&r.status()===200),page.getByRole('button',{name:'Save report',exact:true}).click()]);
+   const body=defined.request().postDataJSON(),id=String(body.id);assert.match(id,uuid);assert.equal(body.version,1);disclosed[width]=id;
+   await expect(page).toHaveURL(new RegExp(`/app/reports/${id}$`));
+   await page.getByRole('button',{name:/^Period: /}).click();await page.getByLabel('Window start',{exact:true}).fill(from);
+   await page.getByLabel('Window end',{exact:true}).fill(through);await Promise.all([page.waitForResponse(r=>r.url().endsWith(`/metrics/${id}/preview`)&&r.status()===200),page.getByRole('button',{name:'Apply',exact:true}).click()]);
    const result=page.locator('.analytics-console__result');await expect(result).toBeVisible();
    await page.getByText('How this report is calculated',{exact:true}).click();
    const details=result.locator('.analytics-console__measurement'),shown=(local:string)=>formatDateTime(new Date(local).toISOString(),TZ);
@@ -64,15 +69,16 @@ test('REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-
    await expect(result.locator('dl').first()).toContainText(new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(1950));
    await expect(details.getByRole('list',{name:'Report groups'})).toContainText('New');
    await expect(details.getByRole('list',{name:'Report groups'})).not.toContainText(f.stage);
-   await page.getByRole('button',{name:'Save reviewed report',exact:true}).click();await expect(page.getByRole('heading',{name:'Saved result',exact:true})).toBeVisible();
-   await page.reload();await page.getByRole('combobox',{name:'Report',exact:true}).selectOption(`${id}:1`);
+   await page.getByRole('button',{name:'Save result',exact:true}).click();await expect(page.getByText(/^Saved result · measured /)).toBeVisible();
+   // Reload keeps the report's address; a later window is applied before the saved result is reopened from Report options.
+   await page.reload();await page.getByRole('button',{name:/^Period: /}).click();await page.getByLabel('Window start',{exact:true}).fill('2000-01-01T00:00');await Promise.all([page.waitForResponse(r=>r.url().endsWith(`/metrics/${id}/preview`)&&r.status()===200),page.getByRole('button',{name:'Apply',exact:true}).click()]);
+   await page.getByRole('button',{name:'Report options',exact:true}).click();
    const history=page.getByRole('region',{name:'Saved report history'});await expect(history).toContainText('Status: Open');
    await expect(history).toContainText(`${shown(from)} to ${shown(through)}`);
    await expect(history).toContainText('Pipeline stage');await expect(history).toContainText('Null or nonnumeric');await expect(history).toContainText('New');
-   await page.getByLabel('Window start',{exact:true}).fill('2000-01-01T00:00');
    await page.getByRole('button',{name:'Reopen saved report',exact:true}).click();
    await page.getByText('How this report is calculated',{exact:true}).click();await expect(result).toContainText(shown(from));
-   const downloading=page.waitForEvent('download');await history.getByRole('link',{name:'Export saved report'}).click();
+   const downloading=page.waitForEvent('download');await page.getByRole('button',{name:'Report options',exact:true}).click();await history.getByRole('link',{name:'Export saved report'}).click();
    const path=join(directory,`disclosed-report-${width}.json`);await (await downloading).saveAs(path);
    const exported=JSON.parse(await readFile(path,'utf8'));
    assert.equal(exported.values.value,195000);assert.equal(exported.values.n,2);
@@ -86,10 +92,10 @@ test('REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-
    await accessible(page,`disclosed-report-${width}`,directory);await errors.check(directory,`disclosed-report-${width}`);
   }finally{await context.close();}
  }
- await dashboardJourney({browser,worker,ownerCookie:f.cookie,seller:{cookie:seller.cookie,operatorId:seller.operator.operatorId},seed:sales,directory});
+ await dashboardJourney({browser,worker,ownerCookie:f.cookie,seller:{cookie:seller.cookie,operatorId:seller.operator.operatorId},seed:sales,disclosed,directory});
  await browser.close();await worker.dispose();await f.target.reopen();worker=await emittedSlackWorker(f.target,origin=>dashboardSlackFixture(f,origin));browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic','--disable-gpu',...worker.browserArgs]});console.info('Owned emitted Worker PID',worker.pid);
  await dashboardSlackScreens(browser,worker,f.cookie,directory);
- await salesReportJourney({browser,worker,ownerCookie:f.cookie,seller:{cookie:seller.cookie,operatorId:seller.operator.operatorId,email:seller.operator.email,displayName:'Marcus Lee'},seed:sales,directory});
+ await salesReportJourney({browser,worker,ownerCookie:f.cookie,seller:{cookie:seller.cookie,operatorId:seller.operator.operatorId,email:seller.operator.email,displayName:'Marcus Lee'},seed:sales,disclosed,directory});
 });
 
 test('Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API',async()=>{
