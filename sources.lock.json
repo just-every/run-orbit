@@ -5599,7 +5599,7 @@
       "executable": false
     },
     "src/core/features/dashboards/directory.tsx": {
-      "sha256": "0e6dfa81d0d99a04941164049f3a3c37cfcf891dff9a4eb6d34c656672a6707b",
+      "sha256": "43a87a89ac56674a12f296f5de6c2a2da518bb27d8bbdfdf6850696abd3beb0c",
       "executable": false
     },
     "src/core/features/dashboards/display.ts": {
@@ -7879,7 +7879,7 @@
       "executable": false
     },
     "src/core/features/reports/index-page.tsx": {
-      "sha256": "9cb10a294e14a4a577e34381dfae02346e47094f89e553c82a717a937f5a0e89",
+      "sha256": "cd9fc203b82386db62f9ea6ffa2aa533bf63129fa481cb7c95fda8728b8cd7f2",
       "executable": false
     },
     "src/core/features/reports/not-found.tsx": {
@@ -7895,11 +7895,11 @@
       "executable": false
     },
     "src/core/features/reports/reports.css": {
-      "sha256": "b10f93325f0f5fc32bc68c2b1254190a70f7f5e4dc939c0674ad168f2ea382bc",
+      "sha256": "f6035d245dc4bf67f10ff52e654262253660c5d104fac7f827e6acb8c97e486e",
       "executable": false
     },
     "src/core/features/reports/rows.tsx": {
-      "sha256": "4e39cbbda1d5c445031479482fd6a7f67b385112de05460bcd1651b7907a3e37",
+      "sha256": "65f30ebafbf24d64019d0357e25a55ea3441577599349982525bcc6cd15f2513",
       "executable": false
     },
     "src/core/features/reports/sales-report.tsx": {
@@ -7911,7 +7911,7 @@
       "executable": false
     },
     "src/core/features/reports/title.tsx": {
-      "sha256": "6ca413cd708caa6c529f11424d6eabf19a6517283a9f6dc536380ed49db9ea3e",
+      "sha256": "902447e891405a42951016e8001c3fe061f3c9f604854feea990fd4c1bd91e93",
       "executable": false
     },
     "src/core/features/risks/actions.ts": {
