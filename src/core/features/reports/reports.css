@@ -89,8 +89,6 @@
 .reports-page .reports-tables .sales-table tbody th{font-weight:500}
 .reports-page .reports-tables .sales-table .sales-cell{font-size:15px;font-weight:600}
 .reports-page .reports-tables .sales-table:focus-visible{outline:2px solid var(--ob-ink);outline-offset:4px}
-/* The records drawer keeps the dashboard drawer's own table, whatever order the stylesheets load in. */
-.reports-page .dash-drill-table table{min-width:0}
 .reports-page :is(.sales-definition,.sales-note){margin:14px 0 0;font-size:14.5px;line-height:1.5;color:var(--ob-muted)}
 /* Tangerine stays for the one key figure; late-arriving evidence keeps its dashed edge in the line colour. */
 .reports-page .sales-late{margin-top:28px;border-color:var(--ob-line-strong)}

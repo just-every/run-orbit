@@ -1,5 +1,8 @@
 import type {ReactNode} from 'react';
 import {Link} from '@tanstack/react-router';
+// The shared stylesheets load in the dashboard page's order (sales before the dashboard's own), so the records drawer and
+// every other shared piece resolve exactly as they do on the dashboard; Reports' own rules come last.
+import '../analytics/sales.css';
 import '../dashboards/dashboards.css';
 import '../dashboards/dashboard-dialogs.css';
 import './reports.css';
