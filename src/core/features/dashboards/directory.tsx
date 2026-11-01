@@ -22,6 +22,6 @@ export function useDashboardDirectory(workspace:string){
 export function DashboardDirectory({directory:{data,error,setDefault},onCreate}:{directory:ReturnType<typeof useDashboardDirectory>;onCreate:()=>void}){
  return <section className="reports-section" aria-labelledby="dashboards-heading"><h2 id="dashboards-heading">Dashboards</h2>{error&&<p role="alert" className="operator-state operator-state--error">{error}</p>}
   {data&&(!data.items.length?<p className="reports-empty"><span>No dashboards yet</span>{data.canDefine&&<> · <button type="button" className="reports-text-button" onClick={onCreate}>Create a dashboard</button></>}</p>
-   :<ul className="reports-list">{data.items.map(item=><Row key={item.id} target={{to:'/app/dashboards/$id',params:{id:item.id}}} name={item.name} line={item.isDefault?'Your default':undefined} action={<button type="button" className="reports-text-button reports-row__action" onClick={()=>void setDefault(item.id,!item.isDefault)}>{item.isDefault?'Remove as my default':'Make this my default'}</button>}/>)}</ul>)}
+   :<ul className="reports-list">{data.items.map(item=><Row key={item.id} target={{href:`/app/dashboards/${encodeURIComponent(item.id)}`}} name={item.name} line={item.isDefault?'Your default':undefined} action={<button type="button" className="reports-text-button reports-row__action" onClick={()=>void setDefault(item.id,!item.isDefault)}>{item.isDefault?'Remove as my default':'Make this my default'}</button>}/>)}</ul>)}
  </section>;
 }
