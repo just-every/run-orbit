@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.3 — 2026-11-01
+
+Orbit 0.4.3 starts first-run setup from what the platform already knows, and carries the changes made since 0.4.2.
+
+- **First-run setup starts filled in.** The first-run form now starts with the Business name, your name and the time zone the platform already knows, so you confirm them instead of typing them again. A value the platform has not set reads as before.
+- **A dashboard can be removed.** In Edit tiles, the dashboard's owner or the installation owner can remove a dashboard after one confirmation. Its versions, sharing, schedule and everyone's default go with it, and Slack notices still waiting to send for it are held. The saved reports and forecast views behind its tiles stay.
+- **Report periods read as dates.** A report's Period, in previews and saved history, shows dates and times in the workspace's time zone instead of raw timestamps. The open-opportunities report, which has no period, says when it was read.
+- **The current month follows the workspace's time zone.** A new forecast or dashboard starts on the current month in the workspace's time zone, not in UTC, so it no longer opens on the wrong month at the turn of a month. Calendar capture windows use the same dates in every browser time zone.
+- **Disconnecting Mailchimp asks first.** Disconnect Mailchimp now explains that it deletes the saved key and the webhook address, and that Mailchimp's unsubscribes stop reaching Orbit until you connect again, then waits for you to confirm.
+- **Clearer focus, readable small text, bigger phone targets.** A focused text field, menu or text box shows focus on its own border instead of a second ring around it. Text that was smaller than 13 px is now 13 px. At phone width, every button, link and expandable row you tap is at least 44 px tall.
+- **A white content area.** The main content area under the header is now plain white; the header keeps its paper tone.
+- **Behind the scenes.** The contract's test-coverage map was updated for the rer 0.2.94 reader, and the edition source lock was regenerated. Orbit still runs on rer 0.2.93.
+
+It updates 0.4.2 in place with no migration and keeps every row.
+
 ## 0.4.2 — 2026-10-30
 
 Orbit 0.4.2 is a security release. The agent door now refuses a still-valid access token whose email claim no longer matches the subject's current native email, with a typed 401 or 403 instead of serving the request (conformance point BASE-AGENT-004.sponsor.changed-email). It also carries the record changes made since 0.4.1: each deal's page opens on its next action, with one Activity list and its details beside the work; opportunities, contacts and companies each have their own address, and every record has its own page; record values and workspace settings save as you change them; and each sent message states what Orbit knows about its delivery. Orbit now runs on rer 0.2.93. It updates 0.4.1 in place with no migration and keeps every row.

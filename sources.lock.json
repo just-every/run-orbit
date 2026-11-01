@@ -679,7 +679,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "072b2faafb92d5b634959ec0b8d19ac5a8bd1c25710a6a275767a2efcd956cca",
+      "sha256": "76310eecf2556f11fc4aa5846a20115d1113ebc1119d6c6c819594b9fda2d200",
       "executable": false
     },
     "CLAUDE.md": {
@@ -3715,7 +3715,7 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "84797cfd9bbcbd898adcbaafea37a1399ce75412b764d1cfd3ea8cc9d3781d91",
+      "sha256": "4ab05b74393d4cd7b4d01c5f690695863497d9df8efbf1525a315a0e92533357",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
@@ -3810,8 +3810,12 @@
       "sha256": "fc1bab25691861f5f325edea2ab5ba60f21bf5e92a19f0e41c8e65f4253a72d9",
       "executable": false
     },
-    "RELEASE.json": {
+    "release-history/0.4.2.json": {
       "sha256": "3476a536ef721043933772fa8a69d55e330b7cd00c0932f29cddeea2c5f4236d",
+      "executable": false
+    },
+    "RELEASE.json": {
+      "sha256": "6f8b6703e5dd8e7ff52a5c62e0e5cc7b7d5bc19e495897e09caa0e58db8b1e02",
       "executable": false
     },
     "rer-project.json": {
@@ -4171,7 +4175,7 @@
       "executable": false
     },
     "seed.json": {
-      "sha256": "15c67b74819c0e8f133391e375aba9123384e5ce74bc9ca8e24f0ed53636e20c",
+      "sha256": "54e7e7d7966fbcbfd50fec769f2a5e91de9660f428880308cf3c2cce791221e9",
       "executable": false
     },
     "SIGNALS-AND-OUTREACH.md": {
@@ -5163,7 +5167,7 @@
       "executable": false
     },
     "src/core/features/agent-door/index.ts": {
-      "sha256": "9863c281aa719787d98881513cb017678a75b3513bcfb223a86604bec926b741",
+      "sha256": "659fd190e728bd640b87b35c21b8d31ed7f75eec0bef66117ebf8aae6e9c2bb4",
       "executable": false
     },
     "src/core/features/agent-door/local-credentials.ts": {
@@ -7915,7 +7919,7 @@
       "executable": false
     },
     "src/core/features/setup/loader.ts": {
-      "sha256": "3d11970461b0a1106574c2dc9a9e80d8b23f4c171540b855a0a0f9f229584d6c",
+      "sha256": "a5ead0b7da92ef59e727891857b8977b178b89ceccf67a5d6f44071ca5293311",
       "executable": false
     },
     "src/core/features/setup/repository.ts": {
@@ -10543,7 +10547,7 @@
       "executable": false
     },
     "tests/rer/journey.test.mjs": {
-      "sha256": "2d1e5c8d6f2e313b0d901fce1a345fef48cbff36d4b0ba45ff3f1fbac0b0b614",
+      "sha256": "84c094ca4b34dbf160ca5b28a51e5e4189eeef4043f94a503d16c002f0ef7fa4",
       "executable": false
     },
     "tests/rer/managed-mail.mjs": {
