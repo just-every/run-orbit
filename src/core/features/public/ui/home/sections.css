@@ -6,6 +6,7 @@
 .ob-section-copy h2 { max-width: 9.4em; }
 .ob-section-copy > p { max-width: 30em; margin-top: clamp(24px, 2.4vw, 36px); color: var(--ob-body); font-size: clamp(18px, 1.45vw, 21px); line-height: 1.6; text-wrap: pretty; }
 .ob-section-copy .ob-actions { margin-top: clamp(32px, 3.2vw, 48px); }
+.ob-section-copy > p.ob-footnote { margin-top: 16px; color: var(--ob-muted); font-size: 13px; line-height: 1.4; }
 
 .ob-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); grid-template-areas: "copy art"; column-gap: clamp(48px, 6.5vw, 120px); align-items: center; }
 .ob-split > .ob-section-copy { grid-area: copy; }
