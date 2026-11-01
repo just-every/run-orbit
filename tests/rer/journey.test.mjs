@@ -1,7 +1,7 @@
 import {isolateBrowserTemp} from '../support/browser-temp.mjs';
 isolateBrowserTemp();
 import assert from 'node:assert/strict';
-import { mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
+import { appendFile, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { get } from 'node:http';
 import { join } from 'node:path';
 import { after, before, test } from 'node:test';
@@ -23,6 +23,20 @@ const hostRequest = (port, path, host) => new Promise((done, fail) => get({ host
   let body = ''; response.on('data', (chunk) => { body += chunk; }); response.on('end', () => done({ status: response.statusCode, body }));
 }).on('error', fail));
 const contentHash = (output) => JSON.parse(output.trim().split('\n').find((line) => line.includes('"event":"result"'))).contentHash;
+
+// The platform's signed Business settings, from a test issuer whose public key the checkout is told to trust.
+async function signedBusiness(origin) {
+  const keys = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+  const issuer = 'https://business.example.test', subject = 'orbit-journey';
+  const trust = JSON.stringify({ v: 1, issuer, audience: origin, subject, keys: { test: await crypto.subtle.exportKey('jwk', keys.publicKey) } });
+  const encode = (value) => Buffer.from(JSON.stringify(value)).toString('base64url');
+  return { trust, async apply(values) {
+    const now = Math.floor(Date.now() / 1000), body = `${encode({ alg: 'ES256', typ: 'rer-business-settings+jwt', kid: 'test' })}.${encode({
+      v: 1, iss: issuer, aud: origin, sub: subject, business: 'journey-business', email: owner, jti: crypto.randomUUID(), iat: now, exp: now + 300, rev: 1, values, logo: null, team: null })}`;
+    const settings = `${body}.${Buffer.from(await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, keys.privateKey, new TextEncoder().encode(body))).toString('base64url')}`;
+    return fetch(`${origin}/api/rer/business-settings`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ settings }) });
+  } };
+}
 
 async function openOwner(origin, context) {
   const page = await context.newPage();
@@ -58,6 +72,8 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
   assert.ok((await readFile(settings)).equals(bytes), 'repeat setup keeps exact private settings');
   await exitOf(await checkout.rer(['setup', '--owner-email', 'other@example.test', '--port', String(port), '--non-interactive']), 4, 'conflicting owner');
 
+  const business = await signedBusiness(origin);
+  await appendFile(join(checkout.root, '.dev.vars'), `\nRER_BUSINESS_TRUST='${business.trust}'\n`);
   const dev = await checkout.serve(['dev']);
   const ready = await dev.ready, key = await devKey(checkout.root);
   assert.match(ready, new RegExp(`^RER_READY ${origin}$`, 'm'));
@@ -86,13 +102,23 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
   await page.screenshot({ path: join(process.env.ORBIT_EVIDENCE_DIR ?? checkout.root, 'setup-390.png'), fullPage: true });
   await page.goto(`${origin}/app/opportunities`);
   assert.equal(new URL(page.url()).pathname, '/setup', 'unfinished setup holds every app route');
-  await page.fill('#setup-owner-name', 'Harper Lane');
-  await page.fill('#setup-name', 'Harbor Revenue');
-  await page.fill('#setup-timezone', 'Australia/Brisbane');
+  // Nothing signed yet: the first screen starts as it always did, with the stand-ins hidden and the default zone.
+  const fields = () => page.evaluate(() => ({ owner: document.querySelector('#setup-owner-name').value, name: document.querySelector('#setup-name').value, timezone: document.querySelector('#setup-timezone').value }));
+  assert.deepEqual(await fields(), { owner: '', name: '', timezone: 'UTC' }, 'unsigned Business starts the form empty');
+  // The platform signs the Business name, owner and time zone: the stranger's first screen does not ask for them again.
+  const signed = { display_name: 'Harbor Revenue', owner_name: 'Harper Lane', timezone: 'Australia/Brisbane' };
+  assert.equal((await business.apply(signed)).status, 200, 'signed Business settings apply');
+  await page.goto(`${origin}/setup`);
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
+    assert.deepEqual(await fields(), { owner: 'Harper Lane', name: 'Harbor Revenue', timezone: 'Australia/Brisbane' }, `signed Business prefills the form at ${width}`);
+  }
   await page.fill('#setup-currency', 'aud');
   await page.fill('#setup-stages', 'New\nQualified\nProposal\nWon');
   await page.getByRole('button', { name: 'Finish setup' }).click();
   assert.equal(new URL(page.url()).pathname, '/app');
+  const saved = await (await context.request.get(`${origin}/api/v1/settings`)).json();
+  assert.deepEqual([saved.workspace.name, saved.workspace.timezone, saved.operators.find((operator) => operator.setup_owner === 1).display_name], ['Harbor Revenue', 'Australia/Brisbane', 'Harper Lane'], 'the prefilled values are what setup stores');
   await page.goto(`${origin}/setup`);
   assert.equal(new URL(page.url()).pathname, '/app', 'finished setup continues into the app');
 
