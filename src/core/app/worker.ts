@@ -53,7 +53,7 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
     if (expectedHost && url.host !== expectedHost && !["127.0.0.1", "localhost", "[::1]"].includes(url.hostname)) return new Response("Not found", { status: 404 });
     const asset = await staticAssetResponse(request, bindings);
     if (asset) return asset;
-    if (path === '/mcp' || path.startsWith('/agents') || path === '/api/rer/agent-policy' || path.startsWith('/.well-known/oauth-protected-resource') || path === '/api/rer/business-settings' || path.startsWith('/rer-business')) {
+    if (path === '/mcp' || path.startsWith('/agents') || path === '/api/rer/agent-decisions' || path === '/api/rer/agent-policy' || path.startsWith('/.well-known/oauth-protected-resource') || path === '/api/rer/business-settings' || path.startsWith('/rer-business')) {
       try {
         const response = await orbitBusinessSettings(bindings).handle(request) ?? await orbitAgentDoor(bindings).handle(request);
         if (response) return response;

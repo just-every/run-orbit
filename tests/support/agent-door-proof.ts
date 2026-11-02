@@ -4,12 +4,21 @@ import {identityResponse, operatorFromRequest} from '../../src/core/features/ide
 import {orbitAgentDoor, orbitBusinessSettings} from '../../src/core/features/agent-door';
 import {SettingsRepository} from '../../src/core/features/settings/repository';
 import {localAgentCredentialProof} from './agent-door-local-proof';
+import {checkAgentArtifacts} from '../../src/base/modules/agent-door/index.ts';
+import {contactAgentArtifacts} from '../../src/core/features/agent-door/erasure';
+import {foldInstalledCatalog} from '../../src/core/features/records/archive-fold-catalog';
+import portabilityPolicy from '../../scripts/installer/portability-policy.mjs';
 import {orbitPeople} from '../../src/core/features/agent-door/people';
 import {autonomousPolicy,policyEnvelope} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 
 export async function agentDoorProof() {
   const fixture = await isolatedDatabase();
   try {
+    await checkAgentArtifacts(fixture.db,contactAgentArtifacts);
+    for(const table of ['agent_door_replay_aliases','agent_door_relay'])assert.ok(portabilityPolicy.excludeTables.includes(table),'CLI archives exclude '+table);
+    for(const catalog of [await foldInstalledCatalog(fixture.db)]) {
+      assert.ok(!catalog.some(table=>['agent_door_replay_aliases','agent_door_relay'].includes(table.name)),'agent replay and relay custody stays installation-local');
+    }
     const origin='https://orbit.example.test', issuer='https://business.example.test', installation='orbit-door-test';
     const keys=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign','verify']);
     const publicKey=await crypto.subtle.exportKey('jwk',keys.publicKey);
@@ -62,7 +71,7 @@ export async function agentDoorProof() {
     const door=orbitAgentDoor(bindings);
     const metadata=await door.handle(new Request(origin+'/.well-known/oauth-protected-resource/mcp'));
     assert.equal((await metadata!.json() as {resource:string}).resource,origin+'/mcp');
-    for(const version of ['2026-07-28','2025-11-25']) {
+    for(const version of ['2026-07-28','2025-06-18']) {
       const bearer=await sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:'business-owner',email:owner.email,act:{sub:'seller-assistant',name:'Ari'},client_id:'door-test',business:'door-company',scope:'events:read',consent:'consent-test',jti:crypto.randomUUID(),iat:now,exp:now+300});
       const call=new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+bearer,'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':version,'MCP-Method':'initialize'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'initialize',params:{_meta:{'io.modelcontextprotocol/protocolVersion':version},protocolVersion:version,capabilities:{},clientInfo:{name:'door-test',version:'1'}}})});
       const response=await door.handle(call);
@@ -191,6 +200,15 @@ export async function agentDoorProof() {
     assert.equal((await door.invoke('orbit.reports.compute',{...privatePeriod,review_hash:privatePreview.reviewHash,idempotency_key:'blocked-private-compute'},principal)).code,'policy_blocked');
     const events=await call('orbit.events.list',{limit:200});
     assert.ok(events.events.some((event:any)=>event.actor.kind==='agent'&&event.actor.label==='Ari for Morgan Lee'&&event.native_activity_id),'native activity is the retained event source');
+    // BASE-AGENT-009.relay: signed pulls use the installation trust without a person session.
+    const pullTime=Math.floor(Date.now()/1000);
+    const pull=await sign('rer-agent-decisions+jwt',{v:1,iss:issuer,aud:origin,sub:installation,business:'door-company',after:0,limit:200,iat:pullTime,exp:pullTime+60,jti:crypto.randomUUID()});
+    const relay=await door.handle(post('/api/rer/agent-decisions',{pull}));
+    assert.equal(relay!.status,200,'BASE-AGENT-009.relay.route');
+    const feed=await relay!.json() as {decisions:Array<{id:string;seq:number}>,cursor:number,head:number,more:boolean};
+    assert.ok(feed.decisions.length>0,'Business MCP audits enter the relay');
+    assert.equal(new Set(feed.decisions.map(row=>row.id)).size,feed.decisions.length);
+    assert.equal((await door.handle(post('/api/rer/agent-decisions',{pull:'foreign.invalid.signature'})))!.status,401,'BASE-AGENT-009.relay.foreign');
     await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId);
     const witness=await call('orbit.operations.read',{});
     assert.ok(witness.record_mail_drafts.rows>0);
