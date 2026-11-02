@@ -9,6 +9,7 @@ import { chromium } from '@playwright/test';
 import { freePort, freshCheckout, listening } from './checkout.mjs';
 import {privateFiles,assertPrivateRoutes,setupWithProbes} from './private-routes.mjs';
 import {devKey,localOwnerSignIn,openLink} from './sign-in.mjs';
+import {assertArchiveCarries,assertRestored,captureMail,readEvidence,seedSlack} from './archive-evidence.mjs';
 
 // The README's "Run it on your computer" journey through the public rer
 // commands in a fresh checkout: setup, one-click sign-in, /setup, reset and
@@ -127,6 +128,7 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
   const api = (path, data) => operator.evaluate(async ([path, data]) => (await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })).status, [path, data]);
   assert.equal(await api('/api/v1/records/company', { name: 'Northwind Freight', primary_domain: 'northwind.example' }), 201);
   assert.equal(await api('/api/v1/records/contact', { name: 'Ada Lovelace', email: 'ada@northwind.example' }), 201);
+  await captureMail(operator, origin);
   await exitOf(await checkout.stop('dev'), 143, 'dev stop');
   assert.equal((await dev.exited).code, 143);
   assert.equal(await listening(port), false, 'dev stop closes the port');
@@ -137,7 +139,12 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
   assert.equal((await preview.exited).code,143);assert.equal(await listening(port),false);
 
   await exitOf(await checkout.rer(['import', '--input', 'exports/missing.rer']), 4, 'import requires confirmation');
-  const first = contentHash(await exitOf(await checkout.rer(['export', '--output', 'exports/first.rer', '--json']), 0, 'export'));
+  // The archived installation holds captured evidence and Slack data, with bot and action authority that never travels.
+  await seedSlack(checkout.root);
+  const archived = await readEvidence(checkout.root);
+  const exported = await exitOf(await checkout.rer(['export', '--output', 'exports/first.rer', '--json']), 0, 'export');
+  const first = contentHash(exported);
+  assertArchiveCarries(JSON.parse(exported.trim().split('\n').find((line) => line.includes('"event":"result"'))), await readFile(join(checkout.root, 'exports/first.rer'), 'utf8'), archived);
   assert.equal((await stat(join(checkout.root, 'exports/first.rer'))).mode & 0o777, 0o600);
   await exitOf(await checkout.rer(['export', '--output', 'exports/first.rer']), 4, 'export refuses an existing archive');
   // A build refuses output holding an installation archive, renamed or not, and builds again once it is moved out.
@@ -156,6 +163,7 @@ test('README local journey: setup, dev sign-in, /setup, reset and complete data 
   await stat(join(checkout.root, 'exports/first.rer'));
   assert.match(await exitOf(await checkout.rer(['import', '--input', 'exports/corrupt.rer', '--yes']), 1, 'a corrupt archive is refused'), /part_checksum/);
   assert.equal(contentHash(await exitOf(await checkout.rer(['import', '--input', 'exports/first.rer', '--yes', '--json']), 0, 'import')), first);
+  assertRestored(archived, await readEvidence(checkout.root));
   assert.equal(contentHash(await exitOf(await checkout.rer(['export', '--output', 'exports/second.rer', '--json']), 0, 'second export')), first, 'export/import/export is equivalent');
 
   // The restored owner signs in again through setup, with search rebuilt.
