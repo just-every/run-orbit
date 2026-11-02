@@ -53,7 +53,7 @@ export function CustomReportPage({workspace,catalog,id,search,builtIn}:{workspac
  const [opened]=useState(()=>Date.now()),defaults={from:new Date(opened-30*DAY).toISOString(),through:new Date(opened).toISOString()};
  const from=instant(search.from)??defaults.from,through=instant(search.through)??defaults.through,custom=Boolean(instant(search.from)&&instant(search.through));
  const [version,setVersion]=useState<number|null>(null),[report,setReport]=useState<Result|null>(null),[busy,setBusy]=useState(true),[error,setError]=useState(''),[saving,setSaving]=useState(false),[refused,setRefused]=useState(''),[options,setOptions]=useState(false),[attempt,setAttempt]=useState(0),[rerun,setRerun]=useState(0);
- const shown=useRef<Result|null>(null),previewed=useRef({from,through}),optionsButton=useRef<HTMLButtonElement>(null);shown.current=report;
+ const shown=useRef<Result|null>(null),optionsButton=useRef<HTMLButtonElement>(null);shown.current=report;
  const address=(next:ReportSearch):ReportSearch=>({...next.version?{version:next.version}:{},...next.result?{result:next.result}:{},...!builtIn&&next.from&&next.through?{from:next.from,through:next.through}:{}});
  const go=(next:ReportSearch)=>void navigate({to:'/app/reports/$id',params:{id},search:address(next),replace:true,resetScroll:false});
  // A version or a reopened result chosen in Report options shows on the page, so the drawer closes.
@@ -70,16 +70,18 @@ export function CustomReportPage({workspace,catalog,id,search,builtIn}:{workspac
  useEffect(()=>{
   const result=search.result;if(!result&&version===null)return;
   if(result&&shown.current&&!shown.current.reviewHash&&shown.current.id===result){setBusy(false);return;}
-  let active=true;setBusy(true);setError('');setRefused('');previewed.current={from,through};
+  let active=true;setBusy(true);setError('');setRefused('');
   (result?api<Result>(`${base}/snapshots/${encodeURIComponent(result)}`):builtIn?api<Result>(`${template}/preview`,{version}):api<Result>(`${base}/metrics/${encodeURIComponent(id)}/preview`,{version,from,through}))
    .then(next=>{if(active){setReport(next);setBusy(false);}}).catch(cause=>{if(active){setReport(null);setError(failure(cause));setBusy(false);}});
   return()=>{active=false;};
  },[search.result,version,from,through,attempt,rerun]);
  // Apply recomputes once: a new window through the address, the same window in place.
  const apply=(first:string,last:string)=>{const start=new Date(first).toISOString(),end=new Date(last).toISOString();if(!search.result&&start===from&&end===through){setRerun(value=>value+1);return;}go({version:search.version,from:start,through:end});};
+ // Save result saves the reviewed preview on screen with its own version, window and review hash. While a new window or
+ // version computes, that preview is being replaced, so Save result waits for the new one.
  async function save(){
-  if(!report?.reviewHash||version===null)return;setSaving(true);setRefused('');
-  try{const saved=await(builtIn?api<Result>(`${template}/save`,{version,reviewHash:report.reviewHash}):api<Result>(`${base}/metrics/${encodeURIComponent(id)}/snapshots`,{version,...previewed.current,reviewHash:report.reviewHash}));setReport(saved);shown.current=saved;go({...search,result:saved.id});}
+  if(!report?.reviewHash)return;setSaving(true);setRefused('');const reviewed={version:report.definitionVersion,reviewHash:report.reviewHash};
+  try{const saved=await(builtIn?api<Result>(`${template}/save`,reviewed):api<Result>(`${base}/metrics/${encodeURIComponent(id)}/snapshots`,{...reviewed,from:report.from,through:report.through}));setReport(saved);shown.current=saved;go({...search,result:saved.id});}
   catch(cause){setRefused(failure(cause));}finally{setSaving(false);}
  }
  const live=!search.result&&report?.reviewHash,open=search.result?report?.definitionVersion??null:version,stored=group?.versions.find(item=>item.version===open);
@@ -90,7 +92,7 @@ export function CustomReportPage({workspace,catalog,id,search,builtIn}:{workspac
  return <div className="reports-page">
   <ReportsTitle title={name} line={line}
    period={builtIn?undefined:<PeriodControl kind={customPeriod} text={custom||search.result?windowLabel(shownFrom,shownThrough,catalog.suite.timezone):'Last 30 days'} from={local(shownFrom)} through={local(shownThrough)} onApply={apply}/>}
-   actions={<>{live&&<div className="reports-save"><button type="button" className="reports-pill" disabled={saving} onClick={()=>void save()}>Save result</button>{refused&&<p className="reports-refusal" role="alert">{refused}</p>}</div>}<button ref={optionsButton} type="button" className="reports-outline" onClick={()=>setOptions(true)}>Report options</button></>}/>
+   actions={<>{live&&<div className="reports-save"><button type="button" className="reports-pill" disabled={saving||busy} onClick={()=>void save()}>Save result</button>{refused&&<p className="reports-refusal" role="alert">{refused}</p>}</div>}<button ref={optionsButton} type="button" className="reports-outline" onClick={()=>setOptions(true)}>Report options</button></>}/>
   {error?<ReadFailure error={error} retry={()=>setAttempt(value=>value+1)}>{search.result&&<> <Link to="/app/reports/$id" params={{id}} activeOptions={{exact:true}} search={address({...search,result:undefined})} replace>Show the live report</Link></>}</ReadFailure>
    :report?<><CustomResult report={report} name={name} builtIn={builtIn} busy={busy}/><p className="reports-basis-line">{busy?'Computing…':['Basis',...live?[`Computed ${formatTime(report.asOf)}`,'Not saved']:['Saved result']].join(' · ')}</p></>
    :<p className="reports-status" role="status">Computing {name}…</p>}
