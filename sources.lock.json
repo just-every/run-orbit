@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "20e1b48e06ca9cbd3d149a8b34982dca962312d9062ca3bb059d0578cee843a7",
+      "sha256": "e48e3eb60a5f6e61c028dbe5979c7e14cbe10b02b9545cf04bdecf94e469a90e",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "696944f5b294a9a519625294de30cf75a5467dbe2ad82b3687f8d4e8694a9f2a",
+      "sha256": "dde39fca26aa3b9b71dd8e798215aeae2ed9c0199e366a5b0ecb731dec22fb66",
       "executable": false
     },
     "DEMO.md": {
@@ -739,7 +739,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "9163edcc5e3077ed3215488e033f3465ec2233608a7dec5d53da481a3a231eb9",
+      "sha256": "6dbe738446178cf479981d198ef33335cd2d59469df17f00328a8e3e17bcb444",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {
@@ -9983,7 +9983,7 @@
       "executable": false
     },
     "tests/core/outreach-limits.test.ts": {
-      "sha256": "627868d245d33a652acdccf3ead0dffe58abab00fb6b6f748c5fbe53a88de709",
+      "sha256": "bf1ddb39a4766ca39ff71b2887553f39c7ed5bbbf4db181cd0ff419a74c7e323",
       "executable": false
     },
     "tests/core/platform-boundaries.test.ts": {
@@ -10618,6 +10618,10 @@
       "sha256": "80de6ce3ee3c20ce42967394eff5430ee08f6f0c281d8420e058edabf65a5311",
       "executable": false
     },
+    "tests/rer/archive-evidence.mjs": {
+      "sha256": "3b731d02b94e156acc55c6a1ebf1d85a9ced49fdc69e45e90e1ab3e5b8c1fbb0",
+      "executable": false
+    },
     "tests/rer/browser-api.mjs": {
       "sha256": "757c9e87f283000e631c8ec3cb333681df7756ef7c73ddc66862ad80b45e4224",
       "executable": false
@@ -10643,7 +10647,7 @@
       "executable": false
     },
     "tests/rer/journey.test.mjs": {
-      "sha256": "84c094ca4b34dbf160ca5b28a51e5e4189eeef4043f94a503d16c002f0ef7fa4",
+      "sha256": "2023b9cf9171cab7ad227adb565438bdbe3ffbbd1c3f6c1b277a4d315d27dacc",
       "executable": false
     },
     "tests/rer/managed-mail.mjs": {
@@ -11035,7 +11039,7 @@
       "executable": false
     },
     "tests/support/slack-archive-proof.ts": {
-      "sha256": "e834e62a251731e66f5a673fb3c5366dead0d8fc8af894cc93849ca24c032b34",
+      "sha256": "abc3be1c34ada7f0a5bc8622ea2d892cf0d1ac6ff5a9941eec8543f750170aac",
       "executable": false
     },
     "tests/support/slack-network.ts": {
