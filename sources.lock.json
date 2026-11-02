@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "1b58600382934388d9887e9eaf6f58701b66926b29830c108ac36c56afaa1112",
+      "sha256": "20e1b48e06ca9cbd3d149a8b34982dca962312d9062ca3bb059d0578cee843a7",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "37ab94a0bdf541a0a7e3c343c08171c8dc988417aa6aa1227ad3bf4e38412203",
+      "sha256": "696944f5b294a9a519625294de30cf75a5467dbe2ad82b3687f8d4e8694a9f2a",
       "executable": false
     },
     "DEMO.md": {
@@ -739,7 +739,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "cb4e17542d61e97a0d3e3872ac12a55ae2834a6dac7ffcee6337b53e64e70768",
+      "sha256": "9163edcc5e3077ed3215488e033f3465ec2233608a7dec5d53da481a3a231eb9",
       "executable": false
     },
     "docs/CONNECT-GMAIL.md": {

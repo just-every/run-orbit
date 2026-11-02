@@ -15,7 +15,7 @@ A claim is done when every clause behind it is done, missing when every one is m
 | 7 | Contacts, companies and deals, with your own fields. | `RECORD-001` partial | partial |
 | 8 | Each enquiry lands on the right contact. | `FORM-003` partial | partial |
 | 9 | A reply cancels what you scheduled for that person. | `OUT-007` partial | partial |
-| 10 | A complete archive of your workspace, any time. | `DATA-001` partial; `DATA-003` partial | partial |
+| 10 | A complete archive of your workspace, any time. | `DATA-001` partial; `DATA-003` done | partial |
 | 11 | Keep your current CRM running while you try it. Import a CSV from the tool you use now. | `RECORD-008` partial | partial |
 | 12 | Invite your team. Everyone sees every customer. | `TEAM-001` partial; `TEAM-002` done | partial |
 
