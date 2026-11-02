@@ -8,12 +8,12 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 13 | 141 | 24 | 178 |
+| Core | 19 | 135 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 13 | 159 | 32 | 204 |
+| Full target | 19 | 153 | 32 | 204 |
 
-Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
+Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
 ## Core
 
@@ -83,15 +83,15 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 
 #### RECORD-002 — Associations
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** A contact has at most one primary company and can have further explicit company relationships under RECORD-015, and can belong to any number of opportunities. An opportunity with contacts names one primary as its default outreach recipient; a deal without a contact is never recommended an email follow-up. Changing an association moves no old timeline entry.
 
 **Acceptance.**
 1. Associate two contacts and a company with a deal, choose the primary recipient, change the associations, and confirm historical timeline entries stay put.
 
-**Evidence.** `src/core/features/relationships/`; `src/core/features/records/repository.ts`; `tests/core/records-search.test.ts`; `tests/core/records-merge-review.test.ts`; `tests/evidence/contract/RECORD-002/`
-**Gap.** Unasserted in the carried evidence: two contact associations; company association; primary recipient choice; association change; historical timeline remains unchanged. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** Acceptance 1: `tests/core/records-search.test.ts` — RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-015 RECORD-002 RECORD-011 RECORD-006 relationships retain history and pipelines move safely and search matches record and timeline text, intersects every opportunity filter and caps the first page; extended `tests/support/buying-context.ts` — exerciseBuyingContext (three contacts and a company on a deal through the Records and relationships routes, the contact and deal company associations changed, every earlier timeline entry still on the deal); extended `tests/support/opportunity-creation.ts` — exerciseOpportunityCreation (the chosen primary recipient read back; invalid selections refused with no records written); push Verify core-3 in shards (batch-11); `src/core/features/relationships/`; `src/core/features/records/repository.ts`; `tests/core/records-merge-review.test.ts`; `tests/evidence/contract/RECORD-002/`
+**Gap.** None.
 
 #### RECORD-003 — Identity keys
 
@@ -326,15 +326,15 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 
 #### SIGNAL-009 — Signed sources
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** Supersedes BASE-ACCESS-004 for the paths the signed signal door and the signed mail-event door only: a request there is authorized by a signature from a source or mail provider configured in this deployment (or, at a source’s the source’s automation door endpoint only, its current private secret in an HTTPS Authorization Bearer header) instead of an operator session, and may write only signals, delivery states, and their timeline entries. The separately scoped application-delegation boundary below is the only additional authorization exception.
 
 **Acceptance.**
 1. Exercise signed callbacks and HTTPS source-scoped automation; refuse invalid, disabled and rotated authority while retaining native session and ownership checks.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: signed provider callback; HTTPS source-scoped automation; disabled authority refused; rotated authority refused; native session checks retained; native ownership checks retained. Asserted: invalid authority refused.
+**Evidence.** Acceptance 1: `tests/core/source-onboarding.test.ts` — NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty; REPORT-004 explicitly enabled Slack schedules respect DST, hold uncertainty and never resume; email stays paused; INTEGRATE-005 INTEGRATE-009 INTEGRATE-010 INTEGRATE-011 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions; BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send (the signed source door accepts a valid signature, refuses the old secret after rotation and then accepts the same event under the new secret; source routes refuse anonymous, foreign-installation and cross-origin requests); SIGNAL-009 source rotation and disabling atomically refuse an already streaming signed event (rotate, disable and remove refuse signed, Cal.com, Calendly and bearer automation requests with 403 and no signal, link, timeline or scoring change); `tests/core/signals-outreach.test.ts` — BASE-OPS-003 OUT-002 OUT-005 signed provider delivery is verified and idempotent; SIGNAL-009 shared provider relay authenticates destination HMAC and refuses modified events; `tests/core/capture-boundaries.test.ts` — CAPTURE-003 CAPTURE-005 OUT-001 OUT-007 ACTION-005 RECORD-012 SIGNAL-009 a captured reply stops outreach at once while its proposals wait; capture never drafts, sends or makes anyone contactable, and only an operator session may capture (a signature or bearer secret is no capture authority and writes nothing); `tests/rer/onboarding.test.mjs` — SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 first hour through native rer sign-in and exact rendered recipes at 1440 and at 390 (extended `tests/rer/source-recipes.mjs` — exerciseAutomationRecipe: HTTPS bearer automation accepted once and replay-safe, missing or wrong bearer refused with 401, disabled source refused with 403 and one signal kept); `tests/rer/operator-desktop.test.mjs` — BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (extended `tests/rer/source-recipes.mjs` — exerciseSourceRemoval: a bearer event accepted, the source removed in the browser, a later bearer event refused with 403 and the deal unchanged); push Verify core-3 in shards (batch-11), core-6 in shards (batch-9), core-5 in shards (batch-0), rer-checkouts in shards (batch-13) and rer-operator-desktop in shards (batch-14); `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`
+**Gap.** None.
 
 ### Mail and calendar capture
 
@@ -412,15 +412,15 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SE
 
 #### CAPTURE-007 — Captured data
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
+Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2
 
 **Requirement.** Captured evidence, including its attachments (RECORD-018), proposals and source state are part of every export and restore under DATA-001; source credentials never are, so a restored provider source must be reconnected. Erasing a contact erases the captured evidence and proposals that carry them under DATA-002. The audit trail keeps counts and anonymous keyed replay proofs with erasure times, without addresses, original item identifiers or content, so later intake cannot recreate erased originals. Private matching contexts and proofs travel in archives; restoring an owner's historical archive retains DATA-001's existing behavior.
 
 **Acceptance.**
 1. Export/restore captured evidence and proposals, verify no source credential travels, erase a contact and replay intake to prove erased originals stay fenced.
 
-**Evidence.** `src/core/features/capture/privacy.ts`; `tests/core/capture-data.test.ts`; `tests/core/capture-upgrade.test.ts`
-**Gap.** Unasserted in the carried evidence: contact evidence erased; replayed erased originals remain absent. Asserted: captured originals exported; proposals restored equivalently; source credentials absent.
+**Evidence.** Acceptance 1: `tests/core/capture-data.test.ts` — DATA-003 current sales capabilities round-trip without authority and erase across public reads (captured originals, proposals and sources exported through Records and restored equivalently; no source credential in the archive or the restored installation); `tests/core/capture-erasure.test.ts` — CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured originals and proposals; the audit trail keeps counts and anonymous replay proofs; CAPTURE-007 DATA-002 erased provider originals stay erased after expired history, crashes and reconnect while new evidence remains eligible; CAPTURE-007 DATA-002 erasure fences an already-resolved capture commit and its later replay; `tests/core/capture-replay-archive.test.ts` — CAPTURE-007 DATA-002 both archive paths carry anonymous replay barriers and Records restore retains destination erasure history; push Verify core-7 in shards (batch-1), core-8 in shards (batch-15) and core-9 in shards (batch-10); `src/core/features/capture/privacy.ts`; `tests/core/capture-upgrade.test.ts`
+**Gap.** None.
 
 #### CAPTURE-008 — Orbit address
 
@@ -553,8 +553,8 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Create two pipelines with different ordered stages, move deals between stages and pipelines, and refuse deletion of an occupied stage; preserve move history and independent lifecycle.
 
-**Evidence.** `migrations/core/0039_sales_pipelines.sql`; `src/core/features/pipelines/`; `tests/core/records-search.test.ts`; `tests/evidence/contract/OPP-009/`
-**Gap.** Unasserted in the carried evidence: two pipelines with distinct stages; moves between stages; moves between pipelines; occupied stage cannot be deleted; stage move history preserved; lifecycle independent. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `tests/core/records-search.test.ts` — RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-015 RECORD-002 RECORD-011 RECORD-006 relationships retain history and pipelines move safely and search matches record and timeline text, intersects every opportunity filter and caps the first page (extended `tests/support/sales-pipelines.ts`); `migrations/core/0039_sales_pipelines.sql`; `src/core/features/pipelines/`; `tests/evidence/contract/OPP-009/`
+**Gap.** Unasserted on push Verify: a refused deletion of an occupied stage, or of an occupied pipeline, leaves the stage, its pipeline and the deal unchanged (`tests/support/sales-pipelines.ts` checks HTTP 409 only and reads nothing back afterwards); the stage order of each pipeline. Asserted through the Settings and Records routes: two pipelines with different stages; a deal moved within a pipeline and across pipelines to an explicit destination; a stale reviewed stage and a missing required field refused with the stage unchanged; two attributed movement-history entries; lifecycle, owner and score unchanged by the moves; an empty pipeline deletes.
 
 ### Recommendations and drafts
 
@@ -768,15 +768,15 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 
 #### AI-001 — Provider and input
 
-Core · published · **partial** · Cites BASE-DATA-004, BASE-SECRET-001
+Core · published · **done** · Cites BASE-DATA-004, BASE-SECRET-001
 
 **Requirement.** Recommendation explanations and email drafts go through `ai.provider.v1`. The request preview shows the operator every field, timeline entry, and instruction the request will carry, and nothing outside the preview is sent.
 
 **Acceptance.**
 1. Open an AI request preview, inspect all customer fields and instructions, then compare the provider-edge request with that exact unchanged preview.
 
-**Evidence.** `src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts`
-**Gap.** Unasserted in the carried evidence: expected complete customer-field set visible in the preview; configured instructions visible in the preview. Asserted: provider request equals the saved preview.
+**Evidence.** Acceptance 1: `tests/e2e/assistance.spec.mjs` — AI-001 AI-003 exact provider request remains inspectable alongside readable evidence and recipient summaries (browser preview on the emitted Worker; every request field, timeline item and the instructions compared field by field with the saved preview at 1440 and 390); `tests/core/assistance.test.ts` — AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creates durable unsent draft and usage (the provider edge receives exactly the saved preview); AI-001 DATA-002 changed or deleted preview context never leaves deployment (changed context refused with 409 and no provider call); push Verify runtime-browser in shards (batch-12) and core-7 in shards (batch-1); `src/core/features/assistance/provider.ts`; `src/core/features/assistance/preview.ts`
+**Gap.** None.
 
 #### AI-002 — Output validation
 
@@ -930,15 +930,15 @@ Core · published · **partial** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE
 
 #### PUBLIC-003 — Unconfigured sign-in
 
-Core · published · **partial** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001
+Core · published · **done** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001
 
 **Requirement.** While no sign-in mail is configured, the native sign-in page answers without an operator session and states that sign-in email is unavailable. It presents no credential field, demo account, local-login action, or session bypass.
 
 **Acceptance.**
 1. Visit sign-in without configured mail/provider; see unavailable state and attempt to obtain a session without a valid native proof.
 
-**Evidence.** `src/base/lobby.ts`; `tests/e2e/baseline.spec.mjs`
-**Gap.** Unasserted in the carried evidence: unconfigured mail/provider state visible; no session without valid native proof. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** Acceptance 1: `tests/e2e/worker-smoke.spec.mjs` — PUBLIC-003 — sign-in honestly reports unconfigured mail delivery (the emitted Worker sign-in page answers without a session, its alert says sign-in email is unavailable and it has no text field); the operator route stays server-gated until magic-link authentication exists; `tests/e2e/baseline.spec.mjs` — BASE-ACCESS-001 BASE-ACCESS-002 native operator APIs reject anonymous and forged session claims (a forged session cookie and claimed operator header are refused with 401 on five operator APIs); `tests/core/platform-boundaries.test.ts` — PUBLIC-003 BASE-SECRET-002 an installed origin reports unconfigured sign-in while partial mail credentials fail by name (the identity front door shows the unavailable page with no input and refuses a sign-in link request with 503 mail_unavailable); push Verify runtime-browser in shards (batch-12) and core-4 in shards (batch-2); `src/core/features/identity/auth.ts`; `src/base/lobby.ts`
+**Gap.** None.
 
 #### PUBLIC-004 — Native sign-in
 
@@ -965,8 +965,8 @@ Core · published · **partial** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUD
 2. Bot tokens, signing secrets and unconsumed action capabilities never travel; restored routes and mappings require fresh administrator confirmation.
 3. Export through both supported archive doors, restore into eligible empty product state, export again and compare domain contents, captured evidence and audit with declared authority exclusions.
 
-**Evidence.** `src/core/features/records/archive-export.ts`; `src/core/features/records/archive-import.ts`; `tests/core/archive-transfer.test.ts`; `newtests/t096/archive-import-recovery.test.ts`; `src/core/shared/archive-identity.ts`
-**Gap.** Unasserted in the carried evidence: Slack routing choices portable; Slack mappings portable without authority; Slack notices and deletion history portable; bot credentials absent from both archive doors; signing secrets absent; unconsumed action capabilities absent; restored routes require new confirmation; restored mappings require new confirmation; both supported archive doors round-trip all domain content; captured evidence round-trips; audit round-trips; all declared authority exclusions. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `tests/core/source-onboarding.test.ts` — NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty; REPORT-004 explicitly enabled Slack schedules respect DST, hold uncertainty and never resume; email stays paused; INTEGRATE-005 INTEGRATE-009 INTEGRATE-010 INTEGRATE-011 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions; BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send (extended `tests/support/slack-archive-proof.ts`); `tests/core/capture-data.test.ts` — DATA-003 current sales capabilities round-trip without authority and erase across public reads (extended `tests/support/current-sales-archive.ts`); `src/core/features/records/archive-export.ts`; `src/core/features/records/archive-import.ts`; `tests/core/archive-transfer.test.ts`; `newtests/t096/archive-import-recovery.test.ts`; `src/core/shared/archive-identity.ts`
+**Gap.** Unasserted on push Verify: Slack deletion history travels as provenance (the Records export in `tests/support/slack-archive-proof.ts` runs before any Slack deletion exists, so its deletion-history comparison reads two empty tables); export through the local CLI archive door with rer export, then rer reset --yes and rer import into empty product state, export again and compare domain contents, captured evidence and audit with declared authority exclusions (push Verify drives only the CLI portability engine by function call and one way in `tests/support/capture-privacy-archive.ts`; the shipped command round trip in `tests/rer/journey.test.mjs` runs nightly and on release only); bot token, signing secret and unconsumed action capability absence through the local CLI door. Asserted through the Records door: Slack routing choices, mappings and notices round-trip as definitions and provenance; bot token, signing secret and action tokens absent from the archive and the restored installation; restored routes disabled and mappings revoked until fresh confirmation, and a reconnect dispatches nothing; export, restore into an empty installation, export again and per-table digest comparison of domain contents, captured evidence and audit with declared authority exclusions.
 
 #### DATA-002 — Contact erasure
 
@@ -1995,15 +1995,15 @@ Core · target · **partial** · From REPORT-002 · Cites BASE-ROLE-001, BASE-DA
 
 #### FORECAST-001 — Weighted forecasts, quotas and revenue schedules
 
-Core · target · **partial** · Cites BASE-ROLE-001, BASE-AUDIT-001
+Core · target · **done** · Cites BASE-ROLE-001, BASE-AUDIT-001
 
 **Requirement.** Managers set stage probabilities, forecast categories, per-rep/team monthly or quarterly USD quotas and revenue schedules for one-time and recurring deal lines. Forecasts separate open unweighted value, weighted expected value, committed/best-case/pipeline, closed-won bookings, recurring revenue and quota attainment. Inputs and overrides retain actor, reason, timestamp and an as-of snapshot; stale or missing close dates/probabilities are visible, and sales forecast never claims to be recognized accounting revenue. Weighted value is amount times reviewed probability, independent of engagement score. Until TEAM-005 ships team roles and membership, the installation owner acts as forecast administrator and reviews stage inputs, deal overrides, schedules and per-rep monthly or quarterly quotas. Current full operators may read forecasts; collaborators have no forecast access. TEAM-006 inherits real team quota membership, team-scoped access and the rep/team quota comparison in this acceptance. QUOTE-001 inherits product/quote-line linkage and its schedule comparison. These inheritances do not remove one-time or recurring schedules for current deals. Every saved as-of snapshot retains its original inputs and values; privacy erasure withdraws an affected snapshot in full and leaves unrelated snapshots unchanged.
 
 **Acceptance.**
 1. Create USD 10,000 at 30% and USD 20,000 at 60%, require USD 15,000 weighted total, apply a documented override and close one won; compare rep/team quota attainment, recurring schedule and preserved prior-period snapshot.
 
-**Evidence.** `src/core/features/forecast/`; `migrations/core/0048_forecasts.sql`; `newtests/t096/browser-journeys.test.ts`; `newtests/t096/forward-upgrade.test.ts`; `docs/retained-verification/FORECAST-001/`
-**Gap.** Unasserted in the carried evidence: weighted total USD 15000; documented override; won close; rep quota attainment; team quota attainment; recurring schedule; prior-period snapshot preserved. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** Acceptance 1: `newtests/t096/browser-journeys.test.ts` — CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots; extended `newtests/t096/browser-forecast-journey.ts` — forecastBrowserJourney (USD 10,000 at 30% and USD 20,000 at 60% give USD 15,000 on the route and the page; documented override with actor, reason and time; one deal closed won; per-rep monthly and quarterly quota attainment; recurring and one-time schedule lines; prior as-of snapshot unchanged; at 1440 and 390); push Verify fold-domain-1 in shards (batch-4); `src/core/features/forecast/`; `migrations/core/0048_forecasts.sql`; `newtests/t096/forward-upgrade.test.ts`; `docs/retained-verification/FORECAST-001/`. Team quota membership and the rep and team quota comparison are TEAM-006 acceptance 2.
+**Gap.** None.
 
 #### QUOTE-001 — Products, quotes and signatures
 
@@ -2086,8 +2086,8 @@ Core · target · **partial** · Cites BASE-ROLE-001, BASE-SECRET-001, BASE-DATA
 3. Deliver a generic private-account notice with all identifying details withheld.
 4. Choose and deliver Dashboard ready with only event kind and an authenticated link; no name, figure, count, PDF, CSV, image or action appears.
 
-**Evidence.** `src/core/features/slack/`; `migrations/core/0051_slack_notices.sql`; `tests/core/source-onboarding.test.ts`; `tests/support/slack-notices-proof.ts`; `tests/support/slack-actions-proof.ts`; `tests/support/slack-archive-proof.ts`; `docs/retained-verification/INTEGRATE-005/`
-**Gap.** Unasserted in the carried evidence: Dashboard-ready event selection; explicit dashboard-ready schedule; token-free authenticated link; dashboard event/link only; no dashboard name/figures/count/PDF/CSV/image/action. Asserted: connected bot identity read back; eligible channel list; external/nonmember channel refused; one stage notice with replay safety; due-work notice; exact allowed content keys; forbidden text absent; private notice has event/link only; private name/owner/stage absent.
+**Evidence.** `tests/core/source-onboarding.test.ts` — NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty; REPORT-004 explicitly enabled Slack schedules respect DST, hold uncertainty and never resume; email stays paused; INTEGRATE-005 INTEGRATE-009 INTEGRATE-010 INTEGRATE-011 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions; BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send (extended `tests/support/slack-notices-proof.ts` and `tests/support/dashboard-slack-proof.ts`); `newtests/t096/browser-dashboard-slack.ts`; `src/core/features/slack/`; `migrations/core/0051_slack_notices.sql`; `docs/retained-verification/INTEGRATE-005/`
+**Gap.** Unasserted on push Verify: refusing an external or non-member channel in Settings leaves no route stored (`tests/support/slack-notices-proof.ts` checks HTTP 400 only and reads no routes afterwards). Asserted: bot and signing secret connected in Settings and never read back; channel list limited to eligible channels; stage, overdue-task and explicitly enabled Dashboard ready notices each post once and replay adds nothing; only the fixed allowed content keys stored and forbidden text absent; token-free link, with dashboard data and the linked page refused without Orbit sign-in; private-account notice carries event kind and link only; Dashboard ready carries only event kind and an authenticated link with no name, figure, count, PDF, CSV, image or dashboard action; Settings shows the channel and Dashboard ready at 1440 and 390.
 
 #### INTEGRATE-009 — Slack identity and single-use actions
 
@@ -2116,8 +2116,8 @@ Core · target · **partial** · From INTEGRATE-005 · Cites BASE-ROLE-001, BASE
 3. Inspect archived, frozen, shared, pending-shared, org-shared, foreign-context and bot-departure refusals before delivery; safety-event replay has one effect and unsharing never resumes a route.
 4. Revoke workspace credentials and read unresolved setup with in-app sales work still usable; reconnect replays neither old notices nor old actions.
 
-**Evidence.** `src/core/features/slack/`; `migrations/core/0051_slack_notices.sql`; `tests/core/source-onboarding.test.ts`; `tests/support/slack-notices-proof.ts`; `tests/support/slack-actions-proof.ts`; `tests/support/slack-archive-proof.ts`; `docs/retained-verification/INTEGRATE-005/`
-**Gap.** Unasserted in the carried evidence: pending-share suspension; bot departure suspension; shared/pending/org/foreign channel refused before delivery; manual in-app work unaffected; reconnect replays no historic notice; reconnect replays no historic action. Asserted: shared route suspended; unshare remains paused; rate limited state visible; successful retry creates one notice; unaccepted failure remains failed; uncertain claim held without resending; frozen/archived refusal suspends route; safety replay has one effect; unshare never resumes; revoked installation shows unresolved setup.
+**Evidence.** `tests/core/source-onboarding.test.ts` — NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty; REPORT-004 explicitly enabled Slack schedules respect DST, hold uncertainty and never resume; email stays paused; INTEGRATE-005 INTEGRATE-009 INTEGRATE-010 INTEGRATE-011 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions; BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send (extended `tests/support/slack-notices-proof.ts`, `tests/support/dashboard-slack-proof.ts` and `tests/support/slack-archive-proof.ts`); `src/core/features/slack/`; `migrations/core/0051_slack_notices.sql`; `docs/retained-verification/INTEGRATE-005/`
+**Gap.** Unasserted on push Verify: after a reconnect, an action from a Slack message posted before it is refused and changes nothing (the journey checks only that no old notice is posted and that routes stay disabled and mappings revoked; it sends no old action after the reconnect). Asserted: a pending share before delivery and signed channel_shared, channel_unshared and member_left_channel events suspend the route with no post and never resume it; signed safety-event replay has one effect; a rate limit then one send with visible notice and channel state; an unaccepted failure held failed until an administrator retries; a timeout held uncertain with no resend and retry refused; shared, archived, frozen and departed-bot channels refused at the pre-post check with no post, and setup refusing shared, pending-shared, org-shared, frozen, archived and foreign-context channels; revoked credentials show unresolved setup in Settings and Connected products while an in-app stage move works and notices pause; reconnect sends no old notice.
 
 #### INTEGRATE-011 — Slack portable definitions and deletion
 
