@@ -9,8 +9,8 @@ import './capture-providers.css';
 type Test={recipient:string;subject:string;body:string};
 type Pending={attemptId:string;sentAt:string;recipient:string;provider?:string};
 const quote=(value:string)=>JSON.stringify(value);
-// Customer mail turns on only once all four are present, so the two that only customer mail uses go last.
-const order=['SENDGRID_API_KEY','MAIL_FROM','MAIL_REPLY_TO','SENDGRID_UNSUBSCRIBE_GROUP_ID'];
+// MAIL_FROM is a public variable applied by a full deploy; these are declared secrets.
+const order=['SENDGRID_API_KEY','MAIL_REPLY_TO','SENDGRID_UNSUBSCRIBE_GROUP_ID'];
 const accepted=(recipient:string,managed=false)=>managed?`Run Edit Run accepted the test email to ${recipient}. Open that mailbox and find “Orbit sender check”. Acceptance is not delivery; check Spam if it does not arrive.`:`SendGrid accepted the test email to ${recipient}. Open that mailbox and find “Orbit sender check”. Acceptance is not delivery; check Spam and SendGrid Activity if it does not arrive.`;
 
 export function MailSenderSetup({local,configured,provider}:{local?:boolean;configured:boolean;provider?:'rer'|'sendgrid'}){
@@ -21,7 +21,8 @@ export function MailSenderSetup({local,configured,provider}:{local?:boolean;conf
  useEffect(()=>{if(!configured)return;let active=true;void workbenchRequest<{pending:Pending|null}>('/sender-test/pending').then(({pending})=>{if(active&&pending){setAttempt(pending.attemptId as ReturnType<typeof crypto.randomUUID>);setSent(true);setResult(`${accepted(pending.recipient,pending.provider==='rer')} Sent ${formatDate(pending.sentAt)}.`);}},()=>{});return()=>{active=false;};},[configured,managed]);
  const complete=from&&key&&reply&&/^[1-9]\d*$/.test(group);
  const values=`MAIL_FROM=${quote(from)}\nSENDGRID_API_KEY=${quote(key)}\nMAIL_REPLY_TO=${quote(reply)}\nSENDGRID_UNSUBSCRIBE_GROUP_ID=${quote(group)}`;
- const commands=order.map(secret=>`rer deploy --env-file .dev.vars.deploy --environment ${name} --set-secret ${secret}`).join(' &&\n');
+ const deploy=`rer deploy --env-file .dev.vars.deploy --environment ${name}`;
+ const commands=order.map(secret=>`${deploy} --set-secret ${secret}`).join('\n');
  async function preview(){setBusy(true);setResult('');try{setTest(await workbenchRequest<Test>('/sender-test'));}catch(e){setResult((e as Error).message);}finally{setBusy(false);}}
  async function send(){setBusy(true);setResult('');try{const sent=await workbenchRequest<{recipient:string;provider?:string}>('/sender-test',{attemptId:attempt,confirmed:true});setResult(accepted(sent.recipient,sent.provider==='rer'));setSent(true);setTest(undefined);}catch(e){setResult((e as Error).message);}finally{setBusy(false);}}
  async function received(){setBusy(true);try{await workbenchRequest('/sender-test/received',{attemptId:attempt});setSent(false);setResult('Thanks. The setup checklist now shows your mail sender as checked.');}catch(e){setResult((e as Error).message);}finally{setBusy(false);}}
@@ -42,7 +43,8 @@ export function MailSenderSetup({local,configured,provider}:{local?:boolean;conf
   {local?<ol className="capture-plain-steps"><li>In the Terminal window for your Orbit folder, run <code>rer dev --stop</code>.</li><li>Open the file named <code>.dev.vars</code> in that folder with a plain text editor (on a Mac, run <code>open -e .dev.vars</code>). Replace any existing lines with these four names, or add them at the end. Save the file. Keep the other settings.</li><li>Run <code>rer dev</code> and open its private RER_OPEN link again. Return here and choose <strong>Check sender configuration</strong>.</li></ol>:<><EnvironmentField id="mail-environment-hint" environment={environment} setEnvironment={setEnvironment}/><ol className="capture-plain-steps">
    <li>In the Orbit folder you deployed from, open the private <code>.dev.vars.deploy</code> file you made for your first deployment (the README’s “Deploy to your Cloudflare account”) with a plain text editor; on a Mac, run <code>open -e .dev.vars.deploy</code>. Replace its <code>MAIL_FROM</code> and <code>SENDGRID_API_KEY</code> lines with the four lines below; each name appears once. Keep the other lines and save.</li>
    <li>If <code>rer dev</code> is running in that folder, stop it with <code>rer dev --stop</code>.</li>
-   <li>Copy the commands below and run them in that folder. Each sets one hosted setting from <code>.dev.vars.deploy</code> and checks Orbit is healthy before the next starts. Customer mail turns on with the last one; until then this page says how many of the four settings are present. If one stops with an error, fix what it says and run that line and the ones after it again.</li>
+   <li><code>MAIL_FROM</code> is a public deployment setting. To apply a new or changed sender address, run the full deployment command below in that folder. It reads your saved <code>.dev.vars.deploy</code> file and applies all four values to the hosted installation; editing the file alone does not change the hosted sender.<CopyField label="Hosted sender address command" value={deploy} block/></li>
+   <li>To update only the SendGrid API key, reply address or unsubscribe group later, save the changed value in <code>.dev.vars.deploy</code> and run its matching command below as a separate step. Each updates one hosted secret and checks Orbit is healthy. If a command reports an error, follow that error for that setting; the other commands can still be run independently. Until all four values are present, this page names the missing settings.</li>
    <li>Return here and choose <strong>Check sender configuration</strong>.</li></ol></>}
   {complete?<><p>Copy these exact settings into your private file. They contain your API key.</p><details><summary>Show private settings to copy</summary><CopyField label="Private mail settings" value={values} block/></details></>:<p>Fill in all four values above to reveal the exact settings and copy button.</p>}
   {!local&&<CopyField label="Hosted mail settings commands" value={commands} block/>}
