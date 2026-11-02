@@ -38,6 +38,7 @@ paidRuntime=new unstable_DevEnv();const paidWorker=await paidRuntime.startWorker
  await page.goto(origin+'/app');await page.getByTestId('now-queue').waitFor();await expect(page.getByText('Finish setting up:',{exact:true})).toHaveCount(0);
  await paidRuntime.teardown();paidRuntime=undefined;
  await managedMail({checkout,page,port,bindings:paidBindings,opportunityURL:result.opportunityURL,evidence,width});
+ await hostedSenderSetup({checkout,page,port,bindings:paidBindings,evidence,width});
  await hostedScheduling({checkout,page,port,bindings:paidBindings,opportunityURL:result.opportunityURL,evidence});
  if(width===1440){
   // An offline dry run validates the local plan and names unchecked inputs;
@@ -49,3 +50,38 @@ paidRuntime=new unstable_DevEnv();const paidWorker=await paidRuntime.startWorker
  }
  }finally{await browser?.close();if(paidRuntime)await paidRuntime.teardown();if(dev){dev.child.kill('SIGTERM');await dev.exited;}await checkout.stop('dev');await checkout.close();}
 });
+
+/** Continue the signed-in workspace with hosted settings; no Cloudflare account is needed. */
+async function hostedSenderSetup({checkout,page,port,bindings,evidence,width}){
+ const origin=`https://127.0.0.1:${port}`,runtime=new unstable_DevEnv();
+ try{
+  const worker=await runtime.startWorker({config:join(checkout.root,'dist/server/wrangler.json'),
+   bindings:{...bindings,AUTH_LOCAL:{type:'plain_text',value:'false'},AUTH_ORIGIN:{type:'plain_text',value:origin},MAIL_PROVIDER:{type:'plain_text',value:'sendgrid'}},
+   dev:{remote:false,persist:join(checkout.root,'.wrangler/state'),watch:false,inspector:false,server:{hostname:'127.0.0.1',port,secure:true},origin:{secure:true}}});
+  await worker.ready;
+  await page.goto(origin+'/app/settings/mail');
+  await page.getByText('Set up the sender',{exact:true}).click();
+  const commands=page.getByRole('textbox',{name:'Hosted mail settings commands',exact:true});
+  await commands.waitFor();
+  // Assert at one width; retain the same changed screen at both desktop and phone widths.
+  if(width===1440){
+   const declaration=JSON.parse(await readFile(new URL('../../deploy.json',import.meta.url),'utf8'));
+   const secrets=new Set(declaration.secrets.map(secret=>secret.binding));
+   const rendered=await commands.innerText(),names=[...rendered.matchAll(/--set-secret ([A-Z_]+)/g)].map(match=>match[1]);
+   assert.ok(names.length,'The page must render its hosted secret updates');
+   for(const name of names)assert.ok(secrets.has(name),`Rendered --set-secret ${name} must name a declared deploy.json secret`);
+   assert.equal(names.length,3,'The key, reply address and unsubscribe group remain separately configurable');
+   assert.equal(rendered.includes('&&'),false,'A refused update must not stop the other commands');
+   assert.equal(rendered.trim().split('\n').length,3,'Each secret update is a separate command');
+   const deploy=page.getByRole('textbox',{name:'Hosted sender address command',exact:true});
+   await expect(deploy).toHaveText('rer deploy --env-file .dev.vars.deploy --environment production');
+   await expect(page.getByText('MAIL_FROM is a public deployment setting.',{exact:false})).toBeVisible();
+   await page.locator('#mail-sender').getByLabel('Deployment environment name',{exact:true}).fill('preview');
+   await expect(deploy).toHaveText('rer deploy --env-file .dev.vars.deploy --environment preview');
+   await expect(commands).toContainText('--environment preview --set-secret MAIL_REPLY_TO');
+   await expect(commands).toContainText('--environment preview --set-secret SENDGRID_UNSUBSCRIBE_GROUP_ID');
+   await page.locator('#mail-sender').getByLabel('Deployment environment name',{exact:true}).fill('production');
+  }
+  await page.locator('#mail-sender').screenshot({path:join(evidence,`hosted-sender-${width}.png`)});
+ }finally{await runtime.teardown();}
+}

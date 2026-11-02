@@ -3707,7 +3707,7 @@
       "executable": false
     },
     "OPERATIONS.md": {
-      "sha256": "96cd6b0921075d54b4b2b91c9a17f8674f26186a8811379be93cc4dc3d22ce3c",
+      "sha256": "39076eb8a06e584245e13504d891cf79ea0e19e2b432202a837e84042e645215",
       "executable": false
     },
     "OWNER-STEPS.md": {
@@ -6555,7 +6555,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/mail-sender-setup.tsx": {
-      "sha256": "9a29086aea43b89ed97c4fec8b4c4f80a90fa66e85195e5cf83d5baff072438e",
+      "sha256": "48f331a5bb2f6766c69a999c02a45b03ef2c9968ccab4c0f234fa2454c02be51",
       "executable": false
     },
     "src/core/features/operator/ui/mailchimp-preview.tsx": {
@@ -10615,7 +10615,7 @@
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
-      "sha256": "bddde2a9d48417a3d511b52c66a6d22cc4e0318932f5a769b7e112a8a21f5bd6",
+      "sha256": "43922dd88635ed140bfc20b566ba9333214519b877027240884f4c37c5c8f2bd",
       "executable": false
     },
     "tests/rer/operator-actions-journey.mjs": {
