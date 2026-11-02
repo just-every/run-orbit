@@ -2307,7 +2307,7 @@
       "executable": false
     },
     "newtests/t096/browser-report-authoring.ts": {
-      "sha256": "c2dc7a0d1a223fc35535b1eada975bb06f363e275550dc9abfaf2c7e41697641",
+      "sha256": "b8bf5df3af6639828806fe839bb3cb0bd76c372a442250ec15213640de4eda7a",
       "executable": false
     },
     "newtests/t096/browser-report-revocation.ts": {
@@ -7911,7 +7911,7 @@
       "executable": false
     },
     "src/core/features/reports/custom-report-page.tsx": {
-      "sha256": "0cff498586c962f02a65e34f314ea6b36e1085afb07a4874879e10f66a3668e0",
+      "sha256": "40a25985d7ea99ac0d978ff0868551d9f5dd41819b2df0ddac74216bbca81bfe",
       "executable": false
     },
     "src/core/features/reports/forecast-figures.tsx": {
