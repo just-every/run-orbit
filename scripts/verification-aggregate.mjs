@@ -7,7 +7,7 @@ import {checkTestEvents} from './verification-events.mjs';
 import {checkCapacityResult} from './verification-capacity.mjs';
 import {checkTestBudget} from './verification-inventory.mjs';
 
-/** Routine pushes leave the installer and README clone journeys to release tags and the nightly run; those, releases and local verification include them. */
+/** Pushes, releases, the nightly run and local verification include the installer and README clone journeys; `journeys:false` omits them. */
 export function aggregate(directory='verification/ci-shards',{release=false,capacity,journeys=release,nightly=false}={}){
  const inventory=checkTestBudget(),plan=verificationPlan({journeys}),expected=nightly?['source','journeys']:Object.keys(plan),commit=spawnSync('git',['rev-parse','HEAD'],{encoding:'utf8'});
  if(commit.status!==0)throw Error('Aggregation requires the edition Git commit.');

@@ -42,9 +42,9 @@ measured CI times, so a push Verify finishes within fifteen minutes; local
   (including a Guest's See and edit grant at 1440 and 390), published forms,
   reports and dashboard composition, browser workflows and restart/upgrade preservation, balanced by file. REPORT-002 extends the existing report journey; its larger browser and archive path is weighted separately so it does not put a shard past the routine time budget.
 - `journeys`: the README install-and-lifecycle clone journey
-  (`tests/rer/journey.test.mjs`). It runs on release tags, the nightly
-  schedule, release qualification and local `rer verify`, not on every push;
-  the routine aggregate then expects every other case.
+  (`tests/rer/journey.test.mjs`), which drives the shipped `rer export`,
+  `rer reset --yes`, `rer import` and a second `rer export` and compares their content
+  hashes. It runs on every push, release tags, the nightly schedule and local `rer verify`.
 
 Every retained test file is discovered and scheduled exactly once. The final
 aggregate requires every shard on the current commit, reconciles individual

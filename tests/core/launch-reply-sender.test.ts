@@ -6,6 +6,7 @@ import {generateKeyPairSync,sign} from 'node:crypto';
 import {launchFixture} from '../support/launch-fixture';
 import {createMailEventRoutes} from '../../src/core/features/outreach/provider-routes';
 import {createId} from '../../src/core/shared/ids';
+import {signedReplies} from '../support/signed-reply';
 
 test('OUT-004 OUT-007 DATA-002 signed reply headers cannot impersonate another contact; normalized legitimate threads apply once to their sender only',async()=>{
  const f=await launchFixture();try{
@@ -24,6 +25,13 @@ test('OUT-004 OUT-007 DATA-002 signed reply headers cannot impersonate another c
   for(const message of [scheduledA,scheduledB])assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(message.id).first())!.state,'scheduled');
   for(const draft of [draftA,draftB])assert.equal((await f.db.prepare('SELECT is_stale FROM drafts WHERE id=?').bind(draft.id).first())!.is_stale,0);
   assert.equal((await f.db.prepare('SELECT opportunity_id FROM unlinked_replies').first())!.opportunity_id,null);
+  // OUT-004: a signed reply from the customer with no reply headers is held for review and changes no schedule, draft or queue.
+  const heldBefore=Number((await f.db.prepare('SELECT COUNT(*) n FROM unlinked_replies').first())!.n),bare=new FormData();bare.set('from',`Customer <${a.email}>`);bare.set('subject','Customer reply');bare.set('text','Reply without thread headers');bare.set('headers',`Message-ID: <${createId()}@customer.test>\r\nDate: ${replyDate}`);
+  assert.equal((await signedReplies(f.db)(bare)).status,200);
+  assert.equal(Number((await f.db.prepare('SELECT COUNT(*) n FROM unlinked_replies').first())!.n),heldBefore+1,'The headerless reply waits for review');assert.equal((await f.db.prepare("SELECT opportunity_id FROM unlinked_replies WHERE body='Reply without thread headers'").first())!.opportunity_id,null,'It is linked to no opportunity');
+  assert.equal((await f.db.prepare('SELECT COUNT(*) n FROM signals').first())!.n,0);assert.deepEqual(await f.db.prepare('SELECT queue_state,queue_reason FROM opportunities WHERE id=?').bind(a.opportunityId).first(),before);
+  for(const message of [scheduledA,scheduledB])assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(message.id).first())!.state,'scheduled');
+  for(const draft of [draftA,draftB])assert.equal((await f.db.prepare('SELECT is_stale FROM drafts WHERE id=?').bind(draft.id).first())!.is_stale,0);
   const replyId=createId();await f.db.prepare("CREATE TRIGGER test_reply_failure BEFORE INSERT ON unlinked_replies BEGIN SELECT RAISE(ABORT,'Injected reply persistence failure'); END").run();
   assert.equal((await post(`Customer <${a.email.toUpperCase()}>`,replyId)).status,503);assert.equal((await f.db.prepare('SELECT count(*) n FROM signals').first())!.n,0);assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(scheduledA.id).first())!.state,'scheduled');await f.db.prepare('DROP TRIGGER test_reply_failure').run();
   assert.deepEqual((await Promise.all([post(`Customer <${a.email.toUpperCase()}>`,replyId),post(`Customer <${a.email.toUpperCase()}>`,replyId)])).map(response=>response.status),[200,200]);

@@ -13,7 +13,7 @@ if (mode === '--plan' && process.argv.length === 3) {
   const decision = await planVerification({ plan: lifecyclePlan(), readers: orbitLightReaders });
   const matrix = { include: decision.coverage === 'full' ? ciBatches(decision.tier) : [] };
   const output = Object.entries({ ...decision, matrix: JSON.stringify(matrix), readers: JSON.stringify(decision.readers),
-    journeys: decision.tier === 'push' ? '0' : '1' }).map(([key, value]) => `${key}=${value}\n`).join('');
+    journeys: '1' }).map(([key, value]) => `${key}=${value}\n`).join('');
   if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, output);
   process.stdout.write(output);
 } else if (mode === '--light' && process.argv.length === 3) {

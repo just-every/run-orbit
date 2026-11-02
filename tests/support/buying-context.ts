@@ -44,6 +44,8 @@ export async function exerciseBuyingContext(request:(path:string,method?:string,
  const oldCompany=await json(`records/company/${company.id}`),newCompany=await json(`records/company/${second.id}`),linkedContact=await json(`records/contact/${champion.id}`),after=await json(`records/opportunity/${deal.id}`);
  assert.equal(oldCompany.openValueCents,0);assert.equal(newCompany.openValueCents,1000000);assert.equal(newCompany.opportunities.find((d:any)=>d.id===deal.id).owner_id,actor);
  assert.ok(linkedContact.opportunities.some((d:any)=>d.id===deal.id));assert.equal(after.record.lifecycle,original.record.lifecycle);assert.equal(after.record.score,original.record.score);assert.equal(linkedContact.record.contactability,'contactable');
+ // RECORD-011: the linked deal reads with the deal's own current stage on the company and on the contact.
+ for(const [where,linked] of [['company',newCompany],['contact',linkedContact]] as const){const row=linked.opportunities.find((d:any)=>d.id===deal.id);assert.equal(row.stage_id,after.record.stage_id,`${where} shows the deal stage`);assert.equal(row.stage_name,after.record.stage_name,`${where} names the deal stage`);}
  for(const entry of original.timeline)assert.ok(after.timeline.some((e:any)=>e.id===entry.id),'association changes leave old history on the original record');
  await json(`records/contact/${champion.id}`,'DELETE',{confirmed:true});const erased=await json(`relationships/opportunity/${deal.id}`);assert.equal(erased.nextStep,'');assert.equal(erased.mutualCommitments,'');assert.ok(!erased.stakeholders.some((s:any)=>s.contactId===champion.id));
 }

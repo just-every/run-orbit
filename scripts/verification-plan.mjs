@@ -46,7 +46,7 @@ function balance(files, count) {
   return bins.map(bin => bin.files.sort());
 }
 
-/** Installer and README clone journeys: release tags, the nightly run and local `rer verify`; not every push. */
+/** Installer and README clone journeys: every push, release tags, the nightly run and local `rer verify`. */
 export const journeyFiles = ['tests/rer/journey.test.mjs'];
 /** What a shard's runner needs beyond Node: a Chromium for browser journeys, and free disk for local servers or archive lineage. */
 export function shardNeeds(name) {

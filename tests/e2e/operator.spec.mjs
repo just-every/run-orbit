@@ -122,6 +122,16 @@ test.describe("authenticated operator UI", () => {
     await page.setViewportSize({width:1440,height:900});
     await expectNoHorizontalOverflow(page);
     await page.screenshot({path:info.outputPath('evidence-1440.png'),fullPage:true});
+    // Each contribution resolves by signal ID to its source evidence in the deal's recorded details: subject, kind, source and how it was linked.
+    const recorded=page.getByTestId("recorded-details");
+    await recorded.locator("summary").click();
+    for(const item of opportunity.evaluation.contributions){
+      const signal=opportunity.signals.find(signal=>signal.id===item.signalId);
+      expect(signal.linkingBasis).toBeTruthy();
+      const evidenceRow=recorded.getByRole('listitem').filter({hasText:signal.subject}).filter({hasText:'linked by'});
+      await expect(evidenceRow).toHaveCount(1);
+      await expect(evidenceRow).toContainText(item.source);
+    }
     expect(failures).toEqual([]);
   });
 

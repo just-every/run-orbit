@@ -81,6 +81,18 @@ test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox 
     const refused = await f.upload([{ name: 'notes.txt', text: 'hello' }]);
     assert.equal(refused.status, 400);
     assert.equal((await f.upload([{ name: 'undated.eml', text: eml({ From: 'ana@acme.example', 'Message-ID': '<undated@acme.example>' }, 'No date') }]).then(r => r.json()) as { summary: { skipReasons: Record<string, number> } }).summary.skipReasons['No valid Date header'], 1);
+    // CAPTURE-001: a missing identity and an unknown time zone are reported by name and store nothing.
+    const stored = async () => [await count(f.db, 'SELECT count(*) n FROM signals'), await count(f.db, 'SELECT count(*) n FROM capture_items'), await count(f.db, 'SELECT count(*) n FROM timeline_entries'), await count(f.db, 'SELECT count(*) n FROM capture_proposals')], storedBefore = await stored();
+    const unnamed = await f.upload([{ name: 'no-identity.eml', text: eml({ From: 'ana@acme.example', Date: 'Wed, 01 Jan 2020 09:00:00 +0000' }, 'No Message-ID') }, { name: 'no-uid.ics', text: ['BEGIN:VCALENDAR', 'VERSION:2.0', 'METHOD:REQUEST', 'BEGIN:VEVENT', 'DTSTAMP:20200101T090000Z', 'DTSTART:20200102T090000Z', 'SUMMARY:No UID', 'ATTENDEE:mailto:ana@acme.example', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n') }]);
+    assert.equal(unnamed.status, 201);
+    const unnamedSummary = (await unnamed.json() as { summary: { captured: number; skipped: number; skipReasons: Record<string, number> } }).summary;
+    assert.equal(unnamedSummary.captured, 0); assert.equal(unnamedSummary.skipped, 2);
+    assert.deepEqual(unnamedSummary.skipReasons, { 'No Message-ID, so it has no replay identity': 1, 'Calendar event has no UID, so it has no replay identity': 1 });
+    const zoned = await f.upload([{ name: 'unknown-zone.ics', text: ['BEGIN:VCALENDAR', 'VERSION:2.0', 'METHOD:REQUEST', 'BEGIN:VEVENT', 'UID:unknown-zone@acme.example', 'DTSTAMP:20200101T090000Z', 'DTSTART;TZID=Mars/Olympus_Mons:20200102T090000', 'SUMMARY:Unknown zone', 'ATTENDEE:mailto:ana@acme.example', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n') }]);
+    assert.equal(zoned.status, 201);
+    const zonedSummary = (await zoned.json() as { summary: { captured: number; skipReasons: Record<string, number> } }).summary;
+    assert.equal(zonedSummary.captured, 0); assert.deepEqual(zonedSummary.skipReasons, { 'Unknown time zone Mars/Olympus_Mons.': 1 });
+    assert.deepEqual(await stored(), storedBefore, 'The invalid identity and time zone files store nothing');
 
     // Folded component markers count before any import writes, just like ordinary markers.
     const event = (index: number) => ['BEGIN:VEVENT', `UID:folded-${index}@acme.example`, 'DTSTAMP:20200101T090000Z', 'DTSTART:20200102T090000Z', 'SUMMARY:Folded meeting', 'ATTENDEE:mailto:ana@acme.example', 'END:VEVENT'].join('\r\n');

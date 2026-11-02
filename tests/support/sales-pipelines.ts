@@ -25,6 +25,11 @@ export async function salesPipelinesJourney(request:(path:string,method?:string,
  await json(`settings/pipelines/${renewals.id}`,'DELETE',{confirmed:true},409);
  const renewal=settings.pipelines.find((p:any)=>p.id===renewals.id);
  await json(`settings/pipelines/${renewals.id}`,'PUT',{name:renewal.name,revision:renewal.revision,stages:[{...stage('Negotiation',90),id:settings.stages.find((s:any)=>s.pipeline_id===renewals.id&&s.name==='Negotiation').id}]},409);
+ // OPP-009: both occupied refusals changed nothing; Renewals keeps Review and Negotiation and the deal stays in Review.
+ const occupied=await json('settings');
+ assert.deepEqual(occupied.stages.filter((s:any)=>s.pipeline_id===renewals.id).map((s:any)=>s.name).sort(),['Negotiation','Review']);
+ assert.equal(occupied.pipelines.find((p:any)=>p.id===renewals.id)?.revision,renewal.revision);
+ assert.equal((await json(`records/opportunity/${deal.id}`)).record.stage_id,review.id);
  const workspace={name:'Brightwork Sales',timezone:'America/Los_Angeles',currency:'USD',workingHours:{days:[1,2,3,4,5],start:'08:30',end:'17:30'},staleIntervalDays:12,awaitingResponseWorkingDays:4,freeMailDomains:['gmail.com']};
  await json('settings','PUT',workspace);settings=await json('settings');
  assert.equal(settings.workspace.timezone,workspace.timezone);assert.equal(settings.workspace.stale_interval_days,12);assert.deepEqual(JSON.parse(settings.workspace.working_hours_json),workspace.workingHours);
