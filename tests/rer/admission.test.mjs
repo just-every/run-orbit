@@ -38,11 +38,13 @@ test('admission uses native owner authority, bounds editor framing and preserves
       if (evidence) await visitor.screenshot({path:join(evidence,`${path === '/' ? 'home' : 'signin'}-${width}.png`),fullPage:true});
     }
     // Setup has claimed the owner even before workspace preferences are confirmed.
-    // An anonymous visitor still has no owner authority and reaches the checkout-key gate.
+    // An anonymous visitor gets the local sign-in form without owner authority.
     await visitor.goto(origin+'/');
     assert.deepEqual(await (await fetch(origin+'/setup/state')).json(), {state:'claimed'});
     await visitor.getByRole('link',{name:'Sign in',exact:true}).click();
-    await visitor.waitForURL(url => url.pathname === '/__dev/key');
+    await visitor.waitForURL(url => url.pathname === '/signin');
+    await visitor.getByLabel('Local access link').waitFor();
+    assert.equal((await visitor.context().request.get(origin+'/auth/dev/enter?as=owner')).status(),404);
     assert.equal((await visitor.context().request.get(origin+'/api/editor/config')).status(),403);
     const notfound=await visitor.goto(origin+'/missing-admission-route');assert.equal(notfound.status(),404);
     await visitor.getByRole('heading',{name:'Published test not found',exact:true}).waitFor();

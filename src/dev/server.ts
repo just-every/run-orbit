@@ -3,9 +3,7 @@
 // `rer build` refuses output that contains this layer's marker.
 import worker, { runtimeBindings } from '../core/app/worker';
 import { cliSession } from './cli-session';
-import { identityConfig } from '../core/features/identity/auth';
-// @ts-expect-error Base's HTML page helper is plain ESM.
-import { pageResponse } from '@runeditrun/rer/internal/modules/operator-auth/page.mjs';
+import {localSignIn} from './sign-in';
 import { devGate, devNotFound, isLoopbackHost, safeReturnTo } from '@runeditrun/rer/modules/operator-auth';
 import { registerDevAdmission, devAdmitted } from '@runeditrun/rer/modules/operator-auth/dev-admission';
 import { decorateLabel } from '@runeditrun/rer/modules/demo/label';
@@ -35,7 +33,8 @@ function managedInstallation(env: PlatformBindings & { RER_INSTALLATION_ID?: str
 async function identity(env: PlatformBindings) {
   const store = sessionStore(env.DB, { devAdmitted });
   const owner = (await store.person("o.setup_owner=1 AND o.status='active'"))?.email;
-  const everyone = () => [...(owner ? [{ as: 'owner', email: owner, role: 'owner' }] : []), ...PERSONAS.map(p => ({ as: p.as, email: `${p.as}@dev.localhost`, role: p.role }))];
+  const known=(await env.DB.prepare("SELECT email,display_name FROM operators WHERE status='active' AND setup_owner=0 AND email NOT IN('seller@dev.localhost','collaborator@dev.localhost') ORDER BY display_name,email").all<{email:string;display_name:string}>()).results;
+  const everyone = () => [...(owner ? [{ as: 'owner', email: owner, role: 'owner', displayName:'Owner' }] : []), ...PERSONAS.map(p => ({ as: p.as, email: `${p.as}@dev.localhost`, role: p.role, displayName:p.as==='collaborator'?'Analyst collaborator':'Seller' })), ...known.map(person=>({as:person.email,email:person.email,displayName:person.display_name}))];
   return {
     store, everyone,
     list: () => [...everyone(), { as: 'signed-out' }],
@@ -109,10 +108,8 @@ export default {
       if (!gate || env.RER_DEV_IDENTITY === 'off' || !await gate.admits(request)) return devNotFound();
       return path === '/__dev/personas' ? Response.json((await identity(env)).list(), { headers }) : enter(request, env, gate);
     }
-    if (path === '/signin' && gate && env.RER_DEV_IDENTITY !== 'off' && request.method === 'GET') {
-      if (!await gate.admits(request)) return new Response(null, {status:303, headers:{...headers, location:'/__dev/key'}});
-      const returnTo = safeReturnTo(new URL(request.url).searchParams.get('returnTo'));
-      return decorateLabel(await pageResponse({branding:identityConfig(env)!.branding, title:'Orbit', heading:'Open your local app', content:`<a class="action" href="/auth/dev/enter?as=owner&returnTo=${encodeURIComponent(returnTo)}">Continue as owner</a>`}), env.RER_DEMO === '1' ? 'Demo' : 'Dev');
+    if (path === '/signin' && gate && env.RER_DEV_IDENTITY !== 'off' && ['GET','HEAD','POST'].includes(request.method)) {
+      return decorateLabel(await localSignIn(request,env,gate,async()=>(await identity(env)).everyone()), env.RER_DEMO === '1' ? 'Demo' : 'Dev');
     }
     const response = await worker.fetch(request, original, execution);
     if (!gate || request.method !== 'GET' || path.startsWith('/__dev/')) return response;
