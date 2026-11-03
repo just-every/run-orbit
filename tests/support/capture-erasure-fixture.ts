@@ -25,7 +25,9 @@ export async function captureErasureFixture(f:CaptureFixture){
  const proposals=(await f.db.prepare("SELECT p.* FROM capture_proposals p JOIN capture_items i ON i.signal_id=p.signal_id WHERE i.headers LIKE '%<reply-to@acme.example>%' ORDER BY p.id").all<{id:string;kind:string;record_id:string;signal_id:string}>()).results;
  const queue=proposals.find(p=>p.kind==='next_action'&&p.record_id===opportunity.id)!;
  assert.ok(queue,'the private original proposes a queue change on Bob\'s opportunity');
- await json(await post(`capture/proposals/${queue.id}/accept`));
+ // A queue change is accepted as the person reviewed it: the deal's proposal list carries that review's revision.
+ const reviewed=(await json(await f.request(`/api/v1/capture/proposals?recordType=opportunity&recordId=${opportunity.id}`))).proposals.find((p:{id:string})=>p.id===queue.id);
+ await json(await post(`capture/proposals/${queue.id}/accept`,{revision:reviewed.revision}));
  await json(await post(`capture/proposals/${proposals.find(p=>p.kind==='link_signal')!.id}/decline`));
  const phone=await f.db.prepare("SELECT p.id FROM capture_proposals p JOIN capture_items i ON i.signal_id=p.signal_id WHERE i.headers LIKE '%<alias-reply-to@acme.example>%' AND p.field='phone'").first<{id:string}>();
  await json(await post(`capture/proposals/${phone!.id}/accept`));

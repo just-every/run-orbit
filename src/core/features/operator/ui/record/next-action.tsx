@@ -33,7 +33,7 @@ export function NextAction({opportunity,presentation,aiConfigured,reload,composi
   <h2 id={`next-${opportunity.id}`} className="sr-only">Next action</h2>
   {opportunity.evaluation?.failureAt?<div role="alert" data-testid="evaluation-failure"><p>Priorities could not be refreshed at {formatDateTime(opportunity.evaluation.failureAt,presentation)}. The score and evidence shown are from the last successful evaluation and may be out of date.</p><RecommendationRefresh opportunityId={opportunity.id} reload={reload}/></div>:null}
   {deal}
-  {opportunity.queueReason?<div className="r-why"><span className="r-why-label">Why NOW</span><span className="r-chip">{opportunity.queueReason}</span></div>:null}
+  {opportunity.lifecycle==='open'&&opportunity.queueState==='now'&&opportunity.queueReason?<div className="r-why"><span className="r-why-label">Why NOW</span><span className="r-chip">{opportunity.queueReason}</span></div>:null}
   <p className="r-next-line">{line}</p>
   {when?<p className="r-next-when">{when}</p>:null}
   <div className="r-next-actions">

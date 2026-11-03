@@ -23,7 +23,7 @@ export class TimelineService {
         recordedAt: entry.recordedAt,
         actorType: importActor ? "import" : entry.actorType,
         actorName: importActor ?? resolveActorName(entry),
-        sourceName: humanizeIdentity(entry.source),
+        sourceName: entry.formName ?? humanizeIdentity(entry.source),
         payloadJson: entry.payloadJson
       };
     });

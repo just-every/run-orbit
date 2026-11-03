@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { captureFixture, fixtureMailbox, eml } from '../support/capture-fixture';
 
-interface Proposal { id: string; kind: string; record_id: string; field: string | null; current_value: string | null; proposed_value: string | null; details: { evidence: { sender: string; date: string; subject: string; quote: string[] } } }
+interface Proposal { revision?: string; id: string; kind: string; record_id: string; field: string | null; current_value: string | null; proposed_value: string | null; details: { evidence: { sender: string; date: string; subject: string; quote: string[] } } }
 const rfc = (minutes: number) => new Date(Date.now() - minutes * 60000).toUTCString().replace('GMT', '+0000');
 
 test('CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority', async () => {
@@ -37,6 +37,10 @@ test('CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person 
     assert.equal((await list(`?recordType=company&recordId=${f.company}`)).length, proposals.length, 'the account shows every proposal for its people');
 
     // Accept a link: the evidence appears once, attributed to the person and to the capture source.
+    const nextAction = of('next_action')[0]!;
+    const acceptNext = (proposal: Proposal) => f.request(`/api/v1/capture/proposals/${proposal.id}/accept`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ revision: proposal.revision }) });
+    const freshNext = async (id: string) => (await list()).find(proposal => proposal.id === id)!;
+    const queue = async () => (await (await f.request(`/api/v1/opportunities/${f.opportunity}`)).json() as any).opportunity;
     const meeting = proposals.find(p => p.kind === 'link_signal' && p.details.evidence.subject === 'Acme rollout review')!;
     assert.equal((await f.request(`/api/v1/capture/proposals/${meeting.id}/accept`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' })).status, 200);
     assert.equal((await f.request(`/api/v1/capture/proposals/${meeting.id}/accept`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' })).status, 409);
@@ -46,6 +50,30 @@ test('CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person 
     assert.equal(JSON.parse(entries[0]!.payload_json).proposalId, meeting.id);
     const detail = await (await f.request(`/api/v1/records/company/${f.company}`)).json() as { timeline: { kind: string }[] };
     assert.equal(detail.timeline.filter(entry => entry.kind === 'signal.recorded').length, 1, 'the account timeline shows it once');
+
+    // Linking changes its own companion's review basis. An old screen refuses, and a reload permits the newly reviewed queue.
+    assert.equal((await acceptNext(nextAction)).status, 409);
+    const refreshed = await freshNext(nextAction.id);
+    assert.notEqual(refreshed.revision, nextAction.revision);
+    assert.equal((await acceptNext(refreshed)).status, 200);
+    const proposedQueue = JSON.parse(refreshed.proposed_value!);
+    assert.equal((await queue()).queueState, proposedQueue.state);
+    assert.equal((await acceptNext(refreshed)).status, 409, 'a reviewed proposal applies only once');
+
+    // A later unthreaded reply has the same link-then-next-action path.
+    const reply = eml({ From: 'Ana Ruiz <ana@acme.example>', To: 'seller@orbit.test', Subject: 'New reply', Date: rfc(1), 'Message-ID': '<companion-reply@acme.example>' }, 'Please call me tomorrow.');
+    await f.upload([{ name: 'reply.eml', text: reply }]);
+    const replyProposals = (await list()).filter(proposal => proposal.details.evidence.subject === 'New reply');
+    const replyLink = replyProposals.find(proposal => proposal.kind === 'link_signal')!, replyNext = replyProposals.find(proposal => proposal.kind === 'next_action')!;
+    assert.equal((await f.request(`/api/v1/capture/proposals/${replyLink.id}/accept`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' })).status, 200);
+    const reviewedReply = await freshNext(replyNext.id);
+    // A due-date change is genuinely stale even when the state and reason stay the same.
+    const dueAt = new Date(Date.now() + 86400000).toISOString();
+    await f.db.prepare('UPDATE opportunities SET next_due_at=? WHERE id=?').bind(dueAt, f.opportunity).run();
+    assert.equal((await acceptNext(reviewedReply)).status, 409);
+    assert.equal(await f.db.prepare('SELECT next_due_at FROM opportunities WHERE id=?').bind(f.opportunity).first('next_due_at'), dueAt);
+    assert.equal((await acceptNext(await freshNext(replyNext.id))).status, 200);
+    assert.equal((await queue()).queueState, JSON.parse(replyNext.proposed_value!).state);
 
     // Edit before accepting; refuse a value that changed since review.
     assert.equal((await f.request(`/api/v1/capture/proposals/${name.id}/accept`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ value: 'Ana Ruiz López' }) })).status, 200);

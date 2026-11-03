@@ -8,6 +8,7 @@ import {IngestionRepository} from '../ingestion/repository';
 import type {SignalEvent} from '../ingestion/contracts';
 import {CaptureError} from './contracts';
 import {linkTargets} from './targets';
+import {queueReviewSql,queueRevision,readQueueReview,type QueueReview} from './next-action-review';
 
 export type ProposalKind='link_signal'|'create_contact'|'set_field'|'next_action'|'do_not_contact';
 export interface ProposalDraft {kind:ProposalKind;recordType:'contact'|'company'|'opportunity';recordId:string;field?:string;value:string|null;current:string|null;details:Record<string,unknown>}
@@ -29,10 +30,15 @@ export async function proposalStatements(db:D1Database,sourceId:string,signalId:
 export async function listProposals(db:D1Database,filter:{status:'pending'|'accepted'|'declined';recordType?:'contact'|'company'|'opportunity';recordId?:string}){
  const scope=filter.recordType&&filter.recordId?` AND ((p.record_type=? AND p.record_id=?) OR json_extract(p.details_json,'$.companyId')=? OR EXISTS(SELECT 1 FROM json_each(p.details_json,'$.contactIds') WHERE value=?))`:'';
  const rows=(await db.prepare(`SELECT p.id,p.kind,p.record_type,p.record_id,p.field,p.current_value,p.proposed_value,p.details_json,p.status,p.decided_at,p.decided_value,p.created_at,
-   s.type AS signal_type,s.occurred_at,cs.name AS source_name,cs.state AS source_state
+   s.type AS signal_type,s.occurred_at,cs.name AS source_name,cs.state AS source_state,
+   CASE WHEN p.kind='next_action' AND o.id IS NOT NULL THEN ${queueReviewSql} END AS queue_review
    FROM capture_proposals p JOIN signals s ON s.id=p.signal_id LEFT JOIN capture_sources cs ON cs.id=s.source_id
+   LEFT JOIN opportunities o ON p.kind='next_action' AND p.record_id=o.id
    WHERE p.status=?${scope} ORDER BY s.occurred_at DESC,p.id LIMIT 200`).bind(filter.status,...(scope?[filter.recordType,filter.recordId,filter.recordId,filter.recordId]:[])).all<Record<string,unknown>&{details_json:string}>()).results;
- return rows.map(({details_json,...row})=>({...row,details:JSON.parse(details_json)}));
+ return Promise.all(rows.map(async({details_json,queue_review,...row})=>{
+  const review=typeof queue_review==='string'?JSON.parse(queue_review) as QueueReview:null;
+  return {...row,...(filter.status==='pending'&&review?{current_value:JSON.stringify({state:review.state,reason:review.reason,dueAt:review.dueAt}),revision:await queueRevision(String(row.id),review)}:{}),details:JSON.parse(details_json)};
+ }));
 }
 
 const recordsOf=(contactId:string|null,companyId:string|null)=>[...(contactId?[['contact',contactId]]:[]),...(companyId?[['company',companyId]]:[])] as [string,string][];
@@ -45,7 +51,7 @@ function entry(db:D1Database,kind:string,actor:string,source:string,payload:unkn
 const fence=(db:D1Database,name:string,sql:string,...bindings:unknown[])=>db.prepare(`INSERT INTO runtime_controls(name,value) SELECT '${name}',NULL WHERE NOT (${sql})`).bind(...bindings);
 
 /** Apply one reviewed change. Nothing changes unless the record still has the value the person reviewed. */
-export async function acceptProposal(db:D1Database,id:string,actor:string,edit?:string){
+export async function acceptProposal(db:D1Database,id:string,actor:string,edit?:string,revision?:string){
  const proposal=await db.prepare('SELECT * FROM capture_proposals WHERE id=?').bind(id).first<ProposalRow>();
  if(!proposal)throw new CaptureError(404,'Proposal not found.');
  if(proposal.status!=='pending')throw new CaptureError(409,'This proposal was already reviewed.');
@@ -81,8 +87,10 @@ export async function acceptProposal(db:D1Database,id:string,actor:string,edit?:
    db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Contact changed',updated_at=? WHERE recipient_contact_id=?").bind(at,proposal.record_id),
    ...entry(db,'capture.field_set',actor,signal.source_id,{field,previous:proposal.current_value,current:decided,...evidence},recordsOf(proposal.record_id,details.companyId??null),at),audit(db,actor,'record.updated','contact',proposal.record_id,{source:'capture',proposalId:id,field}));}
  }else if(proposal.kind==='next_action'){
-  const current=JSON.parse(proposal.current_value!) as {state:string;reason:string|null},next=JSON.parse(proposal.proposed_value!) as {state:'now'|'next';reason:string;dueAt:string|null};
-  statements.push(fence(db,'capture_queue_current',"EXISTS(SELECT 1 FROM opportunities WHERE id=? AND lifecycle='open' AND queue_state=? AND queue_reason IS ?)",proposal.record_id,current.state,current.reason),
+  const review=await readQueueReview(db,proposal.record_id);
+  if(!review||review.lifecycle!=='open'||!revision||revision!==await queueRevision(id,review))throw new CaptureError(409,'The record or this proposal changed since you reviewed it. Reload and review again.');
+  const current={state:review.state,reason:review.reason,dueAt:review.dueAt},next=JSON.parse(proposal.proposed_value!) as {state:'now'|'next';reason:string;dueAt:string|null};
+  statements.push(fence(db,'capture_queue_current',"EXISTS(SELECT 1 FROM opportunities WHERE id=? AND lifecycle='open' AND queue_state=? AND queue_reason IS ? AND next_due_at IS ? AND updated_at=?)",proposal.record_id,current.state,current.reason,current.dueAt,review.updatedAt),
    db.prepare('UPDATE opportunities SET queue_state=?,queue_reason=?,next_due_at=?,updated_at=? WHERE id=?').bind(next.state,next.reason,next.dueAt,at,proposal.record_id),
    ...entry(db,'queue.moved',actor,signal.source_id,{previous:current,current:next,reason:next.reason,...evidence},[['opportunity',proposal.record_id],...recordsOf(null,details.companyId??null)],at),audit(db,actor,'queue.moved','opportunity',proposal.record_id,{source:'capture',proposalId:id}));
  }else{

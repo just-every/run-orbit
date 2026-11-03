@@ -69,9 +69,9 @@ export function createCaptureRoutes(db:D1Database,providers:ProviderConfig={}){
  });
  app.post('/proposals/:id/accept',async c=>{
   if(!recordId.safeParse(c.req.param('id')).success)throw new CaptureError(400,'Invalid proposal ID.');
-  const input=z.object({value:z.string().max(200).optional()}).strict().safeParse(await c.req.json().catch(()=>({})));
+  const input=z.object({value:z.string().max(200).optional(),revision:z.string().regex(/^[a-f0-9]{64}$/).optional()}).strict().safeParse(await c.req.json().catch(()=>({})));
   if(!input.success)throw new CaptureError(400,'Enter the value to accept.');
-  return c.json(await acceptProposal(db,c.req.param('id'),c.get('operator').operatorId,input.data.value));
+  return c.json(await acceptProposal(db,c.req.param('id'),c.get('operator').operatorId,input.data.value,input.data.revision));
  });
  app.post('/proposals/:id/decline',async c=>{
   if(!recordId.safeParse(c.req.param('id')).success)throw new CaptureError(400,'Invalid proposal ID.');

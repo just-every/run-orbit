@@ -10,7 +10,7 @@ const quoteLine=(line:string)=>line.replace(/^(Starts|Ends) (\d{4}-\d{2}-\d{2}T[
 interface Evidence {source:string;sender:string|null;date:string;subject:string;quote:string[]}
 export interface CaptureProposal {
  id:string;kind:'link_signal'|'create_contact'|'set_field'|'next_action'|'do_not_contact';record_type:string;record_id:string;field:string|null;
- current_value:string|null;proposed_value:string|null;signal_type:string;occurred_at:string;source_name:string|null;source_state:string|null;
+ current_value:string|null;proposed_value:string|null;revision?:string;signal_type:string;occurred_at:string;source_name:string|null;source_state:string|null;
  details:{evidence:Evidence;names?:string[];name?:string|null;companyName?:string;title?:string;contactIds?:string[]};
 }
 async function post(path:string,body:unknown){
@@ -45,7 +45,7 @@ export function CaptureProposals({recordType,recordId,onChanged,whenWaiting=fals
  const resource=useOperatorResource(`capture-proposals${query}`,load),[busy,setBusy]=useState(''),[editing,setEditing]=useState(''),[value,setValue]=useState(''),[error,setError]=useState(''),[status,setStatus]=useState('');
  async function review(proposal:CaptureProposal,action:'accept'|'decline',edited?:string){
   setBusy(proposal.id);setError('');setStatus('');
-  try{await post(`/api/v1/capture/proposals/${proposal.id}/${action}`,action==='accept'&&edited!==undefined?{value:edited}:{});setStatus(action==='accept'?`Accepted: ${title(proposal)}.`:`Declined: ${title(proposal)}. It will not be offered again for this evidence.`);setEditing('');resource.reload();onChanged?.();}
+  try{await post(`/api/v1/capture/proposals/${proposal.id}/${action}`,action==='accept'?{...(edited!==undefined?{value:edited}:{}),...(proposal.kind==='next_action'?{revision:proposal.revision}:{})}:{});setStatus(action==='accept'?`Accepted: ${title(proposal)}.`:`Declined: ${title(proposal)}. It will not be offered again for this evidence.`);setEditing('');resource.reload();onChanged?.();}
   catch(e){setError((e as Error).message);}finally{setBusy('');}
  }
  const proposals=resource.data?.proposals??[];

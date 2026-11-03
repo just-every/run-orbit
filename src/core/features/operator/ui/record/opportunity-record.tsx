@@ -51,18 +51,19 @@ export function OpportunityRecordPage(){
  useRefresh(reload);
  if(!data)return <OperatorShell title="Opportunity">{resource.error?<OperatorState kind="error">{resource.error.message}</OperatorState>:<OperatorState>Loading opportunity…</OperatorState>}</OperatorShell>;
  const {detail,settings,opportunity,drafts,messages,handoffs}=data,workspace=settings.workspace,name=String(record.value('title')??opportunity.title);
+ const closed=opportunity.lifecycle!=='open';
  const titles=new Map(opportunity.contacts.map(contact=>[contact.id,contact.jobTitle]));
  const scheduled=messages?.messages.filter(message=>message.state==='scheduled').length??0;
  const company=detail.company?<Link className="r-eyebrow-link" to="/app/companies/$id" params={{id:detail.company.id}}>{detail.company.name}</Link>:<span>Opportunity</span>;
- return <OperatorShell title={name} eyebrow={<span className="r-eyebrow">{company}<SavedLabel show={record.saved('title')}/></span>} heading={<RecordTitle form={record} field="title" label="Opportunity title" required="An opportunity needs a title."/>}>
+ return <OperatorShell title={name} eyebrow={<span className="r-eyebrow">{company}<SavedLabel show={record.saved('title')}/></span>} heading={<><RecordTitle form={record} field="title" label="Opportunity title" required="An opportunity needs a title."/>{closed?<div className="r-why" data-testid="deal-outcome"><span className="r-chip">{opportunity.lifecycle==='won'?'Won':'Lost'}</span><span>{String(detail.record.close_reason??'')}</span></div>:null}</>}>
   <RecordFrame
    waiting={<WorkflowRecordApprovals kind="opportunity" id={id} workspace={workspace} onChanged={reload}/>}
-   next={<><NextAction opportunity={opportunity} presentation={workspace} aiConfigured={Boolean(data.configuration?.aiConfigured)} reload={reload} composing={composing} onCompose={()=>setComposing(!composing)}/>{composing?<div className="r-composer"><EvidenceActions opportunity={opportunity} reload={reload} mode="draft"/></div>:null}</>}
+   next={closed?null:<><NextAction opportunity={opportunity} presentation={workspace} aiConfigured={Boolean(data.configuration?.aiConfigured)} reload={reload} composing={composing} onCompose={()=>setComposing(!composing)}/>{composing?<div className="r-composer"><EvidenceActions opportunity={opportunity} reload={reload} mode="draft"/></div>:null}</>}
    activity={<DealActivity opportunity={opportunity} drafts={drafts} messages={messages} handoffs={handoffs} reload={reload}/>}
    folds={<><FollowUpResults outcomes={messages?.outcomes} presentation={workspace}/><RecordedDetails opportunity={opportunity} presentation={workspace} reload={reload}/></>}
    details={<DetailsPanel>
     <DealValues id={id} record={record} settings={settings} scheduled={scheduled} definitions={definitions} context={context}/>
-    <DealPeople dealId={id} form={context} titles={titles}/>
+    <DealPeople dealId={id} form={context} titles={titles} closed={closed}/>
     <DealContext form={context}/>
     <RecordFoot kind="opportunity" id={id} name={name} record={detail.record} deleteSentence={`Delete ${name}? Its messages and timeline go with it.`} onChanged={reload}/>
    </DetailsPanel>}

@@ -5526,6 +5526,10 @@
       "sha256": "055c8388095e3bbbab26df742801d5b75f0a954ed9b69a09e7d85949bde1747c",
       "executable": false
     },
+    "src/core/features/capture/next-action-review.ts": {
+      "sha256": "5ed82b3f0989cf84d51d65ad1bea99144de2ab7535df690c3144ed1e3ee0a656",
+      "executable": false
+    },
     "src/core/features/capture/privacy-calendar.ts": {
       "sha256": "656ec6f7e5f9247b783ba28d4ae0f97bd4f8be1ce544633fa734bed352ec0254",
       "executable": false
@@ -5543,7 +5547,7 @@
       "executable": false
     },
     "src/core/features/capture/proposals.ts": {
-      "sha256": "9614395932c7d283469cb3c820ec1fda7887f608fdf1c91c73cdb26a69f58a7f",
+      "sha256": "236f0f9bdf300f6625e093be138d141380b8346799e09cbdb0d558a7c216b38f",
       "executable": false
     },
     "src/core/features/capture/provider-evidence.ts": {
@@ -5603,7 +5607,7 @@
       "executable": false
     },
     "src/core/features/capture/routes.ts": {
-      "sha256": "be62af2a544de0979e3e9bf877dfbb5839aa1d2c05512e934dcfcae2eff7e669",
+      "sha256": "9470e045109fc140a34afedf411f56ea40f3dc8d17e61b52fd3540f77aa3146d",
       "executable": false
     },
     "src/core/features/capture/sources.ts": {
@@ -6455,7 +6459,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/capture-proposals.tsx": {
-      "sha256": "90586d12b6df26f4c3d93ad211f711bcaf19a2e0f49782758a82cbeee47bf71d",
+      "sha256": "e12c9ba119aba7d4e5f2365f15f239d50778e3364b8c265afabc6af43a5c6a74",
       "executable": false
     },
     "src/core/features/operator/ui/capture-provider-form.tsx": {
@@ -6719,7 +6723,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/pipeline-board.tsx": {
-      "sha256": "bf599b906da87aace7a7363e143e8c4563e6a0a2f30dfeb458bb249ce926e3ed",
+      "sha256": "8c033fc7433864e9a0ac0c6a32352f66b3d1e14495c7604ccc895a754e8e1ce9",
       "executable": false
     },
     "src/core/features/operator/ui/pipeline-settings.tsx": {
@@ -6835,11 +6839,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/next-action.tsx": {
-      "sha256": "91c81b8508a6ce2eecd0f66aee87117d247f260e4df559851a254cfc677884b4",
+      "sha256": "38d9281130d0da626f4cc7bff420eafe8215f4ec27c449853e8903d0a115fa8c",
       "executable": false
     },
     "src/core/features/operator/ui/record/opportunity-record.tsx": {
-      "sha256": "a026548c8e26fcf35b177f5084b3825a4efff18ff4372daf49d9b78fdbbffc70",
+      "sha256": "72e7207f75b7ae7ce842950a6f78940386275861bb3d81046ae25f15735c6452",
       "executable": false
     },
     "src/core/features/operator/ui/record/owner-field.tsx": {
@@ -6847,7 +6851,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/people.tsx": {
-      "sha256": "afa7b1e68ef6466c97bbbd66db6c2937db938e82f93fe0aa3764e0c30906182f",
+      "sha256": "369c0eb680ff2f1d1e55cb541b70c810b911b6d670ff8268d1d83d7dace1505d",
       "executable": false
     },
     "src/core/features/operator/ui/record/record-activity.tsx": {
@@ -6895,7 +6899,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records-list.tsx": {
-      "sha256": "4ae91848850126a924a1c624bd4ed8e5fe7424cd6bf538f32db06a1e04226a0d",
+      "sha256": "bcdd2a32826ba29b4704c40a5ae528f9c860fac8c74b13e029041c813e5d0b59",
       "executable": false
     },
     "src/core/features/operator/ui/records-page.tsx": {
@@ -8183,11 +8187,11 @@
       "executable": false
     },
     "src/core/features/timeline/repository.ts": {
-      "sha256": "20f7b73b97e5e92c6b97f7b2f1271e8d06117d5c38872f112441d7ae5043d388",
+      "sha256": "0bb1406c5794b045388c38819385fef4536a8a539fae617b8bd23b0b52d4f7c4",
       "executable": false
     },
     "src/core/features/timeline/service.ts": {
-      "sha256": "01da887b79982235efc7b70208a2c24129a30de9cf2eab1e63532d0e3939dc97",
+      "sha256": "c2c5932f3dc73a9e8cc74a382fc68fcf353bc378ba3e5e513c468d380fa9cfa0",
       "executable": false
     },
     "src/core/features/today/brief.ts": {
@@ -9919,7 +9923,7 @@
       "executable": false
     },
     "tests/core/capture-review.test.ts": {
-      "sha256": "73ec466c62e052aa228cf5a48fbaa67c869dd08f2a8edf8528e7a589ac14cc9f",
+      "sha256": "e335d815f157183b8a033de5c7ac4912f33b5535485efade0653c13a661e8632",
       "executable": false
     },
     "tests/core/capture-upgrade.test.ts": {
@@ -10803,7 +10807,7 @@
       "executable": false
     },
     "tests/support/capture-erasure-fixture.ts": {
-      "sha256": "77557550ec8f0e49aaaffab5e72c93ea87c997b91ccb2578d305a7d04adfe391",
+      "sha256": "da99b91f975f05cbac24479c768438aff8edbd64cf88e6172043787c57dce49f",
       "executable": false
     },
     "tests/support/capture-fixture.ts": {
