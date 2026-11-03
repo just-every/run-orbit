@@ -60,7 +60,7 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access', { 
   await shot(page, 'seller-contact');
 
   const note=await browserAPI(page,`/api/v1/records/opportunity/${created.id}/entries`,'POST',{kind:'note',text:'Internal account note',occurredAt:new Date().toISOString()});
-  await browserAPI(page, `/api/v1/workbench/opportunities/${created.id}/events`, 'POST', {type:'form.submitted',subject:'Casey requested a renewal review',occurredAt:new Date().toISOString(),eventId:crypto.randomUUID(),contactId:contact.id});
+  for(const type of ['form.submitted','meeting.booked'])await browserAPI(page, `/api/v1/workbench/opportunities/${created.id}/events`, 'POST', {type,subject:'Casey requested a renewal review',occurredAt:new Date().toISOString(),eventId:crypto.randomUUID(),contactId:contact.id});
   await enter(page, origin, 'collaborator');
   assert.deepEqual(await browserAPI(page, '/api/v2/access/class'), { access_class: 'collaborator' });
   assert.deepEqual(await browserAPI(page, '/api/v2/access/pages'), { access_class: 'collaborator', workspace: true, reports: true }, 'the Analyst profile reads the workspace and reports');
@@ -74,6 +74,7 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access', { 
     await page.locator('nav.operator-nav').getByRole('link',{name:'Shared records',exact:true}).waitFor();
     assert.equal(await page.getByRole('link',{name:'Tasks',exact:true}).count(),0);
     assert.equal(await page.getByRole('button',{name:'Write follow-up',exact:true}).count(),0);
+    assert.equal(await page.getByRole('link',{name:'Plan this meeting',exact:true}).count(),0);
   }
   for(const [path,method,body] of [[`/api/v1/records/opportunity/${created.id}`,'PUT',{title:'Refused change'}],['/api/v1/today/seen','POST',{through:new Date().toISOString()}]]){
     const response=await page.context().request.fetch(origin+path,{method,headers:{Origin:origin},data:body});assert.equal(response.status(),403);
