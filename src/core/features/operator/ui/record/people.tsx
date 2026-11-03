@@ -15,7 +15,7 @@ const roles=Object.keys(roleNames) as StakeholderRole[];
 /** People: one row per stakeholder (their name, job title and whether they are the primary recipient, their roles as
  * chips with + Role, Unconfirmed until confirmed, and a ⋯ menu), then Add a person, then the deal's things to check.
  * Each change saves the deal's relationships at once. */
-export function DealPeople({dealId,form,titles}:{dealId:string;form:AutosaveForm;titles:Map<string,string|null>}){
+export function DealPeople({dealId,form,titles,closed=false}:{dealId:string;form:AutosaveForm;titles:Map<string,string|null>;closed?:boolean}){
  const people=(form.value('stakeholders')??[]) as Stakeholder[];
  const save=(next:Stakeholder[])=>form.commit('stakeholders',next);
  const update=(contactId:string,patch:Partial<Stakeholder>)=>save(people.map(person=>person.contactId===contactId?{...person,...patch}:person));
@@ -34,6 +34,6 @@ export function DealPeople({dealId,form,titles}:{dealId:string;form:AutosaveForm
   </li>;})}</ul>:<p className="r-note">No one on this deal yet.</p>}
   <SaveFailure status={status} onRetry={()=>form.retry('stakeholders')} onDiscard={()=>form.discard('stakeholders')} onUseMine={()=>form.useMine('stakeholders')} describe={value=>((value??[]) as Stakeholder[]).map(person=>person.name??person.email).join(', ')||'no one'}/>
   <RecordSearchField kind="contact" label="Add a person" placeholder="Add a person" exclude={people.map(person=>person.contactId)} onChoose={contact=>save([...people,{contactId:contact.id,name:contact.name??null,email:contact.email??null,contactability:contact.contactability??'',isPrimary:!people.length,roles:[],verified:false,verifiedBy:null,verifiedAt:null}])}/>
-  <DealRisks dealId={dealId}/>
+  {!closed?<DealRisks dealId={dealId}/>:null}
  </DetailsGroup>;
 }
