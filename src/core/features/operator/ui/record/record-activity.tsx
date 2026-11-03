@@ -20,7 +20,7 @@ function CompanyMeeting({contacts,onChanged}:{contacts:CustomerRecord[];onChange
 
 /** A contact's or a company's activity: its timeline (manual entries editable in place), and a contact's mail and the
  * replies that still need a thread, with Log a call, Plan a meeting and Add a note. */
-export function RecordActivity({kind,id,record,timeline,contacts,mail,reloadMail,reload}:{kind:'contact'|'company';id:string;record:CustomerRecord;timeline:TimelineRow[];contacts:CustomerRecord[];mail?:MailHistory;reloadMail:()=>Promise<void>;reload:()=>void}){
+export function RecordActivity({kind,id,record,timeline,contacts,mail,reloadMail,reload,readOnly=false}:{kind:'contact'|'company';id:string;record:CustomerRecord;timeline:TimelineRow[];contacts:CustomerRecord[];mail?:MailHistory;reloadMail:()=>Promise<void>;reload:()=>void;readOnly?:boolean}){
  const names=new Map([...contacts,record].flatMap(contact=>{const name=contact.name??contact.email??'A contact';return [[contact.id,name],...(contact.email?[[String(contact.email).toLowerCase(),name]]:[])] as [string,string][];}));
  // A message the timeline holds (its acceptance) is one line: the timeline's, with the message's own actions.
  const messages=new Map((mail?.messages??[]).map(message=>[message.id,message])),merged=new Set<string>();
@@ -35,11 +35,11 @@ export function RecordActivity({kind,id,record,timeline,contacts,mail,reloadMail
  entries.push(...mailEntries(mail,reloadMail,merged));
  const people=kind==='contact'?[record]:contacts;
  return <div className="r-activity-box" id={kind==='contact'?'record-mail':undefined}>
-  <Activity entries={entries} actions={[
+  <Activity entries={readOnly?entries.map(entry=>({...entry,tools:null})):entries} actions={readOnly?[]:[
    {label:'Log a call',panel:<CallPanel kind={kind} id={id} contacts={people} onSaved={reload}/>},
    {label:'Plan a meeting',panel:kind==='contact'?<MeetingPanel kind="contact" id={id} contacts={[record]} onChanged={reload}/>:<CompanyMeeting contacts={contacts} onChanged={reload}/>},
    {label:'Add a note',panel:<NotePanel kind={kind} id={id} contacts={people} reload={reload}/>},
   ]}/>
-  {kind==='contact'?<UnlinkedReplies contactId={id} onResolved={()=>{void reloadMail();reload();}}/>:null}
+  {!readOnly&&kind==='contact'?<UnlinkedReplies contactId={id} onResolved={()=>{void reloadMail();reload();}}/>:null}
  </div>;
 }

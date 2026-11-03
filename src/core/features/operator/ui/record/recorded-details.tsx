@@ -4,7 +4,7 @@ import {formatDateTime,label,sourceLabel} from '../formatters';
 import {recordStateLabel} from '../record-presentation';
 
 /** Recorded details: how Orbit ranked this deal and where each signal and line came from, in words (no keys or ids). */
-export function RecordedDetails({opportunity,presentation,reload}:{opportunity:OpportunityDetail;presentation:WorkspacePresentation;reload:()=>void}){
+export function RecordedDetails({opportunity,presentation,reload,readOnly=false}:{opportunity:OpportunityDetail;presentation:WorkspacePresentation;reload:()=>void;readOnly?:boolean}){
  const evaluation=opportunity.evaluation,rec=opportunity.recommendation;
  const linked=(basis:string)=>basis==='operator-attested record ID'?'linked by an operator':`linked by ${label(basis).toLowerCase()}`;
  return <details className="r-fold r-fold--foot" data-testid="recorded-details"><summary>Recorded details</summary>
@@ -15,6 +15,6 @@ export function RecordedDetails({opportunity,presentation,reload}:{opportunity:O
    {opportunity.signals.map(signal=><li key={signal.id}>{signal.subject??label(signal.type)} · {label(signal.type)} · {sourceLabel(signal.source)} · {linked(signal.linkingBasis)}</li>)}
    {opportunity.timeline.map(entry=><li key={entry.id}>{label(entry.kind)} · Occurred {formatDateTime(entry.occurredAt,presentation)} · Recorded {formatDateTime(entry.recordedAt,presentation)} · Actor {entry.actorName} ({label(entry.actorType)}) · source {sourceLabel(entry.sourceName)}</li>)}
   </ul>
-  <div className="r-fold-body"><RecommendationRefresh opportunityId={opportunity.id} reload={reload}/></div>
+  {!readOnly&&<div className="r-fold-body"><RecommendationRefresh opportunityId={opportunity.id} reload={reload}/></div>}
  </details>;
 }

@@ -1,3 +1,5 @@
+import {useAppAccess} from '../../../access/app-access';
+import {ReadOnlyRecord} from './read-only-record';
 import {useCallback,useMemo,useState} from 'react';
 import {Link,useParams} from '@tanstack/react-router';
 import type {OpportunityContext} from '../../../relationships/contracts';
@@ -27,7 +29,8 @@ import {useFieldDefinitions} from './custom-values';
 
 /** An opportunity at /app/opportunities/<id>: one page, its next action first, its details beside the work, every
  * value saving as it changes. Its reads go out together; the secondary ones (mail, hand-offs, setup) never block it. */
-export function OpportunityRecordPage(){
+export function OpportunityRecordPage(){const {full}=useAppAccess();return full?<EditableOpportunityRecordPage/>:<ReadOnlyRecord kind="opportunity"/>;}
+function EditableOpportunityRecordPage(){
  const {id}=useParams({from:'/app/opportunities/$id'});
  const load=useCallback(async()=>{
   const [detail,settings,{opportunity},{drafts},context,configuration,messages,handoffs]=await Promise.all([

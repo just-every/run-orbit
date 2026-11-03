@@ -2,7 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import {api} from '../fold-ui/workspace';
 import {CollaboratorGrants} from './collaborator-grants';
 import {CreatedInvitationPanel,type CreatedInvitation} from './collaborator-invite';
-const profiles=[{value:'guest',name:'Guest',meaning:'sees only the records you share with them'},{value:'analyst',name:'Analyst',meaning:'reads every record and saves reports'},{value:'seller',name:'Seller',meaning:'reads and edits every record'}];
+const profiles=[{value:'guest',name:'Guest',meaning:'sees only the records you share with them'},{value:'analyst',name:'Analyst',meaning:'reads every record and reports'},{value:'seller',name:'Seller',meaning:'reads and edits every record'}];
 const profileName=(role:string)=>profiles.find(p=>p.value===role)?.name??role;
 export function CollaboratorConsole({workspaceId}:{workspaceId:string}){
  const base=`/api/v2/access/workspaces/${encodeURIComponent(workspaceId)}`,[self,setSelf]=useState<any>(null),[data,setData]=useState<any>(null),[error,setError]=useState(''),[status,setStatus]=useState(''),[invitation,setInvitation]=useState<CreatedInvitation|null>(null),[busy,setBusy]=useState(false),feedback=useRef<HTMLParagraphElement>(null);
