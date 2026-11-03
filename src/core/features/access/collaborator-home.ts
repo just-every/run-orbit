@@ -14,7 +14,8 @@ export async function appAccess(db:D1Database,operatorId:string):Promise<AppAcce
 const collaboratorPages=['/app/shared-records','/app/access','/app/notifications'];
 /** Where a collaborator's request for an owner-only page goes instead: their shared records. */
 export async function collaboratorLanding(db:D1Database,operatorId:string,path:string):Promise<string|null>{
- const access=await appAccess(db,operatorId);if(access.workspace)return null;
+ const access=await appAccess(db,operatorId);if(access.full)return null;
+ if(access.workspace&&(/^\/app\/(?:opportunities|contacts|companies)(?:\/[0-9A-HJKMNP-TV-Z]{26})?$/.test(path)||path==='/app'||path==='/app/'||path==='/app/brief'))return null;
  const page=path.replace(/\/+$/,'')||'/';
  if(collaboratorPages.includes(page)||(access.reports&&(page==='/app/reports'||/^\/app\/(?:reports|dashboards)\/[a-zA-Z0-9_-]+$/.test(page))))return null;
  return '/app/shared-records';

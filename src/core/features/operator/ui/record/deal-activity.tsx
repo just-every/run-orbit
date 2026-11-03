@@ -33,7 +33,7 @@ function schedulerWords(scheduler:NonNullable<DealMessages['scheduler']>){
 
 /** A deal's activity: its drafts not yet sent, its messages, its timeline, its hand-off tasks and stage moves in one
  * list, with Log a call, Plan a meeting and Add a note. */
-export function DealActivity({opportunity,drafts,messages,handoffs,reload}:{opportunity:OpportunityDetail;drafts:OperatorDraft[];messages:DealMessages|null;handoffs:HandoffEntry[];reload:()=>void}){
+export function DealActivity({opportunity,drafts,messages,handoffs,reload,readOnly=false}:{opportunity:OpportunityDetail;drafts:OperatorDraft[];messages:DealMessages|null;handoffs:HandoffEntry[];reload:()=>void;readOnly?:boolean}){
  // A cited hand-off (#handoff-<id>) opens its task.
  const hash=useRouterState({select:state=>state.location.hash});
  const names=new Map(opportunity.contacts.flatMap(contact=>{const name=contact.name??contact.email??'A contact';return [[contact.id,name],...(contact.email?[[contact.email.toLowerCase(),name]]:[])] as [string,string][];})),byEmail=new Map(opportunity.contacts.filter(contact=>contact.email).map(contact=>[contact.email!.toLowerCase(),contact.name??contact.email!]));
@@ -47,7 +47,7 @@ export function DealActivity({opportunity,drafts,messages,handoffs,reload}:{oppo
  ];
  const contacts=opportunity.contacts.map(contact=>({...contact,name:contact.name??undefined}));
  const waiting=messages?.scheduler&&messages.messages.some(message=>['scheduled','queued'].includes(message.state));
- return <Activity entries={entries} note={waiting?<p className="r-note" role="status">{schedulerWords(messages!.scheduler!)}</p>:null} actions={[
+ return <Activity entries={readOnly?entries.map(entry=>({...entry,tools:null})):entries} note={waiting?<p className="r-note" role="status">{schedulerWords(messages!.scheduler!)}</p>:null} actions={readOnly?[]:[
   {label:'Log a call',panel:<CallPanel kind="opportunity" id={opportunity.id} contacts={contacts} onSaved={reload}/>},
   {label:'Plan a meeting',panel:<MeetingPanel kind="opportunity" id={opportunity.id} contacts={opportunity.contacts} onChanged={reload}/>},
   {label:'Add a note',panel:<NotePanel opportunity={opportunity} contacts={contacts} reload={reload}/>},

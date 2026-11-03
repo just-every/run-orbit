@@ -26,7 +26,7 @@ async function shot(page, name) {
     if (evidence) { await mkdir(evidence, { recursive: true }); await page.screenshot({ path: join(evidence, `${name}-${width}.png`), fullPage: true }); }
   }
 }
-const enter = async (page, origin, as) => { await page.goto(`${origin}/auth/dev/enter?as=${as}&returnTo=${encodeURIComponent('/app/access')}`); await page.waitForLoadState('networkidle'); };
+const enter = async (page, origin, as) => { await page.goto(`${origin}/signin?returnTo=${encodeURIComponent('/app/access')}`); await page.getByRole('link',{name:'Sign in as '+({owner:'Owner',seller:'Seller',collaborator:'Analyst collaborator'}[as]??as),exact:true}).click(); await page.waitForLoadState('networkidle'); };
 
 test('AUTH-5 rer dev opens signed in, personas switch role and field access', { timeout: 30 * 60_000 }, async () => {
   const port = await freePort(), origin = `http://127.0.0.1:${port}`;
@@ -59,12 +59,42 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access', { 
   await page.waitForFunction(() => [...document.querySelectorAll('input')].some((input) => input.value === '+1 555 0199'));
   await shot(page, 'seller-contact');
 
+  const note=await browserAPI(page,`/api/v1/records/opportunity/${created.id}/entries`,'POST',{kind:'note',text:'Internal account note',occurredAt:new Date().toISOString()});
+  for(const type of ['form.submitted','meeting.booked'])await browserAPI(page, `/api/v1/workbench/opportunities/${created.id}/events`, 'POST', {type,subject:'Casey requested a renewal review',occurredAt:new Date().toISOString(),eventId:crypto.randomUUID(),contactId:contact.id});
   await enter(page, origin, 'collaborator');
   assert.deepEqual(await browserAPI(page, '/api/v2/access/class'), { access_class: 'collaborator' });
   assert.deepEqual(await browserAPI(page, '/api/v2/access/pages'), { access_class: 'collaborator', workspace: true, reports: true }, 'the Analyst profile reads the workspace and reports');
   assert.equal(await page.evaluate(async () => (await fetch('/api/v1/workbench')).status), 403, 'a collaborator has no native operator access');
+  await page.setViewportSize({width:1440,height:900});
+  // Analyst read views hydrate through the same scoped authority as their server documents.
+  for(const path of ['/app','/app/opportunities',`/app/opportunities/${created.id}`,'/app/brief']){
+    await page.goto(origin+path);
+    await page.locator(path==='/app'?'[data-testid=now-queue]':path==='/app/brief'?'[data-testid=today-brief]':path.endsWith(created.id)?'[data-testid=record-details]':'.records-list h2').first().waitFor();
+    assert.deepEqual(await page.getByRole('alert').allTextContents(),[]);
+    await page.locator('nav.operator-nav').getByRole('link',{name:'Shared records',exact:true}).waitFor();
+    assert.equal(await page.getByRole('link',{name:'Tasks',exact:true}).count(),0);
+    assert.equal(await page.getByRole('button',{name:'Write follow-up',exact:true}).count(),0);
+    assert.equal(await page.getByRole('link',{name:'Plan this meeting',exact:true}).count(),0);
+  }
+  for(const [path,method,body] of [[`/api/v1/records/opportunity/${created.id}`,'PUT',{title:'Refused change'}],['/api/v1/today/seen','POST',{through:new Date().toISOString()}]]){
+    const response=await page.context().request.fetch(origin+path,{method,headers:{Origin:origin},data:body});assert.equal(response.status(),403);
+  }
+  const analystDeal=(await browserAPI(page,`/api/v1/opportunities/${created.id}`)).opportunity;
+  assert.equal(analystDeal.title,'Persona renewal');assert.equal(analystDeal.timeline.some(entry=>entry.id===note.id),false,'internal entries still require an explicit share');
   const collaboratorId = (await browserAPI(page, '/api/v2/access/workspaces/workspace/administration').catch(() => null))?.members;
   assert.equal(collaboratorId, undefined, 'a collaborator cannot administer access');
+
+  // An invitation's public sign-in keeps its email-bound continuation through local admission.
+  await enter(page,origin,'owner');
+  const invitation=await browserAPI(page,'/api/v2/access/workspaces/workspace/invitations','POST',{email:'invited@persona.example',role:'guest',expiresAt:new Date(Date.now()+86400000).toISOString()});
+  const visitor=await (await browser.newContext()).newPage();
+  await visitor.goto(`${origin}/app/access?invitation=${invitation.token}`);await visitor.getByRole('link',{name:'Sign in as invited@persona.example',exact:true}).click();
+  await visitor.getByLabel('Local access link').fill(openLink(ready));await visitor.getByRole('button',{name:'Choose a persona',exact:true}).click();
+  await visitor.getByRole('link',{name:'Sign in as invited@persona.example',exact:true}).click();
+  await visitor.getByRole('status').filter({hasText:'Invitation accepted'}).waitFor();
+  await visitor.goto(origin+'/app/shared-records');await visitor.getByText('No records match your current access.').waitFor();
+  assert.equal((await visitor.context().request.get(origin+'/api/v1/opportunities/now')).status(),403,'a Guest gains no workspace read access');
+  await visitor.context().close();
 
   // The owner limits the analyst profile to two fields; the collaborator then sees only those.
   await enter(page, origin, 'owner');

@@ -1,3 +1,4 @@
+import {useAppAccess} from '../../access/app-access';
 import {useCallback,useState} from 'react';
 import './today.css';
 import {formatDateTime,formatDay} from './formatters';
@@ -16,9 +17,10 @@ const sections:{title:string;test:(line:BriefLine)=>boolean}[]=[
 ];
 
 function Line({line,presentation}:{line:BriefLine;presentation:WorkspacePresentation}){
+ const {full}=useAppAccess();
  return <li className="today-line" data-line={line.id}>
   <div className="today-line__what"><a href={line.href}><span className="today-line__prefix">{linePrefix(line)}:</span> {line.title}</a>{line.detail&&<span className="today-line__detail">{line.detail}</span>}</div>
-  <div className="today-line__when"><time dateTime={line.occurredAt}>{formatDateTime(line.occurredAt,presentation)}</time>{line.dueAt&&line.group!=='proposal'&&<span>Due {formatDateTime(line.dueAt,presentation)}</span>}{line.planHref&&<a href={line.planHref}>Plan this meeting</a>}</div>
+  <div className="today-line__when"><time dateTime={line.occurredAt}>{formatDateTime(line.occurredAt,presentation)}</time>{line.dueAt&&line.group!=='proposal'&&<span>Due {formatDateTime(line.dueAt,presentation)}</span>}{full&&line.planHref&&<a href={line.planHref}>Plan this meeting</a>}</div>
  </li>;
 }
 
@@ -32,6 +34,7 @@ function sinceLine(brief:Brief,presentation:WorkspacePresentation){
 
 /** Brief: what changed since the operator last looked and what is owed, each line cited. What needs a person first. */
 export function TodayBrief(){
+ const {full}=useAppAccess();
  const load=useCallback(async()=>{const [{brief,aiConfigured},{presentation}]=await Promise.all([todayRequest<{brief:Brief;aiConfigured:boolean}>(''),operatorApi.readWorkspacePresentation()]);return {brief,aiConfigured,presentation};},[]);
  const resource=useOperatorResource('today',load),[error,setError]=useState(''),[busy,setBusy]=useState(false);
  if(resource.error)return <section className="today" aria-label="Brief"><OperatorState kind="error">{resource.error.message}</OperatorState></section>;
@@ -39,7 +42,7 @@ export function TodayBrief(){
  const {brief,presentation,aiConfigured}=resource.data,empty=!brief.accounts.length&&!brief.unresolved.length&&!brief.held.length;
  async function seen(){setBusy(true);setError('');try{await todayRequest('/seen',{body:{through:brief.generatedAt}});resource.reload();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  return <section className="today" aria-label="Brief" data-testid="today-brief">
-  <div className="today__since"><p>{sinceLine(brief,presentation)}</p><button type="button" disabled={busy} onClick={()=>void seen()}>Mark all as seen</button></div>
+  <div className="today__since"><p>{sinceLine(brief,presentation)}</p>{full&&<button type="button" disabled={busy} onClick={()=>void seen()}>Mark all as seen</button>}</div>
   {error&&<OperatorState kind="error">{error}</OperatorState>}
   {empty?<div className="operator-surface today__empty" role="status"><h3>Nothing to do from your records today</h3><p>Nothing new since you last looked, no promise is overdue and every signal is matched to a record.</p></div>:
   <div className="today__accounts">

@@ -1,4 +1,5 @@
 import './now-page.css';
+import {useAppAccess} from '../../access/app-access';
 import {SetupLine,readOnboarding} from './setup-line';
 import {ReviewLine,readReviewSummary} from './review-line';
 import {FilterButton,FilterChips,FilterPanel,useFilterPanel,type FilterField} from './filter-panel';
@@ -28,6 +29,7 @@ function countLine(shown: number, total: number | null, filtered: boolean) {
 /** NOW: the deals that need the operator, highest score first, with one Filter; a line above the queue only while
  * something waits for review or setup steps remain. */
 export function NowPage({ initialData }: { initialData?: Awaited<ReturnType<typeof import("../../../app/loaders").loadNow>> }) {
+  const {full}=useAppAccess();
   const [filters, setFilters] = useState<Record<string, string>>({});
   const owner = filters.owner ?? "", stage = filters.stage ?? "", band = filters.band ?? "";
   const filtersKey = `${owner}:${stage}:${band}`;
@@ -39,8 +41,8 @@ export function NowPage({ initialData }: { initialData?: Awaited<ReturnType<type
     return { facets, opportunities, presentation, filtersKey };
   }, [band, owner, stage, filtersKey]);
   const resource = useOperatorResource(`now:${filtersKey}`, loadNow, initialData ? { ...initialData, filtersKey: "::" } : undefined);
-  const onboarding = useOperatorResource('onboarding', useCallback(readOnboarding, []));
-  const review = useOperatorResource('review-summary', useCallback(readReviewSummary, []));
+  const onboarding = useOperatorResource('onboarding', useCallback(()=>full?readOnboarding():Promise.resolve(null), [full]));
+  const review = useOperatorResource('review-summary', useCallback(()=>full?readReviewSummary():Promise.resolve(null), [full]));
   const panel = useFilterPanel();
   useHashMap(storedTaskLink);
   const currentResults = resource.data?.filtersKey === filtersKey;

@@ -1,3 +1,4 @@
+import {useAppAccess} from '../../access/app-access';
 import {RecordsFilters} from './records-filters';
 import {RecordsList} from './records-list';
 import {RecordOwner} from './record-owner';
@@ -15,6 +16,7 @@ const newWords:Record<RecordKind,string>={opportunity:'New opportunity',contact:
 /** Records: one list per kind at its own address, its search, filters and view in the address; each row opens its
  * record at the record's own address. */
 export function RecordsPage({kind}:{kind:RecordKind}){
+ const {full}=useAppAccess();
  const search=useSearch({strict:false}) as RecordsSearch,navigate=useNavigate(),router=useRouter();
  const filters=listFilters(search),view=kind==='opportunity'&&search.view==='board'?'board':'list';
  const [query,setQuery]=useState(search.q??''),written=useRef(search.q??'');
@@ -38,14 +40,14 @@ export function RecordsPage({kind}:{kind:RecordKind}){
  const empty=kind==='opportunity'&&!loading&&!error&&!records.length&&!filtered;
  useEffect(()=>{if(!empty||customers!==undefined)return;void Promise.all([recordsRequest<{records:CustomerRecord[]}>('records/company'),recordsRequest<{records:CustomerRecord[]}>('records/contact')]).then(([companies,contacts])=>setCustomers(companies.records.length+contacts.records.length>0)).catch(()=>setCustomers(true));},[empty]);
  const emptyWords=kind==='opportunity'&&customers===false?'No customers yet. Add your first customer to start tracking opportunities.':`No ${pluralName[kind].toLowerCase()} yet.`;
- return <OperatorShell title="Records" action={<Link className="operator-button" to={`${listPath[kind]}/new`}>{newWords[kind]}</Link>}><div className="records-workspace">
+ return <OperatorShell title="Records" action={full?<Link className="operator-button" to={`${listPath[kind]}/new`}>{newWords[kind]}</Link>:undefined}><div className="records-workspace">
   <nav className="records-tabs" aria-label="Record types">{kinds.map(type=><Link key={type} to={listPath[type]} aria-current={type===kind?'page':undefined}>{pluralName[type]}</Link>)}</nav>
   {error?<OperatorState kind="error">{error}</OperatorState>:null}
   <RecordsFilters query={query} onQuery={setQuery} filters={filters} onFilters={next=>go(searchFilters(next))} settings={settings} opportunities={kind==='opportunity'}/>
   {kind==='opportunity'?<div className="records-tabs" aria-label="Records display">{(['list','board'] as const).map(type=><Link key={type} to={listPath[kind]} search={previous=>({...previous,view:type==='board'?'board':undefined})} replace aria-current={view===type?'page':undefined}>{type==='list'?'List':'Board'}</Link>)}</div>:null}
-  {kind!=='opportunity'&&!loading&&!error&&records.length?<label className="record-selection"><input type="checkbox" checked={selected.length===records.length} onChange={e=>setSelected(e.target.checked?records.map(record=>record.id):[])}/>Select visible records</label>:null}
-  {kind!=='opportunity'&&selected.length?<RecordOwner key={`bulk-${kind}-${selected.join('-')}`} kind={kind} ids={selected} operators={settings?.operators??[]} onChanged={reload}/>:null}
-  {kind==='opportunity'&&view==='board'&&settings?<PipelineBoard records={!loading&&!error?records:[]} settings={settings} pipelineId={filters.pipeline_id??''}/>:<RecordsList kind={kind} records={!loading&&!error?records:[]} settings={settings} selected={selected} onSelected={setSelected}/>}
+  {full&&kind!=='opportunity'&&!loading&&!error&&records.length?<label className="record-selection"><input type="checkbox" checked={selected.length===records.length} onChange={e=>setSelected(e.target.checked?records.map(record=>record.id):[])}/>Select visible records</label>:null}
+  {full&&kind!=='opportunity'&&selected.length?<RecordOwner key={`bulk-${kind}-${selected.join('-')}`} kind={kind} ids={selected} operators={settings?.operators??[]} onChanged={reload}/>:null}
+  {kind==='opportunity'&&view==='board'&&settings?<PipelineBoard records={!loading&&!error?records:[]} settings={settings} pipelineId={filters.pipeline_id??''}/>:<RecordsList kind={kind} records={!loading&&!error?records:[]} settings={settings} selected={selected} onSelected={setSelected} readOnly={!full}/>}
   {kind==='contact'&&records.some(r=>r.contactability==='do_not_contact')?<p className="records-contactability-note">Orbit never emails a contact marked Do not contact. Imported contacts get this mark unless the file said they agreed to email. Open a contact to see why it is marked and how to change it.</p>:null}
   {loading?<OperatorState>Loading customer records…</OperatorState>:!error&&!records.length?<OperatorState>{filtered?<>No records match your search or filters. <button type="button" onClick={()=>{written.current='';setQuery('');void navigate({to:listPath[kind],search:{},replace:true});}}>Clear search and filters</button></>:emptyWords}</OperatorState>:null}
  </div></OperatorShell>;
