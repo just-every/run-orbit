@@ -25,7 +25,7 @@ import { createOutboundMail, customerMailStatus } from "../platform/outbound-mai
 import start from "@tanstack/react-start/server-entry";
 import { createAssetStore, type PlatformBindings } from "../platform/assets";
 import { createApp } from "./app";
-import { identityResponse, operatorFromRequest, requireStepUp, SESSION_COOKIE } from "../features/identity";
+import { identityConfig, identityResponse, operatorFromRequest, requireStepUp, SESSION_COOKIE } from "../features/identity";
 import { devGate } from "@runeditrun/rer/modules/operator-auth";
 import { publicDemoConfig } from "./mounts/public-config.server";
 import { invitationLanding } from "../features/access/invitation-landing";
@@ -69,7 +69,7 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
     if (path === "/api/editor/config") return editorConfigurationResponse(request, bindings);
     // The checkout's dev key gates its key exchange; a deployment has no key.
     const gate = devGate({ key: bindings.RER_DEV_KEY, origin: bindings.AUTH_ORIGIN ?? '', local: bindings.AUTH_LOCAL === "true" });
-    const exchange = await gate?.exchange(request);
+    const exchange = await gate?.exchange(request,identityConfig(bindings)?.branding);
     if (exchange) return exchange;
     if ((path === "/auth/magic-link" || path === "/auth/confirm") && request.method === "POST" && await archiveImportActive(bindings.DB)) return new Response(JSON.stringify({ error: "Orbit is restoring an archive. Try again shortly." }), { status: 503, headers: { "Content-Type": "application/json", "Retry-After": "30" } });
     const identity = await identityResponse(request, bindings, { waitUntil: promise => executionContext.waitUntil(promise), ownerClaimed: async () => Boolean(await bindings.DB.prepare("SELECT 1 FROM operators WHERE setup_owner=1").first()) });
