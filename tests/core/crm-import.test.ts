@@ -11,6 +11,7 @@ import {createApp} from '../support/app';
 import {createId} from '../../src/core/shared/ids';
 import {signRelayBody} from '../../src/base/sendgrid-event-relay/crypto';
 import {json,finish,genericCsvFlow} from '../support/crm-import-flow';
+import {parseCsv} from '../../src/core/shared/csv';
 test('RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes',async t=>{
  const f=await launchFixture();try{for(const vendor of ['hubspot','pipedrive'] as const){
   const independentlyStopped=await f.customer(`${vendor}-independent@example.test`),restorable=await f.customer(`${vendor}-standalone@example.test`);
@@ -19,13 +20,24 @@ test('RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-
   if(vendor==='pipedrive'){const alias=await f.customer(`${vendor}-independent-alias@example.test`);await json(await f.request('records/contact/merge','POST',{survivorId:independentlyStopped.contactId,retiredId:alias.contactId,choices:{name:'survivor',email:'survivor',contactability:'survivor'},reviewed:await reviewTokens(f.db,'contact',independentlyStopped.contactId,alias.contactId),confirmed:true}));stoppedSourceMailbox=alias.email;}
   const independentProofs=(await f.db.prepare("SELECT id FROM audit_entries WHERE action='contact.suppressed'").all<{id:string}>()).results.map(row=>row.id),scheduled=await f.message(restorable.contactId,restorable.opportunityId);
   const source=crmFixture(vendor,f.stage);source.files.find(file=>file.kind==='suppression')!.csv+=`\r\n"${stoppedSourceMailbox}"`;
+  const notes=source.files.find(file=>file.kind==='note')!,deals=source.files.find(file=>file.kind==='deal')!;
+  const csvRow=(row:string[])=>row.map(value=>'"'+value.replaceAll('"','""')+'"').join(',');
+  const [noteHeaders,noteRow]=parseCsv(notes.csv),[dealHeaders,dealRow]=parseCsv(deals.csv);
+  for(const suffix of ['2','3']){const row=[...noteRow];row[noteHeaders.indexOf(notes.mapping.id)]=`note-${suffix}`;notes.csv+=`\r\n${csvRow(row)}`;}
+  dealRow[dealHeaders.indexOf(deals.mapping.id)]='deal-empty';dealRow[dealHeaders.indexOf(deals.mapping.title)]='Imported deal without notes';deals.csv+=`\r\n${csvRow(dealRow)}`;
   const before=(await f.db.prepare('SELECT count(*) n FROM contacts').first<any>())!.n;
   const dry=await json(await f.request('imports/dry-run','POST',source));assert.equal((await f.db.prepare('SELECT count(*) n FROM contacts').first<any>())!.n,before);assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(scheduled.id).first<any>())!.state,'scheduled');
   assert.equal(dry.counts.rejected,1);assert.ok(dry.counts.rejected/dry.counts.input<.01);assert.equal(dry.rows.filter((r:any)=>r.status==='rejected').length,1);assert.match(dry.rows.find((r:any)=>r.status==='rejected').reason,/occurrence time/);
   await finish(f,dry);assert.equal((await f.db.prepare('SELECT count(*) n FROM contacts').first<any>())!.n,before+120);
   const namespace=`orbit:${vendor}:${source.account}`,person=nativeId(namespace,'contact','person-0'),deal=nativeId(namespace,'deal','deal-1');
-  assert.equal((await f.records.detail('contact',person)).record.contactability,'do_not_contact');const opportunity=(await f.records.detail('opportunity',deal));assert.equal(opportunity.contacts.length,2);assert.equal(opportunity.record.value_cents,125025);assert.equal(opportunity.record.owner_id,null);assert.equal(opportunity.record.queue_state,'none');assert.equal(opportunity.timeline.length,1);assert.match(opportunity.timeline[0].payload_json,/not executable/);
-  const replay=await json(await f.request('imports/dry-run','POST',source));await finish(f,replay);assert.equal((await f.db.prepare('SELECT count(*) n FROM contacts').first<any>())!.n,before+120);assert.equal((await f.records.detail('opportunity',deal)).timeline.length,1);
+  assert.equal((await f.records.detail('contact',person)).record.contactability,'do_not_contact');const opportunity=(await f.records.detail('opportunity',deal));assert.equal(opportunity.contacts.length,2);assert.equal(opportunity.record.value_cents,125025);assert.equal(opportunity.record.owner_id,null);assert.equal(opportunity.record.queue_state,'none');assert.equal(opportunity.timeline.length,3);assert.match(opportunity.timeline[0].payload_json,/not executable/);
+  const opened=(await json(await f.request(`opportunities/${deal}`))).opportunity;
+  assert.equal(opened.timeline.length,opportunity.timeline.length);
+  for(const note of opened.timeline){assert.equal(note.actorType,'import');assert.equal(note.actorName,`${source.account} (${vendor==='hubspot'?'HubSpot':'Pipedrive'} import)`);assert.equal(note.payload.text,JSON.parse(opportunity.timeline[0].payload_json).text);}
+  assert.equal(opportunity.timeline[0].actor_id,namespace);
+  const empty=(await json(await f.request(`opportunities/${nativeId(namespace,'deal','deal-empty')}`))).opportunity;assert.equal(empty.title,'Imported deal without notes');assert.equal(empty.timeline.length,0);
+  assert.equal((await json(await f.request(`opportunities/${restorable.opportunityId}`))).opportunity.title,'Launch opportunity');
+  const replay=await json(await f.request('imports/dry-run','POST',source));await finish(f,replay);assert.equal((await f.db.prepare('SELECT count(*) n FROM contacts').first<any>())!.n,before+120);assert.equal((await json(await f.request(`opportunities/${deal}`))).opportunity.timeline.length,3);
   await finish(f,replay,'undo');assert.ok(await f.db.prepare('SELECT id FROM contacts WHERE id=?').bind(person).first(),'Undo of a reused import cannot steal the first job effects');
   assert.equal((await f.records.detail('contact',restorable.contactId)).record.contactability,'do_not_contact');
   await finish(f,dry,'undo');assert.equal((await f.db.prepare('SELECT count(*) n FROM contacts').first<any>())!.n,before);assert.equal(await f.db.prepare('SELECT id FROM opportunities WHERE id=?').bind(deal).first(),null);

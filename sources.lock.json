@@ -6155,7 +6155,7 @@
       "executable": false
     },
     "src/core/features/imports/planner.ts": {
-      "sha256": "4f56b54f05814ed1d5c6a179f5de0efc9856e2ca07ed387d0db6bd69317a2d2f",
+      "sha256": "b2fdc6eb1e79be381a4bff5d589fe20e5a153be47e293d4a11936b205958a5a5",
       "executable": false
     },
     "src/core/features/imports/repository.ts": {
@@ -8179,11 +8179,11 @@
       "executable": false
     },
     "src/core/features/timeline/repository.ts": {
-      "sha256": "25c043eeebcc6f345c940bd969c5aa93e08c043a28f497598b538951dca8464f",
+      "sha256": "20f7b73b97e5e92c6b97f7b2f1271e8d06117d5c38872f112441d7ae5043d388",
       "executable": false
     },
     "src/core/features/timeline/service.ts": {
-      "sha256": "5b998a57950c44bc7c8a2248f646ac5942ea8b8d2232440457949d60724bd151",
+      "sha256": "01da887b79982235efc7b70208a2c24129a30de9cf2eab1e63532d0e3939dc97",
       "executable": false
     },
     "src/core/features/today/brief.ts": {
@@ -9931,7 +9931,7 @@
       "executable": false
     },
     "tests/core/crm-import.test.ts": {
-      "sha256": "7c33b660d5bc0fa57d32d7444165ff2ce9770cd74cdc2784091dd6f60e4e9ad8",
+      "sha256": "6043d61aa04a1cc2173327c834705f896d9a50d9bea6caa56afa94bf464475d3",
       "executable": false
     },
     "tests/core/identity.test.ts": {

@@ -1,4 +1,5 @@
 import { TimelineRepository } from "./repository";
+import { importTimelineActor } from "../imports/timeline-actor";
 
 export class TimelineService {
   constructor(private readonly repository: TimelineRepository) {}
@@ -13,16 +14,19 @@ export class TimelineService {
 
   async listOpportunityEntries(opportunityId: string) {
     const entries = await this.repository.listOpportunityEntries(opportunityId);
-    return entries.map((entry) => ({
-      id: entry.id,
-      kind: entry.kind,
-      occurredAt: entry.occurredAt,
-      recordedAt: entry.recordedAt,
-      actorType: entry.actorType,
-      actorName: resolveActorName(entry),
-      sourceName: humanizeIdentity(entry.source),
-      payloadJson: entry.payloadJson
-    }));
+    return entries.map((entry) => {
+      const importActor = importTimelineActor(entry);
+      return {
+        id: entry.id,
+        kind: entry.kind,
+        occurredAt: entry.occurredAt,
+        recordedAt: entry.recordedAt,
+        actorType: importActor ? "import" : entry.actorType,
+        actorName: importActor ?? resolveActorName(entry),
+        sourceName: humanizeIdentity(entry.source),
+        payloadJson: entry.payloadJson
+      };
+    });
   }
 }
 

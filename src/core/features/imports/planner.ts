@@ -95,7 +95,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
    if(!data.text)throw new Error('Note text is required.');if(!data.occurred_at||!Number.isFinite(Date.parse(data.occurred_at))||Date.parse(data.occurred_at)>Date.now())throw new Error('Map a valid note occurrence time no later than now.');
    for(const kind of ['contact','company','deal'])for(const recordId of linked(row,kind,`${kind}_ids`))links.push({timeline_entry_id:id,record_type:kind==='deal'?'opportunity':kind,record_id:recordId});
    if(!links.length)throw new Error('A note requires at least one explicit record association.');
-   for(const field of ['created_at','updated_at'])delete native[field];Object.assign(native,{kind:'import.note',occurred_at:new Date(data.occurred_at).toISOString(),recorded_at:at,actor_type:'source',actor_id:null,source:input.vendor,payload_json:JSON.stringify({text:data.text,importSource:provenance})});
+   for(const field of ['created_at','updated_at'])delete native[field];Object.assign(native,{kind:'import.note',occurred_at:new Date(data.occurred_at).toISOString(),recorded_at:at,actor_type:'import',actor_id:namespace,source:input.vendor,payload_json:JSON.stringify({text:data.text,importSource:provenance})});
   }
   links.sort((a,b)=>row.kind==='deal'?a.contact_id.localeCompare(b.contact_id):`${a.record_type}:${a.record_id}`.localeCompare(`${b.record_type}:${b.record_id}`));
   if(Object.values(native).some(v=>typeof v==='number'&&!Number.isFinite(v)))throw new Error('Native record has an unsupported default.');
