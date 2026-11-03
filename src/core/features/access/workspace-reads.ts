@@ -8,6 +8,7 @@ import {buildBrief} from '../today/brief';
 /** Only the workspace's read views, using the same current record and field projection as SSR. */
 export function collaboratorWorkspaceReads(db:D1Database,actor:ActorContext,operatorId:string){
  const scoped=legacyDatabase(db,actor),app=new Hono(),deps=createDependencies(scoped);
+ app.onError(error=>{throw error;});
  app.route('/opportunities',deps.opportunityRoutes);
  app.route('/workspace',deps.workspaceRoutes);
  app.get('/settings',async c=>{
