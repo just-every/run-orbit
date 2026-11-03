@@ -1,3 +1,5 @@
+import {useAppAccess} from '../../../access/app-access';
+import {ReadOnlyRecord} from './read-only-record';
 import {useCallback,useEffect,useMemo,useState} from 'react';
 import {Link,useParams,useRouterState} from '@tanstack/react-router';
 import type {ContactContext} from '../../../relationships/contracts';
@@ -29,7 +31,8 @@ function useCaretOnCreate(ready:boolean){
 
 /** A contact or a company at its own address: what waits for a person, the next action (their deal in NOW), activity
  * with their mail, and their details beside the work, every value saving as it changes. */
-function CustomerRecordPage({kind}:{kind:'contact'|'company'}){
+function CustomerRecordPage({kind}:{kind:'contact'|'company'}){const {full}=useAppAccess();return full?<EditableCustomerRecordPage kind={kind}/>:<ReadOnlyRecord kind={kind}/>;}
+function EditableCustomerRecordPage({kind}:{kind:'contact'|'company'}){
  const {id}=useParams({strict:false}) as {id:string};
  const load=useCallback(async()=>{
   const [detail,settings,context]=await Promise.all([readRecord<any>(kind,id),recordsRequest<any>('settings'),kind==='contact'?readContext<ContactContext>('contact',id):Promise.resolve(null)]);

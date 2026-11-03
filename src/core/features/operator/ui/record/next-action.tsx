@@ -21,7 +21,7 @@ export function signalContacts(opportunity:OpportunityDetail){
 
 /** The first card of a deal: why it is in NOW, the newest contributing signal (or the recommendation's own words),
  * Write follow-up, Draft with AI, Mark done and Skip, and a fold saying why it is first. */
-export function NextAction({opportunity,presentation,aiConfigured,reload,composing,onCompose,deal}:{opportunity:OpportunityDetail;presentation:WorkspacePresentation;aiConfigured:boolean;reload:()=>void;composing:boolean;onCompose:()=>void;deal?:ReactNode}){
+export function NextAction({opportunity,presentation,aiConfigured,reload,composing,onCompose,deal,readOnly=false}:{opportunity:OpportunityDetail;presentation:WorkspacePresentation;aiConfigured:boolean;reload:()=>void;composing:boolean;onCompose:()=>void;deal?:ReactNode;readOnly?:boolean}){
  const rec=opportunity.recommendation,contributions=opportunity.evaluation?.contributions??[],contacts=signalContacts(opportunity);
  const signals=new Map(opportunity.signals.map(signal=>[signal.id,signal]));
  const newest=[...contributions].sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt))[0],signal=newest?signals.get(newest.signalId):undefined;
@@ -31,23 +31,23 @@ export function NextAction({opportunity,presentation,aiConfigured,reload,composi
  async function finish(outcome:'completed'|'skipped'){if(!rec)return;setBusy(true);setError('');try{await workbenchRequest(`/recommendations/${rec.id}/complete`,{outcome,note:''});reload();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  return <section className="operator-surface r-next" aria-labelledby={`next-${opportunity.id}`} data-testid="next-action">
   <h2 id={`next-${opportunity.id}`} className="sr-only">Next action</h2>
-  {opportunity.evaluation?.failureAt?<div role="alert" data-testid="evaluation-failure"><p>Priorities could not be refreshed at {formatDateTime(opportunity.evaluation.failureAt,presentation)}. The score and evidence shown are from the last successful evaluation and may be out of date.</p><RecommendationRefresh opportunityId={opportunity.id} reload={reload}/></div>:null}
+  {opportunity.evaluation?.failureAt?<div role="alert" data-testid="evaluation-failure"><p>Priorities could not be refreshed at {formatDateTime(opportunity.evaluation.failureAt,presentation)}. The score and evidence shown are from the last successful evaluation and may be out of date.</p>{!readOnly&&<RecommendationRefresh opportunityId={opportunity.id} reload={reload}/>}</div>:null}
   {deal}
   {opportunity.queueReason?<div className="r-why"><span className="r-why-label">Why NOW</span><span className="r-chip">{opportunity.queueReason}</span></div>:null}
   <p className="r-next-line">{line}</p>
   {when?<p className="r-next-when">{when}</p>:null}
-  <div className="r-next-actions">
+  {!readOnly&&<div className="r-next-actions">
    <button type="button" className="orbit-button orbit-button--primary" aria-expanded={composing} onClick={onCompose}>Write follow-up</button>
    {aiConfigured?<Link className="orbit-button orbit-button--secondary" to="/app/assistance/$id" params={{id:opportunity.id}}>Draft with AI</Link>:null}
    {rec?<span className="r-quiet-actions"><button type="button" className="operator-text-button" disabled={busy} onClick={()=>void finish('completed')}>Mark done</button><button type="button" className="operator-text-button" disabled={busy} onClick={()=>void finish('skipped')}>Skip</button></span>:null}
-  </div>
+  </div>}
   {error?<p className="r-fail" role="alert">{error}</p>:null}
-  <WhyFirst opportunity={opportunity} presentation={presentation} contacts={contacts}/>
+  <WhyFirst opportunity={opportunity} presentation={presentation} contacts={contacts} readOnly={readOnly}/>
  </section>;
 }
 
 /** "Why this is first": the contributing signals with their points, then the other signals with none. */
-function WhyFirst({opportunity,presentation,contacts}:{opportunity:OpportunityDetail;presentation:WorkspacePresentation;contacts:Map<string,string>}){
+function WhyFirst({opportunity,presentation,contacts,readOnly}:{readOnly:boolean;opportunity:OpportunityDetail;presentation:WorkspacePresentation;contacts:Map<string,string>}){
  const contributions=opportunity.evaluation?.contributions??[],counted=new Set(contributions.map(item=>item.signalId)),signals=new Map(opportunity.signals.map(signal=>[signal.id,signal]));
  // OPP-004: every contributing signal with its kind, source, confidence and points, beside the recommendation it supports.
  const used=new Set(opportunity.recommendation?.evidenceSignalIds??[]),other=opportunity.signals.filter(signal=>!counted.has(signal.id));
@@ -59,6 +59,6 @@ function WhyFirst({opportunity,presentation,contacts}:{opportunity:OpportunityDe
  return <details className="r-fold" data-testid="contributing-evidence"><summary>{summary}</summary>
   {contributions.length?<ul className="r-why-list">{contributions.map(item=><li key={item.signalId}><span className="r-why-what"><span>{subject(item.signalId,item.signalType,item.source)}</span><span className="r-why-meta"><span>{label(item.signalType)}</span> · {sourceLabel(item.source)} · {label(item.confidence).toLowerCase()}{used.has(item.signalId)?' · Used for this recommendation':''}</span></span><span className="r-muted">{formatDateTime(item.occurredAt,presentation)}</span><b>{item.contribution>0?'+':''}{item.contribution}</b></li>)}</ul>:<p className="r-muted">No signals contribute to the current score.</p>}
   {other.length?<><h3>Other signals</h3><ul className="r-why-list">{other.map(signal=><li key={signal.id}><span className="r-why-what"><span>{subject(signal.id,signal.type,signal.source)}</span><span className="r-why-meta"><span>{label(signal.type)}</span> · {sourceLabel(signal.source)} · {label(signal.confidence).toLowerCase()}</span></span><span className="r-muted">{formatDateTime(signal.occurredAt,presentation)}</span><span className="r-none">No points</span></li>)}</ul></>:null}
-  {!opportunity.signals.length?<p className="r-muted">No customer signals yet. <a href="/app/settings/capture">Connect a source</a></p>:null}
+  {!opportunity.signals.length?<p className="r-muted">No customer signals yet. {!readOnly&&<a href="/app/settings/capture">Connect a source</a>}</p>:null}
  </details>;
 }

@@ -1,3 +1,4 @@
+import {useAppAccess} from "../../access/app-access";
 import {useUnreadCount} from "./notifications-page";
 import { type PropsWithChildren, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
@@ -25,7 +26,8 @@ interface OperatorShellProps extends PropsWithChildren {
  * and Sign out apart at the right end; at phone width the lockup and Menu, which opens the same menu as a sheet. */
 export function OperatorShell({ action, children, eyebrow, title, heading, restricted=false, reports=true }: OperatorShellProps) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const menu = operatorMenu(pathname, restricted, reports), unread = useUnreadCount();
+  const access=useAppAccess();
+  const menu = operatorMenu(pathname, restricted||!access.full, reports&&access.reports, access.workspace), unread = useUnreadCount();
   // Leaving a page waits for its saves; a refused one keeps the page with a note at its top.
   useLeaveGuard();
   return (

@@ -53,9 +53,9 @@ export function currentItem(items: readonly NavItem[], pathname: string): NavIte
 /** Settings takes the bar over on its own pages; everywhere else the bar holds the daily jobs. */
 export const settingsPage = (pathname: string) => settingsItem.match.some(pattern => matchLength(pattern, normal(pathname)) >= 0);
 
-export function operatorMenu(pathname: string, collaborator = false, reports = true): OperatorMenu {
+export function operatorMenu(pathname: string, collaborator = false, reports = true, workspace = false): OperatorMenu {
  if (collaborator) {
-  const items = collaboratorPages.filter(item => reports || item.label !== 'Reports');
+  const items = [...(workspace?dailyItems.filter(item=>['NOW','Brief','Records'].includes(item.label)):[]),...collaboratorPages].filter(item => reports || item.label !== 'Reports');
   return {mode: 'daily', label: 'Main menu', items, end: collaboratorSettings, current: currentItem([...items, collaboratorSettings], pathname)};
  }
  if (settingsPage(pathname)) return {mode: 'settings', label: 'Settings menu', items: settingsAreas, end: null, current: currentItem(settingsAreas, pathname)};

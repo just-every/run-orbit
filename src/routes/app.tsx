@@ -1,3 +1,4 @@
+import {AppAccessContext} from "../core/features/access/app-access";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { NativeOwnerEditor } from "../core/features/editor/owner-editor";
 import { loadNativeEditorOwner } from "../core/features/editor/owner-loader";
@@ -13,8 +14,8 @@ export const Route = createFileRoute("/app")({
 });
 
 function App() {
-  const { editorOwner, timeZone } = Route.useRouteContext();
+  const { editorOwner, timeZone, access } = Route.useRouteContext();
   // Set before the page below renders, on the server and in the browser alike.
   setWorkspaceTimeZone(timeZone);
-  return <>{editorOwner ? <NativeOwnerEditor /> : null}<Outlet /></>;
+  return <AppAccessContext.Provider value={access}>{editorOwner ? <NativeOwnerEditor /> : null}<Outlet /></AppAccessContext.Provider>;
 }

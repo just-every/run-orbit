@@ -1,3 +1,4 @@
+import {collaboratorWorkspaceReads,workspaceReadPath} from './workspace-reads';
 import type {MiddlewareHandler} from 'hono';
 import type {AuthenticatedOperator} from '../identity';
 import {AccessService} from './service';
@@ -36,7 +37,11 @@ export function collaboratorNativeBoundary(db:D1Database):MiddlewareHandler<{Var
    if(path==='/api/v1/records/mentions')return c.json({mentions:await collaboratorMentions(db,operator.operatorId)});
    const {Hono}=await import('hono');const scoped=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),url=new URL(c.req.url);url.pathname=url.pathname.slice('/api/v1/notifications'.length)||'/';scoped.use('*',async(ctx,next)=>{ctx.set('operator',operator);await next();});scoped.route('/',createCollaboratorNotificationRoutes(db));return scoped.fetch(new Request(url,c.req.raw));
   }
-  const access=new AccessService(db),actor=await access.authorizeLegacy(operator,crypto.randomUUID(),['GET','HEAD'].includes(c.req.method)?'legacy.read':'legacy.write');
+  const access=new AccessService(db),reading=['GET','HEAD'].includes(c.req.method);
+  const actor=await access.authorizeLegacy(operator,crypto.randomUUID(),reading?'legacy.read':'legacy.write').catch(error=>{if(!reading&&error instanceof AccessError&&error.status===403)deny('Your collaborator access does not allow this change. Ask a full operator to make it.');throw error;});
+  if(['GET','HEAD'].includes(c.req.method)&&workspaceReadPath(path)){
+   const url=new URL(c.req.url);url.pathname=url.pathname.slice('/api/v1'.length);return await collaboratorWorkspaceReads(db,actor,operator.operatorId).fetch(new Request(url,c.req.raw));
+  }
   if(!path.startsWith('/api/v1/records/')||path.includes('/archive')||path.startsWith('/api/v1/records/mention'))deny('This native operation requires a full operator.');
   const edit=/^\/api\/v1\/records\/(contact|company|opportunity)\/([0-9A-HJKMNP-TV-Z]{26})$/.exec(path);
   if(c.req.method==='PUT'&&edit)return c.json(await restrictedEdit(db,actor,edit[1] as keyof typeof nativeEditableFields,edit[2],await c.req.json()));

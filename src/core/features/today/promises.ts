@@ -20,18 +20,18 @@ export async function promiseLines(db:D1Database,now:Date,policy:BriefPolicy,lim
  const [handoffs,nextActions,replies,meetings,drafts]=await Promise.all([
   db.prepare("SELECT h.id,h.title,h.due_at AS dueAt,h.opportunity_id AS opportunityId FROM handoff_tasks h JOIN opportunities o ON o.id=h.opportunity_id WHERE h.status='open' AND h.source_client_id IS NULL AND h.due_at IS NOT NULL AND h.due_at<? AND o.lifecycle='open' ORDER BY h.due_at LIMIT ?").bind(at,limit).all<{id:string;title:string;dueAt:string;opportunityId:string}>(),
   db.prepare("SELECT id,title,queue_reason AS reason,next_due_at AS dueAt FROM opportunities WHERE lifecycle='open' AND queue_state='next' AND next_due_at IS NOT NULL AND next_due_at<? ORDER BY next_due_at LIMIT ?").bind(at,limit).all<{id:string;title:string;reason:string|null;dueAt:string}>(),
-  db.prepare(`SELECT s.id,s.subject,s.occurred_at AS occurredAt FROM signals s WHERE s.type='email.replied' AND ${customerSignalSql()} AND s.occurred_at>=? AND s.occurred_at<=?
-   AND EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=s.id)
-   AND NOT EXISTS(SELECT 1 FROM signal_links l JOIN outbound_messages m ON (l.record_type='opportunity' AND m.opportunity_id=l.record_id) OR (l.record_type='contact' AND m.contact_id=l.record_id) WHERE l.signal_id=s.id AND m.approved_at>=s.occurred_at AND m.state NOT IN ('cancelled','failed'))
-   AND NOT EXISTS(SELECT 1 FROM signal_links l JOIN timeline_entry_records r ON r.record_type=l.record_type AND r.record_id=l.record_id JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE l.signal_id=s.id AND t.actor_type='operator' AND t.kind IN ('manual.call','manual.meeting','action.completed') AND t.recorded_at>=s.occurred_at)
-   AND ${capturedSent}
+  db.prepare(`SELECT s.id,s.subject,s.occurred_at AS occurredAt FROM signals s WHERE ((s.type='email.replied' AND ${customerSignalSql()}) AND (s.occurred_at>=? AND s.occurred_at<=?))
+   AND (EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=s.id)
+   AND NOT EXISTS(SELECT 1 FROM signal_links l JOIN outbound_messages m ON (l.record_type='opportunity' AND m.opportunity_id=l.record_id) OR (l.record_type='contact' AND m.contact_id=l.record_id) WHERE l.signal_id=s.id AND m.approved_at>=s.occurred_at AND m.state NOT IN ('cancelled','failed')))
+   AND (NOT EXISTS(SELECT 1 FROM signal_links l JOIN timeline_entry_records r ON r.record_type=l.record_type AND r.record_id=l.record_id JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE l.signal_id=s.id AND t.actor_type='operator' AND t.kind IN ('manual.call','manual.meeting','action.completed') AND t.recorded_at>=s.occurred_at)
+   AND ${capturedSent})
    AND NOT EXISTS(SELECT 1 FROM signals later JOIN signal_links ll ON ll.signal_id=later.id JOIN signal_links l ON l.record_type=ll.record_type AND l.record_id=ll.record_id WHERE l.signal_id=s.id AND later.type='email.replied' AND ${customerSignalSql('later')} AND (later.occurred_at>s.occurred_at OR (later.occurred_at=s.occurred_at AND later.id>s.id)))
    ORDER BY s.occurred_at LIMIT ?`).bind(from,at,limit).all<{id:string;subject:string|null;occurredAt:string}>(),
-  db.prepare(`SELECT s.id,s.subject,s.occurred_at AS occurredAt FROM signals s WHERE s.type='meeting.completed' AND ${customerSignalSql()} AND s.occurred_at>=? AND s.occurred_at<=?
-   AND EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=s.id)
-   AND NOT EXISTS(SELECT 1 FROM signal_links l JOIN timeline_entry_records r ON r.record_type=l.record_type AND r.record_id=l.record_id JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE l.signal_id=s.id AND t.actor_type='operator' AND ${followUp} AND t.recorded_at>=s.occurred_at)
-   AND NOT EXISTS(SELECT 1 FROM signal_links l JOIN outbound_messages m ON l.record_type='opportunity' AND m.opportunity_id=l.record_id WHERE l.signal_id=s.id AND m.approved_at>=s.occurred_at)
-   AND ${capturedSent}
+  db.prepare(`SELECT s.id,s.subject,s.occurred_at AS occurredAt FROM signals s WHERE ((s.type='meeting.completed' AND ${customerSignalSql()}) AND (s.occurred_at>=? AND s.occurred_at<=?))
+   AND (EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=s.id)
+   AND NOT EXISTS(SELECT 1 FROM signal_links l JOIN timeline_entry_records r ON r.record_type=l.record_type AND r.record_id=l.record_id JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE l.signal_id=s.id AND t.actor_type='operator' AND ${followUp} AND t.recorded_at>=s.occurred_at))
+   AND (NOT EXISTS(SELECT 1 FROM signal_links l JOIN outbound_messages m ON l.record_type='opportunity' AND m.opportunity_id=l.record_id WHERE l.signal_id=s.id AND m.approved_at>=s.occurred_at)
+   AND ${capturedSent})
    ORDER BY s.occurred_at LIMIT ?`).bind(from,at,limit).all<{id:string;subject:string|null;occurredAt:string}>(),
   db.prepare("SELECT d.id,d.subject,d.created_at AS createdAt,d.updated_at AS updatedAt,d.is_stale AS stale,d.stale_reason AS staleReason,d.opportunity_id AS opportunityId,d.recipient_contact_id AS contactId FROM drafts d JOIN opportunities o ON o.id=d.opportunity_id WHERE o.lifecycle='open' AND d.updated_at<? AND COALESCE(d.stale_reason,'')<>'Customer stop event' AND NOT EXISTS(SELECT 1 FROM outbound_messages m WHERE m.draft_id=d.id) ORDER BY d.created_at LIMIT ?").bind(new Date(now.getTime()-policy.staleIntervalDays*86400000).toISOString(),limit).all<{id:string;subject:string;createdAt:string;updatedAt:string;stale:number;staleReason:string|null;opportunityId:string;contactId:string|null}>()]);
  const signalIds=[...replies.results,...meetings.results].map(row=>row.id),[links,entries]=await Promise.all([signalLinks(db,signalIds),signalEntries(db,signalIds)]);

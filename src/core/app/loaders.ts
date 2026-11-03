@@ -4,7 +4,9 @@ export const requireOperator = createServerFn({ method: "GET" }).handler(async (
   const { operatorFromRequest } = await import("../platform/request.server");
   const operator = await operatorFromRequest();
   if (!operator) throw redirect({ href: "/signin?returnTo=%2Fapp", statusCode: 302 });
-  return { operator };
+  const {env}=await import("cloudflare:workers");
+  const {appAccess}=await import("../features/access/collaborator-home");
+  return { operator, access:await appAccess((env as unknown as {DB:D1Database}).DB,operator.operatorId) };
 });
 
 /** The workspace time zone, so every time in the app reads on one labelled clock. */
