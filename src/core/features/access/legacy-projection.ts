@@ -73,7 +73,7 @@ export async function legacyProjection(db:D1Database,c:ActorContext,sql:string):
   else if(table==='sessions'){ctes.push('sessions AS MATERIALIZED(SELECT * FROM main.sessions WHERE operator_id=?)');bindings.push(c.principal.kind==='operator'?c.principal.operatorId:'');}
   else {let condition=`(${related[table]})`;
    // Internal entries retain their explicit Include notes, calls and meetings grants on every read surface.
-   if(table==='timeline_entries')condition+=" AND (b.kind NOT LIKE 'manual.%' OR b.id IN(SELECT timeline_entry_id FROM _legacy_shared_entries))";
+   if(table==='timeline_entries')condition+=" AND ((b.kind NOT LIKE 'manual.%' AND b.source NOT IN('orbit-handoff','tasks')) OR b.id IN(SELECT timeline_entry_id FROM _legacy_shared_entries))";
    if(table==='handoff_tasks')condition+=` AND ${entriesGrantSql(literal(c.principal.kind==='operator'?c.principal.operatorId:''),"'opportunity'",'b.opportunity_id')}`;
    if(['evaluations','recommendations','drafts','outbound_messages','ai_previews','ai_calls'].includes(table))condition+=' AND EXISTS(SELECT 1 FROM _legacy_derived_opportunities visible WHERE visible.id=b.opportunity_id)';
    if(table==='notifications')condition+=' AND (opportunity_id IS NULL OR EXISTS(SELECT 1 FROM _legacy_derived_opportunities visible WHERE visible.id=b.opportunity_id))';

@@ -5094,6 +5094,10 @@
       "sha256": "1bc5c55ab92fc1b5940f34b1a09ba32b2d318331f903123594ab536ae8c05b77",
       "executable": false
     },
+    "src/core/features/access/app-access.tsx": {
+      "sha256": "47f61e147cc7fbe1aaf3096736389fe8a2dda04771d05d4881a32ab44cc1133c",
+      "executable": false
+    },
     "src/core/features/access/base-query-policy.ts": {
       "sha256": "88b651c0a24acf1691f1a62a58b41d7571d95f6f649603db2c84dbb5eab4ec75",
       "executable": false
@@ -5143,7 +5147,7 @@
       "executable": false
     },
     "src/core/features/access/legacy-projection.ts": {
-      "sha256": "2c2d2b189f783f3ad995a9493489178641a32e2b2fb406e985120f2a41abe8a5",
+      "sha256": "59e150b69868bfb0c75f9352c866380952ce9a3e0aad56d08f50bf33dedd0f3c",
       "executable": false
     },
     "src/core/features/access/mutations.ts": {
@@ -5188,6 +5192,10 @@
     },
     "src/core/features/access/shared-records.tsx": {
       "sha256": "593d2b184332ed3680ba745bfe3963956ef78e66d93b1bae97180a4d216a5264",
+      "executable": false
+    },
+    "src/core/features/access/workspace-reads.ts": {
+      "sha256": "9b46c284ea59cc57e5c00fd90d2d3b61350cc56f06dfba94f4c2054758ebf042",
       "executable": false
     },
     "src/core/features/agent-door/drafts.ts": {
@@ -6848,6 +6856,10 @@
     },
     "src/core/features/operator/ui/record/people.tsx": {
       "sha256": "afa7b1e68ef6466c97bbbd66db6c2937db938e82f93fe0aa3764e0c30906182f",
+      "executable": false
+    },
+    "src/core/features/operator/ui/record/read-only-record.tsx": {
+      "sha256": "6ec027c379a7d1c4534622144bc9ac7fe320e39d8d05dfbb3554a112d9821f8d",
       "executable": false
     },
     "src/core/features/operator/ui/record/record-activity.tsx": {
@@ -8516,6 +8528,10 @@
     },
     "src/dev/server.ts": {
       "sha256": "15e8bc9a052084500d4b4b798b1f53f401da305f15d08b57bdcc4337d134d9c4",
+      "executable": false
+    },
+    "src/dev/sign-in.ts": {
+      "sha256": "4d6f54cb8289ec398be416cd69bc6307ed08f3714681d27b870f4c6be1535ec3",
       "executable": false
     },
     "src/editor/leaf.tsx": {
