@@ -5,7 +5,7 @@ import {recordPath} from './records-query';
 import type {CustomerRecord,RecordKind} from './records-api';
 
 export function opportunityMeta(record:CustomerRecord,settings:any){return [record.company_name,record.stage_name??settings?.stages.find((stage:any)=>stage.id===record.stage_id)?.name,record.value_cents!==null&&record.value_cents!==undefined&&settings?.workspace?formatCurrency(record.value_cents,settings.workspace):undefined].filter(Boolean).join(' · ');}
-export function ClosedDealBadge({record}:{record:CustomerRecord}){return record.lifecycle==='won'||record.lifecycle==='lost'?<span className="r-chip">{record.lifecycle==='won'?'Won':'Lost'}</span>:null;}
+export function ClosedDealBadge({record}:{record:CustomerRecord}){return record.lifecycle==='won'||record.lifecycle==='lost'?<b className="r-chip">{record.lifecycle==='won'?'Won':'Lost'}</b>:null;}
 /** Each row is a link to its record, so a middle click opens it in a new tab and Back returns to the list. */
 export function RecordsList({kind,records,settings,selected,onSelected}:{kind:RecordKind;records:CustomerRecord[];settings:any;selected:string[];onSelected:(ids:string[])=>void}){
  return <ol className="operator-queue__list records-list">{records.map(record=><li className="operator-queue-card" key={record.id}>
