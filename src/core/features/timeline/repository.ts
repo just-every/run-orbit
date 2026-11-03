@@ -35,6 +35,7 @@ export class TimelineRepository {
         occurredAt: timelineEntries.occurredAt,
         recordedAt: timelineEntries.recordedAt,
         actorType: timelineEntries.actorType,
+        actorId: timelineEntries.actorId,
         source: timelineEntries.source,
         operatorName: sql<string | null>`CASE WHEN ${timelineEntries.actorType}='agent' THEN json_extract(${timelineEntries.payloadJson},'$.preparedBy.label') ELSE ${operators.displayName} END`,
         signalSourceName: signalSources.name,
