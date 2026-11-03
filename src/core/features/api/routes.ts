@@ -13,7 +13,10 @@ export function apiCredentialRoutes(db:D1Database,clock?:Clock){
  app.get('/',async c=>c.json({credentials:await repo.list(c.get('operator').operatorId)}));
  app.post('/',async c=>{
   const input=credentialDefinition.safeParse(await c.req.json());
-  if(!input.success)return c.json({error:'Choose a name, active principal, explicit deal operations, records, fields and expiry.'},400);
+  if(!input.success){
+   const issues=input.error.issues.flatMap(issue=>(issue.code==='unrecognized_keys'?issue.keys:[issue.path.join('.')||'body']).map(key=>({key,message:issue.message})));
+   return c.json({error:`Missing or invalid keys: ${[...new Set(issues.map(issue=>issue.key))].join(', ')}.`,issues},400);
+  }
   return c.json(await repo.issue(c.get('operator'),input.data),201);
  });
  for(const action of ['rotate','revoke'] as const)app.post(`/:id/${action}`,async c=>{

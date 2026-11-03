@@ -48,7 +48,7 @@ export class ApiCredentials {
  async issue(actor:AuthenticatedOperator,input:Definition){
   await this.requireAdministrator(actor.operatorId);
   const now=this.clock.now(),expires=new Date(input.expiresAt),records=JSON.stringify([...new Set(input.recordIds)].sort());
-  if(expires<=now||expires.getTime()-now.getTime()>90*86400000)throw new RecordError(400,'Choose a future expiry within 90 days.');
+  if(expires<=now||expires.getTime()-now.getTime()>90*86400000)throw new RecordError(400,'expiresAt must be a future UTC timestamp within 90 days.');
   const installation=await this.db.prepare('SELECT id FROM delegation_installation').first<{id:string}>();
   if(!installation)throw new RecordError(409,'The installation identity is unavailable.');
   const id=createId(),secret='orbit_api_'+random(),verifier=await hash(secret);

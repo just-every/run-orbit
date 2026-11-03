@@ -734,6 +734,10 @@
       "sha256": "a102ed60c1a976575ce9fadcb2beba05d75e8eba85dc49af312a9b00478b28d5",
       "executable": false
     },
+    "docs/API-CREDENTIALS.md": {
+      "sha256": "1bcfd739e35d2d050ccb617f53584b3fe4bc4f6e8e0fd979fae89d7943f930a9",
+      "executable": false
+    },
     "docs/artifact/CONTRACT.md": {
       "sha256": "eca67dd799fc90ef3b4502bf04c9b676707c7d93532d347cc47d181e94298411",
       "executable": false
@@ -3803,7 +3807,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "6a400f9c5fbee3e6c2c9a9c254cd7af0830df7b8c54fdc1e6afff4df1ade3652",
+      "sha256": "3d0e7ae842a3f1236e44097860817a2f44eca2ce5c594088865609b963f4f744",
       "executable": false
     },
     "RECORD-POLICIES.md": {
@@ -5367,7 +5371,7 @@
       "executable": false
     },
     "src/core/features/api/credentials.ts": {
-      "sha256": "f79a94188b55c40eb5d369f3e7d4d44a7450c0f082dfec63893120f5573ee28a",
+      "sha256": "87067935dd244d4c6120f9d30d64f558172e024baa6aae888d047d22b34ef98b",
       "executable": false
     },
     "src/core/features/api/privacy.ts": {
@@ -5383,7 +5387,7 @@
       "executable": false
     },
     "src/core/features/api/routes.ts": {
-      "sha256": "0f5a4c65353b21febaa35fc0c8a9dd9cc0e0469cba33a1369bb4a720dc311299",
+      "sha256": "2046dc8d1bf42f95c01ebbf59e1727b85cb289bc1fe3368b7dafb0b46eef19d6",
       "executable": false
     },
     "src/core/features/assistance/demo-output.ts": {
@@ -6999,7 +7003,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/source-recipes.tsx": {
-      "sha256": "346055657ff5d58fe2477e72756ab4a27fa90f7306bca9200aab0393605f9710",
+      "sha256": "1fbb207cde3e195e6d7a3b9027492dfb9772bf99ea952abf89b35cdecdfb91f6",
       "executable": false
     },
     "src/core/features/operator/ui/sources-page.tsx": {
@@ -7068,6 +7072,10 @@
     },
     "src/core/features/operator/ui/use-operator-resource.ts": {
       "sha256": "cca93914e5ded71f4b60f42f6e80b58ea2b4218f200c7aaa99abc806bf0ee803",
+      "executable": false
+    },
+    "src/core/features/operator/ui/website-node-example.tsx": {
+      "sha256": "e8d284ada9447e7890d1361973d2291030b90a85f3e1c714c1da3e17d8de1f02",
       "executable": false
     },
     "src/core/features/operator/ui/workbench-api.ts": {
@@ -10655,7 +10663,7 @@
       "executable": false
     },
     "tests/rer/onboarding-journey.mjs": {
-      "sha256": "612796ac4213a42ac1951b21fb4544194d83cfa2734bcd079058d52738b2f724",
+      "sha256": "4434c1aa46405c1e8ea4f26c222b1fb4706577bcc86e6e5caac868acb2588a64",
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
