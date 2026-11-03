@@ -4,6 +4,7 @@ import {InlineConfirm} from '../autosave/inline-confirm';
 import {formatDateTime,formatDay,formatTime} from '../formatters';
 import {recordsRequest,type RecordKind} from '../records-api';
 import {listPath} from '../records-query';
+import {closedOn} from './deal-outcome';
 
 type Asking={kind:'won'|'lost'}|{kind:'delete'}|null;
 const noun:Record<RecordKind,string>={opportunity:'opportunity',contact:'contact',company:'company'};
@@ -27,7 +28,7 @@ export function RecordFoot({kind,id,name,record,deleteSentence,onChanged}:{kind:
  const ask=(next:Asking)=>(event:React.MouseEvent<HTMLButtonElement>)=>{opener.current=event.currentTarget;setAsking(next);setError('');};
  const closed=kind==='opportunity'&&record.lifecycle!=='open';
  return <div className="r-foot">
-  {closed?<p className="r-closed">{record.lifecycle==='won'?'Won':'Lost'}{record.closed_at?` ${formatDay(record.closed_at)}`:''}{record.close_reason?` · ${record.close_reason}`:''}</p>:null}
+  {closed?<p className="r-closed">{closedOn(record)}{record.close_reason?` · ${record.close_reason}`:''}</p>:null}
   <div className="r-foot-actions">
    {kind==='opportunity'&&!closed?<><button type="button" className="r-pill" aria-expanded={asking?.kind==='won'} onClick={ask({kind:'won'})}>Close as won</button><button type="button" className="r-pill" aria-expanded={asking?.kind==='lost'} onClick={ask({kind:'lost'})}>Close as lost</button></>:null}
    {closed?<button type="button" className="r-pill" disabled={busy} onClick={()=>void close('open')}>Reopen</button>:null}

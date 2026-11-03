@@ -30,6 +30,8 @@
 .r-next > p { margin: 0; }
 .r-why { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .r-why-label { color: var(--ob-muted); font-size: 14px; font-weight: 550; }
+/* A closed deal's reason may be one long pasted link: it wraps inside the header instead of widening it. */
+.r-outcome > span:last-child { min-width: 0; overflow-wrap: anywhere; }
 .r-chip { display: inline-flex; align-items: center; min-height: 30px; padding: 2px 14px; border-radius: 999px; background: var(--ob-tangerine); color: var(--ob-ink); font-size: 14.5px; font-weight: 650; }
 .r-next .r-next-line { margin: 6px 0 0; font-size: 21px; font-weight: 690; line-height: 1.3; letter-spacing: -0.01em; overflow-wrap: anywhere; }
 .r-next .r-next-when { color: var(--ob-muted); font-size: 14.5px; }

@@ -65,6 +65,7 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access', { 
   assert.deepEqual(await browserAPI(page, '/api/v2/access/class'), { access_class: 'collaborator' });
   assert.deepEqual(await browserAPI(page, '/api/v2/access/pages'), { access_class: 'collaborator', workspace: true, reports: true }, 'the Analyst profile reads the workspace and reports');
   assert.equal(await page.evaluate(async () => (await fetch('/api/v1/workbench')).status), 403, 'a collaborator has no native operator access');
+  assert.equal(await page.evaluate(async () => (await fetch('/api/v1/contacts')).status), 404, 'a read no route serves is not found, as for a full operator');
   await page.setViewportSize({width:1440,height:900});
   // Analyst read views hydrate through the same scoped authority as their server documents.
   for(const path of ['/app','/app/opportunities',`/app/opportunities/${created.id}`,'/app/brief']){
@@ -95,6 +96,9 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access', { 
   await visitor.goto(origin+'/app/shared-records');await visitor.getByText('No records match your current access.').waitFor();
   assert.equal((await visitor.context().request.get(origin+'/api/v1/opportunities/now')).status(),403,'a Guest gains no workspace read access');
   await visitor.context().close();
+  // The Analyst's people are the owners of the deals it reads: never the accepted Guest's email, the dev seller or itself.
+  await enter(page,origin,'collaborator');
+  assert.deepEqual((await browserAPI(page,'/api/v1/settings')).operators.map(person=>person.display_name),[analystDeal.ownerName],'a collaborator sees only the owners of deals it reads');
 
   // The owner limits the analyst profile to two fields; the collaborator then sees only those.
   await enter(page, origin, 'owner');

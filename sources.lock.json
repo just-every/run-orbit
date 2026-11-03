@@ -5155,7 +5155,7 @@
       "executable": false
     },
     "src/core/features/access/native-boundary.ts": {
-      "sha256": "8da10ec5050fb0c08b79fba2182b67add219682bf544992a9f23045e42a3cb7e",
+      "sha256": "6fff754d03320ee02120da898ff6674f8912181ee7c5dac852c3cecfd44ef76c",
       "executable": false
     },
     "src/core/features/access/policy.ts": {
@@ -5195,7 +5195,7 @@
       "executable": false
     },
     "src/core/features/access/workspace-reads.ts": {
-      "sha256": "9b46c284ea59cc57e5c00fd90d2d3b61350cc56f06dfba94f4c2054758ebf042",
+      "sha256": "0b3b00405292b78de98c42b015ae590c808336c86d037290deb07c651c2d2c0c",
       "executable": false
     },
     "src/core/features/agent-door/drafts.ts": {
@@ -6826,6 +6826,10 @@
       "sha256": "be398e701338f525b6c4f4636da13d201994918c72e5c4f0ad3e06379f82a28b",
       "executable": false
     },
+    "src/core/features/operator/ui/record/deal-outcome.tsx": {
+      "sha256": "75f8138ef64acd43ce32dc049c6f4e1018347a4d65e8437d39df67396e55866a",
+      "executable": false
+    },
     "src/core/features/operator/ui/record/details-panel.tsx": {
       "sha256": "a4052f859f084c573105bbcdbb1b1784d773d7192764b131802e93e5e556f7e8",
       "executable": false
@@ -6851,7 +6855,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/opportunity-record.tsx": {
-      "sha256": "e6b0902a6decc6e9260cdaa494641ee9d37ef70991830964bf37f38dee44a51f",
+      "sha256": "e0bb600adb9a3a27b79c7d5aec7edb45c307d2d223c4281d9de4537355e5d399",
       "executable": false
     },
     "src/core/features/operator/ui/record/owner-field.tsx": {
@@ -6863,7 +6867,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/read-only-record.tsx": {
-      "sha256": "0ab22fc0b092403cd0e6266e0df72c6c6efc849b0fc7afc07ae4622b789deb0e",
+      "sha256": "e15f3a8c4fda85a9e7a727095acc26d8cab2b847c1ae94584343bfaa100b2a55",
       "executable": false
     },
     "src/core/features/operator/ui/record/record-activity.tsx": {
@@ -6875,7 +6879,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/record-foot.tsx": {
-      "sha256": "fabd42b4fba34334d0d08be686ed70584dc0c06123697515562c3c36acbc5b6f",
+      "sha256": "a5f3e7588f0ef101427dcd86878ec31f7baf890c6fef7ab4787a2cee3071cf42",
       "executable": false
     },
     "src/core/features/operator/ui/record/record-next-action.tsx": {
@@ -6887,7 +6891,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/record.css": {
-      "sha256": "061c512439031d544bcb8d0f95f47762a3028fbf46b78d9ceb0f9ab6c64650b6",
+      "sha256": "c3029334dcae16079b4bfe5a545a7e248b18c0850b871c589ef02f347b679f82",
       "executable": false
     },
     "src/core/features/operator/ui/record/recorded-details.tsx": {
@@ -10675,7 +10679,7 @@
       "executable": false
     },
     "tests/rer/identity.test.mjs": {
-      "sha256": "45ea2435d193016c9f443a0d1a85e313af7e4378a1dbba13b401c65a17dce470",
+      "sha256": "e0fdd2a719b58cc3ad5a5266cf8bd384807d157b1e1177d0012c6b6a2de82250",
       "executable": false
     },
     "tests/rer/journey.test.mjs": {

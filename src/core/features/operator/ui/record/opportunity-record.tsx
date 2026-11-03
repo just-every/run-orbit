@@ -16,6 +16,7 @@ import {WorkflowRecordApprovals} from '../workflows-record-approvals';
 import {FollowUpResults,type Outcomes} from '../follow-up-outcomes';
 import {DealActivity,type DealMessages,type HandoffEntry} from './deal-activity';
 import {DealContext} from './deal-context';
+import {DealOutcome} from './deal-outcome';
 import {DealValues} from './deal-details';
 import {DetailsPanel} from './details-panel';
 import {NextAction} from './next-action';
@@ -58,7 +59,7 @@ function EditableOpportunityRecordPage(){
  const titles=new Map(opportunity.contacts.map(contact=>[contact.id,contact.jobTitle]));
  const scheduled=messages?.messages.filter(message=>message.state==='scheduled').length??0;
  const company=detail.company?<Link className="r-eyebrow-link" to="/app/companies/$id" params={{id:detail.company.id}}>{detail.company.name}</Link>:<span>Opportunity</span>;
- return <OperatorShell title={name} eyebrow={<span className="r-eyebrow">{company}<SavedLabel show={record.saved('title')}/></span>} heading={<><RecordTitle form={record} field="title" label="Opportunity title" required="An opportunity needs a title."/>{closed?<div className="r-why" data-testid="deal-outcome"><span className="r-chip">{opportunity.lifecycle==='won'?'Won':'Lost'}</span><span>{String(detail.record.close_reason??'')}</span></div>:null}</>}>
+ return <OperatorShell title={name} eyebrow={<span className="r-eyebrow">{company}<SavedLabel show={record.saved('title')}/></span>} heading={<><RecordTitle form={record} field="title" label="Opportunity title" required="An opportunity needs a title."/>{closed?<DealOutcome record={detail.record}/>:null}</>}>
   <RecordFrame
    waiting={<WorkflowRecordApprovals kind="opportunity" id={id} workspace={workspace} onChanged={reload}/>}
    next={closed?null:<><NextAction opportunity={opportunity} presentation={workspace} aiConfigured={Boolean(data.configuration?.aiConfigured)} reload={reload} composing={composing} onCompose={()=>setComposing(!composing)}/>{composing?<div className="r-composer"><EvidenceActions opportunity={opportunity} reload={reload} mode="draft"/></div>:null}</>}

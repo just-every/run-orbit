@@ -1,5 +1,6 @@
 import {collaboratorWorkspaceReads,workspaceReadPath} from './workspace-reads';
 import type {MiddlewareHandler} from 'hono';
+import {matchedRoutes} from 'hono/route';
 import type {AuthenticatedOperator} from '../identity';
 import {AccessService} from './service';
 import {isFullOperator} from './identity-class';
@@ -42,7 +43,12 @@ export function collaboratorNativeBoundary(db:D1Database):MiddlewareHandler<{Var
   if(['GET','HEAD'].includes(c.req.method)&&workspaceReadPath(path)){
    const url=new URL(c.req.url);url.pathname=url.pathname.slice('/api/v1'.length);return await collaboratorWorkspaceReads(db,actor,operator.operatorId).fetch(new Request(url,c.req.raw));
   }
-  if(!path.startsWith('/api/v1/records/')||path.includes('/archive')||path.startsWith('/api/v1/records/mention'))deny('This native operation requires a full operator.');
+  if(!path.startsWith('/api/v1/records/')||path.includes('/archive')||path.startsWith('/api/v1/records/mention')){
+   // A read no Orbit route serves (GET /api/v1/contacts never existed; contacts are /api/v1/records/contact) is not
+   // found, exactly as for a full operator. The boundary refuses only doors that exist.
+   if(reading&&!matchedRoutes(c).some(route=>route.method==='GET'))return c.notFound();
+   deny('This native operation requires a full operator.');
+  }
   const edit=/^\/api\/v1\/records\/(contact|company|opportunity)\/([0-9A-HJKMNP-TV-Z]{26})$/.exec(path);
   if(c.req.method==='PUT'&&edit)return c.json(await restrictedEdit(db,actor,edit[1] as keyof typeof nativeEditableFields,edit[2],await c.req.json()));
   if(!['GET','HEAD'].includes(c.req.method))deny('Only explicitly permitted record edits are available to collaborators.');
