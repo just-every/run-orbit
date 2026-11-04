@@ -127,14 +127,69 @@ test('OUT-011 unknown delivery reconciles by durable provider key and never subm
  assert.equal((await service.submit(message)).state,'delivery-unknown');await service.reconcile(new Date(Date.now()+6*60000));await service.reconcile(new Date(Date.now()+12*60000));assert.equal(sends,1);assert.equal(lookups,1);assert.equal((await approval.message(message.id)).state,'accepted');
 });
 
-test('OPP-008 completion removes an exhausted recommendation; new observed evidence produces another',async()=>{
- const {completeAction}=await import('../../src/core/features/workbench/action-repository');const f=await fixture(),workbench=new WorkbenchRepository(db);
- await workbench.recordEvent(f.opportunityId,{type:'email.replied',subject:'Reply',occurredAt:f.at,eventId:createId()},f.actor);
- const current=await db.prepare('SELECT id FROM recommendations WHERE opportunity_id=? AND is_current=1').bind(f.opportunityId).first<{id:string}>();assert.ok(current);
- await completeAction(db,current.id,f.actor,'completed','Handled personally');
- const state=await db.prepare('SELECT queue_state FROM opportunities WHERE id=?').bind(f.opportunityId).first<{queue_state:string}>();assert.equal(state?.queue_state,'none');
- await workbench.recordEvent(f.opportunityId,{type:'meeting.booked',subject:'Meeting',occurredAt:new Date().toISOString(),eventId:createId()},f.actor);
- const next=await db.prepare('SELECT id FROM recommendations WHERE opportunity_id=? AND is_current=1').bind(f.opportunityId).first<{id:string}>();assert.ok(next);assert.notEqual(next.id,current.id);
+test('OPP-008 completion and skipping retain history without sending; only new observed evidence produces another action',async context=>{
+ context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T17:00:00Z')});
+ try{
+  for(const outcome of ['completed','skipped'] as const){
+   const f=await fixture(),operatorName=`Manual action ${outcome} operator`;let sends=0;
+   await db.prepare('UPDATE operators SET display_name=? WHERE id=?').bind(operatorName,f.actor).run();
+   const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:{send:async()=>{sends++;return{providerMessageId:'synthetic-orbit-manual-action'};}}});
+   const session=await createDependencies(db).auth.createSession(f.actor);
+   const api=(path:string,body?:unknown,authenticated=true)=>app.request(`https://orbit.test/api/v1/${path}`,{
+    method:body===undefined?'GET':'POST',headers:{...(authenticated?{Cookie:`__Host-orbit_session=${session.token}`} : {}),Origin:'https://orbit.test','Content-Type':'application/json'},
+    ...(body===undefined?{}:{body:JSON.stringify(body)}),
+   });
+   const detail=async()=>{
+    const response=await api(`opportunities/${f.opportunityId}`);assert.equal(response.status,200);
+    return (await response.json() as {opportunity:import('../../src/core/features/opportunities/contracts').OpportunityDetail}).opportunity;
+   };
+   const event={type:'email.replied',subject:'Customer asks for a discussion',occurredAt:f.at,eventId:createId()};
+   const recorded=await api(`workbench/opportunities/${f.opportunityId}/events`,event);assert.equal(recorded.status,201);
+   const signal=await recorded.json() as {id:string},current=(await detail()).recommendation;assert.ok(current);
+   assert.deepEqual(current.evidenceSignalIds,[signal.id]);
+   const draftResponse=await api(`workbench/opportunities/${f.opportunityId}/drafts`,{contactId:f.contactId,subject:'Unapproved follow-up',body:'Keep this message unsent.'});assert.equal(draftResponse.status,201);
+   const draft=await draftResponse.json() as {id:string};
+   const outbound=async()=>Promise.all(['outbound_messages','record_mail_outbound_messages','rer_mail_development_outbox'].map(async table=>(await db.prepare(`SELECT * FROM ${table} ORDER BY id`).all()).results));
+   const beforeOutbound=await outbound();
+   const history=await db.prepare('SELECT * FROM recommendations WHERE id=?').bind(current.id).first<Record<string,unknown>>();assert.ok(history);
+   const evidence=async()=>(await db.prepare('SELECT * FROM recommendation_evidence WHERE recommendation_id=? ORDER BY signal_id').bind(current.id).all()).results;
+   const beforeEvidence=await evidence();assert.equal(beforeEvidence.length,1);
+   const note=outcome==='completed'?'Handled personally after the discussion.':'No follow-up needed for this evidence.';
+   const completePath=`workbench/recommendations/${current.id}/complete`,input={outcome,note};
+   assert.equal((await api(completePath,input,false)).status,401,'Anonymous callers cannot complete a recommendation');
+   assert.equal((await api(completePath,{outcome:'sent',note})).status,400,'An invalid outcome changes nothing');
+   assert.deepEqual(await db.prepare('SELECT * FROM recommendations WHERE id=?').bind(current.id).first(),history);
+   const completed=await api(completePath,input);assert.equal(completed.status,200);assert.deepEqual(await completed.json(),{completed:true});
+   const after=await detail();
+   assert.equal(after.queueState,'none','An exhausted action leaves both NOW and NEXT');
+   assert.equal(after.recommendation,null,'Evaluating the same observed evidence creates no replacement');
+   const timeline=after.timeline.filter(entry=>entry.kind==='action.completed');assert.equal(timeline.length,1);
+   assert.deepEqual(timeline[0]!.payload,{recommendationId:current.id,outcome,note});
+   assert.equal(timeline[0]!.actorType,'operator');assert.equal(timeline[0]!.actorName,operatorName);
+   const retained=await db.prepare('SELECT * FROM recommendations WHERE id=?').bind(current.id).first<Record<string,unknown>>();assert.ok(retained);
+   assert.deepEqual(retained,{...history,is_current:0,completed_at:f.at,completion_outcome:outcome,completion_note:note,updated_at:f.at},'The original recommendation survives either outcome');
+   assert.deepEqual(await evidence(),beforeEvidence,'Historical evidence remains attached to the original recommendation');
+   const evaluations=await db.prepare('SELECT COUNT(*) AS n FROM evaluations WHERE opportunity_id=?').bind(f.opportunityId).first<{n:number}>();assert.equal(evaluations?.n,2,'Completion evaluates exactly once');
+   assert.equal((await api(completePath,input)).status,409,'Repeated completion is refused');
+   assert.deepEqual(await detail(),after,'A repeated outcome changes neither the visible timeline nor queue');
+   assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM evaluations WHERE opportunity_id=?').bind(f.opportunityId).first<{n:number}>())?.n,2);
+   assert.deepEqual(await outbound(),beforeOutbound,'Neither outcome creates or changes outbound messages');assert.equal(sends,0,'Neither outcome reaches the mail network edge');
+   assert.deepEqual(await db.prepare('SELECT subject,body,revision FROM drafts WHERE id=?').bind(draft.id).first(),{subject:'Unapproved follow-up',body:'Keep this message unsent.',revision:1});
+   assert.equal((await api(`workbench/opportunities/${f.opportunityId}/events`,event)).status,201,'Replaying the original evidence is accepted without new work');
+   assert.equal((await detail()).recommendation,null);
+   const meetingResponse=await api(`workbench/opportunities/${f.opportunityId}/events`,{type:'meeting.booked',subject:'A genuinely new customer meeting',occurredAt:f.at,eventId:createId()});assert.equal(meetingResponse.status,201);
+   const meeting=await meetingResponse.json() as {id:string},fresh=await detail(),next=fresh.recommendation;assert.ok(next);assert.notEqual(next.id,current.id);
+   assert.deepEqual([...next.evidenceSignalIds].sort(),[signal.id,meeting.id].sort());assert.equal(fresh.queueState,'now');
+   assert.deepEqual(await evidence(),beforeEvidence,'New work cannot rewrite the historical evidence');
+   assert.deepEqual(await db.prepare('SELECT * FROM recommendations WHERE id=?').bind(current.id).first(),retained);
+   assert.equal((await api(completePath,input)).status,409,'The old identity cannot complete the new recommendation');
+   assert.equal((await detail()).recommendation?.id,next.id);
+   assert.equal((await api(`workbench/recommendations/${next.id}/complete`,{outcome})).status,200,'The note is optional');
+   const final=await detail(),last=final.timeline.find(entry=>entry.kind==='action.completed'&&(entry.payload as {recommendationId:string}).recommendationId===next.id);assert.ok(last);
+   assert.deepEqual(last.payload,{recommendationId:next.id,outcome,note:''});assert.equal(final.queueState,'none');assert.equal(final.recommendation,null);
+   assert.deepEqual(await outbound(),beforeOutbound);assert.equal(sends,0);
+  }
+ }finally{context.mock.timers.reset();}
 });
 
 test('OUT-010 over-limit approval remains durably unsent with retry time',async()=>{
