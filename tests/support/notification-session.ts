@@ -23,5 +23,8 @@ export async function notificationSession(db:D1Database,operatorId:string,oldCoo
  const otherResponse=await read(otherCookie);assert.equal(otherResponse.status,200);
  assert.ok(!(await otherResponse.json() as any).notifications.some((item:any)=>item.id===notificationId),'A second recipient never sees the read notification');
  assert.equal((await app.request(`https://orbit.test/api/v1/notifications/${notificationId}/read`,{method:'POST',headers:{Cookie:otherCookie,Origin:'https://orbit.test'}})).status,404);
+ assert.equal((await app.request(`https://orbit.test/api/v1/notifications/${notificationId}/read`,{method:'POST',headers:{Cookie:oldCookie,Origin:'https://orbit.test'}})).status,401,'The revoked session cannot mark a notification');
+ const intact=await (await read(fresh.cookie)).json() as any;
+ assert.deepEqual(intact.notifications.find((item:any)=>item.id===notificationId),marked,'Refused nonrecipient and revoked-session writes leave the read state unchanged');
  assert.equal((await read(oldCookie)).status,401,'Signing in again never revives the signed-out cookie');
 }
