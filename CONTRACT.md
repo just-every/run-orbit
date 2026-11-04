@@ -2391,9 +2391,9 @@ Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d17
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 23 | 56 | 0 | 79 |
+| Published | 24 | 55 | 0 | 79 |
 | Target and push further | 7 | 86 | 32 | 125 |
-| All | 30 | 142 | 32 | 204 |
+| All | 31 | 141 | 32 | 204 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -2465,7 +2465,7 @@ Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d17
 | `BRIEF-001` | Today's brief | published | done | `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts` |  |
 | `BRIEF-002` | Overdue promises | published | partial | `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts` | Unasserted in the carried evidence: overdue task; overdue draft; task completion clears line; draft completion clears line. Asserted: overdue reply; overdue meeting; reply completion clears line; meeting completion clears line. |
 | `BRIEF-003` | Account summary | published | partial | `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts` | Unasserted in the carried evidence: actual brief change before generation refused. Asserted: preview sends exact request; fresh summary result succeeds; uncited output fails with no summary. |
-| `BRIEF-004` | Meeting plan | published | partial | `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts` | Unasserted in the carried evidence: promises on meeting plan. Asserted: resolved attendee fields; unresolved attendee address; agenda/prep read after save; cited internal task; uncited task refused; no draft or customer message created. |
+| `BRIEF-004` | Meeting plan | published | done | `tests/core/today-brief.test.ts` — BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a cited plan: exact resolved and unresolved attendees, outstanding linked promise title and due time with exact handoff evidence and authenticated record citation, unrelated promise excluded, agenda and prep read after editing one saved note, cited internal next action, uncited refusal, unchanged draft and message inventories; `tests/delegation-browser/today-brief.test.ts` — a seller starts the day from the brief and plans a meeting at 1440 and 390; `tests/delegation/brief-handoff.test.ts` — scoped meeting-plan reads refuse outside records and revoked grants | |
 | `BRIEF-005` | Agent handoff | published | done | `src/core/features/today/brief.ts`; `tests/delegation/brief-handoff.test.ts` |  |
 | `NOTIFY-001` | Responsible operator | published | partial | `src/core/features/notifications/routes.ts`; `tests/core/assistance.test.ts`; `tests/e2e/zz-notifications.spec.mjs` | Unasserted in the carried evidence: assigned-deal responsible recipient (the fixture leaves the deal unassigned). Asserted: unassigned queue recipient; unassigned reply recipient and replay count; delivery-problem recipient once; no-actor fallback goes to every active operator. |
 | `NOTIFY-002` | Read state | published | partial | `src/core/features/notifications/routes.ts`; `tests/core/assistance.test.ts`; `tests/e2e/zz-notifications.spec.mjs` | Unasserted in the carried evidence: read state persists after a new sign-in session. Asserted: recipient read mark stored; another recipient cannot mark it; unread count returns to previous value; queue notice not duplicated. |

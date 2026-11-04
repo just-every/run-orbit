@@ -16,9 +16,9 @@ const byKind=(brief:Brief,kind:BriefLine['kind'])=>lines(brief).filter(line=>lin
 const count=async(sql:string)=>(await db.prepare(sql).first<{n:number}>())!.n;
 
 async function contactOf(t:TodayApp,opportunityId:string){return (await t.json<{opportunity:{contacts:{id:string}[]}}>(`/api/v1/opportunities/${opportunityId}`,{},200)).opportunity.contacts[0]!.id;}
-async function overdueHandoff(t:TodayApp,opportunityId:string,title:string){
+async function overdueHandoff(t:TodayApp,opportunityId:string,title:string,dueAt=new Date(Date.now()-86400000).toISOString()){
  const target=`opportunities/${opportunityId}/handoffs/${createId()}`,s=await snapshot(db,target,true);
- const response=await t.app.request('https://orbit.test/delegation/handoffs',{method:'POST',headers:{cookie:`__Host-orbit_session=${t.session.token}`,origin:'https://orbit.test','content-type':'application/json'},body:JSON.stringify({operationKey:createId(),operation:'orbit.handoff.upsert',target,expectedRevision:s.revision,expectedAudienceRevision:s.audience.audienceRevision,content:{title,description:'Promised on the last call',assigneeId:t.actor,dueAt:new Date(Date.now()-86400000).toISOString(),status:'open'}})});
+ const response=await t.app.request('https://orbit.test/delegation/handoffs',{method:'POST',headers:{cookie:`__Host-orbit_session=${t.session.token}`,origin:'https://orbit.test','content-type':'application/json'},body:JSON.stringify({operationKey:createId(),operation:'orbit.handoff.upsert',target,expectedRevision:s.revision,expectedAudienceRevision:s.audience.audienceRevision,content:{title,description:'Promised on the last call',assigneeId:t.actor,dueAt,status:'open'}})});
  assert.equal(response.status,200,await response.clone().text());return target.split('/')[3]!;
 }
 async function captureUnknown(t:TodayApp,subject:string){
@@ -188,6 +188,9 @@ test('BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a
  assert.equal((await t.call(`/api/v1/today/meetings/${meeting}`)).status,409);assert.ok((await t.brief()).held.some(line=>line.evidence.id===meeting&&line.kind==='held-capture'));
  const proposal=(await db.prepare("SELECT id FROM capture_proposals WHERE signal_id=? AND kind='link_signal'").bind(meeting).first<{id:string}>())!.id;
  await t.json(`/api/v1/capture/proposals/${proposal}/accept`,{body:{}},200);
+ const dueAt='2026-01-02T12:00:00.000Z',promise=await overdueHandoff(t,opportunity,'Send the rollout checklist',dueAt);
+ const unrelated=await t.opportunity('Unrelated renewal','Unrelated Company','Other Buyer',['synthetic-orbit-21','example.test'].join('@'));
+ const outside=await overdueHandoff(t,unrelated,'Prepare the unrelated renewal',dueAt);
  const before={drafts:await count('SELECT count(*) AS n FROM drafts'),messages:await count('SELECT count(*) AS n FROM outbound_messages')};
  const {plan}=await t.json<{plan:any}>(`/api/v1/today/meetings/${meeting}`,{},200);
  assert.equal(plan.meeting.start,start.toISOString().replace(/\.\d{3}Z$/,'.000Z'));
@@ -196,6 +199,14 @@ test('BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a
  assert.deepEqual(plan.unresolved,[{email:'sam@delta.test',company:null}]);
  assert.equal(plan.primaryOpportunityId,opportunity);assert.equal(plan.openValueCents,1250000);
  assert.ok(plan.interactions.some((line:any)=>line.title==='Rollout questions'&&line.href.startsWith(`/app/opportunities/${opportunity}#entry-`)));
+ const outstanding=plan.promises.find((line:any)=>line.evidence.id===promise);
+ assert.ok(outstanding,'The linked record’s outstanding promise is on the plan');
+ assert.deepEqual({title:outstanding.title,dueAt:outstanding.dueAt,evidence:outstanding.evidence,href:outstanding.href},
+  {title:'Send the rollout checklist',dueAt,evidence:{type:'handoff',id:promise},href:`/app/opportunities/${opportunity}#handoff-${promise}`});
+ assert.ok(!plan.promises.some((line:any)=>line.evidence.id===outside),'Unrelated records’ promises stay off this plan');
+ assert.equal((await t.call(outstanding.href.split('#')[0]!.replace('/app/opportunities/','/api/v1/opportunities/'))).status,200,'The citation opens its authenticated record');
+ assert.equal((await t.app.request(`https://orbit.test/api/v1/opportunities/${opportunity}`)).status,401,'The cited record still requires sign-in');
+
  // Agenda and prep notes are one RECORD-010 note on the opportunity; saving again edits it.
  const saved=await t.json<{entryId:string}>(`/api/v1/today/meetings/${meeting}/plan`,{method:'PUT',body:{agenda:'1. Rollout dates',prep:'Bring the migration checklist'}},200);
  const again=await t.json<{entryId:string}>(`/api/v1/today/meetings/${meeting}/plan`,{method:'PUT',body:{agenda:'1. Rollout dates\n2. Owners',prep:'Bring the migration checklist'}},200);
