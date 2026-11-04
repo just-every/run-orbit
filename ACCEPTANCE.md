@@ -8,12 +8,12 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 30 | 124 | 24 | 178 |
+| Core | 32 | 122 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 30 | 142 | 32 | 204 |
+| Full target | 32 | 140 | 32 | 204 |
 
-Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
+Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
 ## Core
 
@@ -842,27 +842,27 @@ Core · published · **partial** · Cites BASE-ROLE-001
 
 #### BRIEF-003 — Account summary
 
-Core · published · **partial** · Cites BASE-ROLE-001
+Core · published · **done** · Cites BASE-ROLE-001
 
 **Requirement.** With a provider configured (AI-001), an operator can ask for a one-paragraph summary of one account's brief lines. The request preview shows every field sent, and the request is sent only unchanged from that preview; a brief that changed since the preview is refused with 409. Output must validate and cite only evidence IDs from that account's lines (AI-002); failing or uncited output is recorded (AI-004) and shown as failed, never repaired or replaced. Summaries are not stored, and a provider failure leaves the brief whole.
 
 **Acceptance.**
 1. Preview an account summary, alter the brief before generation and require refusal; generate on a fresh preview and reject uncited provider output.
 
-**Evidence.** `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts`
-**Gap.** Unasserted in the carried evidence: actual brief change before generation refused. Asserted: preview sends exact request; fresh summary result succeeds; uncited output fails with no summary.
+**Evidence.** `src/core/features/today/summary.ts`; `tests/core/today-brief.test.ts` — BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks; `tests/delegation-browser/today-brief.test.ts` — a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390
+**Gap.** None.
 
 #### BRIEF-004 — Meeting plan
 
-Core · published · **partial** · Cites BASE-ROLE-001
+Core · published · **done** · Cites BASE-ROLE-001
 
 **Requirement.** A meeting signal linked to a record (booked, completed or canceled, from a source or from capture) has a plan page: its time exactly as the source gave it or the statement that none was given; attendees resolved by exact email key (RECORD-003) with their company and open opportunities; attendees with no record listed as unresolved, never guessed, with a way to create a contact with that exact address; the opportunities with value, stage and owner and their total open value; the last interactions on its records and the outstanding promises on them (BRIEF-002), each citing its timeline entry or record. The agenda and prep notes are saved as one note under RECORD-010 on the meeting's opportunity (or its company or contact) and edited in place. A person can turn a cited plan line into an internal next action on the meeting's opportunity that cites that line. Planning creates no draft and sends nothing (OUT-001).
 
 **Acceptance.**
 1. Open a linked meeting, inspect resolved/unresolved attendees and promises, save agenda/prep and create a cited internal task without customer outreach.
 
-**Evidence.** `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts`
-**Gap.** Unasserted in the carried evidence: promises on meeting plan. Asserted: resolved attendee fields; unresolved attendee address; agenda/prep read after save; cited internal task; uncited task refused; no draft or customer message created.
+**Evidence.** `src/core/features/today/meeting-plan.ts`; `tests/core/today-brief.test.ts` — BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a cited plan with unresolved attendees shown, notes saved as one editable note, and plan lines become next actions without sending anything; a mention notifies once, asks to share the deal with its notes, calls and meetings before notifying a collaborator, who then reads only their own mention and opens the entry on Shared records until the grant is revoked; it withdraws on delete and never reaches AI or a customer; `tests/delegation-browser/today-brief.test.ts` — a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390
+**Gap.** None.
 
 #### BRIEF-005 — Agent handoff
 
