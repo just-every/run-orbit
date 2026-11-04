@@ -16,9 +16,9 @@ const byKind=(brief:Brief,kind:BriefLine['kind'])=>lines(brief).filter(line=>lin
 const count=async(sql:string)=>(await db.prepare(sql).first<{n:number}>())!.n;
 
 async function contactOf(t:TodayApp,opportunityId:string){return (await t.json<{opportunity:{contacts:{id:string}[]}}>(`/api/v1/opportunities/${opportunityId}`,{},200)).opportunity.contacts[0]!.id;}
-async function overdueHandoff(t:TodayApp,opportunityId:string,title:string){
+async function overdueHandoff(t:TodayApp,opportunityId:string,title:string,dueAt=new Date(Date.now()-86400000).toISOString()){
  const target=`opportunities/${opportunityId}/handoffs/${createId()}`,s=await snapshot(db,target,true);
- const response=await t.app.request('https://orbit.test/delegation/handoffs',{method:'POST',headers:{cookie:`__Host-orbit_session=${t.session.token}`,origin:'https://orbit.test','content-type':'application/json'},body:JSON.stringify({operationKey:createId(),operation:'orbit.handoff.upsert',target,expectedRevision:s.revision,expectedAudienceRevision:s.audience.audienceRevision,content:{title,description:'Promised on the last call',assigneeId:t.actor,dueAt:new Date(Date.now()-86400000).toISOString(),status:'open'}})});
+ const response=await t.app.request('https://orbit.test/delegation/handoffs',{method:'POST',headers:{cookie:`__Host-orbit_session=${t.session.token}`,origin:'https://orbit.test','content-type':'application/json'},body:JSON.stringify({operationKey:createId(),operation:'orbit.handoff.upsert',target,expectedRevision:s.revision,expectedAudienceRevision:s.audience.audienceRevision,content:{title,description:'Promised on the last call',assigneeId:t.actor,dueAt,status:'open'}})});
  assert.equal(response.status,200,await response.clone().text());return target.split('/')[3]!;
 }
 async function captureUnknown(t:TodayApp,subject:string){
@@ -99,24 +99,42 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
 
 });
 
-test('BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks',async()=>{
+test('BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks',async(context)=>{
+ context.mock.timers.enable({apis:['Date'],now:Date.now()});
  const config={OPENAI_API_KEY:'test-only',AI_MODEL:'test-model',AI_INPUT_COST_PER_MILLION:'1',AI_OUTPUT_COST_PER_MILLION:'2'};
  const operator=createId(),t=await todayApp(db,{provider:createAIProvider(config),operatorId:operator}),off=await todayApp(db,{operatorId:operator});
  const brief=await t.brief(),account=brief.accounts.find(a=>a.name==='Acme Logistics')!,ids=account.lines.map(l=>l.evidence.id);
  const original=fetch,sent:unknown[]=[];let answer:()=>Response=()=>new Response('down',{status:503});
- globalThis.fetch=async(_url,init)=>{sent.push(JSON.parse(JSON.parse(String(init!.body)).input));return answer();};
+ globalThis.fetch=async(url,init)=>{if(url!=='https://api.openai.com/v1/responses')return original(url,init);sent.push(JSON.parse(JSON.parse(String(init!.body)).input));return answer();};
  const reply=(output:unknown)=>()=>Response.json({status:'completed',usage:{input_tokens:50,output_tokens:20},output:[{content:[{type:'output_text',text:JSON.stringify(output)}]}]});
  try{
-  const preview=await t.json<{configured:boolean;request:{lines:{evidenceId:string}[]};requestHash:string}>('/api/v1/today/summary/preview',{body:{account:account.key}},200);
-  assert.equal(preview.configured,true);assert.deepEqual(preview.request.lines.map(l=>l.evidenceId),ids);
+  type Preview={configured:boolean;request:{lines:{evidenceId:string}[]};requestHash:string};
+  const originalPreview=await t.json<Preview>('/api/v1/today/summary/preview',{body:{account:account.key}},200);
+  assert.equal(originalPreview.configured,true);assert.deepEqual(originalPreview.request.lines.map(l=>l.evidenceId),ids);
+  const opportunity=account.lines.flatMap(line=>line.records).find(record=>record.type==='opportunity')!;
+  const added=await t.event(opportunity.id,'form.submitted','Updated renewal requirements',0);
+  const changed=(await t.brief()).accounts.find(item=>item.key===account.key)!;
+  assert.notDeepEqual(changed.lines,account.lines,'New evidence changes this account’s brief through the native event door');
+  assert.ok(changed.lines.some(line=>line.evidence.id===added),'The changed brief includes the new evidence');
+  const beforeCalls=(await db.prepare("SELECT * FROM ai_calls WHERE feature='brief.summary' ORDER BY id").all()).results;
+  const beforeRequests=sent.length;
+  const stale=await t.call('/api/v1/today/summary',{body:{account:account.key,requestHash:originalPreview.requestHash}});
+  assert.equal(stale.status,409);assert.match(await stale.text(),/brief changed since your preview/i);
+  assert.equal(sent.length,beforeRequests,'A stale preview makes no model request');
+  assert.deepEqual((await db.prepare("SELECT * FROM ai_calls WHERE feature='brief.summary' ORDER BY id").all()).results,beforeCalls,'A stale preview records no model call');
+  const preview=await t.json<Preview>('/api/v1/today/summary/preview',{body:{account:account.key}},200);
+  assert.notEqual(preview.requestHash,originalPreview.requestHash);
+  assert.deepEqual(preview.request.lines.map(line=>line.evidenceId),changed.lines.map(line=>line.evidence.id));
   answer=reply({summary:'Ana asked for pricing and replied about the contract.',evidenceIds:[ids[0]]});
   const ok=await t.json<{status:string;summary:string;evidenceIds:string[]}>('/api/v1/today/summary',{body:{account:account.key,requestHash:preview.requestHash}},200);
-  assert.equal(ok.status,'succeeded');assert.deepEqual(sent.at(-1),preview.request,'exactly the previewed request is sent');
+  assert.equal(ok.status,'succeeded');assert.equal(sent.length,beforeRequests+1);assert.deepEqual(sent.at(-1),preview.request,'exactly the previewed request is sent');
   for(const output of [{summary:'No citations at all.',evidenceIds:[]},{summary:'Cites something invented.',evidenceIds:['invented-evidence']}]){
+   context.mock.timers.tick(1);
    answer=reply(output);const failed=await t.call('/api/v1/today/summary',{body:{account:account.key,requestHash:preview.requestHash}});
    assert.equal(failed.status,502);const body=await failed.json() as {status:string;summary?:string};assert.equal(body.status,'failed');assert.equal(body.summary,undefined);
   }
   assert.equal((await t.call('/api/v1/today/summary',{body:{account:account.key,requestHash:'0'.repeat(64)}})).status,409);
+  context.mock.timers.tick(1);
   answer=()=>new Response('down',{status:503});
   assert.equal((await t.call('/api/v1/today/summary',{body:{account:account.key,requestHash:preview.requestHash}})).status,502);
   const calls=(await db.prepare("SELECT status FROM ai_calls WHERE feature='brief.summary' ORDER BY created_at,id").all<{status:string}>()).results.map(r=>r.status);
@@ -126,6 +144,7 @@ test('BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as p
  const{generatedAt:_a,...whole}=await t.brief(),{generatedAt:_b,...unconfigured}=await off.brief();assert.deepEqual(unconfigured,whole);
  assert.equal((await off.json<{configured:boolean}>('/api/v1/today/summary/preview',{body:{account:account.key}},200)).configured,false);
  assert.equal((await off.call('/api/v1/today/summary',{body:{account:account.key,requestHash:'0'.repeat(64)}})).status,503);
+ context.mock.timers.reset();
  await agentRisks(t,off);
 });
 
@@ -188,8 +207,13 @@ test('BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a
  assert.equal((await t.call(`/api/v1/today/meetings/${meeting}`)).status,409);assert.ok((await t.brief()).held.some(line=>line.evidence.id===meeting&&line.kind==='held-capture'));
  const proposal=(await db.prepare("SELECT id FROM capture_proposals WHERE signal_id=? AND kind='link_signal'").bind(meeting).first<{id:string}>())!.id;
  await t.json(`/api/v1/capture/proposals/${proposal}/accept`,{body:{}},200);
+ const dueAt=new Date(Date.now()-86400000).toISOString(),promised=await overdueHandoff(t,opportunity,'Send the rollout checklist',dueAt);
+ const unrelated=await t.opportunity('Unrelated rollout','Unrelated Freight','Unrelated Buyer','synthetic-orbit-20@example.test');
+ const unrelatedPromise=await overdueHandoff(t,unrelated,'Send an unrelated checklist',dueAt);
  const before={drafts:await count('SELECT count(*) AS n FROM drafts'),messages:await count('SELECT count(*) AS n FROM outbound_messages')};
  const {plan}=await t.json<{plan:any}>(`/api/v1/today/meetings/${meeting}`,{},200);
+ assert.deepEqual(plan.promises.filter((line:BriefLine)=>line.kind==='handoff-due').map((line:BriefLine)=>({title:line.title,dueAt:line.dueAt,evidence:line.evidence,href:line.href})),[{title:'Send the rollout checklist',dueAt,evidence:{type:'handoff',id:promised},href:`/app/opportunities/${opportunity}#handoff-${promised}`}]);
+ assert.ok(!plan.promises.some((line:BriefLine)=>line.evidence.id===unrelatedPromise),'Promises on unrelated records stay off this meeting plan');
  assert.equal(plan.meeting.start,start.toISOString().replace(/\.\d{3}Z$/,'.000Z'));
  assert.deepEqual(plan.attendees.map((a:any)=>[a.contact.name,a.company?.name,a.opportunities.map((o:any)=>o.title)]),[['Mia Stone','Delta Freight',['Delta rollout']]]);
  // The company holds no domain key, so no company is inferred for the unknown address either.
