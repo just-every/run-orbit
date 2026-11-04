@@ -5499,7 +5499,7 @@
       "executable": false
     },
     "src/core/features/capture/forward/receive.ts": {
-      "sha256": "e2225e62b12a7c231fda9d6d09db8b554849b1abec5a2ad781324d001b166781",
+      "sha256": "b6c1f889c50b48340722c6e5aa8623d2adc84aa33d0209b60958e9c934787b76",
       "executable": false
     },
     "src/core/features/capture/forward/routes.ts": {
@@ -9931,7 +9931,7 @@
       "executable": false
     },
     "tests/core/capture-no-console.test.ts": {
-      "sha256": "7ca8ac89a46d10b6e785dd6c16ea40adc8f21007652730ad6806516462eab94d",
+      "sha256": "5a88642df08d0a03e04790f868dccc7e021a3d6a6d974708bc915b53ada0f486",
       "executable": false
     },
     "tests/core/capture-providers.test.ts": {
