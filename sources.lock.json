@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "dde39fca26aa3b9b71dd8e798215aeae2ed9c0199e366a5b0ecb731dec22fb66",
+      "sha256": "1b304d5d9ea3e00c41543afbb0d861c5781efba751986147c0f751b52387dc61",
       "executable": false
     },
     "DEMO.md": {
@@ -9903,7 +9903,7 @@
       "executable": false
     },
     "tests/core/assistance.test.ts": {
-      "sha256": "d8aac7a406ebc7b8818053cd3a3ad27f549fbf02b2c0ae54c76a6d8c750444e0",
+      "sha256": "259df3daa7eac4deacf3956117dbdc283eb2df86166f318c241ed2bd18092e5f",
       "executable": false
     },
     "tests/core/capture-boundaries.test.ts": {
