@@ -78,8 +78,8 @@ test.describe("authenticated operator UI", () => {
     expect(failures).toEqual([]);
   });
 
-  contract("OPP-002", "the desktop opportunity detail keeps independent fields visible", async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
+  contract("OPP-002", "the opportunity detail keeps state independent through stage, owner and evidence changes", async ({ page }, info) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
     const failures = watchFailures(page);
     await openOpportunity(page);
 
@@ -91,7 +91,57 @@ test.describe("authenticated operator UI", () => {
     const recorded = page.getByTestId("recorded-details");
     await recorded.locator("summary").click();
     await expect(recorded).toContainText("Needs attention · Open deal · score 92, High priority");
+    const {stages}=await (await page.request.get('/api/v1/settings')).json();
+    const id=new URL(page.url()).pathname.split('/').at(-1);
+    const original=(await (await page.request.get(`/api/v1/records/opportunity/${id}`)).json()).record;
+    const stage=stages.find(item=>item.id===original.stage_id);
+    const nextStage=stages.find(item=>item.id!==stage.id&&item.pipeline_id===stage.pipeline_id);
+    const origin=new URL(page.url()).origin;
+    const invited=await page.request.post('/api/v1/settings/operators',{headers:{Origin:origin},data:{displayName:'Independent state operator',email:['synthetic-orbit-4','example.test'].join('@')}});
+    expect(invited.status()).toBe(201);
+    const nextOwner=await invited.json();
+    expect(nextStage).toBeTruthy();expect(nextOwner.id).toBeTruthy();
+    // A separate native deal keeps the sample's already-proved display assertions intact.
+    const response=await page.request.post('/api/v1/records/opportunity',{headers:{Origin:origin},data:{title:'Independent state journey',stage_id:stage.id,owner_id:original.owner_id,value_cents:0}});
+    expect(response.status()).toBe(201);
+    const deal=await response.json();
+    const evidence=async(type,eventId)=>{
+      const reply=await page.request.post(`/api/v1/workbench/opportunities/${deal.id}/events`,{headers:{Origin:origin},data:{type,eventId,subject:'Observed customer evidence',occurredAt:new Date().toISOString()}});
+      expect(reply.status()).toBe(201);
+    };
+    await evidence('form.submitted','synthetic-orbit-1');
+    await page.goto(`/app/opportunities/${deal.id}`,{waitUntil:'networkidle'});
+    async function state(stageId,ownerId,score,band,queue){
+      const reply=await page.request.get(`/api/v1/records/opportunity/${deal.id}`);
+      expect(reply.status()).toBe(200);
+      const {record}=await reply.json();
+      expect({lifecycle:record.lifecycle,stage:record.stage_id,owner:record.owner_id,score:record.score,band:record.band,queue:record.queue_state}).toEqual({lifecycle:'open',stage:stageId,owner:ownerId,score,band,queue});
+      await expect(details.getByLabel('Stage',{exact:true})).toHaveValue(stageId);
+      await expect(details.getByLabel('Owner',{exact:true})).toHaveValue(ownerId);
+      if(!await recorded.evaluate(element=>element.open))await recorded.locator('summary').click();
+      await expect(recorded).toContainText(`${queue==='now'?'Needs attention':'No attention needed'} · Open deal · score ${score}, ${band==='high'?'High':'Low'} priority`);
+      const now=await (await page.request.get('/api/v1/opportunities/now')).json();
+      expect(now.opportunities.some(item=>item.id===deal.id)).toBe(queue==='now');
+    }
+    await state(stage.id,original.owner_id,25,'low','none');
+    const moved=page.waitForResponse(reply=>reply.url().endsWith(`/records/opportunity/${deal.id}/move`)&&reply.request().method()==='POST');
+    await details.getByLabel('Stage',{exact:true}).selectOption(nextStage.id);
+    expect((await moved).status()).toBe(200);
+    await page.reload({waitUntil:'networkidle'});
+    await state(nextStage.id,original.owner_id,25,'low','none');
+    const assigned=page.waitForResponse(reply=>reply.url().endsWith(`/records/opportunity/${deal.id}`)&&reply.request().method()==='PATCH');
+    await details.getByLabel('Owner',{exact:true}).selectOption(nextOwner.id);
+    expect((await assigned).status()).toBe(200);
+    await page.reload({waitUntil:'networkidle'});
+    await state(nextStage.id,nextOwner.id,25,'low','none');
+    await evidence('meeting.booked','synthetic-orbit-2');
+    await page.reload({waitUntil:'networkidle'});
+    await state(nextStage.id,nextOwner.id,70,'high','now');
+    await expect(page.getByTestId('contributing-evidence').locator('summary')).toContainText('score 70');
     await expectNoHorizontalOverflow(page);
+    await page.screenshot({path:info.outputPath('independent-state-1440.png'),fullPage:true});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:info.outputPath('independent-state-390.png'),fullPage:true});
     expect(failures).toEqual([]);
   });
 

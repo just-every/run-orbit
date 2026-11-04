@@ -10047,7 +10047,7 @@
       "executable": false
     },
     "tests/core/records-search.test.ts": {
-      "sha256": "7ac001cecb56d3878a99f58574b1dd3629496d49ce08cc5311b81d250502586d",
+      "sha256": "c2dfa8a2951376a4169f568ad9c6102b9fddad4f4222bebef8886f2b2a733701",
       "executable": false
     },
     "tests/core/request-scheduling.test.ts": {
@@ -10187,7 +10187,7 @@
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
-      "sha256": "37cbfec9c3954b08177169cd175919d7335855d3c73ebc4199f872818a536f7b",
+      "sha256": "239addc521e7604d0b4d01db05ad31e829dc08b70eec111cc53e912fa471dedd",
       "executable": false
     },
     "tests/e2e/records.spec.mjs": {
@@ -11047,7 +11047,7 @@
       "executable": false
     },
     "tests/support/sales-pipelines.ts": {
-      "sha256": "356c1acbb6e9375e08b62fbff99ae70a35fec63858db805023ae9d2f4e501283",
+      "sha256": "2f43239e226e168a348535d608280d24f4ba37ef14079632aed8f889c33f3101",
       "executable": false
     },
     "tests/support/sales-tasks.ts": {
