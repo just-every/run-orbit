@@ -17,11 +17,21 @@ import { signedReplies } from '../support/signed-reply';
 const platform=await isolatedDatabase();after(()=>platform.dispose());const db=platform.db;
 async function fixture(){const deps=createDependencies(db),actor=createId(),stage=createId(),at=new Date().toISOString();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.example`,displayName:'Signals operator'});await deps.workspace.ensureWorkspace({name:'Signals workspace',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:['gmail.com']});const position=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Test',position:position!.n});const email=`${createId()}@customer.example`;const opportunity=await new WorkbenchRepository(db).createOpportunity({title:'Signals test',companyName:'Customer',contactName:'Contact',email,stageId:stage,valueCents:100},actor);const contact=await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(opportunity.id).first<{contact_id:string}>();return{actor,opportunityId:opportunity.id,contactId:contact!.contact_id,email,at};}
 async function sign(secret:string,body:string,timestamp:string){const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);return Array.from(new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(`${timestamp}.${body}`))),b=>b.toString(16).padStart(2,'0')).join('');}
+async function ingestionInventory(){
+ const tables=['signals','signal_links','unlinked_signals','timeline_entries','timeline_entry_records','evaluations','evaluation_contributions','recommendations','recommendation_evidence','notifications','audit_entries','opportunities','contacts','companies','drafts','outbound_messages','signal_sources','source_event_errors'] as const;
+ const rows=await db.batch(tables.map(table=>db.prepare(`SELECT * FROM ${table} ORDER BY rowid`)));
+ return Object.fromEntries(tables.map((table,index)=>[table,rows[index]!.results]));
+}
 test('SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing',async()=>{
  const f=await fixture(),security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'11'.repeat(32)})!,repository=new IngestionRepository(db),source=createId(),secret='source-secret-'.repeat(4);await repository.configure({id:source,name:'Source',enabled:true,secret},security);const app=createSignalIngress(db,security),timestamp=String(Math.floor(Date.now()/1000));
  const event={eventId:createId(),type:'email.replied',subject:'Reply',occurredAt:f.at,email:f.email};const raw=JSON.stringify(event),signature=await sign(secret,raw,timestamp);
- const request=(body=raw,sig=signature)=>app.request(`https://orbit.test/${source}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':sig},body});
- assert.equal((await request(raw,'invalid')).status,401);assert.equal((await request('x'.repeat(262145))).status,413);
+ const request=(body=raw,sig=signature,sourceId=source)=>app.request(`https://orbit.test/${sourceId}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':sig},body});
+ const beforeRefusal=await ingestionInventory();
+ assert.equal((await request(raw,'')).status,401);assert.deepEqual(await ingestionInventory(),beforeRefusal,'A missing signature writes nothing');
+ assert.equal((await request(raw,'invalid')).status,401);assert.deepEqual(await ingestionInventory(),beforeRefusal,'An invalid signature writes nothing');
+ const unknown=await request(raw,signature,createId());assert.equal(unknown.status,403);assert.deepEqual(await unknown.json(),{error:'Source is not configured.'});
+ assert.deepEqual(await ingestionInventory(),beforeRefusal,'An unconfigured source changes no domain rows or source diagnostics');
+ assert.equal((await request('x'.repeat(262145))).status,413);assert.deepEqual(await ingestionInventory(),beforeRefusal,'Oversized input writes nothing');
  const posted=Date.now(),results=await Promise.all([request(),request()]);assert.deepEqual(results.map(r=>r.status),[201,201]);const ids=await Promise.all(results.map(r=>r.json() as Promise<{id:string}>));assert.equal(ids[0]!.id,ids[1]!.id);
  // SIGNAL-001: the attributed signal and its linked timeline entry are readable through the Records route within ten seconds of the signed POST.
  const records=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}}),reader=await createDependencies(db).auth.createSession(f.actor),read=async(path:string)=>{const response=await records.request(`https://orbit.test/api/v1/records/${path}`,{headers:{Cookie:`__Host-orbit_session=${reader.token}`}});assert.equal(response.status,200);return response.json() as Promise<{timeline:{id:string;signal_type:string}[]}>;};
@@ -31,7 +41,9 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe 
  const signal=await db.prepare('SELECT COUNT(*) AS n FROM signals WHERE source_id=?').bind(source).first<{n:number}>();assert.equal(signal?.n,1);
  const score=await db.prepare('SELECT score FROM opportunities WHERE id=?').bind(f.opportunityId).first<{score:number}>();assert.equal(score?.score,40);
  const tracking={...event,eventId:createId(),type:'page.viewed'};await repository.ingest(source,tracking,await payloadHash(JSON.stringify(tracking)),JSON.stringify(tracking));const unlinked=await repository.unlinked();assert.ok(unlinked.some(row=>row.type==='page.viewed'));
- const diagnostics=await repository.sources();assert.equal(diagnostics.find(row=>row.id===source)?.rejected_count,1);
+ const sourceRead=await records.request('https://orbit.test/api/v1/sources',{headers:{Cookie:`__Host-orbit_session=${reader.token}`}});assert.equal(sourceRead.status,200);
+ const diagnostics=await sourceRead.json() as {sources:{id:string;rejected_count:number;last_error:string;last_accepted_at:string}[]},diagnostic=diagnostics.sources.find(row=>row.id===source);
+ assert.equal(diagnostic?.rejected_count,1);assert.match(diagnostic!.last_error,/different payload/);assert.ok(diagnostic!.last_accepted_at);
 });
 test('OUT-008 recipient clocks respect weekdays, DST and time to review an out-of-hours send',async context=>{
  const sunday=new Date('2026-09-13T10:00:00Z');assert.equal(nextPermitted(sunday,'Europe/London').toISOString(),'2026-09-14T07:00:00.000Z');
@@ -155,15 +167,38 @@ test('BASE-OPS-003 OUT-002 OUT-005 signed provider delivery is verified and idem
  const count=await db.prepare("SELECT COUNT(*) AS n FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id WHERE r.record_id=? AND t.kind='provider.delivered'").bind(f.opportunityId).first<{n:number}>();assert.equal(count?.n,1);
 });
 
-test('SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a persistence failure rolls back all signal effects',async()=>{
+test('SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a persistence failure rolls back all signal effects',async context=>{
+ context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T09:00:00Z')});
  const f=await fixture(),repository=new IngestionRepository(db),source=createId(),security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'22'.repeat(32)})!;await repository.configure({id:source,name:'Review source',secret:'s'.repeat(40),enabled:true},security);
- const event={eventId:createId(),type:'meeting.booked',subject:'Late customer meeting',occurredAt:new Date(Date.now()-86400000).toISOString()};const raw=JSON.stringify(event),signal=await repository.ingest(source,event,await payloadHash(raw),raw);const prior=await db.prepare('SELECT score FROM opportunities WHERE id=?').bind(f.opportunityId).first<{score:number}>();assert.equal(prior?.score,0);
+ const event={eventId:createId(),type:'meeting.booked',subject:'Late customer meeting',occurredAt:new Date(Date.now()-2*86400000).toISOString()};const raw=JSON.stringify(event),signal=await repository.ingest(source,event,await payloadHash(raw),raw);const prior=await db.prepare('SELECT score FROM opportunities WHERE id=?').bind(f.opportunityId).first<{score:number}>();assert.equal(prior?.score,0);
  await repository.link(signal.id,{type:'opportunity',id:f.opportunityId,basis:'Operator review'},f.actor);await assert.rejects(repository.link(signal.id,{type:'opportunity',id:f.opportunityId,basis:'Operator review'},f.actor));
  const entry=await db.prepare('SELECT occurred_at FROM timeline_entries WHERE id=?').bind(signal.id).first<{occurred_at:string}>();assert.equal(entry?.occurred_at,event.occurredAt);
- const candidate={...event,eventId:createId(),record:{type:'opportunity' as const,id:f.opportunityId}};const candidateRaw=JSON.stringify(candidate);
- await db.prepare("CREATE TRIGGER test_reject_evaluation BEFORE INSERT ON evaluations BEGIN SELECT RAISE(ABORT,'fixture persistence failure'); END").run();
- try{await assert.rejects(repository.ingest(source,candidate,await payloadHash(candidateRaw),candidateRaw));}finally{await db.prepare('DROP TRIGGER test_reject_evaluation').run();}
+ await db.prepare("UPDATE opportunities SET queue_state='next',queue_reason='Waiting for customer',next_due_at='2030-01-07T10:00:00.000Z',owner_id=? WHERE id=?").bind(f.actor,f.opportunityId).run();
+ context.mock.timers.tick(1000);
+ const candidate={...event,eventId:createId(),record:{type:'opportunity' as const,id:f.opportunityId}},candidateRaw=JSON.stringify(candidate),timestamp=String(Math.floor(Date.now()/1000)),signature=await sign('s'.repeat(40),candidateRaw,timestamp);
+ const app=createApp({database:db,sourceSecurity:security,assets:{fetch:async()=>new Response(null,{status:404})}}),session=await createDependencies(db).auth.createSession(f.actor);
+ const deliver=()=>app.request(`https://orbit.test/api/v1/signals/${source}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':signature},body:candidateRaw});
+ const read=async(path:string)=>{const response=await app.request(`https://orbit.test/api/v1/${path}`,{headers:{Cookie:`__Host-orbit_session=${session.token}`}});assert.equal(response.status,200);return response.json() as Promise<any>;};
+ const before=await ingestionInventory(),visibleBefore=await read(`records/opportunity/${f.opportunityId}`),noticesBefore=await read('notifications');
+ // Fail after scoring, recommendation evidence and queue notifications have been written inside the transaction.
+ await db.prepare("CREATE TRIGGER test_reject_evaluation BEFORE INSERT ON timeline_entries WHEN NEW.kind='opportunity.evaluated' BEGIN SELECT RAISE(ABORT,'fixture persistence failure'); END").run();
+ try{
+  const failed=await deliver();assert.equal(failed.status,503);assert.deepEqual(await failed.json(),{error:'Signal persistence failed; replay the same event identity.'});
+  assert.deepEqual(await ingestionInventory(),before,'Persistence failure restores every prior domain row, including opportunity state and source acceptance');
+  assert.deepEqual(await read(`records/opportunity/${f.opportunityId}`),visibleBefore,'The operator sees the same evidence and sales state after failure');
+  assert.deepEqual(await read('notifications'),noticesBefore,'A rolled-back queue change creates no visible notification');
+ }finally{await db.prepare('DROP TRIGGER test_reject_evaluation').run();}
  const absent=await db.prepare('SELECT id FROM signals WHERE source_id=? AND source_event_id=?').bind(source,candidate.eventId).first();assert.equal(absent,null);
+ const accepted=await deliver();assert.equal(accepted.status,201);const saved=await accepted.json() as {id:string;linked:boolean};assert.equal(saved.linked,true);
+ const after=await ingestionInventory();
+ for(const [table,added] of Object.entries({signals:1,signal_links:1,timeline_entries:3,timeline_entry_records:3,evaluations:1,evaluation_contributions:2,recommendations:1,recommendation_evidence:2,notifications:1}))assert.equal(after[table]!.length-before[table]!.length,added,`${table} has exactly one complete effect set`);
+ const evaluation=await db.prepare("SELECT id,score,band FROM evaluations WHERE opportunity_id=? AND status='current'").bind(f.opportunityId).first<{id:string;score:number;band:string}>();assert.equal(evaluation?.score,84);assert.equal(evaluation?.band,'high');
+ assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM evaluation_contributions WHERE evaluation_id=? AND signal_id=?').bind(evaluation!.id,saved.id).first<{n:number}>())?.n,1);
+ const opportunity=await db.prepare('SELECT score,band,queue_state,next_due_at FROM opportunities WHERE id=?').bind(f.opportunityId).first();assert.deepEqual(opportunity,{score:84,band:'high',queue_state:'now',next_due_at:null});
+ const visible=await read(`records/opportunity/${f.opportunityId}`);assert.equal(visible.timeline.filter((entry:{id:string})=>entry.id===saved.id).length,1);
+ const notices=await read('notifications');assert.equal(notices.notifications.filter((notice:{opportunityId:string;kind:string})=>notice.opportunityId===f.opportunityId&&notice.kind==='opportunity.now').length,noticesBefore.notifications.filter((notice:{opportunityId:string;kind:string})=>notice.opportunityId===f.opportunityId&&notice.kind==='opportunity.now').length+1);
+ const replay=await deliver();assert.equal(replay.status,201);assert.deepEqual(await replay.json(),{id:saved.id,replayed:true});assert.deepEqual(await ingestionInventory(),after,'Identical replay changes no domain rows');
+ assert.deepEqual(await read(`records/opportunity/${f.opportunityId}`),visible);assert.deepEqual(await read('notifications'),notices);
 });
 
 test('SIGNAL-009 shared provider relay authenticates destination HMAC and refuses modified events',async()=>{
