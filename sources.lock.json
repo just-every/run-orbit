@@ -10963,7 +10963,7 @@
       "executable": false
     },
     "tests/support/launch-fixture.ts": {
-      "sha256": "9442dfc46e8a92e44ee426ec891825213031e844a77f632c7973962073a03c72",
+      "sha256": "8ff2462d06ef6a1e74a1eb7d9d1849c1a70e5beb7241822a950e09c34c392fc1",
       "executable": false
     },
     "tests/support/mail-transport-client.ts": {
