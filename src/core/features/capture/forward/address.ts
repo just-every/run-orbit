@@ -29,3 +29,10 @@ export function addressedTo(recipients:string[],config:MailboxConfig,tag:string)
   return equal(address,expected);
  });
 }
+
+/** The tag authorizes delivery, never evidence. Also masks retired tags for this mailbox. */
+export function maskForwardAddress<T>(value:T,config:MailboxConfig):T{
+ const escape=(text:string)=>text.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+ const tagged=new RegExp(`${escape(config.local)}\\+[^\\s@<>\\\"\\\\]+@${escape(config.domain)}`,'gi');
+ return JSON.parse(JSON.stringify(value).replace(tagged,`${config.local}@${config.domain}`)) as T;
+}
