@@ -1,0 +1,84 @@
+rer toolchain: node v22.20.0 pnpm 10.12.4 (pins 22.20.0 / 10.12.4)
+TAP version 13
+# (node:8138) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# (node:8138) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing
+not ok 1 - SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing
+  ---
+  duration_ms: 3715.759397
+  type: 'test'
+  location: '/workspace/run-orbit-sd-orbit-c-f62/tests/core/signals-outreach.test.ts:1:3339'
+  failureType: 'testCodeFailure'
+  error: |-
+    Every contributing signal retains its exact weighted, aged value
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          contribution: 30,
+          signalId: '01V0JNKDG00FAR54KA00PJVT1H'
+        },
+    ...
+        {
+    +     contribution: 41,
+    -     contribution: 36,
+          signalId: '01V0JNKDG0MYSC04W7Y8EEE569'
+        },
+        {
+          contribution: 25,
+          signalId: '01V0JNKDG0RZBCWREGHC6YDVD1'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      signalId: '01V0JNKDG00FAR54KA00PJVT1H'
+      contribution: 30
+    1:
+      signalId: '01V0JNKDG01QDJW5C7WR64FDW6'
+      contribution: 40
+    2:
+      signalId: '01V0JNKDG04FSC9PY3M8ABZWKK'
+      contribution: -25
+    3:
+      signalId: '01V0JNKDG0MYSC04W7Y8EEE569'
+      contribution: 36
+    4:
+      signalId: '01V0JNKDG0RZBCWREGHC6YDVD1'
+      contribution: 25
+  actual:
+    0:
+      signalId: '01V0JNKDG00FAR54KA00PJVT1H'
+      contribution: 30
+    1:
+      signalId: '01V0JNKDG01QDJW5C7WR64FDW6'
+      contribution: 40
+    2:
+      signalId: '01V0JNKDG04FSC9PY3M8ABZWKK'
+      contribution: -25
+    3:
+      signalId: '01V0JNKDG0MYSC04W7Y8EEE569'
+      contribution: 41
+    4:
+      signalId: '01V0JNKDG0RZBCWREGHC6YDVD1'
+      contribution: 25
+  operator: 'deepStrictEqual'
+  stack: |-
+    evaluated (/workspace/run-orbit-sd-orbit-c-f62/tests/core/signals-outreach.test.ts:66:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async TestContext.<anonymous> (/workspace/run-orbit-sd-orbit-c-f62/tests/core/signals-outreach.test.ts:76:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 27857.601368

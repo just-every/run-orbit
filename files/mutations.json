@@ -1,0 +1,46 @@
+[
+  {
+    "name": "contributions",
+    "file": "src/core/features/opportunities/service.ts",
+    "mutation": {
+      "before": "contributions: await this.repository.listEvaluationContributions(evaluation.id)",
+      "after": "contributions: []"
+    },
+    "exit": 1,
+    "seconds": 27.785,
+    "log": "mutation-contributions.log"
+  },
+  {
+    "name": "policy",
+    "file": "src/core/features/opportunities/service.ts",
+    "mutation": {
+      "before": "policyVersion: evaluation.policyVersion,",
+      "after": "policyVersion: 'synthetic-orbit-wrong-policy',"
+    },
+    "exit": 1,
+    "seconds": 27.983,
+    "log": "mutation-policy.log"
+  },
+  {
+    "name": "decay",
+    "file": "src/core/features/workbench/evaluation-repository.ts",
+    "mutation": {
+      "before": "/30)) AS INTEGER)`",
+      "after": "/60)) AS INTEGER)`"
+    },
+    "exit": 1,
+    "seconds": 28.871,
+    "log": "mutation-decay.log"
+  },
+  {
+    "name": "closed",
+    "file": "src/core/features/workbench/evaluation-repository.ts",
+    "mutation": {
+      "before": "WHERE id=? AND lifecycle='open')`;",
+      "after": "WHERE id=?)`;"
+    },
+    "exit": 1,
+    "seconds": 32.978,
+    "log": "mutation-closed.log"
+  }
+]

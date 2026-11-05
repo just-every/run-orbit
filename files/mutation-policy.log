@@ -1,0 +1,41 @@
+rer toolchain: node v22.20.0 pnpm 10.12.4 (pins 22.20.0 / 10.12.4)
+TAP version 13
+# (node:7174) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# (node:7174) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing
+not ok 1 - SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing
+  ---
+  duration_ms: 2329.316756
+  type: 'test'
+  location: '/workspace/run-orbit-sd-orbit-c-f62/tests/core/signals-outreach.test.ts:1:3339'
+  failureType: 'testCodeFailure'
+  error: |-
+    Readback names the active policy that computed this evaluation
+    + actual - expected
+    
+    + 'synthetic-orbit-wrong-policy'
+    - 'opportunity.scoring.v1'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'opportunity.scoring.v1'
+  actual: 'synthetic-orbit-wrong-policy'
+  operator: 'strictEqual'
+  stack: |-
+    evaluated (/workspace/run-orbit-sd-orbit-c-f62/tests/core/signals-outreach.test.ts:70:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async TestContext.<anonymous> (/workspace/run-orbit-sd-orbit-c-f62/tests/core/signals-outreach.test.ts:74:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 26958.72551

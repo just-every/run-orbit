@@ -1,0 +1,14 @@
+# sd-orbit-c-f62 plan
+
+Target OPP-003, starting partial. The acceptance sentence is: ingest weighted signals and edit an open opportunity; inspect computed score, band, contributions and policy version, including decay and closed-deal exclusion. The current Gap also lists band, already covered by source onboarding. No new acceptance or policy choice is needed. OPP-002 independence and OPP-007 queue deadline work remain separate.
+
+1. Retain the existing signed-ingestion registration, all its refusals and replay assertions, and source-onboarding band proof. Extend the signed journey without adding a registration.
+2. Control Date; deliver observed positive and negative weighted evidence over signed HTTP. Read the authenticated opportunity detail and compare exact signal identities and contributions against configured weights and the contract decay rule, their clamped sum, the policy band, evaluation time and active policy identity.
+3. Advance evidence age, PATCH the open deal through Records, and read a distinct current evaluation with decayed values. Cross the decay horizon and prove zero remaining contributions. Exercise negative and upper score bounds.
+4. Close the deal through Records. Deliver later evidence and replay it, and edit the closed deal. Require unchanged evaluation, contributions and score, no new evaluations, and retained evidence on the same closed deal.
+5. Correct only failures demonstrated by that public-door journey. Run the touched file, existing source-onboarding band registration, typecheck and first-party checks. Keep the test inventory unchanged.
+6. Update only OPP-003 status and Evidence if all native outcomes pass. Retain every parent Status row and all existing acceptance text. Prove generator write and check, restore the generated views, regenerate source lock last and check it.
+7. Commit with fleet identity and hooks; inspect all candidate identities and trailers; publish the first real commit through the cloud guard. Integrate current main without rewriting published history. Discover and monitor only exact-SHA Verify under the API budget.
+8. Save complete actual results and receipts outside the product tree, publish the explicitly selected packet on the evidence ref, and relay status and gate dependencies to sd and ct. Landing, publication scan and Run site remain with the fleet.
+
+Frozen rubric: R1 signed weighted evidence is reflected in the authenticated detail with exact contributions and clamped score; R2 recorded band, active policy identity and evaluation time are correct; R3 a native open-deal edit evaluates aged evidence with linear decay, including expiry; R4 closed-deal evidence and edits preserve the prior evaluation and score while retaining new evidence. BASE-INPUT-001 is already cited for OPP-003; malformed and unauthorized signed input keeps the original no-write assertions.

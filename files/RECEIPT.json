@@ -1,0 +1,193 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f62",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f62",
+  "head": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+  "code_commit": "39dfa7ba77ad36f12dcf861447cf0790ab603c24",
+  "baseline": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "changed": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/core/signals-outreach.test.ts"
+  ],
+  "runtime_source_changes": false,
+  "proof_bytes_unchanged_after_code_commit": true,
+  "counts": {
+    "before": {
+      "done": 35,
+      "partial": 137,
+      "missing": 32,
+      "total": 204
+    },
+    "after": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "tests": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200,
+    "added_registrations": 0,
+    "removed_registrations": 0
+  },
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/signals-outreach.test.ts",
+      "exit": 0,
+      "passed": 16,
+      "node": "24.19.0",
+      "duration_ms": 626588.437615,
+      "log": "signals-outreach.log",
+      "source_equivalent_to": "3b0ce18793254ec00c67e677dad3b081c3cb83d2"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-name-pattern='source onboarding authenticates' tests/core/source-onboarding.test.ts",
+      "exit": 0,
+      "passed": 1,
+      "node": "24.19.0",
+      "duration_ms": 407415.358132,
+      "log": "source-onboarding.log",
+      "source_equivalent_to": "3b0ce18793254ec00c67e677dad3b081c3cb83d2"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-name-pattern='signed replay-safe ingestion' tests/core/signals-outreach.test.ts",
+      "exit": 0,
+      "passed": 1,
+      "node": "22.20.0",
+      "duration_ms": 30673.765433,
+      "log": "candidate-probe.log",
+      "exact_head": "3b0ce18793254ec00c67e677dad3b081c3cb83d2"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "node": "22.20.0",
+      "log": "typecheck.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "node": "22.20.0"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "contract-generation.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "contract-generation.log",
+      "views_restored_from": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "source-lock-check.json",
+      "exact_head": "3b0ce18793254ec00c67e677dad3b081c3cb83d2"
+    }
+  ],
+  "status_retention": {
+    "status_rows": 204,
+    "all_table_rows_before": 458,
+    "all_table_rows_after": 458,
+    "all_parent_rows_retained": true,
+    "acceptance_unchanged": true
+  },
+  "publication_scan": {
+    "status": "pending fleet lander",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "run_site": {
+    "candidate": "pending main landing",
+    "baseline_run": 42116055015,
+    "baseline_conclusion": "success"
+  },
+  "baseline_verify": {
+    "run": 42116055029,
+    "conclusion": "success"
+  },
+  "browser_proof": {
+    "status": "not required",
+    "reason": "No UI or screen behaviour changed; OPP-003 acceptance is proved through signed ingress and authenticated native routes."
+  },
+  "migration_ledger": {
+    "command": null,
+    "exit": 0,
+    "reason": "No migration changed."
+  },
+  "product_push": {
+    "exit": 0,
+    "log": "product-push.log"
+  },
+  "verify": {
+    "head": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+    "event": "workflow_dispatch",
+    "dispatch_exit": 0,
+    "reason": "Both preservation and metadata commits carry skip ci; exact-SHA discovery found no Verify run.",
+    "dispatched_at_epoch": 1793919613.780517,
+    "run_id": 42126142966,
+    "status": "completed",
+    "conclusion": "failure",
+    "url": "https://github.com/just-every/run-orbit/actions/runs/42126142966",
+    "failed_jobs": [
+      {
+        "id": 127590899030,
+        "name": "source and shared build",
+        "cause": "contract-docs check reports only the two deliberately restored generated views; missing authoritative artifact follows the stopped source shard",
+        "log": "ci-source-failed.log"
+      },
+      {
+        "id": 127591166693,
+        "name": "verify",
+        "cause": "requires the failed source job and missing downstream artifacts",
+        "log": "ci-verdict-failed.log"
+      }
+    ],
+    "generated_view_exception": true,
+    "ready_under_user_exception": true,
+    "failed_job_log_reads": {
+      "source": 1,
+      "verify": 1
+    },
+    "repair_rounds": 0,
+    "shards_loaded": false
+  },
+  "committed_view_check": {
+    "command": "node src/base/contract-docs.mjs check",
+    "exit": 1,
+    "expected": true,
+    "reason": "The user requires generated view files to stay at main until the guarded lander regenerates them.",
+    "log": "committed-views-check.log"
+  },
+  "custody": {
+    "remote_ref": "refs/heads/cloud/sd-orbit-c-f62",
+    "observed_head": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+    "matches_candidate": true,
+    "exit": 0
+  },
+  "mechanical": {
+    "lock": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock then check",
+    "lock_exit": 0,
+    "views": "node src/base/contract-docs.mjs write then check",
+    "views_exit": 0,
+    "generated_views_restored": true,
+    "ledger": null,
+    "ledger_exit": 0
+  },
+  "packet_secret_audit": "fleet push guard sanitizer applied; no injected credential value selected",
+  "api_calls_used": 7,
+  "blockers": [],
+  "all_task_commands_completed": true,
+  "cleanup": "Product clone will be deleted after evidence publication and manifest verification; reports retained outside clone."
+}

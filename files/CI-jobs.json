@@ -1,0 +1,261 @@
+[
+  {
+    "id": 127590747771,
+    "name": "plan",
+    "status": "completed",
+    "conclusion": "success",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run pnpm/action-setup@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run actions/setup-node@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Set runner-owned pnpm store",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Install the plan's TypeScript reader",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Look up complete nightly marker",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Select coverage with Base's planner and Orbit's unchanged partitions",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run actions/setup-node@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run pnpm/action-setup@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  {
+    "id": 127590899030,
+    "name": "source and shared build",
+    "status": "completed",
+    "conclusion": "failure",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run pnpm/action-setup@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run actions/setup-node@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Set runner-owned pnpm store",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run actions/cache@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Run pnpm install --frozen-lockfile",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Verify source, types, boundaries and the single shared app build",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Retain clean authoritative source candidate",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Seal the emitted app for this exact commit",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Run actions/upload-artifact@v4",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Retain source shard completion",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Retain authoritative source candidate",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Post Run actions/cache@v4",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Post Run actions/setup-node@v4",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Post Run pnpm/action-setup@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  {
+    "id": 127590901164,
+    "name": "light",
+    "status": "completed",
+    "conclusion": "skipped",
+    "steps": []
+  },
+  {
+    "id": 127591166693,
+    "name": "verify",
+    "status": "completed",
+    "conclusion": "failure",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Require a successful plan and all required work",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Run actions/setup-node@v4",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Run pnpm/action-setup@v4",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Run pnpm config set store-dir \"$RUNNER_TEMP/pnpm-store\" && pnpm install --frozen-lockfile --ignore-scripts",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Run actions/download-artifact@v4",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Require every planned shard on this commit",
+        "status": "completed",
+        "conclusion": "skipped"
+      },
+      {
+        "name": "Retain combined routine verdicts (capacity pending)",
+        "status": "completed",
+        "conclusion": "failure"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  {
+    "id": 127591169325,
+    "name": "shards (${{ matrix.batch }})",
+    "status": "completed",
+    "conclusion": "skipped",
+    "steps": []
+  },
+  {
+    "id": 127591226070,
+    "name": "full-push-proof",
+    "status": "completed",
+    "conclusion": "skipped",
+    "steps": []
+  },
+  {
+    "id": 127591226435,
+    "name": "release",
+    "status": "completed",
+    "conclusion": "skipped",
+    "steps": []
+  },
+  {
+    "id": 127591227459,
+    "name": "nightly-proof",
+    "status": "completed",
+    "conclusion": "skipped",
+    "steps": []
+  }
+]
