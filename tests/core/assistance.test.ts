@@ -9,7 +9,7 @@ import {createId} from '../../src/core/shared/ids';
 import {WorkbenchRepository} from '../../src/core/features/workbench/repository';
 import {notificationSession} from '../support/notification-session';
 import {notificationResponsibility} from '../support/notification-responsibility';
-import type {AIProvider} from '../../src/core/features/assistance/provider';
+import {createAIProvider,type AIProvider} from '../../src/core/features/assistance/provider';
 import type {OperatorDraft} from '../../src/core/features/operator/ui/operator-api';
 const platform=await isolatedDatabase();after(()=>platform.dispose());const db=platform.db;
 async function fixture(provider?:AIProvider){const deps=createDependencies(db),actor=createId(),stage=createId();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.invalid`,displayName:'Assistance test'});await deps.workspace.ensureWorkspace({name:'Assistance test',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});const n=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Review',position:n!.n});const workbench=new WorkbenchRepository(db);const opportunity=await workbench.createOpportunity({title:'Real D1 test',companyName:'Test company',contactName:'Test contact',email:`${createId()}@test.invalid`,stageId:stage,valueCents:10},actor);await workbench.recordEvent(opportunity.id,{type:'form.submitted',subject:'Requested details',occurredAt:new Date().toISOString(),eventId:createId()},actor);const session=await deps.auth.createSession(actor);const app=createApp({database:db,assets:{fetch:async()=>new Response('test')},aiProvider:provider});const cookie=`__Host-orbit_session=${session.token}`;async function call(path:string,body?:unknown){return app.request(`https://orbit.test/api/v1/${path}`,{method:body?'POST':'GET',headers:{cookie,origin:'https://orbit.test','content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});}return{actor,opportunity,call,app,cookie};}
@@ -79,8 +79,88 @@ test('AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creat
  assert.equal(messages.status,200);
  assert.deepEqual((await messages.json() as {messages:unknown[]}).messages,[],'editing and returning submit no customer message');
 });
-test('AI-002 invented evidence fails visibly; AI-003 unconfigured provider generates nothing',async()=>{
+test('AI-002 invalid content fails visibly and native generation bounds transient retries; AI-003 unconfigured provider generates nothing',async context=>{
  const provider:AIProvider={provider:'test',model:'test',inputCostPerMillion:0,outputCostPerMillion:0,async generate(){return{output:{explanation:'Bad evidence',subject:'No',body:'No',evidenceIds:['not-present']},inputTokens:1,outputTokens:1};}};const f=await fixture(provider);const preview=await(await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'})).json() as {id:string};assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,502);assert.equal((await db.prepare('SELECT count(*) AS n FROM drafts WHERE opportunity_id=?').bind(f.opportunity.id).first<{n:number}>())!.n,0);const off=await fixture();assert.equal((await off.call('assistance/generate',{previewId:createId()})).status,503);
+
+ // Exercise native preview and generation with the real adapter; replace only its HTTP edge.
+ context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T10:00:00Z')});
+ const nativeFetch=globalThis.fetch;
+ type Attempt={at:number;signal:AbortSignal;input:unknown};
+ let attempts:Attempt[]=[],edge:(signal:AbortSignal,attempt:number)=>Promise<Response>;
+ const real=await fixture(createAIProvider({OPENAI_API_KEY:'synthetic-orbit-1',AI_MODEL:'synthetic-orbit-2',AI_INPUT_COST_PER_MILLION:'1',AI_OUTPUT_COST_PER_MILLION:'2'}));
+ const reply=(output:unknown)=>Response.json({status:'completed',usage:{input_tokens:20,output_tokens:10},output:[{content:[{type:'output_text',text:JSON.stringify(output)}]}]});
+ globalThis.fetch=async(input,init)=>{
+  if(String(input)!=='https://api.openai.com/v1/responses')return nativeFetch(input,init);
+  assert.equal(init!.method,'POST');assert.equal(init!.redirect,'manual');
+  assert.ok(init!.signal instanceof AbortSignal,'every attempt has a real abort deadline');
+  const request=JSON.parse(String(init!.body));assert.equal(request.store,false);
+  attempts.push({at:Date.now(),signal:init!.signal,input:JSON.parse(request.input)});
+  return edge(init!.signal,attempts.length);
+ };
+ try {
+  const inventory=async()=>({
+   drafts:(await db.prepare('SELECT * FROM drafts WHERE opportunity_id=? ORDER BY id').bind(real.opportunity.id).all()).results,
+   outbound:(await db.prepare('SELECT * FROM outbound_messages WHERE opportunity_id=? ORDER BY id').bind(real.opportunity.id).all()).results,
+   detail:await(await real.call(`opportunities/${real.opportunity.id}`)).json(),
+  });
+  for(const feature of ['draft','explanation'] as const){
+   async function run(label:string,respond:typeof edge,count:number,success=false){
+    context.mock.timers.tick(1);attempts=[];edge=respond;
+    const before=await inventory(),callsBefore=(await db.prepare('SELECT id FROM ai_calls WHERE opportunity_id=?').bind(real.opportunity.id).all()).results;
+    const previewResponse=await real.call('assistance/preview',{opportunityId:real.opportunity.id,feature});
+    assert.equal(previewResponse.status,200,label);
+    const preview=await previewResponse.json() as {id:string;preview:unknown};
+    const started=Date.now(),response=await real.call('assistance/generate',{previewId:preview.id}),body=await response.json() as {error?:string;output?:unknown;draftId?:string};
+    assert.equal(response.status,success?200:502,label);assert.equal(attempts.length,count,label);
+    for(const attempt of attempts){assert.deepEqual(attempt.input,preview.preview,`${label}: retries send the unchanged preview`);assert.ok(attempt.at-started<30000,`${label}: no new attempt after the shared deadline`);}
+    assert.ok(Date.now()-started<=30000,`${label}: one generation deadline`);
+    const calls=(await db.prepare('SELECT id,status,duration_ms FROM ai_calls WHERE opportunity_id=? ORDER BY id').bind(real.opportunity.id).all<{id:string;status:string;duration_ms:number}>()).results.filter(call=>!callsBefore.some(row=>row.id===call.id));
+    assert.equal(calls.length,1,`${label}: one durable generation outcome`);assert.equal(calls[0]!.status,success?'success':'failed',label);assert.equal(calls[0]!.duration_ms,Date.now()-started);
+    if(!success){
+     assert.match(body.error!,/AI generation failed/);assert.deepEqual(Object.keys(body),['error'],`${label}: no invented output or draft identity`);
+     assert.deepEqual(await inventory(),before,`${label}: no explanation, draft or outbound work changes`);
+     assert.ok(!JSON.stringify(body).includes('synthetic-orbit-1'),'provider credentials never enter the visible failure');
+    }else{
+     const expected={explanation:'Follow up on the recorded request.',subject:'Your request',body:'Thanks for requesting details. What would help?',evidenceIds:[(preview.preview as {evidence:{id:string}[]}).evidence[0]!.id]};
+     assert.deepEqual(body.output,expected,'the actual validated provider result is used');
+     const after=await inventory();assert.deepEqual(after.outbound,before.outbound,'successful generation submits no message');
+     if(feature==='draft'){
+      assert.ok(body.draftId);const saved=await real.call(`drafts/${body.draftId}`);assert.equal(saved.status,200);
+      const draft=(await saved.json() as {draft:OperatorDraft}).draft;assert.equal(draft.subject,expected.subject);assert.equal(draft.body,expected.body);assert.equal(after.drafts.length,before.drafts.length+1);
+     }else{assert.equal((after.detail as {opportunity:{recommendation:{explanation:string}}}).opportunity.recommendation.explanation,expected.explanation);assert.deepEqual(after.drafts,before.drafts);}
+    }
+    assert.equal((await real.call('assistance/generate',{previewId:preview.id})).status,409,`${label}: replay cannot retry a consumed preview`);assert.equal(attempts.length,count);
+   }
+   const output=()=>{const preview=attempts.at(-1)!.input as {evidence:{id:string}[]};return{explanation:'Follow up on the recorded request.',subject:'Your request',body:'Thanks for requesting details. What would help?',evidenceIds:[preview.evidence[0]!.id]};};
+   await run('transient failures recover on the second retry',async(_signal,attempt)=>{
+    context.mock.timers.tick(5000);
+    if(attempt===1)throw new TypeError('Synthetic connection reset');
+    if(attempt===2)return new Response('Synthetic temporary outage',{status:503});
+    return reply(output());
+   },3,true);
+   await run('transport exhaustion',async()=>{context.mock.timers.tick(5000);throw new TypeError('Synthetic connection reset');},3);
+   for(const status of [429,503])await run(`transient HTTP ${status} exhaustion`,async()=>{context.mock.timers.tick(5000);return new Response('Synthetic unavailable',{status});},3);
+   for(const status of [400,401,403,404,422])await run(`definite HTTP ${status} refusal`,async()=>new Response('Synthetic rejected',{status}),1);
+   await run('invalid operation schema',async()=>reply({...output(),explanation:7}),1);
+   await run('foreign citation',async()=>reply({...output(),evidenceIds:['synthetic-orbit-foreign-evidence']}),1);
+   await run('overlong content',async()=>reply({...output(),body:'word '.repeat(151)}),1);
+   await run('invalid provider content',async()=>new Response('Synthetic invalid JSON',{headers:{'Content-Type':'application/json'}}),1);
+   await run('shared deadline aborts the retry',async(signal,attempt)=>{
+    if(attempt===1){context.mock.timers.tick(29999);throw new TypeError('Synthetic delayed connection reset');}
+    // The native timeout has only the one millisecond left by the first attempt.
+    // Keep the event loop alive while waiting for AbortSignal.timeout's unrefed timer.
+    return new Promise<Response>((_resolve,reject)=>{
+     const watchdog=setTimeout(()=>reject(new Error('Provider request did not abort within its shared deadline')),1000);
+     const aborted=()=>{clearTimeout(watchdog);context.mock.timers.tick(1);reject(signal.reason);};
+     if(signal.aborted)aborted();else signal.addEventListener('abort',aborted,{once:true});
+    });
+   },2);
+   assert.equal(attempts[1]!.signal.aborted,true,'the pending HTTP retry actually observes cancellation');
+   assert.equal(attempts[1]!.at-attempts[0]!.at,29999,'retry does not receive another thirty seconds');
+   await run('deadline exhausted by the first attempt',async()=>{context.mock.timers.tick(30000);throw new TypeError('Synthetic deadline transport failure');},1);
+  }
+ }finally{globalThis.fetch=nativeFetch;context.mock.timers.reset();}
+
 });
 test('AI-001 DATA-002 changed or deleted preview context never leaves deployment',async()=>{
  let calls=0;const f=await fixture({provider:'test',model:'test',inputCostPerMillion:0,outputCostPerMillion:0,async generate(){calls++;throw new Error('must not run');}});const preview=await(await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'})).json() as {id:string};await db.prepare('UPDATE opportunities SET title=? WHERE id=?').bind('Changed after preview',f.opportunity.id).run();assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,409);assert.equal(calls,0);
