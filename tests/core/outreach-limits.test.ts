@@ -56,7 +56,7 @@ test('OUT-007 OUT-009 OUT-012 signed provider unsubscribe and permanent bounce s
  const email=(await db.prepare('SELECT email FROM contacts WHERE id=?').bind(f.contactId).first<{email:string}>())!.email;
  const event={sg_event_id:createId(),event:kind,...(kind==='bounce'?{type:'bounce',reason:'Permanent mailbox refusal'}:{}),timestamp:Math.floor(Date.now()/1000),email,rer_product:'orbit',rer_delivery_id:accepted.idempotency_key},body=JSON.stringify([event]);
  const post=async()=>{const timestamp=String(Math.floor(Date.now()/1000));return app.request('https://orbit.test/relay',{method:'POST',headers:{'x-rer-mail-timestamp':timestamp,'x-rer-mail-signature':await signRelayBody(secret,timestamp,body)},body});};
- const before=await outreachStopInventory(db),started=Date.now();assert.equal((await post()).status,200);assert.ok(Date.now()-started<60000);
+ const before=await outreachStopInventory(db),started=performance.now();assert.equal((await post()).status,200);assert.ok(performance.now()-started<60000);
  const session=await createDependencies(db).auth.createSession(f.actor),operatorApp=createApp({database:db,assets:{fetch:async()=>new Response('test')}}),detail=await operatorApp.request(`https://orbit.test/api/v1/opportunities/${f.opportunityId}`,{headers:{cookie:`__Host-orbit_session=${session.token}`}});
  assert.equal(detail.status,200,'Verified provider activity remains readable in the operator detail');assert.ok((await detail.json() as {opportunity:{timeline:{actorName:string}[]}}).opportunity.timeline.some(entry=>entry.actorName==='SendGrid delivery events'));
  assert.equal((await approval.message(scheduled.id)).state,'cancelled');
