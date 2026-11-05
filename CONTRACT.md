@@ -2393,9 +2393,9 @@ SIGNAL-008 is proved from the code and tests at commit `cd4240900048e5276f0ec62d
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 26 | 53 | 0 | 79 |
+| Published | 27 | 52 | 0 | 79 |
 | Target and push further | 7 | 86 | 32 | 125 |
-| All | 33 | 139 | 32 | 204 |
+| All | 34 | 138 | 32 | 204 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
