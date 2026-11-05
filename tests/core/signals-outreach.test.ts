@@ -201,6 +201,39 @@ test('OPP-008 completion and skipping retain history without sending; only new o
    assert.deepEqual(last.payload,{recommendationId:next.id,outcome,note:''});assert.equal(final.queueState,'none');assert.equal(final.recommendation,null);
    assert.deepEqual(await outbound(),beforeOutbound);assert.equal(sends,0);
   }
+  // The recommendation retains both signals even after the reply stops scoring.
+  // Handle on day 21 as a control, and on day 31 after that evidence ages out.
+  for(const day of [21,31])for(const outcome of ['completed','skipped'] as const){
+   const start=Date.parse('2032-01-07T12:00:00Z'),dayMs=86400000;
+   context.mock.timers.setTime(start);
+   const f=await fixture();let sends=0;
+   const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:{send:async()=>{sends++;return{providerMessageId:'synthetic-orbit-aged-action'};}}});
+   let session=await createDependencies(db).auth.createSession(f.actor);
+   const api=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1/${path}`,{method:body===undefined?'GET':'POST',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
+   const detail=async()=>{const response=await api(`opportunities/${f.opportunityId}`);assert.equal(response.status,200);return(await response.json() as {opportunity:import('../../src/core/features/opportunities/contracts').OpportunityDetail}).opportunity;};
+   const eventPath=`workbench/opportunities/${f.opportunityId}/events`;
+   const replyResponse=await api(eventPath,{type:'email.replied',subject:'Reply before the meeting',occurredAt:new Date().toISOString(),eventId:createId()});assert.equal(replyResponse.status,201);
+   const reply=await replyResponse.json() as {id:string};
+   context.mock.timers.setTime(start+20*dayMs);
+   session=await createDependencies(db).auth.createSession(f.actor);
+   const meetingEvent={type:'meeting.booked',subject:'Customer meeting',occurredAt:new Date().toISOString(),eventId:createId()};
+   const meetingResponse=await api(eventPath,meetingEvent);assert.equal(meetingResponse.status,201);
+   const meeting=await meetingResponse.json() as {id:string},current=(await detail()).recommendation;assert.ok(current);
+   assert.deepEqual([...current.evidenceSignalIds].sort(),[reply.id,meeting.id].sort());
+   context.mock.timers.setTime(start+day*dayMs);
+   session=await createDependencies(db).auth.createSession(f.actor);
+   const response=await api(`workbench/recommendations/${current.id}/complete`,{outcome});assert.equal(response.status,200);
+   const handled=await detail();assert.equal(handled.queueState,'none',`day ${day} ${outcome} clears NOW and NEXT`);assert.equal(handled.recommendation,null,`day ${day} ${outcome} cannot recycle handled evidence`);
+   assert.equal(handled.timeline.filter(entry=>entry.kind==='action.completed').length,1);
+   const records=await db.prepare('SELECT COUNT(*) AS n FROM recommendations WHERE opportunity_id=?').bind(f.opportunityId).first<{n:number}>();assert.equal(records?.n,2,'Handling creates no replacement action');
+   assert.equal((await api(eventPath,meetingEvent)).status,201);
+   assert.equal((await detail()).recommendation,null,'Replay of handled meeting stays handled');
+   assert.equal(sends,0);
+   console.log(`PROBE OPP-008 day-${day}-${outcome}: authenticated POST completion after reply day 0 and meeting day 20 -> 200, queue none, no replacement, zero sends`);
+   const newResponse=await api(eventPath,{type:'email.replied',subject:'A new reply after handling',occurredAt:new Date().toISOString(),eventId:createId()});assert.equal(newResponse.status,201);
+   const newSignal=await newResponse.json() as {id:string},fresh=await detail();assert.ok(fresh.recommendation);assert.notEqual(fresh.recommendation.id,current.id);assert.ok(fresh.recommendation.evidenceSignalIds.includes(newSignal.id));assert.equal(fresh.queueState,'now');assert.equal(sends,0);
+  }
+
  }finally{context.mock.timers.reset();}
 });
 
