@@ -7299,7 +7299,7 @@
       "executable": false
     },
     "src/core/features/outreach/settlement.ts": {
-      "sha256": "ee02fc3f34eb1e45a021d4076a1ab84dfaa989f853dd025061852ee01d322017",
+      "sha256": "4e89ca07cd714a7d957ba17ccd04f7b6df47c0d4b48e8f92b4ff1aedb7c3da0c",
       "executable": false
     },
     "src/core/features/outreach/stop-reason.ts": {
@@ -10063,7 +10063,7 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "185cbcc21c2748f52bbc4164cb0df1707ecb4068f15220ec6365c1a69ac096fd",
+      "sha256": "cd62cfe9e8dcbbd335074404430cf4e8ef2de304027d5b9131d2aaeac0b7d79e",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {

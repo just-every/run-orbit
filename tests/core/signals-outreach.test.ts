@@ -158,13 +158,62 @@ test('OUT-010 over-limit approval remains durably unsent with retry time',async(
  assert.deepEqual(messages.map(m=>m.state),['queued','queued','queued','draft']);assert.match(messages[3]!.failure!,/shared sending rate of 3 messages a minute/);assert.equal(messages[3]!.next_attempt_at,'2031-01-06T10:01:00.000Z');
 });
 
-test('BASE-OPS-003 OUT-002 OUT-005 signed provider delivery is verified and idempotent',async()=>{
- const {createMailEventRoutes}=await import('../../src/core/features/outreach/provider-routes');const f=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db);await db.prepare("UPDATE outbound_messages SET claimed_at='2000-01-01T00:00:00.000Z' WHERE claimed_at IS NOT NULL").run();
- const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Delivery',body:'Reviewed provider content'},f.actor),message=await approval.approve(draft.id,1,f.actor,{quietHoursConfirmation:(await approval.preview(draft.id)).localTime});
- const keys=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign','verify']);const pub=btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.exportKey('spki',keys.publicKey))));const app=createMailEventRoutes(db,{eventKey:pub});const timestamp=String(Math.floor(Date.now()/1000));const body=JSON.stringify([{sg_event_id:createId(),event:'delivered',rer_product:'orbit',timestamp:Number(timestamp),email:f.email,rer_delivery_id:message.idempotency_key,sg_message_id:'delivery-receipt'}]);
- const raw=new Uint8Array(await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},keys.privateKey,new TextEncoder().encode(timestamp+body)));const integer=(bytes:Uint8Array)=>{let start=0;while(start<31&&bytes[start]===0)start++;const value=Array.from(bytes.slice(start));return value[0]!&128?[0,...value]:value;};const r=integer(raw.slice(0,32)),s=integer(raw.slice(32)),der=[48,4+r.length+s.length,2,r.length,...r,2,s.length,...s];const signature=btoa(String.fromCharCode(...der));
- const post=(sig:string)=>app.request('https://orbit.test/sendgrid',{method:'POST',headers:{'X-Twilio-Email-Event-Webhook-Timestamp':timestamp,'X-Twilio-Email-Event-Webhook-Signature':sig},body});assert.equal((await post('invalid')).status,401);assert.equal((await post(signature)).status,200);assert.equal((await post(signature)).status,200);assert.equal((await approval.message(message.id)).state,'delivered');
- const count=await db.prepare("SELECT COUNT(*) AS n FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id WHERE r.record_id=? AND t.kind='provider.delivered'").bind(f.opportunityId).first<{n:number}>();assert.equal(count?.n,1);
+test('BASE-OPS-003 OUT-002 OUT-005 signed provider delivery is verified and idempotent',async context=>{
+ context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T10:00:00Z')});
+ const {createMailEventRoutes}=await import('../../src/core/features/outreach/provider-routes');
+ const {createOutboundMail}=await import('../../src/core/platform/outbound-mail');
+ const actualFetch=globalThis.fetch;
+ try{for(const interrupted of [false,true]){
+  const f=await fixture(),other=await fixture(),approval=new ApprovalRepository(db),requests:any[]=[];
+  globalThis.fetch=async(input,init)=>{
+   assert.equal(String(input),'https://api.sendgrid.com/v3/mail/send');requests.push(JSON.parse(String(init?.body)));
+   if(interrupted)throw new Error('Provider receipt interrupted');
+   return new Response(null,{status:202,headers:{'x-message-id':'synthetic-orbit-1'}});
+  };
+  const mail=createOutboundMail({SENDGRID_API_KEY:'synthetic-orbit-1',MAIL_FROM:f.email,MAIL_REPLY_TO:f.email,SENDGRID_UNSUBSCRIBE_GROUP_ID:'1'})!;
+  const native=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:mail});
+  const session=await createDependencies(db).auth.createSession(f.actor),otherSession=await createDependencies(db).auth.createSession(other.actor);
+  async function api(path:string,data?:unknown,token=session.token){const response=await native.request(`https://orbit.test/api/v1/${path}`,{method:data?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(data?{body:JSON.stringify(data)}:{})});return response;}
+  async function read(path:string,token=session.token){const response=await api(path,undefined,token);assert.equal(response.status,200);return response.json() as Promise<any>;}
+  assert.equal((await api(`workbench/opportunities/${f.opportunityId}/events`,{type:'email.replied',subject:'Observed request for the proposal',occurredAt:f.at,eventId:createId()})).status,201);
+  const recommendation=await db.prepare('SELECT * FROM recommendations WHERE opportunity_id=? AND is_current=1').bind(f.opportunityId).first<any>();assert.ok(recommendation);
+  const evidence=await db.prepare('SELECT * FROM recommendation_evidence WHERE recommendation_id=?').bind(recommendation.id).all();assert.ok(evidence.results.length);
+  const created=await api(`workbench/opportunities/${f.opportunityId}/drafts`,{contactId:f.contactId,subject:'Delivery',body:'Reviewed provider content'});assert.equal(created.status,201);const draft=await created.json() as {id:string};
+  assert.equal((await db.prepare('SELECT recommendation_id FROM drafts WHERE id=?').bind(draft.id).first())!.recommendation_id,recommendation.id);
+  const preview=await read(`workbench/drafts/${draft.id}/approval-preview`);
+  const approved=await api(`workbench/drafts/${draft.id}/approve`,{revision:1,quietHoursConfirmation:preview.localTime});assert.equal(approved.status,interrupted?502:200);
+  const message=await approval.message((await approved.json() as {id:string}).id);assert.equal(requests.length,1);
+  assert.equal(requests[0].subject,'Delivery');assert.deepEqual(requests[0].content,[{type:'text/plain',value:'Reviewed provider content'}]);assert.equal(requests[0].personalizations[0].to[0].email,f.email.toLowerCase());
+  const keys=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign','verify']);const pub=btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.exportKey('spki',keys.publicKey))));const app=createMailEventRoutes(db,{eventKey:pub});const timestamp=String(Math.floor(Date.now()/1000));
+  const providerId=interrupted?'synthetic-orbit-2':'synthetic-orbit-1',eventId=createId();
+  const body=JSON.stringify([{sg_event_id:eventId,event:'delivered',rer_product:'orbit',timestamp:Number(timestamp),email:f.email,rer_delivery_id:message.idempotency_key,sg_message_id:providerId}]);
+  const raw=new Uint8Array(await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},keys.privateKey,new TextEncoder().encode(timestamp+body)));const integer=(bytes:Uint8Array)=>{let start=0;while(start<31&&bytes[start]===0)start++;const value=Array.from(bytes.slice(start));return value[0]!&128?[0,...value]:value;};const r=integer(raw.slice(0,32)),s=integer(raw.slice(32)),der=[48,4+r.length+s.length,2,r.length,...r,2,s.length,...s];const signature=btoa(String.fromCharCode(...der));
+  const post=(sig:string)=>app.request('https://orbit.test/sendgrid',{method:'POST',headers:{'X-Twilio-Email-Event-Webhook-Timestamp':timestamp,'X-Twilio-Email-Event-Webhook-Signature':sig},body});
+  const tables=['outbound_messages','recommendations','recommendation_evidence','action_completions','opportunities','timeline_entries','timeline_entry_records','notifications','mail_provider_events'];
+  async function inventory(){return (await db.batch(tables.map(table=>db.prepare(`SELECT * FROM ${table} ORDER BY rowid`)))).map(result=>result.results);}
+  const prior=await inventory(),recordBefore=await read(`records/opportunity/${f.opportunityId}`),noticesBefore=await read('notifications');
+  assert.equal((await post('invalid')).status,401);assert.deepEqual(await inventory(),prior,'A forged receipt changes nothing');
+  if(interrupted){
+   await db.prepare("CREATE TRIGGER test_acceptance_failure BEFORE INSERT ON timeline_entries WHEN NEW.kind='provider.delivered' BEGIN SELECT RAISE(ABORT,'Injected acceptance persistence failure'); END").run();
+   try{assert.equal((await post(signature)).status,503);assert.deepEqual(await inventory(),prior,'Failure after completion and notification writes rolls back the entire receipt');assert.deepEqual(await read(`records/opportunity/${f.opportunityId}`),recordBefore);assert.deepEqual(await read('notifications'),noticesBefore);}
+   finally{await db.prepare('DROP TRIGGER test_acceptance_failure').run();}
+   assert.equal((await db.prepare('SELECT completed_at FROM recommendations WHERE id=?').bind(recommendation.id).first())!.completed_at,null);
+  }
+  assert.equal((await post(signature)).status,200);assert.equal((await approval.message(message.id)).state,'delivered');
+  async function outcome(){return{record:await read(`records/opportunity/${f.opportunityId}`),messages:await read(`workbench/opportunities/${f.opportunityId}/messages`),notices:await read('notifications'),otherNotices:await read('notifications',otherSession.token),recommendation:await db.prepare('SELECT * FROM recommendations WHERE id=?').bind(recommendation.id).first<any>()};}
+  const settled=await outcome(),accepted=settled.record.timeline.filter((entry:any)=>entry.kind==='message.accepted'&&JSON.parse(entry.payload_json).messageId===message.id);
+  assert.equal(accepted.length,1);assert.deepEqual(JSON.parse(accepted[0].payload_json),{messageId:message.id,providerId,failure:null,recipient:f.email.toLowerCase(),subject:'Delivery',body:'Reviewed provider content'});
+  assert.equal(settled.recommendation.completion_outcome,'completed');assert.ok(settled.recommendation.completed_at);assert.equal(settled.recommendation.is_current,0);
+  assert.equal((await db.prepare('SELECT COUNT(*) AS n FROM action_completions WHERE recommendation_id=?').bind(recommendation.id).first())!.n,1);
+  const completion=settled.record.timeline.filter((entry:any)=>entry.kind==='action.completed'&&JSON.parse(entry.payload_json).recommendationId===recommendation.id);assert.equal(completion.length,1);assert.equal(JSON.parse(completion[0].payload_json).outcome,'completed');assert.equal(completion[0].actor_id,f.actor);
+  assert.deepEqual((await db.prepare('SELECT * FROM recommendation_evidence WHERE recommendation_id=?').bind(recommendation.id).all()).results,evidence.results);
+  assert.equal(settled.record.record.queue_state,'next');assert.equal(settled.record.record.queue_reason,'Awaiting customer response');assert.equal(settled.record.record.next_due_at,'2030-01-14T10:00:00.000Z');
+  assert.equal(settled.messages.messages.find((row:any)=>row.id===message.id).providerMessageId,providerId);
+  assert.equal(settled.notices.notifications.filter((row:any)=>row.kind==='message.accepted'&&row.opportunityId===f.opportunityId).length,1,'The responsible operator has exactly one acceptance notification');
+  assert.equal(settled.otherNotices.notifications.filter((row:any)=>row.kind==='message.accepted'&&row.opportunityId===f.opportunityId).length,0,'Another operator sees no acceptance notice');
+  const committed=await inventory();assert.equal((await post(signature)).status,200);assert.deepEqual(await inventory(),committed,'A replay creates no second local effect');assert.deepEqual(await outcome(),settled);assert.equal(requests.length,1,'Callback retry and replay never resubmit mail');
+  const count=await db.prepare("SELECT COUNT(*) AS n FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id WHERE r.record_id=? AND t.kind='provider.delivered'").bind(f.opportunityId).first<{n:number}>();assert.equal(count?.n,1);
+ }}finally{globalThis.fetch=actualFetch;context.mock.timers.reset();}
 });
 
 test('SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a persistence failure rolls back all signal effects',async context=>{

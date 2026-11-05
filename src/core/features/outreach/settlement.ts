@@ -22,9 +22,17 @@ export async function settlementStatements(db:D1Database,id:string,actor:string,
       );
       statements.push(db.prepare("UPDATE opportunities SET queue_state='next',queue_reason='Awaiting customer response',next_due_at=?,updated_at=? WHERE id=? AND lifecycle='open' AND EXISTS(SELECT 1 FROM outbound_messages m JOIN drafts d ON d.id=m.draft_id WHERE m.settlement_id=? AND d.is_stale=0 AND d.revision=m.revision)").bind(due.toISOString(),at,message.opportunity_id,settlementId));
     }
-    if(state==='accepted') statements.push(
-      db.prepare("UPDATE recommendations SET is_current=0,superseded_at=?,updated_at=? WHERE id=(SELECT d.recommendation_id FROM outbound_messages m JOIN drafts d ON d.id=m.draft_id WHERE m.settlement_id=?)").bind(at,at,settlementId)
-    );
+    if(state==='accepted') {
+      const completionId=createId(),note='Message accepted by provider';
+      // Complete the source action inside the winning settlement, preserving its evidence and any newer recommendation.
+      const source="FROM recommendations r JOIN drafts d ON d.recommendation_id=r.id JOIN outbound_messages m ON m.draft_id=d.id WHERE m.settlement_id=? AND r.completed_at IS NULL";
+      statements.push(
+        db.prepare(`INSERT INTO action_completions(recommendation_id,completed_at) SELECT r.id,? ${source} ON CONFLICT DO NOTHING`).bind(at,settlementId),
+        db.prepare(`INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) SELECT ?,'action.completed',?,?,'operator',?,'recommendations',json_object('recommendationId',r.id,'outcome','completed','note',?,'messageId',m.id) ${source}`).bind(completionId,at,at,actor,note,settlementId),
+        db.prepare("INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) SELECT ?,'opportunity',m.opportunity_id FROM outbound_messages m WHERE m.settlement_id=? AND m.opportunity_id IS NOT NULL AND EXISTS(SELECT 1 FROM timeline_entries WHERE id=?)").bind(completionId,settlementId,completionId),
+        db.prepare("UPDATE recommendations SET is_current=0,completed_at=?,completion_outcome='completed',completion_note=?,updated_at=? WHERE id=(SELECT d.recommendation_id FROM outbound_messages m JOIN drafts d ON d.id=m.draft_id WHERE m.settlement_id=?) AND completed_at IS NULL").bind(at,note,at,settlementId)
+      );
+    }
     if(state==='failed'||state==='delivery-unknown'||state==='reconciling') statements.push(db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=?,next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open' AND EXISTS(SELECT 1 FROM outbound_messages WHERE settlement_id=?)").bind(state==='failed'?'Delivery failure':'Delivery unresolved',at,message.opportunity_id,settlementId));
     return statements;
 }
