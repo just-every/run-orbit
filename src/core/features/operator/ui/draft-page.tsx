@@ -12,7 +12,7 @@ import { useOperatorResource } from "./use-operator-resource";
 import { DraftContentFields } from "../../drafts/ui/draft-content-fields";
 
 interface SubmittedMessage { draftId: string; revision: number; state: string; scheduledAt: string | null;recipientEmail:string;subject:string;body:string }
-const submittedTitles: Record<string, string> = { scheduled: "Scheduled message", failed: "Message not sent", bounced: "Message bounced", "delivery-unknown":"Delivery unresolved", reconciling:"Reconciling provider acceptance", queued:"Submission in progress", delivered:"Delivered message" };
+const submittedTitles: Record<string, string> = { accepted: "Sent message", scheduled: "Scheduled message", failed: "Message not sent", bounced: "Message bounced", "delivery-unknown":"Delivery unresolved", reconciling:"Reconciling provider acceptance", queued:"Submission in progress", delivered:"Delivered message" };
 
 export function DraftPage() {
   const { id } = useParams({ from: "/app/drafts/$id" });
@@ -78,7 +78,7 @@ export function DraftPage() {
   return (
     <OperatorShell
       eyebrow="Human-reviewed outreach"
-      title={submitted ? submittedTitles[submitted.state] ?? "Sent message" : "Editable draft"}
+      title={submitted ? submittedTitles[submitted.state] ?? "Message outcome" : "Editable draft"}
       action={draft.opportunityId?<Link className="operator-back-link" to="/app/opportunities/$id" params={{ id: draft.opportunityId }}>← Opportunity detail</Link>:<a className="operator-back-link" href={`/app/contacts/${draft.recipientContactId}#record-mail`}>← Contact detail</a>}
     >
       <section className="operator-draft-editor" style={{display:"block"}} data-testid="draft-editor">
@@ -129,7 +129,7 @@ export function DraftPage() {
 
 /** A message handed to the mail service is a record, not a form: what was sent, as text. */
 function SentMessage({ recipient, subject, body }: { recipient: string; subject: string; body: string }) {
-  return <section className="operator-surface operator-draft-form" aria-label="Message as sent" data-testid="sent-message">
+  return <section className="operator-surface operator-draft-form" aria-label="Approved message" data-testid="sent-message">
     <dl className="operator-sent-message">
       <div><dt>Recipient</dt><dd>{recipient}</dd></div>
       <div><dt>Subject</dt><dd>{subject}</dd></div>

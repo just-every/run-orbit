@@ -3,6 +3,7 @@ import {Link,useRouterState} from '@tanstack/react-router';
 import type {OperatorDraft,OpportunityDetail} from '../operator-api';
 import {HandoffTasks} from '../handoff-tasks';
 import {formatDateTime,label} from '../formatters';
+import {messageStatus} from '../message-status';
 import {Activity,Opens,type ActivityEntry} from './activity';
 import {MessageTools,type DealMessage} from './message-tools';
 import {timelineEntry} from './timeline-entries';
@@ -12,15 +13,13 @@ export interface HandoffEntry{target:string;revision:string;audienceRevision:str
 export interface DealMessages{messages:DealMessage[];mailProvider?:string;outcomesTracked:boolean;scheduler?:{ready:boolean;lastRunAt:string|null;failed:boolean}|null}
 
 /** A message's kind in a word: one never sent does not read as Sent. */
-const messageKind=(state:string)=>({scheduled:'Scheduled',cancelled:'Cancelled',draft:'Not sent'} as Record<string,string>)[state]??'Sent';
+const messageKind=(state:string)=>({accepted:'Sent',delivered:'Delivered',bounced:'Bounced',failed:'Not sent','delivery-unknown':'Unresolved',queued:'Queued',reconciling:'Reconciling',scheduled:'Scheduled',cancelled:'Cancelled',draft:'Not sent'} as Record<string,string>)[state]??'Message';
 /** A sent message's state in words, in its own line; a scheduled one says when, to the exact instant. */
 function messageState(message:DealMessage,tracked:boolean):ReactNode{
- if(message.state==='accepted')return message.deliveredAt?'delivered':tracked?'accepted by the mail provider · delivery not confirmed':'accepted by the mail provider';
+ if(message.state==='accepted')return tracked?'accepted by the mail provider · delivery not confirmed':'accepted by the mail provider';
  if(message.state==='scheduled'){const at=message.scheduledAt??message.retryAfter;return at?<>will send <time dateTime={at}>{formatDateTime(at)}</time></>:'scheduled';}
- if(message.state==='failed')return `failed · not delivered${message.failure?` · ${message.failure}`:''}`;
  if(message.state==='draft')return 'not sent · the provider refused it';
- if(['queued','reconciling','delivery-unknown'].includes(message.state))return 'approved · the provider has not answered yet';
- return `${label(message.state).toLowerCase()}${message.failure?` · ${message.failure}`:''}`;
+ return `${messageStatus(message.state)}${message.failure?` · ${message.failure}`:''}`;
 }
 
 /** While a send waits, whether the hosted minute timer will send it or Orbit sends it when next used. */

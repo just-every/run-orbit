@@ -6539,7 +6539,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/draft-page.tsx": {
-      "sha256": "52752170ce63318d4900fc89efde667ed5a1a5d6129dc003993dfaa4b33b61e1",
+      "sha256": "1191885f2652f4fd41a92f7fd20868d8affb42d467b684f1666b6662faa402a8",
       "executable": false
     },
     "src/core/features/operator/ui/duplicate-review.css": {
@@ -6815,7 +6815,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-activity.tsx": {
-      "sha256": "429ed31cb310f7b9089f5990883e3d60379896e0dbac74f5b5a871de5423a18f",
+      "sha256": "83c16f5e7d5434f6426c85b53f7676cb86cfdb87214ea70794fad417354ea98b",
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-context.tsx": {
@@ -10063,11 +10063,11 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "185cbcc21c2748f52bbc4164cb0df1707ecb4068f15220ec6365c1a69ac096fd",
+      "sha256": "71607b4bd342034dfe7a054a5df7b383ee9c8889b83cf02183fdcc44725ed27d",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
-      "sha256": "59993b1a0cea6fb3ed8d679ca4cc565bdc4ed5b80704d08d4c838700eafe1051",
+      "sha256": "be1f5effe6115bac34c30103680cd97c4aca65a447b5c5e90ad1fc83604d49ea",
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
@@ -10619,7 +10619,7 @@
       "executable": false
     },
     "tests/launch-runtime/mail-ingress.test.ts": {
-      "sha256": "c5d5a50fc7f834294bdf31102b15fad7cd4f56e9d303e6bcf5423cc2f3f74373",
+      "sha256": "9e077813c07336e6fad64807b1745e08e237c8167151554316cec866375d245f",
       "executable": false
     },
     "tests/launch-runtime/source-mailbox-stop.test.ts": {
@@ -10968,6 +10968,10 @@
     },
     "tests/support/mail-transport-client.ts": {
       "sha256": "5aedd823c1b5c5ac7f2951d004d430380f4cba704155b389e51e766671680077",
+      "executable": false
+    },
+    "tests/support/message-outcomes.ts": {
+      "sha256": "a799bb350072f2cee39318ffa05fd355409e3275b79c5a2a07fb6dd7a4858ab2",
       "executable": false
     },
     "tests/support/notification-responsibility.ts": {

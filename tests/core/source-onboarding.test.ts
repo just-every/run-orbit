@@ -46,6 +46,7 @@ test('NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdr
  const draft=await(await f.request(`workbench/opportunities/${customer.id}/drafts`,'POST',{contactId:contact.id,subject:'Your inquiry',body:'Hi Maya, would Thursday suit a walkthrough?'})).json() as any;
  const preview=await(await f.request(`workbench/drafts/${draft.id}/approval-preview`)).json() as any;
  const sent=await f.request(`workbench/drafts/${draft.id}/approve`,'POST',{revision:1,quietHoursConfirmation:preview.localTime});assert.equal(sent.status,200,await sent.clone().text());assert.equal((await sent.json() as any).state,'accepted');assert.equal(f.sends(),2);assert.equal(bodies[1]!.to,contact.email);assert.equal(bodies[1]!.subject,'Your inquiry');assert.equal(bodies[1]!.text,'Hi Maya, would Thursday suit a walkthrough?');assert.equal((await f.db.prepare('SELECT message_id FROM outbound_messages WHERE draft_id=?').bind(draft.id).first<any>()).message_id,'<relay-2@example.test>');
+ const acceptedHistory=await(await f.request(`workbench/opportunities/${customer.id}/messages`)).json() as any;const acceptedMessage=acceptedHistory.messages.find((message:any)=>message.draftId===draft.id);assert.equal(acceptedMessage.state,'accepted');assert.equal(acceptedMessage.deliveredAt,null,'Provider acceptance alone is no delivery report');
  assert.equal((await progress()).sent,1);assert.equal((await f.db.prepare('SELECT queue_state FROM opportunities WHERE id=?').bind(customer.id).first<any>()).queue_state,'next');
  for(const outcome of ['rejected','uncertain'] as const){
   relayOutcome=outcome;
@@ -53,6 +54,7 @@ test('NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdr
   const review=await(await f.request(`workbench/drafts/${candidate.id}/approval-preview`)).json() as any;
   const before=bodies.length;
   const result=await f.request(`workbench/drafts/${candidate.id}/approve`,'POST',{revision:1,quietHoursConfirmation:review.localTime});assert.equal(result.status,502,await result.clone().text());assert.equal((await result.json() as any).state,outcome==='rejected'?'failed':'delivery-unknown');assert.equal(bodies.length,before+1);
+  const history=await(await f.request(`workbench/opportunities/${customer.id}/messages`)).json() as any;const persisted=history.messages.find((message:any)=>message.draftId===candidate.id);assert.equal(persisted.state,outcome==='rejected'?'failed':'delivery-unknown');assert.equal(persisted.acceptedAt,null);assert.equal(persisted.deliveredAt,null);
   await f.request(`workbench/drafts/${candidate.id}/approve`,'POST',{revision:1,quietHoursConfirmation:review.localTime});assert.equal(bodies.length,before+1,'The same exact approval never submits again after rejection or uncertainty');
  }
 
