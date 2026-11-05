@@ -2393,11 +2393,13 @@ SIGNAL-008 is proved from the code and tests at commit `cd4240900048e5276f0ec62d
 
 RECORD-023 was proved through the native authorization and grant audit journey and the emitted collaborator journey at 1440 and 390 from code and tests at commit `da0c64983536beb00775fcb524d58bb4e81e8d04` (5 November 2026); the subsequent status update changes only this contract and its source lock.
 
+BRIEF-002 was proved through native record, handoff, draft approval and cancellation doors at a controlled clock, and the unchanged emitted brief journey at 1440 and 390, from code and tests at commit `c6278cdc4426436585cc929a8e06dc65d350d182` (5 November 2026); subsequent changes only record its status, generated counts and source lock.
+
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 27 | 52 | 0 | 79 |
+| Published | 28 | 51 | 0 | 79 |
 | Target and push further | 8 | 85 | 32 | 125 |
-| All | 35 | 137 | 32 | 204 |
+| All | 36 | 136 | 32 | 204 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -2467,7 +2469,7 @@ RECORD-023 was proved through the native authorization and grant audit journey a
 | `AI-003` | Provider failure | published | partial | `src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts` | Unasserted in the carried evidence: failed generation visible; manual CRM still works; ingestion still works; scoring still works; handwritten sending still works. Asserted: unconfigured generation unavailable. |
 | `AI-004` | Cost | published | partial | `src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts` | Unasserted in the carried evidence: failed call accounting; provider; model; duration; cost; daily totals; feature totals in Settings. Asserted: successful token counts; status. |
 | `BRIEF-001` | Today's brief | published | done | `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts` |  |
-| `BRIEF-002` | Overdue promises | published | partial | `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts` | Unasserted in the carried evidence: overdue task; overdue draft; task completion clears line; draft completion clears line. Asserted: overdue reply; overdue meeting; reply completion clears line; meeting completion clears line. |
+| `BRIEF-002` | Overdue promises | published | done | `tests/core/today-brief.test.ts` — TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence (native reply, meeting, handoff, untouched draft and opportunity deadlines appear and clear; exact evidence, due times and links; fresh handoff revision; exact scheduled draft; other-record isolation and zero provider submissions); `tests/delegation-browser/today-brief.test.ts` — BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390 | |
 | `BRIEF-003` | Account summary | published | done | `src/core/features/today/summary.ts`; `tests/core/today-brief.test.ts` — BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks; `tests/delegation-browser/today-brief.test.ts` — a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390 | |
 | `BRIEF-004` | Meeting plan | published | done | `src/core/features/today/meeting-plan.ts`; `tests/core/today-brief.test.ts` — BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a cited plan with unresolved attendees shown, notes saved as one editable note, and plan lines become next actions without sending anything; a mention notifies once, asks to share the deal with its notes, calls and meetings before notifying a collaborator, who then reads only their own mention and opens the entry on Shared records until the grant is revoked; it withdraws on delete and never reaches AI or a customer; `tests/delegation-browser/today-brief.test.ts` — a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390 | |
 | `BRIEF-005` | Agent handoff | published | done | `src/core/features/today/brief.ts`; `tests/delegation/brief-handoff.test.ts` |  |
