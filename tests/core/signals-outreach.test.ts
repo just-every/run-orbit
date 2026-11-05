@@ -12,10 +12,11 @@ import { WorkbenchRepository } from '../../src/core/features/workbench/repositor
 import { OutreachRepository } from '../../src/core/features/workbench/outreach-repository';
 import { ApprovalRepository } from '../../src/core/features/outreach/approval-repository';
 import { OutreachService } from '../../src/core/features/outreach/service';
+import { createOutboundMail } from '../../src/core/platform/outbound-mail';
 import { nextPermitted,workingDaysAfter,localTime } from '../../src/core/features/outreach/time';
 import { signedReplies } from '../support/signed-reply';
 const platform=await isolatedDatabase();after(()=>platform.dispose());const db=platform.db;
-async function fixture(){const deps=createDependencies(db),actor=createId(),stage=createId(),at=new Date().toISOString();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.example`,displayName:'Signals operator'});await deps.workspace.ensureWorkspace({name:'Signals workspace',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:['gmail.com']});const position=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Test',position:position!.n});const email=`${createId()}@customer.example`;const opportunity=await new WorkbenchRepository(db).createOpportunity({title:'Signals test',companyName:'Customer',contactName:'Contact',email,stageId:stage,valueCents:100},actor);const contact=await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(opportunity.id).first<{contact_id:string}>();return{actor,opportunityId:opportunity.id,contactId:contact!.contact_id,email,at};}
+async function fixture(db:D1Database=platform.db){const deps=createDependencies(db),actor=createId(),stage=createId(),at=new Date().toISOString();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.example`,displayName:'Signals operator'});await deps.workspace.ensureWorkspace({name:'Signals workspace',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:['gmail.com']});const position=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Test',position:position!.n});const email=`${createId()}@customer.example`;const opportunity=await new WorkbenchRepository(db).createOpportunity({title:'Signals test',companyName:'Customer',contactName:'Contact',email,stageId:stage,valueCents:100},actor);const contact=await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(opportunity.id).first<{contact_id:string}>();return{actor,opportunityId:opportunity.id,contactId:contact!.contact_id,email,at};}
 async function sign(secret:string,body:string,timestamp:string){const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);return Array.from(new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(`${timestamp}.${body}`))),b=>b.toString(16).padStart(2,'0')).join('');}
 async function ingestionInventory(){
  const tables=['signals','signal_links','unlinked_signals','timeline_entries','timeline_entry_records','evaluations','evaluation_contributions','recommendations','recommendation_evidence','notifications','audit_entries','opportunities','contacts','companies','drafts','outbound_messages','signal_sources','source_event_errors'] as const;
@@ -132,11 +133,55 @@ test('OUT-014 missing merge fields block; template revisions never rewrite appro
  const next=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Stop',body:'Must not send'},f.actor);await approval.approve(next.id,1,f.actor,{now,scheduledAt:message.scheduledAt});await db.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(f.contactId).run();await service.dispatchDue(new Date(message.scheduledAt));assert.equal(calls,1);
 });
 
-test('OUT-011 unknown delivery reconciles by durable provider key and never submits again',async()=>{
+test('OUT-003 OUT-011 concurrent approval and persisted restart submit once; unknown delivery reconciles without resending',async context=>{
  const f=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db);await db.prepare("UPDATE outbound_messages SET claimed_at='2000-01-01T00:00:00.000Z' WHERE claimed_at IS NOT NULL").run();
  const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Unknown',body:'Reviewed body'},f.actor);const message=await approval.approve(draft.id,1,f.actor,{quietHoursConfirmation:(await approval.preview(draft.id)).localTime});let sends=0,lookups=0;
  const service=new OutreachService(db,{send:async()=>{sends++;throw new Error('Transport timed out');},lookup:async key=>{lookups++;assert.equal(key,message.idempotency_key);return{providerMessageId:'reconciled-receipt'};}});
  assert.equal((await service.submit(message)).state,'delivery-unknown');await service.reconcile(new Date(Date.now()+6*60000));await service.reconcile(new Date(Date.now()+12*60000));assert.equal(sends,1);assert.equal(lookups,1);assert.equal((await approval.message(message.id)).state,'accepted');
+
+ // Use a separate persisted store so unrelated sends cannot consume this approval's budget.
+ const persisted=await isolatedDatabase();
+ context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T06:30:00Z')});
+ try{
+  const initialDb=persisted.db,target=await fixture(initialDb),session=await createDependencies(initialDb).auth.createSession(target.actor);
+  const submissions:{recipient:string;subject:string;body:string;key:string}[]=[],actualFetch=globalThis.fetch;
+  context.mock.method(globalThis,'fetch',async(input,init)=>{
+   const url=input instanceof Request?input.url:String(input);
+   if(url!=='https://api.sendgrid.com/v3/mail/send')return actualFetch(input,init);
+   const payload=JSON.parse(String(init?.body));
+   submissions.push({recipient:payload.personalizations[0].to[0].email,subject:payload.subject,body:payload.content[0].value,key:payload.custom_args.rer_delivery_id});
+   return new Response(null,{status:202,headers:{'x-message-id':'synthetic-orbit-1'}});
+  });
+  const application=()=>createApp({database:persisted.db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:createOutboundMail({DB:persisted.db,SENDGRID_API_KEY:'synthetic-orbit-1',MAIL_FROM:target.email,MAIL_REPLY_TO:target.email,SENDGRID_UNSUBSCRIBE_GROUP_ID:'1'})});
+  let app=application();
+  const request=(path:string,body?:unknown,cookie=session.token)=>app.request(`https://orbit.test/api/v1/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${cookie}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
+  const content={contactId:target.contactId,subject:'Reviewed concurrent approval',body:'Only these exact approved bytes may reach the customer.'};
+  const created=await request(`workbench/opportunities/${target.opportunityId}/drafts`,content);assert.equal(created.status,201);
+  const saved=await created.json() as {id:string};
+  const previewResponse=await request(`workbench/drafts/${saved.id}/approval-preview`);assert.equal(previewResponse.status,200);
+  const preview=await previewResponse.json() as {localTime:string;quietHours:boolean};assert.equal(preview.quietHours,true);
+  const key=`synthetic-orbit-${createId()}`,input={revision:1,idempotencyKey:key,quietHoursConfirmation:preview.localTime};
+  const messages=async()=>{const response=await request(`workbench/opportunities/${target.opportunityId}/messages`);assert.equal(response.status,200);return (await response.json() as {messages:{id:string;draftId:string;revision:number;recipientEmail:string;subject:string;body:string;state:string;providerMessageId:string}[]}).messages;};
+  assert.deepEqual(await messages(),[]);
+  assert.equal((await request(`workbench/drafts/${saved.id}/approve`,input,'')).status,401,'A key alone is not approval authority');
+  assert.deepEqual(await messages(),[]);assert.equal(submissions.length,0);
+  const approve=()=>request(`workbench/drafts/${saved.id}/approve`,input);
+  const concurrent=await Promise.all([approve(),approve()]);
+  assert.deepEqual(concurrent.map(response=>response.status).sort(),[200,409],'Concurrent approval has one winner and explicitly refuses the duplicate');
+  const winner=await concurrent.find(response=>response.status===200)!.json() as {id:string;state:string};assert.equal(winner.state,'accepted');
+  const original=await messages();assert.equal(original.length,1);assert.equal(original[0]!.id,winner.id);assert.equal(original[0]!.draftId,saved.id);assert.equal(original[0]!.revision,1);
+  assert.equal(original[0]!.recipientEmail,target.email.toLowerCase());assert.equal(original[0]!.subject,content.subject);assert.equal(original[0]!.body,content.body);assert.equal(original[0]!.state,'accepted');assert.equal(original[0]!.providerMessageId,'synthetic-orbit-1');
+  const expected=[{recipient:target.email.toLowerCase(),subject:content.subject,body:content.body,key}];
+  assert.deepEqual(submissions,expected,'Exactly one HTTP submission carries the reviewed bytes and explicit key');
+  const inventory=async()=>(await persisted.db.prepare('SELECT * FROM outbound_messages ORDER BY id').all()).results;
+  const stored=await inventory();assert.equal(stored.length,1);assert.equal(stored[0]!.id,winner.id);assert.equal(stored[0]!.idempotency_key,key);
+  assert.equal((await approve()).status,409,'Repeated approval is explicitly refused');assert.deepEqual(await inventory(),stored);assert.deepEqual(submissions,expected);
+  await persisted.close();assert.throws(()=>persisted.db,/closed/);
+  await persisted.reopen();assert.notEqual(persisted.db,initialDb,'Restart reacquires a new binding to the persisted database');app=application();
+  assert.deepEqual(await messages(),original,'A rebuilt application reads the original sole outbound identity and approved bytes');
+  const replayed=await Promise.all([approve(),approve()]);assert.deepEqual(replayed.map(response=>response.status),[409,409],'The same exact approval after restart is refused without a second intent');
+  assert.deepEqual(await messages(),original);assert.deepEqual(await inventory(),stored);assert.deepEqual(submissions,expected,'Total provider submissions remain exactly one after persisted restart and replay');
+ }finally{context.mock.restoreAll();context.mock.timers.reset();await persisted.dispose();}
 });
 
 test('OPP-008 completion removes an exhausted recommendation; new observed evidence produces another',async()=>{
