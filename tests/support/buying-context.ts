@@ -36,6 +36,7 @@ export async function exerciseBuyingContext(request:(path:string,method?:string,
  const invitation=await json(workspace+'/invitations','POST',{email,role:'guest',expiresAt:new Date(Date.now()+86400000).toISOString()});
  const viewer=await emailLinkSignIn(db,email,{returnTo:'/app/access'});
  await json(access+'/invitations/accept','POST',{token:invitation.token},200,viewer.cookie);
+ assert.deepEqual(await json(workspace+'/self','GET',undefined,200,viewer.cookie),{role:'guest',access_class:'collaborator'});
  const grant=async(resourceType:string,resourceId:string,actions:string[],fields:string[])=>json(workspace+'/grants','POST',{subjectKind:'operator',subjectId:viewer.operator.operatorId,resourceType,resourceId,actions,fields,purpose:'Review explicitly shared buying records',expiresAt:null});
  await grant('legacy','*',['legacy.read','legacy.write'],[]);
  const dealGrant=await grant('opportunity',deal.id,['graph.read','graph.update'],['title']);
@@ -45,6 +46,16 @@ export async function exerciseBuyingContext(request:(path:string,method?:string,
  const contactability=async()=>Promise.all([champion,evaluator,decisionMaker].map(async contact=>({id:contact.id,state:(await json(`records/contact/${contact.id}`)).record.contactability})));
  const originalContactability=await contactability();
  const scoped=(kind:string,id:string)=>`/api/v2/workspaces/workspace/records/${kind}/${id}`;
+ const assertRelationshipRefusals=async()=>{
+  for(const [kind,id] of [['opportunity',deal.id],['contact',champion.id]] as const){
+   const context=await json(`relationships/${kind}/${id}`);
+   const attempt=kind==='opportunity'?{revision:context.revision,companyId:context.company?.id??null,primaryContactId:champion.id,stakeholders:context.stakeholders.map(({contactId,roles,verified}:any)=>({contactId,roles,verified})),products:context.products,nextStep:'Unauthorized relationship edit',mutualCommitments:context.mutualCommitments}:{revision:context.revision,secondaryCompanies:[{companyId:second.id,verified:true}]};
+   await json(`relationships/${kind}/${id}`,'GET',undefined,403,viewer.cookie);
+   await json(`relationships/${kind}/${id}`,'PUT',attempt,403,viewer.cookie);
+   await json(`records/${kind}/${id}`,'PUT',{company_id:second.id},403,viewer.cookie);
+   assert.deepEqual(await json(`relationships/${kind}/${id}`),context,'refused relationship writes change nothing for the full operator');
+  }
+ };
  const assertAuthorization=async()=>{
   const sharedDeal=await json(scoped('opportunity',deal.id),'GET',undefined,200,viewer.cookie);
   assert.deepEqual(sharedDeal.fields,{title:input.title},'a relationship never expands the explicitly shared fields');
@@ -54,14 +65,7 @@ export async function exerciseBuyingContext(request:(path:string,method?:string,
    await json(scoped(kind,id),'GET',undefined,403,viewer.cookie);
    await json(`records/${kind}/${id}`,'GET',undefined,404,viewer.cookie);
   }
-  for(const [kind,id] of [['opportunity',deal.id],['contact',champion.id]] as const){
-   const context=await json(`relationships/${kind}/${id}`);
-   const attempt=kind==='opportunity'?{revision:context.revision,companyId:context.company?.id??null,primaryContactId:champion.id,stakeholders:context.stakeholders.map(({contactId,roles,verified}:any)=>({contactId,roles,verified})),products:context.products,nextStep:'Unauthorized relationship edit',mutualCommitments:context.mutualCommitments}:{revision:context.revision,secondaryCompanies:[{companyId:second.id,verified:true}]};
-   await json(`relationships/${kind}/${id}`,'GET',undefined,403,viewer.cookie);
-   await json(`relationships/${kind}/${id}`,'PUT',attempt,403,viewer.cookie);
-   await json(`records/${kind}/${id}`,'PUT',{company_id:second.id},403,viewer.cookie);
-   assert.deepEqual(await json(`relationships/${kind}/${id}`),context,'refused relationship writes change nothing for the full operator');
-  }
+  await assertRelationshipRefusals();
   assert.deepEqual(await grants(),originalGrants,'stakeholder roles and company moves do not create or widen grants');
   assert.deepEqual(await contactability(),originalContactability,'verified and inferred roles confer no contact permission');
  };
@@ -99,9 +103,11 @@ export async function exerciseBuyingContext(request:(path:string,method?:string,
  await json(workspace+`/grants/${dealGrant.id}`,'DELETE',{});
  await json(scoped('opportunity',deal.id),'GET',undefined,403,viewer.cookie);
  await json(`records/opportunity/${deal.id}`,'PUT',{title:'Revoked edit'},403,viewer.cookie);
+ await assertRelationshipRefusals();
  assert.deepEqual((await json(scoped('contact',champion.id),'GET',undefined,200,viewer.cookie)).fields,{name:'Ana Rivera',contactability:'contactable'},'revoking one grant leaves the other explicit grant usable');
  await json(workspace+`/grants/${contactGrant.id}`,'DELETE',{});
  await json(scoped('contact',champion.id),'GET',undefined,403,viewer.cookie);
+ await assertRelationshipRefusals();
  // A restored explicit read grant cannot restore a signed-out session.
  await grant('opportunity',deal.id,['graph.read'],['title']);
  await json(scoped('opportunity',deal.id),'GET',undefined,200,viewer.cookie);
