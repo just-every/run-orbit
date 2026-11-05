@@ -9,7 +9,7 @@ import {join,resolve} from 'node:path';
 import {chromium,expect} from '@playwright/test';
 import {unstable_DevEnv} from 'wrangler';
 import {freshCheckout,freePort} from './checkout.mjs';
-import {firstHour,accessible,ordinaryText} from './onboarding-journey.mjs';
+import {firstHour,persistedWorkspace,accessible,ordinaryText} from './onboarding-journey.mjs';
 import {localOwnerSignIn} from './sign-in.mjs';
 import {holdCloudflareTimer,hostedScheduling} from './hosted-scheduling.mjs';
 const evidence=resolve(process.env.ORBIT_EVIDENCE_DIR??'verification/onboarding');
@@ -19,8 +19,9 @@ for(const width of [1440,390])test(`SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 fir
  await holdCloudflareTimer(checkout);
  const setup=await checkout.rer(['setup','--owner-email','owner@example.test','--port',String(port),'--non-interactive']);assert.equal(setup.code,0,'Native rer setup failed; private output withheld');const varsPath=join(checkout.root,'.dev.vars'),before=await readFile(varsPath,'utf8'),key=/^ORBIT_ENCRYPTION_KEY=["']?([a-f0-9]{64})["']?$/m.exec(before)?.[1];assert.ok(key);assert.equal(setup.output.includes(key),false);assert.equal((await stat(varsPath)).mode&0o777,0o600);const repeat=await checkout.rer(['setup','--non-interactive']);assert.equal(repeat.code,0,'Repeated rer setup failed; private output withheld');assert.ok(await readFile(varsPath,'utf8')===before,'Repeated setup preserves private settings');assert.equal(repeat.output.includes(key),false);
  dev=await checkout.serve(['dev']);await dev.ready;browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});const context=await browser.newContext({viewport:{width,height:900},ignoreHTTPSErrors:true}),page=await context.newPage();page.on('pageerror',error=>console.error('Browser error:',error.message.replace(/[a-f0-9]{64}/gi,'[redacted]').replace(/https?:\/\/\S+\?\S+/g,'[private-url]')));await page.goto(origin+'/signin');await accessible(page);// A native local CLI session: it continues in the production runtime below.
- await localOwnerSignIn(page,origin,checkout.root).catch(()=>{throw Error('Native sign-in navigation failed; private URL withheld');});await page.fill('#setup-owner-name','Hollis Reed');await page.fill('#setup-name','Harbour Revenue');await page.fill('#setup-timezone','UTC');await page.fill('#setup-currency','USD');await page.fill('#setup-stages','Discovery\nEvaluation\nProposal');await page.getByRole('button',{name:'Finish setup'}).click();
+ await localOwnerSignIn(page,origin,checkout.root).catch(()=>{throw Error('Native sign-in navigation failed; private URL withheld');});await page.fill('#setup-owner-name','Hollis Reed');await page.fill('#setup-name','Harbour Revenue');await page.fill('#setup-timezone','America/New_York');await page.fill('#setup-currency','USD');await page.fill('#setup-stages','Discovery\nEvaluation\nProposal');await page.getByRole('button',{name:'Finish setup'}).click();
  const result=await firstHour(page,origin,width,evidence);await writeFile(join(evidence,`journey-${width}.json`),JSON.stringify({width,buttonMs:result.buttonMs,formMs:result.formMs,fonts:result.fonts},null,2));for(const[name,text]of Object.entries(result.snippets))await writeFile(join(evidence,`rendered-${width}-${name}.mjs`),text);
+ await persistedWorkspace(page,origin,width,evidence);
  // Base rer reports SIGTERM as 143 after it has stopped every owned child.
  dev.child.kill('SIGTERM');assert.equal((await dev.exited).code,143);dev=undefined;
  // The only fake is the paid provider's HTTP boundary. The same emitted application,

@@ -12,6 +12,73 @@ async function runRenderedCode(page,name,opportunityId){const read=async()=>{ret
 // rer dev serves through Vite, which may reload a freshly opened page once; act only after navigation stops.
 export async function settle(page){let last=Date.now();const moved=()=>{last=Date.now();};page.on('framenavigated',moved);await page.waitForLoadState('load');while(Date.now()-last<1500)await page.waitForTimeout(250);page.off('framenavigated',moved);}
 function settling(page){if(page.settling)return;page.settling=true;const goto=page.goto.bind(page);page.gotoUnsettled=goto;page.goto=async(url,options)=>{const response=await goto(url,options);await settle(page);return response;};}
+
+/** Continue first-run setup through Settings and two reloaded records, on winter and summer clocks. */
+export async function persistedWorkspace(page,origin,width,evidence){
+ const initial=await browserAPI(page,'/api/v1/settings');
+ const cases=[
+  {title:'synthetic-orbit-1 winter renewal',cents:123456,amount:'USD\u00a01,234.56',at:'2026-01-15T02:45:00.000Z',local:'14 Jan 2026, 9:45 pm'},
+  {title:'synthetic-orbit-2 summer renewal',cents:78901,amount:'USD\u00a0789.01',at:'2026-07-15T02:45:00.000Z',local:'14 July 2026, 10:45 pm'},
+ ];
+ for(const item of cases){
+  const created=await browserAPI(page,'/api/v1/records/opportunity','POST',{title:item.title,stage_id:initial.stages[0].id,value_cents:item.cents});
+  item.id=created.id;
+  const entry=await browserAPI(page,`/api/v1/records/opportunity/${item.id}/entries`,'POST',{kind:'note',text:item.title,occurredAt:item.at});
+  item.entryId=entry.id;
+ }
+ await page.goto(origin+'/app/settings/workspace');
+ if(width===1440){
+  await expect(page.getByLabel('Name',{exact:true})).toHaveValue('Harbour Revenue');
+  await expect(page.getByLabel('Time zone',{exact:true})).toHaveValue('America/New_York');
+  await expect(page.getByLabel('Currency',{exact:true})).toHaveValue('USD');
+  assert.deepEqual((await browserAPI(page,'/api/v1/workspace/presentation')).presentation,{name:'Harbour Revenue',timezone:'America/New_York',currency:'USD'});
+ }
+ async function save(field,change){
+  const response=page.waitForResponse(response=>response.request().method()==='PUT'&&new URL(response.url()).pathname==='/api/v1/settings');
+  await change();assert.equal((await response).status(),200);
+  await page.locator('[data-autosave]').filter({has:field}).getByRole('status').filter({hasText:'Saved'}).waitFor();
+ }
+ await page.getByLabel('Monday',{exact:true}).uncheck();
+ await expect.poll(async()=>JSON.parse((await browserAPI(page,'/api/v1/settings')).workspace.working_hours_json).days).toEqual([2,3,4,5]);
+ for(const [label,value]of [['Start','08:30'],['End','16:30']]){
+  const field=page.getByLabel(label,{exact:true});await save(field,()=>field.selectOption(value));
+ }
+ for(const [label,value]of [['Days before a deal goes stale','12'],["Working days to wait for a customer's reply",'4']]){
+  const field=page.getByLabel(label,{exact:true});await field.fill(value);await save(field,()=>field.press('Tab'));
+ }
+ await page.reload();
+ if(width===1440){
+  await expect(page.getByLabel('Time zone',{exact:true})).toHaveValue('America/New_York');
+  await expect(page.getByLabel('Currency',{exact:true})).toHaveValue('USD');
+  await expect(page.getByLabel('Monday',{exact:true})).not.toBeChecked();
+  for(const label of ['Tuesday','Wednesday','Thursday','Friday'])await expect(page.getByLabel(label,{exact:true})).toBeChecked();
+  await expect(page.getByLabel('Start',{exact:true})).toHaveValue('08:30');
+  await expect(page.getByLabel('End',{exact:true})).toHaveValue('16:30');
+  await expect(page.getByLabel('Days before a deal goes stale',{exact:true})).toHaveValue('12');
+  await expect(page.getByLabel("Working days to wait for a customer's reply",{exact:true})).toHaveValue('4');
+  const {workspace}=await browserAPI(page,'/api/v1/settings');
+  assert.equal(workspace.timezone,'America/New_York');assert.equal(workspace.currency,'USD');
+  assert.deepEqual(JSON.parse(workspace.working_hours_json),{days:[2,3,4,5],start:'08:30',end:'16:30'});
+  assert.equal(workspace.stale_interval_days,12);assert.equal(workspace.awaiting_response_working_days,4);
+  await accessible(page);
+ }
+ await page.screenshot({path:`${evidence}/workspace-settings-${width}.png`,fullPage:true});
+ for(const item of cases){
+  await page.goto(`${origin}/app/opportunities/${item.id}`);await page.reload();
+  await page.getByTestId('record-activity').getByText(item.title,{exact:true}).waitFor();
+  if(width===1440){
+   await expect(page.getByLabel('Value',{exact:true})).toHaveValue(item.amount);
+   await expect(page.locator(`[id="entry-${item.entryId}"] .r-when`)).toHaveText(item.local);
+   const detail=await browserAPI(page,`/api/v1/records/opportunity/${item.id}`);
+   assert.equal(detail.record.value_cents,item.cents,'Presentation keeps the recorded amount');
+   assert.equal(detail.timeline.find(entry=>entry.id===item.entryId).occurred_at,item.at,'Presentation keeps the recorded instant');
+   assert.deepEqual((await browserAPI(page,'/api/v1/workspace/presentation')).presentation,{name:'Harbour Revenue',timezone:'America/New_York',currency:'USD'});
+   await accessible(page);
+  }
+  await page.screenshot({path:`${evidence}/workspace-record-${item.cents}-${width}.png`,fullPage:true});
+ }
+}
+
 export async function firstHour(page,origin,width,evidence){
  settling(page);
  await page.goto(origin+'/app');await expect(page.getByText('No customers need attention yet')).toBeVisible();await expect(page.getByText('Finish setting up:',{exact:true})).toBeVisible();await expect(page.locator('.now-line:not(.now-line--review) a')).toHaveCount(6);await accessible(page);await ordinaryText(page);

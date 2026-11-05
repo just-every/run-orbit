@@ -31,8 +31,15 @@ export async function salesPipelinesJourney(request:(path:string,method?:string,
  assert.equal(occupied.pipelines.find((p:any)=>p.id===renewals.id)?.revision,renewal.revision);
  assert.equal((await json(`records/opportunity/${deal.id}`)).record.stage_id,review.id);
  const workspace={name:'Brightwork Sales',timezone:'America/Los_Angeles',currency:'USD',workingHours:{days:[1,2,3,4,5],start:'08:30',end:'17:30'},staleIntervalDays:12,awaitingResponseWorkingDays:4,freeMailDomains:['gmail.com']};
+ const recorded=await json(`records/opportunity/${deal.id}`);
  await json('settings','PUT',workspace);settings=await json('settings');
  assert.equal(settings.workspace.timezone,workspace.timezone);assert.equal(settings.workspace.stale_interval_days,12);assert.deepEqual(JSON.parse(settings.workspace.working_hours_json),workspace.workingHours);
+ assert.equal(settings.workspace.name,'Brightwork Sales');assert.equal(settings.workspace.currency,'USD');
+ assert.equal(settings.workspace.awaiting_response_working_days,4);assert.deepEqual(JSON.parse(settings.workspace.free_mail_domains_json),['gmail.com']);
+ assert.deepEqual((await json('./workspace/presentation')).presentation,{name:'Brightwork Sales',timezone:'America/Los_Angeles',currency:'USD'});
+ const reloaded=await json(`records/opportunity/${deal.id}`);
+ assert.deepEqual(reloaded.record,recorded.record,'Changing workspace presentation preserves recorded amounts and sales state');
+ assert.deepEqual(reloaded.timeline,recorded.timeline,'Changing workspace presentation preserves recorded history');
  const empty=await json('settings/pipelines','POST',{name:'Retired pipeline',stages:[stage('Empty',10)]},201);
  await json(`settings/pipelines/${empty.id}`,'DELETE',{confirmed:true});
  assert.equal((await json('settings')).pipelines.some((p:any)=>p.id===empty.id),false);
