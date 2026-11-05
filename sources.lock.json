@@ -10043,7 +10043,7 @@
       "executable": false
     },
     "tests/core/records-complete.test.ts": {
-      "sha256": "307e3c67db651de1ba42767ca71a7445d0a6298b697f4a4a63f2097ae668145f",
+      "sha256": "de43f94e02f1d8e81ac66b0cd5afe62912761e64d0d7fac54bde566755891b45",
       "executable": false
     },
     "tests/core/records-merge-review.test.ts": {
@@ -11011,7 +11011,7 @@
       "executable": false
     },
     "tests/support/record-changes-proof.ts": {
-      "sha256": "b8efe0d9b25c1bd38c700eb27210cc6eb48476dc4962f4285be5249f95b9b146",
+      "sha256": "50e67e735d6c4ac49e82965d4531c19f5f3f4d1a727d40b19e2c13ebda0423de",
       "executable": false
     },
     "tests/support/record-data.ts": {
