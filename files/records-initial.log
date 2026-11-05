@@ -1,0 +1,13 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ RECORD-001 RECORD-014 authenticated associated records retain edited scalars and typed fields preserve paged archived definition meaning through public history and export (171339.071688ms)
+✔ RECORD-013 DATA-002 customer history survives one deal deletion, then contact erasure removes mail and linked signals and recomputes the surviving deal (9545.027119ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 184916.703216

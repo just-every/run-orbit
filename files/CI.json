@@ -1,0 +1,19 @@
+{
+  "id": 42125192325,
+  "event": "workflow_dispatch",
+  "head_sha": "52a352d70f487c38015e5a17c7d85ec9c5c757a9",
+  "status": "completed",
+  "conclusion": "failure",
+  "html_url": "https://github.com/just-every/run-orbit/actions/runs/42125192325",
+  "source_job": 127587612480,
+  "aggregate_job": 127587816463,
+  "expected_generated_view_exception": true,
+  "failure": "Only contract-docs check reports stale ACCEPTANCE.md and docs/CLAIMS.md; source artifacts are absent and downstream jobs fail or skip because that check stopped source.",
+  "product_shards": "skipped after source prerequisite",
+  "dispatch_count": 1,
+  "rerun_count": 0,
+  "github_calls": 6,
+  "failed_job_log_command": "gh run view 42125192325 --repo just-every/run-orbit --job 127587612480 --log-failed",
+  "failed_job_log_exit": 0,
+  "log": "verify-failed.log"
+}

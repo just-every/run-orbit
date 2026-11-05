@@ -1,0 +1,60 @@
+{
+  "head": "52a352d70f487c38015e5a17c7d85ec9c5c757a9",
+  "door": "authenticated native Records POST, PUT, PATCH and GET",
+  "status": "passed",
+  "contact": {
+    "id": "01M6PYQMG2G6HBKVX2AH8EYJPQ",
+    "name": "Synthetic Orbit page contact",
+    "emailMatchesReviewedValue": true,
+    "phone": "+12025550143",
+    "jobTitle": "Procurement director",
+    "timezone": "America/Chicago",
+    "customValues": {
+      "licensed_seats": 24,
+      "reference": "synthetic-orbit-2"
+    },
+    "companyId": "01M6PYQM7WNE8Y7KVJ8P2YFDK2",
+    "dealIds": [
+      "01M6PYQMT68P3CWFDK3RK0BMS5"
+    ]
+  },
+  "company": {
+    "id": "01M6PYQM7WNE8Y7KVJ8P2YFDK2",
+    "name": "Synthetic Orbit page company",
+    "primaryDomain": "synthetic-orbit-3.test",
+    "customValues": {
+      "segment": "synthetic-orbit-1",
+      "seats": 24,
+      "reviewed": true
+    },
+    "contactIds": [
+      "01M6PYQMG2G6HBKVX2AH8EYJPQ"
+    ],
+    "dealIds": [
+      "01M6PYQMT68P3CWFDK3RK0BMS5"
+    ]
+  },
+  "opportunity": {
+    "id": "01M6PYQMT68P3CWFDK3RK0BMS5",
+    "title": "Synthetic Orbit page deal",
+    "valueCents": 246810,
+    "expectedCloseAt": "2027-02-19T19:45:00.000Z",
+    "ownerId": "01M6PYQKBPT2C9AEV12CPY48Y3",
+    "stageId": "01M6PYQKF5SG9WDJM6YR1VBWS5",
+    "companyId": "01M6PYQM7WNE8Y7KVJ8P2YFDK2",
+    "contacts": [
+      {
+        "id": "01M6PYQMG2G6HBKVX2AH8EYJPQ",
+        "primary": 1
+      }
+    ],
+    "customValues": {
+      "reference": "synthetic-orbit-3",
+      "renewal": true
+    }
+  },
+  "unauthenticatedPatch": {
+    "status": 401,
+    "detailUnchanged": true
+  }
+}

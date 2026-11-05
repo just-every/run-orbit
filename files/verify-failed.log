@@ -1,0 +1,58 @@
+source and shared build	Verify source, types, boundaries and the single shared app build	﻿2026-11-05T22:53:45.0555798Z ##[group]Run node scripts/verification-shard.mjs source
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0556041Z [36;1mnode scripts/verification-shard.mjs source[0m
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0571777Z shell: /usr/bin/bash -e {0}
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0571910Z env:
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0572023Z   ORBIT_BROWSER_PORT: 15600
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0572154Z   ORBIT_ARCHIVE_PORT: 15601
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0572289Z   ORBIT_DELEGATION_PORT: 15602
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0572426Z   ORBIT_VIEWPORT_PORT: 15603
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0572560Z   ORBIT_RECORD_LAYOUT_PORT: 15604
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0572702Z   ORBIT_RELATED_RECORD_PORT: 15605
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0572844Z   PROOF_PORT: 15606
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0572964Z   ORBIT_LIFECYCLE_PORT: 15608
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0573099Z   ORBIT_INSPECTOR_PORT: 0
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0573229Z   ORBIT_VIEWPORT_INSPECTOR_PORT: 0
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0573387Z   ORBIT_RECORD_LAYOUT_INSPECTOR_PORT: 0
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0573542Z   ORBIT_RELATED_RECORD_INSPECTOR_PORT: 0
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0573692Z   WRANGLER_SEND_METRICS: false
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0573885Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.0574051Z ##[endgroup]
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.6098955Z 
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.6099770Z Verification (source): pnpm exec node src/base/contract-docs.mjs check
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.8852833Z ACCEPTANCE.md: generated content differs; run contract-docs write.
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.8853411Z docs/CLAIMS.md: generated content differs; run contract-docs write.
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T22:53:45.9171067Z ##[error]Process completed with exit code 1.
+source and shared build	Retain authoritative source candidate	﻿2026-11-05T22:53:46.8946929Z ##[group]Run actions/upload-artifact@v4
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8947088Z with:
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8947209Z   name: orbit-authoritative-source
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8947431Z   path: /tmp/orbit-source.bundle
+source and shared build	Retain authoritative source candidate	/tmp/source-check.json
+source and shared build	Retain authoritative source candidate	/tmp/source-release.json
+source and shared build	Retain authoritative source candidate	
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8947659Z   if-no-files-found: error
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8947792Z   compression-level: 6
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8947912Z   overwrite: false
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8948035Z   include-hidden-files: false
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8948175Z env:
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8948285Z   ORBIT_BROWSER_PORT: 15600
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8948417Z   ORBIT_ARCHIVE_PORT: 15601
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8948549Z   ORBIT_DELEGATION_PORT: 15602
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8948691Z   ORBIT_VIEWPORT_PORT: 15603
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8948825Z   ORBIT_RECORD_LAYOUT_PORT: 15604
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8948968Z   ORBIT_RELATED_RECORD_PORT: 15605
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8949108Z   PROOF_PORT: 15606
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8949226Z   ORBIT_LIFECYCLE_PORT: 15608
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8949363Z   ORBIT_INSPECTOR_PORT: 0
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8949514Z   ORBIT_VIEWPORT_INSPECTOR_PORT: 0
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8949661Z   ORBIT_RECORD_LAYOUT_INSPECTOR_PORT: 0
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8949818Z   ORBIT_RELATED_RECORD_INSPECTOR_PORT: 0
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8949966Z   WRANGLER_SEND_METRICS: false
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8950130Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.8950296Z ##[endgroup]
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.9949695Z (node:2384) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.9950225Z (Use `node --trace-deprecation ...` to show where the warning was created)
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.9974749Z Multiple search paths detected. Calculating the least common ancestor of all paths
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.9976304Z The least common ancestor is /tmp. This will be the root directory of the artifact
+source and shared build	Retain authoritative source candidate	2026-11-05T22:53:46.9987163Z ##[error]No files were found with the provided path: /tmp/orbit-source.bundle
+source and shared build	Retain authoritative source candidate	/tmp/source-check.json
+source and shared build	Retain authoritative source candidate	/tmp/source-release.json. No artifacts will be uploaded.
