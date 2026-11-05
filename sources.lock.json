@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "b74ca82593335dcfcb7dade5f74b9930497cf4d321eca867724bdd65f22525f8",
+      "sha256": "6bb6fb9aaef0e0df27f86958e4734fef3b5d0f3cfa37f0400496e6043e8781b1",
       "executable": false
     },
     "DEMO.md": {
@@ -2295,7 +2295,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "d4d29515b1cc21dd53c74bd5590ca7e475eab2da28b1093732fb291d6c07c1a9",
+      "sha256": "0ee637a4aa47dddd3e11d268df9de8452382e50d793c968e0c159c6dab89fb67",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -9947,7 +9947,7 @@
       "executable": false
     },
     "tests/core/capture-upgrade.test.ts": {
-      "sha256": "b2ebd2b761c8502e766d739e99d16b06b1c86396fc8f2950af0175d88ac4ae14",
+      "sha256": "95cfbaa3cd5fdad4b467c22ff1882575e5b3025dba2a41f835ee2d8a087c2db5",
       "executable": false
     },
     "tests/core/contact-erasure.test.ts": {

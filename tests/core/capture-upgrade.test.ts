@@ -1,48 +1,19 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { execFileSync } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { gunzipSync } from 'node:zlib';
-import { DatabaseSync } from 'node:sqlite';
-import { getPlatformProxy } from 'wrangler';
+import { priorCaptureUpgrade } from '../support/prior-capture-upgrade';
 import { createApp } from '../support/app';
 import { testAuth } from '../support/test-auth';
 import { eml } from '../support/capture-mail';
 import { createSourceSecurity, payloadHash } from '../../src/core/platform/source-security';
 
-// tests/fixtures/prior-capture: a store made by main ce67062's own signed-ingestion
-// route and outreach code (populate.ts): real signals, timeline entries, an accepted
-// send and a scheduled send waiting in NEXT. Miniflare names the D1 file after wrangler.jsonc's database id.
-const FIXTURE = 'tests/fixtures/prior-capture';
-const D1_FILE = 'v3/d1/miniflare-D1DatabaseObject/9ba2b04bf514d9facfd57ed57d849e77241a7adc99d1c1545d06688b43d84248.sqlite';
-const quote = (name: string) => '"' + name.replaceAll('"', '""') + '"';
-const read = (file: string) => {
-  const store = new DatabaseSync(file, { readOnly: true });
+test('CAPTURE-007 OUT-032 the capture migration upgrades a store from the previous main with every prior row and queue unchanged', { timeout: 10 * 60_000 }, async () => {
+  const target = await priorCaptureUpgrade(), {prior, migrationStarted} = target;
+  const {columns: originalColumns, rows: before} = target.before, {columns: currentColumns, rows: after} = target.after;
   try {
-    const tables = (store.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' ORDER BY name").all() as { name: string }[]).map(row => row.name);
-    const columns = Object.fromEntries(tables.map(table => [table, (store.prepare(`PRAGMA table_xinfo(${quote(table)})`).all() as { name: string; hidden: number }[]).filter(column => column.hidden !== 1).map(column => column.name)]));
-    const rows = Object.fromEntries(tables.map(table => [table, store.prepare(`SELECT ${columns[table]!.map(quote).join(',')} FROM ${quote(table)}`).all().map(row => JSON.stringify(row)).sort()]));
-    return { columns, rows };
-  } finally { store.close(); }
-};
-
-test('CAPTURE-007 the capture migration upgrades a store from the previous main with every prior row and queue unchanged', { timeout: 10 * 60_000 }, async () => {
-  const directory = await mkdtemp(join(tmpdir(), 'orbit-prior-capture-')), prior = JSON.parse(await readFile(join(FIXTURE, 'capture.json'), 'utf8'));
-  try {
-    const file = join(directory, D1_FILE);
-    await mkdir(join(file, '..'), { recursive: true });
-    await writeFile(file, gunzipSync(await readFile(join(FIXTURE, 'store.sqlite.gz'))));
-    const { columns: originalColumns, rows: before } = read(file);
     assert.equal(before.signals!.length, 3); assert.equal(before.unlinked_signals!.length, 1);
     assert.deepEqual(before.outbound_messages!.map(row => JSON.parse(row).state).sort(), ['accepted', 'scheduled']);
     assert.ok(before.timeline_entries!.length > 10);
 
-    // The real upgrade applies every pending migration to the prior installation.
-    const migrationStarted=Date.now();
-    execFileSync(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', directory], { env: { ...process.env, CI: '1' }, encoding: 'utf8', timeout: 120_000 });
-    const { columns: currentColumns, rows: after } = read(file);
     for (const table of Object.keys(before)) {
       const columns = originalColumns[table]!;
       assert.ok(columns.every(column => currentColumns[table]?.includes(column)), `${table} keeps every prior column`);
@@ -70,16 +41,32 @@ test('CAPTURE-007 the capture migration upgrades a store from the previous main 
     assert.ok(rules.every(row=>row.pipeline_id===pipelines[0].id));
 
     // The upgraded store captures: a reply from the prior contact stops the prior scheduled send.
-    const platform = await getPlatformProxy<{ DB: D1Database }>({ configPath: 'wrangler.jsonc', envFiles: ['tests/support/no-local-settings.env'], persist: { path: join(directory, 'v3') }, remoteBindings: false });
     try {
-      const db = platform.env.DB, session = await testAuth(db).createSession(prior.operator);
+      const db = target.db, session = await testAuth(db).createSession(prior.operator);
       let providerCalls = 0;
       const app = createApp({
         database: db, assets: { fetch: async () => new Response('') },
         sourceSecurity: createSourceSecurity({ ORBIT_ENCRYPTION_KEY: '72'.repeat(32) }),
         captureOrigin: 'https://orbit.test',
+        outboundMail: {send: async () => { providerCalls++; throw new Error('Reading upgraded Settings must not submit customer mail'); }},
         captureFetch: async () => { providerCalls++; throw new Error('Upgrade proof must not contact a provider'); },
       });
+      const path = 'https://orbit.test/api/v1/settings/opt-out';
+      assert.equal((await app.request(path)).status, 401, 'Settings requires native sign-in');
+      for (let read = 0; read < 2; read++) {
+        const settings = await app.request(path, {headers: {Cookie: `__Host-orbit_session=${session.token}`}});
+        assert.equal(settings.status, 200);
+        const body = await settings.json() as {types: {type: string; carries: boolean; basis: string}[]; approvedUnsent: {approvedBeforeSetting: number}};
+        const setting = body.types.find(row => row.type === 'one_to_one');
+        assert.equal(setting?.carries, true, 'Authenticated Settings retains upgraded one-to-one opt-out');
+        assert.equal(setting?.basis, 'kept on for an upgraded installation');
+        assert.equal(body.approvedUnsent.approvedBeforeSetting, 1, 'Settings identifies the actual pre-setting scheduled approval');
+      }
+      const readback = target.snapshot().rows;
+      assert.deepEqual(readback.outbound_messages, after.outbound_messages, 'Reading Settings preserves every historical approval byte and state');
+      assert.deepEqual(readback.drafts, after.drafts, 'Reading Settings preserves every historical draft');
+      assert.deepEqual(readback.outbound_message_opt_out, [], 'Reading Settings never rewrites old approvals with a new opt-out binding');
+      assert.equal(providerCalls, 0);
       const form = new FormData();
       form.append('files', new File([eml({ From: 'Ana Prior <ana@prior-acme.example>', To: 'owner@prior.example', Subject: 'After the upgrade', Date: new Date(Date.now() - 60000).toUTCString(), 'Message-ID': '<after-upgrade@prior-acme.example>' }, 'Still keen. Talk soon.')], 'reply.eml'));
       const response = await app.request('https://orbit.test/api/v1/capture/imports', { method: 'POST', headers: { cookie: `__Host-orbit_session=${session.token}`, origin: 'https://orbit.test' }, body: form });
@@ -102,6 +89,6 @@ test('CAPTURE-007 the capture migration upgrades a store from the previous main 
       assert.ok(state, 'native OAuth returns authorization state');
       assert.equal(await db.prepare('SELECT operator_id FROM capture_oauth WHERE state_hash=? AND session_id=? AND claimed=0').bind(await payloadHash(state), session.id).first('operator_id'), prior.operator);
       assert.equal(providerCalls, 0);
-    } finally { await platform.dispose(); }
-  } finally { await rm(directory, { recursive: true, force: true }); }
+    } finally { await target.close(); }
+  } finally { await target.dispose(); }
 });
