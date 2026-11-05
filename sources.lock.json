@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "a5daffb79dcd269824be36885cba3827615c0429b83bbbe3d33ed55c01420373",
+      "sha256": "3b787c2823287f299bccbd8b0b1a0b24bc9e64223ce739f522b13b3dc1d6890d",
       "executable": false
     },
     "DEMO.md": {
@@ -6075,7 +6075,7 @@
       "executable": false
     },
     "src/core/features/identity/auth.ts": {
-      "sha256": "af93b818bf6321b88518c6b0fdeb2e15f62e2565413fef784de767b6c823be18",
+      "sha256": "a8c754a5556848cfcbc89a0beca96029fcc9e8a9eeeabe28c7a56b5ce6a94230",
       "executable": false
     },
     "src/core/features/identity/bootstrap.ts": {
@@ -9963,7 +9963,7 @@
       "executable": false
     },
     "tests/core/identity.test.ts": {
-      "sha256": "28f05bf5d7515712a0c1ddbc03e137590540318abc6045a8e7482ceb33c500ba",
+      "sha256": "8f2461947f2b3a96a9454ea95995ddddf53272b38018b8d7a728a50e5db44738",
       "executable": false
     },
     "tests/core/launch-inherited-stop.test.ts": {
@@ -10031,7 +10031,7 @@
       "executable": false
     },
     "tests/core/provider-redirects.test.ts": {
-      "sha256": "c2b272c0913f00e2a080c72a668b5dd48e4b8bfb05f7b2ec187990e2797e6ff5",
+      "sha256": "6076e1e2e9d03fdf979e35c031d8810fbffa1f614432df1dbf66c45743e840ee",
       "executable": false
     },
     "tests/core/public-demo.test.ts": {
@@ -11063,7 +11063,7 @@
       "executable": false
     },
     "tests/support/sign-in-domains.ts": {
-      "sha256": "acafc9d0772f30643dad292017d563f7ac832d70a676cb7b1a98e8f0e6b457c7",
+      "sha256": "7af33522b79e017cfc0ada3f970427e8d10cee5268f7e55ef8f1f30502e6165f",
       "executable": false
     },
     "tests/support/signed-reply.ts": {

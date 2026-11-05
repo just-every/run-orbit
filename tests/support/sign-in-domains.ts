@@ -37,7 +37,14 @@ export async function signInDomains(){
   const admitted=await signIn();assert.equal(admitted.status,303,await admitted.clone().text());const sessionCookie=admitted.headers.getSetCookie().find(c=>c.startsWith('__Host-orbit_session='))!.split(';')[0]!;
   const request=new Request(origin+'/app',{headers:{Cookie:sessionCookie}});assert.ok(await auth.getSession(request));
   verified=false;assert.equal((await signIn()).status,403,'unverified email is refused');verified=true;
-  email='uninvited@example.com';subject='synthetic-orbit-uninvited';assert.equal((await signIn()).status,403,'uninvited identity is refused');
+  const admissionInventory=async()=>Promise.all(['operators','identity_bindings','sessions','identity_sessions'].map(async table=>(await db.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()).results));
+  const beforeUninvited=await admissionInventory();
+  assert.ok(beforeUninvited.every(rows=>rows.length>0),'refusal preserves populated operator, binding and session inventories');
+  email='uninvited@example.com';subject='synthetic-orbit-uninvited';
+  const uninvited=await signIn();
+  assert.equal(uninvited.status,403,'uninvited identity is refused');
+  assert.equal(uninvited.headers.getSetCookie().some(value=>value.startsWith('__Host-orbit_session=')),false,'an uninvited assertion issues no Orbit session cookie');
+  assert.deepEqual(await admissionInventory(),beforeUninvited,'an uninvited assertion changes no operator, binding, session or provenance row');
   email='synthetic-orbit-owner@example.com';subject='synthetic-orbit-operator';
   // Existing binding cannot substitute a different verified email, even when no other operator has it.
   email='changed@example.com';assert.equal((await signIn()).status,403,'bound subject still needs matching email');email='synthetic-orbit-owner@example.com';
