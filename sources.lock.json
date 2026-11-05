@@ -9923,7 +9923,7 @@
       "executable": false
     },
     "tests/core/capture-intake.test.ts": {
-      "sha256": "c3efa743ffb6e699e114d0f61faefc2ff727efcb311b5f2e83898bce28308911",
+      "sha256": "fdeb476839d2ad8a9d9d6f0b607371faa8df61808f127213c320e6886c876b05",
       "executable": false
     },
     "tests/core/capture-mail-rules.test.ts": {
@@ -10831,7 +10831,7 @@
       "executable": false
     },
     "tests/support/capture-fixture.ts": {
-      "sha256": "e222017f4b1f6cb5d13a6f0279b19ec8080d336964c64f7bdc65efbd73da412b",
+      "sha256": "f09ba7839238c2a8a800de2e6488245ae8dcb11318cdab5dbb9fb5a034702d74",
       "executable": false
     },
     "tests/support/capture-mail-rule.ts": {

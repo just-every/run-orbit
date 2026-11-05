@@ -6,13 +6,14 @@ import { RecordsRepository } from '../../src/core/features/records/repository';
 import { OutreachRepository } from '../../src/core/features/workbench/outreach-repository';
 import { ApprovalRepository } from '../../src/core/features/outreach/approval-repository';
 import { OutreachService } from '../../src/core/features/outreach/service';
+import type { OutboundMail } from '../../src/core/platform/outbound-mail';
 
 /**
  * An Orbit with one account (Acme, acme.example), two contacts, an open
  * opportunity, real accepted sends to both contacts and follow-up work for one.
  * Sends go through Orbit's outreach code; only the mail provider is a fake.
  */
-export async function captureFixture(followUp: 'ana' | 'bob' = 'ana') {
+export async function captureFixture(options: { followUp?: 'ana' | 'bob'; mailConfigured?: boolean } = {}) {
   const platform = await isolatedDatabase(), db = platform.db, deps = createDependencies(db), records = new RecordsRepository(db);
   const operator = createId(), stage = createId(), sent: { recipient: string }[] = [];
   await deps.auth.ensureOperator({ id: operator, email: 'seller@orbit.test', displayName: 'Sam Seller' });
@@ -23,7 +24,8 @@ export async function captureFixture(followUp: 'ana' | 'bob' = 'ana') {
   const bob = (await records.save('contact', { name: 'Bob Stone', email: 'bob@acme.example', company_id: company }, operator)).id;
   const opportunity = (await records.save('opportunity', { title: 'Acme rollout', stage_id: stage, company_id: company, value_cents: 500000, contact_ids: [ana, bob], primary_contact_id: ana }, operator)).id;
   const outreach = new OutreachRepository(db), approval = new ApprovalRepository(db);
-  const service = new OutreachService(db, { send: async message => { sent.push({ recipient: message.recipient_email }); return { providerMessageId: `provider-${createId()}` }; } });
+  const mail: OutboundMail = { send: async message => { sent.push({ recipient: message.recipient_email }); return { providerMessageId: `provider-${createId()}` }; } };
+  const service = new OutreachService(db, mail);
   const send = async (contactId: string, subject: string) => {
     const draft = await outreach.createDraft(opportunity, { contactId, subject, body: `Reviewed body: ${subject}` }, operator);
     const message = await approval.approve(draft.id, 1, operator, { quietHoursConfirmation: (await approval.preview(draft.id)).localTime });
@@ -31,11 +33,11 @@ export async function captureFixture(followUp: 'ana' | 'bob' = 'ana') {
     return (await approval.message(message.id)).message_id;
   };
   const anaThread = await send(ana, 'Proposal for Acme'), bobThread = await send(bob, 'Rollout plan');
-  const followUpContact = followUp === 'ana' ? ana : bob;
+  const followUpContact = options.followUp === 'bob' ? bob : ana;
   const scheduledDraft = await outreach.createDraft(opportunity, { contactId: followUpContact, subject: 'Follow-up', body: 'Scheduled follow-up' }, operator);
   const scheduled = await approval.approve(scheduledDraft.id, 1, operator, { scheduledAt: new Date(Date.now() + 2 * 86400000).toISOString() });
   const unsentDraft = await outreach.createDraft(opportunity, { contactId: followUpContact, subject: 'Unsent idea', body: 'Not yet approved' }, operator);
-  const session = await deps.auth.createSession(operator), app = createApp({ database: db, assets: { fetch: async () => new Response('') } });
+  const session = await deps.auth.createSession(operator), app = createApp({ database: db, outboundMail: options.mailConfigured ? mail : undefined, assets: { fetch: async () => new Response('') } });
   const cookie = `__Host-orbit_session=${session.token}`;
   const request = (path: string, init: RequestInit = {}) => app.request(`https://orbit.test${path}`, { ...init, headers: { cookie, origin: 'https://orbit.test', ...init.headers } });
   const upload = (files: { name: string; text: string }[], includeUnknown = false, headers: Record<string, string> = { cookie, origin: 'https://orbit.test' }) => {

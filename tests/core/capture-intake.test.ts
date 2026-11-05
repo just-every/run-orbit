@@ -151,7 +151,7 @@ test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox 
 /** Fresh work for each kind of evidence: an earlier stop cannot hide a later one. */
 async function immediateCaptureEffects() {
   for (const kind of ['booking', 'reply', 'automatic'] as const) {
-    const f = await captureFixture(kind === 'automatic' ? 'bob' : 'ana');
+    const f = await captureFixture({ followUp: kind === 'automatic' ? 'bob' : 'ana', mailConfigured: true });
     try {
       const mail = fixtureMailbox(f), file = kind === 'booking'
         ? { name: 'booking.ics', text: mail.invite }
@@ -169,6 +169,7 @@ async function immediateCaptureEffects() {
           })),
         };
       };
+      assert.equal((await f.request(`/api/v1/workbench/drafts/${f.unsentDraft}/approval-preview`)).status, 200, 'a customer mail sender is configured');
       const before = await work(), sends = f.sent.length;
       assert.equal(before.message!.state, 'scheduled');
       assert.deepEqual(before.drafts.map(draft => draft.isStale), [false, false]);
