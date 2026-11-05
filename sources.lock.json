@@ -9903,7 +9903,7 @@
       "executable": false
     },
     "tests/core/assistance.test.ts": {
-      "sha256": "94e653d52ef0395e2914ad7a7e822563c11ffaf2854fd338e417543e04f2d358",
+      "sha256": "04f156f8080a73e360161b082d2ed60b70d151a35a28eb1b408fd852b357ebcd",
       "executable": false
     },
     "tests/core/capture-boundaries.test.ts": {
@@ -10187,7 +10187,7 @@
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
-      "sha256": "37cbfec9c3954b08177169cd175919d7335855d3c73ebc4199f872818a536f7b",
+      "sha256": "3e651bb3eff5cb93717922235febce5a73f61386368c0b36c6f4715051952203",
       "executable": false
     },
     "tests/e2e/records.spec.mjs": {
