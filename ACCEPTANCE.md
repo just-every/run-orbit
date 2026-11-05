@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 32 | 122 | 24 | 178 |
+| Core | 33 | 121 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 32 | 140 | 32 | 204 |
+| Full target | 33 | 139 | 32 | 204 |
 
 Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -314,15 +314,15 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACC
 
 #### SIGNAL-008 — Ingestion failure
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** A missing or invalid signature returns 401, a request naming a source this deployment has not configured returns 403, and a payload over `seed.json → limits.signalPayloadBytes` returns 413; none of them writes anything. A persistence failure returns 503 and writes no partial signal, timeline entry, or evaluation, so the source can safely replay the same event identity. Each source shows its last accepted event, its last error, and its rejected-event count in settings.
 
 **Acceptance.**
 1. POST invalid signatures, unknown sources, oversized input and injected persistence failure; verify status, no partial writes, replay safety and source diagnostics.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: unknown source refused; all downstream effects rolled back. Asserted: bad signature refused; oversized input refused; persistence failure leaves no signal; replay safety; source rejection diagnostic.
+**Evidence.** Acceptance 1: `tests/core/signals-outreach.test.ts` — SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing (missing and invalid signatures return 401, an unconfigured source returns 403, oversized input returns 413, all with unchanged domain rows; concurrent signed delivery, payload conflict diagnostics and authenticated source readback); SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a persistence failure rolls back all signal effects (signed POST returns 503 after a late database trigger fault, preserves full signal, link, timeline, evaluation, contribution, recommendation, notification and opportunity inventories plus authenticated record and inbox reads, then the same event succeeds once after fault removal and replay changes nothing); `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`
+**Gap.** None.
 
 #### SIGNAL-009 — Signed sources
 
