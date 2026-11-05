@@ -9931,7 +9931,7 @@
       "executable": false
     },
     "tests/core/capture-mail-rules.test.ts": {
-      "sha256": "45060317e638be737c3fc722bab6cd80ec1ab700d42c90f0e921bf0873016863",
+      "sha256": "0d0c65fe66a2c0d5a787740dacd21b3734f54ffb3fb14d345fd4a55244f7f77c",
       "executable": false
     },
     "tests/core/capture-no-console.test.ts": {
