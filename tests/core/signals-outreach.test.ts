@@ -40,7 +40,18 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe 
  const changed=JSON.stringify({...event,subject:'Different'});assert.equal((await request(changed,await sign(secret,changed,timestamp))).status,409);
  const signal=await db.prepare('SELECT COUNT(*) AS n FROM signals WHERE source_id=?').bind(source).first<{n:number}>();assert.equal(signal?.n,1);
  const score=await db.prepare('SELECT score FROM opportunities WHERE id=?').bind(f.opportunityId).first<{score:number}>();assert.equal(score?.score,40);
- const tracking={...event,eventId:createId(),type:'page.viewed'};await repository.ingest(source,tracking,await payloadHash(JSON.stringify(tracking)),JSON.stringify(tracking));const unlinked=await repository.unlinked();assert.ok(unlinked.some(row=>row.type==='page.viewed'));
+ const heldBefore=await ingestionInventory();
+ const held=[];
+ for(const input of [{...event,eventId:createId(),email:[createId(),'customer.example'].join('@')},{...event,eventId:createId(),type:'page.viewed'}]){
+  const body=JSON.stringify(input),response=await request(body,await sign(secret,body,timestamp));assert.equal(response.status,201);
+  const saved=await response.json() as {id:string;linked:boolean};assert.equal(saved.linked,false);held.push(saved.id);
+ }
+ const queue=await records.request('https://orbit.test/api/v1/sources/unlinked',{headers:{Cookie:`__Host-orbit_session=${reader.token}`}});assert.equal(queue.status,200);
+ const unlinked=(await queue.json() as {signals:{id:string;reason:string}[]}).signals;
+ assert.equal(unlinked.find(row=>row.id===held[0])?.reason,'No unique record match');
+ assert.equal(unlinked.find(row=>row.id===held[1])?.reason,'Source visitor identity basis is missing');
+ const heldAfter=await ingestionInventory();
+ for(const table of ['signal_links','timeline_entries','timeline_entry_records','evaluations','evaluation_contributions','recommendations','notifications','opportunities'])assert.deepEqual(heldAfter[table],heldBefore[table],`${table} is unchanged by held evidence`);
  const sourceRead=await records.request('https://orbit.test/api/v1/sources',{headers:{Cookie:`__Host-orbit_session=${reader.token}`}});assert.equal(sourceRead.status,200);
  const diagnostics=await sourceRead.json() as {sources:{id:string;rejected_count:number;last_error:string;last_accepted_at:string}[]},diagnostic=diagnostics.sources.find(row=>row.id===source);
  assert.equal(diagnostic?.rejected_count,1);assert.match(diagnostic!.last_error,/different payload/);assert.ok(diagnostic!.last_accepted_at);
@@ -170,9 +181,49 @@ test('BASE-OPS-003 OUT-002 OUT-005 signed provider delivery is verified and idem
 test('SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a persistence failure rolls back all signal effects',async context=>{
  context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T09:00:00Z')});
  const f=await fixture(),repository=new IngestionRepository(db),source=createId(),security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'22'.repeat(32)})!;await repository.configure({id:source,name:'Review source',secret:'s'.repeat(40),enabled:true},security);
- const event={eventId:createId(),type:'meeting.booked',subject:'Late customer meeting',occurredAt:new Date(Date.now()-2*86400000).toISOString()};const raw=JSON.stringify(event),signal=await repository.ingest(source,event,await payloadHash(raw),raw);const prior=await db.prepare('SELECT score FROM opportunities WHERE id=?').bind(f.opportunityId).first<{score:number}>();assert.equal(prior?.score,0);
- await repository.link(signal.id,{type:'opportunity',id:f.opportunityId,basis:'Operator review'},f.actor);await assert.rejects(repository.link(signal.id,{type:'opportunity',id:f.opportunityId,basis:'Operator review'},f.actor));
+ const event={eventId:createId(),type:'meeting.booked',subject:'Late customer meeting',occurredAt:new Date(Date.now()-2*86400000).toISOString()};
+ const reviewApp=createApp({database:db,sourceSecurity:security,assets:{fetch:async()=>new Response(null,{status:404})}}),reviewSession=await createDependencies(db).auth.createSession(f.actor);
+ const review=async(path:string,body?:unknown,token=reviewSession.token)=>reviewApp.request(`https://orbit.test/api/v1/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
+ const postEvent=async(input:typeof event&{email?:string;record?:{type:'opportunity';id:string}})=>{
+  const body=JSON.stringify(input),timestamp=String(Math.floor(Date.now()/1000));
+  return reviewApp.request(`https://orbit.test/api/v1/signals/${source}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':await sign('s'.repeat(40),body,timestamp)},body});
+ };
+ const readDeal=async(id:string)=>{const response=await review(`records/opportunity/${id}`);assert.equal(response.status,200);return response.json() as Promise<any>;};
+ const unknown=await postEvent(event);assert.equal(unknown.status,201);const signal=await unknown.json() as {id:string;linked:boolean};assert.equal(signal.linked,false);
+ const prior=await db.prepare('SELECT score FROM opportunities WHERE id=?').bind(f.opportunityId).first<{score:number}>();assert.equal(prior?.score,0);
+ const beforeUnknownLink=await ingestionInventory();
+ assert.equal((await review(`sources/unlinked/${signal.id}/link`,{type:'opportunity',id:f.opportunityId})).status,200);
+ assert.equal((await review(`sources/unlinked/${signal.id}/link`,{type:'opportunity',id:f.opportunityId})).status,409);
+ const afterUnknownLink=await ingestionInventory();assert.equal(afterUnknownLink.evaluations!.length-beforeUnknownLink.evaluations!.length,1,'One manual unknown-identity link triggers one evaluation');
  const entry=await db.prepare('SELECT occurred_at FROM timeline_entries WHERE id=?').bind(signal.id).first<{occurred_at:string}>();assert.equal(entry?.occurred_at,event.occurredAt);
+ assert.equal((await readDeal(f.opportunityId)).timeline.filter((row:{id:string})=>row.id===signal.id).length,1);
+ const unknownReplay=await postEvent(event);assert.equal(unknownReplay.status,201);assert.deepEqual(await unknownReplay.json(),{id:signal.id,replayed:true});assert.deepEqual(await ingestionInventory(),afterUnknownLink);
+
+ const other=await fixture();
+ // A persisted retired alias disagrees with the current native key. Keep every identity guard active.
+ await db.prepare('INSERT INTO record_aliases(record_type,identity_key,survivor_id,retired_id,created_at) SELECT ?,email_key,?,?,? FROM contacts WHERE id=?').bind('contact',other.contactId,createId(),f.at,f.contactId).run();
+ await assert.rejects(db.prepare('UPDATE contacts SET email_key=(SELECT email_key FROM contacts WHERE id=?) WHERE id=?').bind(f.contactId,f.contactId).run(),/RECORD_IDENTITY_CONFLICT/,'The native alias guard is still active');
+ const ambiguous={...event,eventId:createId(),subject:'synthetic-orbit-1',email:f.email},beforeAmbiguous=await ingestionInventory(),nativeBefore=await readDeal(f.opportunityId),chosenBefore=await readDeal(other.opportunityId);
+ const received=await postEvent(ambiguous);assert.equal(received.status,201);const held=await received.json() as {id:string;linked:boolean};assert.equal(held.linked,false,'Conflicting native and retired identities stay held');
+ const queueResponse=await review('sources/unlinked');assert.equal(queueResponse.status,200);const queue=(await queueResponse.json() as {signals:{id:string;reason:string}[]}).signals;
+ assert.equal(queue.filter(row=>row.id===held.id).length,1);assert.equal(queue.find(row=>row.id===held.id)?.reason,'No unique record match');
+ const afterAmbiguous=await ingestionInventory();
+ for(const table of ['signal_links','timeline_entries','timeline_entry_records','evaluations','evaluation_contributions','recommendations','recommendation_evidence','notifications','opportunities','contacts','drafts','outbound_messages'])assert.deepEqual(afterAmbiguous[table],beforeAmbiguous[table],`${table} is unchanged by ambiguous evidence`);
+ assert.deepEqual(await readDeal(f.opportunityId),nativeBefore);assert.deepEqual(await readDeal(other.opportunityId),chosenBefore);
+ const heldReplay=await postEvent(ambiguous);assert.equal(heldReplay.status,201);assert.deepEqual(await heldReplay.json(),{id:held.id,replayed:true});assert.deepEqual(await ingestionInventory(),afterAmbiguous);
+ const chosen={type:'opportunity',id:other.opportunityId};
+ assert.equal((await review(`sources/unlinked/${held.id}/link`,chosen,'')).status,401,'An anonymous caller cannot resolve held identity');assert.deepEqual(await ingestionInventory(),afterAmbiguous);
+ assert.equal((await review(`sources/unlinked/${held.id}/link`,chosen)).status,200);
+ const linked=await ingestionInventory();assert.equal(linked.evaluations!.length-afterAmbiguous.evaluations!.length,1,'One reviewed ambiguous link triggers exactly one evaluation');
+ assert.equal((await db.prepare('SELECT COUNT(*) n FROM evaluations WHERE opportunity_id=?').bind(other.opportunityId).first<{n:number}>())?.n,1);
+ const links=(await db.prepare('SELECT record_type,record_id FROM signal_links WHERE signal_id=?').bind(held.id).all()).results;assert.deepEqual(links,[{record_type:'opportunity',record_id:other.opportunityId}]);
+ const chosenAfter=await readDeal(other.opportunityId),chosenEntries=chosenAfter.timeline.filter((row:{id:string})=>row.id===held.id);assert.equal(chosenEntries.length,1);assert.equal(chosenEntries[0].occurred_at,event.occurredAt);assert.equal(chosenAfter.record.score,42);
+ assert.deepEqual(await readDeal(f.opportunityId),nativeBefore,'The competing native-key deal remains unchanged after explicit choice');
+ const resolved=await review('sources/unlinked');assert.equal(resolved.status,200);assert.ok(!(await resolved.json() as {signals:{id:string}[]}).signals.some(row=>row.id===held.id));
+ assert.equal((await review(`sources/unlinked/${held.id}/link`,chosen)).status,409);
+ assert.equal((await review(`sources/unlinked/${held.id}/link`,{type:'opportunity',id:f.opportunityId})).status,409,'A second choice cannot move linked evidence');
+ const linkedReplay=await postEvent(ambiguous);assert.equal(linkedReplay.status,201);assert.deepEqual(await linkedReplay.json(),{id:held.id,replayed:true});assert.deepEqual(await ingestionInventory(),linked,'Repeated review and signed replay add no effects');
+ assert.deepEqual(await readDeal(other.opportunityId),chosenAfter);assert.deepEqual(await readDeal(f.opportunityId),nativeBefore);
  await db.prepare("UPDATE opportunities SET queue_state='next',queue_reason='Waiting for customer',next_due_at='2030-01-07T10:00:00.000Z',owner_id=? WHERE id=?").bind(f.actor,f.opportunityId).run();
  context.mock.timers.tick(1000);
  const candidate={...event,eventId:createId(),record:{type:'opportunity' as const,id:f.opportunityId}},candidateRaw=JSON.stringify(candidate),timestamp=String(Math.floor(Date.now()/1000)),signature=await sign('s'.repeat(40),candidateRaw,timestamp);
