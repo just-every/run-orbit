@@ -115,7 +115,8 @@ test('AI-002 AI-003 ACTION-001 current action survives disabled AI without inven
  assert.equal((await db.prepare('SELECT count(*) AS n FROM drafts WHERE opportunity_id=?').bind(f.opportunity.id).first<{n:number}>())!.n,0);
 
  // Reconstruct the application over the same stored records with AI disabled.
- const off=createApp({database:db,assets:{fetch:async()=>new Response('test')}});
+ let mailRequests=0;
+ const off=createApp({database:db,assets:{fetch:async()=>new Response('test')},outboundMail:{async send(){mailRequests++;throw new Error('Generation must not submit customer mail.');}}});
  assert.deepEqual((await detail(off)).recommendation,action,'disabling AI preserves the same named current action, version and observed evidence');
  const inventory=async()=>({
   recommendations:(await db.prepare('SELECT * FROM recommendations WHERE opportunity_id=? ORDER BY id').bind(f.opportunity.id).all()).results,
@@ -135,6 +136,7 @@ test('AI-002 AI-003 ACTION-001 current action survives disabled AI without inven
  }
  assert.deepEqual(await inventory(),before,'disabled generation creates no explanation, draft, outbound intent or recorded model call');
  assert.equal(modelRequests,1,'disabled requests never reach the previous provider');
+ assert.equal(mailRequests,0,'disabled generation makes no customer-mail submission even with mail configured');
  assert.deepEqual((await detail(off)).recommendation,action,'refused generation leaves the same current action intact');
 });
 test('AI-001 DATA-002 changed or deleted preview context never leaves deployment',async()=>{
