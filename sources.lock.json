@@ -10095,7 +10095,7 @@
       "executable": false
     },
     "tests/delegation-browser/private-entries-journey.mjs": {
-      "sha256": "3ed144b462c2fd24ecdf5704dfdc6eeae7614c33ad310ab2b513186e3b6afb24",
+      "sha256": "6e4c7737c3b54a057dec001aead2df3a2d64bfac6b6929172414021b8a06adfc",
       "executable": false
     },
     "tests/delegation-browser/records-layout-journey.mjs": {
@@ -10103,7 +10103,7 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {
-      "sha256": "ab12cdaba6cbf6daa821948ccec360f51d19d0fd1e4fa006c0d2b5d8214468fb",
+      "sha256": "12cb2f6398427416b2b400c344c1ee0de621517c44b5e4518c5631ee3a941ba3",
       "executable": false
     },
     "tests/delegation-browser/related-records.test.ts": {
@@ -10803,7 +10803,7 @@
       "executable": false
     },
     "tests/support/browser-private-data.ts": {
-      "sha256": "10d0ba4f0adfd1f53ca450a60a22655144cd4f85af23d79afb9a9d8fd7dab364",
+      "sha256": "24a33e8a3ec4a356206da197c10072d98a522c52706697c1aafb2c2c68c3ea59",
       "executable": false
     },
     "tests/support/browser-temp.mjs": {
