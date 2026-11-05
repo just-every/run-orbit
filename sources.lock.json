@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "1f01a1e3f4106cd4b7149cdc5159dc520505555d7c21a68e5c183c11e81d1848",
+      "sha256": "bef9cb241cf8d7104d2df9f2527c2dde700e6ea022d5fc8df052f025c60b0184",
       "executable": false
     },
     "DEMO.md": {
@@ -6531,7 +6531,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/draft-approval.tsx": {
-      "sha256": "67be60347d8f1337d0bb7a4bdbe3a2352802daf50496efcb371bad3f52a80f6c",
+      "sha256": "480eb12925430ef6157fabd26868cad56ae9ca298c20c251a3cc4613d615a2f5",
       "executable": false
     },
     "src/core/features/operator/ui/draft-opt-out.tsx": {
@@ -6539,7 +6539,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/draft-page.tsx": {
-      "sha256": "52752170ce63318d4900fc89efde667ed5a1a5d6129dc003993dfaa4b33b61e1",
+      "sha256": "6c4b58f9a3261ce566c6f997673837f55cc74daa4e5e835381b3b8da7336141a",
       "executable": false
     },
     "src/core/features/operator/ui/duplicate-review.css": {
@@ -6815,7 +6815,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-activity.tsx": {
-      "sha256": "429ed31cb310f7b9089f5990883e3d60379896e0dbac74f5b5a871de5423a18f",
+      "sha256": "9c86d92dfdb5e6b3e3e9afac1d0460021d78d000615c529781bc937f243d7f7a",
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-context.tsx": {
@@ -6847,7 +6847,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/message-tools.tsx": {
-      "sha256": "4c91df9d4ad4846537f2149a1bfbcf237276eea4ab38f9b783ecd8e4d63d7e4b",
+      "sha256": "65e3168e4c13655a38cbfaa65a92d034186a14e253b3a23a15578e0cfbb118e4",
       "executable": false
     },
     "src/core/features/operator/ui/record/next-action.tsx": {
@@ -7103,7 +7103,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/workbench-api.ts": {
-      "sha256": "4fc1a3f7bab1cf26058052787e16eb3cde04d3924ae1fe9b38ccbe7c526be5ba",
+      "sha256": "a4431f34824b787a7fcc93f0a11d08cdf8eb55fca51461b747e28927cf7d1862",
       "executable": false
     },
     "src/core/features/operator/ui/workflows-actions.tsx": {
