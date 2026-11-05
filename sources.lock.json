@@ -10691,7 +10691,7 @@
       "executable": false
     },
     "tests/rer/onboarding-journey.mjs": {
-      "sha256": "5f5a67b999a01fee161f4f8c1594b199176240ea523b41a3ddb168fd01b5239b",
+      "sha256": "9d7fbc00ac3360c5cd41e41aea70c2091529248a5a7313a1b6ffb779f5224aac",
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
@@ -10755,7 +10755,7 @@
       "executable": false
     },
     "tests/rer/scheduled-outreach.mjs": {
-      "sha256": "bebf785e155655efe556629ccf8822bdf0caefe912fe15e20918c2bf0461a3b8",
+      "sha256": "3c28f74b1e7c1e9e078b6b675dccaa1628d43f26f6478d649a11f0de2049c7f2",
       "executable": false
     },
     "tests/rer/sent-message-proof.mjs": {

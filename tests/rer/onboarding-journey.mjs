@@ -47,6 +47,7 @@ export async function persistedWorkspace(page,origin,width,evidence){
   const field=page.getByLabel(label,{exact:true});await field.fill(value);await save(field,()=>field.press('Tab'));
  }
  await page.reload();
+ await page.getByLabel('Time zone',{exact:true}).waitFor();
  if(width===1440){
   await expect(page.getByLabel('Time zone',{exact:true})).toHaveValue('America/New_York');
   await expect(page.getByLabel('Currency',{exact:true})).toHaveValue('USD');

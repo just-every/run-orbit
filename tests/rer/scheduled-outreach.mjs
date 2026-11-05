@@ -20,12 +20,16 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  await expect(approval).toContainText(contact.email);
  await expect(approval).toContainText(subject);
  await expect(approval).toContainText(body);
- // Workspace and recipient use UTC. Choose a future weekday in sending hours;
- // the field reads workspace time, as its label says.
- const requested=new Date(Date.now()+86400000);requested.setUTCHours(10,0,0,0);
- while([0,6].includes(requested.getUTCDay()))requested.setUTCDate(requested.getUTCDate()+1);
+ // The field reads the saved workspace clock. At 15:00 UTC, the New York fixture
+ // is inside working hours in both winter and summer; use one of its saved days.
+ const {workspace}=await browserAPI(page,'/api/v1/settings'),hours=JSON.parse(workspace.working_hours_json);
+ const local=date=>Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:workspace.timezone,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',weekday:'short',hour:'2-digit',minute:'2-digit'}).formatToParts(date).map(part=>[part.type,part.value]));
+ const requested=new Date(Date.now()+86400000);requested.setUTCHours(15,0,0,0);
+ while(!hours.days.includes(['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(local(requested).weekday)))requested.setUTCDate(requested.getUTCDate()+1);
+ const parts=local(requested),localTime=`${parts.hour}:${parts.minute}`;
+ assert.ok(localTime>=hours.start&&localTime<hours.end,'The fixture requests an instant inside its saved working hours');
  const requestedAt=requested.toISOString();
- await approval.getByLabel(/Schedule for later/).fill(requestedAt.slice(0,16));
+ await approval.getByLabel(/Schedule for later/).fill(`${parts.year}-${parts.month}-${parts.day}T${localTime}`);
  const previewResponse=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/workbench/drafts/${draft.id}/approval-preview`);
  await approval.getByRole('button',{name:'Review schedule for exact revision',exact:true}).click();
  const response=await previewResponse;assert.equal(response.status(),200);
