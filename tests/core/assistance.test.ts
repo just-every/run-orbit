@@ -11,6 +11,7 @@ import {notificationSession} from '../support/notification-session';
 import {notificationResponsibility} from '../support/notification-responsibility';
 import type {AIProvider} from '../../src/core/features/assistance/provider';
 import type {OperatorDraft} from '../../src/core/features/operator/ui/operator-api';
+import type {OpportunityDetail} from '../../src/core/features/opportunities/contracts';
 const platform=await isolatedDatabase();after(()=>platform.dispose());const db=platform.db;
 async function fixture(provider?:AIProvider){const deps=createDependencies(db),actor=createId(),stage=createId();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.invalid`,displayName:'Assistance test'});await deps.workspace.ensureWorkspace({name:'Assistance test',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});const n=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Review',position:n!.n});const workbench=new WorkbenchRepository(db);const opportunity=await workbench.createOpportunity({title:'Real D1 test',companyName:'Test company',contactName:'Test contact',email:`${createId()}@test.invalid`,stageId:stage,valueCents:10},actor);await workbench.recordEvent(opportunity.id,{type:'form.submitted',subject:'Requested details',occurredAt:new Date().toISOString(),eventId:createId()},actor);const session=await deps.auth.createSession(actor);const app=createApp({database:db,assets:{fetch:async()=>new Response('test')},aiProvider:provider});const cookie=`__Host-orbit_session=${session.token}`;async function call(path:string,body?:unknown){return app.request(`https://orbit.test/api/v1/${path}`,{method:body?'POST':'GET',headers:{cookie,origin:'https://orbit.test','content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});}return{actor,opportunity,call,app,cookie};}
 test('AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creates durable unsent draft and usage',async()=>{
@@ -79,8 +80,62 @@ test('AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creat
  assert.equal(messages.status,200);
  assert.deepEqual((await messages.json() as {messages:unknown[]}).messages,[],'editing and returning submit no customer message');
 });
-test('AI-002 invented evidence fails visibly; AI-003 unconfigured provider generates nothing',async()=>{
- const provider:AIProvider={provider:'test',model:'test',inputCostPerMillion:0,outputCostPerMillion:0,async generate(){return{output:{explanation:'Bad evidence',subject:'No',body:'No',evidenceIds:['not-present']},inputTokens:1,outputTokens:1};}};const f=await fixture(provider);const preview=await(await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'})).json() as {id:string};assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,502);assert.equal((await db.prepare('SELECT count(*) AS n FROM drafts WHERE opportunity_id=?').bind(f.opportunity.id).first<{n:number}>())!.n,0);const off=await fixture();assert.equal((await off.call('assistance/generate',{previewId:createId()})).status,503);
+test('AI-002 AI-003 ACTION-001 current action survives disabled AI without invented evidence or content',async()=>{
+ let modelRequests=0;
+ const provider:AIProvider={provider:'test',model:'test',inputCostPerMillion:0,outputCostPerMillion:0,async generate(){modelRequests++;return{output:{explanation:'Bad evidence',subject:'No',body:'No',evidenceIds:['not-present']},inputTokens:1,outputTokens:1};}};
+ const f=await fixture(provider),path=`opportunities/${f.opportunity.id}`;
+ const detail=async(app=f.app)=>{
+  const response=await app.request(`https://orbit.test/api/v1/${path}`,{headers:{Cookie:f.cookie}});
+  assert.equal(response.status,200);
+  return (await response.json() as {opportunity:OpportunityDetail}).opportunity;
+ };
+ const initial=await detail();
+ assert.equal(initial.lifecycle,'open');
+ assert.equal(initial.signals.length,1);
+ assert.equal(initial.signals[0]!.confidence,'observed');
+ const recorded=await f.call(`workbench/opportunities/${f.opportunity.id}/events`,{
+  type:'meeting.booked',subject:'Customer booked a discovery meeting',occurredAt:new Date().toISOString(),eventId:createId(),
+ });
+ assert.equal(recorded.status,201);
+ const signal=await recorded.json() as {id:string},current=await detail();
+ const stored=await db.prepare('SELECT id,action_type,policy_version FROM recommendations WHERE opportunity_id=? AND is_current=1').bind(f.opportunity.id).all<{id:string;action_type:string;policy_version:string}>();
+ assert.equal(stored.results.length,1,'an open deal has exactly one current action');
+ const action=current.recommendation;
+ assert.ok(action);
+ assert.equal(action.actionType,'manual_action','the current recommendation names a supported action');
+ assert.ok(stored.results[0]!.policy_version,'the producing policy version is recorded');
+ assert.deepEqual([action.id,action.actionType,action.policyVersion],[stored.results[0]!.id,stored.results[0]!.action_type,stored.results[0]!.policy_version],'the operator reads the exact stored identity, action and version');
+ assert.deepEqual(action.evidenceSignalIds,[initial.signals[0]!.id,signal.id].sort(),'the action cites the original observation and the newly recorded meeting by identity');
+ for(const id of action.evidenceSignalIds)assert.equal(current.signals.find(row=>row.id===id)?.confidence,'observed');
+ assert.equal(action.explanation,null,'no written explanation is invented before a model result');
+
+ const preview=await(await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'})).json() as {id:string};
+ assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,502);
+ assert.equal(modelRequests,1);
+ assert.equal((await db.prepare('SELECT count(*) AS n FROM drafts WHERE opportunity_id=?').bind(f.opportunity.id).first<{n:number}>())!.n,0);
+
+ // Reconstruct the application over the same stored records with AI disabled.
+ const off=createApp({database:db,assets:{fetch:async()=>new Response('test')}});
+ assert.deepEqual((await detail(off)).recommendation,action,'disabling AI preserves the same named current action, version and observed evidence');
+ const inventory=async()=>({
+  recommendations:(await db.prepare('SELECT * FROM recommendations WHERE opportunity_id=? ORDER BY id').bind(f.opportunity.id).all()).results,
+  drafts:(await db.prepare('SELECT * FROM drafts WHERE opportunity_id=? ORDER BY id').bind(f.opportunity.id).all()).results,
+  messages:(await db.prepare('SELECT * FROM outbound_messages WHERE opportunity_id=? ORDER BY id').bind(f.opportunity.id).all()).results,
+  calls:(await db.prepare('SELECT * FROM ai_calls WHERE opportunity_id=? ORDER BY id').bind(f.opportunity.id).all()).results,
+ });
+ const before=await inventory();
+ for(const feature of ['explanation','draft']){
+  const response=await off.request('https://orbit.test/api/v1/assistance/preview',{method:'POST',headers:{Cookie:f.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({opportunityId:f.opportunity.id,feature})});
+  assert.equal(response.status,200);
+  const preview=await response.json() as {id:string;configured:boolean};
+  assert.equal(preview.configured,false);
+  const generated=await off.request('https://orbit.test/api/v1/assistance/generate',{method:'POST',headers:{Cookie:f.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({previewId:preview.id})});
+  assert.equal(generated.status,503);
+  assert.deepEqual(await generated.json(),{error:'AI is not configured. Manual work remains available.'});
+ }
+ assert.deepEqual(await inventory(),before,'disabled generation creates no explanation, draft, outbound intent or recorded model call');
+ assert.equal(modelRequests,1,'disabled requests never reach the previous provider');
+ assert.deepEqual((await detail(off)).recommendation,action,'refused generation leaves the same current action intact');
 });
 test('AI-001 DATA-002 changed or deleted preview context never leaves deployment',async()=>{
  let calls=0;const f=await fixture({provider:'test',model:'test',inputCostPerMillion:0,outputCostPerMillion:0,async generate(){calls++;throw new Error('must not run');}});const preview=await(await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'})).json() as {id:string};await db.prepare('UPDATE opportunities SET title=? WHERE id=?').bind('Changed after preview',f.opportunity.id).run();assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,409);assert.equal(calls,0);
