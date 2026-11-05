@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "664579681cd7317b07b5a31d35ae95f0e3b0ef92f24676bfd15d0ac3251f1127",
+      "sha256": "ba573120f07afdd5f759ee245980a2c18de59b65de72cfa8cc3a5f46372d1a0e",
       "executable": false
     },
     "DEMO.md": {
@@ -11096,6 +11096,10 @@
     },
     "tests/support/source-stop-fixture.ts": {
       "sha256": "6eee65991c7036a3530c3eb320b9badeba0f04a903bc3ac311a1bebdc38499d4",
+      "executable": false
+    },
+    "tests/support/stale-draft-review.ts": {
+      "sha256": "53d7e10a1ab8d117e36866067633a6fc4f36bfbd159e08058a1a1b46d1368121",
       "executable": false
     },
     "tests/support/stop-attribution.ts": {
