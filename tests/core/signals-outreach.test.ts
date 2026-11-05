@@ -48,10 +48,10 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe 
  const company=await db.prepare('SELECT company_id FROM contacts WHERE id=?').bind(f.contactId).first<{company_id:string}>();
  const native=createApp({database:db,sourceSecurity:security,assets:{fetch:async()=>new Response(null,{status:404})}});
  const api=async(path:string,body?:unknown,status=200)=>{
-  const response=await native.request(`https://orbit.test/api/v1/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${reader.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+  const response=await native.request(`https://orbit.test/api/v1${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${reader.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
   assert.equal(response.status,status,path);return response.json() as Promise<any>;
  };
- const histories=async()=>Promise.all([`contact/${f.contactId}`,`company/${company!.company_id}`,`opportunity/${f.opportunityId}`].map(path=>api(`records/${path}`)));
+ const histories=async()=>Promise.all([`contact/${f.contactId}`,`company/${company!.company_id}`,`opportunity/${f.opportunityId}`].map(path=>api(`/records/${path}`)));
  const effects=async()=>{
   const {signals,unlinked_signals,signal_sources,...downstream}=await ingestionInventory();
   return downstream;
@@ -63,24 +63,24 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe 
   const deliver=async()=>{const timestamp=String(Math.floor(Date.now()/1000));return native.request(`https://orbit.test/api/v1/signals/${source}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':await sign(secret,body,timestamp)},body});};
   const response=await deliver();assert.equal(response.status,201);
   const held=await response.json() as {id:string;linked:boolean};assert.equal(held.linked,false,`${type} without a source-held basis stays unlinked even with a known identity`);
-  const review=await api('sources/unlinked'),row=review.signals.find((row:{id:string})=>row.id===held.id);
+  const review=await api('/sources/unlinked'),row=review.signals.find((row:{id:string})=>row.id===held.id);
   assert.deepEqual(row,{id:held.id,source_id:source,source_name:'Source',type,subject:unsupported.subject,occurred_at:f.at,reason:'Source visitor identity basis is missing',email:identity.email??null,domain:null,name:null});
   assert.deepEqual(await effects(),beforeHeld,'Held visitors create no record links, timeline, evaluation, contribution, recommendation, notification or sales-state changes');
   assert.deepEqual(await histories(),historyBefore,'Contact, company and deal reads retain exactly their prior history and state');
   const afterHeld=await ingestionInventory();
-  assert.deepEqual(await api(`sources/unlinked/${held.id}/link`,{type:'contact',id:f.contactId},409),{error:'A source-held visitor identity basis is required.'});
+  assert.deepEqual(await api(`/sources/unlinked/${held.id}/link`,{type:'contact',id:f.contactId},409),{error:'A source-held visitor identity basis is required.'});
   assert.deepEqual(await ingestionInventory(),afterHeld,'Native review cannot bypass the missing source-held basis');
   const replay=await deliver();assert.equal(replay.status,201);assert.deepEqual(await replay.json(),{id:held.id,replayed:true});
   assert.deepEqual(await ingestionInventory(),afterHeld,'Replay retains the exact held identity, reason and unchanged downstream effects');
-  assert.deepEqual(await api('sources/unlinked'),review);assert.deepEqual(await histories(),historyBefore);
+  assert.deepEqual(await api('/sources/unlinked'),review);assert.deepEqual(await histories(),historyBefore);
  }
  // Supported visitor evidence still reaches the exact known contact, once, when the source supplies its basis.
  for(const type of ['page.viewed','chat.started','content.downloaded']){
   const identified={eventId:createId(),type,subject:`synthetic-orbit-identified-${type}`,occurredAt:f.at,email:f.email,identityBasis:'Authenticated customer identity held by the source'},body=JSON.stringify(identified);
   const deliver=async()=>{const timestamp=String(Math.floor(Date.now()/1000));return native.request(`https://orbit.test/api/v1/signals/${source}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':await sign(secret,body,timestamp)},body});};
   const response=await deliver();assert.equal(response.status,201);const accepted=await response.json() as {id:string;linked:boolean};assert.equal(accepted.linked,true);
-  for(const path of [`contact/${f.contactId}`,`opportunity/${f.opportunityId}`])assert.equal((await api(`records/${path}`)).timeline.filter((entry:{id:string})=>entry.id===accepted.id).length,1,'Source-supported evidence appears once in customer history');
-  assert.equal((await api('sources/unlinked')).signals.some((row:{id:string})=>row.id===accepted.id),false);
+  for(const path of [`contact/${f.contactId}`,`opportunity/${f.opportunityId}`])assert.equal((await api(`/records/${path}`)).timeline.filter((entry:{id:string})=>entry.id===accepted.id).length,1,'Source-supported evidence appears once in customer history');
+  assert.equal((await api('/sources/unlinked')).signals.some((row:{id:string})=>row.id===accepted.id),false);
   const afterAccepted=await ingestionInventory(),replay=await deliver();assert.equal(replay.status,201);assert.deepEqual(await replay.json(),{id:accepted.id,replayed:true});assert.deepEqual(await ingestionInventory(),afterAccepted);
  }
 });

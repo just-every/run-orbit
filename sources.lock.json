@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "b74ca82593335dcfcb7dade5f74b9930497cf4d321eca867724bdd65f22525f8",
+      "sha256": "39e0364695eb9230caf96b7e3057a900b7f825b3c2a56980117a8e175aa04734",
       "executable": false
     },
     "DEMO.md": {
@@ -10063,7 +10063,7 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "4ff080859ad72e18e1f81375dcb50c8b4e404758ddd520a3762514378c9a2394",
+      "sha256": "54c5ef692ed43c946ba9638e01cacee21647014fc2f19e251cdc748a581fae33",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
@@ -10171,7 +10171,7 @@
       "executable": false
     },
     "tests/e2e/baseline.spec.mjs": {
-      "sha256": "52ac7a5a088da743ebbb058cc436e54c22bcd69e4df1ca8ab678c654d0b3dddb",
+      "sha256": "c3c344709afc31d6be7bffaac388dabceb615f4034e5fe1012fa1fc45b20c86c",
       "executable": false
     },
     "tests/e2e/capture.spec.mjs": {

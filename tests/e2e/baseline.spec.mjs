@@ -27,7 +27,7 @@ test('BASE-PUBLIC-001 BASE-SECRET-001 PUBLIC-001 public surfaces expose no priva
  await page.goto('/');await page.waitForLoadState('networkidle');expect(external).toEqual([]);expect(await context.cookies()).toEqual([]);await expect(page.locator('body')).not.toContainText('Fieldhouse');await expect(page.locator('body')).not.toContainText('maya.patel');
  const scripts=await page.locator('script[src]').evaluateAll(nodes=>nodes.map(node=>node.src));for(const script of scripts){const body=await(await page.request.get(script)).text();expect(body).not.toContain('SENDGRID_API_KEY');expect(body).not.toContain('OPENAI_API_KEY');expect(body).not.toContain('ORBIT_ENCRYPTION_KEY');}
  const docs=JSON.parse(readFileSync('docs/site.json','utf8')).sections.flatMap(section=>section.pages.map(page=>page.slug?`/docs/${page.slug}`:'/docs'));
- const assets=new Set(readdirSync('dist/client',{recursive:true}).map(file=>`/${file}`));
+ const assets=new Set(readdirSync('./dist/client',{recursive:true}).map(file=>`/${file}`));
  const documents=[...assets].filter(file=>file.endsWith('.html'));
  const routes=[...new Set(['/','/signin','/demo',...docs,...documents])];
  const checkedScripts=new Set();
