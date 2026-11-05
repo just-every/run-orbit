@@ -9903,7 +9903,7 @@
       "executable": false
     },
     "tests/core/assistance.test.ts": {
-      "sha256": "04f156f8080a73e360161b082d2ed60b70d151a35a28eb1b408fd852b357ebcd",
+      "sha256": "af7971fc245b3e068b00f68ba68a5b7f4f36b62ddb6987e037f03f07aa0d4fd1",
       "executable": false
     },
     "tests/core/capture-boundaries.test.ts": {

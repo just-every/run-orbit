@@ -7,18 +7,70 @@ import {mailedIdentity} from '../support/email-link';
 import {identityResponse} from '../../src/core/features/identity';
 import {createId} from '../../src/core/shared/ids';
 import {WorkbenchRepository} from '../../src/core/features/workbench/repository';
-import type {AIProvider} from '../../src/core/features/assistance/provider';
+import {createAIProvider,type AIProvider,type AIOutput} from '../../src/core/features/assistance/provider';
+import type {buildPreview} from '../../src/core/features/assistance/preview';
+import {outreachInstructions} from '../../src/ext/assistance';
 import type {OperatorDraft} from '../../src/core/features/operator/ui/operator-api';
 const platform=await isolatedDatabase();after(()=>platform.dispose());const db=platform.db;
-async function fixture(provider?:AIProvider){const deps=createDependencies(db),actor=createId(),stage=createId();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.invalid`,displayName:'Assistance test'});await deps.workspace.ensureWorkspace({name:'Assistance test',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});const n=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Review',position:n!.n});const workbench=new WorkbenchRepository(db);const opportunity=await workbench.createOpportunity({title:'Real D1 test',companyName:'Test company',contactName:'Test contact',email:`${createId()}@test.invalid`,stageId:stage,valueCents:10},actor);await workbench.recordEvent(opportunity.id,{type:'form.submitted',subject:'Requested details',occurredAt:new Date().toISOString(),eventId:createId()},actor);const session=await deps.auth.createSession(actor);const app=createApp({database:db,assets:{fetch:async()=>new Response('test')},aiProvider:provider});const cookie=`__Host-orbit_session=${session.token}`;async function call(path:string,body?:unknown){return app.request(`https://orbit.test/api/v1/${path}`,{method:body?'POST':'GET',headers:{cookie,origin:'https://orbit.test','content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});}return{actor,opportunity,call,app,cookie};}
-test('AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creates durable unsent draft and usage',async()=>{
- let received:unknown;const provider:AIProvider={provider:'test',model:'test-model',inputCostPerMillion:1,outputCostPerMillion:2,async generate(input){received=input;const data=input as {evidence:{id:string}[]};return {output:{explanation:'Follow up on their request.',subject:'Your request',body:'Thanks for asking. What would help?',evidenceIds:[data.evidence[0]!.id]},inputTokens:20,outputTokens:10};}};
- const f=await fixture(provider);const previewResponse=await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'});assert.equal(previewResponse.status,200);const preview=await previewResponse.json() as {id:string;preview:unknown};const generated=await f.call('assistance/generate',{previewId:preview.id});assert.equal(generated.status,200);assert.deepEqual(received,preview.preview);const body=await generated.json() as {draftId:string};assert.ok(await db.prepare('SELECT id FROM drafts WHERE id=?').bind(body.draftId).first());assert.equal((await db.prepare('SELECT count(*) AS n FROM outbound_messages WHERE opportunity_id=?').bind(f.opportunity.id).first<{n:number}>())!.n,0);assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,409);const usage=await db.prepare('SELECT input_tokens,output_tokens,status FROM ai_calls WHERE opportunity_id=?').bind(f.opportunity.id).first();assert.deepEqual(usage,{input_tokens:20,output_tokens:10,status:'success'});
+async function fixture(provider?:AIProvider,outboundMail?:Parameters<typeof createApp>[0]['outboundMail']){const deps=createDependencies(db),actor=createId(),stage=createId();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.invalid`,displayName:'Assistance test'});await deps.workspace.ensureWorkspace({name:'Assistance test',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});const n=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Review',position:n!.n});const workbench=new WorkbenchRepository(db);const opportunity=await workbench.createOpportunity({title:'Real D1 test',companyName:'Test company',contactName:'Test contact',email:`${createId()}@test.invalid`,stageId:stage,valueCents:10},actor);await workbench.recordEvent(opportunity.id,{type:'form.submitted',subject:'Requested details',occurredAt:new Date().toISOString(),eventId:createId()},actor);const session=await deps.auth.createSession(actor);const app=createApp({database:db,assets:{fetch:async()=>new Response('test')},aiProvider:provider,outboundMail});const cookie=`__Host-orbit_session=${session.token}`;async function call(path:string,body?:unknown){return app.request(`https://orbit.test/api/v1/${path}`,{method:body?'POST':'GET',headers:{cookie,origin:'https://orbit.test','content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});}return{actor,opportunity,call,app,cookie};}
+test('AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creates durable unsent draft and usage',async(context)=>{
+ type Preview=Awaited<ReturnType<typeof buildPreview>>;
+ let received:Preview|undefined,modelCalls=0,mailCalls=0;
+ const provider=createAIProvider({OPENAI_API_KEY:'synthetic-orbit-1',AI_MODEL:'synthetic-orbit-2',AI_INPUT_COST_PER_MILLION:'1',AI_OUTPUT_COST_PER_MILLION:'2'});
+ const f=await fixture(provider,{send:async()=>{mailCalls++;return{providerMessageId:'synthetic-orbit-3'};}});
+ const facts='Cedar rollout: the customer requested 37 field units and a technical review next Thursday.';
+ const event=await f.call(`workbench/opportunities/${f.opportunity.id}/events`,{type:'form.submitted',subject:facts,occurredAt:new Date().toISOString(),eventId:createId()});
+ assert.equal(event.status,201,await event.clone().text());
+ const evidenceId=(await event.json() as {id:string}).id;
+ const previewResponse=await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'});
+ assert.equal(previewResponse.status,200);
+ const preview=await previewResponse.json() as {id:string;preview:Preview};
+ assert.ok(preview.preview.recommendation.id);
+ assert.equal(preview.preview.opportunity.id,f.opportunity.id);
+ assert.equal(preview.preview.contact!.name,'Test contact');
+ assert.equal(preview.preview.company!.name,'Test company');
+ assert.equal(preview.preview.evidence.find(item=>item.id===evidenceId)?.subject,facts,'the current recommendation cites the recorded customer facts');
+ assert.equal(preview.preview.instructions,outreachInstructions);
+ const expected:AIOutput={explanation:'The customer requested these units and a technical review.',subject:'Cedar rollout technical review',body:'Thanks for requesting 37 field units for the Cedar rollout and a technical review next Thursday. What requirements should we cover?',evidenceIds:[evidenceId]};
+ const network=globalThis.fetch;
+ context.mock.method(globalThis,'fetch',async(input:Parameters<typeof fetch>[0],init?:RequestInit)=>{
+  if(input!=='https://api.openai.com/v1/responses')return network(input,init);
+  modelCalls++;
+  assert.equal(init?.method,'POST');
+  const request=JSON.parse(String(init?.body));
+  assert.equal(request.model,'synthetic-orbit-2');
+  assert.equal(request.store,false);
+  received=JSON.parse(request.input) as Preview;
+  assert.deepEqual(received,preview.preview,'the real adapter sends the exact reviewed request');
+  assert.equal(received.instructions,outreachInstructions,'the model receives the complete configured outreach instructions');
+  assert.equal(received.evidence.find(item=>item.id===evidenceId)?.subject,facts,'the model receives the current cited facts');
+  return Response.json({status:'completed',usage:{input_tokens:20,output_tokens:10},output:[{content:[{type:'output_text',text:JSON.stringify(expected)}]}]});
+ });
+ const outbound=async()=>(await db.prepare('SELECT * FROM outbound_messages ORDER BY id').all()).results;
+ const beforeOutbound=await outbound();
+ const generated=await f.call('assistance/generate',{previewId:preview.id});
+ assert.equal(generated.status,200,await generated.clone().text());
+ assert.deepEqual(received,preview.preview);
+ const body=await generated.json() as {draftId:string;output:AIOutput};
+ assert.deepEqual(body.output,expected);
+ assert.deepEqual(body.output.evidenceIds,[evidenceId]);
+ assert.ok(body.output.evidenceIds.every(id=>preview.preview.evidence.some(item=>item.id===id)));
+ assert.ok(await db.prepare('SELECT id FROM drafts WHERE id=?').bind(body.draftId).first());
+ assert.deepEqual(await outbound(),beforeOutbound,'generation leaves the complete outbound inventory unchanged');
+ assert.equal((await db.prepare('SELECT count(*) AS n FROM outbound_messages WHERE opportunity_id=?').bind(f.opportunity.id).first<{n:number}>())!.n,0);
+ assert.equal(mailCalls,0,'draft generation makes no customer submission');
+ assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,409);
+ assert.equal(modelCalls,1,'a consumed preview makes no second model request');
+ const usage=await db.prepare('SELECT input_tokens,output_tokens,status FROM ai_calls WHERE opportunity_id=?').bind(f.opportunity.id).first();
+ assert.deepEqual(usage,{input_tokens:20,output_tokens:10,status:'success'});
 
  // ACTION-004: edit the saved draft, end its session, and return through native sign-in.
  const path=`drafts/${body.draftId}`,beforeResponse=await f.call(path);
  assert.equal(beforeResponse.status,200);
  const original=(await beforeResponse.json() as {draft:OperatorDraft}).draft;
+ assert.deepEqual([original.subject,original.body],[expected.subject,expected.body],'the native draft read returns the exact factual model result');
+ assert.ok(original.body.trim().split(/\s+/).length<=150,'the saved draft follows the configured word bound');
+ assert.doesNotMatch(original.subject+' '+original.body,/\$|\b(?:price|discount|guarantee|promise|deliver)\b/i,'no invented commercial fact or commitment enters the saved draft');
  assert.equal(original.id,body.draftId);
  assert.equal(original.opportunityId,f.opportunity.id);
  assert.equal(original.authorId,f.actor);
@@ -78,7 +130,15 @@ test('AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creat
  assert.deepEqual((await messages.json() as {messages:unknown[]}).messages,[],'editing and returning submit no customer message');
 });
 test('AI-002 invented evidence fails visibly; AI-003 unconfigured provider generates nothing',async()=>{
- const provider:AIProvider={provider:'test',model:'test',inputCostPerMillion:0,outputCostPerMillion:0,async generate(){return{output:{explanation:'Bad evidence',subject:'No',body:'No',evidenceIds:['not-present']},inputTokens:1,outputTokens:1};}};const f=await fixture(provider);const preview=await(await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'})).json() as {id:string};assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,502);assert.equal((await db.prepare('SELECT count(*) AS n FROM drafts WHERE opportunity_id=?').bind(f.opportunity.id).first<{n:number}>())!.n,0);const off=await fixture();assert.equal((await off.call('assistance/generate',{previewId:createId()})).status,503);
+ let invalid='foreign';
+ const provider:AIProvider={provider:'test',model:'test',inputCostPerMillion:0,outputCostPerMillion:0,async generate(input){const preview=input as {evidence:{id:string}[]};return{output:{explanation:'Bad evidence',subject:'No',body:invalid==='long'?Array(151).fill('word').join(' '):'No',evidenceIds:invalid==='foreign'?['not-present']:[preview.evidence[0]!.id]},inputTokens:1,outputTokens:1};}};
+ const f=await fixture(provider);
+ for(invalid of ['foreign','long']){
+  const preview=await(await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'})).json() as {id:string};
+  assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,502,`${invalid} output fails visibly`);
+  assert.equal((await db.prepare('SELECT count(*) AS n FROM drafts WHERE opportunity_id=?').bind(f.opportunity.id).first<{n:number}>())!.n,0,'invalid output saves no draft');
+ }
+ const off=await fixture();assert.equal((await off.call('assistance/generate',{previewId:createId()})).status,503);
 });
 test('AI-001 DATA-002 changed or deleted preview context never leaves deployment',async()=>{
  let calls=0;const f=await fixture({provider:'test',model:'test',inputCostPerMillion:0,outputCostPerMillion:0,async generate(){calls++;throw new Error('must not run');}});const preview=await(await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'})).json() as {id:string};await db.prepare('UPDATE opportunities SET title=? WHERE id=?').bind('Changed after preview',f.opportunity.id).run();assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,409);assert.equal(calls,0);
