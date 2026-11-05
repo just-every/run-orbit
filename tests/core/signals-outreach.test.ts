@@ -8,6 +8,7 @@ import { createId } from '../../src/core/shared/ids';
 import { createSourceSecurity,payloadHash } from '../../src/core/platform/source-security';
 import { createSignalIngress } from '../../src/core/features/ingestion/routes';
 import { IngestionRepository } from '../../src/core/features/ingestion/repository';
+import type { OpportunityDetail } from '../../src/core/features/opportunities/contracts';
 import { WorkbenchRepository } from '../../src/core/features/workbench/repository';
 import { OutreachRepository } from '../../src/core/features/workbench/outreach-repository';
 import { ApprovalRepository } from '../../src/core/features/outreach/approval-repository';
@@ -199,6 +200,58 @@ test('SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a pers
  const notices=await read('notifications');assert.equal(notices.notifications.filter((notice:{opportunityId:string;kind:string})=>notice.opportunityId===f.opportunityId&&notice.kind==='opportunity.now').length,noticesBefore.notifications.filter((notice:{opportunityId:string;kind:string})=>notice.opportunityId===f.opportunityId&&notice.kind==='opportunity.now').length+1);
  const replay=await deliver();assert.equal(replay.status,201);assert.deepEqual(await replay.json(),{id:saved.id,replayed:true});assert.deepEqual(await ingestionInventory(),after,'Identical replay changes no domain rows');
  assert.deepEqual(await read(`records/opportunity/${f.opportunityId}`),visible);assert.deepEqual(await read('notifications'),notices);
+
+ // A later delivery belongs between existing evidence, without replacing the operator's newer business values.
+ const postEvidence=async(event:Record<string,unknown>)=>{
+  const body=JSON.stringify(event),timestamp=String(Math.floor(Date.now()/1000));
+  return app.request(`https://orbit.test/api/v1/signals/${source}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':await sign('s'.repeat(40),body,timestamp)},body});
+ };
+ const newerAt=new Date().toISOString(),newer=await postEvidence({eventId:createId(),type:'email.replied',subject:'synthetic-orbit-1',occurredAt:newerAt,email:f.email});
+ assert.equal(newer.status,201);const newerSignal=await newer.json() as {id:string;linked:boolean};assert.equal(newerSignal.linked,true);
+ context.mock.timers.tick(3600000);
+ const dealPath=`records/opportunity/${f.opportunityId}`,contactPath=`records/contact/${f.contactId}`,companyId=(await read(dealPath)).record.company_id as string;
+ const companyPath=`records/company/${companyId}`;
+ const edits:[string,Record<string,unknown>][]=[
+  [contactPath,{name:'synthetic-orbit-2',phone:'5550102',job_title:'Operations lead',timezone:'Europe/London'}],
+  [companyPath,{name:'synthetic-orbit-3'}],
+  [dealPath,{title:'synthetic-orbit-4',value_cents:246800,expected_close_at:'2030-02-15T12:00:00.000Z',owner_id:null}]
+ ];
+ for(const [path,changes] of edits){
+  const current=(await read(path)).record,base=Object.fromEntries(Object.keys(changes).map(key=>[key,current[key]]));
+  const response=await app.request(`https://orbit.test/api/v1/${path}`,{method:'PATCH',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({changes,base})});
+  assert.equal(response.status,200,path);
+  const saved=await response.json() as {changed:boolean;record:Record<string,unknown>};assert.equal(saved.changed,true);
+  for(const [field,value] of Object.entries(changes))assert.deepEqual(saved.record[field],value,`The later native edit saves ${field}`);
+ }
+ const businessFields=(record:Record<string,unknown>)=>Object.fromEntries(['id','title','stage_id','owner_id','company_id','value_cents','expected_close_at','lifecycle','closed_at','closed_by','close_reason','custom_fields_json','created_at'].map(field=>[field,record[field]]));
+ const laterDeal=await read(dealPath),laterContact=await read(contactPath),laterCompany=await read(companyPath);
+ const detail=async()=>(await read(`opportunities/${f.opportunityId}`)).opportunity as OpportunityDetail;
+ const priorEvaluation=(await detail()).evaluation;assert.ok(priorEvaluation);
+ const lateAt='2030-01-06T09:00:00.000Z',lateEvent={eventId:createId(),type:'meeting.completed',subject:'synthetic-orbit-5',occurredAt:lateAt,email:f.email,data:{name:'Old customer name',title:'Old deal title',value_cents:100}};
+ context.mock.timers.tick(60000);
+ const late=await postEvidence(lateEvent);assert.equal(late.status,201);const lateSignal=await late.json() as {id:string;linked:boolean};assert.equal(lateSignal.linked,true);
+ const currentDetail=await detail();assert.ok(currentDetail.evaluation);
+ assert.notEqual(currentDetail.evaluation.id,priorEvaluation.id,'Late evidence creates a distinct current evaluation');
+ assert.equal(currentDetail.evaluation.status,'current');assert.equal(currentDetail.evaluation.evaluatedAt,new Date().toISOString());
+ assert.ok(currentDetail.evaluation.contributions.some(row=>row.signalId===lateSignal.id&&row.confidence==='observed'&&row.contribution>0),'The current evaluation uses the late observed evidence');
+ assert.ok(currentDetail.evaluation.contributions.some(row=>row.signalId===newerSignal.id),'The fresh evaluation retains the newer evidence');
+ const expectedOrder=[newerSignal.id,lateSignal.id,...[signal.id,saved.id].sort()],evidenceIds=new Set(expectedOrder);
+ for(const path of [contactPath,dealPath]){
+  const record=await read(path),expected=path===contactPath?expectedOrder.slice(0,2):expectedOrder;
+  assert.deepEqual(record.timeline.filter((entry:{id:string})=>evidenceIds.has(entry.id)).map((entry:{id:string})=>entry.id),expected,`${path} sorts late evidence by occurred time`);
+  assert.equal(record.timeline.find((entry:{id:string})=>entry.id===lateSignal.id).occurred_at,lateAt);
+ }
+ assert.deepEqual(currentDetail.timeline.filter(entry=>evidenceIds.has(entry.id)).map(entry=>entry.id),expectedOrder,'Opportunity detail puts late evidence between newer and older history');
+ assert.equal(currentDetail.signals.find(row=>row.id===lateSignal.id)?.occurredAt,lateAt);
+ assert.equal(currentDetail.signals.find(row=>row.id===lateSignal.id)?.receivedAt,new Date().toISOString());
+ assert.deepEqual(businessFields((await read(dealPath)).record),businessFields(laterDeal.record),'Late evidence preserves the later deal fields');
+ assert.deepEqual((await read(contactPath)).record,laterContact.record,'Late evidence preserves the later customer fields');
+ assert.deepEqual((await read(companyPath)).record,laterCompany.record,'Late evidence preserves the later company fields');
+ const effects=await ingestionInventory(),lateRecord=await read(dealPath),lateContact=await read(contactPath);
+ context.mock.timers.tick(60000);
+ const lateReplay=await postEvidence(lateEvent);assert.equal(lateReplay.status,201);assert.deepEqual(await lateReplay.json(),{id:lateSignal.id,replayed:true});
+ assert.deepEqual(await ingestionInventory(),effects,'Late replay preserves every evaluation and downstream effect identity');
+ assert.deepEqual(await detail(),currentDetail);assert.deepEqual(await read(dealPath),lateRecord);assert.deepEqual(await read(contactPath),lateContact);
 });
 
 test('SIGNAL-009 shared provider relay authenticates destination HMAC and refuses modified events',async()=>{
