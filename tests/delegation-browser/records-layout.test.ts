@@ -21,7 +21,7 @@ import { sessionCookieName } from '../support/test-auth';
 import { nativeLongRecordLayoutJourney } from './records-layout-journey.mjs';
 import { identityVars } from '../support/worker-identity.mjs';
 
-test('emitted Worker record and NOW lists wrap full valid long names at mobile and desktop widths', async () => {
+test('emitted Worker record and NOW lists wrap full valid long names; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390', async () => {
   const fixture = await isolatedDatabase();
   const port = Number(process.env.ORBIT_RECORD_LAYOUT_PORT ?? 8728);
    const origin = `https://127.0.0.1:${port}`;
@@ -48,7 +48,7 @@ test('emitted Worker record and NOW lists wrap full valid long names at mobile a
       callingProvider.submissions++;return Response.json({status:callingProvider.status,code:callingProvider.code},{status:callingProvider.status});
     }}});await worker.ready;
     if((await worker.fetch(origin+'/health')).status!==200)throw new Error('Emitted Worker did not become healthy.');
-    browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic',...certificateTrust(certificate.cert)]});
+    browser = await chromium.launch({headless:true,executablePath:process.env.ORBIT_CHROMIUM_EXECUTABLE,args:['--no-sandbox','--use-mock-keychain','--password-store=basic',...certificateTrust(certificate.cert)]});
     const context = await browser.newContext({ baseURL: origin, ignoreHTTPSErrors:true, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
     // Emitted documents and HTTP routes share one Worker; only Twilio's outbound network edge is faked.
     await callingJourney(await context.newPage(),{fetch:worker.fetch.bind(worker),origin,provider:callingProvider,accountSid:callingAccount,token:callingToken});
