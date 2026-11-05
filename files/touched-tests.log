@@ -1,0 +1,22 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured originals and proposals; the audit trail keeps counts and anonymous replay proofs (80957.198437ms)
+✔ CAPTURE-007 DATA-002 erased provider originals stay erased after expired history, crashes and reconnect while new evidence remains eligible (31238.865594ms)
+✔ CAPTURE-007 DATA-002 erasure fences an already-resolved capture commit and its later replay (28141.497232ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox and calendar files become signals with their evidence; replay, threading, delivery reports and private mail behave as the contract says (99523.566486ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ CAPTURE-008 CAPTURE-009 the Orbit address and a calendar link capture customer evidence with no provider console (144084.211873ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 390713.03061

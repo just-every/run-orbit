@@ -1,0 +1,15 @@
+{
+  "head": "c87171e4821b960a85d1c60d20440c42fc37646d",
+  "origin_main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "full_history": true,
+  "clause_text_unchanged": true,
+  "requirement_and_acceptance_sha256": "1822f34df9497157cac992ca0b0e7cb726ed7153b31449de4b00855356d07876",
+  "worktree_clean": true,
+  "product_files": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "src/core/features/capture/calendar-link/feed.ts",
+    "tests/core/capture-no-console.test.ts",
+    "tests/support/capture-fixture.ts"
+  ]
+}

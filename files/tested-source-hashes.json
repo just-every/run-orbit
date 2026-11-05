@@ -1,0 +1,5 @@
+{
+  "src/core/features/capture/calendar-link/feed.ts": "c24e1ad59a0edfba4c25797df81fd871d5fa567c81ce80d9905a1e5b166a5a77",
+  "tests/core/capture-no-console.test.ts": "9a44a8ab3b71a2255a55069cafb82082578e1d9acfcaf5316ca8c4dc231fb946",
+  "tests/support/capture-fixture.ts": "f42e1357927f4cc4539e5d03ab9d1188c800fffa122ddb0e470244c618782087"
+}

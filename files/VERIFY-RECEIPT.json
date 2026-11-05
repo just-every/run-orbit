@@ -1,0 +1,25 @@
+{
+  "head": "c87171e4821b960a85d1c60d20440c42fc37646d",
+  "run": 42126036366,
+  "event": "push",
+  "status": "completed",
+  "conclusion": "failure",
+  "jobs": [
+    {
+      "job": 127590586946,
+      "command": "gh run view 42126036366 --repo just-every/run-orbit --job 127590586946 --log-failed",
+      "archive_command_exit": 0,
+      "errors": "source and shared build\tVerify source, types, boundaries and the single shared app build\t2026-11-05T23:00:27.3735778Z ACCEPTANCE.md: generated content differs; run contract-docs write.\nsource and shared build\tVerify source, types, boundaries and the single shared app build\t2026-11-05T23:00:27.4066208Z ##[error]Process completed with exit code 1.\nsource and shared build\tRetain authoritative source candidate\t2026-11-05T23:00:28.6774400Z   if-no-files-found: error\nsource and shared build\tRetain authoritative source candidate\t2026-11-05T23:00:28.8525007Z ##[error]No files were found with the provided path: /tmp/orbit-source.bundle"
+    },
+    {
+      "job": 127590883633,
+      "command": "gh run view 42126036366 --repo just-every/run-orbit --job 127590883633 --log-failed",
+      "archive_command_exit": 0,
+      "errors": "verify\tRequire a successful plan and all required work\t2026-11-05T23:00:36.0416669Z   SOURCE: failure\nverify\tRequire a successful plan and all required work\t2026-11-05T23:00:36.0535901Z ##[error]Process completed with exit code 1.\nverify\tRetain combined routine verdicts (capacity pending)\t2026-11-05T23:00:36.0874457Z   if-no-files-found: error\nverify\tRetain combined routine verdicts (capacity pending)\t2026-11-05T23:00:36.6621575Z ##[error]No files were found with the provided path: verification/core-results.jsonl"
+    }
+  ],
+  "classification": "generated-view-only with dependent artifact and verdict failures",
+  "ready_exception": true,
+  "runtime_ci": "skipped",
+  "runtime_proof": "TEST-RECEIPT.json"
+}

@@ -1,0 +1,4 @@
+verify	Require a successful plan and all required work	2026-11-05T23:00:36.0416669Z   SOURCE: failure
+verify	Require a successful plan and all required work	2026-11-05T23:00:36.0535901Z ##[error]Process completed with exit code 1.
+verify	Retain combined routine verdicts (capacity pending)	2026-11-05T23:00:36.0874457Z   if-no-files-found: error
+verify	Retain combined routine verdicts (capacity pending)	2026-11-05T23:00:36.6621575Z ##[error]No files were found with the provided path: verification/core-results.jsonl

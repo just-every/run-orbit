@@ -1,0 +1,90 @@
+{
+  "first_party": {
+    "command": "pnpm exec rer check --profile first-party",
+    "exit": 0
+  },
+  "touched_tests": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/capture-no-console.test.ts tests/core/capture-intake.test.ts tests/core/capture-erasure.test.ts",
+    "exit": 0,
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "node": "24.19.0"
+  },
+  "typecheck": {
+    "command": "pnpm run typecheck",
+    "exit": 0,
+    "node": "22.20.0"
+  },
+  "views": {
+    "write": "node src/base/contract-docs.mjs write",
+    "check": "node src/base/contract-docs.mjs check",
+    "exit": 0,
+    "views_restored_from": "origin/main"
+  },
+  "lock": {
+    "write": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+    "check": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "exit": 0
+  },
+  "boundaries": {
+    "command": "pnpm run check:boundaries",
+    "exit": 0
+  },
+  "ledger": {
+    "command": "none",
+    "exit": 0,
+    "reason": "No migration changes"
+  },
+  "status_rows": {
+    "before": 204,
+    "after": 204,
+    "dropped": [],
+    "parent_table_lines": 458,
+    "candidate_table_lines": 458
+  },
+  "counts": {
+    "before": {
+      "partial": 137,
+      "done": 35,
+      "missing": 32
+    },
+    "after": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    }
+  },
+  "exact_sha_tests": {
+    "head": "c87171e4821b960a85d1c60d20440c42fc37646d",
+    "started_at": "2026-11-05T23:00:03.834266+00:00",
+    "finished_at": "2026-11-05T23:06:44.395820+00:00",
+    "command": [
+      "pnpm",
+      "exec",
+      "tsx",
+      "--test",
+      "--no-test-only",
+      "--test-concurrency=1",
+      "tests/core/capture-no-console.test.ts",
+      "tests/core/capture-intake.test.ts",
+      "tests/core/capture-erasure.test.ts"
+    ],
+    "exit": 0,
+    "node": "v22.20.0",
+    "log_sha256": "9691c9c6aa06c5f821288da80de9ca00c26730955d1103fa0a53c526ef8d7c58",
+    "sources": {
+      "src/core/features/capture/calendar-link/feed.ts": "c24e1ad59a0edfba4c25797df81fd871d5fa567c81ce80d9905a1e5b166a5a77",
+      "tests/core/capture-no-console.test.ts": "9a44a8ab3b71a2255a55069cafb82082578e1d9acfcaf5316ca8c4dc231fb946",
+      "tests/support/capture-fixture.ts": "f42e1357927f4cc4539e5d03ab9d1188c800fffa122ddb0e470244c618782087"
+    }
+  },
+  "terminal": {
+    "repository": "just-every/run-orbit",
+    "branch": "cloud/sd-orbit-c-f63",
+    "head": "c87171e4821b960a85d1c60d20440c42fc37646d",
+    "custody": "READY under generated-view-only exception",
+    "verify": 42126036366,
+    "landed": false
+  }
+}

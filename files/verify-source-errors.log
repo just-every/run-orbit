@@ -1,0 +1,4 @@
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T23:00:27.3735778Z ACCEPTANCE.md: generated content differs; run contract-docs write.
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-05T23:00:27.4066208Z ##[error]Process completed with exit code 1.
+source and shared build	Retain authoritative source candidate	2026-11-05T23:00:28.6774400Z   if-no-files-found: error
+source and shared build	Retain authoritative source candidate	2026-11-05T23:00:28.8525007Z ##[error]No files were found with the provided path: /tmp/orbit-source.bundle

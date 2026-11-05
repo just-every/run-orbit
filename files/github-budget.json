@@ -1,0 +1,60 @@
+{
+  "calls": 6,
+  "limit": 10,
+  "main_discovery": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "requests": [
+    {
+      "at": 1793919603.177485,
+      "arguments": [
+        "api",
+        "repos/just-every/run-orbit/actions/runs?head_sha=c87171e4821b960a85d1c60d20440c42fc37646d&per_page=100",
+        "--jq",
+        ".workflow_runs | map({id,name,event,status,conclusion,head_sha,html_url})"
+      ]
+    },
+    {
+      "at": 1793919916.8535504,
+      "arguments": [
+        "api",
+        "repos/just-every/run-orbit/actions/runs/42126036366",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ]
+    },
+    {
+      "at": 1793919940.7120345,
+      "arguments": [
+        "api",
+        "repos/just-every/run-orbit/actions/runs/42126036366/jobs?per_page=100",
+        "--jq",
+        "{total_count,jobs:[.jobs[]|{id,name,status,conclusion,steps:[.steps[]|{name,conclusion}]}]}"
+      ]
+    },
+    {
+      "at": 1793919999.569437,
+      "arguments": [
+        "run",
+        "view",
+        "42126036366",
+        "--repo",
+        "just-every/run-orbit",
+        "--job",
+        "127590586946",
+        "--log-failed"
+      ]
+    },
+    {
+      "at": 1793920003.967594,
+      "arguments": [
+        "run",
+        "view",
+        "42126036366",
+        "--repo",
+        "just-every/run-orbit",
+        "--job",
+        "127590883633",
+        "--log-failed"
+      ]
+    }
+  ]
+}

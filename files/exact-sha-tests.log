@@ -1,0 +1,47 @@
+TAP version 13
+# (node:5723) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured originals and proposals; the audit trail keeps counts and anonymous replay proofs
+ok 1 - CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured originals and proposals; the audit trail keeps counts and anonymous replay proofs
+  ---
+  duration_ms: 81490.226465
+  type: 'test'
+  ...
+# Subtest: CAPTURE-007 DATA-002 erased provider originals stay erased after expired history, crashes and reconnect while new evidence remains eligible
+ok 2 - CAPTURE-007 DATA-002 erased provider originals stay erased after expired history, crashes and reconnect while new evidence remains eligible
+  ---
+  duration_ms: 32470.433796
+  type: 'test'
+  ...
+# Subtest: CAPTURE-007 DATA-002 erasure fences an already-resolved capture commit and its later replay
+ok 3 - CAPTURE-007 DATA-002 erasure fences an already-resolved capture commit and its later replay
+  ---
+  duration_ms: 29183.330672
+  type: 'test'
+  ...
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox and calendar files become signals with their evidence; replay, threading, delivery reports and private mail behave as the contract says
+ok 4 - CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox and calendar files become signals with their evidence; replay, threading, delivery reports and private mail behave as the contract says
+  ---
+  duration_ms: 102969.495489
+  type: 'test'
+  ...
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# (node:7691) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: CAPTURE-008 CAPTURE-009 the Orbit address and a calendar link capture customer evidence with no provider console
+ok 5 - CAPTURE-008 CAPTURE-009 the Orbit address and a calendar link capture customer evidence with no provider console
+  ---
+  duration_ms: 147283.71278
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 400233.38304

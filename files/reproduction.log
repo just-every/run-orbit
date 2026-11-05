@@ -1,0 +1,36 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ CAPTURE-008 CAPTURE-009 the Orbit address and a calendar link capture customer evidence with no provider console (96828.636434ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 99310.267225
+
+✖ failing tests:
+
+test at tests/core/capture-no-console.test.ts:1:800
+✖ CAPTURE-008 CAPTURE-009 the Orbit address and a calendar link capture customer evidence with no provider console (96828.636434ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'meeting.booked'
+  - 'meeting.cancelled'
+             ^
+  
+      at check (/home/agent/rer-consolidation/work/sd-orbit-c-f63/run-orbit/tests/core/capture-no-console.test.ts:106:77)
+      at TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f63/run-orbit/tests/core/capture-no-console.test.ts:147:27)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'meeting.booked',
+    expected: 'meeting.cancelled',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

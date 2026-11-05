@@ -1,0 +1,24 @@
+{
+  "head": "c87171e4821b960a85d1c60d20440c42fc37646d",
+  "started_at": "2026-11-05T23:00:03.834266+00:00",
+  "finished_at": "2026-11-05T23:06:44.395820+00:00",
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--no-test-only",
+    "--test-concurrency=1",
+    "tests/core/capture-no-console.test.ts",
+    "tests/core/capture-intake.test.ts",
+    "tests/core/capture-erasure.test.ts"
+  ],
+  "exit": 0,
+  "node": "v22.20.0",
+  "log_sha256": "9691c9c6aa06c5f821288da80de9ca00c26730955d1103fa0a53c526ef8d7c58",
+  "sources": {
+    "src/core/features/capture/calendar-link/feed.ts": "c24e1ad59a0edfba4c25797df81fd871d5fa567c81ce80d9905a1e5b166a5a77",
+    "tests/core/capture-no-console.test.ts": "9a44a8ab3b71a2255a55069cafb82082578e1d9acfcaf5316ca8c4dc231fb946",
+    "tests/support/capture-fixture.ts": "f42e1357927f4cc4539e5d03ab9d1188c800fffa122ddb0e470244c618782087"
+  }
+}
