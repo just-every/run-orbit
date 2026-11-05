@@ -41,7 +41,8 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
  const form=await t.event(acme,'form.submitted','Pricing request',3),view=await t.event(acme,'page.viewed','Viewed pricing page',2),oldReply=await t.event(acme,'email.replied','Re: contract terms',9);
  const completed=await t.event(bright,'meeting.completed','Pilot kickoff',3);
  const draft=(await t.json<{id:string}>(`/api/v1/workbench/opportunities/${cobalt}/drafts`,{body:{contactId:await contactOf(t,cobalt),subject:'Expansion pricing',body:'Here are the numbers we discussed.'}},201)).id;
- const handoff=await overdueHandoff(t,cobalt,'Send the security questionnaire');
+ const handoffDueAt='2026-11-04T12:00:00.000Z';
+ const handoff=await overdueHandoff(t,cobalt,'Send the security questionnaire',handoffDueAt);
  await captureUnknown(t,'Question about your product');
  const unlinked=(await db.prepare("SELECT signal_id AS id FROM unlinked_signals WHERE resolved_at IS NULL").first<{id:string}>())!.id;
 
@@ -114,8 +115,9 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
  const fresh=await resumed.json<{tasks:{target:string;revision:string;audienceRevision:string;task:{id:string;title:string;description:string;assignee_id:string|null;due_at:string;status:string;source_client_id:string|null}}[]}>(`/delegation/handoffs/${cobalt}`,{},200);
  const handoffEntry=fresh.tasks.find(entry=>entry.task.id===handoff)!;
  assert.equal(handoffEntry.task.source_client_id,null,'The overdue handoff was written by a person');
+ assert.equal(handoffEntry.task.due_at,handoffDueAt);
  const overdueHandoffLine=byKind(overdue,'handoff-due').find(line=>line.evidence.id===handoff)!;
- assert.deepEqual([overdueHandoffLine.id,overdueHandoffLine.evidence,overdueHandoffLine.href,overdueHandoffLine.title,overdueHandoffLine.occurredAt,overdueHandoffLine.dueAt],[`handoff-due:${handoff}`,{type:'handoff',id:handoff},`/app/opportunities/${cobalt}#handoff-${handoff}`,handoffEntry.task.title,handoffEntry.task.due_at,handoffEntry.task.due_at]);
+ assert.deepEqual([overdueHandoffLine.id,overdueHandoffLine.evidence,overdueHandoffLine.href,overdueHandoffLine.title,overdueHandoffLine.occurredAt,overdueHandoffLine.dueAt],[`handoff-due:${handoff}`,{type:'handoff',id:handoff},`/app/opportunities/${cobalt}#handoff-${handoff}`,handoffEntry.task.title,handoffDueAt,handoffDueAt]);
  const unrelated=(brief:Brief)=>lines(brief).filter(line=>!line.records.some(record=>record.type==='opportunity'&&record.id===cobalt));
  await resumed.json('/delegation/handoffs',{body:{operationKey:createId(),operation:'orbit.handoff.upsert',target:handoffEntry.target,expectedRevision:handoffEntry.revision,expectedAudienceRevision:handoffEntry.audienceRevision,content:{title:handoffEntry.task.title,description:handoffEntry.task.description,assigneeId:handoffEntry.task.assignee_id,dueAt:handoffEntry.task.due_at,status:'completed'}}},200);
  const kept=await resumed.brief();

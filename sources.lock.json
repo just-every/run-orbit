@@ -10075,7 +10075,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "86c4652e4fbeec684cd72dfc243d78f4c1e5a3e4caab973574c4ef673f54aa68",
+      "sha256": "3061ab18c35445f580bb94f9fee25fef62aec2c7d93fc9b2bf5eecd6b254ca33",
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {
