@@ -10691,7 +10691,7 @@
       "executable": false
     },
     "tests/rer/onboarding-journey.mjs": {
-      "sha256": "7903ca0a707a221eb6dcae4523a66b981d353f6d3b70ad03048f704e4b812f46",
+      "sha256": "5f5a67b999a01fee161f4f8c1594b199176240ea523b41a3ddb168fd01b5239b",
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {

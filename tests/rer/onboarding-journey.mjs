@@ -65,7 +65,7 @@ export async function persistedWorkspace(page,origin,width,evidence){
  await page.screenshot({path:`${evidence}/workspace-settings-${width}.png`,fullPage:true});
  for(const item of cases){
   await page.goto(`${origin}/app/opportunities/${item.id}`);await page.reload();
-  await page.getByTestId('record-activity').getByText(item.title,{exact:true}).waitFor();
+  await page.locator(`[id="entry-${item.entryId}"] .r-entry-title`).waitFor();
   if(width===1440){
    await expect(page.getByLabel('Value',{exact:true})).toHaveValue(item.amount);
    await expect(page.locator(`[id="entry-${item.entryId}"] .r-when`)).toHaveText(item.local);
