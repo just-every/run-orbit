@@ -54,7 +54,15 @@ test('OUT-008 recipient clocks respect weekdays, DST and time to review an out-o
   const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:{send:async()=>{sends++;return{providerMessageId:'test-confirmed'};}}}),session=await createDependencies(db).auth.createSession(f.actor);
   const request=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1/workbench/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
   const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Take time to review',body:'The exact approved message'},f.actor);
-  const preview=await (await request(`drafts/${draft.id}/approval-preview`)).json() as {localTime:string};
+  const previewResponse=await request(`drafts/${draft.id}/approval-preview`);assert.equal(previewResponse.status,200);
+  const preview=await previewResponse.json() as {localTime:string;timezone:string;quietHours:boolean};assert.equal(preview.quietHours,true);
+  const messages=async()=>{const response=await request(`opportunities/${f.opportunityId}/messages`);assert.equal(response.status,200);return(await response.json() as {messages:unknown[]}).messages;};
+  const before=await messages();
+  const unconfirmed=await request(`drafts/${draft.id}/approve`,{revision:1});
+  assert.equal(unconfirmed.status,409,'The valid saved revision still requires a separate out-of-hours confirmation');
+  const refusal=await unconfirmed.json() as {error:string};assert.ok(refusal.error.includes(preview.localTime),'The refusal names the previewed recipient time');assert.ok(refusal.error.includes(preview.timezone),'The refusal names the recipient timezone');
+  assert.deepEqual(await messages(),before,'Refusing an unconfirmed send leaves outbound inventory unchanged');
+  assert.equal(sends,0,'An unconfirmed send makes no provider submission');
   context.mock.timers.tick(61000);
   assert.equal((await request(`drafts/${draft.id}/approve`,{revision:1,quietHoursConfirmation:preview.localTime})).status,200,'Confirmation survives the minute boundary');
   assert.equal(sends,1);
