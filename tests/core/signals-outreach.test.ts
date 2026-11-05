@@ -12,10 +12,12 @@ import { WorkbenchRepository } from '../../src/core/features/workbench/repositor
 import { OutreachRepository } from '../../src/core/features/workbench/outreach-repository';
 import { ApprovalRepository } from '../../src/core/features/outreach/approval-repository';
 import { OutreachService } from '../../src/core/features/outreach/service';
+import { createOutboundMail } from '../../src/core/platform/outbound-mail';
+import { runOrbitTimers } from '../../src/core/features/outreach/timing-repository';
 import { nextPermitted,workingDaysAfter,localTime } from '../../src/core/features/outreach/time';
 import { signedReplies } from '../support/signed-reply';
 const platform=await isolatedDatabase();after(()=>platform.dispose());const db=platform.db;
-async function fixture(){const deps=createDependencies(db),actor=createId(),stage=createId(),at=new Date().toISOString();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.example`,displayName:'Signals operator'});await deps.workspace.ensureWorkspace({name:'Signals workspace',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:['gmail.com']});const position=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Test',position:position!.n});const email=`${createId()}@customer.example`;const opportunity=await new WorkbenchRepository(db).createOpportunity({title:'Signals test',companyName:'Customer',contactName:'Contact',email,stageId:stage,valueCents:100},actor);const contact=await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(opportunity.id).first<{contact_id:string}>();return{actor,opportunityId:opportunity.id,contactId:contact!.contact_id,email,at};}
+async function fixture(database=db){const db=database,deps=createDependencies(db),actor=createId(),stage=createId(),at=new Date().toISOString();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.example`,displayName:'Signals operator'});await deps.workspace.ensureWorkspace({name:'Signals workspace',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:['gmail.com']});const position=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Test',position:position!.n});const email=`${createId()}@customer.example`;const opportunity=await new WorkbenchRepository(db).createOpportunity({title:'Signals test',companyName:'Customer',contactName:'Contact',email,stageId:stage,valueCents:100},actor);const contact=await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(opportunity.id).first<{contact_id:string}>();return{actor,opportunityId:opportunity.id,contactId:contact!.contact_id,email,at};}
 async function sign(secret:string,body:string,timestamp:string){const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);return Array.from(new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(`${timestamp}.${body}`))),b=>b.toString(16).padStart(2,'0')).join('');}
 async function ingestionInventory(){
  const tables=['signals','signal_links','unlinked_signals','timeline_entries','timeline_entry_records','evaluations','evaluation_contributions','recommendations','recommendation_evidence','notifications','audit_entries','opportunities','contacts','companies','drafts','outbound_messages','signal_sources','source_event_errors'] as const;
@@ -132,11 +134,92 @@ test('OUT-014 missing merge fields block; template revisions never rewrite appro
  const next=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Stop',body:'Must not send'},f.actor);await approval.approve(next.id,1,f.actor,{now,scheduledAt:message.scheduledAt});await db.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(f.contactId).run();await service.dispatchDue(new Date(message.scheduledAt));assert.equal(calls,1);
 });
 
-test('OUT-011 unknown delivery reconciles by durable provider key and never submits again',async()=>{
- const f=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db);await db.prepare("UPDATE outbound_messages SET claimed_at='2000-01-01T00:00:00.000Z' WHERE claimed_at IS NOT NULL").run();
- const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Unknown',body:'Reviewed body'},f.actor);const message=await approval.approve(draft.id,1,f.actor,{quietHoursConfirmation:(await approval.preview(draft.id)).localTime});let sends=0,lookups=0;
- const service=new OutreachService(db,{send:async()=>{sends++;throw new Error('Transport timed out');},lookup:async key=>{lookups++;assert.equal(key,message.idempotency_key);return{providerMessageId:'reconciled-receipt'};}});
- assert.equal((await service.submit(message)).state,'delivery-unknown');await service.reconcile(new Date(Date.now()+6*60000));await service.reconcile(new Date(Date.now()+12*60000));assert.equal(sends,1);assert.equal(lookups,1);assert.equal((await approval.message(message.id)).state,'accepted');
+test('OUT-011 lost acceptance transaction or response survives a persisted restart and settles exactly once without resubmission',async context=>{
+ context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T10:00:00Z')});
+ try{for(const loss of ['transaction','response'] as const){
+  const store=await isolatedDatabase();
+  try{
+   let database=store.db;
+   const f=await fixture(database),session=await createDependencies(database).auth.createSession(f.actor);
+   const effects=async()=>{
+    const tables=['timeline_entries','timeline_entry_records','audit_entries','recommendations','recommendation_evidence','opportunities','notifications'];
+    const rows=await database.batch(tables.map(table=>database.prepare(`SELECT * FROM ${table} ORDER BY rowid`)));
+    return Object.fromEntries(tables.map((table,index)=>[table,rows[index]!.results]));
+   };
+   const makeMail=()=>createOutboundMail({DB:database,SENDGRID_API_KEY:'synthetic-orbit-1',MAIL_FROM:['sender','test.invalid'].join('@'),MAIL_REPLY_TO:['reply','test.invalid'].join('@'),SENDGRID_UNSUBSCRIBE_GROUP_ID:'1'})!;
+   let mail=makeMail(),app=createApp({database,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:mail});
+   const api=async<T=any>(path:string,body?:unknown,status=200)=>{
+    const response=await app.request(`https://orbit.test/api/v1/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+    assert.equal(response.status,status,path);return await response.json() as T;
+   };
+   await api(`workbench/opportunities/${f.opportunityId}/events`,{eventId:createId(),type:'email.replied',subject:'synthetic-orbit-2',occurredAt:f.at},201);
+   const recommendation=await database.prepare('SELECT id FROM recommendations WHERE opportunity_id=? AND is_current=1').bind(f.opportunityId).first<{id:string}>();assert.ok(recommendation);
+   const draft=await api<{id:string}>(`workbench/opportunities/${f.opportunityId}/drafts`,{contactId:f.contactId,subject:'synthetic-orbit-3',body:'Exact reviewed customer content'},201);
+   let sends=0,lookups=0,intent:Awaited<ReturnType<ApprovalRepository['message']>>|undefined,beforeSettlement:Awaited<ReturnType<typeof effects>>|undefined;
+   const originalFetch=globalThis.fetch;
+   context.mock.method(globalThis,'fetch',async(input:RequestInfo|URL,init?:RequestInit)=>{
+    const url=new URL(String(input));
+    if(url.href==='https://api.sendgrid.com/v3/mail/send'){
+     sends++;
+     const wire=JSON.parse(String(init?.body));
+     intent=await database.prepare('SELECT * FROM outbound_messages WHERE draft_id=?').bind(draft.id).first() as typeof intent;
+     assert.ok(intent,'The outbound intent exists before the network submission');
+     assert.equal(intent.state,'queued');assert.equal(intent.attempt_count,1);assert.ok(intent.first_attempt_at);
+     assert.equal(wire.custom_args.rer_delivery_id,intent.idempotency_key);
+     assert.equal(intent.subject,'synthetic-orbit-3');assert.equal(intent.body,'Exact reviewed customer content');
+     beforeSettlement=await effects();
+     if(loss==='response')throw new DOMException('Transport timed out','TimeoutError');
+     return new Response(null,{status:202});
+    }
+    if(url.origin==='https://api.sendgrid.com'&&url.pathname==='/v3/messages'){
+     lookups++;assert.equal(url.searchParams.get('query'),`unique_args['rer_delivery_id']="${intent!.idempotency_key}"`);
+     return Response.json({messages:[{msg_id:'reconciled-receipt',status:'processed'}]});
+    }
+    return originalFetch(input,init);
+   });
+   // Fail the last acceptance statement, after the message, notification, timeline and queue writes.
+   if(loss==='transaction')await database.prepare(`CREATE TRIGGER test_reject_acceptance BEFORE UPDATE OF is_current ON recommendations WHEN OLD.id='${recommendation.id}' AND NEW.is_current=0 BEGIN SELECT RAISE(ABORT,'synthetic-orbit acceptance transaction lost'); END`).run();
+   const approved=await api<{id:string;state:string}>(`workbench/drafts/${draft.id}/approve`,{revision:1},502);
+   const unresolved=loss==='transaction'?'reconciling':'delivery-unknown';
+   assert.equal(approved.state,unresolved);assert.equal(sends,1);assert.equal(lookups,0);assert.ok(intent);assert.equal(approved.id,intent.id);
+   if(loss==='transaction'){
+    assert.deepEqual(await effects(),beforeSettlement,'The failed acceptance transaction leaves no partial acceptance effects');
+    await database.prepare('DROP TRIGGER test_reject_acceptance').run();
+   }
+   const read=()=>api<{messages:{id:string;state:string;failure:string|null;providerMessageId:string|null}[]}>(`workbench/opportunities/${f.opportunityId}/messages`);
+   const visible=(await read()).messages.find(row=>row.id===approved.id);assert.equal(visible?.state,unresolved);assert.ok(visible!.failure);assert.equal(visible!.providerMessageId,null);
+   const persisted=await new ApprovalRepository(database).message(approved.id);
+   assert.equal(persisted.idempotency_key,intent.idempotency_key);assert.equal(persisted.next_attempt_at,new Date(Date.now()+300000).toISOString());
+   const oldBinding=database;
+   await store.close();assert.throws(()=>store.db,/closed/);await store.reopen();database=store.db;
+   assert.notEqual(database,oldBinding,'Reopening acquires a new binding to the persisted database');
+   mail=makeMail();app=createApp({database,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:mail});
+   const approval=new ApprovalRepository(database),service=new OutreachService(database,mail);
+   assert.deepEqual(await approval.message(approved.id),persisted,'The same durable intent survives the actual store restart');
+   assert.equal((await read()).messages.find(row=>row.id===approved.id)?.state,unresolved);
+   context.mock.timers.tick(299999);await runOrbitTimers(database,mail);assert.equal(lookups,0);assert.equal(sends,1);
+   context.mock.timers.tick(1);await runOrbitTimers(database,mail);
+   assert.equal(sends,1);assert.equal(lookups,1);assert.equal((await approval.message(approved.id)).state,'accepted');
+   assert.equal((await read()).messages.find(row=>row.id===approved.id)?.state,'accepted');
+   const detail=await api<{record:{queue_state:string;next_due_at:string};timeline:{id:string;kind:string;payload_json:string}[]}>(`records/opportunity/${f.opportunityId}`);
+   assert.equal(detail.record.queue_state,'next');assert.ok(detail.record.next_due_at);
+   const accepted=detail.timeline.filter(entry=>entry.kind==='message.accepted'&&JSON.parse(entry.payload_json).messageId===approved.id);
+   assert.equal(accepted.length,1);
+   assert.deepEqual(JSON.parse(accepted[0]!.payload_json),{messageId:approved.id,providerId:'reconciled-receipt',failure:null,recipient:f.email.toLowerCase(),subject:'synthetic-orbit-3',body:'Exact reviewed customer content'});
+   const completed=await database.prepare('SELECT is_current,superseded_at FROM recommendations WHERE id=?').bind(recommendation.id).first<{is_current:number;superseded_at:string}>();assert.equal(completed?.is_current,0);assert.ok(completed!.superseded_at);
+   const notices=await api<{notifications:{id:string;opportunityId:string;kind:string}[]}>('notifications');
+   assert.equal(notices.notifications.filter(row=>row.opportunityId===f.opportunityId&&row.kind==='message.accepted').length,1);
+   for(const kind of ['contact','company']){
+    const links=await database.prepare('SELECT record_id FROM timeline_entry_records WHERE timeline_entry_id=? AND record_type=?').bind(accepted[0]!.id,kind).all<{record_id:string}>();assert.ok(links.results.length);
+    for(const link of links.results){const record=await api<{timeline:{id:string}[]}>(`records/${kind}/${link.record_id}`);assert.equal(record.timeline.filter(entry=>entry.id===accepted[0]!.id).length,1);}
+   }
+   const once=await effects(),message=await approval.message(approved.id);
+   for(let repeat=0;repeat<2;repeat++){context.mock.timers.tick(300000);await runOrbitTimers(database,mail);await service.reconcile();}
+   assert.equal(sends,1);assert.equal(lookups,1);assert.equal(message.attempt_count,1);assert.equal(message.idempotency_key,intent.idempotency_key);
+   assert.deepEqual(await approval.message(approved.id),message);assert.deepEqual(await effects(),once,'Repeated normal reconciliation preserves exactly one final acceptance effect set');
+   console.log(`PROBE OUT-011 ${loss}: authenticated approval, persisted restart and normal timers -> ${unresolved}, then one accepted effect set; submissions=1 lookups=1`);
+  }finally{context.mock.restoreAll();await store.dispose();}
+ }}finally{context.mock.timers.reset();}
 });
 
 test('OPP-008 completion removes an exhausted recommendation; new observed evidence produces another',async()=>{
