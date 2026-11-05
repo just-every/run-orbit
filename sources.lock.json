@@ -10019,7 +10019,7 @@
       "executable": false
     },
     "tests/core/outreach-limits.test.ts": {
-      "sha256": "bf1ddb39a4766ca39ff71b2887553f39c7ed5bbbf4db181cd0ff419a74c7e323",
+      "sha256": "db30d6e2c4081da0b04e0711fc9638128991d5643bd83b1cc58b2d8a85bfa6a0",
       "executable": false
     },
     "tests/core/platform-boundaries.test.ts": {
@@ -10063,7 +10063,7 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "185cbcc21c2748f52bbc4164cb0df1707ecb4068f15220ec6365c1a69ac096fd",
+      "sha256": "24ecb971b65e0f6a7e0d68a6de74025371ba05bd444230d76968d67ccd429cf9",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
@@ -10988,6 +10988,10 @@
     },
     "tests/support/opportunity-creation.ts": {
       "sha256": "1326e6e55b08ed7183102ca0d35e6fee10bca9bae05c4d52ea701cc597f1b934",
+      "executable": false
+    },
+    "tests/support/outreach-stop.ts": {
+      "sha256": "dcc1de6b5255266765b1a4f2be185d8c36ab11d7e2b5a898e4f054ce9ba6dfb0",
       "executable": false
     },
     "tests/support/personal-slack-proof.ts": {

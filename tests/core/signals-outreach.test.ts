@@ -14,6 +14,7 @@ import { ApprovalRepository } from '../../src/core/features/outreach/approval-re
 import { OutreachService } from '../../src/core/features/outreach/service';
 import { nextPermitted,workingDaysAfter,localTime } from '../../src/core/features/outreach/time';
 import { signedReplies } from '../support/signed-reply';
+import { outreachStopInventory,scheduleStopHistory } from '../support/outreach-stop';
 const platform=await isolatedDatabase();after(()=>platform.dispose());const db=platform.db;
 async function fixture(){const deps=createDependencies(db),actor=createId(),stage=createId(),at=new Date().toISOString();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.example`,displayName:'Signals operator'});await deps.workspace.ensureWorkspace({name:'Signals workspace',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:['gmail.com']});const position=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Test',position:position!.n});const email=`${createId()}@customer.example`;const opportunity=await new WorkbenchRepository(db).createOpportunity({title:'Signals test',companyName:'Customer',contactName:'Contact',email,stageId:stage,valueCents:100},actor);const contact=await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(opportunity.id).first<{contact_id:string}>();return{actor,opportunityId:opportunity.id,contactId:contact!.contact_id,email,at};}
 async function sign(secret:string,body:string,timestamp:string){const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);return Array.from(new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(`${timestamp}.${body}`))),b=>b.toString(16).padStart(2,'0')).join('');}
@@ -276,8 +277,35 @@ test('SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; i
  assert.deepEqual(await opportunityIds(),before,'Inferred activity changes no opportunity identities');
  const count=await db.prepare('SELECT COUNT(*) AS n FROM opportunities WHERE id=?').bind(f.opportunityId).first<{n:number}>();assert.equal(count?.n,1);
 });
-test('OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not',async()=>{
- for(const type of ['email.replied','meeting.booked','email.unsubscribed','email.bounced'] as const){const f=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db),now=new Date('2030-01-07T09:00:00Z');const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Stop proof',body:'Reviewed and never sent'},f.actor);const message=await approval.approve(draft.id,1,f.actor,{now,scheduledAt:'2030-01-07T10:00:00Z'});await new WorkbenchRepository(db).recordEvent(f.opportunityId,{type,contactId:f.contactId,permanentBounce:type==='email.bounced',subject:'Customer stop',occurredAt:now.toISOString(),eventId:createId()},f.actor);let calls=0;await new OutreachService(db,{send:async()=>{calls++;return{providerMessageId:'must-not-send'};}}).dispatchDue(new Date('2030-01-07T10:00:00Z'));assert.equal(calls,0);assert.equal((await approval.message(message.id)).state,'cancelled');assert.equal((await db.prepare('SELECT is_stale FROM drafts WHERE id=?').bind(draft.id).first<{is_stale:number}>())!.is_stale,1);}
+test('OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not',async context=>{
+ context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T09:00:00Z')});
+ try{
+ for(const type of ['email.replied','meeting.booked','email.unsubscribed','email.bounced'] as const){
+  const f=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db),now=new Date('2030-01-07T09:00:00Z');
+  const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Stop proof',body:'Reviewed and never sent'},f.actor);
+  const message=await approval.approve(draft.id,1,f.actor,{now,scheduledAt:'2030-01-07T10:00:00Z'});
+  const waiting=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Unsent stop proof',body:'Still awaiting review'},f.actor);
+  const source=createId(),secret='synthetic-orbit-stop-source',security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'44'.repeat(32)})!;
+  await new IngestionRepository(db).configure({id:source,name:'Stop evidence',enabled:true,secret},security);
+  const ingress=createSignalIngress(db,security),event={eventId:createId(),type,email:f.email,permanentBounce:type==='email.bounced',subject:'Customer stop',occurredAt:f.at},body=JSON.stringify(event);
+  const post=async()=>{const timestamp=String(Math.floor(Date.now()/1000));return ingress.request(`https://orbit.test/${source}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':await sign(secret,body,timestamp)},body});};
+  const before=await outreachStopInventory(db),delivered=await post();assert.equal(delivered.status,201,await delivered.clone().text());
+  const signal=await delivered.json() as {id:string;linked:boolean};assert.equal(signal.linked,true);
+  assert.equal((await db.prepare('SELECT id FROM signals WHERE source_id=? AND source_event_id=?').bind(source,event.eventId).first<{id:string}>())!.id,signal.id);
+  assert.equal((await approval.message(message.id)).state,'cancelled');
+  for(const id of [draft.id,waiting.id])assert.equal((await db.prepare('SELECT is_stale FROM drafts WHERE id=?').bind(id).first<{is_stale:number}>())!.is_stale,1,'The stop stales approved and unapproved unsent drafts');
+  const history=await scheduleStopHistory(db,message.id);assert.equal(history.length,1);
+  const reason=type==='email.replied'?'Customer replied, so the scheduled follow-up was cancelled':type==='meeting.booked'?'Customer booked a meeting, so the scheduled follow-up was cancelled':'Contact is now Do not contact, so the scheduled follow-up was cancelled';
+  assert.equal(JSON.parse(history[0]!.payload_json).reason,reason);assert.equal((await approval.message(message.id)).failure,reason);
+  const stopped=await outreachStopInventory(db);assert.notDeepEqual(stopped,before,'The first signed delivery has real effects on scheduled work');
+  context.mock.timers.tick(1000);const replay=await post();assert.equal(replay.status,201);assert.deepEqual(await replay.json(),{id:signal.id,replayed:true});
+  assert.deepEqual(await outreachStopInventory(db),stopped,`${type} replay changes no signal, cancellation, evaluation, notification, draft or outbound row`);
+  let calls=0;await new OutreachService(db,{send:async()=>{calls++;return{providerMessageId:'must-not-send'};}}).dispatchDue(new Date('2030-01-07T10:01:00Z'));
+  assert.equal(calls,0);assert.equal((await approval.message(message.id)).state,'cancelled');
+  assert.deepEqual(await scheduleStopHistory(db,message.id),history,'Replay and late dispatch retain the original cancellation identity and reason');
+  assert.deepEqual(await outreachStopInventory(db),stopped,'Late dispatch does not resurrect stopped work');
+ }
+ }finally{context.mock.timers.reset();}
  const f=await fixture(),deps=createDependencies(db),approval=new ApprovalRepository(db),advanced=createId(),session=await deps.auth.createSession(f.actor);let calls=0;
  const position=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:advanced,name:'Advanced',position:position!.n});
  const mail={send:async()=>{calls++;return{providerMessageId:`test-receipt-${calls}`};}},app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:mail}),service=new OutreachService(db,mail),post=signedReplies(db);
