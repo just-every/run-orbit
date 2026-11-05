@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
-import {generateKeyPairSync,sign} from 'node:crypto';
+import {createHash,generateKeyPairSync,sign} from 'node:crypto';
+import {readdirSync} from 'node:fs';
+import {join} from 'node:path';
+import {DatabaseSync} from 'node:sqlite';
 import {test} from 'node:test';
 import {captureFixture,eml} from '../support/capture-fixture';
 import {createApp} from '../support/app';
@@ -22,9 +25,10 @@ test('CAPTURE-008 CAPTURE-009 the Orbit address and a calendar link capture cust
   const parse=async(to:string[],raw:string,signed=true)=>{
    const form=new FormData();form.set('email',raw);form.set('envelope',JSON.stringify({to,from:'seller@orbit.test'}));form.set('to',to.join(','));
    const request=new Request('https://orbit.test/api/v1/mail/capture',{method:'POST',body:form}),body=Buffer.from(await request.arrayBuffer()),timestamp=String(Math.floor(Date.now()/1000));
+   assert.ok(body.byteLength<11*1024*1024,'the signed multipart request fits the outer request limit');
    return app.request(request.url,{method:'POST',headers:{'Content-Type':request.headers.get('Content-Type')!,'X-Twilio-Email-Event-Webhook-Timestamp':timestamp,'X-Twilio-Email-Event-Webhook-Signature':signed?sign('sha256',Buffer.concat([Buffer.from(timestamp),body]),keys.privateKey).toString('base64'):'MEUCIQ'},body});
   };
-  const routed=async(to:string,raw:string)=>{let rejected:string|null=null;await receiveRoutedEmail({from:'seller@orbit.test',to,raw:new Response(raw).body!,rawSize:raw.length,headers:new Headers(),setReject:(reason:string)=>{rejected=reason;}} as unknown as ForwardableEmailMessage,f.db,{security,address:'orbit@capture.orbit.test'});return rejected;};
+  const routed=async(to:string,raw:string)=>{let rejected:string|null=null;await receiveRoutedEmail({from:'seller@orbit.test',to,raw:new Response(raw).body!,rawSize:Buffer.byteLength(raw),headers:new Headers(),setReject:(reason:string)=>{rejected=reason;}} as unknown as ForwardableEmailMessage,f.db,{security,address:'orbit@capture.orbit.test'});return rejected;};
   const forwardSignals=()=>f.db.prepare("SELECT type FROM signals WHERE source_id='capture-forward' ORDER BY occurred_at").all<{type:string}>().then(r=>r.results.map(row=>row.type));
 
   // The owner creates a private address; its tag is the only way in.
@@ -52,6 +56,45 @@ test('CAPTURE-008 CAPTURE-009 the Orbit address and a calendar link capture cust
   assert.deepEqual(await forwardSignals(),['email.replied','capture-forward:email.forwarded']);
   const status=await (await api('/forward')).json() as {confirmations:{code:string;account:string;link:string}[]};
   assert.deepEqual(status.confirmations.map(c=>[c.code,c.account,c.link]),[['481516234','sam@gmail.example','https://mail-settings.google.com/mail/vf-abc123-example']]);
+
+  // Both delivery doors acknowledge oversized mail, count it visibly, and retain no part of it.
+  const sourceStatus=async()=>{
+   const response=await api('/sources');assert.equal(response.status,200);
+   return (await response.json() as {sources:{id:string;captured_count:number;skipped_count:number;last_error:string|null;last_error_at:string|null}[]}).sources.find(source=>source.id==='capture-forward')!;
+  };
+  const inventory=async()=>Promise.all(['signals','capture_items','capture_proposals','timeline_entries'].map(async table=>{
+   const rows=(await f.db.prepare(`SELECT * FROM ${table} ORDER BY id`).all()).results;
+   return {table,count:rows.length,hash:createHash('sha256').update(JSON.stringify(rows)).digest('hex')};
+  }));
+  const before=await inventory(),sourceBefore=await sourceStatus();
+  assert.ok(before.every(table=>table.count>0),'nonempty evidence and timeline inventories guard against content loss or replacement');
+  for(const [index,door] of ['routed','parse'].entries()){
+   const sentinel=`synthetic-orbit-27-${door}`,raw=reply.replace('bcc-reply',sentinel).replace('Yes, let us talk on Tuesday.',`${sentinel} ${'é'.repeat(5*1024*1024)}`);
+   assert.ok(Buffer.byteLength(raw)>10*1024*1024&&raw.length<10*1024*1024,'message size is measured in bytes');
+   if(door==='routed'){
+    assert.match((await routed('orbit+guess@capture.orbit.test',raw))!,/Unknown address/);
+   }else{
+    assert.equal((await parse([address],raw,false)).status,401);
+    assert.deepEqual(await (await parse(['orbit+guess@capture.orbit.test'],raw)).json(),{accepted:false});
+   }
+   assert.equal((await sourceStatus()).skipped_count,sourceBefore.skipped_count+index,'unauthorized oversized mail is not counted');
+   assert.deepEqual(await inventory(),before,'unauthorized oversized mail changes no evidence');
+   if(door==='routed')assert.equal(await routed(address,raw),null,'authorized oversized mail is not bounced');
+   else{const response=await parse([address],raw);assert.equal(response.status,200);assert.deepEqual(await response.json(),{accepted:true});}
+   const after=await sourceStatus();
+   assert.equal(after.skipped_count,sourceBefore.skipped_count+index+1,'each accepted oversized message increments Not stored exactly once');
+   assert.equal(after.captured_count,sourceBefore.captured_count);
+   assert.match(after.last_error!,/larger than 10 MB.*not stored/);assert.ok(after.last_error_at);
+   assert.deepEqual(await inventory(),before,'oversized mail creates or changes no signal, captured original, proposal or timeline entry');
+   const directory=join(f.platform.directory,'v3','d1'),files=readdirSync(directory,{recursive:true}).filter((name):name is string=>typeof name==='string'&&name.endsWith('.sqlite'));
+   assert.ok(files.length>0);
+   for(const file of files){
+    const store=new DatabaseSync(join(directory,file),{readOnly:true});
+    try{for(const {name} of store.prepare("SELECT name FROM sqlite_master WHERE type='table'").all() as {name:string}[]){
+     assert.ok(!JSON.stringify(store.prepare(`SELECT * FROM "${name.replaceAll('"','""')}"`).all()).includes(sentinel),`oversized content absent from ${name}`);
+    }}finally{store.close();}
+   }
+  }
 
   // Replacing the address cuts the old one off at once and keeps what was captured.
   const replaced=(await (await api('/forward',{})).json() as {address:string}).address;assert.notEqual(replaced,address);
