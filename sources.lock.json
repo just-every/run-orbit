@@ -10063,7 +10063,7 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "185cbcc21c2748f52bbc4164cb0df1707ecb4068f15220ec6365c1a69ac096fd",
+      "sha256": "4ff080859ad72e18e1f81375dcb50c8b4e404758ddd520a3762514378c9a2394",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
@@ -10171,7 +10171,7 @@
       "executable": false
     },
     "tests/e2e/baseline.spec.mjs": {
-      "sha256": "c9ff61f65348c351ec4dff01b47c4c6ed495e9d987bed54f49e681bcd268d412",
+      "sha256": "52ac7a5a088da743ebbb058cc436e54c22bcd69e4df1ca8ab678c654d0b3dddb",
       "executable": false
     },
     "tests/e2e/capture.spec.mjs": {
