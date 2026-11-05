@@ -44,6 +44,26 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe 
  const sourceRead=await records.request('https://orbit.test/api/v1/sources',{headers:{Cookie:`__Host-orbit_session=${reader.token}`}});assert.equal(sourceRead.status,200);
  const diagnostics=await sourceRead.json() as {sources:{id:string;rejected_count:number;last_error:string;last_accepted_at:string}[]},diagnostic=diagnostics.sources.find(row=>row.id===source);
  assert.equal(diagnostic?.rejected_count,1);assert.match(diagnostic!.last_error,/different payload/);assert.ok(diagnostic!.last_accepted_at);
+ // OPP-004: source originals stay under the native opportunity authority, without public or collaborator reads.
+ const evidencePath=`https://orbit.test/api/v1/opportunities/${f.opportunityId}/signals/${ids[0]!.id}/evidence`;
+ const evidenceRead=(token=reader.token,path=evidencePath)=>records.request(path,{headers:{Cookie:`__Host-orbit_session=${token}`}});
+ const sourceEvidence=await evidenceRead();assert.equal(sourceEvidence.status,200);
+ assert.equal(sourceEvidence.headers.get('Cache-Control'),'no-store');
+ const original=(await sourceEvidence.json() as {evidence:{id:string;sourceEventId:string;originalPayload:string}}).evidence;
+ assert.equal(original.id,ids[0]!.id);assert.equal(original.sourceEventId,event.eventId);assert.equal(original.originalPayload,raw);
+ const beforeEvidenceRefusals=await ingestionInventory();
+ assert.equal((await records.request(evidencePath)).status,401);
+ const collaborator=createId();await db.prepare('INSERT INTO access_collaborators(operator_id,invited_at) VALUES(?,?)').bind(collaborator,f.at).run();
+ await createDependencies(db).auth.ensureOperator({id:collaborator,email:[collaborator,'example.test'].join('@'),displayName:'Evidence collaborator'});
+ const collaboratorSession=await createDependencies(db).auth.createSession(collaborator);
+ assert.equal((await evidenceRead(collaboratorSession.token)).status,403);
+ assert.equal((await evidenceRead(reader.token,evidencePath.replace(f.opportunityId,createId()))).status,404);
+ assert.equal((await evidenceRead(reader.token,evidencePath.replace(ids[0]!.id,createId()))).status,404);
+ assert.equal((await evidenceRead(reader.token,evidencePath.replace(ids[0]!.id,'invalid'))).status,400);
+ assert.deepEqual(await ingestionInventory(),beforeEvidenceRefusals,'Evidence refusals change no customer state');
+ await db.prepare('DELETE FROM sessions WHERE id=?').bind(reader.id).run();
+ assert.equal((await evidenceRead()).status,401,'Revocation applies to the next original-evidence read');
+
 });
 test('OUT-008 recipient clocks respect weekdays, DST and time to review an out-of-hours send',async context=>{
  const sunday=new Date('2026-09-13T10:00:00Z');assert.equal(nextPermitted(sunday,'Europe/London').toISOString(),'2026-09-14T07:00:00.000Z');

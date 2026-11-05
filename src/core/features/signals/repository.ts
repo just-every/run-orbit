@@ -43,6 +43,23 @@ export class SignalsRepository {
     await drizzle(this.binding).insert(signalLinks).values(input).onConflictDoNothing();
   }
 
+  async findOpportunityEvidence(opportunityId: string, signalId: string) {
+    // Require the exact live deal link in the same read as the original evidence.
+    return this.binding.prepare(`SELECT s.id,s.source_event_id AS sourceEventId,s.type,s.subject,
+      s.occurred_at AS occurredAt,s.received_at AS receivedAt,s.confidence,
+      l.linking_basis AS linkingBasis,ss.name AS source,CASE WHEN ci.signal_id IS NULL THEN s.payload_json END AS originalPayload,
+      ci.headers AS originalHeaders,ci.body AS originalBody
+      FROM signal_links l JOIN signals s ON s.id=l.signal_id
+      JOIN signal_sources ss ON ss.id=s.source_id
+      LEFT JOIN capture_items ci ON ci.signal_id=s.id
+      WHERE l.record_type='opportunity' AND l.record_id=? AND s.id=?`)
+      .bind(opportunityId, signalId).first<{
+        id:string;sourceEventId:string;type:string;subject:string|null;occurredAt:string;
+        receivedAt:string;confidence:string;linkingBasis:string;source:string;
+        originalPayload:string|null;originalHeaders:string|null;originalBody:string|null;
+      }>();
+  }
+
   async listOpportunitySignals(opportunityId: string) {
     return drizzle(this.binding)
       .select({

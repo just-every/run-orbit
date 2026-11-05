@@ -9,6 +9,12 @@ test('CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured
   const f = await captureFixture();
   try {
     await captured(f);
+    const deal = await (await f.request(`/api/v1/opportunities/${f.opportunity}`)).json() as {opportunity:{signals:{id:string;subject:string}[]}};
+    const erasedSignals = deal.opportunity.signals.filter(signal => signal.subject === 'Re: Proposal for Acme');
+    assert.ok(erasedSignals.length, 'The deal has the erased contact’s captured reply before erasure');
+    const evidencePaths = erasedSignals.map(signal => `/api/v1/opportunities/${f.opportunity}/signals/${signal.id}/evidence`);
+    for (const path of evidencePaths) assert.equal((await f.request(path)).status, 200);
+
     const headers = { From: 'Bob Stone <bob@acme.example>', To: 'seller@orbit.test', Date: new Date(Date.now() - 60000).toUTCString(), Subject: 'Other customer correspondence' };
     const originals = [
       { name: 'quoted.eml', text: eml({ ...headers, 'Message-ID': '<erasure-quoted@acme.example>' }, 'Following up.\n\nOn Monday, Ana Ruiz <ana@acme.example> wrote:\n> Private budget details from Ana.') },
@@ -51,6 +57,12 @@ test('CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured
     const revisedMail=originals[0]!.text.replace(/^Date:[^\r\n]+/m,`Date: ${later.toUTCString()}`);
     assert.equal((await f.upload([{name:'cancelled.ics',text:revisedCalendar},{name:'revised.eml',text:revisedMail}],true)).status,201);
     assert.equal(await mentions(f.db),0,'raw-only identities and revised calendar phases cannot resurrect erased originals');
+    for (const path of evidencePaths) {
+      const response = await f.request(path);
+      assert.equal(response.status, 404, 'The original-evidence door cannot recover erased content after replay');
+      assert.ok(!(await response.text()).includes('Private budget'), 'Erasure refusals expose no original content');
+    }
+
     assert.deepEqual(await f.db.prepare('SELECT id,headers,body FROM capture_items WHERE id=?').bind(unrelated.id).first(),unrelated);
     const archive = JSON.stringify(await exported(f, true));
     assert.ok(!archive.includes('Private budget details from Ana.'));

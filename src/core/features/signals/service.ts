@@ -21,6 +21,10 @@ export class SignalsService {
     await this.repository.ensureLink(input);
   }
 
+  async findOpportunityEvidence(opportunityId: string, signalId: string) {
+    return this.repository.findOpportunityEvidence(opportunityId, signalId);
+  }
+
   async listOpportunitySignals(opportunityId: string) {
     return this.repository.listOpportunitySignals(opportunityId);
   }

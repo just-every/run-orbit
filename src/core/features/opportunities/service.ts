@@ -33,6 +33,11 @@ export class OpportunitiesService {
     return { facets, opportunities };
   }
 
+  async findSignalEvidence(id: string, signalId: string) {
+    if (!await this.repository.findOpportunity(id)) return null;
+    return this.signals.findOpportunityEvidence(id, signalId);
+  }
+
   async findDetail(id: string): Promise<OpportunityDetail | null> {
     const opportunity = await this.repository.findOpportunity(id);
     if (!opportunity) return null;

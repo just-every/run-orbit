@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import {createHmac,randomUUID} from "node:crypto";
 
 import { contract } from "../contract.mjs";
 import { authenticateOperator } from "./operator-session.mjs";
@@ -89,49 +90,88 @@ test.describe("authenticated operator UI", () => {
     await expect(details.getByLabel("Owner", { exact: true }).locator("option:checked")).toHaveText("Maya Patel");
     await expect(page.getByTestId("contributing-evidence").locator("summary")).toContainText("score 92");
     const recorded = page.getByTestId("recorded-details");
-    await recorded.locator("summary").click();
+    await recorded.locator(":scope > summary").click();
     await expect(recorded).toContainText("Needs attention · Open deal · score 92, High priority");
     await expectNoHorizontalOverflow(page);
     expect(failures).toEqual([]);
   });
 
   contract("OPP-004", "the mobile detail renders current score evidence and recommendation reason", async ({ page }, info) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    test.setTimeout(60_000);
+    await page.setViewportSize({ width: 1440, height: 900 });
     const failures = watchFailures(page);
-    await openOpportunity(page);
-
-    const evidence = page.getByTestId("contributing-evidence");
-    await evidence.locator("summary").click();
-    await expect(evidence).toContainText("Used for this recommendation");
-    await expect(page.getByTestId("next-action")).toContainText("Write follow-up");
-    const id=new URL(page.url()).pathname.split('/').at(-1);
-    const {opportunity}=await(await page.request.get(`/api/v1/opportunities/${id}`)).json();
-    for(const item of opportunity.evaluation.contributions){
-      const signal=opportunity.signals.find(signal=>signal.id===item.signalId);
-      expect(signal?.subject).toBeTruthy();
-      const signalType=item.signalType.split(/[_.-]/).map(word=>word[0].toUpperCase()+word.slice(1)).join(' ');
-      const row=evidence.getByRole('listitem').filter({has:page.getByText(signal.subject,{exact:true})});
-      await expect(row).toHaveCount(1);
-      await expect(row.getByText(signalType,{exact:true})).toBeVisible();
-      await expect(row.locator('b')).toHaveText(`${item.contribution>0?'+':''}${item.contribution}`);
-      await expect(row.locator('b')).toBeVisible();
-      await expect(row).toContainText(item.source);
+    // Create the scored deal through native doors. Both originals deliberately share a subject.
+    const origin = new URL(info.project.use.baseURL).origin;
+    const headers = {Origin:origin};
+    const settings = await (await page.request.get('/api/v1/settings')).json();
+    const created = await page.request.post('/api/v1/records/opportunity', {headers,data:{
+      title:'Source evidence navigation',stage_id:settings.stages[0].id,value_cents:0
+    }});
+    expect(created.status()).toBe(201);
+    const {id} = await created.json();
+    const sourceId = `synthetic-orbit-${randomUUID()}`;
+    const configured = await page.request.put(`/api/v1/sources/${sourceId}`, {headers,data:{name:'Evidence source',enabled:true}});
+    expect(configured.status()).toBe(200);
+    const {secret} = await configured.json();
+    const originals = [];
+    for (const [type,points,confidence,kind] of [
+      ['meeting.booked',45,'Observed','Meeting Booked'],
+      ['email.bounced',-25,'Inferred','Delivery problem reported']
+    ]) {
+      const event = {eventId:`synthetic-orbit-${randomUUID()}`,type,subject:'Shared source subject',
+        occurredAt:new Date(Date.now()-60_000).toISOString(),record:{type:'opportunity',id},
+        data:{detail:`Original ${type} evidence`,literal:'<script>window.evidenceExecuted=true</script>'}};
+      const raw = JSON.stringify(event), timestamp = String(Math.floor(Date.now()/1000));
+      const response = await page.request.post(`/api/v1/signals/${sourceId}`, {data:raw,headers:{
+        'Content-Type':'application/json','X-Orbit-Timestamp':timestamp,
+        'X-Orbit-Signature':createHmac('sha256',secret).update(`${timestamp}.${raw}`).digest('hex')
+      }});
+      expect(response.status()).toBe(201);
+      originals.push({signalId:(await response.json()).id,event,raw,points,confidence,kind});
     }
-    await expectNoHorizontalOverflow(page);
-    await page.screenshot({path:info.outputPath('evidence-390.png'),fullPage:true});
-    await page.setViewportSize({width:1440,height:900});
+    await page.goto(`/app/opportunities/${id}`, {waitUntil:'networkidle'});
+    const evidence = page.getByTestId('contributing-evidence');
+    await evidence.locator('summary').click();
+    await expect(evidence).toContainText('Used for this recommendation');
+    const next = page.getByTestId('next-action');
+    await expect(next).toContainText('Write follow-up');
+    await expect(next).toContainText('Delivery problem');
+    await expect(next.locator('.r-next-line')).toHaveText('Shared source subject');
+    const recorded = page.getByTestId('recorded-details');
+    for (const item of originals) {
+      const link = evidence.getByRole('link').filter({hasText:item.signalId});
+      const row = link.locator('..').locator('..');
+      await expect(row).toContainText(item.event.subject);
+      await expect(row.getByText(item.kind,{exact:true})).toBeVisible();
+      await expect(row).toContainText('Evidence source');
+      await expect(row).toContainText(item.confidence.toLowerCase());
+      await expect(row.locator('b')).toHaveText(`${item.points>0?'+':''}${item.points}`);
+      await expect(row.locator('b')).toBeVisible();
+      await link.focus();
+      await page.keyboard.press('Enter');
+      const summary = recorded.locator(`#signal-evidence-${item.signalId}`);
+      const target = summary.locator('..');
+      await expect(summary).toBeFocused();
+      await expect(target).toContainText('linked by explicit orbit record id');
+      await expect(target).toContainText(item.signalId);
+      await expect(target).toContainText(item.confidence);
+      await expect(target).toContainText('Occurred');
+      await expect(target).toContainText('Received');
+      const original = target.getByRole('region',{name:`Source evidence for signal ${item.signalId}`});
+      await expect(original).toBeVisible();
+      await expect(original).toContainText(item.event.eventId);
+      await expect(original.locator('pre')).toHaveText(item.raw);
+      expect(await page.evaluate(()=>window.evidenceExecuted)).toBeUndefined();
+    }
+    await expect(recorded.getByTestId('current-recommendation')).toContainText('Review customer activity');
     await expectNoHorizontalOverflow(page);
     await page.screenshot({path:info.outputPath('evidence-1440.png'),fullPage:true});
-    // Each contribution resolves by signal ID to its source evidence in the deal's recorded details: subject, kind, source and how it was linked.
-    const recorded=page.getByTestId("recorded-details");
-    await recorded.locator("summary").click();
-    for(const item of opportunity.evaluation.contributions){
-      const signal=opportunity.signals.find(signal=>signal.id===item.signalId);
-      expect(signal.linkingBasis).toBeTruthy();
-      const evidenceRow=recorded.getByRole('listitem').filter({hasText:signal.subject}).filter({hasText:'linked by'});
-      await expect(evidenceRow).toHaveCount(1);
-      await expect(evidenceRow).toContainText(item.source);
+    // The same screen and native links are exercised for the phone proof; assertions run at 1440.
+    await page.setViewportSize({width:390,height:844});
+    for (const item of originals) {
+      await evidence.getByRole('link').filter({hasText:item.signalId}).click();
     }
+    await page.screenshot({path:info.outputPath('evidence-390.png'),fullPage:true});
     expect(failures).toEqual([]);
   });
 
@@ -141,7 +181,7 @@ test.describe("authenticated operator UI", () => {
     await openOpportunity(page);
 
     const timeline = page.getByTestId("recorded-details");
-    await timeline.locator("summary").click();
+    await timeline.locator(":scope > summary").click();
     await expect(timeline).toContainText("Occurred");
     await expect(timeline).toContainText("Recorded");
     await expect(timeline).toContainText("Actor Website form (Source)");

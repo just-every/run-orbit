@@ -16,6 +16,17 @@ const nowOpportunitySchema = z.object({
   lastContributingSignalAt: z.string().nullable()
 });
 
+const signalEvidenceSchema = z.object({
+  id:z.string(),sourceEventId:z.string(),type:z.string(),subject:z.string().nullable(),
+  occurredAt:z.string(),receivedAt:z.string(),confidence:z.string(),linkingBasis:z.string(),source:z.string(),
+  originalPayload:z.string().nullable(),originalHeaders:z.string().nullable(),originalBody:z.string().nullable()
+});
+export type SignalEvidence = z.infer<typeof signalEvidenceSchema>;
+export async function loadSignalEvidence(opportunityId:string,signalId:string) {
+  return (await requestJson(`/api/v1/opportunities/${encodeURIComponent(opportunityId)}/signals/${encodeURIComponent(signalId)}/evidence`,
+    z.object({evidence:signalEvidenceSchema}))).evidence;
+}
+
 const opportunityDetailSchema = nowOpportunitySchema.extend({
   companyId: z.string().nullable(),
   valueCents: z.number(),

@@ -1,4 +1,5 @@
 import {useState,type ReactNode} from 'react';
+import {SignalEvidenceLink} from './signal-evidence';
 import {Link} from '@tanstack/react-router';
 import type {OpportunityDetail,WorkspacePresentation} from '../operator-api';
 import {RecommendationRefresh} from '../manual-action';
@@ -57,7 +58,7 @@ function WhyFirst({opportunity,presentation,contacts,readOnly}:{readOnly:boolean
  const summary=contributions.length?`Why this is first: ${reasons}${from} · score ${opportunity.evaluation?.score??opportunity.score}`:`Why this is first: score ${opportunity.evaluation?.score??opportunity.score}`;
  const subject=(id:string,type:string,source:string)=>signals.get(id)?.subject||`${signalKind(type)} · from ${sourceLabel(source)}`;
  return <details className="r-fold" data-testid="contributing-evidence"><summary>{summary}</summary>
-  {contributions.length?<ul className="r-why-list">{contributions.map(item=><li key={item.signalId}><span className="r-why-what"><span>{subject(item.signalId,item.signalType,item.source)}</span><span className="r-why-meta"><span>{label(item.signalType)}</span> · {sourceLabel(item.source)} · {label(item.confidence).toLowerCase()}{used.has(item.signalId)?' · Used for this recommendation':''}</span></span><span className="r-muted">{formatDateTime(item.occurredAt,presentation)}</span><b>{item.contribution>0?'+':''}{item.contribution}</b></li>)}</ul>:<p className="r-muted">No signals contribute to the current score.</p>}
+  {contributions.length?<ul className="r-why-list">{contributions.map(item=><li key={item.signalId}><span className="r-why-what"><SignalEvidenceLink signalId={item.signalId}>{subject(item.signalId,item.signalType,item.source)}<span className="r-why-meta" style={{display:'block',overflowWrap:'anywhere'}}>Signal {item.signalId}</span></SignalEvidenceLink><span className="r-why-meta"><span>{label(item.signalType)}</span> · {sourceLabel(item.source)} · {label(item.confidence).toLowerCase()}{used.has(item.signalId)?' · Used for this recommendation':''}</span></span><span className="r-muted">{formatDateTime(item.occurredAt,presentation)}</span><b>{item.contribution>0?'+':''}{item.contribution}</b></li>)}</ul>:<p className="r-muted">No signals contribute to the current score.</p>}
   {other.length?<><h3>Other signals</h3><ul className="r-why-list">{other.map(signal=><li key={signal.id}><span className="r-why-what"><span>{subject(signal.id,signal.type,signal.source)}</span><span className="r-why-meta"><span>{label(signal.type)}</span> · {sourceLabel(signal.source)} · {label(signal.confidence).toLowerCase()}</span></span><span className="r-muted">{formatDateTime(signal.occurredAt,presentation)}</span><span className="r-none">No points</span></li>)}</ul></>:null}
   {!opportunity.signals.length?<p className="r-muted">No customer signals yet. {!readOnly&&<a href="/app/settings/capture">Connect a source</a>}</p>:null}
  </details>;

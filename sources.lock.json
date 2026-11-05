@@ -6679,7 +6679,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator-api.ts": {
-      "sha256": "838ec462022019d705077f8b5546361830923b27fe586e04f3ee96ba238b446e",
+      "sha256": "d537198d30ed7f1e07ce496e54ab6a03848e5022ceedf967f2fe62d4aa39e609",
       "executable": false
     },
     "src/core/features/operator/ui/operator-controls.css": {
@@ -6851,7 +6851,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/next-action.tsx": {
-      "sha256": "6a975e7b478cc776f6a9da50c7d878cd6a5ac2df3743ffd6f72b6b672d4ff726",
+      "sha256": "36f91b8454fa6994b6021790d6bfc520e0c363d0f182ddd5b7a87394f572e43d",
       "executable": false
     },
     "src/core/features/operator/ui/record/opportunity-record.tsx": {
@@ -6895,7 +6895,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/recorded-details.tsx": {
-      "sha256": "de0ef6891183fd005ec8115c2d4aa09b145700d155b061e18bb24645732a411f",
+      "sha256": "2598f6faf998de9bcd636288239ee9f0fc8eced7565286d1e812879853ec70ed",
+      "executable": false
+    },
+    "src/core/features/operator/ui/record/signal-evidence.tsx": {
+      "sha256": "062a7364201ad51860d8e3f653bb55659f6c0b2988cbe291e13ecc958ca29cbb",
       "executable": false
     },
     "src/core/features/operator/ui/record/timeline-entries.tsx": {
@@ -7171,11 +7175,11 @@
       "executable": false
     },
     "src/core/features/opportunities/routes.ts": {
-      "sha256": "481349f20dba3649b94b2f9735822c7e63bb87c1824c70a677162111021cfbce",
+      "sha256": "e731167d1f4739b4669f90d3284931eecafe90defe74d0ef65fcb6efc6bda6b8",
       "executable": false
     },
     "src/core/features/opportunities/service.ts": {
-      "sha256": "69d1a46b3d6bb23606f8f0533021627e1c612e837028da270c33f72c121556b6",
+      "sha256": "9a2750025c5bfe6cd2bdabf0509e6b4c89185f27507e01e9ba56c4dee40d1878",
       "executable": false
     },
     "src/core/features/outreach/approval-repository.ts": {
@@ -8059,11 +8063,11 @@
       "executable": false
     },
     "src/core/features/signals/repository.ts": {
-      "sha256": "61a0b9d47fc9a674ffa89f36c9d8df0570a1c4b6054d11f6f324301015a6b4c7",
+      "sha256": "e30d49ebdc72e2e78a416d20da580a315db8392e5c03d5942c3f24c82bc07986",
       "executable": false
     },
     "src/core/features/signals/service.ts": {
-      "sha256": "a1a89a15ece32a2635fe2fc140d1abb041ba04e2670392c76165fd3007211030",
+      "sha256": "0c30a70be8d8fa81115a89c9a15cd278b5f7491bb796f9e9220712974b9be1f9",
       "executable": false
     },
     "src/core/features/signals/test-events.ts": {
@@ -9919,7 +9923,7 @@
       "executable": false
     },
     "tests/core/capture-erasure.test.ts": {
-      "sha256": "9f0c4835ff1006a4d391eeb3ce5bed4276ea1bbc9ff5b666fe50afde4a02aa3e",
+      "sha256": "4ad1eb652f9ca4ed1ba1803fa5ad5f4db0e13f95f39b9ddd41bb487984380e17",
       "executable": false
     },
     "tests/core/capture-intake.test.ts": {
@@ -9943,7 +9947,7 @@
       "executable": false
     },
     "tests/core/capture-review.test.ts": {
-      "sha256": "e335d815f157183b8a033de5c7ac4912f33b5535485efade0653c13a661e8632",
+      "sha256": "e5fbd605ca0175561a5da2bebb5711c50be06ce0565ca7aadd725ffb450a327a",
       "executable": false
     },
     "tests/core/capture-upgrade.test.ts": {
@@ -10063,7 +10067,7 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "185cbcc21c2748f52bbc4164cb0df1707ecb4068f15220ec6365c1a69ac096fd",
+      "sha256": "2d60e846c1d861dc1b900af5d5ab36404d71434410ad09d59413116d26d3c176",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
@@ -10187,7 +10191,7 @@
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
-      "sha256": "3e651bb3eff5cb93717922235febce5a73f61386368c0b36c6f4715051952203",
+      "sha256": "04235949a533b13e8b3aaae3773fd6f2e66693098a99221f3d17834e4ecbb058",
       "executable": false
     },
     "tests/e2e/records.spec.mjs": {

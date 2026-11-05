@@ -50,6 +50,16 @@ test('CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person 
     assert.equal(JSON.parse(entries[0]!.payload_json).proposalId, meeting.id);
     const detail = await (await f.request(`/api/v1/records/company/${f.company}`)).json() as { timeline: { kind: string }[] };
     assert.equal(detail.timeline.filter(entry => entry.kind === 'signal.recorded').length, 1, 'the account timeline shows it once');
+    const capturedSignal = (await queue()).signals.find((signal: {subject:string}) => signal.subject === 'Acme rollout review');
+    assert.ok(capturedSignal, 'The reviewed calendar original contributes to the linked deal');
+    const evidenceResponse = await f.request(`/api/v1/opportunities/${f.opportunity}/signals/${capturedSignal.id}/evidence`);
+    assert.equal(evidenceResponse.status, 200);
+    const {evidence} = await evidenceResponse.json() as {evidence:{id:string;originalHeaders:string;originalBody:string}};
+    assert.equal(evidence.id, capturedSignal.id);
+    assert.match(evidence.originalHeaders, /METHOD: REQUEST/);
+    assert.match(evidence.originalBody, /BEGIN:VEVENT/);
+    assert.ok(mail.invite.replace(/\r\n/g, '\n').includes(evidence.originalBody), 'Evidence navigation returns the retained original calendar event');
+
 
     // Linking changes its own companion's review basis. An old screen refuses, and a reload permits the newly reviewed queue.
     assert.equal((await acceptNext(nextAction)).status, 409);
