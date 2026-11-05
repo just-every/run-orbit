@@ -44,7 +44,8 @@ export function feedItems(text:string,now=Date.now()):CaptureItem[]{
   if('error' in event)continue;
   const start=event.start??event.end,end=event.end??event.start;
   if(start&&end&&(Date.parse(end)<from||Date.parse(start)>to))continue;
-  items.push({at:start??'',raw:`BEGIN:VCALENDAR\r\nVERSION:2.0\r\n${event.raw.replace(/\r?\n/g,'\r\n')}\r\nEND:VCALENDAR`});
+  // Preserve calendar-level cancellation; keep ordinary events' existing replay bytes.
+  items.push({at:start??'',raw:`BEGIN:VCALENDAR\r\nVERSION:2.0\r\n${event.method==='CANCEL'?'METHOD:CANCEL\r\n':''}${event.raw.replace(/\r?\n/g,'\r\n')}\r\nEND:VCALENDAR`});
  }
  return items.sort((left,right)=>left.at.localeCompare(right.at)||left.raw.localeCompare(right.raw)).map(item=>({kind:'calendar' as const,raw:item.raw}));
 }

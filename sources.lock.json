@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "6bb6fb9aaef0e0df27f86958e4734fef3b5d0f3cfa37f0400496e6043e8781b1",
+      "sha256": "80f181df79fba10dbc229706b21682c7654c6db2c0bee0372c7b73dc05f15432",
       "executable": false
     },
     "DEMO.md": {
@@ -5459,7 +5459,7 @@
       "executable": false
     },
     "src/core/features/capture/calendar-link/feed.ts": {
-      "sha256": "790b108487cffbfbb2509a7d99354bfd2c9a0c8b046565bb07649bd46cca2f3c",
+      "sha256": "c24e1ad59a0edfba4c25797df81fd871d5fa567c81ce80d9905a1e5b166a5a77",
       "executable": false
     },
     "src/core/features/capture/calendar-link/routes.ts": {
@@ -9935,7 +9935,7 @@
       "executable": false
     },
     "tests/core/capture-no-console.test.ts": {
-      "sha256": "7ca8ac89a46d10b6e785dd6c16ea40adc8f21007652730ad6806516462eab94d",
+      "sha256": "9a44a8ab3b71a2255a55069cafb82082578e1d9acfcaf5316ca8c4dc231fb946",
       "executable": false
     },
     "tests/core/capture-providers.test.ts": {
@@ -10835,7 +10835,7 @@
       "executable": false
     },
     "tests/support/capture-fixture.ts": {
-      "sha256": "707e662d58d44bb1aefb6d10d391e4f88e9c6e8df7810817b40266ef64394f6b",
+      "sha256": "f42e1357927f4cc4539e5d03ab9d1188c800fffa122ddb0e470244c618782087",
       "executable": false
     },
     "tests/support/capture-mail-rule.ts": {
