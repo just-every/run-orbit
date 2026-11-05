@@ -309,9 +309,69 @@ test('OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end sched
  const {outcomes}=await api<{outcomes:Record<string,unknown>}>(`workbench/opportunities/${f.opportunityId}/messages`);
  assert.deepEqual({...outcomes,firstAcceptedAt:Boolean(outcomes.firstAcceptedAt),closedAt:Boolean(outcomes.closedAt)},{firstAcceptedAt:true,accepted:1,delivered:0,humanReplies:1,meetingsBooked:0,stageAdvances:1,lifecycle:'won',closedAt:true,inferredReports:1,automaticReplies:1});
 });
-test('OUT-009 dispatch rechecks unchanged content, active operator, lifecycle, current recipient and association before claiming',async()=>{
+test('OUT-009 dispatch rechecks unchanged content, active operator, lifecycle, current recipient and association before claiming',async context=>{
  const mutations=["UPDATE drafts SET body='Changed' WHERE id=?","UPDATE drafts SET recipient_email='changed@example.invalid' WHERE id=?","UPDATE opportunities SET lifecycle='won' WHERE id=?","UPDATE contacts SET email='changed@example.invalid' WHERE id=?","DELETE FROM opportunity_contacts WHERE opportunity_id=?","UPDATE operators SET status='removed' WHERE id=?"];
  for(let index=0;index<mutations.length;index++){const f=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db),draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Exact content',body:'Approved only'},f.actor);const message=await approval.approve(draft.id,1,f.actor,{now:new Date('2030-01-07T09:00:00Z'),scheduledAt:'2030-01-07T10:00:00Z'});const target=index<2?draft.id:index===2||index===4?f.opportunityId:index===3?f.contactId:f.actor;await db.prepare(mutations[index]!).bind(target).run();let calls=0;await new OutreachService(db,{send:async()=>{calls++;return{providerMessageId:'must-not-send'};}}).dispatchDue(new Date('2030-01-07T10:00:00Z'));assert.equal(calls,0);assert.equal((await approval.message(message.id)).state,'failed');}
+ context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T09:00:00Z')});
+ try{
+  const f=await fixture(),deps=createDependencies(db),session=await deps.auth.createSession(f.actor);
+  const security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'11'.repeat(32)})!,source=createId(),secret='synthetic-orbit-1';
+  await new IngestionRepository(db).configure({id:source,name:'Reviewed evidence',enabled:true,secret},security);
+  let submissions=0;
+  const mail={send:async()=>{submissions++;return{providerMessageId:'synthetic-orbit-1'};}},service=new OutreachService(db,mail);
+  const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:mail,sourceSecurity:security});
+  const request=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+  async function read<T>(path:string){const response=await request(path);assert.equal(response.status,200,path);return response.json() as Promise<T>;}
+  type Message={id:string;draftId:string;state:string;recipientEmail:string;subject:string;body:string;failure:string|null;scheduledAt:string};
+  const messages=async()=>(await read<{messages:Message[]}>(`workbench/opportunities/${f.opportunityId}/messages`)).messages;
+  const message=async(id:string)=>{const saved=(await messages()).find(row=>row.id===id);assert.ok(saved,'The same approved message remains visible');return saved;};
+  const due='2030-01-07T10:00:00.000Z',content={contactId:f.contactId,subject:'Reviewed follow-up',body:'Use only these approved bytes'};
+  async function schedule(){
+   const created=await request(`workbench/opportunities/${f.opportunityId}/drafts`,content);assert.equal(created.status,201);
+   const draft=await created.json() as {id:string};
+   const approved=await request(`workbench/drafts/${draft.id}/approve`,{revision:1,scheduledAt:due});assert.equal(approved.status,200);
+   const saved=await approved.json() as {id:string;state:string;scheduledAt:string};assert.equal(saved.state,'scheduled');assert.equal(saved.scheduledAt,due);
+   const snapshot=await message(saved.id);
+   assert.deepEqual([snapshot.draftId,snapshot.recipientEmail,snapshot.subject,snapshot.body],[draft.id,f.email.toLowerCase(),content.subject,content.body]);
+   assert.equal(submissions,0,'Scheduling never submits customer mail');
+   return {draftId:draft.id,messageId:saved.id};
+  }
+  const cancelled=await schedule(),beforeCancel=await message(cancelled.messageId);
+  assert.equal((await request(`workbench/messages/${cancelled.messageId}/cancel`,{})).status,200);
+  assert.equal((await request(`workbench/messages/${cancelled.messageId}/cancel`,{})).status,409,'Repeated cancellation cannot add another attributed action');
+  const stopped=await message(cancelled.messageId);assert.equal(stopped.state,'cancelled');assert.equal(stopped.failure,'Cancelled by operator');
+  assert.deepEqual([stopped.draftId,stopped.recipientEmail,stopped.subject,stopped.body,stopped.scheduledAt],[beforeCancel.draftId,beforeCancel.recipientEmail,beforeCancel.subject,beforeCancel.body,beforeCancel.scheduledAt]);
+  const history=await read<{record:{queue_state:string};timeline:{kind:string;actor_type:string;actor_id:string;actor_name:string;payload_json:string}[]}>(`records/opportunity/${f.opportunityId}`);
+  const cancellations=history.timeline.filter(entry=>entry.kind==='message.cancelled'&&JSON.parse(entry.payload_json).messageId===cancelled.messageId);
+  assert.equal(cancellations.length,1);assert.equal(cancellations[0]!.actor_type,'operator');assert.equal(cancellations[0]!.actor_id,f.actor);assert.equal(cancellations[0]!.actor_name,'Signals operator');assert.equal(history.record.queue_state,'now');
+  await service.dispatchDue(new Date(due));await service.dispatchDue(new Date(due));
+  assert.equal(submissions,0,'A cancelled schedule stays unsent through late and repeated dispatch');assert.deepEqual(await message(cancelled.messageId),stopped);
+
+  async function evidence(subject:string){
+   const raw=JSON.stringify({eventId:createId(),type:'content.downloaded',subject,occurredAt:new Date().toISOString(),email:f.email,identityBasis:'Known customer requested the document'});
+   const deliver=async()=>{const timestamp=String(Math.floor(Date.now()/1000));return app.request(`https://orbit.test/api/v1/signals/${source}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':await sign(secret,raw,timestamp)},body:raw});};
+   const response=await deliver();assert.equal(response.status,201);const saved=await response.json() as {id:string};return {...saved,deliver};
+  }
+  const original=await evidence('Customer requested the product guide');
+  const current=async()=>(await read<{opportunity:import('../../src/core/features/opportunities/contracts').OpportunityDetail}>(`opportunities/${f.opportunityId}`)).opportunity;
+  const initial=await current();assert.ok(initial.recommendation);assert.deepEqual(initial.recommendation.evidenceSignalIds,[original.id]);
+  const scheduled=await schedule(),approved=await message(scheduled.messageId);
+  const draft=await read<{draft:{recommendationId:string;isStale:boolean}}>(`drafts/${scheduled.draftId}`);assert.equal(draft.draft.recommendationId,initial.recommendation.id);assert.equal(draft.draft.isStale,false);
+  context.mock.timers.tick(5*60000);
+  const fresh=await evidence('Customer requested the deployment guide'),changed=await current();
+  assert.equal(changed.signals.find(signal=>signal.id===fresh.id)?.confidence,'observed');
+  assert.ok(changed.recommendation);assert.notEqual(changed.recommendation.id,initial.recommendation.id);assert.ok(changed.recommendation.evidenceSignalIds.includes(fresh.id));
+  assert.equal(changed.queueState,'next','Non-stopping evidence leaves this same-band schedule pending until dispatch rechecks it');
+  const stale=await read<{draft:{recommendationId:string;isStale:boolean;staleReason:string}}>(`drafts/${scheduled.draftId}`);
+  assert.equal(stale.draft.recommendationId,initial.recommendation.id);assert.equal(stale.draft.isStale,true);assert.equal(stale.draft.staleReason,'New customer evidence');
+  assert.deepEqual(await message(scheduled.messageId),approved,'Fresh evidence does not rewrite or cancel the approved snapshot');
+  await service.dispatchDue(new Date(due));
+  const refused=await message(scheduled.messageId);assert.equal(refused.state,'failed');assert.match(refused.failure!,/changed, became stale, or is no longer permitted/);
+  assert.deepEqual([refused.recipientEmail,refused.subject,refused.body],[approved.recipientEmail,approved.subject,approved.body]);
+  const returned=await current();assert.equal(returned.queueState,'now');assert.equal(returned.queueReason,'Scheduled message cannot be sent');
+  assert.equal((await fresh.deliver()).status,201);await service.dispatchDue(new Date(due));
+  assert.deepEqual(await message(scheduled.messageId),refused);assert.equal(submissions,0,'Stale approval and replay never submit the old message');
+ }finally{context.mock.timers.reset();}
 });
 test('OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do',async()=>{
  const {ProviderRepository}=await import('../../src/core/features/outreach/provider-repository');for(const type of ['blocked','bounce']){const f=await fixture(),approval=new ApprovalRepository(db),draft=await new OutreachRepository(db).createDraft(f.opportunityId,{contactId:f.contactId,subject:'Bounce classification',body:'Reviewed'},f.actor);await db.prepare("UPDATE outbound_messages SET claimed_at='2000-01-01T00:00:00Z' WHERE claimed_at IS NOT NULL").run();const message=await approval.approve(draft.id,1,f.actor,{quietHoursConfirmation:(await approval.preview(draft.id)).localTime});await new OutreachRepository(db).settle(message.id,f.actor,'accepted','test-receipt',null);const event={sg_event_id:createId(),event:'bounce',type,timestamp:Math.floor(Date.now()/1000),email:f.email,rer_product:'orbit',rer_delivery_id:message.idempotency_key};await new ProviderRepository(db).event(event,await payloadHash(JSON.stringify(event)));assert.equal((await db.prepare('SELECT contactability FROM contacts WHERE id=?').bind(f.contactId).first<{contactability:string}>())!.contactability,type==='bounce'?'do_not_contact':'contactable');}
