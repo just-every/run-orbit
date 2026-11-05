@@ -1,0 +1,8 @@
+M1 killed by Authenticated history retains the exact mail adapter diagnostic for this outcome
+M2 killed by Authenticated history retains the exact signed provider reason
+M3 killed by do_not_contact
+Traceback (most recent call last):
+  File "/tmp/f59-mutations.py", line 23, in <module>
+    else:assert re.search(r'6\s*!==\s*5',output),(name,'wrong assertion failed')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('M4', 'wrong assertion failed')

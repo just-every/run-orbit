@@ -1,0 +1,23 @@
+core-3 [
+  'tests/core/launch-provider-conflicts.test.ts',
+  'tests/core/operator-erasure.test.ts',
+  'tests/core/records-search.test.ts',
+  'tests/core/sendgrid-outcomes.test.ts',
+  'tests/core/source-onboarding.test.ts'
+]
+core-6 [
+  'tests/core/admission.test.ts',
+  'tests/core/launch-reply-authority.test.ts',
+  'tests/core/prior-auth-upgrade.test.ts',
+  'tests/core/signals-outreach.test.ts',
+  'tests/delegation/authority-regressions.test.ts',
+  'tests/delegation/record-state.test.ts'
+]
+core-8 [
+  'tests/core/archive-transfer.test.ts',
+  'tests/core/capture-erasure.test.ts',
+  'tests/core/identity.test.ts',
+  'tests/core/outreach-limits.test.ts',
+  'tests/core/today-brief.test.ts',
+  'tests/delegation/d1.test.ts'
+]

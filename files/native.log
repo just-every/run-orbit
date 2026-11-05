@@ -1,0 +1,52 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+(node:4256) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ OUT-006 BASE-OPS-004 transient rate limits stop after five attempts within one hour and notify once (23075.558993ms)
+✔ OUT-010 OUT-018 one user's volume never consumes another's budget and every deferral names its limit (37349.426478ms)
+✔ OUT-007 OUT-009 OUT-012 a signed provider unsubscribe stops the recipient and schedule within sixty seconds and returns the opportunity to NOW once (23303.087847ms)
+(node:6255) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+(node:6255) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+✔ SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing (2058.654242ms)
+✔ OUT-008 recipient clocks respect weekdays, DST and time to review an out-of-hours send (1203.526628ms)
+✔ OUT-014 missing merge fields block; template revisions never rewrite approved content (8872.026721ms)
+✔ OUT-011 unknown delivery reconciles by durable provider key and never submits again (671.589425ms)
+✔ OPP-008 completion removes an exhausted recommendation; new observed evidence produces another (837.926519ms)
+✔ OUT-010 over-limit approval remains durably unsent with retry time (1106.3474ms)
+✔ BASE-OPS-003 OUT-002 OUT-005 signed provider delivery is verified and idempotent (688.475236ms)
+✔ SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a persistence failure rolls back all signal effects (1895.499528ms)
+✔ SIGNAL-009 shared provider relay authenticates destination HMAC and refuses modified events (98.81345ms)
+✔ BASE-OPS-004 OUT-006 provider retry expiry fails before quiet-hours deferral and never resends (440.851764ms)
+OUT-017 AI: contact/company exact preview -> editable unsent draft; stale/refused/erased no call; foreign/long/provider/off fail; usage recorded
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":138,"parts":41,"observations":[{"operation":"POST /exports","milliseconds":1934.1117460000096,"status":201},{"operation":"GET /exports/01M6PYP4Q4BFT22J540EFGJGDC","milliseconds":43.24532400001772,"status":200},{"operation":"POST /exports/01M6PYP4Q4BFT22J540EFGJGDC/advance","milliseconds":2768.7703579999798,"status":200},{"operation":"POST /exports/01M6PYP4Q4BFT22J540EFGJGDC/advance","milliseconds":1829.2026020000048,"status":200},{"operation":"POST /exports/01M6PYP4Q4BFT22J540EFGJGDC/advance","milliseconds":1811.5166599999939,"status":200},{"operation":"POST /exports/01M6PYP4Q4BFT22J540EFGJGDC/advance","milliseconds":1908.3956619999954,"status":200},{"operation":"POST /exports/01M6PYP4Q4BFT22J540EFGJGDC/advance","milliseconds":1892.4490440000081,"status":200},{"operation":"POST /exports/01M6PYP4Q4BFT22J540EFGJGDC/advance","milliseconds":669.8066530000069,"status":200},{"operation":"GET /exports/01M6PYP4Q4BFT22J540EFGJGDC/download","milliseconds":46.51322399999481,"status":200}]}
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":81,"parts":30,"observations":[{"operation":"POST /exports","milliseconds":1906.017853999976,"status":201},{"operation":"GET /exports/01M6PYVVQN52Y26FPN78B6RH70","milliseconds":43.16140700003598,"status":200},{"operation":"POST /exports/01M6PYVVQN52Y26FPN78B6RH70/advance","milliseconds":2697.728206,"status":200},{"operation":"POST /exports/01M6PYVVQN52Y26FPN78B6RH70/advance","milliseconds":1812.5717679999652,"status":200},{"operation":"POST /exports/01M6PYVVQN52Y26FPN78B6RH70/advance","milliseconds":1878.699271999998,"status":200},{"operation":"POST /exports/01M6PYVVQN52Y26FPN78B6RH70/advance","milliseconds":1754.8596310000285,"status":200},{"operation":"GET /exports/01M6PYVVQN52Y26FPN78B6RH70/download","milliseconds":44.07679199997801,"status":200}]}
+OUT-017 held reply: contact/company attributed once; concurrent/replay no duplicate; automatic and dismissal leave promise open; genuine attach closes; custody and erasure pass
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":239,"parts":45,"observations":[{"operation":"POST /exports","milliseconds":1867.5808350000298,"status":201},{"operation":"GET /exports/01M6PYX8B5RFQ53YGYZEH5EXK2","milliseconds":44.15150199999334,"status":200},{"operation":"POST /exports/01M6PYX8B5RFQ53YGYZEH5EXK2/advance","milliseconds":2711.423890999984,"status":200},{"operation":"POST /exports/01M6PYX8B5RFQ53YGYZEH5EXK2/advance","milliseconds":1952.3639309999999,"status":200},{"operation":"POST /exports/01M6PYX8B5RFQ53YGYZEH5EXK2/advance","milliseconds":1795.0372839999618,"status":200},{"operation":"POST /exports/01M6PYX8B5RFQ53YGYZEH5EXK2/advance","milliseconds":1862.893189000024,"status":200},{"operation":"POST /exports/01M6PYX8B5RFQ53YGYZEH5EXK2/advance","milliseconds":1813.8028219999978,"status":200},{"operation":"POST /exports/01M6PYX8B5RFQ53YGYZEH5EXK2/advance","milliseconds":1504.528741999995,"status":200},{"operation":"GET /exports/01M6PYX8B5RFQ53YGYZEH5EXK2/download","milliseconds":46.53810100001283,"status":200}]}
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":106,"parts":31,"observations":[{"operation":"POST /exports","milliseconds":1782.9824319999898,"status":201},{"operation":"GET /exports/01M6PZ31X91HKSC7NBV8EHBVC3","milliseconds":49.40196100005414,"status":200},{"operation":"POST /exports/01M6PZ31X91HKSC7NBV8EHBVC3/advance","milliseconds":2571.484429000062,"status":200},{"operation":"POST /exports/01M6PZ31X91HKSC7NBV8EHBVC3/advance","milliseconds":1808.8343469999963,"status":200},{"operation":"POST /exports/01M6PZ31X91HKSC7NBV8EHBVC3/advance","milliseconds":1761.271337000071,"status":200},{"operation":"POST /exports/01M6PZ31X91HKSC7NBV8EHBVC3/advance","milliseconds":1773.1512879999354,"status":200},{"operation":"POST /exports/01M6PZ31X91HKSC7NBV8EHBVC3/advance","milliseconds":198.8404599999776,"status":200},{"operation":"GET /exports/01M6PZ31X91HKSC7NBV8EHBVC3/download","milliseconds":41.691886999993585,"status":200}]}
+✔ OUT-017 record mail preserves exact approval, sender promises, custody and OUT-004 header-only reply matching (540115.801204ms)
+✔ BASE-OPS-004 OPP-005 evaluation failure preserves readable prior evidence and clears on a successful refresh (953.07833ms)
+✔ SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; inferred evidence cannot create a deal, high band or action (8603.853321ms)
+✔ OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not (7609.448452ms)
+✔ OUT-009 dispatch rechecks unchanged content, active operator, lifecycle, current recipient and association before claiming (2494.120888ms)
+✔ OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do (3067.589024ms)
+(node:12097) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty; REPORT-004 explicitly enabled Slack schedules respect DST, hold uncertainty and never resume; email stays paused; INTEGRATE-005 INTEGRATE-009 INTEGRATE-010 INTEGRATE-011 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions; BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send (380040.600197ms)
+✔ SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor-native booking signatures reject tampering, expiry and replay while unknown invitees remain unlinked (22731.307389ms)
+✔ SIGNAL-009 source rotation and disabling atomically refuse an already streaming signed event (31244.868047ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1128267.708344

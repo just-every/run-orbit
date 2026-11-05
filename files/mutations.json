@@ -1,0 +1,66 @@
+[
+  {
+    "id": "M1",
+    "head": "1f597a7c2bc3b0fdee0246b923d7c29ef0dc08f8",
+    "file": "src/core/features/outreach/settlement.ts",
+    "change": {
+      "from": ".bind(state,providerId,messageId??null,failure,at,settlementId",
+      "to": ".bind(state,providerId,messageId??null,null,at,settlementId"
+    },
+    "testFile": "tests/core/source-onboarding.test.ts",
+    "testNamePattern": "source onboarding authenticates",
+    "assertion": "Authenticated history retains the exact mail adapter diagnostic for this outcome",
+    "exit": 1,
+    "status": "killed",
+    "startedAt": "2026-11-05T23:08:51.742492+00:00",
+    "originalSha256": "ee02fc3f34eb1e45a021d4076a1ab84dfaa989f853dd025061852ee01d322017"
+  },
+  {
+    "id": "M2",
+    "head": "1f597a7c2bc3b0fdee0246b923d7c29ef0dc08f8",
+    "file": "src/core/features/outreach/provider-events.ts",
+    "change": {
+      "from": ".bind(next,event.reason??null,at,message.id)",
+      "to": ".bind(next,'Provider delivery failed',at,message.id)"
+    },
+    "testFile": "tests/core/signals-outreach.test.ts",
+    "testNamePattern": "temporary provider blocks",
+    "assertion": "Authenticated history retains the exact signed provider reason",
+    "exit": 1,
+    "status": "killed",
+    "startedAt": "2026-11-05T23:09:40.913539+00:00",
+    "originalSha256": "bb8ff8c7f954e3a654f47de276e9cbc0dc147d48c8ddd36be67366857c74b028"
+  },
+  {
+    "id": "M3",
+    "head": "1f597a7c2bc3b0fdee0246b923d7c29ef0dc08f8",
+    "file": "src/core/features/outreach/provider-events.ts",
+    "change": {
+      "from": "||(event.event==='bounce'&&event.type==='bounce')",
+      "to": ""
+    },
+    "testFile": "tests/core/signals-outreach.test.ts",
+    "testNamePattern": "temporary provider blocks",
+    "assertion": "do_not_contact",
+    "exit": 1,
+    "status": "killed",
+    "startedAt": "2026-11-05T23:10:05.730827+00:00",
+    "originalSha256": "bb8ff8c7f954e3a654f47de276e9cbc0dc147d48c8ddd36be67366857c74b028"
+  },
+  {
+    "id": "M4",
+    "head": "1f597a7c2bc3b0fdee0246b923d7c29ef0dc08f8",
+    "file": "src/core/features/outreach/service.ts",
+    "change": {
+      "from": "message.attempt_count<5",
+      "to": "message.attempt_count<6"
+    },
+    "testFile": "tests/core/outreach-limits.test.ts",
+    "testNamePattern": "transient rate limits",
+    "assertion": "assert.match(failed.failure, /rate limit/)",
+    "exit": 1,
+    "status": "killed",
+    "originalSha256": "9ff7f815b25bfb0fb6d49a6202cb7c7dbe46312c94ca9e0f704c95d8de3c6f05",
+    "note": "The independent dispatch guard still limits calls to five. Rescheduling the fifth failure replaces its rate-limit diagnostic with generic retry expiry; the existing exact exhausted-reason assertion catches that loss. The runner initially expected a count failure and exited 1; this receipt records the actual assertion from its log."
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "door": "/app/opportunities/:id",
+  "screens": [
+    {
+      "width": 1440,
+      "rejectionReason": "synthetic-orbit-f59: sender domain refused",
+      "bounceReason": "synthetic-orbit-f59: recipient mailbox permanently disabled",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "rejectionReason": "synthetic-orbit-f59: sender domain refused",
+      "bounceReason": "synthetic-orbit-f59: recipient mailbox permanently disabled",
+      "overflow": false
+    }
+  ],
+  "submissions": 2,
+  "historyMessages": [
+    {
+      "id": "01M6PYM28CJFSVW9QW53KJQN13",
+      "state": "bounced",
+      "failure": "synthetic-orbit-f59: recipient mailbox permanently disabled"
+    },
+    {
+      "id": "01M6PYM1MKZTCQSKMSX4PCHAEE",
+      "state": "failed",
+      "failure": "synthetic-orbit-f59: sender domain refused"
+    }
+  ],
+  "status": "passed",
+  "candidateHead": "af231f9c987f7e6edc5f5ae537c91d3197d4d758",
+  "runtimeTree": "09b7e3ecc61afc0ea0301e75faccf87fd5b5beec",
+  "proofRuntimeTree": "09b7e3ecc61afc0ea0301e75faccf87fd5b5beec",
+  "binding": "Candidate and browser proof have identical runtime source bytes; candidate changes only contract metadata and its lock after the proof save."
+}

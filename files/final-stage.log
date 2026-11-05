@@ -1,0 +1,5 @@
+-| Published | 27 | 52 | 0 | 79 |
+-| All | 35 | 137 | 32 | 204 |
+-| `OUT-006` | Delivery failure | published | partial | `src/core/features/outreach/service.ts`; `tests/core/outreach-limits.test.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: ambiguous outcome distinct; permanent bounce stops contact; provider reason retained. Asserted: known-unsent retry bounded to five attempts; exhausted failure visible; one failure notification. |
+Parent table lines: 458 staged table lines: 458
+All 204 parent Status rows retained.

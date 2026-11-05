@@ -1,0 +1,38 @@
+TAP version 13
+# (node:16556) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do
+not ok 1 - OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do
+  ---
+  duration_ms: 3412.212864
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/sd-orbit-c-f59/run-orbit/tests/core/signals-outreach.test.ts:3:4854'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'contactable'
+    - 'do_not_contact'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'do_not_contact'
+  actual: 'contactable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f59/run-orbit/tests/core/signals-outreach.test.ts:333:105)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 27560.625916

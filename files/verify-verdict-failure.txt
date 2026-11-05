@@ -1,0 +1,6 @@
+Actual diagnostic excerpts; automatic step environment listings omitted.
+Command: gh run view 42127894928 --repo just-every/run-orbit --job 127597121224 --log-failed
+verify	Require a successful plan and all required work	2026-11-05T23:14:02.1773600Z   SOURCE: failure
+verify	Require a successful plan and all required work	2026-11-05T23:14:02.1773878Z   SHARDS: skipped
+verify	Require a successful plan and all required work	2026-11-05T23:14:02.1858757Z ##[error]Process completed with exit code 1.
+verify	Retain combined routine verdicts (capacity pending)	2026-11-05T23:14:02.4751089Z ##[error]No files were found with the provided path: verification/core-results.jsonl

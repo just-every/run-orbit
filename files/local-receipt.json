@@ -1,0 +1,126 @@
+{
+  "branch": "cloud/sd-orbit-c-f59",
+  "proofHead": "1f597a7c2bc3b0fdee0246b923d7c29ef0dc08f8",
+  "focused": {
+    "exit": 0,
+    "passed": 3,
+    "node": "24.19.0",
+    "authoritative": false
+  },
+  "browser": {
+    "exit": 0,
+    "widths": [
+      1440,
+      390
+    ],
+    "runtimeChanged": false
+  },
+  "typecheck": {
+    "command": "pnpm run typecheck",
+    "node": "22.20.0",
+    "exit": 0
+  },
+  "firstParty": {
+    "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+    "exit": 0
+  },
+  "inventory": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "build": {
+    "command": "npx -y @runeditrun/rer build",
+    "exit": 0,
+    "head": "1f597a7c2bc3b0fdee0246b923d7c29ef0dc08f8"
+  },
+  "native": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/outreach-limits.test.ts tests/core/signals-outreach.test.ts tests/core/source-onboarding.test.ts",
+    "exit": 0,
+    "node": "22.20.0",
+    "passed": 22,
+    "failed": 0,
+    "skipped": 0,
+    "proofHead": "1f597a7c2bc3b0fdee0246b923d7c29ef0dc08f8"
+  },
+  "mechanical": {
+    "lock": {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock; node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    "views": {
+      "write": "node src/base/contract-docs.mjs write",
+      "writeExit": 0,
+      "check": "node src/base/contract-docs.mjs check",
+      "checkExit": 0,
+      "restoredFromMain": [
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ],
+      "restoredCheckExit": 1,
+      "restoredCheckExpected": true
+    },
+    "ledger": {
+      "command": "none; no migration changed",
+      "exit": 0
+    }
+  },
+  "finalFirstParty": {
+    "exit": 0
+  },
+  "mutations": {
+    "killed": 4,
+    "runtimeRestored": true,
+    "runnerExit": 1,
+    "note": "M4 was killed at its exhausted-reason assertion rather than the runner expected count assertion; actual failure is preserved."
+  },
+  "candidateHead": "af231f9c987f7e6edc5f5ae537c91d3197d4d758",
+  "baseHead": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "runtimeTree": "09b7e3ecc61afc0ea0301e75faccf87fd5b5beec",
+  "proofRuntimeTree": "09b7e3ecc61afc0ea0301e75faccf87fd5b5beec",
+  "sourceAndTestDiffSinceProof": "empty",
+  "countsBefore": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32,
+    "total": 204
+  },
+  "countsCandidate": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "statusChange": {
+    "OUT-006": [
+      "partial",
+      "done"
+    ]
+  },
+  "clausesAcceptanceChanged": [],
+  "allParentStatusRowsRetained": true,
+  "changedFiles": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/core/signals-outreach.test.ts",
+    "tests/core/source-onboarding.test.ts"
+  ],
+  "ci": {
+    "runId": 42127894928,
+    "event": "push",
+    "head": "af231f9c987f7e6edc5f5ae537c91d3197d4d758",
+    "statusAtDiscovery": "in_progress",
+    "lastObservedAt": "2026-11-05T23:13:41Z",
+    "pollNotBefore": "2026-11-05T23:18:41Z",
+    "status": "completed",
+    "conclusion": "failure",
+    "rootCause": "Only the contract generator check on restored ACCEPTANCE.md; downstream artifact and verdict failures follow from that stopped step.",
+    "generatedViewException": true,
+    "sourceJob": 127596885698,
+    "verdictJob": 127597121224,
+    "failedJobLogReads": 2,
+    "dispatches": 0,
+    "reruns": 0
+  },
+  "handoff": "READY under the explicit generated-view exception; final CI must rerun after lander regeneration."
+}
