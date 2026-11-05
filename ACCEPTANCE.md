@@ -8,12 +8,12 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 32 | 122 | 24 | 178 |
+| Core | 33 | 121 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 32 | 140 | 32 | 204 |
+| Full target | 33 | 139 | 32 | 204 |
 
-Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
+Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. SIGNAL-003 was proved through the signed ingestion and authenticated Records and Sources routes across a persisted D1 restart from code and tests at commit `fb89b6681391fb8d6d4cce3f17a4f838ec06d748` (4 November 2026); subsequent changes affect only its status record, generated summary counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
 ## Core
 
@@ -254,15 +254,15 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS
 
 #### SIGNAL-003 — Idempotency
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
+Core · published · **done** · Cites BASE-INPUT-001, BASE-OPS-003, BASE-ACCESS-004 · Rules D-2
 
 **Requirement.** Repeated or concurrent delivery of one `(source, source event ID)` produces one signal and one set of downstream evaluations. Reusing that identity with a different payload hash is rejected and recorded as an error on that source.
 
 **Acceptance.**
 1. Deliver identical events concurrently and after restart, then change the payload under the same source identity; retain one effect and a visible conflict.
 
-**Evidence.** `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: replay after restart. Asserted: concurrent delivery returns one identity; one persisted effect; changed payload returns conflict.
+**Evidence.** Acceptance 1: `tests/core/signals-outreach.test.ts` — SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing (concurrent signed deliveries return one signal identity and one complete effect set; the isolated persisted D1 proxy is closed and reopened, routes and repositories are reconstructed against the reacquired database, and unchanged event bytes signed with the current timestamp retain that identity and the complete signal, link, timeline, evaluation, contribution, recommendation, evidence, notification and opportunity inventories; a changed payload returns 409 without domain changes and authenticated Sources shows the conflict); `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`
+**Gap.** None.
 
 #### SIGNAL-004 — Linking
 
