@@ -10075,7 +10075,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "60d42334bf70baa3b4c23332d57a99da7617495553d625600e8f5367301f5b36",
+      "sha256": "86c4652e4fbeec684cd72dfc243d78f4c1e5a3e4caab973574c4ef673f54aa68",
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {
@@ -11123,7 +11123,7 @@
       "executable": false
     },
     "tests/support/today-workspace.ts": {
-      "sha256": "e1be6af959c8c915e7e00e089581c95f3a6fff713c1917021acaba51e3e94ab0",
+      "sha256": "3894fb1f63c6703bae5ebcc8bff4b8f61cfa7d0651210ade7a62014488aeb4f2",
       "executable": false
     },
     "tests/support/twilio-calls.ts": {

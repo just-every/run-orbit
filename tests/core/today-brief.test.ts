@@ -27,8 +27,12 @@ async function captureUnknown(t:TodayApp,subject:string){
  const result=await t.json<{summary:unknown}>('/api/v1/capture/imports',{form},201);return result;
 }
 
-test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence',async()=>{
- const t=await todayApp(db);
+test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence',async(context)=>{
+ context.mock.timers.enable({apis:['Date'],now:Date.parse('2026-11-05T12:00:00Z')});
+ context.after(()=>context.mock.timers.reset());
+ let submissions=0;
+ const outboundMail={send:async()=>{submissions++;return{providerMessageId:'synthetic-orbit-1'};}};
+ const t=await todayApp(db,{outboundMail});
  // A day with nothing: the brief says so plainly.
  const empty=await t.brief();assert.deepEqual([empty.accounts.length,empty.unresolved.length],[0,0]);assert.equal(empty.sinceBasis,'stale-interval');
 
@@ -41,6 +45,7 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
  await captureUnknown(t,'Question about your product');
  const unlinked=(await db.prepare("SELECT signal_id AS id FROM unlinked_signals WHERE resolved_at IS NULL").first<{id:string}>())!.id;
 
+ context.mock.timers.tick(1);
  const first=await t.brief();
  const ours=new Set([acme,bright,cobalt,form,view,oldReply,completed,draft,handoff,unlinked]);
  for(const line of lines(first)){
@@ -97,10 +102,48 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
  assert.equal((await leaving.call('/api/v1/tasks?view=all')).status,401);
  const notifications=await db.prepare("SELECT count(*) n FROM notifications WHERE operator_id=? AND kind='task.assigned' AND event_key LIKE 'task.handover:%'").bind(receiver).first<{n:number}>();assert.equal(notifications!.n,1);
 
+ // An untouched native draft crosses the configured stale deadline without a storage rewrite.
+ const saved=(await t.json<{draft:{id:string;revision:number;createdAt:string;updatedAt:string;subject:string;body:string}}>(`/api/v1/drafts/${draft}`,{},200)).draft;
+ const dueAt=new Date(Date.parse(saved.updatedAt)+first.policy.staleIntervalDays*86400000).toISOString();
+ context.mock.timers.setTime(Date.parse(dueAt)+1);
+ // The original session has expired by this date; continue as the same native operator.
+ const resumed=await todayApp(db,{operatorId:t.actor,outboundMail});
+ const overdue=await resumed.brief();
+ assert.deepEqual((await resumed.json<{draft:typeof saved}>(`/api/v1/drafts/${draft}`,{},200)).draft,saved,'Building Today does not touch the saved draft');
+ assert.deepEqual(byKind(overdue,'draft-unsent').map(line=>[line.id,line.evidence,line.href,line.occurredAt,line.dueAt]),[[`draft-unsent:${draft}`,{type:'draft',id:draft},`/app/drafts/${draft}`,saved.createdAt,dueAt]]);
+ const fresh=await resumed.json<{tasks:{target:string;revision:string;audienceRevision:string;task:{id:string;title:string;description:string;assignee_id:string|null;due_at:string;status:string;source_client_id:string|null}}[]}>(`/delegation/handoffs/${cobalt}`,{},200);
+ const handoffEntry=fresh.tasks.find(entry=>entry.task.id===handoff)!;
+ assert.equal(handoffEntry.task.source_client_id,null,'The overdue handoff was written by a person');
+ const overdueHandoffLine=byKind(overdue,'handoff-due').find(line=>line.evidence.id===handoff)!;
+ assert.deepEqual([overdueHandoffLine.id,overdueHandoffLine.evidence,overdueHandoffLine.href,overdueHandoffLine.title,overdueHandoffLine.occurredAt,overdueHandoffLine.dueAt],[`handoff-due:${handoff}`,{type:'handoff',id:handoff},`/app/opportunities/${cobalt}#handoff-${handoff}`,handoffEntry.task.title,handoffEntry.task.due_at,handoffEntry.task.due_at]);
+ const unrelated=(brief:Brief)=>lines(brief).filter(line=>!line.records.some(record=>record.type==='opportunity'&&record.id===cobalt));
+ await resumed.json('/delegation/handoffs',{body:{operationKey:createId(),operation:'orbit.handoff.upsert',target:handoffEntry.target,expectedRevision:handoffEntry.revision,expectedAudienceRevision:handoffEntry.audienceRevision,content:{title:handoffEntry.task.title,description:handoffEntry.task.description,assigneeId:handoffEntry.task.assignee_id,dueAt:handoffEntry.task.due_at,status:'completed'}}},200);
+ const kept=await resumed.brief();
+ assert.ok(!byKind(kept,'handoff-due').some(line=>line.evidence.id===handoff),'Completing the native handoff clears its overdue line');
+ assert.deepEqual(byKind(kept,'draft-unsent').map(line=>line.evidence.id),[draft],'Completing the handoff leaves the overdue draft visible');
+ assert.deepEqual(unrelated(kept),unrelated(overdue),'Keeping this promise changes no other record’s lines');
+ const scheduledAt=new Date(Date.now()+86400000).toISOString();
+ const preview=await resumed.json<{scheduledAt:string}>(`/api/v1/workbench/drafts/${draft}/approval-preview?scheduledAt=${encodeURIComponent(scheduledAt)}`,{},200);
+ const beforeMessages=await count('SELECT count(*) AS n FROM outbound_messages');
+ const approved=await resumed.json<{id:string;state:string;scheduledAt:string}>(`/api/v1/workbench/drafts/${draft}/approve`,{body:{revision:saved.revision,scheduledAt,scheduledAtConfirmation:preview.scheduledAt}},200);
+ assert.deepEqual([approved.state,approved.scheduledAt],['scheduled',preview.scheduledAt]);
+ assert.deepEqual(await db.prepare('SELECT draft_id,revision,subject,body,first_attempt_at,attempt_count FROM outbound_messages WHERE id=?').bind(approved.id).first(),{draft_id:draft,revision:saved.revision,subject:saved.subject,body:saved.body,first_attempt_at:null,attempt_count:0});
+ const fulfilled=await resumed.brief();
+ assert.ok(!lines(fulfilled).some(line=>line.evidence.id===draft||line.evidence.id===handoff),'Reloading Today clears both completed obligations');
+ assert.deepEqual(unrelated(fulfilled),unrelated(overdue),'Approving this exact draft leaves other records alone');
+ assert.equal(await count('SELECT count(*) AS n FROM outbound_messages'),beforeMessages+1);
+ // The scheduled obligation is also the open opportunity's next action, with its own deadline.
+ assert.ok(!byKind(fulfilled,'next-action-due').some(line=>line.evidence.id===cobalt));
+ context.mock.timers.setTime(Date.parse(approved.scheduledAt)+1);
+ const due=await resumed.brief();
+ assert.deepEqual(byKind(due,'next-action-due').filter(line=>line.evidence.id===cobalt).map(line=>[line.evidence,line.href,line.dueAt]),[[{type:'opportunity',id:cobalt},`/app/opportunities/${cobalt}`,approved.scheduledAt]]);
+ await resumed.json(`/api/v1/workbench/messages/${approved.id}/cancel`,{body:{}},200);
+ assert.ok(!byKind(await resumed.brief(),'next-action-due').some(line=>line.evidence.id===cobalt),'Resolving the scheduled obligation clears the opportunity’s overdue next action');
+ assert.equal(submissions,0,'Keeping the promises and approving future work submits no customer mail');
 });
 
 test('BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks',async(context)=>{
- context.mock.timers.enable({apis:['Date'],now:Date.now()});
+ context.mock.timers.enable({apis:['Date'],now:Date.parse('2026-11-05T12:00:00Z')});
  const config={OPENAI_API_KEY:'test-only',AI_MODEL:'test-model',AI_INPUT_COST_PER_MILLION:'1',AI_OUTPUT_COST_PER_MILLION:'2'};
  const operator=createId(),t=await todayApp(db,{provider:createAIProvider(config),operatorId:operator}),off=await todayApp(db,{operatorId:operator});
  const brief=await t.brief(),account=brief.accounts.find(a=>a.name==='Acme Logistics')!,ids=account.lines.map(l=>l.evidence.id);
