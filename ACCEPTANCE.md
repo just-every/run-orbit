@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 36 | 118 | 24 | 178 |
+| Core | 37 | 117 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 36 | 136 | 32 | 204 |
+| Full target | 37 | 135 | 32 | 204 |
 
 Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -830,15 +830,15 @@ Core · published · **done** · Cites BASE-ROLE-001
 
 #### BRIEF-002 — Overdue promises
 
-Core · published · **partial** · Cites BASE-ROLE-001
+Core · published · **done** · Cites BASE-ROLE-001
 
 **Requirement.** Computed from records when the brief is built: an open internal next action (a handoff task a person wrote or accepted) or an open opportunity's next action past its due time; the latest customer reply on a record with no approved outbound message, captured sent message, logged call or meeting, or completed action on that record since, once the awaiting-response interval (TEAM-003, working days in the workspace timezone) has passed; a meeting completed within the last 120 days with no note, logged call or meeting, completed action, handoff, draft, approved message or captured sent message on its records after it; and a draft on an open opportunity left untouched longer than the workspace stale interval, with no outbound attempt and no customer stop event. A recommendation carries no due time and is never a promise by itself.
 
 **Acceptance.**
 1. Advance past each task/reply/meeting/draft deadline, complete the corresponding obligation and verify overdue lines appear and clear from actual records.
 
-**Evidence.** `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts`
-**Gap.** Unasserted in the carried evidence: overdue task; overdue draft; task completion clears line; draft completion clears line. Asserted: overdue reply; overdue meeting; reply completion clears line; meeting completion clears line.
+**Evidence.** `tests/core/today-brief.test.ts` — TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence (native reply, meeting, handoff, untouched draft and opportunity deadlines appear and clear; exact evidence, due times and links; fresh handoff revision; exact scheduled draft; other-record isolation and zero provider submissions); `tests/delegation-browser/today-brief.test.ts` — BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390
+**Gap.** None.
 
 #### BRIEF-003 — Account summary
 
