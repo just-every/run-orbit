@@ -18,7 +18,7 @@ function messageState(message:DealMessage,tracked:boolean):ReactNode{
  if(message.state==='accepted')return message.deliveredAt?'delivered':tracked?'accepted by the mail provider · delivery not confirmed':'accepted by the mail provider';
  if(message.state==='scheduled'){const at=message.scheduledAt??message.retryAfter;return at?<>will send <time dateTime={at}>{formatDateTime(at)}</time></>:'scheduled';}
  if(message.state==='failed')return `failed · not delivered${message.failure?` · ${message.failure}`:''}`;
- if(message.state==='draft')return 'not sent · the provider refused it';
+ if(message.state==='draft')return <>held before submission · not sent{message.failure?` · ${message.failure}`:''}{message.retryAfter?<> · May be sent after <time dateTime={message.retryAfter}>{formatDateTime(message.retryAfter)}</time></>:null} · Review and approve again to send. No automatic retry.</>;
  if(['queued','reconciling','delivery-unknown'].includes(message.state))return 'approved · the provider has not answered yet';
  return `${label(message.state).toLowerCase()}${message.failure?` · ${message.failure}`:''}`;
 }

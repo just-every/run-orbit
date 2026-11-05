@@ -11,8 +11,8 @@ import { OperatorShell, OperatorState } from "./operator-shell";
 import { useOperatorResource } from "./use-operator-resource";
 import { DraftContentFields } from "../../drafts/ui/draft-content-fields";
 
-interface SubmittedMessage { draftId: string; revision: number; state: string; scheduledAt: string | null;recipientEmail:string;subject:string;body:string }
-const submittedTitles: Record<string, string> = { scheduled: "Scheduled message", failed: "Message not sent", bounced: "Message bounced", "delivery-unknown":"Delivery unresolved", reconciling:"Reconciling provider acceptance", queued:"Submission in progress", delivered:"Delivered message" };
+interface SubmittedMessage { draftId: string; revision: number; state: string; scheduledAt: string | null;failure?:string|null;retryAfter?:string|null;recipientEmail:string;subject:string;body:string }
+const submittedTitles: Record<string, string> = { draft: "Held message", scheduled: "Scheduled message", failed: "Message not sent", bounced: "Message bounced", "delivery-unknown":"Delivery unresolved", reconciling:"Reconciling provider acceptance", queued:"Submission in progress", delivered:"Delivered message" };
 
 export function DraftPage() {
   const { id } = useParams({ from: "/app/drafts/$id" });
@@ -23,7 +23,7 @@ export function DraftPage() {
     const path=draft.opportunityId?`opportunities/${draft.opportunityId}/messages`:`records/contact/${draft.recipientContactId}/mail`;
     const history=await fetch(`/api/v1/workbench/${path}`).then(async response=>{if(!response.ok)throw new Error('Saved message history could not load.');return response.json() as Promise<{messages:SubmittedMessage[];mailProvider?:string}>;});
     // This exact revision was already approved: show what happened to it instead of an editor.
-    const submitted = history.messages.find(message => message.draftId === draft.id && message.revision === draft.revision && !["draft", "cancelled"].includes(message.state)) ?? null;
+    const submitted = history.messages.find(message => message.draftId === draft.id && message.revision === draft.revision && message.state !== "cancelled") ?? null;
     const authorName=draft.authorLabel??operators.find(operator=>operator.id===draft.authorId)?.display_name;
     return { draft, presentation, opportunity, contactContext, submitted, authorName, mailProvider:history.mailProvider };
   }, [id]);
@@ -33,7 +33,7 @@ export function DraftPage() {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const [reviewed, setReviewed] = useState(false);
-  const [justSubmitted, setJustSubmitted] = useState<Pick<SubmittedMessage, "state" | "scheduledAt"> | null>(null);
+  const [justSubmitted, setJustSubmitted] = useState<Pick<SubmittedMessage, "state" | "scheduledAt" | "failure" | "retryAfter"> | null>(null);
 
   useEffect(() => {
     if (resource.data) { setDraft(resource.data.draft); setReviewed(false); }
@@ -83,7 +83,7 @@ export function DraftPage() {
     >
       <section className="operator-draft-editor" style={{display:"block"}} data-testid="draft-editor">
         {draft.preparedByLabel&&<p>Prepared by {draft.preparedByLabel}</p>}
-        {submitted ? <OperatorState>{submitted.state === "scheduled" && submitted.scheduledAt ? <>This message is scheduled for <time dateTime={submitted.scheduledAt}>{formatDateTime(submitted.scheduledAt, presentation)}</time>. To change it, cancel it from the record first.</> : <>{messageStatus(submitted.state)} It can no longer be edited. To write to this customer again, start a new follow-up from the record.</>}</OperatorState> : null}
+        {submitted ? <OperatorState>{submitted.state === "draft" ? <>Held before submission. This approved revision has not been sent. {submitted.failure}{submitted.retryAfter&&<> May be sent after <time dateTime={submitted.retryAfter}>{formatDateTime(submitted.retryAfter, presentation)}</time>.</>} Open Review blocked message on the record to approve this exact content again. Orbit will not retry automatically.</> : submitted.state === "scheduled" && submitted.scheduledAt ? <>This message is scheduled for <time dateTime={submitted.scheduledAt}>{formatDateTime(submitted.scheduledAt, presentation)}</time>. To change it, cancel it from the record first.</> : <>{messageStatus(submitted.state)} It can no longer be edited. To write to this customer again, start a new follow-up from the record.</>}</OperatorState> : null}
         {submitted ? <SentMessage recipient={resource.data.submitted?.recipientEmail??draft.recipientEmail} subject={resource.data.submitted?.subject??draft.subject} body={resource.data.submitted?.body??draft.body} /> : <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}><fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
           <label>Recipient
             <input data-testid="draft-recipient" required onChange={(event) => setDraft({ ...draft, recipientEmail: event.target.value })} type="email" value={draft.recipientEmail} />
@@ -122,14 +122,14 @@ export function DraftPage() {
             <div><dt>Revision</dt><dd>{draft.revision}</dd></div>
           </dl>
         </details>
-      {resource.data.submitted ? null : <DraftApproval mailProvider={resource.data.mailProvider} onSubmitted={message=>{setJustSubmitted(message);resource.reload();}} onOptOutChanged={resource.reload} recipientName={contacts.find(contact=>contact.id===draft.recipientContactId)?.name??undefined} draft={draft} dirty={draft.recipientEmail !== resource.data?.draft.recipientEmail || draft.subject !== resource.data?.draft.subject || draft.body !== resource.data?.draft.body} />}
+      {submitted ? null : <DraftApproval mailProvider={resource.data.mailProvider} onSubmitted={message=>{setJustSubmitted(message);resource.reload();}} onOptOutChanged={resource.reload} recipientName={contacts.find(contact=>contact.id===draft.recipientContactId)?.name??undefined} draft={draft} dirty={draft.recipientEmail !== resource.data?.draft.recipientEmail || draft.subject !== resource.data?.draft.subject || draft.body !== resource.data?.draft.body} />}
     </OperatorShell>
   );
 }
 
-/** A message handed to the mail service is a record, not a form: what was sent, as text. */
+/** An approved revision is a record of exact content, including when held before submission. */
 function SentMessage({ recipient, subject, body }: { recipient: string; subject: string; body: string }) {
-  return <section className="operator-surface operator-draft-form" aria-label="Message as sent" data-testid="sent-message">
+  return <section className="operator-surface operator-draft-form" aria-label="Approved message" data-testid="sent-message">
     <dl className="operator-sent-message">
       <div><dt>Recipient</dt><dd>{recipient}</dd></div>
       <div><dt>Subject</dt><dd>{subject}</dd></div>
