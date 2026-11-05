@@ -8,7 +8,8 @@ export function evaluationStatements(db: D1Database, opportunityId: string, acto
   const open = `EXISTS(SELECT 1 FROM opportunities WHERE id=? AND lifecycle='open')`;
   const weight = 'CASE s.type ' + Object.entries(weights).map(([type,value])=>`WHEN '${type}' THEN ${value}`).join(' ')+' ELSE 0 END';
   const contribution = `CAST(ROUND((${weight})*MAX(0,1-MAX(0,julianday('${at}')-julianday(s.occurred_at))/30)) AS INTEGER)`;
-  const completionGuard=reason.startsWith('Action ')?` AND NOT EXISTS(SELECT 1 FROM recommendations old WHERE old.opportunity_id='${opportunityId.replaceAll("'","''")}' AND old.completed_at IS NOT NULL AND NOT EXISTS(SELECT 1 FROM recommendation_evidence prior WHERE prior.recommendation_id=old.id AND NOT EXISTS(SELECT 1 FROM evaluation_contributions c JOIN signals s ON s.id=c.signal_id WHERE c.evaluation_id='${evaluation}' AND s.confidence='observed' AND s.id=prior.signal_id)) AND NOT EXISTS(SELECT 1 FROM evaluation_contributions c JOIN signals s ON s.id=c.signal_id WHERE c.evaluation_id='${evaluation}' AND s.confidence='observed' AND NOT EXISTS(SELECT 1 FROM recommendation_evidence prior WHERE prior.recommendation_id=old.id AND prior.signal_id=s.id)))`:'';
+  // A shrinking scoring window cannot make a subset of handled evidence new.
+  const completionGuard=reason.startsWith('Action ')?` AND NOT EXISTS(SELECT 1 FROM recommendations old WHERE old.opportunity_id='${opportunityId.replaceAll("'","''")}' AND old.completed_at IS NOT NULL AND NOT EXISTS(SELECT 1 FROM evaluation_contributions c JOIN signals s ON s.id=c.signal_id WHERE c.evaluation_id='${evaluation}' AND s.confidence='observed' AND NOT EXISTS(SELECT 1 FROM recommendation_evidence prior WHERE prior.recommendation_id=old.id AND prior.signal_id=s.id)))`:'';
 
   return [
     db.prepare(`UPDATE evaluations SET status='stale' WHERE opportunity_id=? AND status='current' AND ${open}`).bind(opportunityId,opportunityId),

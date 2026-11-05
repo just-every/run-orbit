@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "560cc30f7aa51363677823a0b420b4942263bc576929d5856a3dab95f0da536e",
+      "sha256": "b8989308cbf0a186eaf0323d4b69616480309ff60b8e29187c4a96b46223f6c3",
       "executable": false
     },
     "DEMO.md": {
@@ -8275,7 +8275,7 @@
       "executable": false
     },
     "src/core/features/workbench/evaluation-repository.ts": {
-      "sha256": "7f3d8c061868df75d1f00299fad4205ce60787d0df4f2aafe52c2f4aff2a8912",
+      "sha256": "108bd392f477414ea8361666a6bf50472485ac87b7bc21288bf103ea79b488ef",
       "executable": false
     },
     "src/core/features/workbench/onboarding.ts": {
@@ -10063,7 +10063,7 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "23a8777b5a7394edcf83ae79133fa6971fabd1a4074a0e78413380be5bb07743",
+      "sha256": "c141a3a1ae2dc740496c19fe67d5ed45da32dd3fb381338ba658b573447bed6e",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
