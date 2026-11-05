@@ -151,7 +151,7 @@ test.describe("authenticated operator UI", () => {
   });
 
   contract("ACTION-004", "the desktop draft editor saves D1 state and surfaces a revision conflict", async ({ browser, page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.setViewportSize({ width: 1440, height: 900 });
     const failures = watchFailures(page);
     const issued = await authenticateOperator(page.context());
     const draftHref = `/app/drafts/${issued.draft.id}`;
@@ -173,7 +173,11 @@ test.describe("authenticated operator UI", () => {
     await expect(metadata.getByRole('link')).toHaveAttribute('href',`/app/opportunities/${issued.draft.opportunityId}`);
     await expect(metadata).toContainText("Created");
     await expect(metadata).toContainText("Last updated");
+    const savedRecipient = ["synthetic-orbit-2", "example.test"].join("@");
+    const savedSubject = "Persisted operator subject";
     const savedBody = `Persisted operator edit ${Date.now()}.`;
+    await page.getByTestId("draft-recipient").fill(savedRecipient);
+    await page.getByTestId("draft-subject").fill(savedSubject);
     await page.getByTestId("draft-body").fill(savedBody);
     const refreshedOpportunity = page.waitForResponse(response => response.url().endsWith(`/api/v1/opportunities/${issued.draft.opportunityId}`) && response.request().method() === "GET");
     await page.getByTestId("save-draft").click();
@@ -181,11 +185,15 @@ test.describe("authenticated operator UI", () => {
     await expect(page.getByText(/Saved revision \d+\. Your changes are saved\./)).toBeVisible();
     await page.waitForLoadState("networkidle");
     await page.reload({ waitUntil: "networkidle" });
+    await expect(page.getByTestId("draft-recipient")).toHaveValue(savedRecipient);
+    await expect(page.getByTestId("draft-subject")).toHaveValue(savedSubject);
     await expect(page.getByTestId("draft-body")).toHaveValue(savedBody);
 
     const newPage = await page.context().newPage();
     const newPageFailures = watchFailures(newPage);
     await newPage.goto(draftHref, { waitUntil: "networkidle" });
+    await expect(newPage.getByTestId("draft-recipient")).toHaveValue(savedRecipient);
+    await expect(newPage.getByTestId("draft-subject")).toHaveValue(savedSubject);
     await expect(newPage.getByTestId("draft-body")).toHaveValue(savedBody);
     await newPage.close();
 
@@ -193,6 +201,8 @@ test.describe("authenticated operator UI", () => {
     await staleEditor.getByTestId("save-draft").click();
     await expect(staleEditor.getByText("The draft changed or is stale. Reload it before editing.")).toBeVisible();
     await staleEditor.getByRole("button", { name: "Reload saved draft" }).click();
+    await expect(staleEditor.getByTestId("draft-recipient")).toHaveValue(savedRecipient);
+    await expect(staleEditor.getByTestId("draft-subject")).toHaveValue(savedSubject);
     await expect(staleEditor.getByTestId("draft-body")).toHaveValue(savedBody);
     await expectNoHorizontalOverflow(page);
     expect(failures).toEqual([]);
