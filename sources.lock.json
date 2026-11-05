@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "664579681cd7317b07b5a31d35ae95f0e3b0ef92f24676bfd15d0ac3251f1127",
+      "sha256": "9d39e5bbf2568e9d0aab1ae285bc4ac1e21985270c38383946ecada3e98359e8",
       "executable": false
     },
     "DEMO.md": {
@@ -10086,6 +10086,10 @@
       "sha256": "fc1788ba0589fba4d19529b2a255fa099dc7275349045835770cb909201df9b0",
       "executable": false
     },
+    "tests/delegation-browser/mail-evidence-journey.mjs": {
+      "sha256": "ab550f1e684d22e1532853094ef85fbc9a6bdf144fcc6a89ff513d70d10895c3",
+      "executable": false
+    },
     "tests/delegation-browser/mention-link.mjs": {
       "sha256": "56e6aaa1ef6a34fac3ccb76f83460d77a7a5ddad02c556fa837768c3ee05df06",
       "executable": false
@@ -10800,6 +10804,10 @@
     },
     "tests/support/browser-calendar-data.ts": {
       "sha256": "e9930eedd13bb77ffc0afdf61fb3e80c7cfcad62e293c047be91fd4e68c984e2",
+      "executable": false
+    },
+    "tests/support/browser-mail-evidence.ts": {
+      "sha256": "601a9a3e49819aec6fa117abe940309156c273bbf3ad1be0359ae8d28d26d843",
       "executable": false
     },
     "tests/support/browser-private-data.ts": {
