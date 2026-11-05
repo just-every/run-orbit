@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "3f609f051ad5165ad34c97d157e9f327d9144eabd6a12a481eaf460b6729200c",
+      "sha256": "3eba2e3efa1bada1c0c6326602138fbdf0a5c13aa6a30bfc2ece52df1c935342",
       "executable": false
     },
     "DEMO.md": {
@@ -11071,7 +11071,7 @@
       "executable": false
     },
     "tests/support/slack-actions-proof.ts": {
-      "sha256": "7a09cb98302791b6bf279b2d81178f80002d4686435df49ef7e1fa25ec5d817f",
+      "sha256": "f73239acf92bb670581d916b99f11f827aa02bf9379e39c0e1643fff047de89a",
       "executable": false
     },
     "tests/support/slack-archive-proof.ts": {
