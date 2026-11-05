@@ -1,3 +1,4 @@
+import {maskForwardAddress,type MailboxConfig} from './forward/address';
 import {captureFences} from './fences';
 import {rememberProviderKeys} from './provider-evidence';
 import {createId} from '../../shared/ids';
@@ -13,7 +14,7 @@ import {capturePrivacy} from './privacy';
 import {CaptureError} from './contracts';
 import {automaticMailAssociation} from './mail-association';
 
-export interface CaptureSource {id:string;name:string;connection_id:string|null;lease?:string}
+export interface CaptureSource {id:string;name:string;connection_id:string|null;lease?:string;mailbox?:MailboxConfig}
 export interface Known {email:string;name:string;role:Participant['role'];contact:{id:string;name:string|null;phone:string|null;company_id:string|null}|null;company:{id:string;name:string}|null}
 export type Outcome =
  | {result:'captured';signalId:string;type:string;attached:boolean;stopped:number;proposals:number;bounce:'permanent'|'transient'|null}
@@ -80,6 +81,7 @@ async function unknownReason(db:D1Database,participants:Participant[],operators:
  * the immediate stop for a reply or booking, and proposals for everything else.
  */
 export async function intake(db:D1Database,source:CaptureSource,fact:Fact,options:{includeUnknown:boolean}):Promise<Outcome>{
+ if(source.mailbox)fact=maskForwardAddress(fact,source.mailbox);
  const ingestion=new IngestionRepository(db),existing=await db.prepare('SELECT id,payload_hash FROM signals WHERE source_id=? AND source_event_id=?').bind(source.id,fact.eventId).first<{id:string;payload_hash:string}>();
  if(existing){
   if(existing.payload_hash===fact.hash){if(fact.kind==='event'&&fact.providerKeys)await rememberProviderKeys(db,source,existing.id,fact.providerKeys);return {result:'replayed'};}

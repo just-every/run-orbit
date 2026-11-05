@@ -21,7 +21,7 @@ export async function receiveForwarded(db:D1Database,security:SourceSecurity|und
  if(new TextEncoder().encode(input.raw).byteLength>MAX_FORWARDED_BYTES){await countOversized(db,live.source);return {result:'oversized'};}
  const confirmation=forwardingConfirmation(input.raw);
  if(confirmation){await rememberConfirmation(db,security,live,confirmation);return {result:'confirmation'};}
- const summary=await captureItems(db,live.source,[{kind:'message',raw:input.raw}],{includeUnknown:false});
+ const summary=await captureItems(db,{...live.source,mailbox:config},[{kind:'message',raw:input.raw}],{includeUnknown:false});
  // The owner sent this message on purpose: say on the source why it was not stored.
  const reason=Object.keys(summary.skipReasons)[0];
  await db.prepare("UPDATE capture_sources SET last_error=?,last_error_at=?,updated_at=? WHERE id=? AND connection_id IS ? AND state<>'disconnected'")
