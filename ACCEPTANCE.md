@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 34 | 120 | 24 | 178 |
+| Core | 35 | 119 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 34 | 138 | 32 | 204 |
+| Full target | 35 | 137 | 32 | 204 |
 
 Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -1166,7 +1166,7 @@ Core · target · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-00
 
 #### RECORD-023 — Collaborator entry grants and mention access
 
-Core · target · **partial** · From RECORD-017 · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · target · **done** · From RECORD-017 · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** A collaborator can read a record’s notes, logged calls, meetings, task notes and handoffs only through its live Include notes, calls and meetings grant, initially off. Whoever shares changes the option explicitly; the installation owner acts for the administrator until team roles ship. Grant creation and option changes record actor and old/new value. Saving a mention of someone without that access names the person and asks the author to share explicitly, enable the option or remove the mention. The read-only Shared records view opens the exact entry and never another record’s entries. The collaborator’s notification inbox and Mentions view contain only their own currently permitted mentions and unread count. Revocation or expiry hides them without deleting them; a new grant reveals them again.
 
@@ -1175,8 +1175,8 @@ Core · target · **partial** · From RECORD-017 · Cites BASE-INPUT-001, BASE-R
 2. Grant creation and each change to Include notes, calls and meetings are audited with actor and old/new value; a mention never grants access or turns the option on.
 3. A collaborator reads only their own currently accessible mention notices and unread count, never another operator’s notifications or counts.
 
-**Evidence.** `src/core/features/records/mentions.ts`; `src/core/features/records/manual.ts`; `src/core/features/access/grant-entries.ts`; `src/core/features/notifications/collaborator.ts`; `src/core/features/records/shared-entries.ts`; `src/core/features/access/shared-entries.tsx`; `src/core/features/operator/ui/mention-field.tsx`; `tests/core/today-brief.test.ts`; `tests/evidence/contract/RECORD-017/`
-**Gap.** Unasserted in the carried evidence: browser proof at 1440; browser proof at 390. Asserted: own notification opens exact Shared entry; entries-off save asks first; revocation hides notice; fresh grant reveals notice; grant creation actor and initial option; option change actor and old/new values; mention does not grant access; mention does not turn option on; only own notifications and unread count; other operators have excluded notices; cannot read another record’s entries.
+**Evidence.** `src/core/features/records/mentions.ts`; `src/core/features/records/manual.ts`; `src/core/features/access/grant-entries.ts`; `src/core/features/notifications/collaborator.ts`; `src/core/features/records/shared-entries.ts`; `src/core/features/access/shared-entries.tsx`; `src/core/features/operator/ui/mention-field.tsx`; `tests/core/today-brief.test.ts`; `tests/evidence/contract/RECORD-017/`; `tests/delegation-browser/records-layout.test.ts` — emitted Worker record and NOW lists wrap full valid long names; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390; `tests/delegation-browser/private-entries-journey.mjs` — privateEntriesJourney: entries-off named request, explicit owner enable, exact read-only Shared entry, own mentions and unread count, revoked access and the same notice after regrant at both widths; `tests/core/today-brief.test.ts` — BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a cited plan with unresolved attendees shown, notes saved as one editable note, and plan lines become next actions without sending anything; a mention notifies once, asks to share the deal with its notes, calls and meetings before notifying a collaborator, who then reads only their own mention and opens the entry on Shared records until the grant is revoked; it withdraws on delete and never reaches AI or a customer
+**Gap.** None.
 
 #### RECORD-024 — Mention delivery through personal channels
 
