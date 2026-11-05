@@ -949,7 +949,7 @@ Core · published · **partial** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE
 **Acceptance.**
 1. Request and confirm a native magic link, test unknown/inactive and expired/reused links, sign out and exercise optional linked identity without admitting new operators.
 
-**Evidence.** `src/core/features/identity/index.ts`; `tests/core/identity.test.ts`; `tests/core/prior-auth-upgrade.test.ts`
+**Evidence.** `src/core/features/identity/index.ts`; `tests/core/identity.test.ts`; `tests/core/prior-auth-upgrade.test.ts`; `tests/core/provider-redirects.test.ts` — PUBLIC-004 OPS-001 required domains deny magic-link and recovery sessions, uninvited OIDC changes no identities, while selected OIDC, owner recovery and unrestricted email remain admitted, using `tests/support/sign-in-domains.ts` (uninvited callback refuses with unchanged complete populated operator, binding, session and provenance inventories and no Orbit session cookie)
 **Gap.** Unasserted in the carried evidence: expired link refused; linked provider admits no new operator. Asserted: valid native link creates current person session; unknown/inactive response matches; single-use link signs in only once; sign-out revokes session.
 
 ### Data
