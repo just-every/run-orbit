@@ -6611,7 +6611,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/mail-evidence.tsx": {
-      "sha256": "8e0c4fe48a554aa3a3da0102ef1b11c7eb49679a54b675647e654faee97710e5",
+      "sha256": "1a1e158219d333e859bd7286fcbf1455b9e321e9ef3e18c05e16d97294d13219",
       "executable": false
     },
     "src/core/features/operator/ui/mail-sender-setup.tsx": {
@@ -6763,7 +6763,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record-mail.tsx": {
-      "sha256": "feac658a69b26f97240f2c3c09b02c62a4e5d6dcbd8cc37a3cbbf4b34a47aedd",
+      "sha256": "0fa527365152050ce1d725781a4290f586a04d502a70a1a6866c2de0afc20278",
       "executable": false
     },
     "src/core/features/operator/ui/record-owner.css": {
@@ -6815,7 +6815,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-activity.tsx": {
-      "sha256": "429ed31cb310f7b9089f5990883e3d60379896e0dbac74f5b5a871de5423a18f",
+      "sha256": "843e30745d312f446183f85a806ae8b14675070c526add906e415b872dfa0108",
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-context.tsx": {
@@ -6899,7 +6899,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/timeline-entries.tsx": {
-      "sha256": "a5a29eb89a838d9d0c01cdb27b4d3bc964f12372bd25d6881f42bf77b79e5fb7",
+      "sha256": "b9784aa78917ce7253300fedb294e5a7054bc6dfe1741ba84308eb44f5621efd",
       "executable": false
     },
     "src/core/features/operator/ui/record/use-refresh.ts": {
@@ -9979,7 +9979,7 @@
       "executable": false
     },
     "tests/core/launch-reply-authority.test.ts": {
-      "sha256": "475d36e08c5c3301bfbfe964202415b5d44e3f6606555abf4fcd2ed9dd5ff84a",
+      "sha256": "edb118a9e311f970e1e21b4f994cdb63d20891bdb6eb53d72fcd22c4730a5e8f",
       "executable": false
     },
     "tests/core/launch-reply-sender.test.ts": {
@@ -10015,7 +10015,7 @@
       "executable": false
     },
     "tests/core/outbound-boundaries.test.ts": {
-      "sha256": "713a988c477af1b783a87795b25ff2388076efa7190623b69c7dcf037d21bdf6",
+      "sha256": "d62050e9317805d9e777f7c831e397013dee71befe558d9c751d9244bbb43170",
       "executable": false
     },
     "tests/core/outreach-limits.test.ts": {
@@ -10103,7 +10103,7 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {
-      "sha256": "12cb2f6398427416b2b400c344c1ee0de621517c44b5e4518c5631ee3a941ba3",
+      "sha256": "1c611fddb2e39c8bbe7d38c2d7586f563631ae7858e189f046e873403d32ce7f",
       "executable": false
     },
     "tests/delegation-browser/related-records.test.ts": {

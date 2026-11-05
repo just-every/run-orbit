@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
+import {createHash} from 'node:crypto';
 import {createAIProvider} from '../../src/core/features/assistance/provider';
 import {createOutboundMail} from '../../src/core/platform/outbound-mail';
 import manifest from '../../seed.json' with {type:'json'};
@@ -11,10 +12,10 @@ import {WorkbenchRepository} from '../../src/core/features/workbench/repository'
 import {OutreachService} from '../../src/core/features/outreach/service';
 import type {OutboundMessage} from '../../src/core/features/outreach/approval-repository';
 import {databaseDigest} from '../support/stop-attribution';
-test('OUT-020 OUT-029 OUT-032 managed opt-out is approval-bound, suppresses only its recipient and stops replayed dispatch',async context=>{
- const actual=globalThis.fetch,requests:{url:string;body:any}[]=[];
+test('OUT-015 OUT-020 OUT-029 OUT-032 untracked customer mail preserves reviewed URLs and managed opt-out is approval-bound, suppresses only its recipient and stops replayed dispatch',async context=>{
+ const actual=globalThis.fetch,requests:{url:string;method:string|undefined;body:any}[]=[];
  const relayUrl='https://managed-mail.example.test/send';
- globalThis.fetch=async(input,init)=>{const url=String(input);requests.push({url,body:JSON.parse(String(init?.body??'{}'))});if(url===relayUrl)return Response.json({messageId:`<relay-${requests.length}@example.test>`},{status:202});if(url==='https://api.sendgrid.com/v3/mail/send')return new Response(null,{status:202,headers:{'x-message-id':'test-provider-receipt'}});if(url==='https://api.openai.com/v1/responses')return Response.json({status:'completed',usage:{input_tokens:1,output_tokens:1,input_tokens_details:{cached_tokens:0}},output:[{content:[{type:'output_text',text:JSON.stringify({explanation:'Observed request.',subject:'Request',body:'Thank you for your request.',evidenceIds:['test-evidence']})}]}]});throw new Error('Unexpected outbound target');};
+ globalThis.fetch=async(input,init)=>{const url=String(input);requests.push({url,method:init?.method,body:JSON.parse(String(init?.body??'{}'))});if(url===relayUrl)return Response.json({messageId:`<relay-${requests.length}@example.test>`},{status:202});if(url==='https://api.sendgrid.com/v3/mail/send')return new Response(null,{status:202,headers:{'x-message-id':'test-provider-receipt'}});if(url==='https://api.openai.com/v1/responses')return Response.json({status:'completed',usage:{input_tokens:1,output_tokens:1,input_tokens_details:{cached_tokens:0}},output:[{content:[{type:'output_text',text:JSON.stringify({explanation:'Observed request.',subject:'Request',body:'Thank you for your request.',evidenceIds:['test-evidence']})}]}]});throw new Error('Unexpected outbound target');};
  try{
   await createAIProvider({OPENAI_API_KEY:'test-key',AI_MODEL:'test-model',AI_INPUT_COST_PER_MILLION:'0.2',AI_OUTPUT_COST_PER_MILLION:'1.2'})!.generate({evidence:[{id:'test-evidence',subject:'Test-owned request'}]});
   await createOutboundMail({SENDGRID_API_KEY:'test-key',MAIL_FROM:'test@example.invalid',MAIL_REPLY_TO:'reply@example.invalid',SENDGRID_UNSUBSCRIBE_GROUP_ID:'1'})!.send({id:'test-id',recipient_email:'customer@example.invalid',subject:'Reviewed test subject',body:'Reviewed test body'});
@@ -36,20 +37,53 @@ test('OUT-020 OUT-029 OUT-032 managed opt-out is approval-bound, suppresses only
    const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:createOutboundMail({SENDGRID_API_KEY:'test-key',MAIL_FROM:'test@example.invalid',MAIL_REPLY_TO:'reply@example.invalid',SENDGRID_UNSUBSCRIBE_GROUP_ID:'7',DB:db})});
    const tokens=new Map([[owner,(await deps.auth.createSession(owner)).token],[rep,(await deps.auth.createSession(rep)).token]]);
    const call=(target:typeof app)=>async<T=any>(user:string,path:string,body?:unknown)=>{const response=await target.request(`https://orbit.test/api/v1/${path}`,{method:body===undefined?'GET':'POST',headers:{Cookie:`__Host-orbit_session=${tokens.get(user)}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});return {status:response.status,body:await response.json() as T};},api=call(app);
-   const draft=async(subject:string)=>(await api<{id:string}>(rep,`workbench/opportunities/${deal.id}/drafts`,{contactId:contact,subject,body:'Reviewed body'})).body.id;
+   const customerUrls=['https://customer.example.test/proposal/synthetic-orbit-41?plan=annual&seats=12#pricing','https://docs.example.test/guides/synthetic-orbit-42?format=plain'];
+   const untrackedBody=`The proposal we discussed: ${customerUrls[0]}\nImplementation notes: ${customerUrls[1]}`;
+   const draft=async(subject:string,body='Reviewed body')=>{
+    const result=await api<{id:string}>(rep,`workbench/opportunities/${deal.id}/drafts`,{contactId:contact,subject,body});
+    assert.equal(result.status,201);return result.body.id;
+   };
+   const assertUntracked=async(messageId:string,subject:string,provider:'sendgrid'|'rer',carries=false)=>{
+    const message=(await db.prepare('SELECT * FROM outbound_messages WHERE id=?').bind(messageId).first<OutboundMessage>())!;
+    assert.equal(message.subject,subject);assert.equal(message.body,untrackedBody,'Approval retains exactly the body saved through native HTTP');
+    const request=requests.findLast(request=>request.body.subject===subject)!,wire=request.body;
+    assert.equal(request.url,provider==='sendgrid'?'https://api.sendgrid.com/v3/mail/send':relayUrl);
+    assert.equal(request.method,'POST');assert.equal(wire.subject,subject);
+    let content:string[];
+    if(provider==='sendgrid'){
+     assert.deepEqual(wire.personalizations,[{to:[{email:message.recipient_email}]}]);
+     assert.deepEqual(wire.content,[{type:'text/plain',value:untrackedBody}],'Every serialized part preserves customer URLs; no HTML pixel or redirect is added');
+     assert.deepEqual(wire.tracking_settings,{click_tracking:{enable:false,enable_text:false},open_tracking:{enable:false},ganalytics:{enable:false},subscription_tracking:{enable:false}},'Account-level provider tracking cannot override untracked approval');
+     assert.deepEqual(wire.custom_args,{rer_product:'orbit',rer_delivery_id:message.idempotency_key},'Only product and delivery correlation are sent, without engagement tokens');
+     assert.deepEqual(wire.headers,{'Message-ID':message.message_id,...(message.reference_ids?{References:message.reference_ids,'In-Reply-To':message.reference_ids}:{})},'Delivery and genuine thread identities are retained without engagement tokens');
+     assert.deepEqual(wire.asm,carries?{group_id:7}:undefined,'Approved opt-out is independent of engagement tracking');
+     content=wire.content.map((part:{value:string})=>part.value);
+    }else{
+     const cap=await db.prepare('SELECT token FROM outbound_opt_out_capabilities WHERE message_id=?').bind(messageId).first<{token:string}>();
+     assert.equal(Boolean(cap),carries);
+     const optOut=carries?`https://orbit.test/unsubscribe/${cap!.token}`:undefined;
+     const messageKey=`orbit:${createHash('sha256').update(message.idempotency_key).digest('hex')}`;
+     assert.deepEqual(wire,{to:message.recipient_email,subject,text:untrackedBody+(optOut?`\n\nUnsubscribe: ${optOut}`:''),messageKey,...(message.reference_ids?{references:message.reference_ids,inReplyTo:message.reference_ids.trim().split(/ +/).at(-1)}:{}),...(optOut?{listUnsubscribe:`<${optOut}>`,listUnsubscribePost:true}:{})},'Every relay part and metadata field contains only approved content, opt-out, thread and delivery correlation');
+     assert.equal(message.message_id,message.provider_message_id,'The managed receipt remains the delivery identity');
+     content=[wire.text];
+    }
+    for(const part of content)for(const url of customerUrls)assert.equal(part.split(url).length-1,1,'Each ordinary customer URL reaches the wire once, unchanged and without a tracking query');
+   };
    const delivered=()=>requests.at(-1)!.body;
    const review=async(id:string)=>{const row=(await db.prepare('SELECT * FROM drafts WHERE id=?').bind(id).first<any>())!;assert.equal(row.is_stale,1,'Changing opt-out makes the reviewed draft stale');assert.equal((await api(rep,`workbench/drafts/${id}/review`,{revision:row.revision,reviewedUpdatedAt:row.updated_at,recipientContactId:contact,recipientEmail:row.recipient_email,subject:row.subject,body:row.body})).status,200);return row.revision+1;};
    const settings=await api<{types:{type:string;carries:boolean;basis:string}[]}>(rep,'settings/opt-out');
    assert.deepEqual(settings.body.types.map(t=>[t.type,t.carries]),[['one_to_one',false],['sequence',true],['workflow',true]],'A new installation starts one-to-one off and sequence and workflow email on');
-   const plain=await draft('Default one-to-one');assert.equal((await api(rep,`workbench/drafts/${plain}/opt-out`)).body.carries,false);
-   assert.equal((await api(rep,`workbench/drafts/${plain}/approve`,{revision:1})).body.state,'accepted');assert.equal(delivered().asm,undefined,'No unsubscribe group, so no List-Unsubscribe header and no footer');
+   const plain=await draft('Default one-to-one',untrackedBody);assert.equal((await api(rep,`workbench/drafts/${plain}/opt-out`)).body.carries,false);
+   const plainApproval=await api(rep,`workbench/drafts/${plain}/approve`,{revision:1});assert.equal(plainApproval.status,200);assert.equal(plainApproval.body.state,'accepted');assert.equal(delivered().asm,undefined,'No unsubscribe group, so no List-Unsubscribe header and no footer');
+   await assertUntracked(plainApproval.body.id,'Default one-to-one','sendgrid');
    assert.equal((await api(rep,'settings/opt-out/one_to_one',{carries:true,removalAllowed:true})).status,403);
    const pending=await draft('Reviewed before the owner changed the setting');
    assert.equal((await api(owner,'settings/opt-out/one_to_one',{carries:true,removalAllowed:true})).status,200);
    assert.equal((await db.prepare('SELECT stale_reason FROM drafts WHERE id=?').bind(pending).first<{stale_reason:string}>())!.stale_reason,'Opt-out setting changed','A draft reviewed under the old setting needs review again');
    assert.equal((await api(rep,`workbench/drafts/${pending}/approve`,{revision:1})).status,409);
    const changed=(await db.prepare("SELECT actor_id,details_json FROM audit_entries WHERE action='opt_out.setting.changed' AND entity_id='one_to_one'").first<{actor_id:string;details_json:string}>())!;assert.equal(changed.actor_id,owner);assert.deepEqual(JSON.parse(changed.details_json),{previous:{carries:false,removalAllowed:true},current:{carries:true,removalAllowed:true}});
-   const opted=await draft('Opted in by the owner');assert.equal((await api(rep,`workbench/drafts/${opted}/approve`,{revision:1})).body.state,'accepted');assert.deepEqual(delivered().asm,{group_id:7});
+   const opted=await draft('Opted in by the owner',untrackedBody),optedApproval=await api(rep,`workbench/drafts/${opted}/approve`,{revision:1});assert.equal(optedApproval.status,200);assert.equal(optedApproval.body.state,'accepted');assert.deepEqual(delivered().asm,{group_id:7});
+   await assertUntracked(optedApproval.body.id,'Opted in by the owner','sendgrid',true);
    const scheduled=await draft('Scheduled under opt-out on'),bound=(await api<{id:string}>(rep,`workbench/drafts/${scheduled}/approve`,{revision:1,scheduledAt:'2030-01-08T10:00:00.000Z'})).body.id;
    assert.equal((await api(owner,'settings/opt-out/one_to_one',{carries:false,removalAllowed:false})).status,200);
    assert.deepEqual((await api(owner,'settings/opt-out')).body.approvedUnsent,{carrying:1,notCarrying:0,approvedBeforeSetting:0},'Settings count approved unsent messages bound to the old state');
@@ -103,11 +137,12 @@ test('OUT-020 OUT-029 OUT-032 managed opt-out is approval-bound, suppresses only
     const wire=requests.filter(request=>request.url===relayUrl).findLast(request=>request.body.subject===subject)!.body;
     assert.equal(wire.text,body);assert.equal(Object.hasOwn(wire,'listUnsubscribe'),false);assert.equal(Object.hasOwn(wire,'listUnsubscribePost'),false);
    };
-   const freshManaged=await draft('Managed reviewed opt-out');
+   const freshManaged=await draft('Managed reviewed opt-out',untrackedBody);
    const reviewState=(await managed(rep,`workbench/drafts/${freshManaged}/opt-out`)).body;
    assert.equal(reviewState.carries,true);assert.equal(reviewState.refusal,null);assert.equal(reviewState.marking,null);
    const approved=await approve(freshManaged);assert.equal(approved.state,'accepted');
-   const {cap,url}=await assertWire(approved.id,'Managed reviewed opt-out');assert.equal(cap.contact_id,contact);
+   await assertUntracked(approved.id,'Managed reviewed opt-out','rer',true);
+   const {cap,url}=await assertWire(approved.id,'Managed reviewed opt-out',untrackedBody);assert.equal(cap.contact_id,contact);
    const countBefore=(await db.prepare('SELECT count(*) AS n FROM outbound_opt_out_capabilities').first<{n:number}>())!.n,sendsBeforeReapproval=relaySends();
    assert.equal((await managed(rep,`workbench/drafts/${freshManaged}/approve`,{revision:1})).status,409);
    assert.equal((await managed(rep,`workbench/drafts/${pending}/approve`,{revision:1})).status,409);
@@ -130,7 +165,7 @@ test('OUT-020 OUT-029 OUT-032 managed opt-out is approval-bound, suppresses only
    const switchedDraft=await draft('SendGrid approval keeps opt-out'),switched=(await api<{id:string}>(rep,`workbench/drafts/${switchedDraft}/approve`,{revision:1,scheduledAt:'2030-01-10T10:00:00.000Z'})).body.id;
    assert.equal(await db.prepare('SELECT token FROM outbound_opt_out_capabilities WHERE message_id=?').bind(switched).first(),null);
    assert.equal((await managed(owner,'settings/opt-out/one_to_one',{carries:false,removalAllowed:true})).status,200);
-   const offDraft=await draft('Managed approval keeps opt-out off'),off=await approve(offDraft,'2030-01-10T10:00:00.000Z');
+   const offDraft=await draft('Managed approval keeps opt-out off',untrackedBody),off=await approve(offDraft,'2030-01-10T10:00:00.000Z');
    assert.equal(await db.prepare('SELECT token FROM outbound_opt_out_capabilities WHERE message_id=?').bind(off.id).first(),null);
    assert.equal((await managed(owner,'settings/opt-out/one_to_one',{carries:true,removalAllowed:true})).status,200);
    const olderDraft=await draft('Approval before opt-out bindings'),older=(await api<{id:string}>(rep,`workbench/drafts/${olderDraft}/approve`,{revision:1,scheduledAt:'2030-01-10T10:00:00.000Z'})).body.id;
@@ -144,7 +179,9 @@ test('OUT-020 OUT-029 OUT-032 managed opt-out is approval-bound, suppresses only
     assert.equal((await db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(id).first<{state:string}>())!.state,'accepted');
     assert.equal((await assertWire(id,subject)).cap.contact_id,contact);
    }
-   assertPlain('Managed approval keeps opt-out off');assert.equal(await db.prepare('SELECT token FROM outbound_opt_out_capabilities WHERE message_id=?').bind(off.id).first(),null);
+   assertPlain('Managed approval keeps opt-out off',untrackedBody);
+   await assertUntracked(off.id,'Managed approval keeps opt-out off','rer');
+   assert.equal(await db.prepare('SELECT token FROM outbound_opt_out_capabilities WHERE message_id=?').bind(off.id).first(),null);
    assert.deepEqual(await db.prepare('SELECT state,failure FROM outbound_messages WHERE id=?').bind(oldTransport.id).first(),{state:'failed',failure:refusal},'A legacy transport marking still requires fresh review unless it is a reply');
    assert.equal((await managed(rep,`workbench/opportunities/${secondDeal.id}/events`,{type:'email.replied',subject:'Renewal question',occurredAt:new Date().toISOString(),eventId:'other-buyer-reply',contactId:secondContact})).status,201);
    const oldReplyDraft=await otherDraft('Legacy uncarried reply'),oldReply=await approve(oldReplyDraft,'2030-01-11T10:00:00.000Z');
@@ -185,6 +222,7 @@ test('OUT-020 OUT-029 OUT-032 managed opt-out is approval-bound, suppresses only
    assert.equal((await db.prepare('SELECT count(*) AS n FROM outbound_opt_out_capabilities WHERE contact_id=?').bind(contact).first<{n:number}>())!.n,0,'Public contact erasure removes every capability for that recipient');
    for(const method of ['GET','POST']){const response=await managedApp.request(url,{method});assert.equal(response.status,404);assert.equal(await response.text(),generic404);}
    assert.equal((await managedApp.request(otherWire.url)).status,200,'Erasing one person preserves another person’s capability');
+   assert.ok(requests.every(request=>[relayUrl,'https://api.sendgrid.com/v3/mail/send','https://api.openai.com/v1/responses'].includes(request.url)),'No additional collector receives a request');
   }finally{context.mock.timers.reset();await p.dispose();}
  }finally{globalThis.fetch=actual;}
 });

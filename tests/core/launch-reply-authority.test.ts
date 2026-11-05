@@ -7,7 +7,7 @@ import {archiveHash} from '../../src/core/features/records/archive-schema';
 import {generateKeyPairSync,sign} from 'node:crypto';
 import {createMailEventRoutes} from '../../src/core/features/outreach/provider-routes';
 
-test('OUT-015 automatic/foreign replies never stop follow-up; inferred reports and untracked opens stay distinct; AGENT-002 reported opens without a reply become an inferred, cited deal risk',async()=>{
+test('OUT-015 automatic and foreign replies never stop follow-up; inferred reports and untracked opens stay distinct; AGENT-002 reported opens without a reply become an inferred, cited deal risk',async()=>{
  const f=await launchFixture();try{
   const a=await f.customer(),b=await f.customer(),sent=await f.message(a.contactId,a.opportunityId,'queued'),scheduled=await f.message(a.contactId,a.opportunityId),post=signedReplies(f.db);
   const foreign='visitor@elsewhere.test';

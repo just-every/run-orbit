@@ -20,8 +20,10 @@ import { sampleData } from '../fixtures/sample-data';
 import { sessionCookieName } from '../support/test-auth';
 import { nativeLongRecordLayoutJourney } from './records-layout-journey.mjs';
 import { identityVars } from '../support/worker-identity.mjs';
+import {browserMailEvidenceData} from '../support/browser-mail-evidence';
+import {mailEvidenceJourney} from './mail-evidence-journey.mjs';
 
-test('emitted Worker record and NOW lists wrap full valid long names; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390', async () => {
+test('emitted Worker record and NOW lists wrap full valid long names; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390; OUT-015 mail evidence distinguishes untracked sends and inferred reports', async () => {
   const fixture = await isolatedDatabase();
   const port = Number(process.env.ORBIT_RECORD_LAYOUT_PORT ?? 8728);
    const origin = `https://127.0.0.1:${port}`;
@@ -41,6 +43,7 @@ test('emitted Worker record and NOW lists wrap full valid long names; an invited
     const held=await caller.app.request(callback,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-Twilio-Signature':signature},body:heldForm});if(held.status!==200)throw new Error('Held-call browser fixture failed.');
     const calendarData=await browserCalendarData(fixture.db,sampleData.operators[0].id);
     const privateData=await browserPrivateData(fixture.db,sampleData.operators[0].id);
+    const mailData=await browserMailEvidenceData(fixture.db,sampleData.operators[0].id);
     const certificate=await customCertificate(fixture.directory);await fixture.close();
     const secret=(value:string)=>({type:'secret_text' as const,value});
     const worker=await runtime.startWorker({config:join(process.cwd(),'dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries({...identityVars(origin),ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)}).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:fixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port,secure:true,httpsKeyPath:certificate.keyPath,httpsCertPath:certificate.certPath},origin:{secure:true},outboundService:async request=>{
@@ -51,6 +54,7 @@ test('emitted Worker record and NOW lists wrap full valid long names; an invited
     browser = await chromium.launch({headless:true,executablePath:process.env.ORBIT_CHROMIUM_EXECUTABLE,args:['--no-sandbox','--use-mock-keychain','--password-store=basic',...certificateTrust(certificate.cert)]});
     const context = await browser.newContext({ baseURL: origin, ignoreHTTPSErrors:true, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
     // Emitted documents and HTTP routes share one Worker; only Twilio's outbound network edge is faked.
+    await mailEvidenceJourney(await context.newPage(),mailData);
     await callingJourney(await context.newPage(),{fetch:worker.fetch.bind(worker),origin,provider:callingProvider,accountSid:callingAccount,token:callingToken});
     await calendarJourney(await context.newPage(),calendarData);
     const collaboratorContext=await browser.newContext({baseURL:origin,ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:privateData.cookie}});

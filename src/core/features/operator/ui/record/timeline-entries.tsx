@@ -2,7 +2,7 @@ import type {ReactNode} from 'react';
 import {AuditValue} from '../audit-value';
 import {EntryPrivacy} from '../entry-privacy';
 import {DeleteTimelineEntry} from '../delete-timeline-entry';
-import {mailEvidenceTitle} from '../mail-evidence';
+import {mailEvidenceTitle,MailEvidenceNote,untrackedMailLabel} from '../mail-evidence';
 import {formatDateTime,label,sourceLabel} from '../formatters';
 import type {RecordKind} from '../records-api';
 import {Opens,type ActivityEntry} from './activity';
@@ -24,10 +24,12 @@ export function timelineEntry({line,kind,recordId,contactNames,reload,onChanged}
  if(line.kind==='opportunity.evaluated'||line.kind==='draft.created')return null;
  const payload=line.payload,type=line.signalType??text(payload.type)??'',by=line.actorType==='operator'&&line.actorName?`Recorded by ${line.actorName}`:`From ${sourceLabel(line.actorName??line.sourceName)}`;
  let kindWord=words[line.kind]??(line.kind.includes('.')&&/^(email|meeting|form|page|content)\./.test(line.kind)?signalKind(line.kind):label(line.kind));
+ if(['provider.open','email.opened'].includes(type||line.kind))kindWord='Open report';
+ if((type||line.kind)==='provider.click')kindWord='Click report';
  let title:ReactNode=text(payload.subject)||firstLine(text(payload.text))||mailEvidenceTitle(line.kind,type||undefined),rest:ReactNode=null,tools:ReactNode=null;
  if(line.kind==='signal.recorded'){kindWord=signalKind(type||'email.replied');rest=by;}
  else if(/^(email|meeting|form|page|content)\./.test(line.kind)){rest=text(payload.body)?quote(text(payload.body)):by;}
- else if(line.kind==='message.accepted'){const recipient=text(payload.recipient);rest=`To ${contactNames.get(recipient.toLowerCase())??(recipient||'the recipient')} · accepted by the mail provider`;}
+ else if(line.kind==='message.accepted'){const recipient=text(payload.recipient);rest=`To ${contactNames.get(recipient.toLowerCase())??(recipient||'the recipient')} · accepted by the mail provider · ${untrackedMailLabel}`;}
  else if(line.kind==='action.completed'){const skipped=text(payload.outcome)==='skipped';kindWord=skipped?'Skipped':'Done';title=skipped?'Skipped the next action':'Marked the next action done';rest=text(payload.note)||by;}
  else if(line.kind==='owner.changed'){const before=text(payload.previousOwnerName),after=text(payload.currentOwnerName);title=before||after?`Owner: ${before||'Unassigned'} → ${after||'Unassigned'}`:'Owner changed';rest=by;}
  else if(line.kind==='stage.changed'){title=`${text(payload.previousStageName)||'A stage'} → ${text(payload.currentStageName)||'a stage'}`;rest=by;}
@@ -41,5 +43,5 @@ export function timelineEntry({line,kind,recordId,contactNames,reload,onChanged}
  }
  else rest=text(payload.note)||by;
  return {key:`timeline-${line.id}`,anchor:`entry-${line.id}`,kind:kindWord,title,line:rest,at:line.occurredAt,tools,
-  details:<><p className="r-muted">Occurred {formatDateTime(line.occurredAt)} · recorded {formatDateTime(line.recordedAt)} · {line.actorName??label(line.actorType)} · {sourceLabel(line.sourceName)}</p><AuditValue value={payload}/></>};
+  details:<><MailEvidenceNote kind={line.kind} signalType={type||undefined}/><p className="r-muted">Occurred {formatDateTime(line.occurredAt)} · recorded {formatDateTime(line.recordedAt)} · {line.actorName??label(line.actorType)} · {sourceLabel(line.sourceName)}</p><AuditValue value={payload}/></>};
 }

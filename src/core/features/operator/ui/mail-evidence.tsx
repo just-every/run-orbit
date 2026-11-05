@@ -1,5 +1,7 @@
 import {label} from './formatters';
 
+export const untrackedMailLabel=['Open','click not tracked'].join('/');
+
 /** Read old provider reports honestly as well as newly classified receipts. */
 export function mailEvidenceTitle(kind:string,signalType?:string){
  const type=signalType??kind;
@@ -14,7 +16,7 @@ export function mailEvidenceTitle(kind:string,signalType?:string){
 
 export function MailEvidenceNote({kind,signalType}:{kind:string;signalType?:string}){
  const type=signalType??kind;
- if(['provider.open','provider.click','email.opened'].includes(type))return <p>Inferred, unverified report; it may come from a privacy proxy or automated scanner. It does not prove reading, intent or a human response. Open/click not tracked by Orbit.</p>;
+ if(['provider.open','provider.click','email.opened'].includes(type))return <p>Inferred, unverified report; it may come from a privacy proxy or automated scanner. It does not prove reading, intent or a human response. {untrackedMailLabel} by Orbit.</p>;
  if(type.endsWith(':email.auto_replied'))return <p>Automatic mail does not stop follow-up or count as a human reply.</p>;
  if(type==='message.accepted'||type==='provider.processed')return <p>Provider acceptance does not confirm delivery or a human response.</p>;
  if(type==='provider.delivered')return <p>Provider-reported delivery does not confirm reading or a human response.</p>;

@@ -7,6 +7,7 @@ import {Activity,Opens,type ActivityEntry} from './activity';
 import {MessageTools,type DealMessage} from './message-tools';
 import {timelineEntry} from './timeline-entries';
 import {CallPanel,MeetingPanel,NotePanel} from './activity-panels';
+import {untrackedMailLabel} from '../mail-evidence';
 
 export interface HandoffEntry{target:string;revision:string;audienceRevision:string;task:{id:string;title:string;description:string;assignee_id:string|null;due_at:string|null;status:string;source_client_id:string|null};evidence:unknown[]}
 export interface DealMessages{messages:DealMessage[];mailProvider?:string;outcomesTracked:boolean;scheduler?:{ready:boolean;lastRunAt:string|null;failed:boolean}|null}
@@ -41,7 +42,7 @@ export function DealActivity({opportunity,drafts,messages,handoffs,reload,readOn
  const to=(email:string)=>byEmail.get(email.toLowerCase())??email;
  const entries:ActivityEntry[]=[
   ...drafts.filter(draft=>!sent.has(draft.id)).map(draft=>({key:`draft-${draft.id}`,kind:'Draft',draft:true,title:<Link to="/app/drafts/$id" params={{id:draft.id}}>{draft.subject}</Link>,line:`To ${to(draft.recipientEmail)} · revision ${draft.revision} · not sent${draft.isStale?' · review needed':''}`,at:draft.updatedAt})),
-  ...(messages?.messages??[]).map(message=>({key:`message-${message.id}`,kind:messageKind(message.state),title:message.subject,line:<>To {to(message.recipientEmail)} · {messageState(message,messages!.outcomesTracked)}</>,at:message.acceptedAt??message.scheduledAt??message.createdAt,tools:['scheduled','draft'].includes(message.state)?<MessageTools message={message} mailProvider={messages!.mailProvider} reload={reload}/>:null})),
+  ...(messages?.messages??[]).map(message=>({key:`message-${message.id}`,kind:messageKind(message.state),title:message.subject,line:<>To {to(message.recipientEmail)} · {messageState(message,messages!.outcomesTracked)} · {untrackedMailLabel}</>,at:message.acceptedAt??message.scheduledAt??message.createdAt,tools:['scheduled','draft'].includes(message.state)?<MessageTools message={message} mailProvider={messages!.mailProvider} reload={reload}/>:null})),
   ...opportunity.timeline.filter(entry=>!(entry.kind.startsWith('message.')&&messageIds.has(String((entry.payload as any)?.messageId)))).map(entry=>timelineEntry({line:{...entry,signalType:opportunity.signals.find(signal=>signal.id===entry.id)?.type??null,payload:(entry.payload&&typeof entry.payload==='object'?entry.payload:{}) as Record<string,unknown>},kind:'opportunity',recordId:opportunity.id,contactNames:names,reload,onChanged:reload})).filter((entry):entry is ActivityEntry=>Boolean(entry)),
   ...handoffs.map(entry=>({key:`handoff-${entry.task.id}`,anchor:`handoff-${entry.task.id}`,kind:'Task',title:entry.task.title,line:[`Hand-off · ${label(entry.task.status).toLowerCase()}`,entry.task.source_client_id?`proposed by ${entry.task.source_client_id}`:'',entry.task.due_at?`due ${formatDateTime(entry.task.due_at)}`:''].filter(Boolean).join(' · '),at:entry.task.due_at,tools:<Opens summary="Open task" initiallyOpen={hash===`handoff-${entry.task.id}`}>{()=><HandoffTasks opportunityId={opportunity.id} only={entry.task.id} onChange={reload}/>}</Opens>})),
  ];
