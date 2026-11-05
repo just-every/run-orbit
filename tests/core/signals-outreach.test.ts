@@ -9,6 +9,8 @@ import { createSourceSecurity,payloadHash } from '../../src/core/platform/source
 import { createSignalIngress } from '../../src/core/features/ingestion/routes';
 import { IngestionRepository } from '../../src/core/features/ingestion/repository';
 import { WorkbenchRepository } from '../../src/core/features/workbench/repository';
+import { weights, scoringPolicy, evaluateSignals } from '../../src/core/features/workbench/policies';
+import type { OpportunityDetail } from '../../src/core/features/opportunities/contracts';
 import { OutreachRepository } from '../../src/core/features/workbench/outreach-repository';
 import { ApprovalRepository } from '../../src/core/features/outreach/approval-repository';
 import { OutreachService } from '../../src/core/features/outreach/service';
@@ -22,7 +24,8 @@ async function ingestionInventory(){
  const rows=await db.batch(tables.map(table=>db.prepare(`SELECT * FROM ${table} ORDER BY rowid`)));
  return Object.fromEntries(tables.map((table,index)=>[table,rows[index]!.results]));
 }
-test('SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing',async()=>{
+test('SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing',async context=>{
+ context.mock.timers.enable({apis:['Date'],now:Date.parse('2034-04-05T12:00:00Z')});
  const f=await fixture(),security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'11'.repeat(32)})!,repository=new IngestionRepository(db),source=createId(),secret='source-secret-'.repeat(4);await repository.configure({id:source,name:'Source',enabled:true,secret},security);const app=createSignalIngress(db,security),timestamp=String(Math.floor(Date.now()/1000));
  const event={eventId:createId(),type:'email.replied',subject:'Reply',occurredAt:f.at,email:f.email};const raw=JSON.stringify(event),signature=await sign(secret,raw,timestamp);
  const request=(body=raw,sig=signature,sourceId=source)=>app.request(`https://orbit.test/${sourceId}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':sig},body});
@@ -32,11 +35,11 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe 
  const unknown=await request(raw,signature,createId());assert.equal(unknown.status,403);assert.deepEqual(await unknown.json(),{error:'Source is not configured.'});
  assert.deepEqual(await ingestionInventory(),beforeRefusal,'An unconfigured source changes no domain rows or source diagnostics');
  assert.equal((await request('x'.repeat(262145))).status,413);assert.deepEqual(await ingestionInventory(),beforeRefusal,'Oversized input writes nothing');
- const posted=Date.now(),results=await Promise.all([request(),request()]);assert.deepEqual(results.map(r=>r.status),[201,201]);const ids=await Promise.all(results.map(r=>r.json() as Promise<{id:string}>));assert.equal(ids[0]!.id,ids[1]!.id);
+ const posted=performance.now(),results=await Promise.all([request(),request()]);assert.deepEqual(results.map(r=>r.status),[201,201]);const ids=await Promise.all(results.map(r=>r.json() as Promise<{id:string}>));assert.equal(ids[0]!.id,ids[1]!.id);
  // SIGNAL-001: the attributed signal and its linked timeline entry are readable through the Records route within ten seconds of the signed POST.
  const records=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}}),reader=await createDependencies(db).auth.createSession(f.actor),read=async(path:string)=>{const response=await records.request(`https://orbit.test/api/v1/records/${path}`,{headers:{Cookie:`__Host-orbit_session=${reader.token}`}});assert.equal(response.status,200);return response.json() as Promise<{timeline:{id:string;signal_type:string}[]}>;};
  for(const path of [`contact/${f.contactId}`,`opportunity/${f.opportunityId}`]){const entries=(await read(path)).timeline.filter(entry=>entry.id===ids[0]!.id);assert.equal(entries.length,1,`${path} shows the signal once`);assert.equal(entries[0]!.signal_type,'email.replied');}
- assert.ok(Date.now()-posted<10000,'The signal is readable within ten seconds of the signed POST');
+ assert.ok(performance.now()-posted<10000,'The signal is readable within ten seconds of the signed POST');
  const changed=JSON.stringify({...event,subject:'Different'});assert.equal((await request(changed,await sign(secret,changed,timestamp))).status,409);
  const signal=await db.prepare('SELECT COUNT(*) AS n FROM signals WHERE source_id=?').bind(source).first<{n:number}>();assert.equal(signal?.n,1);
  const score=await db.prepare('SELECT score FROM opportunities WHERE id=?').bind(f.opportunityId).first<{score:number}>();assert.equal(score?.score,40);
@@ -44,6 +47,54 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe 
  const sourceRead=await records.request('https://orbit.test/api/v1/sources',{headers:{Cookie:`__Host-orbit_session=${reader.token}`}});assert.equal(sourceRead.status,200);
  const diagnostics=await sourceRead.json() as {sources:{id:string;rejected_count:number;last_error:string;last_accepted_at:string}[]},diagnostic=diagnostics.sources.find(row=>row.id===source);
  assert.equal(diagnostic?.rejected_count,1);assert.match(diagnostic!.last_error,/different payload/);assert.ok(diagnostic!.last_accepted_at);
+
+ // OPP-003: the signed door and the record page expose the policy's actual working, including negative evidence.
+ const day=86400000,evidence=[{id:ids[0]!.id,type:event.type,occurredAt:event.occurredAt}];
+ let evaluationSession=reader;
+ const native=async(path:string,method='GET',body?:unknown)=>records.request(`https://orbit.test/api/v1/${path}`,{method,headers:{Cookie:`__Host-orbit_session=${evaluationSession.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
+ async function detail(){const response=await native(`opportunities/${f.opportunityId}`);assert.equal(response.status,200);return (await response.json() as {opportunity:OpportunityDetail}).opportunity;}
+ async function weighted(type:string,ageDays=0){
+  const occurredAt=new Date(Date.now()-ageDays*day).toISOString(),input={eventId:createId(),type,subject:'synthetic-orbit-evaluation',occurredAt,email:f.email},body=JSON.stringify(input),at=String(Math.floor(Date.now()/1000));
+  const response=await app.request(`https://orbit.test/${source}`,{method:'POST',headers:{'X-Orbit-Timestamp':at,'X-Orbit-Signature':await sign(secret,body,at)},body});
+  assert.equal(response.status,201);const saved=await response.json() as {id:string;linked:boolean};assert.equal(saved.linked,true);
+  const signal={id:saved.id,type,occurredAt};evidence.push(signal);return {signal,input};
+ }
+ async function evaluated(){
+  const current=await detail(),evaluation=current.evaluation;assert.ok(evaluation,'A weighted signal produces a readable evaluation');
+  // Calculate the contract rule independently of the SQL evaluation, using the installation's configured weights.
+  const contributions=evidence.map(signal=>({signalId:signal.id,contribution:Math.round(weights[signal.type]!*Math.max(0,1-Math.max(0,Date.now()-Date.parse(signal.occurredAt))/(30*day)))})).filter(row=>row.contribution!==0).sort((a,b)=>a.signalId.localeCompare(b.signalId));
+  assert.deepEqual(evaluation.contributions.map(({signalId,contribution})=>({signalId,contribution})).sort((a,b)=>a.signalId.localeCompare(b.signalId)),contributions,'Every contributing signal retains its exact weighted, aged value');
+  const expectedScore=Math.max(0,Math.min(100,contributions.reduce((sum,row)=>sum+row.contribution,0))),policy=evaluateSignals(evidence.map(signal=>({id:signal.id,type:signal.type,occurred_at:signal.occurredAt})),new Date());
+  assert.equal(evaluation.score,expectedScore,'The recorded score is the clamped contribution sum');assert.equal(current.score,expectedScore);
+  assert.equal(evaluation.band,policy.band);assert.equal(current.band,policy.band);
+  assert.equal(evaluation.policyVersion,scoringPolicy,'Readback names the active policy that computed this evaluation');
+  assert.equal(evaluation.evaluatedAt,new Date().toISOString());assert.equal(evaluation.status,'current');
+  return current;
+ }
+ await evaluated();
+ await weighted('meeting.booked',6);await weighted('meeting.completed');await weighted('form.submitted');await weighted('email.bounced');
+ const initial=await evaluated();assert.ok(initial.evaluation!.contributions.some(row=>row.contribution<0));
+ assert.ok(initial.evaluation!.contributions.reduce((sum,row)=>sum+row.contribution,0)>initial.score,'Positive evidence exercises the upper score bound');
+ context.mock.timers.tick(12*day);
+ const patch=async(changes:Record<string,unknown>,base:Record<string,unknown>)=>{const response=await native(`records/opportunity/${f.opportunityId}`,'PATCH',{changes,base});assert.equal(response.status,200);assert.equal((await response.json() as {changed:boolean}).changed,true);};
+ await patch({value_cents:initial.valueCents+100},{value_cents:initial.valueCents});
+ const aged=await evaluated();assert.notEqual(aged.evaluation!.id,initial.evaluation!.id);assert.ok(aged.score<initial.score,'An ordinary open-deal edit recomputes aged evidence');assert.notEqual(aged.band,initial.band);
+ context.mock.timers.tick(19*day);evaluationSession=await createDependencies(db).auth.createSession(f.actor);
+ await patch({expected_close_at:new Date(Date.now()+day).toISOString()},{expected_close_at:aged.expectedCloseAt});
+ const expired=await evaluated();assert.notEqual(expired.evaluation!.id,aged.evaluation!.id);assert.deepEqual(expired.evaluation!.contributions,[]);assert.equal(expired.score,0,'Evidence older than the decay horizon contributes nothing');
+ await weighted('email.bounced');const negative=await evaluated();assert.ok(negative.evaluation!.contributions.reduce((sum,row)=>sum+row.contribution,0)<0);assert.equal(negative.score,0,'Negative evidence exercises the lower score bound');
+ await weighted('email.replied');const beforeClose=await evaluated();assert.ok(beforeClose.score>negative.score);
+ const evaluations=async()=>{const rows=await db.batch([db.prepare('SELECT * FROM evaluations WHERE opportunity_id=? ORDER BY id').bind(f.opportunityId),db.prepare('SELECT c.* FROM evaluation_contributions c JOIN evaluations e ON e.id=c.evaluation_id WHERE e.opportunity_id=? ORDER BY c.id').bind(f.opportunityId)]);return rows.map(row=>row.results);};
+ const frozen=await evaluations();
+ for(const state of ['won','lost']){
+  const closed=await native(`records/opportunity/${f.opportunityId}/lifecycle`,'POST',{state,reason:'synthetic-orbit-evaluation'});assert.equal(closed.status,200);
+  context.mock.timers.tick(60000);const late=await weighted('meeting.booked');
+  await patch({value_cents:(await detail()).valueCents+100},{});
+  const current=await detail();assert.equal(current.lifecycle,state);assert.equal(current.queueState,'none');assert.equal(current.score,beforeClose.score);assert.equal(current.band,beforeClose.band);assert.deepEqual(current.evaluation,beforeClose.evaluation,'Closed deals keep the last computed score and all its provenance');
+  assert.ok(current.signals.some(row=>row.id===late.signal.id));assert.ok(current.timeline.some(row=>row.id===late.signal.id),'Later evidence remains visible on the closed deal');
+  const body=JSON.stringify(late.input),at=String(Math.floor(Date.now()/1000)),replay=await app.request(`https://orbit.test/${source}`,{method:'POST',headers:{'X-Orbit-Timestamp':at,'X-Orbit-Signature':await sign(secret,body,at)},body});
+  assert.equal(replay.status,201);assert.deepEqual(await replay.json(),{id:late.signal.id,replayed:true});assert.deepEqual(await evaluations(),frozen,'Close, later evidence, record edits and replay create no evaluation or contribution');
+ }
 });
 test('OUT-008 recipient clocks respect weekdays, DST and time to review an out-of-hours send',async context=>{
  const sunday=new Date('2026-09-13T10:00:00Z');assert.equal(nextPermitted(sunday,'Europe/London').toISOString(),'2026-09-14T07:00:00.000Z');
