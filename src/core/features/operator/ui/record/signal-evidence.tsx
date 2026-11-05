@@ -29,7 +29,7 @@ export function RecordedSignalEvidence({opportunityId,signal,presentation}:{oppo
  return <details onToggle={event=>{if(event.currentTarget.open&&!loading)void load();}}>
   <summary id={evidenceId(signal.id)} style={{overflowWrap:'anywhere'}}>{signal.subject??label(signal.type)} · Signal {signal.id}</summary>
   <p>{label(signal.type)} · {sourceLabel(signal.source)} · {label(signal.confidence)} · linked by {label(signal.linkingBasis).toLowerCase()}</p>
-  <p>Occurred {formatDateTime(signal.occurredAt,presentation)} · Received {formatDateTime(signal.receivedAt,presentation)}</p>
+  <p>Occurred <time dateTime={signal.occurredAt}>{formatDateTime(signal.occurredAt,presentation)}</time> · Received <time dateTime={signal.receivedAt}>{formatDateTime(signal.receivedAt,presentation)}</time></p>
   {loading&&<p role="status">Loading source evidence…</p>}
   {error&&<p role="alert">{error} <button type="button" onClick={()=>void load()}>Retry evidence</button></p>}
   {evidence&&<section aria-label={`Source evidence for signal ${signal.id}`}>

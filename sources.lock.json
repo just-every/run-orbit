@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "664579681cd7317b07b5a31d35ae95f0e3b0ef92f24676bfd15d0ac3251f1127",
+      "sha256": "b0999a713c2ea2da41dae9d04a27af08feea528d54acc620d171a56a824d6e9a",
       "executable": false
     },
     "DEMO.md": {
@@ -6851,7 +6851,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/next-action.tsx": {
-      "sha256": "36f91b8454fa6994b6021790d6bfc520e0c363d0f182ddd5b7a87394f572e43d",
+      "sha256": "4c99ac78049b7ac89baec76eddcbbc43ebf0588c6f974d11062eb7bb543e4906",
       "executable": false
     },
     "src/core/features/operator/ui/record/opportunity-record.tsx": {
@@ -6899,7 +6899,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/signal-evidence.tsx": {
-      "sha256": "062a7364201ad51860d8e3f653bb55659f6c0b2988cbe291e13ecc958ca29cbb",
+      "sha256": "02d8cf16db3623087f25acda313fd26f8c9c3784dff689642a2de249cbe532f1",
       "executable": false
     },
     "src/core/features/operator/ui/record/timeline-entries.tsx": {
@@ -10191,7 +10191,7 @@
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
-      "sha256": "04235949a533b13e8b3aaae3773fd6f2e66693098a99221f3d17834e4ecbb058",
+      "sha256": "c4f60db5e3e5d53d42e33138d29fcd45e0e50c3e0be4491e4e6609851a2f7896",
       "executable": false
     },
     "tests/e2e/records.spec.mjs": {

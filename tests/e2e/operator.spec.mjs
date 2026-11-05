@@ -96,7 +96,7 @@ test.describe("authenticated operator UI", () => {
     expect(failures).toEqual([]);
   });
 
-  contract("OPP-004", "the mobile detail renders current score evidence and recommendation reason", async ({ page }, info) => {
+  contract("OPP-004", "the opportunity detail follows every score contribution to its original evidence and action reason", async ({ page }, info) => {
     test.setTimeout(60_000);
     await page.setViewportSize({ width: 1440, height: 900 });
     const failures = watchFailures(page);
@@ -145,6 +145,7 @@ test.describe("authenticated operator UI", () => {
       await expect(row.getByText(item.kind,{exact:true})).toBeVisible();
       await expect(row).toContainText('Evidence source');
       await expect(row).toContainText(item.confidence.toLowerCase());
+      await expect(row.locator('time')).toHaveAttribute('datetime',item.event.occurredAt);
       await expect(row.locator('b')).toHaveText(`${item.points>0?'+':''}${item.points}`);
       await expect(row.locator('b')).toBeVisible();
       await link.focus();
@@ -156,6 +157,7 @@ test.describe("authenticated operator UI", () => {
       await expect(target).toContainText(item.signalId);
       await expect(target).toContainText(item.confidence);
       await expect(target).toContainText('Occurred');
+      await expect(target.locator('time').first()).toHaveAttribute('datetime',item.event.occurredAt);
       await expect(target).toContainText('Received');
       const original = target.getByRole('region',{name:`Source evidence for signal ${item.signalId}`});
       await expect(original).toBeVisible();
