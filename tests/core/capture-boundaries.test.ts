@@ -8,6 +8,8 @@ import { createSourceSecurity } from '../../src/core/platform/source-security';
 import { IngestionRepository } from '../../src/core/features/ingestion/repository';
 import { signSource } from '../../src/core/features/ingestion/booking-webhooks';
 import { createId } from '../../src/core/shared/ids';
+import { random } from '../../src/core/features/delegation/protocol';
+import { challenge } from '../../src/core/features/delegation/token';
 
 const rfc = (minutes: number) => new Date(Date.now() - minutes * 60000).toUTCString().replace('GMT', '+0000');
 const count = async (db: D1Database, sql: string, ...bindings: unknown[]) => Number(await db.prepare(sql).bind(...bindings).first('n'));
@@ -42,6 +44,33 @@ test('CAPTURE-003 CAPTURE-005 OUT-001 OUT-007 ACTION-005 RECORD-012 SIGNAL-009 a
       assert.equal(((await (await f.upload([{ name: 'forged.eml', text: forged(headers) }])).json()) as { summary: { skipped: number } }).summary.skipped, 1, `${headers.From} is not Ana`);
     assert.equal(await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(f.scheduled).first('state'), 'scheduled');
     assert.equal(await count(f.db, 'SELECT count(*) n FROM capture_proposals WHERE record_id=?', f.ana), 0);
+
+    // A currently consented application can read its selected deal, but cannot import the same valid mail as a person.
+    const client = 'synthetic-orbit-capture-reader', redirect = 'https://agent.test/callback';
+    const consent = (path: string, body: Record<string, string>) => f.request(`/delegation${path}`, { method: 'POST', body: new URLSearchParams(body) });
+    assert.equal((await consent('/clients', { id: client, redirect_uri: redirect })).status, 303);
+    const verifier = random(), target = `opportunities/${f.opportunity}`;
+    const allowed = await consent('/authorize', { client_id: client, redirect_uri: redirect, response_type: 'code', state: random(), code_challenge: await challenge(verifier), code_challenge_method: 'S256', account_id: 'workspace', scope: 'crm.evidence.read', targets: JSON.stringify([target]) });
+    assert.equal(allowed.status, 303, await allowed.clone().text());
+    const code = new URL(allowed.headers.get('location')!).searchParams.get('code');
+    assert.ok(code);
+    const exchanged = await f.app.request('https://orbit.test/api/delegation/v1/token', { method: 'POST', body: new URLSearchParams({ grant_type: 'authorization_code', client_id: client, redirect_uri: redirect, code, code_verifier: verifier }) });
+    assert.equal(exchanged.status, 200, await exchanged.clone().text());
+    const token = (await exchanged.json() as { access_token: string }).access_token;
+    assert.ok(token);
+    const delegatedRead = () => f.app.request(`https://orbit.test/api/delegation/v1/evidence?target=${encodeURIComponent(target)}`, { headers: { authorization: `Bearer ${token}` } });
+    const evidence = await delegatedRead();
+    assert.equal(evidence.status, 200, await evidence.clone().text());
+    const observed = await evidence.json() as { target: string; title: string; text: string };
+    assert.equal(observed.target, target);
+    assert.equal(observed.title, 'Acme rollout');
+    assert.equal(JSON.parse(observed.text).opportunity.id, f.opportunity);
+    const inventory = async () => Object.fromEntries(await Promise.all(['signal_sources', 'capture_sources', 'capture_items', 'signals', 'signal_links', 'capture_proposals', 'contacts', 'drafts', 'outbound_messages', 'timeline_entries'].map(async table => [table, (await f.db.prepare(`SELECT * FROM ${table}`).all()).results.map(row => JSON.stringify(row)).sort()])));
+    const beforeDelegation = await inventory();
+    const refused = await f.upload([{ name: 'reply.eml', text: reply }], false, { origin: 'https://orbit.test', authorization: `Bearer ${token}` });
+    assert.equal(refused.status, 401, 'a valid delegation is not a native Capture session');
+    assert.deepEqual(await inventory(), beforeDelegation, 'refusing delegated intake changes no source, evidence, proposal, contact, draft or message');
+    assert.equal((await delegatedRead()).status, 200, 'the application remains authorized for its scoped read');
     assert.equal((await f.upload([{ name: 'reply.eml', text: reply }])).status, 201);
     assert.deepEqual(await f.db.prepare('SELECT state,failure FROM outbound_messages WHERE id=?').bind(f.scheduled).first(), { state: 'cancelled', failure: 'Customer reply' }, 'the scheduled send is cancelled at once');
     for (const draft of [f.scheduledDraft, f.unsentDraft]) assert.equal(await f.db.prepare('SELECT is_stale FROM drafts WHERE id=?').bind(draft).first('is_stale'), 1, 'unsent drafts are stale (ACTION-005)');

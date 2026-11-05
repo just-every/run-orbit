@@ -9907,7 +9907,7 @@
       "executable": false
     },
     "tests/core/capture-boundaries.test.ts": {
-      "sha256": "7b307e529e6ef65e8e33c531ad56e6b697cb32cbe3fb5dc673998e8eef82cf8b",
+      "sha256": "75b188a6495a5377a4a5b6efba51603f1ae3c848eed6e95635e5b175881f554c",
       "executable": false
     },
     "tests/core/capture-connector.test.ts": {
