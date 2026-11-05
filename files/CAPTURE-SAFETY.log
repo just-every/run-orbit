@@ -1,0 +1,29 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ CAPTURE-006 a provider cursor resumes after a crash without duplicates and is stored exactly as the provider gave it (24841.593706ms)
+✔ CAPTURE-006 a revoked grant stops intake and shows its error until the source is reconnected (27160.780071ms)
+✔ CAPTURE-006 AI-003 a provider outage leaves records, queues and manual work untouched (27188.309256ms)
+✔ CAPTURE-006 disconnecting stops intake at once, deletes the credential and keeps captured evidence marked as from a disconnected source (23305.61336ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured originals and proposals; the audit trail keeps counts and anonymous replay proofs (88522.306019ms)
+✔ CAPTURE-007 DATA-002 erased provider originals stay erased after expired history, crashes and reconnect while new evidence remains eligible (33445.703466ms)
+✔ CAPTURE-007 DATA-002 erasure fences an already-resolved capture commit and its later replay (31033.513147ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ CAPTURE-005 OAuth binds native session, provider, origin, expiry and one use; encrypted authority stays out of status and archives (24184.925108ms)
+✔ CAPTURE-006 refreshed credentials are durable, leases prevent concurrent reads and disconnect fences in-flight tokens and callbacks (84585.266042ms)
+✔ CAPTURE-006 Microsoft rejects foreign host, user, folder and calendar delta links before bearer disclosure (24159.997208ms)
+✔ CAPTURE-006 oversized mail skips once while both providers finish other messages and selected calendars (97340.486168ms)
+✔ CAPTURE-006 provider deletion respects occurrence and erasure; CAPTURE-011 read-only and writeback consent request and store distinct scopes (214203.619451ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 706862.298524

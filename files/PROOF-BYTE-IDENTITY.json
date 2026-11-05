@@ -1,0 +1,13 @@
+{
+  "head": "54956cf7ad9ab14c3c609b6d2497d95a138cd02f",
+  "files": {
+    "tests/core/capture-mail-rules.test.ts": "0d0c65fe66a2c0d5a787740dacd21b3734f54ffb3fb14d345fd4a55244f7f77c",
+    "tests/core/capture-connector.test.ts": "b9d64a854cc5fb351e301567f70eb7349b81cac5484168c1682e8fc3da8f73c6",
+    "tests/core/capture-providers.test.ts": "9e763ce40b906e7c72e1882381e849b0ab5982b2df38909413bef7e60c76de10",
+    "tests/core/capture-erasure.test.ts": "9f0c4835ff1006a4d391eeb3ce5bed4276ea1bbc9ff5b666fe50afde4a02aa3e",
+    "tests/e2e/capture.spec.mjs": "6270e7309a3b5d6bab70ddf795c6e4755ae630a1a0a24216b439bc8e30f43026",
+    "tests/support/capture-provider-fixture.ts": "397e34d8da4af879b6f34414770a12af97359c03c2616bf4bf93265ca64653b8",
+    "tests/support/capture-provider-network.ts": "3aa2794115aa037c23770af374cbde6059a20f6c5a1258edb63c61f44f595122",
+    "src/core/features/capture/providers/service.ts": "f841461108737b6723562c003e08e57b96635e83046d216b7e308b3570346bc1"
+  }
+}

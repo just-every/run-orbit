@@ -1,0 +1,8 @@
+{"conclusion":"success","id":127590180377,"name":"plan","status":"completed","steps":[]}
+{"conclusion":"failure","id":127590333732,"name":"source and shared build","status":"completed","steps":[{"conclusion":"failure","name":"Verify source, types, boundaries and the single shared app build"},{"conclusion":"failure","name":"Retain authoritative source candidate"}]}
+{"conclusion":"skipped","id":127590335466,"name":"light","status":"completed","steps":[]}
+{"conclusion":"failure","id":127590557364,"name":"verify","status":"completed","steps":[{"conclusion":"failure","name":"Require a successful plan and all required work"},{"conclusion":"failure","name":"Retain combined routine verdicts (capacity pending)"}]}
+{"conclusion":"skipped","id":127590559126,"name":"shards (${{ matrix.batch }})","status":"completed","steps":[]}
+{"conclusion":"skipped","id":127590610853,"name":"nightly-proof","status":"completed","steps":[]}
+{"conclusion":"skipped","id":127590611815,"name":"full-push-proof","status":"completed","steps":[]}
+{"conclusion":"skipped","id":127590612211,"name":"release","status":"completed","steps":[]}

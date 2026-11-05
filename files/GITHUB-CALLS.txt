@@ -1,0 +1,6 @@
+api repos/just-every/run-orbit/actions/runs?head_sha=c01084f133af9aa484a6c1f5151a4e9cfbc7230f&per_page=100 --jq .workflow_runs[] | {id,name,event,status,conclusion,head_sha,html_url} exit=0
+api repos/just-every/run-orbit/actions/runs?head_sha=977e663adaf18d3ff54b0aecbe7d10355217ab0c&per_page=100 --jq .workflow_runs[] | {id,name,event,status,conclusion,head_sha,html_url} exit=0
+api repos/just-every/run-orbit/actions/runs/42125980777 --jq {status,conclusion,head_sha,html_url} exit=0
+api repos/just-every/run-orbit/actions/runs/42125980777/jobs?per_page=100 --jq .jobs[] | {id,name,status,conclusion,steps:[.steps[] | select(.conclusion == "failure") | {name,conclusion}]} exit=0
+run view 42125980777 --repo just-every/run-orbit --job 127590333732 --log-failed exit=0
+run view 42125980777 --repo just-every/run-orbit --job 127590557364 --log-failed exit=0

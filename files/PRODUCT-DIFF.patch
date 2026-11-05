@@ -1,0 +1,100 @@
+diff --git a/CONTRACT.md b/CONTRACT.md
+index 04f3f4d..db02d0c 100644
+--- a/CONTRACT.md
++++ b/CONTRACT.md
+@@ -2387,7 +2387,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
+ 
+ ## Status
+ 
+-Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock.
++Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. CAPTURE-006 was proved through both real provider adapters with external HTTP edges replaced and the existing source status browser journey at 1440 and 390 from code and tests at commit `54956cf7ad9ab14c3c609b6d2497d95a138cd02f` (5 November 2026); subsequent changes for that proof record its status and source lock.
+ 
+ SIGNAL-008 is proved from the code and tests at commit `cd4240900048e5276f0ec62dae3fe02502a180ad` (4 November 2026); subsequent edits only record its status, generated counts and source lock.
+ 
+@@ -2395,9 +2395,9 @@ RECORD-023 was proved through the native authorization and grant audit journey a
+ 
+ | Clauses | Done | Partial | Missing | Total |
+ | --- | ---: | ---: | ---: | ---: |
+-| Published | 27 | 52 | 0 | 79 |
++| Published | 28 | 51 | 0 | 79 |
+ | Target and push further | 8 | 85 | 32 | 125 |
+-| All | 35 | 137 | 32 | 204 |
++| All | 36 | 136 | 32 | 204 |
+ 
+ | Clause | Title | Kind | Status | Evidence | Gap |
+ | --- | --- | --- | --- | --- | --- |
+@@ -2432,7 +2432,7 @@ RECORD-023 was proved through the native authorization and grant audit journey a
+ | `CAPTURE-003` | What capture applies at once | published | partial | `src/core/features/capture/intake.ts`; `src/core/features/capture/proposals.ts`; `tests/core/capture-intake.test.ts` | Unasserted in the carried evidence: booked meeting cancels scheduled work; drafts staled atomically; automatic reply stops no scheduled work. Asserted: threaded reply linked; permanent bounce stops contact. |
+ | `CAPTURE-004` | Reviewed proposals | published | done | `src/core/features/capture/proposals.ts`; `tests/core/capture-review.test.ts` |  |
+ | `CAPTURE-005` | Human boundary | published | partial | `src/core/features/capture/providers/oauth.ts`; `tests/core/capture-providers.test.ts`; `tests/core/capture-boundaries.test.ts` | Unasserted in the carried evidence: delegation credential refused; address-only intake works; proposed new contact stays blocked. Asserted: native intake works; collaborator intake refused; source signature refused. |
+-| `CAPTURE-006` | Capture sources | published | partial | `src/core/features/capture/providers/service.ts`; `tests/core/capture-providers.test.ts`; `tests/core/capture-connector.test.ts` | Unasserted in the carried evidence: Google adapter read; Microsoft adapter read; selected folders/calendars. Asserted: interruption before cursor commit; resumed cursor and deduplication; revoke halts reads and preserves records; reconnect restores capture; disconnect removes credential; visible error reason. |
++| `CAPTURE-006` | Capture sources | published | done | `tests/core/capture-mail-rules.test.ts` — CAPTURE-010 workspace mail rules and one-action corrections preserve CAPTURE-006 selected scope, crash replay, incremental reads and unknown-mail exclusion: both real read adapters, selected folders and calendars, persisted crash resume, revoked-source refusal, renewed authorization and explicit scope reselection, new intake, retained originals, visible error recovery and restarted replay without duplicates; `tests/core/capture-connector.test.ts` — CAPTURE-006 AI-003 a provider outage leaves records, queues and manual work untouched; CAPTURE-006 disconnecting stops intake at once, deletes the credential and keeps captured evidence marked as from a disconnected source; `tests/core/capture-providers.test.ts` — CAPTURE-006 refreshed credentials are durable, leases prevent concurrent reads and disconnect fences in-flight tokens and callbacks; `tests/e2e/capture.spec.mjs` — CAPTURE provider status keeps revoked access clear, reconnects through the guided setup and disconnect preserves captured history | |
+ | `CAPTURE-007` | Captured data | published | done | Acceptance 1: `tests/core/capture-data.test.ts` — DATA-003 current sales capabilities round-trip without authority and erase across public reads (captured originals, proposals and sources exported through Records and restored equivalently; no source credential in the archive or the restored installation); `tests/core/capture-erasure.test.ts` — CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured originals and proposals; the audit trail keeps counts and anonymous replay proofs; CAPTURE-007 DATA-002 erased provider originals stay erased after expired history, crashes and reconnect while new evidence remains eligible; CAPTURE-007 DATA-002 erasure fences an already-resolved capture commit and its later replay; `tests/core/capture-replay-archive.test.ts` — CAPTURE-007 DATA-002 both archive paths carry anonymous replay barriers and Records restore retains destination erasure history; push Verify core-7 in shards (batch-1), core-8 in shards (batch-15) and core-9 in shards (batch-10); `src/core/features/capture/privacy.ts`; `tests/core/capture-upgrade.test.ts` | |
+ | `CAPTURE-008` | Orbit address | published | partial | `tests/core/capture-no-console.test.ts` | Unasserted in the carried evidence: oversized mail counted; oversized content not retained. Asserted: private tagged address created; tag rotation differs; exact envelope tag accepted; wrong envelope tag stores no signal; forwarded/BCC mail captured; Gmail confirmation read back. |
+ | `CAPTURE-009` | Calendar link | published | partial | `tests/core/capture-no-console.test.ts` | Unasserted in the carried evidence: calendar link validated; clock advancement refreshes; event changes deduplicate; event cancellation retained; original event times retained. Asserted: broken link halts with reason. |
+diff --git a/sources.lock.json b/sources.lock.json
+index f3178bf..9f07abb 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -707,7 +707,7 @@
+       "executable": false
+     },
+     "CONTRACT.md": {
+-      "sha256": "6bb6fb9aaef0e0df27f86958e4734fef3b5d0f3cfa37f0400496e6043e8781b1",
++      "sha256": "4c6fa02f3715b90a0fa3cd3e0e71b2858c44a0b9e8cca49ae8f778bc618f2366",
+       "executable": false
+     },
+     "DEMO.md": {
+@@ -9931,7 +9931,7 @@
+       "executable": false
+     },
+     "tests/core/capture-mail-rules.test.ts": {
+-      "sha256": "45060317e638be737c3fc722bab6cd80ec1ab700d42c90f0e921bf0873016863",
++      "sha256": "0d0c65fe66a2c0d5a787740dacd21b3734f54ffb3fb14d345fd4a55244f7f77c",
+       "executable": false
+     },
+     "tests/core/capture-no-console.test.ts": {
+diff --git a/tests/core/capture-mail-rules.test.ts b/tests/core/capture-mail-rules.test.ts
+index 33775cc..1722e4d 100644
+--- a/tests/core/capture-mail-rules.test.ts
++++ b/tests/core/capture-mail-rules.test.ts
+@@ -18,10 +18,38 @@ test('CAPTURE-010 workspace mail rules and one-action corrections preserve CAPTU
+   if(provider==='google'){f.state.expireHistory=true;await f.drain(id);assert.equal(await f.count(id),28);assert.ok(f.state.reads.some(url=>url.includes('startHistoryId=900719925474099312345')));}
+   f.state.recurring=true;await f.drain(id);assert.equal(await f.count(id),30);await f.drain(id);assert.equal(await f.count(id),30,'recurring occurrences replay independently');
+   const starts=(await f.db.prepare("SELECT json_extract(payload_json,'$.data.start') AS start FROM signals WHERE source_id=? AND type LIKE 'meeting.%'").bind(id).all<{start:string}>()).results.map(row=>row.start);assert.ok(starts.includes('2026-11-01T05:30:00.000Z'));assert.ok(starts.includes('2026-11-08T06:30:00.000Z'));
++  const source=async()=>{
++   const response=await f.request('/sources');assert.equal(response.status,200);
++   return ((await response.json()) as any).sources.find((row:any)=>row.id===id);
++  };
++  const originals=async()=>(await f.db.prepare('SELECT * FROM capture_items WHERE source_id=? ORDER BY id').bind(id).all()).results;
++  const retained=await originals();assert.equal(retained.length,30);
+   f.state.outage=true;const before=await f.db.prepare('SELECT cursor FROM capture_sources WHERE id=?').bind(id).first('cursor');const unavailable=await (await f.request(`/sources/${id}/sync`,{})).json() as any;assert.equal(unavailable.summary.halted,'unavailable');assert.equal(await f.db.prepare('SELECT cursor FROM capture_sources WHERE id=?').bind(id).first('cursor'),before);
++  const outage=await source();assert.equal(outage.state,'connected');assert.match(outage.last_error,/Provider unavailable/);assert.ok(outage.last_error_at);assert.deepEqual(await originals(),retained);
+   f.state.outage=false;f.state.revoked=true;assert.equal((await (await f.request(`/sources/${id}/sync`,{})).json() as any).summary.halted,'revoked');const reads=f.state.reads.length;assert.equal((await f.request(`/sources/${id}/sync`,{})).status,409);assert.equal(f.state.reads.length,reads);
+-  f.state.revoked=false;await f.connect(id);assert.equal(await f.db.prepare('SELECT cursor FROM capture_sources WHERE id=?').bind(id).first('cursor'),null);assert.equal((await f.request(`/sources/${id}/sync`,{})).status,409);
++  const revoked=await source();assert.equal(revoked.state,'error');assert.match(revoked.last_error,/Access was revoked/);assert.ok(revoked.last_error_at);assert.deepEqual(await originals(),retained);
++  f.state.revoked=false;assert.equal(await f.connect(id),id);assert.equal(await f.db.prepare('SELECT cursor FROM capture_sources WHERE id=?').bind(id).first('cursor'),null);assert.equal((await f.request(`/sources/${id}/sync`,{})).status,409);
++  const reconnected=await source();assert.equal(reconnected.state,'connected');assert.equal(reconnected.last_error,null);assert.equal(reconnected.last_error_at,null);assert.equal(reconnected.has_credential,1);assert.deepEqual(reconnected.scope,{mail:{folders:[]},calendars:[]});
++  // This message did not exist before the new authorization. A full selected
++  // read after reconnect must admit it while retaining every earlier original.
++  const freshProviderId=String(f.state.total++),freshSubject=`Provider ${freshProviderId}`;
++  assert.equal(await f.db.prepare('SELECT id FROM signals WHERE source_id=? AND subject=?').bind(id,freshSubject).first(),null);
++  assert.equal((await f.request(`/sources/${id}/scope`,selected)).status,200);
++  const readStart=f.state.reads.length;await f.drain(id);
++  assert.equal(await f.count(id),31,'reconnected adapter resumes positive intake');
++  const fresh=await f.db.prepare('SELECT id FROM signals WHERE source_id=? AND subject=?').bind(id,freshSubject).first<{id:string}>();assert.ok(fresh);
++  const captured=await originals();assert.equal(captured.length,31);
++  assert.deepEqual(captured.filter(row=>retained.some(old=>old.id===row.id)),retained,'reconnect preserves all original identities and content');
++  const added=captured.filter(row=>!retained.some(old=>old.id===row.id));assert.equal(added.length,1);assert.equal(added[0]!.signal_id,fresh.id);assert.equal(added[0]!.body,`Evidence ${freshProviderId}`);
++  assert.ok(f.state.reads.slice(readStart).some(url=>url.includes(provider==='google'?`/messages/${freshProviderId}?`:`/messages/${freshProviderId}/$value`)));
++  const detail=await f.app.request(`https://orbit.test/api/v1/records/contact/${f.ana}`,{headers:{cookie:f.cookie}});assert.equal(detail.status,200);assert.ok(((await detail.json()) as any).timeline.some((entry:any)=>entry.id===fresh.id));
++  const recovered=await source();assert.equal(recovered.state,'connected');assert.deepEqual(recovered.scope,selected);assert.equal(recovered.captured_count,31);assert.equal(recovered.last_error,null);assert.equal(recovered.last_error_at,null);assert.ok(recovered.last_success_at);assert.ok(recovered.proposals_waiting>0);assert.equal(recovered.skipped_count,revoked.skipped_count);
++  const effects=async()=>({signals:(await f.db.prepare('SELECT * FROM signals WHERE source_id=? ORDER BY id').bind(id).all()).results,proposals:(await f.db.prepare('SELECT * FROM capture_proposals WHERE signal_id IN(SELECT id FROM signals WHERE source_id=?) ORDER BY id').bind(id).all()).results,timeline:(await f.db.prepare('SELECT * FROM timeline_entries WHERE id IN(SELECT id FROM signals WHERE source_id=?) ORDER BY id').bind(id).all()).results});
++  const resumedEffects=await effects();await f.reopen();await f.drain(id);await f.drain(id);
++  assert.deepEqual(await originals(),captured,'restarted replay keeps original evidence exactly once');assert.deepEqual(await effects(),resumedEffects,'replay creates no signals, proposals or timeline duplicates');assert.equal((await source()).captured_count,31);
+   assert.equal((await f.request(`/sources/${id}/disconnect`,{confirmed:true})).status,200);assert.equal(await f.db.prepare('SELECT count(*) n FROM capture_credentials WHERE source_id=?').bind(id).first('n'),0);
++  const disconnected=await source();assert.equal(disconnected.state,'disconnected');assert.equal(disconnected.has_credential,0);assert.equal(disconnected.captured_count,31);assert.deepEqual(await originals(),captured);
++  const stoppedReads=f.state.reads.length;assert.equal((await f.request(`/sources/${id}/sync`,{})).status,409);assert.equal(f.state.reads.length,stoppedReads);
+  }finally{await f.dispose();}}
+  for(const provider of ['google','microsoft'] as const)await captureMailRuleJourney(await fixture(provider),provider==='google');
+ });

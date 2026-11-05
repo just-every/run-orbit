@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f60",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f60",
+  "source_head": "54956cf7ad9ab14c3c609b6d2497d95a138cd02f",
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/capture-mail-rules.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "pass_count": 1,
+      "duration_ms": 412386.503947
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec playwright test --config=/tmp/orbit-browser-f60.config.mjs tests/e2e/capture.spec.mjs --grep \"CAPTURE provider status\"",
+      "exit": 0,
+      "tests": 1,
+      "pass_count": 1,
+      "widths": [
+        1440,
+        390
+      ],
+      "browser": "/usr/bin/chromium",
+      "args": [
+        "--no-sandbox"
+      ],
+      "note": "Temporary external config changes only browser executable and launch args; tracked test unchanged."
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write && node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "note": "Generated views restored whole from origin main before lock and commit."
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "ok": true
+    },
+    {
+      "command": "migration ledger check",
+      "exit": 0,
+      "note": "Not applicable: no migration added or edited."
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/capture-connector.test.ts tests/core/capture-providers.test.ts tests/core/capture-erasure.test.ts",
+      "exit": 0,
+      "tests": 12,
+      "pass_count": 12,
+      "duration_ms": 706862.298524
+    }
+  ],
+  "counts_before": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "tests_before": {
+    "registrations": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "tests_after": {
+    "registrations": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "runtime_changed": false,
+  "acceptance_changed": false,
+  "held_live_proofs_unchanged": true,
+  "publication_scan": {
+    "status": "not run in cloud",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "owner": "guarded fleet lander"
+  },
+  "ci": {
+    "run_id": 42125980777,
+    "event": "push",
+    "head_sha": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+    "status": "completed",
+    "conclusion": "failure",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42125980777",
+    "last_observed_at": "2026-11-05T23:04:28Z",
+    "permitted_generated_view_exception": true,
+    "root_failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "root_job_id": 127590333732,
+    "dependent_failure_job_id": 127590557364,
+    "application_assertion_failure": false,
+    "shards": "skipped because source prerequisite failed",
+    "failed_job_logs_read_once_each": true
+  },
+  "product_head": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+  "git_worktree_clean": true,
+  "proof_runtime_and_test_bytes_unchanged": true,
+  "main_merged": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "parent_status_rows_retained": 204,
+  "product_push": "success",
+  "product_ref": "refs/heads/cloud/sd-orbit-c-f60",
+  "pr": null,
+  "mechanical": "MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock and check exit=0; views=node src/base/contract-docs.mjs write and check exit=0; ledger=none exit=0",
+  "candidate_files": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/core/capture-mail-rules.test.ts"
+  ],
+  "proof_source_hashes": {
+    "head": "54956cf7ad9ab14c3c609b6d2497d95a138cd02f",
+    "files": {
+      "tests/core/capture-mail-rules.test.ts": "0d0c65fe66a2c0d5a787740dacd21b3734f54ffb3fb14d345fd4a55244f7f77c",
+      "tests/core/capture-connector.test.ts": "b9d64a854cc5fb351e301567f70eb7349b81cac5484168c1682e8fc3da8f73c6",
+      "tests/core/capture-providers.test.ts": "9e763ce40b906e7c72e1882381e849b0ab5982b2df38909413bef7e60c76de10",
+      "tests/core/capture-erasure.test.ts": "9f0c4835ff1006a4d391eeb3ce5bed4276ea1bbc9ff5b666fe50afde4a02aa3e",
+      "tests/e2e/capture.spec.mjs": "6270e7309a3b5d6bab70ddf795c6e4755ae630a1a0a24216b439bc8e30f43026",
+      "tests/support/capture-provider-fixture.ts": "397e34d8da4af879b6f34414770a12af97359c03c2616bf4bf93265ca64653b8",
+      "tests/support/capture-provider-network.ts": "3aa2794115aa037c23770af374cbde6059a20f6c5a1258edb63c61f44f595122",
+      "src/core/features/capture/providers/service.ts": "f841461108737b6723562c003e08e57b96635e83046d216b7e308b3570346bc1"
+    }
+  },
+  "remote_refs": [
+    "977e663adaf18d3ff54b0aecbe7d10355217ab0c\trefs/heads/cloud/sd-orbit-c-f60",
+    "c01084f133af9aa484a6c1f5151a4e9cfbc7230f\trefs/heads/main"
+  ],
+  "git_history_full": true,
+  "identities_verified": true,
+  "candidate_commits": [
+    "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+    "54956cf7ad9ab14c3c609b6d2497d95a138cd02f"
+  ],
+  "changed_status_rows": [
+    "CAPTURE-006"
+  ],
+  "status_transition": "partial -> done",
+  "github_calls": 6,
+  "handoff": "READY under the explicit generated-view exception; guarded landing and its regenerated-view Verify remain required",
+  "evidence_note": "CI failed-job excerpts omit environment blocks. Browser and build output omit binding values when present."
+}
