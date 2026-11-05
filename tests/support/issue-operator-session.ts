@@ -18,19 +18,23 @@ try {
   const dependencies = createDependencies(platform.env.DB);
   for (const opportunity of [
     { id: "01J0000000000000000000000X", score: 99, lastContributingSignalAt: "2026-08-01T00:00:00.000Z" },
-    { id: "01J0000000000000000000000Y", score: 92, lastContributingSignalAt: "2026-08-31T00:00:00.000Z" },
-    { id: "01J0000000000000000000000Z", score: 92, lastContributingSignalAt: "2026-08-29T00:00:00.000Z" }
+    { id: "01J0000000000000000000000Y", score: 96, lastContributingSignalAt: "2026-08-31T00:00:00.000Z" },
+    { id: "01J0000000000000000000000Z", score: 96, lastContributingSignalAt: "2026-08-29T00:00:00.000Z" },
+    // Insert the lower ID after its exact score and time twin: insertion order cannot prove the tie-break.
+    { id: "01J0000000000000000000000W", score: 96, lastContributingSignalAt: "2026-08-31T00:00:00.000Z", ownerId: sampleData.operators[0].id },
+    { id: "01J0000000000000000000000U", score: 90, lastContributingSignalAt: "2026-08-31T00:00:00.000Z", ownerId: sampleData.operators[0].id, band: "medium" as const },
+    { id: "01J0000000000000000000000V", score: 89, lastContributingSignalAt: "2026-08-31T00:00:00.000Z", ownerId: sampleData.operators[0].id, stageId: sampleData.pipelineStages[1].id }
   ]) {
     await dependencies.records.ensureOpportunity({
       ...opportunity,
       title: `Ordering proof ${opportunity.id.slice(-1)}`,
       lifecycle: "open",
-      stageId: sampleData.pipelineStages[0].id,
-      ownerId: null,
+      stageId: opportunity.stageId ?? sampleData.pipelineStages[0].id,
+      ownerId: opportunity.ownerId ?? null,
       companyId: null,
       valueCents: 0,
       expectedCloseAt: null,
-      band: "high",
+      band: opportunity.band ?? "high",
       queueState: "now",
       queueReason: "Ordering proof"
     });

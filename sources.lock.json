@@ -10187,7 +10187,7 @@
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
-      "sha256": "3e651bb3eff5cb93717922235febce5a73f61386368c0b36c6f4715051952203",
+      "sha256": "c6a12eca9d88a6dcab795c85a8cbc09a2526fbf0b898513708956cb13fdbf17f",
       "executable": false
     },
     "tests/e2e/records.spec.mjs": {
@@ -10955,7 +10955,7 @@
       "executable": false
     },
     "tests/support/issue-operator-session.ts": {
-      "sha256": "25dc5c8690fb5e9b3412eaa7f209740fb96599e8f53bb6f2fcff06dd3d9f7ed6",
+      "sha256": "43c317093754f7593d1f9e9bd49e476a4512a519931a29ea1af94296ebf36a8f",
       "executable": false
     },
     "tests/support/keyboard-focus.mjs": {

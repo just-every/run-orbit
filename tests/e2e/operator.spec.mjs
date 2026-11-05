@@ -30,40 +30,76 @@ test.describe("authenticated operator UI", () => {
     await authenticateOperator(context);
   });
 
-  contract("OPP-006", "the desktop NOW queue applies persisted filters before ordered results", async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
+  contract("OPP-006", "the desktop NOW queue applies persisted filters before ordered results", async ({ page }, info) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
     const failures = watchFailures(page);
     await page.goto("/app", { waitUntil: "networkidle" });
 
     await expect(page.getByTestId("now-queue")).toBeVisible();
-    const {opportunities}=await (await page.request.get('/api/v1/opportunities/now')).json();
-    const ordered=[...opportunities].sort((a,b)=>b.score-a.score || (b.lastContributingSignalAt??'').localeCompare(a.lastContributingSignalAt??'') || a.id.localeCompare(b.id));
-    expect(await page.locator('.operator-queue-card > a').evaluateAll(links=>links.map(link=>link.getAttribute('href')))).toEqual(ordered.map(row=>`/app/opportunities/${row.id}`));
+    const id = suffix => `01J0000000000000000000000${suffix}`;
+    const defaultOrder = ["X", "W", "Y", "Z", "F", "U", "V"].map(id);
+    const links = page.locator(".operator-queue-card > a");
+    async function expectDisplayed(ids) {
+      await expect.poll(() => links.evaluateAll(rows => rows.map(row => row.getAttribute("href"))))
+        .toEqual(ids.map(value => `/app/opportunities/${value}`));
+      await expect(page.locator(".operator-queue-card__rank")).toHaveText(ids.map((_, index) => String(index + 1).padStart(2, "0")));
+    }
+    async function expectNative(ids, filters = {}) {
+      const response = await page.request.get(`/api/v1/opportunities/now?${new URLSearchParams(filters)}`);
+      expect(response.status()).toBe(200);
+      const { opportunities } = await response.json();
+      expect(opportunities.map(row => row.id)).toEqual(ids);
+      await expectDisplayed(ids);
+      return opportunities;
+    }
+    // Expected identities are independent of the returned order. X has the highest score;
+    // W and Y tie on score and time, and Z has the same score with older evidence.
+    const persisted = await expectNative(defaultOrder);
+    expect(persisted.filter(row => [id("W"), id("Y"), id("Z")].includes(row.id)).map(row => [row.id, row.score, row.lastContributingSignalAt]))
+      .toEqual([[id("W"), 96, "2026-08-31T00:00:00.000Z"], [id("Y"), 96, "2026-08-31T00:00:00.000Z"], [id("Z"), 96, "2026-08-29T00:00:00.000Z"]]);
     await expect(page.locator(".operator-queue-card").first()).toContainText("Ordering proof X");
     // The filters sit behind one Filter control; each set filter shows as a chip.
     await page.getByRole("button", { name: /^Filter/ }).click();
     await page.getByLabel("Filter by owner").selectOption("unassigned");
     await expect(page.getByText("Fieldhouse Studio workspace", { exact: true })).toHaveCount(0);
     await expect(page.locator(".operator-queue-card")).toHaveCount(3);
+    await expectNative(["X", "Y", "Z"].map(id), { ownerId: "unassigned" });
     await expect(page.getByRole("list", { name: "Applied filters" })).toContainText("Owner: Unassigned");
-    await page.getByLabel("Filter by owner").selectOption("");
-    const stageFilter = page.getByLabel("Filter by stage");
-    const firstPersistedStage = await stageFilter.locator("option").nth(1).getAttribute("value");
-    expect(firstPersistedStage).toBeTruthy();
-    const stageResponse = page.waitForResponse((response) => {
+
+    // A named, active rep owns a deliberately mixed set of stages and bands.
+    await page.getByLabel("Filter by owner").selectOption({ label: "Maya Patel" });
+    const ownerId = id("A"), stageId = id("B");
+    await expectNative(["W", "F", "U", "V"].map(id), { ownerId });
+    await expect(page.getByRole("list", { name: "Applied filters" })).toContainText("Owner: Maya Patel");
+    const stageResponse = page.waitForResponse(response => {
       const url = new URL(response.url());
-      return url.pathname === "/api/v1/opportunities/now" && url.searchParams.get("stageId") === firstPersistedStage;
+      return url.pathname === "/api/v1/opportunities/now" && url.searchParams.get("stageId") === stageId;
     });
-    await stageFilter.selectOption(firstPersistedStage);
+    await page.getByLabel("Filter by stage").selectOption({ label: "Qualified" });
     await stageResponse;
-    const bandResponse = page.waitForResponse((response) => {
+    await expectNative(["W", "F", "U"].map(id), { ownerId, stageId });
+    const bandResponse = page.waitForResponse(response => {
       const url = new URL(response.url());
       return url.pathname === "/api/v1/opportunities/now" && url.searchParams.get("band") === "high";
     });
     await page.getByLabel("Filter by band").selectOption("high");
     await bandResponse;
-    await expect(page.locator(".operator-queue-card")).toHaveCount(4);
+    await expectNative(["W", "F"].map(id), { ownerId, stageId, band: "high" });
+    await page.getByLabel("Filter by owner").selectOption("");
+    await expectNative(["X", "W", "Y", "Z", "F"].map(id), { stageId, band: "high" });
+    await expect(page.locator(".operator-queue-card")).toHaveCount(5);
+    await page.getByLabel("Filter by stage").selectOption("");
+    await expectNative(["X", "W", "Y", "Z", "F", "V"].map(id), { band: "high" });
+    await page.getByRole("button", { name: "Clear filters", exact: true }).click();
+    expect(await expectNative(defaultOrder)).toEqual(persisted);
+    await page.reload({ waitUntil: "networkidle" });
+    expect(await expectNative(defaultOrder)).toEqual(persisted);
+    await expect(page.getByRole("list", { name: "Applied filters" })).toHaveCount(0);
     await expectNoHorizontalOverflow(page);
+    await page.screenshot({ path: info.outputPath("now-ordering-1440.png"), fullPage: true });
+    // Browser proof at the phone width uses the same persisted page; assertions run at 1440.
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.screenshot({ path: info.outputPath("now-ordering-390.png"), fullPage: true });
     expect(failures).toEqual([]);
   });
 
