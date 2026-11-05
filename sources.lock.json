@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "76f826ae35ce939a212936430ba78908ba8d2b64cd7c648e4e5034504fed4174",
+      "sha256": "e0e03d6107f7eabe43653e38b6477fed30083cd43aedf331e524fbd367375e66",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "a5daffb79dcd269824be36885cba3827615c0429b83bbbe3d33ed55c01420373",
+      "sha256": "664579681cd7317b07b5a31d35ae95f0e3b0ef92f24676bfd15d0ac3251f1127",
       "executable": false
     },
     "DEMO.md": {
@@ -9903,7 +9903,7 @@
       "executable": false
     },
     "tests/core/assistance.test.ts": {
-      "sha256": "04f156f8080a73e360161b082d2ed60b70d151a35a28eb1b408fd852b357ebcd",
+      "sha256": "5451e6d248ee85a1c987e41894784d2ff00a4de7af2aaafbd19045e0380c45e0",
       "executable": false
     },
     "tests/core/capture-boundaries.test.ts": {
@@ -10968,6 +10968,14 @@
     },
     "tests/support/mail-transport-client.ts": {
       "sha256": "5aedd823c1b5c5ac7f2951d004d430380f4cba704155b389e51e766671680077",
+      "executable": false
+    },
+    "tests/support/notification-responsibility.ts": {
+      "sha256": "932979e886370dbf3f8b6e4f3fd6e7af479d383261cf8c8be2dc93295a3cbd17",
+      "executable": false
+    },
+    "tests/support/notification-session.ts": {
+      "sha256": "e374bdc89aae61f9cb1316badf19010252c1d680d96c72b5eb109076fbf6f60a",
       "executable": false
     },
     "tests/support/observed-capacity-worker.ts": {

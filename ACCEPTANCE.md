@@ -887,7 +887,7 @@ Core · published · **partial** · Cites BASE-ROLE-001
 **Acceptance.**
 1. Trigger queue entry, reply and delivery problems on assigned and unassigned deals; verify responsible recipients and one notification on replay.
 
-**Evidence.** `src/core/features/notifications/routes.ts`; `tests/core/assistance.test.ts`; `tests/e2e/zz-notifications.spec.mjs`
+**Evidence.** `src/core/features/notifications/routes.ts`; `tests/core/assistance.test.ts`; `tests/e2e/zz-notifications.spec.mjs`; unassigned NOW, replies and failures follow the latest actor once (authenticated inboxes for both full operators, native NOW event, signed genuine reply and bounce, rejected and uncertain mail submissions, and replay); `tests/support/notification-responsibility.ts`; recipient isolation: NOTIFY-001 NOTIFY-002 queue transitions notify once and recipient read state survives a fresh sign-in
 **Gap.** Unasserted in the carried evidence: assigned-deal responsible recipient (the fixture leaves the deal unassigned). Asserted: unassigned queue recipient; unassigned reply recipient and replay count; delivery-problem recipient once; no-actor fallback goes to every active operator.
 
 #### NOTIFY-002 — Read state
@@ -899,7 +899,7 @@ Core · published · **partial** · Cites BASE-ROLE-001
 **Acceptance.**
 1. Open and mark notifications read across sessions; inspect recipient-specific state and an unread count without duplicate events.
 
-**Evidence.** `src/core/features/notifications/routes.ts`; `tests/core/assistance.test.ts`; `tests/e2e/zz-notifications.spec.mjs`
+**Evidence.** `src/core/features/notifications/routes.ts`; `tests/core/assistance.test.ts`; `tests/e2e/zz-notifications.spec.mjs`; `tests/support/notification-session.ts`
 **Gap.** Unasserted in the carried evidence: read state persists after a new sign-in session. Asserted: recipient read mark stored; another recipient cannot mark it; unread count returns to previous value; queue notice not duplicated.
 
 ### Public surfaces
