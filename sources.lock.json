@@ -9959,7 +9959,7 @@
       "executable": false
     },
     "tests/core/crm-import.test.ts": {
-      "sha256": "6043d61aa04a1cc2173327c834705f896d9a50d9bea6caa56afa94bf464475d3",
+      "sha256": "4e492d3b06a21efceaabb444c91b485e11b5c0bcc3003e92dcc4f139f9e50175",
       "executable": false
     },
     "tests/core/identity.test.ts": {
@@ -10887,7 +10887,7 @@
       "executable": false
     },
     "tests/support/crm-import-flow.ts": {
-      "sha256": "78434cfd25e35694e19487840262f4093bf78b9288b39d397b7fbee32a9d48a5",
+      "sha256": "a1c448771be6d82e09eb90a85bccdd45e95fbb82fa677feb3ed38d06ced9ecb6",
       "executable": false
     },
     "tests/support/crm-import-privacy.ts": {
