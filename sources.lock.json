@@ -2295,11 +2295,15 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "0ee637a4aa47dddd3e11d268df9de8452382e50d793c968e0c159c6dab89fb67",
+      "sha256": "7b40cfb9017c3c0788e19083250dd7904e76029282f0508ae9b1680a5fd8d24a",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
       "sha256": "a101a8c86fe2b68e095c974c0ae95fdeef8fc38499d491d4271c745f238f2699",
+      "executable": false
+    },
+    "newtests/t096/browser-opt-out-upgrade.ts": {
+      "sha256": "a32dea6db1a324441ba2461edc9f647f88cbb6fdd5f7e8a1526f392aec0a6e70",
       "executable": false
     },
     "newtests/t096/browser-ownership.ts": {
@@ -11000,6 +11004,10 @@
     },
     "tests/support/preview-timers.mjs": {
       "sha256": "850b4074e72c36869acb4ab0787c3ef700100eed51c0df8357a67ab23cf49815",
+      "executable": false
+    },
+    "tests/support/prior-capture-upgrade.ts": {
+      "sha256": "b478f87132ec87740cdfc074fd89e27eb5f0c3040234ca7f62409b9aa7c933c2",
       "executable": false
     },
     "tests/support/record-changes-proof.ts": {

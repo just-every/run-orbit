@@ -41,13 +41,19 @@ export async function optOutUpgradeBrowserJourney(directory: string) {
           await expect(type.getByRole('checkbox', {name: 'Add opt-out headers and link', exact: true})).toBeChecked();
           await expect(type).toContainText('Kept on for an upgraded installation');
           await expect(settings).toContainText('1 approved before this setting existed');
-          await page.reload();
+        }
+        await page.reload();
+        await settings.locator('fieldset[data-type="one_to_one"] input').first().waitFor();
+        if (width === 1440) {
+          const type = settings.getByRole('group', {name: 'One-to-one email and replies', exact: true});
           await expect(type.getByRole('checkbox', {name: 'Add opt-out headers and link', exact: true})).toBeChecked();
           await expect(type).toContainText('Kept on for an upgraded installation');
           const response = await context.request.get('/api/v1/settings/opt-out');
           assert.equal(response.status(), 200);
           const body = await response.json();
-          assert.equal(body.types.find((row: {type: string}) => row.type === 'one_to_one').basis, 'kept on for an upgraded installation');
+          const retained = body.types.find((row: {type: string}) => row.type === 'one_to_one');
+          assert.equal(retained.carries, true);
+          assert.equal(retained.basis, 'kept on for an upgraded installation');
           assert.deepEqual(body.approvedUnsent, {carrying: 0, notCarrying: 0, approvedBeforeSetting: 1});
         }
         await accessible(page, `opt-out-upgrade-${width}`, directory);
