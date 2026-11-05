@@ -10047,7 +10047,7 @@
       "executable": false
     },
     "tests/core/records-search.test.ts": {
-      "sha256": "7ac001cecb56d3878a99f58574b1dd3629496d49ce08cc5311b81d250502586d",
+      "sha256": "0d178162601f874031e6fc8077d9dad8c456e40937084c75530a0e2e60f9459d",
       "executable": false
     },
     "tests/core/request-scheduling.test.ts": {
@@ -10811,7 +10811,7 @@
       "executable": false
     },
     "tests/support/buying-context.ts": {
-      "sha256": "14182a08eeb9c0224128c17c9e92e9e08d4c2c80e9a7e4d922c9726933d0afa1",
+      "sha256": "fb4c72f8da987a2e1ba10485040c5d2cea6122efa0960a1534933534f8304562",
       "executable": false
     },
     "tests/support/calendar-writeback.ts": {
