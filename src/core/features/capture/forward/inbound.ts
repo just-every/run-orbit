@@ -28,8 +28,9 @@ export function createForwardInboundRoutes(db:D1Database,inbound:ForwardInbound&
  app.post('/',async c=>{
   const reject=async(status:401|403|413,error:string)=>(await rejectedMailRateLimit(db,c.req.raw))??c.json({error},status);
   if(!inbound.parseKey)return reject(403,'Mail signature key is not configured.');
+  // Allow SendGrid's full 30 MB message plus multipart fields before signature verification.
   let raw:ArrayBuffer;
-  try{raw=await boundedRequestBody(c.req.raw,MAX_FORWARDED_BYTES+1024*1024);}
+  try{raw=await boundedRequestBody(c.req.raw,30*1024*1024+1024*1024);}
   catch(error){if(error instanceof RequestBodyTooLarge)return reject(413,'Forwarded mail exceeds the size limit.');throw error;}
   if(!await verifyMailWebhook(inbound.parseKey,raw,c.req.header('X-Twilio-Email-Event-Webhook-Timestamp')??'',c.req.header('X-Twilio-Email-Event-Webhook-Signature')??''))return reject(401,'Mail signature is invalid or expired.');
   const limited=await signedMailRateLimit(db);if(limited)return limited;

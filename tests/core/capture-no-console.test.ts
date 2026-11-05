@@ -6,6 +6,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {test} from 'node:test';
 import {captureFixture,eml} from '../support/capture-fixture';
 import {createApp} from '../support/app';
+import {exported} from '../support/capture-data-archive';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
 import {receiveRoutedEmail} from '../../src/core/features/capture/forward/inbound';
 
@@ -25,7 +26,6 @@ test('CAPTURE-008 CAPTURE-009 the Orbit address and a calendar link capture cust
   const parse=async(to:string[],raw:string,signed=true)=>{
    const form=new FormData();form.set('email',raw);form.set('envelope',JSON.stringify({to,from:'seller@orbit.test'}));form.set('to',to.join(','));
    const request=new Request('https://orbit.test/api/v1/mail/capture',{method:'POST',body:form}),body=Buffer.from(await request.arrayBuffer()),timestamp=String(Math.floor(Date.now()/1000));
-   assert.ok(body.byteLength<11*1024*1024,'the signed multipart request fits the outer request limit');
    return app.request(request.url,{method:'POST',headers:{'Content-Type':request.headers.get('Content-Type')!,'X-Twilio-Email-Event-Webhook-Timestamp':timestamp,'X-Twilio-Email-Event-Webhook-Signature':signed?sign('sha256',Buffer.concat([Buffer.from(timestamp),body]),keys.privateKey).toString('base64'):'MEUCIQ'},body});
   };
   const routed=async(to:string,raw:string)=>{let rejected:string|null=null;await receiveRoutedEmail({from:'seller@orbit.test',to,raw:new Response(raw).body!,rawSize:Buffer.byteLength(raw),headers:new Headers(),setReject:(reason:string)=>{rejected=reason;}} as unknown as ForwardableEmailMessage,f.db,{security,address:'orbit@capture.orbit.test'});return rejected;};
@@ -69,8 +69,8 @@ test('CAPTURE-008 CAPTURE-009 the Orbit address and a calendar link capture cust
   const before=await inventory(),sourceBefore=await sourceStatus();
   assert.ok(before.every(table=>table.count>0),'nonempty evidence and timeline inventories guard against content loss or replacement');
   for(const [index,door] of ['routed','parse'].entries()){
-   const sentinel=`synthetic-orbit-27-${door}`,raw=reply.replace('bcc-reply',sentinel).replace('Yes, let us talk on Tuesday.',`${sentinel} ${'é'.repeat(5*1024*1024)}`);
-   assert.ok(Buffer.byteLength(raw)>10*1024*1024&&raw.length<10*1024*1024,'message size is measured in bytes');
+   const sentinel=`synthetic-orbit-27-${door}`,raw=reply.replace('bcc-reply',sentinel).replace('Yes, let us talk on Tuesday.',`${sentinel} ${'é'.repeat((door==='parse'?6:5)*1024*1024)}`);
+   assert.ok(Buffer.byteLength(raw)>(door==='parse'?12:10)*1024*1024&&raw.length<10*1024*1024,'message size is measured in bytes; Inbound Parse crosses the former 11 MiB cap');
    if(door==='routed'){
     assert.match((await routed('orbit+guess@capture.orbit.test',raw))!,/Unknown address/);
    }else{
@@ -95,6 +95,18 @@ test('CAPTURE-008 CAPTURE-009 the Orbit address and a calendar link capture cust
     }}finally{store.close();}
    }
   }
+
+  // Hand-forwarded headers and signal participants keep the mailbox, never its credential tag.
+  const stored=JSON.stringify((await f.db.prepare("SELECT headers,body FROM capture_items WHERE source_id='capture-forward'").all()).results);
+  const participants=JSON.stringify((await f.db.prepare("SELECT payload_json FROM signals WHERE source_id='capture-forward'").all()).results);
+  for(const evidence of [stored,participants]){
+   assert.ok(evidence.includes('orbit@capture.orbit.test'),'the untagged receiving mailbox remains in evidence');
+   assert.ok(!evidence.toLowerCase().includes(address.toLowerCase()),'the private tag is absent from persisted evidence');
+  }
+  const archive=JSON.stringify(await exported(f));
+  assert.ok(archive.includes('fwd-routed@orbit.test'),'the downloaded archive contains the hand-forwarded capture');
+  assert.ok(archive.includes('orbit@capture.orbit.test'),'the archive keeps the untagged mailbox');
+  assert.ok(!archive.toLowerCase().includes(address.toLowerCase()),'the downloaded archive never carries the tagged address');
 
   // Replacing the address cuts the old one off at once and keeps what was captured.
   const replaced=(await (await api('/forward',{})).json() as {address:string}).address;assert.notEqual(replaced,address);
