@@ -6815,7 +6815,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-activity.tsx": {
-      "sha256": "429ed31cb310f7b9089f5990883e3d60379896e0dbac74f5b5a871de5423a18f",
+      "sha256": "ef89806e6d3e0829e573b5e63b20297b877c09d9ab7a29d63a2106ab3164f7eb",
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-context.tsx": {
@@ -7999,7 +7999,7 @@
       "executable": false
     },
     "src/core/features/risks/evidence.ts": {
-      "sha256": "ad5b75d0f56fda21273e27ff8b76da0df9da36fd8d50d085adee3fd7d60967e7",
+      "sha256": "c718bea9424d2a1ceb21ed4f9171f4d63f79587d518d51ed7a3606cd72d37dff",
       "executable": false
     },
     "src/core/features/risks/findings.ts": {
@@ -10111,7 +10111,7 @@
       "executable": false
     },
     "tests/delegation-browser/today-brief.test.ts": {
-      "sha256": "20b4e7bbcbf8a309e86df667504687737e35f74e5ec3d91df021e92e0fa45b50",
+      "sha256": "f616e14debfd17d0995fe595d262ee550405801d30c049779113b472273bde3f",
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {
