@@ -28,7 +28,7 @@ async function operator(email = `${createId().toLowerCase()}@example.test`) {
   return { id, email, auth };
 }
 
-test('PUBLIC-004 email link: one answer for every address, inert preview, one-use POST confirmation, refused for a removed operator', async () => {
+test('PUBLIC-004 email link: one answer for every address, inert preview, one-use POST confirmation, expiry and removed-operator refusal', async () => {
   const mail = mailedIdentity(fixture.db), person = await operator();
   // The deployed route selects the RER relay, even when old SendGrid credentials remain.
   const relayBindings={...mail.bindings,AUTH_LOCAL:'false',MAIL_PROVIDER:'rer',MAIL_FROM:'managed@example.test',MAIL_API_KEY:'fixture-relay-key',MAIL_RELAY_URL:'https://managed-mail.example.test/send',SENDGRID_API_KEY:'must-not-be-used'};
@@ -53,6 +53,47 @@ test('PUBLIC-004 email link: one answer for every address, inert preview, one-us
   const cookie = signedIn[0]!.headers.get('set-cookie')!;
   assert.match(cookie, /^__Host-orbit_session=[a-f0-9]{64}; Path=\/; HttpOnly; Secure; SameSite=Lax/);
   assert.equal((await operatorFromRequest(new Request(mail.origin + '/app', { headers: { Cookie: cookie.split(';')[0]! } }), mail.bindings))?.operatorId, person.id);
+
+  // Each boundary attempt gets its own real mailed proof; no expiry is edited in storage.
+  let now = Date.UTC(2030, 0, 15, 12);
+  const timedOptions = { ...owned, mailSender: mail.mailSender, clock: () => now };
+  const timedAsk = (request: Request) => identityResponse(request, mail.bindings, timedOptions);
+  const sessions = async () => Promise.all(['sessions', 'identity_sessions'].map(async table =>
+    (await fixture.db.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()).results));
+  const tokens = new Set<string>();
+  for (const elapsed of [15 * 60_000 - 1, 15 * 60_000, 15 * 60_000 + 1]) {
+    const sentBefore = mail.sent.length, before = await sessions();
+    assert.equal((await timedAsk(mail.post('/auth/magic-link', { json: { email: person.email } })))!.status, 202);
+    assert.equal(mail.sent.length, sentBefore + 1, 'each expiry attempt receives a separately issued link');
+    const issuedLink = mail.linkIn(mail.sent.at(-1))!;
+    const issuedToken = new URL(issuedLink).searchParams.get('token')!;
+    assert.ok(!tokens.has(issuedToken), 'an expired attempt never reuses an already consumed proof');
+    tokens.add(issuedToken);
+    now += elapsed;
+    const boundaryPreview = await timedAsk(new Request(issuedLink));
+    assert.equal(boundaryPreview!.status, elapsed < 15 * 60_000 ? 200 : 400);
+    assert.equal(boundaryPreview!.headers.get('set-cookie'), null);
+    assert.deepEqual(await sessions(), before, 'requesting and previewing a link issue no session');
+    const confirmed = await timedAsk(mail.post('/auth/confirm', { form: { token: issuedToken } }));
+    if (elapsed < 15 * 60_000) {
+      assert.equal(confirmed!.status, 303, 'confirmation immediately before the deadline succeeds');
+      const freshCookie = confirmed!.headers.getSetCookie().find(value => value.startsWith('__Host-orbit_session='));
+      assert.ok(freshCookie);
+      const current = await timedAsk(new Request(mail.origin + '/auth/session', { headers: { Cookie: freshCookie.split(';')[0]! } }));
+      assert.equal(current!.status, 200);
+      const session = await current!.json() as { operator: { id: string } };
+      assert.equal(session.operator.id, person.id, 'the valid proof signs in the existing operator');
+      const after = await sessions();
+      assert.equal(after[0]!.length, before[0]!.length + 1);
+      assert.equal(after[1]!.length, before[1]!.length + 1);
+    } else {
+      assert.equal(confirmed!.status, 400, `confirmation after ${elapsed} milliseconds is refused`);
+      assert.deepEqual(await confirmed!.json(), { error: 'invalid_or_expired' });
+      assert.equal(confirmed!.headers.get('set-cookie'), null, 'an expired proof issues no session cookie');
+      assert.deepEqual(await sessions(), before, 'expired confirmation changes no session or provenance row');
+    }
+    now += 15 * 60_000;
+  }
 
   await ask(mail.post('/auth/magic-link', { json: { email: person.email } }));
   const pending = new URL(mail.linkIn(mail.sent.at(-1))!).searchParams.get('token')!;

@@ -52,7 +52,7 @@ const formPost = (request: Request) => (request.headers.get('content-type') ?? '
  * Orbit's identity front door: the shared sign-in page, Base's /auth routes,
  * provider linking under /.well-known, and sign-out. Null for other paths.
  */
-export async function identityResponse(request: Request, bindings: PlatformBindings, options: { waitUntil?: (promise: Promise<unknown>) => void; ownerClaimed: () => Promise<boolean>; mailSender?: MailSender }): Promise<Response | null> {
+export async function identityResponse(request: Request, bindings: PlatformBindings, options: { waitUntil?: (promise: Promise<unknown>) => void; clock?: () => number; ownerClaimed: () => Promise<boolean>; mailSender?: MailSender }): Promise<Response | null> {
   const path = new URL(request.url).pathname;
   if (path !== '/signin' && !path.startsWith('/auth/') && !path.startsWith('/.well-known/rer-')) return null;
   try {
