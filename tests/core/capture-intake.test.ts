@@ -7,6 +7,7 @@ import {signedReplies} from '../support/signed-reply';
 const count = async (db: D1Database, sql: string, ...bindings: unknown[]) => Number(await db.prepare(sql).bind(...bindings).first('n'));
 
 test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox and calendar files become signals with their evidence; replay, threading, delivery reports and private mail behave as the contract says', async () => {
+  await immediateCaptureEffects();
   const f = await captureFixture();
   try {
     const mail = fixtureMailbox(f), files = [{ name: 'export.mbox', text: mail.mbox }, { name: 'invite.ics', text: mail.invite }, { name: 'cancel.ics', text: mail.cancellation }];
@@ -146,3 +147,87 @@ test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox 
 
   } finally { await f.dispose(); }
 });
+
+/** Fresh work for each kind of evidence: an earlier stop cannot hide a later one. */
+async function immediateCaptureEffects() {
+  for (const kind of ['booking', 'reply', 'automatic'] as const) {
+    const f = await captureFixture(kind === 'automatic' ? 'bob' : 'ana');
+    try {
+      const mail = fixtureMailbox(f), file = kind === 'booking'
+        ? { name: 'booking.ics', text: mail.invite }
+        : { name: `${kind}.eml`, text: kind === 'reply' ? mail.reply : mail.autoReply };
+      const work = async () => {
+        const response = await f.request(`/api/v1/workbench/opportunities/${f.opportunity}/messages`);
+        assert.equal(response.status, 200);
+        const { messages } = await response.json() as { messages: Record<string, unknown>[] };
+        return {
+          message: messages.find(message => message.id === f.scheduled),
+          drafts: await Promise.all([f.scheduledDraft, f.unsentDraft].map(async id => {
+            const response = await f.request(`/api/v1/drafts/${id}`);
+            assert.equal(response.status, 200);
+            return (await response.json() as { draft: { id: string; isStale: boolean; staleReason: string | null } }).draft;
+          })),
+        };
+      };
+      const before = await work(), sends = f.sent.length;
+      assert.equal(before.message!.state, 'scheduled');
+      assert.deepEqual(before.drafts.map(draft => draft.isStale), [false, false]);
+      // Register the source through the native door without capturing any evidence.
+      assert.equal((await f.upload([{ name: 'empty.ics', text: 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nEND:VCALENDAR' }])).status, 201);
+      const inventory = async () => Object.fromEntries(await Promise.all([
+        'signals', 'capture_items', 'capture_proposals', 'signal_links', 'timeline_entries',
+        'timeline_entry_records', 'evaluations', 'evaluation_contributions',
+        'evaluation_job_runs', 'recommendations', 'notifications',
+        'contacts', 'opportunities', 'drafts', 'outbound_messages', 'capture_sources',
+      ].map(async table => [table, (await f.db.prepare(`SELECT * FROM ${table}`).all()).results.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)))])));
+      const original = await inventory();
+      if (kind !== 'automatic') {
+        // Proposals are the final writes in intake's real D1 batch, after the stop effects.
+        await f.db.prepare("CREATE TRIGGER synthetic_capture_failure BEFORE INSERT ON capture_proposals BEGIN SELECT RAISE(ABORT, 'synthetic-orbit-capture-failure'); END").run();
+        const failed = await f.upload([file]);
+        assert.equal(failed.status, 500);
+        assert.deepEqual(await failed.json(), { error: 'Capture failed; nothing was confirmed.' });
+        assert.deepEqual(await inventory(), original, `${kind}: failed capture rolls back evidence, links, queue, drafts, cancellation and proposals`);
+        assert.deepEqual(await work(), before);
+        assert.equal(f.sent.length, sends);
+        await f.db.prepare('DROP TRIGGER synthetic_capture_failure').run();
+      }
+      const captured = await f.upload([file]);
+      assert.equal(captured.status, 201);
+      const { summary } = await captured.json() as { summary: { captured: number; attached: number; stopped: number } };
+      assert.equal(summary.captured, 1);
+      const after = await work();
+      if (kind === 'automatic') {
+        assert.equal(summary.attached, 1, 'the automatic message is on the actual Orbit thread');
+        assert.equal(summary.stopped, 0);
+        assert.deepEqual(after, before, 'automatic replies change neither the schedule nor either draft');
+      } else {
+        const reason = kind === 'booking' ? /Meeting booked/ : /Customer repl/;
+        assert.equal(summary.stopped, 1);
+        assert.equal(after.message!.state, 'cancelled');
+        assert.match(String(after.message!.failure), reason);
+        for (const draft of after.drafts) {
+          assert.equal(draft.isStale, true);
+          assert.match(draft.staleReason!, reason);
+        }
+        const response = await f.request('/api/v1/capture/proposals');
+        assert.equal(response.status, 200);
+        const { proposals } = await response.json() as { proposals: { kind: string; status: string }[] };
+        assert.ok(proposals.length > 0, 'other changes still wait for a person');
+        assert.ok(proposals.every(proposal => proposal.status === 'pending'));
+        if (kind === 'booking') assert.ok(proposals.some(proposal => proposal.kind === 'next_action'));
+      }
+      const complete = await inventory();
+      assert.deepEqual(complete.contacts, original.contacts, 'proposed contact changes were not applied');
+      assert.equal(await count(f.db, "SELECT count(*) n FROM capture_proposals WHERE status<>'pending'"), 0);
+      const replay = await f.upload([file]);
+      assert.equal(replay.status, 201);
+      const replaySummary = (await replay.json() as { summary: { replayed: number; captured: number } }).summary;
+      assert.equal(replaySummary.replayed, 1);
+      assert.equal(replaySummary.captured, 0);
+      assert.deepEqual(await inventory(), complete, 'replay repeats no capture or stop effect');
+      assert.deepEqual(await work(), after);
+      assert.equal(f.sent.length, sends, 'capture and replay submit no customer mail');
+    } finally { await f.dispose(); }
+  }
+}

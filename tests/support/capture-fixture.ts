@@ -9,10 +9,10 @@ import { OutreachService } from '../../src/core/features/outreach/service';
 
 /**
  * An Orbit with one account (Acme, acme.example), two contacts, an open
- * opportunity, real accepted sends to both contacts and a scheduled send to Ana.
+ * opportunity, real accepted sends to both contacts and follow-up work for one.
  * Sends go through Orbit's outreach code; only the mail provider is a fake.
  */
-export async function captureFixture() {
+export async function captureFixture(followUp: 'ana' | 'bob' = 'ana') {
   const platform = await isolatedDatabase(), db = platform.db, deps = createDependencies(db), records = new RecordsRepository(db);
   const operator = createId(), stage = createId(), sent: { recipient: string }[] = [];
   await deps.auth.ensureOperator({ id: operator, email: 'seller@orbit.test', displayName: 'Sam Seller' });
@@ -31,9 +31,10 @@ export async function captureFixture() {
     return (await approval.message(message.id)).message_id;
   };
   const anaThread = await send(ana, 'Proposal for Acme'), bobThread = await send(bob, 'Rollout plan');
-  const scheduledDraft = await outreach.createDraft(opportunity, { contactId: ana, subject: 'Follow-up', body: 'Scheduled follow-up' }, operator);
+  const followUpContact = followUp === 'ana' ? ana : bob;
+  const scheduledDraft = await outreach.createDraft(opportunity, { contactId: followUpContact, subject: 'Follow-up', body: 'Scheduled follow-up' }, operator);
   const scheduled = await approval.approve(scheduledDraft.id, 1, operator, { scheduledAt: new Date(Date.now() + 2 * 86400000).toISOString() });
-  const unsentDraft = await outreach.createDraft(opportunity, { contactId: ana, subject: 'Unsent idea', body: 'Not yet approved' }, operator);
+  const unsentDraft = await outreach.createDraft(opportunity, { contactId: followUpContact, subject: 'Unsent idea', body: 'Not yet approved' }, operator);
   const session = await deps.auth.createSession(operator), app = createApp({ database: db, assets: { fetch: async () => new Response('') } });
   const cookie = `__Host-orbit_session=${session.token}`;
   const request = (path: string, init: RequestInit = {}) => app.request(`https://orbit.test${path}`, { ...init, headers: { cookie, origin: 'https://orbit.test', ...init.headers } });
