@@ -52,8 +52,13 @@ test('NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdr
   const candidate=await(await f.request(`workbench/opportunities/${customer.id}/drafts`,'POST',{contactId:contact.id,subject:`Provider ${outcome}`,body:'Reviewed provider outcome'})).json() as any;
   const review=await(await f.request(`workbench/drafts/${candidate.id}/approval-preview`)).json() as any;
   const before=bodies.length;
-  const result=await f.request(`workbench/drafts/${candidate.id}/approve`,'POST',{revision:1,quietHoursConfirmation:review.localTime});assert.equal(result.status,502,await result.clone().text());assert.equal((await result.json() as any).state,outcome==='rejected'?'failed':'delivery-unknown');assert.equal(bodies.length,before+1);
-  await f.request(`workbench/drafts/${candidate.id}/approve`,'POST',{revision:1,quietHoursConfirmation:review.localTime});assert.equal(bodies.length,before+1,'The same exact approval never submits again after rejection or uncertainty');
+  const result=await f.request(`workbench/drafts/${candidate.id}/approve`,'POST',{revision:1,quietHoursConfirmation:review.localTime});assert.equal(result.status,502,await result.clone().text());const message=await result.json() as any;assert.equal(message.state,outcome==='rejected'?'failed':'delivery-unknown');assert.equal(bodies.length,before+1);
+  const reason=outcome==='rejected'?'Managed mail rejected this submission.':'Managed mail acceptance is uncertain; reconcile before resending.';
+  const history=async()=>{const response=await f.request(`workbench/opportunities/${customer.id}/messages`);assert.equal(response.status,200);return (await response.json() as {messages:{id:string;draftId:string;state:string;failure:string}[]}).messages;};
+  const saved=await history(),failed=saved.filter(item=>item.id===message.id);assert.equal(failed.length,1);assert.equal(failed[0]!.draftId,candidate.id);assert.equal(failed[0]!.state,message.state);assert.equal(failed[0]!.failure,reason,'Authenticated history retains the exact mail adapter diagnostic for this outcome');
+  assert.equal((await f.request(`workbench/opportunities/${customer.id}/messages`,'GET',undefined,{Cookie:''})).status,401);
+  assert.equal((await f.request(`workbench/drafts/${candidate.id}/approve`,'POST',{revision:1,quietHoursConfirmation:review.localTime})).status,409);
+  assert.deepEqual(await history(),saved,'Replaying the approval preserves the original message, reason and history inventory');assert.equal(bodies.length,before+1,'The same exact approval never submits again after rejection or uncertainty');
  }
 
  const products=async()=>((await(await f.request('settings/products')).json()) as any).products as any[],named=(list:any[],name:string)=>list.find(item=>item.products.includes(name));

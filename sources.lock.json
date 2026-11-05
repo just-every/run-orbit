@@ -10067,11 +10067,11 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "185cbcc21c2748f52bbc4164cb0df1707ecb4068f15220ec6365c1a69ac096fd",
+      "sha256": "e60fb0ce954308f7c48c19349b7a447ce2d6d3c9c1e0af09799b30ca0f291a63",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
-      "sha256": "59993b1a0cea6fb3ed8d679ca4cc565bdc4ed5b80704d08d4c838700eafe1051",
+      "sha256": "1a1cf9eb12f86eb7997c6a3c7294294699150e93996a588419be9f846f8e6cfc",
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
