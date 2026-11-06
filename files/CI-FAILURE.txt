@@ -1,0 +1,30 @@
+Run: 42225041552
+Job: 127917289309 (shards batch-8)
+Head: 881c08da6a64512b18389b32ed83790d59e02f1f
+Command: node scripts/verification-batch.mjs '["fold-domain-0"]'
+ORBIT_VERIFY_PREBUILT=1; ORBIT_VERIFY_JOURNEYS=1; ORBIT_VERIFY_TIER=push
+Failure below is retained from the actual completed job log. Setup environment rows are excluded.
+
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2363582Z test at newtests/t096/report-disclosure.test.ts:1:3138
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2365644Z ✖ REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence (206495.70394ms)
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2366799Z   Error: expect(locator).toHaveCount(expected) failed
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2367089Z   
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2367425Z   Locator:  getByRole('region', { name: 'Saved sales results' }).locator('ol > li')
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2367802Z   Expected: 1
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2367993Z   Received: 0
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2368189Z   Timeout:  5000ms
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2368370Z   
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2368536Z   Call log:
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2368964Z     - Expect "toHaveCount" getByRole('region', { name: 'Saved sales results' }).locator('ol > li') with timeout 5000ms
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2369741Z     - waiting for getByRole('region', { name: 'Saved sales results' }).locator('ol > li')
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2370204Z       14 × locator resolved to 0 elements
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2370495Z          - unexpected value "0"
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2370727Z   
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2371321Z       at captureRawStack (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2372577Z       at callMatcherAsStep (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2373817Z       at Object.toHaveCount (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2374926Z       at salesReportJourney (/home/runner/work/run-orbit/run-orbit/newtests/t096/browser-sales-report.ts:101:186)
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2375867Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/report-disclosure.test.ts:98:2) {
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2380984Z     matcherResult: { actual: 0, expected: 1, message: `expect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('region', { name: 'Saved sales results' }).locator('ol > li')\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - Expect "toHaveCount" getByRole('region', { name: 'Saved sales results' }).locator('ol > li') with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Saved sales results' }).locator('ol > li')\n    14 × locator resolved to 0 elements\n       - unexpected value "0"\n`, name: 'toHaveCount', pass: false, log: [ `  - Expect "toHaveCount" getByRole('region', { name: 'Saved sales results' }).locator('ol > li') with timeout 5000ms`, "  - waiting for getByRole('region', { name: 'Saved sales results' }).locator('ol > li')", '    14 × locator resolved to 0 elements', '       - unexpected value "0"' ], timeout: 5000, ariaSnapshot: undefined }
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.2384844Z   }
+shards (batch-8)	Verify routine product shard	2026-11-06T13:29:49.4085452Z ##[error]Process completed with exit code 1.

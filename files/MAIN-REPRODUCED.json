@@ -1,0 +1,8 @@
+{
+  "head": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+  "job": "127917289309 main comparison",
+  "command": "node scripts/verification-batch.mjs '[\"fold-domain-0\"]'",
+  "test": "newtests/t096/report-disclosure.test.ts:98 -> newtests/t096/browser-sales-report.ts:101",
+  "exit": 1,
+  "failure": "Saved sales results ol > li: expected 1, received 0, timeout 5000ms"
+}

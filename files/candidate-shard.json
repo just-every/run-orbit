@@ -1,0 +1,132 @@
+{
+  "shard": "fold-domain-0",
+  "commit": "881c08da6a64512b18389b32ed83790d59e02f1f",
+  "startedAt": "2026-11-06T14:13:22.379Z",
+  "finishedAt": "2026-11-06T14:24:06.469Z",
+  "status": "passed",
+  "stages": [
+    {
+      "args": [
+        "exec",
+        "node",
+        "scripts/verification-build.mjs",
+        "check"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 1289,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "exec",
+        "tsx",
+        "--test",
+        "--no-test-only",
+        "--test-concurrency=1",
+        "--test-reporter=spec",
+        "--test-reporter-destination=stdout",
+        "--test-reporter=./scripts/core-results.mjs",
+        "--test-reporter-destination=verification/fold-domain-0-results.jsonl",
+        "newtests/t096/collaborator-links.test.ts",
+        "newtests/t096/report-disclosure.test.ts"
+      ],
+      "env": {},
+      "files": [
+        "newtests/t096/collaborator-links.test.ts",
+        "newtests/t096/report-disclosure.test.ts"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 642777,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [
+        {
+          "kind": "summary",
+          "runner": "node:test",
+          "success": true,
+          "counts": {
+            "tests": 3,
+            "failed": 0,
+            "passed": 3,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "topLevel": 3,
+            "suites": 0
+          }
+        }
+      ],
+      "executions": [
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "collaborator relationship edits require current access to the actual native related rows",
+          "file": "newtests/t096/collaborator-links.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 53276.953975
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence",
+          "file": "newtests/t096/report-disclosure.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 576461.251782
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API",
+          "file": "newtests/t096/report-disclosure.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 2586.443716
+        }
+      ]
+    }
+  ],
+  "executions": [
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "collaborator relationship edits require current access to the actual native related rows",
+      "file": "newtests/t096/collaborator-links.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 53276.953975
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence",
+      "file": "newtests/t096/report-disclosure.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 576461.251782
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API",
+      "file": "newtests/t096/report-disclosure.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 2586.443716
+    }
+  ]
+}

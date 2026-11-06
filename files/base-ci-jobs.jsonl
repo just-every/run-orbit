@@ -1,0 +1,27 @@
+{"conclusion":"success","failed_steps":[],"id":127916284620,"name":"plan","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127916438058,"name":"source and shared build","status":"completed"}
+{"conclusion":"skipped","failed_steps":[],"id":127916441378,"name":"light","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289016,"name":"shards (batch-3)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289073,"name":"shards (batch-5)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289096,"name":"shards (batch-11)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289098,"name":"shards (batch-16)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289099,"name":"shards (batch-10)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289131,"name":"shards (batch-17)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289142,"name":"shards (batch-9)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289225,"name":"shards (batch-2)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289228,"name":"shards (batch-15)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289235,"name":"shards (batch-19)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289250,"name":"shards (batch-7)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289263,"name":"shards (batch-13)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289275,"name":"shards (batch-12)","status":"completed"}
+{"conclusion":"failure","failed_steps":["Verify routine product shard"],"id":127917289309,"name":"shards (batch-8)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289325,"name":"shards (batch-6)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289330,"name":"shards (batch-1)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289332,"name":"shards (batch-0)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289345,"name":"shards (batch-14)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289464,"name":"shards (batch-4)","status":"completed"}
+{"conclusion":"success","failed_steps":[],"id":127917289953,"name":"shards (batch-18)","status":"completed"}
+{"conclusion":"failure","failed_steps":["Require a successful plan and all required work","Retain combined routine verdicts (capacity pending)"],"id":127924919459,"name":"verify","status":"completed"}
+{"conclusion":"skipped","failed_steps":[],"id":127924970147,"name":"release","status":"completed"}
+{"conclusion":"skipped","failed_steps":[],"id":127924970162,"name":"full-push-proof","status":"completed"}
+{"conclusion":"skipped","failed_steps":[],"id":127924970329,"name":"nightly-proof","status":"completed"}

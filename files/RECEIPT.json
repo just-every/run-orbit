@@ -1,0 +1,250 @@
+{
+  "tag": "sd-orbit-c-f116",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f116",
+  "head": "881c08da6a64512b18389b32ed83790d59e02f1f",
+  "main_observed": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+  "checks": {
+    "views_write": {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0
+    },
+    "views_check": {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    "restore_views": {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0
+    },
+    "lock_write": {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    "lock_check": {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    "typecheck": {
+      "command": "pnpm run typecheck",
+      "node": "22.20.0",
+      "exit": 0
+    },
+    "first_party": {
+      "command": "pnpm exec rer check --profile first-party",
+      "node": "22.20.0",
+      "exit": 0
+    },
+    "managed_owner_node24": {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "node": "24.19.0",
+      "exit": 0,
+      "tests": 1,
+      "pass": 1
+    },
+    "managed_owner_node22": {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "node": "22.20.0",
+      "exit": 0,
+      "tests": 1,
+      "pass": 1,
+      "duration_ms": 93189.028781
+    }
+  },
+  "source_edits_this_continuation": false,
+  "new_product_commits_this_continuation": 0,
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "test_budget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "ledger": {
+    "command": null,
+    "exit": 0,
+    "reason": "No migration changed"
+  },
+  "views_committed": false,
+  "contract_diff": "",
+  "worktree_status": "",
+  "product_push": {
+    "command": "python3 /home/agent/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f116",
+    "exit": 0,
+    "head": "881c08da6a64512b18389b32ed83790d59e02f1f"
+  },
+  "candidate_ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f116",
+      "head_sha": "881c08da6a64512b18389b32ed83790d59e02f1f",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42231683336",
+      "id": 42231683336,
+      "name": "Verify",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": "failure",
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f112",
+      "head_sha": "881c08da6a64512b18389b32ed83790d59e02f1f",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42225041552",
+      "id": 42225041552,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ],
+  "main_ci": [
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42217956677",
+      "id": 42217956677,
+      "name": "Run site",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42217956400",
+      "id": 42217956400,
+      "name": "Verify",
+      "status": "completed"
+    },
+    {
+      "conclusion": "skipped",
+      "event": "push",
+      "head_sha": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42217956329",
+      "id": 42217956329,
+      "name": "Run demo",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "dynamic",
+      "head_sha": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42217955441",
+      "id": 42217955441,
+      "name": "Push on main",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42214478644",
+      "id": 42214478644,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ],
+  "github_api_calls": 7,
+  "publication_scan": {
+    "status": "not_run_cloud_route",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "head": "881c08da6a64512b18389b32ed83790d59e02f1f",
+    "owner": "Mac guarded lander"
+  },
+  "earlier_verify_failure": {
+    "run": 42225041552,
+    "job": 127917289309,
+    "shard": "fold-domain-0",
+    "command": "node scripts/verification-batch.mjs '[\"fold-domain-0\"]'",
+    "test": "newtests/t096/report-disclosure.test.ts:98 -> newtests/t096/browser-sales-report.ts:101",
+    "failure": "Saved sales results ol > li: expected 1, received 0, timeout 5000ms",
+    "log_command": "gh run view 42225041552 --repo just-every/run-orbit --job 127917289309 --log-failed",
+    "archive_exit": 0,
+    "source_repair_edited": false,
+    "classification": "FLAKE: also fails on main on the same runner; candidate exact-command reproduction passes"
+  },
+  "candidate_build": {
+    "command": "npx -y @runeditrun/rer build",
+    "exit": 0,
+    "head": "881c08da6a64512b18389b32ed83790d59e02f1f"
+  },
+  "main_build": {
+    "command": "npx -y @runeditrun/rer build",
+    "exit": 0,
+    "head": "b305e58f673cfe0b9485e179d2678734e261c7a8"
+  },
+  "reproduction_browser_adapter": {
+    "path": "/tmp/sd-orbit-c-f116-browser.cjs",
+    "effect": "Use headless /usr/bin/chromium with --no-sandbox; no test assertion or product bytes changed"
+  },
+  "no_product_source_changes_from_main": true,
+  "application_source_diff": "",
+  "generated_view_identity": {
+    "ACCEPTANCE.md": {
+      "equal_to_main": true,
+      "sha256": "81621272877b6fc334cda3d080b8fd74b056ceaede9e4470542aa74e916961df"
+    },
+    "docs/CLAIMS.md": {
+      "equal_to_main": true,
+      "sha256": "6dbe738446178cf479981d198ef33335cd2d59469df17f00328a8e3e17bcb444"
+    }
+  },
+  "source_lock_sha256": "623ce28acdddfa29416c6ec105bdabd756a025f3e0aa49c22459923295451f8f",
+  "candidate_ci_poll1": {
+    "conclusion": null,
+    "head_sha": "881c08da6a64512b18389b32ed83790d59e02f1f",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42231683336",
+    "status": "in_progress"
+  },
+  "candidate_ci_poll2": {
+    "conclusion": null,
+    "head_sha": "881c08da6a64512b18389b32ed83790d59e02f1f",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42231683336",
+    "status": "in_progress"
+  },
+  "candidate_reproduction": {
+    "head": "881c08da6a64512b18389b32ed83790d59e02f1f",
+    "command": "node scripts/verification-batch.mjs '[\"fold-domain-0\"]'",
+    "exit": 0,
+    "tests": 3,
+    "pass": 3,
+    "fail": 0,
+    "duration_ms": 641401.795074,
+    "original_failure_reproduced": false,
+    "source_repair_edited": false
+  },
+  "main_reproduction": {
+    "head": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+    "command": "node scripts/verification-batch.mjs '[\"fold-domain-0\"]'",
+    "exit": 1,
+    "tests": 3,
+    "pass": 2,
+    "fail": 1,
+    "duration_ms": 318402.495186,
+    "test": "newtests/t096/report-disclosure.test.ts:98 -> newtests/t096/browser-sales-report.ts:101",
+    "failure": "Saved sales results ol > li: expected 1, received 0, timeout 5000ms"
+  },
+  "repair_rounds": 0,
+  "main_reproduction_worktree_removed": true,
+  "local_commands_pending": false,
+  "candidate_ci_poll3": {
+    "conclusion": null,
+    "head_sha": "881c08da6a64512b18389b32ed83790d59e02f1f",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42231683336",
+    "status": "in_progress"
+  },
+  "terminal_custody": "PUSHED",
+  "blockers": [],
+  "ci_pending": "Verify 42231683336 is still in progress on the exact candidate SHA; no green conclusion claimed",
+  "landing_status": "not landed by cloud; Mac guarded lander owns scan and landing"
+}
