@@ -44,13 +44,13 @@ test('emitted Worker record and NOW lists wrap full valid long names; an invited
     const certificate=await customCertificate(fixture.directory);await fixture.close();
     const secret=(value:string)=>({type:'secret_text' as const,value});
     const worker=await runtime.startWorker({config:join(process.cwd(),'dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries({...identityVars(origin),ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)}).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:fixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port,secure:true,httpsKeyPath:certificate.keyPath,httpsCertPath:certificate.certPath},origin:{secure:true},outboundService:async request=>{
-      const url=new URL(request.url);if(url.origin!=='https://api.twilio.com'||url.pathname!==`/2010-04-01/Accounts/${callingAccount}/Calls.json`||request.method!=='POST')throw new Error('Unexpected calling provider request.');
+      const url=new URL(request.url);if(['www.googleapis.com','gmail.googleapis.com','graph.microsoft.com'].includes(url.hostname))return calendarData.providerFetch(request);if(url.origin!=='https://api.twilio.com'||url.pathname!==`/2010-04-01/Accounts/${callingAccount}/Calls.json`||request.method!=='POST'){calendarData.unexpectedRequests.push(url.origin+url.pathname);throw new Error('Unexpected provider request.');}
       callingProvider.submissions++;return Response.json({status:callingProvider.status,code:callingProvider.code},{status:callingProvider.status});
     }}});await worker.ready;
     if((await worker.fetch(origin+'/health')).status!==200)throw new Error('Emitted Worker did not become healthy.');
     browser = await chromium.launch({headless:true,executablePath:process.env.ORBIT_CHROMIUM_EXECUTABLE,args:['--no-sandbox','--use-mock-keychain','--password-store=basic',...certificateTrust(certificate.cert)]});
     const context = await browser.newContext({ baseURL: origin, ignoreHTTPSErrors:true, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
-    // Emitted documents and HTTP routes share one Worker; only Twilio's outbound network edge is faked.
+    // Emitted documents and HTTP routes share one Worker; only provider network edges are replaced.
     await callingJourney(await context.newPage(),{fetch:worker.fetch.bind(worker),origin,provider:callingProvider,accountSid:callingAccount,token:callingToken});
     await calendarJourney(await context.newPage(),calendarData);
     const collaboratorContext=await browser.newContext({baseURL:origin,ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:privateData.cookie}});
