@@ -7,13 +7,19 @@ test('BASE-PUBLIC-001 BASE-SECRET-001 PUBLIC-001 public surfaces expose no priva
  await page.goto('/');await page.waitForLoadState('networkidle');expect(external).toEqual([]);expect(await context.cookies()).toEqual([]);await expect(page.locator('body')).not.toContainText('Fieldhouse');await expect(page.locator('body')).not.toContainText('maya.patel');
  const scripts=await page.locator('script[src]').evaluateAll(nodes=>nodes.map(node=>node.src));for(const script of scripts){const body=await(await page.request.get(script)).text();expect(body).not.toContain('SENDGRID_API_KEY');expect(body).not.toContain('OPENAI_API_KEY');expect(body).not.toContain('ORBIT_ENCRYPTION_KEY');}
 });
-test('BASE-PUBLIC-003 public surfaces pass WCAG 2.2 AA at desktop and phone widths',async({page,context})=>{
+test('BASE-PUBLIC-003 PUBLIC-002 public surfaces and unknown demo paths pass WCAG 2.2 AA at desktop and phone widths',async({page,context})=>{
  test.setTimeout(120000);mkdirSync('verification/ui',{recursive:true});
- const routes=['/','/signin','/docs','/demo'];
+ const unknownDemo='/demo/synthetic-orbit-unknown';
+ const routes=['/','/signin','/docs','/demo',unknownDemo];
  for(const width of [1440,390,320]){
   await context.clearCookies();await page.setViewportSize({width,height:900});
   for(const route of routes){
-   await page.goto(route);await page.waitForLoadState('networkidle');
+   const response=await page.goto(route);await page.waitForLoadState('networkidle');
+   if(route===unknownDemo){
+    expect(response.status()).toBe(404);
+    await expect(page.getByRole('main')).toBeVisible();
+    await expect(page.getByRole('main').getByRole('heading',{level:1,name:'Page not found'})).toBeVisible();
+   }
    await page.screenshot({path:`verification/ui/${width}-${route==='/'?'public':route.slice(1).replaceAll('/','-')}.png`,fullPage:true});
    const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();
    expect(result.violations,`${width}px ${route}`).toEqual([]);
@@ -27,6 +33,11 @@ test('BASE-PUBLIC-003 public surfaces pass WCAG 2.2 AA at desktop and phone widt
    await page.keyboard.press('Tab');
    expect(await page.evaluate(()=>document.activeElement!==document.body),`${width}px ${route} keyboard focus`).toBe(true);
    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${width}px ${route} horizontal overflow`).toBe(true);
+   if(route===unknownDemo){
+    await page.getByRole('link',{name:'Return home',exact:true}).click();
+    await expect(page).toHaveURL('/');
+    await expect(page.getByRole('main')).toBeVisible();
+   }
   }
  }
 });
