@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "6bb6fb9aaef0e0df27f86958e4734fef3b5d0f3cfa37f0400496e6043e8781b1",
+      "sha256": "a9008eea1e76ab78d5bbe6a088d5d27e8d2e35ef85ff11d5f6e609d12b92dfb0",
       "executable": false
     },
     "DEMO.md": {
@@ -10075,7 +10075,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "af0f778603755d3adc0040bfeb34a07efb2f2e0ffb13f0ebcbf7f0791d66c631",
+      "sha256": "8d08905acbcd1fc80d6c9f84e6f32595cd84d7a2ff855a56749a962d96a531f0",
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {

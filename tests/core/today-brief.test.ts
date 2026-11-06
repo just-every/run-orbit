@@ -143,6 +143,7 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
   assert.equal((await departing.call('/api/v1/tasks?view=all')).status,401);
   const after=await t.json<any>(`/api/v1/records/opportunity/${deal}`);
   assert.equal(after.record.owner_id,receiver);assert.equal(after.record.lifecycle,'open');
+  for(const entry of before.timeline)assert.deepEqual(after.timeline.find((row:any)=>row.id===entry.id),entry,'Removal preserves every historical timeline entry and its attribution');
   assert.deepEqual(after.timeline.find((entry:any)=>entry.id===note.id),note,'Historical note content and attribution survive unchanged');
   assert.deepEqual(await t.json(`/api/v1/drafts/${saved.id}`),{...draftBefore,draft:{...draftBefore.draft,isStale:true,staleReason:'Owner handover'}},'The draft retains its content and original author while handover requires fresh review');
   const taskAfter=(await t.json<any>(`/api/v1/tasks/${salesTask.id}`)).task;
