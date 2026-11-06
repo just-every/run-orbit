@@ -1,0 +1,13 @@
+{
+  "parent_status_rows": 204,
+  "candidate_status_rows": 204,
+  "statuses_unchanged": true,
+  "counts": {
+    "partial": 136,
+    "done": 36,
+    "missing": 32
+  },
+  "data002_gap_unchanged": true,
+  "new_email_literals": 0,
+  "new_provider_key_shapes": 0
+}

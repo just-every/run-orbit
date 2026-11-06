@@ -1,0 +1,148 @@
+{
+  "base": "d89ffcc89d4e87b5276f13298210de9eb21f4f35",
+  "blockers": [],
+  "branch": "cloud/sd-orbit-c-f102",
+  "changed_files": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/core/assistance.test.ts"
+  ],
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test tests/core/assistance.test.ts",
+      "exit": 0,
+      "failed": 0,
+      "head": "23c6952bb233bb9ccf15b7dee46b2f353c87d482",
+      "log": "candidate-assistance.log",
+      "passed": 6
+    },
+    {
+      "command": "pnpm exec tsx --test --test-name-pattern=\"AI-001 DATA-002 changed or deleted preview context\" tests/core/assistance.test.ts",
+      "exit": 0,
+      "log": "point-final.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck-final.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check (after write)",
+      "exit": 0,
+      "log": "views-check.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock-write.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.json"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check (restored main views)",
+      "exit": 1,
+      "expected": true,
+      "log": "candidate-view-check.log",
+      "only": "ACCEPTANCE.md generated content differs"
+    }
+  ],
+  "ci": {
+    "archive_reads": [
+      {
+        "command": "gh run view 42207748929 --repo just-every/run-orbit --job 127858678140 --log-failed",
+        "exit": 0,
+        "log": "candidate-source-failure.log"
+      },
+      {
+        "command": "gh run view 42207748929 --repo just-every/run-orbit --job 127858923584 --log-failed",
+        "exit": 0,
+        "log": "candidate-verify-failure.log"
+      }
+    ],
+    "conclusion": "failure",
+    "discovery": "candidate-ci-discovery.json",
+    "event": "push",
+    "final_observed_at": "2026-11-06T11:12:20.331083+00:00",
+    "generated_view_only_exception": true,
+    "head": "23c6952bb233bb9ccf15b7dee46b2f353c87d482",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42207748929",
+    "id": 42207748929,
+    "observed_at": "2026-11-06T11:07:19Z",
+    "runtime_shards": "skipped after generated-view failure",
+    "source_failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "source_job": 127858678140,
+    "status": "completed",
+    "verify_job": 127858923584
+  },
+  "counts_after": {
+    "done": 36,
+    "missing": 32,
+    "partial": 136,
+    "total": 204
+  },
+  "counts_before": {
+    "done": 36,
+    "missing": 32,
+    "partial": 136,
+    "total": 204
+  },
+  "file_sha256": {
+    "CONTRACT.md": "f7e1e1102922bcf111d68e544e92f774b8034fd0ed370842985699cab10af3ca",
+    "sources.lock.json": "cc947d8c29ff4f52b767593b2ca6a97fbd91cc7ce2e884acc203f52b2886c3cb",
+    "src/core/features/assistance/preview.ts": "1102138b5ce4d82912b7bb4eea9edcdd1c123a30fa9466d429dbc571e67729ff",
+    "src/core/features/assistance/routes.ts": "10905da9393d840ab1ed76c849b474d7b5d64a0c3033d398a3deded33d37c2ef",
+    "src/core/features/records/data.ts": "0c65fbd9a3deeb96c7ab653576bb5eb73b14daab6c1418ba2f925fdaa2fbc739",
+    "tests/core/assistance.test.ts": "f3ca978057d0a5db1f806d8e22905601be89a4c6cf333f7e6a0e4a18cc59a205"
+  },
+  "github_calls": 6,
+  "head": "23c6952bb233bb9ccf15b7dee46b2f353c87d482",
+  "ledger": "not applicable",
+  "migrations_changed": false,
+  "node": "22.20.0",
+  "packet_preflight": {
+    "credential_scan": "passed: zero injected values or recognizable credential strings",
+    "regular_files_only": true,
+    "shallow_repository": false
+  },
+  "plan_rows_changed": [],
+  "pnpm": "10.12.4",
+  "pr": null,
+  "probe": {
+    "door": "authenticated Records DELETE followed by assistance generate POST",
+    "input": "confirmed recipient deletion then original preview ID",
+    "observed": "200 deletion, fresh 404 contact and absent preview, 409 generation, zero provider calls and unchanged post-erasure inventories"
+  },
+  "product_push": {
+    "attempts": 1,
+    "head": "23c6952bb233bb9ccf15b7dee46b2f353c87d482",
+    "log": "product-push.log",
+    "status": "pushed"
+  },
+  "product_source_changed": false,
+  "publication_scan": {
+    "complete": null,
+    "findings": null,
+    "historyScanned": null,
+    "status": "deferred to guarded fleet lander"
+  },
+  "readiness": "ready under the explicit generated-view-only exception; guarded landing pending",
+  "repository": "just-every/run-orbit",
+  "selected_point": "DATA-002 acceptance 2: pre-erasure recipient-bound AI preview cannot authorize a later AI request",
+  "status_after": "partial",
+  "status_before": "partial",
+  "tag": "sd-orbit-c-f102",
+  "ui_changed": false
+}
