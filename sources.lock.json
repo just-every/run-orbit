@@ -7655,7 +7655,7 @@
       "executable": false
     },
     "src/core/features/publication/fixed-compiler.ts": {
-      "sha256": "175b3e56279749eea9b8c7d1d00f618161614231324867660db7957148404f5c",
+      "sha256": "7480cb9cd64bf04344b35fa9f12a8a25db6ad620f78da65f312be4d0406aa19e",
       "executable": false
     },
     "src/core/features/publication/read-only-preview.ts": {
@@ -10067,7 +10067,7 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "9c0ca3ac93e337b85f66ed81d374e06c16c094ad462f9932e9ec981ab6c3c51f",
+      "sha256": "c2d84948380612d172c23af6e445404b3f650e16398579da7324bfcc22c7edf2",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
