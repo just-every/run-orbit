@@ -9,7 +9,7 @@ import {contactAgentArtifacts} from '../../src/core/features/agent-door/erasure'
 import {foldInstalledCatalog} from '../../src/core/features/records/archive-fold-catalog';
 import portabilityPolicy from '../../scripts/installer/portability-policy.mjs';
 import {orbitPeople} from '../../src/core/features/agent-door/people';
-import {autonomousPolicy,policyEnvelope} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
+import {autonomousPolicy,heldPolicy,policyEnvelope} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 
 export async function agentDoorProof() {
   const fixture = await isolatedDatabase();
@@ -209,7 +209,8 @@ export async function agentDoorProof() {
     assert.ok(feed.decisions.length>0,'Business MCP audits enter the relay');
     assert.equal(new Set(feed.decisions.map(row=>row.id)).size,feed.decisions.length);
     assert.equal((await door.handle(post('/api/rer/agent-decisions',{pull:'foreign.invalid.signature'})))!.status,401,'BASE-AGENT-009.relay.foreign');
-    await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId);
+    await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
+    await adopt(sensitiveBlocked);
     const witness=await call('orbit.operations.read',{});
     assert.ok(witness.record_mail_drafts.rows>0);
     await settingsRepository.remove(teammate.id,owner.operatorId,undefined,owner.sessionId);
