@@ -7,6 +7,18 @@
       "sha256": "7fabfa383afb15fd582e8c6b8e97af0f207a2e0fdc6b4f3eb879fb40272edc17"
     },
     {
+      "blob": "0fa69db9bcf224c34ccf244f11f02c7e971e5478",
+      "bytes": 3451,
+      "path": "EVIDENCE-FIRST-PUBLISH.log",
+      "sha256": "a55a7f67cacb32e4aa3c58e2d9106368a511dad07bc4d559dacb0751950355c8"
+    },
+    {
+      "blob": "615fdbc2c2a698ce31a681c77f0b45e7818a9031",
+      "bytes": 3542,
+      "path": "EVIDENCE-ROUNDTRIP.json",
+      "sha256": "59fea19bb61b50b4ef4f042e3abc48bf499c7d01b488b9e8c3da8ffd69469138"
+    },
+    {
       "blob": "26a59f702ba86e13b34d4a74e9228a3df2c43d88",
       "bytes": 702,
       "path": "HARNESS-RECEIPT.json",
