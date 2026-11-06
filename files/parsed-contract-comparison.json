@@ -1,0 +1,73 @@
+{
+  "source": {
+    "target": {
+      "category": "Sales CRM",
+      "incumbents": [
+        "HubSpot Sales Hub",
+        "Pipedrive",
+        "Salesforce Sales Cloud"
+      ],
+      "replaces": "HubSpot Sales Hub, Pipedrive, Salesforce Sales Cloud",
+      "alsoBeats": "Attio, Day.ai, Twenty",
+      "firstBuyer": "A US small-business sales manager and their reps, selling in USD, using Google Workspace or Microsoft 365, working across US timezones and US daylight-saving transitions"
+    },
+    "counts": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "main": {
+    "target": {
+      "category": "Sales CRM",
+      "incumbents": [
+        "HubSpot Sales Hub",
+        "Pipedrive",
+        "Salesforce Sales Cloud"
+      ],
+      "replaces": "HubSpot Sales Hub, Pipedrive, Salesforce Sales Cloud",
+      "alsoBeats": "Attio, Day.ai, Twenty",
+      "firstBuyer": "A US small-business sales manager and their reps, selling in USD, using Google Workspace or Microsoft 365, working across US timezones and US daylight-saving transitions"
+    },
+    "counts": {
+      "done": 35,
+      "partial": 137,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "sourceClause": {
+    "id": "OUT-005",
+    "title": "Accepted outcome",
+    "kind": "published",
+    "status": "done",
+    "evidence": [
+      "tests/core/signals-outreach.test.ts",
+      "tests/core/launch-provider-conflicts.test.ts",
+      "src/core/features/outreach/settlement.ts"
+    ],
+    "gap": "",
+    "area": "One-to-one outreach",
+    "text": "**Requirement.** When the provider accepts a submission, one local transaction records the reviewed content and provider message ID as a timeline activity, completes the recommendation, sets the next action to awaiting response, moves the opportunity from NOW to NEXT, and creates one notification for the responsible operator. A replayed provider event repeats none of it. This clause governs a send linked to an open opportunity; a send with no linked open opportunity records the same timeline activity and notification and opens OUT-017's contact-level awaiting-response obligation instead of a queue move. **Acceptance.** 1. Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and notification.",
+    "line": 548,
+    "row": 2459
+  },
+  "mainClause": {
+    "id": "OUT-005",
+    "title": "Accepted outcome",
+    "kind": "published",
+    "status": "partial",
+    "evidence": [
+      "src/core/features/outreach/service.ts",
+      "src/core/features/outreach/scheduler.ts",
+      "tests/core/signals-outreach.test.ts"
+    ],
+    "gap": "Unasserted in the carried evidence: one sent timeline activity; recommendation completed; NEXT transition (assertion is in uncited tests/core/source-onboarding.test.ts); one notification; replayed provider response has no second effect. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.",
+    "area": "One-to-one outreach",
+    "text": "**Requirement.** When the provider accepts a submission, one local transaction records the reviewed content and provider message ID as a timeline activity, completes the recommendation, sets the next action to awaiting response, moves the opportunity from NOW to NEXT, and creates one notification for the responsible operator. A replayed provider event repeats none of it. This clause governs a send linked to an open opportunity; a send with no linked open opportunity records the same timeline activity and notification and opens OUT-017's contact-level awaiting-response obligation instead of a queue move. **Acceptance.** 1. Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and notification.",
+    "line": 548,
+    "row": 2457
+  },
+  "allClauseIdsEqual": true
+}

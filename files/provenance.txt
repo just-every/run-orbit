@@ -1,0 +1,12 @@
+$ git rev-parse HEAD
+be80a3b8c7c298837fd2692ba905f36648a4792d
+exit=0
+$ git ls-remote origin refs/heads/cloud/sd-orbit-c-f51 refs/heads/main
+be80a3b8c7c298837fd2692ba905f36648a4792d	refs/heads/cloud/sd-orbit-c-f51
+c01084f133af9aa484a6c1f5151a4e9cfbc7230f	refs/heads/main
+exit=0
+
+Final freshness readback: git ls-remote origin refs/heads/main refs/heads/cloud/sd-orbit-c-f51
+be80a3b8c7c298837fd2692ba905f36648a4792d	refs/heads/cloud/sd-orbit-c-f51
+c01084f133af9aa484a6c1f5151a4e9cfbc7230f	refs/heads/main
+exit=0

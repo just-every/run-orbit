@@ -1,0 +1,13 @@
+{
+  "dependencies_removed": [
+    "node_modules",
+    "dist",
+    ".wrangler",
+    "task-installed node@22.20.0 toolchain"
+  ],
+  "all_started_browser_runtimes_closed": true,
+  "once_only_focused_command_exited": 0,
+  "product_clone": "retained only for report-only evidence publish; delete immediately after successful publication",
+  "packet": "retained outside disposable clone",
+  "no_unpushed_product_work": true
+}

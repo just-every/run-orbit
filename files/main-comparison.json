@@ -1,0 +1,59 @@
+{
+  "source": "be80a3b8c7c298837fd2692ba905f36648a4792d",
+  "main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "source_counts": {
+    "total": 204,
+    "full": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    },
+    "tiers": {
+      "Core": {
+        "partial": 118,
+        "done": 36,
+        "missing": 24
+      },
+      "Agent surface": {
+        "partial": 18,
+        "missing": 8
+      },
+      "Later": {}
+    }
+  },
+  "main_counts": {
+    "total": 204,
+    "full": {
+      "partial": 137,
+      "done": 35,
+      "missing": 32
+    },
+    "tiers": {
+      "Core": {
+        "partial": 119,
+        "done": 35,
+        "missing": 24
+      },
+      "Agent surface": {
+        "partial": 18,
+        "missing": 8
+      },
+      "Later": {}
+    }
+  },
+  "status_differences": {
+    "OUT-005": {
+      "main": "| `OUT-005` | Accepted outcome | published | partial | `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: one sent timeline activity; recommendation completed; NEXT transition (assertion is in uncited tests/core/source-onboarding.test.ts); one notification; replayed provider response has no second effect. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |",
+      "source": "| `OUT-005` | Accepted outcome | published | done | Acceptance 1: `tests/core/signals-outreach.test.ts` \u2014 BASE-OPS-003 OUT-002 OUT-005 signed provider delivery is verified and idempotent (observed customer evidence and the reviewed draft go through native HTTP; the real SendGrid adapter reaches only a replaced HTTP edge; acceptance retains the exact sent activity and provider identity, completes the original recommendation with its evidence and attributed history, moves the deal to NEXT awaiting response, and creates one acceptance notice in the responsible operator inbox with none in another inbox; a forged receipt writes nothing, persistence failure rolls back the complete outcome, and retry and replay retain exactly one effect set and one provider submission); `tests/core/launch-provider-conflicts.test.ts` \u2014 SIGNAL-003 SIGNAL-008 OUT-005 provider conflicts are durable acknowledged no-ops, mixed batches progress and failed settlement fully rolls back; SIGNAL-003 concurrent equal and unequal provider receipts commit exactly one set of effects; `src/core/features/outreach/settlement.ts` | |"
+    },
+    "OUT-032": {
+      "main": "| `OUT-032` | Opt-out upgrades and transport changes | target | partial | `src/core/features/outreach/opt-out.ts`; `src/core/platform/outbound-mail.ts`; `src/core/platform/managed-outbound-mail.ts`; `src/core/features/operator/ui/opt-out-settings.tsx`; `src/core/features/operator/ui/draft-opt-out.tsx`; `tests/core/outbound-boundaries.test.ts`; `tests/evidence/contract/OUT-020/`; `tests/core/capture-upgrade.test.ts` \u2014 CAPTURE-007 OUT-032 the capture migration upgrades a store from the previous main with every prior row and queue unchanged; `newtests/t096/browser-journeys.test.ts` \u2014 OUT-032 established opt-out upgrade (the native emitted Worker registration), using `newtests/t096/browser-opt-out-upgrade.ts` | Established upgrades keep one-to-one opt-out on with the retained basis visible in authenticated Settings and after page reload; historical approval bytes and state remain unchanged with no provider submissions. Remaining unproved execution: connected mailbox, sequence, batch and workflow paths preserving the exact reviewed opt-out choice, with OUT-013 owner-consented mailbox replies and Base relay sequence proof, OUT-019 Base relay recipient support (one To today), and OUT-013, OUT-019, SEQUENCE-001, SEQUENCE-003 and AUTO-001 prerequisites retained; AUTO-001 retains its ambiguous remainder after one continuation. Asserted in the retained outbound boundary journey: new-installation off default, pre-setting approvals retaining opt-out, SendGrid-to-relay exact header and link continuity, explicit off, historical transport refusal, unsupported review and dispatch refusal, and audited Settings refusal counts. |",
+      "source": "| `OUT-032` | Opt-out upgrades and transport changes | target | partial | `src/core/features/outreach/opt-out.ts`; `src/core/platform/outbound-mail.ts`; `src/core/platform/managed-outbound-mail.ts`; `src/core/features/operator/ui/opt-out-settings.tsx`; `src/core/features/operator/ui/draft-opt-out.tsx`; `tests/core/outbound-boundaries.test.ts`; `tests/evidence/contract/OUT-020/` | Unasserted in the carried evidence: established upgrade keeps on; basis shown; pre-setting approvals preserve state; all mailbox/sequence/batch/workflow paths preserve same state. Asserted: new one-to-one default off; SendGrid-to-relay exact header/link continuity; explicit off has no capability; historical transport state refuses; unsupported review refusal; unsupported dispatch refusal; audited Settings refusal count. |"
+    }
+  },
+  "clause_body_differences": [],
+  "source_judged_from": "Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock.",
+  "main_judged_from": "Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock.",
+  "contract_standard_present": false,
+  "tracked_status": ""
+}

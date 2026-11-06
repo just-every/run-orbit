@@ -1,0 +1,16 @@
+{
+  "tests/core/signals-outreach.test.ts": "cd62cfe9e8dcbbd335074404430cf4e8ef2de304027d5b9131d2aaeac0b7d79e",
+  "tests/core/launch-provider-conflicts.test.ts": "18d123cadc2dc51032c37b7ee849746e6c8e690900a49611876dfb629c6d2c89",
+  "src/core/features/outreach/settlement.ts": "4e89ca07cd714a7d957ba17ccd04f7b6df47c0d4b48e8f92b4ff1aedb7c3da0c",
+  "src/core/features/outreach/provider-events.ts": "bb8ff8c7f954e3a654f47de276e9cbc0dc147d48c8ddd36be67366857c74b028",
+  "src/core/features/outreach/provider-routes.ts": "a599a8d546c31e6764e789e9e5cbfdd8ec5fc73e4f3171bc4b5f7b9d452e0ae2",
+  "src/core/features/outreach/service.ts": "9ff7f815b25bfb0fb6d49a6202cb7c7dbe46312c94ca9e0f704c95d8de3c6f05",
+  "src/core/features/workbench/outreach-repository.ts": "7fe66b39ba633f77111dcdbaefcf53588774e9911a35668685fb7763f3276449",
+  "src/core/features/outreach/record-mail-repository.ts": "7dd715ab836b6a7f7c89ade2f74c74f1458a4872646c0146631490a147908b61",
+  "tests/support/isolated-database.ts": "0079405dc889ae15751329af69d2a0fc81280008ad956c21b0d256e4de1433a0",
+  "tests/support/app.ts": "474ba56ee004da3d192c69925ecaa700a43ce43d82effd30483278c8749c859b",
+  "tests/support/launch-fixture.ts": "9442dfc46e8a92e44ee426ec891825213031e844a77f632c7973962073a03c72",
+  "tests/support/record-mail.ts": "834864bf818946fe023c76804a22a419eedbc374aa7411ca0202ac3e9cccf76c",
+  "scripts/verification-plan.mjs": "6cadc2af648d750bbab60a0e10be17ddd1b41c637b5cd113c21546fd8c7d22ce",
+  ".github/workflows/verify.yml": "2d350a75be8a46166f04f9bc77a1e822ab23c75a1ac51fa05be9789db1aec238"
+}

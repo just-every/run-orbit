@@ -1,0 +1,38 @@
+{
+  "commands": [
+    {
+      "command": "git rev-parse HEAD",
+      "exit": 0,
+      "stdout": "be80a3b8c7c298837fd2692ba905f36648a4792d\n",
+      "stderr": ""
+    },
+    {
+      "command": "git rev-parse HEAD^{tree}",
+      "exit": 0,
+      "stdout": "29041db4ca662bb5b21d2f1c3b0297c0d22ff7b1\n",
+      "stderr": ""
+    },
+    {
+      "command": "git status --porcelain",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": "git diff --exit-code",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": "git diff --cached --exit-code",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "relied_on_hashes_unchanged": true,
+  "no_product_commits": true,
+  "no_product_pushes": true,
+  "no_pr": true
+}

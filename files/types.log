@@ -1,0 +1,2 @@
+COMMAND pnpm exec tsc --noEmit
+typecheck exit=0

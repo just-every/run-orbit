@@ -1,0 +1,22 @@
+{
+  "source": "be80a3b8c7c298837fd2692ba905f36648a4792d",
+  "screens": [
+    "accepted-deal-1440.png",
+    "responsible-inbox-1440.png",
+    "accepted-deal-390.png",
+    "responsible-inbox-390.png"
+  ],
+  "providerSubmissions": 1,
+  "externalProviderCalls": 0,
+  "linked": {
+    "timeline": 1,
+    "completedAction": 1,
+    "queue": "next",
+    "responsibleNotification": 1,
+    "otherNotification": 0,
+    "forgedReceipt": 401,
+    "replay": "unchanged",
+    "providerSubmissions": 1
+  },
+  "status": "passed"
+}

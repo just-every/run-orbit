@@ -1,0 +1,17 @@
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/agent/rer-consolidation/work/ct-judge-orbit-out005-20261105-1932-sol1/run-orbit/src/base/sendgrid-event-relay/crypto.mjs' imported from /home/agent/rer-consolidation/work/ct-judge-orbit-out005-20261105-1932-sol1/browser-proof.mts
+    at finalizeResolution (node:internal/modules/esm/resolve:274:11)
+    at moduleResolve (node:internal/modules/esm/resolve:859:10)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///home/agent/rer-consolidation/work/ct-judge-orbit-out005-20261105-1932-sol1/run-orbit/node_modules/.pnpm/tsx@4.23.0/node_modules/tsx/dist/register-D5KIhaFJ.mjs:2:8511)
+    at async resolveDirectory (file:///home/agent/rer-consolidation/work/ct-judge-orbit-out005-20261105-1932-sol1/run-orbit/node_modules/.pnpm/tsx@4.23.0/node_modules/tsx/dist/register-D5KIhaFJ.mjs:2:9591) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///home/agent/rer-consolidation/work/ct-judge-orbit-out005-20261105-1932-sol1/run-orbit/src/base/sendgrid-event-relay/crypto.mjs'
+}
+
+Node.js v22.20.0
+functional browser proof exit=1

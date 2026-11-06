@@ -1,0 +1,84 @@
+{
+  "source": "be80a3b8c7c298837fd2692ba905f36648a4792d",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "xhigh",
+  "source_branch": "cloud/sd-orbit-c-f51",
+  "product_branch_created": false,
+  "product_commits": 0,
+  "product_pushes": 0,
+  "pull_requests": 0,
+  "github_api_calls": 0,
+  "ci_context": {
+    "run_id": 42086549248,
+    "event": "workflow_dispatch",
+    "conclusion": "failure",
+    "classification": "supplied generator-only CANDIDATE exception; derivative artifacts/runtime SKIP; not independently queried"
+  },
+  "checks": {
+    "build": 0,
+    "typecheck": 0,
+    "source_lock": 0,
+    "generator": 1,
+    "generator_reason": "ACCEPTANCE.md generated content differs; expected source exception",
+    "browser": 0,
+    "focused_journeys": 0
+  },
+  "browser_receipt": "browser-receipt.json",
+  "browser_initial_harness_exits": [
+    1,
+    1
+  ],
+  "focused_test_invocations": 1,
+  "focused_test_receipt": "journeys.log",
+  "rubric_sha256": "60162b18fcff60dd63de839aa464f8ad6ebb767a77fdec7960ee90dafb7bcdde",
+  "awarded_delta": 0,
+  "main_counts": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32,
+    "total": 204
+  },
+  "conditional_proposal_counts": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "field_proof": {
+    "not_run": 12,
+    "passed": 0,
+    "failed": 0
+  },
+  "protection_readback": "unestablished here; ACTIVE reported, root supported readback prerequisite retained",
+  "final_runtime_verify": "NOT RUN; required final guard",
+  "full_history_publication_scan": "NOT RUN; COMPLETE NEW0 required final guard",
+  "main_equality": false,
+  "exact_main_run_site": "NOT RUN; required final guard",
+  "product_tracked_status": "",
+  "notes": "No source/acceptance/generated edits, sourcepin transfer, hold change, release, readmission, adoption, provider operation or CI operation.",
+  "custody": {
+    "original_commission": "ct-judge-orbit-out005-20261105-1932",
+    "replacement": "ct-judge-orbit-out005-20261105-1932-sol1",
+    "source_protection": "sd-orbit-c-f51: ACTIVE reported, root supported readback required",
+    "chain_protection": "sd-orbit-c-f51-land: ACTIVE reported, distinct root supported readback required",
+    "source_acceptance": false,
+    "protected_final_admission": false,
+    "awarded": false,
+    "hold_releases": 0,
+    "sourcepin_changes": 0,
+    "lifecycle_mutations": 0,
+    "adoptions": 0,
+    "product_ready": false,
+    "terminal_ready_meaning": "read-only review and evidence completion only"
+  },
+  "focused_result": {
+    "tests": 20,
+    "pass": 20,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 1144438.117264
+  },
+  "completed_at_utc": "2026-11-06T02:19:30.522700+00:00"
+}
