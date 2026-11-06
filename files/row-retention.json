@@ -1,0 +1,15 @@
+{
+  "parent_status_rows": 204,
+  "staged_status_rows": 204,
+  "parent_table_rows": 458,
+  "staged_table_rows": 458,
+  "counts": {
+    "partial": 136,
+    "done": 36,
+    "missing": 32
+  },
+  "changed_status_rows": [
+    "OUT-029"
+  ],
+  "generated_views_staged": false
+}

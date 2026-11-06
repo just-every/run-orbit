@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f95",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f95",
+  "head": "ecff8067c502168e10e10b124dc7d2bb330d9099",
+  "origin_main": "30f7a864d0a643fa020ea3eaa3d5325a112b872e",
+  "created_at": "2026-11-06T09:50:07.188264+00:00",
+  "product_status": "pushed",
+  "pr": null,
+  "safety_save": "67bfe11355b774e74b37513f5c11d6f956c02149",
+  "clause": {
+    "id": "OUT-029",
+    "before": "partial",
+    "after": "partial",
+    "selected_point": "4, deal-bound capability archive slice",
+    "acceptance_changed": false,
+    "holds_released": false
+  },
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "tests": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "row_retention": {
+    "parent_status_rows": 204,
+    "staged_status_rows": 204,
+    "parent_table_rows": 458,
+    "staged_table_rows": 458,
+    "counts": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    },
+    "changed_status_rows": [
+      "OUT-029"
+    ],
+    "generated_views_staged": false
+  },
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test tests/core/capture-data.test.ts",
+      "exit": 0,
+      "receipt": "capture-data.log"
+    },
+    {
+      "command": "pnpm exec tsx --test tests/core/outbound-boundaries.test.ts",
+      "exit": 0,
+      "receipt": "outbound-boundaries.log"
+    },
+    {
+      "command": "pnpm exec tsc --noEmit",
+      "exit": 0,
+      "receipt": "typecheck.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "receipt": "first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "receipt": "contract-write.json"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "receipt": "contract-check.json",
+      "phase": "after write, before restoring generated views"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "receipt": "lock.json"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "receipt": "lock-check.json"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 1,
+      "receipt": "restored-view-check.log",
+      "phase": "after restoring generated views; expected lander-owned freshness difference"
+    }
+  ],
+  "candidate_ci": {
+    "conclusion": "failure",
+    "event": "push",
+    "head_sha": "ecff8067c502168e10e10b124dc7d2bb330d9099",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42197013913",
+    "id": 42197013913,
+    "name": "Verify",
+    "status": "completed"
+  },
+  "publication_scan": {
+    "status": "fleet_pending",
+    "locally_run": false
+  },
+  "run_site": {
+    "status": "fleet_pending",
+    "candidate_receipt": null
+  },
+  "ledger": {
+    "required": false,
+    "reason": "No migration change"
+  },
+  "source_files": [
+    {
+      "path": "CONTRACT.md",
+      "sha256": "1dc1ce59976e9b68a6e735f450dcc571f616c56cd745f55f9f824789cf63b6c4"
+    },
+    {
+      "path": "sources.lock.json",
+      "sha256": "ef8e11d2dd1e9299de51fc17489a444a65d445374f4321626f51d3ed85df603f"
+    },
+    {
+      "path": "tests/core/capture-data.test.ts",
+      "sha256": "3fe2d04b76fd422bb392d0f046b5122b30c664ab30ed80b979d9c8c706c1b780"
+    },
+    {
+      "path": "tests/support/current-sales-archive.ts",
+      "sha256": "cfbfacce3e98bf7a6c7b3f18f7b3912447673e17930b9c4f641e0be2c61df144"
+    },
+    {
+      "path": "tests/support/current-sales-data.ts",
+      "sha256": "d57b9d61593a7cb51aaee292b12e9172ec2e8ba01d856f15f23aaf938b3dbf2c"
+    },
+    {
+      "path": "tests/support/current-sales-local.ts",
+      "sha256": "711ed8277abd5e737e69461e61544a4d1971eaafa7c66926313db6e48523f0f2"
+    },
+    {
+      "path": "tests/support/opt-out-archive.ts",
+      "sha256": "e6ec52583eea27ddb88e14a27f916fbcbddabce30bf836c6ea73e07615b07a8f"
+    }
+  ],
+  "ci_disposition": {
+    "permitted_generated_view_exception": true,
+    "primary_failed_job": 127822852672,
+    "primary_failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "dependent_failed_job": 127823083103,
+    "runtime_shards": "skipped",
+    "runtime_verify_green_claimed": false,
+    "repairs": 0,
+    "reruns": 0,
+    "dispatches": 0,
+    "aggregate_log_fetch": {
+      "exit": 1,
+      "error": "EOF",
+      "http_status": "unknown",
+      "retried": false
+    },
+    "explicit_task_github_invocations": 6
+  }
+}

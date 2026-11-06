@@ -1,0 +1,30 @@
+[
+  {
+    "path": "CONTRACT.md",
+    "sha256": "1dc1ce59976e9b68a6e735f450dcc571f616c56cd745f55f9f824789cf63b6c4"
+  },
+  {
+    "path": "sources.lock.json",
+    "sha256": "ef8e11d2dd1e9299de51fc17489a444a65d445374f4321626f51d3ed85df603f"
+  },
+  {
+    "path": "tests/core/capture-data.test.ts",
+    "sha256": "3fe2d04b76fd422bb392d0f046b5122b30c664ab30ed80b979d9c8c706c1b780"
+  },
+  {
+    "path": "tests/support/current-sales-archive.ts",
+    "sha256": "cfbfacce3e98bf7a6c7b3f18f7b3912447673e17930b9c4f641e0be2c61df144"
+  },
+  {
+    "path": "tests/support/current-sales-data.ts",
+    "sha256": "d57b9d61593a7cb51aaee292b12e9172ec2e8ba01d856f15f23aaf938b3dbf2c"
+  },
+  {
+    "path": "tests/support/current-sales-local.ts",
+    "sha256": "711ed8277abd5e737e69461e61544a4d1971eaafa7c66926313db6e48523f0f2"
+  },
+  {
+    "path": "tests/support/opt-out-archive.ts",
+    "sha256": "e6ec52583eea27ddb88e14a27f916fbcbddabce30bf836c6ea73e07615b07a8f"
+  }
+]

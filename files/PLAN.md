@@ -1,0 +1,12 @@
+# sd-orbit-c-f95 plan
+
+Repository: just-every/run-orbit. Branch: cloud/sd-orbit-c-f95.
+Target: OUT-029, acceptance point 4, selected deal-bound capability archive slice.
+Baseline: 30f7a864d0a643fa020ea3eaa3d5325a112b872e; 36 DONE, 136 PARTIAL, 32 MISSING, 204 total.
+
+1. Read the clause, its Status Gap, the supplied planner extract and CT rulings and DONE riders; map the existing managed single-recipient transport journey and both archive engines. Preserve the accepted scope and all holds.
+2. Populate private outbound_opt_out_capabilities through native draft creation, explicit opt-out, exact review and managed approval, intercepting only relay HTTP. Keep existing transport assertions. Use an independent native control contact because the captured fixture already permanently bounced Bob; do not clear that stop.
+3. Extend the existing capture-data registration with one focused helper, using the current sales data and archive helpers. Compare all token, message, contact, origin and creation-time fields after Records HTTP restore, re-export and real local portability. Verify the original anonymous link after a fixed ten-year clock advance: inert confirmation GET, successful plain or RFC 8058 POST, replay, exact token retention, another contact unchanged, cancelled restored schedules and no late provider resend. Compare source state before and after target operations.
+4. Correct product code only if the public-door journey demonstrates a defect. Do not add registrations or weaken existing assertions. Keep OUT-029 PARTIAL: record-mail archive coverage, complete browser qualification and live-provider duties remain omitted or held, with no release of any existing prerequisite.
+5. Run the touched native tests, typecheck, first-party check, test inventory, contract write then check; restore generated views wholesale from main. Fetch and integrate fresh main, keeping every parent Status row. Generate and check the source lock last. Commit with fleet identity and active cleanup hooks, inspect all candidate identities and trailers, and publish only the named cloud branch using the fleet push guard.
+6. Discover and watch exact-SHA Verify within the shared ten-call GitHub budget and five-minute polling interval. Report its actual state. Retain complete non-secret actual report and receipts in this packet; publish explicitly selected files only to the separate evidence ref. No main push, PR, acceptance change, DONE award or hold release.
