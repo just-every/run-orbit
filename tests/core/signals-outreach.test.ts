@@ -329,6 +329,8 @@ test('OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end sched
  const moved=await approval.message(beforeMove);assert.equal(moved.state,'cancelled');assert.equal(moved.failure,'Deal stage changed, so the scheduled follow-up was cancelled');assert.equal((await db.prepare('SELECT updated_at FROM outbound_messages WHERE id=?').bind(beforeMove).first<{updated_at:string}>())!.updated_at,(await db.prepare("SELECT t.occurred_at FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id WHERE t.kind='stage.changed' AND r.record_type='opportunity' AND r.record_id=?").bind(f.opportunityId).first<{occurred_at:string}>())!.occurred_at,'The send ends in the stage move commit');
  const beforeClose=await schedule('Follow-up before a close',due[2]);
  await api(`records/opportunity/${f.opportunityId}/lifecycle`,{state:'won',reason:'Signed'});
+ const won=await api<{record:{close_reason:string}}>(`records/opportunity/${f.opportunityId}`);
+ assert.equal(won.record.close_reason,'Signed','The won-close reason survives a fresh authenticated record read');
  const closed=await approval.message(beforeClose);assert.equal(closed.state,'cancelled');assert.equal(closed.failure,'Deal closed won, so the scheduled follow-up was cancelled');
  await api(`records/opportunity/${f.opportunityId}/lifecycle`,{state:'open',reason:''});assert.equal((await post(genuine)).status,200,'Replaying the reply is accepted once');
  for(const at of due)await service.dispatchDue(new Date(Date.parse(at)+60000));

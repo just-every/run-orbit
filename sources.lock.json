@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "091c220cbe8bcc6130123db014ef03c0112274f6ff8f3e95bfc6780c53d7a8b5",
+      "sha256": "81621272877b6fc334cda3d080b8fd74b056ceaede9e4470542aa74e916961df",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "67b45680207bfe2ce455612284facb8e73c6f5f6ad575a1baac12c10669b71f7",
+      "sha256": "c296a08e181eb2c2978b3a84f8f25229aafea81cc9af187cef45f2923d8076d8",
       "executable": false
     },
     "DEMO.md": {
@@ -10067,7 +10067,7 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "4aed61c0665a7b79d14dda18424cbaaeb1352ace9de243d04ac1ccdf222e4e03",
+      "sha256": "bb0cd9119837ab0e69c6d43389f38fc98919a4046f79c6b9ed99db026c2d076b",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
