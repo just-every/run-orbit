@@ -14,6 +14,8 @@ export async function consumeRateLimit(db:D1Database,key:string,limit:number,now
 }
 export async function publicRateLimit(db:D1Database,request:Request,now=Date.now()):Promise<Response|undefined>{
  const pathname=new URL(request.url).pathname;
+ // Fictional demo documents are bounded, read-only stories and never write installation state.
+ if(['GET','HEAD'].includes(request.method)&&(pathname==='/demo'||pathname.startsWith('/demo/')))return;
  // The Worker dispatches raw /api/ paths to Hono, which decodes routing text.
  // Use that same decoder; decodeURIComponent would also invent route slashes.
  const routedPath=pathname.startsWith('/api/')?getPath(request):pathname;
