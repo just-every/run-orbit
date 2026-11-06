@@ -1,0 +1,76 @@
+[
+  {
+    "time": "2026-11-06T01:05:18.846155+00:00",
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-orbit/actions/runs?head_sha=c01084f133af9aa484a6c1f5151a4e9cfbc7230f&per_page=100",
+      "--jq",
+      ".workflow_runs | map({id,name,event,status,conclusion,head_sha,html_url,run_attempt})"
+    ],
+    "exit": 0
+  },
+  {
+    "time": "2026-11-06T01:09:05.158259+00:00",
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-orbit/actions/runs?head_sha=a2a3e752f89e80ed0af776463c2313f4fcb9e0bc&per_page=100",
+      "--jq",
+      ".workflow_runs | map({id,name,event,status,conclusion,head_sha,html_url,run_attempt})"
+    ],
+    "exit": 0
+  },
+  {
+    "time": "2026-11-06T01:14:07.570356+00:00",
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-orbit/actions/runs/42141809102",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ],
+    "exit": 0
+  },
+  {
+    "time": "2026-11-06T01:14:16.170069+00:00",
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-orbit/actions/runs/42141809102/jobs",
+      "--jq",
+      ".jobs | map({id,name,status,conclusion,steps:[.steps[] | {name,status,conclusion}]})"
+    ],
+    "exit": 0
+  },
+  {
+    "time": "2026-11-06T01:14:29.602872+00:00",
+    "command": [
+      "gh",
+      "run",
+      "view",
+      "42141809102",
+      "--repo",
+      "just-every/run-orbit",
+      "--job",
+      "127643840517",
+      "--log-failed"
+    ],
+    "exit": 0
+  },
+  {
+    "time": "2026-11-06T01:14:56.006798+00:00",
+    "command": [
+      "gh",
+      "run",
+      "view",
+      "42141809102",
+      "--repo",
+      "just-every/run-orbit",
+      "--job",
+      "127644056866",
+      "--log-failed"
+    ],
+    "exit": 0
+  }
+]

@@ -1,0 +1,159 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f65",
+  "head": "a2a3e752f89e80ed0af776463c2313f4fcb9e0bc",
+  "base": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "record005": {
+    "before": "partial",
+    "after": "partial",
+    "selectedPointClosed": "out-of-order arrivals and equal-time ID ties in native and visible note order"
+  },
+  "countsBefore": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32,
+    "total": 204
+  },
+  "countsAfter": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32,
+    "total": 204
+  },
+  "browser": {
+    "command": "pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs operator.spec.mjs --grep RECORD-005 --reporter=list,json",
+    "timeoutSeconds": 1200,
+    "exit": 0,
+    "stats": {
+      "startTime": "2026-11-06T01:09:04.800Z",
+      "duration": 36267.657,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "testedHead": "a2a3e752f89e80ed0af776463c2313f4fcb9e0bc",
+    "screens": [
+      {
+        "width": 390,
+        "height": 844,
+        "file": "timeline-390.png"
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "file": "timeline-1440.png"
+      }
+    ],
+    "launch": {
+      "executablePath": "/usr/bin/chromium",
+      "args": [
+        "--use-mock-keychain",
+        "--password-store=basic",
+        "--no-sandbox"
+      ]
+    },
+    "existingMetadataAndOverflowAssertionsRetained": true
+  },
+  "checks": [
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    }
+  ],
+  "migrationLedger": {
+    "command": null,
+    "exit": 0,
+    "reason": "No migration changed"
+  },
+  "inventory": {
+    "registeredCases": 198,
+    "qualificationFlows": 2,
+    "total": 200,
+    "addedRegistrations": 0,
+    "removedRegistrations": 0
+  },
+  "generatedViewsCommitted": false,
+  "allParentStatusRowsRetained": true,
+  "parentStatusRows": 204,
+  "candidateStatusRows": 204,
+  "productChanges": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/e2e/operator.spec.mjs"
+  ],
+  "productionOrderingDefectDemonstrated": false,
+  "workflowChanged": false,
+  "baseOrRerPinChanged": false,
+  "productPush": {
+    "entrypoint": "cloud-push.py",
+    "attempt": 1,
+    "status": "PUSH_OK",
+    "head": "a2a3e752f89e80ed0af776463c2313f4fcb9e0bc"
+  },
+  "publicationScan": {
+    "status": "not-run",
+    "reason": "Cloud push exemption; fleet lander must scan full history on the exact landing candidate"
+  },
+  "pr": null,
+  "mainChanged": false,
+  "sourceHashes": {
+    "CONTRACT.md": "cb74914d55abf7e62221a810201cfaff46225681ece13f9866da43186d323bd2",
+    "sources.lock.json": "7b863c2df0fbeadcd18d2eda7e79bb5d31c7bcdf62c56d957507a2afdb851d11",
+    "tests/e2e/operator.spec.mjs": "3ee94455a7b65b201635d14be5ccae94ceb61134877b16e1636701a491b918ec",
+    "src/core/features/records/repository.ts": "6182d0fad72e6c0a0043f3c7534395f9a3a549076edf6fc5381586a12ab8dcde",
+    "src/core/features/timeline/repository.ts": "0bb1406c5794b045388c38819385fef4536a8a539fae617b8bd23b0b52d4f7c4",
+    "src/core/features/operator/ui/record/activity.tsx": "2dceaf2ea4b102f1fd2326b2207dc3f41d1e8c2efcb3bb4be1ded908885dc66c",
+    "src/core/features/operator/ui/record/timeline-entries.tsx": "a5a29eb89a838d9d0c01cdb27b4d3bc964f12372bd25d6881f42bf77b79e5fb7"
+  },
+  "timelineProof": "timeline-order.json",
+  "mutation": {
+    "file": "mutation.json",
+    "exit": 1,
+    "assertion": "tests/e2e/operator.spec.mjs:171",
+    "sourceRestored": true
+  },
+  "ci": {
+    "head": "a2a3e752f89e80ed0af776463c2313f4fcb9e0bc",
+    "run": 42141809102,
+    "event": "push",
+    "status": "completed",
+    "conclusion": "failure",
+    "url": "https://github.com/just-every/run-orbit/actions/runs/42141809102",
+    "sourceJob": 127643840517,
+    "aggregateJob": 127644056866,
+    "rootCommand": "node scripts/verification-shard.mjs source",
+    "failedCommand": "pnpm exec node src/base/contract-docs.mjs check",
+    "exit": 1,
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "localExactCommandReproduced": true,
+    "localExit": 1,
+    "classification": "Expected generated-view check failure, with dependent jobs failed or skipped. Permitted READY exception in cloud brief; no green test-shard claim.",
+    "sourceAndAggregateLogsReadOnce": true,
+    "rerun": false,
+    "repairEdited": false,
+    "productTestsInCI": "skipped after source failure",
+    "terminalCustody": "READY under explicit generated-view exception; fleet lander regenerates the views and reruns Verify before landing"
+  },
+  "terminalCustody": "READY under explicit generated-view exception; fleet lander regenerates the views and reruns Verify before landing"
+}

@@ -1,0 +1,10 @@
+{
+  "main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "counts": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32
+  },
+  "record005": "partial",
+  "statusRow": "| `RECORD-005` | Timeline | published | partial | `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts` | Unasserted in the carried evidence: mail entry; meeting entry; note entry; stage/owner change entry; merge entry; occurred and recorded times; source and actor; out-of-order history. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |"
+}

@@ -1,0 +1,8 @@
+Task sd-orbit-c-f65 — execution plan
+
+1. Read the target clause, existing Status gap, shipped plan and DONE riders. Preserve all existing holds and unrelated text.
+2. Extend the one existing RECORD-005 browser registration. Create three distinctive native notes in reverse occurred-time order with an equal-time pair. Compare both native timeline reads to occurred time descending and ID ascending, then reload and inspect activity rows. Retain metadata labels and overflow checks.
+3. Run the focused existing browser registration, typecheck and first-party check. Correct production ordering only if the journey demonstrates a defect. Capture the same changed screen at 1440 and 390; do not add registrations.
+4. Keep RECORD-005 PARTIAL while the combined mail, meeting, note, change and merge journey and exact per-entry provenance remain unproved. Update only its Evidence and Gap to record the bounded proof.
+5. Generate and check contract views, restore both generated views from main, regenerate and check the source lock last. Inspect staged Status rows, identities, trailers and changed text.
+6. Commit with fleet identity, push the named product branch through the cloud guard, inspect exact-SHA Verify through budgeted REST calls, and publish the full non-secret report packet to the separate evidence ref. Main landing and publication scan remain with the fleet.

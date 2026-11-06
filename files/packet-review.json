@@ -1,0 +1,165 @@
+{
+  "explicitRegularFiles": [
+    {
+      "path": "REPORT.md",
+      "bytes": 9159,
+      "sha256": "a36b65c2c4a8771b7312364958d9b36df76ffbd81bed8123fcf9630594e07a71"
+    },
+    {
+      "path": "PLAN.txt",
+      "bytes": 1376,
+      "sha256": "5f8111f7c02a56ef0ec78fcc4e6e71fcc228c521dc2d23ff93b6c6e39a591e4e"
+    },
+    {
+      "path": "checks.json",
+      "bytes": 5201,
+      "sha256": "ffea3248a972ed6758a275de13efce1cd22a35e74bf39c086c2e3a9a207faf19"
+    },
+    {
+      "path": "CI.json",
+      "bytes": 178,
+      "sha256": "2fda01a60d71d407d5ce96552d0411d1d9e0162a24ea1fa983f631204501aad4"
+    },
+    {
+      "path": "PROBES.txt",
+      "bytes": 492,
+      "sha256": "b5aef7dad53ada73c4d0964224a8430ae0a974bfebfd6badddd05520669c0075"
+    },
+    {
+      "path": "timeline-order.json",
+      "bytes": 1508,
+      "sha256": "5eec2bdfa312642b017d014fc23558dcac4c1cebd24ea6dcf5685e0938c25c90"
+    },
+    {
+      "path": "timeline-390.png",
+      "bytes": 88497,
+      "sha256": "07dcb49a5f415b27889ccd971b1648a443349f565944e4c6eef7a9df187a5767"
+    },
+    {
+      "path": "timeline-1440.png",
+      "bytes": 89413,
+      "sha256": "bdaa9d41a10edd39cdab188b2de4d350d6cb0039efb1f6b01c6fa86b547aa238"
+    },
+    {
+      "path": "browser-result.json",
+      "bytes": 7010,
+      "sha256": "7d2b163ff841cb0b3c2120d599f4bc47b86d06ed67fd112101de52b1f15c06d8"
+    },
+    {
+      "path": "browser.log",
+      "bytes": 4526,
+      "sha256": "62a6859673bca83bd402fae8711af80370034fad6830da96db94fdfedb8fe00a"
+    },
+    {
+      "path": "browser-initial-result.json",
+      "bytes": 8782,
+      "sha256": "a2ce8879525253e420aaad9d2ba78ca456a36e483cf1181ce312236f062c4a50"
+    },
+    {
+      "path": "browser-initial.log",
+      "bytes": 7031,
+      "sha256": "f859228c9acd4a375a409135946f6383af2cf27300b2b5253c3446e8280372df"
+    },
+    {
+      "path": "typecheck.log",
+      "bytes": 183,
+      "sha256": "c6e636b2f7731d2bf0fefb570ddaa2745e1c14caaf4993380db78cd4a8cb0af0"
+    },
+    {
+      "path": "first-party.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "views-write.log",
+      "bytes": 28,
+      "sha256": "df91012bf66fb476e9cd1a30c002829398beb55f869e07cc7be477197fa5a276"
+    },
+    {
+      "path": "views-check.log",
+      "bytes": 32,
+      "sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "path": "lock.log",
+      "bytes": 490651,
+      "sha256": "1aa8a8ea7462fbaf4e788dbfa06843bc13ff8376831536cd895cd697d6e0e0b8"
+    },
+    {
+      "path": "lock-check.log",
+      "bytes": 490665,
+      "sha256": "1204fde5d89f653655ca7a6f1c85492fcff31f65c9d03db8163fe41022e15a50"
+    },
+    {
+      "path": "test-inventory.json",
+      "bytes": 8524,
+      "sha256": "832c7e9f3712023081eb7bd4d6d960cedf7fe17cb1b22a7fc888913aef820653"
+    },
+    {
+      "path": "staged-check.json",
+      "bytes": 151,
+      "sha256": "de0ceb9fea21bd30ba3772afdf761cd629b96165ce190d6f8f73321d71f0bc4c"
+    },
+    {
+      "path": "baseline.json",
+      "bytes": 634,
+      "sha256": "4039f80da492c0e90a7aecb0b1ac90b2c2532ee248a57adea2ef4aa53f4fdeb8"
+    },
+    {
+      "path": "main-ci.json",
+      "bytes": 1225,
+      "sha256": "438cbe3a7e68b3ffef6262d77d09155ac21911924644df984f8c9ee2e94b309a"
+    },
+    {
+      "path": "candidate-ci-discovery.json",
+      "bytes": 236,
+      "sha256": "10879e60bd12082e8fe24f10f2378c6d5e1472c3709c116a5eb5e635fd65f50e"
+    },
+    {
+      "path": "github-call-ledger.json",
+      "bytes": 1735,
+      "sha256": "ccaa2a32d9c3f7194c719ee76129181fa859333b70887c4aecbe4eb5097b76c9"
+    },
+    {
+      "path": "mutation.json",
+      "bytes": 4190,
+      "sha256": "fa7e3dc7ee6ae2b8dffc502f9734d7256b6eaedabfce3cf1d81223542e7857ca"
+    },
+    {
+      "path": "mutation-browser.log",
+      "bytes": 8090,
+      "sha256": "22536efba9a24dd70ff1547ca623d4842177407defde642d4779797e812c6144"
+    },
+    {
+      "path": "mutation-browser-result.json",
+      "bytes": 12760,
+      "sha256": "2697806cb07ae735b6acdd246e0ff1456820ab43e284500a91de369c31b3d42b"
+    },
+    {
+      "path": "ci-failure-receipt.json",
+      "bytes": 1022,
+      "sha256": "90854c1396fbc31c27c9c48ca145086d33753bcd0505c240808397d31178c138"
+    },
+    {
+      "path": "ci-error-excerpt.txt",
+      "bytes": 537,
+      "sha256": "cb57f640e44d0e7cc1890d98b8e681059c6c4b252a5a4ea1bdd3db0c34429842"
+    },
+    {
+      "path": "ci-jobs.json",
+      "bytes": 4280,
+      "sha256": "050c6df1335c4239c31b55ea789ebd5dcbd4a5139382a3ee025b161bf5634f7a"
+    },
+    {
+      "path": "generated-view-reproduction.log",
+      "bytes": 139,
+      "sha256": "2d2e26c190ecd6ac62004d900868f49495dcdbae7a1725502c887d2293be617b"
+    }
+  ],
+  "selectedCredentials": false,
+  "selectedEnvironmentDumps": false,
+  "selectedHeldOutGateMaterial": false,
+  "selectedSymlinks": false,
+  "selectedSessionTraces": false,
+  "review": "Complete task reports and actual check receipts from isolated synthetic public seed fixtures. Full failed-job logs excluded because they include workflow environment blocks; actual relevant error lines selected separately. Screenshots inspected at both widths."
+}

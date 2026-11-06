@@ -1,0 +1,22 @@
+{
+  "head": "a2a3e752f89e80ed0af776463c2313f4fcb9e0bc",
+  "run": 42141809102,
+  "event": "push",
+  "status": "completed",
+  "conclusion": "failure",
+  "url": "https://github.com/just-every/run-orbit/actions/runs/42141809102",
+  "sourceJob": 127643840517,
+  "aggregateJob": 127644056866,
+  "rootCommand": "node scripts/verification-shard.mjs source",
+  "failedCommand": "pnpm exec node src/base/contract-docs.mjs check",
+  "exit": 1,
+  "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "localExactCommandReproduced": true,
+  "localExit": 1,
+  "classification": "Expected generated-view check failure, with dependent jobs failed or skipped. Permitted READY exception in cloud brief; no green test-shard claim.",
+  "sourceAndAggregateLogsReadOnce": true,
+  "rerun": false,
+  "repairEdited": false,
+  "productTestsInCI": "skipped after source failure",
+  "terminalCustody": "READY under explicit generated-view exception; fleet lander regenerates the views and reruns Verify before landing"
+}

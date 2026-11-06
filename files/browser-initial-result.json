@@ -1,0 +1,216 @@
+{
+  "config": {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/run-orbit-sd-orbit-c-f65/node_modules/@playwright/test/cli.js",
+      "test",
+      "--config",
+      "/tmp/orbit-playwright.config.mjs",
+      "operator.spec.mjs",
+      "--grep",
+      "RECORD-005",
+      "--reporter=list,json"
+    ],
+    "configFile": "/tmp/orbit-playwright.config.mjs",
+    "rootDir": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/workspace/run-orbit-sd-orbit-c-f65/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/workspace/run-orbit-sd-orbit-c-f65/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e",
+        "snapshotDir": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:8722",
+          "browserName": "chromium",
+          "headless": true,
+          "launchOptions": {
+            "args": [
+              "--use-mock-keychain",
+              "--password-store=basic",
+              "--no-sandbox"
+            ],
+            "executablePath": "/usr/bin/chromium"
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "PORT=8722 node scripts/browser-server.mjs",
+      "cwd": "/workspace/run-orbit-sd-orbit-c-f65",
+      "url": "http://127.0.0.1:8722",
+      "reuseExistingServer": false,
+      "timeout": 90000
+    }
+  },
+  "suites": [
+    {
+      "title": "operator.spec.mjs",
+      "file": "operator.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "authenticated operator UI",
+          "file": "operator.spec.mjs",
+          "line": 28,
+          "column": 6,
+          "specs": [
+            {
+              "title": "RECORD-005 — the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 6460,
+                      "error": {
+                        "message": "Error: {\"error\":\"Request origin is not allowed.\"}\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m",
+                        "stack": "Error: {\"error\":\"Request origin is not allowed.\"}\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at /workspace/run-orbit-sd-orbit-c-f65/tests/e2e/operator.spec.mjs:160:52",
+                        "location": {
+                          "file": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e/operator.spec.mjs",
+                          "column": 52,
+                          "line": 160
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39moperator.spec.mjs:160\n\n  158 |     for (const note of notes) {\n  159 |       const response = await page.request.post(`${recordPath}/entries`, { data: { kind: 'note', ...note } });\n> 160 |       expect(response.ok(), await response.text()).toBe(true);\n      |                                                    ^\n  161 |       note.id = (await response.json()).id;\n  162 |     }\n  163 |     expect(new Set(notes.map(note => note.id)).size).toBe(3);"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e/operator.spec.mjs",
+                            "column": 52,
+                            "line": 160
+                          },
+                          "message": "Error: {\"error\":\"Request origin is not allowed.\"}\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n   at operator.spec.mjs:160\n\n  158 |     for (const note of notes) {\n  159 |       const response = await page.request.post(`${recordPath}/entries`, { data: { kind: 'note', ...note } });\n> 160 |       expect(response.ok(), await response.text()).toBe(true);\n      |                                                    ^\n  161 |       note.id = (await response.json()).id;\n  162 |     }\n  163 |     expect(new Set(notes.map(note => note.id)).size).toBe(3);\n    at /workspace/run-orbit-sd-orbit-c-f65/tests/e2e/operator.spec.mjs:160:52"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-06T01:05:24.167Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/workspace/run-orbit-sd-orbit-c-f65/test-results/operator-authenticated-ope-d53b7-of-order-notes-with-ID-ties/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/workspace/run-orbit-sd-orbit-c-f65/test-results/operator-authenticated-ope-d53b7-of-order-notes-with-ID-ties/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/workspace/run-orbit-sd-orbit-c-f65/test-results/operator-authenticated-ope-d53b7-of-order-notes-with-ID-ties/trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e/operator.spec.mjs",
+                        "column": 52,
+                        "line": 160
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a2fdce3b1bbd9eeaf8c3-21de84628d4f022125e7",
+              "file": "../contract.mjs",
+              "line": 4,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-06T01:04:58.982Z",
+    "duration": 32036.595,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

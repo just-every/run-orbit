@@ -1,0 +1,216 @@
+{
+  "config": {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/run-orbit-sd-orbit-c-f65/node_modules/@playwright/test/cli.js",
+      "test",
+      "--config",
+      "/tmp/orbit-playwright.config.mjs",
+      "operator.spec.mjs",
+      "--grep",
+      "RECORD-005",
+      "--reporter=list,json"
+    ],
+    "configFile": "/tmp/orbit-playwright.config.mjs",
+    "rootDir": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/workspace/run-orbit-sd-orbit-c-f65/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/workspace/run-orbit-sd-orbit-c-f65/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e",
+        "snapshotDir": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:8722",
+          "browserName": "chromium",
+          "headless": true,
+          "launchOptions": {
+            "args": [
+              "--use-mock-keychain",
+              "--password-store=basic",
+              "--no-sandbox"
+            ],
+            "executablePath": "/usr/bin/chromium"
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "PORT=8722 node scripts/browser-server.mjs",
+      "cwd": "/workspace/run-orbit-sd-orbit-c-f65",
+      "url": "http://127.0.0.1:8722",
+      "reuseExistingServer": false,
+      "timeout": 90000
+    }
+  },
+  "suites": [
+    {
+      "title": "operator.spec.mjs",
+      "file": "operator.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "authenticated operator UI",
+          "file": "operator.spec.mjs",
+          "line": 28,
+          "column": 6,
+          "specs": [
+            {
+              "title": "RECORD-005 — the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 6321,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 4\u001b[39m\n\u001b[31m+ Received  + 4\u001b[39m\n\n\u001b[33m@@ -1,15 +1,15 @@\u001b[39m\n\u001b[2m  Array [\u001b[22m\n\u001b[2m    Object {\u001b[22m\n\u001b[32m-     \"id\": \"01M6Q6N18M2SX54ZFWWERRHX6C\",\u001b[39m\n\u001b[31m+     \"id\": \"01M6Q6N1972ZJKPF9JK4PZRJP1\",\u001b[39m\n\u001b[2m      \"occurredAt\": \"2026-01-03T09:00:00.000Z\",\u001b[22m\n\u001b[32m-     \"text\": \"synthetic-orbit-timeline-tie-one\",\u001b[39m\n\u001b[31m+     \"text\": \"synthetic-orbit-timeline-tie-two\",\u001b[39m\n\u001b[2m    },\u001b[22m\n\u001b[2m    Object {\u001b[22m\n\u001b[32m-     \"id\": \"01M6Q6N1972ZJKPF9JK4PZRJP1\",\u001b[39m\n\u001b[31m+     \"id\": \"01M6Q6N18M2SX54ZFWWERRHX6C\",\u001b[39m\n\u001b[2m      \"occurredAt\": \"2026-01-03T09:00:00.000Z\",\u001b[22m\n\u001b[32m-     \"text\": \"synthetic-orbit-timeline-tie-two\",\u001b[39m\n\u001b[31m+     \"text\": \"synthetic-orbit-timeline-tie-one\",\u001b[39m\n\u001b[2m    },\u001b[22m\n\u001b[2m    Object {\u001b[22m\n\u001b[2m      \"id\": \"01M6Q6N17PDKRHTBGE856A2TH1\",\u001b[22m\n\u001b[2m      \"occurredAt\": \"2026-01-02T09:00:00.000Z\",\u001b[22m\n\u001b[2m      \"text\": \"synthetic-orbit-timeline-earlier\",\u001b[22m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 4\u001b[39m\n\u001b[31m+ Received  + 4\u001b[39m\n\n\u001b[33m@@ -1,15 +1,15 @@\u001b[39m\n\u001b[2m  Array [\u001b[22m\n\u001b[2m    Object {\u001b[22m\n\u001b[32m-     \"id\": \"01M6Q6N18M2SX54ZFWWERRHX6C\",\u001b[39m\n\u001b[31m+     \"id\": \"01M6Q6N1972ZJKPF9JK4PZRJP1\",\u001b[39m\n\u001b[2m      \"occurredAt\": \"2026-01-03T09:00:00.000Z\",\u001b[22m\n\u001b[32m-     \"text\": \"synthetic-orbit-timeline-tie-one\",\u001b[39m\n\u001b[31m+     \"text\": \"synthetic-orbit-timeline-tie-two\",\u001b[39m\n\u001b[2m    },\u001b[22m\n\u001b[2m    Object {\u001b[22m\n\u001b[32m-     \"id\": \"01M6Q6N1972ZJKPF9JK4PZRJP1\",\u001b[39m\n\u001b[31m+     \"id\": \"01M6Q6N18M2SX54ZFWWERRHX6C\",\u001b[39m\n\u001b[2m      \"occurredAt\": \"2026-01-03T09:00:00.000Z\",\u001b[22m\n\u001b[32m-     \"text\": \"synthetic-orbit-timeline-tie-two\",\u001b[39m\n\u001b[31m+     \"text\": \"synthetic-orbit-timeline-tie-one\",\u001b[39m\n\u001b[2m    },\u001b[22m\n\u001b[2m    Object {\u001b[22m\n\u001b[2m      \"id\": \"01M6Q6N17PDKRHTBGE856A2TH1\",\u001b[22m\n\u001b[2m      \"occurredAt\": \"2026-01-02T09:00:00.000Z\",\u001b[22m\n\u001b[2m      \"text\": \"synthetic-orbit-timeline-earlier\",\u001b[22m\n    at /workspace/run-orbit-sd-orbit-c-f65/tests/e2e/operator.spec.mjs:171:136",
+                        "location": {
+                          "file": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e/operator.spec.mjs",
+                          "column": 136,
+                          "line": 171
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39moperator.spec.mjs:171\n\n  169 |     expect(recordsResponse.ok()).toBe(true);\n  170 |     const recordsTimeline = (await recordsResponse.json()).timeline.filter(entry => ids.has(entry.id));\n> 171 |     expect(recordsTimeline.map(entry => ({ id: entry.id, occurredAt: entry.occurred_at, text: JSON.parse(entry.payload_json).text }))).toEqual(expected);\n      |                                                                                                                                        ^\n  172 |     const opportunityResponse = await page.request.get(`/api/v1/opportunities/${opportunityId}`);\n  173 |     expect(opportunityResponse.ok()).toBe(true);\n  174 |     const opportunityTimeline = (await opportunityResponse.json()).opportunity.timeline.filter(entry => ids.has(entry.id));"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e/operator.spec.mjs",
+                            "column": 136,
+                            "line": 171
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 4\u001b[39m\n\u001b[31m+ Received  + 4\u001b[39m\n\n\u001b[33m@@ -1,15 +1,15 @@\u001b[39m\n\u001b[2m  Array [\u001b[22m\n\u001b[2m    Object {\u001b[22m\n\u001b[32m-     \"id\": \"01M6Q6N18M2SX54ZFWWERRHX6C\",\u001b[39m\n\u001b[31m+     \"id\": \"01M6Q6N1972ZJKPF9JK4PZRJP1\",\u001b[39m\n\u001b[2m      \"occurredAt\": \"2026-01-03T09:00:00.000Z\",\u001b[22m\n\u001b[32m-     \"text\": \"synthetic-orbit-timeline-tie-one\",\u001b[39m\n\u001b[31m+     \"text\": \"synthetic-orbit-timeline-tie-two\",\u001b[39m\n\u001b[2m    },\u001b[22m\n\u001b[2m    Object {\u001b[22m\n\u001b[32m-     \"id\": \"01M6Q6N1972ZJKPF9JK4PZRJP1\",\u001b[39m\n\u001b[31m+     \"id\": \"01M6Q6N18M2SX54ZFWWERRHX6C\",\u001b[39m\n\u001b[2m      \"occurredAt\": \"2026-01-03T09:00:00.000Z\",\u001b[22m\n\u001b[32m-     \"text\": \"synthetic-orbit-timeline-tie-two\",\u001b[39m\n\u001b[31m+     \"text\": \"synthetic-orbit-timeline-tie-one\",\u001b[39m\n\u001b[2m    },\u001b[22m\n\u001b[2m    Object {\u001b[22m\n\u001b[2m      \"id\": \"01M6Q6N17PDKRHTBGE856A2TH1\",\u001b[22m\n\u001b[2m      \"occurredAt\": \"2026-01-02T09:00:00.000Z\",\u001b[22m\n\u001b[2m      \"text\": \"synthetic-orbit-timeline-earlier\",\u001b[22m\n\n   at operator.spec.mjs:171\n\n  169 |     expect(recordsResponse.ok()).toBe(true);\n  170 |     const recordsTimeline = (await recordsResponse.json()).timeline.filter(entry => ids.has(entry.id));\n> 171 |     expect(recordsTimeline.map(entry => ({ id: entry.id, occurredAt: entry.occurred_at, text: JSON.parse(entry.payload_json).text }))).toEqual(expected);\n      |                                                                                                                                        ^\n  172 |     const opportunityResponse = await page.request.get(`/api/v1/opportunities/${opportunityId}`);\n  173 |     expect(opportunityResponse.ok()).toBe(true);\n  174 |     const opportunityTimeline = (await opportunityResponse.json()).opportunity.timeline.filter(entry => ids.has(entry.id));\n    at /workspace/run-orbit-sd-orbit-c-f65/tests/e2e/operator.spec.mjs:171:136"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-06T01:12:52.559Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/workspace/run-orbit-sd-orbit-c-f65/test-results/operator-authenticated-ope-d53b7-of-order-notes-with-ID-ties/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/workspace/run-orbit-sd-orbit-c-f65/test-results/operator-authenticated-ope-d53b7-of-order-notes-with-ID-ties/error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/workspace/run-orbit-sd-orbit-c-f65/test-results/operator-authenticated-ope-d53b7-of-order-notes-with-ID-ties/trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/workspace/run-orbit-sd-orbit-c-f65/tests/e2e/operator.spec.mjs",
+                        "column": 136,
+                        "line": 171
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "a2fdce3b1bbd9eeaf8c3-21de84628d4f022125e7",
+              "file": "../contract.mjs",
+              "line": 4,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-06T01:12:27.406Z",
+    "duration": 31732.143,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}
