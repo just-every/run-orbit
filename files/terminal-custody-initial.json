@@ -1,0 +1,12 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f65",
+  "head": "a2a3e752f89e80ed0af776463c2313f4fcb9e0bc",
+  "evidenceRef": "refs/heads/evidence/sd-orbit-c-f65",
+  "evidenceHead": "a972e9d92872e57814fe403aa575c68469d00b6c",
+  "evidenceVerified": true,
+  "ciRun": 42141809102,
+  "ciConclusion": "failure",
+  "exception": "generated-view check only, dependent failures and skips",
+  "custody": "READY under the cloud generated-view exception"
+}

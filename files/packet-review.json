@@ -154,6 +154,21 @@
       "path": "generated-view-reproduction.log",
       "bytes": 139,
       "sha256": "2d2e26c190ecd6ac62004d900868f49495dcdbae7a1725502c887d2293be617b"
+    },
+    {
+      "path": "evidence-fetch-initial.json",
+      "bytes": 6064,
+      "sha256": "f75076473161120207f0c141a9c77c9b93b5cedbd9948ac6c7deaafe5159989d"
+    },
+    {
+      "path": "terminal-custody-initial.json",
+      "bytes": 468,
+      "sha256": "b4c5a6134b2d805f09cec0e55fd00e880f11862bf262b2ff1baa898babc9bb4a"
+    },
+    {
+      "path": "evidence-publication-initial.txt",
+      "bytes": 5876,
+      "sha256": "92bfe7d5e580deaecdfb7c8db52dc2cae639421071dd44721c2d956ba34706b5"
     }
   ],
   "selectedCredentials": false,
@@ -161,5 +176,6 @@
   "selectedHeldOutGateMaterial": false,
   "selectedSymlinks": false,
   "selectedSessionTraces": false,
-  "review": "Complete task reports and actual check receipts from isolated synthetic public seed fixtures. Full failed-job logs excluded because they include workflow environment blocks; actual relevant error lines selected separately. Screenshots inspected at both widths."
+  "review": "Complete task reports and actual check receipts from isolated synthetic public seed fixtures. Full failed-job logs excluded because they include workflow environment blocks; actual relevant error lines selected separately. Screenshots inspected at both widths.",
+  "initialEvidenceRoundTripVerified": true
 }
