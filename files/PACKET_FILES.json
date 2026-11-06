@@ -1,0 +1,96 @@
+{
+  "excluded": [
+    "credentials",
+    "secret values",
+    "environment dumps",
+    "setup output",
+    "runtime state",
+    "browser traces",
+    "private held-out gates",
+    "symlinks"
+  ],
+  "explicit_selection": true,
+  "files": [
+    {
+      "bytes": 3740,
+      "path": "REPORT.md",
+      "sha256": "851b6f3e377356db3dc7d85c87bb66f5ed80758e23c564799a59d9e19c518c42"
+    },
+    {
+      "bytes": 20951,
+      "path": "VERDICT.md",
+      "sha256": "6a801a165b4ecf40c5f72bf7287c3473a19ee03fe572d3f0283bc5674bef67ab"
+    },
+    {
+      "bytes": 2625,
+      "path": "PLAN.md",
+      "sha256": "910fe18b818ab3f39f12fe91c4f43003578dd2e2b8ebfd5fd95dd1b9d9c537a6"
+    },
+    {
+      "bytes": 1205,
+      "path": "RUBRIC.md",
+      "sha256": "6df56963ecbcf4d0a4602ac015f339376f57dc24e48afa790f9dec66c31db41f"
+    },
+    {
+      "bytes": 5063,
+      "path": "RECEIPT.json",
+      "sha256": "e378adae27b9ec55c5a07735ff72790b3d42a9b2102e86e1d88e417d50da900d"
+    },
+    {
+      "bytes": 984,
+      "path": "ADMISSION_RECEIPT.json",
+      "sha256": "799831e9af7309d3873892130eca1419fbb29187ee40682cc9daf2d608811c2c"
+    },
+    {
+      "bytes": 1635,
+      "path": "COMMANDS.jsonl",
+      "sha256": "3a54412dcc571704dbe6ce0848bd95c2d9a944455eb30901d6524cd060bcfdb4"
+    },
+    {
+      "bytes": 10723,
+      "path": "SOURCE_MANIFEST.json",
+      "sha256": "79d29c6ae9ea319c9a37b0c7a1d45765f2d236748f85ad3a7ea6214d6e2a9c65"
+    },
+    {
+      "bytes": 353,
+      "path": "BROWSER_CONFIG.mjs",
+      "sha256": "10167eafc967ea134cb767ef46501a98471b8bc4387f4eb983820c3b00db9db4"
+    },
+    {
+      "bytes": 1010,
+      "path": "CORE.log",
+      "sha256": "550f2bb1b8907cc1139aba794bd4936947213ec0fef30898b1e419178566c874"
+    },
+    {
+      "bytes": 4511,
+      "path": "BROWSER.log",
+      "sha256": "828a202e1799f69870a1cb8e46833c47ece0f4f9a5884536690616dcc4e30fcd"
+    },
+    {
+      "bytes": 3703,
+      "path": "BUILD.log",
+      "sha256": "dfd6b8b1ce1e7522e3d395e6a576372301c91f5b99bcb5ef1ddb683c2e65b3da"
+    },
+    {
+      "bytes": 67,
+      "path": "CONTRACT_CHECK.log",
+      "sha256": "183372998615cc516043a5f66404b300281009a84349eda72da66d79fe542603"
+    },
+    {
+      "bytes": 174957,
+      "path": "browser/1440-assistance-preview.png",
+      "sha256": "36dade1f9a0a6de87f9555b1c5544221733184deb4f0cc61e5903a963c97a8cc"
+    },
+    {
+      "bytes": 157763,
+      "path": "browser/390-assistance-preview.png",
+      "sha256": "fde64e01b1ff00ccbfa0211d5fddf5650aba17033333298587ee82d20e84bfb1"
+    },
+    {
+      "bytes": 313027,
+      "path": "browser/390-assistance-exact-request.png",
+      "sha256": "d627c88ec3e211ef1ce01439378fdaf62b0f94037b8523370c375ae92e6f025f"
+    }
+  ],
+  "secret_pattern_matches": 0
+}

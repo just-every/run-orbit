@@ -1,0 +1,6 @@
+# Frozen original rubric
+
+Frozen before executing the focused journeys. Source: the two original affected outcomes explicitly supplied with this commission. No other original frozen rubric or private held-out material was shipped; no inaccessible fleet work files are read. Score only these outcomes.
+
+R1 / Requirement and AP1: preview and request one-to-one draft from current recommendation/customer evidence and configured instructions through native doors. Exact reviewed input contains current cited facts and instructions; output cites those facts, remains within150words and invents no fact/price/discount/commitment unsupported by records/signals. Full original opportunity/contact/company/signals/exchanged-message context survives.
+R2 / Requirement and AP1: native draft readback preserves exact unsent subject/body, no customer submission/outbound inventory change; consumed preview/foreign citations/151words/stale context refuse without unsafe effects as applicable. Preserve BASE-ROLE-001/current signout-authority and existing ACTION004 durable attribution. Model HTTP edge fake is allowed; no live-model qualification claimed. OUT017/OUT023 separate obligations stay unchanged, no waiver.

@@ -1,0 +1,169 @@
+{
+  "awarded_counts": {
+    "done": 34,
+    "missing": 32,
+    "partial": 138,
+    "total": 204
+  },
+  "browser": {
+    "configuration_override_outside_product": "/tmp/orbit-judge-playwright.config.mjs",
+    "executable": "/usr/bin/chromium",
+    "no_sandbox": true,
+    "passed": 1,
+    "tests": 1,
+    "widths": [
+      1440,
+      390
+    ]
+  },
+  "ci": {
+    "api_calls": 0,
+    "dispatches": 0,
+    "exact_final_runtime_green": false,
+    "existing_run": {
+      "basis": "inline commission; no independent API read",
+      "conclusion": "failure",
+      "event": "workflow_dispatch",
+      "failure": "generated-view freshness and dependent failures",
+      "id": 41996669996,
+      "runtime_shards": "skipped"
+    },
+    "polls": 0,
+    "reruns": 0
+  },
+  "commands": [
+    {
+      "command": [
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "setup",
+        "--owner-email",
+        "fleet@runeditrun.com",
+        "--non-interactive"
+      ],
+      "cwd": "/workspace/run-orbit-judge",
+      "exit_code": 0,
+      "finished_at": "2026-11-06T02:11:30.412117+00:00",
+      "label": "setup",
+      "source": "f2c6cff128afd90fb0c81193408f6b6d1ebd36c4",
+      "started_at": "2026-11-06T02:10:48.200640+00:00"
+    },
+    {
+      "command": [
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "build"
+      ],
+      "cwd": "/workspace/run-orbit-judge",
+      "exit_code": 0,
+      "finished_at": "2026-11-06T02:13:37.715414+00:00",
+      "label": "build",
+      "source": "f2c6cff128afd90fb0c81193408f6b6d1ebd36c4",
+      "started_at": "2026-11-06T02:13:26.887770+00:00"
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "tests/core/assistance.test.ts"
+      ],
+      "cwd": "/workspace/run-orbit-judge",
+      "exit_code": 0,
+      "finished_at": "2026-11-06T02:13:55.959698+00:00",
+      "label": "core",
+      "source": "f2c6cff128afd90fb0c81193408f6b6d1ebd36c4",
+      "started_at": "2026-11-06T02:13:12.352559+00:00"
+    },
+    {
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "cwd": "/workspace/run-orbit-judge",
+      "exit_code": 1,
+      "finished_at": "2026-11-06T02:14:49.588405+00:00",
+      "label": "contract-check",
+      "source": "f2c6cff128afd90fb0c81193408f6b6d1ebd36c4",
+      "started_at": "2026-11-06T02:14:49.437886+00:00"
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "playwright",
+        "test",
+        "--config",
+        "/tmp/orbit-judge-playwright.config.mjs",
+        "tests/e2e/assistance.spec.mjs",
+        "--reporter=list"
+      ],
+      "cwd": "/workspace/run-orbit-judge",
+      "exit_code": 0,
+      "finished_at": "2026-11-06T02:15:02.970157+00:00",
+      "label": "browser",
+      "source": "f2c6cff128afd90fb0c81193408f6b6d1ebd36c4",
+      "started_at": "2026-11-06T02:14:00.670521+00:00"
+    }
+  ],
+  "core": {
+    "failed": 0,
+    "passed": 6,
+    "skipped": 0,
+    "tests": 6
+  },
+  "counts": {
+    "acceptance": {
+      "done": 34,
+      "missing": 32,
+      "partial": 138,
+      "total": 204
+    },
+    "awarded_by_review": 0,
+    "candidate_contract": {
+      "done": 35,
+      "missing": 32,
+      "partial": 137,
+      "total": 204
+    }
+  },
+  "pending_riders": [
+    3,
+    11
+  ],
+  "private_material_selected": false,
+  "product_branch_created": false,
+  "product_commits": 0,
+  "product_pushes": 0,
+  "product_worktree_clean": true,
+  "proposed_gap": "Unproved through a populated native preview, generation and draft-readback journey: previously exchanged customer messages are included unchanged in the exact reviewed provider request, and pre-existing outbound-message custody is preserved during successful generation and the named refusal paths. Current cited facts, exact configured instructions, bounded cited unsent output, consumed-preview, foreign-citation, 151-word and stale-context refusals, native sign-out authority and ACTION-004 durable attribution pass the focused journeys. No live-model qualification is claimed. OUT-017 and OUT-023 retain their independent obligations and gaps.",
+  "pull_request": null,
+  "recorded_at": "2026-11-06T02:17:49.486178+00:00",
+  "repository": "just-every/run-orbit",
+  "rubric_scores": {
+    "R1": "UNMET: populated exchanged-message context unestablished",
+    "R2": "UNMET: populated unchanged outbound custody unestablished"
+  },
+  "schema": 1,
+  "source": "f2c6cff128afd90fb0c81193408f6b6d1ebd36c4",
+  "source_branch": "cloud/sd-orbit-c-f36",
+  "source_remote_ref_observed_matches": true,
+  "substantive_blockers": [
+    "B1",
+    "B2"
+  ],
+  "tag": "ct-judge-orbit-action003-20261105-1500-sol1",
+  "toolchain": {
+    "note": "Supplied shim permits the newer VM Node; rer setup and build announce project Node 22.20.0; build child also warned Node 24.19.0. No claim all child processes used the pin.",
+    "pnpm": "10.12.4",
+    "repository_node_pin": "22.20.0",
+    "rer": "0.2.96",
+    "shell_node": "24.19.0"
+  },
+  "verdict": "STAYS PARTIAL"
+}

@@ -1,0 +1,44 @@
+{
+  "basis": "actual successful terminal commands in this session",
+  "clone": {
+    "command": [
+      "git",
+      "clone",
+      "--depth",
+      "1",
+      "--filter=blob:none",
+      "--branch",
+      "cloud/sd-orbit-c-f36",
+      "https://github.com/just-every/run-orbit.git",
+      "/workspace/run-orbit-judge"
+    ],
+    "exit_code": 0,
+    "head": "f2c6cff128afd90fb0c81193408f6b6d1ebd36c4",
+    "local_fleet_identity_set": true
+  },
+  "installation": {
+    "command": [
+      "npx",
+      "-y",
+      "@runeditrun/rer@0.2.96",
+      "install"
+    ],
+    "exit_code": 0,
+    "pnpm": "10.12.4",
+    "rer": "0.2.96",
+    "runner": "cloud_run"
+  },
+  "no_paid_api": true,
+  "no_subagents": true,
+  "original_source_remote": {
+    "advertised": "f2c6cff128afd90fb0c81193408f6b6d1ebd36c4",
+    "command": [
+      "git",
+      "ls-remote",
+      "origin",
+      "refs/heads/cloud/sd-orbit-c-f36"
+    ],
+    "exit_code": 0
+  },
+  "recorded_at": "2026-11-06T02:21:35.954485+00:00"
+}
