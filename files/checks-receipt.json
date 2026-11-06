@@ -1,0 +1,66 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f83",
+  "head": "84041ac0fee6c6b14c8de27cd3865608a06956a0",
+  "base": "d417a80f86f763583e68f7ba8c13cb668f30bbab",
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/delegation/authority-regressions.test.ts",
+      "exit": 0,
+      "tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 158325.34622,
+      "log": "touched-tests.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    }
+  ],
+  "mechanical": "mechanical.json",
+  "inventory": "test-inventory.json",
+  "rowAndHygiene": "row-and-hygiene.json",
+  "testedBytesMatchCandidate": true,
+  "relevantFiles": [
+    {
+      "path": "tests/delegation/authority-regressions.test.ts",
+      "sha256": "c39d5c92dadfce4a43943f7c0741543142b570ecbb908ec81fe60d98ac5979db",
+      "gitBlob": "f77e07ee58982970bdbb80fc5f5cfe0da1120baa"
+    },
+    {
+      "path": "tests/delegation/authority-fixture.ts",
+      "sha256": "ddeb956790a856c6661a9f1c8cb5811ff81ca8e9f672a83bc7ad319daf3f4137",
+      "gitBlob": "7d6da4002ceefc776917140e33a5d7c1adabb73a"
+    },
+    {
+      "path": "src/core/features/delegation/protocol.ts",
+      "sha256": "f8e4a7b33af157110455a06bcab70b708fb80e7e3a3515ed36131aa42257d24f",
+      "gitBlob": "e341fc74d58a64d1aac41aa3ad0b6a725bd3736f"
+    },
+    {
+      "path": "src/core/features/delegation/routes.ts",
+      "sha256": "10699f6b4a543ee4e231bb7bf5143e749cc5d5bfcb411c948770d1c739b59188",
+      "gitBlob": "d5a201a3859c63e7b82867d12db9498fc8a048e5"
+    },
+    {
+      "path": "src/core/features/delegation/listing.ts",
+      "sha256": "8dad4db53273ac2a92fde80c885a631126cfcb5a60aa08ebcefa89ac5e2b2aa3",
+      "gitBlob": "d0ffd787006835c90350e8d7fd1c1ab62a13c6ac"
+    }
+  ],
+  "productCodeChanged": false,
+  "fixtureChanged": false,
+  "existingAssertionsRemovedOrNarrowed": false,
+  "acceptancePointsChanged": false,
+  "providerProofClaimed": false,
+  "publicationScan": "Not run in cloud; the fleet lander runs the complete exact-head full-history scan",
+  "runSite": "Candidate not landed; main-only gate belongs to the fleet lander"
+}

@@ -1,0 +1,12 @@
+{
+  "parentStatusRows": 204,
+  "candidateStatusRows": 204,
+  "dropped": [],
+  "changed": [
+    "DELEGATE-001"
+  ],
+  "rankChanges": [],
+  "addedEmailStrings": 0,
+  "credentialPatternFindings": 0,
+  "generatedViewsCommitted": false
+}

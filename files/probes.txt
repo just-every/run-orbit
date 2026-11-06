@@ -1,0 +1,4 @@
+PROBE DELEGATE-001 scope: native consent and PKCE issue an active grant for opportunities/opp; delegated GET /evidence?target=opportunities/opp -> 200, target opportunities/opp, title Onboarding, linked contact identity contact retained.
+PROBE DELEGATE-001 refusal: the populated contact contact remains linked; the same active grant GET /evidence?target=contacts/contact -> 404 with error code NOT_FOUND.
+PROBE DELEGATE-001 listing: the same active grant GET /records -> 200; the named opportunity is present and contacts/contact is absent.
+PROBE DELEGATE-001 effects: complete before and after rows for opportunities, contacts, opportunity_contacts, handoff_tasks, handoff_contacts, timeline_entries, drafts, outbound_messages and delegation_receipts -> equal.

@@ -1,0 +1,36 @@
+{
+  "runId": 42177420655,
+  "event": "push",
+  "observedAt": 1793948390.541881,
+  "conclusion": "failure",
+  "head_sha": "84041ac0fee6c6b14c8de27cd3865608a06956a0",
+  "html_url": "https://github.com/just-every/run-orbit/actions/runs/42177420655",
+  "status": "completed",
+  "classification": "permitted-generated-view-freshness-only",
+  "cause": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "failedJobs": [
+    127759122460,
+    127759304236
+  ],
+  "dependentFailures": [
+    "authoritative source bundle absent after source gate stopped",
+    "aggregate verdict and artifacts absent after source gate stopped"
+  ],
+  "productShards": "skipped after source gate stopped",
+  "reruns": 0,
+  "repairs": 0,
+  "githubCalls": 7,
+  "archiveReadsPerFailedJob": 1,
+  "cloudReadyExemption": "The task explicitly permits contract generator check failure on restored ACCEPTANCE.md or docs/CLAIMS.md and its dependent failures and skips",
+  "localReproduction": {
+    "head": "84041ac0fee6c6b14c8de27cd3865608a06956a0",
+    "job": 127759122460,
+    "command": "node scripts/verification-shard.mjs source",
+    "test": "node src/base/contract-docs.mjs check",
+    "exit": 1,
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "log": "expected-view-reproduction.log",
+    "repair": false
+  },
+  "logSanitization": "Environment display blocks omitted; signed URL queries removed; failure assertions retained"
+}
