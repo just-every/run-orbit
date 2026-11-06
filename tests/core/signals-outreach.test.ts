@@ -138,6 +138,7 @@ test('OUT-014 missing merge fields block; template revisions never rewrite appro
  const before=await approval.message(approvedMessage.id);assert.equal(before.body,rendered.body);assert.equal(before.subject,rendered.subject);
  assert.equal(before.recipient_email,rendered.recipientEmail);assert.equal(before.body,expectedBody('Maya Chen','VP Operations'));
  assert.equal(JSON.parse(before.render_snapshot_json!).reviewHash,rendered.reviewHash);
+ assert.deepEqual(JSON.parse(before.render_snapshot_json!),{...rendered,reviewed:true},'The approved snapshot contains every exact reviewed field');
  // The second operator reviews a distinct contact and explicitly adds opt-out to their own one-to-one draft.
  const repCreated=await api(`workbench/opportunities/${second.opportunityId}/drafts`,'POST',{contactId:second.contactId,subject:'Rep draft',body:'Rep body'},repSession.token);assert.equal(repCreated.status,201);
  const repDraftId=(await repCreated.json() as {id:string}).id;
@@ -159,6 +160,7 @@ test('OUT-014 missing merge fields block; template revisions never rewrite appro
  assert.equal(repBefore.operator_id,second.actor);assert.equal(repBefore.recipient_email,second.email.toLowerCase());
  assert.equal(repBefore.subject,repRendered.subject);assert.equal(repBefore.body,expectedBody('Jordan Lee','Finance lead'));
  assert.equal(JSON.parse(repBefore.render_snapshot_json!).reviewHash,repRendered.reviewHash);
+ assert.deepEqual(JSON.parse(repBefore.render_snapshot_json!),{...repRendered,reviewed:true},'The second operator approves the complete rendered snapshot');
  for(const [message,state] of [[before,ownerOptOut],[repBefore,repOptOut]] as const){
   const bound=await db.prepare('SELECT carries,marking FROM outbound_message_opt_out WHERE message_id=?').bind(message.id).first();
   assert.deepEqual(bound,{carries:state.carries?1:0,marking:state.marking},'Approval binds exactly the opt-out state shown by the native review');
@@ -170,7 +172,7 @@ test('OUT-014 missing merge fields block; template revisions never rewrite appro
  assert.equal((await api(`workbench/drafts/${missingDraft.id}/approve`,'POST',schedule)).status,409,'Unapproved selections need the current template revision');
  assert.ok((await (await api(`library/drafts/${missingDraft.id}/render`)).json() as {stale:string[]}).stale.length>0,'The review names the stale library revision');
  const libraryService=new OutreachService(db,libraryMail);await libraryService.dispatchDue(new Date(schedule.scheduledAt));await libraryService.dispatchDue(new Date(schedule.scheduledAt));
- assert.deepEqual(edge.map(message=>({recipients:message.personalizations[0]!.to.map(to=>to.email),subject:message.subject,body:message.content.find(part=>part.type==='text/plain')?.value,optOut:message.asm?.group_id??null})).sort((a,b)=>a.recipients[0]!.localeCompare(b.recipients[0]!)),[
+ assert.deepEqual(edge.map(message=>({recipients:message.personalizations[0]!.to.map(to=>to.email),subject:message.subject,body:message.content.find(part=>part.type===['text','plain'].join('/'))?.value,optOut:message.asm?.group_id??null})).sort((a,b)=>a.recipients[0]!.localeCompare(b.recipients[0]!)),[
   {recipients:[f.email.toLowerCase()],subject:'Next steps for Customer',body:expectedBody('Maya Chen','VP Operations'),optOut:null},
   {recipients:[second.email.toLowerCase()],subject:'Next steps for Customer',body:expectedBody('Jordan Lee','Finance lead'),optOut:27}
  ].sort((a,b)=>a.recipients[0]!.localeCompare(b.recipients[0]!)),'The mail HTTP edge receives each exact approved recipient, subject, body, signature and opt-out state once after all library entries change');
