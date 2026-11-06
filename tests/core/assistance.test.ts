@@ -162,7 +162,51 @@ test('AI-002 invented evidence fails visibly; AI-003 unconfigured provider gener
 
 });
 test('AI-001 DATA-002 changed or deleted preview context never leaves deployment',async()=>{
- let calls=0;const f=await fixture({provider:'test',model:'test',inputCostPerMillion:0,outputCostPerMillion:0,async generate(){calls++;throw new Error('must not run');}});const preview=await(await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'})).json() as {id:string};await db.prepare('UPDATE opportunities SET title=? WHERE id=?').bind('Changed after preview',f.opportunity.id).run();assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,409);assert.equal(calls,0);
+ let calls=0;
+ const provider:AIProvider={provider:'test',model:'test',inputCostPerMillion:0,outputCostPerMillion:0,async generate(){calls++;throw new Error('must not run');}};
+ const f=await fixture(provider);
+ const preview=await(await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'})).json() as {id:string};
+ await db.prepare('UPDATE opportunities SET title=? WHERE id=?').bind('Changed after preview',f.opportunity.id).run();
+ assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,409);
+ assert.equal(calls,0);
+
+ const erased=await fixture(provider),opportunityResponse=await erased.call(`opportunities/${erased.opportunity.id}`);
+ assert.equal(opportunityResponse.status,200);
+ const recipient=(await opportunityResponse.json() as {opportunity:OpportunityDetail}).opportunity.contacts[0]!;
+ const contactUrl=`https://orbit.test/api/v1/records/contact/${recipient.id}`;
+ assert.equal((await erased.app.request(contactUrl,{headers:{Cookie:erased.cookie}})).status,200,'the recipient exists before erasure');
+ const previewResponse=await erased.call('assistance/preview',{opportunityId:erased.opportunity.id,contactId:recipient.id,feature:'draft'});
+ assert.equal(previewResponse.status,200);
+ const saved=await previewResponse.json() as {id:string;preview:{contact:{id:string;email:string}}};
+ assert.deepEqual([saved.preview.contact.id,saved.preview.contact.email],[recipient.id,recipient.email]);
+ assert.deepEqual(await db.prepare('SELECT id,recipient_contact_id,consumed_at FROM ai_previews WHERE id=?').bind(saved.id).first(),{id:saved.id,recipient_contact_id:recipient.id,consumed_at:null},'a real unused preview is bound to the recipient');
+ const deleted=await erased.app.request(contactUrl,{
+  method:'DELETE',headers:{Cookie:erased.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},
+  body:JSON.stringify({confirmed:true}),
+ });
+ assert.equal(deleted.status,200,await deleted.clone().text());
+ assert.deepEqual(await deleted.json(),{deleted:true});
+ assert.equal((await erased.app.request(contactUrl,{headers:{Cookie:erased.cookie}})).status,404,'a fresh authenticated read cannot find the erased recipient');
+ assert.equal(await db.prepare('SELECT * FROM contacts WHERE id=?').bind(recipient.id).first(),null);
+ assert.equal(await db.prepare('SELECT * FROM ai_previews WHERE id=?').bind(saved.id).first(),null,'erasure withdraws the saved recipient context');
+ const drafts=async()=>{
+  const response=await erased.call(`drafts?opportunityId=${erased.opportunity.id}`);
+  assert.equal(response.status,200);
+  return (await response.json() as {drafts:OperatorDraft[]}).drafts;
+ };
+ assert.deepEqual(await drafts(),[]);
+ const inventory=async()=>({
+  calls:(await db.prepare('SELECT * FROM ai_calls ORDER BY id').all()).results,
+  drafts:(await db.prepare('SELECT * FROM drafts ORDER BY id').all()).results,
+  recommendations:(await db.prepare('SELECT * FROM recommendations ORDER BY id').all()).results,
+ });
+ const afterErasure=await inventory();
+ const refused=await erased.call('assistance/generate',{previewId:saved.id});
+ assert.equal(refused.status,409);
+ assert.deepEqual(await refused.json(),{error:'The preview was already used or is unavailable.'});
+ assert.equal(calls,0,'the original preview cannot send erased context to the provider');
+ assert.deepEqual(await inventory(),afterErasure,'refusal creates no AI call, draft or generated explanation after erasure');
+ assert.deepEqual(await drafts(),[],'the authenticated draft list remains empty');
 });
 test('NOTIFY-001 NOTIFY-002 queue transitions notify once and recipient read state survives a fresh sign-in',async()=>{
  const f=await fixture();await db.prepare('DELETE FROM notifications WHERE opportunity_id=?').bind(f.opportunity.id).run();await db.prepare("UPDATE opportunities SET queue_state='next' WHERE id=?").bind(f.opportunity.id).run();await db.prepare("UPDATE opportunities SET queue_state='now',updated_at=? WHERE id=?").bind(new Date().toISOString(),f.opportunity.id).run();await db.prepare("UPDATE opportunities SET queue_state='now' WHERE id=?").bind(f.opportunity.id).run();const rows=(await db.prepare("SELECT id FROM notifications WHERE opportunity_id=? AND kind='opportunity.now'").bind(f.opportunity.id).all<{id:string}>()).results;assert.equal(rows.length,1);assert.equal((await f.call(`notifications/${rows[0]!.id}/read`,{})).status,200);assert.ok((await db.prepare('SELECT read_at FROM notifications WHERE id=?').bind(rows[0]!.id).first<{read_at:string}>())!.read_at);const other=await fixture();assert.equal((await other.call(`notifications/${rows[0]!.id}/read`,{})).status,404);
