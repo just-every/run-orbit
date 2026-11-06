@@ -1,0 +1,21 @@
+TAP version 13
+# (node:3754) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":420,"parts":50,"observations":[{"operation":"POST /exports","milliseconds":2782.3957759999903,"status":201},{"operation":"GET /exports/01M6QN0D5AREJ7F1RVV54GTREZ","milliseconds":58.88327500000014,"status":200},{"operation":"POST /exports/01M6QN0D5AREJ7F1RVV54GTREZ/advance","milliseconds":3600.719041000004,"status":200},{"operation":"POST /exports/01M6QN0D5AREJ7F1RVV54GTREZ/advance","milliseconds":2572.161307000002,"status":200},{"operation":"POST /exports/01M6QN0D5AREJ7F1RVV54GTREZ/advance","milliseconds":2562.4527000000235,"status":200},{"operation":"POST /exports/01M6QN0D5AREJ7F1RVV54GTREZ/advance","milliseconds":2441.70296699999,"status":200},{"operation":"POST /exports/01M6QN0D5AREJ7F1RVV54GTREZ/advance","milliseconds":2303.8380570000154,"status":200},{"operation":"POST /exports/01M6QN0D5AREJ7F1RVV54GTREZ/advance","milliseconds":2428.774434000021,"status":200},{"operation":"POST /exports/01M6QN0D5AREJ7F1RVV54GTREZ/advance","milliseconds":1165.2055859999964,"status":200},{"operation":"GET /exports/01M6QN0D5AREJ7F1RVV54GTREZ/download","milliseconds":55.05291999998735,"status":200}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":304,"parts":44,"observations":[{"operation":"POST /exports","milliseconds":2440.380882999976,"status":201},{"operation":"GET /exports/01M6QN90PAW2KHHKTCS3PNSE7X","milliseconds":53.63964000000851,"status":200},{"operation":"POST /exports/01M6QN90PAW2KHHKTCS3PNSE7X/advance","milliseconds":3907.730692000012,"status":200},{"operation":"POST /exports/01M6QN90PAW2KHHKTCS3PNSE7X/advance","milliseconds":4113.55853499996,"status":200},{"operation":"POST /exports/01M6QN90PAW2KHHKTCS3PNSE7X/advance","milliseconds":3612.388318000012,"status":200},{"operation":"POST /exports/01M6QN90PAW2KHHKTCS3PNSE7X/advance","milliseconds":2569.007092999993,"status":200},{"operation":"POST /exports/01M6QN90PAW2KHHKTCS3PNSE7X/advance","milliseconds":3117.613316999981,"status":200},{"operation":"POST /exports/01M6QN90PAW2KHHKTCS3PNSE7X/advance","milliseconds":1851.0278459999827,"status":200},{"operation":"GET /exports/01M6QN90PAW2KHHKTCS3PNSE7X/download","milliseconds":59.905404999968596,"status":200}]}
+# Subtest: FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent
+ok 1 - FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent
+  ---
+  duration_ms: 442527.429056
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 445738.275414

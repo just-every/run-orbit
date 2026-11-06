@@ -1,0 +1,31 @@
+{
+  "candidate": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+  "branch": "cloud/sd-orbit-c-f73",
+  "pre_ready": {
+    "selected_user_behavior": "Native HTTP proof passed including explicit null ownership, source history and replay inventories.",
+    "prior_assertions": "No pre-existing assertion removed, weakened, skipped or conditionalized.",
+    "authority_erasure_replay": "No implementation or authority change; existing authorization and custody assertions passed, with explicit replay inventory proof added.",
+    "screens": "Not applicable; no UI or screen changed.",
+    "verify": "Exact push Verify 42168725032 completed with only expected generated-view root failure and its dependent missing-artifact failures. Brief exception applies; runtime tests were skipped in CI.",
+    "run_site": "Main run 42157856336 green on initial main; candidate Run site belongs to lander.",
+    "source_lock": "Fresh after final synchronization.",
+    "publication_scan": "Not run in cloud; required from fleet lander before landing.",
+    "new_email_literals": 0,
+    "new_bare_prose_tokens": 0
+  },
+  "clauses": [
+    {
+      "id": "FORM-004",
+      "from": "PARTIAL",
+      "to": "PARTIAL",
+      "selected_point": "Explicit reviewed unassigned rule persists null owner and source-attributed assignment history with idempotent replay.",
+      "held": [
+        "TEAM-005 real team queue and notification qualification with its recorded prerequisite",
+        "RECORD-014 deal-less lead views and lead and custom-object intake",
+        "NOTIFY-003 external email and push; Apple and Google accounts for mobile push",
+        "Complete routing and UI plus inherited qualification omitted by selected POINTS"
+      ]
+    }
+  ],
+  "ready_under_generated_view_exception": true
+}

@@ -1,0 +1,191 @@
+{
+  "task": "sd-orbit-c-f73",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f73",
+  "base_head": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+  "status_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "status_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "clause": "FORM-004",
+  "before": "PARTIAL",
+  "after": "PARTIAL",
+  "checks": [
+    {
+      "command": "npx -y @runeditrun/rer install",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0
+    },
+    {
+      "command": "pnpm run typecheck",
+      "node": "24.19.0",
+      "exit": 0
+    },
+    {
+      "command": "pnpm run typecheck",
+      "node": "22.20.0",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "result": "Wrote 1 contract documents."
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "result": "Contract documents are current."
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "ok": true
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='FORM-001 mapped' newtests/t096/forms-native.test.ts",
+      "node": "22.20.0",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 445738.275414,
+      "scope": "Complete existing mapped registration including archive and erasure assertions."
+    }
+  ],
+  "initial_test_attempt": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='FORM-001 mapped' newtests/t096/forms-native.test.ts",
+    "node": "24.19.0",
+    "exit": 1,
+    "failure": "Fixture migrations hit spawnSync Node ETIMEDOUT after 60000 milliseconds before form assertions.",
+    "test_guard_changed": false
+  },
+  "test_count": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "scope": {
+    "ui_changed": false,
+    "migration_changed": false,
+    "acceptance_changed": false,
+    "product_implementation_changed": false
+  },
+  "publication_scan": {
+    "status": "NOT RUN",
+    "reason": "Fleet Mac lander scans exact candidate before landing."
+  },
+  "test_development": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='FORM-001 mapped' newtests/t096/forms-native.test.ts",
+    "node": "22.20.0",
+    "exit": 1,
+    "failure": "New test incorrectly required the entire notification inventory to remain unchanged on initial unassigned intake, but existing opportunity.now notices are valid.",
+    "correction": "Retain the form.submitted recipient check; snapshot all notices after intake and require the full inventory to be identical after replay. No pre-existing assertion, guard or product code changed."
+  },
+  "head": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+  "tree": "b446df7348e3d7c378529b35d627b0f4d35ac58a",
+  "sync": "Fetch and unpublished rebase reported branch up to date; no product, test or contract bytes changed after the passing journey.",
+  "mechanical_after_sync": {
+    "views_write_exit": 0,
+    "views_check_exit": 0,
+    "generated_views_restored": true,
+    "lock_write_exit": 0,
+    "lock_check_exit": 0,
+    "lock_ok": true,
+    "ledger": "none",
+    "product_tree_clean": true
+  },
+  "proof_bytes": {
+    "newtests/t096/forms-mapped-journey.ts": "ae41cfbc6a8d615e600e35eb62a9e4c78d64358d",
+    "newtests/t096/forms-native.test.ts": "8ebaf5874098f2a4619cadb6efce2e057d6deb00",
+    "src/core/features/forms/assignment.ts": "38da72b2e4db323adcc2d7a3c91ce97f93ec7bfc",
+    "src/core/features/forms/service.ts": "92eb4fb4c0ffa89d4aa062e5ce1899b585539937"
+  },
+  "product_push": {
+    "status": "PUSHED",
+    "attempts": 1,
+    "ref": "refs/heads/cloud/sd-orbit-c-f73",
+    "head": "4d57464352b71da0b375775e8857518d8ff6d5ea"
+  },
+  "candidate_ci": {
+    "workflow_runs": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_sha": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42168725032",
+        "id": 42168725032,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ]
+  },
+  "github_calls": 6,
+  "candidate_ci_last_checked_epoch": 1793943308.176792,
+  "candidate_ci_last_checked_utc": "2026-11-06T05:30:07.289358+00:00",
+  "remote_custody": {
+    "verified": true,
+    "head": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+    "ref": "refs/heads/cloud/sd-orbit-c-f73"
+  },
+  "generated_view_exception": {
+    "candidate_check_exit": 1,
+    "local_generation_write_and_check_passed": true,
+    "views_restored_from_main": true,
+    "message": "ACCEPTANCE.md: generated content differs; run contract-docs write."
+  },
+  "candidate_ci_checkpoint": {
+    "conclusion": "failure",
+    "head_sha": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42168725032",
+    "status": "completed"
+  },
+  "ci_classification": {
+    "run": 42168725032,
+    "event": "push",
+    "head": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+    "actual_conclusion": "failure",
+    "root_cause": "Expected generated-view freshness failure on ACCEPTANCE.md after restoring generated views from main.",
+    "source_job": 127731397908,
+    "aggregate_job": 127731550982,
+    "failed_command": "node scripts/verification-shard.mjs source",
+    "first_failing_gate": "pnpm exec node src/base/contract-docs.mjs check",
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "secondary_failures": "Source and combined receipt artifacts do not exist because source stopped at the generator; aggregate refuses failed source and skipped shards.",
+    "runtime_tests_ran": false,
+    "generated_view_exception": true,
+    "ready_under_brief": true,
+    "repairs": 0,
+    "reruns": 0,
+    "log_archive_commands": [
+      {
+        "command": "gh run view 42168725032 --repo just-every/run-orbit --job 127731397908 --log-failed",
+        "exit": 0
+      },
+      {
+        "command": "gh run view 42168725032 --repo just-every/run-orbit --job 127731550982 --log-failed",
+        "exit": 0
+      }
+    ],
+    "log_sanitization": "Environment metadata blocks omitted; no credentials or signed query strings retained."
+  }
+}

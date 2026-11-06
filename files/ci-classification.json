@@ -1,0 +1,29 @@
+{
+  "run": 42168725032,
+  "event": "push",
+  "head": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+  "actual_conclusion": "failure",
+  "root_cause": "Expected generated-view freshness failure on ACCEPTANCE.md after restoring generated views from main.",
+  "source_job": 127731397908,
+  "aggregate_job": 127731550982,
+  "failed_command": "node scripts/verification-shard.mjs source",
+  "first_failing_gate": "pnpm exec node src/base/contract-docs.mjs check",
+  "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "secondary_failures": "Source and combined receipt artifacts do not exist because source stopped at the generator; aggregate refuses failed source and skipped shards.",
+  "runtime_tests_ran": false,
+  "generated_view_exception": true,
+  "ready_under_brief": true,
+  "repairs": 0,
+  "reruns": 0,
+  "log_archive_commands": [
+    {
+      "command": "gh run view 42168725032 --repo just-every/run-orbit --job 127731397908 --log-failed",
+      "exit": 0
+    },
+    {
+      "command": "gh run view 42168725032 --repo just-every/run-orbit --job 127731550982 --log-failed",
+      "exit": 0
+    }
+  ],
+  "log_sanitization": "Environment metadata blocks omitted; no credentials or signed query strings retained."
+}

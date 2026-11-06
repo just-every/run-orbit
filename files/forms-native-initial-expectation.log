@@ -1,0 +1,286 @@
+TAP version 13
+# (node:2538) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent
+not ok 1 - FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent
+  ---
+  duration_ms: 144446.629617
+  type: 'test'
+  location: '/workspace/run-orbit-f73/newtests/t096/forms-native.test.ts:1:769'
+  failureType: 'testCodeFailure'
+  error: |-
+    an unassigned submission chooses no notification recipient
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          created_at: '2026-11-06T05:20:00.004Z',
+          event_key: 'form:01M6QMSB9K2XBX42SVS1XSYSK8',
+          id: '01M6QMSBQ75DR3S699YNH4R3HR',
+    ...
+        {
+    +     created_at: '2026-11-06T05:20:28.326Z',
+    +     event_key: 'now:01M6QMT6WZMRA3Q4CDY6RT9D72:2026-11-06T05:20:28.326Z',
+    +     id: 'b2f6cfbfe33c91c6ed5570da9cf078e2',
+    +     kind: 'opportunity.now',
+    +     message: 'Form submitted',
+    +     operator_id: '01M6QMS60QB8QFSSPE9092XS02',
+    +     opportunity_id: '01M6QMT6WZMRA3Q4CDY6RT9D72',
+    +     read_at: null
+    +   },
+    +   {
+    +     created_at: '2026-11-06T05:20:28.326Z',
+    +     event_key: 'now:01M6QMT6WZMRA3Q4CDY6RT9D72:2026-11-06T05:20:28.326Z',
+    +     id: 'c2b30fa003a35f755ae4d05474a29a32',
+    +     kind: 'opportunity.now',
+    +     message: 'Form submitted',
+    +     operator_id: '01M6QMS392D9S1G3SQRPYHS0EZ',
+    +     opportunity_id: '01M6QMT6WZMRA3Q4CDY6RT9D72',
+    +     read_at: null
+    +   },
+    +   {
+          created_at: '2026-11-06T05:20:07.109Z',
+          event_key: 'now:01M6QMSJ8HWK9R93DQ1PYPQPB0:2026-11-06T05:20:07.109Z',
+          id: 'd6d62219e2b1cc5f1263e94c3c2ec815',
+          kind: 'opportunity.now',
+          message: 'Form submitted',
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      id: '01M6QMSBQ75DR3S699YNH4R3HR'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSBDQFTRR4GHKJQG0611N'
+      event_key: 'form:01M6QMSB9K2XBX42SVS1XSYSK8'
+      kind: 'form.submitted'
+      message: 'Form enquiry received'
+      created_at: '2026-11-06T05:20:00.004Z'
+      read_at: ~
+    1:
+      id: '01M6QMSEY7QAWAA9HGK3H6YYPY'
+      operator_id: '01M6QMS67ACB80J24NSHG58FW0'
+      opportunity_id: '01M6QMSEMKG2XNQ7V06MYA3P78'
+      event_key: 'form:01M6QMSEGP3XJ7WX83KAV54X0V'
+      kind: 'form.submitted'
+      message: 'Form enquiry received'
+      created_at: '2026-11-06T05:20:03.395Z'
+      read_at: ~
+    2:
+      id: '01M6QMSJJGVV4HWCANFH1J3KMA'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSJ8HWK9R93DQ1PYPQPB0'
+      event_key: 'form:01M6QMSJ4BWS6Z6PWJCCHSY7ST'
+      kind: 'form.submitted'
+      message: 'Form enquiry received'
+      created_at: '2026-11-06T05:20:07.109Z'
+      read_at: ~
+    3:
+      id: '01M6QMSSAMDRD00ZBV2XKEWVTY'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSBDQFTRR4GHKJQG0611N'
+      event_key: 'form:01M6QMSRW31Z1VVZX8YDY6YJ5S'
+      kind: 'form.submitted'
+      message: 'Form enquiry received'
+      created_at: '2026-11-06T05:20:14.135Z'
+      read_at: ~
+    4:
+      id: '01M6QMSXQCS498RS4S3YR79H18'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSXE41DH7NNMCF7FPR052'
+      event_key: 'form:01M6QMSX9VHJ7TQY689VAEQMEC'
+      kind: 'form.submitted'
+      message: 'Form enquiry received'
+      created_at: '2026-11-06T05:20:18.573Z'
+      read_at: ~
+    5:
+      id: '01M6QMT2Y1ZTWBT282ZHF5SGQT'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMT2MJT11GFAP6HKB203CV'
+      event_key: 'form:01M6QMT2H16VKMHB8WNPKM1AGS'
+      kind: 'form.submitted'
+      message: 'Form enquiry received'
+      created_at: '2026-11-06T05:20:23.919Z'
+      read_at: ~
+    6:
+      id: '17c63a071d75227e5ea1d86b04fe7b4a'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSBDQFTRR4GHKJQG0611N'
+      event_key: 'now:01M6QMSBDQFTRR4GHKJQG0611N:2026-11-06T05:20:00.004Z'
+      kind: 'opportunity.now'
+      message: 'Form submitted'
+      created_at: '2026-11-06T05:20:00.004Z'
+      read_at: ~
+    7:
+      id: '2969ef4af9624bd851522064ddc9ab70'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSXE41DH7NNMCF7FPR052'
+      event_key: 'now:01M6QMSXE41DH7NNMCF7FPR052:2026-11-06T05:20:18.573Z'
+      kind: 'opportunity.now'
+      message: 'Form submitted'
+      created_at: '2026-11-06T05:20:18.573Z'
+      read_at: ~
+    8:
+      id: '6a81790427d84d7de1f5b24ff1e237fe'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMT2MJT11GFAP6HKB203CV'
+      event_key: 'now:01M6QMT2MJT11GFAP6HKB203CV:2026-11-06T05:20:23.919Z'
+      kind: 'opportunity.now'
+      message: 'Form submitted'
+      created_at: '2026-11-06T05:20:23.919Z'
+      read_at: ~
+    9:
+      id: 'd6d62219e2b1cc5f1263e94c3c2ec815'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSJ8HWK9R93DQ1PYPQPB0'
+      event_key: 'now:01M6QMSJ8HWK9R93DQ1PYPQPB0:2026-11-06T05:20:07.109Z'
+      kind: 'opportunity.now'
+      message: 'Form submitted'
+      created_at: '2026-11-06T05:20:07.109Z'
+      read_at: ~
+    10:
+      id: 'fe501fec0c9e14af3a6ffc56d10d0658'
+      operator_id: '01M6QMS67ACB80J24NSHG58FW0'
+      opportunity_id: '01M6QMSEMKG2XNQ7V06MYA3P78'
+      event_key: 'now:01M6QMSEMKG2XNQ7V06MYA3P78:2026-11-06T05:20:03.395Z'
+      kind: 'opportunity.now'
+      message: 'Form submitted'
+      created_at: '2026-11-06T05:20:03.395Z'
+      read_at: ~
+  actual:
+    0:
+      id: '01M6QMSBQ75DR3S699YNH4R3HR'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSBDQFTRR4GHKJQG0611N'
+      event_key: 'form:01M6QMSB9K2XBX42SVS1XSYSK8'
+      kind: 'form.submitted'
+      message: 'Form enquiry received'
+      created_at: '2026-11-06T05:20:00.004Z'
+      read_at: ~
+    1:
+      id: '01M6QMSEY7QAWAA9HGK3H6YYPY'
+      operator_id: '01M6QMS67ACB80J24NSHG58FW0'
+      opportunity_id: '01M6QMSEMKG2XNQ7V06MYA3P78'
+      event_key: 'form:01M6QMSEGP3XJ7WX83KAV54X0V'
+      kind: 'form.submitted'
+      message: 'Form enquiry received'
+      created_at: '2026-11-06T05:20:03.395Z'
+      read_at: ~
+    2:
+      id: '01M6QMSJJGVV4HWCANFH1J3KMA'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSJ8HWK9R93DQ1PYPQPB0'
+      event_key: 'form:01M6QMSJ4BWS6Z6PWJCCHSY7ST'
+      kind: 'form.submitted'
+      message: 'Form enquiry received'
+      created_at: '2026-11-06T05:20:07.109Z'
+      read_at: ~
+    3:
+      id: '01M6QMSSAMDRD00ZBV2XKEWVTY'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSBDQFTRR4GHKJQG0611N'
+      event_key: 'form:01M6QMSRW31Z1VVZX8YDY6YJ5S'
+      kind: 'form.submitted'
+      message: 'Form enquiry received'
+      created_at: '2026-11-06T05:20:14.135Z'
+      read_at: ~
+    4:
+      id: '01M6QMSXQCS498RS4S3YR79H18'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSXE41DH7NNMCF7FPR052'
+      event_key: 'form:01M6QMSX9VHJ7TQY689VAEQMEC'
+      kind: 'form.submitted'
+      message: 'Form enquiry received'
+      created_at: '2026-11-06T05:20:18.573Z'
+      read_at: ~
+    5:
+      id: '01M6QMT2Y1ZTWBT282ZHF5SGQT'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMT2MJT11GFAP6HKB203CV'
+      event_key: 'form:01M6QMT2H16VKMHB8WNPKM1AGS'
+      kind: 'form.submitted'
+      message: 'Form enquiry received'
+      created_at: '2026-11-06T05:20:23.919Z'
+      read_at: ~
+    6:
+      id: '17c63a071d75227e5ea1d86b04fe7b4a'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSBDQFTRR4GHKJQG0611N'
+      event_key: 'now:01M6QMSBDQFTRR4GHKJQG0611N:2026-11-06T05:20:00.004Z'
+      kind: 'opportunity.now'
+      message: 'Form submitted'
+      created_at: '2026-11-06T05:20:00.004Z'
+      read_at: ~
+    7:
+      id: '2969ef4af9624bd851522064ddc9ab70'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSXE41DH7NNMCF7FPR052'
+      event_key: 'now:01M6QMSXE41DH7NNMCF7FPR052:2026-11-06T05:20:18.573Z'
+      kind: 'opportunity.now'
+      message: 'Form submitted'
+      created_at: '2026-11-06T05:20:18.573Z'
+      read_at: ~
+    8:
+      id: '6a81790427d84d7de1f5b24ff1e237fe'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMT2MJT11GFAP6HKB203CV'
+      event_key: 'now:01M6QMT2MJT11GFAP6HKB203CV:2026-11-06T05:20:23.919Z'
+      kind: 'opportunity.now'
+      message: 'Form submitted'
+      created_at: '2026-11-06T05:20:23.919Z'
+      read_at: ~
+    9:
+      id: 'b2f6cfbfe33c91c6ed5570da9cf078e2'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMT6WZMRA3Q4CDY6RT9D72'
+      event_key: 'now:01M6QMT6WZMRA3Q4CDY6RT9D72:2026-11-06T05:20:28.326Z'
+      kind: 'opportunity.now'
+      message: 'Form submitted'
+      created_at: '2026-11-06T05:20:28.326Z'
+      read_at: ~
+    10:
+      id: 'c2b30fa003a35f755ae4d05474a29a32'
+      operator_id: '01M6QMS392D9S1G3SQRPYHS0EZ'
+      opportunity_id: '01M6QMT6WZMRA3Q4CDY6RT9D72'
+      event_key: 'now:01M6QMT6WZMRA3Q4CDY6RT9D72:2026-11-06T05:20:28.326Z'
+      kind: 'opportunity.now'
+      message: 'Form submitted'
+      created_at: '2026-11-06T05:20:28.326Z'
+      read_at: ~
+    11:
+      id: 'd6d62219e2b1cc5f1263e94c3c2ec815'
+      operator_id: '01M6QMS60QB8QFSSPE9092XS02'
+      opportunity_id: '01M6QMSJ8HWK9R93DQ1PYPQPB0'
+      event_key: 'now:01M6QMSJ8HWK9R93DQ1PYPQPB0:2026-11-06T05:20:07.109Z'
+      kind: 'opportunity.now'
+      message: 'Form submitted'
+      created_at: '2026-11-06T05:20:07.109Z'
+      read_at: ~
+    12:
+      id: 'fe501fec0c9e14af3a6ffc56d10d0658'
+      operator_id: '01M6QMS67ACB80J24NSHG58FW0'
+      opportunity_id: '01M6QMSEMKG2XNQ7V06MYA3P78'
+      event_key: 'now:01M6QMSEMKG2XNQ7V06MYA3P78:2026-11-06T05:20:03.395Z'
+      kind: 'opportunity.now'
+      message: 'Form submitted'
+      created_at: '2026-11-06T05:20:03.395Z'
+      read_at: ~
+  operator: 'deepStrictEqual'
+  stack: |-
+    formsMappedJourney (/workspace/run-orbit-f73/newtests/t096/forms-mapped-journey.ts:85:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async TestContext.<anonymous> (/workspace/run-orbit-f73/newtests/t096/forms-native.test.ts:30:28)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 160940.332718

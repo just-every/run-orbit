@@ -1,0 +1,12 @@
+commit 4d57464352b71da0b375775e8857518d8ff6d5ea
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Fri Nov 6 05:29:16 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Fri Nov 6 05:29:16 2026 +0000
+
+    test: prove unassigned form ownership and replay
+
+ CONTRACT.md                           |  2 +-
+ newtests/t096/forms-mapped-journey.ts | 28 ++++++++++++++++++++++++++++
+ sources.lock.json                     |  4 ++--
+ 3 files changed, 31 insertions(+), 3 deletions(-)

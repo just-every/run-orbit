@@ -1,0 +1,12 @@
+# FORM-004 focused native proof plan
+
+Repository: https://github.com/just-every/run-orbit
+Branch: cloud/sd-orbit-c-f73
+Task: sd-orbit-c-f73
+
+1. Read the inline plan extract, DONE riders, standing rulings, launcher rules and repository instructions. Map both FORM-004 acceptance sentences to the existing native journey and inspect assignment and submission replay implementation.
+2. Extend the existing mapped capture registration. Publish an explicitly reviewed unassigned rule through authenticated form routes; submit a fresh contact through anonymous cross-origin intake. Read native ownership and the source-attributed assignment entry linked to that exact submission. Replay the identical intake, then compare ownership, assignment entries and complete submission and notification inventories. Correct assignment or service only if this demonstrates a product defect.
+3. Preserve all prior assertions, acceptance sentences and held boundaries. Record the additional proof in FORM-004's Status row without changing its PARTIAL status. Run the touched registration, typecheck and first-party check; retain the existing 198 registrations plus two qualifications. No UI change is planned, so no new screen proof is required for this delta.
+4. Fetch main and preserve newer judgments before publication. Generate contract documents, check them and restore generated views from main. Regenerate the source lock last and check it. Check every parent Status row, commit using fleet identity and hooks, inspect all candidate identities and trailers, and push only the named product branch with the cloud push guard. Discover the exact candidate Verify with REST within the ten-call budget. Keep publication scanning, landing and Run site with the fleet lander. Publish actual non-secret reports and receipts separately to the evidence ref, verify remote provenance, and remove the product clone after successful transfer.
+
+The selected native deficit is the scope of this round. Real team queues and notifications remain with TEAM-005 and its recorded cleanup prerequisite. Deal-less lead views and lead and custom-object intake remain RECORD-014. External email and push remain NOTIFY-003, including the Apple and Google account dependency. The omitted complete routing and UI journey and inherited consent, abuse, export and erasure qualification remain as previously recorded. No policy change, acceptance rewrite, team implementation, provider qualification or homepage change is planned.

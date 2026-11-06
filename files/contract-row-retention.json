@@ -1,0 +1,11 @@
+{
+  "parent_status_rows": 204,
+  "candidate_status_rows": 204,
+  "dropped": [],
+  "changed_status_ranks": [],
+  "changed_rows": [
+    "FORM-004"
+  ],
+  "parent_all_table_rows": 458,
+  "candidate_all_table_rows": 458
+}
