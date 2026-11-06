@@ -37,9 +37,12 @@ export async function opportunityOwnershipJourney(page,dealId,actor){
    previous=next;
   }
   const tooltip=`More for ${original.contacts[0].name}`;
-  await page.getByRole('button',{name:tooltip,exact:true}).focus();
+  const control=page.getByRole('button',{name:tooltip,exact:true});
+  await control.scrollIntoViewIfNeeded();
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  await control.focus();
   await expect(page.getByRole('tooltip',{name:tooltip,exact:true})).toBeVisible();
-  await page.screenshot({path:`${evidence}/tooltip-${width}.png`,fullPage:true});
+  await page.screenshot({path:`${evidence}/tooltip-${width}.png`});
  }
  await page.close();
 }
