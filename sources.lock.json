@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "910b776ea330b99c88d386b2a9ccc851572a1fab11635b65a50c7ceb0cc0c5ab",
+      "sha256": "cd23c6a4565771b22ad8e87c58d43d6791d305228fe8435bd6d853aff1c0cbc0",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "071bf8edf58a61aad954ea8a359e3c8f9793231cafe91bec595b11037c43db7d",
+      "sha256": "9d64787f0cc776fa725671bed1d60aa0bee85d46ce3ddc24821eb2919b4dd49a",
       "executable": false
     },
     "DEMO.md": {
@@ -2339,7 +2339,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-access-proof.ts": {
-      "sha256": "6cc3aefe907f248d1b50304c5fca56e042e8b37736c5d6128fb9b34b9255f75b",
+      "sha256": "abf3a97fe46bb4e8a01762551225772c580e7874ca73ed2ef96eaca26901fadd",
       "executable": false
     },
     "newtests/t096/dashboard-archive.ts": {
@@ -2347,7 +2347,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-backend-proof.ts": {
-      "sha256": "7ef003074fbf3f8b2d9d4c5f5e41209689d13438954b8d69624a99f8b9143ab0",
+      "sha256": "c18be487a50e5ca4a340eb7da146b80ce17df7e495dab32c5f5df61905a645bd",
       "executable": false
     },
     "newtests/t096/dashboard-slack-fixture.ts": {
