@@ -1,0 +1,40 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ CAPTURE-010 workspace mail rules and one-action corrections preserve CAPTURE-006 selected scope, crash replay, incremental reads and unknown-mail exclusion (123602.693238ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ CAPTURE-005 OAuth binds native session, provider, origin, expiry and one use; encrypted authority stays out of status and archives (25353.778113ms)
+✔ CAPTURE-006 refreshed credentials are durable, leases prevent concurrent reads and disconnect fences in-flight tokens and callbacks (86419.579617ms)
+✔ CAPTURE-006 Microsoft rejects foreign host, user, folder and calendar delta links before bearer disclosure (24483.553514ms)
+✔ CAPTURE-006 oversized mail skips once while both providers finish other messages and selected calendars (101339.38599ms)
+✔ CAPTURE-006 provider deletion respects occurrence and erasure; CAPTURE-011 read-only and writeback consent request and store distinct scopes (224658.091396ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 464701.309367
+
+✖ failing tests:
+
+test at tests/core/capture-mail-rules.test.ts:1:362
+✖ CAPTURE-010 workspace mail rules and one-action corrections preserve CAPTURE-006 selected scope, crash replay, incremental reads and unknown-mail exclusion (123602.693238ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(path.includes('/calendars/calendar/'))
+  
+      at TestContext.<anonymous> (/workspace/run-orbit-sd-orbit-c-f114/tests/core/capture-mail-rules.test.ts:45:197)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

@@ -1,0 +1,85 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f114",
+  "head": "1c8327bfcb88d46a9946ba775ff9cb563aceadfb",
+  "base": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+  "recordedAt": "2026-11-06T13:52:37.899094+00:00",
+  "productPush": {
+    "exit": 0,
+    "remoteHead": "1c8327bfcb88d46a9946ba775ff9cb563aceadfb",
+    "ref": "refs/heads/cloud/sd-orbit-c-f114"
+  },
+  "native": {
+    "command": "timeout 1200 pnpm exec tsx --test --test-reporter=tap tests/core/capture-mail-rules.test.ts tests/core/capture-providers.test.ts",
+    "exit": 0,
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "log": "native-final.tap"
+  },
+  "browser": {
+    "command": "ORBIT_CHROMIUM_EXECUTABLE=/usr/bin/chromium timeout 1800 pnpm exec tsx --test --test-reporter=tap tests/delegation-browser/records-layout.test.ts",
+    "exit": 0,
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "log": "browser-final.tap",
+    "viewports": [
+      1440,
+      390
+    ]
+  },
+  "mechanical": "mechanical.json",
+  "testBudget": {
+    "before": 200,
+    "after": 200,
+    "registered": 198,
+    "qualifications": 2
+  },
+  "counts": {
+    "before": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32
+    },
+    "after": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32
+    }
+  },
+  "clause": {
+    "id": "CAPTURE-010",
+    "before": "PARTIAL",
+    "after": "PARTIAL",
+    "selectedSlice": "Native fixed calendar window extension; acceptance 1 remains incomplete",
+    "fullAcceptancePointsClosed": []
+  },
+  "ciRuns": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "1c8327bfcb88d46a9946ba775ff9cb563aceadfb",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42228972260",
+      "id": 42228972260,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "publicationScan": {
+    "commit": "1c8327bfcb88d46a9946ba775ff9cb563aceadfb",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "status": "NOT RUN in cloud; required fleet lander gate"
+  },
+  "landing": {
+    "mainEqualsCandidate": false,
+    "candidateRunSite": null,
+    "status": "branch only; guarded fleet landing pending"
+  },
+  "githubCalls": 3,
+  "pullRequest": null,
+  "custody": "PUSHED",
+  "ciObservedAt": "2026-11-06T13:58:03.472250+00:00"
+}

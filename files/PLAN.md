@@ -1,0 +1,10 @@
+# sd-orbit-c-f114 plan
+
+Target CAPTURE-010 stays PARTIAL. Close the planner-selected native fixed calendar window extension slice of acceptance 1. Preserve all contract judgments and historical assertions.
+
+1. Read the full acceptance, Gap, repository rules, shipped rulings and DONE riders; map existing HTTP and browser journeys.
+2. Extend the existing HTTP registration for both providers. Drive native OAuth, scope save and fresh source read, reopen persistent D1, verify the next calendar request uses the extended start and end without the previous cursor, admit known-participant meetings newly included on both ends exactly once, retain original evidence and repeated-sync identities, and assert unchanged mailbox and calendar selection with zero provider writes.
+3. Extend the provider HTTP edge with opaque cursors bound to fixed dates, retaining recurring and tombstone behavior. Extend the existing emitted Worker browser case to save and reload the real date controls, with desktop assertions and screenshots at 1440 and 390. Correct product code only for a demonstrated defect.
+4. Run touched HTTP and browser journeys, typecheck, first-party check and test inventory. Generate contract views and check, restore generated views, regenerate the source lock last and check it. Commit only requested test or product changes and source lock; no status edits or evidence artifacts in the product tree.
+5. Publish the first real save and final candidate to cloud/sd-orbit-c-f114 with fleet identities and hooks. Merge fresh main after published saves, retain main judgments, validate final bytes, inspect every candidate commit and push through the fleet guard. Observe exact-SHA Verify through the REST budget and report its actual state.
+6. Keep complete non-secret reports and receipts outside the product clone, publish explicitly selected files through evidence/sd-orbit-c-f114, and hand off the exact product SHA and honest remaining live-consent and broader acceptance gaps to sd. Do not promote the clause or clear any hold.

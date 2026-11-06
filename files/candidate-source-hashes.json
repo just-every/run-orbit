@@ -1,0 +1,15 @@
+{
+  "head": "1c8327bfcb88d46a9946ba775ff9cb563aceadfb",
+  "files": {
+    "sources.lock.json": "ee6927d95a75ae86c4686cdb5f95e23e4ae0a22eb949e16cb7ecb06541443466",
+    "src/core/features/capture/providers/config.ts": "eb642e6d2c5ad24a992ce73e187a936ea573a6b03cb8fbdb22a1671eaf374e9a",
+    "src/core/features/capture/providers/routes.ts": "e9a037b0d65e86f509aa00ba7043f06dcc2f03ab41c1c7cfc3614aade21f4ffc",
+    "src/core/features/capture/providers/service.ts": "21d79b2910303ea1bd42cd655bb2896cfd51ebe23ff8fbac656f627b153d15da",
+    "tests/core/capture-mail-rules.test.ts": "2e87ed20648cada8db4706e38278d500443513965c5fe30c7ca03a4c5946f7bd",
+    "tests/delegation-browser/calendar-journey.mjs": "1cd1fea40a8bff490f45bc635352fc3676a932f80ea0d98263c537a7909e0ee2",
+    "tests/delegation-browser/records-layout.test.ts": "424e8a2096c7051b5510ac248a328cf67b2e466e4bd5a6949502fb2a608d4da3",
+    "tests/support/browser-calendar-data.ts": "dc4df4f4be304752e3b1266217c78ea07764a74dc605fbb5356e70abad662747",
+    "tests/support/capture-provider-fixture.ts": "c4d6da3dd7994999e950bc62b94ca1bf71713326ae201cb7dd8d411c6da2ec01",
+    "tests/support/capture-provider-network.ts": "89130e549990d65ac35333024b5bed19bb42c804ea60af4ce787e5c8a169c20a"
+  }
+}

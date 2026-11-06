@@ -1,0 +1,5 @@
+{
+  "tests/core/capture-mail-rules.test.ts": "2e87ed20648cada8db4706e38278d500443513965c5fe30c7ca03a4c5946f7bd",
+  "tests/support/capture-provider-fixture.ts": "c4d6da3dd7994999e950bc62b94ca1bf71713326ae201cb7dd8d411c6da2ec01",
+  "tests/support/capture-provider-network.ts": "89130e549990d65ac35333024b5bed19bb42c804ea60af4ce787e5c8a169c20a"
+}

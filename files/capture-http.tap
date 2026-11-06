@@ -1,0 +1,19 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":257,"parts":37,"observations":[{"operation":"POST /exports","milliseconds":2293.158904000011,"status":201},{"operation":"GET /exports/01M6RH1S9BYYTY11SY0ZTPMN3B","milliseconds":71.70673700000043,"status":200},{"operation":"POST /exports/01M6RH1S9BYYTY11SY0ZTPMN3B/advance","milliseconds":3437.365308999986,"status":200},{"operation":"POST /exports/01M6RH1S9BYYTY11SY0ZTPMN3B/advance","milliseconds":2289.1534280000196,"status":200},{"operation":"POST /exports/01M6RH1S9BYYTY11SY0ZTPMN3B/advance","milliseconds":2334.980648000026,"status":200},{"operation":"POST /exports/01M6RH1S9BYYTY11SY0ZTPMN3B/advance","milliseconds":2237.405509000004,"status":200},{"operation":"POST /exports/01M6RH1S9BYYTY11SY0ZTPMN3B/advance","milliseconds":1852.9347760000092,"status":200},{"operation":"GET /exports/01M6RH1S9BYYTY11SY0ZTPMN3B/download","milliseconds":56.11547900000005,"status":200}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":193,"parts":35,"observations":[{"operation":"POST /exports","milliseconds":2222.4537419999833,"status":201},{"operation":"GET /exports/01M6RH7PZPT7VT8M0JKFFEQQV8","milliseconds":54.91002400004072,"status":200},{"operation":"POST /exports/01M6RH7PZPT7VT8M0JKFFEQQV8/advance","milliseconds":2831.0139919999638,"status":200},{"operation":"POST /exports/01M6RH7PZPT7VT8M0JKFFEQQV8/advance","milliseconds":2004.835618000012,"status":200},{"operation":"POST /exports/01M6RH7PZPT7VT8M0JKFFEQQV8/advance","milliseconds":2065.3817740000086,"status":200},{"operation":"POST /exports/01M6RH7PZPT7VT8M0JKFFEQQV8/advance","milliseconds":1954.2127740000142,"status":200},{"operation":"POST /exports/01M6RH7PZPT7VT8M0JKFFEQQV8/advance","milliseconds":1189.0995549999643,"status":200},{"operation":"GET /exports/01M6RH7PZPT7VT8M0JKFFEQQV8/download","milliseconds":43.31335599999875,"status":200}]}
+# Subtest: CAPTURE-010 workspace mail rules and one-action corrections preserve CAPTURE-006 selected scope, crash replay, incremental reads and unknown-mail exclusion
+ok 1 - CAPTURE-010 workspace mail rules and one-action corrections preserve CAPTURE-006 selected scope, crash replay, incremental reads and unknown-mail exclusion
+  ---
+  duration_ms: 407337.658359
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 409930.069377
