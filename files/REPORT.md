@@ -1,0 +1,13 @@
+# CT Orbit BRIEF-002 review return
+
+**ACCEPT ON LANDING** for BRIEF-002 at exact source 7873c8f26e020205c9c0a2c672b9225d51e56326, source branch cloud/sd-orbit-c-f40. Frozen R1 and R2 are MET. No substantive blocker or NEW finding remains in the scoped judgment. Product code, status, refs and lifecycle were not changed.
+
+The complete verdict, verbatim rubric, full clause/AP, inherited Base duty, all eleven riders, evidence identities, commands/exits, limitations, count delta and pending guards are in VERDICT.md. The full executed plan is PLAN.md. RECEIPT.json, commands.jsonl, source-receipt.json and immutability-receipt.json hold actual non-secret receipts. Seven focused command receipts and the dependency install log are retained. Six tests passed in total (four native Today-brief registrations, one emitted Worker browser journey, one existing scoped authority journey); none failed or skipped. The browser journey produced eight screenshots covering 1440 and 390. Types, build and source-lock check passed. Generator check exited 1 solely because ACCEPTANCE.md is stale, as anticipated by the commission.
+
+The before/after delta is unawarded: 35 done, 137 partial, 32 missing → 36 done, 136 partial, 32 missing across 204 IDs, solely BRIEF-002 partial → done with an empty Gap and accurate named native/browser Evidence. The existing candidate CONTRACT.md proposes that change; generated ACCEPTANCE.md still has the old partial row. Do not add this arithmetic to concurrent claims.
+
+DONE-RIDERS rows 3 and 11 remain pending: merge source first while preserving every newer main Status AND Gap/Evidence/assertion; regenerate/check merged docs, counts and provenance; lock last/check; actually execute full green exact-final runtime Verify including relied-on journeys; complete full-history publication scan NEW 0; guarded landing/main equality and exact-main Verify/Run site. The supplied source push Verify is 42046550133, failed only for generated-view freshness/dependent failures with runtime shards skipped. It is not described as fully green. Zero CI API reads/polls/reruns/dispatches were made, per the reviewer restriction. No PR was created.
+
+Keep original source/chain ACTIVE holds, frozen rubric, private held-outs, lifetime FIX custody, source pin and broader TASK-001/live-account ownership unchanged. CT retains original-to-replacement custody. No paid API or usage credits, provider action, new session or release occurred.
+
+Evidence return is report-only to refs/heads/evidence/ct-judge-orbit-brief002-20261105-1500-sol1 in just-every/run-orbit. The exact transport EVIDENCE line is returned in the final response. Terminal READY refers solely to the completed independent review and evidence return.

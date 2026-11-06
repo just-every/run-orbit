@@ -1,0 +1,176 @@
+{
+  "authority_tests": {
+    "failed": 0,
+    "pass_count": 1,
+    "skipped": 0,
+    "tests": 1
+  },
+  "browser_tests": {
+    "failed": 0,
+    "pass_count": 1,
+    "screenshots": [
+      {
+        "bytes": 163852,
+        "path": "browser/brief-day1-1440.png",
+        "sha256": "085f6b0059c1f2bfa23890f946df1867dc76afd40c2e1d51238ac04b25f71491"
+      },
+      {
+        "bytes": 148756,
+        "path": "browser/brief-day1-390.png",
+        "sha256": "558ae9279b7b323cc1f3303c4b6677c04d01637d2df754a2aca5498209f80a15"
+      },
+      {
+        "bytes": 41175,
+        "path": "browser/brief-empty-1440.png",
+        "sha256": "c8ff4d2f516e9534a151f6ab161403b14b1594843bba889212dd4241bb8b4267"
+      },
+      {
+        "bytes": 32566,
+        "path": "browser/brief-empty-390.png",
+        "sha256": "126533d8f4d61342132f6fcc9d15f327f33428f2e65d2839308f393525c13358"
+      },
+      {
+        "bytes": 400624,
+        "path": "browser/handoff-proposal-1440.png",
+        "sha256": "8a048a7a4902f7d632192eedbc834e88f9a5bd6234b043df043da7f2e9bf191a"
+      },
+      {
+        "bytes": 355685,
+        "path": "browser/handoff-proposal-390.png",
+        "sha256": "62734f64fcee29afa6b6791a912b832e5e12133e01d49a83b39ebe624db97596"
+      },
+      {
+        "bytes": 174968,
+        "path": "browser/meeting-plan-1440.png",
+        "sha256": "2a2d8061d182f9cda402bb1c9e07450e1b4f1bfd8885125dafed4d288d23a7b8"
+      },
+      {
+        "bytes": 162396,
+        "path": "browser/meeting-plan-390.png",
+        "sha256": "e4c365b7c20b9a0aa256ac49a9043f57bb06bf116e9b23afdc0353584af624d7"
+      }
+    ],
+    "skipped": 0,
+    "tests": 1,
+    "widths": [
+      1440,
+      390
+    ]
+  },
+  "ci": {
+    "basis": "Supplied immutable commission: generated-view freshness and dependent failures only; runtime shards skipped. Not polled or independently reclassified as fully green.",
+    "conclusion": "failure",
+    "event": "push",
+    "source_run_id": 42046550133
+  },
+  "commands": [
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-brief002-20261105-1500-sol1/orbit",
+      "elapsed_seconds": 17.358,
+      "ended_at": "2026-11-06T02:12:45.833559+00:00",
+      "exit": 0,
+      "id": "build",
+      "log": "build.log",
+      "source": "7873c8f26e020205c9c0a2c672b9225d51e56326",
+      "started_at": "2026-11-06T02:12:28.475995+00:00"
+    },
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 tests/core/today-brief.test.ts",
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-brief002-20261105-1500-sol1/orbit",
+      "elapsed_seconds": 100.402,
+      "ended_at": "2026-11-06T02:13:57.495116+00:00",
+      "exit": 0,
+      "id": "native",
+      "log": "native.log",
+      "source": "7873c8f26e020205c9c0a2c672b9225d51e56326",
+      "started_at": "2026-11-06T02:12:17.092664+00:00"
+    },
+    {
+      "command": "cloud_run node src/base/contract-docs.mjs check",
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-brief002-20261105-1500-sol1/orbit",
+      "elapsed_seconds": 2.007,
+      "ended_at": "2026-11-06T02:14:27.026325+00:00",
+      "exit": 1,
+      "id": "contract-check",
+      "log": "contract-check.log",
+      "source": "7873c8f26e020205c9c0a2c672b9225d51e56326",
+      "started_at": "2026-11-06T02:14:25.019262+00:00"
+    },
+    {
+      "command": "cloud_run node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-brief002-20261105-1500-sol1/orbit",
+      "elapsed_seconds": 3.212,
+      "ended_at": "2026-11-06T02:14:28.230440+00:00",
+      "exit": 0,
+      "id": "source-check",
+      "log": "source-check.log",
+      "source": "7873c8f26e020205c9c0a2c672b9225d51e56326",
+      "started_at": "2026-11-06T02:14:25.018816+00:00"
+    },
+    {
+      "command": "ORBIT_TODAY_EVIDENCE=../packet/browser cloud_run pnpm exec tsx --import ../chromium-runtime.mjs --test --test-concurrency=1 tests/delegation-browser/today-brief.test.ts",
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-brief002-20261105-1500-sol1/orbit",
+      "elapsed_seconds": 66.314,
+      "ended_at": "2026-11-06T02:14:50.318393+00:00",
+      "exit": 0,
+      "id": "browser",
+      "log": "browser.log",
+      "source": "7873c8f26e020205c9c0a2c672b9225d51e56326",
+      "started_at": "2026-11-06T02:13:44.004689+00:00"
+    },
+    {
+      "command": "cloud_run pnpm exec tsc --noEmit",
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-brief002-20261105-1500-sol1/orbit",
+      "elapsed_seconds": 25.389,
+      "ended_at": "2026-11-06T02:14:50.406865+00:00",
+      "exit": 0,
+      "id": "types",
+      "log": "types.log",
+      "source": "7873c8f26e020205c9c0a2c672b9225d51e56326",
+      "started_at": "2026-11-06T02:14:25.018168+00:00"
+    },
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 tests/delegation/brief-handoff.test.ts",
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-brief002-20261105-1500-sol1/orbit",
+      "elapsed_seconds": 46.661,
+      "ended_at": "2026-11-06T02:15:57.421747+00:00",
+      "exit": 0,
+      "id": "authority",
+      "log": "authority.log",
+      "source": "7873c8f26e020205c9c0a2c672b9225d51e56326",
+      "started_at": "2026-11-06T02:15:10.760710+00:00"
+    }
+  ],
+  "github_api_calls": 0,
+  "native_tests": {
+    "failed": 0,
+    "pass_count": 4,
+    "skipped": 0,
+    "tests": 4
+  },
+  "not_run": [
+    {
+      "command": "rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "reason": "Focused public-door journeys provide isolated real migrations, operators and sessions; persistent setup is unnecessary and would mutate a separate local installation."
+    },
+    {
+      "command": "rer verify",
+      "reason": "Full or baseline suite explicitly excluded by reviewer brief."
+    },
+    {
+      "command": "contract-docs write and source lock regeneration",
+      "reason": "Reviewer is read-only; merged source and generated views belong to the lander."
+    },
+    {
+      "command": "GitHub CI polling, rerun or dispatch; publication scan; Run site; landing",
+      "reason": "Explicitly prohibited or unavailable in this reviewer assignment; retained as final integration guards."
+    }
+  ],
+  "ref_match": true,
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "source": "7873c8f26e020205c9c0a2c672b9225d51e56326",
+  "source_branch": "cloud/sd-orbit-c-f40",
+  "tag": "ct-judge-orbit-brief002-20261105-1500-sol1"
+}
