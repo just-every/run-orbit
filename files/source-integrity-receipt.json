@@ -1,0 +1,24 @@
+{
+  "HEAD": {
+    "src": "09b7e3ecc61afc0ea0301e75faccf87fd5b5beec",
+    "public": "7630483cb9aa6ee6254fde6fdfe45d76bcb154b3",
+    "tests/core/signals-outreach.test.ts": "e28be1837c45c5aa771079003e92466456a6c936",
+    "tests/e2e/baseline.spec.mjs": "7db4513003ccb0e11d9127a8212fad097b7c5284",
+    "CONTRACT.md": "a8f44818bcb250f22499d83e295157b1a3e6171a",
+    "ACCEPTANCE.md": "8f8dba64fc51c4d63724139c0180d293c21cd37a",
+    "sources.lock.json": "9ba261fac1abfed0c0cfe3757e1f30eb6c9626ed"
+  },
+  "origin/main": {
+    "src": "09b7e3ecc61afc0ea0301e75faccf87fd5b5beec",
+    "public": "7630483cb9aa6ee6254fde6fdfe45d76bcb154b3",
+    "tests/core/signals-outreach.test.ts": "47deed80ba6da22ff720cb7cb151ee241ed54e10",
+    "tests/e2e/baseline.spec.mjs": "bab35f701558181d0c3bbd56c4190bdf9de4e9aa",
+    "CONTRACT.md": "04f3f4dde34855f785d85310473739ba3644155d",
+    "ACCEPTANCE.md": "a45be48c6ac32b6853cef6bc4b2af49dca865b47",
+    "sources.lock.json": "f3178bfa9f2a66bd25aac26bd78758c8c278caa3"
+  },
+  "source": "10c2621984e943b01529eb0086b75a7942bc0de2",
+  "observedMain": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "trackedStatus": "",
+  "runtimeAndPublicIdentical": true
+}

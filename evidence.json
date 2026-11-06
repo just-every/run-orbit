@@ -1,0 +1,124 @@
+{
+  "files": [
+    {
+      "blob": "08cb5432b584c0a284c4b94cc101d9b14a380da7",
+      "bytes": 4652,
+      "path": "RECEIPT.json",
+      "sha256": "49574654cc82d989f3ddc69b7af5c965ba7f1b970abae183e40fb65bdacb4b1c"
+    },
+    {
+      "blob": "4b5e951e7de3877ea386275966170c410e2e1373",
+      "bytes": 7441,
+      "path": "REPORT.md",
+      "sha256": "1001c803c0294f82cc9ee6a1e7803e15b529cda9e4745522df2c725c27bfa8e6"
+    },
+    {
+      "blob": "ad83622768e8ac11ff82c856698c7b8273d3bb2a",
+      "bytes": 23130,
+      "path": "VERDICT.md",
+      "sha256": "9243f00523e72c40ea11aed0e2b3e0b555e85fbfed14cfaceb91b4449b7d3eb2"
+    },
+    {
+      "blob": "4a0a17f639aa5634ad6e43fd92673c2ed587ea70",
+      "bytes": 4262,
+      "path": "browser-privacy.log",
+      "sha256": "bfb9212822ac7be59b16a6bf7d0ebdffb65261b0a52db5e3c1e47bb90358901b"
+    },
+    {
+      "blob": "cbaae5a400af0b7d668c3df2eb017bfe6908dbe9",
+      "bytes": 910,
+      "path": "browser-receipt.json",
+      "sha256": "b2f8a203bfb15a714259881964a0c04321ffc99113140a04f9dc36a1c9a54b4f"
+    },
+    {
+      "blob": "38b44393a3987c414a65906ee8382ba9f509e6f5",
+      "bytes": 8685,
+      "path": "browser-results.json",
+      "sha256": "01eb1ce2adcf23b86171a223659717bf0b0ce9ec101f00006e9131ea35cd6804"
+    },
+    {
+      "blob": "828fe7ba971fd5f9f81e0ac0384291644dffc788",
+      "bytes": 643,
+      "path": "browser-selection-receipt.json",
+      "sha256": "dfc0cd8807ef520e90fca0bf4eb50485a7bc89a4427063df045f1d60ee3c9d66"
+    },
+    {
+      "blob": "ce50cf3deef302d9821870a514022c2994a23e6b",
+      "bytes": 6026,
+      "path": "browser-selection-results.json",
+      "sha256": "5f70b59206b094b32383b99052e625012a4c5e4386773956d19b19449b54e3d0"
+    },
+    {
+      "blob": "7aa6f62f719fc0b0ad34f5f9e54cbe6736f358e8",
+      "bytes": 3393,
+      "path": "browser-selection.log",
+      "sha256": "a465151b87cddbc84128010b9f2d67b9031549c25d8cc4d16d7d7b4f4b0da106"
+    },
+    {
+      "blob": "24ac9838eff6edad4e37213d90c9d3643bbf219d",
+      "bytes": 240,
+      "path": "contract-check-receipt.json",
+      "sha256": "a1edcd6494046f119e13ca77c5caa272489e1d0319cee128137c42a0b0a35bdb"
+    },
+    {
+      "blob": "fba560db7c48416c914446f2a1e319a79104d105",
+      "bytes": 67,
+      "path": "contract-check.log",
+      "sha256": "183372998615cc516043a5f66404b300281009a84349eda72da66d79fe542603"
+    },
+    {
+      "blob": "1a5e9739ffa3709230128df8bb923c5cab4c12b6",
+      "bytes": 6859,
+      "path": "contract-preservation-receipt.json",
+      "sha256": "809957fa166c6b4e7c0cba923ca8ead4deb86ac0acd0611e6adcf65ccacc104a"
+    },
+    {
+      "blob": "0dc9aa04c7a67f3797956882f1a3f17b0468abb8",
+      "bytes": 362,
+      "path": "core-receipt.json",
+      "sha256": "c8d07bf0e4deda3b316a3090048f03cd285270d6c8e52c0ae7e91a0df42d3b05"
+    },
+    {
+      "blob": "42cf7bfd22a3da0edaa385de82411d9148a09a57",
+      "bytes": 430,
+      "path": "core-signal007.log",
+      "sha256": "6a22fc6311fdbb6a48ac7d6a720adb472e22e2a81f3a8352d0f6d41e3668a8c9"
+    },
+    {
+      "blob": "53802fb87219156f1a69ed1dbe27b08d8e2fbcad",
+      "bytes": 2493,
+      "path": "dependency-install.log",
+      "sha256": "9dea104f35d34058938f9b54a7cc6719c3acd7a7fc0fe0e1f207aecb0dd54a04"
+    },
+    {
+      "blob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "bytes": 3,
+      "path": "owned-temp-inventory.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "blob": "233ecc6236c05c464b54ce7f97af8216a9d67d53",
+      "bytes": 696,
+      "path": "privacy-playwright.config.mjs",
+      "sha256": "120d92bda00965f3960372be3a408dea5d12e3ff5d522c6b7f1c8a31f79497c1"
+    },
+    {
+      "blob": "6ee7242348f991b704a9b00aff93a35f1bbc93e1",
+      "bytes": 252,
+      "path": "provenance.json",
+      "sha256": "897300f60d1894fd468643b4929607b96868b96ea525570d312bb59f2ea9b20f"
+    },
+    {
+      "blob": "b736ead6b4b0bbfcaa70afdf3c1352af2efd1338",
+      "bytes": 1172,
+      "path": "source-integrity-receipt.json",
+      "sha256": "7cf0742c758f2ad18b3bf439c8471327c86363e4edc87d7676b9a3d43b72de12"
+    }
+  ],
+  "product_branch": "",
+  "product_head": "10c2621984e943b01529eb0086b75a7942bc0de2",
+  "ref": "refs/heads/evidence/ct-judge-orbit-signal007-20261105-2138-sol1",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "ct-judge-orbit-signal007-20261105-2138-sol1"
+}

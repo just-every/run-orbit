@@ -1,0 +1,104 @@
+{
+  "source": "10c2621984e943b01529eb0086b75a7942bc0de2",
+  "main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "fullFileRead": {
+    "10c2621984e943b01529eb0086b75a7942bc0de2": {
+      "CONTRACT.md": {
+        "bytes": 484271,
+        "sha256": "39e0364695eb9230caf96b7e3057a900b7f825b3c2a56980117a8e175aa04734"
+      },
+      "ACCEPTANCE.md": {
+        "bytes": 434241,
+        "sha256": "4e547d52c445494402078619b4160a8ad3768e11742ebc8807a54e64da07d2c9"
+      },
+      "AGENTS.md": {
+        "bytes": 6149,
+        "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9"
+      },
+      "RULINGS.md": {
+        "bytes": 2770,
+        "sha256": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c"
+      }
+    },
+    "c01084f133af9aa484a6c1f5151a4e9cfbc7230f": {
+      "CONTRACT.md": {
+        "bytes": 483851,
+        "sha256": "6bb6fb9aaef0e0df27f86958e4734fef3b5d0f3cfa37f0400496e6043e8781b1"
+      },
+      "ACCEPTANCE.md": {
+        "bytes": 435074,
+        "sha256": "8dece52f213b61f58d621fe04924cf13ea10d39612fb36a8a5e3a19bff1a2449"
+      },
+      "AGENTS.md": {
+        "bytes": 6149,
+        "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9"
+      },
+      "RULINGS.md": {
+        "bytes": 2770,
+        "sha256": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c"
+      }
+    }
+  },
+  "rowCounts": {
+    "10c2621984e943b01529eb0086b75a7942bc0de2": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    },
+    "c01084f133af9aa484a6c1f5151a4e9cfbc7230f": {
+      "partial": 137,
+      "done": 35,
+      "missing": 32
+    }
+  },
+  "clauseIdsEqual": true,
+  "clauseCount": {
+    "10c2621984e943b01529eb0086b75a7942bc0de2": 204,
+    "c01084f133af9aa484a6c1f5151a4e9cfbc7230f": 204
+  },
+  "changedFullClauseBodies": [],
+  "changedStatusRows": {
+    "OUT-032": {
+      "source": {
+        "title": "Opt-out upgrades and transport changes",
+        "kind": "target",
+        "status": "partial",
+        "evidence": "`src/core/features/outreach/opt-out.ts`; `src/core/platform/outbound-mail.ts`; `src/core/platform/managed-outbound-mail.ts`; `src/core/features/operator/ui/opt-out-settings.tsx`; `src/core/features/operator/ui/draft-opt-out.tsx`; `tests/core/outbound-boundaries.test.ts`; `tests/evidence/contract/OUT-020/`",
+        "gap": "Unasserted in the carried evidence: established upgrade keeps on; basis shown; pre-setting approvals preserve state; all mailbox/sequence/batch/workflow paths preserve same state. Asserted: new one-to-one default off; SendGrid-to-relay exact header/link continuity; explicit off has no capability; historical transport state refuses; unsupported review refusal; unsupported dispatch refusal; audited Settings refusal count."
+      },
+      "main": {
+        "title": "Opt-out upgrades and transport changes",
+        "kind": "target",
+        "status": "partial",
+        "evidence": "`src/core/features/outreach/opt-out.ts`; `src/core/platform/outbound-mail.ts`; `src/core/platform/managed-outbound-mail.ts`; `src/core/features/operator/ui/opt-out-settings.tsx`; `src/core/features/operator/ui/draft-opt-out.tsx`; `tests/core/outbound-boundaries.test.ts`; `tests/evidence/contract/OUT-020/`; `tests/core/capture-upgrade.test.ts` \u2014 CAPTURE-007 OUT-032 the capture migration upgrades a store from the previous main with every prior row and queue unchanged; `newtests/t096/browser-journeys.test.ts` \u2014 OUT-032 established opt-out upgrade (the native emitted Worker registration), using `newtests/t096/browser-opt-out-upgrade.ts`",
+        "gap": "Established upgrades keep one-to-one opt-out on with the retained basis visible in authenticated Settings and after page reload; historical approval bytes and state remain unchanged with no provider submissions. Remaining unproved execution: connected mailbox, sequence, batch and workflow paths preserving the exact reviewed opt-out choice, with OUT-013 owner-consented mailbox replies and Base relay sequence proof, OUT-019 Base relay recipient support (one To today), and OUT-013, OUT-019, SEQUENCE-001, SEQUENCE-003 and AUTO-001 prerequisites retained; AUTO-001 retains its ambiguous remainder after one continuation. Asserted in the retained outbound boundary journey: new-installation off default, pre-setting approvals retaining opt-out, SendGrid-to-relay exact header and link continuity, explicit off, historical transport refusal, unsupported review and dispatch refusal, and audited Settings refusal counts."
+      }
+    },
+    "SIGNAL-007": {
+      "source": {
+        "title": "No tracking",
+        "kind": "published",
+        "status": "done",
+        "evidence": "Acceptance 1: `tests/e2e/baseline.spec.mjs` \u2014 BASE-PUBLIC-001 BASE-SECRET-001 PUBLIC-001 public surfaces expose no private data or third-party requests before interaction (emitted Lobby, sign-in, demo, every published docs page and public HTML document; actual script assets and inline scripts, same-origin asset-only requests without visitor collection, no cookie, pixel, persistent tracking state or fingerprint calls); `tests/core/signals-outreach.test.ts` \u2014 SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing (configured signed page, chat and download events without a source-held basis, including known email and explicit contact, company and deal IDs, retain exact held identities and reasons through native review; no customer history or scoring effects, review cannot bypass the basis, replay changes nothing; supported identified intake still links once); `src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/linking-repository.ts`; `src/core/features/ingestion/repository.ts`",
+        "gap": ""
+      },
+      "main": {
+        "title": "No tracking",
+        "kind": "published",
+        "status": "partial",
+        "evidence": "`src/core/features/ingestion/routes.ts`; `src/core/features/ingestion/repository.ts`; `tests/core/signals-outreach.test.ts`",
+        "gap": "Unasserted in the carried evidence: no tracking script/pixel/cookie in public assets/network; identity-free chat held; unsupported identity absent from customer history. Asserted: identity-free page view held."
+      }
+    }
+  },
+  "requiredPreservation": "Retain every newer-main non-SIGNAL-007 Status AND Gap/Evidence/provenance and assertion, including OUT-032. This read-only judgment makes no integration changes.",
+  "assertionChanges": [
+    "M\tnewtests/t096/browser-journeys.test.ts",
+    "A\tnewtests/t096/browser-opt-out-upgrade.ts",
+    "M\ttests/core/capture-upgrade.test.ts",
+    "M\ttests/core/signals-outreach.test.ts",
+    "M\ttests/e2e/baseline.spec.mjs",
+    "A\ttests/support/prior-capture-upgrade.ts"
+  ],
+  "entireContractBeforeStatusEqual": true
+}

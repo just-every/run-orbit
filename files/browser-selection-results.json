@@ -1,0 +1,177 @@
+{
+  "config": {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/run-orbit/node_modules/@playwright/test/cli.js",
+      "test",
+      "--config",
+      "../privacy-playwright.config.mjs",
+      "baseline.spec.mjs",
+      "--grep",
+      "^BASE-PUBLIC-001 BASE-SECRET-001 PUBLIC-001 ",
+      "--workers=1"
+    ],
+    "configFile": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/privacy-playwright.config.mjs",
+    "rootDir": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/run-orbit/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/browser-artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "privacy-1440",
+        "name": "privacy-1440",
+        "testDir": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/run-orbit/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/browser-artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "privacy-390",
+        "name": "privacy-390",
+        "testDir": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/run-orbit/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/browser-artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "name": "privacy-1440",
+        "testDir": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/run-orbit/tests/e2e",
+        "snapshotDir": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/run-orbit/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:15600",
+          "browserName": "chromium",
+          "headless": true,
+          "launchOptions": {
+            "args": [
+              "--use-mock-keychain",
+              "--password-store=basic",
+              "--no-sandbox"
+            ],
+            "executablePath": "/usr/bin/chromium"
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "privacy-1440"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/browser-artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "name": "privacy-390",
+        "testDir": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/run-orbit/tests/e2e",
+        "snapshotDir": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/run-orbit/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:15600",
+          "browserName": "chromium",
+          "headless": true,
+          "launchOptions": {
+            "args": [
+              "--use-mock-keychain",
+              "--password-store=basic",
+              "--no-sandbox"
+            ],
+            "executablePath": "/usr/bin/chromium"
+          },
+          "viewport": {
+            "width": 390,
+            "height": 900
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "privacy-390"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/packet/browser-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "PORT=15600 node scripts/browser-server.mjs",
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-signal007-20261105-2138-sol1/run-orbit",
+      "url": "http://127.0.0.1:15600",
+      "reuseExistingServer": false,
+      "timeout": 90000
+    }
+  },
+  "suites": [],
+  "errors": [
+    {
+      "message": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments.",
+      "stack": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments."
+    }
+  ],
+  "stats": {
+    "startTime": "2026-11-06T02:04:32.645Z",
+    "duration": 56360.105,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

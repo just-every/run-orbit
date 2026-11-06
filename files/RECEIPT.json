@@ -1,0 +1,103 @@
+{
+  "tag": "ct-judge-orbit-signal007-20261105-2138-sol1",
+  "repository": "just-every/run-orbit",
+  "source": "10c2621984e943b01529eb0086b75a7942bc0de2",
+  "sourceBranch": "cloud/sd-orbit-c-f58",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "xhigh",
+  "billing": "subscription-only",
+  "verdict": "ACCEPT ON LANDING",
+  "rubric": {
+    "R1": "MET",
+    "R2": "MET",
+    "R3": "MET"
+  },
+  "newFindings": [],
+  "productCommits": 0,
+  "productPushes": 0,
+  "productPRs": 0,
+  "ciApiCalls": 0,
+  "suppliedVerify": {
+    "id": 42108647654,
+    "event": "push",
+    "independentlyQueried": false,
+    "reportedResult": "generated-view-only failure; runtime proof pending; candidate exception only"
+  },
+  "suppliedAffectedGate": {
+    "actualPassTime": "21:31:37",
+    "independentlyRerunAsFullGate": false
+  },
+  "observedMain": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "actualCounts": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32,
+    "total": 204
+  },
+  "proposedCounts": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204,
+    "awarded": false
+  },
+  "executions": {
+    "core-receipt.json": {
+      "source": "10c2621984e943b01529eb0086b75a7942bc0de2",
+      "startedAt": "2026-11-06T02:02:38Z",
+      "finishedAt": "2026-11-06T02:03:50.950210+00:00",
+      "command": "cloud_run timeout 300 pnpm exec tsx --test --test-concurrency=1 --test-name-pattern '^SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 ' tests/core/signals-outreach.test.ts",
+      "exitCode": 0
+    },
+    "browser-selection-receipt.json": {
+      "source": "10c2621984e943b01529eb0086b75a7942bc0de2",
+      "startedAt": "2026-11-06T02:04:30Z",
+      "finishedAt": "2026-11-06T02:05:29.087498+00:00",
+      "command": "WRANGLER_SEND_METRICS=false ORBIT_BROWSER_PORT=15600 ORBIT_INSPECTOR_PORT=0 cloud_run timeout 600 pnpm exec playwright test --config ../privacy-playwright.config.mjs baseline.spec.mjs --grep '^BASE-PUBLIC-001 BASE-SECRET-001 PUBLIC-001 ' --workers=1",
+      "config": "privacy-playwright.config.mjs outside product checkout; imports pinned config and overrides executablePath=/usr/bin/chromium, --no-sandbox, two projects at widths 1440 and 390, output paths only",
+      "exitCode": 1
+    },
+    "browser-receipt.json": {
+      "source": "10c2621984e943b01529eb0086b75a7942bc0de2",
+      "startedAt": "2026-11-06T02:06:10Z",
+      "finishedAt": "2026-11-06T02:07:44.709774+00:00",
+      "command": "WRANGLER_SEND_METRICS=false ORBIT_BROWSER_PORT=15600 ORBIT_INSPECTOR_PORT=0 cloud_run timeout 600 pnpm exec playwright test --config ../privacy-playwright.config.mjs baseline.spec.mjs --grep 'BASE-PUBLIC-001 BASE-SECRET-001 PUBLIC-001 ' --workers=1",
+      "config": "privacy-playwright.config.mjs outside product checkout; imports pinned config and overrides executablePath=/usr/bin/chromium, --no-sandbox, two projects at widths 1440 and 390, output paths only",
+      "selectionCorrection": "The prior anchored grep selected zero tests because Playwright includes project and file in the full title. No journey executed in that attempt; retained separately as browser-selection.*. This command removes the incorrect leading anchor.",
+      "exitCode": 0
+    },
+    "contract-check-receipt.json": {
+      "source": "10c2621984e943b01529eb0086b75a7942bc0de2",
+      "startedAt": "2026-11-06T02:08:46Z",
+      "finishedAt": "2026-11-06T02:08:46.551648+00:00",
+      "command": "node src/base/contract-docs.mjs check",
+      "exitCode": 1,
+      "writes": false
+    },
+    "dependency-install": {
+      "command": "cloud_run timeout 600 npx -y @runeditrun/rer install",
+      "source": "10c2621984e943b01529eb0086b75a7942bc0de2",
+      "exitCode": 0,
+      "log": "dependency-install.log"
+    }
+  },
+  "finishedAt": "2026-11-06T02:13:07.246358+00:00",
+  "pendingGuards": [
+    "original affected actual PASS and source+exactchain review protection readback",
+    "preserve entire newer-main Status AND Gap/Evidence/provenance and assertions",
+    "merged generator write/check/current counts and judged-source/report provenance",
+    "source lock LAST and check",
+    "actually executed full-green exact-FINAL runtime Verify loading relied-on journeys",
+    "COMPLETE full-history publication NEW 0",
+    "guarded fast-forward and main equality",
+    "exact-main Run site success"
+  ],
+  "cleanup": {
+    "corePlatformDisposed": true,
+    "browserRunnerAndSubreaperCompleted": true,
+    "remainingOwnedTemporaryState": [],
+    "cloneRemoval": "after evidence publication and verification"
+  },
+  "freshMainConfirmedAt": "2026-11-06T02:13:52.642843+00:00",
+  "productTreeCleanAt": "2026-11-06T02:13:52.642843+00:00"
+}

@@ -1,0 +1,8 @@
+{
+  "source": "10c2621984e943b01529eb0086b75a7942bc0de2",
+  "startedAt": "2026-11-06T02:04:30Z",
+  "finishedAt": "2026-11-06T02:05:29.087498+00:00",
+  "command": "WRANGLER_SEND_METRICS=false ORBIT_BROWSER_PORT=15600 ORBIT_INSPECTOR_PORT=0 cloud_run timeout 600 pnpm exec playwright test --config ../privacy-playwright.config.mjs baseline.spec.mjs --grep '^BASE-PUBLIC-001 BASE-SECRET-001 PUBLIC-001 ' --workers=1",
+  "config": "privacy-playwright.config.mjs outside product checkout; imports pinned config and overrides executablePath=/usr/bin/chromium, --no-sandbox, two projects at widths 1440 and 390, output paths only",
+  "exitCode": 1
+}

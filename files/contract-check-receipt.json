@@ -1,0 +1,8 @@
+{
+  "source": "10c2621984e943b01529eb0086b75a7942bc0de2",
+  "startedAt": "2026-11-06T02:08:46Z",
+  "finishedAt": "2026-11-06T02:08:46.551648+00:00",
+  "command": "node src/base/contract-docs.mjs check",
+  "exitCode": 1,
+  "writes": false
+}

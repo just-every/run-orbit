@@ -1,0 +1,7 @@
+{
+  "source": "10c2621984e943b01529eb0086b75a7942bc0de2",
+  "startedAt": "2026-11-06T02:02:38Z",
+  "finishedAt": "2026-11-06T02:03:50.950210+00:00",
+  "command": "cloud_run timeout 300 pnpm exec tsx --test --test-concurrency=1 --test-name-pattern '^SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 ' tests/core/signals-outreach.test.ts",
+  "exitCode": 0
+}
