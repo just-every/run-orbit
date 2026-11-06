@@ -1,0 +1,8 @@
+{
+  "agent": "Codex (developer identifies it as based on GPT-6)",
+  "commissioned_model": "gpt-6.1-sol",
+  "commissioned_reasoning_effort": "xhigh",
+  "independent_runtime_attestation_available": false,
+  "non_secret_runtime_model_metadata": {},
+  "note": "Commissioned route comes from the supplied model-routing authority. Runtime does not otherwise expose an exact model or effort identifier to this agent. No API model call or additional session was launched."
+}

@@ -1,0 +1,101 @@
+{
+  "acceptance_unchanged": true,
+  "browsers_started": 0,
+  "changed_files": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/core/signals-outreach.test.ts",
+    "tests/core/source-onboarding.test.ts"
+  ],
+  "changed_full_status_rows": [
+    "OUT-006"
+  ],
+  "changed_lock_hashes_match": {
+    "CONTRACT.md": "0b9fe765cfaf72ca0a9c6e8e2802641b738b8745ea20172b888032c2e4e108c9",
+    "tests/core/signals-outreach.test.ts": "e60fb0ce954308f7c48c19349b7a447ce2d6d3c9c1e0af09799b30ca0f291a63",
+    "tests/core/source-onboarding.test.ts": "1a1cf9eb12f86eb7997c6a3c7294294699150e93996a588419be9f846f8e6cfc"
+  },
+  "ci_queries": 0,
+  "counts": {
+    "candidate": {
+      "all": {
+        "done": 36,
+        "missing": 32,
+        "partial": 136
+      },
+      "groups": {
+        "published": {
+          "done": 28,
+          "partial": 51
+        },
+        "push-further": {
+          "partial": 5
+        },
+        "target": {
+          "done": 8,
+          "missing": 32,
+          "partial": 80
+        }
+      }
+    },
+    "main": {
+      "all": {
+        "done": 35,
+        "missing": 32,
+        "partial": 137
+      },
+      "groups": {
+        "published": {
+          "done": 27,
+          "partial": 52
+        },
+        "push-further": {
+          "partial": 5
+        },
+        "target": {
+          "done": 8,
+          "missing": 32,
+          "partial": 80
+        }
+      }
+    }
+  },
+  "entire_remaining_contract_equal": true,
+  "exact_source": "af231f9c987f7e6edc5f5ae537c91d3197d4d758",
+  "fingerprints": {
+    "ACCEPTANCE.md": "8dece52f213b61f58d621fe04924cf13ea10d39612fb36a8a5e3a19bff1a2449",
+    "AGENTS.md": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9",
+    "BASELINE.md": "7edf11ce7f54181e40afcf424209b9527bd1e0f7cf6fee7bf84d7811f082042f",
+    "CONTRACT.md": "0b9fe765cfaf72ca0a9c6e8e2802641b738b8745ea20172b888032c2e4e108c9",
+    "RULINGS.md": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c",
+    "src/core/features/operator/ui/record/deal-activity.tsx": "429ed31cb310f7b9089f5990883e3d60379896e0dbac74f5b5a871de5423a18f",
+    "src/core/features/outreach/provider-events.ts": "bb8ff8c7f954e3a654f47de276e9cbc0dc147d48c8ddd36be67366857c74b028",
+    "src/core/features/outreach/service.ts": "9ff7f815b25bfb0fb6d49a6202cb7c7dbe46312c94ca9e0f704c95d8de3c6f05",
+    "src/core/features/outreach/settlement.ts": "ee02fc3f34eb1e45a021d4076a1ab84dfaa989f853dd025061852ee01d322017",
+    "tests/core/outreach-limits.test.ts": "bf1ddb39a4766ca39ff71b2887553f39c7ed5bbbf4db181cd0ff419a74c7e323",
+    "tests/core/signals-outreach.test.ts": "e60fb0ce954308f7c48c19349b7a447ce2d6d3c9c1e0af09799b30ca0f291a63",
+    "tests/core/source-onboarding.test.ts": "1a1cf9eb12f86eb7997c6a3c7294294699150e93996a588419be9f846f8e6cfc"
+  },
+  "fresh_main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "newer_main_drift": false,
+  "non_target_full_status_rows_equal": true,
+  "note": "Actual completion read-only facts. Original executions are carried from the inline retained report, never represented as new cloud executions.",
+  "observed_utc": "2026-11-06T02:06:54.385509+00:00",
+  "platform_contract_standard_present": false,
+  "product_commits_created": 0,
+  "product_pushes": 0,
+  "proof_save": "1f597a7c2bc3b0fdee0246b923d7c29ef0dc08f8",
+  "proof_to_final_changed_files": [
+    "CONTRACT.md",
+    "sources.lock.json"
+  ],
+  "prs_created": 0,
+  "public_ref_readback": "af231f9c987f7e6edc5f5ae537c91d3197d4d758\trefs/heads/cloud/sd-orbit-c-f59\nc01084f133af9aa484a6c1f5151a4e9cfbc7230f\trefs/heads/main\n",
+  "repository": "just-every/run-orbit",
+  "restored_generated_views_equal_main": true,
+  "schema": 1,
+  "servers_started": 0,
+  "source_branch": "cloud/sd-orbit-c-f59",
+  "tag": "ct-judge-orbit-out006-20261105-2348-sol1",
+  "tests_rerun": 0
+}

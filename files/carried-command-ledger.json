@@ -1,0 +1,71 @@
+{
+  "commands": [
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "duration_seconds": 8,
+      "exit": 0,
+      "id": "original-install"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 --test-reporter=spec --test-name-pattern=\"^OUT-006 BASE-OPS-004 transient rate limits\" tests/core/outreach-limits.test.ts",
+      "end_recorded": "23:56:24Z",
+      "exit": 0,
+      "fail": 0,
+      "id": "original-R1",
+      "pass_count": 1,
+      "skipped": 0,
+      "start_recorded": "23:55:58Z",
+      "tests": 1
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 --test-reporter=spec --test-name-pattern=\"^OUT-002 OUT-007 temporary provider blocks|^BASE-OPS-004 OUT-006 provider retry expiry\" tests/core/signals-outreach.test.ts",
+      "command_note": "Equivalent pattern notation transcribed from the retained report, not recovered raw shell text.",
+      "end_recorded": "23:56:57Z",
+      "exit": 0,
+      "fail": 0,
+      "id": "original-R1-R3-R4",
+      "pass_count": 2,
+      "skipped": 0,
+      "start_recorded": "23:56:31Z",
+      "tests": 2
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 --test-reporter=spec --test-name-pattern=\"^NOTIFY-003 opt-in personal mention DMs\" tests/core/source-onboarding.test.ts",
+      "duration_seconds": 475,
+      "end_recorded": "00:04:58Z",
+      "exit": 0,
+      "fail": 0,
+      "id": "original-R2-R4",
+      "pass_count": 1,
+      "skipped": 0,
+      "start_recorded": "23:57:03Z",
+      "tests": 1
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 1,
+      "id": "original-generated-view-check",
+      "output": "ACCEPTANCE.md: generated content differs; run contract-docs write."
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "id": "original-lock-check",
+      "output": "\"ok\": true"
+    },
+    {
+      "exit": 1,
+      "id": "original-wrapper",
+      "reason": "usage_limit_reached; draft not a successful final handoff"
+    }
+  ],
+  "exact_source": "af231f9c987f7e6edc5f5ae537c91d3197d4d758",
+  "fail": 0,
+  "focused_tests": 4,
+  "kind": "Transcription of supported inline retained report and interruption supplement; not original raw logs and not new cloud executions.",
+  "node": "22.20.0",
+  "pass_count": 4,
+  "pnpm": "10.12.4",
+  "schema": 1,
+  "skipped": 0
+}

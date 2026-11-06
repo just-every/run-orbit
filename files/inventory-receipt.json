@@ -1,0 +1,12 @@
+{
+  "carried_focused_tests": 4,
+  "files": {
+    "tests/core/outreach-limits.test.ts": 3,
+    "tests/core/signals-outreach.test.ts": 16,
+    "tests/core/source-onboarding.test.ts": 3
+  },
+  "kind": "static registration count, not test execution",
+  "original_report_correction": "Original section 12 says 19 unrelated registrations; 22 total minus four focused executions is 18. This is a non-blocking factual count correction.",
+  "remaining_not_rerun": 18,
+  "total": 22
+}

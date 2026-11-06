@@ -1,0 +1,20 @@
+{
+  "correction": "Require backticked complete clause IDs and allow multi-component BASE-AGENT prefix; count 204 complete Status rows and compare all other contract text.",
+  "failed_attempts": [
+    {
+      "exit": 1,
+      "reason": "Status-row parser initially excluded 13 BASE-AGENT rows, matching 191 instead of 204."
+    },
+    {
+      "exit": 1,
+      "reason": "First parser adjustment still excluded BASE-AGENT identifiers."
+    },
+    {
+      "exit": 1,
+      "reason": "Second adjustment admitted shared Base-duty table rows as well as Status rows, matching 261."
+    }
+  ],
+  "final_exit": 0,
+  "schema": 1,
+  "scope": "Completion metadata extraction only, never a product test."
+}

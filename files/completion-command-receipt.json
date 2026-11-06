@@ -1,0 +1,138 @@
+{
+  "commands": [
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:06:53.869153+00:00",
+      "stderr": "",
+      "stdout": "af231f9c987f7e6edc5f5ae537c91d3197d4d758\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/main"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:06:53.871827+00:00",
+      "stderr": "",
+      "stdout": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f\n"
+    },
+    {
+      "command": [
+        "git",
+        "ls-remote",
+        "--refs",
+        "origin",
+        "refs/heads/main",
+        "refs/heads/cloud/sd-orbit-c-f59"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:06:53.873121+00:00",
+      "stderr": "",
+      "stdout": "af231f9c987f7e6edc5f5ae537c91d3197d4d758\trefs/heads/cloud/sd-orbit-c-f59\nc01084f133af9aa484a6c1f5151a4e9cfbc7230f\trefs/heads/main\n"
+    },
+    {
+      "command": [
+        "git",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:06:54.313750+00:00",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--name-only",
+        "origin/main",
+        "af231f9c987f7e6edc5f5ae537c91d3197d4d758"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:06:54.321143+00:00",
+      "stderr": "",
+      "stdout": "CONTRACT.md\nsources.lock.json\ntests/core/signals-outreach.test.ts\ntests/core/source-onboarding.test.ts\n"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--name-only",
+        "1f597a7c2bc3b0fdee0246b923d7c29ef0dc08f8",
+        "af231f9c987f7e6edc5f5ae537c91d3197d4d758"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:06:54.323776+00:00",
+      "stderr": "",
+      "stdout": "CONTRACT.md\nsources.lock.json\n"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "origin/main",
+        "af231f9c987f7e6edc5f5ae537c91d3197d4d758",
+        "--",
+        "CONTRACT.md",
+        "sources.lock.json",
+        "tests/core/source-onboarding.test.ts",
+        "tests/core/signals-outreach.test.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:06:54.326111+00:00",
+      "stderr": "",
+      "stdout": "See source-diff.patch for complete output.\n"
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "origin/main:CONTRACT.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:06:54.337876+00:00",
+      "stderr": "",
+      "stdout_bytes": 483851,
+      "stdout_note": "Complete public CONTRACT.md read into comparison; fingerprint recorded instead of duplicated content.",
+      "stdout_sha256": "6bb6fb9aaef0e0df27f86958e4734fef3b5d0f3cfa37f0400496e6043e8781b1"
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "af231f9c987f7e6edc5f5ae537c91d3197d4d758:CONTRACT.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:06:54.343827+00:00",
+      "stderr": "",
+      "stdout_bytes": 485549,
+      "stdout_note": "Complete public CONTRACT.md read into comparison; fingerprint recorded instead of duplicated content.",
+      "stdout_sha256": "0b9fe765cfaf72ca0a9c6e8e2802641b738b8745ea20172b888032c2e4e108c9"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--name-only",
+        "origin/main",
+        "af231f9c987f7e6edc5f5ae537c91d3197d4d758",
+        "--",
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:06:54.379676+00:00",
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "schema": 1
+}

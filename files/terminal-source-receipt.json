@@ -1,0 +1,77 @@
+{
+  "ci_queries": 0,
+  "commands": [
+    {
+      "command": [
+        "git",
+        "ls-remote",
+        "--refs",
+        "origin",
+        "refs/heads/main",
+        "refs/heads/cloud/sd-orbit-c-f59"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "af231f9c987f7e6edc5f5ae537c91d3197d4d758\trefs/heads/cloud/sd-orbit-c-f59\nc01084f133af9aa484a6c1f5151a4e9cfbc7230f\trefs/heads/main\n"
+    },
+    {
+      "command": [
+        "git",
+        "cat-file",
+        "-p",
+        "af231f9c987f7e6edc5f5ae537c91d3197d4d758"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "tree 294d3c4b383970632180cc74eea58214acc2e54f\nparent 1f597a7c2bc3b0fdee0246b923d7c29ef0dc08f8\nauthor Run Edit Run fleet <fleet@runeditrun.com> 1793920377 +0000\ncommitter Run Edit Run fleet <fleet@runeditrun.com> 1793920377 +0000\n\ndocs: mark OUT-006 delivery failure proof complete\n"
+    },
+    {
+      "command": [
+        "git",
+        "cat-file",
+        "-p",
+        "1f597a7c2bc3b0fdee0246b923d7c29ef0dc08f8"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "tree a69062da0c36f8a005b80c1a0baa69f9b8407e34\nparent c01084f133af9aa484a6c1f5151a4e9cfbc7230f\nauthor Run Edit Run fleet <fleet@runeditrun.com> 1793919267 +0000\ncommitter Run Edit Run fleet <fleet@runeditrun.com> 1793919267 +0000\n\ntest: preserve delivery failure reasons through native history [skip ci]\n"
+    },
+    {
+      "command": [
+        "git",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "af231f9c987f7e6edc5f5ae537c91d3197d4d758\n"
+    }
+  ],
+  "exact_source": "af231f9c987f7e6edc5f5ae537c91d3197d4d758",
+  "fresh_main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "lineage": {
+    "1f597a7c2bc3b0fdee0246b923d7c29ef0dc08f8": [
+      "c01084f133af9aa484a6c1f5151a4e9cfbc7230f"
+    ],
+    "af231f9c987f7e6edc5f5ae537c91d3197d4d758": [
+      "1f597a7c2bc3b0fdee0246b923d7c29ef0dc08f8"
+    ]
+  },
+  "product_clean": true,
+  "product_commits_created": 0,
+  "product_pushes": 0,
+  "prs_created": 0,
+  "schema": 1,
+  "utc": "2026-11-06T02:16:30.706523+00:00"
+}
