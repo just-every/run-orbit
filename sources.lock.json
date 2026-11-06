@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "a6a079538cf35bd3ae50436d6998f3249e2e79029b7a38658b8e844fc10fca84",
+      "sha256": "091c220cbe8bcc6130123db014ef03c0112274f6ff8f3e95bfc6780c53d7a8b5",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "801f6c17e414b404801a94f0789205009e3cedaed2b7a6914b0e6a57ff9daa5f",
+      "sha256": "ffd5c8f06ed3c3e21eb60698d24c4afedd77765521fd7ab5096adf169f586a99",
       "executable": false
     },
     "DEMO.md": {
@@ -9907,7 +9907,7 @@
       "executable": false
     },
     "tests/core/assistance.test.ts": {
-      "sha256": "5451e6d248ee85a1c987e41894784d2ff00a4de7af2aaafbd19045e0380c45e0",
+      "sha256": "591ab745c439bcd9a2c6d8f13b74ec15c17ba6cf59885ccf0ab7c14fd7197813",
       "executable": false
     },
     "tests/core/capture-boundaries.test.ts": {
