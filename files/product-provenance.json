@@ -1,0 +1,51 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f97",
+  "head": "471faef4be373789f207bdd71581d21f0cc7dcaf",
+  "base": "30f7a864d0a643fa020ea3eaa3d5325a112b872e",
+  "clean": true,
+  "shallow": false,
+  "commits": [
+    {
+      "head": "5e516664cec68024a319d5215b7d29abaef2e3f8",
+      "subject": "Qualify cross-operator manual meeting lifecycle [skip ci]",
+      "identityPolicyPassed": true,
+      "trailers": [],
+      "parents": [
+        {
+          "parent": "30f7a864d0a643fa020ea3eaa3d5325a112b872e",
+          "statusRowsBefore": 204,
+          "statusRowsAfter": 204,
+          "tableRowsBefore": 458,
+          "tableRowsAfter": 458,
+          "dropped": []
+        }
+      ]
+    },
+    {
+      "head": "471faef4be373789f207bdd71581d21f0cc7dcaf",
+      "subject": "Verify cancellation before confirmed manual meeting deletion",
+      "identityPolicyPassed": true,
+      "trailers": [],
+      "parents": [
+        {
+          "parent": "5e516664cec68024a319d5215b7d29abaef2e3f8",
+          "statusRowsBefore": 204,
+          "statusRowsAfter": 204,
+          "tableRowsBefore": 458,
+          "tableRowsAfter": 458,
+          "dropped": []
+        }
+      ]
+    }
+  ],
+  "files": {
+    "CONTRACT.md": "801f6c17e414b404801a94f0789205009e3cedaed2b7a6914b0e6a57ff9daa5f",
+    "sources.lock.json": "0e74038ed5edb7e449d5d6ffa4b0d84ca689e328f05f635fb3a0047335cc058e",
+    "tests/core/today-brief.test.ts": "8aecf6d2d5f793fd0f13d578d2f9b18d8f36cf88d024051fdac3b9c404443f0c",
+    "tests/rer/operator-actions-journey.mjs": "0941c8f1cdebb659e2194631eab6b09e345b3237b9b345aac1e86d2b6557d032",
+    "tests/rer/operator-fixture.mjs": "2c13a835341797f1456be0a68b367d8c0a731de3289a9923f3e63e4261fe2a0a",
+    "tests/rer/operator-manual-meeting.mjs": "dea16f3022b1a8f0d68b07869acd59d63c24def777bfad6bbcfae18c3bd8ac05",
+    "tests/support/manual-meeting.ts": "63ea594aef60c2d860b26fadf4c3cb9b5962486f5d53f8dde8fc0146236c0171"
+  }
+}

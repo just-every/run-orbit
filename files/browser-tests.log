@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: BASE-PUBLIC-003 T099 native keyboard navigation, form validation, dialog focus and reviewed record changes
+ok 1 - BASE-PUBLIC-003 T099 native keyboard navigation, form validation, dialog focus and reviewed record changes
+  ---
+  duration_ms: 117354.563709
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 117757.069483

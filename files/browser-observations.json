@@ -1,0 +1,65 @@
+{
+  "head": "471faef4be373789f207bdd71581d21f0cc7dcaf",
+  "observations": [
+    {
+      "name": "manual-meeting-edit",
+      "width": 1440,
+      "url": "/app/opportunities/01M6R2XNT2XJMKG6QBXMCFMSHK",
+      "violations": [],
+      "geometry": {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      "fonts": {
+        "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+        "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+      },
+      "rawData": false
+    },
+    {
+      "name": "manual-meeting-edit",
+      "width": 390,
+      "url": "/app/opportunities/01M6R2XNT2XJMKG6QBXMCFMSHK",
+      "violations": [],
+      "geometry": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "fonts": {
+        "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+        "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+      },
+      "rawData": false
+    },
+    {
+      "name": "manual-meeting-delete",
+      "width": 1440,
+      "url": "/app/opportunities/01M6R2XNT2XJMKG6QBXMCFMSHK",
+      "violations": [],
+      "geometry": {
+        "width": 1440,
+        "scrollWidth": 1440
+      },
+      "fonts": {
+        "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+        "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+      },
+      "rawData": false
+    },
+    {
+      "name": "manual-meeting-delete",
+      "width": 390,
+      "url": "/app/opportunities/01M6R2XNT2XJMKG6QBXMCFMSHK",
+      "violations": [],
+      "geometry": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "fonts": {
+        "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+        "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+      },
+      "rawData": false
+    }
+  ]
+}

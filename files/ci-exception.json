@@ -1,0 +1,16 @@
+{
+  "head": "471faef4be373789f207bdd71581d21f0cc7dcaf",
+  "run": 42194856459,
+  "event": "push",
+  "status": "completed",
+  "conclusion": "failure",
+  "failedSourceJob": 127815586561,
+  "aggregateJob": 127815865890,
+  "cause": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "localExactCommand": "node src/base/contract-docs.mjs check",
+  "localExit": 1,
+  "permittedGeneratedViewException": true,
+  "runtimeShards": "skipped after source failed",
+  "workflowReruns": 0,
+  "githubBudgetCalls": 6
+}

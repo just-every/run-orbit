@@ -1,0 +1,74 @@
+{
+  "head": "471faef4be373789f207bdd71581d21f0cc7dcaf",
+  "node": "22.20.0",
+  "browser": "/usr/bin/chromium",
+  "browserArgs": [
+    "--no-sandbox"
+  ],
+  "clean": true,
+  "checks": [
+    {
+      "command": "cloud_run timeout 900 pnpm exec tsx --test --test-concurrency=1 tests/core/today-brief.test.ts",
+      "exit": 0,
+      "tests": 4,
+      "receipt": "core-tests.log",
+      "sha256": "3c5d6bfd3232aecafd60f3232a79dca0d2582a571bb5b8ae87e582c0fe5ccbe0",
+      "head": "471faef4be373789f207bdd71581d21f0cc7dcaf"
+    },
+    {
+      "command": "cloud_run timeout 1200 node --import=/tmp/cloud-chromium.mjs --test tests/rer/operator-actions.test.mjs",
+      "exit": 0,
+      "tests": 1,
+      "receipt": "browser-tests.log",
+      "sha256": "396204f0d7cd9b305d2a299c68a32e09f3dbf281f6e6d518f7a33cfb90f9bd5e",
+      "head": "471faef4be373789f207bdd71581d21f0cc7dcaf"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "receipt": "typecheck.log",
+      "head": "471faef4be373789f207bdd71581d21f0cc7dcaf"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "receipt": "first-party.log",
+      "head": "471faef4be373789f207bdd71581d21f0cc7dcaf"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "receipt": "source-lock-check.json",
+      "head": "471faef4be373789f207bdd71581d21f0cc7dcaf"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write; node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "receipts": [
+        "views-write.log",
+        "views-check.log"
+      ],
+      "note": "Generated views restored from origin main after successful local generation; neither view committed."
+    },
+    {
+      "command": "checkTestBudget from ./scripts/verification-inventory.mjs",
+      "exit": 0,
+      "receipt": "test-budget.json",
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    }
+  ],
+  "point": "RECORD-010 selected manual meeting lifecycle",
+  "observed": {
+    "occurredAt": "2026-01-12T15:23:00.000Z",
+    "durationMinutes": 37,
+    "attendeeCount": 2,
+    "originalAuthorRetained": true,
+    "deletionAttributedToSecondOperator": true,
+    "deletedEntryAbsent": true,
+    "scoreAndBandUnchanged": true,
+    "draftAndOutboundInventoryUnchanged": true,
+    "cancelDeletionPreservesMeeting": true
+  }
+}
