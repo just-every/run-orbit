@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f99",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f99",
+  "head": "fe8fa714c318954ec7feba73dad3a5abc8be2bbb",
+  "base": "d89ffcc89d4e87b5276f13298210de9eb21f4f35",
+  "status": "pushed; guarded landing pending",
+  "productPush": {
+    "exit": 0,
+    "attempt": 1,
+    "remoteVerified": true
+  },
+  "verify": {
+    "conclusion": null,
+    "event": "push",
+    "head_sha": "fe8fa714c318954ec7feba73dad3a5abc8be2bbb",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42202394752",
+    "id": 42202394752,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "pr": null,
+  "countsBefore": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "countsAfter": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "clauses": [
+    {
+      "id": "OPP-001",
+      "before": "partial",
+      "after": "partial",
+      "closedPoint": "Won-close reason persists on a fresh authenticated Records GET",
+      "unchangedRemainder": [
+        "Lost-close reason",
+        "Closing operator and time",
+        "Later evidence keeps the deal closed",
+        "Complete queue membership and lifecycle history",
+        "Stage and owner preservation on reopen"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --no-test-only --test-concurrency=1 tests/core/signals-outreach.test.ts",
+      "node": "24.19.0",
+      "exit": 0,
+      "tests": 16,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-name-pattern='OUT-007 OUT-009 SEQUENCE-002 stage move, close' tests/core/signals-outreach.test.ts",
+      "node": "22.20.0",
+      "exit": 0,
+      "tests": 1,
+      "failed": 0,
+      "afterMutationRestoration": true
+    },
+    {
+      "command": "pnpm run typecheck",
+      "node": "22.20.0",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "checkTestBudget from scripts/verification-inventory.mjs",
+      "exit": 0,
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write then check",
+      "exit": 0,
+      "generatedViewsRestoredFromMain": true
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock then check",
+      "node": "22.20.0",
+      "exit": 0
+    },
+    {
+      "command": "migration ledger",
+      "exit": 0,
+      "reason": "No migration added or changed"
+    }
+  ],
+  "mutation": {
+    "test": "tests/core/signals-outreach.test.ts:311",
+    "name": "OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not",
+    "mutation": "Persist NULL instead of the submitted closing reason in RecordsRepository.lifecycle",
+    "exit": 1,
+    "failure": "The won-close reason survives a fresh authenticated record read: null !== Signed",
+    "sourceRestored": true,
+    "kind": "intentional negative sensitivity check; not a Verify failure or repair"
+  },
+  "parentStatusClauses": 204,
+  "candidateStatusClauses": 204,
+  "tableRowsBefore": 458,
+  "tableRowsAfter": 458,
+  "noAssertionsRemovedOrNarrowed": true,
+  "changedFiles": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/core/signals-outreach.test.ts"
+  ],
+  "sourceHashes": {
+    "CONTRACT.md": "9699a35337e9ee072b6cb83a314c8353df0056d09e41baee39f6671254c7dee3",
+    "sources.lock.json": "b1e7ee966faf07e19c5b7a068d11c953b6ffb03e79d55b928b5cf9a8b65ddbc9",
+    "tests/core/signals-outreach.test.ts": "9c0ca3ac93e337b85f66ed81d374e06c16c094ad462f9932e9ec981ab6c3c51f",
+    "src/core/features/records/routes.ts": "2f55d5ada5dcfb52f78f2072f518aec34265716e9d492c73baace5ab172c354b",
+    "src/core/features/records/repository.ts": "6182d0fad72e6c0a0043f3c7534395f9a3a549076edf6fc5381586a12ab8dcde"
+  },
+  "probe": {
+    "id": "OPP-001",
+    "door": "POST /api/v1/records/opportunity/:id/lifecycle then GET /api/v1/records/opportunity/:id",
+    "input": {
+      "state": "won",
+      "reason": "Signed"
+    },
+    "observed": {
+      "status": 200,
+      "record.close_reason": "Signed"
+    }
+  },
+  "publicationScan": "Not run in cloud; guarded fleet lander owns the exact-head COMPLETE scan",
+  "landing": "Not performed; no main write",
+  "candidateRunSite": "Pending fleet landing",
+  "blockers": [],
+  "createdAt": "2026-11-06T10:25:49.964841+00:00"
+}

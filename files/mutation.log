@@ -1,0 +1,36 @@
+TAP version 13
+# (node:7257) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not
+not ok 1 - OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not
+  ---
+  duration_ms: 8172.494139
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/sd-orbit-c-f99/run-orbit/tests/core/signals-outreach.test.ts:1:42717'
+  failureType: 'testCodeFailure'
+  error: |-
+    The won-close reason survives a fresh authenticated record read
+    
+    null !== 'Signed'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Signed'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f99/run-orbit/tests/core/signals-outreach.test.ts:311:9)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 34446.11969

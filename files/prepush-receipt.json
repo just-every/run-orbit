@@ -1,0 +1,17 @@
+{
+  "head": "fe8fa714c318954ec7feba73dad3a5abc8be2bbb",
+  "base": "d89ffcc89d4e87b5276f13298210de9eb21f4f35",
+  "candidateCommits": [
+    "fe8fa714c318954ec7feba73dad3a5abc8be2bbb"
+  ],
+  "identityAndTrailers": "pass",
+  "allParentStatusRowsRetained": true,
+  "cleanWorktree": true,
+  "files": {
+    "CONTRACT.md": "9699a35337e9ee072b6cb83a314c8353df0056d09e41baee39f6671254c7dee3",
+    "sources.lock.json": "b1e7ee966faf07e19c5b7a068d11c953b6ffb03e79d55b928b5cf9a8b65ddbc9",
+    "tests/core/signals-outreach.test.ts": "9c0ca3ac93e337b85f66ed81d374e06c16c094ad462f9932e9ec981ab6c3c51f",
+    "src/core/features/records/routes.ts": "2f55d5ada5dcfb52f78f2072f518aec34265716e9d492c73baace5ab172c354b",
+    "src/core/features/records/repository.ts": "6182d0fad72e6c0a0043f3c7534395f9a3a549076edf6fc5381586a12ab8dcde"
+  }
+}

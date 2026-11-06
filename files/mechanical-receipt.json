@@ -1,0 +1,38 @@
+{
+  "base": "d89ffcc89d4e87b5276f13298210de9eb21f4f35",
+  "contractWrite": {
+    "command": "node src/base/contract-docs.mjs write",
+    "exit": 0
+  },
+  "contractCheckAfterWrite": {
+    "command": "node src/base/contract-docs.mjs check",
+    "exit": 0
+  },
+  "generatedViewsRestoredFromMain": [
+    "ACCEPTANCE.md",
+    "docs/CLAIMS.md"
+  ],
+  "lockWrite": {
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+    "exit": 0
+  },
+  "lockCheck": {
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "exit": 0
+  },
+  "migrationLedger": {
+    "command": null,
+    "exit": 0,
+    "reason": "No migration added or changed"
+  },
+  "statusRows": {
+    "parent": 204,
+    "candidate": 204
+  },
+  "allTableRows": {
+    "parent": 458,
+    "candidate": 458
+  },
+  "note": "Repeated successfully after the final fetch and rebase; generated views restored and source lock is fresh on the clean pushed tree.",
+  "head": "fe8fa714c318954ec7feba73dad3a5abc8be2bbb"
+}

@@ -1,0 +1,9 @@
+{
+  "test": "tests/core/signals-outreach.test.ts:311",
+  "name": "OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not",
+  "mutation": "Persist NULL instead of the submitted closing reason in RecordsRepository.lifecycle",
+  "exit": 1,
+  "failure": "The won-close reason survives a fresh authenticated record read: null !== Signed",
+  "sourceRestored": true,
+  "kind": "intentional negative sensitivity check; not a Verify failure or repair"
+}

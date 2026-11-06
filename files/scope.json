@@ -1,0 +1,18 @@
+{
+  "tag": "sd-orbit-c-f99",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f99",
+  "predecessor": "4ec6648812344d00172e50e7255346dccb84f835",
+  "target": "OPP-001",
+  "before": "partial",
+  "plannedAfter": "partial",
+  "beforeCounts": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "selectedPoint": "Won-close reason persists through a fresh authenticated Records GET",
+  "uiChanged": false,
+  "createdAt": "2026-11-06T10:10:41.324975+00:00"
+}

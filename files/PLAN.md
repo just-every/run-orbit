@@ -1,0 +1,10 @@
+# sd-orbit-c-f99 plan
+
+1. Refresh the authorized fleet launcher and install its credential helper, commit hook and push guard. Clone the declared Orbit repository with full history and use only the named product branch.
+2. Read the inline plan, DONE riders, Orbit contract, current judgment and predecessor diff. Map the selected won-close reason persistence point to the existing scheduled-follow-up journey. Preserve every other clause row, Gap, hold, prerequisite and assertion.
+3. Replay predecessor 4ec6648812344d00172e50e7255346dccb84f835 onto fresh main. Resolve CONTRACT.md before generated data. Run contract write and check, restore generated views from main and regenerate the source lock last.
+4. Run the touched native HTTP file, typecheck, first-party check and test-budget inventory. Confirm the readback assertion detects a missing persisted reason through one temporary mutation, restoring the product source before final checks.
+5. Stage the full result, check parent Status row retention, finish the replay with fleet identity and intact hooks, and push the first real candidate through the fleet guard. Fetch and integrate fresh main immediately before the candidate push; use merges after publication.
+6. Discover the exact-head Verify using REST without dispatching a duplicate. Leave guarded landing, publication scanning and Run site to the fleet. Save complete actual non-secret reports and receipts separately from the product tree, publish explicitly selected packet files to the evidence ref, then remove the fully pushed clone.
+
+The sole selected point is fresh authenticated Records GET after the existing won-close POST, requiring the saved close_reason to equal the submitted reason. No UI change is planned. Lost-close reason, closing operator and time, later evidence keeping the deal closed, complete queue membership and lifecycle history, and stage and owner preservation on reopen stay unclaimed. Reopen eligibility stays with existing queue rules. TEAM-005 and every existing hold remain unchanged. No DONE promotion or new acceptance sentence is planned.
