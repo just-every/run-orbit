@@ -1,0 +1,116 @@
+TAP version 13
+# (node:2905) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# (node:2905) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing
+ok 1 - SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing
+  ---
+  duration_ms: 2242.563203
+  type: 'test'
+  ...
+# Subtest: OUT-008 recipient clocks respect weekdays, DST and time to review an out-of-hours send
+ok 2 - OUT-008 recipient clocks respect weekdays, DST and time to review an out-of-hours send
+  ---
+  duration_ms: 1437.043471
+  type: 'test'
+  ...
+# Subtest: OUT-014 missing merge fields block; template revisions never rewrite approved content
+ok 3 - OUT-014 missing merge fields block; template revisions never rewrite approved content
+  ---
+  duration_ms: 9024.211947
+  type: 'test'
+  ...
+# Subtest: OUT-011 unknown delivery reconciles by durable provider key and never submits again
+ok 4 - OUT-011 unknown delivery reconciles by durable provider key and never submits again
+  ---
+  duration_ms: 713.188247
+  type: 'test'
+  ...
+# Subtest: OPP-008 completion removes an exhausted recommendation; new observed evidence produces another
+ok 5 - OPP-008 completion removes an exhausted recommendation; new observed evidence produces another
+  ---
+  duration_ms: 836.197728
+  type: 'test'
+  ...
+# Subtest: OUT-010 over-limit approval remains durably unsent with retry time
+ok 6 - OUT-010 over-limit approval remains durably unsent with retry time
+  ---
+  duration_ms: 1003.651958
+  type: 'test'
+  ...
+# Subtest: BASE-OPS-003 OUT-002 OUT-005 signed provider delivery is verified and idempotent
+ok 7 - BASE-OPS-003 OUT-002 OUT-005 signed provider delivery is verified and idempotent
+  ---
+  duration_ms: 667.22164
+  type: 'test'
+  ...
+# Subtest: SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a persistence failure rolls back all signal effects
+ok 8 - SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a persistence failure rolls back all signal effects
+  ---
+  duration_ms: 1989.978539
+  type: 'test'
+  ...
+# Subtest: SIGNAL-009 shared provider relay authenticates destination HMAC and refuses modified events
+ok 9 - SIGNAL-009 shared provider relay authenticates destination HMAC and refuses modified events
+  ---
+  duration_ms: 108.769109
+  type: 'test'
+  ...
+# Subtest: BASE-OPS-004 OUT-006 provider retry expiry fails before quiet-hours deferral and never resends
+ok 10 - BASE-OPS-004 OUT-006 provider retry expiry fails before quiet-hours deferral and never resends
+  ---
+  duration_ms: 478.301108
+  type: 'test'
+  ...
+# OUT-017 AI: contact/company exact preview -> editable unsent draft; stale/refused/erased no call; foreign/long/provider/off fail; usage recorded
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":142,"parts":41,"observations":[{"operation":"POST /exports","milliseconds":2109.3296819999814,"status":201},{"operation":"GET /exports/01M6RBFRQ8T6D3F7B2NYGCQ95E","milliseconds":64.3677139999927,"status":200},{"operation":"POST /exports/01M6RBFRQ8T6D3F7B2NYGCQ95E/advance","milliseconds":2917.0335679999844,"status":200},{"operation":"POST /exports/01M6RBFRQ8T6D3F7B2NYGCQ95E/advance","milliseconds":2042.337664999999,"status":200},{"operation":"POST /exports/01M6RBFRQ8T6D3F7B2NYGCQ95E/advance","milliseconds":2113.4275029999844,"status":200},{"operation":"POST /exports/01M6RBFRQ8T6D3F7B2NYGCQ95E/advance","milliseconds":2324.681374000007,"status":200},{"operation":"POST /exports/01M6RBFRQ8T6D3F7B2NYGCQ95E/advance","milliseconds":2101.244011999981,"status":200},{"operation":"POST /exports/01M6RBFRQ8T6D3F7B2NYGCQ95E/advance","milliseconds":736.4574229999853,"status":200},{"operation":"GET /exports/01M6RBFRQ8T6D3F7B2NYGCQ95E/download","milliseconds":51.28751199998078,"status":200}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":83,"parts":30,"observations":[{"operation":"POST /exports","milliseconds":2390.582687999995,"status":201},{"operation":"GET /exports/01M6RBPA9G1MTRJ21CNK4MZ9Z0","milliseconds":52.13583499996457,"status":200},{"operation":"POST /exports/01M6RBPA9G1MTRJ21CNK4MZ9Z0/advance","milliseconds":3316.3819629999925,"status":200},{"operation":"POST /exports/01M6RBPA9G1MTRJ21CNK4MZ9Z0/advance","milliseconds":2304.0194239999983,"status":200},{"operation":"POST /exports/01M6RBPA9G1MTRJ21CNK4MZ9Z0/advance","milliseconds":2236.4523650000338,"status":200},{"operation":"POST /exports/01M6RBPA9G1MTRJ21CNK4MZ9Z0/advance","milliseconds":2243.7812980000162,"status":200},{"operation":"GET /exports/01M6RBPA9G1MTRJ21CNK4MZ9Z0/download","milliseconds":93.63883200002601,"status":200}]}
+# OUT-017 held reply: contact/company attributed once; concurrent/replay no duplicate; automatic and dismissal leave promise open; genuine attach closes; custody and erasure pass
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":239,"parts":45,"observations":[{"operation":"POST /exports","milliseconds":2250.2347109999973,"status":201},{"operation":"GET /exports/01M6RBQZXDPMD6EWEDNBENJ084","milliseconds":52.864867999975104,"status":200},{"operation":"POST /exports/01M6RBQZXDPMD6EWEDNBENJ084/advance","milliseconds":3221.1339020000305,"status":200},{"operation":"POST /exports/01M6RBQZXDPMD6EWEDNBENJ084/advance","milliseconds":2316.7757020000136,"status":200},{"operation":"POST /exports/01M6RBQZXDPMD6EWEDNBENJ084/advance","milliseconds":2310.1148720000056,"status":200},{"operation":"POST /exports/01M6RBQZXDPMD6EWEDNBENJ084/advance","milliseconds":2287.046241999953,"status":200},{"operation":"POST /exports/01M6RBQZXDPMD6EWEDNBENJ084/advance","milliseconds":2193.1573980000103,"status":200},{"operation":"POST /exports/01M6RBQZXDPMD6EWEDNBENJ084/advance","milliseconds":1922.4719039999763,"status":200},{"operation":"GET /exports/01M6RBQZXDPMD6EWEDNBENJ084/download","milliseconds":69.7960740000126,"status":200}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":106,"parts":31,"observations":[{"operation":"POST /exports","milliseconds":2275.535043000011,"status":201},{"operation":"GET /exports/01M6RBZ9ZTQ3006PBAZRT54QT6","milliseconds":51.68366799992509,"status":200},{"operation":"POST /exports/01M6RBZ9ZTQ3006PBAZRT54QT6/advance","milliseconds":3217.0150300000096,"status":200},{"operation":"POST /exports/01M6RBZ9ZTQ3006PBAZRT54QT6/advance","milliseconds":2110.225231999997,"status":200},{"operation":"POST /exports/01M6RBZ9ZTQ3006PBAZRT54QT6/advance","milliseconds":2145.4905339999823,"status":200},{"operation":"POST /exports/01M6RBZ9ZTQ3006PBAZRT54QT6/advance","milliseconds":2271.2651729999343,"status":200},{"operation":"POST /exports/01M6RBZ9ZTQ3006PBAZRT54QT6/advance","milliseconds":243.1034740000032,"status":200},{"operation":"GET /exports/01M6RBZ9ZTQ3006PBAZRT54QT6/download","milliseconds":50.72555500001181,"status":200}]}
+# Subtest: OUT-017 record mail preserves exact approval, sender promises, custody and OUT-004 header-only reply matching
+ok 11 - OUT-017 record mail preserves exact approval, sender promises, custody and OUT-004 header-only reply matching
+  ---
+  duration_ms: 635376.147119
+  type: 'test'
+  ...
+# Subtest: BASE-OPS-004 OPP-005 evaluation failure preserves readable prior evidence and clears on a successful refresh
+ok 12 - BASE-OPS-004 OPP-005 evaluation failure preserves readable prior evidence and clears on a successful refresh
+  ---
+  duration_ms: 1329.225148
+  type: 'test'
+  ...
+# Subtest: SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; inferred evidence cannot create a deal, high band or action
+ok 13 - SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; inferred evidence cannot create a deal, high band or action
+  ---
+  duration_ms: 9953.384654
+  type: 'test'
+  ...
+# Subtest: OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not
+ok 14 - OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not
+  ---
+  duration_ms: 10853.829123
+  type: 'test'
+  ...
+# Subtest: OUT-009 dispatch rechecks unchanged content, active operator, lifecycle, current recipient and association before claiming
+ok 15 - OUT-009 dispatch rechecks unchanged content, active operator, lifecycle, current recipient and association before claiming
+  ---
+  duration_ms: 3067.03002
+  type: 'test'
+  ...
+# Subtest: OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do
+ok 16 - OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do
+  ---
+  duration_ms: 1498.685246
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 709292.857973

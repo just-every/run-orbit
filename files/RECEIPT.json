@@ -1,0 +1,160 @@
+{
+  "tag": "sd-orbit-c-f110",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f110",
+  "requestedBase": "25ad07ce9805fd8254b1332a2674035460a0ec82",
+  "initialPublishedHead": "c5445253edc418c655fa8f43c4739c0eaf589c0e",
+  "clause": "SEQUENCE-002",
+  "statusBefore": "partial",
+  "statusAfter": "partial",
+  "countsBefore": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "countsAfter": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "testBudget": {
+    "registrations": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-name-pattern='OUT-007 OUT-009 SEQUENCE-002' tests/core/signals-outreach.test.ts",
+      "exit": 0,
+      "passed": 1,
+      "failed": 0,
+      "log": "manual-stop-test.log",
+      "stage": "merged current main, before final commit"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check.log",
+      "generatedViewsRestoredFrom": "origin/main"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock-write.json"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.json"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/signals-outreach.test.ts",
+      "exit": 0,
+      "passed": 16,
+      "failed": 0,
+      "durationMs": 709292.857973,
+      "log": "signals-outreach-tests.log",
+      "executionHead": "c5445253edc418c655fa8f43c4739c0eaf589c0e",
+      "relevantCodeAndTestBytesUnchangedOnFinalHead": true
+    },
+    {
+      "head": "70a100502ab4b9346bd395209bd7c25db7f41327",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-name-pattern=OUT-007 OUT-009 SEQUENCE-002",
+        "tests/core/signals-outreach.test.ts"
+      ],
+      "exit": 0,
+      "log": "exact-candidate-manual-stop.log",
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "command": "node scripts/verification-shard.mjs source",
+      "head": "70a100502ab4b9346bd395209bd7c25db7f41327",
+      "exit": 1,
+      "expectedGeneratedViewFailure": true,
+      "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+      "log": "exact-candidate-source-check.log",
+      "receipt": "exact-candidate-source-shard.json"
+    }
+  ],
+  "migrationLedger": {
+    "required": false,
+    "reason": "No migration changed"
+  },
+  "browserProof": {
+    "requiredForChangedScreens": false,
+    "reason": "No screen or runtime source changed"
+  },
+  "publicationScan": {
+    "performed": false,
+    "custodian": "Fleet guarded lander"
+  },
+  "landing": {
+    "performed": false,
+    "custodian": "Fleet guarded lander"
+  },
+  "acceptanceTextChanged": false,
+  "runtimeSourceChanged": false,
+  "existingAssertionsRemovedOrNarrowed": false,
+  "holdsReleased": false,
+  "newDoneClaims": 0,
+  "planRows": [
+    "SEQUENCE-002 qualification result only"
+  ],
+  "head": "70a100502ab4b9346bd395209bd7c25db7f41327",
+  "mergedMain": "acec2cbbaf816eec78bc158d1577ed372ef647a2",
+  "productPush": {
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f110",
+    "exit": 0,
+    "head": "70a100502ab4b9346bd395209bd7c25db7f41327",
+    "remoteHeadVerified": true,
+    "log": "final-product-push.log"
+  },
+  "fullHistory": true,
+  "prUrl": null,
+  "ci": {
+    "head": "70a100502ab4b9346bd395209bd7c25db7f41327",
+    "runId": 42215755335,
+    "jobId": 127885396113,
+    "event": "push",
+    "status": "completed",
+    "conclusion": "failure",
+    "rootCommand": "pnpm exec node src/base/contract-docs.mjs check",
+    "rootFailure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "expectedGeneratedViewOnly": true,
+    "dependentFailures": "Missing source and combined verdict artifacts; aggregate requires the failed source job",
+    "runtimeShards": "skipped",
+    "repairEdited": false,
+    "workflowRerunRequested": false,
+    "handoff": "Ready under the explicit generated-view exception; no full runtime CI success or DONE claim"
+  },
+  "blockers": [],
+  "readyBasis": "Touched local checks pass and exact-SHA Verify has only the permitted generated-view root failure; the guarded fleet lander generates views, scans and reruns gates.",
+  "remainingClauseGaps": [
+    "external colleague reply exit under the unchanged relay prerequisite",
+    "unsubscribe and permanent-bounce complete qualification",
+    "due-step races for every exit event",
+    "persisted-store and process restart",
+    "unchanged enrollment and mailbox holds"
+  ]
+}

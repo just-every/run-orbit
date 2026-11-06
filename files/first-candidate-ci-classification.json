@@ -1,0 +1,12 @@
+{
+  "head": "c5445253edc418c655fa8f43c4739c0eaf589c0e",
+  "runId": 42213495778,
+  "jobId": 127877786121,
+  "conclusion": "failure",
+  "rootCommand": "pnpm exec node src/base/contract-docs.mjs check",
+  "rootFailure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "expectedGeneratedViewOnly": true,
+  "runtimeShards": "skipped",
+  "repairEdited": false,
+  "workflowRerunRequested": false
+}

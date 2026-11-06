@@ -1,0 +1,16 @@
+{
+  "head": "70a100502ab4b9346bd395209bd7c25db7f41327",
+  "runId": 42215755335,
+  "jobId": 127885396113,
+  "event": "push",
+  "status": "completed",
+  "conclusion": "failure",
+  "rootCommand": "pnpm exec node src/base/contract-docs.mjs check",
+  "rootFailure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "expectedGeneratedViewOnly": true,
+  "dependentFailures": "Missing source and combined verdict artifacts; aggregate requires the failed source job",
+  "runtimeShards": "skipped",
+  "repairEdited": false,
+  "workflowRerunRequested": false,
+  "handoff": "Ready under the explicit generated-view exception; no full runtime CI success or DONE claim"
+}

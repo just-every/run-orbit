@@ -1,0 +1,30 @@
+{
+  "executionHead": "c5445253edc418c655fa8f43c4739c0eaf589c0e",
+  "files": [
+    {
+      "path": "tests/core/signals-outreach.test.ts",
+      "sha256": "bb0cd9119837ab0e69c6d43389f38fc98919a4046f79c6b9ed99db026c2d076b",
+      "unchangedSinceInitialPushedHead": true
+    },
+    {
+      "path": "src/core/features/workbench/routes.ts",
+      "sha256": "c830527ae836fe06f28a5bd5f75d86e5ad4e87565f7363b9bd8f4f3801f0a7ce",
+      "unchangedSinceInitialPushedHead": true
+    },
+    {
+      "path": "src/core/features/outreach/approval-repository.ts",
+      "sha256": "08fbf4063aaf02ace2da51701dd2148749c260901f88665202a318895e3b0e2c",
+      "unchangedSinceInitialPushedHead": true
+    },
+    {
+      "path": "src/core/features/outreach/service.ts",
+      "sha256": "9ff7f815b25bfb0fb6d49a6202cb7c7dbe46312c94ca9e0f704c95d8de3c6f05",
+      "unchangedSinceInitialPushedHead": true
+    }
+  ],
+  "finalHead": "70a100502ab4b9346bd395209bd7c25db7f41327",
+  "changedPathsAfterFullFileExecution": [
+    "sources.lock.json",
+    "tests/core/assistance.test.ts"
+  ]
+}

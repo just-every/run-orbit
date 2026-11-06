@@ -1,0 +1,30 @@
+{
+  "firstHead": "c5445253edc418c655fa8f43c4739c0eaf589c0e",
+  "finalHead": "70a100502ab4b9346bd395209bd7c25db7f41327",
+  "identicalGeneratorAndInputBytes": [
+    {
+      "path": "CONTRACT.md",
+      "sha256": "c296a08e181eb2c2978b3a84f8f25229aafea81cc9af187cef45f2923d8076d8"
+    },
+    {
+      "path": "ACCEPTANCE.md",
+      "sha256": "81621272877b6fc334cda3d080b8fd74b056ceaede9e4470542aa74e916961df"
+    },
+    {
+      "path": "docs/CLAIMS.md",
+      "sha256": "6dbe738446178cf479981d198ef33335cd2d59469df17f00328a8e3e17bcb444"
+    },
+    {
+      "path": "src/base/contract-docs.mjs",
+      "sha256": "d98e14f489c57f60446c2cc68310db09f298f7974d77026dbaa2c62868cc4838"
+    },
+    {
+      "path": "scripts/verification-shard.mjs",
+      "sha256": "391e7c64cddf1d3f14dce0d89cede5c4eed5ed18b902742e3da4d49f510c6927"
+    },
+    {
+      "path": "scripts/verification-plan.mjs",
+      "sha256": "6cadc2af648d750bbab60a0e10be17ddd1b41c637b5cd113c21546fd8c7d22ce"
+    }
+  ]
+}

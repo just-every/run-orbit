@@ -1,0 +1,30 @@
+{
+  "parents": [
+    {
+      "head": "c5445253edc418c655fa8f43c4739c0eaf589c0e",
+      "statusRows": 204,
+      "counts": {
+        "partial": 136,
+        "done": 36,
+        "missing": 32
+      }
+    },
+    {
+      "head": "acec2cbbaf816eec78bc158d1577ed372ef647a2",
+      "statusRows": 204,
+      "counts": {
+        "partial": 136,
+        "done": 36,
+        "missing": 32
+      }
+    }
+  ],
+  "candidateStatusRows": 204,
+  "counts": {
+    "partial": 136,
+    "done": 36,
+    "missing": 32
+  },
+  "allParentStatusRowsRetained": true,
+  "noAcceptanceChanges": true
+}

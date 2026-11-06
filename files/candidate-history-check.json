@@ -1,0 +1,64 @@
+[
+  {
+    "head": "70a100502ab4b9346bd395209bd7c25db7f41327",
+    "parents": [
+      "c5445253edc418c655fa8f43c4739c0eaf589c0e",
+      "acec2cbbaf816eec78bc158d1577ed372ef647a2"
+    ],
+    "statusRows": 204,
+    "counts": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    },
+    "identityAllowed": true,
+    "trailersAllowed": true,
+    "allParentStatusRowsRetained": true
+  },
+  {
+    "head": "c5445253edc418c655fa8f43c4739c0eaf589c0e",
+    "parents": [
+      "25ad07ce9805fd8254b1332a2674035460a0ec82",
+      "74f72f01ad3532725c71bd0832a774abd2c5a6ec"
+    ],
+    "statusRows": 204,
+    "counts": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    },
+    "identityAllowed": true,
+    "trailersAllowed": true,
+    "allParentStatusRowsRetained": true
+  },
+  {
+    "head": "25ad07ce9805fd8254b1332a2674035460a0ec82",
+    "parents": [
+      "6be284a885db70e550aa495ec8d13d43d00a6b31"
+    ],
+    "statusRows": 204,
+    "counts": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    },
+    "identityAllowed": true,
+    "trailersAllowed": true,
+    "allParentStatusRowsRetained": true
+  },
+  {
+    "head": "6be284a885db70e550aa495ec8d13d43d00a6b31",
+    "parents": [
+      "d89ffcc89d4e87b5276f13298210de9eb21f4f35"
+    ],
+    "statusRows": 204,
+    "counts": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    },
+    "identityAllowed": true,
+    "trailersAllowed": true,
+    "allParentStatusRowsRetained": true
+  }
+]
