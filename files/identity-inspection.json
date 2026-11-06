@@ -1,0 +1,10 @@
+{
+  "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+  "purpose": "Read-only source-history inspection; product push candidates remain zero",
+  "identity_lines": 2,
+  "fleet_identity_lines": 2,
+  "other_identity_lines": 0,
+  "trailers_present": false,
+  "product_commits_created": 0,
+  "product_push_candidates": 0
+}

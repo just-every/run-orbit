@@ -1,0 +1,110 @@
+{
+  "AGENTS.md": {
+    "bytes": 6149,
+    "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9"
+  },
+  "CONTRACT.md": {
+    "bytes": 484207,
+    "sha256": "1725a78117061677eb563921d440bab9077cb787c9a5a65b1aeda5da09ab51c9"
+  },
+  "ACCEPTANCE.md": {
+    "bytes": 434241,
+    "sha256": "4e547d52c445494402078619b4160a8ad3768e11742ebc8807a54e64da07d2c9"
+  },
+  "BASELINE.md": {
+    "bytes": 40271,
+    "sha256": "7edf11ce7f54181e40afcf424209b9527bd1e0f7cf6fee7bf84d7811f082042f"
+  },
+  "RULINGS.md": {
+    "bytes": 2770,
+    "sha256": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c"
+  },
+  "OPERATIONS.md": {
+    "bytes": 25151,
+    "sha256": "39076eb8a06e584245e13504d891cf79ea0e19e2b432202a837e84042e645215"
+  },
+  "README.md": {
+    "bytes": 16679,
+    "sha256": "3d0e7ae842a3f1236e44097860817a2f44eca2ce5c594088865609b963f4f744"
+  },
+  "HANDOVER.md": {
+    "bytes": 31465,
+    "sha256": "63a2671adf6551834f7d68e5a17e537d033303a6a01d34a9b3bcd4b88d416e41"
+  },
+  "DIVERGENCE.md": {
+    "bytes": 8112,
+    "sha256": "a28fe793bc2d4aebc95a81493df41aaca5f026aae55a17976004107d2ec6e3e1"
+  },
+  "seed.json": {
+    "bytes": 19129,
+    "sha256": "54e7e7d7966fbcbfd50fec769f2a5e91de9660f428880308cf3c2cce791221e9"
+  },
+  "tests/core/signals-outreach.test.ts": {
+    "bytes": 60278,
+    "sha256": "828ea45bd4bc7d7eace2bba2b5124d6137822fb00541c1ac68c2bb12debef9e8"
+  },
+  "tests/core/sendgrid-outcomes.test.ts": {
+    "bytes": 12124,
+    "sha256": "42cf46b16e8251f7912c31659b48752ac45a9343fa7591c244e2c8ade25f5383"
+  },
+  "tests/core/outreach-limits.test.ts": {
+    "bytes": 13047,
+    "sha256": "bf1ddb39a4766ca39ff71b2887553f39c7ed5bbbf4db181cd0ff419a74c7e323"
+  },
+  "tests/support/isolated-database.ts": {
+    "bytes": 1556,
+    "sha256": "39c3bb7446f26807edea64cb323649057128c977cfc1c50d13168c492029cec1"
+  },
+  "tests/support/app.ts": {
+    "bytes": 1695,
+    "sha256": "474ba56ee004da3d192c69925ecaa700a43ce43d82effd30483278c8749c859b"
+  },
+  "tests/support/dependencies.ts": {
+    "bytes": 464,
+    "sha256": "b1f78488cfb5f0a9ca8edea82672ec364e233549656f38b8d7b2c67c5c538c47"
+  },
+  "tests/support/test-auth.ts": {
+    "bytes": 3858,
+    "sha256": "a6e48105439b5428618a5ca553c612a14200f05199cb3560fdf9274e167b4d03"
+  },
+  "tests/support/signed-reply.ts": {
+    "bytes": 1920,
+    "sha256": "53be545fc757543150cd478db3bb4292e42b223e2bf8aa26786bf8d2396daba1"
+  },
+  "src/core/features/outreach/service.ts": {
+    "bytes": 12155,
+    "sha256": "9ff7f815b25bfb0fb6d49a6202cb7c7dbe46312c94ca9e0f704c95d8de3c6f05"
+  },
+  "src/core/features/outreach/settlement.ts": {
+    "bytes": 4257,
+    "sha256": "ee02fc3f34eb1e45a021d4076a1ab84dfaa989f853dd025061852ee01d322017"
+  },
+  "src/core/features/outreach/approval-repository.ts": {
+    "bytes": 11649,
+    "sha256": "08fbf4063aaf02ace2da51701dd2148749c260901f88665202a318895e3b0e2c"
+  },
+  "src/core/features/workbench/outreach-repository.ts": {
+    "bytes": 4580,
+    "sha256": "7fe66b39ba633f77111dcdbaefcf53588774e9911a35668685fb7763f3276449"
+  },
+  "src/core/features/outreach/timing-repository.ts": {
+    "bytes": 3016,
+    "sha256": "90819d33d63a7ea891326825476bd9982ff68c5305c15185ea1e52ac919ce613"
+  },
+  "src/core/platform/outbound-mail.ts": {
+    "bytes": 6078,
+    "sha256": "75ed7a8ba09987b1b5d417aa9205d3be1e805e05681dd6af751f3d80e48712f0"
+  },
+  "src/core/platform/managed-outbound-mail.ts": {
+    "bytes": 2692,
+    "sha256": "5c9699d6dbf7ee95e287acccfe5bdafedd78f26c676f3999743016eec156aa88"
+  },
+  ".github/workflows/verify.yml": {
+    "bytes": 17450,
+    "sha256": "2d350a75be8a46166f04f9bc77a1e822ab23c75a1ac51fa05be9789db1aec238"
+  },
+  "scripts/verification-plan.mjs": {
+    "bytes": 11284,
+    "sha256": "6cadc2af648d750bbab60a0e10be17ddd1b41c637b5cd113c21546fd8c7d22ce"
+  }
+}

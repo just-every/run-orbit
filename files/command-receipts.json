@@ -1,0 +1,234 @@
+{
+  "schema": 1,
+  "tag": "ct-judge-orbit-out011-20261105-1932-sol1",
+  "recorded_utc": "2026-11-06T02:14:36.125357+00:00",
+  "repository": "just-every/run-orbit",
+  "source": "7bc88865b46d9bc2d03b5611fa87171e393cff3c",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "xhigh",
+  "billing": "subscription-only; no paid media or model API invocation",
+  "commands": [
+    {
+      "command": "git config --global user.name 'Run Edit Run fleet' && git config --global user.email fleet@runeditrun.com",
+      "exit": 0,
+      "purpose": "First environment command: fleet identity"
+    },
+    {
+      "command": "bash /workspace/rer-cloud-launcher/refresh.sh",
+      "exit": 0,
+      "purpose": "Required launcher setup; no credential values recorded"
+    },
+    {
+      "command": "fleet Git helper installation and source syntax validation",
+      "exit": 0,
+      "setup_note": "Initial local installer syntax error exit 1 was corrected and source compilation succeeded before clone; no credential value logged"
+    },
+    {
+      "command": "git clone --depth 1 --filter=blob:none --single-branch --branch cloud/sd-orbit-c-f53 https://github.com/just-every/run-orbit.git <task>/clone",
+      "exit": 0,
+      "head": "7bc88865b46d9bc2d03b5611fa87171e393cff3c"
+    },
+    {
+      "command": "git config user.name 'Run Edit Run fleet' && git config user.email fleet@runeditrun.com",
+      "exit": 0,
+      "purpose": "Local clone identity; no product commits created"
+    },
+    {
+      "command": "cloud_run pnpm install --frozen-lockfile",
+      "exit": 0,
+      "log": "install.log",
+      "setup_note": "Initial dependency install used VM Node 24.19.0. All product build and runtime checks explicitly prepended Node 22.20.0 afterward."
+    },
+    {
+      "command": "timeout 300 npm install --prefix <toolchain>/node-22.20.0 --no-audit --no-fund node@22.20.0",
+      "exit": 0,
+      "log": "node-pin-install.log"
+    },
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 --test-reporter=spec --test-name-pattern='OUT-011 lost acceptance transaction or response|SendGrid (202|408) persists honest outcome|OUT-009 dispatch rechecks|OUT-007 OUT-009 SEQUENCE-002 stage move' tests/core/signals-outreach.test.ts tests/core/sendgrid-outcomes.test.ts",
+      "exit": 0,
+      "log": "focused-journeys.log",
+      "tests": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 519446.222446,
+      "runtime_node": "22.20.0",
+      "pnpm": "10.12.4"
+    },
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 --test-reporter=spec --test-name-pattern='OUT-007 OUT-009 OUT-012 a signed provider unsubscribe' tests/core/outreach-limits.test.ts",
+      "exit": 0,
+      "log": "suppression-journey.log",
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 111705.41526,
+      "runtime_node": "22.20.0"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log",
+      "runtime_node": "22.20.0"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 1,
+      "log": "contract-docs-check.log",
+      "diagnostic": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+      "classification": "Expected mechanical source-view freshness; no generated write performed"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "source-check.log",
+      "result": {
+        "ok": true,
+        "edition": "just-every/orbit"
+      }
+    },
+    {
+      "command": "pnpm exec tsc --noEmit",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "cloud_run pnpm exec tsx ../browser-proof.mts",
+      "attempt": 1,
+      "exit": 1,
+      "log": "browser-proof.log.attempt1",
+      "receipt": "browser-receipt.json.attempt1",
+      "reason": "Reviewer fixture attempted collaborator classification after native operator provisioning; NATIVE_OPERATOR_CLASS_IMMUTABLE refused the setup before the journey. Fixed fixture order only."
+    },
+    {
+      "command": "cloud_run pnpm exec tsx ../browser-proof.mts",
+      "attempt": 2,
+      "exit": 1,
+      "log": "browser-proof.log.attempt2",
+      "receipt": "browser-receipt.json.attempt2",
+      "reason": "Reviewer used a nonexistent GET workbench opportunity drafts collection URL. Corrected to the existing native /api/v1/drafts?opportunityId= collection. Emitted accepted and unresolved submissions had already succeeded in this disposable fixture."
+    },
+    {
+      "command": "cloud_run pnpm exec tsx ../browser-proof.mts",
+      "attempt": 3,
+      "exit": 0,
+      "log": "browser-proof.log",
+      "receipt": "browser-receipt.json",
+      "runtime_node": "22.20.0",
+      "chromium": "/usr/bin/chromium",
+      "sandbox_flag": "--no-sandbox",
+      "viewports": [
+        1440,
+        390
+      ]
+    },
+    {
+      "command": "git ls-remote --refs origin refs/heads/cloud/sd-orbit-c-f53 refs/heads/main; git fetch --depth=1 --no-tags origin main:refs/remotes/origin/main",
+      "exit": 0,
+      "purpose": "Read-only source identity and fresh-main preservation, performed initially and at final readback",
+      "logs": [
+        "remote-refs.txt",
+        "final-remote-refs.txt"
+      ]
+    },
+    {
+      "command": "git status --porcelain=v1; git rev-parse HEAD",
+      "exit": 0,
+      "tracked_or_untracked_changes": 0,
+      "head": "7bc88865b46d9bc2d03b5611fa87171e393cff3c"
+    },
+    {
+      "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+      "exit": 0,
+      "receipt": "identity-inspection.json",
+      "purpose": "Read-only product source ancestry inspection; no product push candidates"
+    }
+  ],
+  "focused_result": {
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "original_relied_on_tests_executed_once": true
+  },
+  "browser": {
+    "source": "7bc88865b46d9bc2d03b5611fa87171e393cff3c",
+    "started": "2026-11-06T02:10:34.502Z",
+    "kind": "functional browser journey, zero changed screens",
+    "viewports": [
+      {
+        "width": 1440,
+        "screenshot": "browser-outcomes-1440.png",
+        "accepted": true,
+        "unresolved": true
+      },
+      {
+        "width": 390,
+        "screenshot": "browser-outcomes-390.png",
+        "accepted": true,
+        "unresolved": true
+      }
+    ],
+    "providerSubmissions": 2,
+    "providerLookups": 0,
+    "unexpectedProviderRequests": 0,
+    "assertions": [
+      "An authorized exact-revision native approval completes as accepted through the emitted Worker and real SendGrid serialization with synthetic HTTP edge.",
+      "Populated collaborator draft creation and approval both return 403 and preserve messages, record including timeline and queue, notifications, drafts, and submission count.",
+      "Existing screens visibly distinguish provider acceptance and unresolved approval at 1440 and 390; reopening them makes no further submission."
+    ],
+    "status": "passed",
+    "finished": "2026-11-06T02:10:42.251Z"
+  },
+  "ci": {
+    "supplied_run_id": 42088623015,
+    "event": "workflow_dispatch",
+    "conclusion": "failure",
+    "queried": false,
+    "ci_api_calls": 0,
+    "final_exact_sha_runtime_green": false
+  },
+  "not_run": [
+    {
+      "item": "Full or baseline suite and rer verify",
+      "reason": "Expressly excluded by focused read-only review assignment"
+    },
+    {
+      "item": "Mutation testing and new product tests",
+      "reason": "Expressly prohibited; late abort is an existing test fixture, not a product-source mutation"
+    },
+    {
+      "item": "Live SendGrid, managed relay, mailbox, account or legal qualification",
+      "reason": "No authorized provider operation; synthetic HTTP edges only. External qualification remains UNMET-EXTERNAL, outside the frozen executable rows"
+    },
+    {
+      "item": "CI polling, rerun, dispatch, or workflow log retrieval",
+      "reason": "Expressly prohibited for this read-only judgment; supplied Verify record retained honestly"
+    },
+    {
+      "item": "Contract generator write and source lock write",
+      "reason": "No source or generated edits authorized. Read-only check results retained; guarded original lander owns regeneration"
+    },
+    {
+      "item": "Complete full-history publication scan",
+      "reason": "Cloud cannot perform the publication scan and the judge clone is deliberately shallow; NEW 0 unestablished"
+    },
+    {
+      "item": "Supported root readback of distinct original source and landing-chain protections",
+      "reason": "Only reported ACTIVE in commission; root-supported custody readback is unprovided and remains a prerequisite"
+    },
+    {
+      "item": "Main equality to candidate, exact-final runtime Verify, exact-main Run site, guarded landing",
+      "reason": "Candidate remains unlanded and reviewer has no integration authority"
+    },
+    {
+      "item": "Newer-main OUT-032 journeys",
+      "reason": "Preserved and inspected as integration context; outside the one-clause original judgment and no successor review authorized"
+    },
+    {
+      "item": "rer setup, rer dev and owner-account operations",
+      "reason": "Browser proof uses existing isolated D1 and emitted Worker harness; no installed or production owner setup needed"
+    }
+  ]
+}

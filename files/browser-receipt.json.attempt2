@@ -1,0 +1,15 @@
+{
+  "source": "7bc88865b46d9bc2d03b5611fa87171e393cff3c",
+  "started": "2026-11-06T02:09:28.301Z",
+  "kind": "functional browser journey, zero changed screens",
+  "viewports": [],
+  "providerSubmissions": 2,
+  "providerLookups": 0,
+  "unexpectedProviderRequests": 0,
+  "assertions": [
+    "An authorized exact-revision native approval completes as accepted through the emitted Worker and real SendGrid serialization with synthetic HTTP edge."
+  ],
+  "status": "failed",
+  "error": "AssertionError [ERR_ASSERTION]: workbench/opportunities/01M6Q9WNS1PQADKSXMW70CF8A9/drafts: 404 Not Found\n\n404 !== 200\n",
+  "finished": "2026-11-06T02:09:35.929Z"
+}

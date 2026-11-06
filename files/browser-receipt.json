@@ -1,0 +1,29 @@
+{
+  "source": "7bc88865b46d9bc2d03b5611fa87171e393cff3c",
+  "started": "2026-11-06T02:10:34.502Z",
+  "kind": "functional browser journey, zero changed screens",
+  "viewports": [
+    {
+      "width": 1440,
+      "screenshot": "browser-outcomes-1440.png",
+      "accepted": true,
+      "unresolved": true
+    },
+    {
+      "width": 390,
+      "screenshot": "browser-outcomes-390.png",
+      "accepted": true,
+      "unresolved": true
+    }
+  ],
+  "providerSubmissions": 2,
+  "providerLookups": 0,
+  "unexpectedProviderRequests": 0,
+  "assertions": [
+    "An authorized exact-revision native approval completes as accepted through the emitted Worker and real SendGrid serialization with synthetic HTTP edge.",
+    "Populated collaborator draft creation and approval both return 403 and preserve messages, record including timeline and queue, notifications, drafts, and submission count.",
+    "Existing screens visibly distinguish provider acceptance and unresolved approval at 1440 and 390; reopening them makes no further submission."
+  ],
+  "status": "passed",
+  "finished": "2026-11-06T02:10:42.251Z"
+}

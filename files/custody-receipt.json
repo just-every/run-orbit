@@ -1,0 +1,15 @@
+{
+  "observed_utc": "2026-11-06T02:11:25.552613+00:00",
+  "source": "7bc88865b46d9bc2d03b5611fa87171e393cff3c",
+  "main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "source_branch": "cloud/sd-orbit-c-f53",
+  "product_checkout_clean": true,
+  "product_commits_created": 0,
+  "product_pushes": 0,
+  "prs_created": 0,
+  "ci_api_calls": 0,
+  "ci_polls": 0,
+  "provider_operations": "local synthetic HTTP edges only; zero live provider operations",
+  "source_and_chain_protection": "reported ACTIVE in commission; supported root readback remains prerequisite, unestablished here",
+  "final_verify": "pending original guarded lander; supplied source workflow_dispatch Verify 42088623015 failed generated-view freshness and dependent artifacts, not final runtime green"
+}

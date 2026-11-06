@@ -1,0 +1,87 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+(node:2872) TimeoutOverflowWarning: 100079648272 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2872) TimeoutOverflowWarning: 100079647961 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647955 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647954 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647911 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647909 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647907 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647906 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647899 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647896 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647869 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647868 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+Error: D1_ERROR: NATIVE_OPERATOR_CLASS_IMMUTABLE: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async <anonymous> (/home/agent/rer-consolidation/work/ct-judge-orbit-out011-20261105-1932-sol1/browser-proof.mts:22:2) {
+  [cause]: Error: NATIVE_OPERATOR_CLASS_IMMUTABLE: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at async cloudflare-internal:d1-api:478:19 {
+    [cause]: undefined
+  }
+}
+(node:2872) TimeoutOverflowWarning: 100079647855 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647854 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647854 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647853 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647851 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647849 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647848 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647847 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647845 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647841 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647840 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647839 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647837 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647836 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647835 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647833 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647832 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647831 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647830 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647828 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647827 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647826 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647825 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647815 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.
+(node:2872) TimeoutOverflowWarning: 100079647814 does not fit into a 32-bit signed integer.
+Timeout duration was set to 1.

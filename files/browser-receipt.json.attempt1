@@ -1,0 +1,13 @@
+{
+  "source": "7bc88865b46d9bc2d03b5611fa87171e393cff3c",
+  "started": "2026-11-06T02:07:21.939Z",
+  "kind": "functional browser journey, zero changed screens",
+  "viewports": [],
+  "providerSubmissions": 0,
+  "providerLookups": 0,
+  "unexpectedProviderRequests": 0,
+  "assertions": [],
+  "status": "failed",
+  "error": "Error: D1_ERROR: NATIVE_OPERATOR_CLASS_IMMUTABLE: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)",
+  "finished": "2026-11-06T02:07:22.205Z"
+}

@@ -1,0 +1,24 @@
+{
+  "source": {
+    "Core": {
+      "partial": 118,
+      "done": 36,
+      "missing": 24
+    },
+    "Agent surface": {
+      "partial": 18,
+      "missing": 8
+    }
+  },
+  "main": {
+    "Core": {
+      "partial": 119,
+      "done": 35,
+      "missing": 24
+    },
+    "Agent surface": {
+      "partial": 18,
+      "missing": 8
+    }
+  }
+}

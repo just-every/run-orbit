@@ -1,0 +1,28 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ SendGrid 202 persists honest outcome, never resubmits, and reconciles real evidence (57774.499968ms)
+(node:1043) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PROBE OUT-011 sendgrid: authenticated message read after failed provider response and timers beyond 24 hours -> failed; submissions=1 lookups=3
+PROBE OUT-011 rer: authenticated message read after failed provider response and timers beyond 24 hours -> delivery-unknown; submissions=1 lookups=0
+✔ SendGrid 408 persists honest outcome, never resubmits, and reconciles real evidence (107904.522649ms)
+(node:2376) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+(node:2376) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+PROBE OUT-011 transaction: authenticated approval, persisted restart and normal timers -> reconciling, then one accepted effect set; submissions=1 lookups=1
+PROBE OUT-011 response: authenticated approval, persisted restart and normal timers -> delivery-unknown, then one accepted effect set; submissions=1 lookups=1
+✔ OUT-011 lost acceptance transaction or response survives a persisted restart and settles exactly once without resubmission (209142.011452ms)
+✔ OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not (16258.120674ms)
+✔ OUT-009 dispatch rechecks unchanged content, active operator, lifecycle, current recipient and association before claiming (5670.138215ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 519446.222446
