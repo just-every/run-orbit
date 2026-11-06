@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "b1d171277a341b9fb8decf9f770443cbe9bb3d33a6ce5997ec21eb33a6a1d728",
+      "sha256": "af3b94e6fdfe61b5d7a32a8e2ee98753c7e180f7342249a6ee8e3abe744cb17c",
       "executable": false
     },
     "DEMO.md": {
@@ -10055,7 +10055,7 @@
       "executable": false
     },
     "tests/core/request-scheduling.test.ts": {
-      "sha256": "abc9f19b1e2a56b9ae2f31519ac3b956ade236538d7645b19771444fa4dcbabb",
+      "sha256": "3ceb827996a2932ae5eb5c02fe9a017b154168b46ea20aedd2554b48a4d0a2d9",
       "executable": false
     },
     "tests/core/retention.test.ts": {
