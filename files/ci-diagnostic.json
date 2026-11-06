@@ -1,0 +1,39 @@
+{
+  "runId": 42208214200,
+  "head": "b8c02d5a1c77404848439fc4daa0c522160775c4",
+  "event": "push",
+  "conclusion": "failure",
+  "permittedGeneratedViewException": true,
+  "rootFailure": {
+    "job": 127860257030,
+    "name": "source and shared build",
+    "jobCommand": "node scripts/verification-shard.mjs source",
+    "failedCommand": "pnpm exec node src/base/contract-docs.mjs check",
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "exit": 1,
+    "diagnostic": [
+      "2026-11-06T11:11:07.1014222Z Verification (source): pnpm exec node src/base/contract-docs.mjs check",
+      "2026-11-06T11:11:07.6009131Z ACCEPTANCE.md: generated content differs; run contract-docs write.",
+      "2026-11-06T11:11:07.6406560Z ##[error]Process completed with exit code 1.",
+      "2026-11-06T11:11:08.7960407Z ##[error]No files were found with the provided path: /tmp/orbit-source.bundle"
+    ],
+    "archiveReadCommand": "gh run view 42208214200 --repo just-every/run-orbit --job 127860257030 --log-failed",
+    "archiveReadExit": 0
+  },
+  "dependentFailure": {
+    "job": 127860484756,
+    "name": "verify",
+    "reason": "source required success, followed by missing runtime result artifact because runtime shards were skipped",
+    "diagnostic": [
+      "2026-11-06T11:11:16.0525252Z ##[error]Process completed with exit code 1.",
+      "2026-11-06T11:11:16.4063759Z ##[error]No files were found with the provided path: verification/core-results.jsonl"
+    ],
+    "archiveReadCommand": "gh run view 42208214200 --repo just-every/run-orbit --job 127860484756 --log-failed",
+    "archiveReadExit": 0
+  },
+  "runtimeAssertions": "not loaded because the source gate failed; no failing runtime assertion observed",
+  "repairs": 0,
+  "reruns": 0,
+  "dispatches": 0,
+  "githubCallsUsed": 6
+}

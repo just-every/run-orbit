@@ -27,8 +27,8 @@
     },
     {
       "number": 3,
-      "result": "pending",
-      "evidence": "Existing source-onboarding registration is scheduled by push Verify; exact-head outcome is recorded separately after publication."
+      "result": "unestablished for complete clause",
+      "evidence": "Exact candidate push Verify 42208214200 failed solely at the generated-view check and dependent artifacts; runtime shards were skipped. This round uses the explicit branch readiness exception and makes no DONE claim."
     },
     {
       "number": 4,

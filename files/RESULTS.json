@@ -84,7 +84,8 @@
     "remote": "origin",
     "ref": "refs/heads/cloud/sd-orbit-c-f104",
     "head": "b8c02d5a1c77404848439fc4daa0c522160775c4",
-    "log": "product-push.log"
+    "log": "product-push.log",
+    "remoteHeadConfirmed": true
   },
   "sourceDigests": {
     "CONTRACT.md": "a87c2602a9ca433619ca6938f7cd322ad4bda28ab7f138d7487a22522559c7f1",
@@ -113,5 +114,18 @@
     "candidate": "b8c02d5a1c77404848439fc4daa0c522160775c4",
     "relevantCodeAndProofBytesUnchanged": true,
     "newMainPreserved": true
-  }
+  },
+  "ci": {
+    "conclusion": "failure",
+    "head_sha": "b8c02d5a1c77404848439fc4daa0c522160775c4",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42208214200",
+    "status": "completed",
+    "runId": 42208214200,
+    "event": "push",
+    "generatedViewException": true,
+    "diagnostic": "ci-diagnostic.json",
+    "runtimeShards": "skipped"
+  },
+  "custody": "READY under explicitly permitted generated-view exception; product remains branch only",
+  "githubCallsUsed": 6
 }

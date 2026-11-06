@@ -2,8 +2,8 @@
   "files": [
     {
       "path": "REPORT.md",
-      "bytes": 6909,
-      "sha256": "fc9d86686692f885d9f746cf9c40b165d66d19be7d64592136698ba7563eb161"
+      "bytes": 8663,
+      "sha256": "f959499a56219b19594eed907872b4176f18906f9ead7faccba2e511fc1819c7"
     },
     {
       "path": "PLAN.md",
@@ -12,8 +12,8 @@
     },
     {
       "path": "RESULTS.json",
-      "bytes": 4268,
-      "sha256": "b0f712d6d0b6fa75c4cbce1cd5658be27e55aa1bf0e0344182a14684d8631509"
+      "bytes": 5027,
+      "sha256": "5dc89793e2db14d3ab13b8c7d887a5730e4777fff71213ed584213c90c2867b2"
     },
     {
       "path": "PROBES.log",
@@ -82,8 +82,8 @@
     },
     {
       "path": "riders.json",
-      "bytes": 2544,
-      "sha256": "5eb192f8f46dc1d0c40b912ddba6ec10211009ef6af42d076c5d86cc4174b20b"
+      "bytes": 2657,
+      "sha256": "7a67042f213f5b0056e17137c5d68f21a01d8e99c5c4b299c100b6f505913ed7"
     },
     {
       "path": "baseline.json",
@@ -101,14 +101,34 @@
       "sha256": "247a2280ba44664216a1031fa3eb33dc8a017c08aae352e8230acf5fa7af2fb5"
     },
     {
+      "path": "candidate-ci-final.json",
+      "bytes": 178,
+      "sha256": "5780c53791d91c1c90dcb74e6a3ea1f2f7985f7ae51747023ac4067f8a278d46"
+    },
+    {
+      "path": "ci-jobs.jsonl",
+      "bytes": 494,
+      "sha256": "c098c487e458b90a21cf6ab4eca27eacaadf011105a303b51e685bc674b839e9"
+    },
+    {
       "path": "github-calls.jsonl",
-      "bytes": 468,
-      "sha256": "57a428969b3c3a594ba0f5d174b68ce9939324bcb91d7a64304900dd187d9e16"
+      "bytes": 1178,
+      "sha256": "ba015f7eb9040b5a4a0891795e72983bf1791c0c8b5fdfcbc9777e721b3e758b"
     },
     {
       "path": "product-push.log",
       "bytes": 898,
       "sha256": "e3764602e65887be970f26e5a7d7b2ae05a105fd2cc011e06098340912342485"
+    },
+    {
+      "path": "evidence-roundtrip-initial.json",
+      "bytes": 4429,
+      "sha256": "c3c5ad6b8e405ce2dfdf064166fc3b5b4fb137025cf992a25e1ad7570d8d278d"
+    },
+    {
+      "path": "ci-diagnostic.json",
+      "bytes": 1820,
+      "sha256": "07232d53d1f8a863f8fae122e93ff8903f8c7dec71688ac0ce7d45fa8e339a5a"
     }
   ],
   "injectedSecretMatches": 0,
