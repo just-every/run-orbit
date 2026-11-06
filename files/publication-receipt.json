@@ -1,0 +1,248 @@
+{
+  "checked_at": "2026-11-06T03:48:22.504191+00:00",
+  "repository": "just-every/run-orbit",
+  "tag": "ct-judge-orbit-ai002-20261105-2114-sol1-complete1",
+  "publish_exit": 0,
+  "readback_exit": 0,
+  "first_publication": {
+    "files": [
+      {
+        "blob": "556344e7136153e3e061f0d8dce3fbda52a8577d",
+        "bytes": 2150,
+        "path": "INPUTS.md",
+        "sha256": "d7e838c9b0bb93bf8ebe976c8b43dcd62e77889df873510cf21a2d718f0325aa"
+      },
+      {
+        "blob": "b39d3c2bd1c60ff83f3100d9a04afba4039dc617",
+        "bytes": 2155,
+        "path": "PLAN.md",
+        "sha256": "182b152c867fd4929a9b2684fb1d8f2404faa2567e7efe92f1693c321f77ded8"
+      },
+      {
+        "blob": "e7e3280d8321d1a2caa88032d15f0f9448bfe3a2",
+        "bytes": 32803,
+        "path": "REPORT.md",
+        "sha256": "2682efc7faf7ff12b859532df979a4b1ff04bbf93fbc85501218e16f19069e14"
+      },
+      {
+        "blob": "98b6d101789f743bb0151f987c2f567ae1487aa5",
+        "bytes": 5998,
+        "path": "STATUS-PROPOSAL.md",
+        "sha256": "91af3d2662c2efbf39dadd0ae26bf4a49596df17a822529c7c997e4a3bc61d10"
+      },
+      {
+        "blob": "e7e3280d8321d1a2caa88032d15f0f9448bfe3a2",
+        "bytes": 32803,
+        "path": "VERDICT.md",
+        "sha256": "2682efc7faf7ff12b859532df979a4b1ff04bbf93fbc85501218e16f19069e14"
+      },
+      {
+        "blob": "ee48b40b5b20dbf6b160f45a5a165cc1f89e78fb",
+        "bytes": 2094,
+        "path": "browser-receipt.json",
+        "sha256": "201d95afec68abd60ed3a617c31c624ca9c9f8f2624b8b45563c8e25273cf632"
+      },
+      {
+        "blob": "6a1d33d52db72447cfa3934726c5238146847cca",
+        "bytes": 511,
+        "path": "cleanup-receipt.json",
+        "sha256": "142647e3d93256c8691aaa77503cd71075cd625d9b6949aef8e4a33cdbad55c5"
+      },
+      {
+        "blob": "b3778d107d83ddef6937b2eb70f41e029cfe0822",
+        "bytes": 16980,
+        "path": "cloud-evidence-transport.py",
+        "sha256": "b9c7778925f7036e969e8a44ede46c11b7d10f930f3b76b557c59b916145e3e7"
+      },
+      {
+        "blob": "903b6f02e130ee8c642373f286ed6a2e7df22579",
+        "bytes": 6112,
+        "path": "completion-receipt.json",
+        "sha256": "abe5df0212262da901b799dbccd3395174193e845b2bd444a564190ef30c8d1f"
+      },
+      {
+        "blob": "9c01f2d018608386b9091296610bed0764f3cf1b",
+        "bytes": 6614,
+        "path": "contract-preservation-receipt.json",
+        "sha256": "7dc400dc2f66ae025fa4768a43ca658dd607121b320d24fd07adb829a5bfb16b"
+      },
+      {
+        "blob": "0d2321ed3d85ad38515e0776f72b73ae77ab1044",
+        "bytes": 855,
+        "path": "evidence-provenance.json",
+        "sha256": "c07c9826b29e93845ebab2906c26712f62ccec932596f33cac9270eff1ff3147"
+      },
+      {
+        "blob": "5c006db26d1f676e7adb08159c3c8244b465cc96",
+        "bytes": 1419,
+        "path": "inline-snapshot-integrity.json",
+        "sha256": "ca5866fcd93d0e5f336427f859f14de460fb125cdc5c812ec58175d5bd48907e"
+      },
+      {
+        "blob": "d9ee6ef9f8b4c6ae08bb54d8267b11f29ba1a66e",
+        "bytes": 1350,
+        "path": "native-receipt.json",
+        "sha256": "4e1889aa2b09b104b4552e9318ded925757eafede6558f786058e97937c48e3a"
+      },
+      {
+        "blob": "110e1a50a305a99accf0be51071b8e39768299f5",
+        "bytes": 3941,
+        "path": "prior-source-equality.json",
+        "sha256": "45e4cdab03a52bff178d49d7e62f9737884bea5bf0c2d673e043bd96f1ffce18"
+      },
+      {
+        "blob": "7670886e77eb4a97307ae15464e84425c03ef68a",
+        "bytes": 2698,
+        "path": "reading-receipt.json",
+        "sha256": "c6b5b2ec4f91f07b348c04e1fc5370584fb9e14b6903f458c1ff686388aefa87"
+      },
+      {
+        "blob": "7334a68fffc33cdc277e01c1865d91ca7b87cce1",
+        "bytes": 593,
+        "path": "source-integrity-receipt.json",
+        "sha256": "f4049c70e9ca1b8fec2d4be36b0e5a849d5fdecca8067c8866513f0a4eac74ed"
+      },
+      {
+        "blob": "cf9649bac02e15bf1d95f7efea47258caa7aaf8c",
+        "bytes": 2285,
+        "path": "source-read-receipt.json",
+        "sha256": "3a805fa3232bd43adc3dd57ecf01c7fb99dfe28a35f797380c22077ae0e1f9b6"
+      }
+    ],
+    "head": "376f59a0ab3f2f6c07e116ca64d93f3c9ea1020a",
+    "identity_audit": {
+      "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+      "commits": [
+        "376f59a0ab3f2f6c07e116ca64d93f3c9ea1020a"
+      ],
+      "passed": true,
+      "side_parents_included": true,
+      "trailers_policy": "fleet identity; permitted coauthors only; OpenAI/Codex stripped"
+    },
+    "ref": "refs/heads/evidence/ct-judge-orbit-ai002-20261105-2114-sol1-complete1",
+    "repository": "just-every/run-orbit"
+  },
+  "exact_head_readback": {
+    "destination": "/home/agent/rer-consolidation/work/ct-judge-orbit-ai002-20261105-2114-sol1-complete1/first-readback/work/ct-judge-orbit-ai002-20261105-2114-sol1-complete1/reports/just-every/run-orbit",
+    "files": [
+      {
+        "blob": "556344e7136153e3e061f0d8dce3fbda52a8577d",
+        "bytes": 2150,
+        "path": "INPUTS.md",
+        "sha256": "d7e838c9b0bb93bf8ebe976c8b43dcd62e77889df873510cf21a2d718f0325aa"
+      },
+      {
+        "blob": "b39d3c2bd1c60ff83f3100d9a04afba4039dc617",
+        "bytes": 2155,
+        "path": "PLAN.md",
+        "sha256": "182b152c867fd4929a9b2684fb1d8f2404faa2567e7efe92f1693c321f77ded8"
+      },
+      {
+        "blob": "e7e3280d8321d1a2caa88032d15f0f9448bfe3a2",
+        "bytes": 32803,
+        "path": "REPORT.md",
+        "sha256": "2682efc7faf7ff12b859532df979a4b1ff04bbf93fbc85501218e16f19069e14"
+      },
+      {
+        "blob": "98b6d101789f743bb0151f987c2f567ae1487aa5",
+        "bytes": 5998,
+        "path": "STATUS-PROPOSAL.md",
+        "sha256": "91af3d2662c2efbf39dadd0ae26bf4a49596df17a822529c7c997e4a3bc61d10"
+      },
+      {
+        "blob": "e7e3280d8321d1a2caa88032d15f0f9448bfe3a2",
+        "bytes": 32803,
+        "path": "VERDICT.md",
+        "sha256": "2682efc7faf7ff12b859532df979a4b1ff04bbf93fbc85501218e16f19069e14"
+      },
+      {
+        "blob": "ee48b40b5b20dbf6b160f45a5a165cc1f89e78fb",
+        "bytes": 2094,
+        "path": "browser-receipt.json",
+        "sha256": "201d95afec68abd60ed3a617c31c624ca9c9f8f2624b8b45563c8e25273cf632"
+      },
+      {
+        "blob": "6a1d33d52db72447cfa3934726c5238146847cca",
+        "bytes": 511,
+        "path": "cleanup-receipt.json",
+        "sha256": "142647e3d93256c8691aaa77503cd71075cd625d9b6949aef8e4a33cdbad55c5"
+      },
+      {
+        "blob": "b3778d107d83ddef6937b2eb70f41e029cfe0822",
+        "bytes": 16980,
+        "path": "cloud-evidence-transport.py",
+        "sha256": "b9c7778925f7036e969e8a44ede46c11b7d10f930f3b76b557c59b916145e3e7"
+      },
+      {
+        "blob": "903b6f02e130ee8c642373f286ed6a2e7df22579",
+        "bytes": 6112,
+        "path": "completion-receipt.json",
+        "sha256": "abe5df0212262da901b799dbccd3395174193e845b2bd444a564190ef30c8d1f"
+      },
+      {
+        "blob": "9c01f2d018608386b9091296610bed0764f3cf1b",
+        "bytes": 6614,
+        "path": "contract-preservation-receipt.json",
+        "sha256": "7dc400dc2f66ae025fa4768a43ca658dd607121b320d24fd07adb829a5bfb16b"
+      },
+      {
+        "blob": "0d2321ed3d85ad38515e0776f72b73ae77ab1044",
+        "bytes": 855,
+        "path": "evidence-provenance.json",
+        "sha256": "c07c9826b29e93845ebab2906c26712f62ccec932596f33cac9270eff1ff3147"
+      },
+      {
+        "blob": "5c006db26d1f676e7adb08159c3c8244b465cc96",
+        "bytes": 1419,
+        "path": "inline-snapshot-integrity.json",
+        "sha256": "ca5866fcd93d0e5f336427f859f14de460fb125cdc5c812ec58175d5bd48907e"
+      },
+      {
+        "blob": "d9ee6ef9f8b4c6ae08bb54d8267b11f29ba1a66e",
+        "bytes": 1350,
+        "path": "native-receipt.json",
+        "sha256": "4e1889aa2b09b104b4552e9318ded925757eafede6558f786058e97937c48e3a"
+      },
+      {
+        "blob": "110e1a50a305a99accf0be51071b8e39768299f5",
+        "bytes": 3941,
+        "path": "prior-source-equality.json",
+        "sha256": "45e4cdab03a52bff178d49d7e62f9737884bea5bf0c2d673e043bd96f1ffce18"
+      },
+      {
+        "blob": "7670886e77eb4a97307ae15464e84425c03ef68a",
+        "bytes": 2698,
+        "path": "reading-receipt.json",
+        "sha256": "c6b5b2ec4f91f07b348c04e1fc5370584fb9e14b6903f458c1ff686388aefa87"
+      },
+      {
+        "blob": "7334a68fffc33cdc277e01c1865d91ca7b87cce1",
+        "bytes": 593,
+        "path": "source-integrity-receipt.json",
+        "sha256": "f4049c70e9ca1b8fec2d4be36b0e5a849d5fdecca8067c8866513f0a4eac74ed"
+      },
+      {
+        "blob": "cf9649bac02e15bf1d95f7efea47258caa7aaf8c",
+        "bytes": 2285,
+        "path": "source-read-receipt.json",
+        "sha256": "3a805fa3232bd43adc3dd57ecf01c7fb99dfe28a35f797380c22077ae0e1f9b6"
+      }
+    ],
+    "head": "376f59a0ab3f2f6c07e116ca64d93f3c9ea1020a",
+    "manifest_sha256": "8cd5a2f8add8b7ae34fd91c13b25655b287246895efbdae85bc4b45853de4582",
+    "product_branch": "cloud/sd-orbit-c-f55",
+    "product_head": "2314db77e0289f80687f6d26ab8f393be8865a8a",
+    "ref": "refs/heads/evidence/ct-judge-orbit-ai002-20261105-2114-sol1-complete1",
+    "repository": "just-every/run-orbit",
+    "status": "restored"
+  },
+  "selected_files_equal_local_packet": true,
+  "files_verified": 17,
+  "verification": "manifest schema/identity, exact ref/head, Git blob IDs, SHA256, lengths, regular-file-only tree and identical restored bytes",
+  "product_HEAD_unchanged": "2314db77e0289f80687f6d26ab8f393be8865a8a",
+  "product_branch_context_unchanged": "cloud/sd-orbit-c-f55",
+  "product_commits": 0,
+  "product_pushes": 0,
+  "source_acceptance_or_READY": false,
+  "final_publication": "This actual first-publication/readback receipt is included in the next append-only publication; final custody head is the terminal EVIDENCE line, avoiding circular self-recording."
+}
