@@ -1,0 +1,231 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f112",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f112",
+  "head": "881c08da6a64512b18389b32ed83790d59e02f1f",
+  "base_main": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+  "created_at": "2026-11-06T13:28:49.463834+00:00",
+  "commands": [
+    {
+      "command": "npx -y @runeditrun/rer install",
+      "exit": 0,
+      "phase": "setup"
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0,
+      "phase": "setup; build and local owner claim included"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "head": "881c08da6a64512b18389b32ed83790d59e02f1f",
+      "phase": "committed candidate",
+      "tests": 1,
+      "passed": 1,
+      "log": "managed-owner.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "output_bytes": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "result": "Wrote 0 contract documents."
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "head": "881c08da6a64512b18389b32ed83790d59e02f1f",
+      "result": "Contract documents are current."
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "phase": "last source operation, after staging the new helper"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "head": "881c08da6a64512b18389b32ed83790d59e02f1f",
+      "result": "fresh, including new helper"
+    },
+    {
+      "command": "git diff --cached -- CONTRACT.md",
+      "exit": 0,
+      "output_bytes": 0,
+      "phase": "before commit"
+    },
+    {
+      "command": "git diff origin/main...HEAD -- CONTRACT.md",
+      "exit": 0,
+      "output_bytes": 0
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    }
+  ],
+  "probes": [
+    "PROBE BASE-AGENT-011 1: raw authenticated MCP under autonomous; discovered capacity=600; admitted native create; overrun=429 Retry-After=50; early retry=429; clock recovery=200 with one native create",
+    "PROBE BASE-AGENT-011 1: raw authenticated MCP under held; discovered capacity=600; admitted native create; overrun=429 Retry-After=60; early retry=429; clock recovery=200 with one native create"
+  ],
+  "confirmed_test_exit": {
+    "command": "cloud_run timeout 1200 pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+    "exit": 0,
+    "head": "881c08da6a64512b18389b32ed83790d59e02f1f"
+  },
+  "earlier_candidate_invocation": {
+    "wrapper_exit": 1,
+    "tap_pass": 1,
+    "tap_fail": 0,
+    "assertion_failure": null,
+    "identical_command_confirmed_exit": 0,
+    "source_repair": false
+  },
+  "ci": {
+    "conclusion": null,
+    "event": "push",
+    "head_sha": "881c08da6a64512b18389b32ed83790d59e02f1f",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42225041552",
+    "id": 42225041552,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "base_main_ci": {
+    "runs": [
+      {
+        "conclusion": "success",
+        "event": "push",
+        "head_sha": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42217956677",
+        "id": 42217956677,
+        "name": "Run site",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "event": "push",
+        "head_sha": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42217956400",
+        "id": 42217956400,
+        "name": "Verify",
+        "status": "completed"
+      },
+      {
+        "conclusion": "skipped",
+        "event": "push",
+        "head_sha": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42217956329",
+        "id": 42217956329,
+        "name": "Run demo",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "event": "dynamic",
+        "head_sha": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42217955441",
+        "id": 42217955441,
+        "name": "Push on main",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "event": "push",
+        "head_sha": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42214478644",
+        "id": 42214478644,
+        "name": "Verify",
+        "status": "completed"
+      }
+    ]
+  },
+  "github_calls": 3,
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "claim": {
+    "clause": "BASE-AGENT-011",
+    "status": "PARTIAL",
+    "points": [
+      1
+    ]
+  },
+  "status_table_unchanged": true,
+  "generated_views_committed": false,
+  "publication_scan": {
+    "head": "881c08da6a64512b18389b32ed83790d59e02f1f",
+    "status": "not_run_in_cloud; guarded lander owns exact-tree full-history scan",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "main_equality": false,
+  "run_site_candidate": null,
+  "pr": null,
+  "product_push": {
+    "exit": 0,
+    "attempt": 1,
+    "ref": "refs/heads/cloud/sd-orbit-c-f112"
+  },
+  "migrations_changed": false,
+  "runtime_sources_changed": false,
+  "ui_changed": false,
+  "test_counts_before": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "test_counts_after": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "logs": {
+    "views-check.log": {
+      "bytes": 32,
+      "sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    "typecheck.log": {
+      "bytes": 102,
+      "sha256": "ffebbf1126ed08aff74901b60ac4a74b06d5f28136d1065c379c866fb2313f33"
+    },
+    "managed-owner.log": {
+      "bytes": 1098,
+      "sha256": "c1ee07b9ddeda2a195598a4a2dcdef618132c3d297e59069ecec8990580f1e1a"
+    },
+    "initial-candidate-managed-owner.log": {
+      "bytes": 1098,
+      "sha256": "b291f6c43084703a94e5704d6f5f8170070cbe2491a78baf7ac6817d8ab9326b"
+    }
+  }
+}

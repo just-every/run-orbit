@@ -1,0 +1,1 @@
+{"command": "cloud_run timeout 1200 pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts", "exit": 0, "head": "881c08da6a64512b18389b32ed83790d59e02f1f"}
