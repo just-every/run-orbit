@@ -38,7 +38,11 @@ export async function exerciseManualMeeting({page,fixture,origin,directory,obser
   await editor.setViewportSize({width:1440,height:900});await entry.getByRole('button',{name:'Delete entry',exact:true}).click();
   const confirmation=entry.getByRole('group',{name:'Confirm change'});await expect(confirmation).toContainText('Delete this entry from every record it is on?');
   for(const width of [1440,390])await observeOperator(editor,'manual-meeting-delete',width,directory,observations);
-  await editor.setViewportSize({width:1440,height:900});await confirmation.getByRole('button',{name:'Delete entry',exact:true}).click();await expect(entry).toHaveCount(0);await editor.reload();await expect(entry).toHaveCount(0);
+  await editor.setViewportSize({width:1440,height:900});await confirmation.getByRole('button',{name:'Keep it',exact:true}).click();
+  await expect(entry.getByRole('button',{name:'Delete entry',exact:true})).toBeFocused();
+  assert.deepEqual((await read(editor)).timeline.find(row=>row.id===first.id),edited,'Keeping the meeting leaves its saved fields and attribution intact');
+  assert.equal((await read(editor)).timeline.some(row=>row.kind==='entry.deleted'&&JSON.parse(row.payload_json).entryId===first.id),false,'Cancelling deletion writes no deletion trace');
+  await entry.getByRole('button',{name:'Delete entry',exact:true}).click();await confirmation.getByRole('button',{name:'Delete entry',exact:true}).click();await expect(entry).toHaveCount(0);await editor.reload();await expect(entry).toHaveCount(0);
   const after=await read(editor);assert.equal(after.timeline.some(row=>row.id===first.id),false);
   const traces=after.timeline.filter(row=>row.kind==='entry.deleted'&&JSON.parse(row.payload_json).entryId===first.id);assert.equal(traces.length,1);assert.notEqual(traces[0].actor_id,first.actor_id);assert.equal(JSON.parse(traces[0].payload_json).kind,'meeting');
   assert.deepEqual(await state(editor),before,'The complete manual meeting lifecycle changes no score, band, draft or outbound message');

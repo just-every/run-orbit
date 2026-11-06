@@ -10726,6 +10726,10 @@
       "sha256": "12deb6bf5f2de055fe9a9aaaaf48ef5486dfe03666a4034c5a20a5d1f413c7e2",
       "executable": false
     },
+    "tests/rer/operator-manual-meeting.mjs": {
+      "sha256": "dea16f3022b1a8f0d68b07869acd59d63c24def777bfad6bbcfae18c3bd8ac05",
+      "executable": false
+    },
     "tests/rer/operator-merge.mjs": {
       "sha256": "1e81a47b85dc34ec79df58c10ec043fca95eb7bcf12ad8d27c1915878bdaab05",
       "executable": false
@@ -10988,6 +10992,10 @@
     },
     "tests/support/mail-transport-client.ts": {
       "sha256": "5aedd823c1b5c5ac7f2951d004d430380f4cba704155b389e51e766671680077",
+      "executable": false
+    },
+    "tests/support/manual-meeting.ts": {
+      "sha256": "63ea594aef60c2d860b26fadf4c3cb9b5962486f5d53f8dde8fc0146236c0171",
       "executable": false
     },
     "tests/support/notification-responsibility.ts": {
