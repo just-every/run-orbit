@@ -1,0 +1,20 @@
+{
+  "command_name": "record-mail-handover",
+  "counts_read_only": {
+    "audit_entries": 0,
+    "operators": 0,
+    "record_mail_drafts": 0,
+    "record_mail_obligations": 0,
+    "record_mail_outbound_messages": 0,
+    "sessions": 0
+  },
+  "interpretation": "No product judgment or row PASS is drawn from this attempt; Node eval launch is being replaced by the maintained file-based test-runner invocation without source changes.",
+  "launch": "node --import tsx --input-type=module -e",
+  "observed_utc": "2026-11-06T02:21:29.320060+00:00",
+  "owned_pids": [
+    1605,
+    2107
+  ],
+  "status": "stalled_before_fixture_population",
+  "synthetic_database_directory": "/tmp/orbit-restore-test-AtwCgO"
+}

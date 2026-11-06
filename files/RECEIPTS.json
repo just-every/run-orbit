@@ -1,0 +1,180 @@
+{
+  "ci_api_calls": 0,
+  "cleanup_before_publication": {
+    "at_utc": "2026-11-06T02:25:54.883435+00:00",
+    "clone": "retained clean for evidence publication; deleted after verified return",
+    "completed_journeys": "isolatedDatabase.dispose through their maintained finally/after cleanup",
+    "initial_owned_processes_still_exist": {
+      "1605": false,
+      "2107": false
+    },
+    "removed_owned_paths": [
+      "/home/agent/rer-consolidation/work/ct-judge-orbit-team004-20261106-0202/run-orbit/node_modules",
+      "/tmp/orbit-restore-test-AtwCgO",
+      "/tmp/miniflare-28c9c043649f63664ef407e79fd69892"
+    ]
+  },
+  "commands": [
+    {
+      "command": [
+        "timeout",
+        "1200",
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "TASK-001 TEAM-004",
+        "tests/core/today-brief.test.ts"
+      ],
+      "end_utc": "2026-11-06T02:14:53.205303+00:00",
+      "exit": 0,
+      "head": "78cd1563746953963f2b57dceae599dace90b864",
+      "log": "team004-native.log",
+      "name": "team004-native",
+      "sha256": "24af610ab3a2517559c5222c4939cfa1100f092669228f0fd20dd1dfad73bb7f",
+      "start_utc": "2026-11-06T02:13:49.904223+00:00"
+    },
+    {
+      "command": [
+        "timeout",
+        "120",
+        "python3",
+        "../inspect-source.py"
+      ],
+      "end_utc": "2026-11-06T02:18:51.017641+00:00",
+      "exit": 0,
+      "head": "78cd1563746953963f2b57dceae599dace90b864",
+      "log": "source-inspection.log",
+      "name": "source-inspection",
+      "sha256": "f48d51fdccbc87f4787ed69bdb304daa86b5713af4466cffca946c5e20d92c0d",
+      "start_utc": "2026-11-06T02:18:50.910209+00:00"
+    },
+    {
+      "command": [
+        "timeout",
+        "120",
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {verificationPlan} from './scripts/verification-plan.mjs'; const p=verificationPlan(); console.log(JSON.stringify(Object.entries(p).flatMap(([name,gates])=>gates.filter(g=>g.files?.some(f=>['tests/core/today-brief.test.ts','tests/core/signals-outreach.test.ts'].includes(f))).map(g=>({shard:name,...g}))),null,2));"
+      ],
+      "end_utc": "2026-11-06T02:18:52.100588+00:00",
+      "exit": 0,
+      "head": "78cd1563746953963f2b57dceae599dace90b864",
+      "log": "verify-binding.log",
+      "name": "verify-binding",
+      "sha256": "93a18074b2e87742152f529a8afd2ce11bac7db19879443a82c093bf2eafc4dc",
+      "start_utc": "2026-11-06T02:18:51.091313+00:00"
+    },
+    {
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--import",
+        "tsx",
+        "--input-type=module",
+        "-e",
+        "import { test } from 'node:test'; import { recordMailHandover } from './tests/support/record-mail-handover.ts'; test('TEAM-004 retained recordMailHandover public-door journey', recordMailHandover);"
+      ],
+      "end_utc": "2026-11-06T02:21:43.075524+00:00",
+      "exit": -9,
+      "head": "78cd1563746953963f2b57dceae599dace90b864",
+      "log": "record-mail-handover.log",
+      "name": "record-mail-handover",
+      "sha256": "dfb0fbe9fe2d2c4cc5fe3fc50efe5a8f5052a3662f4f9881cc99b943c5c52394",
+      "start_utc": "2026-11-06T02:15:03.961028+00:00"
+    },
+    {
+      "command": [
+        "timeout",
+        "600",
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "../record-mail-handover.test.mjs"
+      ],
+      "end_utc": "2026-11-06T02:22:36.375012+00:00",
+      "exit": 0,
+      "head": "78cd1563746953963f2b57dceae599dace90b864",
+      "log": "record-mail-file.log",
+      "name": "record-mail-file",
+      "sha256": "22dc61c4b6efdca6ff643f57a86c31908a4e9fc19900f482494fca8c8fabbf17",
+      "start_utc": "2026-11-06T02:21:49.644343+00:00"
+    }
+  ],
+  "counts_before": {
+    "done": 35,
+    "missing": 32,
+    "partial": 137
+  },
+  "counts_candidate_unawarded": {
+    "done": 36,
+    "missing": 32,
+    "partial": 136
+  },
+  "frozen_rows": {
+    "A1": "MET",
+    "I1": "MET",
+    "P1": "MET",
+    "P2": "MET",
+    "P3": "MET",
+    "P4": "MET"
+  },
+  "head": "78cd1563746953963f2b57dceae599dace90b864",
+  "historical_ci": {
+    "conclusion": "failure",
+    "event": "push",
+    "exception": "candidate only; final runtime-green remains mandatory",
+    "head": "78cd1563746953963f2b57dceae599dace90b864",
+    "initial_failure": "generated ACCEPTANCE.md freshness",
+    "run_id": 42142701144,
+    "runtime": "skipped",
+    "source": "supplied complete affected report and landing note; not queried by this judge",
+    "status": "completed"
+  },
+  "new_fixes_requested": 0,
+  "new_product_findings": 0,
+  "packet_policy": "Only explicit actual report, receipt, log and invocation text files; no secrets, environment dumps, private held-out material or symlinks.",
+  "prior_lifetime_fix_count": "not supplied; preserved, not reset",
+  "product_commits": [],
+  "product_files_edited": [],
+  "product_pr": null,
+  "product_pushes": [],
+  "repository": "just-every/run-orbit",
+  "runtime": {
+    "launcher": "/workspace/rer-cloud-launcher/refresh.sh",
+    "no_browser_or_dev_server_started": true,
+    "node": "22.20.0",
+    "one_heavy_job_at_a_time": true,
+    "pnpm": "10.12.4",
+    "source_root": "/home/agent/rer-consolidation/work/ct-judge-orbit-team004-20261106-0202/run-orbit"
+  },
+  "schema": 1,
+  "setup_logs": {
+    "dependencies": "dependency-install.log",
+    "node_pin": "node-pin-install.log",
+    "original_base_fetch": "base-fetch.log",
+    "source_head": "source-ref.txt"
+  },
+  "setup_observed_exits": {
+    "commit_hooks_after_clone": 0,
+    "commit_hooks_after_dependencies": 0,
+    "fleet_git_setup": 0,
+    "global_identity": 0,
+    "launcher_refresh": 0,
+    "local_identity": 0,
+    "node_22_20_0_install": 0,
+    "original_base_fetch": 0,
+    "pnpm_frozen_install": 0,
+    "shallow_clone": 0,
+    "source_remote_head": 0
+  },
+  "source_branch": "cloud/sd-orbit-c-f68",
+  "tag": "ct-judge-orbit-team004-20261106-0202",
+  "verdict": "ACCEPT ON LANDING"
+}

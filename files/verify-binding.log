@@ -1,0 +1,60 @@
+[
+  {
+    "shard": "core-6",
+    "args": [
+      "exec",
+      "tsx",
+      "--test",
+      "--no-test-only",
+      "--test-concurrency=1",
+      "--test-reporter=spec",
+      "--test-reporter-destination=stdout",
+      "--test-reporter=./scripts/core-results.mjs",
+      "--test-reporter-destination=verification/core-6-results.jsonl",
+      "tests/core/admission.test.ts",
+      "tests/core/launch-reply-authority.test.ts",
+      "tests/core/prior-auth-upgrade.test.ts",
+      "tests/core/signals-outreach.test.ts",
+      "tests/delegation/authority-regressions.test.ts",
+      "tests/delegation/record-state.test.ts"
+    ],
+    "files": [
+      "tests/core/admission.test.ts",
+      "tests/core/launch-reply-authority.test.ts",
+      "tests/core/prior-auth-upgrade.test.ts",
+      "tests/core/signals-outreach.test.ts",
+      "tests/delegation/authority-regressions.test.ts",
+      "tests/delegation/record-state.test.ts"
+    ],
+    "result": "verification/core-6-results.jsonl"
+  },
+  {
+    "shard": "core-8",
+    "args": [
+      "exec",
+      "tsx",
+      "--test",
+      "--no-test-only",
+      "--test-concurrency=1",
+      "--test-reporter=spec",
+      "--test-reporter-destination=stdout",
+      "--test-reporter=./scripts/core-results.mjs",
+      "--test-reporter-destination=verification/core-8-results.jsonl",
+      "tests/core/archive-transfer.test.ts",
+      "tests/core/capture-erasure.test.ts",
+      "tests/core/identity.test.ts",
+      "tests/core/outreach-limits.test.ts",
+      "tests/core/today-brief.test.ts",
+      "tests/delegation/d1.test.ts"
+    ],
+    "files": [
+      "tests/core/archive-transfer.test.ts",
+      "tests/core/capture-erasure.test.ts",
+      "tests/core/identity.test.ts",
+      "tests/core/outreach-limits.test.ts",
+      "tests/core/today-brief.test.ts",
+      "tests/delegation/d1.test.ts"
+    ],
+    "result": "verification/core-8-results.jsonl"
+  }
+]

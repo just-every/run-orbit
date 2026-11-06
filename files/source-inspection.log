@@ -1,0 +1,139 @@
+{
+  "all_status_rows_retained": 204,
+  "base": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "byte_identical_to_base": [
+    "ACCEPTANCE.md",
+    "docs/CLAIMS.md",
+    "AGENTS.md",
+    "RULINGS.md",
+    "tests/support/record-mail-handover.ts",
+    "tests/support/today-workspace.ts"
+  ],
+  "candidate_counts": {
+    "done": 36,
+    "missing": 32,
+    "partial": 136
+  },
+  "candidate_team004_gap": "",
+  "changed_paths": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/core/today-brief.test.ts"
+  ],
+  "changed_status_rows": [
+    "TEAM-004"
+  ],
+  "files": [
+    {
+      "bytes": 6149,
+      "path": "AGENTS.md",
+      "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9"
+    },
+    {
+      "bytes": 484674,
+      "path": "CONTRACT.md",
+      "sha256": "a9008eea1e76ab78d5bbe6a088d5d27e8d2e35ef85ff11d5f6e609d12b92dfb0"
+    },
+    {
+      "bytes": 435074,
+      "path": "ACCEPTANCE.md",
+      "sha256": "8dece52f213b61f58d621fe04924cf13ea10d39612fb36a8a5e3a19bff1a2449"
+    },
+    {
+      "bytes": 2770,
+      "path": "RULINGS.md",
+      "sha256": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c"
+    },
+    {
+      "bytes": 48399,
+      "path": "tests/core/today-brief.test.ts",
+      "sha256": "8d08905acbcd1fc80d6c9f84e6f32595cd84d7a2ff855a56749a962d96a531f0"
+    },
+    {
+      "bytes": 2914,
+      "path": "tests/support/today-workspace.ts",
+      "sha256": "e1be6af959c8c915e7e00e089581c95f3a6fff713c1917021acaba51e3e94ab0"
+    },
+    {
+      "bytes": 6765,
+      "path": "tests/support/sales-tasks.ts",
+      "sha256": "5a3415a4e3e7a3d18ffd1dc23aaffa515ebe7b87fa68354cd2f535cfbb14b868"
+    },
+    {
+      "bytes": 8750,
+      "path": "tests/support/record-mail-handover.ts",
+      "sha256": "24d9378a1f8d9987d088b9f5c33cc9a101b14c48808e3727c36d63f8833de7df"
+    },
+    {
+      "bytes": 1535,
+      "path": "tests/support/isolated-database.ts",
+      "sha256": "0079405dc889ae15751329af69d2a0fc81280008ad956c21b0d256e4de1433a0"
+    },
+    {
+      "bytes": 1695,
+      "path": "tests/support/app.ts",
+      "sha256": "474ba56ee004da3d192c69925ecaa700a43ce43d82effd30483278c8749c859b"
+    },
+    {
+      "bytes": 464,
+      "path": "tests/support/dependencies.ts",
+      "sha256": "b1f78488cfb5f0a9ca8edea82672ec364e233549656f38b8d7b2c67c5c538c47"
+    },
+    {
+      "bytes": 3858,
+      "path": "tests/support/test-auth.ts",
+      "sha256": "a6e48105439b5428618a5ca553c612a14200f05199cb3560fdf9274e167b4d03"
+    },
+    {
+      "bytes": 3193,
+      "path": "tests/support/email-link.ts",
+      "sha256": "4ba8b133bb62bc97630c7214cfa271e4f45f085a9fdc6f49b783a748807694e1"
+    },
+    {
+      "bytes": 4906,
+      "path": "newtests/t096/fixture.ts",
+      "sha256": "05ae46e4fdd2e6d682d81134d45a1863a6fae01afe12cc15ab830cb3ff8f50d1"
+    },
+    {
+      "bytes": 10381,
+      "path": "src/core/features/settings/removal-handover.ts",
+      "sha256": "9af2842f15acb7f9771739f79437139be8b57b6c9e85e14156f25483bc0651f6"
+    },
+    {
+      "bytes": 8467,
+      "path": "src/core/features/settings/routes.ts",
+      "sha256": "819bab7fc2bb966f315f7867ec48debe7c7f9a7cbfb276d67d391e3aa6fcc67e"
+    },
+    {
+      "bytes": 4005,
+      "path": "src/core/features/tasks/handover.ts",
+      "sha256": "141258c2be5a650172a6aa44273747e4b89c4bde924ebbfeaf3adbd91eb45d91"
+    },
+    {
+      "bytes": 12155,
+      "path": "src/core/features/outreach/service.ts",
+      "sha256": "9ff7f815b25bfb0fb6d49a6202cb7c7dbe46312c94ca9e0f704c95d8de3c6f05"
+    },
+    {
+      "bytes": 17450,
+      "path": ".github/workflows/verify.yml",
+      "sha256": "2d350a75be8a46166f04f9bc77a1e822ab23c75a1ac51fa05be9789db1aec238"
+    },
+    {
+      "bytes": 11284,
+      "path": "scripts/verification-plan.mjs",
+      "sha256": "6cadc2af648d750bbab60a0e10be17ddd1b41c637b5cd113c21546fd8c7d22ce"
+    }
+  ],
+  "full_requirement_and_acceptance_prefix_unchanged": true,
+  "head": "78cd1563746953963f2b57dceae599dace90b864",
+  "old_counts": {
+    "done": 35,
+    "missing": 32,
+    "partial": 137
+  },
+  "old_team004_gap": "Unasserted in the carried evidence: delegated handoff unassignment; scheduled-message cancellation; choice recorded for every set; one attributed owner-change entry. Asserted: reviewed task handover; reviewed opportunity handover; revoked session; historical note retains its actor.",
+  "old_tests_retained_ignoring_whitespace": true,
+  "runtime_changed_paths": [],
+  "tracked_status": ""
+}

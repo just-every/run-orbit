@@ -1,0 +1,28 @@
+{
+  "distinct_fragments": 5388,
+  "files": {
+    "ACCEPTANCE.md": {
+      "bytes": 435074,
+      "lossless_reconstruction_verified": true,
+      "sha256": "8dece52f213b61f58d621fe04924cf13ea10d39612fb36a8a5e3a19bff1a2449"
+    },
+    "CONTRACT.md": {
+      "bytes": 484674,
+      "lossless_reconstruction_verified": true,
+      "sha256": "a9008eea1e76ab78d5bbe6a088d5d27e8d2e35ef85ff11d5f6e609d12b92dfb0"
+    }
+  },
+  "head": "78cd1563746953963f2b57dceae599dace90b864",
+  "inline_references": [
+    "briefs/ct/judge-common.md",
+    "lanes/ct/DONE-RIDERS.md",
+    "builder-PLAN.md",
+    "builder-REPORT.md",
+    "builder-RUBRIC.md",
+    "affected-VERDICT.md",
+    "affected-LANDING-NOTES.md"
+  ],
+  "note": "Inline references are historical context, not this judge execution or additional work authority.",
+  "read_method": "Complete pinned files read through exact sentence and table-cell deduplication across CONTRACT and ACCEPTANCE; every distinct fragment displayed, duplicates retained in byte-reconstruction map. No summary or clause selection was used for that reading. Target clause and stale view also read in original order.",
+  "rulings": "All seven RL-1 through RL-7 read; none changes TEAM-004 acceptance."
+}
