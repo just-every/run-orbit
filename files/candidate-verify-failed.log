@@ -1,0 +1,26 @@
+verify	Require a successful plan and all required work	﻿2026-11-06T07:33:29.9170121Z ##[group]Run test "$PLAN" = success
+verify	Require a successful plan and all required work	2026-11-06T07:33:29.9170700Z [36;1mtest "$PLAN" = success[0m
+verify	Require a successful plan and all required work	2026-11-06T07:33:29.9171122Z [36;1mcase "$COVERAGE" in[0m
+verify	Require a successful plan and all required work	2026-11-06T07:33:29.9171748Z [36;1m  reuse) test "$SKIP" = true && test "$SOURCE" = skipped && test "$SHARDS" = skipped && test "$LIGHT" = skipped ;;[0m
+verify	Require a successful plan and all required work	2026-11-06T07:33:29.9172556Z [36;1m  light) test "$SKIP" = false && test "$LIGHT" = success && test "$SOURCE" = skipped && test "$SHARDS" = skipped ;;[0m
+verify	Require a successful plan and all required work	2026-11-06T07:33:29.9173292Z [36;1m  full) test "$SOURCE" = success && test "$SHARDS" = success && test "$LIGHT" = skipped ;;[0m
+verify	Require a successful plan and all required work	2026-11-06T07:33:29.9173826Z [36;1m  *) exit 1 ;;[0m
+verify	Require a successful plan and all required work	2026-11-06T07:33:29.9174211Z [36;1mesac[0m
+verify	Require a successful plan and all required work	2026-11-06T07:33:29.9194712Z shell: /usr/bin/bash -e {0}
+verify	Require a successful plan and all required work	2026-11-06T07:33:29.9299261Z ##[error]Process completed with exit code 1.
+verify	Retain combined routine verdicts (capacity pending)	﻿2026-11-06T07:33:29.9567845Z ##[group]Run actions/upload-artifact@v4
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T07:33:29.9568348Z with:
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T07:33:29.9568706Z   name: orbit-routine-verification
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T07:33:29.9569198Z   path: verification/core-results.jsonl
+verify	Retain combined routine verdicts (capacity pending)	verification/ci-summary.json
+verify	Retain combined routine verdicts (capacity pending)	
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T07:33:29.9569918Z   if-no-files-found: error
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T07:33:29.9570301Z   compression-level: 6
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T07:33:29.9570652Z   overwrite: false
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T07:33:29.9571017Z   include-hidden-files: false
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T07:33:30.2680722Z (node:2001) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T07:33:30.2682075Z (Use `node --trace-deprecation ...` to show where the warning was created)
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T07:33:30.2717184Z Multiple search paths detected. Calculating the least common ancestor of all paths
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T07:33:30.2720840Z The least common ancestor is /home/runner/work/run-orbit/run-orbit/verification. This will be the root directory of the artifact
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T07:33:30.2733875Z ##[error]No files were found with the provided path: verification/core-results.jsonl
+verify	Retain combined routine verdicts (capacity pending)	verification/ci-summary.json. No artifacts will be uploaded.

@@ -1,0 +1,123 @@
+{
+  "tag": "sd-orbit-c-f89",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f89",
+  "head": "211efa56341b3f697f69a42c07820b495935d7f1",
+  "base": "211efa56341b3f697f69a42c07820b495935d7f1",
+  "main": "d417a80f86f763583e68f7ba8c13cb668f30bbab",
+  "newProductCommits": 0,
+  "clause": {
+    "id": "BASE-AGENT-012",
+    "before": "PARTIAL",
+    "after": "PARTIAL",
+    "selectedPoint": 3,
+    "pointResult": "already implemented in requested base; runtime proof passes",
+    "holdsReleased": false
+  },
+  "beforeCounts": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "afterCounts": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "checks": {
+    "build": {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log"
+    },
+    "typecheck": {
+      "command": "cloud_run pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    "firstParty": {
+      "command": "cloud_run node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    "managedOwner": {
+      "command": "cloud_run pnpm exec tsx --test --no-test-only --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1,
+      "log": "managed-owner.log"
+    },
+    "agentDoor": {
+      "command": "cloud_run timeout 1200 node node_modules/@runeditrun/rer/cli/agent-door.mjs . deploy.json",
+      "exit": 0,
+      "points": 3520,
+      "passed": 3520,
+      "nativeJourney": "BASE-AGENT-013.native-journey",
+      "log": "agent-door.log"
+    }
+  },
+  "testBudget": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200,
+    "added": 0,
+    "removed": 0
+  },
+  "probe": "PROBE BASE-AGENT-012 point-3: public /mcp orbit.records.update with retained key, target and expected revision, valid changed value_cents and a new JSON-RPC id -> HTTP 200, isError=true, idempotency_conflict, no structuredContent; operations witness, native record and timeline identical.",
+  "mechanical": "mechanical.json",
+  "scan": {
+    "status": "not run in cloud; guarded Mac lander required",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "landing": {
+    "mainPushed": false,
+    "pr": null,
+    "landed": false
+  },
+  "githubCalls": 9,
+  "sourceUnchangedDuringProof": true,
+  "ci": {
+    "candidate": {
+      "run": 42181543276,
+      "event": "push",
+      "conclusion": "failure",
+      "head": "211efa56341b3f697f69a42c07820b495935d7f1",
+      "classification": "generated-view freshness only, with dependent jobs failed or skipped; explicit cloud exception applies",
+      "failedSourceJob": 127772224404,
+      "failedAggregateJob": 127772389342
+    },
+    "base": {
+      "run": 42177387740,
+      "event": "push",
+      "conclusion": "failure",
+      "head": "211efa56341b3f697f69a42c07820b495935d7f1",
+      "classification": "same generated-view failure and downstream dependencies"
+    },
+    "main": {
+      "head": "d417a80f86f763583e68f7ba8c13cb668f30bbab",
+      "verify": 42173012225,
+      "runSite": 42173012218,
+      "conclusion": "success"
+    }
+  },
+  "handoff": "READY under explicit generated-view exception; no actual test failure found",
+  "productPush": {
+    "branch": "cloud/sd-orbit-c-f89",
+    "head": "211efa56341b3f697f69a42c07820b495935d7f1",
+    "attempts": 1,
+    "success": true
+  },
+  "planRowsChanged": [],
+  "blockers": [],
+  "omittedQualification": [
+    "dropped-stream recovery",
+    "24-hour outcome retention",
+    "stale-refusal current-revision details",
+    "cross-person job isolation",
+    "general concurrent-write qualification"
+  ],
+  "evidencePublication": "separate refs/heads/evidence/sd-orbit-c-f89; see terminal EVIDENCE line",
+  "cleanup": "clone removed after product ref verification and successful evidence publication"
+}

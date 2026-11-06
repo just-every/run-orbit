@@ -1,0 +1,81 @@
+{
+  "head": "211efa56341b3f697f69a42c07820b495935d7f1",
+  "steps": [
+    {
+      "label": "views-candidate-check",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 1
+    },
+    {
+      "label": "views-write",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "views-check",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "views-restore",
+      "command": [
+        "git",
+        "checkout",
+        "origin/main",
+        "--",
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "lock-write",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "lock"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "lock-check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 0
+    }
+  ],
+  "parentRowPreservation": [
+    {
+      "head": "211efa56341b3f697f69a42c07820b495935d7f1",
+      "parent": "d417a80f86f763583e68f7ba8c13cb668f30bbab",
+      "parentStatusRows": 204,
+      "candidateStatusRows": 204,
+      "parentTableLines": 458,
+      "candidateTableLines": 458,
+      "droppedStatusRows": []
+    }
+  ],
+  "changedPaths": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/agent-door/native-journey.mjs"
+  ],
+  "newEmailShapedStrings": 0,
+  "migrations": "none",
+  "workingTree": ""
+}

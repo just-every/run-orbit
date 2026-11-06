@@ -1,0 +1,14 @@
+{
+  "candidate_commits": [
+    {
+      "head": "211efa56341b3f697f69a42c07820b495935d7f1",
+      "identity": "fleet",
+      "trailers": "allowed or absent"
+    }
+  ],
+  "counts": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  }
+}
