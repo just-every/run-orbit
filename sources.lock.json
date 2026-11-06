@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "c4d7d18dfff7a015a2a0efb8055619e7ad14bb2a6c8c64806ba14effa6ca5c24",
+      "sha256": "c84fa227da52a587ce0e766c660a21a6e50c0554a6c808782582076d68ea4c56",
       "executable": false
     },
     "DEMO.md": {
@@ -2339,7 +2339,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-access-proof.ts": {
-      "sha256": "c81e9f16d1fc05d95a7590b4b8cd04480359fb4ca9c05759617c73aa50f392b1",
+      "sha256": "abf3a97fe46bb4e8a01762551225772c580e7874ca73ed2ef96eaca26901fadd",
       "executable": false
     },
     "newtests/t096/dashboard-archive.ts": {
