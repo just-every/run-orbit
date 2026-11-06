@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "f70d465a8051fd75a3aaa5fc8a44c09818c995e778e454fa08ef0fadf9f4d67b",
+      "sha256": "880c5666864f425927746481ed231222395fc88a610c7b5959d00b5b8e2c9c2c",
       "executable": false
     },
     "DEMO.md": {
@@ -10067,7 +10067,7 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "01c7d8d784f7d4cccba4ff60da1ba3c971ed20a94dadc9c19b172adef11aa581",
+      "sha256": "9c0ca3ac93e337b85f66ed81d374e06c16c094ad462f9932e9ec981ab6c3c51f",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
