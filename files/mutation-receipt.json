@@ -1,0 +1,36 @@
+{
+  "baseHead": "ff36a966287054a56a224e534bc37726b2ea3aa1",
+  "mutants": [
+    {
+      "point": "P1-shared-use",
+      "source": "src/core/features/drafts/library-repository.ts",
+      "mutation": "WHERE owner_id=? OR visibility='shared' ORDER BY kind,name,id -> WHERE owner_id=? ORDER BY kind,name,id",
+      "exit": 1,
+      "caught": true,
+      "expectedFailureContains": "The second operator positively lists every shared selection",
+      "seconds": 27.9,
+      "restoredSha256": "e167e92cbc465991611873bab7e101690930842275f4c3bd4a097f7ad695dec7"
+    },
+    {
+      "point": "P2-signature",
+      "source": "src/core/features/drafts/library-routes.ts",
+      "mutation": "else body+='\\n\\n'+entry.body; -> else if(kind!=='signature')body+='\\n\\n'+entry.body;",
+      "exit": 1,
+      "caught": true,
+      "expectedFailureContains": "Synthetic Orbit sales",
+      "seconds": 30.7,
+      "restoredSha256": "e3c8e73635de4ad844cd365274ba7efc7d1b04612d531cf3b96445c4119aa07a"
+    },
+    {
+      "point": "P3-opt-out",
+      "source": "src/core/features/outreach/service.ts",
+      "mutation": "...(optOut===undefined?{}:{opt_out:optOut}) -> ...(optOut===undefined?{}:{opt_out:false})",
+      "exit": 1,
+      "caught": true,
+      "expectedFailureContains": "The mail HTTP edge receives each exact approved recipient",
+      "seconds": 36.5,
+      "restoredSha256": "9ff7f815b25bfb0fb6d49a6202cb7c7dbe46312c94ca9e0f704c95d8de3c6f05"
+    }
+  ],
+  "restoredToCandidate": true
+}

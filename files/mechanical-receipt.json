@@ -1,0 +1,56 @@
+{
+  "head": "ff36a966287054a56a224e534bc37726b2ea3aa1",
+  "mechanical": {
+    "viewsWrite": {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "output": "Wrote 1 contract documents."
+    },
+    "viewsCheck": {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "output": "Contract documents are current."
+    },
+    "restoreViews": {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "output": ""
+    },
+    "lock": {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "output": "Source lock regenerated with the documented edition authoring command."
+    },
+    "lockCheck": {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "output": "{\"ok\": true, \"edition\": \"just-every/orbit\", \"manifest\": \"dc7d6704d5ed529d120a628ed52e9bd9804900d13506a343fd1606c02de0d59d\", \"toolchain\": {\"id\": \"runeditrun/edition-authoring\", \"version\": \"1.1.0\", \"sha256\": \"8d25b7528ba7c5301de349b51b7e6ca44d6b87478f27b5685a5c07b567612e13\"}}"
+    }
+  },
+  "ledger": {
+    "command": null,
+    "exit": 0,
+    "reason": "No migration changed"
+  },
+  "parentStatusRows": 204,
+  "candidateStatusRows": 204,
+  "sourceDiff": "",
+  "candidateFiles": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/core/signals-outreach.test.ts"
+  ],
+  "tests": {
+    "registered": 198,
+    "qualifications": 2
+  },
+  "identities": "ff36a966287054a56a224e534bc37726b2ea3aa1\nRun Edit Run fleet <fleet@runeditrun.com>\nRun Edit Run fleet <fleet@runeditrun.com>\n\ncdd175af3d1405e6c2449ea7e5532a749e227207\nRun Edit Run fleet <fleet@runeditrun.com>\nRun Edit Run fleet <fleet@runeditrun.com>",
+  "baseHead": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "publicationScan": {
+    "status": "NOT RUN",
+    "complete": false,
+    "historyScanned": null,
+    "findings": null,
+    "reason": "Cloud adaptation delegates exact-tree full-history scan to guarded Mac lander"
+  }
+}

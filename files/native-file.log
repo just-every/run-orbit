@@ -1,0 +1,33 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing (1626.905738ms)
+✔ OUT-008 recipient clocks respect weekdays, DST and time to review an out-of-hours send (972.770259ms)
+✔ OUT-014 missing merge fields block; template revisions never rewrite approved content (10618.336621ms)
+✔ OUT-011 unknown delivery reconciles by durable provider key and never submits again (670.587636ms)
+✔ OPP-008 completion removes an exhausted recommendation; new observed evidence produces another (643.625115ms)
+✔ OUT-010 over-limit approval remains durably unsent with retry time (934.080533ms)
+✔ BASE-OPS-003 OUT-002 OUT-005 signed provider delivery is verified and idempotent (603.575384ms)
+✔ SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a persistence failure rolls back all signal effects (1901.548391ms)
+✔ SIGNAL-009 shared provider relay authenticates destination HMAC and refuses modified events (97.57286ms)
+✔ BASE-OPS-004 OUT-006 provider retry expiry fails before quiet-hours deferral and never resends (458.530848ms)
+OUT-017 AI: contact/company exact preview -> editable unsent draft; stale/refused/erased no call; foreign/long/provider/off fail; usage recorded
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":138,"parts":41,"observations":[{"operation":"POST /exports","milliseconds":2138.7579210000113,"status":201},{"operation":"GET /exports/01M6Q6E0F3N3APKYV0SB09D9PP","milliseconds":59.3706489999895,"status":200},{"operation":"POST /exports/01M6Q6E0F3N3APKYV0SB09D9PP/advance","milliseconds":3180.4417319999775,"status":200},{"operation":"POST /exports/01M6Q6E0F3N3APKYV0SB09D9PP/advance","milliseconds":2195.4457430000184,"status":200},{"operation":"POST /exports/01M6Q6E0F3N3APKYV0SB09D9PP/advance","milliseconds":2090.9984259999765,"status":200},{"operation":"POST /exports/01M6Q6E0F3N3APKYV0SB09D9PP/advance","milliseconds":2012.3642930000206,"status":200},{"operation":"POST /exports/01M6Q6E0F3N3APKYV0SB09D9PP/advance","milliseconds":2189.6116299999994,"status":200},{"operation":"POST /exports/01M6Q6E0F3N3APKYV0SB09D9PP/advance","milliseconds":752.8549240000139,"status":200},{"operation":"GET /exports/01M6Q6E0F3N3APKYV0SB09D9PP/download","milliseconds":47.55536500000744,"status":200}]}
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":81,"parts":30,"observations":[{"operation":"POST /exports","milliseconds":1905.8833560000057,"status":201},{"operation":"GET /exports/01M6Q6M1HW80THAMTSGT5K9AYT","milliseconds":50.5801859999774,"status":200},{"operation":"POST /exports/01M6Q6M1HW80THAMTSGT5K9AYT/advance","milliseconds":3202.9812720000045,"status":200},{"operation":"POST /exports/01M6Q6M1HW80THAMTSGT5K9AYT/advance","milliseconds":2117.974174000032,"status":200},{"operation":"POST /exports/01M6Q6M1HW80THAMTSGT5K9AYT/advance","milliseconds":1894.4332059999579,"status":200},{"operation":"POST /exports/01M6Q6M1HW80THAMTSGT5K9AYT/advance","milliseconds":1985.3445880000363,"status":200},{"operation":"GET /exports/01M6Q6M1HW80THAMTSGT5K9AYT/download","milliseconds":46.99542400002247,"status":200}]}
+OUT-017 held reply: contact/company attributed once; concurrent/replay no duplicate; automatic and dismissal leave promise open; genuine attach closes; custody and erasure pass
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":239,"parts":45,"observations":[{"operation":"POST /exports","milliseconds":1866.9333580000093,"status":201},{"operation":"GET /exports/01M6Q6NFMBX0Z0PJG7R17JCXCH","milliseconds":43.841505000018515,"status":200},{"operation":"POST /exports/01M6Q6NFMBX0Z0PJG7R17JCXCH/advance","milliseconds":2686.22664899996,"status":200},{"operation":"POST /exports/01M6Q6NFMBX0Z0PJG7R17JCXCH/advance","milliseconds":1943.5998979999567,"status":200},{"operation":"POST /exports/01M6Q6NFMBX0Z0PJG7R17JCXCH/advance","milliseconds":1821.1513849999756,"status":200},{"operation":"POST /exports/01M6Q6NFMBX0Z0PJG7R17JCXCH/advance","milliseconds":1811.6384919999982,"status":200},{"operation":"POST /exports/01M6Q6NFMBX0Z0PJG7R17JCXCH/advance","milliseconds":1793.164958999958,"status":200},{"operation":"POST /exports/01M6Q6NFMBX0Z0PJG7R17JCXCH/advance","milliseconds":1552.7939459999907,"status":200},{"operation":"GET /exports/01M6Q6NFMBX0Z0PJG7R17JCXCH/download","milliseconds":40.97308000002522,"status":200}]}
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":106,"parts":31,"observations":[{"operation":"POST /exports","milliseconds":1988.128052999964,"status":201},{"operation":"GET /exports/01M6Q6VKWMS79BHSMJEN9C222G","milliseconds":43.655575999990106,"status":200},{"operation":"POST /exports/01M6Q6VKWMS79BHSMJEN9C222G/advance","milliseconds":2826.785955999978,"status":200},{"operation":"POST /exports/01M6Q6VKWMS79BHSMJEN9C222G/advance","milliseconds":1893.4060739999404,"status":200},{"operation":"POST /exports/01M6Q6VKWMS79BHSMJEN9C222G/advance","milliseconds":1923.5566749999998,"status":200},{"operation":"POST /exports/01M6Q6VKWMS79BHSMJEN9C222G/advance","milliseconds":1943.3505769999465,"status":200},{"operation":"POST /exports/01M6Q6VKWMS79BHSMJEN9C222G/advance","milliseconds":208.05873900000006,"status":200},{"operation":"GET /exports/01M6Q6VKWMS79BHSMJEN9C222G/download","milliseconds":42.19066299998667,"status":200}]}
+✔ OUT-017 record mail preserves exact approval, sender promises, custody and OUT-004 header-only reply matching (553803.188235ms)
+✔ BASE-OPS-004 OPP-005 evaluation failure preserves readable prior evidence and clears on a successful refresh (1139.322335ms)
+✔ SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; inferred evidence cannot create a deal, high band or action (8789.352993ms)
+✔ OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not (7965.09792ms)
+✔ OUT-009 dispatch rechecks unchanged content, active operator, lifecycle, current recipient and association before claiming (2666.792015ms)
+✔ OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do (1198.482247ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 618858.343971

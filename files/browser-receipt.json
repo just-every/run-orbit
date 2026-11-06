@@ -1,0 +1,28 @@
+{
+  "head": "ff36a966287054a56a224e534bc37726b2ea3aa1",
+  "rows": [
+    {
+      "width": 1440,
+      "library": true,
+      "exactRecipient": true,
+      "exactSubject": true,
+      "exactBodyAndSignature": true,
+      "optOutNotIncluded": true,
+      "mergeReviewed": true,
+      "noOverflow": true
+    },
+    {
+      "width": 390,
+      "library": true,
+      "exactRecipient": true,
+      "exactSubject": true,
+      "exactBodyAndSignature": true,
+      "optOutNotIncluded": true,
+      "mergeReviewed": true,
+      "noOverflow": true
+    }
+  ],
+  "onlyMailEdgeReplaced": false,
+  "noCustomerSubmission": true,
+  "uiSourceChanges": false
+}

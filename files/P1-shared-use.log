@@ -1,0 +1,30 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ OUT-014 missing merge fields block; template revisions never rewrite approved content (1946.195776ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 26292.929215
+
+✖ failing tests:
+
+test at tests/core/signals-outreach.test.ts:1:9279
+✖ OUT-014 missing merge fields block; template revisions never rewrite approved content (1946.195776ms)
+  AssertionError [ERR_ASSERTION]: The second operator positively lists every shared selection
+      at TestContext.<anonymous> (/workspace/run-orbit/tests/core/signals-outreach.test.ts:100:57)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+rer toolchain: node v24.19.0 pnpm 10.12.4 (pins 22.20.0 / 10.12.4)

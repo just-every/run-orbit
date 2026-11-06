@@ -1,0 +1,48 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ OUT-014 missing merge fields block; template revisions never rewrite approved content (10301.089754ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 35344.055803
+
+✖ failing tests:
+
+test at tests/core/signals-outreach.test.ts:1:9279
+✖ OUT-014 missing merge fields block; template revisions never rewrite approved content (10301.089754ms)
+  AssertionError [ERR_ASSERTION]: The mail HTTP edge receives each exact approved recipient, subject, body, signature and opt-out state once after all library entries change
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        body: 'Hi Maya Chen,\n' +
+          'Your role: VP Operations.\n' +
+          'Let’s discuss Signals test.\n' +
+  ...
+          'Synthetic Orbit sales — 雪 67',
+  +     optOut: null,
+  -     optOut: 27,
+        recipients: [
+          '01q13s5680f0vz3y3ze2grav1a@customer.example'
+        ],
+        subject: 'Next steps for Customer'
+      }
+  
+      at TestContext.<anonymous> (/workspace/run-orbit/tests/core/signals-outreach.test.ts:175:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ { recipients: [Array], subject: 'Next steps for Customer', body: 'Hi Maya Chen,\nYour role: VP Operations.\nLet’s discuss Signals test.\n\nWe can review the plan with Maya Chen.\n\nBest,\nSynthetic Orbit sales — 雪 67', optOut: null }, { recipients: [Array], subject: 'Next steps for Customer', body: 'Hi Jordan Lee,\nYour role: Finance lead.\nLet’s discuss Signals test.\n\nWe can review the plan with Jordan Lee.\n\nBest,\nSynthetic Orbit sales — 雪 67', optOut: null } ],
+    expected: [ { recipients: [Array], subject: 'Next steps for Customer', body: 'Hi Maya Chen,\nYour role: VP Operations.\nLet’s discuss Signals test.\n\nWe can review the plan with Maya Chen.\n\nBest,\nSynthetic Orbit sales — 雪 67', optOut: null }, { recipients: [Array], subject: 'Next steps for Customer', body: 'Hi Jordan Lee,\nYour role: Finance lead.\nLet’s discuss Signals test.\n\nWe can review the plan with Jordan Lee.\n\nBest,\nSynthetic Orbit sales — 雪 67', optOut: 27 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+rer toolchain: node v24.19.0 pnpm 10.12.4 (pins 22.20.0 / 10.12.4)

@@ -1,0 +1,6 @@
+{"time": 1793927531.533268, "args": ["api", "repos/just-every/run-orbit/actions/runs?head_sha=c01084f133af9aa484a6c1f5151a4e9cfbc7230f&per_page=100", "--jq", "[.workflow_runs[]|{id,name,event,status,conclusion,head_sha,html_url}]"]}
+{"time": 1793927717.0907993, "args": ["api", "repos/just-every/run-orbit/actions/runs?head_sha=ff36a966287054a56a224e534bc37726b2ea3aa1&per_page=100", "--jq", "[.workflow_runs[]|{id,name,event,status,conclusion,head_sha,html_url}]"]}
+{"time": 1793928031.5526092, "args": ["api", "repos/just-every/run-orbit/actions/runs/42142496897", "--jq", "{status,conclusion,head_sha,html_url}"]}
+{"time": 1793928037.2367685, "args": ["api", "repos/just-every/run-orbit/actions/runs/42142496897/jobs?per_page=100", "--jq", "[.jobs[]|{id,name,conclusion,steps:[.steps[]|select(.conclusion==\"failure\")|{name,number,conclusion}]}]"]}
+{"time": 1793928057.6902754, "args": ["run", "view", "42142496897", "--repo", "just-every/run-orbit", "--job", "127646337044", "--log-failed"]}
+{"time": 1793928057.696773, "args": ["run", "view", "42142496897", "--repo", "just-every/run-orbit", "--job", "127646117022", "--log-failed"]}
