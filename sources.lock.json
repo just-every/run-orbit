@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "e010146c09ec4111c091c9b6655dc75fd0c27e1c2f3fbd26771fc34128f450eb",
+      "sha256": "d8f94cd2089ec62aeed10f4e7840cd6a72107039a31aafb45e56527218b0a8f2",
       "executable": false
     },
     "DEMO.md": {
@@ -2399,7 +2399,7 @@
       "executable": false
     },
     "newtests/t096/forms-abuse-journey.ts": {
-      "sha256": "2e7dc3262d27027baf965cee328459801fba75627cb336b6863efcecd9198d8f",
+      "sha256": "9c7bea98233344390e957d73b1f6903bf27da7f8e9510fa261cedbc707a63a8b",
       "executable": false
     },
     "newtests/t096/forms-mapped-custody.ts": {

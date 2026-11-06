@@ -13,6 +13,8 @@ export async function formAbuseJourney(f:Awaited<ReturnType<typeof fixture>>,p:A
  const input=(email:string)=>({revision:p.saved.revision,operationId:p.compiled.operationId,idempotencyKey:crypto.randomUUID(),values:{name:'Actual enquiry',email},consent:true});
  const bot={...input('held-bot@example.test'),honeypot:'spam-link'};
  assert.equal((await post(bot)).status,400);
+ const withdrawn={...input(['synthetic-orbit-75','example.test'].join('@')),honeypot:'spam-link'};
+ assert.equal((await post(withdrawn)).status,400);
  const fast=input('held-fast@example.test'),challenge=await publicForms.request(origin+'/'+p.slug+'/challenge',{method:'POST',headers,body:JSON.stringify({idempotencyKey:fast.idempotencyKey})});assert.equal(challenge.status,200);const token=(await challenge.json() as {token:string}).token;
  assert.equal((await post({...fast,fillToken:token})).status,400);
  assert.equal(await f.db.prepare('SELECT count(*) n FROM marketing_form_submissions').first('n'),0);
@@ -40,6 +42,16 @@ export async function formAbuseJourney(f:Awaited<ReturnType<typeof fixture>>,p:A
  assert.equal((await verifyPost(attempts[0])).status,400,'a challenge for another action is refused');valid=true;assert.equal((await verifyPost(attempts[1])).status,200);const called=calls;assert.equal((await verifyPost({...attempts[1],turnstileToken:'already-consumed'})).status,200);assert.equal(calls,called,'accepted replays never resubmit a one-use provider token');
  const heldPayloads=(await f.db.prepare('SELECT intake_json FROM form_spam').all<{intake_json:string}>()).results;assert.ok(heldPayloads.every(row=>!row.intake_json.includes('fillToken')&&!row.intake_json.includes('turnstileToken')),'quarantine excludes transport credentials');
  assert.ok((await f.db.prepare('SELECT bucket FROM public_rate_limits').all<{bucket:string}>()).results.every(row=>!row.bucket.includes('203.0.113.')&&!row.bucket.includes('198.51.100.')),'rate buckets retain no raw network address');
+ const pending=await f.db.prepare('SELECT r.operation_id,s.* FROM form_abuse_refusals r JOIN form_spam s ON s.id=r.id WHERE r.form_id=? AND r.idempotency_key=?').bind(p.saved.id,withdrawn.idempotencyKey).first<{id:string;operation_id:string;state:string;values_json:string;intake_json:string;receipt_json:string|null}>();
+ assert.ok(pending);assert.equal(pending.operation_id,p.compiled.operationId);assert.equal(pending.state,'pending');assert.equal(pending.receipt_json,null);assert.deepEqual(JSON.parse(pending.values_json),withdrawn.values);
+ const heldBefore=await(await operator(base)).json() as any[];assert.equal(heldBefore.find(row=>row.id===pending.id).state,'pending');
+ const inventory=async()=>Object.fromEntries(await Promise.all(['contacts','companies','opportunities','consent_events','marketing_form_submissions','signals','drafts','outbound_messages'].map(async table=>[table,(await f.db.prepare(`SELECT * FROM ${table} ORDER BY id`).all()).results])));
+ const before=await inventory();assert.ok(before.contacts.length>0);assert.ok(before.consent_events.length>0);assert.ok(before.marketing_form_submissions.length>0);
+ const withdrawal=await operator(`/api/v2/workspaces/workspace/forms/publications/${pending.operation_id}/withdraw`,'POST');assert.equal(withdrawal.status,200,await withdrawal.clone().text());assert.deepEqual(await withdrawal.json(),{id:p.compiled.operationId,state:'withdrawn'});
+ const refused=await operator(`${base}/${pending.id}/release`,'POST');assert.equal(refused.status,403,await refused.clone().text());const refusal=await refused.json() as Record<string,unknown>;assert.equal('submissionId' in refusal,false);
+ assert.deepEqual(await inventory(),before,'withdrawal and refused release leave complete customer, consent and submission inventories unchanged');
+ assert.deepEqual(await f.db.prepare('SELECT r.operation_id,s.* FROM form_abuse_refusals r JOIN form_spam s ON s.id=r.id WHERE r.form_id=? AND r.idempotency_key=?').bind(p.saved.id,withdrawn.idempotencyKey).first(),pending,'the held payload stays pending and intact without a release receipt');
+ const heldAfter=await(await operator(base)).json() as any[];assert.deepEqual(heldAfter.find(row=>row.id===pending.id),heldBefore.find(row=>row.id===pending.id),'the authenticated spam list still shows the same pending payload');
  await formOriginRace(f);
 
 }
