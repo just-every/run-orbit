@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f84",
+  "repository": "just-every/run-orbit",
+  "base": "d417a80f86f763583e68f7ba8c13cb668f30bbab",
+  "sourceDigests": {
+    "tests/core/source-onboarding.test.ts": "717f49326a61ace56fca041db27f96b440da9f4a3fd88a5d1e7ede5d2ad83c9e",
+    "src/core/app/app.ts": "036bb7a866be5b98cfd3c00e763f96f93ff620a888bbebd2f28045da9a1876fc",
+    "src/core/features/workbench/routes.ts": "c830527ae836fe06f28a5bd5f75d86e5ad4e87565f7363b9bd8f4f3801f0a7ce"
+  },
+  "checks": [
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "generatedViewsRestored": true
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/source-onboarding.test.ts",
+      "exit": 0,
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "durationMs": 466287.381792,
+      "bytesMatchCandidate": true
+    }
+  ],
+  "migrationLedger": "not applicable; no migration changed",
+  "testsBefore": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "testsAfter": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "statusBefore": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "statusAfter": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "out001Before": "partial",
+  "out001After": "partial",
+  "mainCi": {
+    "head": "d417a80f86f763583e68f7ba8c13cb668f30bbab",
+    "verifyRun": 42173012225,
+    "verifyEvent": "push",
+    "verifyConclusion": "success",
+    "runSite": 42173012218,
+    "runSiteConclusion": "success"
+  },
+  "newEmailLiterals": 0,
+  "parentStatusRowsRetained": 204,
+  "parentTableLineCount": 458,
+  "currentTableLineCount": 458,
+  "generatedViewsCommitted": false,
+  "productionCodeChanged": false,
+  "head": "a0c9345eb762e3449cd3a2ee47e3a4737919720d",
+  "finalMechanical": {
+    "write": 0,
+    "check": 0,
+    "lock": 0,
+    "lockCheck": 0,
+    "generatedViewsRestored": true
+  },
+  "identityAndTrailers": "pass; fleet authors and committers; no trailers",
+  "restoredViewCheck": {
+    "command": "node src/base/contract-docs.mjs check",
+    "exit": 1,
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "expected": true,
+    "reason": "Generated views are restored from origin/main and committed only by the maintained lander."
+  },
+  "verifyJobs": {
+    "run": 42177776658,
+    "head": "a0c9345eb762e3449cd3a2ee47e3a4737919720d",
+    "event": "push",
+    "conclusion": "failure",
+    "primaryJob": 127760235227,
+    "dependentSummaryJob": 127760432115,
+    "archiveLogsPending": false,
+    "primaryFailure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "primaryArchiveReadExit": 0,
+    "generatedViewExceptionEstablished": true,
+    "summaryArchiveReadExit": 0,
+    "summaryFailure": "Required source job failed and shards were skipped; no combined verdict artifact was produced."
+  },
+  "sourceReproduction": {
+    "head": "a0c9345eb762e3449cd3a2ee47e3a4737919720d",
+    "job": 127760235227,
+    "command": "node scripts/verification-shard.mjs source",
+    "test": "node src/base/contract-docs.mjs check",
+    "exit": 1,
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "expectedGeneratedViewFailure": true,
+    "node": "22.20.0"
+  },
+  "apiCallsUsed": 6
+}

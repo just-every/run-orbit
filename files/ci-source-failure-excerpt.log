@@ -1,0 +1,7 @@
+source and shared build	Verify source, types, boundaries and the single shared app build	﻿2026-11-06T06:58:56.9834749Z ##[group]Run node scripts/verification-shard.mjs source
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T06:58:56.9835124Z node scripts/verification-shard.mjs source
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T06:58:57.7537079Z Verification (source): pnpm exec node src/base/contract-docs.mjs check
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T06:58:58.1275009Z ACCEPTANCE.md: generated content differs; run contract-docs write.
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T06:58:58.1613139Z ##[error]Process completed with exit code 1.
+source and shared build	Retain authoritative source candidate	2026-11-06T06:58:59.7235397Z ##[error]No files were found with the provided path: /tmp/orbit-source.bundle
+source and shared build	Retain authoritative source candidate	/tmp/source-release.json. No artifacts will be uploaded.

@@ -1,0 +1,66 @@
+diff --git a/CONTRACT.md b/CONTRACT.md
+index f2dea3f..c62e20d 100644
+--- a/CONTRACT.md
++++ b/CONTRACT.md
+@@ -2450,7 +2450,7 @@ RECORD-023 was proved through the native authorization and grant audit journey a
+ | `ACTION-003` | Draft on request | published | partial | `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts` | Unasserted in the carried evidence: draft facts cite current evidence; configured instructions honored. Asserted: request preview matches generated input; draft saved; no outbound message created. |
+ | `ACTION-004` | Durable draft | published | done | `src/core/features/drafts/service.ts`; `tests/e2e/operator.spec.mjs`; Acceptance 1: `tests/core/assistance.test.ts` — AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creates durable unsent draft and usage (authenticated edits to recipient, subject and body; native sign-out refuses the old cookie; the same operator requests and confirms their own email link; a distinct session reads the exact saved draft identity, recommendation, author, creation time, revision, edit time and attributed timeline entry; no customer message); assertions at 1440, browser proof at 1440 and 390). | |
+ | `ACTION-005` | Stale draft | published | partial | `src/core/features/drafts/service.ts`; `tests/e2e/stale-review.spec.mjs`; `tests/core/capture-boundaries.test.ts` | Unasserted in the carried evidence: customer/deal mutation stales draft; stale send refused; current differences shown before new review. Asserted: reply stop stales draft. |
+-| `OUT-001` | Exact-content customer sending | published | partial | `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/source-onboarding.test.ts`; `tests/rer/onboarding.test.mjs` | Unasserted in the carried evidence: ingestion cannot dispatch; unreviewed agent call has no effect under held policy; signed-in person approves unchanged saved revision. Asserted: exact reviewed bytes dispatched. |
++| `OUT-001` | Exact-content customer sending | published | partial | `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/source-onboarding.test.ts` (source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send); `tests/rer/onboarding.test.mjs` | Unasserted in the carried evidence: an actual agent customer-message call under held company policy through its owning agent-surface tool. Asserted: the current source signature ingests evidence but cannot approve or dispatch a saved draft without a native session; refusal is 401 with unchanged saved content and effect inventories and no mail submission, followed by signed-in exact-revision approval and exact reviewed bytes dispatched. |
+ | `OUT-002` | Message states | published | partial | `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: provider acceptance state; bounce state; persisted buyer-visible labels distinct. Asserted: delivery state; failed state; ambiguous state. |
+ | `OUT-003` | Send idempotency | published | partial | `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `src/core/features/workbench/routes.ts` | Unasserted in the carried evidence: concurrent approval has one outbound intent; same key after restart; at most one provider submission. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |
+ | `OUT-004` | Threading | published | done | Acceptance 1: `tests/core/launch-reply-sender.test.ts` — OUT-004 OUT-007 DATA-002 signed reply headers cannot impersonate another contact; normalized legitimate threads apply once to their sender only (signed Inbound Parse replies: a foreign sender carrying the thread's headers and the customer's own reply without thread headers are each held for review with no opportunity, no signal and schedule, drafts and queue unchanged; the genuine reply with the thread's headers from its normalized sender attaches once under duplicate and conflicting delivery); `tests/core/launch-reply-ambiguity.test.ts` — OUT-007 all known reference opportunities retain ambiguity before sender filtering (references to two deals or to unknown mail link nothing and leave queues and schedules unchanged); push Verify core-7 in shards (batch-1) and core-4 in shards (batch-2); `src/core/features/outreach/reply-matching.ts`; `tests/core/launch-reply-authority.test.ts` |  |
+diff --git a/sources.lock.json b/sources.lock.json
+index 85d8e38..b4761f7 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -707,7 +707,7 @@
+       "executable": false
+     },
+     "CONTRACT.md": {
+-      "sha256": "1ee70503b65c066543dbcf277b25e16bb1458c34ffae26c453c7a898537d001f",
++      "sha256": "9ba85b069760bf1d03e910bb98165ebc8b69d330704e827bae1fe27d663bba10",
+       "executable": false
+     },
+     "DEMO.md": {
+@@ -10071,7 +10071,7 @@
+       "executable": false
+     },
+     "tests/core/source-onboarding.test.ts": {
+-      "sha256": "59993b1a0cea6fb3ed8d679ca4cc565bdc4ed5b80704d08d4c838700eafe1051",
++      "sha256": "717f49326a61ace56fca041db27f96b440da9f4a3fd88a5d1e7ede5d2ad83c9e",
+       "executable": false
+     },
+     "tests/core/today-brief.test.ts": {
+diff --git a/tests/core/source-onboarding.test.ts b/tests/core/source-onboarding.test.ts
+index e4183e1..afdf77f 100644
+--- a/tests/core/source-onboarding.test.ts
++++ b/tests/core/source-onboarding.test.ts
+@@ -45,7 +45,25 @@ test('NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdr
+  const {opportunity}=await(await f.request(`opportunities/${customer.id}`)).json() as any;assert.equal(opportunity.queueReason,'Customer reply');assert.equal(opportunity.band,'high');assert.deepEqual(opportunity.evaluation.contributions.map((c:any)=>c.signalType).sort(),['email.replied','form.submitted','meeting.booked']);assert.ok(opportunity.evaluation.contributions.every((c:any)=>c.signalId!==first.id&&c.signalId!==second.id));
+  const draft=await(await f.request(`workbench/opportunities/${customer.id}/drafts`,'POST',{contactId:contact.id,subject:'Your inquiry',body:'Hi Maya, would Thursday suit a walkthrough?'})).json() as any;
+  const preview=await(await f.request(`workbench/drafts/${draft.id}/approval-preview`)).json() as any;
+- const sent=await f.request(`workbench/drafts/${draft.id}/approve`,'POST',{revision:1,quietHoursConfirmation:preview.localTime});assert.equal(sent.status,200,await sent.clone().text());assert.equal((await sent.json() as any).state,'accepted');assert.equal(f.sends(),2);assert.equal(bodies[1]!.to,contact.email);assert.equal(bodies[1]!.subject,'Your inquiry');assert.equal(bodies[1]!.text,'Hi Maya, would Thursday suit a walkthrough?');assert.equal((await f.db.prepare('SELECT message_id FROM outbound_messages WHERE draft_id=?').bind(draft.id).first<any>()).message_id,'<relay-2@example.test>');
++ const approval={revision:1,quietHoursConfirmation:preview.localTime};
++ const saved=(await(await f.request(`drafts/${draft.id}`)).json() as any).draft;
++ assert.deepEqual([saved.id,saved.recipientEmail,saved.subject,saved.body,saved.revision,saved.isStale],[draft.id,contact.email,'Your inquiry','Hi Maya, would Thursday suit a walkthrough?',1,false]);
++ assert.deepEqual((await(await f.request(`workbench/opportunities/${customer.id}/messages`)).json() as any).messages,[],'The saved draft has not been approved or sent');
++ const effectTables=['drafts','outbound_messages','record_mail_drafts','record_mail_outbound_messages','outbound_delivery_budget','outbound_message_opt_out','opportunities','signals','signal_links','evaluations','evaluation_contributions','recommendations','recommendation_evidence','timeline_entries','timeline_entry_records','audit_entries','notifications'];
++ const inventory=async()=>Object.fromEntries((await f.db.batch(effectTables.map(table=>f.db.prepare(`SELECT * FROM ${table}`)))).map((result,index)=>[effectTables[index],result.results.map(row=>JSON.stringify(row)).sort()]));
++ const beforeSourceApproval=await inventory(),submissionsBeforeSourceApproval=f.sends();
++ const approvalBody=JSON.stringify(approval),approvalTimestamp=String(Math.floor(Date.now()/1000));
++ const sourceApproval=await f.app.request(`https://orbit.test/api/v1/workbench/drafts/${draft.id}/approve`,{
++  method:'POST',
++  headers:{Origin:'https://orbit.test','Content-Type':'application/json','X-Orbit-Timestamp':approvalTimestamp,'X-Orbit-Signature':createHmac('sha256',rotation.secret).update(approvalTimestamp+'.'+approvalBody).digest('hex')},
++  body:approvalBody,
++ });
++ assert.equal(sourceApproval.status,401,await sourceApproval.clone().text());
++ assert.equal(f.sends(),submissionsBeforeSourceApproval,'A configured source cannot submit customer mail without an operator session');
++ assert.deepEqual(await inventory(),beforeSourceApproval,'Source-signed approval changes no draft, outbound message or downstream effect');
++ assert.deepEqual((await(await f.request(`drafts/${draft.id}`)).json() as any).draft,saved,'The exact saved revision remains available for a person to review');
++ assert.deepEqual((await(await f.request(`workbench/opportunities/${customer.id}/messages`)).json() as any).messages,[]);
++ const sent=await f.request(`workbench/drafts/${draft.id}/approve`,'POST',approval);assert.equal(sent.status,200,await sent.clone().text());assert.equal((await sent.json() as any).state,'accepted');assert.equal(f.sends(),2);assert.equal(bodies[1]!.to,contact.email);assert.equal(bodies[1]!.subject,'Your inquiry');assert.equal(bodies[1]!.text,'Hi Maya, would Thursday suit a walkthrough?');assert.equal((await f.db.prepare('SELECT message_id FROM outbound_messages WHERE draft_id=?').bind(draft.id).first<any>()).message_id,'<relay-2@example.test>');
+  assert.equal((await progress()).sent,1);assert.equal((await f.db.prepare('SELECT queue_state FROM opportunities WHERE id=?').bind(customer.id).first<any>()).queue_state,'next');
+  for(const outcome of ['rejected','uncertain'] as const){
+   relayOutcome=outcome;

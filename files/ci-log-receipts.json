@@ -1,0 +1,22 @@
+[
+  {
+    "job": 127760235227,
+    "name": "source and shared build",
+    "command": "gh run view 42177776658 --repo just-every/run-orbit --job 127760235227 --log-failed",
+    "exit": 0,
+    "file": "ci-source-failure-excerpt.log",
+    "observedAt": 1793949201.6822388,
+    "apiCallsUsed": 5,
+    "environmentMetadataOmitted": true
+  },
+  {
+    "job": 127760432115,
+    "name": "verify",
+    "command": "gh run view 42177776658 --repo just-every/run-orbit --job 127760432115 --log-failed",
+    "exit": 0,
+    "file": "ci-summary-failure-excerpt.log",
+    "observedAt": 1793949503.250523,
+    "apiCallsUsed": 6,
+    "environmentMetadataOmitted": true
+  }
+]

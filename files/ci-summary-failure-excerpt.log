@@ -1,0 +1,8 @@
+verify	Require a successful plan and all required work	﻿2026-11-06T06:59:07.7340995Z ##[group]Run test "$PLAN" = success
+verify	Require a successful plan and all required work	2026-11-06T06:59:07.7341778Z test "$PLAN" = success
+verify	Require a successful plan and all required work	2026-11-06T06:59:07.7343441Z   reuse) test "$SKIP" = true && test "$SOURCE" = skipped && test "$SHARDS" = skipped && test "$LIGHT" = skipped ;;
+verify	Require a successful plan and all required work	2026-11-06T06:59:07.7344983Z   light) test "$SKIP" = false && test "$LIGHT" = success && test "$SOURCE" = skipped && test "$SHARDS" = skipped ;;
+verify	Require a successful plan and all required work	2026-11-06T06:59:07.7346348Z   full) test "$SOURCE" = success && test "$SHARDS" = success && test "$LIGHT" = skipped ;;
+verify	Require a successful plan and all required work	2026-11-06T06:59:07.7461506Z ##[error]Process completed with exit code 1.
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T06:59:08.0524696Z ##[error]No files were found with the provided path: verification/core-results.jsonl
+verify	Retain combined routine verdicts (capacity pending)	verification/ci-summary.json. No artifacts will be uploaded.
