@@ -1,4 +1,5 @@
 import {formOriginRace} from './forms-origin-race';
+import {formAbuseQualification} from './forms-abuse-qualification';
 import assert from 'node:assert/strict';
 import {createApp,TEST_SESSION_SECRET} from '../../tests/support/app';
 import {createPublicFormRoutes} from '../../src/core/features/forms/public-routes';
@@ -53,5 +54,6 @@ export async function formAbuseJourney(f:Awaited<ReturnType<typeof fixture>>,p:A
  assert.deepEqual(await f.db.prepare('SELECT r.operation_id,s.* FROM form_abuse_refusals r JOIN form_spam s ON s.id=r.id WHERE r.form_id=? AND r.idempotency_key=?').bind(p.saved.id,withdrawn.idempotencyKey).first(),pending,'the held payload stays pending and intact without a release receipt');
  const heldAfter=await(await operator(base)).json() as any[];assert.deepEqual(heldAfter.find(row=>row.id===pending.id),heldBefore.find(row=>row.id===pending.id),'the authenticated spam list still shows the same pending payload');
  await formOriginRace(f);
+ await formAbuseQualification(f);
 
 }
