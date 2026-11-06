@@ -90,12 +90,12 @@ export async function exerciseRecordIdentity(request:RecordsRequest,signalReques
 
  const source='synthetic-orbit-identity';
  const {secret}=await call(`/sources/${source}`,'PUT',{name:'Synthetic Orbit identity',enabled:true});
- const deliver=async(event:Record<string,unknown>)=>{
+ const deliver=async(event:Record<string,unknown>,status=201)=>{
   const body=JSON.stringify({type:'meeting.booked',occurredAt:'2026-10-01T12:00:00.000Z',...event});
   const timestamp=String(Math.floor(Date.now()/1000));
   const signature=createHmac('sha256',secret).update(`${timestamp}.${body}`).digest('hex');
   const response=await signalRequest(source,body,timestamp,signature),result=await response.json() as {id:string;linked?:boolean;replayed?:boolean};
-  assert.equal(response.status,201,JSON.stringify(result));return result;
+  assert.equal(response.status,status,JSON.stringify(result));return result;
  };
  // Positive exact-key controls prove intake is live before testing absent and excluded keys.
  for(const target of [
@@ -124,6 +124,12 @@ export async function exerciseRecordIdentity(request:RecordsRequest,signalReques
  const {signals}=await call('/sources/unlinked');
  for(const id of unlinkedIds)assert.equal(signals.filter((row:{id:string})=>row.id===id).length,1,'Unmatched signals remain visible once for explicit review');
  assert.deepEqual(await inventory(),noLinksBefore,'Unmatched delivery and replay change no records, associations, scores or timeline entries');
+ await call(`/sources/${source}`,'PATCH',{enabled:false});
+ for(const eventId of ['synthetic-orbit-contact','synthetic-orbit-revoked']){
+  await deliver({eventId,subject:'Synthetic Orbit exact key',email:email.toUpperCase()},403);
+ }
+ assert.deepEqual((await call('/sources/unlinked')).signals,signals,'Revoked source delivery and replay add no held evidence');
+ assert.deepEqual(await inventory(),noLinksBefore,'A revoked source cannot change customer records or their history');
  // Removing the domains explicitly keeps later workspace journeys independent of this setting.
  for(const row of [freeOne,freeTwo,freeEdit]){
   await call(`/records/company/${row.id}`,'PATCH',{changes:{primary_domain:null},base:{primary_domain:freeDomain}});

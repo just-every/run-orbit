@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "cd23c6a4565771b22ad8e87c58d43d6791d305228fe8435bd6d853aff1c0cbc0",
+      "sha256": "a6a079538cf35bd3ae50436d6998f3249e2e79029b7a38658b8e844fc10fca84",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "7dce80aad6923485e818396fb675fd480d75b645ed56c0239126eb76f62816c6",
+      "sha256": "552a4cff48fd81d25f43bb3a9b999522d6f490cc85063a6c3d1a2c73823d20ce",
       "executable": false
     },
     "DEMO.md": {
@@ -10143,7 +10143,7 @@
       "executable": false
     },
     "tests/delegation/authority-regressions.test.ts": {
-      "sha256": "8d969caa18f75f68b4503066bd677d05cf6d0ca20ece1209eea09dbb9e833c1c",
+      "sha256": "c39d5c92dadfce4a43943f7c0741543142b570ecbb908ec81fe60d98ac5979db",
       "executable": false
     },
     "tests/delegation/brief-handoff.test.ts": {
@@ -11023,7 +11023,7 @@
       "executable": false
     },
     "tests/support/record-identity.ts": {
-      "sha256": "aeb8897ce6f7380c84631173bd7838737ba4888f6b200998b62a09598d73c584",
+      "sha256": "89838c46af81625883eabb937c5a9ac7c30842d9334f400ad0d9d518d370a8a9",
       "executable": false
     },
     "tests/support/record-mail-ai.ts": {
