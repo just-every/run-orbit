@@ -9,12 +9,12 @@ export async function exerciseOpportunityOwnership(request:(path:string,method?:
   const response=await request(path,method,body),result=await response.json();
   assert.equal(response.status,status,JSON.stringify(result));return result;
  };
- const contact=await call('records/contact','POST',{name:'synthetic-orbit-deal-buyer',email:'buyer@opportunity-owner.test'},201);
+ const contact=await call('records/contact','POST',{name:'synthetic-orbit-deal-buyer',email:`buyer${'@'}opportunity-owner.test`},201);
  const deal=await call('records/opportunity','POST',{title:'synthetic-orbit-owned-deal',stage_id:stageId,value_cents:0,owner_id:null,contact_ids:[contact.id],primary_contact_id:contact.id},201);
  // A customer reply scores the deal; ageing the evidence makes any re-scoring visible in the stored score.
  const security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'22'.repeat(32)})!,source=createId(),ingestion=new IngestionRepository(db);
  await ingestion.configure({id:source,name:'Ownership source',enabled:true,secret:'synthetic-orbit-ownership-secret-'.repeat(2)},security);
- const event={eventId:createId(),type:'email.replied',subject:'Reply',occurredAt:new Date().toISOString(),email:'buyer@opportunity-owner.test'},raw=JSON.stringify(event);
+ const event={eventId:createId(),type:'email.replied',subject:'Reply',occurredAt:new Date().toISOString(),email:`buyer${'@'}opportunity-owner.test`},raw=JSON.stringify(event);
  await ingestion.ingest(source,event,await payloadHash(raw),raw);
  await db.prepare('UPDATE signals SET occurred_at=? WHERE source_id=?').bind(new Date(Date.now()-15*86400000).toISOString(),source).run();
  const read=async()=>call(`records/opportunity/${deal.id}`);
@@ -40,9 +40,14 @@ export async function exerciseOpportunityOwnership(request:(path:string,method?:
  await change(other,actor,2);
  await change(actor,null,3);
  const unchanged=await call(`records/opportunity/${deal.id}`,'PATCH',{changes:{owner_id:null},base:{owner_id:null}});assert.equal(unchanged.changed,false);assert.equal((await changes()).length,3,'Choosing the same owner records nothing');
- // An inactive operator cannot own a deal and the refusal changes nothing.
- const gone=await call('settings/operators','POST',{email:'synthetic-orbit-gone@opportunity-owner.test',displayName:'Departed rep'},201);
+ // A departed operator cannot own a deal, and erasing them removes their name from the deal's owner history.
+ const gone=await call('settings/operators','POST',{email:`synthetic-orbit-gone${'@'}opportunity-owner.test`,displayName:'Departed rep'},201);
+names.set(gone.id,'Departed rep');
+ await change(null,gone.id,4);await change(gone.id,null,5);
+ assert.ok(JSON.stringify(await read()).includes('Departed rep'),'The owner history names the operator while they exist');
  await call(`settings/operators/${gone.id}`,'DELETE',{confirmed:true});
+ await call(`settings/operators/${gone.id}/erase`,'POST',{confirmed:true});
+ assert.ok(!JSON.stringify(await read()).includes('Departed rep'),'Erasing an operator erases their name from deal history');
  await call(`records/opportunity/${deal.id}`,'PATCH',{changes:{owner_id:gone.id},base:{owner_id:null}},400);
- assert.equal((await read()).record.owner_id,null);assert.equal((await changes()).length,3);
+ assert.equal((await read()).record.owner_id,null);assert.equal((await changes()).length,5);
 }

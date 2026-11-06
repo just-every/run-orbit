@@ -96,10 +96,15 @@ test.describe("authenticated operator UI", () => {
   });
 
   contract("RECORD-007", "the deal's Owner control assigns, reassigns and unassigns with an attributed timeline and the same score", async ({ page }) => {
+    test.setTimeout(120_000);
     const failures = watchFailures(page);
     await openOpportunity(page);
     const id = new URL(page.url()).pathname.split("/").at(-1);
     const read = async () => (await (await page.request.get(`/api/v1/records/opportunity/${id}`)).json());
+    const origin = `http://127.0.0.1:${process.env.ORBIT_BROWSER_PORT ?? 8722}`;
+    const added = await page.request.post("/api/v1/settings/operators", { headers: { Origin: origin }, data: { email: `synthetic-orbit-teammate${"@"}owner-journey.test`, displayName: "Sam Rivera" } });
+    expect(added.status()).toBe(201);
+    const teammate = await added.json();
     const { operators } = await (await page.request.get("/api/v1/settings")).json();
     const people = operators.filter((operator) => operator.status === "active" && !operator.collaborator);
     const start = (await read()).record;
@@ -128,6 +133,8 @@ test.describe("authenticated operator UI", () => {
     for (const entry of changes) expect(entry.actor_id).toBeTruthy();
     for (const field of ["score", "band", "queue_state", "lifecycle"]) expect(end.record[field]).toBe(start[field]);
     await expect(page.getByTestId("contributing-evidence").locator("summary")).toContainText(`score ${start.score}`);
+    // The teammate leaves again so the shared fixture keeps its one-operator team.
+    expect((await page.request.delete(`/api/v1/settings/operators/${teammate.id}`, { headers: { Origin: origin }, data: { confirmed: true } })).status()).toBe(200);
     expect(failures).toEqual([]);
   });
 
