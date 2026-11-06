@@ -1,0 +1,79 @@
+[
+  {
+    "name": "views-before",
+    "command": [
+      "pnpm",
+      "exec",
+      "node",
+      "src/base/contract-docs.mjs",
+      "check"
+    ],
+    "exit": 1,
+    "output_file": "views-before.log"
+  },
+  {
+    "name": "views-write",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "write"
+    ],
+    "exit": 0,
+    "output_file": "views-write.log"
+  },
+  {
+    "name": "views-check",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "output_file": "views-check.log"
+  },
+  {
+    "name": "views-restore",
+    "command": [
+      "git",
+      "checkout",
+      "origin/main",
+      "--",
+      "ACCEPTANCE.md",
+      "docs/CLAIMS.md"
+    ],
+    "exit": 0,
+    "output_file": "views-restore.log"
+  },
+  {
+    "name": "lock",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "lock"
+    ],
+    "exit": 0,
+    "output_file": "lock.log"
+  },
+  {
+    "name": "lock-check",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "output_file": "lock-check.log"
+  },
+  {
+    "name": "first-party",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/bin/rer.mjs",
+      "check",
+      "--profile",
+      "first-party"
+    ],
+    "exit": 0,
+    "output_file": "first-party.log"
+  }
+]

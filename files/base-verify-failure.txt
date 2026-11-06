@@ -1,0 +1,5 @@
+Verify 42208163143; source job 127860054617; head 168a6e4a34d2945df728395d800920162a6032c5
+2026-11-06T11:10:37.1170230Z Verification (source): pnpm exec node src/base/contract-docs.mjs check
+2026-11-06T11:10:37.4062371Z ACCEPTANCE.md: generated content differs; run contract-docs write.
+2026-11-06T11:10:37.4378799Z ##[error]Process completed with exit code 1.
+Runtime shards skipped after source failure. No runtime-green claim.

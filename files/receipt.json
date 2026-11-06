@@ -1,0 +1,163 @@
+{
+  "tag": "sd-orbit-c-f108",
+  "repository": "just-every/run-orbit",
+  "product_branch": "cloud/sd-orbit-c-f108",
+  "head": "168a6e4a34d2945df728395d800920162a6032c5",
+  "origin_main": "74f72f01ad3532725c71bd0832a774abd2c5a6ec",
+  "base": "168a6e4a34d2945df728395d800920162a6032c5",
+  "new_product_commits": 0,
+  "product_pushed": false,
+  "clean_worktree": true,
+  "result": "selected slice already implemented and proved in the supplied base; no product change necessary",
+  "clause": {
+    "id": "BASE-AGENT-003",
+    "before": "partial",
+    "after": "partial",
+    "new_acceptance_points_closed": 0,
+    "holds_released": 0
+  },
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "tests": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "head": "168a6e4a34d2945df728395d800920162a6032c5",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 91121.775657,
+      "log": "managed-owner.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    }
+  ],
+  "test_budget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "mechanical": [
+    {
+      "name": "views-before",
+      "command": [
+        "pnpm",
+        "exec",
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 1,
+      "output_file": "views-before.log"
+    },
+    {
+      "name": "views-write",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0,
+      "output_file": "views-write.log"
+    },
+    {
+      "name": "views-check",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "output_file": "views-check.log"
+    },
+    {
+      "name": "views-restore",
+      "command": [
+        "git",
+        "checkout",
+        "origin/main",
+        "--",
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "output_file": "views-restore.log"
+    },
+    {
+      "name": "lock",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "lock"
+      ],
+      "exit": 0,
+      "output_file": "lock.log"
+    },
+    {
+      "name": "lock-check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "output_file": "lock-check.log"
+    },
+    {
+      "name": "first-party",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/bin/rer.mjs",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "exit": 0,
+      "output_file": "first-party.log"
+    }
+  ],
+  "ci": {
+    "run_id": 42208163143,
+    "job_id": 127860054617,
+    "head": "168a6e4a34d2945df728395d800920162a6032c5",
+    "event": "push",
+    "branch": "cloud/sd-orbit-c-f103",
+    "status": "completed",
+    "conclusion": "failure",
+    "reason": "ACCEPTANCE.md generated content differs; permitted generated-view-only failure; runtime shards did not run",
+    "url": "https://github.com/just-every/run-orbit/actions/runs/42208163143"
+  },
+  "github_calls": 3,
+  "pr": null,
+  "publication_scan": "not run in cloud; no product push; fleet landing gates remain owed",
+  "runtime": {
+    "node": "24.19.0",
+    "pnpm": "10.12.4",
+    "package_rer": "0.2.96"
+  },
+  "ui_changed": false,
+  "browser_proof": "not applicable; no screen changes",
+  "scope": "only the planner-selected native grant company-resource parity slice; all omitted remainder retained",
+  "parent_status_rows": 204,
+  "head_status_rows": 204,
+  "all_parent_status_rows_retained": true
+}
