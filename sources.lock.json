@@ -10051,7 +10051,7 @@
       "executable": false
     },
     "tests/core/records-search.test.ts": {
-      "sha256": "9d144e5131f242cb429ec27c14bce48a3891215271a76a7852f84e89a1df7188",
+      "sha256": "01b563f415f0ae032a55e1ca6479ab884d8cadc64120ec6b863224212beedb25",
       "executable": false
     },
     "tests/core/request-scheduling.test.ts": {
@@ -10999,7 +10999,7 @@
       "executable": false
     },
     "tests/support/opportunity-ownership.ts": {
-      "sha256": "c85938e0bfdf61ad903491182075d2dd8c2b5846970a951b84930cca5b109e86",
+      "sha256": "9483ddb5f8e7a8398357dec51159660f563494616d456f619c83b1a4b6f3cac1",
       "executable": false
     },
     "tests/support/personal-slack-proof.ts": {
