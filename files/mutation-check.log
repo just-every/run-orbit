@@ -1,0 +1,121 @@
+[WebServer] (node:4564) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:4572) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:4584) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:4601) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:4621) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:4629) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:4601) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:4601) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:4601) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:5098) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:5111) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:5186) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:5194) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+
+Running 1 test using 1 worker
+
+(node:5232) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:5414) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:5422) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+  ✘  1 tests/contract.mjs:4:3 › authenticated operator UI › RECORD-005 — the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties (9.1s)
+
+
+  1) tests/contract.mjs:4:3 › authenticated operator UI › RECORD-005 — the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 5
+    + Received  + 5
+
+    @@ -3,15 +3,15 @@
+          "id": "01M6QAHHZW6T6SHDMNMHJK92J4",
+          "occurredAt": "2026-01-03T09:00:00.000Z",
+          "text": "synthetic-orbit-timeline-tie-one",
+        },
+        Object {
+    -     "id": "01M6QAHJ1ZEAASJ6JWMNFPVTAD",
+    -     "occurredAt": "2026-01-03T09:00:00.000Z",
+    -     "text": "synthetic-orbit-timeline-tie-two",
+    -   },
+    -   Object {
+          "id": "01M6QAHJ149RRD7XC9KV1AHNA8",
+          "occurredAt": "2026-01-02T09:00:00.000Z",
+          "text": "synthetic-orbit-timeline-earlier",
+    +   },
+    +   Object {
+    +     "id": "01M6QAHJ1ZEAASJ6JWMNFPVTAD",
+    +     "occurredAt": "2026-01-03T09:00:00.000Z",
+    +     "text": "synthetic-orbit-timeline-tie-two",
+        },
+      ]
+
+       at operator.spec.mjs:172
+
+      170 |       expect(recordsResponse.ok()).toBe(true);
+      171 |       const recordsTimeline = (await recordsResponse.json()).timeline.filter(entry => ids.has(entry.id));
+    > 172 |       expect(recordsTimeline.map(entry => ({ id: entry.id, occurredAt: entry.occurred_at, text: JSON.parse(entry.payload_json).text }))).toEqual(expected);
+          |                                                                                                                                          ^
+      173 |       const opportunityResponse = await page.request.get(`/api/v1/opportunities/${opportunityId}`);
+      174 |       expect(opportunityResponse.ok()).toBe(true);
+      175 |       const opportunityTimeline = (await opportunityResponse.json()).opportunity.timeline.filter(entry => ids.has(entry.id));
+        at readTimelines (/home/agent/rer-consolidation/work/sd-orbit-c-f71/run-orbit/tests/e2e/operator.spec.mjs:172:138)
+        at /home/agent/rer-consolidation/work/sd-orbit-c-f71/run-orbit/tests/e2e/operator.spec.mjs:179:26
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../packet/browser/operator-authenticated-ope-d53b7-of-order-notes-with-ID-ties/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../packet/browser/operator-authenticated-ope-d53b7-of-order-notes-with-ID-ties/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../packet/browser/operator-authenticated-ope-d53b7-of-order-notes-with-ID-ties/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../packet/browser/operator-authenticated-ope-d53b7-of-order-notes-with-ID-ties/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/contract.mjs:4:3 › authenticated operator UI › RECORD-005 — the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties 

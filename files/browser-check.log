@@ -1,0 +1,64 @@
+[WebServer] (node:6890) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6898) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6910) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6927) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6947) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:6955) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:6927) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6927) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6927) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:7434) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:7447) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:7522) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:7530) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+
+Running 1 test using 1 worker
+
+(node:7568) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:7743) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:7751) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+  ✓  1 tests/contract.mjs:4:3 › authenticated operator UI › RECORD-005 — the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties (12.5s)
+
+  1 passed (49.2s)

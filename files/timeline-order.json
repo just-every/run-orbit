@@ -1,0 +1,83 @@
+{
+  "created": [
+    {
+      "text": "synthetic-orbit-timeline-tie-one",
+      "occurredAt": "2026-01-03T09:00:00.000Z",
+      "id": "01M6QAPD0FVGHJGF55HCJTP4JW"
+    },
+    {
+      "text": "synthetic-orbit-timeline-earlier",
+      "occurredAt": "2026-01-02T09:00:00.000Z",
+      "id": "01M6QAPD1WZ8ES39S7M62E3608"
+    },
+    {
+      "text": "synthetic-orbit-timeline-tie-two",
+      "occurredAt": "2026-01-03T09:00:00.000Z",
+      "id": "01M6QAPD2YY7VPZMBAY7Q3RKSS"
+    }
+  ],
+  "expected": [
+    {
+      "text": "synthetic-orbit-timeline-tie-one",
+      "occurredAt": "2026-01-03T09:00:00.000Z",
+      "id": "01M6QAPD0FVGHJGF55HCJTP4JW"
+    },
+    {
+      "text": "synthetic-orbit-timeline-tie-two",
+      "occurredAt": "2026-01-03T09:00:00.000Z",
+      "id": "01M6QAPD2YY7VPZMBAY7Q3RKSS"
+    },
+    {
+      "text": "synthetic-orbit-timeline-earlier",
+      "occurredAt": "2026-01-02T09:00:00.000Z",
+      "id": "01M6QAPD1WZ8ES39S7M62E3608"
+    }
+  ],
+  "initialReads": {
+    "records": [
+      "01M6QAPD0FVGHJGF55HCJTP4JW",
+      "01M6QAPD2YY7VPZMBAY7Q3RKSS",
+      "01M6QAPD1WZ8ES39S7M62E3608"
+    ],
+    "opportunity": [
+      "01M6QAPD0FVGHJGF55HCJTP4JW",
+      "01M6QAPD2YY7VPZMBAY7Q3RKSS",
+      "01M6QAPD1WZ8ES39S7M62E3608"
+    ]
+  },
+  "phoneReads": {
+    "records": [
+      "01M6QAPD0FVGHJGF55HCJTP4JW",
+      "01M6QAPD2YY7VPZMBAY7Q3RKSS",
+      "01M6QAPD1WZ8ES39S7M62E3608"
+    ],
+    "opportunity": [
+      "01M6QAPD0FVGHJGF55HCJTP4JW",
+      "01M6QAPD2YY7VPZMBAY7Q3RKSS",
+      "01M6QAPD1WZ8ES39S7M62E3608"
+    ]
+  },
+  "desktopReads": {
+    "records": [
+      "01M6QAPD0FVGHJGF55HCJTP4JW",
+      "01M6QAPD2YY7VPZMBAY7Q3RKSS",
+      "01M6QAPD1WZ8ES39S7M62E3608"
+    ],
+    "opportunity": [
+      "01M6QAPD0FVGHJGF55HCJTP4JW",
+      "01M6QAPD2YY7VPZMBAY7Q3RKSS",
+      "01M6QAPD1WZ8ES39S7M62E3608"
+    ]
+  },
+  "phoneOrder": [
+    "entry-01M6QAPD0FVGHJGF55HCJTP4JW",
+    "entry-01M6QAPD2YY7VPZMBAY7Q3RKSS",
+    "entry-01M6QAPD1WZ8ES39S7M62E3608"
+  ],
+  "desktopOrder": [
+    "entry-01M6QAPD0FVGHJGF55HCJTP4JW",
+    "entry-01M6QAPD2YY7VPZMBAY7Q3RKSS",
+    "entry-01M6QAPD1WZ8ES39S7M62E3608"
+  ],
+  "desktopFits": true
+}

@@ -1,0 +1,1 @@
+PROBE RECORD-005 deterministic order: authenticated Records creates three distinctive notes with a late older arrival and a late equal-time arrival; Records and opportunity GETs before and after reload -> identical IDs ordered by occurred time descending and ID ascending; visible activity at 390 and 1440 -> identical expected entry IDs and titles, no horizontal overflow.

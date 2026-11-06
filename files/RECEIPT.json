@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f71",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f71",
+  "head": "f4d3dfa78ebc688b48741d0ac34579597de7186e",
+  "base": "a2a3e752f89e80ed0af776463c2313f4fcb9e0bc",
+  "scope": "selected deterministic native and visible timeline order; RECORD-005 remains partial",
+  "counts_before": {
+    "partial": 137,
+    "done": 35,
+    "missing": 32
+  },
+  "counts_after": {
+    "partial": 137,
+    "done": 35,
+    "missing": 32
+  },
+  "tests": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "browser": [
+    {
+      "title": "RECORD-005 \u2014 the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties",
+      "status": "passed",
+      "duration_ms": 12511
+    }
+  ],
+  "checks": [
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec playwright test --config /tmp/orbit-cloud-playwright.config.mjs tests/e2e/operator.spec.mjs --grep RECORD-005 --reporter=list,json",
+      "exit": 0
+    }
+  ],
+  "mutation": {
+    "change": "Temporarily replace Records occurred-time ordering with ID ordering alone",
+    "file": "src/core/features/records/repository.ts",
+    "exit": 1,
+    "assertion": "tests/e2e/operator.spec.mjs:172",
+    "failure": "expect(received).toEqual(expected); the older entry appeared before the late equal-time entry",
+    "restored": true
+  },
+  "production_source_changed": false,
+  "generated_views_restored_from": "origin/main",
+  "migration_ledger": "not applicable; no migration changed",
+  "candidate_parent_rows_retained": [
+    {
+      "commit": "f4d3dfa78ebc688b48741d0ac34579597de7186e",
+      "parent": "702f4b5ae77e91288d0f91ff02f478392f2c8f2a",
+      "parent_rows": 204,
+      "candidate_rows": 204,
+      "dropped": []
+    },
+    {
+      "commit": "702f4b5ae77e91288d0f91ff02f478392f2c8f2a",
+      "parent": "a2a3e752f89e80ed0af776463c2313f4fcb9e0bc",
+      "parent_rows": 204,
+      "candidate_rows": 204,
+      "dropped": []
+    },
+    {
+      "commit": "a2a3e752f89e80ed0af776463c2313f4fcb9e0bc",
+      "parent": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+      "parent_rows": 204,
+      "candidate_rows": 204,
+      "dropped": []
+    }
+  ],
+  "restored_view_check": {
+    "command": "node src/base/contract-docs.mjs check",
+    "exit": 1,
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "expected": true
+  },
+  "remote_product_head": "f4d3dfa78ebc688b48741d0ac34579597de7186e",
+  "product_pushes": [
+    {
+      "head": "702f4b5ae77e91288d0f91ff02f478392f2c8f2a",
+      "exit": 0,
+      "attempts": 1
+    },
+    {
+      "head": "f4d3dfa78ebc688b48741d0ac34579597de7186e",
+      "exit": 0,
+      "attempts": 1
+    }
+  ],
+  "main_at_handoff": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "ci": {
+    "run_id": 42149948754,
+    "event": "push",
+    "head_sha": "f4d3dfa78ebc688b48741d0ac34579597de7186e",
+    "status": "completed",
+    "conclusion": "failure",
+    "source_job": 127670583514,
+    "aggregate_job": 127670750833,
+    "primary_failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "dependent_failures": "Missing source artifacts and aggregate needs check after source stopped; browser shards skipped",
+    "generated_view_only_exception": true,
+    "github_budget_calls": 6,
+    "reruns": 0,
+    "dispatches": 0
+  },
+  "terminal_custody": "READY under the explicit generated-view-only exception; branch-only, not landed"
+}

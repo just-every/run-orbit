@@ -1,0 +1,1 @@
+MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock then check exit=0; views=node src/base/contract-docs.mjs write then check exit=0, restored ACCEPTANCE.md and docs/CLAIMS.md from origin/main; ledger=none exit=0 (no migration change).
