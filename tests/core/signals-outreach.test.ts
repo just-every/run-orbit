@@ -292,6 +292,28 @@ test('OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end sched
  const api=async<T=any>(path:string,body?:unknown,status=200)=>{const response=await app.request(`https://orbit.test/api/v1/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});assert.equal(response.status,status,path);return await response.json() as T;};
  const due=['2030-01-07T10:00:00.000Z','2030-01-08T10:00:00.000Z','2030-01-09T10:00:00.000Z'];
  async function schedule(subject:string,at=due[1]!){const draft=await api<{id:string}>(`workbench/opportunities/${f.opportunityId}/drafts`,{contactId:f.contactId,subject,body:'Reviewed follow-up'},201);return (await api<{id:string;state:string}>(`workbench/drafts/${draft.id}/approve`,{revision:1,scheduledAt:at})).id;}
+ const manual=await schedule('Follow-up stopped by its operator',due[0]);
+ const messages=async()=>(await api<{messages:{id:string;revision:number;state:string;subject:string;body:string;failure:string|null}[]}>(`workbench/opportunities/${f.opportunityId}/messages`)).messages;
+ assert.deepEqual((await messages()).map(({id,revision,state,subject,body})=>({id,revision,state,subject,body})),[{id:manual,revision:1,state:'scheduled',subject:'Follow-up stopped by its operator',body:'Reviewed follow-up'}],'The scheduled message contains exactly the reviewed draft');
+ assert.deepEqual(await api(`workbench/messages/${manual}/cancel`,{}),{cancelled:true});
+ const manualEffects=async()=>({
+  messages:await messages(),
+  detail:await api<{timeline:{id:string;kind:string;actor_type:string;actor_id:string;payload_json:string}[]}>(`records/opportunity/${f.opportunityId}`),
+  audit:(await db.prepare("SELECT * FROM audit_entries WHERE entity_id=? AND action='message.cancelled' ORDER BY id").bind(manual).all()).results
+ });
+ const cancelled=await manualEffects();
+ assert.equal(cancelled.messages.find(message=>message.id===manual)!.state,'cancelled');
+ assert.equal(cancelled.messages.find(message=>message.id===manual)!.failure,'Cancelled by operator');
+ const exits=cancelled.detail.timeline.filter(entry=>entry.kind==='message.cancelled'&&JSON.parse(entry.payload_json).messageId===manual);
+ assert.equal(exits.length,1,'The native timeline retains one human cancellation');
+ assert.equal(exits[0]!.actor_type,'operator');assert.equal(exits[0]!.actor_id,f.actor);
+ assert.equal(cancelled.audit.length,1);assert.equal(cancelled.audit[0]!.actor_id,f.actor);
+ assert.equal(calls,0,'Manual cancellation submits no customer message');
+ await api(`workbench/messages/${manual}/cancel`,{},409);
+ assert.deepEqual(await manualEffects(),cancelled,'Repeated cancellation changes neither the message nor its attributed effects');
+ await new OutreachService(db,mail).dispatchDue(new Date(Date.parse(due[0]!)+60000));
+ assert.equal(calls,0,'A fresh dispatcher submits nothing after the cancelled message is due');
+ assert.deepEqual(await manualEffects(),cancelled,'Late dispatch retains the first human-stop reason and one cancellation');
  const reply=(automatic:boolean,references:string)=>{const form=new FormData();form.set('from',f.email);form.set('subject','Re: follow-up');form.set('text','Customer reply');form.set('headers',`Message-ID: <${createId()}@reply.test>\r\nDate: ${new Date().toUTCString()}\r\nReferences: ${references}${automatic?'\r\nAuto-Submitted: auto-replied':''}`);return form;};
  const first=await schedule('First touch',due[0]);await service.dispatchDue(new Date(due[0]!));assert.equal(calls,1);const sent=await approval.message(first);assert.equal(sent.state,'accepted');
  await new Promise(resolve=>setTimeout(resolve,1000));// mail Date headers have whole seconds; replies must date after the acceptance
