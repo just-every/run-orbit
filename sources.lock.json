@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "9699a35337e9ee072b6cb83a314c8353df0056d09e41baee39f6671254c7dee3",
+      "sha256": "1b2bd30df1135601b8f382b89e434304589337c279763081907c6a0750ad2c26",
       "executable": false
     },
     "DEMO.md": {
@@ -7843,7 +7843,7 @@
       "executable": false
     },
     "src/core/features/records/repository.ts": {
-      "sha256": "6182d0fad72e6c0a0043f3c7534395f9a3a549076edf6fc5381586a12ab8dcde",
+      "sha256": "4c43b7d5d2e093018f19289932a8f5799e06fc00924ac90e060b7a0851a1246f",
       "executable": false
     },
     "src/core/features/records/routes.ts": {
@@ -10051,7 +10051,7 @@
       "executable": false
     },
     "tests/core/records-search.test.ts": {
-      "sha256": "7ac001cecb56d3878a99f58574b1dd3629496d49ce08cc5311b81d250502586d",
+      "sha256": "0c3767344f24303249c892844bd292c941ab37edfd60295d2d3c886679b410b4",
       "executable": false
     },
     "tests/core/request-scheduling.test.ts": {
@@ -10191,7 +10191,7 @@
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
-      "sha256": "3e651bb3eff5cb93717922235febce5a73f61386368c0b36c6f4715051952203",
+      "sha256": "00b90e35bcb13cf87011d1cea42479d1a68cc11122e6e3aea5d6cf14956d40e5",
       "executable": false
     },
     "tests/e2e/records.spec.mjs": {
@@ -10992,6 +10992,10 @@
     },
     "tests/support/opportunity-creation.ts": {
       "sha256": "1326e6e55b08ed7183102ca0d35e6fee10bca9bae05c4d52ea701cc597f1b934",
+      "executable": false
+    },
+    "tests/support/opportunity-ownership.ts": {
+      "sha256": "4c314f040f07b855eb8b208bc0bbd11046734ad8fc529524346ec495614bc27f",
       "executable": false
     },
     "tests/support/personal-slack-proof.ts": {
