@@ -1,0 +1,36 @@
+{
+  "head": "d6c6c3f7239265daab2f0b15439dbc3259fcb56c",
+  "exit": 0,
+  "command": "cloud_run timeout 1200 pnpm exec playwright test --config /tmp/rer-orbit-playwright.config.mjs tests/e2e/operator.spec.mjs --grep RECORD-005 --workers=1 --reporter=list,json",
+  "browser": "/usr/bin/chromium",
+  "browser_args": [
+    "--no-sandbox"
+  ],
+  "temporary_startup_timeout_ms": 300000,
+  "repository_test_timeout_ms": 30000,
+  "stats": {
+    "startTime": "2026-11-06T03:02:00.162Z",
+    "duration": 86995.456,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "runs": [
+    {
+      "test": "RECORD-005 \u2014 the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties",
+      "status": "passed",
+      "duration_ms": 19863
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "timeline-1440.png",
+      "sha256": "d2b0fa1513c15e3d2ad588c9e6fbf1e75a96770728d70a88026a2b179a1c3c54"
+    },
+    {
+      "file": "timeline-390.png",
+      "sha256": "3eefc40a279283ac19403e9657755159804bbb4c6f085e774ea8759658d899dc"
+    }
+  ]
+}

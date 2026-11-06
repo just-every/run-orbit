@@ -1,0 +1,15 @@
+{
+  "conclusion": "failure",
+  "head_sha": "d6c6c3f7239265daab2f0b15439dbc3259fcb56c",
+  "html_url": "https://github.com/just-every/run-orbit/actions/runs/42153980161",
+  "status": "completed",
+  "run_id": 42153980161,
+  "event": "push",
+  "expected_exception": "Generated ACCEPTANCE.md freshness only; dependent artifacts and aggregate verdicts fail or skip after the stopped source shard.",
+  "test_assertion_failure": false,
+  "source_job_id": 127683745947,
+  "verify_job_id": 127683916540,
+  "github_calls": 5,
+  "dispatches": 0,
+  "reruns": 0
+}

@@ -1,0 +1,80 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f72",
+  "head": "d6c6c3f7239265daab2f0b15439dbc3259fcb56c",
+  "base": "f4d3dfa78ebc688b48741d0ac34579597de7186e",
+  "origin_main_before_candidate": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "product_push": {
+    "exit": 0,
+    "attempts": 1
+  },
+  "source_files": [
+    {
+      "path": "tests/e2e/operator.spec.mjs",
+      "sha256": "e570439f694000447c6c950ce9df7953306aca536b876e96cdd3300e9c17a7cc"
+    },
+    {
+      "path": "src/core/features/records/repository.ts",
+      "sha256": "6182d0fad72e6c0a0043f3c7534395f9a3a549076edf6fc5381586a12ab8dcde"
+    },
+    {
+      "path": "src/core/features/timeline/repository.ts",
+      "sha256": "0bb1406c5794b045388c38819385fef4536a8a539fae617b8bd23b0b52d4f7c4"
+    },
+    {
+      "path": "src/core/features/operator/ui/record/activity.tsx",
+      "sha256": "2dceaf2ea4b102f1fd2326b2207dc3f41d1e8c2efcb3bb4be1ded908885dc66c"
+    },
+    {
+      "path": "src/core/features/operator/ui/record/timeline-entries.tsx",
+      "sha256": "a5a29eb89a838d9d0c01cdb27b4d3bc964f12372bd25d6881f42bf77b79e5fb7"
+    }
+  ],
+  "counts_before": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32,
+    "total": 204
+  },
+  "test_budget": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "publication_scan": {
+    "state": "pending_guarded_lander",
+    "run_in_cloud": false
+  },
+  "pr": null,
+  "main_pushed": false,
+  "status": "READY under generated-view exception; main landing and publication scan pending guarded lander",
+  "verify": {
+    "conclusion": "failure",
+    "head_sha": "d6c6c3f7239265daab2f0b15439dbc3259fcb56c",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42153980161",
+    "status": "completed",
+    "run_id": 42153980161,
+    "event": "push",
+    "expected_exception": "Generated ACCEPTANCE.md freshness only; dependent artifacts and aggregate verdicts fail or skip after the stopped source shard.",
+    "test_assertion_failure": false,
+    "source_job_id": 127683745947,
+    "verify_job_id": 127683916540,
+    "github_calls": 5,
+    "dispatches": 0,
+    "reruns": 0
+  },
+  "local_browser": {
+    "head": "d6c6c3f7239265daab2f0b15439dbc3259fcb56c",
+    "exit": 0,
+    "receipt": "browser-receipt.json"
+  },
+  "mechanical_receipt": "mechanical.json",
+  "candidate_check_receipt": "candidate-checks.json",
+  "remote_head_verified": true
+}

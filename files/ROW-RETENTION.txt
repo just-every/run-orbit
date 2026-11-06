@@ -1,0 +1,3 @@
+STAGED_ROWS parent=458 staged=458 status=204 lost=0
+HISTORY_ROWS all candidate parents retain every Status row
+ADDED_TEXT email-shaped strings=0; introduced slash tokens are real repository paths or selectors

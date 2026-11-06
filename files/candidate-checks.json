@@ -1,0 +1,24 @@
+[
+  {
+    "head": "d6c6c3f7239265daab2f0b15439dbc3259fcb56c",
+    "check": "lock-check",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "expected_stale_generated_views": false
+  },
+  {
+    "head": "d6c6c3f7239265daab2f0b15439dbc3259fcb56c",
+    "check": "candidate-view-check",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "check"
+    ],
+    "exit": 1,
+    "expected_stale_generated_views": true
+  }
+]

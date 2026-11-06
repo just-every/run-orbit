@@ -1,0 +1,9 @@
+source failed-job archive excerpts, exact run 42153980161:
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T03:02:33.0881149Z Verification (source): pnpm exec node src/base/contract-docs.mjs check
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T03:02:33.4424304Z ACCEPTANCE.md: generated content differs; run contract-docs write.
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T03:02:33.4771636Z ##[error]Process completed with exit code 1.
+source and shared build	Retain authoritative source candidate	2026-11-06T03:02:34.8534767Z ##[error]No files were found with the provided path: /tmp/orbit-source.bundle
+verify failed-job archive excerpts, exact run 42153980161:
+verify	Require a successful plan and all required work	2026-11-06T03:02:43.1268512Z   SHARDS: skipped
+verify	Require a successful plan and all required work	2026-11-06T03:02:43.1366725Z ##[error]Process completed with exit code 1.
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T03:02:43.5942644Z ##[error]No files were found with the provided path: verification/core-results.jsonl

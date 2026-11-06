@@ -1,0 +1,102 @@
+{
+  "created": [
+    {
+      "text": "synthetic-orbit-timeline-tie-one",
+      "occurredAt": "2026-01-03T09:00:00.000Z",
+      "id": "01M6QCZ6KV5AH132ZAPQ2KRGYA"
+    },
+    {
+      "text": "synthetic-orbit-timeline-earlier",
+      "occurredAt": "2026-01-02T09:00:00.000Z",
+      "id": "01M6QCZ6NBTE1R2EKZ57FGQWAQ"
+    },
+    {
+      "text": "synthetic-orbit-timeline-tie-two",
+      "occurredAt": "2026-01-03T09:00:00.000Z",
+      "id": "01M6QCZ6PS8FARNDCH0XNDEEV0"
+    }
+  ],
+  "expected": [
+    {
+      "text": "synthetic-orbit-timeline-tie-one",
+      "occurredAt": "2026-01-03T09:00:00.000Z",
+      "id": "01M6QCZ6KV5AH132ZAPQ2KRGYA"
+    },
+    {
+      "text": "synthetic-orbit-timeline-tie-two",
+      "occurredAt": "2026-01-03T09:00:00.000Z",
+      "id": "01M6QCZ6PS8FARNDCH0XNDEEV0"
+    },
+    {
+      "text": "synthetic-orbit-timeline-earlier",
+      "occurredAt": "2026-01-02T09:00:00.000Z",
+      "id": "01M6QCZ6NBTE1R2EKZ57FGQWAQ"
+    }
+  ],
+  "expectedTimelineIds": [
+    "01J0000000000000000000000T",
+    "01J0000000000000000000000S",
+    "01M6QCZ6KV5AH132ZAPQ2KRGYA",
+    "01M6QCZ6PS8FARNDCH0XNDEEV0",
+    "01M6QCZ6NBTE1R2EKZ57FGQWAQ"
+  ],
+  "initialReads": {
+    "records": [
+      "01J0000000000000000000000T",
+      "01J0000000000000000000000S",
+      "01M6QCZ6KV5AH132ZAPQ2KRGYA",
+      "01M6QCZ6PS8FARNDCH0XNDEEV0",
+      "01M6QCZ6NBTE1R2EKZ57FGQWAQ"
+    ],
+    "opportunity": [
+      "01J0000000000000000000000T",
+      "01J0000000000000000000000S",
+      "01M6QCZ6KV5AH132ZAPQ2KRGYA",
+      "01M6QCZ6PS8FARNDCH0XNDEEV0",
+      "01M6QCZ6NBTE1R2EKZ57FGQWAQ"
+    ]
+  },
+  "phoneReads": {
+    "records": [
+      "01J0000000000000000000000T",
+      "01J0000000000000000000000S",
+      "01M6QCZ6KV5AH132ZAPQ2KRGYA",
+      "01M6QCZ6PS8FARNDCH0XNDEEV0",
+      "01M6QCZ6NBTE1R2EKZ57FGQWAQ"
+    ],
+    "opportunity": [
+      "01J0000000000000000000000T",
+      "01J0000000000000000000000S",
+      "01M6QCZ6KV5AH132ZAPQ2KRGYA",
+      "01M6QCZ6PS8FARNDCH0XNDEEV0",
+      "01M6QCZ6NBTE1R2EKZ57FGQWAQ"
+    ]
+  },
+  "desktopReads": {
+    "records": [
+      "01J0000000000000000000000T",
+      "01J0000000000000000000000S",
+      "01M6QCZ6KV5AH132ZAPQ2KRGYA",
+      "01M6QCZ6PS8FARNDCH0XNDEEV0",
+      "01M6QCZ6NBTE1R2EKZ57FGQWAQ"
+    ],
+    "opportunity": [
+      "01J0000000000000000000000T",
+      "01J0000000000000000000000S",
+      "01M6QCZ6KV5AH132ZAPQ2KRGYA",
+      "01M6QCZ6PS8FARNDCH0XNDEEV0",
+      "01M6QCZ6NBTE1R2EKZ57FGQWAQ"
+    ]
+  },
+  "phoneOrder": [
+    "entry-01M6QCZ6KV5AH132ZAPQ2KRGYA",
+    "entry-01M6QCZ6PS8FARNDCH0XNDEEV0",
+    "entry-01M6QCZ6NBTE1R2EKZ57FGQWAQ"
+  ],
+  "desktopOrder": [
+    "entry-01M6QCZ6KV5AH132ZAPQ2KRGYA",
+    "entry-01M6QCZ6PS8FARNDCH0XNDEEV0",
+    "entry-01M6QCZ6NBTE1R2EKZ57FGQWAQ"
+  ],
+  "desktopFits": true
+}

@@ -1,0 +1,26 @@
+{
+  "attempts": [
+    {
+      "phase": "before-commit",
+      "exit": 1,
+      "test_body_started": false,
+      "failure": "Error: Timed out waiting 90000ms from config.webServer.",
+      "temporary_server_timeout_ms": 90000
+    },
+    {
+      "phase": "before-commit",
+      "exit": 0,
+      "run_duration_ms": 94139.843,
+      "test_duration_ms": 17512,
+      "temporary_server_timeout_ms": 300000
+    },
+    {
+      "phase": "exact-head",
+      "head": "d6c6c3f7239265daab2f0b15439dbc3259fcb56c",
+      "exit": 0,
+      "run_duration_ms": 86995.456,
+      "test_duration_ms": 19863,
+      "temporary_server_timeout_ms": 300000
+    }
+  ]
+}

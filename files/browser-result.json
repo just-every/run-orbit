@@ -1,0 +1,183 @@
+{
+  "config": {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/run-orbit/node_modules/@playwright/test/cli.js",
+      "test",
+      "--config",
+      "/tmp/rer-orbit-playwright.config.mjs",
+      "tests/e2e/operator.spec.mjs",
+      "--grep",
+      "RECORD-005",
+      "--workers=1",
+      "--reporter=list,json"
+    ],
+    "configFile": "/tmp/rer-orbit-playwright.config.mjs",
+    "rootDir": "/workspace/run-orbit/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/workspace/run-orbit/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/workspace/run-orbit/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/workspace/run-orbit/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/workspace/run-orbit/tests/e2e",
+        "snapshotDir": "/workspace/run-orbit/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:8722",
+          "browserName": "chromium",
+          "headless": true,
+          "launchOptions": {
+            "args": [
+              "--use-mock-keychain",
+              "--password-store=basic",
+              "--no-sandbox"
+            ],
+            "executablePath": "/usr/bin/chromium"
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "PORT=8722 node scripts/browser-server.mjs",
+      "cwd": "/workspace/run-orbit",
+      "url": "http://127.0.0.1:8722",
+      "reuseExistingServer": false,
+      "timeout": 300000
+    }
+  },
+  "suites": [
+    {
+      "title": "operator.spec.mjs",
+      "file": "operator.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "authenticated operator UI",
+          "file": "operator.spec.mjs",
+          "line": 28,
+          "column": 6,
+          "specs": [
+            {
+              "title": "RECORD-005 — the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 19863,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-06T03:03:03.300Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "timeline-order.json",
+                          "contentType": "application/json",
+                          "body": "ewogICJjcmVhdGVkIjogWwogICAgewogICAgICAidGV4dCI6ICJzeW50aGV0aWMtb3JiaXQtdGltZWxpbmUtdGllLW9uZSIsCiAgICAgICJvY2N1cnJlZEF0IjogIjIwMjYtMDEtMDNUMDk6MDA6MDAuMDAwWiIsCiAgICAgICJpZCI6ICIwMU02UUNaNktWNUFIMTMyWkFQUTJLUkdZQSIKICAgIH0sCiAgICB7CiAgICAgICJ0ZXh0IjogInN5bnRoZXRpYy1vcmJpdC10aW1lbGluZS1lYXJsaWVyIiwKICAgICAgIm9jY3VycmVkQXQiOiAiMjAyNi0wMS0wMlQwOTowMDowMC4wMDBaIiwKICAgICAgImlkIjogIjAxTTZRQ1o2TkJURTFSMkVLWjU3RkdRV0FRIgogICAgfSwKICAgIHsKICAgICAgInRleHQiOiAic3ludGhldGljLW9yYml0LXRpbWVsaW5lLXRpZS10d28iLAogICAgICAib2NjdXJyZWRBdCI6ICIyMDI2LTAxLTAzVDA5OjAwOjAwLjAwMFoiLAogICAgICAiaWQiOiAiMDFNNlFDWjZQUzhGQVJORENIMFhOREVFVjAiCiAgICB9CiAgXSwKICAiZXhwZWN0ZWQiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogInN5bnRoZXRpYy1vcmJpdC10aW1lbGluZS10aWUtb25lIiwKICAgICAgIm9jY3VycmVkQXQiOiAiMjAyNi0wMS0wM1QwOTowMDowMC4wMDBaIiwKICAgICAgImlkIjogIjAxTTZRQ1o2S1Y1QUgxMzJaQVBRMktSR1lBIgogICAgfSwKICAgIHsKICAgICAgInRleHQiOiAic3ludGhldGljLW9yYml0LXRpbWVsaW5lLXRpZS10d28iLAogICAgICAib2NjdXJyZWRBdCI6ICIyMDI2LTAxLTAzVDA5OjAwOjAwLjAwMFoiLAogICAgICAiaWQiOiAiMDFNNlFDWjZQUzhGQVJORENIMFhOREVFVjAiCiAgICB9LAogICAgewogICAgICAidGV4dCI6ICJzeW50aGV0aWMtb3JiaXQtdGltZWxpbmUtZWFybGllciIsCiAgICAgICJvY2N1cnJlZEF0IjogIjIwMjYtMDEtMDJUMDk6MDA6MDAuMDAwWiIsCiAgICAgICJpZCI6ICIwMU02UUNaNk5CVEUxUjJFS1o1N0ZHUVdBUSIKICAgIH0KICBdLAogICJleHBlY3RlZFRpbWVsaW5lSWRzIjogWwogICAgIjAxSjAwMDAwMDAwMDAwMDAwMDAwMDAwMDBUIiwKICAgICIwMUowMDAwMDAwMDAwMDAwMDAwMDAwMDAwUyIsCiAgICAiMDFNNlFDWjZLVjVBSDEzMlpBUFEyS1JHWUEiLAogICAgIjAxTTZRQ1o2UFM4RkFSTkRDSDBYTkRFRVYwIiwKICAgICIwMU02UUNaNk5CVEUxUjJFS1o1N0ZHUVdBUSIKICBdLAogICJpbml0aWFsUmVhZHMiOiB7CiAgICAicmVjb3JkcyI6IFsKICAgICAgIjAxSjAwMDAwMDAwMDAwMDAwMDAwMDAwMDBUIiwKICAgICAgIjAxSjAwMDAwMDAwMDAwMDAwMDAwMDAwMDBTIiwKICAgICAgIjAxTTZRQ1o2S1Y1QUgxMzJaQVBRMktSR1lBIiwKICAgICAgIjAxTTZRQ1o2UFM4RkFSTkRDSDBYTkRFRVYwIiwKICAgICAgIjAxTTZRQ1o2TkJURTFSMkVLWjU3RkdRV0FRIgogICAgXSwKICAgICJvcHBvcnR1bml0eSI6IFsKICAgICAgIjAxSjAwMDAwMDAwMDAwMDAwMDAwMDAwMDBUIiwKICAgICAgIjAxSjAwMDAwMDAwMDAwMDAwMDAwMDAwMDBTIiwKICAgICAgIjAxTTZRQ1o2S1Y1QUgxMzJaQVBRMktSR1lBIiwKICAgICAgIjAxTTZRQ1o2UFM4RkFSTkRDSDBYTkRFRVYwIiwKICAgICAgIjAxTTZRQ1o2TkJURTFSMkVLWjU3RkdRV0FRIgogICAgXQogIH0sCiAgInBob25lUmVhZHMiOiB7CiAgICAicmVjb3JkcyI6IFsKICAgICAgIjAxSjAwMDAwMDAwMDAwMDAwMDAwMDAwMDBUIiwKICAgICAgIjAxSjAwMDAwMDAwMDAwMDAwMDAwMDAwMDBTIiwKICAgICAgIjAxTTZRQ1o2S1Y1QUgxMzJaQVBRMktSR1lBIiwKICAgICAgIjAxTTZRQ1o2UFM4RkFSTkRDSDBYTkRFRVYwIiwKICAgICAgIjAxTTZRQ1o2TkJURTFSMkVLWjU3RkdRV0FRIgogICAgXSwKICAgICJvcHBvcnR1bml0eSI6IFsKICAgICAgIjAxSjAwMDAwMDAwMDAwMDAwMDAwMDAwMDBUIiwKICAgICAgIjAxSjAwMDAwMDAwMDAwMDAwMDAwMDAwMDBTIiwKICAgICAgIjAxTTZRQ1o2S1Y1QUgxMzJaQVBRMktSR1lBIiwKICAgICAgIjAxTTZRQ1o2UFM4RkFSTkRDSDBYTkRFRVYwIiwKICAgICAgIjAxTTZRQ1o2TkJURTFSMkVLWjU3RkdRV0FRIgogICAgXQogIH0sCiAgImRlc2t0b3BSZWFkcyI6IHsKICAgICJyZWNvcmRzIjogWwogICAgICAiMDFKMDAwMDAwMDAwMDAwMDAwMDAwMDAwMFQiLAogICAgICAiMDFKMDAwMDAwMDAwMDAwMDAwMDAwMDAwMFMiLAogICAgICAiMDFNNlFDWjZLVjVBSDEzMlpBUFEyS1JHWUEiLAogICAgICAiMDFNNlFDWjZQUzhGQVJORENIMFhOREVFVjAiLAogICAgICAiMDFNNlFDWjZOQlRFMVIyRUtaNTdGR1FXQVEiCiAgICBdLAogICAgIm9wcG9ydHVuaXR5IjogWwogICAgICAiMDFKMDAwMDAwMDAwMDAwMDAwMDAwMDAwMFQiLAogICAgICAiMDFKMDAwMDAwMDAwMDAwMDAwMDAwMDAwMFMiLAogICAgICAiMDFNNlFDWjZLVjVBSDEzMlpBUFEyS1JHWUEiLAogICAgICAiMDFNNlFDWjZQUzhGQVJORENIMFhOREVFVjAiLAogICAgICAiMDFNNlFDWjZOQlRFMVIyRUtaNTdGR1FXQVEiCiAgICBdCiAgfSwKICAicGhvbmVPcmRlciI6IFsKICAgICJlbnRyeS0wMU02UUNaNktWNUFIMTMyWkFQUTJLUkdZQSIsCiAgICAiZW50cnktMDFNNlFDWjZQUzhGQVJORENIMFhOREVFVjAiLAogICAgImVudHJ5LTAxTTZRQ1o2TkJURTFSMkVLWjU3RkdRV0FRIgogIF0sCiAgImRlc2t0b3BPcmRlciI6IFsKICAgICJlbnRyeS0wMU02UUNaNktWNUFIMTMyWkFQUTJLUkdZQSIsCiAgICAiZW50cnktMDFNNlFDWjZQUzhGQVJORENIMFhOREVFVjAiLAogICAgImVudHJ5LTAxTTZRQ1o2TkJURTFSMkVLWjU3RkdRV0FRIgogIF0sCiAgImRlc2t0b3BGaXRzIjogdHJ1ZQp9"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a2fdce3b1bbd9eeaf8c3-21de84628d4f022125e7",
+              "file": "../contract.mjs",
+              "line": 4,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-06T03:02:00.162Z",
+    "duration": 86995.456,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
