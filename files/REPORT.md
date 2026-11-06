@@ -66,3 +66,5 @@ Product pushed: branch `cloud/sd-orbit-c-f75`, head `2627702296761a80e95ec2f8b6f
 FORM-002 remains partial, with the selected publication-withdrawal refusal proved and all held remainder explicit. No product blocker. The generated-view-only Verify exception applies; ordinary Verify green and main equality are not claimed. The product branch is pushed and the exact remote SHA was read back. No PR was created. The clone is removed after evidence publication, leaving the actual report and receipts outside it.
 
 The exact failed check was reproduced without modifying the candidate: `pnpm exec node src/base/contract-docs.mjs check`, exit 1, with the same ACCEPTANCE.md freshness error. This is the documented generated-view exception, not a product repair.
+
+The first evidence transfer published and its complete 24-file manifest was checked against the actual packet bytes, with the product checkout unchanged. TRANSFER-RECEIPT.json retains that actual transport receipt. The final evidence publication adds this receipt to the same report-only ref; its terminal EVIDENCE line names the final manifest.

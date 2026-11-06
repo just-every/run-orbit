@@ -31,10 +31,16 @@
       "sha256": "5a11401f35b1e8e2be42f28be209dd2dde82e3aa7dfea17a43ddbe82de2076eb"
     },
     {
-      "blob": "e481adac4736e951ec4a6016a585bdcdc5ae0674",
-      "bytes": 11624,
+      "blob": "d70d1eae1ff8d142c94722b865f4598474ece56f",
+      "bytes": 11971,
       "path": "REPORT.md",
-      "sha256": "16146e01e4660ded60f5e6588870454b0998fdac5ff074a6c91c3ea3f2455605"
+      "sha256": "b46378ec6fe9c8b8eb15c606845dd66b43413181b7e7c5ea762cf4a01fd848f5"
+    },
+    {
+      "blob": "97d1207652c5dc5fa7097e0a631ee5c7ecae3ac3",
+      "bytes": 5750,
+      "path": "TRANSFER-RECEIPT.json",
+      "sha256": "df541e3cae1e675b454d330834f673cc87828997df6a4209fb42c65c48735ffe"
     },
     {
       "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
