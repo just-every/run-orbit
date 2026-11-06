@@ -18,7 +18,7 @@ test('a real account, attributed event and durable reviewed draft can be created
   expect(await page.evaluate(()=>performance.timeOrigin)).toBe(timeOrigin);
   const opportunityId=new URL(page.url()).pathname.split('/').pop();
   const createdResponse=await page.request.get(`/api/v1/records/opportunity/${opportunityId}`),created=await createdResponse.json();
-  expect(created.record.owner_id).toBeTruthy();
+  expect(created.record.owner_id).toBeNull();
   const companiesBefore=(await (await page.request.get('/api/v1/records/company')).json()).records;
   const contactsBefore=(await (await page.request.get('/api/v1/records/contact')).json()).records;
   await page.goto('/app/opportunities/new');

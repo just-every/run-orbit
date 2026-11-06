@@ -27,5 +27,5 @@ export const recordIdentityPolicy:RecordIdentityPolicy={
 };
 export const opportunityAssignmentPolicy:OpportunityAssignmentPolicy={
  id:'opportunity.assignment.v1',
- ownerForNewOpportunity:({actorId,eligibleOperatorIds})=>eligibleOperatorIds?.length===1?eligibleOperatorIds[0]!:actorId
+ ownerForNewOpportunity:()=>null
 };
