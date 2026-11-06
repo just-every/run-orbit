@@ -5,7 +5,7 @@ type Request=(path:string,method?:string,body?:unknown)=>Promise<Response>;
 /** A scored deal changes hands through the native record door, after its evidence has aged. */
 export async function exerciseOpportunityOwnership(request:Request,otherRequest:Request,revokeOther:()=>Promise<void>,actor:string,other:string,stage:string,context:TestContext){
  const call=async(path:string,method='GET',body?:unknown,status=200,asOther=false):Promise<any>=>{const response=await (asOther?otherRequest:request)(path,method,body);const result=await response.json();assert.equal(response.status,status,JSON.stringify(result));return result;};
- context.mock.timers.enable({apis:['Date'],now:Date.now()});
+ const started=Date.now();context.mock.timers.enable({apis:['Date'],now:started});
  try{
   const deal=await call('records/opportunity','POST',{title:'Ownership journey',stage_id:stage,owner_id:null,value_cents:125000},201),path=`records/opportunity/${deal.id}`;
   const event={eventId:crypto.randomUUID(),type:'email.replied',subject:'Buyer requested a proposal',occurredAt:new Date().toISOString()};
@@ -31,6 +31,7 @@ export async function exerciseOpportunityOwnership(request:Request,otherRequest:
   await call(path,'PATCH',{changes:{owner_id:actor},base:{owner_id:other}},409);
   await call(path,'PATCH',{changes:{owner_id:'not-a-record'},base:{owner_id:null}},400);
   assert.deepEqual(await call(path),before,'Refused and unchanged assignments write nothing');
+  context.mock.timers.setTime(started);
   const retired=await call('settings/operators','POST',{displayName:'Retired opportunity owner',email:['synthetic-orbit-702','operator.test'].join('@')},201);
   await call(path,'PATCH',{changes:{owner_id:retired.id},base:{owner_id:null}});
   await call(path,'PATCH',{changes:{owner_id:null},base:{owner_id:retired.id}});
