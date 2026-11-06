@@ -149,6 +149,10 @@ test.describe("authenticated operator UI", () => {
 
     const opportunityId = new URL(page.url()).pathname.split('/').at(-1);
     const recordPath = `/api/v1/records/opportunity/${opportunityId}`;
+    const beforeResponse = await page.request.get(recordPath);
+    expect(beforeResponse.ok()).toBe(true);
+    const beforeTimeline = (await beforeResponse.json()).timeline;
+    expect(beforeTimeline.length).toBeGreaterThan(0);
     // A newer event arrives before an older one, then a late event ties the first.
     const notes = [
       { text: 'synthetic-orbit-timeline-tie-one', occurredAt: '2026-01-03T09:00:00.000Z' },
@@ -164,24 +168,39 @@ test.describe("authenticated operator UI", () => {
     }
     expect(new Set(notes.map(note => note.id)).size).toBe(3);
     const expected = [...notes].sort((a, b) => b.occurredAt.localeCompare(a.occurredAt) || a.id.localeCompare(b.id));
+    const expectedTimelineIds = [
+      ...beforeTimeline.map(entry => ({ id: entry.id, occurredAt: entry.occurred_at })),
+      ...notes,
+    ].sort((a, b) => b.occurredAt.localeCompare(a.occurredAt) || a.id.localeCompare(b.id)).map(entry => entry.id);
     const ids = new Set(notes.map(note => note.id));
     const readTimelines = async () => {
       const recordsResponse = await page.request.get(recordPath);
       expect(recordsResponse.ok()).toBe(true);
-      const recordsTimeline = (await recordsResponse.json()).timeline.filter(entry => ids.has(entry.id));
+      const completeRecordsTimeline = (await recordsResponse.json()).timeline;
+      expect(completeRecordsTimeline.map(entry => entry.id)).toEqual(expectedTimelineIds);
+      const recordsTimeline = completeRecordsTimeline.filter(entry => ids.has(entry.id));
       expect(recordsTimeline.map(entry => ({ id: entry.id, occurredAt: entry.occurred_at, text: JSON.parse(entry.payload_json).text }))).toEqual(expected);
       const opportunityResponse = await page.request.get(`/api/v1/opportunities/${opportunityId}`);
       expect(opportunityResponse.ok()).toBe(true);
-      const opportunityTimeline = (await opportunityResponse.json()).opportunity.timeline.filter(entry => ids.has(entry.id));
+      const completeOpportunityTimeline = (await opportunityResponse.json()).opportunity.timeline;
+      expect(completeOpportunityTimeline.map(entry => entry.id)).toEqual(expectedTimelineIds);
+      expect(completeOpportunityTimeline.map(entry => ({
+        id: entry.id, kind: entry.kind, occurredAt: entry.occurredAt, recordedAt: entry.recordedAt, actorType: entry.actorType,
+      }))).toEqual(completeRecordsTimeline.map(entry => ({
+        id: entry.id, kind: entry.kind, occurredAt: entry.occurred_at, recordedAt: entry.recorded_at, actorType: entry.actor_type,
+      })));
+      const opportunityTimeline = completeOpportunityTimeline.filter(entry => ids.has(entry.id));
       expect(opportunityTimeline.map(entry => ({ id: entry.id, occurredAt: entry.occurredAt, text: entry.payload.text }))).toEqual(expected);
-      return { records: recordsTimeline.map(entry => entry.id), opportunity: opportunityTimeline.map(entry => entry.id) };
+      return { records: completeRecordsTimeline.map(entry => entry.id), opportunity: completeOpportunityTimeline.map(entry => entry.id) };
     };
     const initialReads = await readTimelines();
 
     await page.reload({ waitUntil: 'networkidle' });
     const activity = page.getByTestId('record-activity');
+    const entryRows = activity.locator('.r-feed > li[id^="entry-"]');
     const noteRows = activity.locator('.r-feed > li[id^="entry-"]').filter({ hasText: 'synthetic-orbit-timeline-' });
     await expect(noteRows).toHaveCount(3);
+    expect(await entryRows.evaluateAll(rows => rows.map(row => row.id))).toEqual(expectedTimelineIds.map(id => `entry-${id}`));
     expect(await noteRows.evaluateAll(rows => rows.map(row => row.id))).toEqual(expected.map(note => `entry-${note.id}`));
     expect(await noteRows.locator('.r-entry-title').allTextContents()).toEqual(expected.map(note => note.text));
     await expectNoHorizontalOverflow(page);
@@ -191,13 +210,14 @@ test.describe("authenticated operator UI", () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.reload({ waitUntil: 'networkidle' });
     await expect(noteRows).toHaveCount(3);
+    expect(await entryRows.evaluateAll(rows => rows.map(row => row.id))).toEqual(expectedTimelineIds.map(id => `entry-${id}`));
     expect(await noteRows.evaluateAll(rows => rows.map(row => row.id))).toEqual(expected.map(note => `entry-${note.id}`));
     expect(await noteRows.locator('.r-entry-title').allTextContents()).toEqual(expected.map(note => note.text));
     await expectNoHorizontalOverflow(page);
     await activity.screenshot({ path: info.outputPath('timeline-1440.png') });
     const desktopReads = await readTimelines();
     await info.attach('timeline-order.json', { contentType: 'application/json', body: JSON.stringify({
-      created: notes, expected, initialReads, phoneReads, desktopReads, phoneOrder,
+      created: notes, expected, expectedTimelineIds, initialReads, phoneReads, desktopReads, phoneOrder,
       desktopOrder: await noteRows.evaluateAll(rows => rows.map(row => row.id)),
       desktopFits: await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     }, null, 2) });
