@@ -1,0 +1,21 @@
+{
+  "candidate": {
+    "conclusion": "success",
+    "event": "push",
+    "head_sha": "5843f5aee0ec8820f9502bb6171c96d4615922d8",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42225433900",
+    "id": 42225433900,
+    "name": "Verify",
+    "status": "completed"
+  },
+  "main_before": {
+    "head_sha": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+    "verify": 42217956400,
+    "verify_conclusion": "success",
+    "run_site": 42217956677,
+    "run_site_conclusion": "success"
+  },
+  "calls_used": 6,
+  "policy": "One watcher, at most one run discovery or poll per 300 seconds. No dispatch or rerun performed.",
+  "last_observed_utc": "2026-11-06T13:46:18Z"
+}

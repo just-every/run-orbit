@@ -1,0 +1,34 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ Managed owner claim verifies RER authority and creates the native owner/session exactly once (57731.301411ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 61711.696732
+
+✖ failing tests:
+
+test at tests/core/managed-owner.test.ts:1:380
+✖ Managed owner claim verifies RER authority and creates the native owner/session exactly once (57731.301411ms)
+  AssertionError [ERR_ASSERTION]: {"jsonrpc":"2.0","id":113,"result":{"resultType":"complete","content":[{"type":"text","text":"{\"code\":\"invalid_arguments\"}"}],"isError":true,"_meta":{"com.runeditrun/decision":{"id":"d79355ce-2948-4e8c-9ddc-ed51b0f58047","disposition":"autonomous","revision":4,"classes":[{"class":"standard","rule":"all","do":"autonomous","facts":{"measure":1}}]},"com.runeditrun/error":{"code":"invalid_arguments"}}}}
+  
+  true !== false
+  
+      at agentDoorBodyLimitProof (/home/agent/rer-consolidation/work/sd-orbit-c-f113/run-orbit/tests/support/agent-door-body-limit.ts:79:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async agentDoorProof (/home/agent/rer-consolidation/work/sd-orbit-c-f113/run-orbit/tests/support/agent-door-proof.ts:161:5)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f113/run-orbit/tests/core/managed-owner.test.ts:50:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

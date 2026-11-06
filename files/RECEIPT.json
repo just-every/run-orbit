@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f113",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f113",
+  "head": "5843f5aee0ec8820f9502bb6171c96d4615922d8",
+  "base": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+  "generated_at": "2026-11-06T13:28:30.072389+00:00",
+  "checks": [
+    {
+      "name": "views-write",
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log",
+      "source": "5843f5aee0ec8820f9502bb6171c96d4615922d8",
+      "notes": "Source and test bytes equal the committed candidate."
+    },
+    {
+      "name": "views-check",
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check.log",
+      "source": "5843f5aee0ec8820f9502bb6171c96d4615922d8",
+      "notes": "Source and test bytes equal the committed candidate."
+    },
+    {
+      "name": "lock-write",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock-write.json",
+      "source": "5843f5aee0ec8820f9502bb6171c96d4615922d8",
+      "notes": "Source and test bytes equal the committed candidate."
+    },
+    {
+      "name": "lock-check",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.json",
+      "source": "5843f5aee0ec8820f9502bb6171c96d4615922d8",
+      "notes": "Source and test bytes equal the committed candidate."
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log",
+      "source": "5843f5aee0ec8820f9502bb6171c96d4615922d8",
+      "notes": "Source and test bytes equal the committed candidate."
+    },
+    {
+      "name": "first-party",
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log",
+      "source": "5843f5aee0ec8820f9502bb6171c96d4615922d8",
+      "notes": "Source and test bytes equal the committed candidate."
+    },
+    {
+      "name": "touched-test",
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "log": "touched-tests.log",
+      "source": "5843f5aee0ec8820f9502bb6171c96d4615922d8",
+      "notes": "Source and test bytes equal the committed candidate."
+    },
+    {
+      "name": "exact-sha-touched-test",
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "log": "exact-sha-tests.log",
+      "head": "5843f5aee0ec8820f9502bb6171c96d4615922d8"
+    }
+  ],
+  "scope": "BASE-AGENT-001 acceptance 6 no-effect limb; PARTIAL remains PARTIAL",
+  "policy": "Existing signed autonomous policy already adopted by agentDoorProof; no policy semantics changed.",
+  "observed": [
+    {
+      "proof": "BASE-AGENT-001.6",
+      "mode": "content-length",
+      "maxBodyBytes": 1048576,
+      "oversizedBytes": 1048577,
+      "refused": 413,
+      "unchangedTables": 277,
+      "control": 200,
+      "created": 1
+    },
+    {
+      "proof": "BASE-AGENT-001.6",
+      "mode": "stream",
+      "maxBodyBytes": 1048576,
+      "oversizedBytes": 1048577,
+      "refused": 413,
+      "unchangedTables": 277,
+      "control": 200,
+      "created": 1
+    }
+  ],
+  "counts_before": {
+    "clauses": 204,
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "counts_after": {
+    "clauses": 204,
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "test_budget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "contract_diff": "",
+  "generated_view_diff": "",
+  "runtime_diff": "",
+  "initial_fixture_failure": {
+    "log": "touched-tests-initial.log",
+    "error": "Within-limit control returned invalid_arguments because the helper omitted required value_cents.",
+    "resolution": "Include value_cents in the same valid opportunity-create shape. Runtime unchanged. Subsequent complete tests passed."
+  },
+  "scan": {
+    "commit": "5843f5aee0ec8820f9502bb6171c96d4615922d8",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "status": "NOT RUN in cloud; complete exact-head full-history publication scan belongs to guarded fleet lander."
+  },
+  "main_equality": false,
+  "landing": "Not performed; cloud branch only.",
+  "run_site": "Candidate Run site pending main landing.",
+  "pr": null,
+  "ci": {
+    "candidate": {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "5843f5aee0ec8820f9502bb6171c96d4615922d8",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42225433900",
+      "id": 42225433900,
+      "name": "Verify",
+      "status": "completed"
+    },
+    "main_before": {
+      "head_sha": "b305e58f673cfe0b9485e179d2678734e261c7a8",
+      "verify": 42217956400,
+      "verify_conclusion": "success",
+      "run_site": 42217956677,
+      "run_site_conclusion": "success"
+    },
+    "calls_used": 6,
+    "policy": "One watcher, at most one run discovery or poll per 300 seconds. No dispatch or rerun performed.",
+    "last_observed_utc": "2026-11-06T13:46:18Z"
+  },
+  "selected_point_status": "proved by exact-head Verify",
+  "product_push_verified": {
+    "head": "5843f5aee0ec8820f9502bb6171c96d4615922d8",
+    "ref": "refs/heads/cloud/sd-orbit-c-f113",
+    "receipt": "product-remote-head.log"
+  },
+  "blockers": []
+}
