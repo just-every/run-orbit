@@ -1,0 +1,163 @@
+{
+  "tag": "ct-judge-orbit-ai002-20261105-2114-sol1-complete1",
+  "completed_at": "2026-11-06T03:47:45.594927+00:00",
+  "repository": "just-every/run-orbit",
+  "source": "2314db77e0289f80687f6d26ab8f393be8865a8a",
+  "source_branch": "cloud/sd-orbit-c-f55",
+  "commission": "bounded completion of original ct-judge-orbit-ai002-20261105-2114 / -sol1 using authorized same-commission ct-proof-orbit-ai002-20261106-0255",
+  "inputs": [
+    {
+      "reference": "briefs/ct/judge-common.md",
+      "location": "supplied inline, not local lane file",
+      "read": true,
+      "disposition": "full inline reading; original rubric/rider/done rules retained"
+    },
+    {
+      "reference": "lanes/ct/DONE-RIDERS.md",
+      "location": "supplied inline, not local lane file",
+      "read": true,
+      "disposition": "full inline reading; all eleven riders disposed in VERDICT"
+    },
+    {
+      "reference": "lanes/ct/plans/iteration-20261106T032200Z/ai002-original/VERDICT.md",
+      "location": "supplied inline, not local lane file",
+      "read": true,
+      "disposition": "full inline reading; historical INSPECTED/incomplete retained, not rewritten"
+    },
+    {
+      "reference": "lanes/ct/plans/iteration-20261106T032200Z/ai002-execution/REPORT.md",
+      "location": "supplied inline, not local lane file",
+      "read": true,
+      "disposition": "full inline reading; same-commission actual execution scored, not automatic acceptance"
+    },
+    {
+      "reference": "lanes/ct/plans/iteration-20261106T032200Z/ai002-execution/native-receipt.receipt.md",
+      "location": "supplied inline, not local lane file",
+      "read": true,
+      "disposition": "full inline reading; matching JSON snapshot reconstructed"
+    },
+    {
+      "reference": "lanes/ct/plans/iteration-20261106T032200Z/ai002-execution/browser-receipt.receipt.md",
+      "location": "supplied inline, not local lane file",
+      "read": true,
+      "disposition": "full inline reading; matching JSON snapshot reconstructed; startup failure retained"
+    },
+    {
+      "reference": "lanes/ct/plans/iteration-20261106T032200Z/ai002-execution/reading-receipt.receipt.md",
+      "location": "supplied inline, not local lane file",
+      "read": true,
+      "disposition": "full inline reading; matching JSON snapshot reconstructed"
+    },
+    {
+      "reference": "lanes/ct/plans/iteration-20261106T032200Z/ai002-execution/prior-source-equality.receipt.md",
+      "location": "supplied inline, not local lane file",
+      "read": true,
+      "disposition": "full inline reading; matching JSON snapshot reconstructed"
+    },
+    {
+      "reference": "lanes/ct/plans/iteration-20261106T032200Z/ai002-execution/source-integrity-receipt.receipt.md",
+      "location": "supplied inline, not local lane file",
+      "read": true,
+      "disposition": "full inline reading; matching JSON snapshot reconstructed"
+    },
+    {
+      "reference": "lanes/ct/plans/iteration-20261106T032200Z/ai002-execution/cleanup-receipt.receipt.md",
+      "location": "supplied inline, not local lane file",
+      "read": true,
+      "disposition": "full inline reading; historical snapshot unchanged; later deletion not invented"
+    }
+  ],
+  "opinion": "AI-002 ACCEPT ON LANDING",
+  "frozen_scores": {
+    "R1": "MET",
+    "R2": "MET"
+  },
+  "new_product_findings": 0,
+  "completion_FIX_delta": 0,
+  "lifetime_FIX_count": "unchanged; no reset or credit",
+  "reused_actual_native": {
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "exit": 0,
+    "source": "2314db77e0289f80687f6d26ab8f393be8865a8a"
+  },
+  "reused_actual_browser": {
+    "journeys": 2,
+    "passed": 2,
+    "failed": 0,
+    "widths": [
+      1440,
+      390
+    ],
+    "startup_adapter_failure": {
+      "exit": 1,
+      "tests_started": 0,
+      "product_FIX": false
+    }
+  },
+  "original_affected_gate": {
+    "name": "sd-orbit-c-f55-gate-1",
+    "end": "2026-11-05T21:14:41Z",
+    "result": "PASS",
+    "source": "2314db77e0289f80687f6d26ab8f393be8865a8a",
+    "provenance": "supplied root-maintained ledger/meta/final readback, not a new gate query"
+  },
+  "historical_CI": {
+    "run_id": 42107937784,
+    "event": "workflow_dispatch",
+    "result": "failure ONLY generated views; runtime SKIP",
+    "candidate_exception_only": true,
+    "final_runtime_green": false,
+    "queried_here": false
+  },
+  "new_CI_run_ids": [],
+  "gh_api_source_metadata_calls": 6,
+  "Actions_queries": 0,
+  "PR_queries": 0,
+  "product_clones": 0,
+  "product_installs": 0,
+  "product_builds": 0,
+  "runtime_journeys_executed_here": 0,
+  "browsers_launched_here": 0,
+  "product_mutations": 0,
+  "product_commits": 0,
+  "product_pushes": 0,
+  "PR": null,
+  "provider_production_calls": 0,
+  "source_pin_or_hold_operations": 0,
+  "original_historical_reports_changed": false,
+  "counts_actual_before": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32
+  },
+  "counts_actual_after": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32
+  },
+  "counts_proposal": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "award": "UNAWARDED"
+  },
+  "unresolved_frozen_outcomes": [],
+  "unresolved_independent_guards": [
+    "original source/stack/review/provider/release/owner cutover holds and original integration custody unchanged",
+    "preserve entire newer-main Status and Gap/Evidence/provenance, especially OUT-032",
+    "merged generator write/check, current counts and honest provenance",
+    "source lock LAST/check",
+    "ACTUALLY EXECUTED full-green exact-FINAL runtime Verify loading relied-on journeys",
+    "complete full-history publication NEW 0",
+    "guarded landing and main equality; exact-main Verify and Run site"
+  ],
+  "external": "UNMET-EXTERNAL: live provider/account/model, provider legal/retention and production assurances; unclaimed, nonblocking",
+  "cleanup": {
+    "runtime_or_browser_or_server_started_here": false,
+    "no_finished_unpushed_product_work": true,
+    "report_packet_and_evidence_provenance_retained": true
+  },
+  "transport": "separate evidence ref only; actual transport receipt generated after publication; bare READY means report complete only"
+}

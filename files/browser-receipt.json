@@ -1,0 +1,62 @@
+{
+  "source": "2314db77e0289f80687f6d26ab8f393be8865a8a",
+  "browser": "Chromium 154.0.8037.57",
+  "executable": "/usr/bin/chromium",
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "private_nonpersistent_contexts": true,
+  "real_HOME_retained": true,
+  "launch_args": [
+    "--use-mock-keychain",
+    "--password-store=basic",
+    "--no-sandbox"
+  ],
+  "assistance": {
+    "command": "WRANGLER_SEND_METRICS=false cloud_run timeout 240 pnpm exec playwright test --config=/tmp/rer-assistance.config.mjs",
+    "exit": 0,
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "widths": [
+      1440,
+      390
+    ],
+    "screens": [
+      "screens/1440-assistance-preview.png",
+      "screens/390-assistance-preview.png",
+      "screens/390-assistance-exact-request.png"
+    ],
+    "preparation": "existing prepare-state.ts and browser-runtime.mjs; already emitted exact-source build reused; no product or test edits",
+    "startup_attempt": {
+      "exit": 1,
+      "tests_started": 0,
+      "reason": "external execution adapter omitted documented PORT; restored original config URL port before the one actual journey execution"
+    }
+  },
+  "brief": {
+    "command": "WRANGLER_SEND_METRICS=false ORBIT_TODAY_EVIDENCE=<task>/browser-today cloud_run timeout 240 node --import=/tmp/rer-chromium-launch.mjs --import=tsx --test tests/delegation-browser/today-brief.test.ts",
+    "exit": 0,
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "widths": [
+      1440,
+      390
+    ],
+    "screens": [
+      "screens/brief-day1-1440.png",
+      "screens/brief-day1-390.png",
+      "screens/brief-empty-1440.png",
+      "screens/brief-empty-390.png",
+      "screens/handoff-proposal-1440.png",
+      "screens/handoff-proposal-390.png",
+      "screens/meeting-plan-1440.png",
+      "screens/meeting-plan-390.png"
+    ],
+    "scope": "existing empty/populated brief, unconfigured summary action absent, meeting plan, handoff and mention journey; no configured summary browser output or live model claimed"
+  },
+  "product_changes": 0,
+  "visual_quality_decisions": 0
+}

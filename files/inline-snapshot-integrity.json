@@ -1,0 +1,42 @@
+{
+  "source": "inline immutable receipt snapshots supplied by task",
+  "verification": "reconstructed JSON bytes match supplied original byte lengths and SHA256; no historical remote re-fetch or re-execution",
+  "receipts": [
+    {
+      "file": "native-receipt.json",
+      "bytes": 1350,
+      "sha256": "4e1889aa2b09b104b4552e9318ded925757eafede6558f786058e97937c48e3a",
+      "matches_supplied_snapshot": true
+    },
+    {
+      "file": "browser-receipt.json",
+      "bytes": 2094,
+      "sha256": "201d95afec68abd60ed3a617c31c624ca9c9f8f2624b8b45563c8e25273cf632",
+      "matches_supplied_snapshot": true
+    },
+    {
+      "file": "cleanup-receipt.json",
+      "bytes": 511,
+      "sha256": "142647e3d93256c8691aaa77503cd71075cd625d9b6949aef8e4a33cdbad55c5",
+      "matches_supplied_snapshot": true
+    },
+    {
+      "file": "source-integrity-receipt.json",
+      "bytes": 593,
+      "sha256": "f4049c70e9ca1b8fec2d4be36b0e5a849d5fdecca8067c8866513f0a4eac74ed",
+      "matches_supplied_snapshot": true
+    },
+    {
+      "file": "reading-receipt.json",
+      "bytes": 2698,
+      "sha256": "c6b5b2ec4f91f07b348c04e1fc5370584fb9e14b6903f458c1ff686388aefa87",
+      "matches_supplied_snapshot": true
+    },
+    {
+      "file": "prior-source-equality.json",
+      "bytes": 3941,
+      "sha256": "45e4cdab03a52bff178d49d7e62f9737884bea5bf0c2d673e043bd96f1ffce18",
+      "matches_supplied_snapshot": true
+    }
+  ]
+}

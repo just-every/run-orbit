@@ -1,0 +1,52 @@
+{
+  "read_at": "2026-11-06T03:37:35.217725+00:00",
+  "repository": "just-every/run-orbit",
+  "source": "2314db77e0289f80687f6d26ab8f393be8865a8a",
+  "main_snapshot": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "gh_api_calls": 6,
+  "Actions_queries": 0,
+  "reads": [
+    {
+      "command": "gh api repos/just-every/run-orbit/git/commits/2314db77e0289f80687f6d26ab8f393be8865a8a",
+      "exit": 0,
+      "file": "source-commit.json",
+      "bytes": 1155,
+      "sha256": "8363d1334e8166150e4e446a4a7318152806424ca1f8943d9b35394739ff2e12"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/contents/CONTRACT.md?ref=2314db77e0289f80687f6d26ab8f393be8865a8a -H Accept: application/vnd.github.raw+json",
+      "exit": 0,
+      "file": "source-CONTRACT.md",
+      "bytes": 484208,
+      "sha256": "8af606f39c2563c4e417331a05463745985c39db9384c7bdb8943990acf9e6a1"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/contents/AGENTS.md?ref=2314db77e0289f80687f6d26ab8f393be8865a8a -H Accept: application/vnd.github.raw+json",
+      "exit": 0,
+      "file": "source-AGENTS.md",
+      "bytes": 6149,
+      "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/contents/CONTRACT.md?ref=c01084f133af9aa484a6c1f5151a4e9cfbc7230f -H Accept: application/vnd.github.raw+json",
+      "exit": 0,
+      "file": "main-CONTRACT.md",
+      "bytes": 483851,
+      "sha256": "6bb6fb9aaef0e0df27f86958e4734fef3b5d0f3cfa37f0400496e6043e8781b1"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/git/commits/c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+      "invocations": 2,
+      "exits": [
+        0,
+        0
+      ],
+      "purpose": "existing main snapshot commit hash verification for evidence identity exclusion anchor; no source tree imported",
+      "initial_local_reconstruction": "failed hash comparison using UTC timezone; API did not fail; no object imported",
+      "final_local_reconstruction": "matched original SHA after retaining the original commit timezone",
+      "git_commit": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+      "raw_commit_bytes": 273,
+      "raw_commit_sha256": "fe3ee641c720b08d19489f24c9935eed0d91b3fa33b01be0cf24ddb8411098d8"
+    }
+  ]
+}

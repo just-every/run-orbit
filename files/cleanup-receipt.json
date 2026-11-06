@@ -1,0 +1,11 @@
+{
+  "checked_at": "2026-11-06T03:14:04.958836+00:00",
+  "browsers_closed": true,
+  "owned_servers_stopped": true,
+  "remaining_chromium_workerd_wrangler_processes": 0,
+  "isolated_native_databases": "disposed by their retained journey finally/after handlers",
+  "additional_owned_browser_state_removed": [],
+  "clone_node_modules_removed": true,
+  "clone_deletion": "deferred until the final report-only publication uses this clone; delete immediately afterwards",
+  "no_finished_unpushed_product_work": true
+}

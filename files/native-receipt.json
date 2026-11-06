@@ -1,0 +1,23 @@
+{
+  "source": "2314db77e0289f80687f6d26ab8f393be8865a8a",
+  "command": "WRANGLER_SEND_METRICS=false cloud_run timeout 360 pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='^(AI-001 AI-002 AI-004 ACTION-003|AI-002 invalid content|AI-001 DATA-002|TASK-001 TEAM-004 BRIEF-001|BRIEF-003 AI-001|BASE-DATA-004 BASE-DATA-005 AI-002)' tests/core/assistance.test.ts tests/core/today-brief.test.ts tests/core/provider-redirects.test.ts",
+  "exit": 0,
+  "tests": 6,
+  "passed": 6,
+  "failed": 0,
+  "skipped": 0,
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "one_invocation_each_file": true,
+  "registrations_excluded_by_name_filter": [
+    "assistance notification-only registrations",
+    "today-brief BRIEF-004/RECORD-017 registration",
+    "today-brief CALL-001/Twilio registration",
+    "provider-redirects PUBLIC-004/OPS-001 domain-policy registration"
+  ],
+  "provider_accounts_used": false,
+  "provider_edge": "existing network-edge fakes only; real adapter and native routes",
+  "protected_state": "assertions passed for drafts, explanations, outbound messages and whole brief; synthetic provider key absent from visible assistance failure",
+  "R1": "observed allowed/refused assertions passed; no acceptance verdict",
+  "R2": "observed recovery/exhaustion/shared deadline/definite refusal/replay assertions passed; no acceptance verdict"
+}

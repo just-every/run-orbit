@@ -1,0 +1,18 @@
+{
+  "repository": "just-every/run-orbit",
+  "source": "2314db77e0289f80687f6d26ab8f393be8865a8a",
+  "source_branch": "cloud/sd-orbit-c-f55",
+  "product_checkout": false,
+  "clone": false,
+  "container": "/home/agent/rer-consolidation/work/ct-judge-orbit-ai002-20261105-2114-sol1-complete1/evidence-provenance.git",
+  "kind": "evidence-only bare provenance container",
+  "raw_source_commit_object_hash_verified": true,
+  "source_commit_object_bytes": 279,
+  "source_tree_imported": false,
+  "product_commits": 0,
+  "product_pushes": 0,
+  "PR": null,
+  "new_CI_run_ids": [],
+  "CI_queries": 0,
+  "deviation": "Specific report-completion no-clone and no-product-write authority overrides generic clone/cloud-branch setup. Existing published source commit object imported via GitHub metadata; no source tree, checkout, product branch or product execution."
+}
