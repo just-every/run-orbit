@@ -1,0 +1,123 @@
+{
+  "branch": "cloud/sd-orbit-c-f92",
+  "ci": {
+    "calls": 1,
+    "discovery": "ci-discovery.json",
+    "dispatches": 0,
+    "exact_sha_successful_verify": 42179778674,
+    "exact_sha_verify_conclusion": "success",
+    "exact_sha_verify_event": "push",
+    "new_branch_verify": 42184925051,
+    "new_branch_verify_observed_status": "in_progress",
+    "reruns": 0,
+    "run_site": 42182721336,
+    "run_site_conclusion": "success"
+  },
+  "clause": {
+    "after": "partial",
+    "before": "partial",
+    "counts_after": {
+      "done": 36,
+      "missing": 32,
+      "partial": 136
+    },
+    "counts_before": {
+      "done": 36,
+      "missing": 32,
+      "partial": 136
+    },
+    "hold_releases": 0,
+    "id": "DELEGATE-001",
+    "status_rows_retained": 204
+  },
+  "files_inspected": {
+    "src/core/features/delegation/listing.ts": {
+      "lines": 35,
+      "sha256": "8dad4db53273ac2a92fde80c885a631126cfcb5a60aa08ebcefa89ac5e2b2aa3"
+    },
+    "src/core/features/delegation/protocol.ts": {
+      "lines": 23,
+      "sha256": "f8e4a7b33af157110455a06bcab70b708fb80e7e3a3515ed36131aa42257d24f"
+    },
+    "src/core/features/delegation/routes.ts": {
+      "lines": 32,
+      "sha256": "10699f6b4a543ee4e231bb7bf5143e749cc5d5bfcb411c948770d1c739b59188"
+    },
+    "tests/delegation/authority-fixture.ts": {
+      "lines": 30,
+      "sha256": "ddeb956790a856c6661a9f1c8cb5811ff81ca8e9f672a83bc7ad319daf3f4137"
+    },
+    "tests/delegation/authority-regressions.test.ts": {
+      "lines": 99,
+      "sha256": "c39d5c92dadfce4a43943f7c0741543142b570ecbb908ec81fe60d98ac5979db"
+    }
+  },
+  "head": "30f7a864d0a643fa020ea3eaa3d5325a112b872e",
+  "mechanical": "mechanical.json",
+  "migration_changed": false,
+  "pr_created": false,
+  "predecessor": "84041ac0fee6c6b14c8de27cd3865608a06956a0",
+  "predecessor_is_ancestor_of_main": true,
+  "probe": {
+    "door": "native consent and PKCE issuance followed by delegated evidence and records HTTP routes",
+    "id": "DELEGATE-001",
+    "observed": [
+      "existing contact identity contact and name Customer retained",
+      "selected opportunities/opp returns 200 and linked contact remains in its evidence",
+      "contacts/contact returns 404 NOT_FOUND",
+      "delegated records include opportunities/opp and exclude contacts/contact",
+      "complete inventoried record, history, task, draft, message and receipt rows unchanged"
+    ],
+    "point": "active selected-opportunity grant refuses existing unselected contact"
+  },
+  "product_commits_created": 0,
+  "product_diff_empty": true,
+  "product_push": {
+    "attempts": 1,
+    "candidate_commits_beyond_main": 0,
+    "exit": 0,
+    "guard": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f92",
+    "identity_and_trailers_inspected": true,
+    "remote_ref": "refs/heads/cloud/sd-orbit-c-f92"
+  },
+  "publication_scan": {
+    "custodian": "fleet lander",
+    "performed_in_cloud": false
+  },
+  "remote_custody": {
+    "main_equal_at_custody_check": true,
+    "observed_main_head": "30f7a864d0a643fa020ea3eaa3d5325a112b872e",
+    "product_ref_head": "30f7a864d0a643fa020ea3eaa3d5325a112b872e",
+    "verified_with": "git ls-remote --refs origin refs/heads/cloud/sd-orbit-c-f92 refs/heads/main"
+  },
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "selected_point_already_on_main": true,
+  "setup": {
+    "dependency_install_exit": 0,
+    "fleet_hooks_installed_after_dependency_setup": true,
+    "pnpm": "10.12.4",
+    "rer_setup_exit": 0,
+    "test_node": "24.19.0"
+  },
+  "tag": "sd-orbit-c-f92",
+  "test": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 tests/delegation/authority-regressions.test.ts",
+    "duration_ms": 157667.143999,
+    "exit": 0,
+    "failed": 0,
+    "head": "30f7a864d0a643fa020ea3eaa3d5325a112b872e",
+    "log": "authority-tests.log",
+    "passed": 3,
+    "skipped": 0,
+    "tests": 3
+  },
+  "test_budget": {
+    "assertions_removed": 0,
+    "cases": 198,
+    "qualifications": 2,
+    "registrations_added": 0,
+    "total": 200
+  },
+  "ui_changed": false
+}

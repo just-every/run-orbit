@@ -1,0 +1,12 @@
+# sd-orbit-c-f92 execution plan
+
+Declared product repository: just-every/run-orbit. Product branch: cloud/sd-orbit-c-f92.
+
+1. Install the fleet identity, launcher refresh, decrypted-bundle Git helper, push guard, repository commit hooks and pinned toolchain. Clone full history from main and check whether predecessor 84041ac0fee6c6b14c8de27cd3865608a06956a0 has already landed.
+2. Read the current DELEGATE-001 requirement, all three acceptance sentences, Status Evidence and Gap, the planner-selected scope point and inline CT riders. Inspect the existing authority registration, populated fixture and delegation authorization, route and listing implementation.
+3. Reuse the existing public-door authority registration. Establish that native consent and PKCE issue an active selected-opportunity grant; the selected opportunity is readable, its existing linked but unselected contact returns 404, the contact is absent from the delegated records list, and allowed and refused reads leave records and write effects unchanged. Correct source only if this journey demonstrates a defect; retain all existing assertions and registrations.
+4. Run the focused authority file, typecheck and first-party check. Refresh main before publication, preserving its current judgments. Run the documented contract generator write and check, restore its generated views from main, regenerate the source lock last and check it. Record the test budget and exact checked SHA.
+5. Do not create an empty product commit when current main already contains the complete selected point. Preserve PARTIAL, every remaining Gap, counts and held prerequisites. Publish the named product branch through the fleet push guard after identity inspection. Discover exact-SHA Verify through the permitted REST endpoint without duplicate dispatch or short-interval polling.
+6. Write the actual non-secret report and receipts here. Publish an explicit file selection only to the separate evidence ref, verify remote product custody, remove the disposable product clone and return its exact SHA and CI state.
+
+Scope boundary: no clause-specific hold is released. Slack mappings, proposal acknowledgment, Slack task rollback, expanded roles, TEAM-005 prerequisites and live-provider qualification stay with their existing owners and entries. No new acceptance point or policy is introduced. No UI change or browser proof is required for this native route proof.

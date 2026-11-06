@@ -1,0 +1,14 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ API-002 native credential lifecycle and delegation D1 reject ambient cookies, scope escalation, expiration, disable and revocation on every read and write (105534.067905ms)
+✔ delegation D1 transaction rolls back task, timeline, provenance and receipt together; concurrent exact replay has one effect (25480.297313ms)
+✔ delegation D1 authority changing after snapshot refuses every durable effect (22574.31407ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 157667.143999
