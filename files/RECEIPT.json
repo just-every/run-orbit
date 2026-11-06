@@ -1,0 +1,141 @@
+{
+  "base": "30f7a864d0a643fa020ea3eaa3d5325a112b872e",
+  "branch": "cloud/sd-orbit-c-f96",
+  "browser": {
+    "reason": "No UI changes",
+    "state": "not-applicable"
+  },
+  "candidateChanges": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/core/assistance.test.ts"
+  ],
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/assistance.test.ts",
+      "exit": 0,
+      "log": "assistance-tests.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern=AI-002 tests/core/assistance.test.ts",
+      "exit": 0,
+      "head": "a67179827796caf92f930601b7af8b44f7fd4440",
+      "log": "exact-head-probe.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "generatedViewsRestored": true,
+      "log": "views-check.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock-write.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.log"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/assistance.test.ts",
+      "exit": 0,
+      "failed": 0,
+      "head": "a67179827796caf92f930601b7af8b44f7fd4440",
+      "log": "pinned-assistance-tests.log",
+      "node": "22.20.0",
+      "passed": 6
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "head": "a67179827796caf92f930601b7af8b44f7fd4440",
+      "log": "pinned-typecheck.log",
+      "node": "22.20.0"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "head": "a67179827796caf92f930601b7af8b44f7fd4440",
+      "log": "pinned-first-party.log",
+      "node": "22.20.0"
+    }
+  ],
+  "ci": {
+    "classification": "expected-generated-view-only-failure",
+    "conclusion": "failure",
+    "event": "push",
+    "head_sha": "a67179827796caf92f930601b7af8b44f7fd4440",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42193553808",
+    "rerunDispatched": false,
+    "runId": 42193553808,
+    "runtimeShards": "skipped",
+    "sourceJobId": 127811286906,
+    "sourceLog": "ci-source-failure-excerpt.log",
+    "status": "completed",
+    "verifyJobId": 127811520180,
+    "verifyLog": "ci-verify-failure-excerpt.log"
+  },
+  "countsAfter": {
+    "done": 36,
+    "missing": 32,
+    "partial": 136,
+    "total": 204
+  },
+  "countsBefore": {
+    "done": 36,
+    "missing": 32,
+    "partial": 136,
+    "total": 204
+  },
+  "generatedFilesCommitted": [],
+  "githubCalls": 6,
+  "head": "a67179827796caf92f930601b7af8b44f7fd4440",
+  "productPush": {
+    "attempts": 1,
+    "exit": 0,
+    "log": "product-push.log"
+  },
+  "publicationScan": {
+    "responsibility": "guarded Mac lander",
+    "state": "not-run-in-cloud"
+  },
+  "readiness": "allowed-generated-view-exception; no full-green runtime CI or DONE claim",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "scope": {
+    "closed": [
+      "unconfigured-AI handwritten outreach continuity"
+    ],
+    "doneAwards": 0,
+    "holdReleases": 0,
+    "planRowsEdited": 0,
+    "productionDefects": 0
+  },
+  "statusAfter": "partial",
+  "statusBefore": "partial",
+  "tag": "sd-orbit-c-f96",
+  "tests": {
+    "qualifications": 2,
+    "registrationsAfter": 198,
+    "registrationsBefore": 198,
+    "total": 200,
+    "touchedCasesPassed": 6
+  }
+}

@@ -1,0 +1,15 @@
+head=a67179827796caf92f930601b7af8b44f7fd4440
+command=pnpm exec tsx --test --test-concurrency=1 --test-name-pattern=AI-002 tests/core/assistance.test.ts
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ AI-002 invented evidence fails visibly; AI-003 unconfigured provider generates nothing and handwritten outreach submits once (2906.53695ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 25497.405694
+exit=0

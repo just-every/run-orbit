@@ -1,0 +1,7 @@
+head=a67179827796caf92f930601b7af8b44f7fd4440
+node=v22.20.0
+
+> orbit@0.4.3 typecheck /workspace/run-orbit
+> tsc --noEmit
+
+exit=0
