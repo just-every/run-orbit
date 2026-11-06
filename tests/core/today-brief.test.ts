@@ -158,8 +158,8 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
  const ordinary=await nativeDraft('Ordinary stale');
  await resumed.json(`/api/v1/records/contact/${ordinary.contact}`,{method:'PATCH',body:{changes:{name:'Updated buyer'},base:{name:'Ordinary stale Buyer'}}},200);controls.push(ordinary.id);
  const reviewed=await nativeDraft('Reviewed after booking');await stopEvent(reviewed,'meeting.booked');context.mock.timers.tick(1);
- const review=(await resumed.json<any>(`/api/v1/drafts/${reviewed.id}`)).draft;
- await resumed.json(`/api/v1/workbench/drafts/${reviewed.id}/review`,{body:{revision:review.revision,reviewedUpdatedAt:review.updatedAt,recipientContactId:reviewed.contact,recipientEmail:review.recipientEmail,subject:review.subject,body:review.body}},200);
+ const draftReview=(await resumed.json<any>(`/api/v1/drafts/${reviewed.id}`)).draft;
+ await resumed.json(`/api/v1/workbench/drafts/${reviewed.id}/review`,{body:{revision:draftReview.revision,reviewedUpdatedAt:draftReview.updatedAt,recipientContactId:reviewed.contact,recipientEmail:draftReview.recipientEmail,subject:draftReview.subject,body:draftReview.body}},200);
  // Later unrelated staleness does not reapply the stop that the person already reviewed.
  context.mock.timers.tick(1);await resumed.json(`/api/v1/records/contact/${reviewed.contact}`,{method:'PATCH',body:{changes:{name:'Updated buyer'},base:{name:'Reviewed after booking Buyer'}}},200);controls.push(reviewed.id);
  const afterReply=await nativeDraft('New after reply');await stopEvent(afterReply,'email.replied');context.mock.timers.tick(1);
