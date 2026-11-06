@@ -110,10 +110,21 @@
       "path": "workspace-record-78901-390.png",
       "bytes": 124071,
       "sha256": "9cb133409cd619d44a23ff8b506a3f58ab57067134e5064d01c397b3fd595769"
+    },
+    {
+      "path": "evidence-publication.log",
+      "bytes": 4633,
+      "sha256": "9fabf70c4c29db429ffedd115b0adb0464007b8f476a6bccbde8258d92b2e5b6"
+    },
+    {
+      "path": "evidence-readback.json",
+      "bytes": 4641,
+      "sha256": "06a9fba22ca7a2efceb96cb7f95b2a9597d49361af378cff5edaa10073e09671"
     }
   ],
   "symlinks": false,
   "secret_pattern_findings": 0,
   "excluded": "Private setup output, rendered recipes and raw browser HTML containing ephemeral source secrets or sign-in authority; no credentials, environment dumps or held-out material selected.",
-  "product_head": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8"
+  "product_head": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8",
+  "transport_receipt_note": "Initial complete packet publication and exact-head manifest/hash readback succeeded at 21acb94201b984e9c9050f161fd1e551119a9ec6. This final append includes those actual transport receipts; terminal EVIDENCE names the final report-only head."
 }
