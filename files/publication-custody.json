@@ -1,0 +1,13 @@
+{
+  "observed_utc": "2026-11-06T02:18:32.209342+00:00",
+  "evidence_head_verified": "27f880141f188ca4043b617ca65a483b7828e307",
+  "manifest_verified": true,
+  "file_hashes_verified": true,
+  "verified_file_count": 45,
+  "product_checkout_head_branch_and_index_unchanged": true,
+  "product_commits": 0,
+  "product_pushes": 0,
+  "source_branch": "cloud/sd-orbit-c-f53",
+  "source_head": "7bc88865b46d9bc2d03b5611fa87171e393cff3c",
+  "cleanup": "All test browsers and workers closed. Disposable product clone and dependencies will be removed after final evidence publication; no unpushed product work exists."
+}

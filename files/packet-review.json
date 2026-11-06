@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "selection": "Explicit report, actual log, receipt, source-context and synthetic local browser evidence files only",
+  "selection": "Explicit complete report and actual command and transfer receipts; hash inventory excludes itself",
   "injected_value_matches": 0,
   "private_key_or_token_matches": 0,
   "symlinks": 0,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "REPORT.md",
-      "bytes": 2362,
-      "sha256": "181be9a17cdd8c6c022baa00b7d538bef737efd191a5a50fe547cbf3b381cbb0"
+      "bytes": 2779,
+      "sha256": "02d6810d4b95748478f5579a747cad2a880d2cee672f390f9f51c7fa876d780d"
     },
     {
       "path": "VERDICT.md",
@@ -225,6 +225,21 @@
       "path": "identity-inspection.json",
       "bytes": 367,
       "sha256": "9078b5a660a350d6bcf47f39abe5fd38b2758af23f21a937fdb153e0f1219ea6"
+    },
+    {
+      "path": "evidence-publication.log",
+      "bytes": 8450,
+      "sha256": "ac91278c0f500be3ff54d7832f3921e566642123cfb2350e1985512005efae0d"
+    },
+    {
+      "path": "evidence-verification.json",
+      "bytes": 8566,
+      "sha256": "7fb35f032dc2993d4943e6f1296ff75b932072dfc5616082042fc5aef000f739"
+    },
+    {
+      "path": "publication-custody.json",
+      "bytes": 609,
+      "sha256": "68c0c6a7abced8f78122b96bc32e7ae6c2dea89e34d5b6fefaa893f8b925f590"
     }
   ]
 }

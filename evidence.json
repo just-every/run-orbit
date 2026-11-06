@@ -13,10 +13,10 @@
       "sha256": "c22bb623b0f524523c63c014b142a1e607ba99780ca40cecea629c57448d4e6b"
     },
     {
-      "blob": "b6d3b4e1dd51fce617a274b5e4d47c2bf1b5f5a6",
-      "bytes": 2362,
+      "blob": "61e443312175c7e0b22ee5df770c3ab371bf5e76",
+      "bytes": 2779,
       "path": "REPORT.md",
-      "sha256": "181be9a17cdd8c6c022baa00b7d538bef737efd191a5a50fe547cbf3b381cbb0"
+      "sha256": "02d6810d4b95748478f5579a747cad2a880d2cee672f390f9f51c7fa876d780d"
     },
     {
       "blob": "d6331d4296433492f1e07305686dbab6cf7b2ab8",
@@ -145,6 +145,18 @@
       "sha256": "6b2e7ac3e22acf80edc3e8967e2f4735f060162d78256b7be626f0241c12d3f4"
     },
     {
+      "blob": "9942fb8d83519c0b13001e6b24f72ad67c35e77f",
+      "bytes": 8450,
+      "path": "evidence-publication.log",
+      "sha256": "ac91278c0f500be3ff54d7832f3921e566642123cfb2350e1985512005efae0d"
+    },
+    {
+      "blob": "76d9d2591e42804991b0d6e74277f7e2476d31d6",
+      "bytes": 8566,
+      "path": "evidence-verification.json",
+      "sha256": "7fb35f032dc2993d4943e6f1296ff75b932072dfc5616082042fc5aef000f739"
+    },
+    {
       "blob": "5b8cdd055c5c8afd980e8ffebbd201c4aa6e067f",
       "bytes": 130,
       "path": "final-remote-refs.txt",
@@ -205,16 +217,22 @@
       "sha256": "baff4ed17ede730e0c2693b23c3a7589f4568049f49a7c1f415d3c6138e46a26"
     },
     {
-      "blob": "5426f48bf3afff58401a06a1330f735bd9d016a0",
-      "bytes": 7106,
+      "blob": "a356b588566667f16ffdcf027266d8037c4a9774",
+      "bytes": 7581,
       "path": "packet-review.json",
-      "sha256": "92221e08bc0c6474c47febc32ef2a9f55a8c20cc37aad3abedf69968cc2e1944"
+      "sha256": "e912cb24545561f28641fcece925cdfb58a32c4afe3f54c6de957059f2839706"
     },
     {
       "blob": "3a7c683da0383758ca1a9a25149490c20720c2b4",
       "bytes": 2598,
       "path": "preserve-newer-main.md",
       "sha256": "977ef39067effe38e33492ed12bd2820a970861e91dc6318590b9c6f025ec62a"
+    },
+    {
+      "blob": "87e3b9732658e3de8c82b8028941111cbf29b741",
+      "bytes": 609,
+      "path": "publication-custody.json",
+      "sha256": "68c0c6a7abced8f78122b96bc32e7ae6c2dea89e34d5b6fefaa893f8b925f590"
     },
     {
       "blob": "5b8cdd055c5c8afd980e8ffebbd201c4aa6e067f",
