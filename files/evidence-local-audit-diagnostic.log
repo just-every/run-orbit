@@ -1,0 +1,12 @@
+Pre-push audit local Git object transfer (no evidence push occurred):
+command: git -C <disposable bare audit repository> fetch --quiet --no-tags --update-shallow /home/agent/rer-consolidation/work/sd-orbit-f40land2-ci-triage-1/run-orbit 32c41a210e1488e53b36c79d6d5056a1a9ab60e3:refs/remotes/origin/main
+exit: 128
+HTTP: not applicable (local object transfer)
+remote: warning: lazy fetching disabled; some objects may not be available
+remote: fatal: could not fetch 135a5d764c46c20c975ade700ff2aa0e82b4a5b2 from promisor remote
+error: git upload-pack: git-pack-objects died with error.
+fatal: git upload-pack: aborting due to possible repository corruption on the remote side.
+remote: aborting due to possible repository corruption on the remote side.
+fatal: protocol error: bad pack header
+
+Resolution: fetch the declared repository's main directly from GitHub with --depth 1 --filter=blob:none for the identity audit. No product checkout mutation, assertion rerun or credential substitution.

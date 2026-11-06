@@ -1,0 +1,227 @@
+$ git diff --stat origin/main...f73da7ab1a8ceebedbb302a415e117a34e2355e9
+exit=0
+ ACCEPTANCE.md                       | 10 ++--
+ CONTRACT.md                         |  8 ++--
+ sources.lock.json                   | 10 ++--
+ src/core/features/today/promises.ts | 21 ++++++--
+ tests/core/today-brief.test.ts      | 96 +++++++++++++++++++++++++++++++++++--
+ tests/support/today-workspace.ts    |  4 +-
+ 6 files changed, 125 insertions(+), 24 deletions(-)
+$ git log --format=%H %s origin/main..f73da7ab1a8ceebedbb302a415e117a34e2355e9
+exit=0
+f73da7ab1a8ceebedbb302a415e117a34e2355e9 Record BRIEF-002 completion from accepted overdue promise journeys
+95cc156df5ac1c698c20cee47bb2847f5ab0531e Keep draft stop state within scoped Today query limits
+60a0a295965c6bba5ddbe6cabe4c11e44af470b5 Correct draft review variable in overdue promise assertions
+bf41c34e74ba31165f13c8d9251884b6d178bb35 Fix stopped draft and old unanswered reply promises
+ff806208fd906473ea248ad280b5dae1fb728b7d Complete overdue promise acceptance from native record journeys
+1f2ae46ea7f0e332e2ce6bf4133687457ac71ddb Bind overdue handoff proof to its original due time [skip ci]
+6f00d13900a5e2a5fb972b96119f70b5c118bc23 Prove overdue promise lifecycles through native records [skip ci]
+$ git diff origin/main...f73da7ab1a8ceebedbb302a415e117a34e2355e9 -- src/core/features/today/promises.ts
+exit=0
+diff --git a/src/core/features/today/promises.ts b/src/core/features/today/promises.ts
+index ef9f314..4e23ec1 100644
+--- a/src/core/features/today/promises.ts
++++ b/src/core/features/today/promises.ts
+@@ -4,10 +4,21 @@ import type {BriefPolicy} from './window';
+ import {signalEntries,signalLinks,type RawLine} from './signal-lines';
+ import {customerSignalSql} from '../signals/test-events';
+ 
+-const LOOKBACK_DAYS=120;
++const MEETING_LOOKBACK_DAYS=120;
+ const followUp="(t.kind LIKE 'manual.%' OR t.kind IN ('action.completed','handoff.updated','handoff.accepted','draft.created'))";
+ // The seller's own answer captured from their mailbox: a linked sent message on the same contact or opportunity at or after the signal.
+ const capturedSent=`NOT EXISTS(SELECT 1 FROM signals sent JOIN signal_links sl ON sl.signal_id=sent.id JOIN signal_links l ON l.record_type=sl.record_type AND l.record_id=sl.record_id WHERE l.signal_id=s.id AND l.record_type IN ('contact','opportunity') AND sent.type='email.sent' AND ${customerSignalSql('sent')} AND sent.occurred_at>=s.occurred_at)`;
++// Stop state is recipient suppression or a typed customer stop linked since this draft was created/reviewed.
++// A new draft or an explicit review starts new work; unrelated staleness still needs the seller's attention.
++// Materialize the stop relation at the top level so scoped field projections stay within D1's expression depth.
++const draftStops=`WITH draft_reviews AS MATERIALIZED(
++ SELECT json_extract(payload_json,'$.draftId') AS draftId,MAX(recorded_at) AS reviewedAt FROM timeline_entries WHERE kind='draft.reviewed' GROUP BY json_extract(payload_json,'$.draftId')
++),draft_stops AS MATERIALIZED(
++ SELECT d.id FROM drafts d JOIN contacts c ON c.id=d.recipient_contact_id WHERE c.contactability='do_not_contact'
++ UNION SELECT d.id FROM drafts d JOIN signal_links l ON l.record_type='contact' AND l.record_id=d.recipient_contact_id AND l.linked_at>=d.created_at
++ JOIN signals stopped ON stopped.id=l.signal_id LEFT JOIN draft_reviews reviewed ON reviewed.draftId=d.id
++ WHERE d.is_stale=1 AND stopped.type IN ('email.replied','meeting.booked','email.unsubscribed','email.bounced') AND ${customerSignalSql('stopped')} AND (reviewed.reviewedAt IS NULL OR reviewed.reviewedAt<l.linked_at)
++)`;
+ 
+ /**
+  * Overdue promises, computed from records only:
+@@ -16,24 +27,24 @@ const capturedSent=`NOT EXISTS(SELECT 1 FROM signals sent JOIN signal_links sl O
+  * a completed meeting with no next step logged after it, and an unsent draft left untouched beyond the workspace stale interval.
+  */
+ export async function promiseLines(db:D1Database,now:Date,policy:BriefPolicy,limit:number):Promise<RawLine[]>{
+- const at=now.toISOString(),from=new Date(now.getTime()-LOOKBACK_DAYS*86400000).toISOString();
++ const at=now.toISOString(),from=new Date(now.getTime()-MEETING_LOOKBACK_DAYS*86400000).toISOString();
+  const [handoffs,nextActions,replies,meetings,drafts]=await Promise.all([
+   db.prepare("SELECT h.id,h.title,h.due_at AS dueAt,h.opportunity_id AS opportunityId FROM handoff_tasks h JOIN opportunities o ON o.id=h.opportunity_id WHERE h.status='open' AND h.source_client_id IS NULL AND h.due_at IS NOT NULL AND h.due_at<? AND o.lifecycle='open' ORDER BY h.due_at LIMIT ?").bind(at,limit).all<{id:string;title:string;dueAt:string;opportunityId:string}>(),
+   db.prepare("SELECT id,title,queue_reason AS reason,next_due_at AS dueAt FROM opportunities WHERE lifecycle='open' AND queue_state='next' AND next_due_at IS NOT NULL AND next_due_at<? ORDER BY next_due_at LIMIT ?").bind(at,limit).all<{id:string;title:string;reason:string|null;dueAt:string}>(),
+-  db.prepare(`SELECT s.id,s.subject,s.occurred_at AS occurredAt FROM signals s WHERE ((s.type='email.replied' AND ${customerSignalSql()}) AND (s.occurred_at>=? AND s.occurred_at<=?))
++  db.prepare(`SELECT s.id,s.subject,s.occurred_at AS occurredAt FROM signals s WHERE s.type='email.replied' AND ${customerSignalSql()} AND s.occurred_at<=?
+    AND (EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=s.id)
+    AND NOT EXISTS(SELECT 1 FROM signal_links l JOIN outbound_messages m ON (l.record_type='opportunity' AND m.opportunity_id=l.record_id) OR (l.record_type='contact' AND m.contact_id=l.record_id) WHERE l.signal_id=s.id AND m.approved_at>=s.occurred_at AND m.state NOT IN ('cancelled','failed')))
+    AND (NOT EXISTS(SELECT 1 FROM signal_links l JOIN timeline_entry_records r ON r.record_type=l.record_type AND r.record_id=l.record_id JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE l.signal_id=s.id AND t.actor_type='operator' AND t.kind IN ('manual.call','manual.meeting','action.completed') AND t.recorded_at>=s.occurred_at)
+    AND ${capturedSent})
+    AND NOT EXISTS(SELECT 1 FROM signals later JOIN signal_links ll ON ll.signal_id=later.id JOIN signal_links l ON l.record_type=ll.record_type AND l.record_id=ll.record_id WHERE l.signal_id=s.id AND later.type='email.replied' AND ${customerSignalSql('later')} AND (later.occurred_at>s.occurred_at OR (later.occurred_at=s.occurred_at AND later.id>s.id)))
+-   ORDER BY s.occurred_at LIMIT ?`).bind(from,at,limit).all<{id:string;subject:string|null;occurredAt:string}>(),
++   ORDER BY s.occurred_at LIMIT ?`).bind(at,limit).all<{id:string;subject:string|null;occurredAt:string}>(),
+   db.prepare(`SELECT s.id,s.subject,s.occurred_at AS occurredAt FROM signals s WHERE ((s.type='meeting.completed' AND ${customerSignalSql()}) AND (s.occurred_at>=? AND s.occurred_at<=?))
+    AND (EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=s.id)
+    AND NOT EXISTS(SELECT 1 FROM signal_links l JOIN timeline_entry_records r ON r.record_type=l.record_type AND r.record_id=l.record_id JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE l.signal_id=s.id AND t.actor_type='operator' AND ${followUp} AND t.recorded_at>=s.occurred_at))
+    AND (NOT EXISTS(SELECT 1 FROM signal_links l JOIN outbound_messages m ON l.record_type='opportunity' AND m.opportunity_id=l.record_id WHERE l.signal_id=s.id AND m.approved_at>=s.occurred_at)
+    AND ${capturedSent})
+    ORDER BY s.occurred_at LIMIT ?`).bind(from,at,limit).all<{id:string;subject:string|null;occurredAt:string}>(),
+-  db.prepare("SELECT d.id,d.subject,d.created_at AS createdAt,d.updated_at AS updatedAt,d.is_stale AS stale,d.stale_reason AS staleReason,d.opportunity_id AS opportunityId,d.recipient_contact_id AS contactId FROM drafts d JOIN opportunities o ON o.id=d.opportunity_id WHERE o.lifecycle='open' AND d.updated_at<? AND COALESCE(d.stale_reason,'')<>'Customer stop event' AND NOT EXISTS(SELECT 1 FROM outbound_messages m WHERE m.draft_id=d.id) ORDER BY d.created_at LIMIT ?").bind(new Date(now.getTime()-policy.staleIntervalDays*86400000).toISOString(),limit).all<{id:string;subject:string;createdAt:string;updatedAt:string;stale:number;staleReason:string|null;opportunityId:string;contactId:string|null}>()]);
++  db.prepare(`${draftStops} SELECT d.id,d.subject,d.created_at AS createdAt,d.updated_at AS updatedAt,d.is_stale AS stale,d.stale_reason AS staleReason,d.opportunity_id AS opportunityId,d.recipient_contact_id AS contactId FROM drafts d JOIN opportunities o ON o.id=d.opportunity_id WHERE o.lifecycle='open' AND d.updated_at<? AND d.id NOT IN(SELECT id FROM draft_stops) AND NOT EXISTS(SELECT 1 FROM outbound_messages m WHERE m.draft_id=d.id) ORDER BY d.created_at LIMIT ?`).bind(new Date(now.getTime()-policy.staleIntervalDays*86400000).toISOString(),limit).all<{id:string;subject:string;createdAt:string;updatedAt:string;stale:number;staleReason:string|null;opportunityId:string;contactId:string|null}>()]);
+  const signalIds=[...replies.results,...meetings.results].map(row=>row.id),[links,entries]=await Promise.all([signalLinks(db,signalIds),signalEntries(db,signalIds)]);
+  const lines:RawLine[]=[];
+  for(const row of handoffs.results)lines.push({id:`handoff-due:${row.id}`,kind:'handoff-due',group:'promise',signalType:null,confidence:null,title:row.title,detail:'Next action past its due time',occurredAt:row.dueAt,dueAt:row.dueAt,evidence:{type:'handoff',id:row.id},records:[{type:'opportunity',id:row.opportunityId}],planHref:null,link:{fixed:`/app/opportunities/${row.opportunityId}#handoff-${row.id}`}});
+$ git show --format=fuller 47762e3e3173a0804126ed7032801bbbc9e7d46d -- src/core/features/operator/ui/record/record-api.ts src/core/features/operator/ui/use-operator-resource.ts src/routes/-operator-detail.tsx src/routes/app.contacts.$id.tsx
+exit=0
+commit 47762e3e3173a0804126ed7032801bbbc9e7d46d
+Author:     James Peter <github@zemaj.com>
+AuthorDate: Fri Oct 30 07:22:25 2026 +1000
+Commit:     James Peter <github@zemaj.com>
+CommitDate: Fri Oct 30 07:22:25 2026 +1000
+
+    Carry gated Orbit OR3 and OR4 onto main
+    
+    Squash exact gated head c37eee360dd00c09e87dd5e20cb20a99ff86b82b onto main 79a91f9243af8708a9ae054d8de20af07efd9c1a. Preserve the gated tree without its intermediate history or follow-up changes.
+
+diff --git a/src/core/features/operator/ui/record/record-api.ts b/src/core/features/operator/ui/record/record-api.ts
+new file mode 100644
+index 0000000..95ac57a
+--- /dev/null
++++ b/src/core/features/operator/ui/record/record-api.ts
+@@ -0,0 +1,56 @@
++import type {ContactContext,OpportunityContext} from '../../../relationships/contracts';
++import {SaveRefused,type SaveAnswer,type Values} from '../autosave/use-autosave';
++import type {RecordKind} from '../records-api';
++
++/** One JSON request for a record page's saves: a refusal keeps the server's words, a 409 its current copy, which
++ * values turns from the server's row into the form's own values (the hook compares and sends again on those). */
++export async function saveRequest<T>(path:string,method:string,body:unknown,init:{keepalive?:boolean}={},values?:(row:Values)=>Values):Promise<T>{
++ const response=await fetch(`/api/v1/${path}`,{method,credentials:'same-origin',keepalive:init.keepalive,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
++ const result=await response.json().catch(()=>({})) as T&{error?:string;current?:Values;changedBy?:string|null};
++ if(!response.ok)throw new SaveRefused(result.error??'Orbit refused this change.',response.status,result.current&&values?values(result.current):result.current,result.changedBy);
++ return result;
++}
++
++/** A record's own values, saved one change at a time (PATCH, with the values each change replaces). */
++export async function patchRecord(kind:RecordKind,id:string,changes:Values,base:Values,init:{keepalive?:boolean}):Promise<SaveAnswer<Values>>{
++ const result=await saveRequest<{changed:boolean;record:Values}>(`records/${kind}/${id}`,'PATCH',{changes,base},init,recordValues);
++ return {copy:recordValues(result.record),changed:result.changed};
++}
++export async function readRecord<T=any>(kind:RecordKind,id:string):Promise<T>{
++ const response=await fetch(`/api/v1/records/${kind}/${id}`,{credentials:'same-origin'});
++ const result=await response.json().catch(()=>({})) as T&{error?:string};
++ if(!response.ok)throw Object.assign(new Error(result.error??'Orbit could not load this record.'),{status:response.status});
++ return result;
++}
++/** A record row as the fields a page saves: its columns, and each custom field as custom:<key>. */
++export function recordValues(row:Values):Values{
++ const custom=JSON.parse(row.custom_fields_json??'{}') as Values;
++ return {...row,...Object.fromEntries(Object.entries(custom).map(([key,value])=>[`custom:${key}`,value]))};
++}
++
++/** A deal's or a contact's relationships, as the fields their page saves; products are one per line. */
++export type DealContextValues={revision:string;company:string|null;companyName:string;stakeholders:OpportunityContext['stakeholders'];products:string;nextStep:string;mutualCommitments:string};
++export type ContactContextValues={revision:string;primaryCompany:ContactContext['primaryCompany'];secondaryCompanies:ContactContext['secondaryCompanies']};
++export const dealContextValues=(context:OpportunityContext):DealContextValues=>({revision:context.revision,company:context.company?.id??null,companyName:context.company?.name??'',stakeholders:context.stakeholders,products:context.products.join('\n'),nextStep:context.nextStep,mutualCommitments:context.mutualCommitments});
++export const contactContextValues=(context:ContactContext):ContactContextValues=>({revision:context.revision,primaryCompany:context.primaryCompany,secondaryCompanies:context.secondaryCompanies});
++
++export async function readContext<T>(kind:'opportunity'|'contact',id:string):Promise<T>{
++ const response=await fetch(`/api/v1/relationships/${kind}/${id}`,{credentials:'same-origin'});
++ const result=await response.json().catch(()=>({})) as T&{error?:string};
++ if(!response.ok)throw new Error(result.error??'Orbit could not load these relationships.');
++ return result;
++}
++/** The whole context with its revision, the one change applied (today's body); 409 when it changed meanwhile. */
++export async function saveDealContext(id:string,changes:Partial<DealContextValues>,copy:DealContextValues,init:{keepalive?:boolean}):Promise<SaveAnswer<DealContextValues>>{
++ const next={...copy,...changes},stakeholders=next.stakeholders;
++ const body={revision:copy.revision,companyId:next.company,primaryContactId:stakeholders.find(item=>item.isPrimary)?.contactId??stakeholders[0]?.contactId??null,
++  stakeholders:stakeholders.map(({contactId,roles,verified})=>({contactId,roles,verified})),
++  products:[...new Map(next.products.split('\n').map(item=>item.trim()).filter(Boolean).map(item=>[item.toLowerCase(),item])).values()],nextStep:next.nextStep,mutualCommitments:next.mutualCommitments};
++ const context=await saveRequest<OpportunityContext>(`relationships/opportunity/${id}`,'PUT',body,init);
++ return {copy:dealContextValues(context),changed:context.revision!==copy.revision};
++}
++export async function saveContactContext(id:string,changes:Partial<ContactContextValues>,copy:ContactContextValues,init:{keepalive?:boolean}):Promise<SaveAnswer<ContactContextValues>>{
++ const next={...copy,...changes};
++ const context=await saveRequest<ContactContext>(`relationships/contact/${id}`,'PUT',{revision:copy.revision,secondaryCompanies:next.secondaryCompanies.map(({companyId,verified})=>({companyId,verified}))},init);
++ return {copy:contactContextValues(context),changed:context.revision!==copy.revision};
++}
+diff --git a/src/core/features/operator/ui/use-operator-resource.ts b/src/core/features/operator/ui/use-operator-resource.ts
+index c0209ed..5f289d9 100644
+--- a/src/core/features/operator/ui/use-operator-resource.ts
++++ b/src/core/features/operator/ui/use-operator-resource.ts
+@@ -28,7 +28,7 @@ export function useOperatorResource<T>(key: string, load: () => Promise<T>, init
+   }, [key, load, request]);
+ 
+   // The main detail read owns the route's recovery state; nested panels keep their own errors.
+-  if (error && (error as Error & { status?: number }).status === 404 && /^(opportunity|draft|meeting|assistance):/.test(key)) {
++  if (error && (error as Error & { status?: number }).status === 404 && /^(opportunity|contact|company|draft|meeting|assistance):/.test(key)) {
+     throw notFound();
+   }
+ 
+diff --git a/src/routes/-operator-detail.tsx b/src/routes/-operator-detail.tsx
+index 8a5ce8c..f5d986d 100644
+--- a/src/routes/-operator-detail.tsx
++++ b/src/routes/-operator-detail.tsx
+@@ -2,7 +2,17 @@ import { Link, notFound } from '@tanstack/react-router';
+ import { OperatorShell, OperatorState } from '../core/features/operator/ui/operator-shell';
+ import { editorLeaf } from '../editor/leaf';
+ 
+-type DetailKind = 'opportunity' | 'draft' | 'meeting' | 'assistance';
++type DetailKind = 'opportunity' | 'contact' | 'company' | 'draft' | 'meeting' | 'assistance';
++
++/** The noun a missing page names, and the list it offers as the way back. */
++const pages: Record<DetailKind, { noun: string; list: string; label: string }> = {
++  opportunity: { noun: 'opportunity', list: '/app/opportunities', label: 'Opportunities' },
++  contact: { noun: 'contact', list: '/app/contacts', label: 'Contacts' },
++  company: { noun: 'company', list: '/app/companies', label: 'Companies' },
++  draft: { noun: 'draft', list: '/app/drafts', label: 'Drafts' },
++  meeting: { noun: 'meeting', list: '/app/meetings', label: 'Meetings' },
++  assistance: { noun: 'opportunity', list: '/app/opportunities', label: 'Opportunities' },
++};
+ 
+ export function requireDetailId(id: string, kind: DetailKind) {
+   const valid = kind === 'meeting' ? /^[A-Za-z0-9_-]{1,100}$/ : /^[0-9A-HJKMNP-TV-Z]{26}$/;
+@@ -10,9 +20,9 @@ export function requireDetailId(id: string, kind: DetailKind) {
+ }
+ 
+ export function OperatorDetailState({ kind, missing = false }: { kind: DetailKind; missing?: boolean }) {
+-  const noun = kind === 'assistance' ? 'opportunity' : kind;
+-  return <OperatorShell title={kind[0].toUpperCase() + kind.slice(1)}>
+-    <OperatorState kind="error">{missing ? `That ${noun} does not exist.` : `Orbit could not load this ${noun}.`} <Link className="operator-back-link" to="/app/records">Back to records</Link></OperatorState>
++  const page = pages[kind];
++  return <OperatorShell title={missing ? 'Not found' : page.noun[0]!.toUpperCase() + page.noun.slice(1)}>
++    <OperatorState kind="error">{missing ? `This ${page.noun} does not exist.` : `Orbit could not load this ${page.noun}.`} <Link className="operator-back-link" to={page.list}>← {page.label}</Link></OperatorState>
+   </OperatorShell>;
+ }
+ 
+diff --git a/src/routes/app.contacts.$id.tsx b/src/routes/app.contacts.$id.tsx
+new file mode 100644
+index 0000000..bc23702
+--- /dev/null
++++ b/src/routes/app.contacts.$id.tsx
+@@ -0,0 +1,9 @@
++import { editorLeaf } from "../editor/leaf";
++import { createFileRoute } from "@tanstack/react-router";
++import { ContactRecordPage } from "../core/features/operator/ui/record/customer-record";
++import { operatorDetailErrors, requireDetailId } from './-operator-detail';
++export const Route = createFileRoute("/app/contacts/$id")({
++  beforeLoad: ({ params }) => requireDetailId(params.id, 'contact'),
++  ...operatorDetailErrors('contact'),
++  component: editorLeaf(ContactRecordPage),
++});
+
+$ git rev-parse bf41c34
+exit=0
+bf41c34e74ba31165f13c8d9251884b6d178bb35
+
+$ git diff --stat 8997ad7e3112fc65ed426845d70a12813ceb8432 f73da7ab1a8ceebedbb302a415e117a34e2355e9 -- src/core/features/today/promises.ts tests/core/today-brief.test.ts tests/support/today-workspace.ts
+exit=0
+
+$ git merge-base --is-ancestor 47762e3e3173a0804126ed7032801bbbc9e7d46d 8997ad7e3112fc65ed426845d70a12813ceb8432
+exit=0
+
+$ git merge-base --is-ancestor 47762e3e3173a0804126ed7032801bbbc9e7d46d 32c41a210e1488e53b36c79d6d5056a1a9ab60e3
+exit=0

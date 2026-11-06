@@ -1,0 +1,38 @@
+{
+  "label": "candidate",
+  "head": "f73da7ab1a8ceebedbb302a415e117a34e2355e9",
+  "tree": "ff9ad9b98387575e423b32c566b1625f3424d3e4",
+  "clean_before": true,
+  "commands": [
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "output_file": "candidate-build.log",
+      "note": "Completed immediately before driver invocation, unchanged head; build not repeated."
+    },
+    {
+      "command": "pnpm exec node scripts/verification-build.mjs seal && pnpm exec node scripts/verification-build.mjs check",
+      "exit": 0,
+      "duration_seconds": 1.44,
+      "output_file": "candidate-seal.log",
+      "owned_shell_pid": 4192
+    },
+    {
+      "command": "cloud_run pnpm exec tsx tests/support/prepare-state.ts",
+      "exit": 0,
+      "duration_seconds": 25.516,
+      "output_file": "candidate-prepare.log",
+      "owned_shell_pid": 4286
+    },
+    {
+      "command": "cloud_run pnpm exec node --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/rer-operator-desktop-results.jsonl tests/rer/operator-desktop.test.mjs",
+      "exit": 0,
+      "duration_seconds": 193.721,
+      "output_file": "candidate-test.log",
+      "owned_shell_pid": 4864
+    }
+  ],
+  "started_at": "2026-11-06T18:57:36.123642+00:00",
+  "finished_at": "2026-11-06T19:01:16.803192+00:00",
+  "clean_after": true
+}

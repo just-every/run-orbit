@@ -1,0 +1,10 @@
+rer toolchain: node v24.19.0 pnpm 10.12.4 (pins 22.20.0 / 10.12.4)
+✔ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (199682.351231ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 200205.63369

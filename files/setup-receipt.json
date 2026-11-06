@@ -1,0 +1,79 @@
+{
+  "kind": "actual terminal command exit summary",
+  "commands": [
+    {
+      "command": "git config --global user.name 'Run Edit Run fleet' && git config --global user.email fleet@runeditrun.com",
+      "exit": 0
+    },
+    {
+      "command": "bash /workspace/rer-cloud-launcher/refresh.sh",
+      "exit": 0,
+      "output": "keys count and helper readiness only; private decrypted bundle excluded"
+    },
+    {
+      "command": "python3 /tmp/fleet-git-setup.py",
+      "exit": 0
+    },
+    {
+      "command": "git clone --depth 1 --filter=blob:none https://github.com/just-every/run-orbit.git \"$HOME/rer-consolidation/work/sd-orbit-f40land2-ci-triage-1/run-orbit\"",
+      "exit": 0
+    },
+    {
+      "command": "git config user.name 'Run Edit Run fleet'",
+      "exit": 0
+    },
+    {
+      "command": "git config user.email fleet@runeditrun.com",
+      "exit": 0
+    },
+    {
+      "command": "git switch -c cloud/sd-orbit-f40land2-ci-triage-1 origin/main",
+      "exit": 0
+    },
+    {
+      "command": "git fetch --depth 160 origin main cloud/sd-orbit-c-f40-land-2 8997ad7e",
+      "exit": 128,
+      "diagnostic": "fatal: couldn't find remote ref 8997ad7e"
+    },
+    {
+      "command": "git fetch --depth 200 origin main cloud/sd-orbit-c-f40-land-2",
+      "exit": 0
+    },
+    {
+      "command": "git fetch --depth 200 origin refs/heads/cloud/sd-orbit-c-f40-land-2:refs/remotes/origin/cloud/sd-orbit-c-f40-land-2",
+      "exit": 0
+    },
+    {
+      "command": "git ls-remote --heads origin '*f40*'",
+      "exit": 0
+    },
+    {
+      "command": "git fetch --no-tags --depth 200 origin refs/heads/cloud/sd-orbit-c-f40-fix1:refs/remotes/origin/cloud/sd-orbit-c-f40-fix1",
+      "exit": 0
+    },
+    {
+      "command": "source /tmp/rer-cloud-toolchain.sh; pnpm install --frozen-lockfile",
+      "exit": 0,
+      "note": "Install initially ran with VM Node 24.19.0; all subsequent per-head builds and tests selected Node 22.20.0 explicitly. Lockfile unchanged."
+    },
+    {
+      "command": "npm install --prefix \"$HOME/.rer/toolchain/node-22.20.0\" --no-audit --no-fund node@22.20.0",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0,
+      "output_retention": "Private output intentionally excluded from public packet."
+    },
+    {
+      "command": "python3 /tmp/fleet-hooks.py",
+      "exit": 0,
+      "note": "Installed on clone and repeated after dependency/setup steps; original repository hooks preserved."
+    }
+  ],
+  "github_api_calls": 0,
+  "ci_log_reads": 0,
+  "product_commits": 0,
+  "product_pushes": 0,
+  "prs_created": 0
+}

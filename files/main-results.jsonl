@@ -1,0 +1,2 @@
+{"kind":"test","runner":"node:test","name":"BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px","file":"tests/rer/operator-desktop.test.mjs","type":"test","nesting":0,"status":"passed","durationMs":196499.126225}
+{"kind":"summary","runner":"node:test","success":true,"counts":{"tests":1,"failed":0,"passed":1,"cancelled":0,"skipped":0,"todo":0,"topLevel":1,"suites":0}}

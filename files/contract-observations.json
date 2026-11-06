@@ -1,0 +1,35 @@
+{
+  "candidate": {
+    "head": "f73da7ab1a8ceebedbb302a415e117a34e2355e9",
+    "generated_progress_rows": [
+      "| Core | 37 | 117 | 24 | 178 |",
+      "| Agent surface | 0 | 18 | 8 | 26 |",
+      "| Later | 0 | 0 | 0 | 0 |",
+      "| Full target | 37 | 135 | 32 | 204 |"
+    ],
+    "brief002_status": "done",
+    "task_changed_clause_status": false
+  },
+  "main": {
+    "head": "32c41a210e1488e53b36c79d6d5056a1a9ab60e3",
+    "generated_progress_rows": [
+      "| Core | 36 | 118 | 24 | 178 |",
+      "| Agent surface | 0 | 18 | 8 | 26 |",
+      "| Later | 0 | 0 | 0 | 0 |",
+      "| Full target | 36 | 136 | 32 | 204 |"
+    ],
+    "brief002_status": "partial",
+    "task_changed_clause_status": false
+  },
+  "original": {
+    "head": "8997ad7e3112fc65ed426845d70a12813ceb8432",
+    "generated_progress_rows": [
+      "| Core | 36 | 118 | 24 | 178 |",
+      "| Agent surface | 0 | 18 | 8 | 26 |",
+      "| Later | 0 | 0 | 0 | 0 |",
+      "| Full target | 36 | 136 | 32 | 204 |"
+    ],
+    "brief002_status": "partial",
+    "task_changed_clause_status": false
+  }
+}

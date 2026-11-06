@@ -1,0 +1,219 @@
+{
+  "reviewed_at": "2026-11-06T19:12:51.564940+00:00",
+  "repository_treated_as_public": true,
+  "files": [
+    {
+      "file": "REPORT.md",
+      "bytes": 15890,
+      "sha256": "0dc0515392f27e81ccf4983548e330cdb6d8faaea59f4baecedc27dcb7a47d8a",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "PLAN.md",
+      "bytes": 1867,
+      "sha256": "342a151728da6a1893409fff798fc34d21022ca895e158b8ba3bce19df575eb8",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "receipt.json",
+      "bytes": 8692,
+      "sha256": "bda70f86eb5c5466cbb26d192fee206ab7cb04882ae06034b71fdb5bf60e9868",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "setup-receipt.json",
+      "bytes": 2661,
+      "sha256": "943be46337d6f15951fdb04ceb7f113b80c4812dc80af600b095aafd8e27ffa2",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "runner.json",
+      "bytes": 836,
+      "sha256": "6dfc67b8fe422f67fcc2c7043ae54e520d2ecfc14e0784c92357a727ebed5262",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "provenance.json",
+      "bytes": 1072,
+      "sha256": "1df078cada3d33301e1e01b88fa71432804d8f748c6c203aa966a0cff96465f9",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "contract-observations.json",
+      "bytes": 1068,
+      "sha256": "bcdd17f9cdb1aea815393ce72dc7f39dbf972a30c1a08f4c2e303fec942e8ecd",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "source-trace.txt",
+      "bytes": 14188,
+      "sha256": "d66718eaf99bf08303d3b797f2166c38875e5ead608587b8fa65091b9994ee7b",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "source-identities.json",
+      "bytes": 5850,
+      "sha256": "b62e4c430bca340623b717b56ba18b3c5da8bec1d57bd2e5686bd8f9d5ff151a",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "source-history.log",
+      "bytes": 20003,
+      "sha256": "b86a3c84228b39c52b99ff8d92d1d67f8a49e4245a958b0f399a42767e12166f",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "candidate-build.log",
+      "bytes": 3546,
+      "sha256": "4b43963cf0ff6dc7bec81871af8fc639ff2017ef09e3189d06f9bd051baf2a19",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "candidate-seal.log",
+      "bytes": 67,
+      "sha256": "0be1c32f376f15c72452fd602286b701e3a1fc7ff2cc7add4b5b721266c84cbc",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "candidate-prepare.log",
+      "bytes": 1027033,
+      "sha256": "c8423902ca99dcfc95b09f0deaf1b6f0b446aa296fd35f4fc0fc045a8178d1ba",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "candidate-test.log",
+      "bytes": 285,
+      "sha256": "06db8c41f10957afc5a7aba7e62c2949423806c1c00efec43ec42295f9f4a3d9",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "candidate-results.jsonl",
+      "bytes": 397,
+      "sha256": "3e2f7905531c85f656cb2a409a23c6c9989658cb313df06e3a8ee7945f7829c5",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "candidate-receipt.json",
+      "bytes": 1453,
+      "sha256": "997623c0a053300091e4372ebb73e3160d3b52f015793a48926aa0ef67acefff",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "main-build.log",
+      "bytes": 3613,
+      "sha256": "831efa68cede5476290cfd32f29b408df2b6bfbf6b8077bdf611775cf146f4c1",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "main-seal.log",
+      "bytes": 67,
+      "sha256": "0be1c32f376f15c72452fd602286b701e3a1fc7ff2cc7add4b5b721266c84cbc",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "main-prepare.log",
+      "bytes": 1026683,
+      "sha256": "5a1d4d6a95d408f90f21c8e0c85f9697387e8149108749c58f8f14e110386987",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "main-test.log",
+      "bytes": 285,
+      "sha256": "d14f17c5f23bf96a30f61bba8887f1ef7e1cff76f754649776e2ece041159563",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "main-results.jsonl",
+      "bytes": 397,
+      "sha256": "734108d0a871b65be454f82dbf759eca0efc366dda8962b3833f6f6b72aa1ba6",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "main-receipt.json",
+      "bytes": 1393,
+      "sha256": "5ad8eeb12ef4a0330db1305e391996846d2096c211fb4d9e6544723ead13938b",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "original-build.log",
+      "bytes": 3613,
+      "sha256": "f8ebc3e38cbf3287427f1edecf7db33a37716276190027bc291643f51d60e3a6",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "original-seal.log",
+      "bytes": 67,
+      "sha256": "0be1c32f376f15c72452fd602286b701e3a1fc7ff2cc7add4b5b721266c84cbc",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "original-prepare.log",
+      "bytes": 1026963,
+      "sha256": "c3687b7d409ee00d0930eb002c4da9aa7fdc1e489e0faac7190c092b91f11d34",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "original-test.log",
+      "bytes": 284,
+      "sha256": "e1aa27b67431188da6dde68ebb11fe67b8903671c54b72c01d3c5f15b33e4a00",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "original-results.jsonl",
+      "bytes": 397,
+      "sha256": "744ecca2c233ce5f37d1590c6b46ed0d6fa189c5db0b5fe62ac8ded58ab2d281",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "original-receipt.json",
+      "bytes": 1414,
+      "sha256": "b325fb36b458e878f99be600627b1c00248d30277f488d74a2d50c9d3089e7f2",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "evidence-attempt-1.log",
+      "bytes": 42,
+      "sha256": "c8fef469efa8673f80598697866057bd110d7d0c33b88c74bbf1182cecd9b42e",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    },
+    {
+      "file": "evidence-local-audit-diagnostic.log",
+      "bytes": 992,
+      "sha256": "0d0ce09717a05f4dd84c44c8271d752123add234cf950e1fc9cece6bcd032c4c",
+      "regular_file": true,
+      "sensitive_pattern_findings": []
+    }
+  ],
+  "scope": "reports, actual test/build/prepare outputs, command receipts and public source trace only",
+  "excluded": "credentials, environment dumps, private setup output, held-out material, browser artifacts/profiles and symlinks",
+  "product_changes": false
+}

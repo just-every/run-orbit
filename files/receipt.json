@@ -1,0 +1,220 @@
+{
+  "task": "sd-orbit-f40land2-ci-triage-1",
+  "repository": "just-every/run-orbit",
+  "finding": "NOT REPRODUCED",
+  "completed_at": "2026-11-06T19:10:52.036540+00:00",
+  "runner": {
+    "os": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "kernel": "6.18.57",
+    "architecture": "x86_64",
+    "runner_id_sha256": "70b8ae30914da36e6f481ecf2e9b9280c1023b21d702311d52ab9f5bc5ee0614",
+    "chromium": "Chromium 154.0.8037.57 built on Debian GNU/Linux 13 (trixie)",
+    "execution": "same dedicated Linux VM, same checkout path for three sequential detached-head runs",
+    "node": "22.20.0",
+    "pnpm": "10.12.4",
+    "playwright": "1.64.1",
+    "rer": "0.2.96",
+    "browser_launcher": "Playwright external browser cache executables symlink to /usr/bin/chromium; default --no-sandbox retained; no tracked test/config/dependency source modified",
+    "differences_from_github_runner": "Debian 13 x86_64 cloud VM; supplied GitHub job used ubuntu-24.04. System Chromium 154 vs Playwright-managed Chromium 156. No extra stress or timing changes."
+  },
+  "provenance": {
+    "repository": "just-every/run-orbit",
+    "initial_main": "32c41a210e1488e53b36c79d6d5056a1a9ab60e3",
+    "tested_main": "32c41a210e1488e53b36c79d6d5056a1a9ab60e3",
+    "final_main": "32c41a210e1488e53b36c79d6d5056a1a9ab60e3",
+    "candidate": "f73da7ab1a8ceebedbb302a415e117a34e2355e9",
+    "candidate_ref": "cloud/sd-orbit-c-f40-land-2",
+    "original": "8997ad7e3112fc65ed426845d70a12813ceb8432",
+    "original_ref": "cloud/sd-orbit-c-f40-fix1",
+    "final_fetch": {
+      "command": "git fetch --no-tags origin main",
+      "exit": 0,
+      "output": "From https://github.com/just-every/run-orbit\n * branch            main       -> FETCH_HEAD\n",
+      "completed_at": "2026-11-06T19:10:51.975730+00:00"
+    },
+    "task_branch": "cloud/sd-orbit-f40land2-ci-triage-1",
+    "product_branch_pushed": false,
+    "terminal_product_head": "32c41a210e1488e53b36c79d6d5056a1a9ab60e3",
+    "source_status": "",
+    "product_candidate_identity_audit": {
+      "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+      "candidate_commits": 0,
+      "output": ""
+    }
+  },
+  "head_receipts": {
+    "candidate": {
+      "label": "candidate",
+      "head": "f73da7ab1a8ceebedbb302a415e117a34e2355e9",
+      "tree": "ff9ad9b98387575e423b32c566b1625f3424d3e4",
+      "clean_before": true,
+      "commands": [
+        {
+          "command": "cloud_run npx -y @runeditrun/rer build",
+          "exit": 0,
+          "output_file": "candidate-build.log",
+          "note": "Completed immediately before driver invocation, unchanged head; build not repeated."
+        },
+        {
+          "command": "pnpm exec node scripts/verification-build.mjs seal && pnpm exec node scripts/verification-build.mjs check",
+          "exit": 0,
+          "duration_seconds": 1.44,
+          "output_file": "candidate-seal.log",
+          "owned_shell_pid": 4192
+        },
+        {
+          "command": "cloud_run pnpm exec tsx tests/support/prepare-state.ts",
+          "exit": 0,
+          "duration_seconds": 25.516,
+          "output_file": "candidate-prepare.log",
+          "owned_shell_pid": 4286
+        },
+        {
+          "command": "cloud_run pnpm exec node --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/rer-operator-desktop-results.jsonl tests/rer/operator-desktop.test.mjs",
+          "exit": 0,
+          "duration_seconds": 193.721,
+          "output_file": "candidate-test.log",
+          "owned_shell_pid": 4864
+        }
+      ],
+      "started_at": "2026-11-06T18:57:36.123642+00:00",
+      "finished_at": "2026-11-06T19:01:16.803192+00:00",
+      "clean_after": true
+    },
+    "main": {
+      "label": "main",
+      "head": "32c41a210e1488e53b36c79d6d5056a1a9ab60e3",
+      "tree": "b618c198bd08e395a63ba2e941e14bb0cccfd173",
+      "clean_before": true,
+      "commands": [
+        {
+          "command": "cloud_run npx -y @runeditrun/rer build",
+          "exit": 0,
+          "duration_seconds": 10.223,
+          "output_file": "main-build.log",
+          "owned_shell_pid": 6740
+        },
+        {
+          "command": "pnpm exec node scripts/verification-build.mjs seal && pnpm exec node scripts/verification-build.mjs check",
+          "exit": 0,
+          "duration_seconds": 1.228,
+          "output_file": "main-seal.log",
+          "owned_shell_pid": 6935
+        },
+        {
+          "command": "cloud_run pnpm exec tsx tests/support/prepare-state.ts",
+          "exit": 0,
+          "duration_seconds": 25.939,
+          "output_file": "main-prepare.log",
+          "owned_shell_pid": 7021
+        },
+        {
+          "command": "cloud_run pnpm exec node --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/rer-operator-desktop-results.jsonl tests/rer/operator-desktop.test.mjs",
+          "exit": 0,
+          "duration_seconds": 197.936,
+          "output_file": "main-test.log",
+          "owned_shell_pid": 7602
+        }
+      ],
+      "started_at": "2026-11-06T19:01:53.224048+00:00",
+      "finished_at": "2026-11-06T19:05:48.555540+00:00",
+      "clean_after": true
+    },
+    "original": {
+      "label": "original",
+      "head": "8997ad7e3112fc65ed426845d70a12813ceb8432",
+      "tree": "ce7e46dfb0c76e67c59318cba6099a83b630b11e",
+      "clean_before": true,
+      "commands": [
+        {
+          "command": "cloud_run npx -y @runeditrun/rer build",
+          "exit": 0,
+          "duration_seconds": 10.748,
+          "output_file": "original-build.log",
+          "owned_shell_pid": 9418
+        },
+        {
+          "command": "pnpm exec node scripts/verification-build.mjs seal && pnpm exec node scripts/verification-build.mjs check",
+          "exit": 0,
+          "duration_seconds": 1.332,
+          "output_file": "original-seal.log",
+          "owned_shell_pid": 9614
+        },
+        {
+          "command": "cloud_run pnpm exec tsx tests/support/prepare-state.ts",
+          "exit": 0,
+          "duration_seconds": 28.706,
+          "output_file": "original-prepare.log",
+          "owned_shell_pid": 9700
+        },
+        {
+          "command": "cloud_run pnpm exec node --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/rer-operator-desktop-results.jsonl tests/rer/operator-desktop.test.mjs",
+          "exit": 0,
+          "duration_seconds": 201.294,
+          "output_file": "original-test.log",
+          "owned_shell_pid": 10263
+        }
+      ],
+      "started_at": "2026-11-06T19:06:07.485455+00:00",
+      "finished_at": "2026-11-06T19:10:09.569213+00:00",
+      "clean_after": true
+    }
+  },
+  "summaries": {
+    "candidate": {
+      "kind": "summary",
+      "runner": "node:test",
+      "success": true,
+      "counts": {
+        "tests": 1,
+        "failed": 0,
+        "passed": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    "main": {
+      "kind": "summary",
+      "runner": "node:test",
+      "success": true,
+      "counts": {
+        "tests": 1,
+        "failed": 0,
+        "passed": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    "original": {
+      "kind": "summary",
+      "runner": "node:test",
+      "success": true,
+      "counts": {
+        "tests": 1,
+        "failed": 0,
+        "passed": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    }
+  },
+  "product_commits": 0,
+  "product_pushes": 0,
+  "pr": null,
+  "github_api_calls": 0,
+  "ci_runs_supplied_only": [
+    "42270737226 attempt 1; job 128075546458",
+    "42226746421 attempt 2"
+  ],
+  "clause_changes": [],
+  "next_action": "Triage complete. Send an informational note to fv about the source-supported shared status-loss race in the landed OR3 contact loader, and retain the historical red Verify as supplied. Default: no product FIX, no assertion weakening, no timeout increase, no rerun/dispatch, no clause or lifecycle change, and no gate/landing decision from this report. A future authorized follow-up could investigate preserving the HTTP status on relationship-read errors or making the primary record read own missing-record recovery; this task does not implement or approve such a change."
+}

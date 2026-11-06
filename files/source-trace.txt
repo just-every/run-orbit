@@ -1,0 +1,185 @@
+
+tests/rer/operator-routes.mjs (candidate; blob comparison in source-identities.json)
+14:   await response.dispose();
+15:  }
+16:  // OR3: a record address with an id that is not a record says Not found in the frame and offers its kind's list.
+17:  const lists={opportunities:'/app/opportunities',contacts:'/app/contacts',companies:'/app/companies',meetings:'/app/meetings',drafts:'/app/drafts',assistance:'/app/opportunities'};
+18:  for(const kind of ['opportunities','contacts','companies','meetings','drafts','assistance']){
+19:   for(const id of ['invalid.id','00000000000000000000000000']){
+20:    if(!['contacts','companies'].includes(kind)){
+21:     const read=kind==='meetings'?`/api/v1/today/meetings/${id}`:kind==='drafts'?`/api/v1/drafts/${id}`:`/api/v1/opportunities/${id}`;
+22:     const response=await page.request.get(origin+read);expect(response.status()).toBe(404);await response.dispose();
+23:    }
+24:    if(kind==='opportunities'){
+25:     const drafts=await page.request.get(origin+`/api/v1/drafts?opportunityId=${id}`);expect(drafts.status()).toBe(404);await drafts.dispose();
+26:    }
+27:    await page.goto(origin+`/app/${kind}/${id}`);
+28:    await expect(page.getByRole('main').getByRole('alert')).toBeVisible();
+29:    if(['opportunities','contacts','companies'].includes(kind))await expect(page.getByRole('main').getByRole('alert')).toContainText(`This ${{opportunities:'opportunity',contacts:'contact',companies:'company'}[kind]} does not exist.`);
+30:    await expect(page.getByRole('main').locator('form')).toHaveCount(0);
+31:    const back=page.getByRole('main').locator(`a[href="${lists[kind]}"]`);await expect(back).toBeVisible();
+32:    if(kind==='opportunities'){
+33:     await back.click();await expect(page).toHaveURL(origin+'/app/opportunities');
+34:     const create=page.getByRole('link',{name:'New opportunity',exact:true});
+35:     await expect(create).toBeVisible();await expect(create).toHaveAttribute('href','/app/opportunities/new');
+36:    }
+
+src/routes/app.contacts.$id.tsx (candidate; blob comparison in source-identities.json)
+1: import { editorLeaf } from "../editor/leaf";
+2: import { createFileRoute } from "@tanstack/react-router";
+3: import { ContactRecordPage } from "../core/features/operator/ui/record/customer-record";
+4: import { operatorDetailErrors, requireDetailId } from './-operator-detail';
+5: export const Route = createFileRoute("/app/contacts/$id")({
+6:   beforeLoad: ({ params }) => requireDetailId(params.id, 'contact'),
+7:   ...operatorDetailErrors('contact'),
+8:   component: editorLeaf(ContactRecordPage),
+9: });
+
+src/routes/-operator-detail.tsx (candidate; blob comparison in source-identities.json)
+17: export function requireDetailId(id: string, kind: DetailKind) {
+18:   const valid = kind === 'meeting' ? /^[A-Za-z0-9_-]{1,100}$/ : /^[0-9A-HJKMNP-TV-Z]{26}$/;
+19:   if (!valid.test(id)) throw notFound();
+20: }
+21: 
+22: export function OperatorDetailState({ kind, missing = false }: { kind: DetailKind; missing?: boolean }) {
+23:   const page = pages[kind];
+24:   return <OperatorShell title={missing ? 'Not found' : page.noun[0]!.toUpperCase() + page.noun.slice(1)}>
+25:     <OperatorState kind="error">{missing ? `This ${page.noun} does not exist.` : `Orbit could not load this ${page.noun}.`} <Link className="operator-back-link" to={page.list}>← {page.label}</Link></OperatorState>
+26:   </OperatorShell>;
+27: }
+28: 
+29: export function operatorDetailErrors(kind: DetailKind) {
+30:   return {
+31:     notFoundComponent: editorLeaf(() => <OperatorDetailState kind={kind} missing />),
+32:     errorComponent: editorLeaf(() => <OperatorDetailState kind={kind} />),
+33:   };
+34: }
+
+src/core/features/operator/ui/record/customer-record.tsx (candidate; blob comparison in source-identities.json)
+33:  * with their mail, and their details beside the work, every value saving as it changes. */
+34: function CustomerRecordPage({kind}:{kind:'contact'|'company'}){const {full}=useAppAccess();return full?<EditableCustomerRecordPage kind={kind}/>:<ReadOnlyRecord kind={kind}/>;}
+35: function EditableCustomerRecordPage({kind}:{kind:'contact'|'company'}){
+36:  const {id}=useParams({strict:false}) as {id:string};
+37:  const load=useCallback(async()=>{
+38:   const [detail,settings,context]=await Promise.all([readRecord<any>(kind,id),recordsRequest<any>('settings'),kind==='contact'?readContext<ContactContext>('contact',id):Promise.resolve(null)]);
+39:   return {detail,settings,context};
+40:  },[kind,id]);
+41:  const resource=useOperatorResource(`${kind}:${id}`,load),data=resource.data,reload=resource.reload;
+42:  const definitions=useFieldDefinitions(kind),mail=useRecordMail(kind,id);
+43:  const recordCopy=useMemo(()=>data?recordValues(data.detail.record):null,[data?.detail]),contextCopy=useMemo(()=>data?.context?contactContextValues(data.context):null,[data?.context]);
+44:  const record=useAutosave<Values>({key:`${kind}.${id}`,copy:recordCopy,version:copy=>copy.updated_at,send:(changes,base,_copy,init)=>patchRecord(kind,id,changes,base,init),reread:async()=>recordValues((await readRecord<{record:Values}>(kind,id)).record),onSaved:reload});
+45:  const context=useAutosave<ContactContextValues>({key:`contact-context.${id}`,copy:contextCopy,send:(changes,_base,copy,init)=>saveContactContext(id,changes,copy,init),reread:async()=>contactContextValues(await readContext<ContactContext>('contact',id)),onSaved:reload});
+46:  const [writing,setWriting]=useState(false);
+47:  useRefresh(reload);
+48:  useCaretOnCreate(Boolean(data&&record.copy));
+49:  if(!data)return <OperatorShell title={kind==='contact'?'Contact':'Company'}>{resource.error?<OperatorState kind="error">{resource.error.message}</OperatorState>:<OperatorState>Loading {kind}…</OperatorState>}</OperatorShell>;
+
+src/core/features/operator/ui/record/record-api.ts (candidate; blob comparison in source-identities.json)
+18: }
+19: export async function readRecord<T=any>(kind:RecordKind,id:string):Promise<T>{
+20:  const response=await fetch(`/api/v1/records/${kind}/${id}`,{credentials:'same-origin'});
+21:  const result=await response.json().catch(()=>({})) as T&{error?:string};
+22:  if(!response.ok)throw Object.assign(new Error(result.error??'Orbit could not load this record.'),{status:response.status});
+23:  return result;
+24: }
+25: /** A record row as the fields a page saves: its columns, and each custom field as custom:<key>. */
+26: export function recordValues(row:Values):Values{
+27:  const custom=JSON.parse(row.custom_fields_json??'{}') as Values;
+28:  return {...row,...Object.fromEntries(Object.entries(custom).map(([key,value])=>[`custom:${key}`,value]))};
+29: }
+30: 
+31: /** A deal's or a contact's relationships, as the fields their page saves; products are one per line. */
+32: export type DealContextValues={revision:string;company:string|null;companyName:string;stakeholders:OpportunityContext['stakeholders'];products:string;nextStep:string;mutualCommitments:string};
+33: export type ContactContextValues={revision:string;primaryCompany:ContactContext['primaryCompany'];secondaryCompanies:ContactContext['secondaryCompanies']};
+34: export const dealContextValues=(context:OpportunityContext):DealContextValues=>({revision:context.revision,company:context.company?.id??null,companyName:context.company?.name??'',stakeholders:context.stakeholders,products:context.products.join('\n'),nextStep:context.nextStep,mutualCommitments:context.mutualCommitments});
+35: export const contactContextValues=(context:ContactContext):ContactContextValues=>({revision:context.revision,primaryCompany:context.primaryCompany,secondaryCompanies:context.secondaryCompanies});
+36: 
+37: export async function readContext<T>(kind:'opportunity'|'contact',id:string):Promise<T>{
+38:  const response=await fetch(`/api/v1/relationships/${kind}/${id}`,{credentials:'same-origin'});
+39:  const result=await response.json().catch(()=>({})) as T&{error?:string};
+40:  if(!response.ok)throw new Error(result.error??'Orbit could not load these relationships.');
+41:  return result;
+42: }
+
+src/core/features/operator/ui/use-operator-resource.ts (candidate; blob comparison in source-identities.json)
+11: export function useOperatorResource<T>(key: string, load: () => Promise<T>, initialData?: T): ResourceState<T> {
+12:   const [data, setData] = useState<T | null>(initialData ?? null);
+13:   const [failure, setFailure] = useState<{ key: string; error: Error } | null>(null);
+14:   const error = failure?.key === key ? failure.error : null;
+15:   const [request, setRequest] = useState(0);
+16: 
+17:   useEffect(() => {
+18:     let active = true;
+19:     // Retain the server-rendered result while refreshing this view.
+20:     setFailure(null);
+21: 
+22:     load().then(
+23:       (next) => { if (active) setData(next); },
+24:       (next: unknown) => { if (active) setFailure({ key, error: next instanceof Error ? next : new Error("Orbit could not load this view.") }); }
+25:     );
+26: 
+27:     return () => { active = false; };
+28:   }, [key, load, request]);
+29: 
+30:   // The main detail read owns the route's recovery state; nested panels keep their own errors.
+31:   if (error && (error as Error & { status?: number }).status === 404 && /^(opportunity|contact|company|draft|meeting|assistance):/.test(key)) {
+32:     throw notFound();
+33:   }
+34: 
+35:   return { data, error, loading: !data && !error, reload: () => setRequest((current) => current + 1) };
+36: }
+
+src/core/features/relationships/routes.ts (candidate; blob comparison in source-identities.json)
+10: /** Mount after the app's native session, origin, maintenance and class boundaries. */
+11: export function createRelationshipRoutes(db:D1Database){
+12:  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
+13:  app.onError((error,c)=>{
+14:   if(error instanceof RecordError)return c.json({error:error.message},error.status);
+15:   logUnexpected('relationships',error);
+16:   return c.json({error:'The relationship update was not confirmed. Reload to inspect its current state.'},500);
+17:  });
+18:  app.use('*',async(c,next)=>{
+19:   if(!await isFullOperator(db,c.get('operator').operatorId))return c.json({error:'A full native operator is required for relationship authoring.'},403);
+20:   if(Object.keys(c.req.query()).length)return c.json({error:'Relationship requests do not accept query parameters.'},400);
+21:   await next();
+22:  });
+23:  for(const kind of ['contact','opportunity'] as const){
+24:   app.use(`/${kind}/:id`,async(c,next)=>{
+25:    if(!relationshipId.safeParse(c.req.param('id')).success)return c.json({error:'Invalid record ID.'},400);
+26:    await next();
+27:   });
+28:   app.get(`/${kind}/:id`,async c=>c.json(kind==='contact'?await readContactContext(db,c.req.param('id')):await readOpportunityContext(db,c.req.param('id'))));
+29:   app.put(`/${kind}/:id`,async c=>{
+
+src/core/features/relationships/contact.ts (candidate; blob comparison in source-identities.json)
+7: function contactView(id:string,snapshot:Awaited<ReturnType<typeof readSnapshot>>):ContactContext{
+8:  return {kind:'contact',recordId:id,revision:snapshot.revision,
+9:   primaryCompany:snapshot.state.company?{id:snapshot.state.company.id,name:snapshot.state.company.name}:null,
+10:   secondaryCompanies:snapshot.state.secondaryCompanies.map((row:SecondaryCompany)=>({companyId:row.companyId,name:row.name,verified:Boolean(row.verified),verifiedBy:row.verifiedBy,verifiedAt:row.verifiedAt}))};
+11: }
+12: export async function readContactContext(db:D1Database,id:string){return contactView(id,await readSnapshot(db,'contact',id));}
+13: export async function saveContactContext(db:D1Database,id:string,input:ContactContextInput,actor:AuthenticatedOperator){
+14:  const snapshot=await readSnapshot(db,'contact',id),before=contactView(id,snapshot);
+
+src/core/features/relationships/snapshot.ts (candidate; blob comparison in source-identities.json)
+32: }
+33: export async function readSnapshot(db:D1Database,kind:'contact'|'opportunity',id:string){
+34:  const row=await db.prepare(snapshotSql(kind)).bind(id).first<{snapshot:string}>();
+35:  if(!row)throw new RecordError(404,'Record not found.');
+36:  return {raw:row.snapshot,state:JSON.parse(row.snapshot),revision:await snapshotRevision(row.snapshot)};
+37: }
+
+src/core/features/records/shared.ts (candidate; blob comparison in source-identities.json)
+1: import { createId } from '../../shared/ids';
+2: export type RecordKind = 'contact'|'company'|'opportunity';
+3: export const tables = { contact:'contacts',company:'companies',opportunity:'opportunities' } as const;
+4: export class RecordError extends Error { constructor(readonly status:400|403|404|409|413|429, message:string,readonly recordId?:string){super(message);} }
+5: export function audit(db:D1Database,actor:string|null,action:string,kind:string,id:string,details:unknown={},occurredAt=new Date().toISOString()) {
+6:  return db.prepare('INSERT INTO audit_entries(id,actor_id,action,entity_type,entity_id,details_json,occurred_at) VALUES(?,?,?,?,?,?,?)').bind(createId(),actor,action,kind,id,JSON.stringify(details),occurredAt);
+7: }
+8: export function timeline(db:D1Database,actor:string,kind:RecordKind,recordId:string,event:string,payload:unknown,occurredAt=new Date().toISOString()) {
+9:  const id=createId(),now=new Date().toISOString();
+10:  return [db.prepare("INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) VALUES(?,?,?,?,'operator',?,'records',?)").bind(id,event,occurredAt,now,actor,JSON.stringify(payload)),db.prepare('INSERT INTO timeline_entry_records VALUES(?,?,?)').bind(id,kind,recordId)];
+11: }
+12: export async function requireRecord(db:D1Database,kind:RecordKind,id:string){const row=await db.prepare(`SELECT * FROM ${tables[kind]} WHERE id=?`).bind(id).first<Record<string,any>>();if(!row)throw new RecordError(404,'Record not found.');return row;}
+13: export function mutationJob(db:D1Database,id:string,actor:string,reason:string){return db.prepare('INSERT INTO record_mutation_jobs VALUES(?,?,?,?) ON CONFLICT(opportunity_id) DO UPDATE SET actor_id=excluded.actor_id,reason=excluded.reason,requested_at=excluded.requested_at').bind(id,actor,reason,new Date().toISOString());}

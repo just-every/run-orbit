@@ -1,0 +1,39 @@
+{
+  "label": "original",
+  "head": "8997ad7e3112fc65ed426845d70a12813ceb8432",
+  "tree": "ce7e46dfb0c76e67c59318cba6099a83b630b11e",
+  "clean_before": true,
+  "commands": [
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "duration_seconds": 10.748,
+      "output_file": "original-build.log",
+      "owned_shell_pid": 9418
+    },
+    {
+      "command": "pnpm exec node scripts/verification-build.mjs seal && pnpm exec node scripts/verification-build.mjs check",
+      "exit": 0,
+      "duration_seconds": 1.332,
+      "output_file": "original-seal.log",
+      "owned_shell_pid": 9614
+    },
+    {
+      "command": "cloud_run pnpm exec tsx tests/support/prepare-state.ts",
+      "exit": 0,
+      "duration_seconds": 28.706,
+      "output_file": "original-prepare.log",
+      "owned_shell_pid": 9700
+    },
+    {
+      "command": "cloud_run pnpm exec node --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/rer-operator-desktop-results.jsonl tests/rer/operator-desktop.test.mjs",
+      "exit": 0,
+      "duration_seconds": 201.294,
+      "output_file": "original-test.log",
+      "owned_shell_pid": 10263
+    }
+  ],
+  "started_at": "2026-11-06T19:06:07.485455+00:00",
+  "finished_at": "2026-11-06T19:10:09.569213+00:00",
+  "clean_after": true
+}

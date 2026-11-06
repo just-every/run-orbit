@@ -1,0 +1,25 @@
+{
+  "repository": "just-every/run-orbit",
+  "initial_main": "32c41a210e1488e53b36c79d6d5056a1a9ab60e3",
+  "tested_main": "32c41a210e1488e53b36c79d6d5056a1a9ab60e3",
+  "final_main": "32c41a210e1488e53b36c79d6d5056a1a9ab60e3",
+  "candidate": "f73da7ab1a8ceebedbb302a415e117a34e2355e9",
+  "candidate_ref": "cloud/sd-orbit-c-f40-land-2",
+  "original": "8997ad7e3112fc65ed426845d70a12813ceb8432",
+  "original_ref": "cloud/sd-orbit-c-f40-fix1",
+  "final_fetch": {
+    "command": "git fetch --no-tags origin main",
+    "exit": 0,
+    "output": "From https://github.com/just-every/run-orbit\n * branch            main       -> FETCH_HEAD\n",
+    "completed_at": "2026-11-06T19:10:51.975730+00:00"
+  },
+  "task_branch": "cloud/sd-orbit-f40land2-ci-triage-1",
+  "product_branch_pushed": false,
+  "terminal_product_head": "32c41a210e1488e53b36c79d6d5056a1a9ab60e3",
+  "source_status": "",
+  "product_candidate_identity_audit": {
+    "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+    "candidate_commits": 0,
+    "output": ""
+  }
+}

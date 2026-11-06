@@ -1,0 +1,14 @@
+{
+  "os": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "kernel": "6.18.57",
+  "architecture": "x86_64",
+  "runner_id_sha256": "70b8ae30914da36e6f481ecf2e9b9280c1023b21d702311d52ab9f5bc5ee0614",
+  "chromium": "Chromium 154.0.8037.57 built on Debian GNU/Linux 13 (trixie)",
+  "execution": "same dedicated Linux VM, same checkout path for three sequential detached-head runs",
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "playwright": "1.64.1",
+  "rer": "0.2.96",
+  "browser_launcher": "Playwright external browser cache executables symlink to /usr/bin/chromium; default --no-sandbox retained; no tracked test/config/dependency source modified",
+  "differences_from_github_runner": "Debian 13 x86_64 cloud VM; supplied GitHub job used ubuntu-24.04. System Chromium 154 vs Playwright-managed Chromium 156. No extra stress or timing changes."
+}
