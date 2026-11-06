@@ -311,8 +311,8 @@ test('OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end sched
  const due=['2030-01-07T10:00:00.000Z','2030-01-08T10:00:00.000Z','2030-01-09T10:00:00.000Z'];
  async function schedule(subject:string,at=due[1]!){const draft=await api<{id:string}>(`workbench/opportunities/${f.opportunityId}/drafts`,{contactId:f.contactId,subject,body:'Reviewed follow-up'},201);return (await api<{id:string;state:string}>(`workbench/drafts/${draft.id}/approve`,{revision:1,scheduledAt:at})).id;}
  const manual=await schedule('Follow-up stopped by its operator',due[0]);
- const messages=async()=>(await api<{messages:{id:string;revision:number;state:string;subject:string;body:string;failure:string|null}[]}>(`workbench/opportunities/${f.opportunityId}/messages`)).messages;
- assert.deepEqual((await messages()).map(({id,revision,state,subject,body})=>({id,revision,state,subject,body})),[{id:manual,revision:1,state:'scheduled',subject:'Follow-up stopped by its operator',body:'Reviewed follow-up'}],'The scheduled message contains exactly the reviewed draft');
+ const messages=async()=>(await api<{messages:{id:string;revision:number;state:string;recipientEmail:string;subject:string;body:string;failure:string|null}[]}>(`workbench/opportunities/${f.opportunityId}/messages`)).messages;
+ assert.deepEqual((await messages()).map(({id,revision,state,recipientEmail,subject,body})=>({id,revision,state,recipientEmail,subject,body})),[{id:manual,revision:1,state:'scheduled',recipientEmail:f.email.toLowerCase(),subject:'Follow-up stopped by its operator',body:'Reviewed follow-up'}],'The scheduled message contains exactly the reviewed draft');
  assert.deepEqual(await api(`workbench/messages/${manual}/cancel`,{}),{cancelled:true});
  const manualEffects=async()=>({
   messages:await messages(),
@@ -353,6 +353,9 @@ test('OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end sched
  await api(`records/opportunity/${f.opportunityId}/lifecycle`,{state:'open',reason:''});assert.equal((await post(genuine)).status,200,'Replaying the reply is accepted once');
  for(const at of due)await service.dispatchDue(new Date(Date.parse(at)+60000));
  assert.equal(calls,1,'Reopen, replay and late dispatch revive no stopped send');
+ assert.deepEqual((await messages()).find(message=>message.id===manual),cancelled.messages[0],'Reply replay and deal changes preserve the manually cancelled message and its first reason');
+ const manualAfterReplay=(await manualEffects()).detail.timeline.filter(entry=>entry.kind==='message.cancelled'&&JSON.parse(entry.payload_json).messageId===manual);
+ assert.deepEqual(manualAfterReplay,exits,'Later stop events retain the same single attributed human exit');
  for(const [id,exit] of [[followUp,stopped],[beforeMove,moved],[beforeClose,closed]] as const){const after=await approval.message(id);assert.equal(after.state,'cancelled');assert.equal(after.failure,exit.failure,'The first exit reason stands');}
  for(const id of [followUp,beforeMove])assert.equal((await db.prepare("SELECT COUNT(*) n FROM timeline_entries WHERE kind='message.schedule_stopped' AND json_extract(payload_json,'$.messageId')=?").bind(id).first<{n:number}>())!.n,1,'One exit reason on the open deal timeline');
  await api(`records/opportunity/${f.opportunityId}/lifecycle`,{state:'won',reason:'Signed again'});
