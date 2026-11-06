@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "tag": "ct-judge-orbit-action005-20261105-1600-sol1",
+  "repository": "just-every/run-orbit",
+  "source_branch": "cloud/sd-orbit-c-f46",
+  "source_head": "3ac8eb791b4d5731ba17adde0b3f454ee17f6b51",
+  "checkout_branch": "detached HEAD",
+  "product_writes": false,
+  "product_commits": 0,
+  "product_pushes": 0,
+  "pull_requests_created": 0,
+  "github_actions_calls": 0,
+  "paid_api_calls": 0,
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "xhigh",
+  "recorded_at": "2026-11-06T02:09:15.482199+00:00",
+  "runtime": {
+    "node": "v24.19.0",
+    "pnpm": "10.12.4",
+    "node_pin": "22.20.0",
+    "node_note": "Provided toolchain retains a newer VM Node; observed execution was v24.19.0. CI remains responsible for its pinned Node 22.20.0."
+  },
+  "commands": [
+    {
+      "id": "dependencies",
+      "command": ". /tmp/rer-cloud-toolchain.sh; cloud_run pnpm install --frozen-lockfile",
+      "exit": 0,
+      "log": "dependencies.log",
+      "purpose": "Pinned dependencies, no package or lock edit.",
+      "log_sha256": "0787fd601c952880a6e43c6cb3f69908e97a19596b47a42074736764764fb02b",
+      "log_bytes": 2305
+    },
+    {
+      "id": "native-core",
+      "command": ". /tmp/rer-cloud-toolchain.sh; cloud_run pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='AI-001 DATA-002 ACTION-005|CAPTURE-003 CAPTURE-005 OUT-001 OUT-007 ACTION-005' tests/core/assistance.test.ts tests/core/capture-boundaries.test.ts",
+      "exit": 0,
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "duration_ms": 83506.860175,
+      "log": "native-core.log",
+      "log_sha256": "f725be8435ef28e18d7aca333fb8497615ac4a1b44f458a59474df186d893022",
+      "log_bytes": 773
+    },
+    {
+      "id": "native-retained",
+      "command": ". /tmp/rer-cloud-toolchain.sh; cloud_run pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='OPP-008 completion|OUT-007 OUT-009 SEQUENCE-002|OUT-009 dispatch rechecks|OUT-002 OUT-007 temporary' tests/core/signals-outreach.test.ts",
+      "exit": 0,
+      "tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "duration_ms": 49166.85128,
+      "log": "native-retained.log",
+      "log_sha256": "8aa397bf2d1db1555f881c3b8933ec355453c516aae2c837725c0d9da82415c1",
+      "log_bytes": 793
+    },
+    {
+      "id": "browser",
+      "command": ". /tmp/rer-cloud-toolchain.sh; cloud_run pnpm exec playwright test --config ../judge.playwright.config.mjs tests/e2e/stale-review.spec.mjs --grep 'ACTION-005'",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "test_duration_seconds": 14.2,
+      "reported_total_duration": "1.0m",
+      "log": "browser.log",
+      "server": "Unchanged scripts/browser-server.mjs applied real migrations and ran pnpm run build:app, then served the emitted local Worker. External config only selected /usr/bin/chromium with --no-sandbox and report output directory. Test assertions remain at 1440; captures also at 390.",
+      "log_sha256": "c196e7006285908eb591fd07f2b50f91ad4cb163df9c2a6ff731af969e844dcd",
+      "log_bytes": 4503
+    },
+    {
+      "id": "contract-check",
+      "command": ". /tmp/rer-cloud-toolchain.sh; node src/base/contract-docs.mjs check",
+      "exit": 1,
+      "log": "contract-check.log",
+      "diagnostic": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+      "classification": "Known generated-view-only mechanical exception; no view written or committed.",
+      "log_sha256": "183372998615cc516043a5f66404b300281009a84349eda72da66d79fe542603",
+      "log_bytes": 67
+    },
+    {
+      "id": "pinned-source",
+      "command": "git rev-parse HEAD",
+      "exit": 0,
+      "stdout": "3ac8eb791b4d5731ba17adde0b3f454ee17f6b51"
+    },
+    {
+      "id": "reference-diff",
+      "command": "git diff --name-status dc255241b0197b57fbae1e7c0edf3f7dc9a7b726 HEAD",
+      "exit": 0,
+      "stdout": "M\tCONTRACT.md\nM\tsources.lock.json\nM\ttests/core/assistance.test.ts\nM\ttests/e2e/stale-review.spec.mjs\nA\ttests/support/stale-draft-review.ts\n"
+    },
+    {
+      "id": "clean-worktree",
+      "command": "git diff --exit-code; git diff --cached --exit-code; git status --porcelain=v1",
+      "exit": 0,
+      "stdout": ""
+    }
+  ],
+  "screens": [
+    {
+      "path": "screens/current-recipient-1440.png",
+      "bytes": 183025,
+      "sha256": "597e443f023ed9d1d6726c4b5ff61d44d307f826ff5d7c6efa139acee737d7dc",
+      "inspection": "Viewed by judge; current evidence, recipient, confirmation and disabled actions visible; no layout quality judgment."
+    },
+    {
+      "path": "screens/current-recipient-390.png",
+      "bytes": 151327,
+      "sha256": "c4253519862f7a606d589c8626998d223a8afc7701f9f10c49833b71521d6a5e",
+      "inspection": "Viewed by judge; current evidence, recipient, confirmation and disabled actions visible; no layout quality judgment."
+    },
+    {
+      "path": "screens/current-deal-1440.png",
+      "bytes": 197014,
+      "sha256": "e7c30e149f132830824ae1e943123b3d7a768a499d48e8a5db085e3924d8fda1",
+      "inspection": "Viewed by judge; current evidence, recipient, confirmation and disabled actions visible; no layout quality judgment."
+    },
+    {
+      "path": "screens/current-deal-390.png",
+      "bytes": 165967,
+      "sha256": "24c664f10dde98b8047c2905aaede8018a9e5f34f856f7a4354d5731fa5b1423",
+      "inspection": "Viewed by judge; current evidence, recipient, confirmation and disabled actions visible; no layout quality judgment."
+    }
+  ],
+  "not_run": [
+    {
+      "item": "Complete Verify, full suite and baseline suite",
+      "reason": "Reviewer assignment permits focused journeys once only."
+    },
+    {
+      "item": "CI polling, rerun and dispatch",
+      "reason": "Forbidden by the specific reviewer brief; supplied dispatch Verify 42054664493 failed generated-view freshness and skipped runtime."
+    },
+    {
+      "item": "Live provider, real device and live-account qualification",
+      "reason": "Outside this functional rubric; no live-provider claim or provider operation."
+    },
+    {
+      "item": "Merged generator write/check/counts/provenance and source-lock LAST, exact-final full runtime Verify, complete full-history NEW 0 publication scan, guarded landing equality and exact-main Run site",
+      "reason": "Pending guarded lander duties; no source edits or landing authorized for judge."
+    }
+  ],
+  "cleanup": "Pending after evidence publication; all cloud_run commands completed, with no browser or app server left running."
+}

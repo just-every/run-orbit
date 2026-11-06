@@ -1,0 +1,29 @@
+{
+  "pin": "3ac8eb791b4d5731ba17adde0b3f454ee17f6b51",
+  "immutable_raw_documents": [
+    {
+      "file": "CONTRACT.md",
+      "bytes": 483665,
+      "sha256": "ba573120f07afdd5f759ee245980a2c18de59b65de72cfa8cc3a5f46372d1a0e",
+      "raw_matches_checkout": true
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "bytes": 433821,
+      "sha256": "e0e03d6107f7eabe43653e38b6477fed30083cd43aedf331e524fbd367375e66",
+      "raw_matches_checkout": true
+    },
+    {
+      "file": "AGENTS.md",
+      "bytes": 6149,
+      "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9",
+      "raw_matches_checkout": true
+    },
+    {
+      "file": "RULINGS.md",
+      "bytes": 2770,
+      "sha256": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c",
+      "raw_matches_checkout": true
+    }
+  ]
+}

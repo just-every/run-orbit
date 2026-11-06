@@ -1,0 +1,95 @@
+{
+  "files": [
+    {
+      "path": "REPORT.md",
+      "bytes": 21753,
+      "sha256": "97ee46ac291b06303f2cf797a90b6381084e063d0fbdd2a6ad855b6afb955d3a"
+    },
+    {
+      "path": "VERDICT.md",
+      "bytes": 21753,
+      "sha256": "97ee46ac291b06303f2cf797a90b6381084e063d0fbdd2a6ad855b6afb955d3a"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 4720,
+      "sha256": "0e8b6d777d2fe5555ffc58723cda3761aff9b51dc1ae76463469b7262e8e7600"
+    },
+    {
+      "path": "COMMAND-RECEIPT.json",
+      "bytes": 6582,
+      "sha256": "60bc4e27ade6a951e115bb285604e3e0a52641dba4e9faf34e35172c2c345063"
+    },
+    {
+      "path": "source-documents.json",
+      "bytes": 822,
+      "sha256": "e7a2d4d8065814b48a86b9389805e04e1231167d02fb0af18f709291ba680fff"
+    },
+    {
+      "path": "custody.json",
+      "bytes": 2411,
+      "sha256": "24417e6b7536086945d991f0c1c9917cd4240465ca79d4b1b0d510aae1348086"
+    },
+    {
+      "path": "main-preservation.json",
+      "bytes": 3041,
+      "sha256": "62cb54a212f1e11fc9866a938cf4659a5ef7a0bf46c68850fd2461b69f565c00"
+    },
+    {
+      "path": "source-diff.txt",
+      "bytes": 489,
+      "sha256": "84a84862f6611506baf394e1a77189db9ac9a35f20b82c43bd0c150e41665f5a"
+    },
+    {
+      "path": "dependencies.log",
+      "bytes": 2305,
+      "sha256": "0787fd601c952880a6e43c6cb3f69908e97a19596b47a42074736764764fb02b"
+    },
+    {
+      "path": "native-core.log",
+      "bytes": 773,
+      "sha256": "f725be8435ef28e18d7aca333fb8497615ac4a1b44f458a59474df186d893022"
+    },
+    {
+      "path": "native-retained.log",
+      "bytes": 793,
+      "sha256": "8aa397bf2d1db1555f881c3b8933ec355453c516aae2c837725c0d9da82415c1"
+    },
+    {
+      "path": "browser.log",
+      "bytes": 4503,
+      "sha256": "c196e7006285908eb591fd07f2b50f91ad4cb163df9c2a6ff731af969e844dcd"
+    },
+    {
+      "path": "contract-check.log",
+      "bytes": 67,
+      "sha256": "183372998615cc516043a5f66404b300281009a84349eda72da66d79fe542603"
+    },
+    {
+      "path": "judge.playwright.config.mjs",
+      "bytes": 399,
+      "sha256": "fef38f64f7fab86ab76f3b0c2cf9db67c40397a2f4de280ff254a70a08784d20"
+    },
+    {
+      "path": "screens/current-recipient-1440.png",
+      "bytes": 183025,
+      "sha256": "597e443f023ed9d1d6726c4b5ff61d44d307f826ff5d7c6efa139acee737d7dc"
+    },
+    {
+      "path": "screens/current-recipient-390.png",
+      "bytes": 151327,
+      "sha256": "c4253519862f7a606d589c8626998d223a8afc7701f9f10c49833b71521d6a5e"
+    },
+    {
+      "path": "screens/current-deal-1440.png",
+      "bytes": 197014,
+      "sha256": "e7c30e149f132830824ae1e943123b3d7a768a499d48e8a5db085e3924d8fda1"
+    },
+    {
+      "path": "screens/current-deal-390.png",
+      "bytes": 165967,
+      "sha256": "24c664f10dde98b8047c2905aaede8018a9e5f34f856f7a4354d5731fa5b1423"
+    }
+  ],
+  "validation": "Explicit regular-file allowlist; report and actual command receipts/logs and synthetic browser captures only. No credentials, environment dumps, session traces, private held-out material or symlinks selected. Not a full-history publication scan."
+}

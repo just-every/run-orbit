@@ -1,0 +1,43 @@
+{
+  "pinned_source": {
+    "summary": [
+      "| All | 36 | 136 | 32 | 204 |"
+    ],
+    "status_row_counts": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32
+    },
+    "target_row": [
+      "| `ACTION-005` | Stale draft | published | done | Acceptance 1: `tests/core/assistance.test.ts` \u2014 AI-001 DATA-002 ACTION-005 changed context refuses generation and stale drafts need fresh explicit review (`tests/support/stale-draft-review.ts`: independent authenticated contact and deal edits stale the same saved draft; approval returns 409 with unchanged outbound inventory and zero provider submissions; another edit invalidates an opened review; only the fresh reviewed revision schedules future work without submitting mail); `tests/e2e/stale-review.spec.mjs` \u2014 an operator reviews new meeting evidence and native record changes before a fresh draft revision (current recipient and deal shown, explicit confirmation required, superseded review refused, meeting-evidence assertions retained, screens at 1440 and 390); `tests/core/capture-boundaries.test.ts` \u2014 CAPTURE-003 CAPTURE-005 OUT-001 OUT-007 ACTION-005 RECORD-012 SIGNAL-009 a captured reply stops outreach at once while its proposals wait; capture never drafts, sends or makes anyone contactable, and only an operator session may capture | |"
+    ],
+    "sha256": "ba573120f07afdd5f759ee245980a2c18de59b65de72cfa8cc3a5f46372d1a0e"
+  },
+  "pinned_generated": {
+    "summary": [
+      "| Full target | 35 | 137 | 32 | 204 |"
+    ],
+    "status_row_counts": {
+      "done": 0,
+      "partial": 0,
+      "missing": 0
+    },
+    "target_row": [],
+    "sha256": "e0e03d6107f7eabe43653e38b6477fed30083cd43aedf331e524fbd367375e66"
+  },
+  "main_at_clone": {
+    "summary": [
+      "| All | 35 | 137 | 32 | 204 |"
+    ],
+    "status_row_counts": {
+      "done": 35,
+      "partial": 137,
+      "missing": 32
+    },
+    "target_row": [
+      "| `ACTION-005` | Stale draft | published | partial | `src/core/features/drafts/service.ts`; `tests/e2e/stale-review.spec.mjs`; `tests/core/capture-boundaries.test.ts` | Unasserted in the carried evidence: customer/deal mutation stales draft; stale send refused; current differences shown before new review. Asserted: reply stop stales draft. |"
+    ],
+    "sha256": "6bb6fb9aaef0e0df27f86958e4734fef3b5d0f3cfa37f0400496e6043e8781b1",
+    "head": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "files": [
+    {
+      "blob": "0ca8abcab953c6244209870612ed3361d6cf8686",
+      "bytes": 6582,
+      "path": "COMMAND-RECEIPT.json",
+      "sha256": "60bc4e27ade6a951e115bb285604e3e0a52641dba4e9faf34e35172c2c345063"
+    },
+    {
+      "blob": "b931d2d84646b5c2cd99aa2adb2339d9b2d95a79",
+      "bytes": 3064,
+      "path": "PACKET-MANIFEST.json",
+      "sha256": "8e359a82e7c51ffbc58699190623430a1f041239605c5dea9d5f47f525cfe305"
+    },
+    {
+      "blob": "c0b90229cf1a4575ca8928913469317a0d51fb15",
+      "bytes": 4720,
+      "path": "PLAN.md",
+      "sha256": "0e8b6d777d2fe5555ffc58723cda3761aff9b51dc1ae76463469b7262e8e7600"
+    },
+    {
+      "blob": "27f6a9b0f7132b1f7be9774a053d03a9a69255d4",
+      "bytes": 21753,
+      "path": "REPORT.md",
+      "sha256": "97ee46ac291b06303f2cf797a90b6381084e063d0fbdd2a6ad855b6afb955d3a"
+    },
+    {
+      "blob": "27f6a9b0f7132b1f7be9774a053d03a9a69255d4",
+      "bytes": 21753,
+      "path": "VERDICT.md",
+      "sha256": "97ee46ac291b06303f2cf797a90b6381084e063d0fbdd2a6ad855b6afb955d3a"
+    },
+    {
+      "blob": "1f9c3d2329136c8a5a6b212fd6f137ffcae43a29",
+      "bytes": 4503,
+      "path": "browser.log",
+      "sha256": "c196e7006285908eb591fd07f2b50f91ad4cb163df9c2a6ff731af969e844dcd"
+    },
+    {
+      "blob": "fba560db7c48416c914446f2a1e319a79104d105",
+      "bytes": 67,
+      "path": "contract-check.log",
+      "sha256": "183372998615cc516043a5f66404b300281009a84349eda72da66d79fe542603"
+    },
+    {
+      "blob": "37d90f0f6bfcdc7250647e9c424f0bb6bbc8e43a",
+      "bytes": 2411,
+      "path": "custody.json",
+      "sha256": "24417e6b7536086945d991f0c1c9917cd4240465ca79d4b1b0d510aae1348086"
+    },
+    {
+      "blob": "3e48ca4b82e41b05cc6626628f892630663fbdca",
+      "bytes": 2305,
+      "path": "dependencies.log",
+      "sha256": "0787fd601c952880a6e43c6cb3f69908e97a19596b47a42074736764764fb02b"
+    },
+    {
+      "blob": "4728648cc3c13bce4e117e4a6cacdb6857741be2",
+      "bytes": 399,
+      "path": "judge.playwright.config.mjs",
+      "sha256": "fef38f64f7fab86ab76f3b0c2cf9db67c40397a2f4de280ff254a70a08784d20"
+    },
+    {
+      "blob": "26d18be8b1ae5c382d6a9b5c16780665d8229244",
+      "bytes": 3041,
+      "path": "main-preservation.json",
+      "sha256": "62cb54a212f1e11fc9866a938cf4659a5ef7a0bf46c68850fd2461b69f565c00"
+    },
+    {
+      "blob": "c69a673f74b54c48e1cdad2374c01766d1bb3baa",
+      "bytes": 773,
+      "path": "native-core.log",
+      "sha256": "f725be8435ef28e18d7aca333fb8497615ac4a1b44f458a59474df186d893022"
+    },
+    {
+      "blob": "4b1d09f51551230a501201ace1825b826d96366e",
+      "bytes": 793,
+      "path": "native-retained.log",
+      "sha256": "8aa397bf2d1db1555f881c3b8933ec355453c516aae2c837725c0d9da82415c1"
+    },
+    {
+      "blob": "b8a778f9629a885d845ec7c46313589ec9055188",
+      "bytes": 197014,
+      "path": "screens/current-deal-1440.png",
+      "sha256": "e7c30e149f132830824ae1e943123b3d7a768a499d48e8a5db085e3924d8fda1"
+    },
+    {
+      "blob": "0e6a86741ebd95d18d2e9e63361ce988fe8c73a7",
+      "bytes": 165967,
+      "path": "screens/current-deal-390.png",
+      "sha256": "24c664f10dde98b8047c2905aaede8018a9e5f34f856f7a4354d5731fa5b1423"
+    },
+    {
+      "blob": "a1e1989bfa43ed7bfda1e140236311a15512b176",
+      "bytes": 183025,
+      "path": "screens/current-recipient-1440.png",
+      "sha256": "597e443f023ed9d1d6726c4b5ff61d44d307f826ff5d7c6efa139acee737d7dc"
+    },
+    {
+      "blob": "9519756affc18627367f1bf7b67a52f9411c6336",
+      "bytes": 151327,
+      "path": "screens/current-recipient-390.png",
+      "sha256": "c4253519862f7a606d589c8626998d223a8afc7701f9f10c49833b71521d6a5e"
+    },
+    {
+      "blob": "f1cf2e56a9577f0bb7fca1ef6cc9306d8a598538",
+      "bytes": 489,
+      "path": "source-diff.txt",
+      "sha256": "84a84862f6611506baf394e1a77189db9ac9a35f20b82c43bd0c150e41665f5a"
+    },
+    {
+      "blob": "290ee9233a5f632a90217bb2e47b939bb59877a9",
+      "bytes": 822,
+      "path": "source-documents.json",
+      "sha256": "e7a2d4d8065814b48a86b9389805e04e1231167d02fb0af18f709291ba680fff"
+    }
+  ],
+  "product_branch": "",
+  "product_head": "3ac8eb791b4d5731ba17adde0b3f454ee17f6b51",
+  "ref": "refs/heads/evidence/ct-judge-orbit-action005-20261105-1600-sol1",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "ct-judge-orbit-action005-20261105-1600-sol1"
+}

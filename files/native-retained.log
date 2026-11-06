@@ -1,0 +1,15 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ OPP-008 completion removes an exhausted recommendation; new observed evidence produces another (1064.475129ms)
+✔ OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not (10038.699357ms)
+✔ OUT-009 dispatch rechecks unchanged content, active operator, lifecycle, current recipient and association before claiming (2896.579521ms)
+✔ OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do (1243.316834ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 49166.85128

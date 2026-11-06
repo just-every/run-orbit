@@ -1,0 +1,16 @@
+{
+  "head": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "source_pin": "3ac8eb791b4d5731ba17adde0b3f454ee17f6b51",
+  "status_rows_source": 204,
+  "status_rows_main": 204,
+  "differing_rows": [
+    "ACTION-005",
+    "OUT-032",
+    "PUBLIC-004"
+  ],
+  "newer_main_rows_to_preserve": {
+    "OUT-032": "| `OUT-032` | Opt-out upgrades and transport changes | target | partial | `src/core/features/outreach/opt-out.ts`; `src/core/platform/outbound-mail.ts`; `src/core/platform/managed-outbound-mail.ts`; `src/core/features/operator/ui/opt-out-settings.tsx`; `src/core/features/operator/ui/draft-opt-out.tsx`; `tests/core/outbound-boundaries.test.ts`; `tests/evidence/contract/OUT-020/`; `tests/core/capture-upgrade.test.ts` \u2014 CAPTURE-007 OUT-032 the capture migration upgrades a store from the previous main with every prior row and queue unchanged; `newtests/t096/browser-journeys.test.ts` \u2014 OUT-032 established opt-out upgrade (the native emitted Worker registration), using `newtests/t096/browser-opt-out-upgrade.ts` | Established upgrades keep one-to-one opt-out on with the retained basis visible in authenticated Settings and after page reload; historical approval bytes and state remain unchanged with no provider submissions. Remaining unproved execution: connected mailbox, sequence, batch and workflow paths preserving the exact reviewed opt-out choice, with OUT-013 owner-consented mailbox replies and Base relay sequence proof, OUT-019 Base relay recipient support (one To today), and OUT-013, OUT-019, SEQUENCE-001, SEQUENCE-003 and AUTO-001 prerequisites retained; AUTO-001 retains its ambiguous remainder after one continuation. Asserted in the retained outbound boundary journey: new-installation off default, pre-setting approvals retaining opt-out, SendGrid-to-relay exact header and link continuity, explicit off, historical transport refusal, unsupported review and dispatch refusal, and audited Settings refusal counts. |",
+    "PUBLIC-004": "| `PUBLIC-004` | Native sign-in | published | partial | `src/core/features/identity/index.ts`; `tests/core/identity.test.ts`; `tests/core/prior-auth-upgrade.test.ts`; `tests/core/provider-redirects.test.ts` \u2014 PUBLIC-004 OPS-001 required domains deny magic-link and recovery sessions, uninvited OIDC changes no identities, while selected OIDC, owner recovery and unrestricted email remain admitted, using `tests/support/sign-in-domains.ts` (uninvited callback refuses with unchanged complete populated operator, binding, session and provenance inventories and no Orbit session cookie) | Unasserted in the carried evidence: expired link refused; linked provider admits no new operator. Asserted: valid native link creates current person session; unknown/inactive response matches; single-use link signs in only once; sign-out revokes session. |"
+  },
+  "guard": "Only ACTION-005 is judged. Preserve every newer main status, Evidence, Gap, provenance and assertion. No broad replay of source status rows or generated views. No acceptance transfer or automatic award."
+}

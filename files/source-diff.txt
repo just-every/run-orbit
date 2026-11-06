@@ -1,0 +1,12 @@
+ CONTRACT.md                         |  8 ++++--
+ sources.lock.json                   | 10 +++++--
+ tests/core/assistance.test.ts       |  9 ++++--
+ tests/e2e/stale-review.spec.mjs     | 40 ++++++++++++++++++++++++--
+ tests/support/stale-draft-review.ts | 57 +++++++++++++++++++++++++++++++++++++
+ 5 files changed, 113 insertions(+), 11 deletions(-)
+
+M	CONTRACT.md
+M	sources.lock.json
+M	tests/core/assistance.test.ts
+M	tests/e2e/stale-review.spec.mjs
+A	tests/support/stale-draft-review.ts
