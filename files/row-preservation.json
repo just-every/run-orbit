@@ -1,0 +1,9 @@
+{
+  "parent_status_rows": 204,
+  "candidate_status_rows": 204,
+  "parent_table_rows": 458,
+  "candidate_table_rows": 458,
+  "statuses_unchanged": true,
+  "removed_status_ids": [],
+  "generated_views_committed": false
+}

@@ -1,0 +1,16 @@
+{
+  "offline_only": true,
+  "rows": [
+    {
+      "path": "CONTRACT.md",
+      "added_repository_references": []
+    },
+    {
+      "path": "tests/core/request-scheduling.test.ts",
+      "added_repository_references": []
+    }
+  ],
+  "publication_scan": false,
+  "new_email_literals": 0,
+  "new_provider_key_literals": 0
+}

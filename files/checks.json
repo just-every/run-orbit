@@ -1,0 +1,89 @@
+[
+  {
+    "name": "views-write",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "write"
+    ],
+    "exit": 0,
+    "log": "views-write.log"
+  },
+  {
+    "name": "views-check",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "log": "views-check.log"
+  },
+  {
+    "name": "views-restore",
+    "command": [
+      "git",
+      "checkout",
+      "origin/main",
+      "--",
+      "ACCEPTANCE.md",
+      "docs/CLAIMS.md"
+    ],
+    "exit": 0,
+    "log": "views-restore.log"
+  },
+  {
+    "name": "lock-write",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "lock"
+    ],
+    "exit": 0,
+    "log": "lock-write.log"
+  },
+  {
+    "name": "lock-check",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "log": "lock-check.log"
+  },
+  {
+    "name": "first-party",
+    "command": [
+      "pnpm",
+      "exec",
+      "rer",
+      "check",
+      "--profile",
+      "first-party"
+    ],
+    "exit": 0,
+    "log": "first-party.log"
+  },
+  {
+    "name": "typecheck-final",
+    "command": [
+      "pnpm",
+      "run",
+      "typecheck"
+    ],
+    "exit": 0,
+    "log": "typecheck-final.log"
+  },
+  {
+    "name": "test-budget",
+    "command": [
+      "node",
+      "--input-type=module",
+      "-e",
+      "import {checkTestBudget} from './scripts/verification-inventory.mjs'; const {files,...counts}=checkTestBudget(); console.log(JSON.stringify(counts));"
+    ],
+    "exit": 0,
+    "log": "test-budget.log"
+  }
+]

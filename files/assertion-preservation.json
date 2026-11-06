@@ -1,0 +1,8 @@
+{
+  "path": "tests/core/request-scheduling.test.ts",
+  "original_lines_with_assertions": 8,
+  "preserved_unchanged": 8,
+  "removed_or_narrowed_assertion_lines": 0,
+  "registrations_before": 1,
+  "registrations_after": 1
+}
