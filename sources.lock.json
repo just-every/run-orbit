@@ -10051,7 +10051,7 @@
       "executable": false
     },
     "tests/core/records-search.test.ts": {
-      "sha256": "94e2dc1d126a2c902ec95170d222cc9ca48b1670044733611d2ff36f91194ea1",
+      "sha256": "ef7a1d3add7e7d1897d9043e9861c09a509f72d8b285bf68502bb5e3410b4dba",
       "executable": false
     },
     "tests/core/request-scheduling.test.ts": {
@@ -11020,6 +11020,10 @@
     },
     "tests/support/record-data.ts": {
       "sha256": "a83d1ff05d69f3151bc3bf5241294d7b90734ab90616345a6966be035d7e738d",
+      "executable": false
+    },
+    "tests/support/record-identity.ts": {
+      "sha256": "aeb8897ce6f7380c84631173bd7838737ba4888f6b200998b62a09598d73c584",
       "executable": false
     },
     "tests/support/record-mail-ai.ts": {

@@ -3,6 +3,9 @@ import {exerciseOpportunityCreation} from '../support/opportunity-creation';
 import {salesPipelinesJourney} from '../support/sales-pipelines';
 import {exerciseBuyingContext} from '../support/buying-context';
 import {exerciseCompanyIdentity} from '../support/company-identity';
+import {exerciseRecordIdentity} from '../support/record-identity';
+import {createSourceSecurity} from '../../src/core/platform/source-security';
+import {randomBytes} from 'node:crypto';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
@@ -20,7 +23,7 @@ test('RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-
   await db.batch([db.prepare('INSERT INTO pipeline_stages VALUES(?,?,0,?,?)').bind(stage,'Qualified',now,now),db.prepare('INSERT INTO pipeline_stages VALUES(?,?,1,?,?)').bind(otherStage,'Later',now,now)]);
   const records=new RecordsRepository(db),manual=new ManualRepository(db);
   const contact=await records.save('contact',{name:'Specificcontact',email:'specific@search.test'},actor),company=await records.save('company',{name:'Specificcompany'},actor),opportunity=await records.save('opportunity',{title:'Specificopportunity',stage_id:stage,owner_id:actor,value_cents:0},actor);
-  const app=createApp({database:db,assets:{fetch:async()=>new Response('asset')}}),session=await deps.auth.createSession(actor);
+  const app=createApp({database:db,assets:{fetch:async()=>new Response('asset')},sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex')})}),session=await deps.auth.createSession(actor);
   async function search(kind:string,query:string){const response=await app.request(`https://orbit.test/api/v1/records/${kind}?${query}`,{headers:{cookie:`__Host-orbit_session=${session.token}`}});assert.equal(response.status,200);return (await response.json() as {records:{id:string}[]}).records.map(row=>row.id);}
   for(const [kind,row]of [['contact',contact],['company',company],['opportunity',opportunity]] as const){
    assert.deepEqual(await search(kind,`q=Specific${kind}`),[row.id]);
@@ -39,6 +42,8 @@ test('RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-
   for(const [field,value]of Object.entries(expected))assert.deepEqual((await search('opportunity',new URLSearchParams({[field]:value}).toString())).sort(),rows.filter(row=>row[field as keyof typeof row]===value).map(row=>row.id).sort(),field);
   assert.deepEqual(await search('opportunity',new URLSearchParams(expected).toString()),[opportunity.id]);
   await exerciseCompanyIdentity((path,method='GET',body)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),stage);
+  await exerciseRecordIdentity((path,method='GET',body)=>app.request('https://orbit.test/api/v1'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),
+   (source,body,timestamp,signature)=>app.request(`https://orbit.test/api/v1/signals/${source}`,{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':signature},body}),stage);
   for(let i=0;i<55;i++)await records.save('contact',{name:`Pagebound ${i}`,email:`page-${i}@search.test`},actor);
   assert.equal((await search('contact','q=Pagebound')).length,50);
   await salesPipelinesJourney((path,method='GET',body)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),actor);
