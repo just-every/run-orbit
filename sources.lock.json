@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "f70d465a8051fd75a3aaa5fc8a44c09818c995e778e454fa08ef0fadf9f4d67b",
+      "sha256": "801f6c17e414b404801a94f0789205009e3cedaed2b7a6914b0e6a57ff9daa5f",
       "executable": false
     },
     "DEMO.md": {
@@ -10075,7 +10075,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "60d42334bf70baa3b4c23332d57a99da7617495553d625600e8f5367301f5b36",
+      "sha256": "8aecf6d2d5f793fd0f13d578d2f9b18d8f36cf88d024051fdac3b9c404443f0c",
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {
@@ -10703,7 +10703,7 @@
       "executable": false
     },
     "tests/rer/operator-actions-journey.mjs": {
-      "sha256": "dbcae4f26b26861bff40038b4bfa57e5c1763577816ea18c5287e545689ef01c",
+      "sha256": "0941c8f1cdebb659e2194631eab6b09e345b3237b9b345aac1e86d2b6557d032",
       "executable": false
     },
     "tests/rer/operator-actions.test.mjs": {
@@ -10715,7 +10715,7 @@
       "executable": false
     },
     "tests/rer/operator-fixture.mjs": {
-      "sha256": "12deb6bf5f2de055fe9a9aaaaf48ef5486dfe03666a4034c5a20a5d1f413c7e2",
+      "sha256": "2c13a835341797f1456be0a68b367d8c0a731de3289a9923f3e63e4261fe2a0a",
       "executable": false
     },
     "tests/rer/operator-merge.mjs": {
