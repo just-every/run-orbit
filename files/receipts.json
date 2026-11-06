@@ -1,0 +1,137 @@
+{
+  "base_verify": {
+    "classification": "Expected generated-view failure; not runtime-green proof and no repair made.",
+    "conclusion": "failure",
+    "consequence_job": 127815764009,
+    "event": "push",
+    "excerpt": "base-verify-excerpt.log",
+    "failed_source_job": 127815560025,
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "head_sha": "53c79461740e58bdbeca411773ff242c378e0f82",
+    "id": 42194832156,
+    "log_read_command": "gh run view 42194832156 --repo just-every/run-orbit --job 127815560025 --log-failed",
+    "runtime_shards": "skipped",
+    "secondary_failure": "Source artifact absent after the earlier generated-view check exited.",
+    "status": "completed"
+  },
+  "browser": {
+    "reason": "No product or UI change; selected point is an HTTP authority refusal.",
+    "run": false
+  },
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-name-pattern=\"OPP-008 completion\" tests/core/signals-outreach.test.ts",
+      "exit": 0,
+      "head": "53c79461740e58bdbeca411773ff242c378e0f82",
+      "log": "action-completion-test.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "head": "53c79461740e58bdbeca411773ff242c378e0f82",
+      "log": "typecheck.log"
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "head": "53c79461740e58bdbeca411773ff242c378e0f82",
+      "log": "first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "head": "53c79461740e58bdbeca411773ff242c378e0f82",
+      "log": "views-write.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "head": "53c79461740e58bdbeca411773ff242c378e0f82",
+      "log": "views-check.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "head": "53c79461740e58bdbeca411773ff242c378e0f82",
+      "log": "lock-write.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "head": "53c79461740e58bdbeca411773ff242c378e0f82",
+      "log": "lock-check.log"
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "head": "53c79461740e58bdbeca411773ff242c378e0f82",
+      "log": "test-inventory.json"
+    }
+  ],
+  "contract_sha256": "fce0fb19c220d66d5d8a5929ffdb245d07de6bdc722734078be4efdcc325d241",
+  "counts_after": {
+    "done": 36,
+    "missing": 32,
+    "partial": 136
+  },
+  "counts_before": {
+    "done": 36,
+    "missing": 32,
+    "partial": 136
+  },
+  "github_calls": 3,
+  "probe": {
+    "clause": "ACTION-002",
+    "door": "Authenticated native Workbench event and completion routes, with authenticated opportunity readback",
+    "outcomes": [
+      "successful current completion HTTP 200",
+      "new observed evidence HTTP 201",
+      "distinct replacement citing new signal",
+      "old uncompleted identity completion HTTP 409",
+      "all eleven database inventories exactly unchanged by refusal",
+      "replacement still current",
+      "zero customer mail submissions"
+    ],
+    "test_file": "tests/core/signals-outreach.test.ts",
+    "test_lines": [
+      150,
+      176
+    ],
+    "test_name": "OPP-008 completion removes an exhausted recommendation; new observed evidence produces another"
+  },
+  "product": {
+    "branch": "cloud/sd-orbit-c-f100",
+    "head": "53c79461740e58bdbeca411773ff242c378e0f82",
+    "new_commits": 0,
+    "origin_main_at_clone": "d89ffcc89d4e87b5276f13298210de9eb21f4f35",
+    "product_push": false,
+    "pull_request": null,
+    "ready_claim": false,
+    "working_tree_clean": true
+  },
+  "publication_scan": {
+    "reason": "No product push or new product candidate. Existing product scan and landing remain fleet responsibilities.",
+    "run": false
+  },
+  "recorded_at": "2026-11-06T10:14:58.818841+00:00",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "source_lock_sha256": "d355292fce478b0816db35fe15b5f56942e242024a844c1972f7611830602f6c",
+  "tag": "sd-orbit-c-f100",
+  "target": {
+    "after": "partial",
+    "before": "partial",
+    "hold_releases": 0,
+    "id": "ACTION-002",
+    "new_acceptance_points_closed": 0,
+    "selected_point": "Already implemented at supplied base; obsolete uncompleted recommendation refuses completion after new observed evidence supersedes it."
+  },
+  "tests": {
+    "focused_failed": 0,
+    "focused_passed": 1,
+    "focused_skipped": 0,
+    "inventory_cases": 198,
+    "inventory_qualifications": 2,
+    "inventory_total": 200
+  }
+}
