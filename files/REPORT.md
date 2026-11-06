@@ -83,4 +83,6 @@ Main Verify 42217956400 and Run site 42217956677 are green on base main `b305e58
 
 An earlier committed invocation emitted a complete passing TAP result but its command session reported exit 1, with no assertion error. The identical command was repeated unchanged with an explicit exit receipt and completed with exit 0; no source, test assertion or guard was repaired. Both actual logs and the explicit exit receipt are retained.
 
+Terminal custody follows the cloud adaptation: PUSHED while exact-SHA Verify is still running. This report does not claim green CI, READY, acceptance or landing. The fleet must finish its exact-SHA workflow and publication gates.
+
 Full actual command outcomes, provenance and log hashes are in `RECEIPTS.json`. The selected packet includes the report, structured receipt, candidate touched-test log, typecheck log and contract check log. It contains no credentials, environment dump, private gate material or symlinks. The evidence ref transports reports only and signals neither product acceptance nor landing.
