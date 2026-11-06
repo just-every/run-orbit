@@ -1,0 +1,649 @@
+{
+  "changed_files": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "src/core/features/capture/calendar-link/feed.ts",
+    "tests/core/capture-no-console.test.ts",
+    "tests/support/capture-fixture.ts"
+  ],
+  "changed_status_records": [
+    "CAPTURE-009"
+  ],
+  "ci_calls": 0,
+  "commands": [
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:04.848053+00:00",
+      "stderr": "",
+      "stdout": "c87171e4821b960a85d1c60d20440c42fc37646d\n"
+    },
+    {
+      "command": [
+        "git",
+        "ls-remote",
+        "origin",
+        "refs/heads/cloud/sd-orbit-c-f63",
+        "refs/heads/main"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:04.850042+00:00",
+      "stderr": "",
+      "stdout": "c87171e4821b960a85d1c60d20440c42fc37646d\trefs/heads/cloud/sd-orbit-c-f63\nc01084f133af9aa484a6c1f5151a4e9cfbc7230f\trefs/heads/main\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/main"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.257839+00:00",
+      "stderr": "",
+      "stdout": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f\n"
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "HEAD:CONTRACT.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.260376+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 484345,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "80f181df79fba10dbc229706b21682c7654c6db2c0bee0372c7b73dc05f15432"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "origin/main:CONTRACT.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.271814+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 483851,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "6bb6fb9aaef0e0df27f86958e4734fef3b5d0f3cfa37f0400496e6043e8781b1"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--name-only",
+        "origin/main",
+        "HEAD"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.289107+00:00",
+      "stderr": "",
+      "stdout": "CONTRACT.md\nsources.lock.json\nsrc/core/features/capture/calendar-link/feed.ts\ntests/core/capture-no-console.test.ts\ntests/support/capture-fixture.ts\n"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "origin/main",
+        "HEAD"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.292261+00:00",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "git",
+        "log",
+        "origin/main..HEAD",
+        "--format=%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.307486+00:00",
+      "stderr": "",
+      "stdout": "Run Edit Run fleet <fleet@runeditrun.com>\nRun Edit Run fleet <fleet@runeditrun.com>\n\n"
+    },
+    {
+      "command": [
+        "git",
+        "log",
+        "origin/main..HEAD",
+        "--format=%H%n%B"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.309935+00:00",
+      "stderr": "",
+      "stdout": "c87171e4821b960a85d1c60d20440c42fc37646d\nPreserve calendar-link cancellations and prove refresh replay\n\n"
+    },
+    {
+      "command": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.312483+00:00",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/main:src/core/features/capture/facts.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.320699+00:00",
+      "stderr": "",
+      "stdout": "9c09300d12fcae0405b399d294264ab6ed1beecb\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD:src/core/features/capture/facts.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.323268+00:00",
+      "stderr": "",
+      "stdout": "9c09300d12fcae0405b399d294264ab6ed1beecb\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/main:src/core/features/capture/sources.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.325289+00:00",
+      "stderr": "",
+      "stdout": "4d48e979677a4a4a05c8725a1bdc134c350988e8\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD:src/core/features/capture/sources.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.327361+00:00",
+      "stderr": "",
+      "stdout": "4d48e979677a4a4a05c8725a1bdc134c350988e8\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/main:src/core/features/capture/intake.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.329673+00:00",
+      "stderr": "",
+      "stdout": "6ae519240fdaf4c13f438dccd268399ba8bf3d71\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD:src/core/features/capture/intake.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.331950+00:00",
+      "stderr": "",
+      "stdout": "6ae519240fdaf4c13f438dccd268399ba8bf3d71\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/main:src/core/features/capture/calendar-link/source.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.334473+00:00",
+      "stderr": "",
+      "stdout": "4097e1901d8aaa4797c16f50ba5dde31eaea988f\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD:src/core/features/capture/calendar-link/source.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.336624+00:00",
+      "stderr": "",
+      "stdout": "4097e1901d8aaa4797c16f50ba5dde31eaea988f\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/main:src/core/features/capture/ics.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.338316+00:00",
+      "stderr": "",
+      "stdout": "abd566c058371639385685a1d4dd841121ce9b3f\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD:src/core/features/capture/ics.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.340799+00:00",
+      "stderr": "",
+      "stdout": "abd566c058371639385685a1d4dd841121ce9b3f\n"
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "HEAD:CONTRACT.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.345953+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 484345,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "80f181df79fba10dbc229706b21682c7654c6db2c0bee0372c7b73dc05f15432"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "HEAD:ACCEPTANCE.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.355957+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 435074,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "8dece52f213b61f58d621fe04924cf13ea10d39612fb36a8a5e3a19bff1a2449"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "HEAD:docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.365904+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 1719,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "6dbe738446178cf479981d198ef33335cd2d59469df17f00328a8e3e17bcb444"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "HEAD:src/core/features/capture/calendar-link/feed.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.369240+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 4392,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "c24e1ad59a0edfba4c25797df81fd871d5fa567c81ce80d9905a1e5b166a5a77"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "HEAD:tests/core/capture-no-console.test.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.372163+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 16699,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "9a44a8ab3b71a2255a55069cafb82082578e1d9acfcaf5316ca8c4dc231fb946"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "HEAD:tests/support/capture-fixture.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.374523+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 4740,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "f42e1357927f4cc4539e5d03ab9d1188c800fffa122ddb0e470244c618782087"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "HEAD:tests/core/capture-intake.test.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.376758+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 15856,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "cf7c66c610e59f3c2a0fb28212823049a567f95b7a5391e2dab8769b584b3834"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "HEAD:tests/core/capture-erasure.test.ts"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.378933+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 10618,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "9f0c4835ff1006a4d391eeb3ce5bed4276ea1bbc9ff5b666fe50afde4a02aa3e"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "HEAD:AGENTS.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.381784+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 6149,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "HEAD:RULINGS.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.385231+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 2770,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "HEAD:.github/workflows/verify.yml"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.388096+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 17450,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "2d350a75be8a46166f04f9bc77a1e822ab23c75a1ac51fa05be9789db1aec238"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "HEAD:scripts/verification-plan.mjs"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.390781+00:00",
+      "stderr": "",
+      "stdout": {
+        "bytes": 11284,
+        "retention": "digest only; public source read without copying full files into packet",
+        "sha256": "6cadc2af648d750bbab60a0e10be17ddd1b41c637b5cd113c21546fd8c7d22ce"
+      }
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/main:ACCEPTANCE.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.392803+00:00",
+      "stderr": "",
+      "stdout": "a45be48c6ac32b6853cef6bc4b2af49dca865b47\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD:ACCEPTANCE.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.394748+00:00",
+      "stderr": "",
+      "stdout": "a45be48c6ac32b6853cef6bc4b2af49dca865b47\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "origin/main:docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.397459+00:00",
+      "stderr": "",
+      "stdout": "0ecf1c5fa724daafbc61ff87efa303183949c172\n"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD:docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "started_utc": "2026-11-06T02:09:05.399728+00:00",
+      "stderr": "",
+      "stdout": "0ecf1c5fa724daafbc61ff87efa303183949c172\n"
+    }
+  ],
+  "completed_utc": "2026-11-06T02:09:05.401575+00:00",
+  "current_main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "files": {
+    ".github/workflows/verify.yml": {
+      "bytes": 17450,
+      "lock_matches": true,
+      "locked_sha256": "2d350a75be8a46166f04f9bc77a1e822ab23c75a1ac51fa05be9789db1aec238",
+      "sha256": "2d350a75be8a46166f04f9bc77a1e822ab23c75a1ac51fa05be9789db1aec238"
+    },
+    "ACCEPTANCE.md": {
+      "bytes": 435074,
+      "lock_matches": true,
+      "locked_sha256": "8dece52f213b61f58d621fe04924cf13ea10d39612fb36a8a5e3a19bff1a2449",
+      "sha256": "8dece52f213b61f58d621fe04924cf13ea10d39612fb36a8a5e3a19bff1a2449"
+    },
+    "AGENTS.md": {
+      "bytes": 6149,
+      "lock_matches": true,
+      "locked_sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9",
+      "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9"
+    },
+    "CONTRACT.md": {
+      "bytes": 484345,
+      "lock_matches": true,
+      "locked_sha256": "80f181df79fba10dbc229706b21682c7654c6db2c0bee0372c7b73dc05f15432",
+      "sha256": "80f181df79fba10dbc229706b21682c7654c6db2c0bee0372c7b73dc05f15432"
+    },
+    "RULINGS.md": {
+      "bytes": 2770,
+      "lock_matches": true,
+      "locked_sha256": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c",
+      "sha256": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c"
+    },
+    "docs/CLAIMS.md": {
+      "bytes": 1719,
+      "lock_matches": true,
+      "locked_sha256": "6dbe738446178cf479981d198ef33335cd2d59469df17f00328a8e3e17bcb444",
+      "sha256": "6dbe738446178cf479981d198ef33335cd2d59469df17f00328a8e3e17bcb444"
+    },
+    "scripts/verification-plan.mjs": {
+      "bytes": 11284,
+      "lock_matches": true,
+      "locked_sha256": "6cadc2af648d750bbab60a0e10be17ddd1b41c637b5cd113c21546fd8c7d22ce",
+      "sha256": "6cadc2af648d750bbab60a0e10be17ddd1b41c637b5cd113c21546fd8c7d22ce"
+    },
+    "src/core/features/capture/calendar-link/feed.ts": {
+      "bytes": 4392,
+      "lock_matches": true,
+      "locked_sha256": "c24e1ad59a0edfba4c25797df81fd871d5fa567c81ce80d9905a1e5b166a5a77",
+      "sha256": "c24e1ad59a0edfba4c25797df81fd871d5fa567c81ce80d9905a1e5b166a5a77"
+    },
+    "tests/core/capture-erasure.test.ts": {
+      "bytes": 10618,
+      "lock_matches": true,
+      "locked_sha256": "9f0c4835ff1006a4d391eeb3ce5bed4276ea1bbc9ff5b666fe50afde4a02aa3e",
+      "sha256": "9f0c4835ff1006a4d391eeb3ce5bed4276ea1bbc9ff5b666fe50afde4a02aa3e"
+    },
+    "tests/core/capture-intake.test.ts": {
+      "bytes": 15856,
+      "lock_matches": true,
+      "locked_sha256": "cf7c66c610e59f3c2a0fb28212823049a567f95b7a5391e2dab8769b584b3834",
+      "sha256": "cf7c66c610e59f3c2a0fb28212823049a567f95b7a5391e2dab8769b584b3834"
+    },
+    "tests/core/capture-no-console.test.ts": {
+      "bytes": 16699,
+      "lock_matches": true,
+      "locked_sha256": "9a44a8ab3b71a2255a55069cafb82082578e1d9acfcaf5316ca8c4dc231fb946",
+      "sha256": "9a44a8ab3b71a2255a55069cafb82082578e1d9acfcaf5316ca8c4dc231fb946"
+    },
+    "tests/support/capture-fixture.ts": {
+      "bytes": 4740,
+      "lock_matches": true,
+      "locked_sha256": "f42e1357927f4cc4539e5d03ab9d1188c800fffa122ddb0e470244c618782087",
+      "sha256": "f42e1357927f4cc4539e5d03ab9d1188c800fffa122ddb0e470244c618782087"
+    }
+  },
+  "generated_views_equal_main": {
+    "ACCEPTANCE.md": true,
+    "docs/CLAIMS.md": true
+  },
+  "kind": "actual-read-only-completion-receipt",
+  "main_capture009": {
+    "complete_line": "| `CAPTURE-009` | Calendar link | published | partial | `tests/core/capture-no-console.test.ts` | Unasserted in the carried evidence: calendar link validated; clock advancement refreshes; event changes deduplicate; event cancellation retained; original event times retained. Asserted: broken link halts with reason. |",
+    "kind": "published",
+    "status": "partial",
+    "title": "Calendar link"
+  },
+  "main_counts": {
+    "All": {
+      "done": 35,
+      "missing": 32,
+      "partial": 137,
+      "total": 204
+    },
+    "Published": {
+      "done": 27,
+      "missing": 0,
+      "partial": 52,
+      "total": 79
+    },
+    "Target and push further": {
+      "done": 8,
+      "missing": 32,
+      "partial": 85,
+      "total": 125
+    }
+  },
+  "parent_from_source_object": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "product_commits": 0,
+  "product_pushes": 0,
+  "product_tests_executed_this_completion": 0,
+  "prs": 0,
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "source_branch": "cloud/sd-orbit-c-f63",
+  "source_capture009": {
+    "complete_line": "| `CAPTURE-009` | Calendar link | published | done | Acceptance 1: `tests/core/capture-no-console.test.ts` \u2014 CAPTURE-008 CAPTURE-009 the Orbit address and a calendar link capture customer evidence with no provider console (validated private link, normal due polling at a fixed clock, original and revised item and signal identities through Records export, retained cancellation and unchanged replay, exact original event times through native meeting plans, GET-only reads without invitations, and broken-link refusal with retained history); inherited erasure and replay: `tests/core/capture-erasure.test.ts` \u2014 CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured originals and proposals; the audit trail keeps counts and anonymous replay proofs; `tests/core/capture-intake.test.ts` | |",
+    "kind": "published",
+    "status": "done",
+    "title": "Calendar link"
+  },
+  "source_clean": true,
+  "source_counts": {
+    "All": {
+      "done": 36,
+      "missing": 32,
+      "partial": 136,
+      "total": 204
+    },
+    "Published": {
+      "done": 28,
+      "missing": 0,
+      "partial": 51,
+      "total": 79
+    },
+    "Target and push further": {
+      "done": 8,
+      "missing": 32,
+      "partial": 85,
+      "total": 125
+    }
+  },
+  "source_head": "c87171e4821b960a85d1c60d20440c42fc37646d",
+  "source_main_requirement_acceptance_meta_unchanged": true,
+  "status_row_count": 204,
+  "tag": "ct-judge-orbit-capture009-20261105-2325-sol1",
+  "triage_unchanged": {
+    "src/core/features/capture/calendar-link/source.ts": {
+      "main_blob": "4097e1901d8aaa4797c16f50ba5dde31eaea988f",
+      "source_blob": "4097e1901d8aaa4797c16f50ba5dde31eaea988f",
+      "unchanged": true
+    },
+    "src/core/features/capture/facts.ts": {
+      "main_blob": "9c09300d12fcae0405b399d294264ab6ed1beecb",
+      "source_blob": "9c09300d12fcae0405b399d294264ab6ed1beecb",
+      "unchanged": true
+    },
+    "src/core/features/capture/ics.ts": {
+      "main_blob": "abd566c058371639385685a1d4dd841121ce9b3f",
+      "source_blob": "abd566c058371639385685a1d4dd841121ce9b3f",
+      "unchanged": true
+    },
+    "src/core/features/capture/intake.ts": {
+      "main_blob": "6ae519240fdaf4c13f438dccd268399ba8bf3d71",
+      "source_blob": "6ae519240fdaf4c13f438dccd268399ba8bf3d71",
+      "unchanged": true
+    },
+    "src/core/features/capture/sources.ts": {
+      "main_blob": "4d48e979677a4a4a05c8725a1bdc134c350988e8",
+      "source_blob": "4d48e979677a4a4a05c8725a1bdc134c350988e8",
+      "unchanged": true
+    }
+  },
+  "unrelated_status_gap_evidence_rows_preserved": 203
+}
