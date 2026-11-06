@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f79",
+  "repository": "just-every/run-orbit",
+  "head": "35df63127709a8795abe2424103a0e1beb92c25f",
+  "branch": "cloud/sd-orbit-c-f79",
+  "product_changes": false,
+  "new_product_commits": 0,
+  "status_before": "partial",
+  "status_after": "partial",
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "checks": [
+    {
+      "command": "npx -y @runeditrun/rer install",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/assistance.test.ts",
+      "exit": 0,
+      "tests": 6,
+      "pass_count": 6,
+      "fail_count": 0
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write then check",
+      "exit": 0,
+      "views_restored_from": "origin/main"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock then check",
+      "exit": 0
+    }
+  ],
+  "ci": [
+    {
+      "id": 42167843726,
+      "job": 127728523932,
+      "event": "push",
+      "head_sha": "35df63127709a8795abe2424103a0e1beb92c25f",
+      "conclusion": "failure",
+      "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+      "classification": "permitted generated-view freshness failure"
+    },
+    {
+      "conclusion": "failure",
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f79",
+      "head_sha": "35df63127709a8795abe2424103a0e1beb92c25f",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42169935146",
+      "id": 42169935146,
+      "name": "Verify",
+      "status": "completed",
+      "job": 127735252539,
+      "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+      "classification": "permitted generated-view freshness failure"
+    }
+  ],
+  "test_budget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "push": {
+    "status": "success",
+    "attempt": 1,
+    "branch": "cloud/sd-orbit-c-f79",
+    "head": "35df63127709a8795abe2424103a0e1beb92c25f"
+  },
+  "publication_scan": "not run in cloud; guarded lander required",
+  "landing": "not attempted",
+  "ready_reason": "local checks pass; selected proof already present; exact-SHA Verify failure is only the explicitly permitted generated-view freshness failure",
+  "github_api_calls": 6,
+  "product_remote_verified": true
+}

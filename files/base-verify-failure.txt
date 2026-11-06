@@ -1,0 +1,3 @@
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:21:32.7585626Z Verification (source): pnpm exec node src/base/contract-docs.mjs check
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:21:33.2917609Z ACCEPTANCE.md: generated content differs; run contract-docs write.
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:21:33.3390232Z ##[error]Process completed with exit code 1.
