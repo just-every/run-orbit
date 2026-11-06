@@ -1,0 +1,1 @@
+{"command": ["pnpm", "exec", "tsx", "--test", "--test-name-pattern=OUT-007 OUT-009 SEQUENCE-002", "tests/core/signals-outreach.test.ts"], "exit": 1, "mutation": "Replace only the persisted lifecycle close_reason binding with NULL", "expected_assertion_failed": true, "production_restored": true}

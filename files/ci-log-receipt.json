@@ -1,0 +1,5 @@
+{
+  "command": "gh run view 42194374549 --repo just-every/run-orbit --job 127814045283 --log-failed",
+  "exit": 0,
+  "calls": 1
+}

@@ -1,0 +1,146 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f93",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f93",
+  "head": "4ec6648812344d00172e50e7255346dccb84f835",
+  "base": "30f7a864d0a643fa020ea3eaa3d5325a112b872e",
+  "ci": {
+    "conclusion": "failure",
+    "event": "push",
+    "head_sha": "4ec6648812344d00172e50e7255346dccb84f835",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42194374549",
+    "id": 42194374549,
+    "status": "completed",
+    "source_job_id": 127814045283,
+    "aggregate_job_id": 127814305009,
+    "permitted_generated_view_failure": true,
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "runtime_shards": "skipped",
+    "full_runtime_ci_success": false
+  },
+  "counts": {
+    "before": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    },
+    "after": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    },
+    "rows_before": 204,
+    "rows_after": 204,
+    "lost": []
+  },
+  "local_checks": {
+    "selected_native_journey": {
+      "command": "pnpm exec tsx --test --test-name-pattern='OUT-007 OUT-009 SEQUENCE-002' tests/core/signals-outreach.test.ts",
+      "exit": 0,
+      "log": "point-probe.log",
+      "node": "22.20.0"
+    },
+    "exact_candidate_native_journey": {
+      "head": "4ec6648812344d00172e50e7255346dccb84f835",
+      "exit": 0,
+      "log": "candidate-point-probe.log",
+      "node": "22.20.0"
+    },
+    "touched_file": {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/signals-outreach.test.ts",
+      "complete": true,
+      "exit": 0,
+      "tests": 16,
+      "passed": 16,
+      "failed": 0,
+      "node": "24.19.0",
+      "log": "touched-tests.log"
+    },
+    "typecheck": {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "node": "22.20.0",
+      "log": "typecheck.log"
+    },
+    "first_party": {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "node": "22.20.0",
+      "log": "first-party.log"
+    },
+    "mechanical": {
+      "lock": {
+        "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+        "exit": 0,
+        "check": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+        "check_exit": 0
+      },
+      "views": {
+        "write": "node src/base/contract-docs.mjs write",
+        "write_exit": 0,
+        "check": "node src/base/contract-docs.mjs check",
+        "check_exit": 0,
+        "restored": [
+          "ACCEPTANCE.md",
+          "docs/CLAIMS.md"
+        ]
+      },
+      "ledger": {
+        "command": null,
+        "exit": 0,
+        "reason": "No migration added or edited"
+      }
+    },
+    "negative_probe": {
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-name-pattern=OUT-007 OUT-009 SEQUENCE-002",
+        "tests/core/signals-outreach.test.ts"
+      ],
+      "exit": 1,
+      "mutation": "Replace only the persisted lifecycle close_reason binding with NULL",
+      "expected_assertion_failed": true,
+      "production_restored": true
+    }
+  },
+  "clause": {
+    "id": "OPP-001",
+    "before": "partial",
+    "after": "partial",
+    "selected_point": "Persisted won-close reason freshly read through authenticated Records",
+    "remaining": [
+      "lost-close reason",
+      "closing operator and time",
+      "later evidence never silently reopens",
+      "complete queue membership and lifecycle history",
+      "stage and owner preservation on reopening"
+    ],
+    "holds_released": 0
+  },
+  "test_budget": {
+    "before": 200,
+    "after": 200,
+    "registered": 198,
+    "qualifications": 2
+  },
+  "production_changes": false,
+  "ui_changes": false,
+  "migrations": false,
+  "assertions_removed": 0,
+  "assertions_narrowed": 0,
+  "publication_scan": {
+    "status": "Not run in cloud; exact-source full-history scan is owned by the guarded fleet lander"
+  },
+  "landing": {
+    "main_pushed": false,
+    "pr_created": false,
+    "run_site": "Pending guarded landing"
+  },
+  "github_calls": 6,
+  "created_at": "2026-11-06T09:28:16.683174+00:00",
+  "handoff": "READY under the explicitly permitted generated-view freshness exception; no DONE promotion"
+}

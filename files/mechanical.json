@@ -1,0 +1,23 @@
+{
+  "lock": {
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+    "exit": 0,
+    "check": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "check_exit": 0
+  },
+  "views": {
+    "write": "node src/base/contract-docs.mjs write",
+    "write_exit": 0,
+    "check": "node src/base/contract-docs.mjs check",
+    "check_exit": 0,
+    "restored": [
+      "ACCEPTANCE.md",
+      "docs/CLAIMS.md"
+    ]
+  },
+  "ledger": {
+    "command": null,
+    "exit": 0,
+    "reason": "No migration added or edited"
+  }
+}

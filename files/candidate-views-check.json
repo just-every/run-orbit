@@ -1,0 +1,6 @@
+{
+  "command": "node src/base/contract-docs.mjs check",
+  "exit": 1,
+  "output": "ACCEPTANCE.md: generated content differs; run contract-docs write.\n",
+  "reason": "Generated views were intentionally restored from main and are never committed by the cloud builder"
+}

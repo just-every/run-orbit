@@ -1,0 +1,16 @@
+{
+  "base": "30f7a864d0a643fa020ea3eaa3d5325a112b872e",
+  "files": {
+    "CONTRACT.md": "880c5666864f425927746481ed231222395fc88a610c7b5959d00b5b8e2c9c2c",
+    "tests/core/signals-outreach.test.ts": "9c0ca3ac93e337b85f66ed81d374e06c16c094ad462f9932e9ec981ab6c3c51f",
+    "sources.lock.json": "1d09737afc20d0fa6563c191a0d746d5b4e612945c8fc0106cba1318ff0adad2"
+  },
+  "unchanged_production": [
+    "src/core/features/records/routes.ts",
+    "src/core/features/records/repository.ts"
+  ],
+  "screens": "Not applicable: no product or UI changes",
+  "assertions_removed": 0,
+  "assertions_narrowed": 0,
+  "registered_tests_added": 0
+}
