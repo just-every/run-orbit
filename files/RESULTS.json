@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "repository": "just-every/run-orbit",
+  "tag": "sd-orbit-c-f104",
+  "branch": "cloud/sd-orbit-c-f104",
+  "head": "b8c02d5a1c77404848439fc4daa0c522160775c4",
+  "parentMain": "74f72f01ad3532725c71bd0832a774abd2c5a6ec",
+  "observedAt": 1793963512.100396,
+  "clause": {
+    "id": "INTEGRATE-011",
+    "before": "partial",
+    "after": "partial",
+    "acceptancePoint": 3,
+    "selectedNativeSliceClosed": true,
+    "newDone": 0,
+    "countsBefore": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32
+    },
+    "countsAfter": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32
+    }
+  },
+  "testBudget": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200,
+    "newRegistrations": 0,
+    "removedAssertions": 0,
+    "narrowedAssertions": 0
+  },
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='NOTIFY-003 opt-in' tests/core/source-onboarding.test.ts",
+      "node": "24.19.0",
+      "exit": 0,
+      "pass": 1,
+      "fail": 0,
+      "durationMilliseconds": 368872.431733,
+      "log": "native-journey.log"
+    },
+    {
+      "command": "pnpm exec tsx /tmp/f104-probe.mts",
+      "timeoutSeconds": 300,
+      "node": "22.20.0",
+      "exit": 0,
+      "outcomes": [
+        "call",
+        "meeting"
+      ],
+      "log": "PROBES.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "node": "22.20.0",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "node": "22.20.0",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    }
+  ],
+  "mechanicalReceipt": "mechanical.json",
+  "identityReceipt": "identity.json",
+  "parentRowReceipt": "parent-rows.json",
+  "uiChanged": false,
+  "screens": "not run; Settings viewport qualification explicitly omitted by the selected POINTS",
+  "productionChanged": false,
+  "publicationScan": "not run in cloud; guarded lander required",
+  "candidateRunSite": "pending guarded landing on main",
+  "productPush": {
+    "exit": 0,
+    "attempts": 1,
+    "remote": "origin",
+    "ref": "refs/heads/cloud/sd-orbit-c-f104",
+    "head": "b8c02d5a1c77404848439fc4daa0c522160775c4",
+    "log": "product-push.log"
+  },
+  "sourceDigests": {
+    "CONTRACT.md": "a87c2602a9ca433619ca6938f7cd322ad4bda28ab7f138d7487a22522559c7f1",
+    "tests/support/slack-notices-proof.ts": "16bbeb779b28d78a31fdf4676294f4ee41883755d53c20a6102b6a9251ebcba4",
+    "tests/core/source-onboarding.test.ts": "59993b1a0cea6fb3ed8d679ca4cc565bdc4ed5b80704d08d4c838700eafe1051",
+    "migrations/core/0051_slack_notices.sql": "f10b66026446b28cd4c68f31d5ee0f59c1b5e4e6250e7adda807f846373ff851",
+    "src/core/features/slack/content.ts": "b6caa0827057d147ce6c7c4457a9a440f8e84f6344b51de08cc6a26d6162842a",
+    "src/core/features/slack/contracts.ts": "bfdd234b7fd1d5f74175c204b9d16f0fe5c3c50370444de9e91a6ca0ca4788b8",
+    "src/core/features/slack/delivery.ts": "a201036d28bbe1d881c17de71237f09599a4dfc00144107ec7b102d7d89f5431",
+    "tests/support/slack-archive-proof.ts": "abc3be1c34ada7f0a5bc8622ea2d892cf0d1ac6ff5a9941eec8543f750170aac",
+    "tests/support/slack-actions-proof.ts": "7a09cb98302791b6bf279b2d81178f80002d4686435df49ef7e1fa25ec5d817f",
+    "tests/support/slack-network.ts": "eb3a2af5ea3c9d33b640b50c5ede6739f245254596d64bd8d5297c603f3c2e7a",
+    "sources.lock.json": "7a4bd0dbda1e09b52012c1131175736d8f2604fe463d6e97915b2082d56a1b2f"
+  },
+  "diffFromMain": " CONTRACT.md                          |  2 +-\n sources.lock.json                    |  4 ++--\n tests/support/slack-notices-proof.ts | 28 +++++++++++++++++++++++++++-\n 3 files changed, 30 insertions(+), 4 deletions(-)\n",
+  "ciReceipt": "candidate-ci-discovery.jsonl",
+  "logDigests": {
+    "native-journey.log": "44abae307e8089f9eac32741974f36658f7c728ac8437788b8b276e67f37efe9",
+    "PROBES.log": "54d9261ddfb8e6a3e9ed2d73adb05eec6437960b6cde1cf0b726bc2edc7e6a8d",
+    "typecheck.log": "394be19468dee08370e9957d2eae6db6a55d780c21f994d457fd9421677f045e",
+    "first-party.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "product-push.log": "e3764602e65887be970f26e5a7d7b2ae05a105fd2cc011e06098340912342485"
+  },
+  "rebaseProof": {
+    "preRebaseProduct": "43ea4b8db64499559e78dc6db71aa2d05cb47565",
+    "candidate": "b8c02d5a1c77404848439fc4daa0c522160775c4",
+    "relevantCodeAndProofBytesUnchanged": true,
+    "newMainPreserved": true
+  }
+}

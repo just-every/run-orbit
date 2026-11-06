@@ -1,0 +1,25 @@
+{
+  "clause": "INTEGRATE-011",
+  "status": "partial",
+  "selectedAcceptancePoint": 3,
+  "testFile": "tests/core/source-onboarding.test.ts",
+  "testNamePrefix": "NOTIFY-003 opt-in personal mention DMs",
+  "helper": "tests/support/slack-notices-proof.ts",
+  "selectedAssertions": {
+    "manualSources": "lines 52 to 64: populated contact, authenticated call and meeting creation, returned entry IDs, native timeline read, one notice per source",
+    "disclosure": "lines 65 to 73: exact content keys, canonical origin and path, no URL capability, session refusal, client message identity, provider receipt, text and block links, private text, contact data and amounts excluded",
+    "repeat": "lines 74 to 76: one provider attempt, repeat process has no extra notice, submission or receipt change"
+  },
+  "otherAcceptancePoints": {
+    "1": "Existing proveSlackArchive covers Records and local archive definitions and history, excluded authority and paused restore. Complete qualification remains unclaimed.",
+    "2": "Existing contact erasure and held restored deletion checks remain. Complete company and deal redaction and provider outcome qualification remains omitted.",
+    "3": "This round closes only the selected native manual call and meeting notice slice. Settings at both widths and remaining notice-kind reconciliation remain omitted."
+  },
+  "inheritedWork": "Buoy notice remains INTEGRATE-008, signed quote remains QUOTE-001, billing remains INTEGRATE-003; the complete buyer walk remains with the last shipping named BOUNDARY-001 clause and its prerequisites. Live Slack, TEAM-005 and all existing holds are unchanged.",
+  "productionCorrection": "none demonstrated; production files unchanged",
+  "newRegistrations": 0,
+  "removedAssertions": 0,
+  "narrowedAssertions": 0,
+  "uiChange": false,
+  "browserProof": "not run: selected point is native only and viewport qualification is explicitly omitted"
+}

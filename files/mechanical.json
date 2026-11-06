@@ -1,0 +1,68 @@
+{
+  "checks": [
+    {
+      "name": "views-write",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 0.09141826629638672,
+      "output": "views-write.log",
+      "sha256": "df91012bf66fb476e9cd1a30c002829398beb55f869e07cc7be477197fa5a276"
+    },
+    {
+      "name": "views-check",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 0.09168601036071777,
+      "output": "views-check.log",
+      "sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "name": "restore-views",
+      "command": [
+        "git",
+        "checkout",
+        "origin/main",
+        "--",
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 0.006954669952392578,
+      "output": "restore-views.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "lock-write",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "lock"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 0.4023873805999756,
+      "output": "lock-write.log",
+      "sha256": "19da3ea95b59d70e920c13d804b4a2bf451a930d9b9b516260f7bb3ac5244c9b"
+    },
+    {
+      "name": "lock-check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 0.41296839714050293,
+      "output": "lock-check.log",
+      "sha256": "bf9adbca0bf9e9020dbef9188e6ddaa09d1a4ebb9d50caf14452a352a0b683bd"
+    }
+  ],
+  "migrationLedger": "not applicable: no migration change"
+}

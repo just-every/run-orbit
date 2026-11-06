@@ -1,0 +1,35 @@
+# sd-orbit-c-f104 result
+
+INTEGRATE-011 remains PARTIAL. The selected native portion of acceptance point 3 is closed: logged calls and meetings each have their own source-bound, minimally disclosed Slack notice. Counts remain 36 DONE, 136 PARTIAL and 32 MISSING, 204 total. No DONE award, restoration, hold release or acceptance rewrite is claimed.
+
+Product repository: just-every/run-orbit. Branch: cloud/sd-orbit-c-f104. Pushed head: `b8c02d5a1c77404848439fc4daa0c522160775c4`. Fresh main incorporated: `74f72f01ad3532725c71bd0832a774abd2c5a6ec`. No PR is required for this repository's push Verify entry point, and none was created. The product checkout and generated views are clean. All candidate authors and committers are the fleet identity; no trailer survived. Every one of the 204 parent Status identities remains. Only this clause's evidence and selected Gap text changed.
+
+## Work and proof
+
+The existing registration in `tests/core/source-onboarding.test.ts`, starting with “NOTIFY-003 opt-in personal mention DMs”, still invokes `proveSlackNotices` in `tests/support/slack-notices-proof.ts`. Lines 52 to 76 now create both kinds through authenticated Records, retain each distinct returned entry ID, read the real timeline source, and read exactly one sent notice for that source through Slack Settings. The real delivery adapter's captured HTTP post is correlated by the notice ID in client_msg_id, channel and provider message timestamp. It checks the exact stored content key set, canonical same-origin record href with no capability, and 401 on the linked record's native read without a session. Stored content, submitted text and submitted blocks exclude distinctive private source text, seeded contact name and address, phone and amounts. A second processing request preserves the same receipt and creates no notice or submission.
+
+Only the existing Slack HTTP edge is captured. Migration 0051, the production content builder, contracts and delivery were inspected and remain unchanged: the extended journey demonstrated no production defect. Existing action, privacy, uncertainty, destination, archive, contact-erasure and held restored-deletion proofs remain active. No registration was added or removed; the suite remains 198 registered cases plus two qualification flows. The original response and no-disclosure assertions remain covered by the stronger source-specific call proof, and all other assertions are intact. No assertion was narrowed, skipped or moved behind a condition.
+
+The extended existing native journey passed, one case and zero failures, in 368.872 seconds under the VM's Node 24.19.0. A separate runtime probe under the exact pinned Node 22.20.0 repeats the changed call and meeting public-door assertions against an isolated migrated database and the real adapter, with both passing. The probe includes a deal with the distinctive amount as actual saved data as well as source text. Pinned Node typecheck and the first-party package check pass. Actual outputs and bound source hashes are in `RESULTS.json`, `native-journey.log`, `PROBES.log`, `typecheck.log` and `first-party.log`.
+
+No UI changed. The selected brief expressly omits Settings, notice-status and unresolved-state qualification at 1440 and 390; no browser or design proof is claimed.
+
+## Mechanical results
+
+MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock then check exit=0; views=node src/base/contract-docs.mjs write then check exit=0; ledger=none exit=0.
+
+After the final main refresh, CONTRACT.md retained fresh main's entire other Status judgments. Its source merged without conflict. Both generated views were restored whole from origin/main after successful write and check. The source-lock conflict was resolved only by the documented generator, last; its check passed before the replay continued. No generated view is committed. Candidate Verify may therefore report the expected generated-view freshness failure; it is not a reason to edit those views.
+
+A follow-on mechanical command ran prematurely during the first, unpublished rebase and locally amended the detached checkout. The guard refused that detached push before any transport. That unpublished attempt was aborted, the original branch restored, and the rebase repeated correctly with source-first checks, generation, lock validation and rebase continuation. No published ref was rewritten. The successful product push was attempt one, with the correct named branch checked out. `product-push.log`, `identity.json`, `parent-rows.json` and `mechanical.json` record final custody and checks.
+
+## Remaining scope and riders
+
+Complete archive and erasure qualification, including company and deal redaction and separate provider outcomes, remains omitted. The existing contact-erasure and restored pending-deletion hold proofs are retained without claiming a release. Remaining notice-kind field and link reconciliation, Settings and status and unresolved-state inspection at both widths, live Slack and TEAM-005 qualification remain unclaimed. Buoy, signed quote and billing notices remain with INTEGRATE-008, QUOTE-001 and INTEGRATE-003. The full buyer walk stays with the last shipping named BOUNDARY-001 clause and its account, consent and receiving-product prerequisites. All existing queue notes, holds and release prerequisites remain unchanged.
+
+DONE-RIDERS was read. This is a partial-point handoff, not a DONE request. Each row is assessed in `riders.json`: rows 1 and 3 remain incomplete for the full clause, row 9 preserves the provider boundary, and row 11 stays with the guarded lander. Rows 5 and 7 preserve inheritance and acceptance text. No policy decision was introduced. The selected native proof exercises real populated sources, successful delivery, unauthenticated refusal and repeat processing. Existing revoked-authority, erasure and replay checks were retained and passed in the existing journey. No UI or configuration was changed. Publication scan, exact-final landing conditions and main Run site remain fleet duties, without an invented receipt.
+
+## Plan disposition
+
+`PLAN.md` contains the full executed plan; `proof-map.json` maps the point to assertions. The plan row for INTEGRATE-011 gains the selected call and meeting notice proof and remains PARTIAL to PARTIAL. No queue, hold or other plan row is changed. The extract provides no next unblocked target in these files beyond the explicitly selected slice. No clause-specific held remainder was released. There is no product blocker for this bounded proof change. Broader qualification remains named above and in the clause Gap.
+
+Exact-SHA CI and final custody are recorded in the CI receipt and final report addendum. The earlier main's Verify runs 42198798726 and 42196045128 and Run site 42198798685 were successful on d89ffcc89d4e87b5276f13298210de9eb21f4f35; they are not offered as candidate receipts.

@@ -1,0 +1,15 @@
+{
+  "parentRows": 204,
+  "stagedRows": 204,
+  "missing": [],
+  "changedRows": [
+    "INTEGRATE-011"
+  ],
+  "counts": {
+    "partial": 136,
+    "done": 36,
+    "missing": 32
+  },
+  "generatedViewsMatchMain": true,
+  "newEmailLiterals": 0
+}

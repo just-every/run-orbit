@@ -1,0 +1,74 @@
+{
+  "target": "INTEGRATE-011",
+  "before": "partial",
+  "after": "partial",
+  "countsBefore": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "countsAfter": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "scope": "selected native call and meeting portion of acceptance point 3 only",
+  "DONEClaim": false,
+  "riders": [
+    {
+      "number": 1,
+      "result": "partial",
+      "evidence": "New native source and disclosure assertions; other acceptance outcomes remain omitted."
+    },
+    {
+      "number": 2,
+      "result": "selected slice asserted",
+      "evidence": "Populated source entries, real Records and Settings doors, actual Slack adapter with only its HTTP edge captured; 401 on record read without a native session."
+    },
+    {
+      "number": 3,
+      "result": "pending",
+      "evidence": "Existing source-onboarding registration is scheduled by push Verify; exact-head outcome is recorded separately after publication."
+    },
+    {
+      "number": 4,
+      "result": "source bytes bound in receipt",
+      "evidence": "Native execution uses the exact changed helper; candidate hash and file digests are recorded after commit."
+    },
+    {
+      "number": 5,
+      "result": "retained",
+      "evidence": "INTEGRATE-011 keeps BASE-ROLE-001, BASE-SECRET-001 and BASE-DATA-004 citations and its INTEGRATE-005 inheritance."
+    },
+    {
+      "number": 6,
+      "result": "partial retained",
+      "evidence": "Only selected evidence and Gap updated; contract write and check pass locally, generated views restored from main. No new judgment or DONE provenance is claimed."
+    },
+    {
+      "number": 7,
+      "result": "pass",
+      "evidence": "No acceptance sentence or other Status row changed; no obligation, ruling or inheritance edited."
+    },
+    {
+      "number": 8,
+      "result": "retained",
+      "evidence": "Existing native authorization, mapping, revocation and action refusal proofs remain intact. This round creates no new authority."
+    },
+    {
+      "number": 9,
+      "result": "partial retained",
+      "evidence": "Only Slack HTTP edge replaced. No live Slack receipt, provider guarantee or full erasure qualification claimed."
+    },
+    {
+      "number": 10,
+      "result": "not applicable",
+      "evidence": "No policy choice or default introduced."
+    },
+    {
+      "number": 11,
+      "result": "pending lander",
+      "evidence": "Product branch only. Main equality, complete publication scan, landing and candidate Run site are not claimed."
+    }
+  ]
+}
