@@ -1,0 +1,5 @@
+# Runtime probe
+
+PROBE FORM-001 1: actual allowlisted HTTPS buyer document, served by a distinct TLS server with Chromium-generated Origin, submitted the reviewed Contact sales form through Orbit's unmodified public challenge and POST routes. Both preflights returned 204 with the exact allowed buyer origin; challenge and POST returned 200. Authenticated Records readback found one exact contact with phone +1 415 555 0198, linked company Direct Manufacturing, and linked opportunity with numeric custom deal size 48000.75. The visitor retained no cookies. Hosted submission and buyer-site framed submission remain in the same existing registration. The full actual network and Records receipt is form-buyer-receipt.json; screenshots are under ./screens/.
+
+Acceptance 2 full matrix remains unclaimed under the planner's selected scope. Native refusal, atomic intake, replay, custody and erasure assertions remain intact and all four existing native form registrations pass. No new policy or provider claim is made.

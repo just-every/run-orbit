@@ -1,0 +1,26 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE OUT-032 established upgrade: emitted Settings and reload -> one-to-one on, upgrade basis retained, historical approvals unchanged, provider submissions=0; screens 1440 and 390
+PROBE FORM-001 1: real allowlisted HTTPS buyer page -> browser Origin admitted, challenge and direct POST 200; authenticated Records phone, exact company and numeric deal size match
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":878,"parts":66,"observations":[{"operation":"POST /exports","milliseconds":2844.5825379999587,"status":201},{"operation":"GET /exports/01M6RMPEVE1AFRZM6BYDQ961CV","milliseconds":53.36944499996025,"status":200},{"operation":"POST /exports/01M6RMPEVE1AFRZM6BYDQ961CV/advance","milliseconds":3982.656920999987,"status":200},{"operation":"POST /exports/01M6RMPEVE1AFRZM6BYDQ961CV/advance","milliseconds":2337.369958000025,"status":200},{"operation":"POST /exports/01M6RMPEVE1AFRZM6BYDQ961CV/advance","milliseconds":2206.7613150000107,"status":200},{"operation":"POST /exports/01M6RMPEVE1AFRZM6BYDQ961CV/advance","milliseconds":2471.350625000021,"status":200},{"operation":"POST /exports/01M6RMPEVE1AFRZM6BYDQ961CV/advance","milliseconds":2582.9906770000234,"status":200},{"operation":"POST /exports/01M6RMPEVE1AFRZM6BYDQ961CV/advance","milliseconds":2453.935557000048,"status":200},{"operation":"POST /exports/01M6RMPEVE1AFRZM6BYDQ961CV/advance","milliseconds":2473.288645999972,"status":200},{"operation":"POST /exports/01M6RMPEVE1AFRZM6BYDQ961CV/advance","milliseconds":2461.0368359999848,"status":200},{"operation":"POST /exports/01M6RMPEVE1AFRZM6BYDQ961CV/advance","milliseconds":996.6871449999744,"status":200},{"operation":"GET /exports/01M6RMPEVE1AFRZM6BYDQ961CV/download","milliseconds":46.7561149999965,"status":200}]}
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":854,"parts":65,"observations":[{"operation":"POST /exports","milliseconds":1870.174095000024,"status":201},{"operation":"GET /exports/01M6RMZZQ951S3CA5QZ4RDN7N7","milliseconds":40.66878200008068,"status":200},{"operation":"POST /exports/01M6RMZZQ951S3CA5QZ4RDN7N7/advance","milliseconds":2861.5163099999772,"status":200},{"operation":"POST /exports/01M6RMZZQ951S3CA5QZ4RDN7N7/advance","milliseconds":1954.7445199999493,"status":200},{"operation":"POST /exports/01M6RMZZQ951S3CA5QZ4RDN7N7/advance","milliseconds":1913.9053589999676,"status":200},{"operation":"POST /exports/01M6RMZZQ951S3CA5QZ4RDN7N7/advance","milliseconds":2152.4108150000684,"status":200},{"operation":"POST /exports/01M6RMZZQ951S3CA5QZ4RDN7N7/advance","milliseconds":1952.437237999984,"status":200},{"operation":"POST /exports/01M6RMZZQ951S3CA5QZ4RDN7N7/advance","milliseconds":1932.9247730000643,"status":200},{"operation":"POST /exports/01M6RMZZQ951S3CA5QZ4RDN7N7/advance","milliseconds":1897.7545880000107,"status":200},{"operation":"POST /exports/01M6RMZZQ951S3CA5QZ4RDN7N7/advance","milliseconds":1876.4664570000023,"status":200},{"operation":"POST /exports/01M6RMZZQ951S3CA5QZ4RDN7N7/advance","milliseconds":712.0066019999795,"status":200},{"operation":"GET /exports/01M6RMZZQ951S3CA5QZ4RDN7N7/download","milliseconds":42.42419199994765,"status":200}]}
+Owned capture Worker PID 12752
+Owned capture browser PIDs [
+  { pid: 12799, type: 'browser' },
+  { pid: 12840, type: 'GPU' },
+  { pid: 12843, type: 'network.mojom.NetworkService' },
+  { pid: 12856, type: 'storage.mojom.StorageService' }
+]
+✔ OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (722334.12001ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 727771.400857

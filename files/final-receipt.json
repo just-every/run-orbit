@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f118",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f118",
+  "head": "2718ad22d8a69de25d5b58d041f5fc41fcf0f020",
+  "tree": "4f9bd71e6291d33016eab30594bb8f6d822fc1f4",
+  "testedTreeMatches": true,
+  "recordedAt": "2026-11-06T14:46:06.955951+00:00",
+  "productPush": {
+    "status": "pushed",
+    "remoteHead": "2718ad22d8a69de25d5b58d041f5fc41fcf0f020",
+    "attempts": 1,
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f118"
+  },
+  "verify": {
+    "conclusion": null,
+    "event": "push",
+    "head_sha": "2718ad22d8a69de25d5b58d041f5fc41fcf0f020",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42236653070",
+    "id": 42236653070,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "githubApiCalls": 4,
+  "githubApiBudget": 10,
+  "claim": "CLAIM FORM-001 PARTIAL points=1 tests=newtests/t096/browser-journeys.test.ts#OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots",
+  "clauseStatusBefore": "PARTIAL",
+  "clauseStatusAfter": "PARTIAL",
+  "closedAcceptancePoints": [
+    1
+  ],
+  "countsBefore": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "countsAfter": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "tests": {
+    "native": {
+      "command": "cloud_run timeout 1200 pnpm exec tsx --test --test-concurrency=1 newtests/t096/forms-native.test.ts",
+      "exit": 0,
+      "passed": 4,
+      "durationMs": 524442.798225,
+      "relevantSourceUnchangedByFavicon": true
+    },
+    "browser": {
+      "command": "cloud_run env NODE_OPTIONS=--require=/tmp/cloud-chromium.cjs ORBIT_FOLD_BROWSER_EVIDENCE=<private-artifacts> timeout 1800 pnpm exec tsx --test --test-concurrency=1 newtests/t096/browser-journeys.test.ts",
+      "exit": 0,
+      "passed": 1,
+      "durationMs": 727771.400857,
+      "chromium": "/usr/bin/chromium 154.0.8037.57",
+      "launchArgsAdded": [
+        "--no-sandbox"
+      ],
+      "routeInterception": false,
+      "browserGeneratedOrigin": true
+    }
+  },
+  "localBrowserReproduction": {
+    "exit": 1,
+    "file": "browser-before.log",
+    "failure": "formWithoutScript: unexpected 404 for same-origin favicon.ico in browser-observations.ts:17",
+    "fix": "Inline favicon in the reviewed compiled form document; existing console assertions retained"
+  },
+  "identityAudit": {
+    "allCandidateCommitsIncludingSideParents": true,
+    "authorsAndCommitters": "Run Edit Run fleet",
+    "trailers": "absent",
+    "result": "pass"
+  },
+  "viewsCommitted": false,
+  "contractSourceEqualToMain": true,
+  "sourceLockCheckOnHead": {
+    "exit": 0
+  },
+  "publicationScan": {
+    "commit": "2718ad22d8a69de25d5b58d041f5fc41fcf0f020",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "status": "fleet lander pending; cloud scan not required"
+  },
+  "landing": {
+    "mainEqualsCandidate": false,
+    "verifyGreenOnCandidate": false,
+    "runSiteOnCandidate": null,
+    "custodian": "fleet guarded lander"
+  },
+  "holdsReleased": [],
+  "newPolicyDefaults": [],
+  "planRowsChanged": [
+    "FORM-001 selected acceptance-1 qualification receipt only; no Mac plan file edited"
+  ],
+  "blockers": []
+}

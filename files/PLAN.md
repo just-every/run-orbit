@@ -1,0 +1,8 @@
+# FORM-001 continuation plan
+
+1. Inspect the pinned f115 base, the full FORM-001 clause and Status gap, native routes and the registered browser journey. Map existing assertions to acceptance sentences. Preserve every Status cell and existing hold.
+2. Run the existing browser journey using real Chromium and the emitted Worker. Use the HTTPS buyer fixture with browser-generated Origin, CORS preflights, actual challenge and direct POST, and authenticated Records readback. Retain hosted and framed proof and inspect screenshots at 1440 and 390.
+3. Correct only a demonstrated defect; do not replace native routes. The pinned base already contains the requested phone and numeric deal-size mapping and buyer-origin assertions. If those pass, avoid redundant product edits and new tests.
+4. Integrate current main without rewriting published f115 history, keep main assertions and judgments, run touched native tests, typecheck and first-party checks. Run contract write and check, restore generated views from main, regenerate the source lock last and check it.
+5. Audit all candidate commit identities and trailers, publish only the named cloud branch through the push guard, discover exact-SHA Verify via REST within the ten-call budget and retain the exact status honestly. Preserve complete actual reports and receipts on the separate evidence ref.
+6. Claim acceptance point 1 only if the journey passes. FORM-001 remains PARTIAL because the planner explicitly leaves acceptance 2 full matrix and broader qualification outside this slice; RECORD-014, NOTIFY-003 and TEAM-005 boundaries and every hold remain unchanged. Landing, full-history publication scan and main Run site remain with the fleet.
