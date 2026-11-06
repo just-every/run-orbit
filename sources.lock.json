@@ -10003,7 +10003,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "b6370cb0934102bf49ed3054f128c15ccf778baa6fc04b0fe675f18a7872a566",
+      "sha256": "0412868868e02a0bc060a43de3fe4a87afea53f643d29de3ce20f924c2243553",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
@@ -10782,12 +10782,16 @@
       "sha256": "e794804bd4716f5e112e1d2192fef0472e0a6cbc73db2354f7d89cd58f0e37e2",
       "executable": false
     },
+    "tests/support/agent-door-capacity-proof.ts": {
+      "sha256": "49f385a1050565b24b8c8143c66d82f9266d241cd4396e98cc17458d025e91c9",
+      "executable": false
+    },
     "tests/support/agent-door-local-proof.ts": {
       "sha256": "b376f9a0eac88f379bc6e459bed719f5065bdaa5afc37bb5000b36766e3aaac9",
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "1614c25b84231de703f706f50ad21a0a0cdacf98f87b363b7ba5a2b9dd507df2",
+      "sha256": "0e8c521c32ae5ea5048ae8c4169c89ccd08bfd6d963843b49e8b752ad372826c",
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {

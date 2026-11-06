@@ -4,7 +4,7 @@ import {isolatedDatabase} from '../support/isolated-database';
 import {agentDoorProof} from '../support/agent-door-proof';
 import {identityResponse, operatorFromRequest} from '../../src/core/features/identity';
 
-test('Managed owner claim verifies RER authority and creates the native owner/session exactly once', async () => {
+test('Managed owner claim verifies RER authority and creates the native owner/session exactly once', async context => {
   const fixture = await isolatedDatabase();
   try {
     const origin = 'https://orbit.example.test', issuer = 'https://rer.example.test';
@@ -47,5 +47,5 @@ test('Managed owner claim verifies RER authority and creates the native owner/se
     assert.equal(direct!.status, 409);
     assert.equal((await direct!.json() as {error: string}).error, 'already_initialized');
   } finally { await fixture.dispose(); }
-  await agentDoorProof();
+  await agentDoorProof(context);
 });
