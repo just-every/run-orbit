@@ -1,0 +1,127 @@
+[
+  {
+    "path": "newtests/t096/forms-abuse-journey.ts",
+    "line": 26,
+    "purpose": "const released="
+  },
+  {
+    "path": "newtests/t096/forms-abuse-journey.ts",
+    "line": 46,
+    "purpose": "const pending="
+  },
+  {
+    "path": "newtests/t096/forms-abuse-journey.ts",
+    "line": 51,
+    "purpose": "const withdrawal="
+  },
+  {
+    "path": "newtests/t096/forms-abuse-journey.ts",
+    "line": 52,
+    "purpose": "const refused="
+  },
+  {
+    "path": "newtests/t096/forms-abuse-qualification.ts",
+    "line": 11,
+    "purpose": "const inventory="
+  },
+  {
+    "path": "newtests/t096/forms-abuse-qualification.ts",
+    "line": 21,
+    "purpose": "for(const [n,consent]"
+  },
+  {
+    "path": "newtests/t096/forms-abuse-qualification.ts",
+    "line": 33,
+    "purpose": "const anonymous="
+  },
+  {
+    "path": "newtests/t096/forms-abuse-qualification.ts",
+    "line": 35,
+    "purpose": "const source="
+  },
+  {
+    "path": "newtests/t096/forms-abuse-qualification.ts",
+    "line": 39,
+    "purpose": "UPDATE access_form_authorities"
+  },
+  {
+    "path": "newtests/t096/forms-abuse-qualification.ts",
+    "line": 44,
+    "purpose": "const allowed="
+  },
+  {
+    "path": "newtests/t096/forms-abuse-qualification.ts",
+    "line": 56,
+    "purpose": "const tooFast="
+  },
+  {
+    "path": "newtests/t096/forms-abuse-qualification.ts",
+    "line": 59,
+    "purpose": "const forged="
+  },
+  {
+    "path": "newtests/t096/forms-abuse-qualification.ts",
+    "line": 61,
+    "purpose": "now+=61000;for"
+  },
+  {
+    "path": "newtests/t096/forms-abuse-qualification.ts",
+    "line": 63,
+    "purpose": "now+=61000;for"
+  },
+  {
+    "path": "newtests/t096/forms-abuse-qualification.ts",
+    "line": 69,
+    "purpose": "for(const [n,configured]"
+  },
+  {
+    "path": "newtests/t096/forms-abuse-qualification.ts",
+    "line": 70,
+    "purpose": "for(const [n,result,reason]"
+  },
+  {
+    "path": "newtests/t096/browser-form-abuse.ts",
+    "line": 14,
+    "purpose": "await publicPage.goto"
+  },
+  {
+    "path": "newtests/t096/browser-form-abuse.ts",
+    "line": 16,
+    "purpose": "await publicPage.getByLabel"
+  },
+  {
+    "path": "newtests/t096/browser-form-abuse.ts",
+    "line": 21,
+    "purpose": "await row.getByRole"
+  },
+  {
+    "path": "newtests/t096/browser-form-abuse.ts",
+    "line": 22,
+    "purpose": "await panel.scrollIntoViewIfNeeded"
+  },
+  {
+    "path": "newtests/t096/browser-form-abuse.ts",
+    "line": 23,
+    "purpose": "await row.getByRole"
+  },
+  {
+    "path": "src/core/features/forms/native-capture.ts",
+    "line": 37,
+    "purpose": "if(form.consentWording"
+  },
+  {
+    "path": "src/core/features/forms/service.ts",
+    "line": 76,
+    "purpose": "async releaseSpam"
+  },
+  {
+    "path": "src/core/features/forms/service.ts",
+    "line": 77,
+    "purpose": "consent_occurred_at"
+  },
+  {
+    "path": "src/core/features/forms/service.ts",
+    "line": 81,
+    "purpose": "consent_occurred_at"
+  }
+]

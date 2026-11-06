@@ -1,0 +1,12 @@
+{
+  "head": "c51ba2c96f2dc947e29e9e349447b8b4a2ab43b1",
+  "files": {
+    "newtests/t096/forms-native.test.ts": "6f8a6a0be5f4288357eeca1ca4cb5cdb670e26c631d4b2332c7cebf47f78437e",
+    "newtests/t096/forms-abuse-journey.ts": "4ed4221aea1b4a0a871721c3ba4785bce53f9abc6263e561c69bc53b7af28028",
+    "newtests/t096/forms-abuse-qualification.ts": "e02143b003d058d6b5cb05cff1cdfb41e3ae0d41f83d91499c4cb73e5b0b6da2",
+    "newtests/t096/browser-journeys.test.ts": "38aebb5b6084e780ed638743e0f9a6ae57a4f5f85443ac239044d0cd3e0e501e",
+    "newtests/t096/browser-form-abuse.ts": "a0c76033f1632175664176da3424b9fa5f2ac77f9c9d8c4aa59883e82b35d4f8",
+    "src/core/features/forms/service.ts": "7c003d79add9491fe38205fc14c1cfb4a1803b3aea7903942d45088d6950b849",
+    "src/core/features/forms/native-capture.ts": "e070f4d49119302b78b3a6e0ca3dcc11776dca298fa2f539d0247f81bba3bbbf"
+  }
+}

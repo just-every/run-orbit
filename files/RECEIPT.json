@@ -1,0 +1,176 @@
+{
+  "tag": "sd-orbit-c-f78",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f78",
+  "head": "c51ba2c96f2dc947e29e9e349447b8b4a2ab43b1",
+  "created_at": "2026-11-06T05:58:47.351178+00:00",
+  "base": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+  "main_observed": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "counts_candidate": {
+    "done": 37,
+    "partial": 135,
+    "missing": 32
+  },
+  "clause_changes": [
+    {
+      "id": "FORM-002",
+      "before": "partial",
+      "candidate": "done"
+    }
+  ],
+  "checks": [
+    {
+      "name": "native forms file",
+      "command": "node node_modules/tsx/dist/cli.mjs --test newtests/t096/forms-native.test.ts",
+      "exit": 0,
+      "passed": 4,
+      "note": "Complete existing file passed before the consent-time correction; final affected native registration rerun after the fix."
+    },
+    {
+      "name": "final native abuse registration",
+      "command": "node node_modules/tsx/dist/cli.mjs --test --test-name-pattern='FORM-001 public form HTTP' newtests/t096/forms-native.test.ts",
+      "exit": 0,
+      "passed": 1,
+      "log": "native-final.log"
+    },
+    {
+      "name": "final emitted forms browser",
+      "command": "node --import tsx /tmp/sd-orbit-f78-browser-probe.mjs",
+      "exit": 0,
+      "viewports": [
+        1440,
+        390
+      ],
+      "log": "browser-final.log",
+      "note": "Invokes the same formAbuseBrowserJourney registered in browser-journeys.test.ts against the rebuilt emitted Worker; Chromium executable /usr/bin/chromium, no-sandbox."
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "name": "app build",
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "name": "first-party",
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "name": "boundaries",
+      "command": "pnpm check:boundaries",
+      "exit": 0
+    },
+    {
+      "name": "deployment",
+      "command": "pnpm deployment:check",
+      "exit": 0
+    },
+    {
+      "name": "inventory",
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    {
+      "name": "views generation",
+      "command": "node src/base/contract-docs.mjs write && node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "restored": [
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ]
+    },
+    {
+      "name": "source lock",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock && node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    {
+      "name": "migration ledger",
+      "command": null,
+      "exit": 0,
+      "note": "No migration added or changed."
+    }
+  ],
+  "ci": {
+    "id": 42171344189,
+    "name": "Verify",
+    "head_sha": "c51ba2c96f2dc947e29e9e349447b8b4a2ab43b1",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "failure",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42171344189",
+    "failed_source_job_id": 127739743178,
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "classification": "PERMITTED_GENERATED_VIEW_ONLY",
+    "dependent_effects": [
+      "source artifact absent because source step stopped",
+      "shards skipped because source failed",
+      "aggregate failed because source failed"
+    ],
+    "journeys_executed": false
+  },
+  "publication_scan": {
+    "commit": "c51ba2c96f2dc947e29e9e349447b8b4a2ab43b1",
+    "state": "NOT_RUN_IN_CLOUD",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "custodian": "fleet Mac",
+    "required_before_landing": true
+  },
+  "landing": {
+    "main_pushed": false,
+    "landed": false,
+    "run_site_candidate": null
+  },
+  "baseline_failure": {
+    "candidate_save": "2673f35e4d75d0530ff6513dffd1495b4745315c",
+    "main": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+    "command": "NODE_OPTIONS=--import=/tmp/rer-browser-system.mjs ORBIT_FOLD_BROWSER_EVIDENCE=<private-proof-directory> node node_modules/tsx/dist/cli.mjs --test newtests/t096/browser-journeys.test.ts",
+    "exit_candidate": 1,
+    "exit_main": 1,
+    "test": "formWithoutScript: browser-observations.ts:17",
+    "failure": "System Chromium requests favicon.ico, which returns 404; existing unexpected console errors assertion fails before the new helper. Same failure on main; assertion retained."
+  },
+  "identity": {
+    "authors": "fleet",
+    "committers": "fleet",
+    "trailers": [],
+    "all_candidate_commits_checked": true
+  },
+  "parent_status_rows": 204,
+  "new_fixture_email_literals": 0,
+  "pr": null,
+  "views_exact_candidate": {
+    "command": "node src/base/contract-docs.mjs check",
+    "exit": 1,
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "permitted_generated_view_exception": true
+  },
+  "proof_inputs_unchanged": true,
+  "product_push": {
+    "exit": 0,
+    "remote_ref": "refs/heads/cloud/sd-orbit-c-f78",
+    "head": "c51ba2c96f2dc947e29e9e349447b8b4a2ab43b1"
+  },
+  "runtime_cleanup": {
+    "focused_browser_closed": true,
+    "focused_worker_closed": true,
+    "main_worktree_removed": true
+  },
+  "readiness": "READY under the explicit generated-view exception; fleet must regenerate and rerun exact landing CI",
+  "github_calls_used": 5,
+  "observed_at": "2026-11-06T06:04:15.238253+00:00"
+}

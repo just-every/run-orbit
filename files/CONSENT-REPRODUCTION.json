@@ -1,0 +1,10 @@
+{
+  "command": "node --import tsx /tmp/sd-orbit-f78-consent-probe.mjs",
+  "door": "authenticated forms spam release",
+  "test": "formAbuseQualification: release preserves the original visitor consent time rather than recording a new consent",
+  "exit": 1,
+  "actual": "2026-11-06T05:53:18.214Z",
+  "expected": "2026-11-06T05:53:17.664Z",
+  "source_before": "2673f35e4d75d0530ff6513dffd1495b4745315c",
+  "fix": "Use the saved refusal creation time for the released consent event; normal captures and release audit retain their current processing times."
+}

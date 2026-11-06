@@ -1,0 +1,16 @@
+{
+  "head": "c51ba2c96f2dc947e29e9e349447b8b4a2ab43b1",
+  "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+  "exit": 0,
+  "result_fields": [
+    "ok",
+    "schemaVersion",
+    "parent",
+    "edition",
+    "manifest",
+    "toolchain",
+    "components",
+    "files"
+  ],
+  "sources_lock_sha256": "d99802dd7f23f56b5aebdacf5079ffa5935c0ea2fbc443af61abf1cc5ab57456"
+}

@@ -1,0 +1,26 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: release preserves the original visitor consent time rather than recording a new consent
++ actual - expected
+
++ '2026-11-06T05:53:18.214Z'
+- '2026-11-06T05:53:17.664Z'
+                     ^
+
+    at formAbuseQualification (/home/agent/rer-consolidation/work/sd-orbit-c-f78/run-orbit/newtests/t096/forms-abuse-qualification.ts:26:359)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async <anonymous> (/tmp/sd-orbit-f78-consent-probe.mjs:4:29) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '2026-11-06T05:53:18.214Z',
+  expected: '2026-11-06T05:53:17.664Z',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

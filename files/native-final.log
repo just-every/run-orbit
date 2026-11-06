@@ -1,0 +1,14 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE FORM-002 consent and authority: native held release preserves true, false and omitted consent; stopped source and revoked authorization refuse without writes; fresh exact review permits release
+PROBE FORM-002 abuse boundaries: signed fill age and key binding, network and form windows, trusted metadata and Turnstile action, hostname and outage refusals preserve domain inventories; valid verified intake and replay succeed once
+✔ FORM-001 public form HTTP refuses abuse without customer writes and releases spam exactly once (75391.058242ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 77153.563591
