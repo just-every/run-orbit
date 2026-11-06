@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "0034e88d18abe462dc0aa0d60a4566b50425fee8ac20601e4f6603d0b7980fda",
+      "sha256": "6677245bd64202fd6d0cc270cdfe9ddd5956858478ebe940e08004d1822c0237",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "2df826e56a75b88fc75a3645ea20bdcb593e19a2f9f3d7be10c4a4995c7489b8",
+      "sha256": "e402bd6944eea1da5dd2e01ebd9b35f78843021ab1282ac2fd081f861ce46ef0",
       "executable": false
     },
     "DEMO.md": {
@@ -11087,7 +11087,7 @@
       "executable": false
     },
     "tests/support/slack-actions-proof.ts": {
-      "sha256": "7a09cb98302791b6bf279b2d81178f80002d4686435df49ef7e1fa25ec5d817f",
+      "sha256": "d9bc7b859e2015262ae19bca8725ba5bbde70d5cbc0619dda4183798d7dc5499",
       "executable": false
     },
     "tests/support/slack-archive-proof.ts": {
