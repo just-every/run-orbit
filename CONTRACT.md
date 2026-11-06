@@ -2393,7 +2393,7 @@ SIGNAL-008 is proved from the code and tests at commit `cd4240900048e5276f0ec62d
 
 RECORD-023 was proved through the native authorization and grant audit journey and the emitted collaborator journey at 1440 and 390 from code and tests at commit `da0c64983536beb00775fcb524d58bb4e81e8d04` (5 November 2026); the subsequent status update changes only this contract and its source lock.
 
-RECORD-007 is proved through the native Owner control and authenticated record journeys from code and tests at commit `f6ff3d70e62331dbb4993df91f5366640581cc56` (6 November 2026); subsequent edits record only its status, evidence, generated counts and source lock. Owner-only edits retain the current score and evidence evaluation; genuine customer evidence and other scoring inputs still evaluate normally.
+RECORD-007 is proved through the native Owner control and authenticated record journeys from code and tests at commit `1b521e402c216fa591ec0947e4a0580577025e62` (6 November 2026); subsequent edits record only its status, evidence, generated counts and source lock. Owner-only edits retain the current score and evidence evaluation; genuine customer evidence and other scoring inputs still evaluate normally.
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
