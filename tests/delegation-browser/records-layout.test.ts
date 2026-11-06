@@ -19,6 +19,7 @@ import { createTestDependencies } from '../support/test-dependencies';
 import { sampleData } from '../fixtures/sample-data';
 import { sessionCookieName } from '../support/test-auth';
 import { nativeLongRecordLayoutJourney } from './records-layout-journey.mjs';
+import { opportunityOwnershipJourney } from './opportunity-ownership-journey.mjs';
 import { identityVars } from '../support/worker-identity.mjs';
 
 test('emitted Worker record and NOW lists wrap full valid long names; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390', async () => {
@@ -50,6 +51,7 @@ test('emitted Worker record and NOW lists wrap full valid long names; an invited
     if((await worker.fetch(origin+'/health')).status!==200)throw new Error('Emitted Worker did not become healthy.');
     browser = await chromium.launch({headless:true,executablePath:process.env.ORBIT_CHROMIUM_EXECUTABLE,args:['--no-sandbox','--use-mock-keychain','--password-store=basic',...certificateTrust(certificate.cert)]});
     const context = await browser.newContext({ baseURL: origin, ignoreHTTPSErrors:true, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
+    await opportunityOwnershipJourney(await context.newPage(),sampleData.opportunities[0].id,sampleData.operators[0]);
     // Emitted documents and HTTP routes share one Worker; only Twilio's outbound network edge is faked.
     await callingJourney(await context.newPage(),{fetch:worker.fetch.bind(worker),origin,provider:callingProvider,accountSid:callingAccount,token:callingToken});
     await calendarJourney(await context.newPage(),calendarData);

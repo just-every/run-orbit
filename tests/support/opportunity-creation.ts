@@ -9,11 +9,11 @@ export async function exerciseOpportunityCreation(request:(path:string,method?:s
  };
  const read=(id:string)=>call(`records/opportunity/${id}`);
  const owner=async(id:string)=>{
-  assert.equal((await read(id)).record.owner_id,actor);
-  assert.equal((await call(`opportunities/${id}`)).opportunity.ownerId,actor);
+  assert.equal((await read(id)).record.owner_id,null);
+  assert.equal((await call(`opportunities/${id}`)).opportunity.ownerId,null);
  };
  const counts=async()=>{const inventory=await call('workbench');return [inventory.companies.length,inventory.contacts.length];};
- // With one active native operator both creation doors default to that operator.
+ // Both creation doors leave ownership empty even when there is only one operator.
  await db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(other).run();
  try{
   const fresh=await call('workbench/opportunities','POST',{title:'New customer opportunity',companyName:'Create journey company',contactName:'New buyer',email:'create-journey@customer.test',stageId,valueCents:2400},201);
@@ -50,7 +50,7 @@ export async function exerciseOpportunityCreation(request:(path:string,method?:s
   await call('workbench/opportunities','POST',{title:'Duplicate new identity',companyName:'Must roll back',contactName:'Duplicate buyer',email:'CREATE-JOURNEY@customer.test',stageId,valueCents:0},409);
   assert.deepEqual(await counts(),invalidBefore,'Invalid selections and duplicate identities write no customer records');
  }finally{await db.prepare("UPDATE operators SET status='active' WHERE id=?").bind(other).run();}
- // With more than one native operator both creation doors default to the creator.
+ // Adding colleagues does not implicitly assign the creator.
  const native=await call('records/opportunity','POST',{title:'Team native creation',stage_id:stageId,value_cents:0},201);await owner(native.id);
  const workbench=await call('workbench/opportunities','POST',{title:'Team form creation',companyName:'Team customer',contactName:'Team buyer',email:'team-create@customer.test',stageId,valueCents:0},201);await owner(workbench.id);
 }
