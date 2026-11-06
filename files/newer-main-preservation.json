@@ -1,0 +1,18 @@
+{
+  "observed_main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "pinned_source": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8",
+  "changed_paths": [
+    "ACCEPTANCE.md",
+    "CONTRACT.md",
+    "newtests/t096/browser-journeys.test.ts",
+    "newtests/t096/browser-opt-out-upgrade.ts",
+    "sources.lock.json",
+    "tests/core/capture-upgrade.test.ts",
+    "tests/rer/onboarding-journey.mjs",
+    "tests/rer/onboarding.test.mjs",
+    "tests/rer/scheduled-outreach.mjs",
+    "tests/support/prior-capture-upgrade.ts",
+    "tests/support/sales-pipelines.ts"
+  ],
+  "rule": "Preserve current main Status AND Gap, Evidence, provenance and newer assertions in full; this report neither integrates nor authorizes replacing them."
+}

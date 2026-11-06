@@ -1,0 +1,119 @@
+{
+  "reviewed_utc": "2026-11-06T02:11:45Z",
+  "explicit_files": [
+    {
+      "path": "REPORT.md",
+      "bytes": 20662,
+      "sha256": "677ab347c9ed87b62f10800f85eaa7c2977f4e0732026d81197112964f0e435e"
+    },
+    {
+      "path": "VERDICT.md",
+      "bytes": 20662,
+      "sha256": "677ab347c9ed87b62f10800f85eaa7c2977f4e0732026d81197112964f0e435e"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 2455,
+      "sha256": "7ee6256de09a591a13963a8782378310453afb2660f466be3d0a57556ed2edac"
+    },
+    {
+      "path": "COMMANDS.json",
+      "bytes": 5531,
+      "sha256": "47c1bb19340a027e5c1bef07a7505d96871b65a14a6a051e57290e8fed8196ed"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 12213,
+      "sha256": "4bca9bb233bf60124d25e00a668cdc7d4746ce1ed15af094744a84e6bc0de676"
+    },
+    {
+      "path": "newer-main-preservation.json",
+      "bytes": 722,
+      "sha256": "97f44f15a8e609934a458b8d8bf2739e666e19a50a5e773302e13921a783cd7d"
+    },
+    {
+      "path": "status-comparison.json",
+      "bytes": 4545,
+      "sha256": "0ea0f8359cb4731240ea83498ab118941587c5779bca9f6b0078b214b7eac5b8"
+    },
+    {
+      "path": "current-main-contract-diff.txt",
+      "bytes": 14281,
+      "sha256": "c6fcffefba0e5c62175a0c35960cb2588be34e55a3b65d1871c0eea87637e237"
+    },
+    {
+      "path": "dependency-install.log",
+      "bytes": 2483,
+      "sha256": "89cb0edda40f0e191d6229f5ae14aaa4826bc535b75951f331b28357c4eea454"
+    },
+    {
+      "path": "build.log",
+      "bytes": 3703,
+      "sha256": "5650ed7dfa8e31d010604a8e760e4674e4e48703de9104eb0e46c4316fe58e40"
+    },
+    {
+      "path": "records-search.log",
+      "bytes": 545,
+      "sha256": "fc4517ddbdc793e3af871ed2ce008b52bc289bbad3c0de59d389d04cfae0fb3c"
+    },
+    {
+      "path": "onboarding.log",
+      "bytes": 632684,
+      "sha256": "2414a5793e109ef347f738c767e07b6692f61ffd221ec2bc100c340b6e6afde9"
+    },
+    {
+      "path": "contract-check.log",
+      "bytes": 67,
+      "sha256": "183372998615cc516043a5f66404b300281009a84349eda72da66d79fe542603"
+    },
+    {
+      "path": "browser-launch-adapter.mjs",
+      "bytes": 320,
+      "sha256": "b431ae37c52d0b57533f643715a39e7c2c027cb8774ed2e19afe3b19f2573932"
+    },
+    {
+      "path": "browser-proof.json",
+      "bytes": 1730,
+      "sha256": "aa8542d261174a1484748002267e338b6b5135d509e87d850f935be585dd7946"
+    },
+    {
+      "path": "CT-POST.txt",
+      "bytes": 897,
+      "sha256": "f551bf6b1e4c757acdd499bc1af3c7e7c0fe0c492ad3cbb05f52964143644310"
+    },
+    {
+      "path": "workspace-settings-1440.png",
+      "bytes": 98927,
+      "sha256": "90715282eb4598d15e6858e553e37c77b30ef0b4c377caf851aac68220665bbe"
+    },
+    {
+      "path": "workspace-record-123456-1440.png",
+      "bytes": 143448,
+      "sha256": "643adc73674e58ea3d6a228749d9c6e0eac3a472f0fd93c0e3524502a7bc16fe"
+    },
+    {
+      "path": "workspace-record-78901-1440.png",
+      "bytes": 145040,
+      "sha256": "de69dc6b9bc291b1c858264d241dec9c682633e5a38027fc8eb99831e8af377e"
+    },
+    {
+      "path": "workspace-settings-390.png",
+      "bytes": 84858,
+      "sha256": "891846383f1a11c0c3038f1b71f48a11cb3fd550612258e221a1850aa3eea5a9"
+    },
+    {
+      "path": "workspace-record-123456-390.png",
+      "bytes": 122975,
+      "sha256": "1394591d060655d313af3eba6878bf7b04337b829c25576b99a62951f60e99f1"
+    },
+    {
+      "path": "workspace-record-78901-390.png",
+      "bytes": 124071,
+      "sha256": "9cb133409cd619d44a23ff8b506a3f58ab57067134e5064d01c397b3fd595769"
+    }
+  ],
+  "symlinks": false,
+  "secret_pattern_findings": 0,
+  "excluded": "Private setup output, rendered recipes and raw browser HTML containing ephemeral source secrets or sign-in authority; no credentials, environment dumps or held-out material selected.",
+  "product_head": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8"
+}

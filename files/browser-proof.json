@@ -1,0 +1,54 @@
+{
+  "source": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8",
+  "cases": [
+    {
+      "width": 1440,
+      "status": "passed",
+      "duration_ms": 190725.405883
+    },
+    {
+      "width": 390,
+      "status": "passed",
+      "duration_ms": 178612.059319
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "workspace-settings-1440.png",
+      "sha256": "90715282eb4598d15e6858e553e37c77b30ef0b4c377caf851aac68220665bbe",
+      "width": 1440,
+      "source": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8"
+    },
+    {
+      "path": "workspace-record-123456-1440.png",
+      "sha256": "643adc73674e58ea3d6a228749d9c6e0eac3a472f0fd93c0e3524502a7bc16fe",
+      "width": 1440,
+      "source": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8"
+    },
+    {
+      "path": "workspace-record-78901-1440.png",
+      "sha256": "de69dc6b9bc291b1c858264d241dec9c682633e5a38027fc8eb99831e8af377e",
+      "width": 1440,
+      "source": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8"
+    },
+    {
+      "path": "workspace-settings-390.png",
+      "sha256": "891846383f1a11c0c3038f1b71f48a11cb3fd550612258e221a1850aa3eea5a9",
+      "width": 390,
+      "source": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8"
+    },
+    {
+      "path": "workspace-record-123456-390.png",
+      "sha256": "1394591d060655d313af3eba6878bf7b04337b829c25576b99a62951f60e99f1",
+      "width": 390,
+      "source": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8"
+    },
+    {
+      "path": "workspace-record-78901-390.png",
+      "sha256": "9cb133409cd619d44a23ff8b506a3f58ab57067134e5064d01c397b3fd595769",
+      "width": 390,
+      "source": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8"
+    }
+  ],
+  "scope": "Functional Settings values and recorded data; no design or visual-quality judgment."
+}

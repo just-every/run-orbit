@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "tag": "ct-judge-orbit-team003-20261105-2138-sol1",
+  "repository": "just-every/run-orbit",
+  "source": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8",
+  "source_branch": "cloud/sd-orbit-c-f57",
+  "product_changes": false,
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "xhigh",
+  "model_provenance": "Authorized commission routing; no child agent or substituted model session launched.",
+  "commands": [
+    {
+      "command": "git clone --depth 1 --filter=blob:none --branch cloud/sd-orbit-c-f57 https://github.com/just-every/run-orbit.git <disposable-checkout>",
+      "exit": 0,
+      "observed_head": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8"
+    },
+    {
+      "command": "git fetch --depth 1 origin main:refs/remotes/origin/main",
+      "exit": 0,
+      "observed_main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f"
+    },
+    {
+      "command": ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 600 pnpm install --frozen-lockfile",
+      "exit": 0,
+      "log": "dependency-install.log"
+    },
+    {
+      "command": ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 300 npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0,
+      "output": "Private setup output deliberately excluded; only disposable local installation state was created."
+    },
+    {
+      "command": ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 300 npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log"
+    },
+    {
+      "command": ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 180 pnpm exec tsx --test --test-concurrency=1 tests/core/records-search.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "duration_ms": 90480.897321,
+      "log": "records-search.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 1,
+      "log": "contract-check.log",
+      "diagnostic": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+      "classification": "Permitted generated-view-only candidate exception; no write or regeneration performed."
+    },
+    {
+      "command": "git diff --exit-code origin/main HEAD -- src migrations scripts/installer",
+      "exit": 0,
+      "meaning": "Runtime source, migrations and installer source equal observed current main."
+    }
+  ],
+  "browser_command": ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 1200 env ORBIT_EVIDENCE_DIR=/tmp/orbit-judge-browser-evidence node --import /tmp/orbit-cloud-chromium.mjs --test --test-concurrency=1 tests/rer/onboarding.test.mjs",
+  "browser_execution": "completed",
+  "browser_launch_adapter": {
+    "executablePath": "/usr/bin/chromium",
+    "additional_args": [
+      "--no-sandbox"
+    ],
+    "source_edits": false,
+    "purpose": "Select the required installed headless Chromium; no assertions or outcomes altered."
+  },
+  "runtime": {
+    "node": "v24.19.0",
+    "pnpm": "10.12.4",
+    "rer": "0.2.96",
+    "declared_node_pin": "22.20.0",
+    "toolchain_note": "Supplied toolchain retains newer installed Node; no pin or dependency source changed."
+  },
+  "not_run": [
+    {
+      "item": "Full or baseline verification, full release, capacity and unrelated journeys",
+      "reason": "Reviewer commission allows only focused relied-on journeys once; no product change was made."
+    },
+    {
+      "item": "Mutations and mutation-sensitivity runs",
+      "reason": "Explicitly forbidden for this independent judgment; inspection only."
+    },
+    {
+      "item": "CI queries, reruns and dispatches",
+      "reason": "Specific read-only reviewer commission forbids them; zero GitHub API calls used."
+    },
+    {
+      "item": "Real provider, mailbox, native-device and cross-product account qualification",
+      "reason": "Outside TEAM-003 functional Settings scope and no account operation authorized; any such qualification remains UNMET-EXTERNAL."
+    },
+    {
+      "item": "Final full-history publication scan, guarded main equality, exact-final runtime Verify and Run site",
+      "reason": "Owned by the installed fleet custodian and lander; cloud judge neither performs nor infers them."
+    },
+    {
+      "item": "Generator write and source-lock regeneration",
+      "reason": "Read-only product assignment forbids changes; final merged generator and lock-last obligations remain."
+    }
+  ],
+  "supplied_evidence": {
+    "affected_gate": "Original affected GATE PASS at 21:26:14; native records-search 1 and onboarding 2 at 1440 and 390, types, lock, isolated generator and complete source/runtime equality to main reported in commission.",
+    "verify_run_id": 42108931147,
+    "verify_event": "push",
+    "verify_conclusion": "failure",
+    "verify_limitation": "Commission reports generated ACCEPTANCE.md freshness as sole failure with dependent jobs failing or skipping. Not queried or independently read back by this judge. Candidate exception only; never final runtime green."
+  },
+  "browser_exit": 0,
+  "browser_tests": 2,
+  "browser_passed": 2,
+  "browser_failed": 0,
+  "browser_duration_ms": 370739.367634,
+  "browser_cases": [
+    {
+      "width": 1440,
+      "status": "passed",
+      "duration_ms": 190725.405883
+    },
+    {
+      "width": 390,
+      "status": "passed",
+      "duration_ms": 178612.059319
+    }
+  ],
+  "product_worktree_clean_after_tests": true,
+  "owned_runtime_processes_remaining": 0,
+  "final_fresh_main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "final_fresh_main_fetch_exit": 0,
+  "completed_utc": "2026-11-06T02:11:05.545405+00:00"
+}

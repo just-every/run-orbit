@@ -1,0 +1,189 @@
+{
+  "source": "bc0eb780abbee5d8a1be89ae7e73f4df577992c8",
+  "main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "working_tree": "",
+  "files": {
+    "CONTRACT.md": {
+      "sha256": "b493f2d87bdd09038364f36f8ce3da3ea479136eb339327aa66aad32d4d91993",
+      "bytes": 484192
+    },
+    "ACCEPTANCE.md": {
+      "sha256": "4e547d52c445494402078619b4160a8ad3768e11742ebc8807a54e64da07d2c9",
+      "bytes": 434241
+    },
+    "AGENTS.md": {
+      "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9",
+      "bytes": 6149
+    },
+    "RULINGS.md": {
+      "sha256": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c",
+      "bytes": 2770
+    },
+    "tests/rer/onboarding.test.mjs": {
+      "sha256": "6903ab71823dbe106e667a396f9b60bc01b9253b8e3a31ff2f7ba18b95a5ea19",
+      "bytes": 11938
+    },
+    "tests/rer/onboarding-journey.mjs": {
+      "sha256": "9d7fbc00ac3360c5cd41e41aea70c2091529248a5a7313a1b6ffb779f5224aac",
+      "bytes": 17657
+    },
+    "tests/support/sales-pipelines.ts": {
+      "sha256": "df8b07fe20eb957ff36d24a9b9757f49bd63f4f6529b7429c2aa274bfcd6fdd0",
+      "bytes": 5218
+    },
+    "tests/core/records-search.test.ts": {
+      "sha256": "7ac001cecb56d3878a99f58574b1dd3629496d49ce08cc5311b81d250502586d",
+      "bytes": 6225
+    },
+    ".github/workflows/verify.yml": {
+      "sha256": "2d350a75be8a46166f04f9bc77a1e822ab23c75a1ac51fa05be9789db1aec238",
+      "bytes": 17450
+    },
+    "scripts/verification-plan.mjs": {
+      "sha256": "6cadc2af648d750bbab60a0e10be17ddd1b41c637b5cd113c21546fd8c7d22ce",
+      "bytes": 11284
+    },
+    "src/core/features/settings/routes.ts": {
+      "sha256": "819bab7fc2bb966f315f7867ec48debe7c7f9a7cbfb276d67d391e3aa6fcc67e",
+      "bytes": 8467
+    },
+    "src/core/features/settings/repository.ts": {
+      "sha256": "e1315042d00ede28a46302f18ce17e08f27447eb29e214d86adc45a8e1505247",
+      "bytes": 4931
+    },
+    "src/core/features/workspace/routes.ts": {
+      "sha256": "439156ce7d01380ae7b1e21a38fe512385a9557d6ebe51d88c6c00b0813dfbd6",
+      "bytes": 450
+    },
+    "src/core/features/workspace/service.ts": {
+      "sha256": "678b148995af18e9df6dde0d303529ea6129706dbf64001aedc342f80b0d2d13",
+      "bytes": 1216
+    },
+    "src/core/features/workspace/repository.ts": {
+      "sha256": "84f6a44faeb4aa5219b738d156ecc75d90d256db8c64db0ab88d08e5171d530b",
+      "bytes": 2054
+    },
+    "src/core/features/operator/presentation-date.ts": {
+      "sha256": "639296ed28619af814881f34caaff7b3dc740940463355bb769645b11947ff74",
+      "bytes": 2535
+    },
+    "src/core/features/operator/ui/formatters.ts": {
+      "sha256": "6a675d346549b63fdd2082b1829625590a15ba1ec6428e58ecaacc1818146b8a",
+      "bytes": 3450
+    },
+    "src/core/app/app.ts": {
+      "sha256": "036bb7a866be5b98cfd3c00e763f96f93ff620a888bbebd2f28045da9a1876fc",
+      "bytes": 15220
+    },
+    "src/core/features/access/native-boundary.ts": {
+      "sha256": "6fff754d03320ee02120da898ff6674f8912181ee7c5dac852c3cecfd44ef76c",
+      "bytes": 8215
+    },
+    "tests/rer/source-recipes.mjs": {
+      "sha256": "0765abeddc0e97b959d6ce6b76eb3f1962d2406d3d10f2a8936caa52d61d5fc5",
+      "bytes": 6892
+    },
+    "tests/rer/checkout.mjs": {
+      "sha256": "79d63c74ab0b8349eabebde5c1b3d40d5dca7cde752c3ef318238906f9c36f9d",
+      "bytes": 8789
+    },
+    "tests/rer/browser-api.mjs": {
+      "sha256": "757c9e87f283000e631c8ec3cb333681df7756ef7c73ddc66862ad80b45e4224",
+      "bytes": 1030
+    },
+    "tests/rer/sign-in.mjs": {
+      "sha256": "e8dd179283b6cb119faad60e2c61e9b487fddca1391b79e860f5581bcea86eb7",
+      "bytes": 1234
+    },
+    "tests/rer/sent-message-proof.mjs": {
+      "sha256": "1f492762d3538af5e6cbe16baea9ecc21fa89e4923fa439af953544105dd2d58",
+      "bytes": 786
+    },
+    "tests/rer/managed-mail.mjs": {
+      "sha256": "7d8554a545940c8ad72dbc500d6e669068a32073cf0c37bf061f46e5cefee1c6",
+      "bytes": 3764
+    },
+    "tests/rer/hosted-scheduling.mjs": {
+      "sha256": "fc497403c13725769625225f2e21fea9ff49f487f3f0276662ad288bf1831204",
+      "bytes": 1914
+    },
+    "tests/rer/scheduled-outreach.mjs": {
+      "sha256": "3c28f74b1e7c1e9e078b6b675dccaa1628d43f26f6478d649a11f0de2049c7f2",
+      "bytes": 6365
+    },
+    "tests/rer/opportunity-editing.mjs": {
+      "sha256": "620aed9ed4e46436f2689ea026d3946979c374ce4cd7558f8e268e49451b1c16",
+      "bytes": 2658
+    },
+    "tests/support/browser-temp.mjs": {
+      "sha256": "4b6f327a58579395db0f5178fd963f48d641f6c3981aadd17a241c3e0b27abf4",
+      "bytes": 666
+    },
+    "tests/support/isolated-database.ts": {
+      "sha256": "0079405dc889ae15751329af69d2a0fc81280008ad956c21b0d256e4de1433a0",
+      "bytes": 1535
+    },
+    "tests/support/app.ts": {
+      "sha256": "474ba56ee004da3d192c69925ecaa700a43ce43d82effd30483278c8749c859b",
+      "bytes": 1695
+    },
+    "tests/support/dependencies.ts": {
+      "sha256": "b1f78488cfb5f0a9ca8edea82672ec364e233549656f38b8d7b2c67c5c538c47",
+      "bytes": 464
+    },
+    "tests/support/test-auth.ts": {
+      "sha256": "a6e48105439b5428618a5ca553c612a14200f05199cb3560fdf9274e167b4d03",
+      "bytes": 3858
+    },
+    "tests/support/record-ownership.ts": {
+      "sha256": "9813f864bbec8c7201530e6502a9d46a4d2966f616133ea4b769047eb725b5cf",
+      "bytes": 6832
+    },
+    "tests/support/opportunity-creation.ts": {
+      "sha256": "1326e6e55b08ed7183102ca0d35e6fee10bca9bae05c4d52ea701cc597f1b934",
+      "bytes": 5345
+    },
+    "tests/support/buying-context.ts": {
+      "sha256": "14182a08eeb9c0224128c17c9e92e9e08d4c2c80e9a7e4d922c9726933d0afa1",
+      "bytes": 7092
+    },
+    "scripts/verification-inventory.mjs": {
+      "sha256": "3d899fef0c417074e3da2b6a0bbd7b2a61f1a2c6f352beadc80de38a9161cfae",
+      "bytes": 3299
+    }
+  },
+  "HEAD": {
+    "counts": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    },
+    "TEAM-003": [
+      "| `TEAM-003` | One workspace | published | done | Acceptance 1: `tests/rer/onboarding.test.mjs` \u2014 SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 first hour through native rer sign-in and exact rendered recipes at 1440 (and the retained 390 journey); `tests/rer/onboarding-journey.mjs` \u2014 persistedWorkspace: first-run business name, New York timezone and USD read through authenticated Settings and workspace presentation; working days, start and end hours, stale and awaiting-response intervals changed through Settings and read after reload; two distinct reloaded native deals show USD amounts and fixed winter and summer instants on the saved US clock while authenticated record reads retain the original cents and instants. `tests/core/records-search.test.ts` \u2014 RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-015 RECORD-002 RECORD-011 RECORD-006 relationships retain history and pipelines move safely and search matches record and timeline text, intersects every opportunity filter and caps the first page; `tests/support/sales-pipelines.ts` \u2014 salesPipelinesJourney: saved workspace name, US timezone, USD, working hours, both intervals and free-mail domains read through Settings; workspace presentation read back; recorded sales state, amount and complete timeline unchanged. | |"
+    ],
+    "provenance": [
+      "Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock.",
+      "SIGNAL-008 is proved from the code and tests at commit `cd4240900048e5276f0ec62dae3fe02502a180ad` (4 November 2026); subsequent edits only record its status, generated counts and source lock.",
+      "RECORD-023 was proved through the native authorization and grant audit journey and the emitted collaborator journey at 1440 and 390 from code and tests at commit `da0c64983536beb00775fcb524d58bb4e81e8d04` (5 November 2026); the subsequent status update changes only this contract and its source lock.",
+      "TEAM-003 was proved through native first-run setup, authenticated Settings and Records, and the complete browser journey at 1440 and 390 from code and tests at commit `f565b5cac7e37c4322721f561fdd0246bb214cce` (5 November 2026); subsequent changes only record its status, generated counts and source lock."
+    ]
+  },
+  "origin/main": {
+    "counts": {
+      "partial": 137,
+      "done": 35,
+      "missing": 32
+    },
+    "TEAM-003": [
+      "| `TEAM-003` | One workspace | published | partial | `tests/core/records-search.test.ts`; `src/core/features/pipelines/`; `tests/evidence/contract/TEAM-003/` | Unasserted in the carried evidence: persisted US timezone; persisted USD default; persisted working hours; persisted stale intervals; reload reads the settings across records. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |"
+    ],
+    "provenance": [
+      "Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock.",
+      "SIGNAL-008 is proved from the code and tests at commit `cd4240900048e5276f0ec62dae3fe02502a180ad` (4 November 2026); subsequent edits only record its status, generated counts and source lock.",
+      "RECORD-023 was proved through the native authorization and grant audit journey and the emitted collaborator journey at 1440 and 390 from code and tests at commit `da0c64983536beb00775fcb524d58bb4e81e8d04` (5 November 2026); the subsequent status update changes only this contract and its source lock."
+    ]
+  },
+  "runtime_source_equal_to_observed_main": true,
+  "independent_prior_report_search": "Tracked source search for bc0eb780 and replacement CT tag returned no matching report; no earlier independent judgment at this source was supplied.",
+  "github_api_calls": 0
+}
