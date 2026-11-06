@@ -1,0 +1,17 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":366,"parts":50,"observations":[{"operation":"POST /exports","milliseconds":2038.7784430000029,"status":201},{"operation":"GET /exports/01M6RGJ51H1V4TNA50BV876Q1T","milliseconds":50.997388999996474,"status":200},{"operation":"POST /exports/01M6RGJ51H1V4TNA50BV876Q1T/advance","milliseconds":3445.3279949999996,"status":200},{"operation":"POST /exports/01M6RGJ51H1V4TNA50BV876Q1T/advance","milliseconds":2084.3005980000016,"status":200},{"operation":"POST /exports/01M6RGJ51H1V4TNA50BV876Q1T/advance","milliseconds":2162.820277000006,"status":200},{"operation":"POST /exports/01M6RGJ51H1V4TNA50BV876Q1T/advance","milliseconds":2084.823339999988,"status":200},{"operation":"POST /exports/01M6RGJ51H1V4TNA50BV876Q1T/advance","milliseconds":1924.9446580000222,"status":200},{"operation":"POST /exports/01M6RGJ51H1V4TNA50BV876Q1T/advance","milliseconds":2204.5294630000135,"status":200},{"operation":"POST /exports/01M6RGJ51H1V4TNA50BV876Q1T/advance","milliseconds":998.5901510000112,"status":200},{"operation":"GET /exports/01M6RGJ51H1V4TNA50BV876Q1T/download","milliseconds":55.33856599999126,"status":200}]}
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":260,"parts":44,"observations":[{"operation":"POST /exports","milliseconds":2513.1930549999815,"status":201},{"operation":"GET /exports/01M6RGSVG86NH0QPW9NNTSVGZF","milliseconds":54.080008000019006,"status":200},{"operation":"POST /exports/01M6RGSVG86NH0QPW9NNTSVGZF/advance","milliseconds":3740.3034380000317,"status":200},{"operation":"POST /exports/01M6RGSVG86NH0QPW9NNTSVGZF/advance","milliseconds":2533.3485710000386,"status":200},{"operation":"POST /exports/01M6RGSVG86NH0QPW9NNTSVGZF/advance","milliseconds":2880.0503950000275,"status":200},{"operation":"POST /exports/01M6RGSVG86NH0QPW9NNTSVGZF/advance","milliseconds":2887.552839000011,"status":200},{"operation":"POST /exports/01M6RGSVG86NH0QPW9NNTSVGZF/advance","milliseconds":2890.5734130000346,"status":200},{"operation":"POST /exports/01M6RGSVG86NH0QPW9NNTSVGZF/advance","milliseconds":2411.146050999989,"status":200},{"operation":"GET /exports/01M6RGSVG86NH0QPW9NNTSVGZF/download","milliseconds":68.58480999997118,"status":200}]}
+✔ FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent (386995.36643ms)
+✔ public capture is one atomic native batch across publication revoke, source stop, consent failure and concurrent replay (42885.634735ms)
+✔ FORM-001 public form HTTP refuses abuse without customer writes and releases spam exactly once (57183.736597ms)
+✔ existing-contact form capture atomically links and evaluates native opportunities exactly once without changing contact fields or mail authority (38348.045024ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 530159.639843

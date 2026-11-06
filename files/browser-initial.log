@@ -1,0 +1,45 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE OUT-032 established upgrade: emitted Settings and reload -> one-to-one on, upgrade basis retained, historical approvals unchanged, provider submissions=0; screens 1440 and 390
+✖ OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (78143.920907ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 83931.2971
+
+✖ failing tests:
+
+test at newtests/t096/browser-journeys.test.ts:1:1405
+✖ OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (78143.920907ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     message: 'Failed to load resource: the server responded with a status of 404 (Not Found)',
+  +     tracing: true,
+  +     url: 'https://127.0.0.1:30128/favicon.ico'
+  +   }
+  + ]
+  - []
+  
+      at Object.check (/home/agent/rer-consolidation/work/sd-orbit-c-f115/orbit/newtests/t096/browser-observations.ts:17:244)
+      at async formWithoutScript (/home/agent/rer-consolidation/work/sd-orbit-c-f115/orbit/newtests/t096/browser-form-no-script.ts:6:348)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f115/orbit/newtests/t096/browser-journeys.test.ts:30:1240)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { message: 'Failed to load resource: the server responded with a status of 404 (Not Found)', url: 'https://127.0.0.1:30128/favicon.ico', tracing: true } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

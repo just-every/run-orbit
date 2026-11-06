@@ -1,0 +1,80 @@
+{
+  "checks": [
+    {
+      "name": "views-write",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "views-check",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "restore-views",
+      "command": [
+        "git",
+        "checkout",
+        "origin/main",
+        "--",
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "run",
+        "typecheck"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "first-party",
+      "command": [
+        "pnpm",
+        "exec",
+        "rer",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "source-lock",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "lock"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "source-check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 0
+    }
+  ],
+  "ledger": {
+    "command": null,
+    "exit": 0,
+    "reason": "No migration change"
+  },
+  "candidateHead": "8bfa5ca6fe29cb91e917c2052c50ed2df5605cf5",
+  "finalSourceBytesUnchanged": true
+}

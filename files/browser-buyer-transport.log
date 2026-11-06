@@ -1,0 +1,30 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE OUT-032 established upgrade: emitted Settings and reload -> one-to-one on, upgrade basis retained, historical approvals unchanged, provider submissions=0; screens 1440 and 390
+✖ OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (210222.819651ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 214905.361964
+
+✖ failing tests:
+
+test at newtests/t096/browser-journeys.test.ts:1:1405
+✖ OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (210222.819651ms)
+  page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://northstar-buyer.test:43883/direct-1440?utm_campaign=direct-1440&owner=forged
+  Call log:
+  [2m  - navigating to "https://northstar-buyer.test:43883/direct-1440?utm_campaign=direct-1440&owner=forged", waiting until "load"[22m
+  
+      at formMappingBrowserJourney (/home/agent/rer-consolidation/work/sd-orbit-c-f115/orbit/newtests/t096/browser-form-mapping.ts:60:21)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f115/orbit/newtests/t096/browser-journeys.test.ts:38:217) {
+    name: 'Error',
+    log: [ '  - navigating to "https://northstar-buyer.test:43883/direct-1440?utm_campaign=direct-1440&owner=forged", waiting until "load"' ]
+  }

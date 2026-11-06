@@ -1,0 +1,26 @@
+{
+  "head": "8bfa5ca6fe29cb91e917c2052c50ed2df5605cf5",
+  "command": [
+    "python3",
+    "/tmp/rer-reap.py",
+    "timeout",
+    "1200",
+    "pnpm",
+    "exec",
+    "tsx",
+    "/tmp/orbit-mapping-only.mts"
+  ],
+  "startedAt": "2026-11-06T13:34:48.784762+00:00",
+  "finishedAt": "2026-11-06T13:36:08.956536+00:00",
+  "exit": 0,
+  "door": "actual emitted Worker and actual HTTPS buyer document",
+  "viewports": [
+    1440,
+    390
+  ],
+  "browser": "/usr/bin/chromium",
+  "launchArgs": [
+    "--no-sandbox"
+  ],
+  "localArtifactAddition": "inert favicon for system Chromium; no Orbit route interception"
+}

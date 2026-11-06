@@ -1,0 +1,19 @@
+{
+  "head": "8bfa5ca6fe29cb91e917c2052c50ed2df5605cf5",
+  "command": "cloud_run timeout 1800 env NODE_OPTIONS=--import=/tmp/orbit-chromium.mjs ORBIT_FOLD_BROWSER_EVIDENCE=<evidence directory> pnpm exec tsx --test --test-concurrency=1 newtests/t096/browser-journeys.test.ts",
+  "exit": 0,
+  "passed": 1,
+  "failed": 0,
+  "durationMs": 642704.526755,
+  "finalTestBytesMatchCandidate": true,
+  "closure": {
+    "closed": true,
+    "viewports": [
+      1440,
+      390
+    ],
+    "ownedWorkers": 0,
+    "ownedBrowsers": 0
+  },
+  "logSha256": "6d23a444d88fc2f4539351ae2e5a04333dc1c45866e878104d5266637598c085"
+}
