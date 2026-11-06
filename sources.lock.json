@@ -10099,7 +10099,7 @@
       "executable": false
     },
     "tests/delegation-browser/opportunity-ownership-journey.mjs": {
-      "sha256": "c83e31b4175a67c69b6ad4a70535b2c48dbe2e7461a3eba4e96c5a512228ffcf",
+      "sha256": "a07abdf140d6fdc46e6cf9f95992d194f4467d7546d2348113a62481d8329e5c",
       "executable": false
     },
     "tests/delegation-browser/private-entries-journey.mjs": {
