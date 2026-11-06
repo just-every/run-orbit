@@ -13,10 +13,10 @@
       "sha256": "c6e8d2bdc582fba6b18b3ea165a166eb860e6551ce823708faebea33d9d1183e"
     },
     {
-      "blob": "3fa0a88a073e8391779adc182f24a7874726ffe9",
-      "bytes": 18402,
+      "blob": "730de56eb4cf3e6d09a4fc16536217313f0c18ff",
+      "bytes": 19062,
       "path": "REPORT.md",
-      "sha256": "35764bd09f0707dd4974de44935826270f30fb068c533323a5e58fd2ee80783d"
+      "sha256": "af276a6dac10c332f80c1ffb2aae684bd8b928b4145a98bc712059531096e438"
     },
     {
       "blob": "f920826a6b6099060aef29631b9e02fc82e7d722",
@@ -53,6 +53,12 @@
       "bytes": 511,
       "path": "cleanup-receipt.json",
       "sha256": "142647e3d93256c8691aaa77503cd71075cd625d9b6949aef8e4a33cdbad55c5"
+    },
+    {
+      "blob": "0860c1b057d194f4f26a9f6fd09864516c8df82e",
+      "bytes": 13044,
+      "path": "cloud-evidence-entrypoint.py",
+      "sha256": "1cd6e9436667a9a57b714cfe731f99867a9581481708bd09d5db06f6afc23b06"
     },
     {
       "blob": "d9c59bf68680ed7eaab3836a0c75055a79f36661",
@@ -95,6 +101,18 @@
       "bytes": 3941,
       "path": "prior-source-equality.json",
       "sha256": "45e4cdab03a52bff178d49d7e62f9737884bea5bf0c2d673e043bd96f1ffce18"
+    },
+    {
+      "blob": "6263a54b3e8ef6b5437ec2b937818c065100c75d",
+      "bytes": 6775,
+      "path": "publication-first.log",
+      "sha256": "ce47f5792c8315924680e91910128baf7228630b229f6ab89e3ab5de76f343a6"
+    },
+    {
+      "blob": "8966168094c9396f82948652fe77d4a9b670f12d",
+      "bytes": 8884,
+      "path": "publication-receipt.json",
+      "sha256": "58a87a29a1a8042baa759d99ea42c2b6d5b946c993f0a3f92839b04e183199ad"
     },
     {
       "blob": "7670886e77eb4a97307ae15464e84425c03ef68a",
