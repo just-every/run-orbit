@@ -1,0 +1,20 @@
+head=168a6e4a34d2945df728395d800920162a6032c5
+v22.20.0
+10.12.4
+TAP version 13
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Subtest: Managed owner claim verifies RER authority and creates the native owner/session exactly once
+ok 1 - Managed owner claim verifies RER authority and creates the native owner/session exactly once
+  ---
+  duration_ms: 90004.142561
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 92784.564461

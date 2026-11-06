@@ -1,0 +1,38 @@
+TAP version 13
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Subtest: Managed owner claim verifies RER authority and creates the native owner/session exactly once
+not ok 1 - Managed owner claim verifies RER authority and creates the native owner/session exactly once
+  ---
+  duration_ms: 85111.044204
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/sd-orbit-c-f103/run-orbit/tests/core/managed-owner.test.ts:1:380'
+  failureType: 'testCodeFailure'
+  error: |-
+    autonomous: an existing unselected company and a missing company have identical complete public bodies
+    + actual - expected
+    
+    + '{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"Resource unavailable","data":{"code":"resource_unavailable","uri":"orbit://records/company/01M6R8GYQREHHVDR3TE3BYNH9V"}}}'
+    - '{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"Resource unavailable","data":{"code":"resource_unavailable","uri":"orbit://records/company/synthetic-orbit-missing"}}}'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"Resource unavailable","data":{"code":"resource_unavailable","uri":"orbit://records/company/synthetic-orbit-missing"}}}'
+  actual: '{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"Resource unavailable","data":{"code":"resource_unavailable","uri":"orbit://records/company/01M6R8GYQREHHVDR3TE3BYNH9V"}}}'
+  operator: 'strictEqual'
+  stack: |-
+    localAgentCredentialProof (/home/agent/rer-consolidation/work/sd-orbit-c-f103/run-orbit/tests/support/agent-door-local-proof.ts:59:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async agentDoorProof (/home/agent/rer-consolidation/work/sd-orbit-c-f103/run-orbit/tests/support/agent-door-proof.ts:212:5)
+    async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f103/run-orbit/tests/core/managed-owner.test.ts:50:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 87859.192024

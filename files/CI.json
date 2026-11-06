@@ -1,0 +1,67 @@
+{
+  "repository": "just-every/run-orbit",
+  "head": "168a6e4a34d2945df728395d800920162a6032c5",
+  "prior_main_api_calls": 1,
+  "calls": [
+    {
+      "at": "2026-11-06T11:10:31.980904+00:00",
+      "path": "repos/just-every/run-orbit/actions/runs?head_sha=168a6e4a34d2945df728395d800920162a6032c5&per_page=100",
+      "exit": 0
+    },
+    {
+      "at": "2026-11-06T11:15:32.597727+00:00",
+      "path": "repos/just-every/run-orbit/actions/runs/42208163143",
+      "exit": 0
+    }
+  ],
+  "status": "completed",
+  "discovery": {
+    "workflow_runs": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_sha": "168a6e4a34d2945df728395d800920162a6032c5",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42208163143",
+        "id": 42208163143,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ]
+  },
+  "run": {
+    "conclusion": "failure",
+    "head_sha": "168a6e4a34d2945df728395d800920162a6032c5",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42208163143",
+    "id": 42208163143,
+    "status": "completed"
+  },
+  "disposition": "expected generated-view-only failure; allowed READY exception",
+  "root_failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "source_job": 127860054617,
+  "aggregate_job": 127860272782,
+  "runtime_shards_executed": false,
+  "dependent_failures": [
+    "authoritative source artifact absent because source gate stopped",
+    "aggregate requires successful source and runtime shards",
+    "aggregate verdict artifact absent because runtime shards skipped"
+  ],
+  "extra_calls": [
+    {
+      "command": "gh api repos/just-every/run-orbit/actions/runs/42208163143/jobs?per_page=100",
+      "exit": 0
+    },
+    {
+      "command": "gh run view 42208163143 --repo just-every/run-orbit --job 127860054617 --log-failed",
+      "exit": 0
+    },
+    {
+      "command": "gh run view 42208163143 --repo just-every/run-orbit --job 127860272782 --log-failed",
+      "exit": 0
+    }
+  ],
+  "github_call_budget_used": 6,
+  "github_call_budget_limit": 10,
+  "repair_rounds": 0,
+  "dispatches": 0,
+  "reruns": 0
+}

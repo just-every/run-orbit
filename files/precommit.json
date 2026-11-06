@@ -1,0 +1,27 @@
+{
+  "parent_status_rows": 204,
+  "staged_status_rows": 204,
+  "parent_pipe_rows": 458,
+  "staged_pipe_rows": 458,
+  "counts_before": {
+    "partial": 136,
+    "done": 36,
+    "missing": 32
+  },
+  "counts_after": {
+    "partial": 136,
+    "done": 36,
+    "missing": 32
+  },
+  "changed_status_ids": [
+    "BASE-AGENT-003"
+  ],
+  "acceptance_unchanged": true,
+  "added_email_shaped_text": false,
+  "staged_files": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/support/agent-door-local-proof.ts",
+    "tests/support/agent-door-proof.ts"
+  ]
+}

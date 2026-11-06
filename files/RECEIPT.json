@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f103",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f103",
+  "head": "168a6e4a34d2945df728395d800920162a6032c5",
+  "parent_main": "74f72f01ad3532725c71bd0832a774abd2c5a6ec",
+  "initial_main": "d89ffcc89d4e87b5276f13298210de9eb21f4f35",
+  "status_before": "partial",
+  "status_after": "partial",
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "selected_point": "BASE-AGENT-003 point 3: selected native grant company resource refusal parity",
+  "push": {
+    "exit": 0,
+    "attempts": 1,
+    "branch_only": true,
+    "guard": "cloud-push.py"
+  },
+  "pr": null,
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "head": "168a6e4a34d2945df728395d800920162a6032c5",
+      "node": "22.20.0",
+      "pnpm": "10.12.4",
+      "passed": 1,
+      "failed": 0,
+      "after_rebase": true,
+      "after_push": true,
+      "log": "focused.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "checkTestBudget from scripts/verification-inventory.mjs",
+      "exit": 0,
+      "registered_cases": 198,
+      "qualification_flows": 2
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write then check",
+      "exit": 0,
+      "generated_views_restored": true
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock then check",
+      "exit": 0,
+      "after_main_sync": true
+    },
+    {
+      "command": "parent Status ID retention and unchanged acceptance check",
+      "exit": 0,
+      "status_rows_before": 204,
+      "status_rows_after": 204,
+      "pipe_rows_before": 458,
+      "pipe_rows_after": 458
+    }
+  ],
+  "mutation": {
+    "type": "temporary unavailable-resource requested-URI leak",
+    "exit": 1,
+    "detected_by": "tests/support/agent-door-local-proof.ts:59",
+    "restored": true,
+    "in_candidate": false
+  },
+  "files": [
+    {
+      "path": "CONTRACT.md",
+      "sha256": "51b00630ebba1eda4609dcc10ecdd1eb5ba0164c962d4792c105cb3df474f1ec"
+    },
+    {
+      "path": "sources.lock.json",
+      "sha256": "fa5b335b17f1b45c6204d1b57a4a653d4de59a11afc8283e77ccd2e5933b2d1b"
+    },
+    {
+      "path": "tests/support/agent-door-local-proof.ts",
+      "sha256": "6ceff8803f79e656759bfd99010335047ed2724a7101a428497d4e4a6390e8cc"
+    },
+    {
+      "path": "tests/support/agent-door-proof.ts",
+      "sha256": "e5c68850db7ad168bde35243dd23ab127dbb247498e8611edb5cfe4229762479"
+    }
+  ],
+  "runtime_source_changed": false,
+  "generated_views_committed": false,
+  "browser_proof": "not applicable: no screen changed",
+  "publication_scan": "fleet lander responsibility; not run in cloud",
+  "landing": "branch only; no main push",
+  "held_remainder": "unchanged",
+  "ci_run": 42208163143,
+  "ci_file": "CI.json",
+  "evidence_ref": "refs/heads/evidence/sd-orbit-c-f103",
+  "verification_repairs": 0,
+  "local_command_pending": false,
+  "ci_status": "completed",
+  "ci_conclusion": "failure",
+  "ci_expected_generated_view_only": true,
+  "ready_exception": "generated contract view freshness, with dependent source artifacts and skipped runtime shards",
+  "product_remote_head_verified": true,
+  "blockers": [],
+  "publication_status": "branch candidate; not landed",
+  "ci_runtime_proof_claimed": false
+}
