@@ -55,5 +55,10 @@ export async function prepareOperatorFixture(page,browser,origin,key,ownerEmail)
  const consent=Object.fromEntries(new URLSearchParams(authorize.split('?')[1]));
  await nativeForm(page,'/delegation/authorize',consent);
  await page.goto(origin+'/app/reports');await page.getByRole('link',{name:'Open opportunities',exact:true}).click();await page.getByRole('button',{name:'Save result',exact:true}).click();await expect(page.getByText(/^Saved result · measured /)).toBeVisible();
- return {provenance,timelineEntryId:timelineEntry.id,opportunityId:created.id,contactId:contact.id,companyId:opportunity.opportunity.companyId,draftId:draft.id,authorize,collaboratorContext,collaborator};
+ const openFullOperator=async()=>{
+  const context=await browser.newContext({baseURL:origin,extraHTTPHeaders:{'x-rer-dev-key':key},viewport:{width:1440,height:900}}),operator=settled(await context.newPage());
+  try{await operator.goto(origin+'/auth/dev/enter?as=seller&returnTo=/app');assert.deepEqual(await request(operator,'/api/v2/access/class',undefined,'GET'),{access_class:'native_full'});return {context,page:operator};}
+  catch(error){await context.close();throw error;}
+ };
+ return {provenance,timelineEntryId:timelineEntry.id,opportunityId:created.id,contactId:contact.id,companyId:opportunity.opportunity.companyId,draftId:draft.id,authorize,collaboratorContext,collaborator,openFullOperator};
 }
