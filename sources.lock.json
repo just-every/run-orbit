@@ -2295,7 +2295,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "7b40cfb9017c3c0788e19083250dd7904e76029282f0508ae9b1680a5fd8d24a",
+      "sha256": "38aebb5b6084e780ed638743e0f9a6ae57a4f5f85443ac239044d0cd3e0e501e",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -2399,7 +2399,7 @@
       "executable": false
     },
     "newtests/t096/forms-abuse-journey.ts": {
-      "sha256": "9c7bea98233344390e957d73b1f6903bf27da7f8e9510fa261cedbc707a63a8b",
+      "sha256": "4ed4221aea1b4a0a871721c3ba4785bce53f9abc6263e561c69bc53b7af28028",
       "executable": false
     },
     "newtests/t096/forms-mapped-custody.ts": {
