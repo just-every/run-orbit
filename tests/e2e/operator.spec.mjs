@@ -95,6 +95,42 @@ test.describe("authenticated operator UI", () => {
     expect(failures).toEqual([]);
   });
 
+  contract("RECORD-007", "the deal's Owner control assigns, reassigns and unassigns with an attributed timeline and the same score", async ({ page }) => {
+    const failures = watchFailures(page);
+    await openOpportunity(page);
+    const id = new URL(page.url()).pathname.split("/").at(-1);
+    const read = async () => (await (await page.request.get(`/api/v1/records/opportunity/${id}`)).json());
+    const { operators } = await (await page.request.get("/api/v1/settings")).json();
+    const people = operators.filter((operator) => operator.status === "active" && !operator.collaborator);
+    const start = (await read()).record;
+    expect(start.owner_id).toBeTruthy();
+    const startName = people.find((person) => person.id === start.owner_id).display_name;
+    const other = people.find((person) => person.id !== start.owner_id);
+    expect(other, "a second operator to hand the deal to").toBeTruthy();
+    const owner = () => page.getByTestId("record-details").getByLabel("Owner", { exact: true });
+    const choose = async (label, ownerId) => {
+      await owner().selectOption({ label });
+      await expect.poll(async () => (await read()).record.owner_id).toBe(ownerId);
+      await page.reload({ waitUntil: "networkidle" });
+      await expect(owner().locator("option:checked")).toHaveText(label);
+    };
+    const feed = page.getByTestId("record-activity");
+    // Reassign, unassign, then assign again: each reload shows the owner and one attributed entry.
+    await choose(other.display_name, other.id);
+    await expect(feed).toContainText(`Owner: ${startName} → ${other.display_name}`);
+    await choose("Unassigned", null);
+    await expect(feed).toContainText(`Owner: ${other.display_name} → Unassigned`);
+    await choose(startName, start.owner_id);
+    await expect(feed).toContainText(`Owner: Unassigned → ${startName}`);
+    const end = await read();
+    const changes = end.timeline.filter((entry) => entry.kind === "owner.changed");
+    expect(changes).toHaveLength(3);
+    for (const entry of changes) expect(entry.actor_id).toBeTruthy();
+    for (const field of ["score", "band", "queue_state", "lifecycle"]) expect(end.record[field]).toBe(start[field]);
+    await expect(page.getByTestId("contributing-evidence").locator("summary")).toContainText(`score ${start.score}`);
+    expect(failures).toEqual([]);
+  });
+
   contract("OPP-004", "the mobile detail renders current score evidence and recommendation reason", async ({ page }, info) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const failures = watchFailures(page);
