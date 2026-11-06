@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "2db968923e83a1a0f5d99758c33d1950393f8fc6bd0425969b9d629837eb2cd8",
+      "sha256": "81621272877b6fc334cda3d080b8fd74b056ceaede9e4470542aa74e916961df",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "9f95947cb4407a5e281993a97c8db3294afc6734d7fd0cd08de6ad9942ab3413",
+      "sha256": "e6d3e7b756345b15bccaa3a624c93a1eaa7d1a4fb16f8ce55b4e4a4124572fd6",
       "executable": false
     },
     "DEMO.md": {
@@ -8239,7 +8239,7 @@
       "executable": false
     },
     "src/core/features/today/promises.ts": {
-      "sha256": "98462c3b7cd7c0a549dd2e3177dbdb691734a3320791e1847ec077c0ab5f2445",
+      "sha256": "b0520a1a11f256b4da5572da4cc1ba6a092c6798a68a6d94a304d6d9170cf9f3",
       "executable": false
     },
     "src/core/features/today/record-mail.ts": {
@@ -10075,7 +10075,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "3061ab18c35445f580bb94f9fee25fef62aec2c7d93fc9b2bf5eecd6b254ca33",
+      "sha256": "edaa1b76757cd585260beff5b0a9e52baa67eadbc7e782eb4408c0e0db068321",
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {
