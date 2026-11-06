@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f101",
+  "repository": "just-every/run-orbit",
+  "checked_at": "2026-11-06T10:12:02.246386+00:00",
+  "product_head": "d89ffcc89d4e87b5276f13298210de9eb21f4f35",
+  "product_branch": "cloud/sd-orbit-c-f101",
+  "main_head": "d89ffcc89d4e87b5276f13298210de9eb21f4f35",
+  "predecessor": "a67179827796caf92f930601b7af8b44f7fd4440",
+  "predecessor_already_ancestor_of_main": true,
+  "product_diff_empty": true,
+  "product_commits_created": 0,
+  "product_branch_pushed": false,
+  "pr_created": false,
+  "checks": [
+    {
+      "name": "selected native public-door journey",
+      "command": "pnpm exec tsx --test --test-name-pattern='AI-002 invented evidence fails visibly; AI-003' tests/core/assistance.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "log": "PROBE.log"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "TYPECHECK.log"
+    },
+    {
+      "name": "first-party",
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "FIRST-PARTY.log"
+    }
+  ],
+  "runtime": {
+    "node": "24.19.0",
+    "pnpm": "10.12.4",
+    "note": "Provided cloud toolchain retained the newer VM Node. Repository tooling also selects its pinned Node for setup. Native focused probe and typecheck passed."
+  },
+  "mechanical": "MECHANICAL.json",
+  "inventory": "INVENTORY.json",
+  "ci": "CI-RUNS.json",
+  "proof_boundary": "Local configured SendGrid adapter with only its HTTP edge replaced; no live provider or model qualification. No new clause status claim or landing candidate."
+}
