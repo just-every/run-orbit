@@ -1,0 +1,8 @@
+Run 42168658819, job 127731184767, exact head 6297679f860ad9809147c17b423fcbb07c7f2a72.
+Source failure and dependent artifact failure, verbatim excerpts:
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:29:48.2841814Z Verification (source): pnpm exec node src/base/contract-docs.mjs check
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:29:48.7526798Z ACCEPTANCE.md: generated content differs; run contract-docs write.
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:29:48.7843654Z ##[error]Process completed with exit code 1.
+source and shared build	Retain authoritative source candidate	2026-11-06T05:29:50.3326763Z ##[error]No files were found with the provided path: /tmp/orbit-source.bundle
+
+The aggregate and skipped test jobs depend on this source check. No workflow or generated view repair is made, following the cloud-candidate exception.
