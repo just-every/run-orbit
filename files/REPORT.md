@@ -14,7 +14,7 @@ Counts before and after: 36 DONE, 136 PARTIAL, 32 MISSING, 204 total. The test i
 
 ## Selected public-door proof
 
-Registration: ./tests/core/managed-owner.test.ts:7, "Managed owner claim verifies RER authority and creates the native owner/session exactly once". It invokes agentDoorProof at line 54; ./tests/support/agent-door-proof.ts:212 invokes localAgentCredentialProof. Native consent, client registration and PKCE token exchange occur in ./tests/support/agent-door-local-proof.ts:12-20. The MCP request uses the actual /mcp handler and the resulting native credential; no agent transport, authorization, policy or database implementation is replaced.
+Registration: ./tests/core/managed-owner.test.ts:7, "Managed owner claim verifies RER authority and creates the native owner/session exactly once". It invokes agentDoorProof at line 50; ./tests/support/agent-door-proof.ts:212 invokes localAgentCredentialProof. Native consent, client registration and PKCE token exchange occur in ./tests/support/agent-door-local-proof.ts:12-20. The MCP request uses the actual /mcp handler and the resulting native credential; no agent transport, authorization, policy or database implementation is replaced.
 
 Frozen slice rubric:
 
