@@ -1,0 +1,10 @@
+{
+  "tag": "ct-judge-orbit-opp003-20261105-2330-sol1",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "xhigh",
+  "source": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+  "repository": "just-every/run-orbit",
+  "product_read_only": true,
+  "billing": "subscription-only; no paid model API or usage credits",
+  "started_at": "2026-11-06T01:55:11.339417+00:00"
+}

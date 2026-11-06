@@ -1,0 +1,47 @@
+{
+  "source": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+  "head_unchanged": true,
+  "git_status_porcelain": "",
+  "product_edits": 0,
+  "product_commits": 0,
+  "product_pushes": 0,
+  "prs": 0,
+  "ci_queries": 0,
+  "owned_browser_server_pids": [
+    3770
+  ],
+  "owned_browser_server_pids_ended": true,
+  "browser_closed_in_finally": true,
+  "source_read_only": true,
+  "browser_functional": {
+    "command": [
+      "node",
+      "../browser-functional.mjs"
+    ],
+    "source": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+    "exit": 0,
+    "duration_seconds": 47.651,
+    "started_at": "2026-11-06T02:05:14.078359+00:00",
+    "node": "v22.20.0"
+  },
+  "focused_journeys": {
+    "command": [
+      "pnpm",
+      "exec",
+      "tsx",
+      "--test",
+      "--test-concurrency=1",
+      "--test-name-pattern=signed replay-safe|^NOTIFY-003 opt-in",
+      "tests/core/signals-outreach.test.ts",
+      "tests/core/source-onboarding.test.ts"
+    ],
+    "source": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+    "node": "v22.20.0",
+    "exit": 0,
+    "duration_seconds": 536.526,
+    "started_at": "2026-11-06T01:55:11.375853+00:00"
+  },
+  "dependencies_removed": true,
+  "browser_state_removed": true,
+  "clone_cleanup": "Remaining shallow clone will be removed after evidence publication; no product work is unpushed."
+}

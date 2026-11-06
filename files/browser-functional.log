@@ -1,0 +1,47 @@
+{
+  "source": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+  "browser": "headless /usr/bin/chromium --no-sandbox",
+  "freshContext": true,
+  "realHome": true,
+  "steps": [
+    {
+      "name": "signed populated HTTP ingestion and native detail",
+      "http": 201,
+      "score": 40,
+      "band": "medium",
+      "evaluationId": "01M6Q9N2YPFBS75CQA30RWG17Q",
+      "policyVersion": "opportunity.scoring.v1",
+      "contributions": [
+        {
+          "type": "email.replied",
+          "contribution": 40
+        }
+      ]
+    },
+    {
+      "name": "People association removal and 30-second evaluation deadline",
+      "saveHttp": 200,
+      "stakeholdersBefore": 1,
+      "stakeholdersAfter": 0,
+      "elapsedAfterSaveMs": 33083,
+      "evaluationBefore": "01M6Q9N2YPFBS75CQA30RWG17Q",
+      "evaluationImmediatelyAfter": "01M6Q9N2YPFBS75CQA30RWG17Q",
+      "evaluationAfterDeadline": "01M6Q9N2YPFBS75CQA30RWG17Q",
+      "evaluatedAtBefore": "2026-11-06T02:05:26.354Z",
+      "evaluatedAtAfterDeadline": "2026-11-06T02:05:26.354Z",
+      "lifecycle": "open",
+      "reevaluated": false
+    }
+  ],
+  "screens": [
+    {
+      "width": 1440,
+      "file": "browser-1440.png"
+    },
+    {
+      "width": 390,
+      "file": "browser-390.png"
+    }
+  ],
+  "completed": true
+}

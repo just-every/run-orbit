@@ -1,0 +1,69 @@
+{
+  "executedTests": false,
+  "targets": [
+    {
+      "file": "tests/core/signals-outreach.test.ts",
+      "shard": "core-6",
+      "batch": "batch-9"
+    },
+    {
+      "file": "tests/core/source-onboarding.test.ts",
+      "shard": "core-3",
+      "batch": "batch-12"
+    }
+  ],
+  "sourceChecks": [
+    [
+      "exec",
+      "node",
+      "src/base/contract-docs.mjs",
+      "check"
+    ],
+    [
+      "run",
+      "source:check"
+    ],
+    [
+      "exec",
+      "node",
+      "node_modules/@runeditrun/rer/bin/rer.mjs",
+      "check",
+      "--profile",
+      "first-party"
+    ],
+    [
+      "run",
+      "check:boundaries"
+    ],
+    [
+      "run",
+      "check:manifest"
+    ],
+    [
+      "run",
+      "agent:surface"
+    ],
+    [
+      "exec",
+      "rer",
+      "build"
+    ],
+    [
+      "exec",
+      "node",
+      "node_modules/@runeditrun/rer/cli/agent-door.mjs",
+      ".",
+      "deploy.json"
+    ],
+    [
+      "exec",
+      "node",
+      "scripts/publish-deployment-spec.mjs",
+      "--check"
+    ],
+    [
+      "run",
+      "typecheck"
+    ]
+  ]
+}

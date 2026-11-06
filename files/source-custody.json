@@ -1,0 +1,60 @@
+{
+  "observed_at": "2026-11-06T01:58:00.630946+00:00",
+  "source": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+  "fresh_main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "status_rows_before": 204,
+  "status_rows_candidate": 204,
+  "changed_status_rows": [
+    "OPP-003"
+  ],
+  "all_other_status_gap_evidence_rows_byte_equal": true,
+  "OPP003_requirement_acceptance_unchanged": true,
+  "changed_files": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/core/signals-outreach.test.ts"
+  ],
+  "application_and_browser_bytes_changed": false,
+  "generated_views_changed": false,
+  "baseline_counts": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32,
+    "total": 204
+  },
+  "candidate_counts": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "source_documents": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6149,
+      "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9"
+    },
+    {
+      "path": "CONTRACT.md",
+      "bytes": 485283,
+      "sha256": "67d7a87346dcf7749d8c637d9ab97ca4d06d3f2254dd5020f85a4e7dc76cd3b2"
+    },
+    {
+      "path": "ACCEPTANCE.md",
+      "bytes": 435074,
+      "sha256": "8dece52f213b61f58d621fe04924cf13ea10d39612fb36a8a5e3a19bff1a2449"
+    },
+    {
+      "path": "RULINGS.md",
+      "bytes": 2770,
+      "sha256": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c"
+    },
+    {
+      "path": "BASELINE.md",
+      "bytes": 40271,
+      "sha256": "7edf11ce7f54181e40afcf424209b9527bd1e0f7cf6fee7bf84d7811f082042f"
+    }
+  ],
+  "all_204_clause_blocks_byte_equal_to_fresh_main": true,
+  "public_raw_pinned_documents_equal_clone": true
+}

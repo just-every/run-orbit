@@ -1,0 +1,17 @@
+{
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=signed replay-safe|^NOTIFY-003 opt-in",
+    "tests/core/signals-outreach.test.ts",
+    "tests/core/source-onboarding.test.ts"
+  ],
+  "source": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+  "node": "v22.20.0",
+  "exit": 0,
+  "duration_seconds": 536.526,
+  "started_at": "2026-11-06T01:55:11.375853+00:00"
+}

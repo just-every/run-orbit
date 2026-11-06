@@ -1,0 +1,40 @@
+{
+  "tag": "ct-judge-orbit-opp003-20261105-2330-sol1",
+  "source": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+  "source_branch": "cloud/sd-orbit-c-f62",
+  "reviewer_product_read_only": true,
+  "ci_queries": 0,
+  "ci_dispatches": 0,
+  "ci_reruns": 0,
+  "recorded_verify": {
+    "id": 42126142966,
+    "event": "workflow_dispatch",
+    "head_sha": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+    "conclusion": "failure",
+    "source_job": 127590899030,
+    "verdict_job": 127591166693,
+    "runtime_shards": "skipped",
+    "only_reported_cause": "Generated ACCEPTANCE.md and docs/CLAIMS.md freshness; dependent missing artifacts/verdict. Supplied immutable builder and affected-gate reports; not independently queried in this commission."
+  },
+  "original_affected_gate": {
+    "tag": "sd-orbit-c-f62-gate-1",
+    "ended_at": "2026-11-05T23:41:53Z",
+    "exit": 0,
+    "result": "GATE PASS",
+    "evidence_source": "Complete immutable affected verdict provided inline; four frozen outcomes and 17 targeted tests passed. No new gate launched."
+  },
+  "final_integration": {
+    "status": "pending",
+    "requirements": [
+      "Original source-lineage custodian and same integration family supported disposition",
+      "Merge fresh main Status AND full Gap/Evidence/provenance/newer assertions, preserving all unrelated judgments",
+      "Merged contract generator write and check/current counts; provenance naming exact judged source and this verdict; source lock last and check",
+      "Actually executed full-green exact-FINAL runtime Verify loading relied-on journeys",
+      "Complete full-history publication scan NEW 0",
+      "Guarded main equality and exact-main green Run site"
+    ],
+    "source_acceptance": "not granted",
+    "award": "none",
+    "rows_3_11": "pending"
+  }
+}

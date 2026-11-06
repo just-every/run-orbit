@@ -1,0 +1,70 @@
+{
+  "source": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+  "paths": [
+    {
+      "path": "src/core/features/ingestion/routes.ts",
+      "sha256": "ece7cda5c8e54c002ac61c7b7becef1326646ef1e968de9199a9ebb3aa4a6f88",
+      "finding": "Signed source ID, bounded body, signature and event-schema validation precede ingress persistence."
+    },
+    {
+      "path": "src/core/features/ingestion/repository.ts",
+      "sha256": "7d9c2c0d1f5b4a63c0176474979fdf915c73f8d8a43bdc1872cc8db26dc70ce0",
+      "finding": "Weighted linked opportunity targets append evaluationStatements in the same D1 batch; replay returns the existing identity."
+    },
+    {
+      "path": "src/core/features/workbench/evaluation-repository.ts",
+      "sha256": "7f3d8c061868df75d1f00299fad4205ce60787d0df4f2aafe52c2f4aff2a8912",
+      "finding": "All evaluation-producing writes are open-lifecycle guarded; SQL decay horizon is 30 days and bands use 40 and 70 thresholds."
+    },
+    {
+      "path": "src/core/features/opportunities/service.ts",
+      "sha256": "69d1a46b3d6bb23606f8f0533021627e1c612e837028da270c33f72c121556b6",
+      "finding": "Authenticated detail reads the persisted evaluation, policy identity, timestamp and contribution list."
+    },
+    {
+      "path": "src/core/features/records/partial-save.ts",
+      "sha256": "4dbf5d23fed8862b0c788120379aa410ef4504c1744947321396425ee379627e",
+      "finding": "Native PATCH retains other values and routes through ordinary Records save."
+    },
+    {
+      "path": "src/core/features/records/repository.ts",
+      "sha256": "6182d0fad72e6c0a0043f3c7534395f9a3a549076edf6fc5381586a12ab8dcde",
+      "finding": "Opportunity fields and association changes append evaluationStatements; value and expected-close edits are executed by the frozen journey."
+    },
+    {
+      "path": "src/core/features/pipelines/movement.ts",
+      "sha256": "ad0dc962c04b0cef468992e23988bdef974d74e44576e58071ed94e5687a1566",
+      "finding": "Native stage moves queue mutationJob; app Records middleware drains it before successful response returns."
+    },
+    {
+      "path": "src/core/app/app.ts",
+      "sha256": "036bb7a866be5b98cfd3c00e763f96f93ff620a888bbebd2f28045da9a1876fc",
+      "finding": "Base session and same-origin write guards; processEvaluationJobs wraps successful Records mutations, not the separate relationships route."
+    },
+    {
+      "path": "src/core/features/relationships/opportunity.ts",
+      "sha256": "307e53d1f3a1ab83f5d4c3ceec70f93743eda5188c5c9c7e2c922773ead45f1b",
+      "finding": "Native People association save commits relationships and stale-draft statements but contains no evaluationStatements or mutationJob."
+    },
+    {
+      "path": "src/core/features/relationships/snapshot.ts",
+      "sha256": "3a25d3023d7da69c185f0be13a9d38c5fa10948c381d5673b451e28f7932c249",
+      "finding": "Relationship snapshot and actor fences guard atomic association saves. commitRelationships only executes the supplied statements."
+    },
+    {
+      "path": "src/core/features/operator/ui/record/record-api.ts",
+      "sha256": "bd2fd18fa52b4d8abfdf5073eb4dd2194f0d7e632ccc668ca145c18bf3b3fa16",
+      "finding": "People saves PUT relationships/opportunity/<id>; ordinary editable fields PATCH records/opportunity/<id>."
+    },
+    {
+      "path": "src/core/features/operator/ui/record/people.tsx",
+      "sha256": "369c0eb680ff2f1d1e55cb541b70c810b911b6d670ff8268d1d83d7dace1505d",
+      "finding": "Remove from deal changes the saved stakeholder set through the separate relationship save."
+    },
+    {
+      "path": "src/core/features/operator/ui/record/opportunity-record.tsx",
+      "sha256": "e0bb600adb9a3a27b79c7d5aec7edb45c307d2d223c4281d9de4537355e5d399",
+      "finding": "Actual emitted opportunity page composes native field autosave and People context autosave."
+    }
+  ]
+}

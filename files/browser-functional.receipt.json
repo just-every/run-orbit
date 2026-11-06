@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "../browser-functional.mjs"
+  ],
+  "source": "3b0ce18793254ec00c67e677dad3b081c3cb83d2",
+  "exit": 0,
+  "duration_seconds": 47.651,
+  "started_at": "2026-11-06T02:05:14.078359+00:00",
+  "node": "v22.20.0"
+}

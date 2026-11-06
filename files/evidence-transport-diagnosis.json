@@ -1,0 +1,16 @@
+{
+  "attempt": 1,
+  "operation": "Evidence publication pre-push identity audit",
+  "exit": 1,
+  "failing_git_command": "git -C <temporary evidence bare repository> fetch --quiet --depth=1 <declared shallow filtered clone> refs/remotes/origin/main:refs/remotes/origin/main",
+  "git_exit": 128,
+  "http_status": "unknown; this failed operation used local file transport, not HTTP",
+  "diagnostic": [
+    "remote: warning: lazy fetching disabled; some objects may not be available",
+    "remote: fatal: could not fetch f3178bfa9f2a66bd25aac26bd78758c8c278caa3 from promisor remote",
+    "error: git upload-pack: git-pack-objects died with error.",
+    "fatal: protocol error: bad pack header"
+  ],
+  "push_attempted": false,
+  "correction": "Fetch the public main audit boundary directly from the same declared credential-free GitHub repository with --filter=blob:none --depth=1; repeat the complete identity/trailer audit before push. No product change or credential substitution."
+}
