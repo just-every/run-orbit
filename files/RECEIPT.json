@@ -1,0 +1,194 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f90",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f90",
+  "head": "ce8b379b57d1860e67c349868de50f44ee685f40",
+  "recorded_at": "2026-11-06T07:51:27.748118+00:00",
+  "source_sha256": {
+    "tests/core/records-search.test.ts": "ef7a1d3add7e7d1897d9043e9861c09a509f72d8b285bf68502bb5e3410b4dba",
+    "tests/support/company-identity.ts": "301b7718fa9546cbb0ec61a56c792479f0d466ca278e374ee4d7570d8c3cbf16",
+    "tests/support/record-identity.ts": "89838c46af81625883eabb937c5a9ac7c30842d9334f400ad0d9d518d370a8a9",
+    "src/core/features/records/routes.ts": "2f55d5ada5dcfb52f78f2072f518aec34265716e9d492c73baace5ab172c354b",
+    "src/core/features/records/repository.ts": "6182d0fad72e6c0a0043f3c7534395f9a3a549076edf6fc5381586a12ab8dcde",
+    "src/ext/records.ts": "2444349b7126a0dbe58ecad829c730fc8cf10a9520b1af85b8669b57d0f560b6",
+    "src/core/features/ingestion/linking-repository.ts": "3d28069723a86a5560301cd69a5da91177f00cf6178d9b92d096e10f0597bf0e"
+  },
+  "evidence_lines": {
+    "company": {
+      "file": "tests/support/company-identity.ts",
+      "line": 9
+    },
+    "company-refusal": {
+      "file": "tests/support/company-identity.ts",
+      "line": 46
+    },
+    "contact": {
+      "file": "tests/support/record-identity.ts",
+      "line": 23
+    },
+    "contact-refusal": {
+      "file": "tests/support/record-identity.ts",
+      "line": 44
+    },
+    "free-mail": {
+      "file": "tests/support/record-identity.ts",
+      "line": 55
+    },
+    "keyless": {
+      "file": "tests/support/record-identity.ts",
+      "line": 75
+    },
+    "signals": {
+      "file": "tests/support/record-identity.ts",
+      "line": 100
+    },
+    "refused-signals": {
+      "file": "tests/support/record-identity.ts",
+      "line": 110
+    },
+    "revoked": {
+      "file": "tests/support/record-identity.ts",
+      "line": 127
+    },
+    "registration": {
+      "file": "tests/core/records-search.test.ts",
+      "line": 18
+    }
+  },
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/records-search.test.ts",
+      "exit": 0,
+      "log": "records-search-candidate.log",
+      "binding": "Executed on the source bytes committed at head; the intervening main merge changed only unrelated delegation tests, contract metadata, views and source lock."
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck-candidate.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party-candidate.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write; node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-final.log",
+      "views_restored_from_main": true
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock; node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-candidate-check.json"
+    },
+    {
+      "command": "migration ledger check",
+      "exit": 0,
+      "reason": "No migrations changed."
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "head": "ce8b379b57d1860e67c349868de50f44ee685f40",
+      "log": "build-candidate.log"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/records-search.test.ts",
+      "exit": 0,
+      "head": "ce8b379b57d1860e67c349868de50f44ee685f40",
+      "log": "records-search-exact-head.log",
+      "binding": "Clean committed candidate HEAD, with no source edits during execution."
+    },
+    {
+      "command": "node scripts/verification-shard.mjs source",
+      "exit": 1,
+      "head": "ce8b379b57d1860e67c349868de50f44ee685f40",
+      "log": "candidate-source-reproduction.log",
+      "expected": "Only generated ACCEPTANCE.md differs after mandated view restoration."
+    }
+  ],
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_candidate": {
+    "done": 37,
+    "partial": 135,
+    "missing": 32,
+    "total": 204
+  },
+  "tests": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "publication_scan": {
+    "status": "NOT RUN",
+    "reason": "Cloud adaptation assigns the full-history publication scan and guarded landing to the fleet Mac."
+  },
+  "assertions_removed": false,
+  "parent_status_rows": {
+    "proof_parent": 204,
+    "main_parent": 204,
+    "candidate": 204
+  },
+  "runtime_code_changed": false,
+  "generated_views_equal_main": true,
+  "candidate_clean": true,
+  "all_source_files_match_commit": true,
+  "exact_head_runtime_pass": true,
+  "logs_sha256": {
+    "push-candidate.log": "95e9238fef324c48aa80a71509201acc8ce2cd2c96e65956c7e4139a000a4f1e",
+    "records-search-final.log": "6adc051a2284fa69c992180adc2ef1d083f873ee2d1b502afdcc86210bcda795",
+    "candidate-source-reproduction.log": "2d2e26c190ecd6ac62004d900868f49495dcdbae7a1725502c887d2293be617b",
+    "records-search-exact-head.log": "b94b682dea83911fdb17d27d6c443012252a164cc13834556643671ae4ec501e",
+    "first-party.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "typecheck-candidate.log": "ffbbe8d116a0d09f3857aaab2fe5297e3457a8698fc90a2bf952e5bc684e60da",
+    "candidate-source-failure.log": "a80a2daf0693d832b7d32cecb573c64fcf3b47d2a57fcafb7bf8c3d12a9715b1",
+    "contract-diff.patch": "2c0578cdc4b22d6013d622d089ab001f01034b547384a42c1c7f558209570628",
+    "typecheck-final.log": "ffbbe8d116a0d09f3857aaab2fe5297e3457a8698fc90a2bf952e5bc684e60da",
+    "base-source-reproduction.log": "2d2e26c190ecd6ac62004d900868f49495dcdbae7a1725502c887d2293be617b",
+    "base-source-failure.log": "045cc0cf9c7e69534095da8db1b5b7cc23c35a9a043ffaeff1e8566f68e7ee9d",
+    "candidate-aggregate-failure.log": "b4d51a16fd4dc88a2f0109974625272f3ae3fafab18c6c803fc28e79da35c7ed",
+    "typecheck.log": "ffbbe8d116a0d09f3857aaab2fe5297e3457a8698fc90a2bf952e5bc684e60da",
+    "views-initial.log": "a0dc3e5a57608862eebb5d81291a8613096d4984f76019b102a0ac55b950fe97",
+    "lock-initial.log": "90713eb89d8a925dbfa03589f4c7f9b9531364e8637d3b3b2917c5415af07f55",
+    "test-diff.patch": "913d9e76290fb251cf38ac55d2b8b3940da766bddea4c3c20a8cd86578f066f6",
+    "build-candidate.log": "d45200fb2cbfd151c19c0a75112716afb550f4bcc385e0681face900cc42d8ca",
+    "first-party-candidate.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "records-search-candidate.log": "98c5b81d8afd738d8b9f96c68dee7b6eae426b4e94d356abcc39ea7f569350c4",
+    "views-final.log": "5eecfea7b487eab7a228ed835023001a682c9b7dfaebaba1036531c67029a8de",
+    "records-search-base.log": "565a79d6695485f09b1bd67ab930bddad7d963e4cd726a436e233154bc1eeed6",
+    "push-save.log": "d84f2710983f00b30c99d7b5328f2b328c9e151bf32d6da1f785d7a853930d26",
+    "records-search-complete.log": "1c75f8b9564f3133ca9f323e38324dcb2850ed1072ef278e22b1438b31cfb151"
+  },
+  "ci": [
+    {
+      "conclusion": "failure",
+      "event": "push",
+      "head_sha": "ce8b379b57d1860e67c349868de50f44ee685f40",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42183438475",
+      "id": 42183438475,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ],
+  "ci_exception": {
+    "run": 42183438475,
+    "head": "ce8b379b57d1860e67c349868de50f44ee685f40",
+    "event": "push",
+    "conclusion": "failure",
+    "eligible_cloud_exception": true,
+    "source_job": 127778214884,
+    "aggregate_job": 127778403000,
+    "cause": "ACCEPTANCE.md generated content differs; restored generated views are intentionally left to the Mac lander. Artifacts and shards depend on the failed source step.",
+    "local_command": "node scripts/verification-shard.mjs source",
+    "local_exit": 1
+  },
+  "github_calls": 9
+}
