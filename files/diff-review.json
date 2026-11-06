@@ -1,0 +1,8 @@
+{
+  "email_shaped_findings": [],
+  "provider_key_findings": [],
+  "slash_tokens_reviewed": [
+    "application/json"
+  ],
+  "note": "Source filenames resolve; HTTP paths use a leading slash. Cloud full-history publication scan remains with the fleet."
+}

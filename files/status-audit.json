@@ -1,0 +1,16 @@
+{
+  "parent": "30f7a864d0a643fa020ea3eaa3d5325a112b872e",
+  "status_rows_before": 204,
+  "status_rows_after": 204,
+  "all_parent_status_ids_retained_in_order": true,
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  }
+}

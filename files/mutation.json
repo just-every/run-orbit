@@ -1,0 +1,6 @@
+{
+  "mutation": "Remove current-recommendation authority condition from completion lookup",
+  "command": "pnpm exec tsx --test --test-name-pattern='OPP-008 completion' tests/core/signals-outreach.test.ts",
+  "exit": 1,
+  "source_restored": true
+}

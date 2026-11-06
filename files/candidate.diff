@@ -1,0 +1,73 @@
+diff --git a/CONTRACT.md b/CONTRACT.md
+index 4118044..e78541b 100644
+--- a/CONTRACT.md
++++ b/CONTRACT.md
+@@ -2446,7 +2446,7 @@ RECORD-023 was proved through the native authorization and grant audit journey a
+ | `OPP-008` | Manual completion | published | partial | `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: skip retains historical recommendation; no message sent. Asserted: manual completion changes queue; only new recommendation gets a new identity. |
+ | `OPP-009` | Pipeline stages | published | done | Acceptance 1: `tests/core/records-search.test.ts` — RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-015 RECORD-002 RECORD-011 RECORD-006 relationships retain history and pipelines move safely and search matches record and timeline text, intersects every opportunity filter and caps the first page; extended `tests/support/sales-pipelines.ts` — salesPipelinesJourney (two pipelines with different ordered stages created in Settings; a deal moved within a pipeline and across pipelines to an explicit destination after a missing required field and a stale reviewed stage are refused with the stage unchanged; two attributed movement-history entries; lifecycle, owner and score unchanged by the moves; deletion of the occupied pipeline and removal of its occupied stage refused with 409, after which Settings still shows Renewals with Review and Negotiation at its unchanged revision and the deal is still in Review; an empty pipeline deletes); push Verify core-3 in shards (batch-12); `migrations/core/0039_sales_pipelines.sql`; `src/core/features/pipelines/`; `tests/evidence/contract/OPP-009/` |  |
+ | `ACTION-001` | Current recommendation | published | partial | `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: current action evidence; current action version; named action remains with AI disabled; no invented explanation. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |
+-| `ACTION-002` | Replacement | published | partial | `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`; `src/core/features/workbench/action-repository.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: new evidence supersedes old recommendation; operator change supersedes recommendation; old action stays historical; old action cannot draft; old action cannot send; old action cannot complete. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |
++| `ACTION-002` | Replacement | published | partial | `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`; `src/core/features/workbench/action-repository.ts`; `tests/core/signals-outreach.test.ts` — OPP-008 completion removes an exhausted recommendation; new observed evidence produces another (authenticated completion succeeds, new observed evidence replaces an uncompleted action, its obsolete completion returns 409 with unchanged completion, evaluation, timeline and outbound inventories and the replacement still current) | Unasserted in the carried evidence: operator change supersedes recommendation; full superseded-history presentation; old action cannot draft; old action cannot send; remaining obsolete-completion and replacement variants after operator change, completed or skipped actions and operator requests. Asserted: new observed evidence replaces an uncompleted recommendation; completing that obsolete identity is refused without changing completion, evaluation, timeline or outbound inventories, and its distinct replacement remains current. No clause-specific hold is released. |
+ | `ACTION-003` | Draft on request | published | partial | `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts` | Unasserted in the carried evidence: draft facts cite current evidence; configured instructions honored. Asserted: request preview matches generated input; draft saved; no outbound message created. |
+ | `ACTION-004` | Durable draft | published | done | `src/core/features/drafts/service.ts`; `tests/e2e/operator.spec.mjs`; Acceptance 1: `tests/core/assistance.test.ts` — AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creates durable unsent draft and usage (authenticated edits to recipient, subject and body; native sign-out refuses the old cookie; the same operator requests and confirms their own email link; a distinct session reads the exact saved draft identity, recommendation, author, creation time, revision, edit time and attributed timeline entry; no customer message); assertions at 1440, browser proof at 1440 and 390). | |
+ | `ACTION-005` | Stale draft | published | partial | `src/core/features/drafts/service.ts`; `tests/e2e/stale-review.spec.mjs`; `tests/core/capture-boundaries.test.ts` | Unasserted in the carried evidence: customer/deal mutation stales draft; stale send refused; current differences shown before new review. Asserted: reply stop stales draft. |
+diff --git a/sources.lock.json b/sources.lock.json
+index 2c72bdc..ab52dbb 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -707,7 +707,7 @@
+       "executable": false
+     },
+     "CONTRACT.md": {
+-      "sha256": "f70d465a8051fd75a3aaa5fc8a44c09818c995e778e454fa08ef0fadf9f4d67b",
++      "sha256": "fce0fb19c220d66d5d8a5929ffdb245d07de6bdc722734078be4efdcc325d241",
+       "executable": false
+     },
+     "DEMO.md": {
+@@ -10067,7 +10067,7 @@
+       "executable": false
+     },
+     "tests/core/signals-outreach.test.ts": {
+-      "sha256": "01c7d8d784f7d4cccba4ff60da1ba3c971ed20a94dadc9c19b172adef11aa581",
++      "sha256": "204d0e6c46d496d17473c53348d50c5f766ca21dabc7535eb21a1d91eebcb4d4",
+       "executable": false
+     },
+     "tests/core/source-onboarding.test.ts": {
+diff --git a/tests/core/signals-outreach.test.ts b/tests/core/signals-outreach.test.ts
+index 1f92f8b..98d2bbb 100644
+--- a/tests/core/signals-outreach.test.ts
++++ b/tests/core/signals-outreach.test.ts
+@@ -148,13 +148,31 @@ test('OUT-011 unknown delivery reconciles by durable provider key and never subm
+ });
+ 
+ test('OPP-008 completion removes an exhausted recommendation; new observed evidence produces another',async()=>{
+- const {completeAction}=await import('../../src/core/features/workbench/action-repository');const f=await fixture(),workbench=new WorkbenchRepository(db);
++ const f=await fixture(),workbench=new WorkbenchRepository(db);let sends=0;
++ const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:{send:async()=>{sends++;return{providerMessageId:'synthetic-orbit-1'};}}}),session=await createDependencies(db).auth.createSession(f.actor);
++ const request=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
++ const read=async()=>{const response=await request(`/opportunities/${f.opportunityId}`);assert.equal(response.status,200);return(await response.json() as {opportunity:{recommendation:{id:string;evidenceSignalIds:string[]}|null}}).opportunity;};
+  await workbench.recordEvent(f.opportunityId,{type:'email.replied',subject:'Reply',occurredAt:f.at,eventId:createId()},f.actor);
+  const current=await db.prepare('SELECT id FROM recommendations WHERE opportunity_id=? AND is_current=1').bind(f.opportunityId).first<{id:string}>();assert.ok(current);
+- await completeAction(db,current.id,f.actor,'completed','Handled personally');
++ assert.equal((await request(`/workbench/recommendations/${current.id}/complete`,{outcome:'completed',note:'Handled personally'})).status,200);
+  const state=await db.prepare('SELECT queue_state FROM opportunities WHERE id=?').bind(f.opportunityId).first<{queue_state:string}>();assert.equal(state?.queue_state,'none');
+  await workbench.recordEvent(f.opportunityId,{type:'meeting.booked',subject:'Meeting',occurredAt:new Date().toISOString(),eventId:createId()},f.actor);
+  const next=await db.prepare('SELECT id FROM recommendations WHERE opportunity_id=? AND is_current=1').bind(f.opportunityId).first<{id:string}>();assert.ok(next);assert.notEqual(next.id,current.id);
++ // ACTION-002: replace a still-uncompleted action, then try its saved completion URL.
++ const obsolete=(await read()).recommendation;assert.ok(obsolete);assert.equal(obsolete.id,next.id);
++ assert.equal((await db.prepare('SELECT completed_at FROM recommendations WHERE id=?').bind(obsolete.id).first<{completed_at:string|null}>())?.completed_at,null);
++ const event=await request(`/workbench/opportunities/${f.opportunityId}/events`,{type:'email.replied',subject:'New customer evidence',occurredAt:new Date().toISOString(),eventId:createId()});assert.equal(event.status,201);
++ const signal=await event.json() as {id:string},replacement=(await read()).recommendation;assert.ok(replacement);assert.notEqual(replacement.id,obsolete.id);assert.ok(replacement.evidenceSignalIds.includes(signal.id),'The replacement cites the new contributing evidence');
++ const inventory=async()=>{
++  const tables=['action_completions','recommendations','recommendation_evidence','evaluations','evaluation_contributions','timeline_entries','timeline_entry_records','opportunities','notifications','drafts','outbound_messages'];
++  const rows=await db.batch(tables.map(table=>db.prepare(`SELECT * FROM ${table} ORDER BY rowid`)));
++  return Object.fromEntries(tables.map((table,index)=>[table,rows[index]!.results]));
++ };
++ const before=await inventory(),refused=await request(`/workbench/recommendations/${obsolete.id}/complete`,{outcome:'completed',note:'Obsolete action attempt'});
++ assert.equal(refused.status,409,'New evidence removes the old action completion authority');
++ assert.deepEqual(await inventory(),before,'Refusing obsolete completion changes no completion, evaluation, timeline, queue, draft or outbound rows');
++ assert.deepEqual((await read()).recommendation,replacement,'The distinct replacement remains current after refusal');
++ assert.equal(sends,0,'Manual completion and obsolete-action refusal send no customer mail');
+ });
+ 
+ test('OUT-010 over-limit approval remains durably unsent with retry time',async()=>{

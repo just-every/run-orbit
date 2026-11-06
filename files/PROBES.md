@@ -1,0 +1,7 @@
+# Runtime probe
+
+PROBE ACTION-002 obsolete-action completion: native authenticated POST /api/v1/workbench/opportunities/:id/events with a new observed customer reply -> 201; GET /api/v1/opportunities/:id returns a distinct current recommendation citing that new signal; POST /api/v1/workbench/recommendations/:obsolete/complete with completed outcome -> 409; complete row inventories for action_completions, recommendations, recommendation_evidence, evaluations, evaluation_contributions, timeline_entries, timeline_entry_records, opportunities, notifications, drafts and outbound_messages remain equal; GET still returns the distinct current replacement; mail-edge submissions remain zero.
+
+The same registration first completes a valid current recommendation through authenticated native HTTP (200), retains the exhausted queue assertion, then confirms genuinely new observed evidence produces another identity. The retained uncompleted action is therefore real and the persisted inventories are populated, rather than empty-list-only evidence.
+
+Source inspection found the existing current and uncompleted authority condition sufficient. No product correction was made. Removing the current condition temporarily yields 200 instead of 409 and fails the new assertion. The original production file was restored byte for byte. These receipts prove only the selected obsolete-action authority point, not every ACTION-002 acceptance outcome.

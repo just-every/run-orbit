@@ -1,0 +1,25 @@
+{
+  "runs": [
+    {
+      "conclusion": "failure",
+      "event": "push",
+      "head_sha": "53c79461740e58bdbeca411773ff242c378e0f82",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42194832156",
+      "id": 42194832156,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ],
+  "total_count": 1,
+  "classification": "permitted generated-view-only failure",
+  "failing_command": "pnpm exec node src/base/contract-docs.mjs check",
+  "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "source_job_id": 127815560025,
+  "aggregate_job_id": 127815764009,
+  "downstream": "Runtime shards skipped; source bundle and combined result artifacts absent because the generator check stopped source work.",
+  "runtime_verify_green": false,
+  "eligible_for_cloud_handoff_by_generated_view_exception": true,
+  "dispatches": 0,
+  "reruns": 0,
+  "github_calls_used": 5
+}

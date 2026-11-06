@@ -1,0 +1,81 @@
+{
+  "tag": "sd-orbit-c-f94",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f94",
+  "head": "53c79461740e58bdbeca411773ff242c378e0f82",
+  "base": "30f7a864d0a643fa020ea3eaa3d5325a112b872e",
+  "recorded_at": "2026-11-06T09:25:43.134163+00:00",
+  "product_push": {
+    "status": "pushed",
+    "attempts": 1,
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f94",
+    "remote_head_verified": true
+  },
+  "commit_identity": "Run Edit Run fleet",
+  "all_candidate_identity_and_trailer_audit": "pass",
+  "all_candidate_commits": 1,
+  "shallow_history": false,
+  "status": {
+    "ACTION-002": {
+      "before": "partial",
+      "after": "partial",
+      "selected_point": "Obsolete completion after new observed evidence refused with unchanged affected inventories",
+      "holds_released": 0
+    }
+  },
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "tests": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "checks_file": "LOCAL-CHECKS.json",
+  "mechanical_file": "MECHANICAL.md",
+  "probe_file": "PROBES.md",
+  "riders_file": "RIDER-REVIEW.md",
+  "ci": {
+    "runs": [
+      {
+        "conclusion": "failure",
+        "event": "push",
+        "head_sha": "53c79461740e58bdbeca411773ff242c378e0f82",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42194832156",
+        "id": 42194832156,
+        "name": "Verify",
+        "status": "completed"
+      }
+    ],
+    "total_count": 1,
+    "classification": "permitted generated-view-only failure",
+    "failing_command": "pnpm exec node src/base/contract-docs.mjs check",
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "source_job_id": 127815560025,
+    "aggregate_job_id": 127815764009,
+    "downstream": "Runtime shards skipped; source bundle and combined result artifacts absent because the generator check stopped source work.",
+    "runtime_verify_green": false,
+    "eligible_for_cloud_handoff_by_generated_view_exception": true,
+    "dispatches": 0,
+    "reruns": 0,
+    "github_calls_used": 5
+  },
+  "pr": null,
+  "publication_scan": {
+    "status": "not run in cloud",
+    "owner": "fleet guarded lander"
+  },
+  "landing": "not claimed",
+  "run_site": "pending fleet landing",
+  "browser_proof": "not applicable: no UI changes",
+  "known_product_blockers": [],
+  "cloud_custody": "READY under the explicit generated-view-only exception",
+  "final_recorded_at": "2026-11-06T09:30:59.760800+00:00"
+}
