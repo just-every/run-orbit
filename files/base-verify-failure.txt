@@ -1,0 +1,5 @@
+Run 42168725032; failed source job 127731397908; head 4d57464352b71da0b375775e8857518d8ff6d5ea
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:30:23.3546430Z Verification (source): pnpm exec node src/base/contract-docs.mjs check
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:30:23.6504772Z ACCEPTANCE.md: generated content differs; run contract-docs write.
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:30:23.6828948Z ##[error]Process completed with exit code 1.
+source and shared build	Retain authoritative source candidate	2026-11-06T05:30:24.8326305Z ##[error]No files were found with the provided path: /tmp/orbit-source.bundle

@@ -1,0 +1,19 @@
+{
+  "index_status_rows": 204,
+  "parents": [
+    {
+      "ref": "HEAD",
+      "sha": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+      "status_rows": 204,
+      "table_rows": 458,
+      "dropped_status_rows": []
+    },
+    {
+      "ref": "origin/main",
+      "sha": "d417a80f86f763583e68f7ba8c13cb668f30bbab",
+      "status_rows": 204,
+      "table_rows": 458,
+      "dropped_status_rows": []
+    }
+  ]
+}

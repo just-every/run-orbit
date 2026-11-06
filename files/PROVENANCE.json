@@ -1,0 +1,28 @@
+{
+  "head": "0dab3e747cde727e5519d0dc93449d5be1269ed6",
+  "runtime_proof_head": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+  "parents": [
+    "4d57464352b71da0b375775e8857518d8ff6d5ea",
+    "d417a80f86f763583e68f7ba8c13cb668f30bbab"
+  ],
+  "origin_main": "d417a80f86f763583e68f7ba8c13cb668f30bbab",
+  "branch": "cloud/sd-orbit-c-f81",
+  "shallow": "false",
+  "before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "parent_status_rows": 204,
+  "candidate_status_rows": 204,
+  "dropped_status_rows": [],
+  "new_product_commits_this_round": 1,
+  "commit_kind": "integration merge only",
+  "new_implementation_or_assertions": false,
+  "base_contains_selected_proof": true
+}

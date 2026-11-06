@@ -1,0 +1,116 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent (60326.27653ms)
+✖ public capture is one atomic native batch across publication revoke, source stop, consent failure and concurrent replay (60216.274119ms)
+✖ FORM-001 public form HTTP refuses abuse without customer writes and releases spam exactly once (60505.765353ms)
+✔ existing-contact form capture atomically links and evaluates native opportunities exactly once without changing contact fields or mail authority (59469.250119ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 262404.271729
+
+✖ failing tests:
+
+test at newtests/t096/forms-native.test.ts:1:769
+✖ FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent (60326.27653ms)
+  Error: spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node ETIMEDOUT
+      at Object.spawnSync (node:internal/child_process:1160:20)
+      at spawnSync (node:child_process:928:24)
+      at execFileSync (node:child_process:971:15)
+      at isolatedDatabase (/workspace/run-orbit/tests/support/isolated-database.ts:11:3)
+      at async fixture (/workspace/run-orbit/newtests/t096/fixture.ts:23:46)
+      at async TestContext.<anonymous> (/workspace/run-orbit/newtests/t096/forms-native.test.ts:14:193)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    errno: -110,
+    code: 'ETIMEDOUT',
+    syscall: 'spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node',
+    path: '/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node',
+    spawnargs: [ 'node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', '/tmp/orbit-restore-test-FGaKWi' ],
+    error: Error: spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node ETIMEDOUT
+        at Object.spawnSync (node:internal/child_process:1160:20)
+        at spawnSync (node:child_process:928:24)
+        at execFileSync (node:child_process:971:15)
+        at isolatedDatabase (/workspace/run-orbit/tests/support/isolated-database.ts:11:3)
+        at async fixture (/workspace/run-orbit/newtests/t096/fixture.ts:23:46)
+        at async TestContext.<anonymous> (/workspace/run-orbit/newtests/t096/forms-native.test.ts:14:193)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3),
+    status: 143,
+    signal: null,
+    output: [ null, <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 20 28 75 70 64 61 74 65 20 61 76 61 69 6c 61 62 6c 65 20 34 2e 31 35 38 2e ... 665304 more bytes>, <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes> ],
+    pid: 1425,
+    stdout: <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 20 28 75 70 64 61 74 65 20 61 76 61 69 6c 61 62 6c 65 20 34 2e 31 35 38 2e ... 665304 more bytes>,
+    stderr: <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes>
+  }
+
+test at newtests/t096/forms-native.test.ts:1:6253
+✖ public capture is one atomic native batch across publication revoke, source stop, consent failure and concurrent replay (60216.274119ms)
+  Error: spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node ETIMEDOUT
+      at Object.spawnSync (node:internal/child_process:1160:20)
+      at spawnSync (node:child_process:928:24)
+      at execFileSync (node:child_process:971:15)
+      at isolatedDatabase (/workspace/run-orbit/tests/support/isolated-database.ts:11:3)
+      at async fixture (/workspace/run-orbit/newtests/t096/fixture.ts:23:46)
+      at async TestContext.<anonymous> (/workspace/run-orbit/newtests/t096/forms-native.test.ts:32:146)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -110,
+    code: 'ETIMEDOUT',
+    syscall: 'spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node',
+    path: '/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node',
+    spawnargs: [ 'node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', '/tmp/orbit-restore-test-wnqJKP' ],
+    error: Error: spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node ETIMEDOUT
+        at Object.spawnSync (node:internal/child_process:1160:20)
+        at spawnSync (node:child_process:928:24)
+        at execFileSync (node:child_process:971:15)
+        at isolatedDatabase (/workspace/run-orbit/tests/support/isolated-database.ts:11:3)
+        at async fixture (/workspace/run-orbit/newtests/t096/fixture.ts:23:46)
+        at async TestContext.<anonymous> (/workspace/run-orbit/newtests/t096/forms-native.test.ts:32:146)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    status: 143,
+    signal: null,
+    output: [ null, <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 20 28 75 70 64 61 74 65 20 61 76 61 69 6c 61 62 6c 65 20 34 2e 31 35 38 2e ... 665304 more bytes>, <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes> ],
+    pid: 2061,
+    stdout: <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 20 28 75 70 64 61 74 65 20 61 76 61 69 6c 61 62 6c 65 20 34 2e 31 35 38 2e ... 665304 more bytes>,
+    stderr: <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes>
+  }
+
+test at newtests/t096/forms-native.test.ts:1:8901
+✖ FORM-001 public form HTTP refuses abuse without customer writes and releases spam exactly once (60505.765353ms)
+  Error: spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node ETIMEDOUT
+      at Object.spawnSync (node:internal/child_process:1160:20)
+      at spawnSync (node:child_process:928:24)
+      at execFileSync (node:child_process:971:15)
+      at isolatedDatabase (/workspace/run-orbit/tests/support/isolated-database.ts:11:3)
+      at async fixture (/workspace/run-orbit/newtests/t096/fixture.ts:23:46)
+      at async TestContext.<anonymous> (/workspace/run-orbit/newtests/t096/forms-native.test.ts:42:121)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -110,
+    code: 'ETIMEDOUT',
+    syscall: 'spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node',
+    path: '/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node',
+    spawnargs: [ 'node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', '/tmp/orbit-restore-test-6vVSs8' ],
+    error: Error: spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node ETIMEDOUT
+        at Object.spawnSync (node:internal/child_process:1160:20)
+        at spawnSync (node:child_process:928:24)
+        at execFileSync (node:child_process:971:15)
+        at isolatedDatabase (/workspace/run-orbit/tests/support/isolated-database.ts:11:3)
+        at async fixture (/workspace/run-orbit/newtests/t096/fixture.ts:23:46)
+        at async TestContext.<anonymous> (/workspace/run-orbit/newtests/t096/forms-native.test.ts:42:121)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    status: 143,
+    signal: null,
+    output: [ null, <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 20 28 75 70 64 61 74 65 20 61 76 61 69 6c 61 62 6c 65 20 34 2e 31 35 38 2e ... 852910 more bytes>, <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes> ],
+    pid: 2707,
+    stdout: <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 20 28 75 70 64 61 74 65 20 61 76 61 69 6c 61 62 6c 65 20 34 2e 31 35 38 2e ... 852910 more bytes>,
+    stderr: <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes>
+  }

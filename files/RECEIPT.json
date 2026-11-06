@@ -1,0 +1,219 @@
+{
+  "tag": "sd-orbit-c-f81",
+  "repository": "just-every/run-orbit",
+  "candidate_head": "0dab3e747cde727e5519d0dc93449d5be1269ed6",
+  "candidate_tree": "426e41691e0b8800b667d5f0813af7720f2f74e2",
+  "runtime_proof_head": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+  "branch": "cloud/sd-orbit-c-f81",
+  "created_at": "2026-11-06T06:22:46.830288+00:00",
+  "checks": [
+    {
+      "name": "native initial attempt",
+      "command": "pnpm exec tsx --test --test-concurrency=1 newtests/t096/forms-native.test.ts",
+      "exit": 1,
+      "log": "forms-native.log",
+      "head": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+      "note": "VM default Node 24; fixture startup timeouts, 1 pass and 3 fail before form assertions",
+      "log_sha256": "2687ce51c5de4f44abf01dfce8311517ce3276aeb41fc3bd4e47d6da28c5202b"
+    },
+    {
+      "name": "native pinned retry",
+      "command": "pnpm exec tsx --test --test-concurrency=1 newtests/t096/forms-native.test.ts",
+      "exit": 0,
+      "log": "forms-native-pinned.log",
+      "head": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+      "note": "Node 22.20.0; 4 pass, 0 fail, 0 skipped; 800550.364315 ms",
+      "log_sha256": "aa7164b1c46a549d950174b2ab0c0e33c425b2fce5a1b3b1be19132152291358"
+    },
+    {
+      "name": "typecheck initial",
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log",
+      "head": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+      "note": "VM default Node 24",
+      "log_sha256": "af9fa8a26bb161a749cbb64769c5998eec031790083e2c5d69fa4e52f7643476"
+    },
+    {
+      "name": "typecheck pinned",
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck-pinned.log",
+      "head": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+      "note": "Node 22.20.0",
+      "log_sha256": "9210eeb2aba2fe2d3f16d1153d0ee18d0ce03516e129f529dcbad384b40bc285"
+    },
+    {
+      "name": "typecheck merged",
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck-merged.log",
+      "head": "0dab3e747cde727e5519d0dc93449d5be1269ed6",
+      "note": "Node 22.20.0",
+      "log_sha256": "9210eeb2aba2fe2d3f16d1153d0ee18d0ce03516e129f529dcbad384b40bc285"
+    },
+    {
+      "name": "first party initial",
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log",
+      "head": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+      "note": "success, empty output",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "first party merged",
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party-merged.log",
+      "head": "0dab3e747cde727e5519d0dc93449d5be1269ed6",
+      "note": "success, empty output",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "expected source reproduction",
+      "command": "node scripts/verification-shard.mjs source",
+      "exit": 1,
+      "log": "source-reproduction.log",
+      "head": "4d57464352b71da0b375775e8857518d8ff6d5ea",
+      "note": "generated ACCEPTANCE.md freshness only; no repair",
+      "log_sha256": "2d2e26c190ecd6ac62004d900868f49495dcdbae7a1725502c887d2293be617b"
+    },
+    {
+      "name": "views-write",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0,
+      "started": "2026-11-06T06:19:39.973081+00:00",
+      "log": "views-write.log",
+      "sha256": "df91012bf66fb476e9cd1a30c002829398beb55f869e07cc7be477197fa5a276"
+    },
+    {
+      "name": "views-check",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "started": "2026-11-06T06:19:40.209774+00:00",
+      "log": "views-check.log",
+      "sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "name": "restore-views",
+      "command": [
+        "git",
+        "checkout",
+        "origin/main",
+        "--",
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "started": "2026-11-06T06:19:40.397644+00:00",
+      "log": "restore-views.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "lock",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "lock"
+      ],
+      "exit": 0,
+      "started": "2026-11-06T06:19:40.409403+00:00",
+      "log": "lock.log",
+      "sha256": "a7a16bc0dcfa7846de6a35fe5c8cb8588bc1fd638c5a1a94c97f02e416bdbece"
+    },
+    {
+      "name": "lock-check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "started": "2026-11-06T06:19:43.446362+00:00",
+      "log": "lock-check.log",
+      "sha256": "35b654d6cc8a965ecf7a937f07fd8bb001998a085da37fbbd3acf761036e9199"
+    },
+    {
+      "name": "candidate expected source reproduction",
+      "head": "0dab3e747cde727e5519d0dc93449d5be1269ed6",
+      "job": 127747973637,
+      "command": "node scripts/verification-shard.mjs source",
+      "test": "node src/base/contract-docs.mjs check",
+      "exit": 1,
+      "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+      "log": "candidate-source-reproduction.log",
+      "log_sha256": "2d2e26c190ecd6ac62004d900868f49495dcdbae7a1725502c887d2293be617b"
+    }
+  ],
+  "source_equivalence": {
+    "command": [
+      "git",
+      "diff",
+      "--quiet",
+      "4d57464352b71da0b375775e8857518d8ff6d5ea",
+      "0dab3e747cde727e5519d0dc93449d5be1269ed6",
+      "--",
+      "src",
+      "migrations",
+      "package.json",
+      "pnpm-lock.yaml",
+      "newtests/t096/forms*.ts",
+      "newtests/t096/fixture.ts",
+      "newtests/t096/form-submit.ts",
+      "tests/support"
+    ],
+    "exit": 0,
+    "scope": "all application source, migrations, dependency pins, native form tests and support helpers"
+  },
+  "counts": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "registered_cases": 198,
+  "qualification_flows": 2,
+  "new_implementation_or_assertions": false,
+  "commits_this_round": "one integration merge preserving published f73 and newer main",
+  "clause": "FORM-004",
+  "before": "partial",
+  "after": "partial",
+  "product_pushed": true,
+  "remote_advertised_head": "0dab3e747cde727e5519d0dc93449d5be1269ed6",
+  "pr": null,
+  "publication_scan": "not run in cloud; guarded lander required",
+  "run_site": "not established; guarded lander required",
+  "ci_discovery": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "0dab3e747cde727e5519d0dc93449d5be1269ed6",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42173908054",
+      "id": 42173908054,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "github_calls_used": 7,
+  "ci_final": {
+    "run_id": 42173908054,
+    "event": "push",
+    "source_job_id": 127747973637,
+    "conclusion": "failure",
+    "head_sha": "0dab3e747cde727e5519d0dc93449d5be1269ed6",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42173908054",
+    "status": "completed"
+  },
+  "handoff_status": "READY under the documented generated-view-only exception",
+  "known_real_product_failure": false,
+  "finished_at": "2026-11-06T06:29:26.295340+00:00"
+}
