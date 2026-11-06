@@ -1,0 +1,10 @@
+{
+  "head": "7cb55138239e120975597cc77cf99e42f7202a8f",
+  "run": 42199601028,
+  "job": 127831737895,
+  "failureLines": [
+    "verify\tRequire a successful plan and all required work\t2026-11-06T10:03:47.8762523Z ##[error]Process completed with exit code 1.",
+    "verify\tRetain combined routine verdicts (capacity pending)\tverification/ci-summary.json. No artifacts will be uploaded."
+  ],
+  "classification": "Source failure prevents required runtime shard and combined artifact completion."
+}

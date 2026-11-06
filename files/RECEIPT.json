@@ -1,0 +1,144 @@
+{
+  "tag": "sd-orbit-c-f98",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f98",
+  "head": "7cb55138239e120975597cc77cf99e42f7202a8f",
+  "base": "471faef4be373789f207bdd71581d21f0cc7dcaf",
+  "mergedMain": "d89ffcc89d4e87b5276f13298210de9eb21f4f35",
+  "status": {
+    "RECORD-010": {
+      "before": "partial",
+      "after": "partial",
+      "newAcceptanceClosures": 0,
+      "selectedSlice": "Already implemented in predecessor; verified again with no additional product edit."
+    }
+  },
+  "counts": {
+    "before": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32
+    },
+    "after": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32
+    }
+  },
+  "checks": [
+    {
+      "name": "native meeting sanity journey",
+      "command": "pnpm exec tsx --test --test-name-pattern='BRIEF-004 RECORD-010' tests/core/today-brief.test.ts",
+      "head": "7cb55138239e120975597cc77cf99e42f7202a8f",
+      "exit": 0,
+      "tests": 1,
+      "log": "native-meeting-candidate.log"
+    },
+    {
+      "name": "native operator browser journey",
+      "command": "timeout 1200 node --import /tmp/cloud-chromium.mjs --test tests/rer/operator-actions.test.mjs",
+      "exit": 0,
+      "tests": 1,
+      "log": "browser-meeting.log",
+      "browser": "/usr/bin/chromium with --no-sandbox and existing default arguments",
+      "executionTree": "Merged working tree before merge commit; all relevant product and test bytes equal the pushed head.",
+      "sourceEquality": "relevant-source-diff.txt is empty from the predecessor to the pushed head.",
+      "screenWidths": [
+        1440,
+        390
+      ],
+      "assertionWidth": 1440
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm exec tsc --noEmit",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "name": "first-party",
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "name": "contract views",
+      "commands": [
+        "node src/base/contract-docs.mjs write",
+        "node src/base/contract-docs.mjs check",
+        "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "log": "views.log",
+      "committedAuthorEdits": false
+    },
+    {
+      "name": "source lock",
+      "commands": [
+        "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+        "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check"
+      ],
+      "exit": 0,
+      "head": "7cb55138239e120975597cc77cf99e42f7202a8f",
+      "check": "lock-candidate.json"
+    },
+    {
+      "name": "test budget",
+      "registered": 198,
+      "qualifications": 2,
+      "total": 200,
+      "added": 0,
+      "removed": 0,
+      "narrowed": 0,
+      "inventory": "test-inventory.json"
+    },
+    {
+      "name": "parent Status preservation",
+      "exit": 0,
+      "rows": 204,
+      "history": "history-rows.json"
+    },
+    {
+      "name": "identity and trailer inspection",
+      "exit": 0,
+      "candidateCommits": 3,
+      "receipt": "identities.json"
+    }
+  ],
+  "probe": {
+    "id": "RECORD-010",
+    "point": "manual meeting lifecycle",
+    "door": "Authenticated Records entry creation, update, read and deletion; native record page controls",
+    "input": "Two full operators; meeting at 14:07 UTC, then 15:23 UTC, duration 37 minutes and two exact contact IDs",
+    "observed": "Original author and recorded time retained after second-operator edit; fresh read retains duration and attendees; canceled deletion changes nothing; confirmed deletion removes the entry, adds one trace attributed to editor, repeated delete returns 404; populated score, band, draft and outbound inventories unchanged."
+  },
+  "mechanical": {
+    "lockExit": 0,
+    "viewsWriteExit": 0,
+    "viewsCheckExit": 0,
+    "viewsRestoredFromMain": true,
+    "ledger": "none; no migration change"
+  },
+  "ci": {
+    "run": 42199601028,
+    "event": "push",
+    "head": "7cb55138239e120975597cc77cf99e42f7202a8f",
+    "observedStatus": "completed",
+    "conclusion": "failure",
+    "url": "https://github.com/just-every/run-orbit/actions/runs/42199601028",
+    "sourceJob": 127831487129,
+    "aggregateJob": 127831737895,
+    "classification": "Expected generated-view freshness failure only; downstream runtime shards skipped. No green runtime CI claim.",
+    "handoffException": true
+  },
+  "publication": {
+    "cloudScan": "not run; cloud route delegates exact-head full-history publication scan and landing to maintained fleet lander",
+    "mainPushed": false,
+    "pr": null,
+    "productPush": "succeeded on first attempt",
+    "handoff": "READY under documented generated-view exception; complete publication scan, regenerated views and exact-head runtime verification remain fleet landing obligations."
+  },
+  "remaining": "Call editing; remaining entry-kind and record-kind combinations; duration and attendee editing controls; mentions; attachments; provider activity qualification. No hold released.",
+  "planRowsChanged": [],
+  "githubCalls": 9
+}

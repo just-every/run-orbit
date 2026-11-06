@@ -1,0 +1,3 @@
+
+Verification (source): pnpm exec node src/base/contract-docs.mjs check
+ACCEPTANCE.md: generated content differs; run contract-docs write.

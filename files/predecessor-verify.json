@@ -1,0 +1,13 @@
+{
+  "head": "471faef4be373789f207bdd71581d21f0cc7dcaf",
+  "run": 42194856459,
+  "event": "push",
+  "conclusion": "failure",
+  "job": 127815586561,
+  "command": "node scripts/verification-shard.mjs source",
+  "exit": 1,
+  "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "classification": "Expected generated-view failure; runtime shards skipped.",
+  "secondary": "Source receipt upload had no files because source checking stopped before producing receipts.",
+  "repair": "none"
+}

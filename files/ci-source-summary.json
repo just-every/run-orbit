@@ -1,0 +1,13 @@
+{
+  "head": "7cb55138239e120975597cc77cf99e42f7202a8f",
+  "run": 42199601028,
+  "job": 127831487129,
+  "command": "node scripts/verification-shard.mjs source",
+  "failureLines": [
+    "source and shared build\tVerify source, types, boundaries and the single shared app build\t2026-11-06T10:03:38.7419533Z Verification (source): pnpm exec node src/base/contract-docs.mjs check",
+    "source and shared build\tVerify source, types, boundaries and the single shared app build\t2026-11-06T10:03:39.2311817Z ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "source and shared build\tVerify source, types, boundaries and the single shared app build\t2026-11-06T10:03:39.2689780Z ##[error]Process completed with exit code 1.",
+    "source and shared build\tRetain authoritative source candidate\t2026-11-06T10:03:40.6389248Z ##[error]No files were found with the provided path: /tmp/orbit-source.bundle"
+  ],
+  "expectedGeneratedViewOnly": true
+}

@@ -1,0 +1,9 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f98",
+  "head": "7cb55138239e120975597cc77cf99e42f7202a8f",
+  "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f98",
+  "attempts": 1,
+  "status": "PUSH_OK",
+  "force": false
+}

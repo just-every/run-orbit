@@ -1,0 +1,197 @@
+[
+  {
+    "name": "manual-meeting-edit",
+    "width": 1440,
+    "url": "/app/opportunities/01M6R4V7P8RQN6ZX7YVT3NZDQ7",
+    "violations": [],
+    "geometry": {
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    "fonts": {
+      "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+    },
+    "rawData": false
+  },
+  {
+    "name": "manual-meeting-edit",
+    "width": 390,
+    "url": "/app/opportunities/01M6R4V7P8RQN6ZX7YVT3NZDQ7",
+    "violations": [],
+    "geometry": {
+      "width": 390,
+      "scrollWidth": 390
+    },
+    "fonts": {
+      "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+    },
+    "rawData": false
+  },
+  {
+    "name": "manual-meeting-delete",
+    "width": 1440,
+    "url": "/app/opportunities/01M6R4V7P8RQN6ZX7YVT3NZDQ7",
+    "violations": [],
+    "geometry": {
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    "fonts": {
+      "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+    },
+    "rawData": false
+  },
+  {
+    "name": "manual-meeting-delete",
+    "width": 390,
+    "url": "/app/opportunities/01M6R4V7P8RQN6ZX7YVT3NZDQ7",
+    "violations": [],
+    "geometry": {
+      "width": 390,
+      "scrollWidth": 390
+    },
+    "fonts": {
+      "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+    },
+    "rawData": false
+  },
+  {
+    "name": "lifecycle-confirm",
+    "width": 1440,
+    "url": "/app/opportunities/01M6R4V7P8RQN6ZX7YVT3NZDQ7",
+    "violations": [],
+    "geometry": {
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    "fonts": {
+      "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+    },
+    "rawData": false
+  },
+  {
+    "name": "lifecycle-confirm",
+    "width": 390,
+    "url": "/app/opportunities/01M6R4V7P8RQN6ZX7YVT3NZDQ7",
+    "violations": [],
+    "geometry": {
+      "width": 390,
+      "scrollWidth": 390
+    },
+    "fonts": {
+      "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+    },
+    "rawData": false
+  },
+  {
+    "name": "lifecycle-confirm",
+    "width": 320,
+    "url": "/app/opportunities/01M6R4V7P8RQN6ZX7YVT3NZDQ7",
+    "violations": [],
+    "geometry": {
+      "width": 320,
+      "scrollWidth": 320
+    },
+    "fonts": {
+      "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+    },
+    "rawData": false
+  },
+  {
+    "name": "merge-values",
+    "width": 1440,
+    "url": "/app/settings/data",
+    "violations": [],
+    "geometry": {
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    "fonts": {
+      "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+    },
+    "rawData": false
+  },
+  {
+    "name": "merge-dialog",
+    "width": 1440,
+    "url": "/app/settings/data",
+    "violations": [],
+    "geometry": {
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    "fonts": {
+      "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+    },
+    "rawData": false
+  },
+  {
+    "name": "merge-values",
+    "width": 390,
+    "url": "/app/settings/data",
+    "violations": [],
+    "geometry": {
+      "width": 390,
+      "scrollWidth": 390
+    },
+    "fonts": {
+      "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+    },
+    "rawData": false
+  },
+  {
+    "name": "merge-dialog",
+    "width": 390,
+    "url": "/app/settings/data",
+    "violations": [],
+    "geometry": {
+      "width": 390,
+      "scrollWidth": 390
+    },
+    "fonts": {
+      "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+    },
+    "rawData": false
+  },
+  {
+    "name": "merge-values",
+    "width": 320,
+    "url": "/app/settings/data",
+    "violations": [],
+    "geometry": {
+      "width": 320,
+      "scrollWidth": 320
+    },
+    "fonts": {
+      "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+    },
+    "rawData": false
+  },
+  {
+    "name": "merge-dialog",
+    "width": 320,
+    "url": "/app/settings/data",
+    "violations": [],
+    "geometry": {
+      "width": 320,
+      "scrollWidth": 320
+    },
+    "fonts": {
+      "body": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+      "heading": "\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", \"Avenir Next\", \"Segoe UI\", sans-serif"
+    },
+    "rawData": false
+  }
+]

@@ -1,0 +1,56 @@
+{
+  "candidate": "7cb55138239e120975597cc77cf99e42f7202a8f",
+  "predecessor": "471faef4be373789f207bdd71581d21f0cc7dcaf",
+  "files": [
+    {
+      "path": "src/core/features/records/manual.ts",
+      "sha256": "0ed72ffb9ef8da965b72942ea306b0c319b0cc17c078b642d2d6363e87a880b8",
+      "sameAsPredecessor": true
+    },
+    {
+      "path": "src/core/features/records/routes.ts",
+      "sha256": "2f55d5ada5dcfb52f78f2072f518aec34265716e9d492c73baace5ab172c354b",
+      "sameAsPredecessor": true
+    },
+    {
+      "path": "src/core/features/operator/ui/record/entry-editor.tsx",
+      "sha256": "8dd0d59d1279d8d6eac644b78ef1e42ddd002ff003a902f52b60c32cad4fac31",
+      "sameAsPredecessor": true
+    },
+    {
+      "path": "tests/core/today-brief.test.ts",
+      "sha256": "8aecf6d2d5f793fd0f13d578d2f9b18d8f36cf88d024051fdac3b9c404443f0c",
+      "sameAsPredecessor": true
+    },
+    {
+      "path": "tests/support/manual-meeting.ts",
+      "sha256": "63ea594aef60c2d860b26fadf4c3cb9b5962486f5d53f8dde8fc0146236c0171",
+      "sameAsPredecessor": true
+    },
+    {
+      "path": "tests/rer/operator-actions.test.mjs",
+      "sha256": "c092009e4bfb2ef05858be873b48b49e3a889285aa981e2215d441c731d38b02",
+      "sameAsPredecessor": true
+    },
+    {
+      "path": "tests/rer/operator-actions-journey.mjs",
+      "sha256": "0941c8f1cdebb659e2194631eab6b09e345b3237b9b345aac1e86d2b6557d032",
+      "sameAsPredecessor": true
+    },
+    {
+      "path": "tests/rer/operator-manual-meeting.mjs",
+      "sha256": "dea16f3022b1a8f0d68b07869acd59d63c24def777bfad6bbcfae18c3bd8ac05",
+      "sameAsPredecessor": true
+    },
+    {
+      "path": "tests/rer/operator-fixture.mjs",
+      "sha256": "2c13a835341797f1456be0a68b367d8c0a731de3289a9923f3e63e4261fe2a0a",
+      "sameAsPredecessor": true
+    },
+    {
+      "path": "tests/rer/operator-workspace.mjs",
+      "sha256": "56bdc57aaf6bee7e13af1d1d645cdfe5f8978bbdec31d7371166b29795ab746b",
+      "sameAsPredecessor": true
+    }
+  ]
+}
