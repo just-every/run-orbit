@@ -178,6 +178,12 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
  const agedBrief=await later.brief();
  assert.deepEqual(byKind(agedBrief,'reply-unanswered').filter(line=>agedReplies.includes(line.evidence.id)).map(line=>line.evidence.id).sort(),agedReplies.sort(),'Both 119- and 121-day unanswered customer replies remain overdue');
  assert.ok(!byKind(agedBrief,'reply-unanswered').some(line=>line.evidence.id===answeredReply),'Answering an older reply clears its promise');
+ const analystId=createId();await db.prepare('INSERT INTO access_collaborators VALUES(?,?)').bind(analystId,new Date().toISOString()).run();
+ const analyst=await todayApp(db,{operatorId:analystId}),invitation=await later.json<{token:string}>('/api/v2/access/workspaces/workspace/invitations',{body:{email:`${analystId.toLowerCase()}@seller.test`,role:'analyst',expiresAt:new Date(Date.now()+86400000).toISOString()}},200);
+ await analyst.json('/api/v2/access/invitations/accept',{body:{token:invitation.token}},200);
+ const scopedBrief=await analyst.brief();
+ assert.deepEqual(byKind(scopedBrief,'draft-unsent').filter(line=>stopped.includes(line.evidence.id)),[],'Scoped Today also clears stopped drafts');
+ assert.deepEqual(byKind(scopedBrief,'reply-unanswered').filter(line=>agedReplies.includes(line.evidence.id)).map(line=>line.evidence.id).sort(),agedReplies,'Scoped Today retains old unanswered replies');
  assert.equal(submissions,0,'Stop and old-reply checks send no customer mail');
 });
 

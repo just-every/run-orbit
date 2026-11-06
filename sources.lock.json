@@ -8239,7 +8239,7 @@
       "executable": false
     },
     "src/core/features/today/promises.ts": {
-      "sha256": "b0520a1a11f256b4da5572da4cc1ba6a092c6798a68a6d94a304d6d9170cf9f3",
+      "sha256": "2ba36fbd3b83a3cc9e226764f0085e3cb6a4d87535bd331f775b2e01fd59bcc2",
       "executable": false
     },
     "src/core/features/today/record-mail.ts": {
@@ -10075,7 +10075,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "b8c6cde4d839d8c12c210ac154ba55f37e1df489a8065cb359c109577b50fe1a",
+      "sha256": "d68427f9cf185694124e12641a1a9f444208b42b7871be854dd311e0525a4af4",
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {

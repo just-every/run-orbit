@@ -10,10 +10,15 @@ const followUp="(t.kind LIKE 'manual.%' OR t.kind IN ('action.completed','handof
 const capturedSent=`NOT EXISTS(SELECT 1 FROM signals sent JOIN signal_links sl ON sl.signal_id=sent.id JOIN signal_links l ON l.record_type=sl.record_type AND l.record_id=sl.record_id WHERE l.signal_id=s.id AND l.record_type IN ('contact','opportunity') AND sent.type='email.sent' AND ${customerSignalSql('sent')} AND sent.occurred_at>=s.occurred_at)`;
 // Stop state is recipient suppression or a typed customer stop linked since this draft was created/reviewed.
 // A new draft or an explicit review starts new work; unrelated staleness still needs the seller's attention.
-const draftStopped=`EXISTS(SELECT 1 FROM contacts c WHERE c.id=d.recipient_contact_id AND c.contactability='do_not_contact')
- OR (d.is_stale=1 AND EXISTS(SELECT 1 FROM signals stopped JOIN signal_links l ON l.signal_id=stopped.id
- WHERE l.record_type='contact' AND l.record_id=d.recipient_contact_id AND stopped.type IN ('email.replied','meeting.booked','email.unsubscribed','email.bounced') AND ${customerSignalSql('stopped')}
- AND l.linked_at>=d.created_at AND NOT EXISTS(SELECT 1 FROM timeline_entries reviewed WHERE reviewed.kind='draft.reviewed' AND json_extract(reviewed.payload_json,'$.draftId')=d.id AND reviewed.recorded_at>=l.linked_at)))`;
+// Materialize the stop relation at the top level so scoped field projections stay within D1's expression depth.
+const draftStops=`WITH draft_reviews AS MATERIALIZED(
+ SELECT json_extract(payload_json,'$.draftId') AS draftId,MAX(recorded_at) AS reviewedAt FROM timeline_entries WHERE kind='draft.reviewed' GROUP BY json_extract(payload_json,'$.draftId')
+),draft_stops AS MATERIALIZED(
+ SELECT d.id FROM drafts d JOIN contacts c ON c.id=d.recipient_contact_id WHERE c.contactability='do_not_contact'
+ UNION SELECT d.id FROM drafts d JOIN signal_links l ON l.record_type='contact' AND l.record_id=d.recipient_contact_id AND l.linked_at>=d.created_at
+ JOIN signals stopped ON stopped.id=l.signal_id LEFT JOIN draft_reviews reviewed ON reviewed.draftId=d.id
+ WHERE d.is_stale=1 AND stopped.type IN ('email.replied','meeting.booked','email.unsubscribed','email.bounced') AND ${customerSignalSql('stopped')} AND (reviewed.reviewedAt IS NULL OR reviewed.reviewedAt<l.linked_at)
+)`;
 
 /**
  * Overdue promises, computed from records only:
@@ -39,7 +44,7 @@ export async function promiseLines(db:D1Database,now:Date,policy:BriefPolicy,lim
    AND (NOT EXISTS(SELECT 1 FROM signal_links l JOIN outbound_messages m ON l.record_type='opportunity' AND m.opportunity_id=l.record_id WHERE l.signal_id=s.id AND m.approved_at>=s.occurred_at)
    AND ${capturedSent})
    ORDER BY s.occurred_at LIMIT ?`).bind(from,at,limit).all<{id:string;subject:string|null;occurredAt:string}>(),
-  db.prepare(`SELECT d.id,d.subject,d.created_at AS createdAt,d.updated_at AS updatedAt,d.is_stale AS stale,d.stale_reason AS staleReason,d.opportunity_id AS opportunityId,d.recipient_contact_id AS contactId FROM drafts d JOIN opportunities o ON o.id=d.opportunity_id WHERE o.lifecycle='open' AND d.updated_at<? AND NOT (${draftStopped}) AND NOT EXISTS(SELECT 1 FROM outbound_messages m WHERE m.draft_id=d.id) ORDER BY d.created_at LIMIT ?`).bind(new Date(now.getTime()-policy.staleIntervalDays*86400000).toISOString(),limit).all<{id:string;subject:string;createdAt:string;updatedAt:string;stale:number;staleReason:string|null;opportunityId:string;contactId:string|null}>()]);
+  db.prepare(`${draftStops} SELECT d.id,d.subject,d.created_at AS createdAt,d.updated_at AS updatedAt,d.is_stale AS stale,d.stale_reason AS staleReason,d.opportunity_id AS opportunityId,d.recipient_contact_id AS contactId FROM drafts d JOIN opportunities o ON o.id=d.opportunity_id WHERE o.lifecycle='open' AND d.updated_at<? AND d.id NOT IN(SELECT id FROM draft_stops) AND NOT EXISTS(SELECT 1 FROM outbound_messages m WHERE m.draft_id=d.id) ORDER BY d.created_at LIMIT ?`).bind(new Date(now.getTime()-policy.staleIntervalDays*86400000).toISOString(),limit).all<{id:string;subject:string;createdAt:string;updatedAt:string;stale:number;staleReason:string|null;opportunityId:string;contactId:string|null}>()]);
  const signalIds=[...replies.results,...meetings.results].map(row=>row.id),[links,entries]=await Promise.all([signalLinks(db,signalIds),signalEntries(db,signalIds)]);
  const lines:RawLine[]=[];
  for(const row of handoffs.results)lines.push({id:`handoff-due:${row.id}`,kind:'handoff-due',group:'promise',signalType:null,confidence:null,title:row.title,detail:'Next action past its due time',occurredAt:row.dueAt,dueAt:row.dueAt,evidence:{type:'handoff',id:row.id},records:[{type:'opportunity',id:row.opportunityId}],planHref:null,link:{fixed:`/app/opportunities/${row.opportunityId}#handoff-${row.id}`}});
