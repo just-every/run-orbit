@@ -1,0 +1,8 @@
+{
+  "observed_at": "2026-11-06T02:31:26.516857+00:00",
+  "owned_browser_state_and_temp_roots_removed": 4,
+  "active_browser_or_worker_or_node_processes": [],
+  "subreaper_core_exit": 0,
+  "subreaper_browser_execution_exit": 0,
+  "clone_and_checkout_dependencies": "Delete only after successful evidence publication and exact-manifest readback; not yet claimed deleted in this pre-publication receipt."
+}

@@ -1,0 +1,69 @@
+{
+  "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+  "commands": [
+    {
+      "label": "clone",
+      "command": [
+        "git",
+        "clone",
+        "--depth",
+        "1",
+        "--filter=blob:none",
+        "--branch",
+        "cloud/sd-orbit-c-f60",
+        "https://github.com/just-every/run-orbit.git",
+        "<owned-disposable-clone>"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "install",
+      "command": [
+        "cloud_run",
+        "timeout",
+        "420",
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "install"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "pin-ref-read",
+      "command": [
+        "git",
+        "ls-remote",
+        "origin",
+        "refs/heads/cloud/sd-orbit-c-f60",
+        "refs/heads/main"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "read-only-fetch",
+      "command": [
+        "git",
+        "fetch",
+        "--depth",
+        "1",
+        "origin",
+        "main",
+        "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+        "54956cf7ad9ab14c3c609b6d2497d95a138cd02f"
+      ],
+      "exit": 0
+    }
+  ],
+  "read_only": true,
+  "product_mutations": [],
+  "ci_queries": 0,
+  "model_endpoint_calls": 0,
+  "subagents": 0,
+  "browser_override": {
+    "file": "/tmp/ct-orbit-playwright.config.mjs",
+    "sha256": "50ecaada2acb976da16129226b409b591d1bbbbd43e5365a0e42bb49855bb929",
+    "purpose": "Use installed Chromium headlessly with --no-sandbox and external output directory; import pinned config, keep existing tests, assertions and width loop unchanged."
+  },
+  "identity_prepublication": "Separate evidence transport audits every report commit and side parent with git log origin/main..HEAD; fleet author and committer, allowed trailers, no Codex/OpenAI co-author."
+}

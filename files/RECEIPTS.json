@@ -1,0 +1,255 @@
+{
+  "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+  "commands": [
+    {
+      "label": "setup",
+      "command": [
+        "timeout",
+        "300",
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "setup",
+        "--owner-email",
+        "fleet@runeditrun.com",
+        "--non-interactive"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-capture006-20261105-2325-sol1/orbit",
+      "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+      "started_at": "2026-11-06T02:07:50.450288+00:00",
+      "finished_at": "2026-11-06T02:08:15.221629+00:00",
+      "duration_seconds": 24.771,
+      "exit": 0
+    },
+    {
+      "label": "document-check",
+      "command": [
+        "timeout",
+        "30",
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-capture006-20261105-2325-sol1/orbit",
+      "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+      "started_at": "2026-11-06T02:14:22.792334+00:00",
+      "finished_at": "2026-11-06T02:14:22.861597+00:00",
+      "duration_seconds": 0.069,
+      "exit": 1
+    },
+    {
+      "label": "source-lock-check",
+      "command": [
+        "timeout",
+        "60",
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-capture006-20261105-2325-sol1/orbit",
+      "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+      "started_at": "2026-11-06T02:14:22.885847+00:00",
+      "finished_at": "2026-11-06T02:14:23.375655+00:00",
+      "duration_seconds": 0.49,
+      "exit": 0
+    },
+    {
+      "label": "toolchain",
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "console.log(JSON.stringify({node:process.version,execPath:process.execPath}))"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-capture006-20261105-2325-sol1/orbit",
+      "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+      "started_at": "2026-11-06T02:14:23.405377+00:00",
+      "finished_at": "2026-11-06T02:14:23.426839+00:00",
+      "duration_seconds": 0.021,
+      "exit": 0
+    },
+    {
+      "label": "focused-core",
+      "command": [
+        "timeout",
+        "1800",
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "tests/core/capture-mail-rules.test.ts",
+        "tests/core/capture-connector.test.ts",
+        "tests/core/capture-providers.test.ts",
+        "tests/core/capture-erasure.test.ts"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-capture006-20261105-2325-sol1/orbit",
+      "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+      "started_at": "2026-11-06T02:08:15.281667+00:00",
+      "finished_at": "2026-11-06T02:23:16.624815+00:00",
+      "duration_seconds": 901.343,
+      "exit": 0
+    },
+    {
+      "label": "functional-browser",
+      "command": [
+        "timeout",
+        "360",
+        "pnpm",
+        "exec",
+        "playwright",
+        "test",
+        "--config",
+        "/tmp/ct-orbit-playwright.config.mjs",
+        "--grep",
+        "^CAPTURE provider status keeps revoked access clear",
+        "--workers=1",
+        "--reporter=line"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-capture006-20261105-2325-sol1/orbit",
+      "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+      "started_at": "2026-11-06T02:23:54.175301+00:00",
+      "finished_at": "2026-11-06T02:24:21.166118+00:00",
+      "duration_seconds": 26.991,
+      "exit": 1
+    },
+    {
+      "label": "browser-selection",
+      "command": [
+        "timeout",
+        "30",
+        "pnpm",
+        "exec",
+        "playwright",
+        "test",
+        "--config",
+        "/tmp/ct-orbit-playwright.config.mjs",
+        "--grep",
+        "CAPTURE provider status keeps revoked access clear",
+        "--list"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-capture006-20261105-2325-sol1/orbit",
+      "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+      "started_at": "2026-11-06T02:25:29.476615+00:00",
+      "finished_at": "2026-11-06T02:25:30.117464+00:00",
+      "duration_seconds": 0.641,
+      "exit": 0
+    },
+    {
+      "label": "functional-browser-execution",
+      "command": [
+        "timeout",
+        "360",
+        "pnpm",
+        "exec",
+        "playwright",
+        "test",
+        "--config",
+        "/tmp/ct-orbit-playwright.config.mjs",
+        "--grep",
+        "CAPTURE provider status keeps revoked access clear",
+        "--workers=1",
+        "--reporter=line"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-capture006-20261105-2325-sol1/orbit",
+      "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+      "started_at": "2026-11-06T02:25:30.151903+00:00",
+      "finished_at": "2026-11-06T02:26:17.157280+00:00",
+      "duration_seconds": 47.005,
+      "exit": 0
+    }
+  ],
+  "core": {
+    "tests": 13,
+    "suites": 0,
+    "pass": 13,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 901068.435751
+  },
+  "browser": {
+    "status": "passed",
+    "registrations_executed": 1,
+    "viewports": [
+      1440,
+      390
+    ],
+    "duration_seconds_including_build": 47.005,
+    "exit": 0,
+    "screenshots": [
+      {
+        "path": "screenshots/capture-guide-google-1440.png",
+        "width": 1440,
+        "height": 970,
+        "bytes": 159287,
+        "sha256": "069088fcf82dfd8e68bbc3c53893fbf233282ccbc70aab17de212da9fdaf88bc",
+        "inspected": true
+      },
+      {
+        "path": "screenshots/capture-guide-google-390.png",
+        "width": 390,
+        "height": 1243,
+        "bytes": 102002,
+        "sha256": "47e13f34abee836aab7201cf579c9ca5ee8024137ac9d1b0eb06351aedcd3d1f",
+        "inspected": true
+      },
+      {
+        "path": "screenshots/capture-guide-microsoft-1440.png",
+        "width": 1440,
+        "height": 1341,
+        "bytes": 231967,
+        "sha256": "45a8e011ac6aa72a6f735aa91362d258c1f1117374ac3255816c44d37b002fc4",
+        "inspected": true
+      },
+      {
+        "path": "screenshots/capture-guide-microsoft-390.png",
+        "width": 390,
+        "height": 1969,
+        "bytes": 167773,
+        "sha256": "96f401d7ac09eb848de7f6e97c52754df320fff998c1d26195a1ea8f2f84c6e9",
+        "inspected": true
+      },
+      {
+        "path": "screenshots/capture-revoked-1440.png",
+        "width": 1440,
+        "height": 2585,
+        "bytes": 253152,
+        "sha256": "566dbef02df5c6095fe58766701c75782bb0c61d72ccf7ee1800f9f1256e0081",
+        "inspected": true
+      },
+      {
+        "path": "screenshots/capture-revoked-390.png",
+        "width": 390,
+        "height": 3297,
+        "bytes": 225621,
+        "sha256": "0ea801963fef0f7d1e6a56b837c31d2914f69b04ec882df1a4328acdf4a2682f",
+        "inspected": true
+      }
+    ],
+    "initial_invocation": {
+      "label": "functional-browser",
+      "exit": 1,
+      "reason": "Anchored --grep selected no tests; no browser assertions ran. Runner filter corrected, filtered --list confirmed exactly one unchanged registration, then actual journey executed once."
+    }
+  },
+  "ci": {
+    "query_count": 0,
+    "dispatch_count": 0,
+    "supplied_exact_source_run": 42125980777,
+    "event": "push",
+    "conclusion": "failure",
+    "exception": "Generated ACCEPTANCE.md freshness only; runtime skipped, never full-green."
+  },
+  "affected_gate": {
+    "provenance": "Complete immutable factual input supplied inline; not executed by this judge.",
+    "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+    "finished_at": "2026-11-05T23:39:30Z",
+    "exit": 0,
+    "verdict": "GATE PASS",
+    "frozen_rows": "R1\u2013R7 PASS"
+  },
+  "product_mutations": [],
+  "pr": null
+}

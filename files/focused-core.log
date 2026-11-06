@@ -1,0 +1,98 @@
+TAP version 13
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Subtest: CAPTURE-006 a provider cursor resumes after a crash without duplicates and is stored exactly as the provider gave it
+ok 1 - CAPTURE-006 a provider cursor resumes after a crash without duplicates and is stored exactly as the provider gave it
+  ---
+  duration_ms: 18444.118478
+  type: 'test'
+  ...
+# Subtest: CAPTURE-006 a revoked grant stops intake and shows its error until the source is reconnected
+ok 2 - CAPTURE-006 a revoked grant stops intake and shows its error until the source is reconnected
+  ---
+  duration_ms: 18193.387619
+  type: 'test'
+  ...
+# Subtest: CAPTURE-006 AI-003 a provider outage leaves records, queues and manual work untouched
+ok 3 - CAPTURE-006 AI-003 a provider outage leaves records, queues and manual work untouched
+  ---
+  duration_ms: 18394.177526
+  type: 'test'
+  ...
+# Subtest: CAPTURE-006 disconnecting stops intake at once, deletes the credential and keeps captured evidence marked as from a disconnected source
+ok 4 - CAPTURE-006 disconnecting stops intake at once, deletes the credential and keeps captured evidence marked as from a disconnected source
+  ---
+  duration_ms: 17639.449811
+  type: 'test'
+  ...
+# (node:3741) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Subtest: CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured originals and proposals; the audit trail keeps counts and anonymous replay proofs
+ok 5 - CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured originals and proposals; the audit trail keeps counts and anonymous replay proofs
+  ---
+  duration_ms: 67766.944126
+  type: 'test'
+  ...
+# Subtest: CAPTURE-007 DATA-002 erased provider originals stay erased after expired history, crashes and reconnect while new evidence remains eligible
+ok 6 - CAPTURE-007 DATA-002 erased provider originals stay erased after expired history, crashes and reconnect while new evidence remains eligible
+  ---
+  duration_ms: 26866.413733
+  type: 'test'
+  ...
+# Subtest: CAPTURE-007 DATA-002 erasure fences an already-resolved capture commit and its later replay
+ok 7 - CAPTURE-007 DATA-002 erasure fences an already-resolved capture commit and its later replay
+  ---
+  duration_ms: 23958.284296
+  type: 'test'
+  ...
+# (node:5196) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":257,"parts":37,"observations":[{"operation":"POST /exports","milliseconds":1667.3934559999907,"status":201},{"operation":"GET /exports/01M6QA446GGWEKAV1HVFAYKGK2","milliseconds":46.506806999997934,"status":200},{"operation":"POST /exports/01M6QA446GGWEKAV1HVFAYKGK2/advance","milliseconds":2223.2242899999983,"status":200},{"operation":"POST /exports/01M6QA446GGWEKAV1HVFAYKGK2/advance","milliseconds":1553.5836019999988,"status":200},{"operation":"POST /exports/01M6QA446GGWEKAV1HVFAYKGK2/advance","milliseconds":1609.5191509999859,"status":200},{"operation":"POST /exports/01M6QA446GGWEKAV1HVFAYKGK2/advance","milliseconds":1514.3270909999846,"status":200},{"operation":"POST /exports/01M6QA446GGWEKAV1HVFAYKGK2/advance","milliseconds":1326.1551359999867,"status":200},{"operation":"GET /exports/01M6QA446GGWEKAV1HVFAYKGK2/download","milliseconds":39.63053999998374,"status":200}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":193,"parts":35,"observations":[{"operation":"POST /exports","milliseconds":1797.2258269999875,"status":201},{"operation":"GET /exports/01M6QA8ZAR0Z7B1WCHZPEDD7CG","milliseconds":44.622084000031464,"status":200},{"operation":"POST /exports/01M6QA8ZAR0Z7B1WCHZPEDD7CG/advance","milliseconds":2517.2547379999887,"status":200},{"operation":"POST /exports/01M6QA8ZAR0Z7B1WCHZPEDD7CG/advance","milliseconds":1632.0975899999612,"status":200},{"operation":"POST /exports/01M6QA8ZAR0Z7B1WCHZPEDD7CG/advance","milliseconds":1611.1344570000074,"status":200},{"operation":"POST /exports/01M6QA8ZAR0Z7B1WCHZPEDD7CG/advance","milliseconds":1614.753703000024,"status":200},{"operation":"POST /exports/01M6QA8ZAR0Z7B1WCHZPEDD7CG/advance","milliseconds":984.736910000036,"status":200},{"operation":"GET /exports/01M6QA8ZAR0Z7B1WCHZPEDD7CG/download","milliseconds":36.04882300004829,"status":200}]}
+# Subtest: CAPTURE-010 workspace mail rules and one-action corrections preserve CAPTURE-006 selected scope, crash replay, incremental reads and unknown-mail exclusion
+ok 8 - CAPTURE-010 workspace mail rules and one-action corrections preserve CAPTURE-006 selected scope, crash replay, incremental reads and unknown-mail exclusion
+  ---
+  duration_ms: 328135.524436
+  type: 'test'
+  ...
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Subtest: CAPTURE-005 OAuth binds native session, provider, origin, expiry and one use; encrypted authority stays out of status and archives
+ok 9 - CAPTURE-005 OAuth binds native session, provider, origin, expiry and one use; encrypted authority stays out of status and archives
+  ---
+  duration_ms: 19090.796781
+  type: 'test'
+  ...
+# Subtest: CAPTURE-006 refreshed credentials are durable, leases prevent concurrent reads and disconnect fences in-flight tokens and callbacks
+ok 10 - CAPTURE-006 refreshed credentials are durable, leases prevent concurrent reads and disconnect fences in-flight tokens and callbacks
+  ---
+  duration_ms: 69254.322535
+  type: 'test'
+  ...
+# Subtest: CAPTURE-006 Microsoft rejects foreign host, user, folder and calendar delta links before bearer disclosure
+ok 11 - CAPTURE-006 Microsoft rejects foreign host, user, folder and calendar delta links before bearer disclosure
+  ---
+  duration_ms: 19587.551773
+  type: 'test'
+  ...
+# Subtest: CAPTURE-006 oversized mail skips once while both providers finish other messages and selected calendars
+ok 12 - CAPTURE-006 oversized mail skips once while both providers finish other messages and selected calendars
+  ---
+  duration_ms: 87167.59858
+  type: 'test'
+  ...
+# Subtest: CAPTURE-006 provider deletion respects occurrence and erasure; CAPTURE-011 read-only and writeback consent request and store distinct scopes
+ok 13 - CAPTURE-006 provider deletion respects occurrence and erasure; CAPTURE-011 read-only and writeback consent request and store distinct scopes
+  ---
+  duration_ms: 180065.332616
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 901068.435751

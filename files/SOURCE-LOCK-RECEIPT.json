@@ -1,0 +1,20 @@
+{
+  "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+  "command": [
+    "node",
+    "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+    "check"
+  ],
+  "exit": 0,
+  "ok": true,
+  "manifest": "dc7d6704d5ed529d120a628ed52e9bd9804900d13506a343fd1606c02de0d59d",
+  "schemaVersion": 1,
+  "toolchain": {
+    "id": "runeditrun/edition-authoring",
+    "version": "1.1.0",
+    "sha256": "8d25b7528ba7c5301de349b51b7e6ca44d6b87478f27b5685a5c07b567612e13"
+  },
+  "source_lock_sha256": "c49df7794f85633c6a2bdefbd0bb77d69b1ea59cc24e96a12fc3054c08cf0c08",
+  "complete_raw_output_sha256": "cf61a6b828850d22662ef7be70edcc923246c2203e3db951f6796a410ff1d1a6",
+  "complete_raw_output_bytes": 490665
+}

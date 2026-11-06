@@ -1,0 +1,3 @@
+Listing tests:
+  capture.spec.mjs:80:1 › CAPTURE provider status keeps revoked access clear, reconnects through the guided setup and disconnect preserves captured history
+Total: 1 test in 1 file

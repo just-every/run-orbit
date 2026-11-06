@@ -1,0 +1,72 @@
+{
+  "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+  "comparison_main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "proved_code_source": "54956cf7ad9ab14c3c609b6d2497d95a138cd02f",
+  "documents": {
+    "CONTRACT.md": {
+      "bytes": 484787,
+      "sha256": "4c6fa02f3715b90a0fa3cd3e0e71b2858c44a0b9e8cca49ae8f778bc618f2366"
+    },
+    "ACCEPTANCE.md": {
+      "bytes": 435074,
+      "sha256": "8dece52f213b61f58d621fe04924cf13ea10d39612fb36a8a5e3a19bff1a2449"
+    },
+    "AGENTS.md": {
+      "bytes": 6149,
+      "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9"
+    },
+    "RULINGS.md": {
+      "bytes": 2770,
+      "sha256": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c"
+    }
+  },
+  "counts": {
+    "source": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    },
+    "main": {
+      "partial": 137,
+      "done": 35,
+      "missing": 32
+    }
+  },
+  "total_rows": {
+    "source": 204,
+    "main": 204
+  },
+  "status_changes": {
+    "CAPTURE-006": {
+      "main": {
+        "id": "`CAPTURE-006`",
+        "title": "Capture sources",
+        "kind": "published",
+        "status": "partial",
+        "evidence": "`src/core/features/capture/providers/service.ts`; `tests/core/capture-providers.test.ts`; `tests/core/capture-connector.test.ts`",
+        "gap": "Unasserted in the carried evidence: Google adapter read; Microsoft adapter read; selected folders/calendars. Asserted: interruption before cursor commit; resumed cursor and deduplication; revoke halts reads and preserves records; reconnect restores capture; disconnect removes credential; visible error reason."
+      },
+      "source": {
+        "id": "`CAPTURE-006`",
+        "title": "Capture sources",
+        "kind": "published",
+        "status": "done",
+        "evidence": "`tests/core/capture-mail-rules.test.ts` \u2014 CAPTURE-010 workspace mail rules and one-action corrections preserve CAPTURE-006 selected scope, crash replay, incremental reads and unknown-mail exclusion: both real read adapters, selected folders and calendars, persisted crash resume, revoked-source refusal, renewed authorization and explicit scope reselection, new intake, retained originals, visible error recovery and restarted replay without duplicates; `tests/core/capture-connector.test.ts` \u2014 CAPTURE-006 AI-003 a provider outage leaves records, queues and manual work untouched; CAPTURE-006 disconnecting stops intake at once, deletes the credential and keeps captured evidence marked as from a disconnected source; `tests/core/capture-providers.test.ts` \u2014 CAPTURE-006 refreshed credentials are durable, leases prevent concurrent reads and disconnect fences in-flight tokens and callbacks; `tests/e2e/capture.spec.mjs` \u2014 CAPTURE provider status keeps revoked access clear, reconnects through the guided setup and disconnect preserves captured history",
+        "gap": ""
+      }
+    }
+  },
+  "all_requirement_acceptance_bodies_equal_main": true,
+  "acceptance_body_count": 204,
+  "contract_body_count": 204,
+  "acceptance_requirement_differences": [],
+  "source_diff_names": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/core/capture-mail-rules.test.ts"
+  ],
+  "source_vs_proved_code_names": [
+    "CONTRACT.md",
+    "sources.lock.json"
+  ]
+}

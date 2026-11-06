@@ -1,0 +1,176 @@
+{
+  "source": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+  "core": {
+    "summary": {
+      "tests": 13,
+      "suites": 0,
+      "pass": 13,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 901068.435751
+    },
+    "cases": [
+      {
+        "number": 1,
+        "name": "CAPTURE-006 a provider cursor resumes after a crash without duplicates and is stored exactly as the provider gave it",
+        "status": "passed",
+        "duration_ms": 18444.118478,
+        "file": "tests/core/capture-connector.test.ts"
+      },
+      {
+        "number": 2,
+        "name": "CAPTURE-006 a revoked grant stops intake and shows its error until the source is reconnected",
+        "status": "passed",
+        "duration_ms": 18193.387619,
+        "file": "tests/core/capture-connector.test.ts"
+      },
+      {
+        "number": 3,
+        "name": "CAPTURE-006 AI-003 a provider outage leaves records, queues and manual work untouched",
+        "status": "passed",
+        "duration_ms": 18394.177526,
+        "file": "tests/core/capture-connector.test.ts"
+      },
+      {
+        "number": 4,
+        "name": "CAPTURE-006 disconnecting stops intake at once, deletes the credential and keeps captured evidence marked as from a disconnected source",
+        "status": "passed",
+        "duration_ms": 17639.449811,
+        "file": "tests/core/capture-connector.test.ts"
+      },
+      {
+        "number": 5,
+        "name": "CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured originals and proposals; the audit trail keeps counts and anonymous replay proofs",
+        "status": "passed",
+        "duration_ms": 67766.944126,
+        "file": "tests/core/capture-erasure.test.ts"
+      },
+      {
+        "number": 6,
+        "name": "CAPTURE-007 DATA-002 erased provider originals stay erased after expired history, crashes and reconnect while new evidence remains eligible",
+        "status": "passed",
+        "duration_ms": 26866.413733,
+        "file": "tests/core/capture-erasure.test.ts"
+      },
+      {
+        "number": 7,
+        "name": "CAPTURE-007 DATA-002 erasure fences an already-resolved capture commit and its later replay",
+        "status": "passed",
+        "duration_ms": 23958.284296,
+        "file": "tests/core/capture-erasure.test.ts"
+      },
+      {
+        "number": 8,
+        "name": "CAPTURE-010 workspace mail rules and one-action corrections preserve CAPTURE-006 selected scope, crash replay, incremental reads and unknown-mail exclusion",
+        "status": "passed",
+        "duration_ms": 328135.524436,
+        "file": "tests/core/capture-mail-rules.test.ts"
+      },
+      {
+        "number": 9,
+        "name": "CAPTURE-005 OAuth binds native session, provider, origin, expiry and one use; encrypted authority stays out of status and archives",
+        "status": "passed",
+        "duration_ms": 19090.796781,
+        "file": "tests/core/capture-providers.test.ts"
+      },
+      {
+        "number": 10,
+        "name": "CAPTURE-006 refreshed credentials are durable, leases prevent concurrent reads and disconnect fences in-flight tokens and callbacks",
+        "status": "passed",
+        "duration_ms": 69254.322535,
+        "file": "tests/core/capture-providers.test.ts"
+      },
+      {
+        "number": 11,
+        "name": "CAPTURE-006 Microsoft rejects foreign host, user, folder and calendar delta links before bearer disclosure",
+        "status": "passed",
+        "duration_ms": 19587.551773,
+        "file": "tests/core/capture-providers.test.ts"
+      },
+      {
+        "number": 12,
+        "name": "CAPTURE-006 oversized mail skips once while both providers finish other messages and selected calendars",
+        "status": "passed",
+        "duration_ms": 87167.59858,
+        "file": "tests/core/capture-providers.test.ts"
+      },
+      {
+        "number": 13,
+        "name": "CAPTURE-006 provider deletion respects occurrence and erasure; CAPTURE-011 read-only and writeback consent request and store distinct scopes",
+        "status": "passed",
+        "duration_ms": 180065.332616,
+        "file": "tests/core/capture-providers.test.ts"
+      }
+    ],
+    "raw_sha256": "609f027dc88ec1a566d5c0f1de29ff004ab287ff2d5f3fa1d9cbfaaf75f950fe"
+  },
+  "browser": {
+    "status": "passed",
+    "registrations_executed": 1,
+    "viewports": [
+      1440,
+      390
+    ],
+    "duration_seconds_including_build": 47.005,
+    "exit": 0,
+    "screenshots": [
+      {
+        "path": "screenshots/capture-guide-google-1440.png",
+        "width": 1440,
+        "height": 970,
+        "bytes": 159287,
+        "sha256": "069088fcf82dfd8e68bbc3c53893fbf233282ccbc70aab17de212da9fdaf88bc",
+        "inspected": true
+      },
+      {
+        "path": "screenshots/capture-guide-google-390.png",
+        "width": 390,
+        "height": 1243,
+        "bytes": 102002,
+        "sha256": "47e13f34abee836aab7201cf579c9ca5ee8024137ac9d1b0eb06351aedcd3d1f",
+        "inspected": true
+      },
+      {
+        "path": "screenshots/capture-guide-microsoft-1440.png",
+        "width": 1440,
+        "height": 1341,
+        "bytes": 231967,
+        "sha256": "45a8e011ac6aa72a6f735aa91362d258c1f1117374ac3255816c44d37b002fc4",
+        "inspected": true
+      },
+      {
+        "path": "screenshots/capture-guide-microsoft-390.png",
+        "width": 390,
+        "height": 1969,
+        "bytes": 167773,
+        "sha256": "96f401d7ac09eb848de7f6e97c52754df320fff998c1d26195a1ea8f2f84c6e9",
+        "inspected": true
+      },
+      {
+        "path": "screenshots/capture-revoked-1440.png",
+        "width": 1440,
+        "height": 2585,
+        "bytes": 253152,
+        "sha256": "566dbef02df5c6095fe58766701c75782bb0c61d72ccf7ee1800f9f1256e0081",
+        "inspected": true
+      },
+      {
+        "path": "screenshots/capture-revoked-390.png",
+        "width": 390,
+        "height": 3297,
+        "bytes": 225621,
+        "sha256": "0ea801963fef0f7d1e6a56b837c31d2914f69b04ec882df1a4328acdf4a2682f",
+        "inspected": true
+      }
+    ],
+    "initial_invocation": {
+      "label": "functional-browser",
+      "exit": 1,
+      "reason": "Anchored --grep selected no tests; no browser assertions ran. Runner filter corrected, filtered --list confirmed exactly one unchanged registration, then actual journey executed once."
+    },
+    "file": "tests/e2e/capture.spec.mjs",
+    "name": "CAPTURE provider status keeps revoked access clear, reconnects through the guided setup and disconnect preserves captured history"
+  }
+}

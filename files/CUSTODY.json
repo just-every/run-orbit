@@ -1,0 +1,27 @@
+{
+  "observed_at": "2026-11-06T02:31:26.501793+00:00",
+  "repository": "just-every/run-orbit",
+  "source_branch": "cloud/sd-orbit-c-f60",
+  "head": "977e663adaf18d3ff54b0aecbe7d10355217ab0c",
+  "tracked_status": "",
+  "tracked_diff_exit": 0,
+  "shallow": "true",
+  "remote_refs_before": [
+    "977e663adaf18d3ff54b0aecbe7d10355217ab0c\trefs/heads/cloud/sd-orbit-c-f60",
+    "c01084f133af9aa484a6c1f5151a4e9cfbc7230f\trefs/heads/main"
+  ],
+  "remote_refs_after": [
+    "977e663adaf18d3ff54b0aecbe7d10355217ab0c\trefs/heads/cloud/sd-orbit-c-f60",
+    "c01084f133af9aa484a6c1f5151a4e9cfbc7230f\trefs/heads/main"
+  ],
+  "product_commits": 0,
+  "product_pushes": 0,
+  "pr": null,
+  "ci_queries": 0,
+  "ci_dispatches": 0,
+  "source_acceptance_calls": 0,
+  "hold_or_pin_changes": 0,
+  "publication_scan": "unestablished; not run by this read-only commission",
+  "verdict": "CAPTURE-006 ACCEPT ON LANDING",
+  "award": 0
+}
