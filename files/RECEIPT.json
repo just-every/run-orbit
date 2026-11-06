@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f109",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f109",
+  "head": "b8c02d5a1c77404848439fc4daa0c522160775c4",
+  "status": "validated-existing-selected-slice",
+  "new_acceptance_closures": 0,
+  "product_commits_created": 0,
+  "product_pushes": 0,
+  "pull_request": null,
+  "ready": false,
+  "runtime": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/source-onboarding.test.ts",
+    "exit": 0,
+    "tests": 3,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "duration_ms": 470251.44411,
+    "selected_registration_duration_ms": 406124.571278,
+    "log": "source-onboarding.log",
+    "node": "24.19.0",
+    "pnpm": "10.12.4"
+  },
+  "mechanical": "MECHANICAL.json",
+  "provenance": "provenance.json",
+  "ci": {
+    "run_id": 42208214200,
+    "source_job_id": 127860257030,
+    "head": "b8c02d5a1c77404848439fc4daa0c522160775c4",
+    "event": "push",
+    "conclusion": "failure",
+    "cause": "ACCEPTANCE.md generated content differs; source stopped and runtime shards skipped",
+    "new_run": false
+  },
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "clause_before": "partial",
+  "clause_after": "partial",
+  "holds": "unchanged",
+  "plan_rows_changed": []
+}

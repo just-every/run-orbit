@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f109",
+  "repository": "just-every/run-orbit",
+  "head": "b8c02d5a1c77404848439fc4daa0c522160775c4",
+  "checks": [
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "output": "typecheck.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "output": "first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "output": "views-write.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "output": "views-check.log"
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "result": "Generated views restored whole; no tracked diff."
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "output": "lock-regenerate.json"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "output": "lock-check.json"
+    }
+  ],
+  "migration_ledger": "not applicable: no migration added or edited",
+  "test_budget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "contract_counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "contract_counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "product_changes": false,
+  "policy_changes": false,
+  "acceptance_changes": false,
+  "screens_changed": false,
+  "browser_proof": "not run: no screen changes; remaining 1440 and 390 qualification is explicitly omitted by supplied POINTS",
+  "github_calls": 3,
+  "ci_run": 42208214200,
+  "ci_source_job": 127860257030,
+  "ci_conclusion": "failure",
+  "ci_failure_class": "generated-view freshness only; runtime shards skipped",
+  "scan": "not run in cloud; no product push or landing claimed",
+  "runtime": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/source-onboarding.test.ts",
+    "exit": 0,
+    "tests": 3,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "duration_ms": 470251.44411,
+    "selected_registration_duration_ms": 406124.571278,
+    "log": "source-onboarding.log",
+    "node": "24.19.0",
+    "pnpm": "10.12.4"
+  }
+}

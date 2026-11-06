@@ -1,0 +1,56 @@
+{
+  "head": "b8c02d5a1c77404848439fc4daa0c522160775c4",
+  "branch": "cloud/sd-orbit-c-f109",
+  "origin_main_at_clone": "74f72f01ad3532725c71bd0832a774abd2c5a6ec",
+  "full_history": true,
+  "tracked_clean": true,
+  "product_commits_created": 0,
+  "product_pushes": 0,
+  "files": [
+    {
+      "path": "tests/core/source-onboarding.test.ts",
+      "sha256": "59993b1a0cea6fb3ed8d679ca4cc565bdc4ed5b80704d08d4c838700eafe1051",
+      "matches_pinned_base": true
+    },
+    {
+      "path": "tests/support/slack-notices-proof.ts",
+      "sha256": "16bbeb779b28d78a31fdf4676294f4ee41883755d53c20a6102b6a9251ebcba4",
+      "matches_pinned_base": true
+    },
+    {
+      "path": "tests/support/slack-network.ts",
+      "sha256": "eb3a2af5ea3c9d33b640b50c5ede6739f245254596d64bd8d5297c603f3c2e7a",
+      "matches_pinned_base": true
+    },
+    {
+      "path": "tests/support/slack-archive-proof.ts",
+      "sha256": "abc3be1c34ada7f0a5bc8622ea2d892cf0d1ac6ff5a9941eec8543f750170aac",
+      "matches_pinned_base": true
+    },
+    {
+      "path": "migrations/core/0051_slack_notices.sql",
+      "sha256": "f10b66026446b28cd4c68f31d5ee0f59c1b5e4e6250e7adda807f846373ff851",
+      "matches_pinned_base": true
+    },
+    {
+      "path": "src/core/features/slack/content.ts",
+      "sha256": "b6caa0827057d147ce6c7c4457a9a440f8e84f6344b51de08cc6a26d6162842a",
+      "matches_pinned_base": true
+    },
+    {
+      "path": "src/core/features/slack/contracts.ts",
+      "sha256": "bfdd234b7fd1d5f74175c204b9d16f0fe5c3c50370444de9e91a6ca0ca4788b8",
+      "matches_pinned_base": true
+    },
+    {
+      "path": "src/core/features/slack/delivery.ts",
+      "sha256": "a201036d28bbe1d881c17de71237f09599a4dfc00144107ec7b102d7d89f5431",
+      "matches_pinned_base": true
+    },
+    {
+      "path": "CONTRACT.md",
+      "sha256": "a87c2602a9ca433619ca6938f7cd322ad4bda28ab7f138d7487a22522559c7f1",
+      "matches_pinned_base": true
+    }
+  ]
+}
