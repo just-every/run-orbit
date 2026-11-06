@@ -1,0 +1,17 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creates durable unsent draft and usage (2535.07995ms)
+✔ AI-002 invented evidence fails visibly; AI-003 unconfigured provider generates nothing and handwritten outreach submits once (2814.690458ms)
+✔ AI-001 DATA-002 changed or deleted preview context never leaves deployment (6806.980984ms)
+✔ NOTIFY-001 NOTIFY-002 queue transitions notify once and recipient read state survives a fresh sign-in (1507.882568ms)
+✔ NOTIFY-001 assigned owners override latest actors; unassigned NOW, replies and failures follow the latest actor once (20486.763926ms)
+✔ NOTIFY-001 BASE-OPS-005 an unassigned opportunity without operator history notifies every active operator and leaves a durable feature audit (1177.785399ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 62634.269818

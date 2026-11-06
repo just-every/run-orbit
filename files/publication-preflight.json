@@ -1,0 +1,13 @@
+{
+  "commits": [
+    {
+      "head": "43f780b29be14a6a55ef5453389ed5fba8ac00f3",
+      "identity": "fleet",
+      "trailers": [],
+      "parent_status_rows_retained": true
+    }
+  ],
+  "generated_views_committed": false,
+  "added_email_shaped_strings": 0,
+  "cloud_scan": "deferred to fleet full-history scanner"
+}

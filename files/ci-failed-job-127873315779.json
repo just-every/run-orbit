@@ -1,0 +1,16 @@
+{
+  "command": [
+    "gh",
+    "run",
+    "view",
+    "42212148603",
+    "--repo",
+    "just-every/run-orbit",
+    "--job",
+    "127873315779",
+    "--log-failed"
+  ],
+  "exit": 0,
+  "job": "127873315779",
+  "run": 42212148603
+}

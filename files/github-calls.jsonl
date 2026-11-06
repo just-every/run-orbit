@@ -1,0 +1,6 @@
+{"at": 1793965317.3061733, "args": ["api", "repos/just-every/run-orbit/actions/runs?head_sha=43f780b29be14a6a55ef5453389ed5fba8ac00f3&per_page=100", "--jq", ".workflow_runs | map({id,name,event,status,conclusion,head_sha,html_url})"], "exit": 0}
+{"at": 1793965317.8216016, "args": ["api", "repos/just-every/run-orbit/actions/runs?head_sha=74f72f01ad3532725c71bd0832a774abd2c5a6ec&per_page=100", "--jq", ".workflow_runs | map({id,name,event,status,conclusion,head_sha,html_url})"], "exit": 0}
+{"at": 1793965618.3450248, "args": ["api", "repos/just-every/run-orbit/actions/runs/42212148603", "--jq", "{status,conclusion,head_sha,html_url}"], "exit": 0}
+{"at": 1793965624.5337386, "args": ["api", "repos/just-every/run-orbit/actions/runs/42212148603/jobs", "--jq", ".jobs | map({id,name,status,conclusion,steps:[.steps[] | select(.conclusion == \"failure\") | {name,conclusion}]})"], "exit": 0}
+{"at": 1793965645.295972, "args": ["run", "view", "42212148603", "--repo", "just-every/run-orbit", "--job", "127873552451", "--log-failed"], "exit": 0}
+{"at": 1793965645.3121266, "args": ["run", "view", "42212148603", "--repo", "just-every/run-orbit", "--job", "127873315779", "--log-failed"], "exit": 0}

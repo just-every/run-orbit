@@ -1,0 +1,160 @@
+{
+  "tag": "sd-orbit-c-f107",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f107",
+  "head": "43f780b29be14a6a55ef5453389ed5fba8ac00f3",
+  "base": "74f72f01ad3532725c71bd0832a774abd2c5a6ec",
+  "predecessor": "23c6952bb233bb9ccf15b7dee46b2f353c87d482",
+  "recovery": "rebased single unfinished commit onto fresh main; regenerated conflicting source lock",
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/assistance.test.ts",
+      "exit": 0,
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "skipped": 0,
+      "duration_ms": 62634.269818,
+      "file": "assistance-tests.log",
+      "head": "43f780b29be14a6a55ef5453389ed5fba8ac00f3"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "file": "typecheck.log",
+      "head": "43f780b29be14a6a55ef5453389ed5fba8ac00f3"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "file": "first-party.log",
+      "head": "43f780b29be14a6a55ef5453389ed5fba8ac00f3"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "file": "views-write.log",
+      "head": "43f780b29be14a6a55ef5453389ed5fba8ac00f3"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "file": "views-check.log",
+      "head": "43f780b29be14a6a55ef5453389ed5fba8ac00f3",
+      "context": "after write, before restoring generated views"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "head": "43f780b29be14a6a55ef5453389ed5fba8ac00f3"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "file": "source-lock-check.log",
+      "head": "43f780b29be14a6a55ef5453389ed5fba8ac00f3"
+    },
+    {
+      "command": "git diff origin/main --check",
+      "exit": 0,
+      "head": "43f780b29be14a6a55ef5453389ed5fba8ac00f3"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 1,
+      "file": "views-restored-check.log",
+      "context": "exact committed candidate after restoring generated views; expected stale view per cloud contract"
+    }
+  ],
+  "probe": {
+    "clause": "DATA-002",
+    "point": "selected acceptance-point-2 saved-preview erasure",
+    "door": "POST /api/v1/assistance/preview; DELETE /api/v1/records/contact/:id with native session and confirmed=true; fresh Records and preview-store reads; POST /api/v1/assistance/generate with original previewId",
+    "observed": {
+      "preview_status": 200,
+      "recipient_bound": true,
+      "delete_status": 200,
+      "fresh_contact_status": 404,
+      "stored_contact": null,
+      "stored_preview": null,
+      "generate_status": 409,
+      "provider_calls": 0,
+      "post_erasure_ai_call_draft_and_recommendation_inventories": "unchanged",
+      "authenticated_drafts": []
+    },
+    "test": "tests/core/assistance.test.ts:164-210",
+    "test_name": "AI-001 DATA-002 changed or deleted preview context never leaves deployment"
+  },
+  "mechanical": {
+    "generated_views_restored_from": "origin/main",
+    "generated_views_committed": false,
+    "migration_ledger": "not applicable; no migrations changed",
+    "parent_status_rows": 204,
+    "source_lock": "fresh"
+  },
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "test_budget": {
+    "before": {
+      "registered": 198,
+      "qualifications": 2
+    },
+    "after": {
+      "registered": 198,
+      "qualifications": 2
+    },
+    "registrations_added": 0,
+    "assertions_removed": 0
+  },
+  "status": {
+    "DATA-002": {
+      "before": "partial",
+      "after": "partial",
+      "gap": "unchanged",
+      "holds_released": 0
+    }
+  },
+  "ui": "no screens or controls changed; no browser claim",
+  "ci": {
+    "verify_run_id": 42212148603,
+    "event": "push",
+    "head": "43f780b29be14a6a55ef5453389ed5fba8ac00f3",
+    "last_observed_status": "completed",
+    "last_observed_conclusion": "failure",
+    "file": "ci-discovery.json",
+    "final_file": "ci-final.json",
+    "expected_generated_view_exception": true,
+    "root_cause": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "failed_jobs": [
+      127873315779,
+      127873552451
+    ],
+    "runtime_shards": "skipped as a consequence of generated-view failure",
+    "repair_rounds": 0,
+    "reruns": 0,
+    "api_calls": 6,
+    "archive_handling": "Each failed job archive read once; environment listings omitted from selected non-secret log receipts."
+  },
+  "publication_scan": {
+    "status": "not run in cloud",
+    "owner": "fleet lander",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "product_push": {
+    "status": "pushed",
+    "attempts": 1,
+    "file": "product-push.log"
+  },
+  "landing": "not performed; no default branch push",
+  "pr": "not needed; push starts Verify"
+}

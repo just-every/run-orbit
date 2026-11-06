@@ -1,0 +1,12 @@
+# sd-orbit-c-f107 execution plan
+
+Scope: just-every/run-orbit, branch cloud/sd-orbit-c-f107. Continue DATA-002's selected acceptance-point-2 proof only. Preserve fresh main, all existing clause judgments, counts, queue notes, holds and prerequisites. The supplied plan extract and rulings are read-only context; no planning rows are rewritten here.
+
+1. Refresh launcher; install fleet Git identity, credential helper, push guard and commit hooks. Clone full history and install the pinned dependencies.
+2. Read DATA-002, current Evidence and Gap, DONE riders, existing erasure and assistance paths. Rebase unfinished predecessor 23c6952bb233bb9ccf15b7dee46b2f353c87d482 onto current main; preserve other writers' changes and regenerate the source lock.
+3. Exercise the existing changed-or-deleted-preview registration. Save a recipient-bound preview, erase its contact through confirmed authenticated Records, freshly read the contact and stored preview, reuse its original ID, and require 409, zero provider calls and unchanged post-erasure AI call, draft and generated explanation inventories. Retain the changed-context refusal. Change runtime code only if this probe demonstrates a defect.
+4. Run the touched assistance suite, typecheck and first-party check. Validate contract generation by write then check, restore generated views from main, regenerate and check the source lock last. Keep the existing test registration count and all assertions.
+5. Preserve the first real commit on the named branch using the fleet push guard. Before the final candidate, fetch and merge fresh main if a save is published; otherwise rebase. Recheck identities, trailers, parent Status rows and lock freshness.
+6. Discover exact-SHA Verify by REST and report its real state and IDs within the polling and ten-call budgets. Do not land main. Publish the actual reports and receipts on the separate evidence ref, verify the transfer, then remove the product clone after successful preservation.
+
+DATA-002 remains PARTIAL: this point does not award the complete clause. Future mail absence, combined five-minute qualification across aliases, imported and captured evidence, notes, drafts, transfer copies, search, export and replay, company and deal Slack redaction, all tracked provider-deletion outcomes, NOTIFY-003 live obligations and TEAM-005's existing prerequisite remain unclaimed. Existing component, anonymous-audit and contact-Slack proofs remain unchanged; external copies remain unrecoverable.
