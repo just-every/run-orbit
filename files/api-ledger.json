@@ -1,0 +1,27 @@
+[
+  {
+    "at": 0,
+    "command": "main exact-SHA run discovery",
+    "exit": 0
+  },
+  {
+    "at": 1793944606.898719,
+    "command": "api repos/just-every/run-orbit/actions/runs?head_sha=c51ba2c96f2dc947e29e9e349447b8b4a2ab43b1&per_page=100",
+    "exit": 0
+  },
+  {
+    "at": 1793944909.4678948,
+    "command": "api repos/just-every/run-orbit/actions/runs/42171344189",
+    "exit": 0
+  },
+  {
+    "at": 1793944928.5489297,
+    "command": "api repos/just-every/run-orbit/actions/runs/42171344189/jobs?per_page=100",
+    "exit": 0
+  },
+  {
+    "at": 1793944941.6071973,
+    "command": "run view 42171344189 --repo just-every/run-orbit --job 127739743178 --log-failed",
+    "exit": 0
+  }
+]

@@ -31,6 +31,12 @@
       "sha256": "543c56a47e13477876d31e7d06caf4a5e19a979359aa1346f881671c15cd9db2"
     },
     {
+      "blob": "9d3d2cf84910c50e7fc78a31793a2661b4d806a5",
+      "bytes": 687,
+      "path": "api-ledger.json",
+      "sha256": "5d43eb25a4ac2b7c5de767f7030a99963334d588bc517396010d9dd8c49bd7fc"
+    },
+    {
       "blob": "3c68906e681fe26ed9bd45bac48edd72b6f7e253",
       "bytes": 284,
       "path": "boundaries.log",
@@ -179,6 +185,12 @@
       "bytes": 2917,
       "path": "proof-lines.json",
       "sha256": "7ee8f5621639ff3fe0fb257bfdecce726fb82d781478174b2de8c975f3149830"
+    },
+    {
+      "blob": "43eedef65444c2fc54d29022106166dbf6fa9f69",
+      "bytes": 204,
+      "path": "remote-custody.json",
+      "sha256": "8f1286d676f1749ba1e09e9497e3064dc42ba3ac9f8768003dafca9ac8d7395d"
     },
     {
       "blob": "663ed9d9bf8ba4700801858330c8af5527633764",
