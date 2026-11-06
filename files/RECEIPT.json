@@ -1,0 +1,210 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f91",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f91",
+  "requested_base": "a0c9345eb762e3449cd3a2ee47e3a4737919720d",
+  "integration_main": "30f7a864d0a643fa020ea3eaa3d5325a112b872e",
+  "product_head": "2d1cd018fed5c86653be6be20293b0a666467db7",
+  "clause": {
+    "id": "OUT-001",
+    "before": "PARTIAL",
+    "after": "PARTIAL",
+    "done_award": 0,
+    "holds_released": 0
+  },
+  "counts": {
+    "before": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32,
+      "total": 204
+    },
+    "after": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "checks": [
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email <fleet mailbox> --non-interactive",
+      "runner": "cloud_run",
+      "exit": 0,
+      "output_retained_outside_packet": "private setup output excluded"
+    },
+    {
+      "command": "pnpm exec tsc --noEmit",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "runner": "cloud_run",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check.log",
+      "phase": "immediately after generator write"
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock-write.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.log",
+      "ok": true
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 1,
+      "phase": "after restoring generated views",
+      "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+      "expected": true
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "registered_cases": 198,
+      "qualifications": 2,
+      "total": 200,
+      "log": "test-inventory.json"
+    },
+    {
+      "command": "git diff --cached --check",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec tsx --test --no-test-only --test-concurrency=1 tests/core/source-onboarding.test.ts",
+      "runner": "cloud_run",
+      "exit": 0,
+      "tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 552187.067195,
+      "log": "source-onboarding.log"
+    }
+  ],
+  "mechanical": "MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock then check exit=0; views=node src/base/contract-docs.mjs write then check exit=0, restored from main; ledger=none exit=0",
+  "migration_changes": false,
+  "ui_changes": false,
+  "browser_proof": "not required; no screen or control changed",
+  "runtime_correction": "none; existing native session fence is correct",
+  "verification_partition": "core-3",
+  "github_api_calls_so_far": 6,
+  "publication_scan": {
+    "status": "not run in cloud",
+    "owner": "fleet guarded lander",
+    "claim_complete": false
+  },
+  "landing": {
+    "main_pushed": false,
+    "pr_created": false,
+    "status": "not landed"
+  },
+  "held_remainder": [
+    "actual agent customer-message call through owning agent-surface tool",
+    "OUT-013 owner-consented mailbox sending",
+    "OUT-019 Base and Platform relay prerequisite",
+    "TEAM-005 contract cleanup and qualification",
+    "all other existing holds and release prerequisites unchanged"
+  ],
+  "local_toolchain": {
+    "node": "24.19.0",
+    "pnpm": "10.12.4",
+    "project_node_pin": "22.20.0",
+    "note": "Used the supplied toolchain bootstrap; its Node installation condition retains a newer VM Node. Branch Verify uses the repository pin."
+  },
+  "probes": [
+    {
+      "id": "OUT-001",
+      "point": "source signature cannot approve or dispatch an exact saved draft without a native session",
+      "door": "POST native signal ingress with active HMAC, then POST native draft approval with valid revision and source HMAC but no cookie",
+      "observed": "active source ingress 201; approval 401; exact saved draft and 17 effect-table inventories unchanged; zero added mail-edge submissions; identical approval with native cookie 200 accepted and exact recipient, subject and body submitted",
+      "evidence": "tests/core/source-onboarding.test.ts:39-66"
+    }
+  ],
+  "verified_at_utc": "2026-11-06T08:00:27.918341+00:00",
+  "push": {
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f91",
+    "exit": 0,
+    "attempts": 1,
+    "remote_head": "2d1cd018fed5c86653be6be20293b0a666467db7",
+    "log": "product-push.log"
+  },
+  "ci": [
+    {
+      "conclusion": null,
+      "created_at": "2026-11-06T08:00:14Z",
+      "event": "push",
+      "head_sha": "2d1cd018fed5c86653be6be20293b0a666467db7",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42184580854",
+      "id": 42184580854,
+      "name": "Verify",
+      "run_attempt": 1,
+      "status": "queued"
+    }
+  ],
+  "ci_observed_at_utc": "2026-11-06T08:00:39.060176+00:00",
+  "ci_final": {
+    "conclusion": "failure",
+    "head_sha": "2d1cd018fed5c86653be6be20293b0a666467db7",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42184580854",
+    "status": "completed"
+  },
+  "ci_final_observed_at_utc": "2026-11-06T08:05:54.856153+00:00",
+  "ci_analysis": {
+    "run_id": 42184580854,
+    "event": "push",
+    "head": "2d1cd018fed5c86653be6be20293b0a666467db7",
+    "conclusion": "failure",
+    "classification": "expected generated-view freshness exception",
+    "source_job": 127781929050,
+    "aggregate_job": 127782145511,
+    "command": "node scripts/verification-shard.mjs source",
+    "first_failed_subcommand": "pnpm exec node src/base/contract-docs.mjs check",
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "runtime_shards": "skipped after source failed",
+    "downstream_failures": "required aggregate verdict and artifacts absent because source stopped before production",
+    "failed_job_archive_commands": [
+      {
+        "command": "gh run view 42184580854 --repo just-every/run-orbit --job 127781929050 --log-failed",
+        "exit": 0,
+        "invocations": 1
+      },
+      {
+        "command": "gh run view 42184580854 --repo just-every/run-orbit --job 127782145511 --log-failed",
+        "exit": 0,
+        "invocations": 1
+      }
+    ],
+    "repair_rounds": 0,
+    "dispatches": 0,
+    "reruns": 0,
+    "ready_permitted_by_brief_exception": true,
+    "actual_full_green_runtime_verify": false,
+    "public_log_policy": "CI environment blocks omitted from selected excerpts; retained privately outside packet"
+  },
+  "terminal_product_status": "READY under generated-view-only exception; PARTIAL clause, no landing or DONE claim"
+}

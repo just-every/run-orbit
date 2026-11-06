@@ -1,0 +1,5 @@
+2d1cd018fed5c86653be6be20293b0a666467db7
+Prove signed sources cannot approve saved customer mail
+
+Exercise the active source signature without a native session against the exact approval body. Require 401, unchanged persisted draft and effects, and no mail submission before the same signed-in approval sends the reviewed bytes. OUT-001 remains partial for the actual agent customer-message call under held company policy.
+

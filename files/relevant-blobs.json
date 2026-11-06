@@ -1,0 +1,32 @@
+[
+  {
+    "path": "src/core/app/app.ts",
+    "head": "8cd87e7caa7b4deb0db3c523d46077ba60ce022b",
+    "same_as_requested_base": true
+  },
+  {
+    "path": "src/core/features/workbench/routes.ts",
+    "head": "be60d474ad66e592b68c2275f8f48ad998f378c2",
+    "same_as_requested_base": true
+  },
+  {
+    "path": "tests/core/source-onboarding.test.ts",
+    "head": "afdf77fb6277f28818b1f9d3be334176db0e8a99",
+    "same_as_requested_base": true
+  },
+  {
+    "path": "tests/support/app.ts",
+    "head": "1e8b5f92492768c2a9c580505d105e9eeb985a76",
+    "same_as_requested_base": true
+  },
+  {
+    "path": "src/core/features/identity/auth.ts",
+    "head": "9dc0ac2d2998277cd4e2755d245272f6afa0b1b5",
+    "same_as_requested_base": true
+  },
+  {
+    "path": "src/core/platform/outbound-mail.ts",
+    "head": "fc95f7cfc2391d065aacad793197b6d2988594a1",
+    "same_as_requested_base": true
+  }
+]

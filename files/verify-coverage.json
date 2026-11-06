@@ -1,0 +1,40 @@
+[
+  {
+    "name": "core-3",
+    "stages": [
+      {
+        "args": [
+          "exec",
+          "tsx",
+          "tests/support/prepare-state.ts"
+        ]
+      },
+      {
+        "args": [
+          "exec",
+          "tsx",
+          "--test",
+          "--no-test-only",
+          "--test-concurrency=1",
+          "--test-reporter=spec",
+          "--test-reporter-destination=stdout",
+          "--test-reporter=./scripts/core-results.mjs",
+          "--test-reporter-destination=verification/core-3-results.jsonl",
+          "tests/core/launch-provider-conflicts.test.ts",
+          "tests/core/operator-erasure.test.ts",
+          "tests/core/records-search.test.ts",
+          "tests/core/sendgrid-outcomes.test.ts",
+          "tests/core/source-onboarding.test.ts"
+        ],
+        "files": [
+          "tests/core/launch-provider-conflicts.test.ts",
+          "tests/core/operator-erasure.test.ts",
+          "tests/core/records-search.test.ts",
+          "tests/core/sendgrid-outcomes.test.ts",
+          "tests/core/source-onboarding.test.ts"
+        ],
+        "result": "verification/core-3-results.jsonl"
+      }
+    ]
+  }
+]
