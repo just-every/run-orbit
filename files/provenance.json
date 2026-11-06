@@ -1,0 +1,43 @@
+{
+  "time": "2026-11-06T02:01:44.335305+00:00",
+  "source_pin": "955b243e28103d0a320aacfe56d5dc9cc1722a5e",
+  "remote_ref": "955b243e28103d0a320aacfe56d5dc9cc1722a5e\trefs/heads/cloud/sd-orbit-c-f41",
+  "remote_matches_pin": true,
+  "head": "955b243e28103d0a320aacfe56d5dc9cc1722a5e",
+  "branch": "cloud/sd-orbit-c-f41",
+  "tracked_status": "",
+  "raw_documents": [
+    {
+      "path": "CONTRACT.md",
+      "url": "https://raw.githubusercontent.com/just-every/run-orbit/955b243e28103d0a320aacfe56d5dc9cc1722a5e/CONTRACT.md",
+      "status": 200,
+      "bytes": 483810,
+      "sha256": "9d39e5bbf2568e9d0aab1ae285bc4ac1e21985270c38383946ecada3e98359e8",
+      "matches_clone": true
+    },
+    {
+      "path": "ACCEPTANCE.md",
+      "url": "https://raw.githubusercontent.com/just-every/run-orbit/955b243e28103d0a320aacfe56d5dc9cc1722a5e/ACCEPTANCE.md",
+      "status": 200,
+      "bytes": 433821,
+      "sha256": "e0e03d6107f7eabe43653e38b6477fed30083cd43aedf331e524fbd367375e66",
+      "matches_clone": true
+    },
+    {
+      "path": "AGENTS.md",
+      "url": "https://raw.githubusercontent.com/just-every/run-orbit/955b243e28103d0a320aacfe56d5dc9cc1722a5e/AGENTS.md",
+      "status": 200,
+      "bytes": 6149,
+      "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9",
+      "matches_clone": true
+    },
+    {
+      "path": "RULINGS.md",
+      "url": "https://raw.githubusercontent.com/just-every/run-orbit/955b243e28103d0a320aacfe56d5dc9cc1722a5e/RULINGS.md",
+      "status": 200,
+      "bytes": 2770,
+      "sha256": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c",
+      "matches_clone": true
+    }
+  ]
+}

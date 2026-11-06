@@ -1,0 +1,153 @@
+{
+  "schema": 1,
+  "tag": "ct-judge-orbit-out015-20261105-1520-sol1",
+  "source": "955b243e28103d0a320aacfe56d5dc9cc1722a5e",
+  "recorded_at": "2026-11-06T02:02:52.496998+00:00",
+  "commands": [
+    {
+      "name": "native",
+      "command": [
+        "bash",
+        "-c",
+        ". /tmp/rer-cloud-toolchain.sh; export WRANGLER_SEND_METRICS=false ORBIT_TEST_STATE=\"/tmp/orbit-out015-review-native\"; cloud_run pnpm exec tsx tests/support/prepare-state.ts && cloud_run pnpm exec tsx --test --test-concurrency=1 --test-name-pattern=\"OUT-015|OUT-007 OUT-009 SEQUENCE-002 stage move\" tests/core/launch-reply-authority.test.ts tests/core/outbound-boundaries.test.ts tests/core/signals-outreach.test.ts"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-out015-20261105-1520-sol1/run-orbit",
+      "head": "955b243e28103d0a320aacfe56d5dc9cc1722a5e",
+      "started_at": "2026-11-06T01:57:20.430483+00:00",
+      "finished_at": "2026-11-06T01:59:56.491209+00:00",
+      "exit_code": 0,
+      "log": "native.log"
+    },
+    {
+      "name": "browser",
+      "command": [
+        "bash",
+        "-c",
+        ". /tmp/rer-cloud-toolchain.sh; export WRANGLER_SEND_METRICS=false ORBIT_CHROMIUM_EXECUTABLE=/usr/bin/chromium ORBIT_RECORD_EVIDENCE=\"$HOME/rer-consolidation/work/ct-judge-orbit-out015-20261105-1520-sol1/packet/screenshots\"; unset ORBIT_TEST_STATE; cloud_run pnpm exec tsx --test --test-concurrency=1 tests/delegation-browser/records-layout.test.ts"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-out015-20261105-1520-sol1/run-orbit",
+      "head": "955b243e28103d0a320aacfe56d5dc9cc1722a5e",
+      "started_at": "2026-11-06T01:58:18.276878+00:00",
+      "finished_at": "2026-11-06T02:00:38.402726+00:00",
+      "exit_code": 0,
+      "log": "browser.log"
+    },
+    {
+      "name": "build",
+      "command": [
+        "bash",
+        "-c",
+        ". /tmp/rer-cloud-toolchain.sh; export WRANGLER_SEND_METRICS=false; cloud_run npx -y @runeditrun/rer build"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-out015-20261105-1520-sol1/run-orbit",
+      "head": "955b243e28103d0a320aacfe56d5dc9cc1722a5e",
+      "started_at": "2026-11-06T01:57:21.727730+00:00",
+      "finished_at": "2026-11-06T01:57:35.156423+00:00",
+      "exit_code": 0,
+      "log": "build.log"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "bash",
+        "-c",
+        ". /tmp/rer-cloud-toolchain.sh; cloud_run pnpm run typecheck"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-out015-20261105-1520-sol1/run-orbit",
+      "head": "955b243e28103d0a320aacfe56d5dc9cc1722a5e",
+      "started_at": "2026-11-06T02:00:19.509092+00:00",
+      "finished_at": "2026-11-06T02:00:36.453875+00:00",
+      "exit_code": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "name": "source-lock",
+      "command": [
+        "bash",
+        "-c",
+        ". /tmp/rer-cloud-toolchain.sh; cloud_run node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-out015-20261105-1520-sol1/run-orbit",
+      "head": "955b243e28103d0a320aacfe56d5dc9cc1722a5e",
+      "started_at": "2026-11-06T02:00:36.481258+00:00",
+      "finished_at": "2026-11-06T02:00:37.583709+00:00",
+      "exit_code": 0,
+      "log": "source-lock.log"
+    },
+    {
+      "name": "contract-check",
+      "command": [
+        "bash",
+        "-c",
+        ". /tmp/rer-cloud-toolchain.sh; cloud_run node src/base/contract-docs.mjs check"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-out015-20261105-1520-sol1/run-orbit",
+      "head": "955b243e28103d0a320aacfe56d5dc9cc1722a5e",
+      "started_at": "2026-11-06T02:00:37.609543+00:00",
+      "finished_at": "2026-11-06T02:00:38.390585+00:00",
+      "exit_code": 1,
+      "log": "contract-check.log"
+    }
+  ],
+  "focused_native": {
+    "tests": 3,
+    "pass": 3,
+    "fail": 0
+  },
+  "emitted_worker_browser": {
+    "tests": 1,
+    "pass": 1,
+    "fail": 0
+  },
+  "screenshots": [
+    {
+      "path": "screenshots/mail-opportunities-1440.png",
+      "bytes": 362231,
+      "sha256": "b176c39c9fe24b96c792eef2280f8ad3e116998ae23ea4cca2bed4ff9df5844f",
+      "inspection": "Functional labels and provenance inspected; no visual-quality judgment"
+    },
+    {
+      "path": "screenshots/mail-opportunities-390.png",
+      "bytes": 318534,
+      "sha256": "1edd60ba12dd0297c8d19917aedd7125d09f813f7c11a2cdcdd50b82e1b15cc0",
+      "inspection": "Functional labels and provenance inspected; no visual-quality judgment"
+    },
+    {
+      "path": "screenshots/mail-companies-1440.png",
+      "bytes": 302456,
+      "sha256": "7ae59734b67e643ca4b65074c8b264b76dd32dfd12fb7adb5cfd20da5236597d",
+      "inspection": "Functional labels and provenance inspected; no visual-quality judgment"
+    },
+    {
+      "path": "screenshots/mail-companies-390.png",
+      "bytes": 264986,
+      "sha256": "d7ffb946393013b76612a6e4554fb209a1bf7c3520316db05fbd6358d6c35121",
+      "inspection": "Functional labels and provenance inspected; no visual-quality judgment"
+    },
+    {
+      "path": "screenshots/mail-contacts-1440.png",
+      "bytes": 316216,
+      "sha256": "ee9356a21ca40fdee93866c2039a9efea08fd60b1bd9ff1a535d724eb7baf19f",
+      "inspection": "Functional labels and provenance inspected; no visual-quality judgment"
+    },
+    {
+      "path": "screenshots/mail-contacts-390.png",
+      "bytes": 277465,
+      "sha256": "e0461540260312b92e77bda48f1431346dc44af8978603addf8219b91d75cf77",
+      "inspection": "Functional labels and provenance inspected; no visual-quality judgment"
+    }
+  ],
+  "ci": {
+    "api_calls": 0,
+    "existing_run_id": 42047293246,
+    "event": "workflow_dispatch",
+    "status": "failure per supplied inline custody; generated-view-only exception",
+    "independently_polled": false,
+    "runtime_shards": "skipped, not full green",
+    "exact_final_runtime_verify": "PENDING"
+  },
+  "product_mutations": 0,
+  "product_commits": 0,
+  "product_pushes": 0,
+  "prs": []
+}

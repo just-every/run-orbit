@@ -1,0 +1,14 @@
+{
+  "name": "browser",
+  "command": [
+    "bash",
+    "-c",
+    ". /tmp/rer-cloud-toolchain.sh; export WRANGLER_SEND_METRICS=false ORBIT_CHROMIUM_EXECUTABLE=/usr/bin/chromium ORBIT_RECORD_EVIDENCE=\"$HOME/rer-consolidation/work/ct-judge-orbit-out015-20261105-1520-sol1/packet/screenshots\"; unset ORBIT_TEST_STATE; cloud_run pnpm exec tsx --test --test-concurrency=1 tests/delegation-browser/records-layout.test.ts"
+  ],
+  "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-out015-20261105-1520-sol1/run-orbit",
+  "head": "955b243e28103d0a320aacfe56d5dc9cc1722a5e",
+  "started_at": "2026-11-06T01:58:18.276878+00:00",
+  "finished_at": "2026-11-06T02:00:38.402726+00:00",
+  "exit_code": 0,
+  "log": "browser.log"
+}

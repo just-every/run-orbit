@@ -1,0 +1,14 @@
+{
+  "name": "contract-check",
+  "command": [
+    "bash",
+    "-c",
+    ". /tmp/rer-cloud-toolchain.sh; cloud_run node src/base/contract-docs.mjs check"
+  ],
+  "cwd": "/home/agent/rer-consolidation/work/ct-judge-orbit-out015-20261105-1520-sol1/run-orbit",
+  "head": "955b243e28103d0a320aacfe56d5dc9cc1722a5e",
+  "started_at": "2026-11-06T02:00:37.609543+00:00",
+  "finished_at": "2026-11-06T02:00:38.390585+00:00",
+  "exit_code": 1,
+  "log": "contract-check.log"
+}
