@@ -1,0 +1,48 @@
+{
+  "completed_utc": "2026-11-06T03:16:21.257722+00:00",
+  "setup": [
+    {
+      "command": "git config --global user.name 'Run Edit Run fleet' && git config --global user.email fleet@runeditrun.com",
+      "exit": 0
+    },
+    {
+      "command": "bash /workspace/rer-cloud-launcher/refresh.sh",
+      "exit": 0
+    },
+    {
+      "command": "python3 /tmp/rer-fleet-git-setup.py",
+      "exit": 0
+    },
+    {
+      "command": "git clone --depth 1 --filter=blob:none --no-checkout --branch cloud/sd-orbit-c-f55 https://github.com/just-every/run-orbit.git <task>/run-orbit",
+      "exit": 0
+    },
+    {
+      "command": "local fleet identity and /tmp/rer-cloud-hooks.py installation",
+      "exit": 0
+    },
+    {
+      "command": "git checkout --detach 2314db77e0289f80687f6d26ab8f393be8865a8a; shallow fetch prior evidence and main",
+      "exit": 0
+    }
+  ],
+  "runtime_receipts": [
+    "setup-build-receipt.json",
+    "native-receipt.json",
+    "browser-receipt.json"
+  ],
+  "inspection_corrections": [
+    {
+      "command": "initial document comparison parser",
+      "result": "204/204 body equality passed; status-row regex raised KeyError before receipt; corrected by escaped-pipe-aware parser; no product or test execution affected"
+    },
+    {
+      "command": "batched optional file/path inspections",
+      "result": "some optional helper paths/env-file and CLI search paths absent; source paths were located and relied-on helpers read; no source fallback was created"
+    }
+  ],
+  "github_api_invocations": 4,
+  "CI_api_invocations": 0,
+  "no_test_reexecution": true,
+  "browser_startup_only_retry": "first external runner exited before any test; missing documented PORT corrected before actual assistance journey"
+}

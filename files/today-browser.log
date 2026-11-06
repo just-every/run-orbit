@@ -1,0 +1,17 @@
+TAP version 13
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Subtest: BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390
+ok 1 - BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390
+  ---
+  duration_ms: 43924.917409
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 46466.349027

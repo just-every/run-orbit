@@ -1,0 +1,61 @@
+{
+  "source": "2314db77e0289f80687f6d26ab8f393be8865a8a",
+  "contract": {
+    "complete_semantic_read": true,
+    "lines": 2609,
+    "bytes": 484208,
+    "coverage": "entire pinned product frame, duties, requirements/acceptance, agent surface, field register, claims, provenance, every Status/Evidence/Gap and counts; truncated read output was followed by narrower reads"
+  },
+  "acceptance": {
+    "all_204_requirement_and_acceptance_bodies_match_full_read_contract": true,
+    "distinct_progress_and_provenance_read": true,
+    "generated_view_drift_retained": true
+  },
+  "agents": "exact pinned instructions read before execution; launcher instructions read",
+  "rulings": "RL-1 through RL-7 read in full; no AI-002 scope amendment",
+  "journey_helpers_read_end_to_end": [
+    "tests/e2e/assistance.spec.mjs",
+    "tests/e2e/operator-session.mjs",
+    "tests/delegation-browser/today-brief.test.ts",
+    "tests/delegation-browser/today-journey.mjs",
+    "tests/delegation-browser/mention-link.mjs",
+    "tests/support/isolated-database.ts",
+    "tests/support/app.ts",
+    "tests/support/dependencies.ts",
+    "tests/support/email-link.ts",
+    "tests/support/today-workspace.ts",
+    "tests/support/capture-mail.ts",
+    "tests/support/sales-tasks.ts",
+    "tests/support/test-auth.ts",
+    "tests/support/worker-identity.mjs",
+    "tests/support/browser-temp.mjs",
+    "tests/support/prepare-state.ts",
+    "tests/support/test-state.ts",
+    "tests/support/test-dependencies.ts",
+    "tests/support/seed-sample.ts",
+    "tests/support/issue-operator-session.ts",
+    "tests/fixtures/sample-data/index.ts",
+    "tests/fixtures/sample-data/schema.ts",
+    "tests/fixtures/sample-data/service.ts",
+    "tests/fixtures/sample-data/repository.ts",
+    "tests/fixtures/sample-data/sample.ts",
+    "scripts/browser-runtime.mjs",
+    "scripts/browser-server.mjs"
+  ],
+  "support_scope": "all relied-on focused journey, fixture, browser preparation and transitive test helpers listed here, with selected production provider/preview/routes, summary/brief and outbound redirect implementation; no claim of semantic review of all unrelated application services or third-party package internals",
+  "prior_report": "INSPECTED/unexecuted retained unchanged as PRIOR-REPORT.md; no earlier runtime receipt reused",
+  "buyer_source": "pinned CONTRACT.md only",
+  "category": "Sales CRM",
+  "buyer": "US small-business sales manager and reps, USD, Google Workspace or Microsoft 365, US timezones and DST",
+  "incumbents": [
+    "HubSpot Sales Hub",
+    "Pipedrive",
+    "Salesforce Sales Cloud"
+  ],
+  "additional_competitors": [
+    "Attio",
+    "Day.ai",
+    "Twenty"
+  ],
+  "clause_verdict_issued": false
+}

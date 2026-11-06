@@ -1,0 +1,859 @@
+{
+  "source": "2314db77e0289f80687f6d26ab8f393be8865a8a",
+  "full_contract_lines": 2609,
+  "acceptance_comparison": [
+    {
+      "id": "TEAM-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "TEAM-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "TEAM-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "TEAM-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-005",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-006",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-007",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-008",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-009",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-010",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-011",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-012",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-013",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SIGNAL-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SIGNAL-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SIGNAL-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SIGNAL-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SIGNAL-005",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SIGNAL-006",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SIGNAL-007",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SIGNAL-008",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SIGNAL-009",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-005",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-006",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-007",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-008",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-009",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OPP-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OPP-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OPP-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OPP-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OPP-005",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OPP-006",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OPP-007",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OPP-008",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OPP-009",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "ACTION-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "ACTION-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "ACTION-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "ACTION-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "ACTION-005",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-005",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-006",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-007",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-008",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-009",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-010",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-011",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-012",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AI-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AI-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AI-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AI-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BRIEF-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BRIEF-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BRIEF-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BRIEF-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BRIEF-005",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "NOTIFY-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "NOTIFY-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "PUBLIC-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "PUBLIC-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "PUBLIC-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "PUBLIC-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "DATA-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "DATA-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "DELEGATE-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "TEAM-005",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "TEAM-006",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "TEAM-007",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "TEAM-008",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-014",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-015",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-016",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-019",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-020",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-021",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-022",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-017",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-023",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-024",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-018",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-025",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-026",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "RECORD-027",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "MIGRATE-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "MIGRATE-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "MIGRATE-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-010",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-011",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-012",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-013",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CAPTURE-014",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "FORM-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "FORM-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "FORM-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "FORM-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-013",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-014",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-015",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-016",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-021",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-022",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-017",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-023",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-018",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-024",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-025",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-026",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-019",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-027",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-028",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-020",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-029",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-030",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-031",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OUT-032",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "TASK-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "NOTIFY-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SEQUENCE-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SEQUENCE-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SEQUENCE-005",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SEQUENCE-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SEQUENCE-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SEQUENCE-006",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SEQUENCE-007",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AUTO-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AUTO-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AUTO-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AUTO-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AUTO-005",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AUTO-006",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CALL-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CALL-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "CALL-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "REPORT-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "REPORT-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "REPORT-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "REPORT-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "FORECAST-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "QUOTE-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "INTEGRATE-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "INTEGRATE-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "INTEGRATE-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "INTEGRATE-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "INTEGRATE-005",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "INTEGRATE-009",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "INTEGRATE-010",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "INTEGRATE-011",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "INTEGRATE-006",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "INTEGRATE-007",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "INTEGRATE-008",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "ENRICH-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "API-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "API-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "API-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "API-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "MOBILE-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "DATA-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "OPS-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BOUNDARY-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BASE-AGENT-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BASE-AGENT-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BASE-AGENT-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BASE-AGENT-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BASE-AGENT-005",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BASE-AGENT-006",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BASE-AGENT-007",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BASE-AGENT-008",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BASE-AGENT-009",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BASE-AGENT-010",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BASE-AGENT-011",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BASE-AGENT-012",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "BASE-AGENT-013",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SURFACE-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SURFACE-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SURFACE-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SURFACE-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SURFACE-005",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SURFACE-006",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SURFACE-007",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SURFACE-008",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SURFACE-009",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SURFACE-010",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SURFACE-011",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SURFACE-012",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "SURFACE-013",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AGENT-001",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AGENT-002",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AGENT-003",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AGENT-004",
+      "requirement_acceptance_equal": true
+    },
+    {
+      "id": "AGENT-005",
+      "requirement_acceptance_equal": true
+    }
+  ],
+  "source_counts": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "main_counts": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32
+  },
+  "proposal_status": {
+    "title": "Output validation",
+    "kind": "published",
+    "status": "done",
+    "evidence": "Acceptance 1: `tests/core/assistance.test.ts` \u2014 AI-002 invalid content fails visibly and native generation bounds transient retries; AI-003 unconfigured provider generates nothing (native preview and generation for drafts and explanations with the real provider adapter and only its HTTP edge replaced; invalid schema, foreign citations and overlong content fail visibly without retries or changed explanation, draft or outbound work; transient transport and HTTP failures recover or exhaust after at most two retries under one abort-aware 30-second deadline; definite refusals are not retried; consumed previews cannot replay); `tests/core/today-brief.test.ts` \u2014 BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks; `tests/core/provider-redirects.test.ts` \u2014 BASE-DATA-004 BASE-DATA-005 AI-002 OUT-012 provider redirects never reach a second destination or become success",
+    "gap": ""
+  },
+  "main_status": {
+    "title": "Output validation",
+    "kind": "published",
+    "status": "partial",
+    "evidence": "`src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts`",
+    "gap": "Unasserted in the carried evidence: invalid schema visibly fails; transport error visibly fails; no fabricated repair; bounded transport retries. Asserted: foreign citation leaves no draft."
+  },
+  "main_out032": {
+    "title": "Opt-out upgrades and transport changes",
+    "kind": "target",
+    "status": "partial",
+    "evidence": "`src/core/features/outreach/opt-out.ts`; `src/core/platform/outbound-mail.ts`; `src/core/platform/managed-outbound-mail.ts`; `src/core/features/operator/ui/opt-out-settings.tsx`; `src/core/features/operator/ui/draft-opt-out.tsx`; `tests/core/outbound-boundaries.test.ts`; `tests/evidence/contract/OUT-020/`; `tests/core/capture-upgrade.test.ts` \u2014 CAPTURE-007 OUT-032 the capture migration upgrades a store from the previous main with every prior row and queue unchanged; `newtests/t096/browser-journeys.test.ts` \u2014 OUT-032 established opt-out upgrade (the native emitted Worker registration), using `newtests/t096/browser-opt-out-upgrade.ts`",
+    "gap": "Established upgrades keep one-to-one opt-out on with the retained basis visible in authenticated Settings and after page reload; historical approval bytes and state remain unchanged with no provider submissions. Remaining unproved execution: connected mailbox, sequence, batch and workflow paths preserving the exact reviewed opt-out choice, with OUT-013 owner-consented mailbox replies and Base relay sequence proof, OUT-019 Base relay recipient support (one To today), and OUT-013, OUT-019, SEQUENCE-001, SEQUENCE-003 and AUTO-001 prerequisites retained; AUTO-001 retains its ambiguous remainder after one continuation. Asserted in the retained outbound boundary journey: new-installation off default, pre-setting approvals retaining opt-out, SendGrid-to-relay exact header and link continuity, explicit off, historical transport refusal, unsupported review and dispatch refusal, and audited Settings refusal counts."
+  },
+  "changed_rows_vs_main": [
+    "AI-002",
+    "OUT-032"
+  ],
+  "views_written": false,
+  "clause_changes": 0
+}

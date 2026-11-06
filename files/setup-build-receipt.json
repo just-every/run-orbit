@@ -1,0 +1,19 @@
+{
+  "install": {
+    "command": "cloud_run timeout 600 pnpm install --frozen-lockfile",
+    "exit": 0,
+    "pnpm": "10.12.4"
+  },
+  "build": {
+    "command": "WRANGLER_SEND_METRICS=false cloud_run timeout 600 npx -y @runeditrun/rer build",
+    "exit": 0,
+    "host_admission": "Heavy job admitted: Orbit build:workflow [02887fec0951]",
+    "toolchain": "CLI selected project Node 22.20.0; build log notes underlying pnpm Node 24.19.0 engine warning; successful emitted build reused by both browser journeys"
+  },
+  "runtime_node": "22.20.0",
+  "rer_setup": "NOT RUN: retained focused verification journeys prepare isolated D1 through repository helpers; no installation-owner or provider setup needed",
+  "full_suite": "NOT RUN: prohibited by evidence-only commission",
+  "mutation_tests": "NOT RUN: prohibited",
+  "source_generator_lock_checks": "NOT RUN: no source changes; explicitly no source/view/lock edits",
+  "ci": "NOT RUN: explicit no-CI-query/rerun/dispatch authority"
+}

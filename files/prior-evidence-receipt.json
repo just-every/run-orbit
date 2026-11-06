@@ -1,0 +1,77 @@
+{
+  "head": "f59fb3d8d43b91def0e0af58230348d4c8d02e9c",
+  "files_verified": [
+    {
+      "path": "PLAN.md",
+      "sha256": "19171d86866c04b592abb06eb51d38b1d74b7127b2622bef7fba695cee716c50",
+      "bytes": 2120
+    },
+    {
+      "path": "REPORT.md",
+      "sha256": "c6e8d2bdc582fba6b18b3ea165a166eb860e6551ce823708faebea33d9d1183e",
+      "bytes": 24388
+    },
+    {
+      "path": "VERDICT.md",
+      "sha256": "c6e8d2bdc582fba6b18b3ea165a166eb860e6551ce823708faebea33d9d1183e",
+      "bytes": 24388
+    },
+    {
+      "path": "admission.json",
+      "sha256": "7a7aca0f2b360d8c3ad04237b3c27fe433249247870a450bd893a3b00f82096a",
+      "bytes": 479
+    },
+    {
+      "path": "assistance-source-diff.patch",
+      "sha256": "427ffc6c40e6711887410443be3c6189abbf4b2abc22397861fa5cd6fe1e2bb3",
+      "bytes": 11611
+    },
+    {
+      "path": "cleanup.json",
+      "sha256": "34ae2742f48f74bbf128fdb6bd9bcb4ecd12ee75e06a19ab422d55191fd57f6d",
+      "bytes": 494
+    },
+    {
+      "path": "commands.json",
+      "sha256": "5b4663d70d9e13501a20c84dda622a13cf8897ee77e7cf7ce7bf129725976e31",
+      "bytes": 4088
+    },
+    {
+      "path": "contract-source-diff.patch",
+      "sha256": "48dd6c365f52f1d4f156b28f56fe2a0c7dbe5cf74fc192959d68fb420fa12ba0",
+      "bytes": 13507
+    },
+    {
+      "path": "document-review.json",
+      "sha256": "e1ac08c489f38f177852518d99390e0476250e2a13f1ee3ffb01c7c50cb60f5b",
+      "bytes": 23467
+    },
+    {
+      "path": "evidence-provenance.json",
+      "sha256": "2390555e454385ca124be5c87fe2d4f6a35f0ecb573e3d0acb4665b9f1924cb2",
+      "bytes": 638
+    },
+    {
+      "path": "fresh-main-preservation.json",
+      "sha256": "986a5a62e99378622f79a118f4bae0138c0aa9ac12e729f99f1f94debbc94375",
+      "bytes": 4435
+    },
+    {
+      "path": "main-source-comparison.json",
+      "sha256": "f69ba7b798f5c2faa412d89ff4c54ded11f117d7cdcc0f91725bf725ad669dc5",
+      "bytes": 1897
+    },
+    {
+      "path": "publication-receipt.json",
+      "sha256": "12baa61b502fbc807ea751283213496a401bac5bd19094f59f820aaa736d3514",
+      "bytes": 1200
+    },
+    {
+      "path": "source-manifest.json",
+      "sha256": "ef53b3fa7bc964c744c94b67e9e62a8f9bf7c12e4ecf21772373bcde8eaf932d",
+      "bytes": 3952
+    }
+  ],
+  "prior_execution": "INSPECTED/unexecuted",
+  "reuse_of_runtime_receipts": false
+}

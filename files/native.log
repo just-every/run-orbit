@@ -1,0 +1,53 @@
+TAP version 13
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Subtest: AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creates durable unsent draft and usage
+ok 1 - AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creates durable unsent draft and usage
+  ---
+  duration_ms: 2199.271914
+  type: 'test'
+  ...
+# (node:1594) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: AI-002 invalid content fails visibly and native generation bounds transient retries; AI-003 unconfigured provider generates nothing
+ok 2 - AI-002 invalid content fails visibly and native generation bounds transient retries; AI-003 unconfigured provider generates nothing
+  ---
+  duration_ms: 24639.410948
+  type: 'test'
+  ...
+# Subtest: AI-001 DATA-002 changed or deleted preview context never leaves deployment
+ok 3 - AI-001 DATA-002 changed or deleted preview context never leaves deployment
+  ---
+  duration_ms: 697.192092
+  type: 'test'
+  ...
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Subtest: BASE-DATA-004 BASE-DATA-005 AI-002 OUT-012 provider redirects never reach a second destination or become success
+ok 4 - BASE-DATA-004 BASE-DATA-005 AI-002 OUT-012 provider redirects never reach a second destination or become success
+  ---
+  duration_ms: 71.96026
+  type: 'test'
+  ...
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# (node:2113) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence
+ok 5 - TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence
+  ---
+  duration_ms: 19723.219544
+  type: 'test'
+  ...
+# Subtest: BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks
+ok 6 - BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks
+  ---
+  duration_ms: 9160.703376
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 104488.671036

@@ -1,0 +1,27 @@
+[WebServer] (node:2714) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:2725) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:2741) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:2741) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:2741) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] file:///home/agent/rer-consolidation/work/ct-proof-orbit-ai002-20261106-0255/run-orbit/scripts/browser-runtime.mjs:39
+[WebServer]   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Browser runtime requires an explicit valid PORT.');
+[WebServer]                                                                  ^
+[WebServer] 
+[WebServer] Error: Browser runtime requires an explicit valid PORT.
+[WebServer]     at Module.serveBrowserRuntime (file:///home/agent/rer-consolidation/work/ct-proof-orbit-ai002-20261106-0255/run-orbit/scripts/browser-runtime.mjs:39:66)
+[WebServer]     at file:///tmp/rer-assistance-server.mjs:4:132
+[WebServer] 
+[WebServer] Node.js v22.20.0
+Error: Process from config.webServer was not able to start. Exit code: 1
+

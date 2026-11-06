@@ -1,0 +1,21 @@
+{
+  "time_utc": "2026-11-06T03:00:01.515025+00:00",
+  "host": "dedicated managed cloud VM",
+  "disk_free_bytes": 32034537472,
+  "load_average": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "cpu_count": 5,
+  "mac_data_volume_50GiB_rule": "not applicable by explicit commission",
+  "one_heavy_job_at_a_time": true,
+  "disposable_shallow_filtered_clone": true,
+  "admitted": true,
+  "reason": "normal dedicated cloud capacity available; no host refusal observed; no overridden guard",
+  "memory.max": "17179869184",
+  "memory.current": "54489088",
+  "cpu.max": "400000 100000",
+  "pids.max": "max",
+  "pids.current": "34"
+}
