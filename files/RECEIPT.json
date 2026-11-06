@@ -1,0 +1,96 @@
+{
+  "base": "d417a80f86f763583e68f7ba8c13cb668f30bbab",
+  "branch": "cloud/sd-orbit-c-f85",
+  "candidate_verify": {
+    "conclusion": null,
+    "event": "push",
+    "head_sha": "8349d342994e3ecbfbdd565451db08711f22fbd8",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42177495814",
+    "id": 42177495814,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "commands": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='TASK-001 TEAM-004' tests/core/today-brief.test.ts",
+      "exit": 0,
+      "log": "candidate-test.log",
+      "name": "touched candidate test",
+      "sha256": "363f4f8b9ed3d2bb7df2df3668f1ff3e7bf7409d52b4b7e5ce48194cca8aa144"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log",
+      "name": "typecheck",
+      "sha256": "9210eeb2aba2fe2d3f16d1153d0ee18d0ce03516e129f529dcbad384b40bc285"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log",
+      "name": "first-party",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log",
+      "name": "generated write",
+      "sha256": "df91012bf66fb476e9cd1a30c002829398beb55f869e07cc7be477197fa5a276"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check.log",
+      "name": "generated check",
+      "sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock-write.log",
+      "name": "source lock write",
+      "sha256": "d5c9389fdda5958e5dba7f583319450a59d52108c8ec5dc421b492248218a745"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.log",
+      "name": "source lock check",
+      "sha256": "de761f5025e7f0881b10b318fc75a168df30d48cb3169c3d3a742bad11e10b50"
+    }
+  ],
+  "counts_after": {
+    "done": 36,
+    "missing": 32,
+    "partial": 136,
+    "total": 204
+  },
+  "counts_before": {
+    "done": 36,
+    "missing": 32,
+    "partial": 136,
+    "total": 204
+  },
+  "generated_views_committed": false,
+  "github_api_calls": 2,
+  "head": "8349d342994e3ecbfbdd565451db08711f22fbd8",
+  "product_done_claim": false,
+  "product_push": {
+    "attempts": 1,
+    "log": "product-push.log",
+    "status": "succeeded"
+  },
+  "publication_scan": "not run in cloud; fleet lander required",
+  "recorded_at": "2026-11-06T06:57:45.979422+00:00",
+  "repository": "just-every/run-orbit",
+  "runtime": "Node 22.20.0",
+  "schema": 1,
+  "tag": "sd-orbit-c-f85",
+  "test_budget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  }
+}
