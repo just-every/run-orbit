@@ -1,0 +1,8 @@
+{"conclusion":"success","failed_steps":[],"id":127759216453,"name":"plan","status":"completed"}
+{"conclusion":"failure","failed_steps":[{"name":"Verify source, types, boundaries and the single shared app build","number":8},{"name":"Retain authoritative source candidate","number":13}],"id":127759350944,"name":"source and shared build","status":"completed"}
+{"conclusion":"skipped","failed_steps":[],"id":127759353044,"name":"light","status":"completed"}
+{"conclusion":"failure","failed_steps":[{"name":"Require a successful plan and all required work","number":2},{"name":"Retain combined routine verdicts (capacity pending)","number":9}],"id":127759534821,"name":"verify","status":"completed"}
+{"conclusion":"skipped","failed_steps":[],"id":127759535566,"name":"shards (${{ matrix.batch }})","status":"completed"}
+{"conclusion":"skipped","failed_steps":[],"id":127759567433,"name":"release","status":"completed"}
+{"conclusion":"skipped","failed_steps":[],"id":127759567458,"name":"full-push-proof","status":"completed"}
+{"conclusion":"skipped","failed_steps":[],"id":127759567952,"name":"nightly-proof","status":"completed"}

@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "repository": "just-every/run-orbit",
+  "tag": "sd-orbit-c-f88",
+  "branch": "cloud/sd-orbit-c-f88",
+  "head": "8349d342994e3ecbfbdd565451db08711f22fbd8",
+  "productPush": {
+    "status": "pushed",
+    "attempt": 1,
+    "remoteHeadVerified": true
+  },
+  "newProductCommits": 0,
+  "contractStatus": "partial",
+  "selectedPoint": "already present in f85; local journey and public-door probe passed",
+  "generatedViewsCommitted": false,
+  "publicationScan": {
+    "status": "not run in cloud",
+    "custodian": "fleet lander"
+  },
+  "mainPushed": false,
+  "pr": null,
+  "verify": {
+    "run": 42182019150,
+    "event": "push",
+    "head": "8349d342994e3ecbfbdd565451db08711f22fbd8",
+    "branch": "cloud/sd-orbit-c-f88",
+    "conclusion": "failure",
+    "sourceJob": 127773707943,
+    "aggregateJob": 127773899882,
+    "classification": "Expected generated-view freshness exception",
+    "firstFailedGate": "node src/base/contract-docs.mjs check",
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "archiveReadExit": 0,
+    "productShards": "skipped behind source failure",
+    "consequentialFailures": "Missing source artifacts and aggregate prerequisites; no additional product assertion failure",
+    "repairRounds": 0
+  },
+  "githubCalls": 6,
+  "branchVerifyDiscovery": [
+    {
+      "conclusion": "failure",
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f88",
+      "head_sha": "8349d342994e3ecbfbdd565451db08711f22fbd8",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42182019150",
+      "id": 42182019150,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ],
+  "priorVerify": {
+    "run": 42177495814,
+    "event": "push",
+    "conclusion": "failure",
+    "sourceJob": 127759350944,
+    "observedLocalFailure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "providerLogInspection": "Read once successfully; the first source gate failed only on generated ACCEPTANCE.md freshness. Source-artifact upload and aggregate failures are consequences; product shards were skipped.",
+    "classification": "Expected generated-view exception; no product assertion failure"
+  },
+  "handoff": "READY under the explicit generated-view-only exception; complete publication scan, generated views and final landing gates remain with the fleet"
+}

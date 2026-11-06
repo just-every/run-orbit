@@ -1,0 +1,11 @@
+{
+  "candidateCommits": [
+    {
+      "head": "8349d342994e3ecbfbdd565451db08711f22fbd8",
+      "author": "Run Edit Run fleet",
+      "committer": "Run Edit Run fleet",
+      "trailers": ""
+    }
+  ],
+  "status": "passed"
+}

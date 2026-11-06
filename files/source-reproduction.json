@@ -1,0 +1,27 @@
+{
+  "shard": "source",
+  "commit": "8349d342994e3ecbfbdd565451db08711f22fbd8",
+  "startedAt": "2026-11-06T07:36:17.722Z",
+  "finishedAt": "2026-11-06T07:36:18.111Z",
+  "status": "failed",
+  "stages": [
+    {
+      "args": [
+        "exec",
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "env": {},
+      "files": [],
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 387,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    }
+  ],
+  "executions": []
+}

@@ -1,0 +1,40 @@
+{
+  "head": "8349d342994e3ecbfbdd565451db08711f22fbd8",
+  "point": "TASK-001 receiver assignment delivery",
+  "status": "passed",
+  "doors": [
+    "PUT /api/v1/tasks/:id",
+    "GET /api/v1/notifications",
+    "GET /api/v1/tasks/:id"
+  ],
+  "taskId": "01M6QWCTSAXA7HH9ZRSFBECYWY",
+  "receiverId": "01M6QWCTHQRJ0EXAM5NKC2KEFD",
+  "before": {
+    "ids": [],
+    "unread": 0
+  },
+  "after": {
+    "ids": [
+      "01M6QWCV78CF7RDCJP79H86EJD"
+    ],
+    "unread": 1
+  },
+  "newNotice": {
+    "id": "01M6QWCV78CF7RDCJP79H86EJD",
+    "kind": "task.assigned",
+    "href": "/app/tasks/01M6QWCTSAXA7HH9ZRSFBECYWY"
+  },
+  "receiverTask": {
+    "id": "01M6QWCTSAXA7HH9ZRSFBECYWY",
+    "ownerId": "01M6QWCTHQRJ0EXAM5NKC2KEFD",
+    "title": "synthetic-orbit-3",
+    "revision": "01M6QWCV4N2DYS8HBRAAZT6PTP"
+  },
+  "staleStatus": 409,
+  "replay": {
+    "ids": [
+      "01M6QWCV78CF7RDCJP79H86EJD"
+    ],
+    "unread": 1
+  }
+}
