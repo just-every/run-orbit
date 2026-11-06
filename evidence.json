@@ -1,0 +1,94 @@
+{
+  "files": [
+    {
+      "blob": "86e63a439ab44375efe21f7236db869e652d057c",
+      "bytes": 1887,
+      "path": "PLAN.md",
+      "sha256": "d55dcf3f9989397d8b97b981c0e2895f6d8b274c97beea3dee314084faf50a3e"
+    },
+    {
+      "blob": "6ddaf569c3a256de109d6b44e39556fbc179de68",
+      "bytes": 625,
+      "path": "PROBES.txt",
+      "sha256": "99930748fd32234810ba5f12dcdd829e9fc03b77adaaca05628416b901116a62"
+    },
+    {
+      "blob": "4a39685f4985d6f7e157fd9765b21d19ae492042",
+      "bytes": 8545,
+      "path": "REPORT.md",
+      "sha256": "a930c7ba2f5a51d8105bcbb811575d497ad9b1f54ff34486e82316a1c9fe607e"
+    },
+    {
+      "blob": "b9098886672aa9785f34aa957a80c1f814225f8a",
+      "bytes": 997,
+      "path": "base-ci-jobs.json",
+      "sha256": "f433280ee2ab7d6c3babaa1310cbe0274ec5d60052e8e7a21727692068127e53"
+    },
+    {
+      "blob": "ace8891ae0c3afb326845bd2e6edf8a78689a621",
+      "bytes": 265,
+      "path": "base-ci.json",
+      "sha256": "faf1ef73c50ea1f02d81c067bf4d0e35775723dea100aeae58689ad7eb638679"
+    },
+    {
+      "blob": "4616fe20916f526817e11b0e64914405d6efb6a4",
+      "bytes": 525,
+      "path": "candidate-ci.json",
+      "sha256": "3cf57f258e7e0094f79ad887c6efc794f7aadb03730d8dba0b677edc28f5e945"
+    },
+    {
+      "blob": "73d4a5dd6d0d2c33486ad5c1ba4ab792cf89d511",
+      "bytes": 317,
+      "path": "expected-source-shard.json",
+      "sha256": "9da5e45cf8c20e50a6e27ea0603f079d60d70450bc9aabfb1fca7ffab02c6957"
+    },
+    {
+      "blob": "e7750d04c05dc639e966a06c96f9caf8e025a0c2",
+      "bytes": 263,
+      "path": "identity-audit.json",
+      "sha256": "9c804d08ea577aca69461998cc0e3e503a92fc0ef18399c26ab6aad29aa56952"
+    },
+    {
+      "blob": "c4c33bebaeea0f3b5f24085da36504df6341ef25",
+      "bytes": 1314,
+      "path": "main-ci.json",
+      "sha256": "a6b40494086e7fd7b452a612218871100405a0d41a3c1c8a6b4cf0865d9f31db"
+    },
+    {
+      "blob": "7ffa69477ac045c1be95ec3f62339f65206bd04c",
+      "bytes": 617,
+      "path": "mechanical-final.json",
+      "sha256": "8467f1a391997e8bce688d5596117dfef27c94182d04cab599137eacb05acd20"
+    },
+    {
+      "blob": "b483d41810e3c0b2558898ef18ca57d60899d311",
+      "bytes": 73,
+      "path": "product-ref.txt",
+      "sha256": "60ec25afa7433efed30c3f2d44de3890dd30f9943981df36e769a05165418866"
+    },
+    {
+      "blob": "b1a181cf4d95f4774108997976caf952ea9f62ae",
+      "bytes": 4721,
+      "path": "receipts.json",
+      "sha256": "54591833aaed8ec71f1cdfa32b72a3f71a364c399b9bdd7908afa96fd5d3f0a5"
+    },
+    {
+      "blob": "5ba3ff4043b8e52ead4f67103cda30cd7ab4b522",
+      "bytes": 1239,
+      "path": "source-onboarding.log",
+      "sha256": "9c5d7610b399f4618c2e7810236eabec303cddd121ed8fa722df2f58f91f3672"
+    },
+    {
+      "blob": "c9319e4e6e13a253a86111b99e96b081b1706d61",
+      "bytes": 211,
+      "path": "status-row-custody.json",
+      "sha256": "42a3777105b2d2eccfeff4a571ef09d5d96431a927bfb5adc6783fc3576f6b57"
+    }
+  ],
+  "product_branch": "cloud/sd-orbit-c-f69",
+  "product_head": "577549de0ddac57a921f664e290bf6176682fb28",
+  "ref": "refs/heads/evidence/sd-orbit-c-f69",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "sd-orbit-c-f69"
+}

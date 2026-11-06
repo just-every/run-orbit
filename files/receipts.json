@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f69",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f69",
+  "head": "577549de0ddac57a921f664e290bf6176682fb28",
+  "main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "created_at": "2026-11-06T01:54:01.572817+00:00",
+  "new_product_commits": 0,
+  "working_tree_clean": true,
+  "target": {
+    "id": "INTEGRATE-009",
+    "before": "partial",
+    "after": "partial",
+    "selected_point": "Atomic consumption rolls back when Slack task insertion fails; same action retries once and replay adds nothing",
+    "implementation_already_at_requested_base": true,
+    "newly_implemented_points": 0
+  },
+  "counts_before": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32,
+    "total": 204
+  },
+  "tests": [
+    {
+      "command": "cloud_run pnpm exec tsx --test --no-test-only --test-concurrency=1 tests/core/source-onboarding.test.ts",
+      "exit": 0,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 480699.493408,
+      "selected_journey_duration_ms": 414573.475307,
+      "head": "577549de0ddac57a921f664e290bf6176682fb28"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "head": "577549de0ddac57a921f664e290bf6176682fb28"
+    },
+    {
+      "command": "cloud_run pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "head": "577549de0ddac57a921f664e290bf6176682fb28"
+    }
+  ],
+  "setup": {
+    "dependencies": "pnpm install --frozen-lockfile",
+    "dependencies_exit": 0,
+    "command": "cloud_run npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+    "exit": 0
+  },
+  "test_budget": {
+    "registrations": 198,
+    "qualifications": 2,
+    "total": 200,
+    "new_registrations": 0
+  },
+  "mechanical": [
+    {
+      "name": "views_write",
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0
+    },
+    {
+      "name": "views_check",
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "name": "restore_views",
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0
+    },
+    {
+      "name": "lock",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "name": "lock_check",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "ok": true
+    }
+  ],
+  "ledger": {
+    "command": null,
+    "exit": 0,
+    "reason": "No migration changed"
+  },
+  "browser": {
+    "status": "not required",
+    "reason": "No UI change or touched screen"
+  },
+  "mutation": {
+    "status": "not run",
+    "reason": "No new DONE claim; retained real D1 fault injection exercises the selected unsafe path"
+  },
+  "publication_scan": {
+    "status": "not run in cloud",
+    "owner": "fleet Mac lander"
+  },
+  "product_verify": {
+    "run": 42142055426,
+    "head": "577549de0ddac57a921f664e290bf6176682fb28",
+    "event": "push",
+    "branch": "cloud/sd-orbit-c-f64",
+    "status": "completed",
+    "conclusion": "failure",
+    "failed_job": 127644628087,
+    "command": "node scripts/verification-shard.mjs source",
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "classification": "Explicit generated-view exception; product shards skipped; no product-green claim"
+  },
+  "main_verify_runs": [
+    42116055029,
+    42111723539
+  ],
+  "main_site_run": 42116055015,
+  "plan_rows_changed": [],
+  "status_changes": [],
+  "pr": null,
+  "blockers": [],
+  "remaining_holds": "Existing clause and plan holds unchanged; no DONE promotion.",
+  "ci_runs_after_push": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f69",
+      "head_sha": "577549de0ddac57a921f664e290bf6176682fb28",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42146783827",
+      "id": 42146783827,
+      "name": "Verify",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": "failure",
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f64",
+      "head_sha": "577549de0ddac57a921f664e290bf6176682fb28",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42142055426",
+      "id": 42142055426,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ],
+  "github_calls": 5,
+  "product_push": {
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f69",
+    "exit": 0,
+    "attempts": 1,
+    "remote_ref": "577549de0ddac57a921f664e290bf6176682fb28\trefs/heads/cloud/sd-orbit-c-f69"
+  }
+}

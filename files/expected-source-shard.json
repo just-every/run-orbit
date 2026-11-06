@@ -1,0 +1,8 @@
+{
+  "head": "577549de0ddac57a921f664e290bf6176682fb28",
+  "job": "source and shared build",
+  "command": "node scripts/verification-shard.mjs source",
+  "exit": 1,
+  "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "classification": "permitted generated-view exception; no repair"
+}
