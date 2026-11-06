@@ -49,7 +49,33 @@ export async function proveSlackNotices(f:SlackFixture,deal:string,contact:strin
   const event=(type:string,extra:object={})=>({type:'event_callback',team_id:'TWORKSPACE',api_app_id:'AORBIT',authorizations:[{team_id:'TWORKSPACE',enterprise_id:null}],event_id:'Ev'+crypto.randomUUID().replaceAll('-',''),event:{type,channel:'CINTERNAL',...extra}});
   const shared=event('channel_shared');assert.equal((await signed(shared,'events')).status,200);assert.equal((await call('')).channels[0].enabled,0);assert.equal((await signed(shared,'events')).data.replayed,true);await signed(event('channel_unshared'),'events');assert.equal((await call('')).channels[0].enabled,0);await confirm();await signed(event('member_left_channel',{user:'UBOT'}),'events');assert.equal((await call('')).channels[0].enabled,0);await confirm();
   await call('mappings','PUT',{slackUserId:'UDEACTIVATE',operatorId:f.actor,revoked:false});await signed(event('user_change',{user:{id:'UDEACTIVATE',team_id:'TWORKSPACE',deleted:true}}),'events');assert.ok((await call('')).mappings.find((m:any)=>m.slack_user_id==='UDEACTIVATE').revoked_at);
-  const callResult=await f.request(`records/opportunity/${deal}/entries`,'POST',{kind:'call',text:'Private customer call contents',occurredAt:new Date().toISOString(),durationMinutes:5});assert.equal(callResult.status,200);await f.request(`records/opportunity/${deal}/lifecycle`,'POST',{state:'won',reason:'Private win reason'});assert.ok((await notices()).some(n=>n.event_kind==='won'&&n.state==='sent'));assert.ok((await notices()).some(n=>n.event_kind==='handoff'&&n.state==='sent'));
+  const contactRead=await f.request(`records/contact/${contact}`);assert.equal(contactRead.status,200);
+  const person=(await contactRead.json() as any).record;assert.ok(person.name&&person.email,'The source entries include real seeded contact details');
+  const phone='+1 202 555 0184',amount='USD 73921.47',cents='7392147',entries:string[]=[];
+  const privateTexts=['synthetic-orbit-104-call Private customer call contents','synthetic-orbit-104-meeting private meeting minutes'];
+  for(const [index,kind] of (['call','meeting'] as const).entries()){
+   const text=`${privateTexts[index]}; ${person.name}; ${person.email}; ${phone}; ${amount}; ${cents} cents`;
+   const beforePosts=posts.length,beforeAttempts=edge.attempts;
+   const saved=await f.request(`records/opportunity/${deal}/entries`,'POST',{kind,text,occurredAt:new Date(Date.now()-60000).toISOString(),durationMinutes:5,contactIds:[contact]});
+   assert.equal(saved.status,200,await saved.clone().text());const entry=(await saved.json() as any).id;assert.ok(entry&&!entries.includes(entry));entries.push(entry);
+   const detail=await f.request(`records/opportunity/${deal}`);assert.equal(detail.status,200);
+   const source=(await detail.json() as any).timeline.find((item:any)=>item.id===entry);assert.equal(source?.kind,`manual.${kind}`);assert.equal(JSON.parse(source.payload_json).text,text);
+   const matching=(await notices()).filter(n=>n.source_id===entry);assert.equal(matching.length,1,`One ${kind} notice belongs to its returned manual entry`);
+   const notice=matching[0];assert.equal(notice.event_key,entry);assert.equal(notice.event_kind,'handoff');assert.equal(notice.state,'sent');assert.equal(notice.record_type,'opportunity');assert.equal(notice.record_id,deal);
+   const content=JSON.parse(notice.content_json);
+   assert.deepEqual(Object.keys(content).sort(),['eventKind','recordDisplayName','stageFrom','stageTo','ownerDisplayName','dueDate','link'].sort());assert.equal(content.eventKind,'handoff');
+   const href=new URL(content.link);assert.equal(href.origin,'https://orbit.test');assert.equal(href.pathname,`/app/opportunities/${deal}`);assert.equal(href.search+href.hash+href.username+href.password,'','The record link carries no capability');
+   assert.equal((await f.request(`records/opportunity/${deal}`,'GET',undefined,{Cookie:''})).status,401,'The linked record needs an Orbit session');
+   const submitted=posts.filter(p=>p.client_msg_id===notice.id);assert.equal(submitted.length,1,`One adapter submission is correlated to the ${kind} notice`);
+   const post=submitted[0];assert.equal(post.channel,notice.channel_id);assert.equal(post.ts,notice.message_ts);assert.ok(post.text.includes(content.link));
+   assert.deepEqual(post.blocks.flatMap((block:any)=>(block.elements??[]).filter((element:any)=>element.url).map((element:any)=>element.url)),[content.link]);
+   assert.equal(post.unfurl_links,false);assert.equal(post.unfurl_media,false);
+   for(const payload of [notice.content_json,post.text,JSON.stringify(post.blocks)])for(const forbidden of [...privateTexts,person.name,person.email,phone,amount,cents])assert.ok(!payload.includes(forbidden),`${kind} notice excludes private source content from storage and Slack`);
+   assert.equal(posts.length,beforePosts+1);assert.equal(edge.attempts,beforeAttempts+1);
+   await process();assert.equal(posts.length,beforePosts+1);assert.equal(edge.attempts,beforeAttempts+1,'Processing again never submits the manual notice again');
+   assert.deepEqual((await notices()).filter(n=>n.source_id===entry),matching,'Processing again retains the same sent notice and provider receipt');
+  }
+  await f.request(`records/opportunity/${deal}/lifecycle`,'POST',{state:'won',reason:'Private win reason'});assert.ok((await notices()).some(n=>n.event_kind==='won'&&n.state==='sent'));assert.ok((await notices()).some(n=>n.event_kind==='handoff'&&n.state==='sent'));
   const booking=await(await f.request('sources/bookings','PUT',{name:'Internal booking notices',enabled:true})).json() as any,raw=JSON.stringify({triggerEvent:'BOOKING_CREATED',createdAt:new Date().toISOString(),payload:{uid:crypto.randomUUID(),attendees:[{email:'maya@harbour.test'}]}}),bookingCount=posts.length;
   const booked=()=>f.app.request('https://orbit.test/api/v1/signals/bookings/calcom',{method:'POST',headers:{'X-Cal-Signature-256':createHmac('sha256',booking.secret).update(raw).digest('hex')},body:raw});assert.equal((await booked()).status,201);await process();assert.equal(posts.length,bookingCount+1);assert.equal((await booked()).status,409);await process();assert.equal(posts.length,bookingCount+1);assert.ok(posts.every(p=>!p.text.includes('maya@harbour.test')&&!p.text.includes('Maya')&&!p.text.includes('Private win reason')&&!p.text.includes('Private customer call contents')));
   await proveDashboardSlack(f,{posts,call,signed,secret,token,outcome:value=>edge.setOutcome(value),safety:value=>edge.setSafety(value)});
