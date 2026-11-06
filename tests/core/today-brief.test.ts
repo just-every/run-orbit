@@ -1,5 +1,6 @@
 import {exerciseTwilio} from '../support/twilio-calls';
 import {exerciseSalesTasks} from '../support/sales-tasks';
+import {exerciseManualMeeting} from '../support/manual-meeting';
 import assert from 'node:assert/strict';
 import {after,test} from 'node:test';
 import {isolatedDatabase} from '../support/isolated-database';
@@ -325,6 +326,7 @@ test('BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a
  const colleague=async(name:string,collaborator=false)=>{const id=createId();if(collaborator)await db.prepare('INSERT INTO access_collaborators VALUES(?,?)').bind(id,new Date().toISOString()).run();const app=await todayApp(db,{operatorId:id});await db.prepare('UPDATE operators SET display_name=? WHERE id=?').bind(name,id).run();if(collaborator){const {token}=await t.json<{token:string}>('/api/v2/access/workspaces/workspace/invitations',{body:{email:`${id.toLowerCase()}@seller.test`,role:'guest',expiresAt:new Date(Date.now()+86400000).toISOString()}},200);await app.json('/api/v2/access/invitations/accept',{body:{token}},200);}return app;};
  const manager=await colleague('Morgan Manager'),riley=await colleague('Riley Rep'),casey=await colleague('Casey Contractor',true);
  await db.prepare("UPDATE operators SET display_name='Avery Author',setup_owner=1 WHERE id=?").bind(t.actor).run();
+ await exerciseManualMeeting(db,t,riley);
  assert.deepEqual((await t.json<{colleagues:{name:string}[]}>('/api/v1/records/mentionable',{},200)).colleagues.map(c=>c.name).filter(name=>['Morgan Manager','Riley Rep','Casey Contractor'].includes(name)),['Casey Contractor','Morgan Manager','Riley Rep'],'Autocomplete offers active colleagues');
  const mentionCount=async(who:TodayApp)=>(await who.json<{notifications:{id:string;kind:string;href:string|null;message:string}[]}>('/api/v1/notifications',{},200)).notifications.filter(n=>n.kind==='record.mention');
  const caseyMentions=()=>count(`SELECT count(*) AS n FROM notifications WHERE kind='record.mention' AND operator_id='${casey.actor}'`);
