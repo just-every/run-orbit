@@ -10106,6 +10106,10 @@
       "sha256": "007a4e147ec0a8afebeb56e1904d681c47c913e14e74f7d79a59952f61f55ab0",
       "executable": false
     },
+    "tests/delegation-browser/opportunity-ownership-journey.mjs": {
+      "sha256": "c83e31b4175a67c69b6ad4a70535b2c48dbe2e7461a3eba4e96c5a512228ffcf",
+      "executable": false
+    },
     "tests/delegation-browser/private-entries-journey.mjs": {
       "sha256": "6e4c7737c3b54a057dec001aead2df3a2d64bfac6b6929172414021b8a06adfc",
       "executable": false
@@ -11020,6 +11024,10 @@
     },
     "tests/support/opportunity-creation.ts": {
       "sha256": "1326e6e55b08ed7183102ca0d35e6fee10bca9bae05c4d52ea701cc597f1b934",
+      "executable": false
+    },
+    "tests/support/opportunity-ownership.ts": {
+      "sha256": "c85938e0bfdf61ad903491182075d2dd8c2b5846970a951b84930cca5b109e86",
       "executable": false
     },
     "tests/support/personal-slack-proof.ts": {
