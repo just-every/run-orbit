@@ -90,4 +90,5 @@ export async function proveOptOutArchive(source:D1Database,restored:D1Database,p
   });
  }finally{setTime(before);}
  assert.equal(await databaseDigest(source),sourceBefore,'Restored capability use leaves the source installation untouched');
+ assert.deepEqual(await optOutRows(source),proof.rows,'Archive transfer and restored use preserve every original source capability field');
 }
