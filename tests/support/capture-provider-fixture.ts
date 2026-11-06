@@ -16,5 +16,8 @@ export async function providerFixture(provider:Provider){
  async function connect(sourceId?:string,writebackConsent=false){const response=await callback(await start(sourceId,f.cookie,writebackConsent));assert.equal(response.status,303);const location=new URL(response.headers.get('location')!,'https://orbit.test');assert.ok(!location.searchParams.has('error'),location.searchParams.get('error')??'');return location.searchParams.get('connected')!;}
  const count=(id:string)=>db.prepare('SELECT count(*) n FROM signals WHERE source_id=?').bind(id).first<number>('n');
  async function drain(id:string){let rounds=0;while(true){const response=await request(`/sources/${id}/sync`,{});assert.equal(response.status,200);const value=await response.json() as any;assert.ok(!value.summary.halted);if(!value.more)return;assert.ok(++rounds<100,'bounded resumable source must eventually finish');}}
- return {...f,...network,db,get app(){return app;},request,start,callback,connect,count,drain,reopen:async()=>{await f.platform.close();await f.platform.reopen();app=build();},crash:()=>{crash=true;}};
+ async function source(id:string){const response=await request('/sources');assert.equal(response.status,200);const value=await response.json() as any;const saved=value.sources.find((source:any)=>source.id===id);assert.ok(saved);return saved;}
+ async function contact(){const response=await app.request(`https://orbit.test/api/v1/records/contact/${f.ana}`,{headers:{cookie:f.cookie}});assert.equal(response.status,200);return response.json() as Promise<any>;}
+ async function proposals(){const response=await request(`/proposals?recordType=contact&recordId=${f.ana}`);assert.equal(response.status,200);return (await response.json() as any).proposals;}
+ return {...f,...network,db,get app(){return app;},request,start,callback,connect,count,drain,source,contact,proposals,reopen:async()=>{await f.platform.close();await f.platform.reopen();app=build();},crash:()=>{crash=true;}};
 }
