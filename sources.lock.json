@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "f70d465a8051fd75a3aaa5fc8a44c09818c995e778e454fa08ef0fadf9f4d67b",
+      "sha256": "7dd0bddc971951b287c066fb30ad3a3b7ae5356ef3ae8af6dd2ea959dd3089c6",
       "executable": false
     },
     "DEMO.md": {
@@ -10071,7 +10071,7 @@
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
-      "sha256": "59993b1a0cea6fb3ed8d679ca4cc565bdc4ed5b80704d08d4c838700eafe1051",
+      "sha256": "717f49326a61ace56fca041db27f96b440da9f4a3fd88a5d1e7ede5d2ad83c9e",
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
