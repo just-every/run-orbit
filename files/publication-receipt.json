@@ -1,0 +1,29 @@
+{
+  "recorded_at": "2026-11-06T02:19:29.438631+00:00",
+  "action": "first report-only evidence publication",
+  "repository": "just-every/run-orbit",
+  "ref": "refs/heads/evidence/ct-judge-orbit-ai002-20261105-2114-sol1",
+  "head": "f821da6eeb60e95dcccd00cb144a604e7c99d812",
+  "exit": 0,
+  "selected_files": 13,
+  "candidate_identity_audit": {
+    "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+    "commits": 1,
+    "all_author_and_committer_names": "Run Edit Run fleet",
+    "all_author_and_committer_emails": "fleet@runeditrun.com",
+    "trailers": [],
+    "verified": true
+  },
+  "product_commits": 0,
+  "product_pushes": 0,
+  "product_acceptance": false,
+  "note": "This actual first-publication receipt will be included in a subsequent append-only report publication. The terminal EVIDENCE line identifies the final packet head.",
+  "readback": {
+    "command": "cloud_evidence.py fetch --head f821da6eeb60e95dcccd00cb144a604e7c99d812",
+    "exit": 0,
+    "status": "restored",
+    "manifest_sha256": "5a6600af502c6a8b3450fa57c615b9ee47dafee6044f2a7711b176b44650aa76",
+    "files_verified": 13,
+    "all_bytes_match_local_packet": true
+  }
+}
