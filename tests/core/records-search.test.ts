@@ -1,5 +1,6 @@
 import {exerciseRecordOwnership} from '../support/record-ownership';
 import {exerciseOpportunityCreation} from '../support/opportunity-creation';
+import {exerciseOpportunityOwnership} from '../support/opportunity-ownership';
 import {salesPipelinesJourney} from '../support/sales-pipelines';
 import {exerciseBuyingContext} from '../support/buying-context';
 import assert from 'node:assert/strict';
@@ -44,5 +45,6 @@ test('RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-
  const receiverSession=await deps.auth.createSession(other);
  await exerciseRecordOwnership((path,method='GET',body)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),actor,other,path=>app.request('https://orbit.test/api/v1/'+path,{headers:{Cookie:`__Host-orbit_session=${receiverSession.token}`}}));
  await exerciseOpportunityCreation((path,method='GET',body)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),db,actor,other,stage);
+ await exerciseOpportunityOwnership((path,method='GET',body)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),db,actor,other,stage);
  } finally {await fixture.dispose();}
 });

@@ -87,8 +87,12 @@ export class RecordsRepository extends RecordSeedRepository {
   const previousFields=JSON.parse(before?.custom_fields_json??'{}');
   const typedSave=await typedFieldSave(this.db,kind,id,data.custom_fields,previousFields);
   data.custom_fields_json=JSON.stringify(normalizedTypedFields(data.custom_fields,previousFields,typedSave.fields));delete data.custom_fields;data.updated_at=now;
-  const changes=before?changedText(before,data,typedSave.fields):{};
+  // An owner change is its own attributed timeline entry and never a scoring event; the other edited fields keep their text.
+  const ownerChanged=kind==='opportunity'&&!!before&&(before.owner_id??null)!==(data.owner_id??null);
+  const changes=before?changedText(before,ownerChanged?{...data,owner_id:before.owner_id}:data,typedSave.fields):{};
   const associationsChanged=kind==='opportunity'&&before&&(links.length!==contacts.length||links.some(link=>!contacts.includes(link.contact_id)||Boolean(link.is_primary)!==(link.contact_id===primary)));
+  const ownerNames=new Map<string,string>();
+  if(ownerChanged)for(const row of (await this.db.prepare('SELECT id,display_name FROM operators WHERE id IN(?,?)').bind(before!.owner_id??null,data.owner_id??null).all<{id:string;display_name:string}>()).results)ownerNames.set(row.id,row.display_name);
   const columns=Object.keys(data),values=columns.map(k=>data[k]??null);
   const statements:D1PreparedStatement[]=policies.length?stagePolicyFence(this.db,policies,before?{id,stage_id:before.stage_id,updated_at:before.updated_at}:undefined):[];
   const emailTokens=kind==='contact'?await suppressionHashes(this.db,data.email):[];
@@ -103,7 +107,7 @@ export class RecordsRepository extends RecordSeedRepository {
   const contactabilityValue=(update:boolean)=>`CASE WHEN ${update&&!explicitClear?"contactability='do_not_contact' OR ":''}${suppressionPredicate(emailTokens)} THEN 'do_not_contact' ELSE ? END`;
 
   // Validation and authority fences still run; an ordinary no-op changes no record or history.
-  if(before&&options.ordinaryEdit&&!changes&&!associationsChanged)return {id,statements,key,keyColumn,kind,changed:false};
+  if(before&&options.ordinaryEdit&&!changes&&!associationsChanged&&!ownerChanged)return {id,statements,key,keyColumn,kind,changed:false};
 
   if(before)statements.push(this.db.prepare(`UPDATE ${tables[kind]} SET ${columns.map(k=>`${k}=${kind==='contact'&&k==='contactability'?contactabilityValue(true):'?'}`).join(',')} WHERE id=?`).bind(...values,id));
   else {
@@ -114,8 +118,9 @@ export class RecordsRepository extends RecordSeedRepository {
   if(kind==='opportunity'){
    statements.push(this.db.prepare('DELETE FROM opportunity_contacts WHERE opportunity_id=? AND contact_id NOT IN(SELECT value FROM json_each(?))').bind(id,JSON.stringify(contacts)),this.db.prepare('UPDATE opportunity_contacts SET is_primary=0 WHERE opportunity_id=?').bind(id));
    for(const contact of contacts)statements.push(this.db.prepare('INSERT INTO opportunity_contacts VALUES(?,?,?,?) ON CONFLICT(opportunity_id,contact_id) DO UPDATE SET is_primary=excluded.is_primary').bind(id,contact,contact===primary?1:0,now));
-   statements.push(...evaluationStatements(this.db,id,actor,'Opportunity fields or associations changed'),this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Opportunity fields or associations changed',updated_at=? WHERE opportunity_id=?").bind(now,id));
-   for(const field of ['stage_id','owner_id'])if(before&&before[field]!==data[field])statements.push(...timeline(this.db,actor,kind,id,field==='stage_id'?'stage.changed':'owner.changed',field==='stage_id'?stageMovement:{previous:before[field],current:data[field]}));
+   if(!ownerChanged||changes||associationsChanged)statements.push(...evaluationStatements(this.db,id,actor,'Opportunity fields or associations changed'),this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Opportunity fields or associations changed',updated_at=? WHERE opportunity_id=?").bind(now,id));
+   if(before&&before.stage_id!==data.stage_id)statements.push(...timeline(this.db,actor,kind,id,'stage.changed',stageMovement));
+   if(ownerChanged)statements.push(...timeline(this.db,actor,kind,id,'owner.changed',{previous:before!.owner_id??null,previousOwnerName:ownerNames.get(before!.owner_id)??null,current:data.owner_id??null,currentOwnerName:ownerNames.get(data.owner_id)??null}));
    if(before&&before.stage_id!==data.stage_id)statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE opportunity_id=? AND state='scheduled'").bind(stageChangedReason,now,id));
   }
   if(kind==='contact'&&before&&Object.hasOwn(data,'company_id'))statements.push(...contactPrimaryCompanyActivity(this.db,actor,id,before.company_id??null,data.company_id??null,now));
