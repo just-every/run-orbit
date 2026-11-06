@@ -1,0 +1,31 @@
+{
+  "conclusion": "failure",
+  "head_sha": "211efa56341b3f697f69a42c07820b495935d7f1",
+  "html_url": "https://github.com/just-every/run-orbit/actions/runs/42177387740",
+  "status": "completed",
+  "run_id": 42177387740,
+  "event": "push",
+  "root_failed_job": 127759012239,
+  "downstream_failed_job": 127759217303,
+  "classification": "permitted generated-view-only exception",
+  "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "log_commands": [
+    {
+      "command": "gh run view 42177387740 --repo just-every/run-orbit --job 127759012239 --log-failed",
+      "exit": 0
+    },
+    {
+      "command": "gh run view 42177387740 --repo just-every/run-orbit --job 127759217303 --log-failed",
+      "exit": 0
+    }
+  ],
+  "local_reproduction": {
+    "command": "pnpm exec node src/base/contract-docs.mjs check",
+    "exit": 1,
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write."
+  },
+  "candidate_ready": true,
+  "ci_green": false,
+  "reruns": 0,
+  "repair_rounds": 0
+}

@@ -1,0 +1,69 @@
+diff --git a/CONTRACT.md b/CONTRACT.md
+index f2dea3f..01f3299 100644
+--- a/CONTRACT.md
++++ b/CONTRACT.md
+@@ -2603,5 +2603,5 @@ RECORD-023 was proved through the native authorization and grant audit journey a
+ | `BASE-AGENT-009` | Every agent action is audited with its class and decision | target | partial | `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs` | The door ships and the cited tests assert audit rows with tool, outcome, idempotency key and the actual resource, and an audit page with no difference from policy. Not asserted in the cited seed tests: class and decision columns across every class. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run. |
+ | `BASE-AGENT-010` | Agents can follow changes | target | partial | `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs` | The door ships and the cited tests assert orbit.events.list returning attributed native activity. Not asserted in the cited seed tests: change-following subscriptions and signed outbound event delivery. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run. |
+ | `BASE-AGENT-011` | Limits are policy, and Pause stops everything | target | partial | `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs` | The door ships and the cited tests assert Pause stopping replays and a blocked class refusing without effect. Not asserted in the cited seed tests: capacity limits and provider-spend caps. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run. |
+-| `BASE-AGENT-012` | Writes are idempotent and conflict-safe | target | partial | `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs` | The door ships and the cited tests assert one retained outcome for a replayed idempotency key, revision_conflict for a stale revision, and paused or blocked replays leaving the record unchanged. Not asserted in the cited seed tests: the same key reused with different arguments and concurrent writes. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run. |
++| `BASE-AGENT-012` | Writes are idempotent and conflict-safe | target | partial | `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs` — sellerDay: accepted native record update followed by changed declared value with the same key, target and expected revision under a new JSON-RPC id returns idempotency_conflict, with no successful structured content and unchanged operation witness, native record and history | The door ships and the cited tests assert one retained outcome for a replayed idempotency key, revision_conflict for a stale revision, and paused or blocked replays leaving the record unchanged. Remaining seed qualification: dropped-stream recovery, 24-hour outcome retention, stale-refusal current-revision details, cross-person job isolation and general concurrent writes. No clause-specific hold is released; TEAM-005 contract cleanup and qualification prerequisites remain unchanged. The full acceptance depends on the Base conformance runner in the source verification gate and the remaining seed qualification. |
+ | `BASE-AGENT-013` | Manifest, docs and the conformance journey | target | partial | `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs` | The door ships and the cited tests assert a manifest generated from the registry (scripts/agent-surface.ts) and a seeded seller-day journey run by the Base harness. Not asserted in the cited seed tests: the generated /docs/agents page content for the planned jobs and the held-policy leg of the journey. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run. |
+diff --git a/sources.lock.json b/sources.lock.json
+index 85d8e38..f78667e 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -707,7 +707,7 @@
+       "executable": false
+     },
+     "CONTRACT.md": {
+-      "sha256": "1ee70503b65c066543dbcf277b25e16bb1458c34ffae26c453c7a898537d001f",
++      "sha256": "26cafcfbc8de3827109015a0d36efcd7791eb967af42ec1f61b9764b27828592",
+       "executable": false
+     },
+     "DEMO.md": {
+@@ -9871,7 +9871,7 @@
+       "executable": false
+     },
+     "tests/agent-door/native-journey.mjs": {
+-      "sha256": "f8e4b2b674f3989ab14842dc6578259851160e3b4b0346c8f6964c3099154181",
++      "sha256": "98cb054cc55f1198196d16e169b1242c0ead39d88cdd214a0421b41e070937bd",
+       "executable": false
+     },
+     "tests/archive/browser.spec.mjs": {
+diff --git a/tests/agent-door/native-journey.mjs b/tests/agent-door/native-journey.mjs
+index b2246f8..b1b53fc 100644
+--- a/tests/agent-door/native-journey.mjs
++++ b/tests/agent-door/native-journey.mjs
+@@ -20,7 +20,12 @@ export default async function sellerDay({tool,request,origin,cookie}) {
+  const stale=await tool('orbit.handoffs.upsert',{...args,idempotency_key:crypto.randomUUID()});
+  assert.equal(stale.result?._meta?.['com.runeditrun/error']?.code,'revision_conflict');
+  const writeKey=crypto.randomUUID();
+- const edited=await call('records.update',{kind:'opportunity',id,fields:{value_cents:Number(record.fields.value_cents)+1000},expected_revision:record.ref.revision,idempotency_key:writeKey});
++ const writeArgs={kind:'opportunity',id,fields:{value_cents:Number(record.fields.value_cents)+1000},expected_revision:record.ref.revision,idempotency_key:writeKey};
++ const accepted=await tool('orbit.records.update',writeArgs);
++ assert.equal(accepted.status,200);
++ assert.equal(accepted.result?.isError,false,'the original native record write succeeds');
++ const edited=accepted.result?.structuredContent;
++ assert.ok(edited,'records.update must return native structured content');
+  assert.equal(edited.id,id);
+  const readback=await call('records.read',{kind:'opportunity',id});
+  assert.equal(readback.fields.value_cents,Number(record.fields.value_cents)+1000,'CRM value is an estimate, not a payment');
+@@ -28,6 +33,17 @@ export default async function sellerDay({tool,request,origin,cookie}) {
+  assert.equal(native.status,200);
+  const detail=await native.json();
+  assert.ok(detail.timeline.some(row=>row.actor_type==='agent'&&row.actor_name&&JSON.parse(row.payload_json).preparedBy?.agent?.id),'native timeline must name agent for sponsor');
++ const beforeConflict=await call('operations.read');
++ const conflict=await tool('orbit.records.update',{...writeArgs,fields:{value_cents:writeArgs.fields.value_cents+1000}});
++ assert.notEqual(conflict.body.id,accepted.body.id,'changed arguments use a new JSON-RPC request identity');
++ assert.equal(conflict.status,200,'an idempotency conflict is a tool refusal');
++ assert.equal(conflict.result?.isError,true);
++ assert.equal(conflict.result?._meta?.['com.runeditrun/error']?.code,'idempotency_conflict');
++ assert.equal(conflict.result?.structuredContent,undefined,'a conflict returns no successful native result');
++ assert.deepEqual(await call('operations.read'),beforeConflict,'changed arguments with the accepted key have no second native effect');
++ const afterConflict=await request(new URL(`/api/v1/records/opportunity/${id}`,origin).href,{headers:{Cookie:cookie}});
++ assert.equal(afterConflict.status,200);
++ assert.deepEqual(await afterConflict.json(),detail,'the accepted record and its native history remain unchanged');
+  const rows=[];
+  let cursor='0';
+  for(;;) {

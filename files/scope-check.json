@@ -1,0 +1,11 @@
+{
+  "head": "211efa56341b3f697f69a42c07820b495935d7f1",
+  "assertion_lines_from_parent_retained": true,
+  "acceptance_bytes_unchanged": true,
+  "unrelated_status_rows_unchanged": true,
+  "runtime_code_unchanged": true,
+  "ui_unchanged": true,
+  "registered_tests": 198,
+  "qualification_flows": 2,
+  "checks": "PASS"
+}

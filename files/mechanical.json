@@ -1,0 +1,9 @@
+{
+  "views_write": 0,
+  "views_check": 0,
+  "source_lock": 0,
+  "source_check": 0,
+  "ledger": "none; no migrations changed",
+  "committed_view_check_exit": 1,
+  "committed_view_check": "expected generated-view exception after restoring origin/main views"
+}

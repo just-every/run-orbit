@@ -1,0 +1,19 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f86",
+  "head": "211efa56341b3f697f69a42c07820b495935d7f1",
+  "parent": "d417a80f86f763583e68f7ba8c13cb668f30bbab",
+  "push": "success on attempt 1",
+  "push_command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f86",
+  "verify_run": 42177387740,
+  "verify_event": "push",
+  "pr": null,
+  "main_pushed": false,
+  "publication_scan": "not run in cloud; required from fleet Mac",
+  "run_site": "candidate not landed; fleet Mac gate pending",
+  "base_main_verify": [
+    42173012225,
+    42170783887
+  ],
+  "base_main_run_site": 42173012218
+}

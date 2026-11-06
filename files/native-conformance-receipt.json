@@ -1,0 +1,10 @@
+{
+  "head": "211efa56341b3f697f69a42c07820b495935d7f1",
+  "node_version": "v22.20.0",
+  "command": "node node_modules/@runeditrun/rer/cli/agent-door.mjs . deploy.json",
+  "exit": 0,
+  "summary": [
+    "Agent door conformance: 3520/3520 points passed."
+  ],
+  "log_sha256": "7d11d689bddaff026f48764915e227f36e263649818b80bb8943c9bf85332412"
+}

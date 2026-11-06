@@ -1,0 +1,89 @@
+{
+  "head": "211efa56341b3f697f69a42c07820b495935d7f1",
+  "starting_main": "d417a80f86f763583e68f7ba8c13cb668f30bbab",
+  "binding": "The committed source and native journey equal the tested working tree. The final added structured-content assertion is also exercised by native-conformance-receipt.json on the exact committed SHA.",
+  "checks": [
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "result": "Your application is built; build: complete (exit 0)"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "result": "1 passed, 0 failed; native agentDoorProof retained",
+      "log": "managed-owner.log",
+      "log_sha256": "9628297fbd59407b568025d56f6c275a046cd3d57317a463f349219ffbcad195"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log",
+      "log_sha256": "5c2f3e816b9c194f84a4eb76e081d89d51d204e2fed5dfa054c5038e667b1e0e"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log",
+      "log_sha256": "df91012bf66fb476e9cd1a30c002829398beb55f869e07cc7be477197fa5a276"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check.log",
+      "log_sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "result": "Generated views restored whole; neither committed"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "result": {
+        "cases": 198,
+        "qualifications": 2,
+        "total": 200
+      }
+    }
+  ],
+  "changed_files": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/agent-door/native-journey.mjs"
+  ],
+  "generated_views_committed": false,
+  "source_integrity": true,
+  "parent_status_rows": {
+    "before": 204,
+    "after": 204
+  },
+  "test_budget": {
+    "before": 200,
+    "after": 200
+  },
+  "pinned_node_recheck": {
+    "node_version": "v22.20.0",
+    "native_conformance_exit": 0,
+    "typecheck_exit": 0,
+    "first_party_exit": 0
+  }
+}
