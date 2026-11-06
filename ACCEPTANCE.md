@@ -8,12 +8,12 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 36 | 118 | 24 | 178 |
+| Core | 37 | 117 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 36 | 136 | 32 | 204 |
+| Full target | 37 | 135 | 32 | 204 |
 
-Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
+Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. CAPTURE-008 was proved through native delivery and authenticated source reads, with emitted Capture screens at 1440 and 390, from code and tests at commit `577b69e5082264d5864dbeef518ef4c1d290e918` (4 November 2026); its subsequent changes are only this status record, generated counts and source lock. Field proof R-6 remains unclaimed. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
 ## Core
 
@@ -424,15 +424,15 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRE
 
 #### CAPTURE-008 — Orbit address
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2 · Register R-6
+Core · published · **done** · Cites BASE-INPUT-001, BASE-DATA-004, BASE-SECRET-001, BASE-DATA-001, BASE-DATA-003 · Rules D-1, D-2 · Register R-6
 
 **Requirement.** When the installation names a receiving mailbox (the configured receiving mailbox, reached through Cloudflare Email Routing or signed SendGrid Inbound Parse), an operator can create a private Orbit address on the Capture page with no provider console: the mailbox with a random tag, kept sealed like a credential and never in archives. Only mail whose envelope names that exact tagged address is read, so a BCC copy, a forwarded message and automatic forwarding all count, and anything else is refused without storing. Each accepted message follows CAPTURE-001 to CAPTURE-004 exactly as an imported `.eml` file, and a forwarded message counts as coming from the sender it names. A forwarding confirmation from Gmail or Google Workspace is shown to the operator with its code and link instead of being stored as evidence. Replacing the address stops the old one at once and keeps everything captured; a message larger than 10 MB is counted as not stored rather than bounced.
 
 **Acceptance.**
 1. Create and rotate a tagged Orbit address, forward/BCC mail and a Gmail confirmation; accept exact envelope tags only and count oversized mail without retaining it.
 
-**Evidence.** `tests/core/capture-no-console.test.ts`
-**Gap.** Unasserted in the carried evidence: oversized mail counted; oversized content not retained. Asserted: private tagged address created; tag rotation differs; exact envelope tag accepted; wrong envelope tag stores no signal; forwarded/BCC mail captured; Gmail confirmation read back.
+**Evidence.** `tests/core/capture-no-console.test.ts`; Acceptance 1: `tests/core/capture-no-console.test.ts` — CAPTURE-008 CAPTURE-009 the Orbit address and a calendar link capture customer evidence with no provider console (private tagged address creation and rotation; exact envelope authorization and wrong-tag refusal; normal BCC and forwarded mail; Gmail confirmation readback; oversized Cloudflare routing and signed multipart Inbound Parse above 12 MiB acknowledged without a bounce, exact visible Not stored increments and size reason; unchanged nonempty signal, captured-original, proposal and timeline inventories and no sentinel content in any persisted table; hand-forwarded captured headers and signal participants retain only the untagged mailbox, and the downloaded Records archive contains the capture but no tagged address).
+**Gap.** None.
 
 #### CAPTURE-009 — Calendar link
 

@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "81621272877b6fc334cda3d080b8fd74b056ceaede9e4470542aa74e916961df",
+      "sha256": "4e7edf1266395b57d7111bd2b0e9cf99cd9208546db72ad0453fd41bd42886fb",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "9699a35337e9ee072b6cb83a314c8353df0056d09e41baee39f6671254c7dee3",
+      "sha256": "f533c031383788d587fdb6f046b6fcb6fe249bb55d5cbd6e8def881ee3b56bfa",
       "executable": false
     },
     "DEMO.md": {
@@ -5491,7 +5491,7 @@
       "executable": false
     },
     "src/core/features/capture/forward/address.ts": {
-      "sha256": "9b3c870568f2eca470b608652f46d61e98110bccbbacdb19f509c0a13398a92b",
+      "sha256": "a3c4b1f155ece0abb6064efc7bb82195e3d05daa86909f96935b09bfc7ea67e8",
       "executable": false
     },
     "src/core/features/capture/forward/confirmation.ts": {
@@ -5499,11 +5499,11 @@
       "executable": false
     },
     "src/core/features/capture/forward/inbound.ts": {
-      "sha256": "61b47ec4bd9777e931caed063bb883c91afb3dcb2dcbe1495032e24f03c259a5",
+      "sha256": "57ac499cd278054d99748aa6e15a0edf7dfb89967f8429843225a2f0008b8ead",
       "executable": false
     },
     "src/core/features/capture/forward/receive.ts": {
-      "sha256": "b6c1f889c50b48340722c6e5aa8623d2adc84aa33d0209b60958e9c934787b76",
+      "sha256": "55072a8b0a46956f460362d4d62f4edc2aa0d6db36bafec391b80e501abbe128",
       "executable": false
     },
     "src/core/features/capture/forward/routes.ts": {
@@ -5523,7 +5523,7 @@
       "executable": false
     },
     "src/core/features/capture/intake.ts": {
-      "sha256": "be030cf03bee5d6f2989742a8e6ca15bafe6f25e07e7f0985c5b6c498f757666",
+      "sha256": "7b2521b88e7b8c251f27ea96d4d3da43e984beb752a34d4a451c5c9a3ab5026c",
       "executable": false
     },
     "src/core/features/capture/mail-association.ts": {
@@ -9935,7 +9935,7 @@
       "executable": false
     },
     "tests/core/capture-no-console.test.ts": {
-      "sha256": "5a88642df08d0a03e04790f868dccc7e021a3d6a6d974708bc915b53ada0f486",
+      "sha256": "faed7b8d74e07f929473aee1b9f1d2ad730729987d8ca386cfdb40ca189f635b",
       "executable": false
     },
     "tests/core/capture-providers.test.ts": {
