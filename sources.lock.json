@@ -10067,7 +10067,7 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "85ff40dda48b25bc21e6f959e97375feb7b2a7403b32742aaeeeed713fdaed0c",
+      "sha256": "4aed61c0665a7b79d14dda18424cbaaeb1352ace9de243d04ac1ccdf222e4e03",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
