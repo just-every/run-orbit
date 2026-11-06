@@ -149,11 +149,11 @@ test.describe("authenticated operator UI", () => {
 
     const opportunityId = new URL(page.url()).pathname.split('/').at(-1);
     const recordPath = `/api/v1/records/opportunity/${opportunityId}`;
-    // The older event arrives last; the first two share an occurred time.
+    // A newer event arrives before an older one, then a late event ties the first.
     const notes = [
       { text: 'synthetic-orbit-timeline-tie-one', occurredAt: '2026-01-03T09:00:00.000Z' },
-      { text: 'synthetic-orbit-timeline-tie-two', occurredAt: '2026-01-03T09:00:00.000Z' },
       { text: 'synthetic-orbit-timeline-earlier', occurredAt: '2026-01-02T09:00:00.000Z' },
+      { text: 'synthetic-orbit-timeline-tie-two', occurredAt: '2026-01-03T09:00:00.000Z' },
     ];
     for (const note of notes) {
       const response = await page.request.post(`${recordPath}/entries`, {
