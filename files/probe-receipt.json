@@ -1,0 +1,25 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f111",
+  "head": "64303bb57b751b6a599db247756c15aa90808622",
+  "started_at": "2026-11-06T11:51:24.073767+00:00",
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "tests/core/request-scheduling.test.ts"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 28.528,
+  "node": "v24.19.0",
+  "files": {
+    "tests/core/request-scheduling.test.ts": "3ceb827996a2932ae5eb5c02fe9a017b154168b46ea20aedd2554b48a4d0a2d9",
+    "src/core/features/outreach/timing-repository.ts": "90819d33d63a7ea891326825476bd9982ff68c5305c15185ea1e52ac919ce613",
+    "src/core/features/outreach/scheduler.ts": "64d673107f3ec5d9d8aa3012a81451fa36551112b0263c28d1fdb902c5a25676",
+    "src/core/features/records/routes.ts": "2f55d5ada5dcfb52f78f2072f518aec34265716e9d492c73baace5ab172c354b",
+    "src/core/features/records/repository.ts": "6182d0fad72e6c0a0043f3c7534395f9a3a549076edf6fc5381586a12ab8dcde",
+    "src/core/features/opportunities/repository.ts": "828761c1937d654d73cbc96e86d60faf6e0004a8dcc9e9a7bd836c444afe3d58",
+    "src/core/app/app.ts": "036bb7a866be5b98cfd3c00e763f96f93ff620a888bbebd2f28045da9a1876fc"
+  }
+}

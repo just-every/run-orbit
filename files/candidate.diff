@@ -1,0 +1,113 @@
+diff --git a/CONTRACT.md b/CONTRACT.md
+index fb8add5..43053d7 100644
+--- a/CONTRACT.md
++++ b/CONTRACT.md
+@@ -2442,7 +2442,7 @@ RECORD-023 was proved through the native authorization and grant audit journey a
+ | `OPP-004` | Explainability | published | partial | `tests/e2e/operator.spec.mjs` — OPP-004 — the mobile detail renders current score evidence and recommendation reason; push Verify runtime-browser in shards (batch-13); `src/core/features/opportunities/repository.ts`; `src/core/features/operator/ui/record/next-action.tsx`; `src/core/features/operator/ui/record/recorded-details.tsx` | Not reachable in the product, so unasserted: following each contribution to its source evidence. A contribution in the deal's Why this is first list has no link or visible signal ID, Recorded details lists each signal's subject, kind, source and linking basis without ids, and no route serves a signal's source evidence; `tests/e2e/operator.spec.mjs` resolves each contribution's signal ID from the opportunity API inside the test and then finds its Recorded details line by subject text. Asserted at 390 and 1440 in the browser: every contribution shown with its signal subject, type, signed points and source; the current recommendation's reason and next action beside them; each contributing signal's Recorded details line names its source and how it was linked. |
+ | `OPP-005` | Evaluation failure | published | done | `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts` |  |
+ | `OPP-006` | NOW ordering | published | partial | `src/core/features/opportunities/repository.ts`; `tests/e2e/operator.spec.mjs` | Unasserted in the carried evidence: tied NOW order; rep filter; stage filter; band filter; ordering persists after reload. Asserted: untied NOW order. |
+-| `OPP-007` | Queue entry | published | partial | `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: close clock; stale clock; awaiting-response clock; form NOW reason; reply NOW reason; booking NOW reason; one transition per triggering event. Asserted: failed-send NOW reason. |
++| `OPP-007` | Queue entry | published | partial | `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/request-scheduling.test.ts` — a fresh hosted schedule sends once through ordinary requests racing Cron, and due follow-ups return to NOW (a distinct Records-created open deal with an explicit null owner is read outside NOW before its expected close deadline; crossing that deadline through ordinary requests racing and repeating hosted timers yields one explained NOW entry and one timer-sourced feature transition with no human actor, preserving score, band, owner, stage and lifecycle) | Unasserted in the carried evidence: stale clock; genuine five-working-day awaiting-response deadline construction in the workspace timezone; complete form, reply, booking and failure reason and transition reconciliation; all NEXT and removal paths; the complete event matrix and one transition per triggering event beyond the close-deadline case. Asserted: close clock and its single explained transition; failed-send NOW reason. |
+ | `OPP-008` | Manual completion | published | partial | `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: skip retains historical recommendation; no message sent. Asserted: manual completion changes queue; only new recommendation gets a new identity. |
+ | `OPP-009` | Pipeline stages | published | done | Acceptance 1: `tests/core/records-search.test.ts` — RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-015 RECORD-002 RECORD-011 RECORD-006 relationships retain history and pipelines move safely and search matches record and timeline text, intersects every opportunity filter and caps the first page; extended `tests/support/sales-pipelines.ts` — salesPipelinesJourney (two pipelines with different ordered stages created in Settings; a deal moved within a pipeline and across pipelines to an explicit destination after a missing required field and a stale reviewed stage are refused with the stage unchanged; two attributed movement-history entries; lifecycle, owner and score unchanged by the moves; deletion of the occupied pipeline and removal of its occupied stage refused with 409, after which Settings still shows Renewals with Review and Negotiation at its unchanged revision and the deal is still in Review; an empty pipeline deletes); push Verify core-3 in shards (batch-12); `migrations/core/0039_sales_pipelines.sql`; `src/core/features/pipelines/`; `tests/evidence/contract/OPP-009/` |  |
+ | `ACTION-001` | Current recommendation | published | partial | `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`; `tests/core/signals-outreach.test.ts` | Unasserted in the carried evidence: current action evidence; current action version; named action remains with AI disabled; no invented explanation. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof. |
+diff --git a/sources.lock.json b/sources.lock.json
+index c1bb86c..5c9ebb0 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -707,7 +707,7 @@
+       "executable": false
+     },
+     "CONTRACT.md": {
+-      "sha256": "9699a35337e9ee072b6cb83a314c8353df0056d09e41baee39f6671254c7dee3",
++      "sha256": "31a94da8b04f91dc404532a2e48f28a3eaccdb0fbd9d155040a6a1c659e9a7e0",
+       "executable": false
+     },
+     "DEMO.md": {
+@@ -10055,7 +10055,7 @@
+       "executable": false
+     },
+     "tests/core/request-scheduling.test.ts": {
+-      "sha256": "abc9f19b1e2a56b9ae2f31519ac3b956ade236538d7645b19771444fa4dcbabb",
++      "sha256": "3ceb827996a2932ae5eb5c02fe9a017b154168b46ea20aedd2554b48a4d0a2d9",
+       "executable": false
+     },
+     "tests/core/retention.test.ts": {
+diff --git a/tests/core/request-scheduling.test.ts b/tests/core/request-scheduling.test.ts
+index 7192e47..d59572c 100644
+--- a/tests/core/request-scheduling.test.ts
++++ b/tests/core/request-scheduling.test.ts
+@@ -5,6 +5,7 @@ import {createApp} from '../support/app';
+ import {createDependencies} from '../support/dependencies';
+ import {WorkbenchRepository} from '../../src/core/features/workbench/repository';
+ import {runHostedTimers,schedulerStatus} from '../../src/core/features/outreach/scheduler';
++import {createId} from '../../src/core/shared/ids';
+ 
+ test('a fresh hosted schedule sends once through ordinary requests racing Cron, and due follow-ups return to NOW',async context=>{
+  const platform=await isolatedDatabase(),db=platform.db;
+@@ -24,13 +25,41 @@ test('a fresh hosted schedule sends once through ordinary requests racing Cron,
+   const mail={send:async()=>{calls++;start();await submitted;return{providerMessageId:'synthetic-provider-receipt'};}};
+   const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:mail,hosted:true});
+   const session=await deps.auth.createSession(actor);
+-  const request=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1/workbench/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined},undefined,{waitUntil(promise:Promise<unknown>){background.push(promise);void promise.catch(()=>{});},passThroughOnException(){}} as ExecutionContext);
++  const api=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined},undefined,{waitUntil(promise:Promise<unknown>){background.push(promise);void promise.catch(()=>{});},passThroughOnException(){}} as ExecutionContext);
++  const request=(path:string,body?:unknown)=>api(`/workbench/${path}`,body);
+   const draft=await (await request(`opportunities/${opportunity.id}/drafts`,{contactId:contact!.contact_id,subject:'Renewal details',body:'Here is the exact reviewed renewal.'})).json() as {id:string};
+   const approval=await request(`drafts/${draft.id}/approve`,{revision:1,scheduledAt:'2030-01-07T10:02:00Z'});
+   assert.equal(approval.status,200);
+   const message=await approval.json() as {id:string;state:string};assert.equal(message.state,'scheduled');
+   await request(`opportunities/${opportunity.id}/messages`);await Promise.all(background.splice(0));
+   assert.equal((await schedulerStatus(db)).lastRunAt,null);assert.equal(calls,0);
++  // A distinct, unassigned deal crosses its close deadline without a sales-state edit.
++  const closeStage=createId(),closeAt='2030-01-07T10:02:00.000Z';
++  await deps.workspace.ensurePipelineStage({id:closeStage,name:'Close review',position:2});
++  const created=await api('/records/opportunity',{title:'Harbor close review',stage_id:closeStage,owner_id:null,value_cents:150000,expected_close_at:closeAt});
++  assert.equal(created.status,201,await created.clone().text());
++  const closeDeal=await created.json() as {id:string};
++  type Deal={id:string;score:number;band:string;owner_id:string|null;stage_id:string;lifecycle:string;queue_state:string;queue_reason:string|null;expected_close_at:string};
++  type Entry={kind:string;actor_type:string;actor_id:string|null;actor_name:string|null;source:string;occurred_at:string;payload_json:string};
++  const readClose=async()=>{
++   const response=await api(`/records/opportunity/${closeDeal.id}`);
++   assert.equal(response.status,200);
++   return response.json() as Promise<{record:Deal;timeline:Entry[]}>;
++  };
++  const readNow=async()=>{
++   const response=await api('/opportunities/now');
++   assert.equal(response.status,200);
++   return (await response.json() as {opportunities:Array<{id:string;queueReason:string;score:number;band:string;ownerId:string|null;stageId:string;lifecycle:string}>}).opportunities;
++  };
++  await readClose();await Promise.all(background.splice(0));
++  const beforeClose=await readClose();
++  assert.equal(beforeClose.record.expected_close_at,closeAt);
++  assert.equal(beforeClose.record.queue_state,'none');
++  assert.equal(beforeClose.record.owner_id,null);
++  assert.equal(beforeClose.record.lifecycle,'open');
++  assert.equal(beforeClose.timeline.filter(entry=>entry.kind==='queue.now').length,0);
++  assert.equal((await readNow()).some(row=>row.id===closeDeal.id),false);
++  await Promise.all(background.splice(0));
+   // Another customer's awaiting-response deadline is processed by the same kick.
+   const followup=await new WorkbenchRepository(db).createOpportunity({title:'Harbor follow-up',companyName:'Harbor Labs',contactName:'Sam Lee',email:'sam@harbor.example',stageId:'request-timer-stage',valueCents:90000},actor);
+   await db.prepare("UPDATE opportunities SET queue_state='next',next_due_at='2030-01-07T10:02:00.000Z' WHERE id=?").bind(followup.id).run();
+@@ -46,6 +75,22 @@ test('a fresh hosted schedule sends once through ordinary requests racing Cron,
+   assert.equal(await db.prepare('SELECT attempt_count FROM outbound_messages WHERE id=?').bind(message.id).first('attempt_count'),1);
+   assert.equal(await db.prepare('SELECT queue_state FROM opportunities WHERE id=?').bind(followup.id).first('queue_state'),'now');
+   assert.equal(await db.prepare("SELECT COUNT(*) FROM timeline_entry_records r JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE r.record_id=? AND t.kind='queue.now'").bind(followup.id).first('COUNT(*)'),1);
++  await Promise.all(background.splice(0));
++  const afterClose=await readClose(),nowClose=(await readNow()).filter(row=>row.id===closeDeal.id);
++  assert.equal(afterClose.record.queue_state,'now');
++  assert.equal(afterClose.record.queue_reason,'Expected close date passed');
++  assert.equal(afterClose.record.expected_close_at,closeAt);
++  for(const field of ['score','band','owner_id','stage_id','lifecycle'] as const)assert.equal(afterClose.record[field],beforeClose.record[field],`Close deadline preserves ${field}`);
++  assert.equal(nowClose.length,1);
++  assert.equal(nowClose[0].queueReason,'Expected close date passed');
++  assert.equal(nowClose[0].score,beforeClose.record.score);assert.equal(nowClose[0].band,beforeClose.record.band);
++  assert.equal(nowClose[0].ownerId,null);assert.equal(nowClose[0].stageId,closeStage);assert.equal(nowClose[0].lifecycle,'open');
++  const transitions=afterClose.timeline.filter(entry=>entry.kind==='queue.now');
++  assert.equal(transitions.length,1,'Racing and repeated timers record one close-deadline transition');
++  assert.deepEqual(JSON.parse(transitions[0].payload_json),{opportunityId:closeDeal.id,reason:'Expected close date passed'});
++  assert.equal(transitions[0].source,'timer');assert.equal(transitions[0].actor_type,'feature');
++  assert.equal(transitions[0].actor_id,null);assert.equal(transitions[0].actor_name,null);
++  assert.equal(transitions[0].occurred_at,new Date().toISOString());
+   await Promise.all(background);
+  }finally{release();await Promise.allSettled(background);context.mock.timers.reset();await platform.dispose();}
+ });

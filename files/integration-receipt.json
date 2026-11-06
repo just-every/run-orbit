@@ -1,0 +1,69 @@
+{
+  "repository": "just-every/run-orbit",
+  "tag": "sd-orbit-c-f111",
+  "branch": "cloud/sd-orbit-c-f111",
+  "head": "64303bb57b751b6a599db247756c15aa90808622",
+  "base": "9441ea5ecb98b11306978f3228d55807f383f46d",
+  "main_integrated": "74f72f01ad3532725c71bd0832a774abd2c5a6ec",
+  "parents": [
+    "9441ea5ecb98b11306978f3228d55807f383f46d",
+    "74f72f01ad3532725c71bd0832a774abd2c5a6ec"
+  ],
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "clause": "OPP-007",
+  "status_before": "partial",
+  "status_after": "partial",
+  "new_clause_status_changes": [],
+  "new_product_source_changes": [],
+  "new_test_registrations": 0,
+  "test_inventory": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "parent_status_preservation": {
+    "9441ea5ecb98b11306978f3228d55807f383f46d": {
+      "parent_table_rows": 458,
+      "candidate_table_rows": 458,
+      "missing_status_ids": [],
+      "parent_clause_status_rows": 204,
+      "candidate_clause_status_rows": 204,
+      "missing_clause_status_ids": []
+    },
+    "74f72f01ad3532725c71bd0832a774abd2c5a6ec": {
+      "parent_table_rows": 458,
+      "candidate_table_rows": 458,
+      "missing_status_ids": [],
+      "parent_clause_status_rows": 204,
+      "candidate_clause_status_rows": 204,
+      "missing_clause_status_ids": []
+    }
+  },
+  "generated_views_equal_main": true,
+  "selected_test_unchanged_from_base": true,
+  "new_diff_hygiene": {
+    "email_shaped_additions": 0,
+    "credential_shaped_additions": 0
+  },
+  "checks": {
+    "request_scheduling": 0,
+    "typecheck": 0,
+    "first_party": 0,
+    "views_write": 0,
+    "views_check_before_restoring_main": 0,
+    "lock_write": 0,
+    "lock_check": 0,
+    "migration_ledger": "not applicable; no migration"
+  },
+  "publication_scan": "not run in cloud; maintained lander required",
+  "pr": null
+}

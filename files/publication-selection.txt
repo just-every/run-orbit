@@ -1,0 +1,1 @@
+Only actual non-secret report, receipts, public product diff and check logs are selected. No setup output, environment dump, credentials, symlinks, private gate material or provider data is included.

@@ -1,0 +1,21 @@
+{
+  "conclusion": "failure",
+  "head_sha": "64303bb57b751b6a599db247756c15aa90808622",
+  "html_url": "https://github.com/just-every/run-orbit/actions/runs/42213255746",
+  "status": "completed",
+  "run_id": 42213255746,
+  "event": "push",
+  "source_job_id": 127876997777,
+  "aggregate_job_id": 127877226437,
+  "classification": "expected generated-view-only failure with dependent skipped shards and missing artifacts",
+  "readiness_exception": "explicit generated-view freshness exception",
+  "runtime_shards": "skipped",
+  "gh_budget_invocations": 6,
+  "repair_rounds": 0,
+  "dispatches": 0,
+  "reruns": 0,
+  "source_log_command": "gh run view 42213255746 --repo just-every/run-orbit --job 127876997777 --log-failed",
+  "source_log_command_exit": 0,
+  "aggregate_log_command": "gh run view 42213255746 --repo just-every/run-orbit --job 127877226437 --log-failed",
+  "aggregate_log_command_exit": 0
+}
