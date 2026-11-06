@@ -1,0 +1,17 @@
+{
+  "name": "candidate first-party conformance",
+  "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+  "command": [
+    "npx",
+    "-y",
+    "@runeditrun/rer",
+    "check",
+    "--profile",
+    "first-party"
+  ],
+  "started_at": "2026-11-06T05:23:22.638522+00:00",
+  "elapsed_seconds": 1.351,
+  "exit": 0,
+  "log": "candidate-first-party.log",
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

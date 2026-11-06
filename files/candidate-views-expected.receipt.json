@@ -1,0 +1,16 @@
+{
+  "name": "expected candidate generated-view freshness failure",
+  "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+  "command": [
+    "pnpm",
+    "exec",
+    "node",
+    "src/base/contract-docs.mjs",
+    "check"
+  ],
+  "started_at": "2026-11-06T05:28:13.079405+00:00",
+  "elapsed_seconds": 0.434,
+  "exit": 1,
+  "log": "candidate-views-expected.log",
+  "log_sha256": "183372998615cc516043a5f66404b300281009a84349eda72da66d79fe542603"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "edition source lock freshness",
+  "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+  "command": [
+    "node",
+    "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+    "check"
+  ],
+  "started_at": "2026-11-06T05:23:06.652429+00:00",
+  "elapsed_seconds": 0.416,
+  "exit": 0,
+  "log": "candidate-lock.log",
+  "log_sha256": "7b61db9a65b509049d1cb413e3e4cd69c9f731a8db703fa5811b8ab03b05faac"
+}

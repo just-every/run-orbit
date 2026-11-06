@@ -1,0 +1,17 @@
+{
+  "name": "FORM-002 native publication withdrawal probe",
+  "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--test-name-pattern=public form HTTP refuses abuse",
+    "newtests/t096/forms-native.test.ts"
+  ],
+  "started_at": "2026-11-06T05:21:54.041129+00:00",
+  "elapsed_seconds": 49.208,
+  "exit": 0,
+  "log": "candidate-native.log",
+  "log_sha256": "db76b5d8d9a19dd9bded2c2ca858dc40e6fd3e9759a113172369d508f439f0ac"
+}

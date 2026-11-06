@@ -1,0 +1,21 @@
+{
+  "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+  "source": "src/core/features/forms/service.ts",
+  "mutation": "withdrawal acknowledges success without changing publication or capture authority",
+  "test": "FORM-001 public form HTTP refuses abuse without customer writes and releases spam exactly once",
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--test-name-pattern=public form HTTP refuses abuse",
+    "newtests/t096/forms-native.test.ts"
+  ],
+  "exit": 1,
+  "detected": true,
+  "assertion": "withdrawn publication release expected 403, observed 200",
+  "original_source_sha256": "3a7ce3420c88dfdda50b40608b4b71c0135b1f001bf78b1a1321d7ea462dbfe7",
+  "source_restored": true,
+  "log": "withdrawal-mutation.log",
+  "log_sha256": "4bf3de0a92cdc7cc07030178fb84e83007abc3a18ca8b8c5e4c2a68a60462919"
+}

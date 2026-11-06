@@ -1,0 +1,15 @@
+{
+  "parent_status_rows": 204,
+  "candidate_status_rows": 204,
+  "parent_table_lines": 458,
+  "candidate_table_lines": 458,
+  "acceptance_unchanged": true,
+  "existing_assertions_removed": 0,
+  "new_email_literals": 0,
+  "new_bare_slash_tokens": 0,
+  "staged_files": [
+    "CONTRACT.md",
+    "newtests/t096/forms-abuse-journey.ts",
+    "sources.lock.json"
+  ]
+}

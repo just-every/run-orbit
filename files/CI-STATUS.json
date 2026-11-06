@@ -1,0 +1,28 @@
+{
+  "conclusion": "failure",
+  "head_sha": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+  "html_url": "https://github.com/just-every/run-orbit/actions/runs/42167948619",
+  "status": "completed",
+  "id": 42167948619,
+  "event": "push",
+  "observed_at": 1793942815.8754098,
+  "gh_calls": 6,
+  "job_log_commands": [
+    {
+      "command": "gh run view 42167948619 --repo just-every/run-orbit --job 127728853944 --log-failed",
+      "exit": 0,
+      "original_log_sha256": "6edc4c6269d22b9f4af0683f223be9accea50ce2c26472af1b6eaf95d1babb36",
+      "environment_blocks_excluded_from_evidence": true
+    },
+    {
+      "command": "gh run view 42167948619 --repo just-every/run-orbit --job 127729068096 --log-failed",
+      "exit": 0,
+      "original_log_sha256": "63e81a5845a9989825e50ad866c28d6c3dd8f4d79bf136a4c7e3a91ceef31d01",
+      "environment_blocks_excluded_from_evidence": true
+    }
+  ],
+  "classification": "permitted generated-view freshness failure only, with dependent source-artifact and aggregate failures",
+  "failed_source_job": 127728853944,
+  "aggregate_job": 127729068096,
+  "test_shards": "skipped"
+}

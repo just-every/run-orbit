@@ -1,0 +1,187 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f75",
+  "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+  "product_push": {
+    "attempts": 1,
+    "exit": 0,
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f75",
+    "result": "PUSH_OK branch=cloud/sd-orbit-c-f75"
+  },
+  "ci": {
+    "conclusion": "failure",
+    "head_sha": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42167948619",
+    "status": "completed",
+    "id": 42167948619,
+    "event": "push",
+    "observed_at": 1793942815.8754098,
+    "gh_calls": 6,
+    "job_log_commands": [
+      {
+        "command": "gh run view 42167948619 --repo just-every/run-orbit --job 127728853944 --log-failed",
+        "exit": 0,
+        "original_log_sha256": "6edc4c6269d22b9f4af0683f223be9accea50ce2c26472af1b6eaf95d1babb36",
+        "environment_blocks_excluded_from_evidence": true
+      },
+      {
+        "command": "gh run view 42167948619 --repo just-every/run-orbit --job 127729068096 --log-failed",
+        "exit": 0,
+        "original_log_sha256": "63e81a5845a9989825e50ad866c28d6c3dd8f4d79bf136a4c7e3a91ceef31d01",
+        "environment_blocks_excluded_from_evidence": true
+      }
+    ],
+    "classification": "permitted generated-view freshness failure only, with dependent source-artifact and aggregate failures",
+    "failed_source_job": 127728853944,
+    "aggregate_job": 127729068096,
+    "test_shards": "skipped"
+  },
+  "clause": {
+    "id": "FORM-002",
+    "before": "partial",
+    "after": "partial",
+    "selected_point": "withdrawal of a publication prevents subsequent held-spam release",
+    "assertion_door": "authenticated forms withdrawal and spam release routes",
+    "observed": "withdrawal 200; release 403; complete inventories unchanged; payload pending and intact; no release receipt"
+  },
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "test_budget": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "local_results": {
+    "native_target": 0,
+    "typecheck": 0,
+    "first_party": 0,
+    "contract_write": 0,
+    "contract_check_after_write": 0,
+    "lock_write": 0,
+    "lock_check": 0,
+    "migration_ledger": "not applicable; no migration change"
+  },
+  "publication_scan": {
+    "status": "not run in cloud",
+    "custody": "fleet Mac must scan complete history before landing"
+  },
+  "run_site": {
+    "candidate": "main-only; pending guarded landing",
+    "starting_main_run": 42157856336,
+    "starting_main_conclusion": "success"
+  },
+  "pr": null,
+  "blockers": [],
+  "candidate_checks": [
+    {
+      "name": "FORM-002 native publication withdrawal probe",
+      "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-name-pattern=public form HTTP refuses abuse",
+        "newtests/t096/forms-native.test.ts"
+      ],
+      "started_at": "2026-11-06T05:21:54.041129+00:00",
+      "elapsed_seconds": 49.208,
+      "exit": 0,
+      "log": "candidate-native.log",
+      "log_sha256": "db76b5d8d9a19dd9bded2c2ca858dc40e6fd3e9759a113172369d508f439f0ac"
+    },
+    {
+      "name": "candidate typecheck",
+      "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+      "command": [
+        "pnpm",
+        "run",
+        "typecheck"
+      ],
+      "started_at": "2026-11-06T05:23:07.122735+00:00",
+      "elapsed_seconds": 15.458,
+      "exit": 0,
+      "log": "candidate-typecheck.log",
+      "log_sha256": "01815e689824a85827051207aa228fa63836b8e89b5dd1414623fef8c430c19f"
+    },
+    {
+      "name": "candidate first-party conformance",
+      "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+      "command": [
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "started_at": "2026-11-06T05:23:22.638522+00:00",
+      "elapsed_seconds": 1.351,
+      "exit": 0,
+      "log": "candidate-first-party.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "edition source lock freshness",
+      "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "started_at": "2026-11-06T05:23:06.652429+00:00",
+      "elapsed_seconds": 0.416,
+      "exit": 0,
+      "log": "candidate-lock.log",
+      "log_sha256": "7b61db9a65b509049d1cb413e3e4cd69c9f731a8db703fa5811b8ab03b05faac"
+    }
+  ],
+  "mutation": {
+    "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+    "source": "src/core/features/forms/service.ts",
+    "mutation": "withdrawal acknowledges success without changing publication or capture authority",
+    "test": "FORM-001 public form HTTP refuses abuse without customer writes and releases spam exactly once",
+    "command": [
+      "pnpm",
+      "exec",
+      "tsx",
+      "--test",
+      "--test-name-pattern=public form HTTP refuses abuse",
+      "newtests/t096/forms-native.test.ts"
+    ],
+    "exit": 1,
+    "detected": true,
+    "assertion": "withdrawn publication release expected 403, observed 200",
+    "original_source_sha256": "3a7ce3420c88dfdda50b40608b4b71c0135b1f001bf78b1a1321d7ea462dbfe7",
+    "source_restored": true,
+    "log": "withdrawal-mutation.log",
+    "log_sha256": "4bf3de0a92cdc7cc07030178fb84e83007abc3a18ca8b8c5e4c2a68a60462919"
+  },
+  "ready_basis": "named branch pushed; exact-candidate local gates pass; generated-view-only Verify exception specified in the brief",
+  "expected_generated_view_check": {
+    "name": "expected candidate generated-view freshness failure",
+    "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+    "command": [
+      "pnpm",
+      "exec",
+      "node",
+      "src/base/contract-docs.mjs",
+      "check"
+    ],
+    "started_at": "2026-11-06T05:28:13.079405+00:00",
+    "elapsed_seconds": 0.434,
+    "exit": 1,
+    "log": "candidate-views-expected.log",
+    "log_sha256": "183372998615cc516043a5f66404b300281009a84349eda72da66d79fe542603"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "candidate typecheck",
+  "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+  "command": [
+    "pnpm",
+    "run",
+    "typecheck"
+  ],
+  "started_at": "2026-11-06T05:23:07.122735+00:00",
+  "elapsed_seconds": 15.458,
+  "exit": 0,
+  "log": "candidate-typecheck.log",
+  "log_sha256": "01815e689824a85827051207aa228fa63836b8e89b5dd1414623fef8c430c19f"
+}

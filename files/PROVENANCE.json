@@ -1,0 +1,18 @@
+{
+  "head": "2627702296761a80e95ec2f8b6fc824915ec75c3",
+  "branch": "cloud/sd-orbit-c-f75",
+  "clean_worktree": true,
+  "full_history": true,
+  "history_commits": 556,
+  "generated_view_diff": [],
+  "application_source_diff": [],
+  "changed_files": [
+    "CONTRACT.md",
+    "newtests/t096/forms-abuse-journey.ts",
+    "sources.lock.json"
+  ],
+  "remote_product_ref_verified": true,
+  "publication_scan": "pending fleet Mac",
+  "main_pushes": 0,
+  "pr": null
+}

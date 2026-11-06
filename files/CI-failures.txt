@@ -1,0 +1,10 @@
+gh run view 42167948619 --repo just-every/run-orbit --job 127728853944 --log-failed
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:22:30.0034114Z Verification (source): pnpm exec node src/base/contract-docs.mjs check
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:22:30.4879494Z ACCEPTANCE.md: generated content differs; run contract-docs write.
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:22:30.5280735Z ##[error]Process completed with exit code 1.
+source and shared build	Retain authoritative source candidate	2026-11-06T05:22:32.1241502Z ##[error]No files were found with the provided path: /tmp/orbit-source.bundle
+gh run view 42167948619 --repo just-every/run-orbit --job 127729068096 --log-failed
+verify	Require a successful plan and all required work	2026-11-06T05:22:39.2685045Z   SOURCE: failure
+verify	Require a successful plan and all required work	2026-11-06T05:22:39.2685532Z   SHARDS: skipped
+verify	Require a successful plan and all required work	2026-11-06T05:22:39.2765244Z ##[error]Process completed with exit code 1.
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T05:22:39.5595272Z ##[error]No files were found with the provided path: verification/core-results.jsonl
