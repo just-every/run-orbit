@@ -10,9 +10,11 @@ import {WorkbenchRepository} from '../../src/core/features/workbench/repository'
 import {notificationSession} from '../support/notification-session';
 import {notificationResponsibility} from '../support/notification-responsibility';
 import type {AIProvider} from '../../src/core/features/assistance/provider';
-import type {OperatorDraft} from '../../src/core/features/operator/ui/operator-api';
+import type {OperatorDraft,OpportunityDetail} from '../../src/core/features/operator/ui/operator-api';
+import {createOutboundMail,type OutboundMail} from '../../src/core/platform/outbound-mail';
+import type {RenderReview} from '../../src/core/features/drafts/render';
 const platform=await isolatedDatabase();after(()=>platform.dispose());const db=platform.db;
-async function fixture(provider?:AIProvider){const deps=createDependencies(db),actor=createId(),stage=createId();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.invalid`,displayName:'Assistance test'});await deps.workspace.ensureWorkspace({name:'Assistance test',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});const n=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Review',position:n!.n});const workbench=new WorkbenchRepository(db);const opportunity=await workbench.createOpportunity({title:'Real D1 test',companyName:'Test company',contactName:'Test contact',email:`${createId()}@test.invalid`,stageId:stage,valueCents:10},actor);await workbench.recordEvent(opportunity.id,{type:'form.submitted',subject:'Requested details',occurredAt:new Date().toISOString(),eventId:createId()},actor);const session=await deps.auth.createSession(actor);const app=createApp({database:db,assets:{fetch:async()=>new Response('test')},aiProvider:provider});const cookie=`__Host-orbit_session=${session.token}`;async function call(path:string,body?:unknown){return app.request(`https://orbit.test/api/v1/${path}`,{method:body?'POST':'GET',headers:{cookie,origin:'https://orbit.test','content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});}return{actor,opportunity,call,app,cookie};}
+async function fixture(provider?:AIProvider,outboundMail?:OutboundMail){const deps=createDependencies(db),actor=createId(),stage=createId();await deps.auth.ensureOperator({id:actor,email:`${actor}@test.invalid`,displayName:'Assistance test'});await deps.workspace.ensureWorkspace({name:'Assistance test',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});const n=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:stage,name:'Review',position:n!.n});const workbench=new WorkbenchRepository(db);const opportunity=await workbench.createOpportunity({title:'Real D1 test',companyName:'Test company',contactName:'Test contact',email:`${createId()}@test.invalid`,stageId:stage,valueCents:10},actor);await workbench.recordEvent(opportunity.id,{type:'form.submitted',subject:'Requested details',occurredAt:new Date().toISOString(),eventId:createId()},actor);const session=await deps.auth.createSession(actor);const app=createApp({database:db,assets:{fetch:async()=>new Response('test')},aiProvider:provider,outboundMail});const cookie=`__Host-orbit_session=${session.token}`;async function call(path:string,body?:unknown){return app.request(`https://orbit.test/api/v1/${path}`,{method:body?'POST':'GET',headers:{cookie,origin:'https://orbit.test','content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});}return{actor,opportunity,call,app,cookie};}
 test('AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creates durable unsent draft and usage',async()=>{
  let received:unknown;const provider:AIProvider={provider:'test',model:'test-model',inputCostPerMillion:1,outputCostPerMillion:2,async generate(input){received=input;const data=input as {evidence:{id:string}[]};return {output:{explanation:'Follow up on their request.',subject:'Your request',body:'Thanks for asking. What would help?',evidenceIds:[data.evidence[0]!.id]},inputTokens:20,outputTokens:10};}};
  const f=await fixture(provider);const previewResponse=await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'});assert.equal(previewResponse.status,200);const preview=await previewResponse.json() as {id:string;preview:unknown};const generated=await f.call('assistance/generate',{previewId:preview.id});assert.equal(generated.status,200);assert.deepEqual(received,preview.preview);const body=await generated.json() as {draftId:string};assert.ok(await db.prepare('SELECT id FROM drafts WHERE id=?').bind(body.draftId).first());assert.equal((await db.prepare('SELECT count(*) AS n FROM outbound_messages WHERE opportunity_id=?').bind(f.opportunity.id).first<{n:number}>())!.n,0);assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,409);const usage=await db.prepare('SELECT input_tokens,output_tokens,status FROM ai_calls WHERE opportunity_id=?').bind(f.opportunity.id).first();assert.deepEqual(usage,{input_tokens:20,output_tokens:10,status:'success'});
@@ -79,8 +81,85 @@ test('AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creat
  assert.equal(messages.status,200);
  assert.deepEqual((await messages.json() as {messages:unknown[]}).messages,[],'editing and returning submit no customer message');
 });
-test('AI-002 invented evidence fails visibly; AI-003 unconfigured provider generates nothing',async()=>{
- const provider:AIProvider={provider:'test',model:'test',inputCostPerMillion:0,outputCostPerMillion:0,async generate(){return{output:{explanation:'Bad evidence',subject:'No',body:'No',evidenceIds:['not-present']},inputTokens:1,outputTokens:1};}};const f=await fixture(provider);const preview=await(await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'})).json() as {id:string};assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,502);assert.equal((await db.prepare('SELECT count(*) AS n FROM drafts WHERE opportunity_id=?').bind(f.opportunity.id).first<{n:number}>())!.n,0);const off=await fixture();assert.equal((await off.call('assistance/generate',{previewId:createId()})).status,503);
+test('AI-002 invented evidence fails visibly; AI-003 unconfigured provider generates nothing and handwritten outreach submits once',async context=>{
+ context.mock.timers.enable({apis:['Date'],now:new Date('2026-11-06T12:00:00.000Z')});
+ const provider:AIProvider={provider:'test',model:'test',inputCostPerMillion:0,outputCostPerMillion:0,async generate(){return{output:{explanation:'Bad evidence',subject:'No',body:'No',evidenceIds:['not-present']},inputTokens:1,outputTokens:1};}};const f=await fixture(provider);const preview=await(await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'})).json() as {id:string};assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,502);assert.equal((await db.prepare('SELECT count(*) AS n FROM drafts WHERE opportunity_id=?').bind(f.opportunity.id).first<{n:number}>())!.n,0);
+ const submissions:{personalizations:{to:{email:string}[]}[];subject:string;content:{type:string;value:string}[];asm?:{group_id:number}}[]=[];
+ context.mock.method(globalThis,'fetch',async(input:RequestInfo|URL,init?:RequestInit)=>{
+  const request=new Request(input,init);
+  assert.equal(request.url,'https://api.sendgrid.com/v3/mail/send','only the configured customer-mail HTTP edge may run');
+  assert.equal(request.method,'POST');
+  submissions.push(await request.json());
+  return new Response(null,{status:202,headers:{'x-message-id':'synthetic-orbit-96-receipt'}});
+ });
+ const mail=createOutboundMail({DB:db,MAIL_PROVIDER:'sendgrid',SENDGRID_API_KEY:'synthetic-orbit-96',MAIL_FROM:['synthetic-orbit-96','example.test'].join('@'),MAIL_REPLY_TO:['synthetic-orbit-97','example.test'].join('@'),SENDGRID_UNSUBSCRIBE_GROUP_ID:'96'});
+ assert.ok(mail,'customer mail is configured independently of AI');
+ const off=await fixture(undefined,mail);
+ const unavailable=await off.call('assistance/generate',{previewId:createId()});
+ assert.equal(unavailable.status,503);
+ assert.deepEqual(await unavailable.json(),{error:'AI is not configured. Manual work remains available.'});
+ const detail=await off.call(`opportunities/${off.opportunity.id}`);
+ assert.equal(detail.status,200);
+ const opportunity=(await detail.json() as {opportunity:OpportunityDetail}).opportunity;
+ const handwritten={contactId:opportunity.contacts[0]!.id,subject:'A handwritten answer',body:'Thanks for requesting details. I can walk through the options with you.'};
+ const created=await off.call(`workbench/opportunities/${off.opportunity.id}/drafts`,handwritten);
+ assert.equal(created.status,201,await created.clone().text());
+ const draftId=(await created.json() as {id:string}).id;
+ const savedResponse=await off.call(`drafts/${draftId}`);
+ assert.equal(savedResponse.status,200);
+ const saved=(await savedResponse.json() as {draft:OperatorDraft}).draft;
+ assert.deepEqual([saved.subject,saved.body,saved.recipientEmail],[handwritten.subject,handwritten.body,opportunity.contacts[0]!.email]);
+ const rendered=await off.call(`library/drafts/${draftId}/render`);
+ assert.equal(rendered.status,200);
+ const review=await rendered.json() as RenderReview;
+ assert.deepEqual([review.recipientEmail,review.subject,review.body,review.revision],[saved.recipientEmail,saved.subject,saved.body,saved.revision]);
+ assert.deepEqual(review.missing,[]);
+ assert.deepEqual(review.stale,[]);
+ const optOutResponse=await off.call(`workbench/drafts/${draftId}/opt-out`);
+ assert.equal(optOutResponse.status,200);
+ const optOut=await optOutResponse.json() as {carries:boolean;marking:string|null};
+ const approvalPreview=await off.call(`workbench/drafts/${draftId}/approval-preview`);
+ assert.equal(approvalPreview.status,200);
+ const timing=await approvalPreview.json() as {localTime:string};
+ const messages=async()=>{
+  const response=await off.call(`workbench/opportunities/${off.opportunity.id}/messages`);
+  assert.equal(response.status,200);
+  return (await response.json() as {messages:{id:string;draftId:string;revision:number;state:string;recipientEmail:string;subject:string;body:string;optOut:number;providerMessageId:string|null;acceptedAt:string|null}[]}).messages;
+ };
+ assert.deepEqual(await messages(),[],'manual composition and review submit nothing');
+ assert.equal(submissions.length,0);
+ const approval={revision:review.revision,quietHoursConfirmation:timing.localTime};
+ const approved=await off.call(`workbench/drafts/${draftId}/approve`,approval);
+ assert.equal(approved.status,200,await approved.clone().text());
+ const accepted=await approved.json() as {id:string;state:string};
+ assert.equal(accepted.state,'accepted');
+ const snapshot=await db.prepare('SELECT render_snapshot_json FROM outbound_messages WHERE id=?').bind(accepted.id).first<{render_snapshot_json:string}>();
+ assert.deepEqual(JSON.parse(snapshot!.render_snapshot_json),review,'approval saves exactly the content the operator read');
+ const bound=await db.prepare('SELECT carries,marking FROM outbound_message_opt_out WHERE message_id=?').bind(accepted.id).first<{carries:number;marking:string|null}>();
+ assert.deepEqual(bound,{carries:optOut.carries?1:0,marking:optOut.marking},'approval binds the reviewed opt-out state');
+ assert.equal(submissions.length,1);
+ const wire=submissions[0]!,approvedSnapshot=JSON.parse(snapshot!.render_snapshot_json) as RenderReview;
+ assert.deepEqual(wire.personalizations,[{to:[{email:approvedSnapshot.recipientEmail}]}]);
+ assert.equal(wire.subject,approvedSnapshot.subject);
+ assert.deepEqual(wire.content,[{type:'text/plain',value:approvedSnapshot.body}]);
+ assert.deepEqual(wire.asm,bound!.carries?{group_id:96}:undefined);
+ const receipts=await messages();
+ assert.equal(receipts.length,1);
+ assert.deepEqual([receipts[0]!.id,receipts[0]!.draftId,receipts[0]!.revision,receipts[0]!.state],[accepted.id,draftId,review.revision,'accepted']);
+ assert.deepEqual([receipts[0]!.recipientEmail,receipts[0]!.subject,receipts[0]!.body,receipts[0]!.optOut],[review.recipientEmail,review.subject,review.body,bound!.carries]);
+ assert.equal(receipts[0]!.providerMessageId,'synthetic-orbit-96-receipt');
+ assert.equal(receipts[0]!.acceptedAt,new Date().toISOString());
+ const repeated=await off.call(`workbench/drafts/${draftId}/approve`,approval);
+ assert.equal(repeated.status,409);
+ assert.match((await repeated.json() as {error:string}).error,/already approved/);
+ assert.deepEqual(await messages(),receipts,'repeated approval leaves the accepted receipt unchanged');
+ assert.equal(submissions.length,1,'repeated approval makes no second provider submission');
+ assert.equal((await db.prepare('SELECT count(*) AS n FROM ai_calls WHERE opportunity_id=?').bind(off.opportunity.id).first<{n:number}>())!.n,0,'manual continuity makes no AI call');
+ const drafts=await off.call(`drafts?opportunityId=${off.opportunity.id}`);
+ assert.equal(drafts.status,200);
+ assert.deepEqual((await drafts.json() as {drafts:OperatorDraft[]}).drafts,[saved],'only the handwritten draft exists');
+ assert.equal((await db.prepare('SELECT count(*) AS n FROM recommendations WHERE opportunity_id=? AND explanation IS NOT NULL').bind(off.opportunity.id).first<{n:number}>())!.n,0,'no generated explanation appears');
+
 });
 test('AI-001 DATA-002 changed or deleted preview context never leaves deployment',async()=>{
  let calls=0;const f=await fixture({provider:'test',model:'test',inputCostPerMillion:0,outputCostPerMillion:0,async generate(){calls++;throw new Error('must not run');}});const preview=await(await f.call('assistance/preview',{opportunityId:f.opportunity.id,feature:'draft'})).json() as {id:string};await db.prepare('UPDATE opportunities SET title=? WHERE id=?').bind('Changed after preview',f.opportunity.id).run();assert.equal((await f.call('assistance/generate',{previewId:preview.id})).status,409);assert.equal(calls,0);
