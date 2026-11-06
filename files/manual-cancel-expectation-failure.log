@@ -1,0 +1,43 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not (4214.469365ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28574.875965
+
+✖ failing tests:
+
+test at tests/core/signals-outreach.test.ts:1:42717
+✖ OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not (4214.469365ms)
+  AssertionError [ERR_ASSERTION]: The scheduled message contains exactly the reviewed draft
+  + actual - expected
+  
+    [
+      {
+        body: 'Reviewed follow-up',
+        id: '01M6R8GA5FJYQ6BZS84EQ9QV93',
+  +     recipientEmail: '01m6r8g9k58cn0ygr0vde043qh@customer.example',
+  -     recipientEmail: '01M6R8G9K58CN0YGR0VDE043QH@customer.example',
+        revision: 1,
+        state: 'scheduled',
+        subject: 'Follow-up stopped by its operator'
+      }
+    ]
+  
+      at TestContext.<anonymous> (/workspace/run-orbit/tests/core/signals-outreach.test.ts:297:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ { id: '01M6R8GA5FJYQ6BZS84EQ9QV93', revision: 1, state: 'scheduled', recipientEmail: '01m6r8g9k58cn0ygr0vde043qh@customer.example', subject: 'Follow-up stopped by its operator', body: 'Reviewed follow-up' } ],
+    expected: [ { id: '01M6R8GA5FJYQ6BZS84EQ9QV93', revision: 1, state: 'scheduled', recipientEmail: '01M6R8G9K58CN0YGR0VDE043QH@customer.example', subject: 'Follow-up stopped by its operator', body: 'Reviewed follow-up' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

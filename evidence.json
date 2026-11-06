@@ -1,0 +1,172 @@
+{
+  "files": [
+    {
+      "blob": "e3cb5b869b3e971b919a5aac277e67ab773b2934",
+      "bytes": 1803,
+      "path": "PLAN.md",
+      "sha256": "4915854b8fe206ab4c1a90facf8e3046275b72ff56414aba587df8dd11d84721"
+    },
+    {
+      "blob": "a85c835a67eb4ebe6101bba3b8eaa3f78e50e532",
+      "bytes": 4637,
+      "path": "RECEIPT.json",
+      "sha256": "59572722ba180c0720d21c9e16796b9f7e4ad9c23b22cd9ce5c41c26bb92e7f5"
+    },
+    {
+      "blob": "1c021db2efbf523023119996cdbb842ca99adb5f",
+      "bytes": 9816,
+      "path": "REPORT.md",
+      "sha256": "6f53953615e2d016559deb3b644023dc9aed654aea95b1f8c74b70c3884a4391"
+    },
+    {
+      "blob": "d95cf71cf22c7649b382506f0db010f2bf6a3201",
+      "bytes": 146,
+      "path": "baseline.json",
+      "sha256": "aa439bcb4203d64bbcc8cc4d5c13b95535623e4c4ce85fdee8cbe937fcc6a48c"
+    },
+    {
+      "blob": "8feb1b861eb2c004214011b4294979e4a3e8d51a",
+      "bytes": 4280,
+      "path": "candidate-ci-jobs.json",
+      "sha256": "eb0012874ae6b6b2b7b2e8998fbe472066469688cdb54e0479f9b1a8b1bfc1d0"
+    },
+    {
+      "blob": "a967f6f353f46df969f09dd82dc3ab4c3dd3d56c",
+      "bytes": 178,
+      "path": "candidate-ci-status.json",
+      "sha256": "21349d348e6a1e9e687b28524952f3b8f5ac633b939555d692680ab12621be0c"
+    },
+    {
+      "blob": "02c8d90d6d9a3a13e9f7ee0521a82a998263f17b",
+      "bytes": 41,
+      "path": "candidate-head.txt",
+      "sha256": "f14e4353cf0116e33e39972893026d62102d5988328bdfaac6fab4853fc45967"
+    },
+    {
+      "blob": "def5fe1e572f941e60aec91fb2aeb2f714da7123",
+      "bytes": 10354,
+      "path": "candidate.patch",
+      "sha256": "a36de17727f53565214e47ef3e7606e5538995b394ed8265aea1dff8e8c48438"
+    },
+    {
+      "blob": "ee095b745cdb5fa08d6311593066941e02634856",
+      "bytes": 886,
+      "path": "checks.json",
+      "sha256": "c18d0f7bc88bdad6bd1af95e3ad48e7f1b6498de29e48eeadd73f970d6a8c6b8"
+    },
+    {
+      "blob": "c835cbc98c4c90fc23ca4745a290dc3e37fd45f2",
+      "bytes": 1938,
+      "path": "ci-failure-excerpt.log",
+      "sha256": "06d42d772bf18b0b3db3d039fc466254c805b7adb87bc7135d6fa069dccdd774"
+    },
+    {
+      "blob": "d0555f252384515e4e6a6007c01cb0f32e97300c",
+      "bytes": 414,
+      "path": "exact-head-test.log",
+      "sha256": "deda0932d373e50beced4099986d557ae0e05a91ac1357063a263016b131c407"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "first-party-exact-head.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "blob": "f6eb62cb9ed9bde5e383687e1eb4bfec15d36f83",
+      "bytes": 1022,
+      "path": "github-calls.jsonl",
+      "sha256": "551b3e99c006cae548d0c5417a6b6fd676d3efcda516923e059af3bd50ade627"
+    },
+    {
+      "blob": "4b6b3c8749408f34f9621106885eecb0e8f71ba2",
+      "bytes": 249,
+      "path": "identity-audit.log",
+      "sha256": "5f782040cf5c71d33dec8afa17b3e1539ebd71f70ebc4bf9e7293ef24ea612c9"
+    },
+    {
+      "blob": "af0c92ffeb649dff941badda88787a862200c16e",
+      "bytes": 2011,
+      "path": "manual-cancel-expectation-failure.log",
+      "sha256": "3ce3b76694b5d1d3a22702829c3dc3a40e9b333228550decb69e6aacb4c179e6"
+    },
+    {
+      "blob": "453db4d9c6cc8c671b813e952cd2b19240918149",
+      "bytes": 413,
+      "path": "manual-cancel-final-test.log",
+      "sha256": "a1706c9e85f86d032c687c03b785b27abd5808d98a93482fd9df086036842b50"
+    },
+    {
+      "blob": "44900449d95e2500f3c732a7860c6fabe0988e36",
+      "bytes": 413,
+      "path": "manual-cancel-test.log",
+      "sha256": "46bb83ba1cf2fd26b3be62b6b36e0d19864ad407887484fab07b5f5363c0e323"
+    },
+    {
+      "blob": "8214add5136ba81afcd308f09f6e963f716b5a51",
+      "bytes": 9787,
+      "path": "proof-source.txt",
+      "sha256": "f0d153e56daf0457414cf20f1299deec93d11da812c4561d79314340ca550939"
+    },
+    {
+      "blob": "1bd5c51fd4f35e776dbb01524944d41b1f4c8577",
+      "bytes": 1579,
+      "path": "push-receipts.log",
+      "sha256": "c42bcc7271482635bad0364f804ca263b641853d63e58a7584471f15ad6c8627"
+    },
+    {
+      "blob": "9e9635572de5940cbfbb9445a88d6799d2f38da0",
+      "bytes": 74,
+      "path": "remote-head.txt",
+      "sha256": "24d5f35d86a4d7ea6ff4387a96232f95104e6edabb3019fd63e8b9d3035fc182"
+    },
+    {
+      "blob": "5b4e8c93aa53cbc342ce7f0c67bcb28adc52d327",
+      "bytes": 399,
+      "path": "row-retention.json",
+      "sha256": "2b6aee50779997e70c88e93ded5c9a4dbe4da2be159b54309950f5cdc94d8b08"
+    },
+    {
+      "blob": "10624c658640570c194a869fb0e5e9eac15af786",
+      "bytes": 6496,
+      "path": "signals-outreach-test.log",
+      "sha256": "96c55626c8ec95b1bcfcb7b57d8e310fa759547109cfba76ed9b1769a58ff3a5"
+    },
+    {
+      "blob": "a082ec4d7a830562a2905fd03b6d955b942a9fd7",
+      "bytes": 490665,
+      "path": "source-lock-exact-head.log",
+      "sha256": "b1aceb052f3d0e8f2bab49e2f5bf08659e3e46201e9723db7552b9e350f09f5d"
+    },
+    {
+      "blob": "aacad36dae52c49dff93b93205e582a4b2678120",
+      "bytes": 45,
+      "path": "test-budget.json",
+      "sha256": "7c5cf44947352f9650b0d7f671d412965cafe09515fe4990444698db39ebba7b"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "typecheck-exact-head.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "blob": "ae869b2fafd3acf46a2dc6ce35ec869497ae9cfb",
+      "bytes": 32,
+      "path": "views-check-final.log",
+      "sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "blob": "d4d1e60ea7fdc565c576421664992b40e47a816e",
+      "bytes": 28,
+      "path": "views-write-final.log",
+      "sha256": "df91012bf66fb476e9cd1a30c002829398beb55f869e07cc7be477197fa5a276"
+    }
+  ],
+  "product_branch": "cloud/sd-orbit-c-f105",
+  "product_head": "25ad07ce9805fd8254b1332a2674035460a0ec82",
+  "ref": "refs/heads/evidence/sd-orbit-c-f105",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "sd-orbit-c-f105"
+}

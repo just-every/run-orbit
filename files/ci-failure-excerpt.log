@@ -1,0 +1,12 @@
+Actual failed-job excerpts from candidate-source-failed.log; workflow environment sections omitted.
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T11:08:52.6351925Z Verification (source): pnpm exec node src/base/contract-docs.mjs check
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T11:08:53.1182227Z ACCEPTANCE.md: generated content differs; run contract-docs write.
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T11:08:53.1568307Z ##[error]Process completed with exit code 1.
+source and shared build	Retain authoritative source candidate	2026-11-06T11:08:54.4592452Z ##[error]No files were found with the provided path: /tmp/orbit-source.bundle
+Actual failed-job excerpts from candidate-verify-failed.log; workflow environment sections omitted.
+verify	Require a successful plan and all required work	﻿2026-11-06T11:09:02.2598152Z ##[group]Run test "$PLAN" = success
+verify	Require a successful plan and all required work	2026-11-06T11:09:02.2600569Z [36;1m  reuse) test "$SKIP" = true && test "$SOURCE" = skipped && test "$SHARDS" = skipped && test "$LIGHT" = skipped ;;[0m
+verify	Require a successful plan and all required work	2026-11-06T11:09:02.2601901Z [36;1m  light) test "$SKIP" = false && test "$LIGHT" = success && test "$SOURCE" = skipped && test "$SHARDS" = skipped ;;[0m
+verify	Require a successful plan and all required work	2026-11-06T11:09:02.2603080Z [36;1m  full) test "$SOURCE" = success && test "$SHARDS" = success && test "$LIGHT" = skipped ;;[0m
+verify	Require a successful plan and all required work	2026-11-06T11:09:02.2753419Z ##[error]Process completed with exit code 1.
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T11:09:02.6478216Z ##[error]No files were found with the provided path: verification/core-results.jsonl

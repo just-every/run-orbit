@@ -1,0 +1,58 @@
+287: test('OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not',async()=>{
+288:  for(const type of ['email.replied','meeting.booked','email.unsubscribed','email.bounced'] as const){const f=await fixture(),outreach=new OutreachRepository(db),approval=new ApprovalRepository(db),now=new Date('2030-01-07T09:00:00Z');const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Stop proof',body:'Reviewed and never sent'},f.actor);const message=await approval.approve(draft.id,1,f.actor,{now,scheduledAt:'2030-01-07T10:00:00Z'});await new WorkbenchRepository(db).recordEvent(f.opportunityId,{type,contactId:f.contactId,permanentBounce:type==='email.bounced',subject:'Customer stop',occurredAt:now.toISOString(),eventId:createId()},f.actor);let calls=0;await new OutreachService(db,{send:async()=>{calls++;return{providerMessageId:'must-not-send'};}}).dispatchDue(new Date('2030-01-07T10:00:00Z'));assert.equal(calls,0);assert.equal((await approval.message(message.id)).state,'cancelled');assert.equal((await db.prepare('SELECT is_stale FROM drafts WHERE id=?').bind(draft.id).first<{is_stale:number}>())!.is_stale,1);}
+289:  const f=await fixture(),deps=createDependencies(db),approval=new ApprovalRepository(db),advanced=createId(),session=await deps.auth.createSession(f.actor);let calls=0;
+290:  const position=await db.prepare('SELECT COALESCE(MAX(position),0)+1 AS n FROM pipeline_stages').first<{n:number}>();await deps.workspace.ensurePipelineStage({id:advanced,name:'Advanced',position:position!.n});
+291:  const mail={send:async()=>{calls++;return{providerMessageId:`test-receipt-${calls}`};}},app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:mail}),service=new OutreachService(db,mail),post=signedReplies(db);
+292:  const api=async<T=any>(path:string,body?:unknown,status=200)=>{const response=await app.request(`https://orbit.test/api/v1/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});assert.equal(response.status,status,path);return await response.json() as T;};
+293:  const due=['2030-01-07T10:00:00.000Z','2030-01-08T10:00:00.000Z','2030-01-09T10:00:00.000Z'];
+294:  async function schedule(subject:string,at=due[1]!){const draft=await api<{id:string}>(`workbench/opportunities/${f.opportunityId}/drafts`,{contactId:f.contactId,subject,body:'Reviewed follow-up'},201);return (await api<{id:string;state:string}>(`workbench/drafts/${draft.id}/approve`,{revision:1,scheduledAt:at})).id;}
+295:  const manual=await schedule('Follow-up stopped by its operator',due[0]);
+296:  const messages=async()=>(await api<{messages:{id:string;revision:number;state:string;recipientEmail:string;subject:string;body:string;failure:string|null}[]}>(`workbench/opportunities/${f.opportunityId}/messages`)).messages;
+297:  assert.deepEqual((await messages()).map(({id,revision,state,recipientEmail,subject,body})=>({id,revision,state,recipientEmail,subject,body})),[{id:manual,revision:1,state:'scheduled',recipientEmail:f.email.toLowerCase(),subject:'Follow-up stopped by its operator',body:'Reviewed follow-up'}],'The scheduled message contains exactly the reviewed draft');
+298:  assert.deepEqual(await api(`workbench/messages/${manual}/cancel`,{}),{cancelled:true});
+299:  const manualEffects=async()=>({
+300:   messages:await messages(),
+301:   detail:await api<{timeline:{id:string;kind:string;actor_type:string;actor_id:string;payload_json:string}[]}>(`records/opportunity/${f.opportunityId}`),
+302:   audit:(await db.prepare("SELECT * FROM audit_entries WHERE entity_id=? AND action='message.cancelled' ORDER BY id").bind(manual).all()).results
+303:  });
+304:  const cancelled=await manualEffects();
+305:  assert.equal(cancelled.messages.find(message=>message.id===manual)!.state,'cancelled');
+306:  assert.equal(cancelled.messages.find(message=>message.id===manual)!.failure,'Cancelled by operator');
+307:  const exits=cancelled.detail.timeline.filter(entry=>entry.kind==='message.cancelled'&&JSON.parse(entry.payload_json).messageId===manual);
+308:  assert.equal(exits.length,1,'The native timeline retains one human cancellation');
+309:  assert.equal(exits[0]!.actor_type,'operator');assert.equal(exits[0]!.actor_id,f.actor);
+310:  assert.equal(cancelled.audit.length,1);assert.equal(cancelled.audit[0]!.actor_id,f.actor);
+311:  assert.equal(calls,0,'Manual cancellation submits no customer message');
+312:  await api(`workbench/messages/${manual}/cancel`,{},409);
+313:  assert.deepEqual(await manualEffects(),cancelled,'Repeated cancellation changes neither the message nor its attributed effects');
+314:  await new OutreachService(db,mail).dispatchDue(new Date(Date.parse(due[0]!)+60000));
+315:  assert.equal(calls,0,'A fresh dispatcher submits nothing after the cancelled message is due');
+316:  assert.deepEqual(await manualEffects(),cancelled,'Late dispatch retains the first human-stop reason and one cancellation');
+317:  const reply=(automatic:boolean,references:string)=>{const form=new FormData();form.set('from',f.email);form.set('subject','Re: follow-up');form.set('text','Customer reply');form.set('headers',`Message-ID: <${createId()}@reply.test>\r\nDate: ${new Date().toUTCString()}\r\nReferences: ${references}${automatic?'\r\nAuto-Submitted: auto-replied':''}`);return form;};
+318:  const first=await schedule('First touch',due[0]);await service.dispatchDue(new Date(due[0]!));assert.equal(calls,1);const sent=await approval.message(first);assert.equal(sent.state,'accepted');
+319:  await new Promise(resolve=>setTimeout(resolve,1000));// mail Date headers have whole seconds; replies must date after the acceptance
+320:  const followUp=await schedule('Follow-up after an automatic reply');
+321:  assert.equal((await post(reply(true,sent.message_id))).status,200);
+322:  await api(`workbench/opportunities/${f.opportunityId}/events`,{type:'email.opened',contactId:f.contactId,subject:'Open reported',occurredAt:new Date().toISOString(),eventId:createId()},201);
+323:  assert.equal((await approval.message(followUp)).state,'scheduled','An automatic reply and an open report leave scheduled follow-up in place');
+324:  const genuine=reply(false,sent.message_id);assert.equal((await post(genuine)).status,200);
+325:  const stopped=await approval.message(followUp);assert.equal(stopped.state,'cancelled');assert.match(stopped.failure!,/Customer repl/);
+326:  const deal=async()=>(await api<{record:{stage_id:string}}>(`records/opportunity/${f.opportunityId}`)).record;
+327:  const beforeMove=await schedule('Follow-up before a stage move'),stage=(await deal()).stage_id;
+328:  await api(`records/opportunity/${f.opportunityId}/move`,{stageId:advanced,reviewedStageId:stage});
+329:  const moved=await approval.message(beforeMove);assert.equal(moved.state,'cancelled');assert.equal(moved.failure,'Deal stage changed, so the scheduled follow-up was cancelled');assert.equal((await db.prepare('SELECT updated_at FROM outbound_messages WHERE id=?').bind(beforeMove).first<{updated_at:string}>())!.updated_at,(await db.prepare("SELECT t.occurred_at FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id WHERE t.kind='stage.changed' AND r.record_type='opportunity' AND r.record_id=?").bind(f.opportunityId).first<{occurred_at:string}>())!.occurred_at,'The send ends in the stage move commit');
+330:  const beforeClose=await schedule('Follow-up before a close',due[2]);
+331:  await api(`records/opportunity/${f.opportunityId}/lifecycle`,{state:'won',reason:'Signed'});
+332:  const closed=await approval.message(beforeClose);assert.equal(closed.state,'cancelled');assert.equal(closed.failure,'Deal closed won, so the scheduled follow-up was cancelled');
+333:  await api(`records/opportunity/${f.opportunityId}/lifecycle`,{state:'open',reason:''});assert.equal((await post(genuine)).status,200,'Replaying the reply is accepted once');
+334:  for(const at of due)await service.dispatchDue(new Date(Date.parse(at)+60000));
+335:  assert.equal(calls,1,'Reopen, replay and late dispatch revive no stopped send');
+336:  assert.deepEqual((await messages()).find(message=>message.id===manual),cancelled.messages[0],'Reply replay and deal changes preserve the manually cancelled message and its first reason');
+337:  const manualAfterReplay=(await manualEffects()).detail.timeline.filter(entry=>entry.kind==='message.cancelled'&&JSON.parse(entry.payload_json).messageId===manual);
+338:  assert.deepEqual(manualAfterReplay,exits,'Later stop events retain the same single attributed human exit');
+339:  for(const [id,exit] of [[followUp,stopped],[beforeMove,moved],[beforeClose,closed]] as const){const after=await approval.message(id);assert.equal(after.state,'cancelled');assert.equal(after.failure,exit.failure,'The first exit reason stands');}
+340:  for(const id of [followUp,beforeMove])assert.equal((await db.prepare("SELECT COUNT(*) n FROM timeline_entries WHERE kind='message.schedule_stopped' AND json_extract(payload_json,'$.messageId')=?").bind(id).first<{n:number}>())!.n,1,'One exit reason on the open deal timeline');
+341:  await api(`records/opportunity/${f.opportunityId}/lifecycle`,{state:'won',reason:'Signed again'});
+342:  const {outcomes}=await api<{outcomes:Record<string,unknown>}>(`workbench/opportunities/${f.opportunityId}/messages`);
+343:  assert.deepEqual({...outcomes,firstAcceptedAt:Boolean(outcomes.firstAcceptedAt),closedAt:Boolean(outcomes.closedAt)},{firstAcceptedAt:true,accepted:1,delivered:0,humanReplies:1,meetingsBooked:0,stageAdvances:1,lifecycle:'won',closedAt:true,inferredReports:1,automaticReplies:1});
+344: });

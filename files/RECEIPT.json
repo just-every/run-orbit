@@ -1,0 +1,171 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f105",
+  "head": "25ad07ce9805fd8254b1332a2674035460a0ec82",
+  "base": "d89ffcc89d4e87b5276f13298210de9eb21f4f35",
+  "productCommits": [
+    "6be284a885db70e550aa495ec8d13d43d00a6b31",
+    "25ad07ce9805fd8254b1332a2674035460a0ec82"
+  ],
+  "status": {
+    "clause": "SEQUENCE-002",
+    "before": "partial",
+    "after": "partial",
+    "countsBefore": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32
+    },
+    "countsAfter": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32
+    }
+  },
+  "tests": {
+    "cases": 198,
+    "qualifications": 2,
+    "newRegistrations": 0,
+    "focusedExactHead": {
+      "exit": 0,
+      "tests": 1,
+      "log": "exact-head-test.log",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-name-pattern=OUT-007 OUT-009 SEQUENCE-002",
+        "tests/core/signals-outreach.test.ts"
+      ]
+    },
+    "fullTouchedFile": {
+      "state": "passed",
+      "exit": 0,
+      "tests": 16,
+      "sourceTree": "6be284a885db70e550aa495ec8d13d43d00a6b31",
+      "log": "signals-outreach-test.log",
+      "note": "Started before the final test additions; final changed registration separately passes on exact head. Remaining registrations are unchanged.",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "tests/core/signals-outreach.test.ts"
+      ]
+    }
+  },
+  "checks": [
+    {
+      "check": "typecheck",
+      "head": "25ad07ce9805fd8254b1332a2674035460a0ec82",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "--noEmit"
+      ],
+      "exit": 0,
+      "log": "typecheck-exact-head.log",
+      "elapsedSeconds": 17.581942796707153
+    },
+    {
+      "check": "first-party",
+      "head": "25ad07ce9805fd8254b1332a2674035460a0ec82",
+      "command": [
+        "pnpm",
+        "exec",
+        "rer",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "exit": 0,
+      "log": "first-party-exact-head.log",
+      "elapsedSeconds": 0.9584650993347168
+    },
+    {
+      "check": "source-lock",
+      "head": "25ad07ce9805fd8254b1332a2674035460a0ec82",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "log": "source-lock-exact-head.log",
+      "elapsedSeconds": 0.5592012405395508
+    }
+  ],
+  "views": {
+    "write": {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write-final.log"
+    },
+    "check": {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check-final.log"
+    },
+    "restoredFromOriginMain": true,
+    "committed": false
+  },
+  "ledger": {
+    "command": null,
+    "exit": 0,
+    "reason": "No migration changes"
+  },
+  "publicationScan": {
+    "state": "not-run",
+    "reason": "Cloud adaptation delegates full-history scanning to fleet lander"
+  },
+  "ci": {
+    "id": 42207936435,
+    "head": "25ad07ce9805fd8254b1332a2674035460a0ec82",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "failure",
+    "url": "https://github.com/just-every/run-orbit/actions/runs/42207936435",
+    "classification": "expected-generated-view-only",
+    "acceptanceCheckError": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "failedJobs": [
+      {
+        "id": 127859269578,
+        "name": "source and shared build",
+        "reason": "Generated view differs; source artifacts consequently unavailable"
+      },
+      {
+        "id": 127859518686,
+        "name": "verify",
+        "reason": "Source failed and runtime shards skipped; routine artifacts consequently unavailable"
+      }
+    ],
+    "logReceipt": "ci-failure-excerpt.log",
+    "logArchiveReads": 2,
+    "reruns": 0
+  },
+  "landing": {
+    "state": "not-landed",
+    "mainEqualityClaimed": false,
+    "runSiteCandidateClaimed": false
+  },
+  "push": {
+    "exit": 0,
+    "log": "push-receipts.log",
+    "remoteReceipt": "remote-head.txt"
+  },
+  "policyChanged": false,
+  "uiChanged": false,
+  "runtimeSourceChanged": false,
+  "developmentFailures": [
+    {
+      "kind": "test-expectation",
+      "exit": 1,
+      "log": "manual-cancel-expectation-failure.log",
+      "failure": "Fixture address was uppercase while native saved drafts normalize it to lowercase. Expected value now uses the native normalization; no product change."
+    }
+  ],
+  "githubCalls": 6,
+  "handoff": "READY under the documented generated-view exception; no full-green Verify, DONE or landing claim"
+}

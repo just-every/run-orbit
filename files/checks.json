@@ -1,0 +1,42 @@
+[
+  {
+    "check": "typecheck",
+    "head": "25ad07ce9805fd8254b1332a2674035460a0ec82",
+    "command": [
+      "pnpm",
+      "exec",
+      "tsc",
+      "--noEmit"
+    ],
+    "exit": 0,
+    "log": "typecheck-exact-head.log",
+    "elapsedSeconds": 17.581942796707153
+  },
+  {
+    "check": "first-party",
+    "head": "25ad07ce9805fd8254b1332a2674035460a0ec82",
+    "command": [
+      "pnpm",
+      "exec",
+      "rer",
+      "check",
+      "--profile",
+      "first-party"
+    ],
+    "exit": 0,
+    "log": "first-party-exact-head.log",
+    "elapsedSeconds": 0.9584650993347168
+  },
+  {
+    "check": "source-lock",
+    "head": "25ad07ce9805fd8254b1332a2674035460a0ec82",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "log": "source-lock-exact-head.log",
+    "elapsedSeconds": 0.5592012405395508
+  }
+]
