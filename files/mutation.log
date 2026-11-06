@@ -1,0 +1,41 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ AI-002 invented evidence fails visibly; AI-004 failed usage survives consumed-preview replay; AI-003 unconfigured provider generates nothing (1021.252363ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 25180.857388
+
+✖ failing tests:
+
+test at tests/core/assistance.test.ts:1:8072
+✖ AI-002 invented evidence fails visibly; AI-004 failed usage survives consumed-preview replay; AI-003 unconfigured provider generates nothing (1021.252363ms)
+  AssertionError [ERR_ASSERTION]: foreign citations retain exactly one failed call with the returned tokens
+  + actual - expected
+  
+    [
+      {
+  +     input_tokens: 0,
+  +     output_tokens: 0,
+  -     input_tokens: 37,
+  -     output_tokens: 19,
+        status: 'failed'
+      }
+    ]
+  
+      at TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f76/run-orbit/tests/core/assistance.test.ts:105:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ { input_tokens: 0, output_tokens: 0, status: 'failed' } ],
+    expected: [ { input_tokens: 37, output_tokens: 19, status: 'failed' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

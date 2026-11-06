@@ -1,0 +1,28 @@
+{
+  "head": "35df63127709a8795abe2424103a0e1beb92c25f",
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern",
+    "AI-002 invented evidence",
+    "tests/core/assistance.test.ts"
+  ],
+  "exit": 0,
+  "point": "AI-004 failed-call token accounting and consumed-preview replay",
+  "observations": {
+    "generation_http_status": 502,
+    "call_rows": 1,
+    "call_status": "failed",
+    "input_tokens": 37,
+    "output_tokens": 19,
+    "draft_rows": 0,
+    "replay_http_status": 409,
+    "provider_requests_after_replay": 1,
+    "call_inventory_unchanged_after_replay": true
+  },
+  "assertions": "tests/core/assistance.test.ts:82 through 116",
+  "evidence": "exact-head-probe.log"
+}

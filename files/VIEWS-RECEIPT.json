@@ -1,0 +1,10 @@
+{
+  "command": [
+    "node",
+    "src/base/contract-docs.mjs",
+    "check"
+  ],
+  "exit": 1,
+  "reason": "Generated views intentionally restored from origin/main and excluded from product commit; lander regenerates them.",
+  "head": "35df63127709a8795abe2424103a0e1beb92c25f"
+}

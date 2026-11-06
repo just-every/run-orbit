@@ -1,0 +1,199 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f76",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f76",
+  "head": "35df63127709a8795abe2424103a0e1beb92c25f",
+  "base": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+  "checks": [
+    {
+      "name": "assistance file",
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/assistance.test.ts",
+      "exit": 0,
+      "passed": 6,
+      "failed": 0,
+      "receipt": "assistance-tests.log",
+      "binding": "Relevant source and test hashes equal the committed candidate; only CONTRACT.md and sources.lock.json were subsequently generated."
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "receipt": "typecheck.log"
+    },
+    {
+      "name": "first-party",
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "receipt": "first-party.log"
+    },
+    {
+      "name": "contract write",
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "receipt": "contract-write.log"
+    },
+    {
+      "name": "contract check after write",
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "receipt": "contract-check.log"
+    },
+    {
+      "name": "restore generated views",
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0
+    },
+    {
+      "name": "lock generation",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "receipt": "lock.log"
+    },
+    {
+      "name": "lock freshness",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "ok": true,
+      "receipt": "lock-check.log"
+    },
+    {
+      "name": "migration ledger",
+      "command": null,
+      "exit": 0,
+      "reason": "No migration added or changed"
+    },
+    {
+      "name": "test inventory",
+      "command": "checkTestBudget from scripts/verification-inventory.mjs",
+      "exit": 0,
+      "receipt": "test-inventory.json"
+    },
+    {
+      "name": "parent rows",
+      "exit": 0,
+      "receipt": "row-and-diff-check.json"
+    },
+    {
+      "name": "mutation sensitivity",
+      "exit": 1,
+      "expected": true,
+      "detected": true,
+      "receipt": "mutation-receipt.json",
+      "production_source_restored": true
+    },
+    {
+      "name": "exact-candidate runtime probe",
+      "head": "35df63127709a8795abe2424103a0e1beb92c25f",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern",
+        "AI-002 invented evidence",
+        "tests/core/assistance.test.ts"
+      ],
+      "exit": 0,
+      "receipt": "PROBE-RECEIPT.json"
+    },
+    {
+      "name": "committed generated views",
+      "exit": 1,
+      "expected": true,
+      "receipt": "VIEWS-RECEIPT.json"
+    }
+  ],
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "status": {
+    "AI-004": {
+      "before": "partial",
+      "after": "partial"
+    }
+  },
+  "implementation_change": false,
+  "ui_change": false,
+  "github_calls": 2,
+  "candidate_ci": {
+    "workflow_runs": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_sha": "35df63127709a8795abe2424103a0e1beb92c25f",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42167843726",
+        "id": 42167843726,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ]
+  },
+  "main_ci": {
+    "workflow_runs": [
+      {
+        "conclusion": "success",
+        "event": "push",
+        "head_sha": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42157856242",
+        "id": 42157856242,
+        "name": "Verify",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "event": "dynamic",
+        "head_sha": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42157855724",
+        "id": 42157855724,
+        "name": "Push on main",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "event": "push",
+        "head_sha": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42157856336",
+        "id": 42157856336,
+        "name": "Run site",
+        "status": "completed"
+      },
+      {
+        "conclusion": "skipped",
+        "event": "push",
+        "head_sha": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42157856319",
+        "id": 42157856319,
+        "name": "Run demo",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "event": "push",
+        "head_sha": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42149502769",
+        "id": 42149502769,
+        "name": "Verify",
+        "status": "completed"
+      }
+    ]
+  },
+  "publication_scan": {
+    "status": "not run in cloud",
+    "duty": "fleet Mac lander"
+  },
+  "landing": {
+    "status": "branch only",
+    "main_pushed": false
+  }
+}

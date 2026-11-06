@@ -1,0 +1,2 @@
+Prove failed AI usage survives consumed preview replay
+

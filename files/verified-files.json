@@ -1,0 +1,14 @@
+[
+  {
+    "path": "tests/core/assistance.test.ts",
+    "sha256": "803737f07cbc49ccc720cc48674e23a2e057c46ab18f7837f6ebf16d04bf6a09"
+  },
+  {
+    "path": "src/core/features/assistance/provider.ts",
+    "sha256": "680289a5184f8900683e87721db78fe9cc73202ab7094e578133daee770abf4f"
+  },
+  {
+    "path": "src/core/features/assistance/routes.ts",
+    "sha256": "10905da9393d840ab1ed76c849b474d7b5d64a0c3033d398a3deded33d37c2ef"
+  }
+]

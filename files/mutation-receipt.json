@@ -1,0 +1,17 @@
+{
+  "mutation": "Discard returned usage before citation validation",
+  "file": "src/core/features/assistance/routes.ts",
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern",
+    "AI-002 invented evidence",
+    "tests/core/assistance.test.ts"
+  ],
+  "exit": 1,
+  "detected": true,
+  "source_restored": true
+}

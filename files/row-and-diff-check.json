@@ -1,0 +1,13 @@
+{
+  "parent_status_rows": 204,
+  "staged_status_rows": 204,
+  "all_parent_rows_retained": true,
+  "parent_table_lines": 458,
+  "staged_table_lines": 458,
+  "new_email_shaped_strings": 0,
+  "files": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "tests/core/assistance.test.ts"
+  ]
+}
