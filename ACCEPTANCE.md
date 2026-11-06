@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 35 | 119 | 24 | 178 |
+| Core | 36 | 118 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 35 | 137 | 32 | 204 |
+| Full target | 36 | 136 | 32 | 204 |
 
 Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -706,15 +706,15 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 
 #### OUT-008 — Quiet hours
 
-Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** A draft can be written at any time. Sending outside 08:00–18:00 Monday to Friday in the contact's timezone, or the workspace timezone when the contact has none, requires a second confirmation naming the recipient's local time; a scheduled send waits for the next permitted minute. The default is the window in this clause, with no holiday calendar.
 
 **Acceptance.**
 1. Approve outside recipient-local quiet hours, including daylight-saving boundaries; require the extra immediate confirmation or delay the schedule to the permitted window.
 
-**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: extra immediate confirmation. Asserted: recipient-local weekday/DST window; expired confirmation cannot send; scheduled message waits for reviewed next window.
+**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; confirming the previewed time submits once across a minute boundary; expired confirmation is refused. Same file — OUT-014 missing merge fields block; template revisions never rewrite approved content: recipient-local weekend schedule is reviewed, waits for the next permitted minute and dispatches once; a changed recipient clock requires a fresh review.
+**Gap.** None.
 
 #### OUT-009 — Scheduled send
 
