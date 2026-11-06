@@ -27,12 +27,12 @@ export function certificateTrust(cert:string){return[`--ignore-certificate-error
 export async function httpsBuyerSite(certificate:Awaited<ReturnType<typeof customCertificate>>){
  const documents=new Map<string,string>(),requests:{method:string;path:string}[]=[];
  const server=createServer(certificate,(request,response)=>{
-  const path=new URL(request.url!,'https://northstar-buyer.test').pathname;requests.push({method:request.method!,path});
+  const path=new URL(request.url!,'https://northstar-buyer.localhost').pathname;requests.push({method:request.method!,path});
   const document=documents.get(path);request.resume();
   response.writeHead(document?200:404,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}).end(document??'Not found');
  });
- const local=await serverOrigin(server,'127.0.0.1',true),origin=`https://northstar-buyer.test:${local.port}`;
- return {origin,browserArgs:['--host-resolver-rules=MAP northstar-buyer.test 127.0.0.1'],requests,
+ const local=await serverOrigin(server,'127.0.0.1',true),origin=`https://northstar-buyer.localhost:${local.port}`;
+ return {origin,browserArgs:['--host-resolver-rules=MAP northstar-buyer.localhost 127.0.0.1','--proxy-bypass-list=northstar-buyer.localhost;127.0.0.1;localhost'],requests,
   serve(path:string,document:string){documents.set(path,document.replace('<head>','<head><link rel="icon" href="data:,">'));},
   dispose:()=>closeServer(server)};
 }

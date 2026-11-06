@@ -2275,7 +2275,7 @@
       "executable": false
     },
     "newtests/t096/browser-form-mapping.ts": {
-      "sha256": "3f9b1c406e6b43ef5752d47a65210ca8652bef04f4c7c9b96716cf6497c2a4ad",
+      "sha256": "aa86156fb1390adff8ee2de9c798bb17019d089686040ee2dd23834523a2d4e0",
       "executable": false
     },
     "newtests/t096/browser-form-no-script.ts": {
@@ -2367,7 +2367,7 @@
       "executable": false
     },
     "newtests/t096/emitted-fixture.ts": {
-      "sha256": "3cf40ad6042ba4820223c5488f685a7824d3a850d82107f458598025e50b0d22",
+      "sha256": "f8e52dc97949d5da65fcc5fba2d7171df73e5fd0509bd9b4ea1702dae8ee082a",
       "executable": false
     },
     "newtests/t096/emitted-request.ts": {
