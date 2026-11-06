@@ -1,0 +1,57 @@
+{
+  "created": [
+    {
+      "text": "synthetic-orbit-timeline-earlier",
+      "occurredAt": "2026-01-02T09:00:00.000Z",
+      "id": "01M6Q8QRSWPKAF0DMRTGMPHSPM"
+    },
+    {
+      "text": "synthetic-orbit-timeline-tie-one",
+      "occurredAt": "2026-01-03T09:00:00.000Z",
+      "id": "01M6Q8QRVBE12PCS7H39MNHQW0"
+    },
+    {
+      "text": "synthetic-orbit-timeline-tie-two",
+      "occurredAt": "2026-01-03T09:00:00.000Z",
+      "id": "01M6Q8QRWGAP71CYQPBB1NJD9M"
+    }
+  ],
+  "expected": [
+    {
+      "text": "synthetic-orbit-timeline-tie-one",
+      "occurredAt": "2026-01-03T09:00:00.000Z",
+      "id": "01M6Q8QRVBE12PCS7H39MNHQW0"
+    },
+    {
+      "text": "synthetic-orbit-timeline-tie-two",
+      "occurredAt": "2026-01-03T09:00:00.000Z",
+      "id": "01M6Q8QRWGAP71CYQPBB1NJD9M"
+    },
+    {
+      "text": "synthetic-orbit-timeline-earlier",
+      "occurredAt": "2026-01-02T09:00:00.000Z",
+      "id": "01M6Q8QRSWPKAF0DMRTGMPHSPM"
+    }
+  ],
+  "records": [
+    "01M6Q8QRVBE12PCS7H39MNHQW0",
+    "01M6Q8QRWGAP71CYQPBB1NJD9M",
+    "01M6Q8QRSWPKAF0DMRTGMPHSPM"
+  ],
+  "opportunity": [
+    "01M6Q8QRVBE12PCS7H39MNHQW0",
+    "01M6Q8QRWGAP71CYQPBB1NJD9M",
+    "01M6Q8QRSWPKAF0DMRTGMPHSPM"
+  ],
+  "phoneOrder": [
+    "entry-01M6Q8QRVBE12PCS7H39MNHQW0",
+    "entry-01M6Q8QRWGAP71CYQPBB1NJD9M",
+    "entry-01M6Q8QRSWPKAF0DMRTGMPHSPM"
+  ],
+  "desktopOrder": [
+    "entry-01M6Q8QRVBE12PCS7H39MNHQW0",
+    "entry-01M6Q8QRWGAP71CYQPBB1NJD9M",
+    "entry-01M6Q8QRSWPKAF0DMRTGMPHSPM"
+  ],
+  "desktopFits": true
+}

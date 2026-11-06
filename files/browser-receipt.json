@@ -1,0 +1,179 @@
+{
+  "config": {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/home/agent/rer-consolidation/work/sd-orbit-c-f70/run-orbit/node_modules/@playwright/test/cli.js",
+      "test",
+      "--config",
+      "/tmp/orbit-playwright-cloud.mjs",
+      "operator.spec.mjs",
+      "--grep",
+      "RECORD-005",
+      "--reporter=json"
+    ],
+    "configFile": "/tmp/orbit-playwright-cloud.mjs",
+    "rootDir": "/home/agent/rer-consolidation/work/sd-orbit-c-f70/run-orbit/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/agent/rer-consolidation/work/sd-orbit-c-f70/browser-baseline",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/agent/rer-consolidation/work/sd-orbit-c-f70/run-orbit/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/agent/rer-consolidation/work/sd-orbit-c-f70/browser-baseline",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/home/agent/rer-consolidation/work/sd-orbit-c-f70/run-orbit/tests/e2e",
+        "snapshotDir": "/home/agent/rer-consolidation/work/sd-orbit-c-f70/run-orbit/tests/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:8722",
+          "browserName": "chromium",
+          "headless": true,
+          "launchOptions": {
+            "args": [
+              "--use-mock-keychain",
+              "--password-store=basic",
+              "--no-sandbox"
+            ],
+            "executablePath": "/usr/bin/chromium"
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "PORT=8722 node scripts/browser-server.mjs",
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f70/run-orbit",
+      "url": "http://127.0.0.1:8722",
+      "reuseExistingServer": false,
+      "timeout": 90000
+    }
+  },
+  "suites": [
+    {
+      "title": "operator.spec.mjs",
+      "file": "operator.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "authenticated operator UI",
+          "file": "operator.spec.mjs",
+          "line": 28,
+          "column": 6,
+          "specs": [
+            {
+              "title": "RECORD-005 \u2014 the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 13256,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-11-06T01:49:15.024Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "timeline-order.json",
+                          "contentType": "application/json",
+                          "body": "ewogICJjcmVhdGVkIjogWwogICAgewogICAgICAidGV4dCI6ICJzeW50aGV0aWMtb3JiaXQtdGltZWxpbmUtZWFybGllciIsCiAgICAgICJvY2N1cnJlZEF0IjogIjIwMjYtMDEtMDJUMDk6MDA6MDAuMDAwWiIsCiAgICAgICJpZCI6ICIwMU02UThRUlNXUEtBRjBETVJUR01QSFNQTSIKICAgIH0sCiAgICB7CiAgICAgICJ0ZXh0IjogInN5bnRoZXRpYy1vcmJpdC10aW1lbGluZS10aWUtb25lIiwKICAgICAgIm9jY3VycmVkQXQiOiAiMjAyNi0wMS0wM1QwOTowMDowMC4wMDBaIiwKICAgICAgImlkIjogIjAxTTZROFFSVkJFMTJQQ1M3SDM5TU5IUVcwIgogICAgfSwKICAgIHsKICAgICAgInRleHQiOiAic3ludGhldGljLW9yYml0LXRpbWVsaW5lLXRpZS10d28iLAogICAgICAib2NjdXJyZWRBdCI6ICIyMDI2LTAxLTAzVDA5OjAwOjAwLjAwMFoiLAogICAgICAiaWQiOiAiMDFNNlE4UVJXR0FQNzFDWVFQQkIxTkpEOU0iCiAgICB9CiAgXSwKICAiZXhwZWN0ZWQiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogInN5bnRoZXRpYy1vcmJpdC10aW1lbGluZS10aWUtb25lIiwKICAgICAgIm9jY3VycmVkQXQiOiAiMjAyNi0wMS0wM1QwOTowMDowMC4wMDBaIiwKICAgICAgImlkIjogIjAxTTZROFFSVkJFMTJQQ1M3SDM5TU5IUVcwIgogICAgfSwKICAgIHsKICAgICAgInRleHQiOiAic3ludGhldGljLW9yYml0LXRpbWVsaW5lLXRpZS10d28iLAogICAgICAib2NjdXJyZWRBdCI6ICIyMDI2LTAxLTAzVDA5OjAwOjAwLjAwMFoiLAogICAgICAiaWQiOiAiMDFNNlE4UVJXR0FQNzFDWVFQQkIxTkpEOU0iCiAgICB9LAogICAgewogICAgICAidGV4dCI6ICJzeW50aGV0aWMtb3JiaXQtdGltZWxpbmUtZWFybGllciIsCiAgICAgICJvY2N1cnJlZEF0IjogIjIwMjYtMDEtMDJUMDk6MDA6MDAuMDAwWiIsCiAgICAgICJpZCI6ICIwMU02UThRUlNXUEtBRjBETVJUR01QSFNQTSIKICAgIH0KICBdLAogICJyZWNvcmRzIjogWwogICAgIjAxTTZROFFSVkJFMTJQQ1M3SDM5TU5IUVcwIiwKICAgICIwMU02UThRUldHQVA3MUNZUVBCQjFOSkQ5TSIsCiAgICAiMDFNNlE4UVJTV1BLQUYwRE1SVEdNUEhTUE0iCiAgXSwKICAib3Bwb3J0dW5pdHkiOiBbCiAgICAiMDFNNlE4UVJWQkUxMlBDUzdIMzlNTkhRVzAiLAogICAgIjAxTTZROFFSV0dBUDcxQ1lRUEJCMU5KRDlNIiwKICAgICIwMU02UThRUlNXUEtBRjBETVJUR01QSFNQTSIKICBdLAogICJwaG9uZU9yZGVyIjogWwogICAgImVudHJ5LTAxTTZROFFSVkJFMTJQQ1M3SDM5TU5IUVcwIiwKICAgICJlbnRyeS0wMU02UThRUldHQVA3MUNZUVBCQjFOSkQ5TSIsCiAgICAiZW50cnktMDFNNlE4UVJTV1BLQUYwRE1SVEdNUEhTUE0iCiAgXSwKICAiZGVza3RvcE9yZGVyIjogWwogICAgImVudHJ5LTAxTTZROFFSVkJFMTJQQ1M3SDM5TU5IUVcwIiwKICAgICJlbnRyeS0wMU02UThRUldHQVA3MUNZUVBCQjFOSkQ5TSIsCiAgICAiZW50cnktMDFNNlE4UVJTV1BLQUYwRE1SVEdNUEhTUE0iCiAgXSwKICAiZGVza3RvcEZpdHMiOiB0cnVlCn0="
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a2fdce3b1bbd9eeaf8c3-21de84628d4f022125e7",
+              "file": "../contract.mjs",
+              "line": 4,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-06T01:48:34.455Z",
+    "duration": 54175.941,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
