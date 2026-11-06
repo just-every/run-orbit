@@ -1,3 +1,5 @@
+import {createApp} from '../support/app';
+import {OutreachService} from '../../src/core/features/outreach/service';
 import {exerciseTwilio} from '../support/twilio-calls';
 import {exerciseSalesTasks} from '../support/sales-tasks';
 import assert from 'node:assert/strict';
@@ -27,7 +29,7 @@ async function captureUnknown(t:TodayApp,subject:string){
  const result=await t.json<{summary:unknown}>('/api/v1/capture/imports',{form},201);return result;
 }
 
-test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence',async()=>{
+test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence',async(context)=>{
  const t=await todayApp(db);
  // A day with nothing: the brief says so plainly.
  const empty=await t.brief();assert.deepEqual([empty.accounts.length,empty.unresolved.length],[0,0]);assert.equal(empty.sinceBasis,'stale-interval');
@@ -96,6 +98,79 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
  const handed=await t.json<any>(`/api/v1/records/opportunity/${owned}`);assert.equal(handed.record.owner_id,t.actor);assert.ok(handed.timeline.some((e:any)=>e.actor_id===work.ownerId&&e.payload_json.includes('handover notes')));
  assert.equal((await leaving.call('/api/v1/tasks?view=all')).status,401);
  const notifications=await db.prepare("SELECT count(*) n FROM notifications WHERE operator_id=? AND kind='task.assigned' AND event_key LIKE 'task.handover:%'").bind(receiver).first<{n:number}>();assert.equal(notifications!.n,1);
+
+ // A second populated removal chooses a receiver for the deal and explicit unassignment for both task sets.
+ context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T15:00:00Z')});
+ try{
+  const t=await todayApp(db),departing=await todayApp(db),deal=await departing.opportunity('Reviewed removal deal','Removal account','Removal buyer',`${createId().toLowerCase()}${String.fromCharCode(64)}synthetic-orbit.test`);
+  const detail=await t.json<any>(`/api/v1/records/opportunity/${deal}`);
+  await t.json(`/api/v1/records/opportunity/${deal}`,{method:'PUT',body:{...detail.record,owner_id:departing.actor,contact_ids:detail.contacts.map((c:any)=>c.id),primary_contact_id:detail.contacts[0].id,custom_fields:{}}},200);
+  const salesTask=await departing.json<{id:string}>('/api/v1/tasks',{body:{title:'Unassign the removal follow-up',recordType:'opportunity',recordId:deal,ownerId:departing.actor,dueAt:'2030-01-08T15:00:00.000Z',priority:'normal',type:'follow_up',notes:'Retain this task after removal.',recurrence:'none',timezone:'UTC',reminderMinutes:null}},201);
+  const delegated=await overdueHandoff(departing,deal,'Unassign the delegated promise','2030-01-08T15:00:00.000Z');
+  await departing.json(`/api/v1/records/opportunity/${deal}/entries`,{body:{kind:'note',text:'The departing operator recorded this customer commitment.',occurredAt:new Date().toISOString()}},200);
+  let submissions=0;
+  const mail={provider:'rer' as const,optOutOrigin:'https://orbit.test',messageIdDomain:'orbit.test',send:async()=>{submissions++;return {providerMessageId:'synthetic-orbit-removal'};}};
+  const app=createApp({database:db,assets:{fetch:async()=>new Response('test')},outboundMail:mail});
+  const sender=async(path:string,body?:unknown)=>{
+   const response=await app.request(`https://orbit.test${path}`,{method:body===undefined?'GET':'POST',headers:{cookie:`__Host-orbit_session=${departing.session.token}`,origin:'https://orbit.test','content-type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
+   assert.equal(response.status,body===undefined?200:path.endsWith('/drafts')?201:200,await response.clone().text());return response.json() as Promise<any>;
+  };
+  const saved=await sender(`/api/v1/workbench/opportunities/${deal}/drafts`,{contactId:detail.contacts[0].id,subject:'Retain the reviewed removal message',body:'This exact scheduled content must never be submitted after removal.'});
+  const rendered=await sender(`/api/v1/library/drafts/${saved.id}/render`);
+  await sender(`/api/v1/library/drafts/${saved.id}/render`,{revision:1,reviewHash:rendered.reviewHash});
+  const scheduledAt='2030-01-08T15:00:00.000Z',preview=await sender(`/api/v1/workbench/drafts/${saved.id}/approval-preview?scheduledAt=${encodeURIComponent(scheduledAt)}`);
+  const scheduled=await sender(`/api/v1/workbench/drafts/${saved.id}/approve`,{revision:1,scheduledAt,scheduledAtConfirmation:preview.scheduledAt});
+  assert.equal(scheduled.state,'scheduled');assert.equal(submissions,0);
+  const draftBefore=await t.json<any>(`/api/v1/drafts/${saved.id}`);
+  const before=await t.json<any>(`/api/v1/records/opportunity/${deal}`);
+  const note=before.timeline.find((entry:any)=>entry.actor_id===departing.actor&&entry.payload_json.includes('recorded this customer commitment'));
+  assert.ok(note);
+  const review=await t.json<any>(`/api/v1/settings/operators/${departing.actor}/removal-review`);
+  assert.deepEqual(review.opportunities.map((row:any)=>[row.id,row.title]),[[deal,'Reviewed removal deal']]);
+  assert.deepEqual(review.tasks.map((row:any)=>[row.id,row.title]),[[salesTask.id,'Unassign the removal follow-up']]);
+  assert.deepEqual(review.handoffs.map((row:any)=>[row.id,row.title]),[[delegated,'Unassign the delegated promise']]);
+  assert.deepEqual(review.scheduledMessages.map((row:any)=>[row.id,row.subject]),[[scheduled.id,'Retain the reviewed removal message']]);
+  assert.deepEqual(review.recordMailObligations,[]);
+  const plan={review:review.review,opportunities:receiver,tasks:null,handoffs:null};
+  const remove=(handover:unknown)=>t.call(`/api/v1/settings/operators/${departing.actor}`,{method:'DELETE',body:{confirmed:true,handover}});
+  for(const key of ['opportunities','tasks','handoffs'] as const){
+   const incomplete:Partial<typeof plan>={...plan};delete incomplete[key];
+   assert.equal((await remove(incomplete)).status,400,'Every populated work set requires its own explicit choice');
+   assert.deepEqual(await t.json(`/api/v1/settings/operators/${departing.actor}/removal-review`),review,'An incomplete review changes no owned work');
+   assert.equal((await departing.call('/api/v1/tasks?view=all')).status,200,'Refused removal keeps the native session active');
+  }
+  const removed=await remove(plan);assert.equal(removed.status,200,await removed.clone().text());
+  assert.equal((await departing.call('/api/v1/tasks?view=all')).status,401);
+  const after=await t.json<any>(`/api/v1/records/opportunity/${deal}`);
+  assert.equal(after.record.owner_id,receiver);assert.equal(after.record.lifecycle,'open');
+  assert.deepEqual(after.timeline.find((entry:any)=>entry.id===note.id),note,'Historical note content and attribution survive unchanged');
+  assert.deepEqual(await t.json(`/api/v1/drafts/${saved.id}`),{...draftBefore,draft:{...draftBefore.draft,isStale:true,staleReason:'Owner handover'}},'The draft retains its content and original author while handover requires fresh review');
+  const taskAfter=(await t.json<any>(`/api/v1/tasks/${salesTask.id}`)).task;
+  assert.equal(taskAfter.ownerId,null);assert.equal(taskAfter.status,'open');
+  const handoffs=await t.app.request(`https://orbit.test/delegation/handoffs/${deal}`,{headers:{cookie:`__Host-orbit_session=${t.session.token}`}});
+  assert.equal(handoffs.status,200);
+  const handoff=(await handoffs.json() as any).tasks.find((row:any)=>row.target.endsWith(delegated)).task;
+  assert.equal(handoff.assignee_id,null);assert.equal(handoff.status,'open');
+  const ownerChanges=after.timeline.filter((entry:any)=>entry.kind==='owner.changed'&&JSON.parse(entry.payload_json).reason==='Operator removal handover');
+  assert.equal(ownerChanges.length,1);assert.equal(ownerChanges[0].actor_type,'operator');assert.equal(ownerChanges[0].actor_id,t.actor);
+  assert.deepEqual(JSON.parse(ownerChanges[0].payload_json),{previous:departing.actor,current:receiver,reason:'Operator removal handover'});
+  const audits=(await db.prepare("SELECT actor_id,details_json FROM audit_entries WHERE action='operator.removed' AND entity_id=?").bind(departing.actor).all<any>()).results;
+  assert.equal(audits.length,1);assert.equal(audits[0].actor_id,t.actor);
+  const audit=JSON.parse(audits[0].details_json);
+  assert.deepEqual(audit.choices,{opportunities:receiver,tasks:null,handoffs:null,recordMailObligations:null});
+  assert.deepEqual(audit.opportunities,[deal]);assert.deepEqual(audit.tasks,[salesTask.id]);assert.deepEqual(audit.handoffs,[delegated]);assert.deepEqual(audit.recordMailObligations,[]);assert.equal(audit.scheduledCancelled,1);
+  const message=async()=>(await t.json<any>(`/api/v1/workbench/opportunities/${deal}/messages`)).messages.find((row:any)=>row.id===scheduled.id);
+  assert.equal((await message()).state,'cancelled');assert.equal((await db.prepare('SELECT operator_id FROM outbound_messages WHERE id=?').bind(scheduled.id).first<{operator_id:string}>())!.operator_id,departing.actor);
+  context.mock.timers.setTime(Date.parse(scheduledAt)+60000);
+  await new OutreachService(db,mail).dispatchDue();
+  assert.equal(submissions,0,'Due dispatch never submits a removed operator’s cancelled opportunity message');
+  assert.equal((await message()).state,'cancelled');
+  assert.equal((await remove(plan)).status,409,'Removal replay cannot repeat handover or the owner-change entry');
+  const replay=await t.json<any>(`/api/v1/records/opportunity/${deal}`);
+  assert.deepEqual(replay.timeline,after.timeline);
+  assert.equal((await db.prepare("SELECT count(*) n FROM audit_entries WHERE action='operator.removed' AND entity_id=?").bind(departing.actor).first<{n:number}>())!.n,1);
+ }finally{context.mock.timers.reset();}
+
 
 });
 
