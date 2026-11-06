@@ -1,0 +1,39 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f64",
+  "head": "577549de0ddac57a921f664e290bf6176682fb28",
+  "runId": 42142055426,
+  "event": "push",
+  "status": "completed",
+  "conclusion": "failure",
+  "url": "https://github.com/just-every/run-orbit/actions/runs/42142055426",
+  "classification": "permitted generated-view freshness failure",
+  "rootJob": {
+    "id": 127644628087,
+    "name": "source and shared build",
+    "command": "node scripts/verification-shard.mjs source",
+    "failingGate": "pnpm exec node src/base/contract-docs.mjs check",
+    "error": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "exit": 1
+  },
+  "downstream": {
+    "verifyJob": 127644829059,
+    "shards": "skipped",
+    "reason": "source failed before building or producing artifacts; the aggregate and missing-artifact steps depend on that output"
+  },
+  "testAssertionsFailed": false,
+  "candidateTestShardsExecuted": false,
+  "localTouchedTests": {
+    "exit": 0,
+    "passed": 3,
+    "failed": 0,
+    "testedBytesMatchCandidate": true
+  },
+  "workflowRepairs": 0,
+  "workflowReruns": 0,
+  "githubBudget": {
+    "used": 6,
+    "limit": 10
+  },
+  "readyException": "The task expressly permits a failure only from generated-view check and its dependent jobs. The lander regenerates views and reruns Verify before landing."
+}

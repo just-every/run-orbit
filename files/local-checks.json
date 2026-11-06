@@ -1,0 +1,68 @@
+{
+  "checks": [
+    {
+      "name": "touched-tests",
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/source-onboarding.test.ts",
+      "exit": 0,
+      "tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "log": "touched-test.log",
+      "durationMs": 437264.446553
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "name": "first-party",
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "name": "test-budget",
+      "command": "checkTestBudget from scripts/verification-inventory.mjs",
+      "exit": 0,
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    }
+  ],
+  "runtimeProbe": {
+    "point": "INTEGRATE-009 atomic task action consumption",
+    "door": "Signed POST /api/v1/slack/actions; real migrated D1; awaited waitUntil promises",
+    "fault": "BEFORE INSERT ON sales_tasks SELECT RAISE(ABORT)",
+    "observed": "Generic HTTP 200; explicit uncertain or refused outcome; identical issued token, prior notice, action, task, series and timeline inventories; after fault removal the same issued action creates one mapped task and one consumption; changed-timestamp replay has no effect",
+    "proof": "tests/support/slack-actions-proof.ts:15-45",
+    "backgroundCompletion": "tests/support/slack-notices-proof.ts:15-18"
+  },
+  "sourceFiles": [
+    {
+      "path": "tests/support/slack-actions-proof.ts",
+      "sha256": "d9bc7b859e2015262ae19bca8725ba5bbde70d5cbc0619dda4183798d7dc5499"
+    },
+    {
+      "path": "tests/support/slack-notices-proof.ts",
+      "sha256": "c324844afa94c39f6bf6246381e166934b0df953c3aae6c5e5b67c7e0865eb26"
+    },
+    {
+      "path": "src/core/features/slack/actions.ts",
+      "sha256": "6058eeba29cef21e4be269b46b54afad2b08691db86acdf3445c2c9b6696ed6e"
+    },
+    {
+      "path": "migrations/core/0051_slack_notices.sql",
+      "sha256": "f10b66026446b28cd4c68f31d5ee0f59c1b5e4e6250e7adda807f846373ff851"
+    }
+  ],
+  "uiChanged": false,
+  "productionChanged": false,
+  "parentStatusRows": 204,
+  "candidateStatusRows": 204,
+  "head": "577549de0ddac57a921f664e290bf6176682fb28",
+  "branch": "cloud/sd-orbit-c-f64",
+  "testedBytesMatchCandidate": true,
+  "complete": true
+}

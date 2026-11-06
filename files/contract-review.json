@@ -1,0 +1,9 @@
+{
+  "parentStatusRows": 204,
+  "candidateStatusRows": 204,
+  "changedStatusRows": [
+    "INTEGRATE-009"
+  ],
+  "statusChanges": 0,
+  "generatedViewsUnchanged": true
+}

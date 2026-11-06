@@ -1,0 +1,27 @@
+[
+  {
+    "name": "views_write",
+    "command": "node src/base/contract-docs.mjs write",
+    "exit": 0
+  },
+  {
+    "name": "views_check",
+    "command": "node src/base/contract-docs.mjs check",
+    "exit": 0
+  },
+  {
+    "name": "restore_views",
+    "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+    "exit": 0
+  },
+  {
+    "name": "lock_write",
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+    "exit": 0
+  },
+  {
+    "name": "lock_check",
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "exit": 0
+  }
+]

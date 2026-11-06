@@ -1,0 +1,25 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f64",
+  "head": "577549de0ddac57a921f664e290bf6176682fb28",
+  "published": true,
+  "remoteHeadVerified": true,
+  "productWorkingTreeClean": true,
+  "pr": null,
+  "status": "partial",
+  "countsBefore": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32,
+    "total": 204
+  },
+  "countsAfter": {
+    "done": 35,
+    "partial": 137,
+    "missing": 32,
+    "total": 204
+  },
+  "publicationScan": "deferred to maintained Mac lander",
+  "landing": "not attempted",
+  "mainPushed": false
+}
