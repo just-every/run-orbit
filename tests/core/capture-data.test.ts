@@ -8,7 +8,8 @@ import {currentSalesData} from '../support/current-sales-data';
 import {proveCurrentArchive} from '../support/current-sales-archive';
 import {exported,captured} from '../support/capture-data-archive';
 
-test('DATA-003 current sales capabilities round-trip without authority and erase across public reads', async () => {
+test('DATA-003 current sales capabilities round-trip without authority and erase across public reads', async context => {
+  context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T10:00:00.000Z')});
   const f = await captureFixture(), target = await launchFixture();
   try {
     await captured(f);
@@ -29,6 +30,6 @@ test('DATA-003 current sales capabilities round-trip without authority and erase
     for (const table of ['capture_sources', 'capture_items', 'capture_proposals', 'signals', 'signal_links', 'unlinked_signals'])
       assert.deepEqual((await target.db.prepare(`SELECT * FROM ${table} ORDER BY 1`).all()).results, (await f.db.prepare(`SELECT * FROM ${table} ORDER BY 1`).all()).results, `${table} restores equivalently`);
     assert.equal(await target.db.prepare('SELECT count(*) n FROM capture_credentials').first('n'), 0, 'a restored provider source has no credential and must be reconnected');
-    await proveCurrentArchive(f,target,current,archive);
+    await proveCurrentArchive(f,target,current,archive,at=>context.mock.timers.setTime(at));
   } finally { await f.dispose(); await target.dispose(); }
 });
