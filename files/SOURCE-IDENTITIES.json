@@ -1,0 +1,9 @@
+{
+  "tests/core/today-brief.test.ts": "8d08905acbcd1fc80d6c9f84e6f32595cd84d7a2ff855a56749a962d96a531f0",
+  "tests/core/signals-outreach.test.ts": "185cbcc21c2748f52bbc4164cb0df1707ecb4068f15220ec6365c1a69ac096fd",
+  "tests/support/record-mail-handover.ts": "24d9378a1f8d9987d088b9f5c33cc9a101b14c48808e3727c36d63f8833de7df",
+  "src/core/features/settings/removal-handover.ts": "9af2842f15acb7f9771739f79437139be8b57b6c9e85e14156f25483bc0651f6",
+  "src/core/features/tasks/handover.ts": "141258c2be5a650172a6aa44273747e4b89c4bde924ebbfeaf3adbd91eb45d91",
+  "src/core/features/outreach/service.ts": "9ff7f815b25bfb0fb6d49a6202cb7c7dbe46312c94ca9e0f704c95d8de3c6f05",
+  "src/core/features/operator/ui/operator-removal-review.tsx": "9796ad3a168a64bbb440c92c0ac1b95f4d64235c8ac4ba583584bf802e26ebd2"
+}

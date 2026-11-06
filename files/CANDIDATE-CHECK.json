@@ -1,0 +1,13 @@
+{
+  "head": "78cd1563746953963f2b57dceae599dace90b864",
+  "candidateCommits": [
+    "78cd1563746953963f2b57dceae599dace90b864",
+    "bb07f6026495dd0d85c1d3a3bb4e293ebc2aaaf3"
+  ],
+  "identities": "pass",
+  "trailers": "pass",
+  "parentStatusRowsRetained": "pass",
+  "statusRows": 204,
+  "addedLiteralEmails": 0,
+  "addedCredentialShapes": 0
+}

@@ -1,0 +1,85 @@
+{
+  "head": "78cd1563746953963f2b57dceae599dace90b864",
+  "base": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "touchedFile": {
+    "command": "pnpm exec tsx --test tests/core/today-brief.test.ts",
+    "exit": 0,
+    "passed": 4,
+    "failed": 0,
+    "log": "today-file.log"
+  },
+  "retainedRecordMail": {
+    "command": "pnpm exec tsx --test --test-name-pattern 'OUT-017 record mail preserves' tests/core/signals-outreach.test.ts",
+    "exit": 0,
+    "passed": 1,
+    "failed": 0,
+    "log": "record-mail.log",
+    "unchangedRelevantFilesSinceBase": [
+      "tests/support/record-mail-handover.ts",
+      "tests/support/record-mail.ts",
+      "tests/core/signals-outreach.test.ts",
+      "src/core/features/settings/removal-handover.ts",
+      "src/core/features/tasks/handover.ts",
+      "src/core/features/outreach/service.ts",
+      "src/core/features/operator/ui/operator-removal-review.tsx"
+    ]
+  },
+  "browser": {
+    "exit": 0,
+    "log": "browser-proof.log",
+    "receipt": "BROWSER.json",
+    "implementationUnchangedFromBase": true
+  },
+  "testBudget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "views": {
+    "writeExit": 0,
+    "checkExit": 0,
+    "restoredFrom": "origin/main",
+    "committed": false
+  },
+  "migrationLedger": {
+    "command": null,
+    "exit": 0,
+    "reason": "No migration changed"
+  },
+  "newRuntimeSourceDefects": 0,
+  "priorAssertionsRemovedOrNarrowed": false,
+  "scan": {
+    "status": "not run in cloud",
+    "requiredAtLanding": true
+  },
+  "runSite": {
+    "candidate": "not applicable before main; main not pushed",
+    "baseRun": 42116055015,
+    "baseConclusion": "success"
+  },
+  "ci": {
+    "head": "78cd1563746953963f2b57dceae599dace90b864",
+    "runId": 42142701144,
+    "event": "push",
+    "observedAt": "2026-11-06T01:24:25.812056+00:00",
+    "run": {
+      "conclusion": "failure",
+      "head_sha": "78cd1563746953963f2b57dceae599dace90b864",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42142701144",
+      "status": "completed"
+    },
+    "rawConclusion": "failure",
+    "readinessException": "Only generated contract-view freshness failed; required build artifacts and dependent verdicts were absent or skipped as consequences. The cloud contract explicitly permits this exception.",
+    "rootJob": 127646818142,
+    "dependentVerdictJob": 127647025400,
+    "failedCommand": "node scripts/verification-shard.mjs source",
+    "firstFailedCommand": "pnpm exec node src/base/contract-docs.mjs check",
+    "error": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "localRestoredViewCheckExit": 1,
+    "generatorWriteThenCheckExit": 0,
+    "sourceAndVerdictArchivesReadOnceEach": true,
+    "calls": 6,
+    "runtimeCiTests": "Skipped after source generator failure; required on the lander regenerated view commit.",
+    "mainAndRunSite": "Not landed by this cloud task."
+  }
+}

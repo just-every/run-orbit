@@ -1,0 +1,71 @@
+{
+  "clause": "TEAM-004",
+  "acceptanceChanged": false,
+  "rubric": [
+    {
+      "id": "P1",
+      "item": "Explicit sales-task and delegated-handoff unassignment while the open deal goes to a full receiver",
+      "door": "native Settings removal, task read, native handoff read and Records opportunity read",
+      "test": "tests/core/today-brief.test.ts",
+      "lines": [
+        128,
+        154
+      ]
+    },
+    {
+      "id": "P2",
+      "item": "Scheduled opportunity mail is cancelled and due dispatch makes no submission",
+      "door": "native reviewed draft approval, removal, message read, normal OutreachService.dispatchDue",
+      "test": "tests/core/today-brief.test.ts",
+      "lines": [
+        122,
+        167
+      ]
+    },
+    {
+      "id": "P3",
+      "item": "Every populated removal set has a reviewed persisted choice; incomplete choices refuse without writes",
+      "door": "native Settings review and removal, persisted attributed removal audit",
+      "test": "tests/core/today-brief.test.ts",
+      "lines": [
+        136,
+        161
+      ]
+    },
+    {
+      "id": "P4",
+      "item": "Exactly one deal-owner change retains previous owner, current owner and removing actor; replay adds none",
+      "door": "Records timeline and repeated native removal",
+      "test": "tests/core/today-brief.test.ts",
+      "lines": [
+        155,
+        171
+      ]
+    },
+    {
+      "id": "A1",
+      "item": "Complete acceptance sentence including revoked sessions and retained historical notes, drafts, sent mail and timeline attribution",
+      "door": "combined native removal and existing record-mail journey",
+      "test": "tests/core/today-brief.test.ts and tests/support/record-mail-handover.ts",
+      "lines": [
+        143,
+        146,
+        73
+      ]
+    },
+    {
+      "id": "I1",
+      "item": "BASE-ACCESS-004 and BASE-ROLE-001 inherited server authority",
+      "door": "existing native-session refusals and full-operator handover; unchanged Base citations at CONTRACT.md:85",
+      "test": "tests/core/today-brief.test.ts and tests/support/record-mail-handover.ts",
+      "lines": [
+        87,
+        92,
+        99,
+        143
+      ]
+    }
+  ],
+  "mutationPolicy": "Named native sanity journeys with populated data and safe and refused paths; no source mutations run, per the revised DONE rule.",
+  "base": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f"
+}

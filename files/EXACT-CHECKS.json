@@ -1,0 +1,101 @@
+{
+  "head": "78cd1563746953963f2b57dceae599dace90b864",
+  "time": "2026-11-06T01:17:30.176673+00:00",
+  "checks": [
+    {
+      "name": "views-write",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0,
+      "seconds": 0.064,
+      "output": "views-write.log",
+      "output_sha256": "df91012bf66fb476e9cd1a30c002829398beb55f869e07cc7be477197fa5a276"
+    },
+    {
+      "name": "views-check",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "seconds": 0.061,
+      "output": "views-check.log",
+      "output_sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "name": "restore-generated-views",
+      "command": [
+        "git",
+        "checkout",
+        "origin/main",
+        "--",
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "seconds": 0.005,
+      "output": "restore-generated-views.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "source-lock-check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "seconds": 0.329,
+      "output": "source-lock-check.log",
+      "output_sha256": "149cea3975df7827aa07b1674d318971693a1bf841b2102ebdcefa7fb77d0f2d"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "run",
+        "typecheck"
+      ],
+      "exit": 0,
+      "seconds": 11.923,
+      "output": "typecheck.log",
+      "output_sha256": "46d0e9a585ebc16ebd4ef250a62767b6df6d145490011e36c6b749d090e9d2b2"
+    },
+    {
+      "name": "first-party",
+      "command": [
+        "pnpm",
+        "exec",
+        "rer",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "exit": 0,
+      "seconds": 0.551,
+      "output": "first-party.log",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "TEAM-004-exact",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-name-pattern",
+        "TASK-001 TEAM-004",
+        "tests/core/today-brief.test.ts"
+      ],
+      "exit": 0,
+      "seconds": 38.068,
+      "output": "TEAM-004-exact.log",
+      "output_sha256": "0a65b1ba5c94539b0a4c13ed7d7ec98dfb44a73aa6ec508a472db3700dad0e88"
+    }
+  ],
+  "tracked_clean": true
+}

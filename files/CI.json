@@ -1,0 +1,25 @@
+{
+  "head": "78cd1563746953963f2b57dceae599dace90b864",
+  "runId": 42142701144,
+  "event": "push",
+  "observedAt": "2026-11-06T01:24:25.812056+00:00",
+  "run": {
+    "conclusion": "failure",
+    "head_sha": "78cd1563746953963f2b57dceae599dace90b864",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42142701144",
+    "status": "completed"
+  },
+  "rawConclusion": "failure",
+  "readinessException": "Only generated contract-view freshness failed; required build artifacts and dependent verdicts were absent or skipped as consequences. The cloud contract explicitly permits this exception.",
+  "rootJob": 127646818142,
+  "dependentVerdictJob": 127647025400,
+  "failedCommand": "node scripts/verification-shard.mjs source",
+  "firstFailedCommand": "pnpm exec node src/base/contract-docs.mjs check",
+  "error": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "localRestoredViewCheckExit": 1,
+  "generatorWriteThenCheckExit": 0,
+  "sourceAndVerdictArchivesReadOnceEach": true,
+  "calls": 6,
+  "runtimeCiTests": "Skipped after source generator failure; required on the lander regenerated view commit.",
+  "mainAndRunSite": "Not landed by this cloud task."
+}

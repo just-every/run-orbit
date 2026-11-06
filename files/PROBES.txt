@@ -1,0 +1,4 @@
+PROBE TEAM-004 P1: authenticated Settings removal with one owned open deal, task and delegated handoff; receiver for deal and explicit null for both task sets -> deal stays open under receiver; task owner and handoff assignee are null and both remain open.
+PROBE TEAM-004 P2: approve exact native opportunity draft for 2030-01-08T15:00:00Z, remove sender and run normal due dispatch one minute later -> same message cancelled; zero mail-edge submissions.
+PROBE TEAM-004 P3: remove each of the three populated-set choices in turn -> 400 and unchanged removal review with live sender session; complete reviewed choices -> one removal audit with exact receiver and both nulls, exact inventory identities and scheduledCancelled=1.
+PROBE TEAM-004 P4: read deal timeline after native removal, then replay the same removal -> one attributed owner.changed entry with exact previous and current owners and remover actor; replay 409 and identical timeline.

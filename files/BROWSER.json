@@ -1,0 +1,40 @@
+{
+  "status": "passed",
+  "door": "/app/settings/team",
+  "widths": [
+    {
+      "width": 1440,
+      "overflow": false,
+      "textMinimum": 14.5,
+      "inventories": {
+        "opportunities": 1,
+        "tasks": 1,
+        "handoffs": 1,
+        "scheduledMessages": 1
+      },
+      "choices": {
+        "opportunities": "Receiving operator",
+        "tasks": "Explicitly leave unassigned",
+        "handoffs": "Explicitly leave unassigned"
+      }
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "textMinimum": 14.5,
+      "inventories": {
+        "opportunities": 1,
+        "tasks": 1,
+        "handoffs": 1,
+        "scheduledMessages": 1
+      },
+      "choices": {
+        "opportunities": "Receiving operator",
+        "tasks": "Explicitly leave unassigned",
+        "handoffs": "Explicitly leave unassigned"
+      }
+    }
+  ],
+  "finalRemoval": "receiver assigned; both task sets unassigned; scheduled message cancelled",
+  "pageErrors": []
+}
