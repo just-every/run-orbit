@@ -37,6 +37,18 @@
       "sha256": "7da2d40f5c4b2142d30bf5d485617422ffbc663eb4c14e759de93dd861e6b035"
     },
     {
+      "blob": "236a8bc6bcf011eec552b079ed9740a13f1470fe",
+      "bytes": 6428,
+      "path": "EVIDENCE-TRANSPORT.txt",
+      "sha256": "724275d4dc493a3d332b52a6b2d79ab54afeeb6aaf6582aca88eeb509dc08fca"
+    },
+    {
+      "blob": "67362c5f7f9f0ffe99e4fe0a76476ffb014792e4",
+      "bytes": 7825,
+      "path": "EVIDENCE-VERIFY.json",
+      "sha256": "80169d4a6477335a7ce1794005ed1b866d6642f0251d51896890cb7531e19081"
+    },
+    {
       "blob": "e39ab7c922ace7d8fe249c7f2947d209456541b1",
       "bytes": 2522,
       "path": "EXACT-CHECKS.json",
