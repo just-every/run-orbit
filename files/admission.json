@@ -1,0 +1,15 @@
+{
+  "time_utc": "2026-11-06T02:04:56.096123+00:00",
+  "disk_free_bytes": 31976640512,
+  "minimum_clone_admission_bytes": 53687091200,
+  "admitted": false,
+  "initial_clone_started_before_disk_result_inspected": true,
+  "clone_owned_pid": 647,
+  "cleanup": "TERM sent to owned clone PID; partial clone removed",
+  "runtime_tests": "NOT RUN",
+  "browser_proof": "NOT RUN",
+  "ci_queries": 0,
+  "product_commits": 0,
+  "product_pushes": 0,
+  "github_api_calls_at_receipt_time": 1
+}

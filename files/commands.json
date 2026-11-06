@@ -1,0 +1,108 @@
+{
+  "recorded_at": "2026-11-06T02:17:52.652119+00:00",
+  "source": "2314db77e0289f80687f6d26ab8f393be8865a8a",
+  "source_gh_api_invocations": 5,
+  "ci_gh_api_invocations": 0,
+  "product_commits": 0,
+  "product_pushes": 0,
+  "rows": [
+    {
+      "command": "git config --global user.name 'Run Edit Run fleet' && git config --global user.email fleet@runeditrun.com",
+      "exit": 0
+    },
+    {
+      "command": "bash /workspace/rer-cloud-launcher/refresh.sh",
+      "exit": 0
+    },
+    {
+      "command": "User-supplied exact fleet Git installer; decrypted-bundle-only helper and config cleanup",
+      "exit": 0
+    },
+    {
+      "command": "cat /workspace/rer-cloud-launcher/AGENTS.md",
+      "exit": 0
+    },
+    {
+      "command": "df -BG /workspace; later df -hT",
+      "exit": 0,
+      "result": "about 30 GiB available; below the stated 50 GiB admission minimum"
+    },
+    {
+      "command": "git clone --depth 1 --filter=blob:none --branch cloud/sd-orbit-c-f55 https://github.com/just-every/run-orbit.git <owned path>",
+      "exit": 143,
+      "result": "Started before preceding disk result inspected. Owned PID 647 terminated; partial clone removed before setup or product work."
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/git/trees/2314db77e0289f80687f6d26ab8f393be8865a8a?recursive=1",
+      "exit": 0,
+      "result": "not truncated"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/tarball/2314db77e0289f80687f6d26ab8f393be8865a8a",
+      "exit": 0,
+      "result": "source inspection only; no archive runtime substitution"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/commits/main --jq '{sha: .sha, committed: .commit.committer.date, message: .commit.message}'",
+      "exit": 0,
+      "result": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/git/commits/2314db77e0289f80687f6d26ab8f393be8865a8a",
+      "exit": 0
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/git/commits/c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+      "exit": 0
+    },
+    {
+      "command": "Raw pinned AGENTS and fresh-main document and relevant implementation source reads",
+      "exit": 0,
+      "result": "No Authorization headers added; source reads only"
+    },
+    {
+      "command": "Git blob SHA-1 checks against exact tree for 17 selected files",
+      "exit": 0,
+      "result": "17 matches"
+    },
+    {
+      "command": "Complete document structural comparison and full Status row comparison",
+      "exit": 0,
+      "result": "204 requirements and acceptances carried; only AI-002 and OUT-032 Status rows differ; full semantic reread remains incomplete"
+    },
+    {
+      "command": "Exact existing published source and main commit reconstruction and Git object identity verification",
+      "exit": 0,
+      "result": "Original hashes match; no new product commit"
+    },
+    {
+      "command": "cat, sed and rg reads of the named pinned source, test, helper and workflow files",
+      "exit": 0,
+      "result": "Source inspection; outputs too large to read fully are not represented as full semantic rereads"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/assistance.test.ts tests/core/today-brief.test.ts tests/core/provider-redirects.test.ts",
+      "exit": null,
+      "status": "NOT RUN",
+      "reason": "host below clone disk admission"
+    },
+    {
+      "command": "Pinned preparation, emitted app build and focused Playwright assistance registration at 1440 and 390",
+      "exit": null,
+      "status": "NOT RUN",
+      "reason": "host below clone disk admission; no dependency setup or browser start"
+    },
+    {
+      "command": "CI query, dispatch, rerun, provider or production operations",
+      "exit": null,
+      "status": "NOT RUN",
+      "reason": "explicit read-only commission authority"
+    },
+    {
+      "command": "Mutation, full suite and baseline suite",
+      "exit": null,
+      "status": "NOT RUN",
+      "reason": "prohibited by exact-source reviewer brief"
+    }
+  ]
+}

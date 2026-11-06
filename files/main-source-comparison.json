@@ -1,0 +1,57 @@
+{
+  "main": "c01084f133af9aa484a6c1f5151a4e9cfbc7230f",
+  "judged_source": "2314db77e0289f80687f6d26ab8f393be8865a8a",
+  "files": [
+    {
+      "path": "src/core/features/assistance/provider.ts",
+      "same_bytes": true,
+      "sha256": "680289a5184f8900683e87721db78fe9cc73202ab7094e578133daee770abf4f"
+    },
+    {
+      "path": "src/core/features/assistance/preview.ts",
+      "same_bytes": true,
+      "sha256": "1102138b5ce4d82912b7bb4eea9edcdd1c123a30fa9466d429dbc571e67729ff"
+    },
+    {
+      "path": "src/core/features/assistance/routes.ts",
+      "same_bytes": true,
+      "sha256": "10905da9393d840ab1ed76c849b474d7b5d64a0c3033d398a3deded33d37c2ef"
+    },
+    {
+      "path": "src/core/features/today/summary.ts",
+      "same_bytes": true,
+      "sha256": "9a1d6238cb219a7caa437f4f5ad385b74bcaffe7a1ef7750d37ead6bb000e565"
+    },
+    {
+      "path": "tests/core/assistance.test.ts",
+      "same_bytes": false,
+      "sha256": "5451e6d248ee85a1c987e41894784d2ff00a4de7af2aaafbd19045e0380c45e0"
+    },
+    {
+      "path": "tests/core/today-brief.test.ts",
+      "same_bytes": true,
+      "sha256": "60d42334bf70baa3b4c23332d57a99da7617495553d625600e8f5367301f5b36"
+    },
+    {
+      "path": "tests/core/provider-redirects.test.ts",
+      "same_bytes": true,
+      "sha256": "6076e1e2e9d03fdf979e35c031d8810fbffa1f614432df1dbf66c45743e840ee"
+    },
+    {
+      "path": "tests/e2e/assistance.spec.mjs",
+      "same_bytes": true,
+      "sha256": "301a0f13d9aa5647761320342b87feb256222df4ef22e9d21807fe42053ae04a"
+    },
+    {
+      "path": "scripts/verification-plan.mjs",
+      "same_bytes": true,
+      "sha256": "6cadc2af648d750bbab60a0e10be17ddd1b41c637b5cd113c21546fd8c7d22ce"
+    },
+    {
+      "path": ".github/workflows/verify.yml",
+      "same_bytes": true,
+      "sha256": "2d350a75be8a46166f04f9bc77a1e822ab23c75a1ac51fa05be9789db1aec238"
+    }
+  ],
+  "main_rejudged": false
+}

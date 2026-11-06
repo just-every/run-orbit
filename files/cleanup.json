@@ -1,0 +1,16 @@
+{
+  "time_utc": "2026-11-06T02:17:52.695739+00:00",
+  "removed_owned_material": [
+    "source-inspection",
+    "fresh-main-inspection",
+    "source.tar.gz",
+    "pinned-AGENTS.md"
+  ],
+  "partial_clone_removed": true,
+  "started_server_pids": [],
+  "started_browsers": 0,
+  "dependency_installs": 0,
+  "product_work_discarded": false,
+  "report_packet_retained": "/home/agent/rer-consolidation/work/ct-judge-orbit-ai002-20261105-2114-sol1/packet",
+  "provenance_metadata_only_retained": true
+}

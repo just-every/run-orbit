@@ -1,0 +1,10 @@
+{
+  "kind": "evidence-only provenance metadata; not a product clone or executable checkout",
+  "method": "exact existing published commit reconstructed from GitHub Git commit API; Git object hash verified before importing",
+  "product_head": "2314db77e0289f80687f6d26ab8f393be8865a8a",
+  "product_branch": "cloud/sd-orbit-c-f55",
+  "new_product_commits": 0,
+  "source_tree_imported": false,
+  "evidence_entrypoint": "/home/agent/rer-consolidation/.tools/cloud_evidence.py",
+  "reason": "A below-50-GiB host may not retain a local product clone. The report-only entrypoint reads only provenance HEAD, branch and credential-free origin."
+}
