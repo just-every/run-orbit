@@ -1,0 +1,7 @@
+{
+  "tests/support/slack-notices-proof.ts": "8ebbd33a1bba7effe1d7d35b3e8d3634d1d445f548b896fbb1a73d51be6fff2b",
+  "src/core/features/slack/content.ts": "b6caa0827057d147ce6c7c4457a9a440f8e84f6344b51de08cc6a26d6162842a",
+  "src/core/features/slack/contracts.ts": "bfdd234b7fd1d5f74175c204b9d16f0fe5c3c50370444de9e91a6ca0ca4788b8",
+  "src/core/features/slack/delivery.ts": "a201036d28bbe1d881c17de71237f09599a4dfc00144107ec7b102d7d89f5431",
+  "migrations/core/0051_slack_notices.sql": "f10b66026446b28cd4c68f31d5ee0f59c1b5e4e6250e7adda807f846373ff851"
+}

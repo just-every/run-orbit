@@ -1,0 +1,127 @@
+{
+  "observed_at_epoch": 1793943264.2260911,
+  "github_calls": 6,
+  "main": [
+    {
+      "id": 42157856242,
+      "name": "Verify",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42157856242"
+    },
+    {
+      "id": 42157855724,
+      "name": "Push on main",
+      "event": "dynamic",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42157855724"
+    },
+    {
+      "id": 42157856336,
+      "name": "Run site",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42157856336"
+    },
+    {
+      "id": 42157856319,
+      "name": "Run demo",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "skipped",
+      "head_sha": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42157856319"
+    },
+    {
+      "id": 42149502769,
+      "name": "Verify",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42149502769"
+    }
+  ],
+  "candidate": [
+    {
+      "id": 42168658819,
+      "name": "Verify",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "failure",
+      "head_sha": "6297679f860ad9809147c17b423fcbb07c7f2a72",
+      "run_attempt": 1,
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42168658819"
+    }
+  ],
+  "jobs": [
+    {
+      "id": 127731058282,
+      "name": "plan",
+      "conclusion": "success",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42168658819/job/127731058282"
+    },
+    {
+      "id": 127731184767,
+      "name": "source and shared build",
+      "conclusion": "failure",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42168658819/job/127731184767"
+    },
+    {
+      "id": 127731186356,
+      "name": "light",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42168658819/job/127731186356"
+    },
+    {
+      "id": 127731369627,
+      "name": "verify",
+      "conclusion": "failure",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42168658819/job/127731369627"
+    },
+    {
+      "id": 127731371027,
+      "name": "shards (${{ matrix.batch }})",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42168658819/job/127731371027"
+    },
+    {
+      "id": 127731403799,
+      "name": "release",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42168658819/job/127731403799"
+    },
+    {
+      "id": 127731403863,
+      "name": "nightly-proof",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42168658819/job/127731403863"
+    },
+    {
+      "id": 127731404252,
+      "name": "full-push-proof",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42168658819/job/127731404252"
+    }
+  ],
+  "classification": "expected generated-view failure only, with downstream artifacts and aggregate blocked by the source job; cloud READY exception applies",
+  "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "failed_job_log_reads": [
+    {
+      "job": 127731184767,
+      "command": "gh run view 42168658819 --repo just-every/run-orbit --job 127731184767 --log-failed",
+      "exit": 0
+    },
+    {
+      "job": 127731369627,
+      "command": "gh run view 42168658819 --repo just-every/run-orbit --job 127731369627 --log-failed",
+      "exit": 0
+    }
+  ]
+}

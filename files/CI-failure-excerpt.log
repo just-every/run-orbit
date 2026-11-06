@@ -1,0 +1,5 @@
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:29:48.7526798Z ACCEPTANCE.md: generated content differs; run contract-docs write.
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-06T05:29:48.7843654Z ##[error]Process completed with exit code 1.
+source and shared build	Retain authoritative source candidate	2026-11-06T05:29:50.3326763Z ##[error]No files were found with the provided path: /tmp/orbit-source.bundle
+verify	Require a successful plan and all required work	2026-11-06T05:29:57.2192729Z ##[error]Process completed with exit code 1.
+verify	Retain combined routine verdicts (capacity pending)	2026-11-06T05:29:58.0480530Z ##[error]No files were found with the provided path: verification/core-results.jsonl
