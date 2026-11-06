@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-11-06T01:49:23.297993+00:00",
+  "source_sha": "a6adec278a7fa27edcdc32289c5fde0b2175ad9e",
+  "source_ref": "refs/heads/cloud/sd-orbit-c-f43",
+  "ls_remote_exit": 0,
+  "ls_remote_stdout": "a6adec278a7fa27edcdc32289c5fde0b2175ad9e\trefs/heads/cloud/sd-orbit-c-f43\n",
+  "expected_match": true
+}

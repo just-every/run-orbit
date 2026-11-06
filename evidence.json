@@ -1,0 +1,100 @@
+{
+  "files": [
+    {
+      "blob": "7320666b10ae310c501630740c06b2a84ff51242",
+      "bytes": 1698,
+      "path": "COMMANDS.jsonl",
+      "sha256": "e6f3caceba67fdd8a07bf28c0591c5b6df74a82216d799343358328bcdea1775"
+    },
+    {
+      "blob": "b4fd4f21f3bc1956997aeaf3285850a9e8feb1b8",
+      "bytes": 2340,
+      "path": "COVERAGE.md",
+      "sha256": "d93caa9443d2378ac221e6c74d12e033c1a8554e38971f5fe0db6b9c470e2202"
+    },
+    {
+      "blob": "4730fa4886435c20d429772e2eabd5d452110b6c",
+      "bytes": 179441,
+      "path": "DOCUMENT-RECEIPT.json",
+      "sha256": "91b55f9c244302a91f41fbb09f7e1e869d4ae25997341840b8453eaceb5e8da8"
+    },
+    {
+      "blob": "53b484dc3d4e4de0c4badfee40441936eb2e1952",
+      "bytes": 3037,
+      "path": "PACKET-RECEIPT.json",
+      "sha256": "331ea1020b2132c59679d14997f4cbfada35fb0bf5a33fa487a2ec777f533f3d"
+    },
+    {
+      "blob": "4591896d48ecc5dd3d59d0a821bd66ea1f665de4",
+      "bytes": 1539,
+      "path": "PLAN.md",
+      "sha256": "e4afab1185f6b4eaa2558e15cb8527b32eb4ade44eb3b5dcc9457d67a4e852ad"
+    },
+    {
+      "blob": "ad3647c5f0d9c599f975559f673680ac25b34c38",
+      "bytes": 23367,
+      "path": "REPORT.md",
+      "sha256": "f4ff1199c11d2112bb215c458ec1afc8dd782c393d5013e1de2e13fe47397c9d"
+    },
+    {
+      "blob": "1efcf349bc3ce67f8e49b3e0a5590ab97ae84f5c",
+      "bytes": 1031,
+      "path": "REVIEW-RECEIPT.json",
+      "sha256": "05921234512bda148498bd8b3bb33ba702ae3347079699c0bdd7b8d245c1d605"
+    },
+    {
+      "blob": "a9367b27fb54f1aba1cb0b37cfc2156abdce653c",
+      "bytes": 315,
+      "path": "SOURCE-RECEIPT.json",
+      "sha256": "9924b8952b332a62e6b112fc2f2eb01ed7410293914a3e11a776b036917845ef"
+    },
+    {
+      "blob": "343d9ccb048d2cedadcdee6db15b5f60cc88b131",
+      "bytes": 20835,
+      "path": "VERDICT.md",
+      "sha256": "e104d7df60fce4cc61cff07e50020767a731270f121c5789d10b29ca914c9422"
+    },
+    {
+      "blob": "22db2dfbba4362077d48587f9889d2a422926543",
+      "bytes": 3247,
+      "path": "VERIFY-WIRING.json",
+      "sha256": "746354a51240baa52c857d87aa2fcc6515f3009bdb7454d0490a54e92283e8bb"
+    },
+    {
+      "blob": "fba560db7c48416c914446f2a1e319a79104d105",
+      "bytes": 67,
+      "path": "contract-check.log",
+      "sha256": "183372998615cc516043a5f66404b300281009a84349eda72da66d79fe542603"
+    },
+    {
+      "blob": "a5e7182c429b796ca7a1864566b7d6a9bac893a9",
+      "bytes": 2128,
+      "path": "dependency-install.log",
+      "sha256": "3aa64c8882f0c3bd6683acdc1db2b8a9bff7182d2fa130c2d7dc0b9a577a0c67"
+    },
+    {
+      "blob": "90751b48e19733a57f806cfb8203fe5de85eed06",
+      "bytes": 879,
+      "path": "focused-capture.log",
+      "sha256": "0e1aaa02875426d6e26cbc7331c6efe05b0a1f22a7bba8c308c72d028bd2c075"
+    },
+    {
+      "blob": "b35d3ea12f8b6b891bfa7ce5fb8107d3f2e60f65",
+      "bytes": 490333,
+      "path": "source-check.log",
+      "sha256": "e8d66080640af439f082c5be30cc15d13b3379eb759f84aa5943a06bea2d0eba"
+    },
+    {
+      "blob": "3381134aae9364fc1a53cde000aa1b065e301708",
+      "bytes": 244,
+      "path": "typecheck.log",
+      "sha256": "35869fb273ff2b2566a751b9fe79fdc4dda9318686872ae7e2b0a6ba2ba6b481"
+    }
+  ],
+  "product_branch": "",
+  "product_head": "a6adec278a7fa27edcdc32289c5fde0b2175ad9e",
+  "ref": "refs/heads/evidence/ct-judge-orbit-capture003-20261105-1520-sol1",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "ct-judge-orbit-capture003-20261105-1520-sol1"
+}

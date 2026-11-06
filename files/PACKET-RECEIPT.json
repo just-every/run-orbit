@@ -1,0 +1,89 @@
+{
+  "ci_calls": 0,
+  "injected_value_scan": "pass; no values logged",
+  "pending_guards": [
+    "merged source judgments and generated views, counts and provenance; source lock last",
+    "full green exact-FINAL runtime Verify including relied-on capture and inherited archive/erasure journeys",
+    "COMPLETE full-history publication scan NEW 0",
+    "guarded landing, main equality, exact-main Verify and Run site; ACTIVE holds retained"
+  ],
+  "public_content_review": "reports, source inventory, command exits and logs only; no credential file, environment dump, private held-out gate material or symlink selected",
+  "regular_files_only": true,
+  "repository": "just-every/run-orbit",
+  "result": "CAPTURE-003 ACCEPT ON LANDING",
+  "selected_files": [
+    {
+      "bytes": 23367,
+      "file": "REPORT.md",
+      "sha256": "f4ff1199c11d2112bb215c458ec1afc8dd782c393d5013e1de2e13fe47397c9d"
+    },
+    {
+      "bytes": 20835,
+      "file": "VERDICT.md",
+      "sha256": "e104d7df60fce4cc61cff07e50020767a731270f121c5789d10b29ca914c9422"
+    },
+    {
+      "bytes": 1539,
+      "file": "PLAN.md",
+      "sha256": "e4afab1185f6b4eaa2558e15cb8527b32eb4ade44eb3b5dcc9457d67a4e852ad"
+    },
+    {
+      "bytes": 2340,
+      "file": "COVERAGE.md",
+      "sha256": "d93caa9443d2378ac221e6c74d12e033c1a8554e38971f5fe0db6b9c470e2202"
+    },
+    {
+      "bytes": 1698,
+      "file": "COMMANDS.jsonl",
+      "sha256": "e6f3caceba67fdd8a07bf28c0591c5b6df74a82216d799343358328bcdea1775"
+    },
+    {
+      "bytes": 315,
+      "file": "SOURCE-RECEIPT.json",
+      "sha256": "9924b8952b332a62e6b112fc2f2eb01ed7410293914a3e11a776b036917845ef"
+    },
+    {
+      "bytes": 179441,
+      "file": "DOCUMENT-RECEIPT.json",
+      "sha256": "91b55f9c244302a91f41fbb09f7e1e869d4ae25997341840b8453eaceb5e8da8"
+    },
+    {
+      "bytes": 1031,
+      "file": "REVIEW-RECEIPT.json",
+      "sha256": "05921234512bda148498bd8b3bb33ba702ae3347079699c0bdd7b8d245c1d605"
+    },
+    {
+      "bytes": 3247,
+      "file": "VERIFY-WIRING.json",
+      "sha256": "746354a51240baa52c857d87aa2fcc6515f3009bdb7454d0490a54e92283e8bb"
+    },
+    {
+      "bytes": 2128,
+      "file": "dependency-install.log",
+      "sha256": "3aa64c8882f0c3bd6683acdc1db2b8a9bff7182d2fa130c2d7dc0b9a577a0c67"
+    },
+    {
+      "bytes": 879,
+      "file": "focused-capture.log",
+      "sha256": "0e1aaa02875426d6e26cbc7331c6efe05b0a1f22a7bba8c308c72d028bd2c075"
+    },
+    {
+      "bytes": 67,
+      "file": "contract-check.log",
+      "sha256": "183372998615cc516043a5f66404b300281009a84349eda72da66d79fe542603"
+    },
+    {
+      "bytes": 490333,
+      "file": "source-check.log",
+      "sha256": "e8d66080640af439f082c5be30cc15d13b3379eb759f84aa5943a06bea2d0eba"
+    },
+    {
+      "bytes": 244,
+      "file": "typecheck.log",
+      "sha256": "35869fb273ff2b2566a751b9fe79fdc4dda9318686872ae7e2b0a6ba2ba6b481"
+    }
+  ],
+  "source_sha": "a6adec278a7fa27edcdc32289c5fde0b2175ad9e",
+  "tag": "ct-judge-orbit-capture003-20261105-1520-sol1",
+  "timestamp": "2026-11-06T02:01:00.795120+00:00"
+}

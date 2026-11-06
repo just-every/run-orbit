@@ -1,0 +1,21 @@
+{
+  "ci_api_calls": 0,
+  "clone_note": "git clone --depth 1 --filter=blob:none --single-branch --branch cloud/sd-orbit-c-f43 succeeded. Its shell then attempted local identity config outside the clone and exited 128 (not in a git directory); both local identity settings were applied successfully inside the clone before any commit. No product commit was made.",
+  "completed_at": "2026-11-06T02:01:00.784150+00:00",
+  "dependency_cleanup": "node_modules removed after all checks; disposable clone removal follows report-only transport",
+  "dependency_install_exit": 0,
+  "head_mode": "detached",
+  "index_diff_exit": 0,
+  "node_version": "v24.19.0",
+  "product_branch_created": false,
+  "product_commits_created": 0,
+  "product_pushes": 0,
+  "provider_operations": 0,
+  "prs_created": 0,
+  "source_branch": "cloud/sd-orbit-c-f43",
+  "source_clean_after_checks": true,
+  "source_sha": "a6adec278a7fa27edcdc32289c5fde0b2175ad9e",
+  "timestamp": "2026-11-06T01:59:51.743055+00:00",
+  "tracked_diff_exit": 0,
+  "tracked_status": ""
+}

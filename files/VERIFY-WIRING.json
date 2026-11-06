@@ -1,0 +1,105 @@
+[
+  {
+    "shard": "core-4",
+    "file": "tests/core/capture-intake.test.ts",
+    "args": [
+      "exec",
+      "tsx",
+      "--test",
+      "--no-test-only",
+      "--test-concurrency=1",
+      "--test-reporter=spec",
+      "--test-reporter-destination=stdout",
+      "--test-reporter=./scripts/core-results.mjs",
+      "--test-reporter-destination=verification/core-4-results.jsonl",
+      "tests/core/capture-intake.test.ts",
+      "tests/core/capture-providers.test.ts",
+      "tests/core/contact-erasure.test.ts",
+      "tests/core/launch-reply-ambiguity.test.ts",
+      "tests/core/platform-boundaries.test.ts",
+      "tests/delegation/rate-limit.test.ts"
+    ]
+  },
+  {
+    "shard": "core-5",
+    "file": "tests/core/capture-boundaries.test.ts",
+    "args": [
+      "exec",
+      "tsx",
+      "--test",
+      "--no-test-only",
+      "--test-concurrency=1",
+      "--test-reporter=spec",
+      "--test-reporter-destination=stdout",
+      "--test-reporter=./scripts/core-results.mjs",
+      "--test-reporter-destination=verification/core-5-results.jsonl",
+      "tests/core/capture-boundaries.test.ts",
+      "tests/core/local-owner.test.ts",
+      "tests/core/onboarding-archive.test.ts",
+      "tests/core/public-demo.test.ts",
+      "tests/core/records-complete.test.ts"
+    ]
+  },
+  {
+    "shard": "core-7",
+    "file": "tests/core/capture-data.test.ts",
+    "args": [
+      "exec",
+      "tsx",
+      "--test",
+      "--no-test-only",
+      "--test-concurrency=1",
+      "--test-reporter=spec",
+      "--test-reporter-destination=stdout",
+      "--test-reporter=./scripts/core-results.mjs",
+      "--test-reporter-destination=verification/core-7-results.jsonl",
+      "tests/core/assistance.test.ts",
+      "tests/core/capture-data.test.ts",
+      "tests/core/launch-reply-sender.test.ts",
+      "tests/core/provider-redirects.test.ts",
+      "tests/delegation/archive-regression.test.ts"
+    ]
+  },
+  {
+    "shard": "core-8",
+    "file": "tests/core/capture-erasure.test.ts",
+    "args": [
+      "exec",
+      "tsx",
+      "--test",
+      "--no-test-only",
+      "--test-concurrency=1",
+      "--test-reporter=spec",
+      "--test-reporter-destination=stdout",
+      "--test-reporter=./scripts/core-results.mjs",
+      "--test-reporter-destination=verification/core-8-results.jsonl",
+      "tests/core/archive-transfer.test.ts",
+      "tests/core/capture-erasure.test.ts",
+      "tests/core/identity.test.ts",
+      "tests/core/outreach-limits.test.ts",
+      "tests/core/today-brief.test.ts",
+      "tests/delegation/d1.test.ts"
+    ]
+  },
+  {
+    "shard": "core-9",
+    "file": "tests/core/capture-replay-archive.test.ts",
+    "args": [
+      "exec",
+      "tsx",
+      "--test",
+      "--no-test-only",
+      "--test-concurrency=1",
+      "--test-reporter=spec",
+      "--test-reporter-destination=stdout",
+      "--test-reporter=./scripts/core-results.mjs",
+      "--test-reporter-destination=verification/core-9-results.jsonl",
+      "tests/core/capture-connector.test.ts",
+      "tests/core/capture-replay-archive.test.ts",
+      "tests/core/capture-upgrade.test.ts",
+      "tests/core/launch-suppression-archive.test.ts",
+      "tests/core/outbound-boundaries.test.ts",
+      "tests/delegation/brief-handoff.test.ts"
+    ]
+  }
+]

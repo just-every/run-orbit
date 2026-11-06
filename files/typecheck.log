@@ -1,0 +1,5 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> orbit@0.4.3 typecheck /home/agent/rer-consolidation/work/ct-judge-orbit-capture003-20261105-1520-sol1/orbit-disposable
+> tsc --noEmit
+
