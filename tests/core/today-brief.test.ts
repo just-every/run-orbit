@@ -142,6 +142,43 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
  await resumed.json(`/api/v1/workbench/messages/${approved.id}/cancel`,{body:{}},200);
  assert.ok(!byKind(await resumed.brief(),'next-action-due').some(line=>line.evidence.id===cobalt),'Resolving the scheduled obligation clears the opportunity’s overdue next action');
  assert.equal(submissions,0,'Keeping the promises and approving future work submits no customer mail');
+
+ // Stops clear the old draft obligation by state, even when another edit overwrites its review reason.
+ const stopped:string[]=[],controls:string[]=[];
+ const nativeDraft=async(label:string)=>{const opportunity=await resumed.opportunity(`${label} renewal`,`${label} Company`,`${label} Buyer`,`${createId().toLowerCase()}@example.test`),contact=await contactOf(resumed,opportunity),id=(await resumed.json<{id:string}>(`/api/v1/workbench/opportunities/${opportunity}/drafts`,{body:{contactId:contact,subject:`${label} renewal terms`,body:'Here are the renewal terms we discussed.'}},201)).id;context.mock.timers.tick(1);return{opportunity,contact,id};};
+ const stopEvent=async(record:Awaited<ReturnType<typeof nativeDraft>>,type:string)=>resumed.json(`/api/v1/workbench/opportunities/${record.opportunity}/events`,{body:{type,subject:type==='email.replied'?'Please stop emailing me':'Customer stop',occurredAt:new Date(Date.now()-30*86400000).toISOString(),eventId:createId(),contactId:record.contact,...(type==='email.bounced'?{permanentBounce:true}:{})}},201);
+ for(const type of ['email.unsubscribed','email.replied','meeting.booked','email.bounced','do_not_contact']){
+  const record=await nativeDraft(type);
+  if(type==='do_not_contact')await resumed.json(`/api/v1/records/contact/${record.contact}`,{method:'PATCH',body:{changes:{contactability:'do_not_contact'},base:{contactability:'contactable'}}},200);
+  else await stopEvent(record,type);
+  context.mock.timers.tick(1);
+  await resumed.json(`/api/v1/records/contact/${record.contact}`,{method:'PATCH',body:{changes:{name:'Updated buyer'},base:{name:`${type} Buyer`}}},200);
+  stopped.push(record.id);
+ }
+ const ordinary=await nativeDraft('Ordinary stale');
+ await resumed.json(`/api/v1/records/contact/${ordinary.contact}`,{method:'PATCH',body:{changes:{name:'Updated buyer'},base:{name:'Ordinary stale Buyer'}}},200);controls.push(ordinary.id);
+ const reviewed=await nativeDraft('Reviewed after booking');await stopEvent(reviewed,'meeting.booked');context.mock.timers.tick(1);
+ const review=(await resumed.json<any>(`/api/v1/drafts/${reviewed.id}`)).draft;
+ await resumed.json(`/api/v1/workbench/drafts/${reviewed.id}/review`,{body:{revision:review.revision,reviewedUpdatedAt:review.updatedAt,recipientContactId:reviewed.contact,recipientEmail:review.recipientEmail,subject:review.subject,body:review.body}},200);
+ // Later unrelated staleness does not reapply the stop that the person already reviewed.
+ context.mock.timers.tick(1);await resumed.json(`/api/v1/records/contact/${reviewed.contact}`,{method:'PATCH',body:{changes:{name:'Updated buyer'},base:{name:'Reviewed after booking Buyer'}}},200);controls.push(reviewed.id);
+ const afterReply=await nativeDraft('New after reply');await stopEvent(afterReply,'email.replied');context.mock.timers.tick(1);
+ const replacement=(await resumed.json<{id:string}>(`/api/v1/workbench/opportunities/${afterReply.opportunity}/drafts`,{body:{contactId:afterReply.contact,subject:'New work after the reply',body:'Following up on our new agreement.'}},201)).id;controls.push(replacement);stopped.push(afterReply.id);
+ const beforeWait=await resumed.brief();assert.ok(!byKind(beforeWait,'draft-unsent').some(line=>[...stopped,...controls].includes(line.evidence.id)),'None of the new drafts is overdue yet');
+ context.mock.timers.tick((beforeWait.policy.staleIntervalDays+1)*86400000);
+ const later=await todayApp(db,{operatorId:t.actor,outboundMail}),afterStops=await later.brief();
+ assert.deepEqual(byKind(afterStops,'draft-unsent').filter(line=>stopped.includes(line.evidence.id)),[],'Unsubscribe, reply, booking, bounce and Do not contact clear stopped draft promises');
+ assert.deepEqual(byKind(afterStops,'draft-unsent').filter(line=>controls.includes(line.evidence.id)).map(line=>line.evidence.id).sort(),controls.sort(),'Ordinary staleness, a reviewed draft and new work after an old reply remain promises');
+
+ // Unanswered replies have no age cutoff; a logged call still answers an older reply.
+ const agedReplies:string[]=[];
+ for(const age of [119,121]){const record=await later.opportunity(`${age} day renewal`,`${age} day Company`,`${age} day Buyer`,`${createId().toLowerCase()}@example.test`);agedReplies.push(await later.event(record,'email.replied',`${age} day renewal question`,age));}
+ const answeredRecord=await later.opportunity('Answered old renewal','Answered Company','Answered Buyer',`${createId().toLowerCase()}@example.test`),answeredReply=await later.event(answeredRecord,'email.replied','Old renewal question answered by phone',121);
+ await later.json(`/api/v1/records/opportunity/${answeredRecord}/entries`,{body:{kind:'call',text:'Answered the renewal question.',durationMinutes:15,occurredAt:new Date().toISOString()}},200);
+ const agedBrief=await later.brief();
+ assert.deepEqual(byKind(agedBrief,'reply-unanswered').filter(line=>agedReplies.includes(line.evidence.id)).map(line=>line.evidence.id).sort(),agedReplies.sort(),'Both 119- and 121-day unanswered customer replies remain overdue');
+ assert.ok(!byKind(agedBrief,'reply-unanswered').some(line=>line.evidence.id===answeredReply),'Answering an older reply clears its promise');
+ assert.equal(submissions,0,'Stop and old-reply checks send no customer mail');
 });
 
 test('BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks',async(context)=>{

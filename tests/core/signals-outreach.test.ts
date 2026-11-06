@@ -54,7 +54,15 @@ test('OUT-008 recipient clocks respect weekdays, DST and time to review an out-o
   const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:{send:async()=>{sends++;return{providerMessageId:'test-confirmed'};}}}),session=await createDependencies(db).auth.createSession(f.actor);
   const request=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1/workbench/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
   const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Take time to review',body:'The exact approved message'},f.actor);
-  const preview=await (await request(`drafts/${draft.id}/approval-preview`)).json() as {localTime:string};
+  const previewResponse=await request(`drafts/${draft.id}/approval-preview`);assert.equal(previewResponse.status,200);
+  const preview=await previewResponse.json() as {localTime:string;timezone:string;quietHours:boolean};assert.equal(preview.quietHours,true);
+  const messages=async()=>{const response=await request(`opportunities/${f.opportunityId}/messages`);assert.equal(response.status,200);return(await response.json() as {messages:unknown[]}).messages;};
+  const before=await messages();
+  const unconfirmed=await request(`drafts/${draft.id}/approve`,{revision:1});
+  assert.equal(unconfirmed.status,409,'The valid saved revision still requires a separate out-of-hours confirmation');
+  const refusal=await unconfirmed.json() as {error:string};assert.ok(refusal.error.includes(preview.localTime),'The refusal names the previewed recipient time');assert.ok(refusal.error.includes(preview.timezone),'The refusal names the recipient timezone');
+  assert.deepEqual(await messages(),before,'Refusing an unconfirmed send leaves outbound inventory unchanged');
+  assert.equal(sends,0,'An unconfirmed send makes no provider submission');
   context.mock.timers.tick(61000);
   assert.equal((await request(`drafts/${draft.id}/approve`,{revision:1,quietHoursConfirmation:preview.localTime})).status,200,'Confirmation survives the minute boundary');
   assert.equal(sends,1);
@@ -299,6 +307,8 @@ test('OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end sched
  const moved=await approval.message(beforeMove);assert.equal(moved.state,'cancelled');assert.equal(moved.failure,'Deal stage changed, so the scheduled follow-up was cancelled');assert.equal((await db.prepare('SELECT updated_at FROM outbound_messages WHERE id=?').bind(beforeMove).first<{updated_at:string}>())!.updated_at,(await db.prepare("SELECT t.occurred_at FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id WHERE t.kind='stage.changed' AND r.record_type='opportunity' AND r.record_id=?").bind(f.opportunityId).first<{occurred_at:string}>())!.occurred_at,'The send ends in the stage move commit');
  const beforeClose=await schedule('Follow-up before a close',due[2]);
  await api(`records/opportunity/${f.opportunityId}/lifecycle`,{state:'won',reason:'Signed'});
+ const won=await api<{record:{close_reason:string}}>(`records/opportunity/${f.opportunityId}`);
+ assert.equal(won.record.close_reason,'Signed','The won-close reason survives a fresh authenticated record read');
  const closed=await approval.message(beforeClose);assert.equal(closed.state,'cancelled');assert.equal(closed.failure,'Deal closed won, so the scheduled follow-up was cancelled');
  await api(`records/opportunity/${f.opportunityId}/lifecycle`,{state:'open',reason:''});assert.equal((await post(genuine)).status,200,'Replaying the reply is accepted once');
  for(const at of due)await service.dispatchDue(new Date(Date.parse(at)+60000));
