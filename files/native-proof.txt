@@ -1,0 +1,17 @@
+TAP version 13
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Subtest: report periods compare instants across ISO precision and timezone equality boundaries
+ok 1 - report periods compare instants across ISO precision and timezone equality boundaries
+  ---
+  duration_ms: 261323.985932
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 268101.470811

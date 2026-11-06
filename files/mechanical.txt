@@ -1,0 +1,4 @@
+MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock then check exit=0; views=node src/base/contract-docs.mjs write then check exit=0; ledger=none exit=0
+Generated views restored from origin/main. No migration changed.
+All 204 parent Status rows retained in each product commit; Markdown table rows 458 before and after.
+Test inventory: 198 registrations plus two qualifications, unchanged.

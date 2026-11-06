@@ -1,0 +1,70 @@
+[
+  {
+    "number": 1,
+    "time": 1793927311.7748363,
+    "arguments": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs?head_sha=c01084f133af9aa484a6c1f5151a4e9cfbc7230f&per_page=100",
+      "--jq",
+      "[.workflow_runs[]|{id,name,status,conclusion,head_sha,event,html_url}]"
+    ]
+  },
+  {
+    "number": 2,
+    "time": 1793928416.3713632,
+    "arguments": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs?head_sha=3a0db404934af25b19cf44228e470e17e760868e&per_page=100",
+      "--jq",
+      "[.workflow_runs[]|{id,name,status,conclusion,head_sha,event,html_url}]"
+    ]
+  },
+  {
+    "number": 3,
+    "time": 1793928716.3608775,
+    "arguments": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs/42143859878",
+      "--jq",
+      "{status,conclusion,head_sha,html_url,id,name,event}"
+    ]
+  },
+  {
+    "number": 4,
+    "time": 1793928726.0664256,
+    "arguments": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs/42143859878/jobs?per_page=100",
+      "--jq",
+      "[.jobs[]|{id,name,status,conclusion,steps:[.steps[]|select(.conclusion==\"failure\")|{name,number,conclusion}]}]"
+    ]
+  },
+  {
+    "number": 5,
+    "time": 1793928737.1629162,
+    "arguments": [
+      "run",
+      "view",
+      "42143859878",
+      "--repo",
+      "just-every/run-orbit",
+      "--job",
+      "127650611727",
+      "--log-failed"
+    ]
+  },
+  {
+    "number": 6,
+    "time": 1793928737.18339,
+    "arguments": [
+      "run",
+      "view",
+      "42143859878",
+      "--repo",
+      "just-every/run-orbit",
+      "--job",
+      "127650816231",
+      "--log-failed"
+    ]
+  }
+]

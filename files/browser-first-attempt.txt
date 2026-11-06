@@ -1,0 +1,51 @@
+TAP version 13
+# (node:3874) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Owned emitted Worker PID 4642
+# Dashboard composer state []
+# Subtest: REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence
+not ok 1 - REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence
+  ---
+  duration_ms: 215672.894554
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/sd-orbit-c-f66/run-orbit/newtests/t096/report-disclosure.test.ts:1:3138'
+  failureType: 'testCodeFailure'
+  error: |-
+    expect(locator).toContainText(expected) failed
+    
+    Locator: locator('.dash-tile--win_rate')
+    Expected substring: "Not available"
+    Received string:    "Win rate v1CSVQ4 2026 · Oct 1 – Dec 31, ET · Computed 8:11 PM EST · just now66.7%2 won of 3 closed2 won · 1 lostBasisPeriodQ4 2026 · Oct 1 – Dec 31, ETTimezoneEastern Time (America/New_York). Monthly buckets on local calendar months. Each month starts at local midnight on its first day in America/New_York (included) and ends at local midnight on the next month's first day (excluded).CurrencyUSD, from each deal amount; no exchange rates or attribution.FiltersPipelines: New business, Renewals. Owner filter applied. Filtered to the chosen pipelines: activities, tasks, messages and bookings count only when linked to a deal in them. The rep filter applies to the deal owner, activity author, message approver and task assignee; bookings are not filtered by rep. Region: Northeast. AccessComputed from every record in this workspace; you are a full operator.FreshnessComputed 8:11 PM EST from current recordsMissing dataNone recorded.Win rateDeals won ÷ (deals won + deals lost) for closes inside the period. With no closes the rate has no value.Source fields: opportunities.lifecycle, opportunities.closed_at."
+    Timeout: 5000ms
+    
+    Call log:
+      - Expect "toContainText" locator('.dash-tile--win_rate') with timeout 5000ms
+      - waiting for locator('.dash-tile--win_rate')
+        7 × locator resolved to <article aria-labelledby="tile-69bea1f5-b6c2-4d33-987b-54137a12db73-title" class="operator-surface dash-tile dash-tile--number dash-tile--win_rate">…</article>
+          - unexpected value "Win rate v1CSVQ4 2026 · Oct 1 – Dec 31, ET · Computed 8:11 PM EST · just now66.7%2 won of 3 closed2 won · 1 lostBasisPeriodQ4 2026 · Oct 1 – Dec 31, ETTimezoneEastern Time (America/New_York). Monthly buckets on local calendar months. Each month starts at local midnight on its first day in America/New_York (included) and ends at local midnight on the next month's first day (excluded).CurrencyUSD, from each deal amount; no exchange rates or attribution.FiltersPipelines: New business, Renewals. Owner filter applied. Filtered to the chosen pipelines: activities, tasks, messages and bookings count only when linked to a deal in them. The rep filter applies to the deal owner, activity author, message approver and task assignee; bookings are not filtered by rep. Region: Northeast. AccessComputed from every record in this workspace; you are a full operator.FreshnessComputed 8:11 PM EST from current recordsMissing dataNone recorded.Win rateDeals won ÷ (deals won + deals lost) for closes inside the period. With no closes the rate has no value.Source fields: opportunities.lifecycle, opportunities.closed_at."
+    
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    captureRawStack (/home/agent/rer-consolidation/work/sd-orbit-c-f66/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    callMatcherAsStep (/home/agent/rer-consolidation/work/sd-orbit-c-f66/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    Object.toContainText (/home/agent/rer-consolidation/work/sd-orbit-c-f66/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    dashboardAccessProof (/home/agent/rer-consolidation/work/sd-orbit-c-f66/run-orbit/newtests/t096/dashboard-access-proof.ts:37:261)
+    async dashboardJourney (/home/agent/rer-consolidation/work/sd-orbit-c-f66/run-orbit/newtests/t096/browser-dashboard.ts:68:3)
+    async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f66/run-orbit/newtests/t096/report-disclosure.test.ts:95:2)
+  ...
+# Subtest: Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API
+ok 2 - Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API
+  ---
+  duration_ms: 5293.985355
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 229843.670416
