@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "6bb6fb9aaef0e0df27f86958e4734fef3b5d0f3cfa37f0400496e6043e8781b1",
+      "sha256": "c4d7d18dfff7a015a2a0efb8055619e7ad14bb2a6c8c64806ba14effa6ca5c24",
       "executable": false
     },
     "DEMO.md": {
@@ -2339,7 +2339,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-access-proof.ts": {
-      "sha256": "6cc3aefe907f248d1b50304c5fca56e042e8b37736c5d6128fb9b34b9255f75b",
+      "sha256": "c81e9f16d1fc05d95a7590b4b8cd04480359fb4ca9c05759617c73aa50f392b1",
       "executable": false
     },
     "newtests/t096/dashboard-archive.ts": {
@@ -2347,7 +2347,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-backend-proof.ts": {
-      "sha256": "7ef003074fbf3f8b2d9d4c5f5e41209689d13438954b8d69624a99f8b9143ab0",
+      "sha256": "c18be487a50e5ca4a340eb7da146b80ce17df7e495dab32c5f5df61905a645bd",
       "executable": false
     },
     "newtests/t096/dashboard-slack-fixture.ts": {
