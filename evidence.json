@@ -7,16 +7,28 @@
       "sha256": "af8ce4342cfe9b9327bef86dc347812bdebe63e98af9b056d34402dcb14aa6fd"
     },
     {
-      "blob": "bd05a6aa29d44b12efb060d8bb5d72d086f3341c",
-      "bytes": 2662,
-      "path": "PLAN.md",
-      "sha256": "2271726d03aaee78c4fcd2ab96abbee8b114673f04bfb22285120dae8b5d4537"
+      "blob": "c50037ae0edafe4bb0944b24793ffb0b34930b48",
+      "bytes": 768,
+      "path": "EVIDENCE-FIRST-PREPUSH-AUDIT.json",
+      "sha256": "d8b340f1b1f35f5d704c90f5884a1992b9c4146b0ab00f156a65c286df442dba"
     },
     {
-      "blob": "294cd4f4d72a9ce6cf4bb3f4f5931b9b0c4eea46",
-      "bytes": 28615,
+      "blob": "02eaf82e3ccdab08c1b9592ceee0a86a78b88860",
+      "bytes": 1561,
+      "path": "EVIDENCE-TRANSFER-RECEIPT.json",
+      "sha256": "0e88a62e4c8fae8015343c66fa7210ac4d20386ef118c487eaeca29df6751578"
+    },
+    {
+      "blob": "a1f67af5d25d0e41db6947708b3bd0305fdad3cc",
+      "bytes": 2791,
+      "path": "PLAN.md",
+      "sha256": "24f140c33829c3c145f238675a4d9a785b0ab6616ab19e4ba04d7606e7877be8"
+    },
+    {
+      "blob": "9daaf7737d1259a70c5db541707e56f05cf7e8bd",
+      "bytes": 29136,
       "path": "REPORT.md",
-      "sha256": "1fa0477a88e330df5a3217d267705a6a7d02a2770f1d66e4c071b905824cac92"
+      "sha256": "5eb05b399e088a5a29b1045baf0ded5622d9952896bcada19bf80cfaa381447d"
     },
     {
       "blob": "ca55cb7defcd93c898c29542beeca056b5ff1f28",
@@ -31,10 +43,10 @@
       "sha256": "e4d27adbcbd3fffe2ac09cf7c229486d7a4a2913902ab2565bb801e62926fd7d"
     },
     {
-      "blob": "294cd4f4d72a9ce6cf4bb3f4f5931b9b0c4eea46",
-      "bytes": 28615,
+      "blob": "9daaf7737d1259a70c5db541707e56f05cf7e8bd",
+      "bytes": 29136,
       "path": "VERDICT.md",
-      "sha256": "1fa0477a88e330df5a3217d267705a6a7d02a2770f1d66e4c071b905824cac92"
+      "sha256": "5eb05b399e088a5a29b1045baf0ded5622d9952896bcada19bf80cfaa381447d"
     }
   ],
   "product_branch": "cloud/sd-orbit-c-f63",

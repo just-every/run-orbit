@@ -1,0 +1,18 @@
+{
+  "repository": "just-every/run-orbit",
+  "ref": "refs/heads/evidence/ct-judge-orbit-capture009-20261105-2325-sol1",
+  "head": "573d3af6643991efb1e0750d38744fcd85885034",
+  "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+  "identity_log": "Run Edit Run fleet <fleet@runeditrun.com>\nRun Edit Run fleet <fleet@runeditrun.com>",
+  "candidates": [
+    {
+      "head": "573d3af6643991efb1e0750d38744fcd85885034",
+      "author": "Run Edit Run fleet",
+      "author_email": "fleet@runeditrun.com",
+      "committer": "Run Edit Run fleet",
+      "committer_email": "fleet@runeditrun.com",
+      "message": "Reports for ct-judge-orbit-capture009-20261105-2325-sol1 [skip ci]"
+    }
+  ],
+  "all_candidates_checked": true
+}
