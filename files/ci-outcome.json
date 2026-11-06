@@ -1,0 +1,20 @@
+{
+  "head": "64ef897481343389cb4eafe729573956323d18d4",
+  "id": 42171204093,
+  "event": "workflow_dispatch",
+  "status": "completed",
+  "conclusion": "failure",
+  "url": "https://github.com/just-every/run-orbit/actions/runs/42171204093",
+  "primaryFailedJob": 127739295794,
+  "aggregateFailedJob": 127739484859,
+  "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+  "command": "node scripts/verification-shard.mjs source",
+  "localReproductionExit": 1,
+  "generatedViewException": true,
+  "productAssertionFailures": 0,
+  "productShards": "skipped because source failed",
+  "reruns": 0,
+  "dispatches": 1,
+  "githubBudgetCalls": 7,
+  "readyUnderCloudException": true
+}

@@ -1,0 +1,15 @@
+{
+  "name": "public-demo-final",
+  "head": "64ef897481343389cb4eafe729573956323d18d4",
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "tests/core/public-demo.test.ts"
+  ],
+  "exit": 0,
+  "started": "2026-11-06T05:53:48.109368+00:00",
+  "durationSeconds": 67.396,
+  "log": "public-demo-final.log"
+}

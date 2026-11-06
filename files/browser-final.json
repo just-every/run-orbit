@@ -1,0 +1,20 @@
+{
+  "name": "browser-final",
+  "head": "64ef897481343389cb4eafe729573956323d18d4",
+  "command": [
+    "pnpm",
+    "exec",
+    "playwright",
+    "test",
+    "tests/e2e/baseline.spec.mjs",
+    "--grep",
+    "public surfaces and unknown demo paths",
+    "--config",
+    "/tmp/orbit-playwright-cloud.config.mjs",
+    "--reporter=list"
+  ],
+  "exit": 0,
+  "started": "2026-11-06T05:53:49.640939+00:00",
+  "durationSeconds": 67.974,
+  "log": "browser-final.log"
+}

@@ -1,0 +1,10 @@
+{
+  "base": "1d08c4c2b35d5c447eba423bf246f7c714b726ee",
+  "command": "pnpm exec tsx --test tests/core/public-demo.test.ts",
+  "test": "PUBLIC-002 separate read-only demo has fresh stories and cannot read or mutate owner records",
+  "exit": 1,
+  "failure": "Public demo documents and data change no D1 table, including rate counters, AI accounting, drafts and approvals",
+  "cause": "GET and HEAD fictional demo documents consumed the durable general public request counter",
+  "repair": "Exempt only GET and HEAD fictional demo document paths from durable public request accounting",
+  "ciRepair": false
+}

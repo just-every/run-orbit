@@ -1,0 +1,13 @@
+{
+  "name": "source-views-reproduction",
+  "head": "64ef897481343389cb4eafe729573956323d18d4",
+  "command": [
+    "node",
+    "scripts/verification-shard.mjs",
+    "source"
+  ],
+  "exit": 1,
+  "started": "2026-11-06T05:59:57.422402+00:00",
+  "durationSeconds": 1.688,
+  "log": "source-views-reproduction.log"
+}

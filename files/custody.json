@@ -1,0 +1,27 @@
+{
+  "head": "64ef897481343389cb4eafe729573956323d18d4",
+  "main": "e010d88be9345bda0c7440b371d7e1cffc87ed83",
+  "productBranch": "cloud/sd-orbit-c-f80",
+  "fullHistory": true,
+  "changedFiles": [
+    "CONTRACT.md",
+    "sources.lock.json",
+    "src/core/platform/public-rate-limit.ts",
+    "tests/core/public-demo.test.ts",
+    "tests/e2e/baseline.spec.mjs",
+    "tests/support/disabled-demo-build.ts",
+    "tests/support/public-demo-proof.ts"
+  ],
+  "generatedViewsCommitted": false,
+  "parentStatusRowsRetained": true,
+  "statusRows": 204,
+  "candidateCommits": [
+    "64ef897481343389cb4eafe729573956323d18d4",
+    "d84232880c1b98204334cc67cdcfcca496862e92",
+    "1d08c4c2b35d5c447eba423bf246f7c714b726ee"
+  ],
+  "addedEmailShapedText": 0,
+  "existingEmailShapedLinesInTouchedFiles": 0,
+  "localScanOnly": true,
+  "publicationScan": "Not run in cloud; guarded fleet lander required"
+}

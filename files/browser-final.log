@@ -1,0 +1,44 @@
+[WebServer] (node:6627) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6635) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6647) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6666) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:6674) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:6647) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6647) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6647) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:7630) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:7638) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+
+Running 1 test using 1 worker
+
+(node:7675) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/e2e/baseline.spec.mjs:10:1 › BASE-PUBLIC-003 PUBLIC-002 public surfaces and unknown demo paths pass WCAG 2.2 AA at desktop and phone widths (28.8s)
+
+  1 passed (1.1m)

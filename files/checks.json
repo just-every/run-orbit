@@ -1,0 +1,88 @@
+{
+  "head": "64ef897481343389cb4eafe729573956323d18d4",
+  "checks": [
+    {
+      "name": "build",
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "scope": "product code from d84232880c1b98204334cc67cdcfcca496862e92, unchanged at final candidate"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "name": "first-party",
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "name": "existing public-limit regression",
+      "command": "pnpm exec tsx --test --test-name-pattern='public limits' tests/core/platform-boundaries.test.ts",
+      "exit": 0,
+      "passed": 1
+    },
+    {
+      "name": "baseline browser file",
+      "command": "pnpm exec playwright test tests/e2e/baseline.spec.mjs --config /tmp/orbit-playwright-cloud.config.mjs --reporter=list",
+      "exit": 0,
+      "passed": 5
+    },
+    {
+      "name": "contract generation",
+      "command": "node src/base/contract-docs.mjs write; node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "viewsRestoredFromMain": true
+    },
+    {
+      "name": "source lock",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock; node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    {
+      "name": "migration ledger",
+      "command": null,
+      "exit": 0,
+      "reason": "No migration changed"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "ui/1440-demo-selected.png",
+      "sha256": "4b9d99c79480e8d27717c71d2c813131116e38a99e9f0bf27270e39c52ef8f1a",
+      "bytes": 242507
+    },
+    {
+      "path": "ui/1440-demo-synthetic-orbit-unknown.png",
+      "sha256": "65e162f92359431aa4d7e30a9dd4072d747fb17c3bc42edb613381aec90767f1",
+      "bytes": 22824
+    },
+    {
+      "path": "ui/1440-demo.png",
+      "sha256": "f3199cdf710ac277ff8b2a72e41808c80b79795237dec391a979004a63040cf5",
+      "bytes": 261337
+    },
+    {
+      "path": "ui/390-demo-selected.png",
+      "sha256": "09836e8ee04a6f8789fabbd25b722dbf43d482a5fac100a1a5acd6faa6c8353f",
+      "bytes": 219353
+    },
+    {
+      "path": "ui/390-demo-synthetic-orbit-unknown.png",
+      "sha256": "6f87643c51d0f0060bc968cde3edba6ce979549b5ca8b0438ee23f8311b98a0e",
+      "bytes": 16949
+    },
+    {
+      "path": "ui/390-demo.png",
+      "sha256": "a4e2a68a639bafa4bba386ca811d5f877a85ede360b54de42ecba5f651b172ff",
+      "bytes": 236928
+    }
+  ],
+  "testBudget": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "noExistingAssertionRemovedOrNarrowed": true
+}
