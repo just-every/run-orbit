@@ -25,6 +25,46 @@ async function openOpportunity(page) {
   await expect(page.getByTestId("next-action")).toBeVisible();
 }
 
+// RECORD-007: the deal's Owner control assigns, reassigns and unassigns; each change survives a reload with one attributed Activity entry and the same score.
+async function exerciseOwnerControl(page) {
+  const id = new URL(page.url()).pathname.split("/").at(-1);
+  const read = async () => (await (await page.request.get(`/api/v1/records/opportunity/${id}`)).json());
+  const origin = `http://127.0.0.1:${process.env.ORBIT_BROWSER_PORT ?? 8722}`;
+  const added = await page.request.post("/api/v1/settings/operators", { headers: { Origin: origin }, data: { email: `synthetic-orbit-teammate${"@"}owner-journey.test`, displayName: "Sam Rivera" } });
+  expect(added.status()).toBe(201);
+  const teammate = await added.json();
+  const { operators } = await (await page.request.get("/api/v1/settings")).json();
+  const people = operators.filter((operator) => operator.status === "active" && !operator.collaborator);
+  const start = (await read()).record;
+  expect(start.owner_id).toBeTruthy();
+  const startName = people.find((person) => person.id === start.owner_id).display_name;
+  const other = people.find((person) => person.id !== start.owner_id);
+  expect(other, "a second operator to hand the deal to").toBeTruthy();
+  const owner = () => page.getByTestId("record-details").getByLabel("Owner", { exact: true });
+  const choose = async (label, ownerId) => {
+    await owner().selectOption({ label });
+    await expect.poll(async () => (await read()).record.owner_id).toBe(ownerId);
+    await page.reload({ waitUntil: "networkidle" });
+    await expect(owner().locator("option:checked")).toHaveText(label);
+  };
+  const feed = page.getByTestId("record-activity");
+  // Reassign, unassign, then assign again: each reload shows the owner and one attributed entry.
+  await choose(other.display_name, other.id);
+  await expect(feed).toContainText(`Owner: ${startName} → ${other.display_name}`);
+  await choose("Unassigned", null);
+  await expect(feed).toContainText(`Owner: ${other.display_name} → Unassigned`);
+  await choose(startName, start.owner_id);
+  await expect(feed).toContainText(`Owner: Unassigned → ${startName}`);
+  const end = await read();
+  const changes = end.timeline.filter((entry) => entry.kind === "owner.changed");
+  expect(changes).toHaveLength(3);
+  for (const entry of changes) expect(entry.actor_id).toBeTruthy();
+  for (const field of ["score", "band", "queue_state", "lifecycle"]) expect(end.record[field]).toBe(start[field]);
+  await expect(page.getByTestId("contributing-evidence").locator("summary")).toContainText(`score ${start.score}`);
+  // The teammate leaves again so the shared fixture keeps its one-operator team.
+  expect((await page.request.delete(`/api/v1/settings/operators/${teammate.id}`, { headers: { Origin: origin }, data: { confirmed: true } })).status()).toBe(200);
+}
+
 test.describe("authenticated operator UI", () => {
   test.beforeEach(async ({ context }) => {
     await authenticateOperator(context);
@@ -78,7 +118,8 @@ test.describe("authenticated operator UI", () => {
     expect(failures).toEqual([]);
   });
 
-  contract("OPP-002", "the desktop opportunity detail keeps independent fields visible", async ({ page }) => {
+  contract("OPP-002 RECORD-007", "the desktop opportunity detail keeps independent fields visible and its Owner control assigns, reassigns and unassigns with an attributed timeline and the same score", async ({ page }) => {
+    test.setTimeout(120_000);
     await page.setViewportSize({ width: 1280, height: 900 });
     const failures = watchFailures(page);
     await openOpportunity(page);
@@ -92,49 +133,7 @@ test.describe("authenticated operator UI", () => {
     await recorded.locator("summary").click();
     await expect(recorded).toContainText("Needs attention · Open deal · score 92, High priority");
     await expectNoHorizontalOverflow(page);
-    expect(failures).toEqual([]);
-  });
-
-  contract("RECORD-007", "the deal's Owner control assigns, reassigns and unassigns with an attributed timeline and the same score", async ({ page }) => {
-    test.setTimeout(120_000);
-    const failures = watchFailures(page);
-    await openOpportunity(page);
-    const id = new URL(page.url()).pathname.split("/").at(-1);
-    const read = async () => (await (await page.request.get(`/api/v1/records/opportunity/${id}`)).json());
-    const origin = `http://127.0.0.1:${process.env.ORBIT_BROWSER_PORT ?? 8722}`;
-    const added = await page.request.post("/api/v1/settings/operators", { headers: { Origin: origin }, data: { email: `synthetic-orbit-teammate${"@"}owner-journey.test`, displayName: "Sam Rivera" } });
-    expect(added.status()).toBe(201);
-    const teammate = await added.json();
-    const { operators } = await (await page.request.get("/api/v1/settings")).json();
-    const people = operators.filter((operator) => operator.status === "active" && !operator.collaborator);
-    const start = (await read()).record;
-    expect(start.owner_id).toBeTruthy();
-    const startName = people.find((person) => person.id === start.owner_id).display_name;
-    const other = people.find((person) => person.id !== start.owner_id);
-    expect(other, "a second operator to hand the deal to").toBeTruthy();
-    const owner = () => page.getByTestId("record-details").getByLabel("Owner", { exact: true });
-    const choose = async (label, ownerId) => {
-      await owner().selectOption({ label });
-      await expect.poll(async () => (await read()).record.owner_id).toBe(ownerId);
-      await page.reload({ waitUntil: "networkidle" });
-      await expect(owner().locator("option:checked")).toHaveText(label);
-    };
-    const feed = page.getByTestId("record-activity");
-    // Reassign, unassign, then assign again: each reload shows the owner and one attributed entry.
-    await choose(other.display_name, other.id);
-    await expect(feed).toContainText(`Owner: ${startName} → ${other.display_name}`);
-    await choose("Unassigned", null);
-    await expect(feed).toContainText(`Owner: ${other.display_name} → Unassigned`);
-    await choose(startName, start.owner_id);
-    await expect(feed).toContainText(`Owner: Unassigned → ${startName}`);
-    const end = await read();
-    const changes = end.timeline.filter((entry) => entry.kind === "owner.changed");
-    expect(changes).toHaveLength(3);
-    for (const entry of changes) expect(entry.actor_id).toBeTruthy();
-    for (const field of ["score", "band", "queue_state", "lifecycle"]) expect(end.record[field]).toBe(start[field]);
-    await expect(page.getByTestId("contributing-evidence").locator("summary")).toContainText(`score ${start.score}`);
-    // The teammate leaves again so the shared fixture keeps its one-operator team.
-    expect((await page.request.delete(`/api/v1/settings/operators/${teammate.id}`, { headers: { Origin: origin }, data: { confirmed: true } })).status()).toBe(200);
+    await exerciseOwnerControl(page);
     expect(failures).toEqual([]);
   });
 
