@@ -144,3 +144,8 @@ Pending guards, all retained:
 4. Obtain the guarded lander's receipt: allowed landing, fresh main equality, exact-main green Verify and Run site on that same final SHA. Do not infer those conditions from this evidence publication or from the old source ref.
 
 No substantive product FIX is requested. All actual failures and unestablished guards are listed above. Mechanical F and G bookkeeping is not converted into a lifetime product FIX. The conditional acceptance remains CT-only; CT retains original-to-replacement custody, and only its later lane process may consider the guards.
+
+
+## Evidence transport receipt
+
+Initial report publication at 7db8a6e3e3a68245e655fda07a281ae7fcc8c79c was independently fetched and restored with all 15 file hashes and the report-only manifest verified. The final evidence ref is a normal descendant containing this actual transfer receipt and initial identity audit. The exact final ref and head are returned in the terminal EVIDENCE line. Product state and its holds are unchanged.

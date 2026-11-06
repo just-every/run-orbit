@@ -1,0 +1,22 @@
+{
+  "file_count": 15,
+  "file_hashes_verified": true,
+  "identity_audit": {
+    "candidate_head": "7db8a6e3e3a68245e655fda07a281ae7fcc8c79c",
+    "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+    "commits": [
+      "7db8a6e3e3a68245e655fda07a281ae7fcc8c79c"
+    ],
+    "evidence_ref": "refs/heads/evidence/ct-judge-orbit-capture003-20261105-1520-sol1",
+    "identity_and_trailers": "pass"
+  },
+  "manifest_sha256": "a6db2627b6359d9e611f487b0664f42581073faf9d0ebabb756a70e1a9d74ec7",
+  "phase": "initial report publication and independent readback; final evidence head is supplied in terminal return",
+  "product_checkout_or_index_changed": false,
+  "product_head": "a6adec278a7fa27edcdc32289c5fde0b2175ad9e",
+  "published_head": "7db8a6e3e3a68245e655fda07a281ae7fcc8c79c",
+  "readback_status": "restored",
+  "ref": "refs/heads/evidence/ct-judge-orbit-capture003-20261105-1520-sol1",
+  "repository": "just-every/run-orbit",
+  "timestamp": "2026-11-06T02:04:28.870158+00:00"
+}

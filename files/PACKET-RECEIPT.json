@@ -13,9 +13,9 @@
   "result": "CAPTURE-003 ACCEPT ON LANDING",
   "selected_files": [
     {
-      "bytes": 23367,
+      "bytes": 23803,
       "file": "REPORT.md",
-      "sha256": "f4ff1199c11d2112bb215c458ec1afc8dd782c393d5013e1de2e13fe47397c9d"
+      "sha256": "f5330e2f64c7e24ab5693d259fc287a82938002bf60043165caafacbc3123942"
     },
     {
       "bytes": 20835,
@@ -81,9 +81,19 @@
       "bytes": 244,
       "file": "typecheck.log",
       "sha256": "35869fb273ff2b2566a751b9fe79fdc4dda9318686872ae7e2b0a6ba2ba6b481"
+    },
+    {
+      "bytes": 1028,
+      "file": "EVIDENCE-TRANSFER-RECEIPT.json",
+      "sha256": "4c57f78a46f55a70c5baa27dbee196802a47d6c0249083dc99b5ccfda7cc9086"
+    },
+    {
+      "bytes": 85,
+      "file": "EVIDENCE-IDENTITY-AUDIT.log",
+      "sha256": "148bad84b5b174568017df50d58e073566703d43c6c9fe7fa6f1af04420adf55"
     }
   ],
   "source_sha": "a6adec278a7fa27edcdc32289c5fde0b2175ad9e",
   "tag": "ct-judge-orbit-capture003-20261105-1520-sol1",
-  "timestamp": "2026-11-06T02:01:00.795120+00:00"
+  "timestamp": "2026-11-06T02:04:28.873145+00:00"
 }
