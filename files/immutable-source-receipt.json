@@ -1,0 +1,34 @@
+[
+  {
+    "file": "CONTRACT.md",
+    "url": "https://raw.githubusercontent.com/just-every/run-orbit/a3c15b599bb5f023accb5635970fe4156484b2e7/CONTRACT.md",
+    "http_status": 200,
+    "bytes": 482198,
+    "sha256": "ef80e7a27321be71f4760ee52f1acc4a3d61ec2a6f9a800cd7bb3e056dae71ee",
+    "matches_clone": true
+  },
+  {
+    "file": "ACCEPTANCE.md",
+    "url": "https://raw.githubusercontent.com/just-every/run-orbit/a3c15b599bb5f023accb5635970fe4156484b2e7/ACCEPTANCE.md",
+    "http_status": 200,
+    "bytes": 432860,
+    "sha256": "09549dc11c75bd01307da2362a8a8f62bc8a36487444c6bd27a0c396009de4fb",
+    "matches_clone": true
+  },
+  {
+    "file": "AGENTS.md",
+    "url": "https://raw.githubusercontent.com/just-every/run-orbit/a3c15b599bb5f023accb5635970fe4156484b2e7/AGENTS.md",
+    "http_status": 200,
+    "bytes": 6149,
+    "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9",
+    "matches_clone": true
+  },
+  {
+    "file": "RULINGS.md",
+    "url": "https://raw.githubusercontent.com/just-every/run-orbit/a3c15b599bb5f023accb5635970fe4156484b2e7/RULINGS.md",
+    "http_status": 200,
+    "bytes": 2770,
+    "sha256": "cca05d6cdb3f7c8cf263b278478ed162badd9c03feef502396b36c1508431d3c",
+    "matches_clone": true
+  }
+]

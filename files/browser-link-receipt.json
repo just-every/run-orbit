@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "status": "FAILED",
+  "source": "a3c15b599bb5f023accb5635970fe4156484b2e7",
+  "startedAt": "2026-11-06T02:01:02.428Z",
+  "finishedAt": "2026-11-06T02:01:13.732Z",
+  "error": "Error: expect(locator).toHaveCount(expected) failed\n\nLocator:  getByText('Held customer meeting for explicit review', { exact: true })\nExpected: 1\nReceived: 4\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveCount\" getByText('Held customer meeting for explicit review', { exact: true }) with timeout 5000ms\n  - waiting for getByText('Held customer meeting for explicit review', { exact: true })\n    14 × locator resolved to 4 elements\n       - unexpected value \"4\"\n",
+  "observations": [
+    "Resumed the same populated held event after a selector-only timeout: native existing-record button, opportunity type, native search, record selection and Confirm link return 200; the held queue removes the event.",
+    "Chosen deal readback contains the signal exactly once at original occurred time and score rises from 0; unselected native-ID deal unchanged. Repeated native review returns 409 and changes neither record. Exact evaluation count and signed replay isolation are executed in the focused D1 journey."
+  ]
+}

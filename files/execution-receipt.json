@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "repository": "just-every/run-orbit",
+  "source": "a3c15b599bb5f023accb5635970fe4156484b2e7",
+  "generated_at": "2026-11-06T02:05:08.693310+00:00",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "xhigh",
+  "execution": "Codex cloud replacement commission",
+  "commands": [
+    {
+      "command": "git config --global user.name 'Run Edit Run fleet' && git config --global user.email fleet@runeditrun.com",
+      "exit_code": 0,
+      "artifact": null,
+      "note": "Configured before repository work."
+    },
+    {
+      "command": "bash /workspace/rer-cloud-launcher/refresh.sh",
+      "exit_code": 0,
+      "artifact": null,
+      "note": "Decrypted bundle loaded; fleet helper installed. No values retained."
+    },
+    {
+      "command": "git clone --depth 1 --filter=blob:none --single-branch --branch cloud/sd-orbit-c-f35 https://github.com/just-every/run-orbit.git /workspace/run-orbit",
+      "exit_code": 0,
+      "artifact": null,
+      "note": "Pinned head matched; local identity and preserved hooks installed."
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "artifact": null,
+      "note": "Executed through cloud_run after sourcing toolchain; pnpm 10.12.4, Node v24.19.0. The prescribed toolchain keeps a newer installed Node; repository pin is 22.20.0."
+    },
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 --test-name-pattern=SIGNAL-004 tests/core/signals-outreach.test.ts",
+      "exit_code": 0,
+      "artifact": "focused-journeys.log",
+      "note": "Two named journeys executed once; 2 pass, 0 fail, 0 skipped; total 36666.349868 ms."
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit_code": 0,
+      "artifact": null,
+      "note": "Disposable local owner and database only. Raw setup log retained outside packet because admission material may be private."
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit_code": 0,
+      "artifact": "build.log",
+      "note": "Build complete."
+    },
+    {
+      "command": "pnpm exec tsc --noEmit",
+      "exit_code": 0,
+      "artifact": "typecheck.log",
+      "note": "No diagnostics."
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit_code": 0,
+      "artifact": "sourcecheck.log",
+      "note": "ok=true, 2663 tracked file inventory entries; no lock rewrite."
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit_code": 1,
+      "artifact": "generated-view-check.log",
+      "note": "ACCEPTANCE.md generated content differs; no generator write or product modification performed. Mechanical pending landing work."
+    },
+    {
+      "command": "cloud_run node /tmp/orbit-functional-browser.mjs",
+      "exit_code": 1,
+      "artifact": "browser-initial-receipt.json",
+      "note": "Stopped after held-queue screenshots at nested exact label selector; no source defect established."
+    },
+    {
+      "command": "cloud_run node /tmp/orbit-browser-resume.mjs",
+      "exit_code": 1,
+      "artifact": "browser-link-receipt.json",
+      "note": "Same fixture, native Confirm link succeeded; original timestamp, changed chosen score, unchanged other deal and repeated-review 409 checked; whole-page subject text count was overbroad."
+    },
+    {
+      "command": "cloud_run node /tmp/orbit-browser-finish.mjs",
+      "exit_code": 0,
+      "artifact": "browser-receipt.json",
+      "note": "Same fixture; native timeline signal identity and rendered Activity anchor each occur once. Final screenshots at 1440 and 390."
+    },
+    {
+      "command": "git ls-remote --refs origin refs/heads/cloud/sd-orbit-c-f35",
+      "exit_code": 0,
+      "artifact": "provenance-receipt.json",
+      "note": "Fresh remote match a3c15b599bb5f023accb5635970fe4156484b2e7."
+    },
+    {
+      "command": "git diff --exit-code; git diff --cached --exit-code; git status --porcelain=v1",
+      "exit_code": 0,
+      "artifact": "provenance-receipt.json",
+      "note": "All tracked bytes and index clean; no untracked report files in product checkout."
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer dev --stop",
+      "exit_code": 0,
+      "artifact": null,
+      "note": "Stopped only the dev server started for this checkout. All browser contexts closed by their commands."
+    }
+  ],
+  "ci": {
+    "api_calls": 0,
+    "dispatches": 0,
+    "reruns": 0,
+    "polls": 0,
+    "supplied_run": {
+      "id": 41997118091,
+      "event": "workflow_dispatch",
+      "head_sha": "a3c15b599bb5f023accb5635970fe4156484b2e7",
+      "conclusion": "failure",
+      "basis": "Supplied brief: only generated-view freshness and dependent failures; runtime shards skipped. Not independently queried."
+    }
+  },
+  "not_run": [
+    {
+      "command": "full or baseline verification suite",
+      "reason": "Independent focused judge scope explicitly forbids it."
+    },
+    {
+      "command": "CI polling, rerun or dispatch",
+      "reason": "Read-only judgment scope explicitly forbids these actions."
+    },
+    {
+      "command": "contract-docs write or source lock rewrite",
+      "reason": "Product source read-only; guarded lander performs integration."
+    },
+    {
+      "command": "full-history publication scan, guarded landing, main equality or Run site qualification",
+      "reason": "Mac landing custody; no cloud authority and no Mac receipts supplied."
+    },
+    {
+      "command": "real external provider, live-account or native-device qualification",
+      "reason": "Not required by frozen SIGNAL-004 rubric; local signed source and Chromium viewport proof do not establish them."
+    }
+  ],
+  "model_metadata_source": "supplied authorized commission; no independent serving-model attestation exposed by tools",
+  "cleanup_before_transfer": {
+    "time": "2026-11-06T02:08:17.919592+00:00",
+    "browsers_closed": true,
+    "own_dev_server_stopped": true,
+    "tracked_diff": "",
+    "index_diff": "",
+    "head": "a3c15b599bb5f023accb5635970fe4156484b2e7",
+    "clone_removal": "after verified evidence transfer, as required"
+  }
+}

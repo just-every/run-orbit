@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "source": "a3c15b599bb5f023accb5635970fe4156484b2e7",
+  "startedAt": "2026-11-06T02:02:26.959Z",
+  "finishedAt": "2026-11-06T02:02:30.818Z",
+  "status": "PASS",
+  "continuations": [
+    "browser-initial-receipt.json",
+    "browser-link-receipt.json"
+  ],
+  "fixtureRecreated": false,
+  "executable": "/usr/bin/chromium",
+  "launchArgs": [
+    "--no-sandbox"
+  ],
+  "viewports": [
+    1440,
+    390
+  ],
+  "observations": [
+    "The same local customer event was linked through the native Review controls; its chosen timeline contains exactly one signal row at original occurred time and no unresolved queue row remains.",
+    "The browser displays one corresponding Activity entry. Other references to the same evidence also appear in scoring and recommendations and recorded payload details; the initial whole-page text count was an invalid uniqueness selector.",
+    "Whole-page subject text copies 4; unique Activity anchor count 1; native record timeline signal identity count 1.",
+    "Chosen deal score is 43; core journey verifies exactly one evaluation and unchanged custody on refused review, rollback and signed replay."
+  ],
+  "providerOperations": 0,
+  "sourceEdits": 0
+}

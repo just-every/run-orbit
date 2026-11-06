@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "selected_files": [
+    {
+      "path": "REPORT.md",
+      "bytes": 3135,
+      "sha256": "172d58cb82d20cde0db57be6929d011b6ee798d64758ce743ddf02f4f010eae3"
+    },
+    {
+      "path": "VERDICT.md",
+      "bytes": 20900,
+      "sha256": "6d41f934581d61c2ce79506cb9e2dd4fbd98977c2bc8cd9fdc36af9aca91dc9f"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 2450,
+      "sha256": "7716a9d034ea51b449423bd6092209df1a0e61ed99d804d713f3c124362ede08"
+    },
+    {
+      "path": "execution-receipt.json",
+      "bytes": 6200,
+      "sha256": "a75d63e02b2f913809b713b247b7f8aa6903661b0899dfb8f275d8cb54da66aa"
+    },
+    {
+      "path": "provenance-receipt.json",
+      "bytes": 7110,
+      "sha256": "19371c464c181f3a0c1b9014a68e67de6f9db1818591f2de9e9af53e73db2c5b"
+    },
+    {
+      "path": "immutable-source-receipt.json",
+      "bytes": 1241,
+      "sha256": "bc368dab5b02fd0f454d0414075e055ae88a97438cc75e7616ca02b775ad1d70"
+    },
+    {
+      "path": "contract-inventory.json",
+      "bytes": 171540,
+      "sha256": "d2732f2c0332dbaab439409c6e4795cb28c033ae24c687ca6e486fae98689a69"
+    },
+    {
+      "path": "focused-journeys.log",
+      "bytes": 569,
+      "sha256": "dc941cb32aee8ebfc898377f0ae433c174b99cbdac8fb4128d24eb35878ba742"
+    },
+    {
+      "path": "typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "sourcecheck.log",
+      "bytes": 489998,
+      "sha256": "0c58880f22b7ae784a5560ddda793fd156f9fd543df8b6f56dfe4ad6853f6476"
+    },
+    {
+      "path": "generated-view-check.log",
+      "bytes": 67,
+      "sha256": "183372998615cc516043a5f66404b300281009a84349eda72da66d79fe542603"
+    },
+    {
+      "path": "build.log",
+      "bytes": 3703,
+      "sha256": "12bfb0b0021de06fe5a4b2ae5a78884a894ef2b8601f13b197df46df66ada9e6"
+    },
+    {
+      "path": "browser-initial-receipt.json",
+      "bytes": 534,
+      "sha256": "76f7a67845caa05c5539b0b5634e1e78986018a9bc4af0057d10965da9a717d3"
+    },
+    {
+      "path": "browser-link-receipt.json",
+      "bytes": 1223,
+      "sha256": "ca430dc4ac5a62a1cb5bb4bed8b29601d0c753fb978527fb5c2509861beeded4"
+    },
+    {
+      "path": "browser-receipt.json",
+      "bytes": 1203,
+      "sha256": "a63d904d27b7adf1f2c1efb89a2c8430900f4ef839744f815fb2a5deaa9b37ef"
+    },
+    {
+      "path": "browser-initial-command.log",
+      "bytes": 534,
+      "sha256": "76f7a67845caa05c5539b0b5634e1e78986018a9bc4af0057d10965da9a717d3"
+    },
+    {
+      "path": "browser-link-command.log",
+      "bytes": 1223,
+      "sha256": "ca430dc4ac5a62a1cb5bb4bed8b29601d0c753fb978527fb5c2509861beeded4"
+    },
+    {
+      "path": "browser-command.log",
+      "bytes": 1203,
+      "sha256": "a63d904d27b7adf1f2c1efb89a2c8430900f4ef839744f815fb2a5deaa9b37ef"
+    },
+    {
+      "path": "browser-command.mjs",
+      "bytes": 8281,
+      "sha256": "4429ad399f1176338f36d2afc89f4b71a5409f049389486132b1aa1fd1679ed0"
+    },
+    {
+      "path": "browser-resume-command.mjs",
+      "bytes": 5287,
+      "sha256": "c2cd6100c62c48dd18246e13586c60a51846d843f3f69c7b773f36a8097368fb"
+    },
+    {
+      "path": "browser-finish-command.mjs",
+      "bytes": 3508,
+      "sha256": "37ab241394ae75a3f133b2ec70a840fe2ea3dd2d3c93d06757b5d930a7ec7c39"
+    },
+    {
+      "path": "review-held-1440.png",
+      "bytes": 58862,
+      "sha256": "05d0b475fc96303159e0d20deb4868f4b29bf62f7d9f6c5ebc21b523410ce33f"
+    },
+    {
+      "path": "review-held-390.png",
+      "bytes": 46520,
+      "sha256": "ea8188943116419c53fdde556a73241df6dae89f7dedd09c3bb186c53ede6c75"
+    },
+    {
+      "path": "linked-timeline-1440.png",
+      "bytes": 161479,
+      "sha256": "07ece4c7410f6607f7c8627c250c5aace8d090631c2fa0a9508b332f9b4cf125"
+    },
+    {
+      "path": "linked-timeline-390.png",
+      "bytes": 139298,
+      "sha256": "1063aac87b0609d2653bda2479471d9408da813f590ec7adc83c9fd39ef6c3a2"
+    }
+  ],
+  "total_bytes": 1136068,
+  "regular_files_only": true,
+  "configured_secret_values_absent": true,
+  "token_pattern_check": "PASS",
+  "note": "This explicit packet check is not the Mac complete full-history publication scan and does not establish NEW 0 for product history."
+}
