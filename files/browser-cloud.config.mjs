@@ -1,0 +1,2 @@
+import config from '/home/agent/rer-consolidation/work/sd-orbit-c-f77/run-orbit/playwright.config.mjs';
+export default {...config, webServer:{...config.webServer,timeout:300000}, testDir:'/home/agent/rer-consolidation/work/sd-orbit-c-f77/run-orbit/tests/e2e', use:{...config.use,launchOptions:{...config.use.launchOptions,executablePath:'/usr/bin/chromium',args:[...config.use.launchOptions.args,'--no-sandbox']}}};

@@ -1,0 +1,17 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: PUBLIC-002 separate read-only demo has fresh stories and cannot read or mutate owner records
+ok 1 - PUBLIC-002 separate read-only demo has fresh stories and cannot read or mutate owner records
+  ---
+  duration_ms: 41729.791785
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 47439.937063

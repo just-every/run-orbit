@@ -1,0 +1,137 @@
+{
+  "branch": "cloud/sd-orbit-c-f77",
+  "checks": [
+    {
+      "cases": 5,
+      "command": "cloud_run timeout 1200 pnpm exec playwright test --config /tmp/orbit-cloud-playwright.config.mjs baseline.spec.mjs --reporter=list",
+      "exit": 0,
+      "head": "1d08c4c2b35d5c447eba423bf246f7c714b726ee",
+      "log": "browser-candidate.log",
+      "name": "touched browser file"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck-candidate.log",
+      "name": "candidate typecheck"
+    },
+    {
+      "cases": 1,
+      "command": "cloud_run timeout 300 pnpm exec tsx --test tests/core/public-demo.test.ts",
+      "exit": 0,
+      "log": "public-demo.log",
+      "name": "public demo API"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log",
+      "name": "first-party"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log",
+      "name": "contract generation"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check.log",
+      "name": "contract generated check before restoring views"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock-write.log",
+      "name": "source lock generation"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.log",
+      "name": "source lock freshness"
+    }
+  ],
+  "ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "1d08c4c2b35d5c447eba423bf246f7c714b726ee",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42167948203",
+      "id": 42167948203,
+      "name": "Verify",
+      "status": "queued"
+    }
+  ],
+  "ci_failed_jobs": [
+    127728865763,
+    127729023345
+  ],
+  "ci_interpretation": "Expected generated-view-only failure: ACCEPTANCE.md generated content differs. Source artifact and aggregate failures follow from the source stop; all test shards were skipped. Permitted READY exception applies, not a green full Verify claim.",
+  "ci_latest": {
+    "conclusion": "failure",
+    "head_sha": "1d08c4c2b35d5c447eba423bf246f7c714b726ee",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42167948203",
+    "status": "completed"
+  },
+  "counts": {
+    "after": {
+      "done": 36,
+      "missing": 32,
+      "partial": 136,
+      "total": 204
+    },
+    "before": {
+      "done": 36,
+      "missing": 32,
+      "partial": 136,
+      "total": 204
+    }
+  },
+  "created_at": "2026-11-06T05:24:36.221301+00:00",
+  "evidence_publication": "selected report-only packet prepared; exact evidence ref and head appear in terminal report",
+  "generated_views_committed": false,
+  "github_api_calls": 6,
+  "head": "1d08c4c2b35d5c447eba423bf246f7c714b726ee",
+  "landing": "not attempted",
+  "mechanical": "MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock, then check exit=0; views=node src/base/contract-docs.mjs write, then check exit=0; ledger=none exit=0",
+  "probe": "PROBE PUBLIC-002 unknown demo path: GET /demo/synthetic-orbit-unknown at 1440, 390 and 320 -> HTTP 404, styled not-found landmark, working home navigation, no WCAG 2.2 AA violations and no horizontal overflow",
+  "product_remote": "1d08c4c2b35d5c447eba423bf246f7c714b726ee\trefs/heads/cloud/sd-orbit-c-f77",
+  "publication_scan": "not run in cloud; fleet lander duty",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "screenshots": [
+    {
+      "file": "1440-demo-synthetic-orbit-unknown.png",
+      "sha256": "65e162f92359431aa4d7e30a9dd4072d747fb17c3bc42edb613381aec90767f1",
+      "width": 1440
+    },
+    {
+      "file": "390-demo-synthetic-orbit-unknown.png",
+      "sha256": "6f87643c51d0f0060bc968cde3edba6ce979549b5ca8b0438ee23f8311b98a0e",
+      "width": 390
+    },
+    {
+      "file": "1440-demo-selected.png",
+      "sha256": "4b9d99c79480e8d27717c71d2c813131116e38a99e9f0bf27270e39c52ef8f1a",
+      "width": 1440
+    },
+    {
+      "file": "390-demo-selected.png",
+      "sha256": "09836e8ee04a6f8789fabbd25b722dbf43d482a5fac100a1a5acd6faa6c8353f",
+      "width": 390
+    }
+  ],
+  "status": {
+    "after": "partial",
+    "before": "partial",
+    "clause": "PUBLIC-002"
+  },
+  "tag": "sd-orbit-c-f77",
+  "test_count": {
+    "qualifications": 2,
+    "registered": 198,
+    "total": 200
+  }
+}
