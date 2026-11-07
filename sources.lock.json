@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "6b1d1e8b51ae8c698f9b8b250da09632bc42791f87ec529a810d5c65fc3b7bd6",
+      "sha256": "f92eba200ecaba77c4eaa4c6fb9d81c178958f4f454dbc614d443a362cf6171c",
       "executable": false
     },
     "DEMO.md": {
@@ -10087,7 +10087,7 @@
       "executable": false
     },
     "tests/core/records-merge-review.test.ts": {
-      "sha256": "3f605fd7b20a5e7cb5b6ce38c7bf7736de765e6c1d469fef6fb12866c3cc27e4",
+      "sha256": "93dc18f2b77dd380e242ed554c483a54f13fc66d41a222802348e45dbd557f65",
       "executable": false
     },
     "tests/core/records-search.test.ts": {
