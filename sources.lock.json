@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "8dece52f213b61f58d621fe04924cf13ea10d39612fb36a8a5e3a19bff1a2449",
+      "sha256": "857272df56c1b689cac51b13654e7b4056d34e79a651aabd8b4064f03563e35e",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "300c5ff33c63ce1f8d3b19b13f48bbffced6668f5d18b254d16ec6a6d6520191",
+      "sha256": "a8de3c0d7599162866083ff66b71bf80dd8f30a90fb5038cc9a523a9a0b5b4e5",
       "executable": false
     },
     "DEMO.md": {
@@ -2339,7 +2339,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-access-proof.ts": {
-      "sha256": "6cc3aefe907f248d1b50304c5fca56e042e8b37736c5d6128fb9b34b9255f75b",
+      "sha256": "abf3a97fe46bb4e8a01762551225772c580e7874ca73ed2ef96eaca26901fadd",
       "executable": false
     },
     "newtests/t096/dashboard-archive.ts": {
@@ -2347,7 +2347,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-backend-proof.ts": {
-      "sha256": "7ef003074fbf3f8b2d9d4c5f5e41209689d13438954b8d69624a99f8b9143ab0",
+      "sha256": "c18be487a50e5ca4a340eb7da146b80ce17df7e495dab32c5f5df61905a645bd",
       "executable": false
     },
     "newtests/t096/dashboard-slack-fixture.ts": {
@@ -8239,7 +8239,7 @@
       "executable": false
     },
     "src/core/features/today/promises.ts": {
-      "sha256": "98462c3b7cd7c0a549dd2e3177dbdb691734a3320791e1847ec077c0ab5f2445",
+      "sha256": "2ba36fbd3b83a3cc9e226764f0085e3cb6a4d87535bd331f775b2e01fd59bcc2",
       "executable": false
     },
     "src/core/features/today/record-mail.ts": {
@@ -9907,7 +9907,7 @@
       "executable": false
     },
     "tests/core/assistance.test.ts": {
-      "sha256": "5451e6d248ee85a1c987e41894784d2ff00a4de7af2aaafbd19045e0380c45e0",
+      "sha256": "f3ca978057d0a5db1f806d8e22905601be89a4c6cf333f7e6a0e4a18cc59a205",
       "executable": false
     },
     "tests/core/capture-boundaries.test.ts": {
@@ -10055,7 +10055,7 @@
       "executable": false
     },
     "tests/core/request-scheduling.test.ts": {
-      "sha256": "abc9f19b1e2a56b9ae2f31519ac3b956ade236538d7645b19771444fa4dcbabb",
+      "sha256": "3ceb827996a2932ae5eb5c02fe9a017b154168b46ea20aedd2554b48a4d0a2d9",
       "executable": false
     },
     "tests/core/retention.test.ts": {
@@ -10067,7 +10067,7 @@
       "executable": false
     },
     "tests/core/signals-outreach.test.ts": {
-      "sha256": "185cbcc21c2748f52bbc4164cb0df1707ecb4068f15220ec6365c1a69ac096fd",
+      "sha256": "c2d84948380612d172c23af6e445404b3f650e16398579da7324bfcc22c7edf2",
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
@@ -10075,7 +10075,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "60d42334bf70baa3b4c23332d57a99da7617495553d625600e8f5367301f5b36",
+      "sha256": "d68427f9cf185694124e12641a1a9f444208b42b7871be854dd311e0525a4af4",
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {
@@ -10143,7 +10143,7 @@
       "executable": false
     },
     "tests/delegation/authority-regressions.test.ts": {
-      "sha256": "8d969caa18f75f68b4503066bd677d05cf6d0ca20ece1209eea09dbb9e833c1c",
+      "sha256": "c39d5c92dadfce4a43943f7c0741543142b570ecbb908ec81fe60d98ac5979db",
       "executable": false
     },
     "tests/delegation/brief-handoff.test.ts": {
@@ -11087,7 +11087,7 @@
       "executable": false
     },
     "tests/support/slack-actions-proof.ts": {
-      "sha256": "7a09cb98302791b6bf279b2d81178f80002d4686435df49ef7e1fa25ec5d817f",
+      "sha256": "d9bc7b859e2015262ae19bca8725ba5bbde70d5cbc0619dda4183798d7dc5499",
       "executable": false
     },
     "tests/support/slack-archive-proof.ts": {
@@ -11123,7 +11123,7 @@
       "executable": false
     },
     "tests/support/today-workspace.ts": {
-      "sha256": "e1be6af959c8c915e7e00e089581c95f3a6fff713c1917021acaba51e3e94ab0",
+      "sha256": "3894fb1f63c6703bae5ebcc8bff4b8f61cfa7d0651210ade7a62014488aeb4f2",
       "executable": false
     },
     "tests/support/twilio-calls.ts": {
