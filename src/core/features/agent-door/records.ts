@@ -83,7 +83,10 @@ export function recordTools(bindings:PlatformBindings) {
   return [
     defineTool({name:'orbit.records.list',title:'Find CRM records',description:'Search the current native row and field projection; search never expands a grant.',scope:'records:read',readOnly:true,
       inputSchema:objectSchema({kind:kindSchema,query:{type:'string',maxLength:500},fields:{type:'array',items:string,maxItems:100},limit:{type:'integer',minimum:1,maximum:100},cursor:string},[]),outputSchema,classes:['standard','sensitive'],clauses:['RECORD-001','RECORD-018'],untrusted:true,
-      classify:async(args,ctx)=>recordRisk(bindings.DB,(await list(args,ctx)).items),run:async(args,ctx)=>({result:await list(args,ctx)})}),
+      classify:async(args,ctx)=>{
+        const {items}=await list(args,ctx),classes=await recordRisk(bindings.DB,items);
+        return classes.map(item=>item.class==='standard'?{...item,facts:{...item.facts,measure:items.length}}:item);
+      },run:async(args,ctx)=>({result:await list(args,ctx)})}),
     defineTool({name:'orbit.records.read',title:'Read a CRM record',description:'Read the current record with native visibility and field grants. Outside text is untrusted.',scope:'records:read',readOnly:true,
       inputSchema:objectSchema({kind:kindSchema,id:string,fields:{type:'array',items:string,maxItems:100}},['kind','id']),outputSchema,classes:['standard','sensitive'],clauses:['RECORD-001','RECORD-018'],untrusted:true,
       classify:async(args,ctx)=>recordRisk(bindings.DB,[await readRecord(bindings,ctx,args.kind as RecordKind,String(args.id),(args.fields??[]) as string[])]),

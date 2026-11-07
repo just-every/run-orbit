@@ -12,6 +12,61 @@ import portabilityPolicy from '../../scripts/installer/portability-policy.mjs';
 import {orbitPeople} from '../../src/core/features/agent-door/people';
 import {autonomousPolicy,heldPolicy,policyEnvelope} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 
+async function recordListMeasureProof(db:D1Database,
+  call:(name:string,args:Record<string,unknown>)=>Promise<{status:number;body:any}>,
+  adopt:(policy:ReturnType<typeof autonomousPolicy>)=>Promise<void>) {
+  const query='syntheticorbitlistf127',ids:string[]=[];
+  for(const suffix of ['one','two','three']) {
+    const created=await call('orbit.records.create',{kind:'company',record:{name:query+' '+suffix},idempotency_key:'synthetic-orbit-list-'+suffix});
+    assert.equal(created.status,200);assert.equal(created.body.result.isError,false);
+    ids.push(created.body.result.structuredContent.id);
+  }
+  assert.equal(new Set(ids).size,3,'the list proof has three distinct native companies');
+  const nativeState=async()=>Promise.all(['companies','contacts','opportunities','graph_records','domain_events','workflow_events','timeline_entries','handoff_tasks','record_mail_drafts','record_mail_outbound_messages','notifications'].map(async table=>[table,(await db.prepare('SELECT * FROM '+table).all()).results.map(row=>JSON.stringify(row)).sort()]));
+  const before=await nativeState();
+  for(const mode of ['autonomous','held'] as const) {
+    await adopt(mode==='held'?heldPolicy():autonomousPolicy());
+    async function read(name:string,args:Record<string,unknown>,count:number) {
+      const response=await call(name,args);
+      assert.equal(response.status,200);assert.equal(response.body.result.isError,false);
+      const result=response.body.result,decision=result._meta['com.runeditrun/decision'];
+      assert.equal(decision.disposition,mode==='held'?'review':'autonomous');
+      const classes=[{class:'standard',facts:{measure:count}}];
+      assert.deepEqual(decision.classes.map(({class:kind,facts}:any)=>({class:kind,facts})),classes,mode+': standard measure counts returned native identities');
+      const retained=await db.prepare('SELECT row,evidence FROM agent_door_audit WHERE id=?').bind(decision.id).first<{row:string;evidence:string}>();
+      assert.ok(retained,'each page retains its own decision audit');
+      const audit=JSON.parse(retained.row);
+      assert.equal(audit.tool,name);assert.equal(audit.outcome,'done');
+      assert.deepEqual(audit.classes,classes,'retained audit counts the same returned identities');
+      assert.deepEqual(JSON.parse(retained.evidence).classes,classes,'retained decision evidence preserves the item count');
+      if(mode==='held') {
+        const review=result._meta['com.runeditrun/review'];
+        assert.ok(review?.id);assert.equal(audit.review.id,review.id);
+        assert.equal(await db.prepare('SELECT state FROM agent_door_reviews WHERE id=?').bind(review.id).first('state'),'open');
+      }
+      assert.deepEqual(await nativeState(),before,'list and single-record reads leave native records and effects unchanged');
+      return result.structuredContent;
+    }
+    const args={kind:'company',fields:['name'],query};
+    const empty=await read('orbit.records.list',{...args,query:'syntheticorbitlistabsentf127'},0);
+    assert.deepEqual(empty.items,[]);assert.equal(empty.nextCursor,null);
+    const full=await read('orbit.records.list',args,3);
+    assert.deepEqual(full.items.map((item:any)=>item.ref.id).sort(),[...ids].sort());
+    assert.ok(full.items.every((item:any)=>item.fields.name.startsWith(query+' ')));
+    assert.equal(full.nextCursor,null);
+    const limited=await read('orbit.records.list',{...args,limit:2},2);
+    assert.equal(limited.items.length,2);assert.ok(limited.nextCursor);
+    assert.equal(new Set(limited.items.map((item:any)=>item.ref.id)).size,2);
+    assert.ok(limited.items.every((item:any)=>ids.includes(item.ref.id)));
+    const remainder=await read('orbit.records.list',{...args,limit:2,cursor:limited.nextCursor},1);
+    assert.equal(remainder.items.length,1);assert.equal(remainder.nextCursor,null);
+    assert.deepEqual([...limited.items,...remainder.items].map((item:any)=>item.ref.id).sort(),[...ids].sort());
+    const single=await read('orbit.records.read',{kind:'company',id:ids[0],fields:['name']},1);
+    assert.equal(single.ref.id,ids[0]);assert.equal(single.fields.name,query+' one');
+  }
+  await adopt(autonomousPolicy());
+}
+
 export async function agentDoorProof() {
   const fixture = await isolatedDatabase();
   try {
@@ -144,6 +199,7 @@ export async function agentDoorProof() {
     assert.equal(blockedReplay.code,'policy_blocked');assert.equal(blockedReplay.result,undefined);
     assert.equal(await readWitness(),beforeReplay,'current replay refusals cannot repeat a native effect');
     await adopt(autonomousPolicy());
+    await recordListMeasureProof(fixture.db,businessCall,adopt);
 
     assert.equal((await door.invoke('orbit.records.update',{...updateArgs,idempotency_key:'stale-company-update'},principal)).code,'revision_conflict');
     assert.equal(await fixture.db.prepare('SELECT name FROM companies WHERE id=?').bind(companyId).first('name'),'Brightwork Studio North');

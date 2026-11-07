@@ -5251,7 +5251,7 @@
       "executable": false
     },
     "src/core/features/agent-door/records.ts": {
-      "sha256": "ae5a8b499d495737fa18e7cda3e26c4c4cc702cff99bca14ed0a010243fea9bc",
+      "sha256": "630f8aa6a99aeb3a3f16bca824b7022f408f62de4533d66bd35752f416ae5c7d",
       "executable": false
     },
     "src/core/features/agent-door/reports.ts": {
@@ -10803,7 +10803,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "bfb7ee0707c477ccc3727016263c54b45038e7e10d637af873cd374a2cf88fc8",
+      "sha256": "47a2dd509e0fd2bdeed3228cb8f3c76b599ac69bff0cfb50ec2463ae8a45b21e",
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {
