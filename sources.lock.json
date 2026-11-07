@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "89bc1df5138e14f3c1b86a888984ba3b9c23b77943d1ecb5d8acba03c4276bca",
+      "sha256": "c3ae37d83e07ac0b73463418ab5f354e71142a62640e2fa501a8a06606deed66",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "fa494422c1fab31eadf565a28ead3d4a6b5147f92c5f0c97c0aa2f02fbbd22b7",
+      "sha256": "c5ec164865205586218bceaf0bcb7630aa50c72dfa00ac63c54e6ef6fb9cd35c",
       "executable": false
     },
     "DEMO.md": {
@@ -2415,7 +2415,7 @@
       "executable": false
     },
     "newtests/t096/forms-mapped-journey.ts": {
-      "sha256": "87852bc759007efb0967482108a83fb190c9e8b8bc6bfc60edffc22ff42e0b2d",
+      "sha256": "9f9045988c0bdc12941d05f8f536dbfc3c8c103ed7c27a318667d9be981dccbb",
       "executable": false
     },
     "newtests/t096/forms-native.test.ts": {
