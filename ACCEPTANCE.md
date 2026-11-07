@@ -186,8 +186,8 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 **Acceptance.**
 1. Log, edit and delete a note, call and meeting on a customer record; verify time, duration and attendees, and verify no score or external message changed.
 
-**Evidence.** `src/core/features/records/manual.ts`; `tests/core/today-brief.test.ts` — BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a cited plan (extended by `tests/support/manual-meeting.ts` — exerciseManualMeeting: two full operators create, edit, freshly read and delete a manual meeting with exact time, duration, attending identities and original author; attributed deletion trace; unchanged score, band and complete draft and outbound inventories); `tests/rer/operator-actions.test.mjs` — BASE-PUBLIC-003 T099 native keyboard navigation, form validation, dialog focus and reviewed record changes (extended by `tests/rer/operator-manual-meeting.mjs` — exerciseManualMeeting: native meeting creation, another full operator's edit and confirmed deletion, fresh field and author readback, edit and delete screens at 1440 and 390)
-**Gap.** Unqualified remainder: call editing; remaining combinations of entry kinds and record kinds; duration and attendee editing controls; mentions and attachments under RECORD-017 and RECORD-018; provider activity qualification. Existing three-kind creation, note creation, editing and deletion, call creation and deletion, and note and call independence remain credited. The selected manual meeting lifecycle, retained fields and author, attributed deletion and score and mail independence are asserted by the named journeys. No clause-specific hold is released.
+**Evidence.** `src/core/features/records/manual.ts`; `tests/core/today-brief.test.ts`
+**Gap.** Unasserted in the carried evidence: note create/edit/delete; call create/edit/delete; meeting create/edit/delete; occurred time retained; duration retained; attendees retained; score unchanged; no external message. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### RECORD-011 — Related records
 
@@ -457,8 +457,8 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Close a deal as won and lost with reasons, ingest later evidence, and explicitly reopen; inspect history and queue membership at every step.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: won close retains reason; lost close retains reason; later evidence never silently reopens; explicit reopen restores correct queue; history records every lifecycle transition. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts` — "OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not" (fresh authenticated won-close reason readback)
+**Gap.** Unasserted in the carried evidence: lost close retains reason; closing operator and time; later evidence never silently reopens; explicit reopen restores correct queue; stage and owner remain unchanged on reopening; history records every lifecycle transition. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OPP-002 — Independent state
 
@@ -529,8 +529,8 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Advance close/stale/awaiting clocks and deliver a form, reply, booking and send failure; inspect NOW/NEXT reasons and one timeline transition per event.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/request-scheduling.test.ts` — a fresh hosted schedule sends once through ordinary requests racing Cron, and due follow-ups return to NOW (a distinct Records-created open deal with an explicit null owner is read outside NOW before its expected close deadline; crossing that deadline through ordinary requests racing and repeating hosted timers yields one explained NOW entry and one timer-sourced feature transition with no human actor, preserving score, band, owner, stage and lifecycle)
-**Gap.** Unasserted in the carried evidence: stale clock; genuine five-working-day awaiting-response deadline construction in the workspace timezone; complete form, reply, booking and failure reason and transition reconciliation; all NEXT and removal paths; the complete event matrix and one transition per triggering event beyond the close-deadline case. Asserted: close clock and its single explained transition; failed-send NOW reason.
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
+**Gap.** Unasserted in the carried evidence: close clock; stale clock; awaiting-response clock; form NOW reason; reply NOW reason; booking NOW reason; one transition per triggering event. Asserted: failed-send NOW reason.
 
 #### OPP-008 — Manual completion
 
@@ -978,7 +978,7 @@ Core · published · **partial** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUD
 1. Erasing a contact, company or deal redacts INTEGRATE-005’s stored notice content and issues tracked chat.delete requests for its bot messages, with each deletion outcome visible.
 2. Delete a contact containing aliases, imported/captured mail and notes, drafts and transfer copies; verify search/export/AI/mail absence and anonymized audit within five minutes, including replay.
 
-**Evidence.** `src/core/features/records/data.ts`; `tests/core/contact-erasure.test.ts`; `tests/core/crm-import-erasure.test.ts`; `tests/core/assistance.test.ts` — AI-001 DATA-002 changed or deleted preview context never leaves deployment (confirmed authenticated contact erasure withdraws its saved recipient-bound preview; the original preview ID returns 409 with zero provider calls and unchanged post-erasure AI call, draft and generated explanation inventories; changed-context refusal retained)
+**Evidence.** `src/core/features/records/data.ts`; `tests/core/contact-erasure.test.ts`; `tests/core/crm-import-erasure.test.ts`
 **Gap.** Unasserted in the carried evidence: contact erasure redacts stored Slack content; company erasure redacts stored Slack content; deal erasure redacts stored Slack content; provider delete requests tracked; each provider-deletion outcome visible; aliases erased; imported/captured evidence erased; drafts erased; transfer copies withdrawn; AI absence; mail absence; anonymous audit; completion within five minutes; replay cannot recreate erased content. Asserted: search absence; export absence.
 
 ### Scoped application delegation
@@ -2423,8 +2423,8 @@ Agent surface · target · **partial**
 5. Bytes over budget return `budget_exhausted` and no partial content.
 6. Customer-sourced text carries the untrusted marker.
 
-**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/support/agent-door-local-proof.ts` via the existing managed owner claim in `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
-**Gap.** The door ships and the cited tests assert ten resource templates, the untrusted marker on report data and one refusal for an unregistered resource. The native selected-opportunity consent and PKCE journey also reads the selected resource and proves identical complete public responses for an existing unselected company and a missing company under autonomous and held company policies, retaining permitted review and audit records, native state, scope refusals and revocation. Not asserted in the cited seed tests: complete primary-type template coverage, two-role read parity with the UI, out-of-scope and missing parity beyond this selected-grant company slice, remaining write resource_link read-back, file byte-budget refusal with no partial content, and full customer-text untrusted marking qualification. Carried company resource-link proof is retained. Expanded-role qualification remains subject to TEAM-005 contract cleanup and new-main qualification; published-client and enterprise authorization receipts remain unclaimed. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
+**Gap.** The door ships and the cited tests assert ten resource templates, the untrusted marker on report data and one refusal for an unregistered resource. Not asserted in the cited seed tests: two-role read parity with the UI, identical out-of-scope and missing responses, resource_link read-back and byte-budget refusal. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
 
 #### BASE-AGENT-004 — Business identity and short-lived, audience-bound tokens
 
