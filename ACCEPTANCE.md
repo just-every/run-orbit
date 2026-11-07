@@ -978,7 +978,7 @@ Core · published · **partial** · Cites BASE-DATA-001, BASE-DATA-003, BASE-AUD
 1. Erasing a contact, company or deal redacts INTEGRATE-005’s stored notice content and issues tracked chat.delete requests for its bot messages, with each deletion outcome visible.
 2. Delete a contact containing aliases, imported/captured mail and notes, drafts and transfer copies; verify search/export/AI/mail absence and anonymized audit within five minutes, including replay.
 
-**Evidence.** `src/core/features/records/data.ts`; `tests/core/contact-erasure.test.ts`; `tests/core/crm-import-erasure.test.ts`
+**Evidence.** `src/core/features/records/data.ts`; `tests/core/contact-erasure.test.ts`; `tests/core/crm-import-erasure.test.ts`; `tests/core/assistance.test.ts` — AI-001 DATA-002 changed or deleted preview context never leaves deployment (confirmed authenticated contact erasure withdraws its saved recipient-bound preview; the original preview ID returns 409 with zero provider calls and unchanged post-erasure AI call, draft and generated explanation inventories; changed-context refusal retained)
 **Gap.** Unasserted in the carried evidence: contact erasure redacts stored Slack content; company erasure redacts stored Slack content; deal erasure redacts stored Slack content; provider delete requests tracked; each provider-deletion outcome visible; aliases erased; imported/captured evidence erased; drafts erased; transfer copies withdrawn; AI absence; mail absence; anonymous audit; completion within five minutes; replay cannot recreate erased content. Asserted: search absence; export absence.
 
 ### Scoped application delegation
