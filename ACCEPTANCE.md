@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 35 | 119 | 24 | 178 |
+| Core | 39 | 115 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 35 | 137 | 32 | 204 |
+| Full target | 39 | 133 | 32 | 204 |
 
 Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -126,8 +126,8 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 **Acceptance.**
 1. Open a record containing mail, meetings, notes, changes and a merge; inspect occurred/recorded times, source and actor, including out-of-order events.
 
-**Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`
-**Gap.** Unasserted in the carried evidence: mail entry; meeting entry; note entry; stage/owner change entry; merge entry; occurred and recorded times; source and actor; out-of-order history. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`; `tests/e2e/operator.spec.mjs` — the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties
+**Gap.** Unasserted in the carried evidence: combined mail, meeting, note, stage and owner change, and merge coverage; exact per-entry occurred and recorded times, source and actor. The browser journey asserts native Records and opportunity reads before and after reload and visible note order at 1440 and 390 for late older arrivals and equal-time ID ties; it does not qualify the complete combined journey.
 
 #### RECORD-006 — Search and views
 
@@ -457,8 +457,8 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Close a deal as won and lost with reasons, ingest later evidence, and explicitly reopen; inspect history and queue membership at every step.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: won close retains reason; lost close retains reason; later evidence never silently reopens; explicit reopen restores correct queue; history records every lifecycle transition. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts` — "OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not" (fresh authenticated won-close reason readback)
+**Gap.** Unasserted in the carried evidence: lost close retains reason; closing operator and time; later evidence never silently reopens; explicit reopen restores correct queue; stage and owner remain unchanged on reopening; history records every lifecycle transition. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OPP-002 — Independent state
 
@@ -706,15 +706,15 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 
 #### OUT-008 — Quiet hours
 
-Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** A draft can be written at any time. Sending outside 08:00–18:00 Monday to Friday in the contact's timezone, or the workspace timezone when the contact has none, requires a second confirmation naming the recipient's local time; a scheduled send waits for the next permitted minute. The default is the window in this clause, with no holiday calendar.
 
 **Acceptance.**
 1. Approve outside recipient-local quiet hours, including daylight-saving boundaries; require the extra immediate confirmation or delay the schedule to the permitted window.
 
-**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: extra immediate confirmation. Asserted: recipient-local weekday/DST window; expired confirmation cannot send; scheduled message waits for reviewed next window.
+**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; confirming the previewed time submits once across a minute boundary; expired confirmation is refused. Same file — OUT-014 missing merge fields block; template revisions never rewrite approved content: recipient-local weekend schedule is reviewed, waits for the next permitted minute and dispatches once; a changed recipient clock requires a fresh review.
+**Gap.** None.
 
 #### OUT-009 — Scheduled send
 
@@ -799,8 +799,8 @@ Core · published · **partial** · Cites BASE-DATA-004, BASE-SECRET-001
 **Acceptance.**
 1. Leave AI unconfigured and fail a configured request; finish manual CRM, ingestion, scoring and handwritten outreach flows while generation reports failure.
 
-**Evidence.** `src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts`
-**Gap.** Unasserted in the carried evidence: failed generation visible; manual CRM still works; ingestion still works; scoring still works; handwritten sending still works. Asserted: unconfigured generation unavailable.
+**Evidence.** `src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts` — AI-002 invented evidence fails visibly; AI-003 unconfigured provider generates nothing and handwritten outreach submits once (after the unconfigured generation 503, the same installation creates a handwritten draft, reads its exact rendered content, opt-out state and recipient time, approves through native Workbench, compares the real mail adapter request with the saved approval snapshot, reads one accepted provider receipt and refuses repeated approval without another submission; no AI call, generated draft or explanation).
+**Gap.** Unasserted in the carried evidence: configured-outage continuity; manual CRM updates; ingestion and linking continuity; scoring and queue placement continuity; search continuity; recommendation action and evidence readback; rendered generation-failure qualification. Connected mailboxes and live model or provider qualification remain unclaimed. Asserted: unconfigured generation unavailable; handwritten drafting, exact approval and one accepted customer-mail submission continue with AI unconfigured.
 
 #### AI-004 — Cost
 
@@ -830,15 +830,15 @@ Core · published · **done** · Cites BASE-ROLE-001
 
 #### BRIEF-002 — Overdue promises
 
-Core · published · **partial** · Cites BASE-ROLE-001
+Core · published · **done** · Cites BASE-ROLE-001
 
 **Requirement.** Computed from records when the brief is built: an open internal next action (a handoff task a person wrote or accepted) or an open opportunity's next action past its due time; the latest customer reply on a record with no approved outbound message, captured sent message, logged call or meeting, or completed action on that record since, once the awaiting-response interval (TEAM-003, working days in the workspace timezone) has passed; a meeting completed within the last 120 days with no note, logged call or meeting, completed action, handoff, draft, approved message or captured sent message on its records after it; and a draft on an open opportunity left untouched longer than the workspace stale interval, with no outbound attempt and no customer stop event. A recommendation carries no due time and is never a promise by itself.
 
 **Acceptance.**
 1. Advance past each task/reply/meeting/draft deadline, complete the corresponding obligation and verify overdue lines appear and clear from actual records.
 
-**Evidence.** `src/core/features/today/brief.ts`; `src/core/features/today/promises.ts`; `tests/core/today-brief.test.ts`
-**Gap.** Unasserted in the carried evidence: overdue task; overdue draft; task completion clears line; draft completion clears line. Asserted: overdue reply; overdue meeting; reply completion clears line; meeting completion clears line.
+**Evidence.** `tests/core/today-brief.test.ts` — TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence (native task, reply, meeting, draft and opportunity deadlines appear and clear; exact evidence, due times and links; fresh handoff completion; exact future draft approval; stop-state exclusions; 119/121-day replies; other-record isolation and zero provider submissions); `tests/delegation-browser/today-brief.test.ts` — BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390; Judged-from 8997ad7e3112fc65ed426845d70a12813ceb8432 (6 November 2026), CT ct-judge-orbit-brief002-20261105-1500 ACCEPT ON LANDING and Codex sd-orbit-c-f40-fix1-gate-1 PASS WITH FOLLOW-UPS
+**Gap.** None.
 
 #### BRIEF-003 — Account summary
 
@@ -918,15 +918,15 @@ Core · published · **partial** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE
 
 #### PUBLIC-002 — Safe demo
 
-Core · published · **partial** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001
+Core · published · **done** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001
 
 **Requirement.** When enabled in the public-site configuration, the demo page presents a separate read-only example workspace with twelve fictional deals, relative dates, signals, drafts and a sent-message/reply story. It clearly labels these as examples before displaying them. No example data is written to the owner's database. The demo cannot load owner records, send mail, call AI, approve outreach or mutate data. Unknown demo paths return the styled not-found page. Disabling it returns 404. This deliberately replaces the former dedicated hosted-record walkthrough; all native session, exact-message review and customer-sending requirements remain unchanged.
 
 **Acceptance.**
 1. Browse the labeled fictional demo and unknown paths at desktop/mobile sizes; verify no owner-data read, D1 write, AI request or send.
 
-**Evidence.** `src/demo.ts`; `tests/core/public-demo.test.ts`
-**Gap.** Unasserted in the carried evidence: unknown demo paths; desktop and phone journey; no owner-data read over populated owner data; no D1 mutation across all tables; no AI request; no customer send. Asserted: fictional demo labeled.
+**Evidence.** `tests/e2e/baseline.spec.mjs` — BASE-PUBLIC-003 PUBLIC-002 public surfaces and unknown demo paths pass WCAG 2.2 AA at desktop and phone widths: twelve fictional deals labeled before display, relative dates, signal and draft context, sent-message and reply story, keyboard selection, unknown-path HTTP 404, styled not-found landmark, home navigation, accessibility and no horizontal overflow at 1440, 390 and 320; `tests/core/public-demo.test.ts` — PUBLIC-002 separate read-only demo has fresh stories and cannot read or mutate owner records: populated contacts, companies, opportunities, signals and drafts stay private, private selection and anonymous native approval are refused, all user tables remain unchanged, AI and mail edges receive no request, and the real emitted enabled and disabled configurations return the expected documents and data without effects; extended `tests/support/public-demo-proof.ts` — emittedDemoProof; `tests/support/disabled-demo-build.ts` — disabledDemoBuild.
+**Gap.** None.
 
 #### PUBLIC-003 — Unconfigured sign-in
 
@@ -994,8 +994,8 @@ Core · published · **partial** · Cites BASE-ACCESS-002, BASE-ACCESS-004, BASE
 2. Its acknowledgment never accepts an application-proposed handoff; its only writes are acknowledgment and an attributed internal task under current native access.
 3. Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority.
 
-**Evidence.** `src/core/features/delegation/protocol.ts`; `tests/delegation/authority-regressions.test.ts`; `tests/delegation/archive-regression.test.ts`
-**Gap.** Unasserted in the carried evidence: Slack mapping grants no delegation authority; Slack mapping grants no outreach authority; Slack acknowledgment does not accept a proposed handoff; Slack writes only acknowledgment/internal task; task retains current native access and actor; native consent and PKCE scope; selected records readable; outside-scope read refused. Asserted: internal handoff proposed; revocation stops every door; restored credential authority absent; restored history preserved.
+**Evidence.** `src/core/features/delegation/protocol.ts`; `tests/delegation/authority-regressions.test.ts` — API-002 native credential lifecycle and delegation D1 reject ambient cookies, scope escalation, expiration, disable and revocation on every read and write (active selected-opportunity evidence read, populated unselected-contact refusal, delegated list exclusion and unchanged records and write effects); `tests/delegation/archive-regression.test.ts`
+**Gap.** Unasserted in the carried evidence: Slack mapping grants no delegation authority; Slack mapping grants no outreach authority; Slack acknowledgment does not accept a proposed handoff; Slack writes only acknowledgment/internal task; task retains current native access and actor; native consent and PKCE scope; remaining selected-record kinds and outside-scope cases. Asserted: active selected-opportunity grant reads its opportunity, refuses its existing unselected linked contact with 404, omits that contact from delegated records and changes no records, history or write effects; internal handoff proposed; revocation stops every door; restored credential authority absent; restored history preserved.
 
 ### Permissions, records and migration
 
@@ -1369,7 +1369,7 @@ Core · target · **partial** · Cites BASE-PUBLIC-001, BASE-PUBLIC-002, BASE-IN
 
 #### FORM-002 — Form abuse refusals and release
 
-Core · target · **partial** · From FORM-001 · Cites BASE-PUBLIC-001, BASE-PUBLIC-002, BASE-INPUT-001 · Rules D-1
+Core · target · **done** · From FORM-001 · Cites BASE-PUBLIC-001, BASE-PUBLIC-002, BASE-INPUT-001 · Rules D-1
 
 **Requirement.** Abuse protection combines a honeypot field, a minimum fill time, per-form and per-network rate limits and optional Cloudflare Turnstile. Refused and suspected-spam submissions are counted with their reason, write no customer record, and can be released by a person from a spam list. A repeated submission key is idempotent. The current checks use a signed fill proof valid for one hour and at least two seconds old, 30 submissions per form and 10 per network in a one-minute window. Only trusted Cloudflare connection metadata supplies the network address; an installation-keyed digest expires with the counter, and raw addresses are not stored. Local submissions share one local network bucket. Opted-in Turnstile loads only after interaction and verifies the form hostname and `orbit_form` action. Release keeps the original consent and current publication/capture authority; erased payloads cannot be released.
 
@@ -1377,8 +1377,8 @@ Core · target · **partial** · From FORM-001 · Cites BASE-PUBLIC-001, BASE-PU
 1. Submit honeypot-filled, too-fast, over-rate and non-allowlisted entries and verify refusal reasons/counts with no customer write.
 2. Replay a submission key once, release suspected spam under its original consent and current authority, and refuse release after erasure; optional Turnstile starts only after interaction.
 
-**Evidence.** `src/core/features/forms/`; `src/core/features/forms/field-values.ts`; `src/core/features/forms/embed-code.ts`; `migrations/core/0055_form_assignment.sql`; `src/core/features/capture/proposals.ts`; `newtests/t096/forms-native.test.ts`; `newtests/t096/forms-mapped-journey.ts`; `newtests/t096/forms-mapped-custody.ts`; `newtests/t096/browser-form-mapping.ts`; `docs/retained-verification/FORM-001/`
-**Gap.** Implemented first slice: Reviewed fixed forms retain consent, atomic intake, honeypot, signed fill proof, per-form/network limits, optional Turnstile, counted refusals, erasable spam and exactly-once release. Allowlisted HTTPS direct posts use the same admission without cookies or tracking. Required and optional free-text and picklist fields map to contact/company/new-deal native and custom JSON properties; exact business domains link/create companies, chosen stages enter NOW, empty values fill and populated differences wait as CAPTURE-004 proposals. A picklist accepts only its reviewed choices. Hidden fields carry a fixed value from the reviewed definition or one declared query parameter, read from the hosted page address, copied from the embedding page by the generated framed embed or sent by a direct post; publication review lists them, and a saved definition change takes effect only after its new revision is compiled, reviewed and published. Forged choices, undeclared names and fixed-value overrides are refused as `invalid_fields` without a customer or proposal write. Existing contact owners remain; fixed, durable active-user round robin and unassigned rules record each choice and notify the selected full operator once per accepted submission. Team selection, team queues and team notifications inherit TEAM-005; explicit full-operator lists are used meanwhile. Lead/custom-object kinds inherit RECORD-014 and email/push delivery NOTIFY-003.
+**Evidence.** `src/core/features/forms/`; `src/core/features/forms/field-values.ts`; `src/core/features/forms/embed-code.ts`; `migrations/core/0055_form_assignment.sql`; `src/core/features/capture/proposals.ts`; `newtests/t096/forms-native.test.ts`; `newtests/t096/forms-mapped-journey.ts`; `newtests/t096/forms-mapped-custody.ts`; `newtests/t096/browser-form-mapping.ts`; `docs/retained-verification/FORM-001/`; `newtests/t096/forms-native.test.ts` — FORM-001 public form HTTP refuses abuse without customer writes and releases spam exactly once, extended in `newtests/t096/forms-abuse-journey.ts`: authenticated publication withdrawal refuses held release, preserves complete customer, consent and submission inventories and the pending payload, and creates no release receipt; `newtests/t096/forms-native.test.ts` — FORM-001 public form HTTP refuses abuse without customer writes and releases spam exactly once, with `newtests/t096/forms-abuse-qualification.ts` — formAbuseQualification and formAbuseBoundaries: exact original true, false and omitted consent, wording, revision, artifact and visitor time; anonymous and collaborator refusal; capture-source stop and independently revoked authorization with unchanged populated inventories and retained pending payload; fresh reviewed authorization permits release; signed fill proof age, binding and integrity; network and form windows, untrusted-address refusal and expiring digests; Turnstile action, hostname, configuration and failure boundaries, accepted replay without repeating verification; `newtests/t096/browser-journeys.test.ts` — OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots, with `newtests/t096/browser-form-abuse.ts` — formAbuseBrowserJourney: interaction-only Turnstile, no cookies, refused release after actual withdrawal, retained pending payload, erased controls and accessible screenshots at 1440 and 390
+**Gap.** None.
 
 #### FORM-003 — Form customer identity and consent
 
@@ -1974,7 +1974,7 @@ Core · target · **partial** · From REPORT-002 · Cites BASE-ROLE-001, BASE-DA
 2. Sign in as a restricted rep and verify that the same dashboard opens by default and shows only totals that reconcile with that rep's permitted drill-through, with no hidden count.
 3. Share privately, by named user/team or workspace to view/edit, then revoke; every figure, drill row and default applies current access with no hidden count or sum.
 
-**Evidence.** `src/core/features/dashboards/`; `migrations/core/0053_dashboards.sql`; `newtests/t096/report-disclosure.test.ts`; `newtests/t096/dashboard-access-proof.ts`; `newtests/t096/dashboard-archive.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/core/source-onboarding.test.ts`; `docs/retained-verification/REPORT-002/`; `src/core/features/dashboards/read-fences.ts`; `newtests/t096/dashboard-backend-proof.ts`
+**Evidence.** `src/core/features/dashboards/`; `migrations/core/0053_dashboards.sql`; `newtests/t096/report-disclosure.test.ts`; `newtests/t096/dashboard-access-proof.ts`; `newtests/t096/dashboard-archive.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/core/source-onboarding.test.ts`; `docs/retained-verification/REPORT-002/`; `src/core/features/dashboards/read-fences.ts`; `newtests/t096/dashboard-backend-proof.ts`; `newtests/t096/report-time-boundaries.test.ts` — “report periods compare instants across ISO precision and timezone equality boundaries” (native named view, denied edits, dashboard-share revocation and default-directory privacy); REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence” (named viewer figures and drill-through, revoked-share refusal and default removal at both widths)
 **Gap.** Nine-tile composition, viewer-fenced figures/drill rows, Owner/Pipeline/US date/Region filters, named/workspace sharing, personal defaults, unavailable/error/no-value/late evidence, PDF and tile CSV, versioned custody, paused restore and erasure are implemented. TEAM-005 inherits team filter/sharing/default/restricted sellers; RECORD-016 later owner kinds; NOTIFY-003 the later delivery model. Owner-chosen Dashboard ready routing and separately audited owner enablement send one generic Slack notice and authenticated link per occurrence/channel; replay, rate limits, failure/retry, held uncertainty and non-resuming safety suspension are proven. Email remains paused: the relay rejects attachments and no system notification sender exists; weekly recipient-specific email, next-send email revocation, email attempts and email retry/uncertain behavior remain gaps. PDF rejects text outside WinAnsi. Live forecasts apply the workspace calendar day and shared-field bindings; saved forecasts keep their original UTC definition and measured result. Every composed response rechecks its original dashboard, saved sources and permitted source rows after the final metadata read. Real team roles, audiences/defaults and restricted sellers remain TEAM-005; daily/weekly/monthly recipient-specific email and its revocation, failure, uncertainty and no-resend provider proof remain blocked on the system sender and attachment transport. No real provider delivery or release acceptance is claimed.
 
 #### REPORT-004 — Dashboard export and scheduled delivery
@@ -2101,8 +2101,8 @@ Core · target · **partial** · From INTEGRATE-005 · Cites BASE-ROLE-001, BASE
 3. Refuse unsigned, stale, unmapped, foreign and revoked actions and removed operators; an authenticated mapped operator acknowledges or creates one internal task with an attributed Slack source and atomic action-id consumption.
 4. An acknowledgment never approves/edits/sends mail or accepts an application-proposed handoff; mappings confer no native role, content, delegation or outreach authority.
 
-**Evidence.** `src/core/features/slack/`; `migrations/core/0051_slack_notices.sql`; `tests/core/source-onboarding.test.ts`; `tests/support/slack-notices-proof.ts`; `tests/support/slack-actions-proof.ts`; `tests/support/slack-archive-proof.ts`; `docs/retained-verification/INTEGRATE-005/`
-**Gap.** Unasserted in the carried evidence: foreign app refused; foreign enterprise refused; foreign user.team_id refused; lost native access refused; changed timestamp cannot reuse spent action id; failure during action consumption remains atomic; no mail editing; no mail approval; acknowledgment cannot accept proposed handoff; mapping grants no native/content/delegation authority. Asserted: unsigned signature refusal; stale signature refusal; unmapped/foreign/revoked/removed identities leave state unchanged; acknowledgment names operator; task names creator/owner; task retains Slack source attribution.; no customer send from Slack.
+**Evidence.** `src/core/features/slack/`; `migrations/core/0051_slack_notices.sql`; `tests/core/source-onboarding.test.ts`; `tests/support/slack-notices-proof.ts`; `tests/support/slack-actions-proof.ts`; `tests/support/slack-archive-proof.ts`; `docs/retained-verification/INTEGRATE-005/`  Acceptance 3 atomic failure and retry: `tests/core/source-onboarding.test.ts` — NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty; REPORT-004 explicitly enabled Slack schedules respect DST, hold uncertainty and never resume; email stays paused; INTEGRATE-005 INTEGRATE-009 INTEGRATE-010 INTEGRATE-011 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions; BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send (extended `tests/support/slack-actions-proof.ts`: a real D1 trigger aborts task insertion through the signed action route; background completion leaves the issued token, prior notice, action, task, series and timeline unchanged; removing the fault and resubmitting the same issued action creates one attributed Slack task and consumes once; replay adds no effect).
+**Gap.** Unasserted in the carried evidence: foreign app refused; foreign enterprise refused; foreign user.team_id refused; lost native access refused; changed timestamp cannot reuse spent action id; no mail editing; no mail approval; acknowledgment cannot accept proposed handoff; mapping grants no native/content/delegation authority. Asserted: unsigned signature refusal; stale signature refusal; unmapped/foreign/revoked/removed identities leave state unchanged; acknowledgment names operator; task names creator/owner; task retains Slack source attribution.; no customer send from Slack. Atomic action consumption rolls back with failed task insertion, and the same issued action retries once without replay effects.
 
 #### INTEGRATE-010 — Slack delivery failures and destination safety
 
@@ -2306,8 +2306,8 @@ Core · target · **partial** · Cites BASE-DATA-004
 3. Walk a US buyer's USD deal through every current capability: signed Calendly booking intake onto the deal, a manual call log, and an exact-message review and send, with the USD amount unchanged and no mail sent by a booking, a manual entry or provider setup.
 4. In Settings › Integrations at 1440 and 390, inspect Connected to Orbit: Slack, Calendly, Cal.com, Mailchimp and Twilio each show the job it does and its real state (Calendly and Cal.com their real delivery state, Slack its actual connected or unresolved setup state), the products Orbit does not connect to are not listed and are named in the docs, with no substituted connector or mock and no reduced CRM scope.
 
-**Evidence.** `tests/core/source-onboarding.test.ts`; `src/core/features/settings/connected-products.ts`; `src/core/features/operator/ui/connected-products.tsx`; `src/core/features/ingestion/booking-webhooks.ts`; `tests/core/signals-outreach.test.ts`; `tests/support/sales-tasks.ts`; `tests/evidence/contract/BOUNDARY-001/`
-**Gap.** Unasserted in the carried evidence: no products/commitments/amounts in Slack won/handoff notices; product states and owned jobs; 1440 browser proof; 390 browser proof; full CRM scope retained. Asserted: Slack disconnected state; signed Calendly intake links deal; manual call log on deal; exact review and send; USD amount unchanged; booking/manual/setup sends no mail; connected/awaiting Calendly and Cal.com state; unavailable products enumerated; Slack actual state; no substituted connector.
+**Evidence.** `tests/core/source-onboarding.test.ts` — INTEGRATE-005 INTEGRATE-009 INTEGRATE-010 INTEGRATE-011 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions (extended `tests/support/slack-notices-proof.ts` — proveSlackNotices: a person-authored native handoff and the won transition correlate their exact source identities to one stored notice and one complete Slack submission each; distinctive saved products, commitments, handoff content, closing reason and USD amount are absent from stored content and submitted text, blocks and metadata; fixed permitted fields and token-free Orbit links; linked record data refuses an anonymous read; stale native handoff review and repeated processing add no notice); `src/core/features/settings/connected-products.ts`; `src/core/features/operator/ui/connected-products.tsx`; `src/core/features/ingestion/booking-webhooks.ts`; `tests/core/signals-outreach.test.ts`; `tests/support/sales-tasks.ts`; `tests/evidence/contract/BOUNDARY-001/`
+**Gap.** Unasserted in the carried evidence: product states and owned jobs; 1440 browser proof; 390 browser proof; full CRM scope retained. Asserted: no products, commitments or amounts in the exact won-deal and person-authored internal handoff Slack notices; Slack disconnected state; signed Calendly intake links deal; manual call log on deal; exact review and send; USD amount unchanged; booking, manual work and setup send no mail; connected and awaiting Calendly and Cal.com state; unavailable products enumerated; Slack actual state; no substituted connector. The complete buyer walk stays with the last-shipping named clause; live Slack and TEAM-005 qualification and all existing provider, consent and receiving-product prerequisites remain unchanged.
 
 ### Push further
 

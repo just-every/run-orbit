@@ -7,18 +7,39 @@ test('BASE-PUBLIC-001 BASE-SECRET-001 PUBLIC-001 public surfaces expose no priva
  await page.goto('/');await page.waitForLoadState('networkidle');expect(external).toEqual([]);expect(await context.cookies()).toEqual([]);await expect(page.locator('body')).not.toContainText('Fieldhouse');await expect(page.locator('body')).not.toContainText('maya.patel');
  const scripts=await page.locator('script[src]').evaluateAll(nodes=>nodes.map(node=>node.src));for(const script of scripts){const body=await(await page.request.get(script)).text();expect(body).not.toContain('SENDGRID_API_KEY');expect(body).not.toContain('OPENAI_API_KEY');expect(body).not.toContain('ORBIT_ENCRYPTION_KEY');}
 });
-test('BASE-PUBLIC-003 public surfaces pass WCAG 2.2 AA at desktop and phone widths',async({page,context})=>{
+test('BASE-PUBLIC-003 PUBLIC-002 public surfaces and unknown demo paths pass WCAG 2.2 AA at desktop and phone widths',async({page,context})=>{
  test.setTimeout(120000);mkdirSync('verification/ui',{recursive:true});
- const routes=['/','/signin','/docs','/demo'];
+ const demoRequests=[];let visitingDemo=false;
+ page.on('request',request=>{if(visitingDemo)demoRequests.push({url:request.url(),method:request.method()});});
+ const unknownDemo='/demo/synthetic-orbit-unknown';
+ const routes=['/','/signin','/docs','/demo',unknownDemo];
  for(const width of [1440,390,320]){
   await context.clearCookies();await page.setViewportSize({width,height:900});
   for(const route of routes){
-   await page.goto(route);await page.waitForLoadState('networkidle');
+   visitingDemo=route==='/demo'||route===unknownDemo;demoRequests.length=0;
+   const response=await page.goto(route);await page.waitForLoadState('networkidle');
+   if(route===unknownDemo){
+    expect(response.status()).toBe(404);
+    await expect(page.getByRole('main')).toBeVisible();
+    await expect(page.getByRole('main').getByRole('heading',{level:1,name:'Page not found'})).toBeVisible();
+   }
    await page.screenshot({path:`verification/ui/${width}-${route==='/'?'public':route.slice(1).replaceAll('/','-')}.png`,fullPage:true});
    const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();
    expect(result.violations,`${width}px ${route}`).toEqual([]);
    if(route==='/demo'){
+    if(width===1440){
+     const examples=page.getByRole('complementary',{name:'Opportunities'});
+     await expect(examples.getByRole('button')).toHaveCount(12);
+     const label=page.getByRole('note');await expect(label).toContainText(/read-only demo/i);await expect(label).toContainText(/fictional/i);
+     expect(await label.evaluate(node=>Boolean(node.compareDocumentPosition(document.querySelector('.workspace'))&Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
+     const story=page.getByRole('region',{name:/Example opportunity:/});
+     await expect(story.getByRole('heading',{name:'Suggested follow-up',exact:true})).toBeVisible();
+     await expect(story.getByRole('heading',{name:'Email sent',exact:true})).toBeVisible();
+     await expect(story.getByRole('heading',{name:'Customer reply',exact:true})).toBeVisible();
+     await expect(story.locator('time').first()).toContainText(/ago/);
+    }
     const selected=page.getByRole('complementary',{name:'Opportunities'}).getByRole('button').last();await selected.focus();await page.keyboard.press('Enter');await expect(selected).toHaveAttribute('aria-pressed','true');
+    if(width===1440)await expect(page.getByRole('region',{name:/Example opportunity:/}).getByRole('heading',{level:2})).toHaveText(await selected.locator('.company').innerText());
     const changed=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();expect(changed.violations,`${width}px demo selection`).toEqual([]);
     await page.screenshot({path:`verification/ui/${width}-demo-selected.png`,fullPage:true});
    }
@@ -27,6 +48,18 @@ test('BASE-PUBLIC-003 public surfaces pass WCAG 2.2 AA at desktop and phone widt
    await page.keyboard.press('Tab');
    expect(await page.evaluate(()=>document.activeElement!==document.body),`${width}px ${route} keyboard focus`).toBe(true);
    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${width}px ${route} horizontal overflow`).toBe(true);
+   if(visitingDemo&&width===1440){
+    for(const request of demoRequests){
+     const url=new URL(request.url);expect(url.origin).toBe(`http://127.0.0.1:${process.env.ORBIT_BROWSER_PORT ?? 8722}`);expect(request.method).toBe('GET');
+     expect(url.pathname.startsWith('/api/')&&url.pathname!=='/api/v1/public-demo').toBe(false);expect(url.pathname.startsWith('/_serverFn/')).toBe(false);
+    }
+   }
+   visitingDemo=false;
+   if(route===unknownDemo){
+    await page.getByRole('link',{name:'Return home',exact:true}).click();
+    await expect(page).toHaveURL('/');
+    await expect(page.getByRole('main')).toBeVisible();
+   }
   }
  }
 });

@@ -5,6 +5,7 @@ import {createApp} from '../support/app';
 import {createDependencies} from '../support/dependencies';
 import {WorkbenchRepository} from '../../src/core/features/workbench/repository';
 import {runHostedTimers,schedulerStatus} from '../../src/core/features/outreach/scheduler';
+import {createId} from '../../src/core/shared/ids';
 
 test('a fresh hosted schedule sends once through ordinary requests racing Cron, and due follow-ups return to NOW',async context=>{
  const platform=await isolatedDatabase(),db=platform.db;
@@ -24,13 +25,41 @@ test('a fresh hosted schedule sends once through ordinary requests racing Cron, 
   const mail={send:async()=>{calls++;start();await submitted;return{providerMessageId:'synthetic-provider-receipt'};}};
   const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:mail,hosted:true});
   const session=await deps.auth.createSession(actor);
-  const request=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1/workbench/${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined},undefined,{waitUntil(promise:Promise<unknown>){background.push(promise);void promise.catch(()=>{});},passThroughOnException(){}} as ExecutionContext);
+  const api=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined},undefined,{waitUntil(promise:Promise<unknown>){background.push(promise);void promise.catch(()=>{});},passThroughOnException(){}} as ExecutionContext);
+  const request=(path:string,body?:unknown)=>api(`/workbench/${path}`,body);
   const draft=await (await request(`opportunities/${opportunity.id}/drafts`,{contactId:contact!.contact_id,subject:'Renewal details',body:'Here is the exact reviewed renewal.'})).json() as {id:string};
   const approval=await request(`drafts/${draft.id}/approve`,{revision:1,scheduledAt:'2030-01-07T10:02:00Z'});
   assert.equal(approval.status,200);
   const message=await approval.json() as {id:string;state:string};assert.equal(message.state,'scheduled');
   await request(`opportunities/${opportunity.id}/messages`);await Promise.all(background.splice(0));
   assert.equal((await schedulerStatus(db)).lastRunAt,null);assert.equal(calls,0);
+  // A distinct, unassigned deal crosses its close deadline without a sales-state edit.
+  const closeStage=createId(),closeAt='2030-01-07T10:02:00.000Z';
+  await deps.workspace.ensurePipelineStage({id:closeStage,name:'Close review',position:2});
+  const created=await api('/records/opportunity',{title:'Harbor close review',stage_id:closeStage,owner_id:null,value_cents:150000,expected_close_at:closeAt});
+  assert.equal(created.status,201,await created.clone().text());
+  const closeDeal=await created.json() as {id:string};
+  type Deal={id:string;score:number;band:string;owner_id:string|null;stage_id:string;lifecycle:string;queue_state:string;queue_reason:string|null;expected_close_at:string};
+  type Entry={kind:string;actor_type:string;actor_id:string|null;actor_name:string|null;source:string;occurred_at:string;payload_json:string};
+  const readClose=async()=>{
+   const response=await api(`/records/opportunity/${closeDeal.id}`);
+   assert.equal(response.status,200);
+   return response.json() as Promise<{record:Deal;timeline:Entry[]}>;
+  };
+  const readNow=async()=>{
+   const response=await api('/opportunities/now');
+   assert.equal(response.status,200);
+   return (await response.json() as {opportunities:Array<{id:string;queueReason:string;score:number;band:string;ownerId:string|null;stageId:string;lifecycle:string}>}).opportunities;
+  };
+  await readClose();await Promise.all(background.splice(0));
+  const beforeClose=await readClose();
+  assert.equal(beforeClose.record.expected_close_at,closeAt);
+  assert.equal(beforeClose.record.queue_state,'none');
+  assert.equal(beforeClose.record.owner_id,null);
+  assert.equal(beforeClose.record.lifecycle,'open');
+  assert.equal(beforeClose.timeline.filter(entry=>entry.kind==='queue.now').length,0);
+  assert.equal((await readNow()).some(row=>row.id===closeDeal.id),false);
+  await Promise.all(background.splice(0));
   // Another customer's awaiting-response deadline is processed by the same kick.
   const followup=await new WorkbenchRepository(db).createOpportunity({title:'Harbor follow-up',companyName:'Harbor Labs',contactName:'Sam Lee',email:'sam@harbor.example',stageId:'request-timer-stage',valueCents:90000},actor);
   await db.prepare("UPDATE opportunities SET queue_state='next',next_due_at='2030-01-07T10:02:00.000Z' WHERE id=?").bind(followup.id).run();
@@ -46,6 +75,22 @@ test('a fresh hosted schedule sends once through ordinary requests racing Cron, 
   assert.equal(await db.prepare('SELECT attempt_count FROM outbound_messages WHERE id=?').bind(message.id).first('attempt_count'),1);
   assert.equal(await db.prepare('SELECT queue_state FROM opportunities WHERE id=?').bind(followup.id).first('queue_state'),'now');
   assert.equal(await db.prepare("SELECT COUNT(*) FROM timeline_entry_records r JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE r.record_id=? AND t.kind='queue.now'").bind(followup.id).first('COUNT(*)'),1);
+  await Promise.all(background.splice(0));
+  const afterClose=await readClose(),nowClose=(await readNow()).filter(row=>row.id===closeDeal.id);
+  assert.equal(afterClose.record.queue_state,'now');
+  assert.equal(afterClose.record.queue_reason,'Expected close date passed');
+  assert.equal(afterClose.record.expected_close_at,closeAt);
+  for(const field of ['score','band','owner_id','stage_id','lifecycle'] as const)assert.equal(afterClose.record[field],beforeClose.record[field],`Close deadline preserves ${field}`);
+  assert.equal(nowClose.length,1);
+  assert.equal(nowClose[0].queueReason,'Expected close date passed');
+  assert.equal(nowClose[0].score,beforeClose.record.score);assert.equal(nowClose[0].band,beforeClose.record.band);
+  assert.equal(nowClose[0].ownerId,null);assert.equal(nowClose[0].stageId,closeStage);assert.equal(nowClose[0].lifecycle,'open');
+  const transitions=afterClose.timeline.filter(entry=>entry.kind==='queue.now');
+  assert.equal(transitions.length,1,'Racing and repeated timers record one close-deadline transition');
+  assert.deepEqual(JSON.parse(transitions[0].payload_json),{opportunityId:closeDeal.id,reason:'Expected close date passed'});
+  assert.equal(transitions[0].source,'timer');assert.equal(transitions[0].actor_type,'feature');
+  assert.equal(transitions[0].actor_id,null);assert.equal(transitions[0].actor_name,null);
+  assert.equal(transitions[0].occurred_at,new Date().toISOString());
   await Promise.all(background);
  }finally{release();await Promise.allSettled(background);context.mock.timers.reset();await platform.dispose();}
 });
