@@ -56,6 +56,25 @@ test('RECORD-004 RECORD-009 matching names across companies remain review-only a
    assert.equal(result.timeline.filter((entry:any)=>entry.kind==='record.merged').length,1);
    const audit=await f.db.prepare("SELECT details_json FROM audit_entries WHERE action='record.merged' AND entity_id=?").bind(survivorId).all<{details_json:string}>();assert.equal(audit.results.length,1);assert.deepEqual(JSON.parse(audit.results[0].details_json),{retiredId,choices});
   }
+  for(const kind of ['contact','company'] as const){
+   // Keyless records (no email, no domain, no company) are candidates too; reviewing them changes and hides nothing, and a chosen merge retires exactly one.
+   const keyField=kind==='contact'?'email':'primary_domain',workplace=kind==='contact'?(await (await f.request('records/company','POST',{name:'Keyless workplace'})).json() as {id:string}).id:null;
+   const make=async(name:string,extra:Record<string,unknown>={})=>{const result=await f.request(`records/${kind}`,'POST',{name,...extra});assert.equal(result.status,201,await result.clone().text());return (await result.json() as {id:string}).id;};
+   const keylessA=await make(`Keyless ${kind}`),keylessB=await make(`  KEYLESS   ${kind} `,kind==='contact'?{company_id:workplace}:{}),keyed=await make(`keyless ${kind}`,{[keyField]:kind==='contact'?'keyless-keyed@example.test':'keyless-keyed.example'});
+   const read=async(id:string)=>(await f.request(`records/${kind}/${id}`)).json() as Promise<any>,snapshot=()=>Promise.all([keylessA,keylessB,keyed].map(read));
+   const before=await snapshot(),listed=await f.request(`records/${kind}/duplicates`);assert.equal(listed.status,200);
+   const group=(await listed.json() as {groups:Record<string,any>[][]}).groups.find(rows=>rows.some(row=>row.id===keylessA))!;
+   assert.deepEqual(group.map(row=>row.id).sort(),[keylessA,keylessB,keyed].sort(),`${kind} keyless records are listed with the keyed one`);
+   assert.deepEqual(group.filter(row=>!row[keyField]).map(row=>row.id).sort(),[keylessA,keylessB].sort());
+   assert.deepEqual(await snapshot(),before,'Reviewing candidates alters nothing');
+   const body={survivorId:keylessA,retiredId:keylessB,choices:{name:'survivor',...kind==='contact'?{company_id:'retired'}:{}},reviewed:{survivor:group.find(row=>row.id===keylessA)!.mergeReviewToken,retired:group.find(row=>row.id===keylessB)!.mergeReviewToken},confirmed:true};
+   const merged=await f.request(`records/${kind}/merge`,'POST',body);assert.equal(merged.status,200,await merged.clone().text());
+   assert.equal((await f.request(`records/${kind}/${keylessB}`)).status,404);
+   assert.deepEqual([await read(keyed)].map(row=>row.record),[before[2].record],'The keyed same-name record is untouched');
+   if(kind==='contact')assert.equal((await read(keylessA)).record.company_id,workplace);
+   const after=(await (await f.request(`records/${kind}/duplicates`)).json() as {groups:Record<string,any>[][]}).groups.find(rows=>rows.some(row=>row.id===keylessA))!;
+   assert.deepEqual(after.map(row=>row.id).sort(),[keylessA,keyed].sort(),'The merge retired exactly one candidate');
+  }
   for(const stopped of ['survivor','retired'] as const){
    const survivor=await f.customer(`synthetic-orbit-${stopped}-survivor@example.test`),retired=await f.customer(`synthetic-orbit-${stopped}-retired@example.test`),scheduled=await Promise.all([f.message(survivor.contactId,survivor.opportunityId),f.message(retired.contactId,retired.opportunityId)]);
    const customers=[survivor,retired],signalIds=await Promise.all(customers.map((customer,index)=>signal(customer.email,`synthetic-orbit-${stopped}-${index}`)));
