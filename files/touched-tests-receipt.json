@@ -1,0 +1,20 @@
+{
+  "head": "f4b2d04fb3ab2b4779f93c4db16d7c4b263b3dcb",
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--no-test-only",
+    "--test-concurrency=1",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "--test-reporter=./scripts/core-results.mjs",
+    "--test-reporter-destination=/home/agent/rer-consolidation/work/sd-orbit-c-f122/packet/core-results.jsonl",
+    "tests/core/managed-owner.test.ts"
+  ],
+  "exit": 0,
+  "startedAt": "2026-11-07T22:18:34.529820+00:00",
+  "completedAt": "2026-11-07T22:20:44.179249+00:00",
+  "node": "v24.19.0"
+}

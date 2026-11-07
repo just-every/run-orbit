@@ -1,0 +1,29 @@
+{
+  "head": "f4b2d04fb3ab2b4779f93c4db16d7c4b263b3dcb",
+  "testExit": 0,
+  "proofs": [
+    {
+      "proof": "BASE-AGENT-007.5.rejected-native-write",
+      "pendingRpc": 51,
+      "retryRpc": 52,
+      "classes": [
+        "standard",
+        "sensitive"
+      ],
+      "approval": "8493260b-67a5-4a38-a885-7f6c2a8b973f",
+      "revision": 5,
+      "summary_sha256": "697a74344ade3a27fe5b4faa025f4da2e3edd236473a6f936226377a8998c051",
+      "state": "rejected",
+      "code": "approval_rejected",
+      "successContent": false,
+      "completionReceipt": false,
+      "unchangedNativeState": true,
+      "autonomousControl": {
+        "snapshot": "cfc3a32e-b01e-4abe-89b1-5da2c0c325ff",
+        "addedSnapshots": 1,
+        "addedSources": 1,
+        "addedComputedEffects": 1
+      }
+    }
+  ]
+}

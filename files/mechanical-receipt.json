@@ -1,0 +1,144 @@
+{
+  "head": "f4b2d04fb3ab2b4779f93c4db16d7c4b263b3dcb",
+  "checks": [
+    {
+      "name": "views-write",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0,
+      "startedAt": "2026-11-07T22:19:13.087230+00:00",
+      "completedAt": "2026-11-07T22:19:13.270700+00:00",
+      "stdout": "Wrote 0 contract documents.\n",
+      "stderr": ""
+    },
+    {
+      "name": "views-check",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "startedAt": "2026-11-07T22:19:13.270760+00:00",
+      "completedAt": "2026-11-07T22:19:13.523568+00:00",
+      "stdout": "Contract documents are current.\n",
+      "stderr": ""
+    },
+    {
+      "name": "restore-generated-views",
+      "command": [
+        "git",
+        "checkout",
+        "origin/main",
+        "--",
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "startedAt": "2026-11-07T22:19:13.523710+00:00",
+      "completedAt": "2026-11-07T22:19:13.530861+00:00",
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "source-lock-check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "startedAt": "2026-11-07T22:19:13.530904+00:00",
+      "completedAt": "2026-11-07T22:19:14.871670+00:00",
+      "ok": true,
+      "edition": "just-every/orbit",
+      "manifest": "dc7d6704d5ed529d120a628ed52e9bd9804900d13506a343fd1606c02de0d59d",
+      "outputSha256": "a91c64bd283182c3153c53fe277eb102acc208deec4eebf57f59bd8e5d530817"
+    },
+    {
+      "name": "first-party",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/bin/rer.mjs",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "exit": 0,
+      "startedAt": "2026-11-07T22:19:14.874714+00:00",
+      "completedAt": "2026-11-07T22:19:15.779970+00:00",
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "run",
+        "typecheck"
+      ],
+      "exit": 0,
+      "startedAt": "2026-11-07T22:19:15.780136+00:00",
+      "completedAt": "2026-11-07T22:19:41.046056+00:00",
+      "stdout": "\u2009WARN\u2009 Unsupported engine: wanted: {\"node\":\"22.20.0\"} (current: {\"node\":\"v24.19.0\",\"pnpm\":\"10.12.4\"})\n\n> orbit@0.4.3 typecheck /workspace/run-orbit\n> tsc --noEmit\n\n",
+      "stderr": ""
+    },
+    {
+      "name": "boundaries",
+      "command": [
+        "pnpm",
+        "run",
+        "check:boundaries"
+      ],
+      "exit": 0,
+      "startedAt": "2026-11-07T22:19:41.046276+00:00",
+      "completedAt": "2026-11-07T22:19:41.758797+00:00",
+      "stdout": "\u2009WARN\u2009 Unsupported engine: wanted: {\"node\":\"22.20.0\"} (current: {\"node\":\"v24.19.0\",\"pnpm\":\"10.12.4\"})\n\n> orbit@0.4.3 check:boundaries /workspace/run-orbit\n> node scripts/check-boundaries.mjs\n\nBoundary check passed for 814 core source files.\n",
+      "stderr": ""
+    },
+    {
+      "name": "inventory",
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {checkTestBudget} from './scripts/verification-inventory.mjs'; const {cases,qualifications,total}=checkTestBudget();console.log(JSON.stringify({cases,qualifications,total}));"
+      ],
+      "exit": 0,
+      "startedAt": "2026-11-07T22:19:41.758843+00:00",
+      "completedAt": "2026-11-07T22:19:42.547402+00:00",
+      "stdout": "{\"cases\":198,\"qualifications\":2,\"total\":200}\n",
+      "stderr": ""
+    },
+    {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit": 0,
+      "startedAt": "2026-11-07T22:19:42.547480+00:00",
+      "completedAt": "2026-11-07T22:19:42.554442+00:00",
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "sourceLockRegeneration": {
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "lock"
+    ],
+    "exit": 0,
+    "outputSha256": "6f4c54ff99db4e9e89d3d79550a03fb599ba5fc478831a0d4d42cf7b1fdd7a66"
+  },
+  "ledger": {
+    "command": null,
+    "exit": 0,
+    "reason": "no migrations changed"
+  }
+}

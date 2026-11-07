@@ -1,0 +1,23 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f122",
+  "head": "f4b2d04fb3ab2b4779f93c4db16d7c4b263b3dcb",
+  "base": "43497d9593cdf019042332a4bf8bae27f4004ede",
+  "changed": [
+    "sources.lock.json",
+    "tests/core/managed-owner.test.ts",
+    "tests/support/agent-door-proof.ts"
+  ],
+  "contractJudgmentsUnchanged": true,
+  "generatedViewsCommitted": false,
+  "productPush": "succeeded first attempt",
+  "publicationScan": {
+    "commit": "f4b2d04fb3ab2b4779f93c4db16d7c4b263b3dcb",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "status": "NOT RUN: cloud adaptation assigns publication scan to maintained Mac lander"
+  },
+  "landing": "not performed",
+  "pr": null
+}
