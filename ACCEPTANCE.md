@@ -529,8 +529,8 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Advance close/stale/awaiting clocks and deliver a form, reply, booking and send failure; inspect NOW/NEXT reasons and one timeline transition per event.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: close clock; stale clock; awaiting-response clock; form NOW reason; reply NOW reason; booking NOW reason; one transition per triggering event. Asserted: failed-send NOW reason.
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/request-scheduling.test.ts` — a fresh hosted schedule sends once through ordinary requests racing Cron, and due follow-ups return to NOW (a distinct Records-created open deal with an explicit null owner is read outside NOW before its expected close deadline; crossing that deadline through ordinary requests racing and repeating hosted timers yields one explained NOW entry and one timer-sourced feature transition with no human actor, preserving score, band, owner, stage and lifecycle)
+**Gap.** Unasserted in the carried evidence: stale clock; genuine five-working-day awaiting-response deadline construction in the workspace timezone; complete form, reply, booking and failure reason and transition reconciliation; all NEXT and removal paths; the complete event matrix and one transition per triggering event beyond the close-deadline case. Asserted: close clock and its single explained transition; failed-send NOW reason.
 
 #### OPP-008 — Manual completion
 
