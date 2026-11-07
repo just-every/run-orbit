@@ -10,7 +10,7 @@ import {createDependencies} from '../support/dependencies';
 import {createApp} from '../support/app';
 import {createId} from '../../src/core/shared/ids';
 import {signRelayBody} from '../../src/base/sendgrid-event-relay/crypto';
-import {json,finish,genericCsvFlow} from '../support/crm-import-flow';
+import {json,finish,genericCsvFlow,resumeImportFlow,sourceConflictFlow,malformedSuppressionFlow} from '../support/crm-import-flow';
 import {parseCsv} from '../../src/core/shared/csv';
 test('RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes',async t=>{
  const f=await launchFixture();try{for(const vendor of ['hubspot','pipedrive'] as const){
@@ -28,7 +28,7 @@ test('RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-
   const before=(await f.db.prepare('SELECT count(*) n FROM contacts').first<any>())!.n;
   const dry=await json(await f.request('imports/dry-run','POST',source));assert.equal((await f.db.prepare('SELECT count(*) n FROM contacts').first<any>())!.n,before);assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(scheduled.id).first<any>())!.state,'scheduled');
   assert.equal(dry.counts.rejected,1);assert.ok(dry.counts.rejected/dry.counts.input<.01);assert.equal(dry.rows.filter((r:any)=>r.status==='rejected').length,1);assert.match(dry.rows.find((r:any)=>r.status==='rejected').reason,/occurrence time/);
-  await finish(f,dry);assert.equal((await f.db.prepare('SELECT count(*) n FROM contacts').first<any>())!.n,before+120);
+  const resumed=await resumeImportFlow(f,dry,restorable,scheduled);assert.equal((await f.db.prepare('SELECT count(*) n FROM contacts').first<any>())!.n,before+120);
   const namespace=`orbit:${vendor}:${source.account}`,person=nativeId(namespace,'contact','person-0'),deal=nativeId(namespace,'deal','deal-1');
   assert.equal((await f.records.detail('contact',person)).record.contactability,'do_not_contact');const opportunity=(await f.records.detail('opportunity',deal));assert.equal(opportunity.contacts.length,2);assert.equal(opportunity.record.value_cents,125025);assert.equal(opportunity.record.owner_id,null);assert.equal(opportunity.record.queue_state,'none');assert.equal(opportunity.timeline.length,3);assert.match(opportunity.timeline[0].payload_json,/not executable/);
   const opened=(await json(await f.request(`opportunities/${deal}`))).opportunity;
@@ -37,6 +37,7 @@ test('RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-
   assert.equal(opportunity.timeline[0].actor_id,namespace);
   const empty=(await json(await f.request(`opportunities/${nativeId(namespace,'deal','deal-empty')}`))).opportunity;assert.equal(empty.title,'Imported deal without notes');assert.equal(empty.timeline.length,0);
   assert.equal((await json(await f.request(`opportunities/${restorable.opportunityId}`))).opportunity.title,'Launch opportunity');
+  await sourceConflictFlow(f,source);
   const replay=await json(await f.request('imports/dry-run','POST',source));await finish(f,replay);assert.equal((await f.db.prepare('SELECT count(*) n FROM contacts').first<any>())!.n,before+120);assert.equal((await json(await f.request(`opportunities/${deal}`))).opportunity.timeline.length,3);
   await finish(f,replay,'undo');assert.ok(await f.db.prepare('SELECT id FROM contacts WHERE id=?').bind(person).first(),'Undo of a reused import cannot steal the first job effects');
   assert.equal((await f.records.detail('contact',restorable.contactId)).record.contactability,'do_not_contact');
@@ -45,7 +46,7 @@ test('RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-
   assert.equal((await f.records.detail('contact',restorable.contactId)).record.contactability,'contactable','An unrelated mailbox regains its exact pre-import permission');
   assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(scheduled.id).first<any>())!.state,'cancelled','Undo never resumes cancelled mail');
   const survivingProofs=new Set((await f.db.prepare("SELECT id FROM audit_entries WHERE action='contact.suppressed'").all<{id:string}>()).results.map(row=>row.id));assert.ok(independentProofs.every(id=>survivingProofs.has(id)));
-  t.diagnostic(`${vendor}: ${dry.counts.input} rows, one listed rejection; records, associations, notes, replay and kit undo reconciled.`);
+  t.diagnostic(`${vendor}: ${dry.counts.input} rows, one listed rejection; source conflict refused, persisted restart at ${resumed.checkpoint} of ${resumed.total} resumed the same job; records, associations, notes, replay and kit undo reconciled.`);
  }await genericCsvFlow(f);await importOwnerFlow(f);}finally{await f.dispose();}
 });
 test('RECORD-008 stops block exact approved sends; undo preserves edits and independent stops, authority and malformed mapping fail closed',async()=>{
@@ -55,6 +56,7 @@ test('RECORD-008 stops block exact approved sends; undo preserves edits and inde
   const request=(path:string,method='GET',body?:any,headers:any={})=>app.request(`https://orbit.test/api/v1/${path}`,{method,headers:{cookie:`__Host-orbit_session=${session.token}`,origin:'https://orbit.test','content-type':'application/json',...headers},...(body===undefined?{}:{body:JSON.stringify(body)})});
   assert.equal((await request('imports/dry-run','POST',source,{cookie:''})).status,401);assert.equal((await request('imports/dry-run','POST',source,{origin:'https://attacker.test'})).status,403);
   const malicious=structuredClone(source);malicious.files[0].mapping.operator_id='Record ID';assert.equal((await f.request('imports/dry-run','POST',malicious)).status,409);
+  await malformedSuppressionFlow(f,source);
   const blockedDraft=await json(await request(`workbench/opportunities/${c.opportunityId}/drafts`,'POST',{contactId:c.contactId,subject:'Exact saved subject',body:'Exact saved content'}));
   const dry=await json(await f.request('imports/dry-run','POST',source));assert.equal((await f.request(`imports/${dry.id}/apply`,'POST',{fingerprint:'0'.repeat(64),confirmed:true})).status,409);await finish(f,dry);
   assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(scheduled.id).first<any>())!.state,'cancelled');assert.equal((await f.records.detail('contact',c.contactId)).record.contactability,'do_not_contact');

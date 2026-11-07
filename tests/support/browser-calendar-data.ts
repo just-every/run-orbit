@@ -1,7 +1,7 @@
 import {todayApp} from './today-workspace';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
 import {captureProviderNetwork} from './capture-provider-network';
-import {writeScopes} from '../../src/core/features/capture/providers/config';
+import {scopes,writeScopes} from '../../src/core/features/capture/providers/config';
 import {createId} from '../../src/core/shared/ids';
 /** Prepare browser state through native HTTP and the provider network edge, with no live provider access. */
 export async function browserCalendarData(db:D1Database,operatorId:string){
@@ -21,6 +21,20 @@ export async function browserCalendarData(db:D1Database,operatorId:string){
  const providerEvent=network.state.writeEvents.get(event!);if(!providerEvent)throw new Error('Browser calendar event was not created.');
  Object.assign(providerEvent,{summary:currentMeeting.title,description:currentMeeting.message,start:{dateTime:currentMeeting.start},end:{dateTime:currentMeeting.end},attendees:currentMeeting.attendees.map(email=>({email})),etag:'"provider-edit"'});
  await t.json(`/api/v1/capture/sources/${source}/sync`,{body:{}},200);
+ const providers={google:network,microsoft:captureProviderNetwork('microsoft')},scopeSources=[];
+ const savedWindow={start:'2026-01-01T00:00:00.000Z',end:'2027-01-01T00:00:00.000Z'};
+ for(const provider of ['google','microsoft'] as const){
+  const edge=providers[provider];edge.state.scope=scopes[provider].join(' ');edge.state.fixedWindow=true;
+  const native=await todayApp(db,{operatorId,calling:{sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)})!,captureOrigin:'https://orbit.test',captureFetch:edge.fetcher}});
+  const name=`Synthetic ${provider} read window`,start=await native.json<any>(`/api/v1/capture/oauth/${provider}/start`,{body:{name,clientId:'synthetic-orbit-client',clientSecret:'synthetic-orbit-1'}},200),authorization=new URL(start.authorizationUrl);edge.state.challenge=authorization.searchParams.get('code_challenge')!;
+  const callback=await native.call(`/api/v1/capture/oauth/${provider}/callback?`+new URLSearchParams({state:authorization.searchParams.get('state')!,code:'synthetic-orbit-code'}));
+  const id=new URL(callback.headers.get('location')!,'https://orbit.test').searchParams.get('connected');if(callback.status!==303||!id)throw new Error('Read-only browser calendar connection failed.');
+  await native.json(`/api/v1/capture/sources/${id}/scope`,{body:{mail:{folders:['INBOX']},calendars:['calendar'],calendarWindow:savedWindow}},200);
+  scopeSources.push({id,name,provider});
+ }
  await db.prepare("INSERT INTO oa_identity_providers(preset,status,issuer,client_id,jwks_uri,authorization_endpoint,token_endpoint,algorithms,token_auth_method,response_iss,provider_id,linked_at) VALUES('legacy-rs256','linked','https://issuer.example.invalid','synthetic-orbit-client','https://issuer.example.invalid/jwks','https://issuer.example.invalid/authorize','https://issuer.example.invalid/token','[\"RS256\"]','client_secret_post',0,'auth',?)").bind(Date.now()).run();
- return {contact,deal,source,writebackId:created.id,originalMeeting,currentMeeting,timeZone:(await t.json<any>('/api/v1/settings')).workspace.timezone};
+ return {contact,deal,source,scopeSources,savedWindow,unexpectedRequests:[] as string[],redirectSource:(provider:'google'|'microsoft',redirect:boolean)=>{providers[provider].state.redirect=redirect;},providerFetch:async(request:Request)=>{
+  const provider=new URL(request.url).hostname==='graph.microsoft.com'?'microsoft':'google';
+  return providers[provider].fetcher(request.url,{method:request.method,headers:request.headers,redirect:'error',...(request.method==='GET'?{}:{body:await request.text()})});
+ },writebackId:created.id,originalMeeting,currentMeeting,timeZone:(await t.json<any>('/api/v1/settings')).workspace.timezone};
 }
