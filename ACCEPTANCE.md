@@ -629,8 +629,8 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 **Acceptance.**
 1. Under the held company policy, attempt sending from ingestion, an agent and an unreviewed draft; only a signed-in person’s approval of the unchanged saved recipient, subject and body permits dispatch.
 
-**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/source-onboarding.test.ts`; `tests/rer/onboarding.test.mjs`
-**Gap.** Unasserted in the carried evidence: ingestion cannot dispatch; unreviewed agent call has no effect under held policy; signed-in person approves unchanged saved revision. Asserted: exact reviewed bytes dispatched.
+**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/source-onboarding.test.ts` (source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send); `tests/rer/onboarding.test.mjs`
+**Gap.** Unasserted in the carried evidence: an actual agent customer-message call under held company policy through its owning agent-surface tool. Asserted: the current source signature ingests evidence but cannot approve or dispatch a saved draft without a native session; refusal is 401 with unchanged saved content and effect inventories and no mail submission, followed by signed-in exact-revision approval and exact reviewed bytes dispatched.
 
 #### OUT-002 — Message states
 
