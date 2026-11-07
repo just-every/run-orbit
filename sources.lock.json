@@ -10055,7 +10055,7 @@
       "executable": false
     },
     "tests/core/records-merge-review.test.ts": {
-      "sha256": "3f605fd7b20a5e7cb5b6ce38c7bf7736de765e6c1d469fef6fb12866c3cc27e4",
+      "sha256": "4b69c00ea320fda9f4ac7926fd368481a56e454daf44e318b0b1595065dc2a8b",
       "executable": false
     },
     "tests/core/records-search.test.ts": {
@@ -10191,7 +10191,7 @@
       "executable": false
     },
     "tests/e2e/imports.spec.mjs": {
-      "sha256": "3a47f9c5c5e0aa6b92b6837dd3841b39f17e9eaab336a3bd380c4700b4da2ba6",
+      "sha256": "25d246e061f1315d4ad9cf466c8191a2a012e4792b657859149429cb428fb71d",
       "executable": false
     },
     "tests/e2e/operator-session.mjs": {

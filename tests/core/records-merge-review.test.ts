@@ -25,8 +25,43 @@ test('RECORD-004 RECORD-009 matching names across companies remain review-only a
    const create=async(index:number)=>{const result=await f.request(`records/${kind}`,'POST',{name:index===2?`  REVIEWED   ${kind}  `:`Reviewed ${kind}`,custom_fields:{label:`Choice ${index}`},...(kind==='company'?{primary_domain:`${kind}-${index}.example`}:{email:`${kind}-${index}@example.test`,company_id:companyIds[index-1]??null})});assert.equal(result.status,201);return (await result.json() as {id:string}).id;};
    const survivorId=await create(1),retiredId=await create(2),path=`records/${kind}/merge`;
    const unassignedId=kind==='contact'?await create(3):undefined;
-   const read=async(id:string)=>(await (await f.request(`records/${kind}/${id}`)).json()) as any;
-   const review=async()=>{const before=await Promise.all([read(survivorId),read(retiredId)]),result=await f.request(`records/${kind}/duplicates`);assert.equal(result.status,200);const groups=(await result.json() as {groups:Record<string,any>[][]}).groups,group=groups.find(group=>group.some(row=>row.id===survivorId))!;assert.ok(group.some(row=>row.id===retiredId));if(unassignedId){assert.ok(group.some(row=>row.id===unassignedId));for(const [index,id] of [survivorId,retiredId,unassignedId].entries()){const row=group.find(row=>row.id===id)!;assert.equal(row.email,`contact-${index+1}@example.test`);assert.equal(row.companyName,['First workplace','Second workplace',null][index]);}}assert.deepEqual(await Promise.all([read(survivorId),read(retiredId)]),before);return {survivor:group.find(row=>row.id===survivorId)!.mergeReviewToken,retired:group.find(row=>row.id===retiredId)!.mergeReviewToken};};
+   const keylessIds:string[]=[];
+   for(const index of [4,5]){
+    const response=await f.request(`records/${kind}`,'POST',{
+     name:index===4?`  REVIEWED   ${kind}  `:`Reviewed ${kind}`,
+     custom_fields:{label:`Keyless choice ${index}`},
+     ...(kind==='contact'?{company_id:index===4?companyIds[0]:null}:{}),
+    });
+    assert.equal(response.status,201);keylessIds.push((await response.json() as {id:string}).id);
+   }
+   const candidateIds=[survivorId,retiredId,...(unassignedId?[unassignedId]:[]),...keylessIds];
+   const read=async(id:string)=>{const response=await f.request(`records/${kind}/${id}`);assert.equal(response.status,200);return response.json() as Promise<any>;};
+   const snapshot=()=>Promise.all(candidateIds.map(read));
+   assert.equal((await f.request(`records/${kind}/duplicates`,'GET',undefined,{Cookie:''})).status,401);
+   const review=async()=>{
+    const before=await snapshot(),result=await f.request(`records/${kind}/duplicates`);
+    assert.equal(result.status,200);
+    const groups=(await result.json() as {groups:Record<string,any>[][]}).groups;
+    const group=groups.find(group=>group.some(row=>row.id===survivorId))!;
+    assert.ok(group.some(row=>row.id===retiredId));
+    assert.deepEqual(group.map(row=>row.id).sort(),[...candidateIds].sort());
+    for(const id of keylessIds){
+     const row=group.find(row=>row.id===id)!;
+     assert.equal(row[kind==='contact'?'email':'primary_domain'],null);
+     assert.equal(row[kind==='contact'?'email_key':'primary_domain_key'],null);
+     assert.ok(row.mergeReviewToken);
+    }
+    if(unassignedId){
+     assert.ok(group.some(row=>row.id===unassignedId));
+     for(const [index,id] of [survivorId,retiredId,unassignedId].entries()){
+      const row=group.find(row=>row.id===id)!;
+      assert.equal(row.email,`contact-${index+1}@example.test`);
+      assert.equal(row.companyName,['First workplace','Second workplace',null][index]);
+     }
+    }
+    assert.deepEqual(await snapshot(),before,'Candidate review preserves every record and its history, including keyless records');
+    return {survivor:group.find(row=>row.id===survivorId)!.mergeReviewToken,retired:group.find(row=>row.id===retiredId)!.mergeReviewToken};
+   };
    const choices={name:'survivor',custom_fields_json:'survivor',[kind==='company'?'primary_domain':'email']:'retired',...kind==='contact'?{company_id:'survivor'}:{}},body={survivorId,retiredId,choices,confirmed:true};
    assert.equal((await f.request(path,'POST',body)).status,400);
    for(const changedId of [survivorId,retiredId]){
@@ -49,7 +84,11 @@ test('RECORD-004 RECORD-009 matching names across companies remain review-only a
     await compose('Unsent consultation');
     retiredMail=await mail(`workbench/records/contact/${retiredId}/mail`);retiredMail.drafts.sort((a:any,b:any)=>a.id.localeCompare(b.id));
    }
+   const untouchedIds=[...(unassignedId?[unassignedId]:[]),...keylessIds],untouched=await Promise.all(untouchedIds.map(read));
    assert.equal((await f.request(path,'POST',{...body,reviewed:await review()})).status,200);
+   assert.deepEqual(await Promise.all(untouchedIds.map(read)),untouched,'An explicit pair merge leaves every unchosen candidate unchanged');
+   const remaining=await json(`records/${kind}/duplicates`),remainingGroup=remaining.groups.find((group:any[])=>group.some(row=>row.id===survivorId));
+   assert.deepEqual(remainingGroup.map((row:any)=>row.id).sort(),[survivorId,...untouchedIds].sort(),'Only the explicitly retired candidate disappears');
    if(retiredMail){const history=await (await f.request(`workbench/records/contact/${survivorId}/mail`)).json() as any;history.drafts.sort((a:any,b:any)=>a.id.localeCompare(b.id));assert.deepEqual(history,{...retiredMail,drafts:retiredMail.drafts.map((draft:any)=>({...draft,isStale:1}))});}
    const result=await read(survivorId);assert.equal(result.record[kind==='company'?'primary_domain':'email'],kind==='company'?'company-2.example':'contact-2@example.test');
    assert.equal((await f.request(`records/${kind}/${retiredId}`)).status,404);

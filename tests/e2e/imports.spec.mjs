@@ -3,6 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import {mkdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {authenticateOperator} from './operator-session.mjs';
+import {exerciseKeylessCandidates} from './duplicate-candidates.mjs';
 import {crmFixture} from '../support/crm-fixtures.ts';
 const names={contact:'Contacts',company:'Companies',deal:'Deals',note:'Notes',suppression:'Do not contact list'};
 test('RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard',async({page,context},info)=>{
@@ -78,5 +79,6 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
    await page.setViewportSize({width:390,height:900});await page.screenshot({path:join(screenshots,'merge-stopped-survivor-390.png'),fullPage:true});await page.setViewportSize({width:1440,height:900});
   }
  }
+ await exerciseKeylessCandidates(page,screenshots);
  expect(errors).toEqual([]);
 });
