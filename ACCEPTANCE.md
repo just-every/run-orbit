@@ -2580,8 +2580,8 @@ Agent surface · target · **partial**
 4. A stale revision returns a conflict naming the current revision.
 5. A job handle used by another person's token reads as not found.
 
-**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs`
-**Gap.** The door ships and the cited tests assert one retained outcome for a replayed idempotency key, revision_conflict for a stale revision, and paused or blocked replays leaving the record unchanged. Not asserted in the cited seed tests: the same key reused with different arguments and concurrent writes. The full acceptance is proven only by the Base conformance runner in the source verification gate, which this audit did not re-run.
+**Evidence.** `src/base/modules/agent-door/index.ts`; `src/core/features/agent-door/index.ts`; `agent-surface.json`; `tests/support/agent-door-proof.ts`; `tests/core/managed-owner.test.ts`; `tests/agent-door/native-journey.mjs` — sellerDay: accepted native record update followed by changed declared value with the same key, target and expected revision under a new JSON-RPC id returns idempotency_conflict, with no successful structured content and unchanged operation witness, native record and history
+**Gap.** The door ships and the cited tests assert one retained outcome for a replayed idempotency key, revision_conflict for a stale revision, and paused or blocked replays leaving the record unchanged. Remaining seed qualification: dropped-stream recovery, 24-hour outcome retention, stale-refusal current-revision details, cross-person job isolation and general concurrent writes. No clause-specific hold is released; TEAM-005 contract cleanup and qualification prerequisites remain unchanged. The full acceptance depends on the Base conformance runner in the source verification gate and the remaining seed qualification.
 
 #### BASE-AGENT-013 — Manifest, docs and the conformance journey
 
