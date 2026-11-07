@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "376489492fe18e815a849c6be54f67e4342e4c9e61c043680b9cd03a6c4866ae",
+      "sha256": "e05917250124d579635aea884f4df2f8177e5823e255a051241de5dd94f7e6d1",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "bc62b7b7c78b3b9655f100b565012a43fe65337fb2ff793513ee8c67f7276fb9",
+      "sha256": "6da0dcdf4eaf817716cbbedf8cb4415f845e877efb807df5a01ea7daea9fe021",
       "executable": false
     },
     "DEMO.md": {
@@ -2274,6 +2274,10 @@
       "sha256": "b023478f18ba8d91c33cbe1a8a64afd21e50ee1ca30a597f33d35daf8f1acc85",
       "executable": false
     },
+    "newtests/t096/browser-form-abuse.ts": {
+      "sha256": "a0c76033f1632175664176da3424b9fa5f2ac77f9c9d8c4aa59883e82b35d4f8",
+      "executable": false
+    },
     "newtests/t096/browser-form-mapping.ts": {
       "sha256": "eec1b6f7719b70026440450a2b0fb840d674cd7b7e77985738aaf2e42366bd7d",
       "executable": false
@@ -2295,7 +2299,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "7b40cfb9017c3c0788e19083250dd7904e76029282f0508ae9b1680a5fd8d24a",
+      "sha256": "38aebb5b6084e780ed638743e0f9a6ae57a4f5f85443ac239044d0cd3e0e501e",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -2399,7 +2403,11 @@
       "executable": false
     },
     "newtests/t096/forms-abuse-journey.ts": {
-      "sha256": "2e7dc3262d27027baf965cee328459801fba75627cb336b6863efcecd9198d8f",
+      "sha256": "4ed4221aea1b4a0a871721c3ba4785bce53f9abc6263e561c69bc53b7af28028",
+      "executable": false
+    },
+    "newtests/t096/forms-abuse-qualification.ts": {
+      "sha256": "e02143b003d058d6b5cb05cff1cdfb41e3ae0d41f83d91499c4cb73e5b0b6da2",
       "executable": false
     },
     "newtests/t096/forms-mapped-custody.ts": {
@@ -6011,7 +6019,7 @@
       "executable": false
     },
     "src/core/features/forms/native-capture.ts": {
-      "sha256": "e7758124a426c2ba7e83bcd16e8ab827df61623371242963594b405741d67ef7",
+      "sha256": "e070f4d49119302b78b3a6e0ca3dcc11776dca298fa2f539d0247f81bba3bbbf",
       "executable": false
     },
     "src/core/features/forms/opportunity-intake.ts": {
@@ -6039,7 +6047,7 @@
       "executable": false
     },
     "src/core/features/forms/service.ts": {
-      "sha256": "3a7ce3420c88dfdda50b40608b4b71c0135b1f001bf78b1a1321d7ea462dbfe7",
+      "sha256": "7c003d79add9491fe38205fc14c1cfb4a1803b3aea7903942d45088d6950b849",
       "executable": false
     },
     "src/core/features/forms/spam-panel.tsx": {

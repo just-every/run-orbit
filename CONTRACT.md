@@ -2398,8 +2398,8 @@ The prior BRIEF-002 nomination cited native record, handoff, draft approval and 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 30 | 49 | 0 | 79 |
-| Target and push further | 8 | 85 | 32 | 125 |
-| All | 38 | 134 | 32 | 204 |
+| Target and push further | 9 | 84 | 32 | 125 |
+| All | 39 | 133 | 32 | 204 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
