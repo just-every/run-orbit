@@ -579,8 +579,8 @@ Core · published · **partial** · Cites BASE-ROLE-001
 **Acceptance.**
 1. Supersede an action by new evidence or an operator change; the old action remains historical and cannot be drafted, sent or completed.
 
-**Evidence.** `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`; `src/core/features/workbench/action-repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: new evidence supersedes old recommendation; operator change supersedes recommendation; old action stays historical; old action cannot draft; old action cannot send; old action cannot complete. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `src/core/features/assistance/provider.ts`; `src/core/features/drafts/service.ts`; `tests/core/assistance.test.ts`; `src/core/features/workbench/action-repository.ts`; `tests/core/signals-outreach.test.ts` — OPP-008 completion removes an exhausted recommendation; new observed evidence produces another (authenticated completion succeeds, new observed evidence replaces an uncompleted action, its obsolete completion returns 409 with unchanged completion, evaluation, timeline and outbound inventories and the replacement still current)
+**Gap.** Unasserted in the carried evidence: operator change supersedes recommendation; full superseded-history presentation; old action cannot draft; old action cannot send; remaining obsolete-completion and replacement variants after operator change, completed or skipped actions and operator requests. Asserted: new observed evidence replaces an uncompleted recommendation; completing that obsolete identity is refused without changing completion, evaluation, timeline or outbound inventories, and its distinct replacement remains current. No clause-specific hold is released.
 
 #### ACTION-003 — Draft on request
 
