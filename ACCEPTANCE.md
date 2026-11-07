@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 36 | 118 | 24 | 178 |
+| Core | 37 | 117 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 36 | 136 | 32 | 204 |
+| Full target | 37 | 135 | 32 | 204 |
 
 Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -143,15 +143,15 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 
 #### RECORD-007 — Ownership
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** An opportunity has zero or one owner. Any operator can assign, reassign or unassign it; each change appears on its timeline as an attributed owner change and leaves its score unchanged. The default is an opportunity an operator creates is unassigned. An opportunity created from a published form's enquiry belongs to the operator who published the form. Owners of contacts, leads, companies and custom-object records, and notifications to a deal's new owner, are RECORD-021.
 
 **Acceptance.**
 1. Assign, reassign and unassign an opportunity through its native control; reload and inspect its attributed timeline without changing score.
 
-**Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`; `tests/core/records-search.test.ts`
-**Gap.** Unasserted in the carried evidence: assign owner; reassign owner; unassign owner; owner persists after reload; attributed timeline entry; score unchanged. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** Acceptance 1: `tests/delegation-browser/records-layout.test.ts` — emitted Worker record and NOW lists wrap full valid long names; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390, extended by `tests/delegation-browser/opportunity-ownership-journey.mjs` — opportunityOwnershipJourney (native Owner control assigns, reassigns and unassigns; reload retains each owner and named attributed timeline change; visible nonzero score stays unchanged at 1440 and 390). `tests/core/records-search.test.ts` — RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-015 RECORD-002 RECORD-011 RECORD-006 relationships retain history and pipelines move safely and search matches record and timeline text, intersects every opportunity filter and caps the first page, extended by `tests/support/opportunity-ownership.ts` — exerciseOpportunityOwnership (two operators, aged nonzero score, no-op and stale writes, inactive owner, erasure, event replay and revoked session) and `tests/support/opportunity-creation.ts` — exerciseOpportunityCreation (both creation doors default unassigned with one or several operators). `tests/e2e/workbench.spec.mjs` — a real account, attributed event and durable reviewed draft can be created (native creation default). `newtests/t096/forms-native.test.ts` — FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent, extended by `newtests/t096/forms-mapped-journey.ts` — formsMappedJourney (published enquiry deal belongs to publisher independently of contact rotation).
+**Gap.** None.
 
 #### RECORD-008 — Import
 
