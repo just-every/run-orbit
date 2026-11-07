@@ -148,13 +148,31 @@ test('OUT-011 unknown delivery reconciles by durable provider key and never subm
 });
 
 test('OPP-008 completion removes an exhausted recommendation; new observed evidence produces another',async()=>{
- const {completeAction}=await import('../../src/core/features/workbench/action-repository');const f=await fixture(),workbench=new WorkbenchRepository(db);
+ const f=await fixture(),workbench=new WorkbenchRepository(db);let sends=0;
+ const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},outboundMail:{send:async()=>{sends++;return{providerMessageId:'synthetic-orbit-1'};}}}),session=await createDependencies(db).auth.createSession(f.actor);
+ const request=(path:string,body?:unknown)=>app.request(`https://orbit.test/api/v1${path}`,{method:body?'POST':'GET',headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+ const read=async()=>{const response=await request(`/opportunities/${f.opportunityId}`);assert.equal(response.status,200);return(await response.json() as {opportunity:{recommendation:{id:string;evidenceSignalIds:string[]}|null}}).opportunity;};
  await workbench.recordEvent(f.opportunityId,{type:'email.replied',subject:'Reply',occurredAt:f.at,eventId:createId()},f.actor);
  const current=await db.prepare('SELECT id FROM recommendations WHERE opportunity_id=? AND is_current=1').bind(f.opportunityId).first<{id:string}>();assert.ok(current);
- await completeAction(db,current.id,f.actor,'completed','Handled personally');
+ assert.equal((await request(`/workbench/recommendations/${current.id}/complete`,{outcome:'completed',note:'Handled personally'})).status,200);
  const state=await db.prepare('SELECT queue_state FROM opportunities WHERE id=?').bind(f.opportunityId).first<{queue_state:string}>();assert.equal(state?.queue_state,'none');
  await workbench.recordEvent(f.opportunityId,{type:'meeting.booked',subject:'Meeting',occurredAt:new Date().toISOString(),eventId:createId()},f.actor);
  const next=await db.prepare('SELECT id FROM recommendations WHERE opportunity_id=? AND is_current=1').bind(f.opportunityId).first<{id:string}>();assert.ok(next);assert.notEqual(next.id,current.id);
+ // ACTION-002: replace a still-uncompleted action, then try its saved completion URL.
+ const obsolete=(await read()).recommendation;assert.ok(obsolete);assert.equal(obsolete.id,next.id);
+ assert.equal((await db.prepare('SELECT completed_at FROM recommendations WHERE id=?').bind(obsolete.id).first<{completed_at:string|null}>())?.completed_at,null);
+ const event=await request(`/workbench/opportunities/${f.opportunityId}/events`,{type:'email.replied',subject:'New customer evidence',occurredAt:new Date().toISOString(),eventId:createId()});assert.equal(event.status,201);
+ const signal=await event.json() as {id:string},replacement=(await read()).recommendation;assert.ok(replacement);assert.notEqual(replacement.id,obsolete.id);assert.ok(replacement.evidenceSignalIds.includes(signal.id),'The replacement cites the new contributing evidence');
+ const inventory=async()=>{
+  const tables=['action_completions','recommendations','recommendation_evidence','evaluations','evaluation_contributions','timeline_entries','timeline_entry_records','opportunities','notifications','drafts','outbound_messages'];
+  const rows=await db.batch(tables.map(table=>db.prepare(`SELECT * FROM ${table} ORDER BY rowid`)));
+  return Object.fromEntries(tables.map((table,index)=>[table,rows[index]!.results]));
+ };
+ const before=await inventory(),refused=await request(`/workbench/recommendations/${obsolete.id}/complete`,{outcome:'completed',note:'Obsolete action attempt'});
+ assert.equal(refused.status,409,'New evidence removes the old action completion authority');
+ assert.deepEqual(await inventory(),before,'Refusing obsolete completion changes no completion, evaluation, timeline, queue, draft or outbound rows');
+ assert.deepEqual((await read()).recommendation,replacement,'The distinct replacement remains current after refusal');
+ assert.equal(sends,0,'Manual completion and obsolete-action refusal send no customer mail');
 });
 
 test('OUT-010 over-limit approval remains durably unsent with retry time',async()=>{
@@ -307,6 +325,8 @@ test('OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end sched
  const moved=await approval.message(beforeMove);assert.equal(moved.state,'cancelled');assert.equal(moved.failure,'Deal stage changed, so the scheduled follow-up was cancelled');assert.equal((await db.prepare('SELECT updated_at FROM outbound_messages WHERE id=?').bind(beforeMove).first<{updated_at:string}>())!.updated_at,(await db.prepare("SELECT t.occurred_at FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id WHERE t.kind='stage.changed' AND r.record_type='opportunity' AND r.record_id=?").bind(f.opportunityId).first<{occurred_at:string}>())!.occurred_at,'The send ends in the stage move commit');
  const beforeClose=await schedule('Follow-up before a close',due[2]);
  await api(`records/opportunity/${f.opportunityId}/lifecycle`,{state:'won',reason:'Signed'});
+ const won=await api<{record:{close_reason:string}}>(`records/opportunity/${f.opportunityId}`);
+ assert.equal(won.record.close_reason,'Signed','The won-close reason survives a fresh authenticated record read');
  const closed=await approval.message(beforeClose);assert.equal(closed.state,'cancelled');assert.equal(closed.failure,'Deal closed won, so the scheduled follow-up was cancelled');
  await api(`records/opportunity/${f.opportunityId}/lifecycle`,{state:'open',reason:''});assert.equal((await post(genuine)).status,200,'Replaying the reply is accepted once');
  for(const at of due)await service.dispatchDue(new Date(Date.parse(at)+60000));
