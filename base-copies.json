@@ -1121,11 +1121,16 @@
         "modules/agent-door/wire.ts"
       ],
       "adapted": {
-        "src/base/modules/agent-door/operator-people.ts": "8b925fa5ffaa577df9f2e4ebab6ede8af5155baa"
+        "src/base/modules/agent-door/operator-people.ts": "8b925fa5ffaa577df9f2e4ebab6ede8af5155baa",
+        "src/base/modules/agent-door/transport.ts": "8b925fa5ffaa577df9f2e4ebab6ede8af5155baa"
       },
       "acknowledged": {
         "src/base/modules/agent-door/operator-people.ts": {
           "sha256": "3d98656e5a7562fdc0105c85fb6266f44cc8a8854e708854453eb143143ebc0c",
+          "mode": "100644"
+        },
+        "src/base/modules/agent-door/transport.ts": {
+          "sha256": "783af95f7bf5d53efc89eaac258e3f63fea7f79f4aee16202ead048a6f087e49",
           "mode": "100644"
         }
       }

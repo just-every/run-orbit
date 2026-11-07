@@ -31,11 +31,11 @@ export async function mcp(rt: Runtime, request: Request): Promise<Response> {
   if (rpc instanceof Response) return rpc
   if (revoked(state, principal) && rpc.method !== 'tools/call') return rpcError(rpc.id, -32001, 'Unauthorized', 401, undefined, challenge(rt))
   if (!methods.includes(rpc.method) && !rpc.method.startsWith('notifications/')) return rpcError(rpc.id, -32601, 'Method not found', 404)
-  if (rpc.method === 'server/discover') return rpcResult(rpc, discovery(rt))
-  if (rpc.method === 'initialize') return rpcResult(rpc, { protocolVersion: protocolVersion(request, rpc), capabilities: doorCapabilities(rt), serverInfo: { name: rt.options.name, version: rt.options.version ?? '1' }, instructions: discovery(rt).instructions })
   const capacity = revoked(state, principal) ? 'revoked' : await admit(rt, principal)
   if (capacity === 'revoked' && rpc.method !== 'tools/call') return rpcError(rpc.id, -32001, 'Unauthorized', 401, undefined, challenge(rt))
   if (typeof capacity === 'number') return rpcError(rpc.id, -32000, 'Capacity exceeded', 429, { code: 'rate_limited' }, { 'retry-after': String(capacity) })
+  if (rpc.method === 'server/discover') return rpcResult(rpc, discovery(rt))
+  if (rpc.method === 'initialize') return rpcResult(rpc, { protocolVersion: protocolVersion(request, rpc), capabilities: doorCapabilities(rt), serverInfo: { name: rt.options.name, version: rt.options.version ?? '1' }, instructions: discovery(rt).instructions })
   if (rpc.id === undefined) return new Response(null, { status: 202 })
   const params = rpc.params ?? {}, meta = metaOf(rpc)
   if (rpc.method === 'tools/call') {

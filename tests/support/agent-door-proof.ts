@@ -5,6 +5,7 @@ import {orbitAgentDoor, orbitBusinessSettings} from '../../src/core/features/age
 import {SettingsRepository} from '../../src/core/features/settings/repository';
 import {localAgentCredentialProof} from './agent-door-local-proof';
 import {agentDoorBodyLimitProof} from './agent-door-body-limit';
+import {agentDoorRevocationProof} from './agent-door-revocation-proof';
 import {checkAgentArtifacts} from '../../src/base/modules/agent-door/index.ts';
 import {contactAgentArtifacts} from '../../src/core/features/agent-door/erasure';
 import {foldInstalledCatalog} from '../../src/core/features/records/archive-fold-catalog';
@@ -214,6 +215,10 @@ export async function agentDoorProof() {
     assert.ok(feed.decisions.length>0,'Business MCP audits enter the relay');
     assert.equal(new Set(feed.decisions.map(row=>row.id)).size,feed.decisions.length);
     assert.equal((await door.handle(post('/api/rer/agent-decisions',{pull:'foreign.invalid.signature'})))!.status,401,'BASE-AGENT-009.relay.foreign');
+    await agentDoorRevocationProof(bindings,cookie,companyId,async agent=>{
+      const issued=Math.floor(Date.now()/1000);
+      return sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:'business-owner',email:bindings.OWNER_EMAIL,act:{sub:agent,name:'Synthetic Orbit agent'},client_id:'business-client',business:'door-company',scope:principal.scopes.join(' '),consent:'synthetic-orbit-revocation-consent',jti:crypto.randomUUID(),iat:issued,exp:issued+300});
+    },mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
     await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
     await adopt(sensitiveBlocked);
     const witness=await call('orbit.operations.read',{});
