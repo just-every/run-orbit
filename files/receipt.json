@@ -1,0 +1,290 @@
+{
+  "tag": "sd-orbit-c-f127",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f127",
+  "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+  "base": "43497d9593cdf019042332a4bf8bae27f4004ede",
+  "checks": [
+    {
+      "name": "regression reproduction before fix",
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 1,
+      "error": "autonomous: standard measure counts returned native identities; actual measure 1, expected measure 0",
+      "log": "reproduction.log"
+    },
+    {
+      "name": "touched journey after fix",
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "log": "touched-tests.log"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "name": "first-party",
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "name": "views write",
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log"
+    },
+    {
+      "name": "views check",
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check.log"
+    },
+    {
+      "name": "source lock regeneration",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock-write.log"
+    },
+    {
+      "name": "source lock validation",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.log"
+    },
+    {
+      "name": "touched journey on committed candidate",
+      "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "log": "exact-sha-tests.log"
+    },
+    {
+      "name": "source lock on committed candidate",
+      "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "exact-sha-lock-check.log"
+    }
+  ],
+  "probes": [
+    {
+      "policy": "autonomous",
+      "door": "authenticated POST /mcp",
+      "tool": "orbit.records.list",
+      "returned_items": 0,
+      "decision_measure": 0,
+      "retained_audit_measure": 0,
+      "retained_evidence_measure": 0,
+      "native_effects": "unchanged"
+    },
+    {
+      "policy": "autonomous",
+      "door": "authenticated POST /mcp",
+      "tool": "orbit.records.list",
+      "returned_items": 3,
+      "decision_measure": 3,
+      "retained_audit_measure": 3,
+      "retained_evidence_measure": 3,
+      "native_effects": "unchanged"
+    },
+    {
+      "policy": "autonomous",
+      "door": "authenticated POST /mcp",
+      "tool": "orbit.records.list",
+      "returned_items": 2,
+      "decision_measure": 2,
+      "retained_audit_measure": 2,
+      "retained_evidence_measure": 2,
+      "native_effects": "unchanged"
+    },
+    {
+      "policy": "autonomous",
+      "door": "authenticated POST /mcp",
+      "tool": "orbit.records.list",
+      "returned_items": 1,
+      "decision_measure": 1,
+      "retained_audit_measure": 1,
+      "retained_evidence_measure": 1,
+      "native_effects": "unchanged"
+    },
+    {
+      "policy": "held",
+      "door": "authenticated POST /mcp",
+      "tool": "orbit.records.list",
+      "returned_items": 0,
+      "decision_measure": 0,
+      "retained_audit_measure": 0,
+      "retained_evidence_measure": 0,
+      "native_effects": "unchanged"
+    },
+    {
+      "policy": "held",
+      "door": "authenticated POST /mcp",
+      "tool": "orbit.records.list",
+      "returned_items": 3,
+      "decision_measure": 3,
+      "retained_audit_measure": 3,
+      "retained_evidence_measure": 3,
+      "native_effects": "unchanged"
+    },
+    {
+      "policy": "held",
+      "door": "authenticated POST /mcp",
+      "tool": "orbit.records.list",
+      "returned_items": 2,
+      "decision_measure": 2,
+      "retained_audit_measure": 2,
+      "retained_evidence_measure": 2,
+      "native_effects": "unchanged"
+    },
+    {
+      "policy": "held",
+      "door": "authenticated POST /mcp",
+      "tool": "orbit.records.list",
+      "returned_items": 1,
+      "decision_measure": 1,
+      "retained_audit_measure": 1,
+      "retained_evidence_measure": 1,
+      "native_effects": "unchanged"
+    }
+  ],
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "test_budget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "contract_judgments_changed": false,
+  "acceptance_changed": false,
+  "policy_default_adopted": false,
+  "held_remainder_released": false,
+  "ui_changed": false,
+  "migrations_changed": false,
+  "publication_scan": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "status": "deferred to maintained Mac lander",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "product_push": {
+    "exit": 0,
+    "attempt": 1,
+    "remote_head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "ref": "refs/heads/cloud/sd-orbit-c-f127",
+    "ls_remote_verified": true
+  },
+  "pull_request": null,
+  "ci_discovery": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42426022916",
+      "id": 42426022916,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "main_ci": [
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "43497d9593cdf019042332a4bf8bae27f4004ede",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42422161763",
+      "id": 42422161763,
+      "name": "Verify",
+      "status": "completed"
+    },
+    {
+      "conclusion": "skipped",
+      "event": "push",
+      "head_sha": "43497d9593cdf019042332a4bf8bae27f4004ede",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42418271283",
+      "id": 42418271283,
+      "name": "Run demo",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "43497d9593cdf019042332a4bf8bae27f4004ede",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42418271336",
+      "id": 42418271336,
+      "name": "Run site",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "dynamic",
+      "head_sha": "43497d9593cdf019042332a4bf8bae27f4004ede",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42418271061",
+      "id": 42418271061,
+      "name": "Push on main",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "43497d9593cdf019042332a4bf8bae27f4004ede",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42418271312",
+      "id": 42418271312,
+      "name": "Verify",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "43497d9593cdf019042332a4bf8bae27f4004ede",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42416479058",
+      "id": 42416479058,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ],
+  "github_api_calls": 3,
+  "ci_discovery_observed_at_unix": 1794094621,
+  "identity_review": {
+    "candidate_commits": [
+      "a32703b5f60ec948ec3d669d62edc947bdd4e07f"
+    ],
+    "author_name": "Run Edit Run fleet",
+    "committer_name": "Run Edit Run fleet",
+    "trailers": [],
+    "all_side_parents_reviewed": true
+  },
+  "mechanical": {
+    "lock_exit": 0,
+    "views_write_exit": 0,
+    "views_check_exit": 0,
+    "generated_views_committed": false,
+    "migration_ledger": "not applicable"
+  },
+  "remaining_gap": "Only ordinary orbit.records.list item counts in acceptance 1 are qualified. Reversible deal-move, task and Undo tools, the complete draft and owner-neutral update matrix, other read-family and report and forecast measures, broader grant, role and protected subsets, and acceptance 2's complete text and argument class-invariance matrix remain omitted or retain existing assertions.",
+  "full_history": {
+    "is_shallow": false,
+    "commit_count": 632
+  },
+  "ci_final_observation": {
+    "conclusion": null,
+    "head_sha": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42426022916",
+    "status": "in_progress"
+  },
+  "ci_final_observed_at_unix": 1794094923,
+  "handoff": "PUSHED"
+}
