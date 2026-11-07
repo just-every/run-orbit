@@ -457,8 +457,8 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Close a deal as won and lost with reasons, ingest later evidence, and explicitly reopen; inspect history and queue membership at every step.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: won close retains reason; lost close retains reason; later evidence never silently reopens; explicit reopen restores correct queue; history records every lifecycle transition. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts` — "OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not" (fresh authenticated won-close reason readback)
+**Gap.** Unasserted in the carried evidence: lost close retains reason; closing operator and time; later evidence never silently reopens; explicit reopen restores correct queue; stage and owner remain unchanged on reopening; history records every lifecycle transition. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OPP-002 — Independent state
 
