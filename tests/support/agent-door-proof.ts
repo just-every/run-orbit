@@ -5,6 +5,7 @@ import {orbitAgentDoor, orbitBusinessSettings} from '../../src/core/features/age
 import {SettingsRepository} from '../../src/core/features/settings/repository';
 import {localAgentCredentialProof} from './agent-door-local-proof';
 import {agentDoorBodyLimitProof} from './agent-door-body-limit';
+import {agentAuditRetentionProof} from './agent-door-audit-proof';
 import {checkAgentArtifacts} from '../../src/base/modules/agent-door/index.ts';
 import {contactAgentArtifacts} from '../../src/core/features/agent-door/erasure';
 import {foldInstalledCatalog} from '../../src/core/features/records/archive-fold-catalog';
@@ -215,6 +216,8 @@ export async function agentDoorProof() {
     assert.equal(new Set(feed.decisions.map(row=>row.id)).size,feed.decisions.length);
     assert.equal((await door.handle(post('/api/rer/agent-decisions',{pull:'foreign.invalid.signature'})))!.status,401,'BASE-AGENT-009.relay.foreign');
     await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
+    await agentAuditRetentionProof({bindings,cookie,companyId,issuer,sign,sponsor:{id:owner.operatorId,name:owner.displayName},
+      setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy())});
     await adopt(sensitiveBlocked);
     const witness=await call('orbit.operations.read',{});
     assert.ok(witness.record_mail_drafts.rows>0);
