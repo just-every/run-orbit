@@ -7,11 +7,12 @@ import {audit,mutationJob,RecordError,requireRecord,tables,type RecordKind} from
 import {closedReason} from '../outreach/stop-reason';
 import {recordInput,assertWorkflowActor,nativeFields} from './record-validation';
 import {needsRecordApproval} from './record-plans';
+import {archiveCreatedDeal} from './created-undo';
 import {approvalFields,customKey,fieldValue,type WorkflowContext,type WorkflowRecordPlan,type WorkflowRecordReceipt} from './record-types';
 
 const same=(a:unknown,b:unknown)=>JSON.stringify(a??null)===JSON.stringify(b??null);
 function receipt(plan:WorkflowRecordPlan,replayed=false):WorkflowRecordReceipt {
- return {id:plan.id,recordId:plan.recordId,recordType:plan.recordType,field:plan.field,before:plan.before,after:plan.after,applied:true,replayed,undoable:plan.field!=='create_record'&&plan.field!=='contactability'};
+ return {id:plan.id,recordId:plan.recordId,recordType:plan.recordType,field:plan.field,before:plan.before,after:plan.after,applied:true,replayed,undoable:plan.field!=='contactability'};
 }
 function workflowTimeline(context:WorkflowContext,plan:WorkflowRecordPlan,at:string,undoOf?:string){
  const contactIds=workflowContactIds(plan);
@@ -64,7 +65,7 @@ async function write(context:WorkflowContext,plan:WorkflowRecordPlan,undoOf?:str
    }else{
     const input=recordInput(plan.recordType,row),key=customKey(plan.field);
     if(key!==null)(input.custom_fields as Record<string,unknown>)[key]=plan.after;else input[plan.field]=plan.after;
-    const options={ordinaryEdit:true,workflowContactIds:workflowContactIds(plan)};
+    const options={ordinaryEdit:true,workflowContactIds:workflowContactIds(plan),movementNote:{text:`${undoOf?'undo of ':''}workflow ${context.workflowName}, version ${context.version}`,workflow:{id:context.workflowId,name:context.workflowName,version:context.version,eventId:context.eventId,runId:context.runId,...(undoOf?{undoOf}:{})}}};
     const prepared=await repo.prepareSave(plan.recordType,input,context.actorId,plan.recordId,options);
     statements.push(...prepared.statements);
    }
@@ -92,7 +93,7 @@ export async function undoRecordWrite(context:WorkflowContext,writeId:string){
  if(!stored)throw new RecordError(404,'Workflow write not found.');
  if(stored.undone_at)return {undone:true,replayed:true,writeId};
  const plan=JSON.parse(stored.plan_json) as WorkflowRecordPlan;
- if(plan.field==='create_record')return {undone:false,skipped:true,writeId,reason:'Native records do not support archiving a created deal.'};
+ if(plan.field==='create_record')return archiveCreatedDeal(context,writeId,plan);
  if(plan.field==='contactability')return {undone:false,skipped:true,writeId,reason:'Do not contact requires the separate reviewed permission action.'};
  const inverse={...plan,id:`${writeId}:undo`,before:plan.after,after:plan.before,needsApproval:false};
  try{return {undone:true,writeId,receipt:await write({...context,approvedWriteId:inverse.id},inverse,writeId)};}
