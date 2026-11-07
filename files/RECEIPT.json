@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f119",
+  "repository": "just-every/run-orbit",
+  "createdAt": "2026-11-07T22:21:29.192166+00:00",
+  "branch": "cloud/sd-orbit-c-f119",
+  "head": "d4075b5355d8bd267f8fefa6f4a56fab5df96327",
+  "originMainAtFinalFetch": "43497d9593cdf019042332a4bf8bae27f4004ede",
+  "productPush": {
+    "status": "pushed",
+    "attempt": 1,
+    "remoteRefVerified": true
+  },
+  "ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "d4075b5355d8bd267f8fefa6f4a56fab5df96327",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42420149719",
+      "id": 42420149719,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "githubApiCalls": 2,
+  "ciPolling": "One exact-SHA discovery; no repeated polls, dispatch or rerun.",
+  "pr": null,
+  "localCommands": [
+    {
+      "command": "pnpm exec tsx --test newtests/t096/report-time-boundaries.test.ts",
+      "exit": 1,
+      "phase": "initial assertion development",
+      "log": "touched-test-initial.log",
+      "failure": "New whole-CSV comparison included legitimate changing freshness timestamps."
+    },
+    {
+      "command": "pnpm exec tsx --test newtests/t096/report-time-boundaries.test.ts",
+      "exit": 0,
+      "phase": "final source bytes",
+      "tests": 1,
+      "passed": 1,
+      "durationMs": 138282.074887,
+      "log": "touched-test.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.log"
+    },
+    {
+      "command": "checkTestBudget from scripts/verification-inventory.mjs",
+      "exit": 0,
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    }
+  ],
+  "runtime": {
+    "node": "24.19.0",
+    "pnpm": "10.12.4",
+    "rer": "0.2.96"
+  },
+  "relevantTestBytes": {
+    "path": "newtests/t096/dashboard-backend-proof.ts",
+    "sha256": "2f24b258f237b4da080509a9a1e87aa787dfb6da3aa39215bc5eb80064ab5658",
+    "sameAsFinalLocalRun": true
+  },
+  "verifyRegistration": {
+    "file": "newtests/t096/report-time-boundaries.test.ts",
+    "name": "report periods compare instants across ISO precision and timezone equality boundaries",
+    "shard": "fold-domain-1"
+  },
+  "counts": {
+    "before": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32,
+      "total": 204
+    },
+    "after": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "claim": {
+    "id": "REPORT-004",
+    "status": "PARTIAL",
+    "points": [
+      4
+    ],
+    "selectedScope": "Declared PDF repertoire refusal only; no email or archive requalification."
+  },
+  "baselineCiObserved": {
+    "head": "43497d9593cdf019042332a4bf8bae27f4004ede",
+    "verify": {
+      "id": 42416479058,
+      "event": "push",
+      "conclusion": "success"
+    },
+    "runSite": {
+      "id": 42418271336,
+      "event": "push",
+      "conclusion": "success"
+    }
+  },
+  "publicationScan": {
+    "commit": "d4075b5355d8bd267f8fefa6f4a56fab5df96327",
+    "status": "NOT RUN IN CLOUD",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "owner": "fleet lander"
+  },
+  "landing": {
+    "status": "pending fleet",
+    "mainEqualsCandidate": false,
+    "candidateRunSite": null
+  },
+  "screens": "Not applicable; no UI change.",
+  "policyDefaults": [],
+  "productDefectDemonstrated": false,
+  "blockers": [],
+  "heldRemainder": [
+    "Attachment transport is unavailable in managed mail relay.",
+    "No system notification sender exists for active operators or collaborators.",
+    "Recipient-specific email and its revocation, states and retry remain unproved.",
+    "TEAM-005 and existing holds remain unchanged."
+  ]
+}

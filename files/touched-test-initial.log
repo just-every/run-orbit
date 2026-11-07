@@ -1,0 +1,51 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ report periods compare instants across ISO precision and timezone equality boundaries (79924.084016ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 83363.857651
+
+✖ failing tests:
+
+test at newtests/t096/report-time-boundaries.test.ts:1:668
+✖ report periods compare instants across ISO precision and timezone equality boundaries (79924.084016ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  ... Skipped lines
+  
+    '"Tile","Open pipeline value and count"\r\n' +
+      '"Access","Computed from every record in this workspace; you are a full operator."\r\n' +
+      '"Figure or basis","Version 1"\r\n' +
+  +   '"Figure or basis","Computed Nov 7, 2026, 5:16 PM EST (2026-11-07T22:16:56.762Z) from current records, checked against current data and access in the same transaction. Not saved."\r\n' +
+  -   '"Figure or basis","Computed Nov 7, 2026, 5:16 PM EST (2026-11-07T22:16:51.422Z) from current records, checked against current data and access in the same transaction. Not saved."\r\n' +
+      '"Figure or basis","Open deals: 4"\r\n' +
+      '"Figure or basis","Open value: $1,000.00"\r\n' +
+      '"Figure or basis","Pipeline / Sales pipeline / Deals: 4"\r\n' +
+      '"Figure or basis","Pipeline / Sales pipeline / Value: $1,000.00"\r\n' +
+      '"Figure or basis","Stage / Sales pipeline · New / Deals: 4"\r\n' +
+  ...
+      '"Figure or basis","Access: Computed from every record in this workspace; you are a full operator."\r\n' +
+  +   '"Figure or basis","Freshness: Computed Nov 7, 2026, 5:16 PM EST (2026-11-07T22:16:56.762Z) from current records, checked against current data and access in the same transaction. Not saved."\r\n' +
+  -   '"Figure or basis","Freshness: Computed Nov 7, 2026, 5:16 PM EST (2026-11-07T22:16:51.422Z) from current records, checked against current data and access in the same transaction. Not saved."\r\n' +
+      '"Figure or basis","Missing data: None recorded."\r\n' +
+      '"Figure or basis","Deals open when the report is computed, by pipeline, by stage and by owner. Value is the sum of each deal amount in the workspace currency. The period does not filter open pipeline."\r\n' +
+      '"Figure or basis","Source fields: opportunities.lifecycle, opportunities.stage_id, opportunities.owner_id, opportunities.value_cents, pipeline_stage_rules.pipeline_id"\r\n'
+  
+      at dashboardBackendProof (/workspace/run-orbit/newtests/t096/dashboard-backend-proof.ts:72:190)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (/workspace/run-orbit/newtests/t096/report-time-boundaries.test.ts:32:485)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '"Tile","Open pipeline value and count"\r\n"Access","Computed from every record in this workspace; you are a full operator."\r\n"Figure or basis","Version 1"\r\n"Figure or basis","Computed Nov 7, 2026, 5:16 PM EST (2026-11-07T22:16:56.762Z) from current records, checked against current data and access in the same transaction. Not saved."\r\n"Figure or basis","Open deals: 4"\r\n"Figure or basis","Open value: $1,000.00"\r\n"Figure or basis","Pipeline / Sales pipeline / Deals: 4"\r\n"Figure or basis","Pipeline / Sales pipeline / Value: $1,000.00"\r\n"Figure or basis","Stage / Sales pipeline · New / Deals: 4"\r\n"Figure or basis","Stage / Sales pipeline · New / Value: $1,000.00"\r\n"Figure or basis","Owner / Owner / Deals: 4"\r\n"Figure or basis","Owner / Owner / Value: $1,000.00"\r\n"Figure or basis","Date range not applied: open pipeline is measured when computed, not over a period."\r\n"Figure or basis","Basis"\r\n"Figure or basis","Period: 2026-11 to 2026-11 (2026-11-01T04:00:00.000Z to 2026-11-02T05:00:00.000Z, excluded)"\r\n"Figure or basis","Timezone: America/New_York"\r\n"Figure or basis","Currency: USD"\r\n"Figure or basis","Filters: All pipelines; All owners.  Date range not applied: open pipeline is measured when computed, not over a period."\r\n"Figure or basis","Access: Computed from every record in this workspace; you are a full operator."\r\n"Figure or basis","Freshness: Computed Nov 7, 2026, 5:16 PM EST (2026-11-07T22:16:56.762Z) from current records, checked against current data and access in the same transaction. Not saved."\r\n"Figure or basis","Missing data: None recorded."\r\n"Figure or basis","Deals open when the report is computed, by pipeline, by stage and by owner. Value is the sum of each deal amount in the workspace currency. The period does not filter open pipeline."\r\n"Figure or basis","Source fields: opportunities.lifecycle, opportunities.stage_id, opportunities.owner_id, opportunities.value_cents, pipeline_stage_rules.pipeline_id"\r\n',
+    expected: '"Tile","Open pipeline value and count"\r\n"Access","Computed from every record in this workspace; you are a full operator."\r\n"Figure or basis","Version 1"\r\n"Figure or basis","Computed Nov 7, 2026, 5:16 PM EST (2026-11-07T22:16:51.422Z) from current records, checked against current data and access in the same transaction. Not saved."\r\n"Figure or basis","Open deals: 4"\r\n"Figure or basis","Open value: $1,000.00"\r\n"Figure or basis","Pipeline / Sales pipeline / Deals: 4"\r\n"Figure or basis","Pipeline / Sales pipeline / Value: $1,000.00"\r\n"Figure or basis","Stage / Sales pipeline · New / Deals: 4"\r\n"Figure or basis","Stage / Sales pipeline · New / Value: $1,000.00"\r\n"Figure or basis","Owner / Owner / Deals: 4"\r\n"Figure or basis","Owner / Owner / Value: $1,000.00"\r\n"Figure or basis","Date range not applied: open pipeline is measured when computed, not over a period."\r\n"Figure or basis","Basis"\r\n"Figure or basis","Period: 2026-11 to 2026-11 (2026-11-01T04:00:00.000Z to 2026-11-02T05:00:00.000Z, excluded)"\r\n"Figure or basis","Timezone: America/New_York"\r\n"Figure or basis","Currency: USD"\r\n"Figure or basis","Filters: All pipelines; All owners.  Date range not applied: open pipeline is measured when computed, not over a period."\r\n"Figure or basis","Access: Computed from every record in this workspace; you are a full operator."\r\n"Figure or basis","Freshness: Computed Nov 7, 2026, 5:16 PM EST (2026-11-07T22:16:51.422Z) from current records, checked against current data and access in the same transaction. Not saved."\r\n"Figure or basis","Missing data: None recorded."\r\n"Figure or basis","Deals open when the report is computed, by pipeline, by stage and by owner. Value is the sum of each deal amount in the workspace currency. The period does not filter open pipeline."\r\n"Figure or basis","Source fields: opportunities.lifecycle, opportunities.stage_id, opportunities.owner_id, opportunities.value_cents, pipeline_stage_rules.pipeline_id"\r\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

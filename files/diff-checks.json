@@ -1,0 +1,11 @@
+{
+  "contract_unchanged": true,
+  "generated_views_unchanged": true,
+  "new_email_strings": [],
+  "provider_key_shapes": false,
+  "test_registration_delta": 0,
+  "changed_files": [
+    "newtests/t096/dashboard-backend-proof.ts",
+    "sources.lock.json"
+  ]
+}

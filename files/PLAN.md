@@ -1,0 +1,12 @@
+# sd-orbit-c-f119 plan
+
+Scope: REPORT-004 acceptance 4, the declared PDF text repertoire refusal only. The clause remains PARTIAL. Preserve the email and TEAM-005 holds, all current Status cells, acceptance text and normal export and access assertions.
+
+1. Inspect the complete clause, its current Gap, inline campaign and DONE riders, the existing period-boundary registration, PDF writer, route, CSV export and access error handling.
+2. Extend the existing authenticated HTTP journey. First require a normal PDF. Save a dashboard name containing Japanese characters, freshly read its definition and incremented version, then request its real PDF route. Require HTTP 400, the documented validation response, JSON rather than a PDF attachment, and no PDF bytes. Freshly read unchanged saved state and require tile CSV to remain available with the same populated totals and timezone. Restore the original name through HTTP for the rest of the journey.
+3. Run only the touched registration, typecheck, first-party check and the test inventory. Do not change product code unless the journey demonstrates a defect. No screen changes or new registration are planned.
+4. Generate and check the contract views, restore both from main, regenerate the source lock last and check it. Fetch main and rebase the unpublished candidate, preserving newer judgments; after any published save merge instead.
+5. Inspect every candidate commit identity and trailer, commit and push only cloud/sd-orbit-c-f119 using the fleet push guard. Discover exact-SHA Verify through REST within the ten-call budget. Record its real state; do not claim a different SHA is green.
+6. Save the complete non-secret report and actual receipts in this packet and publish them separately to evidence/sd-orbit-c-f119. Leave scanning, final status judgment, landing and main Run site to the fleet. Return the exact branch, SHA, partial claim, remaining gap and lane POST line.
+
+Acceptance mapping before the change: normal PDF, tile CSV, access revocation, Slack delivery safety and archive custody already have retained journeys. The selected missing assertion is the declared refusal for unsupported PDF text with unchanged saved state and working CSV. The weekly recipient-specific email journey is unavailable because the relay has no attachment transport and Orbit has no system notification sender. No existing hold is released and no further campaign row is selected.
