@@ -1,0 +1,154 @@
+{
+  "tag": "sd-orbit-c-f125",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f125",
+  "head": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
+  "originMain": "43497d9593cdf019042332a4bf8bae27f4004ede",
+  "newCommitsThisContinuation": 0,
+  "retainedProofCommit": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
+  "checks": [
+    {
+      "command": "cloud_run npx -y @runeditrun/rer install",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "duration_ms": 123676.573615,
+      "log": "managed-owner.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "source-check.log"
+    },
+    {
+      "command": "migration-ledger check",
+      "status": "not applicable; no migration changes"
+    }
+  ],
+  "mechanical": {
+    "contractDiffFromMain": "empty",
+    "stagedContractDiff": "empty",
+    "generatedViewDiff": "empty",
+    "worktree": "clean",
+    "fullHistory": true,
+    "sourceLock": "fresh"
+  },
+  "counts": {
+    "before": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32,
+      "tests": 198,
+      "qualifications": 2
+    },
+    "after": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32,
+      "tests": 198,
+      "qualifications": 2
+    }
+  },
+  "proofSourceSha256": {
+    "tests/support/agent-door-audit-proof.ts": "f501dac3017aa26817a7e0c52f4d0fd1dec952195ef3f11dd084c804c3db9f0f",
+    "tests/support/agent-door-proof.ts": "ebdae8045cd9596acaa5ce502331e60250216919c44dfd466683896626d60fc2"
+  },
+  "ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f125",
+      "head_sha": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42422721321",
+      "id": 42422721321,
+      "name": "Verify",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f120",
+      "head_sha": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42419849424",
+      "id": 42419849424,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ],
+  "publicationScan": {
+    "commit": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "status": "not run in cloud; guarded Mac lander owns this gate"
+  },
+  "landing": {
+    "status": "branch only",
+    "mainEqualsCandidate": false,
+    "runSite": "not run for unlanded candidate"
+  },
+  "probes": [
+    {
+      "point": 6,
+      "policy": "autonomous",
+      "door": "POST /mcp orbit.records.update; POST /agents/api/agents/<act.sub>/revoke; POST /auth/magic-link; POST /auth/confirm; GET /agents/api/audit?agent=<act.sub>",
+      "writeStatus": 200,
+      "originalRows": 2,
+      "revokedWriteStatus": 401,
+      "unchangedNativeState": true,
+      "freshNativeOwnerSession": true,
+      "retainedOriginalRows": 2,
+      "totalRowsAfterRefusal": 3,
+      "retainedAgentAndSponsorNames": true,
+      "retainedAttribution": true
+    },
+    {
+      "point": 6,
+      "policy": "held",
+      "door": "POST /mcp orbit.records.update; POST /agents/api/agents/<act.sub>/revoke; POST /auth/magic-link; POST /auth/confirm; GET /agents/api/audit?agent=<act.sub>",
+      "writeStatus": 200,
+      "originalRows": 2,
+      "revokedWriteStatus": 401,
+      "unchangedNativeState": true,
+      "freshNativeOwnerSession": true,
+      "retainedOriginalRows": 2,
+      "totalRowsAfterRefusal": 3,
+      "retainedAgentAndSponsorNames": true,
+      "retainedAttribution": true
+    }
+  ]
+}
