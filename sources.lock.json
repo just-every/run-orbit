@@ -10111,7 +10111,7 @@
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
-      "sha256": "717f49326a61ace56fca041db27f96b440da9f4a3fd88a5d1e7ede5d2ad83c9e",
+      "sha256": "f3ff451f3a809735025d84dcc1cf87b51c67576977dee16eb806f6b0d68c6a49",
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
