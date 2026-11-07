@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "042ebd013cd1bedca5e541af625e13a3e19c5320e0b38632c9ab30cefc05e3ba",
+      "sha256": "656d16e0de8885d1a6e21a6efe50bdbd274db0acc63f4bf34048b6806ed20e44",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "8227d36c8a799518e3761cfb3ad661f0da9a9aed1c4ee2869565e3ece13637f8",
+      "sha256": "bc1fbfccd03a8bed8cddc9a36b94dcc4b560e90aefc2e18fe802ed58af33ef62",
       "executable": false
     },
     "DEMO.md": {
@@ -10083,7 +10083,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "d68427f9cf185694124e12641a1a9f444208b42b7871be854dd311e0525a4af4",
+      "sha256": "2d9fc202d8cb9e712385321d432f04bc161e09d0bf0950aa473e609815ba5647",
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {
@@ -10711,7 +10711,7 @@
       "executable": false
     },
     "tests/rer/operator-actions-journey.mjs": {
-      "sha256": "dbcae4f26b26861bff40038b4bfa57e5c1763577816ea18c5287e545689ef01c",
+      "sha256": "0941c8f1cdebb659e2194631eab6b09e345b3237b9b345aac1e86d2b6557d032",
       "executable": false
     },
     "tests/rer/operator-actions.test.mjs": {
@@ -10723,7 +10723,7 @@
       "executable": false
     },
     "tests/rer/operator-fixture.mjs": {
-      "sha256": "12deb6bf5f2de055fe9a9aaaaf48ef5486dfe03666a4034c5a20a5d1f413c7e2",
+      "sha256": "2c13a835341797f1456be0a68b367d8c0a731de3289a9923f3e63e4261fe2a0a",
       "executable": false
     },
     "tests/rer/operator-manual-meeting.mjs": {

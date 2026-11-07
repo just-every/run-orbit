@@ -186,8 +186,8 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 **Acceptance.**
 1. Log, edit and delete a note, call and meeting on a customer record; verify time, duration and attendees, and verify no score or external message changed.
 
-**Evidence.** `src/core/features/records/manual.ts`; `tests/core/today-brief.test.ts`
-**Gap.** Unasserted in the carried evidence: note create/edit/delete; call create/edit/delete; meeting create/edit/delete; occurred time retained; duration retained; attendees retained; score unchanged; no external message. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `src/core/features/records/manual.ts`; `tests/core/today-brief.test.ts` — BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a cited plan (extended by `tests/support/manual-meeting.ts` — exerciseManualMeeting: two full operators create, edit, freshly read and delete a manual meeting with exact time, duration, attending identities and original author; attributed deletion trace; unchanged score, band and complete draft and outbound inventories); `tests/rer/operator-actions.test.mjs` — BASE-PUBLIC-003 T099 native keyboard navigation, form validation, dialog focus and reviewed record changes (extended by `tests/rer/operator-manual-meeting.mjs` — exerciseManualMeeting: native meeting creation, another full operator's edit and confirmed deletion, fresh field and author readback, edit and delete screens at 1440 and 390)
+**Gap.** Unqualified remainder: call editing; remaining combinations of entry kinds and record kinds; duration and attendee editing controls; mentions and attachments under RECORD-017 and RECORD-018; provider activity qualification. Existing three-kind creation, note creation, editing and deletion, call creation and deletion, and note and call independence remain credited. The selected manual meeting lifecycle, retained fields and author, attributed deletion and score and mail independence are asserted by the named journeys. No clause-specific hold is released.
 
 #### RECORD-011 — Related records
 
