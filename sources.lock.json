@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "1f763b58febbdc07a4a476b75ec4f8ce78a624a7a3be709087c97365a5aa16dd",
+      "sha256": "743bd726e4afe0ee8e37d78da28ee49a386644a8cd8f2a80b62256059978c9a5",
       "executable": false
     },
     "DEMO.md": {
@@ -7155,7 +7155,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/workflows-version-undo.tsx": {
-      "sha256": "d0c9a38d4d851a89bd6490736ccfa724e4ed5e7d7817aa1023f0f35fb49bdfd2",
+      "sha256": "a51039752a1cea1a2460e0e1bbb2543ba0feff85cd24f5d697592769f8da2f1a",
       "executable": false
     },
     "src/core/features/operator/ui/workflows.css": {
@@ -7851,7 +7851,7 @@
       "executable": false
     },
     "src/core/features/records/repository.ts": {
-      "sha256": "6182d0fad72e6c0a0043f3c7534395f9a3a549076edf6fc5381586a12ab8dcde",
+      "sha256": "3cac8a08c9cede0f05b98ca4f8faeeeb9246409cd29a261ad96f04861483a100",
       "executable": false
     },
     "src/core/features/records/routes.ts": {
@@ -8326,6 +8326,10 @@
       "sha256": "f962256b2475eec91de158b936a97c15e069e25e0c40ec43164ceafc02bb72e1",
       "executable": false
     },
+    "src/core/features/workflows/created-undo.ts": {
+      "sha256": "d1256fc57e026de50f5bfba42c8dcaf14f5db4f5cdc30408ce3516394d24a6c1",
+      "executable": false
+    },
     "src/core/features/workflows/effects.ts": {
       "sha256": "45fe4908d041085d2ee1263b8d9135cdb1a3d27dfc5a5e7c684ae8ae5b1131f2",
       "executable": false
@@ -8371,7 +8375,7 @@
       "executable": false
     },
     "src/core/features/workflows/record-writes.ts": {
-      "sha256": "0632a3ade4db2ff0f47fa235ec6cde226b0794129ad45675fdbf64abf079fedd",
+      "sha256": "a7bc891f50852e32c1f4dbf7836591fe426a80eade7b70afb23bf492ba2bd9b8",
       "executable": false
     },
     "src/core/features/workflows/repository.ts": {
@@ -11175,11 +11179,11 @@
       "executable": false
     },
     "tests/support/workflow-journey.ts": {
-      "sha256": "4d67a7f0fe4d3b9de3208fcce5a1720fe865cba10288de6e8aedf14051bb556c",
+      "sha256": "2a707da6aed948cb7f86c6044bf893ca00184e79dbb0f08ce36f0d8936451119",
       "executable": false
     },
     "tests/support/workflow-record-journey.ts": {
-      "sha256": "0eb87505c3cf51177f8ffdf48aea51f5c47a8ae79f801a13d4739ae10c46231f",
+      "sha256": "b513118e44b2d3a5ac19621982270b75e6ff94691f7c9b8871dec8daa2e9068c",
       "executable": false
     },
     "tests/support/workflow-safety-journey.ts": {
