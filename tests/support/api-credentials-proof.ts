@@ -4,10 +4,24 @@ import {isolatedDatabase} from './isolated-database';
 import {createDependencies} from './dependencies';
 import {createId} from '../../src/core/shared/ids';
 import {hash} from '../../src/core/features/delegation/protocol';
+import {proveCredentialCannotApprove} from './api-credential-approval-proof';
 
 const jsonType=Response.json(null).headers.get('Content-Type')!;
 
+/** Diagnostics are every log line the application writes while the credential journey runs. */
+function captureLogs(){
+ const lines:string[]=[],originals={log:console.log,warn:console.warn,error:console.error,info:console.info};
+ for(const key of Object.keys(originals) as (keyof typeof originals)[])console[key]=(...args:unknown[])=>{lines.push(args.map(value=>value instanceof Error?value.stack??value.message:typeof value==='string'?value:JSON.stringify(value)).join(' '));};
+ return {lines,restore:()=>Object.assign(console,originals)};
+}
+
 export async function proveApiCredentials(db:D1Database,actor:string,cookie:string,stage:string){
+ const logs=captureLogs();
+ try{await proveLifecycle(db,actor,cookie,stage,logs.lines);}finally{logs.restore();}
+ await proveCredentialCannotApprove();
+}
+
+async function proveLifecycle(db:D1Database,actor:string,cookie:string,stage:string,logs:string[]){
  const deps=createDependencies(db),principalId=createId(),record=createId(),now='2026-10-27T00:00:00.000Z';let clockNow=new Date(now);
  await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(actor).run();
  await deps.auth.ensureOperator({id:principalId,email:'synthetic-orbit-1@example.test',displayName:'synthetic-orbit-1'});
@@ -58,6 +72,13 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  const creation={title:'synthetic-orbit-3',stage_id:apiStage,value_cents:500},createHeaders={'Idempotency-Key':'synthetic-orbit-1'};
  const createdResponse=await publicRequest('/deals','POST',creation,creator.secret,createHeaders);assert.equal(createdResponse.status,201,await createdResponse.clone().text());
  const created=await createdResponse.json() as {id:string;replayed:boolean};assert.equal(created.replayed,false);
+ const scopes=async()=>JSON.stringify((await db.prepare('SELECT id,records_json FROM api_credentials ORDER BY id').all()).results);
+ const scopeRows=(await db.prepare('SELECT id,records_json FROM api_credentials').all<{id:string;records_json:string}>()).results;
+ assert.deepEqual(JSON.parse(scopeRows.find(row=>row.id===creator.credential.id)!.records_json),[record,created.id].sort(),'The creating credential gains exactly the one deal it created');
+ assert.deepEqual(JSON.parse(scopeRows.find(row=>row.id===id)!.records_json),[record],'A sibling credential for the same principal and records gains nothing');
+ assert.equal((await publicRequest('/deals/'+created.id,'GET',undefined,creator.secret)).status,200,'The creating credential reads its new deal');
+ assert.equal((await publicRequest('/deals/'+created.id)).status,403,'A deal created through another credential stays outside this credential');
+ assert.deepEqual(((await(await publicRequest('/deals')).json()) as any).deals.map((deal:any)=>deal.id),[record],'The sibling list shows only its own bounded scope');
  const replay=await publicRequest('/deals','POST',creation,creator.secret,createHeaders);assert.equal(replay.status,200,await replay.clone().text());assert.deepEqual(await replay.json(),{...created,replayed:true},'The same idempotency key returns the one original deal');
  assert.equal((await publicRequest('/deals','POST',{...creation,title:'synthetic-orbit-4'},creator.secret,createHeaders)).status,409,'Changed idempotent content is refused');
  const firstPage=await publicRequest('/deals?limit=1', 'GET',undefined,creator.secret);assert.equal(firstPage.status,200);
@@ -72,7 +93,9 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  await db.prepare('DELETE FROM public_rate_limits WHERE bucket=?').bind(`api:${creator.credential.id}:${Math.floor(clockNow.getTime()/60000)}`).run();
  const noCreateResponse=await request('','POST',{...definition,fields:['title','stage_id','value_cents']});assert.equal(noCreateResponse.status,201);
  const noCreate=await noCreateResponse.json() as typeof issued;
- assert.equal((await publicRequest('/deals','POST',creation,noCreate.secret,createHeaders)).status,403,'An update credential cannot create');
+ const beforeDenied=[await scopes(),await db.prepare('SELECT count(*) n FROM opportunities').first('n'),await db.prepare('SELECT count(*) n FROM audit_entries').first('n')];
+ assert.equal((await publicRequest('/deals','POST',{...creation,title:'synthetic-orbit-6'},noCreate.secret,{'Idempotency-Key':'synthetic-orbit-2'})).status,403,'An update credential cannot create');
+ assert.deepEqual([await scopes(),await db.prepare('SELECT count(*) n FROM opportunities').first('n'),await db.prepare('SELECT count(*) n FROM audit_entries').first('n')],beforeDenied,'A denied creation adds no deal, scope or audit entry');
  const readOnly=await(await request('','POST',{...definition,operations:['deal.read']})).json() as typeof issued;
  assert.equal((await publicRequest('/deals/'+record,'PATCH',{title:'synthetic-orbit-4'},readOnly.secret,{'If-Match':updatedEtag})).status,403,'A read-only credential cannot write');
  const rotatedResponse=await request('/'+id+'/rotate','POST',{revision:1});assert.equal(rotatedResponse.status,200,await rotatedResponse.clone().text());
@@ -137,6 +160,8 @@ export async function proveApiCredentials(db:D1Database,actor:string,cookie:stri
  const audits=JSON.stringify((await db.prepare("SELECT * FROM audit_entries WHERE action LIKE 'api.%'").all()).results);
  for(const secret of [issued.secret,rotated.secret,raced.secret])assert.ok(!audits.includes(secret));
  assert.equal(await db.prepare('SELECT count(*) n FROM outbound_messages').first('n'),0);
+ const diagnosticsOutput=JSON.stringify([logs,await(await app().request('https://orbit.test/health')).text(),(await db.prepare('SELECT * FROM audit_entries').all()).results]);
+ for(const secret of [issued.secret,rotated.secret,raced.secret,creator.secret,expired.secret])assert.ok(!diagnosticsOutput.includes(secret)&&!diagnosticsOutput.includes(await hash(secret)),'Health, audit history and application logs never carry a credential secret or verifier');
  await db.prepare('DELETE FROM api_credentials').run();for(const deal of [record,created.id,outsideRecord])await db.prepare('DELETE FROM opportunities WHERE id=?').bind(deal).run();
  await db.prepare('DELETE FROM pipeline_stage_rules WHERE stage_id=?').bind(apiStage).run();await db.prepare('DELETE FROM pipeline_stages WHERE id=?').bind(apiStage).run();
  await proveScopedDealFields();
