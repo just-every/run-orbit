@@ -10183,7 +10183,7 @@
       "executable": false
     },
     "tests/e2e/baseline.spec.mjs": {
-      "sha256": "884996a19e62810cc642683cee9eaa3f4437bea253a1daad53f209b93e11c871",
+      "sha256": "820d9efbbe64e17523eeb75a24b30ee9d43be2f7581e67552a2c4217f0257504",
       "executable": false
     },
     "tests/e2e/capture.spec.mjs": {
