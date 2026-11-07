@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "1f763b58febbdc07a4a476b75ec4f8ce78a624a7a3be709087c97365a5aa16dd",
+      "sha256": "446251b67bed8a1c43e5f0714315179df87de50fbcae669b7e313ac74c7d33e2",
       "executable": false
     },
     "DEMO.md": {
@@ -7155,7 +7155,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/workflows-version-undo.tsx": {
-      "sha256": "d0c9a38d4d851a89bd6490736ccfa724e4ed5e7d7817aa1023f0f35fb49bdfd2",
+      "sha256": "a34c26f5fca8ff39dea2e06c8da46ae70bc8f735dcd0dd202912d681e8a07be0",
       "executable": false
     },
     "src/core/features/operator/ui/workflows.css": {
@@ -7851,7 +7851,7 @@
       "executable": false
     },
     "src/core/features/records/repository.ts": {
-      "sha256": "6182d0fad72e6c0a0043f3c7534395f9a3a549076edf6fc5381586a12ab8dcde",
+      "sha256": "93b10d87ea392354f02db5929a924b715326e94de435bdeb210f41648df3bbf1",
       "executable": false
     },
     "src/core/features/records/routes.ts": {
@@ -8350,6 +8350,10 @@
       "sha256": "9373591a83615e727a357c69e4a18c850408a60bf4f7706408d7083dccbb3776",
       "executable": false
     },
+    "src/core/features/workflows/record-archive.ts": {
+      "sha256": "8573506fee917e1203a0325ec4bb14e1033007614d73060867436527e4d25937",
+      "executable": false
+    },
     "src/core/features/workflows/record-lineage.ts": {
       "sha256": "b87b76a3a9e3228fd8315e23cf9f6892fd968441e7b5ce35624ff08d172eae4b",
       "executable": false
@@ -8363,7 +8367,7 @@
       "executable": false
     },
     "src/core/features/workflows/record-types.ts": {
-      "sha256": "c9774881f843b425f9915a3233316e48920791dce379748d19b32aa9ec235cab",
+      "sha256": "c7048a653b239aa894c7956d31355e9156f463676272d230bf7c3348690e0158",
       "executable": false
     },
     "src/core/features/workflows/record-validation.ts": {
@@ -8371,7 +8375,7 @@
       "executable": false
     },
     "src/core/features/workflows/record-writes.ts": {
-      "sha256": "0632a3ade4db2ff0f47fa235ec6cde226b0794129ad45675fdbf64abf079fedd",
+      "sha256": "0a34e4c7a305ddcc6e8d1ff7b1106e5d51d0e8666b98946ede682ae9f16d3de1",
       "executable": false
     },
     "src/core/features/workflows/repository.ts": {
@@ -11175,7 +11179,7 @@
       "executable": false
     },
     "tests/support/workflow-journey.ts": {
-      "sha256": "4d67a7f0fe4d3b9de3208fcce5a1720fe865cba10288de6e8aedf14051bb556c",
+      "sha256": "f818cc2f00d87bdaa705f48961ab6b52e9936d262f5dfa1c0cee16487d4cec6b",
       "executable": false
     },
     "tests/support/workflow-record-journey.ts": {
@@ -11184,6 +11188,10 @@
     },
     "tests/support/workflow-safety-journey.ts": {
       "sha256": "ef3e31e906de83a825d79aa4eaf24bffdbf7dfcbcf76b64cb5de260b9ec859a0",
+      "executable": false
+    },
+    "tests/support/workflow-undo-journey.ts": {
+      "sha256": "7e484392b736ef273ea0bbc785a078ec71c37cc165bc925a266dc529c4362579",
       "executable": false
     },
     "tools/seed-schema/business-field-inputs.mjs": {
