@@ -1,0 +1,174 @@
+{
+  "tag": "sd-orbit-c-f120",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f120",
+  "head": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
+  "base_main": "43497d9593cdf019042332a4bf8bae27f4004ede",
+  "changed_files": [
+    "sources.lock.json",
+    "tests/support/agent-door-audit-proof.ts",
+    "tests/support/agent-door-proof.ts"
+  ],
+  "public_remote_verified": true,
+  "product_push": "success",
+  "push_attempts": 1,
+  "pr_url": null,
+  "runtime_changes": false,
+  "contract_changed": false,
+  "generated_views_committed": false,
+  "test_registration_changes": 0,
+  "checks": [
+    {
+      "command": "cloud_run timeout 300 pnpm exec tsx --test tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "duration_ms": 168499.327047,
+      "receipt": "touched-test.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "receipt": "typecheck.log"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "receipt": "first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "receipt": "views-write.log",
+      "documents_written": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "receipt": "views-check.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "receipt": "lock-write.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "ok": true,
+      "receipt": "lock-check.log"
+    },
+    {
+      "command": "git diff --cached --check",
+      "exit": 0
+    },
+    {
+      "command": "checkTestBudget from scripts/verification-inventory.mjs",
+      "exit": 0,
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    }
+  ],
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "claimed_points": [
+    6
+  ],
+  "claim": "PARTIAL",
+  "main_equal_head": false,
+  "publication_scan": {
+    "head": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
+    "status": "NOT_RUN_CLOUD",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "custodian": "guarded fleet lander"
+  },
+  "ci": [
+    {
+      "conclusion": null,
+      "created_at": "2026-11-07T22:16:43Z",
+      "event": "push",
+      "head_sha": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42419849424",
+      "id": 42419849424,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "ci_api_calls_used": 5,
+  "probes": [
+    {
+      "clause": "BASE-AGENT-009",
+      "point": 6,
+      "mode": "autonomous",
+      "door": "native MCP update, signed-in owner agent revoke, native email-link request and confirmation, authenticated audit read",
+      "update_status": 200,
+      "revoke_status": 200,
+      "revoked_token_status": 401,
+      "native_state_unchanged_after_refusal": true,
+      "original_audit_rows_retained": 2,
+      "retained_agent_name": true,
+      "retained_sponsor_name": true,
+      "retained_attribution": true,
+      "fresh_native_session": true,
+      "refusal_audited": true
+    },
+    {
+      "clause": "BASE-AGENT-009",
+      "point": 6,
+      "mode": "held",
+      "door": "native MCP update, signed-in owner agent revoke, native email-link request and confirmation, authenticated audit read",
+      "update_status": 200,
+      "revoke_status": 200,
+      "revoked_token_status": 401,
+      "native_state_unchanged_after_refusal": true,
+      "original_audit_rows_retained": 2,
+      "retained_agent_name": true,
+      "retained_sponsor_name": true,
+      "retained_attribution": true,
+      "fresh_native_session": true,
+      "refusal_audited": true
+    }
+  ],
+  "source_sha256": {
+    "sources.lock.json": "d08454b6ecbfffb3740e0d20cf5f073237f8463408b3ee905372ef6e0a80ce4f",
+    "tests/support/agent-door-audit-proof.ts": "f501dac3017aa26817a7e0c52f4d0fd1dec952195ef3f11dd084c804c3db9f0f",
+    "tests/support/agent-door-proof.ts": "ebdae8045cd9596acaa5ce502331e60250216919c44dfd466683896626d60fc2"
+  },
+  "local_test_to_head": "Relevant source and test bytes are identical to the passing run; only source lock generation and the commit followed. There are no worktree changes.",
+  "plan_rows_changed": [],
+  "holds_released": [],
+  "ci_observations": [
+    {
+      "conclusion": null,
+      "head_sha": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42419849424",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42419849424",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42419849424",
+      "status": "in_progress"
+    }
+  ]
+}

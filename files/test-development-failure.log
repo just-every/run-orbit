@@ -1,0 +1,88 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+{"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+✖ Managed owner claim verifies RER authority and creates the native owner/session exactly once (132186.816016ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 136572.165664
+
+✖ failing tests:
+
+test at tests/core/managed-owner.test.ts:1:380
+✖ Managed owner claim verifies RER authority and creates the native owner/session exactly once (132186.816016ms)
+  AssertionError [ERR_ASSERTION]: revocation and a fresh sign-in retain every original audit identity, field and attribution
+  + actual - expected
+  ... Skipped lines
+  
+    {
+  +   cursor: '97',
+  -   cursor: '95',
+      differs_from_policy: 0,
+      rows: [
+        {
+          agent: {
+            id: 'synthetic-orbit-audit-autonomous',
+  ...
+        },
+  +     {
+  +       agent: {
+  +         id: 'synthetic-orbit-audit-autonomous',
+  +         name: 'Audit autonomous',
+  +         specialist: 'sales rep'
+  +       },
+  +       approval: null,
+  +       at: '2026-11-07T22:12:39.474Z',
+  +       classes: [],
+  +       client_id: 'synthetic-orbit-audit-client',
+  +       code: 'unauthenticated',
+  +       consent: 'synthetic-orbit-audit-consent',
+  +       decision: 'none',
+  +       decision_id: null,
+  +       door: 'mcp',
+  +       id: '0695d353-06a0-4427-baa4-256dcb15d6d4',
+  +       idempotency_key: 'synthetic-orbit-audit-autonomous-revoked',
+  +       ignored_arguments: [],
+  +       label: 'Audit autonomous for Morgan Lee',
+  +       operation_id: '0695d353-06a0-4427-baa4-256dcb15d6d4',
+  +       outcome: 'refused',
+  +       replay_of: null,
+  +       resource: null,
+  +       review: null,
+  +       revision: 8,
+  +       role: 'owner',
+  +       rules: [],
+  +       scopes: [
+  +         'records:read',
+  +         'records:write'
+  +       ],
+  +       sequence: 97,
+  +       sponsor: {
+  +         id: '01M6W1293CMS1ECS6V2KVKN7HD',
+  +         name: 'Morgan Lee'
+  +       },
+  +       tool: 'orbit.records.update',
+  +       trace: null
+  +     }
+      ]
+    }
+  
+      at agentAuditRetentionProof (/workspace/sd-orbit-c-f120/tests/support/agent-door-audit-proof.ts:101:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async agentDoorProof (/workspace/sd-orbit-c-f120/tests/support/agent-door-proof.ts:219:5)
+      at async TestContext.<anonymous> (/workspace/sd-orbit-c-f120/tests/core/managed-owner.test.ts:50:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { rows: [ [Object], [Object], [Object] ], cursor: '97', differs_from_policy: 0 },
+    expected: { rows: [ [Object], [Object] ], cursor: '95', differs_from_policy: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
