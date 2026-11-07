@@ -1,7 +1,7 @@
 import {useEffect,useState} from 'react';
 import {Workflow,workflowRequest,workflowTime} from './workflows-types';
 
-type UndoResult={runs:{runId:string;results:{undone?:boolean;skipped?:boolean;reason?:string}[]}[]};
+type UndoResult={runs:{runId:string;results:{undone?:boolean;skipped?:boolean;archived?:string;reason?:string}[]}[]};
 type UndoReview=UndoResult&{version:number;from:string;to:string};
 
 export function WorkflowsVersionUndo({workflow,onChanged}:{workflow:Workflow;onChanged:()=>Promise<unknown>}) {
@@ -25,7 +25,7 @@ export function WorkflowsVersionUndo({workflow,onChanged}:{workflow:Workflow;onC
  }
 
  return <details><summary>Undo a version</summary><div className="workflows-stack">
-  <p className="workflows-note">Restore recorded field changes from one workflow version within a time range. A value is restored only if it still matches the workflow’s change, preserving later user edits. This sends nothing and does not delete tasks.</p>
+  <p className="workflows-note">Restore recorded field changes and stage moves from one workflow version within a time range. A value is restored only if it still matches the workflow’s change, preserving later user edits. A deal the workflow created is archived (closed as lost) only if nobody has edited or associated it since; each skipped item says who changed it and when. This sends nothing and never reopens or deletes tasks or messages.</p>
   <form className="workflows-stack" onSubmit={event=>{event.preventDefault();void undo();}}>
    <label>Version number<input type="number" min="1" max={workflow.version} step="1" required disabled={busy} value={version} onChange={event=>setVersion(event.target.value)}/></label>
    <div className="workflows-grid"><label>From<input type="datetime-local" required disabled={busy} value={from} onChange={event=>setFrom(event.target.value)}/></label><label>To<input type="datetime-local" required disabled={busy} value={to} onChange={event=>setTo(event.target.value)}/></label></div>
@@ -33,6 +33,6 @@ export function WorkflowsVersionUndo({workflow,onChanged}:{workflow:Workflow;onC
    <div className="workflows-buttons"><button type="submit" disabled={busy}>{busy?'Inspecting and undoing…':'Inspect and undo version'}</button></div>
   </form>
   {error&&<p className="operator-state operator-state--error" role="alert">{error}</p>}
-  {review&&<section className="workflows-stack" aria-label="Version undo results"><h3>Undo results · Version {review.version}</h3><p className="workflows-meta">{workflowTime(review.from)} to {workflowTime(review.to)}</p><p role="status">{review.runs.length?`Inspected ${review.runs.length} ${review.runs.length===1?'run':'runs'}.`:'No runs matched this version and time range.'}</p>{review.runs.map(run=><article className="workflows-card" key={run.runId}><h4>Run {run.runId}</h4>{!run.results.length?<p>No recorded field changes to undo.</p>:<ol>{run.results.map((result,index)=><li key={index}>{result.undone?'Restored the earlier value.':result.skipped?'Skipped this change.':'No value restored.'}{result.reason?` ${result.reason}`:''}</li>)}</ol>}</article>)}</section>}
+  {review&&<section className="workflows-stack" aria-label="Version undo results"><h3>Undo results · Version {review.version}</h3><p className="workflows-meta">{workflowTime(review.from)} to {workflowTime(review.to)}</p><p role="status">{review.runs.length?`Inspected ${review.runs.length} ${review.runs.length===1?'run':'runs'}.`:'No runs matched this version and time range.'}</p>{review.runs.map(run=><article className="workflows-card" key={run.runId}><h4>Run {run.runId}</h4>{!run.results.length?<p>No recorded field changes to undo.</p>:<ol>{run.results.map((result,index)=><li key={index}>{result.archived?'Archived the created deal (closed as lost).':result.undone?'Restored the earlier value.':result.skipped?'Skipped this change.':'No value restored.'}{result.reason?` ${result.reason}`:''}</li>)}</ol>}</article>)}</section>}
  </div></details>;
 }
