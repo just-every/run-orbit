@@ -2351,7 +2351,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-backend-proof.ts": {
-      "sha256": "c18be487a50e5ca4a340eb7da146b80ce17df7e495dab32c5f5df61905a645bd",
+      "sha256": "2f24b258f237b4da080509a9a1e87aa787dfb6da3aa39215bc5eb80064ab5658",
       "executable": false
     },
     "newtests/t096/dashboard-slack-fixture.ts": {
