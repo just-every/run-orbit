@@ -1,0 +1,124 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f123",
+  "head": "6ab723013fc3e6ecc103c85d841118c2c78b0dac",
+  "recorded_at": "2026-11-07T22:21:11.870052+00:00",
+  "checks": [
+    {
+      "command": "pnpm exec playwright test tests/e2e/baseline.spec.mjs --config playwright.cloud.config.mjs --reporter=list,json",
+      "exit": 0,
+      "stats": {
+        "startTime": "2026-11-07T22:18:26.007Z",
+        "duration": 79174.045,
+        "expected": 5,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "system_browser": "/usr/bin/chromium",
+      "launch_args_added": [
+        "--no-sandbox"
+      ],
+      "widths": [
+        1440,
+        390
+      ],
+      "receipt": "baseline-results.json",
+      "log": "baseline.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log",
+      "documents_written": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "receipt": "source-check.json"
+    },
+    {
+      "command": "checkTestBudget from scripts/verification-inventory.mjs",
+      "exit": 0,
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    },
+    {
+      "command": "git diff origin/main...HEAD -- CONTRACT.md ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "stdout": ""
+    }
+  ],
+  "source_lock": {
+    "ok": true,
+    "edition": "just-every/orbit",
+    "manifest": "dc7d6704d5ed529d120a628ed52e9bd9804900d13506a343fd1606c02de0d59d",
+    "toolchain": {
+      "id": "runeditrun/edition-authoring",
+      "version": "1.1.0",
+      "sha256": "8d25b7528ba7c5301de349b51b7e6ca44d6b87478f27b5685a5c07b567612e13"
+    }
+  },
+  "before_counts": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "after_counts": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "claim": {
+    "clause": "PUBLIC-001",
+    "status": "PARTIAL",
+    "selected_point": 1,
+    "closed_limbs": [
+      "app-origin raw HTML customer-data privacy",
+      "app-origin every first-load response body customer-data privacy"
+    ],
+    "held_remainder_unchanged": true
+  },
+  "screenshots": [
+    {
+      "file": "1440-lobby-privacy.png",
+      "width": 1440,
+      "height": 900,
+      "sha256": "778c4e057e332990f05a512de2ee0b3eb5851eab30ddb8f167fbfdda7ff2a2b5",
+      "inspected": true
+    },
+    {
+      "file": "390-lobby-privacy.png",
+      "width": 390,
+      "height": 900,
+      "sha256": "92ec7d97c34c03783bcf1ec27956ec3ce75d2d2ccab68dc9833abe841bc80d3e",
+      "inspected": true
+    }
+  ]
+}

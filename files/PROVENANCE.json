@@ -1,0 +1,53 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f123",
+  "head": "6ab723013fc3e6ecc103c85d841118c2c78b0dac",
+  "observed_at": "2026-11-07T22:18:47.113967+00:00",
+  "push": {
+    "status": "pushed",
+    "attempts": 1,
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f123"
+  },
+  "remote_refs": {
+    "cloud/sd-orbit-c-f123": "6ab723013fc3e6ecc103c85d841118c2c78b0dac",
+    "main": "43497d9593cdf019042332a4bf8bae27f4004ede"
+  },
+  "main_ci": [
+    {
+      "name": "Verify",
+      "id": 42418271312,
+      "status": "completed",
+      "conclusion": "success",
+      "head": "43497d9593cdf019042332a4bf8bae27f4004ede"
+    },
+    {
+      "name": "Run site",
+      "id": 42418271336,
+      "status": "completed",
+      "conclusion": "success",
+      "head": "43497d9593cdf019042332a4bf8bae27f4004ede"
+    }
+  ],
+  "candidate_ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "6ab723013fc3e6ecc103c85d841118c2c78b0dac",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42419944348",
+      "id": 42419944348,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "gh_calls_used": 2,
+  "gh_budget": 10,
+  "publication_scan": {
+    "commit": "6ab723013fc3e6ecc103c85d841118c2c78b0dac",
+    "status": "not run in cloud",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "custodian": "fleet guarded lander"
+  },
+  "landing": "not landed; branch-only candidate; no PR required by repository instructions"
+}
