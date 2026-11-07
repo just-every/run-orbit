@@ -108,7 +108,7 @@
       "status": "in_progress"
     }
   ],
-  "ci_api_calls_used": 5,
+  "ci_api_calls_used": 7,
   "probes": [
     {
       "clause": "BASE-AGENT-009",
@@ -169,6 +169,38 @@
       "head_sha": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
       "html_url": "https://github.com/just-every/run-orbit/actions/runs/42419849424",
       "status": "in_progress"
+    },
+    {
+      "conclusion": "success",
+      "head_sha": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42419849424",
+      "status": "completed"
     }
-  ]
+  ],
+  "ci_final": {
+    "conclusion": "success",
+    "head_sha": "4b4824919f577d175b0cdb64476d93d2d25f3b8c",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42419849424",
+    "status": "completed"
+  },
+  "ci_run_id": 42419849424,
+  "ci_test_batch": {
+    "batch": "batch-3",
+    "shards": [
+      "core-1"
+    ],
+    "browsers": false,
+    "disk": false
+  },
+  "ci_test_job": {
+    "completed_at": "2026-11-07T22:33:45Z",
+    "conclusion": "success",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42419849424/job/128546305721",
+    "id": 128546305721,
+    "name": "shards (batch-3)",
+    "started_at": "2026-11-07T22:19:13Z",
+    "status": "completed"
+  },
+  "product_readiness": "READY_FOR_FLEET_GATES",
+  "product_landed": false
 }

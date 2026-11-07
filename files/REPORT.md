@@ -7,7 +7,7 @@ Branch: cloud/sd-orbit-c-f120
 Candidate: 4b4824919f577d175b0cdb64476d93d2d25f3b8c
 Base main observed before publication: 43497d9593cdf019042332a4bf8bae27f4004ede
 Product push: successful, first attempt. No pull request was needed; push is a Verify entry point.
-Verify: push run 42419849424 on the exact candidate; final status is recorded below and in RECEIPT.json.
+Verify: push run 42419849424 completed SUCCESS on the exact candidate. Its source job and all twenty shard jobs succeeded; the final aggregate completed at 22:35:55 UTC on 7 November 2026. No rerun or workflow dispatch was used. The completed result was observed at 22:37 UTC.
 Counts before and after: 36 DONE, 136 PARTIAL, 32 MISSING, 204 total.
 Test budget before and after: 198 registrations plus two qualification flows, 200 total.
 
@@ -54,7 +54,7 @@ This is a PARTIAL claim. No DONE award, release or count change is requested.
 | --- | --- | --- |
 | 1 | PARTIAL for the whole clause; selected point passes locally | Populated native update, owner revocation and fresh-session history read. Other acceptance outcomes remain unqualified as specified above. |
 | 2 | PASS for selected point | Real seeded company changes through MCP; the unsafe revoked-token call is 401 and changes neither company nor timeline inventory. |
-| 3 | Exact-head CI pending at initial discovery | Verify push run 42419849424; ./scripts/verification-plan.mjs loads managed-owner in core-1. Final CI result below. |
+| 3 | PASS for selected point on exact-head CI | Verify push run 42419849424 SUCCESS; core-1 loads the managed-owner registration in batch-3, job 128546305721 SUCCESS. All twenty runtime shards ran and succeeded; light mode was skipped. |
 | 4 | PASS local source binding | The passing touched run used identical relevant source and test bytes to the candidate; only lock generation and commit followed. RECEIPT.json records candidate file hashes. |
 | 5 | INSPECTED, no receiving duty changed | The existing clause explicitly extends BASE-OPS-005; no inherited requirement was rewritten or newly claimed. |
 | 6 | PASS mechanical; judgment preserved | Contract generation wrote zero documents, its check passed, generated views restored from main, and every Status judgment and count retained. |
@@ -75,7 +75,7 @@ PROBE BASE-AGENT-009 6: held Business MCP orbit.records.update -> 200 under stan
 
 ## Pre-handoff checks and limits
 
-1. The selected allowed and refused paths have populated public-door assertions. Removing retained rows, changing original names or attribution, accepting the revoked credential, or failing the native write makes this journey fail. Full-clause qualification remains unclaimed.
+1. The selected allowed and refused paths have populated public-door assertions and the exact-head push Verify is green. Removing retained rows, changing original names or attribution, accepting the revoked credential, or failing the native write makes this journey fail. Full-clause qualification remains unclaimed.
 2. No existing assertion or registration was deleted, weakened or hidden behind a condition.
 3. The selected revoked credential is proved unable to write. Existing erasure and replay assertions remain; no new broad erasure or replay matrix or separate deletion mechanism is claimed.
 4. No screen or UI control changed. The explicitly omitted viewport and axe qualification remains omitted.
@@ -90,3 +90,9 @@ The campaign result to record is BASE-AGENT-009 PARTIAL to PARTIAL, selected acc
 
 CLAIM BASE-AGENT-009 PARTIAL points=6 tests=tests/core/managed-owner.test.ts#Managed owner claim verifies RER authority and creates the native owner/session exactly once
 GAP BASE-AGENT-009: Full-clause audit, review, filtering, export and viewport qualification remains omitted by the lease; all existing holds and prerequisites remain unchanged.
+
+## Terminal CI and custody
+
+Exact-head push Verify 42419849424 is completed and successful on 4b4824919f577d175b0cdb64476d93d2d25f3b8c. The touched registration is in core-1, batch-3, job 128546305721, completed SUCCESS. Source and shared build job 128545804574 succeeded. All twenty shard jobs and the aggregate Verify job succeeded. Seven explicit repository API calls were used, with one watcher and at least 300 seconds between observations of this run. No failed job needed log access or repair.
+
+Product branch custody is PUSHED and ready for the fleet gates. Evidence is returned through the separate report-only ref. Publication scanning, main equality, final status bookkeeping, guarded landing and exact-main Run site remain with the fleet. No product, account, ruling or selected-point blocker remains. No default was adopted and no hold was released.
