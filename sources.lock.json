@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "48f5a5a9d5312f998b02732a3069a6dd3a38e2a72350a4099b650e84e559bc22",
+      "sha256": "3d1d08b43e4921b28de28e392cba2acd88d4d94c9c05fb2c8aa4404211f9b0a1",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "de15543ff11f4a35a1579773fe374bc76312081ae19dc9603c1a5497e0e8855c",
+      "sha256": "e01d169e2ae9d12574e64270c3e6d7c515604af911221be92011ff7f4d075d1f",
       "executable": false
     },
     "DEMO.md": {
@@ -10059,7 +10059,7 @@
       "executable": false
     },
     "tests/core/records-search.test.ts": {
-      "sha256": "7ac001cecb56d3878a99f58574b1dd3629496d49ce08cc5311b81d250502586d",
+      "sha256": "94e2dc1d126a2c902ec95170d222cc9ca48b1670044733611d2ff36f91194ea1",
       "executable": false
     },
     "tests/core/request-scheduling.test.ts": {
@@ -10884,6 +10884,10 @@
     },
     "tests/support/capture-source-boundary.ts": {
       "sha256": "f75b286a611825310afe1bcd6ff72f94b2916c87923dbddcdaeb823006d6d08a",
+      "executable": false
+    },
+    "tests/support/company-identity.ts": {
+      "sha256": "301b7718fa9546cbb0ec61a56c792479f0d466ca278e374ee4d7570d8c3cbf16",
       "executable": false
     },
     "tests/support/contact-seed-schema.ts": {

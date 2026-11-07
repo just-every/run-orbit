@@ -102,8 +102,8 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 **Acceptance.**
 1. Create case/whitespace email and domain collisions through Records; require a 409 naming the existing identity and no extra row; exercise free-mail and keyless records.
 
-**Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`
-**Gap.** Unasserted in the carried evidence: case and whitespace contact collision; domain collision; conflict names existing identity; no extra row after either conflict; free-mail keys excluded; keyless record create/edit. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`; `tests/core/records-search.test.ts` — RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-015 RECORD-002 RECORD-011 RECORD-006 relationships retain history and pipelines move safely and search matches record and timeline text, intersects every opportunity filter and caps the first page; `tests/support/company-identity.ts` — exerciseCompanyIdentity: uppercase leading-www company domain readback, normalized company create and PATCH collisions return 409 with the original recordId, and fresh complete Records reads preserve companies, contacts, deals, associations and timeline entries
+**Gap.** Unasserted in the carried evidence: case and whitespace contact-email create and edit collisions, including existing identity and no-write results; free-mail keys excluded; keyless record create and edit; keyless records never link automatically. Import and Workbench duplicate proofs remain; guided provider migrations remain MIGRATE-001, MIGRATE-002 and MIGRATE-003; expanded roles retain TEAM-005 qualification and contract-cleanup prerequisites. The RECORD-007 creation-default conflict and every existing plan hold remain outside this slice.
 
 #### RECORD-004 — Duplicate merge
 
