@@ -1,0 +1,28 @@
+{
+  "head": "f4b2d04fb3ab2b4779f93c4db16d7c4b263b3dcb",
+  "command": "pnpm exec tsx --test --no-test-only --test-concurrency=1 tests/core/managed-owner.test.ts",
+  "exit": 0,
+  "proof": {
+    "proof": "BASE-AGENT-007.5.rejected-native-write",
+    "pendingRpc": 51,
+    "retryRpc": 52,
+    "classes": [
+      "standard",
+      "sensitive"
+    ],
+    "approval": "28284591-3d2e-4b4b-8b4e-4841376fafe9",
+    "revision": 5,
+    "summary_sha256": "f595daa30cb5d41d90aaa1cc609a0d9e9b2a6d97da64af9e93c8dd9811db2cd9",
+    "state": "rejected",
+    "code": "approval_rejected",
+    "successContent": false,
+    "completionReceipt": false,
+    "unchangedNativeState": true,
+    "autonomousControl": {
+      "snapshot": "229d2680-4e17-4427-8d27-6a407208bd82",
+      "addedSnapshots": 1,
+      "addedSources": 1,
+      "addedComputedEffects": 1
+    }
+  }
+}

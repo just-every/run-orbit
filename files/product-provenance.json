@@ -1,0 +1,13 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f124",
+  "head": "f4b2d04fb3ab2b4779f93c4db16d7c4b263b3dcb",
+  "origin_main": "43497d9593cdf019042332a4bf8bae27f4004ede",
+  "candidate_commits": [
+    "f4b2d04fb3ab2b4779f93c4db16d7c4b263b3dcb"
+  ],
+  "new_commits_this_round": 0,
+  "worktree_clean": true,
+  "contract_unchanged": true,
+  "generated_views_committed": false
+}

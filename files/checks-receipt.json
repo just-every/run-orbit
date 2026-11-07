@@ -1,0 +1,75 @@
+{
+  "head": "f4b2d04fb3ab2b4779f93c4db16d7c4b263b3dcb",
+  "recorded_at": "2026-11-07T22:43:47.693575+00:00",
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --no-test-only --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "receipt": "native-rejection-receipt.json"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email <fleet-owner> --non-interactive",
+      "exit": 0,
+      "initial_attempt": {
+        "exit": 4,
+        "reason": "own running native test held checkout"
+      },
+      "private_runtime_logs_excluded": true
+    }
+  ],
+  "contract_judgments_unchanged": true,
+  "generated_views_restored_from_main": true,
+  "source_lock_fresh": true,
+  "migration_ledger": "not applicable; no migration changes",
+  "tests": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "publication_scan": {
+    "status": "not run in cloud; fleet lander owns this gate"
+  },
+  "landing": "pending fleet",
+  "ci": {
+    "existing_exact_sha_green": 42419962332,
+    "new_branch_verify": {
+      "id": 42421847223,
+      "status": "in_progress",
+      "conclusion": null
+    },
+    "main_verify": [
+      42418271312,
+      42416479058
+    ],
+    "main_run_site": 42418271336,
+    "api_calls": 3
+  }
+}
