@@ -1766,8 +1766,8 @@ Core · target · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001 · Rules D-1
 **Acceptance.**
 1. Race an approved due step with each reply/booking/stage/stop event, including a reply on the step's thread from a colleague the buyer CC'd, restart and replay; verify no prohibited send, one exit reason and separate reply/meeting/deal-outcome measures.
 
-**Evidence.** `tests/core/signals-outreach.test.ts`; `src/core/features/pipelines/movement.ts`; `src/core/features/records/repository.ts`; `src/core/features/outreach/follow-up-outcomes.ts`; `src/core/features/operator/ui/follow-up-outcomes.tsx`; `tests/evidence/contract/SEQUENCE-002/`
-**Gap.** Unasserted in the carried evidence: external colleague reply exit; manual stop; unsubscribe/permanent-bounce stop; restart preserves exit. Asserted: reply exit; booking exit; stage exit atomic with stage change; one first exit reason; replay/reopen/late dispatch revive nothing; separate customer outcome counts.
+**Evidence.** `tests/core/signals-outreach.test.ts` — OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not; `src/core/features/pipelines/movement.ts`; `src/core/features/records/repository.ts`; `src/core/features/outreach/follow-up-outcomes.ts`; `src/core/features/operator/ui/follow-up-outcomes.tsx`; `tests/evidence/contract/SEQUENCE-002/`
+**Gap.** Unasserted in the carried evidence: external colleague reply exit; unsubscribe/permanent-bounce stop; complete due-step races for every exit event; persisted-store and process restart preserves exit. Asserted: native human cancellation of one exact reviewed single scheduled message, fresh cancelled-state and first-reason readback, one attributed message.cancelled timeline entry, repeated cancellation refused with unchanged effects, and zero submission from a fresh late dispatcher (not restart proof); reply exit; booking exit; stage exit atomic with stage change; one first exit reason; replay/reopen/late dispatch revive nothing; separate customer outcome counts.
 
 #### SEQUENCE-003 — Bulk enrollment and rendered batch review
 
