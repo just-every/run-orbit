@@ -10798,8 +10798,12 @@
       "sha256": "1614c25b84231de703f706f50ad21a0a0cdacf98f87b363b7ba5a2b9dd507df2",
       "executable": false
     },
+    "tests/support/api-credential-approval-proof.ts": {
+      "sha256": "c4212fc0f4ed046494c08fe0c1d3d78397edc46d7507320b15e6ade6043300f2",
+      "executable": false
+    },
     "tests/support/api-credentials-proof.ts": {
-      "sha256": "e98f98b92987f9dfa4c6df0891e366d360ef6267bab6cc101997f628a319b371",
+      "sha256": "bcf89762a9941df700e73c0568aca11c39b621b06b05263f084f1bdb804618fd",
       "executable": false
     },
     "tests/support/app.ts": {
