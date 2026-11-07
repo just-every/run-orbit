@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "857272df56c1b689cac51b13654e7b4056d34e79a651aabd8b4064f03563e35e",
+      "sha256": "376489492fe18e815a849c6be54f67e4342e4c9e61c043680b9cd03a6c4866ae",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "a8de3c0d7599162866083ff66b71bf80dd8f30a90fb5038cc9a523a9a0b5b4e5",
+      "sha256": "bc62b7b7c78b3b9655f100b565012a43fe65337fb2ff793513ee8c67f7276fb9",
       "executable": false
     },
     "DEMO.md": {
@@ -8427,7 +8427,7 @@
       "executable": false
     },
     "src/core/platform/public-rate-limit.ts": {
-      "sha256": "8b87cea05abf9b163e2250619d3dfa937dddcb3fcef62854c95b78f859843fe2",
+      "sha256": "bdf2e58f9c0f20f9daff6d5e27caa26e36ece8c78357409cfbf8d334db3bc9b3",
       "executable": false
     },
     "src/core/platform/request.server.ts": {
@@ -10039,7 +10039,7 @@
       "executable": false
     },
     "tests/core/public-demo.test.ts": {
-      "sha256": "41faa0adcb17c73c40371058c461d4bb122e8c6daef59e6901c75c56f4f65698",
+      "sha256": "735dc7eec8ca478235f59191471c9fa495e1dc5ff2fc3bd30d96e90dfd902705",
       "executable": false
     },
     "tests/core/records-complete.test.ts": {
@@ -10175,7 +10175,7 @@
       "executable": false
     },
     "tests/e2e/baseline.spec.mjs": {
-      "sha256": "c9ff61f65348c351ec4dff01b47c4c6ed495e9d987bed54f49e681bcd268d412",
+      "sha256": "884996a19e62810cc642683cee9eaa3f4437bea253a1daad53f209b93e11c871",
       "executable": false
     },
     "tests/e2e/capture.spec.mjs": {
@@ -10934,6 +10934,10 @@
       "sha256": "b1f78488cfb5f0a9ca8edea82672ec364e233549656f38b8d7b2c67c5c538c47",
       "executable": false
     },
+    "tests/support/disabled-demo-build.ts": {
+      "sha256": "2f0090d707914e7786d2f4bdd049d9e890f6cb29e176f8b31bf07708e66aa9b9",
+      "executable": false
+    },
     "tests/support/email-link.ts": {
       "sha256": "4ba8b133bb62bc97630c7214cfa271e4f45f085a9fdc6f49b783a748807694e1",
       "executable": false
@@ -11008,6 +11012,10 @@
     },
     "tests/support/prior-capture-upgrade.ts": {
       "sha256": "b478f87132ec87740cdfc074fd89e27eb5f0c3040234ca7f62409b9aa7c933c2",
+      "executable": false
+    },
+    "tests/support/public-demo-proof.ts": {
+      "sha256": "148dbe420a59e9da63b793f636ed496b5f650005d6fc0c2fd4ddee0336b45f54",
       "executable": false
     },
     "tests/support/record-changes-proof.ts": {
