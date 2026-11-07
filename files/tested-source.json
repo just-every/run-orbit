@@ -1,0 +1,13 @@
+{
+  "tag": "sd-orbit-c-f126",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f126",
+  "baseline": "43497d9593cdf019042332a4bf8bae27f4004ede",
+  "files": {
+    "base-copies.json": "674c28b0b64726f9854ea1813ddd048f96c801835fdddb37a97e83612b4e7204",
+    "sources.lock.json": "5ed9b1ebd2d9f14a3309796feb0fc51c1907a8742009b086f25d6dc1e0d4fbe9",
+    "src/base/modules/agent-door/transport.ts": "783af95f7bf5d53efc89eaac258e3f63fea7f79f4aee16202ead048a6f087e49",
+    "tests/support/agent-door-proof.ts": "6fc1f3a8c325ddc5166246014a48a92b4493b33f26834104882d611bcabee03a",
+    "tests/support/agent-door-revocation-proof.ts": "a6925828860d64b83f67f9cc3c06e238fecb50930b450a70815d70d87c5fe096"
+  }
+}

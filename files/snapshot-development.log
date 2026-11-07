@@ -1,0 +1,4 @@
+Expanded snapshot development check: exit=1
+Managed owner claim verifies RER authority and creates the native owner/session exactly once
+autonomous: handshake success and revocation refusals leave native records and write effects unchanged
+The only changed field was sessions.last_seen_at, updated by the real authenticated owner revocation request. The proof now normalizes that activity timestamp while retaining every session authority field. Raw database rows are retained only in a private temporary log and are not selected for evidence publication.

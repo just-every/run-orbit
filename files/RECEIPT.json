@@ -1,0 +1,181 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f126",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f126",
+  "head": "cc690e5e27d6f63613b78eb7e502be0fe61d6a42",
+  "baseline": "43497d9593cdf019042332a4bf8bae27f4004ede",
+  "recorded_at": "2026-11-07T23:38:05.566842+00:00",
+  "runtime": "Node 22.20.0 for final touched tests and typecheck; pnpm 10.12.4; rer 0.2.96 unchanged",
+  "checks": [
+    {
+      "name": "touched-tests",
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "log": "touched-tests.log",
+      "sha256": "d99d21131097643c4688957c979357e649d5c2832849b2f2462a98235ee90ccd"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log",
+      "sha256": "6f0ca411b8defc432f308e5f122576d29982628462b2c9826af2b5f3941336e2"
+    },
+    {
+      "name": "first-party",
+      "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "boundaries",
+      "command": "pnpm run check:boundaries",
+      "exit": 0,
+      "log": "boundaries.log",
+      "sha256": "f2d4e2c8444d5e1b834b240c080e189691c2f48df62f101dcbdcd51667b76904"
+    },
+    {
+      "name": "surface",
+      "command": "pnpm run agent:surface",
+      "exit": 0,
+      "log": "agent-surface.log",
+      "sha256": "5251ef0f621f0795e7b38b9374d0916c92f1cdb32e76e6dd9a2894c350287384"
+    },
+    {
+      "name": "provenance",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs verify-base",
+      "exit": 0,
+      "log": "provenance.log",
+      "sha256": "2bf4fb0557a8e71e14b882abc4f9457c0267b320006aec711e75d8b14f5226b3"
+    },
+    {
+      "name": "views-write",
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log",
+      "sha256": "14cee29b7bd19487e15f4013d4fb85016e022ef21d230676971a6490c88436d2"
+    },
+    {
+      "name": "views-check",
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check.log",
+      "sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "name": "lock-write",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock-write.log",
+      "sha256": "16ae68baed37cccfd2f666f81881a59335469a49d586afb18fd4b96fea19a8eb"
+    },
+    {
+      "name": "lock-check",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.log",
+      "sha256": "a0f5bacc08f6c208d0b58c4cb6c64b9b1d2b83cab6ef0009f7abc2f58b1c4809"
+    },
+    {
+      "name": "reproduce-original",
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 1,
+      "log": "reproduction.log",
+      "sha256": "f7167e6f41ffcdff8110ed5550f187fe570d4c1729f7d5db0d9f5e166cc5e907"
+    }
+  ],
+  "clause": {
+    "id": "BASE-AGENT-004",
+    "before": "PARTIAL",
+    "after": "PARTIAL",
+    "points": [
+      6
+    ],
+    "boundary": "Only the native agent revocation limb for initialize and server discovery; no full acceptance-6 award"
+  },
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "test_inventory": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200,
+    "managedOwnerVerifyGates": [
+      {
+        "shard": "core-1",
+        "args": [
+          "exec",
+          "tsx",
+          "--test",
+          "--no-test-only",
+          "--test-concurrency=1",
+          "--test-reporter=spec",
+          "--test-reporter-destination=stdout",
+          "--test-reporter=./scripts/core-results.mjs",
+          "--test-reporter-destination=verification/core-1-results.jsonl",
+          "tests/core/capture-no-console.test.ts",
+          "tests/core/crm-import-erasure.test.ts",
+          "tests/core/crm-import.test.ts",
+          "tests/core/managed-owner.test.ts",
+          "tests/core/request-scheduling.test.ts"
+        ]
+      }
+    ]
+  },
+  "push": {
+    "status": "success",
+    "attempt": 1,
+    "branch": "cloud/sd-orbit-c-f126",
+    "head": "cc690e5e27d6f63613b78eb7e502be0fe61d6a42",
+    "log": "product-push.log"
+  },
+  "ci": {
+    "queried_at": "2026-11-07T23:37:03Z",
+    "workflow_runs": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_branch": "cloud/sd-orbit-c-f126",
+        "head_sha": "cc690e5e27d6f63613b78eb7e502be0fe61d6a42",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42426050372",
+        "id": 42426050372,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ]
+  },
+  "publication_scan": {
+    "head": "cc690e5e27d6f63613b78eb7e502be0fe61d6a42",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "status": "deferred to fleet guarded lander under cloud route"
+  },
+  "landing": {
+    "status": "pending",
+    "main_unchanged": true,
+    "run_site_on_candidate": "pending fleet landing"
+  },
+  "test_source": {
+    "tag": "sd-orbit-c-f126",
+    "repository": "just-every/run-orbit",
+    "branch": "cloud/sd-orbit-c-f126",
+    "baseline": "43497d9593cdf019042332a4bf8bae27f4004ede",
+    "files": {
+      "base-copies.json": "674c28b0b64726f9854ea1813ddd048f96c801835fdddb37a97e83612b4e7204",
+      "sources.lock.json": "5ed9b1ebd2d9f14a3309796feb0fc51c1907a8742009b086f25d6dc1e0d4fbe9",
+      "src/base/modules/agent-door/transport.ts": "783af95f7bf5d53efc89eaac258e3f63fea7f79f4aee16202ead048a6f087e49",
+      "tests/support/agent-door-proof.ts": "6fc1f3a8c325ddc5166246014a48a92b4493b33f26834104882d611bcabee03a",
+      "tests/support/agent-door-revocation-proof.ts": "a6925828860d64b83f67f9cc3c06e238fecb50930b450a70815d70d87c5fe096"
+    }
+  }
+}

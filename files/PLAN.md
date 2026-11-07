@@ -1,0 +1,10 @@
+# sd-orbit-c-f126 plan
+
+1. Read the fleet launcher rules, the repository rules and source provenance, BASE-AGENT-004 and its Status row, the supplied campaign extract, rulings and DONE riders. Preserve every Status, Gap, Evidence and acceptance sentence.
+2. Extend the existing managed-owner registration through a focused support helper. Admit separate Business agent identities through an actual native company read. Retain the target token, revoke exactly that identity through the authenticated owner door, issue a fresh token for it, and exercise initialize and server discovery under autonomous and held policies. Check the challenge, absent success result, admitted control and unchanged native tables.
+3. Run the new journey against the original transport to reproduce the early-return defect. Move handshake success after native admission and retain the copied-source baseline using the documented adaptation command.
+4. Run the touched managed-owner journey, typecheck, first-party checks and copied-source verification. Prove contract generation and restore generated views. Check the test inventory without adding registrations. Refresh main before the candidate; preserve newer work and regenerate the source lock last.
+5. Commit with the fleet identity and active repository-preserving hook. Inspect every candidate author, committer and trailer, then push only cloud/sd-orbit-c-f126 through the fleet push guard. Discover exact-head Verify through REST within the API budget.
+6. Keep BASE-AGENT-004 PARTIAL. Record the precise acceptance-6 limb and all held or omitted qualification, actual commands and results, counts and rider dispositions in this packet. Publish explicitly selected non-secret report files only to evidence/sd-orbit-c-f126, return its exact receipt, and relay the sd inbox line in the final message. Leave scanning and guarded landing to the fleet.
+
+No UI, policy default, acceptance rewrite, migration, hold release or other repository write is planned. TEAM-005 and the other campaign entries retain all their existing holds.

@@ -1,0 +1,6 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> orbit@0.4.3 check:boundaries /home/agent/rer-consolidation/work/sd-orbit-c-f126/run-orbit
+> node scripts/check-boundaries.mjs
+
+Boundary check passed for 814 core source files.
