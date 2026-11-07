@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "cfc83e328537a2e53892582f2eeec11f2b57a9dbfea013c0d4701b44d58c5aa4",
+      "sha256": "097cfe444245710e6d049c5ec8ea023dfa0fb8345bb2957104e2722b4fe78364",
       "executable": false
     },
     "DEMO.md": {
@@ -10188,6 +10188,10 @@
     },
     "tests/e2e/capture.spec.mjs": {
       "sha256": "6270e7309a3b5d6bab70ddf795c6e4755ae630a1a0a24216b439bc8e30f43026",
+      "executable": false
+    },
+    "tests/e2e/duplicate-candidates.mjs": {
+      "sha256": "222edcc4826dea8f83ecfed53a697aabccb677d15179b886d65ceded99663262",
       "executable": false
     },
     "tests/e2e/imports.spec.mjs": {
