@@ -8,7 +8,7 @@ import {orbitAgentDoor} from '../../src/core/features/agent-door';
 import type {PlatformBindings} from '../../src/core/platform/assets';
 
 /** Retained credentials are obtained through actual native consent and PKCE. */
-export async function localAgentCredentialProof(bindings:PlatformBindings,cookie:string,opportunityId:string,foreignCompanyId:string,setPolicy:(mode:'autonomous'|'held')=>Promise<void>) {
+export async function localAgentCredentialProof(bindings:PlatformBindings,cookie:string,opportunityId:string,foreignCompanyId:string,setPolicy:(mode:'autonomous'|'held')=>Promise<void>,provePersonMarks:(bearer:string)=>Promise<void>) {
  const origin=bindings.AUTH_ORIGIN!,client='seller-client-'+crypto.randomUUID(),callback='https://assistant.example.test/callback',verifier=crypto.randomUUID()+crypto.randomUUID();
  const app=new Hono();app.route('/delegation',nativeDelegationRoutes(bindings.DB,request=>operatorFromRequest(request,bindings),(request,action,returnTo)=>requireStepUp(request,bindings,action,returnTo)));app.route('/api/delegation/v1',delegationRoutes(bindings.DB));
  const form=(path:string,body:Record<string,string>)=>app.request(origin+path,{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(body)});
@@ -24,6 +24,7 @@ export async function localAgentCredentialProof(bindings:PlatformBindings,cookie
   return {status:response!.status,body:await response!.json() as any};
  }
  const selected=await call('orbit.records.read',{kind:'opportunity',id:opportunityId});assert.equal(selected.status,200);assert.equal(selected.body.result.structuredContent.ref.id,opportunityId);
+ await provePersonMarks(credential.access_token);
  const foreign=await call('orbit.records.read',{kind:'company',id:foreignCompanyId});assert.equal(foreign.body.result._meta['com.runeditrun/error'].code,'resource_unavailable');
  const absent=await call('orbit.records.read',{kind:'opportunity',id:'missing'});assert.equal(absent.body.result._meta['com.runeditrun/error'].code,'resource_unavailable');
  async function resource(uri:string) {

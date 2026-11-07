@@ -10799,11 +10799,11 @@
       "executable": false
     },
     "tests/support/agent-door-local-proof.ts": {
-      "sha256": "6ceff8803f79e656759bfd99010335047ed2724a7101a428497d4e4a6390e8cc",
+      "sha256": "545c8531457868d0cea43a9d4a4d582f230c86d4d3b2bf3b9a03fc11795bc8e0",
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "bfb7ee0707c477ccc3727016263c54b45038e7e10d637af873cd374a2cf88fc8",
+      "sha256": "ba3cc3e86a3c3a2397fa30d09f239652e35804a94a22eb88ea30771a9c2814f5",
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {
