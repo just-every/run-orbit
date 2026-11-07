@@ -1699,8 +1699,8 @@ Core · target · **partial** · Cites BASE-ROLE-001
 3. Slack-created internal tasks retain the mapped operator, source Slack and single-use action identity.
 4. Create a high-priority due call and weekly follow-up, assign/reassign and complete from the daily task view, see the new assignee notified once, restart around recurrence and verify one next occurrence; remove the rep and hand over remaining tasks.
 
-**Evidence.** `src/core/features/tasks/`; `tests/core/today-brief.test.ts`; `tests/evidence/contract/TASK-001/`
-**Gap.** Unasserted in the carried evidence: personal email visibly unavailable; personal push visibly unavailable; personal Slack preference unavailable; channel due-work notice does not claim a personal preference; Slack task names mapped operator; Slack task retains source attribution.; single-use action identity; high-priority due call; weekly follow-up; assignment and reassignment; daily task view completion; one receiving-user notification; restart around recurrence; exactly one next occurrence. Asserted: operator removal handover.
+**Evidence.** `src/core/features/tasks/`; `tests/core/today-brief.test.ts`; `tests/support/sales-tasks.ts` (exerciseSalesTasks); `tests/evidence/contract/TASK-001/`
+**Gap.** Unasserted in the carried evidence: personal email visibly unavailable; personal push visibly unavailable; personal Slack preference unavailable; channel due-work notice does not claim a personal preference; Slack task names mapped operator; Slack task retains source attribution.; single-use action identity; high-priority due call; weekly follow-up; assignment and reassignment; daily task view completion; restart around recurrence; exactly one next occurrence. Asserted: operator removal handover; reassignment reaches the receiving full operator native inbox once, links to the task readable by that receiver, and stale replay preserves the same inbox identities without another notice.
 
 #### NOTIFY-003 — Reminders that reach an absent seller
 

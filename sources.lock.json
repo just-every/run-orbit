@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "790b3a0c2e9113b659642dae0ebe745951a3cd74e608e4baf64db183c9dda837",
+      "sha256": "64ce74301fe8f5973c4779919950749931a7a12d6e375acf3b1dd5c2de5e5d55",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "9d64787f0cc776fa725671bed1d60aa0bee85d46ce3ddc24821eb2919b4dd49a",
+      "sha256": "5e143402880256a1acb0235c2a2babf409e8432c531cc4ade084b7c3ad806627",
       "executable": false
     },
     "DEMO.md": {
@@ -11083,7 +11083,7 @@
       "executable": false
     },
     "tests/support/sales-tasks.ts": {
-      "sha256": "5a3415a4e3e7a3d18ffd1dc23aaffa515ebe7b87fa68354cd2f535cfbb14b868",
+      "sha256": "871265a455855ff43c93cd3bb4ab8d40238518cdfb9da657c231922a26309977",
       "executable": false
     },
     "tests/support/sdk-worker-fixture.ts": {
