@@ -1,0 +1,120 @@
+   215	    assert.ok(feed.decisions.length>0,'Business MCP audits enter the relay');
+   216	    assert.equal(new Set(feed.decisions.map(row=>row.id)).size,feed.decisions.length);
+   217	    assert.equal((await door.handle(post('/api/rer/agent-decisions',{pull:'foreign.invalid.signature'})))!.status,401,'BASE-AGENT-009.relay.foreign');
+   218	    const setPolicy=(mode:'autonomous'|'held')=>adopt(mode==='held'?heldPolicy():autonomousPolicy());
+   219	    await adopt(autonomousPolicy());
+   220	    await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,setPolicy,async localBearer=>{
+   221	      const issued=Math.floor(Date.now()/1000);
+   222	      const businessBearer=await sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:'business-owner',email:bindings.OWNER_EMAIL,act:{sub:'business-ari',name:'Ari'},client_id:'business-client',business:'door-company',scope:principal.scopes.join(' '),consent:'door-test-consent',jti:crypto.randomUUID(),iat:issued,exp:issued+300});
+   223	      await personOnlyDecisionMarksProof({db:fixture.db,door,origin,cookie,ownerId:owner.operatorId,opportunityId:opportunity.id,
+   224	        bearers:[{name:'Business',token:businessBearer},{name:'retained local agent',token:localBearer}],setPolicy,call:businessCall,
+   225	        reportArgs:{...privatePeriod,review_hash:privateMcpPreview.body.result.structuredContent.reviewHash}});
+   226	    });
+   227	    await adopt(sensitiveBlocked);
+   228	    const witness=await call('orbit.operations.read',{});
+   229	    assert.ok(witness.record_mail_drafts.rows>0);
+   230	    await settingsRepository.remove(teammate.id,owner.operatorId,undefined,owner.sessionId);
+   231	    assert.equal((await businessCall('orbit.records.read',{kind:'company',id:companyId},{sub:'business-jamie',email:mappedTeammate!.email,act:{sub:'jamie-assistant',name:'Jules'}})).status,401,'native teammate removal overrides a still-applied Business mapping');
+   232	    await fixture.db.prepare('UPDATE operators SET email=? WHERE id=?').bind('renamed@example.test',owner.operatorId).run();
+   233	    assert.equal((await people.sponsor({sub:'business-owner'}))?.id,owner.operatorId);
+   234	    await fixture.db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(owner.operatorId).run();
+   235	    assert.equal(await people.sponsor({sub:'business-owner'}),null);
+   236	  } finally {await fixture.dispose();}
+   237	}
+   238	
+   239	/** Person-only marks must reject usable credentials even beside the owner's cookie. */
+   240	async function personOnlyDecisionMarksProof({db,door,origin,cookie,ownerId,opportunityId,bearers,setPolicy,call,reportArgs}:{
+   241	  db:D1Database;door:AgentDoor;origin:string;cookie:string;ownerId:string;opportunityId:string;
+   242	  bearers:Array<{name:string;token:string}>;setPolicy:(mode:'autonomous'|'held')=>Promise<void>;
+   243	  call:(name:string,args:Record<string,unknown>)=>Promise<{status:number;body:any}>;reportArgs:Record<string,unknown>;
+   244	}) {
+   245	  const request=async(path:string,body?:object,bearer?:string,withCookie=true)=>{
+   246	    const response=await door.handle(new Request(origin+path,{method:body?'POST':'GET',
+   247	      headers:{Origin:origin,'Content-Type':'application/json',...(withCookie?{Cookie:cookie}:{}),...(bearer?{Authorization:'Bearer '+bearer}:{})},
+   248	      ...(body?{body:JSON.stringify(body)}:{})}));
+   249	    assert.ok(response);return {status:response.status,body:await response.json() as any};
+   250	  };
+   251	  const tables=['agent_door_approvals','agent_door_reviews','agent_door_state','agent_door_agents','agent_door_audit','agent_door_calls','agent_door_events','agent_door_usage','agent_door_relay',
+   252	    'analytics_definitions','analytics_snapshots','analytics_snapshot_sources','domain_audit','domain_events',
+   253	    'companies','contacts','opportunities','timeline_entries','handoff_tasks','record_mail_drafts','record_mail_outbound_messages'];
+   254	  const unchangedState=async()=>{
+   255	    const rows=await db.batch(tables.map(table=>db.prepare('SELECT * FROM '+table)));
+   256	    return rows.map((result,index)=>[tables[index],result.results.map(row=>JSON.stringify(row)).sort()]);
+   257	  };
+   258	  async function prepare() {
+   259	    const pending=await call('orbit.reports.compute',{...reportArgs,idempotency_key:'synthetic-orbit-'+crypto.randomUUID()});
+   260	    assert.equal(pending.status,200);assert.equal(pending.body.result.resultType,'input_required');
+   261	    const meta=pending.body.result._meta,approvalId=meta['com.runeditrun/approval']?.id;
+   262	    assert.ok(approvalId,'a genuine protected report call is pending approval');
+   263	    assert.equal(meta['com.runeditrun/decision'].disposition,'approval');
+   264	    assert.ok(meta['com.runeditrun/decision'].classes.some((item:{class:string})=>item.class==='sensitive'));
+   265	    const ownerRead=await request('/agents/api/approvals/'+approvalId);
+   266	    assert.equal(ownerRead.status,200);
+   267	    const approval=ownerRead.body.approval;
+   268	    assert.equal(approval.id,approvalId);assert.equal(approval.state,'pending');assert.deepEqual(approval.approvals,[]);
+   269	    assert.equal(approval.decision_id,meta['com.runeditrun/decision'].id);
+   270	    assert.equal(approval.revision,meta['com.runeditrun/decision'].revision);
+   271	    assert.match(approval.summary_sha256,/^[a-f0-9]{64}$/);
+   272	    const saved=JSON.parse((await db.prepare('SELECT saved FROM agent_door_approvals WHERE id=?').bind(approvalId).first<string>('saved'))!);
+   273	    assert.deepEqual(approval.summary,saved.summary);assert.equal(approval.summary_sha256,saved.summary_sha256);
+   274	    assert.equal(approval.revision,saved.revision);assert.equal(saved.args.review_hash,reportArgs.review_hash);
+   275	    assert.equal(approval.prepared_by.for.id,ownerId);
+   276	    const completed=await call('orbit.records.read',{kind:'opportunity',id:opportunityId});
+   277	    assert.equal(completed.status,200);assert.equal(completed.body.result.isError,false);
+   278	    assert.equal(completed.body.result.structuredContent.ref.id,opportunityId);
+   279	    const reviewId=completed.body.result._meta['com.runeditrun/review']?.id;
+   280	    assert.ok(reviewId,'a completed standard read has a real open review');
+   281	    const reviews=await request('/agents/api/reviews');assert.equal(reviews.status,200);
+   282	    const review=reviews.body.reviews.find((item:{id:string})=>item.id===reviewId);
+   283	    assert.ok(review);assert.equal(review.state,'open');assert.equal(review.marked_by,null);assert.equal(review.marked_at,null);
+   284	    assert.equal(review.decision_id,completed.body.result._meta['com.runeditrun/decision'].id);
+   285	    return {approval,review};
+   286	  }
+   287	  for(const bearer of bearers) {
+   288	    await setPolicy('autonomous');
+   289	    const usable=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+bearer.token,'Content-Type':'application/json',
+   290	      'MCP-Protocol-Version':'2026-07-28','MCP-Method':'tools/call','MCP-Name':'orbit.records.read'},
+   291	      body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'orbit.records.read',arguments:{kind:'opportunity',id:opportunityId},_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}})}));
+   292	    assert.equal(usable!.status,200);
+   293	    const readable=await usable!.json() as any;assert.equal(readable.result.isError,false);assert.equal(readable.result.structuredContent.ref.id,opportunityId);
+   294	    for(const mode of ['autonomous','held'] as const) {
+   295	      await setPolicy('held');
+   296	      const target=await prepare(),control=await prepare();
+   297	      if(mode==='autonomous')await setPolicy(mode);
+   298	      const state=await request('/agents/api/state');assert.equal(state.status,200);assert.deepEqual(state.body.paused,{business:false,local:false});
+   299	      const before=await unchangedState();
+   300	      const refusals:Array<{withCookie:boolean;approval:number;review:number}>=[];
+   301	      for(const withCookie of [false,true]) {
+   302	        const label=mode+' '+bearer.name+(withCookie?' beside owner cookie':' alone');
+   303	        const approved=await request('/agents/api/approvals/'+target.approval.id+'/approve',
+   304	          {revision:target.approval.revision,summary_sha256:target.approval.summary_sha256},bearer.token,withCookie);
+   305	        assert.equal(approved.status,403,label);assert.deepEqual(approved.body,{code:'person_session_required'},label);
+   306	        assert.deepEqual(await unchangedState(),before,label+': no approval mark, receipt, policy, Pause or native effect');
+   307	        const reviewed=await request('/agents/api/reviews/'+target.review.id+'/reviewed',{},bearer.token,withCookie);
+   308	        assert.equal(reviewed.status,403,label);assert.deepEqual(reviewed.body,{code:'person_session_required'},label);
+   309	        assert.deepEqual(await unchangedState(),before,label+': no review mark, receipt, policy, Pause or native effect');
+   310	        refusals.push({withCookie,approval:approved.status,review:reviewed.status});
+   311	      }
+   312	      assert.deepEqual(await request('/agents/api/approvals/'+target.approval.id),{status:200,body:{approval:target.approval}});
+   313	      const reviews=await request('/agents/api/reviews');assert.deepEqual(reviews.body.reviews.find((item:{id:string})=>item.id===target.review.id),target.review);
+   314	      assert.deepEqual(await request('/agents/api/state'),state);
+   315	      const approved=await request('/agents/api/approvals/'+control.approval.id+'/approve',
+   316	        {revision:control.approval.revision,summary_sha256:control.approval.summary_sha256});
+   317	      const result=JSON.parse((await db.prepare('SELECT result FROM agent_door_approvals WHERE id=?').bind(control.approval.id).first<string>('result'))!);
+   318	      assert.equal(approved.status,200);assert.equal(approved.body.approval.state,mode==='held'?'executed':'refused',JSON.stringify({mode,bearer:bearer.name,code:result.code,outcome:result.outcome}));
+   319	      assert.deepEqual(approved.body.approval.approvals.map((mark:{person:string})=>mark.person),[ownerId]);
+   320	      if(mode==='held') {
+   321	        assert.equal(result.outcome,'done');assert.equal(result.receipt.approval_id,control.approval.id);
+   322	        assert.deepEqual(result.receipt.approved_by,[ownerId]);assert.equal(result.receipt.prepared_by.agent.id,control.approval.prepared_by.agent.id);
+   323	        assert.ok(await db.prepare('SELECT id FROM analytics_snapshots WHERE id=?').bind(result.result.id).first(),'the cookie-only control saves its native report');
+   324	      } else {
+   325	        assert.equal(result.code,'approval_evidence_changed');assert.equal(result.receipt,undefined,'a newer current policy cannot authorize old evidence');
+   326	      }
+   327	      const reviewed=await request('/agents/api/reviews/'+control.review.id+'/reviewed',{});
+   328	      assert.equal(reviewed.status,200);assert.equal(reviewed.body.review.state,'reviewed');assert.equal(reviewed.body.review.marked_by,ownerId);assert.ok(reviewed.body.review.marked_at);
+   329	      assert.deepEqual(await request('/agents/api/state'),state,'person marks do not change policy or Pause');
+   330	      console.log(JSON.stringify({proof:'BASE-AGENT-008.2',bearer:bearer.name,policy:mode,refusals,unchangedTables:tables.length,
+   331	        cookieApproval:approved.body.approval.state,cookieReview:reviewed.body.review.state}));
+   332	    }
+   333	  }
+   334	}

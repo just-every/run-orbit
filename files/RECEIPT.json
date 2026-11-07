@@ -1,0 +1,234 @@
+{
+  "base": "43497d9593cdf019042332a4bf8bae27f4004ede",
+  "branch": "cloud/sd-orbit-c-f128",
+  "browser": {
+    "held": "activity and export viewport qualification remains unclaimed",
+    "status": "not required for this test-only change"
+  },
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "failed": 0,
+      "log": "managed-owner.log",
+      "passed": 1,
+      "runtime": "Node 22.20.0",
+      "tests": 1
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log",
+      "runtime": "Node 22.20.0"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log",
+      "runtime": "Node 22.20.0"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write; node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "generated_views_committed": false,
+      "log": "views.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock; node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock.log"
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    },
+    {
+      "command": "migration ledger",
+      "status": "not applicable: no migration changes"
+    }
+  ],
+  "clause": {
+    "after": "PARTIAL",
+    "before": "PARTIAL",
+    "id": "BASE-AGENT-008",
+    "selected_acceptance": 2,
+    "selected_limbs": [
+      "approval",
+      "mark-reviewed"
+    ],
+    "whole_acceptance_claimed": false
+  },
+  "contract_status_untouched": true,
+  "counts": {
+    "after": {
+      "done": 36,
+      "missing": 32,
+      "partial": 136,
+      "total": 204
+    },
+    "before": {
+      "done": 36,
+      "missing": 32,
+      "partial": 136,
+      "total": 204
+    }
+  },
+  "existing_assertions_preserved": true,
+  "files": [
+    {
+      "git_blob": "84801c443b27b0729c24a004ea3a4a0f41438eca",
+      "path": "sources.lock.json",
+      "sha256": "22dd546be2246f8174fd7e6e441f5bb027c48e2b676d74eca4015ad9717618d5"
+    },
+    {
+      "git_blob": "dfbcf6a0191b61b248c728664966b72dc4496175",
+      "path": "tests/support/agent-door-local-proof.ts",
+      "sha256": "545c8531457868d0cea43a9d4a4d582f230c86d4d3b2bf3b9a03fc11795bc8e0"
+    },
+    {
+      "git_blob": "dc350a067fc6b17a9a4cdb8d46514f3c8ee30a08",
+      "path": "tests/support/agent-door-proof.ts",
+      "sha256": "ba3cc3e86a3c3a2397fa30d09f239652e35804a94a22eb88ea30771a9c2814f5"
+    }
+  ],
+  "head": "3b681261bf198e5540bd4050eb9feab1c03520c1",
+  "main_equals_candidate": false,
+  "policy_default": null,
+  "pr": null,
+  "product_publication": {
+    "log": "product-push.log",
+    "status": "pushed"
+  },
+  "proofs": [
+    {
+      "bearer": "Business",
+      "cookieApproval": "refused",
+      "cookieReview": "reviewed",
+      "policy": "autonomous",
+      "proof": "BASE-AGENT-008.2",
+      "refusals": [
+        {
+          "approval": 403,
+          "review": 403,
+          "withCookie": false
+        },
+        {
+          "approval": 403,
+          "review": 403,
+          "withCookie": true
+        }
+      ],
+      "unchangedTables": 21
+    },
+    {
+      "bearer": "Business",
+      "cookieApproval": "executed",
+      "cookieReview": "reviewed",
+      "policy": "held",
+      "proof": "BASE-AGENT-008.2",
+      "refusals": [
+        {
+          "approval": 403,
+          "review": 403,
+          "withCookie": false
+        },
+        {
+          "approval": 403,
+          "review": 403,
+          "withCookie": true
+        }
+      ],
+      "unchangedTables": 21
+    },
+    {
+      "bearer": "retained local agent",
+      "cookieApproval": "refused",
+      "cookieReview": "reviewed",
+      "policy": "autonomous",
+      "proof": "BASE-AGENT-008.2",
+      "refusals": [
+        {
+          "approval": 403,
+          "review": 403,
+          "withCookie": false
+        },
+        {
+          "approval": 403,
+          "review": 403,
+          "withCookie": true
+        }
+      ],
+      "unchangedTables": 21
+    },
+    {
+      "bearer": "retained local agent",
+      "cookieApproval": "executed",
+      "cookieReview": "reviewed",
+      "policy": "held",
+      "proof": "BASE-AGENT-008.2",
+      "refusals": [
+        {
+          "approval": 403,
+          "review": 403,
+          "withCookie": false
+        },
+        {
+          "approval": 403,
+          "review": 403,
+          "withCookie": true
+        }
+      ],
+      "unchangedTables": 21
+    }
+  ],
+  "publication_scan": {
+    "commit": "3b681261bf198e5540bd4050eb9feab1c03520c1",
+    "complete": "not run in cloud",
+    "custodian": "fleet guarded lander",
+    "findings": "not established",
+    "historyScanned": "not run in cloud"
+  },
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "shallow": false,
+  "tag": "sd-orbit-c-f128",
+  "test_budget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "verify": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "3b681261bf198e5540bd4050eb9feab1c03520c1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42426494364",
+      "id": 42426494364,
+      "name": "Verify",
+      "observed_at": "2026-11-07T23:48:15.773606+00:00",
+      "status": "in_progress"
+    }
+  ],
+  "verify_loading": [
+    {
+      "args": [
+        "exec",
+        "tsx",
+        "--test",
+        "--no-test-only",
+        "--test-concurrency=1",
+        "--test-reporter=spec",
+        "--test-reporter-destination=stdout",
+        "--test-reporter=./scripts/core-results.mjs",
+        "--test-reporter-destination=verification/core-1-results.jsonl",
+        "tests/core/capture-no-console.test.ts",
+        "tests/core/crm-import-erasure.test.ts",
+        "tests/core/crm-import.test.ts",
+        "tests/core/managed-owner.test.ts",
+        "tests/core/request-scheduling.test.ts"
+      ],
+      "file": "tests/core/managed-owner.test.ts",
+      "shard": "core-1"
+    }
+  ]
+}

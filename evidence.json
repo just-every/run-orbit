@@ -1,0 +1,118 @@
+{
+  "files": [
+    {
+      "blob": "27bae94ba45e106cb1e9d6fbbbdd2707038b290e",
+      "bytes": 6000,
+      "path": "RECEIPT.json",
+      "sha256": "57ba5cab8ab7a764d36a711a09dda992b108a5ad819756512c06d09e235ab5b2"
+    },
+    {
+      "blob": "33716a9ce1deeeeea15a0e95e895d1d60c0187c7",
+      "bytes": 9820,
+      "path": "REPORT.md",
+      "sha256": "96e14949ae34d25a473462b44f5b46a91a95f2cc58ab6ae007bf03c9cc636cf2"
+    },
+    {
+      "blob": "85cc67ecffb2c928e239223c466faca7f9cf450b",
+      "bytes": 329,
+      "path": "candidate-ci.json",
+      "sha256": "91d0abcfffb4504448cf29d2c852984ccc5e249bddf9223e91d926ac233b70f0"
+    },
+    {
+      "blob": "4a44b836ae23cb3171022cc95193170d5b6aa2a6",
+      "bytes": 287,
+      "path": "ci-observations.jsonl",
+      "sha256": "fe727eb21fd6e8f275c978b4abdd8f3f1b198d5cb7b83241d0a43b4509a4fec0"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "first-party.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "blob": "77231a2a5e5fa3708173dfa55ed6f8e05dc24150",
+      "bytes": 983920,
+      "path": "lock.log",
+      "sha256": "dca7ddc5166873661a6ed051a81f20d9807ea451192c0845a716e90689cc2dcd"
+    },
+    {
+      "blob": "28018b5e4ce13a6e636b3d5caf414c32440ff2eb",
+      "bytes": 1371,
+      "path": "main-ci.json",
+      "sha256": "0d1869c3dc15abe68c9c21f02decbe159e412ff0794738e4a0942b9911a486c5"
+    },
+    {
+      "blob": "ec6b3cc929f93a2a1cac744394b36bc151083c33",
+      "bytes": 2174,
+      "path": "managed-owner-control-diagnostic.log",
+      "sha256": "81c2d6d6f136b1ab7ca8c59aa835b0b89b524b22bc8021e1d0da2c12f5f62c10"
+    },
+    {
+      "blob": "ee4834d0b338ba6de48af3de9aaea587af72256e",
+      "bytes": 2129,
+      "path": "managed-owner-control-initial.log",
+      "sha256": "da44ee36ca81634838daf1a1f2128cbe13bbaa6fb2efc00ca5c0a5f110c50ecf"
+    },
+    {
+      "blob": "442a63c11c76e5e8b57616f4ed0c325787e1fae0",
+      "bytes": 2199,
+      "path": "managed-owner-initial.log",
+      "sha256": "8199a297cc59e898a1a9a106f87e051daffb77930cd463d43aed6b062965937e"
+    },
+    {
+      "blob": "99273c06c7fb60dbb7fa0a7cbfcb53ecdedc76d8",
+      "bytes": 1881,
+      "path": "managed-owner.log",
+      "sha256": "fdfba0326db9edd4e40aa8156c1aa235fe39f7916f60cef558209568dc9cf6c3"
+    },
+    {
+      "blob": "b5b46af72873b972f8486cff2b7f1458073aabba",
+      "bytes": 1063,
+      "path": "product-push.log",
+      "sha256": "1c0d0fd825cd2db535f86abf43809dc5fccc024f49a4a575e0c83c8d7d87e6f6"
+    },
+    {
+      "blob": "9cc4e418a2e47419f414cf52cb050e0ba9a0a519",
+      "bytes": 74,
+      "path": "product-remote.txt",
+      "sha256": "33dd41a6e713f7f032fa1994b2a65d29478818bead05e98f2131d06e08fd33a8"
+    },
+    {
+      "blob": "e2aacd7001b23ef7c4400ffa1d9a89e729e15c98",
+      "bytes": 11665,
+      "path": "proof-lines.txt",
+      "sha256": "4b5859baf56ec3c15875c50c06aceb539c538f9b8a4f5f0fe02a3c67a3bbd3db"
+    },
+    {
+      "blob": "aacad36dae52c49dff93b93205e582a4b2678120",
+      "bytes": 45,
+      "path": "test-budget.json",
+      "sha256": "7c5cf44947352f9650b0d7f671d412965cafe09515fe4990444698db39ebba7b"
+    },
+    {
+      "blob": "d2ff5713870e60865a21af7b23d0a026b0ef572c",
+      "bytes": 102,
+      "path": "typecheck.log",
+      "sha256": "f37ce34e3b9c141155e1f1815034f0447a15faf31538db314fbb099f0dfe2abf"
+    },
+    {
+      "blob": "79edcdcb09a50184e8ae0c1a5ba4a42ef5dfb33b",
+      "bytes": 618,
+      "path": "verify-loading.json",
+      "sha256": "622aaf76c3689886355764b47c0cfd1c4970374c813cba00db76eb3552c7b459"
+    },
+    {
+      "blob": "7f08ad713eb644515ca188ca96c07a87314528b5",
+      "bytes": 60,
+      "path": "views.log",
+      "sha256": "cdada4f46860989b6e41904b5bffd1be7976cfde8b8dba1b4a7dcf41c522fcda"
+    }
+  ],
+  "product_branch": "cloud/sd-orbit-c-f128",
+  "product_head": "3b681261bf198e5540bd4050eb9feab1c03520c1",
+  "ref": "refs/heads/evidence/sd-orbit-c-f128",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "sd-orbit-c-f128"
+}

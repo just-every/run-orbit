@@ -1,0 +1,41 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+{"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+✖ Managed owner claim verifies RER authority and creates the native owner/session exactly once (110939.438138ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 116769.287912
+
+✖ failing tests:
+
+test at tests/core/managed-owner.test.ts:1:380
+✖ Managed owner claim verifies RER authority and creates the native owner/session exactly once (110939.438138ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - true
+  
+      at prepare (/home/agent/rer-consolidation/work/sd-orbit-c-f128/run-orbit/tests/support/agent-door-proof.ts:260:45)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async personOnlyDecisionMarksProof (/home/agent/rer-consolidation/work/sd-orbit-c-f128/run-orbit/tests/support/agent-door-proof.ts:296:20)
+      at async <anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f128/run-orbit/tests/support/agent-door-proof.ts:223:7)
+      at async localAgentCredentialProof (/home/agent/rer-consolidation/work/sd-orbit-c-f128/run-orbit/tests/support/agent-door-local-proof.ts:27:2)
+      at async agentDoorProof (/home/agent/rer-consolidation/work/sd-orbit-c-f128/run-orbit/tests/support/agent-door-proof.ts:220:5)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f128/run-orbit/tests/core/managed-owner.test.ts:50:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
