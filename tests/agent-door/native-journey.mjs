@@ -103,3 +103,16 @@ export default async function sellerDay({tool,request,origin,cookie}) {
 // an edition migration at Base edition-authoring/edition-migrations.mjs:33-34.
 // archive-source.mjs:34 correctly refuses unavailable Git ancestry. Preserve
 // the other pins; never invent ancestry or skip their migration obligations.
+
+/** Read back the conformance save through the unchanged native owner door. */
+export async function afterStep({step,args,result,request,origin,cookie}){
+ if(step.tool!=='orbit.workflows.save_draft')return;
+ const response=await request(new URL('/api/workflows',origin).href,{headers:{Cookie:cookie}});
+ assert.equal(response.status,200);
+ const inventory=await response.json(),saved=inventory.workflows.find(workflow=>workflow.id===args.id);
+ assert.equal(saved.version,args.source_version+1);assert.equal(saved.status,'draft');
+ assert.equal(saved.activeVersion,null);
+ assert.deepEqual(saved.definition,result.workflow.definition);
+ assert.equal(saved.name,args.name);
+ assert.ok(inventory.runs.every(run=>run.workflowId!==args.id),'saving a draft creates no run');
+}

@@ -25,12 +25,13 @@ export interface RejectedReportProofContext {
   cookie: string;
   ownerId: string;
   sourceId: string;
+  reviewerEmail: string;
   period: {id: string; version: number; from: string; through: string};
   adopt: (policy: ReturnType<typeof autonomousPolicy>) => Promise<void>;
   businessCall: (name: string, args: Record<string, unknown>, overrides?: Record<string, unknown>, method?: string, rpcId?: number) => Promise<{status: number; body: any}>;
 }
 
-export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>,collaboratorProof:(context:CollaboratorProofContext)=>Promise<void>,captureSecurityProof:(context:CaptureSecurityProofContext)=>Promise<void>) {
+export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>,collaboratorProof:(context:CollaboratorProofContext)=>Promise<void>,workflowProof:(context:RejectedReportProofContext)=>Promise<void>,captureSecurityProof:(context:CaptureSecurityProofContext)=>Promise<void>) {
   const fixture = await isolatedDatabase();
   try {
     await checkAgentArtifacts(fixture.db,contactAgentArtifacts);
@@ -97,7 +98,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
       assert.equal(response!.status,200);
       assert.equal((await response!.json() as {result:{protocolVersion:string}}).result.protocolVersion,version);
     }
-    const principal={person:{id:owner.operatorId},agent:{id:'ari',name:'Ari'},scopes:['records:read','records:write','handoffs:read','handoffs:write','events:read','drafts:read','drafts:write','briefs:read','risks:read','sources:read','forecasts:read','forecasts:write','reports:read','reports:write','operations:read','capture:read','capture:write'],consent:'door-test-consent'};
+    const principal={person:{id:owner.operatorId},agent:{id:'ari',name:'Ari'},scopes:['records:read','records:write','handoffs:read','handoffs:write','events:read','drafts:read','drafts:write','briefs:read','risks:read','sources:read','forecasts:read','forecasts:write','reports:read','reports:write','operations:read','workflows:write','capture:read','capture:write'],consent:'door-test-consent'};
     const companyArgs={kind:'company',record:{name:'Brightwork Studio'},idempotency_key:'native-company'};
     assert.equal((await door.invoke('orbit.records.create',companyArgs,principal)).code,'policy_unset');
     const envelope=await policyEnvelope({origin,business:'door-company',seq:0,revision:0,signer:{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation}},autonomousPolicy());
@@ -211,7 +212,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     assert.equal(privateMcpPreview.status,200);assert.equal(privateMcpPreview.body.result._meta['com.runeditrun/untrusted'],true,'native protected report groups remain data, never instructions');
     assert.equal(privatePreview.values.value,1);assert.ok(JSON.stringify(privatePreview.values.groups).includes('private_amount'));
     const privateReport=await call('orbit.reports.compute',{...privatePeriod,review_hash:privatePreview.reviewHash,idempotency_key:'private-report'});
-    await rejectedReportProof({bindings,door,cookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,adopt,businessCall});
+    await rejectedReportProof({bindings,door,cookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});
     await agentDoorClassificationProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await captureSecurityProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await call('orbit.forecasts.read',{opportunity_id:privateOpportunity.id});
@@ -249,6 +250,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
     await agentAuditRetentionProof({bindings,cookie,companyId,issuer,sign,sponsor:{id:owner.operatorId,name:owner.displayName},
       setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy())});
+    await workflowProof({bindings,door,cookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});
     await adopt(sensitiveBlocked);
     const witness=await call('orbit.operations.read',{});
     assert.ok(witness.record_mail_drafts.rows>0);
