@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {agentWorkflowProof} from '../support/agent-workflow-proof';
 import {test} from 'node:test';
 import {buildSite} from '../../src/core/features/public/docs/build/site';
 import {agentDocsInventory} from '../agent-door/native-journey.mjs';
@@ -8,7 +9,8 @@ import {agentDoorCollaboratorProof} from '../support/agent-door-collaborator-pro
 import {identityResponse, operatorFromRequest} from '../../src/core/features/identity';
 import {autonomousPolicy,heldPolicy} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 
-async function rejectedNativeReportProof({bindings,door,cookie,ownerId,sourceId,period,adopt,businessCall}: RejectedReportProofContext) {
+async function rejectedNativeReportProof(context: RejectedReportProofContext) {
+  const {bindings,door,cookie,ownerId,sourceId,period,adopt,businessCall}=context;
   const origin=bindings.AUTH_ORIGIN!,db=bindings.DB;
   const docs=buildSite(process.cwd()),page=docs.pages.find(page=>page.slug==='agents');
   assert.deepEqual(docs.problems,[]);
@@ -169,5 +171,5 @@ test('Managed owner claim verifies RER authority and creates the native owner an
     assert.equal(direct!.status, 409);
     assert.equal((await direct!.json() as {error: string}).error, 'already_initialized');
   } finally { await fixture.dispose(); }
-  await agentDoorProof(context,rejectedNativeReportProof,agentDoorCollaboratorProof);
+  await agentDoorProof(context,rejectedNativeReportProof,agentDoorCollaboratorProof,agentWorkflowProof);
 });
