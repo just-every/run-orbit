@@ -1,0 +1,163 @@
+{
+  "base_main": "6d869cb48cbd6bcebb1566be460b49223e892bb6",
+  "blockers": [],
+  "branch": "cloud/sd-orbit-c-f137",
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/outreach-limits.test.ts",
+      "exit": 0,
+      "name": "touched file",
+      "passed_tests": 3,
+      "receipt": "outreach-limits.log"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern 'OUT-010 OUT-018' tests/core/outreach-limits.test.ts",
+      "exit": 0,
+      "name": "final selected registration",
+      "passed_tests": 1,
+      "receipt": "retry-accounting-final.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "name": "typecheck",
+      "passed_tests": null,
+      "receipt": "typecheck.log"
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "name": "first-party",
+      "passed_tests": null,
+      "receipt": "first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "name": "generated views write",
+      "passed_tests": null,
+      "receipt": "views-write.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "name": "generated views check",
+      "passed_tests": null,
+      "receipt": "views-check.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "name": "source lock write",
+      "passed_tests": null,
+      "receipt": "lock-write.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "name": "source lock check",
+      "passed_tests": null,
+      "receipt": "lock-check.log"
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs and checkTestBudget()",
+      "exit": 0,
+      "name": "test budget",
+      "passed_tests": null,
+      "receipt": "test-budget-check.json"
+    }
+  ],
+  "ci": {
+    "runs": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_sha": "daf0a697d35bf4250bcdbef1bd394b6e6fbcf742",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42479905857",
+        "id": 42479905857,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ]
+  },
+  "claim": {
+    "clause": "OUT-018",
+    "point": 1,
+    "scope": "existing single-recipient one-to-one count-once limb only",
+    "status": "PARTIAL"
+  },
+  "contract_changed": false,
+  "counts": {
+    "after": {
+      "done": 36,
+      "missing": 32,
+      "partial": 136
+    },
+    "before": {
+      "done": 36,
+      "missing": 32,
+      "partial": 136
+    }
+  },
+  "created_at": "2026-11-08T12:23:27.007446+00:00",
+  "generated_views_committed": false,
+  "github_api_calls": 2,
+  "head": "daf0a697d35bf4250bcdbef1bd394b6e6fbcf742",
+  "landing": {
+    "candidate_run_site": null,
+    "main_equals_candidate": false,
+    "status": "pending"
+  },
+  "migration_ledger": {
+    "reason": "No migration changed",
+    "status": "not-applicable"
+  },
+  "pr": null,
+  "probe": {
+    "door": "Native Workbench and authenticated Settings with normal hosted timers",
+    "extra_submissions": 0,
+    "http_edge": [
+      429,
+      202
+    ],
+    "observation_basis": "Passing assertions in the final selected registration",
+    "other_users_unchanged": true,
+    "repeated_approval_status": 409,
+    "sender_used": [
+      0,
+      1,
+      1
+    ],
+    "submissions": 2
+  },
+  "publication_scan": {
+    "commit": "daf0a697d35bf4250bcdbef1bd394b6e6fbcf742",
+    "complete": null,
+    "findings": null,
+    "historyScanned": null,
+    "owner": "maintained fleet lander",
+    "status": "not-run-in-cloud"
+  },
+  "push": {
+    "attempt": 1,
+    "remote_ref": "refs/heads/cloud/sd-orbit-c-f137",
+    "status": "success",
+    "verified_remote_head": "daf0a697d35bf4250bcdbef1bd394b6e6fbcf742"
+  },
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "source_lock_fresh": true,
+  "source_sha256": {
+    "sources.lock.json": "03d0b77541cc5d0aef1813f86ac7f7f3e94b1c33dfd13d34704ed9d59d65f78f",
+    "tests/core/outreach-limits.test.ts": "3686b73abd7a45f6e3984fbd06e6235c386d591d45db9c74b1727d6c44bf197a",
+    "tests/support/outreach-retry-accounting.ts": "ca433a442217d180865e8dcd4cb0e2ea130597ed55663f66ba4ca3c7a7a767c4"
+  },
+  "tag": "sd-orbit-c-f137",
+  "tests": {
+    "after": 200,
+    "before": 200,
+    "qualifications": 2,
+    "registered": 198,
+    "removed_or_narrowed_assertions": false
+  }
+}

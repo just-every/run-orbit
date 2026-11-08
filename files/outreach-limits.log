@@ -1,0 +1,14 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ OUT-006 BASE-OPS-004 transient rate limits stop after five attempts within one hour and notify once (37166.685785ms)
+✔ OUT-010 OUT-018 one user's volume never consumes another's budget and every deferral names its limit (53309.986941ms)
+✔ OUT-007 OUT-009 OUT-012 a signed provider unsubscribe stops the recipient and schedule within sixty seconds and returns the opportunity to NOW once (29706.509609ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 124515.198772
