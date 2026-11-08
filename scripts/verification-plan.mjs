@@ -31,7 +31,8 @@ const minutes = {
   'newtests/t096/archive-native.test.ts': 8.3, 'newtests/t096/archive-terminal-recovery.test.ts': 7.6, 'newtests/t096/archive-view-rollback.test.ts': 3.7,
   'newtests/t096/archive-import-recovery.test.ts': 3.4, 'newtests/t096/archive-cli-native.test.ts': 2.4, 'newtests/t096/archive-upgrade-preflight.test.ts': 1.4,
   'newtests/t096/browser-journeys.test.ts': 9.57, 'newtests/t096/report-disclosure.test.ts': 10.28, 'newtests/t096/forms-native.test.ts': 8.87,
-  'newtests/t096/delegation-collaborator.test.ts': 1.99, 'newtests/t096/collaborator-lifecycle.test.ts': 2.14, 'newtests/t096/forward-upgrade.test.ts': 7.49,
+  // Expanded TEAM-001 native and browser journey: 3.05 minutes in the local run.
+  'newtests/t096/delegation-collaborator.test.ts': 1.99, 'newtests/t096/collaborator-lifecycle.test.ts': 3.1, 'newtests/t096/forward-upgrade.test.ts': 7.49,
   'newtests/t096/collaborator-links.test.ts': 0.39, 'newtests/t096/emitted-restart.test.ts': 0.40,
   'newtests/t096/empty-native.test.ts': 0.40, 'newtests/t096/report-time-boundaries.test.ts': 1.64, 'newtests/t096/report-population-race.test.ts': 0.37,
 };
