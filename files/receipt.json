@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f142",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f142",
+  "head": "ae5c8f3fcf701c704938bc9a669d9e72c1509e1e",
+  "origin_main": "6d869cb48cbd6bcebb1566be460b49223e892bb6",
+  "generated_at": "2026-11-08T12:33:51.965838+00:00",
+  "new_product_commit": false,
+  "reason": "Requested focused helper and assertions already exist at the explicitly pinned starting commit; runtime proof found no demonstrated defect.",
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/outreach-limits.test.ts",
+      "exit": 0,
+      "passed": 3,
+      "failed": 0,
+      "log": "outreach-limits.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.log"
+    }
+  ],
+  "probe": {
+    "proof": "OUT-026 provider retry timing",
+    "messageId": "01Q40FF2802HZEAKMJNSPD64BG",
+    "retryAfter": "2030-01-08T10:01:00.000Z",
+    "beforeRetryAt": "2030-01-08T10:00:59.999Z",
+    "submissionTimes": [
+      "2030-01-08T10:00:00.000Z",
+      "2030-01-08T10:01:00.000Z"
+    ],
+    "providerMessageId": "synthetic-orbit-4",
+    "acceptedAt": "2030-01-08T10:01:00.000Z"
+  },
+  "clause": {
+    "id": "OUT-026",
+    "before": "partial",
+    "after": "partial",
+    "whole_acceptance_points_closed": [],
+    "selected_limb_proven": "Acceptance 2 provider-throttle next-permitted-time for one native one-to-one message"
+  },
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "test_budget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "publication_scan": {
+    "commit": "ae5c8f3fcf701c704938bc9a669d9e72c1509e1e",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "status": "NOT RUN in cloud; maintained fleet gate owns the full-history scan"
+  },
+  "landing": {
+    "main_equals_candidate": false,
+    "run_site_run_id": null,
+    "status": "branch only; fleet gate pending"
+  },
+  "contract_unchanged": true,
+  "generated_views_restored": true,
+  "lock_fresh": true,
+  "provider_qualification": "HTTP network edge fake only; no live provider qualification",
+  "browser": "No screen or UI source changed; no new browser proof required for this HTTP timing limb.",
+  "ci_runs": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f142",
+      "head_sha": "ae5c8f3fcf701c704938bc9a669d9e72c1509e1e",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42480801299",
+      "id": 42480801299,
+      "name": "Verify",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f138",
+      "head_sha": "ae5c8f3fcf701c704938bc9a669d9e72c1509e1e",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42479341040",
+      "id": 42479341040,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "ci_run_id": 42480801299,
+  "ci_status": "in_progress",
+  "ci_conclusion": null
+}

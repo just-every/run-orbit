@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "schemaVersion": 1,
+  "edition": "just-every/orbit",
+  "manifest": "dc7d6704d5ed529d120a628ed52e9bd9804900d13506a343fd1606c02de0d59d",
+  "toolchain": {
+    "id": "runeditrun/edition-authoring",
+    "version": "1.1.0",
+    "sha256": "8d25b7528ba7c5301de349b51b7e6ca44d6b87478f27b5685a5c07b567612e13"
+  }
+}

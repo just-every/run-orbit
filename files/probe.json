@@ -1,0 +1,12 @@
+{
+  "proof": "OUT-026 provider retry timing",
+  "messageId": "01Q40FF2802HZEAKMJNSPD64BG",
+  "retryAfter": "2030-01-08T10:01:00.000Z",
+  "beforeRetryAt": "2030-01-08T10:00:59.999Z",
+  "submissionTimes": [
+    "2030-01-08T10:00:00.000Z",
+    "2030-01-08T10:01:00.000Z"
+  ],
+  "providerMessageId": "synthetic-orbit-4",
+  "acceptedAt": "2030-01-08T10:01:00.000Z"
+}
