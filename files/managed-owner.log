@@ -1,0 +1,17 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+{"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+{"proof":"SURFACE-010.1.report-definition-links","policy":"autonomous","versions":[1,2],"links":["orbit://reports/synthetic-orbit-definition-autonomous/definition/1","orbit://reports/synthetic-orbit-definition-autonomous/definition/2"],"earlierContentUnchanged":true,"currentAccessRefusals":["sharing","scope","sponsor","policy"],"attribution":"agent for native sponsor","decision":"autonomous"}
+{"proof":"SURFACE-010.1.report-definition-links","policy":"held","versions":[1,2],"links":["orbit://reports/synthetic-orbit-definition-held/definition/1","orbit://reports/synthetic-orbit-definition-held/definition/2"],"earlierContentUnchanged":true,"currentAccessRefusals":["sharing","scope","sponsor","policy"],"attribution":"agent for native sponsor","decision":"review"}
+{"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"3675f243-3d4f-436f-ad0b-fa215ef60a97","revision":12,"summary_sha256":"1ca0a5f3f860a18adc5cff148caf709f8c7bf2d57b9f805dd764ed4261c6ba61","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"1499bc4c-3e02-490b-9edb-2f8cb71f2595","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+✔ Managed owner claim verifies RER authority and creates the native owner/session exactly once (117675.02001ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 121917.18689

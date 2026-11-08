@@ -1,0 +1,265 @@
+{
+  "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+  "recordedAt": "2026-11-08T11:36:42.711103+00:00",
+  "checks": [
+    {
+      "name": "agent-conformance",
+      "command": [
+        "timeout",
+        "900",
+        "node",
+        "node_modules/@runeditrun/rer/cli/agent-door.mjs",
+        ".",
+        "deploy.json"
+      ],
+      "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+      "started": "2026-11-08T11:34:30.702473+00:00",
+      "finished": "2026-11-08T11:34:55.292354+00:00",
+      "exit": 0,
+      "log": "agent-conformance.log"
+    },
+    {
+      "name": "agent-surface",
+      "command": [
+        "timeout",
+        "120",
+        "pnpm",
+        "exec",
+        "tsx",
+        "scripts/agent-surface.ts",
+        "--check"
+      ],
+      "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+      "started": "2026-11-08T11:32:13.591365+00:00",
+      "finished": "2026-11-08T11:32:16.326745+00:00",
+      "exit": 0,
+      "log": "agent-surface.log"
+    },
+    {
+      "name": "build",
+      "command": [
+        "timeout",
+        "900",
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "build"
+      ],
+      "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+      "started": "2026-11-08T11:33:45.987913+00:00",
+      "finished": "2026-11-08T11:33:54.369828+00:00",
+      "exit": 0,
+      "log": "build.log"
+    },
+    {
+      "name": "contract-check",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+      "started": "2026-11-08T11:31:57.828429+00:00",
+      "finished": "2026-11-08T11:31:58.023175+00:00",
+      "exit": 0,
+      "log": "contract-check.log"
+    },
+    {
+      "name": "contract-write",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+      "started": "2026-11-08T11:31:57.576052+00:00",
+      "finished": "2026-11-08T11:31:57.741044+00:00",
+      "exit": 0,
+      "log": "contract-write.log"
+    },
+    {
+      "name": "first-party",
+      "command": [
+        "timeout",
+        "600",
+        "pnpm",
+        "exec",
+        "rer",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+      "started": "2026-11-08T11:32:12.592749+00:00",
+      "finished": "2026-11-08T11:32:13.533487+00:00",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "name": "managed-owner",
+      "command": [
+        "timeout",
+        "900",
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "tests/core/managed-owner.test.ts"
+      ],
+      "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+      "started": "2026-11-08T11:31:40.087463+00:00",
+      "finished": "2026-11-08T11:33:42.522430+00:00",
+      "exit": 0,
+      "log": "managed-owner.log"
+    },
+    {
+      "name": "source-check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+      "started": "2026-11-08T11:31:58.775184+00:00",
+      "finished": "2026-11-08T11:31:59.321171+00:00",
+      "exit": 0,
+      "log": "source-check.log"
+    },
+    {
+      "name": "source-lock",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "lock"
+      ],
+      "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+      "started": "2026-11-08T11:31:58.089905+00:00",
+      "finished": "2026-11-08T11:31:58.715426+00:00",
+      "exit": 0,
+      "log": "source-lock.log"
+    },
+    {
+      "name": "test-budget-corrected",
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {checkTestBudget} from \"./scripts/verification-inventory.mjs\"; const {files,...counts}=checkTestBudget(); console.log(JSON.stringify(counts));"
+      ],
+      "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+      "started": "2026-11-08T11:32:32.288965+00:00",
+      "finished": "2026-11-08T11:32:32.805070+00:00",
+      "exit": 0,
+      "log": "test-budget-corrected.log"
+    },
+    {
+      "name": "test-budget",
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {inventory} from \"./scripts/verification-inventory.mjs\"; console.log(JSON.stringify(inventory()));"
+      ],
+      "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+      "started": "2026-11-08T11:32:16.377556+00:00",
+      "finished": "2026-11-08T11:32:16.622163+00:00",
+      "exit": 1,
+      "log": "test-budget.log"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "timeout",
+        "600",
+        "pnpm",
+        "run",
+        "typecheck"
+      ],
+      "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+      "started": "2026-11-08T11:31:41.427256+00:00",
+      "finished": "2026-11-08T11:31:59.316158+00:00",
+      "exit": 0,
+      "log": "typecheck.log"
+    }
+  ],
+  "setup": {
+    "command": [
+      "npx",
+      "-y",
+      "@runeditrun/rer",
+      "setup",
+      "--owner-email",
+      "fleet@runeditrun.com",
+      "--non-interactive"
+    ],
+    "exit": 0,
+    "privateRuntimeLogExcluded": true
+  },
+  "push": {
+    "command": [
+      "python3",
+      "/home/agent/rer-consolidation/.tools/cloud-push.py",
+      "origin",
+      "cloud/sd-orbit-c-f135"
+    ],
+    "attempts": 1,
+    "exit": 0,
+    "ref": "refs/heads/cloud/sd-orbit-c-f135"
+  },
+  "ciDiscovery": {
+    "total_count": 1,
+    "workflow_runs": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_sha": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42476333570",
+        "id": 42476333570,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ]
+  },
+  "contractCounts": {
+    "before": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32
+    },
+    "after": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32
+    }
+  },
+  "testBudget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "ciFinal": {
+    "conclusion": null,
+    "event": "push",
+    "head_sha": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42476333570",
+    "id": 42476333570,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "productCustody": "PUSHED",
+  "githubApiCalls": 3,
+  "githubPolls": {
+    "discovery": "2026-11-08T11:34:29Z",
+    "last": "2026-11-08T11:39:30Z",
+    "singleWatcher": true,
+    "minimumIntervalSeconds": 300
+  },
+  "publicationScan": {
+    "commit": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "reason": "fleet lander owns exact-tree publication scan"
+  },
+  "mainLandingClaimed": false
+}

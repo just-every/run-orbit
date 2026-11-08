@@ -1,0 +1,14 @@
+{
+  "name": "test-budget",
+  "command": [
+    "node",
+    "--input-type=module",
+    "-e",
+    "import {inventory} from \"./scripts/verification-inventory.mjs\"; console.log(JSON.stringify(inventory()));"
+  ],
+  "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+  "started": "2026-11-08T11:32:16.377556+00:00",
+  "finished": "2026-11-08T11:32:16.622163+00:00",
+  "exit": 1,
+  "log": "test-budget.log"
+}

@@ -1,0 +1,128 @@
+{
+  "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+  "checkedAt": "2026-11-08T11:37:33.054060+00:00",
+  "selection": [
+    {
+      "path": "REPORT.md",
+      "bytes": 14341
+    },
+    {
+      "path": "CHECKS.json",
+      "bytes": 6189
+    },
+    {
+      "path": "PROBES.json",
+      "bytes": 1792
+    },
+    {
+      "path": "mechanical-review.json",
+      "bytes": 592
+    },
+    {
+      "path": "ci-discovery.json",
+      "bytes": 259
+    },
+    {
+      "path": "agent-conformance.json",
+      "bytes": 374
+    },
+    {
+      "path": "agent-conformance.log",
+      "bytes": 151150
+    },
+    {
+      "path": "agent-surface.json",
+      "bytes": 353
+    },
+    {
+      "path": "agent-surface.log",
+      "bytes": 63
+    },
+    {
+      "path": "build.json",
+      "bytes": 312
+    },
+    {
+      "path": "build.log",
+      "bytes": 3703
+    },
+    {
+      "path": "contract-write.json",
+      "bytes": 306
+    },
+    {
+      "path": "contract-write.log",
+      "bytes": 28
+    },
+    {
+      "path": "contract-check.json",
+      "bytes": 306
+    },
+    {
+      "path": "contract-check.log",
+      "bytes": 32
+    },
+    {
+      "path": "first-party.json",
+      "bytes": 351
+    },
+    {
+      "path": "first-party.log",
+      "bytes": 0
+    },
+    {
+      "path": "managed-owner.json",
+      "bytes": 360
+    },
+    {
+      "path": "managed-owner.log",
+      "bytes": 1975
+    },
+    {
+      "path": "source-lock.json",
+      "bytes": 327
+    },
+    {
+      "path": "source-lock.log",
+      "bytes": 492119
+    },
+    {
+      "path": "source-check.json",
+      "bytes": 330
+    },
+    {
+      "path": "source-check.log",
+      "bytes": 492133
+    },
+    {
+      "path": "test-budget.json",
+      "bytes": 405
+    },
+    {
+      "path": "test-budget.log",
+      "bytes": 703
+    },
+    {
+      "path": "test-budget-corrected.json",
+      "bytes": 469
+    },
+    {
+      "path": "test-budget-corrected.log",
+      "bytes": 45
+    },
+    {
+      "path": "typecheck.json",
+      "bytes": 303
+    },
+    {
+      "path": "typecheck.log",
+      "bytes": 208
+    }
+  ],
+  "symlinks": 0,
+  "injectedCredentialMatches": 0,
+  "credentialShapeMatches": 0,
+  "privateKeyMatches": 0,
+  "signedBearerMatches": 0,
+  "privateRuntimeLogSelected": false
+}

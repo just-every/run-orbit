@@ -1,0 +1,21 @@
+{
+  "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+  "base": "a301c3152b7c1c564610f20b1e5100e98dd46ba6",
+  "contractStatusDiff": false,
+  "candidateCommits": 1,
+  "identities": [
+    "Run Edit Run fleet <fleet@runeditrun.com>",
+    "Run Edit Run fleet <fleet@runeditrun.com>",
+    ""
+  ],
+  "newEmailShapedStrings": 0,
+  "generatedViewsChanged": false,
+  "scopeFiles": [
+    "agent-surface.json",
+    "scripts/agent-surface.ts",
+    "sources.lock.json",
+    "src/core/features/agent-door/reports.ts",
+    "tests/core/managed-owner.test.ts",
+    "tests/support/agent-door-proof.ts"
+  ]
+}

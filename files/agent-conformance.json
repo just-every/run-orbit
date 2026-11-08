@@ -1,0 +1,16 @@
+{
+  "name": "agent-conformance",
+  "command": [
+    "timeout",
+    "900",
+    "node",
+    "node_modules/@runeditrun/rer/cli/agent-door.mjs",
+    ".",
+    "deploy.json"
+  ],
+  "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+  "started": "2026-11-08T11:34:30.702473+00:00",
+  "finished": "2026-11-08T11:34:55.292354+00:00",
+  "exit": 0,
+  "log": "agent-conformance.log"
+}

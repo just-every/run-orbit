@@ -1,0 +1,18 @@
+{
+  "name": "first-party",
+  "command": [
+    "timeout",
+    "600",
+    "pnpm",
+    "exec",
+    "rer",
+    "check",
+    "--profile",
+    "first-party"
+  ],
+  "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+  "started": "2026-11-08T11:32:12.592749+00:00",
+  "finished": "2026-11-08T11:32:13.533487+00:00",
+  "exit": 0,
+  "log": "first-party.log"
+}

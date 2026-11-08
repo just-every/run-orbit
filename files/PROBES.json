@@ -1,0 +1,62 @@
+{
+  "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+  "door": "authenticated MCP",
+  "proofs": [
+    {
+      "proof": "SURFACE-010.1.report-definition-links",
+      "policy": "autonomous",
+      "versions": [
+        1,
+        2
+      ],
+      "links": [
+        "orbit://reports/synthetic-orbit-definition-autonomous/definition/1",
+        "orbit://reports/synthetic-orbit-definition-autonomous/definition/2"
+      ],
+      "earlierContentUnchanged": true,
+      "currentAccessRefusals": [
+        "sharing",
+        "scope",
+        "sponsor",
+        "policy"
+      ],
+      "attribution": "agent for native sponsor",
+      "decision": "autonomous"
+    },
+    {
+      "proof": "SURFACE-010.1.report-definition-links",
+      "policy": "held",
+      "versions": [
+        1,
+        2
+      ],
+      "links": [
+        "orbit://reports/synthetic-orbit-definition-held/definition/1",
+        "orbit://reports/synthetic-orbit-definition-held/definition/2"
+      ],
+      "earlierContentUnchanged": true,
+      "currentAccessRefusals": [
+        "sharing",
+        "scope",
+        "sponsor",
+        "policy"
+      ],
+      "attribution": "agent for native sponsor",
+      "decision": "review"
+    }
+  ],
+  "emittedWorkerConformance": {
+    "points": 3647,
+    "passed": 3647,
+    "mandatoryResourceFixtureChecks": [
+      "PASS BASE-AGENT-003.4.links.autonomous.definition",
+      "PASS BASE-AGENT-003.4.state.autonomous.definition",
+      "PASS BASE-AGENT-003.4.links.autonomous.definition_v2",
+      "PASS BASE-AGENT-003.4.state.autonomous.definition_v2",
+      "PASS BASE-AGENT-003.4.links.held.definition",
+      "PASS BASE-AGENT-003.4.state.held.definition",
+      "PASS BASE-AGENT-003.4.links.held.definition_v2",
+      "PASS BASE-AGENT-003.4.state.held.definition_v2"
+    ]
+  }
+}

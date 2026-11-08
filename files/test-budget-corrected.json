@@ -1,0 +1,14 @@
+{
+  "name": "test-budget-corrected",
+  "command": [
+    "node",
+    "--input-type=module",
+    "-e",
+    "import {checkTestBudget} from \"./scripts/verification-inventory.mjs\"; const {files,...counts}=checkTestBudget(); console.log(JSON.stringify(counts));"
+  ],
+  "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+  "started": "2026-11-08T11:32:32.288965+00:00",
+  "finished": "2026-11-08T11:32:32.805070+00:00",
+  "exit": 0,
+  "log": "test-budget-corrected.log"
+}

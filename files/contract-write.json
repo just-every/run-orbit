@@ -1,0 +1,13 @@
+{
+  "name": "contract-write",
+  "command": [
+    "node",
+    "src/base/contract-docs.mjs",
+    "write"
+  ],
+  "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+  "started": "2026-11-08T11:31:57.576052+00:00",
+  "finished": "2026-11-08T11:31:57.741044+00:00",
+  "exit": 0,
+  "log": "contract-write.log"
+}

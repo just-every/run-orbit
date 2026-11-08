@@ -1,0 +1,17 @@
+{
+  "name": "managed-owner",
+  "command": [
+    "timeout",
+    "900",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "tests/core/managed-owner.test.ts"
+  ],
+  "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+  "started": "2026-11-08T11:31:40.087463+00:00",
+  "finished": "2026-11-08T11:33:42.522430+00:00",
+  "exit": 0,
+  "log": "managed-owner.log"
+}

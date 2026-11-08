@@ -1,0 +1,17 @@
+{
+  "name": "agent-surface",
+  "command": [
+    "timeout",
+    "120",
+    "pnpm",
+    "exec",
+    "tsx",
+    "scripts/agent-surface.ts",
+    "--check"
+  ],
+  "head": "daa9b0a0e50b5e1e97a407f607f0739dc7443fad",
+  "started": "2026-11-08T11:32:13.591365+00:00",
+  "finished": "2026-11-08T11:32:16.326745+00:00",
+  "exit": 0,
+  "log": "agent-surface.log"
+}
