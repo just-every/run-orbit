@@ -2279,7 +2279,7 @@
       "executable": false
     },
     "newtests/t096/browser-form-mapping.ts": {
-      "sha256": "eec1b6f7719b70026440450a2b0fb840d674cd7b7e77985738aaf2e42366bd7d",
+      "sha256": "aa86156fb1390adff8ee2de9c798bb17019d089686040ee2dd23834523a2d4e0",
       "executable": false
     },
     "newtests/t096/browser-form-no-script.ts": {
@@ -2299,7 +2299,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "38aebb5b6084e780ed638743e0f9a6ae57a4f5f85443ac239044d0cd3e0e501e",
+      "sha256": "aa80c7e822009aee1a1d0b27161e4c6f0db57da85b2d1e2a57c1a8fec8dc242b",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -2371,7 +2371,7 @@
       "executable": false
     },
     "newtests/t096/emitted-fixture.ts": {
-      "sha256": "18e1c1b2171f671404e95a1ea426639c9834eac47693ab6415503dfe370e0ee3",
+      "sha256": "f8e52dc97949d5da65fcc5fba2d7171df73e5fd0509bd9b4ea1702dae8ee082a",
       "executable": false
     },
     "newtests/t096/emitted-request.ts": {
@@ -7663,7 +7663,7 @@
       "executable": false
     },
     "src/core/features/publication/fixed-compiler.ts": {
-      "sha256": "175b3e56279749eea9b8c7d1d00f618161614231324867660db7957148404f5c",
+      "sha256": "7480cb9cd64bf04344b35fa9f12a8a25db6ad620f78da65f312be4d0406aa19e",
       "executable": false
     },
     "src/core/features/publication/read-only-preview.ts": {
@@ -10011,7 +10011,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "3d0569b07053d105c2a87009dc42fca89e603f31f95c11b7bb9627bd07adba46",
+      "sha256": "971dba19f45ccc32542b7cd8180863880c554f5645bda4711e3915241cc4a322",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
@@ -10802,12 +10802,16 @@
       "sha256": "66dbde6d5a8bc1aa11d88d07083f4fb5bb39234ef98d7c02a8f281815310a31e",
       "executable": false
     },
+    "tests/support/agent-door-capacity-proof.ts": {
+      "sha256": "49f385a1050565b24b8c8143c66d82f9266d241cd4396e98cc17458d025e91c9",
+      "executable": false
+    },
     "tests/support/agent-door-local-proof.ts": {
       "sha256": "6ceff8803f79e656759bfd99010335047ed2724a7101a428497d4e4a6390e8cc",
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "4d67d219aeca52447ac2214d432e3084f5b987fb7879073ce81f8c6ed9a38590",
+      "sha256": "b7e861e120760fbc71180d95d2e4afb2d2b0343ae2e209be189c7c800d975c2e",
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {
