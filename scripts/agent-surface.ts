@@ -2,6 +2,7 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {orbitTools,orbitResources} from '../src/core/features/agent-door';
 import type {PlatformBindings} from '../src/core/platform/assets';
 const bindings={AUTH_ORIGIN:'https://orbit.example.invalid'} as PlatformBindings;
+const resources=orbitResources(bindings).sort((a,b)=>a.uriTemplate.localeCompare(b.uriTemplate));
 const registered=orbitTools(bindings),builtin={name:'orbit.events.list',scope:'events:read',readOnly:true,classes:['standard'],clauses:['BASE-AGENT-010']};
 const tools=[...registered,builtin].map(({name,scope,readOnly,classes,clauses})=>({name,scope,readOnly,classes,clauses})).sort((a,b)=>a.name.localeCompare(b.name));
 const from=(id:string,pointer:string)=>({$from:id,pointer});
@@ -50,9 +51,11 @@ step('protected_preview','reports.preview',{id:from('protected_definition','/id'
 step('protected_snapshot','reports.compute',{id:from('protected_definition','/id'),version:1,from:'2026-01-01T00:00:00Z',through:'2027-01-01T00:00:00Z',review_hash:from('protected_preview','/reviewHash')},sensitive);
 step('protected_report','reports.read',{id:from('protected_snapshot','/id')},sensitive);
 step('forecast_update','forecasts.update',{id:from('opportunity','/id'),forecast:{probability:40,category:'pipeline',closeDate:null,schedules:[],reason:'CRM estimate from current buyer evidence'}});
+step('save_workflow_draft','workflows.save_draft',{id:{$fixture:'workflow',pointer:'/id'},source_version:{$fixture:'workflow',pointer:'/version'},name:'synthetic-orbit-conformance-draft',definition:{trigger:{kind:'record_changed',recordType:'opportunity'},conditions:[{field:'title',operator:'equals',value:'synthetic-orbit-no-trigger'}],actions:[{kind:'set',field:'title',value:'synthetic-orbit-draft-only'}]}});
+journey.find(item=>item.id==='save_workflow_draft').target={kind:'workflow',id:{$fixture:'workflow',pointer:'/id'}};
 step('witness','operations.read',{});
 step('events','events.list',{limit:200});
-const surface={schema:'rer-agent-surface/1',seed:'orbit',specialist:'sales rep',tools,resources:orbitResources(bindings).map(item=>item.uriTemplate).sort(),notTools:[{clauses:['DATA-001'],reason:'import-door'},{clauses:['PUBLIC-003'],reason:'installation'}],witness:{tool:'orbit.operations.read',args:{}},escalations:[],journey,verification:{owner:{bindings:{RER_MANAGEMENT_ORIGIN:'issuer',RER_INSTALLATION_ID:'installationId',MAIL_FROM:'email'},initializer:'tests/agent-door/initialize-owner.mjs'},journey:'tests/agent-door/native-journey.mjs',replayAdmission:{prepare:['public_company','public_read','public_update']},reviewers:[{label:'sales-review',email:'jamie-review@example.test',initializer:'tests/agent-door/initialize-reviewer.mjs'}]}};
+const surface={schema:'rer-agent-surface/1',seed:'orbit',specialist:'sales rep',tools,resources:orbitResources(bindings).map(item=>item.uriTemplate).sort(),notTools:[{clauses:['DATA-001'],reason:'import-door'},{clauses:['PUBLIC-003'],reason:'installation'}],witness:{tool:'orbit.operations.read',args:{}},escalations:[],journey,verification:{fixtures:{module:'tests/agent-door/workflow-fixture.mjs'},owner:{bindings:{RER_MANAGEMENT_ORIGIN:'issuer',RER_INSTALLATION_ID:'installationId',MAIL_FROM:'email'},initializer:'tests/agent-door/initialize-owner.mjs'},journey:'tests/agent-door/native-journey.mjs',replayAdmission:{prepare:['public_company','public_read','public_update']},reviewers:[{label:'sales-review',email:'jamie-review@example.test',initializer:'tests/agent-door/initialize-reviewer.mjs'}]}};
 const encoded=JSON.stringify(surface,null,2)+'\n';
 if(process.argv.includes('--check')) {if(await readFile('agent-surface.json','utf8')!==encoded)throw new Error('Agent surface drift: run pnpm exec tsx scripts/agent-surface.ts');}
 else await writeFile('agent-surface.json',encoded);
@@ -60,7 +63,9 @@ console.log(`Agent surface: ${tools.length} tools, ${surface.resources.length} r
 
 const docPath='docs/AGENT-DOOR.md', doc=await readFile(docPath,'utf8');
 const table=['| Tool | Scope | Possible classes |','| --- | --- | --- |',...tools.map(tool=>`| \`${tool.name}\` | \`${tool.scope}\` | ${tool.classes.join(', ')} |`)].join('\n');
+const resourceTable=['| Resource template | Name | Scope |','| --- | --- | --- |',...resources.map(resource=>`| \`${resource.uriTemplate}\` | ${resource.name} | \`${resource.scope??'none'}\` |`)].join('\n');
 const docStart=doc.indexOf('## Current tool inventory'),docEnd=doc.indexOf('## Records and retained outcomes');
-const expectedDoc=doc.slice(0,docStart)+'## Current tool inventory\n\n'+table+'\n\n'+doc.slice(docEnd);
+if(docStart<0||docEnd<=docStart)throw new Error('Agent docs inventory boundaries are missing');
+const expectedDoc=doc.slice(0,docStart)+'## Current tool inventory\n\n'+table+'\n\n## Current resource template inventory\n\n'+resourceTable+'\n\n'+doc.slice(docEnd);
 if(process.argv.includes('--check')) {if(doc!==expectedDoc)throw new Error('Agent docs inventory drift: regenerate scripts/agent-surface.ts');}
 else await writeFile(docPath,expectedDoc);

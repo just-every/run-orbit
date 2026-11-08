@@ -1,10 +1,13 @@
 import assert from 'node:assert/strict';
+import type {TestContext} from 'node:test';
 import {isolatedDatabase} from './isolated-database';
 import {identityResponse, operatorFromRequest} from '../../src/core/features/identity';
 import {orbitAgentDoor, orbitBusinessSettings} from '../../src/core/features/agent-door';
 import {SettingsRepository} from '../../src/core/features/settings/repository';
 import {localAgentCredentialProof} from './agent-door-local-proof';
+import {agentCapacityProof} from './agent-door-capacity-proof';
 import {agentDoorBodyLimitProof} from './agent-door-body-limit';
+import {agentDoorClassificationProof} from './agent-door-classification-proof';
 import {agentAuditRetentionProof} from './agent-door-audit-proof';
 import {checkAgentArtifacts} from '../../src/base/modules/agent-door/index.ts';
 import {contactAgentArtifacts} from '../../src/core/features/agent-door/erasure';
@@ -13,6 +16,7 @@ import portabilityPolicy from '../../scripts/installer/portability-policy.mjs';
 import {orbitPeople} from '../../src/core/features/agent-door/people';
 import {autonomousPolicy,heldPolicy,policyEnvelope} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 import type {PlatformBindings} from '../../src/core/platform/assets';
+import type {CollaboratorProofContext} from './agent-door-collaborator-proof';
 
 export interface RejectedReportProofContext {
   bindings: PlatformBindings;
@@ -21,12 +25,13 @@ export interface RejectedReportProofContext {
   reviewerCookie: string;
   ownerId: string;
   sourceId: string;
+  reviewerEmail: string;
   period: {id: string; version: number; from: string; through: string};
   adopt: (policy: ReturnType<typeof autonomousPolicy>) => Promise<void>;
   businessCall: (name: string, args: Record<string, unknown>, overrides?: Record<string, unknown>, method?: string, rpcId?: number) => Promise<{status: number; body: any}>;
 }
 
-export async function agentDoorProof(rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>) {
+export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>,collaboratorProof:(context:CollaboratorProofContext)=>Promise<void>,workflowProof:(context:RejectedReportProofContext)=>Promise<void>) {
   const fixture = await isolatedDatabase();
   try {
     await checkAgentArtifacts(fixture.db,contactAgentArtifacts);
@@ -93,16 +98,16 @@ export async function agentDoorProof(rejectedReportProof: (context: RejectedRepo
       assert.equal(response!.status,200);
       assert.equal((await response!.json() as {result:{protocolVersion:string}}).result.protocolVersion,version);
     }
-    const principal={person:{id:owner.operatorId},agent:{id:'ari',name:'Ari'},scopes:['records:read','records:write','handoffs:read','handoffs:write','events:read','drafts:read','drafts:write','briefs:read','risks:read','sources:read','forecasts:read','forecasts:write','reports:read','reports:write','operations:read'],consent:'door-test-consent'};
+    const principal={person:{id:owner.operatorId},agent:{id:'ari',name:'Ari'},scopes:['records:read','records:write','handoffs:read','handoffs:write','events:read','drafts:read','drafts:write','briefs:read','risks:read','sources:read','forecasts:read','forecasts:write','reports:read','reports:write','operations:read','workflows:write'],consent:'door-test-consent'};
     const companyArgs={kind:'company',record:{name:'Brightwork Studio'},idempotency_key:'native-company'};
     assert.equal((await door.invoke('orbit.records.create',companyArgs,principal)).code,'policy_unset');
     const envelope=await policyEnvelope({origin,business:'door-company',seq:0,revision:0,signer:{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation}},autonomousPolicy());
     const adopted=await door.handle(post('/api/rer/agent-policy',{policy:envelope.policy}));
     assert.equal(adopted!.status,200,await adopted!.clone().text());
-    async function businessCall(name:string,args:Record<string,unknown>,overrides:Record<string,unknown>={},method='tools/call',rpcId=2) {
+    async function businessCall(name:string,args:Record<string,unknown>,overrides:Record<string,unknown>={},method='tools/call',rpcId=2,requestState?:string) {
       const issued=Math.floor(Date.now()/1000);
       const bearer=await sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:'business-owner',email:bindings.OWNER_EMAIL,act:{sub:'business-ari',name:'Ari'},client_id:'business-client',business:'door-company',scope:principal.scopes.join(' '),consent:'door-test-consent',jti:crypto.randomUUID(),iat:issued,exp:issued+300,...overrides});
-      const response=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+bearer,'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','MCP-Method':method,'MCP-Name':method==='resources/read'?String(args.uri):name},body:JSON.stringify({jsonrpc:'2.0',id:rpcId,method,params:{...(method==='tools/call'?{name,arguments:args}:args),_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}})}));
+      const response=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+bearer,'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','MCP-Method':method,'MCP-Name':method==='resources/read'?String(args.uri):name},body:JSON.stringify({jsonrpc:'2.0',id:rpcId,method,params:{...(method==='tools/call'?{name,arguments:args}:args),...(requestState?{requestState}:{}),_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}})}));
       return {status:response!.status,body:await response!.json() as any};
     }
     const unavailableResource=await businessCall('',{uri:'unregistered://missing'},{},'resources/read');
@@ -208,7 +213,8 @@ export async function agentDoorProof(rejectedReportProof: (context: RejectedRepo
     assert.equal(privateMcpPreview.status,200);assert.equal(privateMcpPreview.body.result._meta['com.runeditrun/untrusted'],true,'native protected report groups remain data, never instructions');
     assert.equal(privatePreview.values.value,1);assert.ok(JSON.stringify(privatePreview.values.groups).includes('private_amount'));
     const privateReport=await call('orbit.reports.compute',{...privatePeriod,review_hash:privatePreview.reviewHash,idempotency_key:'private-report'});
-    await rejectedReportProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,adopt,businessCall});
+    await rejectedReportProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});
+    await agentDoorClassificationProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await call('orbit.forecasts.read',{opportunity_id:privateOpportunity.id});
     const sensitiveBlocked=autonomousPolicy();sensitiveBlocked.rules.push({id:'protected',class:'sensitive',do:'blocked'});
     const blockEnvelope=await policyEnvelope({origin,business:'door-company',seq:++policySeq,revision:policySeq,signer:{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation}},sensitiveBlocked);
@@ -230,14 +236,27 @@ export async function agentDoorProof(rejectedReportProof: (context: RejectedRepo
     assert.ok(feed.decisions.length>0,'Business MCP audits enter the relay');
     assert.equal(new Set(feed.decisions.map(row=>row.id)).size,feed.decisions.length);
     assert.equal((await door.handle(post('/api/rer/agent-decisions',{pull:'foreign.invalid.signature'})))!.status,401,'BASE-AGENT-009.relay.foreign');
+    await collaboratorProof({bindings,door,cookie,setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()),
+      async bearerFor(email,operatorId) {
+        const subject='synthetic-orbit-collaborator';
+        const mapped={...roster,jti:crypto.randomUUID(),rev:3,team:[...roster.team,{id:subject,email,name:'Synthetic collaborator',role:'member',invite:0}]};
+        const applied=await settings.handle(post('/api/rer/business-settings',{settings:await sign('rer-business-settings+jwt',mapped)}));
+        assert.equal(applied!.status,200,await applied!.clone().text());
+        const sponsor=await people.sponsor({sub:subject});
+        assert.equal(sponsor?.id,operatorId);assert.equal(sponsor?.role,'member');
+        const issued=Math.floor(Date.now()/1000);
+        return sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:subject,email,act:{sub:'synthetic-orbit-reader',name:'Synthetic reader'},client_id:'synthetic-orbit-collaborator',business:'door-company',scope:'records:read records:write',consent:'synthetic-orbit-record-consent',jti:crypto.randomUUID(),iat:issued,exp:issued+300});
+      }});
     await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
     await agentAuditRetentionProof({bindings,cookie,companyId,issuer,sign,sponsor:{id:owner.operatorId,name:owner.displayName},
       setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy())});
+    await workflowProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});
     await adopt(sensitiveBlocked);
     const witness=await call('orbit.operations.read',{});
     assert.ok(witness.record_mail_drafts.rows>0);
     await settingsRepository.remove(teammate.id,owner.operatorId,undefined,owner.sessionId);
     assert.equal((await businessCall('orbit.records.read',{kind:'company',id:companyId},{sub:'business-jamie',email:mappedTeammate!.email,act:{sub:'jamie-assistant',name:'Jules'}})).status,401,'native teammate removal overrides a still-applied Business mapping');
+    await agentCapacityProof(context,bindings,{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation},sign);
     await fixture.db.prepare('UPDATE operators SET email=? WHERE id=?').bind('renamed@example.test',owner.operatorId).run();
     assert.equal((await people.sponsor({sub:'business-owner'}))?.id,owner.operatorId);
     await fixture.db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(owner.operatorId).run();

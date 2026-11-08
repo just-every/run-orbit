@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { contract } from "../contract.mjs";
+import {readFile} from "node:fs/promises";
 
 const viewports = [
   { name: "desktop", width: 1280, height: 900 },
@@ -49,7 +50,7 @@ for (const viewport of viewports) {
 }
 
 contract("DOCS-001", "installed docs navigation reaches every page", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.setViewportSize({ width: 1440, height: 900 });
   const failures = watchPageFailures(page);
   const initialResponse = await page.goto("/docs", { waitUntil: "networkidle" });
   await expect(page).toHaveURL(/\/docs$/);
@@ -67,6 +68,23 @@ contract("DOCS-001", "installed docs navigation reaches every page", async ({ pa
   await expect(sidebar.locator('[aria-current="page"]')).toHaveCount(1);
   await expect(page.locator(".docs-sidebar [aria-current=page]")).toHaveAttribute("href", links[2]);
   expect((await page.request.get("/docs/not-a-page")).status()).toBe(404);
+  const surface=JSON.parse(await readFile('agent-surface.json','utf8'));
+  for(const path of ['/docs/agents','/docs/agent-door']) {
+    const response=await page.goto(path,{waitUntil:'networkidle'});
+    expect(response.status()).toBe(200);
+    await expect(page).toHaveURL(/\/docs\/agents$/);
+    await expect(page.getByRole('heading',{level:1})).toBeVisible();
+    const tables=page.locator('.docs-prose table');
+    expect(await tables.nth(0).locator('tbody tr td:first-child').allTextContents()).toEqual(surface.tools.map(tool=>tool.name));
+    expect(await tables.nth(1).locator('tbody tr td:first-child').allTextContents()).toEqual(surface.resources);
+    await expect(sidebar.locator('[aria-current="page"]')).toHaveAttribute('href','/docs/agents');
+    await expectNoHorizontalOverflow(page);
+  }
+  await page.goto('/docs/agents',{waitUntil:'networkidle'});
+  await page.screenshot({path:test.info().outputPath('agent-guide-1440.png'),fullPage:true});
+  await page.setViewportSize({width:390,height:844});
+  await page.screenshot({path:test.info().outputPath('agent-guide-390.png'),fullPage:true});
+  await page.goto(links[2],{waitUntil:'networkidle'});
   await page.setViewportSize({ width: 390, height: 844 });
   const menu = page.locator('.docs-menu');
   await menu.locator('summary').click();

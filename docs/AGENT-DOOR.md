@@ -1,5 +1,8 @@
 # Agents in Orbit
 
+This guide is available at `/docs/agents` and `/docs/agent-door`.
+Its tool and resource template inventories are generated from the current registry.
+
 Orbit exposes its current agent tools through `/mcp`. Discovery supports MCP
 `2026-07-28` and `2025-11-25`. A Business agent acts for a current native person
 under the company's signed policy. A token's email address never selects a
@@ -53,6 +56,29 @@ shows current policy and native person approval/review doors. Approval binds the
 saved action summary and revision; an agent confirmation is not a person's act.
 Spend caps are not enforced by this Base revision. Native quotas and recipient
 permission remain separate requirements.
+
+## Existing workflow drafts
+
+The installation owner can call `orbit.workflows.save_draft` with an existing
+workflow `id`, its current `source_version` from `GET /api/workflows`,
+`name`, `definition` and an idempotency key. Optional `expected_revision`
+also checks that native version. The native definition validator and owner
+authority apply; a stale source version refuses atomically.
+
+One saved draft computes `standard` with `measure: 1` item. Defining a future
+webhook or record action does not execute it. The save creates a draft version
+and native audit only: the active definition and its activation authority remain
+unchanged. Activation, pause, execution and provider routing are outside this
+tool. Under held policy the draft saves immediately with its linked review.
+A current company block, revoked agent or non-owner sponsor cannot save or
+replay a successful result. Retrying an admitted key adds no version.
+
+The existing managed-owner journey invokes the workflow proof in
+`tests/support/agent-workflow-proof.ts`: authenticated MCP save, native readback,
+both company policies, the linked review, refusal and replay witnesses, and a
+separate native trigger that still executes the old active version. The existing
+agent conformance registration also saves and reads back a fresh workflow
+through `tests/agent-door/native-journey.mjs`.
 
 ## Delete a saved report
 
@@ -112,6 +138,22 @@ operation is added by these tools; broader SURFACE-007 remains unqualified.
 | `orbit.signals.list` | `signals:read` | standard |
 | `orbit.signals.read` | `signals:read` | standard |
 | `orbit.sources.read` | `sources:read` | standard |
+| `orbit.workflows.save_draft` | `workflows:write` | standard |
+
+## Current resource template inventory
+
+| Resource template | Name | Scope |
+| --- | --- | --- |
+| `orbit://drafts/{id}` | Saved customer draft | `drafts:read` |
+| `orbit://forecasts/{id}` | Immutable forecast snapshot | `forecasts:read` |
+| `orbit://meetings/{id}/plan` | Meeting plan | `meetings:read` |
+| `orbit://operations/{id}` | Source-bound handoff | `handoffs:read` |
+| `orbit://opportunities/{id}/risks` | Opportunity risks | `risks:read` |
+| `orbit://outreach/{id}` | Native delivery receipt | `drafts:read` |
+| `orbit://records/{kind}/{id}` | CRM record | `records:read` |
+| `orbit://reports/{id}` | Native report snapshot | `reports:read` |
+| `orbit://reports/{id}/definition/{version}` | Native report definition | `reports:read` |
+| `orbit://signals/{id}` | Immutable signal | `signals:read` |
 
 ## Records and retained outcomes
 
