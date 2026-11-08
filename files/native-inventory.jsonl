@@ -1,0 +1,2 @@
+{"nativeMatch": true, "policy": "autonomous", "proof": "BASE-AGENT-013.current-registry", "resourceTemplates": 10, "tools": 23}
+{"nativeMatch": true, "policy": "held", "proof": "BASE-AGENT-013.current-registry", "resourceTemplates": 10, "tools": 23}

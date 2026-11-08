@@ -1,0 +1,157 @@
+{
+  "apiBudget": 10,
+  "apiCalls": 5,
+  "blockers": [],
+  "branch": "cloud/sd-orbit-c-f141",
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "proof": [
+        {
+          "nativeMatch": true,
+          "policy": "autonomous",
+          "proof": "BASE-AGENT-013.current-registry",
+          "resourceTemplates": 10,
+          "tools": 23
+        },
+        {
+          "nativeMatch": true,
+          "policy": "held",
+          "proof": "BASE-AGENT-013.current-registry",
+          "resourceTemplates": 10,
+          "tools": 23
+        }
+      ],
+      "sourceBinding": "Run before final commit with identical final source and test bytes; only source lock and commit metadata changed afterwards.",
+      "test": "Managed owner claim verifies RER authority and creates the native owner/session exactly once"
+    },
+    {
+      "browser": "/usr/bin/chromium, --no-sandbox",
+      "command": "pnpm exec playwright test --config .rer/cloud-playwright.config.mjs tests/e2e/worker-smoke.spec.mjs --grep 'installed docs navigation reaches every page' --workers=1 --reporter=list",
+      "exit": 0,
+      "head": "1f0970db12941dfe555cf90a686ad8e4dd14cd0a",
+      "result": "1 passed",
+      "test": "DOCS-001 \u2014 installed docs navigation reaches every page"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "head": "1f0970db12941dfe555cf90a686ad8e4dd14cd0a"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec tsx scripts/agent-surface.ts --check",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "viewsRestoredFrom": "origin/main"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    }
+  ],
+  "ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "1f0970db12941dfe555cf90a686ad8e4dd14cd0a",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42480354676",
+      "id": 42480354676,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "contractDiff": "none",
+  "generatedAt": "2026-11-08T12:29:43.921156+00:00",
+  "generatedViewDiff": "none",
+  "head": "1f0970db12941dfe555cf90a686ad8e4dd14cd0a",
+  "landing": "pending fleet",
+  "main": "6d869cb48cbd6bcebb1566be460b49223e892bb6",
+  "pr": null,
+  "productPushed": true,
+  "remoteHeadVerified": true,
+  "repository": "just-every/run-orbit",
+  "scan": {
+    "complete": null,
+    "findings": null,
+    "historyScanned": null,
+    "status": "not run in cloud; guarded lander owns publication scan"
+  },
+  "schema": 1,
+  "screenshots": [
+    {
+      "path": "agent-guide-1440.png",
+      "sha256": "b21a5601107448f96842b18ba2cd72d3c54b7b1d6f5d226d8082dd5c776ac351",
+      "width": 1440
+    },
+    {
+      "path": "agent-guide-390.png",
+      "sha256": "c1e799f839d388f7fbf6b6f3a64c6795e3e4f8feeff60d9826f8a9e012b3ec2f",
+      "width": 390
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "scripts/agent-surface.ts",
+      "sha256": "0b07d3b4a035bfc523b520a261191ad81642483df99f6a2f77dfc3e9410d60ad"
+    },
+    {
+      "path": "docs/AGENT-DOOR.md",
+      "sha256": "44e857f92cd93e305cec1d65214eb2b50182db0e892770b93fddd18cd58be863"
+    },
+    {
+      "path": "docs/site.json",
+      "sha256": "be772d32f947c713665551153c457465e1207030245af1e2cd625727cbf12cb8"
+    },
+    {
+      "path": "src/core/features/public/docs/build/manifest.ts",
+      "sha256": "5f19332e1e53abb3163c119773aa2f65f2467ec6e273f1dae56dc6c57795d9db"
+    },
+    {
+      "path": "src/core/features/public/docs/build/plugin.ts",
+      "sha256": "9cf9b585be74a437b8b05dd67558150f2644927a8d293479a712c42434d54417"
+    },
+    {
+      "path": "src/routes/docs.$slug.tsx",
+      "sha256": "4af45fafa83e2f769b50a1fc1b30b1dfbe53d8c1863b442c19b4b007b42df21d"
+    },
+    {
+      "path": "tests/agent-door/native-journey.mjs",
+      "sha256": "4325b212b35157a5fbe98ed140a5f5c533abd55ffe036f893d9e4f351dd32f84"
+    },
+    {
+      "path": "tests/core/managed-owner.test.ts",
+      "sha256": "361d24d1f6cec295b274a7ec3c531515f04936f8facaddbcfd14c0b2b58a1e32"
+    },
+    {
+      "path": "tests/e2e/worker-smoke.spec.mjs",
+      "sha256": "d969ae2d71b1b1a093198562351d8a847a019ea0c49cc5c55d04b39f706c9600"
+    }
+  ],
+  "sourceLockSha256": "b78769be261c4da8124e731ee036478643dc62356805e9c7a48b6a2b93cffffb",
+  "tag": "sd-orbit-c-f141",
+  "testBudget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  }
+}
