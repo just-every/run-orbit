@@ -1,0 +1,14 @@
+node --import tsx --test tests/core/managed-owner.test.ts exit=0
+node node_modules/typescript/bin/tsc --noEmit exit=0
+node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party exit=0
+node --import tsx scripts/agent-surface.ts --check exit=0
+validateAgentSurface(agent-surface.json, {contract: CONTRACT.md}) exit=0
+node src/base/contract-docs.mjs write exit=0 Wrote 0 contract documents.
+node src/base/contract-docs.mjs check exit=0 Contract documents are current.
+node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock exit=0
+node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check exit=0
+checkTestBudget() exit=0
+git diff --check exit=0
+git diff origin/main...HEAD -- CONTRACT.md exit=0
+candidate identity and trailer audit including side parents exit=0
+added-line email-shaped string inspection exit=0

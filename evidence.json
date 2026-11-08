@@ -1,0 +1,52 @@
+{
+  "files": [
+    {
+      "blob": "cc60214cc82b798d2d52e1820183535e36801c0e",
+      "bytes": 2564,
+      "path": "PLAN.md",
+      "sha256": "a3f037a835f72681e7cdd12cb9e87ff830b9a22394aef502d1e46ca323047da4"
+    },
+    {
+      "blob": "4d4a89a792f1d33a28a0c3000829e75aa84175f7",
+      "bytes": 8315,
+      "path": "RECEIPT.json",
+      "sha256": "0cb36f3ebff4108b1382e0d7c847643ce4a273588131bca0240620388ae3289e"
+    },
+    {
+      "blob": "98a5708bade33c7cddd818422e680afa6b77bf2c",
+      "bytes": 10904,
+      "path": "REPORT.md",
+      "sha256": "10976be7d2c78bc3a064bab13e9532e74d71e79cd4c95b404ea58b60facd46ae"
+    },
+    {
+      "blob": "80fe2195031bb39d4feace2ab6ab825d0bb60a9d",
+      "bytes": 223,
+      "path": "candidate-ci.json",
+      "sha256": "40d10235a5e17cddb1cac2174bc16ad639191e191ec11ec4af6d756b5e38f803"
+    },
+    {
+      "blob": "8e9634bef66c481cff60f6e39b2f613cbdff863f",
+      "bytes": 1143,
+      "path": "main-ci.json",
+      "sha256": "6939dea19c64cb7152cd64164d1ea44cfed392cac7cd948ec6e9255366dd6b52"
+    },
+    {
+      "blob": "28370cf62723aaec5c1500ec9924510c6550ced9",
+      "bytes": 1977,
+      "path": "managed-owner.log",
+      "sha256": "4b0cde15c4c8955884a875839c9f6110878dacf59de4f1c586194c62054fdba2"
+    },
+    {
+      "blob": "3faca3f4998d9f538890ed935b62b7e04cd97713",
+      "bytes": 840,
+      "path": "mechanical.log",
+      "sha256": "2347edc92cd5c004152cee0e65f2d2abda47242c0b309185f5807c5458708ec1"
+    }
+  ],
+  "product_branch": "cloud/sd-orbit-c-f132",
+  "product_head": "e791bb136781e1c15b607789171530f777e329c7",
+  "ref": "refs/heads/evidence/sd-orbit-c-f132",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "sd-orbit-c-f132"
+}
