@@ -2396,8 +2396,8 @@ RECORD-023 was proved through the native authorization and grant audit journey a
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 29 | 50 | 0 | 79 |
-| Target and push further | 8 | 85 | 32 | 125 |
-| All | 37 | 135 | 32 | 204 |
+| Target and push further | 9 | 84 | 32 | 125 |
+| All | 38 | 134 | 32 | 204 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
