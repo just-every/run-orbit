@@ -80,5 +80,9 @@ export class FormService extends ScopedMutations{
   const extra=[...this.access.fence(c),...this.event(c,'form.spam_released',{...c,type:'form',id:formId},1,{refusalId:id}),{sql:"INSERT INTO access_write_guards VALUES(?,CASE WHEN EXISTS(SELECT 1 FROM form_spam WHERE id=? AND state='pending' AND intake_json=?) THEN 1 ELSE 0 END)",bindings:[guard,id,row.intake_json]},{sql:'DELETE FROM access_write_guards WHERE id=?',bindings:[guard]}].map(s=>this.db.prepare(s.sql).bind(...s.bindings));
   const result=await this.capture(operation.slug,operation,stored,form,intake,row.payload_hash,extra,id,row.consent_occurred_at);await this.read(c,'SELECT 1');return result;
  }
- async submissions(c:ActorContext,formId:string){await this.owner(c);const rows=await this.read<Record<string,unknown>&{signal_payload:string|null}>(c,'SELECT m.*,s.payload_json AS signal_payload FROM marketing_form_submissions m LEFT JOIN signals s ON s.id=m.signal_id WHERE m.form_id=? ORDER BY m.created_at DESC',[formId]);return rows.results.map(({signal_payload,...submission})=>({...submission,contact_basis:signal_payload?JSON.parse(String(signal_payload)).contactBasis??null:null}));}
+ async submissions(c:ActorContext,formId:string){
+  await this.owner(c);
+  const rows=await this.read<Record<string,unknown>&{signal_payload:string|null}>(c,'SELECT m.*,s.payload_json AS signal_payload FROM marketing_form_submissions m LEFT JOIN signals s ON s.id=m.signal_id WHERE m.form_id=? ORDER BY m.created_at DESC',[formId]);
+  return rows.results.map(({signal_payload,...submission})=>({...submission,contact_basis:signal_payload?JSON.parse(signal_payload).contactBasis??null:null}));
+ }
 }

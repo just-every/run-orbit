@@ -2278,6 +2278,10 @@
       "sha256": "a0c76033f1632175664176da3424b9fa5f2ac77f9c9d8c4aa59883e82b35d4f8",
       "executable": false
     },
+    "newtests/t096/browser-form-identity.ts": {
+      "sha256": "82f71a54eea9988b7768980de28de3b390d570a6f99d6a4b706b1ff66dc7b412",
+      "executable": false
+    },
     "newtests/t096/browser-form-mapping.ts": {
       "sha256": "aa86156fb1390adff8ee2de9c798bb17019d089686040ee2dd23834523a2d4e0",
       "executable": false
@@ -2408,6 +2412,10 @@
     },
     "newtests/t096/forms-abuse-qualification.ts": {
       "sha256": "e02143b003d058d6b5cb05cff1cdfb41e3ae0d41f83d91499c4cb73e5b0b6da2",
+      "executable": false
+    },
+    "newtests/t096/forms-basis-journey.ts": {
+      "sha256": "b53d66e4b6dc762c50749c1fc04c07cd4c404ed881c134a1d834b15304aa4ed8",
       "executable": false
     },
     "newtests/t096/forms-mapped-custody.ts": {
@@ -6010,6 +6018,10 @@
       "sha256": "4a4104529ab353f9398e88a13ed52149d50fa4ab7f843f26b40b002ece2217a2",
       "executable": false
     },
+    "src/core/features/forms/contact-basis.ts": {
+      "sha256": "fb229de0a4f97bcc2a1e41c97924d6e72c6cf1be342005971e8cc26f8f42991c",
+      "executable": false
+    },
     "src/core/features/forms/definition.ts": {
       "sha256": "be30d47603af9877d41c7eca9c6696a27ab8ceb2b390b32479116e6e86490887",
       "executable": false
@@ -6067,11 +6079,15 @@
       "executable": false
     },
     "src/core/features/forms/service.ts": {
-      "sha256": "c7cdca81905e0a1a375bc354484db2dfd69ae4c8d99b698f8910acbdc1c30003",
+      "sha256": "e0b2946567eab167785f643c697a578a15786daf2cd0592383d7b4f7631710c9",
       "executable": false
     },
     "src/core/features/forms/spam-panel.tsx": {
       "sha256": "4467676f5319456cea970d7c113a04095795ef4e5e412589af8972ee05a5a0b4",
+      "executable": false
+    },
+    "src/core/features/forms/submission-basis.tsx": {
+      "sha256": "d007b20c076aebbb49cccfad2643faeb6aecfe846cf7962812f665a1f2a5f145",
       "executable": false
     },
     "src/core/features/graph/identity.ts": {
