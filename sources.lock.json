@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "21be9161d74ea4827a7b6df09a4706021e425c1db0618aa0d5b36b275be976ab",
+      "sha256": "6b475361f76d717200d968496587338bb21e2efd5148a0e639783934eb6a6153",
       "executable": false
     },
     "DEMO.md": {
@@ -2255,7 +2255,7 @@
       "executable": false
     },
     "newtests/t096/browser-access-journey.ts": {
-      "sha256": "ebbd9d805be7c1104518c5f979197237fd8d93ef8027662f07921d8566ab21ff",
+      "sha256": "238c10aea386f3b1d4f1024011ab2679d7ba2b02600e7b828bb7f070d6befb22",
       "executable": false
     },
     "newtests/t096/browser-capture-rule.ts": {
@@ -2268,6 +2268,10 @@
     },
     "newtests/t096/browser-dashboard.ts": {
       "sha256": "04ecc34621e6b58e8c1b7bc9406030ba212507b15bd44d3c7a9fc3fb06258685",
+      "executable": false
+    },
+    "newtests/t096/browser-equal-operators.ts": {
+      "sha256": "9a9da05ce196949ae8ed6a59b7e43ed6f1fdb0150065d32f87726e5484844938",
       "executable": false
     },
     "newtests/t096/browser-forecast-journey.ts": {
@@ -2299,7 +2303,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "aa80c7e822009aee1a1d0b27161e4c6f0db57da85b2d1e2a57c1a8fec8dc242b",
+      "sha256": "41e6f4fa0b95b6eed5fb0cf7ba7bacff4592a76bdfcdaca41113d74205f4f985",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -2335,7 +2339,7 @@
       "executable": false
     },
     "newtests/t096/collaborator-lifecycle.test.ts": {
-      "sha256": "c11134eda05a94d17428a2e6f50da10c0e5bc424955c9e12da25f3b6a22e0889",
+      "sha256": "6af1c1cdbf28fb55257747cd553ca3701e50bf4d8f3257a96e9a61cde74ec699",
       "executable": false
     },
     "newtests/t096/collaborator-links.test.ts": {
@@ -2388,6 +2392,10 @@
     },
     "newtests/t096/empty-native.test.ts": {
       "sha256": "f68c564dae20cbaaf25d3114d88bd2b93579b125e21fbbd79399cc12c471ceb8",
+      "executable": false
+    },
+    "newtests/t096/equal-operators-proof.ts": {
+      "sha256": "a70f3f99ac6044e54144b53648c079848825770d5fd30f14f9f3782c3f2e108a",
       "executable": false
     },
     "newtests/t096/fixture.ts": {
