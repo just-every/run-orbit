@@ -139,7 +139,15 @@ export class RecordsRepository extends RecordSeedRepository {
  const opportunities=kind==='company'?await this.db.prepare('SELECT o.*,s.name AS stage_name,p.display_name AS owner_name FROM opportunities o JOIN pipeline_stages s ON s.id=o.stage_id LEFT JOIN operators p ON p.id=o.owner_id WHERE company_id=?').bind(id).all():kind==='contact'?await this.db.prepare('SELECT o.*,s.name AS stage_name,p.display_name AS owner_name FROM opportunities o JOIN opportunity_contacts oc ON oc.opportunity_id=o.id JOIN pipeline_stages s ON s.id=o.stage_id LEFT JOIN operators p ON p.id=o.owner_id WHERE oc.contact_id=?').bind(id).all():{results:[]};
  const company=record.company_id?await this.db.prepare('SELECT * FROM companies WHERE id=?').bind(record.company_id).first():null;
  const ownership=kind!=='opportunity'&&options.ownership!==false&&!legacyActorContext(this.db)?(await reconcileLegacyOwnership(this.db),await readOwnership(this.db,kind,id)):undefined;
- return {record,company,...(ownership?{ownership}:{}),timeline:entries.results,movementHistory:kind==='opportunity'?movementHistory(entries.results):[],contacts:contacts.results,opportunities:opportunities.results,openValueCents:opportunities.results.reduce((sum:number,o:any)=>sum+(o.lifecycle==='open'?o.value_cents:0),0)};}
+ const consents=kind==='contact'?await this.formConsents(id):undefined;
+ return {record,company,...(ownership?{ownership}:{}),...(consents?{consents}:{}),timeline:entries.results,movementHistory:kind==='opportunity'?movementHistory(entries.results):[],contacts:contacts.results,opportunities:opportunities.results,openValueCents:opportunities.results.reduce((sum:number,o:any)=>sum+(o.lifecycle==='open'?o.value_cents:0),0)};}
+ /** What each form told this person and when: ticked marketing consent, or the disclosed basis of an inquiry-only form. */
+ private async formConsents(contactId:string){
+  const rows=await this.db.prepare(`SELECT submission_id,'marketing_consent' AS kind,wording,form_revision,occurred_at FROM consent_events WHERE contact_id=?1
+   UNION ALL SELECT m.id,json_extract(s.payload_json,'$.basis.kind'),json_extract(s.payload_json,'$.basis.wording'),json_extract(s.payload_json,'$.basis.formRevision'),json_extract(s.payload_json,'$.basis.occurredAt') FROM marketing_form_submissions m JOIN signals s ON s.id=m.signal_id WHERE m.contact_id=?1 AND json_extract(s.payload_json,'$.basis.kind') IS NOT NULL
+   ORDER BY occurred_at DESC,submission_id`).bind(contactId).all<{submission_id:string;kind:string;wording:string;form_revision:number;occurred_at:string}>();
+  return rows.results.map(row=>({submissionId:row.submission_id,kind:row.kind,wording:row.wording,formRevision:row.form_revision,occurredAt:row.occurred_at}));
+ }
  async search(kind:RecordKind,query:string,filters:Record<string,string>={},options:{ownership?:boolean}={}){
   if(kind!=='opportunity'&&options.ownership!==false&&!legacyActorContext(this.db))await reconcileLegacyOwnership(this.db);
   const clauses=['1=1'],values:string[]=[];if(query.trim()){

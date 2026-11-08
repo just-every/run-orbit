@@ -16,6 +16,7 @@ import {CompanyDetails} from './company-details';
 import {ContactDetails} from './contact-details';
 import {useFieldDefinitions} from './custom-values';
 import {DetailsPanel} from './details-panel';
+import {FormConsents} from './form-consents';
 import {contactContextValues,patchRecord,readContext,readRecord,recordValues,saveContactContext,type ContactContextValues} from './record-api';
 import {RecordActivity} from './record-activity';
 import {RecordFoot} from './record-foot';
@@ -60,6 +61,7 @@ function EditableCustomerRecordPage({kind}:{kind:'contact'|'company'}){
    activity={<RecordActivity kind={kind} id={id} record={row} timeline={detail.timeline} contacts={detail.contacts} mail={mail.history} reloadMail={mail.reload} reload={()=>{reload();void mail.reload();}}/>}
    details={<DetailsPanel>
     {kind==='contact'?<ContactDetails id={id} record={record} detail={detail} settings={settings} definitions={definitions} context={context} onSaved={reload}/>:<CompanyDetails id={id} record={record} detail={detail} settings={settings} definitions={definitions} onSaved={reload}/>}
+    {kind==='contact'?<FormConsents entries={detail.consents??[]}/>:null}
     <RecordFoot kind={kind} id={id} name={name} record={row} onChanged={reload} deleteSentence={kind==='contact'?`Delete ${name} and permanently erase their personal history? This also clears notifications and AI error details for their linked opportunities, including shared opportunities. AI usage totals remain.`:`Delete ${name}?`}/>
    </DetailsPanel>}
   />
