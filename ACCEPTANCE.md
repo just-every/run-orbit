@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 37 | 117 | 24 | 178 |
+| Core | 36 | 118 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 37 | 135 | 32 | 204 |
+| Full target | 36 | 136 | 32 | 204 |
 
 Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -126,8 +126,8 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 **Acceptance.**
 1. Open a record containing mail, meetings, notes, changes and a merge; inspect occurred/recorded times, source and actor, including out-of-order events.
 
-**Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`
-**Gap.** Unasserted in the carried evidence: mail entry; meeting entry; note entry; stage/owner change entry; merge entry; occurred and recorded times; source and actor; out-of-order history. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`; `tests/e2e/operator.spec.mjs` — the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties
+**Gap.** Unasserted in the carried evidence: combined mail, meeting, note, stage and owner change, and merge coverage; exact per-entry occurred and recorded times, source and actor. The browser journey asserts native Records and opportunity reads before and after reload and visible note order at 1440 and 390 for late older arrivals and equal-time ID ties; it does not qualify the complete combined journey.
 
 #### RECORD-006 — Search and views
 
@@ -918,15 +918,15 @@ Core · published · **partial** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE
 
 #### PUBLIC-002 — Safe demo
 
-Core · published · **done** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001
+Core · published · **partial** · Cites BASE-PUBLIC-001, BASE-ACCESS-001, BASE-ACCESS-002, BASE-SIGNIN-001
 
 **Requirement.** When enabled in the public-site configuration, the demo page presents a separate read-only example workspace with twelve fictional deals, relative dates, signals, drafts and a sent-message/reply story. It clearly labels these as examples before displaying them. No example data is written to the owner's database. The demo cannot load owner records, send mail, call AI, approve outreach or mutate data. Unknown demo paths return the styled not-found page. Disabling it returns 404. This deliberately replaces the former dedicated hosted-record walkthrough; all native session, exact-message review and customer-sending requirements remain unchanged.
 
 **Acceptance.**
 1. Browse the labeled fictional demo and unknown paths at desktop/mobile sizes; verify no owner-data read, D1 write, AI request or send.
 
-**Evidence.** `tests/e2e/baseline.spec.mjs` — BASE-PUBLIC-003 PUBLIC-002 public surfaces and unknown demo paths pass WCAG 2.2 AA at desktop and phone widths: twelve fictional deals labeled before display, relative dates, signal and draft context, sent-message and reply story, keyboard selection, unknown-path HTTP 404, styled not-found landmark, home navigation, accessibility and no horizontal overflow at 1440, 390 and 320; `tests/core/public-demo.test.ts` — PUBLIC-002 separate read-only demo has fresh stories and cannot read or mutate owner records: populated contacts, companies, opportunities, signals and drafts stay private, private selection and anonymous native approval are refused, all user tables remain unchanged, AI and mail edges receive no request, and the real emitted enabled and disabled configurations return the expected documents and data without effects; extended `tests/support/public-demo-proof.ts` — emittedDemoProof; `tests/support/disabled-demo-build.ts` — disabledDemoBuild.
-**Gap.** None.
+**Evidence.** `src/demo.ts`; `tests/core/public-demo.test.ts`
+**Gap.** Unasserted in the carried evidence: unknown demo paths; desktop and phone journey; no owner-data read over populated owner data; no D1 mutation across all tables; no AI request; no customer send. Asserted: fictional demo labeled.
 
 #### PUBLIC-003 — Unconfigured sign-in
 
