@@ -36,7 +36,7 @@ export async function dealEvidence(db:D1Database,id:string):Promise<DealEvidence
  for(const row of replies.results)evidence.push({id:row.id,ref:row.id,label:'Customer reply',text:row.subject??'Customer reply',occurredAt:row.occurredAt,confidence:'observed',href});
  if(send)evidence.push({id:send.entryId,ref:send.entryId,label:'Accepted send',text:send.subject,occurredAt:send.approvedAt,confidence:'observed',href:`${href}#entry-${send.entryId}`});
  for(const row of opens.results)evidence.push({id:row.id,ref:row.id,label:'Provider open report (inferred; not proof a person read it)',text:'Open reported by the mail provider',occurredAt:row.occurredAt,confidence:'inferred',href:`${href}#entry-${row.id}`});
- for(const row of tasks.results)evidence.push({id:row.id,ref:id,label:'Overdue task, due',text:row.title,occurredAt:row.dueAt,confidence:'observed',href:`${href}#task-${row.id}`});
+ for(const row of tasks.results)evidence.push({id:row.id,ref:id,label:'Overdue task, due',text:row.title,occurredAt:row.dueAt,confidence:'observed',href:`/app/tasks/${row.id}`});
  const since=moved?.occurredAt??deal.createdAt;
  evidence.push({id:moved?.id??`${id}#stage`,ref:moved?.id??id,label:moved?'Stage change':'Deal created',text:`In ${deal.stage??'its stage'} since ${since.slice(0,10)}`,occurredAt:since,confidence:'observed',href:moved?`${href}#entry-${moved.id}`:href});
  const {createdAt:_,intervalDays,...dealFields}=deal;
