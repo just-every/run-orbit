@@ -9987,7 +9987,7 @@
       "executable": false
     },
     "tests/core/capture-upgrade.test.ts": {
-      "sha256": "95cfbaa3cd5fdad4b467c22ff1882575e5b3025dba2a41f835ee2d8a087c2db5",
+      "sha256": "0ba42d5508a2595eda9c227373d5ceb4183837e18d101bb8e89b389cbaec7591",
       "executable": false
     },
     "tests/core/contact-erasure.test.ts": {
@@ -11104,6 +11104,10 @@
     },
     "tests/support/prior-capture-upgrade.ts": {
       "sha256": "b478f87132ec87740cdfc074fd89e27eb5f0c3040234ca7f62409b9aa7c933c2",
+      "executable": false
+    },
+    "tests/support/prior-opt-out-continuity.ts": {
+      "sha256": "e71e72ae4b5f2b66fc89314a803bfa4a3969d40a6775e2105e524cd8c9e4fa62",
       "executable": false
     },
     "tests/support/public-demo-proof.ts": {
