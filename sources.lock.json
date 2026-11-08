@@ -9879,7 +9879,7 @@
       "executable": false
     },
     "tests/agent-door/native-journey.mjs": {
-      "sha256": "9ca1aed6222c6fa5b3512f91f047f2665dddfae8ce10e5593ac770b107efb65e",
+      "sha256": "4325b212b35157a5fbe98ed140a5f5c533abd55ffe036f893d9e4f351dd32f84",
       "executable": false
     },
     "tests/archive/browser.spec.mjs": {
@@ -10011,7 +10011,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "971dba19f45ccc32542b7cd8180863880c554f5645bda4711e3915241cc4a322",
+      "sha256": "361d24d1f6cec295b274a7ec3c531515f04936f8facaddbcfd14c0b2b58a1e32",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
@@ -10031,7 +10031,7 @@
       "executable": false
     },
     "tests/core/outreach-limits.test.ts": {
-      "sha256": "bf1ddb39a4766ca39ff71b2887553f39c7ed5bbbf4db181cd0ff419a74c7e323",
+      "sha256": "3686b73abd7a45f6e3984fbd06e6235c386d591d45db9c74b1727d6c44bf197a",
       "executable": false
     },
     "tests/core/platform-boundaries.test.ts": {
@@ -11028,6 +11028,10 @@
     },
     "tests/support/opportunity-creation.ts": {
       "sha256": "1326e6e55b08ed7183102ca0d35e6fee10bca9bae05c4d52ea701cc597f1b934",
+      "executable": false
+    },
+    "tests/support/outreach-retry-accounting.ts": {
+      "sha256": "ca433a442217d180865e8dcd4cb0e2ea130597ed55663f66ba4ca3c7a7a767c4",
       "executable": false
     },
     "tests/support/personal-slack-proof.ts": {
