@@ -84,6 +84,34 @@ export async function dashboardBackendProof(){
   assert.deepEqual(section.totals.find(c=>c.key==='deals')!.rows,[`deal:${inside.id}`]);
   assert.ok(!JSON.stringify(limited).includes('Before local day'));
   assert.equal(limited.tiles.find(t=>t.id==='forecast')!.status,'unavailable');
+  // A named view grant serves current permitted figures and rows, but grants no editing or sharing authority.
+  const readerShare=await call(base+'/sharing');
+  await call(base+'/sharing','PUT',{version:readerShare.version,audience:'named',grants:[{operatorId:seller.operator.operatorId,access:'view'}]});
+  const reader=await call<DashboardView>(base,'GET',undefined,seller.cookie);
+  assert.equal(reader.canEdit,false);assert.equal(reader.canManage,false);
+  assert.equal(ready(reader,'pipeline').report!.sections[0]!.totals.find(c=>c.key==='deals')!.value,1);
+  assert.equal(ready(reader,'pipeline').report!.sections[0]!.totals.find(c=>c.key==='value')!.value,null);
+  assert.deepEqual(Object.keys(ready(reader,'pipeline').report!.rows),[`deal:${inside.id}`]);
+  assert.equal(ready(reader,'pipeline').report!.rows[`deal:${inside.id}`]!.label,'Inside local day');
+  const ownerDefinition=await call(base+'/definition'),ownerShare=await call(base+'/sharing');
+  for(const [path,method,body] of [[base+'/definition','GET',undefined],[base,'PUT',{...ownerDefinition,definition:{...ownerDefinition.definition,name:'Reader must not rename'}}],[base+'/sharing','GET',undefined],[base+'/sharing','PUT',{version:ownerShare.version,audience:'workspace',grants:[]}]] as const){
+   const denied=await request(path,method,body,seller.cookie);assert.equal(denied.status,403);
+   assert.deepEqual(Object.keys(await denied.json()),['error']);
+  }
+  assert.deepEqual(await call(base+'/definition'),ownerDefinition);assert.deepEqual(await call(base+'/sharing'),ownerShare);
+  await call(base+'/default','PUT',{enabled:true},seller.cookie);
+  assert.equal((await call<DashboardView>(base,'GET',undefined,seller.cookie)).isDefault,true);
+  assert.deepEqual((await call(root+'/dashboards','GET',undefined,seller.cookie)).items,[{id:'native-boundaries',name:definition.name,version:ownerDefinition.version,isDefault:true}]);
+  assert.equal((await call<DashboardView>(base)).isDefault,false,'a reader changes only their personal default');
+  // Revoke the dashboard itself while its source and record grant remain available.
+  await call(base+'/sharing','PUT',{version:ownerShare.version,audience:'private',grants:[]});
+  for(const [path,method,body] of [[base,'GET',undefined],[base+'/compute','POST',definition.filters],[base+'/outline','GET',undefined],[base+'/pdf','GET',undefined],[base+'/tiles/pipeline/csv','GET',undefined],[base+'/definition','GET',undefined],[base+'/sharing','GET',undefined],[base+'/default','PUT',{enabled:true}]] as const){
+   const denied=await request(path,method,body,seller.cookie);assert.equal(denied.status,403,`${method} ${path}`);
+   assert.deepEqual(await denied.json(),{error:'Dashboard unavailable.'},'revoked doors disclose no figures, rows, definition, count or sum');
+  }
+  assert.deepEqual((await call(root+'/dashboards','GET',undefined,seller.cookie)).items,[],'the revoked default discloses neither its identity nor its name');
+  const stillGranted=await call(`${root}/records/opportunity/${inside.id}`,'GET',undefined,seller.cookie);assert.equal(stillGranted.ref.id,inside.id);
+  const privateShare=await call(base+'/sharing');await call(base+'/sharing','PUT',{version:privateShare.version,audience:'named',grants:[{operatorId:seller.operator.operatorId,access:'edit'}]});
   const editable=await call(base+'/definition','GET',undefined,seller.cookie);editable.definition.name='Named editor saved this dashboard';await call(base,'PUT',editable,seller.cookie);
   assert.equal((await request(base+'/sharing','GET',undefined,seller.cookie)).status,403);
   await call(base+'/default','PUT',{enabled:true},seller.cookie);

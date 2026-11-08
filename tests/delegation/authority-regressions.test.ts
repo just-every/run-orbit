@@ -14,6 +14,22 @@ test('API-002 native credential lifecycle and delegation D1 reject ambient cooki
  const fixture=await isolatedDatabase(),db=fixture.db;
  try{
   const f=await authorityFixture(db);await proveApiCredentials(db,'owner',f.cookie,'stage');const g=await f.grant(),read=await f.grant('crm.evidence.read');
+  const readState=async()=>Object.fromEntries(await Promise.all(['opportunities','contacts','opportunity_contacts','handoff_tasks','handoff_contacts','timeline_entries','drafts','outbound_messages','delegation_receipts'].map(async table=>[table,(await db.prepare(`SELECT * FROM ${table}`).all()).results.map(row=>JSON.stringify(row)).sort()])));
+  const beforeReads=await readState();
+  assert.deepEqual(await db.prepare("SELECT id,name FROM contacts WHERE id='contact'").first(),{id:'contact',name:'Customer'},'The unselected contact exists');
+  const selected=await g.request('/evidence?target=opportunities/opp');
+  assert.equal(selected.status,200);
+  const evidence=await selected.json();
+  assert.equal(evidence.target,'opportunities/opp');assert.equal(evidence.title,'Onboarding');
+  assert.equal(JSON.parse(evidence.text).contacts[0].id,'contact','The contact remains linked to the selected opportunity');
+  const unselected=await g.request('/evidence?target=contacts/contact');
+  assert.equal(unselected.status,404,'Selecting an opportunity grants no independent read of its unselected contact');
+  assert.equal((await unselected.json()).error.code,'NOT_FOUND');
+  const records=await g.request('/records');assert.equal(records.status,200);
+  const items=(await records.json()).items as {target:string;kind:string;name:string}[];
+  assert.ok(items.some(item=>item.target==='opportunities/opp'&&item.name==='Onboarding'));
+  assert.ok(!items.some(item=>item.target==='contacts/contact'),'The populated unselected contact is absent from delegated records');
+  assert.deepEqual(await readState(),beforeReads,'Allowed and refused reads leave records, history and write effects unchanged');
   const publicApp=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}});
   assert.equal((await publicApp.request('https://orbit.test/delegation/clients',{method:'POST',headers:{Cookie:f.cookie,Origin:'https://orbit.test'},body:new URLSearchParams({id:'synthetic-orbit-1',redirect_uri:'https://orbit.test/delegation/callback'})})).status,303);
   const connect=(kind:string)=>publicApp.request('https://orbit.test/delegation/connect?'+new URLSearchParams({client:'synthetic-orbit-1',kind}),{headers:{Cookie:f.cookie}});
