@@ -1,0 +1,1005 @@
+shards (batch-8)	Verify routine product shard	﻿2026-11-08T16:20:43.4628659Z ##[group]Run node scripts/verification-batch.mjs '[
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4629090Z node scripts/verification-batch.mjs '[
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4629423Z   "fold-domain-0"
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4629672Z ]'
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4648096Z shell: /usr/bin/bash -e {0}
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4648374Z env:
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4648741Z   ORBIT_BROWSER_PORT: 15600
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4648999Z   ORBIT_ARCHIVE_PORT: 15601
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4649239Z   ORBIT_DELEGATION_PORT: 15602
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4649501Z   ORBIT_VIEWPORT_PORT: 15603
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4649755Z   ORBIT_RECORD_LAYOUT_PORT: 15604
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4650034Z   ORBIT_RELATED_RECORD_PORT: 15605
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4650297Z   PROOF_PORT: 15606
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4650520Z   ORBIT_LIFECYCLE_PORT: 15608
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4650776Z   ORBIT_INSPECTOR_PORT: 0
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4651023Z   ORBIT_VIEWPORT_INSPECTOR_PORT: 0
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4651299Z   ORBIT_RECORD_LAYOUT_INSPECTOR_PORT: 0
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4651591Z   ORBIT_RELATED_RECORD_INSPECTOR_PORT: 0
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4651911Z   WRANGLER_SEND_METRICS: false
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4652172Z   ORBIT_VERIFY_PREBUILT: 1
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4652408Z   ORBIT_VERIFY_JOURNEYS: 1
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4652644Z   ORBIT_VERIFY_TIER: push
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4652934Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4653365Z   PLAYWRIGHT_BROWSERS_PATH: /home/runner/work/_temp/ms-playwright
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:43.4653729Z ##[endgroup]
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:44.5130950Z 
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:44.5132016Z Verification (fold-domain-0): pnpm exec node scripts/verification-build.mjs check
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:44.9453609Z 
+shards (batch-8)	Verify routine product shard	2026-11-08T16:20:44.9457104Z Verification (fold-domain-0): pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/fold-domain-0-results.jsonl newtests/t096/collaborator-links.test.ts newtests/t096/report-disclosure.test.ts
+shards (batch-8)	Verify routine product shard	2026-11-08T16:21:18.5713509Z ✔ collaborator relationship edits require current access to the actual native related rows (29850.97398ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:21:20.2108096Z (node:3427) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+shards (batch-8)	Verify routine product shard	2026-11-08T16:21:20.2109582Z (Use `node --trace-warnings ...` to show where the warning was created)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:22:14.4184563Z Owned emitted Worker PID 3839
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6522761Z Your Worker has access to the following bindings:
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6532596Z Binding                                        Resource                  Mode
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6533336Z env.DB (orbit-local-db)                        D1 Database               local
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6533895Z env.ASSETS                                     Assets                    local
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6534464Z env.MAIL_PROVIDER ("sendgrid")                 Environment Variable      local
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6535066Z env.MAIL_FROM ("(hidden)")                     Environment Variable      local
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6535655Z env.MAIL_RELAY_URL ("")                        Environment Variable      local
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6536536Z env.AUTH_LOCAL ("(hidden)")                    Environment Variable      local
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6537193Z env.AUTH_ORIGIN ("(hidden)")                   Environment Variable      local
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6537813Z env.SENDGRID_API_KEY ("(hidden)")              Environment Variable      local
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6538407Z env.SESSION_SECRET ("(hidden)")                Environment Variable      local
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6538976Z env.OWNER_EMAIL ("(hidden)")                   Environment Variable      local
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6539560Z env.ORBIT_ENCRYPTION_KEY ("(hidden)")          Environment Variable      local
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6539890Z 
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.6562777Z Using custom certificate at  /tmp/orbit-fold-domain-0-5tRcgX/ob-u1BR6r/orbit-restore-test-bZm8lB/tls.key
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7465571Z Attaching additional modules:
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7828469Z ┌──────────────────────────────────────────────────────────┬──────┬─────────────┐
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7830192Z │ Name                                                     │ Type │ Size        │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7831451Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7832621Z │ assets/ClientOnly-BNeYPPGG.js                            │ esm  │ 1.38 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7834137Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7835260Z │ assets/DocsPage-9YoJ-ORR.js                              │ esm  │ 11.42 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7836695Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7837814Z │ assets/Match-BkNmErdU.js                                 │ esm  │ 11.50 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7838975Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7840067Z │ assets/OrbitMark-d_5d-vTy.js                             │ esm  │ 1.45 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7841253Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7842388Z │ assets/ScrollRestoration-sU0zrpFz.js                     │ esm  │ 0.61 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7843615Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7844751Z │ assets/SiteFooter-DvZfbAE2.js                            │ esm  │ 4.70 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7845950Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7847334Z │ assets/__23tanstack-start-server-fn-resolver-2yEVOaA6.js │ esm  │ 1.66 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7848333Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7849229Z │ assets/_tanstack-start-manifest_v-DY-j7ksd.js            │ esm  │ 20.02 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7850410Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7851569Z │ assets/_virtual_orbit-docs-jtaKkgNq.js                   │ esm  │ 3.29 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7852786Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7853925Z │ assets/action-tooltip-RjDxnQNV.js                        │ esm  │ 2.87 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7855170Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7856470Z │ assets/agents-DKXB0ZRL.js                                │ esm  │ 14.47 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7857670Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7858761Z │ assets/app-CyVdl5Ut.js                                   │ esm  │ 25.30 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7859917Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7861055Z │ assets/app-access-UevSSqGT.js                            │ esm  │ 0.56 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7862517Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7863594Z │ assets/app.access-D6YtHOAK.js                            │ esm  │ 3.16 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7864717Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7865980Z │ assets/app.assistance._id-C7dzWxMI.js                    │ esm  │ 20.02 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7867324Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7868364Z │ assets/app.brief-QuvrbSUS.js                             │ esm  │ 14.36 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7869476Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7870592Z │ assets/app.companies._id-B0y5g6hh.js                     │ esm  │ 0.29 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7871733Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7872801Z │ assets/app.companies.index-CqOaoTiW.js                   │ esm  │ 0.28 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7873991Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7875059Z │ assets/app.companies.new-CX5VArJx.js                     │ esm  │ 0.28 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7876385Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7877488Z │ assets/app.contacts._id-BXcLp7E5.js                      │ esm  │ 0.29 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7878613Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7879678Z │ assets/app.contacts.index-wXyIu0Nz.js                    │ esm  │ 0.28 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7880826Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7881877Z │ assets/app.contacts.new-DKa4QFNq.js                      │ esm  │ 0.28 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7883018Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7884358Z │ assets/app.dashboards._id-Ce5AF71k.js                    │ esm  │ 89.97 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7885487Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7886729Z │ assets/app.drafts._id-DR14dnRD.js                        │ esm  │ 36.68 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7888066Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7889113Z │ assets/app.index-D69sZ1FG.js                             │ esm  │ 9.54 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7890227Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7891271Z │ assets/app.meetings._id-B9hOes9U.js                      │ esm  │ 17.57 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7892400Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7893468Z │ assets/app.notifications-BNziLjrs.js                     │ esm  │ 0.29 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7894668Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7895786Z │ assets/app.opportunities._id-C2FV_D93.js                 │ esm  │ 36.46 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7897270Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7898445Z │ assets/app.opportunities.index-KQULtQsU.js               │ esm  │ 0.29 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7899641Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7900757Z │ assets/app.opportunities.new-ClPzDUA6.js                 │ esm  │ 7.33 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7901951Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7903024Z │ assets/app.reports._id-DLhJPJOU.js                       │ esm  │ 48.43 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7904173Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7905513Z │ assets/app.reports.forecast-BC5sLhC3.js                  │ esm  │ 32.77 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7906909Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7907999Z │ assets/app.reports.index-CDreHLgF.js                     │ esm  │ 11.79 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7909368Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7910429Z │ assets/app.review-DtShV8E-.js                            │ esm  │ 12.08 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7911570Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7912629Z │ assets/app.settings-DOM7GCyE.js                          │ esm  │ 0.30 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7913771Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7914880Z │ assets/app.settings.capture.connect._method-BYeU9Urz.js  │ esm  │ 64.12 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7916095Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7917418Z │ assets/app.settings.capture.index-BaiZFIH0.js            │ esm  │ 67.01 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7918603Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7919740Z │ assets/app.settings.data.import-BOYcSl1J.js              │ esm  │ 31.88 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7920924Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7922012Z │ assets/app.settings.data.index-gz3NNXvF.js               │ esm  │ 39.18 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7923193Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7924285Z │ assets/app.settings.forms-C4vHIxlA.js                    │ esm  │ 6.09 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7925454Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7926767Z │ assets/app.settings.integrations-hDkqzseq.js             │ esm  │ 56.28 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7928013Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7929110Z │ assets/app.settings.mail.index-DYkCnaps.js               │ esm  │ 41.04 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7930293Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7931625Z │ assets/app.settings.mail.library-BMDO4ESk.js             │ esm  │ 11.71 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7932810Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7933929Z │ assets/app.settings.pipeline-DqbBlA_g.js                 │ esm  │ 113.87 KiB  │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7935097Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7936373Z │ assets/app.settings.team-DY4tdSWr.js                     │ esm  │ 21.68 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7937554Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7938875Z │ assets/app.settings.workspace-CAMIeolp.js                │ esm  │ 17.20 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7940060Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7941158Z │ assets/app.shared-records-BZunDImW.js                    │ esm  │ 18.21 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7942353Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7943394Z │ assets/app.tasks-CHzF0jsN.js                             │ esm  │ 33.29 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7944525Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7945580Z │ assets/app.tasks._id-MYoeH4yI.js                         │ esm  │ 0.31 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7946916Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7947998Z │ assets/app.tasks.index-km1iAJOl.js                       │ esm  │ 0.21 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7949184Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7950225Z │ assets/area-lKVIo2bP.js                                  │ esm  │ 0.70 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7951326Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7952424Z │ assets/audit-value-C5K1C2VG.js                           │ esm  │ 2.94 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7953574Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7954658Z │ assets/booking-recipe-DriLO5i7.js                        │ esm  │ 14.58 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7955794Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7956977Z │ assets/bootstrap-nbrjxEdR.js                             │ esm  │ 1.24 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7958168Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7959642Z │ assets/capture-copy-field-BPIzE77V.js                    │ esm  │ 2.12 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7960849Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7961981Z │ assets/capture-proposals-Dk30_NjM.js                     │ esm  │ 10.22 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7963528Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7964640Z │ assets/capture-proposals-xge6CLFZ.js                     │ esm  │ 6.88 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7965893Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7967313Z │ assets/capture-scope-5J8v--zp.js                         │ esm  │ 16.31 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7968556Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7969814Z │ assets/collaborator-console-BcImYTFH.js                  │ esm  │ 22.64 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7971210Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7972422Z │ assets/config-BvZMsKZk.js                                │ esm  │ 1.55 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7973640Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7974804Z │ assets/connect-gmail-BJzcarrn.js                         │ esm  │ 14.41 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7976047Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7977550Z │ assets/connect-outlook-BCS77jZC.js                       │ esm  │ 15.17 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7978333Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7979040Z │ assets/connected-applications-4r0xlPNH.js                │ esm  │ 7.93 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7979771Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7980420Z │ assets/console-D0tmwmKD.js                               │ esm  │ 37.84 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7981461Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7982109Z │ assets/contracts-BtCf-B28.js                             │ esm  │ 0.30 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7982792Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7983615Z │ assets/createServerFn-LbQwuMn2.js                        │ esm  │ 12.08 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7984305Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7984960Z │ assets/createServerRpc-clVF8hjL.js                       │ esm  │ 0.45 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7985651Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7986551Z │ assets/createSsrRpc-k8qO6Nb8.js                          │ esm  │ 0.65 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7987349Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7988002Z │ assets/csv-DvgEJywl.js                                   │ esm  │ 6.93 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7988666Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7989324Z │ assets/customer-record-DbmUWtv7.js                       │ esm  │ 27.09 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7990069Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7990759Z │ assets/dashboard-dialogs-CMJh80nw.js                     │ esm  │ 5.60 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7991464Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7992115Z │ assets/data-value-CcFRPSWe.js                            │ esm  │ 3.05 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7992806Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7993464Z │ assets/definition-editor-DPSDPo7v.js                     │ esm  │ 10.75 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7994352Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7994963Z │ assets/delegation-protocol-hnxCZcAC.js                   │ esm  │ 12.21 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7995615Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7996638Z │ assets/demo-BF1QaMxY.js                                  │ esm  │ 10.60 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7997286Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7997881Z │ assets/demo-story-DB1zjGD4.js                            │ esm  │ 2.71 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7998513Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7999117Z │ assets/dependencies-DeKGuF_8.js                          │ esm  │ 448.56 KiB  │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.7999755Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8000382Z │ assets/deploy-environment-CyJIxpyU.js                    │ esm  │ 1.87 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8001030Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8001612Z │ assets/display-BTGvaqAw.js                               │ esm  │ 3.90 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8002259Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8002840Z │ assets/dist-BTbwg1YT.js                                  │ esm  │ 52.24 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8003447Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8004036Z │ assets/docs._slug-DlngtXoy.js                            │ esm  │ 0.66 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8004663Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8005267Z │ assets/docs.index-B2W8Wpr-.js                            │ esm  │ 0.62 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8005903Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8006699Z │ assets/draft-content-fields-BwuhSxUW.js                  │ esm  │ 2.29 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8007352Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8007931Z │ assets/effects-EeWQjti-.js                               │ esm  │ 11.00 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8008743Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8009364Z │ assets/empty-plugin-adapters-D_0twvAa.js                 │ esm  │ 0.28 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8010022Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8010615Z │ assets/entry-privacy-BjqU5iwC.js                         │ esm  │ 1.76 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8011272Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8011864Z │ assets/errors-BFt3LERE.js                                │ esm  │ 0.56 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8012629Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8013219Z │ assets/field-DTNOP0CG.js                                 │ esm  │ 5.32 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8013834Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8014465Z │ assets/filter-panel-CdUrsZR0.js                          │ esm  │ 3.21 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8015112Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8015709Z │ assets/formatters-Bynh5sFH.js                            │ esm  │ 3.12 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8016667Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8017321Z │ assets/getting-started-Cwd6-n8X.js                       │ esm  │ 2.58 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8017978Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8018616Z │ assets/grant-entries-DJeJ_4B1.js                         │ esm  │ 2.19 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8019261Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8019861Z │ assets/grant-fields-BgEVd1ti.js                          │ esm  │ 2.63 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8020519Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8021106Z │ assets/group-labels-LYEagHHb.js                          │ esm  │ 15.77 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8021745Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8022331Z │ assets/hash-target-CAhm8k_U.js                           │ esm  │ 2.87 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8022963Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8023557Z │ assets/identity-DWFdL6qS.js                              │ esm  │ 278.99 KiB  │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8024373Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8024959Z │ assets/ids-BAIcZZAO.js                                   │ esm  │ 5.67 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8025582Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8026735Z │ assets/import-provenance-VeYQoJa7.js                     │ esm  │ 1.80 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8027460Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8028097Z │ assets/inline-confirm-VrNdAKGe.js                        │ esm  │ 2.19 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8028775Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8029382Z │ assets/invariant-B8Adqqro.js                             │ esm  │ 8.25 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8030010Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8030605Z │ assets/jsx-runtime-CE-71699.js                           │ esm  │ 2.78 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8031259Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8031893Z │ assets/lazyRouteComponent-C7S7zf_B.js                    │ esm  │ 10.28 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8032557Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8033156Z │ assets/leaf-Cweyejhj.js                                  │ esm  │ 1.36 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8033775Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8034385Z │ assets/legacy-database-5VDg84z_.js                       │ esm  │ 20.12 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8035025Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8035623Z │ assets/library-api-DSIVEDki.js                           │ esm  │ 0.47 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8043648Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8044575Z │ assets/link-BzwgC-ej.js                                  │ esm  │ 6.81 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8045219Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8045816Z │ assets/link-card-BEVq3gTu.js                             │ esm  │ 1.18 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8046798Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8047424Z │ assets/live-edit-runtime-BEEYGG7d.js                     │ esm  │ 15.08 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8048081Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8048676Z │ assets/load-C1ZdKhfR.js                                  │ esm  │ 1.22 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8049296Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8049872Z │ assets/load-USjoaod1.js                                  │ esm  │ 1.01 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8050507Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8051087Z │ assets/loader-DS8rfu3y.js                                │ esm  │ 1.85 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8051709Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8052303Z │ assets/loaders-B_gcKpOt.js                               │ esm  │ 2.60 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8052925Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8053507Z │ assets/loaders-CKglpynX.js                               │ esm  │ 0.76 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8054131Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8054714Z │ assets/manifest-BL6Vk_kh.js                              │ esm  │ 107.04 KiB  │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8055351Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8058673Z │ assets/menu-button-TSwrn_pT.js                           │ esm  │ 2.44 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8059369Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8059970Z │ assets/moving-in-BODsfKNx.js                             │ esm  │ 11.07 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8060800Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8061393Z │ assets/nav-DipCmYqs.js                                   │ esm  │ 10.23 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8062003Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8062600Z │ assets/not-found-DhdZhR3a.js                             │ esm  │ 0.92 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8063227Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8063914Z │ assets/not-found-Onlrt82C.js                             │ esm  │ 20.79 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8064739Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8065581Z │ assets/operations-CpkrLaB8.js                            │ esm  │ 35.64 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8066704Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8067470Z │ assets/operator-api-DxBkyyF6.js                          │ esm  │ 4.39 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8068403Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8069114Z │ assets/operator-dialog-C3vhMcON.js                       │ esm  │ 4.05 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8082532Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8083565Z │ assets/operator-shell-CsCxMg7F.js                        │ esm  │ 30.78 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8084290Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8084931Z │ assets/owner-loader-B_ZvhdlI.js                          │ esm  │ 1.20 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8085614Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8086502Z │ assets/owner-steps-Dp8sLbbn.js                           │ esm  │ 12.88 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8087177Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8087803Z │ assets/page-DAjpD53F.js                                  │ esm  │ 11.65 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8088431Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8089010Z │ assets/path-E273zKfp.js                                  │ esm  │ 4.76 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8089630Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8090219Z │ assets/policy-BZip83h2.js                                │ esm  │ 6.96 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8090847Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8091699Z │ assets/presentation-date-CpT4HPj-.js                     │ esm  │ 2.13 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8092350Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8092957Z │ assets/public-config-Bq9SmcRB.js                         │ esm  │ 1.07 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8093751Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8094356Z │ assets/query-policy-BaOf1uGz.js                          │ esm  │ 4.75 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8095001Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8095586Z │ assets/record-api-DUaZGM5y.js                            │ esm  │ 16.79 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8096515Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8097171Z │ assets/record-create-DhlXvqzG.js                         │ esm  │ 5.69 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8097855Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8098462Z │ assets/record-foot-BtPnx3a9.js                           │ esm  │ 138.38 KiB  │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8099094Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8099731Z │ assets/record-link-picker-BivpH6-3.js                    │ esm  │ 8.01 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8100381Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8100982Z │ assets/record-policies-DtEsMD6y.js                       │ esm  │ 2.71 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8101627Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8102244Z │ assets/record-presentation-BWaSlU05.js                   │ esm  │ 0.34 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8102888Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8103671Z │ assets/record-search-field-v0k2Idck.js                   │ esm  │ 2.69 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8104321Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8104928Z │ assets/record-selection-D8VRdzbf.js                      │ esm  │ 2.40 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8105719Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8106607Z │ assets/records-api-CvUTuUw8.js                           │ esm  │ 0.62 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8107285Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8107885Z │ assets/records-page-D01g0HP1.js                          │ esm  │ 23.11 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8108524Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8109117Z │ assets/redirect-BDbpra0T.js                              │ esm  │ 1.72 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8110233Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8111384Z │ assets/report-format-Dcm94Lsm.js                         │ esm  │ 0.85 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8112572Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8113726Z │ assets/report-population-BNDGHvo0.js                     │ esm  │ 5.64 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8115034Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8116134Z │ assets/repository-BJXkRcQh.js                            │ esm  │ 18.58 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8117617Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8118718Z │ assets/repository-C0zcmiHF.js                            │ esm  │ 0.28 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8119899Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8121043Z │ assets/request-response-B08sYxm2.js                      │ esm  │ 15.41 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8122820Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8123937Z │ assets/request.server-Iz5UBgDR.js                        │ esm  │ 1.29 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8125143Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8126738Z │ assets/results-rz4TYvHx.js                               │ esm  │ 18.71 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8127898Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8129034Z │ assets/review-line-CnCmW1LW.js                           │ esm  │ 1.41 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8130245Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8131315Z │ assets/root-BkKgunb-.js                                  │ esm  │ 0.24 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8132452Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8133571Z │ assets/router-LhNG-duR.js                                │ esm  │ 50.29 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8134738Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8135804Z │ assets/rows-DznbTqcT.js                                  │ esm  │ 7.98 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8137332Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8138441Z │ assets/run-locally-DSjJAGDo.js                           │ esm  │ 27.23 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8139618Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8140753Z │ assets/sales-definition-TzrioCnt.js                      │ esm  │ 7.50 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8141960Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8143043Z │ assets/sales-format-Cjp0gL-8.js                          │ esm  │ 0.72 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8144332Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8144965Z │ assets/sales-result-BSqxLjx5.js                          │ esm  │ 8.32 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8145621Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8146699Z │ assets/save-failure-CgiH83yI.js                          │ esm  │ 2.22 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8147385Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8147993Z │ assets/saved-label-BqrWfj8c.js                           │ esm  │ 0.49 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8148622Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8149211Z │ assets/schemas-BAlMQMkc.js                               │ esm  │ 97.50 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8149844Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8150477Z │ assets/scroll-restoration-BqgoNT-J.js                    │ esm  │ 2.22 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8151162Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8151737Z │ assets/service-B6yVs117.js                               │ esm  │ 8.20 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8152362Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8152969Z │ assets/setup-DHjNWEAr.js                                 │ esm  │ 5.98 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8153586Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8154180Z │ assets/setup-line-bjzmKwLw.js                            │ esm  │ 1.93 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8154807Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8155417Z │ assets/signals-and-mail-CohLsW3S.js                      │ esm  │ 12.36 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8156067Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8157138Z │ assets/start-Bfr6pcKA.js                                 │ esm  │ 0.28 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8157775Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8158346Z │ assets/time-DToUOz_H.js                                  │ esm  │ 5.16 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8158973Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8159563Z │ assets/today-api-C1y-6LgZ.js                             │ esm  │ 1.47 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8160187Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8160781Z │ assets/trial-owner-CQSsSCIq.js                           │ esm  │ 20.11 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8161419Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8162021Z │ assets/undo-snapshot-DsoLDnjZ.js                         │ esm  │ 366.30 KiB  │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8162903Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8163475Z │ assets/unit-3F4yLeNA.js                                  │ esm  │ 0.48 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8164094Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8164821Z │ assets/updating-Z-m0LAz7.js                              │ esm  │ 9.36 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8165442Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8166057Z │ assets/use-operator-resource-D2D8ngHP.js                 │ esm  │ 1.26 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8167001Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8167639Z │ assets/use-workspace-settings-BtqJu9dQ.js                │ esm  │ 0.82 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8168304Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8168916Z │ assets/useMatch-UPn4MfhK.js                              │ esm  │ 1.45 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8169543Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8170134Z │ assets/useParams-BFaT5tXk.js                             │ esm  │ 1.12 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8170778Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8171386Z │ assets/useRouterState-M73zDL0m.js                        │ esm  │ 1.04 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8172015Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8172602Z │ assets/useSearch-rajMEgbd.js                             │ esm  │ 1.07 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8173235Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8173826Z │ assets/useSelector-DTP4DdB8.js                           │ esm  │ 22.99 KiB   │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8174651Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8175231Z │ assets/utils-CsV-5Usq.js                                 │ esm  │ 0.61 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8175841Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8176918Z │ assets/workbench-api-BZI7VJRn.js                         │ esm  │ 0.58 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8177583Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8178198Z │ assets/workflows-types-B_Azkf1H.js                       │ esm  │ 4.19 KiB    │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8178840Z ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8179410Z │ Total (182 modules)                                      │      │ 3343.68 KiB │
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8180018Z └──────────────────────────────────────────────────────────┴──────┴─────────────┘
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:24.8180437Z ⎔ Starting local server...
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:25.5154143Z [wrangler:info] Ready on https://127.0.0.1:43435
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:25.5744329Z [wrangler:info] GET /health 200 OK (566ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:25.6298678Z Owned emitted Worker PID undefined
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:25.6955138Z [wrangler:info] GET /app/dashboards/synthetic-orbit-notice 401 Unauthorized (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:25.7193381Z [wrangler:info] GET /orbit-auth.css 200 OK (5ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:25.7334257Z [wrangler:info] GET /brand/fonts.css 200 OK (5ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:25.7360739Z [wrangler:info] GET /rer-theme.css 200 OK (6ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:25.7635267Z [wrangler:info] GET /brand/mark.svg 200 OK (6ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:25.7701498Z [wrangler:info] GET /brand/fonts/bricolage-grotesque-latin-opsz-normal.woff2 200 OK (5ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.3397717Z [wrangler:info] GET /app/dashboards/synthetic-orbit-notice 200 OK (70ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.3857951Z [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 200 OK (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.3887529Z [wrangler:info] GET /assets/index-fvHalfId.css 200 OK (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.3896107Z [wrangler:info] GET /assets/app.dashboards-BWRYnZFZ.css 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.3971301Z [wrangler:info] GET /assets/styles-Bh8VDcSi.css 200 OK (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.4006145Z [wrangler:info] GET /assets/dashboard-dialogs-B_4h-fZ3.css 200 OK (23ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.4097743Z [wrangler:info] GET /fonts/fonts.css 200 OK (24ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.4147525Z [wrangler:info] GET /assets/index-D7U_M8gh.js 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.4416141Z [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 200 OK (28ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.4444371Z [wrangler:info] GET /assets/operator-shell-CifHT00w.js 200 OK (23ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.4570043Z [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 200 OK (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.4622865Z [wrangler:info] GET /assets/bricolage-grotesque-latin-opsz-normal-Cre6nC2_.woff2 200 OK (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.4697512Z [wrangler:info] GET /assets/not-found-i5RsCZif.js 200 OK (28ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.4749923Z [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 200 OK (30ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.4751433Z [wrangler:info] GET /assets/useMatch-DakL_zVg.js 200 OK (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.4820055Z [wrangler:info] GET /assets/link-gEQj_RLU.js 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.4948017Z [wrangler:info] GET /assets/root-DLTE-HSj.js 200 OK (23ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5103406Z [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 200 OK (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5179472Z [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 200 OK (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5230517Z [wrangler:info] GET /assets/unit-9lm_J1zs.js 200 OK (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5257006Z [wrangler:info] GET /assets/leaf-BB-HABpD.js 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5272124Z [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 200 OK (21ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5363331Z [wrangler:info] GET /assets/loaders-CM_H7rIf.js 200 OK (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5407402Z [wrangler:info] GET /assets/load-DFXkEZ8q.js 200 OK (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5521619Z [wrangler:info] GET /assets/app-DMe5FNIp.js 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5590296Z [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 200 OK (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5689967Z [wrangler:info] GET /assets/app.dashboards._id-B_BDKZbO.js 200 OK (20ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5706698Z [wrangler:info] GET /assets/results-D14tNqXj.js 200 OK (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5755445Z [wrangler:info] GET /assets/sales-definition-BwzQA4LG.js 200 OK (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5793877Z [wrangler:info] GET /assets/dashboard-dialogs--Wh88L0X.js 200 OK (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5827668Z [wrangler:info] GET /assets/save-failure-CKoovZRf.js 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5891820Z [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5932759Z [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.5955979Z [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.6426894Z [wrangler:info] GET /assets/action-tooltip-vScARSGv.js 200 OK (4ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.6997324Z [wrangler:info] GET /api/editor/config 204 No Content (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.7314005Z [wrangler:info] GET /api/v2/access/pages 200 OK (39ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.7391778Z [wrangler:info] GET /api/v1/notifications 200 OK (47ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.7441127Z [wrangler:info] GET /api/v2/access/workspaces 200 OK (51ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.8208043Z [wrangler:info] GET /api/v2/workspaces/workspace/dashboards/synthetic-orbit-notice/outline 200 OK (66ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.9153531Z [wrangler:info] GET /api/v2/workspaces/workspace/dashboards/synthetic-orbit-notice 200 OK (81ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:26.9777616Z [wrangler:info] GET /api/v2/workspaces/workspace/dashboards/synthetic-orbit-notice/schedule 200 OK (74ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:28.3222126Z [wrangler:info] GET /api/v2/workspaces/workspace/dashboards/synthetic-orbit-notice/schedule 200 OK (67ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:29.1130229Z [wrangler:info] GET /api/v2/workspaces/workspace/dashboards/synthetic-orbit-notice/sharing 200 OK (39ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.1535683Z [wrangler:info] GET /app/settings/integrations 200 OK (31ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.1940026Z [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2040252Z [wrangler:info] GET /assets/capture-setup-CB8DnmI2.css 200 OK (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2061828Z [wrangler:info] GET /assets/capture-providers-BX0AvRJ7.css 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2099945Z [wrangler:info] GET /fonts/fonts.css 304 Not Modified (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2115637Z [wrangler:info] GET /assets/area-Ber9pJFr.css 200 OK (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2123888Z [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2156517Z [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2327435Z [wrangler:info] GET /assets/records-aMaExbty.css 200 OK (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2370958Z [wrangler:info] GET /assets/app.settings-DYcCAE-C.css 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2408799Z [wrangler:info] GET /assets/index-D7U_M8gh.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2457485Z [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2479527Z [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2556153Z [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2730498Z [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (20ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2802004Z [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (6ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2851715Z [wrangler:info] GET /assets/bricolage-grotesque-latin-opsz-normal-Cre6nC2_.woff2 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2897308Z [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2929446Z [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.2953553Z [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (21ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3143234Z [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3166799Z [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3215085Z [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (20ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3227945Z [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3275531Z [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3311619Z [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3472804Z [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3546938Z [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3607811Z [wrangler:info] GET /assets/app-DMe5FNIp.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3687729Z [wrangler:info] GET /assets/app.settings-COeerku0.js 200 OK (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3710042Z [wrangler:info] GET /assets/app.settings.integrations-DG8bj40U.js 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3725566Z [wrangler:info] GET /assets/formatters-COlHYlPW.js 200 OK (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3787419Z [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 200 OK (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3881371Z [wrangler:info] GET /assets/records-api-Q8XL51nl.js 200 OK (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3930089Z [wrangler:info] GET /assets/inline-confirm-B4S1Hbog.js 200 OK (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.3939044Z [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.4041682Z [wrangler:info] GET /assets/saved-label-sbp1WJwW.js 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.4116892Z [wrangler:info] GET /assets/booking-recipe-12NS-Jw4.js 200 OK (23ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.4147653Z [wrangler:info] GET /assets/area-C_mw1rPy.js 200 OK (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.4195104Z [wrangler:info] GET /assets/use-workspace-settings-Cep_2w6Z.js 200 OK (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.4227566Z [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.4237545Z [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.4258025Z [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.4820119Z [wrangler:info] GET /api/editor/config 204 No Content (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.5384390Z [wrangler:info] GET /api/v1/notifications 200 OK (66ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.5466922Z [wrangler:info] GET /api/v1/settings 200 OK (74ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.5609825Z [wrangler:info] GET /api/v1/notifications/slack 200 OK (91ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.5703996Z [wrangler:info] GET /api/v1/settings/products 200 OK (100ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:30.5958577Z [wrangler:info] GET /api/v1/calls/settings 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.4207762Z [wrangler:info] PUT /api/v1/notifications/slack 200 OK (83ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.4489100Z [wrangler:info] GET /api/v1/notifications/slack 200 OK (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.5731070Z [wrangler:info] GET /app/settings/integrations 200 OK (40ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6118299Z [wrangler:info] GET /fonts/fonts.css 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6130982Z [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6150715Z [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6174267Z [wrangler:info] GET /assets/capture-setup-CB8DnmI2.css 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6182453Z [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6253349Z [wrangler:info] GET /assets/capture-providers-BX0AvRJ7.css 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6470196Z [wrangler:info] GET /assets/area-Ber9pJFr.css 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6480794Z [wrangler:info] GET /assets/records-aMaExbty.css 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6497805Z [wrangler:info] GET /assets/app.settings-DYcCAE-C.css 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6528563Z [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6547813Z [wrangler:info] GET /assets/index-D7U_M8gh.js 304 Not Modified (6ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6551563Z [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6866093Z [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6917709Z [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (20ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6943097Z [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6968108Z [wrangler:info] GET /assets/bricolage-grotesque-latin-opsz-normal-Cre6nC2_.woff2 304 Not Modified (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.6980999Z [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7000209Z [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7152933Z [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7297817Z [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7317533Z [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7348760Z [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7374145Z [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7386001Z [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7412791Z [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7543733Z [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7677844Z [wrangler:info] GET /assets/app-DMe5FNIp.js 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7721486Z [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7761855Z [wrangler:info] GET /assets/app.settings-COeerku0.js 304 Not Modified (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7793869Z [wrangler:info] GET /assets/app.settings.integrations-DG8bj40U.js 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7807182Z [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7820602Z [wrangler:info] GET /assets/formatters-COlHYlPW.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.7939890Z [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.8016812Z [wrangler:info] GET /assets/records-api-Q8XL51nl.js 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.8051293Z [wrangler:info] GET /assets/inline-confirm-B4S1Hbog.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.8066939Z [wrangler:info] GET /assets/saved-label-sbp1WJwW.js 304 Not Modified (6ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.8071108Z [wrangler:info] GET /assets/area-C_mw1rPy.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.8157994Z [wrangler:info] GET /assets/booking-recipe-12NS-Jw4.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.8178953Z [wrangler:info] GET /assets/use-workspace-settings-Cep_2w6Z.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.8251850Z [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (7ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.8271341Z [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (6ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.8288615Z [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (7ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.8801316Z [wrangler:info] GET /api/editor/config 204 No Content (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.9258477Z [wrangler:info] GET /api/v1/notifications 200 OK (55ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.9335496Z [wrangler:info] GET /api/v1/settings 200 OK (62ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.9424932Z [wrangler:info] GET /api/v1/notifications/slack 200 OK (72ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.9548785Z [wrangler:info] GET /api/v1/settings/products 200 OK (85ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:31.9804997Z [wrangler:info] GET /api/v1/calls/settings 200 OK (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.1397312Z [wrangler:info] PUT /api/v1/notifications/slack 200 OK (85ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.1727842Z [wrangler:info] GET /api/v1/notifications/slack 200 OK (22ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.2850143Z [wrangler:info] GET /app/notifications 200 OK (28ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.3248483Z [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.3260692Z [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.3269977Z [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.3369761Z [wrangler:info] GET /fonts/fonts.css 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.3380571Z [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.3409968Z [wrangler:info] GET /assets/index-D7U_M8gh.js 304 Not Modified (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.3585930Z [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.3610468Z [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (21ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.3627729Z [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.3711682Z [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.3767701Z [wrangler:info] GET /assets/bricolage-grotesque-latin-opsz-normal-Cre6nC2_.woff2 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.3799960Z [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.3933177Z [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4004181Z [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4051050Z [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4090800Z [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4154385Z [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4180315Z [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4199615Z [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4312905Z [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4381296Z [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4423934Z [wrangler:info] GET /assets/app-DMe5FNIp.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4466051Z [wrangler:info] GET /assets/app.notifications-BzHw7amf.js 200 OK (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4467679Z [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4480428Z [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4490552Z [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4540214Z [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (6ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.4975187Z [wrangler:info] GET /api/editor/config 204 No Content (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.5386066Z [wrangler:info] GET /api/v2/access/pages 200 OK (52ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.5455113Z [wrangler:info] GET /api/v1/notifications 200 OK (58ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.5569585Z [wrangler:info] GET /api/v1/records/mentions 200 OK (69ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:32.5797944Z [wrangler:info] GET /api/v1/notifications 200 OK (23ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.2711144Z [wrangler:info] GET /app/settings/integrations 200 OK (28ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3142684Z [wrangler:info] GET /fonts/fonts.css 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3185089Z [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3207486Z [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3222632Z [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3238805Z [wrangler:info] GET /assets/capture-setup-CB8DnmI2.css 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3256859Z [wrangler:info] GET /assets/capture-providers-BX0AvRJ7.css 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3410736Z [wrangler:info] GET /assets/area-Ber9pJFr.css 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3451464Z [wrangler:info] GET /assets/app.settings-DYcCAE-C.css 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3527571Z [wrangler:info] GET /assets/records-aMaExbty.css 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3598589Z [wrangler:info] GET /assets/index-D7U_M8gh.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3627756Z [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3665134Z [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3758666Z [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (29ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3887896Z [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3921179Z [wrangler:info] GET /assets/bricolage-grotesque-latin-opsz-normal-Cre6nC2_.woff2 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3943552Z [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (7ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3977749Z [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.3997664Z [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4116036Z [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (20ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4226552Z [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4274674Z [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4328162Z [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4336989Z [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4380499Z [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4419096Z [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4512012Z [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4521570Z [wrangler:info] GET /assets/app-DMe5FNIp.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4662038Z [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4695305Z [wrangler:info] GET /assets/app.settings-COeerku0.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4714460Z [wrangler:info] GET /assets/app.settings.integrations-DG8bj40U.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4743229Z [wrangler:info] GET /assets/formatters-COlHYlPW.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4812869Z [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4846672Z [wrangler:info] GET /assets/records-api-Q8XL51nl.js 304 Not Modified (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4941758Z [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.4957529Z [wrangler:info] GET /assets/inline-confirm-B4S1Hbog.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.5006572Z [wrangler:info] GET /assets/saved-label-sbp1WJwW.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.5053180Z [wrangler:info] GET /assets/booking-recipe-12NS-Jw4.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.5077899Z [wrangler:info] GET /assets/area-C_mw1rPy.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.5132440Z [wrangler:info] GET /assets/use-workspace-settings-Cep_2w6Z.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.5146475Z [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.5169293Z [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (7ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.5236638Z [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.5669186Z [wrangler:info] GET /api/editor/config 204 No Content (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.6117918Z [wrangler:info] GET /api/v1/notifications 200 OK (49ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.6182823Z [wrangler:info] GET /api/v1/settings 200 OK (57ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.6316816Z [wrangler:info] GET /api/v1/notifications/slack 200 OK (72ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.6404536Z [wrangler:info] GET /api/v1/settings/products 200 OK (83ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.6669563Z [wrangler:info] GET /api/v1/calls/settings 200 OK (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:33.8041999Z [wrangler:info] GET /api/v1/settings/slack 200 OK (31ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.1330706Z [wrangler:info] GET /app/dashboards/synthetic-orbit-notice 401 Unauthorized (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.1533396Z [wrangler:info] GET /orbit-auth.css 200 OK (5ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.1650922Z [wrangler:info] GET /brand/fonts.css 200 OK (3ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.1671860Z [wrangler:info] GET /rer-theme.css 200 OK (5ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.1849553Z [wrangler:info] GET /brand/mark.svg 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.1927808Z [wrangler:info] GET /brand/fonts/bricolage-grotesque-latin-opsz-normal.woff2 200 OK (4ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.7100372Z [wrangler:info] GET /app/dashboards/synthetic-orbit-notice 200 OK (34ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.7509064Z [wrangler:info] GET /fonts/fonts.css 200 OK (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.7567491Z [wrangler:info] GET /assets/index-fvHalfId.css 200 OK (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.7599300Z [wrangler:info] GET /assets/dashboard-dialogs-B_4h-fZ3.css 200 OK (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.7649745Z [wrangler:info] GET /assets/app.dashboards-BWRYnZFZ.css 200 OK (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.7771324Z [wrangler:info] GET /assets/styles-Bh8VDcSi.css 200 OK (20ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.7797481Z [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 200 OK (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.7840539Z [wrangler:info] GET /assets/index-D7U_M8gh.js 200 OK (21ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8040331Z [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 200 OK (26ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8080654Z [wrangler:info] GET /assets/not-found-i5RsCZif.js 200 OK (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8120563Z [wrangler:info] GET /assets/operator-shell-CifHT00w.js 200 OK (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8210691Z [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 200 OK (21ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8287469Z [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 200 OK (21ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8317949Z [wrangler:info] GET /assets/useMatch-DakL_zVg.js 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8349092Z [wrangler:info] GET /assets/bricolage-grotesque-latin-opsz-normal-Cre6nC2_.woff2 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8488410Z [wrangler:info] GET /assets/link-gEQj_RLU.js 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8509146Z [wrangler:info] GET /assets/root-DLTE-HSj.js 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8542031Z [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8543238Z [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 200 OK (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8689909Z [wrangler:info] GET /assets/leaf-BB-HABpD.js 200 OK (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8763098Z [wrangler:info] GET /assets/unit-9lm_J1zs.js 200 OK (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8800184Z [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8827245Z [wrangler:info] GET /assets/load-DFXkEZ8q.js 200 OK (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8849478Z [wrangler:info] GET /assets/loaders-CM_H7rIf.js 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8950745Z [wrangler:info] GET /assets/app-DMe5FNIp.js 200 OK (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.8989500Z [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.9128098Z [wrangler:info] GET /assets/app.dashboards._id-B_BDKZbO.js 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.9157145Z [wrangler:info] GET /assets/results-D14tNqXj.js 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.9164839Z [wrangler:info] GET /assets/dashboard-dialogs--Wh88L0X.js 200 OK (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.9247689Z [wrangler:info] GET /assets/sales-definition-BwzQA4LG.js 200 OK (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.9277149Z [wrangler:info] GET /assets/save-failure-CKoovZRf.js 200 OK (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.9331458Z [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 200 OK (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.9340140Z [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 200 OK (6ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.9351252Z [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 200 OK (5ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:36.9813496Z [wrangler:info] GET /assets/action-tooltip-vScARSGv.js 200 OK (5ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:37.0381280Z [wrangler:info] GET /api/editor/config 204 No Content (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:37.0669948Z [wrangler:info] GET /api/v2/access/pages 200 OK (38ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:37.0723578Z [wrangler:info] GET /api/v1/notifications 200 OK (46ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:37.0761848Z [wrangler:info] GET /api/v2/access/workspaces 200 OK (46ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:37.1487320Z [wrangler:info] GET /api/v2/workspaces/workspace/dashboards/synthetic-orbit-notice/outline 200 OK (59ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:37.2353184Z [wrangler:info] GET /api/v2/workspaces/workspace/dashboards/synthetic-orbit-notice 200 OK (78ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:37.2906401Z [wrangler:info] GET /api/v2/workspaces/workspace/dashboards/synthetic-orbit-notice/schedule 200 OK (76ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:38.9813629Z [wrangler:info] GET /api/v2/workspaces/workspace/dashboards/synthetic-orbit-notice/schedule 200 OK (59ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:39.7413751Z [wrangler:info] POST /api/v2/workspaces/workspace/dashboards/synthetic-orbit-notice/schedule/slack 200 OK (105ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:39.9848339Z [wrangler:info] POST /api/v2/workspaces/workspace/dashboards/synthetic-orbit-notice/schedule/slack 200 OK (115ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:40.1517747Z [wrangler:info] GET /api/v2/workspaces/workspace/dashboards/synthetic-orbit-notice/sharing 200 OK (29ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.0363453Z [wrangler:info] GET /api/v1/notifications 200 OK (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.1241793Z [wrangler:info] GET /app/settings/integrations 200 OK (29ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.1657858Z [wrangler:info] GET /assets/capture-setup-CB8DnmI2.css 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.1735551Z [wrangler:info] GET /assets/capture-providers-BX0AvRJ7.css 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.1770129Z [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.1790547Z [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.1813072Z [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.1830644Z [wrangler:info] GET /assets/area-Ber9pJFr.css 200 OK (5ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.1868957Z [wrangler:info] GET /fonts/fonts.css 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2019051Z [wrangler:info] GET /assets/records-aMaExbty.css 200 OK (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2049213Z [wrangler:info] GET /assets/app.settings-DYcCAE-C.css 200 OK (6ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2068399Z [wrangler:info] GET /assets/index-D7U_M8gh.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2100690Z [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2126604Z [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2208455Z [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2417903Z [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (22ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2471161Z [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (7ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2479600Z [wrangler:info] GET /assets/bricolage-grotesque-latin-opsz-normal-Cre6nC2_.woff2 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2507628Z [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2519915Z [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2606060Z [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2685529Z [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (22ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2770907Z [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2796647Z [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2835422Z [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2860896Z [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.2890645Z [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3000301Z [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3102737Z [wrangler:info] GET /assets/app.settings-COeerku0.js 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3150904Z [wrangler:info] GET /assets/app-DMe5FNIp.js 304 Not Modified (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3178627Z [wrangler:info] GET /assets/app.settings.integrations-DG8bj40U.js 200 OK (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3210921Z [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3232737Z [wrangler:info] GET /assets/formatters-COlHYlPW.js 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3357664Z [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 200 OK (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3420480Z [wrangler:info] GET /assets/records-api-Q8XL51nl.js 200 OK (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3471629Z [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3509100Z [wrangler:info] GET /assets/inline-confirm-B4S1Hbog.js 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3583517Z [wrangler:info] GET /assets/saved-label-sbp1WJwW.js 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3600204Z [wrangler:info] GET /assets/booking-recipe-12NS-Jw4.js 200 OK (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3645052Z [wrangler:info] GET /assets/area-C_mw1rPy.js 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3697501Z [wrangler:info] GET /assets/use-workspace-settings-Cep_2w6Z.js 200 OK (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3738322Z [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3751971Z [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (4ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.3772648Z [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (5ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.4262454Z [wrangler:info] GET /api/editor/config 204 No Content (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.4782330Z [wrangler:info] GET /api/v1/notifications 200 OK (61ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.4863660Z [wrangler:info] GET /api/v1/settings 200 OK (61ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.4949330Z [wrangler:info] GET /api/v1/notifications/slack 200 OK (78ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.5079188Z [wrangler:info] GET /api/v1/settings/products 200 OK (95ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:41.5379504Z [wrangler:info] GET /api/v1/calls/settings 200 OK (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.0931247Z [wrangler:info] GET /app/notifications 200 OK (37ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.1348183Z [wrangler:info] GET /fonts/fonts.css 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.1356459Z [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.1374235Z [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.1395622Z [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.1417435Z [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.1434927Z [wrangler:info] GET /assets/index-D7U_M8gh.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.1683518Z [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.1694221Z [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.1702080Z [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.1729487Z [wrangler:info] GET /assets/bricolage-grotesque-latin-opsz-normal-Cre6nC2_.woff2 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.1764071Z [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.1801581Z [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2000723Z [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2024887Z [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2045932Z [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2077063Z [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2129532Z [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2167791Z [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2259426Z [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2317605Z [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2369902Z [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2409617Z [wrangler:info] GET /assets/app-DMe5FNIp.js 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2433239Z [wrangler:info] GET /assets/app.notifications-BzHw7amf.js 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2434446Z [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2449073Z [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2520378Z [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2530101Z [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (6ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.2931055Z [wrangler:info] GET /api/editor/config 204 No Content (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.3233915Z [wrangler:info] GET /api/v2/access/pages 200 OK (37ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.3285821Z [wrangler:info] GET /api/v1/notifications 200 OK (45ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.3384924Z [wrangler:info] GET /api/v1/records/mentions 200 OK (54ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.3644367Z [wrangler:info] GET /api/v1/notifications 200 OK (29ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.8789691Z [wrangler:info] GET /app/settings/integrations 200 OK (26ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9201531Z [wrangler:info] GET /fonts/fonts.css 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9262571Z [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9297523Z [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9303255Z [wrangler:info] GET /assets/capture-providers-BX0AvRJ7.css 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9333806Z [wrangler:info] GET /assets/capture-setup-CB8DnmI2.css 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9362804Z [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9487743Z [wrangler:info] GET /assets/area-Ber9pJFr.css 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9557855Z [wrangler:info] GET /assets/app.settings-DYcCAE-C.css 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9567346Z [wrangler:info] GET /assets/records-aMaExbty.css 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9637218Z [wrangler:info] GET /assets/index-D7U_M8gh.js 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9672782Z [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9721453Z [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9746842Z [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9822481Z [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9858640Z [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:42.9972735Z [wrangler:info] GET /assets/bricolage-grotesque-latin-opsz-normal-Cre6nC2_.woff2 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0036690Z [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0115993Z [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0117698Z [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0134723Z [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0150739Z [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0171458Z [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0343401Z [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (20ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0427700Z [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0447520Z [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0487220Z [wrangler:info] GET /assets/app-DMe5FNIp.js 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0508014Z [wrangler:info] GET /assets/app.settings-COeerku0.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0529867Z [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0550608Z [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0679584Z [wrangler:info] GET /assets/app.settings.integrations-DG8bj40U.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0716564Z [wrangler:info] GET /assets/formatters-COlHYlPW.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0771392Z [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0795797Z [wrangler:info] GET /assets/inline-confirm-B4S1Hbog.js 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0824029Z [wrangler:info] GET /assets/records-api-Q8XL51nl.js 304 Not Modified (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0840420Z [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 304 Not Modified (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0865028Z [wrangler:info] GET /assets/saved-label-sbp1WJwW.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.0998556Z [wrangler:info] GET /assets/booking-recipe-12NS-Jw4.js 304 Not Modified (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.1067626Z [wrangler:info] GET /assets/area-C_mw1rPy.js 304 Not Modified (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.1068690Z [wrangler:info] GET /assets/use-workspace-settings-Cep_2w6Z.js 304 Not Modified (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.1104989Z [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.1114065Z [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.1129970Z [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.1698364Z [wrangler:info] GET /api/v1/notifications/slack 200 OK (26ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.2025397Z [wrangler:info] GET /api/editor/config 204 No Content (58ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.2149514Z [wrangler:info] GET /api/v1/notifications 200 OK (68ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.2210998Z [wrangler:info] GET /api/v1/settings 200 OK (72ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.2383943Z [wrangler:info] GET /api/v1/settings/products 200 OK (92ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.2725808Z [wrangler:info] GET /api/v1/calls/settings 200 OK (28ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:43.3827697Z [wrangler:info] GET /api/v1/settings/slack 200 OK (28ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.3968216Z [wrangler:info] GET /api/v1/settings 200 OK (20ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.4818023Z [wrangler:info] PUT /api/v1/settings 200 OK (79ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.5209610Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/reports/suite 200 OK (33ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.5861631Z [wrangler:info] GET /app/reports 200 OK (27ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.6267289Z [wrangler:info] GET /assets/styles-Bh8VDcSi.css 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.6279460Z [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.6355732Z [wrangler:info] GET /fonts/fonts.css 200 OK (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.6379015Z [wrangler:info] GET /assets/dashboard-dialogs-B_4h-fZ3.css 200 OK (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.6381644Z [wrangler:info] GET /assets/index-fvHalfId.css 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.6430225Z [wrangler:info] GET /assets/menu-button-BJTU8Frn.css 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.6542527Z [wrangler:info] GET /assets/rows-o8ZPCEMf.css 200 OK (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.6564534Z [wrangler:info] GET /assets/index-D7U_M8gh.js 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.6807885Z [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 200 OK (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.6811874Z [wrangler:info] GET /assets/operator-shell-CifHT00w.js 200 OK (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.6922149Z [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 200 OK (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.6999246Z [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 200 OK (21ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7077380Z [wrangler:info] GET /assets/not-found-i5RsCZif.js 200 OK (27ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7116159Z [wrangler:info] GET /assets/useMatch-DakL_zVg.js 200 OK (23ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7209735Z [wrangler:info] GET /assets/root-DLTE-HSj.js 200 OK (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7233473Z [wrangler:info] GET /assets/link-gEQj_RLU.js 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7333674Z [wrangler:info] GET /assets/bricolage-grotesque-latin-opsz-normal-Cre6nC2_.woff2 200 OK (18ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7374779Z [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7473537Z [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7503498Z [wrangler:info] GET /assets/leaf-BB-HABpD.js 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7549865Z [wrangler:info] GET /assets/unit-9lm_J1zs.js 200 OK (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7616913Z [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 200 OK (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7705415Z [wrangler:info] GET /assets/load-DFXkEZ8q.js 200 OK (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7758163Z [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 200 OK (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7764641Z [wrangler:info] GET /assets/loaders-CM_H7rIf.js 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7844472Z [wrangler:info] GET /assets/app-DMe5FNIp.js 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7889352Z [wrangler:info] GET /assets/ScrollRestoration-B6jpIZq6.js 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7948416Z [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 200 OK (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.7987815Z [wrangler:info] GET /assets/dashboard-dialogs--Wh88L0X.js 200 OK (7ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.8023948Z [wrangler:info] GET /assets/app.reports.index-DHvp5h8e.js 200 OK (20ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.8119904Z [wrangler:info] GET /assets/menu-button-CahAYL4s.js 200 OK (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.8153303Z [wrangler:info] GET /assets/rows-AAcVrNaY.js 200 OK (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.8165447Z [wrangler:info] GET /assets/definition-editor-wQP_EsQr.js 200 OK (13ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.8173090Z [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.8280722Z [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 200 OK (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.8288758Z [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 200 OK (12ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.8894604Z [wrangler:info] GET /assets/action-tooltip-vScARSGv.js 200 OK (8ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.8942421Z [wrangler:info] GET /assets/data-value-DEhKu7lG.js 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.9017625Z [wrangler:info] GET /assets/import-provenance-CQgpyKHO.js 200 OK (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.9048756Z [wrangler:info] GET /assets/records-api-Q8XL51nl.js 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.9057739Z [wrangler:info] GET /assets/formatters-COlHYlPW.js 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.9551873Z [wrangler:info] GET /api/editor/config 204 No Content (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.9790957Z [wrangler:info] GET /api/v2/access/pages 200 OK (30ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.9854490Z [wrangler:info] GET /api/v1/notifications 200 OK (38ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:45.9871546Z [wrangler:info] GET /api/v2/access/workspaces 200 OK (40ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:46.0240579Z [wrangler:info] GET /api/v2/access/pages 200 OK (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:46.0788317Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/metrics 200 OK (66ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:46.0968171Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/reports/suite 200 OK (86ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:46.1310408Z [wrangler:info] GET /api/v2/workspaces/workspace/dashboards 200 OK (120ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.1430825Z [wrangler:info] GET /_serverFn/7b6af0d434f254352c730e426244f10a1aef0e4cda80d1e81ed3a0eb34260dac 200 OK (10ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.1617305Z [wrangler:info] GET /_serverFn/8540e17e12e9f76d460a667ffd5a7c09ee76fe242d46aaaa48b6855d5d97c732 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.1697832Z [wrangler:info] GET /_serverFn/b2db0da06d90d1d35f7cd3d6ac04cbb112aeb3f81f8f353d1a1679bab094a91b 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.1905066Z [wrangler:info] GET /assets/app.reports._id-D9Ixy5aD.js 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.1940451Z [wrangler:info] GET /assets/not-found-B9cPLXwq.css 200 OK (7ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.1986488Z [wrangler:info] GET /assets/sales-definition-BwzQA4LG.js 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.2007683Z [wrangler:info] GET /assets/not-found-BwRt9Vfb.js 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.2402168Z [wrangler:info] GET /api/v1/notifications 200 OK (15ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.2633265Z [wrangler:info] GET /api/v2/access/pages 200 OK (41ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.2673747Z [wrangler:info] GET /api/v2/access/workspaces 200 OK (43ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.2958108Z [wrangler:info] GET /api/v2/access/pages 200 OK (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.3498205Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/metrics 200 OK (68ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.3606619Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/reports/suite 200 OK (77ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.4476418Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/reports/suite/sales-monthly 200 OK (66ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.4770092Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/metrics 200 OK (23ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:47.5924345Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/reports/sales-monthly/preview 200 OK (106ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.0415835Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/metrics/sales-monthly/versions/1/snapshots 200 OK (62ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.0708565Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/reports/sales-monthly/sharing 200 OK (91ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.3155262Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics 200 OK (62ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.3468514Z [wrangler:info] GET /_serverFn/7b6af0d434f254352c730e426244f10a1aef0e4cda80d1e81ed3a0eb34260dac 200 OK (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.4054508Z [wrangler:info] GET /_serverFn/8540e17e12e9f76d460a667ffd5a7c09ee76fe242d46aaaa48b6855d5d97c732 200 OK (11ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.4133748Z [wrangler:info] GET /_serverFn/b2db0da06d90d1d35f7cd3d6ac04cbb112aeb3f81f8f353d1a1679bab094a91b 200 OK (19ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.4775118Z [wrangler:info] GET /api/v2/access/pages 200 OK (34ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.5200792Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/metrics 200 OK (73ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.5305947Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/reports/suite 200 OK (85ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.6350652Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/reports/8f295bfb-9f35-41db-845a-01764a798c31/preview 200 OK (92ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.7361367Z [wrangler:info] GET /_serverFn/7b6af0d434f254352c730e426244f10a1aef0e4cda80d1e81ed3a0eb34260dac 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.7565889Z [wrangler:info] GET /_serverFn/8540e17e12e9f76d460a667ffd5a7c09ee76fe242d46aaaa48b6855d5d97c732 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.7643284Z [wrangler:info] GET /_serverFn/b2db0da06d90d1d35f7cd3d6ac04cbb112aeb3f81f8f353d1a1679bab094a91b 200 OK (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:48.8679110Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/reports/8f295bfb-9f35-41db-845a-01764a798c31/preview 200 OK (91ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:51.2390408Z [wrangler:info] GET /api/v1/notifications 200 OK (17ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:52.9500371Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/reports/8f295bfb-9f35-41db-845a-01764a798c31/snapshots 200 OK (114ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:52.9840632Z [wrangler:info] GET /_serverFn/7b6af0d434f254352c730e426244f10a1aef0e4cda80d1e81ed3a0eb34260dac 200 OK (16ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:53.0110903Z [wrangler:info] GET /_serverFn/8540e17e12e9f76d460a667ffd5a7c09ee76fe242d46aaaa48b6855d5d97c732 200 OK (9ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:53.0222976Z [wrangler:info] GET /_serverFn/b2db0da06d90d1d35f7cd3d6ac04cbb112aeb3f81f8f353d1a1679bab094a91b 200 OK (20ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:53.1109064Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/metrics/8f295bfb-9f35-41db-845a-01764a798c31/versions/1/snapshots 200 OK (76ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:53.1400325Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/reports/8f295bfb-9f35-41db-845a-01764a798c31/sharing 200 OK (105ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:55.2308379Z [wrangler:info] GET /api/v1/notifications 200 OK (14ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.1679026Z [wrangler:info] PUT /api/v1/settings 200 OK (78ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.1727074Z ✖ REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence (216228.855767ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.2373475Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics 200 OK (60ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.3345816Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics/unit-sum-score/preview 200 OK (86ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.4304269Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics/unit-sum-score/snapshots 200 OK (90ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.4802908Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/ebe27e58-d68e-40de-b75a-8084bf071418/export 200 OK (43ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.5451435Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/ebe27e58-d68e-40de-b75a-8084bf071418/export 403 Forbidden (58ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.5576120Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/ebe27e58-d68e-40de-b75a-8084bf071418/export 401 Unauthorized (6ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.6230672Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics 200 OK (58ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.7140945Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics/unit-mean-score/preview 200 OK (84ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.8080612Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics/unit-mean-score/snapshots 200 OK (88ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.8681175Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/54663ef4-4eb8-4a20-ac69-8fb42a9d7b62/export 200 OK (51ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.9261770Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/54663ef4-4eb8-4a20-ac69-8fb42a9d7b62/export 403 Forbidden (53ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:58.9379183Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/54663ef4-4eb8-4a20-ac69-8fb42a9d7b62/export 401 Unauthorized (6ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.0010272Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics 200 OK (57ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.0951498Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics/unit-mean-value_cents/preview 200 OK (88ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.1901394Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics/unit-mean-value_cents/snapshots 200 OK (89ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.2403109Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/4e9e4eeb-9902-48ac-ad97-bca46a49da37/export 200 OK (44ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.2564152Z [wrangler:info] GET /api/v1/notifications 200 OK (38ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.3085960Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/4e9e4eeb-9902-48ac-ad97-bca46a49da37/export 403 Forbidden (61ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.3228361Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/4e9e4eeb-9902-48ac-ad97-bca46a49da37/export 401 Unauthorized (6ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.3872107Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics 200 OK (60ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.4779310Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics/unit-mean-expected_close_at/preview 200 OK (83ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.5705843Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics/unit-mean-expected_close_at/snapshots 200 OK (87ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.6359788Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/50ccba40-8241-498e-91af-285a0e8b27ff/export 200 OK (59ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.6953882Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/50ccba40-8241-498e-91af-285a0e8b27ff/export 403 Forbidden (53ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.7071722Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/50ccba40-8241-498e-91af-285a0e8b27ff/export 401 Unauthorized (5ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.7692416Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics 200 OK (56ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.8590753Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics/named-id/preview 200 OK (84ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:24:59.9578204Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics/named-id/snapshots 200 OK (90ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.0059901Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/cdec4888-c951-4af1-a2a1-420aae28133f/export 200 OK (44ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.0716037Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics 200 OK (60ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.1547878Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics/named-owner_id/preview 200 OK (77ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.2390682Z [wrangler:info] POST /api/v2/workspaces/workspace/operations/metrics/named-owner_id/snapshots 200 OK (78ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.2801678Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/3657f3bc-1c5f-4c2d-89c3-b69d58a09fe1/export 200 OK (35ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.3263587Z [wrangler:info] GET /api/v2/workspaces/workspace/operations/snapshots/3657f3bc-1c5f-4c2d-89c3-b69d58a09fe1/export 403 Forbidden (40ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.3282966Z ✔ Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API (2157.540808ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.3585997Z ⎔ Shutting down local server...
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5118453Z ℹ tests 3
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5119091Z ℹ suites 0
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5119545Z ℹ pass 2
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5119992Z ℹ fail 1
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5120432Z ℹ cancelled 0
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5120889Z ℹ skipped 0
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5121344Z ℹ todo 0
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5121844Z ℹ duration_ms 255183.690669
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5139096Z 
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5139503Z ✖ failing tests:
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5139774Z 
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5140230Z test at newtests/t096/report-disclosure.test.ts:1:3138
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5143672Z ✖ REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence (216228.855767ms)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5146142Z   Error: expect(locator).toHaveCount(expected) failed
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5147007Z   
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5147718Z   Locator:  getByRole('region', { name: 'Saved sales results' }).locator('ol > li')
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5148513Z   Expected: 1
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5148923Z   Received: 0
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5149339Z   Timeout:  5000ms
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5149743Z   
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5150128Z   Call log:
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5151093Z     - Expect "toHaveCount" getByRole('region', { name: 'Saved sales results' }).locator('ol > li') with timeout 5000ms
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5152477Z     - waiting for getByRole('region', { name: 'Saved sales results' }).locator('ol > li')
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5153538Z       14 × locator resolved to 0 elements
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5154142Z          - unexpected value "0"
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5154623Z   
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5155944Z       at captureRawStack (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5158384Z       at callMatcherAsStep (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5163162Z       at Object.toHaveCount (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5165633Z       at salesReportJourney (/home/runner/work/run-orbit/run-orbit/newtests/t096/browser-sales-report.ts:101:186)
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5168254Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/report-disclosure.test.ts:98:2) {
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5175818Z     matcherResult: { actual: 0, expected: 1, message: `expect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('region', { name: 'Saved sales results' }).locator('ol > li')\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - Expect "toHaveCount" getByRole('region', { name: 'Saved sales results' }).locator('ol > li') with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Saved sales results' }).locator('ol > li')\n    14 × locator resolved to 0 elements\n       - unexpected value "0"\n`, name: 'toHaveCount', pass: false, log: [ `  - Expect "toHaveCount" getByRole('region', { name: 'Saved sales results' }).locator('ol > li') with timeout 5000ms`, "  - waiting for getByRole('region', { name: 'Saved sales results' }).locator('ol > li')", '    14 × locator resolved to 0 elements', '       - unexpected value "0"' ], timeout: 5000, ariaSnapshot: undefined }
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.5181112Z   }
+shards (batch-8)	Verify routine product shard	2026-11-08T16:25:00.6193013Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,188 @@
+{
+  "blockers": [],
+  "branch": "cloud/sd-orbit-c-f147",
+  "candidate_ci": {
+    "workflow_runs": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_sha": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42501953676",
+        "id": 42501953676,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "binding": "exact-candidate",
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "completed_at": "2026-11-08T16:52:53.875232+00:00",
+      "exit": 0,
+      "head": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
+      "log": "checks/managed-owner.log",
+      "passed": 1,
+      "sha256": "952a02c56e791a9113afa400f3f0d43f4b9067700bc1d73254132f91ae3edb82"
+    },
+    {
+      "binding": "unchanged relevant source; final candidate lock and generated-view check also pass",
+      "command": "pnpm exec tsx --test tests/core/capture-no-console.test.ts",
+      "completed_at": "2026-11-08T16:52:53.875409+00:00",
+      "exit": 0,
+      "head": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
+      "log": "checks/capture-native.log",
+      "passed": 1,
+      "sha256": "c7fbc6dc5981b8430de2cad557d31b8105b274061c61b1662408133dd6437882"
+    },
+    {
+      "binding": "exact-candidate",
+      "command": "pnpm exec playwright test --config /tmp/orbit-cloud-playwright.config.mjs tests/e2e/capture.spec.mjs tests/e2e/worker-smoke.spec.mjs --grep \"CAPTURE provider status|installed docs navigation\" --workers=1 --reporter=list",
+      "completed_at": "2026-11-08T16:52:53.875622+00:00",
+      "exit": 0,
+      "head": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
+      "log": "checks/browser.log",
+      "passed": 2,
+      "sha256": "1efcba778ee499b24f2832210e0b3ff2265f8467f918fc03a24d1d7437cadaa2"
+    },
+    {
+      "binding": "exact-candidate",
+      "command": "pnpm run typecheck",
+      "completed_at": "2026-11-08T16:52:53.875804+00:00",
+      "exit": 0,
+      "head": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
+      "log": "checks/typecheck.log",
+      "passed": null,
+      "sha256": "005788508d977dbbb4fb5d2c0eb6bc91fdff77925b224cacc2750411bc40c853"
+    },
+    {
+      "binding": "exact-candidate",
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "completed_at": "2026-11-08T16:52:53.875804+00:00",
+      "exit": 0,
+      "head": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
+      "log": "checks/first-party.log",
+      "passed": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "binding": "exact-candidate",
+      "command": "pnpm exec node node_modules/@runeditrun/rer/cli/agent-door.mjs . deploy.json",
+      "completed_at": "2026-11-08T16:53:31.938165+00:00",
+      "exit": 0,
+      "head": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
+      "log": "checks/conformance.log",
+      "passed": 4220,
+      "sha256": "d289eb47b19c5387e021b0f39be0f1893f600dc5605d925639fe6b8ab201701f"
+    },
+    {
+      "binding": "unchanged relevant source; final candidate lock and generated-view check also pass",
+      "command": "node src/base/contract-docs.mjs write && node src/base/contract-docs.mjs check",
+      "completed_at": "2026-11-08T16:52:53.875942+00:00",
+      "exit": 0,
+      "head": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
+      "log": "checks/contract-views.log",
+      "passed": null,
+      "sha256": "cdada4f46860989b6e41904b5bffd1be7976cfde8b8dba1b4a7dcf41c522fcda"
+    },
+    {
+      "binding": "exact-candidate",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock && node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "completed_at": "2026-11-08T16:52:53.880971+00:00",
+      "exit": 0,
+      "head": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
+      "log": "checks/source-lock-check.log",
+      "passed": null,
+      "sha256": "3866051b67daf9e3e7a1da3b1530f53659345f845fc304e9783d4b6dacb7b52a"
+    }
+  ],
+  "clause": {
+    "claim": "PARTIAL",
+    "committed_status": "missing",
+    "full_points_proven": [],
+    "held_remainder": true,
+    "id": "SURFACE-006",
+    "qualified_limb": "Acceptance 2: existing private Capture address rotation"
+  },
+  "contract_judgment_changed": false,
+  "counts_after": {
+    "done": 38,
+    "missing": 32,
+    "partial": 134,
+    "total": 204
+  },
+  "counts_before": {
+    "done": 38,
+    "missing": 32,
+    "partial": 134,
+    "total": 204
+  },
+  "generated_at": "2026-11-08T16:53:31.941513+00:00",
+  "generated_contract_views_committed": false,
+  "head": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
+  "journey_steps": 37,
+  "main_equality": false,
+  "main_later_failed_verifies": [
+    42496142843,
+    42499172598
+  ],
+  "main_run_site": 42496142810,
+  "main_sha": "2d7b2de603d6925c690816bb68a647fe8c602075",
+  "main_verify_success": 42493933858,
+  "pr": null,
+  "publication_scan": {
+    "complete": null,
+    "findings": null,
+    "historyScanned": null,
+    "status": "not run in cloud; fleet guarded lander required"
+  },
+  "push": {
+    "attempts": 1,
+    "log": "checks/product-push.log",
+    "remote_head": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
+    "status": "pushed"
+  },
+  "repository": "just-every/run-orbit",
+  "resources": 10,
+  "schema": 1,
+  "scope_holds_unchanged": true,
+  "screenshots": [
+    {
+      "bytes": 52693,
+      "path": "ui/approval-1440.png",
+      "sha256": "60c3476f4046232c109a2571acfe1eab5e707df5d37b363abc1c84995380be03"
+    },
+    {
+      "bytes": 45459,
+      "path": "ui/approval-390.png",
+      "sha256": "a8527650f0a4f34a890ff655bde6ed2c6f35c1e7e98b5ae1663ffda8b72682a2"
+    },
+    {
+      "bytes": 250582,
+      "path": "ui/capture-1440.png",
+      "sha256": "03cf903d0a88f559c6e334c4c492a025189580db4a8ca9cc1794a8a92d159967"
+    },
+    {
+      "bytes": 225272,
+      "path": "ui/capture-390.png",
+      "sha256": "b52f2e3cc03242cf125b1052662b4f27a2fe6049a1c71bd90c494a5549f7a627"
+    },
+    {
+      "bytes": 1037940,
+      "path": "ui/docs-1440.png",
+      "sha256": "116b16df189bd1a9e55880977cb003dec0df32231968fa06b3d305055f6e8a8d"
+    },
+    {
+      "bytes": 968726,
+      "path": "ui/docs-390.png",
+      "sha256": "da1a3c3b8304877c9811d3b50ae91c914415d4903954d31705492caeb88b2e39"
+    }
+  ],
+  "tag": "sd-orbit-c-f147",
+  "test_budget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "tools": 25
+}
