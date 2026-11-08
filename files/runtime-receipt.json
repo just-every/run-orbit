@@ -1,0 +1,26 @@
+{
+  "head": "ae5c8f3fcf701c704938bc9a669d9e72c1509e1e",
+  "command": "python3 /tmp/rer-reap.py pnpm exec tsx --test --test-concurrency=1 tests/core/outreach-limits.test.ts",
+  "startedAt": "2026-11-08T12:15:33.758057+00:00",
+  "completedAt": "2026-11-08T12:16:57.790998+00:00",
+  "exit": 0,
+  "log": "exact-head-tests.log",
+  "probe": {
+    "proof": "OUT-026 provider retry timing",
+    "messageId": "01Q40FF280KV34RWTBH8NTXN41",
+    "retryAfter": "2030-01-08T10:01:00.000Z",
+    "beforeRetryAt": "2030-01-08T10:00:59.999Z",
+    "submissionTimes": [
+      "2030-01-08T10:00:00.000Z",
+      "2030-01-08T10:01:00.000Z"
+    ],
+    "providerMessageId": "synthetic-orbit-4",
+    "acceptedAt": "2030-01-08T10:01:00.000Z"
+  },
+  "tests": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0
+  }
+}

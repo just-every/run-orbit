@@ -1,0 +1,55 @@
+{
+  "head": "ae5c8f3fcf701c704938bc9a669d9e72c1509e1e",
+  "base": "6d869cb48cbd6bcebb1566be460b49223e892bb6",
+  "branch": "cloud/sd-orbit-c-f138",
+  "repository": "just-every/run-orbit",
+  "productFiles": [
+    {
+      "path": "tests/core/outreach-limits.test.ts",
+      "sha256": "c9464df972dd5098be6176b46fabb6dc00ad5c1a8b2b35ac2dba5dfb2299942e"
+    },
+    {
+      "path": "tests/support/outreach-retry-timing.ts",
+      "sha256": "3db8d367748587bdc1bad16409244cd43cbc9f3a1297990c624b7db5da465317"
+    },
+    {
+      "path": "sources.lock.json",
+      "sha256": "5fd65cb7e43862947034ba7206acf13e8a9c347f1f387820598229b7a053d070"
+    }
+  ],
+  "contractUnchanged": true,
+  "generatedViewsCommitted": false,
+  "sourceCheck": {
+    "ok": true,
+    "schemaVersion": 1,
+    "edition": "just-every/orbit"
+  },
+  "newHelperInSourceLock": true,
+  "countsBefore": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "countsAfter": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32
+  },
+  "testBudget": {
+    "registered": 198,
+    "qualificationFlows": 2,
+    "total": 200
+  },
+  "publicationScan": {
+    "commit": "ae5c8f3fcf701c704938bc9a669d9e72c1509e1e",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "status": "not run in cloud; fleet lander custody"
+  },
+  "productPush": {
+    "exit": 0,
+    "attempt": 1,
+    "log": "product-push.log"
+  }
+}

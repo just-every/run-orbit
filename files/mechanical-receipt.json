@@ -1,0 +1,70 @@
+{
+  "head": "ae5c8f3fcf701c704938bc9a669d9e72c1509e1e",
+  "checks": [
+    {
+      "name": "views-write",
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write.log"
+    },
+    {
+      "name": "views-check",
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check.log"
+    },
+    {
+      "name": "restore-views",
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "log": "restore-views.log"
+    },
+    {
+      "name": "lock",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock.log"
+    },
+    {
+      "name": "lock-check",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.log"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "name": "first-party",
+      "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "name": "boundaries",
+      "command": "node scripts/check-boundaries.mjs",
+      "exit": 0,
+      "log": "boundaries.log"
+    },
+    {
+      "name": "final-staged-tree",
+      "files": [
+        "tests/core/outreach-limits.test.ts",
+        "tests/support/outreach-retry-timing.ts",
+        "sources.lock.json"
+      ],
+      "contractStatusChanged": false,
+      "newHelperEmailShapedLiterals": 0,
+      "sourceLockIncludesNewHelper": true
+    }
+  ],
+  "finalLockCheck": {
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "exit": 0,
+    "recordedHelper": true
+  },
+  "relevantCodeChangedAfterChecks": false
+}
