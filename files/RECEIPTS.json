@@ -1,0 +1,216 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f146",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f146",
+  "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+  "parent": "2d7b2de603d6925c690816bb68a647fe8c602075",
+  "recorded_at": "2026-11-08T16:39:14.130983+00:00",
+  "commands": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/capture-upgrade.test.ts",
+      "exit": 0,
+      "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+      "result": "1 passed, 0 failed, 0 skipped",
+      "log": "capture-upgrade.log",
+      "exact_committed_head": true
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/outbound-boundaries.test.ts",
+      "exit": 0,
+      "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+      "result": "1 passed, 0 failed, 0 skipped",
+      "log": "outbound-boundaries.log",
+      "provenance": "run before commit; relevant test and runtime bytes identical on candidate"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+      "log": "typecheck.log",
+      "provenance": "run before commit; source and types unchanged"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+      "provenance": "built before commit; all runtime, build and UI bytes identical"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+      "result": "Wrote 0 contract documents."
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+      "result": "Contract documents are current."
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+      "result": "source lock regenerated last; both test inputs included"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+      "result": "ok=true",
+      "receipt": "source-lock-check.json"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "exit": 0,
+      "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+      "receipt": "first-party-check.json"
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+      "result": "198 registered cases + 2 qualifications = 200"
+    },
+    {
+      "command": "perl -e 'alarm 1200; exec @ARGV' -- pnpm exec tsx /tmp/orbit-settings-proof.mts",
+      "exit": 0,
+      "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+      "log": "settings-browser.log",
+      "browser": {
+        "engine": "Chromium",
+        "executable": "/usr/bin/chromium",
+        "headless": true,
+        "args_added": [
+          "--no-sandbox"
+        ],
+        "viewport_widths": [
+          1440,
+          390
+        ]
+      },
+      "proof": "existing optOutUpgradeBrowserJourney; system browser selection only; screenshots and error and accessibility receipts included"
+    },
+    {
+      "command": "git diff --cached -- CONTRACT.md",
+      "exit": 0,
+      "result": "empty before commit"
+    },
+    {
+      "command": "git diff origin/main...HEAD -- CONTRACT.md",
+      "exit": 0,
+      "result": "empty before candidate push"
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    },
+    {
+      "command": "git fetch origin main; git rebase origin/main",
+      "exit": 0,
+      "result": "already up to date; parent is 2d7b2de603d6925c690816bb68a647fe8c602075"
+    },
+    {
+      "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f146",
+      "exit": 0,
+      "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+      "result": "PUSH_OK attempt 1",
+      "log": "product-push.log"
+    }
+  ],
+  "migration_ledger": {
+    "applicable": false,
+    "reason": "no migration added or edited"
+  },
+  "publication_scan": {
+    "commit": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "status": "NOT RUN in cloud; full-history fleet scan required before landing"
+  },
+  "ci": {
+    "workflow_runs": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_sha": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42500712371",
+        "id": 42500712371,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ]
+  },
+  "counts_before": {
+    "done": 38,
+    "partial": 134,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 38,
+    "partial": 134,
+    "missing": 32,
+    "total": 204
+  },
+  "plan_rows_changed": [],
+  "holds_released": [],
+  "default_adopted": null,
+  "runtime_code_changed": false,
+  "pr": null,
+  "full_history": true,
+  "all_candidate_identities_checked": true,
+  "candidate_commits": 1,
+  "candidate_trailers": [],
+  "generated_views_committed": false,
+  "contract_changed": false,
+  "source_lock_fresh": true,
+  "remote_product_head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+  "remote_main_head": "2d7b2de603d6925c690816bb68a647fe8c602075",
+  "product_tree_clean": true,
+  "browser_receipts": [
+    {
+      "width": 1440,
+      "screenshot": "opt-out-upgrade-1440.png",
+      "accessibility": {
+        "violations": [],
+        "seriousCritical": 0
+      },
+      "browser_errors": {
+        "pageErrors": [],
+        "consoleErrors": [],
+        "expectedDenials": [],
+        "expectedNetworkFailures": [],
+        "expectedTracingSandboxErrors": [],
+        "unexpectedConsoleErrors": []
+      }
+    },
+    {
+      "width": 390,
+      "screenshot": "opt-out-upgrade-390.png",
+      "accessibility": {
+        "violations": [],
+        "seriousCritical": 0
+      },
+      "browser_errors": {
+        "pageErrors": [],
+        "consoleErrors": [],
+        "expectedDenials": [],
+        "expectedNetworkFailures": [],
+        "expectedTracingSandboxErrors": [],
+        "unexpectedConsoleErrors": []
+      }
+    }
+  ],
+  "ci_final_observation": {
+    "conclusion": null,
+    "head_sha": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42500712371",
+    "status": "in_progress"
+  },
+  "ci_observed_at": "2026-11-08T16:41:15Z",
+  "github_calls": 3,
+  "terminal_product_custody": "PUSHED, exact-SHA Verify still in progress; local proof passed"
+}
