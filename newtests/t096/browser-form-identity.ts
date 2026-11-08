@@ -16,6 +16,8 @@ export async function formIdentityBrowserJourney(directory:string){
    browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic','--disable-gpu',...worker.browserArgs,...buyer.browserArgs]});
    const owner=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:f.cookie}}),errors=watchBrowser(owner),page=await owner.newPage(),base='/api/v2/workspaces/workspace/forms';
    const call=async(path:string,method='GET',data?:unknown,status=200)=>{const response=await owner.request.fetch(path,{method,headers:{Origin:origin},data});assert.equal(response.status(),status,await response.text());return response.json();};
+   const workspace=(await call('/api/v1/settings')).workspace;
+   await call('/api/v1/settings','PUT',{name:workspace.name,timezone:workspace.timezone,currency:workspace.currency,workingHours:JSON.parse(workspace.working_hours_json),staleIntervalDays:workspace.stale_interval_days,awaitingResponseWorkingDays:workspace.awaiting_response_working_days,freeMailDomains:['gmail.com'],ifUpdatedAt:workspace.updated_at});
    await call('/api/v1/settings/form-embedding','PUT',{origins:[buyer.origin]});
    const pipeline=await call('/api/v1/settings/pipelines','POST',{name:'Manufacturing sales',stages:[{name:'Initial review',probability:10,requiredFields:[],staleIntervalDays:7},{name:'Consultation',probability:40,requiredFields:[],staleIntervalDays:7}]},201);
    const options=await call(`${base}/builder-options`),stage=options.stages.find((row:any)=>row.pipeline_id===pipeline.id&&row.stage_name==='Consultation');assert.ok(stage);assert.notEqual(stage.stage_id,f.stage);
