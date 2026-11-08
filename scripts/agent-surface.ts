@@ -2,6 +2,7 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {orbitTools,orbitResources} from '../src/core/features/agent-door';
 import type {PlatformBindings} from '../src/core/platform/assets';
 const bindings={AUTH_ORIGIN:'https://orbit.example.invalid'} as PlatformBindings;
+const resources=orbitResources(bindings).sort((a,b)=>a.uriTemplate.localeCompare(b.uriTemplate));
 const registered=orbitTools(bindings),builtin={name:'orbit.events.list',scope:'events:read',readOnly:true,classes:['standard'],clauses:['BASE-AGENT-010']};
 const tools=[...registered,builtin].map(({name,scope,readOnly,classes,clauses})=>({name,scope,readOnly,classes,clauses})).sort((a,b)=>a.name.localeCompare(b.name));
 const from=(id:string,pointer:string)=>({$from:id,pointer});
@@ -54,7 +55,9 @@ console.log(`Agent surface: ${tools.length} tools, ${surface.resources.length} r
 
 const docPath='docs/AGENT-DOOR.md', doc=await readFile(docPath,'utf8');
 const table=['| Tool | Scope | Possible classes |','| --- | --- | --- |',...tools.map(tool=>`| \`${tool.name}\` | \`${tool.scope}\` | ${tool.classes.join(', ')} |`)].join('\n');
+const resourceTable=['| Resource template | Name | Scope |','| --- | --- | --- |',...resources.map(resource=>`| \`${resource.uriTemplate}\` | ${resource.name} | \`${resource.scope??'none'}\` |`)].join('\n');
 const docStart=doc.indexOf('## Current tool inventory'),docEnd=doc.indexOf('## Records and retained outcomes');
-const expectedDoc=doc.slice(0,docStart)+'## Current tool inventory\n\n'+table+'\n\n'+doc.slice(docEnd);
+if(docStart<0||docEnd<=docStart)throw new Error('Agent docs inventory boundaries are missing');
+const expectedDoc=doc.slice(0,docStart)+'## Current tool inventory\n\n'+table+'\n\n## Current resource template inventory\n\n'+resourceTable+'\n\n'+doc.slice(docEnd);
 if(process.argv.includes('--check')) {if(doc!==expectedDoc)throw new Error('Agent docs inventory drift: regenerate scripts/agent-surface.ts');}
 else await writeFile(docPath,expectedDoc);

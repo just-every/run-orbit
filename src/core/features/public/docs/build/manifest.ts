@@ -7,7 +7,7 @@ import { join } from 'node:path';
 
 export const manifestPath = 'docs/site.json';
 
-export type ManifestPage = { section: string; slug: string; label: string; source: string; href: string };
+export type ManifestPage = { section: string; slug: string; label: string; source: string; href: string; aliases: string[] };
 type ManifestSection = { title: string; pages: ManifestPage[] };
 type GithubOnlyEntry = { source: string; reason: string };
 export type Manifest = { sections: ManifestSection[]; pages: ManifestPage[]; githubOnly: GithubOnlyEntry[] };
@@ -45,8 +45,17 @@ export function readManifest(root: string): Manifest {
       if (slugs.has(slug)) problems.push(`${where}: slug "${slug}" is used twice`);
       slugs.add(slug);
       if (!label) problems.push(`${where}: no label`);
+      const aliases = page.aliases === undefined ? [] : page.aliases;
+      if (!Array.isArray(aliases) || aliases.some(alias => typeof alias !== 'string' || !slugPattern.test(alias) || alias === 'index')) {
+        problems.push(`${where}: aliases must be lowercase slugs`);
+      }
+      const validAliases: string[] = Array.isArray(aliases) ? aliases.filter((alias): alias is string => typeof alias === 'string') : [];
+      for (const alias of validAliases) {
+        if (slugs.has(alias)) problems.push(`${where}: slug "${alias}" is used twice`);
+        slugs.add(alias);
+      }
       useSource(source, where);
-      return { section: title, slug, label, source, href: docsHref(slug) };
+      return { section: title, slug, label, source, href: docsHref(slug), aliases: validAliases };
     });
     return { title, pages };
   });
