@@ -33,6 +33,9 @@ step('draft','drafts.create',{kind:'opportunity',id:from('fixture','/items/0/ref
 step('draft_read','drafts.read',{id:from('draft','/id')});
 step('draft_update','drafts.update',{id:from('draft','/id'),recipient_email:from('fixture_contact','/items/0/fields/email'),subject:'Brightwork next steps',body:'Maya, here is the revised saved proposal outline.',expected_revision:from('draft_read','/draft/revision')});
 step('definition','reports.update',{definition:{name:'Seller opportunities',description:'Count native opportunities, without causal revenue claims.',aggregation:'count',unit:'opportunities',sourceTypes:['opportunity'],sourceOperation:'graph.read',sourceFields:[],currency:null,missingPolicy:'incomplete',lateArrival:'recompute',attributionModel:'none',attributionWindowDays:30}});
+journey.find(item=>item.id==='definition').resource={uriTemplate:'orbit://reports/{id}/definition/{version}',state:from('definition','/definition')};
+step('definition_v2','reports.update',{id:from('definition','/id'),version:2,definition:{name:'Seller contacts',description:'Count native contacts in a separate definition version.',aggregation:'count',unit:'contacts',sourceTypes:['contact'],sourceOperation:'graph.read',sourceFields:[],currency:null,missingPolicy:'incomplete',lateArrival:'recompute',attributionModel:'none',attributionWindowDays:30}});
+journey.find(item=>item.id==='definition_v2').resource={uriTemplate:'orbit://reports/{id}/definition/{version}',state:from('definition_v2','/definition')};
 step('report_preview','reports.preview',{id:from('definition','/id'),version:1,from:'2026-01-01T00:00:00Z',through:'2027-01-01T00:00:00Z'});
 step('report_snapshot','reports.compute',{id:from('definition','/id'),version:1,from:'2026-01-01T00:00:00Z',through:'2027-01-01T00:00:00Z',review_hash:from('report_preview','/reviewHash')});
 step('report_read','reports.read',{id:from('report_snapshot','/id')});
