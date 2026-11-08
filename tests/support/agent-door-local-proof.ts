@@ -23,6 +23,12 @@ export async function localAgentCredentialProof(bindings:PlatformBindings,cookie
   const response=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+credential.access_token,'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','MCP-Method':'tools/call','MCP-Name':name},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name,arguments:args,_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}})}));
   return {status:response!.status,body:await response!.json() as any};
  }
+ const captureBefore=JSON.stringify((await bindings.DB.prepare("SELECT c.*,k.ciphertext FROM capture_sources c LEFT JOIN capture_credentials k ON k.source_id=c.id WHERE c.id='capture-forward'").all()).results);
+ for(const name of ['orbit.capture.address_read','orbit.capture.address_rotate']) {
+  const refused=await call(name,{source_revision:'0'.repeat(64),idempotency_key:'synthetic-orbit-selected-address'});
+  assert.equal(refused.status,403,'a selected-record credential carries no installation security authority');
+ }
+ assert.equal(JSON.stringify((await bindings.DB.prepare("SELECT c.*,k.ciphertext FROM capture_sources c LEFT JOIN capture_credentials k ON k.source_id=c.id WHERE c.id='capture-forward'").all()).results),captureBefore);
  const selected=await call('orbit.records.read',{kind:'opportunity',id:opportunityId});assert.equal(selected.status,200);assert.equal(selected.body.result.structuredContent.ref.id,opportunityId);
  const foreign=await call('orbit.records.read',{kind:'company',id:foreignCompanyId});assert.equal(foreign.body.result._meta['com.runeditrun/error'].code,'resource_unavailable');
  const absent=await call('orbit.records.read',{kind:'opportunity',id:'missing'});assert.equal(absent.body.result._meta['com.runeditrun/error'].code,'resource_unavailable');

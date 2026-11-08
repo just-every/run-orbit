@@ -32,6 +32,13 @@ export async function ensureFileSource(db:D1Database){
  await registerBatch(db,await register(db,{id:FILE_SOURCE_ID,adapter:'file',name:'Mail and calendar files',scope:{mail:{folders:['Files the operator adds']},calendars:['Files the operator adds']}},'files',at));
  return {id:FILE_SOURCE_ID,name:'Mail and calendar files',state:'connected',connection_id:'files'};
 }
+/** Refuse a prepared connection change if either the source or sealed credential changed. */
+export function captureConnectionFence(db:D1Database,source:{id:string;adapter:string;state:string;connection_id:string;ciphertext:string}){
+ return db.prepare(`INSERT INTO runtime_controls(name,value) SELECT 'capture_connection_fence',NULL WHERE NOT EXISTS(
+  SELECT 1 FROM capture_sources c JOIN capture_credentials k ON k.source_id=c.id
+  WHERE c.id=? AND c.adapter=? AND c.state=? AND c.connection_id=? AND k.ciphertext=?)`)
+  .bind(source.id,source.adapter,source.state,source.connection_id,source.ciphertext);
+}
 /** Connect a provider adapter with its credential. The credential is sealed and never leaves the installation. */
 export async function connectSource(db:D1Database,input:{id:string;adapter:string;name:string;scope:CaptureScope;credential:string},security:SourceSecurity,actor:string,fences:D1PreparedStatement[]=[]){
  if(!/^capture-[a-z0-9-]{1,60}$/.test(input.id)||input.id===FILE_SOURCE_ID)throw new CaptureError(400,'Choose a capture source ID.');

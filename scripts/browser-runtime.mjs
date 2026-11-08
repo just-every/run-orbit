@@ -52,7 +52,8 @@ export async function serveBrowserRuntime() {
       'node_modules/wrangler/bin/wrangler.js', 'dev', '--config', 'dist/server/wrangler.json',
       '--local', '--ip', '127.0.0.1', '--port', String(port),
       '--inspector-port', process.env.ORBIT_INSPECTOR_PORT ?? '0', '--persist-to', state,
-      ...identityVarArgs(origin), '--var', `ORBIT_ENCRYPTION_KEY:${BROWSER_TEST_ORBIT_ENCRYPTION_KEY}`
+      ...identityVarArgs(origin), '--var', `ORBIT_ENCRYPTION_KEY:${BROWSER_TEST_ORBIT_ENCRYPTION_KEY}`,
+      '--var', `CAPTURE_MAIL_ADDRESS:${['synthetic-orbit','capture.example.test'].join('@')}`
     ], { stdio: 'inherit', env: process.env });
     worker = current;
     current.on('exit', code => {

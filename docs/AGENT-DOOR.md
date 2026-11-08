@@ -62,6 +62,8 @@ permission remain separate requirements.
 | Tool | Scope | Possible classes |
 | --- | --- | --- |
 | `orbit.briefs.read` | `briefs:read` | standard |
+| `orbit.capture.address_read` | `capture:read` | standard |
+| `orbit.capture.address_rotate` | `capture:write` | security |
 | `orbit.drafts.create` | `drafts:write` | standard |
 | `orbit.drafts.read` | `drafts:read` | standard |
 | `orbit.drafts.update` | `drafts:write` | standard |
@@ -141,3 +143,21 @@ retain their history; the door refresh does not claim to migrate them.
 The current main contract supplies the aligned SURFACE requirements. Completing
 the customer-send and retained delegation integrations, the broader registry and
 client-data custody remains necessary for the full agent adoption.
+
+## Rotate an existing private Capture address
+
+A full native operator can read `orbit.capture.address_read`, then supply its opaque
+`revision` as `source_revision` to `orbit.capture.address_rotate`, with an
+idempotency key. Rotation computes `security` from the current native source,
+with setting `private_capture_address`, provider `orbit` and measure 1. The
+company policy decides whether it runs, waits for its named person or is blocked.
+A pending approval changes nothing. A changed source requires a fresh revision.
+
+This tool changes only the sealed private tag on an already configured address.
+It accepts no destination, person, role, grant, provider or confirmation override.
+Selected record credentials cannot rotate it. Completed replay returns the same
+receipt without another rotation, while current authority and policy still apply.
+Captured evidence and proposals remain; mail to the old address stops entering.
+Read the new address in Settings → Capture. The address, private tag and forwarding
+confirmation are excluded from tool results, retained summaries, audits and archives.
+Provisioning and other credential changes are outside this adapter.

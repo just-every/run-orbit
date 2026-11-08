@@ -9,6 +9,7 @@ import {evidenceTools,evidenceResources} from './evidence';
 import {draftTools,draftResource} from './drafts';
 import {reportTools,reportResources} from './reports';
 import {nativeTool} from './errors';
+import {captureSecurityTools} from './capture-security';
 import {outreachResource} from './outreach-resource';
 
 function installationTrust(bindings: PlatformBindings): Trust | null {
@@ -19,7 +20,7 @@ function installationTrust(bindings: PlatformBindings): Trust | null {
   return {issuer,installationId,appOrigin,publicKeys:JSON.parse(publicKeys) as Trust['publicKeys']};
 }
 
-export function orbitTools(bindings:PlatformBindings) {return [...recordTools(bindings),...handoffTools(bindings),...evidenceTools(bindings),...draftTools(bindings),...reportTools(bindings)].map(nativeTool);}
+export function orbitTools(bindings:PlatformBindings) {return [...recordTools(bindings),...handoffTools(bindings),...evidenceTools(bindings),...draftTools(bindings),...reportTools(bindings),...captureSecurityTools(bindings)].map(nativeTool);}
 export function orbitResources(bindings:PlatformBindings) {return [recordResource(bindings),handoffResource(bindings),...evidenceResources(bindings),draftResource(bindings),...reportResources(bindings),outreachResource(bindings)];}
 export function orbitAgentDoor(bindings: PlatformBindings, tools: ToolDefinition[] = orbitTools(bindings), resources: ResourceDefinition[] = orbitResources(bindings)) {
   return createAgentDoor({seed:'orbit',name:'Orbit',specialist:'sales rep',db:bindings.DB,
