@@ -22,7 +22,7 @@ Contract and campaign: no acceptance, Status, Gap, Evidence, count or plan row i
 DONE riders (no DONE claim):
 1. PARTIAL: selected public-door outcomes are exercised; the rest of the clause remains held or unqualified as named above.
 2. Selected proof exercises refusals against populated pending and open fixtures, unchanged effects, and owner cookie controls including successful protected-report computation under matching held policy.
-3. The existing Verify planner schedules managed-owner.test.ts in core-1; exact-candidate run provenance is recorded separately below and in the CI receipt.
+3. PASS for the selected proof: push Verify 42426494364 completed successfully on exact candidate 3b681261bf198e5540bd4050eb9feab1c03520c1 and loads managed-owner.test.ts in core-1. Broader held qualification is not claimed.
 4. Candidate validation is bound to the unchanged relevant file bytes and final Git object hashes in the receipt.
 5. NOT APPLICABLE: no receiving clause or inheritance text changes.
 6. Contract generator write and check pass; no generated view is committed. Existing judgment text and counts stay intact.
@@ -46,3 +46,9 @@ Publication scan: commit=3b681261bf198e5540bd4050eb9feab1c03520c1 complete=NOT_R
 
 CLAIM BASE-AGENT-008 PARTIAL points=2 tests=tests/core/managed-owner.test.ts#Managed owner claim verifies RER authority and creates the native owner/session exactly once
 GAP BASE-AGENT-008: Only acceptance 2's selected approval and mark-reviewed limbs are newly qualified. Policy-question and device-token matrices, all other omitted qualification and every existing hold remain unchanged. No DONE promotion or release is claimed.
+
+Evidence preservation: the complete initial packet was published to the separate evidence ref at c7e88048dca3ea7b6238b64b838099817d14e0c0. A readback restored every selected regular file and verified the manifest and hashes, bound to product 3b681261bf198e5540bd4050eb9feab1c03520c1. Actual transport receipt: evidence-save-readback.json. The final evidence update retains this receipt and the latest exact-candidate CI observation.
+
+Final CI: push Verify 42426494364 completed with success on 3b681261bf198e5540bd4050eb9feab1c03520c1, observed 2026-11-08T00:03:20.142192+00:00. This exact-source proof is green. All local touched checks pass, the source lock is current and all selected acceptance limbs are qualified. Six GitHub API calls were used (initial-main discovery, candidate discovery and four status observations); no workflow was dispatched or rerun. No known real blocker remains for this selected change. Guarded landing, publication scanning and candidate Run site remain the fleet responsibility. No main push or default-branch update was performed.
+
+Final disposition: BASE-AGENT-008 PARTIAL to PARTIAL, selected acceptance 2 approval and mark-reviewed limbs closed, all existing holds unchanged. No plan row was edited. Counts remain 36 DONE, 136 PARTIAL, 32 MISSING; test total remains 200. The final evidence manifest binds this report and its actual receipts to the exact pushed candidate. Scratch-clone cleanup follows successful final evidence publication and remote identity verification.

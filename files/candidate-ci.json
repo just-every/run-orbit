@@ -1,12 +1,12 @@
 [
   {
-    "conclusion": null,
+    "conclusion": "success",
     "event": "push",
     "head_sha": "3b681261bf198e5540bd4050eb9feab1c03520c1",
     "html_url": "https://github.com/just-every/run-orbit/actions/runs/42426494364",
     "id": 42426494364,
     "name": "Verify",
-    "observed_at": "2026-11-07T23:48:15.773606+00:00",
-    "status": "in_progress"
+    "observed_at": "2026-11-08T00:03:20.142192+00:00",
+    "status": "completed"
   }
 ]
