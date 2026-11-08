@@ -5,8 +5,9 @@ import { createApp } from '../support/app';
 import { testAuth } from '../support/test-auth';
 import { eml } from '../support/capture-mail';
 import { createSourceSecurity, payloadHash } from '../../src/core/platform/source-security';
+import { provePriorApprovalContinuity } from '../support/prior-opt-out-continuity';
 
-test('CAPTURE-007 OUT-032 the capture migration upgrades a store from the previous main with every prior row and queue unchanged', { timeout: 10 * 60_000 }, async () => {
+test('CAPTURE-007 OUT-032 the capture migration upgrades a store from the previous main with every prior row and queue unchanged', { timeout: 10 * 60_000 }, async context => {
   const target = await priorCaptureUpgrade(), {prior, migrationStarted} = target;
   const {columns: originalColumns, rows: before} = target.before, {columns: currentColumns, rows: after} = target.after;
   try {
@@ -91,4 +92,5 @@ test('CAPTURE-007 OUT-032 the capture migration upgrades a store from the previo
       assert.equal(providerCalls, 0);
     } finally { await target.close(); }
   } finally { await target.dispose(); }
+  await provePriorApprovalContinuity(context);
 });

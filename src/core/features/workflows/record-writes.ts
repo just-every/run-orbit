@@ -7,11 +7,12 @@ import {audit,mutationJob,RecordError,requireRecord,tables,type RecordKind} from
 import {closedReason} from '../outreach/stop-reason';
 import {recordInput,assertWorkflowActor,nativeFields} from './record-validation';
 import {needsRecordApproval} from './record-plans';
+import {createdRecordFence,createdRecordTouch} from './record-archive';
 import {approvalFields,customKey,fieldValue,type WorkflowContext,type WorkflowRecordPlan,type WorkflowRecordReceipt} from './record-types';
 
 const same=(a:unknown,b:unknown)=>JSON.stringify(a??null)===JSON.stringify(b??null);
 function receipt(plan:WorkflowRecordPlan,replayed=false):WorkflowRecordReceipt {
- return {id:plan.id,recordId:plan.recordId,recordType:plan.recordType,field:plan.field,before:plan.before,after:plan.after,applied:true,replayed,undoable:plan.field!=='create_record'&&plan.field!=='contactability'};
+ return {id:plan.id,recordId:plan.recordId,recordType:plan.recordType,field:plan.field,before:plan.before,after:plan.after,applied:true,replayed,undoable:plan.field!=='contactability'};
 }
 function workflowTimeline(context:WorkflowContext,plan:WorkflowRecordPlan,at:string,undoOf?:string){
  const contactIds=workflowContactIds(plan);
@@ -58,15 +59,17 @@ async function write(context:WorkflowContext,plan:WorkflowRecordPlan,undoOf?:str
   if(!same(plan.before,plan.after)){
    if(plan.field==='lifecycle'){
     const state=String(plan.after);if(!['open','won','lost'].includes(state))throw new RecordError(400,'Invalid lifecycle.');
-    statements.push(db.prepare("UPDATE opportunities SET lifecycle=?,closed_at=?,closed_by=?,close_reason=?,queue_state='none',queue_reason=?,next_due_at=NULL,updated_at=? WHERE id=?").bind(state,state==='open'?null:at,state==='open'?null:context.actorId,state==='open'?null:context.evidence,'Workflow lifecycle change',at,plan.recordId),db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Opportunity lifecycle changed',updated_at=? WHERE opportunity_id=?").bind(at,plan.recordId));
+    statements.push(db.prepare("UPDATE opportunities SET lifecycle=?,closed_at=?,closed_by=?,close_reason=?,queue_state='none',queue_reason=?,next_due_at=NULL,updated_at=? WHERE id=?").bind(state,state==='open'?null:at,state==='open'?null:context.actorId,state==='open'?null:plan.closeReason??context.evidence,'Workflow lifecycle change',at,plan.recordId),db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Opportunity lifecycle changed',updated_at=? WHERE opportunity_id=?").bind(at,plan.recordId));
     if(state!=='open')statements.push(db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE opportunity_id=? AND state='scheduled'").bind(closedReason(state as 'won'|'lost'),at,plan.recordId));
     else statements.push(mutationJob(db,plan.recordId,context.actorId,'Workflow reopened opportunity'));
    }else{
     const input=recordInput(plan.recordType,row),key=customKey(plan.field);
     if(key!==null)(input.custom_fields as Record<string,unknown>)[key]=plan.after;else input[plan.field]=plan.after;
-    const options={ordinaryEdit:true,workflowContactIds:workflowContactIds(plan)};
+    const options={ordinaryEdit:true,workflowContactIds:workflowContactIds(plan),undoOf};
     const prepared=await repo.prepareSave(plan.recordType,input,context.actorId,plan.recordId,options);
     statements.push(...prepared.statements);
+    // Undo sends nothing: the reversal of a stage move queues no notice and cancels no scheduled message.
+    if(undoOf)statements.push(db.prepare("DELETE FROM slack_notices WHERE event_key IN(SELECT id FROM timeline_entries WHERE kind='stage.changed' AND json_extract(payload_json,'$.undoOf')=?)").bind(undoOf));
    }
   }
  }
@@ -92,9 +95,19 @@ export async function undoRecordWrite(context:WorkflowContext,writeId:string){
  if(!stored)throw new RecordError(404,'Workflow write not found.');
  if(stored.undone_at)return {undone:true,replayed:true,writeId};
  const plan=JSON.parse(stored.plan_json) as WorkflowRecordPlan;
- if(plan.field==='create_record')return {undone:false,skipped:true,writeId,reason:'Native records do not support archiving a created deal.'};
+ if(plan.field==='create_record')return archiveCreated(context,writeId,plan);
  if(plan.field==='contactability')return {undone:false,skipped:true,writeId,reason:'Do not contact requires the separate reviewed permission action.'};
  const inverse={...plan,id:`${writeId}:undo`,before:plan.after,after:plan.before,needsApproval:false};
  try{return {undone:true,writeId,receipt:await write({...context,approvedWriteId:inverse.id},inverse,writeId)};}
+ catch(error){if(error instanceof RecordError&&error.status===409)return {undone:false,skipped:true,writeId,reason:error.message};throw error;}
+}
+async function archiveCreated(context:WorkflowContext,writeId:string,plan:WorkflowRecordPlan){
+ const row=await context.db.prepare(`SELECT lifecycle FROM ${tables[plan.recordType]} WHERE id=?`).bind(plan.recordId).first<{lifecycle:string}>();
+ if(!row)return {undone:false,skipped:true,writeId,reason:'The created record no longer exists.'};
+ const touched=await createdRecordTouch(context.db,writeId,plan);
+ if(touched)return {undone:false,skipped:true,writeId,reason:touched};
+ if(row.lifecycle!=='open')return {undone:false,skipped:true,writeId,reason:`The created deal is already ${row.lifecycle}.`};
+ const inverse:WorkflowRecordPlan={...plan,id:`${writeId}:undo`,field:'lifecycle',before:'open',after:'lost',createdValues:undefined,needsApproval:false,closeReason:`Archived by undoing ${context.workflowName}, version ${context.version}`};
+ try{return {undone:true,archived:true,writeId,receipt:await write({...context,approvedWriteId:inverse.id,writeFences:[...(context.writeFences??[]),createdRecordFence(context,writeId,plan)]},inverse,writeId)};}
  catch(error){if(error instanceof RecordError&&error.status===409)return {undone:false,skipped:true,writeId,reason:error.message};throw error;}
 }

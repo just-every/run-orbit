@@ -59,6 +59,18 @@ export async function dashboardBackendProof(){
    assert.equal(csv.status,200);assert.match(await csv.text(),/MissingField filter not applied/);
   }
   const forecastCsv=await request(base+'/tiles/forecast/csv');assert.equal(forecastCsv.status,200);assert.match(await forecastCsv.text(),/Timezone: America\/New_York/);
+  // Refusing unsupported PDF text must leave the saved dashboard and its CSV usable.
+  const normalPdf=await request(base+'/pdf');assert.equal(normalPdf.status,200);assert.equal(normalPdf.headers.get('Content-Type'),'application/pdf');assert.ok((await normalPdf.text()).startsWith('%PDF-'));
+  const originalDefinition=await call(base+'/definition');
+  const unicodeDefinition={...originalDefinition.definition,name:'Native dashboard 東京'};
+  await call(base,'PUT',{version:originalDefinition.version,definition:unicodeDefinition});
+  const unicodeSaved=await call(base+'/definition');assert.deepEqual(unicodeSaved,{version:originalDefinition.version+1,definition:unicodeDefinition});
+  const csvBeforeRefusal=await request(base+'/tiles/pipeline/csv');assert.equal(csvBeforeRefusal.status,200);const csvText=await csvBeforeRefusal.text();assert.match(csvText,/\$1,000\.00/);
+  const refusedPdf=await request(base+'/pdf');assert.equal(refusedPdf.status,400);assert.match(refusedPdf.headers.get('Content-Type')??'',/^application\/json/);assert.equal(refusedPdf.headers.get('Content-Disposition'),null);
+  const refusal=await refusedPdf.text();assert.doesNotMatch(refusal,/%PDF-/);assert.deepEqual(JSON.parse(refusal),{error:'PDF export cannot render one of this dashboard’s characters. Export the tile CSV instead.'});
+  assert.deepEqual(await call(base+'/definition'),unicodeSaved,'a refused export preserves the saved name, filters, tiles and version');
+  const csvAfterRefusal=await request(base+'/tiles/pipeline/csv');assert.equal(csvAfterRefusal.status,200);assert.match(csvAfterRefusal.headers.get('Content-Type')??'',/^text\/csv/);const csvAfterText=await csvAfterRefusal.text();assert.match(csvAfterText,/Open deals: 4/);assert.match(csvAfterText,/Open value: \$1,000\.00/);assert.match(csvAfterText,/Timezone: America\/New_York/);
+  await call(base,'PUT',{version:unicodeSaved.version,definition:originalDefinition.definition});
   // Saved forecast values remain original, even under a dashboard date and field filter.
   const edit=await call(base+'/definition');edit.definition.tiles[3].version=1;
   await call(base,'PUT',edit);
@@ -84,6 +96,34 @@ export async function dashboardBackendProof(){
   assert.deepEqual(section.totals.find(c=>c.key==='deals')!.rows,[`deal:${inside.id}`]);
   assert.ok(!JSON.stringify(limited).includes('Before local day'));
   assert.equal(limited.tiles.find(t=>t.id==='forecast')!.status,'unavailable');
+  // A named view grant serves current permitted figures and rows, but grants no editing or sharing authority.
+  const readerShare=await call(base+'/sharing');
+  await call(base+'/sharing','PUT',{version:readerShare.version,audience:'named',grants:[{operatorId:seller.operator.operatorId,access:'view'}]});
+  const reader=await call<DashboardView>(base,'GET',undefined,seller.cookie);
+  assert.equal(reader.canEdit,false);assert.equal(reader.canManage,false);
+  assert.equal(ready(reader,'pipeline').report!.sections[0]!.totals.find(c=>c.key==='deals')!.value,1);
+  assert.equal(ready(reader,'pipeline').report!.sections[0]!.totals.find(c=>c.key==='value')!.value,null);
+  assert.deepEqual(Object.keys(ready(reader,'pipeline').report!.rows),[`deal:${inside.id}`]);
+  assert.equal(ready(reader,'pipeline').report!.rows[`deal:${inside.id}`]!.label,'Inside local day');
+  const ownerDefinition=await call(base+'/definition'),ownerShare=await call(base+'/sharing');
+  for(const [path,method,body] of [[base+'/definition','GET',undefined],[base,'PUT',{...ownerDefinition,definition:{...ownerDefinition.definition,name:'Reader must not rename'}}],[base+'/sharing','GET',undefined],[base+'/sharing','PUT',{version:ownerShare.version,audience:'workspace',grants:[]}]] as const){
+   const denied=await request(path,method,body,seller.cookie);assert.equal(denied.status,403);
+   assert.deepEqual(Object.keys(await denied.json()),['error']);
+  }
+  assert.deepEqual(await call(base+'/definition'),ownerDefinition);assert.deepEqual(await call(base+'/sharing'),ownerShare);
+  await call(base+'/default','PUT',{enabled:true},seller.cookie);
+  assert.equal((await call<DashboardView>(base,'GET',undefined,seller.cookie)).isDefault,true);
+  assert.deepEqual((await call(root+'/dashboards','GET',undefined,seller.cookie)).items,[{id:'native-boundaries',name:definition.name,version:ownerDefinition.version,isDefault:true}]);
+  assert.equal((await call<DashboardView>(base)).isDefault,false,'a reader changes only their personal default');
+  // Revoke the dashboard itself while its source and record grant remain available.
+  await call(base+'/sharing','PUT',{version:ownerShare.version,audience:'private',grants:[]});
+  for(const [path,method,body] of [[base,'GET',undefined],[base+'/compute','POST',definition.filters],[base+'/outline','GET',undefined],[base+'/pdf','GET',undefined],[base+'/tiles/pipeline/csv','GET',undefined],[base+'/definition','GET',undefined],[base+'/sharing','GET',undefined],[base+'/default','PUT',{enabled:true}]] as const){
+   const denied=await request(path,method,body,seller.cookie);assert.equal(denied.status,403,`${method} ${path}`);
+   assert.deepEqual(await denied.json(),{error:'Dashboard unavailable.'},'revoked doors disclose no figures, rows, definition, count or sum');
+  }
+  assert.deepEqual((await call(root+'/dashboards','GET',undefined,seller.cookie)).items,[],'the revoked default discloses neither its identity nor its name');
+  const stillGranted=await call(`${root}/records/opportunity/${inside.id}`,'GET',undefined,seller.cookie);assert.equal(stillGranted.ref.id,inside.id);
+  const privateShare=await call(base+'/sharing');await call(base+'/sharing','PUT',{version:privateShare.version,audience:'named',grants:[{operatorId:seller.operator.operatorId,access:'edit'}]});
   const editable=await call(base+'/definition','GET',undefined,seller.cookie);editable.definition.name='Named editor saved this dashboard';await call(base,'PUT',editable,seller.cookie);
   assert.equal((await request(base+'/sharing','GET',undefined,seller.cookie)).status,403);
   await call(base+'/default','PUT',{enabled:true},seller.cookie);

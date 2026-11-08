@@ -1,5 +1,32 @@
 import assert from 'node:assert/strict';
 
+/** Compare rendered public inventories with authenticated native MCP discovery. */
+export async function agentDocsInventory({html,mcp}) {
+ const tools=await mcp('tools/list'),resources=await mcp('resources/templates/list');
+ assert.equal(tools.status,200,'authenticated tool discovery succeeds');
+ assert.equal(resources.status,200,'authenticated resource discovery succeeds');
+ assert.ok(Array.isArray(tools.body.result?.tools));
+ assert.ok(Array.isArray(resources.body.result?.resourceTemplates));
+ assert.ok(tools.body.result.tools.length>0,'the comparison exercises populated tool discovery');
+ assert.ok(resources.body.result.resourceTemplates.length>0,'the comparison exercises populated resource discovery');
+ const tableAfter=id=>{
+  const start=html.indexOf(`id="${id}"`);
+  assert.ok(start>=0,'the generated inventory heading is rendered');
+  const section=html.slice(start).split(/<h[23]\b/)[0];
+  const table=section.match(/<tbody>([\s\S]*?)<\/tbody>/);
+  assert.ok(table,'the inventory has rendered rows');
+  return [...table[1].matchAll(/<tr>([\s\S]*?)<\/tr>/g)].map(row=>
+   [...row[1].matchAll(/<td>([\s\S]*?)<\/td>/g)].map(cell=>cell[1].replace(/<[^>]+>/g,'')));
+ };
+ const toolRows=tableAfter('current-tool-inventory');
+ assert.deepEqual(toolRows.map(row=>row[0]).sort(),tools.body.result.tools.map(tool=>tool.name).sort(),'rendered tools exactly match native discovery');
+ const resourceRows=tableAfter('current-resource-template-inventory');
+ assert.deepEqual(resourceRows.map(([uriTemplate,name])=>({uriTemplate,name})).sort((a,b)=>a.uriTemplate.localeCompare(b.uriTemplate)),
+  resources.body.result.resourceTemplates.map(({uriTemplate,name})=>({uriTemplate,name})).sort((a,b)=>a.uriTemplate.localeCompare(b.uriTemplate)),
+  'rendered resource templates and names exactly match native discovery');
+ return {tools:toolRows.length,resourceTemplates:resourceRows.length};
+}
+
 export default async function sellerDay({tool,request,origin,cookie}) {
  async function call(name,args={}) {
   const answer=await tool('orbit.'+name,args);
@@ -19,8 +46,19 @@ export default async function sellerDay({tool,request,origin,cookie}) {
  assert.deepEqual(replay,saved,'native handoff replay has the retained outcome');
  const stale=await tool('orbit.handoffs.upsert',{...args,idempotency_key:crypto.randomUUID()});
  assert.equal(stale.result?._meta?.['com.runeditrun/error']?.code,'revision_conflict');
+ const address=await call('capture.address_read');
+ const rotationArgs={source_revision:address.revision,idempotency_key:crypto.randomUUID()};
+ const rotation=await call('capture.address_rotate',rotationArgs),rotationWitness=await call('operations.read');
+ assert.equal(rotation.rotated,true);assert.notEqual(rotation.revision,address.revision);
+ assert.deepEqual(await call('capture.address_rotate',rotationArgs),rotation);
+ assert.deepEqual(await call('operations.read'),rotationWitness,'rotation replay retains the current native connection and evidence');
  const writeKey=crypto.randomUUID();
- const edited=await call('records.update',{kind:'opportunity',id,fields:{value_cents:Number(record.fields.value_cents)+1000},expected_revision:record.ref.revision,idempotency_key:writeKey});
+ const writeArgs={kind:'opportunity',id,fields:{value_cents:Number(record.fields.value_cents)+1000},expected_revision:record.ref.revision,idempotency_key:writeKey};
+ const accepted=await tool('orbit.records.update',writeArgs);
+ assert.equal(accepted.status,200);
+ assert.equal(accepted.result?.isError,false,'the original native record write succeeds');
+ const edited=accepted.result?.structuredContent;
+ assert.ok(edited,'records.update must return native structured content');
  assert.equal(edited.id,id);
  const readback=await call('records.read',{kind:'opportunity',id});
  assert.equal(readback.fields.value_cents,Number(record.fields.value_cents)+1000,'CRM value is an estimate, not a payment');
@@ -28,6 +66,17 @@ export default async function sellerDay({tool,request,origin,cookie}) {
  assert.equal(native.status,200);
  const detail=await native.json();
  assert.ok(detail.timeline.some(row=>row.actor_type==='agent'&&row.actor_name&&JSON.parse(row.payload_json).preparedBy?.agent?.id),'native timeline must name agent for sponsor');
+ const beforeConflict=await call('operations.read');
+ const conflict=await tool('orbit.records.update',{...writeArgs,fields:{value_cents:writeArgs.fields.value_cents+1000}});
+ assert.notEqual(conflict.body.id,accepted.body.id,'changed arguments use a new JSON-RPC request identity');
+ assert.equal(conflict.status,200,'an idempotency conflict is a tool refusal');
+ assert.equal(conflict.result?.isError,true);
+ assert.equal(conflict.result?._meta?.['com.runeditrun/error']?.code,'idempotency_conflict');
+ assert.equal(conflict.result?.structuredContent,undefined,'a conflict returns no successful native result');
+ assert.deepEqual(await call('operations.read'),beforeConflict,'changed arguments with the accepted key have no second native effect');
+ const afterConflict=await request(new URL(`/api/v1/records/opportunity/${id}`,origin).href,{headers:{Cookie:cookie}});
+ assert.equal(afterConflict.status,200);
+ assert.deepEqual(await afterConflict.json(),detail,'the accepted record and its native history remain unchanged');
  const rows=[];
  let cursor='0';
  for(;;) {
@@ -45,7 +94,7 @@ export default async function sellerDay({tool,request,origin,cookie}) {
 
 // The installed 0.2.93 runner exercises the native target, resource refusal,
 // replay admission, signed owner binding and independent reviewer lifecycle.
-// Access/security tools remain undeclared, so no self-widening probe applies.
+// Private address rotation declares no subject; Base retains its no-subject security probes.
 // The runner refreshes native revisions for injection variants. The stale
 // public_update, save_handoff and draft_update requests still refuse, while
 // fresh injection variants assert the original classes and native effects.
@@ -54,3 +103,16 @@ export default async function sellerDay({tool,request,origin,cookie}) {
 // an edition migration at Base edition-authoring/edition-migrations.mjs:33-34.
 // archive-source.mjs:34 correctly refuses unavailable Git ancestry. Preserve
 // the other pins; never invent ancestry or skip their migration obligations.
+
+/** Read back the conformance save through the unchanged native owner door. */
+export async function afterStep({step,args,result,request,origin,cookie}){
+ if(step.tool!=='orbit.workflows.save_draft')return;
+ const response=await request(new URL('/api/workflows',origin).href,{headers:{Cookie:cookie}});
+ assert.equal(response.status,200);
+ const inventory=await response.json(),saved=inventory.workflows.find(workflow=>workflow.id===args.id);
+ assert.equal(saved.version,args.source_version+1);assert.equal(saved.status,'draft');
+ assert.equal(saved.activeVersion,null);
+ assert.deepEqual(saved.definition,result.workflow.definition);
+ assert.equal(saved.name,args.name);
+ assert.ok(inventory.runs.every(run=>run.workflowId!==args.id),'saving a draft creates no run');
+}

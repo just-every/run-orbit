@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 35 | 119 | 24 | 178 |
+| Core | 37 | 117 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 35 | 137 | 32 | 204 |
+| Full target | 37 | 135 | 32 | 204 |
 
 Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -457,8 +457,8 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Close a deal as won and lost with reasons, ingest later evidence, and explicitly reopen; inspect history and queue membership at every step.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: won close retains reason; lost close retains reason; later evidence never silently reopens; explicit reopen restores correct queue; history records every lifecycle transition. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts` — "OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not" (fresh authenticated won-close reason readback)
+**Gap.** Unasserted in the carried evidence: lost close retains reason; closing operator and time; later evidence never silently reopens; explicit reopen restores correct queue; stage and owner remain unchanged on reopening; history records every lifecycle transition. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OPP-002 — Independent state
 
@@ -529,8 +529,8 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Advance close/stale/awaiting clocks and deliver a form, reply, booking and send failure; inspect NOW/NEXT reasons and one timeline transition per event.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: close clock; stale clock; awaiting-response clock; form NOW reason; reply NOW reason; booking NOW reason; one transition per triggering event. Asserted: failed-send NOW reason.
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/request-scheduling.test.ts` — a fresh hosted schedule sends once through ordinary requests racing Cron, and due follow-ups return to NOW (a distinct Records-created open deal with an explicit null owner is read outside NOW before its expected close deadline; crossing that deadline through ordinary requests racing and repeating hosted timers yields one explained NOW entry and one timer-sourced feature transition with no human actor, preserving score, band, owner, stage and lifecycle)
+**Gap.** Unasserted in the carried evidence: stale clock; genuine five-working-day awaiting-response deadline construction in the workspace timezone; complete form, reply, booking and failure reason and transition reconciliation; all NEXT and removal paths; the complete event matrix and one transition per triggering event beyond the close-deadline case. Asserted: close clock and its single explained transition; failed-send NOW reason.
 
 #### OPP-008 — Manual completion
 
@@ -706,15 +706,15 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 
 #### OUT-008 — Quiet hours
 
-Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
+Core · published · **done** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
 **Requirement.** A draft can be written at any time. Sending outside 08:00–18:00 Monday to Friday in the contact's timezone, or the workspace timezone when the contact has none, requires a second confirmation naming the recipient's local time; a scheduled send waits for the next permitted minute. The default is the window in this clause, with no holiday calendar.
 
 **Acceptance.**
 1. Approve outside recipient-local quiet hours, including daylight-saving boundaries; require the extra immediate confirmation or delay the schedule to the permitted window.
 
-**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: extra immediate confirmation. Asserted: recipient-local weekday/DST window; expired confirmation cannot send; scheduled message waits for reviewed next window.
+**Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`; confirming the previewed time submits once across a minute boundary; expired confirmation is refused. Same file — OUT-014 missing merge fields block; template revisions never rewrite approved content: recipient-local weekend schedule is reviewed, waits for the next permitted minute and dispatches once; a changed recipient clock requires a fresh review.
+**Gap.** None.
 
 #### OUT-009 — Scheduled send
 
@@ -799,8 +799,8 @@ Core · published · **partial** · Cites BASE-DATA-004, BASE-SECRET-001
 **Acceptance.**
 1. Leave AI unconfigured and fail a configured request; finish manual CRM, ingestion, scoring and handwritten outreach flows while generation reports failure.
 
-**Evidence.** `src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts`
-**Gap.** Unasserted in the carried evidence: failed generation visible; manual CRM still works; ingestion still works; scoring still works; handwritten sending still works. Asserted: unconfigured generation unavailable.
+**Evidence.** `src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts` — AI-002 invented evidence fails visibly; AI-003 unconfigured provider generates nothing and handwritten outreach submits once (after the unconfigured generation 503, the same installation creates a handwritten draft, reads its exact rendered content, opt-out state and recipient time, approves through native Workbench, compares the real mail adapter request with the saved approval snapshot, reads one accepted provider receipt and refuses repeated approval without another submission; no AI call, generated draft or explanation).
+**Gap.** Unasserted in the carried evidence: configured-outage continuity; manual CRM updates; ingestion and linking continuity; scoring and queue placement continuity; search continuity; recommendation action and evidence readback; rendered generation-failure qualification. Connected mailboxes and live model or provider qualification remain unclaimed. Asserted: unconfigured generation unavailable; handwritten drafting, exact approval and one accepted customer-mail submission continue with AI unconfigured.
 
 #### AI-004 — Cost
 
@@ -994,8 +994,8 @@ Core · published · **partial** · Cites BASE-ACCESS-002, BASE-ACCESS-004, BASE
 2. Its acknowledgment never accepts an application-proposed handoff; its only writes are acknowledgment and an attributed internal task under current native access.
 3. Authorize selected records through native consent and PKCE, read and propose a handoff, refuse outside scope, revoke immediately, and restore without restoring credential authority.
 
-**Evidence.** `src/core/features/delegation/protocol.ts`; `tests/delegation/authority-regressions.test.ts`; `tests/delegation/archive-regression.test.ts`
-**Gap.** Unasserted in the carried evidence: Slack mapping grants no delegation authority; Slack mapping grants no outreach authority; Slack acknowledgment does not accept a proposed handoff; Slack writes only acknowledgment/internal task; task retains current native access and actor; native consent and PKCE scope; selected records readable; outside-scope read refused. Asserted: internal handoff proposed; revocation stops every door; restored credential authority absent; restored history preserved.
+**Evidence.** `src/core/features/delegation/protocol.ts`; `tests/delegation/authority-regressions.test.ts` — API-002 native credential lifecycle and delegation D1 reject ambient cookies, scope escalation, expiration, disable and revocation on every read and write (active selected-opportunity evidence read, populated unselected-contact refusal, delegated list exclusion and unchanged records and write effects); `tests/delegation/archive-regression.test.ts`
+**Gap.** Unasserted in the carried evidence: Slack mapping grants no delegation authority; Slack mapping grants no outreach authority; Slack acknowledgment does not accept a proposed handoff; Slack writes only acknowledgment/internal task; task retains current native access and actor; native consent and PKCE scope; remaining selected-record kinds and outside-scope cases. Asserted: active selected-opportunity grant reads its opportunity, refuses its existing unselected linked contact with 404, omits that contact from delegated records and changes no records, history or write effects; internal handoff proposed; revocation stops every door; restored credential authority absent; restored history preserved.
 
 ### Permissions, records and migration
 
@@ -1880,17 +1880,17 @@ Core · target · **partial** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDI
 
 #### AUTO-006 — Undo workflow effects
 
-Core · target · **partial** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
+Core · target · **done** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
 
-**Requirement.** Undo. A user with workflow permission undoes one run, or every run of a version over a chosen time range. Undo restores each field written by a run only where the field still holds the value the run wrote. It reverses a stage move the same way, recording the reversal in OPP-009 history. It archives a record the run created only if nobody has edited or associated it since. Each skipped item is listed with who changed it and when. Undo is attributed and audited, sends nothing, and never reopens or deletes tasks or messages.
+**Requirement.** Undo. A user with workflow permission undoes one run, or every run of a version over a chosen time range. Undo restores each field written by a run only where the field still holds the value the run wrote. It reverses a stage move the same way, recording the reversal in OPP-009 history. It archives a record the run created only if nobody has edited or associated it since. Orbit archives a created deal by closing it as lost with a reason naming the undone version, which removes it from the queue and keeps its history and associations; edits, added contacts, activities, tasks, drafts, messages, signals and captured changes all count as touching it. Each skipped item is listed with who changed it and when. Undo is attributed and audited, sends nothing, and never reopens or deletes tasks or messages.
 
 **Acceptance.**
 1. Undo the closed-won run after a user edited one contact; verify the other values are restored, that contact is listed as skipped and the stage history records the undo.
 2. Undo a run or version over a time range; archive a created record only while it has no later edit/association, list skipped records with who/time, and retain attributed stage reversal.
 3. Undo sends nothing and never reopens or deletes tasks or messages.
 
-**Evidence.** `src/core/features/workflows/controls.ts`; `src/core/features/workflows/record-writes.ts`; `src/core/features/operator/ui/workflows-version-undo.tsx`; `tests/support/workflow-record-journey.ts`; `tests/support/workflow-journey.ts`
-**Gap.** Implemented: undo of one run or of one version over a time range (at most 1,000 runs), restoring a field only where it still holds the written value, reversing stage moves into movement history and listing skipped items. Remaining: archival undo of created records and complete owner-rule selection; that undo sends nothing and never reopens or deletes tasks or messages is not asserted.
+**Evidence.** `tests/core/capture-review.test.ts` — “CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority”, which runs `tests/support/workflow-record-journey.ts` and `tests/support/workflow-undo-journey.ts` — workflowUndoJourney. Acceptance 1: workflowRecordJourney undoes the closed-won run after a person edited one contact (the other contact is restored, the edited contact is listed as skipped with who changed it) and workflowUndoJourney reverses a stage move into stage history, attributed in the audit trail. Acceptance 2: workflowUndoJourney undoes a version over a time range with three created deals (the untouched deal is archived, the deal a person edited and the deal a person logged a note on are skipped, each naming who and when), refuses an operator without workflow authority, leaves runs outside the range untouched and reverses the stage move. Acceptance 3: workflowUndoJourney counts messages, Slack notices, notifications, tasks and notes before and after undo and replay (unchanged), shows a scheduled message stays scheduled across a stage reversal, and `tests/support/workflow-journey.ts` keeps the task created by a run after its undo. Code: `src/core/features/workflows/controls.ts`; `src/core/features/workflows/record-writes.ts`; `src/core/features/workflows/record-archive.ts`; `src/core/features/operator/ui/workflows-version-undo.tsx`
+**Gap.** None.
 
 #### CALL-001 — Provider-backed click-to-call
 
@@ -1974,7 +1974,7 @@ Core · target · **partial** · From REPORT-002 · Cites BASE-ROLE-001, BASE-DA
 2. Sign in as a restricted rep and verify that the same dashboard opens by default and shows only totals that reconcile with that rep's permitted drill-through, with no hidden count.
 3. Share privately, by named user/team or workspace to view/edit, then revoke; every figure, drill row and default applies current access with no hidden count or sum.
 
-**Evidence.** `src/core/features/dashboards/`; `migrations/core/0053_dashboards.sql`; `newtests/t096/report-disclosure.test.ts`; `newtests/t096/dashboard-access-proof.ts`; `newtests/t096/dashboard-archive.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/core/source-onboarding.test.ts`; `docs/retained-verification/REPORT-002/`; `src/core/features/dashboards/read-fences.ts`; `newtests/t096/dashboard-backend-proof.ts`
+**Evidence.** `src/core/features/dashboards/`; `migrations/core/0053_dashboards.sql`; `newtests/t096/report-disclosure.test.ts`; `newtests/t096/dashboard-access-proof.ts`; `newtests/t096/dashboard-archive.ts`; `newtests/t096/forward-upgrade.test.ts`; `tests/core/source-onboarding.test.ts`; `docs/retained-verification/REPORT-002/`; `src/core/features/dashboards/read-fences.ts`; `newtests/t096/dashboard-backend-proof.ts`; `newtests/t096/report-time-boundaries.test.ts` — “report periods compare instants across ISO precision and timezone equality boundaries” (native named view, denied edits, dashboard-share revocation and default-directory privacy); REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence” (named viewer figures and drill-through, revoked-share refusal and default removal at both widths)
 **Gap.** Nine-tile composition, viewer-fenced figures/drill rows, Owner/Pipeline/US date/Region filters, named/workspace sharing, personal defaults, unavailable/error/no-value/late evidence, PDF and tile CSV, versioned custody, paused restore and erasure are implemented. TEAM-005 inherits team filter/sharing/default/restricted sellers; RECORD-016 later owner kinds; NOTIFY-003 the later delivery model. Owner-chosen Dashboard ready routing and separately audited owner enablement send one generic Slack notice and authenticated link per occurrence/channel; replay, rate limits, failure/retry, held uncertainty and non-resuming safety suspension are proven. Email remains paused: the relay rejects attachments and no system notification sender exists; weekly recipient-specific email, next-send email revocation, email attempts and email retry/uncertain behavior remain gaps. PDF rejects text outside WinAnsi. Live forecasts apply the workspace calendar day and shared-field bindings; saved forecasts keep their original UTC definition and measured result. Every composed response rechecks its original dashboard, saved sources and permitted source rows after the final metadata read. Real team roles, audiences/defaults and restricted sellers remain TEAM-005; daily/weekly/monthly recipient-specific email and its revocation, failure, uncertainty and no-resend provider proof remain blocked on the system sender and attachment transport. No real provider delivery or release acceptance is claimed.
 
 #### REPORT-004 — Dashboard export and scheduled delivery

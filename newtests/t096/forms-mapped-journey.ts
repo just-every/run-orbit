@@ -61,6 +61,34 @@ export async function formsMappedJourney(){
   await f.db.prepare('DELETE FROM public_rate_limits').run();const stale=await request('','POST',{revision:previous.saved.revision,operationId:previous.compiled.operationId,idempotencyKey:crypto.randomUUID(),values:{...values,email:'synthetic-orbit-8@northstar.form.test',plan:'Enterprise plus'},consent:true});assert.equal(stale.status,403);assert.equal(await f.db.prepare("SELECT count(*) n FROM contacts WHERE email='synthetic-orbit-8@northstar.form.test'").first('n'),0);
   await call(`${base}/publications/${compiled.operationId}/approve`,'POST',{artifactHash:compiled.hash,formRevision:saved.revision});await call(`${base}/publications/${compiled.operationId}/publish`,'POST',{});
   const upgraded=await submit({...values,email:'synthetic-orbit-8@northstar.form.test',plan:'Enterprise plus'}),upgradedDeal=await f.db.prepare('SELECT custom_fields_json FROM opportunities WHERE id IN(SELECT opportunity_id FROM opportunity_contacts WHERE contact_id=(SELECT contact_id FROM marketing_form_submissions WHERE id=?))').bind(upgraded.result.submissionId).first<string>('custom_fields_json');assert.equal(JSON.parse(upgradedDeal!).lead_source,'Autumn campaign');assert.equal(JSON.parse(await f.db.prepare("SELECT custom_fields_json FROM contacts WHERE email='synthetic-orbit-8@northstar.form.test'").first<string>('custom_fields_json')!).plan,'Enterprise plus');
+  // Explicitly review and publish an unassigned rule before accepting a fresh enquirer.
+  saved=await call(base,'POST',{id:saved.id,revision:saved.revision,form:{...revised,assignment:{mode:'unassigned',operatorIds:[]}},landing:saved.landing});
+  compiled=await call(`${base}/compile`,'POST',{formId:saved.id,revision:saved.revision,reviewedHash:saved.hash,slug:'mapped-enquiry',maxRecords:30,expiresAt:new Date(Date.now()+86400000).toISOString()});
+  await call(`${base}/publications/${compiled.operationId}/approve`,'POST',{artifactHash:compiled.hash,formRevision:saved.revision});
+  await call(`${base}/publications/${compiled.operationId}/publish`,'POST',{});
+  const unassignedEmail=['synthetic-orbit-9','northstar.form.test'].join('@');
+  assert.equal(await f.db.prepare('SELECT count(*) n FROM contacts WHERE email=?').bind(unassignedEmail).first('n'),0);
+  const noticeInventory=async()=>(await f.db.prepare('SELECT * FROM notifications ORDER BY id').all()).results;
+  const noticesBeforeUnassigned=await noticeInventory(),submissionsBeforeUnassigned=await call(`${base}/${saved.id}/submissions`);
+  const unassigned=await submit({...values,name:'Unassigned enquirer',email:unassignedEmail});
+  assert.equal(unassigned.result.replayed,false);assert.equal(unassigned.result.reviewRequired,false);
+  const submissionsAfterUnassigned=await call(`${base}/${saved.id}/submissions`),submission=submissionsAfterUnassigned.find((row:any)=>row.id===unassigned.result.submissionId);
+  assert.equal(submissionsAfterUnassigned.length,submissionsBeforeUnassigned.length+1);assert.ok(submission);
+  assert.equal(submission.operation_id,compiled.operationId);assert.equal(submission.idempotency_key,unassigned.input.idempotencyKey);
+  const detail=await call(`/api/v1/records/contact/${submission.contact_id}`);
+  assert.equal(detail.record.email,unassignedEmail);assert.deepEqual(detail.ownership,{ownerId:null,ownerName:null,revision:1});
+  assert.deepEqual(await f.db.prepare("SELECT owner_id,revision FROM record_ownership WHERE record_type='contact' AND record_id=?").bind(submission.contact_id).first(),{owner_id:null,revision:1},'unassignment is explicitly persisted');
+  const assignmentEntries=detail.timeline.filter((entry:any)=>entry.kind==='form.assignment');
+  assert.equal(assignmentEntries.length,1);const assignment=assignmentEntries[0];
+  assert.equal(assignment.actor_type,'source');assert.equal(assignment.actor_id,null);assert.equal(assignment.source,`form:${saved.id}`);
+  assert.deepEqual(JSON.parse(assignment.payload_json),{submissionId:unassigned.result.submissionId,ownerId:null,reason:'Unassigned form queue'});
+  const noticesAfterUnassigned=await noticeInventory();
+  assert.deepEqual(noticesAfterUnassigned.filter(notice=>notice.kind==='form.submitted'),noticesBeforeUnassigned.filter(notice=>notice.kind==='form.submitted'),'an unassigned submission chooses no form notification recipient');
+  const unassignedReplay=await request('','POST',unassigned.input);assert.equal(unassignedReplay.status,200);
+  assert.deepEqual(await unassignedReplay.json(),{submissionId:unassigned.result.submissionId,reviewRequired:false,replayed:true});
+  const replayedDetail=await call(`/api/v1/records/contact/${submission.contact_id}`);
+  assert.deepEqual(replayedDetail.ownership,detail.ownership);assert.deepEqual(replayedDetail.timeline.filter((entry:any)=>entry.kind==='form.assignment'),assignmentEntries);
+  assert.deepEqual(await call(`${base}/${saved.id}/submissions`),submissionsAfterUnassigned);assert.deepEqual(await noticeInventory(),noticesAfterUnassigned);
   await formsMappedCustody(f,app,cookie,{formId:saved.id,contactId:contact.id,email:values.email,submitted:campaign});
  }finally{await f.close();}
 }

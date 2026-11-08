@@ -4,7 +4,7 @@ import {z} from 'zod';
 import type {AuthenticatedOperator} from '../../identity';
 import type {SourceSecurity} from '../../../platform/source-security';
 import {CaptureError,CaptureProviderError} from '../contracts';
-import {providerId,redirectUri,trustedOrigin,type ProviderFetch} from './config';
+import {defaultProviderFetch,providerId,redirectUri,trustedOrigin,type ProviderFetch} from './config';
 import {startOAuth,finishOAuth} from './oauth';
 import {providerOptions,selectScope,syncProvider} from './service';
 import {syncLinkedCalendar} from '../calendar-link/routes';
@@ -13,7 +13,7 @@ const instant=z.string().datetime({offset:true}).transform(value=>new Date(value
 const scopeSchema=z.object({mail:z.object({folders:ids}).optional(),calendars:ids.optional(),calendarWindow:z.object({start:instant,end:instant}).refine(window=>Date.parse(window.end)>Date.parse(window.start)&&Date.parse(window.end)-Date.parse(window.start)<=10*366*86400000,'Choose increasing dates within ten years.').optional()}).strict().refine(scope=>(scope.mail?.folders.length??0)+(scope.calendars?.length??0)>0,'Choose at least one label, folder or calendar.');
 export interface ProviderConfig{security?:SourceSecurity;origin?:string;fetcher?:ProviderFetch;mailAddress?:string;local?:boolean}
 export function createProviderRoutes(db:D1Database,config:ProviderConfig){
- const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),fetcher=config.fetcher??fetch;
+ const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),fetcher=config.fetcher??defaultProviderFetch;
  const security=()=>{if(!config.security)throw new CaptureError(503,'Provider connections need ORBIT_ENCRYPTION_KEY.');return config.security;};
  app.onError((error,c)=>{
   const message=error instanceof CaptureError?error.message:error instanceof CaptureProviderError?'The provider connection could not finish. Check its status and try again.':'The provider connection could not finish.';
@@ -21,7 +21,7 @@ export function createProviderRoutes(db:D1Database,config:ProviderConfig){
   const provider=/\/oauth\/(google|microsoft)\//.exec(c.req.path)?.[1],page=provider?`/app/settings/capture/connect/${provider}?step=5&`:'/app/settings/capture?';
   return (c.req.header('accept')??'').includes('text/html')?c.redirect(`${page}error=${encodeURIComponent(message)}`,303):c.json({error:message},status);
  });
- app.route('/writeback',calendarWritebackRoutes(db,config));
+ app.route('/writeback',calendarWritebackRoutes(db,{...config,fetcher}));
  app.get('/providers',c=>{
   const origin=trustedOrigin(config.origin,c.req.url);
   return c.json({available:Boolean(config.security),providers:([{id:'google',name:'Google Gmail and Calendar'},{id:'microsoft',name:'Microsoft mail and calendar'}] as const).map(provider=>({...provider,redirectUri:redirectUri(origin,provider.id)}))});
