@@ -26,10 +26,15 @@ export async function equalOperatorBrowser(){
   browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic','--disable-gpu',...worker.browserArgs]});
   for(const width of [1440,390]){
    const options={baseURL:worker.origin,viewport:{width,height:1000},ignoreHTTPSErrors:true};
-   const owner=await browser.newContext({...options,extraHTTPHeaders:{Cookie:t.f.cookie}}),peer=await browser.newContext({...options,extraHTTPHeaders:{Cookie:t.peer.cookie}}),guest=await browser.newContext({...options,extraHTTPHeaders:{Cookie:t.guest.cookie}});
+   const signedContext=async(cookie:string)=>{const context=await browser!.newContext(options),separator=cookie.indexOf('=');await context.addCookies([{name:cookie.slice(0,separator),value:cookie.slice(separator+1),url:worker!.origin,httpOnly:true,secure:true,sameSite:'Lax'}]);return context;};
+   const owner=await signedContext(t.f.cookie),peer=await signedContext(t.peer.cookie),guest=await signedContext(t.guest.cookie);
    const nativeErrors=watchBrowser(owner),peerErrors=watchBrowser(peer),guestErrors=watchBrowser(guest);
+   // Existing owner-only sign-in administration is an explicit remaining TEAM-001 boundary.
+   peerErrors.allowDeniedResource('/api/v1/settings/sign-in-policy',403);
    try{
     const page=await owner.newPage(),other=await peer.newPage(),shared=await guest.newPage();
+    assert.equal((await page.request.get('/api/v1/settings/sign-in-policy')).status(),200);
+    assert.equal((await other.request.get('/api/v1/settings/sign-in-policy')).status(),403);
     for(const [operator,screen] of [['Alex',page],['Jordan',other]] as const){
      for(const record of records){
       await screen.goto(`/app/${plural[record.kind]}`);
@@ -48,6 +53,7 @@ export async function equalOperatorBrowser(){
     }
     for(const record of records){
      await other.goto('/app/settings/team');
+     await expect(other.locator('section[aria-labelledby="sign-in-policy"]').getByRole('alert')).toBeVisible();
      await other.getByRole('combobox',{name:'Collaborator',exact:true}).selectOption(t.guest.operator.operatorId);
      await other.getByRole('combobox',{name:'Record type',exact:true}).selectOption(record.kind);
      await other.getByLabel('Find by name',{exact:true}).fill(record.name);
@@ -69,7 +75,11 @@ export async function equalOperatorBrowser(){
       const forbidden=await shared.request.put(`${sharedPath}/contact/${record.id}`,{headers:{Origin:worker.origin},data:{email:['forbidden','people.test'].join('@')}});assert.equal(forbidden.status(),403);
       const unchanged=await other.request.get(`${nativePath}/contact/${record.id}`);assert.equal((await unchanged.json()).record.email,record.secret);
       await shared.getByLabel('Name',{exact:true}).fill(record.name);await shared.getByRole('button',{name:'Save name',exact:true}).click();await expect(shared.getByRole('status')).toContainText('Field saved');
-     }else await expect(details.getByRole('button',{name:/^Save /})).toHaveCount(0);
+     }else{
+      await expect(details.getByRole('button',{name:/^Save /})).toHaveCount(0);
+      assert.equal((await shared.request.put(`${sharedPath}/${record.kind}/${record.id}`,{headers:{Origin:worker.origin},data:{[record.kind==='opportunity'?'title':'name']:'Forbidden edit'}})).status(),403);
+      const unchanged=await other.request.get(`${nativePath}/${record.kind}/${record.id}`);assert.equal((await unchanged.json()).record[record.kind==='opportunity'?'title':'name'],record.name);
+     }
      await accessible(shared,`team-shared-${record.kind}-${width}`,directory);
      const blocked=unshared.find(item=>item.kind===record.kind)!;
      guestErrors.allowDeniedResource(`${sharedPath}/${record.kind}/${blocked.id}`,403);
@@ -111,9 +121,11 @@ async function note(page:Page,record:TeamRecord,text:string){
 async function createAndDelete(page:Page,kind:TeamRecord['kind'],name:string){
  await page.goto(`/app/${plural[kind]}`);await page.getByRole('link',{name:`New ${kind}`,exact:true}).click();
  if(kind==='opportunity'){
+  await page.getByLabel('Company name',{exact:true}).fill('Harbour Studio');await page.getByRole('list',{name:'Company search results',exact:true}).getByRole('button').filter({hasText:'Harbour Studio'}).click();
   await page.getByLabel('Contact name',{exact:true}).fill('Taylor Quinn');await page.getByLabel('Contact email',{exact:true}).fill([`synthetic-orbit-${name.replace(/ /g,'-').toLowerCase()}`,'people.test'].join('@'));
   await page.getByLabel('Opportunity title',{exact:true}).fill(name);await page.getByRole('button',{name:'Save opportunity',exact:true}).click();
  }else{await page.getByLabel('Name',{exact:true}).fill(name);await page.getByRole('button',{name:`Create ${kind}`,exact:true}).click();}
+ await expect(page).toHaveURL(new RegExp(`/app/${plural[kind]}/[0-9A-HJKMNP-TV-Z]{26}$`));
  await expect(page.getByLabel(titleLabel[kind],{exact:true})).toHaveValue(name);
  await page.getByRole('button',{name:`Delete ${kind}`,exact:true}).click();await page.getByRole('button',{name:'Delete',exact:true}).click();await expect(page).toHaveURL(new RegExp(`/app/${plural[kind]}$`));
  await expect(page.getByRole('link',{name,exact:true})).toHaveCount(0);

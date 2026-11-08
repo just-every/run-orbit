@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "21be9161d74ea4827a7b6df09a4706021e425c1db0618aa0d5b36b275be976ab",
+      "sha256": "70eb020fbbd38ca35f0cf856431876e0a7f16a299126dede7c3e192a5e3f2a1e",
       "executable": false
     },
     "DEMO.md": {
@@ -3723,11 +3723,11 @@
       "executable": false
     },
     "newtests/t096/team-operator-browser.ts": {
-      "sha256": "a14f2c7b23b0b296696bee8cbc7b9666dc565b535f7e2a051459e53b9e7436e8",
+      "sha256": "b5b4efdf43a2fa8cfbdd5aa986a43ed139900af988677bb00975130bbd785006",
       "executable": false
     },
     "newtests/t096/team-operator-doors.ts": {
-      "sha256": "97d894af541a8bfa1cd6f66cf414842af88563419811e220dd838f694f4d9939",
+      "sha256": "1c0a8552681467be54629f5b93620a11b5a252e7478fffa1fcb7a95b0349ca70",
       "executable": false
     },
     "newtests/t096/team-operator-fixture.ts": {

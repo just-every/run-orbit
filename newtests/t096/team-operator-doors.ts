@@ -51,9 +51,11 @@ export async function equalOperatorDoors(){
   await call(guest.cookie,`${sharedPath}/contact/${contact.id}`,'GET',undefined,403);
   await call(guest.cookie,`${sharedPath}/contact/${contact.id}`,'PUT',{name:'Replayed old share'},403);
   assert.equal((await call(peer.cookie,`${nativePath}/contact/${contact.id}`)).record.name,'Morgan shared review');
+  await call(peer.cookie,`${accessPath}/members/${guest.operator.operatorId}`,'PUT',{role:'guest',status:'removed'});
+  await call(guest.cookie,'/api/v2/access/class','GET',undefined,401);
   for(const cookie of [peer.cookie,f.cookie]){
    for(const record of records){
-    const saved=await call(cookie,`${nativePath}/${record.kind}`,'POST',record.kind==='opportunity'?{title:'Temporary reviewed deal',stage_id:f.stage,value_cents:0}:{name:'Temporary reviewed record'},201);
+    const saved=await call(cookie===peer.cookie?f.cookie:peer.cookie,`${nativePath}/${record.kind}`,'POST',record.kind==='opportunity'?{title:'Temporary reviewed deal',stage_id:f.stage,value_cents:0}:{name:'Temporary reviewed record'},201);
     await call(cookie,`${nativePath}/${record.kind}/${saved.id}`,'DELETE',{confirmed:true});
     await call(cookie,`${nativePath}/${record.kind}/${saved.id}`,'GET',undefined,404);
    }
