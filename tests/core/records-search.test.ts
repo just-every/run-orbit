@@ -2,6 +2,7 @@ import {exerciseRecordOwnership} from '../support/record-ownership';
 import {exerciseOpportunityCreation} from '../support/opportunity-creation';
 import {salesPipelinesJourney} from '../support/sales-pipelines';
 import {exerciseBuyingContext} from '../support/buying-context';
+import {exerciseCompanyIdentity} from '../support/company-identity';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
@@ -37,6 +38,7 @@ test('RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-
   await db.prepare("DELETE FROM runtime_controls WHERE name='restore'").run();
   for(const [field,value]of Object.entries(expected))assert.deepEqual((await search('opportunity',new URLSearchParams({[field]:value}).toString())).sort(),rows.filter(row=>row[field as keyof typeof row]===value).map(row=>row.id).sort(),field);
   assert.deepEqual(await search('opportunity',new URLSearchParams(expected).toString()),[opportunity.id]);
+  await exerciseCompanyIdentity((path,method='GET',body)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),stage);
   for(let i=0;i<55;i++)await records.save('contact',{name:`Pagebound ${i}`,email:`page-${i}@search.test`},actor);
   assert.equal((await search('contact','q=Pagebound')).length,50);
   await salesPipelinesJourney((path,method='GET',body)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),actor);
