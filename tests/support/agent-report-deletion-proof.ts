@@ -108,9 +108,9 @@ export async function savedReportDeletionProof({bindings,door,cookie,reviewerCoo
  // A fresh hold at the old exact scope is refused even when policy itself stays unchanged.
  await adopt(held);const currentHold=await call('orbit.reports.delete',deletion(staleId,fresh.revision,'stale-held'));
  const changedDefinition={...definition,name:'Changed after person review'};
- const member=await db.prepare("SELECT id FROM operators WHERE id<>? AND status='active' LIMIT 1").bind(ownerId).first<string>('id');assert.ok(member);
+ const member=await db.prepare("SELECT id,email FROM operators WHERE id<>? AND status='active' LIMIT 1").bind(ownerId).first<{id:string;email:string}>();assert.ok(member);
  // Native report management remains separate from being a full operator.
- const wrongManager=await call('orbit.reports.delete',deletion(staleId,fresh.revision,'foreign'),{sub:'business-jamie',act:{sub:'synthetic-orbit-other-remover',name:'Other report assistant'}});
+ const wrongManager=await call('orbit.reports.delete',deletion(staleId,fresh.revision,'foreign'),{sub:'business-jamie',email:member.email,act:{sub:'synthetic-orbit-other-remover',name:'Other report assistant'}});
  assert.equal(wrongManager._meta['com.runeditrun/error'].code,'resource_unavailable');assert.deepEqual(await nativeState(),beforeStale);
  const header={Cookie:cookie,Origin:origin,'Content-Type':'application/json'};
  const defineNative=await app.request(origin+'/api/v2/workspaces/'+workspace+'/operations/metrics',{method:'POST',headers:header,body:JSON.stringify({id:staleId,version:3,definition:changedDefinition})});
@@ -140,5 +140,6 @@ export async function savedReportDeletionProof({bindings,door,cookie,reviewerCoo
  const unansweredScope=await preview(accessId),unansweredState=await nativeState();
  const unset=await call('orbit.reports.delete',deletion(accessId,unansweredScope.revision,'unanswered'));
  assert.equal(unset._meta['com.runeditrun/error'].code,'policy_unset');assert.deepEqual(await nativeState(),unansweredState,'no destructive default is invented for an unanswered company class');
+ await adopt(autonomousPolicy());
  console.log(JSON.stringify({proof:'SURFACE-007.saved-report-deletion',autonomous:{id:autonomousId,affected:3,decision:autonomous._meta['com.runeditrun/decision'].id},approval:{id:approvalId,affected:3,oneEffect:true},staleScopeRefused:true,currentAccessRefused:true,replayWithoutEffect:true,retainedFactsAndAttribution:true,nativeHttpParity:true,unansweredClassUnchanged:true}));
 }

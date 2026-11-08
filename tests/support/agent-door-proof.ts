@@ -100,7 +100,8 @@ export async function agentDoorProof(rejectedReportProof: (context: RejectedRepo
     const adopted=await door.handle(post('/api/rer/agent-policy',{policy:envelope.policy}));
     assert.equal(adopted!.status,200,await adopted!.clone().text());
     async function businessCall(name:string,args:Record<string,unknown>,overrides:Record<string,unknown>={},method='tools/call',rpcId=2) {
-      const bearer=await sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:'business-owner',email:bindings.OWNER_EMAIL,act:{sub:'business-ari',name:'Ari'},client_id:'business-client',business:'door-company',scope:principal.scopes.join(' '),consent:'door-test-consent',jti:crypto.randomUUID(),iat:now,exp:now+300,...overrides});
+      const issued=Math.floor(Date.now()/1000);
+      const bearer=await sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:'business-owner',email:bindings.OWNER_EMAIL,act:{sub:'business-ari',name:'Ari'},client_id:'business-client',business:'door-company',scope:principal.scopes.join(' '),consent:'door-test-consent',jti:crypto.randomUUID(),iat:issued,exp:issued+300,...overrides});
       const response=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+bearer,'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','MCP-Method':method,'MCP-Name':method==='resources/read'?String(args.uri):name},body:JSON.stringify({jsonrpc:'2.0',id:rpcId,method,params:{...(method==='tools/call'?{name,arguments:args}:args),_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}})}));
       return {status:response!.status,body:await response!.json() as any};
     }

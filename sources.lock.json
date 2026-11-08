@@ -659,7 +659,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "d1ed92b43a46df8cfe2d6dd29d72c460ed1e4d55cc40586166608c335996c664",
+      "sha256": "2613e104fb74295128f5b41863827e14399ea86b6db8f679b3e1f8df6a6c241c",
       "executable": false
     },
     "AGENTS.md": {
@@ -3875,7 +3875,7 @@
       "executable": false
     },
     "scripts/agent-surface.ts": {
-      "sha256": "5628bbf20f67395ad10f581f7e35541c14a4c8e7ca9b97f287cf73978c9fc282",
+      "sha256": "c209442cd49f249b991388eacecf47e2cd4de55a238b971b9afe6e4c56b4f45f",
       "executable": false
     },
     "scripts/browser-results.mjs": {
@@ -5359,7 +5359,7 @@
       "executable": false
     },
     "src/core/features/analytics/sales-report.ts": {
-      "sha256": "1b25c4d33b524116b904c15c8469044fc868596fa56018ef2a014b665d3893e2",
+      "sha256": "1df09914b966e942b413ba08c2f1b44258c095a8ecb70eada8a82839d77981e2",
       "executable": false
     },
     "src/core/features/analytics/sales-result.tsx": {
@@ -10807,7 +10807,11 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "44736b54c0c3243326b6137e3d3f38d866b5166c5f37a36adcb2936dfb36ca4c",
+      "sha256": "eeeee526ab7fe063a0b31cc7aff8783fc9fee05bfbbd7f4e9fddec3a19674826",
+      "executable": false
+    },
+    "tests/support/agent-report-deletion-proof.ts": {
+      "sha256": "312a4807c60238927128a7329dbb8a8c55e53b35faac9b65b68decfd08f1c047",
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {

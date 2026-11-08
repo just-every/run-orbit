@@ -1149,13 +1149,12 @@
           }
         }
       ],
-      "inject": {
-        "confirmed": true,
-        "confirmExternal": true,
-        "classes": [
-          "standard"
-        ],
-        "policy": "autonomous"
+      "target": {
+        "kind": "report",
+        "id": {
+          "$from": "definition",
+          "pointer": "/id"
+        }
       }
     },
     {

@@ -150,12 +150,14 @@ export class SalesReports{
   const inventory=(await this.db.prepare(inventorySql).bind(...bindings).first<string>('inventory'))!;
   const [definitions,snapshots]=JSON.parse(inventory) as [Array<[number,string,string]>,Array<[string,number,string,string]>];
   if(!definitions.length)throw new AccessError('permission','This report is unavailable.');
+  const savedSharing=(JSON.parse(inventory) as unknown[][])[3]![0] as [string|null,string,string,number]|undefined;
+  const capturedShare={...share,ownerId:savedSharing?.[0]??null,revision:savedSharing?.[3]??0};
   const operator=c.principal.kind==='operator'?c.principal.operatorId:'';
   const proofs=[...this.metrics.store.guard(`(${inventorySql})=?`,[...bindings,inventory]),
-   ...this.metrics.store.guard("?=? OR EXISTS(SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active')",[operator,share.ownerId,operator])];
+   ...this.metrics.store.guard("EXISTS(SELECT 1 FROM analytics_report_shares WHERE workspace_id=? AND definition_id=? AND owner_id=?) OR EXISTS(SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active')",[c.workspaceId,id,operator,operator])];
   const revision=await sha256(JSON.stringify({tenantId:c.tenantId,workspaceId:c.workspaceId,id,inventory}));
   const view={id,reportCount:1,snapshotCount:snapshots.length,affectedItemCount:1+snapshots.length,definitionVersions:definitions.map(row=>row[0]),snapshotIds:snapshots.map(row=>row[0]),revision};
-  return {c,share,proofs,view};
+  return {c,share:capturedShare,proofs,view};
  }
  async removalPreview(c:ActorContext,id:string){
   const scope=await this.removal(c,id);await this.metrics.checkSources(scope.c,scope.proofs);return scope.view;

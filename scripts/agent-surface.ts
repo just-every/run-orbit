@@ -38,6 +38,10 @@ step('report_snapshot','reports.compute',{id:from('definition','/id'),version:1,
 step('report_read','reports.read',{id:from('report_snapshot','/id')});
 step('report_deletion_preview','reports.deletion_preview',{id:from('definition','/id')});
 step('report_delete','reports.delete',{id:from('definition','/id'),review_hash:from('report_deletion_preview','/revision'),expected_revision:from('report_deletion_preview','/revision')},[{class:'destructive',facts:{measure:2}}]);
+// Deletion consumes its preview rows. The managed-owner journey proves ignored
+// caller facts and replay without re-reading a report that no longer exists.
+delete journey.find(item=>item.id==='report_delete').inject;
+journey.find(item=>item.id==='report_delete').target={kind:'report',id:from('definition','/id')};
 step('forecast','forecasts.read',{opportunity_id:from('opportunity','/id')});
 step('protected_opportunity','records.create',{kind:'opportunity',record:{title:'Protected native forecast',stage_id:from('fixture','/items/0/fields/stage_id'),value_cents:750000,custom_fields:{private_amount:1200}}});
 step('protected_forecast','forecasts.read',{opportunity_id:from('protected_opportunity','/id')},sensitive);
