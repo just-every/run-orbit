@@ -1,0 +1,26 @@
+[
+  {
+    "attempt": 1,
+    "exit": 128,
+    "diagnostic": "Invalid username or token. Password authentication is not supported for Git operations.",
+    "http": "unknown (not supplied by Git)"
+  },
+  {
+    "attempt": 2,
+    "exit": 128,
+    "diagnostic": "Invalid username or token. Password authentication is not supported for Git operations.",
+    "http": "unknown (not supplied by Git)"
+  },
+  {
+    "attempt": 3,
+    "exit": 128,
+    "diagnostic": "Invalid username or token. Password authentication is not supported for Git operations.",
+    "http": "unknown (not supplied by Git)"
+  },
+  {
+    "attempt": 4,
+    "exit": 0,
+    "diagnostic": "Full-history clone completed successfully after launcher refresh.",
+    "http": "unknown (not supplied by Git)"
+  }
+]

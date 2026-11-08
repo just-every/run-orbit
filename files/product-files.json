@@ -1,0 +1,11 @@
+{
+  "head": "0cbac1c17119cf12b610c338173cdf8ebf94dbc8",
+  "files": [
+    "sources.lock.json",
+    "tests/core/managed-owner.test.ts",
+    "tests/support/agent-door-collaborator-proof.ts",
+    "tests/support/agent-door-proof.ts"
+  ],
+  "contract_and_views_changed": false,
+  "worktree_clean": true
+}

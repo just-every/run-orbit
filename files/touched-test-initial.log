@@ -1,0 +1,39 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+# {"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+# {"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"73513648-7c3a-4146-b4fd-c889096da845","revision":5,"summary_sha256":"4b7a8d92dbe5f16118d39df27851bf882dc8c7133ef75bd28b0d8b54d936e4f1","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"2d8c47de-d539-4900-8bdd-2d00504209e9","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+# Subtest: Managed owner claim verifies RER authority and creates the native owner/session exactly once
+not ok 1 - Managed owner claim verifies RER authority and creates the native owner/session exactly once
+  ---
+  duration_ms: 96401.34379
+  type: 'test'
+  location: '/workspace/run-orbit/tests/core/managed-owner.test.ts:1:8598'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    400 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 400
+  operator: 'strictEqual'
+  stack: |-
+    agentDoorCollaboratorProof (/workspace/run-orbit/tests/support/agent-door-collaborator-proof.ts:90:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async agentDoorProof (/workspace/run-orbit/tests/support/agent-door-proof.ts:234:5)
+    async TestContext.<anonymous> (/workspace/run-orbit/tests/core/managed-owner.test.ts:158:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 99535.196274
