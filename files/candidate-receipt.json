@@ -1,0 +1,28 @@
+{
+  "head": "cc690e5e27d6f63613b78eb7e502be0fe61d6a42",
+  "branch": "cloud/sd-orbit-c-f129",
+  "main": "43497d9593cdf019042332a4bf8bae27f4004ede",
+  "clean": true,
+  "fullHistory": true,
+  "candidateCommits": [
+    {
+      "head": "cc690e5e27d6f63613b78eb7e502be0fe61d6a42",
+      "identity": "fleet author and committer",
+      "trailers": null
+    }
+  ],
+  "sourceHashes": {
+    "src/base/modules/agent-door/transport.ts": "783af95f7bf5d53efc89eaac258e3f63fea7f79f4aee16202ead048a6f087e49",
+    "tests/support/agent-door-proof.ts": "6fc1f3a8c325ddc5166246014a48a92b4493b33f26834104882d611bcabee03a",
+    "tests/support/agent-door-revocation-proof.ts": "a6925828860d64b83f67f9cc3c06e238fecb50930b450a70815d70d87c5fe096",
+    "tests/core/managed-owner.test.ts": "b6370cb0934102bf49ed3054f128c15ccf778baa6fc04b0fe675f18a7872a566",
+    "base-copies.json": "674c28b0b64726f9854ea1813ddd048f96c801835fdddb37a97e83612b4e7204",
+    "sources.lock.json": "5ed9b1ebd2d9f14a3309796feb0fc51c1907a8742009b086f25d6dc1e0d4fbe9",
+    "CONTRACT.md": "c296a08e181eb2c2978b3a84f8f25229aafea81cc9af187cef45f2923d8076d8"
+  },
+  "contractDiffFromMain": "",
+  "copiedSourceRevision": "8b925fa5ffaa577df9f2e4ebab6ede8af5155baa",
+  "transportOriginComparisonDigest": "fbbda7f1f48d3fd6f3d50254481540348353bfa476e8e6863bcd05aa7b898c23",
+  "transportAdaptationAcknowledged": true,
+  "productCommitsCreatedThisContinuation": 0
+}

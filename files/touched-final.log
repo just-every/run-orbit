@@ -1,0 +1,21 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+# {"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+# {"proof":"BASE-AGENT-004.6","mode":"autonomous","methods":["initialize","server/discover"],"credentials":["retained","fresh"],"refused":401,"resourceMetadata":true,"successResult":false,"control":200,"unchangedNativeTables":276}
+# {"proof":"BASE-AGENT-004.6","mode":"held","methods":["initialize","server/discover"],"credentials":["retained","fresh"],"refused":401,"resourceMetadata":true,"successResult":false,"control":200,"unchangedNativeTables":276}
+# Subtest: Managed owner claim verifies RER authority and creates the native owner/session exactly once
+ok 1 - Managed owner claim verifies RER authority and creates the native owner/session exactly once
+  ---
+  duration_ms: 104879.979969
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 108251.824401

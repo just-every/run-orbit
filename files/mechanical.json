@@ -1,0 +1,53 @@
+{
+  "head": "cc690e5e27d6f63613b78eb7e502be0fe61d6a42",
+  "checks": [
+    {
+      "name": "contract-write",
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "contract-write.log"
+    },
+    {
+      "name": "contract-check",
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "contract-check.log"
+    },
+    {
+      "name": "restore-views",
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "log": "restore-views.log"
+    },
+    {
+      "name": "lock",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock.log"
+    },
+    {
+      "name": "lock-check",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.log"
+    },
+    {
+      "name": "first-party",
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "name": "test-budget",
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "log": "test-budget.log"
+    }
+  ]
+}

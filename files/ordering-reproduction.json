@@ -1,0 +1,9 @@
+{
+  "head": "cc690e5e27d6f63613b78eb7e502be0fe61d6a42",
+  "kind": "temporary restoration of pre-fix ordering, not a Verify repair",
+  "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+  "test": "Managed owner claim verifies RER authority and creates the native owner/session exactly once",
+  "exit": 1,
+  "expectedFailure": "autonomous retained initialize refuses the next call after native revocation",
+  "failureObserved": true
+}

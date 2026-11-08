@@ -1,0 +1,175 @@
+{
+  "repository": "just-every/run-orbit",
+  "tag": "sd-orbit-c-f129",
+  "branch": "cloud/sd-orbit-c-f129",
+  "head": "cc690e5e27d6f63613b78eb7e502be0fe61d6a42",
+  "productPush": {
+    "exit": 0,
+    "attempts": 1,
+    "remoteVerified": true
+  },
+  "localChecks": [
+    {
+      "name": "contract-write",
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "contract-write.log"
+    },
+    {
+      "name": "contract-check",
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "contract-check.log"
+    },
+    {
+      "name": "restore-views",
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "log": "restore-views.log"
+    },
+    {
+      "name": "lock",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock.log"
+    },
+    {
+      "name": "lock-check",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.log"
+    },
+    {
+      "name": "first-party",
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "name": "test-budget",
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "log": "test-budget.log"
+    }
+  ],
+  "touchedJourney": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+    "node": "22.20.0",
+    "exit": 0,
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "log": "touched-final.log"
+  },
+  "setup": {
+    "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+    "exit": 0,
+    "privateLogExcluded": true
+  },
+  "probes": [
+    {
+      "proof": "BASE-AGENT-004.6",
+      "mode": "autonomous",
+      "methods": [
+        "initialize",
+        "server/discover"
+      ],
+      "credentials": [
+        "retained",
+        "fresh"
+      ],
+      "refused": 401,
+      "resourceMetadata": true,
+      "successResult": false,
+      "control": 200,
+      "unchangedNativeTables": 276
+    },
+    {
+      "proof": "BASE-AGENT-004.6",
+      "mode": "held",
+      "methods": [
+        "initialize",
+        "server/discover"
+      ],
+      "credentials": [
+        "retained",
+        "fresh"
+      ],
+      "refused": 401,
+      "resourceMetadata": true,
+      "successResult": false,
+      "control": 200,
+      "unchangedNativeTables": 276
+    }
+  ],
+  "orderingReproduction": {
+    "head": "cc690e5e27d6f63613b78eb7e502be0fe61d6a42",
+    "kind": "temporary restoration of pre-fix ordering, not a Verify repair",
+    "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+    "test": "Managed owner claim verifies RER authority and creates the native owner/session exactly once",
+    "exit": 1,
+    "expectedFailure": "autonomous retained initialize refuses the next call after native revocation",
+    "failureObserved": true
+  },
+  "countsBefore": {
+    "statusRows": 204,
+    "counts": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    }
+  },
+  "countsAfter": {
+    "statusRows": 204,
+    "counts": {
+      "partial": 136,
+      "done": 36,
+      "missing": 32
+    }
+  },
+  "testInventory": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "contractJudgmentsChanged": false,
+  "newProductCommits": 0,
+  "ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f129",
+      "head_sha": "cc690e5e27d6f63613b78eb7e502be0fe61d6a42",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42428239921",
+      "id": 42428239921,
+      "name": "Verify",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f126",
+      "head_sha": "cc690e5e27d6f63613b78eb7e502be0fe61d6a42",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42426050372",
+      "id": 42426050372,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ],
+  "githubCalls": 3,
+  "pr": null,
+  "scan": {
+    "status": "fleet lander responsibility; not run in cloud",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "mainLanding": false,
+  "runSite": "not run; fleet landing responsibility"
+}
