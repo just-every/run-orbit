@@ -4,7 +4,7 @@
   "branch": "cloud/sd-orbit-c-f136",
   "head": "f1803c8ea30831c32433a69d085200c64102ab72",
   "base_main": "6d869cb48cbd6bcebb1566be460b49223e892bb6",
-  "observed_at": "2026-11-08T12:26:01.170946+00:00",
+  "observed_at": "2026-11-08T12:40:56.061874+00:00",
   "product_pushed": true,
   "product_push_attempts": 1,
   "product_push_output": "product-push.log",
@@ -140,21 +140,21 @@
   "probe": "PROBE BASE-AGENT-006 3: authenticated native Records saves ordinary and schema-protected companies, then public MCP orbit.records.read before and after hostile text under both policies -> eight equal expected class and fact results; autonomous returns both; held reviews ordinary and withholds protected until named owner approval; wrong person gets 403; native records unchanged.",
   "mechanical": "MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock and check exit=0; views=node src/base/contract-docs.mjs write and check exit=0, restored origin/main views; ledger=none exit=0",
   "ci": {
-    "observed_at": "2026-11-08T12:25:18.836429+00:00",
+    "observed_at": "2026-11-08T12:40:23.056249+00:00",
     "runs": [
       {
         "id": 42479712701,
         "name": "Verify",
         "event": "push",
-        "conclusion": null,
+        "conclusion": "success",
         "head_sha": "f1803c8ea30831c32433a69d085200c64102ab72",
         "html_url": "https://github.com/just-every/run-orbit/actions/runs/42479712701",
-        "status": "in_progress"
+        "status": "completed"
       }
     ],
-    "watcher_calls": 1
+    "watcher_calls": 4
   },
-  "github_calls_used": 4,
+  "github_calls_used": 7,
   "github_calls_budget": 10,
   "publication_scan": {
     "commit": "f1803c8ea30831c32433a69d085200c64102ab72",

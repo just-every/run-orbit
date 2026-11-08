@@ -2,6 +2,8 @@
 
 Tag: sd-orbit-c-f136. Repository: just-every/run-orbit. Product branch: cloud/sd-orbit-c-f136.
 
+CLAIM BASE-AGENT-006 PARTIAL points=3 tests=tests/support/agent-door-classification-proof.ts#agentDoorClassificationProof
+
 ## Scope and result
 
 BASE-AGENT-006 remains PARTIAL. This round qualifies only acceptance 3's stored-record-text injection half for existing company reads. Native authenticated Records saves an ordinary company and a permitted company with schema-protected synthetic regulated and financial values. The same public MCP orbit.records.read arguments run before and after hostile text is appended, under autonomous and held policies. The fixture holds schema definitions, visibility, owners, team, grants, requested fields and underlying protected values fixed.
@@ -16,12 +18,12 @@ No policy default was adopted. No acceptance sentence, Status, Gap, Evidence, ge
 
 | Row | Check and public proof | Result |
 | --- | --- | --- |
-| R1 | Authenticated native Records creates both real company fixtures; helper lines 24 to 51. | PASS locally; exact-SHA Verify is recorded separately |
-| R2 | Native saves change only customer_context while schema, visibility, owner, team and grants remain fixed; helper lines 53 to 75. | PASS locally; exact-SHA Verify is recorded separately |
-| R3 | Public MCP read computes explicit expected classes and facts, matching before and after stored instructions; helper lines 66 to 90. | PASS locally; exact-SHA Verify is recorded separately |
-| R4 | Policy dispositions and per-class rules remain equal under each policy; helper lines 77 to 89. | PASS locally; exact-SHA Verify is recorded separately |
-| R5 | Held protected read exposes no stored content, refuses the wrong signed-in approver, stays pending, then succeeds after the named owner approves; helper lines 100 to 127. | PASS locally; exact-SHA Verify is recorded separately |
-| R6 | Completed content is the requested projection and is untrusted; ordinary held reads keep a review and all read and approval paths preserve the company; helper lines 91 to 98 and 128 to 135. | PASS locally; exact-SHA Verify is recorded separately |
+| R1 | Authenticated native Records creates both real company fixtures; helper lines 24 to 51. | PASS locally and in exact candidate push Verify 42479712701 |
+| R2 | Native saves change only customer_context while schema, visibility, owner, team and grants remain fixed; helper lines 53 to 75. | PASS locally and in exact candidate push Verify 42479712701 |
+| R3 | Public MCP read computes explicit expected classes and facts, matching before and after stored instructions; helper lines 66 to 90. | PASS locally and in exact candidate push Verify 42479712701 |
+| R4 | Policy dispositions and per-class rules remain equal under each policy; helper lines 77 to 89. | PASS locally and in exact candidate push Verify 42479712701 |
+| R5 | Held protected read exposes no stored content, refuses the wrong signed-in approver, stays pending, then succeeds after the named owner approves; helper lines 100 to 127. | PASS locally and in exact candidate push Verify 42479712701 |
+| R6 | Completed content is the requested projection and is untrusted; ordinary held reads keep a review and all read and approval paths preserve the company; helper lines 91 to 98 and 128 to 135. | PASS locally and in exact candidate push Verify 42479712701 |
 
 ## Acceptance coverage
 
@@ -40,7 +42,7 @@ No policy default was adopted. No acceptance sentence, Status, Gap, Evidence, ge
 | --- | --- |
 | 1 | NOT MET for full clause: other families and complete acceptance remain omitted. Selected public-door outcomes are executed by the touched registration. |
 | 2 | PASS for selected scope: populated fixtures, explicit independent expected classes, permitted reads and forbidden preapproval content and wrong-person approval. |
-| 3 | PENDING exact candidate Verify. Existing push Verify core-1 loads the managed-owner registration; see CI receipt for event and actual conclusion. |
+| 3 | PASS: exact candidate push Verify 42479712701 completed successfully and core-1 loads the managed-owner registration. |
 | 4 | Relevant local proof bytes and exact candidate binding are recorded in RECEIPT.json. Exact-SHA CI remains separately reported. |
 | 5 | INSPECTED: the Base clause is the target; no receiving clause or inherited duty was rewritten. |
 | 6 | INSPECTED: main's judgments and counts are preserved. Generator write and check pass before restoring both views. No status award is requested. |
@@ -70,6 +72,12 @@ PROBE BASE-AGENT-006 3: authenticated native Records saves ordinary and schema-p
 
 MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock and check exit=0; views=node src/base/contract-docs.mjs write and check exit=0, restored origin/main views; ledger=none exit=0
 
+## Evidence transfer
+
+Initial evidence custody was independently fetched and all 21 file hashes verified at evidence head a118b33b7c46b904651a794cb74999a4f09911e3, bound to the product candidate. The actual verification receipt is transfer-verification.json. The final evidence ref may advance to add the latest CI observation and this receipt.
+
 ## Latest CI observation
 
-Run 42479712701 (push event), head f1803c8ea30831c32433a69d085200c64102ab72, observed 2026-11-08T12:25:18.836429+00:00: in_progress, conclusion None. GitHub calls used: 4 of 10. No CI dispatch or rerun was made.
+Run 42479712701 (push event), head f1803c8ea30831c32433a69d085200c64102ab72, observed 2026-11-08T12:40:23.056249+00:00: completed, conclusion success. GitHub calls used: 7 of 10. No CI dispatch or rerun was made.
+
+Final exact-SHA push Verify: 42479712701 completed successfully. No workflow dispatch or rerun was used. Publication scanning, guarded main landing and exact-main Run site remain with the fleet; this partial proof awards no DONE or release.
