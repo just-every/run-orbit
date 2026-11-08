@@ -2335,7 +2335,7 @@
       "executable": false
     },
     "newtests/t096/collaborator-lifecycle.test.ts": {
-      "sha256": "c11134eda05a94d17428a2e6f50da10c0e5bc424955c9e12da25f3b6a22e0889",
+      "sha256": "c858302692c516599b74abc64d774b38dc399bbcdb2ffa966bb7d3f9f4d88ab4",
       "executable": false
     },
     "newtests/t096/collaborator-links.test.ts": {
@@ -3720,6 +3720,18 @@
     },
     "newtests/t096/sales-report-fixture.ts": {
       "sha256": "d641495f95e8141eddc1890a9db3b564689ab9d2ca8ee56e5aacbe6d856cd782",
+      "executable": false
+    },
+    "newtests/t096/team-operator-browser.ts": {
+      "sha256": "a14f2c7b23b0b296696bee8cbc7b9666dc565b535f7e2a051459e53b9e7436e8",
+      "executable": false
+    },
+    "newtests/t096/team-operator-doors.ts": {
+      "sha256": "97d894af541a8bfa1cd6f66cf414842af88563419811e220dd838f694f4d9939",
+      "executable": false
+    },
+    "newtests/t096/team-operator-fixture.ts": {
+      "sha256": "a5ad6dd27b05ab47d8a8fa2cc8f2e88d2e15d703b00925786c05556d9bfe3bf2",
       "executable": false
     },
     "OPERATIONS.json": {

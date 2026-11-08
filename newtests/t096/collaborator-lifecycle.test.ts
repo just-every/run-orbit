@@ -1,3 +1,5 @@
+import {equalOperatorBrowser} from './team-operator-browser';
+import {equalOperatorDoors} from './team-operator-doors';
 import {privateEntriesProof} from './private-entries-proof';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
@@ -10,7 +12,7 @@ import {AccessService} from '../../src/core/features/access/service';
 import {domainEventStatements} from '../../src/core/features/effects/event-statements';
 import {isFullOperator} from '../../src/core/features/access/identity-class';
 
-test('TEAM-001 native peers stay full while a distinct accepted collaborator obeys fields, grants and lifecycle fences',async()=>{const f=await fixture();try{
+test('TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences',async()=>{const f=await fixture();try{
  const peerId=createId();await createDependencies(f.db).auth.ensureOperator({id:peerId,email:'peer@fold.test',displayName:'Native peer'});const peer=await signIn(f.db,'peer@fold.test');assert.equal(await isFullOperator(f.db,peerId),true);assert.equal((await f.access.listWorkspaces(peer.operator)).length,1);{const operator=peer.operator;assert.equal((await f.access.listWorkspaces(operator)).length,1);}
  const record=await nativeRecord(f,'company',{name:'Visible original',primary_domain:'secretneedle.test'}),hidden={result:await nativeRecord(f,'company',{name:'Forbidden original'})};
  await f.db.prepare("UPDATE graph_records SET visibility='restricted',owner_id=? WHERE id=? AND kind='company'").bind(f.nativeOperator.operatorId,hidden.result.ref.id).run();await f.db.prepare("UPDATE schema_types SET fields_json=? WHERE name='company'").bind(JSON.stringify({primary_domain:{sensitivity:'private'}})).run();
@@ -26,6 +28,8 @@ test('TEAM-001 native peers stay full while a distinct accepted collaborator obe
  const query=legacyDatabase(f.db,await f.access.resolveOperatorContext(viewer.operator,'workspace','before-removal')).prepare('SELECT id FROM companies');await f.admin.setMembership(await f.nativeContext(),viewer.operator.operatorId,'seller','removed');await assert.rejects(query.all());assert.equal(await createDependencies(f.db).auth.authenticate(viewer.cookie),undefined);await assert.rejects(f.admin.setMembership(await f.nativeContext(),viewer.operator.operatorId,'seller','active'));assert.equal(await isFullOperator(f.db,viewer.operator.operatorId),false);
  const newSession=await createDependencies(f.db).auth.createSession(viewer.operator.operatorId),operator=(await createDependencies(f.db).auth.authenticate(`__Host-orbit_session=${newSession.token}`))!;await assert.rejects(f.access.resolveOperatorContext(operator,'workspace','removed'));const invitation=await f.admin.invite(await f.nativeContext(),{email:operator.email,role:'guest',expiresAt:new Date(Date.now()+86400000).toISOString()});await f.admin.accept(operator,invitation.token);const renewed=await f.access.resolveOperatorContext(operator,'workspace','reauthorized');assert.equal((await f.graph.searchRecords(renewed,{types:['company'],query:'',fields:[],filters:{},limit:10})).items.length,0);assert.equal(await isFullOperator(f.db,operator.operatorId),false);
  await privateEntriesProof(f);
+ await equalOperatorDoors();
+ await equalOperatorBrowser();
  }finally{await f.close();}});
 
 test('selected original nested-private and assembled-read assertions run against an accepted collaborator and native positive',async()=>{const f=await fixture();try{
