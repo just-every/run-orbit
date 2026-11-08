@@ -30,7 +30,7 @@ export function handoffTools(bindings:PlatformBindings) {
       run:async(args,ctx)=>{
         await readable(bindings,ctx,String(args.target),true);
         const {access,actor}=await nativeRecords(bindings,ctx),db=agentDatabase(bindings.DB,access,actor,ctx),grant=await localGrant(bindings.DB,ctx,String(args.target),'crm.handoff.write');
-        const input:Effect={operation:'orbit.handoff.upsert',operationKey:String(args.idempotency_key),target:String(args.target),expectedRevision:String(args.source_revision),expectedAudienceRevision:String(args.audience_revision),content:contentSchema.parse(args.content)};
+        const input:Effect={operation:'orbit.handoff.upsert',operationKey:ctx.idempotencyKey!,target:String(args.target),expectedRevision:String(args.source_revision),expectedAudienceRevision:String(args.audience_revision),content:contentSchema.parse(args.content)};
         const result=await writeHandoff(db,input,{actor:ctx.person.id,...(grant?{grant}:{}),agent:ctx.agent.id});
         const uri=`orbit://operations/${encodeURIComponent(input.target)}`;ctx.emit('handoff.updated',uri);return {result,resources:[{uri,name:'Saved handoff'}]};
       }}),

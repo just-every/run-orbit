@@ -132,6 +132,9 @@ async function internalTaskOverviewProof(context: Parameters<typeof agentDoorPro
       const key='synthetic-orbit-overview-'+mode;
       const written=await businessCall('orbit.handoffs.upsert',{target,source_revision:source.revision,audience_revision:source.audienceRevision,content,idempotency_key:key});
       assert.equal(written.status,200);assert.equal(written.body.result.isError,false);
+      const effect=written.body.result.structuredContent;
+      assert.equal(effect.receipt.operationKey,key);assert.equal(effect.receipt.target,target);
+      assert.equal(effect.observed.target,target);assert.deepEqual(effect.observed.content,content);
       const meta=written.body.result._meta,decision=meta['com.runeditrun/decision'];
       assert.ok(decision.id);assert.equal(decision.disposition,mode==='held'?'review':'autonomous');
       assert.deepEqual(decision.classes.map((item:{class:string})=>item.class),['standard']);
@@ -143,7 +146,10 @@ async function internalTaskOverviewProof(context: Parameters<typeof agentDoorPro
       calls.push({id:decision.id,key,target,title:content.title,decision:decision.disposition,review});
     }
     const first=await agentOverviewProof({request,origin,cookie,calls,now});
-    for(const call of calls)call.at=first.rows.find((row:{id:string})=>row.id===call.id)!.at;
+    for(const call of calls) {
+      call.at=first.rows.find((row:{id:string})=>row.id===call.id)!.at;
+      assert.equal(call.at,new Date(now).toISOString(),'the public audit retains the actual call time from the pinned clock');
+    }
     await adopt(autonomousPolicy());
     // Read real records across an audit page boundary; never fabricate overview rows.
     for(let count=first.rows.length;count<=200;count++) {

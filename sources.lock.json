@@ -5227,7 +5227,7 @@
       "executable": false
     },
     "src/core/features/agent-door/handoffs.ts": {
-      "sha256": "076464b5a90ec5748c39b66cc450a1da9f8b0d8aa923ff8b9cdbb0d8af768747",
+      "sha256": "5fa7cdcf25423e13bb5fc4eb10382602a9047c9de2959d13127c599f6dabc63f",
       "executable": false
     },
     "src/core/features/agent-door/index.ts": {
@@ -10019,7 +10019,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "cc1c30e263273be19df77c187a7ce647e5e3d77c60dad05a07603d3925c8c24b",
+      "sha256": "a93f11f97d7b21a7af358aa2f550f92e5d9b52b1a55dd87d341f37f55e0a60ce",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
