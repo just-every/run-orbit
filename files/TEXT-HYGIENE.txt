@@ -1,0 +1,3 @@
+New email-shaped literals: 0. Existing reviewer fixture text retained.
+No credentials added. Bare prose reference review: PASS by inspection.
+Publication scan: NOT RUN in cloud; fleet owns the complete full-history scan.

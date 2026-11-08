@@ -1,0 +1,46 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority (141929.679088ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+{"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+{"proof":"SURFACE-008.draft-save","modes":["autonomous","held"],"savedVersions":2,"activeVersion":1,"classes":[{"class":"standard","facts":{"measure":1}}],"replayAddsVersion":false,"saveEffects":false,"providerCalls":0,"oldDefinitionExecuted":true,"refusals":["stale","company-block","non-owner","insufficient-scope","revoked"]}
+{"proof":"BASE-AGENT-013.current-registry","policy":"autonomous","tools":24,"resourceTemplates":10,"nativeMatch":true}
+{"proof":"BASE-AGENT-013.current-registry","policy":"held","tools":24,"resourceTemplates":10,"nativeMatch":true}
+{"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"c802085a-c4c9-4d46-8344-6c83109fd4b8","revision":12,"summary_sha256":"4848bdcd6c469c8677ecad5d53fd394c3d4037e5abb10fbe40a45cb3b6bbd4c8","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"48eb24b9-c39c-4cde-adc9-5ef112c59561","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+{"proof":"BASE-AGENT-006.3.stored-company-text","cases":[{"mode":"autonomous","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"held","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"},{"mode":"held","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"}]}
+✖ Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification (135058.232046ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 145066.044822
+
+✖ failing tests:
+
+test at tests/core/managed-owner.test.ts:1:9517
+✖ Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification (135058.232046ms)
+  AssertionError [ERR_ASSERTION]: {"outcome":"refused","decision":null,"code":"revision_conflict","fields":{}}
+  + actual - expected
+  
+  + 'revision_conflict'
+  - 'policy_blocked'
+  
+      at agentDoorProof (/home/agent/rer-consolidation/work/sd-orbit-c-f145/orbit/tests/support/agent-door-proof.ts:220:67)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f145/orbit/tests/core/managed-owner.test.ts:174:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'revision_conflict',
+    expected: 'policy_blocked',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

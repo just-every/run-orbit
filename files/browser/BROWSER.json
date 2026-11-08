@@ -1,0 +1,40 @@
+{
+  "proof": "SURFACE-008.production-pages",
+  "observations": [
+    {
+      "screen": "workflow",
+      "width": 1440,
+      "populated": "Prepare account review"
+    },
+    {
+      "screen": "review",
+      "width": 1440,
+      "populated": "Agents"
+    },
+    {
+      "screen": "docs",
+      "width": 1440,
+      "populated": "Existing workflow drafts"
+    },
+    {
+      "screen": "workflow",
+      "width": 390,
+      "populated": "Prepare account review"
+    },
+    {
+      "screen": "review",
+      "width": 390,
+      "populated": "Agents"
+    },
+    {
+      "screen": "docs",
+      "width": 390,
+      "populated": "Existing workflow drafts"
+    }
+  ],
+  "standardItems": 1,
+  "policy": "held",
+  "linkedReview": true,
+  "activeUnchanged": true,
+  "providerCalls": 0
+}

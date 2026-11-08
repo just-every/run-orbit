@@ -1,0 +1,35 @@
+[
+  {
+    "check": "views-write",
+    "command": "node src/base/contract-docs.mjs write",
+    "exit": 0,
+    "head": "f7a673b4600fa1ff61f71b9a7a9b81628beeda48"
+  },
+  {
+    "check": "views-check",
+    "command": "node src/base/contract-docs.mjs check",
+    "exit": 0,
+    "head": "f7a673b4600fa1ff61f71b9a7a9b81628beeda48"
+  },
+  {
+    "check": "views-restore",
+    "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+    "exit": 0,
+    "head": "f7a673b4600fa1ff61f71b9a7a9b81628beeda48"
+  },
+  {
+    "check": "lock-write",
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+    "exit": 0,
+    "head": "f7a673b4600fa1ff61f71b9a7a9b81628beeda48"
+  },
+  {
+    "check": "lock-check",
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "exit": 0,
+    "result": {
+      "ok": true
+    },
+    "head": "f7a673b4600fa1ff61f71b9a7a9b81628beeda48"
+  }
+]

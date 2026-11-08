@@ -1,0 +1,184 @@
+{
+  "tag": "sd-orbit-c-f145",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f145",
+  "head": "f7a673b4600fa1ff61f71b9a7a9b81628beeda48",
+  "main_at_merge": "4fb97e943699019f549afcec4d21c8d5d34cb187",
+  "recorded_at": "2026-11-08T14:48:28.507414+00:00",
+  "claim": {
+    "clause": "SURFACE-008",
+    "status": "PARTIAL",
+    "whole_points": [],
+    "selected_slice": "Acceptance 2: existing-workflow owner draft save"
+  },
+  "counts": {
+    "before": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32,
+      "total": 204
+    },
+    "after": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "tests": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200,
+    "added_registrations": 0,
+    "removed_assertions": 0
+  },
+  "proofs": [
+    {
+      "command": "pnpm exec tsx --test tests/core/managed-owner.test.ts",
+      "result": "PASS",
+      "registered": 1,
+      "failed": 0,
+      "log": "NATIVE-MCP.log",
+      "head": "f7a673b4600fa1ff61f71b9a7a9b81628beeda48"
+    },
+    {
+      "command": "pnpm exec tsx --test tests/core/managed-owner.test.ts tests/core/capture-review.test.ts",
+      "result": "capture-review PASS; earlier managed helper sequencing failure repaired",
+      "log": "NATIVE-INITIAL.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/cli/agent-door.mjs . deploy.json",
+      "result": "PASS",
+      "passed": 3605,
+      "total": 3605,
+      "log": "CONFORMANCE.log"
+    },
+    {
+      "command": "node /tmp/orbit-browser-workflows.mjs",
+      "result": "PASS",
+      "widths": [
+        1440,
+        390
+      ],
+      "journey": "tests/rer/workflow-journey.mjs#workflowBrowserJourney",
+      "log": "WORKFLOW-BROWSER.log"
+    },
+    {
+      "command": "node /tmp/orbit-hosted-browser.mjs",
+      "result": "PASS",
+      "widths": [
+        1440,
+        390
+      ],
+      "screens": [
+        "workflow",
+        "review",
+        "docs"
+      ],
+      "log": "BUILT-PAGES.log"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "result": "PASS",
+      "log": "BUILD.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "result": "PASS",
+      "log": "TYPECHECK.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "result": "PASS",
+      "log": "FIRST-PARTY.log"
+    },
+    {
+      "command": "node scripts/check-boundaries.mjs",
+      "result": "PASS",
+      "log": "BOUNDARIES.log"
+    },
+    {
+      "command": "node scripts/publish-deployment-spec.mjs --check",
+      "result": "PASS",
+      "log": "DEPLOYMENT.log"
+    },
+    {
+      "command": "pnpm exec tsx scripts/agent-surface.ts --check",
+      "result": "PASS",
+      "log": "SURFACE.log"
+    }
+  ],
+  "merge_equivalence": {
+    "runtime_docs_conformance_and_browser_diff": "empty",
+    "file": "MERGE-RUNTIME-DIFF.txt",
+    "combined_managed_registration_reexecuted": true
+  },
+  "mechanical": {
+    "views_write": 0,
+    "views_check": 0,
+    "generated_views_committed": false,
+    "source_lock_ok": true,
+    "migration_ledger": "not applicable; no migration"
+  },
+  "publication_scan": {
+    "commit": "f7a673b4600fa1ff61f71b9a7a9b81628beeda48",
+    "complete": false,
+    "historyScanned": false,
+    "findings": null,
+    "reason": "Fleet Mac performs the publication scan and landing; not run in cloud"
+  },
+  "browser": {
+    "proof": "SURFACE-008.production-pages",
+    "observations": [
+      {
+        "screen": "workflow",
+        "width": 1440,
+        "populated": "Prepare account review"
+      },
+      {
+        "screen": "review",
+        "width": 1440,
+        "populated": "Agents"
+      },
+      {
+        "screen": "docs",
+        "width": 1440,
+        "populated": "Existing workflow drafts"
+      },
+      {
+        "screen": "workflow",
+        "width": 390,
+        "populated": "Prepare account review"
+      },
+      {
+        "screen": "review",
+        "width": 390,
+        "populated": "Agents"
+      },
+      {
+        "screen": "docs",
+        "width": 390,
+        "populated": "Existing workflow drafts"
+      }
+    ],
+    "standardItems": 1,
+    "policy": "held",
+    "linkedReview": true,
+    "activeUnchanged": true,
+    "providerCalls": 0
+  },
+  "ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "f7a673b4600fa1ff61f71b9a7a9b81628beeda48",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42491459594",
+      "id": 42491459594,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "main_equals_candidate": false,
+  "landing": "pending fleet; no main push",
+  "product_push_verified": true
+}
