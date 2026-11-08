@@ -14,6 +14,14 @@
       }
     ]
   },
+  "candidate_ci_last_sample": {
+    "conclusion": null,
+    "head_sha": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42501953676",
+    "run_id": 42501953676,
+    "sampled_at": "2026-11-08T16:56:47.660367+00:00",
+    "status": "in_progress"
+  },
   "checks": [
     {
       "binding": "exact-candidate",
@@ -117,8 +125,142 @@
     "partial": 134,
     "total": 204
   },
-  "generated_at": "2026-11-08T16:53:31.941513+00:00",
+  "custody": "PUSHED; exact-SHA Verify in progress; no green CI, DONE or landing claimed",
+  "evidence_transfer_check": {
+    "destination": "/tmp/orbit-evidence-verify/work/sd-orbit-c-f147/reports/just-every/run-orbit",
+    "files": [
+      {
+        "blob": "b972c6cab52c28dd13fbbefa492d12aefe1cef10",
+        "bytes": 7075,
+        "path": "MAIN-CI.json",
+        "sha256": "a19bc0a31d607831cf0d24a0a42cb3035c26d8eb355b60a4671e2c1d483fcdf9"
+      },
+      {
+        "blob": "98194a1ccbd7e841d353cac62350315de3d7836d",
+        "bytes": 6455,
+        "path": "RECEIPT.json",
+        "sha256": "370a21da103b23ff4b48400b41c9d502880e823dd5d958a453191a4d5e3f8bb6"
+      },
+      {
+        "blob": "3a852b2f4dfd802641f31bbb4fdc287a7833aa43",
+        "bytes": 14489,
+        "path": "REPORT.md",
+        "sha256": "254f7e5051a196b7580c026708ad45d2054e93d97b63c18bab678ac89930dfda"
+      },
+      {
+        "blob": "1d76dff5345698bfc9f69e322f84e166fae998b8",
+        "bytes": 5672,
+        "path": "checks/browser.log",
+        "sha256": "1efcba778ee499b24f2832210e0b3ff2265f8467f918fc03a24d1d7437cadaa2"
+      },
+      {
+        "blob": "b71e9ab00c7b855320e9691babaa4ce2651142d7",
+        "bytes": 346,
+        "path": "checks/capture-native.log",
+        "sha256": "c7fbc6dc5981b8430de2cad557d31b8105b274061c61b1662408133dd6437882"
+      },
+      {
+        "blob": "39f0d75d1e9caf4dde82a9b1a7334299c6f97707",
+        "bytes": 176089,
+        "path": "checks/conformance.log",
+        "sha256": "d289eb47b19c5387e021b0f39be0f1893f600dc5605d925639fe6b8ab201701f"
+      },
+      {
+        "blob": "ae869b2fafd3acf46a2dc6ce35ec869497ae9cfb",
+        "bytes": 32,
+        "path": "checks/contract-view-check.log",
+        "sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+      },
+      {
+        "blob": "7f08ad713eb644515ca188ca96c07a87314528b5",
+        "bytes": 60,
+        "path": "checks/contract-views.log",
+        "sha256": "cdada4f46860989b6e41904b5bffd1be7976cfde8b8dba1b4a7dcf41c522fcda"
+      },
+      {
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "bytes": 0,
+        "path": "checks/first-party.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "blob": "1dd2b6eb4a465eb9333133702ceab6103277dd94",
+        "bytes": 183829,
+        "path": "checks/main-failed-job.log",
+        "sha256": "d013d9b96241166e12119b05b48a373d298746e76669aec81112d0fc60ea5997"
+      },
+      {
+        "blob": "a9ffac74c69a8a72a4b239f8857ef6256b2dfc57",
+        "bytes": 4146,
+        "path": "checks/managed-owner.log",
+        "sha256": "952a02c56e791a9113afa400f3f0d43f4b9067700bc1d73254132f91ae3edb82"
+      },
+      {
+        "blob": "b863ed1e2af418050b1b25059e17095f77a126e5",
+        "bytes": 713,
+        "path": "checks/product-push.log",
+        "sha256": "4ab3c499e0ff7566a92b65199810d55f9891e981884775f5466d07cd00bdb9d9"
+      },
+      {
+        "blob": "2bb47192d4c0a46be0d35249d96d55344c8bd11d",
+        "bytes": 494000,
+        "path": "checks/source-lock-check.log",
+        "sha256": "3866051b67daf9e3e7a1da3b1530f53659345f845fc304e9783d4b6dacb7b52a"
+      },
+      {
+        "blob": "3fb8d3a5cb676779e87d88c221cdf82ca3124306",
+        "bytes": 208,
+        "path": "checks/typecheck.log",
+        "sha256": "005788508d977dbbb4fb5d2c0eb6bc91fdff77925b224cacc2750411bc40c853"
+      },
+      {
+        "blob": "cb4ba894351c944ee46bbff79cd72664dd9aa386",
+        "bytes": 52693,
+        "path": "ui/approval-1440.png",
+        "sha256": "60c3476f4046232c109a2571acfe1eab5e707df5d37b363abc1c84995380be03"
+      },
+      {
+        "blob": "81d329a8a2e17798a42a705da8fbdbe02171142f",
+        "bytes": 45459,
+        "path": "ui/approval-390.png",
+        "sha256": "a8527650f0a4f34a890ff655bde6ed2c6f35c1e7e98b5ae1663ffda8b72682a2"
+      },
+      {
+        "blob": "1783a3b413257dc13496d2c88bbd99eb0b5e5aa9",
+        "bytes": 250582,
+        "path": "ui/capture-1440.png",
+        "sha256": "03cf903d0a88f559c6e334c4c492a025189580db4a8ca9cc1794a8a92d159967"
+      },
+      {
+        "blob": "9d4b1131fed323e3013972507a95e1e14a323fff",
+        "bytes": 225272,
+        "path": "ui/capture-390.png",
+        "sha256": "b52f2e3cc03242cf125b1052662b4f27a2fe6049a1c71bd90c494a5549f7a627"
+      },
+      {
+        "blob": "c449337ace1534923f3c5f435510dbf70b84e2bb",
+        "bytes": 1037940,
+        "path": "ui/docs-1440.png",
+        "sha256": "116b16df189bd1a9e55880977cb003dec0df32231968fa06b3d305055f6e8a8d"
+      },
+      {
+        "blob": "85450c28964fd97073e021ec736da8ad8c1ed0d6",
+        "bytes": 968726,
+        "path": "ui/docs-390.png",
+        "sha256": "da1a3c3b8304877c9811d3b50ae91c914415d4903954d31705492caeb88b2e39"
+      }
+    ],
+    "head": "f4057dff715f4a696c130b5c5619833a86dd730e",
+    "manifest_sha256": "de1c8de295714d6d678638d7cf5467fc3a72fcdc865e5397a89daddfd3344140",
+    "product_branch": "cloud/sd-orbit-c-f147",
+    "product_head": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
+    "ref": "refs/heads/evidence/sd-orbit-c-f147",
+    "repository": "just-every/run-orbit",
+    "status": "restored"
+  },
+  "generated_at": "2026-11-08T16:57:54.195792+00:00",
   "generated_contract_views_committed": false,
+  "github_calls": 6,
   "head": "e80ad71cb837775fc9fdc6ce0dfea4ac9510a440",
   "journey_steps": 37,
   "main_equality": false,
