@@ -4,12 +4,13 @@ import {identityResponse, operatorFromRequest} from '../../src/core/features/ide
 import {orbitAgentDoor, orbitBusinessSettings} from '../../src/core/features/agent-door';
 import {SettingsRepository} from '../../src/core/features/settings/repository';
 import {localAgentCredentialProof} from './agent-door-local-proof';
+import {agentDoorBodyLimitProof} from './agent-door-body-limit';
 import {checkAgentArtifacts} from '../../src/base/modules/agent-door/index.ts';
 import {contactAgentArtifacts} from '../../src/core/features/agent-door/erasure';
 import {foldInstalledCatalog} from '../../src/core/features/records/archive-fold-catalog';
 import portabilityPolicy from '../../scripts/installer/portability-policy.mjs';
 import {orbitPeople} from '../../src/core/features/agent-door/people';
-import {autonomousPolicy,policyEnvelope} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
+import {autonomousPolicy,heldPolicy,policyEnvelope} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 
 export async function agentDoorProof() {
   const fixture = await isolatedDatabase();
@@ -156,6 +157,10 @@ export async function agentDoorProof() {
     const contact=await call('orbit.records.create',{kind:'contact',record:{name:'Maya Chen',email:'maya@example.test',company_id:companyId},idempotency_key:'native-contact'});
     const stage=await fixture.db.prepare('SELECT id FROM pipeline_stages ORDER BY position LIMIT 1').first<string>('id');
     const opportunity=await call('orbit.records.create',{kind:'opportunity',record:{title:'Brightwork Team plan',stage_id:stage,value_cents:750000,company_id:companyId,contact_ids:[contact.id],primary_contact_id:contact.id},idempotency_key:'native-opportunity'});
+    const bodyLimitNow=Math.floor(Date.now()/1000);
+    await agentDoorBodyLimitProof({db:fixture.db,door,origin,
+      bearer:await sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:'business-owner',email:bindings.OWNER_EMAIL,act:{sub:'business-ari',name:'Ari'},client_id:'business-client',business:'door-company',scope:principal.scopes.join(' '),consent:'door-test-consent',jti:crypto.randomUUID(),iat:bodyLimitNow,exp:bodyLimitNow+300}),
+      record:{stage_id:stage!,value_cents:750000,company_id:companyId,contact_ids:[contact.id],primary_contact_id:contact.id}});
     const risks=await call('orbit.risks.read',{id:opportunity.id});
     assert.equal(risks.risks.deal.id,opportunity.id);
     assert.ok(Array.isArray(risks.risks.findings),'native rule findings are available over MCP as JSON');
@@ -209,7 +214,8 @@ export async function agentDoorProof() {
     assert.ok(feed.decisions.length>0,'Business MCP audits enter the relay');
     assert.equal(new Set(feed.decisions.map(row=>row.id)).size,feed.decisions.length);
     assert.equal((await door.handle(post('/api/rer/agent-decisions',{pull:'foreign.invalid.signature'})))!.status,401,'BASE-AGENT-009.relay.foreign');
-    await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId);
+    await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
+    await adopt(sensitiveBlocked);
     const witness=await call('orbit.operations.read',{});
     assert.ok(witness.record_mail_drafts.rows>0);
     await settingsRepository.remove(teammate.id,owner.operatorId,undefined,owner.sessionId);

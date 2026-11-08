@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { createId } from '../../src/core/shared/ids';
 import type { SalesTask, TaskHistory, TaskInput, TaskList } from '../../src/core/features/tasks/contracts';
 import { createApp } from './app';
+import { testAuth } from './test-auth';
 import type { TodayApp } from './today-workspace';
 /** Add to an existing public core journey; deliberately registers no test().
  * Returns the remaining owner/task for the parent's removal-handover assertions. */
@@ -18,10 +19,33 @@ export async function exerciseSalesTasks(t: TodayApp, db: D1Database) {
  assert.equal(await assignmentCount(created.id), 1);
  const mine = await save(created.id, {...base, ownerId: t.actor}, created.revision);
  assert.equal(await assignmentCount(created.id), 1, 'self assignment creates no notification');
+ const receiver = await testAuth(db).createSession(other);
+ const receiverRead = async <T>(path: string): Promise<T> => {
+  const response = await t.app.request(`https://orbit.test${path}`, {headers: {cookie: `__Host-orbit_session=${receiver.token}`}});
+  assert.equal(response.status, 200, await response.clone().text());
+  return response.json() as Promise<T>;
+ };
+ const inbox = () => receiverRead<{notifications: {id: string; kind: string; href: string | null}[]; unread: number}>('/api/v1/notifications');
+ const before = await inbox(), previousIds = new Set(before.notifications.map(notice => notice.id));
  const back = await save(created.id, base, mine.revision);
  assert.equal(await assignmentCount(created.id), 2);
+ const delivered = await inbox(), added = delivered.notifications.filter(notice => !previousIds.has(notice.id));
+ assert.equal(added.length, 1, 'reassignment adds exactly one notice to the receiving operator inbox');
+ const notice = added[0]!;
+ assert.equal(notice.kind, 'task.assigned');
+ assert.equal(notice.href, `/app/tasks/${created.id}`);
+ assert.deepEqual(delivered.notifications.map(item => item.id).sort(), [...previousIds, notice.id].sort(), 'existing inbox identities are retained');
+ assert.equal(delivered.unread, before.unread + 1);
+ const receivedTask = (await receiverRead<{task: SalesTask}>(notice.href!.replace('/app/', '/api/v1/'))).task;
+ assert.equal(receivedTask.id, created.id);
+ assert.equal(receivedTask.ownerId, other);
+ assert.equal(receivedTask.title, base.title);
+ assert.equal(receivedTask.revision, back.revision);
  assert.equal((await t.call(`/api/v1/tasks/${created.id}`, {method: 'PUT', body: {...base, revision: mine.revision, status: 'open'}})).status, 409);
  assert.equal(await assignmentCount(created.id), 2, 'a stale replay cannot notify again');
+ const replayed = await inbox();
+ assert.deepEqual(replayed.notifications.map(item => item.id).sort(), delivered.notifications.map(item => item.id).sort(), 'stale reassignment preserves the same receiver inbox identities');
+ assert.equal(replayed.unread, delivered.unread, 'stale reassignment adds no unread notice');
  const history = (await read(created.id)).history;
  assert.ok(history.some(entry => entry.kind === 'task.reassigned' && entry.payload.previousOwnerId === t.actor));
  assert.ok(history.every(entry => entry.actorName && entry.occurredAt && entry.recordedAt));
