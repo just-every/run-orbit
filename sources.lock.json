@@ -2299,7 +2299,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "aa80c7e822009aee1a1d0b27161e4c6f0db57da85b2d1e2a57c1a8fec8dc242b",
+      "sha256": "b609b81aedd6309e60c5e45f47ad6119296e26d01a881c98a9900df9f28e0a16",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -2419,7 +2419,7 @@
       "executable": false
     },
     "newtests/t096/forms-native.test.ts": {
-      "sha256": "6f8a6a0be5f4288357eeca1ca4cb5cdb670e26c631d4b2332c7cebf47f78437e",
+      "sha256": "a05d73910ea33b5afe5ff37c8ae9b9e0f204416ea66ea505d1ec62fd53fca432",
       "executable": false
     },
     "newtests/t096/forms-origin-race.ts": {
@@ -5987,7 +5987,7 @@
       "executable": false
     },
     "src/core/features/forms/console.tsx": {
-      "sha256": "e40bc1ad509a30f7b73f555a6e62d71e38bcb3b5be484447ef5355dd4ae8ad45",
+      "sha256": "4a4104529ab353f9398e88a13ed52149d50fa4ab7f843f26b40b002ece2217a2",
       "executable": false
     },
     "src/core/features/forms/definition.ts": {
@@ -6019,7 +6019,7 @@
       "executable": false
     },
     "src/core/features/forms/native-capture.ts": {
-      "sha256": "e070f4d49119302b78b3a6e0ca3dcc11776dca298fa2f539d0247f81bba3bbbf",
+      "sha256": "6b87cf445fe20f3f6a0ecda33e1cabebeb770f9e156317e4216e1247241af8cf",
       "executable": false
     },
     "src/core/features/forms/opportunity-intake.ts": {
@@ -6047,7 +6047,7 @@
       "executable": false
     },
     "src/core/features/forms/service.ts": {
-      "sha256": "7c003d79add9491fe38205fc14c1cfb4a1803b3aea7903942d45088d6950b849",
+      "sha256": "c7cdca81905e0a1a375bc354484db2dfd69ae4c8d99b698f8910acbdc1c30003",
       "executable": false
     },
     "src/core/features/forms/spam-panel.tsx": {
@@ -7663,7 +7663,7 @@
       "executable": false
     },
     "src/core/features/publication/fixed-compiler.ts": {
-      "sha256": "7480cb9cd64bf04344b35fa9f12a8a25db6ad620f78da65f312be4d0406aa19e",
+      "sha256": "378b250647a7c6fdae1069e960865788124c644090c9ed32be47fcc687409506",
       "executable": false
     },
     "src/core/features/publication/read-only-preview.ts": {
