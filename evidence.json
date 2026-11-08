@@ -1,10 +1,10 @@
 {
   "files": [
     {
-      "blob": "4d4e6fe694bc01734ae692aa224f427df1584e97",
-      "bytes": 12101,
+      "blob": "197f32397ce568967f1da4d17cca130154eaebf2",
+      "bytes": 15454,
       "path": "REPORT.md",
-      "sha256": "d6ec39115ce47619ee184763d4f505412f7cf5d008f0c6c5a8757e70c3586498"
+      "sha256": "ead88f419e527ce4d4df6561f590d1b75ce93f5347ced271850bc2c55966a280"
     },
     {
       "blob": "b148d72ad4354be063082a07ba7705ca01cf8160",
@@ -19,10 +19,22 @@
       "sha256": "c1e799f839d388f7fbf6b6f3a64c6795e3e4f8feeff60d9826f8a9e012b3ec2f"
     },
     {
-      "blob": "8eb2363e048b280ae38c0d7079f099f8bca03f40",
-      "bytes": 192,
+      "blob": "990df5d5f27f3dbbc8006f6a1929cc5e7833e2c3",
+      "bytes": 195,
       "path": "candidate-ci.json",
-      "sha256": "a133506be0e7c77b8df528f437034e9165ce82c616321096ee5e3eb8335f9ce4"
+      "sha256": "5a35ba16323f49c1b8b3c5cacac28b2f10a552146aa93416793ff0ebc0e74866"
+    },
+    {
+      "blob": "35c3cb557fba13b547054edc9daefd7f0e912b9d",
+      "bytes": 424,
+      "path": "candidate-failed-jobs.json",
+      "sha256": "01bf3ae685c4a01f23df5f0faaeff0291f2242c4ee6fdc85a2451c208a0b226f"
+    },
+    {
+      "blob": "1c64808ec96d81731f965e2cdd3a065f779745bc",
+      "bytes": 469,
+      "path": "candidate-failure.json",
+      "sha256": "18dd08ca1de26765d0fca8ab224a82a09507db56810ab1343e3a70ef873e9cc1"
     },
     {
       "blob": "13ac9a9932c011679d44d7a09413863cdf1c9f1b",
@@ -43,10 +55,28 @@
       "sha256": "5b91b8f97fc7366eff1f6e72cb14a57b1ff5e3529fb5f5145b7d082687032c49"
     },
     {
-      "blob": "65287301199f649da93ad46f8c430b12703ccb8c",
-      "bytes": 4718,
+      "blob": "710616d39beef945752499bccbfcce9ad820e0dc",
+      "bytes": 8426,
       "path": "receipt.json",
-      "sha256": "a9bc3e91599d6fa26e134d15bf6f6d0f7ce3d6178fc8f5cf1d062e89c461362c"
+      "sha256": "9c63a3703fbdd9c010ae76a29e21530b13543b2f1e1dc78a8df172c576c78021"
+    },
+    {
+      "blob": "d6a104c7a538d9ce21783a950a31743c82d3b48e",
+      "bytes": 659,
+      "path": "verify-desktop-candidate.json",
+      "sha256": "8c93f98bc9586208c42e938a3662c7a111524420c9fe960f0c821a4868a37c3a"
+    },
+    {
+      "blob": "0e9c19f112c34a86b5598eff2b6986d25aef6f39",
+      "bytes": 659,
+      "path": "verify-desktop-main.json",
+      "sha256": "7b87309e8879e11bdc9181fe02667b7feadfbd59df15102681d831bc975841bb"
+    },
+    {
+      "blob": "94297f6234e61ae7a58e5254693785ebceef7dfe",
+      "bytes": 757,
+      "path": "verify-reproduction-candidate.json",
+      "sha256": "926176b5dec7a8030822c41556cc2fbe5a6c41e2b38bb92f803c6e1e805b76e6"
     }
   ],
   "product_branch": "cloud/sd-orbit-c-f133",

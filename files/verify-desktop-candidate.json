@@ -1,0 +1,11 @@
+{
+  "head": "37614c3bb58648da47b79089c9418665eb21a26a",
+  "job": "128714323632",
+  "command": "pnpm exec node --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/rer-operator-desktop-results.jsonl tests/rer/operator-desktop.test.mjs",
+  "exit": 0,
+  "test": "BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px",
+  "browserAdaptation": "System Chromium at /usr/bin/chromium with --no-sandbox; assertions unchanged",
+  "reproducedCiFailure": false,
+  "result": "passed",
+  "durationMs": 243780.856554
+}

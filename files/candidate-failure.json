@@ -1,0 +1,12 @@
+{
+  "run": 42474856032,
+  "job": 128714323632,
+  "batch": "batch-13",
+  "command": "node scripts/verification-batch.mjs '[\"runtime-browser\",\"rer-operator-desktop\"]' ",
+  "test": "BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px",
+  "assertion": "tests/rer/operator-routes.mjs:29 expectRouteRecovery",
+  "expected": "This contact does not exist.",
+  "actual": "Record not found.",
+  "archiveRead": "success, once",
+  "repairRounds": 0
+}

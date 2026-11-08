@@ -132,16 +132,99 @@
     "mainEqualsCandidate": false
   },
   "ci": {
-    "conclusion": null,
+    "conclusion": "failure",
     "head_sha": "37614c3bb58648da47b79089c9418665eb21a26a",
     "html_url": "https://github.com/just-every/run-orbit/actions/runs/42474856032",
     "id": 42474856032,
-    "status": "in_progress"
+    "status": "completed"
   },
   "staticGuideAliases": {
     "identicalRenderedDocuments": true,
     "sha256": "94bc903cae9220ecdc03b0e9e214d8edf9da06428aa8451338737dac13e07ec6"
   },
   "remoteBranchHead": "37614c3bb58648da47b79089c9418665eb21a26a",
-  "githubCallsUsed": 5
+  "githubCallsUsed": 10,
+  "browserProof": [
+    {
+      "file": "agent-guide-1440.png",
+      "width": 1440,
+      "height": 5579,
+      "sha256": "b21a5601107448f96842b18ba2cd72d3c54b7b1d6f5d226d8082dd5c776ac351",
+      "inspected": true
+    },
+    {
+      "file": "agent-guide-390.png",
+      "width": 390,
+      "height": 8183,
+      "sha256": "c1e799f839d388f7fbf6b6f3a64c6795e3e4f8feeff60d9826f8a9e012b3ec2f",
+      "inspected": true
+    }
+  ],
+  "ciFailure": {
+    "run": 42474856032,
+    "job": 128714323632,
+    "batch": "batch-13",
+    "command": "node scripts/verification-batch.mjs '[\"runtime-browser\",\"rer-operator-desktop\"]' ",
+    "test": "BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px",
+    "assertion": "tests/rer/operator-routes.mjs:29 expectRouteRecovery",
+    "expected": "This contact does not exist.",
+    "actual": "Record not found.",
+    "archiveRead": "success, once",
+    "repairRounds": 0
+  },
+  "docsBrowserInVerify": {
+    "file": "tests/e2e/worker-smoke.spec.mjs",
+    "name": "DOCS-001 \u2014 installed docs navigation reaches every page",
+    "result": "passed",
+    "durationSeconds": 4.3,
+    "run": 42474856032,
+    "job": 128714323632
+  },
+  "diagnostics": [
+    {
+      "head": "37614c3bb58648da47b79089c9418665eb21a26a",
+      "job": "128714323632",
+      "command": "node scripts/verification-batch.mjs '[\"runtime-browser\",\"rer-operator-desktop\"]'",
+      "exit": 1,
+      "browserAdaptation": "System Chromium at /usr/bin/chromium with --no-sandbox; assertions unchanged",
+      "reproducedCiFailure": false,
+      "failedBeforeCiTarget": true,
+      "failures": [
+        {
+          "test": "ACTION-004 \u2014 the desktop draft editor saves D1 state and surfaces a revision conflict",
+          "failure": "Test timeout of 30000ms exceeded; page.goto: Test ended."
+        },
+        {
+          "test": "PUBLIC-001 \u2014 installed Lobby at desktop and mobile widths",
+          "failure": "Unexpected console error: server responded with 404 (Not Found)."
+        }
+      ]
+    },
+    {
+      "head": "37614c3bb58648da47b79089c9418665eb21a26a",
+      "job": "128714323632",
+      "command": "pnpm exec node --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/rer-operator-desktop-results.jsonl tests/rer/operator-desktop.test.mjs",
+      "exit": 0,
+      "test": "BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px",
+      "browserAdaptation": "System Chromium at /usr/bin/chromium with --no-sandbox; assertions unchanged",
+      "reproducedCiFailure": false,
+      "result": "passed",
+      "durationMs": 243780.856554
+    },
+    {
+      "head": "a301c3152b7c1c564610f20b1e5100e98dd46ba6",
+      "job": "128714323632",
+      "command": "pnpm exec node --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/rer-operator-desktop-results.jsonl tests/rer/operator-desktop.test.mjs",
+      "exit": 0,
+      "test": "BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px",
+      "browserAdaptation": "System Chromium at /usr/bin/chromium with --no-sandbox; assertions unchanged",
+      "reproducedCiFailure": false,
+      "result": "passed",
+      "durationMs": 256645.632485
+    }
+  ],
+  "ready": false,
+  "status": "BLOCKED: exact-SHA Verify failed; original desktop assertion did not reproduce in direct candidate or pinned-main replay. No speculative repair permitted.",
+  "ciRepairRounds": 0,
+  "originalCiFailureReproduced": false
 }
