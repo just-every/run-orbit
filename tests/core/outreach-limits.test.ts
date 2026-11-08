@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
+import {assertProviderRetryTiming} from '../support/outreach-retry-timing';
 import {createApp} from '../support/app';
 import {isolatedDatabase} from '../support/isolated-database';
 import {createDependencies} from '../support/dependencies';
@@ -13,6 +14,7 @@ async function fixture(db:D1Database){const deps=createDependencies(db),actor=cr
 test('OUT-006 BASE-OPS-004 transient rate limits stop after five attempts within one hour and notify once',async context=>{
  const p=await isolatedDatabase();try{const f=await fixture(p.db),approval=new ApprovalRepository(p.db),outreach=new OutreachRepository(p.db);context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T10:00:00Z')});const draft=await outreach.createDraft(f.opportunityId,{contactId:f.contactId,subject:'Bounded retries',body:'Exact reviewed body'},f.actor),message=await approval.approve(draft.id,1,f.actor,{scheduledAt:'2030-01-07T10:01:00Z'});let calls=0;const service=new OutreachService(p.db,{send:async()=>{calls++;throw new SendGridSendError('rate_limited','Test provider rate limit',429);}});
  for(let i=0;i<6;i++){context.mock.timers.setTime(Date.parse('2030-01-07T10:01:00Z')+i*5*60000);await service.dispatchDue();}assert.equal(calls,5);const failed=await approval.message(message.id);assert.equal(failed.state,'failed');assert.equal(failed.attempt_count,5);assert.match(failed.failure!,/rate limit/);assert.equal((await p.db.prepare("SELECT COUNT(*) n FROM notifications WHERE event_key=?").bind(`message:${message.id}:failed`).first<{n:number}>())!.n,1);
+ await assertProviderRetryTiming(context,p.db,f);
  }finally{context.mock.timers.reset();await p.dispose();}
 });
 test('OUT-010 OUT-018 one user\'s volume never consumes another\'s budget and every deferral names its limit',async context=>{

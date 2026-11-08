@@ -10031,7 +10031,7 @@
       "executable": false
     },
     "tests/core/outreach-limits.test.ts": {
-      "sha256": "bf1ddb39a4766ca39ff71b2887553f39c7ed5bbbf4db181cd0ff419a74c7e323",
+      "sha256": "c9464df972dd5098be6176b46fabb6dc00ad5c1a8b2b35ac2dba5dfb2299942e",
       "executable": false
     },
     "tests/core/platform-boundaries.test.ts": {
@@ -11028,6 +11028,10 @@
     },
     "tests/support/opportunity-creation.ts": {
       "sha256": "1326e6e55b08ed7183102ca0d35e6fee10bca9bae05c4d52ea701cc597f1b934",
+      "executable": false
+    },
+    "tests/support/outreach-retry-timing.ts": {
+      "sha256": "3db8d367748587bdc1bad16409244cd43cbc9f3a1297990c624b7db5da465317",
       "executable": false
     },
     "tests/support/personal-slack-proof.ts": {
