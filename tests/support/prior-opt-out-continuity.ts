@@ -1,0 +1,125 @@
+import assert from 'node:assert/strict';
+import type {TestContext} from 'node:test';
+import {priorCaptureUpgrade} from './prior-capture-upgrade';
+import {createApp} from './app';
+import {testAuth} from './test-auth';
+import {createId} from '../../src/core/shared/ids';
+import {createOutboundMail} from '../../src/core/platform/outbound-mail';
+import {OutreachService} from '../../src/core/features/outreach/service';
+import type {OutboundMessage} from '../../src/core/features/outreach/approval-repository';
+import type {optOutSettings} from '../../src/core/features/outreach/opt-out';
+
+interface WireMessage {
+  personalizations: {to: {email: string}[]}[];
+  subject: string;
+  content: {type: string; value: string}[];
+  asm?: {group_id: number};
+  headers: Record<string, string>;
+  custom_args: Record<string, string>;
+}
+
+/** A second historical store leaves the original reply-cancellation journey intact. */
+export async function provePriorApprovalContinuity(context: TestContext) {
+  const target = await priorCaptureUpgrade();
+  try {
+    const {db, prior} = target;
+    const original = target.before.rows.outbound_messages!.map(row => JSON.parse(row) as OutboundMessage)
+      .find(row => row.id === prior.scheduledMessage)!;
+    assert.equal(original.state, 'scheduled');
+    assert.equal(original.provider_message_id, null);
+    assert.equal(original.attempt_count, 0);
+    const due = Date.parse(original.scheduled_at!);
+    context.mock.timers.enable({apis: ['Date'], now: due - 60_000});
+
+    // Arrange a current installation owner, without changing the historical sender or approval.
+    const owner = createId(), address = ['synthetic-orbit-146', 'test.invalid'].join('@');
+    const auth = testAuth(db);
+    await auth.ensureOperator({id: owner, email: address, displayName: 'Current installation owner'});
+    await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(owner).run();
+    const session = await auth.createSession(owner);
+    const mail = createOutboundMail({DB: db, MAIL_PROVIDER: 'sendgrid', SENDGRID_API_KEY: 'synthetic-orbit-146',
+      MAIL_FROM: address, MAIL_REPLY_TO: address, SENDGRID_UNSUBSCRIBE_GROUP_ID: '146'});
+    assert.ok(mail);
+    assert.equal(mail.provider, 'sendgrid');
+    const app = createApp({database: db, assets: {fetch: async () => new Response(null, {status: 404})}, outboundMail: mail});
+    const settings = async (change?: {carries: boolean; removalAllowed: boolean}) => {
+      const response = await app.request('https://orbit.test/api/v1/settings/opt-out' + (change ? '/one_to_one' : ''), {
+        method: change ? 'POST' : 'GET',
+        headers: {Cookie: `__Host-orbit_session=${session.token}`, Origin: 'https://orbit.test', 'Content-Type': ['application', 'json'].join('/')},
+        body: change ? JSON.stringify(change) : undefined,
+      });
+      assert.equal(response.status, 200, await response.clone().text());
+      return await response.json() as Awaited<ReturnType<typeof optOutSettings>>;
+    };
+    const submissions: WireMessage[] = [];
+    const edge = context.mock.method(globalThis, 'fetch', async (url: string | URL | Request, init?: RequestInit) => {
+      assert.equal(String(url), 'https://api.sendgrid.com/v3/mail/send');
+      assert.equal(init?.method, 'POST');
+      submissions.push(JSON.parse(String(init?.body)) as WireMessage);
+      return new Response(null, {status: 202, headers: {'x-message-id': 'synthetic-orbit-146-accepted'}});
+    });
+    try {
+      const before = await settings();
+      assert.equal(before.types.find(row => row.type === 'one_to_one')?.carries, true);
+      assert.deepEqual(before.approvedUnsent, {carrying: 0, notCarrying: 0, approvedBeforeSetting: 1});
+      const changed = await settings({carries: false, removalAllowed: true});
+      assert.equal(changed.types.find(row => row.type === 'one_to_one')?.carries, false);
+      for (const current of [changed, await settings()]) assert.deepEqual(current.approvedUnsent, before.approvedUnsent,
+        'Turning opt-out off and reading Settings keep the original pre-setting approval count');
+      const unchanged = target.snapshot().rows;
+      assert.deepEqual(unchanged.outbound_messages, target.after.rows.outbound_messages, 'Settings changes no historical approval bytes');
+      assert.deepEqual(unchanged.drafts, target.after.rows.drafts, 'Settings changes no historical draft bytes');
+      assert.deepEqual(unchanged.outbound_message_opt_out, [], 'Settings invents no historical opt-out binding');
+      assert.equal(submissions.length, 0, 'Changing Settings never submits customer mail');
+
+      const service = new OutreachService(db, mail);
+      await service.dispatchDue(new Date(due - 60_000));
+      assert.equal(submissions.length, 0, 'The original approval keeps its original due time');
+      assert.deepEqual((await settings()).approvedUnsent, before.approvedUnsent);
+      context.mock.timers.setTime(due);
+      await service.dispatchDue(new Date(due));
+      assert.equal(submissions.length, 1, 'The original migrated scheduled approval reaches the configured SendGrid adapter once');
+      const wire = submissions[0]!;
+      assert.deepEqual(wire.personalizations, [{to: [{email: original.recipient_email}]}]);
+      assert.equal(wire.subject, original.subject);
+      assert.deepEqual(wire.content, [{type: ['text', 'plain'].join('/'), value: original.body}]);
+      assert.deepEqual(wire.asm, {group_id: 146}, 'A pre-setting approval retains legacy group behavior with the currently configured group');
+      assert.equal(wire.custom_args.rer_delivery_id, original.idempotency_key);
+      assert.equal(wire.headers['Message-ID'], original.message_id);
+      assert.equal(wire.headers.References, original.reference_ids);
+
+      const messages = async () => {
+        const response = await app.request(`https://orbit.test/api/v1/workbench/opportunities/${original.opportunity_id}/messages`, {
+          headers: {Cookie: `__Host-orbit_session=${session.token}`},
+        });
+        assert.equal(response.status, 200);
+        return (await response.json() as {messages: {id: string; state: string; providerMessageId: string | null; recipientEmail: string; subject: string; body: string}[]}).messages;
+      };
+      const accepted = (await messages()).filter(row => row.id === original.id);
+      assert.equal(accepted.length, 1);
+      assert.equal(accepted[0]!.state, 'accepted');
+      assert.equal(accepted[0]!.providerMessageId, 'synthetic-orbit-146-accepted');
+      assert.equal(accepted[0]!.recipientEmail, original.recipient_email);
+      assert.equal(accepted[0]!.subject, original.subject);
+      assert.equal(accepted[0]!.body, original.body);
+      assert.deepEqual((await settings()).approvedUnsent, {carrying: 0, notCarrying: 0, approvedBeforeSetting: 0});
+      const receiptCount = () => db.prepare("SELECT count(*) AS n FROM timeline_entries WHERE kind='message.accepted' AND json_extract(payload_json,'$.messageId')=?").bind(original.id).first<number>('n');
+      assert.equal(await receiptCount(), 1, 'One accepted receipt belongs to the original approval');
+      const settled = target.snapshot().rows;
+      await service.dispatchDue(new Date(due));
+      await new OutreachService(db, mail).dispatchDue(new Date(due + 60_000));
+      assert.equal(submissions.length, 1, 'Repeated dispatch and a fresh dispatcher never resubmit accepted historical mail');
+      assert.deepEqual((await messages()).filter(row => row.id === original.id), accepted);
+      assert.equal(await receiptCount(), 1);
+      const replayed = target.snapshot().rows;
+      assert.deepEqual(replayed.outbound_messages, settled.outbound_messages);
+      assert.deepEqual(replayed.timeline_entries, settled.timeline_entries);
+      assert.deepEqual(replayed.drafts, target.after.rows.drafts);
+      assert.deepEqual(replayed.outbound_message_opt_out, [], 'Dispatch invents no historical binding or original group identity');
+      assert.equal(replayed.outbound_messages!.length, target.after.rows.outbound_messages!.length);
+      assert.deepEqual(replayed.outbound_messages!.filter(row => JSON.parse(row).id !== original.id),
+        target.after.rows.outbound_messages!.filter(row => JSON.parse(row).id !== original.id));
+      console.log('PROBE OUT-020 2: migrated pre-setting approval, owner Settings off, configured SendGrid HTTP edge -> original content and configured group, one accepted receipt, repeat submissions=0');
+    } finally { edge.mock.restore(); }
+  } finally { context.mock.timers.reset(); await target.dispose(); }
+}
